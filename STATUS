@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 19:02:17 $]
+Last modified at [$Date: 2003/05/13 19:19:30 $]
 
 Release:
 
@@ -242,7 +242,7 @@ PATCHES TO PORT FROM 2.1
     * mod_log_config: be able to log the id of the thread that handled
       the request
       modules/loggers/mod_log_config.c: r1.102-1.104
-      +1: trawick
+      +1: trawick, stoddard (don't forget the doc)
 
     * ap_get_mime_headers_core: allocate space for the trailing null
       when folding is in effect.
