@@ -1,5 +1,8 @@
 Changes with Apache 2.0.43
 
+  *) Add ap_register_provider/ap_lookup_provider API.
+     [John K. Sterling <john@sterls.com>, Justin Erenkrantz]
+
   *) Add -p option to apxs to allow programs to be compiled with apxs.
      [Justin Erenkrantz]
 
