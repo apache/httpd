@@ -2264,6 +2264,7 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     user = password = NULL;
     nocache = 0;
+    passlen=0;	/* not actually needed, but it shuts the compiler up */
     p = strchr(host, '@');
     if (p != NULL)
     {
