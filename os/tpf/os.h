@@ -114,11 +114,6 @@ typedef struct fd_set {
 #define FD_SET(n, p) (0)
 #endif
 
-#define  RESOURCE_KEY ((void*) 0xC1C2C1C3)
-
-/* TPF doesn't have, or need, tzset (it is used in mod_expires.c) */
-#define tzset()
-
 #include <i$netd.h>
 struct apache_input {
     INETD_SERVER_INPUT  inetd_server;
@@ -132,19 +127,12 @@ struct apache_input {
 
 typedef struct apache_input APACHE_TPF_INPUT;
 
-typedef struct tpf_fork_child {
-     char  *filename;
-     enum { FORK_NAME = 1, FORK_FILE = 2 } prog_type;
-     void  *subprocess_env;
-}TPF_FORK_CHILD;
-
-int tpf_accept(int sockfd, struct sockaddr *peer, int *paddrlen);
 extern int tpf_child;
 
 struct server_rec;
 pid_t os_fork(struct server_rec *s, int slot);
 int os_check_server(char *server);
-char *getpass(const char *prompt);
+
 extern char *ap_server_argv0;
 extern int scoreboard_fd;
 #include <signal.h>
