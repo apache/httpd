@@ -1,9 +1,9 @@
-XmlGetUtf16InternalEncoding
-XmlGetUtf8InternalEncoding
-XmlInitEncoding
-XmlInitUnknownEncoding
-XmlParseXmlDecl
-XmlPrologStateInit
-XmlSizeOfUnknownEncoding
-XmlUtf16Encode
-XmlUtf8Encode
+ XmlGetUtf16InternalEncoding,
+ XmlGetUtf8InternalEncoding,
+ XmlInitEncoding,
+ XmlInitUnknownEncoding,
+ XmlParseXmlDecl,
+ XmlPrologStateInit,
+ XmlSizeOfUnknownEncoding,
+ XmlUtf16Encode,
+ XmlUtf8Encode
