@@ -93,6 +93,7 @@
 #include "scoreboard.h" 
 
 #include <signal.h>
+#include <limits.h>             /* for INT_MAX */
 
 /*
  * Actual definitions of config globals
@@ -488,7 +489,7 @@ static void * worker_thread(void * dummy)
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
     while (1) {
-        workers_may_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
+        workers_may_exit |= (requests_this_child <= 0);
         if (workers_may_exit) break;
 
         (void) ap_update_child_status(process_slot, thread_slot, SERVER_READY, 
@@ -1378,6 +1379,14 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy,
     }
 
     ap_max_requests_per_child = atoi(arg);
+    
+    /* a value of zero means infinity.  The following removes a conditional
+     * from worker_thread's hot path 
+     */
+     
+    if (!ap_max_requests_per_child) {
+        ap_max_requests_per_child = INT_MAX; 
+    }
 
     return NULL;
 }
