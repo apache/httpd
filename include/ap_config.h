@@ -56,7 +56,7 @@
 #define AP_AC_CONFIG_H
 
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
-#include <resource.h>		/* rlim_t */
+#include <sys/resource.h>		/* rlim_t */
 
 /* Implemented flags for dynamic library bindings.
  *
