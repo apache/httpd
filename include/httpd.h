@@ -95,7 +95,7 @@ extern "C" {
 
 /* Maximum number of dynamically loaded modules */
 #ifndef DYNAMIC_MODULE_LIMIT
-#define DYNAMIC_MODULE_LIMIT 64
+#define DYNAMIC_MODULE_LIMIT 128
 #endif
 
 /* Default administrator's address */
