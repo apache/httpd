@@ -21,27 +21,31 @@ static char *hex_table = "0123456789ABCDEF";
 /**
  * Dump up to the first 1024 bytes on an AJP Message
  *
+ * @param pool      pool to allocate from
  * @param msg       AJP Message to dump
  * @param err       error string to display
- * @return          APR_SUCCESS or error
+ * @return          dump message
  */
-apr_status_t ajp_msg_dump(ajp_msg_t *msg, char *err)
+char * ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err)
 {
     apr_size_t  i, j;
     char        line[80];
     char        *current;
+    char        *rv, *p;
+    apr_size_t  bl = 8192;
     apr_byte_t  x;
     apr_size_t  len = msg->len;
 
     /* Display only first 1024 bytes */
     if (len > 1024)
         len = 1024;
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+    rv = apr_palloc(pool, bl);
+    apr_snprintf(rv, bl,
                  "ajp_msg_dump(): %s pos=%" APR_SIZE_T_FMT 
-                 " len=%" APR_SIZE_T_FMT " max=%d",
+                 " len=%" APR_SIZE_T_FMT " max=%d\n",
                  err, msg->pos, msg->len, AJP_MSG_BUFFER_SZ);
-
+    bl -= strlen(rv);
+    p = rv + strlen(rv);
     for (i = 0; i < len; i += 16) {
         current = line;
 
@@ -67,13 +71,15 @@ apr_status_t ajp_msg_dump(ajp_msg_t *msg, char *err)
         }
 
         *current++ = '\0';
+        apr_snprintf(p, bl,
+                     "ajp_msg_dump(): %.4lx    %s\n",
+                     (unsigned long)i, line);
+        bl -= strlen(rv);
+        p = rv + strlen(rv);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                      "ajp_msg_dump(): %.4lx    %s",
-                      (unsigned long)i, line);
     }
     
-    return APR_SUCCESS;
+    return rv;
 }
 
 
