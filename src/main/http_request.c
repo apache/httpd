@@ -384,7 +384,7 @@ int directory_walk (request_rec *r)
 
 	    if (entry_core->r
 #if defined(__EMX__) || defined(WIN32)
-		|| (entry_core[0] != '/' && entry_core[1] != ':')
+		|| (entry_dir[0] != '/' && entry_dir[1] != ':')
 #else
 		|| entry_dir[0] != '/'
 #endif
