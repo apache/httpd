@@ -45,11 +45,9 @@ domain add this code to your <code>access.conf</code> configuration file
     &lt;Location /server-status&gt;
     SetHandler server-status
     
-    &lt;Limit GET POST&gt;
     order deny,allow
     deny from all
     allow from .foo.com
-    &lt;/Limit&gt;
     &lt;/Location&gt;
 </pre>
 <p>

@@ -40,11 +40,9 @@ from browsers at foo.com, you might use:
 <pre>
     &lt;Location /status&gt;
     SetHandler server-status
-    <Limit GET>
     order deny,allow
     deny from all
     allow from .foo.com
-    </Limit>
     &lt;/Location&gt;
 </pre>
 
