@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/11 22:35:20 $]
+Last modified at [$Date: 2000/06/12 10:46:50 $]
 
 Release:
 
@@ -169,6 +169,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       ap_sort_hooks()  [to reduce the logic in main()]
 
     * read the config tree just once, and process N times (as necessary)
+
+    * add a version number to ap_initialize() as an extra failsafe against
+      (APR) library version skew.
+      MsgID: <Pine.LNX.4.10.10005231712380.31927-100000@nebula.lyra.org>
+      Status: Greg +1 (volunteers), Jeff +1, Ryan +1, Tony -0(?)
 
 Other bugs that need fixing:
 
