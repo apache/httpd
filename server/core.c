@@ -1113,8 +1113,10 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
         return err;
     }
 
+    /* Make it absolute, relative to ServerRoot */
+    arg = ap_server_root_relative(cmd->pool, arg);
+
     /* TODO: ap_configtestonly && ap_docrootcheck && */
-    /* XXX Shouldn't this be relative to ServerRoot ??? */
     if (apr_filepath_merge((char**)&conf->ap_document_root, NULL, arg,
                            APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS
         || !ap_is_directory(cmd->pool, arg)) {
