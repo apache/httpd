@@ -198,7 +198,6 @@ ap_make_etag
 ap_make_full_path
 ap_make_method_list
 ap_matches_request_vhost
-ap_max_requests_per_child
 ap_md5
 ap_md5_binary
 ap_md5contextTo64
