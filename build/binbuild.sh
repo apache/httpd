@@ -11,9 +11,9 @@ CONFIGPARAM="--with-layout=BinaryDistribution --prefix=`pwd`/bindist"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
 VER=`echo $APDIR |sed s/apache_//`
-TAR="`build/PrintPath tar`"
-GTAR="`build/PrintPath gtar`"
-GZIP="`build/PrintPath gzip`"
+TAR="`srclib/apr/build/PrintPath tar`"
+GTAR="`srclib/apr/build/PrintPath gtar`"
+GZIP="`srclib/apr/build/PrintPath gzip`"
 
 if [ x$1 != x ]; then
   USER=$1
