@@ -160,7 +160,6 @@ void open_error_log (server_rec *s, pool *p)
 
 #ifdef HAVE_SYSLOG
     else if (!strncasecmp(s->error_fname, "syslog", 6)) {
-	register TRANS *fac;
 	if ((fname = strchr(s->error_fname, ':'))) {
 	    fname++;
 	    for (fac = facilities; fac->t_name; fac++) {
