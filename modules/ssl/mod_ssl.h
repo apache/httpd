@@ -733,7 +733,6 @@ int          ssl_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
 int          ssl_mutex_on(server_rec *);
 int          ssl_mutex_off(server_rec *);
-int          ssl_mutex_kill(server_rec *);
 
 /*  Logfile Support  */
 void         ssl_log_open(server_rec *, server_rec *, apr_pool_t *);
