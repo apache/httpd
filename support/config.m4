@@ -6,7 +6,7 @@ htdbm_LTFLAGS=""
 ab_LTFLAGS=""
 checkgid_LTFLAGS=""
 
-AC_ARG_ENABLE(static-support,APACHE_HELP_STRING(--enable-static-support,Build a statically linked version the support binaries),[
+AC_ARG_ENABLE(static-support,APACHE_HELP_STRING(--enable-static-support,Build a statically linked version of the support binaries),[
 if test "$enableval" = "yes" ; then
   APR_ADDTO(htpasswd_LTFLAGS, [-static])
   APR_ADDTO(htdigest_LTFLAGS, [-static])
