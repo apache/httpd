@@ -17,6 +17,7 @@
 <xsl:include href="html.xsl" />
 <xsl:include href="synopsis.xsl" />
 <xsl:include href="moduleindex.xsl" />
+<xsl:include href="directiveindex.xsl" />
 
 <xsl:template match="sitemap">
 <xsl:text>
@@ -28,7 +29,7 @@
 
 % Let LaTeX be lenient about very-bad line wrapping.
 \tolerance=9999 
-\emergencystretch=40pt
+\emergencystretch=60pt
 
 % Keep paragraphs flush left (rather than the default of indenting
 % the first line) and put a space between paragraphs.
@@ -53,8 +54,10 @@
 \date{\today}
 
 \begin{document}
+\frontmatter
 \maketitle
 \tableofcontents
+\mainmatter
 </xsl:text>
 
 <xsl:for-each select="category">
