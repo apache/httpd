@@ -936,7 +936,7 @@ AddHandler type-map var
 #    ErrorDocument 412 /error/HTTP_PRECONDITION_FAILED.html.var
 #    ErrorDocument 413 /error/HTTP_REQUEST_ENTITY_TOO_LARGE.html.var
 #    ErrorDocument 414 /error/HTTP_REQUEST_URI_TOO_LARGE.html.var
-#    ErrorDocument 415 /error/HTTP_SERVICE_UNAVAILABLE.html.var
+#    ErrorDocument 415 /error/HTTP_UNSUPPORTED_MEDIA_TYPE.html.var
 #    ErrorDocument 500 /error/HTTP_INTERNAL_SERVER_ERROR.html.var
 #    ErrorDocument 501 /error/HTTP_NOT_IMPLEMENTED.html.var
 #    ErrorDocument 502 /error/HTTP_BAD_GATEWAY.html.var
