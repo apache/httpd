@@ -1,4 +1,8 @@
 Changes with Apache 2.0.15-dev
+  *) Win32: Don't accept more connections than we have worker threads
+     to handle.
+     [Bill Stoddard]
+
   *) Fix bug in the Unix threaded.c MPM that allowed child processes
      to fork() new child processes. 
      [Bill Stoddard]
