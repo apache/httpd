@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/10 21:35:28 $]
+Last modified at [$Date: 2004/04/10 21:51:08 $]
 
 Release:
 
@@ -71,6 +71,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Allow URLs for ServerAdmin. PR 28174.
+         server/core.c: r1.274
+       +1: nd
 
     *) mod_rewrite: Fix confused map cache (with maps in different VHs using
        the same name). PR 26462. (2.0 + 1.3)
