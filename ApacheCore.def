@@ -143,7 +143,7 @@ EXPORTS
 ;	ap_log_reason   @136
 ;	ap_log_unixerr   @137
 ;	ap_make_array   @138
-	ap_make_dirstr   @139
+;	ap_make_dirstr   @139
 	ap_make_dirstr_parent   @140
 	ap_make_dirstr_prefix   @141
 	ap_make_full_path   @142
