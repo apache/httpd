@@ -167,7 +167,7 @@ messages a day flow over the list, and are typically very conversational in
 tone. We discuss new features to add, bug fixes, user problems, developments
 in the web server community, release dates, etc.  The actual code development
 takes place on the developers' local machines, with proposed changes
-communicated using a patch (output of a context "diff -u oldfile newfile"
+communicated using a patch (output of a unified "diff -u oldfile newfile"
 command), and committed to the source repository by one of the core
 developers using remote CVS.  Anyone on the mailing list can vote on a
 particular issue, but we only count those made by active members or people
