@@ -322,7 +322,7 @@
       (-) mod_example ...... Apache API demonstration (developers only)
 
      MPMs
-          mpmt_pthread ..... Mutli-process(dynamic) Multi-threaded(static) 
+          mpmt_pthread ..... Multi-process(dynamic) Multi-threaded(static) 
                              Unix MPM
           prefork .......... Preforking Unix MPM
           perchild ......... Multi-process(static) Multi-threaded(dynamic)
