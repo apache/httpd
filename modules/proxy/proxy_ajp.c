@@ -19,20 +19,13 @@
 #include "ajp.h"
 
 module AP_MODULE_DECLARE_DATA proxy_ajp_module;
-
-int ap_proxy_ajp_canon(request_rec *r, char *url);
-int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
-                         proxy_server_conf *conf,
-                         char *url, const char *proxyname, 
-                         apr_port_t proxyport);
-
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
  *  url    is the URL starting with the first '/'
  *  def_port is the default port for this scheme.
  */
-int ap_proxy_ajp_canon(request_rec *r, char *url)
+static int proxy_ajp_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
@@ -350,10 +343,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
  * we return DECLINED so that we can try another proxy. (Or the direct
  * route.)
  */
-int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
-                         proxy_server_conf *conf,
-                         char *url, const char *proxyname, 
-                         apr_port_t proxyport)
+static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
+                             proxy_server_conf *conf,
+                             char *url, const char *proxyname, 
+                             apr_port_t proxyport)
 {
     int status;
     char server_portstr[32];
@@ -460,8 +453,8 @@ cleanup:
 
 static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
-    proxy_hook_scheme_handler(ap_proxy_ajp_handler, NULL, NULL, APR_HOOK_FIRST);
-    proxy_hook_canon_handler(ap_proxy_ajp_canon, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_scheme_handler(proxy_ajp_handler, NULL, NULL, APR_HOOK_FIRST);
+    proxy_hook_canon_handler(proxy_ajp_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_ajp_module = {
