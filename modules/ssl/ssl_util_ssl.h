@@ -91,7 +91,7 @@
 /*  
  *  Additional Functions
  */
-int         SSL_get_app_data2_idx(void);
+void        SSL_init_app_data2_idx(void);
 void       *SSL_get_app_data2(SSL *);
 void        SSL_set_app_data2(SSL *, void *);
 X509       *SSL_read_X509(char *, X509 **, int (*)(char*,int,int,void*));
