@@ -373,7 +373,7 @@ static apr_table_t *hash_buckets[MIME_HASHSIZE];
 
 static void mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    configfile_t *f;
+    ap_configfile_t *f;
     char l[MAX_STRING_LEN];
     int x;
     const char *types_confname = ap_get_module_config(s->module_config, &mime_module);

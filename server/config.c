@@ -1257,7 +1257,7 @@ void ap_process_resource_config(server_rec *s, const char *fname,
     cmd_parms parms;
     apr_finfo_t finfo;
     const char *errmsg;
-    configfile_t *cfp;
+    ap_configfile_t *cfp;
 
     fname = ap_server_root_relative(p, fname);
 
@@ -1384,7 +1384,7 @@ AP_DECLARE(void) ap_process_config_tree(server_rec *s,
 int ap_parse_htaccess(ap_conf_vector_t **result, request_rec *r, int override,
 		      const char *d, const char *access_name)
 {
-    configfile_t *f = NULL;
+    ap_configfile_t *f = NULL;
     cmd_parms parms;
     char *filename = NULL;
     const struct htaccess_result *cache;

@@ -634,7 +634,7 @@ static int imap_handler(request_rec *r)
     char *imap_default;
     char *imap_base;
 
-    configfile_t *imap; 
+    ap_configfile_t *imap; 
 
     if (r->method_number != M_GET || (strcmp(r->handler,IMAP_MAGIC_TYPE)
 				      && strcmp(r->handler, "imap-file")))
