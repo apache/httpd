@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/23 19:56:10 $]
+Last modified at [$Date: 2004/08/23 20:41:27 $]
 
 Release:
 
@@ -79,6 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
        +1: jorton
 
     *) Build fix: ensure httpd is linked against user-supplied LIBS during make.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/Makefile.in?r1=1.138&r2=1.139
        PR: 7882
        +1: jorton
 
