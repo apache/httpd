@@ -101,6 +101,12 @@ Use this directive to disable the module instead of commenting out
 all <tt>RewriteRule</tt> directives!
 
 <p>
+Note that, by default, rewrite configurations are not inherited.
+This means that you need to have a <tt>RewriteEngine on</tt>
+directive for each virtual host you wish to use it in, unless <A
+HREF="#RewriteOptions">RewriteOptions inherit</A> is enabled.
+
+<p>
 <hr noshade size=1>
 <p>
 
@@ -110,7 +116,7 @@ all <tt>RewriteRule</tt> directives!
 <strong>Context:</strong> server config, virtual host, per-directory config<br>
 <p>
 
-The <tt>RewriteOption</tt> directive sets some special options for the
+The <tt>RewriteOptions</tt> directive sets some special options for the
 current per-server or per-directory configuration. The <em>Option</em>
 strings can be one of the following:
 
