@@ -2838,6 +2838,243 @@ API_EXPORT(int) ap_rflush(request_rec *r)
     return 0;
 }
 
+static const char *add_optional_notes(request_rec *r, 
+                                      const char *prefix,
+                                      const char *key, 
+                                      const char *suffix)
+{
+    const char *notes, *result;
+    
+    if ((notes = apr_table_get(r->notes, key)) == NULL) {
+        result = prefix;
+    }
+    else {
+        result = apr_pstrcat(r->pool, prefix, notes, suffix, NULL);
+    }
+
+    return result;
+}
+
+static const char *get_canned_error_string(int status, 
+                                           request_rec *r,
+                                           const char *location) 
+
+/* construct and return the default error message for a given 
+ * HTTP defined error code
+ */
+{	
+    apr_pool_t *p = r->pool;
+    const char *error_notes, *h1, *s1;
+
+	switch (status) {
+	case HTTP_MOVED_PERMANENTLY:
+	case HTTP_MOVED_TEMPORARILY:
+	case HTTP_TEMPORARY_REDIRECT:
+	    return(apr_pstrcat(p,
+                           "The document has moved <A HREF=\"",
+		                   ap_escape_html(r->pool, location), 
+						   "\">here</A>.<P>\n",
+                           NULL));
+	case HTTP_SEE_OTHER:
+	    return(apr_pstrcat(p,
+                           "The answer to your request is located <A HREF=\"",
+		                   ap_escape_html(r->pool, location), 
+                           "\">here</A>.<P>\n",
+                           NULL));
+	case HTTP_USE_PROXY:
+	    return(apr_pstrcat(p,
+                           "This resource is only accessible "
+		                   "through the proxy\n",
+		                   ap_escape_html(r->pool, location),
+		                   "<BR>\nYou will need to "
+		                   "configure your client to use that proxy.<P>\n",
+						   NULL));
+	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
+	case HTTP_UNAUTHORIZED:
+	    return("This server could not verify that you\n"
+	           "are authorized to access the document\n"
+	           "requested.  Either you supplied the wrong\n"
+	           "credentials (e.g., bad password), or your\n"
+	           "browser doesn't understand how to supply\n"
+	           "the credentials required.<P>\n");
+	case HTTP_BAD_REQUEST:
+        return(add_optional_notes(r,  
+	                              "Your browser sent a request that "
+	                              "this server could not understand.<P>\n",
+                                  "error-notes", 
+                                  "<P>\n"));
+	case HTTP_FORBIDDEN:
+	    return(apr_pstrcat(p,
+                           "You don't have permission to access ",
+		                   ap_escape_html(r->pool, r->uri),
+		                   "\non this server.<P>\n",
+                           NULL));
+	case HTTP_NOT_FOUND:
+	    return(apr_pstrcat(p,
+                           "The requested URL ",
+		                   ap_escape_html(r->pool, r->uri),
+		                   " was not found on this server.<P>\n",
+                           NULL));
+	case HTTP_METHOD_NOT_ALLOWED:
+	    return(apr_pstrcat(p,
+                           "The requested method ", r->method,
+		                   " is not allowed for the URL ", 
+                           ap_escape_html(r->pool, r->uri),
+		                   ".<P>\n",
+                           NULL));
+	case HTTP_NOT_ACCEPTABLE:
+	    s1 = apr_pstrcat(p,
+	                     "An appropriate representation of the "
+		                 "requested resource ",
+		                 ap_escape_html(r->pool, r->uri),
+		                 " could not be found on this server.<P>\n",
+                         NULL);
+        return(add_optional_notes(r, s1, "variant-list", ""));
+	case HTTP_MULTIPLE_CHOICES:
+        return(add_optional_notes(r, "", "variant-list", ""));
+	case HTTP_LENGTH_REQUIRED:
+	    s1 = apr_pstrcat(p, 
+                        "A request of the requested method ", 
+                         r->method,
+		                 " requires a valid Content-length.<P>\n", 
+                         NULL);
+		return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+	case HTTP_PRECONDITION_FAILED:
+	    return(apr_pstrcat(p,
+                           "The precondition on the request for the URL ",
+		                   ap_escape_html(r->pool, r->uri),
+		                   " evaluated to false.<P>\n",
+                           NULL));
+	case HTTP_NOT_IMPLEMENTED:
+	    s1 = apr_pstrcat(p, 
+                         ap_escape_html(r->pool, r->method), " to ",
+		                 ap_escape_html(r->pool, r->uri),
+		                 " not supported.<P>\n", 
+                         NULL);
+		return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+	case HTTP_BAD_GATEWAY:
+	    s1 = "The proxy server received an invalid" CRLF
+	         "response from an upstream server.<P>" CRLF;
+		return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+	case HTTP_VARIANT_ALSO_VARIES:
+	    return(apr_pstrcat(p,
+                           "A variant for the requested resource\n<PRE>\n",
+		                   ap_escape_html(r->pool, r->uri),
+		                   "\n</PRE>\nis itself a negotiable resource. "
+		                   "This indicates a configuration error.<P>\n",
+                           NULL));
+	case HTTP_REQUEST_TIME_OUT:
+	    return("I'm tired of waiting for your request.\n");
+	case HTTP_GONE:
+	    return(apr_pstrcat(p,
+                           "The requested resource<BR>",
+		                   ap_escape_html(r->pool, r->uri),
+		                   "<BR>\nis no longer available on this server "
+		                   "and there is no forwarding address.\n"
+		                   "Please remove all references to this resource.\n",
+                           NULL));
+	case HTTP_REQUEST_ENTITY_TOO_LARGE:
+	    return(apr_pstrcat(p,
+                           "The requested resource<BR>",
+		                   ap_escape_html(r->pool, r->uri), "<BR>\n",
+		                   "does not allow request data with ", 
+                           r->method,
+                           " requests, or the amount of data provided in\n"
+		                   "the request exceeds the capacity limit.\n",
+                           NULL));
+	case HTTP_REQUEST_URI_TOO_LARGE:
+	    s1 = "The requested URL's length exceeds the capacity\n"
+	         "limit for this server.<P>\n";
+        return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
+	case HTTP_UNSUPPORTED_MEDIA_TYPE:
+	    return("The supplied request data is not in a format\n"
+	           "acceptable for processing by this resource.\n");
+	case HTTP_RANGE_NOT_SATISFIABLE:
+	    return("None of the range-specifier values in the Range\n"
+	           "request-header field overlap the current extent\n"
+	           "of the selected resource.\n");
+	case HTTP_EXPECTATION_FAILED:
+	    return(apr_pstrcat(p, 
+                           "The expectation given in the Expect request-header"
+	                       "\nfield could not be met by this server.<P>\n"
+	                       "The client sent<PRE>\n    Expect: ",
+	                       apr_table_get(r->headers_in, "Expect"), "\n</PRE>\n"
+	                       "but we only allow the 100-continue expectation.\n",
+	                       NULL));
+	case HTTP_UNPROCESSABLE_ENTITY:
+	    return("The server understands the media type of the\n"
+	           "request entity, but was unable to process the\n"
+	           "contained instructions.\n");
+	case HTTP_LOCKED:
+	    return("The requested resource is currently locked.\n"
+	           "The lock must be released or proper identification\n"
+	           "given before the method can be applied.\n");
+	case HTTP_FAILED_DEPENDENCY:
+	    return("The method could not be performed on the resource\n"
+	           "because the requested action depended on another\n"
+	           "action and that other action failed.\n");
+	case HTTP_INSUFFICIENT_STORAGE:
+	    return("The method could not be performed on the resource\n"
+	           "because the server is unable to store the\n"
+	           "representation needed to successfully complete the\n"
+	           "request.  There is insufficient free space left in\n"
+	           "your storage allocation.\n");
+	case HTTP_SERVICE_UNAVAILABLE:
+	    return("The server is temporarily unable to service your\n"
+	           "request due to maintenance downtime or capacity\n"
+	           "problems. Please try again later.\n");
+	case HTTP_GATEWAY_TIME_OUT:
+	    return("The proxy server did not receive a timely response\n"
+	           "from the upstream server.\n");
+	case HTTP_NOT_EXTENDED:
+	    return("A mandatory extension policy in the request is not\n"
+	           "accepted by the server for this resource.\n");
+	default:            /* HTTP_INTERNAL_SERVER_ERROR */
+	    /*
+	     * This comparison to expose error-notes could be modified to
+	     * use a configuration directive and export based on that 
+	     * directive.  For now "*" is used to designate an error-notes
+	     * that is totally safe for any user to see (ie lacks paths,
+	     * database passwords, etc.)
+	     */
+	    if (((error_notes = apr_table_get(r->notes, "error-notes")) != NULL)
+		&& (h1 = apr_table_get(r->notes, "verbose-error-to")) != NULL
+		&& (strcmp(h1, "*") == 0)) {
+	        return(apr_pstrcat(p, error_notes, "<P>\n", NULL));
+	    }
+	    else {
+	        return(apr_pstrcat(p, 
+                         "The server encountered an internal error or\n"
+	                     "misconfiguration and was unable to complete\n"
+	                     "your request.<P>\n"
+	                     "Please contact the server administrator,\n ",
+	                     ap_escape_html(r->pool, r->server->server_admin),
+	                     " and inform them of the time the error occurred,\n"
+	                     "and anything you might have done that may have\n"
+	                     "caused the error.<P>\n"
+		                 "More information about this error may be available\n"
+		                 "in the server error log.<P>\n", 
+                         NULL));
+	    }
+	 /*
+	  * It would be nice to give the user the information they need to
+	  * fix the problem directly since many users don't have access to
+	  * the error_log (think University sites) even though they can easily
+	  * get this error by misconfiguring an htaccess file.  However, the
+	  e error notes tend to include the real file pathname in this case,
+	  * which some people consider to be a breach of privacy.  Until we
+	  * can figure out a way to remove the pathname, leave this commented.
+	  *
+	  * if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
+	  *     return(apr_pstrcat(p, error_notes, "<P>\n", NULL);
+	  * }
+      * else {
+      *     return "";
+      * }
+	  */
+	}
+}
+	
 /* We should have named this send_canned_response, since it is used for any
  * response that can be generated by the server from the request record.
  * This includes all 204 (no content), 3xx (redirect), 4xx (client error),
@@ -2973,7 +3210,6 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
     {
         const char *title = status_lines[idx];
         const char *h1;
-        const char *error_notes;
 
         /* Accept a status_line set by a module, but only if it begins
          * with the 3 digit status code
@@ -2996,228 +3232,8 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
                   "<HTML><HEAD>\n<TITLE>", title,
                   "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
                   NULL);
-
-	switch (status) {
-	case HTTP_MOVED_PERMANENTLY:
-	case HTTP_MOVED_TEMPORARILY:
-	case HTTP_TEMPORARY_REDIRECT:
-	    ap_rvputs(r, "The document has moved <A HREF=\"",
-		      ap_escape_html(r->pool, location), "\">here</A>.<P>\n",
-		      NULL);
-	    break;
-	case HTTP_SEE_OTHER:
-	    ap_rvputs(r, "The answer to your request is located <A HREF=\"",
-		      ap_escape_html(r->pool, location), "\">here</A>.<P>\n",
-		      NULL);
-	    break;
-	case HTTP_USE_PROXY:
-	    ap_rvputs(r, "This resource is only accessible "
-		      "through the proxy\n",
-		      ap_escape_html(r->pool, location),
-		      "<BR>\nYou will need to ",
-		      "configure your client to use that proxy.<P>\n", NULL);
-	    break;
-	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
-	case HTTP_UNAUTHORIZED:
-	    ap_rputs("This server could not verify that you\n"
-	             "are authorized to access the document\n"
-	             "requested.  Either you supplied the wrong\n"
-	             "credentials (e.g., bad password), or your\n"
-	             "browser doesn't understand how to supply\n"
-	             "the credentials required.<P>\n", r);
-	    break;
-	case HTTP_BAD_REQUEST:
-	    ap_rputs("Your browser sent a request that "
-	             "this server could not understand.<P>\n", r);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
-		!= NULL) {
-		ap_rvputs(r, error_notes, "<P>\n", NULL);
-	    }
-	    break;
-	case HTTP_FORBIDDEN:
-	    ap_rvputs(r, "You don't have permission to access ",
-		      ap_escape_html(r->pool, r->uri),
-		      "\non this server.<P>\n", NULL);
-	    break;
-	case HTTP_NOT_FOUND:
-	    ap_rvputs(r, "The requested URL ",
-		      ap_escape_html(r->pool, r->uri),
-		      " was not found on this server.<P>\n", NULL);
-	    break;
-	case HTTP_METHOD_NOT_ALLOWED:
-	    ap_rvputs(r, "The requested method ", r->method,
-		      " is not allowed "
-		      "for the URL ", ap_escape_html(r->pool, r->uri),
-		      ".<P>\n", NULL);
-	    break;
-	case HTTP_NOT_ACCEPTABLE:
-	    ap_rvputs(r,
-		      "An appropriate representation of the "
-		      "requested resource ",
-		      ap_escape_html(r->pool, r->uri),
-		      " could not be found on this server.<P>\n", NULL);
-	    /* fall through */
-	case HTTP_MULTIPLE_CHOICES:
-	    {
-		const char *list;
-		if ((list = apr_table_get(r->notes, "variant-list")))
-		    ap_rputs(list, r);
-	    }
-	    break;
-	case HTTP_LENGTH_REQUIRED:
-	    ap_rvputs(r, "A request of the requested method ", r->method,
-		      " requires a valid Content-length.<P>\n", NULL);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
-		!= NULL) {
-		ap_rvputs(r, error_notes, "<P>\n", NULL);
-	    }
-	    break;
-	case HTTP_PRECONDITION_FAILED:
-	    ap_rvputs(r, "The precondition on the request for the URL ",
-		      ap_escape_html(r->pool, r->uri),
-		      " evaluated to false.<P>\n", NULL);
-	    break;
-	case HTTP_NOT_IMPLEMENTED:
-	    ap_rvputs(r, ap_escape_html(r->pool, r->method), " to ",
-		      ap_escape_html(r->pool, r->uri),
-		      " not supported.<P>\n", NULL);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
-		!= NULL) {
-		ap_rvputs(r, error_notes, "<P>\n", NULL);
-	    }
-	    break;
-	case HTTP_BAD_GATEWAY:
-	    ap_rputs("The proxy server received an invalid" CRLF
-	             "response from an upstream server.<P>" CRLF, r);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
-		!= NULL) {
-		ap_rvputs(r, error_notes, "<P>\n", NULL);
-	    }
-	    break;
-	case HTTP_VARIANT_ALSO_VARIES:
-	    ap_rvputs(r, "A variant for the requested resource\n<PRE>\n",
-		      ap_escape_html(r->pool, r->uri),
-		      "\n</PRE>\nis itself a negotiable resource. "
-		      "This indicates a configuration error.<P>\n", NULL);
-	    break;
-	case HTTP_REQUEST_TIME_OUT:
-	    ap_rputs("I'm tired of waiting for your request.\n", r);
-	    break;
-	case HTTP_GONE:
-	    ap_rvputs(r, "The requested resource<BR>",
-		      ap_escape_html(r->pool, r->uri),
-		      "<BR>\nis no longer available on this server ",
-		      "and there is no forwarding address.\n",
-		      "Please remove all references to this resource.\n",
-		      NULL);
-	    break;
-	case HTTP_REQUEST_ENTITY_TOO_LARGE:
-	    ap_rvputs(r, "The requested resource<BR>",
-		      ap_escape_html(r->pool, r->uri), "<BR>\n",
-		      "does not allow request data with ", r->method,
-		      " requests, or the amount of data provided in\n",
-		      "the request exceeds the capacity limit.\n", NULL);
-	    break;
-	case HTTP_REQUEST_URI_TOO_LARGE:
-	    ap_rputs("The requested URL's length exceeds the capacity\n"
-	             "limit for this server.<P>\n", r);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
-		!= NULL) {
-		ap_rvputs(r, error_notes, "<P>\n", NULL);
-	    }
-	    break;
-	case HTTP_UNSUPPORTED_MEDIA_TYPE:
-	    ap_rputs("The supplied request data is not in a format\n"
-	             "acceptable for processing by this resource.\n", r);
-	    break;
-	case HTTP_RANGE_NOT_SATISFIABLE:
-	    ap_rputs("None of the range-specifier values in the Range\n"
-	             "request-header field overlap the current extent\n"
-	             "of the selected resource.\n", r);
-	    break;
-	case HTTP_EXPECTATION_FAILED:
-	    ap_rvputs(r, "The expectation given in the Expect request-header"
-	              "\nfield could not be met by this server.<P>\n"
-	              "The client sent<PRE>\n    Expect: ",
-	              apr_table_get(r->headers_in, "Expect"), "\n</PRE>\n"
-	              "but we only allow the 100-continue expectation.\n",
-	              NULL);
-	    break;
-	case HTTP_UNPROCESSABLE_ENTITY:
-	    ap_rputs("The server understands the media type of the\n"
-	             "request entity, but was unable to process the\n"
-	             "contained instructions.\n", r);
-	    break;
-	case HTTP_LOCKED:
-	    ap_rputs("The requested resource is currently locked.\n"
-	             "The lock must be released or proper identification\n"
-	             "given before the method can be applied.\n", r);
-	    break;
-	case HTTP_FAILED_DEPENDENCY:
-	    ap_rputs("The method could not be performed on the resource\n"
-	             "because the requested action depended on another\n"
-	             "action and that other action failed.\n", r);
-	    break;
-	case HTTP_INSUFFICIENT_STORAGE:
-	    ap_rputs("The method could not be performed on the resource\n"
-	             "because the server is unable to store the\n"
-	             "representation needed to successfully complete the\n"
-	             "request.  There is insufficient free space left in\n"
-	             "your storage allocation.\n", r);
-	    break;
-	case HTTP_SERVICE_UNAVAILABLE:
-	    ap_rputs("The server is temporarily unable to service your\n"
-	             "request due to maintenance downtime or capacity\n"
-	             "problems. Please try again later.\n", r);
-	    break;
-	case HTTP_GATEWAY_TIME_OUT:
-	    ap_rputs("The proxy server did not receive a timely response\n"
-	             "from the upstream server.\n", r);
-	    break;
-	case HTTP_NOT_EXTENDED:
-	    ap_rputs("A mandatory extension policy in the request is not\n"
-	             "accepted by the server for this resource.\n", r);
-	    break;
-	default:            /* HTTP_INTERNAL_SERVER_ERROR */
-	    /*
-	     * This comparison to expose error-notes could be modified to
-	     * use a configuration directive and export based on that 
-	     * directive.  For now "*" is used to designate an error-notes
-	     * that is totally safe for any user to see (ie lacks paths,
-	     * database passwords, etc.)
-	     */
-	    if (((error_notes = apr_table_get(r->notes, "error-notes")) != NULL)
-		&& (h1 = apr_table_get(r->notes, "verbose-error-to")) != NULL
-		&& (strcmp(h1, "*") == 0)) {
-	        ap_rvputs(r, error_notes, "<P>\n", NULL);
-	    }
-	    else {
-	        ap_rvputs(r, "The server encountered an internal error or\n"
-	             "misconfiguration and was unable to complete\n"
-	             "your request.<P>\n"
-	             "Please contact the server administrator,\n ",
-	             ap_escape_html(r->pool, r->server->server_admin),
-	             " and inform them of the time the error occurred,\n"
-	             "and anything you might have done that may have\n"
-	             "caused the error.<P>\n"
-		     "More information about this error may be available\n"
-		     "in the server error log.<P>\n", NULL);
-	    }
-	 /*
-	  * It would be nice to give the user the information they need to
-	  * fix the problem directly since many users don't have access to
-	  * the error_log (think University sites) even though they can easily
-	  * get this error by misconfiguring an htaccess file.  However, the
-	  * error notes tend to include the real file pathname in this case,
-	  * which some people consider to be a breach of privacy.  Until we
-	  * can figure out a way to remove the pathname, leave this commented.
-	  *
-	  * if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
-	  *     ap_rvputs(r, error_notes, "<P>\n", NULL);
-	  * }
-	  */
-	    break;
-	}
+        
+        ap_rputs(get_canned_error_string(status, r, location),r); 
 
         if (recursive_error) {
             ap_rvputs(r, "<P>Additionally, a ",
