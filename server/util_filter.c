@@ -117,7 +117,8 @@ API_EXPORT(void) ap_register_filter(const char *name,
     apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, apr_null_cleanup);
 }
 
-API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
+API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r,
+                               ap_filter_t *curr)
 {
     ap_filter_rec_t *frec = registered_filters;
 
@@ -130,18 +131,14 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
             f->ftype = frec->ftype;
             f->r = r;
 
-            if (INSERT_BEFORE(f, r->filters)) {
+            if (curr) {
+                f->next = curr->next;
+                curr->next = f;
+            }
+            else {
                 f->next = r->filters;
                 r->filters = f;
             }
-            else {
-                ap_filter_t *fscan = r->filters;
-                while (!INSERT_BEFORE(f, fscan->next))
-                    fscan = fscan->next;
-                f->next = fscan->next;
-                fscan->next = f;
-            }
-
             break;
         }
     }

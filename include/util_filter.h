@@ -255,18 +255,24 @@ API_EXPORT(void) ap_register_filter(const char *name,
  * from another request, then this filter will be added before those other
  * filters.
  * 
- * To re-iterate that last comment.  This function is building a FIFO
+ * To re-iterate that last comment.  This function is building a LIFO
  * list of filters.  Take note of that when adding your filter to the chain.
  */
 /**
- * Add a filter to the current request.  Filters are added in a FIFO manner.
- * The first filter added will be the first filter called.
+ * Add a filter to the current request.  Filters are added in a LIFO manner.
+ * The first filter added will be the last filter called.
  * @param name The name of the filter to add
  * @param ctx Any filter specific data to associate with the filter
  * @param r The request to add this filter for.
- * @deffunc void ap_add_filter(const char *name, void *ctx, request_rec *r)
+ * @param curr The filter to add this filter after.  This is incredibly useful
+ *             if you are adding a filter while executing another filter.  The
+ *             new filter should be added immediately after the current filter.
+ *             By passing the current filter into ap_add_filter, this is
+ *             accomplished easily.
+ * @deffunc void ap_add_filter(const char *name, void *ctx, request_rec *r, ap_filter_t *curr)
  */
-API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
+API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r,
+                               ap_filter_t *curr);
 
 /* The next two filters are for abstraction purposes only.  They could be
  * done away with, but that would require that we break modules if we ever
