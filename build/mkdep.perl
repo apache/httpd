@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: mkdep.perl,v 1.2 2000/03/19 13:25:33 bjh Exp $
+# $Id$
 #
 # Created: Thu Aug 15 11:57:33 1996 too
 # Last modified: Mon Dec 27 09:23:56 1999 too
