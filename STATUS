@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/23 05:43:57 $]
+Last modified at [$Date: 2003/07/23 08:14:44 $]
 
 Release:
 
@@ -207,7 +207,7 @@ PATCHES TO PORT FROM 2.1
     * handle switching between libtools and unwritable ltconfig/ltmain.sh
         buildconf 1.36, 1.37
         build/.cvsignore 1.4
-        +1: trawick, jerenkrantz
+        +1: trawick, jerenkrantz, striker
 
     * Unix: Handle permissions settings for flock-based mutexes in 
       unixd_set_global|proc_mutex_perms().  Allow the functions to
@@ -260,7 +260,7 @@ PATCHES TO PORT FROM 2.1
       adds extensions for commonly used *+xml and calendar types, and
       lists image/x-icon ico.
         docs/conf/mime.types: r1.20
-      +1: fielding, nd, jerenkrantz
+      +1: fielding, nd, jerenkrantz, striker
 
     * httpd-std.conf: Try to be clearer in describing the connection
       between AddType and AddEncoding for defining the meaning of
@@ -309,7 +309,7 @@ PATCHES TO PORT FROM 2.1
       jerenkrantz says: Ben Collins-Sussman confirms this fixes a problem
                         with Subversion when mod_deflate is used where it'd
                         hold on to the entire response until EOS.  That's bad.
-      +1: jerenkrantz
+      +1: jerenkrantz, striker
 
 
 CURRENT RELEASE NOTES:
