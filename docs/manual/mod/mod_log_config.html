@@ -121,7 +121,9 @@ the log files, and `%' directives which are replaced in the log file
 by the values as follows:
 
 <PRE>
-%...b:          Bytes sent, excluding HTTP headers.
+%...B:          Bytes sent, excluding HTTP headers.
+%...b:          Bytes sent, excluding HTTP headers. In CLF format
+		i.e. a '-' rather than a 0 when no bytes are sent.
 %...f:          Filename
 %...{FOOBAR}e:  The contents of the environment variable FOOBAR
 %...h:          Remote host
@@ -145,6 +147,8 @@ by the values as follows:
 %...U:          The URL path requested.
 %...v:          The canonical ServerName of the server serving the request.
 %...V:          The server name according to the UseCanonicalName setting.
+%...m		The request method
+%...H		The request protocol
 </PRE>
 
 The `...' can be nothing at all (<EM>e.g.</EM>, <CODE>"%h %u %r %s %b"</CODE>), or it can
