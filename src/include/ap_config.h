@@ -442,6 +442,7 @@ int initgroups (char *, int);
 #define HAVE_SYS_SELECT_H
 #include <unix.h>
 #define JMP_BUF sigjmp_buf
+#define HAVE_MMAP
 
 #elif defined(LYNXOS)
 #undef NO_KILLPG

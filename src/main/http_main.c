@@ -804,6 +804,55 @@ static void setup_shared_mem(void)
        fprintf(stderr, "httpd: Could not uopen() newly created OS/2 Shared memory pool.\n");
     }
 
+#elif defined(QNX)
+/* 
+ * POSIX 1003.4 style
+ *
+ * Note 1: 
+ * As of version 4.23A, shared memory in QNX must reside under /dev/shmem,
+ * where no subdirectories allowed.
+ *
+ * POSIX shm_open() and shm_unlink() will take care about this issue,
+ * but to avoid confusion, I suggest to redefine scoreboard file name
+ * in httpd.conf to cut "logs/" from it. With default setup actual name
+ * will be "/dev/shmem/logs.apache_status". 
+ * 
+ * If something went wrong and Apache did not unlinked this object upon
+ * exit, you can remove it manually, using "rm -f" command.
+ * 
+ * Note 2:
+ * <sys/mman.h> in QNX defines MAP_ANON, but current implementation 
+ * does NOT support BSD style anonymous mapping. So, the order of 
+ * conditional compilation is important: 
+ * this #ifdef section must be ABOVE the next one (BSD style).
+ *
+ * I tested this stuff and it works fine for me, but if it provides 
+ * trouble for you, just comment out HAVE_MMAP in QNX section of conf.h
+ *
+ * June 5, 1997, 
+ * Igor N. Kovalenko -- infoh@mail.wplus.net
+ */
+    int fd;
+
+    fd = shm_open (scoreboard_fname, O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
+    if (fd == -1) {
+	perror("httpd: could not open(create) scoreboard");
+	exit(1);
+    }
+    if (ltrunc(fd, (off_t)SCOREBOARD_SIZE, SEEK_SET) == -1) {
+	perror("httpd: could not ltrunc scoreboard");
+	shm_unlink(scoreboard_fname);
+	exit(1);
+    }
+    if ((m = (caddr_t)mmap((caddr_t)0,
+		(size_t)SCOREBOARD_SIZE, PROT_READ|PROT_WRITE,
+		MAP_SHARED, fd, (off_t)0)) == (caddr_t)-1) {
+	perror("httpd: cannot mmap scoreboard");
+	shm_unlink(scoreboard_fname);
+	exit(1);
+    }
+    close(fd);
+
 #elif defined(MAP_ANON) || defined(MAP_FILE)
 /* BSD style */
     m = mmap((caddr_t)0, SCOREBOARD_SIZE,
@@ -1043,6 +1092,8 @@ void cleanup_scoreboard (void)
 {
 #ifdef SCOREBOARD_FILE
     unlink (scoreboard_fname);
+#elif defined(QNX) && defined(HAVE_MMAP)
+    shm_unlink(scoreboard_fname);
 #endif
 }
 

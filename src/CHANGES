@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) PORT: QNX mmap() support for faster/more reliable scoreboard handling.
+     [Igor N Kovalenko <infoh@mail.wplus.net>] PR#683
+
   *) child_main avoids an uneeded call to select() when there is only one
      listening socket.  [Dean Gaudet]
 

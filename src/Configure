@@ -357,13 +357,13 @@ case "$PLAT" in
     *-qnx)
 	OS='QNX'
 	CFLAGS="$CFLAGS -DQNX"
-	LIBS="$LIBS -N128k -lsocket"
+	LIBS="$LIBS -N128k -lsocket -lunix"
 	DEF_WANTHSREGEX=yes
 	;;
     *-qnx32)
 	OS='QNX32'
 	CFLAGS="$CFLAGS -DQNX -mf -3"
-	LIBS="$LIBS -N128k -lsocket"
+	LIBS="$LIBS -N128k -lsocket -lunix"
 	DEF_WANTHSREGEX=yes
 	;;
     *-isc4*)
