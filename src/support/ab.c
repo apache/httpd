@@ -81,6 +81,7 @@
    **    - Cleaned up by Ralf S. Engelschall <rse@apache.org>, March 1998
    **    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998
    **    - HTML table output added by David N. Welton <davidw@prosa.it>, January 1999
+   **    - Added Cookie, Arbitrary header and auth support. <dirkx@webweaving.org>, April 199
    **
  */
 
@@ -120,11 +121,17 @@
 #include <string.h>
 
 #define ap_select       select
-#else /* (!)NO_APACHE_INCLUDES */
+#else				/* (!)NO_APACHE_INCLUDES */
 #include "ap_config.h"
 #include <fcntl.h>
 #include <sys/time.h>
-#endif /* NO_APACHE_INCLUDES */
+
+#ifndef NO_WRITEV
+#include <sys/types.h>
+#include <sys/uio.h>
+#endif
+
+#endif				/* NO_APACHE_INCLUDES */
 /* ------------------- DEFINITIONS -------------------------- */
 
 /* maximum number of requests on a time limited test */
@@ -146,7 +153,8 @@ struct connection {
     char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
     int cbx;			/* offset in cbuffer */
     int keepalive;		/* non-zero if a keep-alive request */
-    int gotheader;		/* non-zero if we have the entire header in cbuff */
+    int gotheader;		/* non-zero if we have the entire header in
+				 * cbuff */
     struct timeval start, connect, done;
 };
 
@@ -174,6 +182,10 @@ char postfile[1024];		/* name of file containing post data */
 char *postdata;			/* *buffer containing data from postfile */
 int postlen = 0;		/* length of data to be POSTed */
 char content_type[1024];	/* content type to put in POST header */
+char cookie[1024],		/* optional cookie line */
+     auth[1024],		/* optional (basic/uuencoded)
+				 * authentification */
+     hdrs[4096];		/* optional arbitrary headers */
 int port = 80;			/* port number */
 
 int use_html = 0;		/* use html in the report */
@@ -223,20 +235,63 @@ static void err(char *s)
     exit(errno);
 }
 
+/* -- simple uuencode, lifted from main/util.c which
+ *    needed the pool, so duplicated here with normal
+ *    malloc.
+ */
+static const char basis_64[] =
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+static char *uuencode(char *string)
+{
+    int i, len = strlen(string);
+    char *p;
+    char *encoded = (char *) malloc((len + 2) / 3 * 4 + 1);
+    p = encoded;
+    for (i = 0; i < len; i += 3) {
+	*p++ = basis_64[string[i] >> 2];
+	*p++ = basis_64[((string[i] & 0x3) << 4) |
+			((int) (string[i + 1] & 0xF0) >> 4)];
+	*p++ = basis_64[((string[i + 1] & 0xF) << 2) |
+			((int) (string[i + 2] & 0xC0) >> 6)];
+	*p++ = basis_64[string[i + 2] & 0x3F];
+    };
+    *p-- = '\0';
+    *p-- = '=';
+    *p-- = '=';
+    return encoded;
+}
+
+
 /* --------------------------------------------------------- */
 
 /* write out request to a connection - assumes we can write
    (small) request out in one go into our new socket buffer  */
 
-static void write_request(struct connection *c)
+static void write_request(struct connection * c)
 {
+#ifndef NO_WRITEV
+    struct iovec out[2]; int outcnt = 1;
+#endif
     gettimeofday(&c->connect, 0);
-    /* XXX: this could use writev for posting -- more efficient -djg */
-    write(c->fd, request, reqlen);
+#ifndef NO_WRITEV
+    out[0].iov_base = request;
+    out[0].iov_len = reqlen;
+
     if (posting) {
-	write(c->fd, postdata, postlen);
+	out[1].iov_base = postdata;
+	out[1].iov_len = postlen;
+	outcnt = 2;
 	totalposted += (reqlen + postlen);
     }
+    writev(c->fd,out, outcnt);
+#else
+    write(c->fd,request,reqlen);
+    if (posting) {
+        write(c->fd,postdata,postlen);
+        totalposted += (reqlen + postlen);
+    }
+#endif
 
     c->state = STATE_READ;
     FD_SET(c->fd, &readbits);
@@ -469,7 +524,7 @@ static void output_html_results(void)
 
 /* start asnchronous non-blocking connection */
 
-static void start_connect(struct connection *c)
+static void start_connect(struct connection * c)
 {
     c->read = 0;
     c->bread = 0;
@@ -484,7 +539,7 @@ static void start_connect(struct connection *c)
     nonblock(c->fd);
     gettimeofday(&c->start, 0);
 
-    if (connect(c->fd, (struct sockaddr *) &server, sizeof(server)) < 0) {
+    if (connect(c->fd, (struct sockaddr *) & server, sizeof(server)) < 0) {
 	if (errno == EINPROGRESS) {
 	    c->state = STATE_CONNECTING;
 	    FD_SET(c->fd, &writebits);
@@ -508,7 +563,7 @@ static void start_connect(struct connection *c)
 
 /* close down connection and save stats */
 
-static void close_connection(struct connection *c)
+static void close_connection(struct connection * c)
 {
     if (c->read == 0 && c->keepalive) {
 	/* server has legitimately shut down an idle keep alive request */
@@ -548,7 +603,7 @@ static void close_connection(struct connection *c)
 
 /* read data from connection */
 
-static void read_connection(struct connection *c)
+static void read_connection(struct connection * c)
 {
     int r;
     char *part;
@@ -570,13 +625,14 @@ static void read_connection(struct connection *c)
     if (!c->gotheader) {
 	char *s;
 	int l = 4;
-	int space = CBUFFSIZE - c->cbx - 1;	/* -1 to allow for 0 terminator */
+	int space = CBUFFSIZE - c->cbx - 1;	/* -1 to allow for 0
+						 * terminator */
 	int tocopy = (space < r) ? space : r;
 #ifndef CHARSET_EBCDIC
 	memcpy(c->cbuff + c->cbx, buffer, space);
-#else /*CHARSET_EBCDIC */
+#else				/* CHARSET_EBCDIC */
 	ascii2ebcdic(c->cbuff + c->cbx, buffer, space);
-#endif /*CHARSET_EBCDIC */
+#endif				/* CHARSET_EBCDIC */
 	c->cbx += tocopy;
 	space -= tocopy;
 	c->cbuff[c->cbx] = 0;	/* terminate for benefit of strstr */
@@ -584,8 +640,10 @@ static void read_connection(struct connection *c)
 	    printf("LOG: header received:\n%s\n", c->cbuff);
 	}
 	s = strstr(c->cbuff, "\r\n\r\n");
-	/* this next line is so that we talk to NCSA 1.5 which blatantly breaks
-	   the http specifaction */
+	/*
+	 * this next line is so that we talk to NCSA 1.5 which blatantly
+	 * breaks the http specifaction
+	 */
 	if (!s) {
 	    s = strstr(c->cbuff, "\n\n");
 	    l = 2;
@@ -620,10 +678,12 @@ static void read_connection(struct connection *c)
 		*q = 0;
 	    }
 
-	    /* XXX: this parsing isn't even remotely HTTP compliant...
-	     * but in the interest of speed it doesn't totally have to be,
-	     * it just needs to be extended to handle whatever servers
-	     * folks want to test against. -djg */
+	    /*
+	     * XXX: this parsing isn't even remotely HTTP compliant... but in
+	     * the interest of speed it doesn't totally have to be, it just
+	     * needs to be extended to handle whatever servers folks want to
+	     * test against. -djg
+	     */
 
 	    /* check response code */
 	    part = strstr(c->cbuff, "HTTP");	/* really HTTP/1.x_ */
@@ -732,29 +792,31 @@ static void test(void)
     if (!posting) {
 	sprintf(request, "GET %s HTTP/1.0\r\n"
 		"User-Agent: ApacheBench/%s\r\n"
-		"%s"
+		"%s" "%s" "%s"
 		"Host: %s\r\n"
 		"Accept: */*\r\n"
-		"\r\n",
+		"\r\n" "%s",
 		path,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
-		hostname);
+		cookie, auth, hostname, hdrs);
     }
     else {
 	sprintf(request, "POST %s HTTP/1.0\r\n"
 		"User-Agent: ApacheBench/%s\r\n"
-		"%s"
+		"%s" "%s" "%s"
 		"Host: %s\r\n"
 		"Accept: */*\r\n"
 		"Content-length: %d\r\n"
 		"Content-type: %s\r\n"
+		"%s"
 		"\r\n",
 		path,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
+		cookie, auth,
 		hostname, postlen,
-		(content_type[0]) ? content_type : "text/plain");
+		(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
     if (verbosity >= 2)
@@ -764,7 +826,7 @@ static void test(void)
 
 #ifdef CHARSET_EBCDIC
     ebcdic2ascii(request, request, reqlen);
-#endif /*CHARSET_EBCDIC */
+#endif				/* CHARSET_EBCDIC */
 
     /* ok - lets start */
     gettimeofday(&start, 0);
@@ -851,6 +913,13 @@ static void usage(char *progname)
     fprintf(stderr, "    -x attributes   String to insert as table attributes\n");
     fprintf(stderr, "    -y attributes   String to insert as tr attributes\n");
     fprintf(stderr, "    -z attributes   String to insert as td or th attributes\n");
+    fprintf(stderr, "    -C attribute    Add cookie, eg. 'Apache=1234. (repeatable)\n");
+    fprintf(stderr, "    -H attribute    Add Arbitrary header line, eg. 'Accept-Encoding: zop'\n");
+    fprintf(stderr, "                    Inserted after all normal header lines. (repeatable)\n");
+    fprintf(stderr, "    -A attribute    Add Basic WWW Authentication, the attributes\n");
+    fprintf(stderr, "                    are a colon separated username and password.\n");
+    fprintf(stderr, "    -p attribute    Add Basic Proxy Authentication, the attributes\n");
+    fprintf(stderr, "                    are a colon separated username and password.\n");
     fprintf(stderr, "    -V              Print version number and exit\n");
     fprintf(stderr, "    -k              Use HTTP KeepAlive feature\n");
     fprintf(stderr, "    -h              Display usage information (this message)\n");
@@ -929,9 +998,11 @@ int main(int argc, char **argv)
     tablestring = "";
     trstring = "";
     tdstring = "bgcolor=white";
-
+    cookie[0] = '\0';
+    auth[0] = '\0';
+    hdrs[0] = '\0';
     optind = 1;
-    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhwx:y:z:")) > 0) {
+    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhwx:y:z:C:H:P:A:")) > 0) {
 	switch (c) {
 	case 'n':
 	    requests = atoi(optarg);
@@ -958,10 +1029,36 @@ int main(int argc, char **argv)
 	    break;
 	case 't':
 	    tlimit = atoi(optarg);
-	    requests = MAX_REQUESTS;	/* need to size data array on something */
+	    requests = MAX_REQUESTS;	/* need to size data array on
+					 * something */
 	    break;
 	case 'T':
 	    strcpy(content_type, optarg);
+	    break;
+	case 'C':
+	    strncat(cookie, "Cookie: ", sizeof(cookie));
+	    strncat(cookie, optarg, sizeof(cookie));
+	    strncat(cookie, "\r\n", sizeof(cookie));
+	    break;
+	case 'A':
+	    /*
+	     * assume username passwd already to be in colon separated form.
+	     */
+	    strncat(auth, "Authorization: basic ", sizeof(auth));
+	    strncat(auth, uuencode(optarg), sizeof(auth));
+	    strncat(auth, "\r\n", sizeof(auth));
+	    break;
+	case 'P':
+	    /*
+	     * assume username passwd already to be in colon separated form.
+	     */
+	    strncat(auth, "Proxy-Authorization: basic ", sizeof(auth));
+	    strncat(auth, uuencode(optarg), sizeof(auth));
+	    strncat(auth, "\r\n", sizeof(auth));
+	    break;
+	case 'H':
+	    strncat(hdrs, optarg, sizeof(hdrs));
+	    strncat(hdrs, "\r\n", sizeof(hdrs));
 	    break;
 	case 'V':
 	    copyright();
@@ -970,7 +1067,10 @@ int main(int argc, char **argv)
 	case 'w':
 	    use_html = 1;
 	    break;
-	    /* if any of the following three are used, turn on html output automatically  */
+	    /*
+	     * if any of the following three are used, turn on html output
+	     * automatically
+	     */
 	case 'x':
 	    use_html = 1;
 	    tablestring = optarg;

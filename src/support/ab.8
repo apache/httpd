@@ -1,4 +1,5 @@
 .TH ab 1 "March 1998"
+.\" $Id: ab.8,v 1.5 1999/04/05 13:52:20 dirkx Exp $
 .\" Copyright (c) 1998-1999 The Apache Group. All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -66,6 +67,14 @@ ab \- Apache HTTP server benchmarking tool
 ] [
 .BI \-p " POST file"
 ] [
+.BI \-A " Authenticate username:password"
+] [
+.BI \-P " Proxy Authenticate username:password"
+] [
+.BI \-H " Custom header"
+] [
+.BI \-C " Cookie name=value"
+] [
 .BI \-T " content-type"
 ] [
 .BI \-v " verbosity"
@@ -126,6 +135,31 @@ Default is one request per time.
 File containing data to POST.
 
 .TP 12
+.BI \-A " Authorization username:password"
+Supply BASIC Authentification credentials to the server. The username
+and password are separated by a single ':' and send on the wire uuencoded.
+The string is send regardless of wether the server needs it; (i.e. has
+send an 401. Authentifcation needed).
+
+.TP 12
+.BI \-p " Proxy-Authorization username:password"
+Supply BASIC Authentification credentials to a proxy en-route. The username
+and password are separated by a single ':' and send on the wire uuencoded.
+The string is send regardless of wether the proxy needs it; (i.e. has
+send an 407 Proxy authentifcation needed).
+
+.TP 12
+.BI \-C " Cookie name=value"
+Add a 'Cookie:' line to the request. The argument is typically in the form
+of a 'name=value' pair. This field is repeatable.
+
+.TP 12
+.BI \-p " Header string"
+Postfix extra headers to the request. The argument is typically in the form
+of a valid header line; containing a colon separated field value pair. (i.e. 
+'Accept-Encoding: zip/zop;8bit').
+
+.TP 12
 .BI \-T " content-type"
 Content-type header to use for POST data.
 
@@ -158,6 +192,19 @@ Display version number and exit.
 .B \-h 
 Display usage information.
 .PD
+.SH BUGS
+There are various statically declared buffers of fixed length. Combined
+with the lazy parsing of the command line arguments, the response headers
+from the server and other external inputs this might bite you.
+.P
+It does not implment HTTP/1.x fully; only accepts some 'expected' forms
+of responses. The rather heavy use of 
+.BR strstr(3)
+shows up top in profile,
+which might indicate a performance problem; i.e. you would measure the
+.BR ab
+performance rather than the server's.
+
 .SH SEE ALSO
 .BR httpd(8)
 .
