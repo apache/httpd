@@ -2172,7 +2172,7 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
         }
 
         procnew = apr_pcalloc(child_context, sizeof(*procnew));
-        rc = ap_os_create_privileged_rrocess(r, procnew, compr[parm->method].argv[0],
+        rc = apr_create_process(procnew, compr[parm->method].argv[0],
                                new_argv, env, procattr, child_context);
 
         if (rc != APR_SUCCESS) {
