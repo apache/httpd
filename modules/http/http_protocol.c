@@ -1824,6 +1824,10 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
     apr_bucket_brigade *bb;
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    if (bb == NULL) {
+        r->connection->keepalive = AP_CONN_CLOSE;
+        return -1;
+    }
 
     rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
                         APR_BLOCK_READ, bufsiz);
@@ -1836,6 +1840,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
          * stop trying to read data from the client.
          */
         r->connection->keepalive = AP_CONN_CLOSE;
+        apr_brigade_destroy(bb);
         return -1;
     }
 
@@ -1847,12 +1852,14 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
  
     rv = apr_brigade_flatten(bb, buffer, &bufsiz);
     if (rv != APR_SUCCESS) {
+        apr_brigade_destroy(bb);
         return -1;
     }
 
     /* XXX yank me? */
     r->read_length += bufsiz;
 
+    apr_brigade_destroy(bb);
     return bufsiz;
 }
 
