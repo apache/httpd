@@ -264,6 +264,27 @@
      complicated assembler tricks for relative addressing which are not
      necessarily as fast as absolute addressing.
 
+   - As of Apache 1.3 the in-core list of active modules is not priorized.
+     Instead it is just the list of statically linked modules in reverse order
+     as found in the src/Configuration* file (the list is constructed by
+     adding modules to the top, i.e. later in the config means earlier in the
+     list and thus results in higher priority). But DSO-based modules are
+     added to this in-core list of modules under run-time _after_ the
+     statically linked modules were already added. They are added again in
+     reverse order, i.e. each `LoadModule' command inserts the module again at
+     the top of the list. But because the list is not priorized the two parts
+     (statically linked modules and run-time loaded modules) are _NEVER_
+     merged. They are just connected together but not sorted as a whole.
+     
+     In other words: When a module is compiled as a DSO it automatically
+     results in a higher priority than any statically compiled modules. This
+     can have strange side-effects because of different execution order. As a
+     consequence the rule of thumb is this: Either compile all modules
+     statically or all modules as DSO (--enable-shared=max) when you want to
+     avoid side-effects. And only compile just a subset of modules as DSO when
+     you are sure the different execution order has no side-effects for your
+     configuration. BE WARNED!
+
    - Because DSO modules cannot be linked against other DSO-based libraries
      (ld -lfoo) you cannot use the DSO mechanism for all types of modules. Or
      in other words, modules compiled as DSO files are restricted to only use
