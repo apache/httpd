@@ -232,8 +232,6 @@ DEP_CPP_AP_SN=\
 	"..\..\..\..\include\util_uri.h"\
 	"..\..\os.h"\
 	"..\..\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_AP_SN=\
 	"..\..\..\..\include\ap_config_auto.h"\
@@ -259,8 +257,6 @@ DEP_CPP_AP_SN=\
 	"..\..\..\..\include\util_uri.h"\
 	"..\..\os.h"\
 	"..\..\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_AP_SN=\
 	"..\..\..\..\include\ap_config_auto.h"\
@@ -287,8 +283,6 @@ DEP_CPP_INSTA=\
 	"..\..\..\..\include\conf.h"\
 	"..\..\..\..\include\hsregex.h"\
 	"..\..\os.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_INSTA=\
 	"..\..\..\..\include\ap_config_auto.h"\
@@ -307,8 +301,6 @@ DEP_CPP_INSTA=\
 	"..\..\..\..\include\conf.h"\
 	"..\..\..\..\include\hsregex.h"\
 	"..\..\os.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_INSTA=\
 	"..\..\..\..\include\ap_config_auto.h"\

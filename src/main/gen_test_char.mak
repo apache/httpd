@@ -31,7 +31,7 @@ NULL=nul
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 OUTDIR=.
-INTDIR=.\gen_test_char_R
+INTDIR=.\Release
 # Begin Custom Macros
 OutDir=.
 # End Custom Macros
@@ -47,17 +47,18 @@ ALL : "$(OUTDIR)\gen_test_char.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\gen_test_char.idb"
 	-@erase "$(INTDIR)\gen_test_char.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\gen_test_char.exe"
 
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D\
- "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\gen_test_char_R/
+CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D\
+ "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_test_char"\
+ /FD /c 
+CPP_OBJS=.\Release/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -124,7 +125,7 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_test_char.exe"
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 OUTDIR=.
-INTDIR=.\gen_test_char_D
+INTDIR=.\Debug
 # Begin Custom Macros
 OutDir=.
 # End Custom Macros
@@ -140,9 +141,9 @@ ALL : "$(OUTDIR)\gen_test_char.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\gen_test_char.idb"
 	-@erase "$(INTDIR)\gen_test_char.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\vc50.pdb"
+	-@erase "$(INTDIR)\gen_test_char.pdb"
 	-@erase "$(OUTDIR)\gen_test_char.exe"
 	-@erase "$(OUTDIR)\gen_test_char.pdb"
 
@@ -150,10 +151,10 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
- "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
- /FD /c 
-CPP_OBJS=.\gen_test_char_D/
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
+ "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\gen_test_char" /FD /c 
+CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -223,9 +224,6 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_test_char.exe"
 !IF "$(CFG)" == "gen_test_char - Win32 Release" || "$(CFG)" ==\
  "gen_test_char - Win32 Debug"
 SOURCE=.\gen_test_char.c
-
-!IF  "$(CFG)" == "gen_test_char - Win32 Release"
-
 DEP_CPP_GEN_T=\
 	"..\include\ap.h"\
 	"..\include\ap_alloc.h"\
@@ -239,30 +237,14 @@ DEP_CPP_GEN_T=\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
 	
-
-"$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
-
-DEP_CPP_GEN_T=\
-	"..\include\ap.h"\
-	"..\include\ap_alloc.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
+NODEP_CPP_GEN_T=\
+	"..\include\ap_config_auto.h"\
+	"..\include\ebcdic.h"\
+	"..\include\sfio.h"\
 	
 
 "$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"
 
-
-!ENDIF 
 
 
 !ENDIF 

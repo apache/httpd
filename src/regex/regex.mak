@@ -27,10 +27,10 @@ NULL=nul
 
 !IF  "$(CFG)" == "regex - Win32 Release"
 
-OUTDIR=.\Release
-INTDIR=.\Release
+OUTDIR=.\LibR
+INTDIR=.\LibR
 # Begin Custom Macros
-OutDir=.\Release
+OutDir=.\LibR
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -46,9 +46,9 @@ ALL : "$(OUTDIR)\regex.lib"
 CLEAN :
 	-@erase "$(INTDIR)\regcomp.obj"
 	-@erase "$(INTDIR)\regerror.obj"
+	-@erase "$(INTDIR)\regex.idb"
 	-@erase "$(INTDIR)\regexec.obj"
 	-@erase "$(INTDIR)\regfree.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\regex.lib"
 
 "$(OUTDIR)" :
@@ -56,9 +56,9 @@ CLEAN :
 
 RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\Release/
+CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
+ "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\regex" /FD /c 
+CPP_OBJS=.\LibR/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -110,10 +110,10 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
-OUTDIR=.\Debug
-INTDIR=.\Debug
+OUTDIR=.\LibD
+INTDIR=.\LibD
 # Begin Custom Macros
-OutDir=.\Debug
+OutDir=.\LibD
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -129,9 +129,10 @@ ALL : "$(OUTDIR)\regex.lib"
 CLEAN :
 	-@erase "$(INTDIR)\regcomp.obj"
 	-@erase "$(INTDIR)\regerror.obj"
+	-@erase "$(INTDIR)\regex.idb"
+	-@erase "$(INTDIR)\regex.pdb"
 	-@erase "$(INTDIR)\regexec.obj"
 	-@erase "$(INTDIR)\regfree.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\regex.lib"
 
 "$(OUTDIR)" :
@@ -139,9 +140,9 @@ CLEAN :
 
 RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D\
- "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\Debug/
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D\
+ "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\regex" /FD /c 
+CPP_OBJS=.\LibD/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -210,9 +211,6 @@ DEP_CPP_REGCO=\
 
 
 SOURCE=.\regerror.c
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 DEP_CPP_REGER=\
 	"..\include\hsregex.h"\
 	".\regerror.ih"\
@@ -221,24 +219,8 @@ DEP_CPP_REGER=\
 
 "$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-DEP_CPP_REGER=\
-	"..\include\hsregex.h"\
-	".\regerror.ih"\
-	".\utils.h"\
-	
-
-"$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
-
-
-!ENDIF 
 
 SOURCE=.\regexec.c
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 DEP_CPP_REGEX=\
 	"..\include\ap_ctype.h"\
 	"..\include\hsregex.h"\
@@ -250,27 +232,8 @@ DEP_CPP_REGEX=\
 
 "$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-DEP_CPP_REGEX=\
-	"..\include\ap_ctype.h"\
-	"..\include\hsregex.h"\
-	".\engine.c"\
-	".\engine.ih"\
-	".\regex2.h"\
-	".\utils.h"\
-	
-
-"$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
-
-
-!ENDIF 
 
 SOURCE=.\regfree.c
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 DEP_CPP_REGFR=\
 	"..\include\hsregex.h"\
 	".\regex2.h"\
@@ -279,19 +242,6 @@ DEP_CPP_REGFR=\
 
 "$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
 
-
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-DEP_CPP_REGFR=\
-	"..\include\hsregex.h"\
-	".\regex2.h"\
-	".\utils.h"\
-	
-
-"$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
-
-
-!ENDIF 
 
 
 !ENDIF 

@@ -47,8 +47,8 @@ ALL : "$(OUTDIR)\logresolve.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\logresolve.idb"
 	-@erase "$(INTDIR)\logresolve.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\logresolve.exe"
 	-@erase "$(OUTDIR)\logresolve.map"
 
@@ -56,9 +56,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /I "..\os\win32" /D "NDEBUG"\
- /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /I "..\os\win32" /D "NDEBUG" /D\
+ "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\logresolve" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
@@ -128,9 +128,8 @@ ALL : "$(OUTDIR)\logresolve.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\logresolve.idb"
 	-@erase "$(INTDIR)\logresolve.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\logresolve.exe"
 	-@erase "$(OUTDIR)\logresolve.map"
 	-@erase "$(OUTDIR)\logresolve.pdb"
@@ -139,9 +138,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
  "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+ /Fd"$(INTDIR)\logresolve" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -198,9 +197,6 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "logresolve - Win32 Release" || "$(CFG)" ==\
  "logresolve - Win32 Debug"
 SOURCE=.\logresolve.c
-
-!IF  "$(CFG)" == "logresolve - Win32 Release"
-
 DEP_CPP_LOGRE=\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
@@ -208,24 +204,12 @@ DEP_CPP_LOGRE=\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
-
-"$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "logresolve - Win32 Debug"
-
-DEP_CPP_LOGRE=\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\hsregex.h"\
-	"..\os\win32\os.h"\
+NODEP_CPP_LOGRE=\
+	"..\include\ap_config_auto.h"\
 	
 
 "$(INTDIR)\logresolve.obj" : $(SOURCE) $(DEP_CPP_LOGRE) "$(INTDIR)"
 
-
-!ENDIF 
 
 
 !ENDIF 

@@ -48,7 +48,7 @@ ALL : "$(OUTDIR)\Win9xConHook.dll"
 !ENDIF 
 
 CLEAN :
-	-@erase "$(INTDIR)\vc50.idb"
+	-@erase "$(INTDIR)\Win9xConHook.idb"
 	-@erase "$(INTDIR)\Win9xConHook.obj"
 	-@erase "$(OUTDIR)\Win9xConHook.dll"
 	-@erase "$(OUTDIR)\Win9xConHook.exp"
@@ -59,8 +59,8 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D\
- "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Win9xConHook" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
@@ -135,8 +135,7 @@ ALL : "$(OUTDIR)\Win9xConHook.dll"
 !ENDIF 
 
 CLEAN :
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\vc50.pdb"
+	-@erase "$(INTDIR)\Win9xConHook.idb"
 	-@erase "$(INTDIR)\Win9xConHook.obj"
 	-@erase "$(OUTDIR)\Win9xConHook.dll"
 	-@erase "$(OUTDIR)\Win9xConHook.exp"
@@ -148,8 +147,8 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS"\
- /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Win9xConHook" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 

@@ -28,10 +28,10 @@ NULL=nul
 
 !IF  "$(CFG)" == "ApacheOS - Win32 Release"
 
-OUTDIR=.\ApacheOSR
-INTDIR=.\ApacheOSR
+OUTDIR=.\LibR
+INTDIR=.\LibR
 # Begin Custom Macros
-OutDir=.\ApacheOSR
+OutDir=.\LibR
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -45,8 +45,8 @@ ALL : "$(OUTDIR)\ApacheOS.lib"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\ApacheOS.idb"
 	-@erase "$(INTDIR)\os.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheOS.lib"
 
 "$(OUTDIR)" :
@@ -54,9 +54,9 @@ CLEAN :
 
 RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\ApacheOSR/
+CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS"\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\ApacheOS" /FD /c 
+CPP_OBJS=.\LibR/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -105,10 +105,10 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "ApacheOS - Win32 Debug"
 
-OUTDIR=.\ApacheOSD
-INTDIR=.\ApacheOSD
+OUTDIR=.\LibD
+INTDIR=.\LibD
 # Begin Custom Macros
-OutDir=.\ApacheOSD
+OutDir=.\LibD
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -122,8 +122,9 @@ ALL : "$(OUTDIR)\ApacheOS.lib"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\ApacheOS.idb"
+	-@erase "$(INTDIR)\ApacheOS.pdb"
 	-@erase "$(INTDIR)\os.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheOS.lib"
 
 "$(OUTDIR)" :
@@ -131,9 +132,9 @@ CLEAN :
 
 RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\ApacheOSD/
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\ApacheOS" /FD /c 
+CPP_OBJS=.\LibD/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::

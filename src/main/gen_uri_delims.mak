@@ -32,7 +32,7 @@ NULL=nul
 !IF  "$(CFG)" == "gen_uri_delims - Win32 Release"
 
 OUTDIR=.
-INTDIR=.\gen_uri_delims_R
+INTDIR=.\Release
 # Begin Custom Macros
 OutDir=.
 # End Custom Macros
@@ -48,17 +48,17 @@ ALL : "$(OUTDIR)\gen_uri_delims.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\gen_uri_delims.idb"
 	-@erase "$(INTDIR)\gen_uri_delims.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\gen_uri_delims.exe"
 
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D\
- "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\gen_uri_delims_R/
+CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /c 
+CPP_OBJS=.\Release/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -125,7 +125,7 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_uri_delims.exe"
 !ELSEIF  "$(CFG)" == "gen_uri_delims - Win32 Debug"
 
 OUTDIR=.
-INTDIR=.\gen_uri_delims_D
+INTDIR=.\Debug
 # Begin Custom Macros
 OutDir=.
 # End Custom Macros
@@ -141,9 +141,9 @@ ALL : "$(OUTDIR)\gen_uri_delims.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\gen_uri_delims.idb"
 	-@erase "$(INTDIR)\gen_uri_delims.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\vc50.pdb"
+	-@erase "$(INTDIR)\gen_uri_delims.pdb"
 	-@erase "$(OUTDIR)\gen_uri_delims.exe"
 	-@erase "$(OUTDIR)\gen_uri_delims.pdb"
 
@@ -151,9 +151,9 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE"\
- /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\gen_uri_delims_D/
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D\
+ "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /c 
+CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::

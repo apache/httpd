@@ -27,10 +27,10 @@ NULL=nul
 
 !IF  "$(CFG)" == "Apache - Win32 Release"
 
-OUTDIR=.\ApacheR
-INTDIR=.\ApacheR
+OUTDIR=.\Release
+INTDIR=.\Release
 # Begin Custom Macros
-OutDir=.\ApacheR
+OutDir=.\Release
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -48,9 +48,9 @@ CLEAN :"ApacheCore - Win32 ReleaseCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\Apache.idb"
 	-@erase "$(INTDIR)\apache.res"
 	-@erase "$(INTDIR)\main_win32.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\Apache.exe"
 	-@erase "$(OUTDIR)\Apache.map"
 
@@ -58,9 +58,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\ApacheR/
+CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE"\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache" /FD /c 
+CPP_OBJS=.\Release/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -106,7 +106,7 @@ LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\apache.res" \
 	"$(INTDIR)\main_win32.obj" \
-	".\CoreR\ApacheCore.lib"
+	"$(OUTDIR)\ApacheCore.lib"
 
 "$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -115,10 +115,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 
-OUTDIR=.\ApacheD
-INTDIR=.\ApacheD
+OUTDIR=.\Debug
+INTDIR=.\Debug
 # Begin Custom Macros
-OutDir=.\ApacheD
+OutDir=.\Debug
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -136,10 +136,9 @@ CLEAN :"ApacheCore - Win32 DebugCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\Apache.idb"
 	-@erase "$(INTDIR)\apache.res"
 	-@erase "$(INTDIR)\main_win32.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\Apache.exe"
 	-@erase "$(OUTDIR)\Apache.map"
 	-@erase "$(OUTDIR)\Apache.pdb"
@@ -148,9 +147,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\ApacheD/
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE"\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache" /FD /c 
+CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -196,7 +195,7 @@ LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\apache.res" \
 	"$(INTDIR)\main_win32.obj" \
-	".\CoreD\ApacheCore.lib"
+	"$(OUTDIR)\ApacheCore.lib"
 
 "$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<

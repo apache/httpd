@@ -32,10 +32,10 @@ NULL=nul
 
 !IF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Release"
 
-OUTDIR=.\ApacheModuleAuthAnonR
-INTDIR=.\ApacheModuleAuthAnonR
+OUTDIR=.\Release
+INTDIR=.\Release
 # Begin Custom Macros
-OutDir=.\ApacheModuleAuthAnonR
+OutDir=.\Release
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -53,8 +53,8 @@ CLEAN :"ApacheCore - Win32 ReleaseCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\ApacheModuleAuthAnon.idb"
 	-@erase "$(INTDIR)\mod_auth_anon.obj"
-	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheModuleAuthAnon.dll"
 	-@erase "$(OUTDIR)\ApacheModuleAuthAnon.exp"
 	-@erase "$(OUTDIR)\ApacheModuleAuthAnon.lib"
@@ -64,10 +64,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\os\win32" /D\
- "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\ApacheModuleAuthAnonR/
+CPP_PROJ=/nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG"\
+ /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\ApacheModuleAuthAnon" /FD /c 
+CPP_OBJS=.\Release/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -116,7 +116,7 @@ LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
  /base:@"BaseAddr.ref",mod_auth_anon 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_auth_anon.obj" \
-	"..\..\CoreR\ApacheCore.lib"
+	"..\..\Release\ApacheCore.lib"
 
 "$(OUTDIR)\ApacheModuleAuthAnon.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -125,10 +125,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Debug"
 
-OUTDIR=.\ApacheModuleAuthAnonD
-INTDIR=.\ApacheModuleAuthAnonD
+OUTDIR=.\Debug
+INTDIR=.\Debug
 # Begin Custom Macros
-OutDir=.\ApacheModuleAuthAnonD
+OutDir=.\Debug
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -146,9 +146,8 @@ CLEAN :"ApacheCore - Win32 DebugCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\ApacheModuleAuthAnon.idb"
 	-@erase "$(INTDIR)\mod_auth_anon.obj"
-	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\ApacheModuleAuthAnon.dll"
 	-@erase "$(OUTDIR)\ApacheModuleAuthAnon.exp"
 	-@erase "$(OUTDIR)\ApacheModuleAuthAnon.lib"
@@ -159,10 +158,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /I\
- "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-CPP_OBJS=.\ApacheModuleAuthAnonD/
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /D\
+ "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\ApacheModuleAuthAnon" /FD /c 
+CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
 .c{$(CPP_OBJS)}.obj::
@@ -211,7 +210,7 @@ LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
  /base:@"BaseAddr.ref",mod_auth_anon 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_auth_anon.obj" \
-	"..\..\CoreD\ApacheCore.lib"
+	"..\..\Debug\ApacheCore.lib"
 
 "$(OUTDIR)\ApacheModuleAuthAnon.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -227,13 +226,13 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Release"
 
 "ApacheCore - Win32 Release" : 
-   cd "\live\apache-1.3\src"
+   cd "\live\apache-1.3.15\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
  
    cd ".\os\win32"
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
-   cd "\live\apache-1.3\src"
+   cd "\live\apache-1.3.15\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Release" RECURSE=1 
    cd ".\os\win32"
@@ -241,12 +240,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Debug"
 
 "ApacheCore - Win32 Debug" : 
-   cd "\live\apache-1.3\src"
+   cd "\live\apache-1.3.15\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 DebugCLEAN" : 
-   cd "\live\apache-1.3\src"
+   cd "\live\apache-1.3.15\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Debug" RECURSE=1 
    cd ".\os\win32"
@@ -254,9 +253,6 @@ LINK32_OBJS= \
 !ENDIF 
 
 SOURCE=..\..\modules\standard\mod_auth_anon.c
-
-!IF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Release"
-
 DEP_CPP_MOD_A=\
 	"..\..\include\ap.h"\
 	"..\..\include\ap_alloc.h"\
@@ -275,37 +271,15 @@ DEP_CPP_MOD_A=\
 	".\os.h"\
 	".\readdir.h"\
 	
-
-"$(INTDIR)\mod_auth_anon.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Debug"
-
-DEP_CPP_MOD_A=\
-	"..\..\include\ap.h"\
-	"..\..\include\ap_alloc.h"\
-	"..\..\include\ap_config.h"\
-	"..\..\include\ap_ctype.h"\
-	"..\..\include\ap_mmn.h"\
-	"..\..\include\buff.h"\
-	"..\..\include\hsregex.h"\
-	"..\..\include\http_config.h"\
-	"..\..\include\http_core.h"\
-	"..\..\include\http_log.h"\
-	"..\..\include\http_protocol.h"\
-	"..\..\include\http_request.h"\
-	"..\..\include\httpd.h"\
-	"..\..\include\util_uri.h"\
-	".\os.h"\
-	".\readdir.h"\
+NODEP_CPP_MOD_A=\
+	"..\..\include\ap_config_auto.h"\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_auth_anon.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ENDIF 
 
 
 !ENDIF 
