@@ -76,8 +76,11 @@
 #define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
 
 typedef struct {
-    pid_t pid;
-    char status;
+    union {
+	pid_t pid;		/* if it's not DEAD then this is the pid */
+	int free_list;		/* otherwise this is scratch space */
+    } x;
+    int status;
 #if defined(STATUS)
     unsigned long access_count;
     unsigned long bytes_served;

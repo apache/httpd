@@ -1094,7 +1094,7 @@ int update_child_status (int child_num, int status, request_rec *r)
     
     sync_scoreboard_image();
     new_score_rec = scoreboard_image->servers[child_num];
-    new_score_rec.pid = getpid();
+    new_score_rec.x.pid = getpid();
     old_status = new_score_rec.status;
     new_score_rec.status = status;
 
@@ -1219,7 +1219,7 @@ static int find_child_by_pid (int pid)
     int i;
 
     for (i = 0; i < max_daemons_limit; ++i)
-	if (scoreboard_image->servers[i].pid == pid)
+	if (scoreboard_image->servers[i].x.pid == pid)
 	    return i;
 
     return -1;
@@ -1233,7 +1233,7 @@ static void reclaim_child_processes (void)
 
     sync_scoreboard_image();
     for (i = 0; i < max_daemons_limit; ++i) {
-	int pid = scoreboard_image->servers[i].pid;
+	int pid = scoreboard_image->servers[i].x.pid;
 
 	if (pid != my_pid && pid != 0) { 
 	    int waitret = 0,
@@ -1304,7 +1304,7 @@ int reap_children (void)
 
     for (n = 0; n < max_daemons_limit; ++n) {
 	if (scoreboard_image->servers[n].status != SERVER_DEAD
-		&& waitpid (scoreboard_image->servers[n].pid, &status, WNOHANG)
+		&& waitpid (scoreboard_image->servers[n].x.pid, &status, WNOHANG)
 		    == -1
 		&& errno == ECHILD) {
 	    sync_scoreboard_image ();
@@ -1337,7 +1337,7 @@ static int wait_or_timeout (void)
             if(scoreboard_image->servers[pi].status != SERVER_DEAD)
             {
                 e[hi] = pi;
-                h[hi++] = (HANDLE)scoreboard_image->servers[pi].pid;
+                h[hi++] = (HANDLE)scoreboard_image->servers[pi].x.pid;
             }
 
         }
@@ -1347,9 +1347,9 @@ static int wait_or_timeout (void)
             if(rv == -1)
                 err = GetLastError();
             if((WAIT_OBJECT_0 <= (unsigned int)rv) && ((unsigned int)rv < (WAIT_OBJECT_0 + hi)))
-                return(scoreboard_image->servers[e[rv - WAIT_OBJECT_0]].pid);
+                return(scoreboard_image->servers[e[rv - WAIT_OBJECT_0]].x.pid);
             else if((WAIT_ABANDONED_0 <= (unsigned int)rv) && ((unsigned int)rv < (WAIT_ABANDONED_0 + hi)))
-                return(scoreboard_image->servers[e[rv - WAIT_ABANDONED_0]].pid);
+                return(scoreboard_image->servers[e[rv - WAIT_ABANDONED_0]].x.pid);
 
         }
     }
@@ -2129,7 +2129,6 @@ void child_main(int child_num_arg)
 #endif    
 
     while (1) {
-	int errsave;
 	BUFF *conn_io;
 	request_rec *r;
       
@@ -2169,24 +2168,24 @@ void child_main(int child_num_arg)
         accept_mutex_on();  /* Lock around "accept", if necessary */
 
         for (;;) {
-            memcpy(&main_fds, &listenfds, sizeof(fd_set));
-            srv = ap_select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
-            errsave = errno;
+	    if (listeners->next != listeners) {
+		/* more than one socket */
+		memcpy(&main_fds, &listenfds, sizeof(fd_set));
+		srv = ap_select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
 
-            sync_scoreboard_image();
-            if (scoreboard_image->global.exit_generation >= generation)
-                exit(0);
+		if (srv < 0 && errno != EINTR)
+		    log_unixerr("select", "(listen)", NULL, server_conf);
 
-            errno = errsave;
-            if (srv < 0 && errno != EINTR)
-                log_unixerr("select", "(listen)", NULL, server_conf);
+		if (srv <= 0)
+		    continue;
 
-            if (srv <= 0)
-                continue;
-
-	    lr = find_ready_listener(&main_fds);
-	    if (lr == NULL) continue;
-	    sd = lr->fd;
+		lr = find_ready_listener(&main_fds);
+		if (lr == NULL) continue;
+		sd = lr->fd;
+	    } else {
+		/* there's only one socket, just pretend we the other stuff */
+		sd = listeners->fd;
+	    }
 
 	    /* if we accept() something we don't want to die, so we have to
 	     * defer the exit
@@ -2223,6 +2222,12 @@ void child_main(int child_num_arg)
 		/* ok maybe not, see ya later */
 		exit (0);
 	    }
+	    /* or maybe we missed a signal, you never know on systems
+	     * without reliable signals
+	     */
+	    sync_scoreboard_image();
+	    if (scoreboard_image->global.exit_generation >= generation)
+		exit(0);
         }
 
         accept_mutex_off(); /* unlock after "accept" */
@@ -2404,7 +2409,7 @@ static int make_child(server_rec *s, int slot)
      * to the same word.)
      * XXX: this needs to be sync'd to disk in the non shared memory stuff
      */
-    scoreboard_image->servers[slot].pid = pid;
+    scoreboard_image->servers[slot].x.pid = pid;
 
     return 0;
 }
@@ -2427,16 +2432,34 @@ static void startup_children (int number_to_start)
 }
 
 
+/*
+ * idle_spawn_rate is the number of children that will be spawned on the
+ * next maintenance cycle if there aren't enough idle servers.  It is
+ * doubled up to MAX_SPAWN_RATE, and reset only when a cycle goes by
+ * without the need to spawn.
+ */
+static int idle_spawn_rate = 1;
+#ifndef MAX_SPAWN_RATE
+#define MAX_SPAWN_RATE	(32)
+#endif
+
 static void perform_idle_server_maintenance (void)
 {
     int i;
     int to_kill;
-    int free_slot;
     int idle_count;
+    int free_head;
+    int *free_ptr;
+    int free_length;
 
-    free_slot = -1;
+    /* initialize the free_list */
+    free_head = -1;
+    free_ptr = &free_head;
+    free_length = 0;
+
     to_kill = -1;
     idle_count = 0;
+
     sync_scoreboard_image ();
     for (i = 0; i < daemons_limit; ++i) {
 	switch (scoreboard_image->servers[i].status) {
@@ -2452,8 +2475,10 @@ static void perform_idle_server_maintenance (void)
 	    break;
 	case SERVER_DEAD:
 	    /* try to keep children numbers as low as possible */
-	    if (free_slot == -1) {
-		free_slot = i;
+	    if (free_length < idle_spawn_rate) {
+		*free_ptr = i;
+		free_ptr = &scoreboard_image->servers[i].x.free_list;
+		++free_length;
 	    }
 	    break;
 	}
@@ -2463,9 +2488,12 @@ static void perform_idle_server_maintenance (void)
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	kill (scoreboard_image->servers[to_kill].pid, SIGUSR1);
+	kill (scoreboard_image->servers[to_kill].x.pid, SIGUSR1);
+	idle_spawn_rate = 1;
     } else if (idle_count < daemons_min_free) {
-	if (free_slot == -1) {
+	/* terminate the free list */
+	*free_ptr = -1;
+	if (free_head == -1) {
 	    /* only report this condition once */
 	    static int reported = 0;
 
@@ -2476,8 +2504,28 @@ static void perform_idle_server_maintenance (void)
 		reported = 1;
 	    }
 	} else {
-	    make_child (server_conf, free_slot);
+	    if (idle_spawn_rate >= 4) {
+		log_printf (server_conf,
+		    "server seems busy, spawning %d children (you may need "
+		    "to increase StartServers, or Min/MaxSpareServers)",
+		    idle_spawn_rate);
+	    }
+	    i = 0;
+	    while (i < idle_spawn_rate && free_head != -1) {
+		int slot = free_head;
+		free_head = scoreboard_image->servers[free_head].x.free_list;
+		make_child (server_conf, slot);
+		++i;
+	    }
+	    /* the next time around we want to spawn twice as many if this
+	     * wasn't good enough
+	     */
+	    if (idle_spawn_rate < MAX_SPAWN_RATE) {
+		idle_spawn_rate *= 2;
+	    }
 	}
+    } else {
+	idle_spawn_rate = 1;
     }
 }
 

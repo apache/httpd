@@ -1,5 +1,15 @@
 Changes with Apache 1.3a2
 
+  *) child_main avoids an uneeded call to select() when there is only one
+     listening socket.  [Dean Gaudet]
+
+  *) In the event that the server is starved for idle servers it will
+     spawn 1, then 2, then 4, ..., then 32 servers each second,
+     doubling each second.  It'll also give a warning in the errorlog
+     since the most common reason for this is a poor StartServers
+     setting.  The define MAX_SPAWN_RATE can be used to raise/lower
+     the maximum.  [Dean Gaudet]
+
   *) "nph-" CGIs were not compatible with HTTP/1.1 or SSL support because
      they were passed a socket that connected directly to the client.
      As such they would have to implement the transport level details

@@ -472,7 +472,7 @@ int status_handler (request_rec *r)
 			 i,(int)conn_lres,my_lres,lres);
 		    else
 			rprintf(r,"<b>Server %d</b> (%d): %d|%lu|%lu [",
-			 i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
+			 i,(int)score_record.x.pid,(int)conn_lres,my_lres,lres);
 
 		    switch (score_record.status)
 		    {
@@ -537,7 +537,7 @@ int status_handler (request_rec *r)
 			 i,(int)conn_lres,my_lres,lres);
 		    else
 			rprintf(r,"<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
-			 i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
+			 i,(int)score_record.x.pid,(int)conn_lres,my_lres,lres);
 
 		    switch (score_record.status)
 		    {
