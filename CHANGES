@@ -2,6 +2,10 @@ Changes with Apache 2.1.5
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) util_ldap: Eliminate the load ordering of mod_ldap and mod_authnz_ldap
+     by changing the mod_ldap exported functions to optional functions.
+     [Brad Nicholes]
+
 Changes with Apache 2.1.4
 
   *) Don't let a subrequest inherit headers describing the original request's
