@@ -327,7 +327,15 @@ if test "x$ap_ssltk_configured" = "x"; then
 
   dnl Determine the SSL/TLS toolkit's base directory, if any
   AC_MSG_CHECKING(for SSL/TLS toolkit base)
-  AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,SSL/TLS toolkit), [
+  AC_ARG_WITH(sslc, APACHE_HELP_STRING(--with-sslc=DIR,RSA SSL-C SSL/TLS toolkit), [
+    dnl If --with-sslc specifies a directory, we use that directory or fail
+    if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+      dnl This ensures $withval is actually a directory and that it is absolute
+      ap_ssltk_base="`cd $withval ; pwd`"
+    fi
+    ap_ssltk_type="sslc"
+  ])
+  AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,OpenSSL SSL/TLS toolkit), [
     dnl If --with-ssl specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       dnl This ensures $withval is actually a directory and that it is absolute
@@ -346,40 +354,60 @@ if test "x$ap_ssltk_configured" = "x"; then
     ap_ssltk_inc="-I$ap_ssltk_base/include"
     CPPFLAGS="$CPPFLAGS $ap_ssltk_inc"
   fi
-  AC_CHECK_HEADERS([sslc.h], [ap_ssltk_type="sslc"], [])
   if test "x$ap_ssltk_type" = "x"; then
-    AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
-    if test "x$ap_ssltk_type" = "x"; then
-      AC_MSG_ERROR([No SSL/TLS headers were available])
-    fi
-    dnl so it's OpenSSL - report, then test for a good version
-    echo "... SSL/TLS support configuring for OpenSSL"
     AC_MSG_CHECKING(for OpenSSL version)
-    AC_TRY_COMPILE([#include <openssl/opensslv.h>],
-[#if !defined(OPENSSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER < 0x0090609f
-#error "invalid openssl version"
+    AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
+    if test "$ap_ssltk_type" = "openssl"; then
+      dnl so it's OpenSSL - test for a good version
+      AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
+#if !defined(OPENSSL_VERSION_NUMBER)
+#error "Missing openssl version"
+#endif
+#if  (OPENSSL_VERSION_NUMBER < 0x009060af) \
+ || ((OPENSSL_VERSION_NUMBER > 0x00907000) && (OPENSSL_VERSION_NUMBER < 0x0090702f))
+#error "Insecure openssl version " OPENSSL_VERSION_TEXT
 #endif],
+      [AC_MSG_RESULT(OK)],
       [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
-      AC_MSG_RESULT(OK)],
-      [AC_MSG_RESULT([not encouraging])
-      echo "WARNING: OpenSSL version may contain security vulnerabilities!"])
-
-  else
-
-    dnl so it's SSL-C - report, then test anything relevant
-    echo "... SSL/TLS support configuring for SSL-C"
+       AC_MSG_RESULT([not encouraging])
+       echo "WARNING: OpenSSL version may contain security vulnerabilities!"
+       echo "         Ensure the latest security patches have been applied!"
+      ])
+    else
+      AC_MSG_RESULT([no OpenSSL headers found])
+    fi
+  fi
+  if test "$ap_ssltk_type" != "openssl"; then
+    dnl Might be SSL-C - report, then test anything relevant
     AC_MSG_CHECKING(for SSL-C version)
-    AC_TRY_COMPILE([#include <sslc.h>],
-[#if !defined(SSLC_VERSION_NUMBER) || SSLC_VERSION_NUMBER < 0x2100
-#error "invalid SSL-C version"
+    AC_CHECK_HEADERS([sslc.h], [ap_ssltk_type="sslc"], [ap_ssltk_type=""])
+    if test "$ap_ssltk_type" = "sslc"; then
+      AC_MSG_CHECKING(for SSL-C version)
+      AC_TRY_COMPILE([#include <sslc.h>],[
+#if !defined(SSLC_VERSION_NUMBER)
+#error "Missing SSL-C version"
+#endif
+#if SSLC_VERSION_NUMBER < 0x2310
+#define stringize_ver(x) #x
+#error "Insecure SSL-C version " stringize_ver(SSLC_VERSION_NUMBER)
 #endif],
-    [AC_MSG_RESULT(OK)],
-    [AC_MSG_ERROR([SSL-C Versions < 2.1 has not been tested])])
+      [AC_MSG_RESULT(OK)],
+      [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
+       AC_MSG_RESULT([not encouraging])
+       echo "WARNING: SSL-C version may contain security vulnerabilities!"
+       echo "         Ensure the latest security patches have been applied!"
+      ])
+    else
+      AC_MSG_RESULT([no SSL-C headers found])
+    fi
   fi
   dnl restore
   CPPFLAGS=$saved_CPPFLAGS
+  if test "x$ap_ssltk_type" = "x"; then
+    AC_MSG_ERROR([...No recognized SSL/TLS toolkit detected])
+  fi
 
-  dnl Run library checks
+  dnl Run library and function checks
   saved_LDFLAGS=$LDFLAGS
   saved_LIBS=$LIBS
   if test "x$ap_ssltk_base" != "x"; then
@@ -403,12 +431,12 @@ if test "x$ap_ssltk_configured" = "x"; then
     AC_CHECK_FUNCS(SSL_set_state)
   fi
   AC_CHECK_FUNCS(SSL_set_cert_store)
-  if test "x$liberrors" != "x"; then
-    AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
-  fi
   dnl restore
   LDFLAGS=$saved_LDFLAGS
   LIBS=$saved_LIBS
+  if test "x$liberrors" != "x"; then
+    AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
+  fi
 
   dnl Adjust apache's configuration based on what we found above.
   dnl (a) define preprocessor symbols
