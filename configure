@@ -1038,7 +1038,7 @@ for var in prefix exec_prefix bindir sbindir libexecdir mandir \
            localstatedir runtimedir logfiledir proxycachedir \
            suexec_docroot suexec_logexec; do
     eval "val=\"\$$var\"";
-    val=`echo $val | sed -e 's:/*$::'`
+    val=`echo $val | sed -e 's:\(.\)/*$:\1:'`
     eval "$var=\"$val\""
     #   expand value
     eval "val=\$$var"

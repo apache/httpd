@@ -1,4 +1,9 @@
 Changes with Apache 1.3.10
+
+  *) Made stripping of a trailing slash in directory names in top-level
+     configure script more robust and this way support also a plain `/' 
+     as the argument without resulting in an empty name.
+     [Matthias Lohmann <lohm@lynet.de>] PR#5291
  
   *) Made `tr' usage in top-level configure script more portable 
      by always using square brackets consistently.
