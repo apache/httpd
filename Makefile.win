@@ -164,9 +164,9 @@ _install:
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
         copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
-        xcopy docs\docroot "$(INSTDIR)\htdocs" /dy
-        xcopy docs\manual "$(INSTDIR)\htdocs\manual" /sdy
-        xcopy docs\icons "$(INSTDIR)\icons" /sdy
+        xcopy docs\docroot "$(INSTDIR)\htdocs" /d /q
+        xcopy docs\manual "$(INSTDIR)\htdocs\manual" /s /d /q
+        xcopy docs\icons "$(INSTDIR)\icons" /s /d /q
         copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
         if not exist "$(INSTDIR)\conf\magic" \
             copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
