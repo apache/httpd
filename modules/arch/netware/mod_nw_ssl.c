@@ -61,6 +61,10 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                          conn_rec *, request_rec *,
                          char *));
 
+/* An optional function which returns non-zero if the given connection
+ * is using SSL/TLS. */
+APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
+
 /* The ssl_proxy_enable() and ssl_engine_disable() optional functions
  * are used by mod_proxy to enable use of SSL for outgoing
  * connections. */
@@ -85,6 +89,7 @@ module AP_MODULE_DECLARE_DATA nwssl_module;
 typedef struct NWSSLSrvConfigRec NWSSLSrvConfigRec;
 typedef struct seclisten_rec seclisten_rec;
 typedef struct seclistenup_rec seclistenup_rec;
+typedef struct secsocket_data secsocket_data;
 
 struct seclisten_rec {
     seclisten_rec *next;
@@ -108,6 +113,11 @@ struct NWSSLSrvConfigRec {
     apr_table_t *sltable;
     apr_table_t *slutable;
 	apr_pool_t *pPool;
+};
+
+struct secsocket_data {
+    apr_socket_t* csd;
+    int is_secure;
 };
 
 static apr_array_header_t *certlist = NULL;
@@ -589,7 +599,11 @@ static int nwssl_pre_connection(conn_rec *c, void *csd)
         convert_secure_socket(c, (apr_socket_t*)csd);
     }
     else {
-        ap_set_module_config(c->conn_config, &nwssl_module, csd);
+        secsocket_data *csd_data = apr_palloc(c->pool, sizeof(secsocket_data));
+
+        csd_data->csd = (apr_socket_t*)csd;
+        csd_data->is_secure = 0;
+        ap_set_module_config(c->conn_config, &nwssl_module, (void*)csd_data);
     }
     
     return OK;
@@ -726,11 +740,18 @@ static int isSecureUpgradeable (const request_rec *r)
 	return isSecureConnUpgradeable (r->server, r->connection);
 }
 
+static int isSecureUpgraded (const request_rec *r)
+{
+    secsocket_data *csd_data = (secsocket_data*)ap_get_module_config(r->connection->conn_config, &nwssl_module);
+
+	return csd_data->is_secure;
+}
+
 static int nwssl_hook_Fixup(request_rec *r)
 {
     int i;
 
-    if (!isSecure(r))
+    if (!isSecure(r) && !isSecureUpgraded(r))
         return DECLINED;
 
     apr_table_set(r->subprocess_env, "HTTPS", "on");
@@ -740,7 +761,7 @@ static int nwssl_hook_Fixup(request_rec *r)
 
 static const char *nwssl_hook_http_method (const request_rec *r)
 {
-    if (isSecure(r))
+    if (isSecure(r) && !isSecureUpgraded(r))
         return "https";
 
     return NULL;
@@ -768,7 +789,9 @@ int ssl_engine_disable(conn_rec *c)
 
 static int ssl_is_https(conn_rec *c)
 {
-    return isSecureConn (c->base_server, c);
+    secsocket_data *csd_data = (secsocket_data*)ap_get_module_config(c->conn_config, &nwssl_module);
+
+    return isSecureConn (c->base_server, c) || (csd_data && csd_data->is_secure);
 }
 
 /* This function must remain safe to use for a non-SSL connection. */
@@ -815,6 +838,12 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
                 result = apr_table_get(r->headers_in, "Proxy-Connection");
             else if (strcEQ(var, "HTTP_ACCEPT"))
                 result = apr_table_get(r->headers_in, "Accept");
+            else if (strcEQ(var, "HTTPS")) {
+                if (isSecure(r) || isSecureUpgraded(r))
+                    result = "on";
+                else
+                    result = "off";
+            }
             else if (strlen(var) > 5 && strcEQn(var, "HTTP:", 5))
                 /* all other headers from which we are still not know about */
                 result = apr_table_get(r->headers_in, var+5);
@@ -887,12 +916,6 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
 			result = NULL;
         else if (strcEQ(var, "REMOTE_ADDR"))
             result = c->remote_ip;
-        else if (strcEQ(var, "HTTPS")) {
-			if (isSecureConn (s, c))
-                result = "on";
-            else
-                result = "off";
-        }
     }
 
     /*
@@ -980,6 +1003,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     char *token_string;
     char *token;
     char *token_state;
+    secsocket_data *csd_data;
 
     /* Just remove the filter, if it doesn't work the first time, it won't
      * work at all for this request.
@@ -1018,7 +1042,8 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     apr_table_unset(r->headers_out, "Upgrade");
 
     if (r) {
-        csd = (apr_socket_t*)ap_get_module_config(r->connection->conn_config, &nwssl_module);
+        csd_data = (secsocket_data*)ap_get_module_config(r->connection->conn_config, &nwssl_module);
+        csd = csd_data->csd;
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -1055,6 +1080,9 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
 
         ret = SSLize_Socket(sockdes, key, r);
+        if (!ret) {
+            csd_data->is_secure = 1;
+        }
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -1102,6 +1130,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_default_port  (nwssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter (ssl_hook_Insert_Filter, NULL,NULL, APR_HOOK_MIDDLE);
 
+    APR_REGISTER_OPTIONAL_FN(ssl_is_https);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
