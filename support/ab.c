@@ -1298,14 +1298,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.78 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.79 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.78 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.79 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1497,10 +1497,13 @@ int main(int argc, const char *const argv[])
 #endif
 				,&c, &optarg)) == APR_SUCCESS) {
 	switch (c) {
-#if USE_SSL
 	case 's':
+#if USE_SSL
 	    ssl = 1;
 	    break;
+#else
+	    fprintf(stderr, "SSL not compiled in; no https support\n");
+	    exit(1);
 #endif
 	case 'n':
 	    requests = atoi(optarg);
