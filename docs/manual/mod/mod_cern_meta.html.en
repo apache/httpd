@@ -22,7 +22,8 @@
 files</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MetaDir <em>directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>MetaDir .web</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_cern_meta</td></tr></table></td></tr></table>
     <p>Specifies the name of the directory in which Apache can find
@@ -41,7 +42,8 @@ files</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" clas
                   </strong></td><td>Activates CERN meta-file processing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MetaFiles on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>MetaFiles off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_cern_meta</td></tr></table></td></tr></table>
     <p>Turns on/off Meta file processing on a per-directory basis.</p>
@@ -50,7 +52,8 @@ files</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" clas
 meta information</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MetaSuffix <em>suffix</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>MetaSuffix .meta</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
-                  </a></td><td>directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:
+                    </a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_cern_meta</td></tr></table></td></tr></table>
     <p>Specifies the file name suffix for the file containing the
