@@ -126,12 +126,15 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
                                                 apr_time_t now)
 {
     apr_time_t apparent_age, corrected_received_age, response_delay,
-               corrected_initial_age, resident_time, current_age;
+               corrected_initial_age, resident_time, current_age,
+               age_value_usec;
+
+    age_value_usec = apr_time_from_sec(age_value);
 
     /* Perform an HTTP/1.1 age calculation. (RFC2616 13.2.3) */
 
     apparent_age = MAX(0, info->response_time - info->date);
-    corrected_received_age = MAX(apparent_age, age_value);
+    corrected_received_age = MAX(apparent_age, age_value_usec);
     response_delay = info->response_time - info->request_time;
     corrected_initial_age = corrected_received_age + response_delay;
     resident_time = now - info->response_time;
@@ -148,6 +151,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     int age_in_errhdr = 0;
     const char *cc_cresp, *cc_ceresp, *cc_req;
     const char *agestr = NULL;
+    const char *expstr = NULL;
     char *val;
     apr_time_t age_c = 0;
     cache_info *info = &(cache->handle->cache_obj->info);
@@ -194,6 +198,10 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     else if ((agestr = apr_table_get(r->err_headers_out, "Age"))) {
         age_c = apr_atoi64(agestr);
         age_in_errhdr = 1;
+    }
+
+    if (!(expstr = apr_table_get(r->err_headers_out, "Expires"))) {
+        expstr = apr_table_get(r->headers_out, "Expires");
     }
 
     /* calculate age of object */
@@ -274,12 +282,25 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
                                        "proxy-revalidate", NULL)))) {
         maxstale = 0;
     }
+
     /* handle expiration */
     if (((smaxage != -1) && (age < (smaxage - minfresh))) ||
         ((maxage != -1) && (age < (maxage + maxstale - minfresh))) ||
         ((smaxage == -1) && (maxage == -1) &&
          (info->expire != APR_DATE_BAD) &&
          (age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh)))) {
+        const char *warn_head;
+        apr_table_t *head_ptr;
+
+        warn_head = apr_table_get(r->headers_out, "Warning");
+        if (warn_head != NULL) {
+            head_ptr = r->headers_out;
+        }
+        else {
+            warn_head = apr_table_get(r->err_headers_out, "Warning");
+            head_ptr = r->err_headers_out;
+        }
+
         /* it's fresh darlings... */
         /* set age header on response */
         if (age_in_errhdr) {
@@ -297,7 +318,27 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
               (info->expire != APR_DATE_BAD &&
                (info->expire - info->date) > age))) {
             /* make sure we don't stomp on a previous warning */
-            apr_table_merge(r->headers_out, "Warning", "110 Response is stale");
+            if ((warn_head == NULL) ||
+                ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
+                apr_table_merge(head_ptr, "Warning", "110 Response is stale");
+            }
+        }
+        /* 
+         * If none of Expires, Cache-Control: max-age, or Cache-Control: 
+         * s-maxage appears in the response, and the respose header age 
+         * calculated is more than 24 hours add the warning 113 
+         */
+        if ((maxage_cresp == -1) && (smaxage == -1) &&
+            (expstr == NULL) && (age > 86400)) {
+
+            /* Make sure we don't stomp on a previous warning, and don't dup
+             * a 113 marning that is already present. Also, make sure to add
+             * the new warning to the correct *headers_out location.
+             */
+            if ((warn_head == NULL) ||
+                ((warn_head != NULL) && (ap_strstr_c(warn_head, "113") == NULL))) {
+                apr_table_merge(head_ptr, "Warning", "113 Heuristic expiration");
+            }
         }
         return 1;    /* Cache object is fresh (enough) */
     }
@@ -497,17 +538,18 @@ CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels,
     return apr_pstrdup(p, hashfile);
 }
 
-/* Create a new table consisting of those elements from a request_rec's
- * headers_out that are allowed to be stored in a cache.
+/* Create a new table consisting of those elements from an input
+ * headers table that are allowed to be stored in a cache.
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(request_rec *r)
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
+                                                        apr_table_t *t)
 {
-    /* Make a copy of the response headers, and remove from
+    /* Make a copy of the headers, and remove from
      * the copy any hop-by-hop headers, as defined in Section
      * 13.5.1 of RFC 2616
      */
     apr_table_t *headers_out;
-    headers_out = apr_table_copy(r->pool, r->headers_out);
+    headers_out = apr_table_copy(pool, t);
     apr_table_unset(headers_out, "Connection");
     apr_table_unset(headers_out, "Keep-Alive");
     apr_table_unset(headers_out, "Proxy-Authenticate");

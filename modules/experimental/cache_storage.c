@@ -187,6 +187,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
         switch ((rv = cache_run_open_entity(h, r, type, key))) {
         case OK: {
             char *vary = NULL;
+            char *varyhdr = NULL;
             if (cache_read_entity_headers(h, r) != APR_SUCCESS) {
                 /* TODO: Handle this error */
                 return DECLINED;
@@ -209,7 +210,10 @@ int cache_select_url(request_rec *r, const char *types, char *url)
              * 
              * RFC2616 13.6 and 14.44 describe the Vary mechanism.
              */
-            vary = apr_pstrdup(r->pool, apr_table_get(r->headers_out, "Vary"));
+            if ((varyhdr = apr_table_get(r->err_headers_out, "Vary")) == NULL) {
+                varyhdr = apr_table_get(r->headers_out, "Vary");
+            }
+            vary = apr_pstrdup(r->pool, varyhdr);
             while (vary && *vary) {
                 char *name = vary;
                 const char *h1, *h2;
