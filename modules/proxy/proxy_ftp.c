@@ -184,36 +184,34 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
 }
 
 
+
+
 /*
- * Like ftp_getrc but returns both the ftp status code and 
+ * Reads response lines, returns both the ftp status code and 
  * remembers the response message in the supplied buffer
  */
-static int ftp_getrc_msg(conn_rec *c, char *msgbuf, int msglen)
+static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade *bb, char *msgbuf, int msglen)
 {
-    int len, status;
+    int len = 0, status;
     char *response;
     char buff[5];
     char *mb = msgbuf,
 	 *me = &msgbuf[msglen];
     apr_bucket *e;
-    apr_bucket_brigade *bb = apr_brigade_create(c->pool);
 
-
-    bb = apr_brigade_create(c->pool);
 
     /* Tell http_filter to grab the data one line at a time. */
     c->remain = 0;
 
     ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING);
-
-/* FIXME: When reading the initial server response to the connect, there
- * is a hang at this point...
- */
-
     e = APR_BRIGADE_FIRST(bb);
     apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ);
     if (len == -1) {
 	return -1;
+    }
+    if (len == 0) {
+	msgbuf[0] = 0;
+	return 0;
     }
     if (len < 5 || !apr_isdigit(response[0]) || !apr_isdigit(response[1]) ||
 	!apr_isdigit(response[2]) || (response[3] != ' ' && response[3] != '-'))
@@ -229,6 +227,7 @@ static int ftp_getrc_msg(conn_rec *c, char *msgbuf, int msglen)
 	memcpy(buff, response, 3);
 	buff[3] = ' ';
 	do {
+	    ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING);
 	    apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ);
 	    if (len == -1)
 		return -1;
@@ -445,6 +444,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     int err;
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(p);
+    apr_bucket_brigade *cbb = apr_brigade_create(p);
     char *buf, *pasv, *connectname;
     apr_port_t connectport;
     char buffer[MAX_STRING_LEN];
@@ -520,7 +520,7 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     }
     else {
 		user = "anonymous";
-		password = "apache_proxy@";
+		password = "apache-proxy@";
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
@@ -640,10 +640,11 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     conf->connectport = connectport;
 
     /* if a keepalive connection is floating around, close it first! */
+    /* we might support ftp keepalives later, but not now... */
     if (conf->client_socket) {
 	apr_socket_close(conf->client_socket);
+	conf->client_socket = NULL;
     }
-    conf->client_socket = sock;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: connection complete");
@@ -664,14 +665,13 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     /*   120 Service ready in nnn minutes. */
     /*   220 Service ready for new user. */
     /*   421 Service not available, closing control connection. */
-    i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "FTP: initial connect returned status %d", i);
     if (i == -1) {
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Error reading from remote server");
+	apr_socket_close(sock);
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
-return HTTP_NOT_IMPLEMENTED;
 #if 0
     if (i == 120) {
 	/* RFC2068 states:
@@ -689,10 +689,11 @@ return HTTP_NOT_IMPLEMENTED;
     }
 #endif
     if (i != 220) {
+	apr_socket_close(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "FTP: connected.");
 
     buf = apr_pstrcat(p, "USER ", user, CRLF, NULL);
@@ -703,7 +704,7 @@ return HTTP_NOT_IMPLEMENTED;
     APR_BRIGADE_INSERT_TAIL(bb, e);
     ap_pass_brigade(origin->output_filters, bb);
     apr_brigade_destroy(bb);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "FTP: USER %s", user);
 
     /* possible results; 230, 331, 332, 421, 500, 501, 530 */
@@ -716,19 +717,24 @@ return HTTP_NOT_IMPLEMENTED;
     /*       (This may include errors such as command line too long.) */
     /*   501 Syntax error in parameters or arguments. */
     /*   530 Not logged in. */
-    i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "FTP: returned status %d", i);
     if (i == -1) {
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
+	apr_socket_close(sock);
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
     if (i == 530) {
-/* FIXME: Insert clean disconnect */
+	apr_socket_close(sock);
 	return ftp_unauthorized (r, 1);	/* log it: user name guessing attempt? */
     }
     if (i != 230 && i != 331) {
-	return HTTP_BAD_GATEWAY;
+	apr_socket_close(sock);
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, buffer);
     }
+/* XXX temporary end here while testing */
+apr_socket_close(sock);
+return HTTP_NOT_IMPLEMENTED;
 
     if (i == 331) {		/* send password */
 	if (password == NULL) {
@@ -743,7 +749,7 @@ return HTTP_NOT_IMPLEMENTED;
 	APR_BRIGADE_INSERT_TAIL(bb, e);
 	ap_pass_brigade(origin->output_filters, bb);
 	apr_brigade_destroy(bb);
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                      "FTP: PASS %s", password);
 
 	/* possible results 202, 230, 332, 421, 500, 501, 503, 530 */
@@ -754,7 +760,7 @@ return HTTP_NOT_IMPLEMENTED;
 	/*   501 Syntax error in parameters or arguments. */
 	/*   503 Bad sequence of commands. */
 	/*   530 Not logged in. */
-	i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                      "FTP: returned status %d", i);
 	if (i == -1) {
@@ -805,7 +811,7 @@ return HTTP_NOT_IMPLEMENTED;
 	/*   502 Command not implemented. */
 	/*   530 Not logged in. */
 	/*   550 Requested action not taken. */
-	i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                      "FTP: returned status %d", i);
 	if (i == -1) {
@@ -852,7 +858,7 @@ return HTTP_NOT_IMPLEMENTED;
 	/*   501 Syntax error in parameters or arguments. */
 	/*   504 Command not implemented for that parameter. */
 	/*   530 Not logged in. */
-	i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "FTP: returned status %d", i);
 	if (i == -1) {
@@ -1043,7 +1049,7 @@ return HTTP_NOT_IMPLEMENTED;
 	apr_brigade_destroy(bb);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                      "FTP: SIZE %s", path);
-	i = ftp_getrc_msg(origin, buffer, sizeof buffer);
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof buffer);
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                      "FTP: returned status %d with response %s", i, buffer);
 	if (i != 500) {		/* Size command not recognized */
@@ -1061,7 +1067,7 @@ return HTTP_NOT_IMPLEMENTED;
 		apr_brigade_destroy(bb);
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                              "FTP: CWD %s", path);
-		i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+		i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 		/* possible results: 250, 421, 500, 501, 502, 530, 550 */
 		/* 250 Requested file action okay, completed. */
 		/* 421 Service not available, closing control connection. */
@@ -1112,7 +1118,7 @@ return HTTP_NOT_IMPLEMENTED;
     /*   501 Syntax error in parameters or arguments. */
     /*   502 Command not implemented. */
     /*   550 Requested action not taken. */
-    i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "FTP: PWD returned status %d", i);
     if (i == -1 || i == 421) {
@@ -1164,7 +1170,7 @@ return HTTP_NOT_IMPLEMENTED;
     /*   501 Syntax error in parameters or arguments. */
     /*   530 Not logged in. */
     /*   550 Requested action not taken. */
-    rc = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+    rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                  "FTP: returned status %d", rc);
     if (rc == -1) {
@@ -1193,7 +1199,7 @@ return HTTP_NOT_IMPLEMENTED;
 	/* 502 Command not implemented. */
 	/* 530 Not logged in. */
 	/* 550 Requested action not taken. */
-	rc = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "FTP: returned status %d", rc);
 	if (rc == -1) {
@@ -1225,7 +1231,7 @@ return HTTP_NOT_IMPLEMENTED;
 	/* 501 Syntax error in parameters or arguments. */
 	/* 502 Command not implemented. */
 	/* 550 Requested action not taken. */
-	i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "FTP: PWD returned status %d", i);
 	if (i == -1 || i == 421) {
@@ -1251,7 +1257,7 @@ return HTTP_NOT_IMPLEMENTED;
 	apr_brigade_destroy(bb);
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "FTP: LIST -lag");
-	rc = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 				 "FTP: returned status %d", rc);
 	if (rc == -1)
@@ -1388,7 +1394,7 @@ return HTTP_NOT_IMPLEMENTED;
 	/*   500 Syntax error, command unrecognized. */
 	/*   501 Syntax error in parameters or arguments. */
 	/*   502 Command not implemented. */
-	i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		     "FTP: returned status %d", i);
     }
@@ -1416,7 +1422,7 @@ return HTTP_NOT_IMPLEMENTED;
     /* responses: 221, 500 */
     /*   221 Service closing control connection. */
     /*   500 Syntax error, command unrecognized. */
-    i = ftp_getrc_msg(origin, buffer, sizeof(buffer));
+    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                  "FTP: QUIT: status %d", i);
 
