@@ -288,6 +288,17 @@ There are two ways you can run Apache:
          Windows servers. <A HREF="../mod/mod_isapi.html">More information
          is available.</A>  Note that Apache <em>CANNOT</em> load ISAPI
 		 Filters.
+  <LI>When running CGI scripts, the method Apache uses to find the
+        interpreter for the script is configurable using the
+        <a href="../mod/core.html#scriptinterpretersource"
+        >ScriptInterpreterSource</a> directive.
+   <LI>Since it is often difficult to manage files with names like
+        <code>.htaccess</code> under windows, you may find it useful
+        to change the name of this configuration file using the
+        <a href="../mod/core.html#accessfilename">AccessFilename</a>
+        directive.
+
+
 </UL>
 
 <H2><A NAME="service">Running Apache for Windows as a Service</A></H2>
