@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/29 23:43:29 $]
+Last modified at [$Date: 2004/03/29 23:51:43 $]
 
 Release:
 
@@ -109,10 +109,6 @@ PATCHES TO BACKPORT FROM 2.1
        locks on some platforms. (especially Sparc!!!)
            modules/dav/fs/lock.c: r1.31
        +1: trawick
-
-    *) Use apr_temp_dir_get for htpasswd
-       support/htpasswd.c: 1.75
-       +1: thommay, bnicholes, jjclar
 
     *) Allow Satisfy directives to be influenced by <Limit>.
        PR: 14726
