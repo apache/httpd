@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/24 02:57:41 $]
+Last modified at [$Date: 2003/01/24 08:39:40 $]
 
 Release:
 
@@ -59,7 +59,7 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
 
     * mod_file_cache segfault bugfix. PR 16313.
-     +1: stoddard, orlikowski
+     +1: stoddard, orlikowski, striker
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
       +1: nd
@@ -81,7 +81,7 @@ PATCHES TO PORT FROM 2.1
 
     * apxs fix to include any special APR ld flags when linking a DSO
       This is revision 1.50 of support/apxs.in
-      +1: trawick, orlikowski
+      +1: trawick, orlikowski, striker
 
 CURRENT RELEASE NOTES:
 
@@ -150,7 +150,10 @@ CURRENT VOTES:
          sysconfdir/examples or manualdir/exampleconf/
          +1:   slive, trawick, Ken, nd (prefer the latter)
 
-      d) Installing a set of default config files when upgrading a server
+      d) tailored httpd-std.conf should be installed as httpd-std-<version>.conf.
+         +1:   striker
+
+      e) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
          +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
                       usually needs major customizations
