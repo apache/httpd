@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Rewrite the input filtering mechanisms to consolidate and reorganize
+     code.  In short, core_input_filter does something now and
+     ap_http_filter is now only concerned with HTTP.  [Justin Erenkrantz]
+
   *) Update the Win32 build to re-absorb mod_proxy and family.
      [William Rowe]
 
