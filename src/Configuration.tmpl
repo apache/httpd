@@ -211,6 +211,15 @@ AddModule modules/standard/mod_actions.o
 ##
 ## URL translation modules.
 ##
+
+## The Speling module attemps to correct mispellings of URLs that
+## users might have entered, namely by checking capitalizations
+## or by allowing up to one misspelling (character insertion / omission /
+## transposition/typo). This catches the majority of misspelled requests.
+## If it finds a match, a "spelling corrected" redirection is returned.
+
+# AddModule modules/standard/mod_speling.o
+
 ## The UserDir module for selecting resource directories by user name
 ## and a common prefix, e.g., /~<user> , /usr/web/<user> , etc.
 
