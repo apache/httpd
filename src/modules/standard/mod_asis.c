@@ -58,7 +58,7 @@
 #include "http_main.h"
 #include "http_request.h"
 
-int asis_handler (request_rec *r)
+static int asis_handler (request_rec *r)
 {
     FILE *f;
     char *location;
@@ -104,7 +104,7 @@ int asis_handler (request_rec *r)
     return OK;
 }
 
-handler_rec asis_handlers[] = {
+static handler_rec asis_handlers[] = {
 { ASIS_MAGIC_TYPE, asis_handler },
 { "send-as-is", asis_handler },
 { NULL }
