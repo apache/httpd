@@ -1731,7 +1731,7 @@ client</td></tr>
     from a normal client request. The size of a normal request header 
     field will vary greatly among different client implementations, 
     often depending upon the extent to which a user has configured
-    their browser to support detailed content negotiation. SPENGO
+    their browser to support detailed content negotiation. SPNEGO
     authentication headers can be up to 12392 bytes.</p>
 
     <p>This directive gives the server administrator greater
