@@ -34,6 +34,7 @@ and other protocols.
 <li><a href="#proxyrequests">ProxyRequests</a>
 <li><a href="#proxyremote">ProxyRemote</a>
 <li><a href="#proxypass">ProxyPass</a>
+<li><a href="#proxyblock">ProxyBlock</a>
 <li><a href="#cacheroot">CacheRoot</a>
 <li><a href="#cachesize">CacheSize</a>
 <li><a href="#cachegcinterval">CacheGcInterval</a>
@@ -109,6 +110,36 @@ Suppose the local server has address http://wibble.org; then
 </pre>
 Will cause a local request for the http://wibble.org/mirror/foo/bar to be
 internally converted into a proxy request to http://foo.com/bar
+
+<A name="proxyblock"><h2>ProxyBlock</h2></A>
+<strong>Syntax:</strong> ProxyBlock <em>&lt;word/host/domain list&gt;</em><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_proxy<br>
+<strong>Compatibility:</strong> ProxyBlock is only available in
+Apache 1.2 and later.<p>
+
+The ProxyBlock directive specifies a list of words, hosts and/or domains,
+separated by spaces. HTTP, HTTPS, and FTP document requests to matched words,
+hosts or domains are <em>blocked</em> by the proxy server. The proxy module
+will also attempt to determine IP addresses of list items which may be
+hostnames during startup, and cache them for match test as well. Example:
+
+<pre>
+  ProxyBlock joes_garage.com some_host.co.uk rocky.wotsamattau.edu
+</pre>
+
+'rocky.wotsamattau.edu' would also be matched if referenced by IP address.<p>
+
+Note that 'wotsamattau' would also be sufficient to match 'wotsamattau.edu'.<p>
+
+Note also that
+
+<pre>
+ProxyBlock *
+</pre>
+
+blocks connections to all sites.
 
 <A name="cacheroot"><h2>CacheRoot</h2></A>
 <strong>Syntax:</strong> CacheRoot <em>&lt;directory&gt;</em><br>
@@ -195,7 +226,7 @@ then use &lt;time&gt; hours as the expiry time.
 override.
 
 <A name="nocache"><h2>NoCache</h2></A>
-<strong>Syntax:</strong> NoCache <em>&lt;host/domain list&gt;</em><br>
+<strong>Syntax:</strong> NoCache <em>&lt;word/host/domain list&gt;</em><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
@@ -203,12 +234,17 @@ override.
 Apache 1.1 and later.<p>
 
 The NoCache directive specifies a list of words, hosts and/or domains, separated
-by spaces. HTTP documents from matched words, hosts or domains are <em>not</em>
-cached by the proxy server. Example:
+by spaces. HTTP and non-passworded FTP documents from matched words, hosts or
+domains are <em>not</em> cached by the proxy server. The proxy module will
+also attempt to determine IP addresses of list items which may be hostnames
+during startup, and cache them for match test as well. Example:
 
 <pre>
-  NoCache joes.garage.com some.host.co.uk wotsamattau.edu
+  NoCache joes_garage.com some_host.co.uk bullwinkle.wotsamattau.edu
 </pre>
+
+'bullwinkle.wotsamattau.edu' would also be matched if referenced by IP
+address.<p>
 
 Note that 'wotsamattau' would also be sufficient to match 'wotsamattau.edu'.<p>
 
@@ -228,6 +264,9 @@ disables caching completely.<p>
 <li><a href="#access">Controlling access to your proxy</a>
 <li><a href="#shortname">Using Netscape hostname shortcuts</a>
 <li><a href="#mimetypes">Why doesn't file type <i>xxx</i> download via FTP?</a>
+<li><a href="#startup">Why does Apache start more slowly when using the
+	proxy module?</a>
+<li><a href="#socks">Can I use the Apache proxy module with my SOCKS proxy?</a>
 </ul>
 
 <a name="access"><h2>Controlling access to your proxy</h2>
@@ -259,6 +298,27 @@ file. A useful line can be<p>
 <pre>
 application/octet-stream        bin dms lha lzh exe class tgz taz
 </pre>
+
+<a name="startup"><h2>Why does Apache start more slowly when using the
+	proxy module?</h2>
+
+If you're using the <code>ProxyBlock</code> or <code>NoCache</code>
+directives, hostnames' IP addresses are looked up and cached during
+startup for later match test. This may take a few seconds (or more)
+depending on the speed with which the hostname lookups occur.<p>
+
+<a name="socks"><h2>Can I use the Apache proxy module with my SOCKS proxy?</h2>
+
+Yes. Just build Apache with the rule <code>SOCKS4=yes</code> in your
+<i>Configuration</i> file, and follow the instructions there. SOCKS5 
+capability can be added in a similar way (there's no <code>SOCKS5</code>
+rule yet, so use the <code>EXTRA_LFLAGS</code> definition, or build Apache
+normally and run it with the <i>runsocks</i> wrapper provided with SOCKS5,
+if your OS supports dynamically linked libraries.<p>
+
+Remember that you'll also have to grant access to your Apache proxy machine by
+permitting connections on the appropriate ports in your SOCKS daemon's
+configuration.<p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
