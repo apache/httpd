@@ -165,8 +165,8 @@ LRESULT CALLBACK Service9xWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
 DWORD WINAPI WatchWindow(void *service_name)
 {
-    /* When running as a service under Windows 9x, there is no console
-     * window present, and no ConsoleCtrlHandler to call when the system 
+    /* When running as a service under Windows 9x, ConsoleCtrlHandler 
+     * does not respond properly when the user logs off or the system 
      * is shutdown.  If the WatchWindow thread is created with a NULL
      * service_name argument, then the ...SystemMonitor window class is
      * used to create the "Apache" window to watch for logoff and shutdown.
@@ -262,7 +262,10 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     /* Prevent holding open the (nonexistant) console */
     real_exit_code = 0;
 
-    /* Hide the console */
+    /* Hide the console of this Apache parent process
+     * (children must have a parent in order to properly execute
+     * 16-bit CGI processes or they will lock.)
+     */
     FreeConsole();
 
     thread = CreateThread(NULL, 0, WatchWindow, (LPVOID) service_name, 0, 
@@ -961,9 +964,15 @@ int send_signal_to_service(char *display_name, char *sig)
                 if (action == restart) 
                 {
                     if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED) 
+                    {
+                        printf("The %s service has %s.\n", display_name, 
+                               past[action]);
                         strcpy(sig, "start");
-                    else
-                        ap_start_restart(1);
+                        return status;
+                    }
+                    
+                    ap_start_restart(1);
+                    success = TRUE;
                 }
             }
         }
