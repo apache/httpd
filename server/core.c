@@ -160,6 +160,10 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->add_default_charset = ADD_DEFAULT_CHARSET_UNSET;
     conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
 
+    /* Overriding all negotiation 
+     */
+    conf->mime_type = NULL;
+    conf->handler = NULL;
     conf->output_filters = apr_array_make(a, 2, sizeof(void *));
     conf->input_filters = apr_array_make(a, 2, sizeof(void *));
     return (void *)conf;
@@ -300,6 +304,15 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 	if (new->add_default_charset_name) {
 	    conf->add_default_charset_name = new->add_default_charset_name;
 	}
+    }
+
+    /* Overriding all negotiation 
+     */
+    if (new->mime_type) {
+        conf->mime_type = new->mime_type;
+    }
+    if (new->handler) {
+        conf->handler = new->handler;
     }
     conf->output_filters = apr_array_append(a, base->output_filters, 
                                              new->output_filters);
@@ -2817,6 +2830,13 @@ AP_INIT_TAKE12("RLimitNPROC", set_limit_nproc,
 AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
    OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
+
+AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower, 
+       (void *)APR_XtOffsetOf(core_dir_config, mime_type), OR_FILEINFO,
+     "a mime type that overrides other configured type"),
+AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
+       (void *)APR_XtOffsetOf(core_dir_config, handler), OR_FILEINFO,
+   "a handler name that overrides any other configured handler"),
 AP_INIT_ITERATE("SetOutputFilter", add_filter, NULL, OR_FILEINFO,
    "filters to be run"),
 AP_INIT_ITERATE("SetInputFilter", add_input_filter, NULL, OR_FILEINFO,
@@ -2930,6 +2950,25 @@ static int core_map_to_storage(request_rec *r)
 
 
 static int do_nothing(request_rec *r) { return OK; }
+
+
+static int core_override_type(request_rec *r)
+{
+    core_dir_config *conf = 
+        (core_dir_config *)ap_get_module_config(r->per_dir_config,
+						&core_module);
+
+    /* Check for overrides with ForceType / SetHandler
+     */
+    if (conf->mime_type && strcmp(conf->mime_type, "none"))
+        r->content_type = conf->mime_type;
+
+    if (conf->handler && strcmp(conf->handler, "none"))
+        r->handler = conf->handler;
+
+    return OK;
+}
+
 
 static int default_handler(request_rec *r)
 {
@@ -3372,8 +3411,9 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(core_open_logs,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
-    /* FIXME: I suspect we can eliminate the need for these - Ben */
+    /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_fixups(core_override_type,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(ap_create_scoreboard, NULL, NULL, APR_HOOK_MIDDLE);
