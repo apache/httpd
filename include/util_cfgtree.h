@@ -55,6 +55,8 @@
 #ifndef AP_CONFTREE_H
 #define AP_CONFTREE_H
 
+#include "ap_config.h"
+
 /**
  * @package Config Tree Package
  */
