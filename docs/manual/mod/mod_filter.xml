@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.7 $ -->
+<!-- $Revision: 1.8 $ -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -290,7 +290,9 @@
     <tr><td><code>/</code></td><td>regexp match</td></tr>
     <tr><td><code>=</code></td><td>integer equality</td></tr>
     <tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
+    <tr><td><code>&lt;=</code></td><td>integer less-than or equal</td></tr>
     <tr><td><code>&gt;</code></td><td>integer greater-than</td></tr>
+    <tr><td><code>&gt;=</code></td><td>integer greater-than or equal</td></tr>
     <tr><td><code>*</code></td><td>Unconditional match</td></tr>
     </table>
 </usage>
