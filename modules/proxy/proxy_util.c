@@ -16,6 +16,10 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 
+#if (APR_MAJOR_VERSION < 1)
+#undef apr_socket_create
+#define apr_socket_create apr_socket_create_ex
+#endif
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
