@@ -188,7 +188,6 @@ int cache_select_url(request_rec *r, char *url)
         switch ((rv = list->provider->open_entity(h, r, key))) {
         case OK: {
             char *vary = NULL;
-            const char *varyhdr = NULL;
             int fresh;
 
             if (list->provider->recall_headers(h, r) != APR_SUCCESS) {
