@@ -225,6 +225,8 @@ typedef struct {
     int             hmax;       /* Hard maximum on the total number of connections */
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
                                  * may be available while exceeding the soft limit */
+    apr_interval_time_t timeout; /* connection timeout */
+
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
 } proxy_worker;
