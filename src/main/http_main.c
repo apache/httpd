@@ -4980,6 +4980,14 @@ static void process_child_status(int pid, ap_wait_t status)
 	*/
     if ((WIFEXITED(status)) &&
 	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
+        /* cleanup pid file -- it is useless after our exiting */
+        const char *pidfile = NULL;
+        pidfile = ap_server_root_relative (pconf, ap_pid_fname);
+        if ( pidfile != NULL && unlink(pidfile) == 0)
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+                         server_conf,
+                         "removed PID file %s (pid=%ld)",
+                         pidfile, (long)getpid());
 	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server_conf,
 			"Child %d returned a Fatal error... \n"
 			"Apache is exiting!",
