@@ -209,17 +209,6 @@ It must be accompanied by <A HREF="#authname">AuthName</A> and
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> to work.<p><hr>
 
-<A name="clearmodulelist"><h2>ClearModuleList directive</h2></A>
-<!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
-<strong>Syntax:</strong> ClearModuleList<br>
-<strong>Context:</strong> server config<br>
-<strong>Status:</strong> core<br>
-<strong>Compatibility:</strong> ClearModuleList is only available in Apache 1.2 and later<p>
-
-The server comes with a built-in list of active modules.  This
-directive clears the list.  It is assumed that the list will then be
-re-populated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
-
 <A name="bindaddress"><h2>BindAddress directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt BindAddress} directive&gt; -->
 <strong>Syntax:</strong> BindAddress <em>saddr</em><br>
@@ -250,6 +239,17 @@ This option can be used as an alternative method for supporting
 <a href="../bind.html">Setting which addresses and ports Apache uses</a></p>
 
 <hr>
+
+<A name="clearmodulelist"><h2>ClearModuleList directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
+<strong>Syntax:</strong> ClearModuleList<br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> ClearModuleList is only available in Apache 1.2 and later<p>
+
+The server comes with a built-in list of active modules.  This
+directive clears the list.  It is assumed that the list will then be
+re-populated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
 
 <A name="defaulttype"><h2>DefaultType directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt DefaultType} directive&gt; -->
