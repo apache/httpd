@@ -60,6 +60,8 @@
 #include "http_core.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "apr_file_io.h"
+#include "../../lib/apr/misc/unix/misc.h"
 
 /* mod_speling.c - by Alexei Kosut <akosut@organic.com> June, 1996
  *
@@ -229,9 +231,8 @@ static int check_speling(request_rec *r)
     spconfig *cfg;
     char *good, *bad, *postgood, *url;
     int filoc, dotloc, urlen, pglen;
-    DIR *dirp;
-    struct DIR_TYPE *dir_entry;
     ap_array_header_t *candidates = NULL;
+    ap_dir_t          *dir;
 
     cfg = ap_get_module_config(r->per_dir_config, &speling_module);
     if (!cfg->enabled) {
@@ -289,8 +290,8 @@ static int check_speling(request_rec *r)
     url = ap_pstrndup(r->pool, r->uri, (urlen - pglen));
 
     /* Now open the directory and do ourselves a check... */
-    dirp = ap_popendir(r->pool, good);
-    if (dirp == NULL) {          /* Oops, not a directory... */
+    if (ap_opendir(&dir, good, r->pool) != APR_SUCCESS) {
+        /* Oops, not a directory... */
         return DECLINED;
     }
 
@@ -301,40 +302,51 @@ static int check_speling(request_rec *r)
         dotloc = strlen(bad);
     }
 
-    while ((dir_entry = readdir(dirp)) != NULL) {
+    while (ap_readdir(dir) == APR_SUCCESS) {
         sp_reason q;
+	char *fname;
+        ap_status_t ok; 
 
+        ok = ap_get_dir_filename(&fname, dir);
+
+/*@@*/
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, APR_SUCCESS,
+		  r, __FILE__": Check_Speling `%s' in `%s'", r->filename, good, ok==APR_SUCCESS ? fname : "ERROR");
+/*@@*/
         /*
          * If we end up with a "fixed" URL which is identical to the
          * requested one, we must have found a broken symlink or some such.
          * Do _not_ try to redirect this, it causes a loop!
          */
-        if (strcmp(bad, dir_entry->d_name) == 0) {
-            ap_pclosedir(r->pool, dirp);
+        if (strcmp(bad, fname) == 0) {
+            ap_closedir(dir);
             return OK;
         }
+
         /*
          * miscapitalization errors are checked first (like, e.g., lower case
          * file, upper case request)
          */
-        else if (strcasecmp(bad, dir_entry->d_name) == 0) {
+        else if (strcasecmp(bad, fname) == 0) {
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) ap_push_array(candidates);
-            sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
+            sp_new->name = ap_pstrdup(r->pool, fname);
             sp_new->quality = SP_MISCAPITALIZED;
         }
+
         /*
          * simple typing errors are checked next (like, e.g.,
          * missing/extra/transposed char)
          */
-        else if ((q = spdist(bad, dir_entry->d_name)) != SP_VERYDIFFERENT) {
+        else if ((q = spdist(bad, fname)) != SP_VERYDIFFERENT) {
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) ap_push_array(candidates);
-            sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
+            sp_new->name = ap_pstrdup(r->pool, fname);
             sp_new->quality = q;
         }
+
         /*
 	 * The spdist() should have found the majority of the misspelled
 	 * requests.  It is of questionable use to continue looking for
@@ -367,23 +379,24 @@ static int check_speling(request_rec *r)
              * (e.g. foo.gif and foo.html) This code will pick the first one
              * it finds. Better than a Not Found, though.
              */
-            int entloc = ap_ind(dir_entry->d_name, '.');
+            int entloc = ap_ind(fname, '.');
             if (entloc == -1) {
-                entloc = strlen(dir_entry->d_name);
+                entloc = strlen(fname);
 	    }
 
             if ((dotloc == entloc)
-                && !strncasecmp(bad, dir_entry->d_name, dotloc)) {
+                && !strncasecmp(bad, fname, dotloc)) {
                 misspelled_file *sp_new;
 
 		sp_new = (misspelled_file *) ap_push_array(candidates);
-                sp_new->name = ap_pstrdup(r->pool, dir_entry->d_name);
+                sp_new->name = ap_pstrdup(r->pool, fname);
                 sp_new->quality = SP_VERYDIFFERENT;
             }
 #endif
         }
     }
-    ap_pclosedir(r->pool, dirp);
+
+    ap_closedir(dir);
 
     if (candidates->nelts != 0) {
         /* Wow... we found us a mispelling. Construct a fixed url */
@@ -417,10 +430,11 @@ static int check_speling(request_rec *r)
             ap_table_setn(r->headers_out, "Location",
 			  ap_construct_url(r->pool, nuri, r));
 
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r,
-			 ref ? "Fixed spelling: %s to %s from %s"
-			     : "Fixed spelling: %s to %s",
-			 r->uri, nuri, ref);
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, APR_SUCCESS,
+			  r, 
+			  ref ? "Fixed spelling: %s to %s from %s"
+			      : "Fixed spelling: %s to %s",
+			  r->uri, nuri, ref);
 
             return HTTP_MOVED_PERMANENTLY;
         }
@@ -445,7 +459,9 @@ static int check_speling(request_rec *r)
                 notes = r->main->notes;
             }
 
-	    sub_pool = ap_make_sub_pool(p);
+	    if (ap_create_context(&sub_pool, p) != APR_SUCCESS)
+		return DECLINED;
+
 	    t = ap_make_array(sub_pool, candidates->nelts * 8 + 8,
 			      sizeof(char *));
 	    v = ap_make_array(sub_pool, candidates->nelts * 5,
@@ -523,7 +539,7 @@ static int check_speling(request_rec *r)
 	  
 	    ap_destroy_pool(sub_pool);
 
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, 0, r,
 			 ref ? "Spelling fix: %s: %d candidates from %s"
 			     : "Spelling fix: %s: %d candidates",
 			 r->uri, candidates->nelts, ref);
@@ -534,10 +550,12 @@ static int check_speling(request_rec *r)
 
     return OK;
 }
+
 static void register_hooks(void)
 {
-    ap_hook_fixups(check_speling,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_fixups(check_speling,NULL,NULL,HOOK_LAST);
 }
+
 module MODULE_VAR_EXPORT speling_module =
 {
     STANDARD20_MODULE_STUFF,
