@@ -642,21 +642,24 @@ AP_DECLARE(char *) ap_getword_nc(apr_pool_t *atrans, char **line, char stop)
 
 AP_DECLARE(char *) ap_getword(apr_pool_t *atrans, const char **line, char stop)
 {
-    const char *pos = ap_strchr_c(*line, stop);
+    const char *pos = *line;
+    int len;
     char *res;
 
-    if (!pos) {
-	res = apr_pstrdup(atrans, *line);
-	*line += strlen(*line);
-	return res;
+    while ((*pos != stop) && *pos) {
+        ++pos;
     }
 
-    res = apr_pstrndup(atrans, *line, pos - *line);
+    len = pos - *line;
+    res = (char *)apr_palloc(atrans, len + 1);
+    memcpy(res, *line, len);
+    res[len] = 0;
 
-    while (*pos == stop) {
-	++pos;
+    if (stop) {
+        while (*pos == stop) {
+            ++pos;
+        }
     }
-
     *line = pos;
 
     return res;
