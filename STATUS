@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/13 18:00:18 $]
+Last modified at [$Date: 2002/06/13 18:07:58 $]
 
 Release:
 
@@ -99,7 +99,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Message-ID: <20020613001913.J22524@apache.org>
       Is this a showstopper?
         +1: Justin
-        -1: Cliff
+        -1: Cliff, Aaron
 
     * Returning invalid 304 errors when filters are present.  [PR 9673]
       Message-ID: <Pine.GSO.4.44.0206061713320.3848-100000@lab26.lacfas.hec.ca>
@@ -113,7 +113,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
               proposed patch.  Consensus needed.
       Is this a showstopper?
         +1: Justin
-        -1: Cliff
+        -1: Cliff, Aaron
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
