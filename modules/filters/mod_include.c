@@ -98,6 +98,29 @@ static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
 
 #define BYTE_COUNT_THRESHOLD AP_MIN_BYTES_TO_WRITE
 
+/* This function is used to split the brigade at the beginning of
+ *   the tag and forward the pretag buckets before any substitution
+ *   work is performed on the tag. This maintains proper ordering.
+ */
+static int split_and_pass_pretag_buckets(apr_bucket_brigade **brgd, 
+                                         include_ctx_t *cntxt, 
+                                         ap_filter_t *next)
+{
+    apr_bucket_brigade *tag_plus;
+    int rv;
+
+    if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&
+        (cntxt->head_start_bucket != NULL)) {
+        tag_plus = apr_brigade_split(*brgd, cntxt->head_start_bucket);
+        rv = ap_pass_brigade(next, *brgd);
+        cntxt->bytes_parsed = 0;
+        *brgd = tag_plus;
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+}
+
 /* ------------------------ Environment function -------------------------- */
 
 /* XXX: could use ap_table_overlap here */
@@ -857,7 +880,10 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                 if (!error_fmt) {
                     int rv;
 
-                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
+                    rv = split_and_pass_pretag_buckets(bb, ctx, f->next);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
                     
                     if ((rv = ap_run_sub_req(rr))) {
                         if (APR_STATUS_IS_EPIPE(rv)) {
@@ -2341,7 +2367,6 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
     apr_bucket *dptr = APR_BRIGADE_FIRST(*bb);
     apr_bucket *tmp_dptr;
     apr_bucket_brigade *tag_and_after;
-    int ret;
     apr_status_t rv;
 
     if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
@@ -2435,7 +2460,10 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                     *bb = tag_and_after;
                 }
                 else if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
-                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
+                    rv = split_and_pass_pretag_buckets(bb, ctx, f->next);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
                 }
             }
             else {
@@ -2506,7 +2534,10 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                                                      ctx->combined_tag, 
                                                      ctx->directive_length+1);
             if (handle_func != NULL) {
-                ret = (*handle_func)(ctx, bb, r, f, dptr, &content_head);
+                rv = (*handle_func)(ctx, bb, r, f, dptr, &content_head);
+                if ((rv != 0) && (rv != 1)) {
+                    return (rv);
+                }
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,

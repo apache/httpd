@@ -1,4 +1,11 @@
 Changes with Apache 2.0.25-dev
+  *) Fix for mod_include. Ryan's patch to check error
+     codes put a return in the wrong place. Also, the
+     include handler return code wasn't being checked.
+     I don't like macros with returns, so I converted
+     SPLIT_AND_PASS_PRETAG_BUCKETS into a function.
+     [Paul J. Reder <rederpj@raleigh.ibm.com>]
+
   *) fix segv in mod_mime if no AddTypes are configured
      [John Sterling <sterling@covalent.net>]
 
