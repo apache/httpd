@@ -1,5 +1,10 @@
 Changes with Apache 2.0.46
 
+  *) SECURITY [CAN-2003-0134] OS2: Fix a Denial of Service vulnerability 
+     identified and reported by Robert Howard <rihoward@rawbw.com> that 
+     where device names faulted the running OS2 worker process.
+     The fix is actually in APR 0.9.4.  [Brian Havard]
+
   *) Forward port: Escape special characters (especially control
      characters) in mod_log_config to make a clear distinction between
      client-supplied strings (with special characters) and server-side
@@ -18,7 +23,9 @@ Changes with Apache 2.0.45
 
   *) SECURITY [CAN-2003-0132]: Close a Denial of Service vulnerability
      identified by David Endler <DEndler@iDefense.com> on all platforms.
-     Details embargoed until their announcement on 8 April 2003.
+     An unlimited stream of newlines were acceptable between requests
+     where each <lf> would allocate an 80 byte buffer, leading very
+     quickly to memory exahustion.  [Brian Pane]
 
   *) Added an rpm build script.
      [Graham Leggett, Joe Orton <jorton@redhat.com>]
@@ -26,9 +33,9 @@ Changes with Apache 2.0.45
   *) Simpler, faster code path for request header scanning  [Brian Pane]
 
   *) SECURITY:  Eliminated leaks of several file descriptors to child
-     processes, such as CGI scripts.  This fix depends on the latest
-     APR library release 0.9.2, which is distributed with the httpd 
-     source tarball for Apache 2.0.45.  PR 17206
+     processes, such as CGI scripts.  This fix depends on the APR library 
+     release 0.9.2 or later (0.9.3 was distributed with the httpd 
+     source tarball for Apache 2.0.45.)  PR 17206
      [Christian Kratzer <ck@cksoft.de>, Bjoern A. Zeeb <bz@zabbadoz.net>]
 
   *) Fix path handling of mod_rewrite, especially on non-unix systems.
