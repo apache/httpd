@@ -1884,17 +1884,13 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
         return 1;
     }
 
-    /* if language qualities were equal, try the LanguagePriority
-     * stuff
-     */
-    /* XXX: TODO: there is a slight discrepancy between how this
-     * behaves and how it described in the documentation
-     */
-    if (best->lang_index != -1 && variant->lang_index > best->lang_index) {
+    /* if language qualities were equal, try the LanguagePriority stuff */
+    if (best->lang_index != -1 &&
+        (variant->lang_index == -1 || variant->lang_index > best->lang_index)) {
         return 0;
     }
     if (variant->lang_index != -1 &&
-        (variant->lang_index < best->lang_index || best->lang_index == -1)) {
+        (best->lang_index == -1 || variant->lang_index < best->lang_index)) {
         *p_bestq = q;
         return 1;
     }
