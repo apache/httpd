@@ -275,6 +275,7 @@ static int ap_process_http_connection(conn_rec *c)
     ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_READ, NULL);
     while ((r = ap_read_request(c)) != NULL) {
  
+        c->keepalive = 0;
         /* process the request if it was read without error */
  
         ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_WRITE, r);
