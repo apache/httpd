@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.37 $ ($Date: 1997/04/22 03:01:25 $)
+$Revision: 1.38 $ ($Date: 1997/04/22 10:26:39 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -17,27 +17,27 @@ reference URLs to be found at the end of the document.  These references
 do not appear, and are not needed, for the hypertext version.
 </P>
 <H2>The Questions</H2>
-<!-- Stuff to Add:						    -->
-<!-- - can't bind to port 80					    -->
-<!--   - permission denied					    -->
-<!--   - address already in use					    -->
+<!-- Stuff to Add:                                                  -->
+<!-- - can't bind to port 80                                        -->
+<!--   - permission denied                                          -->
+<!--   - address already in use                                     -->
 <!-- - access control based on DNS name really needs MAXIMUM_DNS    -->
-<!--   and double-check that rDNS resolves to name expected	    -->
+<!--   and double-check that rDNS resolves to name expected         -->
 <!-- - mod_auth & passwd lines "user:pw:.*" - ++1st colon onward is -->
-<!--   treated as pw, not just ++1st to --2nd.			    -->
-<!-- - SSL:							    -->
-<!--   Can I use Apache-SSL for free in Canada?			    -->
-<!--   Why doesn't Apache include SSL?				    -->
-<!--   Why can I use Apache-SSL in the U.S.?			    -->
-<!-- - How can I found out how many visitors my site gets?	    -->
-<!-- - How do I add a counter?					    -->
-<!-- - How do I configure Apache as a proxy?			    -->
-<!-- - What browsers support HTTP/1.1?				    -->
-<!-- - What's the point of vhosts-by-name is there aren't any	    -->
-<!--   HTTP/1.1 brwsers?					    -->
-<!-- - Is there an Apache for W95/WNT?				    -->
-<!-- - Why does Apache die when a vhost can't be DNS-resolved?	    -->
-<!-- - How do I add browsers ands referrers to my logs?		    -->
+<!--   treated as pw, not just ++1st to --2nd.                      -->
+<!-- - SSL:                                                         -->
+<!--   Can I use Apache-SSL for free in Canada?                     -->
+<!--   Why doesn't Apache include SSL?                              -->
+<!--   Why can I use Apache-SSL in the U.S.?                        -->
+<!-- - How can I found out how many visitors my site gets?          -->
+<!-- - How do I add a counter?                                      -->
+<!-- - How do I configure Apache as a proxy?                        -->
+<!-- - What browsers support HTTP/1.1?                              -->
+<!-- - What's the point of vhosts-by-name is there aren't any       -->
+<!--   HTTP/1.1 brwsers?                                            -->
+<!-- - Is there an Apache for W95/WNT?                              -->
+<!-- - Why does Apache die when a vhost can't be DNS-resolved?      -->
+<!-- - How do I add browsers ands referrers to my logs?             -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -76,7 +76,8 @@ do not appear, and are not needed, for the hypertext version.
         in directories other than the ScriptAlias?</A>
    </LI>
    <LI><A HREF="#premature-script-headers">What does it mean when my
-        CGIs fail with &quot;Premature end of script headers&quot;?</A>
+        CGIs fail with &quot;<SAMP>Premature end of script
+	headers</SAMP>&quot;?</A> 
    </LI>
    <LI><A HREF="#ssi-part-i">How do I enable SSI (parsed HTML)?</A>
    </LI>
@@ -97,11 +98,11 @@ do not appear, and are not needed, for the hypertext version.
    <LI><A HREF="#passwdauth">Can I use my <SAMP>/etc/passwd</SAMP> file
     for Web page authentication?</A>
    </LI>
-   <LI><A HREF="#errordoc401">Why doesn't my <SAMP>ErrorDocument
-    401</SAMP> work?</A>
+   <LI><A HREF="#errordoc401">Why doesn't my <CODE>ErrorDocument
+    401</CODE> work?</A>
    </LI>
-   <LI><A HREF="#setgid">Why do I get &quot;setgid: Invalid
-    argument&quot; at startup?</A>
+   <LI><A HREF="#setgid">Why do I get &quot;<SAMP>setgid: Invalid
+    argument</SAMP>&quot; at startup?</A>
    </LI>
    <LI><A HREF="#cookies1">Why does Apache send a cookie on every response?</A>
    </LI>
@@ -123,8 +124,8 @@ do not appear, and are not needed, for the hypertext version.
    <LI><A HREF="#nph-scripts">How can I get my script's output without
     Apache buffering it?</A>
    </LI>
-   <LI><A HREF="#linuxiovec">When compiling under Linux it complains
-   about redefinition of `struct iovec'.</A>
+   <LI><A HREF="#linuxiovec">Why do I get complaints about redefinition
+    of `struct iovec' when compiling under Linux?</A>
    </LI>
   </OL>
  </LI>
@@ -139,9 +140,9 @@ do not appear, and are not needed, for the hypertext version.
  Background
 </H3>
 <OL START=1>
- <LI><A
-      NAME="what"
-     ><STRONG>What is Apache?</STRONG></A>
+ <LI><A NAME="what">
+      <STRONG>What is Apache?</STRONG>
+     </A>
   <P>
   Apache was originally based on code and ideas found in the most
   popular HTTP server of the time.. NCSA httpd 1.3 (early 1995). It has
@@ -331,6 +332,15 @@ do not appear, and are not needed, for the hypertext version.
     fix the problem yourself (such as file permissions or the like).
     </P>
    </LI>
+   <LI><STRONG>Check the
+    <A
+     HREF="http://www.apache.org/docs/misc/FAQ"
+    >FAQ</A>!</STRONG>
+    <P>
+    The latest version of the Apache Frequently-Asked Questions list can
+    always be found at the main Apache web site.
+    </P>
+   </LI>
    <LI><STRONG>Check the Apache bug database</STRONG>
     <P>
     Most problems that get reported to The Apache Group are recorded in
@@ -392,8 +402,8 @@ do not appear, and are not needed, for the hypertext version.
     <P>
     (Substitute the appropiate locations for your
     <SAMP>ServerRoot</SAMP> and your <SAMP>httpd</SAMP> and
-    <SAMP>core</SAMP> files.  You may have to use <SAMP>gdb</SAMP>
-    instead of <SAMP>dbx</SAMP>.)
+    <SAMP>core</SAMP> files.  You may have to use <CODE>gdb</CODE>
+    instead of <CODE>dbx</CODE>.)
     </P>
    </LI>
   </OL>
@@ -471,18 +481,16 @@ do not appear, and are not needed, for the hypertext version.
   </OL>
   <HR>
  </LI>
- <LI><A
-      NAME="premature-script-headers"
-     ><STRONG>What does it mean when my CGIs fail with &quot;Premature
-     end of script headers&quot;?</STRONG></A> 
-  <P>
-  </P>
+ <LI><A NAME="premature-script-headers">
+      <STRONG>What does it mean when my CGIs fail with
+      &quot;<SAMP>Premature end of script headers</SAMP>&quot;?</STRONG>
+     </A> 
   <P>
   It means just what it says: the server was expecting a complete set of
   HTTP headers (one or more followed by a blank line), and didn't get
   them.  The most common cause of this is Perl scripts which haven't
   disabled buffering; if you insert the following statements before your
-  first <SAMP>print</SAMP> statement, this will probably go away.
+  first <CODE>print</CODE> statement, this will probably go away.
   </P>
   <P>
   <CODE>
@@ -499,7 +507,7 @@ do not appear, and are not needed, for the hypertext version.
   <P>
   If your script isn't written in Perl, do the equivalent thing for
   whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
-  <SAMP>fflush()</SAMP> after writing the headers).
+  <CODE>fflush()</CODE> after writing the headers).
   </P>
   <HR>
  </LI>
@@ -526,7 +534,7 @@ do not appear, and are not needed, for the hypertext version.
    <LI>Build your server with the
     <A
      HREF="../mod/mod_include.html"
-    ><CODE>mod_include</CODE></A>
+    ><SAMP>mod_include</SAMP></A>
     module.  This is normally compiled in by default.
    </LI>
    <LI>Make sure your server configuration files have an
@@ -565,9 +573,9 @@ do not appear, and are not needed, for the hypertext version.
   directives, which may change the content shipped to the client, it
   can't know at the time it starts parsing what the final size of the
   result will be, or whether the parsed result will always be the same.
-  This means that it can't generate <CODE>Content-Length</CODE> or
-  <CODE>Last-Modified</CODE> headers.  Caches commonly work by comparing
-  the <CODE>Last-Modified</CODE> of what's in the cache with that being
+  This means that it can't generate <SAMP>Content-Length</SAMP> or
+  <SAMP>Last-Modified</SAMP> headers.  Caches commonly work by comparing
+  the <SAMP>Last-Modified</SAMP> of what's in the cache with that being
   delivered by the server.  Since the server isn't sending that header
   for a parsed document, whatever's doing the caching can't tell whether
   the document has changed or not - and so fetches it again to be on the
@@ -575,11 +583,11 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <P>
   You can work around this in some cases by causing an
-  <CODE>Expires</CODE> header to be generated.  (See the
+  <SAMP>Expires</SAMP> header to be generated.  (See the
   <A
    HREF="../mod/mod_expires.html"
    REL="Help"
-  ><CODE>mod_expires</CODE></A>
+  ><SAMP>mod_expires</SAMP></A>
   documentation for more details.)  Another possibility is to use the
   <A
    HREF="../mod/mod_include.html#xbithack"
@@ -641,7 +649,7 @@ do not appear, and are not needed, for the hypertext version.
   on <STRONG>file descriptors</STRONG>, and that's almost always the
   cause of problems seen when adding virtual hosts.  In this
   case, it is often not actually Apache that's encountering the problem, but 
-  some library routine (such as <SAMP>gethostbyname()</SAMP>)
+  some library routine (such as <CODE>gethostbyname()</CODE>)
   which needs file descriptors and doesn't complain intelligibly when it
   can't get them.
   </P>
@@ -678,13 +686,13 @@ do not appear, and are not needed, for the hypertext version.
    <LI>Reduce the number of log files.  You can use 
        <A
         HREF="../mod/mod_log_config.html"
-       ><CODE>mod_log_config</CODE></A>
+       ><SAMP>mod_log_config</SAMP></A>
        to log all requests to a single log file while including the name
        of the virtual host in the log file.
    </LI>
    <LI>Increase the number of file descriptors available to the server
-       (see your system's documentation on the <SAMP>limit</SAMP> or
-       <SAMP>ulimit</SAMP> commands).  For some systems, information on
+       (see your system's documentation on the <CODE>limit</CODE> or
+       <CODE>ulimit</CODE> commands).  For some systems, information on
        how to do this is available in the
        <A
         HREF="perf.html"
@@ -785,7 +793,7 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  <LI><A NAME="errordoc401">
-      <STRONG>Why doesn't my <SAMP>ErrorDocument 401</SAMP> work?</STRONG>
+      <STRONG>Why doesn't my <CODE>ErrorDocument 401</CODE> work?</STRONG>
      </A>
   <P>
   You need to use it with a URL in the form "/foo/bar" and not one
@@ -798,8 +806,8 @@ do not appear, and are not needed, for the hypertext version.
   <HR>
  </LI>
  <LI><A NAME="setgid">
-      <STRONG>Why do I get &quot;setgid: Invalid argument&quot; at
-      startup?</STRONG>
+      <STRONG>Why do I get &quot;<SAMP>setgid: Invalid
+      argument</SAMP>&quot; at startup?</STRONG>
      </A>
   <P>
   Your
@@ -812,15 +820,15 @@ do not appear, and are not needed, for the hypertext version.
   </P>
   <HR>
  </LI>
- </LI>
  <LI><A NAME="cookies1">
-      <STRONG>Why does Apache send a cookie on every response?</STRONG></A>
+      <STRONG>Why does Apache send a cookie on every response?</STRONG>
+     </A>
   <P>
   Apache does <EM>not</EM> send automatically send a cookie on every
   response, unless you have re-compiled it with the 
   <A
    HREF="../mod/mod_cookies.html"
-  ><CODE>mod_cookies</CODE></A>
+  ><SAMP>mod_cookies</SAMP></A>
   module.
   This module was distributed with Apache prior to 1.2.
   This module may help track users, and uses cookies to do this. If
@@ -829,7 +837,7 @@ do not appear, and are not needed, for the hypertext version.
   more correct name 
   <A
    HREF="../mod/mod_usertrack.html"
-  ><CODE>mod_usertrack</CODE></A>,
+  ><SAMP>mod_usertrack</SAMP></A>,
   and cookies 
   have to be specifically enabled with the
   <A
@@ -861,14 +869,14 @@ do not appear, and are not needed, for the hypertext version.
   As of version 1.2, Apache is an HTTP/1.1 (HyperText Transfer Protocol
   version 1.1) server.  This fact is reflected in the protocol version
   that's included in the response headers sent to a client when
-  processing a request.  Unfortunately, the Java Development Kit (JDK)
-  version 1.0.2 URL methods (URLConnection and friends) expect to see
-  the version string &quot;HTTP/1.0&quot; and do not correctly interpret
-  the &quot;HTTP/1.1&quot; value Apache is sending (this part of the
-  response is a declaration of what the server can do rather than a
-  declaration of the dialect of the response).  The result is that
-  the JDK methods do not correctly parse the headers, and include them
-  with the document content by mistake.
+  processing a request.  Unfortunately, the URL methods (URLConnection
+  and friends) in the Java Development Kit (JDK) versions 1.0.2 through
+  1.1.1 expect to see the version string &quot;HTTP/1.0&quot; and do not
+  correctly interpret the &quot;HTTP/1.1&quot; value Apache is sending
+  (this part of the response is a declaration of what the server can do
+  rather than a declaration of the dialect of the response).  The result
+  is that the JDK methods do not correctly parse the headers, and
+  include them with the document content by mistake.
   </P>
   <P>
   This is definitely a bug in the JDK, but it's unclear when (or
@@ -969,41 +977,48 @@ do not appear, and are not needed, for the hypertext version.
    <DL>
     <DD>if ($0 =~ m:/*nph-:) {
         <BR>
-	&nbsp;&nbsp;&nbsp;&nbsp;
-	$HTTP_headers&nbsp;=&nbsp;
-	&quot;HTTP/1.1&nbsp;200&nbsp;OK\015\012&quot;;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        $HTTP_headers&nbsp;=&nbsp;
+        &quot;HTTP/1.1&nbsp;200&nbsp;OK\015\012&quot;;
         <BR>
-	&nbsp;&nbsp;&nbsp;&nbsp;
-	$HTTP_headers&nbsp;.=&nbsp;
-	&quot;Connection:&nbsp;close\015\012&quot;;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        $HTTP_headers&nbsp;.=&nbsp;
+        &quot;Connection:&nbsp;close\015\012&quot;;
         <BR>
-	&nbsp;&nbsp;&nbsp;&nbsp;
-	printf&nbsp;($HTTP_headers);
-	<BR>
-	};
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        printf&nbsp;($HTTP_headers);
+        <BR>
+        };
     </DD>
    </DL>
   </CODE>
   <P>
   and then follow with your normal non-<SAMP>nph</SAMP> headers.
   </P>
+  <HR>
  </LI>
- <HR>
  <LI><A NAME="linuxiovec">
-	<STRONG>When compiling under Linux it complains about redefinition 
-		of `struct iovec'.</STRONG>
+      <STRONG>Why do I get complaints about redefinition
+      of `struct iovec' when compiling under Linux?</STRONG>
      </A>
   <P>
   This is a conflict between your C library includes and your kernel
   includes.  You need to make sure that the versions of both are matched
-  properly.  There are two workarounds.  One is to remove the definition
-  of struct iovec from your C library includes.  Another is to add
-  <code>-DNO_WRITEV</code> to the <code>EXTRA_CFLAGS</code> line in
-  your <code>Configuration</code> and reconfigure/rebuild.
+  properly.  There are two workarounds:
   </P>
+  <UL>
+   <LI>Remove the definition of <CODE>struct iovec</CODE> from your C
+    library includes.  Or,
+   </LI>
+   <LI>Add  <CODE>-DNO_WRITEV</CODE> to the <CODE>EXTRA_CFLAGS</CODE>
+    line in your <SAMP>Configuration</SAMP> and reconfigure/rebuild.
+   </LI>
+  </UL>
+  </P>
+  <HR>
+  <!-- Don't forget to add HR tags at the end of each list item.. -->
   </LI>
 </OL>
-<HR>
  <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
