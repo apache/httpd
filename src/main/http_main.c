@@ -991,8 +991,7 @@ int count_idle_servers ()
     int res = 0;
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i)
-	if (scoreboard_image->servers[i].status == SERVER_READY
-	  || scoreboard_image->servers[i].status == SERVER_STARTING)
+	if (scoreboard_image->servers[i].status == SERVER_READY)
 	    ++res;
 
     return res;
