@@ -107,7 +107,7 @@ int parent_pid;
 
 static ap_status_t socket_cleanup(void *sock)
 {
-    struct socket_t *thesocket = sock;
+    ap_socket_t *thesocket = sock;
     SOCKET sd;
     if (ap_get_os_sock(&sd, thesocket) == APR_SUCCESS) {
         closesocket(sd);
