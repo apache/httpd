@@ -1,5 +1,8 @@
 Changes with Apache 1.3b1
 
+  *) New module, "mod_speling", which can help find files even when 
+     the URL is slightly misspelled. [Martin Kraemer, Alexei Kosut]
+
   *) API: New function child_terminate() triggers the child process to
      exit, while allowing the child finish what it needs to for the
      current request first.  
