@@ -1403,7 +1403,7 @@ static const char *require(cmd_parms *cmd, void *c_, const char *arg)
 }
 
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
-						  const char *arg) {
+		       				  const char *arg) {
     const char *limited_methods = ap_getword(cmd->pool, &arg, '>');
     void *tog = cmd->cmd->cmd_data;
     apr_int64_t limited = 0;
@@ -1500,12 +1500,13 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (!strcmp(cmd->path, "~")) {
-	cmd->path = ap_getword_conf(cmd->pool, &arg);
+        cmd->path = ap_getword_conf(cmd->pool, &arg);
         if (!cmd->path)
             return "<Directory ~ > block must specify a path";
+        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
-	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else if (!strcmp(cmd->path, "/") == 0) 
     {
