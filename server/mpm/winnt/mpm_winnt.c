@@ -897,7 +897,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
  * Main entry point for the worker threads. Worker threads block in 
  * win*_get_connection() awaiting a connection to service.
  */
-static void worker_main(int thread_num)
+static void worker_main(long thread_num)
 {
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
@@ -941,8 +941,8 @@ static void worker_main(int thread_num)
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
-        c = ap_new_connection(context->ptrans, ap_server_conf, context->sock,
-                              thread_num, sbh);
+        c = ap_run_create_connection(context->ptrans, ap_server_conf, context->sock,
+                                     thread_num, sbh);
 
         if (c) {
             ap_process_connection(c, context->sock);
@@ -953,7 +953,7 @@ static void worker_main(int thread_num)
             }
         }
         else {
-            /* ap_new_connection closes the socket on failure */
+            /* ap_run_create_connection closes the socket on failure */
             context->accept_socket = INVALID_SOCKET;
         }
     }
@@ -1014,7 +1014,7 @@ static void child_main()
                      "Child %d: exit_event_name = %s", my_pid, exit_event_name);
         /* Set up the scoreboard. */
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
-    ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, ap_server_conf,
                      "getting listeners child_main", my_pid);        
         get_listeners_from_parent(ap_server_conf);
     }

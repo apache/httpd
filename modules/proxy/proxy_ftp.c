@@ -1017,10 +1017,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the socket is now open, create a new connection */
-    origin = ap_new_connection(p, r->server, sock, r->connection->id, r->connection->sbh);
+    origin = ap_run_create_connection(p, r->server, sock, r->connection->id, r->connection->sbh);
     if (!origin) {
         /*
-         * the peer reset the connection already; ap_new_connection() closed
+         * the peer reset the connection already; ap_run_create_connection() closed
          * the socket
          */
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
@@ -1778,10 +1778,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the transfer socket is now open, create a new connection */
-    data = ap_new_connection(p, r->server, data_sock, r->connection->id, r->connection->sbh);
+    data = ap_run_create_connection(p, r->server, data_sock, r->connection->id, r->connection->sbh);
     if (!data) {
         /*
-         * the peer reset the connection already; ap_new_connection() closed
+         * the peer reset the connection already; ap_run_create_connection() closed
          * the socket
          */
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,

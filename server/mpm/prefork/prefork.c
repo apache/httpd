@@ -712,7 +712,7 @@ static void child_main(int child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
-	current_conn = ap_new_connection(ptrans, ap_server_conf, csd, my_child_num, sbh);
+	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num, sbh);
         if (current_conn) {
             ap_process_connection(current_conn, csd);
             ap_lingering_close(current_conn);

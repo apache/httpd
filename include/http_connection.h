@@ -65,20 +65,7 @@ extern "C" {
 /**
  * @package Apache connection library
  */
-
 #ifdef CORE_PRIVATE
-/**
- * Create a new connection. 
- * @param p Pool to allocate data structures out of
- * @param server The server to create the connection for
- * @param csd The socket to use for all communication with the client
- * @param id ID of this connection; unique at any point in time.
- * @param sbh Scoreboard handle
- * @return new conn_rec, or NULL if the connection has already been reset
- */
-AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *ptrans, server_rec *server, 
-                                             apr_socket_t *csd, long id, void *sbh);
-
 /**
  * This is the protocol module driver.  This calls all of the
  * pre-connection and connection hooks for all protocol modules.
@@ -109,11 +96,28 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c);
 
   /* Hooks */
 /**
- * This hook is used to install the bottom most input and output
- * filters (e.g., CORE_IN and CORE_OUT) used to interface to the 
- * network. This filter is a RUN_FIRST hook that runs right before
- * the pre_connection filter. This filter hook can use vhost 
- * configuration to influence its operation.
+ * create_connection is a RUN_FIRST hook which allows modules to create 
+ * connections. In general, you should not install filters with the 
+ * create_connection hook. If you require vhost configuration information 
+ * to make filter installation decisions, you must use the pre_connection
+ * or install_network_transport hook. This hook should close the connection
+ * if it encounters a fatal error condition.
+ *
+ * @param p The pool from which to allocate the connection record
+ * @param csd The socket that has been accepted
+ * @param conn_id A unique identifier for this connection.  The ID only
+ *                needs to be unique at that time, not forever.
+ * @param sbh A handle to scoreboard information for this connection.
+ * @return An allocated connection record or NULL.
+ */
+AP_DECLARE_HOOK(conn_rec *, create_connection,
+                (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh))
+   
+/**
+ * install_transport_filters is a RUN_FIRST hook used to install the bottom 
+ * most input and output network transport filters (e.g., CORE_IN and CORE_OUT) 
+ * used to interface to the network. This hook can access vhost configuration.
+ *
  * @param c The socket to the client
  * @param csd Pointer to the client apr_socket_t struct.
  * @return OK or DECLINED

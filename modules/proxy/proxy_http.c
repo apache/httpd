@@ -428,10 +428,10 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                      "proxy: socket is connected");
 
         /* the socket is now open, create a new backend server connection */
-        *origin = ap_new_connection(c->pool, r->server, p_conn->sock,
-                                    r->connection->id, r->connection->sbh);
+        *origin = ap_run_create_connection(c->pool, r->server, p_conn->sock,
+                                           r->connection->id, r->connection->sbh);
         if (!origin) {
-        /* the peer reset the connection already; ap_new_connection() 
+        /* the peer reset the connection already; ap_run_create_connection() 
          * closed the socket
          */
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
