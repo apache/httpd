@@ -10,7 +10,7 @@ Body:----------de--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
      
 <!--#include virtual="include/bottom.html" -->
@@ -27,7 +27,7 @@ Body:----------en--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
     
 <!--#include virtual="include/bottom.html" -->
@@ -45,7 +45,7 @@ Body:----------es--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
     
 <!--#include virtual="include/bottom.html" -->
@@ -63,7 +63,7 @@ Body:----------fr--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->   
@@ -81,7 +81,7 @@ Body:----------nl--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
@@ -99,7 +99,7 @@ Body:----------sv--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->   
@@ -117,7 +117,7 @@ Body:----------it--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
-    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
