@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Allow mod_dav to do weak entity comparison functions.
+     [Justin Erenkrantz]
+
   *) Fix If header parsing when a non-mod_dav lock token is passed to it.
      PR 16452.  [Justin Erenkrantz]
 

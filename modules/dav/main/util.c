@@ -1072,7 +1072,34 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
             switch(state_list->type) {
             case dav_if_etag:
             {
-                int mismatch = strcmp(state_list->etag, etag);
+                const char *given_etag, *current_etag;
+                int mismatch;
+
+                /* Do a weak entity comparison function as defined in
+                 * RFC 2616 13.3.3.
+                 */
+                if (state_list->etag[0] == '"' &&
+                    state_list->etag[1] == 'W' &&
+                    state_list->etag[2] == '/') {
+                    given_etag = apr_pstrdup(p, state_list->etag);
+                    given_etag += 2;
+                    given_etag[0] = '"';
+                }
+                else {
+                    given_etag = state_list->etag;
+                }
+                if (etag[0] == '"' &&
+                    etag[1] == 'W' &&
+                    etag[2] == '/') {
+                    current_etag = apr_pstrdup(p, etag);
+                    current_etag += 2;
+                    current_etag[0] = '"';
+                }
+                else {
+                    current_etag = etag;
+                }
+
+                mismatch = strcmp(given_etag, current_etag);
 
                 if (state_list->condition == DAV_IF_COND_NORMAL && mismatch) {
                     /*
