@@ -8,7 +8,7 @@
  by default via the Options, Language and ErrorDocument directives.
 
  You may configure the design and markup of the documents by modifying
- the HTML files in the directory 'error/includes'.
+ the HTML files in the directory 'error/include'.
 
 
  Supported Languages:
