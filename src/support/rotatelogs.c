@@ -7,13 +7,15 @@
  */
 
 
-#define BUFSIZE		65536
-#define MAX_PATH	1024
-
 #include "ap_config.h"
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
+
+#define BUFSIZE		65536
+#ifndef MAX_PATH
+#define MAX_PATH	1024
+#endif
 
 int main (int argc, char **argv)
 {
@@ -79,4 +81,6 @@ int main (int argc, char **argv)
 	    exit(5);
 	}
     }
+    /* We never get here, but surpress the compile warning */
+    return (0);
 }
