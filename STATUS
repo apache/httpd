@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/08 14:21:11 $]
+Last modified at [$Date: 2003/05/08 20:49:31 $]
 
 Release:
 
@@ -62,29 +62,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    * AllowEncodedSlashes patch to permit %2f in path-info.
-      CHANGES r1.1038
-      include/ap_mmn.h r1.54 (based on r1.53)
-      include/http_core.h r1.73
-      include/httpd.h r1.193
-      server/core.c r1.230
-      server/request.c r1.123
-      server/util.c r1.135
-      +1: coar, nd, stoddard
-      -0: wrowe
-          nd: since it's inherited carefully (namely: not) and has to
-              be explicitely turned on, I see no harm with that patch.
-              (needs docs anyway!)
-          wrowe: no veto here.  But I am now 100% convinced that it 
-                 is altogether wrong to be rejecting any codes within 
-                 the supposedly 'generic' ap_unparse_uri - and that the
-                 rejection of %2f should occur elsewhere.
-                 So in spirit I accept a more extreme version of coar's
-                 patch, where a 'pure' _unparse_uri becomes the default.
-                 But protection must be placed in dir_walk and some
-                 consideration given to how this changes <Location >
-                 block evaluation.
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter

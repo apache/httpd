@@ -1598,6 +1598,57 @@ AP_DECLARE(int) ap_unescape_url(char *url)
         return OK;
 }
 
+AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
+{
+    register int badesc, badpath;
+    char *x, *y;
+
+    badesc = 0;
+    badpath = 0;
+    /* Initial scan for first '%'. Don't bother writing values before
+     * seeing a '%' */
+    y = strchr(url, '%');
+    if (y == NULL) {
+        return OK;
+    }
+    for (x = y; *y; ++x, ++y) {
+        if (*y != '%') {
+            *x = *y;
+        }
+        else {
+            if (!apr_isxdigit(*(y + 1)) || !apr_isxdigit(*(y + 2))) {
+                badesc = 1;
+                *x = '%';
+            }
+            else {
+                char decoded;
+                decoded = x2c(y + 1);
+                if (IS_SLASH(decoded)) {
+                    *x++ = *y++;
+                    *x = *y;
+                }
+                else {
+                    *x = decoded;
+                    y += 2;
+                    if (decoded == '\0') {
+                        badpath = 1;
+                    }
+                }
+            }
+        }
+    }
+    *x = '\0';
+    if (badesc) {
+        return HTTP_BAD_REQUEST;
+    }
+    else if (badpath) {
+        return HTTP_NOT_FOUND;
+    }
+    else {
+        return OK;
+    }
+}
+
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
                                        apr_port_t port, const request_rec *r)
 {

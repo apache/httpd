@@ -539,7 +539,8 @@ typedef struct {
 #define ENABLE_SENDFILE_ON     (1)
 #define ENABLE_SENDFILE_UNSET  (2)
     unsigned int enable_sendfile : 2;  /* files in this dir can be mmap'ed */
-
+    unsigned int allow_encoded_slashes : 1; /* URLs may contain %2f w/o being
+                                             * pitched indiscriminately */
 } core_dir_config;
 
 /* Per-server core configuration */

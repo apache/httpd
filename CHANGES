@@ -1,5 +1,11 @@
 Changes with Apache 2.0.46
 
+  *) Added AllowEncodedSlashes directive to permit control of whether
+     the server will accept encoded slashes ('%2f') in the URI path.
+     Default condition is off (the historical behaviour).  This permits
+     environments in which the path-info needs to contain encoded
+     slashes.  [Ken Coar]
+
   *) When using Redirect in directory context, append requested query
      string if there's no one supplied by configuration. PR 10961.
      [André Malo]
