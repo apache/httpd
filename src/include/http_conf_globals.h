@@ -67,7 +67,7 @@ extern "C" {
  */
 
 extern API_VAR_EXPORT int ap_standalone;
-extern int ap_configtestonly;
+extern API_VAR_EXPORT int ap_configtestonly;
 extern int ap_docrootcheck;
 extern API_VAR_EXPORT uid_t ap_user_id;
 extern API_VAR_EXPORT char *ap_user_name;
