@@ -1,5 +1,16 @@
 Changes with Apache 1.2b5
 
+  *) Several security enhancements to suexec wrapper. It is _highly_
+     recommended that previously installed versions of the wrapper
+     be replaced with this version.  [Randy Terbush, Jason Dour]
+
+	- ~user execution now properly restricted to ~user's home
+	  directory and below.
+	- execution restricted to UID/GID > 100
+	- restrict passed environment to known variables
+	- call setgid() before initgroups() (portability fix)
+	- remove use of setenv() (portability fix)
+
   *) Add HTTP/1.0 response forcing. [Ben Laurie]
 
   *) Add access control via environment variables. [Ben Laurie]
