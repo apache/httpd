@@ -2158,7 +2158,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	case BAD_REQUEST:
 	    ap_bputs("Your browser sent a request that\n", fd);
 	    ap_bputs("this server could not understand.<P>\n", fd);
-	    if (error_notes = ap_table_get(r->notes, "error-notes") != NULL) {
+	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_bvputs(fd, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2195,7 +2195,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	case LENGTH_REQUIRED:
 	    ap_bvputs(fd, "A request of the requested method ", r->method,
 		      " requires a valid Content-length.<P>\n", NULL);
-	    if (error_notes = ap_table_get(r->notes, "error-notes") != NULL) {
+	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_bvputs(fd, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2238,7 +2238,10 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    break;
 	case HTTP_REQUEST_URI_TOO_LARGE:
 	    ap_bputs("The requested URL's length exceeds the capacity\n", fd);
-	    ap_bputs("limit for this server.\n", fd);
+	    ap_bputs("limit for this server.<P>\n", fd);
+	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+	    }
 	    break;
 	case HTTP_UNSUPPORTED_MEDIA_TYPE:
 	    ap_bputs("The supplied request data is not in a format\n", fd);
@@ -2263,7 +2266,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    ap_bputs(" and inform them of the time the error occurred,\n", fd);
 	    ap_bputs("and anything you might have done that may have\n", fd);
 	    ap_bputs("caused the error.<P>\n", fd);
-	    if (error_notes = ap_table_get(r->notes, "error-notes") != NULL) {
+	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_bvputs(fd, error_notes, "<P>\n", NULL);
 	    }
 	    break;
