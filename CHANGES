@@ -749,7 +749,7 @@ Changes with Apache 2.0.44
 
 Changes with Apache 2.0.43
 
-  *) SECURITY: [CAN-2002-0840] HTML-escape the address produced by 
+  *) SECURITY [CAN-2002-0840]: HTML-escape the address produced by 
      ap_server_signature() against this cross-site scripting 
      vulnerability exposed by the directive 'UseCanonicalName Off'.  
      Also HTML-escape the SERVER_NAME environment variable for CGI 
@@ -772,9 +772,9 @@ Changes with Apache 2.0.43
      could lead to an infinite loop.  PR 12705  
      [amund.elstad@ergo.no (Amund Elstad), Jeff Trawick]
 
-  *) SECURITY: CAN-2002-1156 (cve.mitre.org)
-      Fix the exposure of CGI source when a POST request is sent to 
-      a location where both DAV and CGI are enabled. [Ryan Bloom]
+  *) SECURITY [CAN-2002-1156] (cve.mitre.org):
+     Fix the exposure of CGI source when a POST request is sent to 
+     a location where both DAV and CGI are enabled. [Ryan Bloom]
 
   *) Allow the UserDir directive to accept a list of directories.
      This matches what Apache 1.3 does.  Also add documentation for
@@ -950,7 +950,8 @@ Changes with Apache 2.0.41
 
 Changes with Apache 2.0.40
 
-  *) SECURITY: [CAN-2002-0661] Close a very significant security hole that 
+  *) SECURITY [CAN-2002-0661] (cve.mitre.org): 
+     Close a very significant security hole that 
      applies only to the Win32, OS2 and Netware platforms.  Unix was not 
      affected, Cygwin may be affected.  Certain URIs will bypass security
      and allow users to invoke or access any file depending on the system 
@@ -961,18 +962,20 @@ Changes with Apache 2.0.40
      Reported by Auriemma Luigi <bugtest@sitoverde.com>.
      [Brad Nicholes]
 
-  *) SECURITY:  Close a path-revealing exposure in multiview type
+  *) SECURITY [CAN-2002-0654] (cve.mitre.org):
+     Close a path-revealing exposure in multiview type
      map negotiation (such as the default error documents) where the
      module would report the full path of the typemapped .var file when
      multiple documents or no documents could be served based on the mime
      negotiation.  Reported by Auriemma Luigi <bugtest@sitoverde.com>.
-     [CAN-2002-0654]  [William Rowe]
+     [William Rowe]
 
-  *) SECURITY:  Close a path-revealing exposure in cgi/cgid when we 
+  *) SECURITY [CAN-2002-0654] (cve.mitre.org):
+     Close a path-revealing exposure in cgi/cgid when we 
      fail to invoke a script.  The modules would report "couldn't create 
      child process /path-to-script/script.pl" revealing the full path
      of the script.  Reported by Jim Race <jrace@qualys.com>.
-     [CAN-2002-0654]  [Bill Stoddard]
+     [Bill Stoddard]
 
   *) Set aside the apr-iconv and apr_xlate() features for the Win32
      build of 2.0.40 so development can be completed.  A patch, from
@@ -1276,7 +1279,7 @@ Changes with Apache 2.0.37
      the pipes and spawning functionality working.
      [Brad Nicholes]
 
-  *) SECURITY: CAN-2002-0392 (cve.mitre.org) [CERT VU#944335]
+  *) SECURITY [CVE-2002-0392] (cve.mitre.org) [CERT VU#944335]:
      Detect overflow when reading the hex bytes forming a chunk line.
      [Aaron Bannert]
 
@@ -4928,7 +4931,7 @@ Changes with Apache 2.0a7
      multiple places and allows for an SSL module to be added much
      simpler. [Ryan Bloom]
 
-  *) SECURITY: CVE-2000-0913 (cve.mitre.org)
+  *) SECURITY [CVE-2000-0913] (cve.mitre.org):
      Fix a security problem that affects certain configurations of
      mod_rewrite. If the result of a RewriteRule is a filename that
      contains expansion specifiers, especially regexp backreferences
@@ -5318,7 +5321,7 @@ Changes with Apache 2.0a5
      container is VirtualHost or Directory or whatever.
      [Jeff Trawick]
 
-  *) SECURITY: CAN-2000-1204 (cve.mitre.org)
+  *) SECURITY [CAN-2000-1204] (cve.mitre.org):
      Prevent the source code for CGIs from being revealed when 
      using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
@@ -7732,10 +7735,11 @@ Changes with Apache 1.3.2
      run-time configurable using the ExtendedStatus directive.
      [Jim Jagielski]
 
-  *) SECURITY: Eliminate O(n^2) space DoS attacks (and other O(n^2)
+  *) SECURITY [CAN-1999-1199] (cve.mitre.org): 
+     Eliminate O(n^2) space DoS attacks (and other O(n^2)
      cpu time attacks) in header parsing.  Add ap_overlap_tables(),
      a function which can be used to perform bulk update operations
-     on tables in a more efficient manner.  CAN-1999-1199 (cve.mitre.org)
+     on tables in a more efficient manner.
      [Dean Gaudet]
 
   *) SECURITY: Added compile-time and configurable limits for
