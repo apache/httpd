@@ -65,7 +65,7 @@
 #define HAVE_SYS_RESOURCE_H
 #undef NO_KILLPG
 #undef NO_SETSID
-char *crypt(char *pw, char *salt);
+char *crypt(const char *pw, const char *salt);
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #include <sys/time.h>     
