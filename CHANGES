@@ -1,5 +1,7 @@
 Changes with Apache 2.0b1
 
+  *) Use a real pool to dup the error log descriptor.  [Ryan Bloom]
+
   *) Fix a segfault caused by mod_ext_filter when the external filter 
      program does not exist. [Jeff Trawick]
 
