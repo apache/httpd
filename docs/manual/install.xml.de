@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1.25 (outdated: 1.29) -->
+<!-- English Revision: 1.29 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -44,6 +44,7 @@
     href="#upgrading">Upgrade</a>.</p>
 </summary>
 
+<seealso><a href="programs/configure.html">Den Quellcode konfigurieren</a></seealso>
 <seealso><a href="invoking.html">Apache starten</a></seealso>
 <seealso><a href="stopping.html">Beenden und Neustarten</a></seealso>
 
@@ -170,61 +171,25 @@
 
     <p>Der Apache kann von der <a
     href="http://httpd.apache.org/download.cgi">Apache HTTP Server
-    Downloadseite</a> heruntergeladen werden, auf der verschiedene
-    Spiegelserver angegeben sind. Sie finden hier die jeweils aktuelle
-    stabile Version.</p>
+    Downloadseite</a> heruntergeladen werden, auf der verschiedene Spiegelserver
+    angegeben sind. F&uuml;r die meisten Benutzer des Apache ist es auf
+    Unix-&auml;hnlichen Systemen am Besten, die Quellcodeversion herunterzuladen
+    und zu kompilieren. Der Erstellungsprozess (weiter unten beschrieben) ist
+    einfach und erlaubt es Ihnen, den Server Ihren Bed&uuml;rfnissen anzupassen.
+    Dazu kommt, dass Bin&auml;rdistributionen gegen&uuml;ber der aktuellen
+    Quellcodeversion oft veraltet sind. Wenn Sie tats&auml;chlich ein
+    Bin&auml;rpaket herunterladen, folgen Sie bitte den Anweisungen in der Datei
+    <code>INSTALL.bindist</code>, die der Distribution beiliegt.</p>
 
-    <p>Nach dem Download, insbesondere, wenn ein Mirror benutzt wurde, ist es
-    wichtig, zu pr&#252;fen, dass Sie eine vollst&#228;ndige, nicht
-    modifizierte Version des Apache HTTP Servers erhalten haben. Dies kann
-    durch Pr&#252;fen des heruntergeladenen Tarballs gegen die PGP-Signatur
-    erreicht werden. Dies ist wiederum ein Zweischrittverfahren. Zuerst
-    m&#252;ssen Sie die <a href="http://www.apache.org/dist/httpd/KEYS">
-    <code>KEYS</code></a>-Datei ebenfalls von der Apache
-    Distributionsseite beziehen. (Um sicherzustellen, dass die
-    <code>KEYS</code>-Datei selbst nicht ver&#228;ndert wurde, ist
-    es sinnvoll, eine Datei aus einer fr&#252;heren Distribution des
-    Apache zu verwenden, oder den Schl&#252;ssel von einem &#246;ffentlichen
-    Schl&#252;sselserver zu importieren.) Die Schl&#252;ssel werden mit einem
-    der folgenden Befehle (abh&#228;ngig von Ihrer PGP Version) zu Ihrem
-    pers&#246;nlichen Schl&#252;sselring hinzugef&#252;gt:</p>
-
-  <example>$ pgp &lt; KEYS</example>
-
-    <p>oder </p>
-
-  <example>$ gpg --import KEYS</example>
-
-    <p>Der n&auml;chste Schritt ist das Testen des Tarballs gegen
-    die PGP-Signatur, die immer von der <a
-    href="http://httpd.apache.org/download.cgi">Apache Originalseite</a>
-    bezogen werden sollte. Den Link zur Signaturdatei finden Sie hinter
-    dem jeweiligen Download-Link oder im entsprechenden Verzeichnis auf der
-    <a href="http://www.apache.org/dist/httpd/">Apache-Distributionsseite</a>
-    Sie hat den gleichen Dateinamen wie der Tarball, aber zus&auml;tzlich die
-    Endung <code>.asc</code>. Nun k&ouml;nnen Sie die Distribution mit
-    einem der folgenden Befehle (wiederum abh&auml;ngig von Ihrer PGP
-    Version) pr&uuml;fen:</p>
-
-  <example>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</example>
-
-    <p>oder</p>
-
-  <example>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</example>
-
-    <p>Sie sollten eine Meldung wie</p>
-
-  <example>Good signature from user "Martin Kraemer
-      &lt;martin@apache.org&gt;".</example>
-
-    <p>erhalten.</p>
-
-    <p>Abh&#228;ngig von den Vertrauensbeziehungen in Ihrem
-    Schl&#252;sselring k&#246;nnen Sie auch eine Meldung erhalten, die
-    besagt, dass die Beziehungen zwischen dem Schl&#252;ssel und dem
-    Unterzeichner des Schl&#252;ssels nicht verifiziert werden k&#246;nnen.
-    Solange Sie der Authentizit&#228;t der <code>KEYS</code>-Datei
-    vertrauen, ist dies kein Problem.</p>
+    <p>Es ist wichtig, dass Sie nach dem Herunterladen &uuml;berpr&uuml;fen,
+    dass es sich um einer vollst&auml;ndige und unver&auml;nderte Version des
+    Apache HTTP Servers handelt. Das k&ouml;nnen Sie erreichen, indem Sie das
+    heruntergeladene Paket gegen die PGP-Signatur pr&uuml;fen. Einzelheiten dazu
+    erfahren Sie auf der <a
+    href="http://httpd.apache.org/download.cgi#verify">Download-Seite</a>. Es
+    ist auch ein erweitertes Beispiel verf&uuml;gbar, dass die <a
+    href="http://httpd.apache.org/dev/verification.html">Anwendung von PGP</a>
+    beschreibt.</p>
 
 </section>
 
@@ -250,7 +215,8 @@
     <p>Der n&#228;chste Schritt ist die Konfiguration des
     Apache-Codebaumes f&#252;r Ihre spezielle Plattform und Ihre
     pers&#246;nlichen Bed&#252;rfnisse. Dies wird mit dem Skript
-    <code>configure</code> durchgef&#252;hrt, das im Wurzelverzeichnis
+    <code><a href="programs/configure.html">configure</a></code>
+    durchgef&#252;hrt, das im Wurzelverzeichnis
     der Distribution enthalten ist. (Entwickler, welche die CVS Version
     des Apache-Codebaumes herunterladen, m&#252;ssen <code>autoconf</code>
     und <code>libtool</code> installiert haben und m&#252;ssen
@@ -261,13 +227,41 @@
     <p>Um den Codebaum mit den Standardeinstellungen zu konfigurieren,
     geben Sie einfach <code>./configure</code> ein. Zur &#196;nderung
     dieser Voreinstellungen akzeptiert <code>configure</code> eine
-    Reihe von Variablen und Kommandozeilenoptionen. Umgebungsvariablen
-    werden &#252;blicherweise vor den <code>./configure</code>-Befehl gesetzt,
-    w&#228;hrend andere Optionen danach gesetzt werden. Die wichtigste Option
-    hierbei ist der vorangestellte Ablageort, unter dem der Apache sp&#228;ter
-    installiert wird, denn der Apache muss auf diesen Ablageort eingestellt
-    werden, um korrekt zu arbeiten. Es gibt jedoch noch eine Reihe weiterer
-    Optionen f&#252;r Ihre pers&#246;nlichen W&#252;nsche.</p>
+    Reihe von Variablen und Kommandozeilenoptionen.</p>
+
+    <p>Die wichtigste Option ist <code>--prefix</code>, der Ablageort, an dem
+    der Apache sp&auml;ter installiert wird, da er f&uuml;r diesen Ort
+    konfiguriert werden muss, um korrekt zu arbeiten. Eine feinere Einstellung
+    der Dateiablagen ist mit weiteren <a
+    href="programs/configure.html#installationdirectories">configure-Optionen</a>
+    m&ouml;glich.</p>
+
+    <p>Weiterhin k&ouml;nnen Sie zu diesem Zeitpunkt festlegen, welche <a
+    href="programs/configure.html#optionalfeatures">Funktionalit&auml;t</a> Sie
+    in den Apache aufnehmen m&ouml;chten, indem Sie <a href="mod/">Module</a>
+    aktivieren oder deaktivieren. Der Apache bindet standardm&auml;&szlig;ig
+    einen Satz von <a href="mod/module-dict.html#Status">Basismodulen</a> ein.
+    Andere Module werden mit Hilfe der Option
+    <code>--enable-<var>module</var></code> aktiviert, wobei <var>module</var>
+    den Namen des Moduls ohne das Pr&auml;fix <code>mod_</code> darstellt.
+    Ausserdem sind alle Unterstriche durch Bindestriche zu ersetzen. Sie
+    k&ouml;nnen sich auch entscheiden, Module als "<a href="dso.html">Shared
+    Objects (DSOs)</a>" zu kompilieren, welche zur Laufzeit ge- und entladen
+    werden k&ouml;nnen. Dazu verwenden Sie die Option
+    <code>--enable-<var>module</var>=shared</code>. Entsprechend k&ouml;nnen Sie
+    Basismodule mit der Option <code>--disable-<var>module</var></code>
+    deaktivieren. Lassen Sie Vorsicht walten. wenn Sie diese Optionen verwenden,
+    da <code>configure</code> Sie nicht warnen kann, wenn die von Ihnen
+    angegebenen Module nicht existieren; die Option wird dann einfach
+    ignoriert.</p>
+
+    <p>Zus&auml;tzlich ist es zuweilen notwendig, das
+    <code>configure</code>-Skript mit Extrainformationen zum Ablageort
+    Ihres Compilers, Ihrer Bibliotheken oder Header-Dateien zu versorgen. Das
+    tun Sie, indem Sie entweder Umgebungsvariablen oder Kommandozeilenoptionen
+    an <code>configure</code> &uuml;bergeben. F&uuml;r mehr Informationen
+    lesen Sie bitte die <a href="programs/configure.html">Hilfeseite zu
+    configure</a>.</p>
 
     <p>Um einen kurzen Eindruck zu gewinnen, welche M&#246;glichkeiten Sie
     haben, folgt hier ein typisches Beispiel, das den Apache mit einem
@@ -289,296 +283,10 @@
     und ein Makefile zu generieren, das sp&#228;ter zur Kompilierung des
     Servers verwendet wird.</p>
 
-    <p>Die einfachste Art und Weise, alle Konfigurationsflags f&#252;r den
-    Apache herauszufinden, ist, <code>./configure --help</code> aufzurufen.
-    Hier folgt eine kurze Beschreibung der meisten Argumente und
-    Umgebungsvariablen.</p>
+    <p>Einzelheiten zu den vielen verschiedenen Konfigurationsoptionen finden
+    Sie auf der <a href="programs/configure.html">Hilfeseite zu
+    configure</a>.</p>
 
-<section id="environment"><title>Umgebungsvariablen</title>
-
-    <p>Der <code>autoconf</code>-Generierungsvorgang verwendet verschiedene
-    Umgebungsvariablen f&#252;r die Konfiguration der Generierungsumgebung.
-    Im allgemeinen ver&#228;ndern diese Variablen die Methode, die benutzt
-    wird, um den Apache zu erstellen, nicht aber die letztendlichen
-    Features des Servers. Diese Variablen k&#246;nnen vor dem Aufruf von
-    <code>configure</code> im Environment gesetzt werden, doch es ist
-    &#252;blicherweise einfacher, sie in der
-    <code>configure</code>-Befehlszeile, wie im obigen Beispiel gezeigt,
-    anzugeben.</p>
-
-    <dl>
-      <dt><code>CC=...</code></dt>
-
-      <dd>Der Name des C-Compiler-Kommandos.</dd>
-
-      <dt><code>CPPFLAGS=...</code></dt>
-
-      <dd>Verschiedene C-Pr&#228;prozessor- und Compileroptionen.</dd>
-
-      <dt><code>CFLAGS=...</code></dt>
-
-      <dd>Debug- und Optimierungsoptionen f&#252;r den C-Compiler.</dd>
-
-      <dt><code>LDFLAGS=...</code></dt>
-
-      <dd>Verschiedene Optionen, die an den Linker durchgereicht
-      werden.</dd>
-
-      <dt><code>LIBS=...</code></dt>
-
-      <dd>Informationen &#252;ber den Ablageort von Libraries
-      ("<code>-L</code>" und "<code>-l</code>" Optionen), die
-      an den Linker durchgereicht werden.</dd>
-
-      <dt><code>INCLUDES=...</code></dt>
-
-      <dd>Suchverzeichnisse f&#252;r Header-Dateien
-      ("<code>-I<em>Verzeichnis</em></code>").</dd>
-
-      <dt><code>TARGET=...</code> [Default: <code>httpd</code>]</dt>
-
-      <dd>Name der lauff&#228;higen Datei, die erstellt wird.</dd>
-
-      <dt><code>NOTEST_CPPFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_CFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_LDFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_LIBS=...</code></dt>
-
-      <dd>Diese Variablen haben die gleiche Funktion wie ihre
-      Namensvettern ohne <code>NOTEST</code>. Diese Variablen werden jedoch
-      nur auf den Generierungsprozess angewendet, nachdem autoconf seine
-      Featuretests durchgef&#252;hrt hat. Dies erlaubt die Einbeziehung
-      von Flags, die w&#228;hrend des Featuretests Probleme bereiten
-      w&#252;rden, aber f&#252;r die endg&#252;ltige Kompilierung verwendet
-      werden m&#252;ssen.</dd>
-
-      <dt><code>SHLIB_PATH=...</code></dt>
-
-      <dd>Eine Option, die den Pfad zu Libraries angibt, welche sich
-      Compiler und Linker teilen.</dd>
-    </dl>
-</section>
-
-<section id="output"><title>autoconf Ausgabeoptionen</title>
-
-    <dl>
-      <dt><code>--help</code></dt>
-
-      <dd>Gibt die Nutzungsinformationen einschlie&#223;lich aller
-      verf&#252;gbaren Optionen aus, ohne jedoch tats&#228;chlich etwas zu
-      konfigurieren.</dd>
-
-      <dt><code>--quiet</code></dt>
-
-      <dd>Verhindert die Ausgabe der &#252;blichen "<code>checking...</code>"
-      Nachrichten.</dd>
-
-      <dt><code>--verbose</code></dt>
-
-      <dd>Gibt w&#228;hrend des Konfigurationsprozesses weitergehende
-      Informationen aus, einschlie&#223;lich der Namen aller untersuchter
-      Dateien.</dd>
-    </dl>
-</section>
-
-<section id="pathnames"><title>Pfadangaben</title>
-
-    <p>Gegenw&#228;rtig existieren zwei M&#246;glichkeiten, die Pfade
-    zu konfigurieren, in denen der Apache seine Dateien installiert.
-    Bei der ersten k&#246;nnen Sie ein Verzeichnis angeben und den Apache
-    veranlassen, sich selbst unterhalb dieses Verzeichnisses in seinen
-    voreingestellten Ablageorten zu installieren.</p>
-
-    <dl>
-      <dt><code>--prefix=<em>PREFIX</em></code> [Default:
-      <code>/usr/local/apache2</code>]</dt>
-
-      <dd>Gibt das Verzeichnis an, in dem die Apache-Dateien
-      installiert werden.</dd>
-    </dl>
-
-    <p>Es ist m&#246;glich, anzugeben, dass Architektur-abh&#228;ngige
-    Dateien in einem anderen Verzeichnis abgelegt werden sollen.</p>
-
-    <dl>
-      <dt><code>--exec-prefix=<em>EPREFIX</em></code> [Default:
-      <code><em>PREFIX</em></code>]</dt>
-
-      <dd>Gibt das Verzeichnis an, in dem Architektur-abh&#228;ngige Dateien
-      abgelegt werden.</dd>
-    </dl>
-
-    <p>Die zweite und flexiblere Weise, den Installationspfad f&#252;r den
-    Apache einzustellen, ist die Verwendung der Datei
-    <code>config.layout</code>. Wenn Sie diese Methode benutzen, k&#246;nnen
-    Sie den Ablageort f&#252;r jeden Dateityp innerhalb der
-    Apache-Installation separat angeben. Die Datei
-    <code>config.layout</code> enth&#228;lt verschiedene
-    Konfigurationsbeispiele. Sie k&#246;nnen auch anhand der Beispiele Ihre
-    eigene individuelle Konfiguration erstellen. Die verschiedenen
-    Layouts in dieser Datei sind gruppiert in <code>&lt;Layout
-    FOO&gt;...&lt;/Layout&gt;</code>-Abschnitte und
-    werden mit Namen wie <code>FOO</code> bezeichnet.</p>
-
-    <dl>
-      <dt><code>--enable-layout=<em>LAYOUT</em></code></dt>
-
-			<dd>Verwendet das genannte Layout aus der Datei
-      <code>config.layout</code>, um die Installationspfade genau
-      anzugeben.</dd>
-    </dl>
-</section>
-
-<section id="modules"><title>Module</title>
-
-    <p>Der Apache ist ein modularer Server. Nur die grundlegendste
-    Funktionalit&#228;t ist im Kernserver enthalten. Erweiternde Features
-    stehen in verschiedenen Modulen bereit. W&#228;hrend des
-    Konfigurationsprozesses m&#252;ssen Sie ausw&#228;hlen, welche Module
-    f&#252;r die Verwendung mit Ihrem Server kompiliert werden sollen. Eine
-    <a href="mod/">Liste von Modulen</a> ist in dieser
-    Dokumentation enthalten. Module mit dem <a
-    href="mod/module-dict.html#Status">Status</a> "Base"
-    sind standardm&#228;&#223;ig enthalten und m&#252;ssen ausdr&#252;cklich
-    deaktiviert werden (z.B. <module>mod_userdir</module>), wenn Sie sie
-    nicht verwenden m&#246;chten. Module mit einem anderen Status (z.B.
-    <module>mod_expires</module>) m&#252;ssen ausdr&#252;cklich aktiviert
-    werden, wenn Sie sie verwenden m&#246;chten.</p>
-
-    <p>Es gibt zwei M&#246;glichkeiten, Module zu kompilieren und mit dem
-    Apache zu benutzen. Module k&#246;nnen <em>statisch kompiliert</em>
-    werden, was bedeutet, dass sie permanent in dem Apache Binary
-    eingebunden sind. Wenn Ihr Betriebssystem Dynamic Shared Objects
-    (DSOs; Anm. d. &#220;bersetzers: dynamisch eingebundene Bibliotheken)
-    unterst&#252;tzt und <code>autoconf</code> diese Unterst&#252;tzung
-    erkennen kann, dann k&#246;nnen Module alternativ <em>dynamisch
-    kompiliert</em> werden. DSO-Module werden von der Apache Binary getrennt
-    gespeichert und k&#246;nnen vom Server unter Verwendung der Direktiven
-    zur Laufzeitkonfiguration, die von <module>mod_so</module>
-    bereitgestellt werden, ein- oder ausgeschlossen werden. mod_so wird
-    automatisch dem Server hinzugef&#252;gt, sobald ein dynamisches Modul
-    in die Kompilierung einbezogen wird. Wenn Sie Ihren Server f&#252;r das
-    Laden von DSOs tauglich machen wollen, ohne jedoch ein dynamisches Modul
-    zu kompilieren, k&#246;nnen Sie dies explizit mit
-    <code>--enable-so</code> angeben.</p>
-
-    <dl>
-      <dt><code>--enable-<em>MODULE</em>[=shared]</code></dt>
-
-      <dd>Kompiliert das Modul <em>MODUL</em> und bindet es ein.
-      Das Kennzeichen <em>MODUL</em> ist der <a
-      href="mod/module-dict.html#ModuleIdentifier">Modul-Bezeichner</a>
-      aus der Dokumentation zum jeweiligen Modul, jedoch ohne den
-      Namensteil "_module". Um ein Modul als DSO zu kompilieren,
-      f&#252;gen Sie die Option <code>=shared</code> hinzu.</dd>
-
-      <dt><code>--disable-<em>MODULE</em></code></dt>
-
-      <dd>Entfernt das Modul <em>MODUL</em>, das andernfalls
-      kompiliert und eingebunden werden w&#252;rde.</dd>
-
-      <dt><code>--enable-modules=<em>MODUL-LISTE</em></code></dt>
-
-      <dd>Kompiliert die durch Leerzeichen getrennte Liste
-      <em>MODUL-LISTE</em> von Modulen und bindet sie ein.</dd>
-
-      <dt><code>--enable-mods-shared=<em>MODUL-LISTE</em></code></dt>
-
-      <dd>Kompiliert die durch Leerzeichen getrennte Liste
-      <em>MODUL-LISTE</em> von Modulen als dynamisch ladbare (DSO)
-      Module und bindet sie ein.</dd>
-    </dl>
-
-    <p>Die <em>MODUL-LISTE</em> in den Optionen
-    <code>--enable-modules</code> und <code>--enable-mods-shared</code>
-    ist &#252;blicherweise eine durch Leerzeichen getrennte Liste von
-    Modul-Bezeichnern. Zum Beispiel k&#246;nnen zum Aktivieren von
-    <module>mod_dav</module> und <module>mod_info</module> beide
-    benutzt werden, sowohl</p>
-
-  <example>./configure --enable-dav --enable-info</example>
-
-    <p>oder &#228;quivalent</p>
-
-  <example>./configure --enable-modules="dav info"</example>
-
-    <p>Zus&#228;tzlich k&#246;nnen die speziellen Schl&#252;sselw&#246;rter
-    <code>all</code> oder <code>most</code> benutzt werden, um alle oder
-    die meisten der Module in einem Schritt hinzuzuf&#252;gen. Sie
-    k&#246;nnen Module, die Sie nicht benutzen m&#246;chten, mit der Option
-    <code>--disable-<em>MODUL</em></code> entfernen. Um beispielsweise alle
-    Module mit Ausnahme von <module>mod_info</module> als DSOs einzubinden,
-    k&#246;nnen Sie</p>
-
-  <example>
-      ./configure --enable-mods-shared=all
-      --disable-info
-  </example>
-
-    <p>verwenden.</p>
-
-    <p>Zus&#228;tzlich zum Standard-Set von Modulen f&#252;gt der Apache 2.0
-    auch eine Auswahl von <a href="mpm.html">Multi-Processing Modulen</a>
-    (MPMs) ein. Ein, und nur ein einziges, MPM muss in den
-    Kompilierungsprozess eingebunden werden. Das voreingestellte MPM jeder
-    Plattform ist in der <a href="mpm.html">MPM Dokumentation</a>
-    aufgef&#252;hrt, kann jedoch mit der <code>configure</code>-Kommandozeile
-    &#252;berschrieben werden.</p>
-
-    <dl>
-      <dt><code>--with-mpm=<em>NAME</em></code></dt>
-
-      <dd>W&#228;hlt das MPM <em>NAME</em>.</dd>
-    </dl>
-
-    <p>Um ein MPM mit dem Namen <var>mpm_name</var> zu aktivieren, verwenden
-    Sie</p>
-
-    <example>
-      ./configure --with-mpm=<var>mpm_name</var>
-    </example>
-</section>
-
-<section id="dbm"><title>DBM</title>
-
-    <p>Verschiedene Apache-Features, darunter <module>mod_authn_dbm</module>
-    und DBM <directive module="mod_rewrite">RewriteMap</directive> aus
-    <module>mod_rewrite</module>, verwenden einfache
-    Schl&#252;ssel/Wert-Datenbanken f&#252;r eine schnelle Suche nach
-    Informationen. Der Apache-Quellcode enth&#228;lt SDBM, so dass
-    diese Datenbank immer verf&#252;gbar ist. Wenn Sie einen anderen
-    Datenbanktyp benutzen m&#246;chten, k&#246;nnen Sie die folgenden
-    <code>configure</code>-Optionen dazu verwenden:</p>
-
-    <dl>
-      <dt><code>--with-gdbm[=<em>Pfad</em>]</code></dt>
-			<dt><code>--with-ndbm[=<em>Pfad</em>]</code></dt>
-			<dt><code>--with-berkeley-db[=<em>Pfad</em>]</code></dt>
-
-      <dd>Wenn kein <em>Pfad</em> angegeben ist, sucht der Apache in den
-      normalen Suchpfaden nach den Include- und Bibliothek-Dateien. Eine
-      explizite <em>Pfad</em>-Angabe veranlasst den Apache, in
-      <em>Pfad</em><code>/lib</code> und <em>Pfad</em><code>/include</code>
-      nach relevanten Dateien zu suchen. Letztlich kann <em>Pfad</em>
-      auch die speziellen Include- und Bibliothek-Pfade durch Doppelpunkt
-      getrennt auflisten.</dd>
-   </dl>
-</section>
-
-<section id="suexec"><title>Suexec</title>
-
-    <p>Der Apache enth&#228;lt ein Hilfsprogramm namens <a
-    href="suexec.html">suexec</a>, das zur Isolation benutzereigener
-    CGI-Programme verwendet werden kann. Wenn suexec jedoch
-    unsachgem&#228;&#223; konfiguriert wurde, kann es schwere
-    Sicherheitsprobleme verursachen. Deshalb sollten Sie die
-    <a href="suexec.html">suexec Dokumentation</a> sorgf&#228;ltig lesen
-    und beachten, bevor Sie dieses Feature implementieren.
-    </p>
-</section>
 </section>
 
 <section id="compile"><title>Erstellen</title>
