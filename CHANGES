@@ -1,5 +1,10 @@
 Changes with Apache 2.0.37
 
+  *) NetWare: Piping log entries through RotateLogs using the 
+     CustomLogs directive is finally supported now that we have 
+	 the pipes and spawning functionality working.
+     [Brad Nicholes]
+
   *) Detect overflow when reading the hex bytes forming a chunk line.
      [Aaron Bannert]
 
