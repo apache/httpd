@@ -132,7 +132,6 @@ int status_handler (request_rec *r)
 {
     time_t nowtime=time(NULL);
     time_t up_time;
-    struct tm *t1,*t2;
     int i,res;
     int ready=0;
     int busy=0;
