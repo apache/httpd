@@ -50,6 +50,8 @@
 
 #define modssl_PEM_read_bio_X509 PEM_read_bio_X509
 
+#define modssl_PEM_read_bio_PrivateKey PEM_read_bio_PrivateKey
+
 #define modssl_set_cipher_list SSL_set_cipher_list
 
 #define HAVE_SSL_RAND_EGD /* since 9.5.1 */
@@ -70,6 +72,9 @@
 
 #define modssl_PEM_read_bio_X509(b, x, cb, arg) \
    PEM_read_bio_X509(b, x, cb)
+
+#define modssl_PEM_read_bio_PrivateKey(b, k, cb, arg) \
+   PEM_read_bio_PrivateKey(b, k, cb)
 
 /* XXX: add configure check */
 #ifndef HAVE_SSL_SET_STATE
