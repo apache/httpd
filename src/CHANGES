@@ -1,5 +1,8 @@
 Changes with Apache 1.3.32
 
+  *) mod_rewrite: Fix 0 bytes write into random memory position.
+     PR 31036. [André Malo]
+
   *) mod_digest: Fix nonce string calculation since 1.3.31 which
      would force re-authentication for every connection if
      AuthDigestRealmSeed was not configured.  PR 30920.  [Joe Orton]

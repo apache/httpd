@@ -3034,22 +3034,27 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
     DBM *dbmfp = NULL;
     datum dbmkey;
     datum dbmval;
-    char *value = NULL;
-    char buf[MAX_STRING_LEN];
+    char *value;
+
+    if (!(dbmfp = dbm_open(file, O_RDONLY, 0666))) {
+        return NULL;
+    }
 
     dbmkey.dptr  = key;
     dbmkey.dsize = strlen(key);
-    if ((dbmfp = dbm_open(file, O_RDONLY, 0666)) != NULL) {
-        dbmval = dbm_fetch(dbmfp, dbmkey);
-        if (dbmval.dptr != NULL) {
-            memcpy(buf, dbmval.dptr, 
-                   dbmval.dsize < sizeof(buf)-1 ? 
-                   dbmval.dsize : sizeof(buf)-1  );
-            buf[dbmval.dsize] = '\0';
-            value = ap_pstrdup(r->pool, buf);
-        }
-        dbm_close(dbmfp);
+
+    dbmval = dbm_fetch(dbmfp, dbmkey);
+    if (dbmval.dptr) {
+        value = ap_palloc(r->pool, dbmval.dsize + 1);
+        memcpy(value, dbmval.dptr, dbmval.dsize);
+        value[dbmval.dsize] = '\0';
     }
+    else {
+        value = NULL;
+    }
+
+    dbm_close(dbmfp);
+
     return value;
 }
 #endif
