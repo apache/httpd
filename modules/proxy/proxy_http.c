@@ -467,7 +467,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         buf = apr_pmemdup(p, te_hdr, sizeof(te_hdr)-1);
         ap_xlate_proto_to_ascii(buf, sizeof(te_hdr)-1);
 
-        e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
+        e = apr_bucket_pool_create(buf, sizeof(te_hdr)-1, p, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     else {
@@ -586,6 +586,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
                                        /* <trailers> */
                                        ASCII_CRLF, 5, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(body_brigade, e);
+        e = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(body_brigade, e);
     }
 
