@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.17 -->
+<!-- English revision: 1.18 -->
 
 <name>mpm_common</name>
 <description>二つ以上のマルチプロセッシングモジュール (MPM)
@@ -257,6 +257,23 @@
     を 16 プロセス以上必要な値まで増加させたい場合は、
     <directive module="mpm_common">ServerLimit</directive>
     も増加させる必要があります。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxMemFree</name>
+<description>主メモリアロケータが free() を呼ばずに保持し続けられるメモリの
+最大量</description>
+<syntax>MaxMemFree <em>number</em></syntax>
+<contextlist><context>サーバ設定ファイル</context></contextlist>
+<modulelist><module>worker</module><module>prefork</module>
+<module>mpm_netware</module>
+</modulelist>
+
+<usage>
+    <p><directive>MaxMemFree</directive> ディレクティブは free() を呼ばずに
+    主アロケータが保持できる空のメモリの最大値をキロバイト単位で設定します。
+    設定されていないか、零に設定されているときは、無制限になります。</p>
 </usage>
 </directivesynopsis>
 
