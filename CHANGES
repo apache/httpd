@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) RPM spec file changes: changed default dependancy to link to db4
+     instead of db3. Fixed complaints about unpackaged files.
+     [Graham Leggett]
+ 
 Changes with Apache 2.0.50
 
   *) SECURITY: CAN-2004-0493 (cve.mitre.org)

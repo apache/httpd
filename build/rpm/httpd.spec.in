@@ -17,7 +17,7 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-root
-BuildPrereq: openldap-devel, db3-devel, expat-devel, findutils, perl, pkgconfig
+BuildPrereq: openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig
 Requires: gawk, /usr/share/magic.mime, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Prereq: sh-utils, textutils, /usr/sbin/useradd
@@ -335,6 +335,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{contentdir}/error
 %dir %{contentdir}/error/include
 %{contentdir}/icons/*
+%{contentdir}/error/README
 %config(noreplace) %{contentdir}/error/*.var
 %config(noreplace) %{contentdir}/error/include/*.html
 
@@ -344,6 +345,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_mandir}/man1/*
 
+%{_mandir}/man8/apachectl*
+%{_mandir}/man8/httpd*
 %{_mandir}/man8/rotatelogs*
 %{_mandir}/man8/suexec*
 
@@ -366,13 +369,18 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %{_libdir}/libapr-0.so
+%{_libdir}/libapr-0.a
+%{_libdir}/libapr-0.la
 %{_libdir}/libaprutil-0.so
+%{_libdir}/libaprutil-0.a
+%{_libdir}/libaprutil-0.la
 %{_includedir}/httpd
 %{_sysconfdir}/httpd/build
 %{_sbindir}/apxs
 %{_mandir}/man8/apxs.8*
 %dir %{_libdir}/httpd/build
 %{_libdir}/httpd/build/*.mk
+%{_libdir}/httpd/build/config.nice
 %{_libdir}/httpd/build/instdso.sh
 %{_libdir}/httpd/build/libtool
 
