@@ -182,12 +182,12 @@ depend: depend-recursive
 clean: clean-recursive clean-x
 
 clean-x:
-	rm -f $(targets) *.slo *.lo *.la *.o $(CLEANFILES)
+	rm -f $(targets) *.slo *.lo *.la *.o $(CLEAN_TARGETS)
 	rm -rf .libs
 
 distclean: distclean-recursive clean-x
 	rm -f config.cache config.log config.status config_vars.mk libtool \
-	stamp-h Makefile shlibtool .deps $(DISTCLEANFILES)
+	stamp-h Makefile shlibtool .deps $(DISTCLEAN_TARGETS)
 
 include $(builddir)/.deps
 
