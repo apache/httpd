@@ -252,6 +252,7 @@ typedef struct {
     int   type;                    /* the type of the map */
     int   fpin;                    /* in  file pointer for program maps */
     int   fpout;                   /* out file pointer for program maps */
+    int   fperr;                   /* err file pointer for program maps */
     char *(*func)(request_rec *,   /* function pointer for internal maps */
                   char *);
 } rewritemap_entry;

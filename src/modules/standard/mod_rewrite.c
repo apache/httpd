@@ -3127,6 +3127,7 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
     rewrite_server_conf *conf;
     FILE *fpin;
     FILE *fpout;
+    FILE *fperr;
     array_header *rewritemaps;
     rewritemap_entry *entries;
     rewritemap_entry *map;
@@ -3154,16 +3155,18 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
             continue;
         fpin  = NULL;
         fpout = NULL;
-        rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile,
-                         kill_after_timeout, &fpin, &fpout);
+        rc = ap_spawn_child_err(p, rewritemap_program_child, 
+                                (void *)map->datafile, kill_after_timeout, 
+                                &fpin, &fpout, &fperr);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
-            perror("spawn_child");
+            perror("ap_spawn_child");
             fprintf(stderr, "mod_rewrite: "
                     "could not fork child for RewriteMap process\n");
             exit(1);
         }
         map->fpin  = fileno(fpin);
         map->fpout = fileno(fpout);
+        map->fperr = fileno(fperr);
     }
     return;
 }
@@ -3173,17 +3176,48 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
 {
     int child_pid = 1;
 
+    /* 
+     * Prepare for exec 
+     */
     ap_cleanup_for_exec();
 #ifdef SIGHUP
     signal(SIGHUP, SIG_IGN);
 #endif
+
+    /* 
+     * Exec() the child program
+     */
 #if defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH,
-                       "/c", (char *)cmd, NULL);
+    /* MS Windows */
+    {
+        char *pCommand;
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
+
+        pCommand = strcat(SHELL_PATH, " /C ", cmd, NULL);
+
+        memset(&si, 0, sizeof(si));
+        memset(&pi, 0, sizeof(pi));
+
+        si.cb          = sizeof(si);
+        si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+        si.wShowWindow = SW_HIDE;
+        si.hStdInput   = pinfo->hPipeInputRead;
+        si.hStdOutput  = pinfo->hPipeOutputWrite;
+        si.hStdError   = pinfo->hPipeErrorWrite;
+
+        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, 
+                          environ, NULL, &si, &pi)) {
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            child_pid = pi.dwProcessId;
+        }
+    }
 #elif defined(__EMX__)
-    /* OS/2 needs a '/' */
+    /* IBM OS/2 */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else
+    /* Standard Unix */
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
     return(child_pid);
