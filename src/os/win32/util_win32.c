@@ -6,7 +6,7 @@
 #include "http_log.h"
 
 /* Returns TRUE if the path is real, FALSE if it is PATH_INFO */
-static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *szFile)
+static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *szInFile)
 {
     char buf[HUGE_STRING_LEN];
     int n;
@@ -15,7 +15,9 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
     int nSlashes;
     WIN32_FIND_DATA d;
     HANDLE h;
+    const char *szFile;
 
+    szFile = szInFile;
     s=strrchr(szFile,'\\');
     for(nSlashes=0 ; s > szFile && s[-1] == '\\' ; ++nSlashes,--s)
 	;
@@ -23,6 +25,20 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
     n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
     ap_assert(n);
     ap_assert(n < sizeof buf);
+
+    /*
+     * There is an implicit assumption that szInFile will contain a '\'.  If this 
+     * is not true (as in the case of <Directory *> or <File .htaccess>) we would 
+     * assert in some of the code below.  Therefore, if we don't get any '\' in   
+     * the file name, then use the file name we get from GetFullPathName, because 
+     * it will have at least one '\'.  If there is no '\' in szInFile, it must 
+     * just be a file name, so it should be valid to use the name from GetFullPathName.
+     * Be sure to adjust the 's' variable so the rest of the code functions normally.
+     */
+    if (!s) {
+        szFile = buf;
+        s=strrchr(szFile,'\\');
+    }
 
     /* If we have \\machine\share, convert to \\machine\share\ */
     if (buf[0] == '\\' && buf[1] == '\\') {
@@ -106,7 +122,7 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
     char b2[HUGE_STRING_LEN];
     const char *s;
     char *d;
-    int nSlashes;
+    int nSlashes=0;
 
     ap_assert(strlen(szFile) < sizeof b2);
 
@@ -116,22 +132,36 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
        Simultaneously, rewrite / to \.
        This is a bit of a kludge - Ben.
     */
-    for(s=szFile,d=b2 ; (*d=*s) ; ++d,++s) {
-	if(*s == '/')
-	    *d='\\';
-	if(*s == '.' && (s[1] == '/' || s[1] == '\\' || !s[1])) {
-	    while(*d == '.')
-		--d;
-	    if(*d == '\\')
-		--d;
-	    }
-	}
-    // Finally, a trailing slash(es) screws thing, so blow them away
-    for(nSlashes=0 ; d > b2 && d[-1] == '\\' ; --d,++nSlashes)
-	;
-    /* XXXX this breaks '/' and 'c:/' cases */
-    *d='\0';
+    if (strlen(szFile) == 1) {
+        /*
+         *  If the file is only one char (like in the case of / or .) then just pass
+         *  that through to sub_canonical_filename.  Convert a '/' to '\\' if necessary.
+         */
+        if (szFile[0] == '/')
+            b2[0] = '\\';
+        else
+            b2[0] = szFile[0];
 
+        b2[1] = '\0';
+    }
+    else {
+        for(s=szFile,d=b2 ; (*d=*s) ; ++d,++s) {
+	          if(*s == '/')
+	              *d='\\';
+	          if(*s == '.' && (s[1] == '/' || s[1] == '\\' || !s[1])) {
+	              while(*d == '.')
+		                --d;
+	              if(*d == '\\')
+		                --d;
+	          }
+	      }
+
+        // Finally, a trailing slash(es) screws thing, so blow them away
+        for(nSlashes=0 ; d > b2 && d[-1] == '\\' ; --d,++nSlashes)
+	    ;
+        /* XXXX this breaks '/' and 'c:/' cases */
+        *d='\0';
+    }
     sub_canonical_filename(buf, sizeof buf, b2);
 
     buf[0]=ap_tolower(buf[0]);
