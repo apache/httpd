@@ -6,9 +6,10 @@ Changes with Apache 2.1.3
      for the proxy BalancerMember weighting. loadfactors (lbfactors)
      are now normalized with respect to each other. [Jim Jagielski]
 
-  *) mod_dumpio: Added to the available module suite. Placed in
-     the (new) debug module subdirectory. mod_bucketeer moved to
-     that directory as well. [Jim Jagielski]
+  *) mod_dumpio: Added to the available module suite; it is an
+     I/O logging/dumping module. Placed in the (new) debug module
+     subdirectory. mod_bucketeer moved to that directory as well.
+     [Jim Jagielski]
 
   *) core: Add support for APR_TCP_DEFER_ACCEPT to defer accepting
      of a connection until data is available.
