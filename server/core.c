@@ -3176,6 +3176,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                        potential future problems... */
                     AP_DEBUG_ASSERT(AP_MIN_BYTES_TO_WRITE <=
                                     APR_BUCKET_BUFF_SIZE);
+                    if (rv != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server,
+                                     "core_output_filter: Error reading from bucket.");
+                        return rv;
+                    }
                     apr_brigade_write(ctx->b, NULL, NULL, str, n);
                 }
                 apr_brigade_destroy(b);
