@@ -208,9 +208,6 @@
 
 #define MAX_ENV_FLAGS 5
 
-#define EOS_PARANOIA(ca)            ca[sizeof(ca)-1] = '\0'
-#define EOS_PARANOIA_SIZE(cp, size) cp[size-1] = '\0'
-
 
 /*
 **
