@@ -8,7 +8,7 @@ APACHE_MODULE(status, process/thread monitoring, , , yes)
 APACHE_MODULE(autoindex, directory listing, , , yes)
 APACHE_MODULE(asis, as-is filetypes, , , yes)
 APACHE_MODULE(info, server information, , , most)
-APACHE_MODULE(test_pass_brigade, TEST, , , most)
+dnl APACHE_MODULE(test_pass_brigade, TEST, , , most)
 APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
               other_targets=suexec ] )
 
