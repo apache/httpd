@@ -390,6 +390,8 @@ static int32 worker_thread(void * dummy)
 
     apr_pool_tag(ptrans, "transaction");
 
+    bucket_alloc = apr_bucket_alloc_create_ex(allocator);
+
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count++;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
@@ -400,8 +402,6 @@ static int32 worker_thread(void * dummy)
     apr_poll_setup(&pollset, num_listening_sockets + 1, tpool);
     for(n=0 ; n <= num_listening_sockets ; n++)
         apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
-	
-    bucket_alloc = apr_bucket_alloc_create(tpool);
 
     while (1) {
         /* If we're here, then chances are (unless we're the first thread created) 

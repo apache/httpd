@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) The bucket brigades subsystem now honors the MaxMemFree setting.
+     [Cliff Woolley, Jean-Jacques Clar]
+
   *) Fix mod_include's expression parser to recognize strings correctly
      even if they start with an escaped token.  [André Malo]
 
