@@ -276,9 +276,11 @@ control block using the following example:<p>
 
 <pre>
 &lt;Directory proxy:*&gt;
+&lt;Limit&gt;
 order allow,deny
 deny from [machines you'd like not to allow by IP address or name]
 allow from all
+&lt;/Limit&gt;
 &lt;/Directory&gt;
 </pre><p>
 
