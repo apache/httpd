@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/27 17:06:35 $]
+Last modified at [$Date: 2002/02/27 17:16:29 $]
 
 Release:
 
@@ -96,7 +96,6 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * Address popular PRs
         * Win32 doesn't install as service correctly [9863, 9914, 9961]
-        * --enable-layout doesn't work [9873, 9885]
 
 CURRENT VOTES:
 
@@ -347,13 +346,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Eliminate unnecessary creation of pipes in mod_cgid
         Status: Ken asks, didn't Jeff fix this when he fixed the queue
                 overrun?
-
-    * the autoconf setup should be fixed to default to using the 
-      "Apache" layout from config.layout, and each variable settable
-      in a layout should be overridable on the command line.  Plus,
-      what we do right now just doesn't seem to fully fit into how autoconf
-      works, eg. AC_PREFIX_DEFAULT issues.
-        Message-ID: <Pine.BSF.4.20.0104031557420.20876-100000@alive.znep.com>
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
