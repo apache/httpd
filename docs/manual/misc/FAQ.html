@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.122 $ ($Date: 1998/07/09 22:02:54 $)
+  $Revision: 1.123 $ ($Date: 1998/07/10 00:25:35 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -909,6 +909,18 @@
     how to do this is available in the
     <A HREF="perf.html">performance hints</A> page.  There is a specific
     note for <A HREF="#freebsd-setsize">FreeBSD</A> below.
+    <P>
+    For Windows 95, try modifying your <SAMP>C:\CONFIG.SYS</SAMP> file to
+    include a line like
+    </P>
+    <DL>
+     <DD><CODE>FILES=300</CODE>
+     </DD>
+    </DL>
+    <P>
+    Remember that you'll need to reboot your Windows 95 system in order
+    for the new value to take effect.
+    </P>
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
