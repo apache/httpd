@@ -754,7 +754,7 @@ Changes with Apache 1.3.18 [not released]
   *) SECURITY: The default installation could lead to mod_negotiation
      and mod_dir/mod_autoindex displaying a directory listing instead of
      the index.html.* files, if a very long path was created artificially
-     by using many slashes. Now a 403 FORBIDDEN is returned.
+     by using many slashes. Now a 403 FORBIDDEN is returned. CAN-2001-0925.
      [Martin Kraemer]
      
   *) Trailing slashes (if they exist) are now removed from ServerRoot,
