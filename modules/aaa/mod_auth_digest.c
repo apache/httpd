@@ -81,45 +81,10 @@
  *     truerand library
  *   - shared-mem not completely tested yet. Seems to work ok for me,
  *     but... (definitely won't work on Windoze)
+ *   - expired nonces give amaya fits.  
  */
 
-/* The section for the Configure script:
-* XXX: this needs updating for apache-2.0 configuration method
- * MODULE-DEFINITION-START
- * Name: digest_auth_module
- * ConfigStart
-
-    RULE_DEV_RANDOM=`./helpers/CutRule DEV_RANDOM $file`
-    if [ "$RULE_DEV_RANDOM" = "default" ]; then
-	if [ -r "/dev/random" ]; then
-	    RULE_DEV_RANDOM="/dev/random"
-	elif [ -r "/dev/urandom" ]; then
-	    RULE_DEV_RANDOM="/dev/urandom"
-	else
-	    RULE_DEV_RANDOM="truerand"
-	    if helpers/TestCompile func randbyte; then
-		:
-	    elif helpers/TestCompile lib rand randbyte; then
-		:
-	    else
-		echo "      (mod_auth_digest) truerand library missing!"
-		echo "** This will most probably defeat successful compilation."
-		echo "** See Rule DEV_RANDOM in src/Configuration.tmpl for more information."
-	    fi
-	fi
-    fi
-    if [ "$RULE_DEV_RANDOM" = "truerand" ]; then
-	echo "      using truerand library (-lrand) for the random seed"
-	LIBS="$LIBS -L/usr/local/lib -lrand"
-    else
-	echo "      using $RULE_DEV_RANDOM for the random seed"
-	CFLAGS="$CFLAGS -DDEV_RANDOM=$RULE_DEV_RANDOM"
-    fi
-
- * ConfigEnd
- * MODULE-DEFINITION-END
- */
-
+#include "ap_config_auto.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_conf_globals.h"
@@ -131,11 +96,8 @@
 #include "util_uri.h"
 #include "util_md5.h"
 #include "ap_sha1.h"
-
-#ifdef WIN32
-/* Crypt APIs are available on Win95 with OSR 2 */
-#include <wincrypt.h>
-#endif
+#include "apr_time.h"
+#include "apr_errno.h"
 
 #ifdef HAVE_SHMEM_MM
 #include "mm.h"
@@ -162,11 +124,11 @@ typedef struct digest_config_struct {
 
 #define	DFLT_ALGORITHM	"MD5"
 
-#define	DFLT_NONCE_LIFE	300L
-#define NEXTNONCE_DELTA	30
+#define	DFLT_NONCE_LIFE	300000L	/* millis */
+#define NEXTNONCE_DELTA	30000	/* millis */
 
 
-#define NONCE_TIME_LEN	(((sizeof(time_t)+2)/3)*4)
+#define NONCE_TIME_LEN	(((sizeof(ap_time_t)+2)/3)*4)
 #define NONCE_HASH_LEN	(2*SHA_DIGESTSIZE)
 #define NONCE_LEN	(NONCE_TIME_LEN + NONCE_HASH_LEN)
 
@@ -211,7 +173,7 @@ typedef struct digest_header_struct {
     const char           *message_qop;
     const char           *nonce_count;
     /* the following fields are not (directly) from the header */
-    time_t                nonce_time;
+    ap_time_t             nonce_time;
     enum hdr_sts          auth_hdr_sts;
     uri_components       *request_uri;
     int                   needed_auth;
@@ -222,8 +184,8 @@ typedef struct digest_header_struct {
 /* (mostly) nonce stuff */
 
 typedef union time_union {
-    time_t	  time;
-    unsigned char arr[sizeof(time_t)];
+    ap_time_t	  time;
+    unsigned char arr[sizeof(ap_time_t)];
 } time_rec;
 
 
@@ -240,7 +202,7 @@ static unsigned long *opaque_cntr;
 static MM            *client_mm;
 
 static MM            *otn_count_mm;
-static time_t        *otn_counter;	/* one-time-nonce counter */
+static ap_time_t     *otn_counter;	/* one-time-nonce counter */
 
 #define	SHMEM_SIZE 	1000		/* ~ 12 entries */
 #define	NUM_BUCKETS	15UL
@@ -249,7 +211,7 @@ static time_t        *otn_counter;	/* one-time-nonce counter */
 static void          *client_mm = NULL;
 #endif	/* HAVE_SHMEM_MM */
 
-module MODULE_VAR_EXPORT digest_auth_module;
+module MODULE_VAR_EXPORT auth_digest_module;
 
 /*
  * initialization code
@@ -258,7 +220,7 @@ module MODULE_VAR_EXPORT digest_auth_module;
 #ifdef HAVE_SHMEM_MM
 static ap_status_t cleanup_tables(void *not_used)
 {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_rerror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                  "Digest: cleaning up shared memory");
     fflush(stderr);
 
@@ -281,72 +243,25 @@ static ap_status_t cleanup_tables(void *not_used)
 }
 #endif	/* HAVE_SHMEM_MM */
 
-#ifdef WIN32
-/* TODO: abstract out the random number generation. APR? */
 static void initialize_secret(server_rec *s)
 {
-    HCRYPTPROV hProv;
-
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s,
-		 "Digest: generating secret for digest authentication ...");
-    if (!CryptAcquireContext(&hProv,NULL,NULL,PROV_RSA_FULL,0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, s, 
-                     "Digest: Error acquiring context. Errno = %d",
-                     GetLastError());
-        exit(EXIT_FAILURE);
-    }
-    if (!CryptGenRandom(hProv,sizeof(secret),secret)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, s, 
-                     "Digest: Error generating secret. Errno = %d",
-                     GetLastError());
-        exit(EXIT_FAILURE);
-    }
-
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s, "Digest: done");
-}
-#else
-static void initialize_secret(server_rec *s)
-{
-#ifdef	DEV_RANDOM
-    int rnd;
-    size_t got, tot;
-#else
-    extern int randbyte(void);	/* from the truerand library */
-    unsigned int idx;
-#endif
+    ap_status_t status;
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s,
 		 "Digest: generating secret for digest authentication ...");
 
-#ifdef	DEV_RANDOM
-#define	XSTR(x)	#x
-#define	STR(x)	XSTR(x)
-    if ((rnd = open(STR(DEV_RANDOM), O_RDONLY)) == NULL) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, s,
-		     "Digest: Couldn't open " STR(DEV_RANDOM));
+    /* TODO - make sure this func works (compiles?) on win32 */
+    status = ap_generate_random_bytes(secret, sizeof(secret));
+
+    if(!(status == APR_SUCCESS)) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
+		     "Digest: error generating secret: %s", 
+		     /*ap_strerror(status)*/ "need ap_strerror here");
 	exit(EXIT_FAILURE);
     }
-    for (tot=0; tot<sizeof(secret); tot += got) {
-	if ((got = read(rnd, secret+tot, sizeof(secret)-tot)) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_CRIT, s,
-			 "Digest: Error reading " STR(DEV_RANDOM));
-	    exit(EXIT_FAILURE);
-	}
-    }
-    close(rnd);
-#undef	STR
-#undef	XSTR
-#else	/* use truerand */
-    /* this will increase the startup time of the server, unfortunately...
-     * (generating 20 bytes takes about 8 seconds)
-     */
-    for (idx=0; idx<sizeof(secret); idx++)
-	secret[idx] = (unsigned char) randbyte();
-#endif	/* DEV_RANDOM */
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Digest: done");
 }
-#endif
 
 #ifdef HAVE_SHMEM_MM
 static void initialize_tables(server_rec *s)
@@ -420,12 +335,12 @@ static void initialize_tables(server_rec *s)
 failed:
     if (!client_mm || (client_list && client_list->table && !opaque_mm)
 	|| (opaque_cntr && !otn_count_mm))
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, s,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, s,
 		     "Digest: failed to create shared memory segments; reason "
 		     "was `%s' - all nonce-count checking, one-time nonces, "
 		     "and MD5-sess algorithm disabled", mm_error());
     else
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, s,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, s,
 		     "Digest: failed to allocate shared mem; reason was `%s' "
 		     "- all nonce-count checking, one-time nonces, and "
 		     "MD5-sess algorithm disabled", mm_error());
@@ -561,8 +476,8 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
 {
     char *endptr;
     long  lifetime;
-
-    lifetime = strtol(t, &endptr, 10);
+				/* convert from seconds to millis */
+    lifetime = 1000*strtol(t, &endptr, 10); 
     if (endptr < (t+strlen(t)) && !ap_isspace(*endptr))
 	return ap_pstrcat(cmd->pool, "Invalid time in AuthDigestNonceLifetime: ", t, NULL);
 
@@ -788,7 +703,7 @@ static client_entry *add_client(unsigned long key, client_entry *new,
     entry = mm_malloc(client_mm, sizeof(client_entry));
     if (!entry) {
 	long num_removed = gc();
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, s,
 		     "Digest: gc'd %ld client entries. Total new clients: "
 		     "%ld; Total removed clients: %ld; Total renewed clients: "
 		     "%ld", num_removed,
@@ -809,7 +724,7 @@ static client_entry *add_client(unsigned long key, client_entry *new,
 
     mm_unlock(client_mm);
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, s,
 		 "allocated new client %lu", key);
 
     return entry;
@@ -950,7 +865,7 @@ static int parse_hdr_and_update_nc(request_rec *r)
     resp = ap_pcalloc(r->pool, sizeof(digest_header_rec));
     resp->request_uri = &r->parsed_uri;
     resp->needed_auth = 0;
-    ap_set_module_config(r->request_config, &digest_auth_module, resp);
+    ap_set_module_config(r->request_config, &auth_digest_module, resp);
 
     res = get_digest_rec(r, resp);
     resp->client = get_client(resp->opaque_num, r);
@@ -999,7 +914,7 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 
 /* The nonce has the format b64(time)+hash .
  */
-static const char *gen_nonce(ap_pool_t *p, time_t now, const char *opaque,
+static const char *gen_nonce(ap_pool_t *p, ap_time_t now, const char *opaque,
 			     const server_rec *server,
 			     const digest_config_rec *conf)
 {
@@ -1208,14 +1123,13 @@ static void note_digest_auth_failure(request_rec *r,
     const char   *qop, *opaque, *opaque_param, *domain, *nonce;
     int           cnt;
 
-
     /* Setup qop */
 
-    if (conf->qop_list[0] == NULL)
+    if (conf->qop_list[0] == NULL) {
 	qop = ", qop=\"auth\"";
-    else if (!strcasecmp(conf->qop_list[0], "none"))
+    } else if (!strcasecmp(conf->qop_list[0], "none")) {
 	qop = "";
-    else {
+    } else {
 	qop = ap_pstrcat(r->pool, ", qop=\"", conf->qop_list[0], NULL);
 	for (cnt=1; conf->qop_list[cnt] != NULL; cnt++)
 	    qop = ap_pstrcat(r->pool, qop, ",", conf->qop_list[cnt], NULL);
@@ -1293,6 +1207,7 @@ static void note_digest_auth_failure(request_rec *r,
 				opaque_param ? opaque_param : "",
 				domain ? domain : "",
 				stale ? ", stale=true" : "", qop));
+
 }
 
 
@@ -1390,7 +1305,8 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 	return AUTH_REQUIRED;
     }
 
-    dt = difftime(r->request_time, nonce_time.time);
+    dt = r->request_time - nonce_time.time;
+    /* dt = difftime(r->request_time, nonce_time.time); */
     if (conf->nonce_lifetime > 0 && dt < 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: invalid nonce %s received - user attempted "
@@ -1402,8 +1318,9 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     if (conf->nonce_lifetime > 0) {
 	if (dt > conf->nonce_lifetime) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,r,
-			  "Digest: user %s: nonce expired - sending new nonce",
-			  r->user);
+			  "Digest: user %s: nonce expired (%.2lf seconds old - max lifetime %.2lf) - sending new nonce", 
+			  r->user, ((double)dt)/1000, 
+			  ((double)(conf->nonce_lifetime))/1000);
 	    note_digest_auth_failure(r, conf, resp, 1);
 	    return AUTH_REQUIRED;
 	}
@@ -1487,7 +1404,6 @@ static int authenticate_digest_user(request_rec *r)
     const char        *t;
     int                res;
 
-
     /* do we require Digest auth for this URI? */
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest"))
@@ -1506,15 +1422,14 @@ static int authenticate_digest_user(request_rec *r)
     while (mainreq->main != NULL)  mainreq = mainreq->main;
     while (mainreq->prev != NULL)  mainreq = mainreq->prev;
     resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
-						      &digest_auth_module);
+						      &auth_digest_module);
     resp->needed_auth = 1;
 
 
     /* get our conf */
 
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
-						      &digest_auth_module);
-
+						      &auth_digest_module);
 
     /* check for existence and syntax of Auth header */
 
@@ -1534,7 +1449,6 @@ static int authenticate_digest_user(request_rec *r)
 
     r->user         = (char *) resp->username;
     r->ap_auth_type = (char *) "Digest";
-
 
     /* check the auth attributes */
 
@@ -1614,6 +1528,7 @@ static int authenticate_digest_user(request_rec *r)
 	return AUTH_REQUIRED;
     }
 
+    
     if (resp->message_qop == NULL) {
 	/* old (rfc-2069) style digest */
 	if (strcmp(resp->digest, old_digest(r, resp, conf->ha1))) {
@@ -1716,7 +1631,7 @@ static int digest_check_auth(request_rec *r)
 {
     const digest_config_rec *conf =
 		(digest_config_rec *) ap_get_module_config(r->per_dir_config,
-							   &digest_auth_module);
+							   &auth_digest_module);
     const char *user = r->user;
     int m = r->method_number;
     int method_restricted = 0;
@@ -1786,7 +1701,7 @@ static int digest_check_auth(request_rec *r)
 
     note_digest_auth_failure(r, conf,
 	(digest_header_rec *) ap_get_module_config(r->request_config,
-						   &digest_auth_module),
+						   &auth_digest_module),
 	0);
     return AUTH_REQUIRED;
 }
@@ -1811,10 +1726,10 @@ static int add_auth_info(request_rec *r)
 {
     const digest_config_rec *conf =
 		(digest_config_rec *) ap_get_module_config(r->per_dir_config,
-							   &digest_auth_module);
+							   &auth_digest_module);
     digest_header_rec *resp =
 		(digest_header_rec *) ap_get_module_config(r->request_config,
-							   &digest_auth_module);
+							   &auth_digest_module);
     const char *ai = NULL, *digest = NULL, *nextnonce = "";
 
     if (resp == NULL || !resp->needed_auth || conf == NULL)
@@ -1951,14 +1866,14 @@ static void register_hooks(void)
     static const char * const cfgPost[]={ "http_core.c", NULL };
     static const char * const parsePre[]={ "mod_proxy.c", NULL };
 
-    ap_hook_post_config(initialize_module, NULL, cfgPost, NULL);
-    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, NULL);
+    ap_hook_post_config(initialize_module, NULL, cfgPost, 0);
+    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, 0);
     ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, HOOK_MIDDLE);
     ap_hook_auth_checker(digest_check_auth, NULL, NULL, HOOK_MIDDLE);
     ap_hook_fixups(add_auth_info, NULL, NULL, HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT digest_auth_module =
+module MODULE_VAR_EXPORT auth_digest_module =
 {
     STANDARD20_MODULE_STUFF,
     create_digest_dir_config,	/* dir config creater */
