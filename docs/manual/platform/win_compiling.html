@@ -1,180 +1,223 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Compiling Apache for Microsoft Windows</TITLE>
-</HEAD>
+<html>
+<head>
+<title>Compiling Apache for Microsoft Windows</title>
+</head>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
+<body
+ bgcolor="#FFFFFF"
+ text="#000000"
+ link="#0000FF"
+ vlink="#000080"
+ alink="#FF0000"
 >
 <!--#include virtual="header.html" -->
 
-<H1 ALIGN="CENTER">Compiling Apache for Microsoft Windows</H1>
+<h1 align="center">Compiling Apache for Microsoft Windows</h1>
 
-<P>There are many important points before you begin compiling Apache.
-   See <A HREF="windows.html">Using Apache with Microsoft Windows</A>
-   before you begin.</P>
+<p>There are many important points before you begin compiling Apache.
+   See <a href="windows.html">Using Apache with Microsoft Windows</a>
+   before you begin.</p>
 
-<P>Compiling Apache requires Microsoft Visual C++ 5.0 (or later) to be 
-   properly installed. It is easiest to compile with the command-line tools
-   (nmake, <EM>etc.</EM>..). Consult the VC++ manual to determine how to install
-   them.  Be especially aware that the vcvars32.bat file from the 
-   Program Files/DevStudio/VC/bin folder may be required to prepare the 
-   command-line environment for command-line builds!</P>
+<h3><a name="requirements">Requirements</a></h3>
 
-<P>First, unpack the Apache distribution into an appropriate
-   directory. Open a command-line prompt and cd to that directory.</P>
+<p>Compiling Apache requires the following environment to be properly
+   installed;
 
-<P>The master Apache makefile instructions are contained in the
-   <CODE>Makefile.win</CODE> file. To compile Apache on Windows, simply
-   use one of the following commands:<P>
-<UL>
-<LI><CODE>nmake /f Makefile.win _apacher</CODE> (release build)
-<LI><CODE>nmake /f Makefile.win _apached</CODE> (debug build)
-</UL>
+<ul>
 
-<P>These will both compile Apache. The latter will include debugging
+<li>Disk Space<br><br> Make sure you have at least 50 MB of free disk space 
+    available.  After installation Apache requires approximately 10 MB of disk 
+    space, plus space for log and cache files, which can grow rapidly.  The 
+    actual disk space requirements will vary considerably based on your chosen 
+    configuration and any third-party modules or libraries.<br><br></li>
+
+<li>Microsoft Visual C++ 5.0 or higher.<br><br>Apache can be built using
+    the command line tools, or from within the Visual Studio IDE Workbench.
+    the command line tools are configured with the vcvars32 batch file:
+<pre>
+  "c:\Program Files\DevStudio\VC\Bin\vcvars32.bat"
+</pre>
+
+<li>The Windows Platform SDK.<br><br>Visual C++ 5.0 need the updated Microsoft
+    Windows Platform SDK to enable some Apache features.  For command line 
+    builds, the Platform SDK environment is prepared by the setenv batch file:
+<pre>
+  "c:\Program Files\Platform SDK\setenv.bat"
+</pre>
+    The Platform SDK files distributed with Visual C++ 6.0 and later are
+    sufficient, so those users may skip this requirement.<br><br>
+
+    <strong>Note</strong> that the Windows
+    Platform SDK update is required to enable all supported mod_isapi features.
+    Without a recent update, Apache will issue warnings under MSVC++ 5.0
+    that some mod_isapi features will be disabled.  Look for the update at
+    <a href="http://msdn.microsoft.com/downloads/sdks/platform/platform.asp"
+    >http://msdn.microsoft.com/downloads/sdks/platform/platform.asp</a>.</p> 
+
+<li>The awk utility (awk, gawk or similar.)<br><br>
+    To install Apache within the build system, several files are modified using
+    the awk utility.  awk was chosen since it is a very small download (compared
+    with Perl or WSH/VB) and accomplishes the task. Brian Kernighan's  
+    <a href="http://cm.bell-labs.com/cm/cs/who/bwk/"
+    >http://cm.bell-labs.com/cm/cs/who/bwk/</a> site has a compiled native Win32
+    binary, <a href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe"
+    >http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a> 
+    which you should name awk.exe rather than awk95.exe.<br>
+    Note that Developer Studio IDE will only find awk.exe from the <u>T</u>ools 
+    menu <u>O</u>ptions... Directories settings for the Executable files.  Add
+    the path for awk.exe to this list, as needed.</p>
+
+</ul>
+
+<h3><a name="commandbuild">Command-Line Build</a></h3>
+
+<p>First, unpack the Apache distribution into an appropriate
+   directory. Open a command-line prompt and cd to that directory.</p>
+
+<p>The master Apache makefile instructions are contained in the
+   <code>Makefile.win</code> file. To compile Apache on Windows NT, simply
+   use one of the following commands to compiled the release or debug build,
+   respectively:
+<pre>
+    nmake /f Makefile.win _apacher
+
+    nmake /f Makefile.win _apached
+</pre>
+
+<p>Either command will compile Apache. The latter will include debugging
    information in the resulting files, making it easier to find bugs and
-   track down problems.</P>
+   track down problems.</p>
 
-<P>Apache can also be compiled using VC++'s VisualStudio development
+<h3><a name="workspacebuild">Developer Studio Workspace IDE Build</a></h3>
+
+<p>Apache can also be compiled using VC++'s VisualStudio development
    environment. To simplify this process, a VisualStudio workspace,
-   Apache.dsw, is provided.  This workspace exposes
-   the entire list of working .dsp projects that are required for the
-   complete Apache binary release.  It includes dependencies between
-   the projects to assure that they are built in the appropriate order.</P>
+   Apache.dsw, is provided.  This workspace exposes the entire list of 
+   working .dsp projects that are required for the complete Apache binary 
+   release.  It includes dependencies between the projects to assure that 
+   they are built in the appropriate order.</p>
 
-<P><STRONG>Notice: The Apache/VisualStudio project files are distributed
-   in VisualStudio 6.0 (98) format.</STRONG>  In fact you may build with
-   VisualStudio 5.0 (97) but you must first use the perl script command:</P>
+<p>Open the Apache.dsw workspace, and choose InstallBin (Release or Debug
+   build, as desired) as the Active Project.  InstallBin causes all related
+   project to be build, and then invokes Makefile.win to move the compiled 
+   executables and dlls.  You may personalize the INSTDIR= choice by changing 
+   InstallBin's Settings, General tab, Build command line entry.  INSTDIR 
+   defaults to the /Apache2 directory.</p>
 
-<PRE>
-    cd srclib\apr\build
-    cvstodsp5.pl
-</PRE>
+<p>The .dsp project files are distributed in Visual C++ 6.0 format.  Visual
+   C++ 5.0 (97) will recognize them with the single exception of the /ZI flag
+   (which corresponds to the VC 5.0 /Zi flag for debugging symbols.)  To quickly
+   prepare the .dsp files for the Visual Studio 5.0 (97), you can run this command
+   from the top-level httpd-2.0 directory:
+<pre>
+     perl srclib\apr\build\cvtdsp.pl -5
+</pre>
+   You must type this command from the <em>top level</em> directory of the httpd
+   source tree.  Every VC6 .dsp project file within the current directory and 
+   below will be listed as it is converted.  If you contribute back a patch that
+   revises project files, please convert them back with the the -6 option instead
+   of -5, which returns the project files to Visual Studio 6.0 format.</p>
 
-<P>Without running the script you will be able to load and build Apache,
-   however VisualStudio 97 in particular will not recognize the /ZI flag
-   to the C compiler for the debugging mode.  This script toggles the
-   new /ZI flag back to /Zi for Debug builds, among other adjustments.
-   The converse script in <CODE>srclib\apr\build\dsp5tocvs.pl</CODE> will 
-   reverse the adjustments, and we ask you to do so before submitting 
-   patches against any .dsp project files.</P>
+<h3><a name="projectcomponents">Project Components</a></h3>
 
-<P>The Apache.dsw workspace and makefile.win nmake script both build the
-   .dsp projects of the Apache server in the following sequence:</P>
+<p>The Apache.dsw workspace and makefile.win nmake script both build the
+   .dsp projects of the Apache server in the following sequence:</p>
 
-<OL>
-   <LI><CODE>srclib\apr\aprlib.dsp</CODE>
-   <LI><CODE>srclib\apr\aprlibdll.dsp <EM>requires aprlib</EM></CODE>
-   <LI><CODE>srclib\pcre\dftables.dsp</CODE>
-   <LI><CODE>srclib\pcre\pcre.dsp <EM>requires dftables</EM></CODE>
-   <LI><CODE>srclib\pcre\pcreposix.dsp <EM>requires dftables and pcre</EM></CODE>
-   <LI><CODE>srclib\expat-lite\xmltok.dsp</CODE>
-   <LI><CODE>srclib\expat-lite\xmlparse.dsp <EM>requires xmltok</EM></CODE>
-   <LI><CODE>main\gen_uri_delims.dsp</CODE>
-   <LI><CODE>main\gen_test_char.dsp</CODE>
-   <LI><CODE>ApacheCore.dsp <EM>requires all of the above</EM></CODE>
-   <LI><CODE>Apache.dsp <EM>requires ApacheCore and aprlibdll</EM></CODE>
-</OL>
+<ol>
+   <li><code>srclib\apr\apr.dsp</code>
+   <li><code>srclib\apr\libapr.dsp</code>
+   <li><code>srclib\apr-util\uri\gen_uri_delims.dsp</code>
+   <li><code>srclib\apr-util\aprutil.dsp</code>
+   <li><code>srclib\apr-util\libaprutil.dsp</code>
+   <li><code>srclib\pcre\dftables.dsp</code>
+   <li><code>srclib\pcre\pcre.dsp</code>
+   <li><code>srclib\pcre\pcreposix.dsp</code>
+   <li><code>srclib\expat-lite\libexpat.dsp</code>
+   <li><code>server\gen_test_char.dsp</code>
+   <li><code>libhttpd.dsp</code>
+   <li><code>Apache.dsp</code>
+</ol>
 
-   <p>In addition, the <CODE>os\win32</CODE> subdirectory contains
+   <p>In addition, the <code>os\win32</code> subdirectory contains
    project files for the optional modules.</p>
 
-<OL>
-  <LI><CODE>os\win32\ApacheModuleAuthAnon.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleAuthDigest.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleCERNMeta.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleExpires.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleFileCache.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleHeaders.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleInfo.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleRewrite.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleSpeling.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleStatus.dsp</CODE>
-  <LI><CODE>os\win32\ApacheModuleUserTrack.dsp</CODE>
-  <LI><CODE>modules\proxy\ApacheModuleProxy.dsp</CODE>
-</OL>
+<ol>
+  <li><code>modules\aaa\mod_auth_dbm.dsp</code>
+  <li><code>modules\aaa\mod_auth_anon.dsp</code>
+  <li><code>modules\aaa\mod_auth_digest.dsp</code>
+  <li><code>modules\cache\mod_file_cache.dsp</code>
+  <li><code>modules\dav\fs\mod_dav_fs.dsp</code>
+  <li><code>modules\dav\main\mod_dav.dsp</code>
+  <li><code>modules\generators\mod_info.dsp</code>
+  <li><code>modules\generators\mod_status.dsp</code>
+  <li><code>modules\mappers\mod_rewrite.dsp</code>
+  <li><code>modules\mappers\mod_speling.dsp</code>
+  <li><code>modules\metadata\mod_usertrack.dsp</code>
+  <li><code>modules\metadata\mod_cern_meta.dsp</code>
+  <li><code>modules\metadata\mod_headers.dsp</code>
+  <li><code>modules\metadata\mod_expires.dsp</code>
+  <li><code>modules\ssl\mod_ssl.dsp</code>
+  <li><code>modules\tls\mod_tls.dsp</code>
+</ol>
 
-   <p>The <CODE>support\</CODE> folder contains project files for additional
-   programs that are not part of the apache runtime, but are used by
-   the administrator to test Apache and maintain password and log files.</P>
+<p>The <code>support\</code> folder contains project files for additional
+   programs that are not part of the Apache runtime, but are used by
+   the administrator to test Apache and maintain password and log files.</p>
 
-<OL>
-  <LI><CODE>support\ab.dsp</CODE>
-  <LI><CODE>support\htdigest.dsp</CODE>
-  <LI><CODE>support\htpasswd.dsp</CODE>
-  <LI><CODE>support\logresolve.dsp</CODE>
-  <LI><CODE>support\rotatelogs.dsp</CODE>
-</OL>
+<ol>
+  <li><code>support\ab.dsp</code>
+  <li><code>support\htdigest.dsp</code>
+  <li><code>support\htpasswd.dsp</code>
+  <li><code>support\logresolve.dsp</code>
+  <li><code>support\rotatelogs.dsp</code>
+  <li><code>support\win32\wintty.dsp</code>
+</ol>
 
-<P>Once Apache has been compiled, it needs to be installed in its server
-   root directory. The default is the <CODE>\Apache</CODE>
-   directory, on the current hard drive. </P>
+<p>Once Apache has been compiled, it needs to be installed in its server
+   root directory. The default is the <code>\Apache2</code>
+   directory, of the same drive.</p>
 
-<P>To build and install all the files into the desired folder <EM>dir</EM>
-   automatically, use one the following nmake commands:</p>
+<p>To build and install all the files into the desired folder <em>dir</em>
+   automatically, use one the following nmake commands:
+<pre>
+    nmake /f Makefile.win installr INSTDIR=<em>dir</em>
 
-<UL>
-  <LI><CODE>nmake /f Makefile.win installr INSTDIR=<EM>dir</EM></CODE>
-      (for release build)
-  <LI><CODE>nmake /f Makefile.win installd INSTDIR=<EM>dir</EM></CODE>
-      (for debug build)
-</UL>
+    nmake /f Makefile.win installd INSTDIR=<em>dir</em>
+</pre>
+   The <em>dir</em> argument to INSTDIR gives the installation directory; it 
+   can be omitted if Apache is to be installed into <samp>\Apache2</samp>.</p>
 
-   <p>The <EM>dir</EM> argument to INSTDIR gives the installation directory; it 
-   can be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.</P>
+<p>This will install the following:</p>
 
-<P>This will install the following:</P>
+<ul>
+  <li><code><em>dir</em>\bin\Apache.exe</code> - Apache executable
+  <li><code><em>dir</em>\bin\htdigest.exe</code> - Digest auth password file utility
+  <li><code><em>dir</em>\bin\htpasswd.exe</code> - Basic auth password file utility
+  <li><code><em>dir</em>\bin\logresolve.exe</code> - Log file dns name lookup utility
+  <li><code><em>dir</em>\bin\rotatelogs.exe</code> - Log file cycling utility
+  <li><code><em>dir</em>\bin\wintty.exe</code> - Console window utility
+  <li><code><em>dir</em>\bin\libapr.dll</code> - Apache Portable Runtime shared library
+  <li><code><em>dir</em>\bin\libaprutil.dll</code> - Apache Utility Runtime shared library
+  <li><code><em>dir</em>\bin\libhttpd.dll</code> - Apache Core library
+  <li><code><em>dir</em>\modules\mod_*.so</code> - Loadable Apache modules
+  <li><code><em>dir</em>\conf</code> - Configuration directory
+  <li><code><em>dir</em>\logs</code> - Empty logging directory
+  <li><code><em>dir</em>\include</code> - C language header files
+  <li><code><em>dir</em>\lib</code> - Static Link library files
+  <li><code><em>dir</em>\libexec</code> - DLL link library files
+</ul>
 
-<UL>
-  <LI><CODE><EM>dir</EM>\Apache.exe</CODE> - Apache executable
-  <LI><CODE><EM>dir</EM>\aprlib.dll</CODE> - Apache Portable Runtime shared library
-  <LI><CODE><EM>dir</EM>\ApacheCore.dll</CODE> - Apache Core application
-  <LI><CODE><EM>dir</EM>\modules\ApacheModule*.dll</CODE> - Loadable Apache
-      modules
-  <LI><CODE><EM>dir</EM>\bin\*.exe</CODE> - Administrator support executables
-  <LI><CODE><EM>dir</EM>\conf</CODE> - Empty configuration directory
-  <LI><CODE><EM>dir</EM>\logs</CODE> - Empty logging directory
-</UL>
+<p><strong>Warning about building Apache from the development tree</strong></p>
 
-<P>If you do not have nmake, or wish to install in a different directory,
-   be sure to use a similar naming scheme, or use the following shortcut.</P>
-
-<P>To simplify the process, dependencies between all projects
-   are defined in the Microsoft VisualStudio workspace file:
-   
-<PRE>
-   Apache.dsw
-</PRE>
-   
-<P>This assures that lower-level sources are rebuilt from within
-   VisualStudio.  The top level project is InstallBin, which invokes 
-   Makefile.win to move the compiled executables and dlls.  You may 
-   personalize the INSTDIR= setting by changing the Settings for
-   InstallBin, Build command line entry under the General tab.
-   INSTDIR defaults to the same directory as the httpd source.</P>
-
-<P><STRONG>Warning about building Apache from the development tree</STRONG></P>
-
-<P>Only the .dsp files are distributed between release builds.  The
+<p>Only the .dsp files are maintained between release builds.  The
    .mak files are NOT regenerated, due to the tremendous waste of
    reviewer's time.  Therefore, you cannot rely on the NMAKE commands 
    above to build revised .dsp project files unless you then export
    all .mak files yourself from the project.  This is unnecessary if 
-   you build from within the Microsoft DeveloperStudio environment.</P>   
-
-<P>Before running the server you must fill out the conf directory.
-   Copy the *.conf-dist-win from the distribution conf directory
-   and rename *.conf.  Edit the @@ServerRoot@@ entries to your
-   actual server root (for example "C:\apache").  Copy over
-   the conf/magic and conf/mime.types files as well.</P>
+   you build from within the Microsoft DeveloperStudio environment.</p>   
 
 <!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+</body>
+</body>
