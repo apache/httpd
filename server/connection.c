@@ -230,7 +230,7 @@ int ap_pre_http_connection(conn_rec *c)
     return OK;
 }
 
-AP_CORE_DECLARE(int) ap_process_http_connection(conn_rec *c)
+AP_CORE_DECLARE_NONSTD(int) ap_process_http_connection(conn_rec *c)
 {
     request_rec *r;
 
