@@ -100,7 +100,7 @@ fi
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apu_config --includes`)
 APU_BINDIR=`$apu_config --bindir`
-APU_INCLUDEDIR=`$apu_config --includes | sed 's|^.*-I\([[^ ]]*apr[[^ ]]*\).*$|\1|'`
+APU_INCLUDEDIR=`$apu_config --includes | sed 's|^ *-I\([[^ ]]*apr[[^ ]]*\).*$|\1|'`
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
