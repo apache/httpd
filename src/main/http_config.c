@@ -1720,7 +1720,7 @@ static void show_overrides(const command_rec *pc, module *pm)
 
 /* Show the preloaded configuration directives, the help string explaining
  * the directive arguments, in what module they are handled, and in
- * what parts of the configuration they are allowed.  Used for httpd -h.
+ * what parts of the configuration they are allowed.  Used for httpd -L.
  */
 void ap_show_directives(void)
 {
