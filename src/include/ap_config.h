@@ -812,6 +812,7 @@ typedef int rlim_t;
 #define NO_RELIABLE_PIPED_LOGS
 #define USE_OS2SEM_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+#define NO_SLACK
 #define FOPEN_REQUIRES_T
 
 #elif defined(__MACHTEN__)
