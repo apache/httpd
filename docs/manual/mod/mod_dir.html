@@ -15,9 +15,24 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_dir</H1>
 
-This module is contained in the <CODE>mod_dir.c</CODE> file, and
-is compiled in by default.  It provides for "trailing slash" redirects and
-serving directory index files.
+<p>This module provides for "trailing slash" redirects and serving
+directory index files.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_dir.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> dir_module
+</P>
 
 <H2>Summary</H2>
 The index of a directory can come from one of two sources:
@@ -44,12 +59,13 @@ slash, so <CODE>mod_dir</CODE> issues a redirect to
 </MENU>
 <HR>
 
-<H2><A NAME="directoryindex">DirectoryIndex</A></H2>
+<H2><A NAME="directoryindex">DirectoryIndex</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt DirectoryIndex} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> DirectoryIndex <EM>local-url local-url ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> DirectoryIndex <EM>local-url</em>
+    [<em>local-url</em>] ...<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -95,7 +111,7 @@ Note that the documents do not need to be relative to the directory;
 DirectoryIndex index.html index.txt /cgi-bin/index.pl</CODE></BLOCKQUOTE>
 would cause the CGI script <CODE>/cgi-bin/index.pl</CODE> to be executed
 if neither <CODE>index.html</CODE> or <CODE>index.txt</CODE> existed in
-a directory.<P><HR>
+a directory.<P>
 
 <!--#include virtual="footer.html" -->
 </BODY>

@@ -130,7 +130,7 @@ requirements, and returns that document.<P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheNegotiatedDocs <EM>boolean</EM><BR>
+><STRONG>Syntax:</STRONG></A> CacheNegotiatedDocs on|off<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -167,13 +167,15 @@ HTTP/1.1 requests.
 <P>Prior to version 2.0, CacheNegotiatedDocs did not take an argument;
 it was turned on by the presence of the directive by itself.
 
+<hr>
 
 <H2><A NAME="languagepriority">LanguagePriority</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt LanguagePriority} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> LanguagePriority <EM>MIME-lang MIME-lang...</EM><BR>
+><STRONG>Syntax:</STRONG></A> LanguagePriority <EM>MIME-lang</em>
+  [<em>MIME-lang</EM>] ...<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"

@@ -167,7 +167,8 @@ AuthGroupFile.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDigestQop <EM>none | 1*{ auth | auth-int }</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDigestQop none|auth|auth-int 
+[auth|auth-int]<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -208,7 +209,7 @@ directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDigestNonceLifetime <EM>&lt;time&gt;</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDigestNonceLifetime <EM>seconds</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -233,13 +234,13 @@ directive</H2>
 <P>The AuthDigestNonceLifetime directive controls how long the server
 nonce is valid. When the client contacts the server using an expired
 nonce the server will send back a 401 with <code>stale=true</code>. If
-<EM>&lt;time&gt;</EM> is greater than 0 then it specifies the number of
-seconds the nonce is valid; this should probably never be set to less
-than 10 seconds. If <EM>&lt;time&gt;</EM> is less than 0 then the nonce
-never expires.
+<EM>seconds</EM> is greater than 0 then it specifies the amount of
+time for which the nonce is valid; this should probably never be set
+to less than 10 seconds. If <EM>seconds</EM> is less than 0 then
+the nonce never expires.
 
 <!-- Not implemented yet
-If <EM>&lt;time&gt;</EM> is 0 then the nonce may be used exactly once
+If <EM>seconds</EM> is 0 then the nonce may be used exactly once
 by the client. Note that while one-time-nonces provide higher security
 against replay attacks, they also have significant performance
 implications, as the browser cannot pipeline or multiple connections
@@ -291,7 +292,7 @@ generated.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDigestNcCheck <EM>On/Off</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDigestNcCheck On|Off<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -332,7 +333,7 @@ impact performance.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDigestAlgorithm <EM>MD5 | MD5-sess</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDigestAlgorithm MD5|MD5-sess<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -368,7 +369,8 @@ the challenge and response hashes.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDigestDomain <EM>URI URI ...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthDigestDomain <EM>URI</em> 
+[<em>URI</em>] ...<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"

@@ -84,8 +84,16 @@
   <H2><A NAME="Syntax">Syntax</A></H2>
   <P>
   This indicates the format of the directive as it would appear in a
-  configuration file.  This syntax is extremely directive-specific, so
-  refer to the text of the directive's description for details.
+  configuration file.  This syntax is extremely directive-specific, 
+  and is described in detail in the directive's definition.  
+  Generally, the directive name is followed by a series of one or
+  more arguments.  Optional arguments are enclosed in square brackets.
+  Where an argument can take on more than one possible value, possible
+  values are separated by a vertical bar.  Literal text is presented
+  in the default font, while argument-types for which substitution
+  is necessary are emphasized.  Directives which can take a variable
+  number of arguments will end in "..." indicating that the last
+  argument is repeated.
   </P>
 
   <HR>
