@@ -51,7 +51,7 @@ static const struct {
     { NULL, NULL }
 };
 
-static const char *ssl_log_annotation(char *error)
+static const char *ssl_log_annotation(const char *error)
 {
     int i = 0;
 
