@@ -875,7 +875,7 @@ typedef struct server_addr_rec server_addr_rec;
 
 /** A structure to be used for Per-vhost config */
 struct server_addr_rec {
-    /** The next server in the list
+    /** The next server in the list */
     server_addr_rec *next;
     /** The bound address, for this server */
     apr_in_addr host_addr;
@@ -921,9 +921,9 @@ struct server_rec {
     int is_virtual;
     /** Config vector containing pointers to modules' per-server config 
      *  structures. */
-    void *module_config;	/* Config vector containing pointers to
-    /** MIME type info, etc., before we start checking per-directory info. */
-    void *lookup_defaults;	/* MIME type info, etc., before we start
+    void *module_config; 
+    /** MIME type info, etc., before we start checking per-directory info */
+    void *lookup_defaults;
 
     /* Transaction handling */
 
