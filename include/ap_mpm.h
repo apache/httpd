@@ -128,6 +128,11 @@ API_EXPORT(int) ap_graceful_stop_signalled(void);
 void ap_start_shutdown(void);
 void ap_start_restart(int graceful);
 
+/* 
+ * ap_signal_parent() - used to send a signal to the parent process.
+ */
+void ap_signal_parent(ap_context_t *p, const char* signal, const char* server_root);
+
 #ifdef HAS_OTHER_CHILD
 /*
  * register an other_child -- a child which the main loop keeps track of
