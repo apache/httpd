@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/09/22 20:35:27 $]
+  Last modified at [$Date: 2000/09/25 19:03:09 $]
 
 Release:
 
@@ -280,11 +280,9 @@ Open issues:
 	-0: Greg (volunteers; will add to 2.0 series rather than 1.3)
         +1: Martin
 
-    * Many people have asked for a DBM to be distributed with Apache to
-      isolate it from platform inconsistencies. SDBM (used by mod_ssl,
-      mod_dav, Perl, and others) should fit the bill and is public domain.
-	-0: Greg (volunteers; will add to 2.0 series rather than 1.3)
-        +1: Martin
+    * SDBM is now distributed in src/lib, as distributed with mod_dav, but
+      is only incorporated into the Win32 build.  Extra cleanup and build 
+      mechanics are still needed for other platforms.
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
@@ -440,9 +438,7 @@ Win32 specific issues:
     * modules that need to be made to work on win32
         - mod_example isn't multithreadreded
 	- mod_unique_id (needs mt changes)
-	- mod_auth_db.c  (do we want to even try this?  We should have some
-          db of some sort... what else can we pick from under win32?)
-	- mod_auth_dbm.c
+	- mod_auth_db.c  (although mod_auth_dbm is already working.)
 	- mod_log_agent.c
 	- mod_log_referer.c
 	- mod_mime_magic.c (needs access to mod_mime API stage...)
