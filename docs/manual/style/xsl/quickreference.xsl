@@ -41,7 +41,7 @@
 
         <div id="directive-ref">
 
-         <xsl:variable name="directives" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status!='Obsolete']/directivesynopsis[not(@location)]"/>
+         <xsl:variable name="directives" select="document(modulefilelist/modulefile)/modulesynopsis[status!='Obsolete']/directivesynopsis[not(@location)]"/>
 
           <!-- first collect the start letters -->
           <xsl:variable name="start-letters">
