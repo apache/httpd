@@ -402,11 +402,14 @@ static void *merge_expires_dir_configs(apr_pool_t *p, void *basev, void *addv)
     }
     else {
         new->active = add->active;
-    };
+    }
 
-    if (add->expiresdefault != '\0') {
+    if (add->expiresdefault[0] != '\0') {
         new->expiresdefault = add->expiresdefault;
-    };
+    }
+    else {
+	new->expiresdefault = base->expiresdefault;
+    }
 
     new->expiresbytype = apr_table_overlay(p, add->expiresbytype,
                                         base->expiresbytype);
