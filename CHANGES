@@ -30,6 +30,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.44
 
+  *) mod_setenvif: Fix BrowserMatchNoCase support for non-regex
+     patterns [André Malo <nd@perlig.de>]
+
   *) Add version string to provider API.  [Justin Erenkrantz]
 
   *) build: './configure && make' now works without an in-tree
