@@ -464,6 +464,9 @@ request_rec *sub_req_lookup_simple (char *new_file, request_rec *r)
     return rnew;
 }
 
+
+static int some_auth_required (request_rec *r);
+
 request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
 {
     request_rec *rnew;
@@ -510,7 +513,7 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
      */
     
     if ((res = directory_walk (rnew))
-	|| (!auth_type (rnew) ? 0 :
+	|| (!some_auth_required (rnew) ? 0 :
 	     ((res = check_user_id (rnew)) || (res = check_auth (rnew))))
 	|| (res = check_access (rnew))
 	|| (res = find_types (rnew))
@@ -553,7 +556,7 @@ request_rec *sub_req_lookup_file (char *new_file, request_rec *r)
 	
     if ((res = directory_walk (rnew))
 	|| (res = check_access (rnew))
-	|| (!auth_type (rnew) ? 0 :
+	|| (!some_auth_required (rnew) ? 0 :
 	     ((res = check_user_id (rnew)) && (res = check_auth (rnew))))
 	|| (res = find_types (rnew))
 	|| (res = run_fixups (rnew))
