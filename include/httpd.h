@@ -951,6 +951,11 @@ struct request_rec {
 
 /* @} */
 
+typedef enum {
+    AP_CONN_UNKNOWN,
+    AP_CONN_CLOSE,
+    AP_CONN_KEEPALIVE
+} ap_conn_keepalive_e;
 
 /** Structure to store things which are per connection */
 struct conn_rec {
@@ -981,8 +986,8 @@ struct conn_rec {
     unsigned aborted:1;
 
     /** Are we going to keep the connection alive for another request?
-     *  -1 fatal error, 0 undecided, 1 yes   */
-    signed int keepalive:2;
+     * @see ap_conn_keepalive_e */
+    ap_conn_keepalive_e keepalive;
 
     /** have we done double-reverse DNS? -1 yes/failure, 0 not yet, 
      *  1 yes/success */

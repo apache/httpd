@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) Switch conn_rec->keepalive to an enumeration rather than a bitfield.
+     [Justin Erenkrantz]
+
   *) Fix mod_ext_filter to look in the main server for filter definitions
      when running in a vhost if the filter definition is not found in
      the vhost.  PR 10147  [Jeff Trawick]

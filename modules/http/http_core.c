@@ -283,7 +283,7 @@ static int ap_process_http_connection(conn_rec *c)
     ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
     while ((r = ap_read_request(c)) != NULL) {
  
-        c->keepalive = 0;
+        c->keepalive = AP_CONN_UNKNOWN;
         /* process the request if it was read without error */
  
         ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
@@ -293,7 +293,7 @@ static int ap_process_http_connection(conn_rec *c)
         if (ap_extended_status)
             ap_increment_counts(c->sbh, r);
  
-        if (!c->keepalive || c->aborted)
+        if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted)
             break;
  
         ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, r);

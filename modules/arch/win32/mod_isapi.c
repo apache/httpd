@@ -1093,7 +1093,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         return 0;
 
     case HSE_REQ_IS_KEEP_CONN:
-        *((int *)buf_data) = (r->connection->keepalive == 1);
+        *((int *)buf_data) = (r->connection->keepalive == AP_CONN_KEEPALIVE);
         return 1;
 
     case HSE_REQ_ASYNC_READ_CLIENT:
