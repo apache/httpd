@@ -4,6 +4,12 @@ Changes with Apache 1.3b4
      in the STANDARD_MODULE_STUFF portion, and the MODULE_MAGIC_NUMBER
      has been bumped accordingly.  [Paul Sutton]
 
+  *) All BrowserMatch directives mentioned in
+     htdocs/manual/known_client_problems.html are in the default
+     configuration files.  [Lars Eilebrecht]
+
+  *) MiNT port update. [Jan Paul Schmidt]
+
   *) HTTP/1.1 requires x-gzip and gzip encodings be treated
      equivalent, similarly for x-compress and compress.  Apache
      now ignores a leading x- when comparing encodings.  It also
