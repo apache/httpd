@@ -2380,7 +2380,7 @@ static void reclaim_child_processes(int terminate)
 
     ap_sync_scoreboard_image();
 
-    for (tries = terminate ? 4 : 1; tries <= 9; ++tries) {
+    for (tries = terminate ? 4 : 1; tries <= 12; ++tries) {
 	/* don't want to hold up progress any more than 
 	 * necessary, but we need to allow children a few moments to exit.
 	 * Set delay with an exponential backoff.
@@ -2435,8 +2435,13 @@ static void reclaim_child_processes(int terminate)
 		   "child process %d still did not exit, sending a SIGKILL",
 			    pid);
 		kill(pid, SIGKILL);
+		waittime = 1024 * 16; /* give them some time to die */
 		break;
-	    case 9:     /* 14 sec */
+	    case 9:     /*   6 sec */
+	    case 10:    /* 6.1 sec */
+	    case 11:    /* 6.4 sec */
+		break;
+	    case 12:    /* 7.4 sec */
 		/* gave it our best shot, but alas...  If this really 
 		 * is a child we are trying to kill and it really hasn't
 		 * exited, we will likely fail to bind to the port

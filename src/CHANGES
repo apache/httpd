@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
 
+  *) Reduce the time that a parent waits for its children to die
+     after SIGKILL has been sent, since there isn't much point in waiting
+     another 16 seconds beyond the initial SIGTERM waiting period.
+     [Ed Korthof]
+
   *) Revert to the 1.3.3 way of getting the server name from the
      scoreboard, with a modification to make it respect the
      UseCanonicalName setting. This makes things work better with
