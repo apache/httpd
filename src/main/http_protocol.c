@@ -253,6 +253,9 @@ int set_last_modified(request_rec *r, time_t mtime)
     char *if_match          = table_get(r->headers_in, "If-Match");
     time_t now = time(NULL);
 
+    if (now < 0)
+        now = r->request_time;
+
     table_set(r->headers_out, "Last-Modified",
               gm_timestr_822(r->pool, (mtime > now) ? now : mtime));
 
