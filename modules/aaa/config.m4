@@ -41,8 +41,6 @@ APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   CPPFLAGS=$ap_old_cppflags
 ])
 
-APACHE_MODULE(auth_ldap, LDAP based authentication, , , no)
-
 APR_ADDTO(LT_LDFLAGS,-export-dynamic)
 
 APACHE_MODPATH_FINISH
