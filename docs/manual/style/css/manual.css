@@ -191,6 +191,12 @@ h2 {
     color: #fff;
 }
 
+.category h2 {
+    background-color: #e5ecf3;
+    color: #405871;
+    font-size: 14px;
+}
+
 /* take care of <a name>s inside */
 h2 a,
 h2 a:hover,
@@ -363,6 +369,38 @@ table table.bordered th {
     border: 1px solid #aaa;
 }
 
+/* index page layout table */
+/* ======================= */
+body#index-page div#page-content {
+    width: 100%; /* IE fun */
+}
+
+body[id]#index-page div#page-content {
+    width: auto; /* reasonable browsers. */
+}
+
+table#indextable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 0 none;
+}
+
+table#indextable td {
+    width: 33.3%;
+    border-left: 1px solid #aaa;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+table#indextable td.col1 {
+    border-left: 0 none;
+    padding-left: 0;
+}
+
+table#indextable td.col3 {
+    padding-right: 0;
+}
+
 /* mod/dir. overview table and quick reference  */
 /* ============================================ */
 table.module th,
@@ -530,6 +568,18 @@ div#directive-list ul {
     padding: 0;
 }
 
+/* indextable */
+/* ========== */
+table#indextable td ul {
+    list-style-type: none;
+    margin: 0 0 1em 0.5em;
+    padding: 0 0 0 0;
+}
+
+table#indextable td ul li {
+    margin-top: 0.3em;
+}
+
 /* sidebar                */
 /* ====================== */
 div#quickview li {
@@ -679,6 +729,14 @@ div#page-content {
     padding-right: 30px;
 }
 
+/* unsqueeze on some pages... */
+body#index-page div#page-content {
+    margin-left: 30px;
+    margin-right: 0;
+    padding-right: 0;
+    padding-bottom: 1em;
+}
+
 /* in general */
 p {
     line-height: 1.3em;
@@ -790,7 +848,7 @@ table div.warning {
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * quotations, indented paragraphs and figures
+ * quotations, indented paragraphs, forms and figures
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 p.letters {
     margin: 1em 0 0 0;
@@ -836,6 +894,18 @@ p.indent {
 span.indent {
     padding-left: 1.5em;
     display: block;
+}
+
+#index-page form {
+    text-align: center;
+}
+
+#index-page form p {
+    line-height: 1.1em;
+}
+
+#index-page form input {
+    font-size: 1em;
 }
 
 p.figure {

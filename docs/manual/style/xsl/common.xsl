@@ -39,6 +39,7 @@
   <xsl:include href="manualpage.xsl"/>
   <xsl:include href="synopsis.xsl"/>
   <xsl:include href="sitemap.xsl"/>
+  <xsl:include href="indexpage.xsl"/>
   <xsl:include href="quickreference.xsl"/>
 
   <!-- make sure, we set relative anchors
@@ -168,10 +169,12 @@
       <a href="http://httpd.apache.org/docs-project/">
         <xsl:value-of select="$messages/message[@name='documentation']"/>
       </a>
-      <xsl:text> &gt; </xsl:text>
-      <a href="{$path}/">
-        <xsl:value-of select="$messages/message[@name='version']"/>
-      </a>
+      <xsl:if test="not(../indexpage)">
+        <xsl:text> &gt; </xsl:text>
+        <a href="{$path}/">
+          <xsl:value-of select="$messages/message[@name='version']"/>
+        </a>
+      </xsl:if>
       <xsl:if test="../modulesynopsis or ../directiveindex or ../quickreference">
         <xsl:text> &gt; </xsl:text>
         <a href="./">
