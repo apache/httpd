@@ -471,6 +471,12 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
 	DEF_WANTHSREGEX=no
 	;;
+    *-sco_sv*)
+	OS='SCO SV'
+	CFLAGS="$CFLAGS -DSCO"
+	LIBS="$LIBS -lPW -lsocket -lmalloc -lcrypt_i"
+	DEF_WANTHSREGEX=yes
+	;;
     *-solaris2*)
     	PLATOSVERS=`echo $PLAT | sed 's/^.*solaris2.//'`
 	OS="Solaris $PLATOSVERS"
