@@ -51,7 +51,7 @@
  */
 
 /*
- * mod_uniqueid.c: generate a unique identifier for each request
+ * mod_unique_id.c: generate a unique identifier for each request
  *
  * Original author: Dean Gaudet <dgaudet@arctic.org>
  */
@@ -215,21 +215,21 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * it's guaranteed that none of them will share the same pids between
      * children.
      * 
-     * XXX: for multithread this needs to use a pid/tid combo and probably XXX:
+     * XXX: for multithread this needs to use a pid/tid combo and probably
      * needs to be expanded to 32 bits
      */
     pid = getpid();
     cur_unique_id.pid = pid;
 
     /*
-     * Test our assumption that the pid is 16-bits.  But note we can't just
-     * test sizeof (pid_t) because on some machines pid_t is 32-bits but pids
-     * are actually only 16-bits.  It would have been really nice to test
-     * this during global_init ... but oh well.
+     * Test our assumption that the pid is 32-bits.  It's possible that
+     * 64-bit machines will declare pid_t to be 64 bits but only use 32
+     * of them.  It would have been really nice to test this during
+     * global_init ... but oh well.
      */
     if (cur_unique_id.pid != pid) {
-        aplog_error(APLOG_MARK, APLOG_DEBUG, s,
-                    "oh no! pids are greater than 16-bits!  I'm broken!");
+        aplog_error(APLOG_MARK, APLOG_CRIT, s,
+                    "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 
     cur_unique_id.in_addr = global_in_addr;
