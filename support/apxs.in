@@ -375,11 +375,12 @@ if ($opt_c) {
             $dso_file =~ s|\.[^.]+$|.la|;
         }
         else {
-            $dso_file = "mod_unknown.so";
+            $dso_file = "mod_unknown.la";
         }
     }
     else {
         $dso_file = $opt_o;
+        $dso_file =~ s|\.[^.]+$|.la|;
     }
 
     #   create compilation commands
