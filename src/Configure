@@ -1741,7 +1741,7 @@ lib:	$(LIB)
 
 shlib:	$(SHLIBS)
 
-$(LIB): $(OBJS)
+dummy $(LIB): $(OBJS)
 	rm -f $@
 	ar cr $@ $(OBJS)
 	$(RANLIB) $@

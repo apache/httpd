@@ -1,5 +1,10 @@
 Changes with Apache 1.3.1
 
+  *) Add an additional "dummy" target to the "$(LIB)" target in generated
+     modules/xxx/Makefile's to avoid problems with SVR4 Make under "full-DSO"
+     situation (no libxxx.a built, only mod_xxx.so's) where LIB and OBJS are
+     empty. [Ralf S. Engelschall, Dean Gaudet, Martin Kraemer]
+
   *) Replace two bad sprintf() calls with ap_snprintf() variants in
      mod_rewrite. The sprintf()'s were incorrectly introduced recently because
      Ralf didn't recognize that although the ap_psprintf() needs a pool (which
