@@ -1051,6 +1051,19 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
             }
         }
     }
+    else if ((arglen > 3) && strcEQn(arg, "dc:", 3)) {
+#ifdef HAVE_DISTCACHE
+        mc->nSessionCacheMode      = SSL_SCMODE_DC;
+        mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool, arg+3);
+        if (!mc->szSessionCacheDataFile) {
+            return apr_pstrcat(cmd->pool, 
+                               "SSLSessionCache: Invalid cache file path: ",
+                               arg+3, NULL);
+        }
+#else
+        return "SSLSessionCache: distcache support disabled";
+#endif
+    }
     else {
         return "SSLSessionCache: Invalid argument";
     }

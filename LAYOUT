@@ -128,7 +128,7 @@ modules/ ................ Manditory and Add-In Apache stock modules
     ssl_scache.c ............ session cache abstraction layer
     ssl_scache_dbm.c ........ session cache via DBM file
     ssl_scache_shmcb.c ...... session cache via shared memory cyclic buffer
-    ssl_scache_shmht.c ...... session cache via shared memory hash table
+    ssl_scache_dc.c ......... session cache offloading via 'distcache'
     ssl_util.c .............. utility functions
     ssl_util_ssl.c .......... the OpenSSL companion source
     ssl_util_ssl.h .......... the OpenSSL companion header

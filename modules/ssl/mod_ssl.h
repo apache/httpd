@@ -306,7 +306,8 @@ typedef enum {
     SSL_SCMODE_UNSET = UNSET,
     SSL_SCMODE_NONE  = 0,
     SSL_SCMODE_DBM   = 1,
-    SSL_SCMODE_SHMCB = 3
+    SSL_SCMODE_SHMCB = 3,
+    SSL_SCMODE_DC    = 4
 } ssl_scmode_t;
 
 /*
@@ -602,7 +603,15 @@ void         ssl_scache_shmcb_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_shmcb_expire(server_rec *);
 void         ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *pool);
 
-/*  Pass Phrase Support  */
+void         ssl_scache_dc_init(server_rec *, apr_pool_t *);
+void         ssl_scache_dc_kill(server_rec *);
+BOOL         ssl_scache_dc_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
+SSL_SESSION *ssl_scache_dc_retrieve(server_rec *, UCHAR *, int);
+void         ssl_scache_dc_remove(server_rec *, UCHAR *, int);
+void         ssl_scache_dc_expire(server_rec *);
+void         ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool);
+
+/*  PASS Phrase Support  */
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
 
 /*  Diffie-Hellman Parameter Support  */

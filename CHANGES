@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Add support for distributed session cache using 'distcache'.
+     [Geoff Thorpe <geoff geoffthorpe.net>]
+
   *) mod_dav: Disallow requests with an unescaped hash character in
      the Request-URI.  PR 21779.  [Amit Athavale <amit_athavale lycos.com>]
 
