@@ -676,7 +676,8 @@ browsers complain that they cannot verify the server certificate?</a></h3>
 <li><a href="#adh">How to use Anonymous-DH ciphers</a></li>
 <li><a href="#sharedciphers">Why do I get 'no shared ciphers'?</a></li>
 <li><a href="#vhosts">HTTPS and name-based vhosts</a></li>
-<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual Hosting to identify different SSL virtual hosts?</a></li>
+<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual
+Hosting to identify different SSL virtual hosts?</a></li>
 <li><a href="#lockicon">The lock icon in Netscape locks very late</a></li>
 <li><a href="#msie">Why do I get I/O errors with MSIE clients?</a></li>
 <li><a href="#nn">Why do I get I/O errors with NS clients?</a></li>
@@ -766,10 +767,10 @@ I try to connect to my freshly installed server?</a></h3>
     handshake phase. Bingo!</p>
 
 
-<h3><a name="vhosts2" id="vhosts2">Why is it not possible to use Name-Based Virtual Hosting to identify
-different SSL virtual hosts?</a></h3>
+<h3><a name="vhosts2" id="vhosts2">Why is it not possible to use Name-Based
+Virtual Hosting to identify different SSL virtual hosts?</a></h3>
     <p>Name-Based Virtual Hosting is a very popular method of identifying
-    different virtual = hosts. It allows you to use the same IP address and
+    different virtual hosts. It allows you to use the same IP address and
     the same port number for many different sites. When people move on to
     SSL, it seems natural to assume that the same method can be used to have
     lots of different SSL virtual hosts on the same server.</p>
@@ -791,8 +792,14 @@ different SSL virtual hosts?</a></h3>
     you must make sure to put the non-SSL port number on the NameVirtualHost
     directive, e.g.</p> 
 
-    <div class="example"><p>NameVirtualHost 192.168.1.1:80</p><p>Other workaround solutions are: </p><p>Use separate IP addresses for different SSL hosts. 
-    Use different port numbers for different SSL hosts.</p></div>
+    <div class="example"><p><code>
+      NameVirtualHost 192.168.1.1:80
+    </code></p></div>
+    
+    <p>Other workaround solutions are: </p>
+
+    <p>Use separate IP addresses for different SSL hosts. 
+    Use different port numbers for different SSL hosts.</p> 
 
 
 <h3><a name="lockicon" id="lockicon">When I use Basic Authentication over HTTPS the lock icon in Netscape browsers
