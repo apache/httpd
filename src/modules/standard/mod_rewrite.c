@@ -1760,9 +1760,13 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     if (strcmp(output, "-") == 0) {
         for (i = 0; p->env[i] != NULL; i++) {
+            /*  1. take the string  */
             ap_cpystrn(env, p->env[i], sizeof(env));
+            /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
             expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
+            /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
             expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
+            /*  and add the variable to Apache's structures  */
             add_env_variable(r, env);
         }
         return 2;
@@ -1791,7 +1795,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
 
     /*
      *  Additionally do expansion for the environment variable
-     *  strings (`RewriteCond .. .. [E=<string>]').
+     *  strings (`RewriteRule .. .. [E=<string>]').
      */
     for (i = 0; p->env[i] != NULL; i++) {
         /*  1. take the string  */
@@ -1953,12 +1957,13 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
      *   Construct the string we match against
      */
 
-    /* expand the regex backreferences from the RewriteRule ($0-$9),
-       then from the last RewriteCond (%0-%9) and then expand the
-       variables (%{....}) */
+    /*  1. take the string  */
     ap_cpystrn(input, p->input, sizeof(input));
+    /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
     expand_backref_inbuffer(r->pool, input, sizeof(input), briRR, '$');
+    /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
     expand_backref_inbuffer(r->pool, input, sizeof(input), briRC, '%');
+    /*  4. expand %{...} (i.e. variables) */
     expand_variables_inbuffer(r, input, sizeof(input));
 
     /*
