@@ -134,7 +134,7 @@
     </div>
 
     <p>The above configuration is what you will want to use in almost
-    all name-based virtual hosting situations. The only think that this
+    all name-based virtual hosting situations. The only thing that this
     configuration will not work for, in fact, is when you are serving
     different content based on differing IP addresses or ports.</p>
 
