@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: buff.c,v 1.6 1996/08/20 11:50:38 paul Exp $ */
+/* $Id: buff.c,v 1.7 1996/11/03 21:21:04 brian Exp $ */
 
 #include <errno.h>
 #include <stdio.h>
@@ -116,7 +116,7 @@ bcreate(pool *p, int flags)
     else fb->inbase = NULL;
 
     if (flags & B_WR) fb->outbase = palloc(p, fb->bufsiz);
-    else fb->inbase = NULL;
+    else fb->outbase = NULL;
 
     fb->inptr = fb->inbase;
 
