@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.21.2.3 -->
-
+<!-- English revision: 1.21.2.5 -->
 
 <modulesynopsis metafile="mpm_common.xml.meta">
 
@@ -53,7 +52,7 @@
 
       <dt><code>posixsem</code></dt>
       <dd>verwendet POSIX-kompatible Semaphore, um den Mutex zu
-      imlementieren.</dd>
+      implementieren.</dd>
 
       <dt><code>pthread</code></dt>
       <dd>verwendet gem&auml;&szlig; der POSIX-Thread-Spezifikation
@@ -120,8 +119,17 @@ BS2000-Maschinen</description>
     jedoch nicht f&uuml;r den Benutzer beschreibbar sein soll, unter dem
     der Server l&auml;uft, werden normalerweise keine
     Hauptspeicherausz&uuml;ge geschrieben. Wenn Sie zum Debuggen
-    einen Hauptspeicherausz&uuml;g haben m&ouml;chten, k&ouml;nnen Sie
+    einen Hauptspeicherauszug haben m&ouml;chten, k&ouml;nnen Sie
     ihn mit dieser Direktive an einem anderen Ort ablegen lassen.</p>
+
+    <note><title>Hauptspeicherausz&uuml;ge unter Linux</title>
+      <p>Wenn Apache als <code>root</code> startet und zu einem anderen Benutzer 
+      wechselt, <em>deaktiviert</em> der Linux-Kernel Hauptspeicherausz&uuml;ge
+      auch dann, wenn der Prozess in dem Verzeichnis schreiben darf. Ab Linux
+      2.4 reaktiviert Apache (ab 2.0.46) Hauptspeicherausz&uuml;ge wieder,
+      jedoch nur dann, wenn Sie explizit
+      <directive>CoreDumpDirectory</directive> konfigurieren.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -171,7 +179,7 @@ BS2000-Maschinen</description>
       Sie eingehen.</p>
     </note>
 
-    <p>Wichtiger Hinweis: Die Verwendung der Diretive innerhalb von
+    <p>Wichtiger Hinweis: Die Verwendung der Direktive innerhalb von
     <directive module="core" type="section">VirtualHost</directive>
     wird nicht l&auml;nger unterst&uuml;tzt. Benutzen Sie <directive
     module="mod_suexec">SuexecUserGroup</directive> um Ihren Server
@@ -341,7 +349,7 @@ entgegengenommenen Anfragen</description>
 
     <note type="warning"><title>Sicherheit</title>
       <p>Es ist am besten, die Ablage in einem allgemein <transnote>f&uuml;r
-      jederman</transnote> beschreibbaren
+      jedermann</transnote> beschreibbaren
       Verzeichnis wie <code>/var/tmp</code> <em>zu vermeiden</em>, da
       ein Denial-of-Servide-Angriff gestartet werden k&ouml;nnte und der
       Server am Start gehindert werden k&ouml;nnte, indem eine Lock-Datei
@@ -405,7 +413,7 @@ entgegengenommenen Anfragen</description>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
 
 <usage>
     <p>Die Direktive <directive>MaxMemFree</directive> gibt die maximale
