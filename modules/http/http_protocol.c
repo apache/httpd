@@ -1207,7 +1207,16 @@ static apr_status_t send_all_header_fields(header_struct *h,
         t_elt++;
     } while (t_elt < t_end);
 
+#if APR_CHARSET_EBCDIC
+    {
+        apr_size_t len;
+        char *tmp = apr_pstrcatv(r->pool, vec, vec_next - vec, &len);
+        ap_xlate_proto_to_ascii(tmp, len);
+        apr_brigade_write(h->bb, NULL, NULL, tmp, len);
+    }
+#else
     return apr_brigade_writev(h->bb, NULL, NULL, vec, vec_next - vec);
+#endif
 }
 
 /*
