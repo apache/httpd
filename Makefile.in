@@ -47,9 +47,9 @@ install-conf:
 
 htdocs-srcdir = docs/docroot
 
-docs: include/*.h
+docs::
 	mkdir -p ./docs/api
-	srclib/apr/helpers/scandoc -ihelpers/default.pl -p./docs/api/ ./include/*.h
+	srclib/apr/helpers/scandoc -isrclib/apr/helpers/default.pl -p./docs/api/ ./include/*.h
 
 install-htdocs:
 	@echo Installing HTML documents
