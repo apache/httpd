@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.65 $ ($Date: 1997/06/09 15:30:02 $)
+  $Revision: 1.66 $ ($Date: 1997/06/10 16:04:43 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1000,7 +1000,7 @@
   </P>
   <P>
   <DL>
-   <DD><CODE>BrowserMatch Java/1.0 force-response-1.0</CODE>
+   <DD><CODE>BrowserMatch Java1.0 force-response-1.0</CODE>
    </DD>
   </DL>
   </P>
@@ -1380,28 +1380,6 @@
         ><CITE>Gathering Visitor Information: Customising Your
          Logfiles</CITE></A>&quot;.
   </P>
-  <HR>
- </LI>
- <LI><A NAME="jdk1.x">
-      <STRONG>Why do Java applets and applications not work
-      with documents on my Apache server?</STRONG>
-     </A>
-  <P>
-  The Java Development Kit (JDK) libraries versions 1.0.2 and 1.1 do not
-  correctly interpret the &quot;<SAMP>HTTP/1.1</SAMP>&quot; response
-  header that Apache 1.2 sends.  Instead, if they don't see an exact
-  match for &quot;<SAMP>HTTP/1.0</SAMP>&quot;, they assume the headers
-  are part of the document content.
-  </P>
-  <P>
-  This is a known problem, and it has been reported to Sun's JavaSoft
-  unit.  In the meantime, Apache 1.2 servers can work around this by
-  adding the following lines to their configuration files:
-  </P>
-  <DL>
-   <DD><CODE>BrowserMatch&nbsp;Java1.0&nbsp;force-response-1.0</CODE>
-   </DD>
-  </DL>
   <HR>
  </LI>
  <LI><A NAME="bind8.1">
