@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Convert the worker MPM's fdqueue from a LIFO back into a FIFO.
+     [Aaron Bannert]
+
   *) Get basic HTTP proxy working on EBCDIC machines.  [Jeff Trawick]
 
   *) Allow mod_unique_id to work on systems with no IPv4 address
