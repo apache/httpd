@@ -169,6 +169,29 @@ typedef struct {
     int bufbytes; 
 } cgid_server_conf; 
 
+/* This function is used to split the brigade at the beginning of
+ *   the tag and forward the pretag buckets before any substitution
+ *   work is performed on the tag. This maintains proper ordering.
+ */
+static int split_and_pass_pretag_buckets(apr_bucket_brigade **brgd, 
+                                         include_ctx_t *cntxt, 
+                                         ap_filter_t *next)
+{
+    apr_bucket_brigade *tag_plus;
+    int rv;
+
+    if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&
+        (cntxt->head_start_bucket != NULL)) {
+        tag_plus = apr_brigade_split(*brgd, cntxt->head_start_bucket);
+        rv = ap_pass_brigade(next, *brgd);
+        cntxt->bytes_parsed = 0;
+        *brgd = tag_plus;
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+}
+
 /* If a request includes query info in the URL (stuff after "?"), and
  * the query info does not contain "=" (indicative of a FORM submission),
  * then this routine is called to create the argument list to be passed
@@ -1174,7 +1197,10 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
                                    "unable to connect to cgi daemon");
     } 
 
-    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
+    retval = split_and_pass_pretag_buckets(bb, ctx, f->next);
+    if (retval != APR_SUCCESS) {
+        return retval;
+    }
 
     send_req(sd, r, command, env, SSI_REQ); 
 
@@ -1235,6 +1261,7 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
     char *file = r->filename;
     apr_bucket  *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
+    int retval;
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -1266,7 +1293,11 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 }
                 else if (!strcmp(tag, "cgi")) {
                     cgid_pfn_ps(r, tag_val, parsed_string, sizeof(parsed_string), 0);
-                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
+                    retval = split_and_pass_pretag_buckets(bb, ctx, f->next);
+                    if (retval != APR_SUCCESS) {
+                        return retval;
+                    }
+
                     if (include_cgi(parsed_string, r, f->next, head_ptr, inserted_head) == -1) {
                         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                                     "invalid CGI ref \"%s\" in %s", tag_val, file);
