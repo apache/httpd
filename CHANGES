@@ -24,17 +24,17 @@ Changes with Apache 2.1.0-dev
   *) Rewrite of aaa modules to an authn/authz model.
      [Dirk-Willem van Gulik, Justin Erenkrantz]
 
-  *) Reorder the definitions for mod_ldap and mod_auth_ldap within
-     config.m4 to make sure the parent mod_ldap is defined first.
-     This ensures that mod_ldap comes before mod_auth_ldap in the
-     httpd.conf file, which is necessary for mod_auth_ldap to load.
-     PR 14256  [Graham Leggett]
-
 
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Reorder the definitions for mod_ldap and mod_auth_ldap within
+     config.m4 to make sure the parent mod_ldap is defined first.
+     This ensures that mod_ldap comes before mod_auth_ldap in the
+     httpd.conf file, which is necessary for mod_auth_ldap to load.
+     PR 14256  [Graham Leggett]
 
   *) Fix the building of cgi command lines when the query string
      contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
