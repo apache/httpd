@@ -108,20 +108,13 @@ It is recommended that you use an IP address instead of a hostname
 
 <P>
 
-Almost <STRONG>any</STRONG> configuration directive can be put
-in the VirtualHost directive, with the exception of
-<A HREF="../mod/core.html#servertype">ServerType</A>,
-<A HREF="../mod/core.html#startservers">StartServers</A>,
-<A HREF="../mod/core.html#maxspareservers">MaxSpareServers</A>,
-<A HREF="../mod/core.html#minspareservers">MinSpareServers</A>,
-<A HREF="../mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>,
-<A HREF="../mod/core.html#bindaddress">BindAddress</A>,
-<A HREF="../mod/core.html#listen">Listen</A>,
-<A HREF="../mod/core.html#pidfile">PidFile</A>,
-<A HREF="../mod/mod_mime.html#typesconfig">TypesConfig</A>,
-<A HREF="../mod/core.html#serverroot">ServerRoot</A>,
-<A HREF="../mod/core.html#namevirtualhost">NameVirtualHost</A>
-and a few other directives.
+Almost <STRONG>any</STRONG> configuration directive can be put in the
+VirtualHost directive, with the exception of directives that control
+process creation and a few other directives.  To find out if a
+directive can be used in the VirtualHost directive, check the
+<A HREF="../mod/directive-dict.html#Context">Context</A> using the
+<A HREF="../mod/directives.html">directive index</A>.
+
 <P>
 <A HREF="../mod/core.html#user">User</A> and
 <A HREF="../mod/core.html#group">Group</A> may be used inside a VirtualHost
