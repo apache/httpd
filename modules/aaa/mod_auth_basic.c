@@ -176,6 +176,9 @@ static int get_basic_auth(request_rec *r, const char **user,
     *user = ap_getword_nulls(r->pool, (const char**)&decoded_line, ':');
     *pw = decoded_line;
 
+    /* set the user, even though the user is unauthenticated at this point */
+    r->user = (char *) *user;
+
     return OK;
 }
 
