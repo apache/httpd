@@ -78,8 +78,9 @@
            - Linux     - IRIX
            - FreeBSD   - HPUX
            - OpenBSD   - OSF1
-           - SunOS     - UnixWare
-           - Solaris   - AIX
+           - NetBSD    - UnixWare
+           - SunOS     - AIX
+           - Solaris 
 
         o Entirely unsupported platforms are:
            - Ultrix (because no dlopen-style interface)

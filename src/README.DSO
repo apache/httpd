@@ -136,13 +136,14 @@
  Apache's src/Configure script currently has only limited built-in knowledge
  on how to compile DSO files because (as already mentioned) this is heavily
  platform-dependent. Nevertheless all major Unix platforms are supported.  The
- definitive current state (April 1998) is this:
+ definitive current state (May 1998) is this:
 
  Out-of-the-box supported platforms:
  (actually tested versions in parenthesis)
 
    o  FreeBSD            (2.1.5, 2.2.5, 2.2.6)
    o  OpenBSD            (2.x)
+   o  NetBSD             (1.3.1)
    o  Linux              (Debian/1.3.1, RedHat/4.2)
    o  Solaris            (2.4, 2.5.1, 2.6)
    o  SunOS              (4.1.3)
