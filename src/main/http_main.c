@@ -3543,6 +3543,7 @@ main(int argc, char *argv[])
 
     suexec_enabled = init_suexec();
     server_conf = read_config (pconf, ptrans, server_confname);
+    init_modules (pconf, server_conf);
     
     if(standalone) {
         clear_pool (pconf);	/* standalone_main rereads... */

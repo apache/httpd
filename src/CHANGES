@@ -173,8 +173,6 @@ Changes with Apache 1.3b1
 
   *) init_modules is now called after the error logs have been opened.  This
      allows modules to emit information messages into the error logs.
-     init_modules is only called once in standalone config now, previously
-     it was called twice (once after each config file reading).
      [Dean Gaudet]
 
   *) Fixed proxy-pass-through feature of mod_rewrite; Added error logging
