@@ -2930,14 +2930,14 @@ static apr_status_t pass_chunk(ap_filter_t *f, ap_bucket_brigade *b,
     }
     hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr), "%qx" CRLF, bytes);
     e = ap_bucket_create_transient(chunk_hdr, hdr_len);
-    AP_RING_INSERT_HEAD(&b->list, e, ap_bucket, link);
+    AP_BRIGADE_INSERT_HEAD(b, e);
     if (eos) {
 	/* any trailer should go between the last two CRLFs */
 	e = ap_bucket_create_immortal(CRLF "0" CRLF CRLF, 7);
-	AP_RING_INSERT_BEFORE(AP_RING_LAST(&b->list), e, link);
+	AP_BUCKET_INSERT_BEFORE(AP_BRIGADE_LAST(b), e);
     } else {
 	e = ap_bucket_create_immortal(CRLF, 2);
-	AP_RING_INSERT_TAIL(&b->list, e, ap_bucket, link);
+	AP_BRIGADE_INSERT_TAIL(b, e);
     }
     return ap_pass_brigade(f->next, b);
 }
@@ -2954,7 +2954,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     for (more = NULL; b; b = more, more = NULL) {
 	apr_off_t bytes = 0;
 	int eos = 0;
-	AP_RING_FOREACH(e, &b->list, ap_bucket, link) {
+	AP_BRIGADE_FOREACH(e, b) {
 	    if (e->type == AP_BUCKET_EOS) {
 		/* assume it is the last one in the brigade */
 		eos = 1;
@@ -2968,7 +2968,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		    return rv;
 		}
 		bytes += len;
-		more = ap_brigade_split(b, AP_RING_NEXT(e, link));
+		more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
 		break;
 	    }
 	    else {
@@ -3030,7 +3030,7 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     } 
     else {
 #endif
-    AP_RING_FOREACH(e, &b->list, ap_bucket, link) {
+    AP_BRIGADE_FOREACH(e, b) {
 	rv = e->read(e, &str, &len, 0);
 	if (rv != APR_SUCCESS) {
             return rv;
