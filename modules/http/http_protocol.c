@@ -605,7 +605,7 @@ API_EXPORT(void) ap_set_last_modified(request_rec *r)
 {
     ap_time_t *mod_time = ap_rationalize_mtime(r, r->mtime);
     char *datestr;
-    ap_gm_timestr_822(&datestr, mod_time, r->pool);
+    ap_timestr(&datestr, mod_time, APR_UTCTIME, r->pool);
     ap_table_setn(r->headers_out, "Last-Modified", datestr);
 }
 
@@ -1362,7 +1362,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     ap_rvputs(r, protocol, " ", r->status_line, "\015\012", NULL);
 
-    ap_gm_timestr_822(&date, r->request_time, r->pool);
+    ap_timestr(&date, r->request_time, APR_UTCTIME, r->pool);
     ap_send_header_field(r, "Date", date);
     ap_send_header_field(r, "Server", ap_get_server_version());
 
@@ -1645,7 +1645,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
      * some other part of the server configuration.
      */
     if (r->no_cache && !ap_table_get(r->headers_out, "Expires")) {
-        ap_gm_timestr_822(&date, r->request_time, r->pool);
+        ap_timestr(&date, r->request_time, APR_UTCTIME, r->pool);
         ap_table_addn(r->headers_out, "Expires", date);
     }
 
