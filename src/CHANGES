@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: Work around optimiser bug that killed ISAPI in release
+     versions. [Ben Laurie] PR#1533
+
   *) Interim (slow) fix for p->sub_pool critical sections in
      alloc.c (affects win32 only).  [Ben Hyde]
   
