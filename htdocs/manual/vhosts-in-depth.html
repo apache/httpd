@@ -302,20 +302,20 @@ the virtual hosts).
     DNS for all the domains listed.
     <a href="dns-caveats.html">
     There's more information
-    available on this and the next two topics</a>.
+    available on this and the next two topics</a>.</p>
 
 <li><code>ServerName</code> should always be set for each vhost.  Otherwise
-    A DNS lookup is required for each vhost.
+    A DNS lookup is required for each vhost.</p>
 
 <li>A DNS lookup is always required for the main_server's
     <code>ServerName</code> (or to generate that if it isn't specified
-    in the config).
+    in the config).</p>
 
 <li>If a <code>ServerPath</code> directive exists which is a prefix of
     another <code>ServerPath</code> directive that appears later in
     the configuration file, then the former will always be matched
     and the latter will never be matched.  (That is assuming that no
-    Host header was available to disambiguate the two.)
+    Host header was available to disambiguate the two.)</p>
 
 <li>If a vhost that would otherwise be a name-vhost includes a
     <code>Port</code> statement that doesn't match the main_server
@@ -325,7 +325,7 @@ the virtual hosts).
     to the port of the main_server) as the connection vhost.  Then
     <code>check_hostalias</code> will refuse to check any other name-based
     vhost because of the port mismatch.  The result is that the vhost
-    will steal all hits going to the main_server address.
+    will steal all hits going to the main_server address.</p>
 
 <li>If two IP-based vhosts have an address in common, the vhost appearing
     later in the file is always matched.  Such a thing might happen
@@ -335,7 +335,7 @@ the virtual hosts).
     Then the last of them will steal all the hits.</P>
 
 <li>The last name-based vhost in the config is always matched for any hit
-    which doesn't match one of the other name-based vhosts.
+    which doesn't match one of the other name-based vhosts.</p>
 
 </ul>
 
