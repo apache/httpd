@@ -123,6 +123,9 @@ In progress:
     * Ken's IndexFormat enhancement to mod_autoindex to allow
       CustomLog-like tailoring of directory listing formats
 
+    * Doug's attempt to get mod_perl's <Perl> config working under win32,
+      some "non-public" functions and structures need to exposed
+
 Needs patch:
 
     * Dean's "locale" project
