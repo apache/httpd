@@ -876,7 +876,7 @@ const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-static const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
+const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *limited_methods = getword(cmd->pool,&arg,'>');
     int limited = 0;
