@@ -1,6 +1,17 @@
 Changes with Apache 2.0.26-dev
 
-  *) Cured what's ailed mime for quite some time ... if an AddSomething
+  *) Changed syntax of Set{Input|Output}Filter.  The list of filters
+     must be semicolon delimited (if more than one filter is given.)
+     The Set{Input|Output}Filter directive now overrides a parent
+     container's directive (e.g. SetInputFilter in <Directory /web/foo>
+     will override any SetInputFilter directive in <Directory /web>.)
+     This new syntax is more consistent with Add{Input|Output}Filter
+     directives defined in mod_mime.  Also cures a bug in prior releases
+     where the Set{Input|Output}Filter directive would corrupt the 
+     global configuration if the multiple directives were nested.
+     [William Rowe]
+
+  *) Cured what's ailed mime for quite some time.  If an AddSomething
      was given in the configuration (Language, Charset, Handler or
      Encoding) Apache would set the content type as given by AddType, 
      but refused to check the mime.types file if AddType wasn't given 
