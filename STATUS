@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/07 19:11:34 $]
+Last modified at [$Date: 2003/07/07 19:54:53 $]
 
 Release:
 
@@ -196,12 +196,6 @@ PATCHES TO PORT FROM 2.1
         buildconf 1.36, 1.37
         build/.cvsignore 1.4
         +1: trawick, jerenkrantz
-
-    * mod_rewrite: Perform child initialization on the rewrite log
-      lock.  This fixes a log corruption issue when flock-based 
-      serialization is used (e.g., FreeBSD).
-        modules/mappers/mod_rewrite.c 1.152
-        +1: trawick, jerenkrantz, nd
 
     * Unix: Handle permissions settings for flock-based mutexes in 
       unixd_set_global|proc_mutex_perms().  Allow the functions to
