@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Replace some of the mutex locking in the worker MPM with
+     atomic operations for higher concurrency.  [Brian Pane]
+
   *) mod_deflate: Extend the DeflateFilterNote directive to
      allow accurate logging of the filter's in- and outstream.
      [André Malo]

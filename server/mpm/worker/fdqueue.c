@@ -57,6 +57,12 @@
  */
 
 #include "fdqueue.h"
+#include "apr_atomic.h"
+
+typedef struct recycled_pool {
+    apr_pool_t *pool;
+    struct recycled_pool *next;
+} recycled_pool;
 
 struct fd_queue_info_t {
     int idlers;
@@ -64,19 +70,27 @@ struct fd_queue_info_t {
     apr_thread_cond_t *wait_for_idler;
     int terminated;
     int max_idlers;
-    apr_pool_t        **recycled_pools;
-    int num_recycled;
+    recycled_pool  *recycled_pools;
 };
 
 static apr_status_t queue_info_cleanup(void *data_)
 {
     fd_queue_info_t *qi = data_;
-    int i;
     apr_thread_cond_destroy(qi->wait_for_idler);
     apr_thread_mutex_destroy(qi->idlers_mutex);
-    for (i = 0; i < qi->num_recycled; i++) {
-        apr_pool_destroy(qi->recycled_pools[i]);
+
+    /* Clean up any pools in the recycled list */
+    for (;;) {
+        struct recycled_pool *first_pool = qi->recycled_pools;
+        if (first_pool == NULL) {
+            break;
+        }
+        if (apr_atomic_casptr(&(qi->recycled_pools), first_pool->next,
+                              first_pool) == first_pool) {
+            apr_pool_destroy(first_pool->pool);
+        }
     }
+
     return APR_SUCCESS;
 }
 
@@ -98,9 +112,7 @@ apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
     if (rv != APR_SUCCESS) {
         return rv;
     }
-    qi->recycled_pools = (apr_pool_t **)apr_palloc(pool, max_idlers *
-                                                   sizeof(apr_pool_t *));
-    qi->num_recycled = 0;
+    qi->recycled_pools = NULL;
     qi->max_idlers = max_idlers;
     apr_pool_cleanup_register(pool, qi, queue_info_cleanup,
                               apr_pool_cleanup_null);
@@ -114,24 +126,53 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
                                     apr_pool_t *pool_to_recycle)
 {
     apr_status_t rv;
-    rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    AP_DEBUG_ASSERT(queue_info->idlers >= 0);
-    AP_DEBUG_ASSERT(queue_info->num_recycled < queue_info->max_idlers);
+    int prev_idlers;
+
+    /* If we have been given a pool to recycle, atomically link
+     * it into the queue_info's list of recycled pools
+     */
     if (pool_to_recycle) {
-        queue_info->recycled_pools[queue_info->num_recycled++] =
-            pool_to_recycle;
+        struct recycled_pool *new_recycle;
+        new_recycle = (struct recycled_pool *)apr_palloc(pool_to_recycle,
+                                                         sizeof(*new_recycle));
+        new_recycle->pool = pool_to_recycle;
+        for (;;) {
+            new_recycle->next = queue_info->recycled_pools;
+            if (apr_atomic_casptr(&(queue_info->recycled_pools),
+                                  new_recycle, new_recycle->next) ==
+                new_recycle->next) {
+                break;
+            }
+        }
     }
-    if (queue_info->idlers++ == 0) {
-        /* Only signal if we had no idlers before. */
-        apr_thread_cond_signal(queue_info->wait_for_idler);
+
+    /* Atomically increment the count of idle workers */
+    for (;;) {
+        prev_idlers = queue_info->idlers;
+        if (apr_atomic_cas(&(queue_info->idlers), prev_idlers + 1, prev_idlers)
+            == prev_idlers) {
+            break;
+        }
     }
-    rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
-    if (rv != APR_SUCCESS) {
-        return rv;
+
+    /* If this thread just made the idle worker count nonzero,
+     * wake up the listener. */
+    if (prev_idlers == 0) {
+        rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        rv = apr_thread_cond_signal(queue_info->wait_for_idler);
+        if (rv != APR_SUCCESS) {
+            apr_thread_mutex_unlock(queue_info->idlers_mutex);
+            return rv;
+        }
+        rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
     }
+
     return APR_SUCCESS;
 }
 
@@ -139,34 +180,62 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
                                           apr_pool_t **recycled_pool)
 {
     apr_status_t rv;
+
     *recycled_pool = NULL;
-    rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    AP_DEBUG_ASSERT(queue_info->idlers >= 0);
-    while ((queue_info->idlers == 0) && (!queue_info->terminated)) {
-        rv = apr_thread_cond_wait(queue_info->wait_for_idler,
-                                  queue_info->idlers_mutex);
+
+    /* Block if the count of idle workers is zero */
+    if (queue_info->idlers == 0) {
+        rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
         if (rv != APR_SUCCESS) {
-            apr_status_t rv2;
-            rv2 = apr_thread_mutex_unlock(queue_info->idlers_mutex);
-            if (rv2 != APR_SUCCESS) {
-                return rv2;
+            return rv;
+        }
+        /* Re-check the idle worker count: one of the workers might
+         * have incremented the count since we last checked it a
+         * few lines above.  If it's still zero now that we're in
+         * the mutex-protected region, it's safe to block on the
+         * condition variable.
+         */
+        if (queue_info->idlers == 0) {
+            rv = apr_thread_cond_wait(queue_info->wait_for_idler,
+                                  queue_info->idlers_mutex);
+            if (rv != APR_SUCCESS) {
+                apr_status_t rv2;
+                rv2 = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+                if (rv2 != APR_SUCCESS) {
+                    return rv2;
+                }
+                return rv;
             }
+        }
+        rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+        if (rv != APR_SUCCESS) {
             return rv;
         }
     }
-    queue_info->idlers--; /* Oh, and idler? Let's take 'em! */
-    if (queue_info->num_recycled) {
-        *recycled_pool =
-            queue_info->recycled_pools[--queue_info->num_recycled];
+
+    /* Atomically decrement the idle worker count */
+    for (;;) {
+        apr_uint32_t prev_idlers = queue_info->idlers;
+        if (apr_atomic_cas(&(queue_info->idlers), prev_idlers - 1, prev_idlers)
+            == prev_idlers) {
+            break;
+        }
     }
-    rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
-    if (rv != APR_SUCCESS) {
-        return rv;
+
+    /* Atomically pop a pool from the recycled list */
+    for (;;) {
+        struct recycled_pool *first_pool = queue_info->recycled_pools;
+        if (first_pool == NULL) {
+            break;
+        }
+        if (apr_atomic_casptr(&(queue_info->recycled_pools), first_pool->next,
+                              first_pool) == first_pool) {
+            *recycled_pool = first_pool->pool;
+            break;
+        }
     }
-    else if (queue_info->terminated) {
+
+    if (queue_info->terminated) {
         return APR_EOF;
     }
     else {
