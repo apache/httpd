@@ -452,7 +452,7 @@ HostnameLookups Off
 # filesystem) can improve performance; for details, please see
 # http://httpd.apache.org/docs-2.0/mod/core.html#enablemmap
 #
-# EnableMMAP off
+#EnableMMAP off
 
 #
 # ErrorLog: The location of the error log file.
@@ -508,7 +508,9 @@ CustomLog @rel_logfiledir@/access_log common
 # and compiled in modules.
 # Set to one of:  Full | OS | Minor | Minimal | Major | Prod
 # where Full conveys the most information, and Prod the least.
+#
 ServerTokens Full
+
 #
 # Optionally add a line containing the server version and virtual host
 # name to server-generated pages (internal error documents, FTP directory 
@@ -848,6 +850,7 @@ AddType image/x-icon .ico
 #
 AddHandler type-map var
 
+#
 # Filters allow you to process content before it is sent to the client.
 #
 # To parse .shtml files for server-side includes (SSI):
