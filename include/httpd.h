@@ -81,7 +81,9 @@ extern "C" {
 #include "ap.h"
 #include "ap_mmn.h"
 
+#if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
 
 #ifdef CORE_PRIVATE
 
