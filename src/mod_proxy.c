@@ -1814,7 +1814,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
     if (c->fp != NULL)
     {
 	pclosef(r->pool, c->fp->fd);
-	c->fp->fd =(int) NULL;
+	c->fp->fd = -1;
     }
     c->version = 0;
     sec2hex(0, buff+27);
