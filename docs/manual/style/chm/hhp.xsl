@@ -23,6 +23,9 @@
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                   xmlns="">
 
+<!-- the accompanying server version -->
+<xsl:param name="httpd.version" select="'generic'" />
+
 <!-- create nodeset for referencing later                                 -->
 <xsl:variable name="htmlhelp.def" select="document('')/xsl:stylesheet
                                         /xsl:template[@name='htmlhelp.def']" />
@@ -41,7 +44,9 @@
 <xsl:text>Compatibility=1.0</xsl:text>&lf;
 
 <!-- resulting filename -->
-<xsl:text>Compiled file=manual.</xsl:text>
+<xsl:text>Compiled file=httpd-docs-</xsl:text>
+<xsl:value-of select="$httpd.version" />
+<xsl:text>.</xsl:text>
 <xsl:value-of select="$messages/@lang" />
 <xsl:text>.chm</xsl:text>&lf;
 
