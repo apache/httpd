@@ -328,7 +328,7 @@
       <li>
         <p>When running CGI scripts, the method Apache uses to find
         the interpreter for the script is configurable using the
-        <directive module="mod_core">ScriptInterpreterSource</directive>
+        <directive module="core">ScriptInterpreterSource</directive>
         directive.</p>
       </li>
 
@@ -336,7 +336,7 @@
         <p>Since it is often difficult to manage files with names
         like <code>.htaccess</code> under windows, you may find it
         useful to change the name of this configuration file using
-        the <directive module="mod_core">AccessFilename</directive>
+        the <directive module="core">AccessFilename</directive>
         directive.</p>
       </li>
     </ul>
@@ -464,7 +464,7 @@
       apache -n "service name"
     </example>
 
-    <p>In these cases, the proper <directive module="mod_core"
+    <p>In these cases, the proper <directive module="core"
     >ServerRoot</directive> should be set in the configuration file.</p>
 
     <p>If you don't specify a configuration file name with <code>-f</code> or
@@ -472,7 +472,7 @@
     usually "<code>conf/httpd.conf</code>". Invoking Apache with the
     <code>-V</code> switch will display this value labeled as
     <code>SERVER_CONFIG_FILE</code>. Apache
-    will then determine its <directive module="mod_core"
+    will then determine its <directive module="core"
     >ServerRoot</directive> by trying the following, in
     this order:</p>
 
@@ -517,16 +517,16 @@
     warning can be ignored if it otherwise was able to find its
     configuration files.</p>
 
-    <p>The value of this key is the <directive module="mod_core"
+    <p>The value of this key is the <directive module="core"
     >ServerRoot</directive> directory, containing the <code>conf</code>
     directory. When Apache starts it will read the <code>httpd.conf</code>
     file from this directory. If this file contains a
-    <directive module="mod_core">ServerRoot</directive> directive which
+    <directive module="core">ServerRoot</directive> directive which
     is different from the directory obtained from the registry key above,
     Apache will forget the registry key and use the directory from the
     configuration file. If you copy the Apache directory or configuration
     files to a new location it is vital that you update the
-    <directive module="mod_core">ServerRoot</directive> directory
+    <directive module="core">ServerRoot</directive> directory
     in the <code>httpd.conf</code> file to the new location.</p>
 
     <p>To run Apache from the command line as a console
