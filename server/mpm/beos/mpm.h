@@ -63,7 +63,6 @@
 #include "scoreboard.h"
 
 #define MPM_NAME "Beos"
-#define MPM_SYNC_CHILD_TABLE()
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->servers[0][i].tid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 

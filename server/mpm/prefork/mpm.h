@@ -80,7 +80,6 @@
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 
 #define AP_MPM_USES_POD 1
-#define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 #define MPM_ACCEPT_FUNC unixd_accept
