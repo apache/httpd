@@ -329,7 +329,7 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 # directory if a ~user request is received.
 #
 <IfModule mod_userdir.c>
-UserDir public_html
+    UserDir public_html
 </IfModule>
 
 #
@@ -354,7 +354,7 @@ UserDir public_html
 # directory index.  Separate multiple entries with spaces.
 #
 <IfModule mod_dir.c>
-DirectoryIndex index.html
+    DirectoryIndex index.html
 </IfModule>
 
 #
@@ -402,7 +402,7 @@ UseCanonicalName On
 # to be found.
 #
 <IfModule mod_mime.c>
-TypesConfig conf/mime.types
+    TypesConfig conf/mime.types
 </IfModule>
 
 #
@@ -503,40 +503,40 @@ ServerSignature On
 #
 <IfModule mod_alias.c>
 
-#
-# Note that if you include a trailing / on fakename then the server will
-# require it to be present in the URL.  So "/icons" isn't aliased in this
-# example, only "/icons/"..
-#
-Alias /icons/ "@@ServerRoot@@/icons/"
+    #
+    # Note that if you include a trailing / on fakename then the server will
+    # require it to be present in the URL.  So "/icons" isn't aliased in this
+    # example, only "/icons/"..
+    #
+    Alias /icons/ "@@ServerRoot@@/icons/"
 
-<Directory "@@ServerRoot@@/icons">
-    Options Indexes MultiViews
-    AllowOverride None
-    Order allow,deny
-    Allow from all
-</Directory>
+    <Directory "@@ServerRoot@@/icons">
+        Options Indexes MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
 
-#
-# ScriptAlias: This controls which directories contain server scripts.
-# ScriptAliases are essentially the same as Aliases, except that
-# documents in the realname directory are treated as applications and
-# run by the server when requested rather than as documents sent to the client.
-# The same rules about trailing "/" apply to ScriptAlias directives as to
-# Alias.
-#
-ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
+    #
+    # ScriptAlias: This controls which directories contain server scripts.
+    # ScriptAliases are essentially the same as Aliases, except that
+    # documents in the realname directory are treated as applications and
+    # run by the server when requested rather than as documents sent to the client.
+    # The same rules about trailing "/" apply to ScriptAlias directives as to
+    # Alias.
+    #
+    ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
 
-#
-# "@@ServerRoot@@/cgi-bin" should be changed to whatever your ScriptAliased
-# CGI directory exists, if you have that configured.
-#
-<Directory "@@ServerRoot@@/cgi-bin">
-    AllowOverride None
-    Options None
-    Order allow,deny
-    Allow from all
-</Directory>
+    #
+    # "@@ServerRoot@@/cgi-bin" should be changed to whatever your ScriptAliased
+    # CGI directory exists, if you have that configured.
+    #
+    <Directory "@@ServerRoot@@/cgi-bin">
+        AllowOverride None
+        Options None
+        Order allow,deny
+        Allow from all
+    </Directory>
 
 </IfModule>
 # End of aliases.
@@ -553,80 +553,80 @@ ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
 #
 <IfModule mod_autoindex.c>
 
-#
-# FancyIndexing is whether you want fancy directory indexing or standard
-#
-IndexOptions FancyIndexing
+    #
+    # FancyIndexing is whether you want fancy directory indexing or standard
+    #
+    IndexOptions FancyIndexing
 
-#
-# AddIcon* directives tell the server which icon to show for different
-# files or filename extensions.  These are only displayed for
-# FancyIndexed directories.
-#
-AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
+    #
+    # AddIcon* directives tell the server which icon to show for different
+    # files or filename extensions.  These are only displayed for
+    # FancyIndexed directories.
+    #
+    AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
 
-AddIconByType (TXT,/icons/text.gif) text/*
-AddIconByType (IMG,/icons/image2.gif) image/*
-AddIconByType (SND,/icons/sound2.gif) audio/*
-AddIconByType (VID,/icons/movie.gif) video/*
+    AddIconByType (TXT,/icons/text.gif) text/*
+    AddIconByType (IMG,/icons/image2.gif) image/*
+    AddIconByType (SND,/icons/sound2.gif) audio/*
+    AddIconByType (VID,/icons/movie.gif) video/*
 
-AddIcon /icons/binary.gif .bin .exe
-AddIcon /icons/binhex.gif .hqx
-AddIcon /icons/tar.gif .tar
-AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
-AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
-AddIcon /icons/a.gif .ps .ai .eps
-AddIcon /icons/layout.gif .html .shtml .htm .pdf
-AddIcon /icons/text.gif .txt
-AddIcon /icons/c.gif .c
-AddIcon /icons/p.gif .pl .py
-AddIcon /icons/f.gif .for
-AddIcon /icons/dvi.gif .dvi
-AddIcon /icons/uuencoded.gif .uu
-AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
-AddIcon /icons/tex.gif .tex
-AddIcon /icons/bomb.gif core
+    AddIcon /icons/binary.gif .bin .exe
+    AddIcon /icons/binhex.gif .hqx
+    AddIcon /icons/tar.gif .tar
+    AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
+    AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
+    AddIcon /icons/a.gif .ps .ai .eps
+    AddIcon /icons/layout.gif .html .shtml .htm .pdf
+    AddIcon /icons/text.gif .txt
+    AddIcon /icons/c.gif .c
+    AddIcon /icons/p.gif .pl .py
+    AddIcon /icons/f.gif .for
+    AddIcon /icons/dvi.gif .dvi
+    AddIcon /icons/uuencoded.gif .uu
+    AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
+    AddIcon /icons/tex.gif .tex
+    AddIcon /icons/bomb.gif core
 
-AddIcon /icons/back.gif ..
-AddIcon /icons/hand.right.gif README
-AddIcon /icons/folder.gif ^^DIRECTORY^^
-AddIcon /icons/blank.gif ^^BLANKICON^^
+    AddIcon /icons/back.gif ..
+    AddIcon /icons/hand.right.gif README
+    AddIcon /icons/folder.gif ^^DIRECTORY^^
+    AddIcon /icons/blank.gif ^^BLANKICON^^
 
-#
-# DefaultIcon is which icon to show for files which do not have an icon
-# explicitly set.
-#
-DefaultIcon /icons/unknown.gif
+    #
+    # DefaultIcon is which icon to show for files which do not have an icon
+    # explicitly set.
+    #
+    DefaultIcon /icons/unknown.gif
 
-#
-# AddDescription allows you to place a short description after a file in
-# server-generated indexes.  These are only displayed for FancyIndexed
-# directories.
-# Format: AddDescription "description" filename
-#
-#AddDescription "GZIP compressed document" .gz
-#AddDescription "tar archive" .tar
-#AddDescription "GZIP compressed tar archive" .tgz
+    #
+    # AddDescription allows you to place a short description after a file in
+    # server-generated indexes.  These are only displayed for FancyIndexed
+    # directories.
+    # Format: AddDescription "description" filename
+    #
+    #AddDescription "GZIP compressed document" .gz
+    #AddDescription "tar archive" .tar
+    #AddDescription "GZIP compressed tar archive" .tgz
 
-#
-# ReadmeName is the name of the README file the server will look for by
-# default, and append to directory listings.
-#
-# HeaderName is the name of a file which should be prepended to
-# directory indexes. 
-#
-# The server will first look for name.html and include it if found.
-# If name.html doesn't exist, the server will then look for name.txt
-# and include it as plaintext if found.
-#
-ReadmeName README
-HeaderName HEADER
+    #
+    # ReadmeName is the name of the README file the server will look for by
+    # default, and append to directory listings.
+    #
+    # HeaderName is the name of a file which should be prepended to
+    # directory indexes. 
+    #
+    # The server will first look for name.html and include it if found.
+    # If name.html doesn't exist, the server will then look for name.txt
+    # and include it as plaintext if found.
+    #
+    ReadmeName README
+    HeaderName HEADER
 
-#
-# IndexIgnore is a set of filenames which directory indexing should ignore
-# and not include in the listing.  Shell-style wildcarding is permitted.
-#
-IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+    #
+    # IndexIgnore is a set of filenames which directory indexing should ignore
+    # and not include in the listing.  Shell-style wildcarding is permitted.
+    #
+    IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 
 </IfModule>
 # End of indexing directives.
@@ -636,114 +636,114 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 #
 <IfModule mod_mime.c>
 
-#
-# AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
-# information on the fly. Note: Not all browsers support this.
-# Despite the name similarity, the following Add* directives have nothing
-# to do with the FancyIndexing customization directives above.
-#
-AddEncoding x-compress Z
-AddEncoding x-gzip gz tgz
+    #
+    # AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
+    # information on the fly. Note: Not all browsers support this.
+    # Despite the name similarity, the following Add* directives have nothing
+    # to do with the FancyIndexing customization directives above.
+    #
+    AddEncoding x-compress Z
+    AddEncoding x-gzip gz tgz
 
-#
-# AddLanguage allows you to specify the language of a document. You can
-# then use content negotiation to give a browser a file in a language
-# it can understand.  
-#
-# Note 1: The suffix does not have to be the same as the language 
-# keyword --- those with documents in Polish (whose net-standard 
-# language code is pl) may wish to use "AddLanguage pl .po" to 
-# avoid the ambiguity with the common suffix for perl scripts.
-#
-# Note 2: The example entries below illustrate that in quite
-# some cases the two character 'Language' abbriviation is not
-# identical to the two character 'Country' code for it's country,
-# E.g. 'Danmark/dk' versus 'Danish/da'.
-#
-# Note 3: In the case of 'ltz' we violate the RFC by using a three char 
-# specifier. But there is 'work in progress' to fix this and get 
-# the reference data for rfc1766 cleaned up.
-#
-# Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
-# French (fr) - German (de) - Greek-Modern (el)
-# Italian (it) -Portugese (pt) - Luxembourgeois* (ltz)
-# Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
-#
-AddLanguage da .dk
-AddLanguage nl .nl
-AddLanguage en .en
-AddLanguage et .ee
-AddLanguage fr .fr
-AddLanguage de .de
-AddLanguage el .el
-AddLanguage it .it
-AddLanguage pt .pt
-AddLanguage ltz .lu
-AddLanguage ca .ca
-AddLanguage es .es
-AddLanguage sv .se
-AddLanguage cz .cz
+    #
+    # AddLanguage allows you to specify the language of a document. You can
+    # then use content negotiation to give a browser a file in a language
+    # it can understand.  
+    #
+    # Note 1: The suffix does not have to be the same as the language 
+    # keyword --- those with documents in Polish (whose net-standard 
+    # language code is pl) may wish to use "AddLanguage pl .po" to 
+    # avoid the ambiguity with the common suffix for perl scripts.
+    #
+    # Note 2: The example entries below illustrate that in quite
+    # some cases the two character 'Language' abbriviation is not
+    # identical to the two character 'Country' code for it's country,
+    # E.g. 'Danmark/dk' versus 'Danish/da'.
+    #
+    # Note 3: In the case of 'ltz' we violate the RFC by using a three char 
+    # specifier. But there is 'work in progress' to fix this and get 
+    # the reference data for rfc1766 cleaned up.
+    #
+    # Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
+    # French (fr) - German (de) - Greek-Modern (el)
+    # Italian (it) -Portugese (pt) - Luxembourgeois* (ltz)
+    # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
+    #
+    AddLanguage da .dk
+    AddLanguage nl .nl
+    AddLanguage en .en
+    AddLanguage et .ee
+    AddLanguage fr .fr
+    AddLanguage de .de
+    AddLanguage el .el
+    AddLanguage it .it
+    AddLanguage pt .pt
+    AddLanguage ltz .lu
+    AddLanguage ca .ca
+    AddLanguage es .es
+    AddLanguage sv .se
+    AddLanguage cz .cz
 
-# LanguagePriority allows you to give precedence to some languages
-# in case of a tie during content negotiation.
-#
-# Just list the languages in decreasing order of preference. We have
-# more or less alphabetized them here. You probably want to change this.
-#
-<IfModule mod_negotiation.c>
-LanguagePriority en da nl et fr de el it pt ltz ca es sv
-</IfModule>
+    # LanguagePriority allows you to give precedence to some languages
+    # in case of a tie during content negotiation.
+    #
+    # Just list the languages in decreasing order of preference. We have
+    # more or less alphabetized them here. You probably want to change this.
+    #
+    <IfModule mod_negotiation.c>
+        LanguagePriority en da nl et fr de el it pt ltz ca es sv
+    </IfModule>
 
-#
-# AddType allows you to tweak mime.types without actually editing it, or to
-# make certain files to be certain types.
-#
-# For example, the PHP 3.x module (not part of the Apache distribution - see
-# http://www.php.net) will typically use:
-#
-#AddType application/x-httpd-php3 .php3
-#AddType application/x-httpd-php3-source .phps
-#
-# And for PHP 4.x, use:
-#
-#AddType application/x-httpd-php .php
-#AddType application/x-httpd-php-source .phps
+    #
+    # AddType allows you to tweak mime.types without actually editing it, or to
+    # make certain files to be certain types.
+    #
+    # For example, the PHP 3.x module (not part of the Apache distribution - see
+    # http://www.php.net) will typically use:
+    #
+    #AddType application/x-httpd-php3 .php3
+    #AddType application/x-httpd-php3-source .phps
+    #
+    # And for PHP 4.x, use:
+    #
+    #AddType application/x-httpd-php .php
+    #AddType application/x-httpd-php-source .phps
 
-AddType application/x-tar .tgz
+    AddType application/x-tar .tgz
 
-#
-# AddHandler allows you to map certain file extensions to "handlers",
-# actions unrelated to filetype. These can be either built into the server
-# or added with the Action command (see below)
-#
-# If you want to use server side includes, or CGI outside
-# ScriptAliased directories, uncomment the following lines.
-#
-# To use CGI scripts:
-#
-#AddHandler cgi-script .cgi
+    #
+    # AddHandler allows you to map certain file extensions to "handlers",
+    # actions unrelated to filetype. These can be either built into the server
+    # or added with the Action command (see below)
+    #
+    # If you want to use server side includes, or CGI outside
+    # ScriptAliased directories, uncomment the following lines.
+    #
+    # To use CGI scripts:
+    #
+    #AddHandler cgi-script .cgi
 
-#
-# To use server-parsed HTML files
-#
-#AddType text/html .shtml
-#AddHandler server-parsed .shtml
+    #
+    # To use server-parsed HTML files
+    #
+    #AddType text/html .shtml
+    #AddHandler server-parsed .shtml
 
-#
-# Uncomment the following line to enable Apache's send-asis HTTP file
-# feature
-#
-#AddHandler send-as-is asis
+    #
+    # Uncomment the following line to enable Apache's send-asis HTTP file
+    # feature
+    #
+    #AddHandler send-as-is asis
 
-#
-# If you wish to use server-parsed imagemap files, use
-#
-#AddHandler imap-file map
+    #
+    # If you wish to use server-parsed imagemap files, use
+    #
+    #AddHandler imap-file map
 
-#
-# To enable type maps, you might want to use
-#
-#AddHandler type-map var
+    #
+    # To enable type maps, you might want to use
+    #
+    #AddHandler type-map var
 
 </IfModule>
 # End of document types.
@@ -793,25 +793,25 @@ AddType application/x-tar .tgz
 #
 <IfModule mod_setenvif.c>
 
-#
-# The following directives modify normal HTTP response behavior.
-# The first directive disables keepalive for Netscape 2.x and browsers that
-# spoof it. There are known problems with these browser implementations.
-# The second directive is for Microsoft Internet Explorer 4.0b2
-# which has a broken HTTP/1.1 implementation and does not properly
-# support keepalive when it is used on 301 or 302 (redirect) responses.
-#
-BrowserMatch "Mozilla/2" nokeepalive
-BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
+    #
+    # The following directives modify normal HTTP response behavior.
+    # The first directive disables keepalive for Netscape 2.x and browsers that
+    # spoof it. There are known problems with these browser implementations.
+    # The second directive is for Microsoft Internet Explorer 4.0b2
+    # which has a broken HTTP/1.1 implementation and does not properly
+    # support keepalive when it is used on 301 or 302 (redirect) responses.
+    #
+    BrowserMatch "Mozilla/2" nokeepalive
+    BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
 
-#
-# The following directive disables HTTP/1.1 responses to browsers which
-# are in violation of the HTTP/1.0 spec by not being able to grok a
-# basic 1.1 response.
-#
-BrowserMatch "RealPlayer 4\.0" force-response-1.0
-BrowserMatch "Java/1\.0" force-response-1.0
-BrowserMatch "JDK/1\.0" force-response-1.0
+    #
+    # The following directive disables HTTP/1.1 responses to browsers which
+    # are in violation of the HTTP/1.0 spec by not being able to grok a
+    # basic 1.1 response.
+    #
+    BrowserMatch "RealPlayer 4\.0" force-response-1.0
+    BrowserMatch "Java/1\.0" force-response-1.0
+    BrowserMatch "JDK/1\.0" force-response-1.0
 
 </IfModule>
 
@@ -855,32 +855,32 @@ BrowserMatch "JDK/1\.0" force-response-1.0
 # enable the proxy server:
 #
 #<IfModule mod_proxy.c>
-#ProxyRequests On
-#
-#<Directory proxy:*>
-#    Order deny,allow
-#    Deny from all
-#    Allow from .your_domain.com
-#</Directory>
+    #ProxyRequests On
+    #
+    #<Directory proxy:*>
+    #    Order deny,allow
+    #    Deny from all
+    #    Allow from .your_domain.com
+    #</Directory>
 
-#
-# Enable/disable the handling of HTTP/1.1 "Via:" headers.
-# ("Full" adds the server version; "Block" removes all outgoing Via: headers)
-# Set to one of: Off | On | Full | Block
-#
-#ProxyVia On
+    #
+    # Enable/disable the handling of HTTP/1.1 "Via:" headers.
+    # ("Full" adds the server version; "Block" removes all outgoing Via: headers)
+    # Set to one of: Off | On | Full | Block
+    #
+    #ProxyVia On
 
-#
-# To enable the cache as well, edit and uncomment the following lines:
-# (no cacheing without CacheRoot)
-#
-#CacheRoot "@@ServerRoot@@/proxy"
-#CacheSize 5
-#CacheGcInterval 4
-#CacheMaxExpire 24
-#CacheLastModifiedFactor 0.1
-#CacheDefaultExpire 1
-#NoCache a_domain.com another_domain.edu joes.garage_sale.com
+    #
+    # To enable the cache as well, edit and uncomment the following lines:
+    # (no cacheing without CacheRoot)
+    #
+    #CacheRoot "@@ServerRoot@@/proxy"
+    #CacheSize 5
+    #CacheGcInterval 4
+    #CacheMaxExpire 24
+    #CacheLastModifiedFactor 0.1
+    #CacheDefaultExpire 1
+    #NoCache a_domain.com another_domain.edu joes.garage_sale.com
 
 #</IfModule>
 # End of proxy directives.
