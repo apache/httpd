@@ -27,9 +27,6 @@ Changes with Apache 2.1.0-dev
   *) Enable the option to support anonymous shared memory in mod_ldap.
      This makes the cache work on Linux again. [Graham Leggett]
 
-  *) Allow LimitRequestBody to be reset to unlimited. PR 29106
-     [André Malo]
-
   *) Small fix to allow reverse proxying to an ftp server. Previously
      an attempt to do this would try and connect to 0.0.0.0, regardless
      of the server specified. PR 24922
@@ -383,6 +380,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) Allow LimitRequestBody to be reset to unlimited. PR 29106
+     [André Malo]
 
   *) Fix a bunch of cases where the return code of the regex compiler
      was not checked properly. This affects: mod_setenvif, mod_usertrack,
