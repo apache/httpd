@@ -181,8 +181,8 @@ static char *getpass(const char *prompt)
     fputs(prompt, stderr);
     gets((char *) &password);
 
-    if (strlen((char *) &password) > 8) {
-	password[8] = '\0';
+    if (strlen((char *) &password) > 80) {
+	password[80] = '\0';
     }
 
     return (char *) &password;
@@ -217,8 +217,8 @@ static char *getpass(const char *prompt)
     password[n] = '\0';
     printf("\n");
 
-    if (n > 8) {
-        password[8] = '\0';
+    if (n > 80) {
+        password[80] = '\0';
     }
 
     return (char *) &password;
