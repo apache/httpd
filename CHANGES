@@ -4,7 +4,7 @@ Changes with Apache 2.1.0-dev
 
   *) mod_rewrite: fix a problem in the proxy support of mod_rewrite.
      The broken code was inserting multiple "proxy:" fields in the
-     rewritten URIs.
+     rewritten URIs. [PR: 13946]
      [Submitted by:  Eider Oliveira <eider@bol.com.br>]
      [Updated and reviewed by: Paul J. Reder]
 
