@@ -217,8 +217,6 @@
 
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 0
 
-/* ------------------------------ error types ------------------------------ */
-
 /* If you have altered Apache and wish to change the SERVER_VERSION define
  * below, please keep to the HTTP/1.0 specification.  This states that
  * the identification string should consist of product tokens with an optional
@@ -229,15 +227,18 @@
  * "Product tokens should be short and to the point -- use of them for 
  * advertizing or other non-essential information is explicitly forbidden."
  *
- * Example: "Apache/1.1b3 MrWidget/0.1-alpha"
+ * Example: "Apache/1.1b3 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_VERSION "Apache/1.1b3-dev"
+#define SERVER_VERSION "Apache/1.1b3-dev" /* SEE COMMENTS ABOOE */
+
 #define SERVER_PROTOCOL "HTTP/1.0"
 #define SERVER_SUPPORT "http://www.apache.org/"
 
 #define DECLINED -1		/* Module declines to handle */
 #define OK 0			/* Module has handled this stage. */
+
+/* ------------------------------ error types ------------------------------ */
 
 #define DOCUMENT_FOLLOWS 200
 #define REDIRECT 302
