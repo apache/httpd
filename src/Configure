@@ -663,7 +663,7 @@ if [ "x$using_shlib" = "x1" ] ; then
     # set in the configuration file
     #
     if [ "x$TCFLAGS_SHLIB" = "x" ]; then
-        echo "CFLAGS_SHLIB=$CFLAGS_SHLIB" >> Makefile.config
+        echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
     fi
     if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
         echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
