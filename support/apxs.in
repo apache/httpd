@@ -577,9 +577,30 @@ if ($opt_i or $opt_e) {
         foreach $lmd (@lmd) {
             my $what = $opt_A ? "preparing" : "activating";
             if ($content !~ m|\n#?\s*$lmd|) {
-                 $content =~ s|^(.*\n#?\s*LoadModule\s+[^\n]+\n)|$1$c$lmd\n|sg;
+                # check for open <containers>, so that the new LoadModule
+                # directive always appears *outside* of an <container>.
+
+                my $before = ($content =~ m|^(.*\n)#?\s*LoadModule\s+[^\n]+\n|s)[0];
+                my $cntopen = () = ($before =~ m|^\s*<[^/].*$|mg);
+                my $cntclose = () = ($before =~ m|^\s*</.*$|mg);
+
+                if ($cntopen == $cntclose) {
+                    # fine. Last LoadModule is contextless.
+                    $content =~ s|^(.*\n#?\s*LoadModule\s+[^\n]+\n)|$1$c$lmd\n|s;
+                }
+                elsif ($cntopen < $cntclose) {
+                    error('Configuration file is not valid. There are sections'
+                          . ' closed before opened.');
+                    exit(1);
+                }
+                else {
+                    # put our cmd after the section containing the last
+                    # LoadModule.
+                    $content =~ s!\A((?:(?:^\s*(?:[^<]|<[^/]).*(?:$)\n)*^\s*</.*(?:$)\n?){$cntopen})!$1$c$lmd\n!m;
+                }
             } else {
-                 $content =~ s|^(.*\n)#?\s*$lmd[^\n]*\n|$1$c$lmd\n|sg;
+                # replace already existing LoadModule line
+                $content =~ s|^(.*\n)#?\s*$lmd[^\n]*\n|$1$c$lmd\n|s;
             }
             $lmd =~ m|LoadModule\s+(.+?)_module.*|;
             notice("[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]");

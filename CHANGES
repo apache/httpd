@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix apxs to insert LoadModule directives only outside of sections.
+     PR 9012.  [André Malo]
+
   *) Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
      mod_rewrite proxied URLs will not be escaped accidentally by
      mod_proxy's fixup. PR 16368  [André Malo]
