@@ -1,10 +1,10 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/10/03 18:39:38 $]
+  Last modified at [$Date: 2001/10/04 04:05:50 $]
 
 Release:
 
    1.3.21: In development - Bill Stoddard has proposed a T&R "soon",
-             (tag scheduled 10/3 2330Z or thereabouts)
+             (tag scheduled 10/3 2330Z or soon thereafter)
    1.3.20: Tagged and rolled May 15, 2001. Announced May 21, 2001.
    1.3.19: Tagged and rolled Feb 26, 2001. Announced Mar 01, 2001.
    1.3.18: Not released.
@@ -37,9 +37,7 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    Security issues posted to the appropriate list.
-      Status: backport of httpd-2.0/modules/mappers/mod_negotation.c 1.83
-              fixes the only remaining negotiation bugaboo.
+    * none at present
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -69,11 +67,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Status:
 
 
-Documentation that needs writing:
-
-
-Available Patches (Most likely, these will not be added to the official
-1.3 tree, but instead should be ported to 2.0):
+Available Patches (Most likely, will be ported to 2.0 as appropriate):
 
    *  A rewrite of ap_unparse_uri_components() by Jeffrey W. Baker
      <jwbaker@acm.org> to more fully close some segfault potential.
@@ -272,12 +266,12 @@ Win32 specific issues:
       cause instability - see PR#1729.
 
 
-Binaries (1.3.20):
+Binaries (1.3.21):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------------------
- 000964804C00-ibm-aix4.3       yes     Bill Stoddard
- 9000_715-hp-hpux11.00         yes     Jeff Trawick
+ 000964804C00-ibm-aix4.3       no      Bill Stoddard
+ 9000_715-hp-hpux11.00         no      Jeff Trawick
  alpha-dec-osf3.0              no      Sameer Parekh
  alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar, Randy Terbush
  alpha-whatever-linux2         no      Randy Terbush
@@ -285,7 +279,7 @@ Binaries (1.3.20):
  hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
  i386-be-beos                  no      David Reid
  i386-dg-dgux5.4R2.01          no      Randy Terbush
- i386-siemens-sinix5.4         yes     Martin Kraemer
+ i386-siemens-sinix5.4         no      Martin Kraemer
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
  i386-sun-solaris2.6           no      Randy Terbush
@@ -305,9 +299,9 @@ Binaries (1.3.20):
  i586-unknown-linux2           no      Ralf S. Engelschall, Lars Eilebrecht, Randy Terbush
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i686-unknown-linux2           no      Lars Eilebrecht
- i686-whatever-cygwin          yes     Stipe Tolj
+ i686-whatever-cygwin          no      Stipe Tolj
  i686-whatever-linux2          no      Ken Coar, Randy Terbush
- ia64-whatever-linux22         yes     Martin Kraemer
+ ia64-whatever-linux22         no      Martin Kraemer
  m68k-apple-aux3.1.1           no      Jim Jagielski
  m88k-dg-dgux5.4R2.01          no      Sameer parekh
  m88k-next-next                no      Rob Hartill
@@ -315,10 +309,10 @@ Binaries (1.3.20):
  mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-siemens-reliantunix5.4   yes     Martin Kraemer
+ mips-siemens-reliantunix5.4   no      Martin Kraemer
  mips-unknown-linux            no      Lars Eilebrecht
- netware                       yes     Brad Nicholes <bnicholes@novell.com>
- OS/2                          yes     Brian Havard
+ netware                       no      Brad Nicholes <bnicholes@novell.com>
+ OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
@@ -331,8 +325,8 @@ Binaries (1.3.20):
  sparc-sun-solaris2.7          no      Cliff Skolnick
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
- sun4u-sun-solaris2.280        yes     Jeff Trawick
- win32                         yes     William Rowe
+ sun4u-sun-solaris2.280        no      Jeff Trawick
+ win32                         no      William Rowe
  x86-bsdos-3.x                 no      Randy Terbush
  x86-bsdos-4.x                 no      Randy Terbush
  x86-openbsd-2.x               no      Randy Terbush
