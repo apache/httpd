@@ -9,6 +9,50 @@
 
 <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
 
+<xsl:template match="moduleindex">
+<html>
+<head><title><xsl:value-of select="title"/> - Apache HTTP Server</title>
+<link rel="stylesheet" type="text/css" href="../style/manual.css" />
+</head>
+<body>
+  <blockquote>
+   <div align="center">
+    <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+    <h3>Apache HTTP Server Version 2.0</h3>
+   </div>
+   <h1 align="center"><xsl:value-of select="title"/></h1>
+<xsl:apply-templates select="summary" />
+<h2>Core Features and Multi-Processing Modules</h2>
+<dl>
+<xsl:for-each select="document(modulelist/modulefile)/modulesynopsis">
+<xsl:sort select="name"/>
+<xsl:if test="status='MPM' or status='Core'">
+<dt><a href="{name}.html"><xsl:value-of select="name"/></a></dt>
+<dd><xsl:apply-templates select="description"/></dd>
+</xsl:if>
+</xsl:for-each>
+</dl>
+<h2>Other Modules</h2>
+<dl>
+<xsl:for-each select="document(modulelist/modulefile)/modulesynopsis">
+<xsl:sort select="name"/>
+<xsl:if test="status!='MPM' and status!='Core'">
+<dt><a href="{name}.html"><xsl:value-of select="name"/></a></dt>
+<dd><xsl:apply-templates select="description"/></dd>
+</xsl:if>
+</xsl:for-each>
+</dl>
+</blockquote>
+<!-- Page footer -->
+<hr />
+<h3 align="center">Apache HTTP Server Version 2.0</h3>
+<a href="./"><img src="../images/index.gif" alt="Index" /></a>
+<a href="../"><img src="../images/home.gif" alt="Home" /></a>
+</body>
+</html>
+</xsl:template>
+
+
 <xsl:template match="directiveindex">
 <html>
 <head><title><xsl:value-of select="title"/> - Apache HTTP Server</title>
@@ -32,6 +76,11 @@
 </xsl:for-each>
 </ul>
 </blockquote>
+<!-- Page footer -->
+<hr />
+<h3 align="center">Apache HTTP Server Version 2.0</h3>
+<a href="./"><img src="../images/index.gif" alt="Index" /></a>
+<a href="../"><img src="../images/home.gif" alt="Home" /></a>
 </body>
 </html>
 </xsl:template>
