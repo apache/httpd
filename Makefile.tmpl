@@ -408,7 +408,7 @@ install-config:
 			-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
 			-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
 			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \
-			-e 's;@@ServerRoot@@;$(prefix);' \
+			-e 's;@@ServerRoot@@;$(prefix);g' \
 			-e 's;logs/accept.lock;$(runtimedir)/$(TARGET).lock;' \
 			-e 's;logs/apache_runtime_status;$(runtimedir)/$(TARGET).scoreboard;' \
 			-e 's;logs/httpd.pid;$(runtimedir)/$(TARGET).pid;' \
