@@ -1,8 +1,12 @@
 Changes with Apache 1.2b7
 
-  *) Fix handling of unsigned ints in ap_snprintf() on some chips such
+  *) Fixed potential file descriptor leak in mod_asis; updated it and
+     http__core to use pfopen/pfclose instead of fopen/fclose.
+     [Randy Terbush and Roy Fielding]
+
+  *) Fixed handling of unsigned ints in ap_snprintf() on some chips such
      as the DEC Alpha which is 64-bit but uses 32-bit ints. 
-     [Dean Gaudet, Ken Coar]
+     [Dean Gaudet and Ken Coar]
 
   *) Return a 302 response code to the client when sending a redirect
      due to a missing trailing '/' on a directory instead of a 301; now
