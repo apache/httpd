@@ -59,16 +59,6 @@
 
 #define MAX_STRING_LEN 256
 
-/* DELONCLOSE is quite cool, but:
- * we need to close the file before we can copy it.
- * otherwise it's locked by the system ;-(
- *
- * XXX: Other systems affected? (OS2?)
- */
-#if 0
-#define OMIT_DELONCLOSE 1
-#endif
-
 apr_file_t *tfp = NULL;
 apr_file_t *errfile;
 apr_pool_t *cntxt;
@@ -79,23 +69,8 @@ apr_xlate_t *to_ascii;
 static void cleanup_tempfile_and_exit(int rc)
 {
     if (tfp) {
-#ifdef OMIT_DELONCLOSE
-        const char *cfilename;
-        char *filename = NULL;
-
-        if (apr_file_name_get(&cfilename, tfp) == APR_SUCCESS) {
-            filename = apr_pstrdup(cntxt, cfilename);
-        }
-#endif
         apr_file_close(tfp);
-
-#ifdef OMIT_DELONCLOSE
-        if (filename) {
-            apr_file_remove(filename, cntxt);
-        }
-#endif
     }
-
     exit(rc);
 }
 
@@ -261,13 +236,7 @@ int main(int argc, const char * const argv[])
     }
     dirname = apr_psprintf(cntxt, "%s/%s", dirname, tn);
 
-    if (apr_file_mktemp(&tfp, dirname,
-#ifdef OMIT_DELONCLOSE
-    APR_CREATE | APR_READ | APR_WRITE | APR_EXCL
-#else
-    0
-#endif
-    , cntxt) != APR_SUCCESS) {
+    if (apr_file_mktemp(&tfp, dirname, 0, cntxt) != APR_SUCCESS) {
         apr_file_printf(errfile, "Could not open temp file %s.\n", dirname);
         exit(1);
     }
@@ -306,9 +275,7 @@ int main(int argc, const char * const argv[])
         add_password(user, realm, tfp);
     }
     apr_file_close(f);
-#ifdef OMIT_DELONCLOSE
-    apr_file_close(tfp);
-#endif
+
     /* The temporary file has all the data, just copy it to the new location.
      */
     if (apr_file_copy(dirname, argv[1], APR_FILE_SOURCE_PERMS, cntxt) !=
@@ -316,11 +283,7 @@ int main(int argc, const char * const argv[])
         apr_file_printf(errfile, "%s: unable to update file %s\n", 
                         argv[0], argv[1]);
     }
-#ifdef OMIT_DELONCLOSE
-    apr_file_remove(dirname, cntxt);
-#else
     apr_file_close(tfp);
-#endif
 
     return 0;
 }
