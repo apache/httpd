@@ -283,6 +283,15 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.49
 
+  *) SECURITY: CAN-2004-0174 (cve.mitre.org)
+     Fix starvation issue on listening sockets where a short-lived
+     connection on a rarely-accessed listening socket will cause a
+     child to hold the accept mutex and block out new connections until
+     another connection arrives on that rarely-accessed listening socket.
+     With Apache 2.x there is no performance concern about enabling the 
+     logic for platforms which don't need it, so it is enabled everywhere
+     except for Win32.  [Jeff Trawick]
+
   *) mod_cgid: Fix storage corruption caused by use of incorrect pool.
      [Jeff Trawick]
 
