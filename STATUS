@@ -6,8 +6,6 @@ Release:
            evening, with release a day or two later.  This depends on
 	   Win32 working and being ready.
 
-           Does Jim offer to be RM?
-
     1.3.0: Tagged and rolled on June 1. Announced and Released on the 6th.
            
     2.0  : In pre-alpha development, see apache-2.0 repository
@@ -152,16 +150,6 @@ Needs patch:
 
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
-
-    * LynxOS has system-level conf.h file
-	Seems that Lynx has a system level conf.h file that ours overrules,
-	so it doesn't compile correctly. To accomodate, we would need to
-	rename our conf.h to something "safe". Possible choices:
-
-	    apconf.h       :
-	    applatforms.h  :
-	    apdefaults.h   :
-	    apdefines.h    :
 
 Open issues:
 
