@@ -412,6 +412,7 @@ case "$PLAT" in
 		OS='SGI IRIX'
 	    fi
 	fi
+	CC='cc'
 	CFLAGS="$CFLAGS -DIRIX"
 	;;
     *-sgi-irix)

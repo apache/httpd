@@ -1,5 +1,11 @@
 Changes with Apache 1.3.4
 
+  *) Fallback to native compilers for IRIX-32 platform. It seems that
+     a gcc 2.8.1 compiled apache is logging client addresses with all
+     bits set (255.255.255.255). This is the second such problem caused
+     by gcc 2.8.1 compiler. The first being broken semaphore locking.
+     [Randy Terbush]
+
   *) Updated mime.types to reflect current Internet media types
      and include a URL to the registry.
      [Manoj Kasichainula, Roy Fielding] PR#2380, 2286, 2246
