@@ -199,6 +199,7 @@ FILES_nlm_libs = \
 FILES_nlm_modules = \
 	Apache2 \
 	Libc \
+	mod_cach \
 	$(EOLIST)
 
 #
