@@ -653,6 +653,7 @@ if [ ".$layout" = .1 ]; then
     echo "Compilation paths:"
     echo "           HTTPD_ROOT: $prefix"
     echo "           SUEXEC_BIN: $sbindir/suexec"
+    echo "      SHARED_CORE_DIR: $libexecdir"
     echo "       DEFAULT_PIDLOG: ${localstatedir_relative}${localstatesubdir_run}/httpd.pid"
     echo "   DEFAULT_SCOREBOARD: ${localstatedir_relative}${localstatesubdir_run}/httpd.scoreboard"
     echo "     DEFAULT_LOCKFILE: ${localstatedir_relative}${localstatesubdir_run}/httpd.lock"
@@ -709,6 +710,7 @@ echo "## USED AS A COMMAND LINE EXPANDER TO OVERRIDE PATHS" >>$src/apaci
 echo "## WITHOUT DISTURBING THE KNOWN MAKE BUILD PROCESS DISPLAY" >>$src/apaci
 echo "echo '-DHTTPD_ROOT=\"$prefix\"'" >>$src/apaci
 echo "echo '-DSUEXEC_BIN=\"$sbindir/suexec\"'" >>$src/apaci
+echo "echo '-DSHARED_CORE_DIR=\"$libexecdir\"'" >>$src/apaci
 echo "echo '-DDEFAULT_PIDLOG=\"${localstatedir_relative}${localstatesubdir_run}/httpd.pid\"'" >>$src/apaci
 echo "echo '-DDEFAULT_SCOREBOARD=\"${localstatedir_relative}${localstatesubdir_run}/httpd.scoreboard\"'" >>$src/apaci
 echo "echo '-DDEFAULT_LOCKFILE=\"${localstatedir_relative}${localstatesubdir_run}/httpd.lock\"'" >>$src/apaci

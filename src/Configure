@@ -232,6 +232,14 @@ RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 RULE_IRIXN32=`./helpers/CutRule IRIXN32 $file`
 RULE_PARANOID=`./helpers/CutRule PARANOID $file`
+RULE_SHARED_CORE=`./helpers/CutRule SHARED_CORE $file`
+
+####################################################################
+## Rule SHARED_CORE implies required DSO support
+##
+if [ "$RULE_SHARED_CORE" = "yes" ]; then
+	using_shlib=1
+fi
 
 ####################################################################
 ## Preset some "constants";
@@ -241,6 +249,8 @@ DBM_LIB="-ldbm"
 DB_LIB="-ldb"
 SHELL="/bin/sh"
 TARGET="httpd"
+SUBTARGET="target_static"
+SHLIB_SUFFIX_LIST=""
 PRINTPATH=PrintPath
 CAT="cat"
 if ./helpers/$PRINTPATH -s ranlib; then
@@ -730,6 +740,8 @@ TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{prin
 ## required.  For more platforms just add the required lines below.
 ##
 if [ "x$using_shlib" = "x1" ] ; then
+    DEF_SHARED_CORE=no
+    SHLIB_SUFFIX_DEPTH=all
     case "$PLAT" in
         *-linux1)
             CFLAGS_SHLIB="-fpic"
@@ -740,11 +752,13 @@ if [ "x$using_shlib" = "x1" ] ; then
             CFLAGS_SHLIB="-fpic"
             LDFLAGS_SHLIB="-Bshareable"
             LDFLAGS_SHLIB_EXPORT="-rdynamic"
+            SHLIB_SUFFIX_DEPTH=0
             ;;
         *-freebsd*)
             CFLAGS_SHLIB="-fpic"
             LDFLAGS_SHLIB="-Bshareable"
             LDFLAGS_SHLIB_EXPORT=""
+            SHLIB_SUFFIX_DEPTH=2
             ;;
         *-solaris2*)
             case $CC in
@@ -753,6 +767,7 @@ if [ "x$using_shlib" = "x1" ] ; then
             esac
             LDFLAGS_SHLIB="-G"
             LDFLAGS_SHLIB_EXPORT=""
+            SHLIB_SUFFIX_DEPTH=1
             ;;
         *-sunos4*)
             case $CC in
@@ -803,6 +818,36 @@ if [ "x$using_shlib" = "x1" ] ; then
             esac
             LDFLAGS_SHLIB="-Bdynamic -G"
             LDFLAGS_SHLIB_EXPORT=""
+            DEF_SHARED_CORE=yes
+            ;;
+        RM*-sni-sysv4*)
+            # MIPS hosts can take advantage of the LDFLAGS_SHLIB_EXPORT switch
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+            esac
+            LDFLAGS_SHLIB="-G"
+            LDFLAGS_SHLIB_EXPORT="-Wl,-Blargedynsym"
+            ;;
+        *-sni-sysv4*)
+            # Older SINIX machines must be linked as "shared core"-Apache
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+            esac
+            LDFLAGS_SHLIB="-G"
+            LDFLAGS_SHLIB_EXPORT=""
+            SHLIB_SUFFIX_DEPTH=0
+            DEF_SHARED_CORE=yes
+            ;;
+        *-sysv4*)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+            esac
+            LDFLAGS_SHLIB="-G"
+            LDFLAGS_SHLIB_EXPORT=""
+            DEF_SHARED_CORE=yes
             ;;
         *)
             ##  ok, no known explict support for shared objects
@@ -1147,6 +1192,42 @@ if [ "$RULE_WANTHSREGEX" = "yes" ]; then
 fi
 
 ####################################################################
+## Now the SHARED_CORE stuff
+##
+if [ "x$using_shlib" = "x1" ] ; then
+    if [ ".$RULE_SHARED_CORE" = .default ] ; then
+        RULE_SHARED_CORE=$DEF_SHARED_CORE
+    fi
+    if [ ".$RULE_SHARED_CORE" = .yes ]; then
+    echo " + enabling generation of Apache core as DSO"
+        #    shuffle compiler flags from shlib variant to standard
+        CFLAGS="$CFLAGS $CFLAGS_SHLIB"
+        CFLAGS_SHLIB=""
+        #    indicate that Rule SHARED_CORE is active
+        CFLAGS="$CFLAGS -DSHARED_CORE"
+        #    select the special subtarget for shared core generation
+        SUBTARGET=target_shared
+        #    determine additional suffixes for libhttpd.so
+        V=1 R=3 P=0
+        if [ ".$SHLIB_SUFFIX_DEPTH" = .0 ]; then
+            SHLIB_SUFFIX_LIST=""
+        fi
+        if [ ".$SHLIB_SUFFIX_DEPTH" = .1 ]; then
+            SHLIB_SUFFIX_LIST="$V"
+        fi
+        if [ ".$SHLIB_SUFFIX_DEPTH" = .2 ]; then
+            SHLIB_SUFFIX_LIST="$V.$R"
+        fi
+        if [ ".$SHLIB_SUFFIX_DEPTH" = .3 ]; then
+            SHLIB_SUFFIX_LIST="$V.$R.$P"
+        fi
+        if [ ".$SHLIB_SUFFIX_DEPTH" = .all ]; then
+            SHLIB_SUFFIX_LIST="$V $V.$R $V.$R.$P"
+        fi
+    fi
+fi
+
+####################################################################
 ## Now create modules.c
 ##
 sed 's/_module//' $tmpfile | awk >modules.c '
@@ -1270,6 +1351,8 @@ echo "" >>Makefile
 ## Now add the target for the main Makefile
 ##
 echo "TARGET=$TARGET" >> Makefile
+echo "SUBTARGET=$SUBTARGET" >> Makefile
+echo "SHLIB_SUFFIX_LIST=$SHLIB_SUFFIX_LIST" >> Makefile
 echo "" >> Makefile
 
 ####################################################################

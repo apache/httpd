@@ -1,5 +1,24 @@
 Changes with Apache 1.3b6
 
+  *) Added dynamic shared object (DSO) support for SVR4-derivates: The
+     problem under SVR4 is that there is no command flag to force the linker
+     to export the global symbols of the httpd executable therewith they are
+     available to the DSO's. Instead of problematic hacks like creating a
+     dummy.so file (containing dummy references to all global symbols) the
+     httpd binary is linked against, we use a clean trick stolen from Perl 5:
+     Placing the Apache core code itself into a DSO library named libhttpd.so.
+     This way the global symbols _HAVE_ to be exported and thus are available
+     to any manually loaded DSO's under runtime. To reduce the impact to the
+     user to null we go even further and create a stub httpd executable which
+     automatically keeps track of the DSO library loading itself and thus
+     hides the complete mechanism from the user. Although the generation of
+     this DSO library is automatically triggered for platforms which
+     essentially need it (mostly all SVR4-derivates) it can be also enabled
+     manually via the Rule SHARED_CORE. This can be interesting in the future
+     where we perhaps exploit this libhttpd.so mechanism for providing nifty
+     features like graceful upgrades, or whatever. 
+     [Ralf S. Engelschall, Martin Kraemer]
+
   *) Build the libraries before building the rest of the tools. [Ben Hyde]
 
   *) Add "distclean" target to src/-Makefiles to provide "make distclean" also

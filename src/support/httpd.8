@@ -60,6 +60,8 @@ httpd \- Apache hypertext transfer protocol server
 [
 .B \-X
 ] [
+.BI \-L " libexecdir"
+] [
 .BI \-d " serverroot"
 ] [
 .BI \-f " config"
@@ -107,6 +109,15 @@ http://www.apache.org/. Paths in this manual may not reflect those
 compiled into 
 .B httpd.
 .SH OPTIONS
+.TP 12
+.BI \-L " libexecdir"
+This option is only available if Apache was built with
+the 
+.I SHARED_CORE
+rule enabled which forces the Apache core code to be
+placed into a dynamic shared object (DSO) file. This file
+is searched in a hardcoded path under ServerRoot per default. Use this
+option if you want to override it.
 .TP 12
 .BI \-d " serverroot"
 Set the initial value for the ServerRoot directive to \fIserverroot\fP. This

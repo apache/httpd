@@ -152,6 +152,7 @@ Committed Code Changes:
     * Fixed ordering of argument checks for RewriteBase directive, PR#2045
     * Ralf's cleanup of subdir movement to again allow correct breaks on error
     * Ralf's consistent add of "distclean" targets for the src/-Makefiles
+    * Ralf's and Martin's DSO support for all SVR4-derivate Unix platforms
 
 Available Patches:
 

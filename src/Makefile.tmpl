@@ -23,9 +23,33 @@ all: @@Configuration@@ $(TARGET)
 	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
-$(TARGET): subdirs modules.o
+$(TARGET): $(SUBTARGET)
+
+target_static: subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) buildmark.c
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
+
+target_shared: libhttpd.ep
+	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o $(TARGET) -DSHARED_CORE_BOOTSTRAP main/http_main.c
+
+libhttpd.ep: libhttpd.so
+	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o libhttpd.ep -DSHARED_CORE_TIESTATIC main/http_main.c \
+		  -L. -lhttpd $(LIBS)
+
+libhttpd.so: subdirs modules.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) buildmark.c
+	$(LD) $(LDFLAGS_SHLIB) -o libhttpd.so buildmark.o $(OBJS) $(REGLIB)
+	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
+		rm -f libhttpd.so.*; \
+		for suffix in $(SHLIB_SUFFIX_LIST) ""; do \
+			[ ".$$suffix" = . ] && continue; \
+		    echo "ln libhttpd.so libhttpd.so.$$suffix"; \
+		    ln libhttpd.so libhttpd.so.$$suffix; \
+		done; \
+	fi
 
 subdirs:
 	@for i in $(SUBDIRS); do \
@@ -42,7 +66,7 @@ support-dir:
 	echo "<=== $(SDP)support"
 
 clean:
-	rm -f $(TARGET) *.o
+	rm -f $(TARGET) libhttpd.* *.o
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
 		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \

@@ -51,36 +51,44 @@ EXTRA_INCLUDES=
 #RANLIB=
 
 ################################################################
-# Makefile configuration (Shared Object support)
+# Dynamic Shared Object (DSO) support
 #
-# There is experimental support for compiling Apache Modules as
-# shared objects and loading them under runtime without
-# recompilation when the module mod_so is enabled (see below).
-# The shared object feature then can be enabled for each module
-# individually by replacing the `AddModule' command of the
-# corresponding module line below with `SharedModule' and
-# changing the filename extension from `.o' to `.so'. 
+# There is experimental support for compiling the Apache core and
+# the Apache modules into dynamic shared object (DSO) files for
+# maximum runtime flexibility.
 #
 # The Configure script currently has only limited built-in
-# knowledge on how to compile shared objects because this is
+# knowledge on how to compile these DSO files because this is
 # heavily platform-dependent. The current state is this:
 #
 # Out-of-the-box supported platforms:
-#   Linux, FreeBSD, Solaris, SunOS, IRIX, OSF1, UnixWare
+#   Linux, FreeBSD, Solaris, SunOS, 
+#   IRIX, OSF1, UnixWare, SINIX, SVR4
 #
-# Entirely unsupported platforms (no dlopen-style API):
-#   HP-UX, AIX, Ultrix
+# Explicitly unsupported platforms:
+#   HP/UX, AIX, Ultrix
 #
-# For other platforms where you want to use the `SharedModule'
-# directive you first have to make sure it supports the dlopen()
+# For other platforms where you want to use the DSO mechanism you
+# first have to make sure it supports the pragmatic dlopen()
 # system call and then you have to provide the appropriate
-# compiler and linker flags here to create the shared object
-# files on your particular platform.
+# compiler and linker flags below to create the DSO files on your
+# particular platform.
 #
-#
+# The placement of the Apache core into a DSO file is triggered
+# by the SHARED_CORE rule below while support for building
+# individual Apache Modules as DSO files and loading them under
+# runtime without recompilation is triggered by `SharedModule'
+# commands. To be able to use the latter one first enable the
+# module mod_so (see corresponding `AddModule' command below).
+# Then enable the DSO feature for particular modules individually
+# by replacing their `AddModule' command with `SharedModule' and
+# change the filename extension from `.o' to `.so'. 
+
 #CFLAGS_SHLIB=
 #LDFLAGS_SHLIB=
 #LDFLAGS_SHLIB_EXPORT=
+
+Rule SHARED_CORE=default
 
 ################################################################
 # Rules configuration

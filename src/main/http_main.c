@@ -78,6 +78,15 @@
  *      Extensive rework for Apache.
  */
 
+#ifndef SHARED_CORE_BOOTSTRAP
+#ifndef SHARED_CORE_TIESTATIC
+
+#ifdef SHARED_CORE
+#define REALMAIN ap_main
+#else
+#define REALMAIN main
+#endif
+
 #define CORE_PRIVATE
 
 #include "httpd.h"
@@ -788,10 +797,17 @@ static void usage(char *bin)
     for (i = 0; i < strlen(bin); i++)
 	pad[i] = ' ';
     pad[i] = '\0';
+#ifdef SHARED_CORE
+    fprintf(stderr, "Usage: %s [-L directory] [-d directory] [-f file]\n", bin);
+#else
     fprintf(stderr, "Usage: %s [-d directory] [-f file]\n", bin);
+#endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
     fprintf(stderr, "       %s [-v] [-V] [-h] [-l]\n", pad);
     fprintf(stderr, "Options:\n");
+#ifdef SHARED_CORE
+    fprintf(stderr, "  -L directory     : specify an alternate location for shared object files\n");
+#endif
     fprintf(stderr, "  -d directory     : specify an alternate initial ServerRoot\n");
     fprintf(stderr, "  -f file          : specify an alternate ServerConfigFile\n");
     fprintf(stderr, "  -C \"directive\"   : process directive before reading config files\n");
@@ -3023,6 +3039,9 @@ static void show_compile_settings(void)
 #ifdef NEED_HASHBANG_EMUL
     printf(" -D NEED_HASHBANG_EMUL\n");
 #endif
+#ifdef SHARED_CORE
+    printf(" -D SHARED_CORE\n");
+#endif
 }
 
 
@@ -3935,7 +3954,7 @@ void STANDALONE_MAIN(int argc, char **argv);
 extern char *optarg;
 extern int optind;
 
-int main(int argc, char *argv[])
+int REALMAIN(int argc, char *argv[])
 {
     int c;
 
@@ -3950,9 +3969,9 @@ int main(int argc, char *argv[])
     setup_prelinked_modules();
 
 #ifdef DEBUG_SIGSTOP
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:")) != -1) {
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlL:Z:")) != -1) {
 #else
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhl")) != -1) {
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlL:")) != -1) {
 #endif
 	char **new;
 	switch (c) {
@@ -3989,6 +4008,15 @@ int main(int argc, char *argv[])
 #ifdef DEBUG_SIGSTOP
 	case 'Z':
 	    raise_sigstop_flags = atoi(optarg);
+	    break;
+#endif
+#ifdef SHARED_CORE
+	case 'L':
+	    /* just ignore this option here, because it has only
+	     * effect when SHARED_CORE is used and then it was
+	     * already handled in the Shared Core Bootstrap
+	     * program.
+	     */
 	    break;
 #endif
 	case '?':
@@ -5005,7 +5033,7 @@ int master_main(int argc, char **argv)
 __declspec(dllexport)
      int apache_main(int argc, char *argv[])
 #else
-int main(int argc, char *argv[]) 
+int REALMAIN(int argc, char *argv[]) 
 #endif
 {
     int c;
@@ -5138,5 +5166,136 @@ int main(int argc, char *argv[])
     return (0);
 }
 
-
 #endif /* ndef MULTITHREAD */
+
+#else  /* ndef SHARED_CORE_TIESTATIC */
+
+/*
+**  Standalone Tie Program for Shared Core support
+**
+**  It's purpose is to tie the static libraries and 
+**  the shared core library under link-time and  
+**  passing execution control to the real main function
+**  in the shared core library under run-time.
+*/
+
+int main(int argc, char *argv[]) 
+{
+    extern int ap_main(int argc, char *argv[]);
+    return ap_main(argc, argv);
+}
+
+#endif /* ndef SHARED_CORE_TIESTATIC */
+#else  /* ndef SHARED_CORE_BOOTSTRAP */
+
+/*
+**  Standalone Bootstrap Program for Shared Core support
+**
+**  It's purpose is to initialise the LD_LIBRARY_PATH
+**  environment variable therewith the Unix loader is able
+**  to start the Standalone Tie Program (see above)
+**  and then replacing itself with this program by
+**  immediately passing execution to it.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "conf.h"
+#include "httpd.h"
+
+#define VARNAME "LD_LIBRARY_PATH"
+
+#ifndef SHARED_CORE_DIR 
+#define SHARED_CORE_DIR HTTPD_ROOT "/libexec"
+#endif
+
+#ifndef SHARED_CORE_EXECUTABLE_PROGRAM
+#define SHARED_CORE_EXECUTABLE_PROGRAM "libhttpd.ep"
+#endif
+
+int main(int argc, char *argv[], char *envp[]) 
+{
+    extern char *optarg;
+    extern int optind;
+    char prog[MAX_STRING_LEN];
+    char llp_buf[MAX_STRING_LEN];
+    char **llp_slot;
+    char *llp_existing;
+    char *llp_dir;
+    char **envpnew;
+    int c, i, l;
+
+    /* 
+     * parse argument line, 
+     * but only handle the -L option 
+     */
+    llp_dir = SHARED_CORE_DIR;
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlL:Z:")) != -1) {
+	switch (c) {
+	case 'C':
+	case 'c':
+	case 'X':
+	case 'd':
+	case 'f':
+	case 'v':
+	case 'V':
+	case 'h':
+	case 'l':
+	case 'Z':
+	case '?':
+	    break;
+	case 'L':
+	    llp_dir = strdup(optarg);
+	    break;
+	}
+    }
+
+    /* 
+     * create path to SHARED_CORE_EXECUTABLE_PROGRAM
+     */
+    sprintf(prog, "%s/%s", llp_dir, SHARED_CORE_EXECUTABLE_PROGRAM);
+
+    /* 
+     * adjust process environment therewith the Unix loader 
+     * is able to start the SHARED_CORE_EXECUTABLE_PROGRAM.
+     */
+    llp_slot = NULL;
+    llp_existing = NULL;
+    l = strlen(VARNAME);
+    for (i = 0; envp[i] != NULL; i++) {
+	if (strncmp(envp[i], VARNAME "=", l+1) == 0) {
+	    llp_slot = &envp[i];
+	    llp_existing = strchr(envp[i], '=') + 1;
+	}
+    }
+    if (llp_slot == NULL) {
+	envpnew = (char **)malloc(sizeof(char *)*(i + 2));
+	memcpy(envpnew, envp, sizeof(char *)*i);
+	envp = envpnew;
+	llp_slot = &envp[i++];
+	envp[i] = NULL;
+    }
+    if (llp_existing != NULL)
+	 sprintf(llp_buf, "%s=%s:%s", VARNAME, llp_dir, llp_existing);
+    else
+	 sprintf(llp_buf, "%s=%s", VARNAME, llp_dir);
+    *llp_slot = strdup(llp_buf);
+
+    /* 
+     * finally replace our process with 
+     * the SHARED_CORE_EXECUTABLE_PROGRAM
+     */
+    if (execve(prog, argv, envp) == -1) {
+	fprintf(stderr, 
+		"httpd: Unable to exec Shared Core Executable Program `%s'\n",
+		prog);
+	return 1;
+    }
+    else
+	return 0;
+}
+
+#endif /* ndef SHARED_CORE_BOOTSTRAP */
+

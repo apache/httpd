@@ -221,6 +221,22 @@ install-mktree:
 install-programs:
 	@echo "===> [programs: Installing Apache httpd program and shared objects]"
 	$(INSTALL_PROGRAM) $(SRC)/httpd $(sbindir)/httpd
+	@if [ ".`grep 'SUBTARGET=target_shared' $(SRC)/Makefile`" != . ]; then \
+		echo "$(INSTALL_PROGRAM) $(SRC)/libhttpd.ep $(libexecdir)/libhttpd.ep"; \
+		$(INSTALL_SCRIPT) $(SRC)/libhttpd.ep $(libexecdir)/libhttpd.ep; \
+		echo "$(INSTALL_SCRIPT) $(SRC)/libhttpd.so $(libexecdir)/libhttpd.so"; \
+		$(INSTALL_SCRIPT) $(SRC)/libhttpd.so $(libexecdir)/libhttpd.so; \
+		SHLIB_SUFFIX_LIST="`grep '^SHLIB_SUFFIX_LIST=' $(SRC)/Makefile | sed -e 's:^.*=::'`"; \
+		if [ ".$$SHLIB_SUFFIX_LIST" != . ]; then \
+			echo "rm -f $(libexecdir)/libhttpd.so.*"; \
+			rm -f $(libexecdir)/libhttpd.so.*; \
+			for suffix in $$SHLIB_SUFFIX_LIST ""; do \
+			    [ ".$$suffix" = . ] && continue; \
+				echo "ln $(libexecdir)/libhttpd.so $(libexecdir)/libhttpd.so.$$suffix"; \
+				ln $(libexecdir)/libhttpd.so $(libexecdir)/libhttpd.so.$$suffix; \
+			done; \
+		fi; \
+	fi
 	$(INSTALL_DATA) $(SRC)/support/httpd.8 $(mandir)/man8/httpd.8
 	-@rm -f .install.conf; touch .install.conf
 	-@if [ ".`grep '^[ 	]*SharedModule' $(SRC)/Configuration.apaci`" != . ]; then \
