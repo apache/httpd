@@ -254,6 +254,14 @@ static apr_proc_mutex_t *accept_mutex;
 static void wakeup_listener(void)
 {
     listener_may_exit = 1;
+    if (!listener_os_thread) {
+        /* XXX there is an obscure path that this doesn't handle perfectly:
+         *     right after listener thread is created but before 
+         *     listener_os_thread is set, the first worker thread hits an
+         *     error and starts graceful termination
+         */
+        return;
+    }
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
      * platforms and wake up the listener thread since it is the only thread 
@@ -655,7 +663,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
     int process_slot = ti->pid;
-    int thread_slot = ti->tid;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     void *csd = NULL;
     apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
@@ -812,9 +819,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
     }
 
-    ap_update_child_status_from_indexes(process_slot, thread_slot, 
-                                        (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
-                                        (request_rec *) NULL);
     ap_queue_term(worker_queue);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
@@ -904,47 +908,17 @@ static int check_signal(int signum)
     return 0;
 }
 
-/* XXX under some circumstances not understood, children can get stuck
- *     in start_threads forever trying to take over slots which will
- *     never be cleaned up; for now there is an APLOG_DEBUG message issued
- *     every so often when this condition occurs
- */
-static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
+static void create_listener_thread(thread_starter *ts)
 {
-    thread_starter *ts = dummy;
-    apr_thread_t **threads = ts->threads;
+    int my_child_num = ts->child_num_arg;
     apr_threadattr_t *thread_attr = ts->threadattr;
-    int child_num_arg = ts->child_num_arg;
-    int my_child_num = child_num_arg;
-    proc_info *my_info = NULL;
+    proc_info *my_info;
     apr_status_t rv;
-    int i = 0;
-    int threads_created = 0;
-    int loops;
-    int prev_threads_created;
-
-    /* We must create the fd queues before we start up the listener
-     * and worker threads. */
-    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
-    rv = ap_queue_init(worker_queue, ap_threads_per_child, pchild);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
-                     "ap_queue_init() failed");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
 
     my_info = (proc_info *)malloc(sizeof(proc_info));
     my_info->pid = my_child_num;
-    my_info->tid = i;
+    my_info->tid = -1; /* listener thread doesn't have a thread slot */
     my_info->sd = 0;
-
-    /* XXX we shouldn't create the listener thread until we have at least
-     *     one worker thread...  for now I'll blame this bug for some very
-     *     rare hung connections I've seen during restart testing
-     *     (I've also seen cases where a child process starts but is
-     *     never able to take over worker thread slots, so the theory
-     *     does make sense.)  Jeff
-     */
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
                            my_info, pchild);
     if (rv != APR_SUCCESS) {
@@ -960,6 +934,37 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
     apr_os_thread_get(&listener_os_thread, ts->listener);
+}
+
+/* XXX under some circumstances not understood, children can get stuck
+ *     in start_threads forever trying to take over slots which will
+ *     never be cleaned up; for now there is an APLOG_DEBUG message issued
+ *     every so often when this condition occurs
+ */
+static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
+{
+    thread_starter *ts = dummy;
+    apr_thread_t **threads = ts->threads;
+    apr_threadattr_t *thread_attr = ts->threadattr;
+    int child_num_arg = ts->child_num_arg;
+    int my_child_num = child_num_arg;
+    proc_info *my_info;
+    apr_status_t rv;
+    int i;
+    int threads_created = 0;
+    int loops;
+    int prev_threads_created;
+
+    /* We must create the fd queues before we start up the listener
+     * and worker threads. */
+    worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
+    rv = ap_queue_init(worker_queue, ap_threads_per_child, pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+                     "ap_queue_init() failed");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
+
     loops = prev_threads_created = 0;
     while (1) {
         /* ap_threads_per_child does not include the listener thread */
@@ -998,6 +1003,12 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                 clean_child_exit(APEXIT_CHILDFATAL);
             }
             threads_created++;
+            if (threads_created == 1) {
+                /* now that we have a worker thread, it makes sense to create
+                 * a listener thread (we don't want a listener without a worker!)
+                 */
+                create_listener_thread(ts);
+            }
         }
         if (start_thread_may_exit || threads_created == ap_threads_per_child) {
             break;
