@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.63 1996/08/23 18:19:11 jim Exp $ */
+/* $Id: http_main.c,v 1.64 1996/09/06 18:36:08 jim Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -753,11 +753,13 @@ void sync_scoreboard_image ()
 int update_child_status (int child_num, int status, request_rec *r)
 {
     int old_status;
-    short_score new_score_rec=scoreboard_image->servers[child_num];
+    short_score new_score_rec;
 
     if (child_num < 0)
 	return -1;
     
+    sync_scoreboard_image();
+    new_score_rec = scoreboard_image->servers[child_num];
     new_score_rec.pid = getpid();
     old_status = new_score_rec.status;
     new_score_rec.status = status;
@@ -852,8 +854,10 @@ void increment_counts (int child_num, request_rec *r, int flag)
 {
     long int bs=0;
     time_t now;
-    short_score new_score_rec=scoreboard_image->servers[child_num];
+    short_score new_score_rec;
 
+    sync_scoreboard_image();
+    new_score_rec = scoreboard_image->servers[child_num];
     if (r->sent_bodyct)
         bgetopt(r->connection->client, BO_BYTECT, &bs);
 
@@ -959,7 +963,6 @@ void reap_children()
 	   && waitpid(scoreboard_image->servers[n].pid,&status,WNOHANG) == -1
 	   && errno == ECHILD)
 	    {
-	    sync_scoreboard_image();
 	    update_child_status(n,SERVER_DEAD,NULL);
 	    }
     }
