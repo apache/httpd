@@ -221,7 +221,6 @@ static int ssl_hook_pre_connection(conn_rec *c)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
-    unsigned char *cpVHostID;
     char *cpVHostMD5;
     SSLConnRec *sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
 
@@ -241,9 +240,9 @@ static int ssl_hook_pre_connection(conn_rec *c)
      * Remember the connection information for
      * later access inside callback functions
      */
-    cpVHostID = (unsigned char *)ssl_util_vhostid(c->pool,c->base_server);
+
     ssl_log(c->base_server, SSL_LOG_INFO, "Connection to child %d established "
-            "(server %s, client %s)", c->id, cpVHostID, 
+            "(server %s, client %s)", c->id, sc->szVHostID, 
             c->remote_ip != NULL ? c->remote_ip : "unknown");
 
     /*
@@ -263,7 +262,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
         return DECLINED; /* XXX */
     }
     SSL_clear(ssl);
-    cpVHostMD5 = ap_md5(c->pool, cpVHostID);
+    cpVHostMD5 = ap_md5(c->pool, sc->szVHostID);
     if (!SSL_set_session_id_context(ssl, (unsigned char *)cpVHostMD5,
                                     MD5_DIGESTSIZE*2)) {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,

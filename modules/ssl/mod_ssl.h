@@ -497,6 +497,7 @@ typedef struct {
  *  and all <VirtualHost> contexts)
  */
 typedef struct {
+    const char  *szVHostID;
     BOOL         bEnabled;
     apr_table_t *ap_server_ctx;
     const char  *szPublicCertFile[SSL_AIDX_MAX];
