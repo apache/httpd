@@ -606,8 +606,8 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring certificate revocation facility", cpVHostID);
         if ((sc->pRevocationStore =
-                SSL_X509_STORE_create(sc->szCARevocationFile,
-                                      sc->szCARevocationPath)) == NULL) {
+                SSL_X509_STORE_create((char*)sc->szCARevocationFile,
+                                      (char*)sc->szCARevocationPath)) == NULL) {
             ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "Init: (%s) Unable to configure X.509 CRL storage "
                     "for certificate revocation", cpVHostID);
@@ -804,7 +804,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p, SSLSrvConfigRec *sc)
                 break;
             }
         }
-        if ((n = SSL_CTX_use_certificate_chain(ctx, sc->szCertificateChain, 
+        if ((n = SSL_CTX_use_certificate_chain(ctx, (char*)sc->szCertificateChain, 
                                                bSkipFirst, NULL)) < 0) {
             ssl_log(s, SSL_LOG_ERROR,
                     "Init: (%s) Failed to configure CA certificate chain!", cpVHostID);
@@ -889,7 +889,7 @@ static int ssl_init_FindCAList_X509NameCmp(X509_NAME **a, X509_NAME **b)
     return(X509_NAME_cmp(*a, *b));
 }
 
-STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, char *cpCAfile, char *cpCApath)
+STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const char *cpCAfile, const char *cpCApath)
 {
     STACK_OF(X509_NAME) *skCAList;
     STACK_OF(X509_NAME) *sk;
