@@ -32,6 +32,7 @@ to change the scope of other configuration directives.</p>
 <directive type="section" module="core">Location</directive>
 <directive type="section" module="core">LocationMatch</directive>
 <directive type="section" module="proxy">Proxy</directive>
+<directive type="section" module="proxy">ProxyMatch</directive>
 <directive type="section" module="core">VirtualHost</directive>
 </directivelist>
 </related>
@@ -199,16 +200,20 @@ SetHandler server-status<br />
 <p>The <directive type="section" module="core">Directory</directive>,
 <directive type="section" module="core">Files</directive>, and
 <directive type="section" module="core">Location</directive>
-directives can each use the shell-style wildcard characters "?" to
-match any single character, "*" to match any set of characters, and
-character classes like [a-zA-Z] to match particular characters.  This
-is useful to apply the same configuration to a group of filesystem or
-webspace locations. If even more flexible matching is required, each
+directives can each use shell-style wildcard characters as in
+<code>fnmatch</code> from the C standard library.  The character "*"
+matches any sequence of characters, "?" matches any single character,
+and "[<em>seq</em>]" matches any character in <em>seq</em>.  The "/"
+character will not be matched by any wildcard; it must be specified
+explictly.</p>
+
+<p>If even more flexible matching is required, each
 container has a regular-expression (regex) counterpart <directive
 type="section" module="core">DirectoryMatch</directive>, <directive
 type="section" module="core">FilesMatch</directive>, and <directive
 type="section" module="core">LocationMatch</directive> that allow
-perl-compatible<a href="glossary.html#regex">regular expressions</a>
+perl-compatible
+<a href="glossary.html#regex">regular expressions</a>
 to be used in choosing the matches.  But see the section below on
 configuration merging to find out how using regex sections will change
 how directives are applied.</p>
@@ -296,8 +301,9 @@ see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
 
 <section id="proxy"><title>Proxy</title>
 
-<p>The <directive type="section" module="proxy">Proxy</directive>
-container applies enclosed configuration directives only
+<p>The <directive type="section" module="mod_proxy">Proxy</directive>
+and <directive type="section" module="mod_proxy">ProxyMatch</directive>
+containers apply enclosed configuration directives only
 to sites accessed through <module>mod_proxy</module>'s proxy server
 that match the specified URL.  For example, the following configuration
 will prevent the proxy server from being used to access the
@@ -324,8 +330,8 @@ sections is also syntactically allowed in
 <directive type="section" module="core">FilesMatch</directive>,
 <directive type="section" module="core">Location</directive>,
 <directive type="section" module="core">LocationMatch</directive>,
-and
-<directive type="section" module="proxy">Proxy</directive>
+<directive type="section" module="proxy">Proxy</directive>,
+and <directive type="section" module="proxy">ProxyMatch</directive>
 sections.  There are some exceptions, however.</p>
 
 <ul>

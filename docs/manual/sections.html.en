@@ -9,7 +9,7 @@ use configuration section containers or <code>.htaccess</code> files
 to change the scope of other configuration directives.</p>
 <ul><li><a href="#types">Types of Configuration Section Containers</a></li><li><a href="#file-and-web">Filesystem and Webspace</a><ul><li><a href="#filesystem">Filesystem Containers</a></li><li><a href="#webspace">Webspace Containers</a></li><li><a href="#wildcards">Wildcards and Regular Expressions</a></li><li><a href="#whichwhen">What to use When</a></li></ul></li><li><a href="#virtualhost">Virtual Hosts</a></li><li><a href="#proxy">Proxy</a></li><li><a href="#whatwhere">What Directives are Allowed?</a></li><li><a href="#mergin">How the sections are merged</a><ul><li><a href="#merge-examples">Some Examples</a></li></ul></li></ul><hr><h2><a name="types">Types of Configuration Section Containers</a></h2>
 
-<table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="./mod/core.html">core</a></code><br><code><a href="./mod/mod_proxy.html">mod_proxy</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a><br><a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a><br><a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a><br><a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a><br><a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a><br><a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a><br><a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a><br><a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a><br><a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a><br><a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a><br></td></tr></table>
+<table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="./mod/core.html">core</a></code><br><code><a href="./mod/mod_proxy.html">mod_proxy</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a><br><a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a><br><a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a><br><a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a><br><a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a><br><a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a><br><a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a><br><a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a><br><a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a><br><a href="./mod/proxy.html#proxymatch" class="directive"><code class="directive">&lt;ProxyMatch&gt;</code></a><br><a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a><br></td></tr></table>
 
 <p>There are two basic types of containers.  Most containers are
 evaluated for each request.  The enclosed directives are applied only
@@ -165,13 +165,17 @@ SetHandler server-status<br>
 <p>The <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>,
 <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>, and
 <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>
-directives can each use the shell-style wildcard characters "?" to
-match any single character, "*" to match any set of characters, and
-character classes like [a-zA-Z] to match particular characters.  This
-is useful to apply the same configuration to a group of filesystem or
-webspace locations. If even more flexible matching is required, each
+directives can each use shell-style wildcard characters as in
+<code>fnmatch</code> from the C standard library.  The character "*"
+matches any sequence of characters, "?" matches any single character,
+and "[<em>seq</em>]" matches any character in <em>seq</em>.  The "/"
+character will not be matched by any wildcard; it must be specified
+explictly.</p>
+
+<p>If even more flexible matching is required, each
 container has a regular-expression (regex) counterpart <a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a>, <a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a>, and <a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a> that allow
-perl-compatible<a href="glossary.html#regex">regular expressions</a>
+perl-compatible
+<a href="glossary.html#regex">regular expressions</a>
 to be used in choosing the matches.  But see the section below on
 configuration merging to find out how using regex sections will change
 how directives are applied.</p>
@@ -249,8 +253,9 @@ with a different configuration for each.  For more information,
 see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
 <h2><a name="proxy">Proxy</a></h2>
 
-<p>The <a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a>
-container applies enclosed configuration directives only
+<p>The <a href="./mod/mod_proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a>
+and <a href="./mod/mod_proxy.html#proxymatch" class="directive"><code class="directive">&lt;ProxyMatch&gt;</code></a>
+containers apply enclosed configuration directives only
 to sites accessed through <code><a href="./mod/mod_proxy.html">mod_proxy</a></code>'s proxy server
 that match the specified URL.  For example, the following configuration
 will prevent the proxy server from being used to access the
@@ -274,8 +279,8 @@ sections is also syntactically allowed in
 <a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a>,
 <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>,
 <a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a>,
-and
-<a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a>
+<a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a>,
+and <a href="./mod/proxy.html#proxymatch" class="directive"><code class="directive">&lt;ProxyMatch&gt;</code></a>
 sections.  There are some exceptions, however.</p>
 
 <ul>
