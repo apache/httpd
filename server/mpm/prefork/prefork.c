@@ -184,8 +184,8 @@ static int die_now = 0;
 /* 
  * change directory for gprof to plop the gmon.out file
  * configure in httpd.conf:
- * GprofDir logs/   -> $ServerRoot/logs/gmon.out
- * GprofDir logs/%  -> $ServerRoot/logs/gprof.$pid/gmon.out
+ * GprofDir $RuntimeDir/   -> $ServerRoot/$RuntimeDir/gmon.out
+ * GprofDir $RuntimeDir/%  -> $ServerRoot/$RuntimeDir/gprof.$pid/gmon.out
  */
 static void chdir_for_gprof(void)
 {
@@ -210,7 +210,7 @@ static void chdir_for_gprof(void)
 	}
     }
     else {
-	use_dir = ap_server_root_relative(pconf, "logs");
+	use_dir = ap_server_root_relative(pconf, DEFAULT_REL_RUNTIMEDIR);
     }
 
     chdir(use_dir);

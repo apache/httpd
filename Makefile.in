@@ -20,9 +20,9 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 	install-other install-cgi install-include install-suexec install-man \
 	install-build
 
-DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
+DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	modules.c config.cache config.log config.status build/config_vars.mk \
-        build/rules.mk
+        build/rules.mk docs/conf/httpd-std.conf
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists
 
 include $(top_builddir)/build/rules.mk

@@ -98,7 +98,7 @@
                    
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
-#define DEFAULT_PIDLOG "logs/httpd.pid"
+#define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"
 #endif
 
 /*

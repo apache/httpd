@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2000-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,52 +50,48 @@
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- *
- * Portions of this software are based upon public domain software
- * originally written at the National Center for Supercomputing Applications,
- * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef APACHE_MPM_DEFAULT_H
-#define APACHE_MPM_DEFAULT_H
+#ifndef AP_CONFIG_LAYOUT_H
+#define AP_CONFIG_LAYOUT_H
 
-/* Number of servers processes to spawn off by default
- */
-#ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 2
-#endif
+/* Configured Apache directory layout */
+#define DEFAULT_PREFIX "@prefix@"
+#define DEFAULT_EXP_EXEC_PREFIX "@exp_exec_prefix@"
+#define DEFAULT_REL_EXEC_PREFIX "@rel_exec_prefix@"
+#define DEFAULT_EXP_BINDIR "@exp_bindir@"
+#define DEFAULT_REL_BINDIR "@rel_bindir@"
+#define DEFAULT_EXP_SBINDIR "@exp_sbindir@"
+#define DEFAULT_REL_SBINDIR "@rel_sbindir@"
+#define DEFAULT_EXP_LIBEXECDIR "@exp_libexecdir@"
+#define DEFAULT_REL_LIBEXECDIR "@rel_libexecdir@"
+#define DEFAULT_EXP_MANDIR "@exp_mandir@"
+#define DEFAULT_REL_MANDIR "@rel_mandir@"
+#define DEFAULT_EXP_SYSCONFDIR "@exp_sysconfdir@"
+#define DEFAULT_REL_SYSCONFDIR "@rel_sysconfdir@"
+#define DEFAULT_EXP_DATADIR "@exp_datadir@"
+#define DEFAULT_REL_DATADIR "@rel_datadir@"
+#define DEFAULT_EXP_INSTALLBUILDDIR "@exp_installbuilddir@"
+#define DEFAULT_REL_INSTALLBUILDDIR "@rel_installbuilddir@"
+#define DEFAULT_EXP_ERRORDIR "@exp_errordir@"
+#define DEFAULT_REL_ERRORDIR "@rel_errordir@"
+#define DEFAULT_EXP_ICONSDIR "@exp_iconsdir@"
+#define DEFAULT_REL_ICONSDIR "@rel_iconsdir@"
+#define DEFAULT_EXP_HTDOCSDIR "@exp_htdocsdir@"
+#define DEFAULT_REL_HTDOCSDIR "@rel_htdocsdir@"
+#define DEFAULT_EXP_MANUALDIR "@exp_manualdir@"
+#define DEFAULT_REL_MANUALDIR "@rel_manualdir@"
+#define DEFAULT_EXP_CGIDIR "@exp_cgidir@"
+#define DEFAULT_REL_CGIDIR "@rel_cgidir@"
+#define DEFAULT_EXP_INCLUDEDIR "@exp_includedir@"
+#define DEFAULT_REL_INCLUDEDIR "@rel_includedir@"
+#define DEFAULT_EXP_LOCALSTATEDIR "@exp_localstatedir@"
+#define DEFAULT_REL_LOCALSTATEDIR "@rel_localstatedir@"
+#define DEFAULT_EXP_RUNTIMEDIR "@exp_runtimedir@"
+#define DEFAULT_REL_RUNTIMEDIR "@rel_runtimedir@"
+#define DEFAULT_EXP_LOGFILEDIR "@exp_logfiledir@"
+#define DEFAULT_REL_LOGFILEDIR "@rel_logfiledir@"
+#define DEFAULT_EXP_PROXYCACHEDIR "@exp_proxycachedir@"
+#define DEFAULT_REL_PROXYCACHEDIR "@rel_proxycachedir@"
 
-/* Maximum number of *free* server threads --- more than this, and
- * they will die off.
- */
-
-#ifndef DEFAULT_MAX_SPARE_THREAD
-#define DEFAULT_MAX_SPARE_THREAD 10
-#endif
-
-/* Minimum --- fewer than this, and more will be created */
-
-#ifndef DEFAULT_MIN_SPARE_THREAD
-#define DEFAULT_MIN_SPARE_THREAD 5
-#endif
-
-/* Where the main/parent process's pid is logged */
-#ifndef DEFAULT_PIDLOG
-#define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"
-#endif
-
-/*
- * Interval, in microseconds, between scoreboard maintenance.
- */
-#ifndef SCOREBOARD_MAINTENANCE_INTERVAL
-#define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
-#endif
-
-/* Number of requests to try to handle in a single process.  If <= 0,
- * the children don't die off.
- */
-#ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
-#endif
-
-#endif /* AP_MPM_DEFAULT_H */
+#endif /* AP_CONFIG_LAYOUT_H */

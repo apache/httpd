@@ -268,8 +268,8 @@
 #include "os.h"
 #if !defined(WIN32) && !defined(NETWARE)
 #include "ap_config_auto.h"
+#include "ap_config_layout.h"
 #endif
-
 
 /* TODO - We need to put OS detection back to make all the following work */
 
