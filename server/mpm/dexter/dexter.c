@@ -275,7 +275,7 @@ static void reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-static ap_proc_t *wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
+static ap_proc_t *wait_or_timeout(ap_pool_t *p)
 {
     struct timeval tv;
     ap_status_t rv;
@@ -295,11 +295,6 @@ static ap_proc_t *wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
     if (rv == APR_CHILD_DONE) {
         return ret;
     }
-#ifdef NEED_WAITPID
-    if ((ret = reap_children(status)) > 0) {
-        return ret;
-    }
-#endif
     tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
     tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
     ap_select(0, NULL, NULL, NULL, &tv);
@@ -1089,7 +1084,7 @@ static void server_main_loop(int remaining_children_to_start)
     int i;
 
     while (!restart_pending && !shutdown_pending) {
-        pid = wait_or_timeout(&status, pconf);
+        pid = wait_or_timeout(pconf);
         
         if (pid != NULL) {
             int actual_pid;
