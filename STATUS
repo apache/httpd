@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/13 21:10:39 $]
+Last modified at [$Date: 2002/06/13 21:16:32 $]
 
 Release:
 
@@ -99,7 +99,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       same headers as a GET which is wrong.
       Is this a showstopper?
         +1: Justin
-        -1: 
+        -1: Aaron
 
     * 500 returned instead of 501 if a handler other than default_handler
       is invoked on a method with M_INVALID.
