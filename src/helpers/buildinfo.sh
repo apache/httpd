@@ -58,10 +58,10 @@ username="$LOGNAME"
 if [ "x$username" = "x" ]; then
     username="$USER"
     if [ "x$username" = "x" ]; then
-        username="`whoami 2>/dev/null |\
+        username="`(whoami) 2>/dev/null |\
                    awk '{ printf("%s", $1); }'`"
         if [ "x$username" = "x" ]; then
-            username="`who am i 2>/dev/null |\
+            username="`(who am i) 2>/dev/null |\
                        awk '{ printf("%s", $1); }'`"
             if [ "x$username" = "x" ]; then
                 username='unknown'
@@ -73,10 +73,10 @@ fi
 #
 #   determine hostname and domainname
 #
-hostname="`uname -n 2>/dev/null |\
+hostname="`(uname -n) 2>/dev/null |\
            awk '{ printf("%s", $1); }'`"
 if [ "x$hostname" = "x" ]; then
-    hostname="`hostname 2>/dev/null |\
+    hostname="`(hostname) 2>/dev/null |\
                awk '{ printf("%s", $1); }'`"
     if [ "x$hostname" = "x" ]; then
         hostname='unknown'
@@ -115,8 +115,8 @@ time_year="`date '+%Y' 2>/dev/null | awk '{ printf("%s", $1); }'`"
 if [ "x$time_year" = "x" ]; then
     time_year="`date '+%y' | awk '{ printf("%s", $1); }'`"
     case $time_year in
-        9[0-9]*) time_year="19$time_year" ;;
-              *) time_year="20$time_year" ;;
+        [5-9][0-9]) time_year="19$time_year" ;;
+        [0-4][0-9]) time_year="20$time_year" ;;
     esac
 fi
 case $time_month in
