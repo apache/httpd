@@ -642,7 +642,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
                                     const char *url)
 {
     int result;
-    LDAPURLDesc *urld;
+    apr_ldap_url_desc_t *urld;
 
     mod_auth_ldap_config_t *sec = config;
 
@@ -650,7 +650,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 	         cmd->server, "[%d] auth_ldap url parse: `%s'", 
 	         getpid(), url);
 
-    result = ldap_url_parse(url, &(urld));
+    result = apr_ldap_url_parse(url, &(urld));
     if (result != LDAP_SUCCESS) {
         switch (result) {
         case LDAP_URL_ERR_NOTLDAP:
@@ -755,7 +755,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
     }
 
     sec->have_ldap_url = 1;
-    ldap_free_urldesc(urld);
+    apr_ldap_free_urldesc(urld);
     return NULL;
 }
 

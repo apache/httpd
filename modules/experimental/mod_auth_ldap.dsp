@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/ldap/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_auth_ldap" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_auth_ldap" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_ldap
-# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth_ldap.so" /libpath:"..\..\srclib\ldap\lib" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_ldap
+# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_ldap
 
 !ELSEIF  "$(CFG)" == "mod_auth_ldap - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/ldap/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_auth_ldap" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_auth_ldap" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_ldap
-# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth_ldap.so" /libpath:"..\..\srclib\ldap\lib" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_ldap
+# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_ldap
 
 !ENDIF 
 
