@@ -92,7 +92,7 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
  * </pre>
  * @param c The connection we are closing
  */
-apr_status_t ap_lingering_close(void *dummy);
+AP_DECLARE(void) ap_lingering_close(conn_rec *c);
 #endif
 
   /* Hooks */
