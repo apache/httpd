@@ -315,6 +315,7 @@ application/x-troff-ms		ms
 application/x-ustar		ustar
 application/x-wais-source	src
 application/x400-bp
+application/xhtml		xhtml xht
 application/xml
 application/xml-dtd
 application/xml-external-parsed-entity
@@ -365,6 +366,7 @@ image/prs.btif
 image/prs.pti
 image/tiff			tiff tif
 image/vnd.cns.inf2
+image/vnd.djvu			djvu djv
 image/vnd.dwg
 image/vnd.dxf
 image/vnd.fastbidsheet
