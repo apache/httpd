@@ -53,7 +53,7 @@
 
       <dt><code>posixsem</code></dt>
       <dd>verwendet POSIX-kompatible Semaphore, um den Mutex zu
-      imlementieren.</dd>
+      implementieren.</dd>
 
       <dt><code>pthread</code></dt>
       <dd>verwendet gem&auml;&szlig; der POSIX-Thread-Spezifikation
@@ -107,7 +107,7 @@
     jedoch nicht f&uuml;r den Benutzer beschreibbar sein soll, unter dem
     der Server l&auml;uft, werden normalerweise keine
     Hauptspeicherausz&uuml;ge geschrieben. Wenn Sie zum Debuggen
-    einen Hauptspeicherausz&uuml;g haben m&ouml;chten, k&ouml;nnen Sie
+    einen Hauptspeicherauszug haben m&ouml;chten, k&ouml;nnen Sie
     ihn mit dieser Direktive an einem anderen Ort ablegen lassen.</p>
 
     <note><title>Hauptspeicherausz&uuml;ge unter Linux</title>
@@ -167,7 +167,7 @@
       Sie eingehen.</p>
     </note>
 
-    <p>Wichtiger Hinweis: Die Verwendung der Diretive innerhalb von
+    <p>Wichtiger Hinweis: Die Verwendung der Direktive innerhalb von
     <directive module="core" type="section">VirtualHost</directive>
     wird nicht l&auml;nger unterst&uuml;tzt. Benutzen Sie <directive
     module="mod_suexec">SuexecUserGroup</directive> um Ihren Server
@@ -337,7 +337,7 @@ entgegengenommenen Anfragen</description>
 
     <note type="warning"><title>Sicherheit</title>
       <p>Es ist am besten, die Ablage in einem allgemein <transnote>f&uuml;r
-      jederman</transnote> beschreibbaren
+      jedermann</transnote> beschreibbaren
       Verzeichnis wie <code>/var/tmp</code> <em>zu vermeiden</em>, da
       ein Denial-of-Servide-Angriff gestartet werden k&ouml;nnte und der
       Server am Start gehindert werden k&ouml;nnte, indem eine Lock-Datei
