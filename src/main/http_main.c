@@ -4294,9 +4294,10 @@ static void standalone_main(int argc, char **argv)
 		const char *pidfile = NULL;
 		pidfile = ap_server_root_relative (pconf, ap_pid_fname);
 		if ( pidfile != NULL && unlink(pidfile) == 0)
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
-				 "httpd: removed PID file %s (pid=%d)",
-				 pidfile, getpid());
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+				 server_conf,
+				 "httpd: removed PID file %s (pid=%ld)",
+				 pidfile, (long)getpid());
 	    }
 
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
