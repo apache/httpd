@@ -70,7 +70,7 @@
         <message id="syntax">Sintaxis</message>
         <message id="default">Valor por defecto</message>
         <message id="context">Contexto</message>
-        <message id="override">Sustituye a</message>
+        <message id="override">Prevalece sobre</message>
         <message id="status">Estado</message>
         <message id="module">M&#243;dulo</message>
 
@@ -94,7 +94,7 @@
         <message id="summary">Resumen de contenidos</message>
 
         <!-- Used for glossary link titles -->
-        <message id="glossarylink">see glossary</message>
+        <message id="glossarylink">ver glosario</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Servidor HTTP Apache</message>
