@@ -525,7 +525,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
             if (remaining == 0) {
                 /* get the chunk size from the stream */
                 chunk_start = ap_getline(buf, buf_size, f, 0);
-                if ((chunk_start <= 0) || (chunk_start >= (buf_size - 1)) || !ap_isxdigit(*buf)) {
+                if ((chunk_start <= 0) || ((size_t)chunk_start + 1 >= buf_size) || !ap_isxdigit(*buf)) {
                     n = -1;
                 }
                 /* parse the chunk size */
@@ -544,7 +544,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 
             /* read the chunk */
             if (remaining > 0) {
-                n = ap_bread(f, buf, MIN((off_t)buf_size, remaining));
+                n = ap_bread(f, buf, MIN((int)buf_size, (int)remaining));
                 if (n > -1) {
                     remaining -= n;
                 }
@@ -572,7 +572,8 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
                 n = ap_bread(f, buf, buf_size);
             }
             else {
-                n = ap_bread(f, buf, MIN((off_t)buf_size, len - total_bytes_rcvd));
+                n = ap_bread(f, buf, MIN((int)buf_size, 
+                                         (int)(len - total_bytes_rcvd)));
             }
         }
 
