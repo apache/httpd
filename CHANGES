@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_headers no longer crashes if an empty header value should
+     be added.  [André Malo]
+
   *) mod_cgi: Handle output on stderr during script execution on Unix
      platforms; preventing deadlock when stderr output fills pipe buffer.
      PR 22030.  [Joe Orton, Jeff Trawick]
