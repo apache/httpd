@@ -969,7 +969,7 @@ void child_main(apr_pool_t *pconf)
         rv = WaitForMultipleObjects(2, (HANDLE *) child_events, FALSE, 1000);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_TIMEOUT) {
-            apr_proc_other_child_check();
+            apr_proc_other_child_refresh_all(APR_OC_REASON_RUNNING);
         }
         else 
 #endif
