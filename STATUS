@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/24 16:43:38 $]
+Last modified at [$Date: 2003/01/24 18:18:29 $]
 
 Release:
 
@@ -71,11 +71,11 @@ PATCHES TO PORT FROM 2.1
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
       modules/mappers/mod_rewrite.c r1.136
-      +1: nd, jerenkrantz
+      +1: nd, jerenkrantz, +1
 
     * Use saner default config values for suexec. PR 15713.
       support/suexec.h r1.8
-      +1: nd, jerenkrantz
+      +1: nd, jerenkrantz, trawick
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
