@@ -250,6 +250,15 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         /* Would this overrun our buffer?  If so, we'll die. */
         if (n < bytes_handled + len) {
             *read = bytes_handled;
+            if (*s) {
+                /* ensure this string is terminated */
+                if (bytes_handled < n) {
+                    (*s)[bytes_handled] = '\0';
+                }
+                else {
+                    (*s)[n-1] = '\0';
+                }
+            }
             return APR_ENOSPC;
         }
 
@@ -380,6 +389,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             /* Do we have enough space? We may be full now. */
                 if (bytes_handled >= n) {
                     *read = n;
+                    /* ensure this string is terminated */
+                    (*s)[n-1] = '\0';
                     return APR_ENOSPC;
                 }
                 else {
