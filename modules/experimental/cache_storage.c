@@ -66,6 +66,8 @@ APR_HOOK_STRUCT(
 	APR_HOOK_LINK(open_entity)
 )
 
+extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
+
 extern module AP_MODULE_DECLARE_DATA cache_module;
 
 /* -------------------------------------------------------------- */
@@ -78,9 +80,13 @@ int cache_remove_url(request_rec *r, const char *types, char *url)
 {
     const char *next = types;
     const char *type;
-    const char *key;
+    apr_status_t rv;
+    char *key;
 
-    key = cache_create_key(r);
+    rv = cache_generate_key(r,r->pool,&key);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
 
     /* for each specified cache type, delete the URL */
     while(next) {
@@ -107,13 +113,16 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(h));
     const char *next = types;
     const char *type;
-    const char *key;
+    char *key;
     apr_status_t rv;
     cache_request_rec *cache = (cache_request_rec *) 
                          ap_get_module_config(r->request_config, &cache_module);
 
+    rv =  cache_generate_key(r,r->pool,&key);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
     /* for each specified cache type, delete the URL */
-    key = cache_create_key(r);
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
         switch (rv = cache_run_create_entity(h, r, type, key, size)) {
@@ -162,10 +171,14 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     const char *type;
     apr_status_t rv;
     cache_info *info;
-    const char *key;
+    char *key;
     cache_request_rec *cache = (cache_request_rec *) 
                          ap_get_module_config(r->request_config, &cache_module);
-    key = cache_create_key(r);
+
+    rv =  cache_generate_key(r,r->pool,&key);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
     /* go through the cache types till we get a match */
     cache->handle = apr_palloc(r->pool, sizeof(cache_handle_t));
 
@@ -235,9 +248,10 @@ apr_status_t cache_read_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket
     return APR_SUCCESS;
 }
 
-const char* cache_create_key( request_rec *r ) 
+apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key ) 
 {
-    return r->uri;
+   *key = apr_pstrdup(p,r->uri);
+   return APR_SUCCESS;
 }
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
                                       (cache_handle_t *h, request_rec *r, const char *type, 

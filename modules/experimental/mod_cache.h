@@ -74,6 +74,7 @@
 #include "apr_md5.h"
 #include "apr_pools.h"
 #include "apr_strings.h"
+#include "apr_optional.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -168,9 +169,12 @@ typedef struct {
     int factor_set;
     int complete;               /* Force cache completion after this point */
     int complete_set;
-    /* ignore the last-modified header when deciding to cache this request */
+    /** ignore the last-modified header when deciding to cache this request */
     int no_last_mod_ignore_set;
     int no_last_mod_ignore; 
+    /** ignore client's requests for uncached responses */
+    int ignorecachecontrol;
+    int ignorecachecontrol_set;
 } cache_server_conf;
 
 /* cache info information */
@@ -250,6 +254,7 @@ int cache_remove_url(request_rec *r, const char *types, char *url);
 int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t size);
 int cache_remove_entity(request_rec *r, const char *types, cache_handle_t *h);
 int cache_select_url(request_rec *r, const char *types, char *url);
+apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
 /**
  * create a key for the cache based on the request record
  * this is the 'default' version, which can be overridden by a default function
@@ -294,5 +299,12 @@ APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, open_entity,
                            const char *urlkey))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_url, 
                           (const char *type, const char *urlkey))
+
+
+
+APR_DECLARE_OPTIONAL_FN(apr_status_t, 
+                        ap_cache_generate_key, 
+                        (request_rec *r, apr_pool_t*p, char**key ));
+
 
 #endif /*MOD_CACHE_H*/
