@@ -17,8 +17,10 @@ CFG=ApacheCore - Win32 Release
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ApacheCore - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ApacheCore - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ApacheCore - Win32 Release" (based on\
+ "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ApacheCore - Win32 Debug" (based on\
+ "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -69,7 +71,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\include" /I ".\lib\apr\include" /I ".\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -80,7 +82,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 aprlib.lib regex.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 aprlib.lib ap.lib pcre.lib pcreposix.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"lib\pcre\LibD" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 aprlib.lib ap.lib pcre.lib pcreposix.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"lib\pcre\LibD" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
+# SUBTRACT LINK32 /incremental:no /map
 
 !ENDIF 
 

@@ -81,7 +81,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug" /base:@BaseAddr.ref,mod_proxy
-# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug" /base:@BaseAddr.ref,mod_proxy
+# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug" /base:@BaseAddr.ref,mod_proxy
+# SUBTRACT LINK32 /incremental:no /map
 
 !ENDIF 
 
@@ -124,10 +125,6 @@ SOURCE=.\proxy_util.c
 
 SOURCE=.\mod_proxy.h
 # End Source File
-# End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
 # End Target
 # End Project

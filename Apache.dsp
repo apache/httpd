@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib /nologo /subsystem:console /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"CoreR"
-# ADD LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib /nologo /subsystem:console /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"CoreR"
+# ADD LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib user32.lib /nologo /subsystem:console /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"CoreR"
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 
@@ -75,7 +75,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib /nologo /subsystem:console /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"CoreD"
-# ADD LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib /nologo /subsystem:console /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"CoreD"
+# ADD LINK32 aprlib.lib ApacheCore.lib kernel32.lib advapi32.lib user32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"CoreD"
+# SUBTRACT LINK32 /incremental:no /map
 
 !ENDIF 
 
@@ -102,6 +103,10 @@ SOURCE=.\os\win32\service.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
+# Begin Source File
+
+SOURCE=.\OS\WIN32\main_win32.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\os\win32\registry.h

@@ -17,8 +17,10 @@ CFG=gen_uri_delims - Win32 Debug
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "gen_uri_delims - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "gen_uri_delims - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "gen_uri_delims - Win32 Release" (based on\
+ "Win32 (x86) Console Application")
+!MESSAGE "gen_uri_delims - Win32 Debug" (based on\
+ "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -49,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:none /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:none /map /machine:I386
 
 !ELSEIF  "$(CFG)" == "gen_uri_delims - Win32 Debug"
 
@@ -65,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,6 +76,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:none /debug /machine:I386
+# SUBTRACT LINK32 /map
 
 !ENDIF 
 
@@ -81,13 +84,9 @@ LINK32=link.exe
 
 # Name "gen_uri_delims - Win32 Release"
 # Name "gen_uri_delims - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\gen_uri_delims.c
 # End Source File
-# End Group
 # End Target
 # End Project
