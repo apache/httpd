@@ -965,7 +965,8 @@ static int dav_method_put(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* If not a file or collection resource, PUT not allowed */
-    if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
+    if (resource->type != DAV_RESOURCE_TYPE_REGULAR
+        && resource->type != DAV_RESOURCE_TYPE_WORKING) {
         body = apr_psprintf(r->pool,
                            "Cannot create resource %s with PUT.",
                            ap_escape_html(r->pool, r->uri));
