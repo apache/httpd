@@ -2077,7 +2077,7 @@ static void child_main(int child_num_arg)
 		    clean_child_exit(0);
 		}
 		clen = sizeof(sa_client);
-		stat = ap_accept(&csd, sd);
+		stat = ap_accept(&csd, sd, ptrans);
 		if (stat == APR_SUCCESS || stat != APR_EINTR)
 		    break;
 	    }
