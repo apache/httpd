@@ -618,12 +618,14 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             int res;
             char *seg_name;
             char *delim;
+	    int temp_slash=0;
         
             /* We have no trailing slash, but we sure would appreciate one...
              */
             if (sec_idx && r->filename[filename_len-1] != '/') {
                 r->filename[filename_len++] = '/';
                 r->filename[filename_len] = 0;
+		temp_slash=1;
             }
 
             /* Begin *this* level by looking for matching <Directory> sections
@@ -791,7 +793,7 @@ minimerge2:
 
             /* That temporary trailing slash was useful, now drop it.
              */
-            if (seg > startseg) {
+            if (temp_slash) {
                 r->filename[--filename_len] = '\0';
             }
 
