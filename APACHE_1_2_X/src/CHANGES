@@ -1,4 +1,8 @@
 Changes with Apache 1.2.1
+  
+  *) If an object has multiple variants that are otherwise equal Apache
+     would prefer the last listed variant rather than the first.
+     [Paul Sutton] PR#94
 
   *) "HostnameLookups" now defaults to off because it is far better for
      the net if we require people that actually need this data to
