@@ -160,7 +160,17 @@ void ap_reclaim_child_processes(int terminate)
                              0, ap_server_conf,
                    "child process %ld still did not exit, sending a SIGKILL",
                              (long)pid);
+#ifndef BEOS
                 kill(pid, SIGKILL);
+#else
+                /* sending a SIGKILL kills the entire team on BeOS, and as
+                 * httpd thread is part of that team it removes any chance
+                 * of ever doing a restart.  To counter this I'm changing to
+                 * use a kinder, gentler way of killing a specific thread
+                 * that is just as effective.
+                 */
+                kill_thread(pid);
+#endif
                 break;
             case 9:     /* 14 sec */
                 /* gave it our best shot, but alas...  If this really
