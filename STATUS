@@ -195,6 +195,11 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * proxy security fixes from 1.2.5 need to be brought forward
 
+    * Someone other than Dean has to do a security/correctness review on
+      psprintf(), bprintf(), and ap_snprintf().  In particular these routines
+      do lots of fun pointer manipulations and such and possibly have overflow
+      errors.  The respective flush_funcs also need to be exercised.
+
 Needs patch:
 
     * Documentation for:
@@ -285,16 +290,6 @@ Open issues:
             Randy: I would also argue that 1.3b6 is _not_ stable. I've been 
                    having real fits keeping it alive on a dual processor
                    machine. Could be OS problems..
-
-  * vformatter TODO:
-    - double check logic in ap_vformatter(), and especially psprintf()
-    - add in and use the inaddr formatting codes that started the whole
-      debate last october
-    - ... so that we can finally start fixing all the log messages that
-      were previously log_reason(), which included the client address,
-      but now using aplog_error() they're without the client address, and
-      that sucks
-    - bump mmn and make it official (wanna make sure the api is right first)
 
 Win32 specific issues:
 
