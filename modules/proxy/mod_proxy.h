@@ -240,6 +240,13 @@ typedef struct {
 #define PROXY_DECLARE_DATA             __declspec(dllimport)
 #endif
 
+/**
+ * Hook an optional proxy hook.  Unlike static hooks, this uses a macro
+ * instead of a function.
+ */
+#define PROXY_OPTIONAL_HOOK(name,fn,pre,succ,order) \
+        APR_OPTIONAL_HOOK(proxy,name,fn,pre,succ,order)
+
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r, 
                           proxy_server_conf *conf, char *url, 
                           const char *proxyhost, apr_port_t proxyport))
