@@ -365,7 +365,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
     long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
     int csd;
 
-    iol = ap_iol_attach_socket(sock);
+    iol = ap_iol_attach_socket(p, sock);
     if (iol == NULL) {
         if (errno == EBADF) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, NULL,
