@@ -63,6 +63,21 @@
                                            -- Clifford Stoll     */
 #include "mod_ssl.h"
 
+/*
+ * Return true if the named file exists and is readable
+ */
+
+static apr_status_t exists_and_readable(char *fname, apr_pool_t *pool)
+{
+    apr_finfo_t sbuf;
+
+    if ( apr_stat(&sbuf, fname, APR_FINFO_NORM, pool) != APR_SUCCESS )
+        return APR_ENOSTAT;
+
+    return ( ((sbuf.filetype == APR_REG) && (sbuf.protection & APR_UREAD)) ?
+                   APR_SUCCESS : APR_EGENERAL);
+}
+
 /*  _________________________________________________________________
 **
 **  Pass Phrase and Private Key Handling
@@ -84,7 +99,6 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     ssl_asn1_t *asn1;
     unsigned char *ucp;
     X509 *pX509Cert;
-    FILE *fp;
     BOOL bReadable;
     ssl_ds_array *aPassPhrase;
     int nPassPhrase;
@@ -136,25 +150,16 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->szPublicCertFile[i] != NULL; i++) {
 
             apr_cpystrn(szPath, sc->szPublicCertFile[i], sizeof(szPath));
-#if 0 /* XXX */
-            if ((fp = ap_pfopen(p, szPath, "r")) == NULL) {
-#else
-            if ((fp = fopen(szPath, "r")) == NULL) {
-#endif
+            if ( exists_and_readable(szPath, p) != APR_SUCCESS ) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Init: Can't open server certificate file %s", szPath);
                 ssl_die();
             }
-            if ((pX509Cert = SSL_read_X509(fp, NULL, NULL)) == NULL) {
+            if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                         "Init: Unable to read server certificate from file %s", szPath);
                 ssl_die();
             }
-#if 0 /* XXX */
-            ap_pfclose(p, fp);
-#else
-            fclose(fp);
-#endif
 
             /*
              * check algorithm type of certificate and make
@@ -236,24 +241,15 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * the callback function which serves the pass
                  * phrases to OpenSSL
                  */
-#if 0 /* XXX */
-                if ((fp = ap_pfopen(p, szPath, "r")) == NULL) {
-#else
-                if ((fp = fopen(szPath, "r")) == NULL) {
-#endif
-                    ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
-                            "Init: Can't open server private key file %s", szPath);
-                    ssl_die();
+                if ( exists_and_readable(szPath, p) != APR_SUCCESS ) {
+                     ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
+                         "Init: Can't open server private key file %s",szPath);
+                     ssl_die();
                 }
                 cpPassPhraseCur = NULL;
-                bReadable = ((pPrivateKey = SSL_read_PrivateKey(fp, NULL,
-		         ssl_pphrase_Handle_CB, s)) != NULL ? TRUE : FALSE);
-#if 0 /* XXX */
-                ap_pfclose(p, fp);
-#else
-                fclose(fp);
-#endif
-
+                bReadable = ((pPrivateKey = SSL_read_PrivateKey(szPath, NULL,
+                            ssl_pphrase_Handle_CB, s)) != NULL ? TRUE : FALSE);
+  
                 /*
                  * when the private key file now was readable,
                  * it's fine and we go out of the loop
