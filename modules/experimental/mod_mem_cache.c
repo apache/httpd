@@ -351,12 +351,18 @@ static int remove_entity(cache_handle_t *h)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+    /* 
+     * RACE .. some one might have just deleted this object .. so test
+     * if it is still around
+     */
+    if (obj) {
+        apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+        cleanup_cache_object(obj);
+        h->cache_obj = NULL;
+    }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
-    }
-
-    cleanup_cache_object(obj);
+    }    
     
     return OK;
 }
