@@ -281,18 +281,18 @@ AC_DEFUN(APACHE_MODULE,[
   undefine([optname])dnl
   _apmod_extra_msg=""
   if test "$enable_$1" = "most"; then
-    if "$module_selection" = "most"; then
-      $enable_$1=$module_default
-      _apmod_extra_msg=" (most)"
+    if test "$module_selection" = "most" -o "$module_selection" = "all"; then
+      enable_$1=$module_default
+      _apmod_extra_msg=" ($module_selection)"
     else
-      $enable_$1=no
+      enable_$1=no
     fi
   elif test "$enable_$1" = "maybe-all"; then
-    if "$module_selection" = "all"; then
-      $enable_$1=$module_default
+    if test "$module_selection" = "all"; then
+      enable_$1=$module_default
       _apmod_extra_msg=" (all)"
     else
-      $enable_$1=no
+      enable_$1=no
     fi
   fi
   AC_MSG_RESULT($enable_$1$_apmod_extra_msg)
