@@ -240,8 +240,11 @@ by other LDAP modules</description>
 <section id="settingcerts"><title>SSL/TLS Certificates</title>
 
     <p>The different LDAP SDKs have widely different methods of setting
-    and handling both CA and client side certificates. Some of the
-    differences are described below:</p>
+    and handling both CA and client side certificates.<p>
+
+    <p>If you intend to use SSL or TLS, read this section CAREFULLY so as to
+    understand the differences between configurations on the different LDAP
+    toolkits supported.</p>
 
     <section id="settingcerts-netscape"><title>Netscape/Mozilla/iPlanet SDK</title>
         <p>CA certificates are specified within a file called cert7.db.
@@ -250,13 +253,14 @@ by other LDAP modules</description>
         client certificates are required, an optional key3.db file may
         be specified with an optional password. The secmod file can be
         specified if required. These files are in the same format as
-        used by Netscape Communicator / Mozilla web browser. The easiest
-        way to obtain these files is to grab them from a browser
+        used by the Netscape Communicator or Mozilla web browsers. The easiest
+        way to obtain these files is to grab them from your browser
         installation.</p>
 
-        <p>Client certificates are specified per connection by referring
-        to the certificate "nickname", and an optional password may be
-        specified.</p>
+        <p>Client certificates are specified per connection using the
+        LDAPTrustedClientCert directive by referring
+        to the certificate "nickname". An optional password may be
+        specified to unlock the certificate's private key.</p>
 
         <p>The SDK supports SSL only. An attempt to use STARTTLS will cause
         an error when an attempt is made to contact the LDAP server at
@@ -292,10 +296,10 @@ by other LDAP modules</description>
         SDK to work correctly. These certificates can be specified as
         binary DER or Base64 (PEM) encoded files.</p>
 
-        <p>Client certificates are specified globally rather than per
-        connection, and so must be specified with the global certificate
-        option as below. Trying to set client certificates via the
-        LDAPTrustedClientCert option will cause an error to be thrown
+        <p>Note: Client certificates are specified globally rather than per
+        connection, and so must be specified with the LDAPTrustedGlobalCert
+        directive as below. Trying to set client certificates via the
+        LDAPTrustedClientCert directive will cause an error to be thrown
         when httpd starts up.</p>
 
         <p>The SDK supports both SSL and STARTTLS, set using the
@@ -309,6 +313,8 @@ by other LDAP modules</description>
              # Specify a client certificate file and key<br />
              LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem<br />
              LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]<br />
+             # Do not use this directive, as it will throw an error<br />
+             #LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
         </example>
 
     </section>
@@ -368,6 +374,9 @@ by other LDAP modules</description>
 
         <p>Both SSL and TLS are supported by using the ldaps:// URL
         format, or by using the LDAPTrustedMode directive accordingly.</p>
+
+        <p>Note: The status of support for client certificates is not yet known
+        for this toolkit.</p>
 
     </section>
 
@@ -467,9 +476,17 @@ Certificate Authority or global client certificates</description>
 
 <usage>
     <p>It specifies the directory path and file name of the trusted CA
-    certificates and/or client certificates <module>mod_ldap</module>
+    certificates and/or system wide client certificates <module>mod_ldap</module>
     should use when establishing an SSL or TLS connection to an LDAP
-    server. The type specifies the kind of certificate parameter being
+    server. Note that all certificate information specified using this directive
+    is applied globally to the entire server installation. Some LDAP toolkits
+    (notably Novell) require all client certificates to be set globally using
+    this directive. Most other toolkits require clients certificates to be set
+    per Directory or per Location using LDAPTrustedClientCert. If you get this
+    wrong, an error may be logged when an attempt is made to contact the LDAP
+    server, or the connection may silently fail (See the SSL/TLS certificate
+    guide above for details).
+    The type specifies the kind of certificate parameter being
     set, depending on the LDAP toolkit being used. Supported types are:</p>
     <ul>
       <li>CA_DER - binary DER encoded CA certificate</li>
@@ -500,8 +517,13 @@ connection client certificates.</description>
 <usage>
     <p>It specifies the directory path, file name or nickname of a
     per connection client certificate used when establishing an SSL
-    or TLS connection to an LDAP server. Not all LDAP toolkits support
-    per connection client certificates (See the toolkit guide for details).
+    or TLS connection to an LDAP server. Different locations or
+    directories may have their own independant client certificate
+    settings. Some LDAP toolkits (notably Novell)
+    do not support per connection client certificates, and will throw an
+    error on LDAP server connection if you try to use this directive
+    (Use the LDAPTrustedGlobalCert directive instead for Novell client
+    certificates - See the SSL/TLS certificate guide above for details).
     The type specifies the kind of certificate parameter being
     set, depending on the LDAP toolkit being used. Supported types are:</p>
     <ul>
