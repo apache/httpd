@@ -1,4 +1,9 @@
 Changes with Apache 2.0.16-dev
+  *) Performance: Add quick_handler hook. This hook is called at the
+     very beginning of the request processing before location_walk,
+     translate_name, etc.  This hook is useful for URI keyed content
+     caches like Mike Abbott's Quick Shortcut Cache.
+     [Bill Stoddard]
 
   *) top_module global variable renamed to ap_top_module [Perl]
 

@@ -1003,6 +1003,16 @@ AP_DECLARE_HOOK(void,child_init,(apr_pool_t *pchild, server_rec *s))
 AP_DECLARE_HOOK(int,handler,(request_rec *r))
 
 /**
+ * Run the quick handler functions for each module. The quick_handler
+ * is run before any other requests hooks are called (location_walk,
+ * directory_walk, access checking, et. al.). This hook was added
+ * to provide a quick way to serve content out of a URI keyed cache.
+ * @param r The request_rec
+ * @deffunc void ap_run_quick_handler(request_rec *r)
+ */
+AP_DECLARE_HOOK(int,quick_handler,(request_rec *r))
+
+/**
  * Retrieve the optional functions for each module.
  * This is run immediately before the server starts. Optional functions should
  * be registered during the hook registration phase.
