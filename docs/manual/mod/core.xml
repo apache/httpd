@@ -2060,7 +2060,8 @@ directory</description>
       <dt><code>ExecCGI</code></dt>
 
       <dd>
-      Execution of CGI scripts is permitted.</dd>
+      Execution of CGI scripts using <module>mod_cgi</module>
+      is permitted.</dd>
 
       <dt><code>FollowSymLinks</code></dt>
 
@@ -2079,49 +2080,57 @@ directory</description>
       <dt><code>Includes</code></dt>
 
       <dd>
-      Server-side includes are permitted.</dd>
+      Server-side includes provided by <module>mod_include</module>
+      are permitted.</dd>
 
       <dt><code>IncludesNOEXEC</code></dt>
 
       <dd>
 
-      Server-side includes are permitted, but the <code>#exec cmd</code>
-      and <code>#exec cgi</code> are disabled. It is still possible to
-      <code>#include virtual</code> CGI scripts from
-      <directive>ScriptAlias</directive>e'd directories.</dd>
+      Server-side includes are permitted, but the <code>#exec
+      cmd</code> and <code>#exec cgi</code> are disabled. It is still
+      possible to <code>#include virtual</code> CGI scripts from
+      <directive module="mod_cgi">ScriptAlias</directive>ed
+      directories.</dd>
 
       <dt><code>Indexes</code></dt>
 
       <dd>
-      If a URL which maps to a directory is requested, and the
-      there is no <directive>DirectoryIndex</directive> (<em>e.g.</em>,
-      <code>index.html</code>) in that directory, then the server will
-      return a formatted listing of the directory.</dd>
+      If a URL which maps to a directory is requested, and the there
+      is no <directive module="mod_dir">DirectoryIndex</directive>
+      (<em>e.g.</em>, <code>index.html</code>) in that directory, then
+      <module>mod_autoindex</module> will return a formatted listing
+      of the directory.</dd>
 
       <dt><code>MultiViews</code></dt>
 
       <dd>
       <a href="../content-negotiation.html">Content negotiated</a>
-      "MultiViews" are allowed.</dd>
+      "MultiViews" are allowed using
+      <module>mod_negotiation</module>.</dd>
 
       <dt><code>SymLinksIfOwnerMatch</code></dt>
 
-      <dd>
+      <dd>The server will only follow symbolic links for which the
+      target file or directory is owned by the same user id as the
+      link.
 
-      The server will only follow symbolic links for which the target
-      file or directory is owned by the same user id as the link.<br
-      /> <strong>Note</strong>: this option gets ignored if set inside
-      a <directive module="core" type="section">Location</directive>
-      section.</dd>
+      <note><title>Note</title> This option gets ignored if
+      set inside a <directive module="core"
+      type="section">Location</directive> section.</note>
+      </dd>
     </dl>
-    <p>Normally, if multiple <directive>Options</directive> could apply to a
-    directory, then the most specific one is taken complete; the
-    options are not merged. However if <em>all</em> the options on
-    the <directive>Options</directive> directive are preceded by a
-    <code>+</code> or <code>-</code>
-    symbol, the options are merged. Any options preceded by a <code>+</code>
-    are added to the options currently in force, and any options
-    preceded by a <code>-</code> are removed from the options currently in
+
+    <p>Normally, if multiple <directive>Options</directive> could
+    apply to a directory, then the most specific one is used and
+    others are ignored; the options are not merged. (See <a
+    href="../sections.html#mergin">how sections are merged</a>.)
+    However if <em>all</em> the options on the
+    <directive>Options</directive> directive are preceded by a
+    <code>+</code> or <code>-</code> symbol, the options are
+    merged. Any options preceded by a <code>+</code> are added to the
+    options currently in force, and any options preceded by a
+    <code>-</code> are removed from the options currently in
     force. </p>
 
     <p>For example, without any <code>+</code> and <code>-</code> symbols:</p>
