@@ -74,14 +74,6 @@
 #endif
 
 /*
- * Support for retrieving/overriding states
- */
-#ifndef SSL_get_state
-#define SSL_get_state(ssl) SSL_state(ssl)
-#endif
-#define SSL_set_state(ssl,val) (ssl)->state = val
-
-/*
  *  Maximum length of a DER encoded session.
  *  FIXME: There is no define in OpenSSL, but OpenSSL uses 1024*10,
  *         so this value should be ok. Although we have no warm feeling.
