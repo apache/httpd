@@ -3366,11 +3366,6 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
     return APR_SUCCESS;
 }
 
-static void core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
-{
-    /* XXX: can this function go away completely? -jcw */
-}
-
 static void core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap_set_version(pconf);
@@ -3409,7 +3404,6 @@ static void core_insert_filter(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_pre_config(core_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,
