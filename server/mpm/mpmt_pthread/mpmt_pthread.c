@@ -60,6 +60,7 @@
  
 #include "apr_portable.h"
 #include "apr_thread_proc.h"
+#include "apr_file_io.h"
 #include "ap_config.h"
 #include "httpd.h" 
 #include "http_main.h" 
@@ -1431,7 +1432,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    struct stat finfo;
+    struct ap_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1439,7 +1440,7 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    if ((ap_stat(&finfofname, cmd->pool) != APR_SUCCESS) || 
+    if ((ap_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) || 
         (finfo.filetype != APR_DIR)) {
 	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);
