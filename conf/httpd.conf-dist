@@ -111,7 +111,7 @@ KeepAlive On
 #
 # MaxKeepAliveRequests: The maximum number of requests to allow
 # during a persistent connection. Set to 0 to allow an unlimited amount.
-# We reccomend you leave this number high, for maximum performance.
+# We recommend you leave this number high, for maximum performance.
 #
 MaxKeepAliveRequests 100
 
@@ -326,6 +326,23 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 UserDir public_html
 
 #
+# Control access to UserDir directories.  The following is an example
+# for a site where these directories are restricted to read-only.
+#
+#<Directory /*/public_html>
+#    AllowOverride FileInfo AuthConfig Limit
+#    Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
+#    <Limit GET POST OPTIONS PROPFIND>
+#        Order allow,deny
+#        Allow from all
+#    </Limit>
+#    <Limit PUT DELETE PATCH PROPPATCH MKCOL COPY MOVE LOCK UNLOCK>
+#        Order deny,allow
+#        Deny from all
+#    </Limit>
+#</Directory>
+
+#
 # DirectoryIndex: Name of the file or files to use as a pre-written HTML
 # directory index.  Separate multiple entries with spaces.
 #
@@ -476,6 +493,13 @@ ServerSignature On
 #
 Alias /icons/ "@@ServerRoot@@/icons/"
 
+<Directory "@@ServerRoot@@/icons">
+    Options Indexes MultiViews
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+</Directory>
+
 #
 # ScriptAlias: This controls which directories contain server scripts.
 # ScriptAliases are essentially the same as Aliases, except that
@@ -493,6 +517,8 @@ ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
 <Directory "@@ServerRoot@@/cgi-bin">
     AllowOverride None
     Options None
+    Order allow,deny
+    Allow from all
 </Directory>
 
 #
@@ -509,7 +535,7 @@ ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
 #
 # FancyIndexing is whether you want fancy directory indexing or standard
 #
-IndexOptions FancyIndexing
+FancyIndexing On
 
 #
 # AddIcon* directives tell the server which icon to show for different
@@ -585,7 +611,7 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 # AddEncoding allows you to have certain browsers (Mosaic/X 2.1+) uncompress
 # information on the fly. Note: Not all browsers support this.
 # Despite the name similarity, the following Add* directives have nothing
-# to do with the FancyIndexing customisation directives above.
+# to do with the FancyIndexing customization directives above.
 #
 AddEncoding x-compress Z
 AddEncoding x-gzip gz
@@ -697,9 +723,9 @@ LanguagePriority en fr de
 #  request will *not* be available to such a script.
 
 #
-# The following directives disable keepalives and HTTP header flushes.
-# The first directive disables it for Netscape 2.x and browsers which
-# spoof it. There are known problems with these.
+# The following directives modify normal HTTP response behavior.
+# The first directive disables keepalive for Netscape 2.x and browsers that
+# spoof it. There are known problems with these browser implementations.
 # The second directive is for Microsoft Internet Explorer 4.0b2
 # which has a broken HTTP/1.1 implementation and does not properly
 # support keepalive when it is used on 301 or 302 (redirect) responses.
@@ -752,10 +778,17 @@ BrowserMatch "JDK/1\.0" force-response-1.0
 #</Location>
 
 #
-# Proxy Server directives. Uncomment the following line to
+# Proxy Server directives. Uncomment the following lines to
 # enable the proxy server:
 #
+#<IfModule mod_proxy.c>
 #ProxyRequests On
+#
+#<Directory proxy:*>
+#    Order deny,allow
+#    Deny from all
+#    Allow from .your_domain.com
+#</Directory>
 
 #
 # Enable/disable the handling of HTTP/1.1 "Via:" headers.
@@ -775,6 +808,9 @@ BrowserMatch "JDK/1\.0" force-response-1.0
 #CacheLastModifiedFactor 0.1
 #CacheDefaultExpire 1
 #NoCache a_domain.com another_domain.edu joes.garage_sale.com
+
+#</IfModule>
+# End of proxy directives.
 
 ### Section 3: Virtual Hosts
 #
