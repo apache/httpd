@@ -10,7 +10,6 @@
 <identifier>cern_meta_module</identifier>
 
 <summary>
-    <!-- XXX: Should mention other possibilities in Apache: mod_header -->
     <p>Emulate the CERN HTTPD Meta file semantics. Meta files are HTTP
     headers that can be output in addition to the normal range of
     headers for each file accessed. They appear rather like the
@@ -24,6 +23,9 @@
     href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">
     CERN metafile semantics</a> is available.</p>
 </summary>
+
+<seealso><module>mod_headers</module></seealso>
+<seealso><module>mod_asis</module></seealso>
 
 <directivesynopsis>
 <name>MetaFiles</name>
