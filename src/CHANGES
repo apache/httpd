@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) Some Win32 systems terminated all responses after 16 kB. This turns
+     out to be a bug in Winsock - select() doesn't always return the
+	 correct status.  [Ben Laurie]
+
   *) Directives owned by http_core can now use the new check_cmd_context()
      routine to ensure that they're not being used within a container
      (e.g., <Directory>) where they're invalid.  [Martin Kraemer]

@@ -53,6 +53,7 @@
 
 #include "httpd.h"
 #include "http_main.h"
+#include "http_log.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -98,6 +99,10 @@
 
 #ifdef WIN32
 
+/*
+  select() sometimes returns 0 even though the timeout has _not_ expired. We must work around this.
+*/
+
 int sendwithtimeout(int sock, const char *buf, int len, int flags)
 {
     int iostate = 1;
@@ -105,6 +110,7 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
     struct timeval tv;
     int err = WSAEWOULDBLOCK;
     int rv;
+    int retry;
 
     if (!(tv.tv_sec = check_alarm()))
 	return (send(sock, buf, len, flags));
@@ -118,25 +124,36 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
     rv = send(sock, buf, len, flags);
     if (rv == SOCKET_ERROR) {
 	err = WSAGetLastError();
-	if (err == WSAEWOULDBLOCK) {
-	    FD_ZERO(&fdset);
-	    FD_SET(sock, &fdset);
-	    tv.tv_usec = 0;
-	    rv = select(FD_SETSIZE, NULL, &fdset, NULL, &tv);
-	    if (rv == SOCKET_ERROR)
-		err = WSAGetLastError();
-	    else if (rv == 0) {
-		ioctlsocket(sock, FIONBIO, &iostate);
-		check_alarm();
-		WSASetLastError(WSAEWOULDBLOCK);
-		return (SOCKET_ERROR);
-	    }
-	    else {
-		rv = send(sock, buf, len, flags);
+	if (err == WSAEWOULDBLOCK)
+	    do {
+		retry=0;
+
+		FD_ZERO(&fdset);
+		FD_SET(sock, &fdset);
+		tv.tv_usec = 0;
+		rv = select(FD_SETSIZE, NULL, &fdset, NULL, &tv);
 		if (rv == SOCKET_ERROR)
 		    err = WSAGetLastError();
-	    }
-	}
+		else if (rv == 0) {
+ 		    ioctlsocket(sock, FIONBIO, &iostate);
+		    if(check_alarm() < 0) {
+			WSASetLastError(EINTR);	/* Simulate an alarm() */
+			return (SOCKET_ERROR);
+		    }
+		}
+		else {
+		    rv = send(sock, buf, len, flags);
+		    if (rv == SOCKET_ERROR) {
+		        err = WSAGetLastError();
+			if(err == WSAEWOULDBLOCK) {
+			    aplog_error(APLOG_MARK,APLOG_WARNING,NULL,
+				"select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
+			    retry=1;
+			    Sleep(100);
+			}
+		    }
+		}
+	    } while(retry);
     }
     ioctlsocket(sock, FIONBIO, &iostate);
     if (rv == SOCKET_ERROR)
