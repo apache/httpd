@@ -83,7 +83,7 @@ only, but allows export browsers to upgrade to stronger encryption?</a></h3>
     strong encryption or have to upgrade to strong encryption, but are
     not allowed to keep the export ciphers. The following does the trick:</p>
     <div class="example"><h3>httpd.conf</h3><p><code>
-      # allow all ciphers for the inital handshake,<br />
+      # allow all ciphers for the initial handshake,<br />
       # so export browsers can upgrade via SGC facility<br />
       SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
       <br />
@@ -132,7 +132,7 @@ all my clients?</a></h3>
     situation), as it's the case for instance in an Intranet, you can
     use plain certificate authentication. All you have to do is to
     create client certificates signed by your own CA certificate
-    <code>ca.crt</code> and then verifiy the clients against this
+    <code>ca.crt</code> and then verify the clients against this
     certificate.</p>
     <div class="example"><h3>httpd.conf</h3><p><code>
       # require a client certificate which has to be directly<br />
@@ -165,7 +165,7 @@ parts of the server?</a></h3>
 on certificates but still allow arbitrary clients to access the remaining
 parts of the server?</a></h3>
 
-    <p>The key is to check for various ingredients of the client certficate.
+    <p>The key is to check for various ingredients of the client certificate.
     Usually this means to check the whole or part of the Distinguished
     Name (DN) of the Subject. For this two methods exists: The <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> based variant and the <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code> variant. The first method is
     good when the clients are of totally different type, i.e. when their

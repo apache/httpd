@@ -157,7 +157,7 @@
 	is allowed, check the <a href="../mod/directive-dict.html#Context">Context</a> of the
 	directive.  Configuration directives set in the <em>main server
 	context</em> (outside any <code>&lt;VirtualHost&gt;</code> container)
-	will be used only if they are not overriden by the virtual host
+	will be used only if they are not overridden by the virtual host
 	settings.</p>
 
 	<p>Now when a request arrives, the server will first check if it is

@@ -1159,7 +1159,7 @@ once!
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><code>MaxRedirects</code> is available in Apache 2.1 and
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><code>MaxRedirects</code> is available in Apache 2.0.45 and
 later</td></tr>
 </table>
 
