@@ -28,6 +28,10 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+MTL=midl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "mod_dav_fs - Win32 Release"
 
 OUTDIR=.\Release
@@ -66,7 +70,6 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "..\main" /I "..\..\..\srclib\aputil" /I\
  "..\..\..\srclib\sdbm" /I "..\..\..\srclib\expat-lite" /I\
  "..\..\..\srclib\apr\include" /I "../../../srclib/apr-util/include" /I\
@@ -74,40 +77,7 @@ CPP_PROJ=/nologo /MD /W3 /O2 /I "..\main" /I "..\..\..\srclib\aputil" /I\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_dav_fs" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_dav_fs.bsc" 
 BSC32_SBRS= \
@@ -172,7 +142,6 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\main" /I "..\..\..\srclib\aputil"\
  /I "..\..\..\srclib\sdbm" /I "..\..\..\srclib\expat-lite" /I\
  "..\..\..\srclib\apr\include" /I "../../../srclib/apr-util/include" /I\
@@ -180,6 +149,33 @@ CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\main" /I "..\..\..\srclib\aputil"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_dav_fs" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_dav_fs.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows\
+ /dll /incremental:no /pdb:"$(OUTDIR)\mod_dav_fs.pdb"\
+ /map:"$(INTDIR)\mod_dav_fs.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\mod_dav_fs.so" /implib:"$(OUTDIR)\mod_dav_fs.lib"\
+ /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs 
+LINK32_OBJS= \
+	"$(INTDIR)\dbm.obj" \
+	"$(INTDIR)\lock.obj" \
+	"$(INTDIR)\mod_dav_fs.obj" \
+	"$(INTDIR)\repos.obj" \
+	"..\..\..\Debug\libhttpd.lib" \
+	"..\..\..\srclib\apr-util\Debug\libaprutil.lib" \
+	"..\..\..\srclib\apr\Debug\libapr.lib" \
+	"..\main\Debug\mod_dav.lib"
+
+"$(OUTDIR)\mod_dav_fs.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
@@ -210,36 +206,6 @@ CPP_SBRS=.
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
-
-MTL=midl.exe
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-RSC=rc.exe
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_dav_fs.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows\
- /dll /incremental:no /pdb:"$(OUTDIR)\mod_dav_fs.pdb"\
- /map:"$(INTDIR)\mod_dav_fs.map" /debug /machine:I386\
- /out:"$(OUTDIR)\mod_dav_fs.so" /implib:"$(OUTDIR)\mod_dav_fs.lib"\
- /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs 
-LINK32_OBJS= \
-	"$(INTDIR)\dbm.obj" \
-	"$(INTDIR)\lock.obj" \
-	"$(INTDIR)\mod_dav_fs.obj" \
-	"$(INTDIR)\repos.obj" \
-	"..\..\..\Debug\libhttpd.lib" \
-	"..\..\..\srclib\apr-util\Debug\libaprutil.lib" \
-	"..\..\..\srclib\apr\Debug\libapr.lib" \
-	"..\main\Debug\mod_dav.lib"
-
-"$(OUTDIR)\mod_dav_fs.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
 
 
 !IF "$(CFG)" == "mod_dav_fs - Win32 Release" || "$(CFG)" ==\
