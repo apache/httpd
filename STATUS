@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/18 00:08:29 $]
+Last modified at [$Date: 2000/04/18 18:47:52 $]
 
 Release:
 
@@ -73,6 +73,11 @@ RELEASE SHOWSTOPPERS:
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
+
+    * Switch from HSRegex to PCRE. New code should be src/lib/pcre/
+      (ftp://cus.cam.ac.uk/pub/software/programs/pcre/)
+      Status: Greg +1
+
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Configuration Modules.  Allow a new module type that reads 
@@ -170,6 +175,13 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Mass vhosting version of suEXEC.
 
     * Provide a sane API for handling the request's environment variables.
+
+    * configuration option to use *DBM
+      Status: Greg +1 (volunteers)
+
+    * add SDBM into src/lib/sdbm/ as a default/fallback DBM implementation.
+      SDBM is used by Perl, mod_dav, mod_sssl, others for basic DBM support.
+      Status: Greg +1 (volunteers)
 
 Other bugs that need fixing:
 
