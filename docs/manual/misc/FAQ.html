@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.71 $ ($Date: 1997/06/12 15:24:00 $)
+  $Revision: 1.72 $ ($Date: 1997/06/20 17:17:23 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -205,6 +205,8 @@
    </LI>
    <LI><A HREF="#no-info-directives">Why doesn't mod_info list any
     directives?</A>
+   <LI><A HREF="#linux-shmget">When I run it under Linux I get "shmget:
+    function not found", what should I do?</A>
    </LI>
   </OL>
  </LI>
@@ -1557,6 +1559,27 @@
   directive), then <SAMP>mod_info</SAMP> cannot read them in order to
   list their values.  An entry <EM>will</EM> be made in the error log in
   this event, however.
+  </P>
+  <HR>
+ </LI>
+
+ <LI><A NAME="linux-shmget">
+      <STRONG>When I run it under Linux I get "shmget:
+      function not found", what should I do?</STRONG>
+     </A>
+  <P>
+    Your kernel has been built without SysV IPC support.  You will have to
+    rebuild the kernel with that support enabled (it's under the
+    "General Setup" submenu).  Documention for
+    kernel building is beyond the scope of this FAQ, you should consult
+    the <A HREF="http://www.linuxhq.com/HOWTO/Kernel-HOWTO.html">Kernel
+    HOWTO</A>, or the documentation provided with your distribution,
+    or a <A HREF="http://www.linuxhq.com/HOWTO/META-FAQ.html">Linux
+    newsgroup/mailing list</A>.  As a last resort workaround, you can
+    comment out the <CODE>#define HAVE_SHMGET</CODE> definition in the
+    <CODE>LINUX</CODE> section of
+    <CODE>src/conf.h</CODE> and rebuild the server.  This will produce
+    a server which is slower and less reliable.
   </P>
   <HR>
  </LI>
