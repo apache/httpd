@@ -118,9 +118,11 @@
  * literal characters copied into the log files, and '%' directives as
  * follows:
  *
- * %...B:  bytes sent, excluding HTTP headers.
+ * %...a:  remote IP-address
+ * %...A:  local IP-address
  * %...b:  bytes sent, excluding HTTP headers in CLF format, i.e. a '-'
  *         when no bytes where sent (rather than a '0'.
+ * %...B:  bytes sent, excluding HTTP headers.
  * %...c:  Status of the connection.
  *         'X' = connection aborted before the response completed.
  *         '+' = connection may be kept alive after the response is sent.
@@ -128,15 +130,16 @@
  * %...{FOOBAR}e:  The contents of the environment variable FOOBAR
  * %...f:  filename
  * %...h:  remote host
- * %...a:  remote IP-address
- * %...A:  local IP-address
+ * %...H:  the request protocol
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
  *                 sent to the client.
  * %...l:  remote logname (from identd, if supplied)
+ * %...m:  the request method
  * %...{Foobar}n:  The contents of note "Foobar" from another module.
  * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
  * %...p:  the port the request was served to
  * %...P:  the process ID of the child that serviced the request.
+ * %...q:  the query string prepended by "?", or empty if no query string
  * %...r:  first line of request
  * %...s:  status.  For requests that got internally redirected, this
  *         is status of the *original* request --- %...>s for the last.
@@ -148,9 +151,7 @@
  * %...U:  the URL path requested.
  * %...v:  the configured name of the server (i.e. which virtual host?)
  * %...V:  the server name according to the UseCanonicalName setting
- * %...m:  the request method
- * %...H:  the request protocol
- * %...q:  the query string prepended by "?", or empty if no query string
+ * %...X:  An alias for %..c (Status of the connection).
  *
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
  * indicate conditions for inclusion of the item (which will cause it
@@ -500,38 +501,11 @@ static struct log_item_list {
     int want_orig_default;
 } log_item_keys[] = {
 
-    {
-        'h', log_remote_host, 0
-    },
     {   
         'a', log_remote_address, 0 
     },
     {   
         'A', log_local_address, 0 
-    },
-    {
-        'l', log_remote_logname, 0
-    },
-    {
-        'u', log_remote_user, 0
-    },
-    {
-        't', log_request_time, 0
-    },
-    {
-        'T', log_request_duration, 1
-    },
-    {
-        'r', log_request_line, 1
-    },
-    {
-        'f', log_request_file, 0
-    },
-    {
-        'U', log_request_uri, 1
-    },
-    {
-        's', log_status, 1
     },
     {
         'b', clf_log_bytes_sent, 0
@@ -540,22 +514,34 @@ static struct log_item_list {
         'B', log_bytes_sent, 0
     },
     {
-        'i', log_header_in, 0
-    },
-    {
-        'o', log_header_out, 0
-    },
-    {
-        'n', log_note, 0
+        'c', log_connection_status, 0
     },
     {
         'e', log_env_var, 0
     },
     {
-        'V', log_server_name, 0
+        'f', log_request_file, 0
     },
     {
-        'v', log_virtual_host, 0
+        'h', log_remote_host, 0
+    },
+    {
+        'H', log_request_protocol, 0
+    },
+    {
+        'i', log_header_in, 0
+    },
+    {
+        'l', log_remote_logname, 0
+    },
+    {
+        'm', log_request_method, 0
+    },
+    {
+        'n', log_note, 0
+    },
+    {
+        'o', log_header_out, 0
     },
     {
         'p', log_server_port, 0
@@ -564,16 +550,34 @@ static struct log_item_list {
         'P', log_child_pid, 0
     },
     {
-        'H', log_request_protocol, 0
-    },
-    {
-        'm', log_request_method, 0
-    },
-    {
         'q', log_request_query, 0
     },
     {
-        'c', log_connection_status, 0
+        'r', log_request_line, 1
+    },
+    {
+        's', log_status, 1
+    },
+    {
+        't', log_request_time, 0
+    },
+    {
+        'T', log_request_duration, 1
+    },
+    {
+        'u', log_remote_user, 0
+    },
+    {
+        'U', log_request_uri, 1
+    },
+    {
+        'v', log_virtual_host, 0
+    },
+    {
+        'V', log_server_name, 0
+    },
+    {
+        'X', log_connection_status, 0
     },
     {
         '\0'
