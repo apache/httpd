@@ -15,7 +15,7 @@ Guidelines:
       or not, and if not, what changes are needed to make it right.
 
       Approve guidelines as written:
-         +1: Roy, Dean, Paul, Jim, Martin
+         +1: Roy, Dean, Paul, Jim, Martin, Ralf
          +0:
          -1:
 
@@ -352,7 +352,7 @@ Open issues:
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
-	Dean +1, Brian +1, Paul +1
+	Dean +1, Brian +1, Paul +1, Ralf +1
 
     * Release builds: Should we provide Configuration or not?
       Should we 'make all suexec' in src/support?
@@ -389,7 +389,7 @@ Open issues:
 	  field is r->content_languages.  Heck it's not even mentioned in
 	  apache-devsite/mmn.txt when we got content_languages (note the s!).
 	  The proposal is to remove r->content_language:
-	    Status: Dean +1, Paul +1, Roy +1
+	    Status: Dean +1, Paul +1, Roy +1, Ralf +1
 
 	- child_exit() is redundant, it can be implemented via cleanups.  It is
 	  not "symmetric" in the sense that there is no exit API method to go
@@ -398,7 +398,8 @@ Open issues:
 	  mod_mmap_static, and mod_php3 for example).  The proposal is to
 	  remove the child_exit() method and document cleanups as the method of
 	  handling this need.
-	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1, Jim +1, Martin +1
+	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1, Jim +1, 
+	            Martin +1, Ralf +1
 
 Win32 specific issues:
 
