@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/02 19:10:07 $]
+Last modified at [$Date: 2002/03/03 06:04:08 $]
 
 Release:
 
@@ -49,19 +49,6 @@ CURRENT RELEASE NOTES:
                  (Note: Win32 had its .32 yanked due to a mmap() bug.)
 
 FINAL RELEASE SHOWSTOPPERS:
-
-    * All ap_internal_fast_redirect()ed requests are losing their filters
-      and output headers.  mod_negotiation derived Multiviewed documents
-      and mod_dir DirectoryIndex documents both demonstrate this behavior.
-      [PR 9963, 10001]
-        cf reply:  <007c01c1b3d1$46714650$94c0b0d0@v505>
-        to thread: <200202121332.IAA27467@web.turner.com>
-      Solutions:
-        Ditch fast_redirect, it was bogus in 1.3 and it's bogus now.
-          In Agreement? : Justin, Aaron
-        Fix [and *Maintain*] fast_redirect, it was useful to our redirects
-        in negotiation and dir, and it's useful to 3rd parties.
-          In Agreement? :
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 

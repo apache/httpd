@@ -330,7 +330,31 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
         if (node && node->frec) {
             apr_pool_t* p = r ? r->pool : c->pool;
             ap_filter_t *f = apr_palloc(p, sizeof(*f));
-            ap_filter_t **outf = r ? (r_filters ? r_filters : p_filters) : c_filters;
+            ap_filter_t **outf;
+
+            if (node->frec->ftype < AP_FTYPE_HTTP_HEADER) {
+                if (r) {
+                    outf = r_filters;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                                 "a content filter was added without a request: %s", name);
+                    return NULL;
+                }
+            }
+            else if (node->frec->ftype < AP_FTYPE_CONNECTION) {
+                if (r) {
+                    outf = p_filters;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                                 "a protocol filter was added without a request: %s", name);
+                    return NULL;
+                }
+            }
+            else {
+                outf = c_filters;
+            }
 
             f->frec = node->frec;
             f->ctx = ctx;
@@ -339,13 +363,24 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
 
             if (INSERT_BEFORE(f, *outf)) {
                 f->next = *outf;
+                if ((*outf) && (*outf)->prev) {
+                    f->prev = (*outf)->prev;
+                    (*outf)->prev->next = f;
+                    (*outf)->prev = f;
+                }
+                else {
+                    f->prev = NULL;
+                }
                 *outf = f;
             }
             else {
                 ap_filter_t *fscan = *outf;
                 while (!INSERT_BEFORE(f, fscan->next))
                     fscan = fscan->next;
+
                 f->next = fscan->next;
+                f->prev = fscan;
+                fscan->next->prev = f;
                 fscan->next = f;
             }
 
@@ -366,7 +401,31 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
 {
     apr_pool_t* p = r ? r->pool : c->pool;
     ap_filter_t *f = apr_palloc(p, sizeof(*f));
-    ap_filter_t **outf = r ? (r_filters ? r_filters : p_filters) : c_filters;
+    ap_filter_t **outf;
+
+    if (frec->ftype < AP_FTYPE_HTTP_HEADER) {
+        if (r) {
+            outf = r_filters;
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                      "a content filter was added without a request: %s", frec->name);
+            return NULL;
+        }
+    }
+    else if (frec->ftype < AP_FTYPE_CONNECTION) {
+        if (r) {
+            outf = p_filters;
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                         "a protocol filter was added without a request: %s", frec->name);
+            return NULL;
+        }
+    }
+    else {
+        outf = c_filters;
+    }
 
     f->frec = frec;
     f->ctx = ctx;
@@ -375,13 +434,24 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
 
     if (INSERT_BEFORE(f, *outf)) {
         f->next = *outf;
+        if ((*outf) && (*outf)->prev) {
+            f->prev = (*outf)->prev;
+            (*outf)->prev->next = f;
+            (*outf)->prev = f;
+        }
+        else {
+            f->prev = NULL;
+        }
         *outf = f;
     }
     else {
         ap_filter_t *fscan = *outf;
         while (!INSERT_BEFORE(f, fscan->next))
             fscan = fscan->next;
+
         f->next = fscan->next;
+        f->prev = fscan;
+        fscan->next->prev = f;
         fscan->next = f;
     }
 
