@@ -90,6 +90,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "util_time.h"
 
 typedef struct {
     char    *t_name;
