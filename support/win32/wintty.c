@@ -75,13 +75,13 @@ const char *options =
 "\teven when invoked from within a service (such as the Apache server.)\n"
 "\tAlso reflects the console input back to the stdout stream, allowing\n"
 "\tthe operator to respond to prompts from the context of a service.\n\n"
-"Syntax: %s [opts]\n\n"
+"Syntax: %s [opts] [-t \"Window Title\"]\n\n"
 "  opts: -c{haracter}   or -l{ine} input\n"
 "\t-q{uiet}       or -e{cho} input\n"
 "\t-u{nprocessed} or -p{rocessed} input\n"
 "\t-n{owrap}      or -w{rap} output lines\n"
 "\t-f{ormatted}   or -r{aw} output lines\n"
-"\t-v{erbose} error checking\n"
+"\t-v{erbose} error reporting (for debugging)\n"
 "\t-? for this message\n\n";
 
 HANDLE herrout;
@@ -228,6 +228,9 @@ int main(int argc, char** argv)
             printerr("SetProcWinSta(WinSta0) failed (%d)\n", GetLastError());
         }
 	hsavedesk = GetThreadDesktop(GetCurrentThreadId());
+        if (!hsavedesk || hsavedesk == INVALID_HANDLE_VALUE) {
+            printerr("GetThreadDesktop(GetTID()) failed (%d)\n", GetLastError());
+        }
         hdesk = OpenDesktop("Default", 0, TRUE, 
                             DESKTOP_READOBJECTS     
                           | DESKTOP_CREATEWINDOW    
