@@ -98,8 +98,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
- odbccp32.lib /nologo /subsystem:console /incremental:no\
+ advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\htpasswd.pdb" /machine:I386 /out:"$(OUTDIR)\htpasswd.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\ap_md5c.obj" \
@@ -184,8 +183,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
- advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib\
- odbccp32.lib /nologo /subsystem:console /incremental:yes\
+ advapi32.lib shell32.lib /nologo /subsystem:console /incremental:yes\
  /pdb:"$(OUTDIR)\htpasswd.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\htpasswd.exe" /pdbtype:sept 
 LINK32_OBJS= \
@@ -214,13 +212,6 @@ DEP_CPP_AP_MD=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_AP_MD=\
-	"..\ap\ebcdic.h"\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
@@ -257,12 +248,6 @@ DEP_CPP_HTPAS=\
 	"..\include\hsregex.h"\
 	"..\os\win32\getopt.h"\
 	"..\os\win32\os.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_HTPAS=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\htpasswd.obj" : $(SOURCE) $(DEP_CPP_HTPAS) "$(INTDIR)"
