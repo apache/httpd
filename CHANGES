@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) Install config.nice into the build/ directory to make
+     minor version upgrades easier. [Joshua Slive]
+
   *) Fix mod_deflate so that it does not call deflate() without checking
      first whether it has something to deflate. (Currently this causes
      deflate to generate a fatal error according to the zlib spec.)
