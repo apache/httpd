@@ -98,10 +98,10 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf);
 
 /**
  * Send the Status-Line and header fields for HTTP response
- * @param l The current request
- * @deffunc void ap_send_http_header(request_rec *l)
+ * @param r The current request
+ * @deffunc void ap_send_http_header(request_rec *r)
  */
-AP_DECLARE(void) ap_send_http_header(request_rec *l);
+AP_DECLARE(void) ap_send_http_header(request_rec *r);
 
 /* Send the response to special method requests */
 
