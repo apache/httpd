@@ -168,8 +168,9 @@ install-other:
 
 install-include:
 	@echo Installing header files
-	@test -d $(DESTDIR)$(includedir)     || $(MKINSTALLDIRS) $(DESTDIR)$(includedir)
-	@cp -p include/*.h $(srcdir)/include/*.h $(DESTDIR)$(includedir)
+	@test -d $(DESTDIR)$(includedir) || $(MKINSTALLDIRS) $(DESTDIR)$(includedir)
+	@cp -p include/*.h $(DESTDIR)$(includedir)
+	@cp -p $(srcdir)/include/*.h $(DESTDIR)$(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(DESTDIR)$(includedir)
 	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
             cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(DESTDIR)$(includedir); \
