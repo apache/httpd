@@ -133,11 +133,6 @@ Changes with Apache 2.1.0-dev
   *) prefork MPM: Use the right permissions for the directory created 
      for gprof support.  [Jim Carlson <jcarlson jnous.com>]
 
-  *) Fix the inability to log errors like exec failure in
-     mod_ext_filter/mod_cgi script children.  This was broken after 
-     such children stopped inheriting the error log handle.  
-     [Jeff Trawick]
-
   *) Fix a compile failure with recent OpenSSL and picky compilers
      (e.g., OpenSSL 0.9.7a and xlc_r on AIX).  [Jeff Trawick]
 
@@ -239,6 +234,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) Fix the inability to log errors like exec failure in
+     mod_ext_filter/mod_cgi script children.  This was broken after 
+     such children stopped inheriting the error log handle.  
+     [Jeff Trawick]
 
   *) Fix mod_info to use the real config file name, not the default
      config file name.  [Aryeh Katz <aryeh secured-services.com>]
