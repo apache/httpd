@@ -209,19 +209,19 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     age = ap_cache_current_age(info, age_c);
 
     /* extract s-maxage */
-    if (cc_cresp && ap_cache_liststr(cc_cresp, "s-maxage", &val))
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val))
         smaxage = apr_atoi64(val);
     else
         smaxage = -1;
 
     /* extract max-age from request */
-    if (cc_req && ap_cache_liststr(cc_req, "max-age", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val))
         maxage_req = apr_atoi64(val);
     else
         maxage_req = -1;
 
     /* extract max-age from response */
-    if (cc_cresp && ap_cache_liststr(cc_cresp, "max-age", &val))
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val))
         maxage_cresp = apr_atoi64(val);
     else
         maxage_cresp = -1;
@@ -237,27 +237,29 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
         maxage = MIN(maxage_req, maxage_cresp);
 
     /* extract max-stale */
-    if (cc_req && ap_cache_liststr(cc_req, "max-stale", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-stale", &val))
         maxstale = apr_atoi64(val);
     else
         maxstale = 0;
 
     /* extract min-fresh */
-    if (cc_req && ap_cache_liststr(cc_req, "min-fresh", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val))
         minfresh = apr_atoi64(val);
     else
         minfresh = 0;
 
     /* override maxstale if must-revalidate or proxy-revalidate */
     if (maxstale && ((cc_cresp &&
-                      ap_cache_liststr(cc_cresp, "must-revalidate", NULL))
-                     || (cc_cresp && ap_cache_liststr(cc_cresp,
+                      ap_cache_liststr(NULL,
+                                       cc_cresp, "must-revalidate", NULL))
+                     || (cc_cresp && ap_cache_liststr(NULL,
+                                                      cc_cresp,
                                                       "proxy-revalidate", NULL))))
         maxstale = 0;
     /* handle expiration */
     if ((-1 < smaxage && age < (smaxage - minfresh)) ||
         (-1 < maxage && age < (maxage + maxstale - minfresh)) ||
-        (info->expire != APR_DATE_BAD && age < (info->expire - info->date + maxstale - minfresh))) {
+        (info->expire != APR_DATE_BAD && age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh))) {
         /* it's fresh darlings... */
         /* set age header on response */
         apr_table_set(r->headers_out, "Age",
@@ -280,47 +282,74 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
  * The return returns 1 if the token val is found in the list, or 0
  * otherwise.
  */
-CACHE_DECLARE(int) ap_cache_liststr(const char *list, const char *key, char **val)
+CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
+                                    const char *key, char **val)
 {
-    int len, i;
-    char *p;
-    char valbuf[HUGE_STRING_LEN];
-    valbuf[sizeof(valbuf)-1] = 0; /* safety terminating zero */
+    apr_size_t key_len;
+    const char *next;
 
-    len = strlen(key);
-
-    while (list != NULL) {
-        p = strchr((char *) list, ',');
-        if (p != NULL) {
-            i = p - list;
-            do
-            p++;
-            while (apr_isspace(*p));
-        }
-        else
-            i = strlen(list);
-
-        while (i > 0 && apr_isspace(list[i - 1]))
-            i--;
-        if (i == len && strncasecmp(list, key, len) == 0) {
-            if (val) {
-                p = strchr((char *) list, ',');
-                while (apr_isspace(*list)) {
-                    list++;
-                }
-                if ('=' == list[0])
-                    list++;
-                while (apr_isspace(*list)) {
-                    list++;
-                }
-                strncpy(valbuf, list, MIN(p-list, sizeof(valbuf)-1));
-                *val = valbuf;
-            }
-            return 1;
-        }
-        list = p;
+    if (!list) {
+        return 0;
     }
-    return 0;
+
+    key_len = strlen(key);
+    next = list;
+
+    for (;;) {
+
+        /* skip whitespace and commas to find the start of the next key */
+        while (*next && (apr_isspace(*next) || (*next == ','))) {
+            next++;
+        }
+
+        if (!*next) {
+            return 0;
+        }
+
+        if (!strncasecmp(next, key, key_len)) {
+            /* this field matches the key (though it might just be
+             * a prefix match, so make sure the match is followed
+             * by either a space or an equals sign)
+             */
+            next += key_len;
+            if (!*next || (*next == '=') || apr_isspace(*next) ||
+                (*next == ',')) {
+                /* valid match */
+                if (val) {
+                    while (*next && (*next != '=') && (*next != ',')) {
+                        next++;
+                    }
+                    if (*next == '=') {
+                        next++;
+                        while (*next && apr_isspace(*next )) {
+                            next++;
+                        }
+                        if (!*next) {
+                            *val = NULL;
+                        }
+                        else {
+                            const char *val_start = next;
+                            while (*next && !apr_isspace(*next) &&
+                                   (*next != ',')) {
+                                next++;
+                            }
+                            *val = apr_pstrmemdup(p, val_start,
+                                                  next - val_start);
+                        }
+                    }
+                }
+                return 1;
+            }
+        }
+
+        /* skip to the next field */
+        do {
+            next++;
+            if (!*next) {
+                return 0;
+            }
+        } while (*next != ',');
+    }
 }
 
 /* return each comma separated token, one at a time */
