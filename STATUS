@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/23 13:15:20 $]
+Last modified at [$Date: 2003/06/23 13:18:49 $]
 
 Release:
 
@@ -239,6 +239,9 @@ PATCHES TO PORT FROM 2.1
         os/unix/unixd.h 1.138
         +1: trawick
 
+    * Backport wildcard ExpiresByType from 2.0.46
+      +1: ken, stoddard
+
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
@@ -249,9 +252,6 @@ CURRENT RELEASE NOTES:
       get feedback and then commit to APACHE_2_0_BRANCH.
 
 CURRENT VOTES:
-
-    * Backport wildcard ExpiresByType from 2.0.46
-      +1: ken
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
