@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) The 'status' module will now show the process pid's and their
+     state even without full STATUS accounting. [Jim Jagielski]
+
   *) Restore the client IP address to the error log messages, this
      was lost during the transition from 1.2 to 1.3.  Add a new
      function ap_log_rerror() which takes a request_rec * and

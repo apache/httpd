@@ -241,6 +241,7 @@ static int status_handler(request_rec *r)
     short_score score_record;
     parent_score ps_record;
     char stat_buffer[HARD_SERVER_LIMIT];
+    int pid_buffer[HARD_SERVER_LIMIT];
     clock_t tu, ts, tcu, tcs;
 
     tu = ts = tcu = tcs = 0;
@@ -296,6 +297,7 @@ static int status_handler(request_rec *r)
 	ps_record = ap_scoreboard_image->parent[i];
 	res = score_record.status;
 	stat_buffer[i] = status_flags[res];
+	pid_buffer[i] = (int) ps_record.pid;
 	if (res == SERVER_READY)
 	    ready++;
 	else if (res != SERVER_DEAD)
@@ -428,6 +430,15 @@ static int status_handler(request_rec *r)
 	ap_rputs("\"<B><code>L</code></B>\" Logging, \n", r);
 	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n", r);
 	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
+	ap_rputs("<P>\n", r);
+	ap_rputs("PID Key: <br>\n", r);
+	ap_rputs("<UL>\n", r);
+	for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
+	    if (stat_buffer[i] != '.')
+		ap_rprintf(r, "<LI>%d in state: %c <BR>\n", pid_buffer[i],
+		 stat_buffer[i]);
+	}
+	ap_rputs("</UL>\n", r);
     }
 
 #if defined(STATUS)
