@@ -167,15 +167,27 @@ typedef union ap_filter_func {
  *     These filters are used to alter the content that is passed through
  *     them. Examples are SSI or PHP.
  *
+ * AP_FTYPE_HTTP_HEADER: (XXX somebody rename me or get rid of me please)
+ *     This special type ensures that the HTTP header filter ends up in
+ *     the proper location in the filter chain.
+ *
+ * AP_FTYPE_TRANSCODE:
+ *     These filters implement transport encodings (e.g., chunking).
+ *
  * AP_FTYPE_CONNECTION:
  *     These filters will alter the content, but in ways that are more
- *     strongly associated with the output connection. Examples are
- *     compression, character recoding, or chunked transfer coding.
+ *     strongly associated with the connection.  Examples are splitting
+ *     an HTTP connection into multiple requests and buffering HTTP
+ *     responses across multiple requests.
  *
  *     It is important to note that these types of filters are not allowed
  *     in a sub-request. A sub-requests output can certainly be filtered
  *     by AP_FTYPE_CONTENT filters, but all of the "final processing" is
  *     determined by the main request.
+ *
+ * AP_FTYPE_NETWORK:
+ *     These filters don't alter the content.  They are responsible for
+ *     sending/receiving data to/from the client.
  *
  * The types have a particular sort order, which allows us to insert them
  * into the filter chain in a determistic order. Within a particular grouping,
