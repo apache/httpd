@@ -151,6 +151,88 @@ Available Patches:
 
 In progress:
 
+    * The proposed steps for the big symbol renaming change:
+
+      Step 1: Roy
+        - tag the source tree
+          $ cd apache-1.3
+          $ cvs tag PRE_AP_PREFIX_RENAME .
+        - rename the source identifiers
+          $ cd apache-1.3/src/test/rename
+          $ make rename
+        - compile entire server (static variant)
+          $ cd apache-1.3
+          $ ./configure --prefix=/tmp/apache 
+                        --enable-module=most
+                        --disable-rule=HIDE
+        - check symbols
+          $ cd apache-1.3/src
+          $ nm -g httpd |more
+        - check operation of server
+          $ cd apache-1.3
+          $ make install
+          $ /tmp/apache/sbin/apachectl start
+        - compile entire server (shared variant)
+          $ cd apache-1.3
+          $ ./configure --prefix=/tmp/apache 
+                        --enable-module=most
+                        --enable-shared=max
+                        --disable-rule=HIDE
+        - check symbols
+          $ cd apache-1.3/src
+          $ nm -g httpd |more
+        - check operation of server
+          $ cd apache-1.3
+          $ make install
+          $ /tmp/apache/sbin/apachectl start
+        - commit
+          $ cd apache-1.3/src
+          $ cvs commit .
+        - tag the source tree
+          $ cd apache-1.3
+          $ cvs tag POST_AP_PREFIX_RENAME .
+   
+      Step 2: Ralf
+        - tag the source tree
+          $ cd apache-1.3
+          $ cvs tag PRE_AP_PREFIX_RENAME_CLEANUP .
+        - manually change exported module structure symbols for
+          mod_abc_def.c from def_abc_module to APM_abc_def (where APM_ is
+          the prefix in rename.cf) and adjust/simplify src/Configure,
+          mod_so.c accordingly etc.
+          ...MANUAL EDITING...
+        - completely remove HIDE stuff because that's then obsolete
+          ...MANUAL EDITING...
+        - compile entire server (static variant)
+          $ cd apache-1.3
+          $ ./configure --prefix=/tmp/apache 
+                        --enable-module=most
+        - check symbols
+          $ cd apache-1.3/src
+          $ nm -g httpd |more
+        - check operation of server
+          $ cd apache-1.3
+          $ make install
+          $ /tmp/apache/sbin/apachectl start
+        - compile entire server (shared variant)
+          $ cd apache-1.3
+          $ ./configure --prefix=/tmp/apache 
+                        --enable-module=most
+                        --enable-shared=max
+        - check symbols
+          $ cd apache-1.3/src
+          $ nm -g httpd |more
+        - check operation of server
+          $ cd apache-1.3
+          $ make install
+          $ /tmp/apache/sbin/apachectl start
+        - commit
+          $ cd apache-1.3/src
+          $ cvs commit .
+        - tag the source tree
+          $ cd apache-1.3
+          $ cvs tag POST_AP_PREFIX_RENAME_CLEANUP .
+
     * Ken's IndexFormat enhancement to mod_autoindex to allow
       CustomLog-like tailoring of directory listing formats
 
