@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/20 23:38:50 $]
+Last modified at [$Date: 2003/05/21 00:29:26 $]
 
 Release:
 
@@ -245,7 +245,7 @@ PATCHES TO PORT FROM 2.1
       when a MKACTIVITY request comes in.
       Submitted by: Ben Collins-Sussman <sussman@apache.org>
       modules/dav/main/mod_dav.c r1.93
-      +1: striker
+      +1: striker, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
