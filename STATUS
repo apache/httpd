@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/10 14:53:27 $]
+Last modified at [$Date: 2004/02/11 18:07:45 $]
 
 Release:
 
@@ -229,17 +229,6 @@ PATCHES TO BACKPORT FROM 2.1
 	  wouldn't be listening on any port so it wouldn't matter anyway.
          nd replies: But if it can't be 0 the alternatives thereafter make no
            sense anymore, right?
-
-    * LDAP cache fixes from Matthieu Estrade; see PR 18756
-        include/util_ldap.h r1.12
-        modules/experimental/util_ldap.c r1.15, r1.16
-        modules/experimental/util_ldap_cache.c r1.9, r1.10
-        modules/experimental/util_ldap_cache.h r1.7, r1.8
-        modules/experimental/util_ldap_cache_mgr.c r1.6, r1.7, r1.8, r1.10
-      +1: trawick (this stuff can sure use more eyes, but some users 
-                   have already tested the patch successfully)
-	  bnicholes (looks good on Netware but then NetWare does not
-	             use shared memory.)
 
     * mod_auth_digest: Allow sub-requests with different methods than the
       original request.  PR 25040.
