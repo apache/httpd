@@ -1,5 +1,10 @@
 Changes with Apache 1.3.21
 
+  *) Fix the <Files ~ "^\.ht"> container to *really* deny all access.
+     Without the Satisfy All, .ht* files could still be fetched if
+     they were within the scope of a Satisfy Any directive.
+     [Ken Coar]
+
   *) Print a warning when an attempt is made to use line-end comments.
      Apparently they are not detected/handled gracefully by all directives.
      [Martin Kraemer]
