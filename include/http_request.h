@@ -65,6 +65,10 @@
 extern "C" {
 #endif
 
+/**
+ * @package Apache Request library
+ */
+
 /* http_request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
  * directory configuration, building it if necessary, and calling all
@@ -85,14 +89,52 @@ extern "C" {
  * about which was allocated in its apr_pool_t elsewhere before doing this.
  */
 
+/**
+ * Create a sub request from the given URI.  This sub request can be
+ * inspected to find information about the requested URI
+ * @param new_file The URI to lookup
+ * @param r The current request
+ * @return The new request record
+ * @deffunc request_rec * ap_sub_req_lookup_uri(const char *new_file, const request_rec *r)
+ */
 API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
                                              const request_rec *r);
+/**
+ * Create a sub request for the given file.  This sub request can be
+ * inspected to find information about the requested file
+ * @param new_file The URI to lookup
+ * @param r The current request
+ * @return The new request record
+ * @deffunc request_rec * ap_sub_req_lookup_file(const char *new_file, const request_rec *r)
+ */
 API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r);
+/**
+ * Create a sub request for the given URI using a specific method.  This
+ * sub request can be inspected to find information about the requested URI
+ * @param method The method to use in the new sub request
+ * @param new_file The URI to lookup
+ * @param r The current request
+ * @return The new request record
+ * @deffunc request_rec * ap_sub_req_method_uri(const char *method, const char *new_file, const request_rec *r)
+ */
 API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
                                                 const request_rec *r);
+
+/**
+ * Run the handler for the sub request
+ * @param r The sub request to run
+ * @return The return code for the sub request
+ * @deffunc int ap_run_sub_req(request_rec *r)
+ */
 API_EXPORT(int) ap_run_sub_req(request_rec *r);
+
+/**
+ * Free the memory associated with a sub request
+ * @param r The sub request to finish
+ * @deffunc void ap_destroy_sub_req(request_rec *r)
+ */
 API_EXPORT(void) ap_destroy_sub_req(request_rec *r);
 
 /*
@@ -101,11 +143,50 @@ API_EXPORT(void) ap_destroy_sub_req(request_rec *r);
  * If so, call this from a handler, and then immediately return OK.
  */
 
-API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *);
-API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *);
+/**
+ * Redirect the current request to some other uri
+ * @param new_uri The URI to replace the current request with
+ * @param r The current request
+ * @deffunc void ap_internal_redirect(const char *new_uri, request_rec *r)
+ */
+API_EXPORT(void) ap_internal_redirect(const char *new_uri, request_rec *r);
+
+/**
+ * This function is designed for things like actions or CGI scripts, when
+ * using AddHandler, and you want to preserve the content type across
+ * an internal redirect.
+ * @param new_uri The URI to replace the current request with.
+ * @param r The current request
+ * @deffunc void ap_internal_redirect_handler(const char *new_uri, request_rec *r)
+ */
+API_EXPORT(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r);
+
+/**
+ * Can be used within any handler to determine if any authentication
+ * is required for the current request
+ * @param r The current request
+ * @return 1 if authentication is required, 0 otherwise
+ * @deffunc int ap_some_auth_required(request_rec *r)
+ */
 API_EXPORT(int) ap_some_auth_required(request_rec *r);
+ 
+/**
+ * Determine if the current request is the main request or a sub requests
+ * @param r The current request
+ * @retrn 1 if this is a main request, 0 otherwise
+ * @deffunc int ap_is_initial_req(request_rec *r)
+ */
 API_EXPORT(int) ap_is_initial_req(request_rec *r);
+
+/**
+ * Function to set the r->mtime field to the specified value if it's later
+ * than what's already there.
+ * @param r The current request
+ * @param dependency_time Time to set the mtime to
+ * @deffunc void ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
+ */
 API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
+
 /**
  * Add one or more methods to the list permitted to access the resource.
  * Usually executed by the content handler before the response header is
@@ -130,16 +211,77 @@ API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...);
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */
 void ap_process_request(request_rec *);
+/**
+ * Kill the current request
+ * @param type Why the request is dieing
+ * @param r The current request
+ * @deffunc void ap_die(int type, request_rec *r)
+ */
 API_EXPORT(void) ap_die(int type, request_rec *r);
 #endif
 
   /* Hooks */
+/**
+ * This hook allow modules an opportunity to translate the URI into an
+ * actual filename.  If no modules do anything special, the server's default
+ * rules will be followed.
+ * @param r The current request
+ * @return OK, DECLINED, or HTTP_...
+ * @deffunc int ap_run_translate_name(request_rec *r)
+ */
 AP_DECLARE_HOOK(int,translate_name,(request_rec *))
+
+/**
+ * This hook allows modules to check the authentication information sent with
+ * the request.
+ * @param r The current request
+ * @return OK, DECLINED, or HTTP_...
+ * @deffunc int ap_run_check_user_id(request_rec *r)
+ */
 AP_DECLARE_HOOK(int,check_user_id,(request_rec *))
+
+/**
+ * Allows modules to perform module-specific fixing of header fields.  This
+ * is invoked just before any content-handler
+ * @param r The current request
+ * @return OK, DECLINED, or HTTP_...
+ * @deffunc int ap_run_fixups(request_rec *r)
+ */
 AP_DECLARE_HOOK(int,fixups,(request_rec *))
+ 
+/**
+ * This routine is called to determine and/or set the various document type
+ * information bits, like Content-type (via r->content_type), language, et
+ * cetera.
+ * @param r the current request
+ * @return OK, DECLINED, or HTTP_...
+ * @deffunc int ap_run_type_checker(request_rec *r)
+ */
 AP_DECLARE_HOOK(int,type_checker,(request_rec *))
+
+/**
+ * This routine is called to check for any module-specific restrictions placed
+ * upon the requested resource.
+ * @param r the current request
+ * @return OK, DECLINED, or HTTP_...
+ * @deffunc int ap_run_access_checker(request_rec *r)
+ */
 AP_DECLARE_HOOK(int,access_checker,(request_rec *))
+
+/**
+ * This routine is called to check to see if the resource being requested
+ * requires authorisation.
+ * @param r the current request
+ * @return OK, DECLINED, or HTTP_...
+ * @deffunc int ap_run_auth_checker(request_rec *r)
+ */
 AP_DECLARE_HOOK(int,auth_checker,(request_rec *))
+
+/**
+ * This hook allows modules to insert filters for the current request
+ * @param r the current request
+ * @deffunc void ap_run_insert_filter(request_rec *r)
+ */
 AP_DECLARE_HOOK(void,insert_filter,(request_rec *))
 
 #ifdef __cplusplus
