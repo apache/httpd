@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/16 14:05:29 $]
+  Last modified at [$Date: 1999/12/17 14:03:21 $]
 
 Release:
 
@@ -192,6 +192,13 @@ In progress:
       Discussion in thread following message-ID below.
 	Message-ID: <00a001bedc00$fbc5af60$0500a8c0@delf>
 	Status: 
+
+    * Martin Kraemer's mod_ebcdic.c: a new module which will contain the
+      ebcdic related stuff (common to all ebcdic based os's) and will
+      allow for flexible configuration of the conversion rules. That
+      will replace the current hardwired heuristics.
+	Message-Id: none yet
+	Status: first prototype running, to be posted to list soon.
 
 Needs patch:
 
