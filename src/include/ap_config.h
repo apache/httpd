@@ -282,6 +282,24 @@ extern char *getwd();
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
+#elif defined(UW)
+#define NO_KILLPG
+#undef  NO_SETSID
+#undef NEED_STRDUP
+#define NEED_STRCASECMP
+#define NEED_STRNCASECMP
+#define bzero(a,b) memset(a,0,b)
+#define JMP_BUF sigjmp_buf
+#define getwd(d) getcwd(d,MAX_STRING_LEN)
+#define HAVE_RESOURCE
+#define HAVE_MMAP
+#define HAVE_SHMGET
+#define HAVE_CRYPT_H
+#define HAVE_SYS_SELECT_H
+#define HAVE_SYS_RESOURCE_H
+#include <sys/time.h>
+#define _POSIX_SOURCE
+
 #elif defined(DGUX)
 #define NO_KILLPG
 #undef  NO_SETSID

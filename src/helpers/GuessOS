@@ -32,7 +32,11 @@ if [ "x$SCO" != "x" ]; then
 	    echo "whatever-whatever-sco5"; exit 0
 	    ;;
 	4.2MP)
-	    echo "whatever-whatever-unixware2"; exit 0
+            if [ "x$VERSION" = "x2.1.1" ]; then
+                echo "${MACHINE}-whatever-unixware211"; exit 0
+            else
+                echo "${MACHINE}-whatever-unixware2"; exit 0
+            fi
 	    ;;
 	4.2)
 	    echo "whatever-whatever-unixware1"; exit 0
