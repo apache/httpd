@@ -59,6 +59,7 @@
 #include "httpd.h"
 #include "mpm_default.h"
 #include "scoreboard.h"
+#include "unixd.h"
 
 #ifndef APACHE_MPM_PREFORK_H
 #define APACHE_MPM_PREFORK_H

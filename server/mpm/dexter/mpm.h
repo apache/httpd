@@ -58,6 +58,7 @@
 
 #include "httpd.h"
 #include "mpm_default.h"
+#include "unixd.h"
 
 #ifndef APACHE_MPM_DEXTER_H
 #define APACHE_MPM_DEXTER_H

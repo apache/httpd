@@ -76,6 +76,8 @@
  * -Doug MacEachern
  */
 
+#define CORE_PRIVATE
+
 #ifdef USE_PERL_SSI
 #include "config.h"
 #undef VOIDUSED
@@ -94,6 +96,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
+#include "http_core.h"
 #include <string.h>
 #ifdef HAVE_PWD_H
 #include <pwd.h>
@@ -828,6 +831,12 @@ static int include_cmd(char *s, request_rec *r)
     char **argv;
     ap_file_t *file = NULL;
     ap_iol *iol;
+#if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
+    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
+    core_dir_config *conf; 
+    conf = (core_dir_config *) ap_get_module_config(r->per_dir_config,
+                                                    &core_module);
+#endif
 
     arg.r = r;
     arg.s = s;
@@ -863,6 +872,15 @@ static int include_cmd(char *s, request_rec *r)
         (ap_setprocattr_io(procattr, APR_NO_PIPE, 
                            APR_FULL_BLOCK, APR_NO_PIPE) != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
+#ifdef RLIMIT_CPU
+        ((rc = ap_setprocattr_limit(procattr, APR_LIMIT_CPU, conf->limit_cpu)) != APR_SUCCESS) ||
+#endif
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+        ((rc = ap_setprocattr_limit(procattr, APR_LIMIT_MEM, conf->limit_mem)) != APR_SUCCESS) ||
+#endif
+#ifdef RLIMIT_NPROC
+        ((rc = ap_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
+#endif
         (ap_setprocattr_cmdtype(procattr, APR_SHELLCMD) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,

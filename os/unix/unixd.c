@@ -63,6 +63,8 @@
 #include "http_log.h"
 #include "unixd.h"
 #include <pwd.h>
+#include <sys/resource.h>
+#include <sys/resource.h>
 
 unixd_config_rec unixd_config;
 
@@ -394,4 +396,60 @@ void unixd_siglist_init(void)
             ap_sys_siglist[sig] = "";
 }
 #endif /* NEED_AP_SYS_SIGLIST */
- 
+
+#if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
+API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit, 
+                           const char *arg, const char * arg2, int type)
+{
+    char *str;
+    struct rlimit *limit;
+    /* If your platform doesn't define rlim_t then typedef it in ap_config.h */
+    rlim_t cur = 0;
+    rlim_t max = 0;
+
+    *plimit = (struct rlimit *)ap_pcalloc(cmd->pool, sizeof(**plimit));
+    limit = *plimit;
+    if ((getrlimit(type, limit)) != 0)  {
+        *plimit = NULL;
+        ap_log_error(APLOG_MARK, APLOG_ERR, cmd->server,
+                     "%s: getrlimit failed", cmd->cmd->name);
+        return;
+    }
+
+    if ((str = ap_getword_conf(cmd->pool, &arg))) {
+        if (!strcasecmp(str, "max")) {
+            cur = limit->rlim_max;
+        }
+        else {
+            cur = atol(str);
+        }
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
+                     "Invalid parameters for %s", cmd->cmd->name);
+        return;
+    }
+
+    if (arg2 && (str = ap_getword_conf(cmd->pool, &arg2))) {
+        max = atol(str);
+    }
+
+    /* if we aren't running as root, cannot increase max */
+    if (geteuid()) {
+        limit->rlim_cur = cur;
+        if (max) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
+                         "Must be uid 0 to raise maximum %s", cmd->cmd->name);
+        }
+    }
+    else {
+        if (cur) {
+            limit->rlim_cur = cur;
+        }
+        if (max) {
+            limit->rlim_max = max;
+        }
+    }
+}
+#endif
+
