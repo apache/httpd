@@ -198,8 +198,15 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-whatever-unixware212"; exit 0
 	;;
 
-    DYNIX/ptx:4*:*)
-	echo "${MACHINE}-whatever-sysv4"; exit 0
+    DYNIX/ptx:4*:*:i386)
+	PTXVER=`echo ${VERSION}|sed -e 's/[^.]//'`
+	echo "${MACHINE}-sequent-ptx${PTXVER}"; exit 0
+	;;
+
+    *:3.2.0:*:i386)
+	# uname on DYNIX/ptx below V4.0.0 is brain dead
+	PTXVER=`echo ${VERSION}|sed -e 's/[^.]//'`
+	echo "${MACHINE}-sequent-ptx${PTXVER}"; exit 0
 	;;
 
     *:4.0:3.0:[345][0-9]?? | *:4.0:3.0:3[34]??[/,]* | library:*)

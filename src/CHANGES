@@ -1,5 +1,11 @@
 Changes with Apache 1.3.8
 
+  *) PORT: Improved compilation and DSO support on Sequent DYNIX/ptx.
+     [Ian Turner <iant@sequent.com>] PR#4735
+
+  *) Local struct mmap in http_core.c conflicted with system structure
+     name on DYNIX -- changed to mmap_rec.  [Roy Fielding] PR#4735
+
   *) Added updated mod_digest as modules/experimental/mod_auth_digest.
      [Ronald Tschalär <ronald@innovation.ch>]
 
@@ -13,17 +19,16 @@ Changes with Apache 1.3.8
   *) RewriteLock/RewriteMap didn't work properly with virtual hosts.
      [Dmitry Khrustalev <dima@bog.msu.su>] PR#3874
 
-  *) Support for compaq/tandem/com.
-     [Ottati, Michael" <michael.ottati@compaq.com>, dirkx]
+  *) PORT: Support for compaq/tandem/com.
+     [Michael Ottati <michael.ottati@compaq.com>, dirkx]
 
   *) Added SHA1 password encryption support to easy migration from 
-     Netscape servers. See support/SHA1 for more information; based
-     on the code contributed by Clinton Wong <clintdw@netcom.com>.
+     Netscape servers. See support/SHA1 for more information.
      Caused the separation of ap_md5.c into md5, sha1 and a general
      ap_checkpass.c with just a validate_passwd routine. Added a
      couple of flags to support/htpasswd. Some reuse of the to64()
      function; hence renamed to ap_to64().
-     [dirkx]
+     [Dirk-Willem van Gulik, Clinton Wong <clintdw@netcom.com>]
 
   *) Change for EBCDIC platforms (TPF and BS2000) to correctly deal
      with ASCII/EBCDIC conversions in "ident" query.

@@ -82,7 +82,7 @@
            - Linux     - SunOS         - UnixWare     - Mac OS X Server
            - FreeBSD   - Solaris       - AIX          - Mac OS
            - OpenBSD   - IRIX          - SCO          - OpenStep/Mach
-           - NetBSD    - HPUX          - ReliantUNIX
+           - NetBSD    - HPUX          - ReliantUNIX  - DYNIX/ptx
            - BSDI      - Digital Unix  - DGUX
 
         o Entirely unsupported platforms are:

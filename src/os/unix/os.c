@@ -109,7 +109,7 @@ void *ap_os_dso_load(const char *path)
         return NULL;
     return NSLinkModule(image, path, TRUE);
 
-#elif defined(OSF1) ||\
+#elif defined(OSF1) || defined(SEQUENT) ||\
     (defined(__FreeBSD_version) && (__FreeBSD_version >= 220000))
     return dlopen((char *)path, RTLD_NOW | RTLD_GLOBAL);
 
@@ -160,6 +160,9 @@ void *ap_os_dso_sym(void *handle, const char *symname)
     retval = dlsym(handle, symbol);
     free(symbol);
     return retval;
+
+#elif defined(SEQUENT)
+    return dlsym(handle, (char *)symname);
 
 #else
     return dlsym(handle, symname);

@@ -699,10 +699,41 @@ case "$PLAT" in
 	OS='Paragon OSF/1'
 	CFLAGS="$CFLAGS -DPARAGON"
 	;;
-    *DYNIX*)
+    *-sequent-ptx2.*.*)
 	DEF_WANTHSREGEX=yes
-	OS='SEQUENT'
-	CFLAGS="$CFLAGS -DSEQUENT"
+	OS='SEQUENT DYNIX/ptx v2.*.*'
+	CFLAGS="$CFLAGS -DSEQUENT=20 -Wc,-pw"
+	LIBS="$LIBS -lsocket -linet -lnsl -lc -lseq"
+	;;
+    *-sequent-ptx4.0.*)
+	DEF_WANTHSREGEX=yes
+	OS='SEQUENT DYNIX/ptx v4.0.*'
+	CFLAGS="$CFLAGS -DSEQUENT=40 -Wc,-pw"
+	LIBS="$LIBS -lsocket -linet -lnsl -lc"
+	;;
+    *-sequent-ptx4.[123].*)
+	DEF_WANTHSREGEX=yes
+	OS='SEQUENT DYNIX/ptx v4.1.*/v4.2.*'
+	CFLAGS="$CFLAGS -DSEQUENT=41 -Wc,-pw"
+	LIBS="$LIBS -lsocket -lnsl -lc"
+	;;
+    *-sequent-ptx4.4.*)
+	DEF_WANTHSREGEX=yes
+	OS='SEQUENT DYNIX/ptx v4.4.*'
+	CFLAGS="$CFLAGS -DSEQUENT=44 -Wc,-pw"
+	LIBS="$LIBS -lsocket -lnsl -lc"
+	;;
+    *-sequent-ptx4.5.*)
+	DEF_WANTHSREGEX=yes
+	OS='SEQUENT DYNIX/ptx v4.5.*'
+	CFLAGS="$CFLAGS -DSEQUENT=45 -Wc,-pw"
+	LIBS="$LIBS -lsocket -lnsl -lc"
+	;;
+    *-sequent-ptx5.0.*)
+	DEF_WANTHSREGEX=yes
+	OS='SEQUENT DYNIX/ptx v5.0.*'
+	CFLAGS="$CFLAGS -DSEQUENT=50 -Wc,-pw"
+	LIBS="$LIBS -lsocket -lnsl -lc"
 	;;
     *NEWS-OS*)
 	DEF_WANTHSREGEX=yes
@@ -1132,6 +1163,20 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	     SHLIB_SUFFIX_DEPTH=1
 	     ;;
+	*-sequent-ptx*)
+	    case $PLAT in
+	       *-sequent-ptx2*)
+	           ;;
+	       *-sequent-ptx4.0*)
+	           ;;
+	       *-sequent-ptx*)
+	           CFLAGS_SHLIB="-KPIC"
+	           LDFLAGS_SHLIB="-G"
+	           LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+	           LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
+	           ;;
+	    esac
+	    ;;
 	RM*-siemens-sysv4*)
 	    # MIPS hosts can take advantage of the LDFLAGS_SHLIB_EXPORT switch
 	    case $CC in
@@ -1916,6 +1961,17 @@ if [ "x$using_shlib" = "x1" ] ; then
     case $PLAT in
 	*-ibm-aix* )
 	    DL_LIB="-lld"
+	    ;;
+	*-sequent-ptx* )
+	    case $PLAT in
+	        *-sequent-ptx2*)
+	            ;;
+	        *-sequent-ptx4.0*)
+	            ;;
+	        *-sequent-ptx*)
+	            DL_LIB="-ldl"
+	            ;;
+	    esac
 	    ;;
 	*-hp-hpux*)
 	    if ./helpers/TestCompile func shl_load; then

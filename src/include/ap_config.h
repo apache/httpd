@@ -318,11 +318,34 @@ typedef int rlim_t;
 typedef int rlim_t;
 
 #elif defined(SEQUENT)
-#define HAVE_GMTOFF 1
-#undef NO_KILLPG
-#define NO_SETSID
-#define NEED_STRDUP
+#define DEFAULT_USER "nobody"
+#define DEFAULT_GROUP "nobody"
+#define NO_SHMGET 1
+#define HAVE_MMAP 1
 #define HAVE_SYSLOG 1
+#define USE_MMAP_FILES 1
+#define USE_MMAP_SCOREBOARD 1
+#define USE_FCNTL_SERIALIZED_ACCEPT 1
+#define JMP_BUF sigjmp_buf
+#undef NO_SETSID
+#if SEQUENT < 40
+typedef int rlim_t;
+#define NO_GETTIMEOFDAY
+#undef HAVE_SYS_RESOURCE_H /* exists but does not provide *rlimit funcs */
+#include <sys/times.h>
+#endif
+#if SEQUENT < 42
+#define NEED_STRCASECMP
+#define NEED_STRNCASECMP
+#endif
+#if SEQUENT < 44
+#define NO_KILLPG 1
+#define NET_SIZE_T int
+#endif
+#if SEQUENT >= 44
+#undef NO_KILLPG
+#define NET_SIZE_T size_t
+#endif
 
 #elif defined(NEXT)
 typedef unsigned short mode_t;
