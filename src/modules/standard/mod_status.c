@@ -306,9 +306,9 @@ int status_handler (request_rec *r)
 
     if (!short_report)
     {
-        rputs("<html><head><title>Apache Status</title></head><body>\n",r);
-        rputs("<h1>Apache Server Status for ",r);
-	rvputs(r,server->server_hostname,"</h1>\n\n",NULL);
+        rputs("<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n",r);
+        rputs("<H1>Apache Server Status for ",r);
+	rvputs(r,server->server_hostname,"</H1>\n\n",NULL);
 	rvputs(r,"Current Time: ",asctime(localtime(&nowtime)),"<br>\n",NULL);
 	rvputs(r,"Restart Time: ",asctime(localtime(&restart_time)),"<br>\n",
 	       NULL);
@@ -585,7 +585,7 @@ int status_handler (request_rec *r)
 #endif /* STATUS */
 
     if (!short_report)
-        rputs("</body></html>",r);
+        rputs("</BODY></HTML>\n",r);
     return 0;
 }
 

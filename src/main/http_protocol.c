@@ -1620,8 +1620,16 @@ void send_error_response (request_rec *r, int recursive_error)
 	char *h1 = 4 + status_lines[idx];
 	BUFF *fd = c->client;
 	
-        bvputs(fd,"<HEAD><TITLE>", title, "</TITLE></HEAD>\n<BODY><H1>", h1,
-	       "</H1>\n", NULL);
+        bvputs
+	    (
+		fd,
+		"<HTML><HEAD>\n<TITLE>",
+		title,
+		"</TITLE>\n</HEAD><BODY>\n<H1>",
+		h1,
+	       "</H1>\n",
+	       NULL
+	    );
 	
         switch (status) {
 	case REDIRECT:
@@ -1754,7 +1762,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	    bputs("while trying to use an ErrorDocument to\n", fd);
 	    bputs("handle the request.\n", fd);
 	}
-	bputs("</BODY>\n", fd);
+	bputs("</BODY></HTML>\n", fd);
     }
         
 }

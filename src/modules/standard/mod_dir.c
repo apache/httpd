@@ -715,8 +715,14 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     while (title_endp > title_name && *title_endp == '/')
 	*title_endp-- = '\0';
     
-    rvputs(r, "<HEAD><TITLE>Index of ", title_name, "</TITLE></HEAD><BODY>\n",
-	   NULL);
+    rvputs
+	(
+	    r,
+	    "<HTML><HEAD>\n<TITLE>Index of ",
+	    title_name,
+	    "</TITLE>\n</HEAD><BODY>\n",
+	    NULL
+	);
 
     if((!(tmp = find_header(dir_conf,r))) || (!(insert_readme(name,tmp,0,r))))
         rvputs(r, "<H1>Index of ", title_name, "</H1>\n", NULL);
@@ -759,7 +765,7 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
         rputs("</UL>", r);
     }
 
-    rputs("</BODY>", r);
+    rputs ("</BODY></HTML>\n", r);
     return 0;
 }
 

@@ -105,6 +105,8 @@ Changes with Apache 1.2b7
 
   *) Fixed compiler warnings in the regex library. [Dean Gaudet]
 
+  *) Cleaned-up some of the generated HTML. [Ken Coar]
+
 Changes with Apache 1.2b6
 
   *) Allow whitespace in imagemap mapfile coordinates. [Marc Slemko]
