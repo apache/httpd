@@ -556,6 +556,8 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    apr_table_add(merge, w, l);
 	}
     }
+
+    return OK;
 }
 
 static int getsfunc_FILE(char *buf, int len, void *f)
