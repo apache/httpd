@@ -2859,8 +2859,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             /* Retrieve the handler function to be called for this directive 
              * from the functions registered in the hash table.
              * Need to lower case the directive for proper matching. Also need 
-             * to have it NULL terminated (and include the NULL in the length) 
-             * for proper hash matching.
+             * to have it NULL terminated for proper hash matching.
              */
             for (tmp_i = 0; tmp_i < ctx->directive_length; tmp_i++) {
                 ctx->combined_tag[tmp_i] = 
@@ -3075,8 +3074,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * torquing our own last_modified date as well so that the
          * LAST_MODIFIED variable gets reset to the proper value if the
          * nested document resets <!--#config timefmt-->.
-         * We also insist that the memory for this subrequest not be
-         * destroyed, that's dealt with in handle_include().
          */
         r->subprocess_env = r->main->subprocess_env;
         apr_pool_join(r->main->pool, r->pool);
