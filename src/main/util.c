@@ -1175,7 +1175,7 @@ unsigned long get_virthost_addr (const char *w, short int *ports) {
 #else
     my_addr = inet_addr(w);
 #endif
-    if (my_addr != ((unsigned long) 0xffffffff))
+    if (my_addr != (~0ul))
     {
 	if (p != NULL) *p = ':';
 	return my_addr;
