@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Add IndexOptions FoldersFirst to allow fancy-indexed directory
+     listings to have the subdirectories always listed at the top.
+     [Ken Coar]
+
   *) BS2000: Use send() instead of write() in the core buff routines
      for better performance and fewer restrictions (max. transfer size)
      [Martin Kraemer]

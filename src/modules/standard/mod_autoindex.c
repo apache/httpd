@@ -95,6 +95,7 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define SUPPRESS_PREAMBLE 64
 #define SUPPRESS_COLSORT 128
 #define NO_OPTIONS 256
+#define FOLDERS_FIRST 512
 
 #define K_PAD 1
 #define K_NOPAD 0
@@ -400,6 +401,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
         else if (!strcasecmp(w, "SuppressColumnSorting")) {
             option = SUPPRESS_COLSORT;
 	}
+        else if (!strcasecmp(w, "FoldersFirst")) {
+            option = FOLDERS_FIRST;
+	}
 	else if (!strcasecmp(w, "None")) {
 	    if (action != '\0') {
 		return "Cannot combine '+' or '-' with 'None' keyword";
@@ -681,6 +685,8 @@ struct ent {
     time_t lm;
     struct ent *next;
     int ascending;
+    int isdir;
+    int checkdir;
     char key;
 };
 
@@ -1147,6 +1153,14 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     p->alt = NULL;
     p->desc = NULL;
     p->lm = -1;
+    p->isdir = 0;
+    /*
+     * It's obnoxious to have to include this in every entry, but the qsort()
+     * comparison routine only takes two arguments..  The alternative would
+     * add another function call to each invocation.  Let's use memory
+     * rather than CPU.
+     */
+    p->checkdir = ((d->opts & FOLDERS_FIRST) != 0);
     p->key = ap_toupper(keyid);
     p->ascending = (ap_toupper(direction) == D_ASCENDING);
 
@@ -1156,6 +1170,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 	if (rr->finfo.st_mode != 0) {
 	    p->lm = rr->finfo.st_mtime;
 	    if (S_ISDIR(rr->finfo.st_mode)) {
+		p->isdir = 1;
 	        if (!(p->icon = find_icon(d, rr, 1))) {
 		    p->icon = find_default_icon(d, "^^DIRECTORY^^");
 		}
@@ -1449,6 +1464,15 @@ static int dsortf(struct ent **e1, struct ent **e2)
     }
     if (is_parent((*e2)->name)) {
         return 1;
+    }
+    /*
+     * Now see if one's a directory and one isn't, AND we're listing
+     * directories first.
+     */
+    if ((*e1)->checkdir) {
+	if ((*e1)->isdir != (*e2)->isdir) {
+	    return (*e1)->isdir ? -1 : 1;
+	}
     }
     /*
      * All of our comparisons will be of the c1 entry against the c2 one,
