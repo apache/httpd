@@ -72,7 +72,7 @@ typedef struct {
     char *handler;		/* Handler forced with SetHandler */
 } mime_dir_config;
 
-module mime_module;
+module MODULE_VAR_EXPORT mime_module;
 
 void *create_mime_dir_config (pool *p, char *dummy)
 {
@@ -304,7 +304,7 @@ int find_ct(request_rec *r)
 }
 
 
-module mime_module = {
+module MODULE_VAR_EXPORT mime_module = {
    STANDARD_MODULE_STUFF,
    init_mime,			/* initializer */
    create_mime_dir_config,

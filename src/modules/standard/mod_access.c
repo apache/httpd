@@ -79,7 +79,7 @@ typedef struct {
     array_header *denys;
 } access_dir_conf;
 
-module access_module;
+module MODULE_VAR_EXPORT access_module;
 
 void *create_access_dir_config (pool *p, char *dummy)
 {
@@ -263,7 +263,7 @@ int check_dir_access (request_rec *r)
 
 
 
-module access_module = {
+module MODULE_VAR_EXPORT access_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_access_dir_config,	/* dir config creater */

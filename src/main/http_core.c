@@ -243,7 +243,7 @@ void add_file_conf (core_dir_config *conf, void *url_config)
  * here...
  */
 
-int allow_options (request_rec *r)
+API_EXPORT(int) allow_options (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
@@ -275,7 +275,7 @@ char *auth_name (request_rec *r)
     return conf->auth_name;
 }
 
-char *default_type (request_rec *r)
+API_EXPORT(char *) default_type (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
@@ -300,7 +300,7 @@ array_header *requires (request_rec *r)
     return conf->requires;
 }
 
-int satisfies (request_rec *r)
+API_EXPORT(int) satisfies (request_rec *r)
 {
     core_dir_config *conf =
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
@@ -324,8 +324,7 @@ char *response_code_string (request_rec *r, int error_index)
     return conf->response_code_strings[error_index];
 }
 
-const char *
-get_remote_host(conn_rec *conn, void *dir_config, int type)
+API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int type)
 {
     struct in_addr *iaddr;
     struct hostent *hptr;

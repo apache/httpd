@@ -233,12 +233,12 @@ typedef struct module_struct {
  * data
  */
 
-void *get_module_config (void *conf_vector, module *m);
-void set_module_config (void *conf_vector, module *m, void *val);     
+API_EXPORT(void *) get_module_config (void *conf_vector, module *m);
+API_EXPORT(void) set_module_config (void *conf_vector, module *m, void *val);     
      
 /* Generic command handling function... */
 
-const char *set_string_slot (cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *, char *, char *);
 const char *set_flag_slot (cmd_parms *, char *, int);
 
 /* For modules which need to read config files, open logs, etc. ...
@@ -246,7 +246,7 @@ const char *set_flag_slot (cmd_parms *, char *, int);
  * it relativizes it wrt server_root.
  */
 
-char *server_root_relative (pool *p, char *fname);
+API_EXPORT(char *) server_root_relative (pool *p, char *fname);
      
 /* Finally, the hook for dynamically loading modules in... */
 

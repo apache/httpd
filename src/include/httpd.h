@@ -681,7 +681,7 @@ struct listen_rec {
 extern const char month_snames[12][4];
 
 struct tm *get_gmtoff(int *tz);
-char *get_time();
+API_EXPORT(char *) get_time();
 char *ht_time (pool *p, time_t t, const char *fmt, int gmt);     
 char *gm_timestr_822(pool *p, time_t t);
      
@@ -689,25 +689,25 @@ char *gm_timestr_822(pool *p, time_t t);
 arguments (unfortunately C won't automatically convert a char ** to a const
 char **) */     
      
-char *getword(pool *p, const char **line, char stop);
+API_EXPORT(char *) getword(pool *p, const char **line, char stop);
 char *getword_nc(pool *p, char **line, char stop);
 char *getword_white(pool *p, const char **line);
 char *getword_white_nc(pool *p, char **line);
 char *getword_nulls (pool *p, const char **line, char stop);
 char *getword_nulls_nc (pool *p, char **line, char stop);
-char *getword_conf (pool *p, const char **line);      
+API_EXPORT(char *) getword_conf (pool *p, const char **line);      
 char *getword_conf_nc (pool *p, char **line);      
 
 char *get_token (pool *p, char **accept_line, int accept_white);
 int find_token (pool *p, const char *line, const char *tok);
 int find_last_token (pool *p, const char *line, const char *tok);
      
-int is_url(const char *u);
+API_EXPORT(int) is_url(const char *u);
 extern int unescape_url(char *url);
 void no2slash(char *name);
 void getparents(char *name);
 char *escape_path_segment(pool *p, const char *s);
-char *os_escape_path(pool *p,const char *path,int partial);
+API_EXPORT(char *) os_escape_path(pool *p,const char *path,int partial);
 #define escape_uri(ppool,path) os_escape_path(ppool,path,1)
 extern char *escape_html(pool *p, const char *s);
 char *construct_server(pool *p, const char *hostname, unsigned port);
@@ -726,14 +726,14 @@ int strcmp_match(const char *str, const char *exp);
 int strcasecmp_match(const char *str, const char *exp);
 char *uudecode (pool *, const char *);
 
-char *pregsub(pool *p, const char *input, const char *source,
+API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
 	      size_t nmatch, regmatch_t pmatch[]);
 
-void str_tolower (char *);
+API_EXPORT(void) str_tolower (char *);
 int ind (const char *, char);	/* Sigh... */
 int rind (const char *, char);     
 
-int cfg_getline(char *s, int n, FILE *f);
+API_EXPORT(int) cfg_getline(char *s, int n, FILE *f);
 
 #ifdef NEED_STRERROR
 char *strerror (int err);
@@ -744,8 +744,8 @@ char *strerror (int err);
 uid_t uname2id(const char *name);
 gid_t gname2id(const char *name);
 int is_directory(const char *name);
-int can_exec(const struct stat *);     
-void chdir_file(const char *file);
+API_EXPORT(int) can_exec(const struct stat *);     
+API_EXPORT(void) chdir_file(const char *file);
      
 char *get_local_host(pool *);
 unsigned long get_virthost_addr (const char *hostname, unsigned short *port);

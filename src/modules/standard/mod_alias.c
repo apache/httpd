@@ -77,7 +77,8 @@ typedef struct {
 typedef struct {
     array_header *redirects;
 } alias_dir_conf;
-module alias_module;
+
+module MODULE_VAR_EXPORT alias_module;
 
 void *create_alias_config (pool *p, server_rec *s)
 {
@@ -367,7 +368,7 @@ int fixup_redir(request_rec *r)
     return DECLINED;
 }
 
-module alias_module = {
+module MODULE_VAR_EXPORT alias_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_alias_dir_config,	/* dir config creater */

@@ -609,8 +609,7 @@ bread(BUFF *fb, void *buf, int nbyte)
  *  CR characters in the byte stream not immediately followed by a LF
  * will be preserved.
  */
-int
-bgets(char *buff, int n, BUFF *fb)
+API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
 {
     int i, ch, ct;
 
@@ -904,8 +903,7 @@ bcwrite(BUFF *fb, const void *buf, int nbyte)
  * It is worth noting that if an error occurs, the buffer is in an unknown
  * state.
  */
-int
-bwrite(BUFF *fb, const void *buf, int nbyte)
+API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
 {
     int i, nwr;
 
@@ -1032,8 +1030,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
  * Flushes the buffered stream.
  * Returns 0 on success or -1 on error
  */
-int
-bflush(BUFF *fb)
+API_EXPORT(int) bflush(BUFF *fb)
 {
     int i;
 
@@ -1086,8 +1083,7 @@ bflush(BUFF *fb)
  * Sets the EOF flag to indicate no futher data can be read,
  * and the EOUT flag to indicate no further data can be written.
  */
-int
-bclose(BUFF *fb)
+API_EXPORT(int) bclose(BUFF *fb)
 {
     int rc1, rc2, rc3;
 

@@ -1,5 +1,10 @@
 Changes with Apache 1.3
 
+  *) Make modules DLLs, dynamically loaded, using LoadModule/LoadFile
+     on Win32.
+     Note that module DLLs must be compiled with the multithreaded DLL
+	 version of the runtime library. [Alexei Kosut and Ben Laurie]
+
   *) Sequent port re-added and SONY NEWS-OS port included.
 
   *) Automatic indexing removed from mod_dir and placed into mod_autoindex.

@@ -1175,7 +1175,7 @@ static int use_range_x(request_rec *r) {
 	     && strstr(ua, "MSIE 3")));
 }
 
-void send_http_header(request_rec *r)
+API_EXPORT(void) send_http_header(request_rec *r)
 {
     int i;
     const long int zero = 0L;
@@ -1303,7 +1303,7 @@ void finalize_request_protocol (request_rec *r)
  *    If an error occurs on input, we force an end to keepalive.
  */
 
-int setup_client_block (request_rec *r, int read_policy)
+API_EXPORT(int) setup_client_block (request_rec *r, int read_policy)
 {
     char *tenc = table_get(r->headers_in, "Transfer-Encoding");
     char *lenp = table_get(r->headers_in, "Content-Length");
@@ -1346,7 +1346,7 @@ int setup_client_block (request_rec *r, int read_policy)
     return OK;
 }
 
-int should_client_block (request_rec *r)
+API_EXPORT(int) should_client_block (request_rec *r)
 {
     if (r->read_length || is_HTTP_ERROR(r->status))
         return 0;
@@ -1394,7 +1394,7 @@ static long get_chunk_size (char *b)
  * hold a chunk-size line, including any extensions. For now, we'll leave
  * that to the caller, at least until we can come up with a better solution.
  */
-long get_client_block (request_rec *r, char *buffer, int bufsiz)
+API_EXPORT(long) get_client_block (request_rec *r, char *buffer, int bufsiz)
 {
     int c;
     long len_read, len_to_read;
@@ -1591,7 +1591,7 @@ long send_fb_length(BUFF *fb, request_rec *r, long length)
     return total_bytes_sent;
 }
 
-long send_fb(BUFF *fb, request_rec *r) { return send_fb_length(fb, r, -1); }
+API_EXPORT(long) send_fb(BUFF *fb, request_rec *r) { return send_fb_length(fb, r, -1); }
 
 long send_fd(FILE *f, request_rec *r) { return send_fd_length(f, r, -1); }
 

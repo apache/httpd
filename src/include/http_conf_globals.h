@@ -70,7 +70,7 @@ extern int daemons_to_start;
 extern int daemons_min_free;
 extern int daemons_max_free;
 extern int daemons_limit;
-extern int suexec_enabled;
+MODULE_VAR_EXPORT int suexec_enabled;
 extern int listenbacklog;
 
 extern char *pid_fname;

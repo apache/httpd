@@ -51,12 +51,12 @@
  */
 
 void open_logs (server_rec *, pool *p);
-void error_log2stderr (server_rec *);     
+API_EXPORT(void) error_log2stderr (server_rec *);     
 
 void log_pid (pool *p, char *pid_fname);
 void log_error(char *err, server_rec *s);
 extern void log_unixerr(const char *routine, const char *file,
 			const char *msg, server_rec *s);
 void log_printf(const server_rec *s, const char *fmt, ...);
-void log_reason(const char *reason, const char *fname, request_rec *r);
+API_EXPORT(void) log_reason(const char *reason, const char *fname, request_rec *r);
 

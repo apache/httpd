@@ -125,7 +125,7 @@ extern void bpushfd(BUFF *fb, int fd_in, int fd_out);
 extern int bsetopt(BUFF *fb, int optname, const void *optval);
 extern int bgetopt(BUFF *fb, int optname, void *optval);
 extern int bsetflag(BUFF *fb, int flag, int value);
-extern int bclose(BUFF *fb);
+API_EXPORT(int) bclose(BUFF *fb);
 
 #define bgetflag(fb, flag)	((fb)->flags & (flag))
 
@@ -135,11 +135,11 @@ extern void bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
 
 /* I/O */
 extern int bread(BUFF *fb, void *buf, int nbyte);
-extern int bgets(char *s, int n, BUFF *fb);
+API_EXPORT(int) bgets(char *s, int n, BUFF *fb);
 extern int blookc(char *buff, BUFF *fb);
 extern int bskiplf(BUFF *fb);
-extern int bwrite(BUFF *fb, const void *buf, int nbyte);
-extern int bflush(BUFF *fb);
+API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte);
+API_EXPORT(int) bflush(BUFF *fb);
 extern int bputs(const char *x, BUFF *fb);
 extern int bvputs(BUFF *fb, ...);
 extern int bprintf(BUFF *fb,const char *fmt,...);
@@ -156,6 +156,6 @@ extern int bfilbuf(BUFF *fb);
 		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (c), 0))
 
-int spawn_child_err_buff (pool *, int (*)(void *), void *,
+API_EXPORT(int) spawn_child_err_buff (pool *, int (*)(void *), void *,
            	  enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
                   BUFF **pipe_err);

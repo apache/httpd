@@ -861,7 +861,7 @@ static void decl_die (int status, char *phase, request_rec *r)
     else die (status, r);
 }
 
-int some_auth_required (request_rec *r)
+API_EXPORT(int) some_auth_required (request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
     
@@ -1124,7 +1124,7 @@ void internal_redirect (const char *new_uri, request_rec *r)
  * an internal redirect.
  */
 
-void internal_redirect_handler (const char *new_uri, request_rec *r)
+API_EXPORT(void) internal_redirect_handler (const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     if (r->handler)

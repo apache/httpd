@@ -262,7 +262,7 @@ pool *permanent_pool;
 #define POOL_HDR_CLICKS (1 + ((sizeof(struct pool) - 1) / CLICK_SZ))
 #define POOL_HDR_BYTES (POOL_HDR_CLICKS * CLICK_SZ)			 
 
-struct pool *make_sub_pool (struct pool *p)
+API_EXPORT(struct pool *) make_sub_pool (struct pool *p)
 {
   union block_hdr *blok;
   pool *new_pool;
@@ -318,7 +318,7 @@ void clear_pool (struct pool *a)
   unblock_alarms();
 }
 
-void destroy_pool (pool *a)
+API_EXPORT(void) destroy_pool (pool *a)
 {
   block_alarms();
   clear_pool (a);
@@ -342,7 +342,7 @@ long bytes_in_free_blocks () { return bytes_in_block_list (block_freelist); }
  */
 
 
-void *palloc (struct pool *a, int reqsize)
+API_EXPORT(void *) palloc (struct pool *a, int reqsize)
 {
   /* Round up requested size to an even number of alignment units (core clicks)
    */
@@ -388,14 +388,14 @@ void *palloc (struct pool *a, int reqsize)
   return (void *)first_avail;
 }
 
-void *pcalloc(struct pool *a, int size)
+API_EXPORT(void *) pcalloc(struct pool *a, int size)
 {
   void *res = palloc (a, size);
   memset (res, '\0', size);
   return res;
 }
 
-char *pstrdup(struct pool *a, const char *s)
+API_EXPORT(char *) pstrdup(struct pool *a, const char *s)
 {
   char *res;
   if (s == NULL) return NULL;
@@ -404,7 +404,7 @@ char *pstrdup(struct pool *a, const char *s)
   return res;
 }
 
-char *pstrndup(struct pool *a, const char *s, int n)
+API_EXPORT(char *) pstrndup(struct pool *a, const char *s, int n)
 {
   char *res;
   if (s == NULL) return NULL;
@@ -457,7 +457,7 @@ char *pstrcat(pool *a, ...)
  * The 'array' functions...
  */
 
-array_header *make_array (pool *p, int nelts, int elt_size)
+API_EXPORT(array_header *) make_array (pool *p, int nelts, int elt_size)
 {
   array_header *res = (array_header *)palloc(p, sizeof(array_header));
 
@@ -475,7 +475,7 @@ array_header *make_array (pool *p, int nelts, int elt_size)
   return res;
 }
 
-void *push_array (array_header *arr)
+API_EXPORT(void *) push_array (array_header *arr)
 {
   if (arr->nelts == arr->nalloc) {
     int new_size = (arr->nalloc <= 0) ? 1 : arr->nalloc * 2;
@@ -492,7 +492,7 @@ void *push_array (array_header *arr)
   return arr->elts + (arr->elt_size * (arr->nelts - 1));
 }
 
-void array_cat (array_header *dst, const array_header *src)
+API_EXPORT(void) array_cat (array_header *dst, const array_header *src)
 {
   int elt_size = dst->elt_size;
   
@@ -514,7 +514,7 @@ void array_cat (array_header *dst, const array_header *src)
   dst->nelts += src->nelts;
 }
 
-array_header *copy_array (pool *p, const array_header *arr)
+API_EXPORT(array_header *) copy_array (pool *p, const array_header *arr)
 {
   array_header *res = make_array (p, arr->nalloc, arr->elt_size);
 
@@ -530,7 +530,7 @@ array_header *copy_array (pool *p, const array_header *arr)
  * overhead of the full copy only where it is really needed.
  */
 
-array_header *copy_array_hdr (pool *p, const array_header *arr)
+API_EXPORT(array_header *) copy_array_hdr (pool *p, const array_header *arr)
 {
   array_header *res = (array_header *)palloc(p, sizeof(array_header));
 
@@ -546,7 +546,7 @@ array_header *copy_array_hdr (pool *p, const array_header *arr)
 
 /* The above is used here to avoid consing multiple new array bodies... */
 
-array_header *append_arrays (pool *p,
+API_EXPORT(array_header *) append_arrays (pool *p,
 			     const array_header *first,
 			     const array_header *second)
 {
@@ -562,22 +562,22 @@ array_header *append_arrays (pool *p,
  * The "table" functions.
  */
 
-table *make_table (pool *p, int nelts) {
+API_EXPORT(table *) make_table (pool *p, int nelts) {
     return make_array (p, nelts, sizeof (table_entry));
 }
 
-table *copy_table (pool *p, const table *t) {
+API_EXPORT(table *) copy_table (pool *p, const table *t) {
     return copy_array (p, t);
 }
 
-void clear_table (table *t)
+API_EXPORT(void) clear_table (table *t)
 {
     t->nelts = 0;
 }
 
-array_header *table_elts (table *t) { return t; }
+API_EXPORT(array_header *) table_elts (table *t) { return t; }
 
-char *table_get (const table *t, const char *key)
+API_EXPORT(char *) table_get (const table *t, const char *key)
 {
     table_entry *elts = (table_entry *)t->elts;
     int i;
@@ -591,7 +591,7 @@ char *table_get (const table *t, const char *key)
     return NULL;
 }
 
-void table_set (table *t, const char *key, const char *val)
+API_EXPORT(void) table_set (table *t, const char *key, const char *val)
 {
     register int i, j, k;
     table_entry *elts = (table_entry *)t->elts;
@@ -619,7 +619,7 @@ void table_set (table *t, const char *key, const char *val)
     }
 }
 
-void table_unset( table *t, const char *key ) 
+API_EXPORT(void) table_unset( table *t, const char *key ) 
 {
     register int i, j, k;   
     table_entry *elts = (table_entry *)t->elts;
@@ -640,7 +640,7 @@ void table_unset( table *t, const char *key )
         }
 }     
 
-void table_merge (table *t, const char *key, const char *val)
+API_EXPORT(void) table_merge (table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *)t->elts;
     int i;
@@ -656,7 +656,7 @@ void table_merge (table *t, const char *key, const char *val)
     elts->val = pstrdup (t->pool, val);
 }
 
-void table_add (table *t, const char *key, const char *val)
+API_EXPORT(void) table_add (table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *)t->elts;
 
@@ -665,7 +665,7 @@ void table_add (table *t, const char *key, const char *val)
     elts->val = pstrdup (t->pool, val);
 }
 
-table* overlay_tables (pool *p, const table *overlay, const table *base)
+API_EXPORT(table *) overlay_tables (pool *p, const table *overlay, const table *base)
 {
     return append_arrays (p, overlay, base);
 }
@@ -727,7 +727,7 @@ struct cleanup {
   struct cleanup *next;
 };
 
-void register_cleanup (pool *p, void *data, void (*plain_cleanup)(void *),
+API_EXPORT(void) register_cleanup (pool *p, void *data, void (*plain_cleanup)(void *),
 		       void (*child_cleanup)(void *))
 {
   struct cleanup *c = (struct cleanup *)palloc(p, sizeof (struct cleanup));
@@ -738,7 +738,7 @@ void register_cleanup (pool *p, void *data, void (*plain_cleanup)(void *),
   p->cleanups = c;
 }
 
-void kill_cleanup (pool *p, void *data, void (*cleanup)(void *))
+API_EXPORT(void) kill_cleanup (pool *p, void *data, void (*cleanup)(void *))
 {
   struct cleanup *c = p->cleanups;
   struct cleanup **lastp = &p->cleanups;
@@ -754,7 +754,7 @@ void kill_cleanup (pool *p, void *data, void (*cleanup)(void *))
   }
 }
 
-void run_cleanup (pool *p, void *data, void (*cleanup)(void *))
+API_EXPORT(void) run_cleanup (pool *p, void *data, void (*cleanup)(void *))
 {
   block_alarms();		/* Run cleanup only once! */
   (*cleanup)(data);
@@ -787,7 +787,7 @@ static void cleanup_pool_for_exec (pool *p)
     cleanup_pool_for_exec (p);
 }
 
-void cleanup_for_exec()
+API_EXPORT(void) cleanup_for_exec()
 {
 #ifndef WIN32
     /*
@@ -813,16 +813,16 @@ void cleanup_for_exec()
 
 static void fd_cleanup (void *fdv) { close ((int)fdv); }
 
-void note_cleanups_for_fd (pool *p, int fd) {
+API_EXPORT(void) note_cleanups_for_fd (pool *p, int fd) {
   register_cleanup (p, (void *)fd, fd_cleanup, fd_cleanup);
 }
 
-void kill_cleanups_for_fd(pool *p,int fd)
+API_EXPORT(void) kill_cleanups_for_fd(pool *p,int fd)
     {
     kill_cleanup(p,(void *)fd,fd_cleanup);
     }
 
-int popenf(pool *a, const char *name, int flg, int mode)
+API_EXPORT(int) popenf(pool *a, const char *name, int flg, int mode)
 {
   int fd;
   int save_errno;
@@ -839,7 +839,7 @@ int popenf(pool *a, const char *name, int flg, int mode)
   return fd;
 }
 
-int pclosef(pool *a, int fd)
+API_EXPORT(int) pclosef(pool *a, int fd)
 {
   int res;
   int save_errno;
@@ -861,11 +861,11 @@ int pclosef(pool *a, int fd)
 static void file_cleanup (void *fpv) { fclose ((FILE *)fpv); }
 static void file_child_cleanup (void *fpv) { close (fileno ((FILE *)fpv)); }
 
-void note_cleanups_for_file (pool *p, FILE *fp) {
+API_EXPORT(void) note_cleanups_for_file (pool *p, FILE *fp) {
   register_cleanup (p, (void *)fp, file_cleanup, file_child_cleanup);
 }
 
-FILE *pfopen(pool *a, const char *name, const char *mode)
+API_EXPORT(FILE *) pfopen(pool *a, const char *name, const char *mode)
 {
   FILE *fd = NULL;
   int baseFlag, desc;
@@ -897,7 +897,7 @@ FILE *pfopen(pool *a, const char *name, const char *mode)
   return fd;
 }
 
-FILE *pfdopen(pool *a,int fd, const char *mode)
+API_EXPORT(FILE *) pfdopen(pool *a,int fd, const char *mode)
 {
   FILE *f;
 
@@ -910,7 +910,7 @@ FILE *pfdopen(pool *a,int fd, const char *mode)
 }
 
 
-int pfclose(pool *a, FILE *fd)
+API_EXPORT(int) pfclose(pool *a, FILE *fd)
 {
   int res;
   
@@ -930,7 +930,7 @@ static void dir_cleanup (void *dv)
     closedir ((DIR *)dv);
 }
 
-DIR *popendir (pool *p, const char *name)
+API_EXPORT(DIR *) popendir (pool *p, const char *name)
 {
     DIR *d;
     int save_errno;
@@ -948,7 +948,7 @@ DIR *popendir (pool *p, const char *name)
     return d;
 }
 
-void pclosedir (pool *p, DIR *d)
+API_EXPORT(void) pclosedir (pool *p, DIR *d)
 {
     block_alarms ();
     kill_cleanup (p, (void *)d, dir_cleanup);
@@ -969,16 +969,16 @@ static void socket_cleanup (void *fdv)
     rv = closesocket((int)fdv);
 }
 
-void note_cleanups_for_socket (pool *p, int fd) {
+API_EXPORT(void) note_cleanups_for_socket (pool *p, int fd) {
   register_cleanup (p, (void *)fd, socket_cleanup, socket_cleanup);
 }
 
-void kill_cleanups_for_socket(pool *p,int sock)
+API_EXPORT(void) kill_cleanups_for_socket(pool *p,int sock)
 {
     kill_cleanup(p,(void *)sock,socket_cleanup);
 }
 
-int pclosesocket(pool *a, int sock)
+API_EXPORT(int) pclosesocket(pool *a, int sock)
 {
   int res;
   int save_errno;
@@ -1006,7 +1006,7 @@ int pclosesocket(pool *a, int sock)
 
 static void regex_cleanup (void *preg) { regfree ((regex_t *)preg); }
 
-regex_t *pregcomp(pool *p, const char *pattern, int cflags) {
+API_EXPORT(regex_t *) pregcomp(pool *p, const char *pattern, int cflags) {
     regex_t *preg = palloc(p, sizeof(regex_t));
 
     if (regcomp(preg, pattern, cflags))
@@ -1018,7 +1018,7 @@ regex_t *pregcomp(pool *p, const char *pattern, int cflags) {
 }
 
 
-void pregfree(pool *p, regex_t *reg)
+API_EXPORT(void) pregfree(pool *p, regex_t *reg)
 {
     block_alarms();
     regfree (reg);
@@ -1061,7 +1061,7 @@ void note_subprocess (pool *a, int pid, enum kill_conditions how)
 #endif /* WIN32 */
 
 
-int spawn_child_err_buff (pool *p, int (*func)(void *), void *data,
+API_EXPORT(int) spawn_child_err_buff (pool *p, int (*func)(void *), void *data,
 			  enum kill_conditions kill_how,
 			  BUFF **pipe_in, BUFF **pipe_out, BUFF **pipe_err)
 {
@@ -1252,7 +1252,7 @@ int spawn_child_err_buff (pool *p, int (*func)(void *), void *data,
   return pid;
 }
 
-int spawn_child_err (pool *p, int (*func)(void *), void *data,
+API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
 		     enum kill_conditions kill_how,
 		     FILE **pipe_in, FILE **pipe_out, FILE **pipe_err)
 {

@@ -65,7 +65,7 @@ const char month_snames[12][4] = {
     "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
 };
 
-char *get_time() {
+API_EXPORT(char *) get_time() {
     time_t t;
     char *time_string;
 
@@ -206,7 +206,7 @@ int is_matchexp(const char *str) {
  * AT&T V8 regexp package.
  */
 
-char *pregsub(pool *p, const char *input, const char *source,
+API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
 	      size_t nmatch, regmatch_t pmatch[]) {
     const char *src = input;
     char *dest, *dst;
@@ -424,7 +424,7 @@ int count_dirs(const char *path) {
 }
 
 
-void chdir_file(const char *file) {
+API_EXPORT(void) chdir_file(const char *file) {
     int i;
 
     if((i = rind(file,'/')) == -1)
@@ -439,7 +439,7 @@ char *getword_nc(pool* atrans, char **line, char stop)
     return getword(atrans,(const char **)line,stop);
     }
 
-char *getword(pool* atrans, const char **line, char stop) {
+API_EXPORT(char *) getword(pool* atrans, const char **line, char stop) {
     int pos = ind(*line, stop);
     char *res;
 
@@ -545,7 +545,7 @@ char *getword_conf_nc(pool* p, char **line) {
     return getword_conf(p,(const char **)line);
 }
 
-char *getword_conf(pool* p, const char **line) {
+API_EXPORT(char *) getword_conf(pool* p, const char **line) {
     const char *str = *line, *strend;
     char *res;
     char quote;
@@ -604,8 +604,7 @@ void cfg_getword(char *word, char *line) {
 }
 #endif
 
-int
-cfg_getline(char *s, int n, FILE *f) {
+API_EXPORT(int) cfg_getline(char *s, int n, FILE *f) {
     register int i=0, c;
 
     s[0] = '\0';
@@ -892,7 +891,7 @@ char *escape_path_segment(pool *p, const char *segment) {
     return copy;
 }
 
-char *os_escape_path(pool *p,const char *path,int partial) {
+API_EXPORT(char *) os_escape_path(pool *p,const char *path,int partial) {
   char *copy=palloc(p,3*strlen(path)+3);
   char *s=copy;
 
@@ -979,7 +978,7 @@ char *make_full_path(pool *a, const char *src1, const char *src2) {
 /*
  * Check for an absoluteURI syntax (see section 3.2 in RFC2068).
  */
-int is_url(const char *u) {
+API_EXPORT(int) is_url(const char *u) {
     register int x;
 
     for (x = 0; u[x] != ':'; x++) {
@@ -993,7 +992,7 @@ int is_url(const char *u) {
     return (x ? 1 : 0);  /* If the first character is ':', it's broken, too */
 }
 
-int can_exec(const struct stat *finfo) {
+API_EXPORT(int) can_exec(const struct stat *finfo) {
 #ifdef MULTIPLE_GROUPS
   int cnt;
 #endif
@@ -1135,7 +1134,7 @@ int rind(const char *s, char c) {
     return -1;
 }
 
-void str_tolower(char *str) {
+API_EXPORT(void) str_tolower(char *str) {
     while(*str) {
         *str = tolower(*str);
         ++str;

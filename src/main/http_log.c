@@ -139,7 +139,7 @@ void open_logs (server_rec *s_main, pool *p)
     }
 }
 
-void error_log2stderr(server_rec *s) {
+API_EXPORT(void) error_log2stderr(server_rec *s) {
     if(fileno(s->error_log) != STDERR_FILENO)
         dup2(fileno(s->error_log),STDERR_FILENO);
 }
@@ -196,7 +196,7 @@ log_printf(const server_rec *s, const char *fmt, ...)
     fflush(s->error_log);
 }
 
-void log_reason(const char *reason, const char *file, request_rec *r) 
+API_EXPORT(void) log_reason(const char *reason, const char *file, request_rec *r) 
 {
     fprintf (r->server->error_log,
 	     "[%s] access to %s failed for %s, reason: %s\n",

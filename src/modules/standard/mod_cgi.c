@@ -73,7 +73,7 @@
 #include "util_script.h"
 #include "http_conf_globals.h"
 
-module cgi_module;
+module __declspec(dllexport) cgi_module;
 
 /* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
  * in ScriptAliased directories, which means we need to know if this
@@ -550,7 +550,7 @@ handler_rec cgi_handlers[] = {
 { NULL }
 };
 
-module cgi_module = {
+module __declspec(dllexport) cgi_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    NULL,			/* dir config creater */

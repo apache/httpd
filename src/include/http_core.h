@@ -82,15 +82,15 @@
 #define SATISFY_ANY 1
 #define SATISFY_NOSPEC 2
 
-int allow_options (request_rec *);
+API_EXPORT(int) allow_options (request_rec *);
 int allow_overrides (request_rec *);
-char *default_type (request_rec *);     
+API_EXPORT(char *) default_type (request_rec *);     
 char *document_root (request_rec *); /* Don't use this!  If your request went
 				      * through a Userdir, or something like
 				      * that, it'll screw you.  But it's
 				      * back-compatible...
 				      */
-extern const char *get_remote_host(conn_rec *conn, void *dir_config, int type);
+API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int type);
 extern const char *get_remote_logname(request_rec *r);
      
 /* Authentication stuff.  This is one of the places where compatibility
@@ -107,7 +107,7 @@ typedef struct {
      
 char *auth_type (request_rec *);
 char *auth_name (request_rec *);     
-int satisfies (request_rec *r);
+API_EXPORT(int) satisfies (request_rec *r);
 array_header *requires (request_rec *);    
 
 #ifdef CORE_PRIVATE

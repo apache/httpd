@@ -10,3 +10,12 @@ _debug:
     cd modules\proxy & set CFG=proxy - Win32 Debug& nmake -f proxy.mak
     cd regex & set CFG=regex - Win32 Debug& nmake -f regex.mak
 	set CFG=apache - Win32 Debug& nmake -f apache.mak
+
+installd:
+	-mkdir \Apache
+	copy LaunchD\ApacheLaunch.exe \Apache
+	copy CoreD\ApacheCore.dll \Apache
+	copy nt\ModAccessD\ApacheModuleAccess.dll \Apache
+	copy nt\ModAliasD\ApacheModuleAlias.dll \Apache
+	copy nt\ModCGID\ApacheModuleCGI.dll \Apache
+	copy nt\ModMIMED\ApacheModuleMIME.dll \Apache

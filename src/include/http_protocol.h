@@ -66,7 +66,7 @@ int send_header_field (request_rec *r, const char *fieldname,
 
 /* Send the Status-Line and header fields for HTTP response */
 
-void send_http_header (request_rec *l);     
+API_EXPORT(void) send_http_header (request_rec *l);     
 
 /* Send the response to special method requests */
 
@@ -111,7 +111,7 @@ int set_last_modified (request_rec *r, time_t mtime);
 long send_fd(FILE *f, request_rec *r);
 long send_fd_length(FILE *f, request_rec *r, long length);
 
-long send_fb(BUFF *f, request_rec *r);
+API_EXPORT(long) send_fb(BUFF *f, request_rec *r);
 long send_fb_length(BUFF *f, request_rec *r, long length);
      
 /* Hmmm... could macrofy these for now, and maybe forever, though the
@@ -134,9 +134,9 @@ int index_of_response (int status);
 
 /* Reading a block of data from the client connection (e.g., POST arg) */
      
-int setup_client_block (request_rec *r, int read_policy);
-int should_client_block (request_rec *r);
-long get_client_block (request_rec *r, char *buffer, int bufsiz);
+API_EXPORT(int) setup_client_block (request_rec *r, int read_policy);
+API_EXPORT(int) should_client_block (request_rec *r);
+API_EXPORT(long) get_client_block (request_rec *r, char *buffer, int bufsiz);
 
 /* Sending a byterange */
 

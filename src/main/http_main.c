@@ -543,7 +543,7 @@ check_alarm()
  * as long as it hasn't expired already.
  */
 
-void reset_timeout (request_rec *r) {
+API_EXPORT(void) reset_timeout (request_rec *r) {
     int i;
 
     if (timeout_name) { /* timeout has been set */
@@ -571,7 +571,7 @@ void keepalive_timeout (char *name, request_rec *r)
 
 }
 
-void hard_timeout (char *name, request_rec *r)
+API_EXPORT(void) hard_timeout (char *name, request_rec *r)
 {
     timeout_req = r;
     timeout_name = name;
@@ -580,7 +580,7 @@ void hard_timeout (char *name, request_rec *r)
 
 }
 
-void soft_timeout (char *name, request_rec *r)
+API_EXPORT(void) soft_timeout (char *name, request_rec *r)
 {
     timeout_name = name;
     
@@ -588,7 +588,7 @@ void soft_timeout (char *name, request_rec *r)
 
 }
 
-void kill_timeout (request_rec *dummy) {
+API_EXPORT(void) kill_timeout (request_rec *dummy) {
     set_callback_and_alarm(NULL, 0);
     timeout_req = NULL;
     timeout_name = NULL;
@@ -3488,13 +3488,7 @@ master_main(int argc, char **argv)
     return(0);
 }
 
-
-
-
-
-
-int
-main(int argc, char *argv[])
+__declspec(dllexport) int main(int argc, char *argv[])
 {
     int c;
     int child = 0;

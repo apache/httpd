@@ -103,15 +103,13 @@ typedef void *(*merger)(pool *, void *, void *);
  * overridden).
  */
 
-void *    
-get_module_config (void *conf_vector, module *m)
+API_EXPORT(void *) get_module_config (void *conf_vector, module *m)
 {
    void **confv = (void**)conf_vector;
    return confv[m->module_index];
 }
 
-void
-set_module_config (void *conf_vector, module *m, void *val)
+API_EXPORT(void) set_module_config (void *conf_vector, module *m, void *val)
 {
    void **confv = (void**)conf_vector;
    confv[m->module_index] = val;
@@ -778,7 +776,7 @@ const char *srm_command_loop (cmd_parms *parms, void *config)
  * Generic command functions...
  */
 
-const char *set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
+API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     /* This one's pretty generic... */
   
@@ -803,7 +801,7 @@ const char *set_flag_slot (cmd_parms *cmd, char *struct_ptr, int arg)
 
 cmd_parms default_parms = { NULL, 0, -1, NULL, 0, NULL, NULL, NULL, NULL };
 
-char *server_root_relative (pool *p, char *file)
+API_EXPORT(char *)server_root_relative (pool *p, char *file)
 {
 #ifdef __EMX__
     /* Add support for OS/2 drive names */

@@ -5,6 +5,10 @@
 extern "C" {
 #endif
 
+#ifdef WIN32
+#define API_EXPORT(type)    __declspec(dllexport) type __stdcall
+#endif
+
 /* === regex2.h === */
 typedef off_t regoff_t;
 typedef struct {
@@ -54,7 +58,7 @@ extern size_t regerror(int, const regex_t *, char *, size_t);
 
 
 /* === regexec.c === */
-extern int regexec(const regex_t *, const char *, size_t, regmatch_t [], int);
+API_EXPORT(int) regexec(const regex_t *, const char *, size_t, regmatch_t [], int);
 #define	REG_NOTBOL	00001
 #define	REG_NOTEOL	00002
 #define	REG_STARTEND	00004

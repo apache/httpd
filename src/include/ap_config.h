@@ -548,6 +548,16 @@ typedef int gid_t;
 typedef int pid_t;
 typedef int mode_t;
 typedef char * caddr_t;
+
+/*
+Define export types. API_EXPORT_NONSTD is a nasty hack to avoid having to declare
+every configuration function as __stdcall.
+*/
+
+#define API_EXPORT(type)    __declspec(dllexport) type __stdcall
+#define API_EXPORT_NONSTD(type)    __declspec(dllexport) type
+#define MODULE_VAR_EXPORT   __declspec(dllexport)
+
 #define strcasecmp(s1, s2) stricmp(s1, s2)
 #define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
 #define lstat(x, y) stat(x, y)
@@ -583,6 +593,18 @@ typedef char * caddr_t;
 #undef NO_SETSID
 /* NEED_STRDUP is set on stupid systems that don't have strdup. */
 #undef NEED_STRDUP
+#endif
+
+#ifndef API_EXPORT
+#define API_EXPORT(type)    type
+#endif
+
+#ifndef API_EXPORT_NONSTD
+#define API_EXPORT_NONSTD(type)    type
+#endif
+
+#ifndef MODULE_VAR_EXPORT
+#define MODULE_VAR_EXPORT
 #endif
 
 /* Do we have sys/resource.h; assume that BSD does. */

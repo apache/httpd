@@ -128,7 +128,7 @@ static char *http2env(pool *a, char *w)
     return res;
 }
 
-char **create_environment(pool *p, table *t)
+API_EXPORT(char **) create_environment(pool *p, table *t)
 {
     array_header *env_arr = table_elts (t);
     table_entry *elts = (table_entry *)env_arr->elts;
@@ -148,7 +148,7 @@ char **create_environment(pool *p, table *t)
     return env;
 }
 
-void add_common_vars(request_rec *r)
+API_EXPORT(void) add_common_vars(request_rec *r)
 {
     table *e = r->subprocess_env;
     server_rec *s = r->server;
@@ -258,7 +258,7 @@ static char *original_uri(request_rec *r)
     return pstrndup(r->pool, first, last - first);
 }
 
-void add_cgi_vars(request_rec *r)
+API_EXPORT(void) add_cgi_vars(request_rec *r)
 {
     table *e = r->subprocess_env;
 
@@ -312,7 +312,7 @@ void add_cgi_vars(request_rec *r)
     }
 }
 
-int scan_script_header_err_buff(request_rec *r, BUFF *fb, char *buffer)
+API_EXPORT(int) scan_script_header_err_buff(request_rec *r, BUFF *fb, char *buffer)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
@@ -540,7 +540,7 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 #endif
 
 
-int call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
+API_EXPORT(int) call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
     int pid = 0;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \

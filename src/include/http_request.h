@@ -82,8 +82,8 @@ void destroy_sub_req (request_rec *r);
  */
 
 void internal_redirect (const char *new_uri, request_rec *);     
-void internal_redirect_handler (const char *new_uri, request_rec *);
-int some_auth_required (request_rec *r);
+API_EXPORT(void) internal_redirect_handler (const char *new_uri, request_rec *);
+API_EXPORT(int) some_auth_required (request_rec *r);
 int is_initial_req(request_rec *r);
 
 #ifdef CORE_PRIVATE
