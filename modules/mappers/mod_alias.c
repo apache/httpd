@@ -70,8 +70,8 @@
 #include "http_request.h"
 
 typedef struct {
-    char *real;
-    char *fake;
+    const char *real;
+    const char *fake;
     char *handler;
     regex_t *regexp;
     int redir_status;		/* 301, 302, 303, 410, etc */
@@ -126,7 +126,8 @@ static void *merge_alias_dir_config(ap_pool_t *p, void *basev, void *overridesv)
     return a;
 }
 
-static const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char *r,
+static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
+				      const char *f, const char *r,
 				      int use_regex)
 {
     server_rec *s = cmd->server;
@@ -149,17 +150,20 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char
     return NULL;
 }
 
-static const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
+static const char *add_alias(cmd_parms *cmd, void *dummy, const char *f,
+			     const char *r)
 {
     return add_alias_internal(cmd, dummy, f, r, 0);
 }
 
-static const char *add_alias_regex(cmd_parms *cmd, void *dummy, char *f, char *r)
+static const char *add_alias_regex(cmd_parms *cmd, void *dummy, const char *f,
+				   const char *r)
 {
     return add_alias_internal(cmd, dummy, f, r, 1);
 }
 
-static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dirconf,
+static const char *add_redirect_internal(cmd_parms *cmd,
+					 alias_dir_conf *dirconf,
 					 const char *arg1, const char *arg2, 
                                          const char *arg3, int use_regex)
 {
@@ -169,8 +173,8 @@ static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dircon
     (alias_server_conf *) ap_get_module_config(s->module_config, &alias_module);
     int status = (int) (long) cmd->info;
     regex_t *r = NULL;
-    char *f = arg2;
-    char *url = arg3;
+    const char *f = arg2;
+    const char *url = arg3;
 
     if (!strcasecmp(arg1, "gone"))
 	status = HTTP_GONE;
@@ -216,14 +220,22 @@ static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dircon
     return NULL;
 }
 
-static const char *add_redirect(cmd_parms *cmd, alias_dir_conf * dirconf, 
-                                const char *arg1, const char *arg2, const char *arg3)
+static const char *add_redirect(cmd_parms *cmd, void *dirconf,
+                                const char *arg1, const char *arg2,
+				const char *arg3)
 {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 0);
 }
 
-static const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf * dirconf,
-				      char *arg1, char *arg2, char *arg3)
+static const char *add_redirect2(cmd_parms *cmd, void *dirconf,
+                                const char *arg1, const char *arg2)
+{
+    return add_redirect_internal(cmd, dirconf, arg1, arg2, NULL, 0);
+}
+
+static const char *add_redirect_regex(cmd_parms *cmd, void *dirconf,
+				      const char *arg1, const char *arg2,
+				      const char *arg3)
 {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 1);
 }
@@ -246,10 +258,10 @@ static const command_rec alias_cmds[] =
                    (void *) HTTP_MOVED_TEMPORARILY, OR_FILEINFO,
                    "an optional status, then a regular expression and "
                    "destination URL"),
-    AP_INIT_TAKE2("RedirectTemp", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
-                  OR_FILEINFO,
+    AP_INIT_TAKE2("RedirectTemp", add_redirect2,
+		  (void *) HTTP_MOVED_TEMPORARILY, OR_FILEINFO,
                   "a document to be redirected, then the destination URL"),
-    AP_INIT_TAKE2("RedirectPermanent", add_redirect, 
+    AP_INIT_TAKE2("RedirectPermanent", add_redirect2, 
                   (void *) HTTP_MOVED_PERMANENTLY, OR_FILEINFO,
                   "a document to be redirected, then the destination URL"),
     {NULL}
