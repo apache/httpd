@@ -29,6 +29,9 @@ and filter support was enabled.</p>
 mod_proxy up to Apache v1.3.x has been <strong>removed</strong> from
 mod_proxy and will be incorporated into a new module, mod_cache.</p>
 
+<p>If you need to use SSL when contacting remote servers, have a look at the
+<code>SSLProxy*</code> directives in mod_ssl.</p>
+
 <blockquote><table><tr><td bgcolor="#ffe5f5"><p>Do not enable proxying with <a href="#proxyrequests" class="directive"><code class="directive">ProxyRequests</code></a> until you have 
 <a href="#access">secured your server</a>.  Open proxy servers are
 dangerous both to your network and to the Internet at large.</p></td></tr></table></blockquote>
@@ -64,7 +67,7 @@ forward proxy and the remote webserver.</p>
 <p>Apache's mod_proxy can be figured to behave like a forward proxy
 using the <a href="#proxyremote" class="directive"><code class="directive">ProxyRemote</code></a>
 directive. In addition, caching of data can be achieved by configuring
-Apache <code><a href="mod_cache.html">mod_cache</a></code>. Other dedicated forward proxy
+Apache <code><a href="../mod/mod_cache.html">mod_cache</a></code>. Other dedicated forward proxy
 packages include <a href="http://www.squid.org">Squid</a>.</p>
 
 <p>A <em>reverse proxy</em> is a webserver system that is capable of serving webpages
@@ -102,7 +105,7 @@ Allow from 192.168.0<br>
 </code></td></tr></table></blockquote>
 
 <p>When configuring a reverse proxy, access control takes on the
-attributes of the normal server <a href="core.html#directory" class="directive"><code class="directive">&lt;directory&gt;</code></a> configuration.</p>
+attributes of the normal server <a href="../mod/core.html#directory" class="directive"><code class="directive">&lt;directory&gt;</code></a> configuration.</p>
 
 
 
@@ -226,7 +229,7 @@ disable keepalives?</a></h3>
 
 <p>For circumstances where you have a application server which doesn't implement
 keepalives or HTTP/1.1 properly, there are 2 environment variables which when
-set send a HTTP/1.0 with no keepalive. These are set via the  <a href="mod_env.html#setenv" class="directive"><code class="directive">SetEnv</code></a> directive.</p>
+set send a HTTP/1.0 with no keepalive. These are set via the  <a href="../mod/mod_env.html#setenv" class="directive"><code class="directive">SetEnv</code></a> directive.</p>
 <p>These are the 'force-proxy-request-1.0' and 'proxy-nokeepalive' notes.</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
@@ -474,11 +477,11 @@ a subdirectory. eg.</p>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5">NB: order is important. you need to put the exclusions BEFORE the general proxypass directive</td></tr></table></blockquote>
 
-<p>When used inside a <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section, the first argument is
-ommitted and the local directory is obtained from the <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
+<p>When used inside a <a href="../mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section, the first argument is
+ommitted and the local directory is obtained from the <a href="../mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
 
 <p>If you require a more flexible reverse-proxy configuration, see
-the <a href="mod_rewrite.html#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directive
+the <a href="../mod/mod_rewrite.html#rewriterule" class="directive"><code class="directive">RewriteRule</code></a> directive
 with the <code>[P]</code> flag.</p>
 
 <hr/><h2><a name="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Adjusts the URL in HTTP response headers sent from
@@ -512,12 +515,12 @@ redirect response to the client. </p>
 Note that this <code class="directive">ProxyPassReverse</code> directive can
 also be used in conjunction with the proxy pass-through feature
 ("<code>RewriteRule ...  [P]</code>") from
-<code><a href="mod_rewrite.html">mod_rewrite</a></code> because its doesn't depend on a
+<code><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> because its doesn't depend on a
 corresponding <a href="#proxypass" class="directive"><code class="directive">ProxyPass</code></a>
 directive.</p>
 
-<p>When used inside a <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section, the first argument is
-ommitted and the local directory is obtained from the <a href="core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
+<p>When used inside a <a href="../mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section, the first argument is
+ommitted and the local directory is obtained from the <a href="../mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
 
 <hr/><h2><a name="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Use incoming Host HTTP request header for
 proxy request</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyPreserveHost on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ProxyPreserveHost Off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_proxy</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in
