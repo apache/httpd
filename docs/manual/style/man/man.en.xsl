@@ -26,7 +26,7 @@
 />
 
 <!-- Read the localized messages from the specified language file -->
-<xsl:variable name="messages" select="document('../lang/en.xml')/messages" />
+<xsl:variable name="message" select="document('../lang/en.xml')/language/messages/message" />
 
 <!-- Now get the real guts of the stylesheet -->
 <xsl:include href="manpage.xsl" />

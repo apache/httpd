@@ -239,8 +239,8 @@
 &lf;
 <xsl:text>.SH "</xsl:text>
     <xsl:call-template name="filter.escape">
-        <xsl:with-param name="text" select="normalize-space(translate($messages
-                          /message[@name='summary'], $lowercase, $uppercase))"/>
+        <xsl:with-param name="text" select="normalize-space(translate($message
+                          [@id='summary'], $lowercase, $uppercase))"/>
     </xsl:call-template>
 <xsl:text>"</xsl:text>&lf;
 <xsl:apply-templates />
