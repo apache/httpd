@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.es"> ]
->
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1.4.2.6  -->
+<!-- English Revision: 1.4.2.7  -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -59,7 +57,5 @@
       <tr><th>X</th><td>Experimental</td></tr>
     </table>
   </legend>
-
-  &allmodules;
 </quickreference>
 

@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
-<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ru"> ]
->
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
-<!-- English Revision: 1.4 (outdated: 1.4.2.6) -->
+<!-- English Revision: 1.4 (outdated: 1.4.2.7) -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -64,6 +62,4 @@
       <tr><th>X</th><td>Experimental</td></tr>
     </table>
   </legend>
-
-  &allmodules;
 </quickreference>
