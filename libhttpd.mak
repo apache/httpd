@@ -58,6 +58,7 @@ CLEAN :
 	-@erase "$(INTDIR)\buildmark.obj"
 	-@erase "$(INTDIR)\config.obj"
 	-@erase "$(INTDIR)\connection.obj"
+	-@erase "$(INTDIR)\core.obj"
 	-@erase "$(INTDIR)\error_bucket.obj"
 	-@erase "$(INTDIR)\http_core.obj"
 	-@erase "$(INTDIR)\http_protocol.obj"
@@ -85,7 +86,9 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_userdir.obj"
 	-@erase "$(INTDIR)\modules.obj"
 	-@erase "$(INTDIR)\mpm_winnt.obj"
+	-@erase "$(INTDIR)\protocol.obj"
 	-@erase "$(INTDIR)\registry.obj"
+	-@erase "$(INTDIR)\request.obj"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\scoreboard.obj"
 	-@erase "$(INTDIR)\service.obj"
@@ -110,8 +113,8 @@ CLEAN :
 CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I ".\include" /I ".\srclib\apr\include" /I\
  ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I\
- "./os/win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /c 
+ "./os/win32" /I "./modules/http" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ "AP_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
@@ -161,6 +164,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\buildmark.obj" \
 	"$(INTDIR)\config.obj" \
 	"$(INTDIR)\connection.obj" \
+	"$(INTDIR)\core.obj" \
 	"$(INTDIR)\error_bucket.obj" \
 	"$(INTDIR)\http_core.obj" \
 	"$(INTDIR)\http_protocol.obj" \
@@ -187,7 +191,9 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\mpm_winnt.obj" \
+	"$(INTDIR)\protocol.obj" \
 	"$(INTDIR)\registry.obj" \
+	"$(INTDIR)\request.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\scoreboard.obj" \
 	"$(INTDIR)\service.obj" \
@@ -243,6 +249,7 @@ CLEAN :
 	-@erase "$(INTDIR)\buildmark.obj"
 	-@erase "$(INTDIR)\config.obj"
 	-@erase "$(INTDIR)\connection.obj"
+	-@erase "$(INTDIR)\core.obj"
 	-@erase "$(INTDIR)\error_bucket.obj"
 	-@erase "$(INTDIR)\http_core.obj"
 	-@erase "$(INTDIR)\http_protocol.obj"
@@ -270,7 +277,9 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_userdir.obj"
 	-@erase "$(INTDIR)\modules.obj"
 	-@erase "$(INTDIR)\mpm_winnt.obj"
+	-@erase "$(INTDIR)\protocol.obj"
 	-@erase "$(INTDIR)\registry.obj"
+	-@erase "$(INTDIR)\request.obj"
 	-@erase "$(INTDIR)\rfc1413.obj"
 	-@erase "$(INTDIR)\scoreboard.obj"
 	-@erase "$(INTDIR)\service.obj"
@@ -296,8 +305,8 @@ CLEAN :
 CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include"\
  /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite"\
- /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /c 
+ /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ "AP_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -348,6 +357,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\buildmark.obj" \
 	"$(INTDIR)\config.obj" \
 	"$(INTDIR)\connection.obj" \
+	"$(INTDIR)\core.obj" \
 	"$(INTDIR)\error_bucket.obj" \
 	"$(INTDIR)\http_core.obj" \
 	"$(INTDIR)\http_protocol.obj" \
@@ -374,7 +384,9 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\mpm_winnt.obj" \
+	"$(INTDIR)\protocol.obj" \
 	"$(INTDIR)\registry.obj" \
+	"$(INTDIR)\request.obj" \
 	"$(INTDIR)\rfc1413.obj" \
 	"$(INTDIR)\scoreboard.obj" \
 	"$(INTDIR)\service.obj" \
@@ -710,6 +722,7 @@ DEP_CPP_VHOST=\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
 	".\include\util_cfgtree.h"\
+	".\include\util_filter.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
@@ -747,27 +760,23 @@ SOURCE=.\modules\http\http_core.c
 DEP_CPP_HTTP_=\
 	".\include\ap_config.h"\
 	".\include\ap_mmn.h"\
+	".\include\ap_mpm.h"\
 	".\include\ap_release.h"\
 	".\include\http_config.h"\
 	".\include\http_connection.h"\
-	".\include\http_core.h"\
-	".\include\http_log.h"\
-	".\include\http_main.h"\
 	".\include\http_protocol.h"\
 	".\include\http_request.h"\
-	".\include\http_vhost.h"\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
-	".\include\rfc1413.h"\
+	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_charset.h"\
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
-	".\include\util_md5.h"\
 	".\include\util_uri.h"\
 	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
-	".\server\mpm\winnt\mpm.h"\
+	".\server\mpm\winnt\mpm_default.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_ring.h"\
@@ -777,11 +786,8 @@ DEP_CPP_HTTP_=\
 	".\srclib\apr\include\apr_errno.h"\
 	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_fnmatch.h"\
 	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_lock.h"\
-	".\srclib\apr\include\apr_md5.h"\
 	".\srclib\apr\include\apr_mmap.h"\
 	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_pools.h"\
@@ -1055,6 +1061,7 @@ DEP_CPP_MOD_AS=\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
 	".\include\util_uri.h"\
+	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
@@ -1150,6 +1157,7 @@ DEP_CPP_MOD_AUT=\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
 	".\include\util_uri.h"\
+	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
@@ -1202,6 +1210,7 @@ DEP_CPP_MOD_C=\
 	".\include\util_script.h"\
 	".\include\util_uri.h"\
 	".\modules\filters\mod_include.h"\
+	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
@@ -1338,6 +1347,7 @@ DEP_CPP_MOD_I=\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
 	".\include\util_uri.h"\
+	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
@@ -1425,7 +1435,7 @@ NODEP_CPP_MOD_IN=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\os\win32\mod_isapi.c
+SOURCE=.\modules\arch\win32\mod_isapi.c
 DEP_CPP_MOD_IS=\
 	".\include\ap_config.h"\
 	".\include\ap_mmn.h"\
@@ -1441,6 +1451,7 @@ DEP_CPP_MOD_IS=\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
 	".\include\util_uri.h"\
+	".\modules\http\mod_core.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
@@ -1484,6 +1495,7 @@ DEP_CPP_MOD_L=\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
 	".\include\util_cfgtree.h"\
+	".\include\util_filter.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
@@ -1619,6 +1631,7 @@ DEP_CPP_MOD_S=\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
 	".\include\util_cfgtree.h"\
+	".\include\util_filter.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
@@ -1728,6 +1741,65 @@ NODEP_CPP_MOD_U=\
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\server\core.c
+DEP_CPP_CORE_=\
+	".\include\ap_config.h"\
+	".\include\ap_mmn.h"\
+	".\include\ap_release.h"\
+	".\include\http_config.h"\
+	".\include\http_connection.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\pcreposix.h"\
+	".\include\rfc1413.h"\
+	".\include\util_cfgtree.h"\
+	".\include\util_charset.h"\
+	".\include\util_ebcdic.h"\
+	".\include\util_filter.h"\
+	".\include\util_md5.h"\
+	".\include\util_uri.h"\
+	".\modules\http\mod_core.h"\
+	".\os\win32\os.h"\
+	".\server\mpm\winnt\mpm.h"\
+	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_ring.h"\
+	".\srclib\apr-util\include\apu.h"\
+	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
+	".\srclib\apr\include\apr_errno.h"\
+	".\srclib\apr\include\apr_file_info.h"\
+	".\srclib\apr\include\apr_file_io.h"\
+	".\srclib\apr\include\apr_fnmatch.h"\
+	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_lib.h"\
+	".\srclib\apr\include\apr_lock.h"\
+	".\srclib\apr\include\apr_md5.h"\
+	".\srclib\apr\include\apr_mmap.h"\
+	".\srclib\apr\include\apr_network_io.h"\
+	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_strings.h"\
+	".\srclib\apr\include\apr_tables.h"\
+	".\srclib\apr\include\apr_thread_proc.h"\
+	".\srclib\apr\include\apr_time.h"\
+	".\srclib\apr\include\apr_user.h"\
+	".\srclib\apr\include\apr_want.h"\
+	".\srclib\apr\include\apr_xlate.h"\
+	
+NODEP_CPP_CORE_=\
+	".\include\ap_config_auto.h"\
+	
+
+"$(INTDIR)\core.obj" : $(SOURCE) $(DEP_CPP_CORE_) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\server\error_bucket.c
 DEP_CPP_ERROR=\
 	".\include\ap_config.h"\
@@ -1736,6 +1808,7 @@ DEP_CPP_ERROR=\
 	".\include\http_protocol.h"\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
+	".\include\util_filter.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_buckets.h"\
@@ -1765,6 +1838,111 @@ NODEP_CPP_ERROR=\
 	
 
 "$(INTDIR)\error_bucket.obj" : $(SOURCE) $(DEP_CPP_ERROR) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\server\protocol.c
+DEP_CPP_PROTO=\
+	".\include\ap_config.h"\
+	".\include\ap_mmn.h"\
+	".\include\ap_release.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\pcreposix.h"\
+	".\include\util_cfgtree.h"\
+	".\include\util_charset.h"\
+	".\include\util_date.h"\
+	".\include\util_ebcdic.h"\
+	".\include\util_filter.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_ring.h"\
+	".\srclib\apr-util\include\apu.h"\
+	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
+	".\srclib\apr\include\apr_errno.h"\
+	".\srclib\apr\include\apr_file_info.h"\
+	".\srclib\apr\include\apr_file_io.h"\
+	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_lib.h"\
+	".\srclib\apr\include\apr_lock.h"\
+	".\srclib\apr\include\apr_mmap.h"\
+	".\srclib\apr\include\apr_network_io.h"\
+	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_signal.h"\
+	".\srclib\apr\include\apr_strings.h"\
+	".\srclib\apr\include\apr_tables.h"\
+	".\srclib\apr\include\apr_thread_proc.h"\
+	".\srclib\apr\include\apr_time.h"\
+	".\srclib\apr\include\apr_user.h"\
+	".\srclib\apr\include\apr_want.h"\
+	".\srclib\apr\include\apr_xlate.h"\
+	
+NODEP_CPP_PROTO=\
+	".\include\ap_config_auto.h"\
+	
+
+"$(INTDIR)\protocol.obj" : $(SOURCE) $(DEP_CPP_PROTO) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\server\request.c
+DEP_CPP_REQUE=\
+	".\include\ap_config.h"\
+	".\include\ap_mmn.h"\
+	".\include\ap_release.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\pcreposix.h"\
+	".\include\util_cfgtree.h"\
+	".\include\util_charset.h"\
+	".\include\util_filter.h"\
+	".\include\util_uri.h"\
+	".\modules\http\mod_core.h"\
+	".\os\win32\os.h"\
+	".\srclib\apr-util\include\apr_buckets.h"\
+	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_ring.h"\
+	".\srclib\apr-util\include\apu.h"\
+	".\srclib\apr\include\apr.h"\
+	".\srclib\apr\include\apr_dso.h"\
+	".\srclib\apr\include\apr_errno.h"\
+	".\srclib\apr\include\apr_file_info.h"\
+	".\srclib\apr\include\apr_file_io.h"\
+	".\srclib\apr\include\apr_fnmatch.h"\
+	".\srclib\apr\include\apr_general.h"\
+	".\srclib\apr\include\apr_lock.h"\
+	".\srclib\apr\include\apr_mmap.h"\
+	".\srclib\apr\include\apr_network_io.h"\
+	".\srclib\apr\include\apr_pools.h"\
+	".\srclib\apr\include\apr_portable.h"\
+	".\srclib\apr\include\apr_strings.h"\
+	".\srclib\apr\include\apr_tables.h"\
+	".\srclib\apr\include\apr_thread_proc.h"\
+	".\srclib\apr\include\apr_time.h"\
+	".\srclib\apr\include\apr_user.h"\
+	".\srclib\apr\include\apr_want.h"\
+	".\srclib\apr\include\apr_xlate.h"\
+	
+NODEP_CPP_REQUE=\
+	".\include\ap_config_auto.h"\
+	
+
+"$(INTDIR)\request.obj" : $(SOURCE) $(DEP_CPP_REQUE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1822,6 +2000,7 @@ DEP_CPP_UTIL_=\
 	".\include\util_cfgtree.h"\
 	".\include\util_charset.h"\
 	".\include\util_ebcdic.h"\
+	".\include\util_filter.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\server\test_char.h"\
@@ -2115,6 +2294,7 @@ DEP_CPP_UTIL_X=\
 	".\include\http_protocol.h"\
 	".\include\httpd.h"\
 	".\include\pcreposix.h"\
+	".\include\util_filter.h"\
 	".\include\util_uri.h"\
 	".\include\util_xml.h"\
 	".\os\win32\os.h"\

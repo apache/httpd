@@ -278,6 +278,7 @@ SOURCE=.\mod_info.c
 DEP_CPP_MOD_I=\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_mmn.h"\
+	"..\..\include\ap_mpm.h"\
 	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
@@ -287,6 +288,7 @@ DEP_CPP_MOD_I=\
 	"..\..\include\httpd.h"\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\util_cfgtree.h"\
+	"..\..\include\util_filter.h"\
 	"..\..\include\util_script.h"\
 	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\

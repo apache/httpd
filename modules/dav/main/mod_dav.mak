@@ -530,6 +530,7 @@ DEP_CPP_UTIL_L=\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
 	"..\..\..\include\util_cfgtree.h"\
+	"..\..\..\include\util_filter.h"\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\

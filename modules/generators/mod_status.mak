@@ -292,6 +292,7 @@ DEP_CPP_MOD_S=\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_cfgtree.h"\
+	"..\..\include\util_filter.h"\
 	"..\..\include\util_script.h"\
 	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
