@@ -79,6 +79,11 @@ meta information</description>
     <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code> and
     will use its contents to generate additional MIME header
     information.</p>
+
+    <p>Example:</p>
+
+    <example>MetaSuffix .meta</example>
+
 </usage>
 </directivesynopsis>
 
