@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: alloc.c,v 1.12 1996/09/13 00:24:51 jim Exp $ */
+/* $Id: alloc.c,v 1.13 1996/10/01 03:24:04 brian Exp $ */
 
 
 /*
@@ -773,9 +773,23 @@ void note_cleanups_for_file (struct pool *p, FILE *fp) {
 
 FILE *pfopen(struct pool *a, char *name, char *mode)
 {
-  FILE *fd;
+  FILE *fd = NULL;
+  int baseFlag, desc;
 
   block_alarms();
+
+  if (*mode == 'a') {
+    /* Work around faulty implementations of fopen */
+    baseFlag = (*(mode+1) == '+') ? O_RDWR : O_WRONLY;
+    desc = open(name, baseFlag | O_APPEND | O_CREAT,
+		S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+    if (desc >= 0) {
+      fd = fdopen(desc, mode);
+    }
+  } else {
+    fd = fopen(name, mode);
+  }
+
   fd = fopen(name, mode);
   if (fd != NULL) note_cleanups_for_file (a, fd);
   unblock_alarms();
