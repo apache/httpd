@@ -1726,14 +1726,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.109 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.110 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.109 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.110 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1797,7 +1797,7 @@ static int parse_url(char *url)
 
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0) {
 	url += 7;
-#if USE_SSL
+#ifdef USE_SSL
 	ssl = 0;
 #endif
     }
@@ -1833,7 +1833,7 @@ static int parse_url(char *url)
     }
 
     if (port == 0) {		/* no port specified */
-#if USE_SSL
+#ifdef USE_SSL
         if (ssl == 1)
             port = 443;
         else
@@ -1842,7 +1842,7 @@ static int parse_url(char *url)
     }
 
     if ((
-#if USE_SSL
+#ifdef USE_SSL
          (ssl == 1) && (port != 443)) || (( ssl == 0 ) && 
 #endif
          (port != 80)))
