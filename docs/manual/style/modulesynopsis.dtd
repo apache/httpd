@@ -46,12 +46,14 @@ usage?, seealso*)>
 <!ELEMENT a %Inline;>
 
 <!ATTLIST a  href CDATA #IMPLIED 
-             name CDATA #IMPLIED >
+             name CDATA #IMPLIED
+             id   CDATA #IMPLIED >
 
 <!ELEMENT img EMPTY>
 <!ATTLIST img
   src         CDATA   #REQUIRED
   alt         CDATA   #REQUIRED
+  border      CDATA   #IMPLIED
   height      CDATA   #IMPLIED
   width       CDATA  #IMPLIED >
 
