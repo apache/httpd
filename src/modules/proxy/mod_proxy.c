@@ -67,12 +67,12 @@
 /* This will become global when the protocol abstraction comes */
 static struct proxy_services defports[] =
 {
-    {"ftp", DEFAULT_FTP_PORT},
-    {"gopher", DEFAULT_GOPHER_PORT},
     {"http", DEFAULT_HTTP_PORT},
+    {"ftp", DEFAULT_FTP_PORT},
+    {"https", DEFAULT_HTTPS_PORT},
+    {"gopher", DEFAULT_GOPHER_PORT},
     {"nntp", DEFAULT_NNTP_PORT},
     {"wais", DEFAULT_WAIS_PORT},
-    {"https", DEFAULT_HTTPS_PORT},
     {"snews", DEFAULT_SNEWS_PORT},
     {"prospero", DEFAULT_PROSPERO_PORT},
     {NULL, -1}			/* unknown port */
@@ -415,6 +415,7 @@ static void *
     ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
     ps->nocaches = ap_make_array(p, 10, sizeof(struct nocache_entry));
     ps->domain = NULL;
+    ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->req = 0;
 
     ps->cache.root = NULL;
@@ -780,6 +781,28 @@ static const char*
     return NULL;    
 }
 
+static const char*
+    set_via_opt(cmd_parms *parms, void *dummy, char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    if (strcasecmp(arg, "Off") == 0)
+        psf->viaopt = via_off;
+    else if (strcasecmp(arg, "On") == 0)
+        psf->viaopt = via_on;
+    else if (strcasecmp(arg, "Block") == 0)
+        psf->viaopt = via_block;
+    else if (strcasecmp(arg, "Full") == 0)
+        psf->viaopt = via_full;
+    else {
+	return "ProxyVia must be one of: "
+               "off | on | full | block";
+    }
+
+    return NULL;    
+}
+
 static const handler_rec proxy_handlers[] =
 {
     {"proxy-server", proxy_handler},
@@ -824,6 +847,8 @@ static const command_rec proxy_cmds[] =
      "A list of names, hosts or domains for which caching is *not* provided"},
     {"CacheForceCompletion", set_cache_completion, NULL, RSRC_CONF, TAKE1,
      "Force a http cache completion after this percentage is loaded"},
+    {"ProxyVia", set_via_opt, NULL, RSRC_CONF, TAKE1,
+     "Configure Via: proxy header header to one of: on | off | block | full"},
     {NULL}
 };
 

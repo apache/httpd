@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Make the proxy generate and understand Via: headers
+     [Martin Kraemer]
+
   *) Change the proxy to use tables instead of array_headers for
      the header lines. [Martin Kraemer]
 

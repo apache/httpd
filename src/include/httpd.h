@@ -122,6 +122,8 @@ extern "C" {
 /* -- Internal representation for a HTTP protocol number, e.g., HTTP/1.1 -- */
 
 #define HTTP_VERSION(major,minor) (1000*(major)+(minor))
+#define HTTP_VERSION_MAJOR(number) ((number)/1000)
+#define HTTP_VERSION_MINOR(number) ((number)%1000)
 
 
 /* -------------- Port number for server running standalone --------------- */

@@ -212,6 +212,12 @@ typedef struct {
     array_header *nocaches;
     char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
+    enum {
+      via_off,
+      via_on,
+      via_block,
+      via_full
+    } viaopt;                   /* how to deal with proxy Via: headers */
     size_t recv_buffer_size;
 } proxy_server_conf;
 
