@@ -65,7 +65,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 
-APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, AP, int, create_req, 
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req, 
                                    (request_rec *r, request_rec *pr), (r, pr),
                                    OK, DECLINED)
 
