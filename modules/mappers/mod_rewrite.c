@@ -1183,7 +1183,7 @@ static int hook_uri2file(request_rec *r)
                       thisurl, NULL);
     apr_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 
-    if (!(saved_rulestatus = apr_table_get(r->notes,"already_rewritten"))) {
+    if (!(saved_rulestatus = apr_table_get(r->notes,"mod_rewrite_rewritten"))) {
     /* if filename was not initially set,
      * we start with the requested URI
      */
@@ -1201,7 +1201,7 @@ static int hook_uri2file(request_rec *r)
      *  now apply the rules ...
      */
     rulestatus = apply_rewrite_list(r, conf->rewriterules, NULL);
-    apr_table_set(r->notes,"already_rewritten",
+    apr_table_set(r->notes,"mod_rewrite_rewritten",
                   apr_psprintf(r->pool,"%d",rulestatus));
     }
     else {
