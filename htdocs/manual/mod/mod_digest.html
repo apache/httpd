@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,8 +5,7 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
 <H1>Module mod_digest</h1>
 
 This module is contained in the <code>mod_digest.c</code> file, and is
@@ -15,12 +13,12 @@ not compiled in by default. It is only available in Apache 1.1 and
 later. It provides for user authentication using MD5 Digest
 Authentication.
 
-<!--%hypertext -->
+
 <menu>
 <li><A HREF="#authdigestfile">AuthDigestFile</A>
 </menu>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="authdigestfile"><h2>AuthDigestFile</h2></A>
 <strong>Syntax:</strong> AuthDigestFile <em>filename</em><br>
@@ -54,10 +52,7 @@ do not reccomend using this feature on a large Internet site. However, for
 personal and intranet use, where browser users can be controlled, it is
 ideal.</p>
 
-<hr>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

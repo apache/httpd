@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,22 +5,22 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
+
 <H1>Module mod_access</h1>
 
 This module is contained in the <code>mod_access.c</code> file, and
 is compiled in by default. It provides access control based on client
 hostname or IP address.
 
-<!--%hypertext -->
+
 <menu>
 <li><A HREF="#allow">allow</A>
 <li><A HREF="#deny">deny</A>
 <li><A HREF="#order">order</A>
 </menu>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="allow"><h2>allow</h2></A>
 <!--%plaintext &lt;?INDEX {\tt allow} directive&gt; -->
@@ -114,12 +113,7 @@ allow from .ncsa.uiuc.edu
 Hosts in the ncsa.uiuc.edu domain are allowed access; all other hosts are
 denied access.
 
-<!--%hypertext -->
-<hr>
-
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

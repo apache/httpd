@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,8 +5,7 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
 <H1>Module mod_negotiation</h1>
 
 This module is contained in the <code>mod_negotiation.c</code> file, and
@@ -83,14 +81,14 @@ one of them by name.  It then chooses the best match to the client's
 requirements, and returns that document.<p>
 
 
-<!--%hypertext -->
+
 <h2>Directives</h2>
 <ul>
 <li><A href="#cachenegotiateddocs">CacheNegotiatedDocs</a>
 <li><A HREF="#languagepriority">LanguagePriority</A>
 </ul>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="cachenegotiateddocs"><h2>CacheNegotiatedDocs</h2></A>
 <strong>Syntax:</strong> CacheNegotiatedDocs<br>
@@ -106,7 +104,7 @@ proxy servers. This could mean that clients behind those proxys could
 retrieve versions of the documents that are not the best match for
 their abilities, but it will make caching more efficient.</p>
 
-<!--%hypertext -->
+
 <A name="languagepriority"><h2>LanguagePriority</h2></A>
 <!--%plaintext &lt;?INDEX {\tt LanguagePriority} directive&gt; -->
 <strong>Syntax:</strong> LanguagePriority <em>mime-lang mime-lang...</em><br>
@@ -119,16 +117,14 @@ The LanguagePriority sets the precedence of language variants for the case
 where the client does not express a preference, when handling a
 MultiViews request. The list of <em>mime-lang</em> are in order of decreasing
 preference. Example:
+
 <blockquote><code>LanguagePriority en fr de</code></blockquote>
+
 For a request for <code>foo.html</code>, where <code>foo.html.fr</code>
 and <code>foo.html.de</code> both existed, but the browser did not express
 a language preference, then <code>foo.html.fr</code> would be returned.<p>
-<!--%hypertext -->
-<hr>
 
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,19 +5,18 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
 <H1>Module mod_userdir</h1>
 
 This module is contained in the <code>mod_userdir.c</code> file, and
 is compiled in by default. It provides for user-specific directories.
 
-<!--%hypertext -->
+
 <ul>
 <li><A HREF="#userdir">UserDir</A>
 </ul>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="userdir"><h2>UserDir</h2></A>
 <!--%plaintext &lt;?INDEX {\tt UserDir} directive&gt; -->
@@ -44,11 +42,8 @@ The following directives will send redirects to the client:
 UserDir http://www.x.com/users   -> http//www.x.com/users/bar/one/two.html
 UserDir http://www.x.com/*/y     -> http://www.x.com/y/one/two.html
 </pre>
-<!--%hypertext -->
-<hr>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
 
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

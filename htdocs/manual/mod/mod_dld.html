@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,8 +5,7 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
 <H1>Module mod_dld</h1>
 
 This module is contained in the <code>mod_dld.c</code> file, and is not
@@ -15,13 +13,14 @@ compiled in by default. It provides for loading of executable code
 and modules into the server at start-up time, using the GNU dld library.
 
 <h2>Summary</h2>
-The optional dld module is a proof-of-concept piece of code which loads other
-modules into the server as it is configuring itself (the first time only; for
-now, rereading the config files cannot affect the state of loaded modules),
-using the GNU dynamic linking library, DLD.  It isn't compiled into the server
-by default, since not everyone has DLD, but it works when I try it.  (Famous
-last words.)
-<p>
+
+The optional dld module is a proof-of-concept piece of code which
+loads other modules into the server as it is configuring itself (the
+first time only; for now, rereading the config files cannot affect the
+state of loaded modules), using the GNU dynamic linking library, DLD.
+It isn't compiled into the server by default, since not everyone has
+DLD, but it works when I try it.  (Famous last words.)  <p>
+
 Note that for some reason, <code>LoadFile /lib/libc.a</code> seems to be
 required for just about everything.<p>
 
@@ -29,14 +28,14 @@ Note: that DLD needs to read the symbol table out of the server binary
 when starting up; these commands will fail if the server can't find
 its own binary when it starts up, or if that binary is stripped.<p>
 
-<!--%hypertext -->
+
 <h2>Directives</h2>
 <ul>
 <li><A HREF="#loadfile">LoadFile</A>
 <li><A HREF="#loadmodule">LoadModule</A>
 </ul>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="loadfile"><h2>LoadFile</h2></A>
 <!--%plaintext &lt;?INDEX {\tt LoadFile} directive&gt; -->
@@ -67,11 +66,8 @@ LoadFile /lib/libc.a
 </code></blockquote>
 loads the module in the modules subdirectory of the ServerRoot.<p>
 
-<!--%hypertext -->
-<hr>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
 
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

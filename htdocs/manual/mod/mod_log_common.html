@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
@@ -6,8 +5,7 @@
 </HEAD>
 
 <BODY>
-<IMG SRC="../images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
+<!--#include virtual="header.html" -->
 <H1>Module mod_log_common</h1>
 
 This module is contained in the <code>mod_log_common.c</code> file, and is
@@ -53,13 +51,13 @@ zone = (`+' | `-') 4*digit</code></blockquote></dl>
 any headers.
 </dl>
 
-<!--%hypertext -->
+
 <h2>Directives</h2>
 <ul>
 <li><A HREF="#transferlog">TransferLog</A>
 </ul>
 <hr>
-<!--/%hypertext -->
+
 
 <A name="transferlog"><h2>TransferLog</h2></A>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
@@ -83,11 +81,7 @@ the TransferLog from the main server.
 run under the user who started httpd. This will be root if the server
 was started by root; be sure that the program is secure.<p>
 
-<!--%hypertext -->
-<hr>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+

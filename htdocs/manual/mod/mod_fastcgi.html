@@ -1,4 +1,3 @@
-<!--%hypertext -->
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 
 <!-- mod_fastcgi.html                                                     -->
@@ -13,10 +12,7 @@
 </head>
 
 <body>
-<IMG SRC="http://www.apache.org/images/apache_sub.gif" ALT="">
-<!--/%hypertext -->
-
-
+<!--#include virtual="header.html" -->
 <h1>Module mod_fastcgi</h1>
 
 This module is contained in the <code>mod_fastcgi.c</code> file.  It
@@ -353,7 +349,7 @@ AppClass $FASTCGI/examples/echo.fcg -initial-env STATE=TEXAS
 # End of httpd.conf
 </pre>
 
-<HR>
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-<!--/%hypertext -->
+
