@@ -59,10 +59,12 @@ default:
 	(for dir in $(MODULES); do \
 		cd $$dir; \
 		$(MAKE) CC=$(CC) AUX_CFLAGS="$(AUX_CFLAGS)" RANLIB=$(RANLIB); \
+		cd ..; \
 	done)
 
 clean:	
 	(for dir in $(MODULES); do \
 		cd $$dir; $(MAKE) clean; \
+		cd ..; \
 	done)
 	
