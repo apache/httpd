@@ -35,20 +35,20 @@ These now need to be of type ap_status_t and return a value of that type.  Norma
 These should now be renamed to better signify where they sit in the overall process.  So the name gets a small change from mmap_init to mmap_post_config.  The arguments passed have undergone a radical change and now look like
 </p>
 <ul style="list-style:none">
-<li>ap_context_t *p,</li>
-<li>ap_context_t *plog,</li>
-<li>ap_context_t *ptemp,</li>
+<li>apr_pools_t *p,</li>
+<li>apr_pools_t *plog,</li>
+<li>apr_pools_t *ptemp,</li>
 <li>server_rec *s</li>
 </ul>
 <p>
-Throughout Apache the old pools have been replced by the ap_context_t, though their use remains remarkably similar.
+Throughout Apache the old pools have been replced by the apr_pools_t, though their use remains remarkably similar.
 </p>
 
 <h3>Data Types</h3>
 <p>
 A lot of the data types have been moved into the APR.  This means that some have had a name change, such as the one shown above.  The following is a brief list of some of the changes that you are likely to have to make.
 <ul style="list-style:none">
-<li>pool becomes ap_context_t</li>
+<li>pool becomes apr_pools_t</li>
 <li>table becomes ap_table_t</li>
 </ul>
 <hr>
@@ -171,26 +171,65 @@ The remainder of the old functions should be registered as hooks.  There are the
 ap_hook_post_config  <em>(this is where the old _init routines get registered)</em>
 </li>
 <li>
-ap_hook_http_method
+ap_hook_http_method  <em>(retrieve the http method from a request.  (legacy))</em>
 </li>
 <li>
-ap_hook_open_logs
+ap_hook_open_logs  <em>(open any specified logs)</em>
 </li>
 <li>
-ap_hook_auth_checker
+ap_hook_auth_checker  <em>(check if the resource requires authorization)</em>
 </li>
 <li>
-ap_hook_default_port
+ap_hook_access_checker  <em>(check for module-specific restrictions)</em>
 </li>
 <li>
-ap_hook_access_checker
+ap_hook_check_user_id  <em>(check the user-id and password)</em>
 </li>
 <li>
-ap_hook_process_connection
+ap_hook_default_port  <em>(retrieve the default port for the server)</em>
 </li>
 <li>
-ap_hook_child_init_hook
+ap_hook_pre_connection  <em>(do any setup required just before processing, but after accepting)</em>
 </li>
+<li>
+ap_hook_process_connection  <em>(run the correct protocol)</em>
+</li>
+<li>
+ap_hook_child_init  <em>(call as soon as the child is started)</em>
+</li>
+<li>
+ap_hook_create_request  <em>(??)</em>
+</li>
+<li>
+ap_hook_fixups  <em>(last chance to modify things before generating content)</em>
+</li>
+<li>
+ap_hook_handler  <em>(generate the content)</em>
+</li>
+<li>
+ap_hook_header_parser  <em>(let's modules look at the headers, not used by most modules, because they use post_read_request for this.)</em>
+</li>
+<li>
+ap_hook_insert_filter  <em>(to insert filters into the filter chain)</em>
+</li>
+<li>
+ap_hook_log_transaction  <em>(log information about the request)</em>
+</li>
+<li>
+ap_hook_optional_fn_retrieve  <em>(retrieve any functions registered as optional)</em>
+</li>
+<li>
+ap_hook_post_read_request  <em>(called after reading the request, before any other phase)</em>
+</li>
+<li>
+ap_hook_quick_handler  <em>(??)</em>
+</li>
+<li>
+ap_hook_translate_name  <em>(translate the URI into a filename)</em>
+</li>
+<li>
+ap_hook_type_checker  <em>(determine and/or set the doc type)</em>
+
 
 <!--#include virtual="footer.html" -->
 
