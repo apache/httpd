@@ -217,8 +217,6 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
      *   response/entity-digest
      *   --> We ignore the presense of the " if any.
      *
-     * Note: * - not yet for  CHARSET_EBCDIC XXXX
-     *
      * Note: There is an inherent problem with the request URI; as it should
      *       be used unquoted - yet may contain a ',' - which is used as
      *       a terminator:       
@@ -254,26 +252,18 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 	    break;
 
 	case D_VALUE:
-#ifdef CHARSET_EBCDIC
-	    /* This is *wrong* - a request URI may be unquoted and yet
+	    /* A request URI may be unquoted and yet
              * contain non alpha/num chars. (Though gets terminated by 
              * a ',' - which in fact may be in the URI - so I guess 
              * 2069 should be updated to suggest strongly to quote).
              */
-	    if (ap_isalnum(auth_line[0])) {
-		value[vv] = auth_line[0];
-		vv++;
-	    } else
-#endif
 	    if (auth_line[0] == '\"') {
 		s = D_STRING;
 	    }
-#ifndef CHARSET_EBCDIC
 	    else if ((auth_line[0] != ',') && (auth_line[0] != ' ') && (auth_line[0] != '\0')) {
 		value[vv] = auth_line[0];
 		vv++;
 	    }
-#endif
 	    else {
 		value[vv] = '\0';
 
