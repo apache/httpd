@@ -870,7 +870,7 @@ static int create_acceptex_context(ap_pool_t *_pconf, ap_listen_rec *lr)
 
     return 0;
 }
-static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context) 
+static ap_inline ap_status_t reset_acceptex_context(PCOMP_CONTEXT context) 
 {
     DWORD BytesRead;
     SOCKET nsd;
@@ -883,9 +883,10 @@ static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context)
     if (context->accept_socket == INVALID_SOCKET) {
         context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (context->accept_socket == INVALID_SOCKET) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+            lasterror = WSAGetLastError();
+            ap_log_error(APLOG_MARK,APLOG_ERR, lasterror, server_conf,
                          "reset_acceptex_context: socket() failed. Process will exit.");
-            return -1;
+            return lasterror;
         }
         
         /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
@@ -908,20 +909,20 @@ static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context)
 
     /* AcceptEx on the completion context. The completion context will be signaled
      * when a connection is accepted. */
-    if (!AcceptEx(nsd, context->accept_socket, 
-                  context->recv_buf, 
-                  0, //context->recv_buf_size,
-                  PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
-                  &BytesRead, (LPOVERLAPPED) context)) {
+    if (!AcceptEx(nsd, context->accept_socket, context->recv_buf, 0,
+                  PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead, 
+                  (LPOVERLAPPED) context)) {
         lasterror = WSAGetLastError();
         if (lasterror != ERROR_IO_PENDING) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
-                         "reset_acceptex_context: AcceptEx failed. Leaving the process running.");
-            return -1;
+            ap_log_error(APLOG_MARK, APLOG_INFO, lasterror, server_conf,
+                         "reset_acceptex_context: AcceptEx failed for "
+                         "listening socket: %d and accept socket: %d", 
+                         nsd, context->accept_socket);
+            return lasterror;
         }
     }
 
-    return 0;
+    return APR_SUCCESS;
 }
 static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 {
@@ -931,18 +932,27 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     DWORD CompKey;
     DWORD BytesRead;
 
-    if (context != NULL) {
-        /* If child shutdown has been signaled, clean-up the completion context */
-        if (workers_may_exit) {
+    if (workers_may_exit) {
+        /* Child shutdown has been signaled */
+        if (context != NULL)
             CloseHandle(context->Overlapped.hEvent);
-        }
-        else {
-            context->accept_socket = INVALID_SOCKET; /* Don't reuse the accept_socket */
-            if (reset_acceptex_context(context) == -1) {
-                if (context->accept_socket != -1)
+    }
+
+    if (!workers_may_exit && (context != NULL)) {
+        /* Prepare the completion context for reuse */
+        if (reset_acceptex_context(context) != APR_SUCCESS) {
+            /* Retry once, this time requesting a new socket */
+            if (context->accept_socket != INVALID_SOCKET) {
+                closesocket(context->accept_socket);
+                context->accept_socket = INVALID_SOCKET;
+            }
+            if (reset_acceptex_context(context) != APR_SUCCESS) {
+                /* Failed again, so give up, but leave the thread up 
+                 * Should we signal a shutdown now? 
+                 */
+                if (context->accept_socket != INVALID_SOCKET)
                     closesocket(context->accept_socket);
                 CloseHandle(context->Overlapped.hEvent);
-                return NULL;
             }
         }
     }
@@ -1047,7 +1057,7 @@ static void worker_main(int child_num)
             break;
         sock_disable_nagle(context->accept_socket);
         ap_put_os_sock(&context->sock, &context->accept_socket, context->ptrans);
-//        ap_register_cleanup(context->ptrans, context->sock, socket_cleanup, ap_null_cleanup);
+
         iol = win32_attach_socket(context->ptrans, context->sock);
         if (iol == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, server_conf,
