@@ -1171,7 +1171,7 @@ static void child_main()
     HANDLE child_events[2];
     char* exit_event_name;
     int nthreads = ap_threads_per_child;
-    int thread_id;
+    int tid;
     thread **child_handles;
     int rv;
     time_t end_time;
@@ -1238,14 +1238,14 @@ static void child_main()
     child_handles = (thread *) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
         child_handles[i] = (thread *) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
-                                                     NULL, 0, &thread_id);
+                                                     NULL, 0, &tid);
     }
 
     /* Begin accepting connections */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         /* Win95/98: Start the accept thread */
         _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) accept_and_queue_connections,
-                       (void *) i, 0, &thread_id);
+                       (void *) i, 0, &tid);
     } else {
         /* Windows NT/2000: Create AcceptEx completion contexts */
         create_listeners();
