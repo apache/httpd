@@ -138,6 +138,23 @@ apr_file_t *readtty = NULL;
     
 int ssl_pphrase_Handle_CB(char *, int, int, void *);
 
+static char *pphrase_array_get(apr_array_header_t *arr, int idx)
+{
+    if ((idx < 0) || (idx >= arr->nelts)) {
+        return NULL;
+    }
+
+    return ((char **)arr->elts)[idx];
+}
+
+static void pphrase_array_clear(apr_array_header_t *arr)
+{
+    if (arr->nelts > 0) {
+        memset(arr->elts, 0, arr->elt_size * arr->nelts);
+    }
+    arr->nelts = 0;
+}
+
 void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -151,7 +168,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     long int length;
     X509 *pX509Cert;
     BOOL bReadable;
-    ssl_ds_array *aPassPhrase;
+    apr_array_header_t *aPassPhrase;
     int nPassPhrase;
     int nPassPhraseCur;
     char *cpPassPhraseCur;
@@ -169,7 +186,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     /*
      * Start with a fresh pass phrase array
      */
-    aPassPhrase       = ssl_ds_array_make(p, sizeof(char *));
+    aPassPhrase       = apr_array_make(p, 2, sizeof(char *));
     nPassPhrase       = 0;
     nPassPhraseDialog = 0;
 
@@ -467,7 +484,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * Ok, when we have one more pass phrase store it
              */
             if (cpPassPhraseCur != NULL) {
-                cpp = (char **)ssl_ds_array_push(aPassPhrase);
+                cpp = (char **)apr_array_push(aPassPhrase);
                 *cpp = cpPassPhraseCur;
                 nPassPhrase++;
             }
@@ -512,10 +529,10 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
      * Wipe out the used memory from the
      * pass phrase array and then deallocate it
      */
-    if (!ssl_ds_array_isempty(aPassPhrase)) {
-        ssl_ds_array_wipeout(aPassPhrase);
-        ssl_ds_array_kill(aPassPhrase);
-        ssl_log(s, SSL_LOG_INFO, "Init: Wiped out the queried pass phrases from memory");
+    if (aPassPhrase->nelts) {
+        pphrase_array_clear(aPassPhrase);
+        ssl_log(s, SSL_LOG_INFO,
+                "Init: Wiped out the queried pass phrases from memory");
     }
 
     /* Close the pipes if they were opened
@@ -590,13 +607,12 @@ static int pipe_get_passwd_cb(char *buf, int length, char *prompt, int verify)
     return 0;
 }
 
-
 int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
 {
     SSLModConfigRec *mc = myModConfig((server_rec *)srv);
     server_rec *s;
     apr_pool_t *p;
-    ssl_ds_array *aPassPhrase;
+    apr_array_header_t *aPassPhrase;
     SSLSrvConfigRec *sc;
     int *pnPassPhraseCur;
     char **cppPassPhraseCur;
@@ -605,7 +621,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     int *pnPassPhraseDialog;
     int *pnPassPhraseDialogCur;
     BOOL *pbPassPhraseDialogOnce;
-    char **cpp;
+    char *cpp;
     int len = -1;
 
     /*
@@ -613,7 +629,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
      */
     s                      = myCtxVarGet(mc,  1, server_rec *);
     p                      = myCtxVarGet(mc,  2, apr_pool_t *);
-    aPassPhrase            = myCtxVarGet(mc,  3, ssl_ds_array *);
+    aPassPhrase            = myCtxVarGet(mc,  3, apr_array_header_t *);
     pnPassPhraseCur        = myCtxVarGet(mc,  4, int *);
     cppPassPhraseCur       = myCtxVarGet(mc,  5, char **);
     cpVHostID              = myCtxVarGet(mc,  6, char *);
@@ -629,8 +645,8 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     /*
      * When remembered pass phrases are available use them...
      */
-    if ((cpp = (char **)ssl_ds_array_get(aPassPhrase, *pnPassPhraseCur)) != NULL) {
-        apr_cpystrn(buf, *cpp, bufsize);
+    if ((cpp = pphrase_array_get(aPassPhrase, *pnPassPhraseCur)) != NULL) {
+        apr_cpystrn(buf, cpp, bufsize);
         len = strlen(buf);
         return len;
     }
