@@ -361,7 +361,9 @@ extern char *crypt();
 #undef  NO_SETSID
 #undef NEED_STRDUP
 #define NEED_STRCASECMP
+#ifndef ENCORE
 #define NEED_STRNCASECMP
+#endif
 #define bzero(a,b) memset(a,0,b)
 #define JMP_BUF sigjmp_buf
 /* A lot of SVR4 systems need this */
@@ -564,6 +566,16 @@ typedef int rlim_t;
 typedef int pid_t;
 typedef int rlim_t;
 typedef int mode_t;
+
+#elif defined(RISCIX)
+#include <sys/time.h>
+#define JMP_BUF jmp_buf
+typedef int rlim_t;
+#define NO_USE_SIGACTION
+#define USE_LONGJMP
+#define NEED_STRCASECMP
+#define NEED_STRNCASECMP
+#define NEED_STRDUP
 
 #elif defined(WIN32)     
 /* Put your NT stuff here - Ambarish */
@@ -846,7 +858,7 @@ Sigfunc *signal(int signo, Sigfunc *func);
  */
 
 #if defined(CRAY) || defined(__arm)
-#if __STDC__
+#ifdef __STDC__
 #define XtOffset(p_type,field) _Offsetof(p_type,field)
 #else
 #ifdef CRAY2

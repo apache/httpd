@@ -427,6 +427,12 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSVR4"
 	LIBS="$LIBS -lsocket -lnsl -lc"
 	;;
+    88k-encore-sysv4)
+	OS='Encore UMAX V'
+	CFLAGS="$CFLAGS -DSVR4 -DENCORE"
+	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lPW"
+	;;
     *-uts*)
 	OS='Amdahl UTS'
 	CFLAGS="$CFLAGS -Xa -eft -DUTS21"
@@ -468,6 +474,13 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	OS='SONY NEWS-OS'
 	CFLAGS="$CFLAGS -DNEWSOS"
+	;;
+    *-riscix)
+	OS='Acorn RISCix'
+	CFLAGS="$CFLAGS -DRISCIX"
+	OPTIM="-O"
+	MAKE="make"
+	DEF_WANTHSREGEX=yes
 	;;
     *) # default: Catch systems we don't know about
     	echo Sorry, but we cannot grok \"$PLAT\"

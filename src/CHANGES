@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) PORT: 2 new OSs added to the list of ports:
+      Encore's UMAX V: Arieh Markel <amarkel@encore.com>
+      Acorn RISCiX: Stephen Borrill <sborrill@xemplar.co.uk>
+
   *) Add the server version (SERVER_VERSION macro) to the "server
      configured and running" entry in the error_log.  Also build an
      object file at link-time that contains the current time
