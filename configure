@@ -141,6 +141,13 @@ localstatesubdir_run='run'
 localstatesubdir_logs='logs'
 includedir='$prefix/include'
 
+#   customization flags for
+#   automatic "apache" suffix 
+customized_sysconfdir=0
+customized_datadir=0
+customized_localstatedir=0
+customized_includedir=0
+
 #   check and debug
 layout=0
 
@@ -324,15 +331,19 @@ do
             ;;
         --sysconfdir=*)    
             sysconfdir="$apc_optarg"    
+            customized_sysconfdir=1
             ;;
         --datadir=*)       
             datadir="$apc_optarg"       
+            customized_datadir=1
             ;;
         --localstatedir=*) 
             localstatedir="$apc_optarg" 
+            customized_localstatedir=1
             ;;
         --includedir=*)       
             includedir="$apc_optarg"       
+            customized_includedir=1
             ;;
         --compat) 
             prefix='/usr/local/apache'
@@ -600,7 +611,11 @@ for var in prefix exec_prefix bindir sbindir \
            eval "val=\$$var"
            case $val in
                *apache | *apache* ) ;;
-               * ) eval "$var=\$$var/apache" ;;
+               * ) eval "customized=\$customized_$var"
+                   if [ ".$customized" = .0 ]; then
+                       eval "$var=\$$var/apache"
+                   fi
+                   ;;
            esac
            ;;
     esac
