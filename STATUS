@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/22 12:55:14 $]
+  Last modified at [$Date: 1999/02/25 15:48:52 $]
 
 Release:
 
@@ -68,6 +68,7 @@ Available Patches:
                       waiting for a review from Dean for the shared memory
                       hard-core stuff. When someone else is also interested
                       please review the shared memory deep-level code.
+		Doug: +1 on concept (untested)
 
     * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
         Message-ID: <199901192353.PAA15190@scv4.apple.com>
@@ -124,8 +125,8 @@ Available Patches:
 	Mesage-ID: PR#3246, also available at
 		   <http://www.physics.mcgill.ca/~juan/mod_include.patch>
 	Status: Ken -0 for 1.3/+0 for 2.0, Lars -0 for 1.3
-
-    * Eric Prud'hommeaux's mod_dir mods for file-level access control.
+ 
+   * Eric Prud'hommeaux's mod_dir mods for file-level access control.
         Message-ID: <Pine.LNX.3.96.981111213739.1364E-200000@tux.w3.org>
         Status: Jim -0 (The current behavior seems logical to me. If there
 	was more universal interest in changing it, then that would be
@@ -139,6 +140,10 @@ Available Patches:
     * Ronald Tschalär's major update of mod_digest
         Message-ID: <199901050917.KAA10860@chill.innovation.ch>
         Status: Big change -- needs review.
+
+    * Greg Stein's ap_sub_req_method_uri()
+	Message-ID: <36D4A9B1.66BD23F5@lyra.org>
+	Status: Doug +1
 
 In progress:
 
