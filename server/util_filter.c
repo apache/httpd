@@ -172,10 +172,10 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
     }
 
     while (curr->next != f) {
+        curr = curr->next;
         if (curr == NULL) {
             return;
         }
-        curr = curr->next;
     }
     curr->next = f->next ? f->next : NULL;
 }
