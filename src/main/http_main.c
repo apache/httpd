@@ -3804,20 +3804,6 @@ void worker_main()
             count_down = max_jobs_after_exit_request;
             release_mutex(start_mutex);
             start_mutex_released = 1;
-            /* set the listen queue to 1 */
-            {
-		listen_rec *lr = listeners;
-		
-		do {
-		/* to prove a point - Ben */
-		    ap_assert(!lr->used);
-		    if(lr->used)
-		    {
-			listen(lr->fd, 1);
-		    }
-		    lr = lr->next;
-		} while (lr != listeners);
-            }
         }
         if(!start_exit)
         {
@@ -3904,22 +3890,6 @@ void worker_main()
     if(!start_mutex_released)
     {
         release_mutex(start_mutex);
-    }
-            
-    {
-	listen_rec *lr;
-	
-	lr = listeners;
-	do {
-	/* prove the point again */
-	    ap_assert(!lr->used);
-	    if(lr->used)
-	    {
-		closesocket(lr->fd);
-		lr->fd = -1;
-	    }
-	    lr = lr->next;
-	} while (lr != listeners);
     }
 
     for(i=0; i<nthreads; i++)
