@@ -59,10 +59,12 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
 
 void service_cd()
 {
-    /* change to the drive with the executable */
-    char buf[300];
+    /* change to the drive and directory with the executable */
+    char buf[300], *p;
     GetModuleFileName(NULL, buf, 300);
-    buf[2] = 0;
+    p = strrchr(buf, '\\');
+    if (p != NULL)
+        *p = 0;
     chdir(buf);
 }
 
