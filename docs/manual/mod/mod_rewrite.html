@@ -660,7 +660,7 @@ Mr.Joe.Average        joe   # Mr. Average
 <P>
 <TABLE BORDER=0 CELLSPACING=1 CELLPADDING=5 BGCOLOR="#F0F0F0">
 <TR><TD><PRE>
-RewriteMap real-to-host txt:/path/to/file/map.txt
+RewriteMap real-to-user txt:/path/to/file/map.txt
 </PRE></TD></TR>
 </TABLE>
 
@@ -1764,13 +1764,13 @@ into
 </BLOCKQUOTE>
 <P>
 We take the rewrite mapfile from above and save it under
-<CODE>/anywhere/map.real-to-user</CODE>. Then we only have to add the
+<CODE>/path/to/file/map.txt</CODE>. Then we only have to add the
 following lines to the Apache server configuration file:
 
 <BLOCKQUOTE>
 <PRE>
-RewriteLog   /anywhere/rewrite.log
-RewriteMap   real-to-user               txt:/anywhere/map.real-to-host
+RewriteLog   /path/to/file/rewrite.log
+RewriteMap   real-to-user               txt:/path/to/file/map.txt
 RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
 </PRE>
 </BLOCKQUOTE>
