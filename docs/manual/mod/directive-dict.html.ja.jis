@@ -4,31 +4,57 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>ディレクティブの解説に使われる用語 - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>ディレクティブの解説に使われる用語</h1>
-    <p>この文書は各 Apache <a href="directives.html">設定ディレクティブ</a>
-    を説明するために使われている用語を説明します。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">説明</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Syntax">構文</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Default">デフォルト</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Context">コンテキスト</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Override">上書き</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Status">ステータス</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Module">モジュール</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">互換性</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="../configuring.html">設定ファイル</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Description" id="Description">説明</a></h2>
+      -->
+<title>ディレクティブの解説に使われる用語 - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>ディレクティブの解説に使われる用語</h1>
+    <p>この文書は各 Apache <a href="directives.html">設定ディレクティブ</a>
+    を説明するために使われている用語を説明します。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">説明</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Syntax">構文</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Default">デフォルト</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Context">コンテキスト</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Override">上書き</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Status">ステータス</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Module">モジュール</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">互換性</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../configuring.html">設定ファイル</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Description" id="Description">説明</a></h2>
 
 <p>ディレクティブの目的の簡単な説明。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Syntax" id="Syntax">構文</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Syntax" id="Syntax">構文</a></h2>
 
-    <p>設定ファイル中のディレクティブの書式を示します。
+    <p>設定ファイル中のディレクティブの書式を示します。
     この構文はディレクティブ特有なので、詳細はディレクティブの説明を
     参照してください。一般的に、ディレクティブ名の後には
     空白により分割されたいくつかの引数が続きます。
-    引数が空白を含むときは二重引用符 (訳注: ")
+    引数が空白を含むときは二重引用符 (訳注: ")
     で囲まれています。 オプショナルな引数は括弧
     (訳注: []) で囲まれています。
     引数が複数の値を取り得る場合は、それらの値は垂直の棒 "|"
     で 分割されています。
-    変更されないテキストはデフォルトのフォントで表示され、置換の必要な
+    変更されないテキストはデフォルトのフォントで表示され、置換の必要な
     引数は<em>強調されて</em>表示されます。
     引数の数が変わるディレクティブは最後の
     引数が繰り返されることを示すために "..."
     で終わります。</p>
 
     <p>
-    ディレクティブは多くの違う型の引数をとります。いくつか、良く
+    ディレクティブは多くの違う型の引数をとります。いくつか、良く
     使われるものを以下で定義します。</p>
 
     <dl>
@@ -53,7 +79,7 @@
       のように、
       ルートディレクトリから始まるローカルのファイルシステム上のファイルへのパス。
       通常、スラッシュで始まらない <em>file-path</em> は <a href="core.html#serverroot">ServerRoot</a>
-      からの相対パスとして 扱われます。</dd>
+      からの相対パスとして 扱われます。</dd>
 
       <dt><em>directory-path</em></dt>
 
@@ -100,19 +126,23 @@
       <dd>Apache の設定により定義される <a href="../env.html">環境変数</a>の名前です。これはオペレーティングシステムの
       環境変数と同じとは限らないことに注意してください。詳細は <a href="../env.html">環境変数の説明</a>を参照してください。</dd>
     </dl>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Default" id="Default">デフォルト</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Default" id="Default">デフォルト</a></h2>
 
     <p>ディレクティブにデフォルト値
     (<em>すなわち</em>、設定ファイルから
     省略されていても、Apache
     ウェブサーバは特定の値に設定されているかのように
-    動作します) がある場合はここに記述されます。
+    動作します) がある場合はここに記述されます。
     デフォルト値の無い場合、ここは "<em>None</em>" と
     書かれます。ここで書かれているデフォルトはサーバと共に配布されている
     デフォルトの httpd.conf
     内に書かれているディレクティブの値と
     違う可能性があることに注意してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Context" id="Context">コンテキスト</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Context" id="Context">コンテキスト</a></h2>
 
     <p>
     これは、サーバの設定ファイル中のどこでディレクティブが有効なのかを示します。
@@ -170,7 +200,9 @@
     ファイルとで有効ですが、 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     や <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     の中では使用できません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Override" id="Override">上書き</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Override" id="Override">上書き</a></h2>
 
     <p>このディレクティブの属性は、<code>.htaccess</code>
     ファイル中に
@@ -187,7 +219,9 @@
     さらに下位のレベルの <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
     で修正されない限り、 その配下に対して適用されます。
     ディレクティブのドキュメントは取り得る上書きの名前も挙げます。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Status" id="Status">ステータス</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Status" id="Status">ステータス</a></h2>
 
     <p>これはディレクティブが Apache
     ウェブサーバにどれくらいきつく組み込まれているかを
@@ -213,7 +247,7 @@
 
       <dd>"Base" のディレクティブは
       デフォルトでサーバに組み込まれている標準モジュールの中の一つでサ
-      ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
+      ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
       通常では使用可能であることを示します。</dd>
 
       <dt>Extension</dt>
@@ -236,15 +270,23 @@
       しれませんし、そうでないかもしれません。使用可能かどうかは、
       ディレクティブとモジュールの説明をしているページの先頭を調べてください。</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Module" id="Module">モジュール</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Module" id="Module">モジュール</a></h2>
 
     <p>
     これは単純にディレクティブが定義されているモジュールの名前を記載します。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Compatibility" id="Compatibility">互換性</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Compatibility" id="Compatibility">互換性</a></h2>
 
     <p>ディレクティブが Apache 2
     の配布に組み込まれていなかった場合、
     ディレクティブが導入されたバージョンがここに書かれています。
     また、ディレクティブが特定のプラットフォームにのみ存在するときも
     ここに書かれています。</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
