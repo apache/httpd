@@ -154,7 +154,7 @@ static const TRANS priorities[] = {
     {NULL,	-1},
 };
 
-static int error_log_child (void *cmd, child_info *pinfo)
+static int error_log_child(void *cmd, child_info *pinfo)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -165,23 +165,23 @@ static int error_log_child (void *cmd, child_info *pinfo)
     ap_cleanup_for_exec();
 #ifdef SIGHUP
     /* No concept of a child process on Win32 */
-    signal (SIGHUP, SIG_IGN);
+    signal(SIGHUP, SIG_IGN);
 #endif /* ndef SIGHUP */
 #if defined(WIN32)
-    child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)
     /* For OS/2 we need to use a '/' */
-    execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else    
-    execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+    execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif    
-    exit (1);
+    exit(1);
     /* NOT REACHED */
     return(child_pid);
 }
 
-static void open_error_log (server_rec *s, pool *p)
+static void open_error_log(server_rec *s, pool *p)
 {
     char *fname;
 
@@ -190,9 +190,9 @@ static void open_error_log (server_rec *s, pool *p)
 
 	if (!ap_spawn_child(p, error_log_child, (void *)(s->error_fname+1),
 			    kill_after_timeout, &dummy, NULL, NULL)) {
-	    perror ("ap_spawn_child");
-	    fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
-	    exit (1);
+	    perror("ap_spawn_child");
+	    fprintf(stderr, "Couldn't fork child for ErrorLog process\n");
+	    exit(1);
 	}
 
 	s->error_log = dummy;
@@ -219,8 +219,8 @@ static void open_error_log (server_rec *s, pool *p)
     }
 #endif
     else {
-	fname = ap_server_root_relative (p, s->error_fname);
-        if(!(s->error_log = ap_pfopen(p, fname, "a"))) {
+	fname = ap_server_root_relative(p, s->error_fname);
+        if (!(s->error_log = ap_pfopen(p, fname, "a"))) {
             perror("fopen");
             fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
             exit(1);
@@ -228,12 +228,12 @@ static void open_error_log (server_rec *s, pool *p)
     }
 }
 
-void ap_open_logs (server_rec *s_main, pool *p)
+void ap_open_logs(server_rec *s_main, pool *p)
 {
     server_rec *virt, *q;
     int replace_stderr;
 
-    open_error_log (s_main, p);
+    open_error_log(s_main, p);
 
     replace_stderr = 1;
     if (s_main->error_log) {
@@ -262,21 +262,23 @@ void ap_open_logs (server_rec *s_main, pool *p)
 		if (q->error_fname != NULL &&
 		    strcmp(q->error_fname, virt->error_fname) == 0)
 		    break;
-	    if (q == virt) open_error_log (virt, p);
-	    else virt->error_log = q->error_log;
+	    if (q == virt)
+		open_error_log(virt, p);
+	    else 
+		virt->error_log = q->error_log;
 	}
 	else
 	    virt->error_log = s_main->error_log;
     }
 }
 
-API_EXPORT(void) ap_error_log2stderr (server_rec *s) {
+API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
     if (   s->error_log != NULL
         && fileno(s->error_log) != STDERR_FILENO)
         dup2(fileno(s->error_log), STDERR_FILENO);
 }
 
-static void log_error_core (const char *file, int line, int level,
+static void log_error_core(const char *file, int line, int level,
 			   const server_rec *s, const request_rec *r,
 			   const char *fmt, va_list args)
 {
@@ -424,7 +426,7 @@ static void log_error_core (const char *file, int line, int level,
 #endif
 }
     
-API_EXPORT(void) ap_log_error (const char *file, int line, int level,
+API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 			      const server_rec *s, const char *fmt, ...)
 {
     va_list args;
@@ -457,18 +459,19 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-void ap_log_pid (pool *p, char *fname)
+void ap_log_pid(pool *p, char *fname)
 {
     FILE *pid_file;
     struct stat finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
 
-    if (!fname) return;
+    if (!fname) 
+	return;
 
-    fname = ap_server_root_relative (p, fname);
+    fname = ap_server_root_relative(p, fname);
     mypid = getpid();
-    if (mypid != saved_pid && stat(fname,&finfo) == 0) {
+    if (mypid != saved_pid && stat(fname, &finfo) == 0) {
       /* USR1 and HUP call this on each restart.
        * Only warn on first time through for this pid.
        *
@@ -483,28 +486,28 @@ void ap_log_pid (pool *p, char *fname)
 		   );
     }
 
-    if(!(pid_file = fopen(fname,"w"))) {
+    if(!(pid_file = fopen(fname, "w"))) {
 	perror("fopen");
-        fprintf(stderr,"httpd: could not log pid to file %s\n", fname);
+        fprintf(stderr, "httpd: could not log pid to file %s\n", fname);
         exit(1);
     }
-    fprintf(pid_file,"%ld\n",(long)mypid);
+    fprintf(pid_file, "%ld\n", (long)mypid);
     fclose(pid_file);
     saved_pid = mypid;
 }
 
-API_EXPORT(void) ap_log_error_old (const char *err, server_rec *s)
+API_EXPORT(void) ap_log_error_old(const char *err, server_rec *s)
 {
     ap_log_error(APLOG_MARK, APLOG_ERR, s, "%s", err);
 }
 
-API_EXPORT(void) ap_log_unixerr (const char *routine, const char *file,
+API_EXPORT(void) ap_log_unixerr(const char *routine, const char *file,
 			      const char *msg, server_rec *s)
 {
     ap_log_error(file, 0, APLOG_ERR, s, "%s", msg);
 }
 
-API_EXPORT(void) ap_log_printf (const server_rec *s, const char *fmt, ...)
+API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
 {
     va_list args;
     
@@ -513,7 +516,7 @@ API_EXPORT(void) ap_log_printf (const server_rec *s, const char *fmt, ...)
     va_end(args);
 }
 
-API_EXPORT(void) ap_log_reason (const char *reason, const char *file, request_rec *r) 
+API_EXPORT(void) ap_log_reason(const char *reason, const char *file, request_rec *r) 
 {
     ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		"access to %s failed for %s, reason: %s",
@@ -522,7 +525,7 @@ API_EXPORT(void) ap_log_reason (const char *reason, const char *file, request_re
 		reason);
 }
 
-API_EXPORT(void) ap_log_assert (const char *szExp, const char *szFile, int nLine)
+API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
     fprintf(stderr, "[%s] file %s, line %d, assertion \"%s\" failed\n",
 	    ap_get_time(), szFile, nLine, szExp);
@@ -538,9 +541,9 @@ API_EXPORT(void) ap_log_assert (const char *szExp, const char *szFile, int nLine
 
 #ifndef NO_RELIABLE_PIPED_LOGS
 /* forward declaration */
-static void piped_log_maintenance (int reason, void *data, ap_wait_t status);
+static void piped_log_maintenance(int reason, void *data, ap_wait_t status);
 
-static int piped_log_spawn (piped_log *pl)
+static int piped_log_spawn(piped_log *pl)
 {
     int pid;
 
@@ -553,32 +556,32 @@ static int piped_log_spawn (piped_log *pl)
 	 * XXX: close all the relevant stuff, but hey, it could be broken. */
 	RAISE_SIGSTOP(PIPED_LOG_SPAWN);
 	/* we're now in the child */
-	close (STDIN_FILENO);
-	dup2 (pl->fds[0], STDIN_FILENO);
+	close(STDIN_FILENO);
+	dup2(pl->fds[0], STDIN_FILENO);
 
-	ap_cleanup_for_exec ();
-	signal (SIGCHLD, SIG_DFL);	/* for HPUX */
-	signal (SIGHUP, SIG_IGN);
-	execl (SHELL_PATH, SHELL_PATH, "-c", pl->program, NULL);
-	fprintf (stderr,
+	ap_cleanup_for_exec();
+	signal(SIGCHLD, SIG_DFL);	/* for HPUX */
+	signal(SIGHUP, SIG_IGN);
+	execl(SHELL_PATH, SHELL_PATH, "-c", pl->program, NULL);
+	fprintf(stderr,
 	    "piped_log_spawn: unable to exec %s -c '%s': %s\n",
 	    SHELL_PATH, pl->program, strerror (errno));
-	exit (1);
+	exit(1);
     }
     if (pid == -1) {
-	fprintf (stderr,
+	fprintf(stderr,
 	    "piped_log_spawn: unable to fork(): %s\n", strerror (errno));
-	ap_unblock_alarms ();
+	ap_unblock_alarms();
 	return -1;
     }
     ap_unblock_alarms();
     pl->pid = pid;
-    ap_register_other_child (pid, piped_log_maintenance, pl, pl->fds[1]);
+    ap_register_other_child(pid, piped_log_maintenance, pl, pl->fds[1]);
     return 0;
 }
 
 
-static void piped_log_maintenance (int reason, void *data, ap_wait_t status)
+static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 {
     piped_log *pl = data;
 
@@ -586,30 +589,30 @@ static void piped_log_maintenance (int reason, void *data, ap_wait_t status)
     case OC_REASON_DEATH:
     case OC_REASON_LOST:
 	pl->pid = -1;
-	ap_unregister_other_child (pl);
+	ap_unregister_other_child(pl);
 	if (pl->program == NULL) {
 	    /* during a restart */
 	    break;
 	}
-	if (piped_log_spawn (pl) == -1) {
+	if (piped_log_spawn(pl) == -1) {
 	    /* what can we do?  This could be the error log we're having
 	     * problems opening up... */
-	    fprintf (stderr,
+	    fprintf(stderr,
 		"piped_log_maintenance: unable to respawn '%s': %s\n",
-		pl->program, strerror (errno));
+		pl->program, strerror(errno));
 	}
 	break;
     
     case OC_REASON_UNWRITABLE:
 	if (pl->pid != -1) {
-	    kill (pl->pid, SIGTERM);
+	    kill(pl->pid, SIGTERM);
 	}
 	break;
     
     case OC_REASON_RESTART:
 	pl->program = NULL;
 	if (pl->pid != -1) {
-	    kill (pl->pid, SIGTERM);
+	    kill(pl->pid, SIGTERM);
 	}
 	break;
 
@@ -619,67 +622,67 @@ static void piped_log_maintenance (int reason, void *data, ap_wait_t status)
 }
 
 
-static void piped_log_cleanup (void *data)
+static void piped_log_cleanup(void *data)
 {
     piped_log *pl = data;
 
     if (pl->pid != -1) {
-	kill (pl->pid, SIGTERM);
+	kill(pl->pid, SIGTERM);
     }
-    ap_unregister_other_child (pl);
-    close (pl->fds[0]);
-    close (pl->fds[1]);
+    ap_unregister_other_child(pl);
+    close(pl->fds[0]);
+    close(pl->fds[1]);
 }
 
 
-static void piped_log_cleanup_for_exec (void *data)
+static void piped_log_cleanup_for_exec(void *data)
 {
     piped_log *pl = data;
 
-    close (pl->fds[0]);
-    close (pl->fds[1]);
+    close(pl->fds[0]);
+    close(pl->fds[1]);
 }
 
 
-API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
 {
     piped_log *pl;
 
-    pl = ap_palloc (p, sizeof (*pl));
+    pl = ap_palloc(p, sizeof (*pl));
     pl->p = p;
-    pl->program = ap_pstrdup (p, program);
+    pl->program = ap_pstrdup(p, program);
     pl->pid = -1;
     ap_block_alarms ();
-    if (pipe (pl->fds) == -1) {
+    if (pipe(pl->fds) == -1) {
 	int save_errno = errno;
 	ap_unblock_alarms();
 	errno = save_errno;
 	return NULL;
     }
-    ap_register_cleanup (p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
-    if (piped_log_spawn (pl) == -1) {
+    ap_register_cleanup(p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
+    if (piped_log_spawn(pl) == -1) {
 	int save_errno = errno;
-	ap_kill_cleanup (p, pl, piped_log_cleanup);
-	close (pl->fds[0]);
-	close (pl->fds[1]);
-	ap_unblock_alarms ();
+	ap_kill_cleanup(p, pl, piped_log_cleanup);
+	close(pl->fds[0]);
+	close(pl->fds[1]);
+	ap_unblock_alarms();
 	errno = save_errno;
 	return NULL;
     }
-    ap_unblock_alarms ();
+    ap_unblock_alarms();
     return pl;
 }
 
-API_EXPORT(void) ap_close_piped_log (piped_log *pl)
+API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 {
-    ap_block_alarms ();
-    piped_log_cleanup (pl);
-    ap_kill_cleanup (pl->p, pl, piped_log_cleanup);
-    ap_unblock_alarms ();
+    ap_block_alarms();
+    piped_log_cleanup(pl);
+    ap_kill_cleanup(pl->p, pl, piped_log_cleanup);
+    ap_unblock_alarms();
 }
 
 #else
-static int piped_log_child (void *cmd, child_info *pinfo)
+static int piped_log_child(void *cmd, child_info *pinfo)
 {
     /* Child process code for 'TransferLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -689,10 +692,10 @@ static int piped_log_child (void *cmd, child_info *pinfo)
 
     ap_cleanup_for_exec();
 #ifdef SIGHUP
-    signal (SIGHUP, SIG_IGN);
+    signal(SIGHUP, SIG_IGN);
 #endif
 #if defined(WIN32)
-    child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)
     /* For OS/2 we need to use a '/' */
@@ -700,24 +703,24 @@ static int piped_log_child (void *cmd, child_info *pinfo)
 #else
     execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
-    perror ("exec");
-    fprintf (stderr, "Exec of shell for logging failed!!!\n");
+    perror("exec");
+    fprintf(stderr, "Exec of shell for logging failed!!!\n");
     return(child_pid);
 }
 
 
-API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
 {
     piped_log *pl;
     FILE *dummy;
 
     if (!ap_spawn_child(p, piped_log_child, (void *)program,
 			kill_after_timeout, &dummy, NULL, NULL)) {
-	perror ("ap_spawn_child");
-	fprintf (stderr, "Couldn't fork child for piped log process\n");
+	perror("ap_spawn_child");
+	fprintf(stderr, "Couldn't fork child for piped log process\n");
 	exit (1);
     }
-    pl = ap_palloc (p, sizeof (*pl));
+    pl = ap_palloc(p, sizeof (*pl));
     pl->p = p;
     pl->write_f = dummy;
 
@@ -725,8 +728,8 @@ API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
 }
 
 
-API_EXPORT(void) ap_close_piped_log (piped_log *pl)
+API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 {
-    ap_pfclose (pl->p, pl->write_f);
+    ap_pfclose(pl->p, pl->write_f);
 }
 #endif
