@@ -19,7 +19,7 @@
 feedback about the activity and performance of the server as well as
 any problems that may be occuring.  The Apache HTTP Server provides
 very comprehensive and flexible logging capabilities.  This document
-describes how to configure the various log files, and how to
+describes how to configure its logging capabilities, and how to
 understand what the logs contain.</p>
 
 <ul>
@@ -83,8 +83,8 @@ it.</p>
 <p>The error log is usually written to a file (typically
 <code>error_log</code> on unix systems and <code>error.log</code> on
 Windows and OS/2).  On unix systems it is also possible to have the
-server send errors to the <code>syslog</code> or <a href="#pipe">pipe
-them through a program</a>.</p>
+server send errors to <code>syslog</code> or <a href="#pipe">pipe
+them to a program</a>.</p>
 
 <p>The format of the error log is relatively free-form and
 descriptive.  But there is certain information that is contained
@@ -145,7 +145,7 @@ tail -f error_log
 </td></tr></table>
 
 <p>The server access log records all requests processed by the server.
-The location of the access log as well as its contents are controlled
+The location and content of the access log are controlled
 by the <a href="mod/mod_log_config.html#customlog">CustomLog</a>
 directive.  The <a
 href="mod/mod_log_config.html#logformat">LogFormat</a> directive can
@@ -272,13 +272,13 @@ given in double quotes.  The request line contains a great deal of
 useful information.  First, the method used by the client is
 <code>GET</code>.  Second, the client requested the resource
 <code>/apache_pb.gif</code>, and third, the client used the protocol
-<code>HTTP/1.0</code>.</dd> It is also possible to log one or more
+<code>HTTP/1.0</code>. It is also possible to log one or more
 parts of the request line independently.  For example, the format
 string "<code>%m %U%q %H</code>" will log the method, path,
 query-string, and protocol, resulting in exactly the same output as
 "<code>%r</code>".</dd>
 
-<dt><code>200</code></dt> (<code>%>s</code>) <dd>This is the status
+<dt><code>200</code> (<code>%>s</code>)</dt> <dd>This is the status
 code that the server sends back to the client.  This information is
 very valuable, because it reveals whether the request resulted in a
 successful response (codes beginning in 2), a redirection (codes
@@ -307,9 +307,11 @@ LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" comb
 CustomLog log/acces_log combined
 </code></blockquote>
 
-<p>This format is exactly the same as the Common Log Format,
-with the addition of two more fields.  The access log under this
-format will look like:</p>
+<p>This format is exactly the same as the Common Log Format, with the
+addition of two more fields.  Each of the additional fields uses the
+percent-directive <code>%{<em>header</em>}i</code>, where
+<em>header</em> can be any HTTP request header.  The access log under
+this format will look like:</p>
 
 <blockquote><code>
 127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 200 2326 "http://www.example.com/start.html" "Mozilla/4.08 [en] (Win98; I ;Nav)"
