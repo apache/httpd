@@ -522,22 +522,33 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * This list must be tracked by the list in http_protocol.c in routine
  * ap_method_name_of().
  */
-#define M_GET        0
-#define M_PUT        1
-#define M_POST       2
-#define M_DELETE     3
-#define M_CONNECT    4
-#define M_OPTIONS    5
-#define M_TRACE      6
-#define M_PATCH      7
-#define M_PROPFIND   8
-#define M_PROPPATCH  9
-#define M_MKCOL     10
-#define M_COPY      11
-#define M_MOVE      12
-#define M_LOCK      13
-#define M_UNLOCK    14
-#define M_INVALID   15
+#define M_GET                   0       /* RFC 2616: HTTP */
+#define M_PUT                   1       /*  :             */
+#define M_POST                  2
+#define M_DELETE                3
+#define M_CONNECT               4
+#define M_OPTIONS               5
+#define M_TRACE                 6       /* RFC 2616: HTTP */
+#define M_PATCH                 7       /* no rfc(!)  ### remove this one? */
+#define M_PROPFIND              8       /* RFC 2518: WebDAV */
+#define M_PROPPATCH             9       /*  :               */
+#define M_MKCOL                 10
+#define M_COPY                  11
+#define M_MOVE                  12
+#define M_LOCK                  13
+#define M_UNLOCK                14      /* RFC 2518: WebDAV */
+#define M_VERSION_CONTROL       15      /* RFC 3253: WebDAV Versioning */
+#define M_CHECKOUT              16      /*  :                          */
+#define M_UNCHECKOUT            17
+#define M_CHECKIN               18
+#define M_UPDATE                19
+#define M_LABEL                 20
+#define M_REPORT                21
+#define M_MKWORKSPACE           22
+#define M_MKACTIVITY            23
+#define M_BASELINE_CONTROL      24
+#define M_MERGE                 25
+#define M_INVALID               26      /* RFC 3253: WebDAV Versioning */
 
 /**
  * METHODS needs to be equal to the number of bits
@@ -548,7 +559,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 /**
  * The method mask bit to shift for anding with a bitmask.
  */
-#define AP_METHOD_BIT (apr_int64_t)1
+#define AP_METHOD_BIT ((apr_int64_t)1)
 /** @} */
 
 
