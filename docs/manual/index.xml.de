@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1.1 -->
+<!-- English Revision: 1.1.2.1 -->
 
 <indexpage>
 <relativepath href="."/>
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Dokumentation zum Apache HTTP Server Version 2.1</title>
+<title>Dokumentation zum Apache HTTP Server Version 2.0</title>
 
 <category id="release"><title>Hinweise zur Version</title>
     <page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
