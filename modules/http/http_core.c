@@ -3062,9 +3062,8 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     request_rec *r = f->r;
 #endif
     apr_status_t rv;
-    apr_ssize_t bytes_sent = 0;
+    apr_ssize_t bytes_sent = 0, len = 0, written;
     ap_bucket *e;
-    int len = 0, written;
     const char *str;
     
 #if 0 /* XXX: bit rot! */
