@@ -426,6 +426,7 @@ static void signal_threads(int mode)
         return;
     }
     terminate_mode = mode;
+    workers_may_exit = 1;
 
     worker_stack_term(idle_worker_stack);
 }
@@ -952,8 +953,6 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
         }
     }
 
-    workers_may_exit = 1;
-    worker_stack_term(idle_worker_stack);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
 
