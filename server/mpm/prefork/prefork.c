@@ -985,7 +985,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     }
     ap_max_daemons_limit = last_non_dead + 1;
     if (idle_count > ap_daemons_max_free) {
-	/* kill off one child... we use SIGWINCH because that'll cause it to
+	/* kill off one child... we use the pod because that'll cause it to
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
