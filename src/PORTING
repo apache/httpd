@@ -100,7 +100,7 @@ for the port:
    ./include/conf.h
 
 Configure:
- ==========
+==========
 Configure concerns itself with determining the OS-type for the
 build and setting up a few Makefile variables for the build. The
 most important are 'OS' and 'CFLAGS'. For example, when Configure
@@ -130,7 +130,7 @@ than any system supplied regex.  It's been our experience that system
 supplied regex libraries are generally buggy, and should be avoided.
 
 conf.h:
- =======
+=======
 The Apache code, specifically in conf.h, uses a variety of #defines to
 control how the code is compiled and what options are available for each
 supported OS. One of the hardest parts about the porting process is
@@ -343,6 +343,11 @@ build for your OS.
       NEED_HASHBANG_EMUL:
        The execve()/etc. functions on this platform do not deal with #!,
        so it must be emulated by Apache.
+
+      SYS_SIGLIST
+       Should be defined to point to a const char * const * array of
+       signal descriptions.  This is frequently sys_siglist or
+       _sys_siglist, defined in <signals.h>
 
 -----------
 Conclusion:

@@ -158,6 +158,7 @@ typedef int rlim_t;
 #define HAVE_CRYPT_H 1
 int gethostname(char *name, int namelen);
 #define HAVE_SYSLOG 1
+#define SYS_SIGLIST _sys_siglist
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF
@@ -405,6 +406,8 @@ typedef int rlim_t;
 
 /* flock is faster ... but hasn't been tested on 1.x systems */
 #define USE_FLOCK_SERIALIZED_ACCEPT
+
+#define SYS_SIGLIST	_sys_siglist
 
 #else
 #define USE_FCNTL_SERIALIZED_ACCEPT
@@ -1062,6 +1065,13 @@ extern int ap_execve(const char *filename, const char *argv[],
  */
 #ifndef NET_SIZE_T
 #define NET_SIZE_T int
+#endif
+
+/* Linux defines __WCOREDUMP, but doesn't define WCOREDUMP unless __USE_BSD
+ * is in use... we'd prefer to just use WCOREDUMP everywhere.
+ */
+#if defined(__WCOREDUMP) && !defined(WCOREDUMP)
+#define WCOREDUMP __WCOREDUMP
 #endif
 
 #ifdef SUNOS_LIB_PROTOTYPES

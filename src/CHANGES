@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) Apache will now log the reason its httpd children exit if they exit
+     due to an unexpected signal.  (It requires a new porting define,
+     SYS_SIGLIST, which if defined should point to a list of text
+     descriptions of the signals available.  See PORTING.)  [Dean Gaudet]
+
   *) chdir() doesn't make sense in a multithreaded environment like WIN32.
      Before, Win32 CGI's could have had sporadic failures if a chdir call
      from one thread was made between another chdir call and a spawn in

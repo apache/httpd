@@ -2209,47 +2209,16 @@ static int wait_or_timeout(int *status)
 /* handle all varieties of core dumping signals */
 static void sig_coredump(int sig)
 {
-    char emsg[256];
-    const char *s;
-
-    /* Must protect against a nested signal, otherwise we could end up in
-     * an infinite loop.
-     */
-    signal(SIGSEGV, SIG_DFL);
-#ifdef SIGBUS
-    signal(SIGBUS, SIG_DFL);
-#endif
-#ifdef SIGABORT
-    signal(SIGABORT, SIG_DFL);
-#endif
-#ifdef SIGABRT
-    signal(SIGABRT, SIG_DFL);
-#endif
-
-    s = "SIGSEGV";
-#ifdef SIGBUS
-    if (sig == SIGBUS) {
-	s = "SIGBUS";
-    }
-#endif
-#ifdef SIGABORT
-    if (sig == SIGABORT) {
-	s = "SIGABORT";
-    }
-#endif
-#ifdef SIGABRT
-    if (sig == SIGABRT) {
-	s = "SIGABRT";
-    }
-#endif
-
-    ap_snprintf(emsg, sizeof(emsg),
-		"httpd: caught %s, attempting to dump core in %s",
-		s, ap_coredump_dir);
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf, emsg);
     chdir(ap_coredump_dir);
-    abort();
-    exit(1);
+    signal(sig, SIG_DFL);
+    kill(getpid(), sig);
+    /* At this point we've got sig blocked, because we're still inside
+     * the signal handler.  When we leave the signal handler it will
+     * be unblocked, and we'll take the signal... and coredump or whatever
+     * is appropriate for this particular Unix.  In addition the parent
+     * will see the real signal we received -- whereas if we called
+     * abort() here, the parent would only see SIGABRT.
+     */
 }
 
 /*****************************************************************
@@ -3792,6 +3761,57 @@ static void perform_idle_server_maintenance(void)
 }
 
 
+static void process_child_status(int pid, int status)
+{
+    /* Child died... if it died due to a fatal error,
+	* we should simply bail out.
+	*/
+    if ((WIFEXITED(status)) &&
+	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
+	ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+			"Child %d returned a Fatal error... \n"
+			"Apache is exiting!",
+			pid);
+	exit(APEXIT_CHILDFATAL);
+    }
+    if (WIFSIGNALED(status)) {
+	switch (WTERMSIG(status)) {
+	case SIGTERM:
+	case SIGHUP:
+	case SIGUSR1:
+	case SIGKILL:
+	    break;
+	default:
+#ifdef SYS_SIGLIST
+#ifdef WCOREDUMP
+	    if (WCOREDUMP(status)) {
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+		    server_conf,
+		    "httpd: child pid %d exit signal %s (%d), "
+		    "possible coredump in %s",
+		    pid, SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
+		    ap_coredump_dir);
+	    }
+	    else {
+#endif
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+		    server_conf,
+		    "httpd: child pid %d exit signal %s (%d)",
+		    pid, SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
+#ifdef WCOREDUMP
+	    }
+#endif
+#else
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+		server_conf,
+		"httpd: child pid %d exit signal %d",
+		pid, WTERMSIG(status));
+#endif
+	}
+    }
+}
+
+
 /*****************************************************************
  * Executive routines.
  */
@@ -3896,17 +3916,7 @@ static void standalone_main(int argc, char **argv)
 	     * extra child
 	     */
 	    if (pid >= 0) {
-	        /* Child died... if it died due to a fatal error,
-		 * we should simply bail out.
-		 */
-		if ((WIFEXITED(status)) &&
-		   WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
-		    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-				 "Child %d returned a Fatal error... \n"
-				 "Apache is exiting!",
-				 pid);
-		    exit(APEXIT_CHILDFATAL);
-		}
+		process_child_status(pid, status);
 		/* non-fatal death... note that it's gone in the scoreboard. */
 		ap_sync_scoreboard_image();
 		child_slot = find_child_by_pid(pid);
