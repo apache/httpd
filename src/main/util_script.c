@@ -67,6 +67,9 @@
  * in one place (if only to avoid creating inter-module dependancies
  * where there don't have to be).
  */
+ 
+#define MALFORMED_MESSAGE "malformed header from script. Bad header="
+#define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
 char **create_argv(pool *p, char *av0, char *args) {
     register int x,n;
@@ -247,7 +250,7 @@ int scan_script_header(request_rec *r, FILE *f)
     while(1) {
 
 	if (fgets(w, MAX_STRING_LEN-1, f) == NULL) {
-	    log_reason ("malformed header from script", r->filename, r);
+	    log_reason ("Premature end of script headers", r->filename, r);
 	    return SERVER_ERROR;
         }
 
@@ -268,12 +271,15 @@ int scan_script_header(request_rec *r, FILE *f)
 	/* if we see a bogus header don't ignore it. Shout and scream */
 	
         if(!(l = strchr(w,':'))) {
+	    char malformed[(sizeof MALFORMED_MESSAGE)+1+MALFORMED_HEADER_LENGTH_TO_SHOW];
+            strcpy(malformed, MALFORMED_MESSAGE);
+            strncat(malformed, w, MALFORMED_HEADER_LENGTH_TO_SHOW);
             /* Soak up all the script output --- may save an outright kill */
 	    while (fgets(w, MAX_STRING_LEN-1, f) != NULL)
 	        continue;
 	    
 	    kill_timeout (r);
-	    log_reason ("malformed header from script", r->filename, r);
+	    log_reason (malformed, r->filename, r);
 	    return SERVER_ERROR;
         }
 
