@@ -72,6 +72,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include <assert.h>
+#include "../../main/test_char.h"
 
 module MODULE_VAR_EXPORT log_forensic_module;
 
@@ -149,7 +150,7 @@ static char *log_escape(char *q, const char *e, const char *p)
 {
     for ( ; *p ; ++p) {
         assert(q < e);
-        if (*p < ' ' || *p >= 0x7f || *p == '|' || *p == ':' || *p == '%') {
+        if (test_char_table[*(unsigned char *)p]&T_ESCAPE_FORENSIC) {
             assert(q+2 < e);
             *q++ = '%';
             sprintf(q, "%02x", *(unsigned char *)p);
@@ -177,7 +178,7 @@ static int count_string(const char *p)
     int n;
 
     for (n = 0 ; *p ; ++p, ++n)
-        if (*p < ' ' || *p >= 0x7f || *p == '|' || *p == ':' || *p == '%')
+        if (test_char_table[*(unsigned char *)p]&T_ESCAPE_FORENSIC)
             n += 2;
     return n;
 }

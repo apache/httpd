@@ -9,6 +9,7 @@
 #define T_OS_ESCAPE_PATH	(0x04)
 #define T_HTTP_TOKEN_STOP	(0x08)
 #define T_ESCAPE_LOGITEM	(0x10)
+#define T_ESCAPE_FORENSIC       (0x20)
 
 int main(int argc, char *argv[])
 {
@@ -22,21 +23,20 @@ int main(int argc, char *argv[])
 "#define T_OS_ESCAPE_PATH	0x%02x /* escape characters in a path or uri */\n"
 "#define T_HTTP_TOKEN_STOP	0x%02x /* find http tokens, as defined in RFC2616 */\n"
 "#define T_ESCAPE_LOGITEM	0x%02x /* filter what should go in the log file */\n"
+"#define T_ESCAPE_FORENSIC	0x%02x /* filter what should go in the forensic log */\n"
 "\n",
 	T_ESCAPE_SHELL_CMD,
 	T_ESCAPE_PATH_SEGMENT,
 	T_OS_ESCAPE_PATH,
 	T_HTTP_TOKEN_STOP,
-	T_ESCAPE_LOGITEM
+	T_ESCAPE_LOGITEM,
+	T_ESCAPE_FORENSIC
 	);
 
-    /* we explicitly dealt with NUL above
-     * in case some strchr() do bogosity with it */
-
     printf("static const unsigned char test_char_table[256] = {\n"
-	   "    0x00, ");    /* print initial item */
+	   "    ");
 
-    for (c = 1; c < 256; ++c) {
+    for (c = 0; c < 256; ++c) {
 	flags = 0;
 
 	/* escape_shell_cmd */
@@ -79,6 +79,15 @@ int main(int argc, char *argv[])
 	if (!ap_isprint(c) || c == '"' || c == '\\' || ap_iscntrl(c)) {
 	    flags |= T_ESCAPE_LOGITEM;
 	}
+
+        /* For forensic logging, escape all control characters, top bit set,
+         * :, | (used as delimiters) and % (used for escaping).
+         */
+        if (!ap_isprint(c) || c == ':' || c == '|' || c == '%'
+            || ap_iscntrl(c) || !c) {
+            flags |= T_ESCAPE_FORENSIC;
+        }
+
 	printf("0x%02x%s", flags, (c < 255) ? ", " : "  ");
 
 	if ((c % 8) == 7)
