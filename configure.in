@@ -151,6 +151,11 @@ APACHE_LIBTOOL_SILENT
 
 if test "$apache_need_shared" = "yes"; then
   $SHELL $srcdir/ltconfig --output=shlibtool --disable-static --srcdir=$srcdir --cache-file=./config.cache $srcdir/ltmain.sh
+  case $PLATFORM in
+    *os390)
+      CFLAGS="$CFLAGS -Wc,DLL,EXPORTALL"
+      ;;
+  esac
 fi
 
 AC_ARG_WITH(program-name,
