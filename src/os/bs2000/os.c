@@ -80,7 +80,9 @@ int ap_checkconv(struct request_rec *r)
     convert_to_ascii = (r->content_type == NULL);
 
     /* Conversion is applied to text/ files only, if ever. */
-    if (r->content_type && strncmp(r->content_type, "text/", 5)==0) {
+    if (r->content_type &&
+	(strncmp(r->content_type, "text/", 5) == 0
+	|| strncmp(r->content_type, "message/", 8) == 0)) {
         if (strncmp(r->content_type, ASCIITEXT_MAGIC_TYPE_PREFIX, 
         sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
         r->content_type = ap_pstrcat(r->pool, "text/",
