@@ -145,13 +145,15 @@ From Apache 1.3 onwards, module authors can make use of these new features:
      create a Makefile to build the module given a file containing
      the module's dependencies.
  </LI>
- <LI>For building a third-party module <STRONG>outside</STRONG>
-     the Apache source tree the new <CODE>apxs</CODE> support tool can be used
-     to compile the module into a dynamic shared object (DSO), install it into
-     the existing Apache installation and optionally activating it in the
-     Apache <CODE>httpd.conf</CODE> file.  The only requirement is that Apache
-     has DSO-support for the used platform and the module <CODE>mod_so</CODE>
-     was built into the server binary <CODE>httpd</CODE>.
+ <LI>For building a third-party module <STRONG>outside</STRONG> the
+     Apache source tree the new <CODE>apxs</CODE> support tool can be
+     used to compile the module into a <A HREF="dso.html">dynamic
+     shared object (DSO)</A>, install it into the existing Apache
+     installation and optionally activating it in the Apache
+     <CODE>httpd.conf</CODE> file.  The only requirement is that
+     Apache has DSO-support for the used platform and the module
+     <CODE><A HREF="mod/mod_so.html">mod_so</A></CODE> was built into
+     the server binary <CODE>httpd</CODE>.
  </LI>
 </UL>
 

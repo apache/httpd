@@ -24,11 +24,6 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
 Documentation that needs writing:
 
-    * Documentation for:
-      1) htdocs/manual/sourcereorg.html and other files should mention 
-         new mod_so capabilities.
-      2) windows.html should be cleaned up.
-
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
 	virtualhosting.  (If it exists already I can't find it easily.)
 
