@@ -36,6 +36,13 @@ Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter le
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">gestionnaire du site</a>.
 ----------fr--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+Je¶li my¶lisz, ¿e jest to b³±d tego serwera, skontaktuj siê z
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">administratorem</a>.
+----------pl--
+
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--

@@ -167,6 +167,33 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="TITLE" value="B³±d serwera!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Serwer napotka³ b³±d wewnêtrzny i nie jest w stanie
+    zrealizowaæ twojego ¿±dania.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Informacja o b³êdzie:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Serwer napotka³ b³±d wewnêtrzny i nie jest w stanie
+    zrealizowaæ twojego ¿±dania. Serwer jest przeci±¿ony lub
+    napotka³ na b³±d w skrypcie CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

@@ -78,6 +78,18 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="TITLE" value="Przedawnione ¿±danie!"
+--><!--#include virtual="include/top.html" -->
+
+    Serwer zamkn±³ po³±czenie sieciowe poniewa¿ przegl±darka
+    nie zakoñczy³a operacji w przewidywanym czasie.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

@@ -76,6 +76,18 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="TITLE" value="Nieprawid³owe ¿±danie!"
+--><!--#include virtual="include/top.html" -->
+
+    Twoja przegl±darka (lub serwer po¶rednicz±cy) wys³a³ ¿±danie,
+    którego ten serwer nie potrafi obs³u¿yæ.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
