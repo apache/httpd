@@ -1828,7 +1828,6 @@ void winnt_rewrite_args(process_rec *process)
     char fnbuf[MAX_PATH];
     char optbuf[3];
     const char *optarg;
-    const char **new_arg;
     int fixed_args;
     char *pid;
     apr_getopt_t *opt;
