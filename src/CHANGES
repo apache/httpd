@@ -1,8 +1,12 @@
 Changes with Apache 1.2b7
 
+  *) Return a 302 response code to the client when sending a redirect
+     due to a missing trailing '/' on a directory instead of a 301; now
+     it is cacheable. [Markus Gyger]
+
   *) Fix handling of lang_index in is_variant_better().  This was
      causing problems which resulted in the server sending the
-     wrong language document in some cases.
+     wrong language document in some cases. [Petr Lampa]
 
   *) Remove free() from clean_env() in suexec wrapper. This was nuking
      the clean environment on some systems.
