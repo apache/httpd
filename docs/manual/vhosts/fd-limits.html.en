@@ -33,7 +33,8 @@
       such as a limit on stdio streams only using file descriptors
       below 256. (Solaris 2)</li>
     </ol>
-    In the event of problems you can:
+
+	<p>In the event of problems you can:</p>
 
     <ul>
       <li>Reduce the number of log files; don't specify log files
