@@ -70,6 +70,7 @@
 
 <category id="howto">
 <title>Guides, Tutorials, and HowTos</title>
+<page separate="yes" href="howto/">Overview</page>
 <page href="howto/auth.html">Authentication</page>
 <page href="howto/cgi.html">Dynamic Content with CGI</page>
 <page href="howto/ssi.html">Introduction to Server Side Includes</page>
@@ -80,6 +81,7 @@
 
 <category id="platform">
 <title>Platform-specific Notes</title>
+<page separate="yes" href="platform/">Overview</page>
 <page href="platform/windows.html">Using Apache with Microsoft
 Windows</page>
 <page href="platform/win_compiling.html">Compiling Apache for
