@@ -87,9 +87,10 @@ LINK32=link.exe
 
 # Name "mod_cache - Win32 Release"
 # Name "mod_cache - Win32 Debug"
+# End Group
 # Begin Group "Source Files"
 
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
 SOURCE=.\cache_cache.c
@@ -134,10 +135,34 @@ SOURCE=.\cache_pqueue.h
 
 SOURCE=.\mod_cache.h
 # End Source File
-# End Group
-# Begin Group "Resource Files"
+# Begin Source File
 
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-# End Group
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_cache - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_cache.so "cache_module for Apache" ../../include/ap_release.h > .\mod_cache.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_cache - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_cache.so "cache_module for Apache" ../../include/ap_release.h > .\mod_cache.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
