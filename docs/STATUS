@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/12/13 12:37:57 $
+Last modified: $Date: 2002/12/16 03:15:36 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -23,6 +23,7 @@ Things That Need Fixing
 
 - Windows platform docs are in desperate need of rewrites/updates for 2.0.
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
+    - "using apache" has been done, "compiling apache" is still open
 
 - New Auth system
     - Roll back the changes for new auth that are deferred for release 2.2.
