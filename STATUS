@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/25 02:03:31 $]
+Last modified at [$Date: 2003/06/25 15:17:24 $]
 
 Release:
 
@@ -66,15 +66,17 @@ PATCHES TO PORT FROM 2.1
 
     * ap_get_mime_headers(): eliminate the temporary table used to
       combine duplicate headers (performance enhancement)
+      server/protocol.c: r1.132
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.131&r2=1.132&diff_format=h
-      +1: brianp
+      +1: brianp, jerenkrantz
 
     * core_output_filter: don't split the brigade after a FLUSH bucket
       if it's the last bucket.  This prevents creating unneccessary empty
       brigades which may not be destroyed until the end of a keepalive
       connection.
+      server/core.c: r1.238
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.237&r2=1.238
-      +1: brianp, trawick
+      +1: brianp, trawick, jerenkrantz
 
     * Backport LimitInteralRecursion to 2.0 and 1.3.
       (1.3 patch is here: <http://cvs.apache.org/~nd/recursion13.patch>)
@@ -84,7 +86,7 @@ PATCHES TO PORT FROM 2.1
       modules/http/http_request.c r1.156, r1.158
       server/core.c r1.236, r1.237
       server/request.c r1.126, r1.127
-      +1: nd, brianp (for 2.0)
+      +1: nd, brianp (for 2.0), jerenkrantz (both)
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
@@ -212,33 +214,35 @@ PATCHES TO PORT FROM 2.1
         modules/dav/main/mod_dav.c r1.94 r1.95 r1.96
         modules/dav/main/mod_dav.h 1.67
         NOTE: the change passes the WebDAV tests run by 'litmus'
-        +1: striker, gstein
+        +1: striker, gstein, jerenkrantz
 
     * handle switching between libtools and unwritable ltconfig/ltmain.sh
         buildconf 1.36, 1.37
         build/.cvsignore 1.4
-        +1: trawick
+        +1: trawick, jerenkrantz
 
     * Ignore the Server header field as set by modules and CGIs.
         modules/http/http_protocol.c 1.470
+        jerenkrantz: When it is a proxy response that doesn't have server
+                     string set, we shouldn't place one there.  Correct?
         +1: trawick
 
     * mod_rewrite: Perform child initialization on the rewrite log
       lock.  This fixes a log corruption issue when flock-based 
       serialization is used (e.g., FreeBSD).
         modules/mappers/mod_rewrite.c 1.152
-        +1: trawick
+        +1: trawick, jerenkrantz
 
     * Unix: Handle permissions settings for flock-based mutexes in 
       unixd_set_global|proc_mutex_perms().  Allow the functions to
       be called for any type of mutex.  PR 20312
         modules/mappers/mod_rewrite.c 1.153
         modules/ssl/mod_ssl.h 1.136
-        modules/ssl/ssl_engine_config.c 1.181
-        modules/ssl/ssl_engine_mutex.c 1.126
-        os/unix/unixd.c 1.158
-        os/unix/unixd.h 1.138
-        +1: trawick
+        modules/ssl/ssl_engine_config.c 1.81
+        modules/ssl/ssl_engine_mutex.c 1.26
+        os/unix/unixd.c 1.58
+        os/unix/unixd.h 1.38
+        +1: trawick, jerenkrantz
 
     * Backport wildcard ExpiresByType from 2.0.46
       +1: ken, stoddard
