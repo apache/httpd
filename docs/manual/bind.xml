@@ -22,7 +22,7 @@
         <module>mpm_common</module>
       </modulelist>
       <directivelist>
-        <directive module="core">VirtualHost</directive>
+        <directive module="core" type="section">VirtualHost</directive>
         <directive module="mpm_common">Listen</directive>
       </directivelist>
     </related>
