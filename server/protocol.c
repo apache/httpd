@@ -601,7 +601,6 @@ static int read_request_line(request_rec *r)
                          &len, r, 0);
 
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "read_request_line() failed");
 	        r->request_time = apr_time_now();
             return 0;
         }
@@ -710,7 +709,6 @@ static void get_mime_headers(request_rec *r)
 
         if (rv != APR_SUCCESS) {
             r->status = HTTP_BAD_REQUEST;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "get_mime_headers() failed");
             return;
         }
 
