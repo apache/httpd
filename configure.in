@@ -296,8 +296,9 @@ AC_HEADER_SYS_WAIT
 dnl ## Check for typedefs, structures, and compiler characteristics.
 
 AC_C_CONST
-if test "$ac_cv_prog_gcc" = "yes"; then
-  APR_ADDTO(NOTEST_CPPFLAGS,-DAP_HAVE_DESIGNATED_INITIALIZER)
+if test "x$GCC" = "xyes"; then
+  AC_DEFINE([AP_HAVE_DESIGNATED_INITIALIZER], 1,
+            [Define if the compiler supports designated initializers])
 fi
 
 dnl ## Check for library functions
