@@ -1064,6 +1064,10 @@ static void fixup_vary(request_rec *r)
     }
 }
 
+typedef struct header_filter_ctx {
+    int headers_sent;
+} header_filter_ctx;
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
     ap_filter_t *f,
     apr_bucket_brigade *b)
@@ -1076,8 +1080,24 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
     apr_bucket *e;
     apr_bucket_brigade *b2;
     header_struct h;
+    header_filter_ctx *ctx = f->ctx;
 
     AP_DEBUG_ASSERT(!r->main);
+
+    /* Handlers -should- be smart enough not to send content on HEAD requests.
+     * To guard against poorly written handlers, leave the header_filter 
+     * installed (but only for HEAD requests) to intercept and discard content
+     * after the headers have been sent.
+     */
+    if (r->header_only) {
+        if (!ctx) {
+            ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
+        }
+        else if (ctx->headers_sent) {
+            apr_brigade_destroy(b);
+            return OK;
+        }
+    }
 
     APR_BRIGADE_FOREACH(e, b) {
         if (e->type == &ap_bucket_type_error) {
@@ -1212,7 +1232,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
 
     if (r->header_only) {
         apr_brigade_destroy(b);
-        ap_remove_output_filter(f);
+        ctx->headers_sent = 1;
         return OK;
     }
 
