@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/03 23:01:54 $]
+Last modified at [$Date: 2003/04/03 23:14:29 $]
 
 Release:
 
@@ -78,7 +78,7 @@ PATCHES TO PORT FROM 2.1
       modules/loggers/mod_log_config.c: r1.100
       server/gen_test_char.c: r1.16
       server/util.c: r1.138
-      +1: nd, wrowe (clean solution, mirrors our \0 escaping of %00)
+      +1: nd, wrowe (clean solution, mirrors our \0 escaping of %00), trawick
       +0: mod_log_config.c has another change which requires mod_log_config.h
          and a possible mmn bump
          nd: but not in 2.0. AFAICS the MMNs don't conflict.
@@ -162,7 +162,7 @@ PATCHES TO PORT FROM 2.1
       Content-Encoding: gzip header. This prevents gzip compressed content
       from a CGI script from being compressed once more. PR 17797.
       modules/filters/mod_deflate.c: r1.32
-      +1: nd, ianh
+      +1: nd, ianh, trawick
 
     * mod_negotiation: parse quality values independent from
       the current locale and level values as integers. PR 17564.
