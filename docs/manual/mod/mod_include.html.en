@@ -140,7 +140,8 @@
 
       <dd>
         The exec command executes a given shell command or CGI
-        script. The IncludesNOEXEC <a href="../mod/core.html#option" class="directive"><code class="directive">Option</code></a> disables this command
+        script. It requires <code><a href="../mod/mod_cgi.html">mod_cgi</a></code> to be present
+        in the server.  The IncludesNOEXEC <a href="../mod/core.html#option" class="directive"><code class="directive">Option</code></a> disables this command
         completely. The valid attributes are: 
 
         <dl>
