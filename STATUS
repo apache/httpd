@@ -56,6 +56,10 @@ Committed:
 
 Available:
 
+    * [PATCH] mod_digest/1599: proxy authentication using the digest auth scheme never succeeds (fwd)
+	<Pine.LNX.3.95dg3.971225184830.17380C-100000@twinlark.arctic.org>
+	Status: Dean +1
+
     * Ken's [PATCH] for PR#1195 (" in realm names)
 	<34A13B2C.EAD80C05@Golux.Com>
 	Status: Ken +1, Dean +1
