@@ -133,14 +133,14 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
-            <xsl:variable name="modules" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status='MPM' and name != 'mpm_common']"/>
+            <xsl:variable name="mpmmodules" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status='MPM' and name != 'mpm_common']"/>
             <xsl:variable name="translist">
               <xsl:call-template name="module-translist">
-                <xsl:with-param name="modules" select="$modules"/>
+                <xsl:with-param name="modules" select="$mpmmodules"/>
               </xsl:call-template>
             </xsl:variable>
 
-            <xsl:for-each select="$modules">
+            <xsl:for-each select="$mpmmodules">
             <xsl:sort select="substring-before(substring-after($translist, concat('- ', translate(normalize-space(name),$lowercase,$uppercase), ' ')), ' -')"/>
 
               <dt>
