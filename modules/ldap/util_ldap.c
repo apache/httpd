@@ -274,7 +274,7 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
                       &(result));
 
 
-        if (result != NULL) {
+        if (result != NULL && result->rc) {
             ldc->reason = result->reason;
         }
 
@@ -412,6 +412,7 @@ LDAP_DECLARE(util_ldap_connection_t *)
                                        const char *binddn, const char *bindpw,
                                        deref_options deref, int secure) {
     struct util_ldap_connection_t *l, *p; /* To traverse the linked list */
+    int secureflag = secure;
 
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
@@ -426,6 +427,10 @@ LDAP_DECLARE(util_ldap_connection_t *)
     apr_thread_mutex_lock(st->mutex);
 #endif
 
+    if (secure < APR_LDAP_NONE) {
+        secureflag = st->secure;
+    }
+
     /* Search for an exact connection match in the list that is not
      * being used.
      */
@@ -436,7 +441,7 @@ LDAP_DECLARE(util_ldap_connection_t *)
         if ((l->port == port) && (strcmp(l->host, host) == 0) && 
             ((!l->binddn && !binddn) || (l->binddn && binddn && !strcmp(l->binddn, binddn))) && 
             ((!l->bindpw && !bindpw) || (l->bindpw && bindpw && !strcmp(l->bindpw, bindpw))) && 
-            (l->deref == deref) && (l->secure == secure) &&
+            (l->deref == deref) && (l->secure == secureflag) &&
             !compare_client_certs(st->client_certs, l->client_certs)) {
 
             break;
@@ -461,7 +466,7 @@ LDAP_DECLARE(util_ldap_connection_t *)
 
 #endif
             if ((l->port == port) && (strcmp(l->host, host) == 0) && 
-                (l->deref == deref) && (l->secure == secure) &&
+                (l->deref == deref) && (l->secure == secureflag) &&
                 !compare_client_certs(st->client_certs, l->client_certs)) {
 
                 /* the bind credentials have changed */
@@ -513,9 +518,7 @@ LDAP_DECLARE(util_ldap_connection_t *)
          * If the security setting is NONE, override it to the security
          * setting optionally supplied by the admin using LDAPTrustedMode
          */
-        l->secure = (APR_LDAP_NONE == secure) ?
-                     st->secure :
-                     secure;
+        l->secure = secureflag;
 
         /* save away a copy of the client cert list that is presently valid */
         l->client_certs = apr_array_copy_hdr(l->pool, st->client_certs);
