@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/27 14:00:46 $]
+Last modified at [$Date: 2002/05/28 15:22:55 $]
 
 Release:
 
@@ -53,6 +53,11 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+    * HP/UX 10.20: compile breakage in APR.  Looks like it should be easy
+      to fix, probably just some extraneous #include's that are fouling
+      things up.
+      PR: 9457
+
     * decide if the MMN bump was warranted
 
     * Darwin: httpd won't start.  Hangs looking up 0.0.0.0 during config
@@ -62,6 +67,9 @@ RELEASE SHOWSTOPPERS:
 
     * Win32: httpd won't start.  There was a command line args problem
       that got fixed, but now something else is wrong.
+      Status: one problem here might be a "" argument being returned from
+      the rewrite_args hook getting caught by Jeff's patch to check
+      args more strictly.
       Message-ID: <5.1.0.14.2.20020525222410.02a629d0@pop3.rowe-clan.net>
                   <00ca01c2033e$f1c54c10$a6271b09@sashimi>
                   <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
@@ -75,6 +83,11 @@ RELEASE SHOWSTOPPERS:
                   <COEELENBBCHBFEPPGDOPCEPPGPAA.ake@meepzor.com>
 
     * To high-free patch or not to high-free patch?
+      Status: Cliff thinks we need more time to test this
+      code and sniff out any side-effects it may uncover and is
+      leaning toward 2.0.38 but will reserve final judgement
+      since it's as yet unclear how soon 2.0.37 will be ready.
+      (vote tally for 2.0.37: +1: Sander, Ian; -0: Brian, Cliff)
       Message-ID: <JLEGKKNELMHCJPNMOKHOGEIIFOAA.striker@apache.org>
                   <1022371367.23007.13.camel@mypc1.pacbell.net>
 
@@ -89,12 +102,8 @@ RELEASE SHOWSTOPPERS:
     * apr_brigade_write() is not flushing in all cases it should
       Status: Cliff will fix this
 
-    * need consensus on Cliff's /dev/random vs. /dev/urandom question.
-      Is there a better alternative than picking strictly one or the other?
-      Message-ID:
-      <Pine.LNX.4.44.0205251718300.31784-100000@deepthought.cs.virginia.edu>
-      <20020522202404.D27903@apache.org>
-      <20020522210345.E2800@clove.org>
+    * /dev/random vs. /dev/urandom
+      Status: Cliff is working on a patch to make this configurable.
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
