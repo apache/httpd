@@ -2,12 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) complain via error_log when mod_include's INCLUDES filter is
-     enabled, but the relevant Options flag allowing the filter to run
-     for the specific resource wasn't set, so that the filter won't
-     silently get skipped. next remove itself, so the warning will be
-     logged only once [Stas Bekman, Jeff Trawick, Bill Rowe]
-
   *) Clean up httpd -V output: Instead of displaying the MPM source
      directory, display the MPM name and some MPM properties.
      [Geoffrey Young <geoff apache.org>]
@@ -264,6 +258,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) complain via error_log when mod_include's INCLUDES filter is
+     enabled, but the relevant Options flag allowing the filter to run
+     for the specific resource wasn't set, so that the filter won't
+     silently get skipped. next remove itself, so the warning will be
+     logged only once [Stas Bekman, Jeff Trawick, Bill Rowe]
 
   *) mod_info: HTML escape configuration information so it displays 
      correctly. PR 24232. [Thom May]
