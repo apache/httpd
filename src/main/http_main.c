@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.78 1996/10/23 13:15:26 mjc Exp $ */
+/* $Id: http_main.c,v 1.79 1996/10/23 13:28:17 mjc Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -792,7 +792,7 @@ int update_child_status (int child_num, int status, request_rec *r)
 	new_score_rec.request[slot_size] = '\0';
 	slot_size = sizeof(new_score_rec.vhost) - 1;
 	strncpy(new_score_rec.vhost,r->server->server_hostname, slot_size);
-	new_score_rec.request[slot_size] = '\0';
+	new_score_rec.vhost[slot_size] = '\0';
     }
 #endif
 
