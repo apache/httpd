@@ -416,7 +416,7 @@ const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
 const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
 				char *line)
 {
-    int error_number, index_number;
+    int error_number, index_number, idx500;
     char *w;
                 
     /* 1st parameter should be a 3 digit number, which we recognize;
@@ -425,15 +425,14 @@ const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
   
     w = getword_conf_nc (cmd->pool, &line);
     error_number = atoi(w);
-    index_number = index_of_response(error_number);
-  
-    if (index_number < 0)
-        return pstrcat (cmd->pool, "Illegal HTTP response code ", w, NULL);
+
+    idx500 = index_of_response(HTTP_INTERNAL_SERVER_ERROR);
+
+    if (error_number == HTTP_INTERNAL_SERVER_ERROR)
+        index_number = idx500;
+    else if ((index_number = index_of_response(error_number)) == idx500)
+        return pstrcat(cmd->pool, "Unsupported HTTP response code ", w, NULL);
                 
-    /* Nuke trailing '"', if present */
-    
-    if (line[strlen(line) - 1] == '"') line[strlen(line) - 1] = '\0';
-  
     /* Store it... */
 
     conf->response_code_strings[index_number] = pstrdup (cmd->pool, line);
