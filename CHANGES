@@ -1,4 +1,9 @@
-Changes with Apache 2.0b1
+Changes with Apache 2.0.12-dev
+
+  *) Remove the coalesce filter.  With the ap_f* functions, this filter
+     is no longer needed. [Ryan Bloom]
+
+Changes with Apache 2.0.11
 
   *) Remove the dexter MPM.  Perchild is the same basic idea, but it has the
      added feature of allowing a uid/gid per child process.  If no
