@@ -680,6 +680,7 @@ ServerSignature On
     AddLanguage fr .fr
     AddLanguage de .de
     AddLanguage el .el
+    AddLanguage he .he
     AddLanguage it .it
     AddLanguage ja .ja
     AddCharset ISO-2022-JP .jis
