@@ -944,7 +944,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         }
 
         b = apr_bucket_file_create(fd, (apr_off_t)tf->Offset, 
-                                  (apr_size_t)tf->BytesToWrite);
+                                  (apr_size_t)tf->BytesToWrite, r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         
         if (tf->pTail && (apr_size_t)tf->TailLength) {

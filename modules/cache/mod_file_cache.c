@@ -115,6 +115,7 @@
 #include "apr_mmap.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
+#include "apr_buckets.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -206,7 +207,8 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 	return;
     }
 
-    rc = apr_file_open(&fd, fspec, APR_READ | APR_XTHREAD, APR_OS_DEFAULT, cmd->pool);
+    rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD,
+                       APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                      "mod_file_cache: unable to open(%s, O_RDONLY), skipping", fspec);
@@ -318,7 +320,16 @@ static int file_cache_xlat(request_rec *r)
 static int mmap_handler(request_rec *r, a_file *file)
 {
 #if APR_HAS_MMAP
-    ap_send_mmap (file->mm, r, 0, file->finfo.size);
+    apr_bucket *b;
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
+
+    b = apr_bucket_mmap_create(file->mm, 0, file->finfo.size);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    b = apr_bucket_eos_create();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+
+    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
+        return HTTP_INTERNAL_SERVER_ERROR;
 #endif
     return OK;
 }
@@ -326,44 +337,16 @@ static int mmap_handler(request_rec *r, a_file *file)
 static int sendfile_handler(request_rec *r, a_file *file)
 {
 #if APR_HAS_SENDFILE
-    apr_size_t nbytes;
-    apr_status_t rv = APR_EINIT;
-    apr_file_t *rfile;
-    apr_os_file_t fd;
+    apr_bucket *b;
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
 
-    /* A cached file handle (more importantly, its file pointer) is 
-     * shared by all threads in the process. The file pointer will 
-     * be corrupted if multiple threads attempt to read from the 
-     * cached file handle. The sendfile API does not rely on the position 
-     * of the file pointer instead taking explicit file offset and 
-     * length arguments. 
-     *
-     * We should call ap_send_fd with a cached file handle IFF 
-     * we are CERTAIN the file will be served with apr_sendfile(). 
-     * The presense of an AP_FTYPE_FILTER in the filter chain nearly
-     * guarantees that apr_sendfile will NOT be used to send the file.
-     * Furthermore, AP_FTYPE_CONTENT filters will be at the beginning
-     * of the chain, so it should suffice to just check the first 
-     * filter in the chain. If the first filter is not a content filter, 
-     * assume apr_sendfile() will be used to send the content.
-     */
-    if (r->output_filters && r->output_filters->frec) {
-        if (r->output_filters->frec->ftype == AP_FTYPE_CONTENT)
-            return DECLINED;
-    }
+    b = apr_bucket_file_create(file->file, 0, file->finfo.size, r->pool);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    b = apr_bucket_eos_create();
+    APR_BRIGADE_INSERT_TAIL(bb, b);
 
-    /* Create an apr_file_t anchored out of the request pool to use 
-     * on the call to ap_send_fd(). The cached apr_file_t is allocated 
-     * out of pconf (a life of the server pool) and sending it down
-     * the filter chain could cause memory leaks.
-     */
-    apr_os_file_get(&fd, file->file);
-    apr_os_file_put(&rfile, &fd, r->pool);
-    rv = ap_send_fd(rfile, r, 0, file->finfo.size, &nbytes);
-    if (rv != APR_SUCCESS) {
-        /* ap_send_fd will log the error */
+    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
         return HTTP_INTERNAL_SERVER_ERROR;
-    }
 #endif
     return OK;
 }

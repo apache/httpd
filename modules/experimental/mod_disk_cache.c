@@ -98,7 +98,7 @@ static int disk_serve(request_rec *r)
         }
     }
 
-    e = apr_bucket_file_create(fd, offset, r->finfo.size);
+    e = apr_bucket_file_create(fd, offset, r->finfo.size, r->pool);
 
     APR_BRIGADE_INSERT_HEAD(bb, e);
     e = apr_bucket_eos_create();

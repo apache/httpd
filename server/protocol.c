@@ -938,7 +938,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
     apr_status_t rv;
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_file_create(fd, offset, len);
+    b = apr_bucket_file_create(fd, offset, len, r->pool);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     rv = ap_pass_brigade(r->output_filters, bb);
