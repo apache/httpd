@@ -4,9 +4,8 @@
 <modulesynopsis>
 
 <name>mod_expires</name>
-<description>Generation of
-    <code>Expires</code> HTTP headers according to user-specified
-    criteria</description>
+<description>Generation of <code>Expires</code> HTTP headers according to
+user-specified criteria</description>
 <status>Extension</status>
 <sourcefile>mod_expires.c</sourcefile>
 <identifier>expires_module</identifier>
@@ -25,19 +24,17 @@
     must be obtained from the source.</p>
 </summary>
 
-<section id="AltSyn"><title>Alternate Interval
-    Syntax</title>
-
-    <p>The <directive module="mod_expires">ExpiresDefault</directive> and 
+<section id="AltSyn"><title>Alternate Interval Syntax</title>
+    <p>The <directive module="mod_expires">ExpiresDefault</directive> and
     <directive module="mod_expires">ExpiresByType</directive> directives
     can also be defined in a more readable syntax of the form:</p>
 
-<example>
-       ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
+    <example>
+      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
       &lt;type&gt;}*"<br />
-       ExpiresByType type/encoding "&lt;base&gt; [plus]
+      ExpiresByType type/encoding "&lt;base&gt; [plus]
       {&lt;num&gt; &lt;type&gt;}*"
-</example>
+    </example>
 
     <p>where &lt;base&gt; is one of:</p>
 
@@ -50,23 +47,17 @@
       <li><code>modification</code></li>
     </ul>
 
-    <p>The '<code>plus</code>' keyword is optional. &lt;num&gt;
+    <p>The <code>plus</code> keyword is optional. &lt;num&gt;
     should be an integer value [acceptable to <code>atoi()</code>],
     and &lt;type&gt; is one of:</p>
 
     <ul>
       <li><code>years</code></li>
-
       <li><code>months</code></li>
-
       <li><code>weeks</code></li>
-
       <li><code>days</code></li>
-
       <li><code>hours</code></li>
-
       <li><code>minutes</code></li>
-
       <li><code>seconds</code></li>
     </ul>
 
@@ -74,21 +65,21 @@
     make documents expire 1 month after being accessed, by
     default:</p>
 
-<example>
-       ExpiresDefault "access plus 1 month"<br />
-       ExpiresDefault "access plus 4 weeks"<br />
-       ExpiresDefault "access plus 30 days"
-</example>
+    <example>
+      ExpiresDefault "access plus 1 month"<br />
+      ExpiresDefault "access plus 4 weeks"<br />
+      ExpiresDefault "access plus 30 days"
+    </example>
 
     <p>The expiry time can be fine-tuned by adding several
     '&lt;num&gt; &lt;type&gt;' clauses:</p>
 
-<example>
-ExpiresByType text/html "access plus 1 month 15
+    <example>
+      ExpiresByType text/html "access plus 1 month 15
       days 2 hours"<br />
-       ExpiresByType image/gif "modification plus 5 hours 3
+      ExpiresByType image/gif "modification plus 5 hours 3
       minutes"
-</example>
+    </example>
 
     <p>Note that if you use a modification date based setting, the
     Expires header will <strong>not</strong> be added to content
@@ -98,7 +89,8 @@ ExpiresByType text/html "access plus 1 month 15
 
 <directivesynopsis>
 <name>ExpiresActive</name>
-<description>Enables generation of <code>Expires</code> headers</description>
+<description>Enables generation of <code>Expires</code>
+headers</description>
 <syntax>ExpiresActive On|Off</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -110,12 +102,11 @@ ExpiresByType text/html "access plus 1 month 15
     <code>Expires</code> header for the document realm in question.
     (That is, if found in an <code>.htaccess</code> file, for
     instance, it applies only to documents generated from that
-    directory.) If set to <em><code>Off</code></em>, no
-    <code>Expires</code> header will be generated for any document
-    in the realm (unless overridden at a lower level, such as an
-    <code>.htaccess</code> file overriding a server config file).
-    If set to <em><code>On</code></em>, the header will be added to
-    served documents according to the criteria defined by the 
+    directory.) If set to <code>Off</code>, no <code>Expires</code> header
+    will be generated for any document in the realm (unless overridden at
+    a lower level, such as an <code>.htaccess</code> file overriding a
+    server config file). If set to <code>On</code>, the header will be
+    added to served documents according to the criteria defined by the 
     <directive module="mod_expires">ExpiresByType</directive> and 
     <directive module="mod_expires">ExpiresDefault</directive> directives
     (<em>q.v.</em>).</p>
@@ -131,47 +122,46 @@ ExpiresByType text/html "access plus 1 month 15
 <name>ExpiresByType</name>
 <description>Value of the <code>Expires</code> header configured
 by MIME type</description>
-<syntax>ExpiresByType
-    <em>MIME-type &lt;code&gt;seconds</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context><context>directory</context>
-<context>.htaccess</context></contextlist>
+<syntax>ExpiresByType <var>MIME-type</var>
+<var>&lt;code&gt;seconds</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 
 <usage>
     <p>This directive defines the value of the <code>Expires</code>
-    header generated for documents of the specified type
-    (<em>e.g.</em>, <code>text/html</code>). The second argument
-    sets the number of seconds that will be added to a base time to
-    construct the expiration date.</p>
+    header generated for documents of the specified type (<em>e.g.</em>,
+    <code>text/html</code>). The second argument sets the number of
+    seconds that will be added to a base time to construct the expiration
+    date.</p>
 
     <p>The base time is either the last modification time of the
     file, or the time of the client's access to the document. Which
     should be used is specified by the
-    <code><em>&lt;code&gt;</em></code> field; <strong>M</strong>
+    <code><var>&lt;code&gt;</var></code> field; <code>M</code>
     means that the file's last modification time should be used as
-    the base time, and <strong>A</strong> means the client's access
+    the base time, and <code>A</code> means the client's access
     time should be used.</p>
 
-    <p>The difference in effect is subtle. If <em>M</em> is used,
+    <p>The difference in effect is subtle. If <code>M</code> is used,
     all current copies of the document in all caches will expire at
     the same time, which can be good for something like a weekly
-    notice that's always found at the same URL. If <em>A</em> is
+    notice that's always found at the same URL. If <code>A</code> is
     used, the date of expiration is different for each client; this
     can be good for image files that don't change very often,
     particularly for a set of related documents that all refer to
     the same images (<em>i.e.</em>, the images will be accessed
     repeatedly within a relatively short timespan).</p>
 
-    <p><strong>Example:</strong></p>
-<example>
-# enable expirations<br />
-ExpiresActive On<br />
-# expire GIF images after a month in the client's cache<br />
-ExpiresByType image/gif A2592000<br />
-# HTML documents are good for a week from the time they were changed<br />
-ExpiresByType text/html M604800
-</example>
+    <example><title>Example:</title>
+      # enable expirations<br />
+      ExpiresActive On<br />
+      # expire GIF images after a month in the client's cache<br />
+      ExpiresByType image/gif A2592000<br />
+      # HTML documents are good for a week from the<br />
+      # time they were changed<br />
+      ExpiresByType text/html M604800
+    </example>
 
     <p>Note that this directive only has effect if
     <code>ExpiresActive On</code> has been specified. It overrides,
@@ -188,10 +178,9 @@ ExpiresByType text/html M604800
 <directivesynopsis>
 <name>ExpiresDefault</name>
 <description>Default algorithm for calculating expiration time</description>
-<syntax>ExpiresDefault <em>&lt;code&gt;seconds</em></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context><context>directory</context>
-<context>.htaccess</context></contextlist>
+<syntax>ExpiresDefault <var>&lt;code&gt;seconds</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 
 <usage>
