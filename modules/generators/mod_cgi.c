@@ -795,7 +795,8 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
          * it'd be more efficient to pstrcat it into a single pool buffer
          * and a single pool bucket */
 
-        tmp_buck = apr_bucket_immortal_create("<A HREF=\"", sizeof("<A HREF=\""));
+        tmp_buck = apr_bucket_immortal_create("<A HREF=\"",
+                                              sizeof("<A HREF=\"") - 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
         tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
