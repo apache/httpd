@@ -1250,16 +1250,24 @@ API_EXPORT(void) send_http_header(request_rec *r)
     if (r->chunked) bsetflag(r->connection->client, B_CHUNK, 1);
 }
 
+/* finalize_request_protocol must be called by a module after it sends
+ * a response body.  It's sole purpose is to send the terminating
+ * protocol information for any wrappers around the response message body
+ * (i.e., transfer encodings).  It should have been named finalize_response.
+ */
 void finalize_request_protocol (request_rec *r)
 {
-    /* Turn off chunked encoding */
-
     if (r->chunked && !r->connection->aborted) {
-        soft_timeout("send ending chunk", r);
+        /*
+         * Turn off chunked encoding --- we can only do this once.
+         */
+        r->chunked = 0;
         bsetflag(r->connection->client, B_CHUNK, 0);
-	bputs("0\015\012", r->connection->client);
-	/* If we had footer "headers", we'd send them now */
-	bputs("\015\012", r->connection->client);
+
+        soft_timeout("send ending chunk", r);
+        bputs("0\015\012", r->connection->client);
+        /* If we had footer "headers", we'd send them now */
+        bputs("\015\012", r->connection->client);
         kill_timeout(r);
     }
 }

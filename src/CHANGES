@@ -1,11 +1,9 @@
 Changes with Apache 1.3
 
-  *) Make modules DLLs, dynamically loaded, using LoadModule/LoadFile
-     on Win32.
-     Note that module DLLs must be compiled with the multithreaded DLL
-	 version of the runtime library. [Alexei Kosut and Ben Laurie]
-
-  *) Sequent port re-added and SONY NEWS-OS port included.
+  *) On Win32, modules can now be dynamically loaded DLLs using the
+     LoadModule/LoadFile directives. Note that module DLLs must be
+     compiled with the multithreaded DLL version of the runtime library.
+     [Alexei Kosut and Ben Laurie]
 
   *) Automatic indexing removed from mod_dir and placed into mod_autoindex.
      This allows the admin to completely remove automatic indexing
@@ -97,6 +95,9 @@ Changes with Apache 1.3
   *) API: A new handler response DONE which informs apache that the
      request has been handled and it can finish off quickly, similar to
      how it handles errors. [Rob Hartill]
+
+  *) Turn off chunked encoding after sending terminating chunk/footer
+     so that we can't do it twice by accident. [Roy Fielding]
   
   *) mod_expire also issues Cache-Control: max-age headers.
      [Rob Hartill]
@@ -111,7 +112,9 @@ Changes with Apache 1.3
      When used together, these cause mod_dir to emit HEIGHT and WIDTH
      attributes in the FancyIndexing IMG tags.  [Ken Coar]
 
-  *) PORT: Added NT support
+  *) PORT: Sequent and SONY NEWS-OS support added.
+
+  *) PORT: Added Windows NT support
      [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
 
 Changes with Apache 1.2.1
