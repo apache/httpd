@@ -132,7 +132,7 @@ API_EXPORT(array_header *) requires (request_rec *);
 
 char *response_code_string (request_rec *r, int error_index);
 
-extern module core_module;
+extern API_VAR_EXPORT module core_module;
 
 /* Per-directory configuration */
 

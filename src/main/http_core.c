@@ -253,7 +253,7 @@ void *merge_core_server_configs (pool *p, void *basev, void *virtv)
  * these are part of the core server config.
  */
 
-void add_per_dir_conf (server_rec *s, void *dir_config)
+API_EXPORT(void) add_per_dir_conf (server_rec *s, void *dir_config)
 {
     core_server_config *sconf = get_module_config (s->module_config,
 						   &core_module);
@@ -262,7 +262,7 @@ void add_per_dir_conf (server_rec *s, void *dir_config)
     *new_space = dir_config;
 }
 
-void add_per_url_conf (server_rec *s, void *url_config)
+API_EXPORT(void) add_per_url_conf (server_rec *s, void *url_config)
 {
     core_server_config *sconf = get_module_config (s->module_config,
 						   &core_module);
@@ -876,7 +876,7 @@ const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
+API_EXPORT(const char *) limit_section (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *limited_methods = getword(cmd->pool,&arg,'>');
     int limited = 0;
@@ -1864,7 +1864,7 @@ static const command_rec core_cmds[] = {
 { end_virtualhost_section, end_nested_section, NULL, RSRC_CONF, NO_ARGS, "Marks end of <VirtualHost>" },
 { "<Files", filesection, NULL, OR_ALL, RAW_ARGS, "Container for directives affecting files matching specified patterns" },
 { end_files_section, end_nested_section, NULL, OR_ALL, NO_ARGS, "Marks end of <Files>" },
-{ "<Limit", limit_section, NULL, OR_ALL, RAW_ARGS, "Container for authentication directives when accessed using specified HTTP methods" },
+{ "<Limit", (void*)limit_section, NULL, OR_ALL, RAW_ARGS, "Container for authentication directives when accessed using specified HTTP methods" },
 { "</Limit>", endlimit_section, NULL, OR_ALL, NO_ARGS, "Marks end of <Limit>" },
 { "<IfModule", start_ifmod, NULL, OR_ALL, RAW_ARGS, "Container for directives based on existance of specified modules" },
 { end_ifmodule_section, end_ifmod, NULL, OR_ALL, NO_ARGS, "Marks end of <IfModule>" },
@@ -2186,7 +2186,7 @@ static const handler_rec core_handlers[] = {
 { NULL }
 };
 
-module core_module = {
+API_VAR_EXPORT module core_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_core_dir_config,	/* create per-directory config structure */

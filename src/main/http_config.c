@@ -94,7 +94,7 @@ static int total_modules = 0;
  * than DYNAMIC_MODULE_LIMIT.
  */
 static int dynamic_modules = 0;
-module *top_module = NULL;
+API_VAR_EXPORT module *top_module = NULL;
 
 typedef int (*handler_func) (request_rec *);
 typedef void *(*dir_maker_func) (pool *, char *);
@@ -213,7 +213,7 @@ void *create_request_config(pool *p)
     return create_empty_config(p);
 }
 
-void *create_per_dir_config(pool *p)
+API_EXPORT(void *) create_per_dir_config(pool *p)
 {
     return create_empty_config(p);
 }
@@ -861,7 +861,7 @@ const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
     }
 }
 
-const command_rec *find_command(const char *name, const command_rec *cmds)
+API_EXPORT(const command_rec *) find_command(const char *name, const command_rec *cmds)
 {
     while (cmds->name)
 	if (!strcasecmp(name, cmds->name))
@@ -872,7 +872,7 @@ const command_rec *find_command(const char *name, const command_rec *cmds)
     return NULL;
 }
 
-const command_rec *find_command_in_modules(const char *cmd_name, module **mod)
+API_EXPORT(const command_rec *) find_command_in_modules(const char *cmd_name, module **mod)
 {
     const command_rec *cmdp;
     module *modp;
@@ -886,7 +886,7 @@ const command_rec *find_command_in_modules(const char *cmd_name, module **mod)
     return NULL;
 }
 
-const char *handle_command(cmd_parms *parms, void *config, const char *l)
+API_EXPORT(const char *) handle_command(cmd_parms *parms, void *config, const char *l)
 {
     const char *args, *cmd_name, *retval;
     const command_rec *cmd;
@@ -931,7 +931,7 @@ const char *handle_command(cmd_parms *parms, void *config, const char *l)
     return retval;
 }
 
-const char *srm_command_loop(cmd_parms *parms, void *config)
+API_EXPORT(const char *) srm_command_loop(cmd_parms *parms, void *config)
 {
     char l[MAX_STRING_LEN];
 
@@ -1201,7 +1201,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 }
 
 
-const char *init_virtual_host(pool *p, const char *hostname,
+API_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
 			      server_rec *main_server, server_rec **ps)
 {
     server_rec *s = (server_rec *) pcalloc(p, sizeof(server_rec));
