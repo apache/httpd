@@ -1459,7 +1459,7 @@ static void output_directories(struct ent **ar, int n,
 	ap_rputc('\n', r);
     }
     if (autoindex_opts & FANCY_INDEXING) {
-	ap_rputs("<hr /></pre>", r);
+	ap_rputs("<hr /></pre>\n", r);
     }
     else {
 	ap_rputs("</ul>", r);
