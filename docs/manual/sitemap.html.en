@@ -207,6 +207,8 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_negotiation.html">Apache Module mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Apache Module mod_nw_ssl</a></li>
 <li><a href="mod/mod_proxy.html">Apache Module mod_proxy</a></li>
+<li><a href="mod/mod_proxy_ajp.html">Apache Module mod_proxy_ajp</a></li>
+<li><a href="mod/mod_proxy_balancer.html">Apache Module mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache Module mod_proxy_connect</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache Module mod_proxy_ftp</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache Module mod_proxy_http</a></li>
