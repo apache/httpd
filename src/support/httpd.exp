@@ -250,6 +250,7 @@ ap_pgethostbyname
 ap_pid_fname
 ap_popendir
 ap_popenf
+ap_popenf_ex
 ap_pregcomp
 ap_pregfree
 ap_pregsub
@@ -259,6 +260,7 @@ ap_process_request
 ap_process_resource_config
 ap_psignature
 ap_psocket
+ap_psocket_ex
 ap_psprintf
 ap_pstrcat
 ap_pstrdup
