@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.12.2.16 (outdated: 1.12.2.20) -->
+<!-- English Revision: 1.12.2.20 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -117,6 +117,7 @@
 <page href="programs/ab.html">マニュアルページ: ab</page>
 <page href="programs/apachectl.html">マニュアルページ: apachectl</page>
 <page href="programs/apxs.html">マニュアルページ: apxs</page>
+<page href="programs/configure.html">マニュアルページ: configure</page>
 <page href="programs/dbmmanage.html">マニュアルページ: dbmmanage</page>
 <page href="programs/htdigest.html">マニュアルページ: htdigest</page>
 <page href="programs/htpasswd.html">マニュアルページ: htpasswd</page>

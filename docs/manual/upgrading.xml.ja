@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.6.2.8 (outdated: 1.6.2.10) -->
+<!-- English Revision: 1.6.2.10 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -162,6 +162,17 @@
       以前の挙動は、<directive module="mod_mime">MultiviewsMatch</directive>
       ディレクティブを使用することで復活できます。</li>
 
+      <li>(<em>バージョン 2.0.51 から</em>)
+      <p><code>ErrorHeader</code> ディレクティブは不適切な名前
+      だったために廃止され、その機能は <directive module="mod_headers"
+      >Header</directive> ディレクティブに統合されました。
+      望みの動作を得るためには ErrorHeader の代わりに</p>
+
+      <example>
+        Header always set foo bar
+      </example>
+
+      <p>を使ってください。</p></li>
     </ul>
   </section>
 
