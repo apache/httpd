@@ -284,9 +284,9 @@ struct ap_filter_provider_t {
 
     /** The dispatch match itself - union member depends on match_type */
     union {
-        const char *c;
-        regex_t *r;
-        int i;
+        const char *string;
+        regex_t    *regex;
+        int         number;
     } match;
 
     /** The filter that implements this provider */
