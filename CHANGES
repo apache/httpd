@@ -34,12 +34,6 @@ Changes with Apache 2.1.0-dev
   *) Add support for IMT minor-type wildcards (e.g., text/*) to
      ExpiresByType.  PR#7991  [Ken Coar]
 
-  *) Prevent the server from crashing when entering infinite loops. The
-     new LimitInternalRecursion directive configures limits of subsequent
-     internal redirects and nested subrequests, after which the request
-     will be aborted.  PR 19753 (and probably others).
-     [William Rowe, Jeff Trawick, André Malo]
-
   *) mod_rewrite: Fix LA-U variable look ahead which didn't work correctly
      in directory context. Related to PR 8493.  [André Malo]
 
@@ -162,6 +156,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.47
+
+  *) Prevent the server from crashing when entering infinite loops. The
+     new LimitInternalRecursion directive configures limits of subsequent
+     internal redirects and nested subrequests, after which the request
+     will be aborted.  PR 19753 (and probably others).
+     [William Rowe, Jeff Trawick, André Malo]
 
   *) core_output_filter: don't split the brigade after a FLUSH bucket if
      it's the last bucket.  This prevents creating unneccessary empty
