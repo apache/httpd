@@ -446,10 +446,18 @@ static const char *log_cookie(request_rec *r, char *a)
     return NULL;
 }
 
+static const char *log_request_time_custom(request_rec *r, char *a,
+                                           apr_exploded_time_t *xt)
+{
+    apr_size_t retcode;
+    char tstr[MAX_STRING_LEN];
+    apr_strftime(tstr, &retcode, sizeof(tstr), a, xt);
+    return apr_pstrdup(r->pool, tstr);
+}
+
 static const char *log_request_time(request_rec *r, char *a)
 {
     apr_exploded_time_t xt;
-    apr_size_t retcode;
 
     /*
 	hi.  i think getting the time again at the end of the request
@@ -468,9 +476,13 @@ static const char *log_request_time(request_rec *r, char *a)
     ap_explode_recent_localtime(&xt, r->request_time);
 #endif
     if (a && *a) {              /* Custom format */
-        char tstr[MAX_STRING_LEN];
-        apr_strftime(tstr, &retcode, sizeof(tstr), a, &xt);
-        return apr_pstrdup(r->pool, tstr);
+        /* The custom time formatting uses a very large temp buffer
+         * on the stack.  To avoid using so much stack space in the
+         * common case where we're not using a custom format, the code
+         * for the custom format in a separate function.  (That's why
+         * log_request_time_custom is not inlined right here.)
+         */
+        return log_request_time_custom(r, a, &xt);
     }
     else {                      /* CLF format */
 	char sign;
