@@ -460,12 +460,11 @@ static int ftp_unauthorized (request_rec *r, int log_it)
  */
 int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
 {
-    char *host, *path, *strp, *parms, *server_addr;
+    char *host, *path, *strp, *parms;
     char *cwd = NULL;
     char *user = NULL;
 /*    char *account = NULL; how to supply an account in a URL? */
     const char *password = NULL;
-    const char *err;
     ap_socket_t *sock, *dsock, *inc;
     int port, i, j, len, rc, nocache = 0;
     ap_socket_t *csd;
@@ -485,9 +484,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
 
 /* stuff for PASV mode */
     unsigned int presult, h0, h1, h2, h3, p0, p1;
-    unsigned int paddr;
     unsigned short pport;
-    struct sockaddr_in data_addr;
     int pasvmode = 0;
     char pasv[64];
     char *pstr, dates[AP_RFC822_DATE_LEN];

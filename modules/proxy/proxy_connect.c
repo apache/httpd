@@ -115,15 +115,15 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
               const char *proxyhost, int proxyport)
 {
     struct in_addr destaddr;
-    const char *host, *err;
+    const char *host;
     char *p;
     int port;
     ap_socket_t *sock;
     char buffer[HUGE_STRING_LEN];
-    int nbytes, i, j;
+    int nbytes, i;
 
     BUFF *sock_buff;
-    ap_socket_t *client_sock;
+    ap_socket_t *client_sock=NULL;
     ap_pollfd_t *pollfd;
     ap_int32_t pollcnt;
     ap_int16_t pollevent;
