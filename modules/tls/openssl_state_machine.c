@@ -76,9 +76,13 @@
  *
  * This implementation acts as a server, but it can also be done for a client.  */
 
+#include "apr.h"
+
 #include <openssl/ssl.h>
 #include <assert.h>
+#if APR_HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <openssl/err.h>
 #include "openssl_state_machine.h"

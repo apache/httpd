@@ -1,5 +1,8 @@
 Changes with Apache 2.0.18-dev
 
+  *) Get mod_tls to compile/work better on Windows.  PR #7612
+     [Bernhard Schrenk <b.schrenk@improx.com>]
+
   *) Fix shutdown/restart hangs in the threaded MPM.
      [Jeff Trawick, Greg Ames, Ryan Bloom]
   
