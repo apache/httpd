@@ -185,7 +185,7 @@ typedef struct {
      * the error page, (so it will look like a error
      * returned from the rest of the system 
      */
-    int HTTPOverrideErrors;
+    int error_override;
 
 } proxy_server_conf;
 
