@@ -639,6 +639,20 @@ int setrlimit( int, struct rlimit *);
 #define INADDR_NONE ((unsigned long) -1)
 #endif
 
+/*
+ * Replace signal function with sigaction equivalent
+ */
+#ifndef NO_USE_SIGACTION
+typedef void Sigfunc(int);
+
+#if defined(SIG_IGN) && !defined(SIG_ERR)
+#define SIG_ERR ((Sigfunc *)-1)
+#endif
+
+#define signal(s,f)	ap_signal(s,f)
+Sigfunc *signal(int signo, Sigfunc *func);
+#endif
+
 /* Finding offsets of elements within structures.
  * Taken from the X code... they've sweated portability of this stuff
  * so we don't have to.  Sigh...

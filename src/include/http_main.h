@@ -97,16 +97,3 @@ int get_child_status (int child_num);
 int count_busy_servers ();
 int count_idle_servers ();
 
-/*
- * Replace signal function with sigaction equivalent
- */
-#ifndef NO_USE_SIGACTION
-typedef void Sigfunc(int);
-
-#if defined(SIG_IGN) && !defined(SIG_ERR)
-#define SIG_ERR ((Sigfunc *)-1)
-#endif
-
-Sigfunc *signal(int signo, Sigfunc *func);
-#endif
-
