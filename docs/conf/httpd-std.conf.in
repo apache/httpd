@@ -500,8 +500,10 @@ LogLevel warn
     LogFormat "%{Referer}i -> %U" referer
     LogFormat "%{User-agent}i" agent
 
-    # You need to enable mod_logio.c to use %I and %O
-    #LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+    <IfModule logio_module>
+      # You need to enable mod_logio.c to use %I and %O
+      LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+    </IfModule>
 
     #
     # The location and format of the access logfile (Common Logfile Format).
@@ -1017,7 +1019,7 @@ ServerSignature On
     #</Location>
 </IfModule>
 
-<IfModule mod_info.c>
+<IfModule info_module>
     #
     # Allow remote server configuration reports, with the URL of
     #  http://servername/server-info (requires that mod_info.c be loaded).
