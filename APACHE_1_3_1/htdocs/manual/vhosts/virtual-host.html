@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache Server Virtual Host Support</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Virtual Host Support</H1>
+
+<STRONG>See Also:</STRONG>
+<A HREF="host.html">Non-IP based virtual hosts</A>
+
+<H2>What are virtual hosts?</H2>
+This is the ability of a single machine to be a web server for multiple
+domains. For example, an Internet service provider might have a machine
+called <CODE>www.serve.com</CODE> which provides Web space for several
+organizations including, say, <EM>smallco</EM> and <EM>baygroup</EM>.
+Ordinarily, these groups would be given parts of the Web tree on www.serve.com.
+So smallco's home page would have the URL
+<BLOCKQUOTE>
+http://www.serve.com/smallco/
+</BLOCKQUOTE>
+and baygroup's home page would have the URL
+<BLOCKQUOTE>
+http://www.serve.com/baygroup/
+</BLOCKQUOTE>
+<P>
+For esthetic reasons, however, both organizations would rather their home
+pages appeared under their own names rather than that of the service
+provider's; but they do not want to set up their own Internet links and
+servers.
+<P>
+Virtual hosts are the solution to this problem. smallco and baygroup would
+have their own Internet name registrations, <CODE>www.smallco.com</CODE> and
+<CODE>www.baygroup.org</CODE> respectively. These hostnames would both
+correspond to the service provider's machine (www.serve.com). Thus
+smallco's home page would now have the URL
+<BLOCKQUOTE>
+http://www.smallco.com/
+</BLOCKQUOTE>
+and baygroup's home page would would have the URL
+<BLOCKQUOTE>
+http://www.baygroup.org/
+</BLOCKQUOTE>
+
+<H2>System requirements</H2>
+Due to limitations in the HTTP/1.0 protocol, the web server <STRONG>must have a
+different IP address for each virtual host</STRONG>. This can be achieved
+by the machine having several physical network connections, or by use
+of a <A HREF="../misc/vif-info.html">virtual interface</A> on some operating
+systems.
+
+<H2>How to set up Apache</H2>
+There are two ways of configuring apache to support multiple hosts.
+Either by running a separate httpd daemon for each hostname, or by running a
+single daemon which supports all the virtual hosts.
+<P>
+Use multiple daemons when:
+<UL>
+<LI>The different virtual hosts need very different httpd configurations, such
+   as different values for: <A HREF="../mod/core.html#servertype">ServerType</A>,
+   <A HREF="../mod/core.html#user">User</A>,
+   <A HREF="../mod/core.html#group">Group</A>,
+   <A HREF="../mod/mod_mime.html#typesconfig">TypesConfig</A> or
+   <A HREF="../mod/core.html#serverroot">ServerRoot</A>.
+<LI>The machine does not process a very high request rate.
+</UL>
+Use a single daemon when:
+<UL>
+<LI>Sharing of the httpd configuration between virtual hosts is acceptable.
+<LI>The machine services a large number of requests, and so the performance
+   loss in running separate daemons may be significant.
+</UL>
+
+<H2>Setting up multiple daemons</H2>
+Create a separate httpd installation for each virtual host.
+For each installation, use the
+<A HREF="../mod/core.html#bindaddress">BindAddress</A> directive in the
+configuration
+file to select which IP address (or virtual host) that daemon services.
+<EM>E.g.</EM>,
+<BLOCKQUOTE><CODE>BindAddress www.smallco.com</CODE></BLOCKQUOTE>
+This hostname can also be given as an IP address.
+
+<H2>Setting up a single daemon</H2>
+For this case, a single httpd will service requests for all the virtual hosts.
+The <A HREF="../mod/core.html#virtualhost">VirtualHost</A> directive in the
+ configuration file is used to set the values of
+<A HREF="../mod/core.html#serveradmin">ServerAdmin</A>,
+<A HREF="../mod/core.html#servername">ServerName</A>,
+<A HREF="../mod/core.html#documentroot">DocumentRoot</A>,
+<A HREF="../mod/core.html#errorlog">ErrorLog</A> and
+<A HREF="../mod/mod_log_config.html#transferlog">TransferLog</A> configuration
+directives to different values for each virtual host.
+<EM>E.g.</EM>,
+<BLOCKQUOTE><CODE>
+&lt;VirtualHost www.smallco.com&gt;<BR>
+ServerAdmin webmaster@mail.smallco.com<BR>
+DocumentRoot /groups/smallco/www<BR>
+ServerName www.smallco.com<BR>
+ErrorLog /groups/smallco/logs/error_log<BR>
+TransferLog /groups/smallco/logs/access_log<BR>
+&lt;/VirtualHost&gt;<BR>
+<BR>
+&lt;VirtualHost www.baygroup.org&gt;<BR>
+ServerAdmin webmaster@mail.baygroup.org<BR>
+DocumentRoot /groups/baygroup/www<BR>
+ServerName www.baygroup.org<BR>
+ErrorLog /groups/baygroup/logs/error_log<BR>
+TransferLog /groups/baygroup/logs/access_log<BR>
+&lt;/VirtualHost&gt;<BR>
+</CODE></BLOCKQUOTE>
+
+This VirtualHost hostnames can also be given as IP addresses.
+
+<P>
+
+Almost <STRONG>ANY</STRONG> configuration directive can be put
+in the VirtualHost directive, with the exception of
+<A HREF="../mod/core.html#servertype">ServerType</A>,
+<A HREF="../mod/core.html#user">User</A>,
+<A HREF="../mod/core.html#group">Group</A>,
+<A HREF="../mod/core.html#startservers">StartServers</A>,
+<A HREF="../mod/core.html#maxspareservers">MaxSpareServers</A>,
+<A HREF="../mod/core.html#minspareservers">MinSpareServers</A>,
+<A HREF="../mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>,
+<A HREF="../mod/core.html#bindaddress">BindAddress</A>,
+<A HREF="../mod/core.html#pidfile">PidFile</A>,
+<A HREF="../mod/mod_mime.html#typesconfig">TypesConfig</A>, and
+<A HREF="../mod/core.html#serverroot">ServerRoot</A>.
+
+<P>
+
+<EM>SECURITY:</EM> When specifying where to write log files, be aware
+of some security risks which are present if anyone other than the
+user that starts Apache has write access to the directory where they
+are written.  See the <A HREF="../misc/security_tips.html">security
+tips</A> document for details.
+
+<P>
+
+<H2>File Handle/Resource Limits:</H2>
+When using a large number of Virtual Hosts, Apache may run out of available
+file descriptors if each Virtual Host specifies different log files.
+The total number of file descriptors used by Apache is one for each distinct
+error log file, one for every other log file directive, plus 10-20 for
+internal use. Unix operating systems limit the number of file descriptors that
+may be used by a process; the limit is typically 64, and may usually be
+increased up to a large hard-limit.
+<P>
+Although Apache attempts to increase the limit as required, this
+may not work if:
+<OL>
+<LI>Your system does not provide the setrlimit() system call.
+<LI>The setrlimit(RLIMIT_NOFILE) call does not function on your system
+ (such as Solaris 2.3)
+<LI>The number of file descriptors required exceeds the hard limit.
+<LI>Your system imposes other limits on file descriptors, such as a limit
+on stdio streams only using file descriptors below 256. (Solaris 2)
+</OL>
+
+In the event of problems you can:
+<UL>
+<LI>Reduce the number of log files; don't specify log files in the VirtualHost
+sections, but only log to the main log files.
+<LI>If you system falls into 1 or 2 (above), then increase the file descriptor
+limit before starting Apache, using a script like
+<BLOCKQUOTE><CODE>
+#!/bin/sh <BR>
+ulimit -S -n 100 <BR>
+exec httpd</CODE></BLOCKQUOTE>
+</UL>
+
+The have been reports that Apache may start running out of resources allocated
+for the root process. This will exhibit itself as errors in the error log like
+"unable to fork". There are two ways you can bump this up:
+
+<OL>
+<LI>Have a <CODE>csh</CODE> script wrapper around httpd which sets the
+"rlimit" to some large number, like 512.
+<LI>Edit http_main.c to add calls to setrlimit() from main(), along the lines
+of
+<PRE>
+        struct rlimit rlp;
+
+        rlp.rlim_cur = rlp.rlim_max = 512;
+        if (setrlimit(RLIMIT_NPROC, &rlp)) {
+            fprintf(stderr, "setrlimit(RLIMIT_NPROC) failed.\n");
+            exit(1);
+        }
+</PRE>
+(thanks to "Aaron Gifford &lt;agifford@InfoWest.COM&gt;" for the patch)
+</OL>
+
+The latter will probably manifest itself in a later version of Apache.
+
+<!--#include virtual="footer.html" -->
+</BODY></HTML>
+

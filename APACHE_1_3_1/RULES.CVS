@@ -1,0 +1,13 @@
+1. Don't commit several unrelated changes in one go. Each change should be
+committed separately (that is, it can affect multiple files, but it should all
+be part of a single change).
+
+2. When committing, make sure that the CVS log message explains what the
+patches do and why.
+
+3. Don't edit CHANGES files unless there is a change which is visible to a user
+of Apache. CVS logs provide a detailed history of all changes (if people follow
+rule 2), so there is no need to duplicate it in CHANGES.
+
+4. Don't change src/Configuration.tmpl to your local configuration. Copy it to
+Configuration (which is _not_ version controlled) and change that.
