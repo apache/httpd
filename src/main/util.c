@@ -978,16 +978,16 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
     }
 }
 
-/* Find an HTTP header field list item, as separated by a comma.
+/* Size an HTTP header field list item, as separated by a comma.
  * The return value is a pointer to the beginning of the non-empty list item
  * within the original string (or NULL if there is none) and the address
  * of field is shifted to the next non-comma, non-whitespace character.
  * len is the length of the item excluding any beginning whitespace.
  */
-API_EXPORT(const char *) ap_find_list_item(const char **field, int *len)
+API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
 {
-    const char *ptr = *field;
-    const char *token;
+    const unsigned char *ptr = (const unsigned char *)*field;
+    const unsigned char *token;
     int in_qpair, in_qstr, in_com;
 
     /* Find first non-comma, non-whitespace byte */
@@ -1035,7 +1035,7 @@ API_EXPORT(const char *) ap_find_list_item(const char **field, int *len)
 	++ptr;
 
     *field = ptr;
-    return token;
+    return (const char *)token;
 }
 
 /* Retrieve an HTTP header field list item, as separated by a comma,
@@ -1046,14 +1046,16 @@ API_EXPORT(const char *) ap_find_list_item(const char **field, int *len)
  */
 API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
 {
-    const char *tok_start, *ptr;
-    char *token, *pos;
+    const char *tok_start;
+    const unsigned char *ptr;
+    unsigned char *pos;
+    char *token;
     int addspace = 0, in_qpair = 0, in_qstr = 0, in_com = 0, tok_len = 0;
 
     /* Find the beginning and maximum length of the list item so that
      * we can allocate a buffer for the new string and reset the field.
      */
-    if ((tok_start = ap_find_list_item(field, &tok_len)) == NULL) {
+    if ((tok_start = ap_size_list_item(field, &tok_len)) == NULL) {
         return NULL;
     }
     token = ap_palloc(p, tok_len + 1);
@@ -1063,7 +1065,7 @@ API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
      * strip comments, and lowercase normal characters not within a
      * quoted-string or quoted-pair.  The result may be an empty string.
      */
-    for (ptr = tok_start, pos = token;
+    for (ptr = (const unsigned char *)tok_start, pos = (unsigned char *)token;
          *ptr && (in_qpair || in_qstr || in_com || *ptr != ',');
          ++ptr) {
 
@@ -1129,6 +1131,31 @@ API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
 
     return token;
 }
+
+/* Find an item in canonical form (lowercase, no extra spaces) within
+ * an HTTP field value list.  Returns 1 if found, 0 if not found.
+ * This would be much more efficient if we stored header fields as
+ * an array of list items as they are received instead of a plain string.
+ * We could make it more efficient by duplicating the loop/switch above
+ * within this function, replacing the assignments with compares.
+ */
+API_EXPORT(int) ap_find_list_item(pool *p, const char *line, const char *tok)
+{
+    const char *nxt;
+    char *item;
+
+    if (!line || !tok)
+        return 0;
+
+    nxt = line;
+
+    while ((item = ap_get_list_item(p, &nxt)) != NULL) {
+        if (strcmp(item, tok) == 0)
+            return 1;
+    }
+    return 0;
+}
+
 
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens

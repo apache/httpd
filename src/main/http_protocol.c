@@ -144,16 +144,18 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
         return 0;
     }
 
-    /* Check the If-Range header for Etag or Date */
-
+    /* Check the If-Range header for Etag or Date.
+     * Note that this check will return false (as required) if either
+     * of the two etags are weak.
+     */
     if ((if_range = ap_table_get(r->headers_in, "If-Range"))) {
         if (if_range[0] == '"') {
             if (!(match = ap_table_get(r->headers_out, "Etag")) ||
-                (strcasecmp(if_range, match) != 0))
+                (strcmp(if_range, match) != 0))
                 return 0;
         }
         else if (!(match = ap_table_get(r->headers_out, "Last-Modified")) ||
-                 (strcasecmp(if_range, match) != 0))
+                 (strcmp(if_range, match) != 0))
             return 0;
     }
 
@@ -398,13 +400,14 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
     mtime = (r->mtime != 0) ? r->mtime : time(NULL);
 
     /* If an If-Match request-header field was given
-     * AND if our ETag does not match any of the entity tags in that field
-     * AND the field value is not "*" (meaning match anything), then
+     * AND the field value is not "*" (meaning match anything)
+     * AND if our strong ETag does not match any entity tag in that field,
      *     respond with a status of 412 (Precondition Failed).
      */
     if ((if_match = ap_table_get(r->headers_in, "If-Match")) != NULL) {
-        if ((etag == NULL) ||
-            ((if_match[0] != '*') && !ap_find_token(r->pool, if_match, etag))) {
+        if (if_match[0] != '*' &&
+            (etag == NULL || etag[0] == 'W' ||
+             !ap_find_list_item(r->pool, if_match, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -425,22 +428,38 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
     }
 
     /* If an If-None-Match request-header field was given
-     * AND if our ETag matches any of the entity tags in that field
-     * OR if the field value is "*" (meaning match anything), then
-     *    if the request method was GET or HEAD, the server SHOULD
-     *       respond with a 304 (Not Modified) response.
-     *    For all other request methods, the server MUST
-     *       respond with a status of 412 (Precondition Failed).
+     * AND the field value is "*" (meaning match anything)
+     *     OR our ETag matches any of the entity tags in that field, fail.
+     *
+     * If the request method was GET or HEAD, failure means the server
+     *    SHOULD respond with a 304 (Not Modified) response.
+     * For all other request methods, failure means the server MUST
+     *    respond with a status of 412 (Precondition Failed).
+     *
+     * GET or HEAD allow weak etag comparison, all other methods require
+     * strong comparison.  We can only use weak if it's not a range request.
      */
     if_nonematch = ap_table_get(r->headers_in, "If-None-Match");
     if (if_nonematch != NULL) {
-        int rstatus;
-
-        if ((if_nonematch[0] == '*')
-            || ((etag != NULL) && ap_find_token(r->pool, if_nonematch, etag))) {
-            rstatus = (r->method_number == M_GET) ? HTTP_NOT_MODIFIED
-                                                  : HTTP_PRECONDITION_FAILED;
-            return rstatus;
+        if (r->method_number == M_GET) {
+            if (if_nonematch[0] == '*')
+                return HTTP_NOT_MODIFIED;
+            if (etag != NULL) {
+                if (ap_table_get(r->headers_in, "Range")) {
+                    if (etag[0] != 'W' &&
+                        ap_find_list_item(r->pool, if_nonematch, etag)) {
+                        return HTTP_NOT_MODIFIED;
+                    }
+                }
+                else if (strstr(if_nonematch, etag)) {
+                    return HTTP_NOT_MODIFIED;
+                }
+            }
+        }
+        else if (if_nonematch[0] == '*' ||
+                 (etag != NULL &&
+                  ap_find_list_item(r->pool, if_nonematch, etag))) {
+            return HTTP_PRECONDITION_FAILED;
         }
     }
     /* Else if a valid If-Modified-Since request-header field was given

@@ -932,8 +932,10 @@ API_EXPORT(char *) ap_getword_nulls_nc(pool *p, char **line, char stop);
 API_EXPORT(char *) ap_getword_conf(pool *p, const char **line);
 API_EXPORT(char *) ap_getword_conf_nc(pool *p, char **line);
 
-API_EXPORT(const char *) ap_find_list_item(const char **field, int *len);
+API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
 API_EXPORT(char *) ap_get_list_item(pool *p, const char **field);
+API_EXPORT(int) ap_find_list_item(pool *p, const char *line, const char *tok);
+
 API_EXPORT(char *) ap_get_token(pool *p, const char **accept_line, int accept_white);
 API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok);
 API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok);

@@ -312,6 +312,7 @@ ap_show_modules
 ap_signal
 ap_single_module_configure
 ap_single_module_init
+ap_size_list_item
 ap_slack
 ap_snprintf
 ap_soft_timeout
