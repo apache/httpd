@@ -71,7 +71,7 @@ mod_digest.o: mod_digest.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
  $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
  $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h \
- $(INCDIR)/util_md5.h $(INCDIR)/md5.h
+ $(INCDIR)/util_md5.h $(INCDIR)/ap_md5.h
 mod_dir.o: mod_dir.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
  $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
@@ -115,7 +115,7 @@ mod_info.o: mod_info.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
 mod_log_agent.o: mod_log_agent.c $(INCDIR)/httpd.h \
  $(INCDIR)/conf.h $(OSDIR)/os.h $(INCDIR)/alloc.h \
  $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h
+ $(INCDIR)/http_config.h $(INCDIR)/http_log.h
 mod_log_config.o: mod_log_config.c $(INCDIR)/httpd.h \
  $(INCDIR)/conf.h $(OSDIR)/os.h $(INCDIR)/alloc.h \
  $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
@@ -124,11 +124,11 @@ mod_log_config.o: mod_log_config.c $(INCDIR)/httpd.h \
 mod_log_referer.o: mod_log_referer.c $(INCDIR)/httpd.h \
  $(INCDIR)/conf.h $(OSDIR)/os.h $(INCDIR)/alloc.h \
  $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h
+ $(INCDIR)/http_config.h $(INCDIR)/http_log.h
 mod_mime.o: mod_mime.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
  $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h
+ $(INCDIR)/http_config.h $(INCDIR)/http_log.h
 mod_mime_magic.o: mod_mime_magic.c $(INCDIR)/httpd.h \
  $(INCDIR)/conf.h $(OSDIR)/os.h $(INCDIR)/alloc.h \
  $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
