@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/05/02 19:10:07 $
+Last modified: $Date: 2003/05/03 00:12:35 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -52,12 +52,6 @@ Decisions pending
 
 Things That Need Fixing
 =======================
-
-- XML
-    - Rewriting of the remainder of the manual into xml is in
-      progress.  See the bottom of this file for status info.
-    - add ids to non-directive sections of the module docs, so they
-      get a chance to be linked in the sidebar
 
 - Windows platform docs are in desperate need of rewrites/updates for 2.0.
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
@@ -177,13 +171,3 @@ Documentation improvements
 * Summarize all the implemented drafts/standards with short explanations
   within a document. (PR 16938)
 
-XML Conversions
-===============
-
-The following files need to be converted to XML as described at
-http://httpd.apache.org/docs-project/docsformat.html
-
-# Perhaps these should be left in html to allow the developers to
-# play with them
-# nope. in order to create other formats, we need 'em as xml. --nd
-developer/API.html

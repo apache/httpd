@@ -83,7 +83,7 @@
 <xsl:template name="data">
 <!-- documents not converted (yet?). -->
 <not-exists>
-    <file>developer/API.xml</file>
+<!--  example: <file>developer/API.xml</file> -->
 </not-exists>
 </xsl:template>
 
