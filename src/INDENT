@@ -88,7 +88,7 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_rewrite.h
    mod_setenvif.c		DONE by Ken
    mod_speling.c		DONE by Brian
-   mod_status.c			RESERVED by Dean
+   mod_status.c			DONE by Dean
    mod_unique_id.c		DONE by Brian
    mod_userdir.c		DONE by Brian
    mod_usertrack.c		DONE by Brian
