@@ -66,6 +66,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "ApacheModuleAuthDigest"=".\os\win32\ApacheModuleAuthDigest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "ApacheModuleCERNMeta"=".\os\win32\ApacheModuleCERNMeta.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -275,6 +287,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name rotatelogs
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheModuleAuthDigest
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -287,6 +302,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name aprlib
+    End Project Dependency
 }}}
 
 ###############################################################################
