@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/05/07 00:44:33 $
+Last modified: $Date: 2001/05/21 20:53:41 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -64,12 +64,9 @@ apache-docs-subscribe@apache.org
                              filtering and mod_cgid
 
 - New build process.
-   - The new build process is autoconf based, so manual/install.html
-     will need to be completely rewritten.  Someone with enough
-     patience could probably figure out most of the important stuff
-     by trial and error.
-        Status: Ryan's "Building and Installing Apache 2.0" might be
-                a starting place.  
+    - install.html has had a first-pass rewrite, but needs more
+      work to be complete, and needs to track changes/bug-fixes
+      in the build system.
 
 - Documentation of new features.
    - This will probably require more input from new-httpd, since
