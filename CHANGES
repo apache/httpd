@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_isapi: send_response_header() failed to copy status string's 
+     last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
+
   *) Fix a segfault when requests for shared memory fails and returns
      NULL. Fix a segfault caused by a lack of bounds checking on the
      cache. PR 24801 [Graham Leggett]

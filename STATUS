@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/25 23:45:45 $]
+Last modified at [$Date: 2004/05/26 11:50:42 $]
 
 Release:
 
@@ -391,11 +391,6 @@ PATCHES TO BACKPORT FROM 2.1
 	 jim proposes: UseCanonicalName Client directive
 	   which implements this, keeping UseCanonicalName Off
 	   "as is". 
-
-    * mod_isapi: send_response_header() failed to copy status string's 
-      last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.97&r2=1.98
-      +1: trawick, stoddard, nd
 
     * Unix MPMs: Stop dropping connections when the file descriptor
       is at least FD_SETSIZE
