@@ -711,15 +711,14 @@ ServerSignature On
     # file mime.types for specific file types.
     #
     #AddType application/x-gzip .tgz
-
     #
     # AddEncoding allows you to have certain browsers uncompress
     # information on the fly. Note: Not all browsers support this.
     # Despite the name similarity, the following Add* directives have
     # nothing to do with the FancyIndexing customization directives above.
     #
-    #AddEncoding x-compress Z
-    #AddEncoding x-gzip gz tgz
+    #AddEncoding x-compress .Z
+    #AddEncoding x-gzip .gz .tgz
     #
     # If the AddEncoding directives above are commented-out, then you
     # probably should define those extensions to indicate media types:
