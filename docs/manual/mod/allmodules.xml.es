@@ -57,7 +57,7 @@
   <modulefile>mod_userdir.xml</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
-  <modulefile>beos.xml</modulefile>
+  <modulefile>beos.xml.es</modulefile>
   <modulefile>mpm_common.xml</modulefile>
   <modulefile>leader.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>

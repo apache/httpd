@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.1 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.0 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.1</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.0</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -70,29 +70,23 @@ NT.</dd>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">Otros Módulos</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
+<dl><dt><a href="mod_access.html" id="A" name="A">mod_access</a></dt><dd>Provides access control based on client hostname, IP
+address, or other characteristics of the client request.</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
 media type or request method.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
+<dt><a href="mod_auth.html">mod_auth</a></dt><dd>User authentication using text files</dd>
+<dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt><dd>Allows "anonymous" user access to authenticated
+areas</dd>
+<dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt><dd>Provides for user authentication using DBM
+    files</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
 <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
-    areas</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
-<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>Authentication fallback module</dd>
-<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>User authentication using text files</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>Authorization fallback module</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Group authorization using plaintext files</dd>
-<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
-address)</dd>
-<dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
-<dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Generates directory indexes,
     automatically, similar to the Unix <code>ls</code> command or the
     Win32 <code>dir</code> shell command</dd>
@@ -122,8 +116,7 @@ delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
-<dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident lookups</dd>
-<dt><a href="mod_imap.html">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
+<dt><a href="mod_imap.html" id="I" name="I">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Provides a comprehensive overview of the server
 configuration</dd>
@@ -170,8 +163,7 @@ identifier for each request</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>
-<dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>Version dependent configuration</dd>
-<dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
+<dt><a href="mod_vhost_alias.html" id="V" name="V">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
 hosting</dd>
 </dl></div></div>
 <div class="bottomlang">

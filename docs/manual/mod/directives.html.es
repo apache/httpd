@@ -12,17 +12,18 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="directive-index"><div id="page-header">
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.1 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.0 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.1</a> &gt; <a href="./">Módulos</a></div><div id="preamble"><h1>Índice de Directivas</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.0</a> &gt; <a href="./">Módulos</a></div><div id="preamble"><h1>Índice de Directivas</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/directives.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/mod/directives.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
     <p>
@@ -66,31 +67,32 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
-<li><a href="mod_authz_host.html#allow">Allow</a></li>
+<li><a href="mod_access.html#allow">Allow</a></li>
 <li><a href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><a href="core.html#allowoverride">AllowOverride</a></li>
-<li><a href="mod_authn_anon.html#anonymous">Anonymous</a></li>
-<li><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail</a></li>
-<li><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></li>
-<li><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID</a></li>
-<li><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
+<li><a href="mod_auth_anon.html#anonymous">Anonymous</a></li>
+<li><a href="mod_auth_anon.html#anonymous_authoritative">Anonymous_Authoritative</a></li>
+<li><a href="mod_auth_anon.html#anonymous_logemail">Anonymous_LogEmail</a></li>
+<li><a href="mod_auth_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></li>
+<li><a href="mod_auth_anon.html#anonymous_nouserid">Anonymous_NoUserID</a></li>
+<li><a href="mod_auth_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
 <li><a href="perchild.html#assignuserid">AssignUserID</a></li>
-<li><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative</a></li>
-<li><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></li>
-<li><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
-<li><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType</a></li>
-<li><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
-<li><a href="mod_authn_default.html#authdefaultauthoritative">AuthDefaultAuthoritative</a></li>
+<li><a href="mod_auth.html#authauthoritative">AuthAuthoritative</a></li>
+<li><a href="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative</a></li>
+<li><a href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
+<li><a href="mod_auth_dbm.html#authdbmtype">AuthDBMType</a></li>
+<li><a href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
 <li><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm</a></li>
 <li><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></li>
+<li><a href="mod_auth_digest.html#authdigestfile">AuthDigestFile</a></li>
+<li><a href="mod_auth_digest.html#authdigestgroupfile">AuthDigestGroupFile</a></li>
 <li><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck</a></li>
 <li><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat</a></li>
 <li><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
-<li><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></li>
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
 <li><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize</a></li>
-<li><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></li>
+<li><a href="mod_auth.html#authgroupfile">AuthGroupFile</a></li>
 <li><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative</a></li>
 <li><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_auth_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
@@ -105,15 +107,10 @@
 <li><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="core.html#authname">AuthName</a></li>
 <li><a href="core.html#authtype">AuthType</a></li>
-<li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
-<li><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative</a></li>
-<li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
-<li><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative</a></li>
-<li><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
-<li><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
-<li><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative</a></li>
+<li><a href="mod_auth.html#authuserfile">AuthUserFile</a></li>
 <li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
+<li><a href="mpm_common.html#bs2000account">BS2000Account</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
 <li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>
 <li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
@@ -164,7 +161,7 @@
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
 <li><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel</a></li>
 <li><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize</a></li>
-<li><a href="mod_authz_host.html#deny">Deny</a></li>
+<li><a href="mod_access.html#deny">Deny</a></li>
 <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
 <li><a href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
 <li><a href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
@@ -173,7 +170,6 @@
 <li><a href="core.html#enablemmap">EnableMMAP</a></li>
 <li><a href="core.html#enablesendfile">EnableSendfile</a></li>
 <li><a href="core.html#errordocument">ErrorDocument</a></li>
-<li><a href="mod_headers.html#errorheader">ErrorHeader</a></li>
 <li><a href="core.html#errorlog">ErrorLog</a></li>
 <li><a href="mod_example.html#example">Example</a></li>
 <li><a href="mod_expires.html#expiresactive">ExpiresActive</a></li>
@@ -192,11 +188,9 @@
 <li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
-<li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
-<li><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout</a></li>
+<li><a href="core.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
 <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
-<li><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></li>
 <li><a href="mod_imap.html#imapbase">ImapBase</a></li>
 <li><a href="mod_imap.html#imapdefault">ImapDefault</a></li>
 <li><a href="mod_imap.html#imapmenu">ImapMenu</a></li>
@@ -204,7 +198,6 @@
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
 <li><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
-<li><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet</a></li>
 <li><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></li>
 <li><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></li>
 <li><a href="mod_isapi.html#isapicachefile">ISAPICacheFile</a></li>
@@ -268,7 +261,7 @@
 <li><a href="perchild.html#numservers">NumServers</a></li>
 <li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
-<li><a href="mod_authz_host.html#order">Order</a></li>
+<li><a href="mod_access.html#order">Order</a></li>
 <li><a href="mod_env.html#passenv" id="P" name="P">PassEnv</a></li>
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
@@ -382,7 +375,7 @@
 <li><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup</a></li>
 <li><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit</a></li>
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
-<li><a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
+<li><a href="mpm_netware.html#threadstacksize">ThreadStackSize</a></li>
 <li><a href="core.html#timeout">TimeOut</a></li>
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
@@ -403,7 +396,8 @@
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/directives.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/mod/directives.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
