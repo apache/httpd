@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 106803 (outdated: 106851) -->
+<!-- English Revision: 106851 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -254,8 +254,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     コンパイラ、ライブラリ、ヘッダファイルの位置を追加情報として渡す
     必要がある場合があります。このような場合には、環境変数あるいは
     コマンドラインオプションで <program>configure</program> に渡します。
-    詳細に関しては <a 
-    href="programs/configure.html">configure マニュアルページ</a>
+    詳細に関しては <program>configure</program> マニュアルページ
     をご覧ください。</p>
 
     <p>ちょっとどんなことができるかを見せましょう。
@@ -277,7 +276,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     を生成したりするのに数分間かかるでしょう。</p>
 
     <p>個々の <program>configure</program> オプションの詳細に関しては
-    <a href="programs/configure.html">configure マニュアルページ</a>
+    <program>configure</program> マニュアルページ
     をご覧ください。</p>
 </section>
 
