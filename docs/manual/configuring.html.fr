@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Fichiers de Configuration - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Fichiers de Configuration</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/configuring.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/configuring.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
+<p>Ce document présente les fichiers utilisés pour la configuration
+du serveur HTTP Apache.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">Fichiers de Configuration principaux</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#syntax">Syntaxe des fichiers de configuration</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#modules">Modules</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#scope">Directives Possibles</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#htaccess">Fichiers .htaccess</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="main" id="main">Fichiers de Configuration principaux</a></h2>
+    
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
+
+    <p>Apache se configure en positionnant des <a href="mod/directives.html">directives</a> dans des fichiers de
+    configurations, au format texte. Le fichier de configuration principal 
+    est habituellement nommé <code>httpd.conf</code>. 
+    L'emplacement de ce fichier est défini lors de la compilation 
+    mais il est possible de le modifier en ligne de commande au lancement 
+    d'Apache au moyen de l'option <code>-f</code>.
+    De plus, il est possible d'ajouter d'autres fichiers de configuration au
+    moyen de la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code>,
+    qui accepte des jokers, rendant possible la lecture de multiples 
+    fichiers de configuration. Cette directive peut être incluse dans 
+    n'importe quel fichier de configuration. Les changements apportés 
+    aux fichiers de configuration principale ne seront pris en compte 
+    qu'au démarrage d'Apache ou à son redémarrage.</p>
+    
+    <p>Le serveur lit également un fichier contenant les types de documents
+    mime&nbsp;; le nom de ce fichier est défini au moyen de la directive
+    <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code>, et son nom
+    par défaut est <code>mime.types</code>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="syntax" id="syntax">Syntaxe des fichiers de configuration</a></h2>
+    
+
+    <p>Les fichiers de configuration d'Apache contiennent une directive par
+    ligne. Il est possible d'utiliser le caractère antislash "\" à la fin
+    d'une ligne pour signaler que celle-ci se continue sur la ligne suivante.
+    Dans ce cas l'antislash doit impérativement être le tout dernier 
+    caractère de la ligne et ne doit pas être suivi d'espaces.</p>
+    
+    <p>Les directives placées dans les fichiers de configuration 
+    ne sont pas sensibles à la casse, mais leurs arguments le sont. 
+    Les lignes commençant par le caractère "#" sont considérées comme 
+    des commentaires, et sont donc ignorées. Il <strong>n'</strong>est 
+    <strong>pas</strong> possible d'ajouter un commentaire en fin de 
+    ligne, après une directive. Les lignes vides, ainsi que les 
+    espaces précédant les directives, sont ignorés, ce qui vous 
+    permet d'indenter le fichier pour de simplifier sa lecture.</p>
+        
+    <p>Vous pouvez tester vos fichiers de configuration sans 
+    avoir à démarrer le serveur en utilisant la commande 
+    <code>apachectl configtest</code> ou en appelant Apache 
+    avec l'option <code>-t</code>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="modules" id="modules">Modules</a></h2>
+    
+
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
+
+    <p>Apache est un serveur modulaire, ce qui signifie que le 
+    noyau du serveur ne dispose que des fonctions des plus basiques. 
+    Toutes les fonctions étendues sont possibles grâce à des <a href="mod/">modules</a>, qui peuvent être chargés par Apache. 
+    Par défaut, un <a href="mod/module-dict.html#Status">certain 
+    nombre</a> de modules est fourni et compilé avec le serveur. 
+    Dans le cas où le serveur a été compilé avec le <a href="dso.html">
+    support dynamique des modules</a>, il est possible de compiler 
+    des modules à part et de les charger au moyen de la directive 
+    <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>. Dans le cas 
+    contraire, il faudra recompiler tout Apache pour lui ajouter ou 
+    lui enlever des modules. Des directives peuvent être incluses de 
+    façon conditionnelle selon la présence d'un module particulier en 
+    les positionnant dans un bloc <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>.</p>
+        
+    <p>L'option <code>-l</code>, à passer en ligne de commande, provoque
+    l'affichage des modules qui sont compilés dans Apache.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="scope" id="scope">Directives Possibles</a></h2>
+    
+
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+
+    <p>Les directives positionnées dans les fichiers de configuration principaux
+    s'appliquent au serveur dans son ensemble. Pour spécifier des directives
+    spécifiques à une partie du serveur, il est possible de les positionner à
+    l'intérieur d'une des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, ou <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>.
+    Chacune de ces sections limite la validité des directives qu'elle
+    contient à la partie du système de fichier ou de l'URL qu'elle
+    contient. Ces sections peuvent également se contenir les unes les autres,
+    ce qui permet une configuration très fine.</p>
+
+    <p>Il est possible d'utiliser un seul serveur Apache pour servir plusieurs 
+    sites web, ce qu'on appelle des <a href="vhosts/">Serveurs Virtuels</a>.
+    Les différentes directives peuvent être positionnées à l'intérieur de
+    sections <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
+    afin qu'elles régulent le fonctionnement d'un site (dit virtuel)
+    particulier.</p>
+    
+    <p>La plupart des directives peuvent être positionnées dans toutes les
+    sections présentées ci-dessus, sauf dans certains cas. Par exemple, 
+    les directives qui contrôlent la création du processus Apache ne
+    peuvent être placées que dans le contexte du serveur principal. Les
+    sections possibles pour chaque directive sont décrites au niveau du <a href="mod/directive-dict.html#Context">Contexte</a> de celle-ci.
+    Des informations plus complètes au sujet du fonctionnement des sections
+    <a href="sections.html">Directory, Location et Files</a> 
+    sont disponibles ailleurs.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">Fichiers .htaccess</a></h2>
+    
+
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
+
+    <p>Apache permet de délocaliser la gestion de la configuration, au
+    moyen de fichiers spéciaux, placés directement dans l'arborescence Web.
+    Ces fichiers spéciaux portent le plus souvent le nom <code>.htaccess</code>,
+    mais il est bien sûr possible de changer ce nom au moyen de la directive
+    <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code>.
+    Les directives positionnées dans un fichier <code>.htaccess</code>
+    s'appliquent au répertoire le contenant ainsi qu'à tous ses
+    sous-répertoires. La syntaxe à employer dans un fichier
+    <code>.htaccess</code> est identique à la syntaxe des fichiers de
+    configuration principaux. De plus, les fichiers <code>.htaccess</code> 
+    étant lus au moment de chaque requête les concernant, toute 
+    modification de ces fichiers prend effet immédiatement sans qu'il soit
+    nécessaire de redémarrer le serveur.</p>
+    
+    <p>Pour savoir si une directive peut être placée dans un fichier
+    <code>.htaccess</code>, il suffit de vérifier son <a href="mod/directive-dict.html#Context">Contexte</a>. Il est possible à
+    l'administrateur du serveur de spécifier quelles directives sont 
+    autorisées ou non dans les fichiers <code>.htaccess</code>, au moyen 
+    de la directive <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>, 
+    positionnée dans les fichiers de configuration principaux.</p>
+
+    <p>Des informations plus complètes concernant les fichiers 
+    <code>.htaccess</code> sont disponible dans le 
+    <a href="howto/htaccess.html">tutoriel .htaccess</a>.</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/configuring.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/configuring.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>
