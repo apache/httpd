@@ -182,9 +182,10 @@ struct ap_filter_t {
     /** A place to store any data associated with the current filter */
     ap_bucket_brigade *ctx;
 
-    /** The type of filter, either CONTENT or CONNECTION.  A CONTENT filter
-     *  modifies the data based on information found in the content.  A
-     *  CONNECTION filter modifies the data based on the type of connection.
+    /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
+     * An AP_FTYPE_CONTENT filter modifies the data based on information 
+     * found in the content.  An AP_FTYPE_CONNECTION filter modifies the 
+     * data based on the type of connection.
      */
     ap_filter_type ftype;
     /** The next filter in the chain */
@@ -232,7 +233,7 @@ API_EXPORT(int) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
  * functions for later addition to a specific request
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param The type of filter function, either CONTENT or CONNECTION
+ * @param The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
  * @deffunc void ap_register_filter(const char *name, ap_filter_func filter_func, ap_filter_type ftype)
  */
 API_EXPORT(void) ap_register_filter(const char *name,
