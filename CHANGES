@@ -47,13 +47,6 @@ Changes with Apache 2.1.0-dev
      location. Default is to reject path information. PR 21059.
      [André Malo]
 
-  *) Update the header token parsing code to allow LWS between the
-     token word and the ':' seperator.  [PR 16520]
-     [submitted: Kris Verbeeck <kris.verbeeck@advalvas.be> and
-                 Nicel KM <mnicel@yahoo.com>]
-     [Reviewed: <coad@measurement-factory.com> and
-                Paul J. Reder]
-
   *) mod_ext_filter: Add the ability to filter request bodies.
      [Philipp Reisner <philipp.reisner@linbit.com>]
 
@@ -196,6 +189,13 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) Update the header token parsing code to allow LWS between the
+     token word and the ':' seperator.  [PR 16520]
+     [submitted: Kris Verbeeck <kris.verbeeck@advalvas.be> and
+                 Nicel KM <mnicel@yahoo.com>]
+     [Reviewed: <coad@measurement-factory.com> and
+                Paul J. Reder]
 
   *) Eliminate creation of a temporary table in ap_get_mime_headers_core()
      Submitted by: Joe Schaefer <joe+gmane@sunstarsys.com>
