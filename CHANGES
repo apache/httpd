@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Remember an authenticated user during internal redirects if the
+     redirection target is not access protected and pass it
+     to scripts using the REDIRECT_REMOTE_USER environment variable.
+     PR 10678, 11602.  [André Malo]
+
   *) mod_rewrite: fix a problem in the proxy support of mod_rewrite.
      The broken code was inserting multiple "proxy:" fields in the
      rewritten URIs. [PR: 13946]

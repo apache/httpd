@@ -160,6 +160,7 @@ char *safe_env_lst[] =
     "REMOTE_USER=",
     "REDIRECT_HANDLER=",
     "REDIRECT_QUERY_STRING=",
+    "REDIRECT_REMOTE_USER=",
     "REDIRECT_STATUS=",
     "REDIRECT_URL=",
     "REQUEST_METHOD=",
