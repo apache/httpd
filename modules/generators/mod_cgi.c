@@ -477,7 +477,7 @@ static apr_status_t build_command_line(const char **cmd, request_rec *r,
     /*
      * Build the command string to pass to ap_os_create_privileged_process()
      */
-    quoted_filename = apr_pstrcat(p, "\"", argv0, "\"", NULL);
+    quoted_filename = apr_pstrcat(p, "\"", r->filename, "\"", NULL);
     if (interpreter && *interpreter) {
         if (arguments && *arguments)
             *cmd = apr_pstrcat(p, interpreter, " ", quoted_filename, " ", 
@@ -492,7 +492,7 @@ static apr_status_t build_command_line(const char **cmd, request_rec *r,
         *cmd = apr_pstrcat(p, quoted_filename, NULL);
     }
 #else
-    *cmd = argv0;
+    *cmd = apr_pstrcat(p, r->filename, NULL);
 #endif
     return APR_SUCCESS;
 }
