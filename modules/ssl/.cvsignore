@@ -4,3 +4,6 @@ Makefile
 modules.mk
 *.lo
 *.la
+*.plg
+Debug
+Release
