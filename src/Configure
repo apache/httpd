@@ -702,7 +702,7 @@ fi
 #  AddModule              some/path/mod_name[.[oa]]
 #
 # In both cases, the some/path can either be an arbitrary path (including
-# an absolue path), or a path like "modules/DIR", in which case we _might_
+# an absolute path), or a path like "modules/DIR", in which case we _might_
 # auto-generate a Makefile in modules/DIR (see later).
 #
 # The first case is the original style, where we give the module's
