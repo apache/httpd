@@ -662,24 +662,21 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
 
-AP_DECLARE(const char *) ap_mpm_show_accept_lock_mech(void)
-{
-
-    return ("Valid accept mutexes for this platform and MPM are: default"
+const char ap_valid_accept_mutex_string[] =
+    "Valid accept mutexes for this platform and MPM are: default"
 #if APR_HAS_FLOCK_SERIALIZE
-                           ", flock"
+    ", flock"
 #endif
 #if APR_HAS_FCNTL_SERIALIZE
-                           ", fcntl"
+    ", fcntl"
 #endif
 #if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
-                           ", sysvsem"
+    ", sysvsem"
 #endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
-                           ", pthread"
+    ", pthread"
 #endif
-                           ".");
-}
+    ".";
 
 AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
                                                      void *dummy,
@@ -721,7 +718,7 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 #endif
     else {
         return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; ",
-                           ap_mpm_show_accept_lock_mech(), NULL);
+                           ap_valid_accept_mutex_string, NULL);
     }
     return NULL;
 }

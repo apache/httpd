@@ -259,7 +259,7 @@ const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
  */
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 extern apr_lockmech_e ap_accept_lock_mech;
-const char *ap_mpm_show_accept_lock_mech(void);
+extern const char ap_valid_accept_mutex_string[];
 const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd, void *dummy,
                                         const char *arg);
 #endif
