@@ -79,6 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
        tree. Module included in 2.1:modules/debug.
        http://www.apache.org/~jim/mod_dumpio.c
        +1: jim
+       -0: nd (suggests the experimental directory instead)
 
     *) Fix the RPM spec file so that an RPM build now works. An RPM
        build now requires system installations of APR and APR-util.
