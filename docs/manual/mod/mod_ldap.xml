@@ -332,10 +332,12 @@ valid</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The following types are supported:<br />
-          DER_FILE      - file in binary DER format<br />
-          BASE64_FILE   - file in Base64 format<br />
-          CERT7_DB_PATH - Netscape certificate database file ")</p>
+    <p>The following types are supported:</p>
+      <ul>
+	<li>DER_FILE - file in binary DER format</li>
+	<li>BASE64_FILE - file in Base64 format</li>
+	<li>CERT7_DB_PATH - Netscape certificate database file</li>
+      </ul>
 </usage>
 </directivesynopsis>
 
