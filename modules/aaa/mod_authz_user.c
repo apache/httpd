@@ -111,7 +111,7 @@ static int check_user_access(request_rec *r)
                                                        &authz_user_module);
     char *user = r->user;
     int m = r->method_number;
-    int method_restricted = 0;
+    int required_user = 0;
     register int x;
     const char *t, *w;
     const apr_array_header_t *reqs_arr = ap_requires(r);
@@ -131,10 +131,6 @@ static int check_user_access(request_rec *r)
             continue;
         }
 
-        /* Note that there are applicable requirements 
-         */
-        method_restricted |= 1;
-
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
         if (!strcmp(w, "valid-user")) {
@@ -144,7 +140,7 @@ static int check_user_access(request_rec *r)
             /* And note that there are applicable requirements 
              * which we consider ourselves the owner of.
              */
-            method_restricted |= 2;
+            required_user = 1;
             while (t[0]) {
                 w = ap_getword_conf(r->pool, &t);
                 if (!strcmp(user, w)) {
@@ -154,17 +150,8 @@ static int check_user_access(request_rec *r)
         }
     }
 
-    if (method_restricted == 0) {
-        /* no applicable requirements at all */
-        return DECLINED;
-    }
-    /* There are require methods which we do not
-     * understand. 
-     */
-    if ((method_restricted & 2) == 0) {
-        /* no requirements of which we consider ourselves
-         * the owner.
-         */
+    if (!required_user) {
+        /* no applicable requirements */
         return DECLINED;
     }
 
@@ -177,7 +164,7 @@ static int check_user_access(request_rec *r)
                   "'require'ments for user/valid-user to be allowed access",
                   r->uri, user);
         
-    ap_note_basic_auth_failure(r);
+    ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }
 
