@@ -62,7 +62,7 @@
 
 <dl>
 <dt>INCLUDES</dt> <dd>Server-Side Includes processing by <a
-href="mod/mod_include.html">mod_include</dd>
+href="mod/mod_include.html">mod_include</a></dd>
 <dt>DEFLATE</dt> <dd>Compress output before sending it to
 the client using <a href="mod/mod_deflate.html">mod_deflate</a></dd>
 </dl>
