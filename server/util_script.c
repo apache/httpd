@@ -588,10 +588,11 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	 * pass it on blindly because of restrictions on future values.
 	 */
 	else if (!strcasecmp(w, "Last-Modified")) {
-	    time_t mtime = ap_parseHTTPdate(l);
-
-	    ap_update_mtime(r, mtime);
-	    ap_set_last_modified(r);
+	    time_t mtime;
+	    if (ap_parseHTTPdate(l, &mtime) == 1) {
+	        ap_update_mtime(r, mtime);
+		ap_set_last_modified(r);
+	    }
 	}
 	else if (!strcasecmp(w, "Set-Cookie")) {
 	    ap_table_add(cookie_table, w, l);
