@@ -202,7 +202,9 @@ static ap_status_t cleanup_file_cache(void *sconfv)
         } 
         else 
 #endif 
+#if APR_HAS_SENDFILE
             ap_close(file->file); 
+#endif
 	    ++file;
 	    --n;
     }
