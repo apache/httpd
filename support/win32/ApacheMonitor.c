@@ -109,8 +109,9 @@ typedef struct _st_APACHE_SERVICE
 
 /* Global variables */
 HINSTANCE         g_hInstance = NULL;
-TCHAR             *g_szTitle;          /* The title bar text */
-TCHAR             *g_szWindowClass;    /* Window Class Name  */
+CHAR              *g_szTitle;          /* The title bar text */
+CHAR              *g_szWindowClass;    /* Window Class Name  */
+CHAR              *g_szComputer;       /* Connected computer */
 HICON             g_icoStop;
 HICON             g_icoRun;
 UINT              g_bUiTaskbarCreated;
@@ -125,6 +126,7 @@ BOOL              g_bRescanServices;
 HWND              g_hwndServiceDlg;
 HWND              g_hwndMain;
 HWND              g_hwndStdoutList;
+HWND              g_hwndConnectDlg;
 HCURSOR           g_hCursorHourglass;
 HCURSOR           g_hCursorArrow;
 
@@ -136,7 +138,7 @@ HANDLE            g_hpipeStdError;
 LANGID            g_LangID;
 PROCESS_INFORMATION g_lpRedirectProc;
 CRITICAL_SECTION    g_stcSection;
-
+HKEY                g_hKeyRemote;
 
 /* locale language support */
 static CHAR *g_lpMsg[IDS_MSG_LAST - IDS_MSG_FIRST + 1];
@@ -185,7 +187,7 @@ void ErrorMessage(LPCSTR szError, BOOL bFatal)
 
 LPSTR GetStringRes(int id)
 {
-  static TCHAR buffer[MAX_PATH];
+  static CHAR buffer[MAX_PATH];
 
   buffer[0] = 0;
   LoadString(GetModuleHandle (NULL), id, buffer, MAX_PATH);
@@ -639,7 +641,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
         else
             return FALSE;
         schSCManager = OpenSCManager(
-            NULL,
+            g_szComputer,
             NULL,
             SC_MANAGER_ALL_ACCESS
            );
@@ -786,7 +788,7 @@ BOOL IsServiceRunning(LPCSTR szServiceName, LPDWORD lpdwPid)
 
         dwPid = 0;
         schSCManager = OpenSCManager(
-                            NULL,
+                            g_szComputer,
                             NULL,
                             SC_MANAGER_ALL_ACCESS
                            );
@@ -850,7 +852,7 @@ BOOL GetApacheServicesStatus()
 
     g_bRescanServices = FALSE;
 
-    retCode = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+    retCode = RegOpenKeyEx(g_hKeyRemote ? g_hKeyRemote : HKEY_LOCAL_MACHINE,
                             "System\\CurrentControlSet\\Services\\",
                             0, KEY_READ, &hKey);
     if (retCode != ERROR_SUCCESS)
@@ -868,7 +870,7 @@ BOOL GetApacheServicesStatus()
             lstrcpy(szKey, "System\\CurrentControlSet\\Services\\");
             lstrcat(szKey, achKey);
 
-            if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, szKey, 0, 
+            if (RegOpenKeyEx(g_hKeyRemote ? g_hKeyRemote : HKEY_LOCAL_MACHINE, szKey, 0, 
                 KEY_QUERY_VALUE, &hSubKey) == ERROR_SUCCESS)
             {
                 dwBufLen = MAX_PATH;
@@ -908,6 +910,64 @@ BOOL GetApacheServicesStatus()
     return TRUE;
 }
 
+LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    CHAR szCmp[MAX_COMPUTERNAME_LENGTH+4];
+    CHAR szTmp[MAX_PATH];
+    DWORD d;
+    switch (message) 
+    { 
+ 
+        case WM_INITDIALOG: 
+            ShowWindow(hDlg, SW_HIDE);
+            g_hwndConnectDlg = hDlg;
+            CenterWindow(hDlg);
+            ShowWindow(hDlg, SW_SHOW);
+            SetFocus(GetDlgItem(hDlg, IDC_COMPUTER));
+            return TRUE;
+        case WM_COMMAND: 
+            switch (LOWORD(wParam)) 
+            { 
+                case IDOK: 
+                    ZeroMemory(szCmp, MAX_COMPUTERNAME_LENGTH+4);
+                    strcpy(szCmp, "\\\\");
+                    SendMessage(GetDlgItem(hDlg, IDC_COMPUTER), WM_GETTEXT, 
+                        (WPARAM) MAX_COMPUTERNAME_LENGTH, (LPARAM) szCmp+2); 
+
+                    if (g_hKeyRemote)
+                        RegCloseKey(g_hKeyRemote);
+                    g_hKeyRemote = NULL;
+                    if (RegConnectRegistry(szCmp, HKEY_LOCAL_MACHINE, &g_hKeyRemote) != ERROR_SUCCESS)
+                    {
+                        sprintf(szTmp, g_lpMsg[IDS_MSG_ECONNECT-IDS_MSG_FIRST], szCmp);
+                        d = MAX_COMPUTERNAME_LENGTH+1;
+                        GetComputerName(szCmp+2, &d);                                        
+                        ErrorMessage(szTmp, FALSE);
+                    }
+                    LoadString(g_hInstance, IDS_APMONITORTITLE, szTmp, MAX_LOADSTRING);
+                    strcat(szTmp, "@");
+                    strcat(szTmp, szCmp+2);
+                    free(g_szTitle);
+                    free(g_szComputer);
+                    g_szTitle = strdup(szTmp);
+                    g_szComputer = strdup(szCmp);
+                    SetWindowText(g_hwndServiceDlg, szTmp);                     
+                    SendMessage(g_hwndMain, WM_TIMER, WM_TIMER_RESCAN, 0);                        
+                case IDCANCEL:
+                    EndDialog(hDlg, TRUE); 
+                    return TRUE; 
+            }
+        break;
+        case WM_QUIT:
+        case WM_CLOSE: 
+            EndDialog(hDlg, TRUE);
+            return TRUE;
+        default:
+            return FALSE;
+    }
+    return FALSE;
+
+}
 
 LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -930,14 +990,21 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
         case WM_INITDIALOG: 
             ShowWindow(hDlg, SW_HIDE);
             g_hwndServiceDlg = hDlg;
-
+            SetWindowText(hDlg, g_szTitle);
             Button_Enable(GetDlgItem(hDlg, IDC_SSTART), FALSE);
             Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
             Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), FALSE);
-
+            SetWindowText(GetDlgItem(hDlg, IDC_SSTART), g_lpMsg[IDS_MSG_SSTART-IDS_MSG_FIRST]);
+            SetWindowText(GetDlgItem(hDlg, IDC_SSTOP), g_lpMsg[IDS_MSG_SSTOP-IDS_MSG_FIRST]);
+            SetWindowText(GetDlgItem(hDlg, IDC_SRESTART), g_lpMsg[IDS_MSG_SRESTART-IDS_MSG_FIRST]);
+            SetWindowText(GetDlgItem(hDlg, IDC_SMANAGER), g_lpMsg[IDS_MSG_SERVICES-IDS_MSG_FIRST]);
+            SetWindowText(GetDlgItem(hDlg, IDC_SCONNECT), g_lpMsg[IDS_MSG_CONNECT-IDS_MSG_FIRST]);
+            SetWindowText(GetDlgItem(hDlg, IDC_SEXIT), g_lpMsg[IDS_MSG_MNUEXIT-IDS_MSG_FIRST]);
             if (g_dwOSVersion < OS_VERSION_WINNT)
+            {
                 ShowWindow(GetDlgItem(hDlg, IDC_SMANAGER), SW_HIDE);
-
+                ShowWindow(GetDlgItem(hDlg, IDC_SCONNECT), SW_HIDE);
+            }
             hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
             g_hwndStdoutList = GetDlgItem(hDlg, IDL_STDOUT);
             hStatusBar = CreateStatusWindow(0x0800 /* SBT_TOOLTIPS */
@@ -1149,6 +1216,10 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
                     EndDialog( hDlg, TRUE);
                     SendMessage( g_hwndMain, WM_COMMAND, (WPARAM)IDM_EXIT, 0);
                     return TRUE;
+                case IDC_SCONNECT: 
+                    DialogBox(g_hInstance, MAKEINTRESOURCE(IDD_DLGCONNECT),
+                                    hDlg, (DLGPROC)ConnectDlgProc);
+                    return TRUE;
              }
         break;
         case WM_SIZE:
@@ -1187,7 +1258,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             ShowNotifyIcon(hWnd, NIM_ADD);
             SetTimer(hWnd, WM_TIMER_REFRESH, REFRESH_TIME, NULL);
             SetTimer(hWnd, WM_TIMER_RESCAN,  RESCAN_TIME, NULL);
-            g_hwndServiceDlg = NULL;                      
             break;
         case WM_TIMER:
             switch (wParam)
@@ -1254,7 +1324,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                        g_bDlgServiceOn = FALSE;
                        g_hwndServiceDlg = NULL;
                    }
-                   else if (g_hwndServiceDlg)
+                   else if (IsWindow(g_hwndServiceDlg))
                    {
                        /* Dirty hack to bring the window to the foreground */
                        SetWindowPos(g_hwndServiceDlg, HWND_TOPMOST, 0, 0, 0, 0,
@@ -1305,7 +1375,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                        g_bDlgServiceOn = FALSE;
                        g_hwndServiceDlg = NULL;
                    }
-                   else if (g_hwndServiceDlg)
+                   else if (IsWindow(g_hwndServiceDlg))
                        SetFocus(g_hwndServiceDlg);
                    break;
                 case IDC_SMANAGER: 
@@ -1369,11 +1439,13 @@ int WINAPI WinMain(HINSTANCE hInstance,
                     LPSTR lpCmdLine,
                     int nCmdShow)
 {
-    TCHAR szTmp[MAX_LOADSTRING];
+    CHAR szTmp[MAX_LOADSTRING];
+    CHAR szCmp[MAX_COMPUTERNAME_LENGTH+4];
     MSG     msg;
     /* single instance mutex */
     HANDLE hMutex;
     int i;
+    DWORD d;
 
     g_LangID = GetUserDefaultLangID();
     if ((g_LangID & 0xFF) != LANG_ENGLISH)
@@ -1384,9 +1456,16 @@ int WINAPI WinMain(HINSTANCE hInstance,
         g_lpMsg[i - IDS_MSG_FIRST] = strdup(szTmp);
     }
     LoadString(hInstance, IDS_APMONITORTITLE, szTmp, MAX_LOADSTRING);
+    strcat(szTmp, "@");
+    d = MAX_COMPUTERNAME_LENGTH+1;
+    strcpy(szCmp, "\\\\");
+    GetComputerName(szCmp+2, &d);
+    strcat(szTmp, szCmp+2);
     g_szTitle = strdup(szTmp);
+    g_szComputer = strdup(szCmp);
     LoadString(hInstance, IDS_APMONITORCLASS, szTmp, MAX_LOADSTRING);
     g_szWindowClass = strdup(szTmp);
+    g_hKeyRemote = NULL;
 
     g_icoStop          = LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICOSTOP),
                                    IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
@@ -1417,6 +1496,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     g_hwndMain = CreateMainWindow(hInstance);
     g_bUiTaskbarCreated = RegisterWindowMessage("TaskbarCreated");
     InitializeCriticalSection(&g_stcSection);
+    g_hwndServiceDlg = NULL;                      
     if (g_hwndMain != NULL)
     {
         while (GetMessage(&msg, NULL, 0, 0) == TRUE) 
@@ -1426,6 +1506,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
         }    
         am_ClearServicesSt();
     }
+    if (g_hKeyRemote)
+        RegCloseKey(g_hKeyRemote);
     DeleteCriticalSection(&g_stcSection);
     CloseHandle(hMutex);
     DestroyIcon(g_icoStop);
