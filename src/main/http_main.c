@@ -6239,10 +6239,9 @@ static PSECURITY_ATTRIBUTES GetNullACL()
         return NULL;
     }
     /*
-     * We can safely use GetLastError() here without presetting it;
-     * {Initialize,Set}SecurityDescriptor() have been verified as clearing it
-     * on successful completion.
+     * Win98 returns nonzero on failure; check LastError to make sure.
      */
+    SetLastError(0);
     if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
 	|| GetLastError()) {
         LocalFree( pSD );
