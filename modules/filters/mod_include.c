@@ -2464,23 +2464,21 @@ static const handler_rec includes_handlers[] =
 
 module MODULE_VAR_EXPORT includes_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
+    NULL,                       /* pre_config */
+    NULL,                       /* post_config */
+    NULL,                       /* open_logs */
+    NULL,                       /* child initializer */
     create_includes_dir_config, /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     includes_cmds,              /* command table */
     includes_handlers,          /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
     NULL,                       /* check auth */
     NULL,                       /* check access */
     NULL,                       /* type_checker */
     NULL,                       /* fixups */
     NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    NULL			/* register hooks */
 };

@@ -1651,23 +1651,12 @@ static const handler_rec autoindex_handlers[] =
 
 module MODULE_VAR_EXPORT autoindex_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    STANDARD20_MODULE_STUFF,
     create_autoindex_config,	/* dir config creater */
     merge_autoindex_configs,	/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
     autoindex_cmds,		/* command table */
     autoindex_handlers,		/* handlers */
-    NULL,			/* filename translation */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    NULL			/* register hooks */
 };
