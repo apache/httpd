@@ -661,7 +661,7 @@ struct request_rec {
 
     time_t request_time;	/* When the request started */
 
-    char *status_line;		/* Status line, if set by script */
+    const char *status_line;	/* Status line, if set by script */
     int status;			/* In any case */
 
     /* Request method, two ways; also, protocol, etc..  Outside of protocol.c,

@@ -1170,7 +1170,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
  * and must be listed in order.
  */
 
-static char *status_lines[RESPONSE_CODES] = {
+static const char * const status_lines[RESPONSE_CODES] = {
     "100 Continue",
     "101 Switching Protocols",
     "102 Processing",
@@ -2317,8 +2317,8 @@ void ap_send_error_response(request_rec *r, int recursive_error)
             r = r->prev;
     }
     {
-        char *title = status_lines[idx];
-        char *h1;
+        const char *title = status_lines[idx];
+        const char *h1;
         const char *error_notes;
 
         /* Accept a status_line set by a module, but only if it begins
