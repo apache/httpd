@@ -142,7 +142,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
     apr_status_t rv;
 
     for (more = NULL; b; b = more, more = NULL) {
-	apr_off_t bytes = 0;
+        apr_off_t bytes = 0;
         apr_bucket *eos = NULL;
         apr_bucket *flush = NULL;
         /* XXX: chunk_hdr must remain at this scope since it is used in a 
@@ -150,57 +150,55 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          */
         char chunk_hdr[20]; /* enough space for the snprintf below */
 
-	APR_BRIGADE_FOREACH(e, b) {
-	    if (APR_BUCKET_IS_EOS(e)) {
-		/* there shouldn't be anything after the eos */
-		eos = e;
-		break;
-	    }
+        APR_BRIGADE_FOREACH(e, b) {
+            if (APR_BUCKET_IS_EOS(e)) {
+                /* there shouldn't be anything after the eos */
+                eos = e;
+                break;
+            }
             if (APR_BUCKET_IS_FLUSH(e)) {
                 flush = e;
             }
-	    else if (e->length == -1) {
+            else if (e->length == -1) {
                 /* unknown amount of data (e.g. a pipe) */
-		const char *data;
-		apr_size_t len;
+                const char *data;
+                apr_size_t len;
 
-		rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
-		if (rv != APR_SUCCESS) {
-		    return rv;
-		}
-		if (len > 0) {
-		    /*
-		     * There may be a new next bucket representing the
-		     * rest of the data stream on which a read() may
-		     * block so we pass down what we have so far.
-		     */
-		    bytes += len;
+                rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
+                if (len > 0) {
+                    /*
+                     * There may be a new next bucket representing the
+                     * rest of the data stream on which a read() may
+                     * block so we pass down what we have so far.
+                     */
+                    bytes += len;
                     more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
-		    break;
-		}
-		else {
-		    /* If there was nothing in this bucket then we can
-		     * safely move on to the next one without pausing
-		     * to pass down what we have counted up so far.
-		     */
-		    continue;
-		}
-	    }
-	    else {
-		bytes += e->length;
-	    }
-	}
+                    break;
+                }
+                else {
+                    /* If there was nothing in this bucket then we can
+                     * safely move on to the next one without pausing
+                     * to pass down what we have counted up so far.
+                     */
+                    continue;
+                }
+            }
+            else {
+                bytes += e->length;
+            }
+        }
 
-	/*
-	 * XXX: if there aren't very many bytes at this point it may
-	 * be a good idea to set them aside and return for more,
-	 * unless we haven't finished counting this brigade yet.
-	 */
-
+        /*
+         * XXX: if there aren't very many bytes at this point it may
+         * be a good idea to set them aside and return for more,
+         * unless we haven't finished counting this brigade yet.
+         */
         /* if there are content bytes, then wrap them in a chunk */
         if (bytes > 0) {
             apr_size_t hdr_len;
-
             /*
              * Insert the chunk header, specifying the number of bytes in
              * the chunk.
@@ -248,12 +246,11 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
         /* pass the brigade to the next filter. */
-	rv = ap_pass_brigade(f->next, b);
-	if (rv != APR_SUCCESS || eos != NULL) {
-	    return rv;
-	}
+        rv = ap_pass_brigade(f->next, b);
+        if (rv != APR_SUCCESS || eos != NULL) {
+            return rv;
+        }
     }
-
     return APR_SUCCESS;
 }
 
