@@ -69,7 +69,6 @@
 
 
 #ifdef HAVE_SYSLOG
-#include <syslog.h>
 
 static TRANS facilities[] = {
     {"auth",	LOG_AUTH},
@@ -284,14 +283,26 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
     int save_errno = errno;
     FILE *logf;
 
-    if (s && (level & APLOG_LEVELMASK) > s->loglevel)
-	return;
-
-    if (!s) {
+    if (s == NULL) {
 	logf = stderr;
-    } else if (s && s->error_log) {
+    }
+    else if (s->error_log) {
+	/*
+	 * If we are doing normal logging, don't log messages that are
+	 * above the server log level unless it is a startup/shutdown notice
+	 */
+	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
+	    ((level & APLOG_LEVELMASK) > s->loglevel))
+	    return;
 	logf = s->error_log;
-    } else {
+    }
+    else {
+	/*
+	 * If we are doing syslog logging, don't log messages that are
+	 * above the server log level (including a startup/shutdown notice)
+	 */
+	if ((level & APLOG_LEVELMASK) > s->loglevel)
+	    return;
 	logf = NULL;
     }
 

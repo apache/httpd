@@ -50,6 +50,22 @@
  *
  */
 
+#ifdef HAVE_SYSLOG
+#include <syslog.h>
+
+#define APLOG_EMERG     LOG_EMERG     /* system is unusable */
+#define APLOG_ALERT     LOG_ALERT     /* action must be taken immediately */
+#define APLOG_CRIT      LOG_CRIT      /* critical conditions */
+#define APLOG_ERR       LOG_ERR       /* error conditions */
+#define APLOG_WARNING   LOG_WARNING   /* warning conditions */
+#define APLOG_NOTICE    LOG_NOTICE    /* normal but significant condition */
+#define APLOG_INFO      LOG_INFO      /* informational */
+#define APLOG_DEBUG     LOG_DEBUG     /* debug-level messages */
+
+#define APLOG_LEVELMASK LOG_PRIMASK   /* mask off the level value */
+
+#else
+
 #define	APLOG_EMERG	0	/* system is unusable */
 #define	APLOG_ALERT	1	/* action must be taken immediately */
 #define	APLOG_CRIT	2	/* critical conditions */
@@ -58,9 +74,17 @@
 #define	APLOG_NOTICE	5	/* normal but significant condition */
 #define	APLOG_INFO	6	/* informational */
 #define	APLOG_DEBUG	7	/* debug-level messages */
+
+#define	APLOG_LEVELMASK	7	/* mask off the level value */
+
+#endif
+
+#define APLOG_NOERRNO		(APLOG_LEVELMASK + 1)
+
+#ifndef DEFAULT_LOGLEVEL
 #define DEFAULT_LOGLEVEL	APLOG_ERR
-#define APLOG_LEVELMASK 15	/* mask off the level value */
-#define APLOG_NOERRNO	16
+#endif
+
 #define APLOG_MARK	__FILE__,__LINE__
 
 typedef struct _trans {
