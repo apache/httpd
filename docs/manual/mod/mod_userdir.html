@@ -43,6 +43,7 @@ The following directives will send redirects to the client:
 <pre>
 UserDir http://www.foo.com/users   -> http//www.foo.com/users/bob/one/two.html
 UserDir http://www.foo.com/*/usr   -> http://www.foo.com/bob/usr/one/two.html
+UserDir http://www.foo.com/~*/     -> http://www.foo.com/~bob/one/two.html
 </pre>
 
 <!--#include virtual="footer.html" -->
