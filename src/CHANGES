@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Fix the proxy pass-through feature of mod_rewrite for the case of
+     existing QUERY_STRING now that mod_proxy was recently changed because of
+     the new URL parsing stuff. [Ralf S. Engelschall]
+
   *) A few changes to scoreboard definitions which helps gcc generate
      better code.  [Dean Gaudet]
 

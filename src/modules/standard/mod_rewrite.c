@@ -1039,10 +1039,11 @@ static int hook_uri2file(request_rec *r)
             /* make sure the QUERY_STRING and
              * PATH_INFO parts get incorporated
              */
-            r->filename = pstrcat(r->pool, r->filename,
-                                           r->path_info ? r->path_info : "",
-                                           r->args ? "?" : NULL, r->args,
-                                           NULL);
+            if (r->path_info != NULL) 
+                r->filename = pstrcat(r->pool, r->filename, r->path_info, NULL);
+            if (r->args != NULL && 
+                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */) 
+                r->filename = pstrcat(r->pool, r->filename, "?", r->args, NULL);
 
             /* now make sure the request gets handled by the proxy handler */
             r->proxyreq = 1;
@@ -1281,12 +1282,12 @@ static int hook_fixup(request_rec *r)
 
             /* make sure the QUERY_STRING and
              * PATH_INFO parts get incorporated
+             * (r->path_info was already appended by the
+             * rewriting engine because of the per-dir context!)
              */
-            r->filename = pstrcat(r->pool, r->filename,
-                                  /* r->path_info was already
-                                   * appended by the rewriting engine
-                                   * because of the per-dir context!  */
-                                  r->args ? "?" : NULL, r->args, NULL);
+            if (r->args != NULL &&
+                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */) 
+                r->filename = pstrcat(r->pool, r->filename, "?", r->args, NULL);
 
             /* now make sure the request gets handled by the proxy handler */
             r->proxyreq = 1;

@@ -115,6 +115,7 @@ Committed Code Changes:
     * Dean's fix for making work the `HostnameLookups Off'
     * Dean's mark of a few bitfields as signed to ensure correct code. 
     * Dean's changes to scoreboard defs which helps gcc generate better code.
+    * Ralf's fix for QUERY_STRING and the proxy pass-through of mod_rewrite
 
 Available Patches:
 
