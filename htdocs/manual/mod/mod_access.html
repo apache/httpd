@@ -151,7 +151,10 @@ initial state is FORBIDDEN.)
 on the deny list are granted access.  (The initial state is irrelevant.)
 </dl>
 
-Example:
+Note that in all cases every <code>allow</code> and <code>deny</code>
+statement is evaluated, there is no &quot;short-circuiting&quot;.
+
+<p>Example:
 <blockquote><code>
 order deny,allow<br>
 deny from all<br>
