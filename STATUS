@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/02/13 17:41:30 $]
+  Last modified at [$Date: 2000/02/16 19:56:02 $]
 
 Release:
 
@@ -27,7 +27,8 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * NONE !! *
+    * general/5766: AddDefaultCharset bug with CGI scripts
+      general/5760: Use of text type "t" in fopen call...
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
