@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.18 $ ($Date: 1997/04/11 03:43:43 $)
+$Revision: 1.19 $ ($Date: 1997/04/11 04:27:04 $)
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -23,8 +23,6 @@ $Revision: 1.18 $ ($Date: 1997/04/11 03:43:43 $)
 <!-- - disable Apache buffering of script output by using nph-	    -->
 <!-- - access control based on DNS name really needs MAXIMUM_DNS    -->
 <!--   and double-check that rDNS resolves to name expected	    -->
-<!-- - add stuff about using XBitHack Full to generate a	    -->
-<!--   Last-Modified header [section on caching SSL]		    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -443,7 +441,49 @@ $Revision: 1.18 $ ($Date: 1997/04/11 03:43:43 $)
       NAME="ssi-part-i"
      ><STRONG>How do I enable SSI (parsed HTML)?</STRONG></A>
   <P>
+  SSI (an acronym for Server-Side Include) directives allow static HTML
+  documents to be enhanced at run-time (<EM>e.g.</EM>, when delivered to
+  a client by Apache).  The format of SSI directives is covered
+  elsewhere; suffice it to say that Apache supports not only SSI but
+  xSSI (eXtended SSI) directives.
   </P>
+  <P>
+  Processing a document at run-time is called <EM>parsing</EM> it; hence
+  the term &quot;parsed HTML&quot; sometimes used for documents that
+  contain SSI instructions.  Parsing tends to be <EM>extremely</EM>
+  resource-consumptive, and is not enabled by default.
+  </P>
+  <P>
+  To enable SSI processing, you need to
+  </P>
+  <UL>
+   <LI>Build your server with the
+    <A
+     HREF="../mod/mod_include.html"
+    >mod_include</A>
+    module.  This is normally compiled in by default.
+   </LI>
+   <LI>Make sure your server configuration files have an
+    <A
+     HREF="../mod/core.html#options"
+    >Options</A>
+    directive which permits <SAMP>Includes</SAMP>.
+   </LI>
+   <LI>Make sure that the directory where you want the SSI documents to
+    live is covered by the &quot;server-parsed&quot; content handler,
+    either explicitly or in some ancestral location.  That can be done
+    with the following:
+    <PRE>
+     <A
+      HREF="../mod/mod_mime.html#addhandler"
+     >AddHandler</A> server-parsed .shtml
+    </PRE>
+    This indicates that all files ending in &quot;.shtml&quot; in that
+    location (or its descendants) should be parsed.  Note that using
+    &quot;.html&quot; will cause all normal HTML files to be parsed,
+    which may put an inordinate load on your server.
+   </LI>
+  </UL>
   <HR>
  </LI>
  <LI><A
@@ -539,7 +579,7 @@ $Revision: 1.18 $ ($Date: 1997/04/11 03:43:43 $)
   Each log file requires a file descriptor, which means that if you are
   using seperate access and error logs for each virtual host each
   virtual host  needs two file descriptors.  Each 
-  <A HREF="../mod/core.html#listen"> Listen</A> directive also needs 
+  <A HREF="../mod/core.html#listen">Listen</A> directive also needs 
   a file descriptor.  
   </P>
   <P>
@@ -559,10 +599,12 @@ $Revision: 1.18 $ ($Date: 1997/04/11 03:43:43 $)
        directives.  If there are no other servers running on the machine 
        and all of them are running on the same port, you normally don't 
        need any Listen directives at all.
+   </LI>
    <LI>Reduce the number of log files.  You can use 
        <A HREF="../mod/mod_log_config.html">log_mod_config</A> to log
        all requests to a single log file while including the name
        of the virtual host in the log file.
+   </LI>
    <LI>Increase the number of file descriptors available to the server
        (see your system's documentation on the <SAMP>limit</SAMP> or
        <SAMP>ulimit</SAMP> commands).  For some systems, information on
