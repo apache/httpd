@@ -57,7 +57,7 @@
 
 # logresolve.pl
 #
-# v 1.0 by robh @ imdb.com
+# v 1.2 by robh @ imdb.com
 # 
 # usage: logresolve.pl <infile >outfile
 #
@@ -83,6 +83,14 @@
 # I haven't yet seen any noticable reduction in the percentage of IPs
 # that fail to get resolved. Your mileage will no doubt vary. 5s is long
 # enough to wait IMO.
+#
+# Known to work with FreeBSD 2.2
+# Known to have problems with Solaris
+#
+# 980417 - use 'sockaddr_un' for bind/connect to make the script work
+#  with linux. Fix from Luuk de Boer <luuk_de_boer@pi.net>
+
+require 5.004;
 
 $|=1;
 
@@ -92,8 +100,8 @@ use Socket;
 use strict;
 no strict 'refs';
 
-use vars qw($AF_UNIX $SOCK_STREAM $PROTOCOL);
-($AF_UNIX, $SOCK_STREAM, $PROTOCOL) = (1, 1, 0);
+use vars qw($PROTOCOL);
+$PROTOCOL = 0;
 
 my $CHILDREN = 40;
 my $TIMEOUT  = 5;
@@ -141,13 +149,13 @@ sub parent {
 	for (my $child = 1; $child <=$CHILDREN; $child++) {
 		$CHILDSOCK{$child}= FileHandle->new;
 
-		if (!socket($CHILDSOCK{$child}, $AF_UNIX, $SOCK_STREAM, $PROTOCOL)) {
+		if (!socket($CHILDSOCK{$child}, AF_UNIX, SOCK_STREAM, $PROTOCOL)) {
 			warn "parent socket to child failed $!";
 		}
 		$filename = "./.socket.$parent.$child";
 		my $response;
 		do {
-			$response = connect($CHILDSOCK{$child}, "$filename");
+			$response = connect($CHILDSOCK{$child}, sockaddr_un($filename));
 			if ($response != 1) {
 				sleep(1);
 			}                       
@@ -205,10 +213,11 @@ sub child {
 	$SIG{'ALRM'} = sub { die "alarmed"; };
 
 	 # create a socket to communicate with parent
-	socket(INBOUND, $AF_UNIX, $SOCK_STREAM, $PROTOCOL)
+	socket(INBOUND, AF_UNIX, SOCK_STREAM, $PROTOCOL)
 		|| die "Error with Socket: !$\n";
 	$filename = "./.socket.$parent.$me";
-	bind(INBOUND, $filename) || die "Error Binding $filename: $!\n";
+	bind(INBOUND, sockaddr_un($filename))
+		|| die "Error Binding $filename: $!\n";
 	listen(INBOUND, 5) || die "Error Listening: $!\n";
 
 	my ($ip, $send_back);
