@@ -1781,9 +1781,6 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     if (ap_exists_config_define("ONE_PROCESS"))
         one_process = -1;
 
-    if (ap_exists_config_define("ONE_PROCESS"))
-        one_process = -1;
-
     if (!strcasecmp(signal_arg, "runservice")
             && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
             && (service_to_start_success != APR_SUCCESS)) {
