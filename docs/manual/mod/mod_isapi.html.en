@@ -4,10 +4,11 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_isapi - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_isapi</h1><table class="module"><tr><th>Description:
-                </th><td>ISAPI Extensions within Apache for Windows</td></tr><tr><th><a href="module-dict.html#Status">Status:
+      --><title>mod_isapi - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_isapi</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>ISAPI Extensions within Apache for Windows</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>isapi_module</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
+                  </a></th><td>isapi_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
+                  </a></th><td>mod_isapi.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
                   </a></th><td>Win32 only</td></tr></table><h3>Summary</h3>
     <p>This module implements the Internet Server extension API. It
     allows Internet Server extensions (<em>e.g.</em> ISAPI .dll
@@ -180,8 +181,8 @@ following line:</p>
     semantics.  Apache also supports preloading ISAPI .dlls for
     performance, neither of which were not available under Apache 1.3
     mod_isapi.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a> <a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a> <a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
 extensions to the error log</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ISAPIAppendLogToErrors on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ISAPIAppendLogToErrors off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -191,8 +192,8 @@ extensions to the error log</td></tr><tr><th><a href="directive-dict.html#Syntax
               </a></th><td>mod_isapi</td></tr></table>
     <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
     extensions to the server error log.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a> <a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a> <a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
 extensions to the query field</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ISAPIAppendLogToQuery on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ISAPIAppendLogToQuery on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -203,8 +204,8 @@ extensions to the query field</td></tr><tr><th><a href="directive-dict.html#Synt
     <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
     extensions to the query field (appended to the CustomLog %q
     component).</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a> <a name="isapicachefile" id="isapicachefile">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>ISAPI .dll files to be loaded at startup</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a> <a name="isapicachefile" id="isapicachefile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>ISAPI .dll files to be loaded at startup</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ISAPICacheFile <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -214,8 +215,8 @@ extensions to the query field</td></tr><tr><th><a href="directive-dict.html#Synt
     server is shut down. This directive may be repeated for every
     ISAPI .dll file desired. The full path name of each file should
     be specified.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a> <a name="isapifakeasync" id="isapifakeasync">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Fake asynchronous support for isapi callbacks</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a> <a name="isapifakeasync" id="isapifakeasync">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Fake asynchronous support for isapi callbacks</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ISAPIFakeAsync on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ISAPIFakeAsync off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -224,8 +225,8 @@ extensions to the query field</td></tr><tr><th><a href="directive-dict.html#Synt
               </a></th><td>mod_isapi</td></tr></table>
     <p>While set to on, asynchronous support for isapi callbacks is
     simulated.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a> <a name="isapilognotsupported" id="isapilognotsupported">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Log unsupported feature requests from ISAPI
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a> <a name="isapilognotsupported" id="isapilognotsupported">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Log unsupported feature requests from ISAPI
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ISAPILogNotSupported on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ISAPILogNotSupported off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -237,8 +238,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     extensions in the server error log. This may help administrators
     to track down problems. Once set to on and all desired ISAPI modules
     are functioning, it should be set back to off.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a> <a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Size of the Read Ahead Buffer sent to ISAPI
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a> <a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ISAPIReadAheadBuffer <em>size</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ISAPIReadAheadBuffer 49152</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:

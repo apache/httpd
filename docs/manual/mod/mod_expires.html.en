@@ -4,12 +4,13 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_expires - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_expires</h1><table class="module"><tr><th>Description:
-                </th><td>Generation of
+      --><title>mod_expires - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_expires</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>Generation of
     <code>Expires</code> HTTP headers according to user-specified
     criteria</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>expires_module</td></tr></table><h3>Summary</h3>
+                  </a></th><td>expires_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
+                  </a></th><td>mod_expires.c</td></tr></table><h3>Summary</h3>
     <p>This module controls the setting of the <code>Expires</code>
     HTTP header in server responses. The expiration date can set to
     be relative to either the time the source file was last
@@ -91,8 +92,8 @@ ExpiresByType text/html "access plus 1 month 15
     Expires header will <strong>not</strong> be added to content
     that does not come from a file on disk. This is due to the fact
     that there is no modification time for such content.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Enables generation of Expires headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Enables generation of Expires headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ExpiresActive On|Off</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -116,8 +117,8 @@ ExpiresByType text/html "access plus 1 month 15
     <code>Expires</code> header will be generated. If the criteria
     aren't met, no header will be sent, and the effect will be as
     though this directive wasn't even specified.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Value of the Expires header configured
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Value of the Expires header configured
 by MIME type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ExpiresByType
     <em>MIME-type &lt;code&gt;seconds</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -168,8 +169,8 @@ ExpiresByType text/html M604800
     <p>You can also specify the expiration time calculation using
     an <a href="#AltSyn">alternate syntax</a>, described earlier in
     this document.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Default algorithm for calculating expiration time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Default algorithm for calculating expiration time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ExpiresDefault <em>&lt;code&gt;seconds</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:

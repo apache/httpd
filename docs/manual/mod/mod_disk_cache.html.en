@@ -4,10 +4,11 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_disk_cache - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_disk_cache</h1><table class="module"><tr><th>Description:
-                </th><td>Content cache keyed to URIs</td></tr><tr><th><a href="module-dict.html#Status">Status:
+      --><title>mod_disk_cache - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_disk_cache</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>Content cache keyed to URIs</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Experimental</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>disk_cache_module</td></tr></table><h3>Summary</h3>
+                  </a></th><td>disk_cache_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
+                  </a></th><td>mod_disk_cache.c</td></tr></table><h3>Summary</h3>
 
 <div class="warning">
 This module is experimental. Documentation is still under development...
@@ -18,8 +19,8 @@ This module is experimental. Documentation is still under development...
 <div class="note">
     <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> requires the services of <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 </div>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cachedirlength">CacheDirLength</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachedirlevels">CacheDirLevels</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cacheexpirycheck">CacheExpiryCheck</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcclean">CacheGcClean</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcdaily">CacheGcDaily</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcinterval">CacheGcInterval</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcmemusage">CacheGcMemUsage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcunused">CacheGcUnused</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachemaxfilesize">CacheMaxFileSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cacheminfilesize">CacheMinFileSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachesize">CacheSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachetimemargin">CacheTimeMargin</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The number of characters in subdirectory names</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cachedirlength">CacheDirLength</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachedirlevels">CacheDirLevels</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cacheexpirycheck">CacheExpiryCheck</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcclean">CacheGcClean</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcdaily">CacheGcDaily</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcinterval">CacheGcInterval</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcmemusage">CacheGcMemUsage</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachegcunused">CacheGcUnused</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachemaxfilesize">CacheMaxFileSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cacheminfilesize">CacheMinFileSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachesize">CacheSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cachetimemargin">CacheTimeMargin</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The number of characters in subdirectory names</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheDirLength <em>length</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheDirLength 2</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -34,8 +35,8 @@ This module is experimental. Documentation is still under development...
 <div class="example"><p><code>
   CacheDirLength  4 <br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The number of levels of subdirectories in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The number of levels of subdirectories in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheDirLevels <em>levels</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheDirLevels 3</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -51,8 +52,8 @@ This module is experimental. Documentation is still under development...
 <div class="example"><p><code>
   CacheDirLevels  5 <br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheExpiryCheck" id="CacheExpiryCheck">CacheExpiryCheck</a> <a name="cacheexpirycheck" id="cacheexpirycheck">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>On if cache observes Expires date when seeking files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheExpiryCheck" id="CacheExpiryCheck">CacheExpiryCheck</a> <a name="cacheexpirycheck" id="cacheexpirycheck">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>On if cache observes Expires date when seeking files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheExpiryCheck <em>binary</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheExpiryCheck ?</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -65,8 +66,8 @@ This module is experimental. Documentation is still under development...
 <div class="warning">
 The <code class="directive">CacheExpiryCheck</code> directive is currently <em>not</em> implemented.
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcClean" id="CacheGcClean">CacheGcClean</a> <a name="cachegcclean" id="cachegcclean">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The time in hours to retain unchanged files that match a url</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcClean" id="CacheGcClean">CacheGcClean</a> <a name="cachegcclean" id="cachegcclean">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The time in hours to retain unchanged files that match a url</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheGcClean <em>hours</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheGcClean ?</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -79,8 +80,8 @@ The <code class="directive">CacheExpiryCheck</code> directive is currently <em>n
 <div class="warning">
 The <code class="directive">CacheGcClean</code> directive is currently <em>not</em> implemented.
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcDaily" id="CacheGcDaily">CacheGcDaily</a> <a name="cachegcdaily" id="cachegcdaily">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The time of day for garbage collection (24 hour clock)</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcDaily" id="CacheGcDaily">CacheGcDaily</a> <a name="cachegcdaily" id="cachegcdaily">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The time of day for garbage collection (24 hour clock)</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheGcDaily <em>time</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheGcDaily ?</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -93,8 +94,8 @@ The <code class="directive">CacheGcClean</code> directive is currently <em>not</
 <div class="warning">
 The <code class="directive">CacheGcDaily</code> directive is currently <em>not</em> implemented.
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcInterval" id="CacheGcInterval">CacheGcInterval</a> <a name="cachegcinterval" id="cachegcinterval">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The interval between garbage collections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcInterval" id="CacheGcInterval">CacheGcInterval</a> <a name="cachegcinterval" id="cachegcinterval">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The interval between garbage collections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheGcInterval <em>hours</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -106,8 +107,8 @@ The <code class="directive">CacheGcDaily</code> directive is currently <em>not</
 <div class="warning">
 The <code class="directive">CacheGcInterval</code> directive is currently <em>not</em> implemented.
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcMemUsage" id="CacheGcMemUsage">CacheGcMemUsage</a> <a name="cachegcmemusage" id="cachegcmemusage">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The maximum kilobytes of memory used for garbage collection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcMemUsage" id="CacheGcMemUsage">CacheGcMemUsage</a> <a name="cachegcmemusage" id="cachegcmemusage">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The maximum kilobytes of memory used for garbage collection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheGcMemUsage <em>KBytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheGcMemUsage ?</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -120,8 +121,8 @@ The <code class="directive">CacheGcInterval</code> directive is currently <em>no
 <div class="warning">
 The <code class="directive">CacheGcMemUsage</code> directive is currently <em>not</em> implemented.
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcUnused" id="CacheGcUnused">CacheGcUnused</a> <a name="cachegcunused" id="cachegcunused">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The time in hours to retain unused file that match a url</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheGcUnused" id="CacheGcUnused">CacheGcUnused</a> <a name="cachegcunused" id="cachegcunused">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The time in hours to retain unused file that match a url</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheGcUnused <em>hours</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheGcUnused ?</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -134,8 +135,8 @@ The <code class="directive">CacheGcMemUsage</code> directive is currently <em>no
 <div class="warning">
 The <code class="directive">CacheGcUnused</code> directive is currently <em>not</em> implemented.
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The maximum size (in bytes) of a file to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The maximum size (in bytes) of a file to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheMaxFileSize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheMaxFileSize 1000000</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -147,8 +148,8 @@ The <code class="directive">CacheGcUnused</code> directive is currently <em>not<
 <div class="example"><p><code>
    CacheMaxFileSize 64000<br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The minimum size (in bytes) of a file to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The minimum size (in bytes) of a file to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheMinFileSize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheMinFileSize 1</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -160,8 +161,8 @@ The <code class="directive">CacheGcUnused</code> directive is currently <em>not<
 <div class="example"><p><code>
    CacheMinFileSize 64<br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The directory to store cache files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The directory to store cache files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheRoot <em>directory</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>none</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -173,8 +174,8 @@ The <code class="directive">CacheGcUnused</code> directive is currently <em>not<
 <div class="example"><p><code>
   CacheRoot c:/cacheroot <br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheSize" id="CacheSize">CacheSize</a> <a name="cachesize" id="cachesize">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The maximum amount of disk space that will be used by the cache in KBytes</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheSize" id="CacheSize">CacheSize</a> <a name="cachesize" id="cachesize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The maximum amount of disk space that will be used by the cache in KBytes</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheSize <em>KBytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheSize 1000000</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -189,8 +190,8 @@ The <code class="directive">CacheGcUnused</code> directive is currently <em>not<
 <div class="example"><p><code>
   MCacheSize  5000000 <br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheTimeMargin" id="CacheTimeMargin">CacheTimeMargin</a> <a name="cachetimemargin" id="cachetimemargin">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The minimum time margin to cache a document</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheTimeMargin" id="CacheTimeMargin">CacheTimeMargin</a> <a name="cachetimemargin" id="cachetimemargin">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The minimum time margin to cache a document</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheTimeMargin <em>?</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheTimeMargin ?</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
