@@ -147,7 +147,7 @@ static void clear_connection(table *headers)
 int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 		       const char *proxyhost, int proxyport)
 {
-    char *p;
+    char *strp;
     const char *err, *desthost;
     int i, j, sock, len, backasswards;
     array_header *reqhdrs_arr, *resp_hdrs;
@@ -158,7 +158,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     BUFF *f, *cache;
     struct hdr_entry *hdr;
     char buffer[HUGE_STRING_LEN];
-    pool *pool = r->pool;
+    pool *p = r->pool;
     const long int zero = 0L;
     int destport = 0;
     char *destportstr = NULL;
@@ -181,25 +181,25 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	return BAD_REQUEST;
     urlptr += 3;
     destport = DEFAULT_PORT;
-    p = strchr(urlptr, '/');
-    if (p == NULL) {
-	desthost = pstrdup(pool, urlptr);
+    strp = strchr(urlptr, '/');
+    if (strp == NULL) {
+	desthost = pstrdup(p, urlptr);
 	urlptr = "/";
     }
     else {
-	char *q = palloc(pool, p - urlptr + 1);
-	memcpy(q, urlptr, p - urlptr);
-	q[p - urlptr] = '\0';
-	urlptr = p;
+	char *q = palloc(p, strp - urlptr + 1);
+	memcpy(q, urlptr, strp - urlptr);
+	q[strp - urlptr] = '\0';
+	urlptr = strp;
 	desthost = q;
     }
 
-    p = strchr(desthost, ':');
-    if (p != NULL) {
-	*(p++) = '\0';
-	if (isdigit(*p)) {
-	    destport = atoi(p);
-	    destportstr = p;
+    strp = strchr(desthost, ':');
+    if (strp != NULL) {
+	*(strp++) = '\0';
+	if (isdigit(*strp)) {
+	    destport = atoi(strp);
+	    destportstr = strp;
 	}
     }
 
@@ -224,7 +224,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    return proxyerror(r, err);	/* give up */
     }
 
-    sock = psocket(pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "proxy: error creating socket");
@@ -272,7 +272,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     clear_connection(r->headers_in);	/* Strip connection-based headers */
 
-    f = bcreate(pool, B_RDWR | B_SOCKET);
+    f = bcreate(p, B_RDWR | B_SOCKET);
     bpushfd(f, sock, sock);
 
     hard_timeout("proxy send", r);
@@ -328,13 +328,13 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	buffer[12] = '\0';
 	r->status = atoi(&buffer[9]);
 	buffer[12] = ' ';
-	r->status_line = pstrdup(pool, &buffer[9]);
+	r->status_line = pstrdup(p, &buffer[9]);
 
 /* read the headers. */
 /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
 /* Also, take care with headers with multiple occurences. */
 
-	resp_hdrs = proxy_read_headers(pool, buffer, HUGE_STRING_LEN, f);
+	resp_hdrs = proxy_read_headers(p, buffer, HUGE_STRING_LEN, f);
 
 	clear_connection((table *) resp_hdrs);	/* Strip Connection hdrs */
     }
@@ -345,7 +345,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	r->status_line = "200 OK";
 
 /* no headers */
-	resp_hdrs = make_array(pool, 2, sizeof(struct hdr_entry));
+	resp_hdrs = make_array(p, 2, sizeof(struct hdr_entry));
     }
 
     kill_timeout(r);
@@ -359,11 +359,11 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     for (i = 0; i < resp_hdrs->nelts; i++) {
 	if (hdr[i].value[0] == '\0')
 	    continue;
-	p = hdr[i].field;
-	if (strcasecmp(p, "Date") == 0 ||
-	    strcasecmp(p, "Last-Modified") == 0 ||
-	    strcasecmp(p, "Expires") == 0)
-	    hdr[i].value = proxy_date_canon(pool, hdr[i].value);
+	strp = hdr[i].field;
+	if (strcasecmp(strp, "Date") == 0 ||
+	    strcasecmp(strp, "Last-Modified") == 0 ||
+	    strcasecmp(strp, "Expires") == 0)
+	    hdr[i].value = proxy_date_canon(p, hdr[i].value);
     }
 
 /* check if NoCache directive on this host */

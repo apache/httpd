@@ -105,13 +105,13 @@ static int ftp_check_string(const char *x)
  */
 int proxy_ftp_canon(request_rec *r, char *url)
 {
-    char *user, *password, *host, *path, *parms, *p, sport[7];
-    pool *pool = r->pool;
+    char *user, *password, *host, *path, *parms, *strp, sport[7];
+    pool *p = r->pool;
     const char *err;
     int port;
 
     port = DEFAULT_FTP_PORT;
-    err = proxy_canon_netloc(pool, &url, &user, &password, &host, &port);
+    err = proxy_canon_netloc(p, &url, &user, &password, &host, &port);
     if (err)
 	return BAD_REQUEST;
     if (user != NULL && !ftp_check_string(user))
@@ -125,34 +125,34 @@ int proxy_ftp_canon(request_rec *r, char *url)
  * This gives rise to the problem of a ; being decoded into the
  * path.
  */
-    p = strchr(url, ';');
-    if (p != NULL) {
-	*(p++) = '\0';
-	parms = proxy_canonenc(pool, p, strlen(p), enc_parm, r->proxyreq);
+    strp = strchr(url, ';');
+    if (strp != NULL) {
+	*(strp++) = '\0';
+	parms = proxy_canonenc(p, strp, strlen(strp), enc_parm, r->proxyreq);
 	if (parms == NULL)
 	    return BAD_REQUEST;
     }
     else
 	parms = "";
 
-    path = proxy_canonenc(pool, url, strlen(url), enc_path, r->proxyreq);
+    path = proxy_canonenc(p, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL)
 	return BAD_REQUEST;
     if (!ftp_check_string(path))
 	return BAD_REQUEST;
 
     if (!r->proxyreq && r->args != NULL) {
-	if (p != NULL) {
-	    p = proxy_canonenc(pool, r->args, strlen(r->args), enc_parm, 1);
-	    if (p == NULL)
+	if (strp != NULL) {
+	    strp = proxy_canonenc(p, r->args, strlen(r->args), enc_parm, 1);
+	    if (strp == NULL)
 		return BAD_REQUEST;
-	    parms = pstrcat(pool, parms, "?", p, NULL);
+	    parms = pstrcat(p, parms, "?", strp, NULL);
 	}
 	else {
-	    p = proxy_canonenc(pool, r->args, strlen(r->args), enc_fpath, 1);
-	    if (p == NULL)
+	    strp = proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, 1);
+	    if (strp == NULL)
 		return BAD_REQUEST;
-	    path = pstrcat(pool, path, "?", p, NULL);
+	    path = pstrcat(p, path, "?", strp, NULL);
 	}
 	r->args = NULL;
     }
@@ -164,7 +164,7 @@ int proxy_ftp_canon(request_rec *r, char *url)
     else
 	sport[0] = '\0';
 
-    r->filename = pstrcat(pool, "proxy:ftp://", (user != NULL) ? user : "",
+    r->filename = pstrcat(p, "proxy:ftp://", (user != NULL) ? user : "",
 			       (password != NULL) ? ":" : "",
 			       (password != NULL) ? password : "",
 		          (user != NULL) ? "@" : "", host, sport, "/", path,
@@ -216,12 +216,11 @@ static int ftp_getrc(BUFF *f)
 static char *
      encode_space(request_rec *r, char *path)
 {
-    pool *pool = r->pool;
     char *newpath;
     int i, j, len;
 
     len = strlen(path);
-    newpath = palloc(pool, 3 * len + 1);
+    newpath = palloc(r->pool, 3 * len + 1);
     for (i = 0, j = 0; i < len; i++, j++) {
 	if (path[i] != ' ')
 	    newpath[j] = path[i];
@@ -271,17 +270,17 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	if (n == 0)
 	    break;		/* EOF */
 	if (buf[0] == 'l') {
-	    char *link;
+	    char *link_ptr;
 
-	    link = strstr(buf, " -> ");
-	    filename = link;
+	    link_ptr = strstr(buf, " -> ");
+	    filename = link_ptr;
 	    do
 		filename--;
 	    while (filename[0] != ' ');
 	    *(filename++) = 0;
-	    *(link++) = 0;
+	    *(link_ptr++) = 0;
 	    ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s", url, (url[strlen(url) - 1] == '/' ? "" : "/"), filename);
-	    ap_snprintf(buf2, sizeof(urlptr), "%s <A HREF=\"%s\">%s %s</A>\015\012", buf, urlptr, filename, link);
+	    ap_snprintf(buf2, sizeof(urlptr), "%s <A HREF=\"%s\">%s %s</A>\015\012", buf, urlptr, filename, link_ptr);
 	    strncpy(buf, buf2, sizeof(buf) - 1);
 	    buf[sizeof(buf) - 1] = '\0';
 	    n = strlen(buf);
@@ -394,7 +393,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
  */
 int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 {
-    char *host, *path, *p, *user, *password, *parms;
+    char *host, *path, *strp, *user, *password, *parms;
     const char *err;
     int port, userlen, i, j, len, sock, dsock, rc, nocache;
     int passlen = 0;
@@ -406,7 +405,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     array_header *resp_hdrs;
     BUFF *f, *cache;
     BUFF *data = NULL;
-    pool *pool = r->pool;
+    pool *p = r->pool;
     int one = 1;
     const long int zero = 0L;
     NET_SIZE_T clen;
@@ -433,7 +432,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
 /* We break the URL into host, port, path-search */
 
-    host = pstrdup(pool, url + 6);
+    host = pstrdup(p, url + 6);
     port = DEFAULT_FTP_PORT;
     path = strchr(host, '/');
     if (path == NULL)
@@ -443,16 +442,16 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     user = password = NULL;
     nocache = 0;
-    p = strchr(host, '@');
-    if (p != NULL) {
-	(*p++) = '\0';
+    strp = strchr(host, '@');
+    if (strp != NULL) {
+	(*strp++) = '\0';
 	user = host;
-	host = p;
+	host = strp;
 /* find password */
-	p = strchr(user, ':');
-	if (p != NULL) {
-	    *(p++) = '\0';
-	    password = p;
+	strp = strchr(user, ':');
+	if (strp != NULL) {
+	    *(strp++) = '\0';
+	    password = strp;
 	    passlen = decodeenc(password);
 	}
 	userlen = decodeenc(user);
@@ -466,11 +465,11 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	passlen = strlen(password);
     }
 
-    p = strchr(host, ':');
-    if (p != NULL) {
-	*(p++) = '\0';
-	if (isdigit(*p))
-	    port = atoi(p);
+    strp = strchr(host, ':');
+    if (strp != NULL) {
+	*(strp++) = '\0';
+	if (isdigit(*strp))
+	    port = atoi(strp);
     }
 
 /* check if ProxyBlock directive on this host */
@@ -494,7 +493,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (err != NULL)
 	return proxyerror(r, err);	/* give up */
 
-    sock = psocket(pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
 	proxy_log_uerror("socket", NULL, "proxy: error creating socket",
 			 r->server);
@@ -515,7 +514,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		   sizeof(one)) == -1) {
 	proxy_log_uerror("setsockopt", NULL,
 			 "proxy: error setting reuseaddr option", r->server);
-	pclosesocket(pool, sock);
+	pclosesocket(p, sock);
 	return SERVER_ERROR;
     }
 
@@ -542,11 +541,11 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
 #endif
     if (i == -1) {
-	pclosesocket(pool, sock);
+	pclosesocket(p, sock);
 	return proxyerror(r, "Could not connect to remote machine");
     }
 
-    f = bcreate(pool, B_RDWR | B_SOCKET);
+    f = bcreate(p, B_RDWR | B_SOCKET);
     bpushfd(f, sock, sock);
 /* shouldn't we implement telnet control options here? */
 
@@ -622,10 +621,10 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
  * machine
  */
     for (;;) {
-	p = strchr(path, '/');
-	if (p == NULL)
+	strp = strchr(path, '/');
+	if (strp == NULL)
 	    break;
-	*p = '\0';
+	*strp = '\0';
 
 	len = decodeenc(path);
 	bputs("CWD ", f);
@@ -650,7 +649,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    return BAD_GATEWAY;
 	}
 
-	path = p + 1;
+	path = strp + 1;
     }
 
     if (parms != NULL && strncmp(parms, "type=", 5) == 0) {
@@ -688,7 +687,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
 
 /* try to set up PASV data connection first */
-    dsock = psocket(pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    dsock = psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1) {
 	proxy_log_uerror("socket", NULL, "proxy: error creating PASV socket",
 			 r->server);
@@ -714,7 +713,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (i == -1) {
 	proxy_log_uerror("command", NULL, "PASV: control connection is toast",
 			 r->server);
-	pclosesocket(pool, dsock);
+	pclosesocket(p, dsock);
 	bclose(f);
 	kill_timeout(r);
 	return SERVER_ERROR;
@@ -754,7 +753,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    }
 	}
 	else
-	    pclosesocket(pool, dsock);	/* and try the regular way */
+	    pclosesocket(p, dsock);	/* and try the regular way */
     }
 
     if (!pasvmode) {		/* set up data connection */
@@ -767,7 +766,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    return SERVER_ERROR;
 	}
 
-	dsock = psocket(pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	dsock = psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (dsock == -1) {
 	    proxy_log_uerror("socket", NULL, "proxy: error creating socket",
 			     r->server);
@@ -780,7 +779,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		       sizeof(one)) == -1) {
 	    proxy_log_uerror("setsockopt", NULL,
 			"proxy: error setting reuseaddr option", r->server);
-	    pclosesocket(pool, dsock);
+	    pclosesocket(p, dsock);
 	    bclose(f);
 	    kill_timeout(r);
 	    return SERVER_ERROR;
@@ -794,7 +793,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    proxy_log_uerror("bind", buff,
 		      "proxy: error binding to ftp data socket", r->server);
 	    bclose(f);
-	    pclosesocket(pool, dsock);
+	    pclosesocket(p, dsock);
 	    return SERVER_ERROR;
 	}
 	listen(dsock, 2);	/* only need a short queue */
@@ -905,7 +904,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     r->status = 200;
     r->status_line = "200 OK";
 
-    resp_hdrs = make_array(pool, 2, sizeof(struct hdr_entry));
+    resp_hdrs = make_array(p, 2, sizeof(struct hdr_entry));
     if (parms[0] == 'd')
 	proxy_add_header(resp_hdrs, "Content-Type", "text/html", HDR_REP);
     else {
@@ -930,7 +929,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     i = proxy_cache_update(c, resp_hdrs, 0, nocache);
 
     if (i != DECLINED) {
-	pclosesocket(pool, dsock);
+	pclosesocket(p, dsock);
 	bclose(f);
 	return i;
     }
@@ -945,19 +944,19 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	if (csd == -1) {
 	    proxy_log_uerror("accept", NULL,
 		      "proxy: failed to accept data connection", r->server);
-	    pclosesocket(pool, dsock);
+	    pclosesocket(p, dsock);
 	    bclose(f);
 	    kill_timeout(r);
 	    proxy_cache_error(c);
 	    return BAD_GATEWAY;
 	}
-	note_cleanups_for_socket(pool, csd);
-	data = bcreate(pool, B_RDWR | B_SOCKET);
+	note_cleanups_for_socket(p, csd);
+	data = bcreate(p, B_RDWR | B_SOCKET);
 	bpushfd(data, csd, -1);
 	kill_timeout(r);
     }
     else {
-	data = bcreate(pool, B_RDWR | B_SOCKET);
+	data = bcreate(p, B_RDWR | B_SOCKET);
 	bpushfd(data, dsock, dsock);
     }
 

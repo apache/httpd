@@ -192,11 +192,11 @@ char *
  * Returns an error string.
  */
 char *
-     proxy_canon_netloc(pool *pool, char **const urlp, char **userp,
+     proxy_canon_netloc(pool *p, char **const urlp, char **userp,
 			char **passwordp, char **hostp, int *port)
 {
     int i;
-    char *p, *host, *url = *urlp;
+    char *strp, *host, *url = *urlp;
 
     if (url[0] != '/' || url[1] != '/')
 	return "Malformed URL";
@@ -209,23 +209,23 @@ char *
 
     if (userp != NULL) {
 	char *user = NULL, *password = NULL;
-	p = strchr(host, '@');
+	strp = strchr(host, '@');
 
-	if (p != NULL) {
-	    *p = '\0';
+	if (strp != NULL) {
+	    *strp = '\0';
 	    user = host;
-	    host = p + 1;
+	    host = strp + 1;
 
 /* find password */
-	    p = strchr(user, ':');
-	    if (p != NULL) {
-		*p = '\0';
-		password = proxy_canonenc(pool, p + 1, strlen(p + 1), enc_user, 1);
+	    strp = strchr(user, ':');
+	    if (strp != NULL) {
+		*strp = '\0';
+		password = proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
 		if (password == NULL)
 		    return "Bad %-escape in URL (password)";
 	    }
 
-	    user = proxy_canonenc(pool, user, strlen(user), enc_user, 1);
+	    user = proxy_canonenc(p, user, strlen(user), enc_user, 1);
 	    if (user == NULL)
 		return "Bad %-escape in URL (username)";
 	}
@@ -233,17 +233,17 @@ char *
 	*passwordp = password;
     }
 
-    p = strchr(host, ':');
-    if (p != NULL) {
-	*(p++) = '\0';
+    strp = strchr(host, ':');
+    if (strp != NULL) {
+	*(strp++) = '\0';
 
-	for (i = 0; p[i] != '\0'; i++)
-	    if (!isdigit(p[i]))
+	for (i = 0; strp[i] != '\0'; i++)
+	    if (!isdigit(strp[i]))
 		break;
 
-	if (i == 0 || p[i] != '\0')
+	if (i == 0 || strp[i] != '\0')
 	    return "Bad port number in URL";
-	*port = atoi(p);
+	*port = atoi(strp);
 	if (*port > 65535)
 	    return "Port number in URL > 65535";
     }
@@ -265,7 +265,7 @@ char *
     }
 
 /*    if (strchr(host,'.') == NULL && domain != NULL)
-   host = pstrcat(pool, host, domain, NULL);
+   host = pstrcat(p, host, domain, NULL);
  */
     *urlp = url;
     *hostp = host;
@@ -349,14 +349,14 @@ char *
  * Returns NULL on file error
  */
 array_header *
-             proxy_read_headers(pool *pool, char *buffer, int size, BUFF *f)
+             proxy_read_headers(pool *p, char *buffer, int size, BUFF *f)
 {
     int gotcr, len, i, j;
     array_header *resp_hdrs;
     struct hdr_entry *hdr;
-    char *p;
+    char *strp;
 
-    resp_hdrs = make_array(pool, 10, sizeof(struct hdr_entry));
+    resp_hdrs = make_array(p, 10, sizeof(struct hdr_entry));
     hdr = NULL;
 
     gotcr = 1;
@@ -385,13 +385,13 @@ array_header *
 		gotcr = 1;
 		continue;
 	    }
-	    hdr->value = pstrcat(pool, hdr->value, buffer, NULL);
+	    hdr->value = pstrcat(p, hdr->value, buffer, NULL);
 	}
 	else if (gotcr && len == 0)
 	    break;
 	else {
-	    p = strchr(buffer, ':');
-	    if (p == NULL) {
+	    strp = strchr(buffer, ':');
+	    if (strp == NULL) {
 		/* error!! */
 		if (!gotcr) {
 		    i = bskiplf(f);
@@ -403,22 +403,22 @@ array_header *
 		continue;
 	    }
 	    hdr = push_array(resp_hdrs);
-	    *(p++) = '\0';
-	    hdr->field = pstrdup(pool, buffer);
-	    while (*p == ' ' || *p == '\t')
-		p++;
-	    hdr->value = pstrdup(pool, p);
+	    *(strp++) = '\0';
+	    hdr->field = pstrdup(p, buffer);
+	    while (*strp == ' ' || *strp == '\t')
+		strp++;
+	    hdr->value = pstrdup(p, strp);
 	    gotcr = i;
 	}
     }
 
     hdr = (struct hdr_entry *) resp_hdrs->elts;
     for (i = 0; i < resp_hdrs->nelts; i++) {
-	p = hdr[i].value;
-	j = strlen(p);
-	while (j > 0 && (p[j - 1] == ' ' || p[j - 1] == '\t'))
+	strp = hdr[i].value;
+	j = strlen(strp);
+	while (j > 0 && (strp[j - 1] == ' ' || strp[j - 1] == '\t'))
 	    j--;
-	p[j] = '\0';
+	strp[j] = '\0';
     }
 
     return resp_hdrs;
@@ -609,7 +609,7 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
     char tmp[26];
     int i, k, d;
     unsigned int x;
-    static const char table[32] = "abcdefghijklmnopqrstuvwxyz012345";
+    static const char enc_table[32] = "abcdefghijklmnopqrstuvwxyz012345";
 
     MD5Init(&context);
     MD5Update(&context, (const unsigned char *) it, strlen(it));
@@ -621,20 +621,20 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
  */
     for (i = 0, k = 0; i < 15; i += 5) {
 	x = (digest[i] << 24) | (digest[i + 1] << 16) | (digest[i + 2] << 8) | digest[i + 3];
-	tmp[k++] = table[x >> 27];
-	tmp[k++] = table[(x >> 22) & 0x1f];
-	tmp[k++] = table[(x >> 17) & 0x1f];
-	tmp[k++] = table[(x >> 12) & 0x1f];
-	tmp[k++] = table[(x >> 7) & 0x1f];
-	tmp[k++] = table[(x >> 2) & 0x1f];
+	tmp[k++] = enc_table[x >> 27];
+	tmp[k++] = enc_table[(x >> 22) & 0x1f];
+	tmp[k++] = enc_table[(x >> 17) & 0x1f];
+	tmp[k++] = enc_table[(x >> 12) & 0x1f];
+	tmp[k++] = enc_table[(x >> 7) & 0x1f];
+	tmp[k++] = enc_table[(x >> 2) & 0x1f];
 	x = ((x & 0x3) << 8) | digest[i + 4];
-	tmp[k++] = table[x >> 5];
-	tmp[k++] = table[x & 0x1f];
+	tmp[k++] = enc_table[x >> 5];
+	tmp[k++] = enc_table[x & 0x1f];
     }
 /* one byte left */
     x = digest[15];
-    tmp[k++] = table[x >> 3];	/* use up 5 bits */
-    tmp[k++] = table[x & 0x7];
+    tmp[k++] = enc_table[x >> 3];	/* use up 5 bits */
+    tmp[k++] = enc_table[x & 0x7];
     /* now split into directory levels */
 
     for (i = k = d = 0; d < ndepth; ++d) {
@@ -656,7 +656,7 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
     char tmp[22];
     int i, k, d;
     unsigned int x;
-    static const char table[64] =
+    static const char enc_table[64] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_@";
 
     MD5Init(&context);
@@ -669,15 +669,15 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
  */
     for (i = 0, k = 0; i < 15; i += 3) {
 	x = (digest[i] << 16) | (digest[i + 1] << 8) | digest[i + 2];
-	tmp[k++] = table[x >> 18];
-	tmp[k++] = table[(x >> 12) & 0x3f];
-	tmp[k++] = table[(x >> 6) & 0x3f];
-	tmp[k++] = table[x & 0x3f];
+	tmp[k++] = enc_table[x >> 18];
+	tmp[k++] = enc_table[(x >> 12) & 0x3f];
+	tmp[k++] = enc_table[(x >> 6) & 0x3f];
+	tmp[k++] = enc_table[x & 0x3f];
     }
 /* one byte left */
     x = digest[15];
-    tmp[k++] = table[x >> 2];	/* use up 6 bits */
-    tmp[k++] = table[(x << 4) & 0x3f];
+    tmp[k++] = enc_table[x >> 2];	/* use up 6 bits */
+    tmp[k++] = enc_table[(x << 4) & 0x3f];
     /* now split into directory levels */
 
     for (i = k = d = 0; d < ndepth; ++d) {

@@ -90,7 +90,7 @@ static int gcdiff(const void *ap, const void *bp)
 
 static int curbytes, cachesize, every;
 static unsigned long int curblocks;
-static time_t now, expire;
+static time_t garbage_now, garbage_expire;
 static char *filename;
 static mutex *garbage_mutex = NULL;
 
@@ -148,8 +148,8 @@ void help_proxy_garbage_coll(request_rec *r)
 
     if (cachedir == NULL || every == -1)
 	return;
-    now = time(NULL);
-    if (now != -1 && lastcheck != BAD_DATE && now < lastcheck + every)
+    garbage_now = time(NULL);
+    if (garbage_now != -1 && lastcheck != BAD_DATE && garbage_now < lastcheck + every)
 	return;
 
     block_alarms();		/* avoid SIGALRM on big cache cleanup */
@@ -167,7 +167,7 @@ void help_proxy_garbage_coll(request_rec *r)
 	    if (errno != EEXIST)
 		proxy_log_uerror("creat", filename, NULL, r->server);
 	    else
-		lastcheck = abs(now);	/* someone else got in there */
+		lastcheck = abs(garbage_now);	/* someone else got in there */
 	    unblock_alarms();
 	    return;
 	}
@@ -175,7 +175,7 @@ void help_proxy_garbage_coll(request_rec *r)
     }
     else {
 	lastcheck = buf.st_mtime;	/* save the time */
-	if (now < lastcheck + every) {
+	if (garbage_now < lastcheck + every) {
 	    unblock_alarms();
 	    return;
 	}
@@ -199,7 +199,7 @@ void help_proxy_garbage_coll(request_rec *r)
     for (i = 0; i < files->nelts; i++) {
 	fent = elts[i];
 	sprintf(filename, "%s%s", cachedir, fent->file);
-	Explain3("GC Unlinking %s (expiry %ld, now %ld)", filename, fent->expire, now);
+	Explain3("GC Unlinking %s (expiry %ld, garbage_now %ld)", filename, fent->garbage_expire, garbage_now);
 #if TESTING
 	fprintf(stderr, "Would unlink %s\n", filename);
 #else
@@ -259,8 +259,8 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 		if (errno != ENOENT)
 		    proxy_log_uerror("stat", filename, NULL, r->server);
 	    }
-	    else if (now != -1 && buf.st_atime < now - SEC_ONE_DAY &&
-		     buf.st_mtime < now - SEC_ONE_DAY) {
+	    else if (garbage_now != -1 && buf.st_atime < garbage_now - SEC_ONE_DAY &&
+		     buf.st_mtime < garbage_now - SEC_ONE_DAY) {
 		Explain1("GC unlink %s", filename);
 #if TESTING
 		fprintf(stderr, "Would unlink %s\n", filename);
@@ -314,12 +314,12 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	}
 	close(fd);
 	line[i] = '\0';
-	expire = proxy_hex2sec(line + 18);
+	garbage_expire = proxy_hex2sec(line + 18);
 	if (!checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") ||
-	    expire == BAD_DATE) {
+	    garbage_expire == BAD_DATE) {
 	    /* bad file */
-	    if (now != -1 && buf.st_atime > now + SEC_ONE_DAY &&
-		buf.st_mtime > now + SEC_ONE_DAY) {
+	    if (garbage_now != -1 && buf.st_atime > garbage_now + SEC_ONE_DAY &&
+		buf.st_mtime > garbage_now + SEC_ONE_DAY) {
 		log_error("proxy: deleting bad cache file", r->server);
 #if TESTING
 		fprintf(stderr, "Would unlink bad file %s\n", filename);
@@ -340,7 +340,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	 */
 	fent = palloc(r->pool, sizeof(struct gc_ent));
 	fent->len = buf.st_size;
-	fent->expire = expire;
+	fent->expire = garbage_expire;
 	strcpy(fent->file, cachesubdir);
 	strcat(fent->file, ent->d_name);
 	*(struct gc_ent **) push_array(files) = fent;
