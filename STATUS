@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/24 13:24:30 $]
+Last modified at [$Date: 2001/12/25 12:24:14 $]
 
 Release:
 
@@ -347,6 +347,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       +1:   Justin, Jeff, Ian
       -0:   Aaron (premature decision, needs more discussion)
       -0:   Cliff (I think the default config should be the safest possible)
+
+    * Fix the worker MPM to use POD to kill child processes instead
+      of ap_os_killpg, regardless of how they should die. (Ryan Bloom)
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':

@@ -91,6 +91,7 @@ AP_DECLARE(apr_status_t) beosd_accept(void **accepted, ap_listen_rec *lr,
                                       apr_pool_t *ptrans);
 
 #define beosd_killpg(x, y)	(kill (-(x), (y)))
+#define ap_os_killpg(x, y)      (kill (-(x), (y)))
 
 #define BEOS_DAEMON_COMMANDS	\
 AP_INIT_TAKE1("User", beosd_set_user, NULL, RSRC_CONF, \

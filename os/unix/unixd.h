@@ -125,8 +125,10 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr, apr_po
 
 #ifdef HAVE_KILLPG
 #define unixd_killpg(x, y)	(killpg ((x), (y)))
+#define ap_os_killpg(x, y)      (killpg ((x), (y)))
 #else /* HAVE_KILLPG */
 #define unixd_killpg(x, y)	(kill (-(x), (y)))
+#define ap_os_killpg(x, y)      (kill (-(x), (y)))
 #endif /* HAVE_KILLPG */
 
 #define UNIX_DAEMON_COMMANDS	\
