@@ -72,6 +72,12 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 <H3>Run-Time Configuration Changes</H3>
 
 <UL>
+  <LI>As of 1.3.2, <A HREF="mod/mod_expires.html"><CODE>mod_expires</CODE></A>
+    will add Expires headers to content that does not come from a file 
+    on disk, unless you are using a modification time based setting.
+    Previously, it would never add an Expires header unless content came
+    from a file on disk.  This could result in Expires headers being added
+    in places where they were not previously added.
   <LI>Standalone <STRONG><SAMP>FancyIndexing</SAMP></STRONG> directives
     are now combined with the settings of any <SAMP>IndexOptions</SAMP>
     directive already in effect, rather than replacing them.

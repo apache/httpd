@@ -413,9 +413,6 @@ static int add_expires(request_rec *r)
     if (r->main != NULL)        /* Say no to subrequests */
         return DECLINED;
 
-    if (r->finfo.st_mode == 0)  /* no file ? shame. */
-        return DECLINED;
-
     conf = (expires_dir_config *) ap_get_module_config(r->per_dir_config, &expires_module);
     if (conf == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
@@ -454,6 +451,12 @@ static int add_expires(request_rec *r)
 
     switch (code[0]) {
     case 'M':
+	if (r->finfo.st_mode == 0) { 
+	    /* file doesn't exist on disk, so we can't do anything based on
+	     * modification time.  Note that this does _not_ log an error.
+	     */
+	    return DECLINED;
+	}
         base = r->finfo.st_mtime;
         additional = atoi(&code[1]);
         break;

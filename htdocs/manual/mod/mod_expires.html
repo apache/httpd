@@ -316,6 +316,11 @@
     ExpiresByType image/gif "modification plus 5 hours 3 minutes"</CODE>
    </DD>
   </DL>
+  <P>
+  Note that if you use a modification date based setting, the Expires
+  header will <STRONG>not</STRONG> be added to content that does
+  not come from a file on disk.  This is due to the fact that there is
+  no modification time for such content.
 
   <!--#include virtual="footer.html" -->
  </BODY>
