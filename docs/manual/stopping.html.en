@@ -43,10 +43,11 @@ Modify those examples to match your
 <A HREF="mod/core.html#serverroot">ServerRoot</A> and
 <A HREF="mod/core.html#pidfile">PidFile</A> settings.
 
-<p>A shell script called <code>apachectl</code> is provided
-which automates the processing of signalling Apache.
-For details about this script, see the documentation
-on <a href="invoking.html">starting Apache</a>.</p>
+<p>A shell script called <a
+href="programs/apachectl.html">apachectl</a> is provided which
+automates the processing of signalling Apache.  For details about this
+script, see the documentation on <a href="invoking.html">starting
+Apache</a>.</p>
 
 <H3>Stop Now</h3>
 

@@ -894,11 +894,12 @@ versions of Apache prior to 1.3.  It was changed to <CODE>off</CODE>
 in order to save the network traffic for those sites that don't truly
 need the reverse lookups done.  It is also better for the end users
 because they don't have to suffer the extra latency that a lookup
-entails.
-Heavily loaded sites should leave this directive <CODE>off</CODE>, since DNS
-lookups can take considerable amounts of time. The utility <EM>logresolve</EM>,
-provided in the <EM>/support</EM> directory, can be used to look up host names
-from logged IP addresses offline.<P><HR>
+entails.  Heavily loaded sites should leave this directive
+<CODE>off</CODE>, since DNS lookups can take considerable amounts of
+time. The utility <a
+href="../programs/logresolve.html">logresolve</a>, provided in the
+<EM>/support</EM> directory, can be used to look up host names from
+logged IP addresses offline.<P><HR>
 
 <H2><A NAME="identitycheck">IdentityCheck directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt IdentityCheck} directive&gt; -->
