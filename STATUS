@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/02 11:18:44 $]
+Last modified at [$Date: 2004/09/02 19:52:23 $]
 
 Release:
 
@@ -113,7 +113,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
        is enabled.  Previously, such urls would still be rejected with
        404.
-         server/util.c: r1.148
+         server/util.c: r1.148, r1.149
        +1: trawick
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
