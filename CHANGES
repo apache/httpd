@@ -134,11 +134,6 @@ Changes with Apache 2.1.0-dev
   *) Allow 'make depend' to work with non-GCC compilers.
      [Justin Erenkrantz]
 
-  *) Fix a bug where we leak fd's until the end of a keepalive 
-     connection, which may result in:
-       (24)Too many open files: file permissions deny server access
-     especially on threaded servers.  [Greg Ames]
-
   *) If an httpd.conf has commented out AddModule directives, 
      apxs -i -a will add an un-commented AddModule directive for 
      the new module, which breaks the config.
@@ -158,6 +153,13 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Fix possible segfaults under obscure error conditions within the
+     cgid daemon.  [Jeff Trawick, William Rowe]
+
+  *) SECURITY [CAN-2003-0132]: Close a Denial of Service vulnerability
+     identified by David Endler <DEndler@iDefense.com> on all platforms.
+     Details embargoed until their announcement on 8 April 2003.
 
   *) Added an rpm build script.
      [Graham Leggett, Joe Orton <jorton@redhat.com>]
@@ -216,7 +218,7 @@ Changes with Apache 2.0.45
   *) Use .sv instead of .se as extension for Swedish documents in the
      default configuration. PR 12877.  [André Malo]
 
-  *) Updated mod_ldap and mod_auth_ldap to support the Novell LDAP SDK 
+  *) Updated mod_ldap and mod_auth_ldap to support the Novell LDAP SDK SSL
      and standardized the LDAP SSL support across the various LDAP SDKs.  
      Isolated the SSL functionality to mod_ldap rather than speading it 
      across mod_auth_ldap and mod_ldap.  Also added LDAPTrustedCA
@@ -501,6 +503,11 @@ Changes with Apache 2.0.44
      terminates during post-config processing. An error is logged
      once per worker, indicating that the CacheRoot needs to be set.
      [Paul J. Reder]
+
+  *) Fix a bug where we keep files open until the end of a 
+     keepalive connection, which can result in:
+     (24)Too many open files: file permissions deny server access
+     especially on threaded servers.  [Greg Ames, Jeff Trawick]
 
   *) Fix a bug in which mod_proxy sent an invalid Content-Length
      when a proxied URL was invoked as a server-side include within
