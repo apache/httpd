@@ -326,7 +326,7 @@ char *response_code_string (request_rec *r, int error_index)
 
 
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
-static void inline do_double_reverse (conn_rec *conn)
+static inline void do_double_reverse (conn_rec *conn)
 {
     struct hostent *hptr;
     char **haddr;
