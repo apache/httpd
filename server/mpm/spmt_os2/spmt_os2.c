@@ -382,7 +382,7 @@ static int wait_or_timeout(ap_wait_t *status)
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
 	wait_or_timeout_counter = 0;
 #ifdef APR_HAS_OTHER_CHILD
-	probe_writable_fds();
+	ap_probe_writable_fds();
 #endif
     }
 
