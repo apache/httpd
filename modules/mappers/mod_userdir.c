@@ -106,7 +106,7 @@
 #include "http_config.h"
 #include "http_request.h"
 
-#if !defined(WIN32) && !defined(OS2) && !defined(BEOS)
+#if !defined(WIN32) && !defined(OS2) && !defined(BEOS) && !defined(NETWARE)
 #define HAVE_UNIX_SUEXEC
 #endif
 
