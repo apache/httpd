@@ -87,6 +87,9 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
 
+/* magic pointer for ErrorDocument xxx "default" */
+static char errordocument_default;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
@@ -701,6 +704,10 @@ char *ap_response_code_string(request_rec *r, int error_index)
 	return NULL;
     }
 
+    if (dirconf->response_code_strings[error_index] == &errordocument_default) {
+        return NULL;
+    }
+
     return dirconf->response_code_strings[error_index];
 }
 
@@ -1186,13 +1193,21 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
                             RESPONSE_CODES);
         }
 
-        /* hack. Prefix a " if it is a msg; as that is what
-         * http_protocol.c relies on to distinguish between
-         * a msg and a (local) path.
-         */
-        conf->response_code_strings[index_number] = (what == MSG) ?
-                apr_pstrcat(cmd->pool, "\"",msg,NULL) :
-                apr_pstrdup(cmd->pool, msg);
+        if (strcmp(msg, "default") == 0) {
+            /* special case: ErrorDocument 404 default restores the
+             * canned server error response
+             */
+            conf->response_code_strings[index_number] = &errordocument_default;
+        }
+        else {
+            /* hack. Prefix a " if it is a msg; as that is what
+             * http_protocol.c relies on to distinguish between
+             * a msg and a (local) path.
+             */
+            conf->response_code_strings[index_number] = (what == MSG) ?
+                    apr_pstrcat(cmd->pool, "\"",msg,NULL) :
+                    apr_pstrdup(cmd->pool, msg);
+        }
     }
 
     return NULL;

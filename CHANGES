@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) Enable special ErrorDocument value 'default' which restores the
+     canned server response for the scope of the directive
+     [Geoffrey Young, Andre Malo]
+
   *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
      is set in r->subprocess_env allow mismatched query strings to pass.
      PR 27758.  [Paul Querna, Geoffrey Young]
