@@ -1,4 +1,7 @@
 Changes with Apache 1.3.2
+
+  *) SECURITY: Plug "..." and other canonicalization holes under OS/2.
+     [Brian Havard]
   
   *) PORT: implement serialized accepts for OS/2.  [Brian Havard]
 

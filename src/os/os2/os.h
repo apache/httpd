@@ -2,6 +2,7 @@
 #define APACHE_OS_H
 
 #define PLATFORM "OS/2"
+#define HAVE_CANONICAL_FILENAME
 
 /*
  * This file in included in all Apache source code. It contains definitions

@@ -3,7 +3,7 @@ LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
-OBJS=	os.o os-inline.o
+OBJS=	os.o os-inline.o util_os2.o
 COPY=	os.h os-inline.c
 
 LIB=	libos.a
