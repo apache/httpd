@@ -66,6 +66,9 @@
 
 #include <poll.h>
 
+/* TODO: re-implement the lingering close stuff */
+#define NO_LINGCLOSE
+
 /*
  * More machine-dependent networking gooo... on some systems,
  * you've got to be *really* sure that all the packets are acknowledged
