@@ -11,6 +11,7 @@
 //             DD DISP=SHR,DSN=<your-final-syslib-dsn>
 //PLKED.OBJLIB DD DISP=SHR,DSN=<your-first-objlib-dsn>
 //             DD DISP=SHR,DSN=<your-final-objlib-dsn>
+//PLKED.SYSDEFSD DD DISP=SHR,DSN=<your-dsd-dsn>(CHTA<vv>)
 //PLKED.OBJ01  DD PATH='/<your-path-here>/src/buildmark.o'
 //PLKED.OBJ02  DD PATH='/<your-path-here>/src/modules.o'
 //PLKED.OBJ03  DD PATH='/<your-path-here>/src/ap/ap_base64.o'
