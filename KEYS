@@ -190,9 +190,10 @@ MxvPP+92zSyN3dyj/xWZYoRLwll+ync9d4KUFwKw45DALAvz1CKHMOpQPD7dIWdE
 
 Type Bits/KeyID    Date       User ID
 pub  1024/631B5749 1996/06/21 Randy Terbush <randy@zyzzyva.com>
+                              Randy Terbush <randy@covalent.net>
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
-Version: 2.6.3
+Version: 2.6.3ia
 
 mQCNAzHLBS8AAAEEANGFXb9o0NPVfVjSLvQh1j3fN6cMeVNA5BGUJ6HZGP/NDxTE
 i8hwejJqakkU4ux/g6Kqckrx3h8WR7OXZZ+R8CsA0bg9Sr42ndEQCUISgArg+lXZ
@@ -200,8 +201,12 @@ gRUniARPPA7tamTSq8v1mnxqy9s26Ht2rAG2D6IiK/7v0JlezKirDeBjG1dJAAUR
 tCFSYW5keSBUZXJidXNoIDxyYW5keUB6eXp6eXZhLmNvbT6JAJUDBRAxywUwqKsN
 4GMbV0kBAegnA/sH63WyfwMFmn3nWe8T/5IXO/QkMYoMGLS1i7IxMY9O8BVvKQM+
 oxEcJdFAG7zPZkpgKzTBxmExz5hMZ9hwJ42XhrslWoP7JVvADJcdthrUAYW9W+jx
-GcDYAW3qW5DpKsQchfvXq9QOBDxP+Kbbe2B8xGEyGUhLkacISFTrIhhQSg==
-=8P8s
+GcDYAW3qW5DpKsQchfvXq9QOBDxP+Kbbe2B8xGEyGUhLkacISFTrIhhQSrQiUmFu
+ZHkgVGVyYnVzaCA8cmFuZHlAY292YWxlbnQubmV0PokAlQMFEDXwEhioqw3gYxtX
+SQEBnaED/1AJCYW7jKCtBaZZLhp5TRtYSQxBMTmT2b4bDE4mbTb0VtDgpfrp5yOu
+xTtJxiQ53jIenv58qYLMhVBUsuMjWjnTVtNF6531n0T6v/K0ByNmUqKwStH/8qLX
+i+I4VWinALYcSOZDxranDey+1oVyw0NpvJMFFEhF0fmPRlSpaq5c
+=x5FB
 -----END PGP PUBLIC KEY BLOCK-----
 
 Type Bits/KeyID    Date       User ID
