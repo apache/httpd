@@ -126,7 +126,12 @@ char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile) {
     char *pw = NULL;
 
     q.dptr = user; 
+#ifndef NETSCAPE_DBM_COMPAT
     q.dsize = strlen(q.dptr); 
+#else
+    q.dsize = strlen(q.dptr) + 1; 
+#endif
+
     
     if(!(f=dbm_open(auth_dbmpwfile,O_RDONLY,0664))) {
         log_reason ("could not open dbm auth file", auth_dbmpwfile, r);

@@ -1,5 +1,9 @@
 Changes with Apache 1.3
-  
+
+  *) If NETSCAPE_DBM_COMPAT is defined in EXTRA_CFLAGS then Apache
+     will work with netscape dbm files.  (dbmmanage will probably not
+     work however.) [Alexander Spohr <aspohr@netmatic.com>] PR#444
+
   *) Add a ListenBacklog directive to control the backlog parameter
      passed to listen().  Also change the default to 511 from 512.
      [Marc Slemko]
