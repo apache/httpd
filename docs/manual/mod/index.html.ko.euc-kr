@@ -85,22 +85,19 @@ address)</dd>
     <code>dir</code> 쉘명령어와 유사한 디렉토리 목록을 만든다</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN 웹서버 메타파일 지원</dd>
-<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
-<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
-    external CGI daemon</dd>
-<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
+<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI 스크립트 실행</dd>
+<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>외부 CGI 데몬을 사용하여 CGI 스크립트를 실행</dd>
+<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>문자집합 변환을 지정</dd>
 <dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd>
-<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before it is delivered to the
-client</dd>
-<dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and
-    serving directory index files</dd>
+(<a href="http://www.webdav.org/">WebDAV</a>) 기능</dd>
+<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>을 위한 파일시스템 제공자</dd>
+<dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>내용을 클라이언트로 보내기 전에 압축한다</dd>
+<dt><a href="mod_dir.html">mod_dir</a></dt><dd>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
+index 파일을 서비스한다</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
-<dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
-modules</dd>
-<dt><a href="mod_env.html">mod_env</a></dt><dd>Modifies the environment which is passed to CGI scripts and
-SSI pages</dd>
+<dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>프로토콜 모듈을 설명하기위한 간단한 echo 서버</dd>
+<dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
+수정한다</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> HTTP headers according to
 user-specified criteria</dd>

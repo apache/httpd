@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_dav_fs - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">모듈</a></div>
+<div id="page-content">
+<div id="preamble"><h1>아파치 모듈 mod_dav_fs</h1>
+<div class="toplang">
+<p><span>가능한 언어: </span><a href="../en/mod/mod_dav_fs.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dav_fs.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dav_fs.html">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>을 위한 파일시스템 제공자</td></tr>
+<tr><th><a href="module-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>dav_fs_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_dav_fs.c</td></tr></table>
+<h3>요약</h3>
+
+    <p>이 모듈은 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> 서비스에 <em>필요하다</em>.
+    <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>를 지원하는 모듈로 서버의 파일시스템에
+    있는 자원을 접근할 수 있도록 한다. 이 제공자(provider)의
+    정식명칭은 <code>filesystem</code>이다. <code class="directive"><a href="../mod/mod_dav.html#dav">Dav</a></code> 지시어를 지정하여
+    <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> 뒷단 제공자를 사용한다:</p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      Dav filesystem
+    </code></p></div>
+
+    <p><code>filesystem</code>이 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>의
+    기본 제공자이므로 대신 <code>On</code>을 사용할 수 있다.</p>
+</div>
+<div id="quickview"><h3 class="directives">지시어들</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
+</ul>
+<h3>참고</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>DAV 잠금 데이터베이스 위치</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavLockDB <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dav_fs</td></tr>
+</table>
+    <p><code class="directive">DavLockDB</code> 지시어는 잠금 데이터베이스의
+    전체 경로를 확장자를 제외하고 지정한다. 절대경로가 아니면
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>에 상대경로로
+    처리한다. <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>는 잠금을 SDBM 데이터베이스에
+    기록한다.</p>
+
+    
+
+    <div class="example"><h3>예제</h3><p><code>
+      DavLockDB var/DavLock
+    </code></p></div>
+
+    <p>아파치를 실행하는 <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>와
+    <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>은 잠금
+    데이터베이스가 있는 디렉토리에 쓰기 권한을 가져야 한다.
+    보안상 이유로 기존 디렉토리의 권한을 바꾸기보다는 잠금
+    데이터베이스용 디렉토리를 만들어야 한다. 위의 경우 아파치는
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> 아래
+    <code>var/</code> 디렉토리에 서버가 선택한 확장명을 가진
+    <code>DavLock</code> 파일을 만든다.</p>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>가능한 언어: </span><a href="../en/mod/mod_dav_fs.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_dav_fs.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/mod_dav_fs.html">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
+</body></html>
