@@ -42,6 +42,9 @@ Changes with Apache 1.2b8
   *) Improved generation of modules/Makefile to be more generic for
      new module directories. [Ken Coar and Chuck Murcko]
 
+  *) Generate makefile dependency for Configuration based on the actual
+     name given when running the Configure process.  [Dean Gaudet]
+
   *) Fixed problem with vhost error log not being set prior to
      initializing virtual hosts. [Dean Gaudet]
 

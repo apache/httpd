@@ -18,13 +18,13 @@ OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
-all: Configuration httpd
+all: @@Configuration@@ httpd
 
-Configuration: Configuration.tmpl
-	@echo "Configuration older than Configuration.tmpl, or doesn't exist."
-	@echo "Consider copying Configuration.tmpl to Configuration, editing and rerunning"
+@@Configuration@@: Configuration.tmpl
+	@echo "@@Configuration@@ older than Configuration.tmpl, or doesn't exist."
+	@echo "Consider copying Configuration.tmpl to @@Configuration@@, editing and rerunning"
 	@echo "Configure."
-	@echo "If not, you will at least have to touch Configuration."
+	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
 httpd: $(REGLIB) $(OBJS)
