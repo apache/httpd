@@ -159,6 +159,7 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
 
     ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
                  "an unknown filter was not added: %s", name);
+    return NULL;
 }
 
 AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
