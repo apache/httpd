@@ -55,6 +55,10 @@
 #ifndef APACHE_AP_MMN_H
 #define APACHE_AP_MMN_H
 
+/**
+ * @package Module Magic Number
+ */
+
 /*
  * MODULE_MAGIC_NUMBER_MAJOR
  * Major API changes that could cause compatibility problems for older modules
@@ -233,21 +237,27 @@
 #define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
-/* Useful for testing for features. */
+/**
+ * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
+ * specified value.
+ * <PRE>
+ * Useful for testing for features.
+ * For example, suppose you wish to use the ap_overlap_tables
+ *    function.  You can do this:
+ * 
+ * #if MODULE_MAGIC_AT_LEAST(19980812,2)
+ *     ... use ap_overlap_tables()
+ * #else
+ *     ... alternative code which doesn't use ap_overlap_tables()
+ * #endif
+ * </PRE>
+ * @param major The major module magic number
+ * @param minor The minor module magic number
+ * @deffunc MODULE_MAGIC_AT_LEAST(int major, int minor)
+ */
 #define MODULE_MAGIC_AT_LEAST(major,minor)		\
     ((major) > MODULE_MAGIC_NUMBER_MAJOR 		\
 	|| ((major) == MODULE_MAGIC_NUMBER_MAJOR 	\
 	    && (minor) >= MODULE_MAGIC_NUMBER_MINOR))
-
-/* For example, suppose you wish to use the ap_overlap_tables
-   function.  You can do this:
-
-#if MODULE_MAGIC_AT_LEAST(19980812,2)
-    ... use ap_overlap_tables()
-#else
-    ... alternative code which doesn't use ap_overlap_tables()
-#endif
-
-*/
 
 #endif /* !APACHE_AP_MMN_H */
