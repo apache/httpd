@@ -1,5 +1,8 @@
 Changes with Apache 1.3
 
+  *) PORT: Allow for use of n32bit libraries under IRIX 6.x
+     [derived from patch from Jeff Hayes <jhayes@aw.sgi.com>]
+
   *) PORT: Some architectures use size_t for various lengths in network
      functions such as accept(), and getsockname().  The definition
      NET_SIZE_T is used to control this. [Dean Gaudet]

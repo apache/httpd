@@ -85,7 +85,11 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     IRIX:*)
-	echo "${MACHINE}-sgi-irix"; exit 0
+	if [ -f /usr/lib32/mips4/libm.so ]; then
+	    echo "${MACHINE}-sgi-irix32"; exit 0
+	else
+	    echo "${MACHINE}-sgi-irix"; exit 0
+	fi
 	;;
 
     IRIX64:*)

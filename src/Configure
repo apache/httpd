@@ -267,6 +267,18 @@ case "$PLAT" in
 	    CFLAGS="$CFLAGS -DIRIX"
 	fi
 	;;
+    *-sgi-irix32)
+	CFLAGS="$CFLAGS -n32"
+	LDFLAGS="$LDFLAGS -n32"
+	DEF_WANTHSREGEX=yes
+	DBM_LIB=""
+	CFLAGS="$CFLAGS -DIRIX"
+	if [ "$RULE_IRIXNIS" = "yes" ]; then
+	    OS='SGI IRIX-32 w/NIS'
+	else
+	    OS='SGI IRIX-32'
+	fi
+	;;
     *-sgi-irix)
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
