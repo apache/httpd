@@ -971,7 +971,8 @@ void send_http_header(request_rec *r)
     char *default_type = dir_conf->default_type;
   
     if (r->assbackwards) {
-	bsetopt(fd, BO_BYTECT, &zero);
+        if(!r->main)
+	    bsetopt(fd, BO_BYTECT, &zero);
 	r->sent_bodyct = 1;
 	return;
     }
