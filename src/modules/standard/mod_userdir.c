@@ -175,8 +175,8 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
                    "file path";
 #else
             if (strchr(arg, '*'))
-                 return "UserDir cannot specify a both a relative path and "
-                        "'*' substitution";
+                 return "UserDir cannot specify '*' substitution within a "
+                        "relative path";
 #endif
         s_cfg->userdir = ap_pstrdup(cmd->pool, arg);
 #if defined(WIN32) || defined(OS2) || defined(NETWARE)
