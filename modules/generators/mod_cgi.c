@@ -332,7 +332,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
             break;
         }
         rv = apr_bucket_read(e, &buf, &len, APR_BLOCK_READ);
-        if (!APR_STATUS_IS_SUCCESS(rv) || (len == 0)) {
+        if (rv != APR_SUCCESS || (len == 0)) {
             break;
         }
         if (first) {
@@ -592,7 +592,7 @@ static void discard_script_output(apr_bucket_brigade *bb)
             break;
         }
         rv = apr_bucket_read(e, &buf, &len, APR_BLOCK_READ);
-        if (!APR_STATUS_IS_SUCCESS(rv)) {
+        if (rv != APR_SUCCESS) {
             break;
         }
     }
@@ -615,7 +615,7 @@ static int cgi_handler(request_rec *r)
     apr_status_t rv;
     exec_info e_info;
 
-    if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
+    if(strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script"))
         return DECLINED;
 
     is_included = !strcmp(r->protocol, "INCLUDED");
