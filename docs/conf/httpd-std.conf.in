@@ -317,6 +317,8 @@ DocumentRoot "@exp_htdocsdir@"
 <Directory />
     Options FollowSymLinks
     AllowOverride None
+    Order deny,allow
+    Deny from all
 </Directory>
 
 #
@@ -362,7 +364,8 @@ DocumentRoot "@exp_htdocsdir@"
 
 #
 # UserDir: The name of the directory that is appended onto a user's home
-# directory if a ~user request is received.
+# directory if a ~user request is received.  Note that you must also set
+# the default access control for these directories, as in the example below.
 #
 <IfModule mod_userdir.c>
     UserDir public_html
