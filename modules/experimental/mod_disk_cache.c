@@ -80,7 +80,7 @@ typedef struct {
     apr_size_t minfs;            /* minumum file size for cached files */
     apr_size_t maxfs;            /* maximum file size for cached files */
     apr_time_t mintm;            /* minimum time margin for caching files */
-    dgc_time_t gcdt;             /* time of day for daily garbage collection */
+    /* dgc_time_t gcdt;            time of day for daily garbage collection */
     apr_array_header_t *gcclnun; /* gc_retain_t entries for unused files */
     apr_array_header_t *gcclean; /* gc_retain_t entries for all files */
     int maxgcmem;                /* maximum memory used by garbage collection */
@@ -493,7 +493,7 @@ apr_status_t file_cache_el_final(cache_info *info, cache_handle_t *h, request_re
 
 static void *create_config(apr_pool_t *p, server_rec *s)
 {
-    disk_cache_config conf = apr_pcalloc(p, sizeof(disk_cache_conf));
+    disk_cache_conf *conf = apr_pcalloc(p, sizeof(disk_cache_conf));
 
     /* XXX: Set default values */
 
