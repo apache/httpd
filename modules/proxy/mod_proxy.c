@@ -67,6 +67,10 @@ extern module AP_MODULE_DECLARE_DATA proxy_module;
  * A Web proxy module. Stages:
  *
  *  translate_name: set filename to proxy:<URL>
+ *  map_to_storage: run proxy_walk (rather than directory_walk/file_walk)
+ *                  can't trust directory_walk/file_walk since these are
+ *                  not in our filesystem.  Prevents mod_http from serving
+ *                  the TRACE request we will set aside to handle later.
  *  type_checker:   set type to PROXY_MAGIC_TYPE if filename begins proxy:
  *  fix_ups:        convert the URL stored in the filename to the
  *                  canonical form.
@@ -190,6 +194,65 @@ static int proxy_trans(request_rec *r)
     return DECLINED;
 }
 
+int proxy_walk(request_rec *r)
+{
+    proxy_server_conf *sconf = ap_get_module_config(r->server->module_config,
+                                                    &proxy_module);
+    ap_conf_vector_t *per_dir_defaults = r->server->lookup_defaults;
+    ap_conf_vector_t **sec_proxy = (ap_conf_vector_t **) sconf->sec_proxy->elts;
+    ap_conf_vector_t *entry_config;
+    proxy_dir_conf *entry_proxy;
+    int num_sec = sconf->sec_proxy->nelts;
+     /* XXX: shouldn't we use URI here?  Canonicalize it first?
+      * Pass over "proxy:" prefix 
+      */
+    const char *proxyname = r->filename + 6;
+    int j;
+
+    for (j = 0; j < num_sec; ++j) 
+    {
+        entry_config = sec_proxy[j];
+        entry_proxy = ap_get_module_config(entry_config, &proxy_module);
+
+        /* XXX: What about case insensitive matching ???
+         * Compare regex, fnmatch or string as appropriate
+         * If the entry doesn't relate, then continue 
+         */
+        if (entry_proxy->r 
+              ? ap_regexec(entry_proxy->r, proxyname, 0, NULL, 0)
+              : (entry_proxy->p_is_fnmatch
+                   ? apr_fnmatch(entry_proxy->p, proxyname, 0)
+                   : strncmp(proxyname, entry_proxy->p, 
+                                        strlen(entry_proxy->p)))) {
+            continue;
+        }
+        per_dir_defaults = ap_merge_per_dir_configs(r->pool, per_dir_defaults,
+                                                             entry_config);
+    }
+
+    r->per_dir_config = per_dir_defaults;
+
+    return OK;
+}
+
+static int proxy_map_location(request_rec *r)
+{
+    int access_status;
+
+    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+        return DECLINED;
+
+    /* Don't let the core or mod_http map_to_storage hooks handle this,
+     * We don't need directory/file_walk, and we want to TRACE on our own.
+     */
+    if ((access_status = proxy_walk(r))) {
+        ap_die(access_status, r);
+        return access_status;
+    }
+
+    return OK;
+}
+
 /* -------------------------------------------------------------- */
 /* Fixup the filename */
 
@@ -204,6 +267,7 @@ static int proxy_fixup(request_rec *r)
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
+    /* XXX: Shouldn't we try this before we run the proxy_walk? */
     url = &r->filename[6];
 
     /* canonicalise each specific scheme */
@@ -402,6 +466,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
 {
     proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
 
+    ps->sec_proxy = ap_make_array(p, 10, sizeof(ap_conf_vector_t *));
     ps->proxies = ap_make_array(p, 10, sizeof(struct proxy_remote));
     ps->aliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
     ps->raliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
@@ -427,12 +492,13 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     proxy_server_conf *base = (proxy_server_conf *) basev;
     proxy_server_conf *overrides = (proxy_server_conf *) overridesv;
 
-    ps->proxies = ap_append_arrays(p, base->proxies, overrides->proxies);
-    ps->aliases = ap_append_arrays(p, base->aliases, overrides->aliases);
-    ps->raliases = ap_append_arrays(p, base->raliases, overrides->raliases);
-    ps->noproxies = ap_append_arrays(p, base->noproxies, overrides->noproxies);
-    ps->dirconn = ap_append_arrays(p, base->dirconn, overrides->dirconn);
-    ps->allowed_connect_ports = ap_append_arrays(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
+    ps->proxies = apr_array_append(p, base->proxies, overrides->proxies);
+    ps->sec_proxy = apr_array_append(p, base->sec_proxy, overrides->sec_proxy);
+    ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
+    ps->raliases = apr_array_append(p, base->raliases, overrides->raliases);
+    ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
+    ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
+    ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
 
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
@@ -442,6 +508,29 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
 
     return ps;
 }
+
+static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
+{
+    proxy_dir_conf *new =
+        (proxy_dir_conf *) apr_pcalloc(p, sizeof(proxy_dir_conf));
+
+    /* Filled in by proxysection, when applicable */
+
+    return (void *) new;
+}
+
+static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
+{
+    proxy_dir_conf *new = (proxy_dir_conf *) apr_pcalloc(p, sizeof(proxy_dir_conf));
+    proxy_dir_conf *base = (proxy_dir_conf *) basev;
+    proxy_dir_conf *add = (proxy_dir_conf *) addv;
+
+    new->p = add->p;
+    new->p_is_fnmatch = add->p_is_fnmatch;
+    new->r = add->r;
+    return new;
+}
+
 
 static const char *
     add_proxy(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
@@ -726,8 +815,101 @@ static const char*
     return NULL;    
 }
 
+static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
+{
+    proxy_server_conf *sconf = ap_get_module_config(s->module_config,
+					            &proxy_module);
+    void **new_space = (void **)apr_array_push(sconf->sec_proxy);
+    
+    *new_space = dir_config;
+}
+
+static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    const char *errmsg;
+    const char *endp = ap_strrchr_c(arg, '>');
+    int old_overrides = cmd->override;
+    char *old_path = cmd->path;
+    proxy_dir_conf *conf;
+    ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
+    regex_t *r = NULL;
+    const command_rec *thiscmd = cmd->cmd;
+
+    const char *err = ap_check_cmd_context(cmd,
+					   NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (endp == NULL) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+		  "> directive missing closing '>'", NULL);
+    }
+
+    arg=apr_pstrndup(cmd->pool, arg, endp-arg);
+
+    if (!arg) {
+        if (thiscmd->cmd_data)
+            return "<ProxyMatch > block must specify a path";
+        else
+            return "<Proxy > block must specify a path";
+    }
+
+    cmd->path = ap_getword_conf(cmd->pool, &arg);
+    cmd->override = OR_ALL|ACCESS_CONF;
+
+    if (strncasecmp(cmd->path, "proxy:", 6))
+        cmd->path += 6;
+
+    /* XXX Ignore case?  What if we proxy a case-insenstive server?!? 
+     * While we are at it, shouldn't we also canonicalize the entire
+     * scheme?  See proxy_fixup()
+     */
+    if (thiscmd->cmd_data) { /* <ProxyMatch> */
+	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+    else if (!strcmp(cmd->path, "~")) {
+	cmd->path = ap_getword_conf(cmd->pool, &arg);
+        if (!cmd->path)
+            return "<Proxy ~ > block must specify a path";
+        if (strncasecmp(cmd->path, "proxy:", 6))
+            cmd->path += 6;
+	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+
+    /* initialize our config and fetch it */
+    conf = ap_set_config_vectors(cmd->server, new_dir_conf, cmd->path,
+                                 &proxy_module, cmd->pool);
+
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_dir_conf);
+    if (errmsg != NULL)
+	return errmsg;
+
+    conf->r = r;
+    conf->p = cmd->path;
+    conf->p_is_fnmatch = apr_is_fnmatch(conf->p);
+
+    ap_add_per_proxy_conf(cmd->server, new_dir_conf);
+
+    if (*arg != '\0') {
+	return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
+			  "> arguments not (yet) supported.", NULL);
+    }
+
+    cmd->path = old_path;
+    cmd->override = old_overrides;
+
+    return NULL;
+}
+
 static const command_rec proxy_cmds[] =
 {
+    AP_INIT_RAW_ARGS("<Proxy", proxysection, NULL, RSRC_CONF, 
+    "Container for directives affecting resources located in the proxied "
+    "location"),
+    AP_INIT_RAW_ARGS("<ProxyMatch", proxysection, (void*)1, RSRC_CONF,
+    "Container for directives affecting resources located in the proxied "
+    "location, in regular expression syntax"),
     AP_INIT_FLAG("ProxyRequests", set_proxy_req, NULL, RSRC_CONF,
      "on if the true proxy requests should be accepted"),
     AP_INIT_TAKE2("ProxyRemote", add_proxy, NULL, RSRC_CONF,
@@ -759,6 +941,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
+    /* walk <Proxy > entries and suppress default TRACE behavior */
+    ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
@@ -768,8 +952,8 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA proxy_module =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
+    create_proxy_dir_config,    /* create per-directory config structure */
+    merge_proxy_dir_config,     /* merge per-directory config structures */
     create_proxy_config,	/* create per-server config structure */
     merge_proxy_config,		/* merge per-server config structures */
     proxy_cmds,			/* command table */
