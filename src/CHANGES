@@ -1,5 +1,10 @@
 Changes with Apache 1.3b6
 
+  *) Use SA_RESETHAND or SA_ONESHOT when installing the coredump handlers.
+     In particular the handlers could trigger themselves into an infinite
+     loop if RLimitMem was used with a small amount of memory -- too small
+     for the signal stack frame to be set up.  [Dean Gaudet]
+
   *) Fix problems with absoluteURIs.  [Dean Gaudet,
      Alvaro Martinez Echevarria <alvaro@lander.es>]
 
@@ -18,7 +23,7 @@ Changes with Apache 1.3b6
      processor.  httpd children now unbind themselves from that cpu
      and re-bind to one selected at random via bindprocessor()
      [Doug MacEachern]
-      
+
   *) Linux 2.0 and above implement RLIMIT_AS, RLIMIT_DATA has almost no
      effect.  Work around it by using RLIMIT_AS for the RLimitMEM
      directive.  [Enrik Berkhan <enrik@inka.de>] PR#1816

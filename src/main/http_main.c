@@ -2228,6 +2228,11 @@ void set_signals(void)
 
     if (!one_process) {
 	sa.sa_handler = sig_coredump;
+#if defined(SA_ONESHOT)
+	sa.sa_flags = SA_ONESHOT;
+#elif defined(SA_RESETHAND)
+	sa.sa_flags = SA_RESETHAND;
+#endif
 	if (sigaction(SIGSEGV, &sa, NULL) < 0)
 	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGSEGV)");
 #ifdef SIGBUS
@@ -2242,6 +2247,7 @@ void set_signals(void)
 	if (sigaction(SIGABRT, &sa, NULL) < 0)
 	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABRT)");
 #endif
+	sa.sa_flags = 0;
     }
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
