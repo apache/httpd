@@ -512,7 +512,7 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-void ap_log_pid(apr_pool_t *p, const char *fname)
+AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *fname)
 {
     apr_file_t *pid_file = NULL;
     apr_finfo_t finfo;
