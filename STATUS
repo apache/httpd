@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/17 23:22:07 $]
+Last modified at [$Date: 2002/02/17 23:32:17 $]
 
 Release:
 
@@ -108,7 +108,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       sanity checking before totally corrupting whatever file it was
       you thought you had. It should check the input file and bail
       if it finds non-comment lines that do not contain exactly 1
-      ':' character and bail.
+      ':' character.
         Message-ID: <20020217150457.A31632@clove.org>
 
     * Can a static httpd be built reliably?
