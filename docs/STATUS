@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/16 15:52:40 $
+Last modified: $Date: 2002/09/16 16:08:06 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -16,6 +16,9 @@ tutorial on how to get started with making your contribution.
     - Rewriting of the remainder of the manual into xml is in
       progress.  See the bottom of this file for status info.
     - Get mod/mod_auth_ldap.xml to validate against the current dtd.
+    - Some of the nested <dl>s in mod/mod_include.xml are not working
+      in mozilla.  Probably enclosing some of the bare paragraphs
+      in <p> would fix it.
 
 - modules docs
     - mod_suexec: very little documentation
@@ -79,12 +82,9 @@ Documentation improvements
   - Add more information to the directives.html index (description,
     syntax, context, ...) or perhaps add a quickreference.html
     that contains this info.
-  - Use a tag like <replaceable> (but not that long) in place of
+  - Use a tag like <var> (but not that long) in place of
     <em> for things like the <syntax> listing.
-
-    -> use <var>, it's intuitive enough and can easily passed through
-    by XSLT at least for HTML targets --nd (volunteer)
-
+    - nd volunteers
   - Use the sitemap.xml in place of allmodules.xml to generate the
     directives.html and mod/index.html.
   - Handle more levels of sub<section>s.
