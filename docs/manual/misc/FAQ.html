@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.76 $ ($Date: 1997/06/28 21:05:31 $)
+  $Revision: 1.77 $ ($Date: 1997/06/30 21:42:26 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1481,9 +1481,9 @@
   To resolve this, you can either make sure you use the include files
   and libraries that came with your system or make sure to use the
   new include files and libraries.  Adding <CODE>-lbind</CODE> to the
-  <CODE>EXTRA_LFLAGS</CODE> line in your <CODE>Configuration</CODE> 
+  <CODE>EXTRA_LDFLAGS</CODE> line in your <CODE>Configuration</CODE> 
   file, then re-running <CODE>Configure</CODE>, should resolve the
-  problem.
+  problem.  (Pre 1.3 Apache uses <CODE>EXTRA_LFLAGS</CODE> instead.)
   </P>
   <p><b>Note:</b> As of BIND 8.1.1, the bind libraries and files are
   installed under <code>/usr/local/bind</code> by default.  So you
@@ -1491,7 +1491,7 @@
   resolvers you'll have to add the following to the respective lines:
   <blockquote><pre>
   EXTRA_CFLAGS=-I/usr/local/bind/include
-  EXTRA_LFLAGS=-L/usr/local/bind/lib
+  EXTRA_LDFLAGS=-L/usr/local/bind/lib
   EXTRA_LIBS=-lbind
   </pre></blockquote>
   <HR>
