@@ -91,7 +91,7 @@ extern char *ap_scoreboard_fname;
 extern char *ap_lock_fname;
 extern MODULE_VAR_EXPORT char *ap_server_argv0;
 
-extern int ap_note_platform;
+extern enum server_token_type ap_server_tokens;
 
 /* Trying to allocate these in the config pool gets us into some *nasty*
  * chicken-and-egg problems in http_main.c --- where do you stick them

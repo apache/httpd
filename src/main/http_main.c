@@ -343,7 +343,8 @@ scoreboard *ap_scoreboard_image = NULL;
 static char *server_version = NULL;
 static int version_locked = 0;
 
-int ap_note_platform = 1;  /* Global, alas, so http_core can talk to us */
+/* Global, alas, so http_core can talk to us */
+enum server_token_type ap_server_tokens = SrvTk_FULL;
 
 /*
  * This routine is called when the pconf pool is vacuumed.  It resets the
@@ -353,13 +354,13 @@ int ap_note_platform = 1;  /* Global, alas, so http_core can talk to us */
 static void reset_version(void *dummy)
 {
     version_locked = 0;
-    ap_note_platform = 1;
+    ap_server_tokens = SrvTk_FULL;
     server_version = NULL;
 }
 
 API_EXPORT(const char *) ap_get_server_version()
 {
-    return server_version;
+    return (server_version ? server_version : SERVER_BASEVERSION);
 }
 
 API_EXPORT(void) ap_add_version_component(const char *component)
@@ -367,7 +368,8 @@ API_EXPORT(void) ap_add_version_component(const char *component)
     if (! version_locked) {
         /*
          * If the version string is null, register our cleanup to reset the
-         * pointer on pool destruction.
+         * pointer on pool destruction. We also know that, if NULL,
+	 * we are adding the original SERVER_BASEVERSION string.
          */
         if (server_version == NULL) {
 	    ap_register_cleanup(pconf, NULL, (void (*)(void *))reset_version, 
@@ -376,10 +378,11 @@ API_EXPORT(void) ap_add_version_component(const char *component)
 	}
 	else {
 	    /*
-	     * Prepend the given component identifier to the existing string
+	     * Tack the given component identifier to the end of
+	     * the existing string.
 	     */
-	    server_version = ap_pstrcat(pconf, component, " ", server_version,
-					NULL);
+	    server_version = ap_pstrcat(pconf, server_version, " ",
+					component, NULL);
 	}
     }
 }
@@ -390,16 +393,19 @@ API_EXPORT(void) ap_add_version_component(const char *component)
  */
 static void ap_set_version()
 {
-#ifdef SERVER_SUBVERSION
-    ap_add_version_component(SERVER_SUBVERSION);
-#endif
-    if (ap_note_platform) {
-        ap_add_version_component(SERVER_BASEVERSION " (" PLATFORM ")");
+    if (ap_server_tokens == SrvTk_MIN) {
+	ap_add_version_component(SERVER_BASEVERSION);
     }
     else {
-        ap_add_version_component(SERVER_BASEVERSION);
+	ap_add_version_component(SERVER_BASEVERSION " (" PLATFORM ")");
     }
-    version_locked++;
+    /*
+     * Lock the server_version string if we're not displaying
+     * the full set of tokens
+     */
+    if (ap_server_tokens != SrvTk_FULL) {
+	version_locked++;
+    }
 }
 
 static APACHE_TLS int volatile exit_after_unblock = 0;
@@ -3120,12 +3126,8 @@ static void AMCSocketCleanup(void)
 
 static void show_compile_settings(void)
 {
-    printf("Server base version: %s\n", SERVER_BASEVERSION);
-#ifdef SERVER_SUBVERSION
-    printf("Server sub-version:  %s\n", SERVER_SUBVERSION);
-#endif
-    printf("Server Full version: %s\n", ap_get_server_version());
-    printf("Server built:        %s\n", ap_get_server_built());
+    printf("Server version: %s\n", ap_get_server_version());
+    printf("Server built:   %s\n", ap_get_server_built());
     printf("Server's Module Magic Number: %u\n", MODULE_MAGIC_NUMBER);
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
@@ -3997,8 +3999,9 @@ static void standalone_main(int argc, char **argv)
 	setup_listeners(pconf);
 	ap_open_logs(server_conf, pconf);
 	ap_log_pid(pconf, ap_pid_fname);
+	ap_set_version();	/* create our server_version string */
 	ap_init_modules(pconf, server_conf);
-	ap_set_version();
+	version_locked++;	/* no more changes to server_version */
 	SAFE_ACCEPT(accept_mutex_init(pconf));
 	if (!is_graceful) {
 	    reinit_scoreboard(pconf);
@@ -4225,10 +4228,12 @@ int REALMAIN(int argc, char *argv[])
 	    ap_cpystrn(ap_server_confname, optarg, sizeof(ap_server_confname));
 	    break;
 	case 'v':
+	    ap_set_version();
 	    printf("Server version: %s\n", ap_get_server_version());
 	    printf("Server built:   %s\n", ap_get_server_built());
 	    exit(0);
 	case 'V':
+	    ap_set_version();
 	    show_compile_settings();
 	    exit(0);
 	case 'h':
@@ -4269,8 +4274,9 @@ int REALMAIN(int argc, char *argv[])
 
     if (ap_standalone) {
 	ap_open_logs(server_conf, pconf);
-	ap_init_modules(pconf, server_conf);
 	ap_set_version();
+	ap_init_modules(pconf, server_conf);
+	version_locked++;
 	STANDALONE_MAIN(argc, argv);
     }
     else {
@@ -5186,8 +5192,9 @@ int master_main(int argc, char **argv)
 
 	server_conf = ap_read_config(pconf, pparent, ap_server_confname);
 	ap_open_logs(server_conf, pconf);
-	ap_init_modules(pconf, server_conf);
 	ap_set_version();
+	ap_init_modules(pconf, server_conf);
+	version_locked++;
 	if (!is_graceful)
 	    reinit_scoreboard(pconf);
 
@@ -5398,6 +5405,7 @@ int REALMAIN(int argc, char *argv[])
 	    printf("Server built:   %s\n", ap_get_server_built());
 	    exit(0);
 	case 'V':
+	    ap_set_version();
 	    show_compile_settings();
 	    exit(0);
 	case 'h':
@@ -5422,9 +5430,10 @@ int REALMAIN(int argc, char *argv[])
     if (!child) {
 	ap_log_pid(pconf, ap_pid_fname);
     }
+    ap_set_version();
     ap_init_modules(pconf, server_conf);
     ap_suexec_enabled = init_suexec();
-    ap_set_version();
+    version_locked++;
     ap_open_logs(server_conf, pconf);
     set_group_privs();
 

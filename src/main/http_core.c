@@ -1879,13 +1879,17 @@ static const char *set_bs2000_authfile (cmd_parms *cmd, void *dummy, char *name)
  * string.
  */
 
-static const char *enable_platform_announcement(cmd_parms *cmd, void *mconfig,
-						int flag)
+static const char *set_serv_tokens (cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
-    ap_note_platform = flag;
+    if (!strcasecmp(arg, "OS"))
+        ap_server_tokens = SrvTk_OS;
+    else if (!strcasecmp(arg, "Min") || !strcasecmp(arg, "Minimal"))
+        ap_server_tokens = SrvTk_MIN;
+    else
+        ap_server_tokens = SrvTk_FULL;
     return NULL;
 }
 
@@ -2026,8 +2030,8 @@ static const command_rec core_cmds[] = {
 { "BS2000AuthFile", set_bs2000_authfile, NULL, RSRC_CONF, TAKE1,
   "server User's bs2000 logon password file (read-protected)" },
 #endif
-{ "AddVersionPlatform", enable_platform_announcement, NULL, RSRC_CONF, FLAG,
-  "Set to 'off' to not include server OS platform in Server identity text" },
+{ "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
+  "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
 { NULL },
 };
 

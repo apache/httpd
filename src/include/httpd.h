@@ -369,14 +369,9 @@ extern "C" {
 #define DEFAULT_LISTENBACKLOG 511
 #endif
 
-/* If you have altered Apache and wish to change the SERVER_VERSION
- * identifier below, please keep to the HTTP specification.  This states that
- * the identification string should consist of product tokens with an optional
- * slash and version designator.  Sub-products which form a significant part 
- * of the application can be listed, separated by whitespace, by adding
- * their product tokens to EXTRA_CFLAGS in the Configuration file like so.
- *
- * EXTRA_CFLAGS="-DSERVER_SUBVERSION="MrWidget/0.1-alpha"
+/*
+ * The below defines the base string of the Server: header. Additional
+ * tokens can be added via the ap_add_version_component() API call.
  *
  * The tokens are listed in order of their significance for identifying the
  * application.
@@ -388,11 +383,12 @@ extern "C" {
  */
 
 #define SERVER_BASEVERSION "Apache/1.3b7-dev"	/* SEE COMMENTS ABOVE */
-#ifdef SERVER_SUBVERSION
-#define SERVER_VERSION	SERVER_BASEVERSION " " SERVER_SUBVERSION
-#else
-#define SERVER_VERSION	SERVER_BASEVERSION
-#endif
+#define SERVER_VERSION  SERVER_BASEVERSION
+enum server_token_type {
+    SrvTk_MIN,		/* eg: Apache/1.3.0 */
+    SrvTk_OS,		/* eg: Apache/1.3.0 (UNIX) */
+    SrvTk_FULL		/* eg: Apache/1.3.0 (UNIX) PHP/3.0 FooBar/1.2b */
+};
 
 API_EXPORT(const char *) ap_get_server_version(void);
 API_EXPORT(void) ap_add_version_component(const char *component);

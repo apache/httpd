@@ -1,6 +1,13 @@
 Changes with Apache 1.3b7
 
-  *) Support for the NCR MP/RAS 3.0 [John Withers <withers@semi.kcsc.mwr.irs.gov>]
+  *) Replace the AddVersionPlatform directive with ServerTokens which
+     provides for more control over the format of the Server:
+     header line. SERVER_SUBVERSION is no longer supported;
+     all module should use the ap_add_version_component()
+     API function instead. [Jim Jagielski]
+
+  *) Support for the NCR MP/RAS 3.0
+     [John Withers <withers@semi.kcsc.mwr.irs.gov>]
 
   *) The LDFLAGS_SHLIB_EXPORT variable of src/Configuration[.tmpl] was
      not retrieved in src/Configure and thus was not useable.
