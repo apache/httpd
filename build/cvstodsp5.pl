@@ -7,9 +7,10 @@ find(\&tovc5, '.');
 sub tovc5 { 
 
     if (m|.dsp$|) {
+        $oname = $_;
 	$tname = '.#' . $_;
         $verchg = 0;
-	$srcfl = new IO::File $_, "r" || die;
+	$srcfl = new IO::File $oname, "r" || die;
 	$dstfl = new IO::File $tname, "w" || die;
 	while ($src = <$srcfl>) {
 	    if ($src =~ s|Format Version 6\.00|Format Version 5\.00|) {
@@ -31,9 +32,9 @@ sub tovc5 {
 	undef $srcfl;
 	undef $dstfl;
 	if ($verchg) {
-	    unlink $_;
-	    rename $tname, $_;
-	    print "Converted VC6 project " . $_ . " to VC5 in " . $File::Find::dir . "\n"; 
+	    unlink $oname || die;
+	    rename $tname, $oname || die;
+	    print "Converted VC6 project " . $oname . " to VC5 in " . $File::Find::dir . "\n"; 
 	}
 	else {
 	    unlink $tname;
