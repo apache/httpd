@@ -85,14 +85,14 @@ int util_ldap_url_node_compare(void *a, void *b)
     return(strcmp(na->url, nb->url) == 0);
 }
 
-void *util_ldap_url_node_copy(void *c)
+void *util_ldap_url_node_copy(util_ald_cache_t *cache, void *c)
 {
     util_url_node_t *n = (util_url_node_t *)c;
-    util_url_node_t *node = (util_url_node_t *)util_ald_alloc(sizeof(util_url_node_t));
+    util_url_node_t *node = (util_url_node_t *)util_ald_alloc(cache->rmm_addr, sizeof(util_url_node_t));
 
     if (node) {
-        if (!(node->url = util_ald_strdup(n->url))) {
-            util_ald_free(node->url);
+        if (!(node->url = util_ald_strdup(cache->rmm_addr, n->url))) {
+            util_ald_free(cache->rmm_addr, node->url);
             return NULL;
         }
         node->search_cache = n->search_cache;
@@ -105,15 +105,15 @@ void *util_ldap_url_node_copy(void *c)
     }
 }
 
-void util_ldap_url_node_free(void *n)
+void util_ldap_url_node_free(util_ald_cache_t *cache, void *n)
 {
     util_url_node_t *node = (util_url_node_t *)n;
 
-    util_ald_free(node->url);
+    util_ald_free(cache->rmm_addr, node->url);
     util_ald_destroy_cache(node->search_cache);
     util_ald_destroy_cache(node->compare_cache);
     util_ald_destroy_cache(node->dn_compare_cache);
-    util_ald_free(node);
+    util_ald_free(cache->rmm_addr, node);
 }
 
 /* ------------------------------------------------------------------ */
@@ -131,10 +131,10 @@ int util_ldap_search_node_compare(void *a, void *b)
 		  ((util_search_node_t *)b)->username) == 0);
 }
 
-void *util_ldap_search_node_copy(void *c)
+void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
 {
     util_search_node_t *node = (util_search_node_t *)c;
-    util_search_node_t *newnode = util_ald_alloc(sizeof(util_search_node_t));
+    util_search_node_t *newnode = util_ald_alloc(cache->rmm_addr, sizeof(util_search_node_t));
 
     /* safety check */
     if (newnode) {
@@ -144,13 +144,13 @@ void *util_ldap_search_node_copy(void *c)
             int k = 0;
             int i = 0;
             while (node->vals[k++]);
-            if (!(newnode->vals = util_ald_alloc(sizeof(char *) * (k+1)))) {
-                util_ldap_search_node_free(newnode);
+            if (!(newnode->vals = util_ald_alloc(cache->rmm_addr, sizeof(char *) * (k+1)))) {
+                util_ldap_search_node_free(cache, newnode);
                 return NULL;
             }
             while (node->vals[i]) {
-                if (!(newnode->vals[i] = util_ald_strdup(node->vals[i]))) {
-                    util_ldap_search_node_free(newnode);
+                if (!(newnode->vals[i] = util_ald_strdup(cache->rmm_addr, node->vals[i]))) {
+                    util_ldap_search_node_free(cache, newnode);
                     return NULL;
                 }
                 i++;
@@ -159,10 +159,10 @@ void *util_ldap_search_node_copy(void *c)
         else {
             newnode->vals = NULL;
         }
-        if (!(newnode->username = util_ald_strdup(node->username)) ||
-            !(newnode->dn = util_ald_strdup(node->dn)) ||
-            !(newnode->bindpw = util_ald_strdup(node->bindpw)) ) {
-            util_ldap_search_node_free(newnode);
+        if (!(newnode->username = util_ald_strdup(cache->rmm_addr, node->username)) ||
+            !(newnode->dn = util_ald_strdup(cache->rmm_addr, node->dn)) ||
+            !(newnode->bindpw = util_ald_strdup(cache->rmm_addr, node->bindpw)) ) {
+            util_ldap_search_node_free(cache, newnode);
             return NULL;
         }
         newnode->lastbind = node->lastbind;
@@ -171,20 +171,20 @@ void *util_ldap_search_node_copy(void *c)
     return (void *)newnode;
 }
 
-void util_ldap_search_node_free(void *n)
+void util_ldap_search_node_free(util_ald_cache_t *cache, void *n)
 {
     int i = 0;
     util_search_node_t *node = (util_search_node_t *)n;
     if (node->vals) {
         while (node->vals[i]) {
-            util_ald_free(node->vals[i++]);
+            util_ald_free(cache->rmm_addr, node->vals[i++]);
         }
-        util_ald_free(node->vals);
+        util_ald_free(cache->rmm_addr, node->vals);
     }
-    util_ald_free(node->username);
-    util_ald_free(node->dn);
-    util_ald_free(node->bindpw);
-    util_ald_free(node);
+    util_ald_free(cache->rmm_addr, node->username);
+    util_ald_free(cache->rmm_addr, node->dn);
+    util_ald_free(cache->rmm_addr, node->bindpw);
+    util_ald_free(cache->rmm_addr, node);
 }
 
 /* ------------------------------------------------------------------ */
@@ -204,16 +204,16 @@ int util_ldap_compare_node_compare(void *a, void *b)
 	    strcmp(na->value, nb->value) == 0);
 }
 
-void *util_ldap_compare_node_copy(void *c)
+void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c)
 {
     util_compare_node_t *n = (util_compare_node_t *)c;
-    util_compare_node_t *node = (util_compare_node_t *)util_ald_alloc(sizeof(util_compare_node_t));
+    util_compare_node_t *node = (util_compare_node_t *)util_ald_alloc(cache->rmm_addr, sizeof(util_compare_node_t));
 
     if (node) {
-        if (!(node->dn = util_ald_strdup(n->dn)) ||
-            !(node->attrib = util_ald_strdup(n->attrib)) ||
-            !(node->value = util_ald_strdup(n->value))) {
-            util_ldap_compare_node_free(node);
+        if (!(node->dn = util_ald_strdup(cache->rmm_addr, n->dn)) ||
+            !(node->attrib = util_ald_strdup(cache->rmm_addr, n->attrib)) ||
+            !(node->value = util_ald_strdup(cache->rmm_addr, n->value))) {
+            util_ldap_compare_node_free(cache, node);
             return NULL;
         }
         node->lastcompare = n->lastcompare;
@@ -225,13 +225,13 @@ void *util_ldap_compare_node_copy(void *c)
     }
 }
 
-void util_ldap_compare_node_free(void *n)
+void util_ldap_compare_node_free(util_ald_cache_t *cache, void *n)
 {
     util_compare_node_t *node = (util_compare_node_t *)n;
-    util_ald_free(node->dn);
-    util_ald_free(node->attrib);
-    util_ald_free(node->value);
-    util_ald_free(node);
+    util_ald_free(cache->rmm_addr, node->dn);
+    util_ald_free(cache->rmm_addr, node->attrib);
+    util_ald_free(cache->rmm_addr, node->value);
+    util_ald_free(cache->rmm_addr, node);
 }
 
 /* ------------------------------------------------------------------ */
@@ -247,14 +247,14 @@ int util_ldap_dn_compare_node_compare(void *a, void *b)
 		   ((util_dn_compare_node_t *)b)->reqdn) == 0);
 }
 
-void *util_ldap_dn_compare_node_copy(void *c)
+void *util_ldap_dn_compare_node_copy(util_ald_cache_t *cache, void *c)
 {
     util_dn_compare_node_t *n = (util_dn_compare_node_t *)c;
-    util_dn_compare_node_t *node = (util_dn_compare_node_t *)util_ald_alloc(sizeof(util_dn_compare_node_t));
+    util_dn_compare_node_t *node = (util_dn_compare_node_t *)util_ald_alloc(cache->rmm_addr, sizeof(util_dn_compare_node_t));
     if (node) {
-        if (!(node->reqdn = util_ald_strdup(n->reqdn)) ||
-            !(node->dn = util_ald_strdup(n->dn))) {
-            util_ldap_dn_compare_node_free(node);
+        if (!(node->reqdn = util_ald_strdup(cache->rmm_addr, n->reqdn)) ||
+            !(node->dn = util_ald_strdup(cache->rmm_addr, n->dn))) {
+            util_ldap_dn_compare_node_free(cache, node);
             return NULL;
         }
         return node;
@@ -264,12 +264,12 @@ void *util_ldap_dn_compare_node_copy(void *c)
     }
 }
 
-void util_ldap_dn_compare_node_free(void *n)
+void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n)
 {
     util_dn_compare_node_t *node = (util_dn_compare_node_t *)n;
-    util_ald_free(node->reqdn);
-    util_ald_free(node->dn);
-    util_ald_free(node);
+    util_ald_free(cache->rmm_addr, node->reqdn);
+    util_ald_free(cache->rmm_addr, node->dn);
+    util_ald_free(cache->rmm_addr, node);
 }
 
 
@@ -279,46 +279,53 @@ apr_status_t util_ldap_cache_module_kill(void *data);
 
 apr_status_t util_ldap_cache_module_kill(void *data)
 {
+    util_ldap_state_t *st = (util_ldap_state_t *)data;
+
 #if APR_HAS_SHARED_MEMORY
-    if (util_ldap_shm != NULL) {
-        apr_status_t result = apr_shm_destroy(util_ldap_shm);
-        util_ldap_shm = NULL;
+    if (st->cache_shm != NULL) {
+        apr_status_t result = apr_shm_destroy(st->cache_shm);
+        st->cache_shm = NULL;
+        apr_file_remove(st->cache_file, st->pool);
         return result;
     }
 #endif
-    util_ald_destroy_cache(util_ldap_cache);
+    util_ald_destroy_cache(st->util_ldap_cache);
     return APR_SUCCESS;
 }
 
-apr_status_t util_ldap_cache_init(apr_pool_t *pool, apr_size_t reqsize)
+apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 {
 #if APR_HAS_SHARED_MEMORY
     apr_status_t result;
 
-    result = apr_shm_create(&util_ldap_shm, reqsize, MODLDAP_SHMEM_CACHE, pool);
+    if (!st->cache_file) {
+    	return -1;
+    }
+
+    result = apr_shm_create(&st->cache_shm, st->cache_bytes, st->cache_file, st->pool);
     if (result == EEXIST) {
         /*
          * The cache could have already been created (i.e. we may be a child process).  See
          * if we can attach to the existing shared memory
          */
-        result = apr_shm_attach(&util_ldap_shm, MODLDAP_SHMEM_CACHE, pool);
+        result = apr_shm_attach(&st->cache_shm, st->cache_file, st->pool);
     } 
     if (result != APR_SUCCESS) {
         return result;
     }
 
     /* This will create a rmm "handler" to get into the shared memory area */
-    apr_rmm_init(&util_ldap_rmm, NULL,
-			(void *)apr_shm_baseaddr_get(util_ldap_shm), reqsize, pool);
+    apr_rmm_init(&st->cache_rmm, NULL, (void *)apr_shm_baseaddr_get(st->cache_shm), st->cache_bytes, st->pool);
 #endif
 
-    apr_pool_cleanup_register(pool, NULL, util_ldap_cache_module_kill, apr_pool_cleanup_null);
+    apr_pool_cleanup_register(st->pool, st , util_ldap_cache_module_kill, apr_pool_cleanup_null);
 
-    util_ldap_cache = util_ald_create_cache(50,
-				     util_ldap_url_node_hash,
-				     util_ldap_url_node_compare,
-				     util_ldap_url_node_copy,
-				     util_ldap_url_node_free);
+    st->util_ldap_cache =
+        util_ald_create_cache(st,
+                              util_ldap_url_node_hash,
+                              util_ldap_url_node_compare,
+                              util_ldap_url_node_copy,
+                              util_ldap_url_node_free);
     return APR_SUCCESS;
 }
 

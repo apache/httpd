@@ -112,14 +112,17 @@ static const unsigned long primes[] =
   0
 };
 
-void util_ald_free(const void *ptr)
+void util_ald_free(apr_rmm_t *rmm_addr, const void *ptr)
 {
 #if APR_HAS_SHARED_MEMORY
-    if (util_ldap_shm) {
+    if (rmm_addr) {
         if (ptr)
-            apr_rmm_free(util_ldap_rmm, apr_rmm_offset_get(util_ldap_rmm, (void *)ptr));
-    } else {
+            /* Free in shared memory */
+            apr_rmm_free(rmm_addr, apr_rmm_offset_get(rmm_addr, (void *)ptr));
+    }
+    else {
         if (ptr)
+            /* Cache shm is not used */
             free((void *)ptr);
     }
 #else
@@ -128,14 +131,17 @@ void util_ald_free(const void *ptr)
 #endif
 }
 
-void *util_ald_alloc(unsigned long size)
+void *util_ald_alloc(apr_rmm_t *rmm_addr, unsigned long size)
 {
     if (0 == size)
         return NULL;
 #if APR_HAS_SHARED_MEMORY
-    if (util_ldap_shm) {
-        return (void *)apr_rmm_addr_get(util_ldap_rmm, apr_rmm_calloc(util_ldap_rmm, size));
-    } else {
+    if (rmm_addr) {
+        /* allocate from shared memory */
+        return (void *)apr_rmm_addr_get(rmm_addr, apr_rmm_calloc(rmm_addr, size));
+    }
+    else {
+        /* Cache shm is not used */
         return (void *)calloc(sizeof(char), size);
     }
 #else
@@ -143,11 +149,12 @@ void *util_ald_alloc(unsigned long size)
 #endif
 }
 
-const char *util_ald_strdup(const char *s)
+const char *util_ald_strdup(apr_rmm_t *rmm_addr, const char *s)
 {
 #if APR_HAS_SHARED_MEMORY
-    if (util_ldap_shm) {
-        char *buf = (char *)apr_rmm_addr_get(util_ldap_rmm, apr_rmm_calloc(util_ldap_rmm, strlen(s)+1));
+    if (rmm_addr) {
+        /* allocate from shared memory */
+        char *buf = (char *)apr_rmm_addr_get(rmm_addr, apr_rmm_calloc(rmm_addr, strlen(s)+1));
         if (buf) {
             strcpy(buf, s);
             return buf;
@@ -156,6 +163,7 @@ const char *util_ald_strdup(const char *s)
             return NULL;
         }
     } else {
+        /* Cache shm is not used */
         return strdup(s);
     }
 #else
@@ -217,8 +225,8 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
         while (p != NULL) {
             if (p->add_time < cache->marktime) {
 	        q = p->next;
-	        (*cache->free)(p->payload);
-	        util_ald_free(p);
+	        (*cache->free)(cache, p->payload);
+	        util_ald_free(cache->rmm_addr, p);
 	        cache->numentries--;
 	        cache->npurged++;
 	        p = q;
@@ -247,17 +255,17 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
     util_ald_cache_t *dn_compare_cache;
 
     /* create the three caches */
-    search_cache = util_ald_create_cache(st->search_cache_size,
+    search_cache = util_ald_create_cache(st,
 					  util_ldap_search_node_hash,
 					  util_ldap_search_node_compare,
 					  util_ldap_search_node_copy,
 					  util_ldap_search_node_free);
-    compare_cache = util_ald_create_cache(st->compare_cache_size,
+    compare_cache = util_ald_create_cache(st,
 					   util_ldap_compare_node_hash,
 					   util_ldap_compare_node_compare,
 					   util_ldap_compare_node_copy,
 					   util_ldap_compare_node_free);
-    dn_compare_cache = util_ald_create_cache(st->compare_cache_size,
+    dn_compare_cache = util_ald_create_cache(st,
 					      util_ldap_dn_compare_node_hash,
 					      util_ldap_dn_compare_node_compare,
 					      util_ldap_dn_compare_node_copy,
@@ -272,7 +280,7 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
         curl->compare_cache = compare_cache;
         curl->dn_compare_cache = dn_compare_cache;
 
-        util_ald_cache_insert(util_ldap_cache, curl);
+        util_ald_cache_insert(st->util_ldap_cache, curl);
 
     }
 
@@ -280,32 +288,32 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 }
 
 
-util_ald_cache_t *util_ald_create_cache(unsigned long maxentries,
+util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 unsigned long (*hashfunc)(void *), 
                                 int (*comparefunc)(void *, void *),
-                                void * (*copyfunc)(void *),
-                                void (*freefunc)(void *))
+                                void * (*copyfunc)(util_ald_cache_t *cache, void *),
+                                void (*freefunc)(util_ald_cache_t *cache, void *))
 {
     util_ald_cache_t *cache;
     unsigned long i;
 
-    if (maxentries <= 0)
+    if (st->search_cache_size <= 0)
         return NULL;
 
-    cache = (util_ald_cache_t *)util_ald_alloc(sizeof(util_ald_cache_t));
+    cache = (util_ald_cache_t *)util_ald_alloc(st->cache_rmm, sizeof(util_ald_cache_t));
     if (!cache)
         return NULL;
 
-    cache->maxentries = maxentries;
+    cache->maxentries = st->search_cache_size;
     cache->numentries = 0;
-    cache->size = maxentries / 3;
+    cache->size = st->search_cache_size / 3;
     if (cache->size < 64) cache->size = 64;
         for (i = 0; primes[i] && primes[i] < cache->size; ++i) ;
             cache->size = primes[i]? primes[i] : primes[i-1];
 
-    cache->nodes = (util_cache_node_t **)util_ald_alloc(cache->size * sizeof(util_cache_node_t *));
+    cache->nodes = (util_cache_node_t **)util_ald_alloc(cache->rmm_addr, cache->size * sizeof(util_cache_node_t *));
     if (!cache->nodes) {
-        util_ald_free(cache);
+        util_ald_free(cache->rmm_addr, cache);
         return NULL;
     }
 
@@ -345,13 +353,13 @@ void util_ald_destroy_cache(util_ald_cache_t *cache)
         q = NULL;
         while (p != NULL) {
             q = p->next;
-           (*cache->free)(p->payload);
-           util_ald_free(p);
+           (*cache->free)(cache, p->payload);
+           util_ald_free(cache->rmm_addr, p);
            p = q;
         }
     }
-    util_ald_free(cache->nodes);
-    util_ald_free(cache);
+    util_ald_free(cache->rmm_addr, cache->nodes);
+    util_ald_free(cache->rmm_addr, cache);
 }
 
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
@@ -392,9 +400,9 @@ void util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
 
     cache->inserts++;
     hashval = (*cache->hash)(payload) % cache->size;
-    node = (util_cache_node_t *)util_ald_alloc(sizeof(util_cache_node_t));
+    node = (util_cache_node_t *)util_ald_alloc(cache->rmm_addr, sizeof(util_cache_node_t));
     node->add_time = apr_time_now();
-    node->payload = (*cache->copy)(payload);
+    node->payload = (*cache->copy)(cache, payload);
     node->next = cache->nodes[hashval];
     cache->nodes[hashval] = node;
     if (++cache->numentries == cache->fullmark) 
@@ -431,8 +439,8 @@ void util_ald_cache_remove(util_ald_cache_t *cache, void *payload)
         /* We found the node and it's not the first in the list */
         q->next = p->next;
     }
-    (*cache->free)(p->payload);
-    util_ald_free(p);
+    (*cache->free)(cache, p->payload);
+    util_ald_free(cache->rmm_addr, p);
     cache->numentries--;
 }
 
@@ -499,16 +507,19 @@ char *util_ald_cache_display_stats(apr_pool_t *p, util_ald_cache_t *cache, char 
     return buf;
 }
 
-char *util_ald_cache_display(apr_pool_t *pool)
+char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
 {
     unsigned long i;
     char *buf, *t1, *t2, *t3;
+
+    util_ald_cache_t *util_ldap_cache = st->util_ldap_cache;
+
 
     if (!util_ldap_cache) {
         return "<tr valign='top'><td nowrap colspan=7>Cache has not been enabled/initialised.</td></tr>";
     }
 
-    buf = util_ald_cache_display_stats(pool, util_ldap_cache, "LDAP URL Cache");
+    buf = util_ald_cache_display_stats(pool, st->util_ldap_cache, "LDAP URL Cache");
 
     for (i=0; i < util_ldap_cache->size; ++i) {
         util_cache_node_t *p;

@@ -77,47 +77,48 @@ typedef struct util_cache_node_t {
     struct util_cache_node_t *next;
 } util_cache_node_t;
 
-typedef struct util_ald_cache_t {
-    unsigned long size;		/* Size of cache array */
-    unsigned long maxentries;	/* Maximum number of cache entries */
-    unsigned long numentries;	/* Current number of cache entries */
-    unsigned long fullmark;	/* Used to keep track of when cache becomes 3/4 full */
-    apr_time_t marktime;	/* Time that the cache became 3/4 full */
-    unsigned long (*hash)(void *);  /* Func to hash the payload */
-    int (*compare)(void *, void *); /* Func to compare two payloads */
-    void * (*copy)(void *);	/* Func to alloc mem and copy payload to new mem */
-    void (*free)(void *);	/* Func to free mem used by the payload */
+typedef struct util_ald_cache util_ald_cache_t;
+
+struct util_ald_cache {
+    unsigned long size;	                /* Size of cache array */
+    unsigned long maxentries;           /* Maximum number of cache entries */
+    unsigned long numentries;           /* Current number of cache entries */
+    unsigned long fullmark;             /* Used to keep track of when cache becomes 3/4 full */
+    apr_time_t marktime;                /* Time that the cache became 3/4 full */
+    unsigned long (*hash)(void *);      /* Func to hash the payload */
+    int (*compare)(void *, void *);     /* Func to compare two payloads */
+    void * (*copy)(util_ald_cache_t *cache, void *); /* Func to alloc mem and copy payload to new mem */
+    void (*free)(util_ald_cache_t *cache, void *); /* Func to free mem used by the payload */
     util_cache_node_t **nodes;
 
-    unsigned long numpurges;	/* No. of times the cache has been purged */
-    double avg_purgetime;	/* Average time to purge the cache */
-    apr_time_t last_purge;	/* Time of the last purge */
-    unsigned long npurged;	/* Number of elements purged in last purge. This is not
-				   obvious: it won't be 3/4 the size of the cache if 
-				   there were a lot of expired entries. */
+    unsigned long numpurges;    /* No. of times the cache has been purged */
+    double avg_purgetime;       /* Average time to purge the cache */
+    apr_time_t last_purge;      /* Time of the last purge */
+    unsigned long npurged;      /* Number of elements purged in last purge. This is not
+                                   obvious: it won't be 3/4 the size of the cache if 
+                                   there were a lot of expired entries. */
 
-    unsigned long fetches;	/* Number of fetches */
-    unsigned long hits;		/* Number of cache hits */
-    unsigned long inserts;	/* Number of inserts */
-    unsigned long removes;	/* Number of removes */
-} util_ald_cache_t;
+    unsigned long fetches;      /* Number of fetches */
+    unsigned long hits;         /* Number of cache hits */
+    unsigned long inserts;      /* Number of inserts */
+    unsigned long removes;      /* Number of removes */
 
 #if APR_HAS_SHARED_MEMORY
-apr_shm_t *util_ldap_shm;
-apr_rmm_t *util_ldap_rmm;
+    apr_shm_t *shm_addr;
+    apr_rmm_t *rmm_addr;
 #endif
-util_ald_cache_t *util_ldap_cache;
+
+};
 
 #if APR_HAS_THREADS
-apr_thread_rwlock_t *util_ldap_cache_lock;
 #define LDAP_CACHE_LOCK_CREATE(p) \
-    if (!util_ldap_cache_lock) apr_thread_rwlock_create(&util_ldap_cache_lock, p)
+    if (!st->util_ldap_cache_lock) apr_thread_rwlock_create(&st->util_ldap_cache_lock, st->pool)
 #define LDAP_CACHE_WRLOCK() \
-    apr_thread_rwlock_wrlock(util_ldap_cache_lock)
+    apr_thread_rwlock_wrlock(st->util_ldap_cache_lock)
 #define LDAP_CACHE_UNLOCK() \
-    apr_thread_rwlock_unlock(util_ldap_cache_lock)
+    apr_thread_rwlock_unlock(st->util_ldap_cache_lock)
 #define LDAP_CACHE_RDLOCK() \
-    apr_thread_rwlock_rdlock(util_ldap_cache_lock)
+    apr_thread_rwlock_rdlock(st->util_ldap_cache_lock)
 #else
 #define LDAP_CACHE_LOCK_CREATE(p)
 #define LDAP_CACHE_WRLOCK()
@@ -192,35 +193,39 @@ typedef struct util_dn_compare_node_t {
 /* util_ldap_cache.c */
 unsigned long util_ldap_url_node_hash(void *n);
 int util_ldap_url_node_compare(void *a, void *b);
-void *util_ldap_url_node_copy(void *c);
-void util_ldap_url_node_free(void *n);
+void *util_ldap_url_node_copy(util_ald_cache_t *cache, void *c);
+void util_ldap_url_node_free(util_ald_cache_t *cache, void *n);
 unsigned long util_ldap_search_node_hash(void *n);
 int util_ldap_search_node_compare(void *a, void *b);
-void *util_ldap_search_node_copy(void *c);
-void util_ldap_search_node_free(void *n);
+void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c);
+void util_ldap_search_node_free(util_ald_cache_t *cache, void *n);
 unsigned long util_ldap_compare_node_hash(void *n);
 int util_ldap_compare_node_compare(void *a, void *b);
-void *util_ldap_compare_node_copy(void *c);
-void util_ldap_compare_node_free(void *n);
+void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c);
+void util_ldap_compare_node_free(util_ald_cache_t *cache, void *n);
 unsigned long util_ldap_dn_compare_node_hash(void *n);
 int util_ldap_dn_compare_node_compare(void *a, void *b);
-void *util_ldap_dn_compare_node_copy(void *c);
-void util_ldap_dn_compare_node_free(void *n);
+void *util_ldap_dn_compare_node_copy(util_ald_cache_t *cache, void *c);
+void util_ldap_dn_compare_node_free(util_ald_cache_t *cache, void *n);
 
 
 /* util_ldap_cache_mgr.c */
 
-void util_ald_free(const void *ptr);
-void *util_ald_alloc(unsigned long size);
-const char *util_ald_strdup(const char *s);
+/* Cache alloc and free function, dealing or not with shm */
+void util_ald_free(apr_rmm_t *rmm_addr, const void *ptr);
+void *util_ald_alloc(apr_rmm_t *rmm_addr, unsigned long size);
+const char *util_ald_strdup(apr_rmm_t *rmm_addr, const char *s);
+
+/* Cache managing function */
 unsigned long util_ald_hash_string(int nstr, ...);
 void util_ald_cache_purge(util_ald_cache_t *cache);
 util_url_node_t *util_ald_create_caches(util_ldap_state_t *s, const char *url);
-util_ald_cache_t *util_ald_create_cache(unsigned long maxentries,
+util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 unsigned long (*hashfunc)(void *), 
                                 int (*comparefunc)(void *, void *),
-                                void * (*copyfunc)(void *),
-                                void (*freefunc)(void *));
+                                void * (*copyfunc)(util_ald_cache_t *cache, void *),
+                                void (*freefunc)(util_ald_cache_t *cache, void *));
+                                
 void util_ald_destroy_cache(util_ald_cache_t *cache);
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload);
 void util_ald_cache_insert(util_ald_cache_t *cache, void *payload);
