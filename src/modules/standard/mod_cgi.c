@@ -155,12 +155,12 @@ static command_rec cgi_cmds[] = {
 { NULL}
 };
 
-static int log_scripterror(request_rec *r, cgi_server_conf *conf, int ret,
-		    char *error)
+static int log_scripterror (request_rec *r, cgi_server_conf *conf, int ret,
+			    char *error)
 {
     FILE *f;
 
-    log_reason(error, r->filename, r);
+    aplog_error(APLOG_MARK, APLOG_ERR, r->server, error, r->filename);
 
     if (!conf->logname ||
 	((stat(server_root_relative(r->pool, conf->logname), &r->finfo) == 0)
@@ -182,8 +182,8 @@ static int log_scripterror(request_rec *r, cgi_server_conf *conf, int ret,
     return ret;
 }
 
-static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
-		    char *dbuf, char *sbuf, BUFF *script_in, BUFF *script_err)
+static int log_script (request_rec *r, cgi_server_conf *conf, int ret,
+		       char *dbuf, char *sbuf, BUFF *script_in, BUFF *script_err)
 {
     table *hdrs_arr = r->headers_in;
     table_entry *hdrs = (table_entry *)hdrs_arr->elts;
@@ -323,7 +323,7 @@ static int cgi_child (void *child_stuff)
      *
      * Oh, well.  Muddle through as best we can...
      *
-     * (NB we can't use log_error, or anything like that, because we
+     * (NB we can't use aplog_error, or anything like that, because we
      * just closed the file descriptor which r->server->error_log
      * was tied to in cleanup_for_exec().  It's only available on stderr
      * now, so that's what we use).
@@ -412,11 +412,12 @@ static int cgi_handler (request_rec *r)
      * SSI request -djg
      */
     if (!(child_pid =
-	  spawn_child_err_buff (r->main ? r->main->pool : r->pool, cgi_child,
-				(void *)&cld,
-				kill_after_timeout,
-				&script_out, &script_in, &script_err))) {
-        log_reason ("couldn't spawn child process", r->filename, r);
+	  spawn_child_err_buff(r->main ? r->main->pool : r->pool, cgi_child,
+			       (void *)&cld,
+			       kill_after_timeout,
+			       &script_out, &script_in, &script_err))) {
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "couldn't spawn child process: %s", r->filename);
         return SERVER_ERROR;
     }
 
