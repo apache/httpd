@@ -89,7 +89,7 @@
 #include "scoreboard.h"
 #include "mod_core.h"
 #include "mod_proxy.h"
-
+#include "ap_listen.h"
 
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
@@ -104,7 +104,6 @@ APR_HOOK_STRUCT(
 AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
                           (apr_pool_t *p, const char *val, apr_hash_t *ht),
                           (p, val, ht), OK, DECLINED)
-
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -639,10 +638,8 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	&& conn->remote_host == NULL
 	&& (type == REMOTE_DOUBLE_REV
 	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
-        apr_sockaddr_t *remote_addr;
 
-        apr_socket_addr_get(&remote_addr, APR_REMOTE, conn->client_socket);
-	if (apr_getnameinfo(&conn->remote_host, remote_addr, 0) == APR_SUCCESS) {
+	if (apr_getnameinfo(&conn->remote_host, conn->remote_addr, 0) == APR_SUCCESS) {
 	    ap_str_tolower(conn->remote_host);
 	   
 	    if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
@@ -731,10 +728,8 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     }
     if (d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
         if (conn->local_host == NULL) {
-            apr_sockaddr_t *local_addr;
 
-            apr_socket_addr_get(&local_addr, APR_LOCAL, conn->client_socket);
-            if (apr_getnameinfo(&conn->local_host, local_addr, 0) != APR_SUCCESS)
+            if (apr_getnameinfo(&conn->local_host, conn->local_addr, 0) != APR_SUCCESS)
                 conn->local_host = apr_pstrdup(conn->pool, r->server->server_hostname);
             else {
                 ap_str_tolower(conn->local_host);
@@ -2222,7 +2217,7 @@ static apr_status_t writev_it_all(apr_socket_t *s,
  */
 
 #if APR_HAS_SENDFILE
-static apr_status_t sendfile_it_all(conn_rec   *c, 
+static apr_status_t sendfile_it_all(core_net_rec *c, 
                                     apr_file_t *fd,
                                     apr_hdtr_t *hdtr, 
                                     apr_off_t   file_offset,
@@ -2307,7 +2302,7 @@ static apr_status_t sendfile_it_all(conn_rec   *c,
  * to the network. emulate_sendfile will return only when all the bytes have been
  * sent (i.e., it handles partial writes) or on a network error condition.
  */
-static apr_status_t emulate_sendfile(conn_rec *c, apr_file_t *fd, 
+static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd, 
                                      apr_hdtr_t *hdtr, apr_off_t offset, 
                                      apr_size_t length, apr_size_t *nbytes) 
 {
@@ -2785,26 +2780,40 @@ static int default_handler(request_rec *r)
     return ap_pass_brigade(r->output_filters, bb);
 }
 
-typedef struct core_filter_ctx {
-    apr_bucket_brigade *b;
-} core_ctx_t;
-
 static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;
-    core_ctx_t *ctx = f->ctx;
+    core_net_rec *net = f->ctx;
+    core_ctx_t *ctx = net->in_ctx;
     const char *str;
     apr_size_t len;
+    int keptalive = f->c->keepalive == 1;
 
     if (!ctx)
     {
-        f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
+        ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
         ctx->b = apr_brigade_create(f->c->pool);
 
         /* seed the brigade with the client socket. */
-        e = apr_bucket_socket_create(f->c->client_socket);
+        e = apr_bucket_socket_create(net->client_socket);
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
+        net->in_ctx = ctx;
+        ctx->first_line = 1;
+    }
+
+    if (ctx->first_line) {
+        apr_setsocketopt(net->client_socket, APR_SO_TIMEOUT,
+                         (int)(keptalive
+                         ? f->c->base_server->keep_alive_timeout * APR_USEC_PER_SEC
+                         : f->c->base_server->timeout * APR_USEC_PER_SEC));
+        ctx->first_line = 0;
+    }
+    else {
+        if (keptalive) {
+            apr_setsocketopt(net->client_socket, APR_SO_TIMEOUT,
+                             (int)(f->c->base_server->timeout * APR_USEC_PER_SEC));
+        }
     }
 
     /* ### This is bad. */
@@ -2964,24 +2973,18 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.
  */
-typedef struct CORE_OUTPUT_FILTER_CTX {
-    apr_bucket_brigade *b;
-    apr_pool_t *subpool; /* subpool of c->pool used for data saved after a
-                          * request is finished
-                          */
-    int subpool_has_stuff; /* anything in the subpool? */
-} core_output_filter_ctx_t;
-
 #define MAX_IOVEC_TO_WRITE 16
 
 static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
     conn_rec *c = f->c;
-    core_output_filter_ctx_t *ctx = f->ctx;
+    core_net_rec *net = f->ctx;
+    core_output_filter_ctx_t *ctx = net->out_ctx;
 
     if (ctx == NULL) {
-        f->ctx = ctx = apr_pcalloc(c->pool, sizeof(core_output_filter_ctx_t));
+        ctx = apr_pcalloc(c->pool, sizeof(core_output_filter_ctx_t));
+        net->out_ctx = ctx;
     }
 
     /* If we have a saved brigade, concatenate the new brigade to it */
@@ -3163,7 +3166,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 /* Prepare the socket to be reused */
                 flags |= APR_SENDFILE_DISCONNECT_SOCKET;
             }
-            rv = sendfile_it_all(c,        /* the connection            */
+            rv = sendfile_it_all(net,      /* the network information   */
                                  fd,       /* the file to send          */
                                  &hdtr,    /* header and trailer iovecs */
                                  foffset,  /* offset in the file to begin
@@ -3182,7 +3185,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 #endif
             {
                 apr_size_t unused_bytes_sent;
-                rv = emulate_sendfile(c, fd, &hdtr, foffset, flen, 
+                rv = emulate_sendfile(net, fd, &hdtr, foffset, flen, 
                                       &unused_bytes_sent);
             }
             fd = NULL;
@@ -3190,7 +3193,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         else {
             apr_size_t unused_bytes_sent;
 
-            rv = writev_it_all(c->client_socket, 
+            rv = writev_it_all(net->client_socket, 
                                vec, nvec, 
                                nbytes, &unused_bytes_sent);
         }
@@ -3273,6 +3276,21 @@ static int core_create_proxy_req(request_rec *r, request_rec *pr)
     return core_create_req(pr);
 }
 
+static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
+                                  int my_child_num)
+{
+    core_net_rec *net = apr_palloc(ptrans, sizeof(*net));
+
+    net->in_ctx = NULL;
+    net->out_ctx = NULL;
+    net->c = ap_core_new_connection(ptrans, ap_server_conf, csd,
+                                    net, my_child_num);
+
+    ap_add_input_filter("CORE_IN", net, NULL, net->c);
+    ap_add_output_filter("CORE", net, NULL, net->c);
+    return net->c;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
@@ -3284,6 +3302,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_fixups(core_override_type,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_create_connection(core_create_conn, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL, 
                       APR_HOOK_MIDDLE);

@@ -263,13 +263,6 @@ static const char *http_method(const request_rec *r)
 static apr_port_t http_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 
-static int ap_pre_http_connection(conn_rec *c)
-{
-    ap_add_input_filter("CORE_IN", NULL, NULL, c);
-    ap_add_output_filter("CORE", NULL, NULL, c);
-    return OK;
-}
- 
 static int ap_process_http_connection(conn_rec *c)
 {
     request_rec *r;
@@ -315,8 +308,6 @@ static void ap_http_insert_filter(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,
-			       APR_HOOK_REALLY_LAST);
     ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
 			       APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);

@@ -1,5 +1,13 @@
 Changes with Apache 2.0.29-dev
 
+  *) Begin to abstract out the underlying transport layer.
+     The first step is to remove the socket from the conn_rec,
+     the server now lives in a context that is passed to the
+     core's input and output filters. This forces us to be very
+     careful when adding calls that use the socket directly,
+     because the socket isn't available in most locations.
+     [Ryan Bloom]
+
   *) Really reset the MaxClients value in worker and threaded
      when the configured value is not a multiple of the number 
      of threads per child.  We said we did previously but we 

@@ -128,6 +128,19 @@ AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c))
  */
 AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
 
+/**
+ */
+AP_DECLARE_HOOK(conn_rec *, create_connection,
+                (apr_pool_t *p, apr_socket_t *csd, int child_num))
+
+/* This is NOT staying here.  It is necessary to quiet warnings
+ * while I would on the next patch. rbb
+ */
+
+AP_CORE_DECLARE(conn_rec *)ap_core_new_connection(apr_pool_t *p,
+                            server_rec *server, apr_socket_t *inout,
+                            core_net_rec *net, long id);
+
 #ifdef __cplusplus
 }
 #endif
