@@ -57,10 +57,6 @@ Changes with Apache 2.1.0-dev
   *) Forward port of mod_actions' ability to handle arbitrary methods
      with the Script directive.  [André Malo]
 
-  *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
-     be started on Unix because of such problems as bad permissions,
-     bad shebang line, etc.  [Jeff Trawick]
-
   *) Let suexec send a message to stderr, if it failed or its policy
      was violated. This message appears in the error log and allows
      for easier debugging. PR 5381, 7638, 8255, 10773.  [André Malo]
@@ -129,6 +125,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
+     be started on Unix because of such problems as bad permissions,
+     bad shebang line, etc.  [Jeff Trawick]
 
   *) Fix 64-bit problem in mod_ssl input logic.  
      [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
