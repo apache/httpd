@@ -539,7 +539,7 @@ int ssl_hook_Access(request_rec *r)
             verify |= SSL_VERIFY_PEER;
         }
 
-        SSL_set_verify(ssl, verify, ssl_callback_SSLVerify);
+        modssl_set_verify(ssl, verify, ssl_callback_SSLVerify);
         SSL_set_verify_result(ssl, X509_V_OK);
 
         /* determine whether we've to force a renegotiation */
