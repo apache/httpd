@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/24 16:16:19 $]
+Last modified at [$Date: 2003/04/24 17:03:21 $]
 
 Release:
 
@@ -1117,7 +1117,7 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-Binaries (2.0.44):
+Binaries (2.0.45):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
@@ -1140,3 +1140,4 @@ Binaries (2.0.44):
  OS/2                          no      Brian Havard
  OS/390                        no      Greg Ames
  Win32-x86                     yes     William Rowe
+ x86_64-unknown-linux-gnu      yes     Aaron Bannert
