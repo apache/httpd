@@ -326,41 +326,38 @@ static apr_status_t churn (SSLFilterRec *pRec,
     return churn_output(pRec);
 }
 
-static apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
+static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
+                                         apr_bucket_brigade *bb)
 {
-    SSLFilterRec *pRec=f->ctx;
-    apr_bucket *pbktIn;
+    SSLFilterRec *ctx = f->ctx;
+    apr_bucket *bucket;
+    apr_status_t ret = APR_SUCCESS;
 
-    APR_BRIGADE_FOREACH(pbktIn,pbbIn) {
-	const char *data;
-	apr_size_t len, n;
-	apr_status_t ret;
+    APR_BRIGADE_FOREACH(bucket, bb) {
+        const char *data;
+        apr_size_t len, n;
 
-        APR_BUCKET_REMOVE(pbktIn);
-
-	if(APR_BUCKET_IS_EOS(pbktIn)) {
-	    if ((ret = churn_output(pRec)) != APR_SUCCESS)
-            {
-                ap_log_error(
-                    APLOG_MARK,APLOG_ERR,ret,NULL, "Error in churn_output");
-		return ret;
+        if (APR_BUCKET_IS_EOS(bucket)) {
+            if ((ret = churn_output(ctx)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL,
+                             "Error in churn_output");
             }
-	    break;
-	}
+            break;
+        }
 
-	if (!APR_BUCKET_IS_FLUSH(pbktIn)) {
+        if (!APR_BUCKET_IS_FLUSH(bucket)) {
             /* read filter */
-            apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
+            apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
 
             /* write SSL */
-            n = ssl_io_hook_write(pRec->pssl, (unsigned char *)data, len);
+            n = ssl_io_hook_write(ctx->pssl, (unsigned char *)data, len);
 
             if (n != len) {
-                conn_rec *c = (conn_rec *)SSL_get_app_data(pRec->pssl);
+                conn_rec *c = f->c;
                 char *reason = "reason unknown";
 
                 /* XXX: probably a better way to determine this */
-                if (SSL_total_renegotiations(pRec->pssl)) {
+                if (SSL_total_renegotiations(ctx->pssl)) {
                     reason = "likely due to failed renegotiation";
                 }
 
@@ -368,19 +365,22 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbI
                         "failed to write %d of %d bytes (%s)",
                         n > 0 ? len - n : len, len, reason);
 
-                return APR_EINVAL;
+                ret = APR_EINVAL;
+                break;
             }
         }
         /* else fallthrough to flush the current wbio
          * likely triggered by renegotiation in ssl_hook_Access
          */
 
-	/* churn the state machine */
-	ret=churn_output(pRec);
-	if(ret != APR_SUCCESS)
-	    return ret;
+        /* churn the state machine */
+        if ((ret = churn_output(ctx)) != APR_SUCCESS) {
+            break;
+        }
     }
-    return APR_SUCCESS;
+
+    apr_brigade_destroy(bb);
+    return ret;
 }
 
 static apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
