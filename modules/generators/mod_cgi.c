@@ -331,9 +331,9 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
      */
     if (((rc = ap_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
         ((rc = ap_setprocattr_io(procattr, 
-                                 APR_FULL_BLOCK, 
-                                 APR_FULL_BLOCK,
-                                 APR_FULL_BLOCK)) != APR_SUCCESS) ||
+                                 APR_CHILD_BLOCK, 
+                                 APR_CHILD_BLOCK,
+                                 APR_CHILD_BLOCK)) != APR_SUCCESS) ||
         ((rc = ap_setprocattr_dir(procattr, 
                                   ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
         ((rc = ap_setprocattr_cmdtype(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
