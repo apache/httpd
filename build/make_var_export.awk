@@ -20,7 +20,7 @@
 /^#[ \t]*endif/ {
 	if (count > 0) {
 		count--
-		line = line "#endif " macro "\n"
+		line = line "#endif /* " macro " */\n"
 		macro = macro_stack[--macro_no]
 	}
 	if (count == 0) {
