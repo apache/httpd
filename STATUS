@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/15 01:37:47 $]
+Last modified at [$Date: 2002/03/18 21:50:32 $]
 
 Release:
 
@@ -89,6 +89,9 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * Address popular PRs
         * Win32 doesn't install as service correctly [9863, 9914, 9961]
+
+    * Don't forget to reversion mod_ssl, which is currently listed
+      as mod_ssl/3.0a0.
 
 CURRENT VOTES:
 
@@ -297,18 +300,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       The current porting state is summarized in modules/ssl/README. The
       remaining work includes:
       (1) stablizing/optimizing the SSL filter logic
-      (2) Enabling the various SSL caching mechanisms (shmcb, shmht)
-      (3) Enabling SSL extentions
-      (4) Trying to seperate the https filter logic from mod_ssl -
+      (2) Enabling SSL extentions
+      (3) Trying to seperate the https filter logic from mod_ssl -
           This is to facilitate other modules that wish to use the https
           filter or the mod_ssl logic or both as required.
-        Justin: mod_ssl filter logic is redone, so that should be fine.
-                Madhu has submitted a patch for SSL caching - however, I
-                am -0 on that patch as I *think* we could implement the
-                shared memory another way that is much cleaner (i.e.
-                treat shmem directly as a dbm via APR routines).  Justin 
-                also thinks that the https filter logic may be sufficiently
-                decoupled now, but isn't really sure.
 
     * Performance & Debug: Eliminate most (and perhaps all) of the 
       malloc/free calls in the bucket brigade code.  Need some 
