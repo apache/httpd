@@ -128,7 +128,9 @@
 #include "ebcdic.h"
 #endif
 #include <fcntl.h>
+#ifndef MPE
 #include <sys/time.h>
+#endif
 
 #ifndef NO_WRITEV
 #include <sys/types.h>
@@ -882,14 +884,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.36 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.37 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.36 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.37 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");

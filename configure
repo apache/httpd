@@ -355,6 +355,9 @@ case "$*" in
             set -- --with-layout="$default_layout" "$@"
         fi
         ;;
+    *MPE/iX* )
+	iflags_program="-m 755"
+	;;
 esac
 
 ##

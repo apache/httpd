@@ -130,6 +130,9 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 
     our_query_sin = *our_sin;
     our_query_sin.sin_port = htons(ANY_PORT);
+#ifdef MPE 
+    our_query_sin.sin_addr.s_addr = INADDR_ANY;
+#endif
     rmt_query_sin = *rmt_sin;
     rmt_query_sin.sin_port = htons(RFC1413_PORT);
 

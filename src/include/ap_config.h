@@ -145,7 +145,6 @@ extern void GETPRIVMODE();
 extern void GETUSERMODE();
 extern char *inet_ntoa();
 #define NO_SLACK
-#define NO_GETTIMEOFDAY
 #define S_IEXEC  S_IXUSR
 #define S_IREAD  S_IRUSR
 #define S_IWRITE S_IWUSR

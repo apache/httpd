@@ -3285,8 +3285,6 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif /* TPF */
 #endif
 
-#ifndef MPE
-/* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
 #ifndef _OSD_POSIX
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
@@ -3301,7 +3299,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     }
 #endif /*_OSD_POSIX*/
     one = 1;
-#ifdef SO_KEEPALIVE
+#if defined(SO_KEEPALIVE) && !defined(MPE)
     if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
@@ -3314,7 +3312,6 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	ap_unblock_alarms();
 	return -1;
     }
-#endif
 #endif
 
     sock_disable_nagle(s);
@@ -6951,6 +6948,14 @@ int main(int argc, char *argv[], char *envp[])
     char **envpnew;
     int c, i, l;
 
+#ifdef MPE
+    /*
+     * MPE doesn't currently initialize the envp parameter.  Instead, we must
+     * use the global variable environ. 
+     */
+    envp = environ;
+#endif
+	
     /* 
      * parse argument line, 
      * but only handle the -L option 

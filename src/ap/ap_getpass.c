@@ -85,26 +85,53 @@
 #define ERR_OVERFLOW 5
 
 #ifdef MPE
-/*
- * MPE lacks getpass() and a way to suppress stdin echo.  So for now, just
- * issue the prompt and read the results with echo.  (Ugh).
- */
+#include <termios.h>
 
-static char *getpass(const char *prompt)
+char *
+getpass(const char *prompt)
 {
-    static char password[MAX_STRING_LEN];
+	static char		buf[MAX_STRING_LEN+1];	/* null byte at end */
+	char			*ptr;
+	sigset_t		sig, sigsave;
+	struct termios	term, termsave;
+	FILE			*fp,*outfp;
+	int				c;
 
-    fputs(prompt, stderr);
-    gets((char *) &password);
+        if ((outfp = fp = fopen("/dev/tty", "w+")) == NULL) {
+                outfp = stderr;
+                fp = stdin;
+        }
 
-    if (strlen((char *) &password) > (MAX_STRING_LEN - 1)) {
-	password[MAX_STRING_LEN - 1] = '\0';
-    }
+	sigemptyset(&sig);	/* block SIGINT & SIGTSTP, save signal mask */
+	sigaddset(&sig, SIGINT);
+	sigaddset(&sig, SIGTSTP);
+	sigprocmask(SIG_BLOCK, &sig, &sigsave);
 
-    return (char *) &password;
+	tcgetattr(fileno(fp), &termsave);	/* save tty state */
+	term = termsave;			/* structure copy */
+	term.c_lflag &= ~(ECHO | ECHOE | ECHOK | ECHONL);
+	tcsetattr(fileno(fp), TCSAFLUSH, &term);
+
+	fputs(prompt, outfp);
+
+	ptr = buf;
+	while ( (c = getc(fp)) != EOF && c != '\n') {
+		if (ptr < &buf[MAX_STRING_LEN])
+			*ptr++ = c;
+	}
+	*ptr = 0;			/* null terminate */
+	putc('\n', outfp);		/* we echo a newline */
+
+						/* restore tty state */
+	tcsetattr(fileno(fp), TCSAFLUSH, &termsave);
+
+						/* restore signal mask */
+	sigprocmask(SIG_SETMASK, &sigsave, NULL);
+	if (fp != stdin) fclose(fp);
+
+	return(buf);
 }
-
-#endif
+#endif /* MPE */
 
 #if defined(WIN32) || defined(NETWARE)
 /*

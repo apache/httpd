@@ -217,6 +217,13 @@ eval "${MAKE-make} ${TARGET} $ERRDIR >&2"
 # have PrintPath just search this directory.
 
 if ./PrintPath -s -p`pwd` $TARGET ; then
+    if [ "x$OS" = "xMPE/iX" ]; then
+	# clever hack to check for unresolved externals without actually
+	# executing the test program 
+	if eval "callci run `pwd`/$TARGET\;stdin=\*notfound 2>&1 | /bin/grep ^UNRESOLVED $ERRDIR >&2"; then
+	    exit 1 # there were unresolved externals
+	fi
+    fi
     if [ "x$TCRUNIT" = "xyes" ]; then
 	`pwd`/$TARGET
     fi

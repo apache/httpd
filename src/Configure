@@ -278,10 +278,11 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     *MPE/iX*)
-	OS='MPE/iX'
+	export OS='MPE/iX'
+	OSDIR='os/mpeix'
 	CFLAGS="$CFLAGS -DMPE -D_POSIX_SOURCE -D_SOCKET_SOURCE"
-	LIBS="$LIBS -lsocket -lsvipc"
-	LDFLAGS="$LDFLAGS -Xlinker \"-WL,cap=ia,ba,ph,pm;nmstack=1024000\""
+	LIBS="$LIBS -lsocket -lsvipc -lcurses"
+	LDFLAGS="$LDFLAGS -Xlinker \"-WL,cap=ia,ba,ph;nmstack=1024000\""
 	CAT="/bin/cat" # built-in cat is badly broken for stdin redirection
 	;;
     *-apple-aux3*)
@@ -906,9 +907,9 @@ fi
 ##
 TCPP=`egrep '^CPP=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 if [ "x$TCPP" != "x" ]; then
-    CPP=`CC=$CC CPP=$TCPP ./helpers/findcpp.sh`
+    CPP=`env CC="$CC" CPP=$TCPP ./helpers/findcpp.sh`
 else
-    CPP=`CC=$CC ./helpers/findcpp.sh`
+    CPP=`env CC="$CC" ./helpers/findcpp.sh`
 fi
 if [ "x$TCPP" = "x" ]; then
     echo "CPP=$CPP" >> Makefile.config
@@ -934,7 +935,7 @@ for header in $CHECK_FOR_HEADERS; do
     echo "" >>$AP_CONFIG_AUTO_H
     echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
     name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
-    CPP=$CPP ./helpers/checkheader.sh $header
+    env CPP="$CPP" ./helpers/checkheader.sh $header
     if [ $? -eq 0 ]; then
 	echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
 	echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
@@ -1002,6 +1003,12 @@ if [ "x$using_shlib" = "x1" ] ; then
     SHARED_CORE_EP='lib$(TARGET).ep'
     SHCORE_IMPLIB=''
     case "$PLAT" in
+	*MPE/iX*)
+	    LD_SHLIB=ld	
+	    LDFLAGS_SHLIB='-b -a archive'
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
+	    LIBS_SHLIB='$(OSDIR)/mpe_dl_stub.o'	
+	    ;;
 	*-linux1)
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-Bshareable"

@@ -93,7 +93,7 @@ dst="$dst$ext"
 
 #  Make a temp file name in the proper directory.
 dstdir=`dirname $dst`
-dsttmp=$dstdir/#inst.$$#
+dsttmp=$dstdir/inst.$$
 
 #  Move or copy the file name to the temp name
 $instcmd $src $dsttmp
