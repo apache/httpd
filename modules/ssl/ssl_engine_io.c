@@ -297,7 +297,7 @@ typedef struct {
     ap_filter_t *f;
     apr_status_t rc;
     ap_input_mode_t mode;
-    int getline;
+    apr_read_type_e block;
     apr_bucket_brigade *bb;
     apr_bucket *bucket;
     char_buffer_t cbuf;
@@ -368,7 +368,7 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
     
     /* first use data already read from socket if any */
     if ((len = char_buffer_read(&inbio->cbuf, in, inl))) {
-        if ((len <= inl) || inbio->getline) {
+        if ((len <= inl) || inbio->mode == AP_MODE_GETLINE) {
             return len;
         }
     }
@@ -386,8 +386,11 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
         }
 
         if (APR_BRIGADE_EMPTY(inbio->bb)) {
+            /* We will always call with READBYTES even if the user wants
+             * GETLINE.
+             */
             inbio->rc = ap_get_brigade(inbio->f->next, inbio->bb,
-                                       inbio->mode, &readbytes);
+                                       AP_MODE_READBYTES, inbio->block, &readbytes);
 
             if ((inbio->rc != APR_SUCCESS) || APR_BRIGADE_EMPTY(inbio->bb))
             {
@@ -398,7 +401,7 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
         inbio->bucket = APR_BRIGADE_FIRST(inbio->bb);
 
         inbio->rc = apr_bucket_read(inbio->bucket,
-                                    &buf, &buf_len, inbio->mode);
+                                    &buf, &buf_len, inbio->block);
 
         if (inbio->rc != APR_SUCCESS) {
             apr_bucket_delete(inbio->bucket);
@@ -433,7 +436,7 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
             }
         }
 
-        if (inbio->getline) {
+        if (inbio->mode == AP_MODE_GETLINE) {
             /* only read from the socket once in getline mode.
              * since callers buffer size is likely much larger than
              * the request headers.  caller can always come back for more
@@ -643,7 +646,7 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
 
     if ((bytes = char_buffer_read(&ctx->cbuf, buf, wanted))) {
         *len = bytes;
-        if ((*len >= wanted) || ctx->inbio.getline) {
+        if ((*len >= wanted) || ctx->inbio.mode == AP_MODE_GETLINE) {
             return APR_SUCCESS;
         }
     }
@@ -664,9 +667,7 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
     const char *pos;
     apr_status_t status;
 
-    ctx->inbio.getline = 1;
     status = ssl_io_input_read(ctx, buf, len);
-    ctx->inbio.getline = 0;
 
     if (status != APR_SUCCESS) {
         return status;
@@ -725,6 +726,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
 static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
                                         ap_input_mode_t mode,
+                                        apr_read_type_e block,
                                         apr_off_t *readbytes)
 {
     apr_status_t status;
@@ -735,11 +737,12 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
     int is_init = (mode == AP_MODE_INIT);
 
     /* XXX: we don't currently support peek or readbytes == -1 */
-    if (mode == AP_MODE_PEEK || *readbytes == -1) {
+    if (mode == AP_MODE_EATCRLF || *readbytes == -1) {
         return APR_ENOTIMPL;
     }
 
-    ctx->inbio.mode = is_init ? AP_MODE_BLOCKING : mode;
+    ctx->inbio.mode = mode;
+    ctx->inbio.block = block;
 
     /* XXX: we could actually move ssl_hook_process_connection to an
      * ap_hook_process_connection but would still need to call it for
@@ -759,16 +762,19 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    if (bytes > 0) {
+    if (ctx->inbio.mode == AP_MODE_READBYTES) {
         /* Protected from truncation, bytes < MAX_SIZE_T */
         if (bytes < len) {
             len = (apr_size_t)bytes;
         }
-        ctx->inbio.getline = 0;
         status = ssl_io_input_read(ctx, ctx->buffer, &len);
     }
-    else {
+    else if (ctx->inbio.mode == AP_MODE_GETLINE) {
         status = ssl_io_input_getline(ctx, ctx->buffer, &len);
+    }
+    else {
+        /* We have no idea what you are talking about, so return an error. */
+        return APR_ENOTIMPL;
     }
 
     if (status != APR_SUCCESS) {
@@ -804,7 +810,6 @@ static void ssl_io_input_add_filter(SSLFilterRec *frec, conn_rec *c,
     ctx->inbio.f = frec->pInputFilter;
     ctx->inbio.bb = apr_brigade_create(c->pool);
     ctx->inbio.bucket = NULL;
-    ctx->inbio.getline = 0;
     ctx->inbio.cbuf.length = 0;
 
     ctx->cbuf.length = 0;

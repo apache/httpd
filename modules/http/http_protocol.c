@@ -533,15 +533,16 @@ typedef struct http_filter_ctx {
  * are successfully parsed. 
  */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                            ap_input_mode_t mode, apr_off_t *readbytes)
+                            ap_input_mode_t mode, apr_read_type_e block,
+                            apr_off_t *readbytes)
 {
     apr_bucket *e;
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
     /* just get out of the way of this thing. */
-    if (mode == AP_MODE_PEEK) {
-        return ap_get_brigade(f->next, b, mode, readbytes);
+    if (mode == AP_MODE_EATCRLF) {
+        return ap_get_brigade(f->next, b, mode, block, readbytes);
     }
 
     if (!ctx) {
@@ -648,7 +649,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         AP_DEBUG_ASSERT(*readbytes > 0); /* shouldn't be in getline mode */
     }
 
-    rv = ap_get_brigade(f->next, b, mode, readbytes);
+    rv = ap_get_brigade(f->next, b, mode, block, readbytes);
 
     if (rv != APR_SUCCESS) {
         return rv;
@@ -1479,8 +1480,8 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
     /* read until we get a non-empty brigade */
     while (APR_BRIGADE_EMPTY(bb)) {
         apr_off_t len_read = bufsiz;
-        if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
-                           &len_read) != APR_SUCCESS) {
+        if (ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                           APR_BLOCK_READ, &len_read) != APR_SUCCESS) {
             /* if we actually fail here, we want to just return and
              * stop trying to read data from the client.
              */

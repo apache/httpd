@@ -101,6 +101,7 @@ static void CaseFilterInInsertFilter(request_rec *r)
 static apr_status_t CaseFilterInFilter(ap_filter_t *f,
                                        apr_bucket_brigade *pbbOut,
                                        ap_input_mode_t eMode,
+                                       apr_read_type_e eBlock,
                                        apr_off_t *nBytes)
 {
     request_rec *r = f->r;
@@ -113,9 +114,9 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
     }
 
     if (APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
-        ret = ap_get_brigade(f->next, pCtx->pbbTmp, eMode, nBytes);
+        ret = ap_get_brigade(f->next, pCtx->pbbTmp, eMode, eBlock, nBytes);
 
-        if (eMode == AP_MODE_PEEK || ret != APR_SUCCESS)
+        if (eMode == AP_MODE_EATCRLF || ret != APR_SUCCESS)
             return ret;
     }
 
@@ -140,7 +141,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
             break;
         }
 
-        ret=apr_bucket_read(pbktIn, &data, &len, eMode);
+        ret=apr_bucket_read(pbktIn, &data, &len, eBlock);
         if(ret != APR_SUCCESS)
             return ret;
 

@@ -844,8 +844,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 apr_bucket *e;
                 readbytes = AP_IOBUFSIZE;
                 while (ap_get_brigade(rp->input_filters, 
-                                       bb, 
-                                      AP_MODE_BLOCKING, 
+                                      bb, 
+                                      AP_MODE_READBYTES, 
+                                      APR_BLOCK_READ, 
                                       &readbytes) == APR_SUCCESS) {
 #if DEBUGGING
                     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,

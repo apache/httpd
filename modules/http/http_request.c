@@ -249,7 +249,8 @@ static void check_pipeline_flush(request_rec *r)
     /* ### shouldn't this read from the connection input filters? */
     /* ### is zero correct? that means "read one line" */
     if (!r->connection->keepalive || 
-        ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK, &zero) != APR_SUCCESS) {
+        ap_get_brigade(r->input_filters, bb, AP_MODE_EATCRLF, 
+                       APR_NONBLOCK_READ, &zero) != APR_SUCCESS) {
         apr_bucket *e = apr_bucket_flush_create();
 
         /* We just send directly to the connection based filters.  At
