@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/10/16 20:29:29 $]
+Last modified at [$Date: 2002/10/22 16:58:59 $]
 
 Release:
 
@@ -464,7 +464,6 @@ EXPERIMENTAL MODULES:
     get the modules promoted to fully supported status.
 
     mod_cache/mod_mem_cache/mod_disk_cache:
-
     * mod_cache: handle cache_control: no_cache "field_name" to enable 
       cacheing the response w/o header "field_name"
       See RFC2616 section 14.9.1
@@ -484,19 +483,6 @@ EXPERIMENTAL MODULES:
       to collect status.  Status should be queryable by
       HTTP or SNMP?
 
-    * mod_mem_cache: garbage collection. One strategy is to simply
-      remove stale entries as we attempt to serve them. Another
-      strategy is to kick off a GC thread that traverses the cache
-      and preemptively remove stale entries.  How to manage a 
-      cache that is full? Do LRU GC? Other? Bueller?
-
-    * mod_mem_cache/mod_disk_cache: Complete implementing config
-      directives. 
-
-    * Sample config for mod_cache/mod_mem_cache/mod_disk_cache for
-      inclusion into httpd.conf.
-
-    * mod_cache/mod_mem_cache/mod_disk_cache: Documentation.
     
     mod_auth_ldap/util_ldap:
     
