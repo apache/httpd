@@ -542,8 +542,8 @@ static void accept_mutex_init(ap_context_t *p)
     unlock_it.l_pid = 0;		/* pid not actually interesting */
 
     expand_lock_fname(p);
-    ap_open(p, ap_lock_fname, APR_CREATE | APR_WRITE | APR_EXCL,
-            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, &tempfile);
+    ap_open(&tempfile, p, ap_lock_fname, APR_CREATE | APR_WRITE | APR_EXCL,
+            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD);
     ap_get_os_file(tempfile, &lock_fd);
     if (lock_fd == -1) {
 	perror("open");
@@ -605,7 +605,7 @@ static void accept_mutex_child_init(ap_context_t *p)
 {
     ap_file_t *tempfile;
 
-    ap_open(p, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE, &tempfile);
+    ap_open(&tempfile, p, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE);
     if (!tempfile) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Child cannot open lock file: %s", ap_lock_fname);
@@ -1957,9 +1957,9 @@ static void child_main(int child_num_arg)
     /* Get a sub ap_context_t for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    ap_create_context(pconf, &pchild);
+    ap_create_context(&pchild, pconf);
 
-    ap_create_context(pchild, &ptrans);
+    ap_create_context(&ptrans, pchild);
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);
@@ -2078,7 +2078,7 @@ static void child_main(int child_num_arg)
 		    clean_child_exit(0);
 		}
 		clen = sizeof(sa_client);
-		stat = ap_accept(sd, &csd);
+		stat = ap_accept(&csd, sd);
 		if (stat == APR_SUCCESS || stat != APR_EINTR)
 		    break;
 	    }

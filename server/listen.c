@@ -176,7 +176,7 @@ static void alloc_listener(char *addr, unsigned int port)
     /* XXX - We need to deal with freeing this structure properly. */
     new = malloc(sizeof(ap_listen_rec));
     new->active = 0;
-    if (ap_create_tcp_socket(NULL, &new->sd) != APR_SUCCESS) {
+    if (ap_create_tcp_socket(&new->sd, NULL) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
                  "make_sock: failed to get a socket for %s", addr);
         return;

@@ -1251,7 +1251,7 @@ static server_rec *init_server_config(ap_context_t *p)
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL;
     s->error_fname = DEFAULT_ERRORLOG;
-    ap_put_os_file(p, &s->error_log, &errfile);
+    ap_put_os_file(&s->error_log, &errfile, p);
     s->loglevel = DEFAULT_LOGLEVEL;
     s->srm_confname = RESOURCE_CONFIG_FILE;
     s->access_confname = ACCESS_CONFIG_FILE;

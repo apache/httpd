@@ -809,7 +809,7 @@ static void * worker_thread(void * dummy)
 
     free(ti);
 
-    ap_create_context(tpool, &ptrans);
+    ap_create_context(&ptrans, tpool);
 
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count++;
@@ -867,7 +867,7 @@ static void * worker_thread(void * dummy)
                     /* XXX: Should we check for POLLERR? */
                     if (listenfds[curr_pollfd].revents & POLLIN) {
                         last_pollfd = curr_pollfd;
-                        ap_put_os_sock(tpool, &sd, &listenfds[curr_pollfd].fd); 
+                        ap_put_os_sock(&sd, &listenfds[curr_pollfd].fd, tpool); 
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
@@ -875,7 +875,7 @@ static void * worker_thread(void * dummy)
         }
     got_fd:
         if (!workers_may_exit) {
-            ap_accept(sd, &csd);
+            ap_accept(&csd, sd);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
         }
@@ -918,7 +918,7 @@ static void child_main(int child_num_arg)
     ap_listen_rec *lr;
 
     my_pid = getpid();
-    ap_create_context(pconf, &pchild);
+    ap_create_context(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
     reopen_scoreboard(pchild);
@@ -972,7 +972,7 @@ static void child_main(int child_num_arg)
 	my_info->pid = my_child_num;
         my_info->tid = i;
 	my_info->sd = 0;
-	ap_create_context(pchild, &my_info->tpool);
+	ap_create_context(&my_info->tpool, pchild);
 	
 	/* We are creating threads right now */
 	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 

@@ -986,8 +986,8 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		 * the file's contents, any HTML header it had won't end up
 		 * where it belongs.
 		 */
-		if (ap_open(r->pool, rr->filename, APR_READ | APR_BUFFERED,
-                            APR_OS_DEFAULT, &f) == APR_SUCCESS) {
+		if (ap_open(&f, r->pool, rr->filename, APR_READ | APR_BUFFERED,
+                            APR_OS_DEFAULT) == APR_SUCCESS) {
 		    emit_preamble(r, title);
 		    emit_amble = 0;
 		    do_emit_plain(r, f);
@@ -1054,8 +1054,8 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 		/*
 		 * If we can open the file, suppress the signature.
 		 */
-		if (ap_open(r->pool, rr->filename, APR_READ | APR_BUFFERED,
-                            APR_OS_DEFAULT, &f) == APR_SUCCESS) {
+		if (ap_open(&f, r->pool, rr->filename, APR_READ | APR_BUFFERED,
+                            APR_OS_DEFAULT) == APR_SUCCESS) {
 		    do_emit_plain(r, f);
 		    ap_close(f);
 		    suppress_sig = 1;
@@ -1090,8 +1090,8 @@ static char *find_title(request_rec *r)
 			"text/html")
 	    || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
 	&& !r->content_encoding) {
-        if (ap_open(r->pool, r->filename, APR_READ | APR_BUFFERED,
-                    APR_OS_DEFAULT, &thefile) != APR_SUCCESS) {
+        if (ap_open(&thefile, r->pool, r->filename, APR_READ | APR_BUFFERED,
+                    APR_OS_DEFAULT) != APR_SUCCESS) {
 	    return NULL;
 	}
         n = sizeof(char) * (MAX_STRING_LEN - 1);
@@ -1280,7 +1280,7 @@ static void output_directories(struct ent **ar, int n,
     char *name_scratch;
     char *pad_scratch;
 
-    ap_create_context(r->pool, &scratch);
+    ap_create_context(&scratch, r->pool);
     if (name[0] == '\0') {
 	name = "/";
     }
@@ -1513,7 +1513,7 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
 
-    if (ap_opendir(r->pool, name, &d) != APR_SUCCESS) {
+    if (ap_opendir(&d, r->pool, name) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
@@ -1578,7 +1578,7 @@ static int index_directory(request_rec *r,
     head = NULL;
     while (ap_readdir(d)) {
         char *d_name;
-        ap_get_dir_filename(d, &d_name);
+        ap_get_dir_filename(&d_name, d);
 	p = make_autoindex_entry(d_name, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
 	if (p != NULL) {

@@ -222,7 +222,7 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 
     result = FROM_UNKNOWN;
 
-    if (ap_create_tcp_socket(conn->pool, &sock) != APR_SUCCESS) {
+    if (ap_create_tcp_socket(&sock, conn->pool) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
 		    "socket: rfc1413: error creating socket");
 	conn->remote_logname = result;
