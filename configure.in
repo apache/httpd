@@ -31,8 +31,12 @@ dnl Generate ./config.nice for reproducing runs of configure
 dnl
 APR_CONFIG_NICE(config.nice)
 
+dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
+dnl by configure until it is too late.  Is that how it should be or not?
+dnl Something seems broken here.
+AC_PREFIX_DEFAULT(/usr/local/apache2)
+test "$prefix" = "NONE" && prefix='/usr/local/apache2'
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
-test "$prefix" = "NONE" && prefix='/usr/local'
 
 dnl Absolute source/build directory
 abs_srcdir=`(cd $srcdir && pwd)`
