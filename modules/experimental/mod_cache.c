@@ -643,7 +643,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         int all_buckets_here=0;
         int unresolved_length = 0;
         size=0;
-        APR_BRIGADE_FOREACH(e, in) {
+        for (e = APR_BRIGADE_FIRST(in);
+             e != APR_BRIGADE_SENTINEL(in);
+             e = APR_BUCKET_NEXT(e))
+        {
             if (APR_BUCKET_IS_EOS(e)) {
                 all_buckets_here=1;
                 break;

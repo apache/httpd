@@ -997,7 +997,10 @@ static int dav_method_put(request_rec *r)
                 break;
             }
 
-            APR_BRIGADE_FOREACH(b, bb) {
+            for (b = APR_BRIGADE_FIRST(bb);
+                 b != APR_BRIGADE_SENTINEL(bb);
+                 b = APR_BUCKET_NEXT(b))
+            {
                 const char *data;
                 apr_size_t len;
 

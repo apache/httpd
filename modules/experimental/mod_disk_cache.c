@@ -679,7 +679,10 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             return rv;
         }
     }
-    APR_BRIGADE_FOREACH(e, b) {
+    for (e = APR_BRIGADE_FIRST(b);
+         e != APR_BRIGADE_SENTINEL(b);
+         e = APR_BUCKET_NEXT(e))
+    {
         const char *str;
         apr_size_t length;
         apr_bucket_read(e, &str, &length, APR_BLOCK_READ);

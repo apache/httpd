@@ -158,7 +158,11 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          */
         char chunk_hdr[20]; /* enough space for the snprintf below */
 
-        APR_BRIGADE_FOREACH(e, b) {
+
+        for (e = APR_BRIGADE_FIRST(b);
+             e != APR_BRIGADE_SENTINEL(b);
+             e = APR_BUCKET_NEXT(e))
+        {
             if (APR_BUCKET_IS_EOS(e)) {
                 /* there shouldn't be anything after the eos */
                 eos = e;

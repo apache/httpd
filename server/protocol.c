@@ -266,7 +266,10 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         return APR_EGENERAL;
     }
 
-    APR_BRIGADE_FOREACH(e, bb) {
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
         const char *str;
         apr_size_t len;
 

@@ -94,7 +94,10 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
             goto read_error;
         }
 
-        APR_BRIGADE_FOREACH(bucket, brigade) {
+        for (bucket = APR_BRIGADE_FIRST(brigade);
+             bucket != APR_BRIGADE_SENTINEL(brigade);
+             bucket = APR_BUCKET_NEXT(bucket))
+        {
             const char *data;
             apr_size_t len;
 

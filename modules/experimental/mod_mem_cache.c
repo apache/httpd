@@ -957,7 +957,10 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
          * - the brigade is complete &&
          * - the file_bucket is the last data bucket in the brigade
          */
-        APR_BRIGADE_FOREACH(e, b) {
+        for (e = APR_BRIGADE_FIRST(b);
+             e != APR_BRIGADE_SENTINEL(b);
+             e = APR_BUCKET_NEXT(e))
+        {
             if (APR_BUCKET_IS_EOS(e)) {
                 eos = 1;
             }
@@ -1010,7 +1013,10 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     cur = (char*) mobj->m + obj->count;
 
     /* Iterate accross the brigade and populate the cache storage */
-    APR_BRIGADE_FOREACH(e, b) {
+    for (e = APR_BRIGADE_FIRST(b);
+         e != APR_BRIGADE_SENTINEL(b);
+         e = APR_BUCKET_NEXT(e))
+    {
         const char *s;
         apr_size_t len;
 

@@ -1058,7 +1058,11 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
         apr_file_printf(f, "%s\n", sbuf); 
 
     first = 1;
-    APR_BRIGADE_FOREACH(e, bb) {
+
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
         if (APR_BUCKET_IS_EOS(e)) {
             break;
         }
@@ -1159,7 +1163,11 @@ static void discard_script_output(apr_bucket_brigade *bb)
     const char *buf;
     apr_size_t len;
     apr_status_t rv;
-    APR_BRIGADE_FOREACH(e, bb) {
+
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
         if (APR_BUCKET_IS_EOS(e)) {
             break;
         }
@@ -1398,7 +1406,10 @@ static int cgid_handler(request_rec *r)
             return rv;
         }
  
-        APR_BRIGADE_FOREACH(bucket, bb) {
+        for (bucket = APR_BRIGADE_FIRST(bb);
+             bucket != APR_BRIGADE_SENTINEL(bb);
+             bucket = APR_BUCKET_NEXT(bucket))
+        {
             const char *data;
             apr_size_t len;
 

@@ -3794,7 +3794,11 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
         else if (mode == AP_MODE_SPECULATIVE) {
             apr_bucket *copy_bucket;
-            APR_BRIGADE_FOREACH(e, ctx->b) {
+
+            for (e = APR_BRIGADE_FIRST(ctx->b);
+                 e != APR_BRIGADE_SENTINEL(ctx->b);
+                 e = APR_BUCKET_NEXT(e))
+            {
                 rv = apr_bucket_copy(e, &copy_bucket);
                 if (rv != APR_SUCCESS) {
                     return rv;
@@ -3869,7 +3873,10 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         more = NULL;
 
         /* Iterate over the brigade: collect iovecs and/or a file */
-        APR_BRIGADE_FOREACH(e, b) {
+        for (e = APR_BRIGADE_FIRST(b);
+             e != APR_BRIGADE_SENTINEL(b);
+             e = APR_BUCKET_NEXT(e))
+        {
             /* keep track of the last bucket processed */
             last_e = e;
             if (APR_BUCKET_IS_EOS(e)) {

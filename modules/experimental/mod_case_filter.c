@@ -99,8 +99,10 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
     apr_bucket_brigade *pbbOut;
 
     pbbOut=apr_brigade_create(r->pool, c->bucket_alloc);
-    APR_BRIGADE_FOREACH(pbktIn,pbbIn)
-	{
+    for (pbktIn = APR_BRIGADE_FIRST(pbbIn);
+         pbktIn != APR_BRIGADE_SENTINEL(pbbIn);
+         pbktIn = APR_BUCKET_NEXT(pbktIn))
+    {
 	const char *data;
 	apr_size_t len;
 	char *buf;

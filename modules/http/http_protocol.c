@@ -1583,7 +1583,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         }
     }
 
-    APR_BRIGADE_FOREACH(e, b) {
+    for (e = APR_BRIGADE_FIRST(b);
+         e != APR_BRIGADE_SENTINEL(b);
+         e = APR_BUCKET_NEXT(e))
+    {
         if (e->type == &ap_bucket_type_error) {
             ap_bucket_error *eb = e->data;
 
@@ -2025,7 +2028,10 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
             }
         }
 
-        APR_BRIGADE_FOREACH(bucket, bb) {
+        for (bucket = APR_BRIGADE_FIRST(bb);
+             bucket != APR_BRIGADE_SENTINEL(bb);
+             bucket = APR_BUCKET_NEXT(bucket))
+        {
             const char *data;
             apr_size_t len;
 
