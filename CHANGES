@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix segfault which occurred when a section in an included file was
+     not closed. PR 17093.  [André Malo]
+
   *) Extend the SetEnvIf directive to capture subexpressions of the
      matched value.  [André Malo]
 
