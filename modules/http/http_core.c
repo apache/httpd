@@ -2579,6 +2579,7 @@ static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec,
         bytes_written += n;
         if (rv != APR_SUCCESS)
             return rv;
+        *nbytes += n;
 
         /* If the write did not complete, adjust the iovecs and issue
          * apr_sendv again
