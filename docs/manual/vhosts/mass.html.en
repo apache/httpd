@@ -17,6 +17,10 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>Dynamically configured mass virtual hosting</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/vhosts/mass.html">&nbsp;en&nbsp;</a></p>
+</div>
+
 
     <p>This document describes how to efficiently serve an
     arbitrary number of virtual hosts with Apache 1.3. 
@@ -431,7 +435,9 @@ RewriteRule  ^/(.*)$                      %1/cgi-bin/$1
 </code></p></div>
 
 </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/vhosts/mass.html">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

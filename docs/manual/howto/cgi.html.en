@@ -16,7 +16,11 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: Dynamic Content with CGI</h1></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: Dynamic Content with CGI</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/howto/cgi.html">&nbsp;en&nbsp;</a> | <a href="../ja/howto/cgi.html">&nbsp;ja&nbsp;</a></p>
+</div>
+</div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configuring Apache to permit CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writing">Writing a CGI program</a></li>
@@ -488,7 +492,9 @@
     be posted to the Apache bug database unless you are sure you
     have found a problem in the Apache source code.</p>
   </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/howto/cgi.html">&nbsp;en&nbsp;</a> | <a href="../ja/howto/cgi.html">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

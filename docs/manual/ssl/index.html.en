@@ -17,6 +17,10 @@
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache SSL/TLS Encryption</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/ssl/">&nbsp;en&nbsp;</a> | <a href="../ja/ssl/">&nbsp;ja&nbsp;</a></p>
+</div>
+
 <p>The Apache HTTP Server module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
 provides an interface to the <a href="http://www.openssl.org/">OpenSSL</a> library, which provides
 Strong Encryption using the Secure Sockets Layer and Transport Layer
@@ -43,7 +47,9 @@ Ralf S. Engelschall's mod_ssl project.</p>
 provided by this module is provided in the <a href="../mod/mod_ssl.html">mod_ssl reference documentation</a>.
 </p>
 </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/ssl/">&nbsp;en&nbsp;</a> | <a href="../ja/ssl/">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

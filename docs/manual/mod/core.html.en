@@ -20,6 +20,9 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Core Features</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../de/mod/core.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/core.html">&nbsp;en&nbsp;</a></p>
+</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Core Apache HTTP Server features that are always
 available</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -2994,7 +2997,9 @@ hostname or IP address</td></tr>
 </ul>
 </div>
 </div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../de/mod/core.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/core.html">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

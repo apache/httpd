@@ -17,6 +17,10 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs-project/">Документация</a> &gt; <a href="./">Версия 2.1</a></div><div id="page-content"><div id="preamble"><h1>Обзор новых возможностей в Apache 2.0</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./de/new_features_2_0.html">&nbsp;de&nbsp;</a> | <a href="./en/new_features_2_0.html">&nbsp;en&nbsp;</a> | <a href="./fr/new_features_2_0.html">&nbsp;fr&nbsp;</a> | <a href="./ja/new_features_2_0.html">&nbsp;ja&nbsp;</a> | <a href="./ko/new_features_2_0.html">&nbsp;ko&nbsp;</a> | <a href="./ru/new_features_2_0.html">&nbsp;ru&nbsp;</a></p>
+</div>
+
   <p>Этот документ описывает основные различия между версиями 1.3 и 2.0 HTTP сервера Apache</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Улучшения в ядре сервера</a></li>
@@ -226,7 +230,9 @@
 
     </dl>
   </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./de/new_features_2_0.html">&nbsp;de&nbsp;</a> | <a href="./en/new_features_2_0.html">&nbsp;en&nbsp;</a> | <a href="./fr/new_features_2_0.html">&nbsp;fr&nbsp;</a> | <a href="./ja/new_features_2_0.html">&nbsp;ja&nbsp;</a> | <a href="./ko/new_features_2_0.html">&nbsp;ko&nbsp;</a> | <a href="./ru/new_features_2_0.html">&nbsp;ru&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Поддержка осуществляется <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div>
 </body></html>

@@ -20,6 +20,9 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_asis</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_asis.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_asis.html">&nbsp;ja&nbsp;</a></p>
+</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>自分用の HTTP ヘッダの書かれているファイルを送信する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>asis_module</td></tr>
@@ -95,7 +98,9 @@
     </div>
 </div>
 </div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_asis.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/mod_asis.html">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>
