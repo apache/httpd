@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.3 $ ($Date: 2000/01/30 15:47:42 $)
+  $Revision: 1.4 $ ($Date: 2000/11/01 19:18:03 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -382,14 +382,14 @@
    Regular expressions are a way of describing a pattern - for example, "all 
    the words that begin with the letter A" or "every 10-digit phone number" 
    or even "Every sentence with two commas in it, and no capital letter Q".  
-   Regular expressions (aka "regexp"s) are useful in Apache because they 
+   Regular expressions (aka "regex"s) are useful in Apache because they 
    let you apply certain attributes against collections of files or resources 
    in very flexible ways - for example, all .gif and .jpg files under
-   any "images" directory could be written as /.*\/images\/.*[jpg|gif]/.
+   any "images" directory could be written as /\/images\/.*(jpg|gif)$/.
    </P>
    <P>
    The best overview around is probably the one which comes with Perl.
-   We implement a simple subset of Perl's regexp support, but it's
+   We implement a simple subset of Perl's regex support, but it's
    still a good way to learn what they mean.  You can start by going
    to the <A
    HREF="http://www.perl.com/CPAN-local/doc/manual/html/pod/perlre.html#Version_8_Regular_Expresions"
