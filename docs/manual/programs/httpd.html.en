@@ -23,8 +23,9 @@
      child processes or threads to handle requests.</p>
 
      <p>In general, <code>httpd</code> should not be invoked directly,
-     but rather should be invoked via <a href="apachectl.html">apachectl</a> on unix systems or as an NT
-     service under win32.</p>
+     but rather should be invoked via <a href="apachectl.html">apachectl</a> on Unix-based systems or <a href="../platform/windows.html#winsvc">as a service on Windows NT,
+     2000 and XP</a> and <a href="../platform/windows.html#wincons">as
+     a console application on Windows 9x and ME</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
