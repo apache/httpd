@@ -217,7 +217,7 @@
     at the final request.  So for example, <code>%&gt;s</code> can be
     used to record the final status of the request and
     <code>%&lt;u</code> can be used to record the original
-    authenticated user on a request that is internally redirect to an
+    authenticated user on a request that is internally redirected to an
     unauthenticated resource.</p>
 
     <p>Note that in httpd 2.0 versions prior to 2.0.46, no escaping was performed
