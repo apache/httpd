@@ -1,10 +1,10 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/16 00:31:45 $]
+  Last modified at [$Date: 1999/12/16 14:05:29 $]
 
 Release:
 
     1.3.10-dev: Current. Proposal open to try to release on
-           Dec 19th, 1999. Jim offers to be RM.
+           Dec 24th, 1999. Jim offers to be RM.
     1.3.9: Tagged and rolled on Aug. 16. Released and announced on 19th.
     1.3.8: Not released.
     1.3.7: Not released.
@@ -119,11 +119,9 @@ Available Patches:
 		Randy +1 (please choose name other than "hook")
                 Doug +1 on concept (untested), Lars +1 on concept,
 		Martin +1 (untested), Fred +1,
-		Jim ---0 (I really don't think it makes sense to
-		add this right now. If we do, then we want a "long"
-		beta period so that other packages that need to
-		patch the official source code have plenty of time
-		to make the required changes)
+		Jim -1 (I really don't think it makes sense to
+		add this right now this late in the release cycle
+		for 1.3.10. I am +1 for 1.3.11)
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
@@ -146,7 +144,7 @@ Available Patches:
         Status: Lars +1 (on concept), Dirkx +1 (tested),
 		Martin +1 (on concept, but patched apache does not
 		compile successfully on pre-IPv6-SVR4,
-		and possibly others)
+		and possibly others), Jim -1 (not for 1.3.10)
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442
