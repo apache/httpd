@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/16 16:45:23 $]
+Last modified at [$Date: 2003/05/21 16:21:19 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -400,6 +400,17 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * When sufficiently tested, the AllowEncodedSlashes/%2f patch
       needs to be backported to 2.0 and 1.3.
+
+    * APXS either needs to be fixed completely for use when apr is out of tree,
+      or it should drop query mode altogether, and we just grow an 
+      httpd-config or similar arrangement. 
+      To quote a discussion in STATUS earlier:
+
+          thommay: this doesn't fix all the problems with apxs and out of
+                   tree apr/apr-util, but it's a good start. There's still the 
+                   query cases; but I'm beginning to think that in these cases 
+                   the app should be querying ap{r,u}-config directly
+          gstein: agreed. apxs should deprecate the -q flag
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
