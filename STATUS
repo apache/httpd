@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/08/19 16:50:55 $]
+Last modified at [$Date: 2000/08/22 17:09:42 $]
 
 Release:
 
@@ -11,12 +11,6 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
-    * Win32: Socket timeout semantics in Win32 APR are slightly
-      different from Unix semantics. This is mostly due to using 
-      setsockopt(SO_SNDTIMEO | SO_RCVTIMEO) in the Win32
-      socket routines. The major problem in the current implementation
-      is that timeouts apply to sending the entire response.
-      Status: Bill S. is working on this
 
     * All of the bucket types must be implemented.  The list can be found
       in src/include/ap_buckets.h. May need to implement a bucket type
