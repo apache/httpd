@@ -3603,7 +3603,7 @@ Changes with Apache 2.0a8
      so that the lookup can depend on the requested URI etc.
      PR #6671 [Tony Finch]
 
-  *) Tighten up the syntax checking of Host: headers to fix a
+  *) SECURITY: Tighten up the syntax checking of Host: headers to fix a
      security bug in some mass virtual hosting configurations
      that can allow a remote attacker to retrieve some files
      on the system that should be inaccessible. [Tony Finch]
@@ -3862,7 +3862,8 @@ Changes with Apache 2.0a7
      multiple places and allows for an SSL module to be added much
      simpler. [Ryan Bloom]
 
-  *) Fix a security problem that affects certain configurations of
+  *) SECURITY: CVE-2000-0913 (cve.mitre.org)
+     Fix a security problem that affects certain configurations of
      mod_rewrite. If the result of a RewriteRule is a filename that
      contains expansion specifiers, especially regexp backreferences
      $0..$9 and %0..%9, then it may be possible for an attacker to
@@ -4251,8 +4252,8 @@ Changes with Apache 2.0a5
      container is VirtualHost or Directory or whatever.
      [Jeff Trawick]
 
-  *) Prevent the source code for CGIs from being revealed when using
-     mod_vhost_alias and the CGI directory is under the document root
+  *) SECURITY: Prevent the source code for CGIs from being revealed when 
+     using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
      as reported in <news:960999105.344321@ernani.logica.co.uk>
      [Tony Finch]
@@ -4832,8 +4833,8 @@ Changes with Apache 2.0a1
 
   *) port mod_rewrite to 2.0. [Paul J. Reder <rederpj@raleigh.ibm.com>]
 
-  *) More rigorous checking of Host: headers to fix security problems
-     with mass name-based virtual hosting (whether using mod_rewrite
+  *) SECURITY: More rigorous checking of Host: headers to fix security 
+     problems with mass name-based virtual hosting (whether using mod_rewrite
      or mod_vhost_alias).
      [Ben Hyde, Tony Finch]
   
@@ -6667,7 +6668,8 @@ Changes with Apache 1.3.2
   *) SECURITY: Eliminate O(n^2) space DoS attacks (and other O(n^2)
      cpu time attacks) in header parsing.  Add ap_overlap_tables(),
      a function which can be used to perform bulk update operations
-     on tables in a more efficient manner.  [Dean Gaudet]
+     on tables in a more efficient manner.  CAN-1999-1199 (cve.mitre.org)
+     [Dean Gaudet]
 
   *) SECURITY: Added compile-time and configurable limits for
      various aspects of reading a client request to avoid some simple
