@@ -1,23 +1,38 @@
 /*
-Date: Sat, 1 Nov 1997 16:53:52 -0800 (PST)
-From: Dean Gaudet <dgaudet@arctic.org>
+time-sem.c has the basics of the semaphores we use in http_main.c.  It's
+intended for timing differences between various methods on an
+architecture.  In practice we've found many things affect which semaphore
+to be used:
 
-This time-sem.c includes the necessary signal manipulations to allow us to
-continue to use pthreads.  It appears to still be and order of magnitude
-faster than fcntl locking.  I'm a little too busy to make a patch though,
-so if someone could take the pthread code in time-sem.c here and compare
-it against the server ... and generate a patch, that'd be great.  You also
-have to properly release the mutex on any of the three unblocked signals --
-which you should do in the handlers we already have for those signals,
-so that we don't have to also instate a handler during the critical
-section ...
+    - NFS filesystems absolutely suck for fcntl() and flock()
 
-Dean
+    - uslock absolutely sucks on single-processor IRIX boxes, but
+	absolutely rocks on multi-processor boxes.  The converse
+	is true for fcntl.  sysvsem seems a moderate balance.
+
+    - Under Solaris you can't have too many processes use SEM_UNDO, there
+	might be a tuneable somewhere that increases the limit from 29.
+	We're not sure what the tunable is, so there's a define
+	NO_SEM_UNDO which can be used to simulate us trapping/blocking
+	signals to be able to properly release the semaphore on a clean
+	child death.
+
+argv[1] is the #children, argv[2] is the #iterations per child
+
+You should run each over many different #children inputs, and choose
+#iter such that the program runs for at least a second or so... or even
+longer depending on your patience.
+
+compile with:
 
 gcc -o time-FCNTL -Wall -O time-sem.c -DUSE_FCNTL_SERIALIZED_ACCEPT
 gcc -o time-FLOCK -Wall -O time-sem.c -DUSE_FLOCK_SERIALIZED_ACCEPT
-gcc -o time-SEM -Wall -O time-sem.c -DUSE_SYSVSEM_SERIALIZED_ACCEPT
+gcc -o time-SYSVSEM -Wall -O time-sem.c -DUSE_SYSVSEM_SERIALIZED_ACCEPT
+gcc -o time-SYSVSEM2 -Wall -O time-sem.c -DUSE_SYSVSEM_SERIALIZED_ACCEPT -DNO_SEM_UNDO
 gcc -o time-PTHREAD -Wall -O time-sem.c -DUSE_PTHREAD_SERIALIZED_ACCEPT -lpthread
+gcc -o time-USLOCK -Wall -O time-sem.c -DUSE_USLOCK_SERIALIZED_ACCEPT
+
+not all versions work on all systems.
 */
 
 #include <errno.h>
@@ -146,6 +161,10 @@ void accept_mutex_off(void)
 #include <sys/sem.h>
 
 static   int sem_id = -1;
+#ifdef NO_SEM_UNDO
+static sigset_t accept_block_mask;
+static sigset_t accept_previous_mask;
+#endif
 
 void accept_mutex_init(void)
 {
@@ -167,15 +186,29 @@ void accept_mutex_init(void)
        perror ("semctl");
         exit(1);
     }
+#ifdef NO_SEM_UNDO
+    sigfillset(&accept_block_mask);
+    sigdelset(&accept_block_mask, SIGHUP);
+    sigdelset(&accept_block_mask, SIGTERM);
+    sigdelset(&accept_block_mask, SIGUSR1);
+#endif
 }
 
 void accept_mutex_on()
 {
     struct sembuf op;
 
+#ifdef NO_SEM_UNDO
+    if (sigprocmask(SIG_BLOCK, &accept_block_mask, &accept_previous_mask)) {
+	perror("sigprocmask(SIG_BLOCK)");
+	exit (1);
+    }
+    op.sem_flg = 0;
+#else
+    op.sem_flg = SEM_UNDO;
+#endif
     op.sem_num = 0;
     op.sem_op  = -1;
-    op.sem_flg = SEM_UNDO;
     if (semop(sem_id, &op, 1) < 0) {
 	perror ("accept_mutex_on");
 	exit (1);
@@ -188,14 +221,29 @@ void accept_mutex_off()
 
     op.sem_num = 0;
     op.sem_op  = 1;
+#ifdef NO_SEM_UNDO
+    op.sem_flg = 0;
+#else
     op.sem_flg = SEM_UNDO;
+#endif
     if (semop(sem_id, &op, 1) < 0) {
 	perror ("accept_mutex_off");
         exit (1);
     }
+#ifdef NO_SEM_UNDO
+    if (sigprocmask(SIG_SETMASK, &accept_previous_mask, NULL)) {
+	perror("sigprocmask(SIG_SETMASK)");
+	exit (1);
+    }
+#endif
 }
 
 #elif defined (USE_PTHREAD_SERIALIZED_ACCEPT)
+
+/* note: pthread mutexes aren't released on child death, hence the
+ * signal goop ... in a real implementation we'd do special things
+ * during hup, term, usr1.
+ */
 
 #include <pthread.h>
 
@@ -403,5 +451,6 @@ void main (int argc, char **argv)
     }
     last.tv_usec = ms;
     printf ("%8lu.%06lu\n", last.tv_sec, last.tv_usec);
+    exit(0);
 }
 
