@@ -837,9 +837,15 @@ static void child_main(int child_num_arg)
     /* All threads should mask signals out, accoring to sigwait(2) man page */
     sigfillset(&sig_mask);
 
+#ifdef SIGPROCMASK_SETS_THREAD_MASK
+    if (sigprocmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf, "sigprocmask");
+    }
+#else
     if (pthread_sigmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, server_conf, "pthread_sigmask");
     }
+#endif
 
     requests_this_child = ap_max_requests_per_child;
     
@@ -857,7 +863,15 @@ static void child_main(int child_num_arg)
     pthread_mutex_init(&worker_thread_count_mutex, NULL);
     pthread_mutex_init(&pipe_of_death_mutex, NULL);
     pthread_attr_init(&thread_attr);
+#ifdef PTHREAD_ATTR_SETDETACHSTATE_ARG2_ADDR
+    {
+        int on = 1;
+
+        pthread_attr_setdetachstate(&thread_attr, &on);
+    }
+#else
     pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+#endif
     for (i=0; i < ap_threads_per_child; i++) {
 
 	my_info = (proc_info *)malloc(sizeof(proc_info));
