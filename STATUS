@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/31 05:42:51 $]
+Last modified at [$Date: 2003/04/03 11:55:55 $]
 
 Release:
 
@@ -59,6 +59,10 @@ Contributors looking for a mission:
 
 RELEASE SHOWSTOPPERS:
 
+    * PR 18649, --enable-layout breakage
+      configure.in 1.247
+      +1: trawick
+      
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
