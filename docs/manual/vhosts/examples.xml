@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.11 $ -->
+<!-- $Revision: 1.12 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -499,7 +499,9 @@
     href="#name">name-based</a> example, setup 2) should get its own IP
     address. To avoid problems with name servers or proxies who cached the
     old IP address for the name-based vhost we want to provide both
-    variants during a migration phase.<br />
+    variants during a migration phase.</p>
+
+    <p>
      The solution is easy, because we can simply add the new IP address
     (<code>172.20.30.50</code>) to the <code>VirtualHost</code>
     directive.</p>
@@ -594,11 +596,13 @@
     <code>http://www.sub1.domain.tld/</code> is only
     served from the sub1-vhost if the client sent a correct
     <code>Host:</code> header. If no <code>Host:</code> header is sent the
-    client gets the information page from the primary host.<br />
-     Please note that there is one oddity: A request to
+    client gets the information page from the primary host.</p>
+
+    <p>Please note that there is one oddity: A request to
     <code>http://www.sub2.domain.tld/sub1/</code> is also served from the
-    sub1-vhost if the client sent no <code>Host:</code> header.<br />
-     The <directive module="mod_rewrite">RewriteRule</directive> directives
+    sub1-vhost if the client sent no <code>Host:</code> header.</p>
+
+    <p>The <directive module="mod_rewrite">RewriteRule</directive> directives
     are used to make sure that a client which sent a correct
     <code>Host:</code> header can use both URL variants, <em>i.e.</em>,
     with or without URL prefix.</p>
