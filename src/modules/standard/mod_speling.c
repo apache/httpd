@@ -226,14 +226,15 @@ static int sort_by_quality(const void *left, const void *rite)
 
 static int check_speling(request_rec *r)
 {
-    void *server_conf = r->server->module_config;
+    spconfig *cfg;
     char *good, *bad, *postgood, *url;
     int filoc, dotloc, urlen, pglen;
     DIR *dirp;
     struct DIR_TYPE *dir_entry;
     array_header *candidates = NULL;
 
-    if (!ap_get_module_config(server_conf, &speling_module)) {
+    cfg = ap_get_module_config(r->per_dir_config, &speling_module);
+    if (!cfg->enabled) {
         return DECLINED;
     }
 
