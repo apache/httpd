@@ -126,6 +126,7 @@ _clean:
 	 nmake /nologo CFG="ApacheModuleHeaders - Win32 %LONG%" -f ApacheModuleHeaders.mak clean
 	 nmake /nologo CFG="ApacheModuleSpeling - Win32 %LONG%" -f ApacheModuleSpeling.mak clean
 	 nmake /nologo CFG="ApacheModuleUserTrack - Win32 %LONG%" -f ApacheModuleUserTrack.mak clean
+	 nmake /nologo CFG="ApacheModuleRewrite - Win32 %LONG%" -f ApacheModuleRewrite.mak clean
 	cd ..\..
 	cd modules\proxy
 	 nmake /nologo CFG="ApacheModuleProxy - Win32 %LONG%" -f ApacheModuleProxy.mak clean
