@@ -181,25 +181,6 @@ static char c_by_encoding, c_by_type, c_by_path;
 #define BY_PATH &c_by_path
 
 /*
- * Return true if the specified string refers to the parent directory (i.e.,
- * matches ".." or "../").  Hopefully this one call is significantly less
- * expensive than multiple strcmp() calls.
- */
-static APR_INLINE int is_parent(const char *name)
-{
-    /*
-     * Now, IFF the first two bytes are dots, and the third byte is either
-     * EOS (\0) or a slash followed by EOS, we have a match.
-     */
-    if (((name[0] == '.') && (name[1] == '.'))
-	&& ((name[2] == '\0')
-	    || ((name[2] == '/') && (name[3] == '\0')))) {
-        return 1;
-    }
-    return 0;
-}
-
-/*
  * This routine puts the standard HTML header at the top of the index page.
  * We include the DOCTYPE because we may be using features therefrom (i.e.,
  * HEIGHT and WIDTH attributes on the icons if we're FancyIndexing).
@@ -741,20 +722,20 @@ static char *find_item(request_rec *r, apr_array_header_t *list, int path_only)
 #define find_header(d,p) find_item(p,d->hdr_list,0)
 #define find_readme(d,p) find_item(p,d->rdme_list,0)
 
-static char *find_default_icon(autoindex_config_rec *d, char *bogus_name)
+static char *find_default_item(char *bogus_name, apr_array_header_t *list)
 {
     request_rec r;
-
     /* Bleah.  I tried to clean up find_item, and it lead to this bit
      * of ugliness.   Note that the fields initialized are precisely
      * those that find_item looks at...
      */
-
     r.filename = bogus_name;
     r.content_type = r.content_encoding = NULL;
-
-    return find_item(&r, d->icon_list, 1);
+    return find_item(&r, list, 1);
 }
+
+#define find_default_icon(d,n) find_default_item(n, d->icon_list)
+#define find_default_alt(d,n) find_default_item(n, d->alt_list)
 
 /*
  * Look through the list of pattern/description pairs and return the first one
@@ -770,11 +751,10 @@ static char *find_default_icon(autoindex_config_rec *d, char *bogus_name)
 #define MATCH_FLAGS 0
 #endif
 
-static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
+static char *find_desc(autoindex_config_rec *dcfg, const char *filename_full)
 {
     int i;
     ai_desc_t *list = (ai_desc_t *) dcfg->desc_list->elts;
-    const char *filename_full = r->filename;
     const char *filename_only;
     const char *filename;
 
@@ -1140,6 +1120,50 @@ static char *find_title(request_rec *r)
     return NULL;
 }
 
+static struct ent *make_parent_entry(int autoindex_opts,
+ 				     autoindex_config_rec *d,
+                                     request_rec *r, char keyid, 
+                                     char direction)
+{
+    struct ent *p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
+    char *testpath;
+    /*
+     * p->name is now the true parent URI.
+     * testpath is a crafted lie, so that the syntax '/some/..'
+     * (or simply '..')be used to describe 'up' from '/some/'
+     * when processeing IndexIgnore, and Icon|Alt|Desc configs.
+     */
+
+    /* The output has always been to the parent.  Don't make ourself
+     * our own parent (worthless cyclical reference).
+     */
+    if (!(p->name = ap_make_full_path(r->pool, r->uri, "../")))
+        return (NULL);
+    ap_getparents(p->name);
+    if (!*p->name)
+        return (NULL);
+
+    /* IndexIgnore has always compared "/thispath/.." */
+    testpath = ap_make_full_path(r->pool, r->filename, "..");
+    if (ignore_entry(d, testpath))
+        return (NULL);
+
+    p->size = -1;
+    p->lm = -1;
+    p->key = apr_toupper(keyid);
+    p->ascending = (apr_toupper(direction) == D_ASCENDING);
+    p->version_sort = autoindex_opts & VERSION_SORT;
+    if (autoindex_opts & FANCY_INDEXING) {
+        if (!(p->icon = find_default_icon(d, testpath)))
+	    p->icon = find_default_icon(d, "^^DIRECTORY^^");
+        if (!(p->alt = find_default_alt(d, testpath)))
+            if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^")))
+	        p->alt = "DIR";
+        p->desc = find_desc(d, testpath);
+    }
+    return p;
+}
+
 static struct ent *make_autoindex_entry(const apr_finfo_t *dirent, 
                                         int autoindex_opts,
 					autoindex_config_rec *d,
@@ -1149,20 +1173,20 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     request_rec *rr;
     struct ent *p;
 
-    if ((dirent->name[0] == '.') && (!dirent->name[1])) {
+    /* Dot is ignored, Parent is handled by make_parent_entry() */
+    if ((dirent->name[0] == '.') && (!dirent->name[1]
+        || (dirent->name[1] == '.') && !dirent->name[2]))
 	return (NULL);
-    }
 
-    if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, dirent->name))) {
+    if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, dirent->name)))
         return (NULL);
-    }
 
-    if (!(rr = ap_sub_req_lookup_dirent(dirent, r, NULL))) {
+    if (!(rr = ap_sub_req_lookup_dirent(dirent, r, NULL)))
         return (NULL);
-    }
 
     if ((rr->finfo.filetype != APR_DIR && rr->finfo.filetype != APR_REG)
-        || !(rr->status == OK || ap_is_HTTP_SUCCESS(rr->status))) {
+        || !(rr->status == OK || ap_is_HTTP_SUCCESS(rr->status)
+                              || ap_is_HTTP_REDIRECT(rr->status))) {
         ap_destroy_sub_req(rr);
         return (NULL);
     }
@@ -1186,9 +1210,9 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 		p->icon = find_default_icon(d, "^^DIRECTORY^^");
 	    }
 	    if (!(p->alt = find_alt(d, rr, 1))) {
-		p->alt = "DIR";
+		if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^")))
+		    p->alt = "DIR";
 	    }
-	    p->size = -1;
 	    p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
 	}
 	else {
@@ -1197,7 +1221,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 	    p->size = rr->finfo.size;
 	}
 
-	p->desc = find_desc(d, rr);
+	p->desc = find_desc(d, rr->filename);
 
 	if ((!p->desc) && (autoindex_opts & SCAN_HTML_TITLES)) {
 	    p->desc = apr_pstrdup(r->pool, find_title(rr));
@@ -1360,20 +1384,13 @@ static void output_directories(struct ent **ar, int n,
 
 	apr_pool_clear(scratch);
 
-	if (is_parent(ar[x]->name)) {
-	    t = ap_make_full_path(scratch, name, "../");
-	    ap_getparents(t);
-	    if (t[0] == '\0') {
-		t = "/";
-	    }
+        t = ar[x]->name;
+	anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
+
+        if (!x && t[0] == '/')
 	    t2 = "Parent Directory";
-	    anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
-	}
-	else {
-	    t = ar[x]->name;
+        else
 	    t2 = t;
-	    anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
-	}
 
 	if (autoindex_opts & FANCY_INDEXING) {
 	    if (autoindex_opts & ICONS_ARE_LINKS) {
@@ -1468,10 +1485,10 @@ static int dsortf(struct ent **e1, struct ent **e2)
      * First, see if either of the entries is for the parent directory.
      * If so, that *always* sorts lower than anything else.
      */
-    if (is_parent((*e1)->name)) {
+    if ((*e1)->name[0] == '/') {
         return -1;
     }
-    if (is_parent((*e2)->name)) {
+    if ((*e2)->name[0] == '/') {
         return 1;
     }
     /*
@@ -1606,6 +1623,12 @@ static int index_directory(request_rec *r,
      * linked list and then arrayificate them so qsort can use them. 
      */
     head = NULL;
+    p = make_parent_entry(autoindex_opts, autoindex_conf, r, keyid, direction);
+    if (p != NULL) {
+	p->next = head;
+	head = p;
+	num_ent++;
+    }
     while (apr_dir_read(&dirent, APR_FINFO_DIRENT, thedir) == APR_SUCCESS) {
 	p = make_autoindex_entry(&dirent, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
