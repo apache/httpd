@@ -92,4 +92,5 @@ API_EXPORT(int) is_initial_req(request_rec *r);
 /* Function called by main.c to handle first-level request */
 void process_request (request_rec *);     
 int default_handler (request_rec *);
+void die(int type, request_rec *r);
 #endif

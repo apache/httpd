@@ -269,7 +269,7 @@ static command_rec setenvif_module_cmds[] = {
 { NULL },
 };
 
-static int fname_translate_setenvif(request_rec *r)
+static int match_headers(request_rec *r)
 {
     server_rec *s = r->server;
     sei_cfg_rec *sconf = (sei_cfg_rec *)get_module_config(s->module_config,
@@ -342,7 +342,7 @@ module MODULE_VAR_EXPORT setenvif_module = {
    merge_setenvif_config,     	/* merge server configs */
    setenvif_module_cmds,	/* command table */
    NULL,			/* handlers */
-   fname_translate_setenvif,	/* filename translation */
+   NULL,			/* filename translation */
    NULL,			/* check_user_id */
    NULL,			/* check auth */
    NULL,			/* check access */
@@ -350,6 +350,7 @@ module MODULE_VAR_EXPORT setenvif_module = {
    NULL,			/* fixups */
    NULL,			/* logger */
    NULL,			/* browser parse */
-   NULL,			/* child (process) initializer */
-   NULL				/* child (process) rundown handler */
+   NULL,			/* child_init */
+   NULL,			/* child_exit */
+   match_headers		/* post_read_request */
 };

@@ -259,7 +259,8 @@ static const int method_offsets[] = {
     XtOffsetOf (module, type_checker),
     XtOffsetOf (module, fixer_upper),
     XtOffsetOf (module, logger),
-    XtOffsetOf (module, header_parser)
+    XtOffsetOf (module, header_parser),
+    XtOffsetOf (module, post_read_request)
 };
 #define NMETHODS	(sizeof (method_offsets)/sizeof (method_offsets[0]))
 
@@ -272,6 +273,7 @@ static struct {
     int fixer_upper;
     int logger;
     int header_parser;
+    int post_read_request;
 } offsets_into_method_ptrs;
 
 /*
@@ -370,6 +372,10 @@ int log_transaction (request_rec *r) {
 
 int header_parse (request_rec *r) {
     return run_method (r, offsets_into_method_ptrs.header_parser, 1);
+}
+
+int run_post_read_request (request_rec *r) {
+    return run_method (r, offsets_into_method_ptrs.post_read_request, 1);
 }
 
 /* Auth stuff --- anything that defines one of these will presumably

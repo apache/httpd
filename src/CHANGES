@@ -1,5 +1,22 @@
 Changes with Apache 1.3a2
 
+  *) API: Added post_read_request API phase which is run right after reading
+     the request from a client, or right after an internal redirect.  It is
+     useful for modules setting environment variables that depend only on
+     the headers/contents of the request.  It does not run during subrequests
+     because subrequests inherit pretty much everything from the main
+     request. [Dean Gaudet]
+
+  *) Added mod_unique_id which is used to generate a unique identifier for
+     each hit, available in the environment variable UNIQUE_ID.
+     [Dean Gaudet]
+
+  *) init_modules is now called after the error logs have been opened.  This
+     allows modules to emit information messages into the error logs.
+     init_modules is only called once in standalone config now, previously
+     it was called twice (once after each config file reading).
+     [Dean Gaudet]
+
   *) Fixed proxy-pass-through feature of mod_rewrite; Added error logging
      information for case where proxy module is not available. [Marc Slemko]
 

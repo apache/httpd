@@ -205,8 +205,9 @@ typedef struct module_struct {
      *                  supposed to handle this was configured wrong).
      * type_checker --- Determine MIME type of the requested entity;
      *                  sets content_type, _encoding and _language fields.
-     * logger --- log a transaction.  Not supported yet out of sheer
-     *            laziness on my part.
+     * logger --- log a transaction.
+     * post_read_request --- run right after read_request or internal_redirect,
+     *                  and not run during any subrequests.
      */
     
     int (*translate_handler)(request_rec *);
@@ -230,15 +231,12 @@ typedef struct module_struct {
      */
 #ifdef ULTRIX_BRAIN_DEATH
     void (*child_init)();
-#else
-    void (*child_init)(server_rec *, pool *);
-#endif
-#ifdef ULTRIX_BRAIN_DEATH
     void (*child_exit)();
 #else
+    void (*child_init)(server_rec *, pool *);
     void (*child_exit)(server_rec *, pool *);
 #endif
-
+    int (*post_read_request)(request_rec *);
 } module;
 
 /* Initializer for the first few module slots, which are only
@@ -248,7 +246,7 @@ typedef struct module_struct {
  * handle it back-compatibly, or at least signal an error).
  */
 
-#define MODULE_MAGIC_NUMBER 19970728
+#define MODULE_MAGIC_NUMBER 19970818
 #define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
@@ -323,5 +321,6 @@ int run_fixups (request_rec *);	/* poke around for other metainfo, etc.... */
 int invoke_handler (request_rec *);     
 int log_transaction (request_rec *r);
 int header_parse (request_rec *);
+int run_post_read_request (request_rec *);
 
 #endif

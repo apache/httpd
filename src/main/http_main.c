@@ -3082,8 +3082,8 @@ void standalone_main(int argc, char **argv)
 
 	server_conf = read_config (pconf, ptrans, server_confname); 
 	setup_listeners (pconf);
-	init_modules (pconf, server_conf);
 	open_logs (server_conf, pconf);
+	init_modules (pconf, server_conf);
 	set_group_privs ();
 	SAFE_ACCEPT(accept_mutex_init (pconf));
 	if (!is_graceful) {
@@ -3305,7 +3305,6 @@ main(int argc, char *argv[])
 
     suexec_enabled = init_suexec();
     server_conf = read_config (pconf, ptrans, server_confname);
-    init_modules (pconf, server_conf);
     
     if(standalone) {
         clear_pool (pconf);	/* standalone_main rereads... */
@@ -3319,6 +3318,7 @@ main(int argc, char *argv[])
 	NET_SIZE_T l;
       
 	open_logs(server_conf, pconf);
+	init_modules (pconf, server_conf);
 	set_group_privs();
 	default_server_hostnames (server_conf);
 

@@ -63,6 +63,7 @@
 #include "http_core.h"
 #include "http_protocol.h"
 #include "http_main.h"
+#include "http_request.h"
 #include "http_log.h"		/* For errors detected in basic auth
 				 * common support code...
 				 */
@@ -797,6 +798,7 @@ static void check_default_server (request_rec *r)
 request_rec *read_request (conn_rec *conn)
 {
     request_rec *r = (request_rec *)pcalloc (conn->pool, sizeof(request_rec));
+    int access_status;
 
     r->connection = conn;
     conn->server = conn->base_server;
@@ -881,6 +883,11 @@ request_rec *read_request (conn_rec *conn)
         r->method_number = M_TRACE;
     else 
         r->method_number = M_INVALID; /* Will eventually croak. */
+
+    if ((access_status = run_post_read_request (r))) {
+	die (access_status, r);
+	return NULL;
+    }
 
     return r;
 }

@@ -913,7 +913,7 @@ API_EXPORT(int) some_auth_required (request_rec *r)
 void process_request_internal (request_rec *r)
 {
     int access_status;
-  
+
     /* Kludge to be reading the assbackwards field outside of protocol.c,
      * but we've got to check for this sort of nonsense somewhere...
      */
@@ -1102,6 +1102,7 @@ request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
 {
     request_rec *new = (request_rec *)pcalloc(r->pool, sizeof(request_rec));
     char t[256];		/* Long enough... */
+    int access_status;
   
     new->connection = r->connection;
     new->server = r->server;
@@ -1153,6 +1154,15 @@ request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
 
     ap_snprintf (t, sizeof(t), "%d", r->status);
     table_set (new->subprocess_env, "REDIRECT_STATUS", pstrdup (r->pool, t));
+
+    /* XXX: hmm.  This is because mod_setenvif and mod_unique_id really need
+     * to do their thing on internal redirects as well.  Perhaps this is
+     * a misnamed function.
+     */
+    if ((access_status = run_post_read_request (new))) {
+	die (access_status, new);
+	return NULL;
+    }
 
     return new;
 }

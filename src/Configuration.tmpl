@@ -300,3 +300,9 @@ AddModule modules/standard/mod_auth.o
 ## should be the last (highest priority) module.
 
 AddModule modules/standard/mod_setenvif.o
+
+## mod_unique_id generates unique identifiers for each hit, which are
+## available in the environment variable UNIQUE_ID.  It may not work on all
+## systems, hence it is not included by default.
+
+# AddModule modules/standard/mod_unique_id.o
