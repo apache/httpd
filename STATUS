@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/18 12:37:52 $]
+Last modified at [$Date: 2003/09/18 15:16:17 $]
 
 Release:
 
@@ -327,6 +327,13 @@ PATCHES TO PORT FROM 2.1
     * mod_ssl: fix check for the plain-HTTP-request error
         modules/ssl/ssl_engine_io.c r1.111
       +1: jorton
+
+    * Fix the inability to log errors like exec failure in
+      mod_ext_filter/mod_cgi script children.  This was broken after 
+      such children stopped inheriting the error log handle.
+        modules/generators/mod_cgi.c r1.152
+        modules/filters/mod_ext_filter.c r1.5
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
