@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/06/26 15:57:41 $]
+  Last modified at [$Date: 2002/06/27 20:57:21 $]
 
 Release:
 
@@ -253,6 +253,7 @@ Binaries (1.3.26):
  i386-whatever-freebsd3.3      no      Ask Bjoern Hansen
  i386-whatever-freebsd4.0      no      Ask Bjoern Hansen
  i386-whatever-freebsd4.4      no      Martin Kraemer
+ i386-whatever-freebsd4.6      yes     Aaron Bannert
  i586-unknown-linux2           no      Ralf S. Engelschall,
                                        Lars Eilebrecht, Randy Terbush
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
