@@ -509,7 +509,7 @@ expressions</description>
     </note>
 
     <p>When used inside a <directive type="section" module="core"
-    >Location</directive> section, the first argument is ommitted and the local
+    >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
     >Location</directive>.</p>
 
@@ -566,7 +566,7 @@ proxied server</description>
     >ProxyPass</directive> directive.</p>
 
     <p>When used inside a <directive type="section" module="core"
-    >Location</directive> section, the first argument is ommitted and the local
+    >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
     >Location</directive>.</p>
 </usage>

@@ -555,7 +555,7 @@ RewriteMap servers rnd:/path/to/file/map.txt
           in a special representation which is optimized for really
           fast lookups. The <em>type</em> can be sdbm, gdbm, ndbm, or
           db depending on <a href="../install.html#dbm">compile-time
-          settings</a>.  If the <em>type</em> is ommitted, the
+          settings</a>.  If the <em>type</em> is omitted, the
           compile-time default will be chosen. You can create such a
           file with any DBM tool or with the following Perl
           script.  Be sure to adjust it to create the appropriate
