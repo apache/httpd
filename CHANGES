@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Update the mime.types file to the registered media types as
+     of 2001-09-25, and add mapping for xsl extension [Mark Cox]
+
   *) Fix MaxClients in the Worker MPM, so that it specifies the maximum
      number of clients that can connect at the same time, instead of
      specifying the maximum number of child processes.
