@@ -1345,7 +1345,7 @@ const char *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *cmd,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
-    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+    if ((err = ssl_cmd_check_dir(cmd, &arg))) {
         return err;
     }
 
