@@ -203,6 +203,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
     int retval;
     int total = 0;
     int looking_ahead = 0;
+    apr_size_t zero = 0;
     apr_size_t length;
     conn_rec *c = r->connection;
     core_request_config *req_cfg;
@@ -217,7 +218,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 
     while (1) {
         if (APR_BRIGADE_EMPTY(b)) {
-            if ((retval = ap_get_brigade(c->input_filters, b, AP_MODE_BLOCKING)) != APR_SUCCESS ||
+            if ((retval = ap_get_brigade(c->input_filters, b, AP_MODE_BLOCKING, &zero)) != APR_SUCCESS ||
                 APR_BRIGADE_EMPTY(b)) {
                 apr_brigade_destroy(b);
                 return -1;
@@ -547,8 +548,6 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_pool_t *p;
     const char *expect;
     int access_status;
-
-    AP_DEBUG_ASSERT(conn->remain == 0);
 
     apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));

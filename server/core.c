@@ -2995,7 +2995,7 @@ static int default_handler(request_rec *r)
     return ap_pass_brigade(r->output_filters, bb);
 }
 
-static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode)
+static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t *readbytes)
 {
     apr_bucket *e;
     
