@@ -713,7 +713,7 @@ static void child_main(int child_num_arg)
     }
 }
 
-static int make_child(server_rec *s, int slot, time_t now) 
+static int make_child(server_rec *s, int slot) 
 {
     int pid;
 
@@ -781,7 +781,7 @@ static void startup_children(int number_to_start)
 	if (ap_scoreboard_image->parent[i].pid != 0) {
 	    continue;
 	}
-	if (make_child(ap_server_conf, i, 0) < 0) {
+	if (make_child(ap_server_conf, i) < 0) {
 	    break;
 	}
 	--number_to_start;
@@ -806,7 +806,6 @@ static void perform_idle_server_maintenance(void)
     int i, j;
     int idle_thread_count;
     short_score *ss;
-    time_t now = 0;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
@@ -898,7 +897,7 @@ static void perform_idle_server_maintenance(void)
 			     idle_thread_count, total_non_dead);
 	    }
 	    for (i = 0; i < free_length; ++i) {
-	        make_child(ap_server_conf, free_slots[i], now);
+	        make_child(ap_server_conf, free_slots[i]);
 	    }
 	    /* the next time around we want to spawn twice as many if this
 	     * wasn't good enough, but not if we've just done a graceful
@@ -939,7 +938,7 @@ static void server_main_loop(int remaining_children_to_start)
 		    /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-		    make_child(ap_server_conf, child_slot, time(NULL));
+		    make_child(ap_server_conf, child_slot);
 		    --remaining_children_to_start;
 		}
 #if APR_HAS_OTHER_CHILD
