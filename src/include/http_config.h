@@ -238,6 +238,7 @@ void set_module_config (void *conf_vector, module *m, void *val);
 /* Generic command handling function... */
 
 const char *set_string_slot (cmd_parms *, char *, char *);
+const char *set_flag_slot (cmd_parms *, char *, int);
 
 /* For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise

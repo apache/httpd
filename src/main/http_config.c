@@ -697,6 +697,15 @@ const char *set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
     return NULL;
 }
 
+const char *set_flag_slot (cmd_parms *cmd, char *struct_ptr, int arg)
+{
+    /* This one's pretty generic too... */
+  
+    int offset = (int)cmd->info; 
+    *(int *)(struct_ptr + offset) = arg ? 1 : 0;
+    return NULL;
+}
+
 /*****************************************************************
  *
  * Reading whole config files...

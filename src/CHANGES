@@ -1,5 +1,8 @@
 Changes with Apache 1.2b3:
 
+  *) Add set_flag_slot() at the request of Dirk and others.
+     [Dirk vanGulik]
+
   *) Sync mod_rewrite with patch level 10. [Ralf Engelschall]
 
   *) Add changes to improve the error message given for invalid
