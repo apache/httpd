@@ -90,8 +90,7 @@ int main(int argc, char *argv[])
            "#define T_ESCAPE_LOGITEM       (%u)\n"
            "#define T_ESCAPE_FORENSIC      (%u)\n"
            "\n"
-           "static const unsigned char test_char_table[256] = {\n"
-           "    0,",
+           "static const unsigned char test_char_table[256] = {",
            T_ESCAPE_SHELL_CMD,
            T_ESCAPE_PATH_SEGMENT,
            T_OS_ESCAPE_PATH,
@@ -99,10 +98,7 @@ int main(int argc, char *argv[])
            T_ESCAPE_LOGITEM,
            T_ESCAPE_FORENSIC);
 
-    /* we explicitly dealt with NUL above
-     * in case some strchr() do bogosity with it */
-
-    for (c = 1; c < 256; ++c) {
+    for (c = 0; c < 256; ++c) {
         flags = 0;
         if (c % 20 == 0)
             printf("\n    ");
@@ -154,7 +150,7 @@ int main(int argc, char *argv[])
          * :, | (used as delimiters) and % (used for escaping).
          */
         if (!apr_isprint(c) || c == ':' || c == '|' || c == '%'
-            || apr_iscntrl(c)) {
+            || apr_iscntrl(c) || !c) {
             flags |= T_ESCAPE_FORENSIC;
         }
 
