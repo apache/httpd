@@ -107,6 +107,7 @@ int use_acceptex = 1;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
 static int first_thread_limit = 0;
 static int changed_limit_at_restart;
+int winnt_mpm_state = AP_MPMQ_STARTING;
 
 /* ap_my_generation are used by the scoreboard code */
 ap_generation_t volatile ap_my_generation=0;
@@ -312,6 +313,7 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
         switch(type) {
            case SIGNAL_PARENT_SHUTDOWN: 
            {
+               winnt_mpm_state = AP_MPMQ_STOPPING;
                SetEvent(shutdown_event); 
                break;
            }
@@ -319,6 +321,7 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
            case SIGNAL_PARENT_RESTART: 
            case SIGNAL_PARENT_RESTART_GRACEFUL:
            {
+               winnt_mpm_state = AP_MPMQ_STOPPING;
                is_graceful = 1;
                SetEvent(restart_event); 
                break;
@@ -330,6 +333,7 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
     switch(type) {
        case SIGNAL_PARENT_SHUTDOWN: 
        {
+           winnt_mpm_state = AP_MPMQ_STOPPING;
            signal_name = signal_shutdown_name; 
            break;
        }
@@ -337,6 +341,7 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
        case SIGNAL_PARENT_RESTART: 
        case SIGNAL_PARENT_RESTART_GRACEFUL:
        {
+           winnt_mpm_state = AP_MPMQ_STOPPING;
            signal_name = signal_restart_name;     
            is_graceful = 1;
            break;
@@ -1097,6 +1102,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             return APR_SUCCESS;
         case AP_MPMQ_MAX_DAEMONS:
             *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MPM_STATE:
+            *result = winnt_mpm_state;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;

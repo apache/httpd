@@ -92,7 +92,6 @@ HANDLE exit_event;
 /* child_main() should never need to modify is_graceful!?! */
 extern int volatile is_graceful;
 
-
 /* Queue for managing the passing of COMP_CONTEXTs between
  * the accept and worker threads.
  */
@@ -926,6 +925,7 @@ void child_main(apr_pool_t *pconf)
         if (!listener_started && threads_created) {
             create_listener_thread();
             listener_started = 1;
+            winnt_mpm_state = AP_MPMQ_RUNNING;
         }
         if (threads_created == ap_threads_per_child) {
             break;
@@ -1004,6 +1004,8 @@ void child_main(apr_pool_t *pconf)
      */
 
  shutdown:
+
+    winnt_mpm_state = AP_MPMQ_STOPPING;
     /* Setting is_graceful will cause threads handling keep-alive connections 
      * to close the connection after handling the current request.
      */
