@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/18 20:30:41 $]
+Last modified at [$Date: 2003/04/19 11:34:33 $]
 
 Release:
 
@@ -147,7 +147,7 @@ PATCHES TO PORT FROM 2.1
       delimiters (;). Thus column headers no longer contain unescaped
       ampersands. PR 10880 
       modules/generators/mod_autoindex.c: r1.117
-      +1: nd, wrowe
+      +1: nd, wrowe, trawick
 
     * Unescape the supplied wildcard pattern in mod_autoindex. Otherwise
       the pattern will not always match as desired. PR 12596.
@@ -202,6 +202,8 @@ PATCHES TO PORT FROM 2.1
       See MessageID: <5.2.0.9.2.20030405165151.01f1fe48@pop3.rowe-clan.net>
       for a complete patch rollup of this and the two following patches.
       +1: wrowe
+      +1 (concept): trawick (willing to review in more detail/test if
+                    I become the potential 3rd vote)
 
     * mod_ssl compile failure (or maybe warning, depending on
       compiler) with 0.9.7a and later
@@ -209,6 +211,11 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/ssl_engine_kernel.c r1.88
       tried with 0.9.7a on AIX and 0.9.5a on Linux.)
       +1: trawick, wrowe (including the other patches above)
+      trawick: this is a small fix for compatibility with the latest 
+               version of the crypto library that almost all of our
+               users build with; I hope folks who perhaps are not
+               interested in wrowe's extensive compatibility cleanup
+               (above) will look at this independently
 
     * Enable coredumps on Linux 2.4+ if CoreDumpDirectory is coded
       os/unix/unixd.c                 r1.57
