@@ -62,6 +62,7 @@
 
 #include "mod_proxy.h"
 
+module AP_MODULE_DECLARE_DATA proxy_connect_module;
 
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
@@ -100,7 +101,7 @@ allowed_port(proxy_server_conf *conf, int port)
 }
 
 int ap_proxy_connect_handler(request_rec *r, char *url,
-			  const char *proxyname, int proxyport)
+			  const char *proxyname, apr_port_t proxyport)
 {
     apr_pool_t *p = r->pool;
     apr_socket_t *sock;
@@ -383,3 +384,18 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
     return OK;
 }
+
+static void ap_proxy_connect_register_hook(apr_pool_t *p)
+{
+    ap_hook_proxy_scheme_handler(ap_proxy_connect_handler, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
+module AP_MODULE_DECLARE_DATA proxy_connect_module = {
+    STANDARD20_MODULE_STUFF,
+    NULL,		/* create per-directory config structure */
+    NULL,		/* merge per-directory config structures */
+    NULL,		/* create per-server config structure */
+    NULL,		/* merge per-server config structures */
+    NULL,		/* command apr_table_t */
+    ap_proxy_connect_register_hook	/* register hooks */
+};

@@ -60,13 +60,15 @@
 
 #include "mod_proxy.h"
 
+module AP_MODULE_DECLARE_DATA proxy_http_module;
+
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
  *  url    is the URL starting with the first '/'
  *  def_port is the default port for this scheme.
  */
-int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port)
+int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, apr_port_t def_port)
 {
     char *host, *path, *search, sport[7];
     const char *err;
@@ -166,7 +168,7 @@ static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
  * route.)
  */
 int ap_proxy_http_handler(request_rec *r, char *url,
-		       const char *proxyname, int proxyport)
+		       const char *proxyname, apr_port_t proxyport)
 {
     request_rec *rp;
     const char *connectname;
@@ -767,3 +769,19 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     return OK;
 }
+
+static void ap_proxy_http_register_hook(apr_pool_t *p)
+{
+    ap_hook_proxy_scheme_handler(ap_proxy_http_handler, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_proxy_canon_handler(ap_proxy_http_canon, NULL, NULL, APR_HOOK_FIRST);
+}
+
+module AP_MODULE_DECLARE_DATA proxy_http_module = {
+    STANDARD20_MODULE_STUFF,
+    NULL,		/* create per-directory config structure */
+    NULL,		/* merge per-directory config structures */
+    NULL,		/* create per-server config structure */
+    NULL,		/* merge per-server config structures */
+    NULL,		/* command apr_table_t */
+    ap_proxy_http_register_hook	/* register hooks */
+};
