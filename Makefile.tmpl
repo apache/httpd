@@ -348,7 +348,9 @@ install-include:
 	$(CP) $(TOP)/$(SRC)/include/*.h $(root)$(includedir)/
 	@osdir=`grep '^OSDIR=' $(TOP)/$(SRC)/Makefile.config | sed -e 's:^OSDIR=.*/os:os:'`; \
 		echo "$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/"; \
-		$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/
+		$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/; \
+		echo "$(CP) $(TOP)/$(SRC)/$${osdir}/os-inline.c $(root)$(includedir)/"; \
+		$(CP) $(TOP)/$(SRC)/$${osdir}/os-inline.c $(root)$(includedir)/
 	chmod 644 $(root)$(includedir)/*.h
 	@echo "<=== [include]"
 
