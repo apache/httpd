@@ -243,6 +243,17 @@ char *auth_type (request_rec *r)
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
 
+    if (satisfy_any(r, 0))
+	return NULL;
+    else
+        return conf->auth_type;
+}
+
+char *real_auth_type (request_rec *r)
+{
+    core_dir_config *conf =
+	(core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+
     return conf->auth_type;
 }
 

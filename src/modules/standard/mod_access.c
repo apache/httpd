@@ -76,6 +76,7 @@ typedef struct {
     int order[METHODS];
     array_header *allows;
     array_header *denys;
+    char *satisfy;
 } access_dir_conf;
 
 module access_module;
@@ -89,9 +90,30 @@ void *create_access_dir_config (pool *p, char *dummy)
     for (i = 0; i < METHODS; ++i) conf->order[i] = DENY_THEN_ALLOW;
     conf->allows = make_array (p, 1, sizeof (allowdeny));
     conf->denys = make_array (p, 1, sizeof (allowdeny));
+    conf->satisfy = NULL;
     
     return (void *)conf;
 }
+
+int satisfy_any (request_rec *r, int reset)
+{
+    char *satisfy;
+    access_dir_conf *conf =
+      (access_dir_conf *)get_module_config(r->per_dir_config, &access_module);
+
+    if (!(satisfy = conf->satisfy)) 
+	return 0;
+    
+    if (!strcasecmp(satisfy, "any")) {
+	if (reset) strcpy(satisfy, "all");
+	return 1;
+    } else if (!strcasecmp(satisfy, "all"))
+	return 0;
+
+    log_error("Invalid satisfy value.", r->server);
+    return 0;
+} 
+
 
 const char *order (cmd_parms *cmd, void *dv, char *arg)
 {
@@ -133,6 +155,7 @@ command_rec access_cmds[] = {
     "'from' followed by hostnames or IP-address wildcards" },
 { "deny", allow_cmd, NULL, OR_LIMIT, ITERATE2,
     "'from' followed by hostnames or IP-address wildcards" },
+{ "Satisfy", set_string_slot, (void*)XtOffsetOf(access_dir_conf, satisfy), OR_AUTHCFG, TAKE1, NULL },
 {NULL}
 };
 
@@ -235,8 +258,10 @@ int check_dir_access (request_rec *r)
     }
 
     if (ret == FORBIDDEN)
-	log_reason ("Client denied by server configuration", r->filename, r);
-
+	if (satisfy_any(r, 1) && real_auth_type(r))
+	    ret = OK;
+	else 
+	    log_reason ("Client denied by server configuration", r->filename, r);
     return ret;
 }
 
