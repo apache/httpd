@@ -137,6 +137,33 @@
 </directivesynopsis>
 
 <directivesynopsis>
+<name>EnableExceptionHook</name>
+<description>Aktiviert einen Hook, der nach einem Absturz noch
+Ausnahmefehler behandeln lassen kann</description>
+<syntax>EnableExceptionHook On|Off</syntax>
+<default>EnableExceptionHook Off</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module>
+<module>worker</module></modulelist>
+<compatibility>Verf&uuml;gbar seit Version 2.0.49</compatibility>
+
+<usage>
+    <p>Diese Direktive ist aus Sicherheitsgr&uuml;nden nur verf&uuml;gbar,
+    wenn der Server mit der Option <code>--enable-exception-hook</code>
+    konfiguriert wurde. Sie aktiviert einen Hook, der es externen Modulen
+    erlaubt, sich dort einzuh&auml;ngen und nach dem Absturz eines
+    Kindprozesses noch Aktionen durchzuf&uuml;hren.</p>
+
+    <p>Es existieren bereits zwei Module, <code>mod_whatkilledus</code> und
+    <code>mod_backtrace</code>, welchen diesen Hook verwenden. Lesen Sie
+    bitte auf Jeff Trawicks <a
+    href="http://www.apache.org/~trawick/exception_hook.html"
+    >EnableExceptionHook-Seite</a> f&uuml;r weitere Informationen dazu.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>Group</name>
 <description>Benutzergruppe, unter welcher der Server Anfragen
   beantwortet</description>
