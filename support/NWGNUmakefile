@@ -155,6 +155,7 @@ TARGET_nlm = \
 	$(OBJDIR)/htpasswd.nlm \
 	$(OBJDIR)/htdigest.nlm \
 	$(OBJDIR)/htdbm.nlm \
+	$(OBJDIR)/htcacheclean.nlm \
 	$(OBJDIR)/logres.nlm \
 	$(OBJDIR)/rotlogs.nlm \
 	$(EOLIST)
