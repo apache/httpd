@@ -225,7 +225,7 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
-        apr_socket_addr_get(&sa, APR_LOCAL, (*walk)->sd);
+        sa = (*walk)->bind_addr;
         apr_sockaddr_port_get(&oldport, sa);
 	apr_sockaddr_ip_get(&oldaddr, sa);
 	if (!strcmp(oldaddr, addr) && port == oldport) {
@@ -253,9 +253,6 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
                      "alloc_listener: failed to get a socket for %s", addr);
         return;
     }
-    apr_socket_addr_get(&sa, APR_LOCAL, new->sd);
-    apr_sockaddr_port_set(sa, port);
-    apr_sockaddr_ip_set(sa, addr);
     new->next = ap_listeners;
     ap_listeners = new;
 }
