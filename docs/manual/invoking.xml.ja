@@ -3,16 +3,18 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.2 -->
+<!-- English revision: 1.4 -->
 
   <title>Apache の起動</title>
 
 <summary>
     <p>Windows 上では、Apache は通常は
-    Windows NT ではサービスとして、Windows 95 
+    Windows NT, 2000, XP ではサービスとして、Windows 9x, ME 
     ではコンソールアプリケーションとして実行されます。
-    詳細に関しては、「<a href="platform/windows.html#run">
-    Windows で Apache を実行する</a>」をご覧下さい。</p>
+    詳細に関しては、「<a href="platform/windows.html#winsvc">
+    サービスとして実行する</a>」と「<a 
+    href="platform/windows.html#wincons">
+    コンソールアプリケーションとして実行する</a>」をご覧下さい。</p>
 
     <p>Unixでは、<a href="programs/httpd.html">httpd</a> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う

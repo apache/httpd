@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.17 -->
+<!-- English revision: 1.23 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -79,7 +79,6 @@
 <page href="howto/ssi.html">Server Side Includes 入門</page>
 <page href="howto/htaccess.html">.htaccess ファイル</page>
 <page href="howto/public_html.html">ユーザ毎のウェブディレクトリ</page>
-<page href="misc/tutorials.html">いろいろな Apache のチュートリアル</page>
 </category>
 
 <category id="platform">
@@ -112,11 +111,6 @@
 <category id="misc">
 <title>Apache その他</title>
 <page separate="yes" href="misc/">概略</page>
-<page href="misc/custom_errordocs.html">カスタマイズされた
-国際化サーバエラーメッセージ</page>
-<page href="misc/fin_wait_2.html">FIN_WAIT_2 のコネクションと Apache</page>
-<page href="misc/known_client_problems.html">クライアントの既知の問題</page>
-<page href="misc/descriptors.html">記述子と Apache</page>
 <page href="cgi_path.html">CGI 環境の PATH_INFO の変更</page>
 </category>
 
@@ -140,6 +134,7 @@
   <modulefile>mod_authz_default.xml</modulefile>
   <modulefile>mod_authz_groupfile.xml</modulefile>
   <modulefile>mod_authz_host.xml.ja</modulefile>
+  <modulefile>mod_authz_owner.xml</modulefile>
   <modulefile>mod_authz_user.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml.ja</modulefile>
@@ -160,6 +155,7 @@
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml.ja</modulefile>
@@ -171,7 +167,11 @@
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.ja</modulefile>
+  <modulefile>mod_nw_ssl.xml</modulefile>
   <modulefile>mod_proxy.xml</modulefile>
+  <modulefile>mod_proxy_connect.xml</modulefile>
+  <modulefile>mod_proxy_ftp.xml</modulefile>
+  <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_setenvif.xml.ja</modulefile>
   <modulefile>mod_so.xml.ja</modulefile>
@@ -183,12 +183,17 @@
   <modulefile>mod_userdir.xml.ja</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
+
   <modulefile>mpm_common.xml.ja</modulefile>
+  <modulefile>beos.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpm_winnt.xml.ja</modulefile>
+  <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml.ja</modulefile>
   <modulefile>worker.xml.ja</modulefile>
+  <modulefile>leader.xml</modulefile>
+  <modulefile>threadpool.xml</modulefile>
 </modulefilelist>
 </category>
 

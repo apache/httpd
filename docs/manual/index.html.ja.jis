@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<!-- English revision: 1.45 -->
+<!-- English revision: 1.46 -->
 
 <title>Apache HTTP サーバ バージョン 2.1 ドキュメント</title><link
 href="./style/css/manual.css" rel="stylesheet" media="all"
@@ -41,7 +41,7 @@ href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt;
 href="./">バージョン 2.1</a></div>
 
 <div id="page-content">
-	<h1>Apache HTTP サーバ バージョン 2.1 ドキュメント</h1>
+<h1>Apache HTTP サーバ バージョン 2.1 ドキュメント</h1>
 
 
 
@@ -201,9 +201,6 @@ href="./">バージョン 2.1</a></div>
                 </td></tr>
               
                 <tr><td><a href="sitemap.html">サイトマップ</a>
-                </td></tr>
-              
-                <tr><td><a href="misc/tutorials.html">チュートリアル</a>
                 </td></tr>
               
                 <tr><td><a href="developer/">開発者のためのドキュメント
