@@ -60,6 +60,8 @@
 #include "util_date.h"
 #include <utime.h>
 
+#define	abs(c)	((c) >= 0 ? (c) : -(c))
+
 struct gc_ent
 {
     unsigned long int len;
@@ -97,7 +99,7 @@ static void garbage_coll(request_rec *r)
     struct stat buf;
     struct gc_ent *fent,**elts;    
     int i;
-    static time_t lastcheck=-1;  /* static data!!! */
+    static time_t lastcheck=BAD_DATE;  /* static data!!! */
 
     cachedir = conf->root;
     cachesize = conf->space;
@@ -105,7 +107,7 @@ static void garbage_coll(request_rec *r)
 
     if (cachedir == NULL || every == -1) return;
     now = time(NULL);
-    if (now != -1 && lastcheck != -1 && now < lastcheck + every) return;
+    if (now != -1 && lastcheck != BAD_DATE && now < lastcheck + every) return;
 
     block_alarms();	/* avoid SIGALRM on big cache cleanup */
 
@@ -124,7 +126,7 @@ static void garbage_coll(request_rec *r)
 	    if (errno != EEXIST)
 		proxy_log_uerror("creat", filename, NULL, r->server);
 	    else
-		lastcheck = now;  /* someone else got in there */
+		lastcheck = abs(now);  /* someone else got in there */
 	    return;
 	}
     } else
@@ -274,7 +276,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	line[i] = '\0';
 	expire = proxy_hex2sec(line+18);
 	if (!checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") ||
-	  expire == -1)
+	  expire == BAD_DATE)
 	{
 	    /* bad file */
 	    if (now != -1 && buf.st_atime > now + SEC_ONE_DAY &&
@@ -423,14 +425,14 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     c->url = pstrdup(r->pool, url);
 
 /* get the If-Modified-Since date of the request */
-    c->ims = -1;
+    c->ims = BAD_DATE;
     imstr = table_get(r->headers_in, "If-Modified-Since");
     if (imstr != NULL)
     {
 /* this may modify the value in the original table */
 	imstr = proxy_date_canon(r->pool, imstr);
 	c->ims = parseHTTPdate(imstr);
-	if (c->ims == -1)  /* bad or out of range date; remove it */
+	if (c->ims == BAD_DATE)  /* bad or out of range date; remove it */
 	    table_set(r->headers_in, "If-Modified-Since", NULL);
     }
 
@@ -461,8 +463,10 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	} else if (errno != ENOENT)
 	    proxy_log_uerror("open", c->filename,
 		"proxy: error opening cache file", r->server);
+#ifdef EXPLAIN
 	else
 	    Explain1("File %s not found",c->filename);
+#endif
     }
     
     if (cachefp != NULL)
@@ -484,14 +488,14 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     /* FIXME: Shouldn't we check the URL somewhere? */
     now = time(NULL);
 /* Ok, have we got some un-expired data? */
-    if (cachefp != NULL && c->expire != -1 && now < c->expire)
+    if (cachefp != NULL && c->expire != BAD_DATE && now < c->expire)
     {
         Explain0("Unexpired data available");
 /* check IMS */
-	if (c->lmod != -1 && c->ims != -1 && c->ims >= c->lmod)
+	if (c->lmod != BAD_DATE && c->ims != BAD_DATE && c->ims >= c->lmod)
 	{
 /* has the cached file changed since this request? */
-	    if (c->date == -1 || c->date > c->ims)
+	    if (c->date == BAD_DATE || c->date > c->ims)
 	    {
 /* No, but these header values may have changed, so we send them with the
  * 304 response
@@ -525,13 +529,13 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
  * request, then add an If-Modified-Since
  */
 
-    if (cachefp != NULL && c->lmod != -1 && !r->header_only)
+    if (cachefp != NULL && c->lmod != BAD_DATE && !r->header_only)
     {
 /*
  * use the later of the one from the request and the last-modified date
  * from the cache
  */
-	if (c->ims == -1 || c->ims < c->lmod)
+	if (c->ims == BAD_DATE || c->ims < c->lmod)
 	{
 	    struct hdr_entry *q;
 
@@ -584,7 +588,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
  */
     expire = proxy_get_header(resp_hdrs, "Expires");
     if (expire != NULL) expc = parseHTTPdate(expire->value);
-    else expc = -1;
+    else expc = BAD_DATE;
 
 /*
  * read the last-modified date; if the date is bad, then delete it
@@ -593,14 +597,14 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     if (lmods != NULL)
     {
 	lmod = parseHTTPdate(lmods->value);
-	if (lmod == -1)
+	if (lmod == BAD_DATE)
 	{
 /* kill last modified date */
 	    lmods->value = NULL;
 	    lmods = NULL;
 	}
     } else
-	lmod = -1;
+	lmod = BAD_DATE;
 
 /*
  * what responses should we not cache?
@@ -612,7 +616,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
  * protocol requests nocache (e.g. ftp with user/password)
  */
     if ((r->status != 200 && r->status != 301 && r->status != 304) ||
-	(expire != NULL && expc == -1) ||
+	(expire != NULL && expc == BAD_DATE) ||
 	(r->status == 304 && c->fp == NULL) ||
 	(r->status == 200 && lmods == NULL &&
 	                     strncmp(protocol, "HTTP/1.", 7) == 0) ||
@@ -638,23 +642,23 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
  */
     dates = proxy_get_header(resp_hdrs, "Date");
     if (dates != NULL) date = parseHTTPdate(dates->value);
-    else date = -1;
+    else date = BAD_DATE;
 	
     now = time(NULL);
 
-    if (date == -1) /* No, or bad date */
+    if (date == BAD_DATE) /* No, or bad date */
     {
 /* no date header! */
 /* add one; N.B. use the time _now_ rather than when we were checking the cache
  */
-	date = now;
+	date = abs(now);
 	p = gm_timestr_822(r->pool, now);
 	dates = proxy_add_header(resp_hdrs, "Date", p, HDR_REP);
 	Explain0("Added date header");
     }
 
 /* check last-modified date */
-    if (lmod != -1 && lmod > date)
+    if (lmod != BAD_DATE && lmod > date)
 /* if its in the future, then replace by date */
     {
 	lmod = date;
@@ -662,7 +666,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	Explain0("Last modified is in the future, replacing with now");
     }
 /* if the response did not contain the header, then use the cached version */
-    if (lmod == -1 && c->fp != NULL)
+    if (lmod == BAD_DATE && c->fp != NULL)
 	{
 	lmod = c->lmod;
 	Explain0("Reusing cached last modified");
@@ -682,16 +686,16 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
  *      expire date = now + defaultexpire
  */
     Explain1("Expiry date is %ld",expc);
-    if (expc == -1)
+    if (expc == BAD_DATE)
     {
-	if (lmod != -1)
+	if (lmod != BAD_DATE)
 	{
 	    double x = (double)(date - lmod)*conf->cache.lmfactor;
 	    double maxex=conf->cache.maxexpire;
 	    if (x > maxex) x = maxex;
-	    expc = now + (int)x;
+	    expc = abs(now) + (int)x;
 	} else
-	    expc = now + conf->cache.defaultexpire;
+	    expc = abs(now) + conf->cache.defaultexpire;
 	Explain1("Expiry date calculated %ld",expc);
     }
 
@@ -715,7 +719,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 /* if file not modified */
     if (r->status == 304)
     {
-	if (c->ims != -1 && lmod != -1 && lmod <= c->ims)
+	if (c->ims != BAD_DATE && lmod != BAD_DATE && lmod <= c->ims)
 	{
 /* set any changed headers somehow */
 /* update dates and version, but not content-length */
