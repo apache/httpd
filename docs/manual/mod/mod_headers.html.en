@@ -152,17 +152,28 @@ is available only in Apache 2.0</td></tr></table>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header set|append|add|unset|echo  <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
+<var>header</var> [<var>value</var>] [env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><var>Condition</var> is available in version 2.0.51 and
+later</td></tr>
 </table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
     and output filters are run, allowing outgoing headers to be
-    modified. The action it performs is determined by the first
+    modified.</p>
+
+    <p>The optional <var>condition</var> can be either <code>onsuccess</code>
+    or <code>always</code>. It determines, which internal header table should be
+    operated on. <code>onsuccess</code> stands for <code>2<var>xx</var></code>
+    status codes and <code>always</code> for all status codes (including
+    <code>2<var>xx</var></code>). Especially if you want to unset headers
+    set by certain modules, you should try out, which table is affected.</p>
+
+    <p>The action it performs is determined by the second
     argument. This can be one of the following values:</p>
 
     <dl>

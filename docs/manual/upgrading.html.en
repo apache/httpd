@@ -166,6 +166,16 @@ Apache 2.0</a></li></ul></div>
       default file matching.  It will select only from <em>negotiable</em>
       files.  The old behavior can be restored using the <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> directive.</li>
 
+      <li>(<em>since version 2.0.51</em>)
+      <p>The functionality of the <code>ErrorHeader</code> directive was
+      put together with the <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>
+      directive, since it was a misnomer. Use</p>
+
+      <div class="example"><p><code>
+        Header always set foo bar
+      </code></p></div>
+
+      <p>instead to get the desired bahviour.</p></li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
