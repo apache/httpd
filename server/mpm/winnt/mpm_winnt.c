@@ -1521,7 +1521,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     /* Wait for shutdown or restart events or for child death */
     process_handles[current_live_processes] = shutdown_event;
     process_handles[current_live_processes+1] = restart_event;
-    printf("process/shutdown/restart %d %d %d\n", process_handles[0], process_handles[1], process_handles[2]);
+
     rv = WaitForMultipleObjects(current_live_processes+2, (HANDLE *)process_handles, 
                                 FALSE, INFINITE);
     cld = rv - WAIT_OBJECT_0;
@@ -1736,28 +1736,23 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
     if ((parent_pid != my_pid) || one_process) {
         /* Running as Child process or in one_process (debug) mode */
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_SUCCESS, server_conf,
-                     "Child %d: Child process is running %d", my_pid, AcceptExCompPort);
+                     "Child %d: Child process is running", my_pid);
         AMCSocketInitialize();
         child_main();
         AMCSocketCleanup();
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_SUCCESS, server_conf,
-                     "Child %d: Child process is exiting %d", my_pid, AcceptExCompPort);        
+                     "Child %d: Child process is exiting", my_pid);        
 
-        return 1;  /* Shutdown */
-    }
-    else {
-        /* Parent process */
-//        setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
-
-        /* Go to work... */
+        return 1;
+    }  /* Child or single process */
+    else { /* Parent process */
         restart = master_main(server_conf, shutdown_event, restart_event);
 
         if (!restart) {
             /* Shutting down. Clean up... */
-            const char *pidfile = NULL;
+            const char *pidfile = ap_server_root_relative (pconf, ap_pid_fname);
 
-            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
-            if ( pidfile != NULL && unlink(pidfile) == 0) {
+            if (pidfile != NULL && unlink(pidfile) == 0) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,APR_SUCCESS,
                              server_conf, "removed PID file %s (pid=%ld)",
                              pidfile, (long)getpid());
@@ -1770,11 +1765,11 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
 
             service_set_status(SERVICE_STOPPED);
 
-            return 1; /* Shutdown */
+            return 1;
         }
-    }
+    }  /* Parent process */
 
-    return 0;  /* Restart */
+    return 0; /* Restart */
 }
 
 static void winnt_hooks(void)
