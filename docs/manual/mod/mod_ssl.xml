@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.25 $ -->
+<!-- $Revision: 1.26 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -1509,7 +1509,6 @@ SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server
 
 <usage>
 <p>
-
 This directive sets the "user" field in the Apache request object.
 This is used by lower modules to identify the user with a character
 string. In particular, this may cause the environment variable
@@ -1521,5 +1520,22 @@ SSLUserName SSL_CLIENT_S_DN_CN
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLHonorCipherOrder</name>
+<description>Option to prefer the server's cipher preference order</description>
+<syntax>SSLHonorCiperOrder <em>flag</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in Apache 2.1 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
+the client's preference is used.  If this directive is enabled, the
+server's preference will be used instead.</p>
+<example><title>Example</title>
+SSLHonorCipherOrder on
+</example>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
