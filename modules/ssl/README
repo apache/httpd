@@ -27,7 +27,6 @@
    config.m4 ............... Autoconf stub for the Apache config mechanism
    mod_ssl.c ............... main source file containing API structures
    mod_ssl.h ............... common header file of mod_ssl
-   ssl_engine_compat.c ..... backward compatibility support
    ssl_engine_config.c ..... module configuration handling
    ssl_engine_dh.c ......... DSA/DH support
    ssl_engine_ds.c ......... data structures
@@ -55,8 +54,6 @@
    ssl_util.c .............. utility functions
    ssl_util_ssl.c .......... the OpenSSL companion source
    ssl_util_ssl.h .......... the OpenSSL companion header
-   ssl_util_sdbm.c ......... the SDBM library source
-   ssl_util_sdbm.h ......... the SDBM library header
    ssl_util_table.c ........ the hash table library source
    ssl_util_table.h ........ the hash table library header
 
