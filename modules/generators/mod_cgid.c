@@ -89,6 +89,7 @@ static int daemon_should_exit = 0;
 static server_rec *root_server = NULL;
 static apr_pool_t *root_pool = NULL;
 static const char *sockname;
+static pid_t parent_pid;
 
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
@@ -152,6 +153,9 @@ typedef struct {
     unsigned long conn_id; /* connection id; daemon uses this as a hash value
                             * to find the script pid when it is time for that
                             * process to be cleaned up
+                            */
+    pid_t ppid;            /* sanity check for config problems leading to
+                            * wrong cgid socket use
                             */
     int core_module_index;
     int have_suexec;
@@ -439,6 +443,7 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     apr_status_t stat;
 
     req.req_type = req_type;
+    req.ppid = parent_pid;
     req.conn_id = r->connection->id;
     req.core_module_index = core_module.module_index;
     if (suexec_mod) {
@@ -667,6 +672,14 @@ static int cgid_server(void *data)
             continue;
         }
 
+        if (cgid_req.ppid != parent_pid) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, main_server,
+                         "CGI request received from wrong server instance; "
+                         "see ScriptSock directive");
+            close(sd2);
+            continue;
+        }
+
         if (cgid_req.req_type == GETPID_REQ) {
             pid_t pid;
 
@@ -839,6 +852,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         for (m = ap_preloaded_modules; *m != NULL; m++)
             total_modules++;
 
+        parent_pid = getpid();
         sockname = ap_server_root_relative(p, sockname);
         ret = cgid_start(p, main_server, procnew);
         if (ret != OK ) {
@@ -1237,6 +1251,7 @@ static apr_status_t cleanup_script(void *vptr)
     /* we got a socket, and there is already a cleanup registered for it */
 
     req.req_type = GETPID_REQ;
+    req.ppid = parent_pid;
     req.conn_id = info->r->connection->id;
 
     stat = sock_write(sd, &req, sizeof(req));
