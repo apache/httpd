@@ -1,3 +1,7 @@
+
+Changes with Apache 2.0.38
+
+
 Changes with Apache 2.0.37
 
   *) allow POST method over SSL when per-directory client cert
