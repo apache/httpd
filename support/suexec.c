@@ -158,6 +158,7 @@ char *safe_env_lst[] =
     "REMOTE_IDENT=",
     "REMOTE_PORT=",
     "REMOTE_USER=",
+    "REDIRECT_HANDLER=",
     "REDIRECT_QUERY_STRING=",
     "REDIRECT_STATUS=",
     "REDIRECT_URL=",

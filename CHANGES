@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_actions: Propagate the handler name to the action script via
+     the REDIRECT_HANDLER environment variable.  [André Malo]
+
   *) mod_ext_filter: Set additional environment variables for use by
      the external filter.  PR 20944.  [Andrew Ho, Jeff Trawick]
 
