@@ -1004,7 +1004,7 @@ static void init_module(apr_pool_t *p,
 
     /* create the rewriting lockfiles in the parent */
     if ((rv = apr_create_lock (&rewrite_log_lock, APR_MUTEX, APR_LOCKALL,
-                               NULL, NULL)) != APR_SUCCESS) {
+                               NULL, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "mod_rewrite: could not create rewrite_log_lock");
         exit(1);
