@@ -56,7 +56,6 @@
  * University of Illinois, Urbana-Champaign.
  */
 #include "scoreboard.h"
-//#include "unixd.h"
 
 #ifndef APACHE_MPM_THREADED_H
 #define APACHE_MPM_THREADED_H
@@ -65,15 +64,17 @@
 
 #define MPM_NAME "NetWare_Threaded"
 
-//#define AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
-#define AP_MPM_WANT_WAIT_OR_TIMEOUT
-//#define AP_MPM_WANT_PROCESS_CHILD_STATUS
-#define AP_MPM_WANT_SET_PIDFILE
-#define AP_MPM_WANT_SET_SCOREBOARD
-#define AP_MPM_WANT_SET_LOCKFILE
+/*#define AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+  #define AP_MPM_WANT_WAIT_OR_TIMEOUT
+  #define AP_MPM_WANT_PROCESS_CHILD_STATUS
+  #define AP_MPM_WANT_SET_PIDFILE
+  #define AP_MPM_WANT_SET_SCOREBOARD
+  #define AP_MPM_WANT_SET_LOCKFILE 
+*/
 #define AP_MPM_WANT_SET_MAX_REQUESTS
-#define AP_MPM_WANT_SET_COREDUMPDIR
-//#define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+/*#define AP_MPM_WANT_SET_COREDUMPDIR
+  #define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH 
+*/
 
 #define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
