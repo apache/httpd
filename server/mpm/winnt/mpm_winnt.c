@@ -197,6 +197,45 @@ static void destroy_event(event *event_id)
 }
 
 /*
+ * The Win32 call WaitForMultipleObjects will only allow you to wait for 
+ * a maximum of MAXIMUM_WAIT_OBJECTS (current 64).  Since the threading 
+ * model in the multithreaded version of apache wants to use this call, 
+ * we are restricted to a maximum of 64 threads.  This is a simplistic 
+ * routine that will increase this size.
+ */
+static DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
+                            DWORD dwSeconds)
+{
+    time_t tStopTime;
+    DWORD dwRet = WAIT_TIMEOUT;
+    DWORD dwIndex=0;
+    BOOL bFirst = TRUE;
+  
+    tStopTime = time(NULL) + dwSeconds;
+  
+    do {
+        if (!bFirst)
+            Sleep(1000);
+        else
+            bFirst = FALSE;
+          
+        for (dwIndex = 0; dwIndex * MAXIMUM_WAIT_OBJECTS < nCount; dwIndex++) {
+            dwRet = WaitForMultipleObjects(
+                        min(MAXIMUM_WAIT_OBJECTS, 
+                            nCount - (dwIndex * MAXIMUM_WAIT_OBJECTS)),
+                        lpHandles + (dwIndex * MAXIMUM_WAIT_OBJECTS), 
+                        0, 0);
+                                           
+            if (dwRet != WAIT_TIMEOUT) {                                          
+              break;
+            }
+        }
+    } while((time(NULL) < tStopTime) && (dwRet == WAIT_TIMEOUT));
+    
+    return dwRet;
+}
+
+/*
  * Signalling Apache on NT.
  *
  * Under Unix, Apache can be told to shutdown or restart by sending various
@@ -730,50 +769,76 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 #endif
 /* 
  * Windows NT specific code...
+ * TODO: Insert a discussion of 'completion contexts' here ...
  */
 static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *lr) 
 {
     PCOMP_CONTEXT context;
     DWORD BytesRead;
     SOCKET nsd;
+    int lasterror;
+    
+    /* allocate the completion context */
     context = ap_pcalloc(p, sizeof(COMP_CONTEXT));
-
-    if (!context)
+    if (!context) {
+        ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                     "create_and_queue_completion_context: ap_pcalloc() failed. Process will exit.");
         return -1;
+    }
 
+    /* initialize the completion context */
     context->lr = lr;
     context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
-
+    if (context->Overlapped.hEvent == NULL) {
+        ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                     "create_and_queue_completion_context: CreateEvent() failed. Process will exit.");
+        return -1;
+    }
     context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (context->accept_socket == INVALID_SOCKET) {
+        ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+                     "create_and_queue_completion_context: socket() failed. Process will exit.");
+        return -1;
+    }
     ap_create_context(&context->ptrans, p);
     context->conn_io =  ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
     ap_get_os_sock(&nsd, context->lr->sd);
 
-    AcceptEx(nsd,//context->lr->fd, 
-             context->accept_socket,
-             context->recv_buf,
-             context->recv_buf_size,
-             PADDED_ADDR_SIZE,
-             PADDED_ADDR_SIZE,
-             &BytesRead,
-             (LPOVERLAPPED) context);
-
+    /* AcceptEx on the completion context. The completion context will be signaled
+     * when a connection is accepted. */
+    if (!AcceptEx(nsd, context->accept_socket,
+                  context->recv_buf, context->recv_buf_size,
+                  PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
+                  &BytesRead,
+                  (LPOVERLAPPED) context)) {
+        lasterror = WSAGetLastError();
+        if (lasterror != ERROR_IO_PENDING) {
+            ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+                         "create_and_queue_completion_context: AcceptEx failed. Process will exit.");
+            return -1;
+        }
+    }
     lr->count++;
-//    num_comp_contexts++;
 
     return 0;
 }
-static ap_inline void reset_completion_context(PCOMP_CONTEXT context) 
+static ap_inline int reset_completion_context(PCOMP_CONTEXT context) 
 {
     DWORD BytesRead;
     SOCKET nsd;
-    int rc;
+    int lasterror;
     context->lr->count++;
 
     if (context->accept_socket == -1)
-        context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);    
+        context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    if (context->accept_socket == INVALID_SOCKET) {
+        ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+                     "reset_completion_context: socket() failed. Process will exit.");
+        return -1;
+    }
 
     ap_clear_pool(context->ptrans);
     context->conn_io =  ap_bcreate(context->ptrans, B_RDWR);
@@ -781,14 +846,18 @@ static ap_inline void reset_completion_context(PCOMP_CONTEXT context)
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
     ap_get_os_sock(&nsd, context->lr->sd);
 
-    rc = AcceptEx(nsd, //context->lr->fd, 
-                  context->accept_socket,
-                  context->recv_buf,
-                  context->recv_buf_size,
-                  PADDED_ADDR_SIZE,
-                  PADDED_ADDR_SIZE,
-                  &BytesRead,
-                  (LPOVERLAPPED) context);
+    if (!AcceptEx(nsd, context->accept_socket, 
+                  context->recv_buf, context->recv_buf_size,
+                  PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
+                  &BytesRead, (LPOVERLAPPED) context)) {
+        lasterror = WSAGetLastError();
+        if (lasterror != ERROR_IO_PENDING) {
+            ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+                         "reset_completion_context: AcceptEx failed. Leaving the process running.");
+            return -1;
+        }
+    }
+    return 0;
 }
 static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 {
@@ -801,7 +870,8 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
     if (context != NULL) {
         context->accept_socket = -1; /* Don't reuse the socket */
-        reset_completion_context(context);
+        if (reset_completion_context(context) == -1)
+            return NULL;
     }
 
     rc = GetQueuedCompletionStatus(AcceptExCompPort,
@@ -823,7 +893,9 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     context->lr->count--;
     if (context->lr->count < 2) {
         if (create_and_queue_completion_context(pconf, context->lr) == -1) {
-            /* log error and continue */
+            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                         "Unable to create an AcceptEx completion context -- process will exit");
+            return NULL;
         }
     }
     ap_unlock(allowed_globals.jobmutex);
@@ -870,10 +942,6 @@ static void child_main(int child_num)
 
 //    ap_create_context(&(lpCompContext->ptrans), pconf);
 
-#if 0
-    (void) ap_update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
-#endif
-
     while (1) {
         conn_rec *current_conn;
         ap_iol *iol;
@@ -891,18 +959,12 @@ static void child_main(int child_num)
 
 //        ap_note_cleanups_for_socket(context->ptrans, context->accept_socket);
 
-
-#if 0
-	(void) ap_update_child_status(child_num, SERVER_BUSY_READ,
-                                      (request_rec *) NULL);
-#endif
-
 	sock_disable_nagle(context->accept_socket);
 
         iol = win32_attach_socket(context->ptrans, context->accept_socket);
         if (iol == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, server_conf,
-                         "error attaching to socket");
+                         "child_main: attach_socket() failed. Continuing...");
             closesocket(context->accept_socket);
             continue;
         }
@@ -916,6 +978,7 @@ static void child_main(int child_num)
 
         ap_process_connection(current_conn);
     }
+    SetEvent(exit_event);
     /* TODO: Add code to clean-up completion contexts here */
 }
 
@@ -929,44 +992,6 @@ static void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clea
     (*thread_cnt)--;
 }
 
-/*
- * The Win32 call WaitForMultipleObjects will only allow you to wait for 
- * a maximum of MAXIMUM_WAIT_OBJECTS (current 64).  Since the threading 
- * model in the multithreaded version of apache wants to use this call, 
- * we are restricted to a maximum of 64 threads.  This is a simplistic 
- * routine that will increase this size.
- */
-static DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
-                            DWORD dwSeconds)
-{
-    time_t tStopTime;
-    DWORD dwRet = WAIT_TIMEOUT;
-    DWORD dwIndex=0;
-    BOOL bFirst = TRUE;
-  
-    tStopTime = time(NULL) + dwSeconds;
-  
-    do {
-        if (!bFirst)
-            Sleep(1000);
-        else
-            bFirst = FALSE;
-          
-        for (dwIndex = 0; dwIndex * MAXIMUM_WAIT_OBJECTS < nCount; dwIndex++) {
-            dwRet = WaitForMultipleObjects(
-                        min(MAXIMUM_WAIT_OBJECTS, 
-                            nCount - (dwIndex * MAXIMUM_WAIT_OBJECTS)),
-                        lpHandles + (dwIndex * MAXIMUM_WAIT_OBJECTS), 
-                        0, 0);
-                                           
-            if (dwRet != WAIT_TIMEOUT) {                                          
-              break;
-            }
-        }
-    } while((time(NULL) < tStopTime) && (dwRet == WAIT_TIMEOUT));
-    
-    return dwRet;
-}
 
 
 /*
@@ -999,7 +1024,6 @@ static void worker_main()
 {
     int nthreads = ap_threads_per_child;
 
-
     thread **child_handles;
     int rv;
     ap_status_t status;
@@ -1011,96 +1035,103 @@ static void worker_main()
 
 //    ap_restart_time = time(NULL);
 
-#if 0
-    reinit_scoreboard(pconf);
-#endif
-
     /*
      * Wait until we have permission to start accepting connections.
      * start_mutex is used to ensure that only one child ever
-     * goes into the listen/accept loop at once. Also wait on exit_event,
-     * in case we (this child) is told to die before we get a chance to
-     * serve any requests.
+     * goes into the listen/accept loop at once.
      */
     status = ap_lock(start_mutex);
     if (status != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK,APLOG_ERR, status, server_conf,
                      "Waiting for start_mutex or exit_event -- process will exit");
 
-	ap_destroy_context(pchild); // ap_destroy_pool(pchild):
-#if 0
-	cleanup_scoreboard();
-#endif
+	ap_destroy_context(pchild);
 	exit(0);
     }
 
-    /* start_mutex obtained, continue into the select() loop */
+    /* Setup the listening sockets */
     if (one_process) {
         setup_listeners(server_conf);
     } else {
         /* Get listeners from the parent process */
         setup_inherited_listeners(server_conf);
     }
-
     if (listenmaxfd == INVALID_SOCKET) {
 	/* Help, no sockets were made, better log something and exit */
 	ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, NULL,
 		    "No sockets were created for listening");
-
 	signal_parent(0);	/* tell parent to die */
-
-//	ap_destroy_pool(pchild);
         ap_destroy_context(pchild);
-#if 0
-	cleanup_scoreboard();
-#endif
 	exit(0);
     }
 
     allowed_globals.jobsemaphore = create_semaphore(0);
     ap_create_lock(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
 
-    /* spawn off accept thread (WIN9x only) */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-        /* spawn off the worker threads */
+        /* Win9X (Windows 95/98)
+         * In the Win9x environment, on accept thread produces to a queue (via add_job())which
+         * is consumed (via remove_job()) by a pool of worker threads 
+         * First, create the worker thread pool... */
         child_handles = (thread *) alloca(nthreads * sizeof(int));
         for (i = 0; i < nthreads; i++) {
             child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
         }
-
+        /* Now, create the accept thread */
 //        create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
     }
     else {
+        /* Windows NT/2000 
+         * Windows NT/2000 have nifty network I/O routines not available in 
+         * Windows 95/98 like AcceptEx, TransmitFile and CompletionPorts. If we want to use
+         * them, we gotta do things differently. */
         ap_listen_rec *lr;
         SOCKET nsd;
-        /* Create the AcceptEx completion port */
+
+        /* Create the AcceptEx completion port 
+         * All listeners are associated with the AcceptEx completion port. When a connection
+         * is accepted, the AcceptEx completion port is signaled and one of the worker threads
+         * blocked on it will be awakened (in LIFO order) to handle the connection. 
+         * Note: Experiment with CONCURRENT_ACTIVE_THREADS. A setting of 0 is best for performance
+         * (only one thread will be 'active', i.e., not blocked on I/O, at any time). This is bad
+         * if your 'active' threads get caught in computationally intensive tasks... */
         AcceptExCompPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
                                                   NULL,
                                                   0,
                                                   0); /* CONCURRENT ACTIVE THREADS */
-
-        /* Associate each listener with the completion port */
-        for (lr = ap_listeners; lr != NULL; lr = lr->next) {
-            ap_get_os_sock(&nsd, lr->sd);
-            CreateIoCompletionPort((HANDLE) nsd, //(HANDLE)lr->fd,
-                                   AcceptExCompPort,
-                                   0,
-                                   0);
+        if (AcceptExCompPort == NULL) {
+            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                         "Unable to create the AcceptExCompletionPort -- process will exit");
+            ap_destroy_context(pchild);
+            exit(0);
         }
 
-        /* spawn off the worker threads */
+        /* Associate each listener with the AcceptEx completion port */
+        for (lr = ap_listeners; lr != NULL; lr = lr->next) {
+            ap_get_os_sock(&nsd, lr->sd);
+            if (!CreateIoCompletionPort((HANDLE) nsd, AcceptExCompPort, 0, 0)) {
+                ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                             "Unable to associate listener with the AcceptExCompletionPort -- process will exit");
+                ap_destroy_context(pchild);
+                exit(0);
+            }
+        }
+
+        /* Create the worker thread pool */
         child_handles = (thread *) alloca(nthreads * sizeof(int));
         for (i = 0; i < nthreads; i++) {
             child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
         }
 
         /* Create 3 AcceptEx contexts for each listener then queue them to the 
-         * AcceptEx completion port.
-         */
+         * AcceptEx completion port. */
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
             for(i=0; i<2; i++) {
                 if (create_and_queue_completion_context(pconf, lr) == -1) {
-                    /* log error and exit */
+                    ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                                 "Unable to create an AcceptEx completion context -- process will exit");
+                    ap_destroy_context(pchild);
+                    exit(0);
                 }
             }
         }
@@ -1108,6 +1139,8 @@ static void worker_main()
 
     rv = WaitForSingleObject(exit_event, INFINITE);
     printf("exit event signalled \n");
+    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf,
+                 "Exit event signaled. Child process is ending.");
     workers_may_exit = 1;      
 
     /* Get ready to shutdown and exit */
@@ -1115,11 +1148,15 @@ static void worker_main()
 
     /* Tell the workers to stop */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+        /* Windows 95/98
+         * Tell the workers to stop */
         for (i = 0; i < nthreads; i++) {
 //            add_job(-1);
         }
     }
     else {
+        /* Windows NT/2000
+         * Drain any completion contexts and threads waiting for them */
         for (i=0; i < nthreads; i++) {
             PostQueuedCompletionStatus(AcceptExCompPort, 0, 999, NULL);
         }
@@ -1149,9 +1186,6 @@ static void worker_main()
 
     ap_destroy_context(pchild);
 
-#if 0
-    cleanup_scoreboard();
-#endif
 }
 static HANDLE create_exit_event(const char* event_name)
 {
@@ -1369,7 +1403,6 @@ static PSECURITY_ATTRIBUTES GetNullACL()
     return sa;
 }
 
-
 static void CleanNullACL( void *sa ) {
     if( sa ) {
         LocalFree( ((PSECURITY_ATTRIBUTES)sa)->lpSecurityDescriptor);
@@ -1510,7 +1543,7 @@ die_now:
 }
 
 /* 
- * winnt_pre_config()
+ * winnt_pre_config() hook
  */
 static void winnt_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp) 
 {
@@ -1747,8 +1780,6 @@ static const command_rec winnt_cmds[] = {
 LISTEN_COMMANDS
 { "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
     "A file for logging the server process ID"},
-//{ "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
-//    "A file for Apache to maintain runtime process management information"},
 { "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, TAKE1,
   "Number of threads each child creates" },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
