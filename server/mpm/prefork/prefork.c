@@ -644,31 +644,31 @@ static void child_main(int child_num_arg)
 	/* Lock around "accept", if necessary */
 	SAFE_ACCEPT(accept_mutex_on());
 
-	for (;;) {
-            apr_status_t ret;
-            apr_int16_t event;
-            apr_int32_t n;
+        if (num_listensocks == 1) {
+            offset = 0;
+        }
+        else {
+            /* multiple listening sockets - need to poll */
+	    for (;;) {
+                apr_status_t ret;
+                apr_int16_t event;
+                apr_int32_t n;
 
-            ret = apr_poll(pollset, &n, -1);
-            if (ret != APR_SUCCESS) {
-                if (APR_STATUS_IS_EINTR(ret)) {
-                    continue;
-                }
-    	        /* Single Unix documents select as returning errnos
-    	         * EBADF, EINTR, and EINVAL... and in none of those
-    	         * cases does it make sense to continue.  In fact
-    	         * on Linux 2.0.x we seem to end up with EFAULT
-    	         * occasionally, and we'd loop forever due to it.
-    	         */
-    	        ap_log_error(APLOG_MARK, APLOG_ERR, ret, ap_server_conf,
+                ret = apr_poll(pollset, &n, -1);
+                if (ret != APR_SUCCESS) {
+                    if (APR_STATUS_IS_EINTR(ret)) {
+                        continue;
+                    }
+    	            /* Single Unix documents select as returning errnos
+    	             * EBADF, EINTR, and EINVAL... and in none of those
+    	             * cases does it make sense to continue.  In fact
+    	             * on Linux 2.0.x we seem to end up with EFAULT
+    	             * occasionally, and we'd loop forever due to it.
+    	             */
+    	            ap_log_error(APLOG_MARK, APLOG_ERR, ret, ap_server_conf,
                              "apr_poll: (listen)");
-    	        clean_child_exit(1);
-            }
-            if (num_listensocks == 1) {
-                offset = 0;
-                goto got_fd;
-            }
-            else {
+    	            clean_child_exit(1);
+                }
                 /* find a listener */
                 curr_pollfd = last_pollfd;
                 do {
@@ -684,9 +684,9 @@ static void child_main(int child_num_arg)
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
-            }
 
-            continue;
+                continue;
+            }
         }
     got_fd:
 	/* if we accept() something we don't want to die, so we have to
