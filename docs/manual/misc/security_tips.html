@@ -48,10 +48,10 @@ When you install the httpd executable, you should ensure that it is
 similarly protected:
 
 <BLOCKQUOTE><PRE>
-    cp httpd /usr/local/apache/bin
-    chown 0 /usr/local/apache/bin/httpd
-    chgrp 0 /usr/local/apache/bin/httpd
-    chmod 511 /usr/local/apache/bin/httpd
+    cp httpd /usr/local/apache/sbin
+    chown 0 /usr/local/apache/sbin/httpd
+    chgrp 0 /usr/local/apache/sbin/httpd
+    chmod 511 /usr/local/apache/sbin/httpd
 </PRE></BLOCKQUOTE>
 
 <P>You can create an htdocs subdirectory which is modifiable by other
@@ -218,9 +218,9 @@ include the following line in your server configuration files:
 <HR>
 <P>Please send any other useful security tips to The Apache Group
 by filling out a
-<A HREF="http://www.apache.org/bug_report.html">problem report</A>, or by
-sending mail to
-<A HREF="mailto:apache-bugs@mail.apache.org">apache-bugs@mail.apache.org</A>
+<A HREF="http://www.apache.org/bug_report.html">problem report</A>.  
+Serious security matters should of course be sent to <A HREF="mailto:security@apache.org">
+security@apache.org</A>.
 <P>
 <HR>
 
