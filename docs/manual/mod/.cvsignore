@@ -1,3 +1,4 @@
 *.tex
 *.aux
 .cvsstat.prop
+.translated.*
