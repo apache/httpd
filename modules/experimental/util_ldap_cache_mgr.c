@@ -351,6 +351,7 @@ void util_ald_destroy_cache(util_ald_cache_t *cache)
         }
     }
     util_ald_free(cache->nodes);
+    util_ald_free(cache);
 }
 
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
