@@ -593,7 +593,7 @@ int PREFIX(scanAtts)(const ENCODING *enc, const char *ptr, const char *end,
     /* fall through */
     case BT_EQUALS:
       {
-	int open;
+	int opentype;
 #ifdef XML_NS
 	hadColon = 0;
 #endif
@@ -602,10 +602,10 @@ int PREFIX(scanAtts)(const ENCODING *enc, const char *ptr, const char *end,
 	  ptr += MINBPC(enc);
 	  if (ptr == end)
 	    return XML_TOK_PARTIAL;
-	  open = BYTE_TYPE(enc, ptr);
-	  if (open == BT_QUOT || open == BT_APOS)
+	  opentype = BYTE_TYPE(enc, ptr);
+	  if (opentype == BT_QUOT || opentype == BT_APOS)
 	    break;
-	  switch (open) {
+	  switch (opentype) {
 	  case BT_S:
 	  case BT_LF:
 	  case BT_CR:
@@ -622,7 +622,7 @@ int PREFIX(scanAtts)(const ENCODING *enc, const char *ptr, const char *end,
 	  if (ptr == end)
 	    return XML_TOK_PARTIAL;
 	  t = BYTE_TYPE(enc, ptr);
-	  if (t == open)
+	  if (t == opentype)
 	    break;
 	  switch (t) {
 	  INVALID_CASES(ptr, nextTokPtr)
@@ -957,7 +957,7 @@ int PREFIX(scanPoundName)(const ENCODING *enc, const char *ptr, const char *end,
 }
 
 static
-int PREFIX(scanLit)(int open, const ENCODING *enc,
+int PREFIX(scanLit)(int opentype, const ENCODING *enc,
 		    const char *ptr, const char *end,
 		    const char **nextTokPtr)
 {
@@ -968,7 +968,7 @@ int PREFIX(scanLit)(int open, const ENCODING *enc,
     case BT_QUOT:
     case BT_APOS:
       ptr += MINBPC(enc);
-      if (t != open)
+      if (t != opentype)
 	break;
       if (ptr == end)
 	return XML_TOK_PARTIAL;
@@ -1391,7 +1391,7 @@ int PREFIX(getAtts)(const ENCODING *enc, const char *ptr,
 {
   enum { other, inName, inValue } state = inName;
   int nAtts = 0;
-  int open = 0;
+  int opentype = 0;
 
   for (ptr += MINBPC(enc);; ptr += MINBPC(enc)) {
     switch (BYTE_TYPE(enc, ptr)) {
@@ -1418,9 +1418,9 @@ int PREFIX(getAtts)(const ENCODING *enc, const char *ptr,
 	if (nAtts < attsMax)
 	  atts[nAtts].valuePtr = ptr + MINBPC(enc);
         state = inValue;
-        open = BT_QUOT;
+        opentype = BT_QUOT;
       }
-      else if (open == BT_QUOT) {
+      else if (opentype == BT_QUOT) {
         state = other;
 	if (nAtts < attsMax)
 	  atts[nAtts].valueEnd = ptr;
@@ -1432,9 +1432,9 @@ int PREFIX(getAtts)(const ENCODING *enc, const char *ptr,
 	if (nAtts < attsMax)
 	  atts[nAtts].valuePtr = ptr + MINBPC(enc);
         state = inValue;
-        open = BT_APOS;
+        opentype = BT_APOS;
       }
-      else if (open == BT_APOS) {
+      else if (opentype == BT_APOS) {
         state = other;
 	if (nAtts < attsMax)
 	  atts[nAtts].valueEnd = ptr;
@@ -1454,7 +1454,7 @@ int PREFIX(getAtts)(const ENCODING *enc, const char *ptr,
 	       && (ptr == atts[nAtts].valuePtr
 		   || BYTE_TO_ASCII(enc, ptr) != ' '
 		   || BYTE_TO_ASCII(enc, ptr + MINBPC(enc)) == ' '
-	           || BYTE_TYPE(enc, ptr + MINBPC(enc)) == open))
+	           || BYTE_TYPE(enc, ptr + MINBPC(enc)) == opentype))
 	atts[nAtts].normalized = 0;
       break;
     case BT_CR: case BT_LF:
