@@ -161,6 +161,38 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 
 </UL>
 
+<h3>Third Party Modules</h3>
+
+<p>The following changes between the 1.2 and 1.3 API may require slight
+changes in third party modules not maintained by Apache.
+
+<ul>
+  <li><code>construct_url</code> prototype change.  The second parameter
+    was previously a <code>server_rec</code>, it has been changed to
+    a <code>request_rec</code>.
+
+  <li>The <code>table</code> datatype has been made an opaque type.
+    Code which assumes a <code>table</code> is the same as an
+    <code>array_header</code> will not compile.  This is actually a
+    change to enforce the API the way it was intended, all versions
+    of Apache have had a <code>table_elts()</code> function which
+    is intended for code which needs to access the elements of
+    a table.  The changes required for this are pretty easy, and
+    work with all versions of Apache.
+
+    <p>Suppose <code>t</code> is a table.  Whenever code refers to
+    <code>t-&gt;elts</code>, replace it with something like this:
+
+<blockquote><pre>
+    array_header *arr = table_elts(t);
+    table_entry *elts = (table_entry *)arr-&gt;elts;
+</pre></blockquote>
+
+    Whenever code refers to <code>t-&gt;nelts</code> use
+    <code>arr-&gt;nelts</code>.  Many examples can be found in
+    the standard modules, search for <code>table_elts</code>.
+</ul>
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
