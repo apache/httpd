@@ -499,7 +499,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* we only support GET and HEAD */
 
     if (r->method_number != M_GET)
-	return NOT_IMPLEMENTED;
+	return HTTP_NOT_IMPLEMENTED;
 
 /* allocate a buffer for the response message */
 	resplen = MAX_STRING_LEN;
@@ -572,7 +572,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (sock == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		     "proxy: error creating socket");
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (conf->recv_buffer_size) {
@@ -590,7 +590,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		     "proxy: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
 	ap_pclosesocket(p, sock);
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
     }
 
@@ -641,7 +641,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     if (i != 220) {
 	ap_kill_timeout(r);
-	return BAD_GATEWAY;
+	return HTTP_BAD_GATEWAY;
     }
 
     Explain0("FTP: connected.");
@@ -666,12 +666,12 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     if (i != 230 && i != 331) {
 	ap_kill_timeout(r);
-	return BAD_GATEWAY;
+	return HTTP_BAD_GATEWAY;
     }
 
     if (i == 331) {		/* send password */
 	if (password == NULL)
-	    return FORBIDDEN;
+	    return HTTP_FORBIDDEN;
 	ap_bputs("PASS ", f);
 	ap_bwrite(f, password, passlen);
 	ap_bputs(CRLF, f);
@@ -694,7 +694,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	}
 	if (i != 230 && i != 202) {
 	    ap_kill_timeout(r);
-	    return BAD_GATEWAY;
+	    return HTTP_BAD_GATEWAY;
 	}
     }
 
@@ -724,11 +724,11 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	}
 	if (i == 550) {
 	    ap_kill_timeout(r);
-	    return NOT_FOUND;
+	    return HTTP_NOT_FOUND;
 	}
 	if (i != 250) {
 	    ap_kill_timeout(r);
-	    return BAD_GATEWAY;
+	    return HTTP_BAD_GATEWAY;
 	}
 
 	path = strp + 1;
@@ -761,7 +761,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	}
 	if (i != 200 && i != 504) {
 	    ap_kill_timeout(r);
-	    return BAD_GATEWAY;
+	    return HTTP_BAD_GATEWAY;
 	}
 /* Allow not implemented */
 	if (i == 504)
@@ -775,7 +775,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		     "proxy: error creating PASV socket");
 	ap_bclose(f);
 	ap_kill_timeout(r);
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (conf->recv_buffer_size) {
@@ -798,7 +798,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	ap_pclosesocket(p, dsock);
 	ap_bclose(f);
 	ap_kill_timeout(r);
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
     else {
 	pasv[i - 1] = '\0';
@@ -852,7 +852,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 			 "proxy: error getting socket address");
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
-	    return SERVER_ERROR;
+	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	dsock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -861,7 +861,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 			 "proxy: error creating socket");
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
-	    return SERVER_ERROR;
+	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
@@ -872,7 +872,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    ap_pclosesocket(p, dsock);
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
-	    return SERVER_ERROR;
+	    return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
 	}
 
@@ -885,7 +885,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 			 "proxy: error binding to ftp data socket %s", buff);
 	    ap_bclose(f);
 	    ap_pclosesocket(p, dsock);
-	    return SERVER_ERROR;
+	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 	listen(dsock, 2);	/* only need a short queue */
     }
@@ -923,11 +923,11 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		}
 		if (i == 550) {
 		    ap_kill_timeout(r);
-		    return NOT_FOUND;
+		    return HTTP_NOT_FOUND;
 		}
 		if (i != 250) {
 		    ap_kill_timeout(r);
-		    return BAD_GATEWAY;
+		    return HTTP_BAD_GATEWAY;
 		}
 		path = "";
 		len = 0;
@@ -976,11 +976,11 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	}
 	if (rc == 550) {
 	    ap_kill_timeout(r);
-	    return NOT_FOUND;
+	    return HTTP_NOT_FOUND;
 	}
 	if (rc != 250) {
 	    ap_kill_timeout(r);
-	    return BAD_GATEWAY;
+	    return HTTP_BAD_GATEWAY;
 	}
 
 	ap_bputs("LIST -lag" CRLF, f);
@@ -993,7 +993,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     ap_kill_timeout(r);
     if (rc != 125 && rc != 150 && rc != 226 && rc != 250)
-	return BAD_GATEWAY;
+	return HTTP_BAD_GATEWAY;
 
     r->status = 200;
     r->status_line = "200 OK";
@@ -1045,7 +1045,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
 	    ap_proxy_cache_error(c);
-	    return BAD_GATEWAY;
+	    return HTTP_BAD_GATEWAY;
 	}
 	ap_note_cleanups_for_socket(p, csd);
 	data = ap_bcreate(p, B_RDWR | B_SOCKET);

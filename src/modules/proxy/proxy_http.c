@@ -342,7 +342,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (buffer[5] != '1' || buffer[len - 1] != '\n') {
 	    ap_bclose(f);
 	    ap_kill_timeout(r);
-	    return BAD_GATEWAY;
+	    return HTTP_BAD_GATEWAY;
 	}
 	backasswards = 0;
 	buffer[--len] = '\0';

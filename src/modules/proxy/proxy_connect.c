@@ -162,7 +162,7 @@ int ap_proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
     if (sock == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "proxy: error creating socket");
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
 #ifndef WIN32
@@ -173,7 +173,7 @@ int ap_proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
 	    "found, you probably need to rebuild Apache with a "
 	    "larger FD_SETSIZE", sock, FD_SETSIZE);
 	ap_pclosesocket(r->pool, sock);
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 #endif
 
