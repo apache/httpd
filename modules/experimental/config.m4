@@ -1,7 +1,14 @@
 
 APACHE_MODPATH_INIT(experimental)
 
-APACHE_MODULE(charset_lite, character set translation, , , no)
+if test "$ac_cv_ebcdic" = "yes"; then
+# mod_charset_lite can be very useful on an ebcdic system, 
+#   so include it by default
+    APACHE_MODULE(charset_lite, character set translation, , , yes)
+else
+    APACHE_MODULE(charset_lite, character set translation, , , no)
+fi
+
 dnl #  list of object files for mod_cache
 cache_objs="dnl
 mod_cache.lo dnl
