@@ -312,7 +312,7 @@ static void usage(process_rec *process)
 #endif
 #ifdef AP_MPM_WANT_SIGNAL_SERVER
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "       %s [-k start|startssl|restart|graceful|stop]",
+                 "       %s [-k start|restart|graceful|stop]",
                  pad);
 #endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,

@@ -850,14 +850,6 @@ void ap_mpm_rewrite_args(process_rec *process)
                     dash_k_arg = optarg;
                     break;
                 }
-                if (!strcmp(optarg, "startssl")) {
-                    char **new_define;
-
-                    dash_k_arg = "start";
-                    new_define = (char **)apr_array_push(ap_server_config_defines);
-                    *new_define = "SSL";
-                    break;
-                }
             }
         default:
             *(const char **)apr_array_push(mpm_new_argv) =
