@@ -210,7 +210,7 @@ static int get_path_info(request_rec *r)
     char *path = r->filename;
     char *end = &path[strlen(path)];
     char *last_cp = NULL;
-    int rv, rvc;
+    int rv;
 #ifdef HAVE_DRIVE_LETTERS
     char bStripSlash=1;
 #endif
@@ -301,10 +301,9 @@ static int get_path_info(request_rec *r)
 	 * even if they returned an error.
 	 */
 	r->finfo.protection = 0;
-	rvc = apr_canonical_error(rv);
 
 #if defined(APR_ENOENT) && defined(APR_ENOTDIR)
-        if (rvc == APR_ENOENT || rvc == APR_ENOTDIR) {
+        if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_ENOTDIR(rv)) {
             last_cp = cp;
 
             while (--cp > path && *cp != '/')
@@ -315,14 +314,14 @@ static int get_path_info(request_rec *r)
         }
         else {
 #if defined(APR_EACCES)
-            if (rvc != APR_EACCES)
+            if (APR_STATUS_IS_EACCES(rv))
 #endif
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                             "access to %s failed", r->uri);
             return HTTP_FORBIDDEN;
         }
 #else
-#error ENOENT || ENOTDIR not defined; please see the
+#error APR_ENOENT || APR_ENOTDIR not defined; please see the
 #error comments at this line in the source for a workaround.
         /*
          * If ENOENT || ENOTDIR is not defined in one of the your OS's
@@ -344,7 +343,7 @@ static int get_path_info(request_rec *r)
 
 	while (cp > path && cp[-1] == '/')
 	    --cp;
-#endif  /* ENOENT && ENOTDIR */
+#endif  /* APR_ENOENT && APR_ENOTDIR */
     }
     return OK;
 }

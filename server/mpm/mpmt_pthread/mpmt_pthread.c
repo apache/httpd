@@ -432,7 +432,7 @@ static void check_pipe_of_death(void)
 	apr_ssize_t n = 1;
 
         ret = apr_recv(listensocks[0], &pipe_read_char, &n);
-        if (apr_canonical_error(ret) == APR_EAGAIN) {
+        if (APR_STATUS_IS_EAGAIN(ret)) {
             /* It lost the lottery. It must continue to suffer
              * through a life of servitude. */
         }
@@ -498,7 +498,7 @@ static void * worker_thread(void * dummy)
 
             ret = apr_poll(pollset, &n, -1);
             if (ret != APR_SUCCESS) {
-                if (apr_canonical_error(ret) == APR_EINTR) {
+                if (APR_STATUS_IS_EINTR(ret)) {
                     continue;
                 }
 
@@ -1133,7 +1133,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	/* give the children the signal to die */
         for (i = 0; i < ap_daemons_limit;) {
             if ((rv = apr_write(pipe_of_death_in, &char_of_death, &one)) != APR_SUCCESS) {
-                if (apr_canonical_error(rv) == APR_EINTR) continue;
+                if (APR_STATUS_IS_EINTR(rv)) continue;
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
             }
             i++;

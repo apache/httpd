@@ -1447,9 +1447,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
             *result = dc;
             break;
         } else {
-	    apr_status_t cerr = apr_canonical_error(status);
-
-	    if (cerr != APR_ENOENT && cerr != APR_ENOTDIR) {
+	    if (!APR_STATUS_IS_ENOENT(status) && !APR_STATUS_IS_ENOTDIR(status)) {
 		ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
 			      "%s pcfg_openfile: unable to check htaccess file, "
 			      "ensure it is readable",

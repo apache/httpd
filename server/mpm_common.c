@@ -191,11 +191,11 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
 #endif
     }
     rv = apr_wait_all_procs(ret, status, APR_NOWAIT, p);
-    if (apr_canonical_error(rv) == APR_EINTR) {
+    if (APR_STATUS_IS_EINTR(rv)) {
         ret->pid = -1;
         return;
     }
-    if (rv == APR_CHILD_DONE) {
+    if (APR_STATUS_IS_CHILD_DONE(rv)) {
         return;
     }
 #ifdef NEED_WAITPID

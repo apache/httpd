@@ -498,7 +498,7 @@ static void start_connect(struct connection *c)
     }
     c->start = apr_now();
     if ((rv = apr_connect(c->aprsock, hostname)) != APR_SUCCESS) {
-        if (apr_canonical_error(rv) == APR_EINPROGRESS) {
+        if (APR_STATUS_IS_EINPROGRESS(rv)) {
             c->state = STATE_CONNECTING;
             apr_add_poll_socket(readbits, c->aprsock, APR_POLLOUT);
             return;
@@ -574,13 +574,13 @@ static void read_connection(struct connection *c)
     r = sizeof(buffer);
     apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
     status = apr_recv(c->aprsock, buffer, &r);
-    if (r == 0 || (status != 0 && apr_canonical_error(status) != APR_EAGAIN)) {
+    if (r == 0 || (status != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(status))) {
         good++;
         close_connection(c);
         return;
     }
 
-    if (apr_canonical_error(status) == APR_EAGAIN)
+    if (APR_STATUS_IS_EAGAIN(status))
         return;
 
     c->read += r;
@@ -862,14 +862,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.27 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.28 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.27 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.28 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
