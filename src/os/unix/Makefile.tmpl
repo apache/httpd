@@ -36,6 +36,6 @@ $(OBJS): Makefile
 
 # DO NOT REMOVE
 os-inline.o: os-inline.c $(INCDIR)/conf.h ../../os/unix/os.h \
- $(INCDIR)/hsregex.h
+ $(INCDIR)/hide.h $(INCDIR)/hsregex.h
 os.o: os.c $(INCDIR)/conf.h ../../os/unix/os.h \
- $(INCDIR)/hsregex.h os.h os-inline.c
+ $(INCDIR)/hide.h $(INCDIR)/hsregex.h os.h

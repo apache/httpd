@@ -17,8 +17,9 @@ depend:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-mod_mmap_static.o: mod_mmap_static.c ../../include/httpd.h \
- ../../include/conf.h ../../os/unix/os.h ../../include/hsregex.h \
- ../../include/alloc.h ../../include/buff.h ../../include/ap.h \
- ../../include/http_config.h ../../include/http_log.h \
- ../../include/http_protocol.h ../../include/http_request.h
+mod_mmap_static.o: mod_mmap_static.c $(INCDIR)/httpd.h \
+ $(INCDIR)/conf.h ../../os/unix/os.h $(INCDIR)/hide.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_request.h
