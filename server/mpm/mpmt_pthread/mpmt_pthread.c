@@ -62,6 +62,9 @@
 #include "apr_file_io.h"
 #include "apr_thread_proc.h"
 
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #if APR_HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
