@@ -1,4 +1,9 @@
 Changes with Apache 2.0.27-dev
+
+  *) Fix the reporting for child processes that die.  This removes
+     all of the non-portable W* macros from Apache. 
+     [Jeff Trawick and Ryan Bloom]
+
   *) Win32: Track and display "Parent Server Generation:" in
      mod_status output. The generation will be bumped at
      server graceful restart, when the child process exits

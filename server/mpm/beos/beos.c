@@ -597,16 +597,17 @@ static void perform_idle_server_maintenance(void)
 static void server_main_loop(int remaining_threads_to_start)
 {
     int child_slot;
-    apr_wait_t status;
+    apr_exit_why_e exitwhy;
+    int status;
     apr_proc_t pid;
     int i;
 
     while (!restart_pending && !shutdown_pending) {
 
-        ap_wait_or_timeout(&status, &pid, pconf);
+        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
          
         if (pid.pid >= 0) {
-            ap_process_child_status(&pid, status);
+            ap_process_child_status(&pid, exitwhy, status);
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = -1;
             for (i = 0; i < ap_max_child_assigned; ++i) {
