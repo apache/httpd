@@ -172,8 +172,9 @@
     modifizierte Version des Apache HTTP Servers erhalten haben. Dies kann
     durch Prüfen des heruntergeladenen Tarballs gegen die PGP-Signatur
     erreicht werden. Dies ist wiederum ein Zweischrittverfahren. Zuerst
-    müssen Sie die <code>KEYS</code>-Datei ebenfalls von der <a href="http://httpd.apache.org/download.cgi">Apache HTTP
-    Server Downloadseite</a> beziehen. (Um sicherzustellen, dass die
+    müssen Sie die <a href="http://www.apache.org/dist/httpd/KEYS">
+    <code>KEYS</code></a>-Datei ebenfalls von der Apache
+    Distributionsseite beziehen. (Um sicherzustellen, dass die
     <code>KEYS</code>-Datei selbst nicht verändert wurde, ist
     es sinnvoll, eine Datei aus einer früheren Distribution des
     Apache zu verwenden, oder den Schlüssel von einem öffentlichen
@@ -188,9 +189,11 @@
   <div class="example"><p><code>$ gpg --import KEYS</code></p></div>
 
     <p>Der nächste Schritt ist das Testen des Tarballs gegen
-    die PGP-Signatur, die immer von der <a href="http://httpd.apache.org/download.cgi">Apache
-    Originalseite</a> bezogen werden sollte. Die Signaturdatei hat den
-    gleichen Dateinamen wie der Tarball, aber zusätzlich die
+    die PGP-Signatur, die immer von der <a href="http://httpd.apache.org/download.cgi">Apache Originalseite</a>
+    bezogen werden sollte. Den Link zur Signaturdatei finden Sie hinter
+    dem jeweiligen Download-Link oder im entsprechenden Verzeichnis auf der
+    <a href="http://www.apache.org/dist/httpd/">Apache-Distributionsseite</a>
+    Sie hat den gleichen Dateinamen wie der Tarball, aber zusätzlich die
     Endung <code>.asc</code>. Nun können Sie die Distribution mit
     einem der folgenden Befehle (wiederum abhängig von Ihrer PGP
     Version) prüfen:</p>
