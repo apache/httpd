@@ -1873,7 +1873,7 @@ static const char *set_bs2000_authfile (cmd_parms *cmd, void *dummy, char *name)
 
 /*
  * Handle a request to include the server's OS platform in the Server
- * response header field (the AddVersionPlatform directive).  Unfortunately
+ * response header field (the ServerTokens directive).  Unfortunately
  * this requires a new global in order to communicate the setting back to
  * http_main so it can insert the information in the right place in the
  * string.
