@@ -1020,7 +1020,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if we are overriding the errors, we can't put the content
              * of the page into the brigade
              */
-            if ( (conf->error_override ==0) || r->status < 400 ) {
+            if ( (conf->error_override ==0) || r->status < 300 ) {
 
                 /* read the body, pass it to the output filters */
                 int finish = FALSE;
