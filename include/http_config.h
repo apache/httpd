@@ -967,6 +967,13 @@ AP_DECLARE_HOOK(int,header_parser,(request_rec *r))
 AP_DECLARE_HOOK(int,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,
                                 apr_pool_t *ptemp))
 
+/**
+ * Run the test_config function for each module; this hook is run
+ * only if the server was invoked to test the configuration syntax.
+ * @param pconf The config pool
+ * @param s The list of server_recs
+ */
+AP_DECLARE_HOOK(void,test_config,(apr_pool_t *pconf, server_rec *s))
 
 /**
  * Run the post_config function for each module
