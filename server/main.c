@@ -68,16 +68,16 @@
 
 #define CORE_PRIVATE
 #include "ap_config.h"
-#include "httpd.h" 
-#include "http_main.h" 
-#include "http_log.h" 
+#include "httpd.h"
+#include "http_main.h"
+#include "http_log.h"
 #include "http_config.h"
 #include "http_vhost.h"
-#include "apr_uri.h" 
+#include "apr_uri.h"
 #include "util_ebcdic.h"
 #include "ap_mpm.h"
 
-/* WARNING: Win32 binds http_main.c dynamically to the server. Please place 
+/* WARNING: Win32 binds http_main.c dynamically to the server. Please place
  *          extern functions and global data in another appropriate module.
  *
  * Most significant main() global data can be found in http_config.c
@@ -89,7 +89,8 @@ static void show_compile_settings(void)
     printf("Server version: %s\n", ap_get_server_version());
     printf("Server built:   %s\n", ap_get_server_built());
     printf("Server's Module Magic Number: %u:%u\n",
-	   MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
+           MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
+
     /* sizeof(foo) is long on some platforms so we might as well
      * make it long everywhere to keep the printf format
      * consistent
@@ -99,75 +100,98 @@ static void show_compile_settings(void)
 #ifdef BIG_SECURITY_HOLE
     printf(" -D BIG_SECURITY_HOLE\n");
 #endif
+
 #ifdef SECURITY_HOLE_PASS_AUTHORIZATION
     printf(" -D SECURITY_HOLE_PASS_AUTHORIZATION\n");
 #endif
+
 #ifdef APACHE_MPM_DIR
     printf(" -D APACHE_MPM_DIR=\"%s\"\n", APACHE_MPM_DIR);
 #endif
+
 #ifdef HAVE_SHMGET
     printf(" -D HAVE_SHMGET\n");
 #endif
+
 #if APR_FILE_BASED_SHM
     printf(" -D APR_FILE_BASED_SHM\n");
 #endif
+
 #if APR_HAS_SENDFILE
     printf(" -D APR_HAS_SENDFILE\n");
 #endif
+
 #if APR_HAS_MMAP
     printf(" -D APR_HAS_MMAP\n");
 #endif
+
 #ifdef NO_WRITEV
     printf(" -D NO_WRITEV\n");
 #endif
+
 #ifdef NO_LINGCLOSE
     printf(" -D NO_LINGCLOSE\n");
 #endif
+
 #if APR_HAVE_IPV6
     printf(" -D APR_HAVE_IPV6\n");
 #endif
+
 #if APR_USE_FLOCK_SERIALIZE
     printf(" -D APR_USE_FLOCK_SERIALIZE\n");
 #endif
+
 #if APR_USE_SYSVSEM_SERIALIZE
     printf(" -D APR_USE_SYSVSEM_SERIALIZE\n");
 #endif
+
 #if APR_USE_FCNTL_SERIALIZE
     printf(" -D APR_USE_FCNTL_SERIALIZE\n");
 #endif
+
 #if APR_USE_PROC_PTHREAD_SERIALIZE
     printf(" -D APR_USE_PROC_PTHREAD_SERIALIZE\n");
 #endif
+
 #if APR_USE_PTHREAD_SERIALIZE
     printf(" -D APR_USE_PTHREAD_SERIALIZE\n");
 #endif
+
 #if APR_PROCESS_LOCK_IS_GLOBAL
     printf(" -D APR_PROCESS_LOCK_IS_GLOBAL\n");
 #endif
+
 #ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
     printf(" -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT\n");
 #endif
+
 #if APR_HAS_OTHER_CHILD
     printf(" -D APR_HAS_OTHER_CHILD\n");
 #endif
+
 #ifdef AP_HAVE_RELIABLE_PIPED_LOGS
     printf(" -D AP_HAVE_RELIABLE_PIPED_LOGS\n");
 #endif
+
 #ifdef BUFFERED_LOGS
     printf(" -D BUFFERED_LOGS\n");
 #ifdef PIPE_BUF
-	printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
+    printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
 #endif
 #endif
+
 #if APR_CHARSET_EBCDIC
     printf(" -D APR_CHARSET_EBCDIC\n");
 #endif
+
 #ifdef APACHE_XLATE
     printf(" -D APACHE_XLATE\n");
 #endif
+
 #ifdef NEED_HASHBANG_EMUL
     printf(" -D NEED_HASHBANG_EMUL\n");
 #endif
+
 #ifdef SHARED_CORE
     printf(" -D SHARED_CORE\n");
 #endif
@@ -176,33 +200,42 @@ static void show_compile_settings(void)
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
 #endif
+
 #ifdef SUEXEC_BIN
     printf(" -D SUEXEC_BIN=\"" SUEXEC_BIN "\"\n");
 #endif
+
 #if defined(SHARED_CORE) && defined(SHARED_CORE_DIR)
     printf(" -D SHARED_CORE_DIR=\"" SHARED_CORE_DIR "\"\n");
 #endif
+
 #ifdef DEFAULT_PIDLOG
     printf(" -D DEFAULT_PIDLOG=\"" DEFAULT_PIDLOG "\"\n");
 #endif
+
 #ifdef DEFAULT_SCOREBOARD
     printf(" -D DEFAULT_SCOREBOARD=\"" DEFAULT_SCOREBOARD "\"\n");
 #endif
+
 #ifdef DEFAULT_LOCKFILE
     printf(" -D DEFAULT_LOCKFILE=\"" DEFAULT_LOCKFILE "\"\n");
 #endif
+
 #ifdef DEFAULT_ERRORLOG
     printf(" -D DEFAULT_ERRORLOG=\"" DEFAULT_ERRORLOG "\"\n");
 #endif
+
 #ifdef TYPES_CONFIG_FILE
     printf(" -D TYPES_CONFIG_FILE=\"" TYPES_CONFIG_FILE "\"\n");
 #endif
+
 #ifdef SERVER_CONFIG_FILE
     printf(" -D SERVER_CONFIG_FILE=\"" SERVER_CONFIG_FILE "\"\n");
 #endif
 }
 
-static void destroy_and_exit_process(process_rec *process, int process_exit_value)
+static void destroy_and_exit_process(process_rec *process,
+                                     int process_exit_value)
 {
     apr_pool_destroy(process->pool); /* and destroy all descendent pools */
     apr_terminate();
@@ -247,47 +280,101 @@ static void usage(process_rec *process)
     char pad[MAX_STRING_LEN];
     unsigned i;
 
-    for (i = 0; i < strlen(bin); i++)
-	pad[i] = ' ';
+    for (i = 0; i < strlen(bin); i++) {
+        pad[i] = ' ';
+    }
+
     pad[i] = '\0';
+
 #ifdef SHARED_CORE
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0,NULL , "Usage: %s [-R directory] [-D name] [-d directory] [-f file]", bin);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL ,
+                 "Usage: %s [-R directory] [-D name] [-d directory] [-f file]",
+                 bin);
 #else
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Usage: %s [-D name] [-d directory] [-f file]", bin);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "Usage: %s [-D name] [-d directory] [-f file]", bin);
 #endif
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-C \"directive\"] [-c \"directive\"]", pad);
+
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "       %s [-C \"directive\"] [-c \"directive\"]", pad);
+
 #ifdef WIN32
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-k restart|shutdown|start]", pad);
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-n service_name]", pad);
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-i] [-u]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "       %s [-k restart|shutdown|start]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "       %s [-n service_name]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "       %s [-i] [-u]", pad);
 #endif
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T]", pad);
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Options:");
+
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "Options:");
+
 #ifdef SHARED_CORE
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -R directory      : specify an alternate location for shared object files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -R directory      : specify an alternate location for "
+                 "shared object files");
 #endif
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -D name           : define a name for use in <IfDefine name> directives");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -d directory      : specify an alternate initial ServerRoot");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -f file           : specify an alternate ServerConfigFile");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -C \"directive\"    : process directive before reading config files");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -c \"directive\"    : process directive after  reading config files");
+
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -D name           : define a name for use in "
+                 "<IfDefine name> directives");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -d directory      : specify an alternate initial "
+                 "ServerRoot");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -f file           : specify an alternate ServerConfigFile");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -C \"directive\"    : process directive before reading "
+                 "config files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -c \"directive\"    : process directive after reading "
+                 "config files");
+
 #ifdef WIN32
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -n name           : set service name and use its ServerConfigFile");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k shutdown       : tell running Apache to shutdown");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k restart        : tell running Apache to do a graceful restart");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -k start          : tell Apache to start");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -i                : install an Apache service");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -u                : uninstall an Apache service");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -n name           : set service name and use its "
+                 "ServerConfigFile");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -k shutdown       : tell running Apache to shutdown");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -k restart        : tell running Apache to do a graceful "
+                 "restart");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -k start          : tell Apache to start");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -i                : install an Apache service");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -u                : uninstall an Apache service");
 #endif
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -e level          : show startup errors of level (see LogLevel)");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -v                : show version number");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -V                : show compile settings");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -h                : list available command line options (this page)");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -l                : list compiled in modules");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -L                : list available configuration directives");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t -D DUMP_VHOSTS : show parsed settings (currently only vhost settings)"); 
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t                : run syntax check for config files (with docroot check)");
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -T                : run syntax check for config files (without docroot check)");
+
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -e level          : show startup errors of level "
+                 "(see LogLevel)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -v                : show version number");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -V                : show compile settings");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -h                : list available command line options "
+                 "(this page)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -l                : list compiled in modules");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -L                : list available configuration "
+                 "directives");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -t -D DUMP_VHOSTS : show parsed settings (currently only "
+                 "vhost settings)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -t                : run syntax check for config files "
+                 "(with docroot check)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -T                : run syntax check for config files "
+                 "(without docroot check)");
+
     destroy_and_exit_process(process, 1);
 }
 
@@ -334,7 +421,7 @@ int main(int argc, const char * const argv[])
 
     ap_run_rewrite_args(process);
 
-    /* Maintain AP_SERVER_BASEARGS list in http_main.h to allow the MPM 
+    /* Maintain AP_SERVER_BASEARGS list in http_main.h to allow the MPM
      * to safely pass on our args from its rewrite_args() handler.
      */
     apr_getopt_init(&opt, pcommands, process->argc, process->argv);
@@ -342,44 +429,49 @@ int main(int argc, const char * const argv[])
     while ((rv = apr_getopt(opt, AP_SERVER_BASEARGS, &c, &optarg))
             == APR_SUCCESS) {
         char **new;
+
         switch (c) {
- 	case 'c':
-	    new = (char **)apr_array_push(ap_server_post_read_config);
-	    *new = apr_pstrdup(pcommands, optarg);
-	    break;
-	case 'C':
-	    new = (char **)apr_array_push(ap_server_pre_read_config);
-	    *new = apr_pstrdup(pcommands, optarg);
-	    break;
-	case 'd':
-	    def_server_root = optarg;
-	    break;
-	case 'D':
-	    new = (char **)apr_array_push(ap_server_config_defines);
-	    *new = apr_pstrdup(pcommands, optarg);
-	    break;
+        case 'c':
+            new = (char **)apr_array_push(ap_server_post_read_config);
+            *new = apr_pstrdup(pcommands, optarg);
+            break;
+
+        case 'C':
+            new = (char **)apr_array_push(ap_server_pre_read_config);
+            *new = apr_pstrdup(pcommands, optarg);
+            break;
+
+        case 'd':
+            def_server_root = optarg;
+            break;
+
+        case 'D':
+            new = (char **)apr_array_push(ap_server_config_defines);
+            *new = apr_pstrdup(pcommands, optarg);
+            break;
+
         case 'e':
             if (strcasecmp(optarg, "emerg") == 0) {
                 ap_default_loglevel = APLOG_EMERG;
-            } 
+            }
             else if (strcasecmp(optarg, "alert") == 0) {
                 ap_default_loglevel = APLOG_ALERT;
-            } 
+            }
             else if (strcasecmp(optarg, "crit") == 0) {
                 ap_default_loglevel = APLOG_CRIT;
-            } 
+            }
             else if (strncasecmp(optarg, "err", 3) == 0) {
                 ap_default_loglevel = APLOG_ERR;
-            } 
+            }
             else if (strncasecmp(optarg, "warn", 4) == 0) {
                 ap_default_loglevel = APLOG_WARNING;
-            } 
+            }
             else if (strcasecmp(optarg, "notice") == 0) {
                 ap_default_loglevel = APLOG_NOTICE;
-            } 
+            }
             else if (strcasecmp(optarg, "info") == 0) {
                 ap_default_loglevel = APLOG_INFO;
-            } 
+            }
             else if (strcasecmp(optarg, "debug") == 0) {
                 ap_default_loglevel = APLOG_DEBUG;
             }
@@ -387,37 +479,45 @@ int main(int argc, const char * const argv[])
                 usage(process);
             }
             break;
-	case 'X':
-	    new = (char **)apr_array_push(ap_server_config_defines);
-	    *new = "DEBUG";
-	    break;
-	case 'f':
-	    confname = optarg;
-	    break;
-	case 'v':
-	    printf("Server version: %s\n", ap_get_server_version());
-	    printf("Server built:   %s\n", ap_get_server_built());
-	    destroy_and_exit_process(process, 0);
-	case 'V':
-	    show_compile_settings();
-	    destroy_and_exit_process(process, 0);
-	case 'l':
-	    ap_show_modules();
-	    destroy_and_exit_process(process, 0);
-	case 'L':
-	    ap_show_directives();
-	    destroy_and_exit_process(process, 0);
-	case 't':
-	    configtestonly = 1;
-	    break;
-	case 'h':
-	case '?':
-	    usage(process);
-	}
+
+        case 'X':
+            new = (char **)apr_array_push(ap_server_config_defines);
+            *new = "DEBUG";
+            break;
+
+        case 'f':
+            confname = optarg;
+            break;
+
+        case 'v':
+            printf("Server version: %s\n", ap_get_server_version());
+            printf("Server built:   %s\n", ap_get_server_built());
+            destroy_and_exit_process(process, 0);
+
+        case 'V':
+            show_compile_settings();
+            destroy_and_exit_process(process, 0);
+
+        case 'l':
+            ap_show_modules();
+            destroy_and_exit_process(process, 0);
+
+        case 'L':
+            ap_show_directives();
+            destroy_and_exit_process(process, 0);
+
+        case 't':
+            configtestonly = 1;
+            break;
+
+        case 'h':
+        case '?':
+            usage(process);
+        }
     }
 
     /* bad cmdline option?  then we die */
-    if (rv != APR_EOF) { 
+    if (rv != APR_EOF) {
         usage(process);
     }
 
@@ -426,25 +526,31 @@ int main(int argc, const char * const argv[])
     apr_pool_create(&ptemp, pconf);
 
     /* Note that we preflight the config file once
-       before reading it _again_ in the main loop.
-       This allows things, log files configuration 
-       for example, to settle down. */
+     * before reading it _again_ in the main loop.
+     * This allows things, log files configuration
+     * for example, to settle down.
+     */
 
     ap_server_root = def_server_root;
     server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
     if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Pre-configuration failed\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0,
+                     NULL, "Pre-configuration failed\n");
         destroy_and_exit_process(process, 1);
     }
-    ap_process_config_tree(server_conf, ap_conftree, process->pconf, ptemp); 
+
+    ap_process_config_tree(server_conf, ap_conftree, process->pconf, ptemp);
     ap_fixup_virtual_hosts(pconf, server_conf);
     ap_fini_vhost_config(pconf, server_conf);
     apr_sort_hooks();
     if (configtestonly) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
-	destroy_and_exit_process(process, 0);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "Syntax OK\n");
+        destroy_and_exit_process(process, 0);
     }
+
     apr_pool_clear(plog);
+
     /* It is assumed that if you are going to fail the open_logs phase, then
      * you will print out your own message that explains what has gone wrong.
      * The server doesn't need to do that for you.
@@ -452,15 +558,19 @@ int main(int argc, const char * const argv[])
     if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
         destroy_and_exit_process(process, 1);
     }
+
     if ( ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Configuration Failed\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0,
+                     NULL, "Configuration Failed\n");
         destroy_and_exit_process(process, 1);
     }
+
     apr_pool_destroy(ptemp);
 
     for (;;) {
-	apr_hook_deregister_all();
-	apr_pool_clear(pconf);
+        apr_hook_deregister_all();
+        apr_pool_clear(pconf);
+
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
         }
@@ -470,37 +580,46 @@ int main(int argc, const char * const argv[])
          * memory.  rbb
          */
         ap_conftree = NULL;
-	apr_pool_create(&ptemp, pconf);
-	ap_server_root = def_server_root;
+        apr_pool_create(&ptemp, pconf);
+        ap_server_root = def_server_root;
         server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
         if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Pre-configuration failed\n");
+            ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO,
+                         0, NULL, "Pre-configuration failed\n");
             destroy_and_exit_process(process, 1);
         }
+
         ap_process_config_tree(server_conf, ap_conftree, process->pconf, ptemp);
         ap_fixup_virtual_hosts(pconf, server_conf);
         ap_fini_vhost_config(pconf, server_conf);
         apr_sort_hooks();
         apr_pool_clear(plog);
-        if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Unable to open logs\n");
+        if (ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO,
+                         0, NULL, "Unable to open logs\n");
             destroy_and_exit_process(process, 1);
         }
 
-	if  (ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR | APLOG_NOERRNO, 0, NULL, "Configuration Failed\n");
+        if (ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR | APLOG_NOERRNO,
+                         0, NULL, "Configuration Failed\n");
             destroy_and_exit_process(process, 1);
         }
-	apr_pool_destroy(ptemp);
-	apr_pool_lock(pconf, 1);
 
-	ap_run_optional_fn_retrieve();
+        apr_pool_destroy(ptemp);
+        apr_pool_lock(pconf, 1);
 
-	if (ap_mpm_run(pconf, plog, server_conf)) break;
-	apr_pool_lock(pconf, 0);
+        ap_run_optional_fn_retrieve();
+
+        if (ap_mpm_run(pconf, plog, server_conf))
+            break;
+
+        apr_pool_lock(pconf, 0);
     }
+
     apr_pool_lock(pconf, 0);
     destroy_and_exit_process(process, 0);
+
     return 0; /* Supress compiler warning. */
 }
 
