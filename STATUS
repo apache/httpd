@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/11 18:14:15 $]
+Last modified at [$Date: 2002/12/12 12:50:22 $]
 
 Release:
 
@@ -56,13 +56,6 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
-
-    * Reorder the definitions for mod_ldap and mod_auth_ldap within
-      config.m4 to make sure the parent mod_ldap is defined first.
-      This ensures that mod_ldap comes before mod_auth_ldap in the
-      httpd.conf file, which is necessary for mod_auth_ldap to load.
-      PR 14256  [Graham Leggett]
-      +1: trawick, wrowe, striker
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
