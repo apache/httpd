@@ -14,7 +14,7 @@ Release: APACHE_RELEASE
 URL: http://httpd.apache.org/
 Vendor: Apache Software Foundation
 Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
-License: Apache Software License
+License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-root
 BuildPrereq: openldap-devel, db3-devel, expat-devel, findutils, perl, pkgconfig
