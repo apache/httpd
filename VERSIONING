@@ -1,0 +1,154 @@
+APACHE 2.x VERSIONING
+=====================
+Last modified at [$Date: 2002/10/28 04:16:40 $]
+
+
+INTRODUCTION
+------------
+The Apache HTTP Server project must balance two competing and disjoint
+objectives: maintain stable code for third party authors, distributors and
+most importantly users so that bug and security fixes can be quickly adopted
+without significant hardship due to user-visible changes; and continue the
+development process that requires ongoing redesign to correct earlier
+oversights and to add additional features.
+
+The Apache HTTP Server, through version 2.0, used the Module Magic Number (MMN)
+to reflect API changes.  This had the shortcoming of often leaving users
+hunting to replace binary third party modules that were now incompatible.
+This also left module authors searching through the API change histories to
+determine the exact cause for the MMN change and whether their module was
+affected.
+
+With the simultaneous release of Apache 2.2-stable and Apache 2.3-development,
+the Apache HTTP Server project is moving towards a more predictable stable
+release cycle, while allowing forward progress to occur without concern
+for breaking the stable branch.  This document explains the rationale between
+the two versions and their behavior.
+
+
+STABLE RELEASES, 2.{even}.{revision}
+------------------------------------ 
+
+All even numbered releases will be considered stable revisions. 
+
+Stable revisions will retain forward compatiblity to the maximum
+possible extent.  Features may be added during minor revisions, and
+features may be deprecated by making appropriate notations in the
+documentation, but no features may be removed.
+
+In essence, that implies that you can upgrade from one minor revision
+to the next with a minimum of trouble.  In particular, this means:
+
+  * The Module API will retain forward compatibility.
+    It will not be necessary to update modules to work with new
+    revisions of the stable tree.
+
+  * The run-time configuration will be forward compatible.
+    No configuration changes will be necessary to work with new
+    revisions of the stable tree.
+
+  * Compile-time configuration will be forward compatible.
+    The configure command line options that work in one release
+    of the stable tree will also work in the next release.
+
+As always, it will be necessary to test any new release to assure
+that it works correctly with a particular configuration and a 
+particular set of modules, but every effort will be made to assure
+that upgrades are as smooth as possible.
+
+In addition, the following development restrictions will aid in 
+keeping the stable tree as safe as possible:
+
+  * No 'Experimental' modules; while it may be possible (based on API changes
+    required to support a given module) to load a 2.3-development module into
+    a 2.2-stable build of Apache, there are no guarantees.  Experimental 
+    modules will be introduced to the 2.3-development versions and either
+    added to 2.2-stable once they are proven and compatible, or deferred
+    to the 2.4-stable release if they cannot be incorporated in the current
+    stable release due to API change requirements.
+
+  * The stable CVS tree should not remain unstable at any time.  Atomic commits 
+    aught be used to introduce code from the development version to the stable 
+    tree.  At any given time a security release may be in preparation, 
+    unbeknownst to other contributors.  At any given time, testers may be
+    checking out CVS head to confirm that a bug has been corrected.  And as
+    all code was well-tested in development prior to committing to the stable
+    tree, there is really no reason for this tree to be broken for more than 
+    a few minutes during a lengthy commit.
+
+In order to avoid 'skipped' release numbers in the stable releases, the
+Release Manager will generally roll a release candidate (APACHE_#_#_#_RC#)
+tag.  Release Candidate tarballs will be announced to the
+stable-testers@httpd.apache.org for the stable tree.  Then, the participants
+will vote on the quality of the proposed release tarball.
+
+The final APACHE_#_#_# tag will not exist until the APACHE_#_#_#_RC# candidate
+has passed the usual votes to release that version.  Only then is the final
+tarball packaged, removing all -rc# designations from the version number, and
+tagging the tree with the release number.
+
+DEVELOPMENT RELEASES, 2.{odd}.{revision}
+-----------------------------------------
+
+All odd numbered releases designate the 'next' possible stable release,
+therefore the current development version will always be one greater than
+the current stable release.  Work proceeds on development releases, permitting
+the modification of the MMN at any time in order to correct deficiencies 
+or shortcomings in the API.  This means that modules from one development
+release to another may not be binary compatible, or may not successfully
+compile without modification to accomodate the API changes.
+
+The only 'supported' development release at any time will be the most
+recently released version.  Developers will not be answering bug reports
+of older development releases once a new release is available.  It becomes
+the resposibility of the reporter to use the latest development version
+to confirm that any issue still exists.
+
+Any new code, new API features or new ('experimental') modules may be
+promoted at any time to the next stable release, by a vote of the project
+contributors.  This vote is based on the technical stability of the new
+code and the stability of the interface.  Once moved to stable, that feature
+cannot change for the remainder of that stable release cycle, so the vote must
+reflect that the final decisions on the behavior and naming of that new
+feature were reached.  Vetos continue to apply to this choice of introducing
+the new work to the stable version.
+
+At any given time, when the quality of changes to the development branch
+is considered release quality, that version may become a candidate for the
+next stable release.  This includes some or all of the API changes, promoting
+experimental modules to stable or deprecating and eliminating older modules
+from the last stable release.  All of these choices are considered by the
+project as a group in the interests of promoting the stable release, so that
+any given change may be 'deferred' for a future release by the group, rather 
+than introduce unacceptable risks to adopting the next stable release.
+
+Third party module authors are strongly encouraged to test with the latest
+development version.  This assures that the module will be ready for the next
+stable release, but more importantly, the author can react to shortcomings
+in the API early enough to warn the dev@httpd.apache.org community of the
+shortcomings so that they can be addressed before the stable release.  The
+entire burden is on the module author to anticipate the needs of their module
+before the stable release is created.  Once a new stable release cycle has
+begun, that API will be present for the lifetime of the stable release.  Any
+desired changes in the stable versions must wait for inclusion into the next
+release cycle.
+
+When deciding to promote a development tree to being stable, a determination
+should be made whether the changes since the last stable version warrant a
+major version bump.  That is, if 2.2 is the current stable version and 2.3 is
+'ready' to become stable, the group needs to decide if the next stable
+version is 2.4 or 3.0.  One suggested rule of thumb is that if it requires
+too much effort to port a module from 2.2 to 2.4, then the stable version
+should be labeled 3.0.
+
+In order to ease the burden of creating development releases, the process
+for packaging a development releases is less formal than for the stable
+release.  This strategy reflects the fact that while in development, versions
+are cheap.  Development releases may be classified as alpha, beta, or GA
+to reflect the group's perceived stability of the tree.  Development releases
+may be made at any time by any committer.
+
+Please read the following link for a more detailed description of the
+development release strategy:
+
+http://httpd.apache.org/dev/release.html
