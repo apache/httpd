@@ -96,7 +96,7 @@ configuration</td></tr>
     
     <p>Other views of the configuration information are available by
     appending a query to the <code>server-info</code> request. For
-    example, <code>http://your.host.dom/server-info?config</code>
+    example, <code>http://your.host.example.com/server-info?config</code>
     will show all configuration directives.</p>
     
     <dl>
