@@ -507,7 +507,6 @@ static int remove_job(void)
 
 static void win9x_accept(void * dummy)
 {
-    int requests_this_child = 0;
     struct timeval tv;
     fd_set main_fds;
     int wait_time = 1;
@@ -537,10 +536,6 @@ static void win9x_accept(void * dummy)
     head_listener = ap_listeners;
 
     while (!shutdown_in_progress) {
-        if (ap_max_requests_per_child && (requests_this_child > ap_max_requests_per_child)) {
-            break;
-	}
-
 	tv.tv_sec = wait_time;
 	tv.tv_usec = 0;
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
@@ -591,7 +586,6 @@ static void win9x_accept(void * dummy)
 	}
 	else {
 	    add_job(csd);
-	    requests_this_child++;
 	}
     }
     SetEvent(exit_event);
@@ -658,7 +652,6 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 static void winnt_accept(void *listen_socket) 
 {
     static int num_completion_contexts = 0;
-    static int requests_this_child = 0;
     PCOMP_CONTEXT pCompContext;
     DWORD BytesRead;
     SOCKET nlsd;
@@ -667,10 +660,7 @@ static void winnt_accept(void *listen_socket)
     nlsd = (SOCKET) listen_socket;
 
     while (!shutdown_in_progress) {
-        if (ap_max_requests_per_child && (requests_this_child > ap_max_requests_per_child)) {
-            SetEvent(max_requests_per_child_event);
-            break;
-	}
+
         pCompContext = NULL;
         /* Grab a context off the queue */
         apr_lock_acquire(qlock);
@@ -770,7 +760,7 @@ static void winnt_accept(void *listen_socket)
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
                                    &pCompContext->Overlapped);
-        requests_this_child++;
+
     }
 
     if (!shutdown_in_progress) {
@@ -780,7 +770,6 @@ static void winnt_accept(void *listen_socket)
 }
 static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
 {
-    int requests_this_child = 0;
     int rc;
     DWORD BytesRead;
     DWORD CompKey;
@@ -863,6 +852,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
  */
 static void worker_main(int thread_num)
 {
+    static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
     apr_os_sock_info_t sockinfo;
 
@@ -873,6 +863,7 @@ static void worker_main(int thread_num)
         ap_update_child_status(0, thread_num, SERVER_READY, 
                                (request_rec *) NULL);
 
+
         /* Grab a connection off the network */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
             context = win9x_get_connection(context);
@@ -880,9 +871,18 @@ static void worker_main(int thread_num)
         else {
             context = winnt_get_connection(context);
         }
-
-        if (!context)
+        if (!context) {
+            /* Time for the thread to exit */
             break;
+        }
+
+        /* Have we hit MaxRequestPerChild connections? */
+        if (ap_max_requests_per_child) {
+            requests_this_child++;
+            if (requests_this_child > ap_max_requests_per_child) {
+                SetEvent(max_requests_per_child_event);
+            }
+	}
 
         sockinfo.os_sock = &context->accept_socket;
         sockinfo.local   = context->sa_server;
