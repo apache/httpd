@@ -889,26 +889,35 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         }
     }
 
-    if (length > 0) {
-        int remain = length;
-        const char *ignore;
-
+    if (f->c->remain) {
+        int total = 0;
         e = AP_BRIGADE_FIRST(b);
+        len = length;
         while (e != AP_BRIGADE_SENTINEL(b)) {
+            const char *ignore;
             ap_bucket_read(e, &ignore, &len, 0);
-            if (remain <= len) {
+            if (total + len >= length) {
+                len = length - total;
+                total += len;
                 break;
             }
-            remain -= len;
+            total += len;
+            len = length - total;
             e = AP_BUCKET_NEXT(e);
         }
         if (e != AP_BRIGADE_SENTINEL(b)) {
-            if (remain <= len) {
-                ap_bucket_split(e, remain);
-                remain = 0;
+            ap_bucket *eos_bucket;
+            if (total >= length) {
+                ap_bucket_split(e, len);
+                total = length;
             }
             bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
             ctx->b = bb;
+            if (f->c->remain == 0) { 
+                eos_bucket = ap_bucket_create_eos();
+                AP_BUCKET_INSERT_AFTER(e, eos_bucket);
+            }
+            f->c->remain -= total;
             return APR_SUCCESS;
         }
         else {
@@ -2289,7 +2298,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
             return HTTP_BAD_REQUEST;
         }
 
-        r->remaining = atol(lenp);
+        r->connection->remain = r->remaining = atol(lenp);
     }
 
     if ((r->read_body == REQUEST_NO_BODY) &&
@@ -2403,24 +2412,27 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
 
-        if (len_to_read == 0) {
-            return 0;
-        }
         bb = ap_brigade_create(r->pool);
+
         do {
             if (AP_BRIGADE_EMPTY(bb)) {
-                apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
-                if (ap_get_brigade(r->input_filters, bb, len_to_read) != APR_SUCCESS) {
+                apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 
+                                 &timeout);
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
+                                 0);
+                if (ap_get_brigade(r->input_filters, bb, 
+                                   len_to_read) != APR_SUCCESS) {
                     /* if we actually fail here, we want to just return and
                      * stop trying to read data from the client.
                      */
-                    apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
+                    apr_setsocketopt(r->connection->client->bsock, 
+                                     APR_SO_TIMEOUT, timeout);
                     r->connection->keepalive = -1;
                     ap_brigade_destroy(bb);
                     return -1;
                 }
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
+                                 timeout);
             }
             b = AP_BRIGADE_FIRST(bb);
             
@@ -2434,20 +2446,45 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
         total = 0;
         do {
+            if (AP_BRIGADE_EMPTY(bb)) {
+                apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
+                                 &timeout);
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
+                                 0);
+                if (ap_get_brigade(r->input_filters, bb, 
+                                   len_to_read) != APR_SUCCESS) {
+                    /* if we actually fail here, we want to just return and
+                     * stop trying to read data from the client.
+                     */
+                    apr_setsocketopt(r->connection->client->bsock, 
+                                     APR_SO_TIMEOUT, timeout);
+                    r->connection->keepalive = -1;
+                    return -1;
+                }
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
+                                 timeout);
+            }
+            b = AP_BRIGADE_FIRST(bb);
+            if (b->type == ap_eos_type()) {
+                r->connection->remain = 0;
+                break;
+            }
             rv = ap_bucket_read(b, &tempbuf, &len_read, 0);
-            ap_debug_assert(total + len_read <= bufsiz); /* because we told the filter 
-                                                          * below us not to give us too much */
+
+            /* because we told the filter below us not to give us too much */
+            ap_debug_assert(total + len_read <= bufsiz);
             ap_debug_assert(r->remaining >= len_read);
             memcpy(buffer, tempbuf, len_read);
             buffer += len_read;
             r->read_length += len_read;
             total += len_read;
+
             r->remaining -= len_read;
+
             old = b;
-            b = AP_BUCKET_NEXT(b);
             AP_BUCKET_REMOVE(old);
             ap_bucket_destroy(old);
-        } while (b != AP_BRIGADE_SENTINEL(bb));
+        } while (!AP_BRIGADE_EMPTY(bb));
         ap_brigade_destroy(bb);
         return total;
     }

@@ -906,6 +906,9 @@ struct conn_rec {
     /** A list of output filters to be used for this connection
      *  @defvar ap_filter_t *filters */
     struct ap_filter_t *output_filters;
+    /** The length of the current request body
+     *  @defvar long remain */
+    long remain;
 };
 
 /* Per-vhost config... */
