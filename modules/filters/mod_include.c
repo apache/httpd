@@ -853,20 +853,20 @@ static int include_cmd(char *s, request_rec *r)
         (ap_setprocattr_io(procattr, APR_NO_PIPE, 
                            APR_FULL_BLOCK, APR_NO_PIPE) != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
-        (ap_setprocattr_cmdtype(procattr, APR_PROGRAM) != APR_SUCCESS)) {
+        (ap_setprocattr_cmdtype(procattr, APR_SHELLCMD) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-		      "couldn't create child process: %s", r->filename);
+            "couldn't initialize proc attributes: %s %s", r->filename, s);
         rc = !APR_SUCCESS;
     }
     else {
         build_argv_list(&argv, r, r->pool);
-        rc = ap_create_process(&procnew, r->filename, argv, ap_create_environment(r->pool, env), procattr, r->pool);
+        rc = ap_create_process(&procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
 
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-                        "couldn't create child process: %d: %s", rc, r->filename);
+                        "couldn't create child process: %d: %s", rc, s);
         }
         else {
             ap_note_subprocess(r->pool, procnew, kill_after_timeout);
