@@ -3450,11 +3450,14 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	struct accept_filter_arg af = {
 	    ACCEPT_FILTER_NAME, ""
 	};
-	if ((setsockopt(s, SOL_SOCKET, SO_ACCEPTFILTER, &af, sizeof(af)) < 0)
-            && (errno != ENOENT) && (errno != ENOPROTOOPT)) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
-			 "make_sock: for %s, setsockopt: (SO_ACCEPTFILTER)",
-			 addr);
+	if (setsockopt(s, SOL_SOCKET, SO_ACCEPTFILTER, &af, sizeof(af)) < 0) {
+            if (errno == ENOPROTOOPT) {
+	    	ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, server_conf,
+			 "socket option SO_ACCEPTFILTER unkown on this machine. Continuing.");
+	     } else {
+	    	ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_INFO, server_conf,
+			 "make_sock: for %s, setsockopt: (SO_ACCEPTFILTER)", addr);
+	     }
 	}
     }
 #endif
