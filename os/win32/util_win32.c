@@ -65,7 +65,7 @@
 #include "httpd.h"
 #include "http_log.h"
 
-/* Returns APR_TRUE if the input string is a string
+/* Returns TRUE if the input string is a string
  * of one or more '.' characters.
  */
 static BOOL OnlyDots(char *pString)
@@ -73,13 +73,13 @@ static BOOL OnlyDots(char *pString)
     char *c;
 
     if (*pString == '\0')
-        return APR_FALSE;
+        return FALSE;
 
     for (c = pString;*c;c++)
         if (*c != '.')
-            return APR_FALSE;
+            return FALSE;
 
-    return APR_TRUE;
+    return TRUE;
 }
 
 /* Accepts as input a pathname, and tries to match it to an 
@@ -93,8 +93,8 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool,
     char buf[HUGE_STRING_LEN];
     char *pInputName;
     char *p, *q;
-    BOOL bDone = APR_FALSE;
-    BOOL bFileExists = APR_TRUE;
+    BOOL bDone = FALSE;
+    BOOL bFileExists = TRUE;
     HANDLE hFind;
     WIN32_FIND_DATA wfd;
 
@@ -119,7 +119,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool,
 
         /* If all we have is a drive letter, then we are done */
         if (strlen(pInputName) == 2)
-            bDone = APR_TRUE;
+            bDone = TRUE;
     }
     
     q = p;
@@ -156,7 +156,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool,
             *p = '\0';
 
         if (strchr(q, '*') || strchr(q, '?'))
-            bFileExists = APR_FALSE;
+            bFileExists = FALSE;
 
         /* If the path exists so far, call FindFirstFile
          * again.  However, if this portion of the path contains
@@ -169,7 +169,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool,
             hFind = FindFirstFile(pInputName, &wfd);
             
             if (hFind == INVALID_HANDLE_VALUE) {
-                bFileExists = APR_FALSE;
+                bFileExists = FALSE;
             }
             else {
                 FindClose(hFind);
@@ -190,7 +190,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool,
             p = strchr(p, '\\');
         }
         else {
-            bDone = APR_TRUE;
+            bDone = TRUE;
         }
     }
     
