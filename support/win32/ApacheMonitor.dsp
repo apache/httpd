@@ -132,19 +132,20 @@ SOURCE=..\..\build\win32\win32ver.awk
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\ApacheMonitorVersion.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > .\ApacheMonitorVersion.rc
+".\ApacheMonitor.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.rc
+	copy ApacheMonitor.rc + ApacheMonitor.rc.in
 
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
 
-# PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\ApacheMonitorVersion.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > .\ApacheMonitorVersion.rc
+".\ApacheMonitor.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.rc
+	copy ApacheMonitor.rc + ApacheMonitor.rc.in
 
 # End Custom Build
 
