@@ -67,7 +67,7 @@ NCSA's httpd as the #1 server on the Internet.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 1 August 1997:
+Current Apache Group in alphabetical order as of 1 November 1997:
 
    Brian Behlendorf       Organic Online, California 
    Ken Coar               Process Software Corporation, New England, USA 
@@ -78,6 +78,7 @@ Current Apache Group in alphabetical order as of 1 August 1997:
    Rob Hartill            Internet Movie DB, UK 
    Jim Jagielski          jaguNET ISP, Maryland 
    Alexei Kosut           Stanford University, California 
+   Martin Kraemer         Munich, Germany
    Ben Laurie             Freelance Consultant, UK 
    Chuck Murcko           The Topsail Group, Pennsylvania 
    Doug MacEachern        TOG Research Institute, Massachusetts
@@ -114,9 +115,8 @@ Hundreds of people have made individual contributions to the Apache
 project.  Patch contributors are listed in the src/CHANGES file.
 Frequent contributors have included Petr Lampa, Tom Tromey,
 James H. Cloos Jr., Ed Korthof, Nathan Neulinger, Jason S. Clary,
-Jason A. Dour, Michael Douglass, Tony Sanders, Martin Kraemer,
-Brian Tao, Michael Smith, Adam Sussman, Nathan Schrenk, Matthew Gray,
-and John Heidemann.
+Jason A. Dour, Michael Douglass, Tony Sanders, Brian Tao, Michael Smith,
+Adam Sussman, Nathan Schrenk, Matthew Gray, and John Heidemann.
 
  ============================================================================
 
