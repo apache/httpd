@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) mod_userdir: Ensure that the userdir identity is used for
+     suexec userdir access in a virtual host which has suexec configured.  
+     PR 18156.  [Joshua Slive]
+
   *) mod_rewrite no longer confuses the RewriteMap caches if
      different maps defined in different virtual hosts use the
      same map name. PR 26462.  [André Malo]
