@@ -284,7 +284,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
                                       const char *cgiprg, const char *cgiargs)
 {
     apr_array_header_t *args = apr_array_make(p, 8, sizeof(char*));
-    char *d = apr_palloc(p, strlen(interp));
+    char *d = apr_palloc(p, strlen(interp)+1);
     const char *ch = interp; 
     const char **arg;
     int prgtaken = 0;
