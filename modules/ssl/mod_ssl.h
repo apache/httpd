@@ -107,6 +107,7 @@
 #include "apr_fnmatch.h"
 #include "apr_strings.h"
 #include "apr_dbm.h"
+#include "apr_optional.h"
 
 /* OpenSSL headers */
 #include <ssl.h>
@@ -685,6 +686,11 @@ void         ssl_die(void);
 void         ssl_var_register(void);
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 void         ssl_var_log_config_register(apr_pool_t *p);
+
+APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
+                        (apr_pool_t *, server_rec *,
+                         conn_rec *, request_rec *,
+                         char *));
 
 /*  Proxy Extensions  */
 #if 0 /* XXX */
