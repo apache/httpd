@@ -19,17 +19,61 @@ Plan:
 Showstoppers:
 
 Committed Code Changes:
+    * Dean's `const'-change to os_is_path_absolute().
+    * Security patch for "UserDir /abspath" without a * in the path. PR#1701
+    * Dean's cleanup of race conditions in Unix child_main
+    * Dean's fixes for better handling of various errors from select() and
+      accept() in child_main(). PR#1747, 1107, 588, 1787, 987, 588
+    * Dean's add of -lm to LIBS for HPUX. PR#1639
+    * Ralf's remove of obsolete "dist.tar" target from Makefile.tmpl
+    * Dean's fixes for some inconsistencies in <Files> semantics. PR#1817
+    * Dean's <Files> is not permitted within <Location>. PR#379
+    * Dean's and Martin's fix of </Files> 
+    * Fix for mod_mime_magic error messages. PR#1827
+    * Workaround for using RLIMIT_AS for the RLimitMEM directive. PR#1816
+    * Doug's patch to bind a process to a single processor under AIX
+    * Martin's patch for mod_info to fix HTML markup
+    * Martin's changes to the check_cmd_context() function 
+    * Patch for the ap_cpystrn() off-by-1 error
+    * Dean's fix for multiple UserDir problem introduced during 1.3b4-dev.
+    * Dean's fix to problems with absoluteURIs.
+    * Dean's patch to use SA_RESETHAND or SA_ONESHOT for coredump handlers.
+    * Patch to recognize FreeBSD versions. PR#1450
+    * Workaround in mod_status for NeXT's running not m68k chips
+    * Fix for -X situation to honor the SIGINT or SIGQUIT signals
+    * Patch to hide Proxy-Authorization from CGI/SSI/etc
+    * Ralf's new ProxyPassReverse directive for mod_proxy
+    * Ralf's add of new RewriteMap types: rnd and int. PR#1631
+    * Fix regex handling for mod_setenvif BrowserMatch command. PR#1825
+    * Ralf's fix for assumptions on the username characters in mod_rewrite
+    * Paul's merge of os/win32/mod_dll.c into modules/standard/mod_so.c
+    * Paul's patch for reading the server-root from the NT registry
+    * Ralf's fix for locking of `RewriteMap' programs. PR#1029
+    * Dean's fix for the `config with no Port setting' situation
+    * Ralf's fix for `RewriteMap' program handling. PR#1431
+    * Ralf's fix for the initialization of RewriteLogLevel. PR#1325
+    * Ralf's mod_rewrite meta-construct expansion inconsistency fix
+    * Martin's new URI parsing stuff (the source module main/util_uri.c)
+    * New `%a' construct for LogFormat and CustomLog. PR#1885
+    * Ralf's `Rule HIDE' feature for hiding the symbol namespace
+    * Make \\ behave as expected.
+    * Fix for "poly" directive in image maps. PR#1771
+    * Reduce memory usage, and speed up ServerAlias support. PR#1531
+    * Dean's cleanup of code in http_vhost.c and vhost-stuff in mod_rewrite.c
+    * Dean's rewrite of absoluteURI handling vhost matching
+    * Dean's new mod_test_util_uri.c 
 
 Available Patches:
 
-    * Ralf's [PATCH] Config File Line Continuation (take 2)
-        <199802281601.RAA02379@en1.engelschall.com>
+    * Ralf's [PATCH] Config File Line Continuation (take 3)
+        <199803020910.KAA12793@en1.engelschall.com>
         (this version uses strict matching of the backslash, i.e.  no trailing
         spaces are allowed - this should be now avoid problems)
         Status: Ralf +1
                 Martin +1 (on concept)
-                Dean +1   (on concept)
-                Dean -1?  (because of RAW_ARGS issues)
+                Dean +1 (on concept, but -1? because of RAW_ARGS issues?)
+		Dirk-Willem van Gulik +1
+		Jim +1
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
@@ -47,6 +91,7 @@ Concepts:
                 Jim +1    (for 1.3.1 on concept)
                 Jim -1    (for 1.3.0 because too late)
                 Randy -1  (too late for 1.3 in general)
+                Ken -1    (for 1.3.0 in general)
 
     * Dean's [PRE-PATCH] expanding ap_snprintf()
 	<Pine.LNX.3.95dg3.971023233600.4431I-100000@twinlark.arctic.org>
