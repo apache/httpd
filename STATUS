@@ -28,6 +28,8 @@ Showstoppers:
 
 Committed Code Changes:
 
+    * Paul's [PATCH] to build shared modules with "SharedModule" command
+    * Sameer's mod_so.c to dynamically load modules (experimental)
     * Ben Hyde's [PATCH] fix mmap error conditions again
     * [PATCH] Fix problems with timeouts in inetd mode and -X mode
     * Marc's [PATCH] fix strtoul
@@ -272,13 +274,6 @@ Open issues:
 
       should be non-static and in util_* so modules can use 'em.  (He
       didn't notice this flaw during the review.)
-
-    * Sameer's mod_so implemetation
-	See <199711092016.MAA17039@gabber.c2.net>
-	Issues: Underscores: Should I try prepending, appending, and
-	 ignoring? -> Alexei says look at Java
-	 Location? os/unix ??
-	Dean +1
 
     * 206 vs. 200 issue on Content-Length
 	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
