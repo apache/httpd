@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/09 02:51:07 $]
+Last modified at [$Date: 2001/07/12 03:50:19 $]
 
 Release:
 
@@ -105,21 +105,7 @@ RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
 
-    * cgi on all platforms is broken.  Specifically, with the addition of 
-      filters, we have lost the ability to flush partially written buffers
-      received from CGI scripts to the network. Apache 1.3 does a 
-      non-blocking read on the pipe from the CGI. If bytes are present,
-      Apache 1.3 keeps reading until one of three conditions are
-      hit: 
-      1. output buffer fills up (Apache should flush to network)
-      2. receives an EOF on the pipe (ditto & cleanup)
-      3. receives EWOULDBLOCK on the non-blocking read
-      In case 3, Apache should flush the network buffer then do a
-      blocking read on the pipe. Apache 2.0 always does a blocking read
-      (in the content length filter), thus never gets the chance to
-      flush the network i/o buffer.
-      
-    * Rotatelogs on Windows sometimes is not terminated when Apache
+    * Win32: Rotatelogs sometimes is not terminated when Apache
       goes down hard. When this occurs, Apache will not serve requests
       after it is restarted. The problem is that the old rotatelogs
       is holding the listening socket. netstat -an shows two listeners
@@ -135,21 +121,6 @@ RELEASE SHOWSTOPPERS:
     * Root all file systems with <Directory /> for WIN32/OS2/NW permissions 
         Status: patch brought forward from 1.3.14
                 WIN32 and OS2 need review [William Rowe, Brian Harvard]
-
-    * Win32: Get Apache working on Windows 95/98. The following work
-	(at least) needs to be done:
-	- winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
-	specific code that is still not in NT only code paths
-	- IOL binds to APR sendfile, implemented with TransmitFile, which 
-        is not available on 95/98.
-        - Document warning that OSR2 is required (for Crypt functions, in
-        rand.c, at least.)
-
-    * Win32: Test access logging with multiple threads. Will the 
-	native file I/O calls serialize automagically like the 
-	CRT calls or do we need to add region locking each time 
-	we access the logs?
-	Status: 
 
     * Win32: Complete the revamp the service environment and relocation
         into the WinNT MPM.  Changes ServerRoot service registry 
@@ -205,6 +176,15 @@ RELEASE SHOWSTOPPERS:
       directive.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Win32: Get Apache working on Windows 95/98. The following work
+	(at least) needs to be done:
+	- winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
+	specific code that is still not in NT only code paths
+	- IOL binds to APR sendfile, implemented with TransmitFile, which 
+        is not available on 95/98.
+        - Document warning that OSR2 is required (for Crypt functions, in
+        rand.c, at least.)
 
     * Port of mod_ssl to Apache 2.0:
 
