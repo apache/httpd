@@ -213,7 +213,7 @@ progname=$progname
 
 AC_TYPE_RLIM_T
 
-perlbin=`./helpers/PrintPath perl`
+perlbin=`$srcdir/helpers/PrintPath perl`
 AC_SUBST(perlbin)
 
 AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs)
