@@ -1731,50 +1731,6 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
                         "file %s";
         }
 
-        if (!error_fmt) {
-            int founddupe = 0;
-            request_rec *p, *q;
-
-            /* try to avoid recursive includes.  We do this by walking
-             * up the r->main list of subrequests, and at each level
-             * walking back through any internal redirects.  At each
-             * step, we compare the filenames and the URIs.  
-             *
-             * The filename comparison catches a recursive include
-             * with an ever-changing URL, eg.
-             * <!--#include virtual=
-             *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x" -->
-             * which, although they would eventually be caught because
-             * we have a limit on the length of files, etc., can 
-             * recurse for a while.
-             *
-             * The URI comparison catches the case where the filename
-             * is changed while processing the request, so the 
-             * current name is never the same as any previous one.
-             * This can happen with "DocumentRoot /foo" when you
-             * request "/" on the server and it includes "/".
-             * This only applies to modules such as mod_dir that 
-             * (somewhat improperly) mess with r->filename outside 
-             * of a filename translation phase.
-             */
-             for (p = r; p && !founddupe; p = p->main) {
-                for (q = p; q; q = q->prev) {
-                    if ((q->filename && rr->filename && 
-                        (strcmp(q->filename, rr->filename) == 0)) ||
-                        ((*q->uri == '/') && 
-                        (strcmp(q->uri, rr->uri) == 0))) {
-
-                        founddupe = 1;
-                        break;
-                    }
-                }
-            }
-
-            if (p) {
-                error_fmt = "Recursive include of \"%s\" in parsed file %s";
-            }
-        }
-
         /* See the Kludge in includes_filter for why.
          * Basically, it puts a bread crumb in here, then looks
          * for the crumb later to see if its been here.
