@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/21 22:20:20 $]
+Last modified at [$Date: 2003/01/22 16:22:05 $]
 
 Release:
 
@@ -76,11 +76,6 @@ PATCHES TO PORT FROM 2.1
       -1: brianp (we need a more robust solution than what's in 2.1 right now),
           jerenkrantz (should be fixed, but I don't have time to do this)
 
-    * Insure that ap_get_mime_headers passes a null terminated string
-      to ap_escape_html if ap_rgetline exits abnormally (e.g. header too long).
-      The patch is r1.123 thru r1.125 of server/protocol.c.
-      +1: gregames, trawick, jerenkrantz, nd
-
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
@@ -99,13 +94,13 @@ CURRENT VOTES:
     * APACHE_2_0_BRANCH *has* to work with an official stable version 
       of APR (i.e., 1.0).
       yes:
-      no:   trawick, jerenkrantz, wrowe, stoddard, striker, nd
+      no:   trawick, jerenkrantz, wrowe, stoddard, striker, nd, gregames
         wrowe adds it's nice if we *can* compile against it, but as
         a matter of a practical tarball or binary release, don't.
 
     * APACHE_2_0_BRANCH uses a level of apr and apr-util code branched
       from the APACHE_2_0_44 tag.
-      yes:   trawick, jerenkrantz, striker, nd
+      yes:   trawick, jerenkrantz, striker, nd, gregames
         (but nd doesn't branch anything in apr repos)
       no:    wrowe
         (objection remains the same, APR 0.9 is pretty much in 'bugfix'
@@ -125,7 +120,8 @@ CURRENT VOTES:
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
-       R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker, nd
+       R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker, nd,
+                gregames(lazy consensus OK for mainline)
        Abstain: 
        C-T-R:   BrianP, aaron, jim
 

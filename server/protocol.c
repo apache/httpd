@@ -766,18 +766,17 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         int folded = 0;
 
         field = NULL;
-        rv = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
+        rv = ap_rgetline(&field, r->server->limit_req_fieldsize + 2,
                          &len, r, 0, bb);
 
         /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before
          * finding the end-of-line.  This is only going to happen if it
          * exceeds the configured limit for a field size.
-         * The cast is safe, limit_req_fieldsize cannot be negative
          */
-        if (rv == APR_ENOSPC
-            || (rv == APR_SUCCESS 
-                && len > (apr_size_t)r->server->limit_req_fieldsize)) {
+        if (rv == APR_ENOSPC && field) {
             r->status = HTTP_BAD_REQUEST;
+            /* insure ap_escape_html will terminate correctly */
+            field[len - 1] = '\0';
             apr_table_setn(r->notes, "error-notes",
                            apr_pstrcat(r->pool,
                                        "Size of a request header field "
