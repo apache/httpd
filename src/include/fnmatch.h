@@ -44,9 +44,9 @@
 #define	FNM_PATHNAME	0x02	/* Slash must be matched by slash. */
 #define	FNM_PERIOD	0x04	/* Period must be matched by period. */
 
-int	 fnmatch (const char *, const char *, int);
+int fnmatch(const char *, const char *, int);
 
 /* this function is an Apache addition */
-extern int is_fnmatch (const char *);
+extern int is_fnmatch(const char *);
 
 #endif /* !_FNMATCH_H_ */

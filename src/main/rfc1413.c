@@ -72,10 +72,10 @@
 
 /* Rewritten by David Robinson */
 
-#include "httpd.h"    /* for server_rec, conn_rec, ap_longjmp, etc. */
-#include "http_log.h" /* for aplog_error */
+#include "httpd.h"		/* for server_rec, conn_rec, ap_longjmp, etc. */
+#include "http_log.h"		/* for aplog_error */
 #include "rfc1413.h"
-#include "http_main.h" /* set_callback_and_alarm */
+#include "http_main.h"		/* set_callback_and_alarm */
 
 /* Local stuff. */
 /* Semi-well-known port */
@@ -88,24 +88,23 @@
 #ifndef RFC1413_TIMEOUT
 #define RFC1413_TIMEOUT	30
 #endif
-#define	ANY_PORT	0		/* Any old port will do */
+#define	ANY_PORT	0	/* Any old port will do */
 #define FROM_UNKNOWN  "unknown"
 
-int rfc1413_timeout = RFC1413_TIMEOUT;  /* Global so it can be changed */
+int rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
 
 JMP_BUF timebuf;
 
 /* bind_connect - bind both ends of a socket */
 /* Ambarish fix this. Very broken */
-static int
-get_rfc1413(int sock, const struct sockaddr_in *our_sin,
-	  const struct sockaddr_in *rmt_sin, char user[256], server_rec *srv)
+static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
+	 const struct sockaddr_in *rmt_sin, char user[256], server_rec *srv)
 {
     struct sockaddr_in rmt_query_sin, our_query_sin;
     unsigned int rmt_port, our_port;
     int i;
     char *cp;
-    char buffer[RFC1413_MAXDATA+1];
+    char buffer[RFC1413_MAXDATA + 1];
 
     /*
      * Bind the local and remote ends of the query socket to the same
@@ -121,9 +120,8 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     rmt_query_sin = *rmt_sin;
     rmt_query_sin.sin_port = htons(RFC1413_PORT);
 
-    if (bind(sock, (struct sockaddr *)&our_query_sin,
-	     sizeof(struct sockaddr_in)) < 0)
-    {
+    if (bind(sock, (struct sockaddr *) &our_query_sin,
+	     sizeof(struct sockaddr_in)) < 0) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
 		    "bind: rfc1413: Error binding to local port", srv);
 	return -1;
@@ -133,14 +131,15 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
  * errors from connect usually imply the remote machine doesn't support
  * the service
  */
-    if (connect(sock, (struct sockaddr *)&rmt_query_sin,
+    if (connect(sock, (struct sockaddr *) &rmt_query_sin,
 		sizeof(struct sockaddr_in)) < 0)
-	return -1;
+	            return -1;
 
 /* send the data */
     ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", ntohs(rmt_sin->sin_port),
-	    ntohs(our_sin->sin_port));
-    do i = write(sock, buffer, strlen(buffer));
+		ntohs(our_sin->sin_port));
+    do
+	i = write(sock, buffer, strlen(buffer));
     while (i == -1 && errno == EINTR);
     if (i == -1) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
@@ -152,8 +151,9 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
      * Read response from server. We assume that all the data
      * comes in a single packet.
      */
-    
-    do i = read(sock, buffer, RFC1413_MAXDATA);
+
+    do
+	i = read(sock, buffer, RFC1413_MAXDATA);
     while (i == -1 && errno == EINTR);
     if (i == -1) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
@@ -165,30 +165,30 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 /* RFC1413_USERLEN = 512 */
     if (sscanf(buffer, "%u , %u : USERID :%*[^:]:%512s", &rmt_port, &our_port,
 	       user) != 3 || ntohs(rmt_sin->sin_port) != rmt_port
-	|| ntohs(our_sin->sin_port) != our_port) return -1;
+	|| ntohs(our_sin->sin_port) != our_port)
+	return -1;
 
     /*
      * Strip trailing carriage return. It is part of the
      * protocol, not part of the data.
      */
-    
-    if ((cp = strchr(user, '\r'))) *cp = '\0';
+
+    if ((cp = strchr(user, '\r')))
+	*cp = '\0';
 
     return 0;
 }
 
 /* ident_timeout - handle timeouts */
-static void
-ident_timeout(int sig)
+static void ident_timeout(int sig)
 {
     ap_longjmp(timebuf, sig);
 }
 
 /* rfc1413 - return remote user name, given socket structures */
-char *
-rfc1413(conn_rec *conn, server_rec *srv)
+char *rfc1413(conn_rec *conn, server_rec *srv)
 {
-    static char user[RFC1413_USERLEN+1]; /* XXX */
+    static char user[RFC1413_USERLEN + 1];	/* XXX */
     static char *result;
     static int sock;
 
@@ -205,8 +205,8 @@ rfc1413(conn_rec *conn, server_rec *srv)
      * Set up a timer so we won't get stuck while waiting for the server.
      */
     if (ap_setjmp(timebuf) == 0) {
-        set_callback_and_alarm(ident_timeout, rfc1413_timeout);
-	
+	set_callback_and_alarm(ident_timeout, rfc1413_timeout);
+
 	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user, srv) >= 0)
 	    result = user;
 
