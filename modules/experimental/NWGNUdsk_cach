@@ -30,7 +30,6 @@ XINCDIRS	+= \
 			$(AP_WORK)/os/NetWare \
 			$(AP_WORK)/server/mpm/NetWare \
 			$(AP_WORK)/srclib/pcre \
-			../main \
 			$(NWOS) \
 			$(EOLIST)
 
@@ -220,12 +219,7 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	@$(APR)/aprlib.imp \
 	@httpd.imp \
-	generate_name \
-	ap_cache_hex2usec \
-	ap_cache_usec2hex \
-	cache_hook_create_entity \
-	cache_hook_open_entity \
-	cache_hook_remove_url \
+	@mod_cache.imp \
 	$(EOLIST)
  
 #   

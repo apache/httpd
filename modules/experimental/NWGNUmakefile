@@ -152,7 +152,6 @@ XDCDATA         =
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/deflate.nlm \
 	$(OBJDIR)/example.nlm \
 	$(OBJDIR)/mod_cach.nlm \
 	$(OBJDIR)/mem_cach.nlm \
