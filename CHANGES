@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ssl_toolkit_compat.h and code fixes to build clean on SSLC.
+     [William Rowe, Madhusudan Mathihalli]
+
   *) Fix the inability to log errors like exec failure in
      mod_ext_filter/mod_cgi script children.  This was broken after 
      such children stopped inheriting the error log handle.  
