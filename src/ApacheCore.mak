@@ -76,6 +76,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_env.obj"
 	-@erase "$(INTDIR)\mod_imap.obj"
 	-@erase "$(INTDIR)\mod_include.obj"
+	-@erase "$(INTDIR)\mod_isapi.obj"
 	-@erase "$(INTDIR)\mod_log_config.obj"
 	-@erase "$(INTDIR)\mod_mime.obj"
 	-@erase "$(INTDIR)\mod_negotiation.obj"
@@ -143,6 +144,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
+	"$(INTDIR)\mod_isapi.obj" \
 	"$(INTDIR)\mod_log_config.obj" \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
@@ -232,6 +234,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_imap.sbr"
 	-@erase "$(INTDIR)\mod_include.obj"
 	-@erase "$(INTDIR)\mod_include.sbr"
+	-@erase "$(INTDIR)\mod_isapi.obj"
+	-@erase "$(INTDIR)\mod_isapi.sbr"
 	-@erase "$(INTDIR)\mod_log_config.obj"
 	-@erase "$(INTDIR)\mod_log_config.sbr"
 	-@erase "$(INTDIR)\mod_mime.obj"
@@ -306,6 +310,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_env.sbr" \
 	"$(INTDIR)\mod_imap.sbr" \
 	"$(INTDIR)\mod_include.sbr" \
+	"$(INTDIR)\mod_isapi.sbr" \
 	"$(INTDIR)\mod_log_config.sbr" \
 	"$(INTDIR)\mod_mime.sbr" \
 	"$(INTDIR)\mod_negotiation.sbr" \
@@ -361,6 +366,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
+	"$(INTDIR)\mod_isapi.obj" \
 	"$(INTDIR)\mod_log_config.obj" \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
@@ -443,6 +449,11 @@ DEP_CPP_ALLOC=\
 	".\multithread.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_ALLOC=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\alloc.obj"	"$(INTDIR)\alloc.sbr" : $(SOURCE) $(DEP_CPP_ALLOC)\
@@ -478,6 +489,11 @@ DEP_CPP_BUFF_=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_BUFF_=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\buff.obj"	"$(INTDIR)\buff.sbr" : $(SOURCE) $(DEP_CPP_BUFF_)\
@@ -549,6 +565,11 @@ DEP_CPP_HTTP_=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_HTTP_=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\http_bprintf.obj"	"$(INTDIR)\http_bprintf.sbr" : $(SOURCE)\
@@ -594,6 +615,11 @@ DEP_CPP_HTTP_C=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_HTTP_C=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\http_config.obj"	"$(INTDIR)\http_config.sbr" : $(SOURCE)\
@@ -647,6 +673,11 @@ DEP_CPP_HTTP_CO=\
 	".\rfc1413.h"\
 	".\scoreboard.h"\
 	".\util_md5.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_HTTP_CO=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\http_core.obj"	"$(INTDIR)\http_core.sbr" : $(SOURCE)\
@@ -686,6 +717,11 @@ DEP_CPP_HTTP_L=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_HTTP_L=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\http_log.obj"	"$(INTDIR)\http_log.sbr" : $(SOURCE) $(DEP_CPP_HTTP_L)\
@@ -743,6 +779,11 @@ DEP_CPP_HTTP_M=\
 	".\nt\service.h"\
 	".\regex\regex.h"\
 	".\scoreboard.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_HTTP_M=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\http_main.obj"	"$(INTDIR)\http_main.sbr" : $(SOURCE)\
@@ -788,6 +829,11 @@ DEP_CPP_HTTP_P=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_date.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_HTTP_P=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\http_protocol.obj"	"$(INTDIR)\http_protocol.sbr" : $(SOURCE)\
@@ -835,6 +881,11 @@ DEP_CPP_HTTP_R=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\scoreboard.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_HTTP_R=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\http_request.obj"	"$(INTDIR)\http_request.sbr" : $(SOURCE)\
@@ -862,6 +913,8 @@ DEP_CPP_MD5C_=\
 	".\conf.h"\
 	".\md5.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 
 "$(INTDIR)\md5c.obj"	"$(INTDIR)\md5c.sbr" : $(SOURCE) $(DEP_CPP_MD5C_)\
@@ -903,6 +956,11 @@ DEP_CPP_MOD_A=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_A=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_access.obj"	"$(INTDIR)\mod_access.sbr" : $(SOURCE)\
@@ -950,6 +1008,11 @@ DEP_CPP_MOD_AC=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_AC=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_actions.obj"	"$(INTDIR)\mod_actions.sbr" : $(SOURCE)\
@@ -985,6 +1048,11 @@ DEP_CPP_MOD_AL=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_AL=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_alias.obj"	"$(INTDIR)\mod_alias.sbr" : $(SOURCE)\
@@ -1030,6 +1098,11 @@ DEP_CPP_MOD_AS=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_AS=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_asis.obj"	"$(INTDIR)\mod_asis.sbr" : $(SOURCE) $(DEP_CPP_MOD_AS)\
@@ -1071,6 +1144,11 @@ DEP_CPP_MOD_AU=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_AU=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_auth.obj"	"$(INTDIR)\mod_auth.sbr" : $(SOURCE) $(DEP_CPP_MOD_AU)\
@@ -1118,6 +1196,11 @@ DEP_CPP_MOD_AUT=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_AUT=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_autoindex.obj"	"$(INTDIR)\mod_autoindex.sbr" : $(SOURCE)\
@@ -1153,6 +1236,11 @@ DEP_CPP_MOD_B=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_B=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_browser.obj"	"$(INTDIR)\mod_browser.sbr" : $(SOURCE)\
@@ -1202,6 +1290,11 @@ DEP_CPP_MOD_C=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_C=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_cgi.obj"	"$(INTDIR)\mod_cgi.sbr" : $(SOURCE) $(DEP_CPP_MOD_C)\
@@ -1249,6 +1342,11 @@ DEP_CPP_MOD_D=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_D=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_dir.obj"	"$(INTDIR)\mod_dir.sbr" : $(SOURCE) $(DEP_CPP_MOD_D)\
@@ -1285,6 +1383,11 @@ DEP_CPP_MOD_DL=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_DL=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_dll.obj"	"$(INTDIR)\mod_dll.sbr" : $(SOURCE) $(DEP_CPP_MOD_DL)\
@@ -1321,6 +1424,11 @@ DEP_CPP_MOD_E=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_E=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_env.obj"	"$(INTDIR)\mod_env.sbr" : $(SOURCE) $(DEP_CPP_MOD_E)\
@@ -1368,6 +1476,11 @@ DEP_CPP_MOD_I=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_I=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_imap.obj"	"$(INTDIR)\mod_imap.sbr" : $(SOURCE) $(DEP_CPP_MOD_I)\
@@ -1415,10 +1528,55 @@ DEP_CPP_MOD_IN=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_IN=\
+	".\config.h"\
+	".\modules\perl\mod_perl.h"\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_include.obj"	"$(INTDIR)\mod_include.sbr" : $(SOURCE)\
  $(DEP_CPP_MOD_IN) "$(INTDIR)"
+
+
+!ENDIF 
+
+SOURCE=.\nt\mod_isapi.c
+DEP_CPP_MOD_IS=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\regex\regex.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_IS=\
+	".\sfio.h"\
+	
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+
+"$(INTDIR)\mod_isapi.obj" : $(SOURCE) $(DEP_CPP_MOD_IS) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+
+"$(INTDIR)\mod_isapi.obj"	"$(INTDIR)\mod_isapi.sbr" : $(SOURCE)\
+ $(DEP_CPP_MOD_IS) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ENDIF 
@@ -1452,6 +1610,11 @@ DEP_CPP_MOD_L=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_L=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_log_config.obj"	"$(INTDIR)\mod_log_config.sbr" : $(SOURCE)\
@@ -1489,6 +1652,11 @@ DEP_CPP_MOD_M=\
 	".\mod_mime.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_M=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_mime.obj"	"$(INTDIR)\mod_mime.sbr" : $(SOURCE) $(DEP_CPP_MOD_M)\
@@ -1532,6 +1700,11 @@ DEP_CPP_MOD_N=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_N=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_negotiation.obj"	"$(INTDIR)\mod_negotiation.sbr" : $(SOURCE)\
@@ -1567,6 +1740,11 @@ DEP_CPP_MOD_U=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_U=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\mod_userdir.obj"	"$(INTDIR)\mod_userdir.sbr" : $(SOURCE)\
@@ -1603,6 +1781,11 @@ DEP_CPP_MODUL=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MODUL=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\modules.obj"	"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL)\
@@ -1632,6 +1815,8 @@ DEP_CPP_MULTI=\
 	".\conf.h"\
 	".\multithread.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 
 "$(INTDIR)\multithread.obj"	"$(INTDIR)\multithread.sbr" : $(SOURCE)\
@@ -1642,12 +1827,12 @@ DEP_CPP_MULTI=\
 !ENDIF 
 
 SOURCE=.\nt\readdir.c
-DEP_CPP_READD=\
-	".\nt\readdir.h"\
-	
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
+DEP_CPP_READD=\
+	".\nt\readdir.h"\
+	
 
 "$(INTDIR)\readdir.obj" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1655,6 +1840,10 @@ DEP_CPP_READD=\
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
+DEP_CPP_READD=\
+	".\nt\readdir.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
 
 "$(INTDIR)\readdir.obj"	"$(INTDIR)\readdir.sbr" : $(SOURCE) $(DEP_CPP_READD)\
  "$(INTDIR)"
@@ -1694,6 +1883,11 @@ DEP_CPP_RFC14=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\rfc1413.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_RFC14=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\rfc1413.obj"	"$(INTDIR)\rfc1413.sbr" : $(SOURCE) $(DEP_CPP_RFC14)\
@@ -1724,6 +1918,8 @@ DEP_CPP_SERVI=\
 	".\multithread.h"\
 	".\nt\service.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 
 "$(INTDIR)\service.obj"	"$(INTDIR)\service.sbr" : $(SOURCE) $(DEP_CPP_SERVI)\
@@ -1760,6 +1956,11 @@ DEP_CPP_UTIL_=\
 	".\httpd.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_UTIL_=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\util.obj"	"$(INTDIR)\util.sbr" : $(SOURCE) $(DEP_CPP_UTIL_)\
@@ -1787,6 +1988,8 @@ DEP_CPP_UTIL_D=\
 	".\conf.h"\
 	".\regex\regex.h"\
 	".\util_date.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 
 "$(INTDIR)\util_date.obj"	"$(INTDIR)\util_date.sbr" : $(SOURCE)\
@@ -1824,6 +2027,11 @@ DEP_CPP_UTIL_M=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_md5.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_UTIL_M=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\util_md5.obj"	"$(INTDIR)\util_md5.sbr" : $(SOURCE) $(DEP_CPP_UTIL_M)\
@@ -1873,6 +2081,11 @@ DEP_CPP_UTIL_S=\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	".\util_script.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_UTIL_S=\
+	".\sfio.h"\
 	
 
 "$(INTDIR)\util_script.obj"	"$(INTDIR)\util_script.sbr" : $(SOURCE)\
@@ -1898,6 +2111,8 @@ DEP_CPP_UTIL_SN=\
 DEP_CPP_UTIL_SN=\
 	".\conf.h"\
 	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 
 "$(INTDIR)\util_snprintf.obj"	"$(INTDIR)\util_snprintf.sbr" : $(SOURCE)\

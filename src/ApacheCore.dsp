@@ -197,6 +197,10 @@ SOURCE=.\mod_include.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\nt\mod_isapi.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\mod_log_config.c
 # End Source File
 # Begin Source File

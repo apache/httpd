@@ -23,6 +23,7 @@ extern module asis_module;
 extern module imap_module;
 extern module action_module;
 extern module browser_module;
+extern module isapi_module;
 
 module *prelinked_modules[] = {
   &core_module,
@@ -43,6 +44,7 @@ module *prelinked_modules[] = {
   &imap_module,
   &action_module,
   &browser_module,
+  &isapi_module,
   NULL
 };
 module *preloaded_modules[] = {
@@ -64,5 +66,6 @@ module *preloaded_modules[] = {
   &imap_module,
   &action_module,
   &browser_module,
+  &isapi_module,
   NULL
 };
