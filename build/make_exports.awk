@@ -97,6 +97,13 @@ function add_symbol(symbol) {
     next
 }
 
+/^[ \t]*APR_POOL_DECLARE_ACCESSOR[^(]*[(][^)]*[)]/ {
+    sub("[ \t]*APR_POOL_DECLARE_ACCESSOR[^(]*[(]", "", $0)
+    sub("[)].*$", "", $0)
+    add_symbol("apr_" $0 "_pool_get")
+    next
+}
+
 /^#[ \t]*if(ndef| !defined[(])([^_]*_)*H/ {
     enter_scope(TYPE_HEADER)
     next
