@@ -335,10 +335,10 @@ static int writable(char *fname)
 static int exists(char *fname)
 {
     apr_finfo_t sbuf;
-    int check;
+    apr_status_t check;
 
     check = apr_stat(&sbuf, fname, NULL);
-    return ((check == -1) && (errno == ENOENT)) ? 0 : 1;
+    return (check ? 0 : 1);
 }
 
 /*
