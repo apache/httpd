@@ -751,21 +751,26 @@ AP_CORE_DECLARE(const command_rec *) ap_find_command_in_modules(const char *cmd_
     return NULL;
 }
 
-AP_CORE_DECLARE(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod)
+AP_CORE_DECLARE(void *) ap_set_config_vectors(server_rec *server,
+                                              ap_conf_vector_t *section_vector,
+                                              const char *section,
+                                              module *mod, apr_pool_t *pconf)
 {
-    ap_conf_vector_t *mconfig = ap_get_module_config(config, mod);
-    ap_conf_vector_t *sconfig = ap_get_module_config(parms->server->module_config, mod);
+    void *section_config = ap_get_module_config(section_vector, mod);
+    void *server_config = ap_get_module_config(server->module_config, mod);
 
-    if (!mconfig && mod->create_dir_config) {
-	mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
-	ap_set_module_config(config, mod, mconfig);
+    if (!section_config && mod->create_dir_config) {
+        /* ### need to fix the create_dir_config functions' prototype... */
+	section_config = (*mod->create_dir_config) (pconf, (char *)section);
+	ap_set_module_config(section_vector, mod, section_config);
     }
 
-    if (!sconfig && mod->create_server_config) {
-	sconfig = (*mod->create_server_config) (parms->pool, parms->server);
-	ap_set_module_config(parms->server->module_config, mod, sconfig);
+    if (!server_config && mod->create_server_config) {
+	server_config = (*mod->create_server_config) (pconf, server);
+	ap_set_module_config(server->module_config, mod, server_config);
     }
-    return mconfig;
+
+    return section_config;
 }
 
 static const char *execute_now(char *cmd_line, const char *args, cmd_parms *parms, 
@@ -914,7 +919,8 @@ const char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
 }
 
 static const char *ap_walk_config_sub(const ap_directive_t *current,
-				      cmd_parms *parms, void *config)
+				      cmd_parms *parms,
+                                      ap_conf_vector_t *section_vector)
 {
     module *mod = top_module;
 
@@ -930,10 +936,14 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
 			      NULL);
 	}
 	else {
-	    void *mconfig = ap_set_config_vectors(parms,config, mod);
+	    void *dir_config = ap_set_config_vectors(parms->server,
+                                                     section_vector,
+                                                     parms->path,
+                                                     mod,
+                                                     parms->pool);
 	    const char *retval;
 
-	    retval = invoke_cmd(cmd, parms, mconfig, current->args);
+	    retval = invoke_cmd(cmd, parms, dir_config, current->args);
 	    if (retval == NULL) {
                 return NULL;
             }
@@ -956,11 +966,12 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
 }
 
 AP_DECLARE(const char *) ap_walk_config(ap_directive_t *current,
-					cmd_parms *parms, void *config)
+					cmd_parms *parms,
+                                        ap_conf_vector_t *section_vector)
 {
-    void *oldconfig = parms->context;
+    ap_conf_vector_t *oldconfig = parms->context;
 
-    parms->context = config;
+    parms->context = section_vector;
 
     /* scan through all directives, executing each one */
     for (; current != NULL; current = current->next) {
@@ -969,7 +980,7 @@ AP_DECLARE(const char *) ap_walk_config(ap_directive_t *current,
 	parms->directive = current;
 
         /* actually parse the command and execute the correct function */
-        errmsg = ap_walk_config_sub(current, parms, config);
+        errmsg = ap_walk_config_sub(current, parms, section_vector);
 	if (errmsg != NULL) {
 	    /* restore the context (just in case) */
 	    parms->context = oldconfig;
