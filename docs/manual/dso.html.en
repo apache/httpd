@@ -166,7 +166,7 @@ code which automatically makes sure the Unix loader is able to load and start
 <P>Apache's <CODE>src/Configure</CODE> script currently has only limited but
 adequate built-in knowledge on how to compile DSO files, because as already
 mentioned this is heavily platform-dependent. Nevertheless all major Unix
-platforms are supported.  The definitive current state (May 1998) is this:
+platforms are supported.  The definitive current state (May 1999) is this:
 
 <P>
 <UL>
@@ -189,6 +189,8 @@ o  SCO                (5.0.4)
 o  AIX                (3.2, 4.1.5, 4.2, 4.3)
 o  ReliantUNIX/SINIX  (5.43)
 o  SVR4               (-)
+o  Mac OS X Server    (1.0)
+o  Mac OS             (10.0 preview 1)
 </PRE>
 
 <P>
