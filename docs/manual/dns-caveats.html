@@ -139,8 +139,11 @@ for your OS.
 the IP address of any of the webservers will be served from the "main" or
 "default" server configurations.  The "main" server configuration consists
 of all those definitions appearing outside of any VirtualHost section.
-You may want instead to define a <code>&lt;VirtualHost _default&gt;</code>
-which returns 403 or 404 for all hits.
+You may want instead to define a <code>&lt;VirtualHost _default_:*&gt;</code>
+which returns 403 or 404 for all hits.  (The trailing <code>:*</code>
+makes it apply to all ports, which is just a safety measure should you
+begin using multiple <code><a href="mod/core.html#listen">Listen</a></code>
+directives.)
 
 <h3><a name="tips">Tips to Avoid these problems</a></h3>
 
@@ -149,7 +152,7 @@ which returns 403 or 404 for all hits.
 <li> use IP addresses in <code>Listen</code>
 <li> use IP addresses in <code>BindAddress</code>
 <li> ensure all virtual hosts have an explicit <code>ServerName</code>
-<li> create a <code>&lt;VirtualHost _default_&gt;</code> server that
+<li> create a <code>&lt;VirtualHost _default_:*&gt;</code> server that
     has no pages to serve
 </ul>
 
