@@ -1,6 +1,13 @@
-Changes with Apache 1.2b9
+Changes with Apache 1.2
 
-  *) add macro for memmove to conf.h for SUNOS4 [Marc Slemko]
+  *) Add macro for memmove to conf.h for SUNOS4. [Marc Slemko]
+
+  *) Improve handling of directories when filenames have spaces in them.
+     [Chuck Murcko]
+
+  *) For hosts with multiple IP addresses, try all additional addresses if
+     necessary to get a connect. Fail only if hostent address list is
+     exhausted. [Chuck Murcko]
 
 Changes with Apache 1.2b8
 
