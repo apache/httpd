@@ -729,6 +729,10 @@ do
                 suexec ) 
                     suexec=1
                     ;;
+                * ) 
+                    echo "configure:Error: invalid option '$apc_option'" 1>&2
+                    exit 1
+                    ;;
             esac
             ;;
         --disable-*)
@@ -786,6 +790,10 @@ do
                            eval "shared_${apc_optarg}=no" 
                            ;;
                     esac
+                    ;;
+                * ) 
+                    echo "configure:Error: invalid option '$apc_option'" 1>&2
+                    exit 1
                     ;;
             esac
             ;;
