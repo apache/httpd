@@ -13,9 +13,9 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Apache's Handler Use</H1>
+<H1 ALIGN="CENTER">Apache's Handler Use</H1>
 
-<h2>What is a Handler</h2>
+<H2>What is a Handler</H2>
 
 <P>A "handler" is an internal Apache representation of the action to be
 performed when a file is called. Generally, files have implicit
@@ -61,7 +61,7 @@ handlers in the standard distribution are as follows:</P>
 
 <P>
 
-<h2>Directives</h2>
+<H2>Directives</H2>
 <UL>
 <LI><A HREF="#addhandler">AddHandler</A>
 <LI><A HREF="#sethandler">SetHandler</A>
@@ -69,7 +69,7 @@ handlers in the standard distribution are as follows:</P>
 
 <HR>
 
-<h2><A name="addhandler">AddHandler</A></h2>
+<H2><A name="addhandler">AddHandler</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -101,7 +101,7 @@ program.</P>
 
 <HR>
 
-<h2><A name="sethandler">SetHandler</A></h2>
+<H2><A name="sethandler">SetHandler</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -141,7 +141,7 @@ called, you might put the following into access.conf:
 
 <P><HR>
 
-<h2>Programmer's Note</h2>
+<H2>Programmer's Note</H2>
 
 <P>In order to implement the handler features, an addition has been
 made to the <A HREF="misc/API.html">Apache API</A> that you may wish to

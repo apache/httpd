@@ -13,7 +13,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">File Descriptor Limits</H1>
+<H1 ALIGN="CENTER">File Descriptor Limits</H1>
 
 <P>
 When using a large number of Virtual Hosts, Apache may run out of available

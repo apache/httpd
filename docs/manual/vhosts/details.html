@@ -12,7 +12,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">An In-Depth Discussion of Virtual Host Matching</H1>
+<H1 ALIGN="CENTER">An In-Depth Discussion of Virtual Host Matching</H1>
 
 <P>The virtual host code was completely rewritten in <STRONG>Apache 1.3</STRONG>.
 This document attempts to explain exactly what Apache does when
@@ -24,7 +24,7 @@ than with versions prior to 1.3.
 <P>If you just want to <CITE>make it work</CITE> without understanding
 how, here are <A HREF="examples.html">some examples</A>.
 
-<h3>Config File Parsing</h3>
+<H3>Config File Parsing</H3>
 
 <P>There is a <EM>main_server</EM> which consists of all
 the definitions appearing outside of <CODE>&lt;VirtualHost&gt;</CODE> sections.
@@ -182,11 +182,11 @@ statement defining the vhost.
 is given the same <CODE>ServerName</CODE> as the main_server.
 
 
-<h3>Virtual Host Matching</h3>
+<H3>Virtual Host Matching</H3>
 
 <P>The server determines which vhost to use for a request as follows:
 
-<h4>Hash table lookup</h4>
+<H4>Hash table lookup</H4>
 
 <P>When the connection is first made by a client, the IP address to
 which the client connected is looked up in the internal IP hash table.
@@ -201,13 +201,13 @@ main_server.
 found) the next step is to decide if we have to deal with an IP-based
 or a name-base vhost.
 
-<h4>IP-based vhost</h4>
+<H4>IP-based vhost</H4>
 
 <P>If the entry we found has an empty name list then we have found an
 IP-based vhost, no further actions are performed and the request is
 served from that vhost.
 
-<h4>Name-based vhost</h4>
+<H4>Name-based vhost</H4>
 
 <P>If the entry corresponds to a name-based vhost the name list contains
 one or more vhost structures. This list contains the vhosts in the same
@@ -236,7 +236,7 @@ request is served from that vhost.
 first vhost with a matching port number that is on the list for the IP
 to which the client connected (as already mentioned before).
 
-<h4>Persistent connections</h4>
+<H4>Persistent connections</H4>
 The IP lookup described above is only done <EM>once</EM> for a particular
 TCP/IP session while the name lookup is done on <EM>every</EM> request
 during a KeepAlive/persistent connection. In other words a client may
@@ -244,7 +244,7 @@ request pages from different name-based vhosts during a single
 persistent connection.
 
 
-<h4>Absolute URI</h4>
+<H4>Absolute URI</H4>
 
 <P>If the URI from the request is an absolute URI, and its hostname and
 port match the main server or one of the configured virtual hosts
@@ -255,7 +255,7 @@ If it does not match, then the URI remains untouched and the request is
 taken to be a proxy request.
 
 
-<h3>Observations</h3>
+<H3>Observations</H3>
 
 <UL>
 
@@ -334,7 +334,7 @@ taken to be a proxy request.
 
 </UL>
 
-<h3>Tips</h3>
+<H3>Tips</H3>
 
 <P>In addition to the tips on the <A HREF="../dns-caveats.html#tips">DNS
 Issues</A> page, here are some further tips:

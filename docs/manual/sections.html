@@ -12,7 +12,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">How Directory, Location and Files sections work</H1>
+<H1 ALIGN="CENTER">How Directory, Location and Files sections work</H1>
 
 The sections <A
 HREF="mod/core.html#directory"><CODE>&lt;Directory&gt;</CODE></A>, <A
@@ -25,7 +25,7 @@ different sections differ and how they relate to each other when
 Apache decides which directives apply for a particular directory or
 request URL.
 
-<h2>Directives allowed in the sections</h2>
+<H2>Directives allowed in the sections</H2>
 
 Everything that is syntactically allowed in
 <CODE>&lt;Directory&gt;</CODE> is also allowed in
@@ -37,7 +37,7 @@ notable is AllowOverrides, make no sense in
 <CODE>&lt;Files&gt;</CODE> -- syntactically everything is fine, but
 semantically some things are different.
 
-<h2>How the sections are merged</h2>
+<H2>How the sections are merged</H2>
 
 The order of merging is:
 
@@ -85,7 +85,7 @@ configuration. (Note: this only works correctly from 1.2.2 and 1.3a2
 onwards. Before those releases sections inside virtual hosts were
 applied <EM>before</EM> the main server).
 
-<h2>Notes about using sections</h2>
+<H2>Notes about using sections</H2>
 
 The general guidelines are:
 

@@ -13,14 +13,14 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Apache IP-based Virtual Host Support</H1>
+<H1 ALIGN="CENTER">Apache IP-based Virtual Host Support</H1>
 
 <STRONG>See also:</STRONG>
 <A HREF="name-based.html">Name-based Virtual Hosts Support</A>
 
 <HR>
 
-<h2>System requirements</h2>
+<H2>System requirements</H2>
 As the term <CITE>IP-based</CITE> indicates, the server <STRONG>must have a
 different IP address for each IP-based virtual host</STRONG>.
 This can be achieved by the machine having several physical network connections,
@@ -29,7 +29,7 @@ operating systems (see system documentation for details, these are
 frequently called "ip aliases", and the "ifconfig" command
 is most commonly used to set them up).
 
-<h2>How to set up Apache</h2>
+<H2>How to set up Apache</H2>
 There are two ways of configuring apache to support multiple hosts.
 Either by running a separate httpd daemon for each hostname, or by running a
 single daemon which supports all the virtual hosts.
@@ -60,7 +60,7 @@ Use a single daemon when:
    loss in running separate daemons may be significant.
 </UL>
 
-<h2>Setting up multiple daemons</h2>
+<H2>Setting up multiple daemons</H2>
 Create a separate httpd installation for each virtual host.
 For each installation, use the
 <A HREF="../mod/core.html#listen">Listen</A> directive in the configuration
@@ -72,7 +72,7 @@ e.g.
 It is recommended that you use an IP address instead of a hostname
 (see <A HREF="../dns-caveats.html">DNS caveats</A>).
 
-<h2>Setting up a single daemon with virtual hosts</h2>
+<H2>Setting up a single daemon with virtual hosts</H2>
 For this case, a single httpd will service requests for the main server
 and all the virtual hosts.
 The <A HREF="../mod/core.html#virtualhost">VirtualHost</A> directive in the

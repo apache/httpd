@@ -21,7 +21,7 @@ mod_log_common in Apache 1.2. Prior to version 1.2, mod_log_config was
 an optional module. It provides for logging of the requests made to
 the server, using the Common Log Format or a user-specified format.
 
-<h2>Summary</h2>
+<H2>Summary</H2>
 
 Three directives are provided by this module: <CODE>TransferLog</CODE>
 to create a log file, <CODE>LogFormat</CODE> to set a custom format,
@@ -31,7 +31,7 @@ be used multiple times in each server to cause each request to be
 logged to multiple files.
 <P>
 
-<h3>Compatibility notes</h3>
+<H3>Compatibility notes</H3>
 
 <UL>
 <LI>This module is based on mod_log_config distributed with
@@ -47,7 +47,7 @@ should be defined to log user-tracking information instead.
 
 </UL>
 
-<h2>Log File Formats</h2>
+<H2>Log File Formats</H2>
 
 Unless told otherwise with <TT>LogFormat</TT> the log files created by
 <TT>TransferLog</TT> will be in standard "Common Log Format"
@@ -56,7 +56,7 @@ below. Alternatively, the log file can be customized (and if multiple
 log files are used, each can have a different format). Custom formats
 are set with <CODE>LogFormat</CODE> and <CODE>CustomLog</CODE>.
 
-<h3>Common Log Format</h3>
+<H3>Common Log Format</H3>
 
 The Common Log Format (CLF) file contains a separate line for each
 request. A line is composed of several tokens separated by spaces:
@@ -97,7 +97,7 @@ zone = (`+' | `-') 4*digit</CODE></BLOCKQUOTE></DL>
 any headers.
 </DL>
 
-<h3><A NAME="formats">Custom Log Formats</A></h3>
+<H3><A NAME="formats">Custom Log Formats</A></H3>
 
 The format argument to the <CODE>LogFormat</CODE> and
 <CODE>CustomLog</CODE> is a string. This string is logged to the log
@@ -153,14 +153,14 @@ Note that the common log format is defined by the string <CODE>"%h %l
 extending for format if desired (e.g. to add extra fields at the end).
 NCSA's extended/combined log format would be <CODE>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\""</CODE>.
 
-<h2>Using Multiple Log Files</h2>
+<H2>Using Multiple Log Files</H2>
 
 The <CODE>TransferLog</CODE> and <CODE>CustomLog</CODE> directives can
 be given more than once to log requests to multiple log files. Each
 request will be logged to all the log files defined by either of these
 directives.
 
-<h3>Use with Virtual Hosts</h3>
+<H3>Use with Virtual Hosts</H3>
 
 If a &lt;VirtualHost&gt; section does not contain any
 <TT>TransferLog</TT> or <TT>CustomLog</TT> directives, the
@@ -171,14 +171,14 @@ within its definition, not in any of the main server's log files.
 See the examples below.
 <P>
 
-<h2>Security Considerations</h2>
+<H2>Security Considerations</H2>
 
 See the <A HREF="../misc/security_tips.html#security">security tips</A>
 document for details on why your security could be compromised if the
 directory where logfiles are stored is writable by anyone other than
 the user that starts the server.
 <P>
-<h2>Directives</h2>
+<H2>Directives</H2>
 
 <UL>
 <LI><A HREF="#cookielog">CookieLog</A>
@@ -189,7 +189,7 @@ the user that starts the server.
 <HR>
 
 
-<h2><A name="cookielog">CookieLog</A></h2>
+<H2><A name="cookielog">CookieLog</A></H2>
 <!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -263,7 +263,7 @@ the
 directive.
 </P>
 <HR>
-<h2><A name="logformat">LogFormat</A></h2>
+<H2><A name="logformat">LogFormat</A></H2>
 <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -315,7 +315,7 @@ it doesn't actually apply the format and make it the default.
 </P>
 
 <HR>
-<h2><A name="transferlog">TransferLog</A></h2>
+<H2><A name="transferlog">TransferLog</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"

@@ -13,7 +13,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Content Negotiation</H1>
+<H1 ALIGN="CENTER">Content Negotiation</H1>
 
 <P>
 Apache's support for content negotiation has been updated to meet the
@@ -29,7 +29,7 @@ which is compiled in by default.
 
 <HR>
 
-<h2>About Content Negotiation</h2>
+<H2>About Content Negotiation</H2>
 
 <P>
 A resource may be available in several different representations. For
@@ -77,7 +77,7 @@ available in several formats, these are called <STRONG>representations</STRONG>
 or <STRONG>variants</STRONG>. The ways in which the variants for a particular
 resource vary are called the <STRONG>dimensions</STRONG> of negotiation.
 
-<h2>Negotiation in Apache</h2>
+<H2>Negotiation in Apache</H2>
 
 <P>
 In order to negotiate a resource, the server needs to be given
@@ -91,7 +91,7 @@ ways:
        filename pattern match, and chooses from among the results.
 </UL>
 
-<h3>Using a type-map file</h3>
+<H3>Using a type-map file</H3>
 
 <P>
 A type map is a document which is associated with the handler
@@ -182,7 +182,7 @@ The full list of headers recognized is:
        thresholds without checking the actual file.
 </DL>
 
-<h3>Multiviews</h3>
+<H3>Multiviews</H3>
 
 <P>
 This is a per-directory option, meaning it can be set with an
@@ -229,7 +229,7 @@ rating, and generally invoked; otherwise it is given an extremely low
 quality rating, which generally causes one of the other views (if any)
 to be retrieved.
 
-<h2>The Negotiation Algorithm</h2>
+<H2>The Negotiation Algorithm</H2>
 
 After Apache has obtained a list of the variants for a given resource,
 either from a type-map file or from the filenames in the directory, it
@@ -244,7 +244,7 @@ In some circumstances, Apache can 'fiddle' the quality factor of a
 particular dimension to achieve a better result. The ways Apache can
 fiddle quality factors is explained in more detail below.
 
-<h3>Dimensions of Negotiation</h3>
+<H3>Dimensions of Negotiation</H3>
 
 <TABLE>
 <TR><TH>Dimension
@@ -265,7 +265,7 @@ or more languages.
 can indicate a charset as a parameter of the media type.
 </TABLE>
 
-<h3>Apache Negotiation Algorithm</h3>
+<H3>Apache Negotiation Algorithm</H3>
 
 <P>
 Apache uses an algorithm to select the 'best' variant (if any) to
@@ -330,7 +330,7 @@ and go to stage 3.
 
 </OL>
 
-<h2><A name="better">Fiddling with Quality Values</A></h2>
+<H2><A name="better">Fiddling with Quality Values</A></H2>
 
 <P>
 Apache sometimes changes the quality values from what would be
@@ -343,7 +343,7 @@ sends full and correct information these fiddles will not
 be applied.
 <P>
 
-<h3>Media Types and Wildcards</h3>
+<H3>Media Types and Wildcards</H3>
 
 <P>
 The Accept: request header indicates preferences for media types. It
@@ -386,7 +386,7 @@ behavior. It also sets the q value of wildcards of the format
 these special values are <EM>not</EM> applied, so requests from browsers
 which send the correct information to start with work as expected.
 
-<h3>Variants with no Language</h3>
+<H3>Variants with no Language</H3>
 
 <P>
 If some of the variants for a particular resource have a language
@@ -413,7 +413,7 @@ header includes either en or fr (or both) one of foo.en.html
 or foo.fr.html will be returned. If the browser does not list
 either en or fr as acceptable, foo.html will be returned instead.
 
-<h2>Note on hyperlinks and naming conventions</h2>
+<H2>Note on hyperlinks and naming conventions</H2>
 
 <P>
 If you are using language negotiation you can choose between
@@ -500,7 +500,7 @@ if there is one) must be on the right hand side of the mime-type extension
 (e.g. <SAMP>foo.html.en</SAMP>).
 
 
-<h2>Note on Caching</h2>
+<H2>Note on Caching</H2>
 
 <P>
 When a cache stores a document, it associates it with the request URL.

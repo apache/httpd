@@ -12,14 +12,14 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Apache non-IP Virtual Hosts</H1>
+<H1 ALIGN="CENTER">Apache non-IP Virtual Hosts</H1>
 
 <STRONG>See Also:</STRONG>
 <A HREF="virtual-host.html">Virtual Host Support</A>
 
 <HR>
 
-<h2>What is a Virtual Host</h2>
+<H2>What is a Virtual Host</H2>
 
 <P>The "Virtual Host" refers to the practice of maintaining more than
 one server on one machine, as differentiated by their apparent
@@ -52,7 +52,7 @@ latest versions of many browsers (including Netscape Navigator 2.0 and
 later) do, but many browsers, especially older ones, do not. This can
 cause problems, although a possible solution is addressed below.</P>
 
-<h2>Using non-IP Virtual Hosts</h2>
+<H2>Using non-IP Virtual Hosts</H2>
 
 <P>Using the new virtual hosts is quite easy, and superficially looks
 like the old method. You simply add to one of the Apache configuration
@@ -95,7 +95,7 @@ familiar with typing "www" or "www.physics" then you will need to add
 server to know what domain the client uses for their name resolution
 because the client doesn't provide that information in the request.</P>
 
-<h2>Security Considerations</h2>
+<H2>Security Considerations</H2>
 
 Apache allows all virtual hosts to be made accessible via the
 <CODE>Host:</CODE> header through all IP interfaces, even those which
@@ -126,7 +126,7 @@ layer - all security controls used by Apache (i.e., <A
 HREF="mod/mod_access.html">allow, deny from,</A> etc.) are consistently
 respected.
 
-<h2>Compatibility with Older Browsers</h2>
+<H2>Compatibility with Older Browsers</H2>
 
 <P>As mentioned earlier, a majority of browsers do not send the
 required data for the new virtual hosts to work properly. These

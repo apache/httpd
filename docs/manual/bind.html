@@ -12,7 +12,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Setting which addresses and ports Apache uses</H1>
+<H1 ALIGN="CENTER">Setting which addresses and ports Apache uses</H1>
 
 <HR>
 
@@ -36,7 +36,7 @@ and ports Apache listens to.
   to more than one address and/or port.
 </UL>
 
-<h3><A name="bindaddress">BindAddress</A></h3>
+<H3><A name="bindaddress">BindAddress</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -59,7 +59,7 @@ is *, the server listens to all addresses. The port listened to
 is set with the <TT>Port</TT> directive. Only one BindAddress
 should be used.
 
-<h3><A name="listen">Listen</A></h3>
+<H3><A name="listen">Listen</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -102,7 +102,7 @@ interfaces and port numbers, use
    Listen 192.170.2.5:8000
 </PRE>
 
-<h2>How this works with Virtual Hosts</h2>
+<H2>How this works with Virtual Hosts</H2>
 
 BindAddress and Listen do not implement Virtual Hosts. They tell the
 main server what addresses and ports to listen to.  If no
@@ -116,7 +116,7 @@ and port to set the behavior of this virtual host. Note that if the
 &lt;VirtualHost&gt; is set for an address and port that the server is
 not listening to, it cannot be accessed.
 
-<h2>See also</h2>
+<H2>See also</H2>
 
 See also the documentation on
 <A HREF="vhosts/index.html">Virtual Hosts</A>,

@@ -12,7 +12,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Issues Regarding DNS and Apache</H1>
+<H1 ALIGN="CENTER">Issues Regarding DNS and Apache</H1>
 
 <P>This page could be summarized with the statement: <EM>don't require
 Apache to use DNS for any parsing of the configuration files</EM>.
@@ -21,7 +21,7 @@ server may be subject to reliability problems (it might not boot), or
 denial and theft of service attacks (including users able to steal hits
 from other users).
 
-<h3>A Simple Example</h3>
+<H3>A Simple Example</H3>
 
 Consider this configuration snippet:
 
@@ -71,7 +71,7 @@ which includes the server name then it will fail to generate a valid URL.
     &lt;/VirtualHost&gt;
 </PRE></BLOCKQUOTE>
 
-<h3>Denial of Service</h3>
+<H3>Denial of Service</H3>
 
 <P>There are (at least) two forms that denial of service can come in.
 If you are running a version of Apache prior to version 1.2 then your
@@ -115,7 +115,7 @@ this happens requires a more in-depth discussion of how Apache matches
 up incoming requests with the virtual host that will serve it.  A rough
 document describing this <A HREF="vhosts/details.html"> is available</A>.
 
-<h3>The "main server" Address</h3>
+<H3>The "main server" Address</H3>
 
 <P>The addition of <A HREF="vhosts/name-based.html">name-based virtual host
 support</A> in Apache 1.1 requires Apache to know the IP address(es) of
@@ -141,7 +141,7 @@ CGIs unless you use <A HREF="mod/mod_env.html"><CODE>mod_env</CODE></A>
 to control the environment.  It's best to consult the man pages or FAQs
 for your OS.
 
-<h3><A name="tips">Tips to Avoid these problems</A></h3>
+<H3><A name="tips">Tips to Avoid these problems</A></H3>
 
 <UL>
 <LI> use IP addresses in <CODE>&lt;VirtualHost&gt</CODE>
@@ -152,7 +152,7 @@ for your OS.
     has no pages to serve
 </UL>
 
-<h3>Appendix: Future Directions</h3>
+<H3>Appendix: Future Directions</H3>
 
 <P>The situation regarding DNS is highly undesirable.  For Apache
 1.2 we've attempted to make the server at least continue booting

@@ -11,11 +11,11 @@
 >
 
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Module mod_status</H1>
+<H1 ALIGN="CENTER">Module mod_status</H1>
 
 The Status Module is only available in Apache 1.1 and later.<P>
 
-<h2>Function</h2>
+<H2>Function</H2>
 
 The Status module allows a server administrator to find out how well
 their server is performing.  A HTML page is presented that gives
@@ -45,7 +45,7 @@ A compile-time option must be used to display the details marked "(*)" as
 the instrumentation required for obtaining these statistics does not
 exist within standard Apache.
 
-<h2>Enabling Status Support</h2>
+<H2>Enabling Status Support</H2>
 
 To enable status reports only for browsers from the foo.com
 domain add this code to your <CODE>access.conf</CODE> configuration file
@@ -66,18 +66,18 @@ Note that mod_status will only work when you are running Apache in
 <A HREF="core.html#servertype">standalone</A> mode and not
 <A HREF="core.html#servertype">inetd</A> mode.
 
-<h3>Automatic Updates</h3>
+<H3>Automatic Updates</H3>
 You can get the status page to update itself automatically if you have
 a browser that supports "refresh".  Access the page
 <CODE>http://your.server.name/server-status?refresh=N</CODE> to refresh the page
 every N seconds.
-<h3>Machine Readable Status File</h3>
+<H3>Machine Readable Status File</H3>
 A machine-readable version of the status file is available by accessing the
 page <CODE>http://your.server.name/server-status?auto</CODE>.  This is useful
 when automatically run, see the Perl program in the <CODE>/support</CODE>
 directory of Apache, <CODE>log_server_status</CODE>.
 
-<h2>Full Instrumentation</h2>
+<H2>Full Instrumentation</H2>
 
 To obtain full statistics you must compile Apache with a special
 directive.  On some machines there may be a small performance loss
