@@ -77,6 +77,7 @@
  *  5: Failure; buffer would overflow (username, filename, or computed
  *     record too long)
  *  6: Failure; username contains illegal or reserved characters
+ *  7: Failure; file is not a valid htpasswd file
  */
 
 #include "apr.h"
@@ -133,6 +134,7 @@
 #define ERR_INTERRUPTED 4
 #define ERR_OVERFLOW 5
 #define ERR_BADUSER 6
+#define ERR_INVALID 7
 
 #define APHTP_NEWFILE        1
 #define APHTP_NOFILE         2
@@ -577,6 +579,18 @@ int main(int argc, const char * const argv[])
             colon = strchr(scratch, ':');
             if (colon != NULL) {
                 *colon = '\0';
+            }
+            else {
+                /*
+                 * If we've not got a colon on the line, this could well 
+                 * not be a valid htpasswd file.
+                 * We should bail at this point.
+                 */
+                apr_file_printf(errfile, "\n%s: The file %s does not appear "
+                                         "to be a valid htpasswd file.\n",
+                                argv[0], pwfilename);
+                apr_file_close(fpw);
+                exit(ERR_INVALID);
             }
             if (strcmp(user, scratch) != 0) {
                 putline(ftemp, line);

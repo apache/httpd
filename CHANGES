@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) htpasswd: Check the processed file on validity. If a line is not empty
+     and not a comment, it must contain at least one colon. Otherwise exit
+     with error code 7. [Kris Verbeeck <Kris.Verbeeck@ubizen.com>, Thom May]
+
   *) Fix a problem that caused httpd to be linked with incorrect flags
      on some platforms when mod_so was enabled by default, breaking 
      DSOs on AIX.  PR 19012  [Jeff Trawick]
