@@ -482,7 +482,7 @@ static apr_status_t expires_filter(ap_filter_t *f,
                 char *checkmime;
                 char *spos;
                 checkmime = apr_pstrdup(r->pool, r->content_type);
-                spos = strchr(checkmime, '/');
+                spos = checkmime ? ap_strchr(checkmime, '/') : NULL;
                 if (spos != NULL) {
                     /*
                      * Without a '/' character, nothing we have will match.
