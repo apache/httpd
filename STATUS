@@ -85,6 +85,12 @@ Committed Code Changes:
     * Performance improvements to invoke_handler().
     * Ben Hyde's check to make sure the "Port" range is valid
     * Ralf's Unbundling mod_proxy and mod_mime (making mime_find_ct obsolete)
+    * Jim's change of -DAUX to -DAUX3 for A/UX
+    * Jim's src/include/ap_config.h wraps it's #define's with #ifndef/#endif's
+    * Dean's Clean up of some undocumented behavior of mod_setenvif
+    * Performance tweak to mod_log_config
+    * Marc's cfg_getline() fix for lines without the termination char
+    * Ralf's Various cleanups to the command line interface and manual pages
 
 Available Patches:
 

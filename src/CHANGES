@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Various cleanups to the command line interface and manual pages
+     [Ralf S. Engelschall]
+
   *) cfg_getline() was not properly handling lines that did not end
      with a line termination character.  [Marc Slemko] PR#1869, 1909
 
