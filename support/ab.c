@@ -862,14 +862,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.24 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.25 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.24 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.25 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -970,11 +970,12 @@ static int open_postfile(char *pfile)
 /* sort out command-line args and call test */
 int main(int argc, char **argv)
 {
-    int c, r, l;
+    int r, l;
     char tmp[1024];
-#ifdef NOT_ASCII
     apr_status_t status;
-#endif
+    apr_getopt_t *opt;
+    char *optarg;
+    char c;
 
     /* table defaults  */
     tablestring = "";
@@ -1006,11 +1007,11 @@ int main(int argc, char **argv)
     }
 #endif
 
-    apr_optind = 1;
-    while (apr_getopt(argc, argv, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, cntxt) == APR_SUCCESS) {
+    apr_initopt(&opt, cntxt, argc, argv);
+    while ((status = apr_getopt(opt, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, &optarg)) == APR_SUCCESS) {
         switch (c) {
         case 'n':
-            requests = atoi(apr_optarg);
+            requests = atoi(optarg);
             if (!requests) {
                err("Invalid number of requests\n");
             }
@@ -1019,7 +1020,7 @@ int main(int argc, char **argv)
             keepalive = 1;
             break;
         case 'c':
-            concurrency = atoi(apr_optarg);
+            concurrency = atoi(optarg);
             break;
         case 'i':
             if (posting == 1)
@@ -1030,7 +1031,7 @@ int main(int argc, char **argv)
             if (posting != 0)
                 err("Cannot mix POST and HEAD\n");
 
-            if (0 == (r = open_postfile(apr_optarg))) {
+            if (0 == (r = open_postfile(optarg))) {
                posting = 1;
             }
             else if (postdata) {
@@ -1038,27 +1039,27 @@ int main(int argc, char **argv)
             }
             break;
         case 'v':
-            verbosity = atoi(apr_optarg);
+            verbosity = atoi(optarg);
             break;
         case 't':
-            tlimit = atoi(apr_optarg);
+            tlimit = atoi(optarg);
             requests = MAX_REQUESTS;  /* need to size data array on something */
             break;
         case 'T':
-            strcpy(content_type, apr_optarg);
+            strcpy(content_type, optarg);
             break;
         case 'C':
             strncat(cookie, "Cookie: ", sizeof(cookie));
-            strncat(cookie, apr_optarg, sizeof(cookie));
+            strncat(cookie, optarg, sizeof(cookie));
             strncat(cookie, "\r\n", sizeof(cookie));
             break;
         case 'A':
             /* assume username passwd already to be in colon separated form. 
              * Ready to be uu-encoded.
              */
-            while(isspace(*apr_optarg))
-                apr_optarg++;
-            l=ap_base64encode(tmp, apr_optarg, strlen(apr_optarg));
+            while(isspace(*optarg))
+                optarg++;
+            l=ap_base64encode(tmp, optarg, strlen(optarg));
             tmp[l]='\0';
  
             strncat(auth, "Authorization: basic ", sizeof(auth));
@@ -1069,9 +1070,9 @@ int main(int argc, char **argv)
             /*
              * assume username passwd already to be in colon separated form.
              */
-            while(isspace(*apr_optarg))
-                apr_optarg++;
-            l=ap_base64encode(tmp, apr_optarg, strlen(apr_optarg));
+            while(isspace(*optarg))
+                optarg++;
+            l=ap_base64encode(tmp, optarg, strlen(optarg));
             tmp[l]='\0';
  
             strncat(auth, "Proxy-Authorization: basic ", sizeof(auth));
@@ -1079,7 +1080,7 @@ int main(int argc, char **argv)
             strncat(auth, "\r\n", sizeof(auth));
             break;
         case 'H':
-            strncat(hdrs, apr_optarg, sizeof(hdrs));
+            strncat(hdrs, optarg, sizeof(hdrs));
             strncat(hdrs, "\r\n", sizeof(hdrs));
             break;
 	case 'w':
@@ -1091,15 +1092,15 @@ int main(int argc, char **argv)
 	     */
 	case 'x':
 	    use_html = 1;
-	    tablestring = apr_optarg;
+	    tablestring = optarg;
 	    break;
 	case 'y':
 	    use_html = 1;
-	    trstring = apr_optarg;
+	    trstring = optarg;
 	    break;
 	case 'z':
 	    use_html = 1;
-	    tdstring = apr_optarg;
+	    tdstring = optarg;
 	    break;
 	case 'h':
 	    usage(argv[0]);
@@ -1110,12 +1111,12 @@ int main(int argc, char **argv)
         }
     }
 
-    if (apr_optind != argc - 1) {
+    if (opt->ind != argc - 1) {
         fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
         usage(argv[0]);
     }
 
-    if (parse_url(argv[apr_optind++])) {
+    if (parse_url((char*)opt->argv[opt->ind++])) {
         fprintf(stderr, "%s: invalid URL\n", argv[0]);
         usage(argv[0]);
     }
