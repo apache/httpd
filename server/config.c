@@ -1442,20 +1442,6 @@ CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostnam
 {
     server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
 
-#ifdef RLIMIT_NOFILE
-    struct rlimit limits;
-
-    getrlimit(RLIMIT_NOFILE, &limits);
-    if (limits.rlim_cur < limits.rlim_max) {
-	limits.rlim_cur += 2;
-	if (setrlimit(RLIMIT_NOFILE, &limits) < 0) {
-	    perror("setrlimit(RLIMIT_NOFILE)");
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                         "Cannot exceed hard limit for open files");
-	}
-    }
-#endif
-
     /* TODO: this crap belongs in http_core */
     s->process = main_server->process;
     s->server_admin = NULL;
