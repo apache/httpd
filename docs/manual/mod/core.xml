@@ -1453,6 +1453,15 @@ methods</description>
     case-sensitive.</strong> If <code>GET</code> is used it will also
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
     cannot be limited.</p>
+
+    <note type="warning">A <directive type="section"
+    module="core">LimitExcept</directive> section should always be
+    used in preference to a <directive type="section"
+    module="core">Limit</directive> section when restricting access,
+    since a <directive type="section"
+    module="core">LimitExcept</directive> section provides protection
+    against arbitrary methods.</note>
+
 </usage>
 </directivesynopsis>
 

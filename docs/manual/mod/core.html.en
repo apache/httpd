@@ -1504,6 +1504,12 @@ methods</td></tr>
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
     cannot be limited.</p>
 
+    <div class="warning">A <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section should always be
+    used in preference to a <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> section when restricting access,
+    since a <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section provides protection
+    against arbitrary methods.</div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Directive</a></h2>
