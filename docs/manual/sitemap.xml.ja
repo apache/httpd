@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.17 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -73,6 +73,7 @@
 
 <category id="howto">
 <title>ガイド、チュートリアル、ハウツー</title>
+<page separate="yes" href="howto/">概略</page>
 <page href="howto/auth.html">認証</page>
 <page href="howto/cgi.html">CGI による動的コンテンツ</page>
 <page href="howto/ssi.html">Server Side Includes 入門</page>
@@ -83,11 +84,10 @@
 
 <category id="platform">
 <title>プラットフォーム固有の情報</title>
+<page separate="yes" href="platform/">概略</page>
 <page href="platform/windows.html">Microsoft Windows での Apache の使用</page>
 <page href="platform/win_compiling.html">Microsoft Windows での Apache
 のコンパイル</page>
-<page href="platform/win_service.html">Windows 用の Apache
-をサービスとして実行</page>
 <page href="platform/netware.html">Novell NetWare で Apache を使う</page>
 <page href="platform/perf-hp.html">HPUX で高性能ウェブサーバを実行する</page>
 <page href="platform/ebcdic.html">EBCDIC 版 Apache</page>
@@ -132,13 +132,16 @@
   <modulefile>mod_asis.xml.ja</modulefile>
   <modulefile>mod_auth_basic.xml.ja</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
-  <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
   <modulefile>mod_authn_dbm.xml</modulefile>
   <modulefile>mod_authn_file.xml.ja</modulefile>
+  <modulefile>mod_authn_default.xml</modulefile>
   <modulefile>mod_authz_dbm.xml</modulefile>
+  <modulefile>mod_authz_default.xml</modulefile>
   <modulefile>mod_authz_groupfile.xml</modulefile>
   <modulefile>mod_authz_host.xml.ja</modulefile>
+  <modulefile>mod_authz_user.xml</modulefile>
+  <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml.ja</modulefile>
   <modulefile>mod_cache.xml</modulefile>
   <modulefile>mod_cern_meta.xml</modulefile>
@@ -146,8 +149,10 @@
   <modulefile>mod_cgid.xml</modulefile>
   <modulefile>mod_charset_lite.xml</modulefile>
   <modulefile>mod_dav.xml.ja</modulefile>
+  <modulefile>mod_dav_fs.xml</modulefile>
   <modulefile>mod_deflate.xml.ja</modulefile>
   <modulefile>mod_dir.xml.ja</modulefile>
+  <modulefile>mod_disk_cache.xml</modulefile>
   <modulefile>mod_echo.xml.ja</modulefile>
   <modulefile>mod_env.xml.ja</modulefile>
   <modulefile>mod_example.xml</modulefile>
@@ -162,6 +167,7 @@
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_logio.xml</modulefile>
+  <modulefile>mod_mem_cache.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.ja</modulefile>
@@ -183,12 +189,6 @@
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml.ja</modulefile>
   <modulefile>worker.xml.ja</modulefile>
-
-  <modulefile>obs_mod_access.xml</modulefile>
-  <modulefile>obs_mod_auth.xml</modulefile>
-  <modulefile>obs_mod_auth_anon.xml</modulefile>
-  <modulefile>obs_mod_auth_dbm.xml</modulefile>
-  <modulefile>obs_mod_auth_digest.xml</modulefile>
 </modulefilelist>
 </category>
 
