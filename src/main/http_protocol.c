@@ -582,7 +582,7 @@ int get_basic_auth_pw (request_rec *r, char **pw)
     }
 
     t = uudecode (r->pool, auth_line);
-    r->connection->user = getword (r->pool, &t, ':');
+    r->connection->user = getword_nulls (r->pool, &t, ':');
     r->connection->auth_type = "Basic";
 
     *pw = t;
