@@ -1453,8 +1453,8 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	}
 	else {
-	    ap_rvputs(r, "<li /><a href=\"", anchor, "\"> ", t2,
-		      "</a>", NULL);
+	    ap_rvputs(r, "<li><a href=\"", anchor, "\"> ", t2,
+		         "</a></li>", NULL);
 	}
 	ap_rputc('\n', r);
     }
