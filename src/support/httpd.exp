@@ -290,6 +290,7 @@ ap_rwrite
 ap_satisfies
 ap_scan_script_header_err
 ap_scan_script_header_err_buff
+ap_scan_script_header_err_strs
 ap_scoreboard_fname
 ap_scoreboard_image
 ap_send_error_response
@@ -362,6 +363,7 @@ ap_table_setn
 ap_table_unset
 ap_threads_per_child
 ap_tm2sec
+ap_to64
 ap_translate_name
 ap_uname2id
 ap_unblock_alarms
