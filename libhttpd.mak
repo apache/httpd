@@ -62,6 +62,7 @@ CLEAN :
 	-@erase "$(INTDIR)\http_core.obj"
 	-@erase "$(INTDIR)\http_protocol.obj"
 	-@erase "$(INTDIR)\http_request.obj"
+	-@erase "$(INTDIR)\libhttpd.idb"
 	-@erase "$(INTDIR)\listen.obj"
 	-@erase "$(INTDIR)\log.obj"
 	-@erase "$(INTDIR)\mod_access.obj"
@@ -102,7 +103,6 @@ CLEAN :
 	-@erase "$(OUTDIR)\libhttpd.exp"
 	-@erase "$(OUTDIR)\libhttpd.lib"
 	-@erase "$(OUTDIR)\libhttpd.map"
-	-@erase ".\Debug\libhttpd.idb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -111,7 +111,7 @@ CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I ".\include" /I ".\srclib\apr\include" /I\
  ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I\
  "./os/win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT"\
- /Fo"$(INTDIR)\\" /Fd"Debug\libhttpd" /FD /c 
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
