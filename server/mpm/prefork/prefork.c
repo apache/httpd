@@ -372,6 +372,11 @@ API_EXPORT(int) ap_exists_scoreboard_image(void)
     return (ap_scoreboard_image ? 1 : 0);
 }
 
+API_EXPORT(int) ap_get_max_daemons(void)
+{
+    return ap_max_daemons_limit;
+}
+
 static ap_inline void put_scoreboard_info(int child_num,
                                        short_score *new_score_rec)
 {

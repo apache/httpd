@@ -235,6 +235,11 @@ API_EXPORT(int) ap_exists_scoreboard_image(void)
     return (ap_scoreboard_image ? 1 : 0);
 }
 
+API_EXPORT(int) ap_get_max_daemons(void)
+{
+    return max_daemons_limit;
+}
+
 int ap_update_child_status(int child_num, int status, request_rec *r)
 {
     int old_status;
