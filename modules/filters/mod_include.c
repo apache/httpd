@@ -2314,7 +2314,6 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
     return 0;
 }
 
-
 /* -------------------------- The main function --------------------------- */
 
 static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r, 
@@ -2616,6 +2615,12 @@ enum xbithack {
     xbithack_off, xbithack_on, xbithack_full
 };
 
+typedef struct {
+    char *default_error_msg;
+    char *default_time_fmt;
+    enum xbithack *xbithack;
+} include_dir_config;
+
 #ifdef XBITHACK
 #define DEFAULT_XBITHACK xbithack_full
 #else
@@ -2624,23 +2629,29 @@ enum xbithack {
 
 static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
 {
-    enum xbithack *result = (enum xbithack *) apr_palloc(p, sizeof(enum xbithack));
-    *result = DEFAULT_XBITHACK;
+    include_dir_config *result =
+        (include_dir_config *)apr_palloc(p, sizeof(include_dir_config));
+    enum xbithack *xbh = (enum xbithack *) apr_palloc(p, sizeof(enum xbithack));
+    *xbh = DEFAULT_XBITHACK;
+    result->default_error_msg = DEFAULT_ERROR_MSG;
+    result->default_time_fmt = DEFAULT_TIME_FORMAT;
+    result->xbithack = xbh;
+    return result;
     return result;
 }
 
 static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
 {
-    enum xbithack *state = (enum xbithack *) xbp;
+    include_dir_config *conf = (include_dir_config *)xbp;
 
     if (!strcasecmp(arg, "off")) {
-        *state = xbithack_off;
+        *conf->xbithack = xbithack_off;
     }
     else if (!strcasecmp(arg, "on")) {
-        *state = xbithack_on;
+        *conf->xbithack = xbithack_on;
     }
     else if (!strcasecmp(arg, "full")) {
-        *state = xbithack_full;
+        *conf->xbithack = xbithack_full;
     }
     else {
         return "XBitHack must be set to Off, On, or Full";
@@ -2653,9 +2664,10 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
     include_ctx_t *ctx = f->ctx;
-    enum xbithack *state =
-    (enum xbithack *) ap_get_module_config(r->per_dir_config, &include_module);
     request_rec *parent;
+    include_dir_config *conf = 
+                   (include_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                              &include_module);
 
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         return ap_pass_brigade(f->next, b);
@@ -2675,8 +2687,8 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
             }
             ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
 
-            apr_cpystrn(ctx->error_str, DEFAULT_ERROR_MSG,   sizeof(ctx->error_str));
-            apr_cpystrn(ctx->time_str,  DEFAULT_TIME_FORMAT, sizeof(ctx->time_str));
+            apr_cpystrn(ctx->error_str, conf->default_error_msg, sizeof(ctx->error_str));
+            apr_cpystrn(ctx->time_str, conf->default_time_fmt, sizeof(ctx->time_str));
             ctx->error_length = strlen(ctx->error_str);
         }
         else {
@@ -2686,7 +2698,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     }
 
     /* Assure the platform supports Group protections */
-    if ((*state == xbithack_full)
+    if ((*conf->xbithack == xbithack_full)
         && (r->finfo.valid & APR_FINFO_GPROT)
         && (r->finfo.protection & APR_GEXECUTE)) {
         ap_update_mtime(r, r->finfo.mtime);
@@ -2711,7 +2723,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 	 * environment */
         ap_add_common_vars(r);
         ap_add_cgi_vars(r);
-        add_include_vars(r, DEFAULT_TIME_FORMAT);
+        add_include_vars(r, conf->default_time_fmt);
     }
     /* XXX: this is bogus, at some point we're going to do a subrequest,
      * and when we do it we're going to be subjecting code that doesn't
@@ -2758,6 +2770,20 @@ static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
 }
 
+static const char *set_default_error_msg(cmd_parms *cmd, void *mconfig, const char *msg)
+{
+    include_dir_config *conf = (include_dir_config *)mconfig;
+    conf->default_error_msg = apr_pstrdup(cmd->pool, msg);
+    return NULL;
+}
+
+static const char *set_default_time_fmt(cmd_parms *cmd, void *mconfig, const char *fmt)
+{
+    include_dir_config *conf = (include_dir_config *)mconfig;
+    conf->default_time_fmt = apr_pstrdup(cmd->pool, fmt);
+    return NULL;
+}
+
 /*
  * Module definition and configuration data structs...
  */
@@ -2765,6 +2791,10 @@ static const command_rec includes_cmds[] =
 {
     AP_INIT_TAKE1("XBitHack", set_xbithack, NULL, OR_OPTIONS, 
                   "Off, On, or Full"),
+    AP_INIT_TAKE1("SSIErrorMsg", set_default_error_msg, NULL, OR_ALL, 
+                  "a string"),
+    AP_INIT_TAKE1("SSITimeFormat", set_default_time_fmt, NULL, OR_ALL,
+                  "a strftime(3) formatted string"),
     {NULL}
 };
 
