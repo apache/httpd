@@ -518,11 +518,13 @@ got_listener:
                         */
                         ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
                             "apr_accept: giving up.");
+                        apr_thread_mutex_unlock(accept_mutex);
                         clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, bucket_alloc);
 
                     default:
                         ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
                             "apr_accept: (client socket)");
+                        apr_thread_mutex_unlock(accept_mutex);
                         clean_child_exit(1, my_worker_num, bucket_alloc);
                 }
             }
@@ -872,6 +874,7 @@ static int shutdown_listeners()
     for (lr = ap_listeners; lr; lr = lr->next) {
         apr_socket_close(lr->sd);
     }
+    ap_listeners = NULL;
     return 0;
 }
 
