@@ -320,18 +320,6 @@ static int my_child_num;
 
 scoreboard *scoreboard_image = NULL;
 
-/* small utility macros to make things easier to read */
-
-#ifdef WIN32
-#define ap_killpg(x, y)
-#else
-#ifdef NO_KILLPG
-#define ap_killpg(x, y)		(kill (-(x), (y)))
-#else
-#define ap_killpg(x, y)		(killpg ((x), (y)))
-#endif
-#endif /* WIN32 */
-
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT) || defined(USE_FLOCK_SERIALIZED_ACCEPT)
 static void expand_lock_fname(pool *p)
 {

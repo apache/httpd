@@ -64,4 +64,17 @@ API_EXPORT(int) ap_snprintf(char *, size_t, const char *, ...);
 API_EXPORT(int) ap_vsnprintf(char *, size_t, const char *, va_list ap);
 int ap_execle(const char *, const char *, ...);
 int ap_execve(const char *, const char *argv[], const char *envp[]);
+
+/* small utility macros to make things easier to read */
+
+#ifdef WIN32
+#define ap_killpg(x, y)
+#else
+#ifdef NO_KILLPG
+#define ap_killpg(x, y)		(kill (-(x), (y)))
+#else
+#define ap_killpg(x, y)		(killpg ((x), (y)))
+#endif
+#endif /* WIN32 */
+
 #endif	/* !APACHE_AP_H */
