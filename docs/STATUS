@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/04/30 23:25:08 $
+Last modified: $Date: 2003/05/01 00:39:16 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -189,6 +189,5 @@ http://httpd.apache.org/docs-project/docsformat.html
 developer/API.html
 
 # converting from nroff to xml
-programs/htdigest.html
 programs/htpasswd.html
 programs/other.html

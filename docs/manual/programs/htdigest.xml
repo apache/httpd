@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage metafile="htdigest.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>htdigest - manage user files for digest authentication</title>
+
+<summary>
+    <p><code>htdigest</code> is used to create and update the flat-files used
+    to store usernames, realm and password for digest authentication of HTTP
+    users. Resources available from the Apache HTTP server can be restricted
+    to just the users listed in the files created by <code>htdigest</code>.</p>
+
+    <p>This manual page only lists the command line arguments. For details of
+    the directives necessary to configure digest authentication in
+    <a href="httpd.html">httpd</a> see the Apache manual, which is part
+    of the Apache distribution or can be found at
+    <a href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
+</summary>
+<seealso><a href="httpd.html">httpd</a></seealso>
+<seealso><module>mod_auth_digest</module></seealso>
+
+<section id="synopsis"><title>Synopsis</title>
+    <p><code><strong>htdigest</strong> [ -<strong>c</strong> ]
+    <var>passwdfile</var> <var>realm</var> <var>username</var></code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+    <dt><code>-c</code></dt>
+    <dd>Create the <var>passwdfile</var>. If <var>passwdfile</var> already
+    exists, it is deleted first.</dd>
+
+    <dt><code><var>passwdfile</var></code></dt>
+    <dd>Name of the file to contain the username, realm and password. If
+    <code>-c</code> is given, this file is created if it does not already
+    exist, or deleted and recreated if it does exist.</dd>
+
+    <dt><code><var>realm</var></code></dt>
+    <dd>The realm name to which the user name belongs.</dd>
+
+    <dt><code><var>username</var></code></dt>
+    <dd>The user name to create or update in <var>passwdfile</var>. If
+    <var>username</var> does not exist is this file, an entry is added. If it
+    does exist, the password is changed.</dd>
+    </dl>
+</section>
+
+</manualpage>
