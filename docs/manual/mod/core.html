@@ -2460,6 +2460,11 @@ that the limit should be set to the maximum allowed by the operating system
 configuration. Raising the maximum resource limit requires that the server
 is running as root, or in the initial startup phase.<P>
 
+This applies to processes forked off from Apache children servicing requests,
+not the Apache children themselves. This includes CGI scripts and SSI
+exec commands, but not any processes forked off from the Apache parent
+such as piped logs.<P>
+
 CPU resource limits are expressed in seconds per process.<P>
 
 See also <A HREF="#rlimitmem">RLimitMEM</A> or
@@ -2498,6 +2503,11 @@ limit should be set to the maximum allowed by the operating system
 configuration. Raising the maximum resource limit requires that the
 server is running as root, or in the initial startup phase.<P>
 
+This applies to processes forked off from Apache children servicing requests,
+not the Apache children themselves. This includes CGI scripts and SSI
+exec commands, but not any processes forked off from the Apache parent
+such as piped logs.<P>
+
 Memory resource limits are expressed in bytes per process.<P>
 
 See also <A HREF="#rlimitcpu">RLimitCPU</A> or
@@ -2535,6 +2545,11 @@ Either parameter can be a number, or <EM>max</EM> to indicate to the server
 that the limit should be set to the maximum allowed by the operating system
 configuration. Raising the maximum resource limit requires that the server
 is running as root, or in the initial startup phase.<P>
+
+This applies to processes forked off from Apache children servicing requests,
+not the Apache children themselves. This includes CGI scripts and SSI
+exec commands, but not any processes forked off from the Apache parent
+such as piped logs.<P>
 
 Process limits control the number of processes per user.<P>
 
