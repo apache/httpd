@@ -256,8 +256,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
      * the CONNECT request on to it.
      */
     if (proxyport) {
-	/* FIXME: Error checking ignored.  Also, we force
-	 * a HTTP/1.0 request to keep things simple.
+	/* FIXME: Error checking ignored.
 	 */
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		     "proxy: CONNECT: sending the CONNECT request to the remote proxy");
@@ -271,7 +270,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		     "proxy: CONNECT: Returning 200 OK Status");
-        ap_rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
+        ap_rvputs(r, "HTTP/1.1 200 Connection established" CRLF, NULL);
         ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
         ap_rflush(r);
     }
