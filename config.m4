@@ -1,7 +1,7 @@
 dnl ## ====================================================================
 dnl ## The Apache Software License, Version 1.1
 dnl ##  
-dnl ## Copyright (c) 2000-2001 The Apache Software Foundation.  All rights
+dnl ## Copyright (c) 2000-2002 The Apache Software Foundation.  All rights
 dnl ## reserved.
 dnl ##
 dnl ## Redistribution and use in source and binary forms, with or without
