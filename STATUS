@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/22 17:35:04 $]
+Last modified at [$Date: 2003/10/22 17:40:26 $]
 
 Release:
 
@@ -271,6 +271,12 @@ PATCHES TO BACKPORT FROM 2.1
         modules/http/http_request.c r1.159
         server/protocol.c r1.138
       +1: trawick, stoddard
+
+    * When UseCanonicalName is set to OFF, allow ap_get_server_port to 
+      check r->connection->local_addr->port before defaulting to 
+      server->port or ap_default_port()
+        server/core.c r1.247
+      +1: bnicholes
 
 CURRENT RELEASE NOTES:
 
