@@ -782,8 +782,8 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     /* We are not using multiviews */
     neg->count_multiviews_variants = 0;
 
-    if (ap_open(neg->pool, rr->filename, APR_READ | APR_BUFFERED,
-                APR_OS_DEFAULT, &map) != APR_SUCCESS) {
+    if (ap_open(&map, neg->pool, rr->filename, APR_READ | APR_BUFFERED,
+                APR_OS_DEFAULT) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                       "cannot access type map file: %s", rr->filename);
         return HTTP_FORBIDDEN;
@@ -908,7 +908,7 @@ static int read_types_multi(negotiation_state *neg)
     ++filp;
     prefix_len = strlen(filp);
 
-    if (ap_opendir(neg->pool, neg->dir_name, &dirp) != APR_SUCCESS) {
+    if (ap_opendir(&dirp, neg->pool, neg->dir_name) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
@@ -918,7 +918,7 @@ static int read_types_multi(negotiation_state *neg)
         request_rec *sub_req;
         char *d_name;
 
-        ap_get_dir_filename(dirp, &d_name);
+        ap_get_dir_filename(&d_name, dirp);
         /* Do we have a match? */
 
         if (strncmp(d_name, filp, prefix_len)) {

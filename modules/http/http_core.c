@@ -399,7 +399,7 @@ void ap_core_reorder_directories(ap_context_t *p, server_rec *s)
     elts = (void **)sec->elts;
 
     /* we have to allocate tmp space to do a stable sort */
-    ap_create_context(p, &tmp);
+    ap_create_context(&tmp, p);
     sortbin = ap_palloc(tmp, sec->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
 	sortbin[i].orig_index = i;
@@ -2515,7 +2515,7 @@ static int default_handler(request_rec *r)
         return METHOD_NOT_ALLOWED;
     }
 	
-    if (ap_open (r->pool, r->filename, APR_READ | APR_BINARY, 0, &fd) != APR_SUCCESS) {
+    if (ap_open (&fd, r->pool, r->filename, APR_READ | APR_BINARY, 0) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;

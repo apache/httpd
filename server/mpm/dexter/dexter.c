@@ -858,9 +858,9 @@ static void *worker_thread(void *arg)
     int native_socket;
 
     pthread_mutex_lock(&thread_pool_create_mutex);
-    ap_create_context(thread_pool_parent, &tpool);
+    ap_create_context(&tpool, thread_pool_parent);
     pthread_mutex_unlock(&thread_pool_create_mutex);
-    ap_create_context(tpool, &ptrans);
+    ap_create_context(&ptrans, tpool);
 
     while (!workers_may_exit) {
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
@@ -923,7 +923,7 @@ static void *worker_thread(void *arg)
                     /* XXX: Should we check for POLLERR? */
                     if (listenfds[curr_pollfd].revents & POLLIN) {
                         last_pollfd = curr_pollfd;
-                        ap_put_os_sock(tpool, &sd, &listenfds[curr_pollfd].fd);
+                        ap_put_os_sock(&sd, &listenfds[curr_pollfd].fd, tpool);
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
@@ -931,7 +931,7 @@ static void *worker_thread(void *arg)
         }
     got_fd:
         if (!workers_may_exit) {
-            ap_accept(sd, &csd);
+            ap_accept(&csd, sd);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
 	    pthread_mutex_lock(&idle_thread_count_mutex);
@@ -981,7 +981,7 @@ static void child_main(int child_num_arg)
 
     my_pid = getpid();
     child_num = child_num_arg;
-    ap_create_context(pconf, &pchild);
+    ap_create_context(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
@@ -1026,7 +1026,7 @@ static void child_main(int child_num_arg)
     for (i = 0; i < max_threads; i++) {
         worker_thread_free_ids[i] = i;
     }
-    ap_create_context(pchild, &thread_pool_parent);
+    ap_create_context(&thread_pool_parent, pchild);
     pthread_mutex_init(&thread_pool_create_mutex, NULL);
     pthread_mutex_init(&idle_thread_count_mutex, NULL);
     pthread_mutex_init(&worker_thread_count_mutex, NULL);

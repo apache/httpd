@@ -1001,7 +1001,7 @@ static config_log_state *open_config_log(server_rec *s, ap_context_t *p,
     }
     else {
         const char *fname = ap_server_root_relative(p, cls->fname);
-        if (ap_open(p, fname, xfer_flags, xfer_mode, &cls->log_fd) != APR_SUCCESS) {
+        if (ap_open(&cls->log_fd, p, fname, xfer_flags, xfer_mode) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
                          "could not open transfer log file %s.", fname);
             exit(1);

@@ -209,7 +209,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
 	}
 
         dummyno = fileno(dummy);
-	ap_put_os_file(p, &s->error_log, &dummyno);
+	ap_put_os_file(&s->error_log, &dummyno, p);
     }
 
 #ifdef HAVE_SYSLOG
@@ -236,8 +236,8 @@ static void open_error_log(server_rec *s, ap_context_t *p)
     else {
 	fname = ap_server_root_relative(p, s->error_fname);
 	/*  Change to AP funcs. */
-        if (ap_open(p, fname, APR_BUFFERED | APR_APPEND | APR_READ | APR_WRITE, 
-                      APR_OS_DEFAULT, &s->error_log) != APR_SUCCESS) {
+        if (ap_open(&s->error_log, p, fname, APR_BUFFERED | APR_APPEND | 
+                    APR_READ | APR_WRITE, APR_OS_DEFAULT) != APR_SUCCESS) {
             perror("fopen");
             fprintf(stderr, "%s: could not open error log file %s.\n",
 		    ap_server_argv0, fname);
@@ -321,7 +321,7 @@ static void log_error_core(const char *file, int line, int level,
 	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
 	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
 	    return;
-	ap_put_os_file(NULL, &logf, &errfileno);
+	ap_put_os_file(&logf, &errfileno, NULL);
     }
     else if (s->error_log) {
 	/*
@@ -773,7 +773,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     pl = ap_palloc(p, sizeof (*pl));
     pl->p = p;
     dummyno = fileno(dummy);
-    ap_put_os_file(p, &pl->write_f, &dummyno);
+    ap_put_os_file(&pl->write_f, &dummyno, p);
 
     return pl;
 }
