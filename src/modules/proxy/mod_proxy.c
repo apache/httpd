@@ -56,8 +56,12 @@
  */
 
 #include "mod_proxy.h"
+
+#define CORE_PRIVATE
+
 #include "http_log.h"
 #include "http_vhost.h"
+#include "http_request.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
