@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/27 12:33:06 $]
+Last modified at [$Date: 2003/02/27 12:53:15 $]
 
 Release:
 
@@ -165,8 +165,11 @@ CURRENT VOTES:
       of APR (i.e., 1.0).
       yes:
       no:   trawick, jerenkrantz, wrowe, stoddard, striker, nd, gregames
-        wrowe adds it's nice if we *can* compile against it, but as
-        a matter of a practical tarball or binary release, don't.
+        wrowe: it's nice if we *can* compile against it, but as a
+               matter of a practical tarball or binary release, don't.
+        gstein: the Q is unclear. of course it has to work with an
+                official version. maybe the Q is really "we *require*
+                a stable version" ?
 
     * APACHE_2_0_BRANCH uses a level of apr and apr-util code branched
       from the APACHE_2_0_44 tag.
@@ -193,7 +196,76 @@ CURRENT VOTES:
        R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker, nd,
                 gregames(lazy consensus OK for mainline)
        Abstain: 
-       C-T-R:   BrianP, aaron, jim
+       C-T-R:   BrianP, aaron, jim, gstein
+       
+       gstein: we have an open branch, so there is an easy release
+               valve for feature and API changes. we trust developers
+               to put their changes in the right place. if they
+               *don't*, that is what the -T-R is all about, and why we
+               have source control.
+               
+               yes, the branch should be "bug fix only" or other
+               voted-upon feature changes, but we already have
+               guidelines for all that.
+
+                 http://httpd.apache.org/dev/guidelines.html
+               
+               see the section titled "Product Changes" and the
+               following paragraph which states:
+
+               "... All product changes to a prior-branch (old
+               version) repository require consensus before the change
+               is committed."
+
+               And under "When to Commit a Change", first line:
+               
+               "Ideas must be review-then-commit; patches can be
+               commit-then-review."
+
+               The problem here is that R-T-C expresses a fundamental
+               DISTRUST of your peers. We had problems stabilizing the
+               code simply because there are numerous interests in the
+               codebase, and those are not fully compatible. With the
+               branch, we have partitioned the interest: bug fix vs
+               new features. But developers *know* when a bug fix
+               should be applied or should not. There is no reason to
+               tell a developer they are wrong, and their basic
+               understanding of what is broken and what needs to be
+               fixed is subject to peer review. Once you have a bug
+               fix in hand, it isn't rocket science. And, always,
+               there is the option to pull a fix back out if a
+               developer goofs. We all goof, but there is no sense in
+               ASSUMING that incorrect behavior is the norm.
+
+               If a develop consistently causes problems, then we have
+               ways of dealing with that. But at the moment, this
+               isn't the case, and it does not foster a healthy
+               environment to apply that label to ALL developers.
+               R-T-C is fundamentally "you're guilty of bad behavior,
+               with no way to prove innocence. all your actions are
+               hereby monitored."
+               
+               Why did I wait so long to issue this commentary? Simply
+               because I disagreed with it at such a fundamental level
+               that I didn't want to deal with it. Also, that I
+               *wasn't* going to deal with it when I had changes to
+               commit. But now we're seeing this stupid R-T-C hammer
+               being used to smack developers over the head. That is
+               inappropriate when the bug fixes they are committing to
+               the branch are entirely reasonable and appropriate. The
+               hammer simply should not exist.
+               
+               Yes, I'm ranting, and hey, I'm even sober. :-) R-T-C is
+               Badness. If I could veto the policy, I would. If I can
+               ignore it, I will. For years, this group was built on
+               the notion of peer respect and trust. R-T-C destroys
+               that, and makes the environment less cozy and less
+               inviting. Our polcies and procedures were designed to
+               operate successfully in a C-T-R environment; there is
+               no need for such a draconian policy.
+
+               Bleh.
+
 
     * httpd-std.conf and friends;
 
