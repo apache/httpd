@@ -160,13 +160,21 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     conf->d_components = new->d_components;
     conf->r = new->r;
     
-    if (!(new->opts & OPT_UNSET)) conf->opts = new->opts;
-    if (new->opts_add) {
-	conf->opts |= new->opts_add;
-	conf->opts &= ~OPT_UNSET;
+    if (new->opts & OPT_UNSET) {
+	/* there was no explicit setting of new->opts, so we merge
+	 * preserve the invariant (opts_add & opts_remove) == 0
+	 */
+	conf->opts_add = (conf->opts_add & ~new->opts_remove) | new->opts_add;
+	conf->opts_remove = (conf->opts_remove & ~new->opts_add) | new->opts_remove;
+	conf->opts = (conf->opts & ~conf->opts_remove) | conf->opts_add;
     }
-    if (new->opts_remove) {
-	conf->opts &= ~(new->opts_remove | OPT_UNSET);
+    else {
+	/* otherwise we just copy, because an explicit opts setting
+	 * overrides all earlier +/- modifiers
+	 */
+	conf->opts = new->opts;
+	conf->opts_add = new->opts_add;
+	conf->opts_remove = new->opts_remove;
     }
 
     if (!(new->override & OR_UNSET)) conf->override = new->override;
@@ -801,12 +809,15 @@ const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 	else 
 	    return pstrcat (cmd->pool, "Illegal option ", w, NULL);
 
+	/* we ensure the invariant (d->opts_add & d->opts_remove) == 0 */
 	if (action == '-') {
 	    d->opts_remove |= opt;
+	    d->opts_add &= ~opt;
 	    d->opts &= ~opt;
 	}
 	else if (action == '+') {
 	    d->opts_add |= opt;
+	    d->opts_remove &= ~opt;
 	    d->opts |= opt;
 	}
 	else {

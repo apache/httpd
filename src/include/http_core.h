@@ -145,6 +145,13 @@ typedef struct {
     /* the number of slashes in d */
     unsigned d_components;
 
+    /* If (opts & OPT_UNSET) then no absolute assignment to options has
+     * been made.
+     * invariant: (opts_add & opts_remove) == 0
+     * Which said another way means that the last relative (options + or -)
+     * assignment made to each bit is recorded in exactly one of opts_add
+     * or opts_remove.
+     */
     allow_options_t opts;
     allow_options_t opts_add;
     allow_options_t opts_remove;
