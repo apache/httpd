@@ -71,7 +71,6 @@
 #define NEED_STRCASECMP
 #define NEED_STRDUP
 #define NEED_STRNCASECMP
-#define FNDELAY O_NDELAY
 extern void GETPRIVMODE();
 extern void GETUSERMODE();
 extern char *inet_ntoa();
@@ -113,6 +112,7 @@ int gethostname(char *name, int namelen);
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 #define HAVE_BSTRING_H
+#define NO_LINGCLOSE
 
 #elif defined(HIUX)
 #define HAVE_SYS_RESOURCE_H
@@ -198,6 +198,7 @@ typedef unsigned short mode_t;
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_STRDUP
+#define NO_LINGCLOSE
 #define NO_UNISTD_H
 #undef _POSIX_SOURCE
 #ifndef FD_CLOEXEC
@@ -333,6 +334,7 @@ extern char *crypt();
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(UW)
+#define NO_LINGCLOSE
 #define NO_KILLPG
 #undef  NO_SETSID
 #undef NEED_STRDUP

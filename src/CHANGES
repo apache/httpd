@@ -1,5 +1,14 @@
 Changes with Apache 1.2b8
 
+  *) Improved lingering_close by adding a special timeout, removing the
+     spurious log messages, removing the nonblocking settings (they
+     are not needed with the better timeout), and adding commentary
+     about the NO_LINGCLOSE and USE_SO_LINGER issues.  NO_LINGCLOSE is
+     now the default for SunOS4, Unixware, NeXT, and Irix.  [Roy Fielding]
+
+  *) Send error messages about setsockopt failures to the server error
+     log instead of stderr.  [Roy Fielding]
+
   *) Fix loopholes in proxy cache expiry vis a vis alarms. [Brian Moore]
 
   *) Stopgap solution for CGI 3-second delay with server-side includes: if

@@ -301,101 +301,6 @@ void accept_mutex_off()
 #define accept_mutex_off()
 #endif
 
-/*
- * More machine-dependant networking gooo... on some systems,
- * you've got to be *really* sure that all the packets are acknowledged
- * before closing the connection.
- */
-
-#ifndef NO_LINGCLOSE
-static void lingering_close (request_rec *r)
-{
-    int dummybuf[512];
-    struct timeval tv;
-    fd_set lfds, fds_read, fds_err;
-    int select_rv = 0, read_rv = 0;
-    int lsd;
-
-    /* Prevent a slow-drip client from holding us here indefinitely */
-
-    hard_timeout("lingering_close", r);
-
-    /* Send any leftover data to the client, but never try to again */
-
-    bflush(r->connection->client);
-    bsetflag(r->connection->client, B_EOUT, 1);
-
-    /* Close our half of the connection --- send the client a FIN and
-     * set the socket to non-blocking for later reads.
-     */
-    lsd = r->connection->client->fd;
-
-#ifdef MPE
-    if (((shutdown(lsd, 1)) != 0) || (sfcntl(lsd, F_SETFL, FNDELAY) == -1)) {
-#else
-    if (((shutdown(lsd, 1)) != 0) || (fcntl(lsd, F_SETFL, FNDELAY) == -1)) {
-#endif
-	/* if it fails, no need to go through the rest of the routine */
-	if (errno != ENOTCONN)
-	    log_unixerr("shutdown", NULL, "lingering_close", r->server);
-	bclose(r->connection->client);
-	kill_timeout(r);
-	return;
-    }
-
-    /* Set up to wait for readable data on socket... */
-
-    FD_ZERO(&lfds);
-    FD_SET(lsd, &lfds);
-
-    /* Wait for readable data or error condition on socket;
-     * slurp up any data that arrives...  We exit when we go for 
-     * an interval of tv length without getting any more data, get an
-     * error from select(), get an exception on lsd, get an error or EOF
-     * on a read, or the timer expires.
-     */
-
-    do {
-        /* We use a 1 second timeout because current (Feb 97) browsers
-         * fail to close a connection after the server closes it.  Thus,
-         * to avoid keeping the child busy, we are only lingering long enough
-         * for a client that is actively sending data on a connection.
-         * This should be sufficient unless the connection is massively
-         * losing packets, in which case we might have missed the RST anyway.
-         * These parameters are reset on each pass, since they might be
-         * changed by select.
-         */
-        tv.tv_sec  = 1;
-        tv.tv_usec = 0;
-        read_rv    = 0;
-        fds_read   = lfds;
-        fds_err    = lfds;
-    
-#ifdef SELECT_NEEDS_CAST
-        select_rv = select(lsd+1, (int*)&fds_read, NULL, (int*)&fds_err, &tv);
-#else
-        select_rv = select(lsd+1, &fds_read, NULL, &fds_err, &tv);
-#endif
-    } while ((select_rv > 0) &&           /* Something to see on socket    */
-             !FD_ISSET(lsd, &fds_err) &&   /* that isn't an error condition */
-             FD_ISSET(lsd, &fds_read) &&   /* and is worth trying to read   */
-             ((read_rv = read(lsd, dummybuf, sizeof dummybuf)) > 0));
-
-    /* Log any errors that occurred (client close or reset is not an error) */
-    
-    if (select_rv < 0)
-        log_unixerr("select", NULL, "lingering_close", r->server);
-    else if (read_rv < 0 && errno != ECONNRESET)
-        log_unixerr("read", NULL, "lingering_close", r->server);
-
-    /* Should now have seen final ack.  Safe to finally kill socket */
-
-    bclose(r->connection->client);
-
-    kill_timeout(r);
-}
-#endif /* ndef NO_LINGCLOSE */
-
 void usage(char *bin)
 {
     fprintf(stderr,"Usage: %s [-d directory] [-f file] [-v] [-h] [-l]\n",bin);
@@ -557,6 +462,158 @@ void reset_timeout (request_rec *r) {
 	    alarm(0);
     }
 }
+
+/*
+ * More machine-dependent networking gooo... on some systems,
+ * you've got to be *really* sure that all the packets are acknowledged
+ * before closing the connection, since the client will not be able
+ * to see the last response if their TCP buffer is flushed by a RST
+ * packet from us, which is what the server's TCP stack will send
+ * if it receives any request data after closing the connection.
+ *
+ * In an ideal world, this function would be accomplished by simply
+ * setting the socket option SO_LINGER and handling it within the
+ * server's TCP stack while the process continues on to the next request.
+ * Unfortunately, it seems that most (if not all) operating systems
+ * block the server process on close() when SO_LINGER is used.
+ * For those that don't, see USE_SO_LINGER below.  For the rest,
+ * we have created a home-brew lingering_close.
+ *
+ * Many operating systems tend to block, puke, or otherwise mishandle
+ * calls to shutdown only half of the connection.  You should define
+ * NO_LINGCLOSE in conf.h if such is the case for your system.
+ */
+#ifdef USE_SO_LINGER
+#define NO_LINGCLOSE    /* The two lingering options are exclusive */
+
+static void sock_enable_linger (int s)
+{
+    struct linger li;
+
+    li.l_onoff = 1;
+    li.l_linger = 30;
+
+    if (setsockopt(s, SOL_SOCKET, SO_LINGER,
+                   (char *)&li, sizeof(struct linger)) < 0) {
+        log_unixerr("setsockopt", "(SO_LINGER)", NULL, server_conf);
+        /* not a fatal error */
+    }
+}
+
+#else
+#define sock_enable_linger(s) /* NOOP */
+#endif  /* USE_SO_LINGER */
+
+#ifndef NO_LINGCLOSE
+
+/* Special version of timeout for lingering_close */
+
+static void lingerout(sig)
+int sig;
+{
+    if (alarms_blocked) {
+	alarm_pending = 1;
+	return;
+    }
+    
+    if (!current_conn) {
+#if defined(USE_LONGJMP)
+	longjmp(jmpbuffer,1);
+#else
+	siglongjmp(jmpbuffer,1);
+#endif
+    }
+    current_conn->aborted = 1;
+}
+    
+static void linger_timeout ()
+{
+    const int max_secs_to_linger = 30;
+
+    timeout_name = "lingering close";
+    
+    signal(SIGALRM,(void (*)())lingerout);
+    alarm(max_secs_to_linger);
+}
+
+/* Since many clients will abort a connection instead of closing it,
+ * attempting to log an error message from this routine will only
+ * confuse the webmaster.  There doesn't seem to be any portable way to
+ * distinguish between a dropped connection and something that might be
+ * worth logging.
+ */
+static void lingering_close (request_rec *r)
+{
+    int dummybuf[512];
+    struct timeval tv;
+    fd_set lfds, fds_read, fds_err;
+    int select_rv = 0, read_rv = 0;
+    int lsd;
+
+    /* Prevent a slow-drip client from holding us here indefinitely */
+
+    linger_timeout();
+
+    /* Send any leftover data to the client, but never try to again */
+
+    bflush(r->connection->client);
+    bsetflag(r->connection->client, B_EOUT, 1);
+
+    /* Close our half of the connection --- send the client a FIN */
+
+    lsd = r->connection->client->fd;
+
+    if ((shutdown(lsd, 1) != 0) || r->connection->aborted) {
+	kill_timeout(r);
+	bclose(r->connection->client);
+	return;
+    }
+
+    /* Set up to wait for readable data on socket... */
+
+    FD_ZERO(&lfds);
+    FD_SET(lsd, &lfds);
+
+    /* Wait for readable data or error condition on socket;
+     * slurp up any data that arrives...  We exit when we go for 
+     * an interval of tv length without getting any more data, get an
+     * error from select(), get an exception on lsd, get an error or EOF
+     * on a read, or the timer expires.
+     */
+
+    do {
+        /* We use a 2 second timeout because current (Feb 97) browsers
+         * fail to close a connection after the server closes it.  Thus,
+         * to avoid keeping the child busy, we are only lingering long enough
+         * for a client that is actively sending data on a connection.
+         * This should be sufficient unless the connection is massively
+         * losing packets, in which case we might have missed the RST anyway.
+         * These parameters are reset on each pass, since they might be
+         * changed by select.
+         */
+        tv.tv_sec  = 2;
+        tv.tv_usec = 0;
+        read_rv    = 0;
+        fds_read   = lfds;
+        fds_err    = lfds;
+    
+#ifdef SELECT_NEEDS_CAST
+        select_rv = select(lsd+1, (int*)&fds_read, NULL, (int*)&fds_err, &tv);
+#else
+        select_rv = select(lsd+1, &fds_read, NULL, &fds_err, &tv);
+#endif
+    } while ((select_rv > 0) &&            /* Something to see on socket    */
+             !FD_ISSET(lsd, &fds_err) &&   /* that isn't an error condition */
+             FD_ISSET(lsd, &fds_read) &&   /* and is worth trying to read   */
+             ((read_rv = read(lsd, dummybuf, sizeof dummybuf)) > 0));
+
+    /* Should now have seen final ack.  Safe to finally kill socket */
+
+    bclose(r->connection->client);
+
+    kill_timeout(r);
+}
+#endif /* ndef NO_LINGCLOSE */
 
 /*****************************************************************
  *
@@ -1566,8 +1623,7 @@ static void sock_disable_nagle (int s)
 
     if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
                    sizeof(int)) < 0) {
-	perror ("setsockopt(TCP_NODELAY)");
-	fprintf(stderr, "httpd: could not set socket option TCP_NODELAY\n");
+        log_unixerr("setsockopt", "(TCP_NODELAY)", NULL, server_conf);
     }
 }
 #else
@@ -1840,63 +1896,41 @@ int make_child(server_rec *server_conf, int child_num)
     return 0;
 }
 
-static int
-make_sock(pool *pconf, const struct sockaddr_in *server)
+static int make_sock(pool *pconf, const struct sockaddr_in *server)
 {
     int s;
     int one = 1;
 
     if ((s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
-        perror("socket");
-        fprintf(stderr,"httpd: could not get socket\n");
+        log_unixerr("socket", NULL, "Failed to get a socket, exiting child",
+                    server_conf);
         exit(1);
     }
 
-    note_cleanups_for_fd (pconf, s); /* arrange to close on exec or restart */
+    note_cleanups_for_fd(pconf, s); /* arrange to close on exec or restart */
     
 #ifndef MPE
 /* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
     if (setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) {
-	perror("setsockopt(SO_REUSEADDR)");
-	fprintf(stderr,"httpd: could not set socket option SO_REUSEADDR\n");
+        log_unixerr("setsockopt", "(SO_REUSEADDR)", NULL, server_conf);
         exit(1);
     }
     one = 1;
     if (setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&one,sizeof(int)) < 0) {
-	perror("setsockopt(SO_KEEPALIVE)"); 
-        fprintf(stderr,"httpd: could not set socket option SO_KEEPALIVE\n"); 
-        exit(1); 
+        log_unixerr("setsockopt", "(SO_KEEPALIVE)", NULL, server_conf);
+        exit(1);
     }
 #endif
 
     sock_disable_nagle(s);
+    sock_enable_linger(s);
     
-#ifdef USE_SO_LINGER   /* If puts don't complete, you could try this. */
-    {
-	/* Unfortunately, SO_LINGER causes problems as severe as it
-	 * cures on many of the affected systems; now trying the
-	 * lingering_close trick (see routine by that name above)
-	 * instead...
-	 */
-	struct linger li;
-	li.l_onoff = 1;
-	li.l_linger = 900;
-
-	if (setsockopt(s, SOL_SOCKET, SO_LINGER,
-	               (char *)&li, sizeof(struct linger)) < 0) {
-	    perror("setsockopt(SO_LINGER)");
-	    fprintf(stderr,"httpd: could not set socket option SO_LINGER\n");
-	    exit(1);
-	}
-    }
-#endif  /* USE_SO_LINGER */
-
     /*
      * To send data over high bandwidth-delay connections at full
-     * speed we must the TCP window to open wide enough to keep the
-     * pipe full.  Default the default window size on many systems
+     * speed we must force the TCP window to open wide enough to keep the
+     * pipe full.  The default window size on many systems
      * is only 4kB.  Cross-country WAN connections of 100ms
-     * at 1Mb/s are not impossible for well connected sites in 1995.
+     * at 1Mb/s are not impossible for well connected sites.
      * If we assume 100ms cross-country latency,
      * a 4kB buffer limits throughput to 40kB/s.
      *
@@ -1908,14 +1942,15 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
      *
      * -John Heidemann <johnh@isi.edu> 25-Oct-96
      *
-     *
      * If no size is specified, use the kernel default.
      */
     if (server_conf->send_buffer_size) {
         if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
               (char *)&server_conf->send_buffer_size, sizeof(int)) < 0) {
-	    perror("setsockopt(SO_SNDBUF), using default buffer size"); 
-	    /* Fail soft. */
+            log_unixerr("setsockopt", "(SO_SNDBUF)",
+                        "Failed to set SendBufferSize, using default",
+                        server_conf);
+	    /* not a fatal error */
 	}
     }
 

@@ -347,13 +347,13 @@ case "$PLAT" in
     *-unixware1)
 	DEF_WANTHSREGEX=yes
 	OS='Unixware'
-	CFLAGS="$CFLAGS -DSVR4"
+	CFLAGS="$CFLAGS -DSVR4 -DNO_LINGCLOSE"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
 	;;
     *-unixware2)
 	DEF_WANTHSREGEX=yes
 	OS='Unixware'
-	CFLAGS="$CFLAGS -DSVR4"
+	CFLAGS="$CFLAGS -DSVR4 -DNO_LINGCLOSE"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
 	;;
     *-unixware211)
