@@ -88,6 +88,7 @@ bzero \
 )
 
 AC_CHECK_LIB(nsl, gethostbyname)
+AC_CHECK_LIB(nsl, gethostname)
 AC_CHECK_LIB(socket, socket)
 
 AC_CHECK_FUNCS(inet_addr inet_network, break, [
