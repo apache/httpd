@@ -862,13 +862,13 @@ static const char
 
 static const command_rec cache_cmds[] =
 {
-    AP_INIT_TAKE1("CacheSize", set_max_cache_size, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("MCacheSize", set_max_cache_size, NULL, RSRC_CONF,
      "The maximum amount of memory used by the cache in KBytes"),
-    AP_INIT_TAKE1("CacheMaxObjectCount", set_max_object_count, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("MCacheMaxObjectCount", set_max_object_count, NULL, RSRC_CONF,
      "The maximum number of objects allowed to be placed in the cache"),
-    AP_INIT_TAKE1("CacheMinObjectSize", set_min_cache_object_size, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("MCacheMinObjectSize", set_min_cache_object_size, NULL, RSRC_CONF,
      "The minimum size (in bytes) of an object to be placed in the cache"),
-    AP_INIT_TAKE1("CacheMaxObjectSize", set_max_cache_object_size, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("MCacheMaxObjectSize", set_max_cache_object_size, NULL, RSRC_CONF,
      "The maximum size (in bytes) of an object to be placed in the cache"),
     {NULL}
 };
