@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) no2slash() was O(n^2) in the length of the input.  Make it O(n).
+     [Dean Gaudet]
+
   *) migration from strncpy() to our "enhanced" version called
      ap_cpystrn() for performance and functionality reasons.
      Located in libap.a.  [Jim Jagielski]

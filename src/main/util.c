@@ -366,14 +366,20 @@ API_EXPORT(void) getparents(char *name)
 
 API_EXPORT(void) no2slash(char *name)
 {
-    register int x, y;
+    char *d, *s;
 
-    for (x = 0; name[x];)
-	if (x && (name[x - 1] == '/') && (name[x] == '/'))
-	    for (y = x + 1; name[y - 1]; y++)
-		name[y - 1] = name[y];
-	else
-	    x++;
+    s = d = name;
+    while (*s) {
+	if ((*d++ = *s) == '/') {
+	    do {
+		++s;
+	    } while (*s == '/');
+	}
+	else {
+	    ++s;
+	}
+    }
+    *d = '\0';
 }
 
 
