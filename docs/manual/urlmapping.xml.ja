@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.12 (outdated: 1.13) -->
+<!-- English Revision: 1.13 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -48,6 +48,8 @@
 <directive module="core">Options</directive>
 <directive module="mod_proxy">ProxyPass</directive>
 <directive module="mod_proxy">ProxyPassReverse</directive>
+<directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+<directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
 <directive module="mod_alias">Redirect</directive>
 <directive module="mod_alias">RedirectMatch</directive>
 <directive module="mod_rewrite">RewriteCond</directive>
@@ -216,18 +218,27 @@
 
 <example>
 ProxyPass /foo/ http://internal.example.com/bar/<br />
-ProxyPassReverse /foo/ http://internal.example.com/bar/
+ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
+ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
+ProxyPassReverseCookiePath /foo/ /bar/
 </example>
 
 <p><directive module="mod_proxy">ProxyPass</directive> ディレクティブは
 サーバが適切なドキュメントを取得するように設定し、
 <directive module="mod_proxy">ProxyPassReverse</directive> ディレクティブは
 <code>internal.example.com</code> からのリダイレクトがローカルサーバの
-適切なディレクトリを指すように書き換えます。ただし、ドキュメントの中の
-リンクは書き換えられない、ということは知っておいてください。
+適切なディレクトリを指すように書き換えます。
+同様に <directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+と <directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
+でバックエンド側サーバの発行した Cookie を書き換えることができます。</p>
+<p>ただし、ドキュメントの中のリンクは書き換えられない、
+ということは知っておいてください。
 ですから、<code>internal.example.com</code> への絶対パスによるリンクでは、
 クライアントがプロキシサーバを抜け出して <code>internal.example.com</code> に
-直接リクエストを送る、ということになります。</p>
+直接リクエストを送る、ということになります。
+サードパーティ製モジュールの <a 
+href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
+は、HTML と XHTML 中のリンクを書き換えることができます。</p>
 </section>
 
 <section id="rewrite"><title>リライトエンジン</title>
