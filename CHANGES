@@ -145,9 +145,6 @@ Changes with Apache 2.1.0-dev
   *) mod_dav: Disallow requests with an unescaped hash character in
      the Request-URI.  PR 21779.  [Amit Athavale <amit_athavale lycos.com>]
 
-  *) Add forensic logging module (mod_log_forensic).
-     [Ben Laurie]
-
   *) mod_proxy with ProxyErrorOverride On in a reverse-proxy configuration attaches
      a body to the 302 response and a wrong Content-Length header. 
      PR: 22951 [Ermanno Scaglione scaglione ..at.. starnetone.de]
@@ -332,6 +329,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) Add forensic logging module (mod_log_forensic).
+     [Ben Laurie]
 
   *) logresolve: Allow size of log line buffer to be overridden at
      build time (MAXLINE).  PR 27793.  [Jeff Trawick]
