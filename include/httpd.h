@@ -60,8 +60,8 @@
 #define APACHE_HTTPD_H
 
 /**
- * \file httpd.h
- * \brief HTTP Daemon routines
+ * @file httpd.h
+ * @brief HTTP Daemon routines
  */
 
 /* XXX - We need to push more stuff to other .h files, or even .c files, to
