@@ -2227,14 +2227,11 @@ AP_CORE_DECLARE(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
     const long int zero = 0L;
     char *date = NULL;
     request_rec *r = f->r;
-/* This hack should be removed as soon as we can remove filters */
-    static int foobar = 0;
 
-    if (foobar != 0) {
+    if ((int)f->ctx != 0) {
         return ap_pass_brigade(f->next, b);
     }
-    foobar++;
-/* END HACK */
+    (int)f->ctx++;
 
     if (r->assbackwards) {
         if (!r->main)
