@@ -147,7 +147,7 @@ static int set_group_privs(void)
 }
 
 
-int unixd_setup_child(void)
+AP_DECLARE(int) unixd_setup_child(void)
 {
     if (set_group_privs()) {
 	return -1;
@@ -182,7 +182,8 @@ int unixd_setup_child(void)
 }
 
 
-const char *unixd_set_user(cmd_parms *cmd, void *dummy, const char *arg)
+AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy, 
+                                        const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -208,7 +209,8 @@ const char *unixd_set_user(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg)
+AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy, 
+                                         const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -220,7 +222,7 @@ const char *unixd_set_group(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-void unixd_pre_config(apr_pool_t *ptemp)
+AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp)
 {
     apr_finfo_t wrapper;
 
