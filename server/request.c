@@ -559,7 +559,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * it goes out of scope, filename_len==strlen(r->filename)
          */
         apr_size_t filename_len;
-
+#ifdef CASE_BLIND_FILESYSTEM
+        apr_size_t canonical_len;
+#endif
         /*
          * We must play our own mimi-merge game here, for the few 
          * running dir_config values we care about within dir_walk.
@@ -572,24 +574,94 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         opts_remove = this_dir->opts_remove;
         override = this_dir->override;
 
-        /* Save path_info to merge back onto path_info later. If this
-         * isn't really path_info, what would it be doing here?
-         */
-        save_path_info = r->path_info;
-
-        /* Now begin to build r->filename from components, set aside the
-         * segments we have yet to work with in r->path_info (where they
-         * will stay when the current element resolves to a regular file.)
+        /* Set aside path_info to merge back onto path_info later.
+         * If r->filename is a directory, we must remerge the path_info, 
+         * before we continue!  [Directories cannot, by defintion, have
+         * path info.  Either the next segment is not-found, or a file.]
          *
-         * r->path_info tracks the remaining source path.
-         * r->filename  tracks the path as we build it.
+         * r->path_info tracks the unconsumed source path.
+         * r->filename  tracks the path as we process it
          */
-        r->path_info = r->filename;
+        if ((r->finfo.filetype == APR_DIR) && r->path_info && *r->path_info) 
+        {
+            if ((rv = apr_filepath_merge(&r->path_info, r->filename, r->path_info,
+                                         APR_FILEPATH_NOTABOVEROOT, r->pool))
+                      != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "dir_walk error, path_info %s is not relative "
+                              "to the filename path %s for uri %s", 
+                              r->path_info, r->filename, r->uri);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+            save_path_info = NULL;
+        }
+        else {
+            save_path_info = r->path_info;
+            r->path_info = r->filename;
+        }
+
+#ifdef CASE_BLIND_FILESYSTEM
+
+        canonical_len = 0; 
+        while (r->canonical_filename && r->canonical_filename[canonical_len]
+            && (r->canonical_filename[canonical_len]
+                      == r->path_info[canonical_len])) {
+             ++canonical_len;
+        }
+        while (canonical_len
+                 && ((r->canonical_filename[canonical_len - 1] != '/'
+                   && r->canonical_filename[canonical_len - 1])
+                  || (r->path_info[canonical_len - 1] != '/'
+                   && r->path_info[canonical_len - 1]))) {
+            --canonical_len;
+        }
+
+        /* 
+         * Now build r->filename component by component, starting
+         * with the root (on Unix, simply "/").  We will make a huge
+         * assumption here for efficiency, that any canonical path 
+         * already given included a canonical root.
+         */
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
-                               APR_FILEPATH_TRUENAME, r->pool);
+                               canonical_len 
+                                   ? 0 : APR_FILEPATH_TRUENAME, 
+                               r->pool);
         filename_len = strlen(r->filename);
-        /* Space for terminating null and an extra / is required. */
+
+        /*
+         * Bad assumption above?  If the root's length is longer
+         * than the canonical length, then it cannot be trusted as
+         * a truename.  So try again, this time more seriously.
+         */
+        if ((rv == APR_SUCCESS) && canonical_len 
+                                && (filename_len > canonical_len)) {
+            rv = apr_filepath_root((const char **)&r->filename,
+                                   (const char **)&r->path_info,
+                                   APR_FILEPATH_TRUENAME, r->pool);
+            filename_len = strlen(r->filename);
+            canonical_len = 0;
+        }
+
+#else /* ndef CASE_BLIND_FILESYSTEM, really this simple for Unix today; */
+
+        rv = apr_filepath_root((const char **)&r->filename,
+                               (const char **)&r->path_info,
+                               0, r->pool);
+        filename_len = strlen(r->filename);
+
+#endif
+
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "dir_walk error, could not determine the root "
+                          "path of filename %s%s for uri %s", 
+                          r->filename, r->path_info, r->uri);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        /* Working space for terminating null and an extra / is required.
+         */
         buflen = filename_len + strlen(r->path_info) + 2;
         buf = apr_palloc(r->pool, buflen);
         memcpy(buf, r->filename, filename_len + 1);
@@ -842,9 +914,7 @@ minimerge2:
              */
             if (r->finfo.filetype 
 #ifdef CASE_BLIND_FILESYSTEM
-                && (r->canonical_filename 
-                    && (strncmp(r->filename, 
-                                r->canonical_filename, filename_len) == 0))
+                && (filename_len <= canonical_len)
 #endif
                 && ((opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS)) 
             {
@@ -1027,6 +1097,12 @@ minimerge2:
  x       return res;
  x   }
  */
+
+    /* Save future sub-requestors much angst in processing
+     * this subrequest.  If dir_walk couldn't canonicalize
+     * the file path, nothing can.
+     */
+    r->canonical_filename = r->filename;
 
     if (r->finfo.filetype == APR_DIR) {
         cache->cached = r->filename;
