@@ -29,7 +29,7 @@
 #endif
 
 /* Global balancer counter */
-static int lb_workers = 0;
+int PROXY_DECLARE_DATA proxy_lb_workers = 0;
 static int lb_workers_limit = 0;
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
@@ -1142,9 +1142,9 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     if (port == -1)
         port = apr_uri_port_of_scheme((*worker)->scheme);
     (*worker)->port = port;
-    (*worker)->id   = lb_workers;
+    (*worker)->id   = proxy_lb_workers;
     /* Increase the total worker count */
-    ++lb_workers;
+    proxy_lb_workers++;
     init_conn_pool(p, *worker);
 
     return NULL;
@@ -1155,9 +1155,9 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
 
     proxy_worker *worker;
     worker = (proxy_worker *)apr_pcalloc(p, sizeof(proxy_worker));
-    worker->id = lb_workers;
+    worker->id = proxy_lb_workers;
     /* Increase the total worker count */
-    ++lb_workers;
+    proxy_lb_workers++;
     init_conn_pool(p, worker);
 
     return worker;
@@ -1169,27 +1169,11 @@ ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
 {
     proxy_worker *runtime;
 
-#if PROXY_HAS_SCOREBOARD
-    int mpm_daemons;
-
-    ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &mpm_daemons);
-    /* Check if we are prefork or single child */
-    if (worker->hmax && mpm_daemons > 1) {
-        /* Check only if workers_limit is set */
-        if (lb_workers_limit && (lb_workers + 1) > lb_workers_limit) {
-            ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool,
-                          "proxy: Can not add worker (%s) to balancer (%s)."
-                          " Dynamic limit reached.",
-                          worker->name, balancer->name);
-            return;
-        }
-    }
-#endif
     runtime = apr_array_push(balancer->workers);
     memcpy(runtime, worker, sizeof(proxy_worker));
-    runtime->id = lb_workers;
+    runtime->id = proxy_lb_workers;
     /* Increase the total runtime count */
-    ++lb_workers;
+    proxy_lb_workers++;
 
 }
 
@@ -1389,16 +1373,25 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
 #endif
 #if PROXY_HAS_SCOREBOARD
         /* Get scoreboard slot */
-    if (ap_scoreboard_image)
+    if (ap_scoreboard_image) {
         score = ap_get_scoreboard_lb(worker->id);
+	if (!score)
+	    ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conf->pool,
+			  "proxy: ap_get_scoreboard_lb(%d) failed for worker %s",
+			  worker->id, worker->name);
+    }
 #endif
     if (!score)
         score = apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
     worker->s = (proxy_worker_stat *)score;
     if (worker->route)
         strcpy(worker->s->route, worker->route);
+    else
+	*worker->s->route = '\0';
     if (worker->redirect)
         strcpy(worker->s->redirect, worker->redirect);
+    else
+	*worker->s->redirect = '\0';
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s)
@@ -1435,8 +1428,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                   apr_pool_cleanup_null);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "proxy: initialized worker for (%s) min=%d max=%d smax=%d",
-                      worker->hostname, worker->min, worker->hmax, worker->smax);
+                     "proxy: initialized worker %d for (%s) min=%d max=%d smax=%d",
+		     worker->id, worker->hostname, worker->min, worker->hmax, worker->smax);
 
 #if (APR_MAJOR_VERSION > 0)
         /* Set the acquire timeout */
@@ -1450,8 +1443,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         
         rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "proxy: initialized single connection worker for (%s)",
-                      worker->hostname);
+                     "proxy: initialized single connection worker %d for (%s)",
+		     worker->id, worker->hostname);
     }
     if (rv == APR_SUCCESS)
         worker->s->status |= PROXY_WORKER_INITIALIZED;
@@ -1840,7 +1833,11 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 
 int ap_proxy_lb_workers(void)
 {
-    /* Set the dynamic #workers limit */
-    lb_workers_limit = lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
+    /* Since we can't resize the scoreboard when reconfiguring, we
+     * have to impose a limit on the number of workers, we are
+     * able to reconfigure to.
+     */
+    if (!lb_workers_limit)
+	lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
     return lb_workers_limit;
 }
