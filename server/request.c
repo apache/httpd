@@ -240,10 +240,6 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      */
     ap_run_insert_filter(r);
 
-    if ((access_status = ap_invoke_handler(r)) != 0) {
-        return access_status;
-    }
-
     return OK;
 }
 
