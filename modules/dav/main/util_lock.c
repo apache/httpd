@@ -357,7 +357,7 @@ dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
 	/* Walk existing collection and set indirect locks */
         dav_walker_ctx ctx = { { 0 } };
 
-	ctx.w.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_AUTH;
+	ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH;
 	ctx.w.func = dav_lock_walker;
         ctx.w.walk_ctx = &ctx;
 	ctx.w.pool = r->pool;
