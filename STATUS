@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/10 17:07:30 $]
+Last modified at [$Date: 2000/06/10 17:12:01 $]
 
 Release:
 
@@ -158,7 +158,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Another approach would be a new hook phase after "translate" which
       would allow mod_mmap_static to munge what the translation has
       decided to do.
-        Status: Greg +1 (volunteers)
+        Status: Greg +1 (volunteers), Ryan +1
 
 Other bugs that need fixing:
 
