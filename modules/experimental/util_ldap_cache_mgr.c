@@ -73,7 +73,7 @@
 /* here till malloc is gone */
 #include <stdlib.h>
 
-static const int primes[] =
+static const unsigned long primes[] =
 {
   11,
   19,
@@ -201,7 +201,7 @@ unsigned long util_ald_hash_string(int nstr, ...)
 */
 void util_ald_cache_purge(util_ald_cache_t *cache)
 {
-    int i;
+    unsigned long i;
     util_cache_node_t *p, *q;
     apr_time_t t;
 
@@ -287,7 +287,7 @@ util_ald_cache_t *util_ald_create_cache(unsigned long maxentries,
                                 void (*freefunc)(void *))
 {
     util_ald_cache_t *cache;
-    int i;
+    unsigned long i;
 
     if (maxentries <= 0)
         return NULL;
@@ -334,7 +334,7 @@ util_ald_cache_t *util_ald_create_cache(unsigned long maxentries,
 
 void util_ald_destroy_cache(util_ald_cache_t *cache)
 {
-    int i;
+    unsigned long i;
     util_cache_node_t *p, *q;
 
     if (cache == NULL)
@@ -438,7 +438,7 @@ void util_ald_cache_remove(util_ald_cache_t *cache, void *payload)
 
 char *util_ald_cache_display_stats(apr_pool_t *p, util_ald_cache_t *cache, char *name)
 {
-    int i;
+    unsigned long i;
     int totchainlen = 0;
     int nchains = 0;
     double chainlen;
@@ -501,7 +501,7 @@ char *util_ald_cache_display_stats(apr_pool_t *p, util_ald_cache_t *cache, char 
 
 char *util_ald_cache_display(apr_pool_t *pool)
 {
-    int i;
+    unsigned long i;
     char *buf, *t1, *t2, *t3;
 
     if (!util_ldap_cache) {
