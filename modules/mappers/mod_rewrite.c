@@ -225,6 +225,7 @@
 #define LEFT_CURLY  '{'
 #define RIGHT_CURLY '}'
 
+
 /*
  * +-------------------------------------------------------+
  * |                                                       |
@@ -246,11 +247,26 @@ typedef struct {
     char **argv;                   /* argv of the external rewrite map    */
 } rewritemap_entry;
 
+/* special pattern types for RewriteCond */
+typedef enum {
+    CONDPAT_REGEX = 0,
+    CONDPAT_FILE_EXISTS,
+    CONDPAT_FILE_SIZE,
+    CONDPAT_FILE_LINK,
+    CONDPAT_FILE_DIR,
+    CONDPAT_LU_URL,
+    CONDPAT_LU_FILE,
+    CONDPAT_STR_GT,
+    CONDPAT_STR_LT,
+    CONDPAT_STR_EQ
+} pattern_type;
+
 typedef struct {
-    char    *input;                /* Input string of RewriteCond   */
-    char    *pattern;              /* the RegExp pattern string     */
-    regex_t *regexp;               /* the precompiled regexp        */
-    int      flags;                /* Flags which control the match */
+    char        *input;   /* Input string of RewriteCond   */
+    char        *pattern; /* the RegExp pattern string     */
+    regex_t     *regexp;  /* the precompiled regexp        */
+    int          flags;   /* Flags which control the match */
+    pattern_type ptype;   /* pattern type                  */
 } rewritecond_entry;
 
 typedef struct {
@@ -2876,18 +2892,23 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         newcond = apr_array_push(dconf->rewriteconds);
     }
 
-    /*  parse the argument line ourself */
+    /* parse the argument line ourself
+     * a1 .. a3 are substrings of str, which is a fresh copy
+     * of the argument line. So we can use a1 .. a3 without
+     * copying them again.
+     */
     if (parseargline(str, &a1, &a2, &a3)) {
         return apr_pstrcat(cmd->pool, "RewriteCond: bad argument line '", str,
                            "'", NULL);
     }
 
-    /*  arg1: the input string */
-    newcond->input = apr_pstrdup(cmd->pool, a1);
+    /* arg1: the input string */
+    newcond->input = a1;
 
     /* arg3: optional flags field
-       (this have to be first parsed, because we need to
-        know if the regex should be compiled with ICASE!) */
+     * (this has to be parsed first, because we need to
+     *  know if the regex should be compiled with ICASE!)
+     */
     newcond->flags = CONDFLAG_NONE;
     if (a3 != NULL) {
         if ((err = cmd_parseflagfield(cmd->pool, newcond, a3,
@@ -2896,24 +2917,60 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         }
     }
 
-    /*  arg2: the pattern
-        try to compile the regexp to test if is ok */
+    /* arg2: the pattern */
     if (*a2 == '!') {
         newcond->flags |= CONDFLAG_NOTMATCH;
         ++a2;
     }
 
-    regexp = ap_pregcomp(cmd->pool, a2, REG_EXTENDED |
-                                        ((newcond->flags & CONDFLAG_NOCASE)
-                                         ? REG_ICASE : 0));
-    if (!regexp) {
-        return apr_pstrcat(cmd->pool,
-                           "RewriteCond: cannot compile regular expression '",
-                           a2, "'", NULL);
+    /* determine the pattern type */
+    newcond->ptype = 0;
+    if (*a2 && a2[1]) {
+        if (!a2[2] && *a2 == '-') {
+            switch (a2[1]) {
+            case 'f': newcond->ptype = CONDPAT_FILE_EXISTS; break;
+            case 's': newcond->ptype = CONDPAT_FILE_SIZE;   break;
+            case 'l': newcond->ptype = CONDPAT_FILE_LINK;   break;
+            case 'd': newcond->ptype = CONDPAT_FILE_DIR;    break;
+            case 'U': newcond->ptype = CONDPAT_LU_URL;      break;
+            case 'F': newcond->ptype = CONDPAT_LU_FILE;     break;
+            }
+        }
+        else {
+            switch (*a2) {
+            case '>': newcond->ptype = CONDPAT_STR_GT; break;
+            case '<': newcond->ptype = CONDPAT_STR_LT; break;
+            case '=': newcond->ptype = CONDPAT_STR_EQ;
+                /* "" represents an empty string */
+                if (*++a2 == '"' && a2[1] == '"' && !a2[2]) {
+                    a2 += 2;
+                }
+                break;
+            }
+        }
     }
 
-    newcond->pattern = apr_pstrdup(cmd->pool, a2);
-    newcond->regexp  = regexp;
+    if (newcond->ptype && newcond->ptype != CONDPAT_STR_EQ &&
+        (newcond->flags & CONDFLAG_NOCASE)) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                     "RewriteCond: NoCase option for non-regex pattern '%s' "
+                     "is not supported and will be ignored.", a2);
+        newcond->flags &= ~CONDFLAG_NOCASE;
+    }
+
+    newcond->pattern = a2;
+
+    if (!newcond->ptype) {
+        regexp = ap_pregcomp(cmd->pool, a2,
+                             REG_EXTENDED | ((newcond->flags & CONDFLAG_NOCASE)
+                                             ? REG_ICASE : 0));
+        if (!regexp) {
+            return apr_pstrcat(cmd->pool, "RewriteCond: cannot compile regular "
+                               "expression '", a2, "'", NULL);
+        }
+
+        newcond->regexp  = regexp;
+    }
 
     return NULL;
 }
@@ -3194,137 +3251,111 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
                               char *perdir, backrefinfo *briRR,
                               backrefinfo *briRC)
 {
-    char *input;
+    char *input = do_expand(r, p->input, briRR, briRC);
     apr_finfo_t sb;
     request_rec *rsub;
     regmatch_t regmatch[MAX_NMATCH];
-    int rc;
+    int rc = 0;
 
-    /*
-     *   Construct the string we match against
-     */
-
-    input = do_expand(r, p->input, briRR, briRC);
-
-    /*
-     *   Apply the patterns
-     */
-
-    rc = 0;
-    if (strcmp(p->pattern, "-f") == 0) {
-        if (apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS) {
-            if (sb.filetype == APR_REG) {
-                rc = 1;
-            }
+    switch (p->ptype) {
+    case CONDPAT_FILE_EXISTS:
+        if (   apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
+            && sb.filetype == APR_REG) {
+            rc = 1;
         }
-    }
-    else if (strcmp(p->pattern, "-s") == 0) {
-        if (apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS) {
-            if ((sb.filetype == APR_REG) && sb.size > 0) {
-                rc = 1;
-            }
+        break;
+
+    case CONDPAT_FILE_SIZE:
+        if (   apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
+            && sb.filetype == APR_REG && sb.size > 0) {
+            rc = 1;
         }
-    }
-    else if (strcmp(p->pattern, "-l") == 0) {
+        break;
+
+    case CONDPAT_FILE_LINK:
 #if !defined(OS2)
-        if (apr_lstat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS) {
-            if (sb.filetype == APR_LNK) {
-                rc = 1;
-            }
+        if (   apr_lstat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
+            && sb.filetype == APR_LNK) {
+            rc = 1;
         }
 #endif
-    }
-    else if (strcmp(p->pattern, "-d") == 0) {
-        if (apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS) {
-            if (sb.filetype == APR_DIR) {
+        break;
+
+    case CONDPAT_FILE_DIR:
+        if (   apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
+            && sb.filetype == APR_DIR) {
+            rc = 1;
+        }
+        break;
+
+    case CONDPAT_LU_URL:
+        if (*input && subreq_ok(r)) {
+            rsub = ap_sub_req_lookup_uri(input, r, NULL);
+            if (rsub->status < 400) {
                 rc = 1;
             }
-        }
-    }
-    else if (strcmp(p->pattern, "-U") == 0) {
-        /* avoid infinite subrequest recursion */
-        if (strlen(input) > 0 && subreq_ok(r)) {
-
-            /* run a URI-based subrequest */
-            rsub = ap_sub_req_lookup_uri(input, r, NULL);
-
-            /* URI exists for any result up to 3xx, redirects allowed */
-            if (rsub->status < 400)
-                rc = 1;
-
-            /* log it */
             rewritelog(r, 5, "RewriteCond URI (-U) check: "
                        "path=%s -> status=%d", input, rsub->status);
-
-            /* cleanup by destroying the subrequest */
             ap_destroy_sub_req(rsub);
         }
-    }
-    else if (strcmp(p->pattern, "-F") == 0) {
-        /* avoid infinite subrequest recursion */
-        if (strlen(input) > 0 && subreq_ok(r)) {
+        break;
 
-            /* process a file-based subrequest:
-             * this differs from -U in that no path translation is done.
-             */
+    case CONDPAT_LU_FILE:
+        if (*input && subreq_ok(r)) {
             rsub = ap_sub_req_lookup_file(input, r, NULL);
-
-            /* file exists for any result up to 2xx, no redirects */
             if (rsub->status < 300 &&
                 /* double-check that file exists since default result is 200 */
                 apr_stat(&sb, rsub->filename, APR_FINFO_MIN,
                          r->pool) == APR_SUCCESS) {
                 rc = 1;
             }
-
-            /* log it */
             rewritelog(r, 5, "RewriteCond file (-F) check: path=%s "
                        "-> file=%s status=%d", input, rsub->filename,
                        rsub->status);
-
-            /* cleanup by destroying the subrequest */
             ap_destroy_sub_req(rsub);
         }
-    }
-    else if (strlen(p->pattern) > 1 && *(p->pattern) == '>') {
-        rc = (compare_lexicography(input, p->pattern+1) == 1 ? 1 : 0);
-    }
-    else if (strlen(p->pattern) > 1 && *(p->pattern) == '<') {
-        rc = (compare_lexicography(input, p->pattern+1) == -1 ? 1 : 0);
-    }
-    else if (strlen(p->pattern) > 1 && *(p->pattern) == '=') {
-        if (strcmp(p->pattern+1, "\"\"") == 0) {
-            rc = (*input == '\0');
+        break;
+
+    case CONDPAT_STR_GT:
+        rc = (compare_lexicography(input, p->pattern+1) == 1) ? 1 : 0;
+        break;
+
+    case CONDPAT_STR_LT:
+        rc = (compare_lexicography(input, p->pattern+1) == -1) ? 1 : 0;
+        break;
+
+    case CONDPAT_STR_EQ:
+        if (p->flags & CONDFLAG_NOCASE) {
+            rc = !strcasecmp(input, p->pattern);
         }
         else {
-            rc = (strcmp(input, p->pattern+1) == 0 ? 1 : 0);
+            rc = !strcmp(input, p->pattern);
         }
-    }
-    else {
+        break;
+
+    default:
         /* it is really a regexp pattern, so apply it */
-        rc = (ap_regexec(p->regexp, input,
-                         p->regexp->re_nsub+1, regmatch,0) == 0);
+        rc = !ap_regexec(p->regexp, input, p->regexp->re_nsub+1, regmatch, 0);
 
-        /* if it isn't a negated pattern and really matched
-           we update the passed-through regex subst info structure */
+        /* update briRC backref info */
         if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
-            briRC->source = apr_pstrdup(r->pool, input);
+            briRC->source = input;
             briRC->nsub   = p->regexp->re_nsub;
-            memcpy((void *)(briRC->regmatch), (void *)(regmatch),
-                   sizeof(regmatch));
+            memcpy(briRC->regmatch, regmatch, sizeof(regmatch));
         }
+        break;
     }
 
-    /* if this is a non-matching regexp, just negate the result */
     if (p->flags & CONDFLAG_NOTMATCH) {
         rc = !rc;
     }
 
-    rewritelog(r, 4, "RewriteCond: input='%s' pattern='%s%s' => %s",
-               input, (p->flags & CONDFLAG_NOTMATCH ? "!" : ""),
-               p->pattern, rc ? "matched" : "not-matched");
+    rewritelog(r, 4, "RewriteCond: input='%s' pattern='%s%s%s'%s => %s",
+               input, (p->flags & CONDFLAG_NOTMATCH) ? "!" : "",
+               (p->ptype == CONDPAT_STR_EQ) ? "=" : "", p->pattern,
+               (p->flags & CONDFLAG_NOCASE) ? " [NC]" : "",
+               rc ? "matched" : "not-matched");
 
-    /* end just return the result */
     return rc;
 }
 
