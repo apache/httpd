@@ -593,8 +593,13 @@ extern char *crypt();
 #define NO_KILLPG
 #undef  NO_SETSID
 #undef NEED_STRDUP
+#ifdef _IX86_DG
+#undef NEED_STRCASECMP
+#undef NEED_STRNCASECMP
+#else
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
+#endif
 #define bzero(a,b) memset(a,0,b)
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
