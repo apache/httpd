@@ -138,7 +138,7 @@ SOURCE=.\main\iol_file.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\iol_socket.c
+SOURCE=.\main\iol_socket.c
 # End Source File
 # Begin Source File
 
@@ -362,7 +362,7 @@ SOURCE=.\include\httpd.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\iol_socket.h
+SOURCE=.\include\iol_socket.h
 # End Source File
 # Begin Source File
 
