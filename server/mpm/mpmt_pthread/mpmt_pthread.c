@@ -1377,8 +1377,6 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
             "no listening sockets available, shutting down");
         return 1;
     }
-    ap_clear_pool(plog);
-    ap_open_logs(server_conf, plog);
     ap_log_pid(pconf, ap_pid_fname);
     SAFE_ACCEPT(accept_mutex_init(pconf, 1));
     if (!is_graceful) {
