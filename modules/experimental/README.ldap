@@ -1,14 +1,6 @@
 Quick installation instructions (UNIX):
 
-- Copy the httpd-ldap directory into httpd-2.0/modules like so:
-
-  cp -a httpd-ldap httpd-2.0/modules
-
-- Rebuild the ./configure script
-
-  ./buildconf
-
-- Add the TWO ldap modules to the build, like this:
+- Add generic ldap support and the TWO ldap modules to the build, like this:
 
   ./configure --with-ldap --enable-ldap --enable-auth-ldap
 
