@@ -326,21 +326,33 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
  * Handles direct access of ftp:// URLs
  * Original (Non-PASV) version from
  * Troy Morrison <spiffnet@zoom.com>
+ * PASV added by Chuck
  */
 int
 proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 {
     char *host, *path, *p, *user, *password, *parms;
     const char *err;
-    int port, userlen, passlen, i, len, sock, dsock, csd, rc, nocache;
+    int port, userlen, passlen, i, len, sock, dsock, rc, nocache;
+    int csd = 0;
     struct sockaddr_in server;
     struct hdr_entry *hdr;
     array_header *resp_hdrs;
-    BUFF *f, *cache, *data;
+    BUFF *f, *cache;
+    BUFF *data = NULL;
     pool *pool=r->pool;
     const int one=1;
     const long int zero=0L;
 
+/* stuff for PASV mode */
+    unsigned int presult, h0, h1, h2, h3, p0, p1;
+    unsigned int paddr;
+    unsigned short pport;
+    struct sockaddr_in data_addr;
+    int pasvmode = 0;
+    char pasv[64];
+    char *pstr;
+ 
 /* This appears to fix a bug(?) that generates an "Address family not
     supported by protocol" error in proxy_doconnect() later (along with
     making sure server.sin_family = AF_INET - cdm) */
@@ -519,56 +531,135 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	else if (i == 504) parms[0] = '\0';
     }
 
-/* set up data connection */
-    len = sizeof(struct sockaddr_in);
-    if (getsockname(sock, (struct sockaddr *)&server, &len) < 0)
-    {
-	proxy_log_uerror("getsockname", NULL,
-	    "proxy: error getting socket address", r->server);
-	pclosef(pool, sock);
-	return SERVER_ERROR;
-    }
-
+/* try to set up PASV data connection first */
     dsock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1)
-    {
-	proxy_log_uerror("socket", NULL, "proxy: error creating socket",
+    { 
+	proxy_log_uerror("socket", NULL, "proxy: error creating PASV socket",
 	    r->server);
 	pclosef(pool, sock);
-	return SERVER_ERROR;
+        return SERVER_ERROR;
     }
     note_cleanups_for_fd(pool, dsock);
 
-    if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (const char *)&one,
-		   sizeof(int)) == -1)
+    if (setsockopt(dsock, SOL_SOCKET, SO_DEBUG, (const char *)&one,
+      sizeof (int)) == -1)
     {
 	proxy_log_uerror("setsockopt", NULL,
-	    "proxy: error setting reuseaddr option", r->server);
+	    "proxy: error setting PASV debug option", r->server);
 	pclosef(pool, dsock);
 	pclosef(pool, sock);
 	return SERVER_ERROR;
     }
 
-    if (bind(dsock, (struct sockaddr *)&server, sizeof(struct sockaddr_in)) ==
-	-1)
-    {
-	char buff[22];
+    bputs("PASV\015\012", f);
+    bflush(f);
+    Explain0("FTP: PASV command issued");
+/* possible results: 227, 421, 500, 501, 502, 530 */
+    i = bgets(pasv, sizeof(pasv), f); 
 
-	sprintf(buff, "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
-	proxy_log_uerror("bind", buff,
-	    "proxy: error binding to ftp data socket", r->server);
-	pclosef(pool, sock);
+    if (i == -1)
+    {
+	proxy_log_uerror("command", NULL, "PASV: control connection is toast",
+	    r->server);
 	pclosef(pool, dsock);
+	pclosef(pool, sock);
+	return SERVER_ERROR;
+    } else
+    {
+	pasv[i-1] = '\0';
+	pstr = strtok(pasv, " ");	/* separate result code */
+	if (pstr != NULL)
+	{
+	    presult = atoi(pstr);
+	    pstr = strtok(NULL, "(");	/* separate address & port params */
+	    if (pstr != NULL)
+		pstr = strtok(NULL, ")");
+	}
+	else
+	    presult = atoi(pasv);
+
+	Explain1("FTP: returned status %d", presult);
+
+	if (presult == 227 && pstr != NULL && (sscanf(pstr,
+	    "%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6))
+	{
+	    /* pardon the parens, but it makes gcc happy */
+            paddr = (((((h3 << 8) + h2) << 8) + h1) << 8) + h0;
+            pport = (p1 << 8) + p0;
+	    Explain5("FTP: contacting host %d.%d.%d.%d:%d",
+		h3, h2, h1, h0, pport);
+            data_addr.sin_family = AF_INET;
+            data_addr.sin_addr.s_addr = htonl(paddr);
+            data_addr.sin_port = htons(pport);
+	    i = proxy_doconnect(dsock, &data_addr, r);
+
+	    if (i == -1)
+		return proxyerror(r, "Could not connect to remote machine");
+	    else
+	    {
+	        data = bcreate(pool, B_RDWR); 
+	        bpushfd(data, dsock, dsock);
+	        pasvmode = 1;
+	    }
+	} else
+	    pclosef(pool, dsock);	/* and try the regular way */
     }
-    listen(dsock, 2); /* only need a short queue */
+
+    if (!pasvmode)	/* set up data connection */
+    {
+        len = sizeof(struct sockaddr_in);
+        if (getsockname(sock, (struct sockaddr *)&server, &len) < 0)
+        {
+	    proxy_log_uerror("getsockname", NULL,
+	        "proxy: error getting socket address", r->server);
+	    pclosef(pool, sock);
+	    return SERVER_ERROR;
+        }
+
+        dsock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+        if (dsock == -1)
+        {
+	    proxy_log_uerror("socket", NULL, "proxy: error creating socket",
+	        r->server);
+	    pclosef(pool, sock);
+	    return SERVER_ERROR;
+        }
+        note_cleanups_for_fd(pool, dsock);
+
+        if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (const char *)&one,
+		   sizeof(int)) == -1)
+        {
+	    proxy_log_uerror("setsockopt", NULL,
+	        "proxy: error setting reuseaddr option", r->server);
+	    pclosef(pool, dsock);
+	    pclosef(pool, sock);
+	    return SERVER_ERROR;
+        }
+
+        if (bind(dsock, (struct sockaddr *)&server,
+            sizeof(struct sockaddr_in)) == -1)
+        {
+	    char buff[22];
+
+	    sprintf(buff, "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
+	    proxy_log_uerror("bind", buff,
+	        "proxy: error binding to ftp data socket", r->server);
+    	    pclosef(pool, sock);
+    	    pclosef(pool, dsock);
+        }
+        listen(dsock, 2); /* only need a short queue */
+    }
 
 /* set request */
     len = decodeenc(path);
 
     /* TM - if len == 0 then it must be a directory (you can't RETR nothing) */
 
-    if(len==0) parms="d";
-    else
+    if(len==0)
+    {
+	parms="d";
+    } else
     {
         bputs("SIZE ", f);
         bwrite(f, path, len);
@@ -656,7 +747,10 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
             proxy_add_header(resp_hdrs, "Content-Type", r->content_type,
 		HDR_REP);
             Explain1("FTP: Content-Type set to %s",r->content_type);
-        }
+        } else
+	{
+	    proxy_add_header(resp_hdrs, "Content-Type", "text/plain", HDR_REP);
+	}
     }
     i = proxy_cache_update(c, resp_hdrs, "FTP", nocache);
     if (i != DECLINED)
@@ -667,24 +761,26 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     cache = c->fp;
 
-/* wait for connection */
-    hard_timeout ("proxy ftp data connect", r);
-    len = sizeof(struct sockaddr_in);
-    do csd = accept(dsock, (struct sockaddr *)&server, &len);
-    while (csd == -1 && errno == EINTR);	/* SHUDDER on SOCKS - cdm */
-    if (csd == -1)
+    if (!pasvmode)	/* wait for connection */
     {
-	proxy_log_uerror("accept", NULL,
-	    "proxy: failed to accept data connection", r->server);
-	pclosef(pool, dsock);
-	pclosef(pool, sock);
-	proxy_cache_error(c);
-	return BAD_GATEWAY;
+        hard_timeout ("proxy ftp data connect", r);
+        len = sizeof(struct sockaddr_in);
+        do csd = accept(dsock, (struct sockaddr *)&server, &len);
+        while (csd == -1 && errno == EINTR);
+        if (csd == -1)
+        {
+	    proxy_log_uerror("accept", NULL,
+	        "proxy: failed to accept data connection", r->server);
+	    pclosef(pool, dsock);
+	    pclosef(pool, sock);
+	    proxy_cache_error(c);
+	    return BAD_GATEWAY;
+        }
+        note_cleanups_for_fd(pool, csd);
+        data = bcreate(pool, B_RDWR);
+        bpushfd(data, csd, -1);
+	kill_timeout(r);
     }
-    note_cleanups_for_fd(pool, csd);
-    data = bcreate(pool, B_RDWR);
-    bpushfd(data, csd, -1);
-    kill_timeout(r);
 
     hard_timeout ("proxy receive", r);
 /* send response */
@@ -731,7 +827,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* abort the transfer */
 	bputs("ABOR\015\012", f);
 	bflush(f);
-        pclosef(pool, csd);
+	if (!pasvmode)
+            pclosef(pool, csd);
         Explain0("FTP: ABOR");
 /* responses: 225, 226, 421, 500, 501, 502 */
 	i = ftp_getrc(f);
@@ -746,7 +843,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     Explain0("FTP: QUIT");
 /* responses: 221, 500 */    
 
-    pclosef(pool, csd);
+    if (!pasvmode)
+        pclosef(pool, csd);
     pclosef(pool, dsock);
     pclosef(pool, sock);
 
