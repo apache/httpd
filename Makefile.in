@@ -26,16 +26,16 @@ include $(top_srcdir)/build/program.mk
 install-conf:
 	@echo Installing configuration files
 	@test -d $(sysconfdir) || $(MKINSTALLDIRS) $(sysconfdir)
-	@cd $(srcdir)/../conf; \
+	@cd docs/conf; \
 	for i in mime.types magic; do \
 		$(INSTALL_DATA) $$i $(sysconfdir); \
 	done; \
-	for i in *-dist; do \
+	for i in *-std*; do \
 		sed -e 's#@@ServerRoot@@#$(prefix)#g' \
 		    -e 's#@@Port@@#$(PORT)#g' \
 			< $$i > $(sysconfdir)/$$i; \
 		chmod 0644 $(sysconfdir)/$$i; \
-		file=`echo $$i|sed s/-dist//`; \
+		file=`echo $$i|sed s/-std//`; \
 		if [ "$$file" = "httpd.conf" ]; then \
 			file=`echo $$file|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
 		fi; \
@@ -44,7 +44,7 @@ install-conf:
 		fi; \
 	done
 
-htdocs-srcdir = $(srcdir)/../htdocs
+htdocs-srcdir = docs/docroot
 
 docs: include/*.h
 	mkdir -p ./docs/api
@@ -58,12 +58,12 @@ install-htdocs:
 install-icons:
 	@echo Installing icons
 	@test -d $(iconsdir) || $(MKINSTALLDIRS) $(iconsdir)
-	@(cd $(srcdir)/../icons && cp -rp * $(iconsdir))
+	@(cd docs/icons && cp -rp * $(iconsdir))
 
 install-cgi:
 	@echo Installing CGIs
 	@test -d $(cgidir) || $(MKINSTALLDIRS) $(cgidir)
-	@(cd $(srcdir)/../cgi-bin && cp -rp * $(cgidir))
+	@(cd docs/cgi-examples && cp -rp * $(cgidir))
 
 install-support:
 	@echo Installing Support Binaries
