@@ -7,9 +7,11 @@ ApacheModuleProxy.opt
 ApacheModuleProxy.plg
 Makefile
 *.lo
+*.la
 *.so
 *.dll
 *.def
 *.mak
 modules.mk
 .deps
+.libs
