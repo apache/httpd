@@ -58,7 +58,7 @@ extern void *ap_dummy_mutex;
 #define ap_create_mutex(name)	((mutex *)ap_dummy_mutex)
 #define ap_acquire_mutex(mutex_id)	((int)MULTI_OK)
 #define ap_release_mutex(mutex_id)	((int)MULTI_OK)
-#define ap_destroy_mutex(mutex_id)	(0)
+#define ap_destroy_mutex(mutex_id)
 
 #endif /* ndef MULTITHREAD */
 
