@@ -1158,10 +1158,10 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
 
         /* Set a timeout on the socket */
         if (conf->timeout_set == 1) {
-            apr_setsocketopt(*newsock, APR_SO_TIMEOUT, conf->timeout);
+            apr_setsocketopt(*newsock, APR_SO_TIMEOUT, (int)conf->timeout);
         }
         else {
-            apr_setsocketopt(*newsock, APR_SO_TIMEOUT, s->timeout);
+            apr_setsocketopt(*newsock, APR_SO_TIMEOUT, (int)s->timeout);
         }
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,

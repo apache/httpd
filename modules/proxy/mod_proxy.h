@@ -194,8 +194,8 @@ typedef struct {
     int error_override_set;
     int preserve_host;
     int preserve_host_set;
-    int timeout;
-    int timeout_set;
+    apr_interval_time_t timeout;
+    apr_interval_time_t timeout_set;
 
 } proxy_server_conf;
 
