@@ -2388,10 +2388,7 @@ static const command_rec core_cmds[] = {
 { "UseCanonicalName", set_use_canonical_name, NULL,
   RSRC_CONF|ACCESS_CONF, TAKE1,
   "How to work out the ServerName : Port when constructing URLs" },
-/* TODOC: MaxServers is deprecated */
-/* TODOC: ServersSafetyLimit is deprecated */
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
-/* TODOC: BindAddress deprecated */
 { "AddModule", add_module_command, NULL, RSRC_CONF, ITERATE,
   "The name of a module" },
 { "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF, NO_ARGS, 
