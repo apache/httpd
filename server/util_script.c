@@ -616,16 +616,16 @@ struct vastrs {
 static int getsfunc_STRING(char *w, int len, void *pvastrs)
 {
     struct vastrs *strs = (struct vastrs*) pvastrs;
-    char *p;
+    const char *p;
     int t;
     
     if (!strs->curpos || !*strs->curpos) 
         return 0;
-    p = strchr(strs->curpos, '\n');
+    p = ap_strchr_c(strs->curpos, '\n');
     if (p)
         ++p;
     else
-        p = strchr(strs->curpos, '\0');
+        p = ap_strchr_c(strs->curpos, '\0');
     t = p - strs->curpos;
     if (t > len)
         t = len;
