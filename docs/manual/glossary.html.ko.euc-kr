@@ -19,6 +19,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>용어</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">This translation may be out of date. Check the
@@ -350,6 +351,7 @@ Telecommunication Union, ITU-T)이 권장하는 인증서 양식. SSL/TLS
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
