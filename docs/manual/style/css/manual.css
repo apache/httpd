@@ -348,6 +348,10 @@ ol.up-A {
     list-style-type: upper-alpha;
 }
 
+li.separate {
+    margin-bottom: 1em;
+}
+
 /* table of contents      */
 /* ====================== */
 #toc,
@@ -436,7 +440,7 @@ div#quickview .seealso {
 #manual-page div#quickview ul#toc li,
 div#quickview #topics li,
 div#quickview .seealso li {
-    margin: 0 0 2px 0;
+    margin: 0.4em 0 2px 0;
     padding: 0;
     list-style-type: square;
     list-style-position: outside;

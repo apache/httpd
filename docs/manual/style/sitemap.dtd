@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!ENTITY % common SYSTEM "common.dtd">
+%common;
+
+<!-- <sitemap> is the root element -->
+<!ELEMENT sitemap (relativepath, title, summary?, seealso*, category*)>
+
+<!ELEMENT category (title, page*, modulefilelist? )>
+<!ATTLIST category id ID #IMPLIED>
+
+<!ELEMENT page (#PCDATA)>
+<!ATTLIST page href CDATA #IMPLIED
+               separate (yes | no) "no" >
+
+<!ELEMENT modulefilelist (modulefile*) >
+<!ELEMENT modulefile (#PCDATA) >
+
+<!-- The path to the root of the documentation from the current doc -->
+<!ELEMENT relativepath EMPTY>
+<!ATTLIST relativepath href CDATA #REQUIRED >
+
