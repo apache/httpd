@@ -756,6 +756,9 @@ request_rec *read_request (conn_rec *conn)
       check_hostalias(r);
     else
       check_serverpath(r);
+    
+    /* we may have switched to another server */
+    r->per_dir_config = r->server->lookup_defaults;
 
     kill_timeout (r);
     conn->keptalive = 0;   /* We now have a request - so no more short timeouts */
