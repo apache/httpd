@@ -215,9 +215,6 @@ Changes with Apache 2.1.0-dev
   *) mod_rewrite: Support for recognizing SSL variables in RewriteCond
      using the new "SSL:" format.  [Joe Orton, Madhusudan Mathihalli]
 
-  *) mod_setenvif: Remove "support" for Remote_User variable which
-     never worked at all. PR 25725.  [André Malo]
-
   *) minor mod_auth_basic and mod_auth_digest sync.  mod_auth_basic
      now populates r->user with the (possibly unauthenticated) user,
      and mod_auth_digest returns 500 when a provider returns
@@ -227,9 +224,6 @@ Changes with Apache 2.1.0-dev
   *) The whole codebase was relicensed and is now available under
      the Apache License, Version 2.0 (http://www.apache.org/licenses).
      [Apache Software Foundation]
-
-  *) FreeBSD: Use the httpready accept filter instead of dataready on
-     newer levels of the OS.  [Paul Querna <chip force-elite.com>]
 
   *) Delete some make-generated files in the server directory during 
      "make clean" processing.  PR 26552.  [Jeff Trawick]
@@ -446,6 +440,18 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) mod_setenvif: Remove "support" for Remote_User variable which
+     never worked at all. PR 25725.  [André Malo]
+
+  *) Backport from 2.1 / Regression from 1.3: mod_headers now knows
+     again the functionality of the ErrorHeader directive. But instead
+     using this misnomer additional flags to the Header directive were
+     introduced ("always" and "onsuccess", defaulting to the latter).
+     PR 28657.  [André Malo]
+
+  *) Use the higher performing 'httpready' Accept Filter on all platforms 
+     except FreeBSD < 4.1.1. [Paul Querna]
 
   *) mod_usertrack: Escape the cookie name before pasting into the
      regexp.  [André Malo]
