@@ -239,24 +239,6 @@ void ap_process_request(request_rec *r)
 {
     int access_status;
 
-    /* Give quick handlers a shot at serving the request on the fast
-     * path, bypassing all of the other Apache hooks. 
-     *
-     * This hook was added to enable serving files out of a URI keyed 
-     * content cache ( e.g., Mike Abbott's Quick Shortcut Cache, 
-     * described here: http://oss.sgi.com/projects/apache/mod_qsc.html )
-     *
-     * It may have other uses as well, such as routing requests directly to
-     * content handlers that have the ability to grok HTTP and do their
-     * own access checking, etc (e.g. servlet engines). 
-     * 
-     * Use this hook with extreme care and only if you know what you are 
-     * doing.
-     * 
-     * Consider moving this hook to after the first location_walk in order
-     * to enable the quick handler to make decisions based on config
-     * directives in Location blocks.
-     */
     access_status = ap_process_request_internal(r);
     if (access_status == OK) {
         access_status = ap_invoke_handler(r);
