@@ -831,10 +831,19 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         /* We can't read the chunk until after sending 100 if required. */
         if (ctx->state == BODY_CHUNK) {
             char line[30];
+            apr_bucket_brigade *bb;
+            apr_size_t len = 30;
 
-            if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+
+            rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
+                                APR_BLOCK_READ, 0);
+
+            if (rv != APR_SUCCESS) {
                 return rv;
             }
+            apr_brigade_flatten(bb, line, &len);
+
             ctx->remaining = get_chunk_size(line);
         } 
     }
@@ -851,23 +860,32 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK:
             {
                 char line[30];
+                apr_bucket_brigade *bb;
+                apr_size_t len = 30;
 
-                ctx->state = BODY_NONE;
+                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
 
                 /* We need to read the CRLF after the chunk.  */
-                if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+                rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
+                                    APR_BLOCK_READ, 0);
+                if (rv != APR_SUCCESS) {
                     return rv;
                 }
+                apr_brigade_cleanup(bb);
 
                 /* Read the real chunk line. */
-                if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+                rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
+                                    APR_BLOCK_READ, 0);
+
+                if (rv != APR_SUCCESS) {
                     return rv;
                 }
-                ctx->state = BODY_CHUNK;
+                apr_brigade_flatten(bb, line, &len);
                 ctx->remaining = get_chunk_size(line);
 
                 if (!ctx->remaining) {
                     /* Handle trailers by calling ap_get_mime_headers again! */
+                    ctx->state = BODY_NONE;
                     ap_get_mime_headers(f->r);
                     e = apr_bucket_eos_create(c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(b, e);
