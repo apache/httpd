@@ -2630,7 +2630,7 @@ static void child_main(int child_num_arg)
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
-	conn_io = ap_bcreate(ptrans, B_RDWR | B_SOCKET);
+	conn_io = ap_bcreate(ptrans, B_RDWR);
 
 #ifdef B_SFIO
 	(void) sfdisc(conn_io->sf_in, SF_POPDISC);
