@@ -322,7 +322,10 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	/* use previous keepalive socket */
 	origin = conf->origin;
 	sock = origin->client_socket;
+	origin->aborted = 0;
+	origin->keepalive = 1;
 	origin->keepalives++;
+	origin->remain = 0;
 	new = 0;
 
 	/* XXX FIXME: If the socket has since closed, change new to 1 so
@@ -388,11 +391,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    origin->keepalive = 1;
 	    origin->keepalives = 1;
 
-	    /* set up the connection filters */
-	    ap_add_output_filter("CORE", NULL, NULL, origin);
-	    ap_add_input_filter("HTTP_IN", NULL, NULL, origin);
-	    ap_add_input_filter("CORE_IN", NULL, NULL, origin);
-
 	    /* if we get here, all is well */
 	    failed = 0;
 	    break;
@@ -415,6 +413,15 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      *
      * Send the HTTP/1.1 request to the remote server
      */
+
+    /* set up the connection filters */
+    origin->input_filters = NULL;
+    ap_add_input_filter("HTTP_IN", NULL, NULL, origin);
+    ap_add_input_filter("CORE_IN", NULL, NULL, origin);
+
+    origin->output_filters = NULL;
+    ap_add_output_filter("CORE", NULL, NULL, origin);
+
 
     /* strip connection listed hop-by-hop headers from the request */
     /* even though in theory a connection: close coming from the client
@@ -571,6 +578,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      * Get response from the remote server, and pass it up the
      * filter chain
      */
+
 
     rp = make_fake_req(origin, r);
 
