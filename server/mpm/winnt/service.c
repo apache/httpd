@@ -657,7 +657,7 @@ ap_status_t mpm_service_set_name(ap_pool_t *p, char *name)
 
     /* Take the given literal name if there is no service entry */
     display_name = ap_pstrdup(p, name);
-    return APR_NOTFOUND;
+    return APR_ENOFILE;
 }
 
 
