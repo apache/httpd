@@ -123,7 +123,7 @@ passwords for authentication</td></tr><tr><td nowrap="nowrap"><a href="directive
     initial ID. It will prompt for the password:</p>
     <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>htpasswd -c Filename username</code></td></tr></table></blockquote>
 
-    <p>Add or modify 'username' in the password file 'Filename':</p>
+    <p>Add or modify 'username2' in the password file 'Filename':</p>
     <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>htpasswd Filename username2</code></td></tr></table></blockquote>
 
     <p>Note that searching large text files is <em>very</em>
