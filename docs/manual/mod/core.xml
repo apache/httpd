@@ -2308,7 +2308,7 @@ a resource</description>
 
 <usage>
     <p>This directive selects which authenticated users can access
-    a directory. The allowed syntaxes are:</p>
+    a resource. The allowed syntaxes are:</p>
 
     <dl>
       <dt><code>Require user <var>userid</var> [<var>userid</var>]
@@ -2332,7 +2332,7 @@ a resource</description>
 
     <example>
        AuthType Basic<br />
-       AuthName "Restricted Directory"<br />
+       AuthName "Restricted Resource"<br />
        AuthUserFile /web/users<br />
        AuthGroupFile /web/groups<br />
        Require group admin
