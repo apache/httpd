@@ -323,17 +323,6 @@ apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 {
     SSLFilterRec *pRec=f->ctx;
     apr_bucket *pbktIn;
-    conn_rec *c = SSL_get_app_data (pRec->pssl);
-
-    if (!c) {
-        /* if this happens we have already called ssl_hook_CloseConnection
-         * if we dont return here, this routine will segv
-         * XXX: this doesnt seem right, ssl_hook_CloseConnection probably 
-         * is being called to early, but as the README:TODO says:
-         * "Cleanup ssl_engine_io.c !!"
-         */
-        return APR_EOF;
-    }
 
     APR_BRIGADE_FOREACH(pbktIn,pbbIn) {
 	const char *data;
@@ -341,51 +330,29 @@ apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 	apr_status_t ret;
 
 	if(APR_BUCKET_IS_EOS(pbktIn)) {
-	    /* XXX: demote to debug */
-            ssl_log(c->base_server, SSL_LOG_INFO, "EOS in output");
+	    if ((ret = churn_output(pRec)) != APR_SUCCESS)
+            {
+                ap_log_error(
+                    APLOG_MARK,APLOG_ERR,ret,NULL, "Error in churn_output");
+		return ret;
+            }
 
-            if (ssl_hook_CloseConnection (pRec) != APR_SUCCESS)
-                ssl_log(c->base_server, SSL_LOG_INFO,
+            if ((ret = ssl_hook_CloseConnection (pRec)) != APR_SUCCESS)
+                ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
                     "Error in ssl_hook_CloseConnection");
-#if 0
-	    /* XXX: dubious - does this always terminate? Does it return the right thing? */
-	    for( ; ; ) {
-		ret=churn_output(pRec);
-		if(ret != APR_SUCCESS)
-		    return ret;
-                /* XXX - Verify if passing &len is okay for churn - TBD */
-                len = 0;
-		ret=churn(pRec,APR_NONBLOCK_READ,&len);
-		if(ret != APR_SUCCESS) {
-		    if(ret == APR_EOF)
-			return APR_SUCCESS;
-		    else
-			return ret;
-		}
-	    }
-#endif
 	    break;
 	}
 
 	if(APR_BUCKET_IS_FLUSH(pbktIn)) {
-	    /* assume that churn will flush (or already has) if there's output */
-            /* XXX - Verify if passing &len is okay for churn - TBD */
-            ssl_log(c->base_server, SSL_LOG_INFO, "FLUSH in output");
-            len = 0;
-	    ret=churn(pRec,APR_NONBLOCK_READ,&len);
-	    if(ret != APR_SUCCESS)
-		return ret;
 	    continue;
 	}
 
-        ssl_log(c->base_server, SSL_LOG_INFO, "DATA in output");
 	/* read filter */
 	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
 
 	/* write SSL */
         n = ssl_io_hook_write(pRec->pssl, (unsigned char *)data, len);
         assert (n == len);
-
 
 	/* churn the state machine */
 	ret=churn_output(pRec);
@@ -421,6 +388,12 @@ apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
     return APR_SUCCESS;
 }
 
+apr_status_t ssl_io_filter_cleanup (void *data)
+{
+    SSL *ssl = (SSL *)data;
+    return APR_SUCCESS;
+}
+
 void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 {
     SSLFilterRec *filter;
@@ -434,6 +407,10 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     filter->pbioWrite       = BIO_new(BIO_s_mem());
     SSL_set_bio(ssl, filter->pbioRead, filter->pbioWrite);
     filter->pssl            = ssl;
+
+    apr_pool_cleanup_register(c->pool, (void*)ssl,
+                              ssl_io_filter_cleanup, apr_pool_cleanup_null);
+
     return;
 }
 
