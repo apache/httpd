@@ -42,7 +42,7 @@
     behavior. As patches were introduced to 2.0, these
     optimizations (and the server behavior) were quickly broken due
     to this duplication of code. All duplicate code has been folded
-    back into <code>ap_process_internal_request()</code> to prevent
+    back into <code>ap_process_request_internal()</code> to prevent
     the code from falling out of sync again.</p>
 
     <p>This means that much of the existing code was 'unoptimized'.
