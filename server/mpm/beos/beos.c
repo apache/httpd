@@ -592,7 +592,7 @@ static void perform_idle_server_maintenance(void)
 static void server_main_loop(int remaining_threads_to_start)
 {
     int child_slot;
-    ap_wait_t status;
+    apr_wait_t status;
     apr_proc_t pid;
     int i;
 
