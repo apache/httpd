@@ -364,3 +364,5 @@ EXPORTS
 	ap_SHA1Update	@358
 	ap_SHA1Final	@359
 	ap_sha1_base64	@360
+	ap_add_file_conf  @361
+	ap_set_config_vectors  @362
