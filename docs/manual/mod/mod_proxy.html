@@ -296,17 +296,17 @@ disables caching completely.<p>
 
 <a name="access"><h2>Controlling access to your proxy</h2>
 
-You can control who can access your proxy via the normal &lt;Directory&gt;
+You can control who can access your proxy via the normal &lt;Files&gt;
 control block using the following example:<p>
 
 <pre>
-&lt;Directory proxy:*&gt;
+&lt;Files proxy:*&gt;
 &lt;Limit GET&gt;
-order allow,deny
-deny from [machines you'd like not to allow by IP address or name]
-allow from all
+order deny,allow
+deny from [machines you'd like *not* to allow by IP address or name]
+allow from [machines you'd like to allow by IP address or name]
 &lt;/Limit&gt;
-&lt;/Directory&gt;
+&lt;/Files&gt;
 </pre><p>
 
 <a name="shortname"><h2>Using Netscape hostname shortcuts</h2>
