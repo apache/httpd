@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 static int rc=0;
+static char errorstr[20];
 
 void ap_os_dso_init(void)
 {
@@ -18,7 +19,6 @@ void ap_os_dso_init(void)
 
 ap_os_dso_handle_t ap_os_dso_load(const char *module_name)
 {
-    char errorstr[200];
     HMODULE handle;
 
     rc = DosLoadModule(errorstr, sizeof(errorstr), module_name, &handle);
@@ -54,5 +54,9 @@ void *ap_os_dso_sym(ap_os_dso_handle_t handle, const char *funcname)
 
 const char *ap_os_dso_error(void)
 {
-    return ap_os_error_message(rc);
+    static char message[200];
+    strcpy(message, ap_os_error_message(rc));
+    strcat(message, " for module ");
+    strcat(message, errorstr);
+    return message;
 }
