@@ -1312,16 +1312,14 @@ static void child_main(int child_num_arg)
             }
         }
 
-        if (rv == AP_GRACEFUL) {
-            /* A terminating signal was received. Now join each of the
-             * workers to clean them up.
-             *   If the worker already exited, then the join frees
-             *   their resources and returns.
-             *   If the worker hasn't exited, then this blocks until
-             *   they have (then cleans up).
-             */
-            join_workers(ts->listener, threads);
-        }
+        /* A terminating signal was received. Now join each of the
+         * workers to clean them up.
+         *   If the worker already exited, then the join frees
+         *   their resources and returns.
+         *   If the worker hasn't exited, then this blocks until
+         *   they have (then cleans up).
+         */
+        join_workers(ts->listener, threads);
     }
 
     free(threads);
