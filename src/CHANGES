@@ -1,6 +1,6 @@
 Changes with Apache 1.3
 
-  *) API: Added is_initial_request() which tests if the request being
+  *) API: Added is_initial_req() which tests if the request being
      processed is the initial request, or a subrequest.
      [Doug MacEachern]
 
