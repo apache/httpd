@@ -48,11 +48,6 @@ cd $START_DIR/$WORKING_DIR
 echo >> $LOG_NAME
 echo "Running ./buildconf" >> $LOG_NAME
 ./buildconf >> $LOG_NAME
-rm -f ltconfig ltmain.sh config.sub config.guess
-cp /usr/local/share/libtool/ltconfig .
-cp /usr/local/share/libtool/ltmain.sh .
-cp /usr/local/share/libtool/config.sub .
-cp /usr/local/share/libtool/config.guess .
 
 # Remove any files we don't distribute with our code
 rm -f STATUS
