@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href=".."/>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <title>Apache チュートリアル: Server Side Includes 入門</title>
 
@@ -91,13 +91,13 @@
     <code>.shtml</code> 拡張子にするため、そのページの名前と、
     そのページへの全てのリンクを変更しなければならないことです。</p>
 
-    <p>もう一つの方法は、<directive module="mod_includes">XBitHack</directive>
+    <p>もう一つの方法は、<directive module="mod_include">XBitHack</directive>
     ディレクティブを使用することです:</p>
 <example>
         XBitHack on
 </example>
 
-    <p><directive module="mod_includes">XBitHack</directive> 
+    <p><directive module="mod_include">XBitHack</directive> 
     は、ファイルの実行ビットが立っている場合、
     SSI ディレクティブにより解析することを Apache に伝えます。
     従って、SSI ディレクティブを現在のページに加えるためには、
@@ -111,7 +111,7 @@
     <code>.html</code> ファイルを SSI で解析するよう Apache に伝えれば、
     わざわざ <code>.shtml</code> というファイル名にする必要がないといって
     薦めるのを見ることでしょう。こういう人たちは、おそらく
-    <directive module="mod_includes">XBitHack</directive>
+    <directive module="mod_include">XBitHack</directive>
     について聞いたことがないのでしょう。
     この方法について注意することは、たとえ SSI
     ディレクティブを全く含まない場合でも、Apache がクライアントに
