@@ -347,9 +347,15 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
 
     *pod = apr_palloc(p, sizeof(**pod));
     rv = apr_file_pipe_create(&((*pod)->pod_in), &((*pod)->pod_out), p);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
     apr_file_pipe_timeout_set((*pod)->pod_in, 0);
     (*pod)->p = p;
-    return rv;
+    
+    apr_sockaddr_info_get(&(*pod)->sa, "127.0.0.1", APR_UNSPEC, ap_listeners->bind_addr->port, 0, p);
+
+    return APR_SUCCESS;
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_pod_check(ap_pod_t *pod)
@@ -388,10 +394,10 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod)
 AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
 {
     apr_socket_t *sock;
-    apr_sockaddr_t *sa;
     apr_status_t rv;
     char char_of_death = '!';
     apr_size_t one = 1;
+    apr_pool_t *p;
 
     do {
         rv = apr_file_write(pod->pod_out, &char_of_death, &one);
@@ -401,9 +407,14 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
                      "write pipe_of_death");
         return rv;
     }
+
+    /* create a temporary pool for the socket.  pconf stays around too long */
+    rv = apr_pool_create(&p, pod->p);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
     
-    apr_sockaddr_info_get(&sa, "127.0.0.1", APR_UNSPEC, ap_listeners->bind_addr->port, 0, pod->p);
-    rv = apr_socket_create(&sock, sa->family, SOCK_STREAM, pod->p);
+    rv = apr_socket_create(&sock, pod->sa->family, SOCK_STREAM, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "get socket to connect to listener");
@@ -421,7 +432,8 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
                      "set timeout on socket to connect to listener");
         return rv;
     }
-    rv = apr_connect(sock, sa);    
+    
+    rv = apr_connect(sock, pod->sa);    
     if (rv != APR_SUCCESS) {
         int log_level = APLOG_WARNING;
 
@@ -438,6 +450,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
         return rv;
     }
     apr_socket_close(sock);
+    apr_pool_destroy(p);
 
     return APR_SUCCESS;
 }
