@@ -416,7 +416,7 @@ static int send_handles_to_child(apr_pool_t *p,
     HANDLE hDup;
     HANDLE os_start;
     HANDLE hScore;
-    DWORD BytesWritten;
+    apr_size_t BytesWritten;
 
     if (!DuplicateHandle(hCurrentProcess, child_ready_event, hProcess, &hDup,
         EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, 0)) {
@@ -566,14 +566,14 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId,
     int lcnt = 0;
     ap_listen_rec *lr;
     LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
-    DWORD BytesWritten;
+    apr_size_t BytesWritten;
 
     /* Run the chain of open sockets. For each socket, duplicate it 
      * for the target process then send the WSAPROTOCOL_INFO 
      * (returned by dup socket) to the child.
      */
     for (lr = ap_listeners; lr; lr = lr->next, ++lcnt) {
-        int nsd;
+        apr_os_sock_t nsd;
         lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
         apr_os_sock_get(&nsd,lr->sd);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,

@@ -185,7 +185,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
      */
     LONG rc;
     DWORD type;
-    DWORD size = 0;
+    apr_size_t size = 0;
     
 #if APR_HAS_UNICODE_FS
     IF_WIN_OS_IS_UNICODE 
@@ -201,7 +201,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
         else if (valuelen)
             return APR_ENAMETOOLONG;
         /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, &type, NULL, &size);
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, &type, NULL, (DWORD *)&size);
         if (rc != ERROR_SUCCESS) {
             return APR_FROM_OS_ERROR(rc);
         }
@@ -212,7 +212,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
         wvalue = apr_palloc(pool, size);
         /* Read value based on size query above */
         rc = RegQueryValueExW(key->hkey, wvalname, 0, &type, 
-                              (LPBYTE)wvalue, &size);
+                              (LPBYTE)wvalue, (DWORD *)&size);
         if (rc != ERROR_SUCCESS) {
             return APR_FROM_OS_ERROR(rc);
         }
@@ -223,7 +223,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
                 apr_wchar_t *tmp = wvalue;
                 /* The size returned by ExpandEnvironmentStringsW is wchars */
                 wvalue = apr_palloc(pool, size * 2);
-                size = ExpandEnvironmentStringsW(tmp, wvalue, size);
+                size = ExpandEnvironmentStringsW(tmp, wvalue, (DWORD)size);
             }
         }
         else {
@@ -247,7 +247,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
     ELSE_WIN_OS_IS_ANSI
     {
         /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueEx(key->hkey, valuename, 0, &type, NULL, &size);
+        rc = RegQueryValueEx(key->hkey, valuename, 0, &type, NULL, (DWORD *)&size);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
 
@@ -257,7 +257,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
 
         *result = apr_palloc(pool, size);
         /* Read value based on size query above */
-        rc = RegQueryValueEx(key->hkey, valuename, 0, &type, *result, &size);
+        rc = RegQueryValueEx(key->hkey, valuename, 0, &type, *result, (DWORD *)&size);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
 
@@ -270,7 +270,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
             if (size) {
                 char *tmp = *result;
                 *result = apr_palloc(pool, size);
-                size = ExpandEnvironmentStrings(tmp, *result, size);
+                size = ExpandEnvironmentStrings(tmp, *result, (DWORD)size);
             }
         }
     }
@@ -289,7 +289,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
      * that the system has configured (e.g. %SystemRoot%/someapp.exe)
      */
     LONG rc;
-    DWORD size = strlen(value) + 1;
+    apr_size_t size = strlen(value) + 1;
     DWORD type = (flags & AP_REGKEY_EXPAND) ? REG_EXPAND_SZ : REG_SZ;
     
 #if APR_HAS_UNICODE_FS
@@ -320,7 +320,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
          */
         size = (alloclen - wvallen) * 2;
         rc = RegSetValueExW(key->hkey, wvalname, 0, type, 
-                            (LPBYTE)wvalue, size);
+                            (LPBYTE)wvalue, (DWORD)size);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
     }
@@ -328,7 +328,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        rc = RegSetValueEx(key->hkey, valuename, 0, type, value, size);
+        rc = RegSetValueEx(key->hkey, valuename, 0, type, value, (DWORD)size);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
     }
@@ -363,7 +363,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
             return APR_ENAMETOOLONG;
         /* Read to NULL buffer to determine value size */
         rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype, 
-                              NULL, resultsize);
+                              NULL, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS) {
             return APR_FROM_OS_ERROR(rc);
         }
@@ -371,7 +371,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
         /* Read value based on size query above */
         *result = apr_palloc(pool, *resultsize);
         rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype, 
-                             (LPBYTE)*result, resultsize);
+                             (LPBYTE)*result, (LPDWORD)resultsize);
     }
 #endif /* APR_HAS_UNICODE_FS */
 #if APR_HAS_ANSI_FS
@@ -379,14 +379,14 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
     {
         /* Read to NULL buffer to determine value size */
         rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype, 
-                             NULL, resultsize);
+                             NULL, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
 
         /* Read value based on size query above */
         *result = apr_palloc(pool, *resultsize);
         rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype, 
-                             (LPBYTE)*result, resultsize);
+                             (LPBYTE)*result, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
     }
@@ -422,14 +422,14 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key,
             return APR_ENAMETOOLONG;
 
         rc = RegSetValueExW(key->hkey, wvalname, 0, valuetype, 
-                            (LPBYTE)value, valuesize);
+                            (LPBYTE)value, (DWORD)valuesize);
     }
 #endif /* APR_HAS_UNICODE_FS */
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
         rc = RegSetValueEx(key->hkey, valuename, 0, valuetype, 
-                            (LPBYTE)value, valuesize);
+                            (LPBYTE)value, (DWORD)valuesize);
     }
 #endif
     if (rc != ERROR_SUCCESS) {
@@ -452,7 +452,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
     char *buf;
     char *tmp;
     DWORD type;
-    DWORD size = 0;
+    apr_size_t size = 0;
 
     rv = ap_regkey_value_raw_get(&value, &size, &type, key, valuename, pool);
     if (rv != APR_SUCCESS) {
@@ -510,7 +510,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
         }
     }
 
-    *result = apr_array_make(pool, size, sizeof(char *));
+    *result = apr_array_make(pool, (int)size, sizeof(char *));
     for (tmp = buf; *tmp; ++tmp) {
         char **newelem = (char **) apr_array_push(*result);
         *newelem = tmp;

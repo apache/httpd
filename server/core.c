@@ -2298,7 +2298,7 @@ static const char *set_serverpath(cmd_parms *cmd, void *dummy,
     }
 
     cmd->server->path = arg;
-    cmd->server->pathlen = strlen(arg);
+    cmd->server->pathlen = (int)strlen(arg);
     return NULL;
 }
 
@@ -3156,7 +3156,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
                                      apr_size_t length, apr_size_t *nbytes)
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_int32_t togo;        /* Remaining number of bytes in the file to send */
+    apr_size_t togo;        /* Remaining number of bytes in the file to send */
     apr_size_t sendlen = 0;
     apr_size_t bytes_sent;
     apr_int32_t i;
