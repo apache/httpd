@@ -933,15 +933,15 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
     char buf[AP_IOBUFSIZE + 1];
     int ch;
     apr_size_t i, c, n;
-    apr_status_t stat;
+    apr_status_t rv;
 
     ap_rputs("<pre>\n", r);
     while (!apr_file_eof(f)) {
         do {
             n = sizeof(char) * AP_IOBUFSIZE;
-            stat = apr_file_read(f, buf, &n);
-        } while (APR_STATUS_IS_EINTR(stat));
-        if (n == 0 || stat != APR_SUCCESS) {
+            rv = apr_file_read(f, buf, &n);
+        } while (APR_STATUS_IS_EINTR(rv));
+        if (n == 0 || rv != APR_SUCCESS) {
             /* ###: better error here? */
             break;
         }
