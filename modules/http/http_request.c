@@ -1416,7 +1416,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->request_config = ap_create_request_config(r->pool);
     req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
     req_cfg->bb = ap_brigade_create(r->pool);
-    ap_set_module_config(r->request_config, &core_module, req_cfg);
+    ap_set_module_config(new->request_config, &core_module, req_cfg);
 
     new->per_dir_config = r->server->lookup_defaults;
 
