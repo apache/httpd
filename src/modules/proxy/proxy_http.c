@@ -67,7 +67,7 @@
  */
 int proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port)
 {
-    char *host, *path, *search, *p, sport[7];
+    char *host, *path, *search, sport[7];
     const char *err;
     int port;
 
@@ -81,29 +81,21 @@ int proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port
 
 /* now parse path/search args, according to rfc1738 */
 /* N.B. if this isn't a true proxy request, then the URL _path_
- * has already been decoded
+ * has already been decoded.  True proxy requests have r->uri
+ * == r->unparsed_uri, and no others have that property.
  */
-    if (r->proxyreq) {
-	p = strchr(url, '?');
-	if (p != NULL)
-	    *(p++) = '\0';
+    if (r->uri == r->unparsed_uri) {
+	search = strchr(url, '?');
+	if (search != NULL)
+	    *(search++) = '\0';
     }
     else
-	p = r->args;
+	search = r->args;
 
 /* process path */
     path = proxy_canonenc(r->pool, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL)
 	return HTTP_BAD_REQUEST;
-
-/* process search */
-    if (p != NULL) {
-	search = p;
-	if (search == NULL)
-	    return HTTP_BAD_REQUEST;
-    }
-    else
-	search = NULL;
 
     if (port != def_port)
 	ap_snprintf(sport, sizeof(sport), ":%d", port);

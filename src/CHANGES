@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) When using ProxyPass the ?querystring was not passed correctly.
+     [Joel Truher <truher@wired.com>]
+
   *) To deal with modules being compiled and [dynamically] linked
      at a different time from the core, the SERVER_VERSION and
      SERVER_BUILT symbols have been abstracted through the new
