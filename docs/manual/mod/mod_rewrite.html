@@ -17,7 +17,7 @@
 >
 <!--#include virtual="header.html" -->
 
-<h1 ALIGN="CENTER">Module mod_rewrite (Version 3.0)</h1>
+<h1 ALIGN="CENTER">Module mod_rewrite</h1>
 
 This module is contained in the <code>mod_rewrite.c</code> file, with Apache
 1.2 and later.  It provides a rule-based rewriting engine to rewrite requested
@@ -41,20 +41,15 @@ tables, DBM hash files or external processes) for advanced URL
 substitution.
 
 <p>
-It operates on the full URLs (including the PATH_INFO part) both in
-per-server context (httpd.conf) and per-dir context (.htaccess) and even
-can generate QUERY_STRING parts on result.   The rewritten result can lead to internal sub-processing, external request redirection or to internal proxy throughput.
+It operates on the full URLs (including the PATH_INFO part) both in per-server
+context (httpd.conf) and per-dir context (.htaccess) and even can generate
+QUERY_STRING parts on result.   The rewritten result can lead to internal
+sub-processing, external request redirection or to internal proxy throughput.
 
 <p>
-The latest version can be found on<br>
-<a href="http://www.engelschall.com/sw/mod_rewrite/">
-<code><b>http://www.engelschall.com/sw/mod_rewrite/</b></code></a>
-
+This module was originally written in April 1996 and 
+gifted exclusively to the The Apache Group in July 1997 by
 <p>
-Copyright &copy; 1996,1997 <b>The Apache Group</b>, All rights reserved.<br>
-Copyright &copy; 1996,1997 <i>Ralf S. Engelschall</i>, All rights reserved.
-<p>
-Written for <b>The Apache Group</b> by
 <blockquote>
     <i>Ralf S. Engelschall</i><br>
     <a href="mailto:rse@engelschall.com"><tt>rse@engelschall.com</tt></a><br>
@@ -126,7 +121,6 @@ strings can be one of the following:
     conditions and rules of the main server gets inherited. In per-directory
     context this means that conditions and rules of the parent directory's
     <tt>.htaccess</tt> configuration gets inherited.
-<p>
 </ul>
 
 <p>
@@ -146,7 +140,7 @@ with a slash ('<tt>/</tt>') then it is assumed to be relative to the
 config.
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 To disable the logging of rewriting actions it is not recommended
 to set <em>Filename</em>
@@ -160,7 +154,7 @@ To disable logging either remove or comment out the
 </table>
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 SECURITY: See the <a
 href="../misc/security_tips.html">Apache Security
@@ -197,7 +191,7 @@ To disable the logging of rewriting actions simply set <em>Level</em> to 0.
 This disables all rewrite action logs.
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 <b>Notice:</b> Using a high value for <i>Level</i> will slow down your Apache
 server dramatically! Use the rewriting logfile only for debugging or at least
@@ -266,7 +260,7 @@ of the following formats:
     string as in the following example:
 
 <p>
-<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <tr><td><pre>
 #
 #   map.real-to-user -- maps realnames to usernames
@@ -278,7 +272,7 @@ Dr.Fred.Klabuster     fred  # Mr. DAU
 </table>
 
 <p>
-<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <tr><td><pre>
 RewriteMap real-to-host txt:/path/to/file/map.real-to-user
 </pre></td></tr>
@@ -312,7 +306,7 @@ RewriteMap real-to-host txt:/path/to/file/map.real-to-user
     for the given key). A trivial program which will implement a 1:1 map
     (i.e. key == value) could be:
     <p>
-<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <tr><td><pre>
 #!/usr/bin/perl
 $| = 1;
@@ -345,7 +339,7 @@ context it is of course possible to <b>use</b> this map in per-directory
 context.
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 For plain text and DBM format files the looked-up keys are cached in-core
 until the <tt>mtime</tt> of the mapfile changes or the server does a
@@ -383,7 +377,7 @@ will be usually be wrong!</b> There you have to use the <tt>RewriteBase</tt>
 directive to specify the correct URL-prefix.
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 So, if your webserver's URLs are <b>not</b> directly
 related to physical file paths, you have to use <tt>RewriteBase</tt> in every
@@ -399,7 +393,7 @@ directives.
    Assume the following per-directory config file:
 
 <p>
-<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <tr><td><pre>
 #
 #  /abc/def/.htaccess -- per-dir config file for directory /abc/def
@@ -423,7 +417,7 @@ In the above example, a request to <tt>/xyz/oldstuff.html</tt> gets correctly
 rewritten to the physical file <tt>/abc/def/newstuff.html</tt>.
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 <font size=-1>
 <b>For the Apache hackers:</b><br>
@@ -487,7 +481,7 @@ where <em>NAME_OF_VARIABLE</em> can be a string
 of the following list:
 
 <p>
-<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<table bgcolor="#f0f0f0" cellspacing=0 cellpadding=5>
 <tr>
 <td valign=top>
 <b>HTTP headers:</b><p>
@@ -543,6 +537,7 @@ TIME_HOUR<br>
 TIME_MIN<br>
 TIME_SEC<br>
 TIME_WDAY<br>
+TIME<br>
 </font>
 </td>
 
@@ -561,7 +556,7 @@ IS_SUBREQ<br>
 
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 These variables all correspond to the similar named HTTP MIME-headers, C
 variables of the Apache server or <tt>struct tm</tt> fields of the Unix
@@ -622,6 +617,22 @@ There are some special variants of <em>CondPatterns</em>. Instead of real
 regular expression strings you can also use one of the following:
 <p>
 <ul>
+<li>'<b>&lt;CondPattern</b>' (is lexicographically lower)<br>
+Treats the <i>CondPattern</i> as a plain string and compares it
+lexicographically to <i>TestString</i> and results in a true expression if
+<i>TestString</i> is lexicographically lower then <i>CondPattern</i>.
+<p>
+<li>'<b>&gt;CondPattern</b>' (is lexicographically greater)<br>
+Treats the <i>CondPattern</i> as a plain string and compares it
+lexicographically to <i>TestString</i> and results in a true expression if
+<i>TestString</i> is lexicographically greater then <i>CondPattern</i>.
+<p>
+<li>'<b>=CondPattern</b>' (is lexicographically equal)<br>
+Treats the <i>CondPattern</i> as a plain string and compares it
+lexicographically to <i>TestString</i> and results in a true expression if
+<i>TestString</i> is lexicographically equal to <i>CondPattern</i>, i.e the
+two strings are exactly equal (character by character).
+<p>
 <li>'<b>-d</b>' (is <b>d</b>irectory)<br>
 Treats the <i>TestString</i> as a pathname and
 tests if it exists and is a directory.
@@ -682,7 +693,6 @@ RewriteCond %{REMOTE_HOST}  ^host3.*
 RewriteRule ...some special stuff for any of these hosts...
 </pre></blockquote>
     Without this flag you had to write down the cond/rule three times.
-<p>
 </ul>
 
 <p>
@@ -708,7 +718,6 @@ Frames, etc. If you use the Lynx browser (which is Terminal-based), then you
 get the min homepage, which contains no images, no tables, etc.  If you
 use any other browser you get the standard homepage.
 </blockquote>
-<p>
 
 <p>
 <hr noshade size=1>
@@ -738,7 +747,7 @@ and made alterations to it.
 Some hints about the syntax of regular expressions:
 
 <p>
-<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<table bgcolor="#f0f0f0" cellspacing=0 cellpadding=5>
 <tr>
 <td valign=top>
 <pre>
@@ -769,7 +778,7 @@ for special cases where it is better to match the negative pattern or as a
 last default rule.
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 <b>Notice!</b> When using the NOT character to negate a pattern you cannot
 have grouped wildcard parts in the pattern. This is impossible because when
@@ -813,7 +822,14 @@ conjunction with the <b>C</b> (chain) flag to be able to have more than one
 pattern to be applied before a substitution occurs.
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+One more note: You can even create URLs in the substitution string containing
+a query string part. Just use a question mark inside the substitution string
+to indicate that the following stuff should be re-injected into the
+QUERY_STRING.  When you want to erase an existing query string, end the
+substitution string with just the question mark.
+
+<p>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 <b>Notice</b>: There is a special feature. When you prefix a substitution
 field with <tt>http://</tt><em>thishost</em>[<em>:thisport</em>] then
@@ -935,6 +951,13 @@ comma-separated list of the following flags:
     chance is high that you will run into problems (or even overhead) on sub-requests.
     In these cases, use this flag.
 <p>
+<li>'<strong><code>qsappend|QSA</code></strong>' (<b>q</b>uery <b>s</b>tring
+    <b>a</b>ppend)<br> 
+    This flag forces the rewriting engine to append a query
+    string part in the substitution string to the existing one instead of
+    replacing it.  Use this when you want to add more data to the query string
+    via a rewrite rule.
+<p>
 <li>'<strong><code>passthrough|PT</code></strong>' (<b>p</b>ass <b>t</b>hrough to next handler)<br>
     This flag forces the rewriting engine to set the <code>uri</code> field
     of the internal <code>request_rec</code> structure to the value
@@ -961,7 +984,7 @@ comma-separated list of the following flags:
     typical example is the use of <tt>mod_alias</tt> and
     <tt>mod_rewrite</tt>..
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 <font size=-1>
     <b>For the Apache hackers:</b><br>
@@ -994,7 +1017,7 @@ comma-separated list of the following flags:
 </ul>
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 Remember: Never forget that <em>Pattern</em> gets applied to a complete URL
 in per-server configuration files. <b>But in per-directory configuration
@@ -1011,7 +1034,7 @@ external redirect or proxy throughput (if flag <b>P</b> is used!) is forced!
 </table>
 
 <p>
-<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
 <tr><td>
 Notice!  To enable the rewriting engine for per-directory configuration files
 you need to set ``<tt>RewriteEngine On</tt>'' in these files <b>and</b>
@@ -1030,7 +1053,7 @@ Here are all possible substitution combinations and their meanings:
 for request ``<tt>GET /somepath/pathinfo</tt>'':</b><br>
 
 <p>
-<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<table bgcolor="#f0f0f0" cellspacing=0 cellpadding=5>
 <tr>
 <td>
 <pre>
@@ -1077,7 +1100,7 @@ for request ``<tt>GET /somepath/pathinfo</tt>'':</b><br>
 request ``<tt>GET /somepath/localpath/pathinfo</tt>'':</b><br>
 
 <p>
-<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<table bgcolor="#f0f0f0" cellspacing=0 cellpadding=5>
 <tr>
 <td>
 <pre>
@@ -1147,6 +1170,45 @@ RewriteMap   real-to-user               txt:/anywhere/map.real-to-host
 RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
 </pre>
 </blockquote>
+</blockquote>
+
+
+<!--%hypertext -->
+<hr>
+<!--/%hypertext -->
+
+<center>
+<a name="Additional">
+<h1>Additional Features</h1>
+</a>
+</center>
+
+<a name="EnvVar">
+<h2>Environment Variables</h2>
+</a>
+
+This module keeps track of two additional (non-standard) CGI/SSI environment
+variables named <tt>SCRIPT_URL</tt> and <tt>SCRIPT_URI</tt>. These contain
+the <em>logical</em> Web-view to the current resource, while the standard CGI/SSI
+variables <tt>SCRIPT_NAME</tt> and <tt>SCRIPT_FILENAME</tt> contain the
+<em>physical</em> System-view. 
+
+<p>
+Notice: These variables hold the URI/URL <em>as they were initially
+requested</em>, i.e. in a state <em>before</em> any rewriting. This is
+important because the rewriting process is primarily used to rewrite logical
+URLs to physical pathnames.
+
+<p>
+<b>Example:</b>
+
+<blockquote>
+<pre>
+SCRIPT_NAME=/v/sw/free/lib/apache/global/u/rse/.www/index.html
+SCRIPT_FILENAME=/u/rse/.www/index.html
+SCRIPT_URL=/u/rse/
+SCRIPT_URI=http://en2.en.sdm.de/u/rse/
+</pre>
 </blockquote>
 
 
