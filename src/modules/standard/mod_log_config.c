@@ -202,10 +202,9 @@ static mode_t xfer_mode = (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
  * multi_log_state is our per-(virtual)-server configuration. We store
  * an array of the logs we are going to use, each of type config_log_state.
  * If a default log format is given by LogFormat, store in default_format
- * (backward compat. with mod_log_config). We also store a pointer to
- * the logs specified for the main server for virtual servers, so that
- * if this vhost has now logs defined, we can use the main server's
- * logs instead.
+ * (backward compat. with mod_log_config).  We also store for each virtual
+ * server a pointer to the logs specified for the main server, so that if this
+ * vhost has no logs defined, we can use the main server's logs instead.
  *
  * So, for the main server, config_logs contains a list of the log files
  * and server_config_logs in empty. For a vhost, server_config_logs

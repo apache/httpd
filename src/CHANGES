@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) Correct comment in mod_log_config.c about its internals.
+     [Elf Sternberg <elf@halcyon.com>]
+
   *) Avoid possible line overflow in Configure: Use an awkfile to
      handle the creation of modules.c [Jim Jagielski]
 
