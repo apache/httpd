@@ -292,6 +292,8 @@ typedef struct {
 } char_buffer_t;
 
 typedef struct {
+    SSL *ssl;
+    BIO *wbio;
     ap_filter_t *f;
     apr_status_t rc;
     ap_input_mode_t mode;
@@ -354,8 +356,16 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
     int len = 0;
     apr_off_t readbytes = inl;
 
-    inbio->rc = APR_SUCCESS;
+    /* XXX: flush here only required for SSLv2;
+     * OpenSSL calls BIO_flush() at the appropriate times for
+     * the other protocols.
+     */
+    if (SSL_version(inbio->ssl) == SSL2_VERSION) {
+        BIO_bucket_flush(inbio->wbio);
+    }
 
+    inbio->rc = APR_SUCCESS;
+    
     /* first use data already read from socket if any */
     if ((len = char_buffer_read(&inbio->cbuf, in, inl))) {
         if ((len <= inl) || inbio->getline) {
@@ -789,6 +799,8 @@ static void ssl_io_input_add_filter(SSLFilterRec *frec, conn_rec *c,
     frec->pbioRead->ptr = &ctx->inbio;
 
     ctx->frec = frec;
+    ctx->inbio.ssl = ssl;
+    ctx->inbio.wbio = frec->pbioWrite;
     ctx->inbio.f = frec->pInputFilter;
     ctx->inbio.bb = apr_brigade_create(c->pool);
     ctx->inbio.bucket = NULL;
@@ -825,13 +837,13 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 
     filter = apr_palloc(c->pool, sizeof(SSLFilterRec));
 
-    ssl_io_input_add_filter(filter, c, ssl);
-
     filter->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
                                                    filter, NULL, c);
 
     filter->pbioWrite       = BIO_new(BIO_s_bucket());
     filter->pbioWrite->ptr  = BIO_bucket_new(filter, c);
+
+    ssl_io_input_add_filter(filter, c, ssl);
 
     SSL_set_bio(ssl, filter->pbioRead, filter->pbioWrite);
     filter->pssl            = ssl;
