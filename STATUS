@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/20 12:10:11 $]
+Last modified at [$Date: 2003/08/20 16:45:40 $]
 
 Release:
 
@@ -332,6 +332,11 @@ PATCHES TO PORT FROM 2.1
 
     * Fix mod_log_config's %b format to write "-" in case of bytes_sent == 0.
         modules/loggers/mod_log_config.c: r1.106
+      +1: nd
+
+    * Overhaul of mod_include's filter parser.
+        modules/filters/mod_include.c: r1.235, r1.236
+        modules/filters/mod_include.h: r1.35
       +1: nd
 
 CURRENT RELEASE NOTES:
