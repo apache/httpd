@@ -2291,7 +2291,7 @@ static void add_cookie(request_rec *r, char *s)
                                  expires ? exp_time : NULL,
                                  NULL);
 
-            apr_table_add(rmain->err_headers_out, "Set-Cookie", cookie);
+            apr_table_addn(rmain->err_headers_out, "Set-Cookie", cookie);
             apr_pool_userdata_set("set", notename, NULL, rmain->pool);
             rewritelog((rmain, 5, NULL, "setting cookie '%s'", cookie));
         }
