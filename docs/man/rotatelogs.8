@@ -64,7 +64,7 @@ is a simple program for use in conjunction with Apache's piped logfile
 feature, which can be used like this:
 
 .fi
-TransferLog "|bin/rotatelogs /path/to/logs/logfile 86400"
+CustomLog "|bin/rotatelogs /path/to/logs/logfile 86400" combined
 .mf
 
 This creates the files /path/to/logs/logfile.nnnn where nnnn is the system
