@@ -121,7 +121,7 @@ extern "C" {
 #define SATISFY_ANY 1
 #define SATISFY_NOSPEC 2
 
-/* Make sure we don't write less than 4096 bytes at any one time.
+/* Make sure we don't write less than 9000 bytes at any one time.
  */
 #define AP_MIN_BYTES_TO_WRITE  9000
 

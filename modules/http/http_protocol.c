@@ -2240,6 +2240,7 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
 struct content_length_ctx {
     ap_bucket_brigade *saved;
     int compute_len;
+    apr_size_t curr_len;
 };
 
 /* This filter computes the content length, but it also computes the number
@@ -2276,10 +2277,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         else {
             length = e->length;
         }
+        ctx->curr_len += length;
         r->bytes_sent += length;
     }
 
-    if (r->bytes_sent < AP_MIN_BYTES_TO_WRITE) {
+    if ((ctx->curr_len < AP_MIN_BYTES_TO_WRITE) && !send_it) {
         ap_save_brigade(f, &ctx->saved, &b);
         return APR_SUCCESS;
     }
@@ -2295,9 +2297,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
      */
     if ((r->proto_num == HTTP_VERSION(1,1)
         && !ap_find_last_token(f->r->pool,
-                              apr_table_get(r->headers_out,
-                                            "Transfer-Encoding"),
-                                            "chunked"))
+                               apr_table_get(r->headers_out,
+                                             "Transfer-Encoding"),
+                               "chunked"))
         || (f->r->connection->keepalive)
         || (AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(b)))) {
         ctx->compute_len = 1;
@@ -2318,9 +2320,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     }
     if (ctx->saved) {
         AP_BRIGADE_CONCAT(ctx->saved, b);
+        ap_brigade_destroy(b);
         b = ctx->saved;
+        ctx->saved = NULL;
     }
 
+    ctx->curr_len = 0;
     return ap_pass_brigade(f->next, b);
 }
 
