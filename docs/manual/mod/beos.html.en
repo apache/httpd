@@ -21,7 +21,8 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache MPM beos</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/beos.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../de/mod/beos.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/beos.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/beos.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>This Multi-Processing Module is optimized for BeOS.</td></tr>
@@ -31,7 +32,7 @@
 <h3>Summary</h3>
 
     <p>This Multi-Processing Module (MPM) is the default for BeOS. It uses
-    a single control process creates threads to handle requests.</p>
+    a single control process which creates threads to handle requests.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -94,7 +95,8 @@ will handle during its life</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/beos.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../de/mod/beos.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/beos.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/beos.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>

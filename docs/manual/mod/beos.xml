@@ -11,7 +11,7 @@
 
 <summary>
     <p>This Multi-Processing Module (MPM) is the default for BeOS. It uses
-    a single control process creates threads to handle requests.</p>
+    a single control process which creates threads to handle requests.</p>
 </summary>
 <seealso><a href="../bind.html">Setting which addresses and ports Apache
 uses</a></seealso>
