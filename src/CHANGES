@@ -1,5 +1,14 @@
 Changes with Apache 1.3.21
 
+  *) mod_proxy - fix reverse proxy cookie passthrough
+     [Brian Eidelman <beidelman@netegrity.com>] PR#6055
+
+  *) mod_proxy - fix CacheForceCompletion directive
+     [Alexey Panchenko <panchenko@liwest.ru>] PR#8090
+
+  *) mod_proxy - close origin server connection when client aborts
+     [Alexey Panchenko <panchenko@liwest.ru>] PR#8067,7383,6585
+
   *) PORT: Some Cygwin changes. [Stipe Tolj <tolj@wapme-systems.de>]
 
   *) ErrorDocument 404 pointing to a parsed html file with a
