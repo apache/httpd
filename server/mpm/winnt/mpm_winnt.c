@@ -1060,7 +1060,7 @@ static void child_main()
      *    number of completion contexts, etc.)
      */
     while (1) {
-        rv = WaitForMultipleObjects(2, (HANDLE *) child_events, FALSE, INFINITE);
+        rv = WaitForMultipleObjects(2, (HANDLE *) child_events, FALSE, 1000);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
@@ -1069,10 +1069,7 @@ static void child_main()
             break;
         }
         else if (rv == WAIT_TIMEOUT) {
-            /* Hey, this cannot happen */
-            ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, server_conf,
-                         "Child %d: WAIT_TIMEOUT -- shutting down server", my_pid);
-            break;
+            apr_proc_other_child_check();
         }
         else if (cld == 0) {
             /* Exit event was signaled */

@@ -1,4 +1,9 @@
 Changes with Apache 2.0.18-dev
+  *) Win32: Add support for reliable piped logs. If the logging process
+     goes down, Apache will automatically restart it. This function has 
+     been part of Apache on Unix/Linux/BSD since the early v1.3 releases.
+     [Bill Stoddard]
+
   *) Do not start piped log processes during the config file 
      preflight.  This change also circumvents a problem on 
      Windows where the rotatelog processes created during preflight
