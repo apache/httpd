@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
->
+<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.10 -->
+<!-- English Revision: 1.11 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -34,6 +32,4 @@
   </seealso>
   <seealso><a href="quickreference.html">ディレクティブ クイックリファレンス</a>
   </seealso>
-
-  &allmodules;
 </moduleindex>

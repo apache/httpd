@@ -98,43 +98,43 @@
                 <!-- core -->
                 <dl>&lf;
                 <dt>
-                    <a href="{document(modulefilelist/modulefile
-                                       [starts-with(., 'core.xml')])
+                    <a href="{document(document($allmodules)/modulefilelist
+                              /modulefile[starts-with(., 'core.xml')])
                               /modulesynopsis/name}.html">
                         <xsl:value-of
-                            select="document(modulefilelist/modulefile
-                                             [starts-with(., 'core.xml')])
+                            select="document(document($allmodules)/modulefilelist
+                                    /modulefile[starts-with(., 'core.xml')])
                                     /modulesynopsis/name" />
                     </a>
                 </dt>
                 <dd>
                     <xsl:apply-templates
-                        select="document(modulefilelist/modulefile
-                                         [starts-with(., 'core.xml')])
+                        select="document(document($allmodules)/modulefilelist
+                                         /modulefile[starts-with(., 'core.xml')])
                                 /modulesynopsis/description" />
                 </dd>&lf;
 
                 <!-- mpm_common -->
                 <dt>
-                    <a href="{document(modulefilelist/modulefile
-                                       [starts-with(., 'mpm_common.xml')])
+                    <a href="{document(document($allmodules)/modulefilelist
+                                       /modulefile[starts-with(., 'mpm_common.xml')])
                               /modulesynopsis/name}.html">
                         <xsl:value-of
-                            select="document(modulefilelist/modulefile
-                                             [starts-with(., 'mpm_common.xml')])
+                            select="document(document($allmodules)/modulefilelist
+                                             /modulefile[starts-with(., 'mpm_common.xml')])
                                     /modulesynopsis/name" />
                     </a>
                 </dt>
                 <dd class="separate">
                     <xsl:apply-templates
-                        select="document(modulefilelist/modulefile
-                                         [starts-with(., 'mpm_common.xml')])
+                        select="document(document($allmodules)/modulefilelist
+                                         /modulefile[starts-with(., 'mpm_common.xml')])
                                 /modulesynopsis/description" />
                 </dd>&lf;
 
                 <!-- and now the remaining MPMs -->
                 <xsl:variable name="mpmmodules"
-                    select="document(modulefilelist/modulefile)
+                    select="document(document($allmodules)/modulefilelist/modulefile)
                             /modulesynopsis
                                 [status='MPM' and name != 'mpm_common']" />
                 <xsl:variable name="translist">
@@ -171,7 +171,7 @@
                 </h2>&lf;
             
                 <xsl:variable name="modules"
-                    select="document(modulefilelist/modulefile)
+                    select="document(document($allmodules)/modulefilelist/modulefile)
                             /modulesynopsis[status!='MPM' and
                                             status!='Core']" />
 
