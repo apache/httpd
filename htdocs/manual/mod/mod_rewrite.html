@@ -751,6 +751,10 @@ close(TXT)</PRE></TD></TR>
         Converts the looked up key to all upper case.
     <LI><STRONG>tolower</STRONG>:<BR>
         Converts the looked up key to all lower case.
+    <LI><STRONG>escape</STRONG>:<BR>
+        Translates special characters in the looked up key to hex-encodings.
+    <LI><STRONG>unescape</STRONG>:<BR>
+        Translates hex-encodings in the looked up key back to special characters.
     </UL>
 <P>
 <LI><STRONG>External Rewriting Program</STRONG><BR>
@@ -1584,6 +1588,11 @@ comma-separated list of the following flags:
     with CGI-scripts to force them to be processed by the CGI-script, the
     chance is high that you will run into problems (or even overhead) on sub-requests.
     In these cases, use this flag.
+<P>
+<LI>'<STRONG><CODE>nocase|NC</CODE></STRONG>' (<STRONG>n</STRONG>o <STRONG>c</STRONG>ase)<BR>
+	This makes the <EM>Pattern</EM> case-insensitive, <EM>i.e.</EM>, there is
+	no difference between 'A-Z' and 'a-z' when <EM>Pattern</EM> is matched
+	against the current URL.
 <P>
 <LI>'<STRONG><CODE>qsappend|QSA</CODE></STRONG>' (<STRONG>q</STRONG>uery <STRONG>s</STRONG>tring
     <STRONG>a</STRONG>ppend)<BR> 

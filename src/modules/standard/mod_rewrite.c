@@ -501,6 +501,12 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         else if (strcmp(a2+4, "toupper") == 0) {
             new->func = rewrite_mapfunc_toupper;
         }
+        else if (strcmp(a2+4, "escape") == 0) {
+            new->func = rewrite_mapfunc_escape;
+        }
+        else if (strcmp(a2+4, "unescape") == 0) {
+            new->func = rewrite_mapfunc_unescape;
+        }
         else if (sconf->state == ENGINE_ENABLED) {
             return ap_pstrcat(cmd->pool, "RewriteMap: internal map not found:",
                               a2+4, NULL);
@@ -708,6 +714,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     char *a3;
     char *cp;
     const char *err;
+    int mode;
 
     sconf = (rewrite_server_conf *)
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
@@ -726,16 +733,32 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                           "'\n", NULL);
     }
 
+    /* arg3: optional flags field */
+    new->forced_mimetype     = NULL;
+    new->forced_responsecode = HTTP_MOVED_TEMPORARILY;
+    new->flags  = RULEFLAG_NONE;
+    new->env[0] = NULL;
+    new->skip   = 0;
+    if (a3 != NULL) {
+        if ((err = cmd_rewriterule_parseflagfield(cmd->pool, new,
+                                                  a3)) != NULL) {
+            return err;
+        }
+    }
+
     /*  arg1: the pattern
      *  try to compile the regexp to test if is ok
      */
-    new->flags = RULEFLAG_NONE;
     cp = a1;
     if (cp[0] == '!') {
         new->flags |= RULEFLAG_NOTMATCH;
         cp++;
     }
-    if ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL) {
+    mode = REG_EXTENDED;
+    if (new->flags & RULEFLAG_NOCASE) {
+        mode |= REG_ICASE;
+    }
+    if ((regexp = ap_pregcomp(cmd->pool, cp, mode)) == NULL) {
         return ap_pstrcat(cmd->pool,
                           "RewriteRule: cannot compile regular expression '",
                           a1, "'\n", NULL);
@@ -748,18 +771,6 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
      *  used Regular Expression library
      */
     new->output = ap_pstrdup(cmd->pool, a2);
-
-    /* arg3: optional flags field */
-    new->forced_mimetype = NULL;
-    new->forced_responsecode = HTTP_MOVED_TEMPORARILY;
-    new->env[0] = NULL;
-    new->skip = 0;
-    if (a3 != NULL) {
-        if ((err = cmd_rewriterule_parseflagfield(cmd->pool, new,
-                                                  a3)) != NULL) {
-            return err;
-        }
-    }
 
     /* now, if the server or per-dir config holds an
      * array of RewriteCond entries, we take it for us
@@ -916,6 +927,10 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
     else if (   strcasecmp(key, "qsappend") == 0
              || strcasecmp(key, "QSA") == 0   ) {
         cfg->flags |= RULEFLAG_QSAPPEND;
+    }
+    else if (   strcasecmp(key, "nocase") == 0
+             || strcasecmp(key, "NC") == 0    ) {
+        cfg->flags |= RULEFLAG_NOCASE;
     }
     else {
         return ap_pstrcat(p, "RewriteRule: unknown flag '", key, "'\n", NULL);
@@ -2964,6 +2979,23 @@ static char *rewrite_mapfunc_tolower(request_rec *r, char *key)
          cp++) {
         *cp = ap_tolower(*cp);
     }
+    return value;
+}
+
+static char *rewrite_mapfunc_escape(request_rec *r, char *key)
+{
+    char *value;
+
+    value = ap_escape_uri(r->pool, key);
+    return value;
+}
+
+static char *rewrite_mapfunc_unescape(request_rec *r, char *key)
+{
+    char *value;
+
+    value = ap_pstrdup(r->pool, key);
+    ap_unescape_url(value);
     return value;
 }
 
