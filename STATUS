@@ -94,12 +94,12 @@ Available Patches:
 
     * Ralf's [PATCH] Cleanup command line options
         Message-ID: <19981206195422.A10001@engelschall.com>
-        Status: Ralf +1, Roy +1
+        Status: Ralf +1, Roy +1, Jim 0 (is a 1.3.3->1.3.4 bump the place?)
 
     * Michael van Elst's patch [PR#3160] to improve mod_rewrite's
       in-core cache handling by using a hash table.
         Message-ID: <XFMail.981115192248.sfx@unix-ag.org>
-        Status: Lars +1
+        Status: Lars +1, Jim +1
 
     * Marc's [PATCH] PR#3323: recursive includes
         Message-ID: <Pine.BSF.4.03.9810311132540.20832-100000@alive.znep.com>
@@ -114,7 +114,9 @@ Available Patches:
 
     * Eric Prud'hommeaux's mod_dir mods for file-level access control.
         Message-ID: <Pine.LNX.3.96.981111213739.1364E-200000@tux.w3.org>
-        Status: 
+        Status: Jim -0 (The current behavior seems logical to me. If there
+	was more universal interest in changing it, then that would be
+	a different matter).
 
     * Eric Prud'hommeaux's mods for practical negotiation with
       file level access control.
@@ -129,7 +131,7 @@ In progress:
 
     * Addition of "cute little icons" to Apache's main icon groups.
       See <4.1.19981024045505.00a9dce0@hyperreal.org>
-        Status: Ralf +1, Roy +1 (in "icons/small" subdirectory)
+        Status: Ralf +1, Roy +1 (in "icons/small" subdirectory), Jim +1
 
     * Ken's IndexFormat enhancement to mod_autoindex to allow
       CustomLog-like tailoring of directory listing formats
