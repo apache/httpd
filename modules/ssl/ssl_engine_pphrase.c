@@ -532,7 +532,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
                 "Init: Requesting pass phrase from dialog filter program (%s)",
                 sc->szPassPhraseDialogPath);
 
-        if (strchr(sc->szPassPhraseDialogPath, ' ') != NULL)
+        if (ap_strchr_c(sc->szPassPhraseDialogPath, ' ') != NULL)
             cmd = apr_psprintf(p, "\"%s\" %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
         else
             cmd = apr_psprintf(p, "%s %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
