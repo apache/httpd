@@ -375,7 +375,9 @@ case "$PLAT" in
 	OS='SCO 5'
 	CFLAGS="$CFLAGS -DSCO5"
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
-	OSBPRINTF="-K noinline"
+	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
+	    OSBPRINTF="-K noinline"
+	fi
 	DEF_WANTHSREGEX=no
 	;;
     *-solaris2*)

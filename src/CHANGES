@@ -162,6 +162,9 @@ Changes with Apache 1.2.1
 
   *) PORT: Workaround for AIX 3.x compiler bug in http_bprintf.c.  
      [Marc Slemko] PR#725
+  
+  *) PORT: fix problem compiling http_bprintf.c with gcc under SCO
+     [Marc Slemko] PR#695
 
 Changes with Apache 1.2
 
