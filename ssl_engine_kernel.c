@@ -1203,7 +1203,8 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
 {
     /* Get Apache context back through OpenSSL context */
-    SSL *ssl            = (SSL *)X509_STORE_CTX_get_app_data(ctx);
+    SSL *ssl = X509_STORE_CTX_get_ex_data(ctx,
+                                          SSL_get_ex_data_X509_STORE_CTX_idx());
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s       = conn->base_server;
     request_rec *r      = (request_rec *)SSL_get_app_data2(ssl);
