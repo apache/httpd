@@ -714,7 +714,14 @@ static void fix_hostname(request_rec *r)
     src = r->hostname;
     dst = host;
     while (*src) {
-	if (!apr_isalnum(*src) && *src != '.' && *src != '-') {
+	if (!apr_isalnum(*src) && *src != '-') {
+	    if (*src == '.') {
+		*dst++ = *src++;
+		if (*src == '.')
+		    goto bad;
+		else
+		    continue;
+	    }
 	    if (*src == ':')
 		break;
 	    else
