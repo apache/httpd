@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.3 (outdated: 1.7) -->
+<!-- English Revision: 1.7 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -97,7 +97,7 @@
         <directive module="core">RLimitCPU</directive>
         <directive module="core">RLimitMEM</directive>
         <directive module="core">RLimitNPROC</directive>
-        <directive module="mpm_netware">ThreadStackSize</directive>
+        <directive module="mpm_common">ThreadStackSize</directive>
       </directivelist>
     </related>
 
@@ -111,7 +111,7 @@
     特に、これは CGI スクリプトと SSI exec
     コマンドで使われるリソースを制御します。</p>
 
-    <p><directive module="mpm_netware">ThreadStackSize</directive> は Netware
+    <p><directive module="mpm_common">ThreadStackSize</directive> は Netware
     でのみ、スタックの大きさを制御するために使われます。</p>
   </section>
 </manualpage>
