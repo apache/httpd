@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) When READing a request in ExtendedStatus mode, the "old"
+     vhost, request and client information is cleared out.
+     [Jim Jagielski]
+
   *) STATUS is no longer available. Full status information now
      run-time configurable using the ExtendedStatus directive.
      [Jim Jagielski]
