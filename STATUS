@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/12 23:12:26 $]
+Last modified at [$Date: 2002/04/13 00:50:20 $]
 
 Release:
 
@@ -51,6 +51,8 @@ RELEASE SHOWSTOPPERS:
 
     * Daedalus segfaults with 2.0.35
       Greg and Cliff are working on this.
+
+    * HTTP chunk reads fail to read the trailers.
 
 CURRENT VOTES:
 
@@ -745,6 +747,9 @@ put them into 'the next release':
         Status: 
 
 Other bugs that need fixing:
+
+    * ap_discard_request should be converted to use the bucket API
+      directly rather than waste cycles copying buffers with the old API.
 
     * MaxRequestsPerChild measures connections, not requests.
         Until someone has a better way, we'll probably just rename it
