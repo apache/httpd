@@ -1530,13 +1530,14 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         for(;;)
         {
 /* FIXME: this does not return, despite the incoming connection being accepted */
-            switch(rv = apr_accept(&remote_sock, local_sock, r->pool))
-            {
-            case APR_EINTR:
+            rv = apr_accept(&remote_sock, local_sock, r->pool);
+            if (rv == APR_EINTR) {
                 continue;
-            case APR_SUCCESS:
+            }
+            else if (rv == APR_SUCCESS) {
                 break;
-            default:
+            }
+            else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                               "proxy: FTP: failed to accept data connection");
                 return HTTP_BAD_GATEWAY;
