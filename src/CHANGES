@@ -1,4 +1,7 @@
 Changes with Apache 1.3.7
+
+  *) Fix sed regex for generating ap_config_auto.h in src/Configure.
+     [Jan Gallo <gallo@pvt.sk>] PR#3690, PR#4373
  
   *) Switch to /bin/sh5 in APACI on Ultrix and friends to avoid problems with
      their brain-dead /bin/sh. [Ralf S. Engelschall] PR#4372
