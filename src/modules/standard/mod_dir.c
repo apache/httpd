@@ -179,13 +179,13 @@ static int handle_dir(request_rec *r)
         if (ap_is_HTTP_REDIRECT(rr->status) ||
             (rr->status == HTTP_NOT_ACCEPTABLE && num_names == 1)) {
 
+            ap_pool_join(r->pool, rr->pool);
             error_notfound = rr->status;
             r->notes = ap_overlay_tables(r->pool, r->notes, rr->notes);
             r->headers_out = ap_overlay_tables(r->pool, r->headers_out,
                                             rr->headers_out);
             r->err_headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
                                                 rr->err_headers_out);
-            ap_destroy_sub_req(rr);
             return error_notfound;
         }
 

@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/06 08:18:45 $]
+  Last modified at [$Date: 1999/02/06 08:51:22 $]
 
 Release:
 
@@ -94,20 +94,6 @@ Available Patches:
     * Koen Holtman's [PATCH] mod_negotiation some loose ends
         Message-ID: <Pine.GSO.3.95a.990125190321.5403B-100000@suncms33.cern.ch>
         Status: Roy is looking at it.
-
-    * Core dump with Language Negotiation?!?
-
-      o Roy's [PATCH] Adds ap_copyover_table()
-        Message-ID: <9901180536.aa11781@paris.ics.uci.edu>
-        Status: Roy +1, Dirkx +1
-
-      o Martin and Dean's [PATCH] Adds copy semantics to ap_overlap_tables().
-        Message-ID: <19990119223005.A9971@deejai.mch.sni.de>
-        Status: 
-
-      o Dean's minimal [PATCH] Adds ap_pool_join()
-        MID: <Pine.LNX.3.96dg4.990129180920.22674Y-100000@twinlark.arctic.org>
-        Status: Dean +1, Roy +1
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
