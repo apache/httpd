@@ -81,10 +81,16 @@ LN              = ln
 RM              = rm -f
 MKDIR           = $(TOP)/$(AUX)/mkdir.sh
 INSTALL         = $(TOP)/$(AUX)/install.sh -c
-INSTALL_PROGRAM = $(INSTALL) -s -m 755
-INSTALL_DSO     = $(INSTALL) -m 755
-INSTALL_SCRIPT  = $(INSTALL) -m 755
-INSTALL_DATA    = $(INSTALL) -m 644
+IFLAGS_PROGRAM  = -m 755 -s
+IFLAGS_CORE     = -m 755
+IFLAGS_DSO      = -m 755
+IFLAGS_SCRIPT   = -m 755 
+IFLAGS_DATA     = -m 644
+INSTALL_PROGRAM = $(INSTALL) $(IFLAGS_PROGRAM)
+INSTALL_CORE    = $(INSTALL) $(IFLAGS_CORE)
+INSTALL_DSO     = $(INSTALL) $(IFLAGS_DSO)
+INSTALL_SCRIPT  = $(INSTALL) $(IFLAGS_SCRIPT)
+INSTALL_DATA    = $(INSTALL) $(IFLAGS_DATA)
 PERL            = @PERL@
 TAR		= @TAR@
 TAROPT		= @TAROPT@
@@ -253,12 +259,18 @@ install-mktree:
 #   shared object files.
 install-programs:
 	@echo "===> [programs: Installing Apache $(TARGET) program and shared objects]"
-	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET)
+	-@if [ ".`grep '^[ 	]*AddModule.*mod_so\.o' $(TOP)/$(SRC)/Configuration.apaci`" != . ]; then \
+		echo "$(INSTALL_CORE) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET)"; \
+		$(INSTALL_CORE) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET); \
+	else \
+		echo "$(INSTALL_PROGRAM) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET)"; \
+		$(INSTALL_PROGRAM) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET); \
+	fi
 	-@if [ ".`grep 'SUBTARGET=target_shared' $(TOP)/$(SRC)/Makefile`" != . ]; then \
 		SHLIB_SUFFIX_NAME="`grep '^SHLIB_SUFFIX_NAME=' $(TOP)/$(SRC)/Makefile | sed -e 's:^.*=::'`"; \
 		SHLIB_SUFFIX_LIST="`grep '^SHLIB_SUFFIX_LIST=' $(TOP)/$(SRC)/Makefile | sed -e 's:^.*=::'`"; \
-		echo "$(INSTALL_DSO) $(TOP)/$(SRC)/lib$(TARGET).ep $(root)$(libexecdir)/lib$(TARGET).ep"; \
-		$(INSTALL_DSO) $(TOP)/$(SRC)/lib$(TARGET).ep $(root)$(libexecdir)/lib$(TARGET).ep; \
+		echo "$(INSTALL_CORE) $(TOP)/$(SRC)/lib$(TARGET).ep $(root)$(libexecdir)/lib$(TARGET).ep"; \
+		$(INSTALL_CORE) $(TOP)/$(SRC)/lib$(TARGET).ep $(root)$(libexecdir)/lib$(TARGET).ep; \
 		echo "$(INSTALL_DSO) $(TOP)/$(SRC)/lib$(TARGET).$${SHLIB_SUFFIX_NAME} $(root)$(libexecdir)/lib$(TARGET).$${SHLIB_SUFFIX_NAME}"; \
 		$(INSTALL_DSO) $(TOP)/$(SRC)/lib$(TARGET).$${SHLIB_SUFFIX_NAME} $(root)$(libexecdir)/lib$(TARGET).$${SHLIB_SUFFIX_NAME}; \
 		if [ ".$${SHLIB_SUFFIX_LIST}" != . ]; then \

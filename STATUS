@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/10 11:48:42 $]
+  Last modified at [$Date: 1999/02/10 12:09:34 $]
 
 Release:
 
@@ -83,10 +83,6 @@ Available Patches:
     * Ralf's patch to fix append of target name to layout paths
         Message-ID: <19990114114248.A14406@engelschall.com>
         Status: Ralf +1, Roy +1
-
-    * Ralf's adjusted version of Fred's Add strip flags variables
-        Message-ID: <19990114084058.A9039@engelschall.com>
-        Status: Ralf +1, Dirkx +1, Fred +1, Jim +1
 
     * Fred's PATCH: man page section numbers
         Message-ID: <199901140041.QAA05676@scv3.apple.com>
