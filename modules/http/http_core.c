@@ -3549,13 +3549,13 @@ static void register_hooks(void)
                               AP_FTYPE_HTTP_HEADER);
     ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter, 
                               AP_FTYPE_HTTP_HEADER);
+    ap_register_output_filter("BYTERANGE", ap_byterange_filter, 
+                              AP_FTYPE_HTTP_HEADER);
     ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_NETWORK);
     ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
                               AP_FTYPE_CONTENT);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
     ap_register_output_filter("COALESCE", coalesce_filter, AP_FTYPE_CONNECTION);
-    ap_register_output_filter("BYTERANGE", ap_byterange_filter, 
-                              AP_FTYPE_TRANSCODE);
 }
 
 AP_DECLARE_DATA module core_module = {
