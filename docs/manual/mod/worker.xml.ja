@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.8.2.4 -->
 <modulesynopsis metafile="worker.xml.meta">
 <name>worker</name>
 <description>マルチスレッドとマルチプロセスのハイブリッド型
@@ -26,7 +26,6 @@
     各子プロセスで用意されるスレッド数を制御して、
     <directive module="mpm_common">MaxClients</directive> は
     起動されるスレッドの総数の最大値を制限します。</p>
-
 </summary>
 <seealso><a href="../bind.html">Apache 
 の使用するアドレスとポートの設定</a></seealso>
@@ -83,7 +82,7 @@
     </example>
 
     <p>通常 Unix では親プロセスは 80 番ポートにバインドするために
-    root で起動されますが、子プロセスやスレッドは
+    <code>root</code> で起動されますが、子プロセスやスレッドは
     もっと低い権限のユーザで Apache によって起動されます。
     <directive module="mpm_common">User</directive> と
     <directive module="mpm_common">Group</directive> ディレクティブは
@@ -99,6 +98,8 @@
     どの程度の頻度でサーバがプロセスをリサイクルするかを制御します。</p>
 </section>
 
+<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Group</name>

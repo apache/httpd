@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.4.2.1 -->
+<!-- English revision: 1.4.2.3 -->
 
 <moduleindex metafile="index.xml.meta">
   <title>モジュール一覧</title>
@@ -14,9 +14,9 @@
       ディレクティブ</a> のアルファベット順のリストも見てください。
     </p>
   </summary>
-  <seealso><a href="../mpm.html">マルチプロセッシングモジュール (MPM)</a>
+  <seealso><a href="../mpm.html">マルチプロセッシングモジュール (MPMs)</a>
   </seealso>
-  <seealso><a href="quickreference.html">ディレクティブクイックリファレンス</a>
+  <seealso><a href="quickreference.html">ディレクティブ クイックリファレンス</a>
   </seealso>
 
   &allmodules;

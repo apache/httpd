@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.1.2.2 -->
 <modulesynopsis metafile="mod_dav_fs.xml.meta">
 
 <name>mod_dav_fs</name> 
@@ -24,8 +24,7 @@
     </example>
 
     <p><code>filesystem</code> は <module>mod_dav</module>
-    のデフォルトプロバイダになっていますから、<code>filesystem</code>
-    の代わりに単に
+    のデフォルトプロバイダになっていますから、代わりに単に
     <code>On</code> と指定することもできます。</p>
 </summary>
 <seealso><module>mod_dav</module></seealso>
@@ -42,7 +41,7 @@
     指定するには、<directive>DavLockDB</directive>
     を使います。パスが絶対パスでなければ、<directive module=
     "core">ServerRoot</directive> からの相対パスと解釈されます。
-    <module>mod_dav_fs</module> の実装では、ユーザロックを
+    <module>mod_dav_fs</module> 実装では、ユーザロックを
     追跡するために SDBM データベースを使います。</p>
 
     <!-- XXX: someone should add that tool to the support directory...

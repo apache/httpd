@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.2 -->
+<!-- English revision: 1.2.2.2 -->
 
 <manualpage metafile="directive-dict.xml.meta">
 
@@ -154,12 +154,11 @@
       <dt>ディレクトリ</dt>
 
       <dd>これは、サーバ設定ファイルの
-      <directive module="core" type="section">Directory</directive>、
-      <directive module="core" type="section">Location</directive>、
-      <directive module="core" type="section">Files</directive>
-      の中で、 <a
-      href="../sections.html">Directory、Location、Files
-      セクションの機能</a>
+      <directive module="core" type="section">Directory</directive>, 
+      <directive module="core" type="section">Location</directive>, 
+      <directive module="core" type="section">Files</directive> 
+      コンテナの中で、 <a
+      href="../sections.html">Directory, Location, Files セクションの動作方法</a>
       で説明されている制限の下で使用できることを示します。</dd>
 
       <dt>.htaccess</dt>

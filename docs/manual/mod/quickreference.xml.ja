@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.4.2.3 -->
 
 <quickreference metafile="quickreference.xml.meta">
   <title>ディレクティブ クイックリファレンス</title>
@@ -26,6 +26,7 @@
 
   <legend>
     <table>
+      <columnspec><column width=".1"/><column width=".2"/></columnspec>
       <tr><th>s</th><td>サーバ設定ファイル</td></tr>
       <tr><th>v</th><td>バーチャルホスト</td></tr>
       <tr><th>d</th><td>ディレクトリ</td></tr>
@@ -33,6 +34,7 @@
     </table>
 
     <table>
+      <columnspec><column width=".1"/><column width=".2"/></columnspec>
       <tr><th>C</th><td>Core</td></tr>
       <tr><th>M</th><td>MPM</td></tr>
       <tr><th>B</th><td>Base</td></tr>

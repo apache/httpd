@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_alias.xml.meta">
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.9.2.4 -->
 
 <name>mod_alias</name>
 <description>ホストファイルシステム上のいろいろな違う場所を
@@ -61,9 +61,9 @@ href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</
     ファイル /ftp/pub/image/foo.gif を返します。</p>
 
     <p>もし <var>url-path</var> の最後に /
-    を書いたなら、サーバはエイリアスを展開するために最後の /
-    を要求するということに注意してください。すなわち、<code>Alias /icons/
-     /usr/local/apache/icons/</code> というものを使用していると、
+    を書いたなら、サーバがエイリアスを展開するためには、最後の /
+    が必要になることに注意してください。すなわち、<code>Alias /icons/
+     /usr/local/apache/icons/</code> というものを使用している場合は、
     <code>/icons</code> という url はエイリアスされません。</p>
 
     <p>エイリアスの<em>行き先</em>を含んでいる <directive
@@ -79,6 +79,21 @@ href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</
     type="section" module="core">Location</directive>
     セクションはエイリアスが処理される前に実行されますので、
     こちらは適用されます。)</p>
+
+    <p>特に、<code>Alias</code> を
+    <directive module="core">DocumentRoot</directive>
+    ディレクトリの外側に配置した場合は、行き先のディレクトリに対する
+    アクセス権限を明示的に制限しなければならないでしょう。</p>
+
+    <example><title>例</title>
+        Alias /image /ftp/pub/image<br />
+        &lt;Directory /ftp/pub/image&gt;<br />
+        <indent>
+            Order allow,deny<br />
+            Allow from all<br />
+        </indent>
+        &lt;/Directory&gt;
+    </example>
 
 </usage>
 </directivesynopsis>

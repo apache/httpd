@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_unique_id.xml.meta">
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.3.2.2 -->
 
 <name>mod_unique_id</name>
 <description>それぞれのリクエストに対する一意な識別子の入った環境変数を
@@ -23,7 +23,7 @@
     このドキュメントの目的からは外れるため、ここでは説明しません。</p>
 </summary>
 
-<section>
+<section id="theory">
     <title>理論</title>
 
     <p>まずはじめに、Apache サーバが Unix

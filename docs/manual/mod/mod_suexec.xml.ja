@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_suexec.xml.meta">
 
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.6.2.1 -->
 <name>mod_suexec</name>
 <description>指定されたユーザとグループで CGI スクリプトを実行する</description>
 <status>拡張</status>
