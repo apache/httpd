@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/05/16 19:19:47 $]
+Last modified at [$Date: 2001/05/17 12:37:15 $]
 
 Release:
 
@@ -257,8 +257,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * There are still a number of places in the code where we are
       losing error status (i.e. throwing away the error returned by a
       system call and replacing it with a generic error code)
-
-    * Win32: Implement reliable piped logs on Windows
 
     * Mass vhosting version of suEXEC.
 
