@@ -183,12 +183,7 @@
 module MODULE_VAR_EXPORT config_log_module;
 
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
-#if defined(OS2) || defined(WIN32)
-/* OS/2 dosen't support users and groups */
-static mode_t xfer_mode = (S_IREAD | S_IWRITE);
-#else
-static mode_t xfer_mode = (APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD);
-#endif
+static ap_fileperms_t xfer_perms = APR_OS_DEFAULT;
 
 /* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
  * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
@@ -1028,7 +1023,7 @@ static config_log_state *open_config_log(server_rec *s, ap_pool_t *p,
     }
     else {
         const char *fname = ap_server_root_relative(p, cls->fname);
-        if ((status = ap_open(&cls->log_fd, fname, xfer_flags, xfer_mode, p)) 
+        if ((status = ap_open(&cls->log_fd, fname, xfer_flags, xfer_perms, p)) 
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
                          "could not open transfer log file %s.", fname);
