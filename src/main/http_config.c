@@ -476,7 +476,8 @@ static void init_handlers(pool *p)
 int ap_invoke_handler(request_rec *r)
 {
     fast_handler_rec *handp;
-    char *handler, *p;
+    const char *handler;
+    char *p;
     size_t handler_len;
 
     if (r->handler) {

@@ -159,8 +159,8 @@ static int action_handler(request_rec *r)
 {
     action_dir_config *conf =
     (action_dir_config *) ap_get_module_config(r->per_dir_config, &action_module);
-    char *t, *action = r->handler ? r->handler : r->content_type;
-    char *script = NULL;
+    const char *t, *action = r->handler ? r->handler : r->content_type;
+    const char *script = NULL;
 
     /* Set allowed stuff */
     if (conf->get)

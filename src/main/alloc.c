@@ -1117,7 +1117,7 @@ API_EXPORT(void) ap_clear_table(table *t)
     t->a.nelts = 0;
 }
 
-API_EXPORT(char *) ap_table_get(const table *t, const char *key)
+API_EXPORT(const char *) ap_table_get(const table *t, const char *key)
 {
     table_entry *elts = (table_entry *) t->a.elts;
     int i;

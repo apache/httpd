@@ -619,7 +619,8 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		      struct cache_req **cr)
 {
-    char hashfile[66], *imstr, *pragma, *auth;
+    char hashfile[66];
+    const char *imstr, *pragma, *auth;
     struct cache_req *c;
     time_t now;
     BUFF *cachefp;

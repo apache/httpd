@@ -111,7 +111,7 @@ int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_p
     return OK;
 }
  
-static char *proxy_location_reverse_map(request_rec *r, char *url)
+static const char *proxy_location_reverse_map(request_rec *r, const char *url)
 {
     void *sconf;
     proxy_server_conf *conf;
@@ -136,8 +136,11 @@ static char *proxy_location_reverse_map(request_rec *r, char *url)
 /* Clear all connection-based headers from the incoming headers table */
 static void clear_connection(table *headers)
 {
-    char *name;
-    char *next = ap_table_get(headers, "Connection");
+    const char *name;
+    /* Although we shouldn't alter the return from ap_table_get, in this case
+       its OK, coz we're going to delete the entry anyway
+    */
+    char *next = (char *)ap_table_get(headers, "Connection");
 
     ap_table_unset(headers, "Proxy-Connection");
     if (!next)
@@ -168,7 +171,8 @@ static void clear_connection(table *headers)
 int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 		       const char *proxyhost, int proxyport)
 {
-    char *strp;
+    const char *strp;
+    char *strp2;
     const char *err, *desthost;
     int i, j, sock, len, backasswards;
     array_header *reqhdrs_arr, *resp_hdrs;
@@ -183,7 +187,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     const long int zero = 0L;
     int destport = 0;
     char *destportstr = NULL;
-    char *urlptr = NULL;
+    const char *urlptr = NULL;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -215,12 +219,12 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	desthost = q;
     }
 
-    strp = strchr(desthost, ':');
-    if (strp != NULL) {
-	*(strp++) = '\0';
-	if (isdigit(*strp)) {
-	    destport = atoi(strp);
-	    destportstr = strp;
+    strp2 = strchr(desthost, ':');
+    if (strp2 != NULL) {
+	*(strp2++) = '\0';
+	if (isdigit(*strp2)) {
+	    destport = atoi(strp2);
+	    destportstr = strp2;
 	}
     }
 

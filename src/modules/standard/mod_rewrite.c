@@ -942,9 +942,10 @@ static int hook_uri2file(request_rec *r)
 {
     void *sconf;
     rewrite_server_conf *conf;
-    char *var;
+    const char *var;
     const char *thisserver;
-    char *thisport, *thisurl;
+    char *thisport;
+    const char *thisurl;
     char buf[512];
     char docroot[512];
     char *cp, *cp2;
@@ -1202,7 +1203,7 @@ static int hook_uri2file(request_rec *r)
 
 static int hook_mimetype(request_rec *r)
 {
-    char *t;
+    const char *t;
 
     /* now check if we have to force a MIME-type */
     t = ap_table_get(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR);

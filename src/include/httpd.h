@@ -600,7 +600,7 @@ struct request_rec {
     int header_only;		/* HEAD request, as opposed to GET */
     char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */
     int proto_num;		/* Number version of protocol; 1.1 = 1001 */
-    char *hostname;		/* Host, as set by full URI or Host: */
+    const char *hostname;	/* Host, as set by full URI or Host: */
 
     time_t request_time;	/* When the request started */
 
@@ -645,7 +645,7 @@ struct request_rec {
     int chunked;		/* sending chunked transfer-coding */
     int byterange;		/* number of byte ranges */
     char *boundary;		/* multipart/byteranges boundary */
-    char *range;		/* The Range: header */
+    const char *range;		/* The Range: header */
     long clength;		/* The "real" content length */
 
     long remaining;		/* bytes left to read */
@@ -675,11 +675,11 @@ struct request_rec {
      * content_languages MUST be lowercased strings.  They may be pointers
      * to static strings; they should not be modified in place.
      */
-    char *content_type;		/* Break these out --- we dispatch on 'em */
-    char *handler;		/* What we *really* dispatch on           */
+    const char *content_type;	/* Break these out --- we dispatch on 'em */
+    const char *handler;	/* What we *really* dispatch on           */
 
-    char *content_encoding;
-    char *content_language;	/* for back-compat. only -- do not use */
+    const char *content_encoding;
+    const char *content_language;	/* for back-compat. only -- do not use */
     array_header *content_languages;	/* array of (char*) */
 
     int no_cache;
@@ -862,7 +862,7 @@ API_EXPORT(char *) ap_getword_nulls_nc(pool *p, char **line, char stop);
 API_EXPORT(char *) ap_getword_conf(pool *p, const char **line);
 API_EXPORT(char *) ap_getword_conf_nc(pool *p, char **line);
 
-API_EXPORT(char *) ap_get_token(pool *p, char **accept_line, int accept_white);
+API_EXPORT(char *) ap_get_token(pool *p, const char **accept_line, int accept_white);
 API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok);
 API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok);
 

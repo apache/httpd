@@ -961,10 +961,10 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
  * by whitespace at the caller's option.
  */
 
-API_EXPORT(char *) ap_get_token(pool *p, char **accept_line, int accept_white)
+API_EXPORT(char *) ap_get_token(pool *p, const char **accept_line, int accept_white)
 {
-    char *ptr = *accept_line;
-    char *tok_start;
+    const char *ptr = *accept_line;
+    const char *tok_start;
     char *token;
     int tok_len;
 

@@ -322,7 +322,8 @@ static int check_speling(request_rec *r)
 
     if (candidates->nelts != 0) {
         /* Wow... we found us a mispelling. Construct a fixed url */
-        char *nuri, *ref;
+        char *nuri;
+	const char *ref;
         misspelled_file *variant = (misspelled_file *) candidates->elts;
         int i;
 

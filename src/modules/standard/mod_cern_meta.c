@@ -261,15 +261,16 @@ static int scan_meta_file(request_rec *r, FILE *f)
 	    ++l;
 
 	if (!strcasecmp(w, "Content-type")) {
-
+	    char *tmp;
 	    /* Nuke trailing whitespace */
 
 	    char *endp = l + strlen(l) - 1;
 	    while (endp > l && isspace(*endp))
 		*endp-- = '\0';
 
-	    r->content_type = ap_pstrdup(r->pool, l);
-	    ap_content_type_tolower(r->content_type);
+	    tmp = ap_pstrdup(r->pool, l);
+	    ap_content_type_tolower(tmp);
+	    r->content_type = tmp;
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);

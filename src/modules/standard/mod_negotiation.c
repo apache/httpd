@@ -180,7 +180,7 @@ typedef struct var_rec {
     request_rec *sub_req;       /* May be NULL (is, for map files) */
     char *type_name;		/* MUST be lowercase */
     char *file_name;
-    char *content_encoding;
+    const char *content_encoding;
     array_header *content_languages;    /* list of languages for this variant */
     char *content_charset;
     char *description;
@@ -297,7 +297,7 @@ static void set_mime_fields(var_rec *var, accept_rec *mime_info)
  * enter the values we recognize into the argument accept_rec
  */
 
-static char *get_entry(pool *p, accept_rec *result, char *accept_line)
+static const char *get_entry(pool *p, accept_rec *result, const char *accept_line)
 {
     result->quality = 1.0f;
     result->max_bytes = 0.0f;
@@ -409,7 +409,7 @@ static char *get_entry(pool *p, accept_rec *result, char *accept_line)
  * and charset is only valid in Accept.
  */
 
-static array_header *do_header_line(pool *p, char *accept_line)
+static array_header *do_header_line(pool *p, const char *accept_line)
 {
     array_header *accept_recs = ap_make_array(p, 40, sizeof(accept_rec));
 
@@ -461,7 +461,7 @@ static negotiation_state *parse_accept_headers(request_rec *r)
     accept_rec *elts;
     table *hdrs = r->headers_in;
     int i;
-    char *hdr;
+    const char *hdr;
 
     new->pool = r->pool;
     new->r = r;
@@ -1446,7 +1446,7 @@ static void set_charset_quality(negotiation_state *neg, var_rec *variant)
  * use 7bit, 8bin or binary in their var files??
  */
 
-static int is_identity_encoding(char *enc)
+static int is_identity_encoding(const char *enc)
 {
     return (!enc || !enc[0] || !strcmp(enc, "7bit") || !strcmp(enc, "8bit")
             || !strcmp(enc, "binary"));
@@ -1456,7 +1456,7 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     accept_rec *accept_recs = (accept_rec *) neg->accept_encodings->elts;
-    char *enc = variant->content_encoding;
+    const char *enc = variant->content_encoding;
 
     if (!enc || is_identity_encoding(enc)) {
         return;
@@ -1805,7 +1805,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     var_rec *avail_recs = (var_rec *) neg->avail_vars->elts;
     char *sample_type = NULL;
     char *sample_language = NULL;
-    char *sample_encoding = NULL;
+    const char *sample_encoding = NULL;
     char *sample_charset = NULL;
     int vary_by_type = 0;
     int vary_by_language = 0;
@@ -1973,7 +1973,7 @@ static void store_variant_list(request_rec *r, negotiation_state *neg)
 static int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *variant)
 {
     request_rec *sub_req;
-    char *sub_vary;
+    const char *sub_vary;
 
     if (!variant->sub_req) {
         int status;
@@ -2232,7 +2232,7 @@ static int handle_multi(request_rec *r)
  */
 static int fix_encoding(request_rec *r)
 {
-    char *enc = r->content_encoding;
+    const char *enc = r->content_encoding;
     char *x_enc = NULL;
     array_header *accept_encodings;
     accept_rec *accept_recs;

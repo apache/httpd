@@ -88,7 +88,7 @@ module MODULE_VAR_EXPORT cgi_module;
 
 static int is_scriptaliased(request_rec *r)
 {
-    char *t = ap_table_get(r->notes, "alias-forced-type");
+    const char *t = ap_table_get(r->notes, "alias-forced-type");
     return t && (!strcasecmp(t, "cgi-script"));
 }
 
@@ -193,7 +193,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 }
 
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
-		  char *dbuf, char *sbuf, BUFF *script_in, BUFF *script_err)
+		  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err)
 {
     array_header *hdrs_arr = table_elts(r->headers_in);
     table_entry *hdrs = (table_entry *) hdrs_arr->elts;
@@ -491,7 +491,8 @@ static int cgi_handler(request_rec *r)
 
     /* Handle script return... */
     if (script_in && !nph) {
-	char *location, sbuf[MAX_STRING_LEN];
+	const char *location;
+	char sbuf[MAX_STRING_LEN];
 	int ret;
 
 	if ((ret = ap_scan_script_header_err_buff(r, script_in, sbuf))) {

@@ -304,8 +304,8 @@ static const char * const lwday[7] =
  * sscanf and sprintf. However, if the date is already correctly
  * formatted, then it exits very quickly.
  */
-char *
-     ap_proxy_date_canon(pool *p, char *x)
+const char *
+     ap_proxy_date_canon(pool *p, const char *x)
 {
     int wk, mday, year, hour, min, sec, mon;
     char *q, month[4], zone[4], week[4];
@@ -353,11 +353,10 @@ char *
     if (mon == 12)
 	return x;
 
-    if (strlen(x)+1 < 30)
-	x = ap_palloc(p, 30);
-    ap_snprintf(x, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
+    q = ap_palloc(p, 30);
+    ap_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
 		ap_month_snames[mon], year, hour, min, sec);
-    return x;
+    return q;
 }
 
 /*
@@ -371,6 +370,7 @@ array_header *
     array_header *resp_hdrs;
     struct hdr_entry *hdr;
     char *strp;
+    const char *strcp;
 
     resp_hdrs = ap_make_array(p, 10, sizeof(struct hdr_entry));
     hdr = NULL;
@@ -430,11 +430,12 @@ array_header *
 
     hdr = (struct hdr_entry *) resp_hdrs->elts;
     for (i = 0; i < resp_hdrs->nelts; i++) {
-	strp = hdr[i].value;
-	j = strlen(strp);
-	while (j > 0 && (strp[j - 1] == ' ' || strp[j - 1] == '\t'))
+	strcp = hdr[i].value;
+	j = strlen(strcp);
+	while (j > 0 && (strcp[j - 1] == ' ' || strcp[j - 1] == '\t'))
 	    j--;
-	strp[j] = '\0';
+	/* Note that this is OK, coz we created the header above */
+	((char *)strcp)[j] = '\0';
     }
 
     return resp_hdrs;
@@ -526,7 +527,7 @@ struct hdr_entry *
  * is not subsequently overwritten
  */
 struct hdr_entry *
-          ap_proxy_add_header(array_header *hdrs_arr, char *field, char *value,
+          ap_proxy_add_header(array_header *hdrs_arr, const char *field, const char *value,
 			   int rep)
 {
     int i;
@@ -828,7 +829,7 @@ const char *
     return NULL;
 }
 
-static char *
+static const char *
      proxy_get_host_of_request(request_rec *r)
 {
     char *url, *user = NULL, *password = NULL, *err, *host;
@@ -1127,7 +1128,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p)
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 {
     char *host = This->name;
-    char *host2 = proxy_get_host_of_request(r);
+    const char *host2 = proxy_get_host_of_request(r);
     int h2_len;
     int h1_len;
 
@@ -1165,7 +1166,7 @@ int ap_proxy_is_word(struct dirconn_entry *This, pool *p)
 /* Return TRUE if string "str2" occurs literally in "str1" */
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
 {
-    char *host = proxy_get_host_of_request(r);
+    const char *host = proxy_get_host_of_request(r);
     return host != NULL && strstr(host, This->name) != NULL;
 }
 

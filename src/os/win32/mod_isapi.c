@@ -297,7 +297,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
 			       LPVOID lpvBuffer, LPDWORD lpdwSizeofBuffer) {
     request_rec *r = ((isapi_cid *)hConn)->r;
     table *e = r->subprocess_env;
-    char *result;
+    const char *result;
     
     /* Mostly, we just grab it from the environment, but there are
      * a couple of special cases
@@ -467,13 +467,15 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 	     */
 
 	    if (!strcasecmp(data, "Content-Type")) {
+		char *tmp;
 		/* Nuke trailing whitespace */
 		
 		char *endp = value + strlen(value) - 1;
 		while (endp > value && isspace(*endp)) *endp-- = '\0';
             
-		r->content_type = ap_pstrdup (r->pool, value);
-		ap_str_tolower(r->content_type);
+		tmp = ap_pstrdup (r->pool, value);
+		ap_str_tolower(tmp);
+		r->content_type = tmp;
 	    }
 	    else if (!strcasecmp(data, "Content-Length")) {
 		ap_table_set(r->headers_out, data, value);

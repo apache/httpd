@@ -202,7 +202,7 @@ static int spot_cookie(request_rec *r)
 {
     int *enable = (int *) ap_get_module_config(r->per_dir_config,
                                             &usertrack_module);
-    char *cookie;
+    const char *cookie;
     char *value;
 
     if (!*enable)

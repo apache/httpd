@@ -444,8 +444,8 @@ struct ent {
 
 static char *find_item(request_rec *r, array_header *list, int path_only)
 {
-    char *content_type = r->content_type;
-    char *content_encoding = r->content_encoding;
+    const char *content_type = r->content_type;
+    const char *content_encoding = r->content_encoding;
     char *path = r->filename;
 
     struct item *items = (struct item *) list->elts;

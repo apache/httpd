@@ -943,7 +943,7 @@ void ap_die(int type, request_rec *r)
             ap_table_setn(r->headers_out, "Location", custom_response);
         }
         else if (custom_response[0] == '/') {
-            char *error_notes;
+            const char *error_notes;
             r->no_local_copy = 1;       /* Do NOT send USE_LOCAL_COPY for
                                          * error documents! */
             /*

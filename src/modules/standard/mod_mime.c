@@ -245,7 +245,9 @@ static int find_ct(request_rec *r)
     const char *fn = strrchr(r->filename, '/');
     mime_dir_config *conf =
     (mime_dir_config *) ap_get_module_config(r->per_dir_config, &mime_module);
-    char *ext, *type, *orighandler = r->handler;
+    char *ext;
+    const char *orighandler = r->handler;
+    const char *type;
 
     if (S_ISDIR(r->finfo.st_mode)) {
         r->content_type = DIR_MAGIC_TYPE;
@@ -273,7 +275,7 @@ static int find_ct(request_rec *r)
 
         /* Check for Content-Language */
         if ((type = ap_table_get(conf->language_types, ext))) {
-            char **new;
+            const char **new;
 
             r->content_language = type;         /* back compat. only */
             if (!r->content_languages)

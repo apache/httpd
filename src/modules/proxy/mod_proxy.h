@@ -211,8 +211,8 @@ typedef struct {
 } proxy_server_conf;
 
 struct hdr_entry {
-    char *field;
-    char *value;
+    const char *field;
+    const char *value;
 };
 
 /* caching information about a request */
@@ -272,12 +272,12 @@ char *ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
 		     int isenc);
 char *ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
-char *ap_proxy_date_canon(pool *p, char *x);
+const char *ap_proxy_date_canon(pool *p, const char *x);
 array_header *ap_proxy_read_headers(pool *p, char *buffer, int size, BUFF *f);
 long int ap_proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c);
 struct hdr_entry *ap_proxy_get_header(array_header *hdrs_arr, const char *name);
-struct hdr_entry *ap_proxy_add_header(array_header *hdrs_arr, char *field,
-				   char *value, int rep);
+struct hdr_entry *ap_proxy_add_header(array_header *hdrs_arr, const char *field,
+				      const char *value, int rep);
 void ap_proxy_del_header(array_header *hdrs_arr, const char *field);
 void ap_proxy_send_headers(request_rec *r, const char *respline,
 			array_header *hdrs_arr);

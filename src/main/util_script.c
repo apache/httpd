@@ -458,6 +458,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    ++l;
 
 	if (!strcasecmp(w, "Content-type")) {
+	    char *tmp;
 
 	    /* Nuke trailing whitespace */
 
@@ -465,8 +466,9 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    while (endp > l && isspace(*endp))
 		*endp-- = '\0';
 
-	    r->content_type = ap_pstrdup(r->pool, l);
-	    ap_content_type_tolower(r->content_type);
+	    tmp = ap_pstrdup(r->pool, l);
+	    ap_content_type_tolower(tmp);
+	    r->content_type = tmp;
 	}
 	/*
 	 * If the script returned a specific status, that's what
@@ -525,7 +527,7 @@ static int getsfunc_BUFF(char *w, int len, void *fb)
 }
 
 API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
-					    char *buffer)
+					       char *buffer)
 {
     return scan_script_header_err_core(r, buffer, getsfunc_BUFF, fb);
 }

@@ -116,12 +116,12 @@ static int parse_byterange(char *range, long clength, long *start, long *end)
     return (*start > 0 || *end < clength - 1);
 }
 
-static int internal_byterange(int, long *, request_rec *, char **, long *,
+static int internal_byterange(int, long *, request_rec *, const char **, long *,
                               long *);
 
 API_EXPORT(int) ap_set_byterange(request_rec *r)
 {
-    char *range, *if_range, *match;
+    const char *range, *if_range, *match;
     long range_start, range_end;
 
     if (!r->clength || r->assbackwards)
@@ -206,7 +206,7 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length)
  * when done.
  */
 static int internal_byterange(int realreq, long *tlength, request_rec *r,
-                              char **r_range, long *offset, long *length)
+                              const char **r_range, long *offset, long *length)
 {
     long range_start, range_end;
     char *range;
@@ -221,14 +221,14 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
         return 0;
     }
 
-    range = ap_getword_nc(r->pool, r_range, ',');
+    range = ap_getword(r->pool, r_range, ',');
     if (!parse_byterange(range, r->clength, &range_start, &range_end))
         /* Skip this one */
         return internal_byterange(realreq, tlength, r, r_range, offset,
                                   length);
 
     if (r->byterange > 1) {
-        char *ct = r->content_type ? r->content_type : ap_default_type(r);
+        const char *ct = r->content_type ? r->content_type : ap_default_type(r);
         char ts[MAX_STRING_LEN];
 
         ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
@@ -264,7 +264,7 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
     int ka_sent = 0;
     int wimpy = ap_find_token(r->pool,
                            ap_table_get(r->headers_out, "Connection"), "close");
-    char *conn = ap_table_get(r->headers_in, "Connection");
+    const char *conn = ap_table_get(r->headers_in, "Connection");
 
     /* The following convoluted conditional determines whether or not
      * the current connection should remain persistent after this response
@@ -375,8 +375,8 @@ API_EXPORT(time_t) ap_rationalize_mtime(request_rec *r, time_t mtime)
 
 API_EXPORT(int) ap_meets_conditions(request_rec *r)
 {
-    char *etag = ap_table_get(r->headers_out, "ETag");
-    char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
+    const char *etag = ap_table_get(r->headers_out, "ETag");
+    const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
     time_t mtime;
 
     /* Check for conditional requests --- note that we only want to do
@@ -1198,7 +1198,7 @@ int ap_send_http_options(request_rec *r)
  */
 static int use_range_x(request_rec *r)
 {
-    char *ua;
+    const char *ua;
     return (ap_table_get(r->headers_in, "Request-Range") ||
             ((ua = ap_table_get(r->headers_in, "User-Agent"))
              && strstr(ua, "MSIE 3")));
@@ -1356,8 +1356,8 @@ void ap_finalize_request_protocol(request_rec *r)
 
 API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
-    char *tenc = ap_table_get(r->headers_in, "Transfer-Encoding");
-    char *lenp = ap_table_get(r->headers_in, "Content-Length");
+    const char *tenc = ap_table_get(r->headers_in, "Transfer-Encoding");
+    const char *lenp = ap_table_get(r->headers_in, "Content-Length");
 
     r->read_body = read_policy;
     r->read_chunked = 0;
@@ -1378,7 +1378,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         r->read_chunked = 1;
     }
     else if (lenp) {
-        char *pos = lenp;
+        const char *pos = lenp;
 
         while (isdigit(*pos) || isspace(*pos))
             ++pos;
@@ -1960,7 +1960,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
     int status = r->status;
     int idx = ap_index_of_response(status);
     char *custom_response;
-    char *location = ap_table_get(r->headers_out, "Location");
+    const char *location = ap_table_get(r->headers_out, "Location");
 
     /* We need to special-case the handling of 204 and 304 responses,
      * since they have specific HTTP requirements and do not include a
@@ -2064,7 +2064,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
     {
         char *title = status_lines[idx];
         char *h1;
-        char *error_notes;
+        const char *error_notes;
 
         /* Accept a status_line set by a module, but only if it begins
          * with the 3 digit status code
@@ -2142,7 +2142,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
                 /* fall through */
             case MULTIPLE_CHOICES:
                 {
-                    char *list;
+                    const char *list;
                     if ((list = ap_table_get(r->notes, "variant-list")))
                         ap_bputs(list, fd);
                 }

@@ -607,7 +607,7 @@ static int include_cgi(char *s, request_rec *r)
 
     rr_status = ap_run_sub_req(rr);
     if (is_HTTP_REDIRECT(rr_status)) {
-        char *location = ap_table_get(rr->headers_out, "Location");
+        const char *location = ap_table_get(rr->headers_out, "Location");
         location = ap_escape_html(rr->pool, location);
         ap_rvputs(r, "<A HREF=\"", location, "\">", location, "</A>", NULL);
     }
@@ -893,7 +893,7 @@ static int handle_echo(FILE *in, request_rec *r, const char *error)
             return 1;
         }
         if (!strcmp(tag, "var")) {
-            char *val = ap_table_get(r->subprocess_env, tag_val);
+            const char *val = ap_table_get(r->subprocess_env, tag_val);
 
             if (val) {
                 ap_rputs(val, r);

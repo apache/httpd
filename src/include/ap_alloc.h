@@ -179,7 +179,7 @@ typedef struct {
 API_EXPORT(table *) ap_make_table(pool *p, int nelts);
 API_EXPORT(table *) ap_copy_table(pool *p, const table *);
 API_EXPORT(void) ap_clear_table(table *);
-API_EXPORT(char *) ap_table_get(const table *, const char *);
+API_EXPORT(const char *) ap_table_get(const table *, const char *);
 API_EXPORT(void) ap_table_set(table *, const char *name, const char *val);
 API_EXPORT(void) ap_table_setn(table *, const char *name, const char *val);
 API_EXPORT(void) ap_table_merge(table *, const char *name, const char *more_val);

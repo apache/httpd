@@ -244,7 +244,8 @@ static void proxy_init(server_rec *r, pool *p)
 /* The "ProxyDomain" directive determines what domain will be appended */
 static int proxy_needsdomain(request_rec *r, const char *url, const char *domain)
 {
-    char *nuri, *ref;
+    char *nuri;
+    const char *ref;
 
     /* We only want to worry about GETs */
     if (!r->proxyreq || r->method_number != M_GET || !r->parsed_uri.hostname)

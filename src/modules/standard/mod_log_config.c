@@ -343,14 +343,14 @@ static char *log_bytes_sent(request_rec *r, char *a)
     }
 }
 
-static char *log_header_in(request_rec *r, char *a)
+static const char *log_header_in(request_rec *r, char *a)
 {
     return ap_table_get(r->headers_in, a);
 }
 
-static char *log_header_out(request_rec *r, char *a)
+static const char *log_header_out(request_rec *r, char *a)
 {
-    char *cp = ap_table_get(r->headers_out, a);
+    const char *cp = ap_table_get(r->headers_out, a);
     if (!strcasecmp(a, "Content-type") && r->content_type) {
         cp = r->content_type;
     }
@@ -360,11 +360,11 @@ static char *log_header_out(request_rec *r, char *a)
     return ap_table_get(r->err_headers_out, a);
 }
 
-static char *log_note(request_rec *r, char *a)
+static const char *log_note(request_rec *r, char *a)
 {
     return ap_table_get(r->notes, a);
 }
-static char *log_env_var(request_rec *r, char *a)
+static const char *log_env_var(request_rec *r, char *a)
 {
     return ap_table_get(r->subprocess_env, a);
 }
@@ -803,7 +803,7 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
 {
     multi_log_state *base = (multi_log_state *) basev;
     multi_log_state *add = (multi_log_state *) addv;
-    char *format;
+    const char *format;
     const char *dummy;
 
     add->server_config_logs = base->config_logs;

@@ -355,7 +355,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     char *string_pos = NULL;
     const char *string_pos_const = NULL;
     char *directory = NULL;
-    char *referer = NULL;
+    const char *referer = NULL;
     char *my_base;
 
     if (!strcasecmp(value, "map") || !strcasecmp(value, "menu")) {
