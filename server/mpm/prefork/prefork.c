@@ -1367,7 +1367,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 		    make_child(ap_server_conf, child_slot, time(0));
 		    --remaining_children_to_start;
 		}
-#ifdef APR_HAS_OTHER_CHILD
+#if APR_HAS_OTHER_CHILD
 	    }
 	    else if (ap_reap_other_child(&pid, status) == 0) {
 		/* handled */

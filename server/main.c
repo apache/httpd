@@ -130,7 +130,7 @@ static void show_compile_settings(void)
 #ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
     printf(" -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT\n");
 #endif
-#ifdef APR_HAS_OTHER_CHILD
+#if APR_HAS_OTHER_CHILD
     printf(" -D APR_HAS_OTHER_CHILD\n");
 #endif
 #ifdef HAVE_RELIABLE_PIPED_LOGS

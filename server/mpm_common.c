@@ -202,7 +202,7 @@ void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p)
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
         wait_or_timeout_counter = 0;
-#ifdef APR_HAS_OTHER_CHILD
+#if APR_HAS_OTHER_CHILD
         ap_probe_writable_fds();
 #endif
     }
