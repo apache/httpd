@@ -384,6 +384,43 @@ static char *conv_10(register wide_int num, register bool_int is_unsigned,
 
 
 
+static char *conv_in_addr(struct in_addr *ia, char *buf_end, int *len)
+{
+    unsigned addr = ntohl(ia->s_addr);
+    char *p = buf_end;
+    bool_int is_negative;
+    int sub_len;
+
+    p = conv_10((addr & 0x000000FF)      , TRUE, &is_negative, p, &sub_len);
+    *--p = '.';
+    p = conv_10((addr & 0x0000FF00) >>  8, TRUE, &is_negative, p, &sub_len);
+    *--p = '.';
+    p = conv_10((addr & 0x00FF0000) >> 16, TRUE, &is_negative, p, &sub_len);
+    *--p = '.';
+    p = conv_10((addr & 0xFF000000) >> 24, TRUE, &is_negative, p, &sub_len);
+
+    *len = buf_end - p;
+    return (p);
+}
+
+
+
+static char *conv_sockaddr_in(struct sockaddr_in *si, char *buf_end, int *len)
+{
+    char *p = buf_end;
+    bool_int is_negative;
+    int sub_len;
+
+    p = conv_10(ntohs(si->sin_port), TRUE, &is_negative, p, &sub_len);
+    *--p = ':';
+    p = conv_in_addr(&si->sin_addr, p, &sub_len);
+
+    *len = buf_end - p;
+    return (p);
+}
+
+
+
 /*
  * Convert a floating point number to a string formats 'f', 'e' or 'E'.
  * The result is placed in buf, and len denotes the length of the string
@@ -660,33 +697,27 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		    i_num = va_arg(ap, u_wide_int);
 		else
 		    i_num = (wide_int) va_arg(ap, unsigned int);
-		/*
-		 * The rest also applies to other integer formats, so fall
-		 * into that case.
-		 */
+		s = conv_10(i_num, 1, &is_negative,
+			    &num_buf[NUM_BUF_SIZE], &s_len);
+		FIX_PRECISION(adjust_precision, precision, s, s_len);
+		break;
+
 	    case 'd':
 	    case 'i':
-		/*
-		 * Get the arg if we haven't already.
-		 */
-		if ((*fmt) != 'u') {
-		    if (is_long)
-			i_num = va_arg(ap, wide_int);
-		    else
-			i_num = (wide_int) va_arg(ap, int);
-		};
-		s = conv_10(i_num, (*fmt) == 'u', &is_negative,
+		if (is_long)
+		    i_num = va_arg(ap, wide_int);
+		else
+		    i_num = (wide_int) va_arg(ap, int);
+		s = conv_10(i_num, 0, &is_negative,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
 
-		if (*fmt != 'u') {
-		    if (is_negative)
-			prefix_char = '-';
-		    else if (print_sign)
-			prefix_char = '+';
-		    else if (print_blank)
-			prefix_char = ' ';
-		}
+		if (is_negative)
+		    prefix_char = '-';
+		else if (print_sign)
+		    prefix_char = '+';
+		else if (print_blank)
+		    prefix_char = ' ';
 		break;
 
 
@@ -801,26 +832,77 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		break;
 
 		/*
-		 * Always extract the argument as a "char *" pointer. We 
-		 * should be using "void *" but there are still machines 
-		 * that don't understand it.
-		 * If the pointer size is equal to the size of an unsigned
-		 * integer we convert the pointer to a hex number, otherwise 
-		 * we print "%p" to indicate that we don't handle "%p".
+		 * This is where we extend the printf format, with a second
+		 * type specifier
 		 */
 	    case 'p':
-		ui_num = (u_wide_int) va_arg(ap, char *);
+		switch(*++fmt) {
+		    /*
+		     * If the pointer size is equal to the size of an unsigned
+		     * integer we convert the pointer to a hex number, otherwise 
+		     * we print "%p" to indicate that we don't handle "%p".
+		     */
+		case 'p':
+		    ui_num = (u_wide_int) va_arg(ap, void *);
 
-		if (sizeof(char *) <= sizeof(u_wide_int))
-		               s = conv_p2(ui_num, 4, 'x',
-					   &num_buf[NUM_BUF_SIZE], &s_len);
-		else {
-		    s = "%p";
-		    s_len = 2;
+		    if (sizeof(char *) <= sizeof(u_wide_int))
+				s = conv_p2(ui_num, 4, 'x',
+					    &num_buf[NUM_BUF_SIZE], &s_len);
+		    else {
+			s = "%p";
+			s_len = 2;
+		    }
+		    pad_char = ' ';
+		    break;
+
+		    /* print a struct sockaddr_in as a.b.c.d:port */
+		case 'I':
+		    {
+			struct sockaddr_in *si;
+
+			si = va_arg(ap, struct sockaddr_in *);
+			if (si != NULL) {
+			    s = conv_sockaddr_in(si, &num_buf[NUM_BUF_SIZE], &s_len);
+			    if (adjust_precision && precision < s_len)
+				s_len = precision;
+			}
+			else {
+			    s = S_NULL;
+			    s_len = S_NULL_LEN;
+			}
+			pad_char = ' ';
+		    }
+		    break;
+
+		    /* print a struct in_addr as a.b.c.d */
+		case 'A':
+		    {
+			struct in_addr *ia;
+
+			ia = va_arg(ap, struct in_addr *);
+			if (ia != NULL) {
+			    s = conv_in_addr(ia, &num_buf[NUM_BUF_SIZE], &s_len);
+			    if (adjust_precision && precision < s_len)
+				s_len = precision;
+			}
+			else {
+			    s = S_NULL;
+			    s_len = S_NULL_LEN;
+			}
+			pad_char = ' ';
+		    }
+		    break;
+
+		case NUL:
+		    /* if %p ends the string, oh well ignore it */
+		    continue;
+
+		default:
+		    s = "bogus %p";
+		    s_len = 8;
+		    break;
 		}
-		pad_char = ' ';
 		break;
-
 
 	    case NUL:
 		/*
