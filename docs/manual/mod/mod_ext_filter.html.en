@@ -129,7 +129,7 @@
 <h3>Tracing another filter</h3>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 <pre>
-  # Trace the data read and written by mod_deflate for a particuar
+  # Trace the data read and written by mod_deflate for a particular
   # client (IP 192.168.1.31) experiencing compression problems.
   # This filter will trace what goes into mod_deflate.
   ExtFilterDefine tracebefore cmd="/bin/tracefilter.pl /tmp/tracebefore" \
