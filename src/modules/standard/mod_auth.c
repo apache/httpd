@@ -65,6 +65,9 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#if defined(HAVE_CRYPT_H)
+#include <crypt.h>
+#endif
 
 typedef struct auth_config_struct {
     char *auth_pwfile;
