@@ -293,7 +293,7 @@ Open issues:
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
             ap_xxx:    +1: Roy, Dean, Randy, Martin, Brian
-            apx_xxx:   +1: Ralf, Roy, Jim
+            apx_xxx:   +1: Ralf, Jim
             appri_xxx: +1: Paul, Ken
 
         - Public API module structure variables (e.g.,
