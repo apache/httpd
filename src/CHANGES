@@ -1,3 +1,10 @@
+
+  *) WinNT: Do a better job at handling spaces in service names.
+     Add the util function ap_remove_spaces and export it on all
+     platforms. Change some Win32 service and registry functions to 
+     make use of this new function. 
+     [Keith Wannamaker <wannamaker@us.ibm.com>]
+
 Changes with Apache 1.3.13
 
   *) use send/recv instead of write/read in proxy_connect -- fixes

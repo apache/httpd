@@ -360,3 +360,8 @@ EXPORTS
 	ap_SHA1Final   @355
 	ap_sha1_base64   @356
         ap_send_error_response @357
+	ap_remove_spaces @358
+	ap_get_service_key @359
+	ap_registry_get_server_root @360
+	ap_registry_get_service_conf @361
+	ap_registry_set_service_conf @362

@@ -2184,3 +2184,16 @@ API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring)
     *outchr = '\0';
     return outstring;
 }
+
+/* dest = src with whitespace removed
+ * length of dest assumed >= length of src
+ */
+API_EXPORT(void) ap_remove_spaces(char *dest, char *src)
+{
+    while (*src) {
+        if (!ap_isspace(*src)) 
+            *dest++ = *src;
+        src++;
+    }
+    *dest = 0;
+}

@@ -199,7 +199,7 @@ static int ap_registry_get_key_int(pool *p, char *key, char *name, char *pBuffer
  * an error getting the key.
  */
 
-int ap_registry_get_server_root(pool *p, char *dir, int size)
+API_EXPORT(int) ap_registry_get_server_root(pool *p, char *dir, int size)
 {
     int rv;
 
@@ -211,21 +211,29 @@ int ap_registry_get_server_root(pool *p, char *dir, int size)
     return (rv < -1) ? -1 : 0;
 }
 
-char *ap_get_service_key(char *service_name)
+API_EXPORT(char *) ap_get_service_key(char *display_name)
 {
-    char *key = malloc(strlen(SERVICEKEYPRE) +
-                       strlen(service_name) +
-                       strlen(SERVICEKEYPOST) + 1);
+    char *key, *service_name;
+    
+    if (display_name == NULL)
+        return strdup("");
+
+    service_name = strdup(display_name);
+    ap_remove_spaces(service_name, display_name);
+
+    key = malloc(strlen(SERVICEKEYPRE) +
+                 strlen(service_name) +
+                 strlen(SERVICEKEYPOST) + 1);
 
     sprintf(key,"%s%s%s", SERVICEKEYPRE, service_name, SERVICEKEYPOST);
 
     return(key);
 }
 
-int ap_registry_get_service_conf(pool *p, char *dir, int size, char *service_name)
+API_EXPORT(int) ap_registry_get_service_conf(pool *p, char *dir, int size, char *display_name)
 {
     int rv;
-    char *key = ap_get_service_key(service_name);
+    char *key = ap_get_service_key(display_name);
 
     rv = ap_registry_get_key_int(p, key, "ConfPath", dir, size, NULL);
     if (rv < 0) {
@@ -443,10 +451,10 @@ static int ap_registry_store_key_int(char *key, char *name, DWORD type, void *va
  * logged via aplog_error().
  */
 
-int ap_registry_set_service_conf(char *conf, char *service_name)
+API_EXPORT(int) ap_registry_set_service_conf(char *conf, char *display_name)
 {
     int rv;
-    char *key = ap_get_service_key(service_name);
+    char *key = ap_get_service_key(display_name);
     
     rv = ap_registry_store_key_int(key, "ConfPath", REG_SZ, conf, strlen(conf)+1);
     free(key);

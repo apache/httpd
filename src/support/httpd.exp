@@ -267,6 +267,7 @@ ap_regexec
 ap_register_cleanup
 ap_register_other_child
 ap_remove_module
+ap_remove_spaces
 ap_requires
 ap_reset_timeout
 ap_response_code_string

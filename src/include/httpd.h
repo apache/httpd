@@ -1034,6 +1034,7 @@ API_EXPORT(int) ap_ind(const char *, char);	/* Sigh... */
 API_EXPORT(int) ap_rind(const char *, char);
 
 API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring);
+API_EXPORT(void) ap_remove_spaces(char *dest, char *src);
 
 /* Common structure for reading of config files / passwd files etc. */
 typedef struct {
