@@ -1,0 +1,1083 @@
+<!--%hypertext -->
+<!-- mod_rewrite.html                                 -->
+<!-- Documentation for the mod_rewrite Apache module  -->
+<html>
+<head>
+<title>Apache module mod_rewrite</title>
+</head>
+
+<body>
+<!--#include virtual="header.html" -->
+<h1>Module mod_rewrite (Version 2.3)</h1>
+
+This module is contained in the <code>mod_rewrite.c</code> file, with
+Apache 1.2 and later.  It provides
+a rule-based rewriting engine to rewrite requested URLs on the fly. 
+<code>mod_rewrite</code> is not compiled into the server by
+default. To use <code>mod_rewrite</code> you have to enable the following
+line in the server build Configuration file:
+<pre>
+    Module  rewrite_module   mod_rewrite.o
+</pre>
+
+<h2>Summary</h2>
+
+This module uses a rule-based rewriting engine (based on a
+regular-expression parser) to rewrite requested URLs on the fly. 
+
+<p>
+It supports an unlimited number of additional rule conditions (which can
+operate on a lot of variables, including HTTP headers) for granular
+matching and external database lookups (either via plain text
+tables, DBM hash files or external processes) for advanced URL
+substitution.
+
+<p>
+It operates on the full URLs (including the PATH_INFO part) both in
+per-server context (httpd.conf) and per-dir context (.htaccess) and even
+can generate QUERY_STRING parts on result.   The rewrittten result can lead to internal sub-processing, external request redirection or to internal proxy throughput.
+</b>
+
+<p>
+The latest version can be found on<br>
+<a href="http://www.engelschall.com/sw/mod_rewrite/">
+<code><b>http://www.engelschall.com/sw/mod_rewrite/</b></code></a>
+
+<p>
+Copyright &copy; 1996 <b>The Apache Group</b>, All rights reserved.<br>
+Copyright &copy; 1996 <i>Ralf S. Engelschall</i>, All rights reserved.
+<p>
+Written for <b>The Apache Group</b> by
+<blockquote>
+    <i>Ralf S. Engelschall</i><br>
+    <a href="mailto:rse@engelschall.com"><tt>rse@engelschall.com</tt></a><br>
+    <a href="http://www.engelschall.com/~rse"><tt>http://www.engelschall.com/~rse</i></a> 
+</blockquote>
+
+<!--%hypertext -->
+<HR>
+<!--/%hypertext -->
+
+<p>
+<h2>Directives</h2>
+
+<ul>
+    <li><a href="#RewriteEngine">RewriteEngine</a>
+    <li><a href="#RewriteOptions">RewriteOptions</a>
+    <li><a href="#RewriteLog">RewriteLog</a>
+    <li><a href="#RewriteLogLevel">RewriteLogLevel</a>
+    <li><a href="#RewriteMap">RewriteMap</a>
+    <li><a href="#RewriteBase">RewriteBase</a>
+    <li><a href="#RewriteCond">RewriteCond</a>
+    <li><a href="#RewriteRule">RewriteRule</a>
+</ul>
+
+<!--%hypertext -->
+<hr>
+<!--/%hypertext -->
+
+
+<center>
+<a name="Configuration">
+<h1>Configuration Directives</h1>
+</a>
+</center>
+
+<a name="RewriteEngine"><h3>RewriteEngine</h3></a>
+<strong>Syntax:</strong> <code>RewriteEngine</code> {<code>on,off</code>}<br>
+<strong>Default:</strong> <strong><code>RewriteEngine off</code></strong><br>
+<strong>Context:</strong> server config, virtual host, per-directory config<br>
+<p>
+
+The <tt>RewriteEngine</tt> directive enables or disables the
+runtime rewriting engine. If it is set to <code>off</code> this module does
+no runtime processing at all. It does not even update the <tt>SCRIPT_URx</tt>
+environment variables. 
+
+<p>
+Use this directive to disable the module instead of commenting out
+all <tt>RewriteRule</tt> directives!
+
+<p>
+<hr noshade size=1>
+<p>
+
+<a name="RewriteOptions"><h3>RewriteOptions</h3></a>
+<strong>Syntax:</strong> <code>RewriteOptions</code> <em>Option</em> ...<br>
+<strong>Default:</strong> -<em>None</em>-<br>
+<strong>Context:</strong> server config, virtual host, per-directory config<br>
+<p>
+
+The <tt>RewriteOption</tt> directive sets some special options for the
+current per-server or per-directory configuration. The <em>Option</em>
+strings can be one of the following:
+
+<ul>
+<li>'<strong><code>inherit</code></strong>'<br>
+	This forces the current configuration to inherit the configuration of the
+	parent. In per-virtual-server context this means that the maps,
+	conditions and rules of the main server gets inherited. In per-directory
+	context this means that conditions and rules of the parent directory's
+	<tt>.htaccess</tt> configuration gets inherited.
+<p>
+</ul>
+
+<p>
+<hr noshade size=1>
+<p>
+
+<a name="RewriteLog"><h3>RewriteLog</h3></a>
+<strong>Syntax:</strong> <code>RewriteLog</code> <em>Filename</em><br>
+<strong>Default:</strong> -<em>None</em>-<br>
+<strong>Context:</strong> server config, virtual host<br>
+<p>
+
+The <tt>RewriteLog</tt> directive sets the name of the file to which the
+server logs any rewriting actions it performs. If the name does not begin
+with a slash ('<tt>/</tt>') then it is assumed to be relative to the
+<em>Server Root</em>.  The directive should occur only once per server
+config. 
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+To disable the logging of rewriting actions it is not recommended
+to set <em>Filename</em>
+to <code>/dev/null</code>, because although the rewriting engine does
+not create output to a logfile it still creates the logfile
+output internally. <b>This will slow down the server with no advantage to the
+administrator!</b>
+To disable logging either remove or comment out the
+<tt>RewriteLog</tt> directive or use <tt>RewriteLogLevel 0</tt>!
+</td></tr>
+</table>
+
+<p>
+<b>Example:</b>
+<blockquote>
+<pre>
+RewriteLog "/usr/local/var/apache/logs/rewrite.log"
+</pre>
+</blockquote>
+
+<p>
+<hr noshade size=1>
+<p>
+
+<a name="RewriteLogLevel"><h3>RewriteLogLevel</h3></a>
+<strong>Syntax:</strong> <code>RewriteLogLevel</code> <em>Level</em><br>
+<strong>Default:</strong> <strong><code>RewriteLogLevel 0</code></strong><br>
+<strong>Context:</strong> server config, virtual host<br>
+<p>
+
+The <tt>RewriteLogLevel</tt> directive set the verbosity level of the rewriting
+logfile.  The default level 0 means no logging, while 9 or more means
+that practically all actions are logged.
+
+<p>
+To disable the logging of rewriting actions simply set <em>Level</em> to 0.
+This disables all rewrite action logs.
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+<b>Notice:</b> Using a high value for <i>Level</i> will slow down your Apache
+server dramatically! Use the rewriting logfile only for debugging or at least
+at <em>Level</em> not greater than 2!
+</td></tr>
+</table>
+
+
+<p>
+<b>Example:</b>
+<blockquote>
+<pre>
+RewriteLogLevel 3
+</pre>
+</blockquote>
+
+<p>
+<hr noshade size=1>
+<p>
+
+<a name="RewriteMap"><h3>RewriteMap</h3></a>
+<strong>Syntax:</strong> <code>RewriteMap</code> <em>Mapname</em> <code>{txt,dbm,prg}:</code><em>Filename</em><br>
+<strong>Default:</strong> not used per default<br>
+<strong>Context:</strong> server config, virtual host<br>
+<p>
+
+The <tt>RewriteMap</tt> directive defines an external <em>Rewriting Map</em>
+which can be used inside rule substitution strings by the mapping-functions
+to insert/substitute fields through a key lookup.
+<p>
+
+The <a name="mapfunc"><em>Mapname</em></a> is the name of the map and will
+be used to specify a mapping-function for the substitution strings of a
+rewriting rule via
+
+<blockquote><strong>
+<code>${</code> <em>Mapname</em> <code>:</code> <em>LookupKey</em>
+<code>|</code> <em>DefaultValue</em> <code>}</code>
+</strong></blockquote>
+
+When such a directive occurs the map <em>Mapname</em>
+is consulted and the key <em>LookupKey</em> is looked-up. If the key is
+found, the map-function directive is substituted by <em>SubstValue</em>. If
+the key is not found then it is substituted by <em>DefaultValue</em>.
+
+<p>
+The <em>Filename</em> must be a valid Unix filepath, containing one
+of the following formats:
+
+<ol>
+<li><b>Plain Text Format</b>
+    <p>
+    This is a ASCII file which contains either blank lines, comment lines
+    (starting with a '#' character) or
+
+    <blockquote><strong>
+    <em>MatchingKey</em>  <em>SubstValue</em>
+    </strong></blockquote>
+
+    pairs - one per line. You can create such files either manually,
+    using your favorite editor, or by using the programs
+    <tt>mapcollect</tt> and <tt>mapmerge</tt> from the <tt>support</tt>
+    directory of the <b>mod_rewrite</b> distribution.
+    <p>
+    To declare such a map prefix, <em>Filename</em> with a <code>txt:</code>
+    string as in the following example:
+
+<p>
+<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<tr><td><pre>
+#
+#   map.real-to-user -- maps realnames to usernames
+#
+
+Ralf.S.Engelschall    rse   # Bastard Operator From Hell 
+Dr.Fred.Klabuster     fred  # Mr. DAU
+</pre></td></tr>
+</table>
+
+<p>
+<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<tr><td><pre>
+RewriteMap real-to-host txt:/path/to/file/map.real-to-user
+</pre></td></tr>
+</table>
+
+<p>
+<li><b>DBM Hashfile Format</b>
+    <p>
+    This is a binary NDBM format file containing the
+    same contents as the <em>Plain Text Format</b> files. You can create
+    such a file with any NDBM tool or with the <tt>dbmmanage</tt> program
+    from the <tt>support</tt> directory of the Apache distribution.
+    <p>
+    To declare such a map prefix <em>Filename</em> with a <code>dbm:</code>
+    string.
+<p>
+<li><b>Program Format</b>
+    <p>
+    This is a Unix executable, not a lookup file.  To create it you can use
+    the language of your choice, but the result has to be a runable Unix
+    binary (i.e. either object-code or a script with the
+    magic cookie trick '<tt>#!/path/to/interpreter</tt>' as the first line).
+    <p>
+    This program gets started once at startup of the Apache servers and then
+    communicates with the rewriting engine over its <tt>stdin</tt> and
+    <tt>stdout</tt> filehandles.  For each map-function lookup it will
+    receive the key to lookup as a newline-terminated string on
+    <tt>stdin</tt>. It then has to give back the looked-up value as a
+    newline-terminated string on <tt>stdout</tt> or the four-character string
+    ``<tt>NULL</tt>'' if it fails (i.e. there is no corresponding value
+    for the given key). A trivial program which will implement a 1:1 map
+    (i.e. key == value) could be:
+    <p>
+<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<tr><td><pre>
+#!/usr/bin/perl
+$| = 1;
+while (&lt;STDIN&gt;) {
+    # ...here any transformations 
+    # or lookups should occur...
+    print $_;
+}
+</pre></td></tr>
+</table>
+    <p>
+    <b>But be very careful:</b><br>
+    <ol>
+    <li>``<i>Keep the program simple, stupid</i>'' (KISS), because
+        if this program hangs it will lead to a hang of the Apache server
+        when the rule occurs.
+    <li>Avoid one common mistake: never do buffered I/O on <tt>stdout</tt>!
+    This will cause a deadloop! Hence the ``<tt>$|=1</tt>'' in the above
+    example...
+    </ol>
+    <p>
+    To declare such a map prefix <em>Filename</em> with a <code>prg:</code>
+    string.
+</ol>
+
+The <tt>RewriteMap</tt> directive can occur more than once. For each
+mapping-function use one <tt>RewriteMap</tt> directive to declare its
+rewriting mapfile. While you cannot <b>declare</b> a map in per-directory
+context it is of course possible to <b>use</b> this map in per-directory
+context.  
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+For plain text and DBM format files the looked-up keys are cached in-core
+until the <tt>mtime</tt> of the mapfile changes or the server does a
+restart. This way you can have map-functions in rules which are used
+for <b>every</b> request. This is no problem, because the external lookup
+only happens once!
+</td></tr>
+</table>
+
+
+<p>
+<hr noshade size=1>
+<p>
+
+<a name="RewriteBase"><h3>RewriteBase</h3></a>
+<strong>Syntax:</strong> <code>RewriteBase</code> <em>BaseURL</em><br>
+<strong>Default:</strong> <em>default is the physical directory path</em><br>
+<strong>Context:</strong> per-directory config<br>
+<p>
+
+The <tt>RewriteBase</tt> directive explicitly sets the base URL for
+per-directory rewrites. As you will see below, <tt>RewriteRule</tt> can be
+used in per-directory config files (<tt>.htaccess</tt>). There it will act
+locally, i.e. the local directory prefix is stripped at this stage of
+processing and your rewriting rules act only on the remainder. At the end
+it is automatically added.
+
+<p>
+When a substitution occurs for a new URL, this module has to
+re-inject the URL into the server processing. To be able to do this it needs
+to know what the corresponding URL-prefix or URL-base is. By default this
+prefix is the corresponding filepath itself. <b>But at most websites URLs are
+<b>NOT</b> directly related to physical filename paths, so this assumption
+will be usually be wrong!</b> There you have to use the <tt>RewriteBase</tt>
+directive to specify the correct URL-prefix. 
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+So, if your webserver's URLs are <b>not</b> directly
+related to physical file paths, you have to use <tt>RewriteBase</tt> in every
+<tt>.htaccess</tt> files where you want to use <tt>RewriteRule</tt>
+directives.
+</td></tr>
+</table>
+
+<p>
+<b>Example:</b>
+
+<blockquote>
+   Assume the following per-directory config file:
+
+<p>
+<table border=2 cellspacing=1 cellpadding=5 bgcolor="#d0d0d0">
+<tr><td><pre>
+#
+#  /abc/def/.htaccess -- per-dir config file for directory /abc/def
+#  Remember: /abc/def is the physical path of /xyz, i.e. the server
+#            has a 'Alias /xyz /abc/def' directive e.g.
+#
+
+RewriteEngine On
+
+#  let the server know that we are reached via /xyz and not 
+#  via the physical path prefix /abc/def
+RewriteBase   /xyz
+
+#  now the rewriting rules
+RewriteRule   ^oldstuff\.html$  newstuff.html
+</pre></td></tr>
+</table>
+
+<p>
+In the above example, a request to <tt>/xyz/oldstuff.html</tt> gets correctly
+rewritten to the physical file <tt>/abc/def/newstuff.html</tt>. 
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+<font size=-1>
+<b>For the Apache hackers:</b><br>
+The following list gives detailed information about the internal
+processing steps:
+
+<p>
+<pre>
+Request:
+  /xyz/oldstuff.html
+
+Internal Processing:
+  /xyz/oldstuff.html     -> /abc/def/oldstuff.html    (per-server Alias)
+  /abc/def/oldstuff.html -> /abc/def/newstuff.html    (per-dir    RewriteRule)
+  /abc/def/newstuff.html -> /xyz/newstuff.html        (per-dir    RewriteBase)
+  /xyz/newstuff.html     -> /abc/def/newstuff.html    (per-server Alias)
+
+Result:
+  /abc/def/newstuff.html
+</pre>
+
+This seems very complicated but is the correct Apache internal processing,
+because the per-directory rewriting comes too late in the process.  So,
+when it occurs the (rewritten) request has to be re-injected into the Apache
+kernel! BUT: While this seems like a serious overhead, it really isn't, because
+this re-injection happens fully internal to the Apache server and the same
+procedure is used by many other operations inside Apache. So, you can be 
+sure the design and implementation is correct.
+</font>
+</td></tr>
+</table>
+
+</blockquote>
+
+
+<p>
+<hr noshade size=1>
+<p>
+
+<a name="RewriteCond"><h3>RewriteCond</h3></a>
+<strong>Syntax:</strong> <code>RewriteCond</code> <em>TestString</em> <em>CondPattern</em><br>
+<strong>Default:</strong> -<em>None</em>-<br>
+<strong>Context:</strong> server config, virtual host, per-directory config<br>
+<p>
+
+The <tt>RewriteCond</tt> directive defines a rule condition. Precede a
+<tt>RewriteRule</tt> directive with one ore more <t>RewriteCond</tt>
+directives.
+
+The following rewriting rule is only used if its pattern matches the current
+state of the URI <b>AND</b> if these additional conditions apply, too.
+
+<p>
+<em>TestString</em> is a string which contains server-variables of the form
+
+<blockquote><strong>
+<tt>%{</tt> <em>NAME_OF_VARIABLE</em> <tt>}</tt> 
+</strong></blockquote>
+
+where <em>NAME_OF_VARIABLE</em> can be a string
+of the following list:
+
+<p>
+<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<tr>
+<td valign=top>
+<b>HTTP headers:</b><p>
+<font size=-1>
+HTTP_USER_AGENT<br>
+HTTP_REFERER<br>
+HTTP_COOKIE<br>
+HTTP_FORWARDED<br>
+HTTP_HOST<br>
+HTTP_PROXY_CONNECTION<br>
+HTTP_ACCEPT<br>
+</font>
+</td>
+
+<td valign=top>
+<b>connection &amp; request:</b><p>
+<font size=-1>
+REMOTE_ADDR<br>
+REMOTE_HOST<br>
+REMOTE_USER<br>
+REMOTE_IDENT<br>
+REQUEST_METHOD<br>
+SCRIPT_FILENAME<br>
+PATH_INFO<br>
+QUERY_STRING<br>
+AUTH_TYPE<br>
+</font>
+</td>
+
+</tr>
+<tr>
+
+<td valign=top>
+<b>server internals:</b><p>
+<font size=-1>
+DOCUMENT_ROOT<br>
+SERVER_ADMIN<br>
+SERVER_NAME<br>
+SERVER_PORT<br>
+SERVER_PROTOCOL<br>
+SERVER_SOFTWARE<br>
+SERVER_VERSION<br>
+</font>
+</td>
+
+<td valign=top>
+<b>system stuff:</b><p>
+<font size=-1>
+TIME_YEAR<br>
+TIME_MON<br>
+TIME_DAY<br>
+TIME_HOUR<br>
+TIME_MIN<br>
+TIME_SEC<br>
+TIME_WDAY<br>
+</font>
+</td>
+
+<td valign=top>
+<b>specials:</b><p>
+<font size=-1>
+API_VERSION<br>
+THE_REQUEST<br>
+REQUEST_URI<br>
+REQUEST_FILENAME<br>
+</font>
+</td>
+</tr>
+</table>
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+These variables all correspond to the similar named HTTP MIME-headers, C
+variables of the Apache server or <tt>struct tm</tt> fields of the Unix
+system.
+</td></tr>
+</table>
+
+<p>
+Special Notes:
+<ol>
+<li>The variables SCRIPT_FILENAME and REQUEST_FILENAME contain the same
+value, i.e. the value of the <tt>filename</tt> field of the internal
+<tt>request_rec</tt> structure of the Apache server. The first name is just the
+commonly known CGI variable name while the second is the consistent
+counterpart to REQUEST_URI (which contains the value of the <tt>uri</tt>
+field of <tt>request_rec</tt>).
+
+<p>
+<li>There is an additional format: <tt>%{ENV:variable}</tt> where
+<i>variable</i> can be any Unix environment variable. This is looked-up
+via <tt>getenv()</tt> from the Apache server process.
+
+<p>
+<li>There is one more additional format: <tt>%{HTTP:header}</tt> where
+<i>header</i> can be any HTTP MIME-header name. This is looked-up
+from the HTTP request. Example: <tt>%{HTTP:Proxy-Connection}</tt>
+is the value of the HTTP header ``<tt>Proxy-Connection:</tt>''.
+</ol>
+
+
+<p>
+<em>CondPattern</em> is the condition pattern, i.e. a regular expression
+which gets applied to the current instance of the <em>TestString</em>, i.e.
+<em>TestString</em> gets evaluated and then matched against
+<em>CondPattern</em>. 
+
+<p>
+<b>Remember:</b> <em>CondPattern</em> is a standard
+<em>Extended Regular Expression</em> with some additions:
+
+<ol>
+<li>You can precede the pattern string with a '<tt>!</tt>' character
+(exclamation mark) to specify a <b>non</b>-matching pattern.
+
+<p>
+<li>
+There are some special variants of <em>CondPatterns</em>. Instead of real
+regular expression strings you can also use one of the following:
+<p>
+<ul>
+<li>'<b>-d</b>' (is <b>d</b>irectory)<br>
+Treats the <i>TestString</i> as a pathname and
+tests if it exists and is a directory.
+<p>
+<li>'<b>-f</b>' (is regular <b>f</b>ile)<br>
+Treats the <i>TestString</i> as a pathname and
+tests if it exists and is a regular file.
+<p>
+<li>'<b>-s</b>' (is regular file with <b>s</b>ize)<br>
+Treats the <i>TestString</i> as a pathname and
+tests if it exists and is a regular file with size greater then zero.
+<p>
+<li>'<b>-l</b>' (is symbolic <b>l</b>ink)<br>
+Treats the <i>TestString</i> as a pathname and
+tests if it exists and is a symbolic link.
+</ul>
+<p>
+Notice: All of these tests can also be prefixed by a not ('!') character
+to negate their meaning.
+</ol>
+
+<p>
+Additionally you can set special flags for <em>CondPattern</em> by appending
+
+<blockquote><strong>
+<code>[</code><em>flags</em><code>]</code>
+</strong></blockquote>
+
+as the third argument to the <tt>RewriteCond</tt> directive. <em>Flags</em>
+is a comma-separated list of the following flags:
+
+<ul>
+<li>'<strong><code>nocase|NC</code></strong>' (<b>n</b>o <b>c</b>ase)<br>
+    This makes the condition test case-insensitive, i.e. there is
+    no difference between 'A-Z' and 'a-z' both in the expanded
+    <em>TestString</em> and the <em>CondPattern</em>.
+<p>
+<li>'<strong><code>ornext|OR</code></strong>' (<b>or</b> next condition)<br>
+	Use this to combine rule conditions with a local OR instead of the
+	implicit AND. Typical example:
+	<p>
+<blockquote><pre>
+RewriteCond %{REMOTE_HOST}  ^host1.*  [OR]
+RewriteCond %{REMOTE_HOST}  ^host2.*  [OR]
+RewriteCond %{REMOTE_HOST}  ^host3.*  
+RewriteRule ...some special stuff for any of these hosts...
+</pre></blockquote>
+    Without this flag you had to write down the cond/rule three times.
+<p>
+</ul>
+
+<p>
+<b>Example:</b>
+<blockquote>
+
+To rewrite the Homepage of a site according to the ``<tt>User-Agent:</tt>''
+header of the request, you can use the following:
+
+<blockquote><pre>
+RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla.*
+RewriteRule  ^/$                 /homepage.max.html  [L]
+
+RewriteCond  %{HTTP_USER_AGENT}  ^Lynx.*
+RewriteRule  ^/$                 /homepage.min.html  [L]
+
+RewriteRule  ^/$                 /homepage.std.html  [L]
+</pre></blockquote>
+
+Interpretation: If you use Netscape Navigator as your browser (which identifies
+itself as 'Mozilla'), then you get the max homepage, which includes
+Frames, etc. If you use the Lynx browser (which is Terminal-based), then you
+get the min homepage, which contains no images, no tables, etc.  If you
+use any other browser you get the standard homepage.
+</blockquote>
+<p>
+
+<p>
+<hr noshade size=1>
+<p>
+
+<a name="RewriteRule"><h3>RewriteRule</h3></a>
+<strong>Syntax:</strong> <code>RewriteRule</code> <em>Pattern</em> <em>Substitution</em><br>
+<strong>Default:</strong> -<em>None</em>-<br>
+<strong>Context:</strong> server config, virtual host, per-directory config<br>
+
+<p>
+The <tt>RewriteRule</tt> directive is the real rewriting workhorse.  The
+directive can occur more than once. Each directive then defines one single
+rewriting rule.  The <b>definition order</b> of these rules is
+<b>important</b>, because this order is used when applying the rules at
+run-time.
+
+<p>
+<a name="patterns"><em>Pattern</em></a> can be (for Apache 1.1.x a System
+V8 and for Apache 1.2.x a POSIX) <a name="regexp">regular expression</a>
+which gets applied to the current URL. Here ``current'' means the value of the
+URL when this rule gets applied. This may not be the original requested
+URL, because there could be any number of rules before which already matched
+and made alterations to it.
+
+<p>
+Some hints about the syntax of regular expressions:
+
+<p>
+<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<tr>
+<td valign=top>
+<pre>
+<strong><code>^</code></strong>           Start of line
+<strong><code>$</code></strong>           End of line
+<strong><code>.</code></strong>           Any single character
+<strong><code>[</code></strong>chars<strong><code>]</code></strong>     One of chars 
+<strong><code>[^</code></strong>chars<strong><code>]</code></strong>    None of chars 
+
+<strong><code>?</code></strong>           0 or 1 of the preceding char
+<strong><code>*</code></strong>           0 or N of the preceding char
+<strong><code>+</code></strong>           1 or N of the preceding char
+
+<strong><code>\</code></strong>char       escape that specific char 
+            (e.g. for specifying the chars "<code>.[]()</code>" etc.)
+
+<strong><code>(</code></strong>string<strong><code>)</code></strong>    Grouping of chars (the <b>N</b>th group can be used on the RHS with <code>$</code><b>N</b>)
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+Additionally the NOT character ('<tt>!</tt>') is a possible pattern
+prefix. This gives you the ability to negate a pattern; to say, for instance: ``<i>if
+the current URL does <b>NOT</b> match to this pattern</i>''. This can be used
+for special cases where it is better to match the negative pattern or as a
+last default rule.
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+<b>Notice!</b> When using the NOT character to negate a pattern you cannot
+have grouped wildcard parts in the pattern. This is impossible because when
+the pattern does NOT match, there are no contents for the groups. In
+consequence, if negated patterns are used, you cannot use <tt>$N</tt> in the
+substitution string!
+</td></tr>
+</table>
+
+<p>
+<a name="rhs"><em>Substitution</em></a> of a rewriting rule is the string
+which is substituted for (or replaces) the original URL for which
+<em>Pattern</em> matched.  Beside plain text you can use 
+
+<ol>
+<li>pattern-group back-references (<code>$N</code>)
+<li>server-variables as in rule condition test-strings (<code>%{VARNAME}</code>)
+<li><a href="#mapfunc">mapping-function</a> calls (<code>${mapname:key|default}</code>)
+</ol>
+
+Back-references are <code>$</code><b>N</b> (<b>N</b>=1..9) identifiers which
+will be replaced by the contents of the <b>N</b>th group of the matched
+<em>Pattern</em>. The server-variables are the same as for the
+<em>TestString</em> of a <tt>RewriteCond</tt> directive. The
+mapping-functions come from the <tt>RewriteMap</tt> directive and are
+explained there. These three types of variables are expanded in the order of
+the above list.
+
+<p>
+As already mentioned above, all the rewriting rules are applied to the
+<em>Substitution</em> (in the order of definition in the config file).  The
+URL is <b>completely replaced</b> by the <em>Substitution</em> and the
+rewriting process goes on until there are no more rules (unless explicitly
+terminated by a <code><b>L</b></code> flag - see below).
+
+<p>
+There is a special substitution string named '<tt>-</tt>' which means:
+<b>NO substitution</b>! Sounds silly? No, it is useful to provide rewriting
+rules which <b>only</b> match some URLs but do no substitution, e.g. in
+conjunction with the <b>C</b> (chain) flag to be able to have more than one
+pattern to be applied before a substitution occurs.
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+<b>Notice</b>: There is a special feature. When you prefix a substitution
+field with <tt>http://</tt><em>thishost</em>[<em>:thisport</em>] then
+<b>mod_rewrite</b> automatically strips it out.   This auto-reduction on
+implicit external redirect URLs is a useful and important feature when
+used in combination with a mapping-function which generates the hostname
+part.  Have a look at the first example in the example section below to
+understand this.
+<p>
+<b>Remember:</b> An unconditional external redirect to your own server will
+not work with the prefix <tt>http://thishost</tt> because of this feature.
+To achieve such a self-redirect, you have to use the <b>R</b>-flag (see
+below).
+</td></tr>
+</table>
+
+<p>
+Additionally you can set special flags for <em>Substitution</em> by appending
+
+<blockquote><strong>
+<code>[</code><em>flags</em><code>]</code>
+</strong></blockquote>
+
+as the third argument to the <tt>RewriteRule</tt> directive. <em>Flags</em> is a
+comma-separated list of the following flags:
+
+<ul>
+<li>'<strong><code>redirect|R</code></strong>' (force <a name="redirect"><b>r</b>edirect</a>)<br>
+    Prefix <em>Substitution</em> 
+    with <code>http://thishost/</code> (which makes the new URL a URI) to
+    force a external redirection. Use it for rules which should 
+	canonicalize the URL and gives it back to the client, e.g. translate
+    ``<code>/~</code>'' into ``<code>/u/</code>'' or always append a slash to
+    <code>/u/</code><em>user</em>, etc.<br>
+    <b>Notice:</b> When you use this flag, make sure that the
+    substitution field is a valid URL! If not, you are redirecting to an invalid
+    location!</b>
+<p>
+<li>'<strong><code>proxy|P</code></strong>' (force <b>p</b>roxy)<br>
+    This flag forces the substitution part to be internally forced as a proxy
+    request and immediately (i.e. rewriting rule processing stops here) put
+    through the proxy module. You have to make sure that the substitution
+    string is a valid URI (e.g. typically <tt>http://</tt>) which can
+    be handled by the Apache proxy module. If not you get an error from
+    the proxy module. Use this flag to achieve a more powerful implementation
+    of the <tt>mod_proxy</tt> directive <tt>ProxyPass</tt>, to map
+    some remote stuff into the namespace of the local server.
+<p>
+<li>'<strong><code>last|L</code></strong>' (<b>l</b>ast rule)<br>
+    Stop the rewriting process here and
+    don't apply any more rewriting rules. This corresponds to the Perl
+    <code>last</code> command or the <code>break</code> command from the C
+    language. Use this flag to prevent the currently rewritten URL from being
+    rewritten further by following rules which may be wrong. For
+    example, use it to rewrite the root-path URL ('<code>/</code>') to a real
+    one, e.g. '<code>/e/www/</code>'.
+<p>
+<li>'<strong><code>next|N</code></strong>' (<b>n</b>ext round)<br>
+    Re-run the rewriting process (starting again with the first rewriting
+    rule). Here the URL to match is again not the original URL but the URL
+    from the last rewriting rule.  This corresponds to the Perl
+    <code>next</code> command or the <code>continue</code> command from the C
+    language. Use this flag to restart the rewriting process, i.e.  to
+    immediately go to the top of the loop. <br> 
+    <b>But be careful not to create a deadloop!</b>
+<p>
+<li>'<strong><code>chain|C</code></strong>' (<b>c</b>hained with next rule)<br>
+    This flag chains the current rule with the next rule (which itself can
+    also be chained with its following rule, etc.). This has the following
+    effect: if a rule matches, then processing continues as usual, i.e. the
+    flag has no effect. If the rule does <b>not</b> match, then all following
+    chained rules are skipped.   For instance, use it to remove the
+    ``<tt>.www</tt>'' part inside a per-directory rule set when you let an
+    external redirect happen (where the ``<tt>.www</tt>'' part should not to
+    occur!).
+<p>
+<li>'<strong><code>type|T</code></strong>=<em>mime-type</em>' (force MIME <b>t</b>ype)<br>
+    Force the MIME-type of the target file to be <em>mime-type</em>. For
+    instance, this can be used to simulate the old <tt>mod_alias</tt>
+    directive <tt>ScriptAlias</tt> which internally forces all files inside
+    the mapped directory to have a MIME type of
+    ``<tt>application/x-httpd-cgi</tt>''.
+<p>
+<li>'<strong><code>nosubreq|NS</code></strong>' (used only if <b>n</b>o internal <b>s</b>ub-request)<br>
+    This flag forces the rewriting engine to skip a rewriting rule if the
+    current request is an internal sub-request. For instance, sub-requests
+    occur internally in Apache when <tt>mod_include</tt> tries to find out
+    information about possible directory default files (<tt>index.xxx</tt>).
+    On sub-requests it is not always useful and even sometimes causes a failure to
+    if the complete set of rules are applied. Use this flag to exclude some rules.<br>
+    <p>
+    Use the following rule for your decision: whenever you prefix some URLs
+    with CGI-scripts to force them to be processed by the CGI-script, the
+    chance is high that you will run into problems (or even overhead) on sub-requests.
+    In these cases, use this flag.
+<p>
+<li>'<strong><code>passthrough|PT</code></strong>' (<b>p</b>ass <b>t</b>hrough to next handler)<br>
+    This flag forces the rewriting engine to set the <code>uri</code> field
+    of the internal <code>request_rec</code> structure to the value
+    of the <code>filename</code> field.  This flag is just a hack to be able
+    to post-process the output of <tt>RewriteRule</tt> directives by
+    <tt>Alias</tt>, <tt>ScriptAlias</tt>, <tt>Redirect</tt>, etc. directives
+    from other URI-to-filename translators. A trivial example to show the
+    semantics:
+    If you want to rewrite <tt>/abc</tt> to <tt>/def</tt> via the rewriting
+    engine of <tt>mod_rewrite</tt> and then <tt>/def</tt> to <tt>/ghi</tt>
+    with <tt>mod_alias</tt>:
+    <pre>
+    RewriteRule ^/abc(.*)  /def$1 [PT]
+    Alias       /def       /ghi   
+    </pre>
+    If you omit the <tt>PT</tt> flag then <tt>mod_rewrite</tt>
+    will do its job fine, i.e. it rewrites <tt>uri=/abc/...</tt> to
+    <tt>filename=/def/...</tt> as a full API-compliant URI-to-filename
+    translator should do. Then <tt>mod_alias</tt> comes and tries to do a
+    URI-to-filename transition which will not work.
+    <p>
+    Notice: <b>You have to use this flag if you want to intermix directives
+    of different modules which contain URL-to-filename translators</b>. The
+    typical example is the use of <tt>mod_alias</tt> and
+    <tt>mod_rewrite</tt>..
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+<font size=-1>
+    <b>For the Apache hackers:</b><br>
+    If the current Apache API had a
+    filename-to-filename hook additionally to the URI-to-filename hook then
+    we wouldn't need this flag!  But without  such a hook this flag is the
+    only solution. The Apache Group has discussed this problem and will
+    add such hooks into Apache version 2.0.
+</font>
+</td></tr>
+</table>
+<p>
+<li>'<strong><code>skip|S</code></strong>=<em>num</em>' (<b>s</b>kip next rule(s))<br>
+    This flag forces the rewriting engine to skip the next <em>num</em> rules
+    in sequence when the current rule matches. Use this to make pseudo
+    if-then-else constructs: The last rule of the then-clause becomes
+    a <tt>skip=N</tt> where N is the number of rules in the else-clause.
+    (This is <b>not</b> the same as the 'chain|C' flag!)
+<p>
+</ul>
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+Remember: Never forget that <em>Pattern</em> gets applied to a complete URL
+in per-server configuration files. <b>But in per-directory configuration
+files, the per-directory prefix (which always is the same for a specific
+directory!) gets automatically <em>removed</em> for the pattern matching and
+automatically <em>added</em> after the substitution has been done.</b> This feature is
+essential for many sorts of rewriting, because without this prefix stripping
+you have to match the parent directory which is not always possible.
+<p>
+There is one exception: If a substitution string starts with
+``<tt>http://</tt>'' then the directory prefix will be <b>not</b> added and a
+external redirect or proxy throughput (if flag <b>P</b> is used!) is forced!
+</td></tr>
+</table>
+
+<p>
+<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<tr><td>
+Notice!  To enable the rewriting engine for per-directory configuration files
+you need to set ``<tt>RewriteEngine On</tt>'' in these files <b>and</b>
+``<tt>Option FollowSymLinks</tt>'' enabled. If your administrator has
+disabled override of <tt>FollowSymLinks</tt> for a user's directory, then
+you cannot use the rewriting engine.  This restriction is needed for
+security reasons.
+</td></tr>
+</table>
+
+<p>
+Here are all possible substitution combinations and their meanings:
+
+<p>
+<b>Inside per-server configuration (<tt>httpd.conf</tt>)<br>
+for request ``<tt>GET /somepath/pathinfo</tt>'':</b><br>
+
+<p>
+<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<tr>
+<td>
+<pre>
+<b>Given Rule</b>                                      <b>Resulting Substitution</b>
+----------------------------------------------  ----------------------------------
+^/somepath(.*) otherpath$1                      not supported, because invalid!
+
+^/somepath(.*) otherpath$1  [R]                 not supported, because invalid!
+
+^/somepath(.*) otherpath$1  [P]                 not supported, because invalid!
+----------------------------------------------  ----------------------------------
+^/somepath(.*) /otherpath$1                     /otherpath/pathinfo
+
+^/somepath(.*) /otherpath$1 [R]                 http://thishost/otherpath/pathinfo
+                                                via external redirection
+
+^/somepath(.*) /otherpath$1 [P]                 not supported, because silly!
+----------------------------------------------  ----------------------------------
+^/somepath(.*) http://thishost/otherpath$1      /otherpath/pathinfo
+
+^/somepath(.*) http://thishost/otherpath$1 [R]  http://thishost/otherpath/pathinfo
+                                                via external redirection
+
+^/somepath(.*) http://thishost/otherpath$1 [P]  not supported, because silly!
+----------------------------------------------  ----------------------------------
+^/somepath(.*) http://otherhost/otherpath$1     http://otherhost/otherpath/pathinfo
+                                                via external redirection
+
+^/somepath(.*) http://otherhost/otherpath$1 [R] http://otherhost/otherpath/pathinfo
+                                                via external redirection
+                                                (the [R] flag is redundant)
+
+^/somepath(.*) http://otherhost/otherpath$1 [P] http://otherhost/otherpath/pathinfo
+                                                via internal proxy
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+<b>Inside per-directory configuration for <tt>/somepath</tt><br>
+(i.e. file <tt>.htaccess</tt> in dir <tt>/physical/path/to/somepath</tt> containing
+<tt>RewriteBase /somepath</tt>)<br> for
+request ``<tt>GET /somepath/localpath/pathinfo</tt>'':</b><br>
+
+<p>
+<table bgcolor="#d0d0d0" cellspacing=0 cellpadding=5>
+<tr>
+<td>
+<pre>
+<b>Given Rule</b>                                      <b>Resulting Substitution</b>
+----------------------------------------------  ----------------------------------
+^localpath(.*) otherpath$1                      /somepath/otherpath/pathinfo
+
+^localpath(.*) otherpath$1  [R]                 http://thishost/somepath/otherpath/pathinfo
+                                                via external redirection
+
+^localpath(.*) otherpath$1  [P]                 not supported, because silly!
+----------------------------------------------  ----------------------------------
+^localpath(.*) /otherpath$1                     /otherpath/pathinfo
+
+^localpath(.*) /otherpath$1 [R]                 http://thishost/otherpath/pathinfo
+                                                via external redirection
+
+^localpath(.*) /otherpath$1 [P]                 not supported, because silly!
+----------------------------------------------  ----------------------------------
+^localpath(.*) http://thishost/otherpath$1      /otherpath/pathinfo
+
+^localpath(.*) http://thishost/otherpath$1 [R]  http://thishost/otherpath/pathinfo
+                                                via external redirection
+
+^localpath(.*) http://thishost/otherpath$1 [P]  not supported, because silly!
+----------------------------------------------  ----------------------------------
+^localpath(.*) http://otherhost/otherpath$1     http://otherhost/otherpath/pathinfo
+                                                via external redirection
+
+^localpath(.*) http://otherhost/otherpath$1 [R] http://otherhost/otherpath/pathinfo
+                                                via external redirection
+                                                (the [R] flag is redundant)
+
+^localpath(.*) http://otherhost/otherpath$1 [P] http://otherhost/otherpath/pathinfo
+                                                via internal proxy
+</pre>
+</td>
+</tr>
+</table>
+
+
+</td>
+</tr>
+</table>
+
+<p>
+<b>Example:</b>
+<p>
+<blockquote>
+We want to rewrite URLs of the form
+<blockquote>
+<code>/</code> <em>Language</em>
+<code>/~</code> <em>Realname</em>
+<code>/.../</code> <em>File</em>
+</blockquote>
+into
+<blockquote>
+<code>/u/</code> <em>Username</em>
+<code>/.../</code> <em>File</em>
+<code>.</code> <em>Language</em>
+</blockquote>
+<p>
+We take the rewrite mapfile from above and save it under
+<code>/anywhere/map.real-to-user</code>. Then we only have to add the
+following lines to the Apache server configuration file:
+
+<blockquote>
+<pre>
+RewriteLog   /anywhere/rewrite.log
+RewriteMap   real-to-user               txt:/anywhere/map.real-to-host
+RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
+</pre>
+</blockquote>
+</blockquote>
+
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
