@@ -3673,7 +3673,7 @@ static int FastCgiHandler(WS_Request *reqPtr)
                 reqPtr->filename, reqPtr);
         return NOT_FOUND;
     }
-    status = setup_client_block(reqPtr);
+    status = setup_client_block(reqPtr, REQUEST_CHUNKED_ERROR);
     if(status != OK) {
         return status;
     }

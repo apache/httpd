@@ -206,13 +206,16 @@ int set_content_length (request_rec *r, long clength)
 
 int set_keepalive(request_rec *r)
 {
-    char *conn = table_get (r->headers_in, "Connection");
-    char *length = table_get (r->headers_out, "Content-length");
+    char *conn   = table_get(r->headers_in,  "Connection");
+    char *length = table_get(r->headers_out, "Content-Length");
+    char *tenc   = table_get(r->headers_out, "Transfer-Encoding");
     int ka_sent;
 
-    if ((r->server->keep_alive > r->connection->keepalives) &&
+    if (r->connection->keepalive == -1)  /* Did we get bad input? */
+        r->connection->keepalive = 0;
+    else if ((r->server->keep_alive > r->connection->keepalives) &&
 	(r->server->keep_alive_timeout > 0) &&
-	(r->header_only || length ||
+	(r->header_only || length || tenc ||
 	 ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1)))) &&
 	(!find_token(r->pool, conn, "close")) &&
 	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
@@ -633,6 +636,9 @@ request_rec *read_request (conn_rec *conn)
     r->per_dir_config = r->server->lookup_defaults; /* For now. */
 
     r->sent_bodyct = 0; /* bytect isn't for body */
+
+    r->read_length  = 0;
+    r->read_body    = REQUEST_NO_BODY;
     
     r->status = HTTP_OK;	/* Until further notice.
 				 * Only changed by die(), or (bletch!)
@@ -702,6 +708,9 @@ void set_sub_req_protocol (request_rec *rnew, const request_rec *r)
     rnew->headers_out = make_table (rnew->pool, 5);
     rnew->err_headers_out = make_table (rnew->pool, 5);
     rnew->notes = make_table (rnew->pool, 5);
+    
+    rnew->read_length = r->read_length;
+    rnew->read_body   = REQUEST_NO_BODY;
     
     rnew->main = (request_rec *)r;
 }
@@ -1056,57 +1065,83 @@ void finalize_request_protocol (request_rec *r) {
 
 }
 
-/* Here we deal with getting input from the client. This can be in the
- * form of POST or PUT (other methods can be added later), and may be
- * transmitted in either a fixed content-length or via chunked
- * transfer-coding.
+/* Here we deal with getting the request message body from the client.
+ * Whether or not the request contains a body is signaled by the presence
+ * of a non-zero Content-Length or by a Transfer-Encoding: chunked.
  *
  * Note that this is more complicated than it was in Apache 1.1 and prior
  * versions, because chunked support means that the module does less.
  *
  * The proper procedure is this:
+ *
  * 1. Call setup_client_block() near the beginning of the request
- *    handler. This will set up all the neccessary properties, and
- *    will return either OK, or an error code. If the latter,
- *    the module should return that error code.
+ *    handler. This will set up all the necessary properties, and will
+ *    return either OK, or an error code. If the latter, the module should
+ *    return that error code. The second parameter selects the policy to
+ *    apply if the request message indicates a body, and how a chunked
+ *    transfer-coding should be interpreted. Choose one of
  *
- * 2. When you are ready to possibly accept input, call should_client_block().
+ *    REQUEST_NO_BODY          Send 413 error if message has any body
+ *    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
+ *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
+ *    REQUEST_CHUNKED_PASS     Pass the chunks to me without removal.
+ *
+ *    In order to use the last two options, the caller MUST provide a buffer
+ *    large enough to hold a chunk-size line, including any extensions.
+ *
+ * 2. When you are ready to read a body (if any), call should_client_block().
  *    This will tell the module whether or not to read input. If it is 0,
- *    the module should assume that the input is of a non-entity type
- *    (e.g. a GET request). This step also sends a 100 Continue response
- *    to HTTP/1.1 clients, so should not be called until the module
- *    is *definitely* ready to read content. (otherwise, the point of the
- *    100 response is defeated). Never call this function more than once.
+ *    the module should assume that there is no message body to read.
+ *    This step also sends a 100 Continue response to HTTP/1.1 clients,
+ *    so should not be called until the module is *definitely* ready to
+ *    read content. (otherwise, the point of the 100 response is defeated).
+ *    Never call this function more than once.
  *
- * 3. Finally, call get_client_block in a loop. Pass it a buffer and its
- *    size. It will put data into the buffer (not neccessarily the full
- *    buffer, in the case of chunked inputs), and return the length of
- *    the input block. When it is done reading, it will return 0.
- *
+ * 3. Finally, call get_client_block in a loop. Pass it a buffer and its size.
+ *    It will put data into the buffer (not necessarily a full buffer), and
+ *    return the length of the input block. When it is done reading, it will
+ *    return 0 if EOF, or -1 if there was an error.
+ *    If an error occurs on input, we force an end to keepalive.
  */
 
-int setup_client_block (request_rec *r)
+int setup_client_block (request_rec *r, int read_policy)
 {
-    char *tenc = table_get (r->headers_in, "Transfer-Encoding");
-    char *lenp = table_get (r->headers_in, "Content-length");
+    char *tenc = table_get(r->headers_in, "Transfer-Encoding");
+    char *lenp = table_get(r->headers_in, "Content-length");
 
-    if ((r->method_number != M_POST) && (r->method_number != M_PUT))
-	return OK;
+    r->read_body    = read_policy;
+    r->read_chunked = 0;
+    r->remaining    = 0;
 
     if (tenc) {
-	if (strcasecmp(tenc, "chunked")) {
-	    log_printf(r->server, "Unknown Transfer-Encoding %s", tenc);
-	    return BAD_REQUEST;
-	}
-	r->read_chunked = 1;
-	r->remaining = 0;
+        if (strcasecmp(tenc, "chunked")) {
+            log_printf(r->server, "Unknown Transfer-Encoding %s", tenc);
+            return HTTP_BAD_REQUEST;
+        }
+        if (r->read_body == REQUEST_CHUNKED_ERROR) {
+            log_reason("chunked Transfer-Encoding forbidden", r->uri, r);
+            return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
+        }
+
+        r->read_chunked = 1;
     }
-    else {
-	if (!lenp) {
-	    log_reason("POST or PUT without Content-length:", r->filename, r);
-	    return LENGTH_REQUIRED;
-	}
-	r->remaining = atol(lenp);
+    else if (lenp) {
+        char *pos = lenp;
+
+        while (isdigit(*pos) || isspace(*pos)) ++pos;
+        if (*pos != '\0') {
+            log_printf(r->server, "Invalid Content-Length %s", lenp);
+            return HTTP_BAD_REQUEST;
+        }
+
+        r->remaining = atol(lenp);
+    }
+
+    if ((r->read_body == REQUEST_NO_BODY) &&
+        (r->read_chunked || (r->remaining > 0))) {
+        log_printf(r->server, "%s with body is not allowed for %s",
+                   r->method, r->uri);
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
     return OK;
@@ -1114,11 +1149,7 @@ int setup_client_block (request_rec *r)
 
 int should_client_block (request_rec *r)
 {
-    /* The following should involve a test of whether the request message
-     * included a Content-Length or Transfer-Encoding header field, since
-     * methods are supposed to be extensible.  However, this'll do for now.
-     */
-    if (r->method_number != M_POST && r->method_number != M_PUT)
+    if (!r->read_chunked && (r->remaining <= 0))
         return 0;
 
     if (r->proto_num >= 1001) {    /* sending 100 Continue interim response */
@@ -1130,67 +1161,158 @@ int should_client_block (request_rec *r)
     return 1;
 }
 
-static int rd_chunk_size (BUFF *b)
+static long get_chunk_size (char *b)
 {
-    int chunksize = 0;
-    int c;
+    long chunksize = 0;
 
-    while ((c = bgetc (b)) != EOF && isxdigit (c)) {
+    while (isxdigit(*b)) {
         int xvalue = 0;
 
-        if (c >= '0' && c <= '9') xvalue = c - '0';
-        else if (c >= 'A' && c <= 'F') xvalue = c - 'A' + 0xa;
-        else if (c >= 'a' && c <= 'f') xvalue = c - 'a' + 0xa;
+        if (*b >= '0' && *b <= '9')      xvalue = *b - '0';
+        else if (*b >= 'A' && *b <= 'F') xvalue = *b - 'A' + 0xa;
+        else if (*b >= 'a' && *b <= 'f') xvalue = *b - 'a' + 0xa;
 
         chunksize = (chunksize << 4) | xvalue;
+        ++b;
     }
 
-    /* Skip to end of line, bypassing chunk options, if present */
-
-    while (c != '\n' && c != EOF)
-        c = bgetc (b);
-
-    return (c == EOF) ? -1 : chunksize;
+    return chunksize;
 }
 
+/* get_client_block is called in a loop to get the request message body.
+ * This is quite simple if the client includes a content-length
+ * (the normal case), but gets messy if the body is chunked. Note that
+ * r->remaining is used to maintain state across calls and that
+ * r->read_length is the total number of bytes given to the caller
+ * across all invocations.  It is messy because we have to be careful not
+ * to read past the data provided by the client, since these reads block.
+ * Returns 0 on End-of-body, -1 on error or premature chunk end.
+ *
+ * Reading the chunked encoding requires a buffer size large enough to
+ * hold a chunk-size line, including any extensions. For now, we'll leave
+ * that to the caller, at least until we can come up with a better solution.
+ */
 long get_client_block (request_rec *r, char *buffer, int bufsiz)
 {
-    long c, len_read, len_to_read = r->remaining;
+    int c;
+    long len_read, len_to_read;
+    long chunk_start = 0;
 
-    if (!r->read_chunked) {	/* Content-length read */
-	if (len_to_read > bufsiz)
-	    len_to_read = bufsiz;
-	len_read = bread(r->connection->client, buffer, len_to_read);
-	r->remaining -= len_read;
-	return len_read;
+    if (!r->read_chunked) {                 /* Content-length read */
+        len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
+        len_read = bread(r->connection->client, buffer, len_to_read);
+        if (len_read <= 0) {
+            if (len_read < 0) r->connection->keepalive = -1;
+            return len_read;
+        }
+        r->read_length += len_read;
+        r->remaining   -= len_read;
+        return len_read;
     }
 
-    /* Handle chunked reading */
-    if (len_to_read == 0) {
-	len_to_read = rd_chunk_size(r->connection->client);
-	if (len_to_read == 0) {
-	    /* Read any footers - the module may not notice them,
-	     * but they're there, and so we read them */
-	    get_mime_headers(r);
-	    return 0;
-	}
+    /* Handle chunked reading
+     * Note: we are careful to shorten the input bufsiz so that there
+     * will always be enough space for us to add a CRLF (if necessary).
+     */
+    if (r->read_body == REQUEST_CHUNKED_PASS)
+        bufsiz -= 2;
+    if (bufsiz <= 0)
+        return -1;             /* Cannot read chunked with a small buffer */
+
+    if (r->remaining == 0) {         /* Start of new chunk */
+
+        chunk_start = getline(buffer, bufsiz, r->connection->client, 0);
+        if ((chunk_start <= 0) || (chunk_start >= (bufsiz - 1))
+                               || !isxdigit(*buffer)) {
+            r->connection->keepalive = -1;
+            return -1;
+        }
+
+        len_to_read = get_chunk_size(buffer);
+
+        if (len_to_read == 0) {      /* Last chunk indicated, get footers */
+            if (r->read_body == REQUEST_CHUNKED_DECHUNK) {
+                get_mime_headers(r);
+                sprintf(buffer, "%ld", r->read_length);
+                table_unset(r->headers_in, "Transfer-Encoding");
+                table_set(r->headers_in, "Content-Length", buffer);
+                return 0;
+            }
+            r->remaining = -1;       /* Indicate footers in-progress */
+        }
+        else {
+            r->remaining = len_to_read;
+        }
+        if (r->read_body == REQUEST_CHUNKED_PASS) {
+            buffer[chunk_start++] = CR;  /* Restore chunk-size line end  */
+            buffer[chunk_start++] = LF;
+            buffer += chunk_start;       /* and pass line on to caller   */
+            bufsiz -= chunk_start;
+        }
     }
-    if (len_to_read > bufsiz) {
-	r->remaining = len_to_read - bufsiz;
-	len_to_read = bufsiz;
+                                     /* When REQUEST_CHUNKED_PASS, we are */
+    if (r->remaining == -1) {        /* reading footers until empty line  */
+        len_read = chunk_start;
+
+        while ((bufsiz > 1) && ((len_read =
+                getline(buffer, bufsiz, r->connection->client, 1)) > 0)) {
+
+            if (len_read != (bufsiz - 1)) {
+                buffer[len_read++] = CR;  /* Restore footer line end  */
+                buffer[len_read++] = LF;
+            }
+            chunk_start += len_read;
+            buffer      += len_read;
+            bufsiz      -= len_read;
+        }
+        if (len_read < 0) {
+            r->connection->keepalive = -1;
+            return -1;
+        }
+
+        if (len_read == 0) {         /* Indicates an empty line */
+            buffer[0] = CR;
+            buffer[1] = LF;
+            chunk_start += 2;
+            r->remaining = -2;
+        }
+        r->read_length += chunk_start;
+        return chunk_start;
     }
-    else
-	r->remaining = 0;
+                                     /* When REQUEST_CHUNKED_PASS, we     */
+    if (r->remaining == -2) {        /* finished footers when last called */
+        r->remaining = 0;            /*     so now we must signal EOF     */
+        return 0;
+    }
+
+    /* Otherwise, we are in the midst of reading a chunk of data */
+
+    len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
     
     len_read = bread(r->connection->client, buffer, len_to_read);
-    if (r->remaining == 0) {
-	/* Read the newline at the end of the chunk
-	 * (and any other garbage that might be present) */
-	do c = bgetc (r->connection->client);
-	while (c != '\n' && c != EOF);
+    if (len_read <= 0) {
+        r->connection->keepalive = -1;
+        return -1;
     }
 
-    return len_read;
+    r->remaining -= len_read;
+
+    if (r->remaining == 0) {         /* End of chunk, get trailing CRLF */
+        if ((c = bgetc(r->connection->client)) == CR) {
+           c = bgetc(r->connection->client);
+        }
+        if (c != LF) {
+            r->connection->keepalive = -1;
+            return -1;
+        }
+        if (r->read_body == REQUEST_CHUNKED_PASS) {
+            buffer[len_read++] = CR;
+            buffer[len_read++] = LF;
+        }
+    }
+    r->read_length += (chunk_start + len_read);
+
+    return (chunk_start + len_read);
 }
 
 long send_fd(FILE *f, request_rec *r) { return send_fd_length(f, r, -1); }
@@ -1469,10 +1591,12 @@ void send_error_response (request_rec *r, int recursive_error)
 	           "Please remove all references to this resource.\n", NULL);
   	    break;
 	case HTTP_REQUEST_ENTITY_TOO_LARGE:
-	    bputs("The supplied request data exceeds the capacity\n", fd);
-	    bputs("limit placed on this resource. The request data \n", fd);
-	    bputs("must be reduced before the request can proceed.\n", fd);
-  	    break;
+	    bvputs(fd, "The requested resource<BR>",
+	           escape_html(r->pool, r->uri), "<BR>\n",
+	           "does not allow request data with ", r->method,
+	           " requests, or the amount of data provided in\n",
+	           "the request exceeds the capacity limit.\n", NULL);
+	    break;
 	case HTTP_REQUEST_URI_TOO_LARGE:
 	    bputs("The requested URL's length exceeds the capacity\n", fd);
 	    bputs("limit for this server.\n", fd);

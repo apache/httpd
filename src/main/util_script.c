@@ -327,6 +327,12 @@ int scan_script_header_err(request_rec *r, FILE *f, char *buffer)
         else if(!strcasecmp(w,"Location")) {
 	    table_set (r->headers_out, w, l);
         }   
+        else if(!strcasecmp(w,"Content-Length")) {
+	    table_set (r->headers_out, w, l);
+        }   
+        else if(!strcasecmp(w,"Transfer-Encoding")) {
+	    table_set (r->headers_out, w, l);
+        }   
 
 /* The HTTP specification says that it is legal to merge duplicate
  * headers into one.  Some browsers that support Cookies don't like

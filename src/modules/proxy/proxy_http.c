@@ -108,6 +108,26 @@ proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port)
     return OK;
 }
 
+/* Clear all connection-based headers from the incoming headers table */
+static void clear_connection (table *headers)
+{
+    char *name;
+    char *next = table_get(headers, "Connection");
+
+    if (!next) return;
+
+    while (*next) {
+        name = next;
+        while (*next && !isspace(*next) && (*next != ',')) ++next;
+        while (*next && (isspace(*next) || (*next == ','))) {
+            *next = '\0';
+            ++next;
+        }
+        table_unset(headers, name);
+    }
+    table_unset(headers, "Connection");
+}
+
 /*
  * This handles http:// URLs, and other URLs using a remote proxy over http
  * If proxyhost is NULL, then contact the server directly, otherwise
@@ -193,6 +213,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	else return proxyerror(r, "Could not connect to remote machine");
     }
 
+    clear_connection(r->headers_in);   /* Strip connection-based headers */
+
     f = bcreate(pool, B_RDWR);
     bpushfd(f, sock, sock);
 
@@ -204,7 +226,6 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     for (i=0; i < reqhdrs_arr->nelts; i++)
     {
 	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL) continue;
-	if (!strcasecmp(reqhdrs[i].key, "Connection")) continue;
 	bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, "\015\012", NULL);
     }
 
@@ -213,7 +234,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     if (should_client_block(r))
     {
-	while ((i = get_client_block (r, buffer, HUGE_STRING_LEN)))
+	while ((i = get_client_block(r, buffer, HUGE_STRING_LEN)) > 0)
             bwrite(f, buffer, i);
     }
     bflush(f);

@@ -381,7 +381,7 @@ int cgi_handler (request_rec *r)
 	return log_scripterror(r, conf, FORBIDDEN,
 			       "file permissions deny server execution");
     
-    if ((retval = setup_client_block(r)))
+    if ((retval = setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return retval;
 
     add_common_vars (r);
@@ -422,16 +422,21 @@ int cgi_handler (request_rec *r)
         hard_timeout ("copy script args", r);
         handler = signal (SIGPIPE, SIG_IGN);
     
-	while ((len_read = get_client_block (r, argsbuffer, HUGE_STRING_LEN)))
+	while ((len_read =
+                get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0)
 	{
-	    if (fwrite (argsbuffer, 1, len_read, script_out) == 0)
-		break;
 	    if (conf->logname) {
 		if ((dbpos + len_read) > conf->bufbytes)
 		    dbsize = conf->bufbytes - dbpos;
 		else dbsize = len_read;
 		strncpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
+	    }
+	    if (fwrite(argsbuffer, 1, len_read, script_out) < len_read) {
+		/* silly script stopped reading, soak up remaining message */
+	        while (get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0)
+	            ; /* dump it */
+	        break;
 	    }
 	}
 

@@ -196,7 +196,7 @@ proxy_handler(request_rec *r)
 
     if (strncmp(r->filename, "proxy:", 6) != 0) return DECLINED;
 
-    if ((rc = setup_client_block(r)))
+    if ((rc = setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return rc;
 
     url = r->filename + 6;

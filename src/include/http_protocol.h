@@ -124,7 +124,7 @@ int index_of_response (int status);
 
 /* Reading a block of data from the client connection (e.g., POST arg) */
      
-int setup_client_block (request_rec *r);
+int setup_client_block (request_rec *r, int read_policy);
 int should_client_block (request_rec *r);
 long get_client_block (request_rec *r, char *buffer, int bufsiz);
 
