@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/07 15:33:58 $]
+Last modified at [$Date: 2001/12/07 15:41:00 $]
 
 Release:
 
@@ -99,6 +99,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Reasons include sole-function servers that need to die if
       an external dependency (e.g., a database) fails, et cetera.
       Perhaps something in the (ever more abused) scoreboard?
+	rbb:  I don't believe the scoreboard is the correct mechanism
+	for this.  We already have a pipe that goes between parent
+	and child for graceful shutdown events, along with an API that
+	can be used to send a message down that pipe.  In threaded MPMs,
+	it is easy enough to make that one pipe be used for graceful
+	and graceless events, and it is also easy to open that pipe
+	to both parent and child for writing.  Then we just need to figure
+	out how to do graceless on non-threaded MPMs.
 
     * revamp the input filter behavior, per discussions since
       February (and especially at the hackathon last
