@@ -1025,7 +1025,7 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
     }
 
     if ((*len = (ptr - token)) == 0) {
-        *field = ptr;
+        *field = (const char *)ptr;
         return NULL;
     }
 
@@ -1034,7 +1034,7 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
     while (*ptr == ',' || ap_isspace(*ptr))
 	++ptr;
 
-    *field = ptr;
+    *field = (const char *)ptr;
     return (const char *)token;
 }
 
