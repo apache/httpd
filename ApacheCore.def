@@ -16,7 +16,7 @@ EXPORTS
 	ap_add_named_module   @9
 	ap_add_per_dir_conf   @10
 	ap_add_per_url_conf   @11
-
+        ap_add_version_component @12
 	ap_allow_options   @13
 	ap_allow_overrides   @14
 
@@ -167,8 +167,8 @@ EXPORTS
 
 	ap_open_piped_log   @161
 	ap_os_canonical_filename   @162
-	ap_os_escape_path   @163
-
+	ap_os_case_canonical_filename   @163
+	ap_os_escape_path   @164
 
 
 	ap_parseHTTPdate   @167
@@ -256,8 +256,8 @@ EXPORTS
 	ap_unescape_url   @249
 	ap_unparse_uri_components   @250
 	ap_update_mtime   @251
-	ap_uudecode   @252
-	ap_uuencode   @253
+
+
 	ap_vbprintf   @254
 
 
@@ -329,8 +329,7 @@ EXPORTS
 	ap_size_list_item   @323
 	ap_get_list_item   @324
 
-
-
+        ap_get_status_line @326
 
 
 
@@ -378,9 +377,9 @@ EXPORTS
 
 
 
-
-
-
+        ap_debug_module_hooks @376
+        ap_debug_module_name @377
+        ap_global_hook_pool @378 DATA
         ap_hook_pre_connection @379
         ap_hook_post_read_request @380
         ap_hook_log_transaction @381
@@ -390,10 +389,10 @@ EXPORTS
         ap_hook_type_checker @385
         ap_hook_access_checker @386
         ap_hook_header_parser @387
-
         ap_hook_post_config @389
         ap_hook_open_logs @390
         ap_hook_child_init @391
+
         ap_get_status_table @392
         ap_run_default_port @393
         ap_run_http_method @394
@@ -419,7 +418,6 @@ EXPORTS
         ap_sort_hooks		 @412
 	ap_fini_vhost_config	 @413
 	ap_fixup_virtual_hosts	 @414
-	ap_global_hook_pool      @415 DATA
 
 ; 
 ; util_xml.h
