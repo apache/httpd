@@ -8,7 +8,8 @@
 <!--#include virtual="header.html" -->
 <H1>Apache module mod_proxy</h1>
 
-This module is contained in the <code>mod_proxy.c</code> file, and
+This module is contained in the <code>mod_proxy.c</code> file for Apache 1.1.x,
+or the <code>modules/proxy/libproxy.a</code> library for Apache 1.2, and
 is not compiled in by default. It provides for a caching proxy server.
 It is only available in Apache 1.1 and later. Common configuration
 questions are addressed <a href="#configs">here</a>.
@@ -22,6 +23,7 @@ stability is <i>greatly</i> improved.<p>
 This module implements a proxy/cache for Apache. It implements
 proxying capability for 
 <code>FTP</code>,
+<code>CONNECT</code> (for SSL),
 <code>HTTP/0.9</code>, and
 <code>HTTP/1.0</code>.
 The module can be configured to connect to other proxy modules for these
