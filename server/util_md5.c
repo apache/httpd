@@ -190,7 +190,7 @@ API_EXPORT(char *) ap_md5contextTo64(ap_context_t *a, AP_MD5_CTX * context)
 
 #ifdef CHARSET_EBCDIC
 
-API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile, int convert)
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, ap_file_t *infile, int convert)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];
@@ -198,20 +198,21 @@ API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile, int convert)
     int nbytes;
 
     ap_MD5Init(&context);
-    while ((nbytes = read(infile, buf, sizeof(buf)))) {
+    nbytes = sizeof(buf);
+    while (ap_read(infile, buf, &nbytes) == APR_SUCCESS) {
 	length += nbytes;
         if (!convert) {
             ascii2ebcdic(buf, buf, nbytes);
         }
 	ap_MD5Update(&context, buf, nbytes);
     }
-    lseek(infile, 0L, SEEK_SET);
+    ap_seek(infile, 0L, APR_SET);
     return ap_md5contextTo64(p, &context);
 }
 
 #else
 
-API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile)
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, ap_file_t *infile)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];
@@ -219,11 +220,12 @@ API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile)
     int nbytes;
 
     ap_MD5Init(&context);
-    while ((nbytes = read(infile, buf, sizeof(buf)))) {
+    nbytes = sizeof(buf);
+    while (ap_read(infile, buf, &nbytes) == APR_SUCCESS) {
 	length += nbytes;
 	ap_MD5Update(&context, buf, nbytes);
     }
-    lseek(infile, 0L, SEEK_SET);
+    ap_seek(infile, 0L, APR_SET);
     return ap_md5contextTo64(p, &context);
 }
 
