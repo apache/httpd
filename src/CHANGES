@@ -1,5 +1,7 @@
 Changes with Apache 1.2b5
 
+  *) suEXEC wrapper was freeing memory that had not been malloc'ed.
+
   *) Correctly allow access and auth directives in <Files> sections in
      server config files. [Alexei Kosut]
 
