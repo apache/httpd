@@ -1025,7 +1025,6 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   const char *url)
 {
     char *c, *q, *uri = apr_pstrdup(p, url);
-    apr_status_t rc = 0;
 
     c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
@@ -1042,10 +1041,10 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_runtime_worker));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
-    if ((rc = apr_thread_mutex_create(&((*balancer)->mutex),
-                APR_THREAD_MUTEX_DEFAULT, p)) != APR_SUCCESS) {
-            /* XXX: Do we need to log something here */
-            return "can not create thread mutex";
+    if (apr_thread_mutex_create(&((*balancer)->mutex),
+                APR_THREAD_MUTEX_DEFAULT, p) != APR_SUCCESS) {
+        /* XXX: Do we need to log something here */
+        return "can not create thread mutex";
     }
 #endif
 
@@ -1445,8 +1444,13 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
                      proxy_function, worker->hostname);
         if (worker->retry)
             diff = worker->retry;
-        else
-            diff = apr_time_from_sec((60 + 60 * worker->retries++));
+        else {
+            /* Increase the time by 1 minute on each retry */
+            diff = apr_time_from_sec((60 + 60 * worker->retries));
+            /* Use 10 minutes as maximum value for retry */
+            if (worker->retries < 8)
+                ++worker->retries;
+        }
         if (now > worker->error_time + diff) {
             worker->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
