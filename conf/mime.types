@@ -12,6 +12,7 @@
 application/activemessage
 application/andrew-inset	ez
 application/applefile
+application/atom+xml		atom
 application/atomicmail
 application/batch-smtp
 application/beep+xml
@@ -282,6 +283,7 @@ application/vnd.pwg-multiplexed
 application/vnd.pwg-xhtml-print+xml
 application/vnd.quark.quarkxpress
 application/vnd.rapid
+application/vnd.rn-realmedia	rm
 application/vnd.s3sms
 application/vnd.sealed.net
 application/vnd.seemail
@@ -442,9 +444,8 @@ audio/vnd.vmx.cvsd
 audio/x-aiff			aif aiff aifc
 audio/x-alaw-basic
 audio/x-mpegurl			m3u
-audio/x-pn-realaudio		ram rm
-audio/x-pn-realaudio-plugin	rpm
-audio/x-realaudio		ra
+audio/x-pn-realaudio		ram ra
+audio/x-pn-realaudio-plugin
 audio/x-wav			wav
 chemical/x-pdb			pdb
 chemical/x-xyz			xyz
