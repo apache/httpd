@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/18 21:30:06 $]
+Last modified at [$Date: 2003/12/18 22:05:54 $]
 
 Release:
 
@@ -79,7 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_protocol.h?r1=1.84&r2=1.85
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/http/http_protocol.c?r1=1.473&r2=1.474
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c?r1=1.48&r2=1.49
-      +1: rederpj, trawick (requires minor MMN bump I believe)
+      +1: rederpj, trawick (requires minor MMN bump I believe), stoddard
 
     * mod_dav: Return a WWW-Auth header for MOVE/COPY requests where
       the destination resource gives a 401.
@@ -190,7 +190,7 @@ PATCHES TO BACKPORT FROM 2.1
         server/mpm/experimental/leader/leader.c r1.35
         server/mpm/experimental/threadpool/threadpool.c r1.23
         server/mpm/netware/mpm_netware.c r1.78
-      +1: trawick
+      +1: trawick, stoddard
 
         server/mpm/winnt/mpm_winnt.c r1.303
         server/mpm/winnt/mpm_winnt.h r1.44
@@ -202,7 +202,7 @@ PATCHES TO BACKPORT FROM 2.1
         modules/generators/mod_cgid.c r1.152, r1.161
         server/mpm_common.c r1.111
         PREREQ: ap_mpm_query(mpm-state) support in Unix MPMs
-        +1: trawick
+        +1: trawick, stoddard
 
     * piped log programs respawning after Apache is stopped. PR 24805
       bogus "piped log program '(null)' failed" messages during
