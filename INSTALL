@@ -418,7 +418,14 @@
      installation process by using the `install-quiet' target. Example:
 
          $ make install-quiet root=/tmp/apache-root
- 
+
+     Notes for specific platforms:
+
+     NOTE: Please note that for re-installing Apache on AIX you should use the
+           command `slibclean' before using `make install' to really unload
+           any old versions of the DSO's that might still be cached by the
+           dynamic loader.  
+
   6. Testing the package
      -------------------
  
