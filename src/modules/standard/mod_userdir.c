@@ -101,7 +101,7 @@ typedef struct userdir_config {
     char *userdir;
     table *enabled_users;
     table *disabled_users;
-}              userdir_config;
+} userdir_config;
 
 /*
  * Server config for this module: global disablement flag, a list of usernames
@@ -111,9 +111,9 @@ typedef struct userdir_config {
 
 static void *create_userdir_config(pool *p, server_rec *s)
 {
-    userdir_config
-    * newcfg = (userdir_config *) ap_pcalloc(p, sizeof(userdir_config));
+    userdir_config *newcfg;
 
+    newcfg = (userdir_config *) ap_pcalloc(p, sizeof(userdir_config));
     newcfg->globally_disabled = 0;
     newcfg->userdir = DEFAULT_USER_DIR;
     newcfg->enabled_users = ap_make_table(p, 4);
@@ -127,18 +127,14 @@ static void *create_userdir_config(pool *p, server_rec *s)
 
 static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
 {
-    userdir_config
-    * s_cfg = (userdir_config *) ap_get_module_config
-    (
-     cmd->server->module_config,
-     &userdir_module
-    );
+    userdir_config *s_cfg;
     char *username;
-    const char
-        *usernames = arg;
+    const char *usernames = arg;
     char *kw = ap_getword_conf(cmd->pool, &usernames);
     table *usertable;
 
+    s_cfg = (userdir_config *) ap_get_module_config(cmd->server->module_config,
+                                                    &userdir_module);
     /*
      * Let's do the comparisons once.
      */
@@ -173,15 +169,17 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
         const char *userdirs = arg;
         while (*userdirs) {
             char *thisdir = ap_getword_conf(cmd->pool, &userdirs);
-            if (!ap_os_is_path_absolute(thisdir) && !strchr(thisdir, ':'))
+            if (!ap_os_is_path_absolute(thisdir) && !strchr(thisdir, ':')) {
 #if defined(WIN32) || defined(NETWARE)
                 return "UserDir must specify an absolute redirect "
                        "or absolute file path";
 #else
-                if (strchr(thisdir, '*'))
+                if (strchr(thisdir, '*')) {
                      return "UserDir cannot specify '*' substitution within "
                             "a relative path";
+                }
 #endif
+            }
         }
         s_cfg->userdir = ap_pstrdup(cmd->pool, arg);
 #if defined(WIN32) || defined(OS2) || defined(NETWARE)
@@ -190,8 +188,9 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
          * change them to slash form.
          */
         arg = s_cfg->userdir;
-        while (arg = strchr(arg, '\\'))
+        while (arg = strchr(arg, '\\')) {
             *(arg++) = '/';
+        }
 #endif
         return NULL;
     }
@@ -206,9 +205,12 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const command_rec userdir_cmds[] = {
+static const command_rec userdir_cmds[] =
+{
     {"UserDir", set_user_dir, NULL, RSRC_CONF, RAW_ARGS,
-    "the public subdirectory in users' home directories, or 'disabled', or 'disabled username username...', or 'enabled username username...'"},
+     "the public subdirectory in users' home directories, or "
+     "'disabled', or 'disabled username username...', or "
+     "'enabled username username...'"},
     {NULL}
 };
 
@@ -227,11 +229,9 @@ static int translate_userdir(request_rec *r)
      * If the URI doesn't match our basic pattern, we've nothing to do with
      * it.
      */
-    if (
-        (s_cfg->userdir == NULL) ||
-        (name[0] != '/') ||
-        (name[1] != '~')
-        ) {
+    if ((s_cfg->userdir == NULL)
+        || (name[0] != '/')
+        || (name[1] != '~')) {
         return DECLINED;
     }
 
@@ -252,7 +252,10 @@ static int translate_userdir(request_rec *r)
     /*
      * If there's no username, it's not for us.  Ignore . and .. as well.
      */
-    if (w[0] == '\0' || (w[1] == '.' && (w[2] == '\0' || (w[2] == '.' && w[3] == '\0')))) {
+    if ((w[0] == '\0')
+        || ((w[1] == '.')
+            && ((w[2] == '\0')
+                || ((w[2] == '.') && (w[3] == '\0'))))) {
         return DECLINED;
     }
     /*
@@ -265,10 +268,8 @@ static int translate_userdir(request_rec *r)
      * If there's a global interdiction on UserDirs, check to see if this
      * name is one of the Blessed.
      */
-    if (
-        s_cfg->globally_disabled &&
-        (ap_table_get(s_cfg->enabled_users, w) == NULL)
-        ) {
+    if (s_cfg->globally_disabled
+        && (ap_table_get(s_cfg->enabled_users, w) == NULL)) {
         return DECLINED;
     }
 
@@ -295,7 +296,8 @@ static int translate_userdir(request_rec *r)
             else if (strchr(x, ':')) {
                 /* token '*' within a redirect path
                  * serves [UserDir arg-pre*][user][UserDir arg-post*]
-                 * http://server/user/ * + /~smith/foo -> http://server/user/smith/foo
+                 * http://server/user/ * + /~smith/foo ->
+                 *   http://server/user/smith/foo
                  */
                 redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
                 ap_table_setn(r->headers_out, "Location", redirect);
@@ -325,10 +327,12 @@ static int translate_userdir(request_rec *r)
              * serves [UserDir arg]/[user][dname]
              * http://server/ + /~smith/foo -> http://server/smith/foo
              */
-            if (userdir[strlen(userdir) - 1] == '/')
+            if (userdir[strlen(userdir) - 1] == '/') {
                 redirect = ap_pstrcat(r->pool, userdir, w, dname, NULL);
-            else
+            }
+            else {
                 redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
+            }
             ap_table_setn(r->headers_out, "Location", redirect);
             return REDIRECT;
         }
@@ -347,9 +351,11 @@ static int translate_userdir(request_rec *r)
             if ((pw = getpwnam(w))) {
 #ifdef OS2
                 /* Need to manually add user name for OS/2 */
-                filename = ap_pstrcat(r->pool, pw->pw_dir, w, "/", userdir, NULL);
+                filename = ap_pstrcat(r->pool, pw->pw_dir, w, "/",
+                                      userdir, NULL);
 #else
-                filename = ap_pstrcat(r->pool, pw->pw_dir, "/", userdir, NULL);
+                filename = ap_pstrcat(r->pool, pw->pw_dir, "/",
+                                      userdir, NULL);
 #endif
             }
 #endif                          /* WIN32 & NetWare */
@@ -366,8 +372,9 @@ static int translate_userdir(request_rec *r)
 	    /* when statbuf contains info on r->filename we can save a syscall
 	     * by copying it to r->finfo
 	     */
-	    if (*userdirs && dname[0] == 0)
+	    if (*userdirs && dname[0] == 0) {
 		r->finfo = statbuf;
+            }
             return OK;
         }
     }
