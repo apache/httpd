@@ -137,10 +137,10 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA dav_fs_module =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* dir config creater */
-    NULL,			/* dir merger --- default is to override */
-    dav_fs_create_server_config,	/* server config */
-    dav_fs_merge_server_config,	/* merge server config */
-    dav_fs_cmds,		/* command table */
-    register_hooks,             /* register hooks */
+    NULL,                        /* dir config creater */
+    NULL,                        /* dir merger --- default is to override */
+    dav_fs_create_server_config, /* server config */
+    dav_fs_merge_server_config,  /* merge server config */
+    dav_fs_cmds,                 /* command table */
+    register_hooks,              /* register hooks */
 };
