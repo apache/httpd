@@ -156,7 +156,6 @@ int cache_remove_entity(request_rec *r, const char *types, cache_handle *h)
  */
 int cache_select_url(request_rec *r, const char *types, char *url)
 {
-    cache_handle *h;
     const char *next = types;
     const char *type;
     apr_status_t rv;
@@ -164,12 +163,13 @@ int cache_select_url(request_rec *r, const char *types, char *url)
                                                                           &cache_module);
 
     /* go through the cache types till we get a match */
+    cache->handle = apr_palloc(r->pool, sizeof(cache_handle));
+
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch ((rv = cache_run_open_entity(&h, type, url))) {
+        switch ((rv = cache_run_open_entity(cache->handle, type, url))) {
         case OK: {
             /* cool bananas! */
-            cache->handle = h;
 /*** loop through returned entities */
 /*** do freshness calculation here */
             cache->fresh = 1;
@@ -182,10 +182,12 @@ int cache_select_url(request_rec *r, const char *types, char *url)
         }
         default: {
             /* oo-er! an error */
+            cache->handle = NULL;
             return rv;
         }
         }
     }
+    cache->handle = NULL;
     return DECLINED;
 }
 
@@ -245,8 +247,8 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity,
                                       (cache_handle **hp, const char *type, 
                                       char *url, apr_size_t len),(hp,type,url,len),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, open_entity,  
-                                      (cache_handle **hp, const char *type, 
-                                      char *url),(hp,type,url),DECLINED)
+                                      (cache_handle *h, const char *type, 
+                                      char *url),(h,type,url),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, remove_url, 
                                     (const char *type, char *url),(type,url),OK,DECLINED)
 #if 0
