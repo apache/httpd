@@ -3092,28 +3092,30 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
                 rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
                 if (n) {
-                    nbytes += n;
                     if (!fd) {
+                        if (nvec == MAX_IOVEC_TO_WRITE) {
+                            /* woah! too many. stop now. */
+                            more = apr_brigade_split(b, e);
+                            break;
+                        }
                         vec[nvec].iov_base = (char*) str;
                         vec[nvec].iov_len = n;
                         nvec++;
                     }
                     else {
                         /* The bucket is a trailer to a file bucket */
+
+                        if (nvec_trailers == MAX_IOVEC_TO_WRITE) {
+                            /* woah! too many. stop now. */
+                            more = apr_brigade_split(b, e);
+                            break;
+                        }
                         vec_trailers[nvec_trailers].iov_base = (char*) str;
                         vec_trailers[nvec_trailers].iov_len = n;
                         nvec_trailers++;
                     }
+                    nbytes += n;
                 }
-            }
-    
-            if ((nvec == MAX_IOVEC_TO_WRITE) || 
-                (nvec_trailers == MAX_IOVEC_TO_WRITE)) {
-                /* Split the brigade and break */
-                if (APR_BUCKET_NEXT(e) != APR_BRIGADE_SENTINEL(b)) {
-                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
-                }
-                break;
             }
         }
     
@@ -3153,6 +3155,17 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                     apr_size_t n;
 
                     rv = apr_bucket_read(bucket, &str, &n, APR_BLOCK_READ);
+
+                    /* This apr_brigade_write does not use a flush function
+                       because we assume that we will not write enough data
+                       into it to cause a flush. However, if we *do* write
+                       "too much", then we could end up with transient
+                       buckets which would suck. This works for now, but is
+                       a bit shaky if changes are made to some of the
+                       buffering sizes. Let's do an assert to prevent
+                       potential future problems... */
+                    AP_DEBUG_ASSERT(AP_MIN_BYTES_TO_WRITE <
+                                    APR_BUCKET_BUFF_SIZE);
                     apr_brigade_write(ctx->b, NULL, NULL, str, n);
                 }
                 apr_brigade_destroy(b);
