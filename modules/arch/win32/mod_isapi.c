@@ -75,6 +75,9 @@
  * the ISA is in.
  */
 
+#include "apr_strings.h"
+#include "apr_portable.h"
+#include "ap_buckets.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -83,8 +86,6 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "util_script.h"
-#include "apr_portable.h"
-#include "apr_strings.h"
 
 
 /* We use the exact same header file as the original */
@@ -633,24 +634,19 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
                          DWORD dwReserved)
 {
     request_rec *r = ((isapi_cid *)ConnID)->r;
-    int writ;   /* written, actually, but why shouldn't I make up words? */
+    ap_bucket_brigade *bb;
+    ap_bucket *b;
 
-    /* We only support synchronous writing */
-    if (dwReserved && dwReserved != HSE_IO_SYNC) {
-        if (((isapi_cid *)ConnID)->sconf->LogNotSupported)
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI %s  asynch I/O request refused",
-                          r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
-        return FALSE;
-    }
+    if (dwReserved == HSE_IO_SYNC)
+        ; /* XXX: Fake it */
 
-    if ((writ = ap_rwrite(Buffer, *lpwdwBytes, r)) == EOF) {
-        SetLastError(WSAEDISCON); /* TODO: Find the right error code */
-        return FALSE;
-    }
+    bb = ap_brigade_create(r->pool);
+    b = ap_bucket_create_transient(Buffer, (apr_size_t)lpwdwBytes);
+    AP_BRIGADE_INSERT_TAIL(bb, b);
+    b = ap_bucket_create_eos();
+    AP_BRIGADE_INSERT_TAIL(bb, b);
+    ap_pass_brigade(r->output_filters, bb);
 
-    *lpwdwBytes = writ;
     return TRUE;
 }
 
@@ -669,7 +665,7 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
         if (res < 0) {
             *lpdwSize = 0;
             if (!apr_get_os_error())
-                apr_set_os_error(TODO_ERROR); /* XXX: Find the right error code */
+                SetLastError(TODO_ERROR); /* XXX: Find the right error code */
             return FALSE;
         }
 
@@ -680,9 +676,9 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
     return TRUE;
 }
 
-static BOOL SendResponseHeaderEx(isapi_cid *cid, const char *stat,
-                                 const char *head, DWORD statlen,
-                                 DWORD headlen)
+static apr_off_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
+                                      const char *head, apr_size_t statlen,
+                                      apr_size_t headlen)
 {
     int termarg;
     char *termch;
@@ -714,28 +710,24 @@ static BOOL SendResponseHeaderEx(isapi_cid *cid, const char *stat,
                                                   &termarg, stat, head, NULL);
     cid->ecb->dwHttpStatusCode = cid->r->status;
     if (cid->r->status == HTTP_INTERNAL_SERVER_ERROR)
-        return FALSE;
+        return -1;
     
     /* All the headers should be set now */
     ap_send_http_header(cid->r);
 
-    /* Any data left should now be sent directly,
-     * it may be raw if headlen was provided.
+    /* Any data left is sent directly by the caller, all we
+     * give back is the size of the headers we consumed
      */
-    if (termch && (termarg == 1)) {
-        if (headlen == -1 && *termch)
-            ap_rputs(termch, cid->r);
-        else if (headlen > (size_t) (termch - head))
-            ap_rwrite(termch, headlen - (termch - head), cid->r);
+    if (termch && (termarg == 1) && headlen > (termch - head)) {
+        return termch - head;
     }
-
-    return TRUE;
+    return 0;
 }
 
 /* XXX: Is there is still an O(n^2) attack possible here?  Please detail. */
-BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
-                                   LPVOID lpvBuffer, LPDWORD lpdwSize,
-                                   LPDWORD lpdwDataType)
+BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
+                                  LPVOID lpvBuffer, LPDWORD lpdwSize,
+                                  LPDWORD lpdwDataType)
 {
     isapi_cid *cid = (isapi_cid *)hConn;
     request_rec *r = cid->r;
@@ -776,20 +768,38 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
     case 3: /* HSE_REQ_SEND_RESPONSE_HEADER */
     {
         /* Parse them out, or die trying */
-        DWORD statlen = 0, headlen = 0;
+        apr_size_t statlen = 0, headlen = 0;
+        int ate;
         if (lpvBuffer)
             statlen = strlen((char*) lpvBuffer);
         if (lpdwDataType)
             headlen = strlen((char*) lpdwDataType);
-        return SendResponseHeaderEx(cid, (char*) lpvBuffer, (char*) lpdwDataType, 
-                                    statlen, headlen);
+        ate = SendResponseHeaderEx(cid, (char*) lpvBuffer,
+                                   (char*) lpdwDataType,
+                                   statlen, headlen);
+        if (ate < 0) {
+            SetLastError(TODO_ERROR);
+            return FALSE;
+        }
+        else if (ate < headlen) {
+            ap_bucket_brigade *bb;
+            ap_bucket *b;
+            bb = ap_brigade_create(cid->r->pool);
+	    b = ap_bucket_create_transient((char*) lpdwDataType + ate, 
+                                           headlen - ate);
+	    AP_BRIGADE_INSERT_TAIL(bb, b);
+            b = ap_bucket_create_eos();
+	    AP_BRIGADE_INSERT_TAIL(bb, b);
+	    ap_pass_brigade(cid->r->output_filters, bb);
+        }
+        return TRUE;
     }
 
     case 4: /* HSE_REQ_DONE_WITH_SESSION */
         /* Signal to resume the thread completing this request
          */
         if (cid->complete)
-            SetEvent(cid->complete);
+            SetEvent(cid->complete);            
         return TRUE;
 
     case 1001: /* HSE_REQ_MAP_URL_TO_PATH */
@@ -844,24 +854,102 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
          * Per MS docs... HSE_REQ_IO_COMPLETION replaces any prior call
          * to HSE_REQ_IO_COMPLETION, and lpvBuffer may be set to NULL.
          */
-        if (!cid->isa->fakeasync)
+        if (!cid->isa->fakeasync) {
+            if (cid->sconf->LogNotSupported)
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
+                          "ISAPI ServerSupportFunction HSE_REQ_IO_COMPLETION "
+                          "is not supported: %s", r->filename);
+            SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
+        }
         cid->completion = (PFN_HSE_IO_COMPLETION) lpvBuffer;
         cid->completion_arg = (PVOID) lpdwDataType;
         return TRUE;
 
     case 1006: /* HSE_REQ_TRANSMIT_FILE */
-        /* Use TransmitFile... nothing wrong with that :)
-         * Just not quite ready yet...
+    {
+        HSE_TF_INFO *tf = (HSE_TF_INFO*)lpvBuffer;
+        apr_status_t rv;
+        ap_bucket_brigade *bb;
+        ap_bucket *b;
+        apr_file_t *fd;
+
+        if (!cid->isa->fakeasync && (tf->dwFlags & HSE_IO_ASYNC)) {
+            if (cid->sconf->LogNotSupported)
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
+                         "ISAPI ServerSupportFunction HSE_REQ_TRANSMIT_FILE "
+                         "as HSE_IO_ASYNC is not supported: %s", r->filename);
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+        }
+        
+        if ((rv = apr_put_os_file(&fd, tf->hFile, r->pool)) != APR_SUCCESS) {
+            return FALSE;
+        }
+        
+        /* apr_dupfile_oshandle (&fd, tf->hFile, r->pool); */
+        bb = ap_brigade_create(r->pool);
+
+        if (tf->dwFlags & HSE_IO_SEND_HEADERS) 
+        {
+            /* According to MS: if calling HSE_REQ_TRANSMIT_FILE with the
+             * HSE_IO_SEND_HEADERS flag, then you can't otherwise call any
+             * HSE_SEND_RESPONSE_HEADERS* fn, but if you don't use the flag,
+             * you must have done so.  They document that the pHead headers
+             * option is valid only for HSE_IO_SEND_HEADERS - we are a bit
+             * more flexible and assume with the flag, pHead are the
+             * response headers, and without, pHead simply contains text
+             * (handled after this case).
+             */
+            apr_off_t ate = SendResponseHeaderEx(cid, tf->pszStatusCode, 
+                                                 (char*)tf->pHead,
+                                                 strlen(tf->pszStatusCode), 
+                                                 (apr_size_t)tf->HeadLength);
+            if (ate < 0)
+            {
+                ap_brigade_destroy(bb);
+                SetLastError(TODO_ERROR);
+                return FALSE;
+            }
+            if (ate < (apr_size_t)tf->HeadLength)
+            {
+                b = ap_bucket_create_transient((char*)tf->pHead + ate, 
+                                            (apr_size_t)tf->HeadLength - ate);
+                AP_BRIGADE_INSERT_TAIL(bb, b);
+            }
+        }
+        else if (tf->pHead && tf->HeadLength) {
+            b = ap_bucket_create_transient((char*)tf->pHead, 
+                                           (apr_size_t)tf->HeadLength);
+            AP_BRIGADE_INSERT_TAIL(bb, b);
+        }
+
+        b = ap_bucket_create_file(fd, (apr_off_t)tf->Offset, 
+                                  (apr_size_t)tf->BytesToWrite);
+        AP_BRIGADE_INSERT_TAIL(bb, b);
+        
+        if (tf->pTail && (apr_size_t)tf->TailLength) {
+            b = ap_bucket_create_transient((char*)tf->pTail, 
+                                           (apr_size_t)tf->TailLength);
+            AP_BRIGADE_INSERT_TAIL(bb, b);
+        }
+        
+        b = ap_bucket_create_eos();
+        AP_BRIGADE_INSERT_TAIL(bb, b);
+        ap_pass_brigade(r->output_filters, bb);
+
+        /* we do nothing with (tf->dwFlags & HSE_DISCONNECT_AFTER_SEND)
          */
 
-        if (cid->sconf->LogNotSupported)
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI asynchronous I/O not supported: %s", 
-                          r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
-        return FALSE;
-            
+        if (tf->dwFlags & HSE_IO_ASYNC) {
+            /* XXX: Fake async response,
+             * use tf->pfnHseIO, or if NULL, then use cid->fnIOComplete
+             * pass pContect to the HseIO callback.
+             */
+        }
+        return TRUE;
+    }
+
     case 1007: /* HSE_REQ_REFRESH_ISAPI_ACL */
         if (cid->sconf->LogNotSupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
@@ -875,7 +963,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
         *((LPBOOL) lpvBuffer) = (r->connection->keepalive == 1);
         return TRUE;
 
-    case 1010: /* HSE_REQ_ASYNC_READ_CLIENT */
+    case 1010: /* XXX: Fake it : HSE_REQ_ASYNC_READ_CLIENT */
         if (cid->sconf->LogNotSupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                           "ISAPI asynchronous I/O not supported: %s", 
@@ -967,16 +1055,16 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                           "ISAPI ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE"
                           " is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
-            return FALSE;
+        return FALSE;
 
     case 1015: /* HSE_REQ_GET_CERT_INFO_EX  Added in ISAPI 4.0 */
         if (cid->sconf->LogNotSupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                           "ISAPI ServerSupportFunction "
                           "HSE_REQ_GET_CERT_INFO_EX "
-                          "is not supported: %s", r->filename);
+                          "is not supported: %s", r->filename);        
         SetLastError(ERROR_INVALID_PARAMETER);
-            return FALSE;
+        return FALSE;
 
     case 1016: /* HSE_REQ_SEND_RESPONSE_HEADER_EX  Added in ISAPI 4.0 */
     {
@@ -984,8 +1072,27 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                                   = (LPHSE_SEND_HEADER_EX_INFO) lpvBuffer;
         /* XXX: ignore shi->fKeepConn?  We shouldn't need the advise */
         /* r->connection->keepalive = shi->fKeepConn; */
-        return SendResponseHeaderEx(cid, shi->pszStatus, shi->pszHeader,
-                                         shi->cchStatus, shi->cchHeader);
+        apr_off_t ate = SendResponseHeaderEx(cid, shi->pszStatus, 
+                                             shi->pszHeader,
+                                             shi->cchStatus, 
+                                             shi->cchHeader);
+        if (ate < 0) {
+            SetLastError(TODO_ERROR);
+            return FALSE;
+        }
+        else if (ate < (apr_off_t)shi->cchHeader) {
+            ap_bucket_brigade *bb;
+            ap_bucket *b;
+            bb = ap_brigade_create(cid->r->pool);
+	    b = ap_bucket_create_transient(shi->pszHeader + ate, 
+                                           (apr_size_t)shi->cchHeader - ate);
+	    AP_BRIGADE_INSERT_TAIL(bb, b);
+            b = ap_bucket_create_eos();
+	    AP_BRIGADE_INSERT_TAIL(bb, b);
+	    ap_pass_brigade(cid->r->output_filters, bb);
+        }
+        return TRUE;
+
     }
 
     case 1017: /* HSE_REQ_CLOSE_CONNECTION  Added after ISAPI 4.0 */
