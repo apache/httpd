@@ -155,11 +155,14 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
     DBT d, q;
     char *pw = NULL;
 
+    memset(&d, 0, sizeof(d));
+    memset(&q, 0, sizeof(q));
+
     q.data = user;
     q.size = strlen(q.data);
 
 #ifdef DB2
-    if (db_open(auth_dbpwfile, DB_HASH, O_RDONLY, 0664, NULL, NULL,  &f) != 0) {
+    if (db_open(auth_dbpwfile, DB_HASH, DB_RDONLY, 0664, NULL, NULL, &f) != 0) {
 #else
     if (!(f = dbopen(auth_dbpwfile, O_RDONLY, 0664, DB_HASH, NULL))) {
 #endif
