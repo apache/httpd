@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.30 (outdated: 1.31) -->
+<!-- English Revision: 1.31 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -675,17 +675,18 @@ directive]&quot;</default>
     <p>このディレクティブは <module>mod_include</module> が探す、include
     要素の開始を示す文字列を変更します。</p>
 
-    <p>二つのサーバが (もしかすると違うときに) ファイルの出力を解析していて、
+    <p>2 つのサーバで (もしかすると別々の段階で) ファイルの出力を解析していて、
     それぞれに違うコマンドを処理させたい、
     というようなときにこのオプションを使います。</p>
 
     <example><title>例</title>
-      SSIStartTag "&lt;%"
+      SSIStartTag "&lt;%"<br />
+      SSIEndTag   "%&gt;"
     </example>
 
-    <p>上の例と、それに対応する
-    <directive module="mod_include">SSIEndTag</directive> を使うと、
-    下の例の様にして SSI ディレクティブを使うことができます:</p>
+    <p>上の例のように対応する
+    <directive module="mod_include">SSIEndTag</directive> を併せて使うと、
+    下に示す例のように SSI ディレクティブを使えます:</p>
 
     <example><title>違う開始と終了のタグを使った SSI ディレクティブ</title>
       &lt;%printenv %&gt;
