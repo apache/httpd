@@ -204,13 +204,13 @@ gotit:
 
         var = getword(cmd->pool, &feature, '=');
         if (*feature) {
-            table_set(new->features, var, feature);
+            table_setn(new->features, var, feature);
         }
         else if (*var == '!') {
-            table_set(new->features, var + 1, "!");
+            table_setn(new->features, var + 1, "!");
         }
         else {
-            table_set(new->features, var, "1");
+            table_setn(new->features, var, "1");
         }
     }
 

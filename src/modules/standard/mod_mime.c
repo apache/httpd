@@ -228,7 +228,7 @@ static void init_mime(server_rec *s, pool *p)
         while (ll[0]) {
             char *ext = getword_conf(p, &ll);
             str_tolower(ext);   /* ??? */
-            table_set(hash_buckets[hash(ext[0])], ext, ct);
+            table_setn(hash_buckets[hash(ext[0])], ext, ct);
         }
     }
     cfg_closefile(f);

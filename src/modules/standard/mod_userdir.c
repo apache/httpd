@@ -176,7 +176,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
      */
     while (*usernames) {
         username = getword_conf(cmd->pool, &usernames);
-        table_set(usertable, username, kw);
+        table_setn(usertable, username, kw);
     }
     return NULL;
 }

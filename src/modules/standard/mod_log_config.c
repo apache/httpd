@@ -828,7 +828,7 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
     if (name != NULL) {
         parse_log_string(cmd->pool, fmt, &err_string);
         if (err_string == NULL) {
-            table_set(mls->formats, name, fmt);
+            table_setn(mls->formats, name, fmt);
         }
     }
     else {

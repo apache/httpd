@@ -121,7 +121,7 @@ static void *merge_action_dir_configs(pool *p, void *basev, void *addv)
 static const char *add_action(cmd_parms *cmd, action_dir_config * m, char *type,
 			      char *script)
 {
-    table_set(m->action_types, type, script);
+    table_setn(m->action_types, type, script);
     return NULL;
 }
 

@@ -206,13 +206,13 @@ static void do_headers_fixup(request_rec *r, array_header *headers)
         header_entry *hdr = &((header_entry *) (headers->elts))[i];
         switch (hdr->action) {
         case hdr_add:
-            table_add(r->headers_out, hdr->header, hdr->value);
+            table_addn(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_append:
-            table_merge(r->headers_out, hdr->header, hdr->value);
+            table_mergen(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_set:
-            table_set(r->headers_out, hdr->header, hdr->value);
+            table_setn(r->headers_out, hdr->header, hdr->value);
             break;
         case hdr_unset:
             table_unset(r->headers_out, hdr->header);

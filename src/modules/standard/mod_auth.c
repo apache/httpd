@@ -168,7 +168,7 @@ static table *groups_for_user(pool *p, char *user, char *grpfile)
 	while (ll[0]) {
 	    w = getword_conf(sp, &ll);
 	    if (!strcmp(w, user)) {
-		table_set(grps, group_name, "in");
+		table_setn(grps, pstrdup(p, group_name), "in");
 		break;
 	    }
 	}
