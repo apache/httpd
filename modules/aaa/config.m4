@@ -63,6 +63,8 @@ case "$PLAT" in
         ;;
     *-freebsd*)
         ;;
+    *-os2_emx)
+        ;;
     *)
         LIBS="$LIBS -ldl"
         ;;
