@@ -729,7 +729,6 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
     }
 }
 
-#ifndef WIN32
 typedef struct {
     request_rec *r;
     char *s;
@@ -827,7 +826,6 @@ static int include_cmd(char *s, request_rec *r)
     ap_bclose(script_in);
     return 0;
 }
-#endif
 
 static int handle_exec(FILE *in, request_rec *r, const char *error)
 {
