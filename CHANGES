@@ -135,9 +135,21 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Enhance the behavior of mod_isapi's WriteClient() callback to
+     provide better emulation for isapi modules that presume that the
+     first WriteClient() call may send status and headers.  An example
+     of WriteClient() abuse is the foxisapi module, which relies on
+     that assumpion and now works.  [William Rowe, Milan Kosina]
+
+  *) Check the return value of ap_run_pre_connection(). So if the
+     pre_connection phase fails (without setting c->aborted)
+     ap_run_process_connection is not executed. [Stas Bekman]
+
   *) Fixed a problem with mod_ldap which caused it to fault when caching
      was disabled.  Needed to make sure that the code did not
-     attempt to use the cache if it didn't exist. [Brad Nicholes]
+     attempt to use the cache if it didn't exist. Also fixed some memory
+     leaks which were due to not releasing LDAP resources on error
+     conditions.  [Brad Nicholes]
      
   *) Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
      mod_rewrite proxied URLs will not be escaped accidentally by
