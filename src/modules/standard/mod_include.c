@@ -109,7 +109,8 @@ static void add_include_vars(request_rec *r, char *timefmt)
 
     table_set(e, "DATE_LOCAL", ht_time(r->pool, date, timefmt, 0));
     table_set(e, "DATE_GMT", ht_time(r->pool, date, timefmt, 1));
-    table_set(e, "LAST_MODIFIED", ht_time(r->pool, r->finfo.st_mtime, timefmt, 0));
+    table_set(e, "LAST_MODIFIED",
+              ht_time(r->pool, r->finfo.st_mtime, timefmt, 0));
     table_set(e, "DOCUMENT_URI", r->uri);
     table_set(e, "DOCUMENT_PATH_INFO", r->path_info);
 #ifndef WIN32
@@ -119,15 +120,18 @@ static void add_include_vars(request_rec *r, char *timefmt)
     }
     else {
         char uid[16];
-        ap_snprintf(uid, sizeof(uid), "user#%lu", (unsigned long) r->finfo.st_uid);
+        ap_snprintf(uid, sizeof(uid), "user#%lu",
+                    (unsigned long) r->finfo.st_uid);
         table_set(e, "USER_NAME", uid);
     }
 #endif /* ndef WIN32 */
 
-    if ((t = strrchr(r->filename, '/')))
+    if ((t = strrchr(r->filename, '/'))) {
         table_set(e, "DOCUMENT_NAME", ++t);
-    else
+    }
+    else {
         table_set(e, "DOCUMENT_NAME", r->uri);
+    }
     if (r->args) {
         char *arg_copy = pstrdup(r->pool, r->args);
 
@@ -180,8 +184,10 @@ static void add_include_vars(request_rec *r, char *timefmt)
  { \
    int i = getc(f); \
    if (i == EOF) { /* either EOF or error -- needs error handling if latter */ \
-       if (ferror(f)) \
-           fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
+       if (ferror(f)) { \
+           fprintf(stderr, "encountered error in GET_CHAR macro, " \
+                   "mod_include.\n"); \
+       } \
        FLUSH_BUF(r); \
        pfclose(r->pool, f); \
        return ret; \
@@ -224,8 +230,10 @@ static int find_string(FILE *in, char *str, request_rec *r, int printing)
  { \
    int i = getc(f); \
    if (i == EOF) { /* either EOF or error -- needs error handling if latter */ \
-       if (ferror(f)) \
-           fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
+       if (ferror(f)) { \
+           fprintf(stderr, "encountered error in GET_CHAR macro, " \
+                   "mod_include.\n"); \
+       } \
        pfclose(p, f); \
        return r; \
    } \
@@ -277,8 +285,9 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
             continue;
         }
         /* find end of entity */
-        for (i = 1; s[i] != ';' && s[i] != '\0'; i++)
+        for (i = 1; s[i] != ';' && s[i] != '\0'; i++) {
             continue;
+        }
 
         if (s[i] == '\0') {     /* treat as normal data */
             *p = *s;
@@ -287,27 +296,34 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
 
         /* is it numeric ? */
         if (s[1] == '#') {
-            for (j = 2, val = 0; j < i && isdigit(s[j]); j++)
+            for (j = 2, val = 0; j < i && isdigit(s[j]); j++) {
                 val = val * 10 + s[j] - '0';
+            }
             s += i;
             if (j < i || val <= 8 || (val >= 11 && val <= 31) ||
-                (val >= 127 && val <= 160) || val >= 256)
+                (val >= 127 && val <= 160) || val >= 256) {
                 p--;            /* no data to output */
-            else
+            }
+            else {
                 *p = val;
+            }
         }
         else {
             j = i - 1;
-            if (i - 1 > MAXENTLEN || entlist[i - 1] == NULL) {  /* wrong length */
+            if (i - 1 > MAXENTLEN || entlist[i - 1] == NULL) {
+                /* wrong length */
                 *p = '&';
                 continue;       /* skip it */
             }
-            for (ents = entlist[i - 1]; *ents != '\0'; ents += i)
-                if (strncmp(s + 1, ents, i - 1) == 0)
+            for (ents = entlist[i - 1]; *ents != '\0'; ents += i) {
+                if (strncmp(s + 1, ents, i - 1) == 0) {
                     break;
+                }
+            }
 
-            if (*ents == '\0')
+            if (*ents == '\0') {
                 *p = '&';       /* unknown */
+            }
             else {
                 *p = ((const unsigned char *) ents)[i - 1];
                 s += i;
@@ -357,8 +373,9 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
             t[tagbuf_len - 1] = '\0';
             return NULL;
         }
-        if (c == '=' || isspace(c))
+        if (c == '=' || isspace(c)) {
             break;
+        }
         *(t++) = tolower(c);
         GET_CHAR(in, c, NULL, p);
     }
@@ -366,8 +383,9 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
     *t++ = '\0';
     tag_val = t;
 
-    while (isspace(c))
+    while (isspace(c)) {
         GET_CHAR(in, c, NULL, p);       /* space before = */
+    }
     if (c != '=') {
         ungetc(c, in);
         return NULL;
@@ -379,8 +397,9 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
 
     /* we should allow a 'name' as a value */
 
-    if (c != '"' && c != '\'')
+    if (c != '"' && c != '\'') {
         return NULL;
+    }
     term = c;
     while (1) {
         GET_CHAR(in, c, NULL, p);
@@ -392,16 +411,19 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
         if (c == '\\') {
             *(t++) = c;         /* Add backslash */
             GET_CHAR(in, c, NULL, p);
-            if (c == term)      /* Only if */
+            if (c == term) {    /* Only if */
                 *(--t) = c;     /* Replace backslash ONLY for terminator */
+            }
         }
-        else if (c == term)
+        else if (c == term) {
             break;
+        }
         *(t++) = c;
     }
     *t = '\0';
-    if (dodecode)
+    if (dodecode) {
         decodehtml(tag_val);
+    }
     return pstrdup(p, tag_val);
 }
 
@@ -412,15 +434,17 @@ static int get_directive(FILE *in, char *d, pool *p)
     /* skip initial whitespace */
     while (1) {
         GET_CHAR(in, c, 1, p);
-        if (!isspace(c))
+        if (!isspace(c)) {
             break;
+        }
     }
     /* now get directive */
     while (1) {
         *d++ = tolower(c);
         GET_CHAR(in, c, 1, p);
-        if (isspace(c))
+        if (isspace(c)) {
             break;
+        }
     }
     *d = '\0';
     return 0;
@@ -439,10 +463,12 @@ static void parse_string(request_rec *r, char *in, char *out, int length,
     while ((ch = *in++) != '\0') {
         switch (ch) {
         case '\\':
-            if (*in == '$')
+            if (*in == '$') {
                 *next++ = *in++;
-            else
+            }
+            else {
                 *next++ = ch;
+            }
             break;
         case '$':
             {
@@ -462,16 +488,21 @@ static void parse_string(request_rec *r, char *in, char *out, int length,
                     vtext[vtlen++] = *in++;
                 }
                 while (*in != '\0') {
-                    if (vlen == (MAX_STRING_LEN - 1))
+                    if (vlen == (MAX_STRING_LEN - 1)) {
                         continue;
-                    if (braces == 1) {
-                        if (*in == '}')
-                            break;
                     }
-                    else if (!(isalpha((int) *in) || (*in == '_') || isdigit((int) *in)))
+                    if (braces == 1) {
+                        if (*in == '}') {
+                            break;
+                        }
+                    }
+                    else if (!(isalpha((int) *in) || (*in == '_') ||
+                               isdigit((int) *in))) {
                         break;
-                    if (vtlen < (MAX_STRING_LEN - 1))
+                    }
+                    if (vtlen < (MAX_STRING_LEN - 1)) {
                         vtext[vtlen++] = *in;
+                    }
                     var[vlen++] = *in++;
                 }
                 var[vlen] = vtext[vtlen] = '\0';
@@ -482,8 +513,9 @@ static void parse_string(request_rec *r, char *in, char *out, int length,
                         *next = '\0';
                         return;
                     }
-                    else
+                    else {
                         in++;
+                    }
                 }
 
                 val = (char *) NULL;
@@ -492,13 +524,15 @@ static void parse_string(request_rec *r, char *in, char *out, int length,
                 }
                 else {
                     val = table_get(r->subprocess_env, &var[0]);
-                    if (!val && leave_name)
+                    if (!val && leave_name) {
                         val = &vtext[0];
+                    }
                 }
                 while ((val != (char *) NULL) && (*val != '\0')) {
                     *next++ = *val++;
-                    if (++numchars == (length - 1))
+                    if (++numchars == (length - 1)) {
                         break;
+                    }
                 }
                 break;
             }
@@ -506,8 +540,9 @@ static void parse_string(request_rec *r, char *in, char *out, int length,
             *next++ = ch;
             break;
         }
-        if (++numchars == (length - 1))
+        if (++numchars == (length - 1)) {
             break;
+        }
     }
     *next = '\0';
     return;
@@ -519,19 +554,22 @@ static int include_cgi(char *s, request_rec *r)
 {
     request_rec *rr = sub_req_lookup_uri(s, r);
 
-    if (rr->status != 200)
+    if (rr->status != 200) {
         return -1;
+    }
 
     /* No hardwired path info or query allowed */
 
-    if ((rr->path_info && rr->path_info[0]) || rr->args)
+    if ((rr->path_info && rr->path_info[0]) || rr->args) {
         return -1;
-    if (rr->finfo.st_mode == 0)
+    }
+    if (rr->finfo.st_mode == 0) {
         return -1;
+    }
 
     /* Script gets parameters of the *document*, for back compatibility */
 
-    rr->path_info = r->path_info;       /* painful to get right; see mod_cgi.c */
+    rr->path_info = r->path_info;       /* hard to get right; see mod_cgi.c */
     rr->args = r->args;
 
     /* Force sub_req to be treated as a CGI request, even if ordinary
@@ -561,8 +599,9 @@ static int handle_include(FILE *in, request_rec *r, char *error, int noexec)
     char *tag_val;
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-                 return 1;
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+            return 1;
+        }
         if (!strcmp(tag, "file") || !strcmp(tag, "virtual")) {
             request_rec *rr = NULL;
             char *error_fmt = NULL;
@@ -572,33 +611,44 @@ static int handle_include(FILE *in, request_rec *r, char *error, int noexec)
                 /* be safe; only files in this directory or below allowed */
                 char tmp[MAX_STRING_LEN + 2];
                 ap_snprintf(tmp, sizeof(tmp), "/%s/", parsed_string);
-                if (parsed_string[0] == '/' || strstr(tmp, "/../") != NULL)
-                    error_fmt = "unable to include file \"%s\" in parsed file %s";
-                else
+                if (parsed_string[0] == '/' || strstr(tmp, "/../") != NULL) {
+                    error_fmt = "unable to include file \"%s\" "
+                        "in parsed file %s";
+                }
+                else {
                     rr = sub_req_lookup_file(parsed_string, r);
+                }
             }
-            else
+            else {
                 rr = sub_req_lookup_uri(parsed_string, r);
+            }
 
-            if (!error_fmt && rr->status != 200)
+            if (!error_fmt && rr->status != 200) {
                 error_fmt = "unable to include \"%s\" in parsed file %s";
+            }
 
             if (!error_fmt && noexec && rr->content_type
-                && (strncmp(rr->content_type, "text/", 5)))
-                error_fmt =
-                    "unable to include potential exec \"%s\" in parsed file %s";
+                && (strncmp(rr->content_type, "text/", 5))) {
+                error_fmt = "unable to include potential exec \"%s\" "
+                    "in parsed file %s";
+            }
             if (error_fmt == NULL) {
                 request_rec *p;
 
-                for (p = r; p != NULL; p = p->main)
-                    if (strcmp(p->filename, rr->filename) == 0)
+                for (p = r; p != NULL; p = p->main) {
+                    if (strcmp(p->filename, rr->filename) == 0) {
                         break;
-                if (p != NULL)
-                    error_fmt = "Recursive include of \"%s\" in parsed file %s";
+                    }
+                }
+                if (p != NULL) {
+                    error_fmt = "Recursive include of \"%s\" "
+                        "in parsed file %s";
+                }
             }
 
-            if (!error_fmt && run_sub_req(rr))
+            if (!error_fmt && run_sub_req(rr)) {
                 error_fmt = "unable to include \"%s\" in parsed file %s";
+            }
             chdir_file(r->filename);
 
             if (error_fmt) {
@@ -607,11 +657,13 @@ static int handle_include(FILE *in, request_rec *r, char *error, int noexec)
                 rputs(error, r);
             }
 
-            if (rr != NULL)
+            if (rr != NULL) {
                 destroy_sub_req(rr);
+            }
         }
-        else if (!strcmp(tag, "done"))
+        else if (!strcmp(tag, "done")) {
             return 0;
+        }
         else {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                         "unknown parameter \"%s\" to tag include in %s",
@@ -654,10 +706,11 @@ static int include_cmd_child(void *arg)
         table_set(env, "PATH_INFO", escape_shell_cmd(r->pool, r->path_info));
 
         pa_req = sub_req_lookup_uri(escape_uri(r->pool, r->path_info), r);
-        if (pa_req->filename)
+        if (pa_req->filename) {
             table_set(env, "PATH_TRANSLATED",
                       pstrcat(r->pool, pa_req->filename, pa_req->path_info,
                               NULL));
+        }
     }
 
     if (r->args) {
@@ -706,8 +759,9 @@ static int include_cmd(char *s, request_rec *r)
     arg.s = s;
 
     if (!spawn_child(r->pool, include_cmd_child, &arg,
-                     kill_after_timeout, NULL, &f))
-             return -1;
+                     kill_after_timeout, NULL, &f)) {
+        return -1;
+    }
 
     send_fd(f, r);
     pfclose(r->pool, f);        /* will wait for zombie when
@@ -725,13 +779,15 @@ static int handle_exec(FILE *in, request_rec *r, char *error)
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-                 return 1;
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+            return 1;
+        }
         if (!strcmp(tag, "cmd")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 1);
             if (include_cmd(parsed_string, r) == -1) {
                 aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                            "execution failure for parameter \"%s\" to tag exec in file %s",
+                            "execution failure for parameter \"%s\" "
+                            "to tag exec in file %s",
                             tag, r->filename);
                 rputs(error, r);
             }
@@ -748,8 +804,9 @@ static int handle_exec(FILE *in, request_rec *r, char *error)
             /* grumble groan */
             chdir_file(r->filename);
         }
-        else if (!strcmp(tag, "done"))
+        else if (!strcmp(tag, "done")) {
             return 0;
+        }
         else {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                         "unknown parameter \"%s\" to tag exec in %s",
@@ -766,18 +823,22 @@ static int handle_echo(FILE *in, request_rec *r, char *error)
     char *tag_val;
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-                 return 1;
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+            return 1;
+        }
         if (!strcmp(tag, "var")) {
             char *val = table_get(r->subprocess_env, tag_val);
 
-            if (val)
+            if (val) {
                 rputs(val, r);
-            else
+            }
+            else {
                 rputs("(none)", r);
+            }
         }
-        else if (!strcmp(tag, "done"))
+        else if (!strcmp(tag, "done")) {
             return 0;
+        }
         else {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                         "unknown parameter \"%s\" to tag echo in %s",
@@ -802,14 +863,18 @@ static int handle_perl(FILE *in, request_rec *r, char *error)
         return DECLINED;
     }
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-                 break;
-        if (strnEQ(tag, "sub", 3))
-            sub = newSVpv(tag_val, 0);
-        else if (strnEQ(tag, "arg", 3))
-            av_push(av, newSVpv(tag_val, 0));
-        else if (strnEQ(tag, "done", 4))
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
             break;
+        }
+        if (strnEQ(tag, "sub", 3)) {
+            sub = newSVpv(tag_val, 0);
+        }
+        else if (strnEQ(tag, "arg", 3)) {
+            av_push(av, newSVpv(tag_val, 0));
+        }
+        else if (strnEQ(tag, "done", 4)) {
+            break;
+        }
     }
     perl_stdout2client(r);
     perl_call_handler(sub, r, av);
@@ -829,8 +894,9 @@ static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
     table *env = r->subprocess_env;
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0)))
-                 return 1;
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0))) {
+            return 1;
+        }
         if (!strcmp(tag, "errmsg")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             strncpy(error, parsed_string, MAX_STRING_LEN - 1);
@@ -838,23 +904,28 @@ static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
         }
         else if (!strcmp(tag, "timefmt")) {
             time_t date = r->request_time;
+
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             strncpy(tf, parsed_string, MAX_STRING_LEN - 1);
             tf[MAX_STRING_LEN - 1] = '\0';
             table_set(env, "DATE_LOCAL", ht_time(r->pool, date, tf, 0));
             table_set(env, "DATE_GMT", ht_time(r->pool, date, tf, 1));
-            table_set(env, "LAST_MODIFIED", ht_time(r->pool, r->finfo.st_mtime, tf, 0));
+            table_set(env, "LAST_MODIFIED",
+                      ht_time(r->pool, r->finfo.st_mtime, tf, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             decodehtml(parsed_string);
-            if (!strcmp(parsed_string, "bytes"))
+            if (!strcmp(parsed_string, "bytes")) {
                 *sizefmt = SIZEFMT_BYTES;
-            else if (!strcmp(parsed_string, "abbrev"))
+            }
+            else if (!strcmp(parsed_string, "abbrev")) {
                 *sizefmt = SIZEFMT_KMG;
+            }
         }
-        else if (!strcmp(tag, "done"))
+        else if (!strcmp(tag, "done")) {
             return 0;
+        }
         else {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                         "unknown parameter \"%s\" to tag config in %s",
@@ -876,7 +947,8 @@ static int find_file(request_rec *r, char *directive, char *tag,
         to_send = make_full_path(r->pool, dir, tag_val);
         if (stat(to_send, finfo) == -1) {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                 "unable to get information about \"%s\" in parsed file %s",
+                        "unable to get information about \"%s\" "
+                        "in parsed file %s",
                         to_send, r->filename);
             rputs(error, r);
             return -1;
@@ -887,13 +959,15 @@ static int find_file(request_rec *r, char *directive, char *tag,
         request_rec *rr = sub_req_lookup_uri(tag_val, r);
 
         if (rr->status == 200 && rr->finfo.st_mode != 0) {
-            memcpy((char *) finfo, (const char *) &rr->finfo, sizeof(struct stat));
+            memcpy((char *) finfo, (const char *) &rr->finfo,
+                   sizeof(struct stat));
             destroy_sub_req(rr);
             return 0;
         }
         else {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                 "unable to get information about \"%s\" in parsed file %s",
+                        "unable to get information about \"%s\" "
+                        "in parsed file %s",
                         tag_val, r->filename);
             rputs(error, r);
             destroy_sub_req(rr);
@@ -918,10 +992,12 @@ static int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-                 return 1;
-        else if (!strcmp(tag, "done"))
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+            return 1;
+        }
+        else if (!strcmp(tag, "done")) {
             return 0;
+        }
         else {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             if (!find_file(r, "fsize", tag, parsed_string, &finfo, error)) {
@@ -957,14 +1033,17 @@ static int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-                 return 1;
-        else if (!strcmp(tag, "done"))
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+            return 1;
+        }
+        else if (!strcmp(tag, "done")) {
             return 0;
+        }
         else {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error))
+            if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error)) {
                 rputs(ht_time(r->pool, finfo.st_mtime, tf, 0), r);
+            }
         }
     }
 }
@@ -1003,13 +1082,17 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
     int qs = 0;
 
     /* Skip leading white space */
-    if (string == (char *) NULL)
+    if (string == (char *) NULL) {
         return (char *) NULL;
-    while ((ch = *string++))
-        if (!isspace(ch))
+    }
+    while ((ch = *string++)) {
+        if (!isspace(ch)) {
             break;
-    if (ch == '\0')
+        }
+    }
+    if (ch == '\0') {
         return (char *) NULL;
+    }
 
     switch (ch) {
     case '(':
@@ -1067,8 +1150,9 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
         break;
     }
     /* We should only be here if we are in a string */
-    if (!qs)
+    if (!qs) {
         token->value[next++] = ch;
+    }
 
     /* 
      * Yes I know that goto's are BAD.  But, c doesn't allow me to
@@ -1081,14 +1165,16 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
      */
     for (ch = *string; ch != '\0'; ch = *++string) {
         if (ch == '\\') {
-            if ((ch = *++string) == '\0')
+            if ((ch = *++string) == '\0') {
                 goto TOKEN_DONE;
+            }
             token->value[next++] = ch;
             continue;
         }
         if (!qs) {
-            if (isspace(ch))
+            if (isspace(ch)) {
                 goto TOKEN_DONE;
+            }
             switch (ch) {
             case '(':
                 goto TOKEN_DONE;
@@ -1099,11 +1185,13 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
             case '!':
                 goto TOKEN_DONE;
             case '|':
-                if (*(string + 1) == '|')
+                if (*(string + 1) == '|') {
                     goto TOKEN_DONE;
+                }
             case '&':
-                if (*(string + 1) == '&')
+                if (*(string + 1) == '&') {
                     goto TOKEN_DONE;
+                }
             case '<':
                 goto TOKEN_DONE;
             case '>':
@@ -1150,8 +1238,9 @@ static int parse_expr(request_rec *r, char *expr, char *error)
     pool *expr_pool;
     int retval = 0;
 
-    if ((parse = expr) == (char *) NULL)
+    if ((parse = expr) == (char *) NULL) {
         return (0);
+    }
     root = current = (struct parse_node *) NULL;
     if ((expr_pool = make_sub_pool(r->pool)) == (pool *) NULL) {
         aplog_error(APLOG_MARK, APLOG_ERR, r->server,
@@ -1162,7 +1251,8 @@ static int parse_expr(request_rec *r, char *expr, char *error)
 
     /* Create Parse Tree */
     while (1) {
-        new = (struct parse_node *) palloc(expr_pool, sizeof(struct parse_node));
+        new = (struct parse_node *) palloc(expr_pool,
+                                           sizeof(struct parse_node));
         if (new == (struct parse_node *) NULL) {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                         "out of memory processing file %s", r->filename);
@@ -1171,8 +1261,9 @@ static int parse_expr(request_rec *r, char *expr, char *error)
         }
         new->parent = new->left = new->right = (struct parse_node *) NULL;
         new->done = 0;
-        if ((parse = get_ptoken(r, parse, &new->token)) == (char *) NULL)
+        if ((parse = get_ptoken(r, parse, &new->token)) == (char *) NULL) {
             break;
+        }
         switch (new->token.type) {
 
         case token_string:
@@ -1185,9 +1276,10 @@ static int parse_expr(request_rec *r, char *expr, char *error)
             }
             switch (current->token.type) {
             case token_string:
-                if (current->token.value[0] != '\0')
+                if (current->token.value[0] != '\0') {
                     strncat(current->token.value, " ",
                          MAX_STRING_LEN - strlen(current->token.value) - 1);
+                }
                 strncat(current->token.value, new->token.value,
                         MAX_STRING_LEN - strlen(current->token.value) - 1);
                 break;
@@ -1498,17 +1590,20 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                 }
             }
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "     Left: ", current->left->value ? "1" : "0", "\n", NULL);
-            rvputs(r, "     Right: ", current->right->value ? "1" : "0", "\n", NULL);
+            rvputs(r, "     Left: ", current->left->value ? "1" : "0",
+                   "\n", NULL);
+            rvputs(r, "     Right: ", current->right->value ? "1" : "0",
+                   "\n", NULL);
 #endif
-            if (current->token.type == token_and)
-                current->value =
-                    current->left->value && current->right->value;
-            else
-                current->value =
-                    current->left->value || current->right->value;
+            if (current->token.type == token_and) {
+                current->value = current->left->value && current->right->value;
+            }
+            else {
+                current->value = current->left->value || current->right->value;
+            }
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "     Returning ", current->value ? "1" : "0", "\n", NULL);
+            rvputs(r, "     Returning ", current->value ? "1" : "0",
+                   "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1567,10 +1662,12 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                     (strcmp(current->left->token.value,
                             current->right->token.value) == 0);
             }
-            if (current->token.type == token_ne)
+            if (current->token.type == token_ne) {
                 current->value = !current->value;
+            }
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "     Returning ", current->value ? "1" : "0", "\n", NULL);
+            rvputs(r, "     Returning ", current->value ? "1" : "0",
+                   "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1605,18 +1702,24 @@ static int parse_expr(request_rec *r, char *expr, char *error)
             current->value =
                 strcmp(current->left->token.value,
                        current->right->token.value);
-            if (current->token.type == token_ge)
+            if (current->token.type == token_ge) {
                 current->value = current->value >= 0;
-            else if (current->token.type == token_gt)
+            }
+            else if (current->token.type == token_gt) {
                 current->value = current->value > 0;
-            else if (current->token.type == token_le)
+            }
+            else if (current->token.type == token_le) {
                 current->value = current->value <= 0;
-            else if (current->token.type == token_lt)
+            }
+            else if (current->token.type == token_lt) {
                 current->value = current->value < 0;
-            else
+            }
+            else {
                 current->value = 0;     /* Don't return -1 if unknown token */
+            }
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "     Returning ", current->value ? "1" : "0", "\n", NULL);
+            rvputs(r, "     Returning ", current->value ? "1" : "0",
+                   "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1634,7 +1737,8 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                 current->value = 0;
             }
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "     Evaluate !: ", current->value ? "1" : "0", "\n", NULL);
+            rvputs(r, "     Evaluate !: ", current->value ? "1" : "0",
+                   "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1652,7 +1756,8 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                 current->value = 1;
             }
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "     Evaluate (): ", current->value ? "1" : "0", "\n", NULL);
+            rvputs(r, "     Evaluate (): ", current->value ? "1" : "0",
+                   "\n", NULL);
 #endif
             current->done = 1;
             current = current->parent;
@@ -1694,8 +1799,9 @@ static int handle_if(FILE *in, request_rec *r, char *error,
 
     while (1) {
         tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0);
-        if (*tag == '\0')
+        if (*tag == '\0') {
             return 1;
+        }
         else if (!strcmp(tag, "done")) {
             *printing = *conditional_status = parse_expr(r, expr, error);
 #ifdef DEBUG_INCLUDE
@@ -1728,11 +1834,13 @@ static int handle_elif(FILE *in, request_rec *r, char *error,
 
     while (1) {
         tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0);
-        if (*tag == '\0')
+        if (*tag == '\0') {
             return 1;
+        }
         else if (!strcmp(tag, "done")) {
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+            rvputs(r, "**** elif conditional_status=\"",
+                   *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
             if (*conditional_status) {
                 *printing = 0;
@@ -1740,7 +1848,8 @@ static int handle_elif(FILE *in, request_rec *r, char *error,
             }
             *printing = *conditional_status = parse_expr(r, expr, error);
 #ifdef DEBUG_INCLUDE
-            rvputs(r, "**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+            rvputs(r, "**** elif conditional_status=\"",
+                   *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
             return 0;
         }
@@ -1765,11 +1874,13 @@ static int handle_else(FILE *in, request_rec *r, char *error,
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
-    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-             return 1;
+    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        return 1;
+    }
     else if (!strcmp(tag, "done")) {
 #ifdef DEBUG_INCLUDE
-        rvputs(r, "**** else conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+        rvputs(r, "**** else conditional_status=\"",
+               *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
         *printing = !(*conditional_status);
         *conditional_status = 1;
@@ -1778,8 +1889,9 @@ static int handle_else(FILE *in, request_rec *r, char *error,
     else {
         aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                     "else directive does not take tags");
-        if (*printing)
+        if (*printing) {
             rputs(error, r);
+        }
         return -1;
     }
 }
@@ -1795,7 +1907,8 @@ static int handle_endif(FILE *in, request_rec *r, char *error,
     }
     else if (!strcmp(tag, "done")) {
 #ifdef DEBUG_INCLUDE
-        rvputs(r, "**** endif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
+        rvputs(r, "**** endif conditional_status=\"",
+               *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
         *printing = 1;
         *conditional_status = 1;
@@ -1818,10 +1931,12 @@ static int handle_set(FILE *in, request_rec *r, char *error)
 
     var = (char *) NULL;
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-                 return 1;
-        else if (!strcmp(tag, "done"))
+        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+            return 1;
+        }
+        else if (!strcmp(tag, "done")) {
             return 0;
+        }
         else if (!strcmp(tag, "var")) {
             var = tag_val;
         }
@@ -1845,11 +1960,13 @@ static int handle_printenv(FILE *in, request_rec *r, char *error)
     table_entry *elts = (table_entry *) r->subprocess_env->elts;
     int i;
 
-    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1)))
-             return 1;
+    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        return 1;
+    }
     else if (!strcmp(tag, "done")) {
-        for (i = 0; i < r->subprocess_env->nelts; ++i)
+        for (i = 0; i < r->subprocess_env->nelts; ++i) {
             rvputs(r, elts[i].key, "=", elts[i].val, "\n", NULL);
+        }
         return 0;
     }
     else {
@@ -1898,75 +2015,95 @@ static void send_parsed_content(FILE *f, request_rec *r)
 
     while (1) {
         if (!find_string(f, STARTING_SEQUENCE, r, printing)) {
-            if (get_directive(f, directive, r->pool))
-                     return;
+            if (get_directive(f, directive, r->pool)) {
+                return;
+            }
             if (!strcmp(directive, "if")) {
                 if (!printing) {
                     if_nesting++;
                 }
                 else {
-                    ret = handle_if(f, r, error, &conditional_status, &printing);
+                    ret = handle_if(f, r, error, &conditional_status,
+                                    &printing);
                     if_nesting = 0;
                 }
                 continue;
             }
             else if (!strcmp(directive, "else")) {
-                if (!if_nesting)
-                    ret = handle_else(f, r, error, &conditional_status, &printing);
+                if (!if_nesting) {
+                    ret = handle_else(f, r, error, &conditional_status,
+                                      &printing);
+                }
                 continue;
             }
             else if (!strcmp(directive, "elif")) {
-                if (!if_nesting)
-                    ret = handle_elif(f, r, error, &conditional_status, &printing);
+                if (!if_nesting) {
+                    ret = handle_elif(f, r, error, &conditional_status,
+                                      &printing);
+                }
                 continue;
             }
             else if (!strcmp(directive, "endif")) {
                 if (!if_nesting) {
-                    ret = handle_endif(f, r, error, &conditional_status, &printing);
+                    ret = handle_endif(f, r, error, &conditional_status,
+                                       &printing);
                 }
                 else {
                     if_nesting--;
                 }
                 continue;
             }
-            if (!printing)
+            if (!printing) {
                 continue;
+            }
             if (!strcmp(directive, "exec")) {
                 if (noexec) {
                     aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                                 "httpd: exec used but not allowed in %s",
                                 r->filename);
-                    if (printing)
+                    if (printing) {
                         rputs(error, r);
+                    }
                     ret = find_string(f, ENDING_SEQUENCE, r, 0);
                 }
-                else
+                else {
                     ret = handle_exec(f, r, error);
+                }
             }
-            else if (!strcmp(directive, "config"))
+            else if (!strcmp(directive, "config")) {
                 ret = handle_config(f, r, error, timefmt, &sizefmt);
-            else if (!strcmp(directive, "set"))
+            }
+            else if (!strcmp(directive, "set")) {
                 ret = handle_set(f, r, error);
-            else if (!strcmp(directive, "include"))
+            }
+            else if (!strcmp(directive, "include")) {
                 ret = handle_include(f, r, error, noexec);
-            else if (!strcmp(directive, "echo"))
+            }
+            else if (!strcmp(directive, "echo")) {
                 ret = handle_echo(f, r, error);
-            else if (!strcmp(directive, "fsize"))
+            }
+            else if (!strcmp(directive, "fsize")) {
                 ret = handle_fsize(f, r, error, sizefmt);
-            else if (!strcmp(directive, "flastmod"))
+            }
+            else if (!strcmp(directive, "flastmod")) {
                 ret = handle_flastmod(f, r, error, timefmt);
-            else if (!strcmp(directive, "printenv"))
+            }
+            else if (!strcmp(directive, "printenv")) {
                 ret = handle_printenv(f, r, error);
+            }
 #ifdef USE_PERL_SSI
-            else if (!strcmp(directive, "perl"))
+            else if (!strcmp(directive, "perl")) {
                 ret = handle_perl(f, r, error);
+            }
 #endif
             else {
                 aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-                         "httpd: unknown directive \"%s\" in parsed doc %s",
+                            "httpd: unknown directive \"%s\" "
+                            "in parsed doc %s",
                             directive, r->filename);
-                if (printing)
+                if (printing) {
                     rputs(error, r);
+                }
                 ret = find_string(f, ENDING_SEQUENCE, r, 0);
             }
             if (ret) {
@@ -1976,8 +2113,9 @@ static void send_parsed_content(FILE *f, request_rec *r)
                 return;
             }
         }
-        else
+        else {
             return;
+        }
     }
 }
 
@@ -2009,14 +2147,18 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, char *arg)
 {
     enum xbithack *state = (enum xbithack *) xbp;
 
-    if (!strcasecmp(arg, "off"))
+    if (!strcasecmp(arg, "off")) {
         *state = xbithack_off;
-    else if (!strcasecmp(arg, "on"))
+    }
+    else if (!strcasecmp(arg, "on")) {
         *state = xbithack_on;
-    else if (!strcasecmp(arg, "full"))
+    }
+    else if (!strcasecmp(arg, "full")) {
         *state = xbithack_full;
-    else
+    }
+    else {
         return "XBitHack must be set to Off, On, or Full";
+    }
 
     return NULL;
 }
@@ -2028,14 +2170,17 @@ static int send_parsed_file(request_rec *r)
     (enum xbithack *) get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
 
-    if (!(allow_options(r) & OPT_INCLUDES))
+    if (!(allow_options(r) & OPT_INCLUDES)) {
         return DECLINED;
-    if (r->method_number != M_GET)
+    }
+    if (r->method_number != M_GET) {
         return DECLINED;
+    }
     if (r->finfo.st_mode == 0) {
         aplog_error(APLOG_MARK, APLOG_ERR, r->server, "File does not exist: %s",
-                    r->path_info ?
-           pstrcat(r->pool, r->filename, r->path_info, NULL) : r->filename);
+                    (r->path_info
+                     ? pstrcat(r->pool, r->filename, r->path_info, NULL)
+                     : r->filename));
         return NOT_FOUND;
     }
 
@@ -2102,14 +2247,16 @@ static int xbithack_handler(request_rec *r)
 #else
     enum xbithack *state;
 
-    if (!(r->finfo.st_mode & S_IXUSR))
+    if (!(r->finfo.st_mode & S_IXUSR)) {
         return DECLINED;
+    }
 
     state = (enum xbithack *) get_module_config(r->per_dir_config,
                                                 &includes_module);
 
-    if (*state == xbithack_off)
+    if (*state == xbithack_off) {
         return DECLINED;
+    }
     return send_parsed_file(r);
 #endif
 }
