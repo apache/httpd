@@ -78,7 +78,7 @@ ap_ssltk_dc="no"])
     if test "$tmp_forced" = "yes" -a "x$ap_ssltk_dc" = "xno"; then
       AC_MSG_ERROR(distcache support failed: $tmp_nomessage)
     else
-      APR_ADDTO(LIBS,[-ldistcache -lnal])
+      APR_ADDTO(MOD_SSL_LDADD, [-ldistcache -lnal])
       AC_DEFINE(HAVE_DISTCACHE, 1, [Define if distcache support is enabled])
     fi
   fi
@@ -114,6 +114,7 @@ ssl_util_ssl.lo dnl
 dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
 APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     APACHE_CHECK_SSL_TOOLKIT
+    APR_SETVAR(MOD_SSL_LDADD, [\$(SSL_LIBS)])
     CHECK_DISTCACHE
 ])
 
