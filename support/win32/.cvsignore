@@ -2,4 +2,6 @@ Release
 Debug
 *.plg
 *.aps
+*.dep
+*.mak
 *.rc

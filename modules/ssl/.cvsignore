@@ -4,7 +4,10 @@ Makefile
 modules.mk
 *.lo
 *.la
-*.plg
 Debug
 Release
-*.rc 
+*.plg
+*.aps
+*.dep
+*.mak
+*.rc

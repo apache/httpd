@@ -6,5 +6,8 @@ modules.mk
 *.la
 Debug
 Release
-mod_tls.plg
-*.rc 
+*.plg
+*.aps
+*.dep
+*.mak
+*.rc
