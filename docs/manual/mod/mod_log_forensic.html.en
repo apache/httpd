@@ -26,7 +26,9 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Forensic Logging of the requests made to the server</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>log_forensic_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_log_forensic.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_log_forensic.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> is no longer required since
+version 2.1</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides for forensic logging of client
@@ -111,7 +113,6 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_forensic</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.1 and later</td></tr>
 </table>
     <p>The <code class="directive">ForensicLog</code> directive is used to
     log requests to the server for forensic analysis. Each log entry
