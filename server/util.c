@@ -1703,7 +1703,10 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
 
     len1 = strlen(src1);
     len2 = strlen(src2);
-    path = (char *)apr_palloc(a, len1 + len2 + 2); /* +2 for '/' plus null */
+     /* allocate +3 for '/' delimiter, trailing NULL and overallocate
+      * one extra byte to allow the caller to add a trailing '/'
+      */
+    path = (char *)apr_palloc(a, len1 + len2 + 3);
     if (len1 == 0) {
         *path = '/';
         memcpy(path + 1, src2, len2 + 1);
