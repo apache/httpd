@@ -55,6 +55,10 @@
  * See README for a listing of what they mean
  */
 
+#if !defined(WIN32)
+#include "os.h"
+#endif
+
 #if !defined(QNX) && !defined(MPE) && !defined(WIN32)
 #include <sys/param.h>
 #endif
