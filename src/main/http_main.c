@@ -679,7 +679,7 @@ int update_child_status (int child_num, int status, request_rec *r)
 	new_score_rec.my_access_count = 0L;
 	new_score_rec.my_bytes_served = 0L;
 	new_score_rec.conn_count = (unsigned short)0;
-	new_score_rec.conn_bytes = (unsigned short)0;
+	new_score_rec.conn_bytes = (unsigned long)0;
     }
     if (r) {
 	int slot_size;
@@ -744,14 +744,14 @@ void increment_counts (int child_num, request_rec *r, int flag)
 
     if (flag) {
 	new_score_rec.conn_count = (unsigned short)0;
-	new_score_rec.conn_bytes = (unsigned short)0;
+	new_score_rec.conn_bytes = (unsigned long)0;
     }
     new_score_rec.access_count ++;
     new_score_rec.my_access_count ++;
     new_score_rec.conn_count ++;
     new_score_rec.bytes_served += (unsigned long)bs;
     new_score_rec.my_bytes_served += (unsigned long)bs;
-    new_score_rec.conn_bytes += (unsigned short)bs;
+    new_score_rec.conn_bytes += (unsigned long)bs;
 
     times(&new_score_rec.times);
 

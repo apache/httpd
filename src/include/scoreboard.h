@@ -81,8 +81,8 @@ typedef struct {
     unsigned long bytes_served;
     unsigned long my_access_count;
     unsigned long my_bytes_served;
+    unsigned long conn_bytes;
     unsigned short conn_count;
-    unsigned short conn_bytes;
     struct tms times;
     time_t last_used;
     char client[32];	/* Keep 'em small... */

@@ -170,8 +170,8 @@ int status_handler (request_rec *r)
 #if defined(STATUS)
     unsigned long count=0;
     unsigned long lres,bytes;
-    unsigned long my_lres,my_bytes;
-    unsigned short conn_lres,conn_bytes;
+    unsigned long my_lres,my_bytes,conn_bytes;
+    unsigned short conn_lres;
     unsigned long bcount=0;
     float tick=sysconf(_SC_CLK_TCK);
 #endif /* STATUS */
@@ -429,7 +429,7 @@ int status_handler (request_rec *r)
 			    score_record.times.tms_cutime/tick,
 			    score_record.times.tms_cstime/tick,
 			    asctime(localtime(&score_record.last_used)));
-		    format_byte_out(r,(unsigned long)conn_bytes);
+		    format_byte_out(r,conn_bytes);
 		    rputs("|",r);
 		    format_byte_out(r,my_bytes);
 		    rputs("|",r);
