@@ -2624,7 +2624,8 @@ static int default_handler(request_rec *r)
 		ap_send_mmap(mm, r, 0, r->finfo.st_size);
 	    }
 	    else {
-		long offset, length;
+		ap_off_t offset;
+		long length;
 		while (ap_each_byterange(r, &offset, &length)) {
 		    ap_send_mmap(mm, r, offset, length);
 		}

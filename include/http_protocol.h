@@ -173,7 +173,8 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r);
 /* Sending a byterange */
 
 API_EXPORT(int) ap_set_byterange(request_rec *r);
-API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length);
+API_EXPORT(int) ap_each_byterange(request_rec *r, ap_off_t *offset,
+				  long *length);
 
 /* Support for the Basic authentication protocol.  Note that there's
  * nothing that prevents these from being in mod_auth.c, except that other
