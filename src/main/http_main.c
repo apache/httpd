@@ -370,8 +370,8 @@ API_EXPORT(void) ap_add_version_component(const char *component)
          * pointer on pool destruction.
          */
         if (server_version == NULL) {
-	    ap_register_cleanup(pconf, NULL, reset_version, 
-				ap_null_cleanup);
+	    ap_register_cleanup(pconf, NULL, (void (*)(void *))reset_version, 
+				(void (*)(void *))ap_null_cleanup);
 	    server_version = ap_pstrdup(pconf, component);
 	}
 	else {
@@ -390,11 +390,14 @@ API_EXPORT(void) ap_add_version_component(const char *component)
  */
 static void ap_set_version()
 {
+#ifdef SERVER_SUBVERSION
+    ap_add_version_component(SERVER_SUBVERSION);
+#endif
     if (ap_note_platform) {
-        ap_add_version_component(SERVER_VERSION " (" PLATFORM ")");
+        ap_add_version_component(SERVER_BASEVERSION " (" PLATFORM ")");
     }
     else {
-        ap_add_version_component(SERVER_VERSION);
+        ap_add_version_component(SERVER_BASEVERSION);
     }
     version_locked++;
 }
