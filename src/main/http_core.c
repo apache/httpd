@@ -1288,9 +1288,9 @@ int default_handler (request_rec *r)
     
 #ifdef __EMX__
     /* Need binary mode for OS/2 */
-    f = fopen (r->filename, "rb");
+    f = pfopen (r->pool, r->filename, "rb");
 #else
-    f = fopen (r->filename, "r");
+    f = pfopen (r->pool, r->filename, "r");
 #endif
 
     if (f == NULL) {
@@ -1319,7 +1319,7 @@ int default_handler (request_rec *r)
 	}
     }
 
-    fclose(f);
+    pfclose(r->pool, f);
     return OK;
 }
 

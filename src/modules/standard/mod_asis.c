@@ -69,7 +69,7 @@ int asis_handler (request_rec *r)
 	return NOT_FOUND;
     }
 	
-    f = fopen (r->filename, "r");
+    f = pfopen (r->pool, r->filename, "r");
 
     if (f == NULL) {
         log_reason("file permissions deny server access", r->filename, r);
@@ -81,6 +81,8 @@ int asis_handler (request_rec *r)
 
     if (location && location[0] == '/' && 
         ((r->status == HTTP_OK) || is_HTTP_REDIRECT(r->status))) {
+
+        pfclose(r->pool, f);
 
         /* Internal redirect -- fake-up a pseudo-request */
         r->status = HTTP_OK;
@@ -98,7 +100,8 @@ int asis_handler (request_rec *r)
     soft_timeout ("send", r);
     send_http_header (r);
     if (!r->header_only) send_fd (f, r);
-    fclose (f);
+
+    pfclose(r->pool, f);
     return OK;
 }
 
