@@ -1,1 +1,9 @@
+.deps
+.libs
+*.la
 Makefile
+*.lo
+*.slo
+*.so
+*.dll
+*.def
