@@ -71,7 +71,7 @@ host virtual</a></seealso>
       (Una direcci&#243;n IP para cada sitio web)</li>
       <li><a href="examples.html">Ejemplos t&#237;picos de
       configuraci&#243;n para usar hosting virtual</a></li>
-      <li><a href="fd-limits.html">L#237;mites a los descriptores de
+      <li><a href="fd-limits.html">L&#237;mites a los descriptores de
       ficheros</a> (o, <em>demasiados ficheros de registro</em>)</li>
       <li><a href="mass.html">Configuraci&#243;n din&#225;mica de
       Hosting virtual masivo</a></li>

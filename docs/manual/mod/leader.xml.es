@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 106090:151405 (outdated) -->
+<!-- English Revision: 151405 -->
 
 <!--
- Copyright 2004 The Apache Software Foundation
+ Copyright 2004-2005 The Apache Software Foundation or its licensors,
+ as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -28,9 +29,9 @@
 <identifier>mpm_leader_module</identifier>
 
 <summary>
-    <note type="warning"><title>Warning</title>
+    <note type="warning"><title>Advertencia</title>
       <p>Este m&#243;dulo es todav&#237;a experimental, lo que
-      significa que podr&#237;a no funcionar como es debido.</p>
+      significa que podr&#237;a no funcionar como se espera.</p>
     </note>
     
     <p>Este m&#243;dulo es una variante experimental del m&#243;dulo
@@ -40,21 +41,22 @@
     <a href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf"
     >http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>.</p>
 
-    <p>Para usar el MPM <module>leader</module>, a&#241;ada
+    <p>Para usar el m&#243;dulo de multiprocesamiento
+      <module>leader</module>, a&#241;ada
       <code>--with-mpm=leader</code> como argumento al script
-      <code>configure</code> en el momento de compilar
-      <code>httpd</code>.</p>
+      <program>configure</program> en el momento de compilar
+      <program>httpd</program>.</p>
   
     <p>Este m&#243;dulo de multiprocesamiento depende de operaciones
-    at&#243;micas compare-and-swap del APR para sicronizar las
+    at&#243;micas compare-and-swap del APR para sincronizar las
     hebras. Si est&#225; compilando el servidor para una m&#225;quina
     x86 y no necesita soportar la arquitectura 386, o est&#225;
     compilando para una m&#225;quina SPARC y no necesita ejecutar el
     servidor en chips pre-UltraSPARC, a&#241;ada
     <code>--enable-nonportable-atomics=yes</code> como argumento al
-    script <code>configure</code>. Esto har&#225; que APR implemente
+    script <program>configure</program>. Esto har&#225; que APR implemente
     las operaciones at&#243;micas usando opciones m&#225;s eficientes
-    que no est&#225;n presentes en CPUs antiguas.</p>
+    que no est&#225;n presentes para CPUs antiguas.</p>
 </summary>
 
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>

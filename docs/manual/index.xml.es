@@ -4,7 +4,8 @@
 <!-- English Revision: 151405 -->
 
 <!--
- Copyright 2004 The Apache Software Foundation
+ Copyright 2004-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,12 +23,12 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Versi&#243;n 2.0 de la documentaci&#243;n del Servidor de HTTP Apache</title>
+<title>Documentaci&#243;n del Servidor HTTP Apache 2.0</title>
 
 <category id="release"><title>Notas de la Versi&#243;n</title> 
     <page href="new_features_2_0.html">Nuevas funcionalidades en
     Apache 2.0</page>
-    <page href="upgrading.html">Actualizarse a la versión 2.0 desde la 1.3</page>
+    <page href="upgrading.html">Pasar a usar Apache 2.0 si ahora usa Apache 1.3</page>
     <page href="license.html">Licencia Apache</page>
 </category>
 
