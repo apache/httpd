@@ -349,6 +349,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
 	/* handle a permanent error from the above loop */
 	if (failed) {
+	    apr_socket_close(sock);
 	    if (proxyname) {
 		return DECLINED;
 	    }
