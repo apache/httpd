@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/13 05:10:24 $]
+Last modified at [$Date: 2001/11/14 08:07:19 $]
 
 Release:
 
@@ -126,6 +126,14 @@ RELEASE SHOWSTOPPERS:
     * Fold mod_auth_db features back into mod_auth_dbm, and depricate it.
         This can't wait until we have a 2.0-gold release, if folks need
         to move over to auth_dbm, we can't do that to them after 2.0 gold.
+
+    * Convert all instances of the old apr_lock_t type to the new
+      types (once they are fully supported in APR).
+        Status: Aaron is working on converting INTRAPROCESS
+                to apr_thread_mutex_t types. Full replacements for
+                LOCKALL and CROSS_PROCESS are not yet complete on all
+                platforms, and should only be used in MPMs like worker
+                with limited OS exposure.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
