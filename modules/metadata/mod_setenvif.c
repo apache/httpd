@@ -259,8 +259,13 @@ static const char *non_regex_pattern(apr_pool_t *p, const char *s)
             in_escape = 0;
             break;
         case '\\':
-            in_escape = 1;
-            escapes_found = 1;
+            if (!in_escape) {
+                in_escape = 1;
+                escapes_found = 1;
+            }
+            else {
+                in_escape = 0;
+            }
             break;
         default:
             if (in_escape) {
