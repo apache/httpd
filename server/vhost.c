@@ -63,10 +63,10 @@
 #define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
-#include "http_conf_globals.h"
 #include "http_log.h"
 #include "http_vhost.h"
 #include "http_protocol.h"
+#include "http_core.h"
 
 /*
  * After all the definitions there's an explanation of how it's all put
@@ -647,8 +647,8 @@ void ap_fini_vhost_config(pool *p, server_rec *main_s)
 #ifdef IPHASH_STATISTICS
     dump_iphash_statistics(main_s);
 #endif
-    if (ap_dump_settings) {
-	dump_vhost_config(stderr);
+    if (getenv("DUMP_VHOSTS")) {
+	dump_vhost_config(STDERR_FILENO);
     }
 }
 
@@ -824,7 +824,7 @@ static void check_hostalias(request_rec *r)
 
 found:
     /* s is the first matching server, we're done */
-    r->server = r->connection->server = s;
+    r->server = s;
 }
 
 
@@ -862,7 +862,7 @@ static void check_serverpath(request_rec *r)
             (s->path[s->pathlen - 1] == '/' ||
              r->uri[s->pathlen] == '/' ||
              r->uri[s->pathlen] == '\0')) {
-            r->server = r->connection->server = s;
+            r->server = s;
 	    return;
 	}
     }
@@ -898,7 +898,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     if (trav) {
 	/* save the name_chain for later in case this is a name-vhost */
 	conn->vhost_lookup_data = trav->names;
-	conn->server = trav->server;
+	conn->base_server = trav->server;
 	return;
     }
 
@@ -910,7 +910,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     /* maybe there's a default server matching this port */
     trav = find_default_server(port);
     if (trav) {
-	conn->server = trav->server;
+	conn->base_server = trav->server;
     }
 
     /* otherwise we're stuck with just the main server */
