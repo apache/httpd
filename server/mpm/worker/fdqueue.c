@@ -286,6 +286,7 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
+    int delete_pool = 0;
 
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
         if (recycled_pool) {
@@ -299,7 +300,7 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
             queue->recycled_pools[queue->num_recycled++] = recycled_pool;
         }
         else {
-            apr_pool_destroy(recycled_pool);
+            delete_pool = 1;
         }
     }
 
@@ -311,7 +312,13 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
         /* If we wake up and it's still empty, then we were interrupted */
         if (ap_queue_empty(queue)) {
             if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+                if (delete_pool) {
+                    apr_pool_destroy(recycled_pool);
+                }
                 return rv;
+            }
+            if (delete_pool) {
+                apr_pool_destroy(recycled_pool);
             }
             if (queue->terminated) {
                 return APR_EOF; /* no more elements ever again */
