@@ -78,6 +78,10 @@
 #include "http_request.h"
 #include "util_ldap.h"
 
+#ifndef APU_HAS_LDAP
+#error mod_auth_ldap requires APR-util to have LDAP support built in
+#endif
+
 /* per directory configuration */
 typedef struct {
     apr_pool_t *pool;			/* Pool that this config is allocated from */
