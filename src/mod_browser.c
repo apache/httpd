@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_browser.c,v 1.3 1996/08/20 11:51:01 paul Exp $ */
+/* $Id: mod_browser.c,v 1.4 1996/10/05 13:26:51 ben Exp $ */
 
 /*
  * mod_browser.c
@@ -134,7 +134,7 @@ char *add_browser(cmd_parms *cmd, void *dummy, char *name, char *feature)
 command_rec browser_module_cmds[] = {
 { "BrowserMatch", add_browser, (void*)0,
     RSRC_CONF, ITERATE2, "A browser regex and a list of variables." },
-{ "BrowserNoCase", add_browser, (void*)REG_ICASE,
+{ "BrowserMatchNoCase", add_browser, (void*)REG_ICASE,
     RSRC_CONF, ITERATE2, "a browser regex and a list of variables." },
 { NULL },
 };
