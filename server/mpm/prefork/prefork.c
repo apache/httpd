@@ -122,12 +122,6 @@ static ap_pod_t *pod;
 int ap_max_daemons_limit = -1;
 server_rec *ap_server_conf;
 
-/* *Non*-shared http_main globals... */
-
-static apr_socket_t *sd;
-static fd_set listenfds;
-static int listenmaxfd;
-
 /* one_process --- debugging mode variable; can be set from the command line
  * with the -X flag.  If set, this gets you the child_main loop running
  * in the process which originally started up (no detach, no make_child),
@@ -533,10 +527,10 @@ static void set_signals(void)
  * they are really private to child_main.
  */
 
-static int srv;
 static apr_socket_t *csd;
 static int requests_this_child;
-static fd_set main_fds;
+static int num_listensocks = 0;
+static apr_socket_t **listensocks;
 
 int ap_graceful_stop_signalled(void)
 {
@@ -547,19 +541,19 @@ int ap_graceful_stop_signalled(void)
 
 static void child_main(int child_num_arg)
 {
-    ap_listen_rec *lr;
-    ap_listen_rec *last_lr;
-    ap_listen_rec *first_lr;
     apr_pool_t *ptrans;
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
-    int sockdes;
+    int sockdes, i, n;
+    ap_listen_rec *lr;
+    int curr_pollfd, last_pollfd = 0;
+    apr_pollfd_t *pollset;
+    apr_socket_t *sd;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
     csd = NULL;
     requests_this_child = 0;
-    last_lr = NULL;
 
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
@@ -581,6 +575,17 @@ static void child_main(int child_num_arg)
     (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_READY, (request_rec *) NULL);
 
     ap_sync_scoreboard_image();
+
+    /* Set up the pollfd array */
+    listensocks = apr_pcalloc(pchild,
+                            sizeof(*listensocks) * (num_listensocks));
+    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, i++)
+        listensocks[i]=lr->sd;
+
+    apr_poll_setup(&pollset, num_listensocks, pchild);
+    for(n=0 ; n < num_listensocks ; n++)
+        apr_poll_socket_add(pollset, listensocks[n], APR_POLLIN);
+
     while (!die_now) {
 	/*
 	 * (Re)initialize this child to a pre-connection state.
@@ -605,75 +610,61 @@ static void child_main(int child_num_arg)
 	SAFE_ACCEPT(accept_mutex_on());
 
 	for (;;) {
-	    if (ap_listeners->next) {
-		/* more than one socket */
-		memcpy(&main_fds, &listenfds, sizeof(fd_set));
-		srv = select(listenmaxfd + 1, &main_fds, NULL, NULL, NULL);
+            apr_status_t ret;
+            apr_int16_t event;
 
-		if (srv < 0 && errno != EINTR) {
-		    /* Single Unix documents select as returning errnos
-		     * EBADF, EINTR, and EINVAL... and in none of those
-		     * cases does it make sense to continue.  In fact
-		     * on Linux 2.0.x we seem to end up with EFAULT
-		     * occasionally, and we'd loop forever due to it.
-		     */
-		    ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf, "select: (listen)");
-		    clean_child_exit(1);
-		}
+            ret = apr_poll(pollset, &n, -1);
+            if (ret != APR_SUCCESS) {
+                if (APR_STATUS_IS_EINTR(ret)) {
+                    continue;
+                }
+    	        /* Single Unix documents select as returning errnos
+    	         * EBADF, EINTR, and EINVAL... and in none of those
+    	         * cases does it make sense to continue.  In fact
+    	         * on Linux 2.0.x we seem to end up with EFAULT
+    	         * occasionally, and we'd loop forever due to it.
+    	         */
+    	        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
+                             "apr_poll: (listen)");
+    	        clean_child_exit(1);
+            }
+            if (num_listensocks == 1) {
+                sd = ap_listeners->sd;
+                goto got_fd;
+            }
+            else {
+                /* find a listener */
+                curr_pollfd = last_pollfd;
+                do {
+                    curr_pollfd++;
+                    if (curr_pollfd > num_listensocks) {
+                        curr_pollfd = 1;
+                    }
+                    /* XXX: Should we check for POLLERR? */
+                    apr_poll_revents_get(&event, listensocks[curr_pollfd], pollset);
+                    if (event & APR_POLLIN) {
+                        last_pollfd = curr_pollfd;
+                        sd=listensocks[curr_pollfd];
+                        goto got_fd;
+                    }
+                } while (curr_pollfd != last_pollfd);
+            }
 
-		if (srv <= 0)
-		    continue;
-
-		/* we remember the last_lr we searched last time around so that
-		   we don't end up starving any particular listening socket */
-		if (last_lr == NULL) {
-		    lr = ap_listeners;
-		}
-		else {
-		    lr = last_lr->next;
-		    if (!lr)
-			lr = ap_listeners;
-		}
-		first_lr=lr;
-		do {
-                    apr_os_sock_get(&sockdes, lr->sd);
-                    if (FD_ISSET(sockdes, &main_fds))
-                        goto got_listener;
-                    lr = lr->next;
-                    if (!lr)
-                        lr = ap_listeners;
-		}
-		while (lr != first_lr);
-		/* FIXME: if we get here, something bad has happened, and we're
-		   probably gonna spin forever.
-		*/
-		continue;
-	got_listener:
-		last_lr = lr;
-		sd = lr->sd;
-	    }
-	    else {
-		/* only one socket, just pretend we did the other stuff */
-		sd = ap_listeners->sd;
-	    }
-
-	    /* if we accept() something we don't want to die, so we have to
-	     * defer the exit
-	     */
-	    for (;;) {
-                ap_sync_scoreboard_image();
-		stat = apr_accept(&csd, sd, ptrans);
-		if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
-		    break;
+            continue;
+    got_fd:
+	/* if we accept() something we don't want to die, so we have to
+	 * defer the exit
+	 */
+	for (;;) {
+            ap_sync_scoreboard_image();
+	    stat = apr_accept(&csd, sd, ptrans);
+   	    if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
+	        break;
 	    }
 
 	    if (stat == APR_SUCCESS)
 		break;		/* We have a socket ready for reading */
 	    else {
-
-/* TODO: this accept result handling stuff should be abstracted...
- * it's already out of date between the various unix mpms
- */
 		/* Our old behaviour here was to continue after accept()
 		 * errors.  But this leads us into lots of troubles
 		 * because most of the errors are quite fatal.  For
@@ -1047,29 +1038,6 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     }
 }
 
-static int setup_listeners(server_rec *s)
-{
-    ap_listen_rec *lr;
-    int sockdes;
-
-    if (ap_setup_listeners(s) < 1 ) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
-		    "no listening sockets available, shutting down");
-	return -1;
-    }
-
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        apr_os_sock_get(&sockdes, lr->sd);
-        FD_SET(sockdes, &listenfds);
-        if (sockdes > listenmaxfd) {
-            listenmaxfd = sockdes;
-        }
-    }
-    return 0;
-}
-
 /*****************************************************************
  * Executive routines.
  */
@@ -1084,8 +1052,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_server_conf = s;
  
-    if (setup_listeners(s)) {
+    if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
 	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
+                     "no listening sockets available, shutting down");
 	return 1;
     }
 
