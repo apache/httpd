@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/23 15:18:54 $]
+Last modified at [$Date: 2004/08/23 19:56:10 $]
 
 Release:
 
@@ -76,6 +76,22 @@ PATCHES TO BACKPORT FROM 2.1
     *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
        PR: 30134
+       +1: jorton
+
+    *) Build fix: ensure httpd is linked against user-supplied LIBS during make.
+       PR: 7882
+       +1: jorton
+
+    *) mod_autoindex: Don't truncate directory listing when a stat call fails.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_autoindex.c?r1=1.132&r2=1.133
+       +1: jorton
+
+    *) unixd_accept: Eliminate now-unnecessary apr_os_sock_get() call.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/os/unix/unixd.c?r1=1.66&r2=1.67
+       +1: jorton
+
+    *) Prevent byterange filter doing its thang for a CGI which returns a Content-Range
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_script.c?r1=1.89&r2=1.90
        +1: jorton
 
     *) Proposal: Several folks want to aggressively backport changes
