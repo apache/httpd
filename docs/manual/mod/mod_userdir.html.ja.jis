@@ -8,15 +8,15 @@
                   </a></th><td>ユーザ専用のディレクトリを提供
   </td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>userdir_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
+                  </a></th><td>userdir_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
                   </a></th><td>mod_userdir.c</td></tr></table><h3>概要</h3>
 <p>このモジュールは、
 <code>http://example.com/~user/</code>
-構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
+構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
 </div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL から
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL から
 ファイルシステムへのマッピング</a></li><li><a href="../howto/public_html.html">public_html
-チュートリアル</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+チュートリアル</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>ユーザ専用ディレクトリの位置</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code>UserDir <em>directory-filename</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>UserDir public_html</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -128,5 +128,5 @@ Apache はリダイレクトが成功するかどうかを決めることはできませんので、
 リストの前の方にリダイレクトを書くと、それが必ず使用される選択肢に
 なってしまいます。</p>
 
-<h3>参照</h3><ul><li><a href="../howto/public_html.html">public_html
+<h3>参照</h3><ul><li><a href="../howto/public_html.html">public_html
 チュートリアル</a></li></ul></div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>

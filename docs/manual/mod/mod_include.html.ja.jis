@@ -5,16 +5,16 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>mod_include - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_include</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>サーバがパースする html ドキュメント (Server Side Includes)</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
+                  </a></th><td>サーバがパースする html ドキュメント (Server Side Includes)</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>include_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
+                  </a></th><td>include_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
                   </a></th><td>mod_include.c</td></tr></table><h3>概要</h3>
 
-    <p>このモジュールはファイルがクライアントに送られる前に処理するフィルタを
+    <p>このモジュールはファイルがクライアントに送られる前に処理するフィルタを
     提供します。処理の内容は<em>要素</em>と呼ばれる特別な形式の SGML コメントにより
     制御されます。これらの要素は条件分岐や、他のファイルや
     プログラムの出力の取り込み、環境変数の設定や表示を行なうことが
-    できます。</p>
+    できます。</p>
 
 </div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
@@ -22,14 +22,14 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#ssitimeformat">SSITimeFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiundefinedecho">SSIUndefinedEcho</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#xbithack">XBitHack</a></li>
-</ul><h3>トピック</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#enabling">Server-Side Includes を有効にする</a></li><li><img alt="" src="../images/down.gif" /> <a href="#basic">基本要素</a></li><li><img alt="" src="../images/down.gif" /> <a href="#includevars">Include 変数</a></li><li><img alt="" src="../images/down.gif" /> 変数置換</li><li><img alt="" src="../images/down.gif" /> <a href="#flowctrl">フロー制御用要素</a></li><li><img alt="" src="../images/down.gif" /> ErrorDocuments で Server Side Includes を使う</li><li><img alt="" src="../images/down.gif" /> Server Side Includes での PATH_INFO</li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="enabling" id="enabling">Server-Side Includes を有効にする</a></h2>
+</ul><h3>トピック</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#enabling">Server-Side Includes を有効にする</a></li><li><img alt="" src="../images/down.gif" /> <a href="#basic">基本要素</a></li><li><img alt="" src="../images/down.gif" /> <a href="#includevars">Include 変数</a></li><li><img alt="" src="../images/down.gif" /> 変数置換</li><li><img alt="" src="../images/down.gif" /> <a href="#flowctrl">フロー制御用要素</a></li><li><img alt="" src="../images/down.gif" /> ErrorDocuments で Server Side Includes を使う</li><li><img alt="" src="../images/down.gif" /> Server Side Includes での PATH_INFO</li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="enabling" id="enabling">Server-Side Includes を有効にする</a></h2>
     
 
     <p>Server Side Includes は <code>INCLUDES</code>
     <a href="../filter.html">フィルタ</a> により実装されています。
     Server-side include のディレクティブを含むドキュメントの拡張子が
     .shtml の場合、以下のディレクティブでは Apache がそれらを
-    パースして、その結果できるドキュメントに <code>text/html</code> の
+    パースして、その結果できるドキュメントに <code>text/html</code> の
     MIME タイプを割り当てます:</p>
 
     <div class="example"><p><code>
@@ -79,7 +79,7 @@
       <dt><strong>config</strong></dt>
 
       <dd>
-        <p>このコマンドはパース時の振る舞いを制御します。指定可能な属性は:</p>
+        <p>このコマンドはパース時の振る舞いを制御します。指定可能な属性は:</p>
 
         <dl>
           <dt><strong>errmsg</strong></dt>
@@ -391,11 +391,11 @@
 
 <div class="example"><p><code>
     &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;<br />
-&#160;&#160;    in foo<br />
+??    in foo<br />
     &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;<br />
-&#160;&#160;    in bar<br />
+??    in bar<br />
     &lt;!--#else --&gt;<br />
-&#160;&#160;    in neither<br />
+??    in neither<br />
     &lt;!--#endif --&gt;
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="flowctrl" id="flowctrl">フロー制御用要素</a></h2>
@@ -493,7 +493,7 @@
     PATH_INFO の付いたリクエストを受け付けるように設定するために、<code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> ディレクティブを
     使うことができます。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>include 要素を終了させる文字列</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code>SSIEndTag <em>tag</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>SSIEndTag "--&gt;"</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -510,7 +510,7 @@
     SSIEndTag "%&gt;"
     </code></p></div>
 
-<h3>参照</h3><ul><li><code class="directive"><a href="#ssistarttag">SSIStartTag</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+<h3>参照</h3><ul><li><code class="directive"><a href="#ssistarttag">SSIStartTag</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>SSI のエラーがあったときに表示されるエラーメッセージ</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code>SSIErrorMsg <em>message</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>SSIErrorMsg 
@@ -534,7 +534,7 @@
     SSIErrorMsg "&lt;!-- Error --&gt;"
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>include 要素を開始する文字列</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code>SSIStartTag <em>tag</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>SSIStartTag "&lt;!--"</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -564,7 +564,7 @@
     &lt;%#printenv %&gt;
     </code></p></div>
 
-<h3>参照</h3><ul><li><code class="directive"><a href="#ssiendtag">SSIEndTag</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+<h3>参照</h3><ul><li><code class="directive"><a href="#ssiendtag">SSIEndTag</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>日付けを現す文字列の書式を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code>SSITimeFormat <em>formatstring</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -588,7 +588,7 @@
     <p>上のディレクティブでは、日付は "22:26, June 14, 2002" という
     形式で表示されます。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>未定義の変数が echo されたときに表示される文字列</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code>SSIUndefinedEcho <em>tag</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>SSIUndefinedEcho "(none)"</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
@@ -606,7 +606,7 @@
     SSIUndefinedEcho "&lt;!-- undef --&gt;"
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>実行ビットが設定されたファイルの SSI ディレクティブを
 解析する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code>XBitHack on|off|full</code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
