@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/26 20:25:27 $]
+Last modified at [$Date: 2002/01/27 05:48:31 $]
 
 Release:
 
@@ -40,14 +40,6 @@ on related projects:
 
 RELEASE SHOWSTOPPERS:
 
-    * win32 scoreboard should _not_ use anon with no scoreboard name, it
-      should revert to the old method if scoreboard name is null (use the
-      NOT_SHARED bit that we do in -X).  At this moment Win32 doesn't 
-      -need- to have a shared score, until we create multiple processes,
-      or unless a module in the parent wants scoreboard data from the child.
-      If such a module is installed [for the moment] they aught to configure
-      the ScoreboardFile directive.
-
     * mod_rewrite's locks (win32) were broken by recent changes to the 
       apr_lock_t api (which we were deprecating in the first place, so
       I'm far from certain why it changed.)  It has to do with creating
@@ -57,6 +49,10 @@ RELEASE SHOWSTOPPERS:
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
         Message-ID: <m3itbdiijq.fsf@rdu163-40-092.nc.rr.com>
+        * That is very unlikely, merges are additive.  Much more likely,
+          the default SetOutputFilter default or merge is borked.
+          Unless it's the code that permits 'null' merges, per module.
+          Still, it's probably in SetOutputFilter's behavior.
 
     * Test suite failures:
       o perchild doesn't even build
@@ -87,12 +83,6 @@ RELEASE SHOWSTOPPERS:
       before or after the Add...Filter(s) which are ordered by sequence of
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
       like the quickest fix for a 2.0 gold release.
-
-    * mod_negotiation needs a new option or directive, something like
-      ForceLanguagePriority, to fall back to the LanguagePriority
-      directive instead of returning a "no acceptable variant" error.
-        Status: Bill has some code in his tree that accomplishes
-                this, and will commit it Friday after it's tested.
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -270,6 +260,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       goes down hard.  FirstBill was looking at possibly tracking the 
       child's-child processes in the parent process.
         OtherBill asks, wasn't this fixed?
+        OtherBill asks again, what is the status?
 
     * Win32: Add a simple hold console open patch (wait for close or
         the ESC key, with a nice message) if the server died a bad 
@@ -350,10 +341,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         necessarily the library that Apache was built with.  Aught to
         rewrite dbmmanage upon installation to bin/ with the proper library 
         for predictable mod_auth_dbm administration.
-        Status: Mladen Turk has posted several patches and ideas.
-                Key question, part of htpasswd, or a seperate utility?
-                prefer htpasswd: Lars
-                prefer seperate: OtherBill
+        Questions; htdbm exists, time to kill dbmmanage, or does it remain
+                   useful as a perl dbm management example?  If we keep it,
+                   do we address the issue above?
 
     * use apu_dbm in mod_auth_dbm
         Status: Greg +1 (low-priority volunteer)
@@ -792,7 +782,8 @@ put them into 'the next release':
 
     * PR#5713: os-windows
       [PATCH] install as win32 service with domain account
-	Status: 
+	Status: Cannot accept password-as-arg, we should prompt the
+                user when -k install/-k config with a user argument.
 
     * PR#5993: general
       AllowOverride should have a 'CheckNone' and 'AllowNone' argument
@@ -809,6 +800,9 @@ Other bugs that need fixing:
         Status: No one has come up with an efficient way to fix this
         behavior. Dean has suggested getting rid of regex containers
         completely.
+        OtherBill suggests: We at least seem to agree on eliminating
+                            the <Container ~ foo> forms, and using only
+                            <ContainerMatch foo> semantics.
 
     * SIGSEGV on Linux (glibc 2.1.2) isn't caught properly by a
       sigwaiting thread. We need to work around this, perhaps unless
