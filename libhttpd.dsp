@@ -97,9 +97,13 @@ PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr
 
 # Name "libhttpd - Win32 Release"
 # Name "libhttpd - Win32 Debug"
-# Begin Group "core"
+# Begin Group "headers"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+# Begin Source File
+
+SOURCE=.\include\ap_compat.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\include\ap_config.h
@@ -110,28 +114,7 @@ SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\ap_regkey.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\ap_release.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\buildmark.c
-# PROP Exclude_From_Build 1
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\config.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\connection.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\core.c
 # End Source File
 # Begin Source File
 
@@ -168,73 +151,6 @@ SOURCE=.\include\http_vhost.h
 # Begin Source File
 
 SOURCE=.\include\httpd.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\log.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\modules.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\os.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\protocol.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\request.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\scoreboard.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\scoreboard.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\vhost.c
-# End Source File
-# End Group
-# Begin Group "generated"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\server\gen_test_char.exe
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-USERDEP__GEN_T=".\include\os.h"	
-# Begin Custom Build - Generating test_char.h from gen_test_char.exe
-InputPath=.\server\gen_test_char.exe
-
-".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\server\gen_test_char.exe >.\server\test_char.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-USERDEP__GEN_T=".\include\os.h"	
-# Begin Custom Build - Generating test_char.h from gen_test_char.exe
-InputPath=.\server\gen_test_char.exe
-
-".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\server\gen_test_char.exe >.\server\test_char.h
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -383,64 +299,6 @@ InputPath=.\modules\proxy\mod_proxy.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\mpm\winnt\mpm.h
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm.h
-InputPath=.\server\mpm\winnt\mpm.h
-
-".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm.h
-InputPath=.\server\mpm\winnt\mpm.h
-
-".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\mpm\winnt\mpm_default.h
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm_default.h
-InputPath=.\server\mpm\winnt\mpm_default.h
-
-".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm_default.h
-InputPath=.\server\mpm\winnt\mpm_default.h
-
-".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\os\win32\os.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -478,6 +336,23 @@ SOURCE=.\server\test_char.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\server\buildmark.c
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\config.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\connection.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\core.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\http\http_core.c
 # End Source File
 # Begin Source File
@@ -490,7 +365,19 @@ SOURCE=.\modules\http\http_request.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\http\mod_core.h
+SOURCE=.\server\log.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\protocol.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\request.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\vhost.c
 # End Source File
 # End Group
 # Begin Group "modules"
@@ -504,14 +391,14 @@ SOURCE=.\modules\mappers\mod_so.c
 
 SOURCE=.\modules\arch\win32\mod_win32.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\modules.c
+# End Source File
 # End Group
 # Begin Group "util"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\os\win32\ap_regkey.c
-# End Source File
 # Begin Source File
 
 SOURCE=.\server\error_bucket.c
@@ -594,6 +481,14 @@ SOURCE=.\include\ap_listen.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\os\win32\ap_regkey.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_regkey.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\ap_mpm.h
 # End Source File
 # Begin Source File
@@ -603,6 +498,31 @@ SOURCE=.\server\listen.c
 # Begin Source File
 
 SOURCE=.\server\mpm\winnt\mpm.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mpm.h
+InputPath=.\server\mpm\winnt\mpm.h
+
+".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mpm.h
+InputPath=.\server\mpm\winnt\mpm.h
+
+".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -615,10 +535,31 @@ SOURCE=.\include\mpm_common.h
 # Begin Source File
 
 SOURCE=.\server\mpm\winnt\mpm_default.h
-# End Source File
-# Begin Source File
 
-SOURCE=.\include\mpm_status.h
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mpm_default.h
+InputPath=.\server\mpm\winnt\mpm_default.h
+
+".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mpm_default.h
+InputPath=.\server\mpm\winnt\mpm_default.h
+
+".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -636,7 +577,46 @@ SOURCE=.\server\mpm\winnt\nt_eventlog.c
 
 SOURCE=.\server\mpm\winnt\service.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\server\scoreboard.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\scoreboard.h
+# End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\server\gen_test_char.exe
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+USERDEP__GEN_T=".\include\os.h"	
+# Begin Custom Build - Generating test_char.h from gen_test_char.exe
+InputPath=.\server\gen_test_char.exe
+
+".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_test_char.exe >.\server\test_char.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+USERDEP__GEN_T=".\include\os.h"	
+# Begin Custom Build - Generating test_char.h from gen_test_char.exe
+InputPath=.\server\gen_test_char.exe
+
+".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_test_char.exe >.\server\test_char.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # Begin Source File
 
 SOURCE=.\build\win32\libhttpd.rc
