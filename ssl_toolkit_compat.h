@@ -44,6 +44,7 @@
 #define SSL_set_state(ssl,val) (ssl)->state = val
 
 #define MODSSL_BIO_CB_ARG_TYPE const char
+#define MODSSL_CRYPTO_CB_ARG_TYPE const char
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c)
 
@@ -61,6 +62,7 @@
 #endif
 
 #define MODSSL_BIO_CB_ARG_TYPE char
+#define MODSSL_CRYPTO_CB_ARG_TYPE char
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c, NULL)
 

@@ -404,7 +404,9 @@ static apr_thread_mutex_t **lock_cs;
    CRYPT_num_locks() [Ben, Jan 2002] */
 static long                 lock_count[CRYPTO_NUM_LOCKS];
 
-static void ssl_util_thr_lock(int mode, int type, const char *file, int line)
+static void ssl_util_thr_lock(int mode, int type,
+                              MODSSL_CRYPTO_CB_ARG_TYPE *file,
+                              int line)
 {
     if (mode & CRYPTO_LOCK) {
         apr_thread_mutex_lock(lock_cs[type]);
