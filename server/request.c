@@ -522,17 +522,17 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     ap_conf_vector_t *this_conf;
     core_dir_config *entry_core;
 
-    /*
-     * Are we dealing with a file? If not, the handler needed to register
-     * a hook to escape from our walking the file.  Since they haven't, we
-     * are going to assume the worst and refuse to proceed.
+    /* "OK" as a response to a real problem is not _OK_, but to allow broken 
+     * modules to proceed, we will permit the not-a-path filename to pass here.
+     * We must catch it later if it's heading for the core handler.  Leave an 
+     * INFO note here for module debugging.
      */
     if (r->filename == NULL || !ap_os_is_path_absolute(r->pool, r->filename)) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
                       "Module bug?  Request filename path %s is missing or "
                       "or not absolute for uri %s", 
                       r->filename ? r->filename : "<NULL>", r->uri);
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return OK;
     }
 
     /*
@@ -760,6 +760,13 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                     "Symbolic link not allowed: %s", r->filename);
         return res;
     }
+
+    /* Save a dummy userdata element till we optimize this function.
+     * If this userdata is set, directory_walk has run.
+     */
+    apr_pool_userdata_set((void *)1, "ap_directory_walk::cache",
+                          apr_pool_cleanup_null, r->pool);
+
     return OK;                  /* Can only "fail" if access denied by the
                                  * symlink goop. */
 }
@@ -798,19 +805,19 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     char *seg_name;
     char *delim;
 
-    /*
-     * XXX: Better (faster) tests needed!!!
+    /* XXX: Better (faster) tests needed!!!
      *
-     * Are we dealing with a file? If not, the handler needed to register
-     * a hook to escape from our walking the file.  Since they haven't, we
-     * are going to assume the worst and refuse to proceed.
+    /* "OK" as a response to a real problem is not _OK_, but to allow broken 
+     * modules to proceed, we will permit the not-a-path filename to pass here.
+     * We must catch it later if it's heading for the core handler.  Leave an 
+     * INFO note here for module debugging.
      */
     if (r->filename == NULL || !ap_os_is_path_absolute(r->pool, r->filename)) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
                       "Module bug?  Request filename path %s is missing or "
                       "or not absolute for uri %s", 
                       r->filename ? r->filename : "<NULL>", r->uri);
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return OK;
     }
 
     /*
@@ -1074,6 +1081,12 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
  x   }
  */
 
+    /* Save a dummy userdata element till we optimize this function.
+     * If this userdata is set, directory_walk has run.
+     */
+    apr_pool_userdata_set((void *)1, "ap_directory_walk::cache",
+                          apr_pool_cleanup_null, r->pool);
+
     return OK;  /* 'no excuses' */
 }
 
@@ -1139,8 +1152,8 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         r->per_dir_config = r->server->lookup_defaults;
     
     /* No tricks here, there are no <Locations > to parse in this vhost.
-     * We cache NULL because it's possible that another vhost had some
-     * different locations, and we are throwing those away.
+     * We won't destroy the cache, just in case _this_ redirect is later
+     * redirected again to a vhost with <Location > blocks to optimize.
      */
     if (!num_loc) {
 	return OK;
@@ -1268,6 +1281,14 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     int num_files = conf->sec_file->nelts;
     char *test_file;
 
+    /* To allow broken modules to proceed, we allow missing filenames to pass.
+     * We will catch it later if it's heading for the core handler.  
+     * directory_walk already posted an INFO note for module debugging.
+     */
+     if (r->filename == NULL) {
+        return OK;
+    }
+
     /* get the basename */
     test_file = strrchr(r->filename, '/');
     if (test_file == NULL) {
@@ -1318,6 +1339,13 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         }
         r->per_dir_config = per_dir_defaults;
     }
+
+    /* Save a dummy userdata element till we optimize this function.
+     * If this userdata is set, file_walk has run.
+     */
+    apr_pool_userdata_set((void *)1, "ap_file_walk::cache",
+                          apr_pool_cleanup_null, r->pool);
+
     return OK;
 }
 
