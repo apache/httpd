@@ -30,6 +30,7 @@
   <modulefile>mod_deflate.xml</modulefile>
   <modulefile>mod_dir.xml</modulefile>
   <modulefile>mod_disk_cache.xml</modulefile>
+  <modulefile>mod_dumpio.xml</modulefile>
   <modulefile>mod_echo.xml</modulefile>
   <modulefile>mod_env.xml</modulefile>
   <modulefile>mod_example.xml</modulefile>
