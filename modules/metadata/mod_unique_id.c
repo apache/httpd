@@ -65,18 +65,24 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
-#include "multithread.h"
-
-#ifdef MULTITHREAD
-#error sorry this module does not support multithreaded servers yet
-#endif
 
 typedef struct {
     unsigned int stamp;
     unsigned int in_addr;
     unsigned int pid;
     unsigned short counter;
+    unsigned int thread_index;
 } unique_id_rec;
+
+/* We are using thread_index (the index into the scoreboard), because we
+ * cannont garauntee the thread_id will be an integer.
+ *
+ * This code looks like it won't give a unique ID with the new thread logic.
+ * It will.  The reason is, we don't increment the counter in a thread_safe 
+ * manner.  Because the thread_index is also in the unique ID now, this does
+ * not matter.  In order for the id to not be unique, the same thread would
+ * have to get the same counter twice in the same second. 
+ */
 
 /* Comments:
  *
@@ -143,12 +149,12 @@ typedef struct {
 
 static unsigned global_in_addr;
 
-static APACHE_TLS unique_id_rec cur_unique_id;
+static unique_id_rec cur_unique_id;
 
 /*
  * Number of elements in the structure unique_id_rec.
  */
-#define UNIQUE_ID_REC_MAX 4
+#define UNIQUE_ID_REC_MAX 5 
 
 static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_size[UNIQUE_ID_REC_MAX],
@@ -177,8 +183,11 @@ static void unique_id_global_init(server_rec *s, pool *p)
     unique_id_rec_size[2] = sizeof(cur_unique_id.pid);
     unique_id_rec_offset[3] = XtOffsetOf(unique_id_rec, counter);
     unique_id_rec_size[3] = sizeof(cur_unique_id.counter);
+    unique_id_rec_offset[4] = XtOffsetOf(unique_id_rec, thread_index);
+    unique_id_rec_size[4] = sizeof(cur_unique_id.thread_index);
     unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1] +
-                               unique_id_rec_size[2] + unique_id_rec_size[3];
+                               unique_id_rec_size[2] + unique_id_rec_size[3] +
+                               unique_id_rec_size[4];
 
     /*
      * Calculate the size of the structure when encoded.
@@ -316,6 +325,7 @@ static int gen_unique_id(request_rec *r)
      * Buffer padded with two final bytes, used to copy the unique_id_red
      * structure without the internal paddings that it could have.
      */
+    unique_id_rec new_unique_id;
     struct {
 	unique_id_rec foo;
 	unsigned char pad[2];
@@ -332,16 +342,21 @@ static int gen_unique_id(request_rec *r)
 	ap_table_setn(r->subprocess_env, "UNIQUE_ID", e);
 	return DECLINED;
     }
+    
+    new_unique_id.in_addr = cur_unique_id.in_addr;
+    new_unique_id.pid = cur_unique_id.pid;
+    new_unique_id.counter = cur_unique_id.counter;
 
-    cur_unique_id.stamp = htonl((unsigned int)r->request_time);
+    new_unique_id.stamp = htonl((unsigned int)r->request_time);
+    new_unique_id.thread_index = htonl((unsigned int)r->connection->thread_num);
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
      * paddings of the original structure */
     x = (unsigned char *) &paddedbuf;
-    y = (unsigned char *) &cur_unique_id;
+    y = (unsigned char *) &new_unique_id;
     k = 0;
     for (i = 0; i < UNIQUE_ID_REC_MAX; i++) {
-        y = ((unsigned char *) &cur_unique_id) + unique_id_rec_offset[i];
+        y = ((unsigned char *) &new_unique_id) + unique_id_rec_offset[i];
         for (j = 0; j < unique_id_rec_size[i]; j++, k++) {
             x[k] = y[j];
         }
@@ -370,7 +385,8 @@ static int gen_unique_id(request_rec *r)
     ap_table_setn(r->subprocess_env, "UNIQUE_ID", str);
 
     /* and increment the identifier for the next call */
-    counter = ntohs(cur_unique_id.counter) + 1;
+
+    counter = ntohs(new_unique_id.counter) + 1;
     cur_unique_id.counter = htons(counter);
 
     return DECLINED;
