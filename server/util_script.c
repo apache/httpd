@@ -496,7 +496,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
             apr_size_t inbytes_left, outbytes_left;
 
 	    for (cp = w; *cp != '\0'; ++cp) {
-                native = ap_xlate_conv_byte(ap_hdrs_from_ascii, *cp);
+                native = apr_xlate_conv_byte(ap_hdrs_from_ascii, *cp);
 		if (isprint(*cp) && !isprint(native))
 		    ++maybeEBCDIC;
 		if (!isprint(*cp) && isprint(native))
@@ -507,8 +507,8 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
                              "CGI Interface Error: Script headers apparently ASCII: (CGI = %s)",
                              r->filename);
                 inbytes_left = outbytes_left = cp - w;
-                ap_xlate_conv_buffer(ap_hdrs_from_ascii,
-                                     w, &inbytes_left, w, &outbytes_left);
+                apr_xlate_conv_buffer(ap_hdrs_from_ascii,
+                                      w, &inbytes_left, w, &outbytes_left);
 	    }
 	}
 #endif /*CHARSET_EBCDIC*/

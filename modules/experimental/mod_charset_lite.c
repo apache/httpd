@@ -226,7 +226,7 @@ static int find_code_page(request_rec *r)
                      dc && dc->charset_default ? dc->charset_default : "(none)");
     }
 
-    rv = ap_xlate_open(&output_xlate, dc->charset_default, dc->charset_source, r->pool);
+    rv = apr_xlate_open(&output_xlate, dc->charset_default, dc->charset_source, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "can't open translation %s->%s",
@@ -247,8 +247,8 @@ static int find_code_page(request_rec *r)
          * with the OPTIONS method, but for now we don't set up translation 
          * of it.
          */
-        rv = ap_xlate_open(&input_xlate, dc->charset_source, 
-                           dc->charset_default, r->pool);
+        rv = apr_xlate_open(&input_xlate, dc->charset_source, 
+                            dc->charset_default, r->pool);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "can't open translation %s->%s",
