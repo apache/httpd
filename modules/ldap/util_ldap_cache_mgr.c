@@ -128,8 +128,10 @@ void util_ald_free(const void *ptr)
 #endif
 }
 
-void *util_ald_alloc(int size)
+void *util_ald_alloc(unsigned long size)
 {
+    if (0 == size)
+        return NULL;
 #if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
         return (void *)apr_shm_calloc(util_ldap_shm, size);
@@ -137,7 +139,7 @@ void *util_ald_alloc(int size)
         return (void *)calloc(sizeof(char), size);
     }
 #else
-    return (void *)calloc(size);
+    return (void *)calloc(sizeof(char), size);
 #endif
 }
 
@@ -202,6 +204,9 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
     int i;
     util_cache_node_t *p, *q;
     apr_time_t t;
+
+    if (!cache)
+        return;
   
     cache->last_purge = apr_time_now();
     cache->npurged = 0;

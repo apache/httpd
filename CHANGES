@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Added some bulletproofing to memory allocation in the LDAP cache
+     code. [Graham Leggett]
+
 Changes with Apache 2.0.25
 
   *) Move the installed /manual directory out of the /htdocs/ tree, so
