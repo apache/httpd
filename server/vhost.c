@@ -552,7 +552,7 @@ static void remove_unused_name_vhosts(server_rec *main_s, ipaddr_chain **pic)
 }
 
 /* compile the tables and such we need to do the run-time vhost lookups */
-void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
+AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 {
     server_addr_rec *sar;
     int has_default_vhost_addr;

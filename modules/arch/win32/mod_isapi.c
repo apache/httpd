@@ -1264,7 +1264,7 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static void isapi_hooks(void)
+static void isapi_hooks(apr_pool_t *cont)
 {
     ap_hook_post_config(isapi_post_config, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_handler(isapi_handler, NULL, NULL, AP_HOOK_MIDDLE);

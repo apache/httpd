@@ -74,8 +74,9 @@ void ap_init_vhost_config(apr_pool_t *p);
  * the run-time vhost lookups
  * @param p The pool to allocate out of
  * @param main_server The start of the virtual host list
+ * @deffunc ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server)
  */
-void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server);
+AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server);
 
 /**
  * handle addresses in <VirtualHost> statement

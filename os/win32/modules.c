@@ -27,7 +27,7 @@ extern module action_module;
 extern module setenvif_module;
 extern module isapi_module;
 
-module *ap_prelinked_modules[] = {
+module AP_DECLARE_DATA *ap_prelinked_modules[] = {
   &core_module,
   &mpm_winnt_module,
   &so_module,
