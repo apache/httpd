@@ -86,7 +86,7 @@ module status_module;
 
 /* Format the number of bytes nicely */
 
-void format_byte_out(request_rec *r,long bytes) {
+void format_byte_out(request_rec *r,unsigned long bytes) {
     char ss[20];
 
     if (bytes<5196)
@@ -134,10 +134,10 @@ int status_handler (request_rec *r)
     int i,res;
     int ready=0;
     int busy=0;
-    long count=0;
-    long lres,bytes;
-    long my_lres,my_bytes;
-    long bcount=0;
+    unsigned long count=0;
+    unsigned long lres,bytes;
+    unsigned long my_lres,my_bytes;
+    unsigned long bcount=0;
     int short_report=0;
     server_rec *server = r->server;
     short_score score_record;
@@ -229,7 +229,7 @@ int status_handler (request_rec *r)
 	my_bytes= score_record.my_bytes_served;
         if (lres!=0 || (score_record.status != SERVER_READY && score_record.status != SERVER_DEAD)) {
 	    if (!short_report) {
-	        sprintf(buffer,"<b>Server %d</b> (%d): %ld|%ld [",
+	        sprintf(buffer,"<b>Server %d</b> (%d): %lu|%lu [",
 		 i,(int)score_record.pid,my_lres,lres);
 		rputs(buffer,r);
 
@@ -274,10 +274,10 @@ int status_handler (request_rec *r)
 	}
     }
     if (short_report) {
-        sprintf(buffer,"Total Accesses: %ld\nTotal Bytes: %ld\n",count,bcount);
+        sprintf(buffer,"Total Accesses: %lu\nTotal Bytes: %lu\n",count,bcount);
 	rputs(buffer,r);
     } else {
-        sprintf(buffer,"<p>Total accesses: %ld u%g s%g cu%g cs%g (",
+        sprintf(buffer,"<p>Total accesses: %lu u%g s%g cu%g cs%g (",
 		count,tu/tick,ts/tick,tcu/tick,tcs/tick);
 	rputs(buffer,r);
 	format_byte_out(r,bcount);

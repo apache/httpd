@@ -73,10 +73,10 @@ typedef struct {
     pid_t pid;
     char status;
 #if defined(STATUS_INSTRUMENTATION)
-    long access_count;
-    long bytes_served;
-    long my_access_count;
-    long my_bytes_served;
+    unsigned long access_count;
+    unsigned long bytes_served;
+    unsigned long my_access_count;
+    unsigned long my_bytes_served;
     struct tms times;
     time_t last_used;
     char client[32];	/* Keep 'em small... */

@@ -670,8 +670,8 @@ void update_child_status (int child_num, int status, request_rec *r)
 	/*
 	 * Reset individual counters
 	 */
-	new_score_rec.my_access_count = 0;
-	new_score_rec.my_bytes_served = 0;
+	new_score_rec.my_access_count = 0L;
+	new_score_rec.my_bytes_served = 0L;
     }
     if (r) {
 	int slot_size;
@@ -723,8 +723,8 @@ void increment_counts (int child_num, request_rec *r)
 
     new_score_rec.access_count ++;
     new_score_rec.my_access_count ++;
-    new_score_rec.bytes_served += (long)bs;
-    new_score_rec.my_bytes_served += (long)bs;
+    new_score_rec.bytes_served += (unsigned long)bs;
+    new_score_rec.my_bytes_served += (unsigned long)bs;
 
     times(&new_score_rec.times);
 
