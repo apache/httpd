@@ -307,10 +307,10 @@ CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht,
             tval = (*hep)->val;
             (*hep)->val = val;
         }
-        /* Return the object just removed from the cache
-         * to let the caller clean it up
+        /* Return the object just removed from the cache to let the 
+         * caller clean it up. Cast the constness away upon return.
          */
-        return tval;
+        return (void *) tval;
     }
     /* else key not present and val==NULL */
     return NULL;
