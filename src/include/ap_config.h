@@ -169,6 +169,7 @@ int gethostname(char *name, int namelen);
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #ifndef _HPUX_SOURCE
 #define _HPUX_SOURCE
 #endif

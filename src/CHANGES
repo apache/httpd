@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
   
+  *) Default to USE_FCNTL_SERIALIZED_ACCEPT on HPUX to properly 
+     handle multiple Listen directives.  [Marc Slemko] PR#872
+
   *) Inherit a bugfix to fnmatch.c from FreeBSD sources.
      ["[KOI8-R] Андрей Чернов" <ache@nagual.pp.ru>] PR#1311
 
