@@ -691,7 +691,7 @@ API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
     void *param,
     int(*getch)(void*),
     void *(*getstr) (void *buf, size_t bufsiz, void *param),
-    int(*close)(void*))
+    int(*close_func)(void*))
 {
     configfile_t *new_cfg = palloc(p, sizeof (*new_cfg));
 #ifdef DEBUG
@@ -701,7 +701,7 @@ API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
     new_cfg->name = descr;
     new_cfg->getch = getch;
     new_cfg->getstr = getstr;
-    new_cfg->close = close;
+    new_cfg->close = close_func;
     new_cfg->line_number = 0;
     return new_cfg;
 }

@@ -822,9 +822,9 @@ API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name);
 /* Allocate a configfile_t handle with user defined functions and params */
 API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
     void *param,
-    int(*getc)(void*),
-    void *(*gets) (void *buf, size_t bufsiz, void *param),
-    int(*close)(void*));
+    int(*getc_func)(void*),
+    void *(*gets_func) (void *buf, size_t bufsiz, void *param),
+    int(*close_func)(void*));
 
 /* Read one line from open configfile_t, strip LF, increase line number */
 API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
