@@ -1581,9 +1581,8 @@ fsmagic(request_rec * r, const char *fn, struct stat * sb)
             /* At MIME-typing time we want to follow symlinks */
             /* So just handle it. */
             magic_process(r);
-            return 1;
         }
-        return 1;
+	return 1;
 #endif
 #ifdef    S_IFSOCK
 #ifndef __COHERENT__
