@@ -282,7 +282,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)
     return ap_pass_brigade(f->next, bb);
 }
 
-AP_DECLARE(int) ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
+AP_DECLARE_NONSTD(int) ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
 {
     va_list args;
     int res;
@@ -293,7 +293,7 @@ AP_DECLARE(int) ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
     return res;
 }
 
-AP_DECLARE(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...){
+AP_DECLARE_NONSTD(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...){
     va_list args;
     int res;
 
