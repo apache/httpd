@@ -551,30 +551,30 @@ ServerSignature On
 
 ### Section 3: Supplemental configuration
 #
-# The configuration files in the @relsysconfdir@/extra/ directory can be included
+# The configuration files in the @rel_sysconfdir@/extra/ directory can be included
 # to add extra features, or you may simply copy their contents
 # here and change as necessary.
 
 # Server-Pool Size Regulation (MPM specific)
-# Include @relsysconfdir@/extra/httpd-mpm.conf
+# Include @rel_sysconfdir@/extra/httpd-mpm.conf
 
 # Multi-language error messages
-# Include @relsysconfdir@/extra/httpd-multilang-error.conf
+# Include @rel_sysconfdir@/extra/httpd-multilang-error.conf
 
 # Fancy directory listings
-# Include @relsysconfdir@/extra/httpd-autoindex.conf
+# Include @rel_sysconfdir@/extra/httpd-autoindex.conf
 
 # Language settings
-# Include @relsysconfdir@/extra/httpd-languages.conf
+# Include @rel_sysconfdir@/extra/httpd-languages.conf
 
 # User home directories
-# Include @relsysconfdir@/extra/httpd-userdir.conf
+# Include @rel_sysconfdir@/extra/httpd-userdir.conf
 
 # Real-time info on requests and configuration
-# Include @relsysconfdir@/extra/httpd-info.conf
+# Include @rel_sysconfdir@/extra/httpd-info.conf
 
 # Virtual hosts
-# Include @relsysconfdir@/extra/httpd-vhosts.conf
+# Include @rel_sysconfdir@/extra/httpd-vhosts.conf
 
 #
 # Secure (SSL/TLS) connections
