@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/03 23:47:39 $]
+Last modified at [$Date: 2001/04/04 01:46:36 $]
 
 Release:
 
@@ -117,9 +117,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Common logging API.
 
     * Document mod_file_cache.
-
-    * OS/2: Get loadable modules working again. Requires shared core support
-      which doesn't appear to be catered for in the current build system.
 
     * OS/2: Make mod_status work for spmt_os2 MPM.
 
