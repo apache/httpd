@@ -1149,7 +1149,7 @@ static apr_status_t flush_all_logs(void *data)
 }
 #endif
 
-static void init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server_rec *s)
+static int init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server_rec *s)
 {
     /* First, do "physical" server, which gets default log fd and format
      * for the virtual servers, if they don't override...
@@ -1162,6 +1162,7 @@ static void init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, serve
     for (s = s->next; s; s = s->next) {
         open_multi_logs(s, p);
     }
+    return OK;
 }
 
 static void init_child(apr_pool_t *p, server_rec *s)

@@ -396,7 +396,10 @@ int main(int argc, const char * const argv[])
 	destroy_and_exit_process(process, 0);
     }
     apr_pool_clear(plog);
-    ap_run_open_logs(pconf, plog, ptemp, server_conf);
+    if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Unable to open logs\n");
+        destroy_and_exit_process(process, 1);
+    }
     if ( ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Configuration Failed\n");
         destroy_and_exit_process(process, 1);
@@ -425,7 +428,11 @@ int main(int argc, const char * const argv[])
         ap_fini_vhost_config(pconf, server_conf);
         apr_sort_hooks();
 	apr_pool_clear(plog);
-	ap_run_open_logs(pconf, plog, ptemp, server_conf);
+        if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Unable to open logs\n");
+            destroy_and_exit_process(process, 1);
+        }
+
 	if  (ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR | APLOG_NOERRNO, 0, NULL, "Configuration Failed\n");
             destroy_and_exit_process(process, 1);

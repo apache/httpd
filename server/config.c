@@ -176,9 +176,9 @@ AP_DECLARE(int) ap_run_post_config (apr_pool_t *pconf,
 }
  */
 
-AP_IMPLEMENT_HOOK_VOID(open_logs,
+AP_IMPLEMENT_HOOK_RUN_ALL(int, open_logs,
 		       (apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, 
-                        server_rec *s),(pconf,plog,ptemp,s))
+                        server_rec *s),(pconf,plog,ptemp,s),OK,DECLINED)
 AP_IMPLEMENT_HOOK_VOID(child_init,
                        (apr_pool_t *pchild, server_rec *s),(pchild,s))
 
