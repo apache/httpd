@@ -223,6 +223,8 @@ typedef struct {
     int             min;        /* Desired minimum number of available connections */
     int             smax;       /* Soft maximum on the total number of connections */
     int             hmax;       /* Hard maximum on the total number of connections */
+    apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
+                                 * may be available while exceeding the soft limit */
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
 } proxy_worker;
