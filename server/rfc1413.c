@@ -129,7 +129,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
     }
     
     if ((rv = apr_sockaddr_info_get(&destsa, conn->remote_ip, 
-                              localsa->sa.sin.sin_family, /* has to match */
+                              localsa->family, /* has to match */
                               RFC1413_PORT, 0, conn->pool)) != APR_SUCCESS) {
         /* This should not fail since we have a numeric address string
          * as the host. */
@@ -140,7 +140,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
     }
 
     if ((rv = apr_socket_create(newsock, 
-                                localsa->sa.sin.sin_family, /* has to match */
+                                localsa->family, /* has to match */
                                 SOCK_STREAM, conn->pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: error creating query socket");
