@@ -68,7 +68,7 @@ int ap_proxy_ajp_canon(request_rec *r, char *url)
     def_port = apr_uri_port_of_scheme(scheme);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-             "proxy: HTTP: canonicalising URL %s", url);
+             "proxy: AJP: canonicalising URL %s", url);
 
     /* do syntatic check.
      * We break the URL into host, port, path, search
@@ -113,30 +113,6 @@ int ap_proxy_ajp_canon(request_rec *r, char *url)
     return OK;
 }
  
-/* Clear all connection-based headers from the incoming headers table */
-static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
-{
-    const char *name;
-    char *next = apr_pstrdup(p, apr_table_get(headers, "Connection"));
-
-    apr_table_unset(headers, "Proxy-Connection");
-    if (!next)
-        return;
-
-    while (*next) {
-        name = next;
-        while (*next && !apr_isspace(*next) && (*next != ',')) {
-            ++next;
-        }
-        while (*next && (apr_isspace(*next) || (*next == ','))) {
-            *next = '\0';
-            ++next;
-        }
-        apr_table_unset(headers, name);
-    }
-    apr_table_unset(headers, "Connection");
-}
-
 static
 apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
                                                 proxy_ajp_conn_t *p_conn,
@@ -166,7 +142,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: HTTP connecting %s to %s:%d", *url, uri->hostname,
+                 "proxy: AJP connecting %s to %s:%d", *url, uri->hostname,
                  uri->port);
 
     /* do a DNS lookup for the destination host */
@@ -282,7 +258,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         apr_socket_timeout_set(p_conn->sock, current_timeout);
         if ( APR_STATUS_IS_EOF(socket_status) ) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                         "proxy: HTTP: previous connection is closed");
+                         "proxy: AJP: previous connection is closed");
             new = 1;
         }
     }
@@ -368,6 +344,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 {
     apr_status_t status;
     int result;
+    apr_bucket_brigade *input_brigade;
 
     /*
      * Send the AJP request to the remote server
@@ -382,8 +359,60 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         return status;
     }
 
+    /* read the first bloc of data */
+    input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
+    status = ap_get_brigade(r->input_filters, input_brigade,
+                            AP_MODE_READBYTES, APR_BLOCK_READ,
+                            8186);
+ 
+    if (status != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: ap_get_brigade failed");
+        apr_brigade_destroy(input_brigade);
+        return status;
+    }
+
+    /* have something */
+    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: APR_BUCKET_IS_EOS");
+    }
+
+    if (1) { /* XXXX only when something to send ? */
+        void *msg;
+        apr_size_t bufsiz;
+        char *buff;
+        long len;
+        status = ajp_alloc_data_msg(r, &buff, &bufsiz, &msg);
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: data to read (max %d at %08x)", bufsiz, buff);
+
+        /* XXXX calls apr_brigade_flatten... */
+        status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
+        if (status != APR_SUCCESS) {
+             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: apr_brigade_flatten");
+            return status;
+        }
+
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: got %d byte of data", bufsiz);
+        if (bufsiz > 0) {
+            status = ajp_send_data_msg(p_conn->sock, r, msg, bufsiz);
+            if (status != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                             "proxy: request failed to %pI (%s)",
+                             p_conn->addr, p_conn->name);
+                return status;
+            }
+        }
+    }
+
     /* read the response */
-    status = ajp_read_header(p_conn->sock,r,&(p_conn->data));
+    status = ajp_read_header(p_conn->sock, r, &(p_conn->data));
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: request failed to %pI (%s)",
@@ -400,7 +429,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         return APR_SUCCESS;
     }
 
-    /* send data via brigade or not??? */
+    /* XXXX: need logic to send the rest of the data */
 /*
     status = ajp_send_data(p_conn->sock,r);
     if (status != APR_SUCCESS) {
