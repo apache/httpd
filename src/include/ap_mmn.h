@@ -195,7 +195,7 @@
  * 19990101             - renamed macro escape_uri() to ap_escape_uri()
  *                      - added MODULE_MAGIC_COOKIE to identify module structs
  * 19990103 (1.3.4-dev) - added ap_array_pstrcat()
- * 19990105 (1.3.4-dev) - added ap_os_is_filename_valid() to Win32
+ * 19990105 (1.3.4-dev) - added ap_os_is_filename_valid()
  * 19990106 (1.3.4-dev) - Move MODULE_MAGIC_COOKIE to the end of the
  *                        STANDARD_MODULE_STUFF macro so the version
  *                        numbers and file name remain at invariant offsets

@@ -229,11 +229,11 @@ static int get_path_info(request_rec *r)
 
         *cp = '\0';
 
-#ifdef WIN32
-        /* We must not stat() filenames such as "/file/aux" since it can cause
-         * delays or lockups. So pretend that they do not exist by returning
-         * an ENOENT error. This will force us to drop that part of the path and
-         * keep looking back for a "real" file that exists, while still allowing
+        /* We must not stat() filenames that may cause os-specific system
+         * problems, such as "/file/aux" on DOS-abused filesystems.
+         * So pretend that they do not exist by returning an ENOENT error.
+         * This will force us to drop that part of the path and keep
+         * looking back for a "real" file that exists, while still allowing
          * the "invalid" path parts within the PATH_INFO.
          */
         if (!ap_os_is_filename_valid(path)) {
@@ -244,10 +244,6 @@ static int get_path_info(request_rec *r)
             errno = 0;
             rv = stat(path, &r->finfo);
         }
-#else
-        errno = 0;
-        rv = stat(path, &r->finfo);
-#endif
 
         if (cp != end)
             *cp = '/';
@@ -407,13 +403,11 @@ static int directory_walk(request_rec *r)
     ap_no2slash(test_filename);
     num_dirs = ap_count_dirs(test_filename);
 
-#ifdef WIN32
     if (!ap_os_is_filename_valid(r->filename)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                       "Filename is not valid: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
-#endif
 
     if ((res = check_safe_file(r))) {
         return res;

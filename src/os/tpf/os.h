@@ -33,6 +33,13 @@ INLINE int ap_os_is_path_absolute(const char *file);
 extern int ap_os_is_path_absolute(const char *file);
 #endif
 
+/* Other ap_os_ routines not used by this platform */
+
+#define ap_os_canonical_filename(p,f)       (f)
+#define ap_os_case_canonical_filename(p,f)  (f)
+#define ap_os_systemcase_filename(p,f)      (f)
+#define ap_os_is_filename_valid(f)          (1)
+
 /* Sorry if this is ugly, but the include order doesn't allow me
  * to use request_rec here... */
 struct request_rec;

@@ -1,5 +1,11 @@
 Changes with Apache 1.3.4
 
+  *) Moved prototypes/defines for ap_os_canonical_filename(),
+     ap_os_case_canonical_filename(), ap_os_systemcase_filename(), and
+     ap_os_is_filename_valid() from httpd.h to the separate os.h files.
+     Moved BS2000-specific os_set_account() and os_init_job_environment()
+     prototypes to bs2000/os.h. [Roy Fielding]
+
   *) Renamed macros status_drops_connection to ap_status_drops_connection
      and vestigial scan_script_header to ap_scan_script_header_err,
      mostly for aesthetic reasons. [Roy Fielding]
