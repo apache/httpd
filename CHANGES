@@ -1,5 +1,11 @@
 Changes with Apache 2.0.37
 
+  *) Allow ap_discard_request_body to be called multiple times in the
+     same request.  Essentially, ap_http_filter keeps track of whether
+     it has sent an EOS bucket up the stack, if so, it will only ever
+     send an EOS bucket for this request.  
+     [Ryan Bloom, Justin Erenkrantz, Greg Stein]
+
   *) Remove all special mod_ssl URIs.  This also fixes the bug where
      redirecting (.*) will allow an SSL protected page to be viewed
      without SSL.  [Ryan Bloom]
