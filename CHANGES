@@ -4,7 +4,7 @@ Changes with Apache 2.0.44
      config.m4 to make sure the parent mod_ldap is defined first.
      This ensures that mod_ldap comes before mod_auth_ldap in the
      httpd.conf file, which is necessary for mod_auth_ldap to load.
-     [Graham Leggett]
+     PR 14256  [Graham Leggett]
 
   *) Fix critical bug in new --enable-v4-mapped configure option
      implementation which broke IPv4 listening sockets on some
