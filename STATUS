@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/20 20:40:31 $]
+Last modified at [$Date: 2004/09/20 20:57:13 $]
 
 Release:
 
@@ -77,7 +77,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix Satisfy merging regression in 2.0.51.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.285&r2=1.286    
        PR: 31315
-       +1: jorton, nd
+       +1: jorton, nd, pquerna
 
     *) Fix the global mutex crash when the global mutex is never allocated
        due to disabled/empty caches.
