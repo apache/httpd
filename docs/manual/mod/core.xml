@@ -851,9 +851,19 @@ ErrorLog logs/error.log (Windows and OS/2)</default>
     the file to which the server will log any errors it encounters. If
     the <var>file-path</var> does not begin with a slash (/) then it is
     assumed to be relative to the <directive
-    module="core">ServerRoot</directive>. If the <var>file-path</var>
+    module="core">ServerRoot</directive>.</p>
+
+    <example><title>Example</title>
+    ErrorLog /var/log/httpd/error_log
+    </example>
+    
+    <p>If the <var>file-path</var>
     begins with a pipe (|) then it is assumed to be a command to spawn
     to handle the error log.</p>
+
+    <example><title>Example</title>
+    ErrorLog "|/usr/local/bin/httpd_errors"
+    </example>
 
     <p>Using <code>syslog</code> instead of a filename enables logging
     via syslogd(8) if the system supports it. The default is to use
@@ -861,6 +871,10 @@ ErrorLog logs/error.log (Windows and OS/2)</default>
     using the <code>syslog:<var>facility</var></code> syntax where
     <var>facility</var> can be one of the names usually documented in
     syslog(1).</p>
+
+    <example><title>Example</title>
+    ErrorLog syslog:user
+    </example>
 
     <p>SECURITY: See the <a
     href="../misc/security_tips.html#serverroot">security tips</a>
