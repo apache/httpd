@@ -39,17 +39,19 @@
   &lt;/Location&gt;
 </example>
 
-<note><title>Note</title>
-    <p>MD5 authentication provides a more
-    secure password system than Basic authentication, but only
-    works with supporting browsers. As of this writing (October 2001),
-    the only major browsers which support digest authentication are
-    <a href="http://www.opera.com/">Opera 4.0</a>,
-    <a href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer 5.0</a> and <a href="http://www.w3.org/Amaya/">Amaya</a>.
-    Therefore, we do not yet recommend using this feature on a large
-    Internet site. However, for personal and intra-net use, where
-    browser users can be controlled, it is ideal.</p>
+<note><title>Note</title> 
+    
+    <p>Digest authentication provides a more secure password system
+    than Basic authentication, but only works with supporting
+    browsers. As of July 2002, the major browsers that support digest
+    authentication are <a href="http://www.opera.com/">Opera</a>, <a
+    href="http://www.microsoft.com/windows/ie/">MS Internet
+    Explorer</a> (fails when used with a query string), <a
+    href="http://www.w3.org/Amaya/">Amaya</a> and <a
+    href="http://www.mozilla.org">Mozilla</a>.  Since digest
+    authentication is not as widely implemented as basic
+    authentication, you should use it only in controlled settings.</p>
+
 </note>
 </section>
 
@@ -268,4 +270,6 @@ authentication</description>
 </directivesynopsis>
 
 </modulesynopsis>
+
+
 
