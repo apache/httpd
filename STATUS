@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/26 19:00:50 $]
+Last modified at [$Date: 2004/02/26 20:12:13 $]
 
 Release:
 
@@ -277,7 +277,7 @@ PATCHES TO BACKPORT FROM 2.1
       this patch I can "kill -SEGV" the cgid daemon process a number
       of times and the daemon will be restarted each time.
       http://www.apache.org/~trawick/fatal_exception_20.patch
-      +1: trawick, stoddard, jerenkrantz
+      +1: trawick, stoddard, jerenkrantz, gregames
 
 CURRENT RELEASE NOTES:
 
