@@ -135,7 +135,7 @@ if test "$abs_builddir" != "$abs_srcdir"; then
   APR_ADDTO(INCLUDES, [-I\$(srcdir) -I\$(top_builddir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_builddir)/include])
 fi
 
-APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/filters -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/include])
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/filters -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/include -I\$(top_srcdir)/modules/generators])
 
 echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
 
