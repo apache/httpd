@@ -328,3 +328,49 @@ ssl_util_getmodconfig_ssl(
     return mc;
 }
 
+/*
+ * To ensure thread-safetyness in OpenSSL - work in progress
+ */
+
+static apr_lock_t *lock_cs[CRYPTO_NUM_LOCKS];
+static long        lock_count[CRYPTO_NUM_LOCKS];
+
+void ssl_util_thread_locking_callback(int mode, int type, char *file, int line)
+{
+    if (mode & CRYPTO_LOCK) {
+        apr_lock_acquire(lock_cs[type]);
+        lock_count[type]++;
+    }
+    else {
+        apr_lock_release(lock_cs[type]);
+    }
+}
+
+apr_status_t ssl_util_thread_cleanup(void *data)
+{
+    int i;
+
+    CRYPTO_set_locking_callback(NULL);
+    for (i = 0; i < CRYPTO_NUM_LOCKS; i++)
+        apr_lock_destroy(lock_cs[i]);
+    return APR_SUCCESS;
+}
+
+void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
+{
+    int i;
+    SSLModConfigRec *mc = myModConfig(s);
+
+    *lock_cs = apr_palloc(p, CRYPTO_NUM_LOCKS);
+    for (i = 0; i < CRYPTO_NUM_LOCKS; i++)
+    {
+        lock_count[i]=0;
+        apr_lock_create(&(lock_cs[i]), APR_MUTEX, APR_LOCKALL,
+                                                mc->szMutexFile, p);
+    }
+
+    CRYPTO_set_locking_callback((void (*)())ssl_util_thread_locking_callback);
+    apr_pool_cleanup_register(p, NULL,
+                ssl_util_thread_cleanup, apr_pool_cleanup_null);
+
+}

@@ -728,7 +728,7 @@ BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *); 
 char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
-void         ssl_util_thread_setup(void);
+void         ssl_util_thread_setup(server_rec *, apr_pool_t *);
 apr_status_t     ssl_util_setmodconfig(server_rec *, const char *, SSLModConfigRec *);
 SSLModConfigRec *ssl_util_getmodconfig(server_rec *, const char *);
 SSLModConfigRec *ssl_util_getmodconfig_ssl(SSL *, const char *);
