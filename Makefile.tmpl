@@ -441,7 +441,7 @@ install-include:
 #   icons and distributed CGI scripts.
 install-data:
 	@echo "===> [data: Installing initial data files]"
-	-@if [ -f $(root)$(htdocsdir)/index.html.en ]; then \
+	-@if [ -f $(root)$(htdocsdir)/index.html ] || [ -f $(root)$(htdocsdir)/index.html.en ]; then \
 		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(htdocsdir)/]"; \
 	else \
 		echo "Copying tree $(TOP)/htdocs/ -> $(root)$(htdocsdir)/"; \
