@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/24 19:50:56 $]
+Last modified at [$Date: 2004/03/24 20:03:34 $]
 
 Release:
 
@@ -71,6 +71,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Bojan Smojver's fix to core_output_filter emulate_sendfile()
+       Fix bug that could result in sending garbage over the network 
+       when module handlers construct bucket brigades containing 
+       multiple file buckets all referencing the same open file 
+       descriptor.
+           server/core.c?r1=1.268&r2=1.269
+       +1: stoddard
 
     *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
        is set in r->subprocess_env allow mismatched query strings to pass.
