@@ -234,6 +234,12 @@ PATCHES TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs?view=rev&rev=155345
       +1: jerenkrantz, pquerna, striker
 
+    * don't propagate input headers describing a body to a GET subrequest       
+      with no body
+      http://svn.apache.org/viewcvs?view=rev&rev=158798
+      http://svn.apache.org/viewcvs?view=rev&rev=159410
+      +1: gregames
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
