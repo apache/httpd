@@ -1524,20 +1524,39 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     }
 
     if (shutdown_pending) {
-	/* Time to gracefully shut down:
-	 * Don't worry about killing child threads for now, the all die when the parent exits
-	 */
+	/* Time to gracefully shut down */
+        const char *pidfile = NULL;
+        int slot;
+        TID tid;
+        ULONG rc;
 
-	/* cleanup pid file on normal shutdown */
-	{
-	    const char *pidfile = NULL;
-	    pidfile = ap_server_root_relative (pconf, ap_pid_fname);
-	    if ( pidfile != NULL && unlink(pidfile) == 0)
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,
-				server_conf,
-				"removed PID file %s (pid=%ld)",
-				pidfile, (long)getpid());
-	}
+        /* Kill off running threads */
+        for (slot=0; slot<max_daemons_limit; slot++) {
+            if (ap_scoreboard_image->servers[slot].status != SERVER_DEAD) {
+                tid = ap_scoreboard_image->parent[slot].tid;
+                rc = DosKillThread(tid);
+
+                if (rc == 0) {
+                    rc = DosWaitThread(&tid, DCWW_WAIT);
+
+                    if (rc) {
+                        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, server_conf,
+                                     "error %lu waiting for thread to terminate", rc);
+                    }
+                } else {
+                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, server_conf,
+                                 "error %lu killing thread", rc);
+                }
+            }
+        }
+
+        /* cleanup pid file on normal shutdown */
+        pidfile = ap_server_root_relative (pconf, ap_pid_fname);
+        if ( pidfile != NULL && unlink(pidfile) == 0)
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,
+                            server_conf,
+                            "removed PID file %s (pid=%ld)",
+                            pidfile, (long)getpid());
 
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, server_conf,
 		    "caught SIGTERM, shutting down");
