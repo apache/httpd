@@ -1948,7 +1948,12 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     sock_bind (s, server);
 #endif
 
-    listen(s, listenbacklog);
+    if (listen(s, listenbacklog) == -1) {
+	log_unixerr ("listen", NULL, "unable to listen for connections",
+	    server_conf);
+	close (s);
+	return -1;
+    }
     return s;
 }
 
@@ -2033,8 +2038,10 @@ static void setup_listeners(pool *p)
 	if (fd < 0) {
 	    fd = make_sock (p, &lr->local_addr);
 	}
-	FD_SET (fd, &listenfds);
-	if (fd > listenmaxfd) listenmaxfd = fd;
+	if (fd >= 0) {
+	    FD_SET (fd, &listenfds);
+	    if (fd > listenmaxfd) listenmaxfd = fd;
+	}
 	lr->fd = fd;
 	if (lr->next == NULL) break;
 	lr = lr->next;
