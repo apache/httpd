@@ -89,38 +89,132 @@ typedef struct {
 #define UNP_OMITPATHINFO	(1U<<4)	/* Show "scheme://user@site:port" only */
 #define UNP_OMITQUERY	        (1U<<5)	/* Omit the "?queryarg" from the path */
 
-typedef struct {
-    char *scheme;		/* scheme ("http"/"ftp"/...) */
-    char *hostinfo;             /* combined [user[:password]@]host[:port] */
-    char *user;			/* user name, as in http://user:passwd@host:port/ */
-    char *password;		/* password, as in http://user:passwd@host:port/ */
-    char *hostname;		/* hostname from URI (or from Host: header) */
-    char *port_str;		/* port string (integer representation is in "port") */
-    char *path;			/* the request path (or "/" if only scheme://host was given) */
-    char *query;		/* Everything after a '?' in the path, if present */
-    char *fragment;		/* Trailing "#fragment" string, if present */
+typedef struct uri_components uri_components;
 
+/**
+ * A structure to encompass all of the fields in a uri
+ */
+struct uri_components {
+    /** scheme ("http"/"ftp"/...) */
+    char *scheme;
+    /** combined [user[:password]@]host[:port] */
+    char *hostinfo;
+    /** user name, as in http://user:passwd@host:port/ */
+    char *user;
+    /** password, as in http://user:passwd@host:port/ */
+    char *password;
+    /** hostname from URI (or from Host: header) */
+    char *hostname;
+    /** port string (integer representation is in "port") */
+    char *port_str;
+    /** the request path (or "/" if only scheme://host was given) */
+    char *path;
+    /** Everything after a '?' in the path, if present */
+    char *query;
+    /** Trailing "#fragment" string, if present */
+    char *fragment;
+
+    /** structure returned from gethostbyname() 
+     *  @defvar struct hostent *hostent */
     struct hostent *hostent;
 
-    unsigned short port;	/* The port number, numeric, valid only if port_str != NULL */
+    /** The port number, numeric, valid only if port_str != NULL */
+    unsigned short port;
     
+    /** has the structure been initialized */
     unsigned is_initialized:1;
 
+    /** has the DNS been looked up yet */
     unsigned dns_looked_up:1;
+    /** has the dns been resolved yet */
     unsigned dns_resolved:1;
-
-} uri_components;
+};
 
 /* util_uri.c */
+/**
+ * Return the default port for a given scheme.  The schemes recognized are
+ * http, ftp, https, gopher, wais, nntp, snews, and prospero
+ * @param scheme_str The string that contains the current scheme
+ * @return The default port for this scheme
+ * @deffunc unsigned short ap_default_port_for_scheme(const char *scheme_str)
+ */ 
 API_EXPORT(unsigned short) ap_default_port_for_scheme(const char *scheme_str);
+
+/**
+ * Return the default for the current request
+ * @param r The current request
+ * @return The default port
+ * @deffunc unsigned short ap_default_port_for_request(const request_rec *r)
+ */
 API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r);
+
+/**
+ * Create a copy of a "struct hostent" record; it was presumably returned
+ * from a call to gethostbyname() and lives in static storage.
+ * By creating a copy we can tuck it away for later use.
+ * @param p Pool to allocate out of
+ * @param hp hostent to duplicate
+ * @deffunc struct hostent * ap_pduphostent(apr_pool_t *p, const struct hostent *hp)
+ */ 
 API_EXPORT(struct hostent *) ap_pduphostent(apr_pool_t *p, const struct hostent *hp);
+
+/**
+ * resolve hostname, if successful return an ALLOCATED COPY OF the hostent 
+ * structure, intended to be stored and used later.
+ * @param p The pool to allocate out of
+ * @param hostname The hostname to resolve
+ * @return The allocated hostent structure
+ * @deffunc struct hostent * ap_pgethostbyname(apr_pool_t *p, const char *hostname)
+ */
 API_EXPORT(struct hostent *) ap_pgethostbyname(apr_pool_t *p, const char *hostname);
+
+/**
+ * Unparse a uri_components structure to an URI string.  Optionally suppress 
+ * the password for security reasons.
+ * @param p The pool to allocate out of
+ * @param uri_components All of the parts of the uri
+ * @param flags How to unparse the uri.  One of:
+ * <PRE>
+ *    UNP_OMITSITEPART        suppress "scheme://user@site:port" 
+ *    UNP_OMITUSER            Just omit user 
+ *    UNP_OMITPASSWORD        Just omit password 
+ *    UNP_OMITUSERINFO        omit "user:password@" part 
+ *    UNP_REVEALPASSWORD      Show plain text password (default: show XXXXXXXX) 
+ *    UNP_OMITPATHINFO        Show "scheme://user@site:port" only 
+ *    UNP_OMITQUERY           Omit the "?queryarg" from the path 
+ * </PRE>
+ * @return The uri as a string
+ * @deffunc char * ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr, unsigned flags)
+ */
 API_EXPORT(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components *uptr,
     unsigned flags);
+
+/**
+ * Parse a given URI, fill in all supplied fields of a uri_components
+ * structure. This eliminates the necessity of extracting host, port,
+ * path, query info repeatedly in the modules.
+ * @param p The pool to allocate out of
+ * @param uri The uri to parse
+ * @param uptr The uri_components to fill out
+ * @return An HTTP status code
+ * @deffunc int ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr)
+ */
 API_EXPORT(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_components *uptr);
+
+/**
+ * Special case for CONNECT parsing: it comes with the hostinfo part only
+ * @param p The pool to allocate out of
+ * @param hostinfo The hostinfo string to parse
+ * @param uptr The uri_components to fill out
+ * @return An HTTP status code
+ * @deffunc int ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr)
+ */
 API_EXPORT(int) ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr);
-/* called by the core in main() */
+
+/**
+ * Setup everything necessary to parse uri's
+ * @deffunc void ap_util_uri_init(void)
+ */
 API_EXPORT(void) ap_util_uri_init(void);
 
 #ifdef __cplusplus
