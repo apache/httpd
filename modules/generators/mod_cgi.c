@@ -166,7 +166,7 @@ static const command_rec cgi_cmds[] =
 static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 			   int show_errno, char *error)
 {
-    FILE *f;
+    ap_file_t *f;
     struct stat finfo;
 
     ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, r, 
@@ -175,20 +175,20 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     if (!conf->logname ||
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
 	 &&   (finfo.st_size > conf->logbytes)) ||
-         ((f = ap_pfopen(r->pool, ap_server_root_relative(r->pool, conf->logname),
-		      "a")) == NULL)) {
+          (ap_open(&f, r->pool, ap_server_root_relative(r->pool, conf->logname),
+                   APR_APPEND | APR_BUFFERED, APR_OS_DEFAULT) != APR_SUCCESS)) {
 	return ret;
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
+    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin */
-    fprintf(f, "%%%% %d %s\n", ret, r->filename);
+    ap_fprintf(f, "%%%% %d %s\n", ret, r->filename);
 
-    fprintf(f, "%%error\n%s\n", error);
+    ap_fprintf(f, "%%error\n%s\n", error);
 
-    ap_pfclose(r->pool, f);
+    ap_close(f);
     return ret;
 }
 
@@ -196,17 +196,17 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 		  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err)
 {
     ap_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
-    table_entry *hdrs = (table_entry *) hdrs_arr->elts;
+    ap_table_entry_t *hdrs = (ap_table_entry_t *) hdrs_arr->elts;
     char argsbuffer[HUGE_STRING_LEN];
-    FILE *f;
+    ap_file_t *f;
     int i;
     struct stat finfo;
 
     if (!conf->logname ||
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
 	 &&   (finfo.st_size > conf->logbytes)) ||
-         ((f = ap_pfopen(r->pool, ap_server_root_relative(r->pool, conf->logname),
-		      "a")) == NULL)) {
+         (ap_open(&f, r->pool, ap_server_root_relative(r->pool, conf->logname),
+                  APR_APPEND, APR_OS_DEFAULT) != APR_SUCCESS)) {
 	/* Soak up script output */
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	    continue;
@@ -227,55 +227,55 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
+    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", ap_get_time(), r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin" */
-    fprintf(f, "%%%% %d %s\n", ret, r->filename);
+    ap_fprintf(f, "%%%% %d %s\n", ret, r->filename);
 
-    fputs("%request\n", f);
+    ap_puts("%request\n", f);
     for (i = 0; i < hdrs_arr->nelts; ++i) {
 	if (!hdrs[i].key)
 	    continue;
-	fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+	ap_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
     }
     if ((r->method_number == M_POST || r->method_number == M_PUT)
 	&& *dbuf) {
-	fprintf(f, "\n%s\n", dbuf);
+	ap_fprintf(f, "\n%s\n", dbuf);
     }
 
-    fputs("%response\n", f);
+    ap_puts("%response\n", f);
     hdrs_arr = ap_table_elts(r->err_headers_out);
-    hdrs = (table_entry *) hdrs_arr->elts;
+    hdrs = (ap_table_entry_t *) hdrs_arr->elts;
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {
 	if (!hdrs[i].key)
 	    continue;
-	fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+	ap_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
     }
 
     if (sbuf && *sbuf)
-	fprintf(f, "%s\n", sbuf);
+	ap_fprintf(f, "%s\n", sbuf);
 
     if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
-	fputs("%stdout\n", f);
-	fputs(argsbuffer, f);
+	ap_puts("%stdout\n", f);
+	ap_puts(argsbuffer, f);
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
-	    fputs(argsbuffer, f);
-	fputs("\n", f);
+	    ap_puts(argsbuffer, f);
+	ap_puts("\n", f);
     }
 
     if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
-	fputs("%stderr\n", f);
-	fputs(argsbuffer, f);
+	ap_puts("%stderr\n", f);
+	ap_puts(argsbuffer, f);
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
-	    fputs(argsbuffer, f);
-	fputs("\n", f);
+	    ap_puts(argsbuffer, f);
+	ap_puts("\n", f);
     }
 
     ap_bclose(script_in);
     ap_bclose(script_err);
 
-    ap_pfclose(r->pool, f);
+    ap_close(f);
     return ret;
 }
 
@@ -295,12 +295,20 @@ struct cgi_child_stuff {
     char *argv0;
 };
 
-static int cgi_child(void *child_stuff, child_info *pinfo)
+static int  cgi_child(struct cgi_child_stuff *child_stuff,
+                      BUFF **script_out, BUFF **script_in, BUFF **script_err)
 {
-    struct cgi_child_stuff *cld = (struct cgi_child_stuff *) child_stuff;
+    struct cgi_child_stuff *cld = child_stuff;
     request_rec *r = cld->r;
+    char err_string[MAX_STRING_LEN];
     char *argv0 = cld->argv0;
-    int child_pid;
+    char **args = NULL;
+    char **env;
+    ap_context_t *child_context;
+    ap_procattr_t *procattr;
+    ap_proc_t *procnew;
+    ap_os_proc_t fred;
+    int rc;
 
 #ifdef DEBUG_CGI
 #ifdef OS2
@@ -312,7 +320,9 @@ static int cgi_child(void *child_stuff, child_info *pinfo)
     int i;
 #endif
 
-    char **env;
+    ap_block_alarms();
+
+    child_context = r->main ? r->main->pool : r->pool;
 
     RAISE_SIGSTOP(CGI_CHILD);
 #ifdef DEBUG_CGI
@@ -321,7 +331,7 @@ static int cgi_child(void *child_stuff, child_info *pinfo)
 #endif
 
     ap_add_cgi_vars(r);
-    env = ap_create_environment(r->pool, r->subprocess_env);
+    env = ap_create_environment(child_context, r->subprocess_env);
 
 #ifdef DEBUG_CGI
     fprintf(dbg, "Environment: \n");
@@ -329,40 +339,81 @@ static int cgi_child(void *child_stuff, child_info *pinfo)
 	fprintf(dbg, "'%s'\n", env[i]);
 #endif
 
-#ifndef WIN32
-    ap_chdir_file(r->filename);
-#endif
     if (!cld->debug)
 	ap_error_log2stderr(r->server);
 
-    /* Transumute outselves into the script.
+    /* Transumute ourselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
      */
 
 #ifdef TPF
+    ap_unblock_alarms();
+
     return (0);
 #else
     ap_cleanup_for_exec();
 
-    child_pid = ap_call_exec(r, pinfo, argv0, env, 0);
-#if defined(WIN32) || defined(OS2)
-    return (child_pid);
-#else
+    if ((ap_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr,
+                           script_in  ? 1 : 0,
+                           script_out ? 1 : 0,
+                           script_err ? 1 : 0)            != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr, r->filename)        != APR_SUCCESS) ||
+        (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
+        /* Something bad happened, tell the world. */
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+		      "couldn't create child process: %s", r->filename);
+        ap_unblock_alarms();
 
-    /* Uh oh.  Still here.  Where's the kaboom?  There was supposed to be an
-     * EARTH-shattering kaboom!
-     *
-     * Oh, well.  Muddle through as best we can...
-     *
-     * Note that only stderr is available at this point, so don't pass in
-     * a server to aplog_error.
-     */
+        return (-1);
+    }
+    else {
 
-    ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "exec of %s failed", r->filename);
-    exit(0);
-    /* NOT REACHED */
-    return (0);
+        rc = ap_tokenize_to_argv(child_context, argv0, &args);
+        if (rc != APR_SUCCESS) {
+            ap_snprintf(err_string, sizeof(err_string),
+                        "argv[] allocation failed, reason: %s (errno = %d)\n",
+                        strerror(errno), errno);
+            write(STDERR_FILENO, err_string, strlen(err_string));
+            ap_unblock_alarms();
+
+            exit(0);
+        }
+
+        rc = ap_create_process(&procnew, child_context, r->filename, args,
+                               env, procattr);
+    
+        if (rc != APR_SUCCESS) {
+            /* Bad things happened. Everyone should have cleaned up. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                        "couldn't create child process: %d: %s", rc, r->filename);
+        }
+        else {
+#ifndef WIN32
+            /* pjr - this is a cheap hack for now to get the basics working in
+             *       stages. ap_note_subprocess and free_proc need to be redone
+             *       to make use of ap_proc_t instead of pid.
+             */
+            ap_get_os_proc(procnew, &fred);
+            ap_note_subprocess(child_context, fred, kill_after_timeout);
 #endif
+            if (script_in) {
+                *script_in = ap_bcreate(child_context, B_WR);
+            }
+
+            if (script_out) {
+                *script_out = ap_bcreate(child_context, B_RD);
+            }
+
+            if (script_err) {
+                *script_err = ap_bcreate(child_context, B_RD);
+            }
+        }
+
+        ap_unblock_alarms();
+
+        return (rc);
+    }
 #endif  /* TPF */
 }
 
@@ -449,12 +500,10 @@ static int cgi_handler(request_rec *r)
      * waiting for free_proc_chain to cleanup in the middle of an
      * SSI request -djg
      */
-    if (!ap_bspawn_child(r->main ? r->main->pool : r->pool, cgi_child,
-			 (void *) &cld, kill_after_timeout,
-			 &script_out, &script_in, &script_err)) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-		    "couldn't spawn child process: %s", r->filename);
-	return HTTP_INTERNAL_SERVER_ERROR;
+    if (cgi_child(&cld, &script_out, &script_in, &script_err) < 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                      "couldn't spawn child process: %s", r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* Transfer any put/post args, CERN style...
@@ -573,20 +622,11 @@ static const handler_rec cgi_handlers[] =
 module MODULE_VAR_EXPORT cgi_module =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* pre_config */
-    NULL,			/* post_config */
-    NULL,			/* open_logs */
-    NULL,			/* child initializer */
     NULL,			/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     create_cgi_config,		/* server config */
     merge_cgi_config,		/* merge server config */
     cgi_cmds,			/* command ap_table_t */
     cgi_handlers,		/* handlers */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
     NULL			/* register hooks */
 };
