@@ -527,7 +527,7 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
      * Now make the output string.  We know our limitations, so we
      * can use the string routines without bounds checking.
      */
-    ap_cpystrn(passwd, AP_MD5PW_ID, AP_MD5PW_ID + 1);
+    ap_cpystrn(passwd, AP_MD5PW_ID, AP_MD5PW_IDLEN + 1);
     ap_cpystrn(passwd + AP_MD5PW_IDLEN, (char *)sp, sl + 1);
     passwd[AP_MD5PW_IDLEN + sl]     = '$';
     passwd[AP_MD5PW_IDLEN + sl + 1] = '\0';
