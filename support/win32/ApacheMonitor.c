@@ -591,7 +591,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
             switch (dwCommand)
             {
             case SERVICE_CONTROL_STOP:
-                lstrcat(szBuf, " -k stop -n ");
+                lstrcat(szBuf, " -k shutdown -n ");
                 break;
             case SERVICE_CONTROL_CONTINUE:
                 sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTART-IDS_MSG_FIRST], szServiceName);
@@ -820,7 +820,7 @@ BOOL IsServiceRunning(LPCSTR szServiceName, LPDWORD lpdwPid)
     return FALSE;
 }
 
-BOOL FindRunningServices()
+BOOL FindRunningServices(void)
 {
     int i = 0;
     DWORD dwPid;
