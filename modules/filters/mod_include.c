@@ -128,7 +128,6 @@ typedef struct {
 static const char lazy_eval_sentinel;
 #define LAZY_VALUE (&lazy_eval_sentinel)
 
-/* XXX: could use ap_table_overlap here */
 static void add_include_vars(request_rec *r, char *timefmt)
 {
     apr_table_t *e = r->subprocess_env;
