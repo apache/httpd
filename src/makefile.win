@@ -162,6 +162,8 @@ _install:
 	copy lib\sdbm\Lib$(SHORT)\sdbm.lib "$(INSTDIR)\lib"
 	copy $(LONG)\ApacheCore.exp "$(INSTDIR)\libexec"
 	copy $(LONG)\ApacheCore.lib "$(INSTDIR)\libexec"
+	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.exp "$(INSTDIR)\libexec"
+	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.lib "$(INSTDIR)\libexec"
 	copy lib\expat-lite\$(LONG)\xmltok.exp "$(INSTDIR)\libexec"
 	copy lib\expat-lite\$(LONG)\xmltok.lib "$(INSTDIR)\libexec"
 	copy lib\expat-lite\$(LONG)\xmlparse.exp "$(INSTDIR)\libexec"
