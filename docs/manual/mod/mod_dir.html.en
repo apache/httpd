@@ -75,7 +75,7 @@ a directory</td></tr>
 </table>
     <p>The <code class="directive">DirectoryIndex</code> directive sets the
     list of resources to look for, when the client requests an index
-    of the directory by specifying a / at the end of the a directory
+    of the directory by specifying a / at the end of the directory
     name.  <var>Local-url</var> is the (%-encoded) URL of a document on
     the server relative to the requested directory; it is usually the
     name of a file in the directory. Several URLs may be given, in
