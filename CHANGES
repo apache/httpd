@@ -1,8 +1,12 @@
 Changes with Apache 2.0.25-dev
+
+  *) Fix a growing connection pool in core_output_filter() for 
+     keepalive requests.  [Jeff Trawick]
+
   *) Moved split_and_pass_pretag_buckets back to being a
      macro at Ryans's request. Removed the return from it
      by setting and returning a return code instead. Updated
-     the code to check the return code from teh macro and
+     the code to check the return code from the macro and
      do the right thing. [Paul J. Reder]
 
   *) Fix a segfault when a numeric value was received for Host:.
