@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/14 21:16:45 $]
+Last modified at [$Date: 2002/03/14 22:40:14 $]
 
 Release:
 
@@ -74,6 +74,7 @@ FINAL RELEASE SHOWSTOPPERS:
       ap_pass_brigade() hook?  As a filter that runs at HTTP_HEADER stage?
       This needs to be resolved before the next public release.
         Message-ID: <018701c1b99c$f0f24310$0a01230a@KOJ>
+      BillS is working on this...
         
     * API changes planned for 2.0 that should happen before the
       GA release:
@@ -118,7 +119,6 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
     * mod_negotiation may be broken on Win32 with large .var
       files.  Some Win32 savant needs to evaluate the Win32 
       portion of the patch posted to dev@apr.apache.org in this
