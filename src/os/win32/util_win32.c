@@ -642,7 +642,7 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file)
 
 	/* Test 2 */
 	for (idx = 0; idx < seglength; idx++) {
-	    if (segstart[idx] < 32 ||
+	    if ((segstart[idx] > 0 && segstart[idx] < 32) ||
 		strchr(invalid_characters, segstart[idx])) {
 		return 0;
 	    }
