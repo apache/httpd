@@ -1,7 +1,7 @@
 Changes with Apache 1.3.4
 
   *) Fix ordering of definitions in ap_config.h so that ap_inline is
-     defined before it might be used. [Khimenko Victor]
+     defined before it might be used. [Victor Khimenko]
 
   *) PORT: Add Dynamic Shared Object (DSO) support for BSDI (v4.0).
      [Tom Serkowski <tks@bsdi.com>] PR#3453
