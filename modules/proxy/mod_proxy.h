@@ -193,6 +193,12 @@ struct per_thread_data {
 };
 
 typedef struct {
+    conn_rec *connection;
+    char *hostname;
+    apr_port_t port;
+} proxy_conn_rec;
+
+typedef struct {
         float cache_completion; /* completion percentage */
         int content_length; /* length of the content */
 } proxy_completion;

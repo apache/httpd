@@ -206,6 +206,15 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     apr_bucket *e;
     apr_bucket_brigade *bb = apr_brigade_create(p);
 
+    proxy_conn_rec *backend =
+    (proxy_conn_rec *) ap_get_module_config(c->conn_config, &proxy_module);
+    if (!backend) {
+	backend = ap_pcalloc(c->pool, sizeof(proxy_conn_rec));
+	backend->connection = NULL;
+	backend->hostname = NULL;
+	backend->port = 0;
+	ap_set_module_config(c->conn_config, &proxy_module, backend);
+    }
 
     /*
      * Step One: Determine Who To Connect To
@@ -285,11 +294,11 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      * open, or whether it should be closed and a new socket created.
      */
     /* see memory note above */
-    if (conf->connection) {
-	if ((conf->id == c->id) &&
-	    (conf->connectport == connectport) &&
-	    (conf->connectname) &&
-            (!apr_strnatcasecmp(conf->connectname,connectname))) {
+    if (backend->connection) {
+	if ((backend->connection->id == c->id) &&
+	    (backend->port == connectport) &&
+	    (backend->hostname) &&
+            (!apr_strnatcasecmp(backend->hostname,connectname))) {
 	    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 			 "proxy: keepalive address match (keep original socket)");
         }
@@ -297,20 +306,20 @@ int ap_proxy_http_handler(request_rec *r, char *url,
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 			 "proxy: keepalive address mismatch / connection has"
 			 " changed (close old socket (%s/%s, %d/%d))", 
-			 connectname, conf->connectname, 
-			 connectport, conf->connectport);
-            apr_socket_close(conf->connection->client_socket);
-            conf->connection = NULL;
+			 connectname, backend->hostname, 
+			 connectport, backend->port);
+            apr_socket_close(backend->connection->client_socket);
+            backend->connection = NULL;
 	}
     }
 
     /* get a socket - either a keepalive one, or a new one */
     new = 1;
-    if ((conf->id == c->id) && (conf->connection)) {
+    if ((backend->connection) && (backend->connection->id == c->id)) {
 
 	/* use previous keepalive socket */
-	sock = conf->connection->client_socket;
-	origin = conf->connection;
+	origin = backend->connection;
+	sock = origin->client_socket;
 	new = 0;
 
 	/* reset the connection filters */
@@ -322,7 +331,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     if (new) {
 
 	/* create a new socket */
-	conf->connection = NULL;
+	backend->connection = NULL;
 
 	/* see memory note above */
 	if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, c->pool)) != APR_SUCCESS) {
@@ -389,7 +398,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: socket is connected");
 
-	/* the socket is now open, create a new downstream connection */
+	/* the socket is now open, create a new backend server connection */
 	origin = ap_new_connection(c->pool, r->server, sock, r->connection->id);
 	if (!origin) {
 	    /* the peer reset the connection already; ap_new_connection() 
@@ -399,10 +408,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	    apr_socket_close(sock);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
-	conf->id = r->connection->id;
-	conf->connectname = connectname;
-	conf->connectport = connectport;
-	conf->connection = origin;
+	backend->connection = origin;
+	backend->hostname = apr_pstrdup(c->pool, connectname);
+	backend->port = connectport;
 
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: connection complete");
@@ -581,7 +589,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 
     if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer)))) {
 	apr_socket_close(sock);
-	conf->connection = NULL;
+	backend->connection = NULL;
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	     "proxy: error reading status line from remote server %s",
 	     connectname);
@@ -602,7 +610,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
         /* If not an HTTP/1 message or if the status line was > 8192 bytes */
 	else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
 	    apr_socket_close(sock);
-	    conf->connection = NULL;
+	    backend->connection = NULL;
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 				 apr_pstrcat(p, "Corrupt status line returned by remote server: ", buffer, NULL));
 	}
@@ -752,7 +760,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      */
     if (close || (r->proto_num < HTTP_VERSION(1,1))) {
         apr_socket_close(sock);
-	conf->connection = NULL;
+	backend->connection = NULL;
     }
 
     return OK;
