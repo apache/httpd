@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/02 22:44:11 $]
+Last modified at [$Date: 2002/06/03 18:07:36 $]
 
 Release:
 
@@ -136,16 +136,6 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * "apxs -g" support is broken in a binbuild (tested 2.0.36 on
-      Solaris).  At least the following is necessary to make the
-      generated Makefile work:
-
-      1) copy more of the .mk files to the build directory (only 
-         config_vars.mk was copied initially); rules.mk and special.mk
-         are definitely needed
-      2) edit the path to LIBTOOL in config_vars.mk to reflect the
-         place where it was actually installed
 
     * exec cmd and suexec arg-passing enhancements
       Status: Patches proposed
