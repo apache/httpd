@@ -47,6 +47,8 @@
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c)
 
+#define modssl_set_cipher_list SSL_set_cipher_list
+
 #define HAVE_SSL_RAND_EDG /* since 9.5.1 */
 
 #else /* RSA sslc */
@@ -61,8 +63,6 @@
 #define MODSSL_BIO_CB_ARG_TYPE char
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c, NULL)
-
-#define modssl_set_cipher_list SSL_set_cipher_list
 
 /* XXX: add configure check */
 #ifndef HAVE_SSL_SET_STATE
