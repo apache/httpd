@@ -7,15 +7,21 @@
 # See http://www.apache.org/docs/LICENSE
 
 
+CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
 VER=`echo $APDIR |sed s/apache_//`
 OS=`src/helpers/GuessOS`
-USER="`src/helpers/buildinfo.sh -n %u@%h%d`"
 TAR="`src/helpers/PrintPath tar`"
 GTAR="`src/helpers/PrintPath gtar`"
 GZIP="`src/helpers/PrintPath gzip`"
-CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max"
+
+if [ x$1 != x ]
+then
+  USER=$1
+else
+  USER="`src/helpers/buildinfo.sh -n %u@%h%d`"
+fi
 
 if [ ! -f ./ABOUT_APACHE ]
 then
@@ -59,7 +65,10 @@ then
   exit 1;
 fi
 
-echo "Binary images successfully created..."
+echo "Binary image successfully created..."
+
+./bindist/bin/httpd -v
+
 echo "Creating supplementary files..."
 
 ( echo " " && \
