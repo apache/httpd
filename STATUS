@@ -86,7 +86,7 @@ Available Patches:
 
     * Marc's [PATCH] don't log bogus errno when file doesn't exist
 	<Pine.BSF.3.95.980110232826.3955E-100000@alive.znep.com>
-	Status: 
+	Status: Marc +1, Dean +1
 
     * Dean's [PATCH] OSF/1 serialized accept
 	<Pine.LNX.3.95dg3.980110002610.7757A-100000@twinlark.arctic.org>
@@ -95,6 +95,8 @@ Available Patches:
     * Dean's [PATCH] make mod_rewrite use ap_cpystrn
 	<Pine.LNX.3.95dg3.980107182931.5827H-100000@twinlark.arctic.org>
 	Status: waiting to find out status of Ralf's mod_rewrite restructuring
+	Ralf says go for it now.
+	Status: Dean +1
 
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
@@ -107,11 +109,13 @@ Available Patches:
     * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
 	Submitted by: Soeren Ziehe <ROBINTON@AMTRASH.comlink.de>
 	<19980109130721.21356@deejai.mch.sni.de>
-	Status: Martin +1,
+	Status: Martin +1, Dean +1
 
     * Martin's [PATCH] 36kB: Make apache compile & run on an EBCDIC mainframe
 	<19971217184646.62136@deejai.mch.sni.de>
 	Status: Martin +1, Dean +1
+	(needs an update I'm sure... I've been running this patch on a linux box
+	since Martin posted it without troubles -djg)
 
     * Marc's [PATCH] PR#1543: suexec logging exec failures
 	<Pine.BSF.3.95.971210202721.1361I-100000@alive.znep.com>
