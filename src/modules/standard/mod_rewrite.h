@@ -50,27 +50,42 @@
  *
  */
 
-/* $Id: mod_rewrite.h,v 1.4 1996/08/20 11:51:19 paul Exp $ */
+/* $Id: mod_rewrite.h,v 1.5 1996/08/23 16:16:53 akosut Exp $ */
 
 #ifndef _MOD_REWRITE_H
 #define _MOD_REWRITE_H 1
 
 /*
-**  mod_rewrite.h
+**  mod_rewrite.h -- Common Header File
+**                       _                            _ _ 
+**   _ __ ___   ___   __| |    _ __ _____      ___ __(_) |_ ___ 
+**  | '_ ` _ \ / _ \ / _` |   | '__/ _ \ \ /\ / / '__| | __/ _ \
+**  | | | | | | (_) | (_| |   | | |  __/\ V  V /| |  | | ||  __/
+**  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
+**                       |_____|
 **
-**  URL Rewriting Module Header, Version 2.2 (xx-08-1996)
+**  URL Rewriting Module, Version 2.2 (22-08-1996)
 **
-**  This module uses a regular-expression parser to rewrite requested URLs
-**  on the fly. It can use external databases (either plain text, or
-**  DBM) to provide a mapping function or generate real URIs (including
-**  QUERY_INFO parts) for internal subprocessing or external request
-**  redirection.
+**  This module uses a rule-based rewriting engine (based on a
+**  regular-expression parser) to rewrite requested URLs on the fly. 
+**  
+**  It supports an unlimited number of additional rule conditions (which can
+**  operate on a lot of variables, even on HTTP headers) for granular
+**  matching and even external database lookups (either via plain text
+**  tables, DBM hash files or even external processes) for advanced URL
+**  substitution.
+**  
+**  It operates on the full URLs (including the PATH_INFO part) both in
+**  per-server context (httpd.conf) and per-dir context (.htaccess) and even
+**  can generate QUERY_STRING parts on result.   The rewriting result finally
+**  can lead to internal subprocessing, external request redirection or even
+**  to internal proxy throughput.
 **
 **  The documentation and latest release can be found on
 **  http://www.engelschall.com/sw/mod_rewrite/
 **
-**  Copyright (c) 1996 The Apache Group
-**  Copyright (c) 1996 Ralf S. Engelschall
+**  Copyright (c) 1996 The Apache Group,    All rights reserved.
+**  Copyright (c) 1996 Ralf S. Engelschall, All rights reserved.
 **
 **  Written for The Apache Group by
 **      Ralf S. Engelschall
@@ -83,15 +98,15 @@
 
    /* try to see under which version we are running */
 #if (MODULE_MAGIC_NUMBER >= 19960725)
-#define HAVE_INTERNAL_REGEX 1
+#define HAS_APACHE_REGEX_LIB 1
 #endif
 
     /* now we go on and include more of our own stuff ... */
-#ifndef HAVE_INTERNAL_REGEX
+#ifndef HAS_APACHE_REGEX_LIB
 #include "regexp/regexp.h"
 #endif
-#if SUPPORT_DBM_REWRITEMAP
-#include "sdbm/sdbm.h"
+#if HAS_NDBM_LIB
+#include <ndbm>
 #endif
 
 
@@ -100,7 +115,6 @@
 **  Some defines
 **
 */
-
 
 #define ENVVAR_SCRIPT_URL "SCRIPT_URL"
 #define ENVVAR_SCRIPT_URI "SCRIPT_URI"
@@ -157,7 +171,7 @@ typedef struct {
 typedef struct {
     char   *input;                 /* Input string of RewriteCond */
     char   *pattern;               /* the RegExp pattern string */
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     regex_t *regexp;
 #else
     regexp *regexp;                /* the RegExp pattern compilation */
@@ -168,7 +182,7 @@ typedef struct {
 typedef struct {
     array_header *rewriteconds;    /* the corresponding RewriteCond entries */
     char         *pattern;         /* the RegExp pattern string */
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     regex_t      *regexp;          /* the RegExp pattern compilation */
 #else
     regexp       *regexp;
@@ -178,6 +192,7 @@ typedef struct {
     char         *forced_mimetype; /* forced MIME-type of substitution */
     int           skip;            /* number of next rules to skip */
 } rewriterule_entry;
+
 
     /* the per-server or per-virtual-server configuration
        statically generated once on startup for every server */
@@ -191,6 +206,7 @@ typedef struct {
     array_header *rewriteconds;    /* the RewriteCond entries (temporary) */
     array_header *rewriterules;    /* the RewriteRule entries */
 } rewrite_server_conf;
+
 
     /* the per-directory configuration
        individually generated on-the-fly by Apache server for current request */
@@ -230,8 +246,10 @@ typedef struct cache {
 */
 
     /* static config */
+extern module rewrite_module;
 static command_rec command_table[];
 static handler_rec handler_table[];
+extern cache *cachep;
 
     /* config structure handling */
 static void *config_server_create(pool *p, server_rec *s);
@@ -251,7 +269,7 @@ static char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, cha
 static char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *new, char *str);
 static char *cmd_rewritecond_setflag       (pool *p, rewritecond_entry *cfg, char *key, char *val);
 
-       char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
+extern char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
 static char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *new, char *str);
 static char *cmd_rewriterule_setflag       (pool *p, rewriterule_entry *cfg, char *key, char *val);
 
@@ -270,10 +288,10 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir); 
 
     /* URI transformation function */
-static void splitout_queryargs(request_rec *r);
-static void reduce_uri(request_rec *r);
+static void  splitout_queryargs(request_rec *r);
+static void  reduce_uri(request_rec *r);
 static char *expand_tildepaths(request_rec *r, char *uri);
-static void expand_map_lookups(request_rec *r, char *uri);
+static void  expand_map_lookups(request_rec *r, char *uri);
 
     /* DBM hashfile support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
@@ -313,6 +331,6 @@ static int    prefix_stat(const char *path, struct stat *sb);
 static int    is_this_our_host(request_rec *r, char *testhost);
 static char **make_hostname_list(request_rec *r, char *hostname);
 
-
 #endif /* _MOD_REWRITE_H */
+
 /*EOF*/

@@ -50,18 +50,33 @@
  *
  */
 
-/* $Id: mod_rewrite.c,v 1.3 1996/08/20 11:51:18 paul Exp $ */
+/* $Id: mod_rewrite.c,v 1.4 1996/08/23 16:16:52 akosut Exp $ */
 
 /*
-**  mod_rewrite.c
+**  mod_rewrite.c -- The Main Module Code
+**                       _                            _ _ 
+**   _ __ ___   ___   __| |    _ __ _____      ___ __(_) |_ ___ 
+**  | '_ ` _ \ / _ \ / _` |   | '__/ _ \ \ /\ / / '__| | __/ _ \
+**  | | | | | | (_) | (_| |   | | |  __/\ V  V /| |  | | ||  __/
+**  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
+**                       |_____|
 **
-**  URI Rewriting Module, Version 2.2 (xx-08-1996)
+**  URL Rewriting Module, Version 2.2 (22-08-1996)
 **
-**  This module uses a regular-expression parser to rewrite requested URLs
-**  on the fly. It can use external databases (either plain text, or
-**  DBM) to provide a mapping function or generate real URIs (including
-**  QUERY_INFO parts) for internal subprocessing or external request
-**  redirection.
+**  This module uses a rule-based rewriting engine (based on a
+**  regular-expression parser) to rewrite requested URLs on the fly. 
+**  
+**  It supports an unlimited number of additional rule conditions (which can
+**  operate on a lot of variables, even on HTTP headers) for granular
+**  matching and even external database lookups (either via plain text
+**  tables, DBM hash files or even external processes) for advanced URL
+**  substitution.
+**  
+**  It operates on the full URLs (including the PATH_INFO part) both in
+**  per-server context (httpd.conf) and per-dir context (.htaccess) and even
+**  can generate QUERY_STRING parts on result.   The rewriting result finally
+**  can lead to internal subprocessing, external request redirection or even
+**  to internal proxy throughput.
 **
 **  The documentation and latest release can be found on
 **  http://www.engelschall.com/sw/mod_rewrite/
@@ -113,7 +128,8 @@
 **
 **  keep in mind:
 **
-**  o  Runtime logic of a request:
+**  o  Runtime logic of a request is as following:
+**
 **       while(request or subrequest) {
 **           foreach(stage #1...#8) {
 **               foreach(module) { (**)
@@ -122,12 +138,13 @@
 **           }
 **       }
 **
-**  o  the order of modules is the inverted order as
-**     given in the Configuration file, i.e. the last module
-**     specified is the first one called! The core module
-**     is allways the last!
+**  o  the order of modules at (**) is the inverted order as
+**     given in the "Configuration" file, i.e. the last module
+**     specified is the first one called for each hook!
+**     The core module is allways the last!
 **
-**  o  there are two different types of result checking and continue processing:
+**  o  there are two different types of result checking and 
+**     continue processing:
 **     for hook #1,#3,#4,#5,#7:
 **         hook run loop stops on first modules which gives
 **         back a result != DECLINED, i.e. it usually returns OK
@@ -137,14 +154,15 @@
 **         all hooks are run, independend of result
 **
 **  o  at the last stage, the core module allways 
-**         - says "BAD_REQUEST" if r->filename does not begin with "/"
-**         - prefix URL with document_root or replaced server_root
-**           with document_root and sets r->filename
-**         - allways return a "OK" independed if the file really exists
-**           or not!
+**       - says "BAD_REQUEST" if r->filename does not begin with "/"
+**       - prefix URL with document_root or replaced server_root
+**         with document_root and sets r->filename
+**       - allways return a "OK" independed if the file really exists
+**         or not!
 **
 */
 
+    /* the main config structure */
 module rewrite_module = {
    STANDARD_MODULE_STUFF, 
 
@@ -170,30 +188,34 @@ module rewrite_module = {
    NULL                         /* [#8] log a transaction */
 };
 
+    /* the table of commands we provide */
 static command_rec command_table[] = {
     { "RewriteEngine",   cmd_rewriteengine,   NULL, OR_FILEINFO, FLAG, 
       "On or Off to enable or disable (default) the whole rewriting engine" },
-    { "RewriteBase",     cmd_rewritebase,     NULL, OR_OPTIONS, TAKE1, 
+    { "RewriteBase",     cmd_rewritebase,     NULL, OR_OPTIONS,  TAKE1, 
       "the base URL of the per-directory context" },
     { "RewriteCond",     cmd_rewritecond,     NULL, OR_FILEINFO, RAW_ARGS, 
       "a input string and a to be applied regexp-pattern" },
     { "RewriteRule",     cmd_rewriterule,     NULL, OR_FILEINFO, RAW_ARGS, 
       "a URL-applied regexp-pattern and a substitution URL" },
-    { "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF, TAKE2, 
+    { "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,   TAKE2, 
       "a mapname and a filename" },
-    { "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF, TAKE1, 
+    { "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,   TAKE1, 
       "the filename of the rewriting logfile" },
-    { "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF, TAKE1, 
+    { "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,   TAKE1, 
       "the level of the rewriting logfile verbosity (0=none, 1=std, .., 9=max)" },
     { NULL }
 };
 
+    /* the table of content handlers we provide */
 static handler_rec handler_table[] = {
     { "redirect-handler", handler_redirect },
     { NULL }
 };
 
-static cache *cachep;
+    /* the common cache */
+cache *cachep;
+
 
 
 
@@ -290,7 +312,7 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
 
 /*
 **
-**  configuration directive commands
+**  the configuration commands
 **
 */
 
@@ -299,19 +321,10 @@ static char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf, int f
     rewrite_server_conf *sconf;
 
     sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
-
-    if (cmd->path == NULL) {   /* is server command */
-        if (flag) 
-            sconf->state = ENGINE_ENABLED;
-        else
-            sconf->state = ENGINE_DISABLED;
-    }
-    else {                     /* is per-directory command */
-        if (flag) 
-            dconf->state = ENGINE_ENABLED;
-        else
-            dconf->state = ENGINE_DISABLED;
-    }
+    if (cmd->path == NULL) /* is server command */
+        sconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
+    else                   /* is per-directory command */
+        dconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
 
     return NULL;
 }
@@ -389,7 +402,7 @@ static char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *s
 {
     rewrite_server_conf *sconf;
     rewritecond_entry *new;
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     regex_t *regexp;
 #else
     regexp *regexp;
@@ -437,7 +450,7 @@ static char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *s
     /* now be careful: Under the POSIX regex library
        we can compile the pattern for case-insensitive matching,
        under the old V8 library we have to do it self via a hack */
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     if (new->flags & CONDFLAG_NOCASE)
         rc = ((regexp = pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE)) == NULL);
     else
@@ -515,12 +528,11 @@ static char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char *key,
     return NULL;
 }
 
-
 char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
 {
     rewrite_server_conf *sconf;
     rewriterule_entry *new;
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     regex_t *regexp;
 #else
     regexp *regexp;
@@ -552,7 +564,7 @@ char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
         new->flags |= RULEFLAG_NOTMATCH;
         cp++;
     }
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     if ((regexp = pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL)
 #else
     if ((regexp = regcomp(cp)) == NULL)
@@ -564,7 +576,7 @@ char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
     /*  arg2: the output string
         replace the $<N> by \<n> which is needed by the currently
         used Regular Expression library */
-#ifndef HAVE_INTERNAL_REGEX
+#ifndef HAS_APACHE_REGEX_LIB
     for (i = 0; a2[i] != '\0'; i++) {
         if (a2[i] == '$' && a2[i+1] >= '1' && a2[i+1] <= '9') 
             a2[i] = '\\';
@@ -594,7 +606,6 @@ char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
 
     return NULL;
 }
-
 
 static char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *cfg, char *str)
 {
@@ -694,8 +705,8 @@ static char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char *key,
 /*
 **
 **  module initialisation 
-**  [called from read_config() after all config commands
-**  were already called]
+**  [called from read_config() after all 
+**  config commands were already called]
 **
 */
 
@@ -760,7 +771,6 @@ static int hook_uri2file(request_rec *r)
     if (conf->state == ENGINE_DISABLED)
         return DECLINED;
 
-
     /*
      *  add the SCRIPT_URL variable to the env. this is a bit complicated
      *  due to the fact that apache uses subrequests and internal redirects
@@ -814,7 +824,8 @@ static int hook_uri2file(request_rec *r)
             strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should be go on as an internal proxy request */
 
-            /* make sure the QUERY_INFO part gets incorporated */
+            /* make sure the QUERY_STRING and
+               PATH_INFO parts get incorporated */
             r->filename = pstrcat(r->pool, r->filename, 
                                            r->path_info ? r->path_info : "", 
                                            r->args ? "?" : NULL, r->args, 
@@ -841,7 +852,7 @@ static int hook_uri2file(request_rec *r)
                 r->filename = pstrcat(r->pool, r->filename, cp2, NULL);
             }
 
-            /* append the QUERY_INFO part */
+            /* append the QUERY_STRING part */
             if (r->args != NULL)
                r->filename = pstrcat(r->pool, r->filename, "?", r->args, NULL);
 
@@ -1007,7 +1018,8 @@ static int hook_fixup(request_rec *r)
             strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should go on as an internal proxy request */
 
-            /* make sure the QUERY_INFO part gets incorporated */
+            /* make sure the QUERY_STRING and
+               PATH_INFO parts get incorporated */
             r->filename = pstrcat(r->pool, r->filename, 
                                            r->path_info ? r->path_info : "", 
                                            r->args ? "?" : NULL, r->args, 
@@ -1049,7 +1061,7 @@ static int hook_fixup(request_rec *r)
                 r->filename = pstrcat(r->pool, r->filename, cp2, NULL);
             }
 
-            /* append the QUERY_INFO part */
+            /* append the QUERY_STRING part */
             if (r->args != NULL)
                r->filename = pstrcat(r->pool, r->filename, "?", r->args, NULL);
 
@@ -1233,7 +1245,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     int flags;
     static char newuri[MAX_STRING_LEN];
     static char port[32];
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     regex_t *regexp;
     regmatch_t regmatch[10];
 #else
@@ -1270,7 +1282,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     if (perdir != NULL) 
         rewritelog(r, 3, "[per-dir %s] applying pattern '%s' to uri '%s'", perdir, p->pattern, uri);
 
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
     rc = (regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);   /* try to match the pattern */
 #else
     rc = (regexec(regexp, uri) != 0);   /* try to match the pattern */
@@ -1304,7 +1316,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             }
             else {
                 output = pstrcat(r->pool, "proxy:", output, NULL);
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
                 strcpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch));    /* substitute in output */
 #else
                 regsub(regexp, output, newuri);                      /* substitute in output */
@@ -1328,7 +1340,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                 expand_map_lookups(r, newuri);                       /* expand ${...} */
             }
             else {
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
                 strcpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch));    /* substitute in output */
 #else
                 regsub(regexp, output, newuri);                      /* substitute in output */
@@ -1356,7 +1368,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         }
         else {
             /* substitute in output */
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
             strcpy(newuri, pregsub(r->pool, output, uri, regexp->re_nsub+1, regmatch));    /* substitute in output */
 #else
             regsub(regexp, output, newuri);                      /* substitute in output */
@@ -1415,7 +1427,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 
 static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir)
 {
-#ifndef HAVE_INTERNAL_REGEX
+#ifndef HAS_APACHE_REGEX_LIB
     static char inputbuf[MAX_STRING_LEN];
     int i;
 #endif
@@ -1449,7 +1461,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
     }
     else {
         /* it is really a regexp pattern, so apply it */
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
         rc = (regexec(p->regexp, input, 0, NULL, 0) == 0);
 #else
         if (p->flags & CONDFLAG_NOCASE) {
@@ -1480,7 +1492,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
-** |              URI transformation functions
+** |              URL transformation functions
 ** |                                                       |
 ** +-------------------------------------------------------+
 */
@@ -1488,7 +1500,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
 
 /*
 **
-**  split out a QUERY_INFO part from
+**  split out a QUERY_STRING part from
 **  the current URI string
 **
 */
@@ -1509,6 +1521,7 @@ static void splitout_queryargs(request_rec *r)
     }
     return;            
 }
+
 
 /*
 **
@@ -1582,6 +1595,7 @@ static void reduce_uri(request_rec *r)
     return;            
 }
 
+
 /*
 **
 **  Expand tilde-paths (~user) through
@@ -1623,6 +1637,7 @@ static char *expand_tildepaths(request_rec *r, char *uri)
     }
     return newuri;
 }
+
 
 /*
 **
@@ -1759,14 +1774,16 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
+                        return NULL;
                     }
                 }
                 else {
                     rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
+                    return value;
                 }
             }
             else if (s->type == MAPTYPE_DBM) {
-#if SUPPORT_DBM_REWRITEMAP
+#if HAS_NDBM_LIB
                 stat(s->file, &st); /* existence was checked at startup! */
                 value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
                 if (value == NULL) {
@@ -1778,10 +1795,12 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     }
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
+                        return NULL;
                     }
                 }
                 else {
                     rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
+                    return value;
                 }
 #else
                 return NULL;
@@ -1803,7 +1822,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 
 #define PATTERN "^([^ ]+) +([^ ]+).*$"
 
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
 
 #define OUTPUT "$1,$2"
 static regex_t   *lookup_map_txtfile_regexp = NULL;
@@ -1831,7 +1850,7 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
         return NULL;
 
     if (lookup_map_txtfile_regexp == NULL)
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
         lookup_map_txtfile_regexp = pregcomp(r->pool, PATTERN, REG_EXTENDED);
 #else
         lookup_map_txtfile_regexp = regcomp(PATTERN);
@@ -1841,12 +1860,12 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     while (fgets(line, sizeof(line), fp) != NULL) {
         if (line[strlen(line)-1] == '\n')
             line[strlen(line)-1] = '\0';
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
         if (regexec(lookup_map_txtfile_regexp, line, lookup_map_txtfile_regexp->re_nsub+1, lookup_map_txtfile_regmatch, 0) == 0) {
 #else
         if (regexec(lookup_map_txtfile_regexp, line) != 0) {
 #endif
-#ifdef HAVE_INTERNAL_REGEX
+#ifdef HAS_APACHE_REGEX_LIB
             strcpy(result, pregsub(r->pool, output, line, lookup_map_txtfile_regexp->re_nsub+1, lookup_map_txtfile_regmatch)); /* substitute in output */
 #else
             regsub(lookup_map_txtfile_regexp, output, result);
@@ -1866,7 +1885,7 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     return value;
 }
 
-#if SUPPORT_DBM_REWRITEMAP
+#if HAS_NDBM_LIB
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
 {
     DBM *dbmfp = NULL;
@@ -2096,7 +2115,7 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
     return;
 }
 
-/* Child process code */
+/* child process code */
 static void rewritemap_program_child(void *cmd)
 {
     cleanup_for_exec();
@@ -2107,6 +2126,7 @@ static void rewritemap_program_child(void *cmd)
 
 
 
+
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -2114,6 +2134,7 @@ static void rewritemap_program_child(void *cmd)
 ** |                                                       |
 ** +-------------------------------------------------------+
 */
+
 
 static void expand_variables_inbuffer(request_rec *r, char *buf)
 {
@@ -2187,6 +2208,10 @@ static char *lookup_variable(request_rec *r, char *var)
     }
     else if (strcasecmp(var, "HTTP_ACCEPT") == 0) {
         result = lookup_header(r, "Accept");
+    }
+    /* all other headers from which we are still not know about */
+    else if (strlen(var) > 5 && strncasecmp(var, "HTTP:", 5) == 0) {
+        result = lookup_header(r, var+5);
     }
 
     /* connection stuff */
@@ -2586,6 +2611,7 @@ static int prefix_stat(const char *path, struct stat *sb)
     else
         return 0;
 }
+
 
 /*
 **
