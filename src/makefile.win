@@ -127,6 +127,7 @@ _install:
 	copy ..\ABOUT_APACHE "$(INSTDIR)\ABOUT_APACHE.TXT"
 	copy ..\Announcement "$(INSTDIR)\Announcement.txt"
 	copy ..\LICENSE "$(INSTDIR)\LICENSE.TXT"
+	copy ..\NOTICE "$(INSTDIR)\NOTICE.TXT"
 	copy ..\README-WIN.TXT "$(INSTDIR)"
 	copy ..\WARNING-WIN.TXT "$(INSTDIR)"
 	copy $(LONG)\Apache.exe "$(INSTDIR)"
