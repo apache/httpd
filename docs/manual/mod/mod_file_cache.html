@@ -1,23 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_file_cache - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_file_cache</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Caches a static list of files in memory</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>file_cache_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_file_cache</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_file_cache</h1>
-
-    <p><strong>This module should be used with care. You can easily
+<blockquote><table><tr><td bgcolor="#ffe5f5">
+This module should be used with care. You can easily
     create a broken site using mod_file_cache, so read this
-    document carefully.</strong></p>
+    document carefully.
+</td></tr></table></blockquote>
 
     <p><em>Caching</em> frequently requested files that change very
     infrequently is a technique for reducing server load.
@@ -30,18 +21,6 @@
     (specifically, the file I/O) for serving the file when the
     server is started rather than during each request.</p>
 
-    <p><code>mod_file_cache</code> is not compiled into the server
-    by default. To use <code>mod_file_cache</code> you have to
-    enable the following line in the server build
-    <code>Configuration</code> file:</p>
-<pre>
-    AddModule  modules/experimental/mod_file_cache.o
- 
-</pre>
-    <br />
-     <br />
-     
-
     <p>Notice: You cannot use this for speeding up CGI programs or
     other files which are served by special content handlers. It
     can only be used for regular files which are usually served by
@@ -49,39 +28,35 @@
 
     <p>This module is an extension of and borrows heavily from the
     mod_mmap_static module in Apache 1.3.</p>
+</summary><h2>Directives</h2><ul><li><a href="#cachefile">CacheFile</a></li><li><a href="#mmapfile">MMapFile</a></li></ul><h2>Using mod_file_cache</h2>
 
-    <h2>Summary</h2>
+    <p><code><a href="mod_file_cache.html">mod_file_cache</a></code> caches a list of statically
+    configured files via <a href="#mmapfile" class="directive"><code class="directive">MMapFile</code></a> or <a href="#cachefile" class="directive"><code class="directive">CacheFile</code></a> directives in the
+    main server configuration.</p>
 
-    <p><code>mod_file_cache</code> caches a list of statically
-    configured files via <code>MMapFile</code> or
-    <code>CacheFile</code> directives in the main server
-    configuration.</p>
+    <p>Not all platforms support both directives. For example, Apache
+    on Windows does not currently support the <a href="#mmapstatic" class="directive"><code class="directive">MMapStatic</code></a> directive, while
+    other platforms, like AIX, support both. You will receive an error
+    message in the server error log if you attempt to use an
+    unsupported directive. If given an unsupported directive, the
+    server will start but the file will not be cached. On platforms
+    that support both directives, you should experiment with both to
+    see which works best for you.</p>
 
-    <p>Not all platforms support both directives. For example,
-    Apache on Windows does not currently support the MMapStatic
-    directive, while other platforms, like AIX, support both. You
-    will receive an error message in the server error log if you
-    attempt to use an unsupported directive. If given an
-    unsupported directive, the server will start but the file will
-    not be cached. On platforms that support both directives, you
-    should experiment with both to see which works best for
-    you.</p>
+<h3>MmapFile Directive</h3>
 
-    <h3><code>MmapFile</code> Directive</h3>
-
-    <p>The <code>MmapFile</code> directive of
-    <code>mod_file_cache</code> maps a list of statically
-    configured files into memory through the system call
-    <code>mmap()</code>. This system call is available on most
-    modern Unix derivates, but not on all. There are sometimes
-    system-specific limits on the size and number of files that can
-    be mmap()d, experimentation is probably the easiest way to find
+    <p>The <a href="#mmapfile" class="directive"><code class="directive">MmapFile</code></a>
+    directive of <code><a href="mod_file_cache.html">mod_file_cache</a></code> maps a list of
+    statically configured files into memory through the system call
+    <code>mmap()</code>. This system call is available on most modern
+    Unix derivates, but not on all. There are sometimes
+    system-specific limits on the size and number of files that can be
+    mmap()d, experimentation is probably the easiest way to find
     out.</p>
 
     <p>This mmap()ing is done once at server start or restart,
     only. So whenever one of the mapped files changes on the
-    filesystem you <em>have</em> to restart the server (see the <a
-    href="../stopping.html">Stopping and Restarting</a>
+    filesystem you <em>have</em> to restart the server (see the <a href="../stopping.html">Stopping and Restarting</a>
     documentation). To reiterate that point: if the files are
     modified <em>in place</em> without restarting the server you
     may end up serving requests that are completely bogus. You
@@ -92,15 +67,16 @@
     an extra <code>stat()</code> every time which is a waste and
     against the intent of I/O reduction.</p>
 
-    <h3><code>CacheFile</code> Directive</h3>
 
-    <p>The <code>CacheFile</code> directive of
-    <code>mod_file_cache</code> opens an active <em>handle</em> or
-    <em>file descriptor</em> to the file (or files) listed in the
-    configuration directive and places these open file handles in
-    the cache. When the file is requested, the server retrieves the
-    handle from the cache and passes it to the sendfile() (or
-    TransmitFile() on Windows), socket API.</p>
+<h3>CacheFile Directive</h3>
+
+    <p>The <a href="#cachefile" class="directive"><code class="directive">CacheFile</code></a>
+    directive of <code><a href="mod_file_cache.html">mod_file_cache</a></code> opens an active
+    <em>handle</em> or <em>file descriptor</em> to the file (or files)
+    listed in the configuration directive and places these open file
+    handles in the cache. When the file is requested, the server
+    retrieves the handle from the cache and passes it to the
+    sendfile() (or TransmitFile() on Windows), socket API.</p>
 
     <p>Insert more details about sendfile API...</p>
 
@@ -115,109 +91,57 @@
     copy in place. Most tools such as <code>rdist</code> and
     <code>mv</code> do this.</p>
 
-    <h2>Directives</h2>
 
-    <ul>
-      <li><a href="#mmapfile">MMapFile</a></li>
+<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Note</strong></p> Don't bother asking for a for a
+    directive which recursively caches all the files in a
+    directory. Try this instead... See the 
+    <a href="core.html#include" class="directive"><code class="directive">Include</code></a> directive, and consider
+    this command:
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+  find /www/htdocs -type f -print \ <br>
+  | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
+</code></td></tr></table></blockquote>
+</td></tr></table></blockquote>
 
-      <li><a href="#cachefile">CacheFile</a></li>
-    </ul>
-    <hr />
+<hr/><h2><a name="CacheFile">CacheFile</a> <a name="cachefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CacheFile
+    <em>file-path</em> [<em>file-path</em>] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">CacheFile</code> directive opens handles to
+    one or more files (given as whitespace separated arguments) and
+    places these handles into the cache at server startup
+    time. Handles to cached files are automatically closed on a server
+    shutdown.  When the files have changed on the filesystem, the
+    server should be restarted to to re-cache them.</p>
 
-    <h2><a id="mmapfile" name="mmapfile">MMapFile</a></h2>
+    <p>Be careful with the <em>file-path</em> arguments: They have
+    to literally match the filesystem path Apache's URL-to-filename
+    translation handlers create. We cannot compare inodes or other
+    stuff to match paths through symbolic links <em>etc.</em>
+    because that again would cost extra <code>stat()</code> system
+    calls which is not acceptable. This module may or may not work
+    with filenames rewritten by <code><a href="mod_alias.html">mod_alias</a></code> or
+    <code><a href="mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> MMapFile
-    <em>filename</em> [<em>filename</em>] ...<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server-config<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> <em>Not
-    applicable</em><br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Experimental<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_file_cache<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Only in Apache
-    1.3 (via mod_mmap_statis) or later.</p>
-
-    <p>The <code>MMapFile</code> directive maps one or more files
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+  CacheFile /usr/local/apache/htdocs/index.html
+</code></td></tr></table></blockquote>
+</usage><hr/><h2><a name="MMapFile">MMapFile</a> <a name="mmapfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>MMapFile <em>file-path</em> [<em>file-path</em>] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">MMapFile</code> directive maps one or more files
     (given as whitespace separated arguments) into memory at server
     startup time. They are automatically unmapped on a server
     shutdown. When the files have changed on the filesystem at
     least a HUP or USR1 signal should be send to the server to
     re-mmap them.</p>
 
-    <p>Be careful with the <em>filename</em> arguments: They have
+    <p>Be careful with the <em>file-path</em> arguments: They have
     to literally match the filesystem path Apache's URL-to-filename
     translation handlers create. We cannot compare inodes or other
     stuff to match paths through symbolic links <em>etc.</em>
     because that again would cost extra <code>stat()</code> system
     calls which is not acceptable. This module may or may not work
-    with filenames rewritten by <code>mod_alias</code> or
-    <code>mod_rewrite</code>.</p>
-    Example: 
-<pre>
+    with filenames rewritten by <code><a href="mod_alias.html">mod_alias</a></code> or
+    <code><a href="mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
   MMapFile /usr/local/apache/htdocs/index.html
- 
-</pre>
-    <hr />
-
-    <h2><a id="cachefile" name="cachefile">CacheFile</a></h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> CacheFile
-    <em>filename</em> [<em>filename</em>] ...<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server-config<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> <em>Not
-    applicable</em><br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Experimental<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_file_cache<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Only available
-    in Apache 2.0 or later.</p>
-
-    <p>The <code>CacheFile</code> directive opens handles to one or
-    more files (given as whitespace separated arguments) and places
-    these handles into the cache at server startup time. Handles to
-    cached files are automatically closed on a server shutdown.
-    When the files have changed on the filesystem, the server
-    should be restarted to to re-cache them.</p>
-
-    <p>Be careful with the <em>filename</em> arguments: They have
-    to literally match the filesystem path Apache's URL-to-filename
-    translation handlers create. We cannot compare inodes or other
-    stuff to match paths through symbolic links <em>etc.</em>
-    because that again would cost extra <code>stat()</code> system
-    calls which is not acceptable. This module may or may not work
-    with filenames rewritten by <code>mod_alias</code> or
-    <code>mod_rewrite</code>.</p>
-    Example: 
-<pre>
-  CacheFile /usr/local/apache/htdocs/index.html
- 
-</pre>
-
-    <p><strong>Note</strong>: don't bother asking for a for a
-    directive which recursively caches all the files in a
-    directory. Try this instead... See the <a
-    href="core.html#include">Include</a> directive, and consider
-    this command:</p>
-<pre>
-  find /www/htdocs -type f -print \
-  | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
- 
-</pre>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+</code></td></tr></table></blockquote>
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>

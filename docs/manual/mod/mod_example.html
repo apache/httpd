@@ -1,45 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_example</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <blockquote>
-      <strong>Warning:</strong> This document has not been updated
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_example - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_example</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Illustrates the Apache module API</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>example_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
+<blockquote><table><tr><td bgcolor="#ffe5f5">
+      This document has not been updated
       to take into account changes made in the 2.0 version of the
       Apache HTTP Server. Some of the information may still be
       relevant, but please use it with care.
-    </blockquote>
-
-    <h1 align="CENTER">Module mod_example</h1>
-
-    <p>This module illustrates many of the aspects of the <a
-    href="../misc/API.html" rel="Help">Apache 1.2 API</a> and, when
-    used, demonstrates the manner in which module callbacks are
-    triggered by the server.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>
-    mod_example.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    example_module<br />
-     <a href="module-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 1.2 and later.</p>
-
-    <h2>Summary</h2>
+</td></tr></table></blockquote>
 
     <p>The files in the <code>src/modules/example directory</code>
     under the Apache distribution directory tree are provided as an
@@ -56,17 +25,7 @@
     location, and then browse to that location, you will see a
     display of some of the tracing the example module did as the
     various callbacks were made.</p>
-
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="#example">Example</a></li>
-    </ul>
-    <br />
-     <br />
-     
-
-    <h2>Compiling the example module</h2>
+</summary><h2>Directives</h2><ul><li><a href="#example">Example</a></li></ul><h2>Compiling the example module</h2>
 
     <p>To include the example module in your server, follow the
     steps below:</p>
@@ -76,90 +35,61 @@
         Uncomment the "AddModule modules/example/mod_example" line
         near the bottom of the <code>src/Configuration</code> file.
         If there isn't one, add it; it should look like this: 
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
      AddModule modules/example/mod_example.o
-   
-</pre>
+</code></td></tr></table></blockquote>
       </li>
 
       <li>Run the <code>src/Configure</code> script
-      ("<samp>cd&nbsp;src;&nbsp;./Configure</samp>"). This will
+      ("<code>cd&nbsp;src;&nbsp;./Configure</code>"). This will
       build the Makefile for the server itself, and update the
       <code>src/modules/Makefile</code> for any additional modules
       you have requested from beneath that subdirectory.</li>
 
-      <li>Make the server (run "<samp>make</samp>" in the
+      <li>Make the server (run "<code>make</code>" in the
       <code>src</code> directory).</li>
     </ol>
 
     <p>To add another module of your own:</p>
 
     <ol type="A">
-      <li><samp>mkdir src/modules/<em>mymodule</em></samp></li>
+      <li><code>mkdir src/modules/<em>mymodule</em></code></li>
 
-      <li><samp>cp src/modules/example/*
-      src/modules/<em>mymodule</em></samp></li>
+      <li><code>cp src/modules/example/*
+      src/modules/<em>mymodule</em></code></li>
 
       <li>Modify the files in the new directory.</li>
 
       <li>Follow steps [1] through [3] above, with appropriate
       changes.</li>
     </ol>
-
-    <h2>Using the <samp>mod_example</samp> Module</h2>
+<h2>Using the <code>mod_example</code> Module</h2>
 
     <p>To activate the example module, include a block similar to
-    the following in your <samp>srm.conf</samp> file:</p>
-<pre>
-   &lt;Location /example-info&gt;
-       SetHandler example-handler
+    the following in your <code>srm.conf</code> file:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+   &lt;Location /example-info&gt;<br>
+       SetHandler example-handler<br>
    &lt;/Location&gt;
- 
-</pre>
+</code></td></tr></table></blockquote>
 
-    <p>As an alternative, you can put the following into a <a
-    href="core.html#accessfilename"><samp>.htaccess</samp></a> file
-    and then request the file "test.example" from that
-    location:</p>
-<pre>
+    <p>As an alternative, you can put the following into a <a href="core.html#accessfilename"><code>.htaccess</code></a> file
+    and then request the file "test.example" from that location:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
    AddHandler example-handler .example
- 
-</pre>
+</code></td></tr></table></blockquote>
 
     <p>After reloading/restarting your server, you should be able
     to browse to this location and see the brief display mentioned
     earlier.</p>
-    <hr />
-
-    <h2><a id="example" name="example">Example directive</a></h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Example<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> None<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> Options<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_example<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a>
-    <samp>Example</samp> is only available in Apache 1.2 and
-    later.</p>
-
-    <p>The <samp>Example</samp> directive just sets a demonstration
+<hr/><h2><a name="Example">Example</a> <a name="example">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Demonstration directive to illustrate the Apache module
+API</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>Example</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_example</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">Example</code> directive just sets a demonstration
     flag which the example module's content handler displays. It
     takes no arguments. If you browse to an URL to which the
     example content-handler applies, you will get a display of the
     routines within the module and how and in what order they were
     called to service the document request. The effect of this
-    directive one can observe under the point "<samp>Example
-    directive declared here: YES/NO</samp>".</p>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+    directive one can observe under the point "<code>Example
+    directive declared here: YES/NO</code>".</p>
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>

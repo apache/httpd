@@ -2,8 +2,8 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_status - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_status</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>This module provides information on server activity and
-performance.</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>status_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Available in Apache 1.1 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2><summary>
+--><title>mod_status - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_status</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Provides information on server activity and
+performance</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>status_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5">
   <strong>Warning:</strong> This document has not been updated
@@ -45,15 +45,15 @@ performance.</description></td></tr><tr><td><a href="module-dict.html#Status" cl
       <li>The current hosts and requests being processed (*)</li>
     </ul>
 
-    A compile-time option must be used to display the details
+    <p>A compile-time option must be used to display the details
     marked "(*)" as the instrumentation required for obtaining
-    these statistics does not exist within standard Apache. 
+    these statistics does not exist within standard Apache.</p>
 </summary><h2>Directives</h2><ul><li><a href="#extendedstatus">ExtendedStatus</a></li></ul><h2>Enabling Status Support</h2>
     
 
-    To enable status reports only for browsers from the foo.com
+    <p>To enable status reports only for browsers from the foo.com
     domain add this code to your <code>httpd.conf</code>
-    configuration file 
+    configuration file</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     &lt;Location /server-status&gt;<br>
     SetHandler server-status<br>
@@ -74,20 +74,20 @@ performance.</description></td></tr><tr><td><a href="module-dict.html#Status" cl
 <h2>Automatic Updates</h2>
 
     
-    You can get the status page to update itself automatically if
+    <p>You can get the status page to update itself automatically if
     you have a browser that supports "refresh". Access the page
     <code>http://your.server.name/server-status?refresh=N</code> to
-    refresh the page every N seconds. 
+    refresh the page every N seconds.</p>
 
 <h2>Machine Readable Status File</h2>
 
     
-    A machine-readable version of the status file is available by
+    <p>A machine-readable version of the status file is available by
     accessing the page
     <code>http://your.server.name/server-status?auto</code>. This
     is useful when automatically run, see the Perl program in the
     <code>/support</code> directory of Apache,
-    <code>log_server_status</code>. 
+    <code>log_server_status</code>.</p>
 
     <blockquote><table><tr><td bgcolor="#e0e5f5">
       <strong>It should be noted that if <code><a href="mod_status.html">mod_status</a></code> is

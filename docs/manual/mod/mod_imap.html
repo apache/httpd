@@ -1,71 +1,31 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_imap</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_imap</h1>
-
-    <p>This module provides for server-side imagemap
-    processing.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a> mod_imap.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    imap_module<br />
-     <a href="module-dict.html#compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 1.1 and later.</p>
-
-    <h2>Summary</h2>
-
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_imap - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_imap</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Server-side imagemap processing</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>imap_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
     <p>This module processes <code>.map</code> files, thereby
     replacing the functionality of the <code>imagemap</code> CGI
     program. Any directory or document type configured to use the
-    handler <code>imap-file</code> (using either <code><a
-    href="mod_mime.html#addhandler">AddHandler</a></code> or
-    <code><a href="mod_mime.html#sethandler">SetHandler</a></code>)
+    handler <code>imap-file</code> (using either 
+    <a href="mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a> or
+    <a href="core.html#sethandler" class="directive"><code class="directive">SetHandler</code></a>)
     will be processed by this module.</p>
 
     <p>The following directive will activate files ending with
     <code>.map</code> as imagemap files:</p>
 
-    <blockquote>
-      <code>AddHandler imap-file map</code>
-    </blockquote>
-    Note that the following is still supported: 
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddHandler imap-file map</code></td></tr></table></blockquote>
 
-    <blockquote>
-      <code>AddType application/x-httpd-imap map</code>
-    </blockquote>
-    However, we are trying to phase out "magic MIME types" so we
-    are deprecating this method. 
+    <p>Note that the following is still supported:</p>
 
-    <h2>Directives</h2>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddType application/x-httpd-imap map</code></td></tr></table></blockquote>
 
-    <ul>
-      <li><a href="#imapmenu">ImapMenu</a></li>
+    <p>However, we are trying to phase out "magic MIME types" so we
+    are deprecating this method.</p>
+</summary><h2>Directives</h2><ul><li><a href="#imapbase">ImapBase</a></li><li><a href="#imapdefault">ImapDefault</a></li><li><a href="#imapmenu">ImapMenu</a></li></ul><h2>New Features</h2>
 
-      <li><a href="#imapdefault">ImapDefault</a></li>
-
-      <li><a href="#imapbase">ImapBase</a></li>
-    </ul>
-
-    <h2>New Features</h2>
-    The imagemap module adds some new features that were not
-    possible with previously distributed imagemap programs. 
+    <p>The imagemap module adds some new features that were not
+    possible with previously distributed imagemap programs.</p>
 
     <ul>
       <li>URL references relative to the Referer: information.</li>
@@ -79,29 +39,29 @@
 
       <li>Configurable generation of imagemap menus.</li>
     </ul>
+<h2>Imagemap File</h2>
 
-    <h2>Imagemap File</h2>
-    The lines in the imagemap files can have one of several
-    formats: 
+    <p>The lines in the imagemap files can have one of several
+    formats:</p>
 
-    <blockquote>
-      <code>directive value [x,y ...]</code><br />
-       <code>directive value "Menu text" [x,y ...]</code><br />
-       <code>directive value x,y ... "Menu text"</code><br />
-    </blockquote>
-    The directive is one of <code>base</code>,
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      directive value [x,y ...]<br>
+      directive value "Menu text" [x,y ...]<br>
+      directive value x,y ... "Menu text"
+</code></td></tr></table></blockquote>
+    <p>The directive is one of <code>base</code>,
     <code>default</code>, <code>poly</code>, <code>circle</code>,
     <code>rect</code>, or <code>point</code>. The value is an
     absolute or relative URL, or one of the special values listed
     below. The coordinates are <code>x,y</code> pairs separated by
     whitespace. The quoted text is used as the text of the link if
     a imagemap menu is generated. Lines beginning with '#' are
-    comments. 
+    comments.</p>
 
-    <h3>Imagemap File Directives</h3>
-    There are six directives allowed in the imagemap file. The
+<h3>Imagemap File Directives</h3>
+    <p>There are six directives allowed in the imagemap file. The
     directives can come in any order, but are processed in the
-    order they are found in the imagemap file. 
+    order they are found in the imagemap file.</p>
 
     <dl>
       <dt><code>base</code> Directive</dt>
@@ -112,7 +72,7 @@
       ImapBase as set in a .htaccess file or in the server
       configuration files. In the absence of an ImapBase
       configuration directive, <code>base</code> defaults to
-      <code>http://server_name/</code>.<br />
+      <code>http://server_name/</code>.<br>
        <code>base_uri</code> is synonymous with <code>base</code>.
       Note that a trailing slash on the URL is significant.</dd>
 
@@ -154,8 +114,10 @@
       valid coordinates are given.</dd>
     </dl>
 
-    <h3>Values</h3>
-    The values for each of the directives can any of the following:
+
+<h3>Values</h3>
+
+    <p>The values for each of the directives can any of the following:</p>
     
 
     <dl>
@@ -163,7 +125,7 @@
 
       <dd>The URL can be relative or absolute URL. Relative URLs
       can contain '..' syntax and will be resolved relative to the
-      <code>base</code> value.<br />
+      <code>base</code> value.<br>
        <code>base</code> itself will not resolved according to the
       current value. A statement <code>base mailto:</code> will
       work properly, though.</dd>
@@ -197,12 +159,13 @@
       <code>default</code>.</dd>
     </dl>
 
-    <h3>Coordinates</h3>
+
+<h3>Coordinates</h3>
 
     <dl>
       <dt><code>0,0 200,200</code></dt>
 
-      <dd>A coordinate consists of an <tt>x</tt> and a <tt>y</tt>
+      <dd>A coordinate consists of an <code>x</code> and a <code>y</code>
       value separated by a comma. The coordinates are separated
       from each other by whitespace. To accommodate the way Lynx
       handles imagemaps, should a user select the coordinate
@@ -210,7 +173,9 @@
       selected.</dd>
     </dl>
 
-    <h3>Quoted Text</h3>
+
+
+<h3>Quoted Text</h3>
 
     <dl>
       <dt><code>"Menu Text"</code></dt>
@@ -218,64 +183,64 @@
       <dd>After the value or after the coordinates, the line
       optionally may contain text within double quotes. This string
       is used as the text for the link if a menu is
-      generated:<br />
+      generated:<br>
        <code>&lt;a HREF="http://foo.com/"&gt;Menu
-      text&lt;/a&gt;</code><br />
+      text&lt;/a&gt;</code><br>
        If no quoted text is present, the name of the link will be
-      used as the text:<br />
+      used as the text:<br>
        <code>&lt;a
-      HREF="http://foo.com/"&gt;http://foo.com&lt;/a&gt;</code><br />
+      HREF="http://foo.com/"&gt;http://foo.com&lt;/a&gt;</code><br>
        It is impossible to escape double quotes within this
       text.</dd>
     </dl>
 
-    <h2>Example Mapfile</h2>
+<h2>Example Mapfile</h2>
 
-    <blockquote>
-      <code>#Comments are printed in a 'formatted' or
-      'semiformatted' menu.<br />
-       #And can contain html tags. &lt;hr&gt;<br />
-       base referer<br />
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      #Comments are printed in a 'formatted' or
+      'semiformatted' menu.<br>
+       #And can contain html tags. &lt;hr&gt;<br>
+       base referer<br>
        poly map "Could I have a menu, please?" 0,0 0,10 10,10
-      10,0<br />
-       rect .. 0,0 77,27 "the directory of the referer"<br />
+      10,0<br>
+       rect .. 0,0 77,27 "the directory of the referer"<br>
        circle http://www.inetnebr.com/lincoln/feedback/ 195,0
-      305,27<br />
+      305,27<br>
        rect another_file "in same directory as referer" 306,0
-      419,27<br />
-       point http://www.zyzzyva.com/ 100,100<br />
-       point http://www.tripod.com/ 200,200<br />
-       rect mailto:nate@tripod.com 100,150 200,0 "Bugs?"<br />
-      </code>
-    </blockquote>
+      419,27<br>
+       point http://www.zyzzyva.com/ 100,100<br>
+       point http://www.tripod.com/ 200,200<br>
+       rect mailto:nate@tripod.com 100,150 200,0 "Bugs?"<br>
+</code></td></tr></table></blockquote>
 
-    <h2>Referencing your mapfile</h2>
+<h2>Referencing your mapfile</h2>
 
-    <blockquote>
-      <code>&lt;A HREF="/maps/imagemap1.map"&gt;<br />
-       &lt;IMG ISMAP SRC="/images/imagemap1.gif"&gt;<br />
-       &lt;/A&gt;</code>
-    </blockquote>
-    <hr />
-
-    <h2><a id="imapmenu" name="imapmenu">ImapMenu</a>
-    directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> ImapMenu
-    none|formatted|semiformatted|unformatted<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> Indexes<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_imap<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> ImapMenu is only
-    available in Apache 1.1 and later. 
-
-    <p>The ImapMenu directive determines the action taken if an
-    imagemap file is called without valid coordinates.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      &lt;A HREF="/maps/imagemap1.map"&gt;<br>
+       &lt;IMG ISMAP SRC="/images/imagemap1.gif"&gt;<br>
+       &lt;/A&gt;
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="ImapBase">ImapBase</a> <a name="imapbase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Default base for imagemap files</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ImapBase map|referer|<em>URL</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ImapBase http://servername/</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_imap</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">ImapBase</code> directive sets the default
+    <code>base</code> used in the imagemap files. Its value is
+    overridden by a <code>base</code> directive within the imagemap
+    file. If not present, the <code>base</code> defaults to
+    <code>http://servername/</code>.</p>
+</usage><hr/><h2><a name="ImapDefault">ImapDefault</a> <a name="imapdefault">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Default action when an imagemap is called with coordinates
+that are not explicitly mapped</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ImapDefault error|nocontent|map|referer|<em>URL</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ImapDefault nocontent</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_imap</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">ImapDefault</code> directive sets the default
+    <code>default</code> used in the imagemap files. Its value is
+    overridden by a <code>default</code> directive within the
+    imagemap file. If not present, the <code>default</code> action
+    is <code>nocontent</code>, which means that a <code>204 No
+    Content</code> is sent to the client. In this case, the client
+    should continue to display the original page.</p>
+</usage><hr/><h2><a name="ImapMenu">ImapMenu</a> <a name="imapmenu">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Action if no coordinates are given when calling
+an imagemap</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ImapMenu
+    none|formatted|semiformatted|unformatted</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_imap</td></tr></table></td></tr></table><usage>
+    <p>The <code class="directive">ImapMenu</code> directive determines the
+    action taken if an imagemap file is called without valid
+    coordinates.</p>
 
     <dl>
       <dt><code>none</code></dt>
@@ -308,56 +273,4 @@
       of your menus, but requires you to treat your map files as
       HTML instead of plaintext.</dd>
     </dl>
-    <hr />
-
-    <h2><a id="imapdefault" name="imapdefault">ImapDefault</a>
-    directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> ImapDefault
-    error|nocontent|map|referer|<em>URL</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> Indexes<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_imap<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> ImapDefault is
-    only available in Apache 1.1 and later. 
-
-    <p>The ImapDefault directive sets the default
-    <code>default</code> used in the imagemap files. Its value is
-    overridden by a <code>default</code> directive within the
-    imagemap file. If not present, the <code>default</code> action
-    is <code>nocontent</code>, which means that a <code>204 No
-    Content</code> is sent to the client. In this case, the client
-    should continue to display the original page.</p>
-    <hr />
-
-    <h2><a id="imapbase" name="imapbase">ImapBase</a>
-    directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> ImapBase
-    map|referer|<em>URL</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> Indexes<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_imap<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> ImapBase is only
-    available in Apache 1.1 and later. 
-
-    <p>The ImapBase directive sets the default <code>base</code>
-    used in the imagemap files. Its value is overridden by a
-    <code>base</code> directive within the imagemap file. If not
-    present, the <code>base</code> defaults to
-    <code>http://servername/</code>. 
-    <!--#include virtual="footer.html" -->
-    </p>
-  </body>
-</html>
-
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>

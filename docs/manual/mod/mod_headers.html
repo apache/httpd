@@ -1,49 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_headers</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_headers</h1>
-
-    <p>This module provides for the customization of HTTP request
-    and response headers.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>
-    mod_headers.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    headers_module<br />
-     <a href="module-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 1.2 and later. RequestHeader appeared in Apache 2.0.</p>
-
-    <h2>Summary</h2>
-    This module provides directives to control and modify HTTP
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_headers - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_headers</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Customization of HTTP request
+    and response headers</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>headers_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>RequestHeader is available only in Apache 2.0</compatibility></td></tr></table></td></tr></table><h2>Summary</h2><summary>
+    <p>This module provides directives to control and modify HTTP
     request and response headers. Headers can be merged, replaced
-    or removed. 
-
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="#requestheader">RequestHeader</a></li>
-
-      <li><a href="#header">Header</a></li>
-    </ul>
-
-    <h2>Order of Processing</h2>
+    or removed.</p>
+</summary><h2>Directives</h2><ul><li><a href="#header">Header</a></li><li><a href="#requestheader">RequestHeader</a></li></ul><h2>Order of Processing</h2>
 
     <p>The directives provided by mod_header can occur almost
     anywhere within the server configuration. They are valid in the
@@ -68,158 +32,69 @@
     <p>Order is important. These two headers have a different
     effect if reversed:</p>
 
-    <blockquote>
-      <code>RequestHeader append MirrorID "mirror 12"<br />
-       RequestHeader unset MirrorID</code>
-    </blockquote>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+RequestHeader append MirrorID "mirror 12"<br>
+       RequestHeader unset MirrorID
+</code></td></tr></table></blockquote>
 
     <p>This way round, the MirrorID header is not set. If reversed,
     the MirrorID header is set to "mirror 12".</p>
-
-    <h2>Examples</h2>
+<h2>Example</h2>
 
     <ol>
       <li>Copy all request headers that begin with "TS" to the
-      response headers:</li>
+      response headers:
 
-      <li style="list-style: none">
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
    Header echo ^TS*
-</pre>
-      </li>
+</code></td></tr></table></blockquote></li>
 
       <li>Add a header, MyHeader, to the response including a
       timestamp for when the request was received and how long it
       took to begin serving the request. This header can be used by
       the client to intuit load on the server or in isolating
-      bottlenecks between the client and the server.</li>
+      bottlenecks between the client and the server.
 
-      <li style="list-style: none">
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
    Header add MyHeader "%D %t"
-</pre>
-        results in this header being added to the response: 
-<pre>
+</code></td></tr></table></blockquote>
+        results in this header being added to the response:
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
    MyHeader: D=3775428 t=991424704447256
-</pre>
+</code></td></tr></table></blockquote>
       </li>
 
-      <li>Say hello to Joe</li>
+      <li>Say hello to Joe
 
-      <li style="list-style: none">
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
    Header add MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
-</pre>
+</code></td></tr></table></blockquote>
         results in this header being added to the response: 
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
    MyHeader: Hello Joe. It took D=3775428 microseconds for Apache to serve this request.
-</pre>
+</code></td></tr></table></blockquote>
       </li>
 
       <li>Conditionally send MyHeader on the response if and only
       if header "MyRequestHeader" is present on the request. This
       is useful for constructing headers in response to some client
       stimulus. Note that this example requires the services of the
-      mod_setenvif module.</li>
+      mod_setenvif module.
 
-      <li style="list-style: none">
-<pre>
-   SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+   SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br>
    Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
-</pre>
+</code></td></tr></table></blockquote>
         If the header "MyRequestHeader: value" is present on the
         HTTP request, the response will contain the following
         header: 
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
    MyHeader: D=3775428 t=991424704447256 mytext
-</pre>
+</code></td></tr></table></blockquote>
       </li>
     </ol>
-    <hr />
-
-    <h2><a id="requestheader"
-    name="requestheader">RequestHeader</a> directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> RequestHeader
-    set|append|add <em>header</em> <em>value</em><br />
-     <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> RequestHeader unset
-    <em>header</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, access.conf, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> FileInfo<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_header 
-
-    <p>This directive can replace, merge or remove HTTP request
-    headers. The header is modified just before the content handler
-    is run, allowing incoming headers to be modified. The action it
-    performs is determined by the first argument. This can be one
-    of the following values:</p>
-
-    <ul>
-      <li><strong>set</strong><br />
-       The request header is set, replacing any previous header
-      with this name</li>
-
-      <li><strong>append</strong><br />
-       The request header is appended to any existing header of the
-      same name. When a new value is merged onto an existing header
-      it is separated from the existing header with a comma. This
-      is the HTTP standard way of giving a header multiple
-      values.</li>
-
-      <li><strong>add</strong><br />
-       The request header is added to the existing set of headers,
-      even if this header already exists. This can result in two
-      (or more) headers having the same name. This can lead to
-      unforeseen consequences, and in general "append" should be
-      used instead.</li>
-
-      <li><strong>unset</strong><br />
-       The request header of this name is removed, if it exists. If
-      there are multiple headers of the same name, all will be
-      removed.</li>
-    </ul>
-
-    <p>This argument is followed by a header name, which can
-    include the final colon, but it is not required. Case is
-    ignored. For <code>add</code>, <code>append</code> and
-    <code>set</code> a value is given as the third argument. If
-    this value contains spaces, it should be surrounded by double
-    quotes. For unset, no value should be given.</p>
-
-    <p>The <code>RequestHeader</code> directive is processed just
-    before the request is run by its handler in the fixup phase.
-    This should allow headers generated by the browser, or by
-    Apache input filters to be overridden or modified.</p>
-    <hr />
-
-    <h2><a id="header" name="header">Header</a> directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Header set|append|add
-    <em>header</em> <em>value</em>
-    <em>[env=[!]environment-variable]</em><br />
-     <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Header unset
-    <em>header</em><br />
-     <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Header echo
-    <em>header</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, access.conf, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> FileInfo<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_header 
-
+<hr/><h2><a name="Header">Header</a> <a name="header">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure HTTP response headers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>Header set|append|add|unset|echo  <em>header</em> 
+[<em>value</em>]</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_headers</td></tr></table></td></tr></table><usage>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
     and output filters are run, allowing outgoing headers to be
@@ -227,31 +102,31 @@
     argument. This can be one of the following values:</p>
 
     <ul>
-      <li><strong>set</strong><br />
+      <li><strong>set</strong><br>
        The response header is set, replacing any previous header
       with this name. The <em>value</em> may be a format
       string.</li>
 
-      <li><strong>append</strong><br />
+      <li><strong>append</strong><br>
        The response header is appended to any existing header of
       the same name. When a new value is merged onto an existing
       header it is separated from the existing header with a comma.
       This is the HTTP standard way of giving a header multiple
       values.</li>
 
-      <li><strong>add</strong><br />
+      <li><strong>add</strong><br>
        The response header is added to the existing set of headers,
       even if this header already exists. This can result in two
       (or more) headers having the same name. This can lead to
       unforeseen consequences, and in general "append" should be
       used instead.</li>
 
-      <li><strong>unset</strong><br />
+      <li><strong>unset</strong><br>
        The response header of this name is removed, if it exists.
       If there are multiple headers of the same name, all will be
       removed.</li>
 
-      <li><strong>echo</strong><br />
+      <li><strong>echo</strong><br>
        Request headers with this name are echoed back in the
       response headers. <em>header</em> may be a regular
       expression.</li>
@@ -283,14 +158,13 @@ duration of the request. The value is preceded by "D=".</td></tr>
 variable</a> FOOBAR.</td></tr>
 </table>
 
-    <p>When the <code>Header</code> directive is used with the
+    <p>When the <code class="directive">Header</code> directive is used with the
     <code>add</code>, <code>append</code>, or <code>set</code>
     argument, a fourth argument may be used to specify conditions
-    under which the action will be taken. If the <a
-    href="../env.html">environment variable</a> specified in the
+    under which the action will be taken. If the <a href="../env.html">environment variable</a> specified in the
     <code>env=...</code> argument exists (or if the environment
     variable does not exist and <code>env=!...</code> is specified)
-    then the action specified by the <code>Header</code> directive
+    then the action specified by the <code class="directive">Header</code> directive
     will take effect. Otherwise, the directive will have no effect
     on the request.</p>
 
@@ -298,7 +172,48 @@ variable</a> FOOBAR.</td></tr>
     is sent to the network. These means that it is possible to set
     and/or override most headers, except for those headers added by
     the header filter.</p>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
+</usage><hr/><h2><a name="RequestHeader">RequestHeader</a> <a name="requestheader">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure HTTP request headers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>RequestHeader   set|append|add|unset <em>header</em> 
+[<em>value</em>]</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_headers</td></tr></table></td></tr></table><usage>
+    <p>This directive can replace, merge or remove HTTP request
+    headers. The header is modified just before the content handler
+    is run, allowing incoming headers to be modified. The action it
+    performs is determined by the first argument. This can be one
+    of the following values:</p>
 
+    <ul>
+      <li><strong>set</strong><br>
+       The request header is set, replacing any previous header
+      with this name</li>
+
+      <li><strong>append</strong><br>
+       The request header is appended to any existing header of the
+      same name. When a new value is merged onto an existing header
+      it is separated from the existing header with a comma. This
+      is the HTTP standard way of giving a header multiple
+      values.</li>
+
+      <li><strong>add</strong><br>
+       The request header is added to the existing set of headers,
+      even if this header already exists. This can result in two
+      (or more) headers having the same name. This can lead to
+      unforeseen consequences, and in general "append" should be
+      used instead.</li>
+
+      <li><strong>unset</strong><br>
+       The request header of this name is removed, if it exists. If
+      there are multiple headers of the same name, all will be
+      removed.</li>
+    </ul>
+
+    <p>This argument is followed by a header name, which can
+    include the final colon, but it is not required. Case is
+    ignored. For <code>add</code>, <code>append</code> and
+    <code>set</code> a value is given as the third argument. If
+    this value contains spaces, it should be surrounded by double
+    quotes. For unset, no value should be given.</p>
+
+    <p>The <code class="directive">RequestHeader</code> directive is processed
+    just before the request is run by its handler in the fixup phase.
+    This should allow headers generated by the browser, or by Apache
+    input filters to be overridden or modified.</p>
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
