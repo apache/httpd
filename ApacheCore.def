@@ -261,12 +261,12 @@ EXPORTS
 	ap_vbprintf   @254
 ;	ap_vformatter   @255
 ;	ap_vsnprintf   @256
-	closedir   @257
-	opendir   @258
+;	closedir   @257
+;	opendir   @258
 ;	os_spawnv   @259
 ;	os_spawnve   @260
 	os_stat   @261
-	readdir   @262
+;	readdir   @262
 	regcomp   @263
 	regexec   @264
 	regfree   @265
