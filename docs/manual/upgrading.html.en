@@ -154,10 +154,10 @@
       DUMP_VHOSTS</code>.</li>
 
       <li>The module mod_auth_digest, which was experimental in
-      Apache 1.3 is now a standard module.</li>
+      Apache 1.3, is now a standard module.</li>
 
       <li>The mod_mmap_static module, which was experimental in
-      Apache 1.3 has been replaced with mod_file_cache.</li>
+      Apache 1.3, has been replaced with mod_file_cache.</li>
 
       <li>The distribution has been completely reorganized so that
       it no longer contains an independent <code>src</code>
