@@ -325,23 +325,6 @@ AC_DEFUN(APACHE_LAYOUT,[
   done
   changequote([,])
 ])dnl
-dnl
-dnl APACHE_ENABLE_LAYOUT
-dnl
-AC_DEFUN(APACHE_ENABLE_LAYOUT,[
-AC_ARG_ENABLE(layout,
-APACHE_HELP_STRING(--enable-layout=LAYOUT,Default file layout),[
-  LAYOUT=$enableval
-])
-
-if test -z "$LAYOUT"; then
-  LAYOUT="Apache"
-fi
-APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
-
-AC_MSG_CHECKING(for chosen layout)
-AC_MSG_RESULT($layout_name)
-])
 
 dnl
 dnl APACHE_ENABLE_MODULES

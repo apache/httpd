@@ -18,6 +18,18 @@ sinclude(srclib/apr/build/apr_network.m4)
 sinclude(srclib/apr/build/apr_threads.m4)
 sinclude(acinclude.m4)
 
+dnl Get the layout here, so we can pass the required variables to apr
+dnl APACHE_ENABLE_LAYOUT
+AC_MSG_CHECKING(for chosen layout)
+AC_ARG_ENABLE(layout,
+APACHE_HELP_STRING(--enable-layout=LAYOUT,Default file layout),[
+  LAYOUT=$enableval
+  APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
+  AC_MSG_RESULT($LAYOUT)
+], [
+  AC_MSG_RESULT([Autoconf Defaults])
+])
+
 dnl Save user-defined environment settings for later restoration
 dnl
 APR_SAVE_THE_ENVIRONMENT(CPPFLAGS)
@@ -52,15 +64,15 @@ orig_prefix="$prefix"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix")
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --bindir=$bindir")
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --bindir=$bindir")
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/pcre, "--prefix=$prefix")
+APR_SUBDIR_CONFIG(srclib/pcre, "--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --bindir=$bindir")
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
 
@@ -277,7 +289,6 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
   APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
 ])dnl
 
-APACHE_ENABLE_LAYOUT
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
 
