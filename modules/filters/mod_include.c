@@ -99,6 +99,7 @@
 #include <pwd.h>
 #endif
 #endif
+#include "util_ebcdic.h"
 
 #define STARTING_SEQUENCE "<!--#"
 #define ENDING_SEQUENCE "-->"
@@ -107,7 +108,7 @@
 #define SIZEFMT_BYTES 0
 #define SIZEFMT_KMG 1
 #ifdef CHARSET_EBCDIC
-#define RAW_ASCII_CHAR(ch)  os_toebcdic[(unsigned char)ch]
+#define RAW_ASCII_CHAR(ch)  ap_xlate_conv_byte(ap_hdrs_from_ascii, (unsigned char)ch)
 #else /*CHARSET_EBCDIC*/
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*CHARSET_EBCDIC*/
@@ -2444,7 +2445,7 @@ static int send_parsed_file(request_rec *r)
      */
 #ifdef CHARSET_EBCDIC
     /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
-    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+    ap_bsetopt(r->connection->client, BO_WXLATE, &ap_hdrs_to_ascii);
 #endif
 
     send_parsed_content(f, r);
