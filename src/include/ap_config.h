@@ -569,8 +569,11 @@ extern char *crypt();
 #endif /*_OSD_POSIX*/
 
 #elif defined(UW)
+#if UW < 700
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #define NO_LINGCLOSE
 #define NO_KILLPG
+#endif
 #undef  NO_SETSID
 #undef NEED_STRDUP
 #define NEED_STRCASECMP
@@ -587,7 +590,6 @@ extern char *crypt();
 #endif
 #define NET_SIZE_T size_t
 #define HAVE_SYSLOG 1
-#define USE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(DGUX)
 #define NO_KILLPG
