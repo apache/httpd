@@ -91,7 +91,7 @@
 
 /* Make sure we don't write less than 4096 bytes at any one time.
  */
-#define MIN_SIZE_TO_WRITE  9000
+#define MIN_BYTES_TO_WRITE  9000
 
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
@@ -2959,6 +2959,9 @@ static int default_handler(request_rec *r)
  * non-contiguous buckets. For example, if a brigade contains 10 small 
  * buckets followed by a large bucket (or a pipe or file bucket) followed 
  * by more small buckets, only the first 10 buckets will be coalesced.
+ *
+ * Yack... Using heap buckets which is really inefficient (multiple byte moves)
+ * until we get heap bucket pooling in place.
  */
 typedef struct COALESCE_FILTER_CTX {
     char *buf;           /* Start of buffer */
@@ -2966,7 +2969,6 @@ typedef struct COALESCE_FILTER_CTX {
     apr_size_t cnt;     /* Number of bytes put in buf */
     apr_size_t avail;   /* Number of bytes available in the buf */
 } coalesce_filter_ctx_t;
-#define FILTER_BUFF_SIZE 8192
 #define MIN_BUCKET_SIZE 200
 static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
@@ -2978,7 +2980,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
     if (ctx == NULL) {
         f->ctx = ctx = apr_pcalloc(p, sizeof(coalesce_filter_ctx_t));
-        ctx->avail = FILTER_BUFF_SIZE;
+        ctx->avail = MIN_BYTES_TO_WRITE;
     }
 
     if (ctx->cnt) {
@@ -3008,7 +3010,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
             if ((n < MIN_BUCKET_SIZE) && (n < ctx->avail)) {
                 /* Coalesce this bucket into the buffer */
                 if (ctx->buf == NULL) {
-                    ctx->buf = apr_palloc(p, FILTER_BUFF_SIZE);
+                    ctx->buf = apr_palloc(p, MIN_BYTES_TO_WRITE);
                     ctx->cur = ctx->buf;
                     ctx->cnt = 0;
                 }
@@ -3051,13 +3053,13 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
 
     if (pass_the_brigade) {
-        /* Insert ctx->buf into the correct spotin the brigade */
+        /* Insert ctx->buf into the correct spot in the brigade */
         if (insert_first) {
-            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, p);
+            e = ap_bucket_create_heap(ctx->buf, ctx->cnt, 1, NULL);
             AP_BRIGADE_INSERT_HEAD(b, e);
         } 
         else if (insert_before) {
-            e = ap_bucket_create_pool(ctx->buf, ctx->cnt, p);
+            e = ap_bucket_create_heap(ctx->buf, ctx->cnt, 1, NULL);
             AP_BUCKET_INSERT_BEFORE(e, insert_before);
             AP_BUCKET_REMOVE(insert_before);
             ap_bucket_destroy(insert_before);
@@ -3072,7 +3074,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
         if (ctx) {
             ctx->cur = ctx->buf;
             ctx->cnt = 0;
-            ctx->avail = FILTER_BUFF_SIZE;
+            ctx->avail = MIN_BYTES_TO_WRITE;
         }
     }
     else {
@@ -3306,7 +3308,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if ((!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e))
+        if ((!fd && (!more) && (nbytes < MIN_BYTES_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e))
             || (AP_BUCKET_IS_EOS(e) && c->keepalive)) {
             
             /* NEVER save an EOS in here.  If we are saving a brigade with an
@@ -3469,7 +3471,7 @@ static void register_hooks(void)
     ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
                               AP_FTYPE_CONTENT);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
-    ap_register_output_filter("COALESCE", coalesce_filter, AP_FTYPE_CONNECTION);
+    ap_register_output_filter("COALESCE", coalesce_filter, AP_FTYPE_CONTENT);
 }
 
 AP_DECLARE_DATA module core_module = {
