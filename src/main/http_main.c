@@ -5887,11 +5887,11 @@ int REALMAIN(int argc, char *argv[])
     set_group_privs();
 
 #ifdef OS2
-    printf("%s \n", ap_get_server_version());
+    printf("%s running...\n", ap_get_server_version());
 #endif
 #ifdef WIN32
     if (!child) {
-	printf("%s \n", ap_get_server_version());
+	printf("%s running...\n", ap_get_server_version());
     }
 #endif
 
