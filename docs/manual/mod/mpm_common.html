@@ -216,14 +216,9 @@
     <p>The Listen directive tells the server to accept incoming
     requests on the specified port or address-and-port combination.
     If only a port number is specified, the server listens to the
-    given port on all interfaces, instead of the port given by the
-    <tt>Port</tt> directive. If an IP address is given as well as a
-    port, the server will listen on the given port and
+    given port on all interfaces. If an IP address is given as well 
+    as a port, the server will listen on the given port and
     interface.</p>
-
-    <p>Note that you may still require a <tt>Port</tt> directive so
-    that URLs that Apache generates that point to your server still
-    work.</p>
 
     <p>Multiple Listen directives may be used to specify a number
     of addresses and ports to listen to. The server will respond to
