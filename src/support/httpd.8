@@ -54,12 +54,34 @@ httpd \- Apache hypertext transfer protocol server
 .SH SYNOPSIS
 .B httpd 
 [
-.B \-hlvX?
+.B \-X
 ] [
 .BI \-d " serverroot"
 ] [
 .BI \-f " config"
+] [
+.BI \-C " directive"
+] [
+.BI \-c " directive"
 ]
+
+.B httpd 
+[
+.B \-h
+] 
+[
+.B \-l
+] 
+[
+.B \-v
+] 
+[
+.B \-V
+] 
+[
+.B \-?
+] 
+
 .SH DESCRIPTION
 .B httpd
 is the Apache HyperText Transfer Protocol (HTTP) server program. It is
@@ -73,10 +95,13 @@ may be invoked by the Internet daemon inetd(8) each
 time a connection to the HTTP service is made.
 .PP
 This manual page only lists the command line arguments. For details
-of the directives necessary to configure httpd see the Apache manual,
+of the directives necessary to configure 
+.B httpd
+see the Apache manual,
 which is part of the Apache distribution or can be found at
 http://www.apache.org/. Paths in this manual may not reflect those
-compiled into httpd.
+compiled into 
+.B httpd.
 .SH OPTIONS
 .TP 12
 .BI \-d " serverroot"
@@ -88,6 +113,12 @@ default is \fB/usr/local/apache\fP.
 Execute the commands in the file \fIconfig\fP on startup. If \fIconfig\fP
 does not begin with a /, then it is taken to be a path relative to
 the ServerRoot. The default is \fBconf/httpd.conf\fP.
+.TP
+.BI \-C " directive"
+Process the configuration \fIdirective\fP before reading config files.
+.TP
+.BI \-c " directive"
+Process the configuration \fIdirective\fP after reading config files.
 .TP
 .B \-h
 Output a list of directives together with expected arguments and
@@ -102,10 +133,19 @@ does not detach from the terminal or fork any children. Do NOT use this mode
 to provide ordinary web service.
 .TP
 .B \-v
-Print the version of httpd, and then exit.
+Print the version of 
+.B httpd
+, and then exit.
+.TP
+.B \-V
+Print the version and build parameters of 
+.B httpd
+, and then exit.
 .TP
 .B \-?
-Print a list of the httpd options, and then exit.
+Print a list of the 
+.B httpd 
+options, and then exit.
 .SH FILES
 .PD 0
 .B /usr/local/apache/conf/httpd.conf
@@ -115,6 +155,8 @@ Print a list of the httpd options, and then exit.
 .B /usr/local/apache/conf/access.conf
 .br
 .B /usr/local/apache/conf/mime.types
+.br
+.B /usr/local/apache/conf/magic
 .br
 .B /usr/local/apache/logs/error_log
 .br

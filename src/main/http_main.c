@@ -3873,7 +3873,11 @@ int main(int argc, char *argv[])
 
     setup_prelinked_modules();
 
+#ifdef DEBUG_SIGSTOP
     while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:")) != -1) {
+#else
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhl")) != -1) {
+#endif
 	char **new;
 	switch (c) {
 	case 'c':
