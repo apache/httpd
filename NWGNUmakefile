@@ -338,10 +338,8 @@ install :: nlms FORCE
 installdev :: FORCE
 	-copy $(subst /,\,$(AP_WORK))\include\*.h           $(INSTALL)\Apache2\include\*.*
 	-copy $(subst /,\,$(AP_WORK))\os\netware\*.h        $(INSTALL)\Apache2\include\*.*
-	-copy $(subst /,\,$(NWOS))\include\*.h              $(INSTALL)\Apache2\include\*.*
 	-copy $(subst /,\,$(NWOS))\*.imp                    $(INSTALL)\Apache2\lib\*.*
 	-copy $(subst /,\,$(APR))\include\*.h               $(INSTALL)\Apache2\include\*.*
-	-copy $(subst /,\,$(APR))\arch\netware\include\*.h  $(INSTALL)\Apache2\include\*.*
 	-copy $(subst /,\,$(APRUTIL))\include\*.h           $(INSTALL)\Apache2\include\*.*
 	-copy $(subst /,\,$(APR))\*.imp                     $(INSTALL)\Apache2\lib\*.*
 	-copy $(subst /,\,$(NWOS))\*.xdc                    $(INSTALL)\Apache2\lib\*.*
