@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 22:58:30 $]
+Last modified at [$Date: 2004/05/21 23:20:48 $]
 
 Release:
 
@@ -93,12 +93,6 @@ PATCHES TO BACKPORT FROM 2.1
        docs/manual/mod/mod_auth_ldap.xml r1.18
        modules/experimental/mod_auth_ldap.c r1.27
        PR 19304
-       +1: minfrin, jim, trawick, bnicholes
-
-    *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
-       from escaping filters twice when the backslash character is used.
-       modules/experimental/mod_auth_ldap.c r1.25
-       PR 24437 [Jess Holle <jessh@ptc.com>]
        +1: minfrin, jim, trawick, bnicholes
 
     *) Fix handling of IPv6 numeric strings in mod_proxy.
