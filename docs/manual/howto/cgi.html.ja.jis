@@ -253,7 +253,7 @@
       <dt>CGI プログラムのソースコード、または "POST Method Not Allowed"
       というメッセージ</dt> 
       <dd>これは、CGI プログラムを処理できるよう Apache
-      を適切に設定していなかったことを意味します。<a href="#configuringapachetopermitcgi">「CGI を許可するように
+      を適切に設定していなかったことを意味します。<a href="#configuring">「CGI を許可するように
       Apache を設定する」</a>の章を読み直し、
       あなたが何を間違えたかを探してみてください。
       </dd>
