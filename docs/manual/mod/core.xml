@@ -687,7 +687,7 @@ Location</a></seealso>
     <li>On some multiprocessor systems, memory-mapping can reduce the
     performance of the httpd.</li>
     <li>With an NFS-mounted <directive module="core">DocumentRoot</directive>,
-    the httpd may crash due tof a segmentation fault if a file is deleted
+    the httpd may crash due to a segmentation fault if a file is deleted
     or truncated while the httpd has it memory-mapped.</li>
     </ul>
 
@@ -742,7 +742,7 @@ Location</a></seealso>
     </ul>
 
     <p>For server configurations that are vulnerable to these problems,
-    you should disable memory-mapping of delivered files by specifying:</p>
+    you should disable this feature by specifying:</p>
 
     <example>
       EnableSendfile off
@@ -1710,7 +1710,7 @@ URLs</description>
       <p>The slash character has special meaning depending on where in a
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
-      slash (<var>i.e.</var>, <code>/home///foo</code> is the same as
+      slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
       <code>/home/foo</code>). In URL-space this is not necessarily true.
       The <directive type="section" module="core">LocationMatch</directive>
       directive and the regex version of <directive type="section"
@@ -1968,7 +1968,7 @@ hosting</description>
     </note>
 </usage>
 
-<seealso>See also: <a href="../vhosts/">Virtual Hosts
+<seealso><a href="../vhosts/">Virtual Hosts
 documentation</a></seealso>
 
 </directivesynopsis>

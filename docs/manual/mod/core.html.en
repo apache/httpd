@@ -616,7 +616,7 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
     <li>On some multiprocessor systems, memory-mapping can reduce the
     performance of the httpd.</li>
     <li>With an NFS-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code>,
-    the httpd may crash due tof a segmentation fault if a file is deleted
+    the httpd may crash due to a segmentation fault if a file is deleted
     or truncated while the httpd has it memory-mapped.</li>
     </ul>
 
@@ -665,7 +665,7 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
     </ul>
 
     <p>For server configurations that are vulnerable to these problems,
-    you should disable memory-mapping of delivered files by specifying:</p>
+    you should disable this feature by specifying:</p>
 
     <div class="example"><p><code>
       EnableSendfile off
@@ -1489,7 +1489,7 @@ URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
       <p>The slash character has special meaning depending on where in a
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
-      slash (<var>i.e.</var>, <code>/home///foo</code> is the same as
+      slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
       <code>/home/foo</code>). In URL-space this is not necessarily true.
       The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
@@ -1717,7 +1717,7 @@ hosting</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
         &lt;/VirtualHost&gt;<br />
       </code></p></div>
     </div>
-<h3>See also</h3><ul><li>See also: <a href="../vhosts/">Virtual Hosts
+<h3>See also</h3><ul><li><a href="../vhosts/">Virtual Hosts
 documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Configures what features are available in a particular
 directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
