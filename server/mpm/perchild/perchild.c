@@ -96,6 +96,7 @@
 #include <signal.h>
 #include <setjmp.h>
 #include <stropts.h>
+#include <sys/uio.h>
 
 /*
  * Actual definitions of config globals
@@ -127,6 +128,7 @@ typedef struct {
     const char *fullsockname;   /* socket base name + extension */
     int        sd;       /* The socket descriptor */
     int        sd2;       /* The socket descriptor */
+    char       *buffer;
 } perchild_server_conf;
 
 typedef struct child_info_t child_info_t;
@@ -1339,16 +1341,16 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 
 static int pass_request(request_rec *r)
 {
-    apr_socket_t *thesock = r->connection->client->bsock;
+    apr_socket_t *thesock = r->connection->client_socket;
     struct msghdr msg;
     struct cmsghdr *cmsg;
     int sfd;
     struct iovec iov;
-    char *foo = r->connection->client->inbase;
-    int len = r->connection->client->inptr - r->connection->client->inbase;
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
+    char *foo = sconf->buffer;
+    int len = strlen(sconf->buffer);
 
     apr_get_os_sock(&sfd, thesock);
 
@@ -1434,9 +1436,9 @@ static int perchild_post_read(request_rec *r)
         apr_socket_t *csd = NULL;
 
         apr_put_os_sock(&csd, &thread_socket_table[thread_num], 
-                             r->connection->client->pool);
-        ap_sock_disable_nagle(thread_socket_table[thread_num]);
-        ap_bpush_socket(r->connection->client, csd);
+                             r->connection->pool);
+        ap_sock_disable_nagle(csd);
+        r->connection->client_socket = csd;
         return OK;
     }
     else {
@@ -1453,6 +1455,34 @@ static int perchild_post_read(request_rec *r)
     return OK;
 }
 
+static apr_status_t perchild_buffer(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
+{
+    perchild_server_conf *sconf = (perchild_server_conf *)
+                            ap_get_module_config(f->r->server->module_config, 
+                                                 &mpm_perchild_module);
+    ap_bucket *e;
+    apr_status_t rv;
+
+    if ((rv = ap_get_brigade(f->next, b, mode)) != APR_SUCCESS) {
+        return rv;
+    }
+
+    AP_BRIGADE_FOREACH(e, b) {
+        const char *str;
+        apr_size_t len;
+        ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
+        apr_pstrcat(f->r->pool, sconf->buffer, str);
+    }
+    
+    return APR_SUCCESS;
+}
+
+static int perchild_pre_connection(conn_rec *c)
+{
+    ap_add_input_filter("PERCHILD_BUFFER", NULL, NULL, c);
+    return OK;
+}
+
 static void perchild_hooks(void)
 {
     INIT_SIGLIST()
@@ -1460,12 +1490,15 @@ static void perchild_hooks(void)
 
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
     ap_hook_post_config(perchild_post_config, NULL, NULL, AP_HOOK_MIDDLE); 
+    ap_hook_pre_connection(perchild_pre_connection,NULL,NULL, AP_HOOK_MIDDLE);
+
     /* This must be run absolutely first.  If this request isn't for this
      * server then we need to forward it to the proper child.  No sense
      * tying up this server running more post_read request hooks if it is
      * just going to be forwarded along.
      */
     ap_hook_post_read_request(perchild_post_read, NULL, NULL, AP_HOOK_REALLY_FIRST);
+    ap_register_input_filter("PERCHILD_BUFFER", perchild_buffer, AP_FTYPE_CONTENT);
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
