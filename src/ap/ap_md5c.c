@@ -607,6 +607,6 @@ API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 	crypt_pw = crypt(passwd, hash);
 	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
     }
-    return (strcmp(sample, hash) == 0) ? NULL : "password mismatch";
 #endif
+    return (strcmp(sample, hash) == 0) ? NULL : "password mismatch";
 }
