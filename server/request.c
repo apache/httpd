@@ -832,6 +832,28 @@ static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
     ap_set_sub_req_protocol(rnew, r);
 }
 
+static int sub_req_common_validation(request_rec *rnew)
+{
+    int res;
+
+    if (((   ap_satisfies(rnew) == SATISFY_ALL
+             || ap_satisfies(rnew) == SATISFY_NOSPEC)
+            ? ((res = ap_run_access_checker(rnew))
+               || (ap_some_auth_required(rnew)
+                   && ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
+            : ((res = ap_run_access_checker(rnew))
+               && (!ap_some_auth_required(rnew)
+                   || ((res = ap_run_check_user_id(rnew))
+                       || (res = ap_run_auth_checker(rnew)))))
+           )
+        || (res = ap_run_type_checker(rnew))
+        || (res = ap_run_fixups(rnew)))
+        return res;
+    else
+        return 0;
+}
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
                                                         apr_bucket_brigade *bb)
 {
@@ -928,20 +950,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     if ((res = directory_walk(rnew))
         || (res = file_walk(rnew))
         || (res = location_walk(rnew))
-        || ((ap_satisfies(rnew) == SATISFY_ALL
-             || ap_satisfies(rnew) == SATISFY_NOSPEC)
-            ? ((res = ap_run_access_checker(rnew))
-               || (ap_some_auth_required(rnew)
-                   && ((res = ap_run_check_user_id(rnew))
-                       || (res = ap_run_auth_checker(rnew)))))
-            : ((res = ap_run_access_checker(rnew))
-               && (!ap_some_auth_required(rnew)
-                   || ((res = ap_run_check_user_id(rnew))
-                       || (res = ap_run_auth_checker(rnew)))))
-           )
-        || (res = ap_run_type_checker(rnew))
-        || (res = ap_run_fixups(rnew))
-       ) {
+        || (res = sub_req_common_validation(rnew))) {
         rnew->status = res;
     }
     return rnew;
@@ -1039,6 +1048,11 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
             return rnew;
         }
     }
+
+    if (res || (res = sub_req_common_validation(rnew))) {
+        rnew->status = res;
+    }
+    return rnew;
 }
 
 AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
@@ -1142,21 +1156,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         }
     }
 
-    if (res
-        || ((ap_satisfies(rnew) == SATISFY_ALL
-             || ap_satisfies(rnew) == SATISFY_NOSPEC)
-            ? ((res = ap_run_access_checker(rnew))
-               || (ap_some_auth_required(rnew)
-                   && ((res = ap_run_check_user_id(rnew))
-                       || (res = ap_run_auth_checker(rnew)))))
-            : ((res = ap_run_access_checker(rnew))
-               && (!ap_some_auth_required(rnew)
-                   || ((res = ap_run_check_user_id(rnew))
-                       || (res = ap_run_auth_checker(rnew)))))
-           )
-        || (res = ap_run_type_checker(rnew))
-        || (res = ap_run_fixups(rnew))
-       ) {
+    if (res || (res = sub_req_common_validation(rnew))) {
         rnew->status = res;
     }
     return rnew;
