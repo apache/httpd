@@ -867,7 +867,7 @@ static char *
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
-int proxy_is_ipaddr(struct dirconn_entry *This)
+int proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
 {
     const char *addr = This->name;
     long ip_addr[4];
@@ -1054,7 +1054,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a domain name */
-int proxy_is_domainname(struct dirconn_entry *This)
+int proxy_is_domainname(struct dirconn_entry *This, pool *p)
 {
     char *addr = This->name;
     int i;
@@ -1066,10 +1066,12 @@ int proxy_is_domainname(struct dirconn_entry *This)
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
     for (i = 0; isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
 
+#if 0
     if (addr[i] == ':') {
 	fprintf(stderr, "@@@@ handle optional port in proxy_is_domainname()\n");
 	/* @@@@ handle optional port */
     }
+#endif
 
     if (addr[i] != '\0')
 	return 0;
@@ -1104,7 +1106,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a host name */
-int proxy_is_hostname(struct dirconn_entry *This)
+int proxy_is_hostname(struct dirconn_entry *This, pool *p)
 {
     char *addr = This->name;
     int i;
@@ -1116,10 +1118,12 @@ int proxy_is_hostname(struct dirconn_entry *This)
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
     for (i = 0; isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
 
+#if 0
     if (addr[i] == ':') {
 	fprintf(stderr, "@@@@ handle optional port in proxy_is_hostname()\n");
 	/* @@@@ handle optional port */
     }
+#endif
 
     if (addr[i] != '\0' || proxy_host2addr(addr, &This->hostlist) != NULL)
 	return 0;
@@ -1159,7 +1163,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr is to be matched as a word */
-int proxy_is_word(struct dirconn_entry *This)
+int proxy_is_word(struct dirconn_entry *This, pool *p)
 {
     This->matcher = proxy_match_word;
     return 1;

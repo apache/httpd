@@ -530,20 +530,20 @@ static const char *
 	    fprintf(stderr, "Parsed mask %s\n", inet_ntoa(New->mask));
 #endif
 	}
-	else if (proxy_is_domainname(New)) {
+	else if (proxy_is_domainname(New, parms->pool)) {
 	    str_tolower(New->name);
 #if DEBUGGING
 	    fprintf(stderr, "Parsed domain %s\n", New->name);
 #endif
 	}
-	else if (proxy_is_hostname(New)) {
+	else if (proxy_is_hostname(New, parms->pool)) {
 	    str_tolower(New->name);
 #if DEBUGGING
 	    fprintf(stderr, "Parsed host %s\n", New->name);
 #endif
 	}
 	else {
-	    proxy_is_word(New);
+	    proxy_is_word(New, parms->pool);
 #if DEBUGGING
 	    fprintf(stderr, "Parsed word %s\n", New->name);
 #endif
@@ -708,6 +708,7 @@ static const char *
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
 	if (strchr(arg, '.') != NULL && proxy_host2addr(new->name, &hp) == NULL)
+	    /*@@@FIXME: This copies only the first of (possibly many) IP addrs */
 	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
 	else
 	    new->addr.s_addr = 0;
