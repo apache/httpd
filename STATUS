@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/27 23:30:56 $]
+Last modified at [$Date: 2000/05/01 21:46:19 $]
 
 Release:
 
@@ -74,10 +74,6 @@ RELEASE SHOWSTOPPERS:
 
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-    * Configuration Modules.  Allow a new module type that reads 
-      a config file and sets up an internal tree structure for
-      configuration.
-    
     * the top-level configure.in appears to use $USE_MAINTAINER_MODE = yes
 	to set -Wall/etc. flags, and the APR configure.in appears to use
 	--with-debug.  both seem like more of a hardwired pain compaired
@@ -136,7 +132,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Status: Manoj has placed an initial version into the 2.0
         repository. Todos include:
           
-          - "make install" should work
           - a tool to simplfy third-party module building should be
             written. Something like apxs
           - Add a lot more checks to satisfy the various platforms, e.g.
