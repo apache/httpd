@@ -384,6 +384,12 @@ apapi_get_server_version       PREFIX_get_server_version
 aplog_error                    PREFIX_log_error
 log_error                      PREFIX_log_error_old
 os_escape_path                 PREFIX_escape_path
+os_canonical_filename          PREFIX_canonical_filename
+acquire_mutex                  PREFIX_acquire_mutex
+create_mutex                   PREFIX_create_mutex 
+destroy_mutex                  PREFIX_destroy_mutex
+open_mutex                     PREFIX_open_mutex   
+release_mutex                  PREFIX_release_mutex
 
 #   specials: needs tag in source to become PREFIX_!
 os_is_path_absolute            PREFIX_is_path_absolute
