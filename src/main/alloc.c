@@ -1361,6 +1361,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 
     if (!pid) {
 	/* Child process */
+	RAISE_SIGSTOP(SPAWN_CHILD);
 
 	if (pipe_out) {
 	    close(out_fds[0]);

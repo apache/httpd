@@ -413,6 +413,7 @@ static int piped_log_spawn (piped_log *pl)
 	/* XXX: need to check what open fds the logger is actually passed,
 	 * XXX: and CGIs for that matter ... cleanup_for_exec *should*
 	 * XXX: close all the relevant stuff, but hey, it could be broken. */
+	RAISE_SIGSTOP(PIPED_LOG_SPAWN);
 	/* we're now in the child */
 	close (STDIN_FILENO);
 	dup2 (pl->fds[0], STDIN_FILENO);

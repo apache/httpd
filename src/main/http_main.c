@@ -223,6 +223,10 @@ pid_t pgrp;
 
 int one_process = 0;
 
+#ifdef DEBUG_SIGSTOP
+int raise_sigstop_flags;
+#endif
+
 #ifndef NO_OTHER_CHILD
 /* used to maintain list of children which aren't part of the scoreboard */
 typedef struct other_child_rec other_child_rec;
@@ -2144,6 +2148,7 @@ void detach(void)
 	fprintf(stderr, "httpd: unable to fork new process\n");
 	exit(1);
     }
+    RAISE_SIGSTOP(DETACH);
 #endif
 #ifndef NO_SETSID
     if ((pgrp = setsid()) == -1) {
@@ -2983,6 +2988,7 @@ static int make_child(server_rec *s, int slot, time_t now)
     }
 
     if (!pid) {
+	RAISE_SIGSTOP(MAKE_CHILD);
 	/* Disable the restart signal handlers and enable the just_die stuff.
 	 * Note that since restart() just notes that a restart has been
 	 * requested there's no race condition here.
@@ -3424,7 +3430,7 @@ int main(int argc, char *argv[])
 
     setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "Xd:f:vhl")) != -1) {
+    while ((c = getopt(argc, argv, "Xd:f:vhlZ:")) != -1) {
 	switch (c) {
 	case 'd':
 	    strncpy(server_root, optarg, sizeof(server_root) - 1);
@@ -3446,6 +3452,11 @@ int main(int argc, char *argv[])
 	case 'X':
 	    ++one_process;	/* Weird debugging mode. */
 	    break;
+#ifdef DEBUG_SIGSTOP
+	case 'Z':
+	    raise_sigstop_flags = atoi(optarg);
+	    break;
+#endif
 	case '?':
 	    usage(argv[0]);
 	}
