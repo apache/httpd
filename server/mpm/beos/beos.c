@@ -687,7 +687,8 @@ static void server_main_loop(int remaining_threads_to_start)
 		        }
 #if APR_HAS_OTHER_CHILD
             }
-            else if (apr_proc_other_child_read(&pid, status) == 0) {
+            else if (apr_proc_other_child_alert(&pid, APR_OC_REASON_DEATH,
+                                                status) == 0) {
     		/* handled */
 #endif
             }
