@@ -197,18 +197,9 @@ AC_ARG_WITH(suexec-safepath,
 [  --with-suexec-safepath  Set the safepath],[
   AC_DEFINE_UNQUOTED(AP_SAFE_PATH, "$withval", [safe shell path for SuExec] ) ] )
 
-dnl ### util_xml is always included, so we always need Expat (for now)
-apache_need_expat=yes
-
 dnl AP_LIB_DIRS specifies the additional libs from srclib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
 AP_LIBS="srclib/pcre/libpcre.la srclib/apr-util/libaprutil.la $AP_LIBS"
-
-if test "$apache_need_expat" = "yes"; then
-  AP_LIB_DIRS="$AP_LIB_DIRS expat-lite"
-  AP_LIBS="$AP_LIBS srclib/expat-lite/libexpat.la"
-  INCLUDES="$INCLUDES -I\$(top_srcdir)/srclib/expat-lite"
-fi
 
 dnl APR should go after the other libs, so the right symbols can be picked up
 AP_LIBS="$AP_LIBS srclib/apr/libapr.la"
@@ -251,7 +242,7 @@ dnl ## APRVARS before Apache generates it's Makefiles and the related files.
 dnl ## This allows APR to detect libraries like dl and tell Apache that it
 dnl ## needs to include or not include them.
 APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared")
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --with-expat=../expat-lite --disable-shared")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared")
 APR_SUBDIR_CONFIG(srclib/pcre)
 . ./srclib/apr/APRVARS
 
