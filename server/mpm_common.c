@@ -170,7 +170,9 @@ void ap_reclaim_child_processes(int terminate)
                 break;
             }
         }
+#if APR_HAS_OTHER_CHILD
         apr_proc_other_child_check();
+#endif
         if (!not_dead_yet) {
             /* nothing left to wait for */
             break;
@@ -288,7 +290,8 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name)
     if (name[0] == '#')
         return (atoi(&name[1]));
 
-    if (!(ent = getpwnam(name))) {                                                      ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad user name %s", ap_server_argv0, name);
+    if (!(ent = getpwnam(name))) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad user name %s", ap_server_argv0, name);
         exit(1);
     }
     return (ent->pw_uid);
