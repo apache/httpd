@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/16 05:43:08 $]
+Last modified at [$Date: 2002/04/19 18:21:45 $]
 
 Release:
 
@@ -52,6 +52,9 @@ RELEASE SHOWSTOPPERS:
     * Daedalus segfaults with 2.0.35
       Greg and Cliff are working on this.
 
+    * worker MPM segfaults because the apr_bucket_alloc_t is cleaned
+      up twice.
+
 CURRENT VOTES:
 
     * Should we always build [support*] binaries statically unless otherwise
@@ -80,6 +83,10 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * --enable-mods-shared="foo1 foo2" is busted on Darwin.  Pier
+        posted a patch (Message-ID: <B8DBBE8D.575A%pier@betaversion.org>).
+
     * We do not properly substitute the prefix-variables in the configuration
       scripts or generated-configs.  (i.e. if sysconfdir is etc,
       httpd-std.conf points to conf.)
