@@ -38,8 +38,12 @@ content-type</description>
 
 <usage>
     <p>This directive adds an action, which will activate
-    <em>cgi-script</em> when <em>action-type</em> is triggered by
-    the request. The <em>action-type</em> can be either a <a
+    <em>cgi-script</em> when <em>action-type</em> is triggered by the
+    request.  The <em>cgi-script</em> is the URL-path to a resource
+    that has been designated as a CGI script using <directive
+    module="mod_alias">ScriptAliase</directive> or <directive
+    module="mod_mime">AddHandler</directive>.  The
+    <em>action-type</em> can be either a <a
     href="../handler.html">handler</a> or a MIME content type. It
     sends the URL and file path of the requested document using the
     standard CGI PATH_INFO and PATH_TRANSLATED environment
@@ -82,9 +86,12 @@ method.</description>
 <usage>
     <p>This directive adds an action, which will activate
     <em>cgi-script</em> when a file is requested using the method of
-    <em>method</em>. It sends the URL and file path of the requested
-    document using the standard CGI PATH_INFO and PATH_TRANSLATED
-    environment variables.</p>
+    <em>method</em>. The <em>cgi-script</em> is the URL-path to a
+    resource that has been designated as a CGI script using <directive
+    module="mod_alias">ScriptAliase</directive> or <directive
+    module="mod_mime">AddHandler</directive>.  The URL and
+    file path of the requested document is sent using the standard CGI
+    PATH_INFO and PATH_TRANSLATED environment variables.</p>
 
 <note>
       Any arbitrary method name may be used. <strong>Method names are
