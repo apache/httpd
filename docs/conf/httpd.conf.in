@@ -319,32 +319,6 @@ LogLevel warn
     # the filesystem path.
 
     #
-    # This should be changed to the ServerRoot/manual/.  The alias provides
-    # the manual, even if you choose to move your DocumentRoot.  You may
-    # comment this out if you do not care for the documentation.
-    #
-    AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|pt-br|ru))?(/.*)?$ \
-        "@exp_manualdir@$1"
-
-    <Directory "@exp_manualdir@">
-        Options Indexes
-        AllowOverride None
-        Order allow,deny
-        Allow from all
-
-        <Files *.html>
-            SetHandler type-map
-        </Files>
-
-        SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|pt-br|ru)/ prefer-language=$1
-        RedirectMatch 301 ^/manual(?:/(de|en|es|fr|ja|ko|pt-br|ru)){2,}(/.*)?$ /manual/$1$2
-
-        LanguagePriority en de es fr ja ko pt-br ru 
-        ForceLanguagePriority Prefer Fallback
-
-    </Directory>
-
-    #
     # ScriptAlias: This controls which directories contain server scripts. 
     # ScriptAliases are essentially the same as Aliases, except that
     # documents in the realname directory are treated as applications and
@@ -480,33 +454,38 @@ LogLevel warn
 ### Section 3: Supplemental configuration
 #
 # The configuration files in the @rel_sysconfdir@/extra/ directory can be included
-# to add extra features, or you may simply copy their contents
-# here and change as necessary.
+# to add extra features or modify the default configuration of the server, 
+# or you may simply copy their contents here and change as necessary.
 
 # Server-Pool Size Regulation (MPM specific)
-# Include @rel_sysconfdir@/extra/httpd-mpm.conf
+#Include @rel_sysconfdir@/extra/httpd-mpm.conf
 
 # Multi-language error messages
-# Include @rel_sysconfdir@/extra/httpd-multilang-error.conf
+#Include @rel_sysconfdir@/extra/httpd-multilang-error.conf
 
 # Fancy directory listings
-# Include @rel_sysconfdir@/extra/httpd-autoindex.conf
+#Include @rel_sysconfdir@/extra/httpd-autoindex.conf
 
 # Language settings
-# Include @rel_sysconfdir@/extra/httpd-languages.conf
+#Include @rel_sysconfdir@/extra/httpd-languages.conf
 
 # User home directories
-# Include @rel_sysconfdir@/extra/httpd-userdir.conf
+#Include @rel_sysconfdir@/extra/httpd-userdir.conf
 
 # Real-time info on requests and configuration
-# Include @rel_sysconfdir@/extra/httpd-info.conf
+#Include @rel_sysconfdir@/extra/httpd-info.conf
 
 # Virtual hosts
-# Include @rel_sysconfdir@/extra/httpd-vhosts.conf
+#Include @rel_sysconfdir@/extra/httpd-vhosts.conf
 
-#
+# Local access to the Apache HTTP Server Manual
+#Include @rel_sysconfdir@/extra/httpd-manual.conf
+
+# Various default settings
+#Include @rel_sysconfdir@/extra/httpd-default.conf
+
 # Secure (SSL/TLS) connections
-# Include @rel_sysconfdir@/extra/httpd-ssl.conf
+#Include @rel_sysconfdir@/extra/httpd-ssl.conf
 #
 # Note: The following must must be present to support
 #       starting without SSL on platforms with no /dev/random equivalent
