@@ -1265,7 +1265,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLDirConfigRec *dc = r ? myDirConfig(r) : NULL;
     SSLConnRec *sslconn = myConnConfig(conn);
-    modssl_ctx_t *mctx  = myCtxConfig(sslconn);
+    modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
 
     /* Get verify ingredients */
     int errnum   = X509_STORE_CTX_get_error(ctx);
@@ -1371,7 +1371,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
     server_rec *s       = c->base_server;
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLConnRec *sslconn = myConnConfig(c);
-    modssl_ctx_t *mctx  = myCtxConfig(sslconn);
+    modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
     X509_OBJECT obj;
     X509_NAME *subject, *issuer;
     X509 *cert;
