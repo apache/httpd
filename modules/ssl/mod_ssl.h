@@ -498,6 +498,7 @@ typedef struct {
  */
 typedef struct {
     const char  *szVHostID;
+    int          nVHostID_length;
     BOOL         bEnabled;
     apr_table_t *ap_server_ctx;
     const char  *szPublicCertFile[SSL_AIDX_MAX];
