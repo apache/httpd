@@ -133,10 +133,10 @@ AND don't forget to run expand on the file after it has been indent'd.
    utils.h			DONE
 
 ./support:
-   cls.c			RESERVED by Randy
-   htdigest.c			RESERVED by Randy
-   htpasswd.c			RESERVED by Randy
-   logresolve.c			RESERVED by Randy
-   rotatelogs.c			RESERVED by Randy
-   suexec.c			RESERVED by Randy
-   suexec.h			RESERVED by Randy
+   cls.c			DONE by Randy
+   htdigest.c			DONE by Randy
+   htpasswd.c			DONE by Randy
+   logresolve.c			DONE by Randy
+   rotatelogs.c			DONE by Randy
+   suexec.c			DONE by Randy
+   suexec.h			DONE by Randy
