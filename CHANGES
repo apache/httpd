@@ -2,6 +2,9 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_proxy: Fix ProxyRemoteMatch directive.  PR 33170.
+     [Rici Lake <rici ricilake.net>]
+
   *) proxy HTTP: Rework the handling of request bodies to handle
      chunked input and input filters which modify content length, and
      avoid spooling arbitrary-sized request bodies in memory.
