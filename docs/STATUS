@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/03/23 03:23:15 $
+Last modified: $Date: 2002/03/29 19:22:47 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -13,14 +13,11 @@ tutorial on how to get started with making your contribution.
 
               ------------------------------
 
-The module docs are being converted to a new xml format.  The format
-is described at: http://httpd.apache.org/docs-project/docsformat.html
-Help with the conversion is needed.
-
-- IPv6: need to update some directives to show correct syntax for IPv6
-    - Listen
-    - NameVirtualHost/VirtualHost
-    - Allow/Deny
+- XML
+    - The xsl transformations could be greatly improved to a) look better
+      and b) use proper CSS+html rather than the horrible hack that
+      Joshua did.
+    - The build system does not work very well right now.
 
 - modules docs
     - mod_suexec: very little documentation
@@ -41,22 +38,22 @@ Help with the conversion is needed.
         Status: Initial outlines done.  Much more details need to be
           filled in.
           - Non unix/windows MPMs still need to be completed.
-          - worker has no docs
           - the perchild directives in threaded/worker need docs
 
    - Individual docs will need some cleanup. 
         Status:  What docs still need to be touched here?
-                 - invoking.html has had a first-pass cleaning done.
                  - misc/perf-tuning.html - needs major rewrite for 2.0
                  - misc/tutorials.html - mostly not relevant to 2.0
                  - misc/stopping.html
                  - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
                  - misc/known_client_problems.html - mostly ancient
+                 - content-negotiation.html - Multiviews has changed
+                   significantly since 1.3, so this needs updating
+                   Bill Rowe can probably help with any questions
 
 - New build process.
-    - install.html has had a first-pass rewrite, but needs more
-      work to be complete, and needs to track changes/bug-fixes
-      in the build system.
+    - install.html has had a first-pass rewrite, but many things have
+      changed in the build system since it was written.
 
 - Documentation of new features.
    - This will probably require more input from new-httpd, since
@@ -114,7 +111,8 @@ New User documentation
   up web serving out of their home directory.
 
 * .htaccess - Perhaps as simple as an auto-generated listing of what
-  directives are permitted in .htaccess files. Would be nice if common
+  directives are permitted in .htaccess files (possible with the
+  appropriate xsl stylesheet). Would be nice if common
   examples (authentication, adding SSI or CGI capabilities, etc) could
   be given as well.
 
@@ -150,5 +148,6 @@ Documentation improvements
     updates the manual indices.  (We do something like that now for
     httpd.conf file with apxs [LoadModule, etc.].)
 
-
+* regex: We should at least document someplace what regex library we
+  are using and how to find more information about it
 
