@@ -160,7 +160,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
         ap_ssize_t j = strlen(buffer + i);
         ap_status_t status;
 	status  = ap_send(sock, buffer+i, &j);
-	if (status != APR_SUCCESS && status != APR_EINTR) {
+	if (status != APR_SUCCESS && ap_canonical_error(status) != APR_EINTR) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		         "write: rfc1413: error sending request");
 	    return -1;
@@ -186,7 +186,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
         ap_ssize_t j = sizeof(buffer) - 1 - i;
         ap_status_t status;
 	status = ap_recv(sock, buffer+i, &j);
-	if (status != APR_SUCCESS && status != APR_EINTR) {
+	if (status != APR_SUCCESS && ap_canonical_error(status) != APR_EINTR) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 			"read: rfc1413: error reading response");
 	    return -1;
