@@ -43,50 +43,6 @@ Plan:
 
 Showstoppers:
 
-Committed Code Changes:
-
-    * Lars' Configure fix to avoid confusing message under APACI control
-    * Ralf's Configure fix for AWK's failing with "string to long" error
-    * Ralf's fix for stderr logging to make sure default loglevel is honored
-    * Marc's catching of defined handlers still ending in the default handler
-    * Ralf's cast for dlopen's arg1 under OSF1 and FreeBSD 2.2.x
-    * Lars' fix for the prefix setup on configure --compat
-    * Dean's add %pA, %pI, and %pp codes to ap_vformatter
-    * Dean's httpd -S command line option to dump parsed vhost setup
-    * HP-UX 11 port by Jeff Earickson
-    * Ralf's fix for the install-config target to get correct MimeMagicFile
-    * PRs 2081 and 2082 closed
-    * Ralf's adjustments to `configure --compat' to be even more "compatible"
-    * Ralf/Jim's enhanced "make install" carefulness for DocRoot, PR#2084
-    * Ralf's back-compat in configure for EXTRA_xxx parameter names
-    * Ralf's configure fix to avoid side-effects in Configure on exported vars
-    * Ralf's fix for the install-config target to get correct ScoreBoardFile
-    * Dynamic Shared Object (DSO) support for OpenBSD 2.x
-    * Ralf's enhanced "make install" carefulness for mime.types+magic files
-    * Ralf's paranoia-fixes for the IFS-handling in `configure'
-    * Fix for the DEBUG_CGI (#ifdef'ed) situation in mod_cgi.c, PR#2114
-    * Ralf's various bugfixes and cleanups for the configure script
-    * Ralf's workaround for braindead awk when generating ap_config.h, PR#2139
-    * Ralf's manual renaming of forgotten non-ap_-symbols because of #define
-    * Ralf's fix for SOCKS4 and adding of additional SOCKS5 support, PR#2140
-    * Ralf's workaround for sed limitation in configure script, PR#2136
-    * Ralf's support for making APACI install root overrideable by pkg authors
-    * Ralf's more granular install paths: runtimedir, logfiledir, proxycachedir
-    * Roy's bugfixes for select() handling
-    * Martin's suppress "error(0)" messages for ap_log_error()
-    * Ralf's fixes for compiler warnings under AIX 4.2 (NET_SIZE_T is size_t)
-    * Ralf's DSO support for AIX
-    * Ralf's DSO support for NetBSD, PR#2158
-    * Some optimization defines for NetBSD, PR#2165
-    * Ralf's various porting changes to support AIX 3.2, 4.1.5, 4.2 and 4.3.
-    * Ben's WIN32: Make roots of filesystems (e.g. c:/) work, PR#1558
-    * Ben's WIN32: Extensive overhaul of the way UNCs are handled.
-    * Ralf's fix for referer/agent log entries in installed httpd.conf, PR#2175
-    * Jim's fix for MIME type case sensitivity disparity, PR#2112
-    * Child processes can now "signal" to the parent process that
-      it (the parent process) should abort, shutting down the server.
-    * Michael Anderson's <mka@redes.int.com.mx> C++ friendly patch
-
 Available Patches:
 
     * Dean's mod_alias.c, translate_alias_redir patch
