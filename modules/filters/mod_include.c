@@ -190,7 +190,7 @@ static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
     int state = 0;
 
     do {
-        if (dptr->type == ap_eos_type()) {
+        if (AP_BUCKET_IS_EOS(dptr)) {
             break;
         }
         ap_bucket_read(dptr, &buf, &len, 0);

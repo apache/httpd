@@ -890,7 +890,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
     }
 
     e = AP_BRIGADE_FIRST(b);
-    if (f->c->remain == 0 && e->type == ap_eos_type()) {
+    if (f->c->remain == 0 && AP_BUCKET_IS_EOS(e)) {
         bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
         ctx->b = bb;
         return APR_SUCCESS;
@@ -2441,7 +2441,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
                                  timeout);
             }
             b = AP_BRIGADE_FIRST(bb);
-            if (b->type == ap_eos_type()) {
+            if (AP_BUCKET_IS_EOS(b)) {
                 r->connection->remain = 0;
                 break;
             }
