@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/05 22:49:03 $]
+Last modified at [$Date: 2002/02/05 23:24:07 $]
 
 Release:
 
@@ -45,10 +45,12 @@ RELEASE SHOWSTOPPERS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, 
                       Linux 2.2 & 2.4, HPUX
+        Broken on: Win32 [no error logging within service, other bugs]
         for beta
             +1 : Jeff Trawick, BrianP, Aaron, Jim
             +0 : Lars
-            -1 : BillS, BillR, Ian, gregames, Justin
+            -0 : OtherBill
+            -1 : BillS, Ian, gregames, Justin
         bumps since original tag:
             * mod-dir patch
             * scoreboard x2 : 1 to fix gracefull restarts
@@ -87,8 +89,16 @@ RELEASE SHOWSTOPPERS:
                 Justin is tracking this down.
 
             * FirstBill reports problem [re]starting as-a-service, shared
-              score is suspect.  OtherBill is investigating, definately
-              a showstopper for a .31/.32 beta.  Progress report later today.
+              score is suspect.  OtherBill is investigating... has found
+                 . created restart and shutdown events, only restart
+                   survived initialization on XP, although breaking into 
+                   the debugger interferes with reproducing the bug.  
+                   Perhaps in FirstBill's example _restart didn't survive.
+                 . Scoreboard appears irrelevant to the problem.
+                 . This looks like handle corruption in NT/XP
+                 . Args are not initialied correctly when the -k install
+                   is given.
+              OtherBill will not create Win32 binaries due to this bug.
 
             * mod_auth_dbm can't open a Berkely DB password file on Unix
                 Justin postulates that this might be related to the fact
