@@ -1145,14 +1145,7 @@ static void worker_main(int child_num)
         }
         else {
             context->accept_socket = INVALID_SOCKET;
-            /* Disable lingering close for the moment to fix a seg fault.
-             * All the sendfile code needs some serious work to return 
-             * proper error values, handle updating bytes_sent, etc.
-             * I'll enable lingering close after I've fixed the sendfile
-             * code
-             * ap_lingering_close(c);
-             */
-            ap_bclose(c->client);
+            ap_lingering_close(c);
         }
     }
 
