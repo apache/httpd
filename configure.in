@@ -82,7 +82,6 @@ pwd.h \
 grp.h \
 )
 AC_HEADER_SYS_WAIT
-AC_STRUCT_TM
 
 dnl ## Check for C preprocessor symbols
 
