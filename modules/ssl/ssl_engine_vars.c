@@ -296,8 +296,10 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
         result = ssl_var_lookup_ssl_cert_verify(p, c);
     }
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "CLIENT_", 7)) {
-        if ((xs = SSL_get_peer_certificate(ssl)) != NULL)
+        if ((xs = SSL_get_peer_certificate(ssl)) != NULL) {
             result = ssl_var_lookup_ssl_cert(p, xs, var+7);
+            X509_free(xs);
+        }
     }
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "SERVER_", 7)) {
         if ((xs = SSL_get_certificate(ssl)) != NULL)
@@ -536,6 +538,9 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
     else
         /* client verification failed */
         result = apr_psprintf(p, "FAILED:%s", verr);
+
+    if (xs)
+        X509_free(xs);
     return result;
 }
 
