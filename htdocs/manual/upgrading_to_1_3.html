@@ -39,7 +39,7 @@ document, or in the <code>src/CHANGES</code> file.
   
   <LI>The <code>-DMAXIMUM_DNS</code> definition has been obsoleted by
     changes to <code>mod_access</code> enforcing double-reverse DNS lookups
-    all the time.
+    when necessary.
   
   <LI><code>mod_dir</code> has been split into two pieces
     <code><a href="mod/mod_autoindex.html">mod_autoindex</a></code>, and
@@ -83,7 +83,7 @@ document, or in the <code>src/CHANGES</code> file.
     more general "allow from env".
 
   <li>When using wildcards in pathnames (such as * and ?) they no longer
-    match / (slash).  That is, they more closely behave how the shell
+    match / (slash).  That is, they more closely behave how a UNIX shell
     behaves.  This affects <code>&lt;Directory&gt;</code> directives,
     for example.
 
