@@ -61,32 +61,20 @@
  * preload the API symbols now...
  */
 
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0400
-#endif
-#ifndef NOGDI
-#define NOGDI
-#endif
-#ifndef NONLS
-#define NONLS
-#endif
-#ifndef NOMCX
-#define NOMCX
-#endif
-#ifndef NOIME
-#define NOIME
-#endif
-#include <windows.h>
-#include <winsock2.h>
-#include <mswsock.h>
-
-#define  CORE_PRIVATE 
+#define CORE_PRIVATE 
+#define _WINUSER_
 
 #include "httpd.h"
 #include "http_log.h"
 #include "mpm_winnt.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+
+#ifdef NOUSER
+#undef NOUSER
+#endif
+#undef _WINUSER_
+#include <winuser.h>
 
 static const char * service_name = NULL;
 
