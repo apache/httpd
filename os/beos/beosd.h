@@ -56,8 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef UNIXD_H
-#define UNIXD_H
+#ifndef BEOSD_H
+#define BEOSD_H
 
 /* common stuff that beos MPMs will want */
 
@@ -84,18 +84,6 @@ void beosd_pre_config(void);
 const char *beosd_set_user(cmd_parms *cmd, void *dummy, char *arg);
 const char *beosd_set_group(cmd_parms *cmd, void *dummy, char *arg);
 
-#if defined(NSIG)
-#define NumSIG NSIG
-#elif defined(_NSIG)
-#define NumSIG _NSIG
-#elif defined(__NSIG)
-#define NumSIG __NSIG
-#else
-#define NumSIG 32   /* for 1998's unixes, this is still a good assumption */
-#endif
-
-#define INIT_SIGLIST()  /* nothing */
-
 #define beosd_killpg(x, y)	(kill (-(x), (y)))
 
 #define UNIX_DAEMON_COMMANDS	\
@@ -104,4 +92,4 @@ const char *beosd_set_group(cmd_parms *cmd, void *dummy, char *arg);
 { "Group", beosd_set_group, NULL, RSRC_CONF, TAKE1, \
   "Effective group id for this server"}, \
 
-#endif
+#endif /* BEOSD_H */

@@ -69,7 +69,7 @@
 
 #include "apr.h"
 #include "apr_thread_proc.h"
-#include "apr_general.h"        /* for signal stuff */
+#include "apr_signal.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -214,6 +214,9 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
 
 void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
 {
+    int signum = WTERMSIG(status);
+    const char *sigdesc = apr_signal_get_description(signum);
+
     /* Child died... if it died due to a fatal error,
         * we should simply bail out.
         */
@@ -225,41 +228,32 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
                         (long)pid->pid);
         exit(APEXIT_CHILDFATAL);
     }
+
     if (WIFSIGNALED(status)) {
-        switch (WTERMSIG(status)) {
+        switch (signum) {
         case SIGTERM:
         case SIGHUP:
         case SIGWINCH:
         case SIGKILL:
             break;
         default:
-#ifdef SYS_SIGLIST
 #ifdef WCOREDUMP
             if (WCOREDUMP(status)) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
                              0, ap_server_conf,
                              "child pid %ld exit signal %s (%d), "
                              "possible coredump in %s",
-                             (long)pid->pid, (WTERMSIG(status) >= NumSIG) ? "" :
-                             SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
+                             (long)pid->pid, sigdesc, signum,
                              ap_coredump_dir);
             }
-            else {
+            else
 #endif
+            {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
                              0, ap_server_conf,
                              "child pid %ld exit signal %s (%d)",
-                             (long)pid->pid,
-                             SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
-#ifdef WCOREDUMP
+                             (long)pid->pid, sigdesc, signum);
             }
-#endif
-#else
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-                         0, ap_server_conf,
-                         "child pid %ld exit signal %d",
-                         (long)pid->pid, WTERMSIG(status));
-#endif
         }
     }
 }

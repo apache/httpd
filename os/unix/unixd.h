@@ -112,30 +112,6 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);
 #endif
 
-/* Information on signals for the various platforms */
-
-#if defined(NSIG)
-#define NumSIG NSIG
-#elif defined(_NSIG)
-#define NumSIG _NSIG
-#elif defined(__NSIG)
-#define NumSIG __NSIG
-#else
-#define NumSIG 33   /* breaks on OS/390 with < 33; 32 is o.k. for most */
-#endif
-
-#ifdef SYS_SIGLIST /* platform has sys_siglist[] */
-#define INIT_SIGLIST()  /* nothing */
-#elif defined(SYS_SIGLIST_DECLARED) /* from autoconf */
-#define INIT_SIGLIST()  /* nothing */
-#define SYS_SIGLIST sys_siglist
-#else
-#define NEED_AP_SYS_SIGLIST
-extern const char *ap_sys_siglist[NumSIG];
-#define SYS_SIGLIST ap_sys_siglist
-void unixd_siglist_init(void);
-#define INIT_SIGLIST() unixd_siglist_init();
-#endif /* platform has sys_siglist[] */
 
 #ifdef HAVE_KILLPG
 #define unixd_killpg(x, y)	(killpg ((x), (y)))
