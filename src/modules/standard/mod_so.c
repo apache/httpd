@@ -252,6 +252,10 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded module %s", modname);
 
+#ifdef HIDE
+    modname = pstrcat(cmd->pool, "AP_", modname, NULL);
+#endif
+
 #ifdef NEED_UNDERSCORE_SYM
     modname = pstrcat(cmd->pool, "_", modname, NULL);
 #endif
