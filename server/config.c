@@ -1308,14 +1308,13 @@ void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m)
                              (*m->create_dir_config)(p, NULL));
 }
 
-void run_pre_config(ap_context_t *p, ap_context_t *plog,
-                       ap_context_t *ptemp, server_rec *s)
+void run_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
 {
     module *m;
 
     for (m = top_module; m; m = m->next)
         if (m->pre_config)
-            (*m->pre_config) (p, plog, ptemp, s);
+            (*m->pre_config) (p, plog, ptemp);
     init_handlers(p);
 }
 
