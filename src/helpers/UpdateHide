@@ -9,15 +9,39 @@ eval 'exec perl -S $0 ${1+"$@"}'
 #   the parameters
 $httpdbinary = $ARGV[0];
 $headerfile  = $ARGV[1];
+$gnutriple   = $ARGV[2];
 
 #   configuration
 $listbegin  = '\n#ifdef HIDE\n';
 $listend    = '\n#endif\n';
-@excluded   = (
-    'main', 
-    'errno', 
-    'optarg',
+@excluded   = qw(
+    main errno environ optarg
+    dlclose dlerror dlopen dlsym
+    start end atexit exit etext edata
 );
+@included   = qw(
+    D:db_auth_module
+    D:dbm_auth_module
+);
+
+#   determine os-dependend stuff
+if ($gnutriple =~ m|.*-freebsd2.*|) {
+    $nm_cmd   = '/usr/bin/nm -g';
+    $us_strip = 1;
+}
+elsif ($gnutriple =~ m|.*-solaris2.*|) {
+    $nm_cmd   = '/usr/ccs/bin/nm -p -g';
+    $us_strip = 0;
+}
+elsif ($gnutriple =~ m|.*-hpux.*|) {
+    $nm_cmd   = '/usr/ccs/bin/nm -p -g';
+    $us_strip = 0;
+}
+else {
+    print STDERR "Sorry, UpdateHide currently can be used only under\n";
+    print STDERR "the following OS: FreeBSD, Solaris, HPUX\n";
+    exit(1);
+}
 
 #   read current file as template
 open(FP, "<$headerfile");
@@ -31,20 +55,20 @@ close(FP);
 %SB = ();
 %SD = ();
 %ST = ();
-@L = `nm $httpdbinary`;
+@L = `$nm_cmd $httpdbinary`;
 foreach $l (@L) {
-    if ($l =~ m|^.+\s+([BDT])\s+(.+)\s*$|) {
+    if ($l =~ m|^.*\s+([BDT])\s+(\S+)\s*$|) {
         ($type, $name) = ($1, $2);
 
         #   remove leading underscore (C linker convention)
-        $name =~ s|^_||;    
+        $name =~ s|^_|| if $us_strip;
         #   remove perhaps already existing AP_ prefix
         #   (when running this script while httpd was
         #    already compiled with HIDE defined)
         $name =~ s|^AP_||;  
         #   skip any compiler- or system-private symbols
-        next if ($name =~ m|^_|);
-        #   skip any global compiler or system symbols
+        next if ($name !~ m|^[a-zA-Z]+|);
+        #   skip any symbols in our exclusion list
         next if (grep(/$name/, @excluded));
 
         #   insert the symbol into our lists
@@ -52,6 +76,13 @@ foreach $l (@L) {
         $SD{$name}++ if $type eq 'D';
         $ST{$name}++ if $type eq 'T';
     }
+}
+#   additionally add entries from static include list
+foreach $i (@included) {
+    ($type, $name) = ($i =~ m|^([BDT]):(.+)$|);
+    $SB{$name}++ if $type eq 'B';
+    $SD{$name}++ if $type eq 'D';
+    $ST{$name}++ if $type eq 'T';
 }
 
 #   generate new redefinition list

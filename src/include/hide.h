@@ -76,8 +76,6 @@
 #define daemons_max_free               AP_daemons_max_free
 #define daemons_min_free               AP_daemons_min_free
 #define daemons_to_start               AP_daemons_to_start
-#define end                            AP_end
-#define environ                        AP_environ
 #define excess_requests_per_child      AP_excess_requests_per_child
 #define group_id                       AP_group_id
 #define jmpbuffer                      AP_jmpbuffer
@@ -129,7 +127,6 @@
 #define digest_module                  AP_digest_module
 #define dir_module                     AP_dir_module
 #define dummy_mutex                    AP_dummy_mutex
-#define edata                          AP_edata
 #define env_module                     AP_env_module
 #define example_cmds                   AP_example_cmds
 #define example_handlers               AP_example_handlers
@@ -231,7 +228,6 @@
 #define check_alarm                    AP_check_alarm
 #define check_auth                     AP_check_auth
 #define check_cmd_context              AP_check_cmd_context
-#define check_fulluri                  AP_check_fulluri
 #define check_serverpath               AP_check_serverpath
 #define check_symlinks                 AP_check_symlinks
 #define check_user_id                  AP_check_user_id
@@ -265,6 +261,7 @@
 #define create_request_config          AP_create_request_config
 #define create_server_config           AP_create_server_config
 #define default_handler                AP_default_handler
+#define default_port_for_request       AP_default_port_for_request
 #define default_port_for_scheme        AP_default_port_for_scheme
 #define default_type                   AP_default_type
 #define destroy_pool                   AP_destroy_pool
@@ -274,10 +271,6 @@
 #define directory_walk                 AP_directory_walk
 #define dirsection                     AP_dirsection
 #define discard_request_body           AP_discard_request_body
-#define dlclose                        AP_dlclose
-#define dlerror                        AP_dlerror
-#define dlopen                         AP_dlopen
-#define dlsym                          AP_dlsym
 #define do_nothing                     AP_do_nothing
 #define document_root                  AP_document_root
 #define each_byterange                 AP_each_byterange
@@ -287,7 +280,6 @@
 #define escape_html                    AP_escape_html
 #define escape_path_segment            AP_escape_path_segment
 #define escape_shell_cmd               AP_escape_shell_cmd
-#define etext                          AP_etext
 #define exists_scoreboard_image        AP_exists_scoreboard_image
 #define file_walk                      AP_file_walk
 #define filesection                    AP_filesection
@@ -379,6 +371,7 @@
 #define make_sub_request               AP_make_sub_request
 #define make_table                     AP_make_table
 #define malloc_block                   AP_malloc_block
+#define matches_request_vhost          AP_matches_request_vhost
 #define meets_conditions               AP_meets_conditions
 #define merge_core_dir_configs         AP_merge_core_dir_configs
 #define merge_core_server_configs      AP_merge_core_server_configs
@@ -407,7 +400,6 @@
 #define parse_htaccess                 AP_parse_htaccess
 #define parse_uri                      AP_parse_uri
 #define parse_uri_components           AP_parse_uri_components
-#define parse_uri_components_regex     AP_parse_uri_components_regex
 #define parse_vhost_addrs              AP_parse_vhost_addrs
 #define pcalloc                        AP_pcalloc
 #define pcfg_open_custom               AP_pcfg_open_custom
@@ -554,6 +546,7 @@
 #define set_pidfile                    AP_set_pidfile
 #define set_scoreboard                 AP_set_scoreboard
 #define set_send_buffer_size           AP_set_send_buffer_size
+#define set_server_alias               AP_set_server_alias
 #define set_server_limit               AP_set_server_limit
 #define set_server_root                AP_set_server_root
 #define set_server_string_slot         AP_set_server_string_slot
@@ -580,7 +573,6 @@
 #define spawn_child_err_buff           AP_spawn_child_err_buff
 #define srm_command_loop               AP_srm_command_loop
 #define standalone_main                AP_standalone_main
-#define start                          AP_start
 #define start_ifmod                    AP_start_ifmod
 #define start_restart                  AP_start_restart
 #define start_shutdown                 AP_start_shutdown

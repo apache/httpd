@@ -66,16 +66,17 @@ depend:
 # httpd binary with all modules built in and then updates the
 # $(INCDIR)/hide.h file according to the exported symbols of this
 # binary. So run this target once after a new function was added
-# to the source.
+# to the source. But never trust this operation. You really 
+# have to review the changes manually afterwards.
 updatehide:
 	cat Configuration.tmpl |\
         sed -e 's/^#*[ 	]*\(AddModule\)/\1/g' |\
-        cat >Configuration.for-hide
-	$(MAKE) clean 
+        sed -e 's/^\(AddModule.*auth_db.*\)/# \1/g' \
+        >Configuration.for-hide
 	./Configure -file Configuration.for-hide
-	$(MAKE) httpd
-	./helpers/UpdateHide httpd $(INCDIR)/hide.h
-	$(MAKE) clean
+	$(MAKE) clean httpd
+	./helpers/UpdateHide httpd $(INCDIR)/hide.h `helpers/GuessOS`
+	$(MAKE) clean 
 	rm -f Configuration.for-hide
 
 #Dependencies
