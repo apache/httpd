@@ -50,8 +50,8 @@
     with filename extensions, the <module>core</module> server
     provides directives that are used to associate all the files in a
     given container (<em>e.g.</em>, <directive type="section"
-    module="core">location</directive>, <directive type="section"
-    module="core">directory</directive>, or <directive type="section"
+    module="core">Location</directive>, <directive type="section"
+    module="core">Directory</directive>, or <directive type="section"
     module="core">Files</directive>) with particular
     meta-information. These directives include <directive
     module="core">ForceType</directive>, <directive
@@ -154,7 +154,7 @@
 
 </section>
 
-<section>
+<section id="charset-lang">
 
 <title>Character sets and languages</title>
 
@@ -640,37 +640,31 @@ DefaultLanguage en
 <description>Tells mod_mime to treat path_info components as part of the filename</description>
 <syntax>ModMimeUsePathInfo On|Off</syntax>
 <contextlist>
-<context>server config</context>
-<context>virtual host</context>
 <context>directory</context>
-<context>.htaccess</context>
 </contextlist>
-<override>FileInfo</override>
 <compatibility>Available in Apache 2.0.41 and later</compatibility>
 
 <usage>
+    <p>The <directive>ModMimeUsePathInfo</directive> directive is used to
+    combine the filename with the path_info URL component to apply
+    <module>mod_mime</module>'s directives to the request.  The default
+    value is <code>Off</code> - therefore, the path_info component is
+    ignored.</p>
 
-  <p>The ModMimeUsePathInfo directive is used to combine the filename with
-     the path_info URL component to apply mod_mime's directives to the
-     request.  The default value is 'Off' - therefore, the path_info
-     component is ignored.
-  </p>
+    <p>This directive is recommended when you have a virtual filesystem.</p>
 
-  <p>This directive is recommended when you have a virtual filesystem.</p>
+    <example><title>Example</title>
+      ModMimeUsePathInfo On
+    </example>
 
-<example>
-<title>Example</title>
-ModMimeUsePathInfo On
-</example>
-
-  <p>If you have a request for /bar/foo.shtml where /bar is a Location and
-     ModMimeUsePathInfo is on, mod_mime will treat the incoming request as
-     /bar/foo.shtml and directives like
-     <code>AddOutputFilter INCLUDES .shtml</code> will add the INCLUDES
-     filter to the request.  If ModMimeUsePathInfo is not set, the includes
-     filter will not be added.
-  </p>
-
+    <p>If you have a request for <code>/bar/foo.shtml</code> where
+    <code>/bar</code> is a Location and <directive
+    >ModMimeUsePathInfo</directive> is on, <module>mod_mime</module> will
+    treat the incoming request as <code>/bar/foo.shtml</code> and
+    directives like <code>AddOutputFilter INCLUDES .shtml</code> will add
+    the INCLUDES filter to the request. If <directive
+    >ModMimeUsePathInfo</directive> is not set, the INCLUDES filter will
+    not be added.</p>
 </usage>
 </directivesynopsis>
 

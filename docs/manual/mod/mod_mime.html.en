@@ -37,7 +37,7 @@
     <p>While <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> associates meta-information
     with filename extensions, the <code class="module"><a href="../mod/core.html">core</a></code> server
     provides directives that are used to associate all the files in a
-    given container (<em>e.g.</em>, <code class="directive"><a href="../mod/core.html#location">&lt;location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#directory">&lt;directory&gt;</a></code>, or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>) with particular
+    given container (<em>e.g.</em>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>) with particular
     meta-information. These directives include <code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>, and <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>.  The core directives
     override any filename extension mappings defined in
     <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>.</p>
@@ -68,7 +68,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#removeoutputfilter">RemoveOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li><li><img alt="" src="../images/down.gif" /> Character sets and languages</li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li><li><img alt="" src="../images/down.gif" /> <a href="#charset-lang">Character sets and languages</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
 
 
     <p>Files can have more than one extension, and the order of the
@@ -136,7 +136,7 @@
 
     <div class="example"><p><code>Content-encoding: pkzip</code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Character sets and languages</h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="charset-lang" id="charset-lang">Character sets and languages</a></h2>
 
 
 
@@ -474,33 +474,28 @@ DefaultLanguage en
 <h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Tells mod_mime to treat path_info components as part of the filename</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_mime</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
               </a></th><td>Available in Apache 2.0.41 and later</td></tr></table>
+    <p>The <code class="directive">ModMimeUsePathInfo</code> directive is used to
+    combine the filename with the path_info URL component to apply
+    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>'s directives to the request.  The default
+    value is <code>Off</code> - therefore, the path_info component is
+    ignored.</p>
 
-  <p>The ModMimeUsePathInfo directive is used to combine the filename with
-     the path_info URL component to apply mod_mime's directives to the
-     request.  The default value is 'Off' - therefore, the path_info
-     component is ignored.
-  </p>
+    <p>This directive is recommended when you have a virtual filesystem.</p>
 
-  <p>This directive is recommended when you have a virtual filesystem.</p>
+    <div class="example"><h3>Example</h3><p><code>
+      ModMimeUsePathInfo On
+    </code></p></div>
 
-<div class="example"><h3>Example</h3><p><code>
-
-ModMimeUsePathInfo On
-</code></p></div>
-
-  <p>If you have a request for /bar/foo.shtml where /bar is a Location and
-     ModMimeUsePathInfo is on, mod_mime will treat the incoming request as
-     /bar/foo.shtml and directives like
-     <code>AddOutputFilter INCLUDES .shtml</code> will add the INCLUDES
-     filter to the request.  If ModMimeUsePathInfo is not set, the includes
-     filter will not be added.
-  </p>
-
+    <p>If you have a request for <code>/bar/foo.shtml</code> where
+    <code>/bar</code> is a Location and <code class="directive">ModMimeUsePathInfo</code> is on, <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> will
+    treat the incoming request as <code>/bar/foo.shtml</code> and
+    directives like <code>AddOutputFilter INCLUDES .shtml</code> will add
+    the INCLUDES filter to the request. If <code class="directive">ModMimeUsePathInfo</code> is not set, the INCLUDES filter will
+    not be added.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The types of files that will be included when 
 searching for a matching file with MultiViews</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
