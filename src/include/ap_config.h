@@ -1059,7 +1059,9 @@ typedef int rlim_t;
 #include <pwd.h>
 #include <grp.h>
 #include <fcntl.h>
+#ifndef BEOS
 #define closesocket(s) close(s)
+#endif
 #ifndef O_BINARY
 #define O_BINARY (0)
 #endif
