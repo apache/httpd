@@ -3291,6 +3291,8 @@ static int make_child(server_rec *s, int slot, time_t now)
 
     if (one_process) {
 	signal(SIGHUP, just_die);
+	signal(SIGINT, just_die);
+	signal(SIGQUIT, SIG_DFL);
 	signal(SIGTERM, just_die);
 	child_main(slot);
     }

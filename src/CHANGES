@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Apache will, when started with the -X (single process) debugging flag,
+     honor the SIGINT or SIGQUIT signals again now. This capability got lost
+     a while ago during OS/2 signal handling changes.
+
   *) [PORT] Work around the fact that NeXT runs on more than the
      m68k chips in mod_status [Scott Anguish and Timothy Luoma
      <luomat@peak.org>]
