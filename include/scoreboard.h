@@ -91,11 +91,10 @@ extern "C" {
 #define SERVER_BUSY_KEEPALIVE 5	/* Waiting for more requests via keepalive */
 #define SERVER_BUSY_LOG 6	/* Logging the request */
 #define SERVER_BUSY_DNS 7	/* Looking up a hostname */
-#define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
-#define SERVER_ACCEPTING 9	/* thread is accepting connections */
-#define SERVER_QUEUEING	10      /* thread is putting connection on the queue */
-#define SERVER_IDLE_KILL 11     /* Server is cleaning up idle children. */
-#define SERVER_NUM_STATUS 12	/* number of status settings */
+#define SERVER_CLOSING 8	/* Closing the connection */
+#define SERVER_GRACEFUL 9	/* server is gracefully finishing request */
+#define SERVER_IDLE_KILL 10     /* Server is cleaning up idle children. */
+#define SERVER_NUM_STATUS 11	/* number of status settings */
 
 /* Type used for generation indicies.  Startup and every restart cause a
  * new generation of children to be spawned.  Children within the same

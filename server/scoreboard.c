@@ -279,7 +279,7 @@ int ap_update_child_status(int child_num, int thread_num, int status, request_re
 
     ps = &ap_scoreboard_image->parent[child_num];
     
-    if ((status == SERVER_READY  || status == SERVER_ACCEPTING)
+    if (status == SERVER_READY
 	&& old_status == SERVER_STARTING) {
         ws->thread_num = child_num * HARD_SERVER_LIMIT + thread_num;
         ps->generation = ap_my_generation;

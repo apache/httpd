@@ -157,6 +157,8 @@ void ap_lingering_close(conn_rec *c)
     apr_int32_t timeout;
     apr_int32_t total_linger_time = 0;
 
+    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_CLOSING, NULL);
+
 #ifdef NO_LINGCLOSE
     ap_flush_conn(c);	/* just close it */
     apr_socket_close(c->client_socket);
