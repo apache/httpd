@@ -845,7 +845,7 @@ static int create_acceptex_context(ap_pool_t *_pconf, ap_listen_rec *lr)
     DWORD BytesRead;
     SOCKET nsd;
     int lasterror;
-    
+
     /* allocate the completion context */
     context = ap_pcalloc(_pconf, sizeof(COMP_CONTEXT));
     if (!context) {
@@ -862,17 +862,30 @@ static int create_acceptex_context(ap_pool_t *_pconf, ap_listen_rec *lr)
                      "create_acceptex_context: CreateEvent() failed. Process will exit.");
         return -1;
     }
+
+    /* create and initialize the accept socket */
+    ap_get_os_sock(&nsd, context->lr->sd);
     context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (context->accept_socket == INVALID_SOCKET) {
         ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
                      "create_acceptex_context: socket() failed. Process will exit.");
         return -1;
     }
+
+    /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
+    if (setsockopt(context->accept_socket, SOL_SOCKET,
+                   SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
+                   sizeof(nsd))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, WSAGetLastError(), server_conf,
+                     "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
+        /* Not a failure condition. Keep running. */
+    }
+
     ap_create_pool(&context->ptrans, _pconf);
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
-    ap_get_os_sock(&nsd, context->lr->sd);
+
 
     /* AcceptEx on the completion context. The completion context will be signaled
      * when a connection is accepted. */
@@ -888,19 +901,6 @@ static int create_acceptex_context(ap_pool_t *_pconf, ap_listen_rec *lr)
                          "create_acceptex_context: AcceptEx failed. Process will exit.");
             return -1;
         }
-        
-        /* SO_UPDATE_ACCEPT_CONTEXT is a Microsoft-ism which is required
-         * if you want to use more than several key socket calls on a
-         * socket initialized via AcceptEx().  In particular, it is
-         * required for shutdown() to work.
-         */
-
-        if (setsockopt(context->accept_socket, SOL_SOCKET,
-                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
-                       sizeof(nsd))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, WSAGetLastError(), server_conf,
-                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
-        }
 
     }
     lr->count++;
@@ -915,22 +915,36 @@ static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context)
 
     context->lr->count++;
 
-    if (context->accept_socket == -1)
-        context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
+    /* recreate and initialize the accept socket if it is not being reused */
+    ap_get_os_sock(&nsd, context->lr->sd);
     if (context->accept_socket == INVALID_SOCKET) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
-                     "reset_acceptex_context: socket() failed. Process will exit.");
-        return -1;
+        context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        if (context->accept_socket == INVALID_SOCKET) {
+            ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+                         "reset_acceptex_context: socket() failed. Process will exit.");
+            return -1;
+        }
+        
+        /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
+        if (setsockopt(context->accept_socket, SOL_SOCKET,
+                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
+                       sizeof(nsd))) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(),
+                         server_conf,
+                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
+            /* Not a failure condition. Keep running. */
+        }
     }
 
+    /* reset the completion context */
     ap_clear_pool(context->ptrans);
     context->sock = NULL;
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
-    ap_get_os_sock(&nsd, context->lr->sd);
 
+    /* AcceptEx on the completion context. The completion context will be signaled
+     * when a connection is accepted. */
     if (!AcceptEx(nsd, context->accept_socket, 
                   context->recv_buf, 
                   0, //context->recv_buf_size,
@@ -941,20 +955,6 @@ static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context)
             ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
                          "reset_acceptex_context: AcceptEx failed. Leaving the process running.");
             return -1;
-        }
-        
-        /* SO_UPDATE_ACCEPT_CONTEXT is a Microsoft-ism which is required
-         * if you want to use more than several key socket calls on a
-         * socket initialized via AcceptEx().  In particular, it is
-         * required for shutdown() to work.
-         */
-
-        if (setsockopt(context->accept_socket, SOL_SOCKET,
-                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
-                       sizeof(nsd))) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(),
-                         server_conf,
-                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
         }
     }
 
@@ -975,7 +975,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
             /* destroy pool */
         }
         else {
-            context->accept_socket = -1; /* Don't reuse the accept_socket */
+            context->accept_socket = INVALID_SOCKET; /* Don't reuse the accept_socket */
             if (reset_acceptex_context(context) == -1) {
                 if (context->accept_socket != -1)
                     closesocket(context->accept_socket);
@@ -1054,31 +1054,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
 static void worker_main(int child_num)
 {
-    static BOOLEAN bListenersStarted = FALSE;
     PCOMP_CONTEXT context = NULL;
-
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
-        /* Windows NT/2000: Create AcceptEx completion contexts for each of the
-         * listeners
-         */
-        ap_lock(allowed_globals.jobmutex);
-        if (!bListenersStarted) {
-            ap_listen_rec *lr;
-            int i;
-            bListenersStarted = TRUE;
-            for (lr = ap_listeners; lr != NULL; lr = lr->next) {
-                for(i=0; i<2; i++) {
-                    if (lr->count < 2)
-                        if (create_acceptex_context(pconf, lr) == -1) {
-                            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
-                                         "Unable to create an AcceptEx completion context -- process will exit");
-                            signal_parent(0);	/* tell parent to die */
-                        }
-                }
-            }
-        }
-        ap_unlock(allowed_globals.jobmutex);
-    }
 
     while (1) {
         conn_rec *current_conn;
@@ -1155,7 +1131,6 @@ static void child_main()
     /* This is the child process or we are running in single process
      * mode.
      */
-
     exit_event_name = ap_psprintf(pconf, "apC%d", my_pid);
     setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
 
@@ -1179,20 +1154,26 @@ static void child_main()
     ap_assert(start_mutex);
     ap_assert(exit_event);
 
-    ap_create_pool(&pchild, pconf);
-
-
     if (listenmaxfd == INVALID_SOCKET) {
         /* No sockets were made, better log something and exit */
         ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, NULL,
                      "No sockets were created for listening");
         signal_parent(0);	/* tell parent to die */
-        ap_destroy_pool(pchild);
         exit(0);
     }
 
+    ap_create_pool(&pchild, pconf);
     allowed_globals.jobsemaphore = create_semaphore(0);
     ap_create_lock(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
+
+    /* Create the worker thread pool */
+    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
+                 "Child %d: Starting %d worker threads.", my_pid, nthreads);
+    child_handles = (thread *) alloca(nthreads * sizeof(int));
+    for (i = 0; i < nthreads; i++) {
+        child_handles[i] = (thread *) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
+                                                     NULL, 0, &thread_id);
+    }
 
     /*
      * Wait until we have permission to start accepting connections.
@@ -1204,31 +1185,40 @@ static void child_main()
 	ap_log_error(APLOG_MARK,APLOG_ERR, status, server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
         signal_parent(0);	/* tell parent to die */
-	ap_destroy_pool(pchild);
 	exit(0);
     }
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, "Child %d: Acquired the start mutex", my_pid);
+    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
+                 "Child %d: Acquired the start mutex.", my_pid);
 
-    /* Create the worker thread pool */
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, "Child %d: Creating %d worker threads",my_pid, nthreads);
-    child_handles = (thread *) alloca(nthreads * sizeof(int));
-    for (i = 0; i < nthreads; i++) {
-        child_handles[i] = (thread *) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
-                                                     NULL, 0, &thread_id);
-    }
-
+    /* Begin accepting connections */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         /* Win95/98: Create the accept thread */
         _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) accept_and_queue_connections,
                        (void *) i, 0, &thread_id);
+    } else {
+        /* Windows NT/2000: Create AcceptEx completion contexts for each of the
+         * listeners.
+         */
+        ap_listen_rec *lr;
+        int i;
+        for (lr = ap_listeners; lr != NULL; lr = lr->next) {
+            for(i=0; i<2; i++) {
+                if (lr->count < 2)
+                    if (create_acceptex_context(pconf, lr) == -1) {
+                        ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                                     "Unable to create an AcceptEx completion context -- process will exit");
+                        signal_parent(0);	/* tell parent to die */
+                    }
+            }
+        }
     }
 
     /* Wait for the exit event to be signaled by the parent process */
     rv = WaitForSingleObject(exit_event, INFINITE);
+    workers_may_exit = 1;      
 
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf,
                  "Child %d: Exit event signaled. Child process is ending.", my_pid);
-    workers_may_exit = 1;      
 
     /* Shutdown the worker threads */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -1446,7 +1436,7 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
             int nsd;
             lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
             ap_get_os_sock(&nsd,lr->sd);
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, APR_SUCCESS, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                          "Parent: Duplicating socket %d and sending it to child process %d", nsd, pi.dwProcessId);
             if (WSADuplicateSocket(nsd, pi.dwProcessId,
                                    lpWSAProtocolInfo) == SOCKET_ERROR) {
@@ -1553,7 +1543,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         /* restart_event signalled */
         int children_to_kill = current_live_processes;
         restart_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, s, 
                      "master_main: Restart event signaled. Doing a graceful restart.");
         if (ResetEvent(restart_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
@@ -1566,7 +1556,6 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * child out of the process_handles ap_table_t and hope for the best...
          */
         for (i = 0; i < children_to_kill; i++) {
-            printf("SetEvent handle = %d\n", process_kill_events[i]);
             if (SetEvent(process_kill_events[i]) == 0)
                 ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
                              "master_main: SetEvent for child process in slot #%d failed", i);
