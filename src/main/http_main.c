@@ -247,9 +247,9 @@ API_VAR_EXPORT int ap_threads_per_child=0;
 API_VAR_EXPORT int ap_excess_requests_per_child=0;
 API_VAR_EXPORT char *ap_pid_fname=NULL;
 API_VAR_EXPORT char *ap_scoreboard_fname=NULL;
-API_VAR_EXPORT char *ap_lock_fname;
+API_VAR_EXPORT char *ap_lock_fname=NULL;
 API_VAR_EXPORT char *ap_server_argv0=NULL;
-API_VAR_EXPORT struct in_addr ap_bind_address;
+API_VAR_EXPORT struct in_addr ap_bind_address={};
 API_VAR_EXPORT int ap_daemons_to_start=0;
 API_VAR_EXPORT int ap_daemons_min_free=0;
 API_VAR_EXPORT int ap_daemons_max_free=0;
@@ -309,11 +309,11 @@ static listen_rec *head_listener;
 
 API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN]="";
 API_VAR_EXPORT char ap_server_confname[MAX_STRING_LEN]="";
-API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN];
+API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN]="";
 
-API_VAR_EXPORT array_header *ap_server_pre_read_config;
-API_VAR_EXPORT array_header *ap_server_post_read_config;
-API_VAR_EXPORT array_header *ap_server_config_defines;
+API_VAR_EXPORT array_header *ap_server_pre_read_config=NULL;
+API_VAR_EXPORT array_header *ap_server_post_read_config=NULL;
+API_VAR_EXPORT array_header *ap_server_config_defines=NULL;
 
 /* *Non*-shared http_main globals... */
 
