@@ -2495,7 +2495,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
 
     if (ctx->headers_sent) {
         apr_brigade_destroy(b);
-        return AP_REQUEST_DONE;
+        return OK;
     }
 
     if (r->assbackwards) {
@@ -2644,7 +2644,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
 
     if (r->header_only) {
         apr_brigade_destroy(b);
-        return AP_REQUEST_DONE;
+        return OK;
     }
 
     if (r->chunked) {
