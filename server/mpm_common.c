@@ -86,7 +86,7 @@
 #include <grp.h>
 #endif
 
-#ifdef MPM_NEEDS_RECLAIM_CHILD_PROCESSES
+#ifdef AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate)
 {
     int i;

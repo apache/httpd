@@ -110,7 +110,9 @@ extern "C" {
  *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
  * </PRE>
  */
+#if AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate);
+#endif
 
 /**
  * Determine if any child process has died.  If no child process died, then

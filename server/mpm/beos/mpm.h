@@ -62,7 +62,7 @@
 #define BEOS_MPM
 #include "scoreboard.h"
 
-#define MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
+#define AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE()
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->servers[0][i].tid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
