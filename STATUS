@@ -416,11 +416,19 @@ Open issues:
 	Proposal: the next release should be named 1.3.0 and should be labelled
 	    "stable on unix, beta on NT".
 	    +1: Dean
+	    -0: Ralf (because we've done a lot of good but new stuff
+		      in 1.3b6-dev now and we should give us at least
+		      one pre-release before the so-called "release" [1.3.0].
+		      But we should not take again many months. 1.3.0 should
+		      be kicked out as soon as possible after 1.3b6 is out. So
+		      we should commit APACI, test a few days again, release
+		      1.3b6, look for the responses, fix a few bugs and then
+		      roll 1.3.0 out of the door marked as stated above)
 
 	Proposal: the next release should be named 1.3b6, and labelled "release
 	    candidate on unix, beta on NT".  The release after that will be
 	    called 1.3.0 "stable on unix, beta on NT".
-	    +1: Jim
+	    +1: Jim, Ralf
 	    +0: Dean
 
 Win32 specific issues:
