@@ -2,8 +2,8 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_mime_magic- Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_mime_magic</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Determines the MIME type of a file
-    by looking at a few bytes of its contents</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>mime_magic_module</td></tr></table></td></tr></table><h2>Summary</h2>
+        --><title>mod_mime_magic- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_mime_magic</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Determines the MIME type of a file
+    by looking at a few bytes of its contents</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mime_magic_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This module determines the MIME type of files in the same
     way the Unix file(1) command works: it looks at the first few
     bytes of the file. It is intended as a "second line of defense"
@@ -16,7 +16,7 @@
     <code>file(1)</code> command for Unix, which uses "magic
     numbers" and other hints from a file's contents to figure out
     what the contents are. This module is active only if the magic
-    file is specified by the <a class="directive" href="#mimemagicfile"><code class="directive">MimeMagicFile</code></a> directive.</p>
+    file is specified by the <a href="#mimemagicfile" class="directive"><code class="directive">MimeMagicFile</code></a> directive.</p>
 <h2>Directives</h2><ul><li><a href="#mimemagicfile">MimeMagicFile</a></li></ul><h2>Format of the Magic File</h2>
 
     <p>The contents of the file are plain ASCII text in 4-5
@@ -34,7 +34,7 @@
       <tr valign="top">
         <td>1</td>
 
-        <td>byte number to begin checking from<br/>
+        <td>byte number to begin checking from<br>
          "&gt;" indicates a dependency upon the previous non-"&gt;"
         line</td>
       </tr>
@@ -267,8 +267,8 @@
  *
  */
 </pre>
-<hr/><h2><a name="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enable MIME-type determination based on file contents
-using the specified magic file</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MimeMagicFile <em>file-path</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Extension</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_mime_magic</td></tr></table></td></tr></table>
+<hr/><h2><a name="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enable MIME-type determination based on file contents
+using the specified magic file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MimeMagicFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime_magic</td></tr></table></td></tr></table>
     <p>The <code class="directive">MimeMagicFile</code> directive can be used to
     enable this module, the default file is distributed at
     <code>conf/magic</code>. Non-rooted paths are relative to the
