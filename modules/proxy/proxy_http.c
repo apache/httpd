@@ -1022,15 +1022,41 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * of the page into the brigade
              */
             if (conf->error_override == 0 || ap_is_HTTP_SUCCESS(r->status)) {
-
                 /* read the body, pass it to the output filters */
+                apr_read_type_e mode = APR_NONBLOCK_READ;
                 int finish = FALSE;
-                while (ap_get_brigade(rp->input_filters, 
-                                      bb, 
-                                      AP_MODE_READBYTES, 
-                                      APR_BLOCK_READ, 
-                                      conf->io_buffer_size) == APR_SUCCESS) {
+
+                do {
                     apr_off_t readbytes;
+                    apr_status_t rv;
+
+                    rv = ap_get_brigade(rp->input_filters, bb, 
+                                        AP_MODE_READBYTES, mode,
+                                        conf->io_buffer_size);
+
+                    /* ap_get_brigade will return success with an empty brigade
+                     * for a non-blocking read which would block: */
+                    if (APR_STATUS_IS_EAGAIN(rv)
+                        || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb))) {
+                        /* flush to the client and switch to blocking mode */
+                        e = apr_bucket_flush_create(c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(bb, e);
+                        if (ap_pass_brigade(r->output_filters, bb)) {
+                            backend->close = 1;
+                            break;
+                        }
+                        apr_brigade_cleanup(bb);
+                        mode = APR_BLOCK_READ;
+                        continue;
+                    }
+                    else if (rv != APR_SUCCESS) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+                                      "proxy: error reading response");
+                        break;
+                    }
+                    /* next time try a non-blocking read */
+                    mode = APR_NONBLOCK_READ;
+                    
                     apr_brigade_length(bb, 0, &readbytes);
                     backend->worker->s->readed += readbytes;
 #if DEBUGGING
@@ -1068,11 +1094,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     /* make sure we always clean up after ourselves */
                     apr_brigade_cleanup(bb);
 
-                    /* if we are done, leave */
-                    if (TRUE == finish) {
-                        break;
-                    }
-                }
+                } while (!finish);
             }
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: end body send");
