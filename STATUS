@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/04/13 21:54:10 $]
+  Last modified at [$Date: 2000/04/15 14:59:44 $]
 
 Release:
 
@@ -43,6 +43,11 @@ Documentation that needs writing:
 
 
 Available Patches:
+
+    * Dan Astoorian <djast@cs.toronto.edu>'s patch to fix mod_include RE
+      tokenisation
+	PR: 5898
+	Status: 
 
     * Gerd Knorr <gknorr@berlinonline.de>'s patch to enable mod_auth_digest
       to handle both Digest *and* Basic authentication modes.
