@@ -124,6 +124,27 @@
 #define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR (0.1)
 
+/* Create a set of PROXY_DECLARE(type), PROXY_DECLARE_NONSTD(type) and 
+ * PROXY_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define CACHE_DECLARE(type)            type
+#define CACHE_DECLARE_NONSTD(type)     type
+#define CACHE_DECLARE_DATA
+#elif defined(CACHE_DECLARE_STATIC)
+#define CACHE_DECLARE(type)            type __stdcall
+#define CACHE_DECLARE_NONSTD(type)     type
+#define CACHE_DECLARE_DATA
+#elif defined(CACHE_DECLARE_EXPORT)
+#define CACHE_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define CACHE_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define CACHE_DECLARE_DATA             __declspec(dllexport)
+#else
+#define CACHE_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define CACHE_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define CACHE_DECLARE_DATA             __declspec(dllimport)
+#endif
+
 struct cache_enable {
     const char *url;
     const char *type;
@@ -211,15 +232,16 @@ typedef struct {
 /**
  *
  */
-apr_time_t ap_cache_hex2msec(const char *x);
-void ap_cache_msec2hex(apr_time_t j, char *y);
-char *generate_name(apr_pool_t *p, int dirlevels, int dirlength, 
-                    const char *name);
-int ap_cache_request_is_conditional(request_rec *r);
-void ap_cache_reset_output_filters(request_rec *r);
-const char *ap_cache_get_cachetype(request_rec *r, cache_server_conf *conf, const char *url);
-int ap_cache_liststr(const char *list, const char *key, char **val);
-const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
+CACHE_DECLARE(apr_time_t) ap_cache_hex2msec(const char *x);
+CACHE_DECLARE(void) ap_cache_msec2hex(apr_time_t j, char *y);
+CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels, 
+                                    int dirlength, 
+                                    const char *name);
+CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r);
+CACHE_DECLARE(void) ap_cache_reset_output_filters(request_rec *r);
+CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r, cache_server_conf *conf, const char *url);
+CACHE_DECLARE(int) ap_cache_liststr(const char *list, const char *key, char **val);
+CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
 
 /**
  * cache_storage.c
