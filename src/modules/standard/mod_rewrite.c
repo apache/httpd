@@ -2165,7 +2165,7 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
     char buf[MAX_STRING_LEN];
 
     dbmkey.dptr  = key;
-    dbmkey.dsize = (strlen(key) < sizeof(buf) - 1 : strlen(key) ? sizeof(buf)-1);
+    dbmkey.dsize = (strlen(key) < sizeof(buf) - 1 ? strlen(key) : sizeof(buf)-1);
     if ((dbmfp = dbm_open(file, O_RDONLY, 0666)) != NULL) {
         dbmval = dbm_fetch(dbmfp, dbmkey);
         if (dbmval.dptr != NULL) {
