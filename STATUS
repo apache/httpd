@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/11 20:11:08 $]
+Last modified at [$Date: 2002/11/11 20:18:00 $]
 
 Release:
 
@@ -221,9 +221,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
             But the right answer is to fail the request up-front in dir/file
             walk if the path was entirely invalid; and we can't do that either
             UNTIL 2.1 or we break modules that haven't hooked map_to_storage.
-
-    * Rewrite core_output_filter. It is nearly impossible to support
-      it with predictable results as it is implemented now.
 
     * With AP_MODE_EXHAUSTIVE in the core, it is finally clear to me
       how the Perchild MPM should be re-written.  It hasn't worked
