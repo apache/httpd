@@ -34,6 +34,7 @@ AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int send_buffer_size;
+static int receive_buffer_size;
 
 /* TODO: make_sock is just begging and screaming for APR abstraction */
 static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
@@ -109,6 +110,17 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
                           "make_sock: failed to set SendBufferSize for "
                           "address %pI, using default",
                           server->bind_addr);
+            /* not a fatal error */
+        }
+    }
+    if (receive_buffer_size) {
+        stat = apr_socket_opt_set(s, APR_SO_RCVBUF, receive_buffer_size);
+        if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
+                          "make_sock: failed to set ReceiveBufferSize for "
+                          "address %pI, using default",
+                          server->bind_addr);
+            strerror(errno);
             /* not a fatal error */
         }
     }
@@ -532,5 +544,24 @@ AP_DECLARE_NONSTD(const char *) ap_set_send_buffer_size(cmd_parms *cmd,
     }
 
     send_buffer_size = s;
+    return NULL;
+}
+
+AP_DECLARE_NONSTD(const char *) ap_set_receive_buffer_size(cmd_parms *cmd,
+                                                           void *dummy,
+                                                           const char *arg)
+{
+    int s = atoi(arg);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if (s < 512 && s != 0) {
+        return "ReceiveBufferSize must be >= 512 bytes, or 0 for system default.";
+    }
+
+    receive_buffer_size = s;
     return NULL;
 }
