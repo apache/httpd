@@ -16,10 +16,28 @@
 
 <H1 ALIGN="CENTER">Module mod_access</H1>
 <P>
-This module is contained in the <CODE>mod_access.c</CODE> file, and
-is compiled in by default. It provides access control based on client
-hostname or IP address.
+This module provides access control based on client hostname or IP
+address.
 </P>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_access.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> access_module
+</P>
+
+
+<H2>Directives</H2>
 
 <UL>
 <LI><A HREF="#allow">Allow</A>
@@ -28,10 +46,10 @@ hostname or IP address.
 <LI><A HREF="#denyfromenv">Deny from env=</A>
 <LI><A HREF="#order">Order</A>
 </UL>
-<DL>
-<DD>See also <A HREF="core.html#satisfy">Satisfy</A>
+
+<P>See also <A HREF="core.html#satisfy">Satisfy</A>
     and <A HREF="core.html#require">Require</A>.
-</DL>
+
 <HR>
 
 
@@ -72,10 +90,10 @@ The Allow directive affects which hosts can access a given directory.
 <DD>An IP address of a host allowed access
 <DT>A partial IP address
 <DD>The first 1 to 3 bytes of an IP address, for subnet restriction.
-<DT>A network/netmask pair (<STRONG>Apache 1.3 and later</STRONG>)
+<DT>A network/netmask pair
 <DD>A network a.b.c.d, and a netmask w.x.y.z.  For more fine-grained subnet
     restriction.  (<EM>i.e.</EM>, 10.1.0.0/255.255.0.0)
-<DT>A network/nnn CIDR specification (<STRONG>Apache 1.3 and later</STRONG>)
+<DT>A network/nnn CIDR specification
 <DD>Similar to the previous case, except the netmask consists of nnn 
     high-order 1 bits.  (<EM>i.e.</EM>, 10.1.0.0/16 is the same as 10.1.0.0/255.255.0.0)
 </DL>
@@ -91,13 +109,17 @@ Note that this compares whole components; <CODE>bar.edu</CODE>
 would not match <CODE>foobar.edu</CODE>.
 </P>
 <P>
-See also <A HREF="#deny">Deny</A>, <A HREF="#order">Order</A>, and
-<A HREF="mod_browser.html#browsermatch">BrowserMatch</A>.
+See also <A HREF="#allowfromenv">Allow from env=</A>, <A
+HREF="#deny">Deny</A> and <A HREF="#order">Order</A>.
 </P>
 
+<HR>
+
+<H2><A NAME="allowfromenv">Allow from env= directive</A></H2>
+
 <P>
-<A NAME="allowfromenv"><STRONG>Syntax:</STRONG> Allow from
- env=<EM>variablename</EM></A><BR>
+<STRONG>Syntax:</STRONG> Allow from
+ env=<EM>variablename</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -113,11 +135,7 @@ See also <A HREF="#deny">Deny</A>, <A HREF="#order">Order</A>, and
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_access<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Apache 1.2 and above
+><STRONG>Module:</STRONG></A> mod_access
 </P>
 <P>
 The <CODE>Allow from env</CODE> directive controls access to a directory by the
@@ -127,7 +145,7 @@ existence (or non-existence) of an environment variable.
 Example:
 </P>
 <BLOCKQUOTE><PRE>
-BrowserMatch ^KnockKnock/2.0 let_me_in
+SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in
 &lt;Directory /docroot&gt;
     Order Deny,Allow
     Deny from all
@@ -137,8 +155,8 @@ BrowserMatch ^KnockKnock/2.0 let_me_in
 In this case browsers with the user-agent string <TT>KnockKnock/2.0</TT> will
 be allowed access, and all others will be denied.
 <P>
-See also <A HREF="#denyfromenv">Deny from env</A>
-and <A HREF="#order">Order</A>.
+See also <A HREF="#denyfromenv">Deny from env=</A>, <A HREF="#order">Order</A>
+and <A HREF="mod_setenvif.html#SetEnvIf">SetEnvIf</A>.
 </P>
 <HR>
 
@@ -179,10 +197,10 @@ The <CODE>Deny</CODE> directive affects which hosts can access a given directory
 <DD>An IP address of a host denied access
 <DT>A partial IP address
 <DD>The first 1 to 3 bytes of an IP address, for subnet restriction.
-<DT>A network/netmask pair (<STRONG>Apache 1.3 and later</STRONG>)
+<DT>A network/netmask pair
 <DD>A network a.b.c.d, and a netmask w.x.y.z.  For more fine-grained subnet
     restriction.  (<EM>i.e.</EM>, 10.1.0.0/255.255.0.0)
-<DT>A network/nnn CIDR specification (<STRONG>Apache 1.3 and later</STRONG>)
+<DT>A network/nnn CIDR specification
 <DD>Similar to the previous case, except the netmask consists of nnn 
     high-order 1 bits.  (<EM>i.e.</EM>, 10.1.0.0/16 is the same as 10.1.0.0/255.255.0.0)
 </DL>
@@ -198,12 +216,17 @@ Note that this compares whole components; <CODE>bar.edu</CODE>
 would not match <CODE>foobar.edu</CODE>.
 </P>
 <P>
-See also <A HREF="#allow">Allow</A> and <A HREF="#order">Order</A>.
+See also <A HREF="#denyfromenv">Deny from env=</A>, <A
+HREF="#allow">Allow</A> and <A HREF="#order">Order</A>.
 </P>
 
+<HR>
+
+<H2><A NAME="denfromenv">Deny from env= directive</A></H2>
+
 <P>
-<A NAME="denyfromenv"><STRONG>Syntax:</STRONG> Deny from
- env=<EM>variablename</EM></A><BR>
+<STRONG>Syntax:</STRONG> Deny from
+ env=<EM>variablename</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -219,11 +242,7 @@ See also <A HREF="#allow">Allow</A> and <A HREF="#order">Order</A>.
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_access<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Apache 1.2 and above
+><STRONG>Module:</STRONG></A> mod_access
 </P>
 <P>
 The <CODE>Deny from env</CODE> directive controls access to a directory by the
@@ -233,7 +252,7 @@ existence (or non-existence) of an environment variable.
 Example:
 </P>
 <BLOCKQUOTE><PRE>
-BrowserMatch ^BadRobot/0.9 go_away
+SetEnvIf User-Agent ^BadRobot/0.9 go_away
 &lt;Directory /docroot&gt;
     Order Allow,Deny
     Allow from all
@@ -244,8 +263,9 @@ In this case browsers with the user-agent string <TT>BadRobot/0.9</TT> will
 be denied access, and all others will be allowed.
 
 <P>
-See also <A HREF="#allowfromenv">Allow from env</A>
-and <A HREF="#order">Order</A>.
+See also <A HREF="#allowfromenv">Allow from env=</A>, <A
+HREF="#order">Order</A> and <A
+HREF="mod_setenvif.html#SetEnvIf">SetEnvIf</A>.
 </P>
 <HR>
 
@@ -313,6 +333,8 @@ Example:
 Hosts in the ncsa.uiuc.edu domain are allowed access; all other hosts are
 denied access.
 </P>
+
+<P>See also: <A HREF="#deny">Deny</A> and <A HREF="#allow">Allow</A>.
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
