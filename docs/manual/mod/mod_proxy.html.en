@@ -578,14 +578,14 @@ directly</td></tr>
         <td>Time To Live for the inactive connections above the
         <code>smax</code> connections in seconds. Apache will close all
         connections that has not been used inside that time period.
-        If not set the Apache will wait until the free connection
-        is available. This directive is used for limiting the number
-        of connections to the backend server together with <code>max</code>
-        parameter.
     </td></tr>
     <tr><td>timeout</td>
         <td><code class="directive">Timeout</code></td>
         <td>Connection timeout in seconds.
+        If not set the Apache will wait until the free connection
+        is available. This directive is used for limiting the number
+        of connections to the backend server together with <code>max</code>
+        parameter.
     </td></tr>
     <tr><td>acquire</td>
         <td>-</td>
