@@ -94,27 +94,11 @@
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 
 
-/*
- * Module definition information - the part between the -START and -END
- * lines below is used by Configure. This could be stored in a separate
- * instead.
- *
- * XXX: this needs updating for apache-2.0 configuration method
- * MODULE-DEFINITION-START
- * Name: auth_dbm_module
- * ConfigStart
-    . ./build/find-dbm-lib
- * ConfigEnd
- * MODULE-DEFINITION-END
- */
-
 typedef struct {
-
     char *auth_dbmpwfile;
     char *auth_dbmgrpfile;
     char *auth_dbmtype;
     int auth_dbmauthoritative;
-
 } dbm_auth_config_rec;
 
 static void *create_dbm_auth_dir_config(apr_pool_t *p, char *d)
@@ -123,7 +107,7 @@ static void *create_dbm_auth_dir_config(apr_pool_t *p, char *d)
 
     conf->auth_dbmpwfile = NULL;
     conf->auth_dbmgrpfile = NULL;
-    conf->auth_dbmtype ="default";
+    conf->auth_dbmtype = "default";
     conf->auth_dbmauthoritative = 1;  /* fortress is secure by default */
 
     return conf;
@@ -144,10 +128,9 @@ static const char *set_dbm_type(cmd_parms *cmd,
 {
     dbm_auth_config_rec *conf = dir_config;
    
-    conf->auth_dbmtype = apr_pstrdup(cmd->pool ,arg);
+    conf->auth_dbmtype = apr_pstrdup(cmd->pool, arg);
     return NULL;
 }
-
 
 static const command_rec dbm_auth_cmds[] =
 {
@@ -163,11 +146,9 @@ static const command_rec dbm_auth_cmds[] =
     AP_INIT_TAKE12("AuthGroupFile", set_dbm_slot,
      (void *) APR_XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
      OR_AUTHCFG, NULL),
-
     AP_INIT_TAKE1("AuthDBMType", set_dbm_type,
      NULL,
      OR_AUTHCFG, "what type of DBM file the user file is"),
-
     AP_INIT_FLAG("AuthDBMAuthoritative", ap_set_flag_slot,
      (void *) APR_XtOffsetOf(dbm_auth_config_rec, auth_dbmauthoritative),
      OR_AUTHCFG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module"),
@@ -195,10 +176,12 @@ static char *get_dbm_pw(request_rec *r,
 #endif
 
 #ifdef AP_AUTH_DBM_USE_APR
-    retval  = apr_dbm_open_ex(&f, dbtype, auth_dbmpwfile, APR_DBM_READONLY, APR_OS_DEFAULT, r->pool);
+    retval  = apr_dbm_open_ex(&f, dbtype, auth_dbmpwfile, APR_DBM_READONLY, 
+                              APR_OS_DEFAULT, r->pool);
     if (retval != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
-            "could not open dbm (type %s) auth file: %s", dbtype, auth_dbmpwfile);
+                      "could not open dbm (type %s) auth file: %s", dbtype, 
+                      auth_dbmpwfile);
         return NULL;
     }
     if (apr_dbm_fetch(f, q, &d) == APR_SUCCESS)
@@ -237,7 +220,8 @@ static char *get_dbm_pw(request_rec *r,
  * mark@telescope.org, 22Sep95
  */
 
-static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile, char*dbtype)
+static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile, 
+                         char *dbtype)
 {
     char *grp_data = get_dbm_pw(r, user, auth_dbmgrpfile,dbtype);
     char *grp_colon;
@@ -270,11 +254,12 @@ static int dbm_authenticate_basic_user(request_rec *r)
     if (!conf->auth_dbmpwfile)
         return DECLINED;
 
-    if (!(real_pw = get_dbm_pw(r, r->user, conf->auth_dbmpwfile,conf->auth_dbmtype))) {
+    if (!(real_pw = get_dbm_pw(r, r->user, conf->auth_dbmpwfile,
+                               conf->auth_dbmtype))) {
         if (!(conf->auth_dbmauthoritative))
             return DECLINED;
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                    "DBM user %s not found: %s", r->user, r->filename);
+                      "DBM user %s not found: %s", r->user, r->filename);
         ap_note_basic_auth_failure(r);
         return HTTP_UNAUTHORIZED;
     }
@@ -328,7 +313,8 @@ static int dbm_check_auth(request_rec *r)
             const char *orig_groups, *groups;
             char *v;
 
-        if (!(groups = get_dbm_grp(r, user, conf->auth_dbmgrpfile,conf->auth_dbmtype))) {
+            if (!(groups = get_dbm_grp(r, user, conf->auth_dbmgrpfile,
+                                       conf->auth_dbmtype))) {
                 if (!(conf->auth_dbmauthoritative))
                     return DECLINED;
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -348,8 +334,8 @@ static int dbm_check_auth(request_rec *r)
                 }
             }
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                        "user %s not in right group: %s",
-                        user, r->filename);
+                          "user %s not in right group: %s",
+                          user, r->filename);
             ap_note_basic_auth_failure(r);
             return HTTP_UNAUTHORIZED;
         }
