@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix the TIME_* SSL var lookups to be threadsafe.  PR 9469.
+     [Cliff Woolley]
+
   *) Ensure that apr_brigade_write() flushes in all of the cases that
      it should to avoid conditions in some modules that could cause
      large amounts of data to be buffered.  [Cliff Woolley]
