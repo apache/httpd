@@ -119,7 +119,10 @@ static const server_rec *main_server;
 static apr_status_t ef_output_filter(ap_filter_t *, apr_bucket_brigade *);
 
 #define DBGLVL_SHOWOPTIONS         1
+#define DBGLVL_ERRORCHECK          2
 #define DBGLVL_GORY                9
+
+#define ERRFN_USERDATA_KEY         "EXTFILTCHILDERRFN"
 
 static void *create_ef_dir_conf(apr_pool_t *p, char *dummy)
 {
@@ -420,6 +423,17 @@ static apr_status_t ef_close_file(void *vfile)
     return apr_file_close(vfile);
 }
 
+static void child_errfn(apr_pool_t *p, apr_status_t err, const char *desc)
+{
+    request_rec *r;
+    void *vr;
+
+    apr_pool_userdata_get(&vr, ERRFN_USERDATA_KEY, p);
+    r = vr;
+    
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, "%s", desc);
+}
+
 /* init_ext_filter_process: get the external filter process going
  * This is per-filter-instance (i.e., per-request) initialization.
  */
@@ -451,6 +465,15 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
         ap_assert(rc == APR_SUCCESS);
     }
 
+    rc = apr_procattr_child_errfn_set(ctx->procattr, child_errfn);
+    ap_assert(rc == APR_SUCCESS);
+    apr_pool_userdata_set(f->r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ctx->p);
+    
+    if (dc->debug >= DBGLVL_ERRORCHECK) {
+        rc = apr_procattr_error_check_set(ctx->procattr, 1);
+        ap_assert(rc == APR_SUCCESS);
+    }
+    
     /* add standard CGI variables as well as DOCUMENT_URI, DOCUMENT_PATH_INFO,
      * and QUERY_STRING_UNESCAPED
      */

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/27 12:09:42 $]
+Last modified at [$Date: 2003/02/27 12:33:06 $]
 
 Release:
 
@@ -108,22 +108,6 @@ PATCHES TO PORT FROM 2.1
       modules/dav/main/util.c: r1.45
       [ This one is under review.  Don't merge.  ]
       +1:
-
-    * Better report problems with external scripts
-      modules/filters/mod_ext_filter.c: r1.4
-      modules/generators/mod_cgi.c: r1.151
-      modules/generators/mod_cgid.c: r1.148
-      +1: trawick, nd, stoddard
-        nd: there's always the same function (foo_child_errfn), shouldn't it
-        appear only once in util_script.c?
-        trawick: The implementations are already different for mod_cgi
-                 vs. mod_cgid, and I fear that a fix to mod_cgid to
-                 use the right vhost-specific error log is going to
-                 make them even more different in the future.
-                 Meanwhile, there isn't enough commonality (LOC, not 
-                 percentage) to spread the pieces over multiple files.
-                 nd: argh. Really overlooked the slightly differences...
-                     sounds right, however.
 
     * Standardize mod_ldap and mod_auth_ldap SSL support across the various 
       LDAP SDKs.  Isolate the SSL functionality to mod_ldap rather than 
