@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 21:18:37 $]
+Last modified at [$Date: 2004/08/26 21:53:23 $]
 
 Release:
 
@@ -177,10 +177,6 @@ PATCHES TO BACKPORT FROM 2.1
        processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.118&r2=1.119
        +1: trawick, nd, jerenkrantz
-
-    *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
-         modules/mappers/mod_rewrite.c: r1.254
-       +1: nd, trawick, stoddard
 
     *) mod_include: remove "recursive-include" check, it's no longer
        necessary and forbids legal actions.

@@ -1395,6 +1395,7 @@ static int hook_fixup(request_rec *r)
     int rulestatus;
     int n;
     char *ofilename;
+    int is_proxyreq;
 
     dconf = (rewrite_perdir_conf *)ap_get_module_config(r->per_dir_config,
                                                         &rewrite_module);
@@ -1416,15 +1417,23 @@ static int hook_fixup(request_rec *r)
     }
 
     /*
+     * Proxy request?
+     */
+  	is_proxyreq = (   r->proxyreq && r->filename
+  	               && !strncmp(r->filename, "proxy:", 6));
+
+    /*
      *  .htaccess file is called before really entering the directory, i.e.:
      *  URL: http://localhost/foo  and .htaccess is located in foo directory
      *  Ignore such attempts, since they may lead to undefined behaviour.
      */
-    l = strlen(dconf->directory) - 1;
-    if (r->filename && strlen(r->filename) == l &&
-        (dconf->directory)[l] == '/' &&
-        !strncmp(r->filename, dconf->directory, l)) {
-        return DECLINED;
+    if (is_proxyreq) {
+        l = strlen(dconf->directory) - 1;
+        if (r->filename && strlen(r->filename) == l &&
+            (dconf->directory)[l] == '/' &&
+            !strncmp(r->filename, dconf->directory, l)) {
+            return DECLINED;
+        }
     }
 
     /*
@@ -1920,6 +1929,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     rewritecond_entry *c;
     int i;
     int rc;
+    int is_proxyreq = 0;
 
     /*
      *  Initialisation
@@ -1945,7 +1955,13 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  threatment in the logfile.
      */
     if (perdir) {
-        if (   strlen(uri) >= strlen(perdir)
+        /*
+  	     * Proxy request?
+         */
+  	    is_proxyreq = (   r->proxyreq && r->filename
+  	                   && !strncmp(r->filename, "proxy:", 6));
+
+        if (   !is_proxyreq && strlen(uri) >= strlen(perdir)
             && strncmp(uri, perdir, strlen(perdir)) == 0) {
             rewritelog(r, 3, "[per-dir %s] strip per-dir prefix: %s -> %s",
                        perdir, uri, uri+strlen(perdir));
@@ -2145,7 +2161,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *   location, i.e. if it's not an absolute URL (!) path nor
      *   a fully qualified URL scheme.
      */
-    if (perdir && *r->filename != '/' && !is_absolute_uri(r->filename)) {
+    if (   perdir && !is_proxyreq && *r->filename != '/'
+        && !is_absolute_uri(r->filename)) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
         r->filename = apr_pstrcat(r->pool, perdir, r->filename, NULL);

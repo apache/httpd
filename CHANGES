@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) mod_rewrite now officially supports RewriteRules in <Proxy> sections.
+     PR 27985.  [André Malo]
+
   *) mod_disk_cache: Implement binary format for on-disk header files.
      [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
 
