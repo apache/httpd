@@ -6,7 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <err.h>
+
+#include "util.h"
 
 /*
  * Return an allocated memory area.
@@ -47,9 +48,6 @@ xrealloc(void *ptr, size_t size)
  */
 
 
-/* The name of the running program. */
-extern char *__progname;
-
 void
 err(int status, const char *fmt, ...)
 {
@@ -65,7 +63,7 @@ verr(int status, const char *fmt, va_list ap)
 {
 	int olderrno = errno;
 
-	fprintf(stderr, "%s: ", __progname);
+	fprintf(stderr, "csubst: ");
 	if (fmt != NULL) {
 		vfprintf(stderr, fmt, ap);
 		fprintf(stderr, ": ");
@@ -88,7 +86,7 @@ errx(int status, const char *fmt, ...)
 void
 verrx(int status, const char *fmt, va_list ap)
 {
-	fprintf(stderr, "%s: ", __progname);
+	fprintf(stderr, "csubst: ");
 	if (fmt != NULL)
 		vfprintf(stderr, fmt, ap);
 	fputc('\n', stderr);
@@ -111,7 +109,7 @@ vwarn(const char *fmt, va_list ap)
 {
 	int olderrno = errno;
 
-	fprintf(stderr, "%s: ", __progname);
+	fprintf(stderr, "csubst: ");
 	if (fmt != NULL) {
 		vfprintf(stderr, fmt, ap);
 		fprintf(stderr, ": ");
@@ -132,7 +130,7 @@ warnx(const char *fmt, ...)
 void
 vwarnx(const char *fmt, va_list ap)
 {
-	fprintf(stderr, "%s: ", __progname);
+	fprintf(stderr, "csubst: ");
 	if (fmt != NULL)
 		vfprintf(stderr, fmt, ap);
 	fputc('\n', stderr);

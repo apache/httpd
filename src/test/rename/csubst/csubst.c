@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <err.h>
+
+#include "util.h"
 
 #include "tokens.h"
 

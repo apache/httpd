@@ -10,8 +10,8 @@ IS		(u|U|l|L)+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <err.h>
 
+#include "util.h"
 #include "tokens.h"
 
 extern int opt_directives;

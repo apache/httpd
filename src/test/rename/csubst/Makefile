@@ -26,7 +26,6 @@ clean:
 	-rm -f $(PROG) *.o
 
 distclean: clean 
-	-rm -f Makefile
 
 realclean: distclean
 	-rm -f lexer.c
