@@ -850,7 +850,7 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
             return FileTypeSCRIPT;
         else {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
-             "Win32InterpreterSource config directive set to \"registry\".\n\t"
+             "ScriptInterpreterSource config directive set to \"registry\".\n\t"
              "Registry was searched but interpreter not found. Trying the shebang line.");
         }
     }
@@ -2861,7 +2861,7 @@ static const command_rec core_cmds[] = {
   OR_ALL, TAKE1,
   "Limit (in bytes) on maximum size of request message body" },
 #ifdef WIN32
-{ "Win32InterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
+{ "ScriptInterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
   "Where to find interpreter to run Win32 scripts (Registry or script shebang line)" },
 #endif
 { NULL },
