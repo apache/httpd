@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/04/21 13:21:09 $]
+  Last modified at [$Date: 2002/05/13 07:21:45 $]
 
 Release:
 
@@ -297,7 +297,7 @@ Binaries (1.3.24):
  hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
  i386-be-beos                  no      David Reid
  i386-dg-dgux5.4R2.01          no      Randy Terbush
- i386-siemens-sinix5.4         no      Martin Kraemer
+ i386-siemens-sinix5.4         yes     Martin Kraemer
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
  i386-sun-solaris2.6           no      Randy Terbush
@@ -328,7 +328,7 @@ Binaries (1.3.24):
  mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-siemens-reliantunix5.4   no      Martin Kraemer
+ mips-siemens-reliantunix5.4   yes     Martin Kraemer
  mips-unknown-linux            no      Lars Eilebrecht
  netware                       yes     Brad Nicholes <bnicholes@novell.com>
  OS/2                          yes     Brian Havard
