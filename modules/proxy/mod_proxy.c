@@ -366,7 +366,7 @@ static int proxy_handler(request_rec *r)
 		/* handle the scheme */
 		ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
 			     "Trying to run scheme_handler against proxy");
-		access_status = proxy_run_scheme_handler(r, conf, url, NULL, 0);
+		access_status = proxy_run_scheme_handler(r, conf, url, ents[i].hostname, ents[i].port);
 
 		/* an error or success */
 		if (access_status != DECLINED && access_status != HTTP_BAD_GATEWAY) {
