@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/11 15:35:22 $]
+Last modified at [$Date: 2004/06/11 15:48:48 $]
 
 Release:
 
@@ -76,12 +76,12 @@ PATCHES TO BACKPORT FROM 2.1
        instead of just the first one reported by the resolver.  This
        corrects a regression since 1.3.
          server/vhost.c r1.87
-       +1: trawick, stoddard
+       +1: trawick, stoddard, jim
 
     *) util_ldap: allow relative paths for LDAPTrustedCA to be resolved
        against ServerRoot PR#26602
        modules/experimental/util_ldap.c r1.31
-       +1: bnicholes, minfrin, trawick
+       +1: bnicholes, minfrin, trawick, jim
        
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
@@ -100,7 +100,7 @@ PATCHES TO BACKPORT FROM 2.1
        of the server specified.
          modules/proxy/proxy_ftp.c r1.143
        PR 24922 [Pascal Terjan <pterjan@linuxfr.org>]
-       +1: minfrin, nd
+       +1: minfrin, nd, jim
 
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.
