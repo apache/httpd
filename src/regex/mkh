@@ -48,6 +48,8 @@ do
 	esac
 done
 
+echo "/* DON'T EVEN THINK ABOUT EDITING THIS, go see regex/Makefile,"
+echo " * search for mkh */"
 if test " $ifndef" != " "
 then
 	echo "#ifndef $ifndef"
