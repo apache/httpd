@@ -70,21 +70,25 @@
 #define API_EXPORT(type)        type
 #define API_EXPORT_NONSTD(type) type
 #define API_VAR_EXPORT
+#define MODULE_EXPORT(type)     type
 #define MODULE_VAR_EXPORT
 #elif defined(API_STATIC)
 #define API_EXPORT(type)        type __stdcall
 #define API_EXPORT_NONSTD(type) type
 #define API_VAR_EXPORT
+#define MODULE_EXPORT(type)     type __stdcall
 #define MODULE_VAR_EXPORT
 #elif defined(API_EXPORT_SYMBOLS)
 #define API_EXPORT(type)        __declspec(dllexport) type __stdcall
 #define API_EXPORT_NONSTD(type) __declspec(dllexport) type
 #define API_VAR_EXPORT		__declspec(dllexport)
+#define MODULE_EXPORT(type)     __declspec(dllexport) type __stdcall
 #define MODULE_VAR_EXPORT       __declspec(dllexport)
 #else
 #define API_EXPORT(type)        __declspec(dllimport) type __stdcall
 #define API_EXPORT_NONSTD(type) __declspec(dllimport) type
 #define API_VAR_EXPORT		__declspec(dllimport)
+#define MODULE_EXPORT(type)     __declspec(dllexport) type __stdcall
 #define MODULE_VAR_EXPORT       __declspec(dllexport)
 #endif
 
