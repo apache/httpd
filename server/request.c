@@ -84,6 +84,7 @@
 #include "http_main.h"
 #include "util_filter.h"
 #include "util_charset.h"
+#include "util_script.h"
 
 #include "mod_core.h"
 
@@ -1589,7 +1590,17 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     /* Special case: we are looking at a relative lookup in the same directory. 
      * This is 100% safe, since dirent->name just came from the filesystem.
      */
-    udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+    if (r->path_info && *r->path_info) {
+        /* strip path_info off the end of the uri to keep it in sync
+         * with r->filename, which has already been stripped by directory_walk
+         */
+        udir = apr_pstrdup(rnew->pool, r->uri);
+        udir[ap_find_path_info(udir, r->path_info)] = '\0';
+        udir = ap_make_dirstr_parent(rnew->pool, udir);
+    }
+    else {
+        udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+    }
     rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
