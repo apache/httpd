@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) WIN32: Allow .cmd as an executable extension.
+     [Kari Likovuori <Kari.Likovuori@mol.fi>] PR#2146
+
   *) Make Apache header files, and some variables, C++ friendly.
      [Michael Anderson's <mka@redes.int.com.mx>]
 
