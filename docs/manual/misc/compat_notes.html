@@ -22,7 +22,7 @@ httpd, there are a couple gotcha's to watch out for.  These are mostly
 due to the fact that the parser for config and access control files
 was rewritten from scratch, so certain liberties the earlier servers
 took may not be available here.  These are all easily fixable.  If you
-know of other non-fatal problems that belong here, <A
+know of other problems that belong here, <A
 HREF="http://www.apache.org/bug_report.html">let us know.</A>
 
 <P>Please also check the <A HREF="known_client_problems.html">known
@@ -43,7 +43,7 @@ client problems</A> page.
 <P>
 <LI>If you follow the NCSA guidelines for setting up access
     restrictions based on client domain, you may well have added
-    entries for, <CODE>AuthType, AuthName, AuthUserFile</CODE> or
+    entries for <CODE>AuthType, AuthName, AuthUserFile</CODE> or
     <CODE>AuthGroupFile</CODE>.  <STRONG>None</STRONG> of these are
     needed (or appropriate) for restricting access based on client
     domain.  When Apache sees <CODE>AuthType</CODE> it (reasonably)
@@ -57,7 +57,7 @@ client problems</A> page.
 <P>
 <LI><CODE>exec cgi=""</CODE> produces reasonable <STRONG>malformed
   header</STRONG> responses when used to invoke non-CGI scripts.<BR>
-  The NCSA code ignores the missing header. (bad idea)
+  The NCSA code ignores the missing header (bad idea).
   <BR>Solution: write CGI to the CGI spec and use
   <CODE>include&nbsp;virtual</CODE>, or use <CODE>exec cmd=""</CODE> instead.
 
@@ -90,7 +90,7 @@ client problems</A> page.
     booting unless an added <CODE>optional</CODE> keyword is included.
 
 <P>
-<LI>Apache does not implement <CODE>OnDeny</CODE> use
+<LI>Apache does not implement <CODE>OnDeny</CODE>; use
     <A HREF="../mod/core.html#errordocument"><CODE>ErrorDocument</CODE></A>
     instead.
 
@@ -115,7 +115,7 @@ client problems</A> page.
 <LI>Apache does not allow ServerRoot settings inside a VirtualHost
     container.  There is only one global ServerRoot in Apache; any desired
     changes in paths for virtual hosts need to be made with the explicit
-    directives, eg. DocumentRoot, TransferLog, <EM>etc.</EM>
+    directives, <em>e.g.</em>, DocumentRoot, TransferLog, <EM>etc.</EM>
 
 </OL>
 
