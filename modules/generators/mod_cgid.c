@@ -89,7 +89,6 @@
 #include "http_conf_globals.h" 
 #include "buff.h" 
 #include "ap_mpm.h"
-#include "ap_iol.h"
 #include "unixd.h"
 #include <sys/stat.h>
 #ifdef HAVE_SYS_SOCKET_H
@@ -840,7 +839,6 @@ static int cgid_handler(request_rec *r)
     struct sockaddr_un unix_addr;
     apr_socket_t *tempsock = NULL;
     int nbytes;
-    ap_iol *iol;
     script = ap_bcreate(r->pool, B_RDWR); 
 
     if (r->method_number == M_OPTIONS) { 
@@ -920,9 +918,7 @@ static int cgid_handler(request_rec *r)
 
     apr_put_os_sock(&tempsock, &sd, pcgi);
 
-    iol = ap_iol_attach_socket(pcgi, tempsock);
-
-    ap_bpush_iol(script, iol); 
+    ap_bpush_socket(script, tempsock); 
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 

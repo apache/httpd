@@ -836,7 +836,7 @@ static int include_cmd(char *s, request_rec *r)
     apr_table_t *env = r->subprocess_env;
     char **argv;
     apr_file_t *file = NULL;
-    ap_iol *iol;
+    apr_socket_t *sock = NULL;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
     core_dir_config *conf; 
@@ -908,11 +908,15 @@ static int include_cmd(char *s, request_rec *r)
             apr_note_subprocess(r->pool, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
             file = procnew->out;
-            iol = ap_create_file_iol(file);
-            if (!iol)
+            if (!file)
                 return APR_EBADF;
+            /* XXX This is a hack.  The correct solution is to create a 
+             * pipe bucket, and just pass it down.  Since that bucket type
+             * hasn't been written, we can hack it for the moment.
+             */ 
+            apr_socket_from_file(&sock, file);
             script_in = ap_bcreate(r->pool, B_RD);
-            ap_bpush_iol(script_in, iol);
+            ap_bpush_socket(script_in, sock);
             ap_send_fb(script_in, r);
             ap_bclose(script_in);
         }

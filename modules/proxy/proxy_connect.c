@@ -61,7 +61,6 @@
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
-#include "ap_iol.h"
 
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>        /* for IRIX, FD_SET calls bzero() */
@@ -211,7 +210,7 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
     }
 
     sock_buff = ap_bcreate(r->pool, B_RDWR);
-    ap_bpush_iol(sock_buff, ap_iol_attach_socket(sock));
+    ap_bpush_socket(sock_buff, sock);
 
     if(apr_setup_poll(&pollfd, 2, r->pool) != APR_SUCCESS)
     {

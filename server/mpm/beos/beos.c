@@ -76,7 +76,6 @@
 #include "http_connection.h"
 #include "ap_mpm.h"
 #include "beosd.h"
-#include "ap_iol.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
 #include <kernel/OS.h>
@@ -308,7 +307,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
 {
     BUFF *conn_io;
     conn_rec *current_conn;
-    ap_iol *iol;
     long conn_id = my_child_num;
     int csd;
 
@@ -323,16 +321,8 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
 	    return;
     }
     
-    iol = ap_iol_attach_socket(p, sock);
-    if (iol == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
-          "error attaching to socket");
-        apr_close_socket(sock);
-	    return;
-    }
-
     conn_io = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(conn_io, iol);
+    ap_bpush_socket(conn_io, sock);
 
     current_conn = ap_new_apr_connection(p, ap_server_conf, conn_io, sock, 
                                          conn_id);

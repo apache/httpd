@@ -62,7 +62,6 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "http_core.h"
-#include "ap_iol.h"
 
 #define AUTODETECT_PWD
 
@@ -589,7 +588,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
     }
 
     f = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(f, ap_iol_attach_socket(sock));
+    ap_bpush_socket(f, sock);
 /* shouldn't we implement telnet control options here? */
 
 #ifdef CHARSET_EBCDIC
@@ -1146,11 +1145,11 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
             }
         }
         data = ap_bcreate(p, B_RDWR);
-        ap_bpush_iol(f, ap_iol_attach_socket(csd));
+        ap_bpush_socket(f, csd);
     }
     else {
         data = ap_bcreate(p, B_RDWR);
-        ap_bpush_iol(data, ap_iol_attach_socket(dsock));
+        ap_bpush_socket(data, dsock);
     }
 
 /* send response */

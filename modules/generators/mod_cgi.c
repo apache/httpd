@@ -309,7 +309,7 @@ static apr_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **sc
     apr_proc_t *procnew = apr_pcalloc(p, sizeof(*procnew));
     apr_status_t rc = APR_SUCCESS;
     apr_file_t *file = NULL;
-    ap_iol *iol;
+    apr_file_t *sock = NULL;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
     core_dir_config *conf;
@@ -379,29 +379,42 @@ static apr_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **sc
 
             /* Fill in BUFF structure for parents pipe to child's stdout */
             file = procnew->out;
-            iol = ap_create_file_iol(file);
-            if (!iol)
+            if (!file)
                 return APR_EBADF;
+            /* XXX This is a hack.  The correct solution is to create a
+             * pipe bucket, and just pass it down.  Since that bucket type
+             * hasn't been written, we can hack it for the moment.
+             */
+            apr_socket_from_file(&sock, file);
+
             *script_in = ap_bcreate(p, B_RD);
-            ap_bpush_iol(*script_in, iol);
+            ap_bpush_socket(*script_in, sock);
             ap_bsetopt(*script_in, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdin */
             file = procnew->in;
-            iol = ap_create_file_iol(file);
-            if (!iol)
+            if (!file)
                 return APR_EBADF;
+            /* XXX This is a hack.  The correct solution is to create a
+             * pipe bucket, and just pass it down.  Since that bucket type
+             * hasn't been written, we can hack it for the moment.
+             */
+            apr_socket_from_file(&sock, file);
             *script_out = ap_bcreate(p, B_WR);
-            ap_bpush_iol(*script_out, iol);
+            ap_bpush_socket(*script_out, sock);
             ap_bsetopt(*script_out, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stderr */
             file = procnew->err;
-            iol = ap_create_file_iol(file);
-            if (!iol)
+            if (!file)
                 return APR_EBADF;
+            /* XXX This is a hack.  The correct solution is to create a
+             * pipe bucket, and just pass it down.  Since that bucket type
+             * hasn't been written, we can hack it for the moment.
+             */
+            apr_socket_from_file(&sock, file);
             *script_err = ap_bcreate(p, B_RD);
-            ap_bpush_iol(*script_err, iol);
+            ap_bpush_socket(*script_err, sock);
             ap_bsetopt(*script_err, BO_TIMEOUT, &r->server->timeout);
         }
     }

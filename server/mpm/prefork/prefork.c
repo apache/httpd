@@ -103,7 +103,6 @@
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "mpm_common.h"
-#include "ap_iol.h"
 #include "ap_listen.h"
 #include "ap_mmn.h"
 #ifdef HAVE_SYS_TYPES_H
@@ -748,7 +747,6 @@ static void child_main(int child_num_arg)
     ap_listen_rec *first_lr;
     apr_pool_t *ptrans;
     conn_rec *current_conn;
-    ap_iol *iol;
     apr_status_t stat = APR_EINIT;
     int sockdes;
 
@@ -1022,13 +1020,12 @@ static void child_main(int child_num_arg)
 
 	ap_sock_disable_nagle(csd);
 
-	iol = ap_iol_attach_socket(ptrans, csd);
 	(void) ap_update_child_status(my_child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
 	conn_io = ap_bcreate(ptrans, B_RDWR);
 
-	ap_bpush_iol(conn_io, iol);
+	ap_bpush_socket(conn_io, csd);
 
 	current_conn = ap_new_apr_connection(ptrans, ap_server_conf, conn_io, csd,
 					 my_child_num);

@@ -2966,7 +2966,7 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 /* Default filter.  This filter should almost always be used.  It's only job
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.  To send the data, we create an iovec out of the bucket
- * brigade and then call the iol's writev function.  On platforms that don't
+ * brigade and then call the sendv function.  On platforms that don't
  * have writev, we have the problem of creating a lot of potentially small
  * packets that we are sending to the network.
  *

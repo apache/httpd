@@ -70,7 +70,6 @@
 #include "ap_config.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
-#include "ap_iol.h"
 #include "mpm_winnt.h"
 #include "mpm_common.h"
 
@@ -1123,7 +1122,6 @@ static void worker_main(int child_num)
 
     while (1) {
         conn_rec *c;
-        ap_iol *iol;
         apr_int32_t disconnected;
 
         /* Grab a connection off the network */
@@ -1139,14 +1137,7 @@ static void worker_main(int child_num)
         sock_disable_nagle(context->accept_socket);
         apr_put_os_sock(&context->sock, &context->accept_socket, context->ptrans);
 
-        iol = ap_iol_attach_socket(context->ptrans, context->sock);
-        if (iol == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, server_conf,
-                         "worker_main: attach_socket() failed. Continuing...");
-            closesocket(context->accept_socket);
-            continue;
-        }
-        ap_bpush_iol(context->conn_io, iol);
+        ap_bpush_socket(context->conn_io, context->sock);
         c = ap_new_connection(context->ptrans, server_conf, context->conn_io,
                               (struct sockaddr_in *) context->sa_client,
                               (struct sockaddr_in *) context->sa_server,
@@ -1157,11 +1148,13 @@ static void worker_main(int child_num)
 
         apr_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
         if (disconnected) {
+            /* I have no idea if we should do anything here, so I leave this
+             * for a windows guy
+             */
             /* Kill the clean-up registered by the iol. We want to leave 
              * the accept socket open because we are about to try to 
              * reuse it
              */
-            ap_bpop_iol(&iol, context->conn_io);
         }
         else {
             context->accept_socket = INVALID_SOCKET;
