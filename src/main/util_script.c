@@ -100,21 +100,26 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
 
     /* count the number of keywords */
 
-    for (x = 0, numwords = 1; args[x]; x++)
-	if (args[x] == '+')
+    for (x = 0, numwords = 1; args[x]; x++) {
+        if (args[x] == '+') {
 	    ++numwords;
+	}
+    }
 
     if (numwords > APACHE_ARG_MAX - 5) {
 	numwords = APACHE_ARG_MAX - 5;	/* Truncate args to prevent overrun */
     }
     av = (char **) ap_palloc(p, (numwords + 5) * sizeof(char *));
 
-    if (path)
+    if (path) {
 	av[idx++] = path;
-    if (user)
+    }
+    if (user) {
 	av[idx++] = user;
-    if (group)
+    }
+    if (group) {
 	av[idx++] = group;
+    }
 
     av[idx++] = av0;
 
@@ -157,12 +162,14 @@ API_EXPORT(char **) ap_create_environment(pool *p, table *t)
     j = 0;
     if (!ap_table_get(t, "TZ")) {
 	tz = getenv("TZ");
-	if (tz != NULL)
+	if (tz != NULL) {
 	    env[j++] = ap_pstrcat(p, "TZ=", tz, NULL);
+	}
     }
     for (i = 0; i < env_arr->nelts; ++i) {
-	if (!elts[i].key)
+        if (!elts[i].key) {
 	    continue;
+	}
 	env[j] = ap_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
 	whack = env[j];
 	if (isdigit(*whack)) {
@@ -203,48 +210,58 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
      */
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {
-	if (!hdrs[i].key)
+        if (!hdrs[i].key) {
 	    continue;
+	}
 
 	/* A few headers are special cased --- Authorization to prevent
 	 * rogue scripts from capturing passwords; content-type and -length
 	 * for no particular reason.
 	 */
 
-	if (!strcasecmp(hdrs[i].key, "Content-type"))
+	if (!strcasecmp(hdrs[i].key, "Content-type")) {
 	    ap_table_setn(e, "CONTENT_TYPE", hdrs[i].val);
-	else if (!strcasecmp(hdrs[i].key, "Content-length"))
+	}
+	else if (!strcasecmp(hdrs[i].key, "Content-length")) {
 	    ap_table_setn(e, "CONTENT_LENGTH", hdrs[i].val);
+	}
 	/*
 	 * You really don't want to disable this check, since it leaves you
 	 * wide open to CGIs stealing passwords and people viewing them
 	 * in the environment with "ps -e".  But, if you must...
 	 */
 #ifndef SECURITY_HOLE_PASS_AUTHORIZATION
-	else if (!strcasecmp(hdrs[i].key, "Authorization") ||
-                 !strcasecmp(hdrs[i].key, "Proxy-Authorization"))
+	else if (!strcasecmp(hdrs[i].key, "Authorization") 
+		 || !strcasecmp(hdrs[i].key, "Proxy-Authorization")) {
 	    continue;
+	}
 #endif
-	else
+	else {
 	    ap_table_setn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+	}
     }
 
-    if (!(env_path = getenv("PATH")))
+    if (!(env_path = getenv("PATH"))) {
 	env_path = DEFAULT_PATH;
+    }
 
 #ifdef WIN32
-    if (env_temp = getenv("SystemRoot"))
+    if (env_temp = getenv("SystemRoot")) {
         ap_table_setn(e, "SystemRoot", env_temp);         
-    if (env_temp = getenv("COMSPEC"))
+    }
+    if (env_temp = getenv("COMSPEC")) {
         ap_table_setn(e, "COMSPEC", env_temp);            
-    if (env_temp = getenv("WINDIR"))
-        ap_table_setn(e, "WINDIR", env_temp);             
+    }
+    if (env_temp = getenv("WINDIR")) {
+        ap_table_setn(e, "WINDIR", env_temp);
+    }
 #endif
 
     ap_table_setn(e, "PATH", env_path);
     ap_table_setn(e, "SERVER_SOFTWARE", ap_get_server_version());
     ap_table_setn(e, "SERVER_NAME", ap_get_server_name(r));
-    ap_table_setn(e, "SERVER_PORT", ap_psprintf(r->pool, "%u", ap_get_server_port(r)));
+    ap_table_setn(e, "SERVER_PORT",
+		  ap_psprintf(r->pool, "%u", ap_get_server_port(r)));
     host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST);
     if (host) {
 	ap_table_setn(e, "REMOTE_HOST", host);
@@ -254,23 +271,29 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     ap_table_setn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
     ap_table_setn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    ap_table_setn(e, "REMOTE_PORT", ap_psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
+    ap_table_setn(e, "REMOTE_PORT",
+		  ap_psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
 
-    if (c->user)
+    if (c->user) {
 	ap_table_setn(e, "REMOTE_USER", c->user);
-    if (c->ap_auth_type)
+    }
+    if (c->ap_auth_type) {
 	ap_table_setn(e, "AUTH_TYPE", c->ap_auth_type);
+    }
     rem_logname = ap_get_remote_logname(r);
-    if (rem_logname)
+    if (rem_logname) {
 	ap_table_setn(e, "REMOTE_IDENT", ap_pstrdup(r->pool, rem_logname));
+    }
 
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
-	if (r->prev->args)
+        if (r->prev->args) {
 	    ap_table_setn(e, "REDIRECT_QUERY_STRING", r->prev->args);
-	if (r->prev->uri)
+	}
+	if (r->prev->uri) {
 	    ap_table_setn(e, "REDIRECT_URL", r->prev->uri);
+	}
     }
 }
 
@@ -286,12 +309,13 @@ API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info)
 
     while (lu-- && lp-- && uri[lu] == path_info[lp]);
 
-    if (lu == -1)
+    if (lu == -1) {
 	lu = 0;
+    }
 
-    while (uri[lu] != '\0' && uri[lu] != '/')
-	lu++;
-
+    while (uri[lu] != '\0' && uri[lu] != '/') {
+        lu++;
+    }
     return lu;
 }
 
@@ -302,19 +326,23 @@ static char *original_uri(request_rec *r)
 {
     char *first, *last;
 
-    if (r->the_request == NULL)
+    if (r->the_request == NULL) {
 	return (char *) ap_pcalloc(r->pool, 1);
+    }
 
     first = r->the_request;	/* use the request-line */
 
-    while (*first && !isspace(*first))
+    while (*first && !isspace(*first)) {
 	++first;		/* skip over the method */
-    while (isspace(*first))
+    }
+    while (isspace(*first)) {
 	++first;		/*   and the space(s)   */
+    }
 
     last = first;
-    while (*last && !isspace(*last))
+    while (*last && !isspace(*last)) {
 	++last;			/* end at next whitespace */
+    }
 
     return ap_pstrndup(r->pool, first, last - first);
 }
@@ -337,8 +365,9 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 
     if (!strcmp(r->protocol, "INCLUDED")) {
 	ap_table_setn(e, "SCRIPT_NAME", r->uri);
-	if (r->path_info && *r->path_info)
+	if (r->path_info && *r->path_info) {
 	    ap_table_setn(e, "PATH_INFO", r->path_info);
+	}
     }
     else if (!r->path_info || !*r->path_info) {
 	ap_table_setn(e, "SCRIPT_NAME", r->uri);
@@ -346,8 +375,8 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
     else {
 	int path_info_start = ap_find_path_info(r->uri, r->path_info);
 
-	ap_table_setn(e, "SCRIPT_NAME", ap_pstrndup(r->pool, r->uri,
-					     path_info_start));
+	ap_table_setn(e, "SCRIPT_NAME",
+		      ap_pstrndup(r->pool, r->uri, path_info_start));
 
 	ap_table_setn(e, "PATH_INFO", r->path_info);
     }
@@ -358,15 +387,16 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 	 * Need to re-escape it for this, since the entire URI was
 	 * un-escaped before we determined where the PATH_INFO began.
 	 */
-	request_rec *pa_req = ap_sub_req_lookup_uri(escape_uri(r->pool, r->path_info),
-						 r);
+	request_rec *pa_req;
+
+	pa_req = ap_sub_req_lookup_uri(escape_uri(r->pool, r->path_info), r);
 
 	if (pa_req->filename) {
 #ifdef WIN32
 	    char buffer[HUGE_STRING_LEN];
 #endif
 	    char *pt = ap_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
-			       NULL);
+				  NULL);
 #ifdef WIN32
 	    /* We need to make this a real Windows path name */
 	    GetFullPathName(pt, HUGE_STRING_LEN, buffer, NULL);
@@ -381,15 +411,17 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 
 
 static int scan_script_header_err_core(request_rec *r, char *buffer,
-		 int (*getsfunc) (char *, int, void *), void *getsfunc_data)
+				       int (*getsfunc) (char *, int, void *),
+				       void *getsfunc_data)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
     int p;
     int cgi_status = HTTP_OK;
 
-    if (buffer)
+    if (buffer) {
 	*buffer = '\0';
+    }
     w = buffer ? buffer : x;
 
     ap_hard_timeout("read script header", r);
@@ -399,7 +431,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
 	    ap_kill_timeout(r);
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-			"Premature end of script headers: %s", r->filename);
+			 "Premature end of script headers: %s", r->filename);
 	    return SERVER_ERROR;
 	}
 
@@ -407,10 +439,12 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 
 	p = strlen(w);
 	if (p > 0 && w[p - 1] == '\n') {
-	    if (p > 1 && w[p - 2] == '\015')
+	    if (p > 1 && w[p - 2] == '\015') {
 		w[p - 2] = '\0';
-	    else
+	    }
+	    else {
 		w[p - 1] = '\0';
+	    }
 	}
 
 	/*
@@ -438,24 +472,29 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	/* if we see a bogus header don't ignore it. Shout and scream */
 
 	if (!(l = strchr(w, ':'))) {
-	    char malformed[(sizeof MALFORMED_MESSAGE) + 1 + MALFORMED_HEADER_LENGTH_TO_SHOW];
+	    char malformed[(sizeof MALFORMED_MESSAGE) + 1
+			   + MALFORMED_HEADER_LENGTH_TO_SHOW];
+
 	    strcpy(malformed, MALFORMED_MESSAGE);
 	    strncat(malformed, w, MALFORMED_HEADER_LENGTH_TO_SHOW);
 
-	    if (!buffer)
-		/* Soak up all the script output --- may save an outright kill */
-		while ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data))
+	    if (!buffer) {
+		/* Soak up all the script output - may save an outright kill */
+	        while ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data)) {
 		    continue;
+		}
+	    }
 
 	    ap_kill_timeout(r);
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-			"%s: %s", malformed, r->filename);
+			 "%s: %s", malformed, r->filename);
 	    return SERVER_ERROR;
 	}
 
 	*l++ = '\0';
-	while (*l && isspace(*l))
+	while (*l && isspace(*l)) {
 	    ++l;
+	}
 
 	if (!strcasecmp(w, "Content-type")) {
 	    char *tmp;
@@ -463,8 +502,9 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    /* Nuke trailing whitespace */
 
 	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && isspace(*endp))
+	    while (endp > l && isspace(*endp)) {
 		*endp-- = '\0';
+	    }
 
 	    tmp = ap_pstrdup(r->pool, l);
 	    ap_content_type_tolower(tmp);
@@ -516,7 +556,8 @@ static int getsfunc_FILE(char *buf, int len, void *f)
     return fgets(buf, len, (FILE *) f) != NULL;
 }
 
-API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f, char *buffer)
+API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f,
+					  char *buffer)
 {
     return scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
 }
@@ -536,18 +577,24 @@ API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
 API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
 {
     /* XXX: this -1 thing is a gross hack */
-    if (size == (size_t)-1)
+    if (size == (size_t)-1) {
 	ap_rputs("    -", r);
-    else if (!size)
+    }
+    else if (!size) {
 	ap_rputs("   0k", r);
-    else if (size < 1024)
+    }
+    else if (size < 1024) {
 	ap_rputs("   1k", r);
-    else if (size < 1048576)
+    }
+    else if (size < 1048576) {
 	ap_rprintf(r, "%4dk", (size + 512) / 1024);
-    else if (size < 103809024)
+    }
+    else if (size < 103809024) {
 	ap_rprintf(r, "%4.1fM", size / 1048576.0);
-    else
+    }
+    else {
 	ap_rprintf(r, "%4dM", (size + 524288) / 1048576);
+    }
 }
 
 #if defined(__EMX__) || defined(WIN32)
@@ -557,9 +604,11 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
     char **av;
     char *w;
 
-    for (x = 0, n = 2; args[x]; x++)
-	if (args[x] == '+')
+    for (x = 0, n = 2; args[x]; x++) {
+        if (args[x] == '+') {
 	    ++n;
+	}
+    }
 
     /* Add extra strings to array. */
     n = n + 2;
@@ -582,14 +631,16 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 #endif
 
 
-API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, char **env, int shellcmd)
+API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
+			     char **env, int shellcmd)
 {
     int pid = 0;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
 
-    core_dir_config *conf =
-    (core_dir_config *) ap_get_module_config(r->per_dir_config, &core_module);
+    core_dir_config *conf;
+    conf = (core_dir_config *) ap_get_module_config(r->per_dir_config,
+						    &core_module);
 
 #endif
 
@@ -603,44 +654,58 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 #endif
 
 #ifdef RLIMIT_CPU
-    if (conf->limit_cpu != NULL)
-	if ((setrlimit(RLIMIT_CPU, conf->limit_cpu)) != 0)
+    if (conf->limit_cpu != NULL) {
+        if ((setrlimit(RLIMIT_CPU, conf->limit_cpu)) != 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			"setrlimit: failed to set CPU usage limit");
+			 "setrlimit: failed to set CPU usage limit");
+	}
+    }
 #endif
 #ifdef RLIMIT_NPROC
-    if (conf->limit_nproc != NULL)
-	if ((setrlimit(RLIMIT_NPROC, conf->limit_nproc)) != 0)
+    if (conf->limit_nproc != NULL) {
+        if ((setrlimit(RLIMIT_NPROC, conf->limit_nproc)) != 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			"setrlimit: failed to set process limit");
+			 "setrlimit: failed to set process limit");
+	}
+    }
 #endif
 #if defined(RLIMIT_AS)
-    if (conf->limit_mem != NULL)
-	if ((setrlimit(RLIMIT_AS, conf->limit_mem)) != 0)
+    if (conf->limit_mem != NULL) {
+        if ((setrlimit(RLIMIT_AS, conf->limit_mem)) != 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			"setrlimit(RLIMIT_AS): failed to set memory usage limit");
+			 "setrlimit(RLIMIT_AS): failed to set memory "
+			 "usage limit");
+	}
+    }
 #elif defined(RLIMIT_DATA)
-    if (conf->limit_mem != NULL)
-	if ((setrlimit(RLIMIT_DATA, conf->limit_mem)) != 0)
+    if (conf->limit_mem != NULL) {
+        if ((setrlimit(RLIMIT_DATA, conf->limit_mem)) != 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			"setrlimit(RLIMIT_DATA): failed to set memory usage limit");
+			 "setrlimit(RLIMIT_DATA): failed to set memory "
+			 "usage limit");
+	}
+    }
 #elif defined(RLIMIT_VMEM)
-    if (conf->limit_mem != NULL)
-	if ((setrlimit(RLIMIT_VMEM, conf->limit_mem)) != 0)
+    if (conf->limit_mem != NULL) {
+        if ((setrlimit(RLIMIT_VMEM, conf->limit_mem)) != 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			"setrlimit(RLIMIT_VMEM): failed to set memory usage limit");
+			 "setrlimit(RLIMIT_VMEM): failed to set memory "
+			 "usage limit");
+	}
+    }
 #endif
 
 #ifdef __EMX__
     {
 	/* Additions by Alec Kloss, to allow exec'ing of scripts under OS/2 */
 	int is_script;
-	char interpreter[2048];	/* hope this is large enough for the interpreter path */
+	char interpreter[2048];	/* hope it's enough for the interpreter path */
 	FILE *program;
+
 	program = fopen(r->filename, "rt");
 	if (!program) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, r->server, "fopen(%s) failed",
-			r->filename);
+			 r->filename);
 	    return (pid);
 	}
 	fgets(interpreter, sizeof(interpreter), program);
@@ -658,13 +723,14 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	    char *emxtemp;
 
 	    /* For OS/2 place the variables in the current
-	     * enviornment then it will be inherited. This way
+	     * environment then it will be inherited. This way
 	     * the program will also get all of OS/2's other SETs.
 	     */
-	    for (emxloop = 0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
+	    for (emxloop = 0; ((emxtemp = env[emxloop]) != NULL); emxloop++) {
 		putenv(emxtemp);
+	    }
 
-	    /* Additions by Alec Kloss, to allow exec'ing of scripts under OS/2 */
+	    /* More additions by Alec Kloss for OS/2 */
 	    if (is_script) {
 		/* here's the stuff to run the interpreter */
 		execl(interpreter + 2, interpreter + 2, r->filename, NULL);
@@ -686,26 +752,29 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	     * environment so that they will be inherited. This way
 	     * the program will also get all of OS/2's other SETs.
 	     */
-	    for (emxloop = 0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
+	    for (emxloop = 0; ((emxtemp = env[emxloop]) != NULL); emxloop++) {
 		putenv(emxtemp);
+	    }
 
 	    if (strstr(strupr(r->filename), ".CMD") > 0) {
 		/* Special case to allow use of REXX commands as scripts. */
 		os2pathname(r->filename);
-		execv(SHELL_PATH, create_argv_cmd(r->pool, argv0, r->args, r->filename));
+		execv(SHELL_PATH, create_argv_cmd(r->pool, argv0, r->args,
+						  r->filename));
 	    }
-	    else
+	    else {
 		execv(r->filename,
-		    create_argv(r->pool, NULL, NULL, NULL, argv0, r->args));
+		      create_argv(r->pool, NULL, NULL, NULL, argv0, r->args));
+	    }
 	}
 	return (pid);
     }
 #elif defined(WIN32)
     {
-	/* Adapted from work by Alec Kloss, to allow exec'ing of scripts under OS/2 */
+	/* Adapted from Alec Kloss' work for OS/2 */
 	int is_script = 0;
 	int is_binary = 0;
-	char interpreter[2048];	/* hope this is large enough for the interpreter path */
+	char interpreter[2048];	/* hope it's enough for the interpreter path */
 	FILE *program;
 	int i, sz;
 	char *dot;
@@ -723,32 +792,36 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	interpreter[0] = 0;
 
 	exename = strrchr(r->filename, '/');
-	if (!exename)
+	if (!exename) {
 	    exename = strrchr(r->filename, '\\');
-	if (!exename)
+	}
+	if (!exename) {
 	    exename = r->filename;
-	else
+	}
+	else {
 	    exename++;
+	}
 	dot = strrchr(exename, '.');
 	if (dot) {
-	    if (!strcasecmp(dot, ".BAT") ||
-		!strcasecmp(dot, ".CMD") ||
-		!strcasecmp(dot, ".EXE") ||
-		!strcasecmp(dot, ".COM"))
+	    if (!strcasecmp(dot, ".BAT")
+		|| !strcasecmp(dot, ".CMD")
+		|| !strcasecmp(dot, ".EXE")
+		||  !strcasecmp(dot, ".COM")) {
 		is_exe = 1;
+	    }
 	}
 
 	if (!is_exe) {
 	    program = fopen(r->filename, "rb");
 	    if (!program) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			    "fopen(%s) failed", r->filename);
+			     "fopen(%s) failed", r->filename);
 		return (pid);
 	    }
 	    sz = fread(interpreter, 1, sizeof(interpreter) - 1, program);
 	    if (sz < 0) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			    "fread of %s failed", r->filename);
+			     "fread of %s failed", r->filename);
 		fclose(program);
 		return (pid);
 	    }
@@ -757,9 +830,10 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	    if (!strncmp(interpreter, "#!", 2)) {
 		is_script = 1;
 		for (i = 2; i < sizeof(interpreter); i++) {
-		    if ((interpreter[i] == '\r') ||
-			(interpreter[i] == '\n'))
+		    if ((interpreter[i] == '\r')
+			|| (interpreter[i] == '\n')) {
 			break;
+		    }
 		}
 		interpreter[i] = 0;
 		for (i = 2; interpreter[i] == ' '; ++i)
@@ -767,10 +841,11 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 		memmove(interpreter+2,interpreter+i,strlen(interpreter+i)+1);
 	    }
 	    else {
-                        /* Check to see if it's a executable */
+	        /* Check to see if it's a executable */
                 IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)interpreter;
-                if (hdr->e_magic == IMAGE_DOS_SIGNATURE && hdr->e_cblp < 512)
+                if (hdr->e_magic == IMAGE_DOS_SIGNATURE && hdr->e_cblp < 512) {
                     is_binary = 1;
+		}
 	    }
 	}
 
@@ -935,10 +1010,10 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	return (pid);
     }
 #else
-    if (ap_suexec_enabled &&
-	((r->server->server_uid != ap_user_id) ||
-	 (r->server->server_gid != ap_group_id) ||
-	 (!strncmp("/~", r->uri, 2)))) {
+    if (ap_suexec_enabled
+	&& ((r->server->server_uid != ap_user_id)
+	    || (r->server->server_gid != ap_group_id)
+	    || (!strncmp("/~", r->uri, 2)))) {
 
 	char *execuser, *grpname;
 	struct passwd *pw;
@@ -949,49 +1024,57 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	    char *username = ap_pstrdup(r->pool, r->uri + 2);
 	    char *pos = strchr(username, '/');
 
-	    if (pos)
+	    if (pos) {
 		*pos = '\0';
+	    }
 
 	    if ((pw = getpwnam(username)) == NULL) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			    "getpwnam: invalid username %s", username);
+			     "getpwnam: invalid username %s", username);
 		return (pid);
 	    }
 	    execuser = ap_pstrcat(r->pool, "~", pw->pw_name, NULL);
 	    user_gid = pw->pw_gid;
 
 	    if ((gr = getgrgid(user_gid)) == NULL) {
-		if ((grpname = ap_palloc(r->pool, 16)) == NULL)
+	        if ((grpname = ap_palloc(r->pool, 16)) == NULL) {
 		    return (pid);
-		else
+		}
+		else {
 		    ap_snprintf(grpname, 16, "%ld", (long) user_gid);
+		}
 	    }
-	    else
+	    else {
 		grpname = gr->gr_name;
+	    }
 	}
 	else {
 	    if ((pw = getpwuid(r->server->server_uid)) == NULL) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-		            "getpwuid: invalid userid %ld",
-		            (long) r->server->server_uid);
+			     "getpwuid: invalid userid %ld",
+			     (long) r->server->server_uid);
 		return (pid);
 	    }
 	    execuser = ap_pstrdup(r->pool, pw->pw_name);
 
 	    if ((gr = getgrgid(r->server->server_gid)) == NULL) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-		            "getgrgid: invalid groupid %ld",
-		            (long) r->server->server_gid);
+			     "getgrgid: invalid groupid %ld",
+			     (long) r->server->server_gid);
 		return (pid);
 	    }
 	    grpname = gr->gr_name;
 	}
 
-	if (shellcmd)
-	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
+	if (shellcmd) {
+	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0,
+		   NULL, env);
+	}
 
-	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '='))
-	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
+	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
+	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0,
+		   NULL, env);
+	}
 
 	else {
 	    execve(SUEXEC_BIN,
@@ -1001,16 +1084,19 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	}
     }
     else {
-	if (shellcmd)
+        if (shellcmd) {
 	    execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
+	}
 
-	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '='))
+	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
 	    execle(r->filename, argv0, NULL, env);
+	}
 
-	else
+	else {
 	    execve(r->filename,
 		   create_argv(r->pool, NULL, NULL, NULL, argv0, r->args),
 		   env);
+	}
     }
     return (pid);
 #endif
