@@ -101,8 +101,13 @@ in early versions have been fixed in 1.2.
     see sockets in FIN_WAIT_2 state due to network or operating system
     issues outside the control of Apache. See our <A
     HREF="fin_wait_2.html">FIN_WAIT_2</A> page for more details.
-    <P><b>Note:</b>  Depending on client mixture, SunOS 4.x boxes
-    may need all keepalives disabled with "KeepAlive off".
+
+    <P>SunOS4 has a kernel bug in the allocation of memory for the mbuf table.
+    When it fills up, the result is a Panic the next time any routine tries
+    to set something in an imaginary mbuf beyond the range of the table.
+    Due to buggy browser behavior and the lack of a FIN_WAIT_2 timeout
+    on SunOS4, "KeepAlive Off" is necessary to avoid filling up the mbuf
+    table on busy sites.
     <P></LI>
 
     <LI>Compilation fails on SCO3 when using gcc instead of cc, complaining
