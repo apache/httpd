@@ -232,16 +232,18 @@ static apr_status_t close_listeners_on_exec(void *v)
 static const char *alloc_listener(process_rec *process, char *addr, apr_port_t port)
 {
     ap_listen_rec **walk;
-    ap_listen_rec *new;
     apr_status_t status;
-    apr_port_t oldport;
     apr_sockaddr_t *sa;
+    int found_listener = 0;
 
     /* see if we've got an old listener for this address:port */
-    for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
+    for (walk = &old_listeners; *walk;) {
         sa = (*walk)->bind_addr;
         /* Some listeners are not real so they will not have a bind_addr. */
         if (sa) {
+            ap_listen_rec *new;
+            apr_port_t oldport;
+
             apr_sockaddr_port_get(&oldport, sa);
             /* If both ports are equivalent, then if their names are equivalent,
              * then we will re-use the existing record.
@@ -253,16 +255,20 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
                 *walk = new->next;
                 new->next = ap_listeners;
                 ap_listeners = new;
-                return NULL;
+                found_listener = 1;
+                continue;
             }
         }
+
+        walk = &(*walk)->next;
     }
 
-    /* this has to survive restarts */
-    new = apr_palloc(process->pool, sizeof(ap_listen_rec));
-    new->active = 0;
-    if ((status = apr_sockaddr_info_get(&new->bind_addr, addr, APR_UNSPEC,
-                                        port, 0, process->pool))
+    if (found_listener) {
+        return NULL;
+    }
+
+    if ((status = apr_sockaddr_info_get(&sa, addr, APR_UNSPEC, port, 0,
+                                        process->pool))
         != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                       "alloc_listener: failed to set up sockaddr for %s",
@@ -270,33 +276,40 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
         return "Listen setup failed";
     }
 
-    while (new->bind_addr) {
+    while (sa) {
+        ap_listen_rec *new;
+
+        /* this has to survive restarts */
+        new = apr_palloc(process->pool, sizeof(ap_listen_rec));
+        new->active = 0;
+        new->bind_addr = sa;
+
+        /* Go to the next sockaddr. */
+        sa = sa->next;
+
         status = apr_socket_create(&new->sd, new->bind_addr->family,
                                     SOCK_STREAM, process->pool);
+
 #if APR_HAVE_IPV6
         /* What could happen is that we got an IPv6 address, but this system
          * doesn't actually support IPv6.  Try the next address.
          */
         if (status != APR_SUCCESS && !addr &&
             new->bind_addr->family == APR_INET6) {
-            new->bind_addr = new->bind_addr->next;
+            continue;
         }
-        else {
-            break;
-        }
-#else
-        break;
 #endif
+        if (status != APR_SUCCESS) {
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
+                          "alloc_listener: failed to get a socket for %s",
+                          addr);
+            return "Listen setup failed";
+        }
+
+        new->next = ap_listeners;
+        ap_listeners = new;
     }
 
-    if (status != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
-                      "alloc_listener: failed to get a socket for %s", addr);
-        return "Listen setup failed";
-    }
-
-    new->next = ap_listeners;
-    ap_listeners = new;
     return NULL;
 }
 
