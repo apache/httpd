@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Fixed a segfault parsing large SSIs on non-mmap systems.
+     [Brian Havard]
+
   *) Proxy was bombing out every second keepalive request, caused by a
      stray CRLF before the second response's status line. Proxy now
      tries to read one more line if it encounters a CRLF where it
