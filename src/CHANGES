@@ -1,5 +1,8 @@
 Changes with Apache 1.3
-
+  
+  *) run_method optimized to avoid needless scanning over NULLs in the
+     module list.  [Dean Gaudet]
+  
   *) Revamp of (unix) scoreboard management code such that it avoids
      unnecessary traversals of the scoreboard on each hit.  This is
      particularly important for high volume sites with a large

@@ -144,7 +144,7 @@ create_default_per_dir_config (pool *p)
 void *
 merge_per_dir_configs (pool *p, void *base, void *new)
 {
-   void **conf_vector = (void **)pcalloc(p, sizeof(void*) * total_modules);
+   void **conf_vector = (void **)palloc(p, sizeof(void*) * total_modules);
    void **base_vector = (void **) base;
    void **new_vector = (void **) new;
    module *modp;
@@ -250,20 +250,101 @@ char *ShowMethod(module *modp,int offset)
  * do the dirty work of slogging through the module structures.
  */
 
-int
+/*
+ * Optimized run_method routines.  The observation here is that many modules
+ * have NULL for most of the methods.  So we build optimized lists of
+ * everything.  If you think about it, this is really just like a sparse array
+ * implementation to avoid scanning the zero entries.
+ */
+static const int method_offsets[] = {
+    XtOffsetOf (module, translate_handler),
+    XtOffsetOf (module, check_user_id),
+    XtOffsetOf (module, auth_checker),
+    XtOffsetOf (module, access_checker),
+    XtOffsetOf (module, type_checker),
+    XtOffsetOf (module, fixer_upper),
+    XtOffsetOf (module, logger),
+    XtOffsetOf (module, header_parser)
+};
+#define NMETHODS	(sizeof (method_offsets)/sizeof (method_offsets[0]))
+
+static struct {
+    int translate_handler;
+    int check_user_id;
+    int auth_checker;
+    int access_checker;
+    int type_checker;
+    int fixer_upper;
+    int logger;
+    int header_parser;
+} offsets_into_method_ptrs;
+
+/*
+ * This is just one big array of method_ptrs.  It's constructed such that,
+ * for example, method_ptrs[ offsets_into_method_ptrs.logger ] is the first
+ * logger function.  You go one-by-one from there until you hit a NULL.
+ * This structure was designed to hopefully maximize cache-coolness.
+ */
+static handler *method_ptrs;
+
+/* routine to reconstruct all these shortcuts... called after every
+ * add_module.
+ * XXX: this breaks if modules dink with their methods pointers
+ */
+static void
+build_method_shortcuts (void)
+{
+    module *modp;
+    int how_many_ptrs;
+    int i;
+    int next_ptr;
+    handler fp;
+
+    if (method_ptrs) {
+	/* free up any previous set of method_ptrs */
+	free (method_ptrs);
+    }
+
+    /* first we count how many functions we have */
+    how_many_ptrs = 0;
+    for (modp = top_module; modp; modp = modp->next) {
+	for (i = 0; i<NMETHODS; ++i) {
+	    if (*(handler *)(method_offsets[i] + (char *)modp)) {
+		++how_many_ptrs;
+	    }
+	}
+    }
+    method_ptrs = malloc ((how_many_ptrs+NMETHODS)*sizeof (handler));
+    next_ptr = 0;
+    for (i = 0; i<NMETHODS; ++i) {
+	/* XXX: This is an itsy bit presumptuous about the alignment
+	 * constraints on offsets_into_method_ptrs.  I can't remember if
+	 * ANSI says this has to be true... -djg */
+	((int *)&offsets_into_method_ptrs)[i] = next_ptr;
+	for (modp = top_module; modp; modp = modp->next) {
+	    fp = *(handler *)(method_offsets[i] + (char *)modp);
+	    if (fp) {
+		method_ptrs[next_ptr++] = fp;
+	    }
+	}
+	method_ptrs[next_ptr++] = NULL;
+    }
+}
+
+
+static int
 run_method (request_rec *r, int offset, int run_all)
 {
-   module *modp;
-   for (modp = top_module; modp; modp = modp->next) {
-       handler mod_handler = *(handler *)(offset + (char *)(modp));
+    int i;
 
-       if (mod_handler) {
+    for (i = offset; method_ptrs[i]; ++i ) {
+	handler mod_handler = method_ptrs[i];
+
+	if (mod_handler) {
            int result;
 
-           Explain1("Run %s",ShowMethod(modp,offset));
 	   result = (*mod_handler)(r);
 
-	   Explain2("%s returned %d",ShowMethod(modp,offset),result);
 	   if (result != DECLINED && (!run_all || result != OK))
 	       return result;
        }
@@ -273,27 +354,27 @@ run_method (request_rec *r, int offset, int run_all)
 }
 
 int translate_name(request_rec *r) {
-   return run_method (r, XtOffsetOf (module, translate_handler), 0);
+   return run_method (r, offsets_into_method_ptrs.translate_handler, 0);
 }
 
 int check_access(request_rec *r) {
-   return run_method (r, XtOffsetOf (module, access_checker), 1);
+   return run_method (r, offsets_into_method_ptrs.access_checker, 1);
 }
 
 int find_types (request_rec *r) {
-   return run_method (r, XtOffsetOf (module, type_checker), 0);
+   return run_method (r, offsets_into_method_ptrs.type_checker, 0);
 }
 
 int run_fixups (request_rec *r) {
-   return run_method (r, XtOffsetOf (module, fixer_upper), 1);
+   return run_method (r, offsets_into_method_ptrs.fixer_upper, 1);
 }
 
 int log_transaction (request_rec *r) {
-   return run_method (r, XtOffsetOf (module, logger), 1);
+   return run_method (r, offsets_into_method_ptrs.logger, 1);
 }
 
 int header_parse (request_rec *r) {
-    return run_method (r, XtOffsetOf (module, header_parser), 1);
+    return run_method (r, offsets_into_method_ptrs.header_parser, 1);
 }
 
 /* Auth stuff --- anything that defines one of these will presumably
@@ -302,11 +383,11 @@ int header_parse (request_rec *r) {
  */
 
 int check_user_id (request_rec *r) {
-   return run_method (r, XtOffsetOf (module, check_user_id), 0);
+   return run_method (r, offsets_into_method_ptrs.check_user_id, 0);
 }
 
 int check_auth (request_rec *r) {
-   return run_method (r, XtOffsetOf (module, auth_checker), 0);
+   return run_method (r, offsets_into_method_ptrs.auth_checker, 0);
 }
 
 int invoke_handler (request_rec *r)
@@ -391,6 +472,8 @@ void add_module (module *m)
     if (m->module_index == -1) {
 	m->module_index = num_modules++;
     }
+    /** XXX: this will be slow if there's lots of add_modules */
+    build_method_shortcuts ();
 }
 
 void setup_prelinked_modules ()
