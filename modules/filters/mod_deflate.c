@@ -58,7 +58,7 @@
 /*
  * mod_deflate.c: Perform deflate transfer-encoding on the fly
  *
- * Written by Ian Holsman (IanH@apache.org)
+ * Written by Ian Holsman
  *
  */
 
