@@ -98,7 +98,13 @@ typedef struct mem_cache_object {
     apr_os_file_t fd;
     long priority;      /**< the priority of this entry */
     long total_refs;          /**< total number of references this entry has had */
-    apr_ssize_t pos;    /**< the position of this entry in the cache */
+
+#ifdef USE_ATOMICS
+    apr_atomic_t pos;   /**< the position of this entry in the cache */
+#else
+    apr_ssize_t pos;
+#endif
+
 } mem_cache_object_t;
 
 typedef struct {
@@ -137,12 +143,7 @@ static long memcache_get_priority(void*a)
     cache_object_t *obj = (cache_object_t *)a;
     mem_cache_object_t *mobj = obj->vobj;
 
-#ifdef USE_ATOMICS
-    return  (long)apr_atomic_read(&mobj->priority);
-#else
     return  mobj->priority;
-#endif
-    
 }
 
 static void memcache_inc_frequency(void*a)
