@@ -3860,7 +3860,7 @@ void worker_main()
         {
 	    listen_rec *lr;
 
-	    lr = find_ready_listener (&listenfds);
+	    lr = find_ready_listener (&main_fds);
 	    if (lr != NULL) {
 		sd = lr->fd;
 	    }
