@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix the link to the description of the CoredumpDirectory 
+     directive in the server-wide document.  PR 8643.  [Jeff Trawick]
+
   *) Fixed SHMCB session caching.  [Aaron Bannert, Cliff Woolley]
 
   *) Synced with remaining changes from mod_ssl 2.8.8-1.3.24:
