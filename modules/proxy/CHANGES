@@ -1,3 +1,7 @@
+mod_proxy changes for httpd 2.0.25-dev
+  *) apr_uri type/function namespace changes in apr_uri functions
+  	 [Doug MacEachern <dougm@covalent.net>]
+
 mod_proxy changes for httpd 2.0.23-dev
 
   *) break the proxy_http_handler into multiple smaller functions.

@@ -190,7 +190,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
                                                 proxy_http_conn_t *p_conn,
                                                 conn_rec *c,
                                                 proxy_server_conf *conf,
-                                                apr_uri_components *uri,
+                                                apr_uri_t *uri,
                                                 char **url,
                                                 const char *proxyname,
                                                 apr_port_t proxyport,
@@ -203,7 +203,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
      */
 
     /* we break the URL into host, port, uri */
-    if (APR_SUCCESS != apr_uri_parse_components(p, *url, uri)) {
+    if (APR_SUCCESS != apr_uri_parse(p, *url, uri)) {
         return ap_proxyerror(r, HTTP_BAD_REQUEST,
                              apr_pstrcat(p,"URI cannot be parsed: ", *url,
                                          NULL));
@@ -441,7 +441,7 @@ static
 apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_http_conn_t *p_conn, conn_rec *origin, 
                                    proxy_server_conf *conf,
-                                   apr_uri_components *uri,
+                                   apr_uri_t *uri,
                                    char *url, apr_bucket_brigade *bb,
                                    char *server_portstr) {
     char buffer[HUGE_STRING_LEN];
@@ -904,7 +904,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     apr_pool_t *p = r->connection->pool;
     conn_rec *c = r->connection;
     apr_bucket_brigade *bb = apr_brigade_create(p);
-    apr_uri_components *uri = apr_palloc(r->connection->pool, sizeof(*uri));
+    apr_uri_t *uri = apr_palloc(r->connection->pool, sizeof(*uri));
     proxy_http_conn_t *p_conn = apr_pcalloc(r->connection->pool,
                                            sizeof(*p_conn));
 

@@ -289,9 +289,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (HEADER == ctx->state) {
 
 	/* Save "scheme://site" prefix without password */
-	site = apr_uri_unparse_components(p, &f->r->parsed_uri, UNP_OMITPASSWORD|UNP_OMITPATHINFO);
+	site = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITPASSWORD|APR_URI_UNP_OMITPATHINFO);
 	/* ... and path without query args */
-	path = apr_uri_unparse_components(p, &f->r->parsed_uri, UNP_OMITSITEPART|UNP_OMITQUERY);
+	path = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITSITEPART|APR_URI_UNP_OMITQUERY);
 	(void)decodeenc(path);
 
 	/* Copy path, strip (all except the last) trailing slashes */
@@ -510,13 +510,13 @@ static int ftp_unauthorized (request_rec *r, int log_it)
     if (log_it)
 	ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
 		      "proxy: missing or failed auth to %s",
-		      apr_uri_unparse_components(r->pool,
-		      &r->parsed_uri, UNP_OMITPATHINFO));
+		      apr_uri_unparse(r->pool,
+		      &r->parsed_uri, APR_URI_UNP_OMITPATHINFO));
 
     apr_table_setn(r->err_headers_out, "WWW-Authenticate",
                   apr_pstrcat(r->pool, "Basic realm=\"",
-		  apr_uri_unparse_components(r->pool, &r->parsed_uri,
-		    UNP_OMITPASSWORD|UNP_OMITPATHINFO),
+		  apr_uri_unparse(r->pool, &r->parsed_uri,
+		    APR_URI_UNP_OMITPASSWORD|APR_URI_UNP_OMITPATHINFO),
 		    "\"", NULL));
 
     return HTTP_UNAUTHORIZED;
