@@ -1,5 +1,9 @@
 Changes with Apache 2.0.40
 
+  *) Support WinNT CGI invocation through ScriptInterpreterSource 
+     'registry' for script interpreter paths and names with non-ascii
+     characters in the executable filepath.  [William Rowe]
+
   *) Support the -w flag on to keep the Win32 console open on error.
      [William Rowe]
 
