@@ -62,6 +62,7 @@
 #include "apr_fnmatch.h"
 #include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
+#include "apr_hooks.h"
 
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC
@@ -3383,11 +3384,44 @@ static void core_insert_filter(request_rec *r)
     }
 }
 
-static int core_create_req(request_rec *r)
+static apr_size_t num_request_notes = AP_NUM_STD_NOTES;
+
+static apr_status_t reset_request_notes(void *dummy)
+{
+    num_request_notes = AP_NUM_STD_NOTES;
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(apr_size_t) ap_register_request_note(void)
+{
+    apr_pool_cleanup_register(apr_global_hook_pool, NULL, reset_request_notes,
+                              apr_pool_cleanup_null);
+    return num_request_notes++;
+}
+
+AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num)
 {
     core_request_config *req_cfg;
-    req_cfg = apr_palloc(r->pool, sizeof(core_request_config));
-    memset(req_cfg, 0, sizeof(*req_cfg));
+    if (note_num >= num_request_notes) {
+        return NULL;
+    }
+    req_cfg = (core_request_config *)
+        ap_get_module_config(r->request_config, &core_module);
+    if (!req_cfg) {
+        return NULL;
+    }
+    return &(req_cfg->notes[note_num]);
+}
+
+static int core_create_req(request_rec *r)
+{
+    /* Alloc the config struct and the array of request notes in
+     * a single block for efficiency
+     */
+    core_request_config *req_cfg;
+    req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config) +
+                          sizeof(void *) * num_request_notes);
+    req_cfg->notes = (void **)((char *)req_cfg + sizeof(core_request_config));
     if (r->main) {
         core_request_config *main_req_cfg = (core_request_config *)
             ap_get_module_config(r->main->request_config, &core_module);

@@ -296,10 +296,10 @@ typedef struct walk_cache_t {
     apr_array_header_t *walked;         /* The list of walk_walked_t results */
 } walk_cache_t;
 
-static walk_cache_t *prep_walk_cache(ap_walk_cache_type t, request_rec *r)
+static walk_cache_t *prep_walk_cache(apr_size_t t, request_rec *r)
 {
     walk_cache_t *cache;
-    core_request_config *my_req_cfg;
+    void **note;
 
     /* Find the most relevant, recent entry to work from.  That would be
      * this request (on the second call), or the parent request of a
@@ -307,20 +307,19 @@ static walk_cache_t *prep_walk_cache(ap_walk_cache_type t, request_rec *r)
      * this _walk()er with a copy it is allowed to munge.  If there is no
      * parent or prior cached request, then create a new walk cache.
      */
-    my_req_cfg = (core_request_config *)
-        ap_get_module_config(r->request_config, &core_module);
-
-    if (!my_req_cfg || !(cache = my_req_cfg->walk_cache[t])) {
-        core_request_config *req_cfg;
+    note = ap_get_request_note(r, t);
+    if (!note) {
+        return NULL;
+    }
+    if (!(cache = *note)) {
+        void **inherit_note;
         if ((r->main &&
-             (req_cfg = (core_request_config *)
-              ap_get_module_config(r->main->request_config, &core_module)) &&
-             req_cfg->walk_cache[t]) ||
+             ((inherit_note = ap_get_request_note(r->main, t))) &&
+             *inherit_note) ||
             (r->prev &&
-             (req_cfg = (core_request_config *)
-              ap_get_module_config(r->prev->request_config, &core_module)) &&
-             req_cfg->walk_cache[t])) {
-            cache = apr_pmemdup(r->pool, req_cfg->walk_cache[t],
+             ((inherit_note = ap_get_request_note(r->prev, t))) &&
+             *inherit_note)) {
+            cache = apr_pmemdup(r->pool, *inherit_note,
                                 sizeof(*cache));
             cache->walked = apr_array_copy(r->pool, cache->walked);
         }
@@ -328,9 +327,7 @@ static walk_cache_t *prep_walk_cache(ap_walk_cache_type t, request_rec *r)
             cache = apr_pcalloc(r->pool, sizeof(*cache));
             cache->walked = apr_array_make(r->pool, 4, sizeof(walk_walked_t));
         }
-        if (my_req_cfg) {
-            my_req_cfg->walk_cache[t] = cache;
-        }
+        *note = cache;
     }
     return cache;
 }
@@ -489,7 +486,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      */
     r->filename = entry_dir;
 
-    cache = prep_walk_cache(AP_WALK_DIRECTORY, r);
+    cache = prep_walk_cache(AP_NOTE_DIRECTORY_WALK, r);
 
     /* If this is not a dirent subrequest with a preconstructed 
      * r->finfo value, then we can simply stat the filename to
@@ -1063,7 +1060,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     walk_cache_t *cache;
     const char *entry_uri;
 
-    cache = prep_walk_cache(AP_WALK_LOCATION, r);
+    cache = prep_walk_cache(AP_NOTE_LOCATION_WALK, r);
     
     /* No tricks here, there are no <Locations > to parse in this vhost.
      * We won't destroy the cache, just in case _this_ redirect is later
@@ -1219,7 +1216,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         return OK;
     }
 
-    cache = prep_walk_cache(AP_WALK_FILE, r);
+    cache = prep_walk_cache(AP_NOTE_FILE_WALK, r);
 
     /* No tricks here, there are just no <Files > to parse in this context.
      * We won't destroy the cache, just in case _this_ redirect is later
