@@ -206,7 +206,7 @@ LISTEN_COMMANDS,
 AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
 {
     /* Recycle the completion context.
-     * - destroy the ptrans pool
+     * - clear the ptrans pool
      * - put the context on the queue to be consumed by the accept thread
      * Note: 
      * context->accept_socket may be in a disconnected but reusable 
@@ -214,7 +214,6 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
      */
     if (context) {
         apr_pool_clear(context->ptrans);
-        apr_pool_destroy(context->ptrans);
         context->ptrans = NULL;
         context->next = NULL;
         apr_thread_mutex_lock(qlock);
@@ -229,6 +228,7 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT context)
 
 AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
 {
+    apr_status_t rv;
     PCOMP_CONTEXT context = NULL;
 
     /* Grab a context off the queue */
@@ -256,6 +256,10 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
             }
             return NULL;
         }
+        /* Note:
+         * Multiple failures in the next two steps will cause the pchild pool
+         * to 'leak' storage. I don't think this is worth fixing...
+         */
         context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
 
         context->Overlapped.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL); 
@@ -265,10 +269,21 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                          "mpm_get_completion_context: CreateEvent failed.");
             return NULL;
         }
+
+        /* Create the tranaction pool */
+        if ((rv = apr_pool_create(&context->ptrans, pchild)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK,APLOG_WARNING, rv, ap_server_conf,
+                         "mpm_get_completion_context: Failed to create the transaction pool.");
+            CloseHandle(context->Overlapped.hEvent);
+            return NULL;
+        }
+        apr_pool_tag(context->ptrans, "ptrans");
+
         context->accept_socket = INVALID_SOCKET;
         context->ba = apr_bucket_alloc_create(pchild);
         num_completion_contexts++;
     }
+
     return context;
 }
 
@@ -835,6 +850,7 @@ static void win9x_accept(void * dummy)
 
 static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 {
+    apr_os_sock_info_t sockinfo;
     int len;
 
     if (context == NULL) {
@@ -845,7 +861,6 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context->ba = apr_bucket_alloc_create(pchild);
     }
     
-
     while (1) {
         apr_pool_clear(context->ptrans);        
         context->accept_socket = remove_job();
@@ -868,9 +883,13 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
                          "getpeername failed");
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
+        sockinfo.os_sock = &context->accept_socket;
+        sockinfo.local   = context->sa_server;
+        sockinfo.remote  = context->sa_client;
+        sockinfo.family  = APR_INET;
+        sockinfo.type    = SOCK_STREAM;
+        apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
-        /* do we NEED_DUPPED_CSD ?? */
-        
         return context;
     }
 }
@@ -890,7 +909,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
  */
 static void winnt_accept(void *listen_socket) 
 {
-
+    apr_os_sock_info_t sockinfo;
     PCOMP_CONTEXT context;
     DWORD BytesRead;
     SOCKET nlsd;
@@ -989,6 +1008,13 @@ static void winnt_accept(void *listen_socket)
                              &context->sa_client,
                              &context->sa_client_len);
 
+        sockinfo.os_sock = &context->accept_socket;
+        sockinfo.local   = context->sa_server;
+        sockinfo.remote  = context->sa_client;
+        sockinfo.family  = APR_INET;
+        sockinfo.type    = SOCK_STREAM;
+        apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
+
         /* When a connection is received, send an io completion notification to
          * the ThreadDispatchIOCP. This function could be replaced by
          * mpm_post_completion_context(), but why do an extra function call...
@@ -1042,13 +1068,6 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
     g_blocked_threads--;    
 
-    if ((rc = apr_pool_create(&context->ptrans, pconf)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_DEBUG, rc, ap_server_conf,
-                     "Child %d: apr_pool_create failed with rc %d", my_pid, rc);
-    } else {
-        apr_pool_tag(context->ptrans, "ptrans");
-    }
-
     return context;
 }
 
@@ -1061,7 +1080,6 @@ static void worker_main(long thread_num)
 {
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
-    apr_os_sock_info_t sockinfo;
     ap_sb_handle_t *sbh;
 
     while (1) {
@@ -1091,14 +1109,6 @@ static void worker_main(long thread_num)
                 SetEvent(max_requests_per_child_event);
             }
         }
-
-        sockinfo.os_sock = &context->accept_socket;
-        sockinfo.local   = context->sa_server;
-        sockinfo.remote  = context->sa_client;
-        sockinfo.family  = APR_INET;
-        sockinfo.type    = SOCK_STREAM;
-        /* ### is this correct?  Shouldn't be inheritable (at this point) */
-        apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
         c = ap_run_create_connection(context->ptrans, ap_server_conf,
