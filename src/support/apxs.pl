@@ -383,7 +383,7 @@ if ($opt_c) {
     $opt = '';
     my ($opt_Wl, $opt_L, $opt_l);
     foreach $opt_Wl (@opt_W) {
-		if($CFG_LD_SHLIB ne "gcc") {
+		if ($CFG_LD_SHLIB !~ m/gcc$/) {
 	        $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
 		} else {
 	        $opt .= " -W$opt_Wl";
