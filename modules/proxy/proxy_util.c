@@ -16,6 +16,7 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 #include "ap_mpm.h"
+#include "apr_version.h"
 
 #if (APR_MAJOR_VERSION < 1)
 #undef apr_socket_create
