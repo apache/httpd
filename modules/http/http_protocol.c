@@ -2250,6 +2250,7 @@ API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
     ap_size_t len = r->finfo.size;
 #if APR_HAS_SENDFILE
+    ap_int32_t flags = 0;
     if (!r->chunked) {
 	ap_status_t rv;
         ap_bsetopt(r->connection->client, BO_TIMEOUT,
@@ -2257,12 +2258,20 @@ API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
                    ? &r->server->keep_alive_timeout
                    : &r->server->timeout);
         ap_bflush(r->connection->client);
+
+        if (!r->connection->keepalive) {
+            /* Prepare the socket to be reused. Ignored on systems
+             * that do not support reusing the accept socket
+             */
+            flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+        }
+
         rv = iol_sendfile(r->connection->client->iol, 
                           fd,     /* The file to send */
                           NULL,   /* header and trailer iovecs */
                           0,      /* Offset in file to begin sending from */
                           &len,
-                          0);
+                          flags);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "ap_send_fd: iol_sendfile failed.");
