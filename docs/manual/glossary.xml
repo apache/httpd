@@ -209,7 +209,13 @@
       <code>cgi-script</code> handler designates files to be processed as
       <glossary ref="cgi">CGIs</glossary>.<br />
       See: <a href="handler.html">Apache's Handler Use</a>
-    </dd>
+   </dd>
+
+   <dt><a name="hash">Hash</a></dt>
+   <dd>A mathematical one-way, irreversable algorithm generating a string with
+      fixed-length from another string of any length. Different input strings
+      will usually produce different hashes (depending on the hash function).
+   </dd>
 
     <dt><a name="header">Header</a></dt>
     <dd>The part of the <glossary ref="http">HTTP</glossary> request and
