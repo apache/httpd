@@ -859,7 +859,7 @@ struct server_rec {
     /* Log files --- note that transfer log is now in the modules... */
 
     char *error_fname;
-    FILE *error_log;
+    ap_file_t *error_log;
     int loglevel;
 
     /* Module-specific configuration for server, and defaults... */

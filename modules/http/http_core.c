@@ -2472,9 +2472,10 @@ static ap_status_t mmap_cleanup(void *mmv)
 static int default_handler(request_rec *r)
 {
     core_dir_config *d =
-      (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     int rangestatus, errstatus;
-    APRFile fd;         /*  Abstract out File descriptors. */
+    ap_file_t *fd = NULL;
+    int fd_os;
 #ifdef USE_MMAP_FILES
     caddr_t mm;
 #endif
@@ -2514,18 +2515,13 @@ static int default_handler(request_rec *r)
         return METHOD_NOT_ALLOWED;
     }
 	
-#if defined(OS2) || defined(WIN32)
-    /* Need binary mode for OS/2 */
-    fd = ap_popenf(r->pool, r->filename, O_RDONLY | O_BINARY, 0);
-#else
-    fd = ap_popenf(r->pool, r->filename, O_RDONLY, 0);
-#endif
-
-    if (fd == -1) {
+    if (ap_open (r->pool, r->filename, APR_READ | APR_BINARY, 0, &fd) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
+    else
+       ap_get_os_file (fd, &fd_os);
 	
     ap_update_mtime(r, r->finfo.st_mtime);
     ap_set_last_modified(r);
@@ -2533,7 +2529,7 @@ static int default_handler(request_rec *r)
     ap_table_setn(r->headers_out, "Accept-Ranges", "bytes");
     if (((errstatus = ap_meets_conditions(r)) != OK)
 	|| (errstatus = ap_set_content_length(r, r->finfo.st_size))) {
-        ap_pclosef(r->pool, fd);
+        ap_close(fd);
         return errstatus;
     }
 
@@ -2544,7 +2540,7 @@ static int default_handler(request_rec *r)
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
 	mm = mmap(NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
-		  fd, 0);
+		  fd_os, 0);
 	if (mm == (caddr_t)-1) {
 	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
 			 "default_handler: mmap failed: %s", r->filename);
@@ -2568,12 +2564,12 @@ static int default_handler(request_rec *r)
 	convert_flag = ap_checkconv(r);
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, fd, convert_flag));
+			  ap_md5digest(r->pool, fd_os, convert_flag));
 	}
 #else
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, fd));
+			  ap_md5digest(r->pool, fd_os));
 	}
 #endif /* CHARSET_EBCDIC */
 
@@ -2583,19 +2579,20 @@ static int default_handler(request_rec *r)
 	
 	if (!r->header_only) {
 	    if (!rangestatus) {
-		ap_send_fd(fd, r);
+		ap_send_fd(fd_os, r);
 	    }
 	    else {
-		long offset, length;
+		long     length;
+                ap_off_t offset;
+
 		while (ap_each_byterange(r, &offset, &length)) {
-		    /* ZZZ change to AP func */
-		    if (lseek(fd, offset, SEEK_SET) == -1) {
+                    if (ap_seek(fd, APR_SET, &offset) != APR_SUCCESS) {
 		        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 				  "error byteserving file: %s", r->filename);
-			ap_pclosef(r->pool, fd);
+			ap_close(fd);
 			return HTTP_INTERNAL_SERVER_ERROR;
 		    }
-		    ap_send_fd_length(fd, r, length);
+		    ap_send_fd_length(fd_os, r, length);
 		}
 	    }
 	}
@@ -2636,7 +2633,7 @@ static int default_handler(request_rec *r)
     }
 #endif
 
-    ap_pclosef(r->pool, fd);
+    ap_close(fd);
     return OK;
 }
 

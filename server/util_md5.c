@@ -84,6 +84,7 @@
 /* md5.c --Module Interface to MD5. */
 /* Jeff Hostetler, Spyglass, Inc., 1994. */
 
+#include "apr_portable.h"
 #include "httpd.h"
 #include "util_md5.h"
 
@@ -189,7 +190,7 @@ API_EXPORT(char *) ap_md5contextTo64(ap_context_t *a, AP_MD5_CTX * context)
 
 #ifdef CHARSET_EBCDIC
 
-API_EXPORT(char *) ap_md5digest(ap_context_t *p, APRFile infile, int convert)
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile, int convert)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];
@@ -212,7 +213,7 @@ API_EXPORT(char *) ap_md5digest(ap_context_t *p, APRFile infile, int convert)
 
 #else
 
-API_EXPORT(char *) ap_md5digest(ap_context_t *p, APRFile infile)
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];

@@ -65,8 +65,10 @@
 
 static int asis_handler(request_rec *r)
 {
-    FILE *f;
+    ap_file_t *f;
     const char *location;
+    FILE *thefile;         /* XXX leave these alone until we convert */
+    int thefd;             /* everything to use apr_file_t's. */ 
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
@@ -77,21 +79,23 @@ static int asis_handler(request_rec *r)
 	return NOT_FOUND;
     }
 
-    f = ap_pfopen(r->pool, r->filename, "r");
-
-    if (f == NULL) {
+    if (ap_open(r->pool, r->filename, APR_READ | APR_BUFFERED, 
+                APR_OS_DEFAULT, &f) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    "file permissions deny server access: %s", r->filename);
 	return FORBIDDEN;
     }
 
-    ap_scan_script_header_err(r, f, NULL);
+    ap_get_os_file(f, &thefd); 
+    thefile = fdopen(thefd, "r");
+    
+    ap_scan_script_header_err(r, thefile, NULL);
     location = ap_table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' &&
 	((r->status == HTTP_OK) || ap_is_HTTP_REDIRECT(r->status))) {
 
-	ap_pfclose(r->pool, f);
+	ap_close(f);
 
 	/* Internal redirect -- fake-up a pseudo-request */
 	r->status = HTTP_OK;
@@ -108,11 +112,12 @@ static int asis_handler(request_rec *r)
 
     ap_send_http_header(r);
     if (!r->header_only) {
-	fseek(f, 0, SEEK_CUR);
-	ap_send_fd(fileno(f), r);
+        ap_off_t zero = 0;
+	ap_seek(f, APR_CUR, &zero);
+	ap_send_fd(thefd, r);
     }
 
-    ap_pfclose(r->pool, f);
+    ap_close(f);
     return OK;
 }
 

@@ -139,9 +139,9 @@ typedef struct piped_log {
 #ifndef NO_RELIABLE_PIPED_LOGS
     char *program;
     int pid;
-    int fds[2];
+    ap_file_t fds[2];
 #else
-    FILE *write_f;
+    ap_file_t *write_f;
 #endif
 } piped_log;
 
@@ -152,7 +152,7 @@ API_EXPORT(void) ap_close_piped_log (piped_log *);
 #define ap_piped_log_write_fd(pl)	((pl)->fds[1])
 #else
 #define ap_piped_log_read_fd(pl)	(-1)
-#define ap_piped_log_write_fd(pl)	(fileno((pl)->write_f))
+#define ap_piped_log_write_fd(pl)	((pl)->write_f)
 #endif
 
 #ifdef __cplusplus
