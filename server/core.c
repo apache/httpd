@@ -2168,15 +2168,15 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
     apr_snprintf(sport, sizeof sport, "%u", (unsigned) ap_get_server_port(r));
 
     if (conf->server_signature == srv_sig_withmail) {
-	return apr_pstrcat(r->pool, prefix, "<ADDRESS>" AP_SERVER_BASEVERSION
-			  " Server at <A HREF=\"mailto:",
+	return apr_pstrcat(r->pool, prefix, "<address>" AP_SERVER_BASEVERSION
+			  " Server at <a href=\"mailto:",
 			  r->server->server_admin, "\">",
-			  ap_get_server_name(r), "</A> Port ", sport,
-			  "</ADDRESS>\n", NULL);
+			  ap_get_server_name(r), "</a> Port ", sport,
+			  "</address>\n", NULL);
     }
-    return apr_pstrcat(r->pool, prefix, "<ADDRESS>" AP_SERVER_BASEVERSION
+    return apr_pstrcat(r->pool, prefix, "<address>" AP_SERVER_BASEVERSION
 		      " Server at ", ap_get_server_name(r), " Port ", sport,
-		      "</ADDRESS>\n", NULL);
+		      "</address>\n", NULL);
 }
 
 /*

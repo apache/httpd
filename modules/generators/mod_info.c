@@ -201,20 +201,20 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 		    apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
 				tmptree->parent->directive,
 				tmptree->parent->args);
-		    ap_rprintf(r, "<dd><tt>%s</tt><br>\n",
+		    ap_rprintf(r, "<dd><tt>%s</tt></dd>\n",
 			       mod_info_html_cmd_string(htmlstring, buf,
 							sizeof(buf), 0));
 		}
 		if (nest == 2) {
 		    ap_rprintf(r, "<dd><tt>&nbsp;&nbsp;&nbsp;&nbsp;%s "
-			       "<i>%s</i></tt><br>\n",
+			       "<i>%s</i></tt></dd>\n",
 			       tmptree->directive, tmptree->args);
 		} else if (nest == 1) {
 		    ap_rprintf(r,
-			       "<dd><tt>&nbsp;&nbsp;%s <i>%s</i></tt><br>\n",
+			       "<dd><tt>&nbsp;&nbsp;%s <i>%s</i></tt></dd>\n",
 			       tmptree->directive, tmptree->args);
 		} else {
-		    ap_rprintf(r, "<dd><tt>%s <i>%s</i></tt><br>\n",
+		    ap_rprintf(r, "<dd><tt>%s <i>%s</i></tt></dd>\n",
 			       mod_info_html_cmd_string(tmptree->directive,
 							buf, sizeof(buf),
 							0), tmptree->args);
@@ -232,7 +232,7 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 		apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",
 			    tmptree->parent->directive,
 			    tmptree->parent->args);
-		ap_rprintf(r, "<dd><tt>%s</tt><br>\n",
+		ap_rprintf(r, "<dd><tt>%s</tt></dd>\n",
 			   mod_info_html_cmd_string(htmlstring, buf,
 						    sizeof(buf), 1));
 		block_start--;
@@ -327,15 +327,16 @@ static void module_request_hook_participate(request_rec *r, module *modp)
 {
     int i, comma=0;
 
-    ap_rputs("<dt><strong>Request Phase Participation:</strong> \n", r);
+    ap_rputs("<dt><strong>Request Phase Participation:</strong>\n", r);
 
     for (i=0; request_hooks[i].name; i++) {
         module_participate(r, modp, &request_hooks[i], &comma);
     }
 
     if (!comma) {
-        ap_rputs("<tt> <EM>none</EM></tt>", r);
+        ap_rputs("<tt> <em>none</em></tt>", r);
     }
+    ap_rputs("</dt>\n", r);
 }
 
 static const char *find_more_info(server_rec *s, const char *module_name)
@@ -383,58 +384,58 @@ static int display_info(request_rec *r)
 
     ap_rputs(DOCTYPE_HTML_3_2
 	     "<html><head><title>Server Information</title></head>\n", r);
-    ap_rputs("<body><h1 align=center>Apache Server Information</h1>\n", r);
+    ap_rputs("<body><h1 align=\"center\">Apache Server Information</h1>\n", r);
     if (!r->args || strcasecmp(r->args, "list")) {
         if (!r->args) {
-            ap_rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
+            ap_rputs("<dl><dt><tt><a href=\"#server\">Server Settings</a>, ", r);
             for (modp = ap_top_module; modp; modp = modp->next) {
                 ap_rprintf(r, "<a href=\"#%s\">%s</a>", modp->name, modp->name);
                 if (modp->next) {
                     ap_rputs(", ", r);
                 }
             }
-            ap_rputs("</tt><hr>", r);
+            ap_rputs("</tt></dt></dl><hr />", r);
 
         }
         if (!r->args || !strcasecmp(r->args, "server")) {
             int max_daemons, forked, threaded;
 
-            ap_rprintf(r, "<a name=\"server\"><strong>Server Version:</strong> "
-                        "<font size=+1><tt>%s</tt></a></font><br>\n",
+            ap_rprintf(r, "<dl><dt><a name=\"server\"><strong>Server Version:</strong> "
+                        "<font size=\"+1\"><tt>%s</tt></font></a></dt>\n",
                         ap_get_server_version());
-            ap_rprintf(r, "<strong>Server Built:</strong> "
-                        "<font size=+1><tt>%s</tt></a></font><br>\n",
+            ap_rprintf(r, "<dt><strong>Server Built:</strong> "
+                        "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
                         ap_get_server_built());
-            ap_rprintf(r, "<strong>API Version:</strong> "
-                        "<tt>%d:%d</tt><br>\n",
+            ap_rprintf(r, "<dt><strong>API Version:</strong> "
+                        "<tt>%d:%d</tt></dt>\n",
                         MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
-            ap_rprintf(r, "<strong>Hostname/port:</strong> "
-                        "<tt>%s:%u</tt><br>\n",
+            ap_rprintf(r, "<dt><strong>Hostname/port:</strong> "
+                        "<tt>%s:%u</tt></dt>\n",
                         serv->server_hostname, serv->port);
-            ap_rprintf(r, "<strong>Timeouts:</strong> "
+            ap_rprintf(r, "<dt><strong>Timeouts:</strong> "
                         "<tt>connection: %d &nbsp;&nbsp; "
-                        "keep-alive: %d</tt><br>",
+                        "keep-alive: %d</tt></dt>",
                         serv->timeout, serv->keep_alive_timeout);
             ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
             ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
             ap_mpm_query(AP_MPMQ_IS_FORKED, &forked);
-            ap_rprintf(r, "MPM used is %s<br>\n", ap_show_mpm());
-            ap_rprintf(r, "<strong>MPM Information:</strong> "
-		       "<tt>Max Daemons: %d Threaded: %s Forked: %s</tt><br>\n",
+            ap_rprintf(r, "<dt><strong>MPM Name:</strong> <tt>%s</tt></dt>\n", ap_show_mpm());
+            ap_rprintf(r, "<dt><strong>MPM Information:</strong> "
+		       "<tt>Max Daemons: %d Threaded: %s Forked: %s</tt></dt>\n",
                        max_daemons, threaded ? "yes" : "no",
                        forked ? "yes" : "no");
-            ap_rprintf(r, "<strong>Server Root:</strong> "
-                        "<tt>%s</tt><br>\n", ap_server_root);
-            ap_rprintf(r, "<strong>Config File:</strong> "
-		       "<tt>%s</tt><br>\n", SERVER_CONFIG_FILE);
+            ap_rprintf(r, "<dt><strong>Server Root:</strong> "
+                        "<tt>%s</tt></dt>\n", ap_server_root);
+            ap_rprintf(r, "<dt><strong>Config File:</strong> "
+		       "<tt>%s</tt></dt>\n", SERVER_CONFIG_FILE);
+            ap_rputs("</dl><hr />", r);
         }
-        ap_rputs("<hr><dl>", r);
         for (modp = ap_top_module; modp; modp = modp->next) {
             if (!r->args || !strcasecmp(modp->name, r->args)) {
-                ap_rprintf(r, "<dt><a name=\"%s\"><strong>Module Name:</strong> "
-                            "<font size=+1><tt>%s</tt></a></font>\n",
+                ap_rprintf(r, "<dl><dt><a name=\"%s\"><strong>Module Name:</strong> "
+                            "<font size=\"+1\"><tt>%s</tt></font></a></dt>\n",
                             modp->name, modp->name);
-                ap_rputs("<dt><strong>Content handlers:</strong>", r);
+                ap_rputs("<dt><strong>Content handlers:</strong> ", r);
 #ifdef NEVERMORE
                 hand = modp->handlers;
                 if (hand) {
@@ -452,17 +453,18 @@ static int display_info(request_rec *r)
                     }
                 }
                 else {
-                    ap_rputs("<tt> <EM>none</EM></tt>", r);
+                    ap_rputs("<tt> <em>none</em></tt>", r);
                 }
 #else
                 if (module_find_hook(modp, ap_hook_get_handler)) {
-                    ap_rputs("<tt> <EM>yes</EM></tt>", r);
+                    ap_rputs("<tt> <em>yes</em></tt>", r);
                 }
                 else {
-                    ap_rputs("<tt> <EM>none</EM></tt>", r);
+                    ap_rputs("<tt> <em>none</em></tt>", r);
                 }
 #endif
-                ap_rputs("<dt><strong>Configuration Phase Participation:</strong> \n",
+                ap_rputs("</dt>", r);
+                ap_rputs("<dt><strong>Configuration Phase Participation:</strong>\n",
                       r);
                 if (modp->create_dir_config) {
                     if (comma) {
@@ -493,14 +495,15 @@ static int display_info(request_rec *r)
                     comma = 1;
                 }
                 if (!comma)
-                    ap_rputs("<tt> <EM>none</EM></tt>", r);
+                    ap_rputs("<tt> <em>none</em></tt>", r);
                 comma = 0;
+                ap_rputs("</dt>", r);
 
                 module_request_hook_participate(r, modp);
 
-                ap_rputs("<dt><strong>Module Directives:</strong> ", r);
                 cmd = modp->cmds;
                 if (cmd) {
+                    ap_rputs("<dt><strong>Module Directives:</strong></dt>", r);
                     while (cmd) {
                         if (cmd->name) {
                             ap_rprintf(r, "<dd><tt>%s - <i>",
@@ -509,44 +512,45 @@ static int display_info(request_rec *r)
                             if (cmd->errmsg) {
                                 ap_rputs(cmd->errmsg, r);
                             }
-                            ap_rputs("</i></tt>\n", r);
+                            ap_rputs("</i></tt></dd>\n", r);
                         }
                         else {
                             break;
                         }
                         cmd++;
                     }
-                    ap_rputs("<dt><strong>Current Configuration:</strong>\n", r);
+                    ap_rputs("<dt><strong>Current Configuration:</strong></dt>\n", r);
                     mod_info_module_cmds(r, modp->cmds, ap_conftree);
                 }
                 else {
-                    ap_rputs("<tt> none</tt>\n", r);
+                    ap_rputs("<dt><strong>Module Directives:</strong> <tt>none</tt></dt>", r);
                 }
                 more_info = find_more_info(serv, modp->name);
                 if (more_info) {
-                    ap_rputs("<dt><strong>Additional Information:</strong>\n<dd>",
+                    ap_rputs("<dt><strong>Additional Information:</strong>\n</dt><dd>",
                           r);
                     ap_rputs(more_info, r);
+                    ap_rputs("</dd>", r);
                 }
-                ap_rputs("<dt><hr>\n", r);
+                ap_rputs("</dl><hr />\n", r);
                 if (r->args) {
                     break;
                 }
             }
         }
         if (!modp && r->args && strcasecmp(r->args, "server")) {
-            ap_rputs("<b>No such module</b>\n", r);
+            ap_rputs("<p><b>No such module</b></p>\n", r);
         }
     }
     else {
+        ap_rputs("<dl><dt>Server Module List</dt>", r);
         for (modp = ap_top_module; modp; modp = modp->next) {
+            ap_rputs("<dd>", r);
             ap_rputs(modp->name, r);
-            if (modp->next) {
-                ap_rputs("<br>", r);
-            }
+            ap_rputs("</dd>", r);
         }
+        ap_rputs("</dl><hr />", r);
     }
-    ap_rputs("</dl>\n", r);
     ap_rputs(ap_psignature("",r), r);
     ap_rputs("</body></html>\n", r);
     /* Done, turn off timeout, close file and return */

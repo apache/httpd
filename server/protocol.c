@@ -511,9 +511,9 @@ static void get_mime_headers(request_rec *r)
 			   apr_pstrcat(r->pool,
 				       "Size of a request header field "
 				       "exceeds server limit.<P>\n"
-				       "<PRE>\n",
+				       "<pre>\n",
 				       ap_escape_html(r->pool, field),
-				       "</PRE>\n", NULL));
+				       "</pre>\n", NULL));
             return;
         }
         copy = apr_palloc(r->pool, len + 1);
@@ -525,9 +525,9 @@ static void get_mime_headers(request_rec *r)
 			   apr_pstrcat(r->pool,
 				       "Request header field is missing "
 				       "colon separator.<P>\n"
-				       "<PRE>\n",
+				       "<pre>\n",
 				       ap_escape_html(r->pool, copy),
-				       "</PRE>\n", NULL));
+				       "</pre>\n", NULL));
             return;
         }
 
