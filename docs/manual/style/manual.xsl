@@ -24,13 +24,12 @@
         This file is generated from xml source: DO NOT EDIT
      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
 
-    <head>
-      <xsl:apply-templates select="meta"/>
-      <title><xsl:value-of select="name"/> - Apache HTTP Server</title>
-      <link rel="stylesheet" type="text/css" href="../style/manual.css" />
-    </head>
-    <body>
-
+<head>
+  <xsl:apply-templates select="meta"/>
+  <title><xsl:value-of select="name"/> - Apache HTTP Server</title>
+  <link rel="stylesheet" type="text/css" href="../style/manual.css" />
+</head>
+<body>
 <blockquote>
 
     <div align="center">
@@ -44,71 +43,87 @@
 <table bgcolor="#cccccc" cellpadding="0" cellspacing="1">
 <tr><td>
 <table bgcolor="#ffffff">
-<tr><td><span class="help">Description:</span> </td>
-<td><xsl:apply-templates select="description"/></td></tr>
-<tr><td><a class="help" href="module-dict.html#Status">Status:</a> </td>
-<td><xsl:value-of select="status"/></td></tr>
-<tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a> </td>
-<td><xsl:value-of select="identifier"/></td></tr>
-<xsl:if test="compatibility">
-<tr><td><a class="help" href="module-dict.html#Compatibility">Compatibility:</a> </td>
-<td><xsl:apply-templates select="compatibility"/></td></tr>
-</xsl:if>
+  <tr><td><span class="help">Description:</span> </td>
+    <td><xsl:apply-templates select="description"/></td></tr>
+  <tr><td><a class="help" href="module-dict.html#Status">Status:</a> </td>
+    <td><xsl:value-of select="status"/></td></tr>
+  <xsl:if test="identifier">
+     <tr><td><a class="help" href="module-dict.html#ModuleIdentifier"
+       >Module&nbsp;Identifier:</a> </td>
+       <td><xsl:value-of select="identifier"/></td></tr>
+  </xsl:if>
+  <xsl:if test="compatibility">
+     <tr><td><a class="help" href="module-dict.html#Compatibility"
+       >Compatibility:</a> </td>
+       <td><xsl:apply-templates select="compatibility"/></td></tr>
+  </xsl:if>
 </table>
 </td></tr>
 </table>
 
+<!-- Summary of module features/usage (1 to 3 paragraphs, optional) -->
 
 <xsl:if test="summary">
-<h2>Summary</h2>
-<xsl:apply-templates select="summary"/>
+  <h2>Summary</h2>
+  <xsl:apply-templates select="summary"/>
 </xsl:if>
 
 <xsl:if test="seealso">
-<p><strong>See also:</strong></p>
-<ul>
-  <xsl:for-each select="seealso">
-    <li><xsl:apply-templates/></li>
-  </xsl:for-each>
-</ul>
+  <p><strong>See also:</strong></p>
+  <ul>
+    <xsl:for-each select="seealso">
+      <li><xsl:apply-templates/></li>
+    </xsl:for-each>
+  </ul>
 </xsl:if>
+
+<!-- Index of directives, automatically generated from
+     directivesynopsis/name -->
 
 <h2>Directives</h2>
 
 <xsl:if test="directivesynopsis">
-<ul>
- <xsl:for-each select="directivesynopsis/name">
-  <xsl:sort select="name"/>
-  <xsl:variable name="name">
-   <xsl:value-of select="."/>
-  </xsl:variable>
-  <xsl:variable name="lowername" select="translate($name, $uppercase, $lowercase)" />
-  <li><a href="#{$lowername}"><xsl:value-of select="."/></a></li>
- </xsl:for-each>
-</ul>
+  <ul>
+     <xsl:for-each select="directivesynopsis/name">
+       <xsl:sort select="name"/>
+       <xsl:variable name="name">
+         <xsl:value-of select="."/>
+       </xsl:variable>
+       <xsl:variable name="lowername" 
+         select="translate($name, $uppercase, $lowercase)" />
+       <li><a href="#{$lowername}"><xsl:value-of select="."/></a></li>
+     </xsl:for-each>
+  </ul>
 </xsl:if>
 <xsl:if test="not(directivesynopsis)">
-<p>This module provides no directives.</p>
+  <p>This module provides no directives.</p>
 </xsl:if>
+
+<!-- Sections of documentation about the module as a whole -->
 
 <xsl:apply-templates select="section"/>
 
 <hr />
 
+<!-- Directive documentation -->
+
 <xsl:apply-templates select="directivesynopsis">
   <xsl:sort select="name"/>
 </xsl:apply-templates> 
 
-    <h3 align="center">Apache HTTP Server Version 2.0</h3>
-    <a href="./"><img src="../images/index.gif" alt="Index" /></a>
-    <a href="../"><img src="../images/home.gif" alt="Home" /></a>
+<!-- Page footer -->
+
+<h3 align="center">Apache HTTP Server Version 2.0</h3>
+<a href="./"><img src="../images/index.gif" alt="Index" /></a>
+<a href="../"><img src="../images/home.gif" alt="Home" /></a>
 
 </blockquote>
+</body>
+</html>
+</xsl:template> <!-- /modulesynopsis -->
 
-    </body>
-    </html>
-  </xsl:template>
 
+<!-- Subsections: get a lower level heading -->
   <xsl:template match="section/section">
    <xsl:variable name="href">
       <xsl:value-of select="@id"/>
@@ -150,51 +165,62 @@
   <xsl:template match="directivesynopsis">
 
   <xsl:variable name="name">
-   <xsl:value-of select="./name"/>
+    <xsl:value-of select="./name"/>
   </xsl:variable>
-  <xsl:variable name="lowername" select="translate($name, $uppercase, $lowercase)" />
-    <h2><a name="{$name}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="./name"/><xsl:if test="./@type='section'">&gt;</xsl:if></a>
-        <a name="{$lowername}">Directive</a></h2>
+  <xsl:variable name="lowername" 
+     select="translate($name, $uppercase, $lowercase)" />
+  <!-- Directive heading gets both mixed case and lowercase anchors,
+       and includes lt/gt only for "section" directives -->
+  <h2><a name="{$name}"><xsl:if test="./@type='section'">&lt;</xsl:if><
+      xsl:value-of select="./name"/><xsl:if test="./@type='section'"
+      >&gt;</xsl:if></a><xsl:text> </xsl:text><
+      a name="{$lowername}">Directive</a></h2>
+
+<!-- Directive header -->
 <table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
 <tr><td>
 <table bgcolor="#ffffff" width="100%">
-<tr><td>Description: </td>
-<td><xsl:value-of select="description"/></td></tr>
-<tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a> </td>
-<td><xsl:apply-templates select="syntax"/></td></tr>
-<xsl:if test="default">
-<tr><td><a class="help" href="directive-dict.html#Default">Default:</a> </td>
-<td><code><xsl:value-of select="default"/></code></td></tr>
-</xsl:if>
-<tr><td><a class="help" href="directive-dict.html#Context">Context:</a> </td>
-<td><xsl:apply-templates select="contextlist"/></td></tr>
-<xsl:if test="override">
-<tr><td><a class="help" href="directive-dict.html#Override">Override:</a> </td>
-<td><xsl:value-of select="override"/></td></tr>
-</xsl:if>
-<tr><td><a class="help" href="directive-dict.html#Status">Status:</a> </td>
-<td><xsl:value-of select="/modulesynopsis/status"/></td></tr>
-<tr><td><a class="help" href="directive-dict.html#Module">Module:</a> </td>
-<td><xsl:value-of select="/modulesynopsis/name"/></td></tr>
-<xsl:if test="compatibility">
-<tr><td><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a> </td>
-<td><xsl:value-of select="compatibility"/></td></tr>
-</xsl:if>
+  <tr><td><strong>Description: </strong></td>
+    <td><xsl:value-of select="description"/></td></tr>
+  <tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a> </td>
+    <td><xsl:apply-templates select="syntax"/></td></tr>
+  <xsl:if test="default">
+    <tr><td><a class="help" href="directive-dict.html#Default"
+      >Default:</a> </td>
+      <td><code><xsl:value-of select="default"/></code></td></tr>
+  </xsl:if>
+  <tr><td><a class="help" href="directive-dict.html#Context">Context:</a> </td>
+    <td><xsl:apply-templates select="contextlist"/></td></tr>
+  <xsl:if test="override">
+    <tr><td><a class="help" href="directive-dict.html#Override"
+    >Override:</a> </td>
+    <td><xsl:value-of select="override"/></td></tr>
+  </xsl:if>
+  <tr><td><a class="help" href="directive-dict.html#Status">Status:</a> </td>
+    <td><xsl:value-of select="/modulesynopsis/status"/></td></tr>
+  <tr><td><a class="help" href="directive-dict.html#Module">Module:</a> </td>
+    <td><xsl:value-of select="/modulesynopsis/name"/></td></tr>
+  <xsl:if test="compatibility">
+    <tr><td><a class="help" href="directive-dict.html#Compatibility"
+      >Compatibility:</a> </td>
+      <td><xsl:value-of select="compatibility"/></td></tr>
+  </xsl:if>
 </table>
 </td></tr></table>
+
 <xsl:apply-templates select="usage"/>
 
 <xsl:if test="seealso">
-<p><strong>See also:</strong></p>
-<ul>
-  <xsl:for-each select="seealso">
-    <li><xsl:apply-templates/></li>
-  </xsl:for-each>
-</ul>
+  <p><strong>See also:</strong></p>
+  <ul>
+    <xsl:for-each select="seealso">
+      <li><xsl:apply-templates/></li>
+    </xsl:for-each>
+  </ul>
 </xsl:if>
 
 <hr />
-</xsl:template>
+</xsl:template> <!-- /directivesynopsis -->
 
   <xsl:template match="contextlist">
     <xsl:apply-templates select="context"/>
@@ -248,7 +274,7 @@
       </xsl:if>
     </xsl:if>
     <xsl:if test="not(@module)">
-       <xsl:value-of select="."/>
+       <xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if>
     </xsl:if>
     </code>
   </xsl:template>
