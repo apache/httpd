@@ -392,7 +392,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
         i--;
     }
     else {
-        if (strlen(argv[i]) > (PATH_MAX - 1)) {
+        if (strlen(argv[i]) > (APR_PATH_MAX - 1)) {
             apr_file_printf(errfile, "%s: filename too long\n", argv[0]);
             exit(ERR_OVERFLOW);
         }
