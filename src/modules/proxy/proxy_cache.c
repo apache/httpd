@@ -119,6 +119,7 @@ void proxy_garbage_coll(request_rec *r)
 	if (errno != ENOENT)
 	{
 	    proxy_log_uerror("stat", filename, NULL, r->server);
+	    unblock_alarms();
 	    return;
 	}
 	if (creat(filename, 0666) == -1)
@@ -127,12 +128,17 @@ void proxy_garbage_coll(request_rec *r)
 		proxy_log_uerror("creat", filename, NULL, r->server);
 	    else
 		lastcheck = abs(now);  /* someone else got in there */
+	    unblock_alarms();
 	    return;
 	}
     } else
     {
 	lastcheck = buf.st_mtime;  /* save the time */
-	if (now < lastcheck + every) return;
+	if (now < lastcheck + every)
+	{
+	    unblock_alarms();
+	    return;
+	}
 	if (utime(filename, NULL) == -1)
 	    proxy_log_uerror("utimes", filename, NULL, r->server);
     }
@@ -143,7 +149,10 @@ void proxy_garbage_coll(request_rec *r)
     sub_garbage_coll(r,files,cachedir,"/");
 
     if (curblocks < cachesize || curblocks + curbytes <= cachesize)
+    {
+	unblock_alarms();
 	return;
+    }
 
     qsort(files->elts, files->nelts, sizeof(struct gc_ent *), gcdiff);
 
