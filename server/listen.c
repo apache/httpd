@@ -66,6 +66,7 @@
 #include "apr_strings.h"
 #include "http_log.h"
 #include "mpm.h"
+#include "mpm_common.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
@@ -134,6 +135,10 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	    /* not a fatal error */
 	}
     }
+
+#if DISABLE_NAGLE_INHERITED
+    ap_sock_disable_nagle(s);
+#endif
 
     if ((stat = apr_bind(s)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
