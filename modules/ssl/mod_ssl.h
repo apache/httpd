@@ -518,7 +518,7 @@ typedef struct {
     int             nScoreboardSize; /* used for builtin random seed */
     apr_hash_t     *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
-    ssl_ds_table   *tPublicCert;
+    apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;
 #ifdef SSL_EXPERIMENTAL_ENGINE
     char           *szCryptoDevice;
