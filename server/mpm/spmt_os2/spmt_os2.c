@@ -58,6 +58,8 @@
 
 
 #define CORE_PRIVATE
+#define INCL_DOS
+#define INCL_DOSERRORS
 
 #include "httpd.h"
 #include "mpm_default.h"
@@ -70,9 +72,8 @@
 #include "ap_mpm.h"
 #include "ap_listen.h"
 #include "iol_socket.h"
+#include "apr_portable.h"
 
-#define INCL_DOS
-#define INCL_DOSERRORS
 #include <os2.h>
 #include <stdlib.h>
 
@@ -99,7 +100,6 @@ static char ap_coredump_dir[MAX_STRING_LEN];
 /* *Non*-shared http_main globals... */
 
 static server_rec *server_conf;
-static fd_set listenfds;
 static int listenmaxfd;
 
 /* one_process --- debugging mode variable; can be set from the command line
@@ -179,10 +179,11 @@ static void clean_child_exit(int code)
 
 static HMTX lock_sem = -1;
 
-static void accept_mutex_cleanup(void *foo)
+static ap_status_t accept_mutex_cleanup(void *foo)
 {
     DosReleaseMutexSem(lock_sem);
     DosCloseMutexSem(lock_sem);
+    return APR_SUCCESS;
 }
 
 /*
@@ -877,6 +878,27 @@ int ap_graceful_stop_signalled(void)
     return 0;
 }
 
+
+
+static int setup_listeners(ap_context_t *pchild, ap_pollfd_t **listen_poll)
+{
+    ap_listen_rec *lr;
+    int numfds = 0;
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        numfds++;
+    }
+
+    ap_setup_poll(listen_poll, numfds, pchild);
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+	ap_add_poll_socket(*listen_poll, lr->sd, APR_POLLIN);
+    }
+    return 0;
+}
+
+
+
 static void child_main(void *child_num_arg)
 {
     NET_SIZE_T clen;
@@ -889,8 +911,10 @@ static void child_main(void *child_num_arg)
     ap_iol *iol;
     ap_context_t *pchild;
     parent_score *sc_parent_rec;
-    int csd = -1, requests_this_child = 0;
-    fd_set main_fds;
+    int requests_this_child = 0;
+    ap_pollfd_t *listen_poll;
+    ap_socket_t *csd = NULL;
+    int nsds, rv, sockdes;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
      * Note that since restart() just notes that a restart has been
@@ -905,12 +929,16 @@ static void child_main(void *child_num_arg)
     /* Get a sub pool for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    pchild = ap_make_sub_pool(pconf);
+    ap_create_context(&pchild, pconf);
     *ppthread_globals = (struct thread_globals *)ap_palloc(pchild, sizeof(struct thread_globals));
     THREAD_GLOBAL(child_num) = (int)child_num_arg;
     sc_parent_rec = ap_scoreboard_image->parent + THREAD_GLOBAL(child_num);
     THREAD_GLOBAL(pchild) = pchild;
-    ptrans = ap_make_sub_pool(pchild);
+    ap_create_context(&ptrans, pchild);
+
+    if (setup_listeners(pchild, &listen_poll)) {
+	clean_child_exit(1);
+    }
 
     /* needs to be done before we switch UIDs so we have permissions */
     SAFE_ACCEPT(accept_mutex_child_init(pchild));
@@ -918,13 +946,15 @@ static void child_main(void *child_num_arg)
     ap_child_init_hook(pchild, server_conf);
 
     (void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_READY, (request_rec *) NULL);
+    
 
     signal(SIGHUP, just_die);
     signal(SIGTERM, just_die);
 
     while (!ap_graceful_stop_signalled()) {
         BUFF *conn_io;
-        int srv, sd;
+        int srv;
+        ap_socket_t *sd;
 
 	/* Prepare to receive a SIGUSR1 due to graceful restart so that
 	 * we can exit cleanly.
@@ -957,8 +987,7 @@ static void child_main(void *child_num_arg)
 	for (;;) {
 	    if (ap_listeners->next) {
 		/* more than one socket */
-		memcpy(&main_fds, &listenfds, sizeof(fd_set));
-		srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, NULL);
+		srv = ap_poll(listen_poll, &nsds, -1);
 
 		if (srv < 0 && errno != EINTR) {
 		    /* Single Unix documents select as returning errnos
@@ -982,12 +1011,16 @@ static void child_main(void *child_num_arg)
 		
                 lr = first_lr;
 		
-		do {
+                do {
+                    ap_int16_t event;
+
 		    if (!lr) {
 			lr = ap_listeners;
 		    }
-		    
-		    if (FD_ISSET(lr->fd, &main_fds)) {
+
+                    ap_get_revents(&event, lr->sd, listen_poll);
+
+		    if (event == APR_POLLIN) {
                         first_lr = lr->next;
 		        break;
 		    }
@@ -997,11 +1030,11 @@ static void child_main(void *child_num_arg)
 		if (lr == first_lr) {
 		    continue;
 		}
-		sd = lr->fd;
+		sd = lr->sd;
 	    }
 	    else {
 		/* only one socket, just pretend we did the other stuff */
-		sd = ap_listeners->fd;
+		sd = ap_listeners->sd;
 	    }
 
 	    /* if we accept() something we don't want to die, so we have to
@@ -1013,13 +1046,12 @@ static void child_main(void *child_num_arg)
 		    /* we didn't get a socket, and we were told to die */
 		    clean_child_exit(0);
 		}
-		clen = sizeof(sa_client);
-		csd = ap_accept(sd, &sa_client, &clen);
-		if (csd >= 0 || errno != EINTR)
+		rv = ap_accept(&csd, sd);
+		if (rv != APR_EINTR)
 		    break;
 	    }
 
-	    if (csd >= 0)
+	    if (rv == APR_SUCCESS)
 		break;		/* We have a socket ready for reading */
 	    else {
 
@@ -1033,7 +1065,7 @@ static void child_main(void *child_num_arg)
 		 * lead to never-ending loops here.  So it seems best
 		 * to just exit in most cases.
 		 */
-                switch (errno) {
+                switch (rv) {
 #ifdef EPROTO
 		    /* EPROTO on certain older kernels really means
 		     * ECONNABORTED, so we need to ignore it for them.
@@ -1101,29 +1133,30 @@ static void child_main(void *child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
+        ap_get_os_sock(&sockdes, csd);
 	clen = sizeof(sa_server);
-	if (getsockname(csd, &sa_server, &clen) < 0) {
+	if (getsockname(sockdes, &sa_server, &clen) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
-	    close(csd);
+	    ap_close_socket(csd);
 	    continue;
 	}
 
-	sock_disable_nagle(csd);
+	sock_disable_nagle(sockdes);
 
-        iol = os2_attach_socket(csd);
+        iol = os2_attach_socket(sockdes);
 
 	if (iol == NULL) {
 	    if (errno == EBADF) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		    "filedescriptor (%u) larger than FD_SETSIZE (%u) "
 		    "found, you probably need to rebuild Apache with a "
-		    "larger FD_SETSIZE", csd, FD_SETSIZE);
+		    "larger FD_SETSIZE", sockdes, FD_SETSIZE);
 	    }
 	    else {
 		ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
 		    "error attaching to socket");
 	    }
-	    close(csd);
+	    ap_close_socket(csd);
 	    continue;
         }
 
@@ -1378,28 +1411,6 @@ static void process_child_status(int tid, ap_wait_t status)
 }
 
 
-static int setup_listeners(server_rec *s)
-{
-    ap_listen_rec *lr;
-
-    if (ap_listen_open(s->process, s->port)) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
-		    "no listening sockets available, shutting down");
-	return -1;
-    }
-
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-    for (lr = ap_listeners; lr; lr = lr->next) {
-	FD_SET(lr->fd, &listenfds);
-	if (lr->fd > listenmaxfd) {
-	    listenmaxfd = lr->fd;
-	}
-    }
-    return 0;
-}
-
-
 /*****************************************************************
  * Executive routines.
  */
@@ -1413,9 +1424,10 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     server_conf = s;
     ap_log_pid(pconf, ap_pid_fname);
 
-    if (setup_listeners(s)) {
-	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
-	return 1;
+    if (ap_listen_open(s->process, s->port)) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+		    "no listening sockets available, shutting down");
+	return -1;
     }
 
     SAFE_ACCEPT(accept_mutex_init(pconf));
