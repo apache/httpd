@@ -176,7 +176,7 @@ typedef struct {
      * directory_walk() and its relatives, this field was created and
      * is set to the result of that call.
      */
-    int d_is_fnmatch : 1;
+    unsigned d_is_fnmatch : 1;
 
     /* System Resource Control */
 #ifdef RLIMIT_CPU

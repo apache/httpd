@@ -667,10 +667,10 @@ struct conn_rec {
 				 */
   char *auth_type;		/* Ditto. */
 
-  int aborted : 1;		/* Are we still talking? */
+  unsigned aborted : 1;		/* Are we still talking? */
   int keepalive : 2;		/* Are we using HTTP Keep-Alive?
                                  * -1 fatal error, 0 undecided, 1 yes */
-  int keptalive : 1;		/* Did we use HTTP Keep-Alive? */
+  unsigned keptalive : 1;	/* Did we use HTTP Keep-Alive? */
   int double_reverse : 2;	/* have we done double-reverse DNS?
 				 * -1 yes/failure, 0 not yet, 1 yes/success */
   int keepalives;		/* How many times have we used it? */
