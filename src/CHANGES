@@ -1,4 +1,9 @@
 Changes with Apache 1.3.28
+
+  *) If Listen directive is not a port, but just an IP, emit an
+     error condition as this case is ambiguous.
+     [Rich Bowen, Justin Erenkrantz, Cliff Woolley]
+
   *) Update timeout algorithm in free_proc_chain. If a subprocess
      did not exit immediately, the thread would sleep for 3 seconds
      before checking the subprocess exit status again. In a very

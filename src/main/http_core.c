@@ -2596,7 +2596,7 @@ static const char *set_acceptfilter(cmd_parms *cmd, void *dummy, int flag)
 static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
-    char *ports;
+    char *ports, *endptr;
     unsigned short port;
     
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -2626,9 +2626,9 @@ static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     else {
 	new->local_addr.sin_addr.s_addr = ap_get_virthost_addr(ips, NULL);
     }
-    port = atoi(ports);
-    if (!port) {
-	return "Port must be numeric";
+    port = ap_strtol(ports, &endptr, 10);
+    if (errno || (endptr && *endptr) || !port) {
+	return "Missing or non-numeric port";
     }
     new->local_addr.sin_port = htons(port);
     new->fd = -1;
