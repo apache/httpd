@@ -839,6 +839,135 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
     return AP_HTTP_METHODS[methnum];
 }
 
+static apr_status_t brigade_bgets(ap_bucket_brigade *bb,
+                                  int remove_buckets,
+                                  char *line,
+                                  apr_ssize_t max_line_size)
+{
+    const char *buf;
+    apr_ssize_t len;
+    ap_bucket *e = AP_BRIGADE_FIRST(bb), *old;
+
+    while (e != AP_BRIGADE_SENTINEL(bb)) {
+        ap_bucket_read(e, &buf, &len, 0);
+        if (len + 2 >= max_line_size) { /* overflow */
+            return APR_EINVAL;          /* what a stupid choice */
+        }
+        memcpy(line, buf, len);
+        line += len;
+        max_line_size -= len;
+        old = e;
+        e = AP_BUCKET_NEXT(e);
+        if (remove_buckets) {
+            AP_BUCKET_REMOVE(old);
+            ap_bucket_destroy(old);
+        }
+    }
+    --line;            /* point at '\n' */
+    ap_debug_assert(*line == '\n');
+    if (*(line - 1) == '\r') {
+        --line;
+    }
+    *line = '\0';
+    return APR_SUCCESS;
+}
+
+struct dechunk_ctx {
+    apr_ssize_t chunk_size;
+    apr_ssize_t bytes_delivered;
+    enum {WANT_HDR /* must have value zero */, WANT_BODY, WANT_TRL} state;
+    int remove_chunk_proto;
+};
+
+static long get_chunk_size(char *);
+
+apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
+                            apr_ssize_t length)
+{
+    apr_status_t rv;
+    struct dechunk_ctx *ctx = f->ctx;
+    ap_bucket *b;
+    const char *buf;
+    apr_ssize_t len;
+
+    if (!ctx) {
+        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(struct dechunk_ctx));
+        ctx->remove_chunk_proto = f->r->read_body != REQUEST_CHUNKED_PASS;
+    }
+
+    do {
+        if (ctx->chunk_size == ctx->bytes_delivered) {
+            /* Time to read another chunk header or trailer...  http_filter() is 
+             * the next filter in line and it knows how to return a brigade with 
+             * one line.
+             */
+            char line[30];
+            
+            ap_debug_assert(!strcmp(f->next->frec->name, "HTTP_IN"));
+            if ((rv = ap_get_brigade(f->next, bb, AP_GET_LINE)) != APR_SUCCESS) {
+                return rv;
+            }
+            if ((rv = brigade_bgets(bb, ctx->remove_chunk_proto,
+                                    line, sizeof(line))) != APR_SUCCESS) {
+                return rv;
+            }
+            switch(ctx->state) {
+            case WANT_HDR:
+                ctx->chunk_size = get_chunk_size(line);
+                ctx->bytes_delivered = 0;
+                if (ctx->chunk_size == 0) {
+                    ctx->state = WANT_TRL;
+                }
+                else {
+                    ctx->state = WANT_BODY;
+                }
+                break;
+            case WANT_TRL:
+                /* XXX sanity check end chunk here */
+                if (strlen(line)) {
+                    /* bad trailer */
+                }
+                if (ctx->chunk_size == 0) { /* we just finished the last chunk? */
+                    /* append eos bucket and get out */
+                    b = ap_bucket_create_eos();
+                    AP_BRIGADE_INSERT_TAIL(bb, b);
+                    return APR_SUCCESS;
+                }
+                ctx->state = WANT_HDR;
+                break;
+            default:
+                ap_assert(ctx->state == WANT_HDR || ctx->state == WANT_TRL);
+            }
+        }
+    } while (ctx->state != WANT_BODY);
+
+    if (ctx->state == WANT_BODY) {
+        /* Tell http_filter() how many bytes to deliver. */
+        f->c->remain = ctx->chunk_size - ctx->bytes_delivered;
+        if ((rv = ap_get_brigade(f->next, bb, 999)) != APR_SUCCESS) {
+            return rv;
+        }
+        /* Walk through the body, accounting for bytes, and removing an eos bucket if
+         * http_filter() delivered the entire chunk.
+         */
+        b = AP_BRIGADE_FIRST(bb);
+        while (b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
+            ap_bucket_read(b, &buf, &len, 1);
+            ap_debug_assert(len <= ctx->chunk_size - ctx->bytes_delivered);
+            ctx->bytes_delivered += len;
+            b = AP_BUCKET_NEXT(b);
+        }
+        if (ctx->bytes_delivered == ctx->chunk_size) {
+            ap_debug_assert(AP_BUCKET_IS_EOS(b));
+            AP_BUCKET_REMOVE(b);
+            ap_bucket_destroy(b);
+            ctx->state = WANT_TRL;
+        }
+    }
+
+    return APR_SUCCESS;
+}
+
 typedef struct http_filter_ctx {
     ap_bucket_brigade *b;
 } http_ctx_t;
@@ -872,47 +1001,35 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         }
     }
 
-    e = AP_BRIGADE_FIRST(b);
-    if (f->c->remain == 0 && AP_BUCKET_IS_EOS(e)) {
-        bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
-        ctx->b = bb;
-        return APR_SUCCESS;
-    }
+    if (f->c->remain > 0) {
+        const char *ignore;
 
-    if (f->c->remain) {
-        int total = 0;
-        len = length;
+        e = AP_BRIGADE_FIRST(b);
         while (e != AP_BRIGADE_SENTINEL(b)) {
-            const char *ignore;
             ap_bucket_read(e, &ignore, &len, 0);
-            if (total + len >= length) {
-                len = length - total;
-                total += len;
+            if (f->c->remain < len) {
                 break;
             }
-            total += len;
-            len = length - total;
+            f->c->remain -= len;
             e = AP_BUCKET_NEXT(e);
         }
         if (e != AP_BRIGADE_SENTINEL(b)) {
-            ap_bucket *eos_bucket;
-            if (total > length) {
-                ap_bucket_split(e, len);
-                total = length;
+            if (f->c->remain < len) {
+                ap_bucket_split(e, f->c->remain);
+                f->c->remain = 0;
             }
             bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
             ctx->b = bb;
-            if (f->c->remain == total) { 
-                eos_bucket = ap_bucket_create_eos();
-                AP_BRIGADE_INSERT_HEAD(bb, eos_bucket);
-            }
-            f->c->remain -= total;
-            return APR_SUCCESS;
         }
         else {
             ctx->b = NULL;
-            return APR_SUCCESS;
         }
+        if (f->c->remain == 0) {
+            ap_bucket *eos = ap_bucket_create_eos();
+
+            AP_BRIGADE_INSERT_TAIL(b, eos);
+        }
+        return APR_SUCCESS;
     }
 
     AP_BRIGADE_FOREACH(e, b) {
@@ -2246,6 +2363,11 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 			  "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
+/*XXX hack to use mod_cgi[d] for testing chunked request bodies XXX
+        if (r->read_body == REQUEST_CHUNKED_ERROR) {
+            r->read_body = REQUEST_CHUNKED_DECHUNK;
+        }
+  XXX end of this particular hack :) */
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "chunked Transfer-Encoding forbidden: %s", r->uri);
@@ -2253,6 +2375,11 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         }
 
         r->read_chunked = 1;
+        if (r->read_body == REQUEST_CHUNKED_PASS) {
+            /* can't filter the body *and* preserve the chunk headers */
+            r->input_filters = r->connection->input_filters;
+        }
+        ap_add_input_filter("DECHUNK", NULL, r, r->connection);
     }
     else if (lenp) {
         const char *pos = lenp;
@@ -2343,206 +2470,76 @@ static long get_chunk_size(char *b)
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 {
-    int c;
-    apr_size_t len_to_read;
     apr_ssize_t len_read, total;
-    long chunk_start = 0;
-    long max_body;
     apr_status_t rv;
     apr_int32_t timeout;
     ap_bucket *b, *old;
-    ap_bucket_brigade *bb;
+    const char *tempbuf;
+    core_dir_config *conf =
+	(core_dir_config *)ap_get_module_config(r->per_dir_config,
+						&core_module);
+    ap_bucket_brigade *bb = conf->bb;
 
-    if (!r->read_chunked) {     /* Content-length read */
-        const char *tempbuf;
-
-        len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
-
-        bb = ap_brigade_create(r->pool);
-
-        total = 0;
-        do {
-            if (AP_BRIGADE_EMPTY(bb)) {
-                apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
-                                 &timeout);
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
-                                 0);
-                if (ap_get_brigade(r->input_filters, bb, 
-                                   len_to_read) != APR_SUCCESS) {
-                    /* if we actually fail here, we want to just return and
-                     * stop trying to read data from the client.
-                     */
-                    apr_setsocketopt(r->connection->client->bsock, 
-                                     APR_SO_TIMEOUT, timeout);
-                    r->connection->keepalive = -1;
-                    return -1;
-                }
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT,
-                                 timeout);
-            }
-            b = AP_BRIGADE_FIRST(bb);
-            if (AP_BUCKET_IS_EOS(b)) {
-                r->connection->remain = 0;
-                break;
-            }
-            rv = ap_bucket_read(b, &tempbuf, &len_read, 0);
-
-            /* because we told the filter below us not to give us too much */
-            ap_debug_assert(total + len_read <= bufsiz);
-            ap_debug_assert(r->remaining >= len_read);
-            memcpy(buffer, tempbuf, len_read);
-            buffer += len_read;
-            r->read_length += len_read;
-            total += len_read;
-
-            r->remaining -= len_read;
-
-            old = b;
-            AP_BUCKET_REMOVE(old);
-            ap_bucket_destroy(old);
-        } while (!AP_BRIGADE_EMPTY(bb));
-        ap_brigade_destroy(bb);
-        return total;
+    if (!bb) {
+        conf->bb = bb = ap_brigade_create(r->pool);
     }
 
-    /*
-     * Handle chunked reading Note: we are careful to shorten the input
-     * bufsiz so that there will always be enough space for us to add a CRLF
-     * (if necessary).
-     */
-    if (r->read_body == REQUEST_CHUNKED_PASS)
-        bufsiz -= 2;
-    if (bufsiz <= 0)
-        return -1;              /* Cannot read chunked with a small buffer */
-
-    /* Check to see if we have already read too much request data.
-     * For efficiency reasons, we only check this at the top of each
-     * caller read pass, since the limit exists just to stop infinite
-     * length requests and nobody cares if it goes over by one buffer.
-     */
-    max_body = ap_get_limit_req_body(r);
-    if (max_body && (r->read_length > max_body)) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "Chunked request body is larger than the "
-		      "configured limit of %lu", max_body);
-        r->connection->keepalive = -1;
-        return -1;
-    }
-
-    if (r->remaining == 0) {    /* Start of new chunk */
-
-        chunk_start = getline(buffer, bufsiz, r->connection, 0);
-        if ((chunk_start <= 0) || (chunk_start >= (bufsiz - 1))
-            || !apr_isxdigit(*buffer)) {
-            r->connection->keepalive = -1;
-            return -1;
-        }
-
-        len_to_read = get_chunk_size(buffer);
-
-        if (len_to_read == 0) { /* Last chunk indicated, get footers */
-            if (r->read_body == REQUEST_CHUNKED_DECHUNK) {
-                get_mime_headers(r);
-                apr_snprintf(buffer, bufsiz, "%ld", r->read_length);
-                apr_table_unset(r->headers_in, "Transfer-Encoding");
-                apr_table_setn(r->headers_in, "Content-Length",
-			       apr_pstrdup(r->pool, buffer));
-                return 0;
+    do {
+        if (AP_BRIGADE_EMPTY(bb)) {
+            apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
+            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
+            if (ap_get_brigade(r->input_filters, bb, 9999) != APR_SUCCESS) {
+                /* if we actually fail here, we want to just return and
+                 * stop trying to read data from the client.
+                 */
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
+                r->connection->keepalive = -1;
+                ap_brigade_destroy(bb);
+                return -1;
             }
-            r->remaining = -1;  /* Indicate footers in-progress */
+            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
         }
-        else {
-            r->remaining = len_to_read;
+        b = AP_BRIGADE_FIRST(bb);
+        while (!AP_BUCKET_IS_EOS(b) && b->length == 0 && 
+               b != AP_BRIGADE_SENTINEL(bb)) {
+            ap_bucket *e = b;
+            b = AP_BUCKET_NEXT(e);
+            AP_BUCKET_REMOVE(e);
+            ap_bucket_destroy(e);
         }
-        if (r->read_body == REQUEST_CHUNKED_PASS) {
-            buffer[chunk_start++] = CR; /* Restore chunk-size line end  */
-            buffer[chunk_start++] = LF;
-            buffer += chunk_start;      /* and pass line on to caller   */
-            bufsiz -= chunk_start;
-        }
-        else {
-            /* REQUEST_CHUNKED_DECHUNK -- do not include the length of the
-             * header in the return value
-             */
-            chunk_start = 0;
-        }
-    }
-                                /* When REQUEST_CHUNKED_PASS, we are */
-    if (r->remaining == -1) {   /* reading footers until empty line  */
-        len_read = chunk_start;
+    } while (AP_BRIGADE_EMPTY(bb));
 
-        while ((bufsiz > 1)
-	       && ((len_read = getline(buffer, bufsiz, r->connection,
-				       1)) > 0)) {
-
-            if (len_read != (bufsiz - 1)) {
-                buffer[len_read++] = CR;        /* Restore footer line end  */
-                buffer[len_read++] = LF;
-            }
-            chunk_start += len_read;
-            buffer += len_read;
-            bufsiz -= len_read;
-        }
-        if (len_read < 0) {
-            r->connection->keepalive = -1;
-            return -1;
-        }
-
-        if (len_read == 0) {    /* Indicates an empty line */
-            buffer[0] = CR;
-            buffer[1] = LF;
-            chunk_start += 2;
-            r->remaining = -2;
-        }
-        r->read_length += chunk_start;
-        return chunk_start;
-    }
-                                /* When REQUEST_CHUNKED_PASS, we     */
-    if (r->remaining == -2) {   /* finished footers when last called */
-        r->remaining = 0;       /* so now we must signal EOF         */
+    if (AP_BUCKET_IS_EOS(b)) {         /* reached eos on previous invocation */
+        AP_BUCKET_REMOVE(b);
+        ap_bucket_destroy(b);
         return 0;
     }
 
-    /* Otherwise, we are in the midst of reading a chunk of data */
-
-    len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
-
-    (void) ap_bread(r->connection->client, buffer, len_to_read, &len_read);
-    if (len_read == 0) {        /* error or eof */
-        r->connection->keepalive = -1;
-        return -1;
-    }
-
-    r->remaining -= len_read;
-
-    if (r->remaining == 0) {    /* End of chunk, get trailing CRLF */
-#ifdef APACHE_XLATE
-        /* Chunk end is Protocol stuff! Set conversion = 1 to read CR LF: */
-        AP_PUSH_INPUTCONVERSION_STATE(r->connection->client,
-                                      ap_hdrs_from_ascii);
-#endif /*APACHE_XLATE*/
-
-        if ((c = ap_bgetc(r->connection->client)) == CR) {
-            c = ap_bgetc(r->connection->client);
-        }
-
-#ifdef APACHE_XLATE
-        /* restore previous input translation handle */
-        AP_POP_INPUTCONVERSION_STATE(r->connection->client);
-#endif /*APACHE_XLATE*/
-
-        if (c != LF) {
-            r->connection->keepalive = -1;
+    total = 0;
+    while (total < bufsiz &&  b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
+        if ((rv = ap_bucket_read(b, &tempbuf, &len_read, 0)) != APR_SUCCESS) {
             return -1;
         }
-        if (r->read_body == REQUEST_CHUNKED_PASS) {
-            buffer[len_read++] = CR;
-            buffer[len_read++] = LF;
+        if (total + len_read > bufsiz) {
+            ap_bucket_split(b, bufsiz - total);
+            len_read = bufsiz - total;
         }
+        memcpy(buffer, tempbuf, len_read);
+        buffer += len_read;
+        total += len_read;
+        /* XXX the next two fields shouldn't be mucked with here, as they are in terms
+         * of bytes in the unfiltered body; gotta see if anybody else actually uses 
+         * these
+         */
+        r->read_length += len_read;      /* XXX yank me? */
+        r->remaining -= len_read;        /* XXX yank me? */
+        old = b;
+        b = AP_BUCKET_NEXT(b);
+        AP_BUCKET_REMOVE(old);
+        ap_bucket_destroy(old);
     }
-    r->read_length += (chunk_start + len_read);
 
-    return (chunk_start + len_read);
+    return total;
 }
 
 /* In HTTP/1.1, any method can have a body.  However, most GET handlers
