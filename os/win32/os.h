@@ -64,7 +64,7 @@
  * really running on an NT system.
  */
 #define _WIN32_WINNT 0x0400
-
+#include "apr_general.h"
 #include <windows.h>
 #include <winsock2.h>
 #include <mswsock.h>
