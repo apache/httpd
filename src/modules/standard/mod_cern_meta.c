@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_cern_meta.c,v 1.5 1996/08/20 11:51:02 paul Exp $ */
+/* $Id: mod_cern_meta.c,v 1.6 1996/10/30 23:53:20 brian Exp $ */
 
 /*
  * mod_cern_meta.c
@@ -155,7 +155,7 @@ void *create_cern_meta_config (pool *p, server_rec *dummy)
     return new;
 }   
 
-char *set_metadir (cmd_parms *parms, void *dummy, char *arg)
+const char *set_metadir (cmd_parms *parms, void *dummy, char *arg)
 {       
     cern_meta_config *cmc ;
 
@@ -165,7 +165,7 @@ char *set_metadir (cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-char *set_metasuffix (cmd_parms *parms, void *dummy, char *arg)
+const char *set_metasuffix (cmd_parms *parms, void *dummy, char *arg)
 {       
     cern_meta_config *cmc ;
 
