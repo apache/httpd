@@ -2239,7 +2239,7 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
 
 struct content_length_ctx {
     ap_bucket_brigade *saved;
-    int hold_data;    /* Whether or not to buffer the data. */
+    int compute_len;
 };
 
 /* This filter computes the content length, but it also computes the number
@@ -2258,32 +2258,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     ctx = f->ctx;
     if (!ctx) { /* first time through */
         f->ctx = ctx = apr_pcalloc(r->pool, sizeof(struct content_length_ctx));
-
-        /* We won't compute a content length if one of the following is true:
-         * . subrequest
-         * . HTTP/0.9
-         * . status HTTP_NOT_MODIFIED or HTTP_NO_CONTENT
-         * . HEAD
-         * . content length already computed
-         * . can be chunked
-         * . body already chunked
-         * Much of this should correspond to checks in ap_set_keepalive().
-         */
-        if ((r->assbackwards 
-            || r->status == HTTP_NOT_MODIFIED 
-            || r->status == HTTP_NO_CONTENT
-            || r->header_only
-            || r->proto_num == HTTP_VERSION(1,1)
-            || ap_find_last_token(f->r->pool,
-                                  apr_table_get(r->headers_out,
-                                                "Transfer-Encoding"),
-                                                "chunked"))
-            && (!AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(b)))) {
-            ctx->hold_data = 0;
-        }
-        else {
-            ctx->hold_data = 1;
-        }
     }
 
     AP_BRIGADE_FOREACH(e, b) {
@@ -2305,7 +2279,34 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         r->bytes_sent += length;
     }
 
-    if (ctx->hold_data) { /* calculating content length? */
+    if (r->bytes_sent < AP_MIN_BYTES_TO_WRITE) {
+        ap_save_brigade(f, &ctx->saved, &b);
+        return APR_SUCCESS;
+    }
+
+    /* We will compute a content length if:
+     *     We already have all the data
+     *         This is a bit confusing, because we will always buffer up
+     *         to AP_MIN_BYTES_TO_WRITE, so if we get all the data while
+     *         we are buffering that much data, we set the c-l.
+     *  or We are in a 1.1 request and we can't chunk
+     *  or This is a keepalive connection
+     *         We may want to change this later to just close the connection
+     */
+    if ((r->proto_num == HTTP_VERSION(1,1)
+        && !ap_find_last_token(f->r->pool,
+                              apr_table_get(r->headers_out,
+                                            "Transfer-Encoding"),
+                                            "chunked"))
+        || (f->r->connection->keepalive)
+        || (AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(b)))) {
+        ctx->compute_len = 1;
+    }
+    else {
+        ctx->compute_len = 0;
+    }
+
+    if (ctx->compute_len) {
         /* save the brigade; we can't pass any data to the next
          * filter until we have the entire content length
          */
@@ -2313,11 +2314,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
             ap_save_brigade(f, &ctx->saved, &b);
             return APR_SUCCESS;
         }
-        if (ctx->saved) {
-            AP_BRIGADE_CONCAT(ctx->saved, b);
-            b = ctx->saved;
-        }
         ap_set_content_length(r, r->bytes_sent);
+    }
+    if (ctx->saved) {
+        AP_BRIGADE_CONCAT(ctx->saved, b);
+        b = ctx->saved;
     }
 
     return ap_pass_brigade(f->next, b);

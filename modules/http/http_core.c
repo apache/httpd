@@ -89,10 +89,6 @@
 #include <strings.h>
 #endif
 
-/* Make sure we don't write less than 4096 bytes at any one time.
- */
-#define MIN_BYTES_TO_WRITE  9000
-
 /* LimitXMLRequestBody handling */
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
@@ -3063,7 +3059,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
     if (ctx == NULL) {
         f->ctx = ctx = apr_pcalloc(p, sizeof(coalesce_filter_ctx_t));
-        ctx->avail = MIN_BYTES_TO_WRITE;
+        ctx->avail = AP_MIN_BYTES_TO_WRITE;
     }
 
     if (ctx->cnt) {
@@ -3093,7 +3089,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
             if ((n < MIN_BUCKET_SIZE) && (n < ctx->avail)) {
                 /* Coalesce this bucket into the buffer */
                 if (ctx->buf == NULL) {
-                    ctx->buf = apr_palloc(p, MIN_BYTES_TO_WRITE);
+                    ctx->buf = apr_palloc(p, AP_MIN_BYTES_TO_WRITE);
                     ctx->cur = ctx->buf;
                     ctx->cnt = 0;
                 }
@@ -3156,7 +3152,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
         if (ctx) {
             ctx->cur = ctx->buf;
             ctx->cnt = 0;
-            ctx->avail = MIN_BYTES_TO_WRITE;
+            ctx->avail = AP_MIN_BYTES_TO_WRITE;
         }
     }
     else {
@@ -3390,7 +3386,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if ((!fd && (!more) && (nbytes < MIN_BYTES_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e))
+        if ((!fd && (!more) && (nbytes < AP_MIN_BYTES_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e))
             || (AP_BUCKET_IS_EOS(e) && c->keepalive)) {
             
             /* NEVER save an EOS in here.  If we are saving a brigade with an
