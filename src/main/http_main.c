@@ -978,15 +978,15 @@ static void usage(char *bin)
 	pad[i] = ' ';
     pad[i] = '\0';
 #ifdef SHARED_CORE
-    fprintf(stderr, "Usage: %s [-L directory] [-d directory] [-f file]\n", bin);
+    fprintf(stderr, "Usage: %s [-R directory] [-d directory] [-f file]\n", bin);
 #else
     fprintf(stderr, "Usage: %s [-d directory] [-f file]\n", bin);
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-S] [-t]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t]\n", pad);
     fprintf(stderr, "Options:\n");
 #ifdef SHARED_CORE
-    fprintf(stderr, "  -L directory     : specify an alternate location for shared object files\n");
+    fprintf(stderr, "  -R directory     : specify an alternate location for shared object files\n");
 #endif
     fprintf(stderr, "  -D name          : define a name for use in <IfDefine name> directives\n");
     fprintf(stderr, "  -d directory     : specify an alternate initial ServerRoot\n");
@@ -995,8 +995,9 @@ static void usage(char *bin)
     fprintf(stderr, "  -c \"directive\"   : process directive after  reading config files\n");
     fprintf(stderr, "  -v               : show version number\n");
     fprintf(stderr, "  -V               : show compile settings\n");
-    fprintf(stderr, "  -h               : list available configuration directives\n");
+    fprintf(stderr, "  -h               : list available command line options (this page)\n");
     fprintf(stderr, "  -l               : list compiled-in modules\n");
+    fprintf(stderr, "  -L               : list available configuration directives\n");
     fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
     fprintf(stderr, "  -t               : run syntax test for configuration files only\n");
 #ifdef WIN32
@@ -4499,7 +4500,7 @@ int REALMAIN(int argc, char *argv[])
 
 #ifndef TPF
     while ((c = getopt(argc, argv,
-				    "D:C:c:Xd:f:vVhlL:St"
+				    "D:C:c:Xd:f:vVlLR:Sth"
 #ifdef DEBUG_SIGSTOP
 				    "Z:"
 #endif
@@ -4533,11 +4534,11 @@ int REALMAIN(int argc, char *argv[])
 	    ap_set_version();
 	    show_compile_settings();
 	    exit(0);
-	case 'h':
-	    ap_show_directives();
-	    exit(0);
 	case 'l':
 	    ap_show_modules();
+	    exit(0);
+	case 'L':
+	    ap_show_directives();
 	    exit(0);
 	case 'X':
 	    ++one_process;	/* Weird debugging mode. */
@@ -4548,7 +4549,7 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 #endif
 #ifdef SHARED_CORE
-	case 'L':
+	case 'R':
 	    /* just ignore this option here, because it has only
 	     * effect when SHARED_CORE is used and then it was
 	     * already handled in the Shared Core Bootstrap
@@ -4562,6 +4563,8 @@ int REALMAIN(int argc, char *argv[])
 	case 't':
 	    configtestonly = 1;
 	    break;
+	case 'h':
+	    usage(argv[0]);
 	case '?':
 	    usage(argv[0]);
 	}
@@ -5856,7 +5859,7 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVhlZ:iusStk:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLZ:iusSthk:")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -5914,11 +5917,11 @@ int REALMAIN(int argc, char *argv[])
 	    ap_set_version();
 	    show_compile_settings();
 	    exit(0);
-	case 'h':
-	    ap_show_directives();
-	    exit(0);
 	case 'l':
 	    ap_show_modules();
+	    exit(0);
+	case 'L':
+	    ap_show_directives();
 	    exit(0);
 	case 'X':
 	    ++one_process;	/* Weird debugging mode. */
@@ -5926,6 +5929,8 @@ int REALMAIN(int argc, char *argv[])
 	case 't':
 	    configtestonly = 1;
 	    break;
+	case 'h':
+	    usage(argv[0]);
 	case '?':
 	    usage(argv[0]);
 	}
@@ -6063,7 +6068,7 @@ int main(int argc, char *argv[], char *envp[])
      * but only handle the -L option 
      */
     llp_dir = SHARED_CORE_DIR;
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVhlL:SZ:t")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLR:SZ:th")) != -1) {
 	switch (c) {
 	case 'D':
 	case 'C':
@@ -6073,14 +6078,15 @@ int main(int argc, char *argv[], char *envp[])
 	case 'f':
 	case 'v':
 	case 'V':
-	case 'h':
 	case 'l':
+	case 'L':
 	case 'S':
 	case 'Z':
 	case 't':
+	case 'h':
 	case '?':
 	    break;
-	case 'L':
+	case 'R':
 	    llp_dir = strdup(optarg);
 	    break;
 	}

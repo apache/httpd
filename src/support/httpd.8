@@ -60,7 +60,7 @@ httpd \- Apache hypertext transfer protocol server
 [
 .B \-X
 ] [
-.BI \-L " libexecdir"
+.BI \-R " libexecdir"
 ] [
 .BI \-d " serverroot"
 ] [
@@ -81,6 +81,9 @@ httpd \- Apache hypertext transfer protocol server
 .B \-l
 ] 
 [
+.B \-L
+] 
+[
 .B \-v
 ] 
 [
@@ -88,9 +91,6 @@ httpd \- Apache hypertext transfer protocol server
 ] 
 [
 .B \-S
-] 
-[
-.B \-?
 ] 
 
 .SH DESCRIPTION
@@ -115,7 +115,7 @@ compiled into
 .B httpd.
 .SH OPTIONS
 .TP 12
-.BI \-L " libexecdir"
+.BI \-R " libexecdir"
 This option is only available if Apache was built with
 the 
 .I SHARED_CORE
@@ -146,11 +146,14 @@ Sets a configuration \fIparameter\fP which can be used with
 to conditionally skip or process commands.
 .TP
 .B \-h
-Output a list of directives together with expected arguments and
-places where the directive is valid.
+Output a short summary of available command line options.
 .TP
 .B \-l
 Output a list of modules compiled into the server.
+.TP
+.B \-L
+Output a list of directives together with expected arguments and
+places where the directive is valid.
 .TP
 .B \-S
 Show the settings as parsed from the config file (currently only shows the
@@ -175,11 +178,6 @@ Print the version of
 Print the version and build parameters of 
 .B httpd
 , and then exit.
-.TP
-.B \-?
-Print a list of the 
-.B httpd 
-options, and then exit.
 .SH FILES
 .PD 0
 .B /usr/local/apache/conf/httpd.conf

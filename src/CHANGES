@@ -1,5 +1,22 @@
 Changes with Apache 1.3.4
 
+  *) Cleanup the command line options: `-?' was documented to show
+     the usage list but does it with an error because `?' is not a valid
+     command. OTOH a lot of users expect `-h' to print such a usage list and
+     instead are annoyed for ages by our huge unreadable list of directives.
+     So we now changed the command line options this way:
+     1. `-L' => `-R' 
+        Intent: we need `-L' to be free, and `-R' for the DSO run-time path is
+        very similar to the popular linker option.
+     2. `-h' => `-L'
+        Intent: while -l gives the small list of modules, -L now gives the
+        large list of directives implemented by these modules.  This is also
+        consistent with -v (short version info) and -V (large version info).
+     3. `-?' => `-h' 
+        Intent: it's now the expected option ;-)
+     The manual page was adjusted accordingly. 
+     [Ralf S. Engelschall] PR#2714
+
   *) Fixed problem of fclose() on an unopened file in suexec if LOG_EXEC
      wasn't defined.  [Rick Franchuk <rickf@transpect.net>]
 
