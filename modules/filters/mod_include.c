@@ -356,6 +356,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
             if (!apr_isspace(*c)) {
                 break;
             }
+            c++;
         }
         if (!apr_isspace(*c)) {
             break;
@@ -464,7 +465,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     if (dodecode) {
         decodehtml(tag_val);
     }
-    *offset = c - str;
+    *offset = c - str + 1;
     return apr_pstrdup(p, tag_val);
 }
 
@@ -2278,6 +2279,9 @@ static int handle_printenv(ap_bucket *in, request_rec *r, const char *error)
 
 /* This is a stub which parses a file descriptor. */
 
+typedef struct include_ctx {
+    ap_bucket_brigade *bb;
+} include_ctx;
 static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r, 
                                 ap_filter_t *f)
 {
@@ -2292,6 +2296,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
     ap_bucket *tagbuck, *dptr2;
     ap_bucket *endsec;
     ap_bucket_brigade *tag_and_after;
+    include_ctx *ctx;
     int ret;
 
     apr_cpystrn(error, DEFAULT_ERROR_MSG, sizeof(error));
@@ -2312,18 +2317,22 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
 
+    if (!f->ctx) {
+        f->ctx = ctx = apr_pcalloc(r->pool, sizeof(f->ctx));
+        ctx->bb = ap_brigade_create(r->pool);
+    }
+    else {
+        ctx = f->ctx;
+        AP_BRIGADE_CONCAT(*bb, ctx->bb);
+    }
+
     AP_BRIGADE_FOREACH(dptr, *bb) {
         if ((tagbuck = find_string(dptr, STARTING_SEQUENCE, AP_BRIGADE_LAST(*bb))) != NULL) {
             dptr2 = tagbuck;
             dptr = tagbuck;
             endsec = find_string(dptr2, ENDING_SEQUENCE, AP_BRIGADE_LAST(*bb));
             if (endsec == NULL) {
-                /** XXX No ending tag, needs to become an error bucket
-                 ** Tag could come in the next brigade (unless we've 
-                 ** received eos in this brigade).
-                 **
-                 ** We're about to segfault.
-                 **/
+                ap_save_brigade(f, &ctx->bb, bb);
             }
              
             /* At this point, everything between tagbuck and endsec is an SSI
@@ -2512,9 +2521,9 @@ static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
 	 * We also insist that the memory for this subrequest not be
 	 * destroyed, that's dealt with in handle_include().
 	 */
-	r->subprocess_env = parent->subprocess_env;
-	apr_pool_join(parent->pool, r->pool);
-	r->finfo.mtime = parent->finfo.mtime;
+        r->subprocess_env = r->main->subprocess_env;
+        apr_pool_join(r->main->pool, r->pool);
+        r->finfo.mtime = r->main->finfo.mtime;
     }
     else {
 	/* we're not a nested include, so we create an initial
