@@ -344,7 +344,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
         ((rc = ap_setprocattr_cmdtype(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
-		      "couldn't create child process: %s", r->filename);
+		      "couldn't set child process attributes: %s", r->filename);
     }
     else {
         rc = ap_create_process(&procnew, command, argv, env, procattr, p);
