@@ -95,25 +95,24 @@ void SSL_set_app_data2(SSL *ssl, void *arg)
 **  _________________________________________________________________
 */
 
-X509 *SSL_read_X509(FILE *fp, X509 **x509, int (*cb)(char*,int,int,void*))
+X509 *SSL_read_X509(char* filename, X509 **x509, int (*cb)(char*,int,int,void*))
 {
     X509 *rc;
     BIO *bioS;
     BIO *bioF;
 
     /* 1. try PEM (= DER+Base64+headers) */
-#if SSL_LIBRARY_VERSION < 0x00904000
-    rc = PEM_read_X509(fp, x509, cb);
-#else
-    rc = PEM_read_X509(fp, x509, cb, NULL);
-#endif
+       if ((bioS=BIO_new_file(filename, "r")) == NULL)
+               return NULL;
+       rc=PEM_read_bio_X509 (bioS, x509, cb, NULL);
+       BIO_free(bioS);
+
     if (rc == NULL) {
         /* 2. try DER+Base64 */
-        fseek(fp, 0L, SEEK_SET);
-        if ((bioS = BIO_new(BIO_s_fd())) == NULL)
-            return NULL;
-        BIO_set_fd(bioS, fileno(fp), BIO_NOCLOSE);
-        if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
+               if ((bioS=BIO_new_file(filename, "r")) == NULL)
+                       return NULL;
+                      
+               if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
             BIO_free(bioS);
             return NULL;
         }
@@ -122,10 +121,8 @@ X509 *SSL_read_X509(FILE *fp, X509 **x509, int (*cb)(char*,int,int,void*))
         BIO_free_all(bioS);
         if (rc == NULL) {
             /* 3. try plain DER */
-            fseek(fp, 0L, SEEK_SET);
-            if ((bioS = BIO_new(BIO_s_fd())) == NULL)
-                return NULL;
-            BIO_set_fd(bioS, fileno(fp), BIO_NOCLOSE);
+                       if ((bioS=BIO_new_file(filename, "r")) == NULL)
+                               return NULL;
             rc = d2i_X509_bio(bioS, NULL);
             BIO_free(bioS);
         }
@@ -148,25 +145,24 @@ static EVP_PKEY *d2i_PrivateKey_bio(BIO *bio, EVP_PKEY **key)
 }
 #endif
 
-EVP_PKEY *SSL_read_PrivateKey(FILE *fp, EVP_PKEY **key, int (*cb)(char*,int,int,void*), void *s)
+EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, int (*cb)(char*,int,int,void*), void *s)
 {
     EVP_PKEY *rc;
     BIO *bioS;
     BIO *bioF;
 
     /* 1. try PEM (= DER+Base64+headers) */
-#if SSL_LIBRARY_VERSION < 0x00904000
-    rc = PEM_read_PrivateKey(fp, key, cb);
-#else
-    rc = PEM_read_PrivateKey(fp, key, cb, s);
-#endif
+       if ((bioS=BIO_new_file(filename, "r")) == NULL)
+               return NULL;
+       rc = PEM_read_bio_PrivateKey(bioS, key, cb, s);
+       BIO_free(bioS);
+
     if (rc == NULL) {
         /* 2. try DER+Base64 */
-        fseek(fp, 0L, SEEK_SET);
-        if ((bioS = BIO_new(BIO_s_fd())) == NULL)
-            return NULL;
-        BIO_set_fd(bioS, fileno(fp), BIO_NOCLOSE);
-        if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
+               if ( (bioS = BIO_new_file(filename, "r")) == NULL )
+                       return NULL;
+
+               if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
             BIO_free(bioS);
             return NULL;
         }
@@ -175,10 +171,8 @@ EVP_PKEY *SSL_read_PrivateKey(FILE *fp, EVP_PKEY **key, int (*cb)(char*,int,int,
         BIO_free_all(bioS);
         if (rc == NULL) {
             /* 3. try plain DER */
-            fseek(fp, 0L, SEEK_SET);
-            if ((bioS = BIO_new(BIO_s_fd())) == NULL)
-                return NULL;
-            BIO_set_fd(bioS, fileno(fp), BIO_NOCLOSE);
+                       if ( (bioS = BIO_new_file(filename, "r")) == NULL )
+                               return NULL;
             rc = d2i_PrivateKey_bio(bioS, NULL);
             BIO_free(bioS);
         }
