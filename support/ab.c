@@ -161,6 +161,7 @@
 #include "apr_getopt.h"
 #include "apr_general.h"
 #include "apr_lib.h"
+#include "apr_portable.h"
 #include "ap_release.h"
 
 #define APR_WANT_STRFUNC
@@ -375,6 +376,74 @@ static void apr_err(char *s, apr_status_t rv)
         printf("Total of %ld requests completed\n" , done);
     exit(rv);
 }
+
+#if defined(USE_SSL) && APR_HAS_THREADS
+/*
+ * To ensure thread-safetyness in OpenSSL - work in progress
+ */
+
+static apr_thread_mutex_t **lock_cs;
+static int                  lock_num_locks;
+
+static void ssl_util_thr_lock(int mode, int type,
+                              const char *file, int line)
+{
+    if (type < lock_num_locks) {
+        if (mode & CRYPTO_LOCK) {
+            apr_thread_mutex_lock(lock_cs[type]);
+        }
+        else {
+            apr_thread_mutex_unlock(lock_cs[type]);
+        }
+    }
+}
+
+static unsigned long ssl_util_thr_id(void)
+{
+    /* OpenSSL needs this to return an unsigned long.  On OS/390, the pthread 
+     * id is a structure twice that big.  Use the TCB pointer instead as a 
+     * unique unsigned long.
+     */
+#ifdef __MVS__
+    struct PSA {
+        char unmapped[540];
+        unsigned long PSATOLD;
+    } *psaptr = 0;
+
+    return psaptr->PSATOLD;
+#else
+    return (unsigned long) apr_os_thread_current();
+#endif
+}
+
+static apr_status_t ssl_util_thread_cleanup(void *data)
+{
+    CRYPTO_set_locking_callback(NULL);
+
+    /* Let the registered mutex cleanups do their own thing 
+     */
+    return APR_SUCCESS;
+}
+
+void ssl_util_thread_setup(apr_pool_t *p)
+{
+    int i;
+
+    lock_num_locks = CRYPTO_num_locks();
+    lock_cs = apr_palloc(p, lock_num_locks * sizeof(*lock_cs));
+
+    for (i = 0; i < lock_num_locks; i++) {
+        apr_thread_mutex_create(&(lock_cs[i]), APR_THREAD_MUTEX_DEFAULT, p);
+    }
+
+    CRYPTO_set_id_callback(ssl_util_thr_id);
+
+    CRYPTO_set_locking_callback(ssl_util_thr_lock);
+
+    apr_pool_cleanup_register(p, NULL, ssl_util_thread_cleanup,
+                                       apr_pool_cleanup_null);
+}
+#endif
 
 /* --------------------------------------------------------- */
 /* write out request to a connection - assumes we can write
@@ -1329,14 +1398,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.101 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.102 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.101 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.102 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1703,12 +1772,17 @@ int main(int argc, const char * const argv[])
 	heartbeatres = 0;
 
 #ifdef USE_SSL
+    CRYPTO_malloc_init();
+    SSL_load_error_strings();
     SSL_library_init();
     if (!(ctx = SSL_CTX_new(SSLv2_client_method()))) {
 	fprintf(stderr, "Could not init SSL CTX");
 	ERR_print_errors_fp(stderr);
 	exit(1);
     }
+#if APR_HAS_THREADS
+    ssl_util_thread_setup(cntxt);
+#endif
 #endif
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);       /* Ignore writes to connections that
