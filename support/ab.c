@@ -573,6 +573,8 @@ static void output_results(void)
 	    }
 	    fprintf(out, "starttime\tseconds\tctime\tdtime\tttime\twait\n");
 	    for (i = 0; i < requests; i++) {
+                apr_time_t diff = stats[i].time - stats[i].ctime;
+
 		sttime = stats[i].starttime;
 		(void) apr_ctime(tmstring, sttime);
 		tmstring[strlen(tmstring) - 1] = '\0';	/* ctime returns a
@@ -582,7 +584,7 @@ static void output_results(void)
 			tmstring,
 			sttime,
 			stats[i].ctime,
-			stats[i].time - stats[i].ctime,
+			diff,
 			stats[i].time,
 			stats[i].waittime);
 	    }
@@ -1301,14 +1303,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.81 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.82 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.81 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.82 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
