@@ -329,9 +329,21 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
+        /* RFC 1952 Section 2.3 dictates the gzip header:
+         *
+         * +---+---+---+---+---+---+---+---+---+---+
+         * |ID1|ID2|CM |FLG|     MTIME     |XFL|OS |
+         * +---+---+---+---+---+---+---+---+---+---+
+         *
+         * If we wish to populate in MTIME (as hinted in RFC 1952), do:
+         * putLong(date_array, apr_time_now() / APR_USEC_PER_SEC);
+         * where date_array is a char[4] and then print date_array in the
+         * MTIME position.
+         */
         buf = apr_psprintf(r->pool, "%c%c%c%c%c%c%c%c%c%c", deflate_magic[0],
-                           deflate_magic[1], Z_DEFLATED, 0 /* flags */ , 0, 0,
-                           0, 0 /* time */ , 0 /* xflags */ , OS_CODE);
+                           deflate_magic[1], Z_DEFLATED, 0 /* flags */,
+                           0, 0, 0, 0 /* 4 chars for mtime */,
+                           0 /* xflags */, OS_CODE);
         e = apr_bucket_pool_create(buf, 10, r->pool, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
