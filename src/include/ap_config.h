@@ -419,6 +419,14 @@ typedef int rlim_t;
 #define FCNTL_SERIALIZED_ACCEPT
 #endif
 
+/* Convex OS v11 */
+#elif defined(CONVEXOS11)
+#define NO_TIMEZONE
+#include <stdio.h>
+#include <sys/types.h>
+#define JMB_BUF jmp_buf
+typedef int rlim_t;
+
 /* Unknown system - Edit these to match */
 #else
 #ifdef BSD
@@ -481,7 +489,7 @@ typedef int rlim_t;
 #include <grp.h>
 #include <fcntl.h>
 #include <limits.h>
-#ifndef QNX
+#if !defined(QNX) && !defined(CONVEXOS11)
 #include <memory.h>
 #endif
 #ifdef NEED_PROCESS_H

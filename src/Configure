@@ -344,6 +344,12 @@ case "$PLAT" in
     	OS='MachTen'
 	LFLAGS="$LFLAGS -Xlstack=131072 -Xldelcsect"
 	;;
+    *convex-v11*)
+        OS='CONVEXOS11'
+	CFLAGS="$CFLAGS -DCONVEXOS11"
+	CC='cc'
+	DEF_WANTHSREGEX=yes
+	;;
     *) # default: Catch systems we don't know about
     	echo Sorry, but we cannot grok \"$PLAT\"
 	echo uname -m

@@ -164,9 +164,14 @@ else
 
 	machten:*)
 	   echo "${MACHINE}-tenon-${SYSTEM}"; exit 0;
+	   ;;
 
 	library:*)
 	    echo "${MACHINE}-ncr-sysv4"; exit 0
+	    ;;
+
+	ConvexOS:*:11.0:*)
+	    echo "${MACHINE}-v11-${SYSTEM}"; exit 0;
 	    ;;
 
     esac
