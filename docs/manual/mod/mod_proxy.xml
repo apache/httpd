@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.29 $ -->
+<!-- $Revision: 1.30 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -600,7 +600,7 @@ proxied server</description>
     This means that if the proxied content contains absolute URL
     references, they will by-pass the proxy.  A third-party module
     that will look inside the HTML and rewrite URL references is Nick
-    Kew's <a href="http://www.webthing.com/software/mod_proxy_html/"
+    Kew's <a href="http://apache.webthing.com/software/mod_proxy_html/"
     >mod_proxy_html</a>.</p>
 
     <p><var>path</var> is the name of a local virtual path. <var>url</var> is a
@@ -613,6 +613,8 @@ proxied server</description>
     <example>
       ProxyPass         /mirror/foo/ http://backend.example.com/<br />
       ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+      ProxyPassReverseCookieDomain  backend.example.com  public.example.com
+      ProxyPassReverseCookiePath  /  /mirror/foo/
     </example>
 
     <p>will not only cause a local request for the
@@ -639,6 +641,38 @@ proxied server</description>
     >Location</directive>.</p>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyPassReverseCookieDomain</name>
+<description>Adjusts the Domain string in Set-Cookie headers from a reverse-
+proxied server</description>
+<syntax>ProxyPassReverseCookieDomain <var>internal-domain</var> <var>public-domain</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<usage>
+<p>Usage is basically similar to
+<directive module="mod_proxy">ProxyPassReverse</directive>, but instead of
+rewriting headers that are a URL, this rewrites the <code>domain</code>
+string in <code>Set-Cookie</code> headers.</p>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>ProxyPassReverseCookiePath</name>
+<description>Adjusts the Path string in Set-Cookie headers from a reverse-
+proxied server</description>
+<syntax>ProxyPassReverseCookiePath <var>internal-path</var> <var>public-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<usage>
+<p>Usage is basically similar to
+<directive module="mod_proxy">ProxyPassReverse</directive>, but instead of
+rewriting headers that are a URL, this rewrites the <code>path</code>
+string in <code>Set-Cookie</code> headers.</p>
+</usage>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>AllowCONNECT</name>
