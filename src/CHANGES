@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) OS/2: Fix problem with accept lock semaphores where server would die with
+     "OS2SEM: Error 105 getting accept lock. Exiting!" 
+     [Brian Havard] PR#4505
+
   *) Add DSO support for DGUX 4.x using gcc. Tested on x86 platforms.
      [Randy Terbush <randy@covalent.net>]
  

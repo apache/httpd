@@ -918,6 +918,8 @@ static void accept_mutex_child_init(pool *p)
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
 		    "Child cannot open lock semaphore, rc=%d", rc);
 	clean_child_exit(APEXIT_CHILDINIT);
+    } else {
+        ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
     }
 }
 
