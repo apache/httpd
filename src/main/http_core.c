@@ -2743,7 +2743,6 @@ static int default_handler(request_rec *r)
 	    emsg = ap_pstrcat(r->pool, emsg, r->filename, r->path_info, NULL);
 	}
 	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r, emsg);
-	ap_table_setn(r->notes, "error-notes", emsg);
 	return HTTP_NOT_FOUND;
     }
     if (r->method_number != M_GET) {

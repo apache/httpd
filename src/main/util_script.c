@@ -458,8 +458,6 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_kill_timeout(r);
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			  "Premature end of script headers: %s", r->filename);
-	    ap_table_setn(r->notes, "error-notes",
-			  "Premature end of script headers");
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
@@ -543,8 +541,6 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_kill_timeout(r);
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			  "%s: %s", malformed, r->filename);
-	    ap_table_setn(r->notes, "error-notes",
-			  ap_pstrdup(r->pool, malformed));
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
