@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Updated mime.types to reflect current Internet media types
+     and include a URL to the registry.
+     [Manoj Kasichainula, Roy Fielding] PR#2380, 2286, 2246
+
   *) SECURITY: Do a more complete check in mod_include to avoid 
      an infinite loop of recursive SSI includes.  [Marc Slemko] PR#3323
 

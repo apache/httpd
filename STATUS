@@ -109,10 +109,6 @@ Available Patches:
 		   <http://www.physics.mcgill.ca/~juan/mod_include.patch>
 	Status: Ken -0 for 1.3/+0 for 2.0
 
-    * Manoj's [PATCH] mime.types update
-        Message-ID: <19980923190915.B15359@raleigh.ibm.com>
-        Status: Roy +1, Ralf +1, Lars +1, Martin +1
-
     * Patches for the DSO/mod_perl problem (see below for description):
 
       Ralf's "[PATCH] Fix module init"
