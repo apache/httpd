@@ -62,11 +62,11 @@
 #include "ap_config.h"
 
 #ifndef PLATFORM
-  #ifdef BONE_VERSION
-  #define PLATFORM "BeOS BONE"
-  #else
-  #define PLATFORM "BeOS R5"
-  #endif
+# ifdef BONE_VERSION
+#  define PLATFORM "BeOS BONE"
+# else
+#  define PLATFORM "BeOS R5"
+# endif
 #endif
 
 #endif	/* !APACHE_OS_H */
