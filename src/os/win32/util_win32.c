@@ -288,8 +288,9 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 {
     int n;
+    int len = strlen(szPath);
     
-    if (strlen(szPath) == 0) {
+    if ((len == 0) || (len >= MAX_PATH)) {
         return -1;
     }
 
@@ -298,7 +299,6 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 	char *s;
 	int nSlashes = 0;
 
-	ap_assert(strlen(szPath) < _MAX_PATH);
 	strcpy(buf, szPath);
 	for (s = buf; *s; ++s) {
 	    if (*s == '/') {
@@ -308,6 +308,9 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 	}
 	/* then we need to add one more to get \\machine\share\ */
 	if (nSlashes == 3) {
+            if (++len >= MAX_PATH) {
+                return -1;
+            }
 	    *s++ = '\\';
 	}
 	*s = '\0';

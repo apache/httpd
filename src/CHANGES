@@ -1,5 +1,10 @@
 Changes with Apache 1.3.13
 
+  *) Expand Win32 protection for pathname length, to provide protection
+     from future potential bugs such as that which caused directory index 
+     to be displayed rather than returning an error.
+     [William Rowe, Allan Edwards <ake@raleigh.ibm.com>]
+
   *) USE_SYSVSEM_SERIALIZED_ACCEPT locking on OS/390
      [Ovies Brabson]
 
@@ -7,7 +12,7 @@ Changes with Apache 1.3.13
      helper apps that invoke Apache.exe without a console.  Recognize that
      we are running NT, and use the STARTF_FORCEOFFFEEDBACK flag to be
      sure that the SCM has invoked the process. [William Rowe,
-       Jim Patterson <jim-patterson@ncf.ca>, Kevin Kiley, TOKILEY@aol.com]
+       Jim Patterson <jim-patterson@ncf.ca>, Kevin Kiley <TOKILEY@aol.com>]
 
   *) Export from Win32 the ap_start_shutdown and ap_start_restart symbols 
      for modules and executables dynamically linked to the core.
