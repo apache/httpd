@@ -31,6 +31,7 @@
 #define T_OS_ESCAPE_PATH      (0x04)
 #define T_HTTP_TOKEN_STOP     (0x08)
 #define T_ESCAPE_LOGITEM      (0x10)
+#define T_ESCAPE_FORENSIC     (0x20)
 
 int main(int argc, char *argv[])
 {
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
            "#define T_OS_ESCAPE_PATH       (%u)\n"
            "#define T_HTTP_TOKEN_STOP      (%u)\n"
            "#define T_ESCAPE_LOGITEM       (%u)\n"
+           "#define T_ESCAPE_FORENSIC      (%u)\n"
            "\n"
            "static const unsigned char test_char_table[256] = {\n"
            "    0,",
@@ -51,7 +53,8 @@ int main(int argc, char *argv[])
            T_ESCAPE_PATH_SEGMENT,
            T_OS_ESCAPE_PATH,
            T_HTTP_TOKEN_STOP,
-           T_ESCAPE_LOGITEM);
+           T_ESCAPE_LOGITEM,
+	   T_ESCAPE_FORENSIC);
 
     /* we explicitly dealt with NUL above
      * in case some strchr() do bogosity with it */
@@ -102,6 +105,14 @@ int main(int argc, char *argv[])
          */
         if (!apr_isprint(c) || c == '"' || c == '\\' || apr_iscntrl(c)) {
             flags |= T_ESCAPE_LOGITEM;
+        }
+
+        /* For forensic logging, escape all control characters, top bit set,
+         * :, | (used as delimiters) and % (used for escaping).
+         */
+        if (!apr_isprint(c) || c == ':' || c == '|' || c == '%'
+            || apr_iscntrl(c) || !c) {
+            flags |= T_ESCAPE_FORENSIC;
         }
 
         printf("%u%c", flags, (c < 255) ? ',' : ' ');

@@ -41,8 +41,6 @@ typedef struct fcfg {
     apr_file_t *fd;
 } fcfg;
 
-static apr_uint32_t next_id;
-
 static void *make_forensic_log_scfg(apr_pool_t *p, server_rec *s)
 {
     fcfg *cfg = apr_pcalloc(p, sizeof *cfg);
@@ -192,8 +190,9 @@ static int log_before(request_rec *r)
     if (!(id = apr_table_get(r->subprocess_env, "UNIQUE_ID"))) {
         /* we make the assumption that we can't go through all the PIDs in
            under 1 second */
-        id = apr_psprintf(r->pool, "%x:%lx:%x", getpid(), time(NULL),
-                          apr_atomic_inc32(&next_id));
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                    "mod_log_forensic: mod_unique_id must also be active");
+	return DECLINED;
     }
     ap_set_module_config(r->request_config, &log_forensic_module, (char *)id);
 
