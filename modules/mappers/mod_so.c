@@ -222,7 +222,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 {
     ap_status_t stat;
     ap_dso_handle_t *modhandle;
-    ap_dso_handle_sym_t *modsym;
+    ap_dso_handle_sym_t modsym;
     module *modp;
     const char *szModuleFile=ap_server_root_relative(cmd->pool, filename);
     so_server_conf *sconf;
@@ -263,12 +263,13 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * First with the hidden variant (prefix `AP_') and then with the plain
      * symbol name.
      */
-    if ((stat = ap_dso_sym(modsym, modhandle, modname)) != APR_SUCCESS) {
+    if ((stat = ap_dso_sym(&modsym, modhandle, modname)) != APR_SUCCESS) {
 	return ap_pstrcat(cmd->pool, "Can't locate API module structure `", modname,
 		       "' in file ", szModuleFile, ": ", ap_os_dso_error(), NULL);
     }
-    modi->modp = (module *)modsym;
+    modp = (module*) modsym;
     modp->dynamic_load_handle = (ap_dso_handle_t *)modhandle;
+    modi->modp = modp;
 
     /* 
      * Make sure the found module structure is really a module structure
