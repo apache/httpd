@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_disk_cache: Correctly store cached content type.  PR 30278.
+     [Rüdiger Plüm <r.pluem t-online.de>]
+
   *) Fix a segfault in the LDAP cache purge. [Jess Holle <jessh ptc.com>]
 
   *) mod_rewrite: Handle per-location rules when r->filename is unset.
