@@ -63,7 +63,8 @@
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <pthread.h>
+#include <apr_thread_mutex.h>
+#include <apr_thread_cond.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <apr_errno.h>
@@ -80,17 +81,18 @@ struct fd_queue_elem_t {
 typedef struct fd_queue_elem_t fd_queue_elem_t;
 
 struct fd_queue_t {
-    int                tail;
-    fd_queue_elem_t   *data;
-    int                bounds;
-    int                blanks;
-    pthread_mutex_t    one_big_mutex;
-    pthread_cond_t     not_empty;
-    pthread_cond_t     not_full;
-    int                cancel_state;
+    int                 tail;
+    fd_queue_elem_t    *data;
+    int                 bounds;
+    int                 blanks;
+    apr_thread_mutex_t *one_big_mutex;
+    apr_thread_cond_t  *not_empty;
+    apr_thread_cond_t  *not_full;
+    int                 cancel_state;
 };
 typedef struct fd_queue_t fd_queue_t;
 
+/* FIXME: APRize these -- return values should be apr_status_t */
 int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a);
 int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p);
 apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p);
