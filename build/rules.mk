@@ -158,7 +158,7 @@ clean-x:
 
 distclean: distclean-recursive clean-x
 	rm -f config.cache config.log config.status config_vars.mk libtool \
-	stamp-h Makefile shlibtool
+	stamp-h Makefile shlibtool $(DISTCLEANFILES)
 
 include $(srcdir)/.deps
 

@@ -23,7 +23,7 @@ targets         = $(PROGRAMS)
 phony_targets   = buildmark.c
 install_targets = install-conf install-htdocs install-icons install-other \
 	install-cgi install-include
-CLEANFILES      = apaci
+DISTCLEANFILES  = apaci
 
 include $(topsrcdir)/build/rules.mk
 include $(topsrcdir)/build/program.mk
