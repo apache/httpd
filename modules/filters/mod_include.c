@@ -1079,33 +1079,6 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     }
 }
 
-#define NEG_SIGN  "    -"
-#define ZERO_K    "   0k"
-#define ONE_K     "   1k"
-
-static void generate_size(apr_ssize_t size, char *buff, apr_size_t buff_size)
-{
-    /* XXX: this -1 thing is a gross hack */
-    if (size == (apr_ssize_t)-1) {
-	memcpy (buff, NEG_SIGN, sizeof(NEG_SIGN)+1);
-    }
-    else if (!size) {
-	memcpy (buff, ZERO_K, sizeof(ZERO_K)+1);
-    }
-    else if (size < 1024) {
-	memcpy (buff, ONE_K, sizeof(ONE_K)+1);
-    }
-    else if (size < 1048576) {
-        apr_snprintf(buff, buff_size, "%4" APR_SSIZE_T_FMT "k", (size + 512) / 1024);
-    }
-    else if (size < 103809024) {
-        apr_snprintf(buff, buff_size, "%4.1fM", size / 1048576.0);
-    }
-    else {
-        apr_snprintf(buff, buff_size, "%4" APR_SSIZE_T_FMT "M", (size + 524288) / 1048576);
-    }
-}
-
 static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
                         ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
@@ -1134,7 +1107,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
                     char buff[50];
 
                     if (!(ctx->flags & FLAG_SIZE_IN_BYTES)) {
-                        generate_size(finfo.size, buff, sizeof(buff));
+                        apr_strfsize(finfo.size, buff);
                         s_len = strlen (buff);
                     }
                     else {

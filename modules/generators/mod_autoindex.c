@@ -1355,7 +1355,7 @@ static void output_directories(struct ent **ar, int n,
 	if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
             emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
                       static_columns);
-	    ap_rputs("       ", r);
+	    ap_rputs("      ", r);
 	}
 	if (!(autoindex_opts & SUPPRESS_SIZE)) {
             emit_link(r, "Size", K_SIZE, keyid, direction, static_columns);
@@ -1445,7 +1445,8 @@ static void output_directories(struct ent **ar, int n,
 		}
 	    }
 	    if (!(autoindex_opts & SUPPRESS_SIZE)) {
-		ap_send_size(ar[x]->size, r);
+                char buf[5];
+		ap_rputs(apr_strfsize(ar[x]->size, buf), r);
 		ap_rputs("  ", r);
 	    }
 	    if (!(autoindex_opts & SUPPRESS_DESC)) {

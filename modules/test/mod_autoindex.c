@@ -1442,7 +1442,8 @@ static void output_directories(struct ent **ar, int n,
 		}
 	    }
 	    if (!(autoindex_opts & SUPPRESS_SIZE)) {
-		ap_send_size(ar[x]->size, r);
+		char buf[5];
+		ap_rputs(apr_strfsize(ar[x]->size, buf), r);
 		ap_rputs("  ", r);
 	    }
 	    if (!(autoindex_opts & SUPPRESS_DESC)) {
