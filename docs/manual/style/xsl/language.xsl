@@ -103,6 +103,9 @@
 <xsl:when test="$type = 'desc'">
     <xsl:apply-templates select="/language-list" mode="desc" />
 </xsl:when>
+<xsl:when test="$type = 'modlists'">
+    <xsl:apply-templates select="/language-list" mode="modlists" />
+</xsl:when>
 </xsl:choose>
 </xsl:template>
 
@@ -275,6 +278,28 @@
 
 <!-- ==================================================================== -->
 <!-- <language-list>                                                      -->
+<!-- generate list of modulelists                                         -->
+<!-- ==================================================================== -->
+<xsl:template match="/language-list" mode="modlists">
+<items>
+    &lf;
+    <xsl:for-each select="lang">
+    <xsl:sort select="." />
+
+        <xsl:variable name="file" select="document(concat(
+                                          '../lang/', ., '.xml'))
+                                          /language" />
+        <item lang="{.}">
+            <xsl:text>../../../mod/allmodules</xsl:text>
+            <xsl:value-of select="$file/source-ext" />
+        </item>
+        &lf;
+    </xsl:for-each>
+</items>
+</xsl:template>
+
+<!-- ==================================================================== -->
+<!-- <language-list>                                                      -->
 <!-- generate project description                                         -->
 <!-- ==================================================================== -->
 <xsl:template match="/language-list" mode="desc">
@@ -416,6 +441,16 @@ Some targets have additional requirements:
         <xsl:element name="xsl:variable">
             <xsl:attribute name="name">doclang</xsl:attribute>
             <xsl:value-of select="@id" />
+        </xsl:element>
+        &lf;
+        <xsl:element name="xsl:variable">
+            <xsl:attribute name="name">allmodules</xsl:attribute>
+            <xsl:attribute name="select">
+                <xsl:text>document('</xsl:text>
+                <xsl:if test="$type != 'manual'">../</xsl:if>
+                <xsl:text>xsl/util/allmodules.xml')</xsl:text>
+                <xsl:text>/items/item[@lang=$doclang]</xsl:text>
+            </xsl:attribute>
         </xsl:element>
         &lf;
     </xsl:if>
