@@ -104,12 +104,11 @@ together with details of mirror web and anonymous ftp sites.</P>
 
 <P>Project files (<CODE>.DSP</CODE>) are included for each of the
    portions of Apache. The three projects that are necessary for
-   Apache to run are <CODE>Apache.dsp</CODE>,
-   <CODE>ApacheCore.dsp</CODE> and
-   <CODE>os/win32/ApacheOS.dsp</CODE>. The regular expression library
-   in <CODE>regex</CODE> also need to be compiled using the supplied
-   makefile. The <CODE>src/win32</CODE> subdirectory contains project
-   files for the optional modules (see below).</P>
+   Apache to run are <CODE>Apache.dsp</CODE>, <CODE>ap/ap.dsp</CODE>,
+   <CODE>regex/regex.dsp</CODE>, <CODE>ApacheCore.dsp</CODE> and
+   <CODE>os/win32/ApacheOS.dsp</CODE>. The <CODE>src/win32</CODE>
+   subdirectory contains project files for the optional modules (see
+   below).</P>
 
 <H2><A name="inst">Installing Apache for Windows</A></H2>
 
@@ -156,13 +155,12 @@ together with details of mirror web and anonymous ftp sites.</P>
 <UL>
   <LI><P>Because Apache for Windows is multithreaded, it does not use a
       separate process for each request, as Apache does with
-      Unix. Therefore, the "process"-management directives are different:
-      <P><A HREF="mod/core.html#startservers">StartServers</A> - This
-         tells the server how many processes to use. Unlike Unix, there
-         will never be more than this number, and only one will be used
-         at a time (the others will be held in reserve in case the main
-         processes crashes or otherwise dies). The recommended default is
-         <CODE>StartServers 3</CODE>.
+      Unix. Instead there are usually only two Apache processes running:
+      a parent process, and a child which handles the requests. Within
+      the child each request is handled by a separate thread.
+      <P>
+
+      So the "process"-management directives are different:
       <P><A
          HREF="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>
          - Like the Unix directive, this controls how many requests a
@@ -186,15 +184,15 @@ together with details of mirror web and anonymous ftp sites.</P>
       without recompiling the server. If Apache is compiled normally, it
       will install a number of optional modules in the
       <CODE>\Apache\modules</CODE> directory. To activate these, or other
-      modules, the new <A HREF="mod/mod_dll.html#loadmodule">LoadModule</A>
+      modules, the new <A HREF="mod/mod_so.html#loadmodule">LoadModule</A>
       directive must be used. For example, to active the status module,
       use the following (in addition to the status-activating directives
       in <CODE>access.conf</CODE>):</P>
 <PRE>
     LoadModule status_module modules/ApacheModuleStatus.dll
 </PRE>
-      <P>Information on <A HREF="mod/mod_dll.html#creating">creating module
-         DLLs</A> is also available.</P>
+      <P>Information on <A HREF="mod/mod_so.html#creating">creating loadable
+         modules</A> is also available.</P>
   <LI><P>Apache can also load ISAPI Extensions (i.e., Internet Server
          Applications), such as those used by Microsoft's IIS, and other
          Windows servers. <A HREF="mod/mod_isapi.html">More information
