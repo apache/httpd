@@ -95,7 +95,7 @@ RELEASE = optimized
 endif
 
 ifeq "$(RELEASE)" "debug"
-OBJDIR = Debug
+OBJDIR = Debug.o
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -103,7 +103,7 @@ OBJDIR = Noopt
 endif
 
 ifeq "$(RELEASE)" "optimized"
-OBJDIR = Release
+OBJDIR = Release.o
 endif
 
 #
