@@ -179,9 +179,10 @@ static int parse_byterange(char *range, apr_off_t clength,
     return (*start > 0 || *end < clength - 1);
 }
 
+static int ap_set_byterange(request_rec *r);
+
 typedef struct byterange_ctx {
     ap_bucket_brigade *bb;
-    const char *bound_head;
     int num_ranges;
 } byterange_ctx;
 
@@ -199,6 +200,20 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     apr_off_t range_start;
     apr_off_t range_end;
     char *current;
+    const char *bound_head;
+    const char *ct = make_content_type(r, r->content_type);
+
+    if (!ctx) {
+        int num_ranges = ap_set_byterange(r);
+ 
+        if (num_ranges == 0) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
+        }
+        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+        ctx->num_ranges = ap_set_byterange(r);
+        
+    }
 
     /* We can't actually deal with byte-ranges until we have the whole brigade
      * because the byte-ranges can be in any order, and according to the RFC,
@@ -208,6 +223,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         ap_save_brigade(f, &ctx->bb, &bb);
         return APR_SUCCESS;
     }
+
+    /* compute this once (it is an invariant) and store it away */
+    bound_head = apr_pstrcat(r->pool, CRLF "--", r->boundary,
+                                  CRLF "Content-type: ", ct,
+                                  CRLF "Content-range: bytes ", 
+                                  NULL);
 
     /* concat the passed brigade with our saved brigade */
     AP_BRIGADE_CONCAT(ctx->bb, bb);
@@ -247,7 +268,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         */
 
         ap_bucket_read(e, &str, &n, AP_NONBLOCK_READ);
-        /* ### using e->length doesn't account for pipes */
+        /* using e->length doesn't account for pipes once we change the read
+         * to a split.*/
         while (range_start > (curr_offset + e->length)) {
             curr_offset += e->length;
             e = AP_BUCKET_NEXT(e);
@@ -256,14 +278,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
                 break;
             }
 
-            /* ### eventually we can avoid this */
+            /* eventually we can avoid this */
             ap_bucket_read(e, &str, &n, AP_NONBLOCK_READ);
         }
         if (range_start != curr_offset) {
             /* If we get here, then we know that the beginning of this 
              * byte-range occurs someplace in the middle of the current bucket
              */
-            /* ### when we split above, we should read here */
+            /* when we split above, we should read here */
             segment_length = MIN_LENGTH(curr_length + 1, e->length);
             memcpy(loc, str + (range_start - curr_offset), segment_length);
             loc += segment_length;
@@ -289,8 +311,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         if (ctx->num_ranges > 1) {
             const char *ts;
 
-            e = ap_bucket_create_pool(ctx->bound_head,
-                                      strlen(ctx->bound_head), r->pool);
+            e = ap_bucket_create_pool(bound_head,
+                                      strlen(bound_head), r->pool);
             AP_BRIGADE_INSERT_TAIL(bsend, e);
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
@@ -1371,6 +1393,7 @@ request_rec *ap_read_request(conn_rec *conn)
                      ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
                      : r->server->timeout * APR_USEC_PER_SEC);
                      
+    ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
     ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
     ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
 
@@ -2331,7 +2354,7 @@ static int ap_set_byterange(request_rec *r)
             return 0;
     }
 
-    /* ### would be nice to pick this up from f->ctx */
+    /* would be nice to pick this up from f->ctx */
     ct = make_content_type(r, r->content_type);
 
     if (!ap_strchr_c(range, ',')) {
@@ -2345,18 +2368,11 @@ static int ap_set_byterange(request_rec *r)
         apr_table_setn(r->headers_out, "Content-Range",
                        apr_psprintf(r->pool, "bytes " BYTERANGE_FMT,
                                     range_start, range_end, r->clength));
-        apr_table_setn(r->headers_out, "Content-Length",
-                       apr_psprintf(r->pool, "%" APR_OFF_T_FMT,
-                                    range_end - range_start + 1));
 	apr_table_setn(r->headers_out, "Content-Type", ct);
 
         num_ranges = 1;
     }
     else {
-        const char *work_range = range;
-        char *current;
-        apr_off_t tlength = 0;
-
         /* a multiple range */
 
         num_ranges = 2;
@@ -2365,30 +2381,6 @@ static int ap_set_byterange(request_rec *r)
         r->boundary = apr_psprintf(r->pool, "%qx%lx",
                                    r->request_time, (long) getpid());
 
-        /* compute the length for the actual data plus the boundary headers */
-        while ((current = ap_getword(r->pool, &work_range, ','))
-               && parse_byterange(current, r->clength,
-                                  &range_start, &range_end)) {
-            char rng[MAX_STRING_LEN];
-
-            apr_snprintf(rng, sizeof(rng), BYTERANGE_FMT,
-                         range_start, range_end, r->clength);
-            /* CRLF "--" boundary
-               CRLF "Content-type: " ct
-               CRLF "Content-range: bytes " rng
-               CRLF CRLF
-               content
-            */
-            tlength += (4 + strlen(r->boundary) + 16 + strlen(ct) +
-                        23 + strlen(rng) + 4 +
-                        range_end - range_start + 1);
-        }
-
-        /* add final boundary length: CRLF "--" boundary "--" CRLF */
-        tlength += 4 + strlen(r->boundary) + 4;
-
-        apr_table_setn(r->headers_out, "Content-Length",
-                       apr_psprintf(r->pool, "%" APR_OFF_T_FMT, tlength));
         apr_table_setn(r->headers_out, "Content-Type",
 		       apr_pstrcat(r->pool,
                                    "multipart", use_range_x(r) ? "/x-" : "/",
@@ -2402,25 +2394,6 @@ static int ap_set_byterange(request_rec *r)
     return num_ranges;
 }
 
-static void add_byterange_filter(request_rec *r, int num_ranges)
-{
-    byterange_ctx *ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-    const char *ct = make_content_type(r, r->content_type);
-
-    /* we will always need this */
-    ctx->bb = ap_brigade_create(r->pool);
-
-    /* compute this once (it is an invariant) and store it away */
-    ctx->bound_head = apr_pstrcat(r->pool, CRLF "--", r->boundary,
-                                  CRLF "Content-type: ", ct,
-                                  CRLF "Content-range: bytes ", 
-                                  NULL);
-
-    ctx->num_ranges = num_ranges;
-
-    ap_add_output_filter("BYTERANGE", ctx, r, r->connection);
-}
-
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     int i;
@@ -2431,7 +2404,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     ap_bucket_brigade *b2;
     apr_size_t len = 0;
     header_struct h;
-    int num_ranges;
 
     AP_DEBUG_ASSERT(!r->main);
 
@@ -2474,8 +2446,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
          * bucket brigade code  */
 /*      ap_add_output_filter("COALESCE", NULL, r, r->connection); */
     }
-
-    num_ranges = ap_set_byterange(r);
 
     if (r->content_encoding) {
         apr_table_setn(r->headers_out, "Content-Encoding",
@@ -2535,11 +2505,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
          * as well, and that is just wrong.
          */
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
-    }
-    if (num_ranges) {
-        /* wait until the headers have been sent before adding the byterange
-           filter */
-        add_byterange_filter(r, num_ranges);
     }
 
     /* Don't remove this filter until after we have added the CHUNK filter.
