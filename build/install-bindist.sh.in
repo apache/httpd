@@ -83,6 +83,7 @@ lcopy bindist/icons $SR/icons 755 644
 lcopy bindist/manual $SR/manual 755 644
 lcopy bindist/cgi-bin $SR/cgi-bin 750 750
 lcopy bindist/bin $SR/bin 750 750
+lcopy bindist/lib $SR/lib 750 750
 if [ -d $SR/conf ]
 then
   echo "[Preserving existing configuration files.]"
