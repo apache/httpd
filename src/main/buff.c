@@ -933,7 +933,8 @@ API_EXPORT(int) ap_bskiplf(BUFF *fb)
 }
 
 /*
- * Empty the buffer after putting a single character in it
+ * output a single character.  Used by ap_bputs when the buffer
+ * is full... and so it'll cause the buffer to be flushed first.
  */
 API_EXPORT(int) ap_bflsbuf(int c, BUFF *fb)
 {
