@@ -823,7 +823,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                            my_info, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
-                     "apr_thread_create: unable to create worker thread");
+                     "apr_thread_create: unable to create listener thread");
         /* In case system resources are maxxed out, we don't want
          * Apache running away with the CPU trying to fork over and
          * over and over again if we exit.
