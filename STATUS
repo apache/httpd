@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/14 00:50:20 $]
+Last modified at [$Date: 2003/12/14 14:18:35 $]
 
 Release:
 
@@ -68,7 +68,7 @@ RELEASE SHOWSTOPPERS:
         include/httpd.h: r1.203
         server/log.c: r1.136
         server/util.c: r1.143
-      +1: nd, erikabele
+      +1: nd, erikabele, trawick
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -82,18 +82,18 @@ PATCHES TO BACKPORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_protocol.h?r1=1.84&r2=1.85
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/http/http_protocol.c?r1=1.473&r2=1.474
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c?r1=1.48&r2=1.49
-      +1: rederpj
+      +1: rederpj, trawick (requires minor MMN bump I believe)
 
     * mod_dav: Return a WWW-Auth header for MOVE/COPY requests where
       the destination resource gives a 401.
       http://cvs.apache.org/viewcvs/httpd-2.0/modules/dav/main/mod_dav.c.diff?r1=1.100&r2=1.101
       PR: 15571
-      +1: jorton
+      +1: jorton, trawick
 
     * mod_dav_fs: Fix for dropping custom namespaces
       http://cvs.apache.org/viewcvs/httpd-2.0/modules/dav/fs/dbm.c.diff?r1=1.28&r2=1.29
       PR: 11637
-      +1: jorton
+      +1: jorton, trawick
 
     * prefork: Fix slow graceful restarts on some platforms.
       http://cvs.apache.org/viewcvs/httpd-2.0/server/mpm/prefork/prefork.c.diff?r1=1.279&r2=1.280
@@ -254,6 +254,7 @@ PATCHES TO BACKPORT FROM 2.1
                   internal meaning I do not think that the change requires a
                   bump.
       +1: nd, brianp
+      +1 (concept): trawick
       jwoolley suggests: Hang onto it for 2.2 series.
       brianp asks: Do we have an alternate fix to eliminate 2.0's segfaults?
       nd adds: I've found some time over the weekend to create the following
@@ -272,7 +273,7 @@ PATCHES TO BACKPORT FROM 2.1
       (patch for 2.0: http://cvs.apache.org/~nd/ssi-escape.patch)
       1.3 goes the same way.
         modules/filters/mod_include.c: r1.264
-      +1: nd
+      +1: nd, trawick
 
     * mod_ssl: fix check for the plain-HTTP-request error
         modules/ssl/ssl_engine_io.c r1.111
@@ -294,7 +295,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Let mod_autoindex show filenames containing special characters.
       PR 13598.
         server/request.c: r1.130
-      +1: nd, ianh
+      +1: nd, ianh, trawick
 
     * mod_setenvif: Fix optimizer to treat regexps as such even if they
       only contain anchors like \b. PR 24219.
