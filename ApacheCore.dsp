@@ -26,6 +26,7 @@ CFG=ApacheCore - Win32 Debug
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
+RSC=rc.exe
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
@@ -39,11 +40,10 @@ CPP=cl.exe
 # PROP Output_Dir "LibR"
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-RSC=rc.exe
-# ADD BASE RSC /l 0x409
-# ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -64,11 +64,10 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "LibD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-RSC=rc.exe
-# ADD BASE RSC /l 0x409
-# ADD RSC /l 0x409
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -206,35 +205,11 @@ SOURCE=.\include\http_connection.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\http_core.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_core.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\http_log.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\include\http_main.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\http_protocol.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_protocol.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\http_request.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_request.h
 # End Source File
 # Begin Source File
 
@@ -256,6 +231,30 @@ SOURCE=.\server\vhost.c
 # Begin Group "modules"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\modules\http\http_core.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_core.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_protocol.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_protocol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_request.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_request.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\modules\aaa\mod_access.c
