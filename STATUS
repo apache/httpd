@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/28 18:37:45 $]
+Last modified at [$Date: 2002/03/01 09:21:42 $]
 
 Release:
 
@@ -53,7 +53,7 @@ FINAL RELEASE SHOWSTOPPERS:
     * All ap_internal_fast_redirect()ed requests are losing their filters
       and output headers.  mod_negotiation derived Multiviewed documents
       and mod_dir DirectoryIndex documents both demonstrate this behavior.
-      [PR 9963]
+      [PR 9963, 10001]
         cf reply:  <007c01c1b3d1$46714650$94c0b0d0@v505>
         to thread: <200202121332.IAA27467@web.turner.com>
       Solutions:
