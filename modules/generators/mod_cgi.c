@@ -682,7 +682,7 @@ static int cgi_handler(request_rec *r)
      * Note that we already ignore SIGPIPE in the core server.
      */
     if (ap_should_client_block(r)) {
-	int dbsize, len_read;
+	int len_read, dbsize;
         apr_size_t bytes_written, bytes_to_write;
         apr_status_t rv;
 
@@ -712,8 +712,9 @@ static int cgi_handler(request_rec *r)
                 rv = apr_file_write(script_out, argsbuffer + bytes_written, 
                                &bytes_to_write);
                 bytes_written += bytes_to_write;
-            } while (rv == APR_SUCCESS && bytes_written < len_read);
-	    if (rv != APR_SUCCESS || bytes_written < len_read) {
+            } while (rv == APR_SUCCESS 
+                  && bytes_written < (apr_size_t)len_read);
+	    if (rv != APR_SUCCESS || bytes_written < (apr_size_t)len_read) {
 		/* silly script stopped reading, soak up remaining message */
 		while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) {
 		    /* dump it */
