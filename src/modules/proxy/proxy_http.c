@@ -156,6 +156,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     const long int zero=0L;
     int destport = 0;
     char *destportstr = NULL;
+    char *urlptr = NULL;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -169,19 +170,21 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
 /* We break the URL into host, port, path-search */
 
-    url += 7;  /* skip http:// */
+    urlptr = strstr(url,"://");
+    if (urlptr == NULL) return BAD_REQUEST;
+    urlptr += 3;
     destport = DEFAULT_PORT;
-    p = strchr(url, '/');
+    p = strchr(urlptr, '/');
     if (p == NULL)
     {
-        desthost = pstrdup(pool, url);
-        url = "/";
+        desthost = pstrdup(pool, urlptr);
+        urlptr = "/";
     } else
     {
-        char *q = palloc(pool, p-url+1);
-        memcpy(q, url, p-url);
-        q[p-url] = '\0';
-        url = p;
+        char *q = palloc(pool, p-urlptr+1);
+        memcpy(q, urlptr, p-urlptr);
+        q[p-urlptr] = '\0';
+        urlptr = p;
         desthost = q;
     }
 
@@ -207,7 +210,6 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     if (proxyhost != NULL)
     {
-	url = r->uri;			/* restore original URL */
 	server.sin_port = htons(proxyport);
 	err = proxy_host2addr(proxyhost, &server_hp);
 	if (err != NULL) return DECLINED;  /* try another */
