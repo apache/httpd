@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/07 22:39:17 $]
+  Last modified at [$Date: 1999/01/08 08:48:43 $]
 
 Release:
 
@@ -56,10 +56,6 @@ Documentation that needs writing:
          vhost-xxx.html document out of it. -- rse
 
 Available Patches:
-
-    * Martin's [PATCH] Make "-S" exit(0) after dumping the VHost settings
-        Message-ID: <19990105103836.A3225@deejai.mch.sni.de>
-        Status: Martin +1, Roy +1
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442

@@ -247,7 +247,7 @@ int ap_daemons_limit;
 time_t ap_restart_time;
 int ap_suexec_enabled = 0;
 int ap_listenbacklog;
-int ap_dump_settings;
+int ap_dump_settings = 0;
 API_VAR_EXPORT int ap_extended_status = 0;
 
 /*
@@ -4576,6 +4576,9 @@ int REALMAIN(int argc, char *argv[])
 
     if (configtestonly) {
         fprintf(stderr, "Syntax OK\n");
+        exit(0);
+    }
+    if (ap_dump_settings) {
         exit(0);
     }
 
