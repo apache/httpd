@@ -490,7 +490,7 @@ API_EXPORT(int) os_strftime(char *s, size_t max, const char *format,
     int return_value;
     int length_written;
 
-    for (i = 0, j = 0; (i < format_length && j < max)) {
+    for (i = 0, j = 0; (i < format_length && j < max);) {
         if (format[i] != '%') {
             new_format[j++] = format[i++];
             continue;
