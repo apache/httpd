@@ -54,16 +54,18 @@
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_lib.h"
+#include "apr_hash.h"
+#include "apr_strings.h"
 
 #include "httpd.h"
 #include "http_log.h"
 #include "util_filter.h"
 
 /* ### make this visible for direct manipulation?
- * ### use a hash table
  */
-static ap_filter_rec_t *registered_output_filters = NULL;
-static ap_filter_rec_t *registered_input_filters = NULL;
+static apr_hash_t *registered_output_filters = NULL;
+static apr_hash_t *registered_input_filters = NULL;
 
 /* NOTE: Apache's current design doesn't allow a pool to be passed thu,
    so we depend on a global to hold the correct pool
@@ -92,16 +94,20 @@ static apr_status_t filter_cleanup(void *ctx)
 static void register_filter(const char *name,
                             ap_filter_func filter_func,
                             ap_filter_type ftype,
-                            ap_filter_rec_t **reg_filter_list)
+                            apr_hash_t **reg_filter_set)
 {
     ap_filter_rec_t *frec = apr_palloc(FILTER_POOL, sizeof(*frec));
 
-    frec->name = name;
+    if (!*reg_filter_set) {
+        *reg_filter_set = apr_hash_make(FILTER_POOL);
+    }
+
+    frec->name = apr_pstrdup(FILTER_POOL, name);
+    ap_str_tolower((char *)frec->name);
     frec->filter_func = filter_func;
     frec->ftype = ftype;
 
-    frec->next = *reg_filter_list;
-    *reg_filter_list = frec;
+    apr_hash_set(*reg_filter_set, frec->name, APR_HASH_KEY_STRING, frec);
 
     apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, apr_pool_cleanup_null);
 }
@@ -126,12 +132,26 @@ AP_DECLARE(void) ap_register_output_filter(const char *name,
 
 static ap_filter_t *add_any_filter(const char *name, void *ctx, 
 				   request_rec *r, conn_rec *c, 
-				   ap_filter_rec_t *frec,
+                   apr_hash_t *reg_filter_set,
 				   ap_filter_t **r_filters,
 				   ap_filter_t **c_filters)
 {
-    for (; frec != NULL; frec = frec->next) {
-        if (!strcasecmp(name, frec->name)) {
+    if (reg_filter_set) {
+        ap_filter_rec_t *frec;
+        int len = strlen(name);
+        int size = len + 1;
+        char name_lower[size];
+        char *dst = name_lower;
+        const char *src = name;
+
+        /* Normalize the name to all lowercase to match register_filter() */
+        do {
+            *dst++ = apr_tolower(*src++);
+        } while (--size);
+
+        frec = (ap_filter_rec_t *)apr_hash_get(reg_filter_set,
+                                               name_lower, len);
+        if (frec) {
             apr_pool_t *p = r ? r->pool : c->pool;
             ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
             ap_filter_t **outf = r ? r_filters : c_filters;
