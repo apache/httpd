@@ -240,7 +240,6 @@ int set_byterange (request_rec *r)
 int each_byterange (request_rec *r, long *offset, long *length) {
     long range_start, range_end;
     char *range;
-    const char *rp;
 
     if (!*r->range) {
 	if (r->byterange > 1)

@@ -946,6 +946,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 }
 #endif
 
+#if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)) || !defined (RLIMIT_NPROC)
 static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
 				 char *arg)
 {
@@ -953,6 +954,7 @@ static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
 	       cmd->cmd->name);
     return NULL;
 }
+#endif
 
 #ifdef RLIMIT_CPU
 const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)

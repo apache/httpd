@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.24 1996/10/20 20:45:51 ben Exp $ */
+/* $Id: http_request.c,v 1.25 1996/10/22 18:45:34 brian Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -784,7 +784,6 @@ static int some_auth_required (request_rec *r)
 void process_request_internal (request_rec *r)
 {
     int access_status;
-    void *save_per_dir_config;
   
     /* Kludge to be reading the assbackwards field outside of protocol.c,
      * but we've got to check for this sort of nonsense somewhere...
