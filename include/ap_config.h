@@ -58,12 +58,41 @@
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
 #include "apr_lib.h"		/* apr_isfoo() macros */
 
-/* Create a set of AP_DECLARE(type), AP_DECLARE_NONSTD(type) and 
- * AP_DECLARE_DATA with appropriate export and import tags for the platform
+/**
+ * AP_DECLARE_EXPORT is defined when building the Apache Core dynamic
+ * library, so that all public symbols are exported.
+ *
+ * AP_DECLARE_STATIC is defined when including Apache's Core headers,
+ * to provide static linkage when the dynamic library may be unavailable.
+ *
+ * AP_DECLARE_STATIC and AP_DECLARE_EXPORT are left undefined when
+ * including Apache's Core headers, to import and link the symbols from the 
+ * dynamic Apache Core library and assure appropriate indirection and calling 
+ * conventions at compile time.
  */
+
 #if !defined(WIN32)
+/**
+ * Apache Core dso functions are declared with AP_DECLARE(), so they may
+ * use the most appropriate calling convention.  Hook functions and other
+ * Core functions with variable arguments must use AP_DECLARE_NONSTD().
+ *
+ * @deffunc AP_DECLARE(rettype) ap_func(args);
+ */
 #define AP_DECLARE(type)            type
+/**
+ * Apache Core dso variable argument and hook functions are declared with 
+ * AP_DECLARE(), as they must use the C language calling convention.
+ *
+ * @deffunc AP_DECLARE_NONSTD(rettype) ap_func(args [...]);
+ */
 #define AP_DECLARE_NONSTD(type)     type
+/**
+ * Apache Core dso variables are declared with AP_MODULE_DECLARE_DATA.
+ * This assures the appropriate indirection is invoked at compile time.
+ *
+ * @deffunc type AP_DECLARE_DATA ap_variable;
+ */
 #define AP_DECLARE_DATA
 #elif defined(AP_DECLARE_STATIC)
 #define AP_DECLARE(type)            type __stdcall
@@ -79,34 +108,37 @@
 #define AP_DECLARE_DATA             __declspec(dllimport)
 #endif
 
-/* setup compat like aliases for authors
+/* XXX: move to compatibility aliases once the symbol rename is complete
  */
 #define API_EXPORT(t)        AP_DECLARE(t)
 #define API_EXPORT_NONSTD(t) AP_DECLARE_NONSTD(t)
 #define API_VAR_EXPORT       AP_DECLARE_DATA
 
-/* Play a little game.  Unless MODULE_DECLARE_STATIC 
- * is defined, MODULE_DECLARE_* macros are always exported
+#if !defined(WIN32) || defined(AP_MODULE_DECLARE_STATIC)
+/**
+ * Declare a dso module's exported module structure as AP_MODULE_DECLARE_DATA.
+ *
+ * Unless AP_MODULE_DECLARE_STATIC is defined at compile time, symbols 
+ * declared with AP_MODULE_DECLARE_DATA are always exported.
+ *
+ * @deffunc module AP_MODULE_DECLARE_DATA mod_tag
  */
-/* Create a set of MODULE_DECLARE(type), MODULE_DECLARE_NONSTD(type) and 
- * MODULE_DECLARE_DATA with appropriate export and import tags for the platform
- */
-#if !defined(WIN32)
-#define MODULE_DECLARE(type)            type
-#define MODULE_DECLARE_NONSTD(type)     type
-#define MODULE_DECLARE_DATA
-#elif defined(MODULE_DECLARE_STATIC)
-#define MODULE_DECLARE(type)            type __stdcall
-#define MODULE_DECLARE_NONSTD(type)     type
-#define MODULE_DECLARE_DATA
+#define AP_MODULE_DECLARE_DATA
 #else
-#define MODULE_DECLARE_EXPORT
-#define MODULE_DECLARE(type)            __declspec(dllexport) type __stdcall
-#define MODULE_DECLARE_NONSTD(type)     __declspec(dllexport) type
-#define MODULE_DECLARE_DATA             __declspec(dllexport)
+/**
+ * AP_MODULE_DECLARE_EXPORT is a no-op.  Unless contradicted by the
+ * AP_MODULE_DECLARE_STATIC compile-time symbol, it is assumed and defined.
+ *
+ * The old SHARED_MODULE compile-time symbol is now the default behavior, 
+ * so it is no longer referenced anywhere with Apache 2.0.
+ */
+#define AP_MODULE_DECLARE_EXPORT
+#define AP_MODULE_DECLARE_DATA __declspec(dllexport)
 #endif
 
-#define MODULE_VAR_EXPORT    MODULE_DECLARE_DATA
+/* XXX: Must go away, perhaps into compat, maybe not even there.
+ */
+#define MODULE_VAR_EXPORT    AP_MODULE_DECLARE_DATA
 
 #ifdef WIN32
 #include "os.h"
