@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/05/19 13:26:03 $]
+  Last modified at [$Date: 1999/05/20 10:17:46 $]
 
 Release:
 
@@ -81,6 +81,11 @@ Documentation that needs writing:
 
 
 Available Patches:
+
+    * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
+      (PR#2598)
+	Message-ID: <199905170830.SAA31549@silk.apana.org.au>
+	Status:
 
     * Aidan Cully's patch to allow assignment of 'ownership' of resources
       to either the server UID or the file's owner.
