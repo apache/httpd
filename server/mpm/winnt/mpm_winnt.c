@@ -100,6 +100,9 @@
  */
 #define HARD_SERVER_LIMIT 1
 
+/* scoreboard.c does the heavy lifting; all we do is create the child
+ * score by moving a handle down the pipe into the child's stdin.
+ */
 extern apr_shm_t *ap_scoreboard_shm;
 server_rec *ap_server_conf;
 typedef HANDLE thread;
@@ -282,23 +285,6 @@ static void CleanNullACL( void *sa ) {
     }
 }
 
-static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_conf)
-{
-    void *sb_shared;
-    int rv;
-
-    rv = ap_reopen_scoreboard(pchild, &ap_scoreboard_shm, 1);
-    if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, "Looks like we're gonna die %d %x", rv, ap_scoreboard_shm);
-        exit(APEXIT_INIT); /* XXX need to return an error from this function */
-    }
-    ap_init_scoreboard(sb_shared);
-
-    ap_scoreboard_image->parent[0].pid = parent_pid;
-    ap_scoreboard_image->parent[0].quiescing = 0;
-}
-
-
 /*
  * The Win32 call WaitForMultipleObjects will only allow you to wait for 
  * a maximum of MAXIMUM_WAIT_OBJECTS (current 64).  Since the threading 
@@ -434,6 +420,33 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
     CloseHandle(e);
 }
 
+/* set_listeners_noninheritable()
+ * Make the listening socket handles noninheritable by processes
+ * started out of this process.
+ */
+static int set_listeners_noninheritable(apr_pool_t *p) 
+{
+    ap_listen_rec *lr;
+    HANDLE dup;
+    SOCKET nsd;
+    HANDLE hProcess = GetCurrentProcess();
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        apr_os_sock_get(&nsd,lr->sd);
+        if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 0,
+                             FALSE,     /* Inherit flag */
+                             DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), 
+                         ap_server_conf,
+                         "set_listeners_noninheritable: DuplicateHandle failed.");
+            return 0;
+        }
+        nsd = (SOCKET) dup;
+        apr_os_sock_put(&lr->sd, &nsd, p);
+    }
+    return 1;
+}
+
 /*
  * find_ready_listener()
  * Only used by Win9* and should go away when the win9*_accept() function is 
@@ -456,6 +469,43 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
 	}
     }
     return NULL;
+}
+
+/*
+ *
+ */
+static int get_scoreboard_from_parent(server_rec *s)
+{
+    apr_status_t rv;
+    HANDLE pipe;
+    HANDLE sb_os_shm;
+    DWORD BytesRead;
+    void *sb_shared;
+
+    pipe = GetStdHandle(STD_INPUT_HANDLE);
+    if (!ReadFile(pipe, &sb_os_shm, sizeof(sb_os_shm),
+                  &BytesRead, (LPOVERLAPPED) NULL)
+        || (BytesRead != sizeof(sb_os_shm))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "child: Unable to access scoreboard handle from parent");
+        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
+        exit(1);
+    }
+    if ((rv = apr_os_shm_put(&ap_scoreboard_shm, &sb_os_shm, s->process->pool)) 
+            != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "child: Unable to access scoreboard handle from parent");
+        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
+        exit(1);
+    }
+
+    rv = ap_reopen_scoreboard(pchild, &ap_scoreboard_shm, 1);
+    if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
+	ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, "Looks like we're gonna die %d %x", rv, ap_scoreboard_shm);
+        exit(APEXIT_INIT); /* XXX need to return an error from this function */
+    }
+    ap_init_scoreboard(sb_shared);
+    return 1;
 }
 
 /* 
@@ -511,6 +561,11 @@ static int get_listeners_from_parent(server_rec *s)
         num_listeners++;
     }
     CloseHandle(pipe);
+
+    if (!set_listeners_noninheritable(pconf)) {
+        return 1;
+    }
+
     return num_listeners;
 }
 
@@ -996,7 +1051,8 @@ static void child_main()
     int i;
     int cld;
 
-    /* This is the child process or we are running in single process mode. */
+    apr_pool_create(&pchild, pconf);
+
     exit_event_name = apr_psprintf(pconf, "apC%d", my_pid);
     setup_signal_names(apr_psprintf(pconf,"ap%d", parent_pid));
 
@@ -1012,26 +1068,19 @@ static void child_main()
         exit_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, exit_event_name);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                      "Child %d: exit_event_name = %s", my_pid, exit_event_name);
-        /* Set up the scoreboard. */
-        ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "getting listeners child_main, pid %d", my_pid);
-        get_listeners_from_parent(ap_server_conf);
     }
+
+    ap_run_child_init(pchild, ap_server_conf);
+    
+    ap_assert(start_mutex);
+    ap_assert(exit_event);
+    ap_assert(max_requests_per_child_event);
 
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     child_events[0] = exit_event;
     child_events[1] = max_requests_per_child_event;
 
-    ap_assert(start_mutex);
-    ap_assert(exit_event);
-    ap_assert(max_requests_per_child_event);
-
-    apr_pool_create(&pchild, pconf);
-
-    ap_run_child_init(pchild, ap_server_conf);
-    
     allowed_globals.jobsemaphore = CreateSemaphore(NULL, 0, 1000000, NULL);
     apr_lock_create(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, 
                     APR_LOCK_DEFAULT, NULL, pchild);
@@ -1423,6 +1472,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      * We have already set the listening sockets noninheritable, but if 
      * WSADuplicateSocket runs before the child process initializes
      * the listeners will be inherited anyway.
+     *
+     * XXX: This is badness; needs some mutex interlocking
      */
     Sleep(1000);
 
@@ -1642,33 +1693,6 @@ die_now:
     }
 
     return 1;      /* Tell the caller we want a restart */
-}
-
-/* set_listeners_noninheritable()
- * Make the listening socket handles noninheritable by processes
- * started out of this process.
- */
-static int set_listeners_noninheritable(apr_pool_t *p) 
-{
-    ap_listen_rec *lr;
-    HANDLE dup;
-    SOCKET nsd;
-    HANDLE hProcess = GetCurrentProcess();
-
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        apr_os_sock_get(&nsd,lr->sd);
-        if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 0,
-                             FALSE,     /* Inherit flag */
-                             DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), 
-                         ap_server_conf,
-                         "set_listeners_noninheritable: DuplicateHandle failed.");
-            return 0;
-        }
-        nsd = (SOCKET) dup;
-        apr_os_sock_put(&lr->sd, &nsd, p);
-    }
-    return 1;
 }
 
 /* service_nt_main_fn needs to append the StartService() args 
@@ -2129,55 +2153,48 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
                          NULL, "no listening sockets available, shutting down");
             return DONE;
         }
+
+        if (!set_listeners_noninheritable(pconf)) {
+            return 1;
+        }
     }
     return OK;
 }
+
+static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_conf)
+{
+    /* This is the child process or we are running in single process mode. */
+    if (!one_process) {
+        /* Set up the scoreboard. */
+        get_scoreboard_from_parent(ap_server_conf);
+
+        /* Set up the listeners. */
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+                     "getting listeners child_main, pid %d", my_pid);
+        get_listeners_from_parent(ap_server_conf);
+
+        ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
+    }
+}
+
 
 AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 {
     static int restart = 0;            /* Default is "not a restart" */
 
-    if ((parent_pid != my_pid) || one_process) {
-        /* Child process or in one_process (debug) mode */
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "Child %d: Child process is running", my_pid);
-
-        if (one_process) {
-            /* Set up the scoreboard. */
-            if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
-                return 1;
-            }
-        }
-        else {
-            /* Set up the scoreboard. */
-            HANDLE pipe;
-            HANDLE sb_os_shm;
-            DWORD BytesRead;
-            apr_status_t rv;
-            pipe = GetStdHandle(STD_INPUT_HANDLE);
-            if (!ReadFile(pipe, &sb_os_shm, sizeof(sb_os_shm),
-                          &BytesRead, (LPOVERLAPPED) NULL)
-                || (BytesRead != sizeof(sb_os_shm))) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                             "child: Unable to access scoreboard handle from parent");
-                ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-                exit(1);
-            }
-            if ((rv = apr_os_shm_put(&ap_scoreboard_shm, &sb_os_shm, s->process->pool)) 
-                    != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                             "child: Unable to access scoreboard handle from parent");
-                ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-                exit(1);
-            }
-
-
-            ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
-        }
-
-        if (!set_listeners_noninheritable(pconf)) {
+    if ((parent_pid == my_pid) || one_process) {
+        /* Set up the scoreboard. */
+        if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
             return 1;
         }
+    }
+    
+    if ((parent_pid != my_pid) || one_process) 
+    {
+        /* The child process or in one_process (debug) mode 
+         */
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+                     "Child %d: Child process is running", my_pid);
 
         child_main();
 
@@ -2185,18 +2202,14 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                      "Child %d: Child process is exiting", my_pid);        
         return 1;
     }
-    else /* Child */ { 
-        /* Set up the scoreboard. */
-        if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
-            return 1;
-        }
+    else 
+    {
+        /* A real-honest to goodness parent */
 
-        if (!set_listeners_noninheritable(pconf)) {
-            return 1;
-        }
         restart = master_main(ap_server_conf, shutdown_event, restart_event);
 
-        if (!restart) {
+        if (!restart) 
+        {
             /* Shutting down. Clean up... */
             const char *pidfile = ap_server_root_relative (pconf, ap_pid_fname);
 
@@ -2212,7 +2225,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
             return 1;
         }
-    }  /* Parent process */
+    }
 
     return 0; /* Restart */
 }
