@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/27 13:18:56 $]
+Last modified at [$Date: 2004/01/01 17:29:15 $]
 
 Release:
 
@@ -86,6 +86,7 @@ PATCHES TO BACKPORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_protocol.h?r1=1.84&r2=1.85
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/http/http_protocol.c?r1=1.473&r2=1.474
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c?r1=1.48&r2=1.49
+        nd: yes, it's a minor bump
       +1: rederpj, trawick (requires minor MMN bump I believe), stoddard
 
     * Replace some of the mutex locking in the worker MPM with
@@ -229,6 +230,9 @@ PATCHES TO BACKPORT FROM 2.1
       jerenkrantz: Okay by me, but perhaps we should just escape the \n?
                    Wouldn't ignoring the rewrite here do something bad tho?
                    (Am not backporting.)
+      nd: If the user/admin wants to escape, he can use the internal escape
+          map. Additionally not escaping \n is (more or less) backwards
+          compatible, because it always failed (the map got out of sync).
       +1: nd, trawick, jerenkrantz
 
     * mod_ssl: fix a link failure when the openssl-engine libraries are
@@ -304,6 +308,8 @@ PATCHES TO BACKPORT FROM 2.1
         include/httpd.h: r1.201
         include/ap_mmn.h: r1.60
       jerenkrantz suggests: Why don't we just always output XHTML instead?
+      nd replies: backwards compat; it would break those sites who have html
+      READMEs or HEADERs (or don't want to use xhtml)
       +1: nd, jerenkrantz
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
