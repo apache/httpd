@@ -860,7 +860,7 @@ MIME タイプによって選択</td></tr>
      </code></p></div>
 
      <p>中身の効果は
-     <code>IndexOptions?FancyIndexing?+SuppressSize</code>
+     <code>IndexOptions&nbsp;FancyIndexing&nbsp;+SuppressSize</code>
      と同一です。
      接頭辞の付かない <code>FancyIndexing</code>
      でそれ以前の増減キーワードを無効にされて、

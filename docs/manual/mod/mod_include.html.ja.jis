@@ -546,11 +546,11 @@
     使われているからです。複数の文字列が続いているときは、
     空白を間に入れて一つにくっつけられます。ですから、</p>
 
-    <div class="example"><p><code><var>string1</var>????<var>string2</var></code> は <code><var>string1</var>?<var>string2</var></code> になります。<br />
+    <div class="example"><p><code><var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code> は <code><var>string1</var>&nbsp;<var>string2</var></code> になります。<br />
       <br />
       また、<br />
       <br />
-      <code>'<var>string1</var>????<var>string2</var>'</code> は <code><var>string1</var>????<var>string2</var></code>
+      <code>'<var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var>'</code> は <code><var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code>
       になります。</p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
