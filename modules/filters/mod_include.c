@@ -1704,7 +1704,7 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
             apr_status_t rv;
 
             /* be safe; only files in this directory or below allowed */
-            rv = apr_filepath_merge(&newpath, NULL, tag_val,
+            rv = apr_filepath_merge(&newpath, NULL, parsed_string,
                                     APR_FILEPATH_NOTABOVEROOT |
                                     APR_FILEPATH_SECUREROOTTEST |
                                     APR_FILEPATH_NOTABSOLUTE, ctx->dpool);
