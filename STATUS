@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/01 18:54:14 $]
+Last modified at [$Date: 2004/09/02 11:18:44 $]
 
 Release:
 
@@ -168,12 +168,6 @@ PATCHES TO BACKPORT FROM 2.1
                     This just seems like a lot of code to duplicate what we
                     have already.  *shrug*  Regardless, patch looks okay...
        +1: nd, jerenkrantz
-
-    *) mod_log_config: Fix a bug which prevented request completion time
-       from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
-       processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.118&r2=1.119
-       +1: trawick, nd, jerenkrantz
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
