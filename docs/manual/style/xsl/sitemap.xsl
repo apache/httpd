@@ -172,6 +172,9 @@
 
     <xsl:call-template name="toplink"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     <div class="section">
 
       <!-- Section heading -->
@@ -187,12 +190,18 @@
         </xsl:if>
       </h2>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <!-- category body -->
       <ul>
         <xsl:apply-templates select="page"/>
       </ul>
       
       <xsl:apply-templates select="modulefilelist"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
     </div> <!-- /.section -->
   </xsl:template>
@@ -204,37 +213,57 @@
   <!-- insert module list into sitemap                    -->
   <!--                                                    -->
   <xsl:template match="category/modulefilelist">
-    <ul>
+
+    <!-- create our own translation list first -->
+    <xsl:variable name="translist">
+      <xsl:text>-</xsl:text>
+
       <xsl:for-each select="modulefile">
-        <xsl:sort select="document(concat($basedir,'mod/',.))/modulesynopsis/name"/>
+        <xsl:variable name="current" select="document(concat($basedir,'mod/',.))/modulesynopsis" />
+   
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="$current/name"/>
+        <xsl:text> </xsl:text>
+        <xsl:call-template name="module-translatename">
+          <xsl:with-param name="name" select="$current/name"/>
+        </xsl:call-template>
+        <xsl:text> -</xsl:text>
+      </xsl:for-each>
+    </xsl:variable>
+
+    <ul>
+      <!-- put core and mpm_common on top -->
+      <li>
+        <a href="mod/core.html">
+          <xsl:value-of select="$messages/message[@name='apachecore']"/>
+        </a>
+      </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+      <li>
+        <a href="mod/mpm_common.html">
+          <xsl:value-of select="$messages/message[@name='apachempmcommon']"/>
+        </a>
+      </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+      <xsl:for-each select="modulefile">
+      <xsl:sort select="substring-before(substring-after($translist, concat('- ', document(concat($basedir,'mod/',.))/modulesynopsis/name, ' ')), ' -')"/>
+
         <xsl:variable name="current" select="document(concat($basedir,'mod/',.))/modulesynopsis" />
 
-        <xsl:if test="$current/status='MPM' or $current/status='Core'">
-          <xsl:variable name="name"><xsl:choose>
-            <xsl:when test="starts-with($current/name,'mpm_')">
-              <xsl:value-of select="substring($current/name,5)"/>
-            </xsl:when>
-
-            <xsl:otherwise>
-              <xsl:value-of select="$current/name"/>
-            </xsl:otherwise>
-          </xsl:choose></xsl:variable>
+        <xsl:if test="$current/status='MPM' and $current/name!='mpm_common'">
+          <xsl:variable name="name" select="substring-before(substring-after($translist, concat('- ', $current/name, ' ')), ' -')"/>
 
           <li>
-            <a href="mod/{$current/name}.html"><xsl:choose>
-              <xsl:when test="$name='core'">
-                <xsl:value-of select="$messages/message[@name='apachecore']"/>
-              </xsl:when>
-
-              <xsl:when test="$name='common'">
-                <xsl:value-of select="$messages/message[@name='apachempmcommon']"/>
-              </xsl:when>
-                
-              <xsl:otherwise>
-                <xsl:value-of select="$messages/message[@name='apachempm']"/>
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="$name"/>
-              </xsl:otherwise></xsl:choose>
+            <a href="mod/{$current/name}.html">
+              <xsl:value-of select="$messages/message[@name='apachempm']"/>
+              <xsl:text> </xsl:text>
+              <xsl:value-of select="$name"/>
             </a>
           </li>
 
@@ -243,10 +272,13 @@
 
         </xsl:if>
       </xsl:for-each>
-      <!-- /core,mpm -->
+    </ul>
+    <!-- /core, mpm -->
 
+    <ul>
       <xsl:for-each select="modulefile">
-        <xsl:sort select="document(concat($basedir,'mod/',.))/modulesynopsis/name"/>
+      <xsl:sort select="substring-before(substring-after($translist, concat('- ', document(concat($basedir,'mod/',.))/modulesynopsis/name, ' ')), ' -')"/>
+
         <xsl:variable name="current" select="document(concat($basedir,'mod/',.))/modulesynopsis" />
 
         <xsl:if test="$current/status!='MPM' and $current/status!='Core' and $current/status!='Obsolete'">
@@ -263,33 +295,8 @@
 
         </xsl:if>
       </xsl:for-each>
-      <!-- /other modules -->
     </ul>
-
-    <!-- obsolete modules -->
-<!--
-    <ul>
-      <xsl:for-each select="modulefile">
-        <xsl:sort select="document(concat($basedir,'mod/',.))/modulesynopsis/name"/>
-        <xsl:variable name="current" select="document(concat($basedir,'mod/',.))/modulesynopsis" />
-
-        <xsl:if test="$current/status='Obsolete'">
-          <li>
-            <a href="mod/obs_{$current/name}.html">
-              <xsl:value-of select="$messages/message[@name='obsoleteapachemodule']"/>
-              <xsl:text> </xsl:text>
-              <xsl:value-of select="$current/name"/>
-            </a>
-          </li>
- 
-<xsl:text>
-</xsl:text>
-
-        </xsl:if>
-      </xsl:for-each>
-     </ul>
--->
-     <!-- /obsolete modules -->
+    <!-- /other modules -->
 
   </xsl:template>
   <!-- /category/modulefilelist -->
