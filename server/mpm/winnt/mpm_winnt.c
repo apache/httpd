@@ -198,14 +198,15 @@ static PSECURITY_ATTRIBUTES GetNullACL()
     if (pSD == NULL || sa == NULL) {
         return NULL;
     }
+    apr_set_os_error(0);
     if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
-	|| GetLastError()) {
+	|| apr_get_os_error()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;
     }
     if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
-	|| GetLastError()) {
+	|| apr_get_os_error()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;
@@ -314,13 +315,13 @@ void signal_parent(int type)
 	/* Um, problem, can't signal the parent, which means we can't
 	 * signal ourselves to die. Ignore for now...
 	 */
-	ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
+	ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), server_conf,
                      "OpenEvent on %s event", signal_name);
 	return;
     }
     if (SetEvent(e) == 0) {
 	/* Same problem as above */
-	ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
+	ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), server_conf,
                      "SetEvent on %s event", signal_name);
 	CloseHandle(e);
 	return;
@@ -467,7 +468,7 @@ static int setup_inherited_listeners(server_rec *s)
     for (lr = ap_listeners; lr; lr = lr->next) {
         if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
                       &BytesRead, (LPOVERLAPPED) NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                          "setup_inherited_listeners: Unable to read socket data from parent");
             signal_parent(0);	/* tell parent to die */
             exit(1);
@@ -477,7 +478,7 @@ static int setup_inherited_listeners(server_rec *s)
         nsd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
                         &WSAProtocolInfo, 0, 0);
         if (nsd == INVALID_SOCKET) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), server_conf,
                          "Child %d: setup_inherited_listeners(), WSASocket failed to open the inherited socket.", my_pid);
             signal_parent(0);	/* tell parent to die */
             exit(1);
@@ -758,7 +759,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         /* allocate the completion context and the transaction pool */
         context = apr_pcalloc(pconf, sizeof(COMP_CONTEXT));
         if (!context) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+            ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), server_conf,
                          "win9x_get_connection: apr_pcalloc() failed. Process will exit.");
             return NULL;
         }
@@ -776,7 +777,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context->sa_server = apr_palloc(context->ptrans, len);
         if (getsockname(context->accept_socket, 
                         context->sa_server, &len)== SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(), server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), server_conf, 
                          "getsockname failed");
             continue;
         }
@@ -784,7 +785,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context->sa_client = apr_palloc(context->ptrans, len);
         if ((getpeername(context->accept_socket,
                          context->sa_client, &len)) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(), server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), server_conf, 
                          "getpeername failed");
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
@@ -819,8 +820,8 @@ static void drain_acceptex_complport(HANDLE hComplPort, BOOLEAN bCleanUp)
         rc = GetQueuedCompletionStatus(hComplPort, &BytesRead, &CompKey,
                                        &pol, 1000);
         if (!rc) {
-            rc = GetLastError();
-            if (rc == ERROR_OPERATION_ABORTED) {
+            rc = apr_get_os_error();
+            if (rc == APR_FROM_OS_ERROR(ERROR_OPERATION_ABORTED)) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                              "Child %d: - Draining an ABORTED packet off "
                              "the AcceptEx completion port.", my_pid);
@@ -849,7 +850,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
     /* allocate the completion context */
     context = apr_pcalloc(_pconf, sizeof(COMP_CONTEXT));
     if (!context) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+        ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), server_conf,
                      "create_acceptex_context: apr_pcalloc() failed. Process will exit.");
         return -1;
     }
@@ -858,7 +859,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
     context->lr = lr;
     context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
     if (context->Overlapped.hEvent == NULL) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+        ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), server_conf,
                      "create_acceptex_context: CreateEvent() failed. Process will exit.");
         return -1;
     }
@@ -867,7 +868,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
     apr_get_os_sock(&nsd, context->lr->sd);
     context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (context->accept_socket == INVALID_SOCKET) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+        ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), server_conf,
                      "create_acceptex_context: socket() failed. Process will exit.");
         return -1;
     }
@@ -876,7 +877,7 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
     if (setsockopt(context->accept_socket, SOL_SOCKET,
                    SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
                    sizeof(nsd))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, WSAGetLastError(), server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), server_conf,
                      "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
         /* Not a failure condition. Keep running. */
     }
@@ -895,9 +896,9 @@ static int create_acceptex_context(apr_pool_t *_pconf, ap_listen_rec *lr)
                   PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                   &BytesRead,
                   (LPOVERLAPPED) context)) {
-        lasterror = WSAGetLastError();
-        if (lasterror != ERROR_IO_PENDING) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
+        lasterror = apr_get_netos_error();
+        if (lasterror != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
+            ap_log_error(APLOG_MARK,APLOG_ERR, lasterror, server_conf,
                          "create_acceptex_context: AcceptEx failed. Process will exit.");
             return -1;
         }
@@ -935,7 +936,7 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
         if (context->accept_socket == INVALID_SOCKET) {
             context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
             if (context->accept_socket == INVALID_SOCKET) {
-                rc = WSAGetLastError();
+                rc = apr_get_netos_error();
                 ap_log_error(APLOG_MARK,APLOG_ERR, rc, server_conf,
                              "reset_acceptex_context: socket() failed. Process will exit.");
                 return rc;
@@ -944,7 +945,7 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
             /* SO_UPDATE_ACCEPT_CONTEXT is required for shutdown() to work */
             if (setsockopt(context->accept_socket, SOL_SOCKET,
                            SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd, sizeof(nsd))) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(),
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(),
                              server_conf,
                              "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
             }
@@ -953,8 +954,8 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
         if (!AcceptEx(nsd, context->accept_socket, context->recv_buf, 0,
                       PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead, 
                       (LPOVERLAPPED) context)) {
-            rc = WSAGetLastError();
-            if (rc != ERROR_IO_PENDING) {
+            rc = apr_get_netos_error();
+            if (rc != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, rc, server_conf,
                              "reset_acceptex_context: AcceptEx failed for "
                              "listening socket: %d and accept socket: %d", 
@@ -1012,8 +1013,8 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
         rc = GetQueuedCompletionStatus(AcceptExCompPort, &BytesRead, &CompKey,
                                        &pol, INFINITE);
         if (!rc) {
-            rc = GetLastError();
-            if (rc != ERROR_OPERATION_ABORTED) {
+            rc = apr_get_os_error();
+            if (rc != APR_FROM_OS_ERROR(ERROR_OPERATION_ABORTED)) {
                 /* Is this a deadly condition? 
                  * We sometimes get ERROR_NETNAME_DELETED when a client
                  * disconnects when attempting to reuse sockets. Not sure why 
@@ -1188,7 +1189,7 @@ static void create_listeners()
     for (lr = ap_listeners; lr != NULL; lr = lr->next) {
         while (lr->count < NUM_LISTENERS) {
             if (create_acceptex_context(pconf, lr) == -1) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), server_conf,
                              "Unable to create an AcceptEx completion context -- process will exit");
                 signal_parent(0);	/* tell parent to die */
             }
@@ -1309,7 +1310,7 @@ static void child_main()
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                          "Child %d: WAIT_FAILED -- shutting down server");
             break;
         }
@@ -1506,7 +1507,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
                      "Parent: Path to Apache process too long");
         return -1;
     } else if (rv == 0) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                      "Parent: GetModuleFileName() returned NULL for current process.");
         return -1;
     }
@@ -1544,7 +1545,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
     pEnvVar = '\0';
     /* Create a pipe to send socket info to the child */
     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                      "Parent: Unable to create pipe to child process.");
         return -1;
     }
@@ -1565,7 +1566,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
                        pEnvBlock,          /* Environment block */
                        NULL,
                        &si, &pi)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                      "Parent: Not able to create the child process.");
         /*
          * We must close the handles to the new process and its main thread
@@ -1587,7 +1588,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
     sa.lpSecurityDescriptor = NULL;        
     kill_event = CreateEvent(&sa, TRUE, FALSE, apr_psprintf(pconf,"apC%d", pi.dwProcessId));
     if (!kill_event) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                      "Parent: Could not create exit event for child process");
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
@@ -1622,7 +1623,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
         if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
                        &BytesWritten,
                        (LPOVERLAPPED) NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                          "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
             return -1;
         }
@@ -1634,7 +1635,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
         if (!DuplicateHandle(GetCurrentProcess(), AcceptExCompPort, 
                              pi.hProcess, &hDupedCompPort,  0,
                              TRUE, DUPLICATE_SAME_ACCESS)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                          "Parent: Unable to duplicate AcceptEx completion port. Shutting down.");
             return -1;
         }
@@ -1670,7 +1671,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
                            &current_live_processes) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                          "master_main: create child process failed. Exiting.");
             shutdown_pending = 1;
             goto die_now;
@@ -1691,13 +1692,13 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
         /* Something serious is wrong */
-        ap_log_error(APLOG_MARK,APLOG_CRIT, GetLastError(), server_conf,
+        ap_log_error(APLOG_MARK,APLOG_CRIT, apr_get_os_error(), server_conf,
                      "master_main: WaitForMultipeObjects WAIT_FAILED -- doing server shutdown");
         shutdown_pending = 1;
     }
     else if (rv == WAIT_TIMEOUT) {
         /* Hey, this cannot happen */
-        ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                      "master_main: WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
         shutdown_pending = 1;
     }
@@ -1708,7 +1709,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
                      "master_main: Shutdown event signaled -- doing server shutdown.");
         if (ResetEvent(shutdown_event) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                          "ResetEvent(shutdown_event)");
         }
 
@@ -1720,7 +1721,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, s, 
                      "master_main: Restart event signaled. Doing a graceful restart.");
         if (ResetEvent(restart_event) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                          "master_main: ResetEvent(restart_event) failed.");
         }
         /* Signal each child process to die 
@@ -1731,7 +1732,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          */
         for (i = 0; i < children_to_kill; i++) {
             if (SetEvent(process_kill_events[i]) == 0)
-                ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
+                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                              "master_main: SetEvent for child process in slot #%d failed", i);
             cleanup_process(process_handles, process_kill_events, i, &current_live_processes);
         }
@@ -1772,7 +1773,7 @@ die_now:
         for (i = 0; i < current_live_processes; i++) {
             printf("SetEvent handle = %d\n", process_kill_events[i]);
             if (SetEvent(process_kill_events[i]) == 0)
-                ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), server_conf,
                              "master_main: SetEvent for child process in slot #%d failed", i);
         }
 
@@ -1877,7 +1878,7 @@ void winnt_rewrite_args(process_rec *process)
         /* WARNING: There is an implict assumption here that the
          * executable resides in the ServerRoot!
          */
-        rv = GetLastError();
+        rv = apr_get_os_error();
         ap_log_error(APLOG_MARK,APLOG_ERR, rv, NULL, 
                      "Failed to get the running module's file name");
         exit(1);
@@ -2112,7 +2113,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
                                                           0,
                                                           0); /* CONCURRENT ACTIVE THREADS */
                 if (AcceptExCompPort == NULL) {
-                    ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                    ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), server_conf,
                                  "Parent: Unable to create the AcceptExCompletionPort -- process will exit");
                     exit(1);
                 }
@@ -2125,7 +2126,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
              */
             shutdown_event = CreateEvent(sa, FALSE, FALSE, signal_shutdown_name);
             if (!shutdown_event) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), server_conf,
                              "Parent: Cannot create shutdown event %s", signal_shutdown_name);
                 CleanNullACL((void *)sa);
                 exit(1);
@@ -2137,7 +2138,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
             restart_event = CreateEvent(sa, FALSE, FALSE, signal_restart_name);
             if (!restart_event) {
                 CloseHandle(shutdown_event);
-                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), server_conf,
                              "Parent: Cannot create restart event %s", signal_restart_name);
                 CleanNullACL((void *)sa);
                 exit(1);
