@@ -27,61 +27,65 @@ include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
 
 install-conf:
-	@echo Installing configuration files
-	@test -d $(DESTDIR)$(sysconfdir) || $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir)
-	@cd $(top_srcdir)/docs/conf; \
-	for i in mime.types magic; do \
-		$(INSTALL_DATA) $$i $(DESTDIR)$(sysconfdir); \
-	done; \
-	for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
-		cd $$j ; \
-	for i in *-std*.conf ssl.conf; do \
-		[ -f $$i ] || continue; \
-		( \
-			n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
-			if test $$n_lm -eq 0 -o "x$(DSO_MODULES)" = "x"; then \
-				sed -e 's#@@ServerRoot@@#$(prefix)#g' \
-					-e 's#@@Port@@#$(PORT)#g' \
-					-e '/@@LoadModule@@/d' \
-					< $$i; \
-			else \
-				sed -n -e '/@@LoadModule@@/q' \
-					-e 's#@@ServerRoot@@#$(prefix)#g' \
-					-e 's#@@Port@@#$(PORT)#g' \
-					-e 'p' \
-					< $$i; \
-				for j in $(DSO_MODULES) "^EOL^"; do \
-					if test "x$$j" = "xssl"; then \
-						echo "<IfDefine SSL>"; \
-					fi; \
-					if test $$j != "^EOL^"; then \
-						echo "LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
-					fi; \
-					if test "x$$j" = "xssl"; then \
-						echo "</IfDefine>"; \
-					fi; \
-				done; \
-				sed -e '1,/@@LoadModule@@/d' \
-					-e '/@@LoadModule@@/d' \
-					-e 's#@@ServerRoot@@#$(prefix)#g' \
-					-e 's#@@Port@@#$(PORT)#g' \
-					< $$i; \
-			fi \
-		) > $(DESTDIR)$(sysconfdir)/$$i; \
-		chmod 0644 $(DESTDIR)$(sysconfdir)/$$i; \
-		file=`echo $$i|sed s/-std//`; \
-		if [ "$$file" = "httpd.conf" ]; then \
-			file=`echo $$file|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
-		fi; \
-		if test "$$file" != "$$i" && test ! -f $(DESTDIR)$(sysconfdir)/$$file; then \
-			$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/$$i $(DESTDIR)$(sysconfdir)/$$file; \
-		fi; \
-	done ; \
-	done
-	@if test -f "$(builddir)/envvars-std"; then \
-	    cp -p envvars-std $(DESTDIR)$(sbindir); \
-	    if test ! -f $(DESTDIR)$(sbindir)/envvars; then \
-	        cp -p envvars-std $(DESTDIR)$(sbindir)/envvars ; \
+	-@if [ -d $(DESTDIR)$(sysconfdir) ]; then \
+           echo "[PRESERVING EXISTING CONF SUBDIR: $(DESTDIR)$(sysconfdir)]"; \
+        else \
+	    echo Installing configuration files ; \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir) ; \
+	    cd $(top_srcdir)/docs/conf; \
+	    for i in mime.types magic; do \
+	    	$(INSTALL_DATA) $$i $(DESTDIR)$(sysconfdir); \
+	    done; \
+	    for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
+	    	cd $$j ; \
+	    for i in *-std*.conf ssl.conf; do \
+	    	[ -f $$i ] || continue; \
+	    	( \
+	    		n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
+	    		if test $$n_lm -eq 0 -o "x$(DSO_MODULES)" = "x"; then \
+	    			sed -e 's#@@ServerRoot@@#$(prefix)#g' \
+	    				-e 's#@@Port@@#$(PORT)#g' \
+	    				-e '/@@LoadModule@@/d' \
+	    				< $$i; \
+	    		else \
+	    			sed -n -e '/@@LoadModule@@/q' \
+	    				-e 's#@@ServerRoot@@#$(prefix)#g' \
+	    				-e 's#@@Port@@#$(PORT)#g' \
+	    				-e 'p' \
+	    				< $$i; \
+	    			for j in $(DSO_MODULES) "^EOL^"; do \
+	    				if test "x$$j" = "xssl"; then \
+	    					echo "<IfDefine SSL>"; \
+	    				fi; \
+	    				if test $$j != "^EOL^"; then \
+	    					echo "LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+	    				fi; \
+	    				if test "x$$j" = "xssl"; then \
+	    					echo "</IfDefine>"; \
+	    				fi; \
+	    			done; \
+	    			sed -e '1,/@@LoadModule@@/d' \
+	    				-e '/@@LoadModule@@/d' \
+	    				-e 's#@@ServerRoot@@#$(prefix)#g' \
+	    				-e 's#@@Port@@#$(PORT)#g' \
+	    				< $$i; \
+	    		fi \
+	    	) > $(DESTDIR)$(sysconfdir)/$$i; \
+	    	chmod 0644 $(DESTDIR)$(sysconfdir)/$$i; \
+	    	file=`echo $$i|sed s/-std//`; \
+	    	if [ "$$file" = "httpd.conf" ]; then \
+	    		file=`echo $$file|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
+	    	fi; \
+	    	if test "$$file" != "$$i" && test ! -f $(DESTDIR)$(sysconfdir)/$$file; then \
+	    		$(INSTALL_DATA) $(DESTDIR)$(sysconfdir)/$$i $(DESTDIR)$(sysconfdir)/$$file; \
+	    	fi; \
+	    done ; \
+	    done ; \
+	    if test -f "$(builddir)/envvars-std"; then \
+	        cp -p envvars-std $(DESTDIR)$(sbindir); \
+	        if test ! -f $(DESTDIR)$(sbindir)/envvars; then \
+	            cp -p envvars-std $(DESTDIR)$(sbindir)/envvars ; \
+	        fi ; \
 	    fi ; \
 	fi
 
@@ -103,30 +107,50 @@ dox::
 	doxygen $(top_srcdir)/docs/doxygen.conf
 
 install-htdocs:
-	@echo Installing HTML documents
-	@test -d $(DESTDIR)$(htdocsdir) || $(MKINSTALLDIRS) $(DESTDIR)$(htdocsdir)
-	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir))
-	@test -d $(DESTDIR)$(manualdir) || $(MKINSTALLDIRS) $(DESTDIR)$(manualdir)
-	@test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir))
-	-@test "x$(htdocsdir)" != "x" && cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -print | xargs rm -rf
+	-@if [ -d $(DESTDIR)$(htdocsdir) ]; then \
+           echo "[PRESERVING EXISTING HTDOCS SUBDIR: $(DESTDIR)$(htdocsdir)]"; \
+        else \
+	    @echo Installing HTML documents ; \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(htdocsdir) ; \
+	    @test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir)) ; \
+	fi
+	-@if [ -d $(DESTDIR)$(manualdir) ]; then \
+           echo "[PRESERVING EXISTING MANUAL SUBDIR: $(DESTDIR)$(manualdir)]"; \
+        else \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(manualdir) ; \
+	    @test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir)) ; \
+	    -@test "x$(htdocsdir)" != "x" && cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -print | xargs rm -rf ; \
+	fi
 
 install-error:
-	@echo Installing error documents
-	@test -d $(DESTDIR)$(errordir) || $(MKINSTALLDIRS) $(DESTDIR)$(errordir)
-	@cd $(top_srcdir)/docs/error && cp -rp * $(DESTDIR)$(errordir)
-	-@test "x$(errordir)" != "x" && cd $(DESTDIR)$(errordir) && find . -name "CVS" -print | xargs rm -rf
+	-@if [ -d $(DESTDIR)$(errordir) ]; then \
+           echo "[PRESERVING EXISTING ERROR SUBDIR: $(DESTDIR)$(errordir)]"; \
+        else \
+	    @echo Installing error documents ; \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(errordir) ; \
+	    @cd $(top_srcdir)/docs/error && cp -rp * $(DESTDIR)$(errordir) ; \
+	    -@test "x$(errordir)" != "x" && cd $(DESTDIR)$(errordir) && find . -name "CVS" -print | xargs rm -rf ; \
+	fi
 
 install-icons:
-	@echo Installing icons
-	@test -d $(DESTDIR)$(iconsdir) || $(MKINSTALLDIRS) $(DESTDIR)$(iconsdir)
-	@cd $(top_srcdir)/docs/icons && cp -rp * $(DESTDIR)$(iconsdir)
-	-@test "x$(iconsdir)" != "x" && cd $(DESTDIR)$(iconsdir) && find . -name "CVS" -print | xargs rm -rf
+	-@if [ -d $(DESTDIR)$(iconsdir) ]; then \
+           echo "[PRESERVING EXISTING ICONS SUBDIR: $(DESTDIR)$(iconsdir)]"; \
+        else \
+	    @echo Installing icons ; \
+	    $(MKINSTALLDIRS) $(DESTDIR)$(iconsdir) ; \
+	    @cd $(top_srcdir)/docs/icons && cp -rp * $(DESTDIR)$(iconsdir) ; \
+	    -@test "x$(iconsdir)" != "x" && cd $(DESTDIR)$(iconsdir) && find . -name "CVS" -print | xargs rm -rf ; \
+	fi
 
 install-cgi:
-	@echo Installing CGIs
-	@test -d $(DESTDIR)$(cgidir) || $(MKINSTALLDIRS) $(DESTDIR)$(cgidir)
-	@cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(DESTDIR)$(cgidir)
-	-@test "x$(cgidir)" != "x" && cd $(DESTDIR)$(cgidir) && find . -name "CVS" -print | xargs rm -rf
+	-@if [ -d $(DESTDIR)$(cgidir) ];then \
+	    echo "[PRESERVING EXISTING CGI SUBDIR: $(DESTDIR)$(cgidir)]"; \
+	else \
+	   @echo Installing CGIs ; \
+	   $(MKINSTALLDIRS) $(DESTDIR)$(cgidir) ; \
+	   @cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(DESTDIR)$(cgidir) ; \
+	   test "x$(cgidir)" != "x" && cd $(DESTDIR)$(cgidir) && find . -name "CVS" -print | xargs rm -rf ; \
+	fi
 
 install-other:
 	@test -d $(DESTDIR)$(logfiledir) || $(MKINSTALLDIRS) $(DESTDIR)$(logfiledir)
