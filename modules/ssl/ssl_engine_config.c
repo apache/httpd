@@ -665,6 +665,12 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
 #define NO_PER_DIR_SSL_CA \
     "Your ssl library does not have support for per-directory CA"
 
+#ifdef HAVE_SSL_SET_CERT_STORE
+#   define MODSSL_HAVE_SSL_SET_CERT_STORE 1
+#else
+#   define MODSSL_HAVE_SSL_SET_CERT_STORE 0
+#endif
+
 #define MODSSL_SET_CA(f) \
     if (cmd->path) \
         if (MODSSL_HAVE_SSL_SET_CERT_STORE) \
