@@ -62,6 +62,7 @@ Committed Code Changes:
     * Dean's cleanup of code in http_vhost.c and vhost-stuff in mod_rewrite.c
     * Dean's rewrite of absoluteURI handling vhost matching
     * Dean's new mod_test_util_uri.c 
+    * back out USE_PTHREAD_SERIALIZED_ACCEPT for solaris
 
 Available Patches:
 
@@ -102,11 +103,6 @@ Concepts:
 
 In progress:
 
-    * Martin Kraemer's [PATCH] Parsing URI into its components 
-      This has "evolved" into a new module: util_uri. Martin
-      will post when it's at a state where he's happy with it.
-      Ken would like to see it in libap instead of libmain.
-
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
 	Status: Dean +1, Jim +1, Martin +1, Paul +1
@@ -124,13 +120,26 @@ Needs patch:
 
     * proxy security fixes from 1.2.5 need to be brought forward
 
-    * DoS created by the lame hostname lookup code in check_fulluri, which
-	should be part of the proxy and not in the core
-
     * Documentation for:
       1) htdocs/manual/sourcereorg.html and other files should mention 
          new mod_so capabilities.
       2) windows.html should be cleaned up.
+
+    * uri issues (dean will do unless someone else wants 'em):
+	- RFC2068 requires a server to recognize its own IP addr(s) in dot
+	notation, we do this fine if the user follows the dns-caveats
+	documentation... we should handle it in the case the user doesn't ever
+	supply a dot-notation address.
+
+	- The proxy now asks http_vhost "is this hostname:port the same as
+	r->server?"  Which means if it's not the same as r->server, but is another
+	server on the same machine then the proxy may make a request to itself.
+	In particular if you're so silly as to combine NameVirtualHosts with the
+	proxy on the same IP address you may end up with some fun results.
+	(which means: test namevhosts + proxy)
+
+	- abs_path versus net_loc parsing issues with new parser, in particular
+	    "GET //hostname/path HTTP/1.0" won't behave correctly.
 
 Closed issues:
 
@@ -220,7 +229,6 @@ Open issues:
     * Ken's PR#1053: an error when accessing a negotiated document
       explicitly names the variant selected.  Should it do so, or should
       the base input name be referenced?
-
 
 Win32 specific issues:
 
