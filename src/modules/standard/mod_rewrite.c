@@ -90,6 +90,7 @@
     /* from the underlaying Unix system ... */
 #include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <time.h>
 #include <signal.h>
 #include <errno.h>
@@ -2708,7 +2709,7 @@ static char *rewrite_mapfunc_tolower(request_rec *r, char *key)
 
 static int rewrite_rand_init_done = 0;
 
-void rewrite_rand_init(void)
+static void rewrite_rand_init(void)
 {
     if (!rewrite_rand_init_done) {
         srand((unsigned)(getpid()));
@@ -2717,7 +2718,7 @@ void rewrite_rand_init(void)
     return;
 }
 
-int rewrite_rand(int l, int h)
+static int rewrite_rand(int l, int h)
 {
     int i;
     char buf[50];
