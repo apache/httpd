@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"Release/mod_rewrite.so" /base:@"BaseAddr.ref",mod_rewrite /opt:ref
-# ADD LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"Release/mod_rewrite.so" /base:@"BaseAddr.ref",mod_rewrite /opt:ref
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_rewrite.so" /base:@"BaseAddr.ref",mod_rewrite /opt:ref
+# ADD LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_rewrite.so" /base:@"BaseAddr.ref",mod_rewrite /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_rewrite - Win32 Debug"
 
