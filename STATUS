@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/12/22 06:20:11 $]
+Last modified at [$Date: 2000/02/08 14:19:59 $]
 
 Release:
 
@@ -8,10 +8,6 @@ Release:
     2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
-
-    * Complete HAVE_SENDFILE work. Need to add iovec head and tail pointers to 
-      the iol sendfile API and make it work under Unix.
-        Status: Bill <stoddard@raleigh.ibm.com> is working on this
 
     * Pipes to CGI scripts are not being timed out
         Status: code has been added to APR to support timing out pipes.
@@ -29,13 +25,12 @@ RELEASE SHOWSTOPPERS:
     * Windows NT port isn't done
         Status: Bill  <stoddard@raleigh.ibm.com> is working on MPM and APR. 
 	Remaining work:
-        1. Add back ability to run Apache as a service
-        2. Fix Win9* specific code in the winnt MPM
-        3. Test access logging with multiple threads. Will the native file I/O 
-           calls serialize automagically like the CRT calls or do we need to
-           add region locking each time we write to the access/error logs?
-        4. Fix the DOS hole in AcceptEx (need to time out connections over
-           which data is never sent).
+        - Fix Win9* specific code in the winnt MPM
+        - Test access logging with multiple threads. Will the native file I/O 
+          calls serialize automagically like the CRT calls or do we need to
+          add region locking each time we write to the access/error logs?
+	- Piped logging is broken
+	- DSO support is broken
 
     * Current 2.0 code is not tested on many Unix platforms. Make 2.0
       work on most, if not all the systems 1.3 did
@@ -53,6 +48,15 @@ RELEASE SHOWSTOPPERS:
         resolver calls,
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Dynamically loadable MPMs
+      Enable users of the binary distributions of Apache to be able to 
+      dynamically load the MPM.
+
+    * Platforms that do not support fork (primarily Win32 and AS/400)
+      Consider introducing HAVE_FORK feature macro. Architect start-up code
+      that avoids initializing all the modules in the parent process on
+      platforms that do not support fork.
 
     * Clean the code.  There are a lot of places we used APR but didn't 
       remove the hacks that were required for the cross-platform code in
