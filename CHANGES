@@ -9,10 +9,6 @@ Changes with Apache 2.1.0-dev
      logging hooks so that server-status will show 'L' for hung loggers
      instead of 'W'.  [Jeff Trawick]
 
-  *) mod_include: fix segfault which occured if the filename was not
-     set, for example, when processing some error conditions.
-     PR 23836.  [Brian Akins <bakins@web.turner.com>, André Malo]
-
   *) Log an error when requests for URIs which fail to map to a valid 
      filesystem name are rejected with 403.  [Jeff Trawick]
 
@@ -213,6 +209,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) mod_include: fix segfault which occured if the filename was not
+     set, for example, when processing some error conditions.
+     PR 23836.  [Brian Akins <bakins@web.turner.com>, André Malo]
 
   *) fix the config parser to support <Foo>..</Foo> containers (no
      arguments in the opening tag) supported by httpd 1.3. Without
