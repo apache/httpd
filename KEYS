@@ -726,6 +726,10 @@ Type bits      keyID      Date       User ID
 DSS  1024      0xB0D5F771 2001/07/24 *** DEFAULT SIGNING KEY ***
                                      Cliff Woolley <jwoolley@virginia.edu>
 
+          Key fingerprint =  3D E0 24 AF DA 7A 4B 15
+                             CB 6C 14 41 0F 81 AA 8A
+                             B0 D5 F7 71
+
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: PGP 6.5.8
 
