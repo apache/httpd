@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Rework the RFC1413 handling to make it thread-safe, use a timeout
+     on the query, and remove IPv4 dependencies.  [Jeff Trawick]
+
   *) Get all of the auth modules to the point that they will install and
      be loadable into the server.  Our new build/install mechanism expects
      that all modules will have a common name format.  The auth modules 
