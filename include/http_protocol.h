@@ -347,12 +347,11 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
     
 /**
  * Set the content type for this request (r->content_type). 
- * Note:
- * This function must be called to set r->content_type in order 
- * for the AddOutputFilterByType directive to work correctly.
  * @param r The current request
- * @param length The new content type
+ * @param ct The new content type
  * @deffunc void ap_set_content_type(request_rec *r, const char* ct)
+ * @warning This function must be called to set r->content_type in order 
+ * for the AddOutputFilterByType directive to work correctly.
  */
 AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct);
 
