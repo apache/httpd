@@ -3118,7 +3118,7 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
     request_rec *r = f->r;
     apr_pool_t *p = r->pool;
     apr_status_t rv;
-    apr_ssize_t bytes_sent = 0, len = 0, written;
+    apr_ssize_t bytes_sent = 0, len = 0;
     ap_bucket *e;
 
     
@@ -3180,8 +3180,8 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
             break;
         default: 
         {
-            char *str;
-            apr_size_t n;
+            const char *str;
+            apr_ssize_t n;
             rv = e->read(e, &str, &n, 0);
             if (n) {
                 len += n;
@@ -3198,7 +3198,7 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
                     }
                     iov = (struct iovec *) apr_push_array(vec_trailers);
                 }
-                iov->iov_base = str;
+                iov->iov_base = (char *)str;
                 iov->iov_len = n;
             }
             break;
