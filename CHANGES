@@ -1,5 +1,9 @@
 Changes with Apache 2.0.43
 
+  *) Allow the UserDir directive to accept a list of directories.
+     This matches what Apache 1.3 does.  Also add documentation for
+     this feature. [Jay Ball <jay@veggiespam.com>]
+
   *) New Module: mod_logio. adds the ability to log bytes sent and
      received. [Bojan Smojver <bojan@rexursive.com>]
 

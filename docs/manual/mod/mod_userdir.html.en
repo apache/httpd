@@ -104,5 +104,19 @@ UserDir enabled<br />
 UserDir disabled user4 user5 user6
 </code></p></div>
 
+<p>It is also possible to specify alternative user directories.
+If you use a command like:</p>
+<div class="example"><p><code>
+Userdir public_html /usr/web http://www.foo.com/
+</code></p></div>
+<p>With a request for http://www.foo.com/~bob/one/two.html, will try to 
+find the page at ~bob/public_html/one/two.html first, then
+/usr/web/bob/one/two.html, and finally it will send a redirect
+to http://www.foo.com/bob/one/two.html.</p>
+<p>If you add a redirect, it must be the last alternative in the list.
+Apache cannot determine if the redirect succeeded or not, so if you have
+the redirect earlier in the list, that will always be the alternative
+that is used.</p>
+
 <h3>See also</h3><ul><li><a href="../howto/public_html.html">public_html
 tutorial</a></li></ul></div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
