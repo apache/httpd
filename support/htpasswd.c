@@ -89,7 +89,6 @@
 
 #ifdef WIN32
 #include <conio.h>
-#include "../os/win32/getopt.h"
 #define unlink _unlink
 #endif
 
