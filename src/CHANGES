@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) The default for the HIDE rule is now "yes" to aid portability, and
+     include/hide.h is always included.  It doesn't do anything if the
+     rule is "no" but the dependencies don't change now regardless.
+     Previously, a "make depend" would result in different dependencies
+     according to how the rule was set.  [Ken Coar]
+
   *) Add the new ApacheBench program "ab" to src/support/: This is derived
      from the ZeusBench benchmarking program and can be used to determine the
      response performance of an Apache installation. This version is
@@ -173,7 +179,7 @@ Changes with Apache 1.3b6
      at a different time from the core, the SERVER_VERSION and
      SERVER_BUILT symbols have been abstracted through the new
      API routines apapi_get_server_version() and apapi_get_server_built().
-     [Ken Coar]
+     [Ken Coar]  PR#1448
 
   *) WIN32: Preserve trailing slash in canonical path (and hence
 	   in PATH_INFO). [Paul Sutton, Ben Laurie]

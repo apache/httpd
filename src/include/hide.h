@@ -487,7 +487,7 @@
 /*  __________________________________________________________________________
  *
  *  DO NOT EDIT ANYTHING ABOVE THIS LINE - Any changes made here will be lost!
- *  The section below is updated by running the script hide.pl 
+ *  The section above is updated by running the script Helpers/UpdateHide
  */
 
 #endif  /* !APACHE_HTTP_HIDE_H */

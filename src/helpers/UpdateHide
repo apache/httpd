@@ -74,7 +74,7 @@ $gnutriple   = $ARGV[2];
 
 #   configuration
 $listbegin  = '\n#ifdef HIDE\n';
-$listend    = '\n#endif\n';
+$listend    = '\n#endif /* HIDE */\n';
 @excluded   = qw(
     main errno environ optarg
     dlclose dlerror dlopen dlsym

@@ -94,13 +94,10 @@ Committed Code Changes:
     * Marc's mod_proxy was not clearing the Proxy-Connection header
     * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
     * Ralf's new ApacheBench support program (src/support/ab.c)
+    * Ken's change HIDE default to "yes", always include hide.h
 
 Available Patches:
 
-    * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
-	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
-	Status: Dean +1, Martin +0 (duplicates /server-info?server),
-		Alexei -1 (shared lib concerns)
 
 Concepts:
 
