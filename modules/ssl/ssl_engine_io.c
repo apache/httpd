@@ -1170,7 +1170,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
 {
 #define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
-#define UPGRADE_HEADER "Upgrade: TLS/1.0 HTTP/1.1"
+#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
 #define CONNECTION_HEADER "Connection: Upgrade"
     const char *upgrade;
     const char *connection;
@@ -1178,6 +1178,9 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     request_rec *r = f->r;
     SSLConnRec *sslconn;
     SSL *ssl;
+    char *token_string;
+    char *token;
+    char *token_state;
 
     /* Just remove the filter, if it doesn't work the first time, it won't
      * work at all for this request.
@@ -1192,18 +1195,29 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     if (upgrade == NULL) {
         return ap_pass_brigade(f->next, bb);
     }
-    connection = apr_table_get(r->headers_in, "Connection");
-
-    apr_table_unset(r->headers_out, "Upgrade");
-
-    /* XXX: I don't think the requirement that the client sends exactly 
-     * "Connection: Upgrade" is correct; the only requirement here is 
-     * on the client to send a  Connection header including the "upgrade" 
-     * token.
-     */
-    if (strcmp(connection, "Upgrade") || strcmp(upgrade, "TLS/1.0")) {
+    token_string = apr_pstrdup(r->pool,upgrade);
+    token = apr_strtok(token_string,", ",&token_state);
+    while (token && strcmp(token,"TLS/1.0")) {
+        apr_strtok(NULL,", ",&token_state);
+    }
+    /* "Upgrade: TLS/1.0" header not found, don't do Upgrade */
+    if (!token) {
         return ap_pass_brigade(f->next, bb);
     }
+
+    connection = apr_table_get(r->headers_in, "Connection");
+
+    token_string = apr_pstrdup(r->pool,connection);
+    token = apr_strtok(token_string,",",&token_state);
+    while (token && strcmp(token,"Upgrade")) {
+        apr_strtok(NULL,",",&token_state);
+    }
+    /* "Connection: Upgrade" header not found, don't do Upgrade */
+    if (!token) {
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    apr_table_unset(r->headers_out, "Upgrade");
 
     if (r->method_number == M_OPTIONS) {
         apr_bucket *b = NULL;
@@ -1238,18 +1252,22 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
      * However, this causes failures in perl-framework currently, 
      * perhaps pre-test if we have already negotiated?
      */
-    SSL_set_state(ssl, SSL_ST_ACCEPT);
+    SSL_set_accept_state(ssl);
     SSL_do_handshake(ssl);
 
     if (SSL_get_state(ssl) != SSL_ST_OK) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "Re-negotiation handshake failed: "
+                     "TLS Upgrade handshake failed: "
                 "Not accepted by client!?");
 
         return AP_FILTER_ERROR;
     }
 
-    return OK;
+    /* Now that we have initialized the ssl connection which added the ssl_io_filter, 
+       pass the brigade off to the connection based output filters so that the 
+       request can complete encrypted */
+    return ap_pass_brigade(f->c->output_filters, bb);
+
 }
 
 static apr_status_t ssl_io_filter_input(ap_filter_t *f,

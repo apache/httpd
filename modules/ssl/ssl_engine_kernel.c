@@ -1013,7 +1013,7 @@ int ssl_hook_Fixup(request_rec *r)
     SSL *ssl;
     int i;
 
-    if (sc->enabled == SSL_ENABLED_OPTIONAL) {
+    if (sc->enabled == SSL_ENABLED_OPTIONAL && !(sslconn && sslconn->ssl)) {
         apr_table_setn(r->headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
     }
 
