@@ -38,7 +38,7 @@ default:        _apacher
 !ENDIF
 
 # Note; tryssl: is only used by the msvc developer studio environment to 'fix up'
-#	the build, since conditional dependencies aren't supported
+#	the build, since conditional dependencies aren't supported.
 #
 !IF EXIST("srclib\openssl")
 !IF "$(LONG)" == "Debug"
@@ -47,12 +47,19 @@ SSLBIN=out32dll.dbg
 SSLBIN=out32dll
 !ENDIF
 tryssl:
+!IF EXIST("modules\ssl\mod_ssl.mak")
 	cd modules\ssl
         $(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\tls
         $(MAKE) $(MAKEOPT) -f mod_tls.mak CFG="mod_tls - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+!ELSE
+	msdev Apache.dsw /MAKE\
+		"mod_ssl - Win32 $(LONG)"\
+		"mod_tls - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
 !ELSE
 tryssl:
 	echo mod_ssl and mod_tls will not build without openssl installed
@@ -88,14 +95,14 @@ installr:
 installd: 
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build _install
 
+clean:	_cleanr _cleand
+
+!IF EXIST("Apache.mak")
+
 _cleanr:  
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _build
 
 _cleand:  
-	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   CTARGET=CLEAN _build
-
-clean:
-	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _build
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   CTARGET=CLEAN _build
 
 _build:
@@ -174,6 +181,59 @@ _build:
          $(MAKE) $(MAKEOPT) -f ApacheMonitor.mak CFG="ApacheMonitor - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f wintty.mak CFG="wintty - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+
+!ELSE
+
+_cleanr:  
+	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET="/CLEAN" _build
+
+_cleand:  
+	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   CTARGET="/CLEAN" _build
+
+_build:
+	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
+	-del $(LONG)\buildmark.obj
+	msdev Apache.dsw /MAKE\
+		"apr - Win32 $(LONG)"\
+		"libapr - Win32 $(LONG)"\
+		"gen_uri_delims - Win32 $(LONG)"\
+		"xml - Win32 $(LONG)"\
+        	"aprutil - Win32 $(LONG)"\
+		"libaprutil - Win32 $(LONG)"\
+		"dftables - Win32 $(LONG)"\
+		"pcre - Win32 $(LONG)"\
+		"pcreposix - Win32 $(LONG)"\
+		"gen_test_char - Win32 $(LONG)"\
+		"libhttpd - Win32 $(LONG)"\
+		"Apache - Win32 $(LONG)"\
+		"mod_auth_anon - Win32 $(LONG)"\
+        	"mod_auth_dbm - Win32 $(LONG)"\
+		"mod_auth_digest - Win32 $(LONG)"\
+		"mod_file_cache - Win32 $(LONG)"\
+		"mod_dav - Win32 $(LONG)"\
+		"mod_dav_fs - Win32 $(LONG)"\
+		"mod_info - Win32 $(LONG)"\
+        	"mod_status - Win32 $(LONG)"\
+		"mod_rewrite - Win32 $(LONG)"\
+		"mod_speling - Win32 $(LONG)"\
+		"mod_cern_meta - Win32 $(LONG)"\
+		"mod_expires - Win32 $(LONG)"\
+		"mod_headers - Win32 $(LONG)"\
+		"mod_usertrack - Win32 $(LONG)"\
+		"ab - Win32 $(LONG)"\
+        	"htpasswd - Win32 $(LONG)"\
+        	"htdigest - Win32 $(LONG)"\
+		"logresolve - Win32 $(LONG)"\
+		"rotatelogs - Win32 $(LONG)"\
+        	"ApacheMonitor - Win32 $(LONG)"\
+        	"wintty - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!IF EXIST("srclib\openssl")
+	msdev Apache.dsw /MAKE\
+		"mod_ssl - Win32 $(LONG)"\
+		"mod_tls - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ENDIF
 
 _install:
 	-mkdir "$(INSTDIR)"
