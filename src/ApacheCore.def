@@ -368,3 +368,4 @@ EXPORTS
 	ap_start_shutdown @363
 	ap_start_restart @364
         ap_configtestonly @365 DATA
+	ap_scan_script_header_err_strs @366
