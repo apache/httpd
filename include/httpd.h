@@ -695,7 +695,7 @@ struct request_rec {
      */
     /** First line of request, so we can log it */
     char *the_request;
-    /** HTTP/0.9, "simple" request */
+    /** HTTP/0.9, "simple" request (e.g. GET /foo\n w/no headers) */
     int assbackwards;
     /** A proxy request (calculated during post_read_request/translate_name)
      *  possible values PROXYREQ_NONE, PROXYREQ_PROXY, PROXYREQ_REVERSE
@@ -853,6 +853,11 @@ struct request_rec {
     apr_finfo_t finfo;
     /** components of uri, dismantled */
     apr_uri_t parsed_uri;
+
+    /** Flag for the core handler to permit path_info on the current
+        filename, to be consumed by some filter.  Unless this is
+        toggled, path_info requests are rejected by the core */
+    int used_path_info;
 
     /* Various other config info which may change with .htaccess files
      * These are config vectors, with one void* pointer for each module
