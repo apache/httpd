@@ -187,10 +187,16 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
  *
- * Returns: 
- *     the length of s (normal case),
- *     n               (buffer full),
- *    -1               (other errors)
+ * If s is NULL, ap_rgetline will allocate necessary memory from r->pool.
+ *
+ * Returns APR_SUCCESS if there are no problems and sets *read to be
+ * the full length of s.
+ *
+ * APR_ENOSPC is returned if there is not enough buffer space.
+ * Other errors may be returned on other errors.
+ *
+ * The LF is *not* returned in the buffer.  Therefore, a *read of 0
+ * indicates that an empty line was read.
  *
  * Notes: Because the buffer uses 1 char for NUL, the most we can return is 
  *        (n - 1) actual characters.  
@@ -198,152 +204,279 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  *        If no LF is detected on the last line due to a dropped connection 
  *        or a full buffer, that's considered an error.
  */
-AP_DECLARE(int) ap_rgetline(char **s, int n, request_rec *r, int fold)
+AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n, 
+                                     apr_size_t *read, request_rec *r, 
+                                     int fold)
 {
-    char *pos;
-    char *last_char;
-    const char *temp;
-    int retval;
-    apr_size_t total = 0;
-    int looking_ahead = 0;
-    apr_size_t length;
-    core_request_config *req_cfg;
+    apr_status_t rv;
     apr_bucket_brigade *b;
     apr_bucket *e;
-    int do_alloc = (*s == NULL);
-    apr_size_t alloc_size = 0;
+    apr_size_t bytes_handled = 0, current_alloc = 0;
+    apr_off_t bytes_read;
+    char *pos, *last_char = *s;
+    int do_alloc = (*s == NULL), saw_eos = 0;
 
-    req_cfg = (core_request_config *)
-                ap_get_module_config(r->request_config, &core_module);
-    b = req_cfg->bb;
-    /* make sure it's empty unless we're folding */ 
-    AP_DEBUG_ASSERT(fold || APR_BRIGADE_EMPTY(b));
+    b = apr_brigade_create(r->pool);
+    rv = ap_get_brigade(r->input_filters, b, AP_MODE_GETLINE,
+                        APR_BLOCK_READ, &bytes_read);
 
-    while (1) {
-        if (APR_BRIGADE_EMPTY(b)) {
-            apr_off_t zero = 0;
-            if ((retval = ap_get_brigade(r->input_filters, b,
-                                         AP_MODE_GETLINE,
-                                         APR_BLOCK_READ,
-                                         &zero)) != APR_SUCCESS ||
-                APR_BRIGADE_EMPTY(b)) {
-                apr_brigade_destroy(b);
-                return -1;
-            }
-        }
-        e = APR_BRIGADE_FIRST(b); 
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    /* Something horribly wrong happened.  Someone didn't block! */
+    if (APR_BRIGADE_EMPTY(b)) {
+        return APR_EGENERAL; 
+    }
+
+    APR_BRIGADE_FOREACH(e, b) {
+        const char *str;
+        apr_size_t len;
+
+        /* If we see an EOS, don't bother doing anything more. */
         if (APR_BUCKET_IS_EOS(e)) {
-            apr_brigade_destroy(b);
-            return -1;
-        }
-        if (e->length == 0) {
-            apr_bucket_delete(e);
-            continue;
-        }
-        retval = apr_bucket_read(e, &temp, &length, APR_BLOCK_READ);
-        if (retval != APR_SUCCESS) {
-            apr_brigade_destroy(b);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, "apr_bucket_read() failed");
-            if (total) {
-                break; /* report previously-read data to caller, do ap_xlate_proto_to_ascii() */
-            }
-            else {
-                return -1;
-            }
-        }
-
-        if ((looking_ahead) && (*temp != APR_ASCII_BLANK) && (*temp != APR_ASCII_TAB)) { 
-            /* can't fold because next line isn't indented, 
-             * so return what we have.  lookahead brigade is 
-             * stashed on req_cfg->bb
-             */
-            AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(req_cfg->bb));
+            saw_eos = 1; 
             break;
         }
-        if (total + length - 1 < (apr_size_t)n) {
-            if (do_alloc) {
-                if (!*s) {
-                    alloc_size = length;
-                    *s = apr_palloc(r->pool, length + 2); /* +2 for LF, null */
-                }
-                else if (total + length > alloc_size) {
-                    apr_size_t new_size = alloc_size;
-                    char *new_buffer;
-                    do {
-                        new_size *= 2;
-                    } while (total + length > new_size);
-                    new_buffer = apr_palloc(r->pool, new_size + 2);
-                    memcpy(new_buffer, *s, total);
-                    alloc_size = new_size;
-                    *s = new_buffer;
-                }
-            }
-            pos = *s + total;
-            last_char = pos + length - 1;
-            memcpy(pos, temp, length);
-            apr_bucket_delete(e);
+
+        rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+
+        if (rv != APR_SUCCESS) {
+            apr_brigade_destroy(b);
+            return rv;
         }
-        else {
-            /* input line was larger than the caller's buffer */
+
+        /* Would this overrun our buffer?  If so, we'll die. */
+        if (n < bytes_handled + len) {
             apr_brigade_destroy(b); 
-
-            /* don't need to worry about req_cfg->bb being bogus.
-             * the request is about to die, and ErrorDocument
-             * redirects get a new req_cfg->bb
-             */
-
-            return n;
+            return APR_ENOSPC;
         }
-        
-        pos = last_char;        /* Point at the last character           */
 
-        if (*pos == APR_ASCII_LF) { /* Did we get a full line of input?      */
-                
-            if (pos > *s && *(pos - 1) == APR_ASCII_CR) {
-                --pos;          /* zap optional CR before LF             */
+        /* Do we have to handle the allocation ourselves? */
+        if (do_alloc) {
+            /* We'll assume the common case where one bucket is enough. */
+            if (!*s) {
+                current_alloc = len;
+                *s = apr_palloc(r->pool, len);
             }
-                
-            /*
-             * Trim any extra trailing spaces or tabs except for the first
-             * space or tab at the beginning of a blank string.  This makes
-             * it much easier to check field values for exact matches, and
-             * saves memory as well.  Terminate string at end of line.
-             */
-            while (pos > ((*s) + 1) && 
-                   (*(pos - 1) == APR_ASCII_BLANK || *(pos - 1) == APR_ASCII_TAB)) {
-                --pos;          /* trim extra trailing spaces or tabs    */
+            else if (bytes_handled + len > current_alloc) {
+                /* We resize to the next power of 2. */
+                apr_size_t new_size = current_alloc;
+                char *new_buffer;
+                do {
+                    new_size *= 2;
+                } while (bytes_handled + len > new_size);
+                new_buffer = apr_palloc(r->pool, new_size);
+                /* Copy what we already had. */
+                memcpy(new_buffer, *s, bytes_handled);
+                current_alloc = new_size;
+                *s = new_buffer;
             }
-            *pos = '\0';        /* zap end of string                     */
-            total = pos - *s;   /* update total string length            */
+        }
+        /* Just copy the rest of the data to the end of the old buffer. */
+        pos = *s + bytes_handled;
+        memcpy(pos, str, len);
+        last_char = pos + len - 1;
 
-            /* look ahead another line if line folding is desired 
-             * and this line isn't empty
-             */
-            if (fold && total) {
-                looking_ahead = 1;
+        /* We've now processed that new data - update accordingly. */
+        bytes_handled += len;
+    }
+
+    /* We no longer need the returned brigade. */
+    apr_brigade_destroy(b);
+
+    /* We likely aborted early before reading anything or we read no 
+     * data.  Technically, this might be success condition.  But,
+     * probably means something is horribly wrong.  For now, we'll
+     * treat this as APR_SUCCESS, but it may be worth re-examining.
+     */
+    if (bytes_handled == 0) {
+        *read = 0;
+        return APR_SUCCESS; 
+    }
+
+    /* If we didn't get a full line of input, try again. */
+    if (*last_char != APR_ASCII_LF) {
+        /* Do we have enough space? We may be full now. */
+        if (bytes_handled < n) {
+            apr_size_t next_size, next_len;
+            char *tmp;
+     
+            /* If we're doing the allocations for them, we have to
+             * give ourselves a NULL and copy it on return.
+             */ 
+            if (do_alloc) {
+                tmp = NULL;
+            } else {
+                /* We're not null terminated yet. */
+                tmp = last_char + 1;
             }
-            else {
-                AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(req_cfg->bb));
-                break;
+
+            next_size = n - bytes_handled;
+
+            rv = ap_rgetline(&tmp, next_size, &next_len, r, fold);
+
+            if (rv != APR_SUCCESS) {
+                return rv;
             }
+
+            if (do_alloc && next_len > 0) {
+                char *new_buffer;
+                apr_size_t new_size = bytes_handled + next_len;
+                /* Again we need to alloc an extra two bytes for LF, null */
+                new_buffer = apr_palloc(r->pool, new_size);
+                /* Copy what we already had. */
+                memcpy(new_buffer, *s, bytes_handled);
+                memcpy(new_buffer + bytes_handled, tmp, next_len);
+                current_alloc = new_size;
+                *s = new_buffer;
+            }
+
+            bytes_handled += next_len;
+            last_char = *s + bytes_handled - 1;
         }
         else {
-            /* no LF yet...character mode client (telnet)...keep going
-             * bump past last character read,   
-             * and set total in case we bail before finding a LF   
-             */
-            total = ++pos - *s;
-            looking_ahead = 0;  /* only appropriate right after LF       */ 
+            return APR_ENOSPC;
         }
     }
-    ap_xlate_proto_from_ascii(*s, total);
-    return total;
+
+    /* We now go backwards over any CR (if present) or white spaces.
+     *
+     * Trim any extra trailing spaces or tabs except for the first
+     * space or tab at the beginning of a blank string.  This makes
+     * it much easier to check field values for exact matches, and
+     * saves memory as well.  Terminate string at end of line.
+     */
+    pos = last_char;
+    if (pos > *s && *(pos - 1) == APR_ASCII_CR) {
+        --pos;
+    }
+
+    /* Trim any extra trailing spaces or tabs except for the first
+     * space or tab at the beginning of a blank string.  This makes
+     * it much easier to check field values for exact matches, and
+     * saves memory as well.
+     */
+    while (pos > ((*s) + 1) && 
+           (*(pos - 1) == APR_ASCII_BLANK || *(pos - 1) == APR_ASCII_TAB)) {
+        --pos;
+    }
+
+    /* Since we want to remove the LF from the line, we'll go ahead
+     * and set this last character to be the term NULL and reset 
+     * bytes_handled accordingly.
+     */
+    *pos = '\0';
+    last_char = pos;
+    bytes_handled = pos - *s;
+   
+    /* If we're folding, we have more work to do. 
+     *
+     * Note that if an EOS was seen, we know we can't have another line.
+     */
+    if (fold && bytes_handled && !saw_eos) {
+        const char *str;
+        apr_size_t len;
+
+        /* We only care about the first byte. */
+        bytes_read = 1;
+        rv = ap_get_brigade(r->input_filters, b, AP_MODE_SPECULATIVE,
+                            APR_BLOCK_READ, &bytes_read);
+
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+
+        e = APR_BRIGADE_FIRST(b);
+
+        /* If we see an EOS, don't bother doing anything more. */
+        if (APR_BUCKET_IS_EOS(e)) {
+            *read = bytes_handled;
+            return APR_SUCCESS;
+        }
+
+        rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+
+        /* Found one, so call ourselves again to get the next line. 
+         *
+         * FIXME: If the folding line is completely blank, should we
+         * stop folding?  Does that require also looking at the next
+         * char?
+         */
+        if (*str == APR_ASCII_BLANK || *str == APR_ASCII_TAB) {
+            /* Do we have enough space? We may be full now. */
+            if (bytes_handled < n) {
+                apr_size_t next_size, next_len;
+                char *tmp;
+       
+                /* If we're doing the allocations for them, we have to
+                 * give ourselves a NULL and copy it on return.
+                 */ 
+                if (do_alloc) {
+                    tmp = NULL;           
+                } else { 
+                    /* We're null terminated. */
+                    tmp = last_char;
+                }
+
+                next_size = n - bytes_handled;
+
+                rv = ap_rgetline(&tmp, next_size, &next_len, r, fold);
+
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
+
+                if (do_alloc && next_len > 0) {
+                    char *new_buffer;
+                    apr_size_t new_size = bytes_handled + next_len;
+                    /* Again we need to alloc an extra two bytes for LF, null */
+                    new_buffer = apr_palloc(r->pool, new_size);
+                    /* Copy what we already had. */
+                    memcpy(new_buffer, *s, bytes_handled);
+                    memcpy(new_buffer + bytes_handled, tmp, next_len);
+                    current_alloc = new_size;
+                    *s = new_buffer;
+                }
+
+                *read = bytes_handled + next_len;
+                return APR_SUCCESS;
+            }
+            else {
+                return APR_ENOSPC;
+            }
+        }
+    }
+
+    /* FIXME: Can we optimize this at all by placing it a different layer? */
+    ap_xlate_proto_from_ascii(*s, bytes_handled);
+    *read = bytes_handled;
+    return APR_SUCCESS;
 }
 
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 {
     char *tmp_s = s;
-    return ap_rgetline(&tmp_s, n, r, fold);
+    apr_status_t rv;
+    apr_size_t len;
+
+    rv = ap_rgetline(&tmp_s, n, &len, r, fold);
+
+    /* Map the out-of-space condition to the old API. */
+    if (rv == APR_ENOSPC) {
+        return n;
+    }
+
+    /* Anything else is just bad. */
+    if (rv != APR_SUCCESS) {
+        return -1;
+    }
+
+    return (int)len;
 }
 
 /* parse_uri: break apart the uri
@@ -409,7 +542,7 @@ static int read_request_line(request_rec *r)
     conn_rec *conn = r->connection;
 #endif
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
-    int len;
+    apr_size_t len;
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -426,16 +559,20 @@ static int read_request_line(request_rec *r)
      * have to block during a read.
      */
 
-    while ((len = ap_rgetline(&(r->the_request),
-                              DEFAULT_LIMIT_REQUEST_LINE + 2, r, 0)) <= 0) {
-        if (len < 0) {             /* includes EOF */
-	    /* this is a hack to make sure that request time is set,
-	     * it's not perfect, but it's better than nothing 
-	     */
-	    r->request_time = apr_time_now();
+    do {
+        apr_status_t rv;
+
+        rv = ap_rgetline(&(r->the_request), DEFAULT_LIMIT_REQUEST_LINE + 2,
+                         &len, r, 0);
+
+        if (rv != APR_SUCCESS) {
+            /* Something went horribly wrong. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "read_request_line() failed");
+	        r->request_time = apr_time_now();
             return 0;
         }
-    }
+    } while (len <= 0);
+
     /* we've probably got something to do, ignore graceful restart requests */
 
     r->request_time = apr_time_now();
@@ -502,7 +639,7 @@ static void get_mime_headers(request_rec *r)
 {
     char* field;
     char *value;
-    int len;
+    apr_size_t len;
     int fields_read = 0;
     apr_table_t *tmp_headers;
 
@@ -513,9 +650,38 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    field = NULL;
-    while ((len = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
-                              r, 1)) > 0) {
+    while(1) {
+        apr_status_t rv;
+
+        field = NULL;
+        rv = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
+                         &len, r, 1);
+
+        /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before 
+         * finding the end-of-line.  This is only going to happen if it 
+         * exceeds the configured limit for a field size.
+         */
+        if (rv == APR_ENOSPC) {
+            r->status = HTTP_BAD_REQUEST;
+            apr_table_setn(r->notes, "error-notes",
+                apr_pstrcat(r->pool,
+                            "Size of a request header field "
+                            "exceeds server limit.<br />\n"
+                            "<pre>\n",
+                            ap_escape_html(r->pool, field),
+                            "</pre>\n", NULL));
+            return;
+        }
+
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "get_mime_headers() failed");
+            return;
+        }
+
+        /* Found a blank line, stop. */
+        if (len == 0) {
+            break;
+        }
 
         if (r->server->limit_req_fields &&
             (++fields_read > r->server->limit_req_fields)) {
@@ -523,21 +689,6 @@ static void get_mime_headers(request_rec *r)
             apr_table_setn(r->notes, "error-notes",
 			   "The number of request header fields exceeds "
 			   "this server's limit.");
-            return;
-        }
-        /* ap_getline returns (size of max buffer - 1) if it fills up the
-         * buffer before finding the end-of-line.  This is only going to
-         * happen if it exceeds the configured limit for a field size.
-         */
-        if (len > r->server->limit_req_fieldsize) {
-            r->status = HTTP_BAD_REQUEST;
-            apr_table_setn(r->notes, "error-notes",
-			   apr_pstrcat(r->pool,
-				       "Size of a request header field "
-				       "exceeds server limit.<br />\n"
-				       "<pre>\n",
-				       ap_escape_html(r->pool, field),
-				       "</pre>\n", NULL));
             return;
         }
 
@@ -557,10 +708,9 @@ static void get_mime_headers(request_rec *r)
         ++value;
         while (*value == ' ' || *value == '\t') {
             ++value;            /* Skip to start of value   */
-	}
+        }
 
-	apr_table_addn(tmp_headers, field, value);
-        field = NULL; /* to cause ap_rgetline to allocate a new one */
+        apr_table_addn(tmp_headers, field, value);
     }
 
     apr_table_overlap(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);

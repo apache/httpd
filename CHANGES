@@ -1,5 +1,8 @@
 Changes with Apache 2.0.31-dev
 
+  *) Refactor ap_rgetline so that it does not use an internal brigade.
+     Change ap_rgetline's prototype to return errors.  [Justin Erenkrantz]
+
   *) Remove mod_auth_db.  [Justin Erenkrantz]
 
   *) Do not install unnecessary pcre headers like config.h and internal.h.
