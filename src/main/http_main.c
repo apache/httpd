@@ -750,13 +750,12 @@ void sync_scoreboard_image ()
 
 int update_child_status (int child_num, int status, request_rec *r)
 {
-    short_score new_score_rec;
     int old_status;
+    short_score new_score_rec=scoreboard_image->servers[child_num];
 
     if (child_num < 0)
 	return -1;
     
-    memcpy(&new_score_rec,&scoreboard_image->servers[child_num],sizeof new_score_rec);
     new_score_rec.pid = getpid();
     old_status = new_score_rec.status;
     new_score_rec.status = status;
