@@ -9,8 +9,9 @@ Changes with Apache 1.3.7
 
   *) If a "Location" field was stored in r->err_headers_out rather
      than r->headers_out, redirect processing wouldn't find it and
-     the server would core dump on ap_escape_html(NULL).
-     [Doug MacEachern, Ken Coar]
+     the server would core dump on ap_escape_html(NULL).  Check both
+     tables and raise HTTP_INTERNAL_SERVER_ERROR with a log message
+     if Location isn't set.  [Doug MacEachern, Ken Coar]
 
   *) Add RULE_EXPAT, the src/lib/ directory structure, and a modified copy
      of the Expat 1.0.2 distribution. [Greg Stein]

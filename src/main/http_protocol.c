@@ -2367,9 +2367,24 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         r->err_headers_out = tmp;
         ap_clear_table(r->err_headers_out);
 
-        if ((location != NULL) && *location
-            && (ap_is_HTTP_REDIRECT(status) || status == HTTP_CREATED)) {
-            ap_table_setn(r->headers_out, "Location", location);
+        if (ap_is_HTTP_REDIRECT(status) || (status == HTTP_CREATED)) {
+	    if ((location != NULL) && *location) {
+		ap_table_setn(r->headers_out, "Location", location);
+	    }
+	    else {
+		/*
+		 * We're supposed to tell the client to go somewhere,
+		 * but the destination was omitted.  Turn this into
+		 * a 500 status with an explanatory note in the error log.
+		 */
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+		              "resource created or redirection requested "
+			      "(status=%03d) but no Location field set "
+			      "(URI=%s)",
+			      r->status, r->unparsed_uri);
+		r->status = status = HTTP_INTERNAL_SERVER_ERROR;
+		r->status_line = NULL;
+	    }
 	}
 
         r->content_language = NULL;
@@ -2631,7 +2646,8 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 		&& (h1 = ap_table_get(r->notes, "verbose-error-to")) != NULL
 		&& (strcmp(h1, "*") == 0)) {
 	        ap_rvputs(r, error_notes, "<P>\n", NULL);
-	    } else {
+	    }
+	    else {
 	        ap_rvputs(r, "The server encountered an internal error or\n"
 	             "misconfiguration and was unable to complete\n"
 	             "your request.<P>\n"
