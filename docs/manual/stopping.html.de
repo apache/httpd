@@ -18,8 +18,12 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Beenden und Neustarten</h1>
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
-    Apache auf Unix-ähnlichen Systemen. Windows-Anwender sollten  <a href="platform/windows.html#signal">Signale an den laufenden Apache
-    senden</a> lesen.</p>
+    Apache auf Unix-ähnlichen Systemen. Anwender von Windows NT, 2000
+    und XP sollten <a href="platform/windows.html#winsvc">Ausführen
+    des Apache als Service</a> lesen, während hingegen Anwender von
+    Windows 9x sowie ME <a href="platform/windows.html#wincons">Ausführen
+	des Apache als Konsolen-Anwendung</a> lesen sollten, um mehr Informationen
+    zur Handhabung des Apache auf diesen Systemen zu erhalten.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Einleitung</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">Beenden</a></li>
