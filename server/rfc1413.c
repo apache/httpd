@@ -130,7 +130,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
      */
 
     apr_set_port(sock, APR_LOCAL, ANY_PORT);
-    apr_set_local_ipaddr(sock, local_ip);
+    apr_set_ipaddr(sock, APR_LOCAL, local_ip);
 
     if ((status = apr_bind(sock)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
@@ -143,7 +143,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
  * the service
  */
     apr_set_port(sock, APR_REMOTE, RFC1413_PORT);
-    apr_set_remote_ipaddr(sock, rmt_ip);
+    apr_set_ipaddr(sock, APR_REMOTE, rmt_ip);
                     
     if (apr_connect(sock, NULL) != APR_SUCCESS)
         return -1;
