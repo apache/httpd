@@ -115,14 +115,8 @@
 <li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
 <li><a href="mod_cache.html#cachedisable">CacheDisable</a></li>
 <li><a href="mod_cache.html#cacheenable">CacheEnable</a></li>
-<li><a href="mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck</a></li>
 <li><a href="mod_file_cache.html#cachefile">CacheFile</a></li>
 <li><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion</a></li>
-<li><a href="mod_disk_cache.html#cachegcclean">CacheGcClean</a></li>
-<li><a href="mod_disk_cache.html#cachegcdaily">CacheGcDaily</a></li>
-<li><a href="mod_disk_cache.html#cachegcinterval">CacheGcInterval</a></li>
-<li><a href="mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage</a></li>
-<li><a href="mod_disk_cache.html#cachegcunused">CacheGcUnused</a></li>
 <li><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
@@ -132,8 +126,6 @@
 <li><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
 <li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
-<li><a href="mod_disk_cache.html#cachesize">CacheSize</a></li>
-<li><a href="mod_disk_cache.html#cachetimemargin">CacheTimeMargin</a></li>
 <li><a href="core.html#cgimapextension">CGIMapExtension</a></li>
 <li><a href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
