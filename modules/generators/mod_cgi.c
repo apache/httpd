@@ -353,7 +353,7 @@ static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
                            script_in  ? 1 : 0,
                            script_out ? 1 : 0,
                            script_err ? 1 : 0)            != APR_SUCCESS) ||
-        (ap_setprocattr_dir(procattr, r->filename)        != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr,  ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
         (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
