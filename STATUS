@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/20 16:19:24 $]
+Last modified at [$Date: 2002/03/21 20:38:02 $]
 
 Release:
 
@@ -94,6 +94,8 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * Don't forget to reversion mod_ssl, which is currently listed
       as mod_ssl/3.0a0.
+        Jeff posted a patch 20020321.  He'll commit if he doesn't see
+        any concerns expressed.
 
 CURRENT VOTES:
 
