@@ -329,8 +329,10 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or ::
- *        AP_FTYPE_CONNECTION
+ * @param filter_init The function to call before the filter handlers 
+                      are invoked
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
+ *              ::AP_FTYPE_CONNECTION
  * @see add_input_filter()
  */
 AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
@@ -345,6 +347,8 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
+ * @param filter_init The function to call before the filter handlers 
+ *                    are invoked
  * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
  *              ::AP_FTYPE_CONNECTION
  * @see ap_add_output_filter()
@@ -475,6 +479,8 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
  * to flush the brigade if the brigade buffer overflows.
  * @param bb The brigade to flush
  * @param ctx The filter to pass the brigade to
+ * @note this function has nothing to do with FLUSH buckets. It is simply
+ * a way to flush content out of a brigade and down a filter stack.
  */
 AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
                                                 void *ctx);
