@@ -453,7 +453,7 @@ static int read_request_line(request_rec *r)
         pro = "HTTP/0.9";
         len = 8;
     }
-    r->protocol = apr_pstrndup(r->pool, pro, len);
+    r->protocol = apr_pstrmemdup(r->pool, pro, len);
 
     /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
 
