@@ -1027,7 +1027,6 @@ typedef int rlim_t;
 #include <pwd.h>
 #include <grp.h>
 #include <fcntl.h>
-#include <limits.h>
 #define closesocket(s) close(s)
 #ifndef O_BINARY
 #define O_BINARY (0)
@@ -1039,7 +1038,7 @@ typedef int rlim_t;
 #include <io.h>
 #include <fcntl.h>
 #endif /* ndef WIN32 */
-
+#include <limits.h>
 #include <time.h>		/* for ctime */
 #ifdef WIN32
 #define strftime(s,max,format,tm)  os_strftime(s,max,format,tm)
