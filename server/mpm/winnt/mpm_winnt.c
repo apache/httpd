@@ -1587,16 +1587,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                        NULL,
                        &si, &pi);
 
-    /* Important:
-     * Give the child process a chance to run before dup'ing the sockets.
-     * We have already set the listening sockets noninheritable, but if 
-     * WSADuplicateSocket runs before the child process initializes
-     * the listeners will be inherited anyway.
-     *
-     * XXX: This is badness; needs some mutex interlocking
-     */
-    Sleep(1000);
-
     /* Undo everything we created for the child only
      */
     CloseHandle(pi.hThread);
@@ -1627,6 +1617,16 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         CloseHandle(hPipeWrite);
         return -1;
     }
+
+    /* Important:
+     * Give the child process a chance to run before dup'ing the sockets.
+     * We have already set the listening sockets noninheritable, but if 
+     * WSADuplicateSocket runs before the child process initializes
+     * the listeners will be inherited anyway.
+     *
+     * XXX: This is badness; needs some mutex interlocking
+     */
+    Sleep(1000);
 
     if (send_listeners_to_child(p, pi.dwProcessId, hPipeWrite)) {
         CloseHandle(hPipeWrite);        
