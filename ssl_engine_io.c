@@ -144,56 +144,47 @@ static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
     return rc;
 }
 
-static apr_status_t churn_output(SSLFilterRec *pRec)
+#define BIO_mem(b) ((BUF_MEM *)b->ptr)
+
+static apr_status_t churn_output(SSLFilterRec *ctx)
 {
-    conn_rec *c = pRec->pOutputFilter->c;
-    apr_pool_t *p = c->pool;
+    ap_filter_t *f = ctx->pOutputFilter;
+    apr_pool_t *p = f->c->pool;
+    apr_bucket_brigade *bb = NULL;
 
-    apr_bucket_brigade *pbbOutput=NULL;
-    int done;
-
-    if (!pRec->pssl) {
+    if (!ctx->pssl) {
         /* we've been shutdown */
         return APR_EOF;
     }
 
-    do {
-	char buf[1024];
-	int n;
-	apr_bucket *pbkt;
+    if (BIO_pending(ctx->pbioWrite)) {
+        BUF_MEM *bm = BIO_mem(ctx->pbioWrite);
+        apr_bucket *bucket; 
 
-	done=0;
+        bb = apr_brigade_create(p);
 
-	if (BIO_pending(pRec->pbioWrite)) {
-            n = BIO_read(pRec->pbioWrite, buf, sizeof buf);
-            if(n > 0) {
-		char *pbuf;
+        /*
+         * use the BIO memory buffer that has already been allocated,
+         * rather than making another copy of it.
+         * use bm directly here is *much* faster than calling BIO_read()
+         * look at crypto/bio/bss_mem.c:mem_read and you'll see why
+         */
 
-		if(!pbbOutput)
-		    pbbOutput = apr_brigade_create(p);
+        bucket = apr_bucket_transient_create((const char *)bm->data,
+                                             bm->length);
 
-		pbuf = apr_pmemdup(p, buf, n);
-		pbkt = apr_bucket_pool_create(pbuf, n, p);
-		APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
-		done=1;
-	    }
-            else {
-                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                        "attempting to read %d bytes from wbio, got %d",
-                        sizeof buf, n);
-                return APR_EINVAL;
-            }
-	}
-    } while(done);
+        bm->length = 0; /* reset */
+
+        APR_BRIGADE_INSERT_TAIL(bb, bucket);
+    }
     
     /* XXX: check for errors */
-    if(pbbOutput) {
-	apr_bucket *pbkt;
+    if (bb) {
+	apr_bucket *bucket = apr_bucket_flush_create();
 
 	/* XXX: it may be possible to not always flush */
-	pbkt=apr_bucket_flush_create();
-	APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
-	ap_pass_brigade(pRec->pOutputFilter->next,pbbOutput);
+	APR_BRIGADE_INSERT_TAIL(bb, bucket);
+	ap_pass_brigade(f->next, bb);
     }
 
     return APR_SUCCESS;
