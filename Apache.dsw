@@ -54,9 +54,6 @@ Package=<4>
     Project_Dep_Name Apache
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name apriconv
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name ApacheMonitor
     End Project Dependency
     Begin Project Dependency
@@ -287,6 +284,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name apriconv
+    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
     End Project Dependency
