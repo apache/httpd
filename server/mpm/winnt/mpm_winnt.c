@@ -81,36 +81,6 @@
 #include <malloc.h>
 #include "apr_atomic.h"
 
-/* Limit on the threads per process.  Clients will be locked out if more than
- * this  * server_limit are needed.
- *
- * We keep this for one reason it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef DEFAULT_THREAD_LIMIT
-#define DEFAULT_THREAD_LIMIT 1920
-#endif
-
-/* Admin can't tune ThreadLimit beyond MAX_THREAD_LIMIT.  We want
- * some sort of compile-time limit to help catch typos.
- */
-#ifndef MAX_THREAD_LIMIT
-#define MAX_THREAD_LIMIT 15000
-#endif
-
-/* Limit on the total --- clients will be locked out if more servers than
- * this are needed.  It is intended solely to keep the server from crashing
- * when things get out of hand.
- *
- * We keep a hard maximum number of servers, for two reasons --- first off,
- * in case something goes seriously wrong, we want to stop the fork bomb
- * short of actually crashing the machine we're running on by filling some
- * kernel table.  Secondly, it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#define HARD_SERVER_LIMIT 1
 
 /* scoreboard.c does the heavy lifting; all we do is create the child
  * score by moving a handle down the pipe into the child's stdin.
@@ -1413,7 +1383,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
     }
 
     ap_listen_pre_config();
-    ap_threads_per_child = DEFAULT_START_THREAD;
+    ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 

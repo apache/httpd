@@ -59,26 +59,35 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
-/* Number of threads to spawn off by default --- also, if fewer than
- * this free when the caretaker checks, it will spawn more.
+/* Default limit on the maximum setting of the ThreadsPerChild configuration
+ * directive.  This limit can be overridden with the ThreadLimit directive.
+ * This limit directly influences the amount of shared storage that is allocated
+ * for the scoreboard. DEFAULT_THREAD_LIMIT represents a good compromise
+ * between scoreboard size and the ability of the server to handle the most
+ * common installation requirements.
  */
-#ifndef DEFAULT_START_THREAD
-#define DEFAULT_START_THREAD 5
+#ifndef DEFAULT_THREAD_LIMIT
+#define DEFAULT_THREAD_LIMIT 1920
 #endif
 
-/* Maximum number of *free* server threads --- more than this, and
- * they will die off.
-#ifndef DEFAULT_MAX_SPARE_THREAD
-#define DEFAULT_MAX_SPARE_THREAD 10
+/* The ThreadLimit directive can be used to override the DEFAULT_THREAD_LIMIT.
+ * ThreadLimit cannot be tuned larger than MAX_THREAD_LIMIT.
+ * This is a sort of compile-time limit to help catch typos.
+ */
+#ifndef MAX_THREAD_LIMIT
+#define MAX_THREAD_LIMIT 15000
 #endif
-*/
 
-/* Minimum --- fewer than this, and more will be created */
-/*
-#ifndef DEFAULT_MIN_SPARE_THREAD
-#define DEFAULT_MIN_SPARE_THREAD 5
+/* Number of threads started in the child process in the absence
+ * of a ThreadsPerChild configuration directive
+ */
+#ifndef DEFAULT_THREADS_PER_CHILD
+#define DEFAULT_THREADS_PER_CHILD 64
 #endif
-*/
+
+/* Max number of child processes allowed.
+ */
+#define HARD_SERVER_LIMIT 1
 
 /* Number of servers to spawn off by default
  */
