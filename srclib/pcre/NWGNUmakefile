@@ -1,4 +1,5 @@
 #
+# NWGNUmakefile for DfTables.nlm (Apache2)
 # Declare the sub-directories to be built here
 #
 
@@ -35,9 +36,8 @@ $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(APR)/pcre \
 			$(AP_WORK)/os/netware \
-			$(APR)/include/arch/netware \
+			$(APR_WORK)/include/arch/netware \
 			$(EOLIST)
 
 #
@@ -156,7 +156,7 @@ NLM_FLAGS		= PSEUDOPREEMPTION
  
 #
 # If this is specified it will be linked in with the XDCData option in the def 
-# file instead of the default of $(APR)/misc/netware/apache.xdc.  XDCData can 
+# file instead of the default of $(APR)/misc/netware/apr.xdc.  XDCData can 
 # be disabled by setting APACHE_UNIPROC in the environment
 #
 XDCDATA         = 
@@ -264,3 +264,4 @@ install :: nlms FORCE
 
 include $(APR_WORK)\build\NWGNUtail.inc
 
+# End of NWGNUmakefile for DfTables.nlm (Apache2)
