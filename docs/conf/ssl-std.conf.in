@@ -51,15 +51,15 @@ SSLPassPhraseDialog  builtin
 #   Configure the SSL Session Cache: First the mechanism 
 #   to use and second the expiring timeout (in seconds).
 #SSLSessionCache        none
-#SSLSessionCache        shmht:@exp_logfiledir@/ssl_scache(512000)
-#SSLSessionCache        shmcb:@exp_logfiledir@/ssl_scache(512000)
-SSLSessionCache         dbm:@exp_logfiledir@/ssl_scache
+#SSLSessionCache        shmht:@exp_runtimedir@/ssl_scache(512000)
+#SSLSessionCache        shmcb:@exp_runtimedir@/ssl_scache(512000)
+SSLSessionCache         dbm:@exp_runtimedir@/ssl_scache
 SSLSessionCacheTimeout  300
 
 #   Semaphore:
 #   Configure the path to the mutual exclusion semaphore the
 #   SSL engine uses internally for inter-process synchronization. 
-SSLMutex  file:@exp_logfiledir@/ssl_mutex
+SSLMutex  file:@exp_runtimedir@/ssl_mutex
 
 #   Pseudo Random Number Generator (PRNG):
 #   Configure one or more sources to seed the PRNG of the 
