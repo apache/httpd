@@ -168,7 +168,6 @@ AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     if (ap_scoreboard_image == NULL) {
         if (sb_type == SB_SHARED) {
             setup_shared(p);
-            ap_scoreboard_image->global.sb_type = SB_SHARED;
         }
         else {
             /* A simple malloc will suffice */
@@ -180,10 +179,10 @@ AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
                 perror(buf); /* o.k. since MM sets errno */
                 exit(APEXIT_INIT);            
             }
-            ap_scoreboard_image->global.sb_type = SB_NOT_SHARED;
         }
     }
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
+    ap_scoreboard_image->global.sb_type = sb_type;
     ap_scoreboard_image->global.running_generation = running_gen;
     ap_restart_time = apr_now();
     apr_register_cleanup(p, NULL, ap_cleanup_scoreboard, apr_null_cleanup);
