@@ -945,7 +945,7 @@ static void tryit(request_rec *r, unsigned char *buf, apr_size_t nb, int checkzm
     magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 }
 
-#define    EATAB {while (apr_isspace((unsigned char) *l))  ++l;}
+#define    EATAB {while (apr_isspace(*l))  ++l;}
 
 /*
  * apprentice - load configuration from the magic file r
@@ -1279,7 +1279,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
 	}
 	/* FALL THROUGH */
     default:
-	if (*l == 'x' && apr_isspace((unsigned char) l[1])) {
+	if (*l == 'x' && apr_isspace(l[1])) {
 	    m->reln = *l;
 	    ++l;
 	    goto GetDesc;	/* Bill The Cat */
@@ -1351,7 +1351,7 @@ static char *getstr(server_rec *serv, register char *s, register char *p,
     register int val;
 
     while ((c = *s++) != '\0') {
-	if (apr_isspace((unsigned char) c))
+	if (apr_isspace(c))
 	    break;
 	if (p >= pmax) {
 	    ap_log_error(APLOG_MARK, APLOG_ERR, 0, serv,
@@ -1454,7 +1454,7 @@ static char *getstr(server_rec *serv, register char *s, register char *p,
 /* Single hex char to int; -1 if not a hex char. */
 static int hextoint(int c)
 {
-    if (apr_isdigit((unsigned char) c))
+    if (apr_isdigit(c))
 	return c - '0';
     if ((c >= 'a') && (c <= 'f'))
 	return c + 10 - 'a';
@@ -2257,7 +2257,7 @@ static int uncompress(request_rec *r, int method,
  * Darwin.
  */
 
-#define    isodigit(c)    ( ((c) >= '0') && ((c) <= '7') )
+#define isodigit(c) (((unsigned char)(c) >= '0') && ((unsigned char)(c) <= '7'))
 
 /*
  * Return 0 if the checksum is bad (i.e., probably not a tar archive), 1 for
