@@ -12,6 +12,20 @@
 # Be as similar to the output of config.guess/config.sub
 # as possible.
 
+# Handle TPF before handling other OSes.  This
+# is being done because TPF is sometimes compiled
+# on OS/390.  When that is the case, if we don't
+# handle TPF ahead of the other OSes, TPF will
+# fall into the OS/390 case and this script would
+# return an incorrect value for the platform.
+#
+# Apache is not compiled on the TPF platform
+# therefore an environment variable is used
+if [ "x$TPF" = "xYES" ]; then
+    echo "TPF"
+    exit 0	
+fi
+
 # First get uname entries that we use below
 
 MACHINE=`(uname -m) 2>/dev/null` || MACHINE="unknown"
@@ -295,13 +309,6 @@ esac
 if [ -d /usr/apollo ]; then
     echo "whatever-apollo-whatever"
     exit 0
-fi
-
-# Apache is not compiled on the TPF platform
-# therefore an environment variable is used
-if [ "x$TPF" = "xYES" ]; then
-    echo "TPF"
-    exit 0	
 fi
 
 # Now NeXT
