@@ -1,5 +1,12 @@
 Changes with Apache 1.3b7
 
+  *) PORT: Various porting changes to support AIX 3.2, 4.1.5, 4.2 and 4.3.
+     Additionally the checks for finding the vendor DSO library were moved
+     from mod_so.c to Configure because first it needs $PLAT etc. and second
+     mod_so already uses an abstraction layer and does not fiddle with the
+     vendor functions itself.
+     [Jens-Uwe Mager, Ralf S. Engelschall]
+
   *) PORT: Some optimization defines for NetBSD
      [Jaromir Dolecek <dolecek@ics.muni.cz>] PR#2165
 

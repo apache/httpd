@@ -71,7 +71,9 @@
 
 DEF_Explain
 
+#ifndef abs
 #define	abs(c)	((c) >= 0 ? (c) : -(c))
+#endif
 
 struct gc_ent {
     unsigned long int len;

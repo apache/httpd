@@ -132,7 +132,9 @@ typedef struct {
     char *regex;                /* regex to match against */
     regex_t *preg;              /* compiled regex */
     table *features;            /* env vars to set (or unset) */
-    enum special special_type : 4;	/* is it a "special" header ? */
+    ENUM_BITFIELD(              /* is it a "special" header ? */
+	enum special,
+	special_type,4);
     unsigned icase : 1;		/* ignoring case? */
 } sei_entry;
 

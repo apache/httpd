@@ -814,9 +814,11 @@ typedef int rlim_t;
 #if !defined(__GNUC__) || __GNUC__ < 2 || __GNUC_MINOR__ < 7 || defined(NEXT)
 #define ap_inline
 #define __attribute__(__x)
+#define ENUM_BITFIELD(e,n,w)  signed int n : w
 #else
 #define ap_inline __inline__
 #define USE_GNU_INLINE
+#define ENUM_BITFIELD(e,n,w)  e n : w
 #endif
 
 /* Do we have sys/resource.h; assume that BSD does. */

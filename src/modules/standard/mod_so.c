@@ -125,35 +125,6 @@
  */
 
 
-/*
- * Module definition information used by Configure
- *
- * MODULE-DEFINITION-START
- * Name: so_module
- * ConfigStart
-    if ./helpers/TestCompile func dlopen; then
-	:
-    else
-        DL_LIB=""
-        case $PLAT in
-             *-ibm-aix* )
-                 DL_LIB="-lld"
-                 ;;
-             * )
-                 if ./helpers/TestCompile lib dl; then
-	             DL_LIB="-ldl"
-                 fi
-                 ;;
-        esac 
-        if [ ".$DL_LIB" != . ]; then
-	    LIBS="$LIBS $DL_LIB"
- 	    echo " + using $DL_LIB for DSO support"
-        fi
-    fi
- * ConfigEnd
- * MODULE-DEFINITION-END
- */
-
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"

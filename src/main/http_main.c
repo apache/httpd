@@ -3529,7 +3529,7 @@ static int make_child(server_rec *s, int slot, time_t now)
     }
 
     if (!pid) {
-#ifdef AIX
+#if defined(AIX) && (AIX >= 41)
 /* by default AIX binds to a single processor
  * this bit unbinds children which will then bind to another cpu
  */
