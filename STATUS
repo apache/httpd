@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/01 17:29:15 $]
+Last modified at [$Date: 2004/01/04 15:07:04 $]
 
 Release:
 
@@ -58,7 +58,12 @@ on related projects:
 
 Contributors looking for a mission:
 
-    * just do an egrep on "TODO", "XXX" and see what's there
+    * Just do an egrep on "TODO" or "XXX" in the source.
+
+    * Review the "PatchAvailable" bugs in the bug database.
+      Append a comment saying "Reviewed and tested".
+
+    * Open bugs in the bug database.
 
 RELEASE SHOWSTOPPERS:
 
@@ -72,6 +77,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * Move SSLRandomSeed out of the <IfDefine SSL> container to support
+      starting without SSL on platforms with no /dev/random equivalent
+      but a statically compiled-in mod_ssl.  PR: 25867
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/docs/conf/ssl-std.conf.in?r1=1.4&r2=1.5
+      +1: erikabele
 
     * Fix segfault in mod_mem_cache cache_insert() due to cache size
       becoming negative.  PR: 21285, 21287
