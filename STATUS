@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/23 08:14:44 $]
+Last modified at [$Date: 2003/07/23 13:45:17 $]
 
 Release:
 
@@ -265,10 +265,11 @@ PATCHES TO PORT FROM 2.1
     * httpd-std.conf: Try to be clearer in describing the connection
       between AddType and AddEncoding for defining the meaning of
       compressed file extensions.  Follows mime.types change above.
-        docs/conf/httpd-std.conf.in: r1.47
+        docs/conf/httpd-std.conf.in: r1.47, 1.53
         docs/conf/httpd-win.conf:    r1.93
       jerenkrantz asks: Why does httpd-std.conf.in have two copies of the
                         AddEncoding directives?  This is a typo, right?
+            nd replies: Sure. 1.53 fixes that.
       +1: fielding, nd
 
     * mod_ext_filter: Set additional environment variables for use by
@@ -295,9 +296,10 @@ PATCHES TO PORT FROM 2.1
     * Ignore RewriteRules in .htaccess files if the directory
       containing the .htaccess file is requested without a trailing slash.
       PR 20195.
-        modules/mappers/mod_rewrite.c: r1.156
+        modules/mappers/mod_rewrite.c: r1.156, 1.168
       jerenkrantz says: We're doing 3 strlen's on the same value, can we please
                         clean that up?
+            nd replies: of course ..., 1.168 does.
       +1: nd
 
     * ab: reject overlong credentials from command line (2.0 + 1.3)
