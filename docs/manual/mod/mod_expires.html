@@ -1,38 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_expires</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_expires</h1>
-
-    <p>This module provides for the generation of
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_expires - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_expires</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Generation of
     <code>Expires</code> HTTP headers according to user-specified
-    criteria.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>
-    mod_expires.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    expires_module<br />
-     <a href="module-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 1.2 and later.</p>
-
-    <h2>Summary</h2>
-
+    criteria</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>expires_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
     <p>This module controls the setting of the <code>Expires</code>
     HTTP header in server responses. The expiration date can set to
     be relative to either the time the source file was last
@@ -44,106 +16,76 @@
     from the source until this time has passed. After that, the
     cache copy is considered "expired" and invalid, and a new copy
     must be obtained from the source.</p>
-
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="#expiresactive">ExpiresActive</a></li>
-
-      <li><a href="#expiresbytype">ExpiresByType</a></li>
-
-      <li><a href="#expiresdefault">ExpiresDefault</a></li>
-    </ul>
-
-    <h2><a id="AltSyn" name="AltSyn">Alternate Interval
+</summary><h2>Directives</h2><ul><li><a href="#expiresactive">ExpiresActive</a></li><li><a href="#expiresbytype">ExpiresByType</a></li><li><a href="#expiresdefault">ExpiresDefault</a></li></ul><h2><a name="AltSyn">Alternate Interval
     Syntax</a></h2>
 
-    <p>The <a
-    href="#expiresdefault"><samp>ExpiresDefault</samp></a> and <a
-    href="#expiresbytype"><samp>ExpiresByType</samp></a> directives
+    <p>The <a href="#expiresdefault" class="directive"><code class="directive">ExpiresDefault</code></a> and 
+    <a href="#expiresbytype" class="directive"><code class="directive">ExpiresByType</code></a> directives
     can also be defined in a more readable syntax of the form:</p>
 
-    <dl>
-      <dd><code>ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
-      &lt;type&gt;}*"<br />
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+       ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
+      &lt;type&gt;}*"<br>
        ExpiresByType type/encoding "&lt;base&gt; [plus]
-      {&lt;num&gt; &lt;type&gt;}*"</code></dd>
-    </dl>
+      {&lt;num&gt; &lt;type&gt;}*"
+</code></td></tr></table></blockquote>
 
     <p>where &lt;base&gt; is one of:</p>
 
     <ul>
-      <li><samp>access</samp></li>
+      <li><code>access</code></li>
 
-      <li><samp>now</samp> (equivalent to
-      '<samp>access</samp>')</li>
+      <li><code>now</code> (equivalent to
+      '<code>access</code>')</li>
 
-      <li><samp>modification</samp></li>
+      <li><code>modification</code></li>
     </ul>
 
-    <p>The '<samp>plus</samp>' keyword is optional. &lt;num&gt;
-    should be an integer value [acceptable to <samp>atoi()</samp>],
+    <p>The '<code>plus</code>' keyword is optional. &lt;num&gt;
+    should be an integer value [acceptable to <code>atoi()</code>],
     and &lt;type&gt; is one of:</p>
 
     <ul>
-      <li><samp>years</samp></li>
+      <li><code>years</code></li>
 
-      <li><samp>months</samp></li>
+      <li><code>months</code></li>
 
-      <li><samp>weeks</samp></li>
+      <li><code>weeks</code></li>
 
-      <li><samp>days</samp></li>
+      <li><code>days</code></li>
 
-      <li><samp>hours</samp></li>
+      <li><code>hours</code></li>
 
-      <li><samp>minutes</samp></li>
+      <li><code>minutes</code></li>
 
-      <li><samp>seconds</samp></li>
+      <li><code>seconds</code></li>
     </ul>
 
     <p>For example, any of the following directives can be used to
     make documents expire 1 month after being accessed, by
     default:</p>
 
-    <dl>
-      <dd><code>ExpiresDefault "access plus 1 month"<br />
-       ExpiresDefault "access plus 4 weeks"<br />
-       ExpiresDefault "access plus 30 days"</code></dd>
-    </dl>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+       ExpiresDefault "access plus 1 month"<br>
+       ExpiresDefault "access plus 4 weeks"<br>
+       ExpiresDefault "access plus 30 days"
+</code></td></tr></table></blockquote>
 
     <p>The expiry time can be fine-tuned by adding several
     '&lt;num&gt; &lt;type&gt;' clauses:</p>
 
-    <dl>
-      <dd><code>ExpiresByType text/html "access plus 1 month 15
-      days 2 hours"<br />
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+ExpiresByType text/html "access plus 1 month 15
+      days 2 hours"<br>
        ExpiresByType image/gif "modification plus 5 hours 3
-      minutes"</code></dd>
-    </dl>
+      minutes"
+</code></td></tr></table></blockquote>
 
     <p>Note that if you use a modification date based setting, the
     Expires header will <strong>not</strong> be added to content
     that does not come from a file on disk. This is due to the fact
     that there is no modification time for such content.</p>
-    <hr />
-
-    <h2><a id="expiresactive" name="expiresactive">ExpiresActive
-    directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt ExpiresActive} directive&gt; -->
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> ExpiresActive
-    on|off<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> Indexes<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_expires</p>
-
+<hr/><h2><a name="ExpiresActive">ExpiresActive</a> <a name="expiresactive">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enables generation of Expires headers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ExpiresActive On|Off</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_expires</td></tr></table></td></tr></table><usage>
     <p>This directive enables or disables the generation of the
     <code>Expires</code> header for the document realm in question.
     (That is, if found in an <code>.htaccess</code> file, for
@@ -153,34 +95,18 @@
     in the realm (unless overridden at a lower level, such as an
     <code>.htaccess</code> file overriding a server config file).
     If set to <em><code>On</code></em>, the header will be added to
-    served documents according to the criteria defined by the <a
-    href="#expiresbytype">ExpiresByType</a> and <a
-    href="#expiresdefault">ExpiresDefault</a> directives
+    served documents according to the criteria defined by the 
+    <a href="#expiresbytype" class="directive"><code class="directive">ExpiresByType</code></a> and 
+    <a href="#expiresdefault" class="directive"><code class="directive">ExpiresDefault</code></a> directives
     (<em>q.v.</em>).</p>
 
     <p>Note that this directive does not guarantee that an
     <code>Expires</code> header will be generated. If the criteria
     aren't met, no header will be sent, and the effect will be as
     though this directive wasn't even specified.</p>
-    <hr />
-
-    <h2><a id="expiresbytype" name="expiresbytype">ExpiresByType
-    directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt ExpiresByType} directive&gt; -->
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> ExpiresByType
-    <em>MIME-type &lt;code&gt;seconds</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> Indexes<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_expires</p>
-
+</usage><hr/><h2><a name="ExpiresByType">ExpiresByType</a> <a name="expiresbytype">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Value of the Expires header configured
+by MIME type</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ExpiresByType
+    <em>MIME-type &lt;code&gt;seconds</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_expires</td></tr></table></td></tr></table><usage>
     <p>This directive defines the value of the <code>Expires</code>
     header generated for documents of the specified type
     (<em>e.g.</em>, <code>text/html</code>). The second argument
@@ -206,55 +132,29 @@
     repeatedly within a relatively short timespan).</p>
 
     <p><strong>Example:</strong></p>
-<pre>
-   ExpiresActive On                  # enable expirations
-   ExpiresByType image/gif A2592000  # expire GIF images after a month
-                                     #  in the client's cache
-   ExpiresByType text/html M604800   # HTML documents are good for a
-                                     #  week from the time they were
-                                     #  changed, period
- 
-</pre>
-    <br />
-     <br />
-     
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+# enable expirations<br>
+ExpiresActive On<br>
+# expire GIF images after a month in the client's cache<br>
+ExpiresByType image/gif A2592000<br>
+# HTML documents are good for a week from the time they were changed<br>
+ExpiresByType text/html M604800
+</code></td></tr></table></blockquote>
 
     <p>Note that this directive only has effect if
     <code>ExpiresActive On</code> has been specified. It overrides,
     for the specified MIME type <em>only</em>, any expiration date
-    set by the <a href="#expiresdefault">ExpiresDefault</a>
+    set by the <a href="#expiresdefault" class="directive"><code class="directive">ExpiresDefault</code></a>
     directive.</p>
 
     <p>You can also specify the expiration time calculation using
-    an <a href="#AltSyn">alternate syntax</a>, described later in
+    an <a href="#AltSyn">alternate syntax</a>, described earlier in
     this document.</p>
-    <hr />
-
-    <h2><a id="expiresdefault" name="expiresdefault">ExpiresDefault
-    directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt ExpiresDefault} directive&gt; -->
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> ExpiresDefault
-    <em>&lt;code&gt;seconds</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host, directory, .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> Indexes<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_expires</p>
-
-    <p>This directive sets the default algorithm for calculating
-    the expiration time for all documents in the affected realm. It
-    can be overridden on a type-by-type basis by the <a
-    href="#expiresbytype">ExpiresByType</a> directive. See the
-    description of that directive for details about the syntax of
-    the argument, and the <a href="#AltSyn">alternate syntax</a>
+</usage><hr/><h2><a name="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Default algorithm for calculating expiration time</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>ExpiresDefault <em>&lt;code&gt;seconds</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_expires</td></tr></table></td></tr></table><usage>
+    <p>This directive sets the default algorithm for calculating the
+    expiration time for all documents in the affected realm. It can be
+    overridden on a type-by-type basis by the <a href="#expiresbytype" class="directive"><code class="directive">ExpiresByType</code></a> directive. See the
+    description of that directive for details about the syntax of the
+    argument, and the <a href="#AltSyn">alternate syntax</a>
     description as well.</p>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
