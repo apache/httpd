@@ -169,30 +169,6 @@ typedef struct {
     int bufbytes; 
 } cgid_server_conf; 
 
-/* This function is used to split the brigade at the beginning of
- *   the tag and forward the pretag buckets before any substitution
- *   work is performed on the tag. This maintains proper ordering.
- */
-static int split_and_pass_pretag_buckets(apr_bucket_brigade **brgd, 
-                                         include_ctx_t *cntxt, 
-                                         ap_filter_t *next)
-{
-    apr_bucket_brigade *tag_plus;
-    int rv;
-
-    if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&
-        (cntxt->head_start_bucket != NULL)) {
-        tag_plus = apr_brigade_split(*brgd, cntxt->head_start_bucket);
-        rv = ap_pass_brigade(next, *brgd);
-        cntxt->bytes_parsed = 0;
-        *brgd = tag_plus;
-        if (rv != APR_SUCCESS) {
-            return rv;
-        }
-    }
-    return APR_SUCCESS;
-}
-
 /* If a request includes query info in the URL (stuff after "?"), and
  * the query info does not contain "=" (indicative of a FORM submission),
  * then this routine is called to create the argument list to be passed
@@ -1175,7 +1151,8 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     char **env; 
     const char *location; 
     int sd;
-    int retval; 
+    apr_status_t rc = APR_SUCCESS; 
+    int retval;
     apr_bucket_brigade *bcgi;
     apr_bucket *b;
     struct sockaddr_un unix_addr;
@@ -1200,9 +1177,9 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
                                    "unable to connect to cgi daemon");
     } 
 
-    retval = split_and_pass_pretag_buckets(bb, ctx, f->next);
-    if (retval != APR_SUCCESS) {
-        return retval;
+    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, rc);
+    if (rc != APR_SUCCESS) {
+        return rc;
     }
 
     send_req(sd, r, command, env, SSI_REQ); 
@@ -1264,7 +1241,6 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
     char *file = r->filename;
     apr_bucket  *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
-    int retval;
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -1295,8 +1271,10 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                     /* just in case some stooge changed directories */
                 }
                 else if (!strcmp(tag, "cgi")) {
+                    apr_status_t retval = APR_SUCCESS;
+
                     cgid_pfn_ps(r, tag_val, parsed_string, sizeof(parsed_string), 0);
-                    retval = split_and_pass_pretag_buckets(bb, ctx, f->next);
+                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, retval);
                     if (retval != APR_SUCCESS) {
                         return retval;
                     }
