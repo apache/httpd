@@ -82,6 +82,9 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
 
+/* magic pointer for ErrorDocument xxx "default" */
+static char errordocument_default;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
@@ -271,7 +274,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
                sizeof(*conf->response_code_strings) * RESPONSE_CODES);
 
         for (i = 0; i < RESPONSE_CODES; ++i) {
-            conf->response_code_strings[i] = new->response_code_strings[i];
+            if (new->response_code_strings[i] != NULL) {
+                conf->response_code_strings[i] = new->response_code_strings[i];
+            }
         }
     }
     /* Otherwise we simply use the base->response_code_strings array
@@ -693,6 +698,10 @@ char *ap_response_code_string(request_rec *r, int error_index)
 
     if (dirconf->response_code_strings == NULL) {
 	return NULL;
+    }
+
+    if (dirconf->response_code_strings[error_index] == &errordocument_default) {
+        return NULL;
     }
 
     return dirconf->response_code_strings[error_index];
@@ -1180,7 +1189,7 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
             /* special case: ErrorDocument 404 default restores the
              * canned server error response
              */
-            conf->response_code_strings[index_number] = NULL;
+            conf->response_code_strings[index_number] = &errordocument_default;
         }
         else {
             /* hack. Prefix a " if it is a msg; as that is what
