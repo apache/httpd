@@ -535,9 +535,9 @@ engine</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <em>Options</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
       <em>Pattern</em> <em>Substitution</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>number</var>|max [<var>number</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the CPU consumption of processes launched
+<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the CPU consumption of processes launched
 by Apache children</td></tr>
-<tr><td><a href="core.html#rlimitmem">RLimitMEM <var>number</var>|max [<var>number</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the memory consumption of processes launched
+<tr><td><a href="core.html#rlimitmem">RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the memory consumption of processes launched
 by Apache children</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <var>number</var>|max [<var>number</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the number of processes that can be launched by
 processes launched by Apache children</td></tr>
@@ -573,7 +573,8 @@ itself</td></tr>
 is accessed by an incompatible browser</td></tr>
 <tr><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Base directory for the server installation</td></tr>
 <tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the footer on server-generated documents</td></tr>
-<tr><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures the Server HTTP response header</td></tr>
+<tr><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures the <code>Server</code> HTTP response
+header</td></tr>
 <tr class="odd"><td><a href="mod_env.html#setenv">SetEnv <var>env-variable</var> <var>value</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets environment variables</td></tr>
 <tr><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
@@ -654,7 +655,7 @@ Certificate verification</td></tr>
 per child process</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Number of threads created by each child process</td></tr>
 <tr><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <var>number</var></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Determine the stack size for each thread</td></tr>
-<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>number</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Amount of time the server will wait for
+<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>second</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Amount of time the server will wait for
 certain events before failing a request</td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Specifly location of a log file</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
