@@ -1890,6 +1890,7 @@ static const char *get_ptoken(request_rec *r, const char *string,
                 if (ch == qs) {
                     qs = 0;
                     tkn_fnd = 1;
+                    string++;
                 }
                 else {
                     token->value[next++] = ch;

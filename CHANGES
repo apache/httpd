@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix mod_include's handling of regular expressions in
+     "<!--#if" directives [Julius Gawlas <julius_gawlas@hp.com>]
+
   *) Fix the worker MPM deadlock problem  [Brian Pane]
 
   *) Modify the module documentation to allow for translations.
