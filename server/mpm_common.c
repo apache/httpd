@@ -347,6 +347,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
 
     *pod = apr_palloc(p, sizeof(**pod));
     rv = apr_file_pipe_create(&((*pod)->pod_in), &((*pod)->pod_out), p);
+    apr_file_pipe_timeout_set((*pod)->pod_in, 0);
     apr_file_pipe_timeout_set((*pod)->pod_out, 0);
     (*pod)->p = p;
     return rv;
