@@ -4122,47 +4122,49 @@ static cacheentry *retrieve_cache_string(cache *c, char *res, char *key)
 ** +-------------------------------------------------------+
 */
 
+/*
+ * substitute the prefix path 'match' in 'input' with 'subst'
+ * (think of RewriteBase which substitutes the physical path with
+ *  the virtual path)
+ */
+
 static char *subst_prefix_path(request_rec *r, char *input, char *match,
-                               char *subst)
+                               const char *subst)
 {
-    char matchbuf[LONG_STRING_LEN];
-    char substbuf[LONG_STRING_LEN];
-    char *output;
-    int l;
+    size_t len = strlen(match);
 
-    output = input;
-
-    /* first create a match string which always has a trailing slash */
-    l = ap_cpystrn(matchbuf, match, sizeof(matchbuf) - 1) - matchbuf;
-    if (!l || matchbuf[l-1] != '/') {
-       matchbuf[l] = '/';
-       matchbuf[l+1] = '\0';
-       l++;
+    if (len && match[len - 1] == '/') {
+        --len;
     }
-    /* now compare the prefix */
-    if (strncmp(input, matchbuf, l) == 0) {
-        rewritelog(r, 5, "strip matching prefix: %s -> %s", output, output+l);
-        output = ap_pstrdup(r->pool, output+l);
 
-        /* and now add the base-URL as replacement prefix */
-        l = ap_cpystrn(substbuf, subst, sizeof(substbuf) - 1) - substbuf;
-        if (!l || substbuf[l-1] != '/') {
-           substbuf[l] = '/';
-           substbuf[l+1] = '\0';
-           l++;
+    if (!strncmp(input, match, len) && input[len++] == '/') {
+        size_t slen, outlen;
+        char *output;
+
+        rewritelog(r, 5, "strip matching prefix: %s -> %s", input, input+len);
+
+        slen = strlen(subst);
+        if (slen && subst[slen - 1] != '/') {
+            ++slen;
         }
-        if (output[0] == '/') {
-            rewritelog(r, 4, "add subst prefix: %s -> %s%s",
-                       output, substbuf, output+1);
-            output = ap_pstrcat(r->pool, substbuf, output+1, NULL);
+
+        outlen = strlen(input) + slen - len;
+        output = ap_palloc(r->pool, outlen + 1); /* don't forget the \0 */
+
+        memcpy(output, subst, slen);
+        if (slen && !output[slen-1]) {
+            output[slen-1] = '/';
         }
-        else {
-            rewritelog(r, 4, "add subst prefix: %s -> %s%s",
-                       output, substbuf, output);
-            output = ap_pstrcat(r->pool, substbuf, output, NULL);
-        }
+        memcpy(output+slen, input+len, outlen - slen);
+        output[outlen] = '\0';
+
+        rewritelog(r, 4, "add subst prefix: %s -> %s", input+len, output);
+
+        return output;
     }
-    return output;
+
+    /* prefix didn't match */
+    return input;
 }
 
 

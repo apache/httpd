@@ -1,5 +1,7 @@
 Changes with Apache 1.3.30
 
+  *) Fix RewriteBase directive to not add double slashes.  [André Malo]
+
   *) mod_rewrite: In external rewrite maps lookup keys containing
      a newline now cause a lookup failure. PR 14453.
      [Cedric Gavage <cedric.gavage unixtech.be>, André Malo]

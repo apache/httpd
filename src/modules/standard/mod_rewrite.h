@@ -493,7 +493,7 @@ static void   store_cache_string(cache *c, char *res, cacheentry *ce);
 
     /* misc functions */
 static char  *subst_prefix_path(request_rec *r, char *input, char *match,
-                                char *subst);
+                                const char *subst);
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, ap_pool *pool);
 static void   add_env_variable(request_rec *r, char *s);
