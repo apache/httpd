@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Fix a bug in which mod_proxy sent an invalid Content-Length
+     when a proxied URL was invoked as a server-side include within
+     a page generated in response to a form POST.  [Brian Pane]
+
   *) Added code to process min and max file size directives and to
      init the expirychk flag in mod_disk_cache. Added a clarifying
      comment to cache_util.   [Paul J. Reder]

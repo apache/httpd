@@ -597,7 +597,26 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                      || !apr_strnatcasecmp(headers_in[counter].key, "If-None-Match")) {
                     continue;
                 }
+
+                /* If you POST to a page that gets server-side parsed
+                 * by mod_include, and the parsing results in a reverse
+                 * proxy call, the proxied request will be a GET, but
+                 * its request_rec will have inherited the Content-Length
+                 * of the original request (the POST for the enclosing
+                 * page).  We can't send the original POST's request body
+                 * as part of the proxied subrequest, so we need to avoid
+                 * sending the corresponding content length.  Otherwise,
+                 * the server to which we're proxying will sit there
+                 * forever, waiting for a request body that will never
+                 * arrive.
+                 */
+                if ((r->method_number == M_GET) && headers_in[counter].key &&
+                    !apr_strnatcasecmp(headers_in[counter].key,
+                                       "Content-Length")) {
+                    continue;
+                }
         }
+
 
         buf = apr_pstrcat(p, headers_in[counter].key, ": ",
                           headers_in[counter].val, CRLF,
