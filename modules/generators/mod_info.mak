@@ -306,12 +306,14 @@ DEP_CPP_MOD_I=\
 	"..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\srclib\apr\include\apr_inherit.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\srclib\apr\include\apr_portable.h"\
+	"..\..\srclib\apr\include\apr_sms.h"\
 	"..\..\srclib\apr\include\apr_strings.h"\
 	"..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\srclib\apr\include\apr_thread_proc.h"\
