@@ -2272,7 +2272,7 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
             else if (rv != APR_SUCCESS) {
                 if (r->connection->aborted)
                     break;
-                else if (rv == EAGAIN)
+                else if (ap_canonical_error(rv) == APR_EAGAIN)
                     continue;
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,

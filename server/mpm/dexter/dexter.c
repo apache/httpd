@@ -681,7 +681,7 @@ static void check_pipe_of_death(void)
         char pipe_read_char;
 
         ret = read(listenfds[0].fd, &pipe_read_char, 1);
-        if (ret == -1 && errno == EAGAIN) {
+        if (ret == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
             /* It lost the lottery. It must continue to suffer
              * through a life of servitude. */
         }
