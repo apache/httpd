@@ -73,7 +73,7 @@ format:
   %% <i>HTTP-status</i> <i>CGI-script-filename</i>
 </pre>
 
-If the error is the that CGI script cannot be run, the log file will
+If the error is that CGI script cannot be run, the log file will
 contain
 an extra two lines:
 
@@ -82,7 +82,7 @@ an extra two lines:
   <i>error-message</i>
 </pre>
 
-Alternatively, if the error is the result of the script returning the
+Alternatively, if the error is the result of the script returning
 incorrect header information (often due to a bug in the script), the
 following information is logged:
 
@@ -146,7 +146,7 @@ exceeds this size, no more information will be written to it.
 <b>Status:</b> mod_cgi
 <p>
 
-The size of any PUR or POST entity body that is logged to the file is
+The size of any PUT or POST entity body that is logged to the file is
 limited, to prevent the log file growing too big too quickly if large
 bodies are being received. By default, up to 1024 bytes are logged,
 but this can be changed with this directive.
