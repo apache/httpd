@@ -1,5 +1,9 @@
 Changes with Apache 1.3.28
 
+  *) mod_auth_digest no longer tries to guess AuthDigestDomain, if it's
+     not specified. Now it assumes "/" as already documented. PR 16937.
+     [André Malo]
+
   *) In configure always assume suexec-umask to be an octal value by
      prepending a "0". PR 16984.  [André Malo]
 
