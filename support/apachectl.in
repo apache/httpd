@@ -26,14 +26,14 @@ ARGV="$@"
 # --------------------                              --------------------
 # 
 # the path to your PID file
-PIDFILE=@prefix@/logs/@progname@.pid
+PIDFILE=@exp_runtimedir@/@progname@.pid
 #
 # the path to your httpd binary, including options if necessary
-HTTPD='@prefix@/bin/@progname@'
+HTTPD='@exp_bindir@/@progname@'
 #
 # pick up any necessary environment variables
-if test -f @prefix@/bin/envvars; then
-  . @prefix@/bin/envvars
+if test -f @exp_bindir@/envvars; then
+  . @exp_bindir@/envvars
 fi
 #
 # a command that outputs a formatted text version of the HTML at the

@@ -24,9 +24,9 @@
 # Configuration and logfile names: If the filenames you specify for many
 # of the server's control files begin with "/" (or "drive:/" for Win32), the
 # server will use that explicit path.  If the filenames do *not* begin
-# with "/", the value of ServerRoot is prepended -- so "logs/foo.log"
-# with ServerRoot set to "/usr/local/apache" will be interpreted by the
-# server as "/usr/local/apache/logs/foo.log".
+# with "/", the value of ServerRoot is prepended -- so "@rel_logfiledir@/foo.log"
+# with ServerRoot set to "@@ServerRoot@@" will be interpreted by the
+# server as "@@ServerRoot@@/@rel_logfiledir@/foo.log".
 #
 
 ### Section 1: Global Environment
@@ -54,7 +54,7 @@ ServerRoot "@@ServerRoot@@"
 #
 <IfModule !mpm_winnt.c>
 <IfModule !mpm_netware.c>
-#LockFile logs/accept.lock
+#LockFile @rel_logfiledir@/accept.lock
 </IfModule>
 </IfModule>
 
@@ -68,7 +68,7 @@ ServerRoot "@@ServerRoot@@"
 #
 <IfModule !mpm_netware.c>
 <IfModule !perchild.c>
-#ScoreBoardFile logs/apache_runtime_status
+#ScoreBoardFile @rel_logfiledir@/apache_runtime_status
 </IfModule>
 </IfModule>
 
@@ -78,7 +78,7 @@ ServerRoot "@@ServerRoot@@"
 # identification number when it starts.
 #
 <IfModule !mpm_netware.c>
-PidFile logs/httpd.pid
+PidFile @rel_logfiledir@/httpd.pid
 </IfModule>
 
 #
@@ -290,7 +290,7 @@ UseCanonicalName Off
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 #
-DocumentRoot "@@ServerRoot@@/htdocs"
+DocumentRoot "@@ServerRoot@@/@rel_htdocsdir@"
 
 #
 # Each directory to which Apache has access can be configured with respect
@@ -315,7 +315,7 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 #
 # This should be changed to whatever you set DocumentRoot to.
 #
-<Directory "@@ServerRoot@@/htdocs">
+<Directory "@@ServerRoot@@/@rel_htdocsdir@">
 
 #
 # Possible values for the Options directive are "None", "All",
@@ -398,7 +398,7 @@ AccessFileName .htaccess
 # TypesConfig describes where the mime.types file (or equivalent) is
 # to be found.
 #
-TypesConfig conf/mime.types
+TypesConfig @rel_sysconfdir@/mime.types
 
 #
 # DefaultType is the default MIME type the server will use for a document
@@ -417,7 +417,7 @@ DefaultType text/plain
 # directive tells the module where the hint definitions are located.
 #
 <IfModule mod_mime_magic.c>
-    MIMEMagicFile conf/magic
+    MIMEMagicFile @rel_sysconfdir@/magic
 </IfModule>
 
 #
@@ -437,7 +437,7 @@ HostnameLookups Off
 # logged here.  If you *do* define an error logfile for a <VirtualHost>
 # container, that host's errors will be logged there and not here.
 #
-ErrorLog logs/error_log
+ErrorLog @rel_logfiledir@/error_log
 
 #
 # LogLevel: Control the number of messages logged to the error_log.
@@ -462,20 +462,20 @@ LogFormat "%{User-agent}i" agent
 # define per-<VirtualHost> access logfiles, transactions will be
 # logged therein and *not* in this file.
 #
-CustomLog logs/access_log common
+CustomLog @rel_logfiledir@/access_log common
 
 #
 # If you would like to have agent and referer logfiles, uncomment the
 # following directives.
 #
-#CustomLog logs/referer_log referer
-#CustomLog logs/agent_log agent
+#CustomLog @rel_logfiledir@/referer_log referer
+#CustomLog @rel_logfiledir@/agent_log agent
 
 #
 # If you prefer a single logfile with access, agent, and referer information
 # (Combined Logfile Format) you can use the following directive.
 #
-#CustomLog logs/access_log combined
+#CustomLog @rel_logfiledir@/access_log combined
 
 #
 # Optionally add a line containing the server version and virtual host
@@ -499,9 +499,9 @@ ServerSignature On
 # We include the /icons/ alias for FancyIndexed directory listings.  If you
 # do not use FancyIndexing, you may comment this out.
 #
-Alias /icons/ "@@ServerRoot@@/icons/"
+Alias /icons/ "@@ServerRoot@@/@rel_iconsdir@/"
 
-<Directory "@@ServerRoot@@/icons">
+<Directory "@@ServerRoot@@/@rel_iconsdir@">
     Options Indexes MultiViews
     AllowOverride None
     Order allow,deny
@@ -513,9 +513,9 @@ Alias /icons/ "@@ServerRoot@@/icons/"
 # the manual, even if you choose to move your DocumentRoot.  You may comment
 # this out if you do not care for the documentation.
 #
-Alias /manual "@@ServerRoot@@/manual"
+Alias /manual "@@ServerRoot@@/@rel_manualdir@"
 
-<Directory "@@ServerRoot@@/manual">
+<Directory "@@ServerRoot@@/@rel_manualdir@">
     Options Indexes FollowSymLinks MultiViews
     AllowOverride None
     Order allow,deny
@@ -530,21 +530,21 @@ Alias /manual "@@ServerRoot@@/manual"
 # The same rules about trailing "/" apply to ScriptAlias directives as to
 # Alias.
 #
-ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
+ScriptAlias /cgi-bin/ "@@ServerRoot@@/@rel_cgidir@/"
 
 <IfModule mod_cgid.c>
 #
 # Additional to mod_cgid.c settings, mod_cgid has Scriptsock <path>
 # for setting UNIX socket for communicating with cgid.
 #
-#Scriptsock            logs/cgisock
+#Scriptsock            @rel_runtimedir@/cgisock
 </IfModule>
 
 #
-# "@@ServerRoot@@/cgi-bin" should be changed to whatever your ScriptAliased
+# "@@ServerRoot@@/@rel_cgidir@" should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 #
-<Directory "@@ServerRoot@@/cgi-bin">
+<Directory "@@ServerRoot@@/@rel_cgidir@">
     AllowOverride None
     Options None
     Order allow,deny
@@ -854,15 +854,15 @@ AddHandler type-map var
 #   Alias /error/include/ "/your/include/path/"
 #
 # which allows you to create your own set of files by starting with the
-# @@ServerRoot@@/error/include/ files and
+# @@ServerRoot@@/@rel_errordir@/include/ files and
 # copying them to /your/include/path/, even on a per-VirtualHost basis.
 #
 
 <IfModule mod_negotiation.c>
 <IfModule mod_include.c>
-    Alias /error/ "@@ServerRoot@@/error/"
+    Alias /error/ "@@ServerRoot@@/@rel_errordir@/"
 
-    <Directory "@@ServerRoot@@/error">
+    <Directory "@@ServerRoot@@/@rel_errordir@">
         AllowOverride None
         Options IncludesNoExec
         AddOutputFilter Includes html
@@ -960,7 +960,7 @@ BrowserMatch "^WebDrive" redirect-carefully
 # To enable the cache as well, edit and uncomment the following lines:
 # (no cacheing without CacheRoot)
 #
-#CacheRoot "@@ServerRoot@@/proxy"
+#CacheRoot "@@ServerRoot@@/@rel_proxycachedir@"
 #CacheSize 5
 #CacheGcInterval 4
 #CacheMaxExpire 24
@@ -975,7 +975,7 @@ BrowserMatch "^WebDrive" redirect-carefully
 # Bring in additional module-specific configurations
 #
 <IfModule mod_ssl.c>
-    Include conf/ssl.conf
+    Include @rel_sysconfdir@/ssl.conf
 </IfModule>
 
 
@@ -1008,6 +1008,6 @@ BrowserMatch "^WebDrive" redirect-carefully
 #    ServerAdmin webmaster@dummy-host.example.com
 #    DocumentRoot /www/docs/dummy-host.example.com
 #    ServerName dummy-host.example.com
-#    ErrorLog logs/dummy-host.example.com-error_log
-#    CustomLog logs/dummy-host.example.com-access_log common
+#    ErrorLog @rel_logfiledir@/dummy-host.example.com-error_log
+#    CustomLog @rel_logfiledir@/dummy-host.example.com-access_log common
 #</VirtualHost>

@@ -149,7 +149,7 @@ static int is_scriptaliased(request_rec *r)
 
 #define DEFAULT_LOGBYTES 10385760 
 #define DEFAULT_BUFBYTES 1024 
-#define DEFAULT_SOCKET "logs/cgisock"
+#define DEFAULT_SOCKET  DEFAULT_REL_RUNTIMEDIR "/cgisock"
 
 #define CGI_REQ 1
 #define SSI_REQ 2
