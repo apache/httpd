@@ -58,6 +58,8 @@
 
 #include "httpd.h"
 #include "ap_config.h"
+#include "http_config.h"
+#include "http_log.h"
 #include <dirent.h>
 
 extern char ap_server_root[MAX_STRING_LEN];
@@ -131,6 +133,19 @@ char *bslash2slash(char* str)
         }
     }
     return str;
+}
+
+void check_clean_load(module *top_module)
+{
+    if (top_module != NULL) {
+        module *m;
+
+        ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+            "abnormal shutdown detected, performing a clean shutdown: please restart apache");
+        for (m = top_module; m; m = m->next)
+            ap_os_dso_unload((ap_os_dso_handle_t)m->dynamic_load_handle);
+        exit(1);
+    }
 }
 
 void init_name_space()
