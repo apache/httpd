@@ -1,0 +1,20 @@
+Name: db_auth_module
+ConfigStart
+    if ./helpers/TestCompile func dbopen; then
+        :
+    else
+	case "$PLAT" in
+	    *-linux*)
+		# many systems have -ldb installed
+		DB_LIB=""
+		if ./helpers/TestCompile lib db dbopen; then
+		    DB_LIB="-ldb"
+		fi
+		;;
+	esac
+	LIBS="$LIBS $DB_LIB"
+	if [ "X$DB_LIB" != "X" ]; then
+	    echo " + using $DB_LIB for mod_auth_db"
+	fi
+    fi
+ConfigEnd
