@@ -14,7 +14,7 @@ HTTP headers</td></tr><tr><td><a href="module-dict.html#Status" class="help">Sta
 
     <p>For historical reasons, this module will also process any
     file with the mime type <code>httpd/send-as-is</code>.</p>
-<h2>Directives</h2><p>This module provides no directives.</p><h2>Usage</h2>
+<h2>Directives</h2><p>This module provides no directives.</p><p><strong>See also </strong></p><ul><li><code><a href="mod_headers.html">mod_headers</a></code></li><li><code><a href="mod_cern_meta.html">mod_cern_meta</a></code></li></ul><h2>Usage</h2>
 
     <p>In the server configuration file, associate files with the
     <code>send-as-is</code> handler <em>e.g.</em></p>
