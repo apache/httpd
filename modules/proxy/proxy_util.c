@@ -16,12 +16,16 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 #include "ap_mpm.h"
+#include "scoreboard.h"
 #include "apr_version.h"
 
 #if (APR_MAJOR_VERSION < 1)
 #undef apr_socket_create
 #define apr_socket_create apr_socket_create_ex
 #endif
+
+/* Global balancer counter */
+static int lb_workers = 0;
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -1038,7 +1042,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
             return "can not create thread mutex";
     }
 #endif
-    
+
     return NULL;
 }
 
@@ -1137,52 +1141,76 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
 }
 
 PROXY_DECLARE(void) 
-ap_proxy_add_worker_to_balancer(proxy_balancer *balancer, proxy_worker *worker)
+ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, proxy_worker *worker)
 {
     int i;
     double median, ffactor = 0.0;
-    proxy_runtime_worker *runtime, *workers;
+    proxy_runtime_worker *runtime, *workers;    
+#if PROXY_HAS_SCOREBOARD
+    lb_score *score;
+#else
+    void *score;
+#endif
 
+#if PROXY_HAS_SCOREBOARD
+    int mpm_daemons;
+
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &mpm_daemons);
+    /* Check if we are prefork or single child */
+    if (worker->hmax && mpm_daemons > 1)
+        score = ap_get_scoreboard_lb(getpid(), lb_workers);
+    else
+#endif
+    {
+        /* Use the plain memory */
+        score = apr_pcalloc(pool, sizeof(proxy_runtime_stat));
+    }
+    if (!score)
+        return;
     runtime = apr_array_push(balancer->workers);
     runtime->w = worker;
+    runtime->s = (proxy_runtime_stat *)score;
+    runtime->s->id = lb_workers;
+    /* TODO: deal with the dynamic overflow */
+    ++lb_workers;
 
     /* Recalculate lbfactors */
     workers = (proxy_runtime_worker *)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* Set to the original configuration */
-        workers[i].lbfactor = workers[i].w->lbfactor;
-        ffactor += workers[i].lbfactor;
+        workers[i].s->lbfactor = workers[i].w->lbfactor;
+        ffactor += workers[i].s->lbfactor;
     }
     if (ffactor < 100.0) {
         int z = 0;
         for (i = 0; i < balancer->workers->nelts; i++) {
-            if (workers[i].lbfactor == 0.0) 
+            if (workers[i].s->lbfactor == 0.0) 
                 ++z;
         }
         if (z) {
             median = (100.0 - ffactor) / z;
             for (i = 0; i < balancer->workers->nelts; i++) {
-                if (workers[i].lbfactor == 0.0) 
-                    workers[i].lbfactor = median;
+                if (workers[i].s->lbfactor == 0.0) 
+                    workers[i].s->lbfactor = median;
             }
         }
         else {
             median = (100.0 - ffactor) / balancer->workers->nelts;
             for (i = 0; i < balancer->workers->nelts; i++)
-                workers[i].lbfactor += median;
+                workers[i].s->lbfactor += median;
         }
     }
     else if (ffactor > 100.0) {
         median = (ffactor - 100.0) / balancer->workers->nelts;
         for (i = 0; i < balancer->workers->nelts; i++) {
-            if (workers[i].lbfactor > median)
-                workers[i].lbfactor -= median;
+            if (workers[i].s->lbfactor > median)
+                workers[i].s->lbfactor -= median;
         }
     } 
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* Update the status entires */
-        workers[i].lbstatus = workers[i].lbfactor;
+        workers[i].s->lbstatus = workers[i].s->lbfactor;
     }
 }
 
@@ -1756,4 +1784,9 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     ap_run_pre_connection(conn->connection, conn->sock);
 
     return OK;
+}
+
+PROXY_DECLARE(int) ap_proxy_lb_workers(void)
+{
+    return (lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT);
 }
