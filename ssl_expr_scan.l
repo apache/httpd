@@ -33,7 +33,7 @@
 */
 
 %{
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 #include "ssl_expr_parse.h"
 

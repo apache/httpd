@@ -27,7 +27,7 @@
                                   join forces to help you shoot
                                   yourself in the foot for free.''
                                                  -- Unknown         */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 #include "mod_status.h"
 
 /*  _________________________________________________________________

@@ -27,7 +27,7 @@
                                   because DEC 25 = OCT 31.''
                                              -- Unknown     */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 #if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
 #include "unixd.h"
 #define MOD_SSL_SET_MUTEX_PERMS /* XXX Apache should define something */

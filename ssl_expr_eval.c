@@ -25,7 +25,7 @@
                              /* ``Make love,
                                   not software!''
                                         -- Unknown */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **

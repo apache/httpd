@@ -26,6 +26,7 @@
                                   know everything are very annoying
                                   to those of us who do.''
                                                   -- Unknown       */
+#include "ssl_private.h"
 #include "mod_ssl.h"
 
 /*  _________________________________________________________________

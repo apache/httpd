@@ -25,7 +25,7 @@
                              /* ``Recursive, adj.;
                                   see Recursive.''
                                         -- Unknown   */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **

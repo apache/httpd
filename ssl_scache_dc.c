@@ -23,7 +23,7 @@
  *  Distributed Session Cache (client support)
  */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /* Only build this code if it's enabled at configure-time. */
 #ifdef HAVE_DISTCACHE

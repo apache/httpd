@@ -32,7 +32,7 @@
 */
 
 %{
-#include "mod_ssl.h"
+#include "ssl_private.h"
 %}
 
 %union {

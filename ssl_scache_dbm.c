@@ -23,7 +23,7 @@
  *  Session Cache via DBM
  */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
 {

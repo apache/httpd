@@ -23,7 +23,7 @@
  *  Session Cache via Shared Memory (Cyclic Buffer Variant)
  */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /* 
  * This shared memory based SSL session cache implementation was

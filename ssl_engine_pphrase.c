@@ -27,7 +27,7 @@
                                   else use it, and get a new one
                                   every six months.''
                                            -- Clifford Stoll     */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*
  * Return true if the named file exists and is readable
