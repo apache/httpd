@@ -1,5 +1,10 @@
 Changes with Apache 1.3.4
 
+  *) Fix per-directory config merging for cases in which a 500 error
+     is encountered in an .htaccess file somewhere down the tree.
+     Also make display of error details on 500 errors a customisable
+     offense.  [Ken Coar]  PR#2409, 3173
+
   *) Minor performance improvement to ap_escape_html(). [Roy Fielding]
 
   *) Fixed a segmentation violation in mod_proxy when a response is
