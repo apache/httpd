@@ -1072,20 +1072,24 @@ static int read_types_multi(negotiation_state *neg)
             continue;
         }
 
+        /* Don't negotiate directories and other unusual files
+         */
+        if (dirent.filetype != APR_REG)
+            continue;
+
         /* Ok, something's here.  Maybe nothing useful.  Remember that
          * we tried, if we completely fail, so we can reject the request!
          */
         anymatch = 1;
 
-        /* Yep.  See if it's something which we have access to, and 
-         * which has a known type and encoding (as opposed to something
+        /* See if it's something which we have access to, and which 
+         * has a known type and encoding (as opposed to something
          * which we'll be slapping default_type on later).
          */
+        sub_req = ap_sub_req_lookup_dirent(&dirent, r, AP_SUBREQ_MERGE_ARGS, NULL);
 
-        sub_req = ap_sub_req_lookup_dirent(&dirent, r, NULL);
-
-        /* BLECH --- don't multi-resolve non-ordinary files */
-
+        /* Double check, we still don't multi-resolve non-ordinary files 
+         */
         if (sub_req->finfo.filetype != APR_REG)
             continue;
 

@@ -1579,6 +1579,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
 
 AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
                                                    const request_rec *r,
+                                                   int subtype,
                                                    ap_filter_t *next_filter)
 {
     request_rec *rnew;
@@ -1593,16 +1594,26 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
      */
     if (r->path_info && *r->path_info) {
         /* strip path_info off the end of the uri to keep it in sync
-         * with r->filename, which has already been stripped by directory_walk
+         * with r->filename, which has already been stripped by directory_walk,
+         * merge the dirent->name, and then, if the caller wants us to remerge 
+         * the original path info, do so.  Note we never fix the path_info back
+         * to r->filename, since dir_walk would do so (but we don't expect it
+         * to happen in the usual cases)
          */
         udir = apr_pstrdup(rnew->pool, r->uri);
         udir[ap_find_path_info(udir, r->path_info)] = '\0';
         udir = ap_make_dirstr_parent(rnew->pool, udir);
+
+        rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
+        if (subtype == AP_SUBREQ_MERGE_ARGS) {
+            rnew->uri = ap_make_full_path(rnew->pool, rnew->uri, r->path_info + 1);
+            rnew->path_info = apr_pstrdup(rnew->pool, r->path_info);
+        }
     }
     else {
         udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+        rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     }
-    rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
     if (r->canonical_filename == r->filename) {
@@ -1657,17 +1668,23 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     }
 
     if (rnew->finfo.filetype == APR_DIR) {
-        /* ### Would be real nice if apr_make_full_path overallocated 
-         * the buffer by one character instead of a complete copy.
+        /* ap_make_full_path overallocated the buffers
+         * by one character to help us out here.
          */
-        rnew->filename = apr_pstrcat(rnew->pool, rnew->filename, "/", NULL);
-        rnew->uri = apr_pstrcat(rnew->pool, rnew->uri, "/", NULL);
-        if (r->canonical_filename == r->filename) {
-            rnew->canonical_filename = rnew->filename;
+        strcpy(rnew->filename + strlen(rnew->filename), "/");
+        if (!rnew->path_info || !*rnew->path_info) {
+            strcpy(rnew->uri  + strlen(rnew->uri ), "/");
         }
     }
 
-    ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+    /* fill in parsed_uri values 
+     */
+    if (r->args && *r->args && (subtype == AP_SUBREQ_MERGE_ARGS)) {
+        ap_parse_uri(rnew, apr_pstrcat(r->pool, rnew->uri, "?", r->args, NULL));
+    }
+    else {
+        ap_parse_uri(rnew, rnew->uri);
+    }
 
     if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
