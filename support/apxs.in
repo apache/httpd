@@ -80,6 +80,8 @@ my $libexecdir     = get_vars("libexecdir");
 my $CFG_LIBEXECDIR = eval qq("$libexecdir");
 my $sbindir        = get_vars("sbindir");
 my $CFG_SBINDIR    = eval qq("$sbindir");
+my $ltflags        = $ENV{'LTFLAGS'};
+$ltflags or $ltflags = "--silent";
 
 my %internal_vars = map {$_ => 1}
     qw(TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
@@ -412,7 +414,7 @@ if ($opt_c) {
         $la =~ s|\.c$|.la|;
         my $o = $s;
         $o =~ s|\.c$|.o|;
-        push(@cmds, "$prefix/build/libtool --silent --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
+        push(@cmds, "$prefix/build/libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
         unshift(@objs, $lo);
     }
 
@@ -437,7 +439,7 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
 
-    push(@cmds, "$prefix/build/libtool --silent --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
+    push(@cmds, "$prefix/build/libtool $ltflags --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);

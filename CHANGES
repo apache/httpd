@@ -1,5 +1,9 @@
 Changes with Apache 2.0.32-dev
 
+  *) apxs: LTFLAGS envvar can override default libtool options.  Try
+     "LTFLAGS=' ' apxs -c mod_foo.c" to see what libtool does under
+     the covers.  [Jeff Trawick]
+
   *) The Location: response header field, used for external
      redirect, *must* be an absoluteURI.  The Redirect directive
      tested for that, but RedirectMatch didn't -- it would allow
