@@ -9,7 +9,7 @@
 <status>Base</status>
 <sourcefile>mod_auth_basic.c</sourcefile>
 <identifier>auth_basic_module</identifier>
-<compatibility>Apache 2.0.44 以降</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
 

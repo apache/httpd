@@ -11,7 +11,7 @@ address)</description>
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
-<compatibility>Available in Apache 2.0.44 and later</compatibility>
+<compatibility>Available in Apache 2.1 and later</compatibility>
 
 <summary>
     <p>The directives provided by <module>mod_authz_host</module> are
