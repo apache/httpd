@@ -208,10 +208,17 @@ int get_path_info(request_rec *r)
 	} 
 #if defined(ENOENT) && defined(ENOTDIR)
 	else {
-	    log_printf(r->server, "access to %s failed for client; unable to determine if index file exists (stat() returned unexpected error[%d])", r->filename, errno);
+#if defined(EACCES)
+	    if (errno != EACCES) 
+#endif 
+	    log_printf(r->server, 
+	       "access to %s failed for %s, reason: stat: %s (errno = %d)",
+	       r->uri, get_remote_host(r->connection, r->per_dir_config,
+	       REMOTE_NAME), strerror(errno), errno);
+
 	    return HTTP_FORBIDDEN;
 	}
-#endif
+#endif /* ENOENT && ENOTDIR */
     }
     return OK;
 }
