@@ -139,6 +139,15 @@ CACHE_DECLARE(cache_hash_t *) cache_hash_make(apr_size_t size)
     return ht;
 }
 
+CACHE_DECLARE(void) cache_hash_free(cache_hash_t *ht)
+{
+    if (ht) {
+        if (ht->array) {
+            free (ht->array);
+        }
+        free (ht);
+    }
+}
 /*
  * Hash iteration functions.
  */
