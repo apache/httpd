@@ -309,7 +309,11 @@ directives which will apply only to the named directory and sub-directories
 of that directory. Any directive which is allowed in a directory
 context may be used. <em>Directory</em> is either the full path to a directory,
 or a wild-card string. In a wild-card string, `?' matches any single character,
-and `*' matches any sequences of characters. Example:
+and `*' matches any sequences of characters.  As of Apache 1.3, you
+may also use `[]' character ranges like in the shell.  Also as of Apache 1.3
+none of the wildcards match a `/' character, which more closely mimics the
+behaviour of Unix shells.
+Example:
 <pre>
    &lt;Directory /usr/local/httpd/htdocs&gt;
    Options Indexes FollowSymLinks
@@ -324,11 +328,10 @@ Extended regular expressions can also be used, with the addition of the
    &lt;Directory ~ &quot;^/www/.*/[0-9]{3}&quot;&gt;
 </pre>
 
-would match directories in /www/ that consisted of three numbers. In
-Apache 1.3 and later, it is reccomended to use
-<a href="#directorymatch">&lt;DirectoryMatch&gt;</a> instead.<p>
+would match directories in /www/ that consisted of three numbers.</p>
 
-<p>If multiple directory sections match the directory (or its parents) containing
+<p>If multiple (non-regular expression) directory sections match the
+directory (or its parents) containing
 a document, then the directives are applied in the order of shortest match
 first, interspersed with the directives from the
 <A HREF="#accessfilename">.htaccess</A> files. For example, with
@@ -350,6 +353,33 @@ steps are:
 </menu>
 
 <P>
+Regular expression directory sections are handled slightly differently
+by Apache 1.2 and 1.3.  In Apache 1.2 they are interspersed with the normal
+directory sections and applied in the order they appear in the configuration
+file.  They are applied only once, and apply when the shortest match
+possible occurs.  In Apache 1.3 regular expressions are not considered
+until after all of the normal sections have been applied.  Then all of
+the regular expressions are tested in the order they appeared in the
+configuration file.  For example, with
+<blockquote><code>
+&lt;Directory ~ abc$&gt;<br>
+... directives here ...<br>
+&lt;/Directory&gt;<br>
+</code></blockquote>
+Suppose that the filename being accessed is
+<code>/home/abc/public_html/abc/index.html</code>.  The server
+considers each of <code>/</code>, <code>/home</code>, <code>/home/abc</code>,
+<code>/home/abc/public_html</code>, and <code>/home/abc/public_html/abc</code>
+in that order.   In Apache 1.2, when
+<code>/home/abc</code> is considered, the regular expression will match
+and be applied.  In Apache 1.3 the regular expression isn't considered
+at all at that point in the tree.  It won't be considered until after
+all normal &lt;Directory&gt;s and <code>.htaccess</code> files have
+been applied.  Then the regular expression will
+match on <code>/home/abc/public_html/abc</code> and be applied.
+
+<P>
+
 <STRONG>
 Note that the default Apache access for &lt;Directory /&gt; is
 <SAMP>Allow from All</SAMP>.  This means that Apache will serve any file
@@ -395,6 +425,10 @@ argument a regular expression. For example:</p>
 </pre>
 
 <p>would match directories in /www/ that consisted of three numbers.</p>
+
+<p><strong>See Also:</strong>
+<a href="#directory">&lt;Directory&gt;</a> for a description of how
+regular expressions are mixed in with normal &lt;Directory&gt;s.</p>
 
 <hr>
 
