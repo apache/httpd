@@ -991,7 +991,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
     else {
         if (ctx->b) {
             AP_BRIGADE_CONCAT(b, ctx->b);
-            ctx->b = NULL; /* XXX we just leaked a brigade structure */
+            ctx->b = NULL;
         }
         else {
             if ((rv = ap_get_brigade(f->next, b, AP_GET_LINE)) != APR_SUCCESS) {
