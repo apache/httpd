@@ -62,6 +62,9 @@
 #include "mod_cache.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
+#ifdef APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 /* USE_ATOMICS should be replaced with the appropriate APR feature macro */
 #define USE_ATOMICS
