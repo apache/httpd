@@ -1395,7 +1395,7 @@ case "$OS" in
     'HI-UX')
 	case "$CC" in
 	    */cc|cc )
-		CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
+		CFLAGS="$CFLAGS -Aa -Ae -D_HIUX_SOURCE"
 		OPTIM=" "
 		TOPTIM=""
 	    ;;
@@ -1404,7 +1404,7 @@ case "$OS" in
     'HP-UX'|'HP-UX 10'|'HP-UX 11')
 	case "$CC" in
 	    */cc|cc )
-		CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
+		CFLAGS="$CFLAGS -Aa -Ae -D_HPUX_SOURCE"
 		OPTIM=" "
 		TOPTIM=""
 	    ;;
