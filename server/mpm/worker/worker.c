@@ -620,17 +620,28 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     void *csd = NULL;
     apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
     apr_pool_t *recycled_pool = NULL;
-    int n;
-    apr_pollfd_t *pollset;
+    apr_pollset_t *pollset;
     apr_status_t rv;
-    ap_listen_rec *lr, *last_lr = ap_listeners;
+    ap_listen_rec *lr;
     int have_idle_worker = 0;
+    int last_poll_idx = 0;
 
     free(ti);
 
-    apr_poll_setup(&pollset, num_listensocks, tpool);
-    for(lr = ap_listeners ; lr != NULL ; lr = lr->next)
-        apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
+    /* ### check the status */
+    (void) apr_pollset_create(&pollset, num_listensocks, tpool, 0);
+
+    for (lr = ap_listeners; lr != NULL; lr = lr->next) {
+        apr_pollfd_t pfd = { 0 };
+
+        pfd.desc_type = APR_POLL_SOCKET;
+        pfd.desc.s = lr->sd;
+        pfd.reqevents = APR_POLLIN;
+        pfd.client_data = lr;
+
+        /* ### check the status */
+        (void) apr_pollset_add(pollset, &pfd);
+    }
 
     /* Unblock the signal used to wake this thread up, and set a handler for
      * it.
@@ -690,41 +701,52 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
         else {
             while (!listener_may_exit) {
-                apr_status_t ret;
-                apr_int16_t event;
+                apr_int32_t numdesc;
+                const apr_pollfd_t *pdesc;
 
-                ret = apr_poll(pollset, num_listensocks, &n, -1);
-                if (ret != APR_SUCCESS) {
-                    if (APR_STATUS_IS_EINTR(ret)) {
+                rv = apr_pollset_poll(pollset, -1, &numdesc, &pdesc);
+                if (rv != APR_SUCCESS) {
+                    if (APR_STATUS_IS_EINTR(rv)) {
                         continue;
                     }
 
                     /* apr_poll() will only return errors in catastrophic
                      * circumstances. Let's try exiting gracefully, for now. */
-                    ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
-                                 ap_server_conf, "apr_poll: (listen)");
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv,
+                                 (const server_rec *) ap_server_conf,
+                                 "apr_pollset_poll: (listen)");
                     signal_threads(ST_GRACEFUL);
                 }
 
                 if (listener_may_exit) break;
 
-                /* find a listener */
-                lr = last_lr;
-                do {
-                    lr = lr->next;
-                    if (lr == NULL) {
-                        lr = ap_listeners;
-                    }
-                    /* XXX: Should we check for POLLERR? */
-                    apr_poll_revents_get(&event, lr->sd, pollset);
-                    if (event & APR_POLLIN) {
-                        last_lr = lr;
-                        goto got_fd;
-                    }
-                } while (lr != last_lr);
-            }
-        }
-    got_fd:
+                /* We can always use pdesc[0], but sockets at position N
+                 * could end up completely starved of attention in a very
+                 * busy server. Therefore, we round-robin across the
+                 * returned set of descriptors. While it is possible that
+                 * the returned set of descriptors might flip around and
+                 * continue to starve some sockets, we happen to know the
+                 * internal pollset implementation retains ordering
+                 * stability of the sockets. Thus, the round-robin should
+                 * ensure that a socket will eventually be serviced.
+                 */
+                if (last_poll_idx >= numdesc)
+                    last_poll_idx = 0;
+
+                /* Grab a listener record from the client_data of the poll
+                 * descriptor, and advance our saved index to round-robin
+                 * the next fetch.
+                 *
+                 * ### hmm... this descriptor might have POLLERR rather
+                 * ### than POLLIN
+                 */
+                lr = pdesc[last_poll_idx++].client_data;
+                break;
+
+            } /* while */
+
+        } /* if/else */
+
         if (!listener_may_exit) {
             /* create a new transaction pool for each accepted socket */
             if (recycled_pool == NULL) {
