@@ -1,5 +1,5 @@
-#ifndef APR_COMPAT_H
-#define APR_COMPAT_H
+#ifndef AP_COMPAT_H
+#define AP_COMPAT_H
 
 /* Drag in apu (and therefore apr) renamed symbols */
 #include "apu_compat.h"
@@ -9,4 +9,4 @@
 #define MODULE_VAR_EXPORT    AP_MODULE_DECLARE_DATA
 #define ap_send_http_header(r) ;
 
-#endif /* APR_COMPAT_H */
+#endif /* AP_COMPAT_H */
