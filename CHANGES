@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Emit a message to the error log when we return 404 because
+     the URI contained '%2f'.  (This was previously nastily silent
+     and difficult to debug.)  [Ken Coar]
+
   *) Fix streaming output from an nph- CGI script.  CGI:IRC now
      works.  PR 8482  [Jeff Trawick]
 
