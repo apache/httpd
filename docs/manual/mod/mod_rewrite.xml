@@ -537,16 +537,20 @@ RewriteMap servers rnd:/path/to/file/map.txt
         </li>
 
         <li>
-          <strong>Hash File</strong><br />
-           MapType: <code>dbm</code>, MapSource: Unix filesystem
-          path to valid regular file 
+          <strong>Hash File</strong><br /> MapType:
+          <code>dbm[=<em>type</em>]</code>, MapSource: Unix filesystem
+          path to valid regular file
 
-          <p>Here the source is a binary NDBM format file
-          containing the same contents as a <em>Plain Text</em>
-          format file, but in a special representation which is
-          optimized for really fast lookups. You can create such a
-          file with any NDBM tool or with the following Perl
-          script:</p>
+          <p>Here the source is a binary format DBM file containing
+          the same contents as a <em>Plain Text</em> format file, but
+          in a special representation which is optimized for really
+          fast lookups. The <em>type</em> can be sdbm, gdbm, ndbm, or
+          db depending on <a href="../install.html#dbm">compile-time
+          settings</a>.  If the <em>type</em> is ommitted, the
+          compile-time default will be chosen. You can create such a
+          file with any DBM tool or with the following Perl
+          script.  Be sure to adjust it to create the appropriate
+          type of DBM.  The example creates an NDBM file.</p>
 
 <example>
 <pre>
