@@ -2737,9 +2737,10 @@ static int handle_map_file(request_rec *r)
         if ((res = ap_discard_request_body(r)) != OK) {
             return res;
         }
-        //if (r->method_number == M_OPTIONS) {
-        //    return ap_send_http_options(r);
-        //}
+        /*if (r->method_number == M_OPTIONS) {
+         *    return ap_send_http_options(r);
+         *}
+         */
         if (r->method_number != M_GET && r->method_number != M_POST) {
             return HTTP_METHOD_NOT_ALLOWED;
         }
