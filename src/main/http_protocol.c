@@ -1250,9 +1250,9 @@ API_EXPORT(void) send_http_header(request_rec *r)
     if (r->chunked) bsetflag(r->connection->client, B_CHUNK, 1);
 }
 
-/* finalize_request_protocol must be called by a module after it sends
- * a response body.  It's sole purpose is to send the terminating
- * protocol information for any wrappers around the response message body
+/* finalize_request_protocol is called at completion of sending the
+ * response.  It's sole purpose is to send the terminating protocol
+ * information for any wrappers around the response message body
  * (i.e., transfer encodings).  It should have been named finalize_response.
  */
 void finalize_request_protocol (request_rec *r)
