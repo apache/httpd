@@ -16,16 +16,21 @@
 #ifndef UTIL_LDAP_H
 #define UTIL_LDAP_H
 
-#include <apr_ldap.h>
+/* APR header files */
+#include "apr.h"
+#include "apr_thread_mutex.h"
+#include "apr_thread_rwlock.h"
+#include "apr_tables.h"
+#include "apr_time.h"
+#include "apr_ldap.h"
+
+#if APR_HAS_SHARED_MEMORY
+#include "apr_rmm.h"
+#include "apr_shm.h"
+#endif
 
 /* this whole thing disappears if LDAP is not enabled */
 #if APR_HAS_LDAP
-
-/* APR header files */
-#include <apr_thread_mutex.h>
-#include <apr_thread_rwlock.h>
-#include <apr_tables.h>
-#include <apr_time.h>
 
 /* Apache header files */
 #include "ap_config.h"
@@ -36,13 +41,8 @@
 #include "http_protocol.h"
 #include "http_request.h"
 
-#if APR_HAS_SHARED_MEMORY
-#include "apr_rmm.h"
-#include "apr_shm.h"
-#endif
-
-/* Create a set of LDAP_DECLARE(type), LDLDAP_DECLARE(type) and 
- * LDAP_DECLARE_DATA with appropriate export and import tags for the platform
+/* Create a set of LDAP_DECLARE macros with appropriate export 
+ * and import tags for the platform
  */
 #if !defined(WIN32)
 #define LDAP_DECLARE(type)            type

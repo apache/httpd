@@ -13,19 +13,6 @@
  * limitations under the License.
  */
 
-#include "apr_ldap.h"
-#include "apr_strings.h"
-#include "apr_xlate.h"
-#define APR_WANT_STRFUNC
-#include "apr_want.h"
-
-#include "ap_config.h"
-#if APR_HAVE_UNISTD_H
-/* for getpid() */
-#include <unistd.h>
-#endif
-#include <ctype.h>
-
 #include "ap_provider.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -37,8 +24,19 @@
 
 #include "mod_auth.h"
 
+#include "apr_strings.h"
+#include "apr_xlate.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_UNISTD_H
+/* for getpid() */
+#include <unistd.h>
+#endif
+#include <ctype.h>
+
 #if !APR_HAS_LDAP
-#error mod_auth_ldap requires APR-util to have LDAP support built in. To fix add --with-ldap to ./configure.
+#error mod_authnz_ldap requires APR-util to have LDAP support built in. To fix add --with-ldap to ./configure.
 #endif
 
 typedef struct {

@@ -21,7 +21,7 @@
  * Copyright 1999-2001 Dave Carrigan
  */
 
-#include <apr_ldap.h>
+#include "httpd.h"
 #include "util_ldap.h"
 #include "util_ldap_cache.h"
 #include <apr_strings.h>
