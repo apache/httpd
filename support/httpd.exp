@@ -152,6 +152,7 @@ ap_hook_child_init
 ap_hook_create_request
 ap_hook_default_port
 ap_hook_fixups
+ap_hook_get_optional_fn_retrieve
 ap_hook_handler
 ap_hook_header_parser
 ap_hook_http_method
@@ -490,8 +491,6 @@ apr_hash_next
 apr_hash_set
 apr_hash_this
 apr_hook_deregister_all
-apr_hook_generic_add
-apr_hook_generic_get
 apr_hook_sort_register
 apr_implode_time
 apr_initialize
@@ -516,6 +515,8 @@ apr_mmap_create
 apr_mmap_delete
 apr_mmap_offset
 apr_month_snames
+apr_optional_hook_add
+apr_optional_hook_get
 apr_os_dir_get
 apr_os_dir_put
 apr_os_exp_time_get
