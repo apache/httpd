@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.46 1996/10/22 04:21:43 akosut Exp $
+# $Id: Configuration.tmpl,v 1.47 1996/10/26 03:47:47 fielding Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -142,8 +142,7 @@ Module action_module       mod_actions.o
 Module browser_module      mod_browser.o
 
 ## Optional modules for NCSA user-agent/referer logging compatibility
-## We recommend, however, that you migrate to the configurable logging
-## module, below.
+## We recommend, however, that you just use the configurable access_log.
 
 # Module agent_log_module    mod_log_agent.o
 # Module referer_log_module  mod_log_referer.o
