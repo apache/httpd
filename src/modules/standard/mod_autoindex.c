@@ -1009,7 +1009,7 @@ static int dsortf(struct ent **e1, struct ent **e2)
     char *s2;
     struct ent *c1;
     struct ent *c2;
-    int result;
+    int result = 0;
     int compare_by_string = 1;
 
     /*
