@@ -99,7 +99,10 @@ Available Patches:
     * Michael van Elst's patch [PR#3160] to improve mod_rewrite's
       in-core cache handling by using a hash table.
         Message-ID: <XFMail.981115192248.sfx@unix-ag.org>
-        Status: Lars +1, Jim +1
+        Status: Lars +1, Jim +1, Ralf +1 (on concept, but because the code
+                                          change is not trivial I want to
+                                          first walk though it line by line 
+                                          the next days before we commit it).
 
     * Marc's [PATCH] PR#3323: recursive includes
         Message-ID: <Pine.BSF.4.03.9810311132540.20832-100000@alive.znep.com>
@@ -124,6 +127,8 @@ Available Patches:
         Status: 
 
 In progress:
+
+    * Ralf's take 2 for "MODULE_MAGIC_COOKIE field for module structure"
  
     * Mark Bixby's freshening up the MPE/iX port (mostly APACI)
       Message-ID: <199811162227.OAA18137@spock.dis.cccd.edu>
