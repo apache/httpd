@@ -105,7 +105,7 @@
 </code></td></tr></table></blockquote>
 
 
-<hr/><h2><a name="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ExtFilterDefine <em>filtername</em> <em>parameters</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ext_filter</td></tr></table></td></tr></table>
+<hr/><h2><a name="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ExtFilterDefine <em>filtername</em> <em>parameters</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ext_filter</td></tr></table></td></tr></table>
     <p>The <code class="directive">ExtFilterDefine</code> directive defines the
     characteristics of an external filter, including the program to
     run and its arguments.</p>
@@ -160,8 +160,8 @@
       event that the filter doesn't modify the length, this keyword
       should be specified.</dd>
     </dl>
-<hr/><h2><a name="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ExtFilterOptions
-    <em>option</em> [<em>option</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ext_filter</td></tr></table></td></tr></table>
+<hr/><h2><a name="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ExtFilterOptions
+    <em>option</em> [<em>option</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ext_filter</td></tr></table></td></tr></table>
     <p>The <code class="directive">ExtFilterOptions</code> directive specifies
     special processing options for <code>mod_ext_filter</code>.
     <em>Option</em> can be one of</p>

@@ -267,8 +267,8 @@
  *
  */
 </pre>
-<hr/><h2><a name="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Enable MIME-type determination based on file contents
-using the specified magic file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MimeMagicFile <em>file-path</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime_magic</td></tr></table></td></tr></table>
+<hr/><h2><a name="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Enable MIME-type determination based on file contents
+using the specified magic file</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MimeMagicFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime_magic</td></tr></table></td></tr></table>
     <p>The <code class="directive">MimeMagicFile</code> directive can be used to
     enable this module, the default file is distributed at
     <code>conf/magic</code>. Non-rooted paths are relative to the

@@ -38,18 +38,14 @@ configuration</dd><dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Exten
     encoding)</dd><dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file
     by looking at a few bytes of its contents</dd><dt><a href="mod_negotiation.html">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd><dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>HTTP/1.1 proxy/gateway server</dd><dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd><dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
-on characteristics of the request</dd><dt><a href="mod_so.html">mod_so</a></dt><dd>
- This module provides for loading of executable code and
- modules into the server at start-up or restart time.
-</dd><dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that
+on characteristics of the request</dd><dt><a href="mod_so.html">mod_so</a></dt><dd>Loading of executable code and
+modules into the server at start-up or restart time</dd><dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that
 users might have entered by ignoring capitalization and by
 allowing up to one misspelling</dd><dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd><dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
 performance</dd><dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
 and Group</dd><dt><a href="mod_unique_id.html">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
-identifier for each request</dd><dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>Provides for user-specific
-directories</dd><dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
-    This module uses cookies to provide for a
-    <em>clickstream</em> log of user activity on a site.
-</dd><dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for <a href="../vhosts/mass.html">dynamically configured mass virtual
-hosting</a></dd></dl></blockquote><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+identifier for each request</dd><dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>User-specific directories</dd><dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
+<em>Clickstream</em> logging of user activity on a site
+</dd><dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
+hosting</dd></dl></blockquote><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
