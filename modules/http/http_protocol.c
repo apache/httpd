@@ -1413,6 +1413,8 @@ request_rec *ap_read_request(conn_rec *conn)
                ? &r->server->keep_alive_timeout
                : &r->server->timeout);
 
+    ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
+
     /* Get the request... */
     if (!read_request_line(r)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
@@ -1768,7 +1770,17 @@ AP_DECLARE(const char *) ap_get_status_line(int status)
 AP_DECLARE_NONSTD(int) ap_send_header_field(request_rec *r,
     const char *fieldname, const char *fieldval)
 {
-    return (0 < checked_bputstrs(r, fieldname, ": ", fieldval, CRLF, NULL));
+    char *headfield;
+    ap_bucket *headbuck;
+    ap_bucket_brigade *bb;
+
+    headfield = apr_pstrcat(r->pool, fieldname, ": ", fieldval, CRLF, NULL);
+    headbuck = ap_bucket_create_pool(headfield, strlen(headfield), r->pool);
+    bb = ap_brigade_create(r->pool);
+    AP_BRIGADE_INSERT_HEAD(bb, headbuck);
+
+    ap_pass_brigade(r->connection->output_filters, bb);
+    return 1;
 }
 
 AP_DECLARE(void) ap_basic_http_header(request_rec *r)
@@ -1828,13 +1840,24 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r)
  */
 static void terminate_header(request_rec *r)
 {
-    long int bs;
+    char *headfield;
+    ap_bucket *headbuck;
+    ap_bucket_brigade *bb;
 
+    headfield = apr_pstrcat(r->pool, CRLF, NULL);
+    headbuck = ap_bucket_create_pool(headfield, strlen(headfield), r->pool);
+    bb = ap_brigade_create(r->pool);
+    AP_BRIGADE_INSERT_HEAD(bb, headbuck);
+
+    ap_pass_brigade(r->connection->output_filters, bb);
+
+#if 0
     ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
     if (bs >= 255 && bs <= 257)
         (void) checked_bputs("X-Pad: avoid browser bug" CRLF, r);
 
     (void) checked_bputs(CRLF, r);  /* Send the terminating empty line */
+#endif
 }
 
 /*
@@ -2196,15 +2219,28 @@ static void fixup_vary(request_rec *r)
 
 AP_DECLARE(void) ap_send_http_header(request_rec *r)
 {
+}
+
+AP_CORE_DECLARE(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
+{
     int i;
     const long int zero = 0L;
     char *date = NULL;
+    request_rec *r = f->r;
+/* This hack should be removed as soon as we can remove filters */
+    static int foobar = 0;
+
+    if (foobar != 0) {
+        return ap_pass_brigade(f->next, b);
+    }
+    foobar++;
+/* END HACK */
 
     if (r->assbackwards) {
         if (!r->main)
             ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
         r->sent_bodyct = 1;
-        return;
+        return APR_SUCCESS;
     }
 
     /*
@@ -2280,7 +2316,6 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
         apr_rfc822_date(date, r->request_time);
         apr_table_addn(r->headers_out, "Expires", date);
     }
-
     apr_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
 		 (void *) r, r->headers_out, NULL);
 
@@ -2293,6 +2328,7 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
     if (r->chunked) {
         ap_bsetflag(r->connection->client, B_CHUNK, 1);
     }
+    return ap_pass_brigade(f->next, b);
 }
 
 /* finalize_request_protocol is called at completion of sending the
