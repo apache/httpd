@@ -378,8 +378,9 @@ static int status_handler(request_rec *r)
 
     if (ap_extended_status) {
 	if (short_report) {
-	    ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %lu\n",
-		count, kbcount);
+	    ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %" 
+                       APR_OFF_T_FMT "\n",
+                       count, kbcount);
 
 #ifdef HAVE_TIMES
 	    /* Allow for OS/2 not having CPU stats */
