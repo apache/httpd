@@ -151,6 +151,7 @@ int gethostname(char *name, int namelen);
 #define HAVE_SYSLOG 1
 #define SYS_SIGLIST _sys_siglist
 #define AP_ENABLE_EXCEPTION_HOOK
+#define NONBLOCK_WHEN_MULTI_LISTEN
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF
@@ -174,6 +175,7 @@ int gethostname(char *name, int namelen);
 #define NO_LONG_DOUBLE
 #define NO_LINGCLOSE
 #define HAVE_SYSLOG 1
+#define NONBLOCK_WHEN_MULTI_LISTEN
 
 #elif defined(HIUX)
 #undef HAVE_GMTOFF
@@ -259,6 +261,7 @@ typedef int rlim_t;
 #define NET_SIZE_T size_t
 #endif
 #define AP_ENABLE_EXCEPTION_HOOK
+#define NONBLOCK_WHEN_MULTI_LISTEN
 
 #elif defined(ULTRIX)
 /* we don't want to use sys/resource.h under
@@ -285,6 +288,7 @@ typedef int rlim_t;
 #define HAVE_SYSLOG 1
 #define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+#define NONBLOCK_WHEN_MULTI_LISTEN
 
 #elif defined(PARAGON)
 #define HAVE_GMTOFF 1
@@ -977,6 +981,7 @@ typedef int rlim_t;
 #include <sys/socket.h>
 #define NET_SIZE_T size_t
 #define NEED_HASHBANG_EMUL
+#define NONBLOCK_WHEN_MULTI_LISTEN
 
 #elif defined(CYGWIN)               /* Cygwin 1.x POSIX layer for Win32 */
 #define SYSTEM_UID 18
@@ -996,6 +1001,8 @@ typedef int rlim_t;
 #define USE_PTHREAD_SERIALIZED_ACCEPT
 #endif
 
+#elif defined(NETWARE)
+#define NONBLOCK_WHEN_MULTI_LISTEN
 
 #else
 /* Unknown system - Edit these to match */

@@ -3920,6 +3920,76 @@ static void close_unused_listeners(void)
     old_listeners = NULL;
 }
 
+#ifdef NONBLOCK_WHEN_MULTI_LISTEN
+/* retrieved from APR */
+static int soblock(int sd)
+{
+#ifdef NETWARE
+    u_long one = 0;
+
+    if (ioctlsocket(sd, FIONBIO, &one) == SOCKET_ERROR) {
+        return -1;
+    }
+#else
+#ifndef BEOS
+    int fd_flags;
+    
+    fd_flags = fcntl(sd, F_GETFL, 0);
+#if defined(O_NONBLOCK)
+    fd_flags &= ~O_NONBLOCK;
+#elif defined(O_NDELAY)
+    fd_flags &= ~O_NDELAY;
+#elif defined(FNDELAY)
+    fd_flags &= ~FNDELAY;
+#else
+#error Teach soblock() how to make a socket blocking on your platform.
+#endif
+    if (fcntl(sd, F_SETFL, fd_flags) == -1) {
+        return errno;
+    }
+#else
+    int on = 0;
+    if (setsockopt(sd, SOL_SOCKET, SO_NONBLOCK, &on, sizeof(int)) < 0)
+        return errno;
+#endif /* BEOS */
+#endif /* NETWARE */
+    return 0;
+}
+
+static int sononblock(int sd)
+{
+#ifdef NETWARE
+    u_long one = 1;
+
+    if (ioctlsocket(sd, FIONBIO, &one) == SOCKET_ERROR) {
+        return -1;
+    }
+#else
+#ifndef BEOS
+    int fd_flags;
+    
+    fd_flags = fcntl(sd, F_GETFL, 0);
+#if defined(O_NONBLOCK)
+    fd_flags |= O_NONBLOCK;
+#elif defined(O_NDELAY)
+    fd_flags |= O_NDELAY;
+#elif defined(FNDELAY)
+    fd_flags |= FNDELAY;
+#else
+#error Teach sononblock() how to make a socket non-blocking on your platform.
+#endif
+    if (fcntl(sd, F_SETFL, fd_flags) == -1) {
+        return errno;
+    }
+#else
+    int on = 1;
+    if (setsockopt(sd, SOL_SOCKET, SO_NONBLOCK, &on, sizeof(int)) < 0)
+        return errno;
+#endif /* BEOS */
+#endif /* NETWARE */
+    return 0;
+}
+#endif /* NONBLOCK_WHEN_MULTI_LISTEN */
 
 /* open sockets, and turn the listeners list into a singly linked ring */
 static void setup_listeners(pool *p)
@@ -3952,6 +4022,20 @@ static void setup_listeners(pool *p)
     head_listener = ap_listeners;
     close_unused_listeners();
 
+#ifdef NONBLOCK_WHEN_MULTI_LISTEN
+    if (ap_listeners->next != ap_listeners) {
+        lr = ap_listeners;
+        do {
+            if (sononblock(lr->fd) < 0) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+                             "A listening socket could not be made non-blocking.");
+                exit(APEXIT_INIT);
+            }
+            lr = lr->next;
+        } while (lr != ap_listeners);
+    }
+#endif /* NONBLOCK_WHEN_MULTI_LISTEN */
+    
 #ifdef NO_SERIALIZED_ACCEPT
     /* warn them about the starvation problem if they're using multiple
      * sockets
@@ -4502,6 +4586,19 @@ static void child_main(int child_num_arg)
 #ifdef ENETUNREACH
 		case ENETUNREACH:
 #endif
+                    /* EAGAIN/EWOULDBLOCK can be returned on BSD-derived
+                     * TCP stacks when the connection is aborted before
+                     * we call connect, but only because our listener
+                     * sockets are non-blocking (NONBLOCK_WHEN_MULTI_LISTEN)
+                     */
+#ifdef EAGAIN
+                case EAGAIN:
+#endif
+#ifdef EWOULDBLOCK
+#if !defined(EAGAIN) || EAGAIN != EWOULDBLOCK
+                case EWOULDBLOCK:
+#endif
+#endif
                     break;
 #ifdef ENETDOWN
 		case ENETDOWN:
@@ -4590,6 +4687,21 @@ static void child_main(int child_num_arg)
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
 	 */
+
+#ifdef NONBLOCK_WHEN_MULTI_LISTEN
+        /* This assumes that on this platform the non-blocking setting of
+         * a listening socket is inherited.  If that isn't the case,
+         * this is wasted effort.
+         */
+        if (ap_listeners != ap_listeners->next) {
+            if (soblock(csd) != 0) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+                             "couldn't make socket descriptor (%d) blocking again",
+                             csd);
+                continue;
+            }
+        }
+#endif /* NONBLOCK_WHEN_MULTI_LISTEN */
 
 	clen = sizeof(sa_server);
 	if (getsockname(csd, &sa_server, &clen) < 0) {
@@ -6365,15 +6477,22 @@ void worker_main(void)
             if (csd == INVALID_SOCKET) {
                 csd = -1;
             }
-        } while (csd < 0 && h_errno == EINTR);
+        } while (csd < 0 && h_errno == WSAEINTR);
 	
         if (csd == INVALID_SOCKET) {
-            if (h_errno != WSAECONNABORTED) {
+            if ((h_errno != WSAECONNABORTED) && (h_errno != WSAEWOULDBLOCK)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
                              "accept: (client socket) failed with errno = %d",h_errno);
             }
         }
         else {
+            u_long one = 0;
+
+            if (soblock(csd) != 0) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+                             "%d couldn't make socket descriptor (%d) blocking again.", h_errno, csd);
+                continue;
+            }
             add_job(csd);
         }
     }
