@@ -2282,7 +2282,7 @@ virtueller Hosts</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Options" id="Options">Options</a>-<a name="options" id="options">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Definiert, welche Eigenscahften oder Funktionen in einem
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Definiert, welche Eigenschaften oder Funktionen in einem
 bestimmten Verzeichnis verfügbar sind</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Options
     [+|-]<var>Option</var> [[+|-]<var>Option</var>] ...</code></td></tr>
