@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
  <HEAD>
-  <TITLE>Test Side for Apache installationen</TITLE>
+  <TITLE>Prøveside for Apache installationen</TITLE>
  </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
  <BODY
@@ -12,25 +12,25 @@
   ALINK="#FF0000"
  >
   <H1 ALIGN="CENTER">
-   Det virkede!  Apache Web Serveren er installeret på denne maskine!
+   Det virkede!  Apache Webserveren er installeret på denne maskine!
   </H1>
   <P>
-  Hvis de kan se denne side, så har dem som ejer dette domain lige
-  installeret <A HREF="http://www.apache.org/httpd">Apache Web Serveren</A>.
-  De må nu placere web sider i dette directory og fjerne denne side, eller
-  peje serveren på et andet directory.
+  Hvis du kan se denne side, så har dem som ejer dette domæne lige
+  installeret <A HREF="http://www.apache.org/httpd">Apache Webserveren</A>.
+  Du må nu placere web sider i dette directory og fjerne denne side, eller
+  konfigurere serveren til at anvende et andet directory.
   </P>
   <HR>
   <BLOCKQUOTE>
-   Hvis de ser denne side isteden for en anden ekspekteret side, <STRONG>kontakt
-   venligst administratøren for den server de prøver at kontakte.</STRONG>
+   Hvis du ser denne side istedet for en anden forventet side, <STRONG>kontakt
+   venligst administratoren for den server du prøver at kontakte.</STRONG>
    (Prøv at sende mail til <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.)
-   Apache Gruppen har ikke noget at gøre med denne site, så det vil ikke
-   hjælpe at sende mail to Apache forfatterne omvirkende denne site.  
+   Apachegruppen har ikke noget at gøre med denne site, så det vil ikke
+   hjælpe at sende mail to Apache udviklerne angående denne site.  
   </BLOCKQUOTE>
   <HR>
   <P>
-  Apache
+  Apache-
   <A
    HREF="manual/index.html"
   >documentationen</A>
@@ -38,7 +38,7 @@
   </P>
   <P>
   Webmasteren af denne site må gerne bruge den følgende grafik
-  på en Apache-drevet web server.  Mange tak for at bruge Apache!
+  på en Apache-drevet webserver.  Mange tak for at bruge Apache!
   </P>
   <DIV ALIGN="CENTER">
    <IMG SRC="apache_pb.gif" ALT="">
