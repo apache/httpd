@@ -71,9 +71,9 @@ ServerRoot "@@ServerRoot@@"
 # ErrorLog: The location of the error log file. If this does not start
 # with /, ServerRoot is prepended to it.
 
-ErrorLog logs/error_log
+ErrorLog logs/error.log
 
-# LogLevel: Control the number of messages logged to the error_log.
+# LogLevel: Control the number of messages logged to the error.log.
 # Possible values include: debug, info, notice, warn, error, crit,
 # alert, emerg.
 
@@ -90,18 +90,18 @@ LogFormat "%{User-agent}i" agent
 # The location of the access logfile (Common Logfile Format).
 # If this does not start with /, ServerRoot is prepended to it.
 
-CustomLog logs/access_log common
+CustomLog logs/access.log common
 
 # If you would like to have an agent and referer logfile uncomment the
 # following directives.
 
-#CustomLog logs/referer_log referer
-#CustomLog logs/agent_log agent
+#CustomLog logs/referer.log referer
+#CustomLog logs/agent.log agent
 
 # If you prefer a single logfile with access, agent and referer information
 # (Combined Logfile Format) you can use the following directive.
 
-#CustomLog logs/access_log combined
+#CustomLog logs/access.log combined
 
 # PidFile: The file the server should log its pid to
 PidFile logs/httpd.pid
@@ -209,8 +209,8 @@ ThreadsPerChild 50
 #ServerAdmin webmaster@host.some_domain.com
 #DocumentRoot /www/docs/host.some_domain.com
 #ServerName host.some_domain.com
-#ErrorLog logs/host.some_domain.com-error_log
-#TransferLog logs/host.some_domain.com-access_log
+#ErrorLog logs/host.some_domain.com-error.log
+#TransferLog logs/host.some_domain.com-access.log
 #</VirtualHost>
 
 
