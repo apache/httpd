@@ -745,7 +745,8 @@ apr_status_t proxy_ftp_cleanup(request_rec *r, proxy_conn_rec *backend)
     return OK;
 }
 
-static ftp_proxyerror(request_rec *r, proxy_conn_rec *conn, int statuscode, const char *message)
+static
+int ftp_proxyerror(request_rec *r, proxy_conn_rec *conn, int statuscode, const char *message)
 {
     proxy_ftp_cleanup(r, conn);
     return ap_proxyerror(r, statuscode, message);
@@ -782,7 +783,6 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_worker *worker, proxy_server_conf
     int len, rc;
     int one = 1;
     char *size = NULL;
-    apr_socket_t *origin_sock = NULL;
     char xfer_type = 'A'; /* after ftp login, the default is ASCII */
     int  dirlisting = 0;
 #if defined(USE_MDTM) && (defined(HAVE_TIMEGM) || defined(HAVE_GMTOFF))
