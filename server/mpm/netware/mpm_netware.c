@@ -140,17 +140,6 @@
 #define HARD_SERVER_LIMIT 1
 #endif
 
-/* Limit on the threads per process.  Clients will be locked out if more than
- * this  * HARD_SERVER_LIMIT are needed.
- *
- * We keep this for one reason it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 2048
-#endif
-
 #define WORKER_DEAD         SERVER_DEAD
 #define WORKER_STARTING     SERVER_STARTING
 #define WORKER_READY        SERVER_READY
