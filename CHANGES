@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fixed mod_usertrack to not get false positive matches on the
+     user-tracking cookie's name.  PR 16661.
+     [Manni Wood <manniwood@planet-save.com>]
+
   *) Fix mod_info to use the real config file name, not the default
      config file name.  [Aryeh Katz <aryeh@secured-services.com>]
 
