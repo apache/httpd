@@ -2345,6 +2345,7 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		char *empty = "";
 		key = strchr(inp, ':');
 		if (key == NULL) {
+		    *endp = '}';
 		    goto skip;
 		}
 		*key++ = '\0';
