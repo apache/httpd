@@ -46,9 +46,3 @@ AC_CHECK_FUNCS(
 difftime \
 syslog \
 )
-AC_FUNC_MMAP
-
-dnl XXX - is autoconf's detection routine good enough?
-if test "$ac_cv_func_mmap_fixed_mapped" = "yes"; then
-    AC_DEFINE(USE_MMAP_FILES)
-fi
