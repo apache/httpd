@@ -3,53 +3,53 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
 <manualpage metafile="custom-error.xml.meta">
-  
+
   <title>Custom Error Responses</title>
-  
+
   <summary>
     <p>Additional functionality allows webmasters to configure the response 
     of Apache to some error or problem.</p>
-    
+
     <p>Customizable responses can be defined to be activated in the event of 
     a server detected error or problem.</p>
-    
+
     <p>If a script crashes and produces a "500 Server Error" response, 
     then this response can be replaced with either some friendlier text or by 
     a redirection to another URL (local or external).</p>
   </summary>
-  
+
   <section id="behavior">
     <title>Behavior</title>
-    
+
     <section>
       <title>Old Behavior</title>
-      
+
       <p>NCSA httpd 1.3 would return some boring old error/problem message 
       which would often be meaningless to the user, and would provide no 
       means of logging the symptoms which caused it.</p>
     </section>
-    
+
     <section>
       <title>New Behavior</title>
-      
+
       <p>The server can be asked to:</p>
-      
+
       <ol>
         <li>Display some other text, instead of the NCSA hard coded 
         messages, or</li>
-      
+
         <li>redirect to a local URL, or</li>
-      
+
         <li>redirect to an external URL.</li>
       </ol>
-      
+
       <p>Redirecting to another URL can be useful, but only if some 
       information can be passed which can then be used to explain and/or log 
       the error/problem more clearly.</p>
-      
+
       <p>To achieve this, Apache will define new CGI-like environment 
       variables:</p>
-      
+
       <example>
         REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap, 
             image/jpeg<br />
@@ -64,9 +64,9 @@
         REDIRECT_SERVER_SOFTWARE=Apache/0.8.15<br />
         REDIRECT_URL=/cgi-bin/buggy.pl
       </example>
-      
+
       <p>Note the <code>REDIRECT_</code> prefix.</p>
-      
+
       <p>At least <code>REDIRECT_URL</code> and
       <code>REDIRECT_QUERY_STRING</code> will be passed to the
       new URL (assuming it's a cgi-script or a cgi-include). The
@@ -78,16 +78,16 @@
       as the server).</p>
     </section>
   </section>
-  
+
   <section id="configuration">
     <title>Configuration</title>
-    
+
     <p>Use of <directive module="core">ErrorDocument</directive> is enabled 
     for .htaccess files when the 
     <directive module="core">AllowOverride</directive> is set accordingly.</p>
-    
+
     <p>Here are some examples...</p>
-    
+
     <example>
       ErrorDocument 500 /cgi-bin/crash-recover <br />
       ErrorDocument 500 "Sorry, our script crashed. Oh dear" <br />
@@ -95,44 +95,44 @@
       ErrorDocument 404 /Lame_excuses/not_found.html <br />
       ErrorDocument 401 /Subscription/how_to_subscribe.html
     </example>
-    
+
     <p>The syntax is,</p>
-    
+
     <example>
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
     </example>
-    
+
     <p>where the action can be,</p>
-    
+
     <ol>
       <li>Text to be displayed. Prefix the text with a quote
       ("). Whatever follows the quote is displayed. <em>Note:
       the (") prefix isn't displayed.</em></li>
-    
+
       <li>An external URL to redirect to.</li>
-    
+
       <li>A local URL to redirect to.</li>
     </ol>
   </section>
-  
+
   <section id="custom">
     <title>Custom Error Responses and Redirects</title>
-    
+
     <p>Apache's behavior to redirected URLs has been modified so
     that additional environment variables are available to a
     script/server-include.</p>
-    
+
     <section>
       <title>Old behavior</title>
-    
+
       <p>Standard CGI vars were made available to a script which
       has been redirected to. No indication of where the
       redirection came from was provided.</p>
     </section>
-    
+
     <section>
       <title>New behavior</title>
-    
+
       <p>A new batch of environment variables will be initialized
       for use by a script which has been redirected to. Each new
       variable will have the prefix <code>REDIRECT_</code>.
@@ -145,21 +145,21 @@
       and <code>REDIRECT_STATUS</code> to help the script trace its
       origin. Both the original URL and the URL being redirected to
       can be logged in the access log.</p>
-    
+
       <p>If the ErrorDocument specifies a local redirect to a CGI
       script, the script should include a "<code>Status:</code>"
       header field in its output in order to ensure the propagation
       all the way back to the client of the error condition that
       caused it to be invoked. For instance, a Perl ErrorDocument
       script might include the following:</p>
-    
+
       <example>
         ... <br />
         print  "Content-type: text/html\n"; <br />
         printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
         ...
       </example>
-    
+
       <p>If the script is dedicated to handling a particular error
       condition, such as <code>404&nbsp;Not&nbsp;Found</code>, it can
       use the specific code and error text instead.</p>
