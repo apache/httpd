@@ -89,7 +89,6 @@ string.h \
 limits.h \
 unistd.h \
 sys/socket.h \
-netinet/tcp.h \
 pwd.h \
 grp.h \
 strings.h

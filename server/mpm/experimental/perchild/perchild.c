@@ -92,10 +92,6 @@
 #include "scoreboard.h"
 #include "util_filter.h"
 
-#ifdef HAVE_NETINET_TCP_H
-#include <netinet/tcp.h>
-#endif
-
 /* ### should be APR-ized */
 #include <poll.h>
 #include <grp.h>
