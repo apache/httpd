@@ -62,6 +62,7 @@
 #include "http_main.h"		/* For the default_handler below... */
 #include "http_log.h"
 #include "rfc1413.h"
+#include "util_md5.h"
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -86,6 +87,8 @@ void *create_core_dir_config (pool *a, char *dir)
 
     conf->opts = dir ? OPT_UNSET : OPT_ALL;
     conf->override = dir ? OR_UNSET : OR_ALL;
+
+    conf->content_md5 = 2;
 
     conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
@@ -118,6 +121,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     if (new->hostname_lookups != 2)
 	conf->hostname_lookups = new->hostname_lookups;
     if ((new->do_rfc1413 & 2) == 0) conf->do_rfc1413 = new->do_rfc1413;
+    if ((new->content_md5 & 2) == 0) conf->content_md5 = new->content_md5;
 
     return (void*)conf;
 }
@@ -623,6 +627,11 @@ char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, int arg) {
     return NULL;
 }
 
+char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
+    d->content_md5 = arg;
+    return NULL;
+}
+
 char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_to_start = atoi (arg);
     return NULL;
@@ -749,6 +758,7 @@ command_rec core_cmds[] = {
 { "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
 { "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Maximum Keep-Alive requests per connection (0 to disable)" },
 { "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG, NULL },
+{ "ContentDigest", set_content_md5, NULL, RSRC_CONF|ACCESS_CONF|OR_AUTHCFG, FLAG, "whether or not to send a Content-MD5 header with each request" },
 { "CacheNegotiatedDocs", },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1, NULL },
 { "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1, NULL },
@@ -794,6 +804,8 @@ int do_nothing (request_rec *r) { return OK; }
 
 int default_handler (request_rec *r)
 {
+    core_dir_config *d =
+      (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
     int errstatus;
     FILE *f;
     
@@ -818,7 +830,11 @@ int default_handler (request_rec *r)
         log_reason("file permissions deny server access", r->filename, r);
         return FORBIDDEN;
     }
-      
+
+    if (d->content_md5 & 1) {
+      table_set (r->headers_out, "Content-MD5", md5digest(r->pool, f));
+    }
+
     soft_timeout ("send", r);
     
     send_http_header (r);

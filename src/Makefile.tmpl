@@ -5,7 +5,7 @@
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
-  md5c.o $(MODULES)
+  md5c.o util_md5.o $(MODULES)
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $<
@@ -66,8 +66,11 @@ mod_imap.o mod_include.o: http_protocol.h
 mod_cgi.o mod_dir.o mod_imap.o mod_include.o mod_negotiation.o: http_request.h
 mod_proxy.o: md5.h
 mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: util_script.h
+mod_digest.o: util_md5.h
 
 #Utils
 md5c.o: md5.h
 util.o: http_conf_globals.h
 util_script.o: http_core.h http_main.h http_protocol.h util_script.h
+util_md5.o: md5.h
+

@@ -140,6 +140,8 @@ typedef struct {
     char *auth_type;
     char *auth_name;
     array_header *requires;
+
+    int content_md5;
     
     /* Custom response config. These can contain text or a URL to redirect to.
      */

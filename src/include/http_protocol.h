@@ -147,10 +147,16 @@ void client_to_stdout (conn_rec *c);
  *
  * note_basic_auth_failure arranges for the right stuff to be scribbled on
  * the HTTP return so that the client knows how to authenticate itself the
- * next time.
+ * next time. As does note_digest_auth_failure for Digest auth.
+ *
+ * note_auth_failure does the same thing, but will call the correct one
+ * based on the authentication type in use.
+ *
  */
 
+void note_auth_failure(request_rec *r);
 void note_basic_auth_failure(request_rec *r);
+void note_digest_auth_failure(request_rec *r);
 int get_basic_auth_pw (request_rec *r, char **pw);
 
 /*

@@ -384,15 +384,34 @@ void finalize_sub_req_protocol (request_rec *sub)
 {
 } 
 
-/* Support for the Basic authentication protocol.  
+/* Support for the Basic authentication protocol, and a bit for Digest.
  */
+
+void note_auth_failure(request_rec *r)
+{
+    if (!strcasecmp(auth_type(r), "Basic"))
+      return note_basic_auth_failure(r);
+    else if(!strcasecmp(auth_type(r), "Digest"))
+      return note_digest_auth_failure(r);
+}
 
 void note_basic_auth_failure(request_rec *r)
 {
+    if (strcasecmp(auth_type(r), "Basic"))
+      return note_auth_failure(r);
     table_set (r->err_headers_out, "WWW-Authenticate",
 	       pstrcat(r->pool, "Basic realm=\"", auth_name(r), "\"", NULL));
 }
 
+void note_digest_auth_failure(request_rec *r)
+{
+    char nonce[10];
+
+    sprintf(nonce, "%lu", time(NULL));
+    table_set (r->err_headers_out, "WWW-Authenticate",
+               pstrcat(r->pool, "Digest realm=\"", auth_name(r),
+                       "\", nonce=\"", nonce, "\"", NULL));
+}
 
 int get_basic_auth_pw (request_rec *r, char **pw)
 {
