@@ -3,3 +3,4 @@ Makefile
 *.so
 *.dll
 *.def
+*.exp
