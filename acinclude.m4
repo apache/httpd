@@ -467,8 +467,9 @@ if test "x$ap_ssltk_base" = "x"; then
   AC_MSG_RESULT($ap_ssltk_libdir)
 
   dnl #  annotate the Apache build environment with determined information
+  APR_ADDTO(INCLUDES, [-I$ap_ssltk_incdir/openssl])
   if test "x$ap_ssltk_incdir" != "x/usr/include"; then
-    APR_ADDTO(INCLUDES, [-I$ap_ssltk_incdir -I$ap_ssltk_incdir/openssl])
+    APR_ADDTO(INCLUDES, [-I$ap_ssltk_incdir])
   fi
   if test "x$ap_ssltk_libdir" != "x/usr/lib"; then
     APR_ADDTO(LIBS, [-L$ap_ssltk_libdir])
