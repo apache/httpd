@@ -88,6 +88,10 @@
 /* We use the exact same header file as the original */
 #include <HttpExt.h>
 
+/* TODO: Unknown errors that must be researched for correct codes */
+
+#define TODO_ERROR 1
+
 /* Seems IIS does not enforce the requirement for \r\n termination on HSE_REQ_SEND_RESPONSE_HEADER,
    define this to conform */
 #define RELAX_HEADER_RULE
@@ -370,7 +374,7 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
     }
 
     if ((writ = ap_rwrite(Buffer, *lpwdwBytes, r)) == EOF) {
-            SetLastError(ERROR); /* TODO: Find the right error code */
+            SetLastError(WSAEDISCON); /* TODO: Find the right error code */
             return FALSE;
     }
 
@@ -453,7 +457,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                 if (!lf) { /* Huh? Invalid data, I think */
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                                     "ISA sent invalid headers: %s", r->filename);
-                        SetLastError(ERROR);    /* XXX: Find right error */
+                        SetLastError(TODO_ERROR);
                         return FALSE;
                 }
 
@@ -473,7 +477,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                 }
 
                 if (!(value = strchr(data, ':'))) {
-                        SetLastError(ERROR);    /* TODO: Find right error */
+                        SetLastError(TODO_ERROR);
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, SERVER_ERROR, r,
                                           "ISA sent invalid headers", r->filename);
                         return FALSE;
