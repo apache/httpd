@@ -49,6 +49,20 @@ clean:
 		echo "<=== $(SDP)$$i"; \
 	done
 
+distclean:
+	-rm -f $(TARGET) *.o
+	@for i in $(SUBDIRS); do \
+		echo "===> $(SDP)$$i"; \
+		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
+		echo "<=== $(SDP)$$i"; \
+	done
+	-rm -f include/ap_config.h
+	-rm -f modules.c
+	-rm -f modules/Makefile
+	-rm -f regex/Makefile
+	-rm -f Makefile.config
+	-rm -f Makefile
+
 # We really don't expect end users to use this rule.  It works only with
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
 # using it.

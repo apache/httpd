@@ -346,8 +346,8 @@ install-docroot:
 clean:
 	@echo "===> $(SRC)"
 	@$(MAKE) -f $(MKF) $(MFLAGS) clean-std $(clean-support)
-	@rm -f $(SRC)/.apaci.build.ok
 	@echo "<=== $(SRC)"
+	@rm -f $(SRC)/.apaci.build.ok
 
 #   clean the standard stuff
 clean-std:
@@ -363,10 +363,9 @@ clean-support:
 	    fi; \
 	echo "<=== $(SRC)/support"
 
-#   first cleanup with the clean target and then additionally
-#   remove anything the "configure" script has created, i.e.
-#   create a really vanially source tree. When --shadow is used
-#   we just remove the complete shadow tree.
+#   cleanup the source tree by removing anything which was
+#   created by the configure step and the build target.
+#   When --shadow is used we just remove the complete shadow tree.
 distclean:
 	@if [ ".$(SRC)" = .src ]; then \
 		$(MAKE) -f $(MKF) $(MFLAGS) distclean-normal; \
@@ -375,28 +374,26 @@ distclean:
 	fi
 
 distclean-normal:
-	@$(MAKE) -f $(MKF) $(MFLAGS) clean distclean-std $(distclean-support)
+	@echo "===> $(SRC)"
+	@$(MAKE) -f $(MKF) $(MFLAGS) distclean-std $(distclean-support)
+	@echo "<=== $(SRC)"
 	-rm -f $(SRC)/Configuration.apaci
 	-rm -f $(SRC)/apaci
+	@rm -f $(SRC)/.apaci.build.ok
 	-rm -f Makefile
 
+#   clean the standard stuff
 distclean-std:
-	-rm -f $(SRC)/main/Makefile
-	-rm -f $(SRC)/ap/Makefile
-	-rm -f $(SRC)/regex/Makefile
-	-rm -f $(SRC)/os/unix/Makefile
-	-rm -f $(SRC)/modules/experimental/Makefile
-	-rm -f $(SRC)/modules/extra/Makefile
-	-rm -f $(SRC)/modules/standard/Makefile
-	-rm -f $(SRC)/modules/proxy/Makefile
-	-rm -f $(SRC)/modules/Makefile
-	-rm -f $(SRC)/modules.c
-	-rm -f $(SRC)/include/ap_config.h
-	-rm -f $(SRC)/Makefile.config
-	-rm -f $(SRC)/Makefile
+	@cd $(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ distclean
 
 distclean-support:
-	-rm -f $(SRC)/support/Makefile
+	@echo "===> $(SRC)/support"; \
+	cd $(SRC)/support; $(MAKE) $(MFLAGS) distclean; \
+	if [ ".$(suexec)" = .1 ]; then \
+	    echo "rm -f suexec"; \
+	    rm -f suexec; \
+	fi; \
+	echo "<=== $(SRC)/support"
 
 distclean-shadow:
 	rm -rf $(SRC)

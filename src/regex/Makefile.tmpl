@@ -135,6 +135,9 @@ tidy:
 clean:	tidy
 	rm -f *.o *.s re libregex.a
 
+distclean: clean
+	-rm -f Makefile
+
 # don't do this one unless you know what you're doing
 spotless:	clean
 	rm -f mkh ../include/hsregex.h

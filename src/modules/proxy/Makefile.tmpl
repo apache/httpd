@@ -40,6 +40,9 @@ libproxy.so: $(SHLIB_OBJS)
 clean:
 	rm -f $(OBJS) $(SHLIB_OBJS) $(LIB)
 
+distclean: clean
+	-rm -f Makefile
+
 # We really don't expect end users to use this rule.  It works only with
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
 # using it.

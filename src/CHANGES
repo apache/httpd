@@ -1,5 +1,13 @@
 Changes with Apache 1.3b6
 
+  *) Add "distclean" target to src/-Makefiles to provide "make distclean" also
+     inside the src subtree (i.e. for non-APACI users). Following GNU Makefile
+     conventions while "clean" removes only stuff created by "all" targets,
+     "distclean" additionally removes the stuff from the configuration
+     process. This way "make distclean" (hence the name) provides a fresh
+     source tree as it was for distribution.
+     [Ralf S. Engelschall]
+
   *) Allow top-level (APACI) Makefile to break on build errors
      the same way the src/ subtree Makefiles breaks on them by replacing the
      initial APACI sed-subdir-display-kludge with a more clean

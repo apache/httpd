@@ -28,6 +28,9 @@ clean:
 	for i in $(COPY); do  rm -f $(INCDIR)/$$i ; done
 	rm -f $(OBJS) $(LIB)
 
+distclean: clean
+	-rm -f Makefile
+
 $(OBJS): Makefile
 
 # We really don't expect end users to use this rule.  It works only with

@@ -29,6 +29,9 @@ $(LIB): $(OBJS)
 clean:
 	rm -f *.o $(LIB) uri_delims.h gen_uri_delims test_char.h gen_test_char
 
+distclean: clean
+	-rm -f Makefile
+
 uri_delims.h: gen_uri_delims
 	./gen_uri_delims >uri_delims.h
 

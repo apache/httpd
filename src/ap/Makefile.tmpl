@@ -16,6 +16,9 @@ all: $(LIB)
 clean:
 	rm -f *.o *.a
 
+distclean: clean
+	-rm -f Makefile
+
 $(OBJS): Makefile
 
 $(LIB): $(OBJS)

@@ -1379,7 +1379,7 @@ CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
 
 default: all
 
-all clean depend :: 
+all clean distclean depend :: 
 	@for i in \$(MODULES); do \\
 	    echo "===> \$(SDP)modules/\$\$i"; \\
 		(cd \$\$i && \$(MAKE) \$(MFLAGS_STATIC) SDP='\$(SDP)' CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; \\
@@ -1473,6 +1473,9 @@ $(LIB): $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(SHLIBS) $(SHLIBS_OBJ) $(LIB) $(SHLIB)
+
+distclean: clean
+	rm -f Makefile
 
 $(OBJS) $(SHLIBS) $(SHLIBS_OBJ): Makefile
 

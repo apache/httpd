@@ -151,6 +151,7 @@ Committed Code Changes:
     * OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
     * Fixed ordering of argument checks for RewriteBase directive, PR#2045
     * Ralf's cleanup of subdir movement to again allow correct breaks on error
+    * Ralf's consistent add of "distclean" targets for the src/-Makefiles
 
 Available Patches:
 
