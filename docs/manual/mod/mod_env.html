@@ -15,18 +15,37 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Apache module mod_env</H1>
 
-This module is contained in the <CODE>mod_env.c</CODE> file, and
-is compiled in by default. It provides for
-passing environment variables to CGI/SSI scripts. Is is only available
-in Apache 1.1 and later.
+<p>This module provides for
+passing environment variables to CGI/SSI scripts.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_env.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> env_module
+<BR>
+<A
+HREF="module-dict.html#Compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.1 and later.
+</P>
 
 <H2>Summary</H2>
-
-This module allows Apache's CGI and SSI environment to inherit
+<!-- XXX: Should mention mod_setenvif and the effect of suexec -->
+<p>This module allows Apache's CGI and SSI environment to inherit
 environment variables from the shell which invoked the httpd process.
 CERN web-servers are able to do this, so this module is especially
 useful to web-admins who wish to migrate from CERN to Apache without
-rewriting all their scripts
+rewriting all their scripts</p>
 
 <H2>Directives</H2>
 <UL>
@@ -37,7 +56,7 @@ rewriting all their scripts
 
 <HR>
 
-<H2><A NAME="passenv">PassEnv</A></H2>
+<H2><A NAME="passenv">PassEnv</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -68,7 +87,7 @@ from the server's own environment. Example:
 
 <HR>
 
-<H2><A NAME="setenv">SetEnv</A></H2>
+<H2><A NAME="setenv">SetEnv</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -99,7 +118,7 @@ scripts. Example:
 
 <HR>
 
-<H2><A NAME="unsetenv">UnsetEnv</A></H2>
+<H2><A NAME="unsetenv">UnsetEnv</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
