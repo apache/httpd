@@ -93,7 +93,7 @@ HTTP server.</p>
     directive.
     Otherwise, Apache must be recompiled to add or remove modules.
     Configuration directives may be included conditional on a
-    presence of a particular module by enclosing them in an<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> block.</p>
+    presence of a particular module by enclosing them in an <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> block.</p>
 
     <p>To see which modules are currently compiled into the server,
     you can use the <code>-l</code> command line option.</p>
