@@ -948,7 +948,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg, request_rec *
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-length:", 15)) {
-                mime_info.bytes = atol(body);
+                mime_info.bytes = apr_atoll((char *)body);
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-language:", 17)) {

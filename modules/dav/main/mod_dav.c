@@ -761,12 +761,11 @@ static int dav_parse_range(request_rec *r,
 
     *dash = *slash = '\0';
 
-    /* ### atol may not be large enough for the apr_off_t */
-    *range_start = atol(range + 6);
-    *range_end = atol(dash + 1);
+    *range_start = apr_atoll(range + 6);
+    *range_end = apr_atoll(dash + 1);
 
     if (*range_end < *range_start
-        || (slash[1] != '*' && atol(slash + 1) <= *range_end)) {
+        || (slash[1] != '*' && apr_atoll(slash + 1) <= *range_end)) {
         /* invalid range. ignore it (per S14.16 of RFC2616) */
         return 0;
     }
@@ -2319,7 +2318,7 @@ static int process_mkcol_body(request_rec *r)
             return HTTP_BAD_REQUEST;
         }
 
-        r->remaining = atol(lenp);
+        r->remaining = apr_atoll(lenp);
     }
 
     if (r->read_chunked || r->remaining > 0) {

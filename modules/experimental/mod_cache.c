@@ -577,7 +577,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         const char* cl;
         cl = apr_table_get(r->headers_out, "Content-Length");
         if (cl) {
-            size = atol(cl);
+            size = apr_atoll(cl);
         }
         else {
 
