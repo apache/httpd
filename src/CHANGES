@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
 
+  *) Make all possible meta-construct expansions ($N, %N, %{NAME} and
+     ${map:key}) available for all location where a string is created in
+     mod_rewrite rewriting rulesets: 1st arg of RewriteCond, 2nd arg of
+     RewriteRule and for the [E=NAME:STRING] flag of RewriteRule. This way the
+     possible expansions are consequently useable at all string creation
+     locations. [Ralf S. Engelschall]
+
   *) Fix initialization of RewriteLogLevel (default now is 0 as documented 
      and not 1) and the per-virtual-server merging of directives. Now all
      directives except `RewriteEngine' and `RewriteOption' are either
