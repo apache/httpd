@@ -1504,7 +1504,7 @@ static void timeout(int sig)
 	if (!current_conn->keptalive) {
 	    /* in some cases we come here before setting the time */
 	    if (log_req->request_time == 0) {
-                log_req->request_time = time(0);
+                log_req->request_time = time(NULL);
 	    }
 	    ap_log_transaction(log_req);
 	}
@@ -1587,20 +1587,21 @@ API_EXPORT(unsigned int) ap_set_callback_and_alarm(void (*fn) (int), int x)
     unsigned int old;
 
 #if defined(WIN32) || defined(NETWARE)
+    time_t now = time(NULL);
 #ifdef NETWARE
     get_tsd
 #endif
     old = alarm_expiry_time;
 
     if (old)
-	old -= time(0);
+	old -= now;
     if (x == 0) {
 	alarm_fn = NULL;
 	alarm_expiry_time = 0;
     }
     else {
 	alarm_fn = fn;
-	alarm_expiry_time = time(NULL) + x;
+	alarm_expiry_time = now + x;
     }
 #else
     if (alarm_fn && x && fn != alarm_fn) {
@@ -4742,7 +4743,7 @@ static int make_child(server_rec *s, int slot, time_t now)
 static void startup_children(int number_to_start)
 {
     int i;
-    time_t now = time(0);
+    time_t now = time(NULL);
 
     for (i = 0; number_to_start && i < ap_daemons_limit; ++i) {
 	if (ap_scoreboard_image->servers[i].status != SERVER_DEAD) {
@@ -4788,7 +4789,7 @@ static void perform_idle_server_maintenance(void)
     int to_kill;
     int idle_count;
     short_score *ss;
-    time_t now = time(0);
+    time_t now = time(NULL);
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
@@ -5099,7 +5100,7 @@ static void standalone_main(int argc, char **argv)
 			/* we're still doing a 1-for-1 replacement of dead
 			 * children with new children
 			 */
-			make_child(server_conf, child_slot, time(0));
+			make_child(server_conf, child_slot, time(NULL));
 			--remaining_children_to_start;
 		    }
 #ifndef NO_OTHER_CHILD
