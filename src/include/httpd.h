@@ -219,7 +219,7 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
-#define HARD_SERVER_LIMIT 150
+#define HARD_SERVER_LIMIT 256
 
 /* Number of requests to try to handle in a single process.  If <= 0,
  * the children don't die off.  That's the default here, since I'm still
