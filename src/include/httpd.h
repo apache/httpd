@@ -135,7 +135,7 @@
 
 /* Define this to be what type you'd like returned for files with unknown */
 /* suffixes */
-#define DEFAULT_TYPE "text/html"
+#define DEFAULT_TYPE "text/plain"
 
 /* Define this to be what your per-directory security files are called */
 #ifdef __EMX__

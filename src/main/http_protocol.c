@@ -1172,9 +1172,6 @@ void send_http_header(request_rec *r)
 {
     int i;
     const long int zero = 0L;
-    core_dir_config *dir_conf =
-      (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
-    char *default_type = dir_conf->default_type;
   
     if (r->assbackwards) {
         if(!r->main)
@@ -1206,8 +1203,8 @@ void send_http_header(request_rec *r)
                           "byteranges; boundary=", r->boundary, NULL));
     else if (r->content_type)
         table_set(r->headers_out, "Content-Type", r->content_type);
-    else if (default_type)
-        table_set(r->headers_out, "Content-Type", default_type);
+    else 
+        table_set(r->headers_out, "Content-Type", default_type(r));
     
     if (r->content_encoding)
         table_set(r->headers_out, "Content-Encoding", r->content_encoding);

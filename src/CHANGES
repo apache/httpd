@@ -1,5 +1,11 @@
 Changes with Apache 1.2
 
+  *) Fixed a couple places where a check for the default Content-Type was
+     not properly checking both the value configured by the DefaultType
+     directive and the DEFAULT_TYPE symbol in httpd.h.  Changed the value
+     of DEFAULT_TYPE to match the documented default (text/plain).
+     [Dean Gaudet]
+
   *) Escape the HTML-sensitive characters in the Request-URI that is
      output for each child by mod_status. [Dean Gaudet and Ken Coar] PR#501
 
