@@ -1025,6 +1025,14 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->remaining -= totalread;
     }
 
+    /* If we have no more bytes remaining on a C-L request, 
+     * save the callter a roundtrip to discover EOS.
+     */
+    if (ctx->state == BODY_LENGTH && ctx->remaining == 0) {
+        e = apr_bucket_eos_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(b, e);
+    }
+
     /* We have a limit in effect. */
     if (ctx->limit) {
         /* FIXME: Note that we might get slightly confused on chunked inputs
