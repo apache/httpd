@@ -1424,6 +1424,7 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd, void *dummy
     apr_finfo_t finfo;
     apr_status_t rv;
     int cert_type = 0;
+    apr_ldap_opt_tls_cert_t *cert;
 
     if (err != NULL) {
         return err;
@@ -1450,7 +1451,7 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd, void *dummy
                        file, type);
 
     /* add the certificate to the global array */
-    apr_ldap_opt_tls_cert_t *cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(st->global_certs);
+    cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(st->global_certs);
     cert->type = cert_type;
     cert->path = file;
     cert->password = password;
@@ -1491,6 +1492,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *confi
     apr_finfo_t finfo;
     apr_status_t rv;
     int cert_type = 0;
+    apr_ldap_opt_tls_cert_t *cert;
 
     /* handle the certificate type */
     if (type) {
@@ -1524,7 +1526,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *confi
                        file, type);
 
     /* add the certificate to the global array */
-    apr_ldap_opt_tls_cert_t *cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(st->global_certs);
+    cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(st->global_certs);
     cert->type = cert_type; 
     cert->path = file;
     cert->password = password;
@@ -1658,6 +1660,8 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 
     void *data;
     const char *userdata_key = "util_ldap_init";
+    apr_ldap_err_t *result_err = NULL;
+    int rc;
 
     /* util_ldap_post_config() will be called twice. Don't bother
      * going through all of the initialization on the first call
@@ -1755,11 +1759,10 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
      * If SSL is not supported it is not necessarily an error, as the
      * application may not want to use it.
      */
-    apr_ldap_err_t *result_err = NULL;
-    int rc = apr_ldap_ssl_init(p,
-                               NULL,
-                               NULL,
-                               &(result_err));
+    rc = apr_ldap_ssl_init(p, 
+                      NULL, 
+                      0, 
+                      &(result_err));
     if (APR_SUCCESS == rc) {
         rc = apr_ldap_set_option(p, NULL, APR_LDAP_OPT_TLS_CERT,
                                  (void *)st->global_certs, &(result_err));
