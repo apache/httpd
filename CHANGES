@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) rewrite mod_ssl input filtering to work with the new input filtering
+     system.  [Justin Erenkrantz]
+
   *) prefork: Don't segfault when we are able to listen on some but
      not all of the configured ports.  [Jeff Trawick]
 
