@@ -181,8 +181,7 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
         bucket = apr_bucket_flush_create();
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
 
-        /* XXX: check for errors */
-        ap_pass_brigade(f->next, bb);
+        return ap_pass_brigade(f->next, bb);
     }
 
     return APR_SUCCESS;
