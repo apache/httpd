@@ -23,8 +23,6 @@
 <a href="../ja/mod/directive-dict.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>この文書は各 Apache <a href="directives.html">設定ディレクティブ</a>
     を説明するために使われている用語を説明します。</p>
@@ -104,9 +102,8 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>正規表現で、
-      テキストのマッチのパターンを表します。ディレクティブの定義が
-      <em>regex</em>
+      <dd>Perl 互換の<a href="../glossary.html#regex">正規表現</a>です。
+      ディレクティブの定義が <em>regex</em>
       が何に対してマッチを行なうのかを指定します。</dd>
 
       <dt><em>extension</em></dt>

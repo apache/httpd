@@ -42,8 +42,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="core" name="core">コア機能と MPM</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
-available</dd>
+<dt><a href="core.html">core</a></dt><dd>常に使用可能な Apache HTTP サーバのコア機能</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</dd>
 <dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
@@ -89,8 +88,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI スクリプトの実行</dd>
-<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
-    external CGI daemon</dd>
+<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>外部 CGI デーモンを使った CGI スクリプトの実行</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
 <dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</dd>
@@ -104,9 +102,8 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI スクリプト及び SSI
 ページに渡される環境変数を変更する機能を提供する</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> and
-<code>Cache-Control</code> HTTP headers according to user-specified
-criteria</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>ユーザの指定した基準に基づいた <code>Expires</code> と
+<code>Cache-Control</code> HTTP ヘッダの生成</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
 delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
@@ -118,9 +115,9 @@ headers</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>サーバへのリクエストのロギング</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
@@ -147,8 +144,7 @@ URLs on the fly</dd>
 修正を試みる</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
-<dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
-performance</dd>
+<dt><a href="mod_status.html">mod_status</a></dt><dd>サーバの活動状況と性能に関する情報を提供する</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>指定されたユーザとグループで CGI スクリプトを実行する</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>それぞれのリクエストに対する一意な識別子の入った環境変数を
 提供する</dd>

@@ -24,8 +24,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_access.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントのホスト名、IP アドレス、その他のクライアント
 のリクエストの特徴に基づいたアクセス制御機能を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -113,10 +111,14 @@
       各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
-      この設定をすると、サーバは
+      この設定をすると、Apache は
       <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
       の設定に関わらず、クライアントの IP アドレスに対して
-      DNS の逆引きを行ないます。</p></dd>
+      二重の DNS の逆引きを行ないます。まず IP アドレスに対して DNS の
+      逆引きを行なってホスト名を得、そのホスト名に対して正引きを
+      行ない、元の IP アドレスと一致するかを調べます。DNS の正引きと
+      逆引きが無矛盾かつホスト名が一致するときにのみ
+      アクセスが許可されます。</p></dd>
 
       <dt>完全な IP アドレス</dt>
 

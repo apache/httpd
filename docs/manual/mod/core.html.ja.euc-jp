@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache コア機能</h1>
 <div class="toplang">
@@ -53,6 +53,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#identitycheck">IdentityCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
@@ -359,11 +360,11 @@
 
       <dd>
 
-      認証に関するディレクティブの使用を許可する (<code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
-      <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
-      <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>,
+      認証に関するディレクティブの使用を許可する (<code class="directive"><a href="../mod/mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
+      <code class="directive"><a href="../mod/mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
+      <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code>,
       <code class="directive"><a href="#authname">AuthName</a></code>, 
-      <code class="directive"><a href="#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="#require">Require</a></code> <em>など。</em>)。</dd>
+      <code class="directive"><a href="#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="#require">Require</a></code> <em>など。</em>)。</dd>
 
       <dt>FileInfo</dt>
 
@@ -386,17 +387,14 @@
       <dt>Limit</dt>
 
       <dd>
-      ホストへのアクセス制御を行うためのディレクティブの使用を許可する (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
+      ホストへのアクセス制御を行うためのディレクティブの使用を許可する (<code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code>, <code class="directive"><a href="../mod/mod_access.html#order">Order</a></code>).</dd>
 
-      <dt>Options[=<var>Option</var>,...]</dt>
+      <dt>Options</dt>
 
       <dd>
       特定のディレクトリにおける機能を指定するためのディレクティブの使用を許可する
       (<code class="directive"><a href="#options">Options</a></code> と
-      <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>)。
-      <code class="directive"><a href="#options">Options</a></code> で設定するオプション
-      を、(空白を含めない) コンマ区切りのリストにして等号の後に続けることで
-      設定できます。</dd>
+      <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>)。</dd>
     </dl>
 
     <p>例:</p>
@@ -435,8 +433,8 @@
     このディレクティブは
     <code class="directive"><a href="#authtype">AuthType</a></code> ディレクティブや
     <code class="directive"><a href="#require">Require</a></code> ディレクティブと、
-    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> や
-    <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> などのディレクティブと
+    <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code> や
+    <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> などのディレクティブと
     一緒に利用する必要があります。</p>
 
    <p>例えば:</p>
@@ -469,7 +467,7 @@
 
     このディレクティブは <code class="directive"><a href="#authname">AuthName</a></code>ディレクティブや
     <code class="directive"><a href="#require">Require</a></code> ディレクティブと、
-    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> や <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> などのディレクティブと
+    <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code> や <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> などのディレクティブと
     一緒に利用する必要があります。</p>
 
 <h3>参照</h3>
@@ -767,10 +765,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 
     <p>この場合、
     <code>http://www.my.host.com/index.html</code> へのアクセスがあれば
-    <code>/usr/web/index.html</code> が返されます。
-    <var>directory-path</var> が絶対パスでない場合は、
-    <code class="directive"><a href="#serverroot">ServerRoot</a></code> 
-    からの相対パスとみなされます。</p>
+    <code>/usr/web/index.html</code> が返されます。</p>
 
     <p><code class="directive">DocumentRoot</code> は最後のスラッシュ無しで
     指定する必要があります。</p>
@@ -1246,7 +1241,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     結果の IP アドレスの中にオリジナルのアドレスと一致するものがなければ
     なりません。("tcpwrappers" の用語では PARANOID と呼ばれています。)</p>
 
-    <p><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> でホスト名によるアクセス
+    <p><code class="module"><a href="../mod/mod_access.html">mod_access</a></code> でホスト名によるアクセス
     制御を行なう場合には、
     設定の如何によらず 2 重の逆引きが実行されます。
     これは、セキュリティを保つために必要です。
@@ -1269,6 +1264,35 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     インストールされる <a href="../programs/logresolve.html">logresolve</a> ユーティリティにより、
     Apache の動作とは別に、ログに残されている IP アドレスからホスト名を
     ルックアップすることが可能です。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a> <a name="identitycheck" id="identitycheck">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リモートユーザの RFC1413 によるアイデンティティのロギングを
+有効にする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>IdentityCheck On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>IdentityCheck Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+</table>
+    <p>このディレクティブは、クライアントマシン上で
+    identd やそれに類似したデーモンが動作しているときに、
+    それぞれの接続に対して RFC 1413 に準処したリモートユーザの
+    名前のロギングを行なうようにします。
+    この情報は、アクセスログに収集されます。</p>
+
+    <p>ここで得られた情報は簡単なユーザ追跡に使う以外は、
+    まったく信頼するべきではありません。</p>
+
+    <p>すべてのリクエストに対してルックアップが行なわれますので、
+    深刻な遅延の問題を起こすかもしれないことに注意してください。
+    (訳注: 例えばクライアント側に) ファイアウォールがあると、
+    ルックアップが失敗し、各リクエストに 30 秒の遅延が加わることに
+    なる可能性があります。
+    従って、一般的にはインターネットからアクセス可能なパブリックなサーバで
+    有益なものではありません。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1333,13 +1357,12 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>モジュールの存在するかしないかに応じて処理される
 ディレクティブを囲む</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;IfModule [!]<var>module-name</var>&gt; ...
     &lt;/IfModule&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>モジュール識別子はバージョン 2.1 以降で使用可能。</td></tr>
 </table>
     <p><code>&lt;IfModule <var>test</var>&gt;...&lt;/IfModule&gt;</code>
     セクションは、モジュールが存在するときに処理されるディレクティブを
@@ -1355,23 +1378,23 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     次の二つの形式のうちの一つをとります。</p>
 
     <ul>
-      <li><var>module</var></li>
+      <li><var>module name</var></li>
 
-      <li>!<var>module</var></li>
+      <li>!<var>module name</var></li>
     </ul>
 
-    <p>前者の場合は、<var>module</var> と名付けられたモジュールが
+    <p>前者の場合は、<var>module name</var> と名付けられたモジュールが
     Apache に組み込まれていれば
     (コンパイル済みのものと、<code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> を利用して
     動的に読み込んだものの両方)、
     開始と終了の間のディレクティブが処理されます。
-    後者の場合は逆で、<var>module</var> が組み込まれて<strong>いない</strong>
+    後者の場合は逆で、<var>module name</var> が組み込まれて<strong>いない</strong>
     場合に処理されます。</p>
 
-    <p><var>module</var> 引数は、モジュール識別子か
+    <p><var>module name</var> 引数は、
     コンパイルをした時のモジュールのファイル名です。
-    例えば、<code>rewrite_module</code> は識別子で
-    <code>mod_rewrite.c</code> はファイル名です。
+    例えば、
+    <code>mod_rewrite.c</code> です。
     モジュールが複数のソースファイルから構成されている場合は、文字列
     <code>STANDARD20_MODULE_STUFF</code> があるファイルの名前を
     使ってください。</p>
@@ -2335,7 +2358,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     </dl>
 
     <p><code class="directive">Require</code> は、正しく動作するためには <code class="directive"><a href="#authname">AuthName</a></code> 及び <code class="directive"><a href="#authtype">AuthType</a></code> ディレクティブや、
-    (ユーザとグループを指定するために) <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> 及び <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>
+    (ユーザとグループを指定するために) <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code> 及び <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code>
     といったディレクティブと共に
     指定する必要があります。
     例えば:</p>
@@ -2360,7 +2383,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <h3>参照</h3>
 <ul>
 <li><code class="directive"><a href="#satisfy">Satisfy</a></code></li>
-<li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
+<li><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2488,7 +2511,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.0.51 以降では <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> ディレクティブと <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> ディレクティブの影響を受ける
 </td></tr>
 </table>
-    <p><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> と
+    <p><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code> と
     <code class="directive"><a href="#require">Require</a></code> の両方が使われているときの
     アクセスポリシーを設定します。パラメータは <code>All</code> か <code>Any</code>
     です。このディレクティブはある場所へのアクセスがユーザ名/パスワード
@@ -2521,7 +2544,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 
 <h3>参照</h3>
 <ul>
-<li><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code></li>
+<li><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code></li>
 <li><code class="directive"><a href="#require">Require</a></code></li>
 </ul>
 </div>
@@ -2550,7 +2573,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
       #!C:/Perl/bin/perl.exe
     </code></p></div>
 
-    <p>もしくは、<code>perl</code> が <code>PATH</code> にある場合は単に:</p>
+    <p>もしくは、perl が <code>PATH</code> にある場合は単に:</p>
 
     <div class="example"><p><code>
       #!perl
@@ -2591,22 +2614,14 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがクライアントに送るエラーメッセージに含める電子メールの
 アドレス</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerAdmin <var>email-address</var>|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerAdmin <var>email-address</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
     <p><code class="directive">ServerAdmin</code> は、クライアントに返すさまざまな
     エラーメッセージ中に記述する、
-    問合せアドレスを設定します。与えられた引数を <code>httpd</code> が
-    URL と認識しない場合は、<var>email-address</var> だと解釈して、
-    ハイパーリンクのターゲットに <code>mailto:</code> を付けます。
-    実際には、ここには電子メールアドレスを使うことが推奨されています。
-    多くの CGI スクリプトはそうなっていることを仮定しています。
-    URL を使う場合は、あなたの管理下にある別サーバを指すようにしてください。
-    そうでないと、エラーが起こったときに連絡をすることができなくなって
-    しまいます。
-</p>
+    電子メールアドレスを設定します。</p>
 
     <p>その際、これのために専用のアドレスを設定するのが良いでしょう。
     例えば、</p>

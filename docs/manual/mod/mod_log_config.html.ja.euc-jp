@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_log_config</h1>
 <div class="toplang">
@@ -84,7 +84,7 @@
     <table class="bordered"><tr class="header"><th>フォーマット文字列</th>
         <th>説明</th></tr>
 <tr><td><code>%%</code></td>
-        <td>パーセント記号</td></tr>
+        <td>パーセント記号 (<em>Apache 2.0.44 以降</em>)</td></tr>
 <tr class="odd"><td><code>%...a</code></td>
         <td>リモート IP アドレス</td></tr>
 <tr><td><code>%...A</code></td>
@@ -112,8 +112,8 @@
         ヘッダの内容</td></tr>
 <tr><td><code>%...l</code></td>
         <td>(identd からもし提供されていれば) リモートログ名。
-        これは <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> がサーバに存在して、
-        <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>
+        これは
+        <code class="directive"><a href="../mod/core.html#identitycheck">IdentityCheck</a></code>
         ディレクティブが <code>On</code> に設定されていない限り、
         <code>-</code> になります。</td></tr>
 <tr class="odd"><td><code>%...m</code></td>
@@ -129,6 +129,7 @@
 <tr><td><code>%...{<var>format</var>}P</code></td>
         <td>リクエストを扱ったワーカーのプロセス ID かスレッド ID。
         <var>format</var> として有効な値は <code>pid</code> と <code>tid</code>
+	(<em>Apache 2.0.46 以降</em>)
         </td></tr>
 <tr class="odd"><td><code>%...q</code></td>
         <td>問い合せ文字列 (存在する場合は前に <code>?</code> が追加される。

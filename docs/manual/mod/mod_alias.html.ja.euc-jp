@@ -24,8 +24,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_alias.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ホストファイルシステム上のいろいろな違う場所を
     ドキュメントツリーにマップする機能と、
     URL のリダイレクトを行なう機能を提供する</td></tr>
@@ -50,6 +48,11 @@
     クライアントに違った
     URL に新しいリクエストを送るように指示します。これは、
     リソースが新しい場所に移動したときによく使用されます。</p>
+
+    <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> は簡単な URL 操作向けに設計されています。
+    より複雑な操作、クエリーストリングの操作には、<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    で提供されるツールを使用してください。</p>
+
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
@@ -62,12 +65,42 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
 </ul>
-<h3>参照</h3>
+<h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#order">処理の順番</a></li>
+</ul><h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
 <li><a href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</a></li>
 </ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">処理の順番</a></h2>
 
+<p>様々なコンテキスト中での Alias や Redirect は他のディレクティブと
+同じように標準の <a href="../sections.html#mergin">マージ規則</a> に
+従って処理されます。ただし、(例えば <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> セクションの中のように) 複数の Alias や Redirect が
+同じコンテキスト中に現れた場合は決まった順番で処理されます。</p>
+
+<p>まず、Alias の前にすべての Redirect が処理されます。ですから、<code class="directive"><a href="#redirect">Redirect</a></code> か <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> にマッチするリクエストには
+Alias は決して適用されません。次に、Alias と Redirect が設定ファイル中の
+順番に適用され、最初にマッチしたものが優先されます。</p>
+
+<p>ですから、二つ以上のディレクティブが同じパスに適用されるときは、
+すべてのディレクティブの効果を得るためにはより詳しいパスを先に書く
+必要があります。例えば、次の設定は期待通りの動作をします:</p>
+
+<div class="example"><p><code>
+Alias /foo/bar /baz<br />
+Alias /foo /gaq
+</code></p></div>
+
+<p>しかし、上記の二つのディレクティブの順番が逆になると、
+<code>/foo</code> <code class="directive"><a href="#alias">Alias</a></code> が
+常に <code>/foo/bar</code> <code class="directive"><a href="#alias">Alias</a></code> より先にマッチしますので、後者は
+決して適用されることはありません。</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">ディレクティブ</a></h2>
 <table class="directive">
@@ -181,7 +214,7 @@ Redirect 系のディレクティブは Alias
 ディレクティブと ScriptAlias ディレクティブよりも優先されます。
 また、.htaccess ファイルや <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
 セクションの中で使われていたとしても、<var>URL-path</var>
-は相対パスではなく、絶対パスでなければなりません。</p></div>
+は相対パスではなく、完全な URL でなければなりません。</p></div>
 
     <p>もし <var>status</var> 引数が与えられていなければ、リダイレクトは
     "temporary" (HTTP ステータス 302) になります。これはクライアントに

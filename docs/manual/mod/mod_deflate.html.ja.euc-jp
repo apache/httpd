@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_deflate.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントへ送られる前にコンテンツを圧縮する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>deflate_module</td></tr>
@@ -47,7 +45,7 @@
 </ul>
 <h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">推奨設定</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#recommended">サンプル設定</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">圧縮を有効にする</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxies">Proxy サーバでの扱い</a></li>
 </ul><h3>参照</h3>
@@ -56,13 +54,15 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">推奨設定</a></h2>
-    <p>下にせっかちな人向けの設定例を示します。しかしぜひ時間を取って
-    下記の詳細もお読み下さい!</p>
+<h2><a name="recommended" id="recommended">サンプル設定</a></h2>
+    <p>下にせっかちな人向けの簡単な設定例を示します。</p>
 
     <div class="example"><h3>数タイプのみ圧縮する</h3><p><code>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </code></p></div>
+
+    <p>以下の設定はコンテンツをより圧縮しますが、ずっと複雑な設定になります。
+    設定の隅々までよく理解しないで使わないでください。</p>
 
     <div class="example"><h3>画像以外全て圧縮する</h3><p><code>
       &lt;Location /&gt;<br />
@@ -163,6 +163,7 @@
         フィルタの後になります。
         DEFLATE フィルタは内部的なサブリクエストを関知しません。
       </div>
+
     
 
     <h3><a name="input" id="input">入力の伸張</a></h3>

@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_dir.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -63,6 +61,7 @@
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 </ul>
 </div>
 
@@ -110,6 +109,64 @@
     <p>とした場合、<code>index.html</code> と <code>index.txt</code>
     のどちらもディレクトリ内に存在しない場合、CGI スクリプト
     <code>/cgi-bin/index.pl</code> が実行されます。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a name="directoryslash" id="directoryslash">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>パス末尾のスラッシュでリダイレクトするかどうかのオンオフをトグルさせる</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DirectorySlash On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.51 以降</td></tr>
+</table>
+    <p>要求のあった URL がディレクトリを指すかどうかを、
+    <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> が調整するべきかどうかを
+    <code class="directive">DirectorySlash</code>
+    ディレクティブで設定します。</p>
+
+    <p>典型的には、ユーザが末尾のスラッシュ無しでリソースへのリクエストを発行し、
+    そして、そのリソースがディレクトリを指していた場合、<code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
+    は、末尾にスラッシュを<em>付加</em>した上で同じリソースにリダイレクトさせます。
+    この挙動には幾つか理由があります:</p>
+
+    <ul>
+    <li>ユーザは、最終的にはリソースの別名 URL をリクエストすることになる。</li>
+    <li><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> が期待通りに動く。<code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> 
+    の生成するリンクはパスを出力しませんので、スラッシュがない場合は間違ったパスを
+    指してしまうことになります。</li>
+    <li><code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> は、
+    末尾にスラッシュがついているリクエストについて<em>のみ</em>評価される。</li>
+    <li>HTML ページの相対 URL 参照が正しく動作する。</li>
+    </ul>
+
+    <p>とはいえ、もしこういった効果を望まない、かつ、
+    上記のような理由が当てはまらない場合は、リダイレクトを次のようにしてオフにできます:</p>
+
+    <div class="example"><p><code>
+        # see security warning below!<br />
+        &lt;Location /some/path&gt;<br />
+        <span class="indent">
+            DirectorySlash Off<br />
+            SetHandler some-handler<br />
+        </span>
+        &lt;/Location&gt;
+    </code></p></div>
+
+    <div class="warning"><h3>セキュリティ警告</h3>
+    <p>末尾のスラッシュでのリダイレクトをオフにすると、結果的に情報漏洩を
+    招くことになるかもしれません。
+    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> が有効 (<code>Options +Indexes</code>) で、
+    <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> が有効なリソース (例えば
+    <code>index.html</code>) を指していて、また、要求のあった URL に特別な
+    ハンドラが設定されていない場合を考えてみてください。
+    この場合末尾にスラッシュのついているリクエストに対しては <code>index.html</code>
+    ファイルが返されます。<strong>しかしスラッシュのないリクエストに対しては、
+    ディレクトリの内容一覧を返してしまいます。</strong></p>
+    </div>
 
 </div>
 </div>
