@@ -99,8 +99,10 @@
 #include <sys/time.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
-#include <sys/ioctl.h>
 #include <netinet/in.h>
+#ifdef AIX
+#include <sys/select.h>
+#endif
 
 /* ------------------- DEFINITIONS -------------------------- */
 
