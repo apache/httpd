@@ -1,5 +1,8 @@
 Changes with Apache 1.3.20
 
+  *) Resolve the Win32 SSI exec cmd bug, where cmd was not executed
+     appropriately against the shell.  [William Rowe]
+
   *) Added NOESCAPE (NS) flag to RewriteRule and enabled use of
      '\' to allow escaping of special characters.  Previously
      there was no way to embed either '$' or '%' in the output

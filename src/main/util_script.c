@@ -1102,34 +1102,21 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
         else /* shellcmd */
         {
             char *p, *comspec = getenv("COMSPEC");
+            const char *quotecomspec;
+            const char *quoteargv0;
             if (!comspec)
                 comspec = SHELL_PATH;
             p = strchr(comspec, '\0');
-            if ((p - comspec >= 11) && !strcasecmp(p - 11, "command.com")) 
-            {
-                /* Command.com doesn't like long paths
-                 */
-                char shortname[MAX_PATH];
-                DWORD rv = GetShortPathName(r->filename, shortname, MAX_PATH);
-                if (!rv || rv >= MAX_PATH) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
-                                  "%s is not executable; cannot translate "
-                                  "to a short path name.", r->filename);
-                    return (pid);
-                }
-                pCommand = ap_pstrcat(r->pool, "\"", comspec, "\" /C ", 
-                                      shortname, NULL);
-            }
-            else
-            {
-                /* Assume any other shell likes long paths
-                 */
-                pCommand = ap_pstrcat(r->pool, "\"", comspec, "\" /C \"", 
-                                      r->filename, "\"", NULL);
-                for (p = pCommand; *p; ++p) {
-                    if (*p == '/')
-                        *p = '\\';
-                }
+            quotecomspec = (strchr(comspec, ' ') && comspec[0] != '\"')
+                         ? "\"" : "";
+            quoteargv0 = (strchr(argv0, ' ') && argv0[0] != '\"') ? "\"" : "";
+            pCommand = ap_pstrcat(r->pool, quotecomspec, comspec, quotecomspec,
+                                  " /c ", quoteargv0, argv0, quoteargv0, NULL);
+            /* Forward slash argv[0] only */
+            for (p = pCommand + strlen(pCommand) - strlen(argv0) 
+                              - strlen(quoteargv0); *p; ++p) {
+                if (*p == '/')
+                    *p = '\\';
             }
         }
 
