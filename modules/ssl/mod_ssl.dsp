@@ -170,7 +170,8 @@ SOURCE=.\ssl_util.c
 
 SOURCE=.\ssl_util_ssl.c
 # End Source File
-# Begin Source File
+# End Group 	 
+ # Begin Group "Header Files"
 
 # PROP Default_Filter "*.h"
 # Begin Source File
