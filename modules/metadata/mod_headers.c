@@ -188,7 +188,15 @@ static const char *header_request_time(request_rec *r, char *a)
 {
     return apr_psprintf(r->pool, "t=%qd", r->request_time);
 }
-
+static const char *header_request_env_var(request_rec *r, char *a)
+{
+    char *s = apr_table_get(r->subprocess_env,a);
+		 
+    if (s)
+        return s;
+    else
+        return "(null)";
+}
 /*
  * Config routines
  */
@@ -289,6 +297,12 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
         return parse_misc_string(p, tag, sa);
     }
     s++; /* skip the % */
+    tag->arg = '\0';
+    /* grab the argument if there is one */
+    if (*s == '{') {
+        ++s;
+        tag->arg = ap_getword(p,&s,'}');
+    }
 
     tag_handler = (const char * (*)(request_rec *,char *))apr_hash_get(format_tag_hash, s++, 1);
 
@@ -302,7 +316,6 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
     tag->func = tag_handler;
 
     *sa = s;
-    tag->arg = '\0';
     return NULL;
 }
 
@@ -597,6 +610,7 @@ static void header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     format_tag_hash = apr_hash_make(p);
     register_format_tag_handler(p, "D", (void*) header_request_duration, 0);
     register_format_tag_handler(p, "t", (void*) header_request_time, 0);
+    register_format_tag_handler(p, "e", (void*) header_request_env_var, 0);
 }
 
 static void register_hooks(apr_pool_t *p)
