@@ -798,9 +798,7 @@ static int cgi_handler(request_rec *r)
             return HTTP_MOVED_TEMPORARILY;
         }
 
-        if (!r->header_only) {
-            ap_pass_brigade(r->output_filters, bb);
-        }
+        ap_pass_brigade(r->output_filters, bb);
 
         log_script_err(r, script_err);
         apr_file_close(script_err);
