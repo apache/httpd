@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/04 16:37:58 $]
+  Last modified at [$Date: 1999/06/04 16:49:10 $]
 
 Release:
 
@@ -95,7 +95,7 @@ Available Patches:
 
     * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
 	Message-ID: <19990414134729.A93825@engelschall.com>
-	Status: Jim +1, Mark +1, Dean -0, BenH +1
+	Status: Jim +1, Mark +1, Dean +1, BenH +1
 
     * Tony Finch's patch to support mass virtual hosting
 	Message-ID: <E10kXMV-00011I-00@fanf.noc.demon.net>
@@ -115,11 +115,11 @@ Available Patches:
     * Aidan Cully's patch to allow assignment of 'ownership' of resources
       to either the server UID or the file's owner.
 	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
-	Status: Ken +1
+	Status: Ken +1, Dean +1
 
     * John Giannadrea's patch for ceiling on file size for mmap (PR#4122)
 	Message-ID: <19990325094501.5997.qmail@hyperreal.org>
-	Status: Ken +1
+	Status: Ken +1, Dean +1
 
     * Keith Wannamaker's NT multiple services patch
 	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
@@ -175,6 +175,7 @@ In progress:
                       please review the shared memory deep-level code.
                 Doug: +1 on concept (untested)
                 Lars: +1 on concept
+		Dean: isn't this superceded by EAPI?
 
     * Mark Bixby's freshening up the MPE/iX port (mostly APACI)
 	Message-ID: <199811162227.OAA18137@spock.dis.cccd.edu>
@@ -251,17 +252,6 @@ Open issues:
 
     * general/3787: SERVER_PORT is always 80 if client comes to any port
       => needs review by the protocol guys, I think.
-
-    * Someone other than Dean has to do a security/correctness review on
-      psprintf(), bprintf(), and ap_snprintf().  In particular these routines
-      do lots of fun pointer manipulations and such and possibly have overflow
-      errors.  The respective flush_funcs also need to be exercised.
-       o Jim's looked over the ap_snprintf() stuff (the changes that Dean
-         did to make thread-safe) and they look fine.
-       o Laura La Gassa's looked over ap_vformatter & other related code
-       o Martin did a "source review" as well.
-       o Could still use 1 or 2 more sets of eyeballs.
-       Status: Is this still valid??
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
