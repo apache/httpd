@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/18 11:24:19 $]
+Last modified at [$Date: 2004/08/18 11:56:09 $]
 
 Release:
 
@@ -86,6 +86,10 @@ PATCHES TO BACKPORT FROM 2.1
     *) apachectl: Fix a problem finding envvars if sbindir != bindir.
        PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apachectl.in?r1=1.22&r2=1.23
+       +1: trawick
+
+    *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/suexec.c?r1=1.32&r2=1.33
        +1: trawick
 
     *) Proposal: Several folks want to aggressively backport changes
