@@ -1142,7 +1142,10 @@ void winnt_rewrite_args(process_rec *process)
     
     /* This is the parent, we have a long way to go :-) */
     parent_pid = my_pid = GetCurrentProcessId();
-    
+
+    /* This behavior is voided by setting real_exit_code to 0 */
+    atexit(hold_console_open_on_error);
+
     /* Rewrite process->argv[]; 
      *
      * strip out -k signal into signal_arg
@@ -1365,9 +1368,6 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
     /* Initialize shared static objects. 
      */
     pconf = pconf_;
-
-    /* This behavior is voided by setting real_exit_code to 0 */
-    atexit(hold_console_open_on_error);
 
     if (ap_exists_config_define("ONE_PROCESS") ||
         ap_exists_config_define("DEBUG"))
