@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.0 (06-Mar-1997)
+**  URL Rewriting Module, Version 3.0.1 (17-Mar-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -935,24 +935,23 @@ static int hook_uri2file(request_rec *r)
             rewritelog(r, 1, "go-ahead with proxy request %s [OK]", r->filename);
             return OK; 
         }
-#ifdef APACHE_SSL
-        else if (  (!r->connection->client->ssl &&
-                    strlen(r->filename) > 7     &&
+        else if (  (strlen(r->filename) > 7 &&
                     strncmp(r->filename, "http://", 7) == 0)
-                || (r->connection->client->ssl  &&
-                    strlen(r->filename) > 8     &&
-                    strncmp(r->filename, "https://", 8) == 0) ) {
-#else
-        else if (strlen(r->filename) > 7 &&
-                 strncmp(r->filename, "http://", 7) == 0) {
-#endif
-            /* it was finally rewritten to a remote path */
+                || (strlen(r->filename) > 8 &&
+                    strncmp(r->filename, "https://", 8) == 0)
+                || (strlen(r->filename) > 9 &&
+                    strncmp(r->filename, "gopher://", 9) == 0)
+                || (strlen(r->filename) > 6 &&
+                    strncmp(r->filename, "ftp://", 6) == 0)    ) {
+            /* it was finally rewritten to a remote URL */
 
-#ifdef APACHE_SSL
-            for (cp = r->filename+strlen(http_method(r))+3; *cp != '/' && *cp != '\0'; cp++)
-#else
-            for (cp = r->filename+7; *cp != '/' && *cp != '\0'; cp++)
-#endif
+            /* skip 'scheme:' */
+            for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
+                ;
+            /* skip '//' */
+            cp += 2;
+            /* skip host part */
+            for ( ; *cp != '/' && *cp != '\0'; cp++)
                 ;
             if (*cp != '\0') {
                 rewritelog(r, 1, "escaping %s for redirect", r->filename);
@@ -1160,28 +1159,26 @@ static int hook_fixup(request_rec *r)
             rewritelog(r, 1, "[per-dir %s] go-ahead with proxy request %s [OK]", dconf->directory, r->filename);
             return OK; 
         }
-#ifdef APACHE_SSL
-        else if (  (!r->connection->client->ssl &&
-                    strlen(r->filename) > 7     &&
+        else if (  (strlen(r->filename) > 7 &&
                     strncmp(r->filename, "http://", 7) == 0)
-                || (r->connection->client->ssl  &&
-                    strlen(r->filename) > 8     &&
-                    strncmp(r->filename, "https://", 8) == 0) ) {
-#else
-        else if (strlen(r->filename) > 7 &&
-                 strncmp(r->filename, "http://", 7) == 0) {
-#endif
-            /* it was finally rewritten to a remote path */
+                || (strlen(r->filename) > 8 &&
+                    strncmp(r->filename, "https://", 8) == 0)
+                || (strlen(r->filename) > 9 &&
+                    strncmp(r->filename, "gopher://", 9) == 0)
+                || (strlen(r->filename) > 6 &&
+                    strncmp(r->filename, "ftp://", 6) == 0)    ) {
+            /* it was finally rewritten to a remote URL */
 
             /* because we are in a per-dir context
                first try to replace the directory with its base-URL
                if there is a base-URL available */
             if (dconf->baseurl != NULL) {
-#ifdef APACHE_SSL
-                if ((cp = strchr(r->filename+strlen(http_method(r))+3, '/')) != NULL) {
-#else
-                if ((cp = strchr(r->filename+7, '/')) != NULL) {
-#endif
+                /* skip 'scheme:' */
+                for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
+                    ;
+                /* skip '//' */
+                cp += 2;
+                if ((cp = strchr(cp, '/')) != NULL) {
                     rewritelog(r, 2, "[per-dir %s] trying to replace prefix %s with %s", dconf->directory, dconf->directory, dconf->baseurl);
                     cp2 = subst_prefix_path(r, cp, dconf->directory, dconf->baseurl);
                     if (strcmp(cp2, cp) != 0) {
@@ -1192,11 +1189,14 @@ static int hook_fixup(request_rec *r)
             }
 
             /* now prepare the redirect... */
-#ifdef APACHE_SSL
-            for (cp = r->filename+strlen(http_method(r))+3; *cp != '/' && *cp != '\0'; cp++)
-#else
-            for (cp = r->filename+7; *cp != '/' && *cp != '\0'; cp++)
-#endif
+
+            /* skip 'scheme:' */
+            for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
+                ;
+            /* skip '//' */
+            cp += 2;
+            /* skip host part */
+            for ( ; *cp != '/' && *cp != '\0'; cp++)
                 ;
             if (*cp != '\0') {
                 rewritelog(r, 1, "[per-dir %s] escaping %s for redirect", dconf->directory, r->filename);
@@ -1523,14 +1523,12 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         }
 
         /* if this is a implicit redirect in a per-dir rule */
-#ifdef APACHE_SSL
-        if (perdir != NULL && (  (!r->connection->client->ssl &&
-                                  strncmp(output, "http://", 7) == 0)
-                              || (r->connection->client->ssl &&
-                                  strncmp(output, "https://", 8) == 0) )) { 
-#else
-        if (perdir != NULL && strncmp(output, "http://", 7) == 0) {
-#endif
+        i = strlen(output);
+        if (perdir != NULL
+            && (   (i > 7 && strncmp(output, "http://", 7) == 0)
+                || (i > 8 && strncmp(output, "https://", 8) == 0)
+                || (i > 9 && strncmp(output, "gopher://", 9) == 0)
+                || (i > 6 && strncmp(output, "ftp://", 6) == 0)   ) ) {
             if (p->flags & RULEFLAG_NOTMATCH) {
                 strncpy(newuri, output, sizeof(newuri)-1);
                 EOS_PARANOIA(newuri);
@@ -1591,7 +1589,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 
         r->filename = pstrdup(r->pool, newuri);
 
-        /* reduce http://<ourhost>[:<port>] */
+        /* reduce http[s]://<ourhost>[:<port>] */
         reduce_uri(r);
 
         /* split out on-the-fly generated QUERY_STRING '....?xxxxx&xxxx...' */
@@ -1607,16 +1605,18 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         }
 
         /* if we are forced to do a explicit redirect by [R] flag
-           finally prefix the new URI with http://<ourname> explicitly */
+           and the current URL still is not a fully qualified one we
+           finally prefix it with http[s]://<ourname> explicitly */
         if (flags & RULEFLAG_FORCEREDIRECT) {
-#ifdef APACHE_SSL
-           if ( (!r->connection->client->ssl &&
-                 strncmp(r->filename, "http://", 7) != 0) ||
-                (r->connection->client->ssl &&
-                 strncmp(r->filename, "https://", 8) != 0)) {
-#else
-            if (strncmp(r->filename, "http://", 7) != 0) {
-#endif
+            if (  !(strlen(r->filename) > 7 &&
+                    strncmp(r->filename, "http://", 7) == 0)
+               && !(strlen(r->filename) > 8 &&
+                    strncmp(r->filename, "https://", 8) == 0)
+               && !(strlen(r->filename) > 9 &&
+                    strncmp(r->filename, "gopher://", 9) == 0)
+               && !(strlen(r->filename) > 6 &&
+                    strncmp(r->filename, "ftp://", 6) == 0)    ) {
+
 #ifdef APACHE_SSL
                 if ((!r->connection->client->ssl && r->server->port == 80) ||
                     ( r->connection->client->ssl && r->server->port == 443)  )
@@ -1736,6 +1736,15 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
             destroy_sub_req(rsub);
         }
     }
+    else if (strlen(p->pattern) > 1 && *(p->pattern) == '>') {
+        rc = (compare_lexicography(input, p->pattern+1) == 1 ? 1 : 0);
+    }
+    else if (strlen(p->pattern) > 1 && *(p->pattern) == '<') {
+        rc = (compare_lexicography(input, p->pattern+1) == -1 ? 1 : 0);
+    }
+    else if (strlen(p->pattern) > 1 && *(p->pattern) == '=') {
+        rc = (strcmp(input, p->pattern+1) == 0 ? 1 : 0);
+    }
     else {
         /* it is really a regexp pattern, so apply it */
         rc = (regexec(p->regexp, input, 0, NULL, 0) == 0);
@@ -1790,7 +1799,7 @@ static void splitout_queryargs(request_rec *r)
 
 /*
 **
-**  strip 'http://ourhost/' from URI
+**  strip 'http[s]://ourhost/' from URI
 **
 */
 
@@ -2613,6 +2622,15 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "TIME_WDAY") == 0) {
         MKTIMESTR("%d", tm_wday)
     }
+    else if (strcasecmp(var, "TIME") == 0) {
+        tc = time(NULL);
+        tm = localtime(&tc);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%02d%02d%02d%02d%02d%02d%02d",
+            (tm->tm_year / 100) + 19, (tm->tm_year % 100),
+            tm->tm_mon+1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+        result = resultbuf;
+        rewritelog(r, 1, "RESULT='%s'", result);
+    }
 
     /* all other env-variables from the parent Apache process */
     else if (strlen(var) > 4 && strncasecmp(var, "ENV:", 4) == 0) {
@@ -3225,6 +3243,32 @@ static void fd_unlock(int fd)
         fprintf(stderr, "Error freeing lock. Exiting!");
         exit(1);
     }
+}
+
+/*
+**
+**  Lexicographic Compare
+**
+*/
+
+int compare_lexicography(char *cpNum1, char *cpNum2)
+{
+    int i;
+    int n1, n2;
+
+    n1 = strlen(cpNum1);
+    n2 = strlen(cpNum2);
+    if (n1 > n2)
+        return 1;
+    if (n1 < n2)
+        return -1;
+    for (i = 0; i < n1; i++) {
+        if (cpNum1[i] > cpNum2[i])
+            return 1;
+        if (cpNum1[i] < cpNum2[i])
+            return -1;
+    }
+    return 0;
 }
 
 

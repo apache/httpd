@@ -64,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.0 (01-02-1997)
+**  URL Rewriting Module, Version 3.0.1 (17-Mar-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -110,8 +110,8 @@
 
 
     /* The locking support:
-       Try to determine whether we should use
-       fcntl() or flock(). */
+       Try to determine whether we should use fcntl() or flock().
+       Would be better conf.h could provide this... :-( */
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 #define USE_FCNTL 1
 #include <fcntl.h>
@@ -130,6 +130,11 @@
 #define USE_FCNTL 1
 #include <fcntl.h>
 #endif
+#endif
+#ifdef AIX
+#undef USE_FLOCK
+#define USE_FCNTL 1
+#include <fcntl.h>
 #endif
 
 
@@ -382,6 +387,9 @@ static int is_proxy_available(server_rec *s);
     /* File locking */
 static void fd_lock(int fd);
 static void fd_unlock(int fd);
+
+    /* Lexicographic Comparison */
+int compare_lexicography(char *cpNum1, char *cpNum2);
 
 #endif /* _MOD_REWRITE_H */
 
