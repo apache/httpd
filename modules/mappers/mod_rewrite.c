@@ -2352,7 +2352,7 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 		if (dflt == NULL) {
 		    dflt = empty;
 		}
-		else
+		else {
 		    *dflt++ = '\0';
 		}
 		do_expand(r, key,  xkey,  sizeof(xkey),  briRR, briRC);
