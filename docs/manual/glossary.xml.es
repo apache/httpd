@@ -212,7 +212,7 @@ petici&#243;n y la respuesta <a href="#http">HTTP</a> que se
 env&#237;a antes del contenido propiamente dicho, y que contiene
 meta-informaci&#243;n describiendo el contenido.</dd>
 
-<dt><a name=".htaccess">.htaccess</a></dt> <dd>Un <a
+<dt><a name="htaccess">.htaccess</a></dt> <dd>Un <a
 href="#configurationfile">fichero de configuraci&#243;n</a> que se
 pone dentro de la estructura de directorios del sitio web y aplica <a
 href="#directive">directivas</a> de configuraci&#243;n al directorio
