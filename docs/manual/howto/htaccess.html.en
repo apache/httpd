@@ -140,12 +140,12 @@ changes on a per-directory basis.</p>
     directory <code>/www/htdocs/example</code>, Apache must look for the
     following files:</p>
 
-   <div class="example"><p><code>
+    <div class="example"><p><code>
       /.htaccess<br />
       /www/.htaccess<br />
       /www/htdocs/.htaccess<br />
       /www/htdocs/example/.htaccess
-   </code></p></div>
+    </code></p></div>
 
     <p>And so, for each file access out of that directory, there are 4
     additional file-system accesses, even if none of those files are
@@ -263,11 +263,11 @@ changes on a per-directory basis.</p>
     <p><code>.htaccess</code> file contents:</p>
 
     <div class="example"><p><code>
-          AuthType Basic<br />
-           AuthName "Password Required"<br />
-           AuthUserFile /www/passwords/password.file<br />
-           AuthGroupFile /www/passwords/group.file<br />
-           Require Group admins
+      AuthType Basic<br />
+      AuthName "Password Required"<br />
+      AuthUserFile /www/passwords/password.file<br />
+      AuthGroupFile /www/passwords/group.file<br />
+      Require Group admins
     </code></p></div>
 
     <p>Note that <code>AllowOverride AuthConfig</code> must be in effect

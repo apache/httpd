@@ -22,6 +22,8 @@
 <a href="./ja/bind.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
     <p>Apache が使用するアドレスとポートの設定をします。</p>
   </div>

@@ -41,7 +41,7 @@
 
      <p>This configuration will rotate the logfile whenever it reaches
      a size of 5 megabytes.</p>
-   
+ 
 <div class="example"><p><code>
      ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
 </code></p></div>

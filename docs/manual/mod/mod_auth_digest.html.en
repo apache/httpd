@@ -70,7 +70,7 @@
     containing at least the root URI(s) for this protection space.</p>
 
     <p>Appropriate user (text) files can be created using the
-    <a href="../programs/htdigest.html">htdigest</a> tool.</p>
+    <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
 
     <div class="example"><h3>Example:</h3><p><code>
       &lt;Location /private/&gt;<br />
@@ -194,7 +194,7 @@ of users and encoded passwords for digest authentication</td></tr>
     absolute path to the user file.</p>
 
     <p>The digest file uses a special format. Files in this format
-    can be created using the <a href="../programs/htdigest.html">htdigest</a> utility found in
+    can be created using the <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> utility found in
     the <code>support/</code> subdirectory of the Apache distribution.</p>
 
 </div>

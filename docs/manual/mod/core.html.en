@@ -767,7 +767,7 @@ from the web</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>This directive sets the directory from which <code>httpd</code>
+    <p>This directive sets the directory from which <code class="program"><a href="../programs/httpd.html">httpd</a></code>
     will serve files. Unless matched by a directive like <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, the server appends the
     path from the requested URL to the document root to make the
     path to the document. Example:</p>
@@ -800,7 +800,7 @@ Location</a></li>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>This directive controls whether the <code>httpd</code> may use
+    <p>This directive controls whether the <code class="program"><a href="../programs/httpd.html">httpd</a></code> may use
     memory-mapping if it needs to read the contents of a file during
     delivery.  By default, when the handling of a request requires
     access to the data within a file -- for example, when delivering a
@@ -813,10 +813,10 @@ Location</a></li>
 
     <ul>
     <li>On some multiprocessor systems, memory-mapping can reduce the
-    performance of the <code>httpd</code>.</li>
+    performance of the <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</li>
     <li>With an NFS-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code>,
-    the <code>httpd</code> may crash due to a segmentation fault if a file
-    is deleted or truncated while the <code>httpd</code> has it
+    the <code class="program"><a href="../programs/httpd.html">httpd</a></code> may crash due to a segmentation fault if a file
+    is deleted or truncated while the <code class="program"><a href="../programs/httpd.html">httpd</a></code> has it
     memory-mapped.</li>
     </ul>
 
@@ -851,8 +851,8 @@ Location</a></li>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.44 and later</td></tr>
 </table>
-    <p>This directive controls whether <code>httpd</code> may use the sendfile
-    support from the kernel to transmit file contents to the client.
+    <p>This directive controls whether <code class="program"><a href="../programs/httpd.html">httpd</a></code> may use the
+    sendfile support from the kernel to transmit file contents to the client.
     By default, when the handling of a request requires no access
     to the data within a file -- for example, when delivering a
     static file -- Apache uses sendfile to deliver the file contents
@@ -1260,9 +1260,10 @@ MIME content-type</td></tr>
     don't have to suffer the extra latency that a lookup entails.
     Heavily loaded sites should leave this directive
     <code>Off</code>, since DNS lookups can take considerable
-    amounts of time. The utility <a href="../programs/logresolve.html">logresolve</a>, compiled by default
-    to the <code>bin</code> subdirectory of your installation directory, can
-    be used to look up host names from logged IP addresses offline.</p>
+    amounts of time. The utility <code class="program"><a href="../programs/logresolve.html">logresolve</a></code>, compiled by
+    default to the <code>bin</code> subdirectory of your installation
+    directory, can be used to look up host names from logged IP addresses
+    offline.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1326,7 +1327,7 @@ if a test is true at startup</td></tr>
     <var>parameter-name</var> is <strong>not</strong> defined.</p>
 
     <p>The <var>parameter-name</var> argument is a define as given on
-    the <code>httpd</code> command line via <code>-D<var>parameter-</var>
+    the <code class="program"><a href="../programs/httpd.html">httpd</a></code> command line via <code>-D<var>parameter-</var>
     </code>, at the time the server was started.</p>
 
     <p><code class="directive">&lt;IfDefine&gt;</code> sections are
@@ -1416,7 +1417,7 @@ the server configuration files</td></tr>
     rather than a file, Apache will read all files in that directory
     and any subdirectory.  But including entire directories is not
     recommended, because it is easy to accidentally leave temporary
-    files in a directory that can cause <code>httpd</code> to
+    files in a directory that can cause <code class="program"><a href="../programs/httpd.html">httpd</a></code> to
     fail.</p>
 
     <p>The file path specified may be an absolute path, or may be relative 
@@ -1450,7 +1451,7 @@ the server configuration files</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../programs/apachectl.html">apachectl</a></li>
+<li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

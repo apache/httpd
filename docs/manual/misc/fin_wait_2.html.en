@@ -289,7 +289,7 @@
         function, add <code>-DNO_LINGCLOSE</code> to the end of the
         <code>EXTRA_CFLAGS</code> line in your
         <code>Configuration</code> file, rerun
-        <code>Configure</code> and rebuild the server.</p>
+        <code class="program"><a href="../programs/Configure.html">Configure</a></code> and rebuild the server.</p>
 
     
 
@@ -309,7 +309,7 @@
         -DNO_LINGCLOSE</code> to the end of the
         <code>EXTRA_CFLAGS</code> line in your
         <code>Configuration</code> file, rerun
-        <code>Configure</code> and rebuild the server.</p>
+        <code class="program"><a href="../programs/Configure.html">Configure</a></code> and rebuild the server.</p>
 
         <div class="note"><h3>NOTE</h3>Attempting to use
         <code>SO_LINGER</code> and <code>lingering_close()</code>

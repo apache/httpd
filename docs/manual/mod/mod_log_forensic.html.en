@@ -71,7 +71,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="formats" id="formats">Forensic Log Format</a></h2>
-    <p>Each request is logged two times. The first time <em>before</em> it's
+    <p>Each request is logged two times. The first time is <em>before</em> it's
     processed further (that is, after receiving the headers). The second log
     entry is written <em>after</em> the request processing at the same time
     where normal logging occurs.</p>
@@ -92,7 +92,7 @@
         Firefox/0.8|Accept:image/png, <var>etc...</var>
     </code></p></div>
 
-    <p>The plus character at the beginning indicates that this is first log
+    <p>The plus character at the beginning indicates that this is the first log
     line of this request. The second line just contains a minus character and
     the ID again:</p>
 
@@ -146,9 +146,9 @@
 
       <div class="warning"><h3>Security:</h3>
       <p>If a program is used, then it will be run as the user who
-      started httpd. This will be root if the server was started by root;
-      be sure that the program is secure or switches to a less privileged
-      user.</p>
+      started <code class="program"><a href="../programs/httpd.html">httpd</a></code>. This will be root if the server was
+      started by root; be sure that the program is secure or switches to a
+      less privileged user.</p>
       </div>
 
       <div class="note"><h3>Note</h3>

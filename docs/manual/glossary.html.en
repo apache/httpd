@@ -51,7 +51,7 @@
     <dd>A perl script that aids in compiling <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#module">module</a> sources into Dynamic Shared Objects
       (<span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSO</a>s) and helps install them in the
       Apache Web server.<br />
-      See: <a href="programs/apxs.html">Manual Page: apxs</a>
+      See: Manual Page: <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     </dd>
 
     <dt><a name="authentication" id="authentication">Authentication</a></dt>
@@ -155,7 +155,7 @@
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">Dynamic
         Shared Object</a> <a name="dso" id="dso">(DSO)</a></dt>
     <dd><span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#module">Modules</a> compiled separately from the
-      Apache httpd binary that can be loaded on-demand.<br />
+      Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary that can be loaded on-demand.<br />
       See: <a href="dso.html">Dynamic Shared Object Support</a>
     </dd>
 
@@ -275,7 +275,7 @@
     <dt><a name="module" id="module">Module</a></dt>
     <dd>An independent part of a program.  Much of Apache's functionality is
       contained in modules that you can choose to include or exclude.  Modules
-      that are compiled into the Apache httpd binary are
+      that are compiled into the Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary are
       called <dfn>static modules</dfn>, while modules that are stored
       separately and can be optionally loaded at run-time are called
       <dfn>dynamic modules</dfn> or <span title="see glossary">&#8594;</span>&nbsp;<a href="./glossary.html#dso">DSOs</a>.

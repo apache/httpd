@@ -387,11 +387,11 @@
 
       <p>To check if you are using suexec, run <code>apachectl
       -V</code> and check for the location of <code>SUEXEC_BIN</code>.
-      If Apache finds an suexec binary there on startup, suexec will
-      be activated.</p>
+      If Apache finds an <code class="program"><a href="../programs/suexec.html">suexec</a></code> binary there on startup,
+      suexec will be activated.</p>
 
       <p>Unless you fully understand suexec, you should not be using it.
-      To disable suexec, simply remove (or rename) the <code>suexec</code>
+      To disable suexec, simply remove (or rename) the <code class="program"><a href="../programs/suexec.html">suexec</a></code>
       binary pointed to by <code>SUEXEC_BIN</code> and then restart the
       server.  If, after reading about <a href="../suexec.html">suexec</a>,
       you still wish to use it, then run <code>suexec -V</code> to find

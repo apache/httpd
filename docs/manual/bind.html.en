@@ -53,7 +53,7 @@
     directive, the server
     listens to the given port on all interfaces. If an IP address
     is given as well as a port, the server will listen on the given
-    port and interface. Multiple Listen directives may be used to
+    port and interface. Multiple <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directives may be used to
     specify a number of addresses and ports to listen on. The
     server will respond to requests from any of the listed
     addresses and ports.</p>
@@ -96,12 +96,14 @@
     platforms but are disallowed by default on FreeBSD, NetBSD, and 
     OpenBSD in order to match the system-wide policy on those
     platforms.  But even on systems where it is disallowed by default, a 
-    special configure parameter can change this behavior for Apache.</p>
+    special <code class="program"><a href="./programs/configure.html">configure</a></code> parameter can change this behavior
+    for Apache.</p>
 
     <p>If you want Apache to handle IPv4 and IPv6 connections with a 
     minimum of sockets, which requires using IPv4-mapped IPv6 addresses, 
-    specify the <code>--enable-v4-mapped</code> configure option and use 
-    generic Listen directives like the following:</p>
+    specify the <code>--enable-v4-mapped</code> <code class="program"><a href="./programs/configure.html">configure</a></code>
+    option and use generic <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    directives like the following:</p>
 
     <div class="example"><p><code>
       Listen 80
@@ -115,7 +117,8 @@
 
     <p>If you want Apache to handle IPv4 connections only, regardless of 
     what your platform and APR will support, specify an IPv4 address on all 
-    Listen directives, as in the following examples:</p>
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directives, as in the
+    following examples:</p>
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
@@ -124,8 +127,8 @@
 
     <p>If you want Apache to handle IPv4 and IPv6 connections on separate 
     sockets (i.e., to disable IPv4-mapped addresses), specify the 
-    <code>--disable-v4-mapped</code> configure option and use specific Listen 
-    directives like the following:</p>
+    <code>--disable-v4-mapped</code> <code class="program"><a href="./programs/configure.html">configure</a></code> option and
+    use specific Listen directives like the following:</p>
 
     <div class="example"><p><code>
       Listen [::]:80<br />
@@ -142,10 +145,9 @@
 <h2><a name="virtualhost" id="virtualhost">How This Works With Virtual Hosts</a></h2>
     
 
-    <p>Listen does not implement Virtual Hosts. It only tells the
-    main server what addresses and ports to listen to. If no
-    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    directives are used, the server will behave
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> does not implement
+    Virtual Hosts. It only tells the main server what addresses and ports to
+    listen to. If no <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> directives are used, the server will behave
     the same for all accepted requests. However,
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     can be used to specify a different behavior

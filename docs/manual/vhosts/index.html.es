@@ -25,6 +25,10 @@
 <a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/vhosts/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 
 
     <p>El término <cite>Hosting Virtual</cite> se refiere a hacer
