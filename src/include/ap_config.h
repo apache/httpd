@@ -1003,8 +1003,10 @@ typedef int rlim_t;
 #define NEED_HASHBANG_EMUL
 
 #elif defined(CYGWIN)               /* Cygwin 1.x POSIX layer for Win32 */
+#define SYSTEM_UID 18
 #define JMP_BUF jmp_buf
 #define NO_KILLPG
+#define NO_SETSID
 #define USE_LONGJMP
 #define GDBM_STATIC
 #define HAVE_MMAP 1

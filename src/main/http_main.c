@@ -3409,6 +3409,13 @@ static void detach(void)
 #elif defined(MPE)
     /* MPE uses negative pid for process group */
     pgrp = -getpid();
+#elif defined(CYGWIN)
+    /* Cygwin does not take any argument for setpgrp() */
+    if ((pgrp = setpgrp()) == -1) {
+        perror("setpgrp");
+        fprintf(stderr, "%s: setpgrp failed\n", ap_server_argv0);
+        exit(1);
+    }
 #else
     if ((pgrp = setpgrp(getpid(), 0)) == -1) {
 	perror("setpgrp");
@@ -4225,8 +4232,15 @@ static void child_main(int child_num_arg)
     }
     GETUSERMODE();
 #else
-    /* Only try to switch if we're running as root */
+    /* 
+     * Only try to switch if we're running as root
+     * In case of Cygwin we have the special super-user named SYSTEM
+     */
+#ifdef CYGWIN
+    if (getuid() == SYSTEM_UID && (
+#else
     if (!geteuid() && (
+#endif
 #ifdef _OSD_POSIX
 	os_init_job_environment(server_conf, ap_user_name, one_process) != 0 || 
 #endif
@@ -4798,13 +4812,16 @@ static int hold_off_on_exponential_spawning;
  * is greater then ap_daemons_max_free. Usually we will use SIGUSR1
  * to gracefully shutdown, but unfortunatly some OS will need other 
  * signals to ensure that the child process is terminated and the 
- * scoreboard pool is not growing to infinity. This effect has been
- * seen at least on Cygwin 1.x. -- Stipe Tolj <tolj@wapme-systems.de>
+ * scoreboard pool is not growing to infinity. Also set the signal we
+ * use to kill of childs that exceed timeout. This effect has been
+* seen at least on Cygwin 1.x. -- Stipe Tolj <tolj@wapme-systems.de>
  */
 #if defined(CYGWIN)
 #define SIG_IDLE_KILL SIGKILL
+#define SIG_TIMEOUT_KILL SIGUSR2
 #else
 #define SIG_IDLE_KILL SIGUSR1
+#define SIG_TIMEOUT_KILL SIGALRM
 #endif
 
 static void perform_idle_server_maintenance(void)
@@ -4876,7 +4893,7 @@ static void perform_idle_server_maintenance(void)
 		else if (ps->last_rtime + ss->timeout_len < now) {
 		    /* no progress, and the timeout length has been exceeded */
 		    ss->timeout_len = 0;
-		    kill(ps->pid, SIGALRM);
+		    kill(ps->pid, SIG_TIMEOUT_KILL);
 		}
 	    }
 #endif
@@ -5492,8 +5509,16 @@ int REALMAIN(int argc, char *argv[])
 	}
 	GETUSERMODE();
 #else
-	/* Only try to switch if we're running as root */
+    /* 
+     * Only try to switch if we're running as root
+     * In case of Cygwin we have the special super-user named SYSTEM
+     * with a pre-defined uid.
+     */
+#ifdef CYGWIN
+    if ((getuid() == SYSTEM_UID) && setuid(ap_user_id) == -1) {
+#else
 	if (!geteuid() && setuid(ap_user_id) == -1) {
+#endif
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 			"setuid: unable to change to uid: %ld",
 			(long) ap_user_id);
@@ -7686,7 +7711,7 @@ __declspec(dllimport)
 #endif
 
 
-int ap_main(int argc, char *argv[]); /* Load time linked from libhttpd.dll */
+int ap_main(int argc, char *argv[]); /* Load time linked from cyghttpd.dll */
 
 int main(int argc, char *argv[])
 {

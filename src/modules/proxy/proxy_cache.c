@@ -248,6 +248,14 @@ static void detached_proxy_garbage_coll(request_rec *r)
                         ap_server_argv0);
                 exit(1);
             }
+#elif defined(CYGWIN)
+            /* Cygwin does not take any argument for setpgrp() */
+            if ((pgrp = setpgrp()) == -1) {
+                perror("setpgrp");
+                fprintf(stderr, "%S: setpgrp failed\n",
+                        ap_server_argv0);
+                exit(1);
+            }
 #else
             if ((pgrp = setpgrp(getpid(), 0)) == -1) {
                 perror("setpgrp");
