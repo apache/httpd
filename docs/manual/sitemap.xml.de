@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"
-  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.de"> ]
->
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1.12.2.18 -->
+<!-- English Revision: 1.12.2.19 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -147,7 +145,6 @@ HPUX betreiben</page>
 <title>Apache-Module</title>
 <page href="mod/module-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Modulen</page>
 <page href="mod/directive-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Direktiven</page>
-&allmodules;
 </category>
 
 <category id="developer">

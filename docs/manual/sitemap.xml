@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
-  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml"> ]
->
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.12.2.18 $ -->
+<!-- $Revision: 1.12.2.19 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -145,7 +143,6 @@ Server on HPUX</page>
 <title>Apache modules</title>
 <page href="mod/module-dict.html">Definitions of terms used to describe Apache modules</page>
 <page href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</page>
-&allmodules;
 </category>
 
 <category id="developer">
