@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/08 21:06:57 $]
+  Last modified at [$Date: 1999/03/13 12:19:57 $]
 
 Release:
 
@@ -227,7 +227,8 @@ Open issues:
 	  remove the child_exit() method and document cleanups as the method of
 	  handling this need.
 	    Status: Rasmus +1, Paul +1, Jim +1, 
-	            Martin +1, Ralf +1, Ken +1
+	            Martin +1, Ralf +1, Ken +1, 
+		    Dirkx +1 (with doc change)
 
     * Should we re-enable nagle now that we're non-buffering CGIs?  See
       various messages from Marc in March 98.
