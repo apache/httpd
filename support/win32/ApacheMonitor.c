@@ -780,13 +780,14 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
     else
     {
         schSCManager = OpenSCManager(szComputerName, NULL,
-                                     GENERIC_EXECUTE);
+                                     SC_MANAGER_CONNECT);
         if (!schSCManager) {
             return FALSE;
         }
 
         schService = OpenService(schSCManager, szServiceName, 
-                                 GENERIC_EXECUTE);
+                                 SERVICE_QUERY_STATUS | SERVICE_START | 
+                                 SERVICE_STOP | SERVICE_USER_DEFINED_CONTROL);
         if (schService != NULL)
         {
             retValue = FALSE;
@@ -937,7 +938,7 @@ BOOL IsServiceRunning(LPCSTR szServiceName, LPCSTR szComputerName,
     {
         dwPid = 0;
         schSCManager = OpenSCManager(szComputerName, NULL,
-                                     GENERIC_READ);
+                                     SC_MANAGER_CONNECT);
         if (!schSCManager) {
             return FALSE;
         }
