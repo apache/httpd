@@ -61,8 +61,8 @@ mod_authz_groupfile.so  0x6FB10000    0x00010000
 mod_authz_host.so       0x6FB00000    0x00010000
 mod_authz_user.so       0x6FAF0000    0x00010000
 mod_logio.so            0x6FAE0000    0x00010000
-util_ldap.so            0x6FAD0000    0x00010000
-mod_auth_ldap.so        0x6FAC0000    0x00010000
+mod_ldap.so             0x6FAD0000    0x00010000
+mod_authnz_ldap.so      0x6FAC0000    0x00010000
 mod_ident.so            0x6FAB0000    0x00010000
 mod_proxy_ajp.so        0x6FAA0000    0x00010000
 mod_proxy_balancer.so   0x6FA90000    0x00010000

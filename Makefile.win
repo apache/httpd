@@ -98,8 +98,8 @@ _tryzlib:
 _tryzlib:
 	@echo -----
 	@echo mod_deflate will not build unless zlib is installed in srclib\zlib.  
-	@echo zlib does not need to be built, we compile the sources directly.
-	@echo Available from http://www.gzip.org/zlib/
+	@echo Version 1.2.1 and later available from http://www.gzip.org/zlib/
+	@echo built w/ nmake -f win32/Makefile.msc will satisfy this requirement.
 
 !ENDIF
 
@@ -209,6 +209,10 @@ _build:
 	cd ..
 	 $(MAKE) $(MAKEOPT) -f libhttpd.mak        CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak          CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+# build ldap prior to authnz_ldap
+	cd modules\ldap
+	 $(MAKE) $(MAKEOPT) -f mod_ldap.mak        CFG="mod_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd modules\aaa
 	 $(MAKE) $(MAKEOPT) -f mod_auth_basic.mak  CFG="mod_auth_basic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -221,6 +225,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_authz_groupfile.mak CFG="mod_authz_groupfile - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_host.mak  CFG="mod_authz_host - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_user.mak  CFG="mod_authz_user - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_authnz_ldap.mak CFG="mod_authnz_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\arch\win32
 	 $(MAKE) $(MAKEOPT) -f mod_isapi.mak       CFG="mod_isapi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -239,8 +244,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f util_ldap.mak       CFG="util_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_auth_ldap.mak   CFG="mod_auth_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\filters
 !IF EXIST("srclib\zlib")
@@ -381,6 +384,7 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_authz_groupfile.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_host.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_user.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authnz_ldap.$(src_so)	"$(inst_so)" <.y
 	copy modules\arch\win32\$(LONG)\mod_isapi.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_file_cache.$(src_so) 	"$(inst_so)" <.y
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.$(src_so) 	"$(inst_so)" <.y
@@ -389,10 +393,11 @@ _copybin:
 	copy modules\experimental\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\util_ldap.$(src_so)		"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\mod_auth_ldap.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\zlib\zlib1.$(src_dll)")
+	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
+!ENDIF
 !ENDIF
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y
@@ -402,6 +407,7 @@ _copybin:
 	copy modules\generators\$(LONG)\mod_info.$(src_so) 	"$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_status.$(src_so) 	"$(inst_so)" <.y
 	copy modules\http\$(LONG)\mod_mime.$(src_so) 		"$(inst_so)" <.y
+	copy modules\ldap\$(LONG)\mod_ldap.$(src_so)		"$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_log_config.$(src_so) 	"$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_log_forensic.$(src_so) "$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_logio.$(src_so) 	"$(inst_so)" <.y

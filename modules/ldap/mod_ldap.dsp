@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="util_ldap" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="mod_ldap" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=util_ldap - Win32 Release
+CFG=mod_ldap - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "util_ldap.mak".
+!MESSAGE NMAKE /f "mod_ldap.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "util_ldap.mak" CFG="util_ldap - Win32 Release"
+!MESSAGE NMAKE /f "mod_ldap.mak" CFG="mod_ldap - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "util_ldap - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "util_ldap - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_ldap - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_ldap - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "util_ldap - Win32 Release"
+!IF  "$(CFG)" == "mod_ldap - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /Zi /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "LDAP_DECLARE_EXPORT" /Fd"Release\util_ldap_src" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "LDAP_DECLARE_EXPORT" /Fd"Release\mod_ldap_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,10 +52,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap.so
-# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap.so /opt:ref
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_ldap.so
+# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_ldap.so /opt:ref
 
-!ELSEIF  "$(CFG)" == "util_ldap - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_ldap - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "LDAP_DECLARE_EXPORT" /Fd"Debug\util_ldap_src" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "LDAP_DECLARE_EXPORT" /Fd"Debug\mod_ldap_src" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,22 +78,22 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap.so
-# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap.so
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_ldap.so
+# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,mod_ldap.so
 
 !ENDIF 
 
 # Begin Target
 
-# Name "util_ldap - Win32 Release"
-# Name "util_ldap - Win32 Debug"
+# Name "mod_ldap - Win32 Release"
+# Name "mod_ldap - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\util_ldap.c
+SOURCE=.\mod_ldap.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_ldap.rc
+SOURCE=.\util_ldap.c
 # End Source File
 # Begin Source File
 
@@ -111,25 +111,25 @@ SOURCE=.\util_ldap_cache_mgr.c
 
 SOURCE=..\..\build\win32\win32ver.awk
 
-!IF  "$(CFG)" == "util_ldap - Win32 Release"
+!IF  "$(CFG)" == "mod_ldap - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\util_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk util_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
+".\mod_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\mod_ldap.rc
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "util_ldap - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_ldap - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating Version Resource
 InputPath=..\..\build\win32\win32ver.awk
 
-".\util_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk util_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
+".\mod_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\mod_ldap.rc
 
 # End Custom Build
 
