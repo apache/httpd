@@ -1672,13 +1672,15 @@ DAV_DECLARE(void) dav_add_response(dav_walk_resource *wres,
 **
 ** Note that the structure is opaque -- it is private to the repository
 ** that created the stream in the repository's "open" function.
+**
+** ### THIS STUFF IS GOING AWAY ... GET/read requests are handled by
+** ### having the provider jam stuff straight into the filter stack.
+** ### this is only left for handling PUT/write requests.
 */
 
 typedef struct dav_stream dav_stream;
 
 typedef enum {
-    DAV_MODE_READ,		/* open for reading */
-    DAV_MODE_READ_SEEKABLE,	/* open for random access reading */
     DAV_MODE_WRITE_TRUNC,	/* truncate and open for writing */
     DAV_MODE_WRITE_SEEKABLE	/* open for writing; random access */
 } dav_stream_mode;
@@ -1789,19 +1791,6 @@ struct dav_hooks_repository
     dav_error * (*close_stream)(dav_stream *stream, int commit);
 
     /*
-    ** Read data from the stream.
-    **
-    ** The size of the buffer is passed in *bufsize, and the amount read
-    ** is returned in *bufsize.
-    **
-    ** *bufsize should be set to zero when the end of file is reached.
-    ** As a corollary, this function should always read at least one byte
-    ** on each call, until the EOF condition is met.
-    */
-    dav_error * (*read_stream)(dav_stream *stream,
-			       void *buf, apr_size_t *bufsize);
-
-    /*
     ** Write data to the stream.
     **
     ** All of the bytes must be written, or an error should be returned.
@@ -1824,30 +1813,29 @@ struct dav_hooks_repository
     ** is used to provide the repository with a way to set the headers
     ** in the response.
     **
-    ** It may be NULL if get_pathname is provided.
+    ** This function may be called without a following deliver(), to
+    ** handle a HEAD request.
+    **
+    ** This may be NULL if handle_get is FALSE.
     */
     dav_error * (*set_headers)(request_rec *r,
 			       const dav_resource *resource);
 
-    /* Get a pathname for the file represented by the resource descriptor.
-     * A provider may need to create a temporary copy of the file, if it is
-     * not directly accessible in a filesystem. free_handle_p will be set by
-     * the provider to point to information needed to clean up any temporary
-     * storage used.
-     *
-     * Returns NULL if the file could not be made accessible.
-     */
-    const char * (*get_pathname)(
-        const dav_resource *resource,
-        void **free_handle_p
-    );
-
-    /* Free any temporary storage associated with a file made accessible by
-     * get_pathname().
-     */
-    void (*free_file)(
-        void *free_handle
-    );
+    /*
+    ** The provider should deliver the resource into the specified filter.
+    ** Basically, this is the response to the GET method.
+    **
+    ** Note that this is called for all resources, including collections.
+    ** The provider should determine what has content to deliver or not.
+    **
+    ** set_headers will be called prior to this function, allowing the
+    ** provider to set the appropriate response headers.
+    **
+    ** This may be NULL if handle_get is FALSE.
+    ** ### maybe toss handle_get and just use this function as the marker
+    */
+    dav_error * (*deliver)(const dav_resource *resource,
+                           ap_filter_t *output);
 
     /* Create a collection resource. The resource must not already exist.
      *
