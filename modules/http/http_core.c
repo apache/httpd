@@ -1012,8 +1012,9 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
     arg = ap_os_canonical_filename(cmd->pool, arg);
     if (/* TODO: ap_configtestonly && ap_docrootcheck && */ !ap_is_directory(arg)) {
 	if (cmd->server->is_virtual) {
-	    fprintf(stderr, "Warning: DocumentRoot [%s] does not exist\n",
-		    arg);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                         "Warning: DocumentRoot [%s] does not exist",
+		         arg);
 	}
 	else {
 	    return "DocumentRoot must be a directory";

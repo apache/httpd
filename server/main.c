@@ -58,6 +58,7 @@
 #define CORE_PRIVATE
 #include "httpd.h" 
 #include "http_main.h" 
+#include "http_log.h" 
 #include "http_config.h"
 #include "util_uri.h" 
 #include "ap_mpm.h"
@@ -229,30 +230,30 @@ static void usage(process_rec *process)
 	pad[i] = ' ';
     pad[i] = '\0';
 #ifdef SHARED_CORE
-    fprintf(stderr, "Usage: %s [-R directory] [-D name] [-d directory] [-f file]\n", bin);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0,NULL , "Usage: %s [-R directory] [-D name] [-d directory] [-f file]", bin);
 #else
-    fprintf(stderr, "Usage: %s [-D name] [-d directory] [-f file]\n", bin);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Usage: %s [-D name] [-d directory] [-f file]", bin);
 #endif
-    fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]\n", pad);
-    fprintf(stderr, "Options:\n");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-C \"directive\"] [-c \"directive\"]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]", pad);
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Options:");
 #ifdef SHARED_CORE
-    fprintf(stderr, "  -R directory     : specify an alternate location for shared object files\n");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -R directory     : specify an alternate location for shared object files");
 #endif
-    fprintf(stderr, "  -D name          : define a name for use in <IfDefine name> directives\n");
-    fprintf(stderr, "  -d directory     : specify an alternate initial ServerRoot\n");
-    fprintf(stderr, "  -f file          : specify an alternate ServerConfigFile\n");
-    fprintf(stderr, "  -C \"directive\"   : process directive before reading config files\n");
-    fprintf(stderr, "  -c \"directive\"   : process directive after  reading config files\n");
-    fprintf(stderr, "  -v               : show version number\n");
-    fprintf(stderr, "  -V               : show compile settings\n");
-    fprintf(stderr, "  -h               : list available command line options (this page)\n");
-    fprintf(stderr, "  -l               : list compiled in modules\n");
-    fprintf(stderr, "  -L               : list available configuration directives\n");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -D name          : define a name for use in <IfDefine name> directives");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -d directory     : specify an alternate initial ServerRoot");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -f file          : specify an alternate ServerConfigFile");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -C \"directive\"   : process directive before reading config files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -c \"directive\"   : process directive after  reading config files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -v               : show version number");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -V               : show compile settings");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -h               : list available command line options (this page)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -l               : list compiled in modules");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -L               : list available configuration directives");
     /* TODOC: -S has been replaced by '-t -D DUMP_VHOSTS' */
-    /* fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n"); */
-    fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
-    fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
+    /* ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -S               : show parsed settings (currently only vhost settings)"); */
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -t               : run syntax check for config files (with docroot check)");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -T               : run syntax check for config files (without docroot check)");
     /* TODOC: -X goes away, expect MPMs to use -D options */
     destroy_and_exit_process(process, 1);
 }
@@ -348,7 +349,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_run_pre_config(pconf, plog, ptemp);
     server_conf = ap_read_config(process, ptemp, confname);
     if (configtestonly) {
-	fprintf(stderr, "Syntax OK\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
     }
     ap_clear_pool(plog);

@@ -98,6 +98,9 @@ extern "C" {
 #define APLOG_WIN32ERROR	((APLOG_LEVELMASK+1) * 2)
 #endif
 
+/* normal but significant condition on startup, usually printed to stderr */
+#define APLOG_STARTUP           ((APLOG_LEVELMASK + 1) * 4) 
+
 #ifndef DEFAULT_LOGLEVEL
 #define DEFAULT_LOGLEVEL	APLOG_WARNING
 #endif
