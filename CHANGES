@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgid: Eliminate a double-close of a socket.  This resolves
+     various operational problems in a threaded MPM, since on the
+     second attempt to close the socket, the same descriptor was
+     often already in use by another thread for another purpose.
+     [Jeff Trawick]
+
   *) Unix: Handle permissions settings for flock-based mutexes in 
      unixd_set_global|proc_mutex_perms().  Allow the functions to be
      called for any type of mutex.  PR 20312  [Jeff Trawick]
