@@ -1,5 +1,11 @@
 Changes with Apache 1.3.25
 
+  *) Added a '-F' flag; which causes the mother/supervisor process to
+     no longer fork down and detach. But instead stays attached to
+     the tty - thus making live for automatic restart and exit checking
+     code easier. [ Contributed by Michael Handler <handler@grendel.net>,
+     Jos Backus <jos@catnook.com> [ Dirk-Willem van Gulik ]].
+
   *) Make apxs.pl more flexible (file extensions like .so or .dll are
      no longer hardcoded). [Stipe Tolj <tolj@wapme-systems.de>]
 

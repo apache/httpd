@@ -341,6 +341,8 @@ static pid_t pgrp;
 
 static int one_process = 0;
 
+static int do_detach = 1;
+
 /* set if timeouts are to be handled by the children and not by the parent.
  * i.e. child_timeouts = !standalone || one_process.
  */
@@ -1349,7 +1351,7 @@ static void usage(char *bin)
 #ifdef WIN32
     fprintf(stderr, "Usage: %s [-D name] [-d directory] [-f file] [-n service]\n", bin);
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"] [-k signal]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T] [-F]\n", pad);
 #else /* !WIN32 */
 #ifdef SHARED_CORE
     fprintf(stderr, "Usage: %s [-R directory] [-D name] [-d directory] [-f file]\n", bin);
@@ -1357,7 +1359,7 @@ static void usage(char *bin)
     fprintf(stderr, "Usage: %s [-D name] [-d directory] [-f file]\n", bin);
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T] [-F]\n", pad);
     fprintf(stderr, "Options:\n");
 #ifdef SHARED_CORE
     fprintf(stderr, "  -R directory     : specify an alternate location for shared object files\n");
@@ -1380,6 +1382,7 @@ static void usage(char *bin)
 #endif
     fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
     fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
+    fprintf(stderr, "  -F               : run main process in foreground, for process supervisors\n");
 #ifdef WIN32
     fprintf(stderr, "  -n name          : name the Apache service for -k options below;\n");
     fprintf(stderr, "  -k stop|shutdown : tell running Apache to shutdown\n");
@@ -3374,19 +3377,24 @@ static void detach(void)
     !defined(BONE)
 /* Don't detach for MPE because child processes can't survive the death of
    the parent. */
-    if ((x = fork()) > 0)
-	exit(0);
-    else if (x == -1) {
-	perror("fork");
-	fprintf(stderr, "%s: unable to fork new process\n", ap_server_argv0);
-	exit(1);
+    if (do_detach) {
+        if ((x = fork()) > 0)
+            exit(0);
+        else if (x == -1) {
+            perror("fork");
+	    fprintf(stderr, "%s: unable to fork new process\n", ap_server_argv0);
+	    exit(1);
+        }
+        RAISE_SIGSTOP(DETACH);
     }
-    RAISE_SIGSTOP(DETACH);
 #endif
 #ifndef NO_SETSID
-    if ((pgrp = setsid()) == -1) {
+    if (pgrp = setsid()) == -1) {
 	perror("setsid");
 	fprintf(stderr, "%s: setsid failed\n", ap_server_argv0);
+	if (!do_detach) 
+	    fprintf(stderr, "setsid() failed probably because you aren't "
+		"running under a process management tool like daemontools\n");
 	exit(1);
     }
 #elif defined(NEXT) || defined(NEWSOS)
@@ -5312,7 +5320,7 @@ int REALMAIN(int argc, char *argv[])
     ap_setup_prelinked_modules();
 
     while ((c = getopt(argc, argv,
-				    "D:C:c:xXd:f:vVlLR:StTh"
+				    "D:C:c:xXd:Ff:vVlLR:StTh"
 #ifdef DEBUG_SIGSTOP
 				    "Z:"
 #endif
@@ -5333,6 +5341,9 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 	case 'd':
 	    ap_cpystrn(ap_server_root, optarg, sizeof(ap_server_root));
+	    break;
+	case 'F':
+	    do_detach = 0;
 	    break;
 	case 'f':
 	    ap_cpystrn(ap_server_confname, optarg, sizeof(ap_server_confname));
@@ -7215,9 +7226,9 @@ int REALMAIN(int argc, char *argv[])
         reparsed = 1;
     }
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:wiuStThk:n:W:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:fF:vVlLz:Z:wiuStThk:n:W:")) != -1) {
 #else /* !WIN32 */
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLesStTh")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:fF:vVlLesStTh")) != -1) {
 #endif
         char **new;
 	switch (c) {
@@ -7338,6 +7349,9 @@ int REALMAIN(int argc, char *argv[])
             if (ap_server_root[0] 
                     && ap_server_root[strlen(ap_server_root) - 1] == '/')
                 ap_server_root[strlen(ap_server_root) - 1] = '\0';
+	    break;
+	case 'F':
+	    do_detach = 0;
 	    break;
 	case 'f':
             ap_cpystrn(ap_server_confname,
@@ -7733,13 +7747,14 @@ int main(int argc, char *argv[], char *envp[])
      * but only handle the -L option 
      */
     llp_dir = SHARED_CORE_DIR;
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLR:SZ:tTh")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:Ff:vVlLR:SZ:tTh")) != -1) {
 	switch (c) {
 	case 'D':
 	case 'C':
 	case 'c':
 	case 'X':
 	case 'd':
+	case 'F':
 	case 'f':
 	case 'v':
 	case 'V':
