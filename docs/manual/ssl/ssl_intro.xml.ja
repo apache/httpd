@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.3.2.7 -->
+<!-- English Revision: 1.3.2.8 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -496,7 +496,7 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
 
     <p class="figure">
     <img 
-    src="ssl_intro_fig1.gif" alt="" width="423" height="327" /><br />
+    src="../images/ssl_intro_fig1.gif" alt="" width="423" height="327" /><br />
     <a id="figure1" name="figure1"><dfn>図1</dfn></a>: SSL
     ハンドシェークシークエンス概略</p>
 
@@ -619,7 +619,8 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
     カプセル化されたプロトコルは下層のプロトコルに関して一切関知しません。</p>
 
     <p class="figure">
-    <img src="ssl_intro_fig2.gif" alt="" width="428" height="217" /><br />
+    <img src="../images/ssl_intro_fig2.gif" alt="" width="428"
+        height="217" /><br />
     <a id="figure2" name="figure2"><dfn>図2</dfn></a>: SSL プロトコルスタック
     </p>
 
@@ -646,7 +647,8 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
     (注意: 現在メジャーな SLL 実装で圧縮をサポートしているものはありません)</p>
 
     <p class="figure">
-    <img src="ssl_intro_fig3.gif" alt="" width="423" height="323" /><br />
+    <img src="../images/ssl_intro_fig3.gif" alt="" width="423"
+        height="323" /><br />
     <a id="figure3" name="figure3"><dfn>図 3</dfn></a>: SSL レコードプロトコル
     </p>
 </section>
