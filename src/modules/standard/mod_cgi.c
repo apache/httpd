@@ -539,8 +539,9 @@ static int cgi_handler(request_rec *r)
                               "%s", argsbuffer);            
             }
 #else
-	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 	        continue;
+	    }
 #endif
 	    ap_kill_timeout(r);
 
@@ -583,8 +584,9 @@ static int cgi_handler(request_rec *r)
                           "%s", argsbuffer);            
         }
 #else
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 	    continue;
+	}
 #endif
 	ap_kill_timeout(r);
 	ap_bclose(script_err);
