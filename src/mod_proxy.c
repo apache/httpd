@@ -270,6 +270,7 @@ proxy_trans(request_rec *r)
 	    {
 		r->filename = pstrcat(r->pool, "proxy:", ent[i].real,
 				      r->uri + len, NULL);
+		r->handler = "proxy-server";
 		return OK;
 	    }
 	}
