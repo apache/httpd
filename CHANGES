@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: EOLs sent by external rewritemaps are now consumed
+     as whole. That way, on systems with more than one EOL character
+     rewritemap programs no longer need to switch stdout to binary
+     mode. PR 25635.  [André Malo]
+
   *) mod_rewrite: Introduce the ability to force a content handler via
      the [handler=...] flag.  [André Malo]
 
