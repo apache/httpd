@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/22 21:32:30 $]
+Last modified at [$Date: 2003/03/22 22:21:24 $]
 
 Release:
 
@@ -189,6 +189,11 @@ PATCHES TO PORT FROM 2.1
       docs/conf/httpd-win.conf: r1.81
       docs/docroot/index.html.var: r1.11
       docs/docroot/index.html.zh -> index.html.zh-tw.big5
+      +1: nd
+
+    * Do not bypass output filters when redirecting subrequests internally.
+      PR 17629.
+      modules/http/http_request.c: r1.155
       +1: nd
 
 CURRENT RELEASE NOTES:
