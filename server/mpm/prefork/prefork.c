@@ -1123,7 +1123,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		    "Graceful restart requested, doing restart");
 
 	/* kill off the idle ones */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit);
+        ap_mpm_pod_killpg(pod, ap_max_daemons_limit);
 
 	/* This is mostly for debugging... so that we know what is still
 	    * gracefully dealing with existing request.  This will break
