@@ -63,3 +63,14 @@ features:
        process," before any requests are handled. This allows the module
        to set up anything that need to be done once per processes. For
        example, connections to databases.
+
+  *) Integrated mod_rewrite 3.0.9 & Moved development authority
+	   The last officially available release of mod_rewrite (3.0.9) was
+	   integrated into the Apache source repository. Additionally to the fact
+	   that this fixes some bugs, mod_rewrite now is no longer developed and
+	   maintained _externally_ by the original author Ralf S. Engelschall.
+	   Instead he has officially joined the Apache Group and gifted the
+	   sources to it (removed the shared copyright), so further development
+	   takes place directly at the Apache Groups source repository. No more
+	   version synchronizations are needed in the future.
+
