@@ -93,7 +93,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) LimitRequestFieldSize directive: Remove upper limit on the request
        field size.
        http://svn.apache.org/viewcvs.cgi?rev=149269&view=rev
-       +1: stoddard, jerenkrantz
+       +1: stoddard, jerenkrantz, jim
 
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
@@ -104,7 +104,7 @@ PATCHES TO BACKPORT FROM 2.1
        making many doomed ap_pass_brigade calls
        http://svn.apache.org/viewcvs?view=rev&rev=125166
        PR: 32699
-       +1: jorton, jerenkrantz
+       +1: jorton, jerenkrantz, jim
 
     *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
        using the proper accessor function; matters only in some
@@ -129,7 +129,7 @@ PATCHES TO BACKPORT FROM 2.1
        svn rev 124556
        +1: wrowe
 
-    *) modules: Include mod_dumpio to the modules/logger
+    *) modules: Include mod_dumpio to the modules/experimental
        tree. Module included in 2.1:modules/debug.
        http://www.apache.org/~jim/mod_dumpio.c
        +1: jim
