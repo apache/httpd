@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+<!-- English revision: 1.5 -->
+<name>prefork</name>
+<description>スレッドを使わず、先行して fork を行なうウェブサーバを実装しています
+</description>
+<status>MPM</status>
+<sourcefile>prefork.c</sourcefile>
+<identifier>mpm_prefork_module</identifier>
+
+<summary>
+    <p>このマルチプロセッシングモジュール (MPM) は、
+    Unix 上での Apache 1.3 のデフォルトの挙動と非常によく似た方法で
+    リクエストを処理する、スレッドを使わず、先行して fork を行なう
+    ウェブサーバを実装しています。
+    スレッドセーフでないライブラリとの互換性をとるために、
+    スレッドを避ける必要のあるサイトでは、このモジュールの使用が適切でしょう。
+    あるリクエストで発生した問題が他のリクエストに影響しないように、
+    個々のリクエストを単離するのにも、最適な MPM です。</p>
+
+    <p>この MPM は非常に自律的なので、この MPM の設定ディレクティブを
+    調整する必要はほとんどないでしょう。もっとも重要なことは、
+    <directive module="mpm_common">MaxClients</directive>
+    が、予想される同時リクエスト数を十分扱えるぐらいは大きいけれども、
+    全プロセスに十分な物理メモリが確実に行き渡る程度には小さい値にする、
+    ということです。</p>
+
+</summary>
+<seealso><a href="../bind.html">Apache
+が使用するアドレスとポートの設定</a></seealso>
+
+<section><title>動作方法</title>
+    <p>一つのコントロールプロセスが、
+    コネクションに対して listen して、しかるべき時に応答する
+    子プロセスを起動します。Apache は常に幾つかの<em>スペア</em>
+    かアイドルなサーバプロセスを維持していて、それらは入ってきた
+    リクエストに応答できるように待機しています。
+    このようにしてクライアントは、リクエストが応答される前に、
+    新しい子プロセスが fork されるのを待たなくてもよいように
+    なっています。</p>
+
+    <p>親プロセスがリクエストに応答するの子プロセスを
+    どのように生成するかは、
+    <directive module="mpm_common">StartServers</directive>,
+    <directive module="prefork">MinSpareServers</directive>,
+    <directive module="prefork">MaxSpareServers</directive>,
+    <directive module="mpm_common">MaxClients</directive>
+    で調整します。一般的に、Apache は非常に自律的なので、
+    大抵のサイトではこれらのディレクティブをデフォルト値から調整する
+    必要はないでしょう。
+    同時に 256 を超えるリクエストに応答しないといけないサイトでは、
+    <directive module="mpm_common">MaxClients</directive>
+    を増やす必要があるでしょう。
+    一方、メモリの限られているサイトでは、スラッシング
+    (メモリとディスク間で何度もスワップ) が起こるのを防ぐために
+    <directive module="mpm_common">MaxClients</directive>
+    を減らす必要があるでしょう。プロセス生成のチューニングに関する
+    詳しい情報は、<a 
+    href="../misc/perf-tuning.html">性能に関するヒント</a>
+    にあります。</p>
+
+    <p>通常 Unix では親プロセスは 80 番ポートにバインドするために
+    root で起動されますが、子プロセスやスレッドは
+    もっと低い権限のユーザで Apache によって起動されます。
+    <directive module="mpm_common">User</directive> と
+    <directive module="mpm_common">Group</directive>
+    ディレクティブは
+    Apache の子プロセスの権限を設定するのに用いられます。
+    子プロセスはクライアントに送るコンテンツ全てを読めないといけませんが、
+    可能な限り必要最小限の権限のみを持っているようにするべきです。</p>
+
+    <p><directive module="mpm_common">MaxRequestsPerChild</directive>
+    は、古いプロセスを停止して新しいプロセスを起動することによって、
+    どの程度の頻度でサーバがプロセスをリサイクルするかを制御します。</p>
+</section>
+
+<directivesynopsis location="mpm_common">
+<name>CoreDumpDirectory</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>PidFile</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>Listen</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>ListenBacklog</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>LockFile</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>MaxClients</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>MaxRequestsPerChild</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>MaxSpareServers</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>MinSpareServers</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>ScoreBoardFile</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>SendBufferSize</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>ServerLimit</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>StartServers</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>User</name>
+</directivesynopsis>
+
+<directivesynopsis location="mpm_common">
+<name>Group</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AcceptMutex</name>
+<description>複数の子プロセスがネットワークソケットでリクエストを
+accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
+使う方法</description>
+<syntax>AcceptMutex default|<em>method</em></syntax>
+<default>AcceptMutex default</default>
+<contextlist><context>サーバ設定ファイル</context></contextlist>
+
+<usage>
+    <p><directive>AcceptMutex</directive> ディレクティブは、
+    ネットワークソケットのリクエストを accept しようとしている複数の子プロセスを
+    Apache が直列化するために使う方法を設定します。
+    Apache 2.0 より前では、このメソッドはコンパイル時にのみ選択できました。
+    最適な方法は、アーキテクチャやプラットホームに大きく依存します。
+    詳細に関しては、<a 
+    href="../misc/perf-tuning.html">性能のチューニング</a>
+    ドキュメントをご覧下さい。</p>
+
+    <p>このディレクティブが <code>default</code>
+    に設定されていれば、コンパイル時に選択されたデフォルト値が使われます。
+    他の使用可能なメソッドの一覧は下にあります。
+    全てのメソッドが全てのプラットホームで使用可能であるわけではない、
+    ということに注意してください。
+    使用可能でないメソッドが指定された場合は、
+    使用可能なメソッドの一覧を含んだメッセージが
+    エラーログに出力されます。</p>
+
+    <dl>
+      <dt><code>flock</code></dt>
+
+      <dd><directive module="mpm_common">LockFile</directive>
+      ディレクティブで定義したファイルのロックに、
+      <code>flock(2)</code> システムコールを使います。</dd>
+
+      <dt><code>fcntl</code></dt>
+
+      <dd><directive module="mpm_common">LockFile</directive>
+      ディレクティブで定義したファイルのロックに、
+      <code>fnctl(2)</code> システムコールを使います。</dd>
+
+      <dt><code>sysvsem</code></dt>
+
+      <dd>排他処理の実装に SysV 形式のセマフォを使います。</dd>
+
+      <dt><code>pthread</code></dt>
+
+      <dd>POSIX Threads (PThreads) 規格で実装されている
+      POSIX 排他処理を使います。</dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxSpareServers</name>
+<description>アイドルな子サーバプロセスの最大個数</description>
+<syntax>MaxSpareServers <em>number</em><br /></syntax>
+<default>MaxSpareServers 10</default>
+<contextlist><context>サーバ設定ファイル</context></contextlist>
+
+<usage>
+    <p><directive>MaxSpareServers</directive> ディレクティブは、
+    <em>アイドルな</em>子サーバプロセスの希望最大個数を設定します。
+    アイドルプロセスとは、リクエストを扱っていないプロセスです。
+    MaxSpareServers よりも多い数がアイドルであれば、
+    親プロセスは超過プロセスを kill します。</p>
+
+    <p>非常に混んでいるサイトでのみ、このパラメータをチューニングするべきです。
+    このパラメータを大きくするということは、大抵の場合は悪い発想です。</p>
+</usage>
+<seealso><directive module="prefork">MinSpareServers</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MinSpareServers</name>
+<description>アイドルな子サーバプロセスの最小個数</description>
+<syntax>MinSpareServers <em>number</em></syntax>
+<default>MinSpareServers  5</default>
+<contextlist><context>サーバ設定ファイル</context></contextlist>
+
+<usage>
+    <p><directive>MaxSpareServers</directive> ディレクティブは、
+    <em>アイドルな</em>子サーバプロセスの希望最小個数を設定します。
+    アイドルプロセスとは、リクエストを扱っていないプロセスです。
+    MinSpareServers よりも少ない数がアイドルであれば、
+    親プロセスは最高で 1 秒につき 1 個の割合で新しい子プロセスを生成します。</p>
+
+    <p>非常に混んでいるサイトでのみ、このパラメータをチューニングするべきです。
+    このパラメータを大きくするということは、大抵の場合は悪い発想です。</p>
+</usage>
+<seealso><directive module="prefork">MaxSpareServers</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+</directivesynopsis>
+
+</modulesynopsis>
+
