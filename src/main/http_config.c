@@ -1557,9 +1557,9 @@ static void show_overrides(const command_rec *pc, module *pm)
 	 ((pc->req_override & (ACCESS_CONF | OR_AUTHCFG | OR_LIMIT)))))
 	printf("anywhere");
     else if (pc->req_override & RSRC_CONF)
-	printf("only outside <Directory> or <Location>");
+	printf("only outside <Directory>, <Files> or <Location>");
     else
-	printf("only inside <Directory> or <Location>");
+	printf("only inside <Directory>, <Files> or <Location>");
 
     /* Warn if the directive is allowed inside <Directory> or .htaccess
      * but module doesn't support per-dir configuration */

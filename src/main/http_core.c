@@ -2584,10 +2584,10 @@ static const command_rec core_cmds[] = {
   "Whether persistent connections should be On or Off" },
 { "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG,
   "Enable identd (RFC 1413) user lookups - SLOW" },
-{ "ContentDigest", set_content_md5, NULL, RSRC_CONF|ACCESS_CONF|OR_AUTHCFG,
+{ "ContentDigest", set_content_md5, NULL, OR_OPTIONS,
   FLAG, "whether or not to send a Content-MD5 header with each request" },
 { "UseCanonicalName", set_use_canonical_name, NULL,
-  RSRC_CONF|ACCESS_CONF|OR_AUTHCFG, FLAG,
+  OR_OPTIONS, FLAG,
   "Whether or not to always use the canonical ServerName : Port when "
   "constructing URLs" },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1,
@@ -2664,7 +2664,7 @@ static const command_rec core_cmds[] = {
   "Limit (0 = unlimited) on max number of header fields in a request message"},
 { "LimitRequestBody", set_limit_req_body,
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
-  RSRC_CONF|ACCESS_CONF|OR_ALL, TAKE1,
+  OR_ALL, TAKE1,
   "Limit (in bytes) on maximum size of request message body" },
 { NULL },
 };
