@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) Unix MPMs: Stop dropping connections when the file descriptor
+     is at least FD_SETSIZE.  [Jeff Trawick]
+
   *) Fix handling of IPv6 numeric strings in mod_proxy.  [Jeff Trawick]
 
   *) mod_isapi: send_response_header() failed to copy status string's 

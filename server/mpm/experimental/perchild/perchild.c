@@ -460,16 +460,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id,
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "apr_os_sock_get");
     }
 
-    if (csd >= FD_SETSIZE) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
-                     "new file descriptor %d is too large; you probably need "
-                     "to rebuild Apache with a larger FD_SETSIZE "
-                     "(currently %d)", 
-                     csd, FD_SETSIZE);
-        apr_socket_close(sock);
-        return;
-    }
-
     if (thread_socket_table[thread_num] < 0) {
         ap_sock_disable_nagle(sock);
     }

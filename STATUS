@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/26 12:13:58 $]
+Last modified at [$Date: 2004/05/26 12:22:15 $]
 
 Release:
 
@@ -392,15 +392,6 @@ PATCHES TO BACKPORT FROM 2.1
 	 jim proposes: UseCanonicalName Client directive
 	   which implements this, keeping UseCanonicalName Off
 	   "as is". 
-
-    * Unix MPMs: Stop dropping connections when the file descriptor
-      is at least FD_SETSIZE
-        os/unix/unixd.c: r1.63
-        server/mpm/experimental/leader/leader.c: r1.37
-        server/mpm/experimental/perchild/perchild.c: r1.143
-        server/mpm/experimental/threadpool/threadpool.c: r1.25
-        server/mpm/worker/worker.c: r1.145
-      +1: trawick, nd, jorton
 
     * ThreadStackSize for Win32 and threaded MPMs
       (if there is sufficient interest I'll pursue getting APR 0.9
