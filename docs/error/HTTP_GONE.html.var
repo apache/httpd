@@ -1,9 +1,9 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Objekt nicht mehr verf&uuml;gbar!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Objekt nicht mehr verf&uuml;gbar!"
+--><!--#include virtual="include/top.html" -->
 
     Der angeforderte URL existiert auf dem Server nicht mehr
     und wurde dauerhaft entfernt.
@@ -12,8 +12,8 @@ Body:----------de--
   <!--#if expr="$HTTP_REFERER" -->
 
     Bitte informieren Sie den Autor der
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">verweisenden Seite</a>,
-    dass der Link nicht mehr aktuell ist.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">verweisenden
+    Seite</a>, dass der Link nicht mehr aktuell ist.
 
   <!--#else -->
 
@@ -28,8 +28,8 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Resource is no longer available!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Resource is no longer available!"
+--><!--#include virtual="include/top.html" -->
 
     The requested URL is no longer available on this server and there is no
     forwarding address.
@@ -37,7 +37,7 @@ Body:----------en--
   <!--#if expr="$HTTP_REFERER" -->
   
     Please inform the author of the
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">referring
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referring
     page</a> that the link is outdated.
    
   <!--#else -->
@@ -53,9 +53,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Resource is no longer available!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Resource is no longer available!"
+--><!--#include virtual="include/top.html" -->
 
 	Los recursos solicitados ya no estan disponibles en
 	este servidor y no existe una direcci&oacute;n alterna.
@@ -63,8 +63,8 @@ Body:----------es--
   <!--#if expr="$HTTP_REFERER" -->
 
 	Le solicitamos que comunique al autor de la 
-	<a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina 
-	referida</a> que el URL esta fuera de tiempo.
+	<a href="<!--#echo encoding="url" var="HTTP_REFERER"
+        -->">p&aacute;gina referida</a> que el URL esta fuera de tiempo.
 
   <!--#else -->
 	
@@ -79,9 +79,9 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Cette ressource n'existe plus!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Cette ressource n'existe plus!"
+--><!--#include virtual="include/top.html" -->
 
     L'URL demand&eacute;e n'est plus accessible sur ce serveur et il
     n'y a pas d'adresse de suite. 
@@ -89,8 +89,8 @@ Body:----------fr--
   <!--#if expr="$HTTP_REFERER" --> 
 
     Nous vous prions d'informer l'auteur de
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">la 
-    page en question</a> que la r&eacute;f&eacute;rence n'est plus actuelle. 
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la 
+    page en question</a> que la r&eacute;f&eacute;rence n'est plus actuelle.
 
   <!--#else --> 
 
@@ -105,9 +105,9 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Dit object is niet langer beschikbaar!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Dit object is niet langer beschikbaar!"
+--><!--#include virtual="include/top.html" -->
 
    De gevraagde URL is niet langer beschikbaar op deze server en er is geen
    doorverwijsadres.
@@ -115,7 +115,7 @@ Body:----------nl--
   <!--#if expr="$HTTP_REFERER" -->
 
    Gelieve aan de auteur van
-   <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">deze pagina</a>
+   <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">deze pagina</a>
    te melden dat deze link niet langer actueel is.
 
   <!--#else -->
@@ -131,9 +131,9 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Resursen inte l&auml;ngre tillg&auml;nglig!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Resursen inte l&auml;ngre tillg&auml;nglig!"
+--><!--#include virtual="include/top.html" -->
 
     Den &ouml;nskade adressen &auml;r inte l&auml;ngre tillg&auml;nglig hos
     denna server och det finns inte n&aring;gon adress f&ouml;r vidarebefodran.
@@ -141,8 +141,8 @@ Body:----------sv--
   <!--#if expr="$HTTP_REFERER" -->
 
     V&auml;nligen informera f&ouml;rfattaren bakom 
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">den aktuella sidan</a> 
-    att l&auml;nken &auml;r inaktuell.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">den aktuella
+    sidan</a> att l&auml;nken &auml;r inaktuell.
  
   <!--#else -->
 
@@ -157,9 +157,9 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="La risorsa non &egrave; pi&ugrave; disponibile!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="La risorsa non &egrave; pi&ugrave; disponibile!"
+--><!--#include virtual="include/top.html" -->
 
     L'URL richiesto non &egrave; pi&ugrave; disponibile su questo server
     e non esistono indirizzi verso i quali sia possibile inoltrare
@@ -168,7 +168,7 @@ Body:----------it--
   <!--#if expr="$HTTP_REFERER" -->
 
     Per favore, informa l'autore della
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">pagina
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina
     di provenienza</a> che il link non &egrave; pi&ugrave; valido.
 
   <!--#else -->
@@ -184,8 +184,9 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Recurso n&atilde;o dispon&iacute;vel!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Recurso n&atilde;o dispon&iacute;vel!"
+--><!--#include virtual="include/top.html" -->
 
    A URL solicitada n&atilde;o est&aacute; dispon&iacute;vel neste servidor
    e n&atilde;o existe um endere&ccedil;o alternativo.
@@ -193,7 +194,7 @@ Body:-------pt-br--
   <!--#if expr="$HTTP_REFERER" -->
 
    Por favor informe o autor da
-   <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina
+   <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
    referida</a> que a URL est&aacute; desatualizada.
 
   <!--#else -->
@@ -206,3 +207,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+

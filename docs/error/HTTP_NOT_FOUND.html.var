@@ -1,19 +1,19 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Objekt nicht gefunden!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Objekt nicht gefunden!"
+--><!--#include virtual="include/top.html" -->
 
     Der angeforderte URL konnte auf dem Server nicht gefunden werden.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     Der Link auf der
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">verweisenden
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">verweisenden
     Seite</a> scheint falsch oder nicht mehr aktuell zu sein.
     Bitte informieren Sie den Autor
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">dieser Seite</a>
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">dieser Seite</a>
     &uuml;ber den Fehler.
 
   <!--#else -->
@@ -29,17 +29,17 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Object not found!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Object not found!"
+--><!--#include virtual="include/top.html" -->
 
     The requested URL was not found on this server.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     The link on the
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">referring
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referring
     page</a> seems to be wrong or outdated. Please inform the author of
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">that page</a>
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">that page</a>
     about the error.
 
   <!--#else -->
@@ -55,9 +55,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Object not found!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Object not found!"
+--><!--#include virtual="include/top.html" -->
 
     El URL requerido no ha sido localizado en
     este servidor.
@@ -65,10 +65,10 @@ Body:----------es--
   <!--#if expr="$HTTP_REFERER" -->
 
     El URL en la
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
     referida</a> parece tener algun error o estar fuera de tiempo. Porfavor
     comunique al autor de
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">la
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la
     p&aacute;gina</a> acerca del error.
 
   <!--#else -->
@@ -84,20 +84,20 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Objet non trouv&eacute;!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Objet non trouv&eacute;!"
+--><!--#include virtual="include/top.html" -->
 
     L'URL requise n'a pu etre trouv&eacute;e sur ce serveur.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     La r&eacute;f&eacute;rence sur
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">la page
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la page
     cit&eacute;e</a>
     semble &ecirc;tre erron&eacute;e ou perim&eacute;e. Nous vous prions
     d'informer l'auteur de
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">cette page</a>
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">cette page</a>
     de cette erreur.
 
   <!--#else -->
@@ -113,18 +113,18 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Object niet gevonden!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Object niet gevonden!"
+--><!--#include virtual="include/top.html" -->
 
     De gevraagde URL was niet gevonden op deze server.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     De link op
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">deze pagina
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">deze pagina
     pagina</a> is verkeerd of achterhaald. Gelieve de auteur van
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">die pagina</a>
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">die pagina</a>
     in te lichten over deze fout.
 
   <!--#else -->
@@ -140,18 +140,18 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Objektet hittas ej!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Objektet hittas ej!"
+--><!--#include virtual="include/top.html" -->
 
     Den efterfr&aring;gade adressen hittades inte p&aring; denna server.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     L&auml;nken p&aring; den
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">tidigare sidan</a> 
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">tidigare sidan</a> 
     verkar vara felaktig eller inaktuell. V&auml;nligen informera f&ouml;rfattaren av
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">sidan</a>
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">sidan</a>
     om felet.
 
   <!--#else -->
@@ -167,19 +167,19 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Oggetto non trovato!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Oggetto non trovato!"
+--><!--#include virtual="include/top.html" -->
 
     L'URL richiesto non esiste su questo server.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     Il link della
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">pagina da cui
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina da cui
     sei arrivato</a> potrebbe essere errato o non essere pi&ugrave; valido.
     Per favore, informa dell'errore l'autore della
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">pagina</a>.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina</a>.
 
   <!--#else -->
 
@@ -194,17 +194,18 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Objeto n&atilde;o encontrado!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Objeto n&atilde;o encontrado!"
+--><!--#include virtual="include/top.html" -->
 
     A URL requisitada n&atilde;o foi encontrada neste servidor.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     O link na
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
     referida</a> parece estar com algum erro ou desatualizado. Por favor informe o
-    autor <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">desta 
+    autor <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">desta 
     p&aacute;gina</a> sobre o erro.
 
    <!--#else -->
@@ -216,3 +217,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+

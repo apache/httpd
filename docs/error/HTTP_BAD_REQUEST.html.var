@@ -1,9 +1,9 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Fehlerhafte Anfrage!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Fehlerhafte Anfrage!"
+--><!--#include virtual="include/top.html" -->
 
     Ihr Browser (oder Proxy) hat eine ung&uuml;ltige Anfrage
     gesendet, die vom Server nicht beantwortet werden kann.
@@ -14,8 +14,8 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Bad request!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Bad request!"
+--><!--#include virtual="include/top.html" -->
 
     Your browser (or proxy) sent a request that
     this server could not understand.
@@ -26,9 +26,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Bad request!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Bad request!"
+--><!--#include virtual="include/top.html" -->
 
 	El buscador ha solicitado una operaci&oacute;n
 	que no puede ser procesada por el servidor.
@@ -39,9 +39,9 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Demande incorrecte!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Demande incorrecte!"
+--><!--#include virtual="include/top.html" -->
 
     Votre navigateur (ou votre proxy) a envoy&eacute;
     une demande que ce serveur n'a pas comprise.
@@ -52,9 +52,9 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Slechte vraag!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Slechte vraag!"
+--><!--#include virtual="include/top.html" -->
 
     Uw browser (of proxy) stuurde een vraag die
     deze server niet kon begrijpen.
@@ -65,9 +65,9 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Felaktig f&ouml;rfr&aring;gan!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Felaktig f&ouml;rfr&aring;gan!"
+--><!--#include virtual="include/top.html" -->
 
     Din webbl&auml;sare eller proxy skickade en f&ouml;rfr&aring;gan
     som denna server inte kunde f&ouml;rst&aring;.
@@ -78,9 +78,9 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Richiesta incomprensibile!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Richiesta incomprensibile!"
+--><!--#include virtual="include/top.html" -->
 
     Il tuo browser (o il proxy) ha inviato a
     questo server una richiesta incomprensibile.
@@ -91,11 +91,13 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Requisi&ccedil;&atilde;o Inv&aacute;lida!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Requisi&ccedil;&atilde;o Inv&aacute;lida!"
+--><!--#include virtual="include/top.html" -->
 
     Seu "browser" (ou o servidor proxy) enviou uma
     requisi&ccedil;&atilde;o inv&aacute;lida ao servidor.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+

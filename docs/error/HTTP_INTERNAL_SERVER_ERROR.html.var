@@ -1,9 +1,9 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Serverfehler!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Serverfehler!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
@@ -30,8 +30,8 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Server error!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Server error!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
@@ -57,9 +57,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Server error!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Server error!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
@@ -87,9 +87,9 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Erreur du serveur!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Erreur du serveur!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
@@ -116,9 +116,9 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Server fout!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Server fout!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
@@ -141,9 +141,9 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Serverfel!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Serverfel!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
@@ -169,9 +169,9 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Errore del server!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Errore del server!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
@@ -198,8 +198,9 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Erro interno do Servidor!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Erro interno do Servidor!"
+--><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     
@@ -222,3 +223,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+
