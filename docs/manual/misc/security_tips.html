@@ -24,14 +24,14 @@ the suggestions will be general, others specific to Apache.
 
 <H2>Permissions on Log File Directories</H2>
 <P>When Apache starts, it opens the log files as the user who started the
-server before switching to the user defined in the 
+server before switching to the user defined in the
 <a href="../mod/core.html#user"><b>User</b></a> directive.  Anyone who
 has write permission for the directory where any log files are
 being written to can append pseudo-arbitrary data to any file on the
 system which is writable by the user who starts Apache.  Since the
 server is normally started by root, you should <EM>NOT</EM> give anyone
 write permission to the directory where logs are stored unless you
-want them to have root access. 
+want them to have root access.
 <P>
 <HR>
 <H2>Server Side Includes</H2>

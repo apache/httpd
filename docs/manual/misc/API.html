@@ -59,7 +59,7 @@ coming up, and in what order:
 
 <h2><a name="basics">Basic concepts.</a></h2>
 
-We begin with an overview of the basic concepts behind the 
+We begin with an overview of the basic concepts behind the
 API, and how they are manifested in the code.
 
 <h3><a name="HMR">Handlers, Modules, and Requests</a></h3>
@@ -78,7 +78,7 @@ might be useful in the future).  These are:
   <li> `Fixups' --- there aren't any of these yet, but the phase is
        intended as a hook for possible extensions like
        <code>SetEnv</code>, which don't really fit well elsewhere.
-  <li> Actually sending a response back to the client.  
+  <li> Actually sending a response back to the client.
   <li> Logging the request
 </ul>
 
@@ -89,7 +89,7 @@ one of three things:
 
 <ul>
   <li> <em>Handle</em> the request, and indicate that it has done so
-       by returning the magic constant <code>OK</code>.  
+       by returning the magic constant <code>OK</code>.
   <li> <em>Decline</em> to handle the request, by returning the magic
        integer constant <code>DECLINED</code>.  In this case, the
        server behaves in all respects as if the handler simply hadn't
@@ -160,7 +160,7 @@ sometimes of use to the function which processes a config-file command
 (such as <code>ScriptAlias</code>).
 
 With no further ado, the module itself:
- 
+
 <pre>
 /* Declarations of handlers. */
 
@@ -273,17 +273,17 @@ struct request_rec {
   server_rec *server;
 
   /* What object is being requested */
-  
+
   char *uri;
   char *filename;
   char *path_info;
   char *args;           /* QUERY_ARGS, if any */
   struct stat finfo;    /* Set by server core;
                          * st_mode set to zero if no such file */
-  
+
   char *content_type;
   char *content_encoding;
-  
+
   /* MIME header environments, in and out.  Also, an array containing
    * environment variables to be passed to subprocesses, so people can
    * write modules to add to that environment.
@@ -293,14 +293,14 @@ struct request_rec {
    * redirects (so the headers printed for ErrorDocument handlers will
    * have them).
    */
-  
+
   table *headers_in;
   table *headers_out;
   table *err_headers_out;
   table *subprocess_env;
 
   /* Info about the request itself... */
-  
+
   int header_only;     /* HEAD request, as opposed to GET */
   char *protocol;      /* Protocol, as given to us, or HTTP/0.9 */
   char *method;        /* GET, HEAD, POST, etc. */
@@ -321,10 +321,10 @@ struct request_rec {
    * These are config vectors, with one void* pointer for each module
    * (the thing pointed to being the module's business).
    */
-  
+
   void *per_dir_config;   /* Options set in config files, etc. */
   void *request_config;   /* Notes on *this* request */
-  
+
 };
 
 </pre>
@@ -426,14 +426,14 @@ int default_handler (request_rec *r)
 {
     int errstatus;
     FILE *f;
-    
+
     if (r-&gt;method_number != M_GET) return DECLINED;
     if (r-&gt;finfo.st_mode == 0) return NOT_FOUND;
 
     if ((errstatus = set_content_length (r, r-&gt;finfo.st_size))
         || (errstatus = set_last_modified (r, r-&gt;finfo.st_mtime)))
         return errstatus;
-    
+
     f = fopen (r-&gt;filename, "r");
 
     if (f == NULL) {
@@ -441,7 +441,7 @@ int default_handler (request_rec *r)
                    r-&gt;filename, r);
         return FORBIDDEN;
     }
-      
+
     register_timeout ("send", r);
     send_http_header (r);
 
@@ -491,7 +491,7 @@ pointers.  The <code>request_rec</code> which is passed to the logging
 handlers in such cases is the one which was originally built for the
 initial request from the client; note that the bytes_sent field will
 only be correct in the last request in the chain (the one for which a
-response was actually sent). 
+response was actually sent).
 
 <h2><a name="pools">Resource allocation and resource pools</a></h2>
 
@@ -641,7 +641,7 @@ in cases where your module is opening, or could open, a lot of files).
 <h3>Other sorts of resources --- cleanup functions</h3>
 
 More text goes here.  Describe the the cleanup primitives in terms of
-which the file stuff is implemented; also, <code>spawn_process</code>. 
+which the file stuff is implemented; also, <code>spawn_process</code>.
 
 <h3>Fine control --- creating and dealing with sub-pools, with a note
 on sub-requests</h3>
@@ -783,7 +783,7 @@ void *create_mime_dir_config (pool *p, char *dummy)
 
     new-&gt;forced_types = make_table (p, 4);
     new-&gt;encoding_types = make_table (p, 4);
-    
+
     return new;
 }
 </pre>
@@ -876,9 +876,9 @@ look like this:
 
 <pre>
 command_rec mime_cmds[] = {
-{ "AddType", add_type, NULL, OR_FILEINFO, TAKE2, 
+{ "AddType", add_type, NULL, OR_FILEINFO, TAKE2,
     "a mime type followed by a file extension" },
-{ "AddEncoding", add_encoding, NULL, OR_FILEINFO, TAKE2, 
+{ "AddEncoding", add_encoding, NULL, OR_FILEINFO, TAKE2,
     "an encoding (e.g., gzip), followed by a file extension" },
 { NULL }
 };
@@ -919,7 +919,7 @@ The entries in these tables are:
        should be present.  If the arguments in the actual config file
        are not as required, this string will be used to help give a
        more specific error message.  (You can safely leave this
-       <code>NULL</code>). 
+       <code>NULL</code>).
 </ul>
 
 Finally, having set this all up, we have to use it.  This is
@@ -942,7 +942,7 @@ int find_ct(request_rec *r)
         r-&gt;content_type = DIR_MAGIC_TYPE;
         return OK;
     }
-    
+
     if((i=rind(fn,'.')) &lt; 0) return DECLINED;
     ++i;
 
@@ -961,7 +961,7 @@ int find_ct(request_rec *r)
     {
         r-&gt;content_type = type;
     }
-    
+
     return OK;
 }
 
@@ -995,7 +995,7 @@ char *add_redirect(cmd_parms *cmd, void *dummy, char *f, char *url)
     alias_entry *new = push_array (conf-&gt;redirects);
 
     if (!is_url (url)) return "Redirect to non-URL";
-    
+
     new-&gt;fake = f; new-&gt;real = url;
     return NULL;
 }

@@ -397,14 +397,14 @@ one of four things,
 <LI>redirect to an external URL to handle the problem/error
 </OL>
 
-<P>The first option is the default, while options 2-4 are configured 
-using the <CODE>ErrorDocument</CODE> directive, which is followed by 
+<P>The first option is the default, while options 2-4 are configured
+using the <CODE>ErrorDocument</CODE> directive, which is followed by
 the HTTP response code and a message or URL.
 
 <P><em>Messages</em> in this context begin with a single quote
-(<code>"</code>), which does not form part of the message itself. 
-Apache will sometimes offer additional information regarding the 
-problem/error. 
+(<code>"</code>), which does not form part of the message itself.
+Apache will sometimes offer additional information regarding the
+problem/error.
 
 <P>URLs can begin with a slash (/) for local URLs, or be a full
 URL which the client can resolve. Examples:
@@ -415,10 +415,10 @@ ErrorDocument 401 /subscription_info.html<br>
 ErrorDocument 403 "Sorry can't allow you access today
 </code></blockquote>
 
-<P>Note that when you specify an <CODE>ErrorDocument</CODE> that 
-points to a remote URL (ie. anything with a method such as "http" in 
+<P>Note that when you specify an <CODE>ErrorDocument</CODE> that
+points to a remote URL (ie. anything with a method such as "http" in
 front of it) Apache will send a redirect to the client to tell it
-where to find the document, even if the document ends up being 
+where to find the document, even if the document ends up being
 on the same server..  This has several implications, the
 most important being that <STRONG>if you use an "ErrorDocument 401"
 directive then it must refer to a local document.</STRONG>  This results
@@ -441,7 +441,7 @@ Example:
 <blockquote><code>ErrorLog /dev/null</code></blockquote>
 This effectively turns off error logging.<p>
 
-SECURITY: See the <A HREF="../misc/security_tips.html">security tips</A> 
+SECURITY: See the <A HREF="../misc/security_tips.html">security tips</A>
 document for details on why your security could be compromised if
 the directory where logfiles are stored is writable by anyone other
 than the user that starts the server.
@@ -467,9 +467,10 @@ order they appear in the configuration file, after the
 &lt;Directory&gt; sections and <code>.htaccess</code> files are
 read, but before &lt;Location&gt; sections.</p>
 
-<p>The <em>filename</em> argument should include a filename, or a 
+<p>The <em>filename</em> argument should include a filename, or a
 wild-card string, where `?' matches any single character, and `*' matches any
-sequences of characters. Extended regular expressions can also be used, with the addition of
+sequences of characters. Extended regular expressions can also be used,
+with the addition of
 the <code>~</code> character. For example:</p>
 
 <pre>
@@ -670,7 +671,7 @@ versions after 1.2.0.<p>
 
 The maximum length of the queue of pending connections.  Generally no
 tuning is needed or desired, however on some systems it is desirable
-to increase this when under a TCP SYN flood attack.  See 
+to increase this when under a TCP SYN flood attack.  See
 the backlog parameter to the <code>listen(2)</code> system call.
 
 <h2><A name="limit">&lt;Limit&gt; directive</A></h2>
@@ -852,7 +853,7 @@ See also <A HREF="#maxspareservers">MaxSpareServers</A> and
 <strong>Status:</strong> core<p>
 
 The Options directive controls which server features are available in
-a particular directory. 
+a particular directory.
 <p>
 <em>option</em> can be set to <code>None</code>, in which case none of
 the extra features are enabled, or one or more of the following:
@@ -982,7 +983,7 @@ listens at.
 sets the <code>SERVER_PORT</code> environment variable (for
 <a href="mod_cgi.html">CGI</a> and <a href="mod_include.html">SSI</a>),
 and is used when the server must generate a URL that refers to itself
-(for example when creating an external redirect to itself).  
+(for example when creating an external redirect to itself).
 </ul>
 
 In no event does a Port setting affect
@@ -1065,7 +1066,7 @@ sections; in fact it can now contain any server directive allowed in the
 
 See also <A HREF="#accessconfig">AccessConfig</A>.<p><hr>
 
-<H2><A name="rlimit">RLimitCPU</A> <A NAME="rlimit">directive</A></H2>
+<H2><A name="rlimit">RLimitCPU</A> <A NAME="rlimitcpu">directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
 <strong>Syntax:</strong> RLimitCPU <em># or 'max'</em> <em>[# or 'max']</em><br>
 <strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
@@ -1335,7 +1336,7 @@ wait for three things:
   <LI>The total amount of time it takes to receive a GET request.
   <LI>The amount of time between receipt of TCP packets on a POST or
       PUT request.
-  <LI>The amount of time between ACKs on transmissions of TCP packets 
+  <LI>The amount of time between ACKs on transmissions of TCP packets
       in responses.
 </OL>
 
@@ -1400,7 +1401,7 @@ Apache 1.2 and later.<p>
 
 &lt;VirtualHost&gt; and &lt;/VirtualHost&gt; are used to enclose a group of
 directives which will apply only to a particular virtual host.
-Any directive which is allowed in a virtual host context may be used. 
+Any directive which is allowed in a virtual host context may be used.
 When the server receives a request for a document on a particular virtual
 host, it uses the configuration directives enclosed in the &lt;VirtualHost&gt;
 section. <em>Addr</em> can be
@@ -1440,7 +1441,7 @@ may also specify <code>:*</code> to match all ports on that address.
 (This is recommended when used with <code>_default_</code>.)<p>
 
 <strong>SECURITY</strong>: See the
-<A HREF="../misc/security_tips.html">security tips</A> 
+<A HREF="../misc/security_tips.html">security tips</A>
 document for details on why your security could be compromised if
 the directory where logfiles are stored is writable by anyone other
 than the user that starts the server.
