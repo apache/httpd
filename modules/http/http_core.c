@@ -3218,6 +3218,8 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
  */
 static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
+#define ASCII_CRLF  "\015\012"
+#define ASCII_ZERO  "\060"
     ap_bucket_brigade *more = NULL;
     ap_bucket *e;
     apr_status_t rv;
@@ -3282,6 +3284,15 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
             /* XXX might be nice to have APR_OFF_T_FMT_HEX */
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%qx" CRLF, (apr_uint64_t)bytes);
+#ifdef CHARSET_EBCDIC
+            {
+                apr_size_t inbytes_left = hdr_len, outbytes_left = hdr_len;
+
+                apr_xlate_conv_buffer(ap_hdrs_to_ascii,
+                                      chunk_hdr, &inbytes_left,
+                                      chunk_hdr, &outbytes_left);
+            }
+#endif
             e = ap_bucket_create_transient(chunk_hdr, hdr_len);
             AP_BRIGADE_INSERT_HEAD(b, e);
 
@@ -3289,7 +3300,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
              * Insert the end-of-chunk CRLF before the EOS bucket, or
              * appended to the brigade
              */
-            e = ap_bucket_create_immortal(CRLF, 2);
+            e = ap_bucket_create_immortal(ASCII_CRLF, 2);
             if (eos != NULL) {
                 AP_BUCKET_INSERT_BEFORE(eos, e);
             }
@@ -3313,7 +3324,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
          */
         if (eos != NULL) {
             /* XXX: (2) trailers ... does not yet exist */
-            e = ap_bucket_create_immortal("0" CRLF /* <trailers> */ CRLF, 5);
+            e = ap_bucket_create_immortal(ASCII_ZERO ASCII_CRLF /* <trailers> */ ASCII_CRLF, 5);
             AP_BUCKET_INSERT_BEFORE(eos, e);
         }
 
