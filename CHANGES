@@ -6,7 +6,7 @@ Changes with Apache 2.0.51
      proxy request to an SSL server.  PR 30134.  [Joe Orton]
 
   *) mod_rewrite: Add %{SSL:...} and %{HTTPS} variable lookups.
-     PR 30464.  [Joe Orton]
+     PR 30464.  [Joe Orton, Madhusudan Mathihalli]
 
   *) mod_ssl: Add new 'ssl_is_https' optional function.  [Joe Orton]
 
