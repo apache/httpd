@@ -1423,6 +1423,15 @@ for module in $modules; do
 done
 IFS="$OIFS"
 
+# translate module names to dll names for OS/2 so that they are no more
+# than 8 characters long and have an extension of "dll" instead of "so"
+case $PLATFORM in
+    *OS/2* ) 
+        echo $SEO "s%/mod_\\(.\\{1,8\\}\\).*\\.so%/\\1\\.dll%" >>$sedsubst
+        echo $SEO "s%/\\(lib.*\\)\\.so$%/\\1.dll%" >>$sedsubst
+        ;;
+esac
+
 #   split sedsubst into chunks of 50 commands
 #   to workaround limits in braindead seds
 files=`$AWK <$sedsubst '
