@@ -76,8 +76,6 @@ Changes with Apache 2.1.0-dev
   *) mod_rewrite: RewriteRules in server context using the force
      type feature [T=...] no longer disable MultiViews.  [André Malo]
 
-  *) ab: Work over non-loopback on Unix again. PR 21495. [Jeff Trawick]
-
   *) mod_rewrite: In external rewrite maps lookup keys containing
      a newline now cause a lookup failure. PR 14453.
      [Cedric Gavage <cedric.gavage@unixtech.be>, André Malo]
@@ -260,6 +258,8 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) ab: Work over non-loopback on Unix again. PR 21495. [Jeff Trawick]
 
   *) Fix a misleading message from the some of the threaded MPMs when 
      MaxClients has to be lowered due to the setting of ServerLimit.  
