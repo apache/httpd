@@ -160,11 +160,14 @@ Module config_log_module   mod_log_config.o
 ## of HTTP headers at the beginning of the document.  mod_imap handles internal 
 ## imagemaps (no more cgi-bin/imagemap/!).  mod_actions is used to specify 
 ## CGI scripts which act as "handlers" for particular files, for example to
-## automatically convert every GIF to another file type.
+## automatically convert every GIF to another file type. mod_browser lets
+## you set environment variables based on the User-Agent string; this is
+## useful for conditional HTML, for example.
 
 Module asis_module         mod_asis.o
 Module imap_module         mod_imap.o
 Module action_module       mod_actions.o
+Module browser_module      mod_browser.o
 
 ## Optional modules for NCSA user-agent/referer logging compatibility
 ## We recommend, however, that you migrate to the configurable logging
