@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/18 00:53:58 $]
+Last modified at [$Date: 2004/10/19 00:07:54 $]
 
 Release:
 
@@ -79,7 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
        Currently any use of CacheDisable disables all caching. 
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c?r1=1.93&r2=1.94
        PR: 31128
-       +1: pquerna
+       +1: pquerna, stoddard
 
     *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
          modules/ldap/util_ldap.c: 1.16
