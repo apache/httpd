@@ -66,32 +66,6 @@ accepting requests on network sockets</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>BS2000Account</name>
-<description>Define the non-privileged account on BS2000
-machines</description>
-<syntax>BS2000Account <var>account</var></syntax>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>perchild</module><module>prefork</module></modulelist>
-<compatibility>Only available for BS2000 machines</compatibility>
-
-<usage>
-    <p>The <directive>BS2000Account</directive> directive is available for
-    BS2000 hosts only. It must be used to define the account number for
-    the non-privileged apache server user (which was configured using the
-    <directive module="mpm_common">User</directive> directive). This is
-    required by the BS2000 POSIX subsystem (to change the underlying BS2000
-    task environment by performing a sub-LOGON) to prevent CGI scripts
-    from accessing resources of the privileged account which started the
-    server, usually <code>SYSROOT</code>.</p>
-
-    <note><title>Note</title>
-      <p>Only one <code>BS2000Account</code> directive can be used.</p>
-    </note>
-</usage>
-<seealso><a href="../platform/ebcdic.html">Apache EBCDIC port</a></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CoreDumpDirectory</name>
 <description>Directory where Apache attempts to
 switch before dumping core</description>

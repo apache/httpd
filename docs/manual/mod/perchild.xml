@@ -125,8 +125,6 @@ uses</a></seealso>
 
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>BS2000Account</name>
-</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Group</name>

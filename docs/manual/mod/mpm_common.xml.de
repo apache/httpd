@@ -73,35 +73,6 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>BS2000Account</name>
-<description>Bestimmt den nicht-privilegierten Account auf
-BS2000-Maschinen</description>
-<syntax>BS2000Account <var>Account</var></syntax>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>perchild</module><module>prefork</module></modulelist>
-<compatibility>Nur f&uuml;r BS2000-Maschinen verf&uuml;gbar</compatibility>
-
-<usage>
-    <p>Die Direktive <directive>BS2000Account</directive> ist nur
-    f&uuml;r BS2000-Hosts verf&uuml;gbar. Sie muss dazu verwendet werden,
-    den Account f&uuml;r den nicht-privilegierten Apache-Server-Benutzer
-    (der durch die Direktive <directive module="mpm_common">User</directive>
-    eingestellt wird) zu bestimmen. Dies wird vom BS2000-POSIX-Subsystem
-    ben&ouml;tigt (um die zugrundeliegende BS2000-Anwendungsumgebung
-    mittels eines Sub-LOGONs zu wechseln), um zu verhindern, dass
-    CGI-Skripte auf Ressourcen des privilegierten Accounts zugreifen, der
-    den Server gestartet hat, &uuml;blicherweise <code>SYSROOT</code>.</p>
-
-    <note><title>Anmerkung</title>
-      <p>Es kann nur eine <code>BS2000Account</code>-Direktive verwendet
-      werden.</p>
-    </note>
-</usage>
-<seealso><a
-  href="../platform/ebcdic.html">Apache-EBCDIC-Portierung</a></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CoreDumpDirectory</name>
 <description>Verzeichnis, in das der Apache zu wechseln versucht, bevor er
   einen Hauptspeicherauszug erstellt</description>
