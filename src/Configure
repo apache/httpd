@@ -1416,7 +1416,7 @@ $(LIB): $(OBJS)
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 .c.so:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) -o $*-so.o $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) $< && mv $*.o $*-so.o
 	$(LD) $(LDFLAGS_SHLIB) -o $@ $*-so.o
 
 clean:
