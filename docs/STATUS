@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/05 10:21:51 $
+Last modified: $Date: 2002/09/05 19:21:52 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -17,7 +17,7 @@ tutorial on how to get started with making your contribution.
       and b) use proper CSS+html rather than the horrible hack that
       Joshua did (in progress).
     - Rewriting of the remainder of the manual into xml is in
-      progress.
+      progress.  See the bottom of this file for status info.
 
 - modules docs
     - mod_suexec: very little documentation
@@ -75,11 +75,6 @@ New User documentation
 
 * Directory Handling (mod_dir/mod_autoindex/etc)
 
-* Sections (<Directory>/<Files>/<Location>)
-  - I think this should be a priority.  A rewrite of /sections.html would
-    be a good place to start.  That document is too technical and 
-    insufficiently verbose for the average user.
-
 Documentation improvements
 ==========================
 
@@ -107,4 +102,106 @@ Documentation improvements
 
 * regex: We should at least document someplace what regex library we
   are using and how to find more information about it
+
+XML Conversions
+===============
+
+The following files need to be converted to XML as described at
+http://httpd.apache.org/docs-project/docsformat.html
+
+dns-caveats.html
+ebcdic.html                        # Perhaps move to platform/
+footer.html                        # delete after finishing manual/ 
+glossary.html
+header.html                        # delete after finishing manual/ 
+custom-error.html.en
+index.html.en                      # leave in html?
+cgi_path.html.en
+sitemap.html.en
+howto/cgi.html.en
+howto/ssi.html.en
+howto/auth.html.en
+howto/footer.html                  # delete after finishing howto/ 
+howto/header.html                  # delete after finishing howto/ 
+misc/custom_errordocs.html         # obsolete?
+misc/descriptors.html              # obsolete?
+misc/fin_wait_2.html               # obsolete?
+misc/footer.html                   # delete after finishing misc/ 
+misc/header.html                   # delete after finishing misc/ 
+misc/index.html
+misc/known_client_problems.html    # obsolete?
+misc/perf-tuning.html              
+misc/rewriteguide.html
+misc/tutorials.html                # obsolete?
+mod/module-dict.html.en
+mod/directive-dict.html.en
+mod/footer.html                    # delete after finishing mod/ directory
+mod/header.html                    # delete after finishing mod/ directory
+platform/footer.html               # delete after finishing platform/
+platform/header.html               # delete after finishing platform/
+platform/netware.html
+platform/perf-hp.html
+platform/win_compiling.html
+platform/win_service.html
+platform/windows.html
+ssl/footer.html                    # delete after finishing ssl/
+ssl/header.html                    # delete after finishing ssl/
+ssl/index.html.en
+ssl/ssl_compat.html
+ssl/ssl_faq.html
+ssl/ssl_glossary.html              # delete.  replaced by ../glossary.html
+ssl/ssl_howto.html
+ssl/ssl_intro.html
+vhosts/details.html
+vhosts/examples.html
+vhosts/footer.html                 # delete after finishing vhosts/
+vhosts/header.html                 # delete after finishing vhosts/
+vhosts/ip-based.html
+vhosts/mass.html
+vhosts/index.html.en
+vhosts/fd-limits.html.en
+vhosts/name-based.html.en
+expand.pl                          # delete after finishing everything
+
+# These will require manual.xsl changes
+faq/footer.html                    
+faq/header.html
+faq/index.html
+faq/support.html
+
+# Perhaps these should be left in html to allow the developers to
+# play with them
+developer/API.html
+developer/debugging.html
+developer/documenting.html
+developer/filters.html
+developer/footer.html
+developer/header.html
+developer/hooks.html
+developer/index.html
+developer/layeredio.html
+developer/request.html
+developer/thread_safety.html
+developer/modules.html.en
+
+# These are currently generated from nroff, but nobody is editting
+# the nroff sources.  Should we just convert to pure xml and forget
+# about man pages?
+programs/ab.html
+programs/apachectl.html
+programs/apxs.html
+programs/dbmmanage.html
+programs/footer.html
+programs/header.html
+programs/htdigest.html
+programs/htpasswd.html
+programs/httpd.html
+programs/index.html
+programs/logresolve.html
+programs/other.html
+programs/rotatelogs.html
+programs/suexec.html
+
+
+
 
