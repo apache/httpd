@@ -318,8 +318,7 @@ SOURCE=.\modules\filters\mod_include.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\mod_isapi.c
-# ADD CPP /I "."
+SOURCE=.\modules\arch\win32\mod_isapi.c
 # End Source File
 # Begin Source File
 
