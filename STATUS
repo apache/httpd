@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/05/04 18:49:28 $]
+Last modified at [$Date: 2001/05/07 16:59:05 $]
 
 Release:
 
@@ -237,10 +237,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       what we do right now just doesn't seem to fully fit into how autoconf
       works, eg. AC_PREFIX_DEFAULT issues.
         Message-ID: <Pine.BSF.4.20.0104031557420.20876-100000@alive.znep.com>
-
-    * mod_status ExtendedStatus SS (seconds since last request) is
-      bogus because of an uninitialized field in the scoreboard.
-        Status: Cliff is working on this
 
     * All of our MPMs should use APR for threads/processes.  This 
       will allow us to error out if a threaded MPM is chosen on a
