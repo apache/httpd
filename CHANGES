@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Modify the module documentation to allow for translations.
+     [Yoshiki Hayashi, Joshua Slive]
+
   *) Fix a file permissions problem which prevented mod_disk_cache
      from working on Unix.  [Jeff Trawick]
 
