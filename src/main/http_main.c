@@ -540,8 +540,8 @@ static void accept_mutex_on(void)
 	continue;
 
     if (ret < 0) {
-	log_unixerr("fcntl", "F_SETLKW", "Error getting accept lock. Exiting!",
-		    server_conf);
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
+		    "fcntl: F_SETLKW: Error getting accept lock. Exiting!");
 	exit(1);
     }
 }
@@ -550,8 +550,8 @@ static void accept_mutex_off(void)
 {
     if (fcntl (lock_fd, F_SETLKW, &unlock_it) < 0)
     {
-	log_unixerr("fcntl", "F_SETLKW", "Error freeing accept lock. Exiting!",
-		    server_conf);
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
+		    "fcntl: F_SETLKW: Error freeing accept lock. Exiting!");
 	exit(1);
     }
 }
@@ -571,10 +571,9 @@ static void accept_mutex_init(pool *p)
 
     expand_lock_fname (p);
     lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
-    if (lock_fd == -1)
-    {
-	perror ("open");
-	fprintf (stderr, "Cannot open lock file: %s\n", lock_fname);
+    if (lock_fd == -1) {
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
+		    "Cannot open lock file: %s\n", lock_fname);
 	exit (1);
     }
     unlink(lock_fname);
@@ -588,8 +587,8 @@ static void accept_mutex_on(void)
 	continue;
 
     if (ret < 0) {
-	log_unixerr("flock", "LOCK_EX", "Error getting accept lock. Exiting!",
-		    server_conf);
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
+		    "flock: LOCK_EX: Error getting accept lock. Exiting!");
 	exit(1);
     }
 }
@@ -598,8 +597,8 @@ static void accept_mutex_off(void)
 {
     if (flock (lock_fd, LOCK_UN) < 0)
     {
-	log_unixerr("flock", "LOCK_UN", "Error freeing accept lock. Exiting!",
-		    server_conf);
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
+		    "flock: LOCK_UN: Error freeing accept lock. Exiting!");
 	exit(1);
     }
 }
@@ -691,17 +690,17 @@ void timeout(int sig)			/* Also called on SIGPIPE */
     else dirconf = current_conn->server->lookup_defaults;
     if (sig == SIGPIPE) {
         ap_snprintf(errstr, sizeof(errstr), "%s lost connection to client %s",
-	    timeout_name ? timeout_name : "request",
-	    get_remote_host(current_conn, dirconf, REMOTE_NAME));
+		    timeout_name ? timeout_name : "request",
+		    get_remote_host(current_conn, dirconf, REMOTE_NAME));
     } else {
         ap_snprintf(errstr, sizeof(errstr), "%s timed out for %s",
-	    timeout_name ? timeout_name : "request",
-	    get_remote_host(current_conn, dirconf, REMOTE_NAME));
+		    timeout_name ? timeout_name : "request",
+		    get_remote_host(current_conn, dirconf, REMOTE_NAME));
     }
     
     if (!current_conn->keptalive) 
-       log_error(errstr, current_conn->server);
-      
+	aplog_error(APLOG_MARK, APLOG_WARNING, current_conn->server, errstr);
+          
     if (timeout_req) {
 	/* Someone has asked for this transaction to just be aborted
 	 * if it times out...
@@ -930,7 +929,7 @@ static void sock_enable_linger (int s)
 
     if (setsockopt(s, SOL_SOCKET, SO_LINGER,
                    (char *)&li, sizeof(struct linger)) < 0) {
-        log_unixerr("setsockopt", "(SO_LINGER)", NULL, server_conf);
+        aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "setsockopt: (SO_LINGER)");
         /* not a fatal error */
     }
 }
@@ -1231,7 +1230,7 @@ static void setup_shared_mem(void)
     }
 
     ap_snprintf(errstr, sizeof(errstr), "created shared memory segment #%d", shmid);
-    log_error(errstr, server_conf);
+    aplog_error(APLOG_MARK, APLOG_INFO, server_conf, errstr);
 
 #ifdef MOVEBREAK
     /*
@@ -1282,8 +1281,10 @@ static void setup_shared_mem(void)
     if (shmctl(shmid, IPC_RMID, NULL) != 0) {
 	perror("shmctl");
 	fprintf(stderr, "httpd: Could not delete segment #%d\n", shmid);
-	ap_snprintf(errstr, sizeof(errstr), "could not remove shared memory segment #%d", shmid);
-	log_unixerr("shmctl","IPC_RMID",errstr, server_conf);
+	ap_snprintf(errstr, sizeof(errstr),
+		    "could not remove shared memory segment #%d", shmid);
+	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+		    "shmctl: IPC_RMID: %s", errstr);
     }
     if (scoreboard_image == BADSHMAT)	/* now bailout */
 	exit(1);
@@ -1628,17 +1629,23 @@ static void reclaim_child_processes (int start_tries)
 		    switch (tries) {
 		    case 1:
 			/* perhaps it missed the SIGHUP, lets try again */
-			log_printf(server_conf, "child process %d did not exit, sending another SIGHUP", pid);
+			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+				    "child process %d did not exit, sending another SIGHUP",
+				    pid);
 			kill(pid, SIGHUP);
 			break;
 		    case 2:
 			/* ok, now it's being annoying */
-			log_printf(server_conf, "child process %d still did not exit, sending a SIGTERM", pid);
+			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+				    "child process %d still did not exit, sending a SIGTERM",
+				    pid);
 			kill(pid, SIGTERM);
 			break;
 		    case 3:
 			/* die child scum */
-			log_printf(server_conf, "child process %d still did not exit, sending a SIGKILL", pid);
+			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+				    "child process %d still did not exit, sending a SIGKILL",
+				    pid);
 			kill(pid, SIGKILL);
 			break;
 		    case 4:
@@ -1647,7 +1654,9 @@ static void reclaim_child_processes (int start_tries)
 			 * exited, we will likely fail to bind to the port
 			 * after the restart.
 			 */
-			log_printf(server_conf, "could not make child process %d exit, attempting to continue anyway", pid);
+			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+				    "could not make child process %d exit, attempting to continue anyway",
+				    pid);
 			break;
 		    }
 		}
@@ -1752,8 +1761,9 @@ void bus_error(int sig) {
     char emsg[256];
 
     ap_snprintf(emsg, sizeof(emsg), 
-        "httpd: caught SIGBUS, attempting to dump core in %s", coredump_dir);
-    log_error(emsg, server_conf);
+		"httpd: caught SIGBUS, attempting to dump core in %s",
+		coredump_dir);
+    aplog_error(APLOG_MARK, APLOG_INFO, server_conf, emsg);
     chdir(coredump_dir);
     abort();         
     exit(1);
@@ -1763,8 +1773,9 @@ void seg_fault(int sig) {
     char emsg[256];
 
     ap_snprintf(emsg, sizeof(emsg), 
-        "httpd: caught SIGSEGV, attempting to dump core in %s", coredump_dir);
-    log_error(emsg, server_conf);
+		"httpd: caught SIGSEGV, attempting to dump core in %s",
+		coredump_dir);
+    aplog_error(APLOG_MARK, APLOG_INFO, server_conf, emsg);
     chdir(coredump_dir);
     abort();
     exit(1);
@@ -1829,38 +1840,38 @@ void set_signals(void)
 
     if (!one_process) {
 	sa.sa_handler = seg_fault;
-	if (sigaction (SIGSEGV, &sa, NULL) < 0)
-	    log_unixerr ("sigaction(SIGSEGV)", NULL, NULL, server_conf);
+	if (sigaction(SIGSEGV, &sa, NULL) < 0)
+	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGSEGV)");
 	sa.sa_handler = bus_error;
-	if (sigaction (SIGBUS, &sa, NULL) < 0)
-	    log_unixerr ("sigaction(SIGBUS)", NULL, NULL, server_conf);
+	if (sigaction(SIGBUS, &sa, NULL) < 0)
+	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGBUS)");
     }
     sa.sa_handler = sig_term;
-    if (sigaction (SIGTERM, &sa, NULL) < 0)
-	log_unixerr ("sigaction(SIGTERM)", NULL, NULL, server_conf);
+    if (sigaction(SIGTERM, &sa, NULL) < 0)
+	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGTERM)");
 
     /* we want to ignore HUPs and USR1 while we're busy processing one */
-    sigaddset (&sa.sa_mask, SIGHUP);
-    sigaddset (&sa.sa_mask, SIGUSR1);
+    sigaddset(&sa.sa_mask, SIGHUP);
+    sigaddset(&sa.sa_mask, SIGUSR1);
     sa.sa_handler = restart;
-    if (sigaction (SIGHUP, &sa, NULL) < 0)
-	log_unixerr ("sigaction(SIGHUP)", NULL, NULL, server_conf);
-    if (sigaction (SIGUSR1, &sa, NULL) < 0)
-	log_unixerr ("sigaction(SIGUSR1)", NULL, NULL, server_conf);
+    if (sigaction(SIGHUP, &sa, NULL) < 0)
+	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGHUP)");
+    if (sigaction(SIGUSR1, &sa, NULL) < 0)
+	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGUSR1)");
 #else
     if(!one_process) {
-	signal (SIGSEGV, seg_fault);
+	signal(SIGSEGV, seg_fault);
 #ifdef SIGBUS
-    	signal (SIGBUS, bus_error);
+    	signal(SIGBUS, bus_error);
 #endif /* SIGBUS */
     }
 
-    signal (SIGTERM, sig_term);
+    signal(SIGTERM, sig_term);
 #ifdef SIGHUP
-    signal (SIGHUP, restart);
+    signal(SIGHUP, restart);
 #endif /* SIGHUP */
 #ifdef SIGUSR1
-    signal (SIGUSR1, restart);
+    signal(SIGUSR1, restart);
 #endif /* SIGUSR1 */
 #endif
 }
@@ -1940,7 +1951,8 @@ static void set_group_privs(void)
       uid_t uid=atoi(&user_name[1]);
 
       if ((ent = getpwuid(uid)) == NULL) {
-	 log_unixerr("getpwuid",NULL,"couldn't determine user name from uid", server_conf);
+	 aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
+		     "getpwuid: couldn't determine user name from uid");
 	 exit(1);
       }
       
@@ -1953,17 +1965,20 @@ static void set_group_privs(void)
     /* Reset `groups' attributes. */
     
     if (initgroups(name, group_id) == -1) {
-	log_unixerr("initgroups", NULL, "unable to set groups", server_conf);
+	aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
+		    "initgroups: unable to set groups");
 	exit (1);
     }
 #ifdef MULTIPLE_GROUPS
     if (getgroups(NGROUPS_MAX, group_id_list) == -1) {
-	log_unixerr("getgroups", NULL, "unable to get group list", server_conf);
+	aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
+		    "getgroups: unable to get group list");
 	exit (1);
     }
 #endif
     if (setgid(group_id) == -1) {
-	log_unixerr("setgid", NULL, "unable to set group id", server_conf);
+	aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
+		    "setgid: unable to set group id");
 	exit (1);
     }
 #endif 
@@ -2074,23 +2089,23 @@ static void dump_vhash_statistics (void)
     }
     qsort (count, VHASH_TABLE_SIZE, sizeof (count[0]), vhash_compare);
     p = buf + ap_snprintf (buf, sizeof (buf),
-	"vhash: total hashed = %u, avg chain = %u, #default = %u, "
-	"#name-vhost = %u, chain lengths (count x len):",
-	total, total / VHASH_TABLE_SIZE, count [VHASH_DEFAULT_BUCKET],
-	count [VHASH_MAIN_BUCKET]);
+			   "vhash: total hashed = %u, avg chain = %u, #default = %u, "
+			   "#name-vhost = %u, chain lengths (count x len):",
+			   total, total / VHASH_TABLE_SIZE, count [VHASH_DEFAULT_BUCKET],
+			   count [VHASH_MAIN_BUCKET]);
     total = 1;
     for (i = 1; i < VHASH_TABLE_SIZE; ++i) {
 	if (count[i-1] != count[i]) {
 	    p += ap_snprintf (p, sizeof (buf) - (p - buf), " %ux%u",
-		total, count[i-1]);
+			      total, count[i-1]);
 	    total = 1;
 	} else {
 	    ++total;
 	}
     }
-    p += ap_snprintf (p, sizeof (buf) - (p - buf), " %ux%u",
-	total, count[VHASH_TABLE_SIZE-1]);
-    log_error(buf, server_conf);
+    p += ap_snprintf(p, sizeof (buf) - (p - buf), " %ux%u",
+		     total, count[VHASH_TABLE_SIZE-1]);
+    aplog_error(APLOG_MARK, APLOG_DEBUG, server_conf, buf);
 }
 #endif
 
@@ -2262,7 +2277,8 @@ static void sock_disable_nagle (int s)
 
     if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
                    sizeof(int)) < 0) {
-        log_unixerr("setsockopt", "(TCP_NODELAY)", NULL, server_conf);
+        aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+		    "setsockopt: (TCP_NODELAY)");
     }
 }
 #else
@@ -2278,8 +2294,8 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     /* note that because we're about to slack we don't use psocket */
     block_alarms();
     if ((s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
-        log_unixerr("socket", NULL, "Failed to get a socket, exiting child",
-                    server_conf);
+        aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
+		    "socket: Failed to get a socket, exiting child");
 	unblock_alarms();
         exit(1);
     }
@@ -2302,15 +2318,17 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 
 #ifndef MPE
 /* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
-    if (setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) {
-        log_unixerr("setsockopt", "(SO_REUSEADDR)", NULL, server_conf);
+    if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *)&one, sizeof(int)) < 0) {
+        aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
+		    "setsockopt: (SO_REUSEADDR)");
         exit(1);
     }
     one = 1;
 #ifndef BEOS
 /* BeOS does not support SO_KEEPALIVE */
     if (setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&one,sizeof(int)) < 0) {
-        log_unixerr("setsockopt", "(SO_KEEPALIVE)", NULL, server_conf);
+        aplog_error(APLOG_MARK, APLOG_CRIT, server_conf,
+		    "setsockopt: (SO_KEEPALIVE)");
         exit(1);
     }
 #endif
@@ -2341,10 +2359,9 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #ifndef BEOS	/* BeOS does not support SO_SNDBUF */
     if (server_conf->send_buffer_size) {
         if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
-              (char *)&server_conf->send_buffer_size, sizeof(int)) < 0) {
-            log_unixerr("setsockopt", "(SO_SNDBUF)",
-                        "Failed to set SendBufferSize, using default",
-                        server_conf);
+		       (char *)&server_conf->send_buffer_size, sizeof(int)) < 0) {
+            aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+			"setsockopt: (SO_SNDBUF): Failed to set SendBufferSize, using default");
 	    /* not a fatal error */
 	}
     }
@@ -2354,8 +2371,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 /* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
     if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
 #endif
-    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
-    {
+    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1) {
         perror("bind");
 #ifdef MPE
         if (ntohs(server->sin_port) < 1024) GETUSERMODE();
@@ -2373,8 +2389,8 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif
 
     if (listen(s, listenbacklog) == -1) {
-	log_unixerr ("listen", NULL, "unable to listen for connections",
-	    server_conf);
+	aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    "listen: unable to listen for connections");
 	close (s);
 #ifdef WORKAROUND_SOLARIS_BUG
 	unblock_alarms();
@@ -2601,7 +2617,8 @@ void child_main(int child_num_arg)
     /* Only try to switch if we're running as root */
     if (!geteuid() && setuid(user_id) == -1) {
 #endif
-        log_unixerr("setuid", NULL, "unable to change uid", server_conf);
+        aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
+		    "setuid: unable to change uid");
 	exit (1);
     }
 #ifdef MPE
@@ -2676,8 +2693,8 @@ void child_main(int child_num_arg)
 		srv = ap_select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
 
 		if (srv < 0 && errno != EINTR)
-		    log_unixerr("select", "(listen)", NULL, server_conf);
-
+		    aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
+		
 		if (srv <= 0)
 		    continue;
 
@@ -2717,7 +2734,8 @@ void child_main(int child_num_arg)
 #elif defined(ECONNABORTED)
               if (errno != ECONNABORTED)
 #endif
-                log_unixerr("accept", "(client socket)", NULL, server_conf);
+		  aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+			      "accept: (client socket)");
             }
 
 	    /* go around again, safe to die */
@@ -2755,7 +2773,7 @@ void child_main(int child_num_arg)
 
 	clen = sizeof(sa_server);
 	if (getsockname(csd, &sa_server, &clen) < 0) {
-	    log_unixerr("getsockname", NULL, NULL, server_conf);
+	    aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "getsockname");
 	    continue;
 	}
 
@@ -2779,7 +2797,8 @@ void child_main(int child_num_arg)
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
 	if ((dupped_csd = dup(csd)) < 0) {
-	    log_unixerr("dup", NULL, "couldn't duplicate csd", server_conf);
+	    aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+			"dup: couldn't duplicate csd");
 	    dupped_csd = csd;   /* Oh well... */
 	}
 	note_cleanups_for_fd(ptrans,dupped_csd);
@@ -2887,7 +2906,7 @@ static int make_child(server_rec *s, int slot)
     (void)update_child_status (slot, SERVER_STARTING, (request_rec *)NULL);
 
     if ((pid = fork()) == -1) {
-	log_unixerr("fork", NULL, "Unable to fork new process", s);
+	aplog_error(APLOG_MARK, APLOG_ERR, s, "fork: Unable to fork new process");
 
 	/* fork didn't succeed. Fix the scoreboard or else
 	 * it will say SERVER_STARTING forever and ever
@@ -3030,17 +3049,17 @@ static void perform_idle_server_maintenance (void)
 	    static int reported = 0;
 
 	    if (!reported) {
-		log_printf (server_conf,
-		    "server reached MaxClients setting, consider"
-		    " raising the MaxClients setting");
+		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+			    "server reached MaxClients setting, consider"
+			    " raising the MaxClients setting");
 		reported = 1;
 	    }
 	} else {
 	    if (idle_spawn_rate >= 4) {
-		log_printf (server_conf,
-		    "server seems busy, spawning %d children (you may need "
-		    "to increase StartServers, or Min/MaxSpareServers)",
-		    idle_spawn_rate);
+		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+			    "server seems busy, spawning %d children (you may need "
+			    "to increase StartServers, or Min/MaxSpareServers)",
+			    idle_spawn_rate);
 	    }
 	    i = 0;
 	    while (i < idle_spawn_rate && free_head != -1) {
@@ -3109,14 +3128,14 @@ void standalone_main(int argc, char **argv)
 	}
 #ifdef SCOREBOARD_FILE
 	else {
-	    scoreboard_fname = server_root_relative (pconf, scoreboard_fname);
-	    note_cleanups_for_fd (pconf, scoreboard_fd);
+	    scoreboard_fname = server_root_relative(pconf, scoreboard_fname);
+	    note_cleanups_for_fd(pconf, scoreboard_fd);
 	}
 #endif
 	default_server_hostnames (server_conf);
 
-	set_signals ();
-	log_pid (pconf, pid_fname);
+	set_signals();
+	log_pid(pconf, pid_fname);
 
 	if (daemons_max_free < daemons_min_free + 1) /* Don't thrash... */
 	    daemons_max_free = daemons_min_free + 1;
@@ -3142,16 +3161,17 @@ void standalone_main(int argc, char **argv)
 	    hold_off_on_exponential_spawning = 10;
 	}
 
-	log_printf (server_conf, "Apache HTTP Server version: %s",
-	            SERVER_VERSION);
-	log_printf (server_conf, "Server built: %s", SERVER_BUILT);
-	log_error ("Server configured -- resuming normal operations",
-	           server_conf);
+	aplog_error(APLOG_MARK, APLOG_INFO, server_conf,
+		    "Apache HTTP Server version: %s", SERVER_VERSION);
+	aplog_error(APLOG_MARK, APLOG_INFO, server_conf,
+		    "Server built: %s", SERVER_BUILT);
+	aplog_error(APLOG_MARK, APLOG_INFO, server_conf,
+		    "Server configured -- resuming normal operations");
 	restart_pending = shutdown_pending = 0;
 
 	while (!restart_pending && !shutdown_pending) {
 	    int child_slot;
-	    int pid = wait_or_timeout ();
+	    int pid = wait_or_timeout();
 
 	    /* XXX: if it takes longer than 1 second for all our children
 	     * to start up and get into IDLE state then we may spawn an
@@ -3180,8 +3200,8 @@ void standalone_main(int argc, char **argv)
 		     * scoreboard.  Somehow we don't know about this
 		     * child.
 		     */
-		    log_printf (server_conf,
-			"long lost child came home! (pid %d)", pid );
+		    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+				"long lost child came home! (pid %d)", pid );
 		}
 	    } else if (remaining_children_to_start) {
 		/* we hit a 1 second timeout in which none of the previous
@@ -3204,11 +3224,12 @@ void standalone_main(int argc, char **argv)
 	    /* Time to gracefully shut down:
 	     * Kill child processes, tell them to call child_exit, etc...
 	     */
-	    if (ap_killpg (pgrp, SIGTERM) < 0) {
-		log_unixerr ("killpg SIGTERM", NULL, NULL, server_conf);
+	    if (ap_killpg(pgrp, SIGTERM) < 0) {
+		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGTERM");
 	    }
 	    reclaim_child_processes(2); /* Start with SIGTERM */
-	    log_error("httpd: caught SIGTERM, shutting down", server_conf);
+	    aplog_error(APLOG_MARK, APLOG_NOTICE, server_conf,
+			"httpd: caught SIGTERM, shutting down");
 
 	    /* Clear the pool - including any registered cleanups */
 	    destroy_pool(pconf);
@@ -3219,8 +3240,8 @@ void standalone_main(int argc, char **argv)
 	}
 
 	/* we've been told to restart */
-	signal (SIGHUP, SIG_IGN);
-	signal (SIGUSR1, SIG_IGN);
+	signal(SIGHUP, SIG_IGN);
+	signal(SIGUSR1, SIG_IGN);
 
 	if (one_process) {
 	    /* not worth thinking about */
@@ -3237,10 +3258,12 @@ void standalone_main(int argc, char **argv)
 	    scoreboard_image->global.exit_generation = generation;
 	    update_scoreboard_global ();
 
-	    log_error ("SIGUSR1 received.  Doing graceful restart",server_conf);
+	    aplog_error(APLOG_MARK, APLOG_NOTICE, server_conf,
+			"SIGUSR1 received.  Doing graceful restart");
+	    
 	    /* kill off the idle ones */
 	    if (ap_killpg(pgrp, SIGUSR1) < 0) {
-		log_unixerr ("killpg SIGUSR1", NULL, NULL, server_conf);
+		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGUSR1");
 	    }
 #ifndef SCOREBOARD_FILE
 	    /* This is mostly for debugging... so that we know what is still
@@ -3258,11 +3281,12 @@ void standalone_main(int argc, char **argv)
 	}
 	else {
 	    /* Kill 'em off */
-	    if (ap_killpg (pgrp, SIGHUP) < 0) {
-		log_unixerr ("killpg SIGHUP", NULL, NULL, server_conf);
+	    if (ap_killpg(pgrp, SIGHUP) < 0) {
+		aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "killpg SIGHUP");
 	    }
 	    reclaim_child_processes(1); /* Not when just starting up */
-	    log_error ("SIGHUP received.  Attempting to restart", server_conf);
+	    aplog_error(APLOG_MARK, APLOG_NOTICE, server_conf,
+			"SIGHUP received.  Attempting to restart");
 	}
 	++generation;
 
@@ -3371,7 +3395,8 @@ main(int argc, char *argv[])
       /* Only try to switch if we're running as root */
       if(!geteuid() && setuid(user_id) == -1) {
 #endif
-          log_unixerr("setuid", NULL, "unable to change uid", server_conf);
+          aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
+		      "setuid: unable to change uid");
           exit (1);
       }
 #ifdef MPE
@@ -3611,7 +3636,7 @@ void child_sub_main(int child_num, int srv,
 
 	clen = sizeof(sa_server);
 	if (getsockname(csd, &sa_server, &clen) < 0) {
-	    log_unixerr("getsockname", NULL, NULL, server_conf);
+	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "getsockname");
 	    continue;
 	}
         clen = sizeof(sa_client);
@@ -3631,7 +3656,8 @@ void child_sub_main(int child_num, int srv,
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
 	if ((dupped_csd = dup(csd)) < 0) {
-	    log_unixerr("dup", NULL, "couldn't duplicate csd", server_conf);
+	    aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+			"dup: couldn't duplicate csd");
 	    dupped_csd = csd;   /* Oh well... */
 	}
 	note_cleanups_for_socket(pchild,dupped_csd);
@@ -3773,11 +3799,11 @@ void worker_main()
     nthreads = threads_per_child;
     max_jobs_after_exit_request = excess_requests_per_child;
     max_jobs_per_exe = max_requests_per_child;
-    if(nthreads <= 0)
+    if (nthreads <= 0)
         nthreads = 40;
-    if(max_jobs_per_exe <= 0)
+    if (max_jobs_per_exe <= 0)
         max_jobs_per_exe = 0;
-    if(max_jobs_after_exit_request <= 0)
+    if (max_jobs_after_exit_request <= 0)
         max_jobs_after_exit_request = max_jobs_per_exe/10;
     
     if (!one_process) detach(); 
@@ -3790,7 +3816,7 @@ void worker_main()
     restart_time = time(NULL);
 
     reinit_scoreboard(pconf);
-    default_server_hostnames (server_conf);
+    default_server_hostnames(server_conf);
 
     acquire_mutex(start_mutex);
 
@@ -3821,8 +3847,7 @@ void worker_main()
     {
         int i;
 
-        for(i=0; i<nthreads; i++)
-        {
+        for (i = 0; i < nthreads; i++) {
             child_handles[i] = create_thread((void (*)(void *))child_main, (void *)i);
         }
 	if (nthreads > max_daemons_limit) {
@@ -3831,33 +3856,29 @@ void worker_main()
     }
 
     /* main loop */
-    for(;;)
-    {
-        if(max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit)
-        {
+    for(;;) {
+        if(max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit) {
             start_exit = 1;
             wait_time = 1;
             count_down = max_jobs_after_exit_request;
             release_mutex(start_mutex);
             start_mutex_released = 1;
         }
-        if(!start_exit)
-        {
+        if (!start_exit) {
             rv = WaitForSingleObject(exit_event, 0);
             ap_assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
-            if(rv == WAIT_OBJECT_0)
+            if (rv == WAIT_OBJECT_0)
                 break;
             rv = WaitForMultipleObjects(nthreads, child_handles, 0, 0);
 	    ap_assert(rv != WAIT_FAILED);
-            if(rv != WAIT_TIMEOUT)
-            {
+            if(rv != WAIT_TIMEOUT) {
                 rv = rv - WAIT_OBJECT_0;
                 ap_assert((rv >= 0) && (rv < nthreads));
                 cleanup_thread(child_handles, &nthreads, rv);
                 break;
             }
         }
-        if(start_exit && max_jobs_after_exit_request && (count_down-- < 0))
+        if (start_exit && max_jobs_after_exit_request && (count_down-- < 0))
             break;
         tv.tv_sec = wait_time;
         tv.tv_usec = 0;
@@ -3865,18 +3886,17 @@ void worker_main()
         memcpy(&main_fds, &listenfds, sizeof(fd_set));
         srv = ap_select(listenmaxfd+1, &main_fds, NULL, NULL, &tv);
 #ifdef WIN32
-        if(srv == SOCKET_ERROR)
+        if (srv == SOCKET_ERROR)
             errno = WSAGetLastError() - WSABASEERR;
 #endif /* WIN32 */
 
         if (srv < 0 && errno != EINTR)
-            log_unixerr("select", "(listen)", NULL, server_conf);
-
+            aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
+	
         if (srv < 0)
             continue;
-        if(srv == 0)
-        {
-            if(start_exit)
+        if (srv == 0) {
+            if (start_exit)
                 break;
             else
                 continue;
@@ -3895,8 +3915,7 @@ void worker_main()
             clen = sizeof(sa_client);
             csd  = accept(sd, (struct sockaddr *)&sa_client, &clen);
 #ifdef WIN32
-            if(csd == INVALID_SOCKET)
-            {
+            if(csd == INVALID_SOCKET) {
                 csd = -1;
                 errno = WSAGetLastError() - WSABASEERR;
             }
@@ -3912,10 +3931,10 @@ void worker_main()
 #elif defined(ECONNABORTED)
                     if (errno != ECONNABORTED)
 #endif
-                        log_unixerr("accept", "(client socket)", NULL, server_conf);
+                        aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+				    "accept: (client socket)");
         }
-        else
-        {
+        else {
             add_job(csd);
             total_jobs++;
         }
@@ -3923,23 +3942,19 @@ void worker_main()
 
     /* Get ready to shutdown and exit */
     allowed_globals.exit_now = 1;
-    if(!start_mutex_released)
-    {
+    if (!start_mutex_released) {
         release_mutex(start_mutex);
     }
 
-    for(i=0; i<nthreads; i++)
-    {
+    for (i = 0; i < nthreads; i++) {
         add_job(-1);
     }
 
     /* Wait for all your children */
     end_time = time(NULL) + 180;
-    while(nthreads)
-    {
+    while (nthreads) {
         rv = WaitForMultipleObjects(nthreads, child_handles, 0, (end_time-time(NULL))*1000);
-        if(rv != WAIT_TIMEOUT)
-        {
+        if (rv != WAIT_TIMEOUT) {
             rv = rv - WAIT_OBJECT_0;
             ap_assert((rv >= 0) && (rv < nthreads));
             cleanup_thread(child_handles, &nthreads, rv);
@@ -3948,8 +3963,7 @@ void worker_main()
         break;
     }
 
-    for(i=0; i<nthreads; i++)
-    {
+    for (i = 0; i < nthreads; i++) {
         kill_thread(child_handles[i]);
         free_thread(child_handles[i]);
     }
