@@ -58,7 +58,7 @@ CFG=InstallBin - Win32 Debug
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR=e:\apache\apache-2.0 SHORT=D LONG=Debug _install"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR=.. SHORT=D LONG=Debug _install"
 # PROP Rebuild_Opt ""
 # PROP Target_File "..\Apache.exe"
 # PROP Bsc_Name ".\apache.bsc"
