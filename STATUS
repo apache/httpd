@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/05 01:01:54 $]
+Last modified at [$Date: 2002/02/05 04:38:18 $]
 
 Release:
 
@@ -46,9 +46,9 @@ RELEASE SHOWSTOPPERS:
         Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, 
                       Linux 2.2 & 2.4, HPUX
         for beta
-            +1 : Justin, Ian, Jeff Trawick, BrianP, Aaron, Jim
+            +1 : Justin, Jeff Trawick, BrianP, Aaron, Jim
             +0 : Lars
-            -1 : BillS, BillR
+            -1 : BillS, BillR, Ian
         bumps since original tag:
             * mod-dir patch
             * scoreboard x2 : 1 to fix gracefull restarts
@@ -88,6 +88,9 @@ RELEASE SHOWSTOPPERS:
 
             * mod_autoindex displays the wrong icon for subdirectories
               on Unix
+
+            * anon shared memory not allocating enough 
+                (fix is apr/shm/unix/shm.c 1.14)
 
     * Win32 allows multiple processes to attach to the same port.  This
       means that I can open three DOS prompts, and run the same Apache
