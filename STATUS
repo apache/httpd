@@ -109,6 +109,7 @@ Committed Code Changes:
     * Ben Hyde's [PATCH] WIN32 deserves a pid log file
     * Paul Eggert's [PATCH] suexec/1343: year-2000 bug in suexec log
     * Marc's [PATCH] define to allow passing of Authorization header
+    * Roy's [PATCH] protocol/1399: failing to read body
 
 Available Patches:
 
@@ -116,10 +117,6 @@ Available Patches:
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
 	Status: Dean +1, Martin +1, Alexei -1 (shared lib concerns)
-
-    * Roy's [PATCH] protocol/1399: failing to read body
-	<9711141029.aa01965@paris.ics.uci.edu>
-	Status: Roy +1, Martin +1 (on code)
 
     * Martin's [PATCH] "Signing" server generated pages
 	<19971122001602.03385@deejai.mch.sni.de>
