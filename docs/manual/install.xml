@@ -174,7 +174,7 @@
     source releases.  If you do download a binary, follow the instructions
     in the <code>INSTALL.bindist</code> file inside the distribution.</p>
 
-    <p>After downloading, it is important to verify that you ahve a
+    <p>After downloading, it is important to verify that you have a
     complete and unmodified version of the Apache HTTP Server. This
     can be accomplished by testing the downloaded tarball against the
     PGP signature.  Details on how to do this are available on the <a
@@ -218,10 +218,10 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     options, <code>configure</code> accepts a variety of variables
     and command line options.</p>
 
-    <p>The most important option is the location prefix where Apache
-    is to be installed later, because Apache has to be configured for
-    this location to work correctly.  More fine-tuned control of the
-    location of files is possible with additional <a
+    <p>The most important option is the location <code>--prefix</code>
+    where Apache is to be installed later, because Apache has to be
+    configured for this location to work correctly.  More fine-tuned
+    control of the location of files is possible with additional <a
     href="programs/configure.html#installationdirectories">configure
     options</a>.</p>
 
