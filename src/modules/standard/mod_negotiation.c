@@ -209,7 +209,7 @@ void clean_var_rec (var_rec *mime_info)
     mime_info->content_encoding = "";
     mime_info->content_language = "";
 
-    mime_info->is_pseudo_html = 0.0;
+    mime_info->is_pseudo_html = 0;
     mime_info->level = 0.0;
     mime_info->level_matched = 0.0;
     mime_info->qs = 0.0;
@@ -896,7 +896,7 @@ int find_encoding (array_header *accept_encodings, char *enc)
     accept_rec *accs = (accept_rec *)accept_encodings->elts;
     int i;
 
-    if (is_identity_encoding(enc)) return 1.0;
+    if (is_identity_encoding(enc)) return 1;
 
     for (i = 0; i < accept_encodings->nelts; ++i)
 	if (!strcmp (enc, accs[i].type_name))
