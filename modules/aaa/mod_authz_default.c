@@ -150,7 +150,7 @@ static int check_user_access(request_rec *r)
                           "access to %s failed, reason: require directives "
                           "present and no Authoritative handler.", r->uri);
 
-    ap_note_basic_auth_failure(r);
+    ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }
 
