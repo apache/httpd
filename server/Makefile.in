@@ -1,6 +1,8 @@
 
 CLEANFILES = gen_test_char gen_uri_delims test_char.h uri_delims.h
 
+SUBDIRS = mpm
+
 LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
     uri_delims.h test_char.h \
@@ -8,7 +10,7 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_uri.c util_md5.c util_cfgtree.c util_ebcdic.c \
 	rfc1413.c connection.c listen.c \
         mpm_common.c util_charset.c util_debug.c util_xml.c \
-	util_filter.c exports.c
+	util_filter.c exports.c buildmark.c
 
 include $(top_srcdir)/build/ltlib.mk
 

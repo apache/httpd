@@ -2,12 +2,12 @@
 SUBDIRS = modules os server srclib support test
 
 PROGRAM_NAME         = $(progname)
-PROGRAM_SOURCES      = modules.c buildmark.c
+PROGRAM_SOURCES      = modules.c
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = \
   $(BUILTIN_LIBS) \
   $(MPM_LIB) \
-  main/libmain.la \
+  server/libmain.la \
   os/$(OS_DIR)/libos.la \
   $(AP_LIBS)
 
