@@ -14,13 +14,13 @@ address)</description>
 <compatibility>Available in Apache 2.0.44 and later</compatibility>
 
 <summary>
-    <p>The directives provided by mod_authz_host are used in <directive
-    module="core" type="section">Directory</directive>, <directive
-    module="core" type="section">Files</directive>, and <directive
-    module="core" type="section">Location</directive> sections as well as
-    <code><a href="core.html#accessfilename">.htaccess</a></code>
-    files to control access to particular parts of the server. Access
-    can be controlled based on the client hostname, IP address, or
+    <p>The directives provided by <module>mod_authz_host</module> are
+    used in <directive module="core" type="section">Directory</directive>,
+    <directive module="core" type="section">Files</directive>, and
+    <directive module="core" type="section">Location</directive> sections
+    as well as <code><a href="core.html#accessfilename">.htaccess</a>
+    </code> files to control access to particular parts of the server.
+    Access can be controlled based on the client hostname, IP address, or
     other characteristics of the client request, as captured in <a
     href="../env.html">environment variables</a>. The <directive
     module="mod_authz_host">Allow</directive> and <directive

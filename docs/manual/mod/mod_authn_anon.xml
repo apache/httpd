@@ -67,7 +67,7 @@
       AuthType basic<br />
 <br />
        # An
-      AuthUserFile/AuthDBUserFile/AuthDBMUserFile<br />
+      AuthUserFile/AuthDBMUserFile<br />
        # directive must be specified, or use<br />
        # Anonymous_Authoritative for public access.<br />
        # In the .htaccess for the public directory, add:<br />
