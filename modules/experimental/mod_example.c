@@ -512,7 +512,7 @@ static const char *cmd_example(cmd_parms *cmd, void *mconfig)
 /* see.  (See mod_mime's SetHandler and AddHandler directives, and the      */
 /* mod_info and mod_status examples, for more details.)                     */
 /*                                                                          */
-/* Since content handlers are dumping data directly into the connexion      */
+/* Since content handlers are dumping data directly into the connection     */
 /* (using the r*() routines, such as rputs() and rprintf()) without         */
 /* intervention by other parts of the server, they need to make             */
 /* sure any accumulated HTTP headers are sent first.  This is done by       */
@@ -877,8 +877,8 @@ static int x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 }
 
 /*
- * This routine is called to perform any module-specific fixing of header
- * fields, et cetera.  It is invoked just before any content-handler.
+ * This routine is called to perform any module-specific log file
+ * openings. It is invoked just before the post_config phase
  *
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
  * server will still call any remaining modules with an handler for this
@@ -937,8 +937,7 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
 }
 
 /*
- * This routine is called to perform any module-specific fixing of header
- * fields, et cetera.  It is invoked just before any content-handler.
+ * XXX: This routine is called XXX
  *
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
  * server will still call any remaining modules with an handler for this
@@ -953,13 +952,12 @@ static const char *x_http_method(const request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_post_config()");
+    trace_add(r->server, NULL, cfg, "x_http_method()");
     return "foo";
 }
 
 /*
- * This routine is called to perform any module-specific fixing of header
- * fields, et cetera.  It is invoked just before any content-handler.
+ * XXX: This routine is called XXX
  *
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
  * server will still call any remaining modules with an handler for this
@@ -973,14 +971,13 @@ static apr_port_t x_default_port(const request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_post_config()");
+    trace_add(r->server, NULL, cfg, "x_default_port()");
     return 80;
 }
 #endif /*0*/
 
 /*
- * This routine is called to perform any module-specific fixing of header
- * fields, et cetera.  It is invoked just before any content-handler.
+ * XXX: This routine is called XXX
  *
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
  * server will still call any remaining modules with an handler for this
@@ -994,15 +991,11 @@ static void x_insert_filter(request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_post_config()");
+    trace_add(r->server, NULL, cfg, "x_insert_filter()");
 }
 
 /*
- * XXX fix my comment!!!!!!  this sounds like the comment for a fixup
- *     handler
- *
- * This routine is called to perform any module-specific fixing of header
- * fields, et cetera.  It is invoked just before any content-handler.
+ * XXX: This routine is called XXX
  *
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
  * server will still call any remaining modules with an handler for this
@@ -1101,6 +1094,33 @@ static int x_translate_handler(request_rec *r)
     trace_add(r->server, r, cfg, "x_translate_handler()");
     return DECLINED;
 }
+
+/*
+ * this routine gives our module another chance to examine the request
+ * headers and to take special action. This is the first phase whose
+ * hooks' configuration directives can appear inside the <Directory>
+ * and similar sections, because at this stage the URI has been mapped
+ * to the filename. For example this phase can be used to block evil
+ * clients, while little resources were wasted on these.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK,
+ * the server will still call any remaining modules with an handler
+ * for this phase.
+ */
+static int x_header_parser_handler(request_rec *r)
+{
+
+    x_cfg *cfg;
+
+    cfg = our_dconfig(r);
+    /*
+     * We don't actually *do* anything here, except note the fact that we were
+     * called.
+     */
+    trace_add(r->server, r, cfg, "header_parser_handler()");
+    return DECLINED;
+}
+
 
 /*
  * This routine is called to check the authentication information sent with
@@ -1278,6 +1298,7 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
     ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_header_parser(x_header_parser_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id(x_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_type_checker(x_type_checker, NULL, NULL, APR_HOOK_MIDDLE);
