@@ -118,31 +118,31 @@
     to assure the arguments are all parsed before mod_autoindex
     encounters the X=Go input.</p>
 
-<div class="example"><p><code>
-&lt;FORM METHOD="GET"&gt;<br />
-  Show me a &lt;SELECT NAME="F"&gt;<br />
-    &lt;OPTION VALUE="0"&gt; Plain list <br />
-    &lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br />
-    &lt;OPTION VALUE="2"&gt; Table list<br />
-  &lt;/SELECT&gt;<br />
-  Sorted by &lt;SELECT NAME="C"&gt;<br />
-    &lt;OPTION VALUE="N" SELECTED&gt; Name<br />
-    &lt;OPTION VALUE="M"&gt; Date Modified<br />
-    &lt;OPTION VALUE="S"&gt; Size<br />
-    &lt;OPTION VALUE="D"&gt; Description<br />
-  &lt;/SELECT&gt;<br />
-  &lt;SELECT NAME="O"&gt;<br />
-    &lt;OPTION VALUE="A" SELECTED&gt; Ascending<br />
-    &lt;OPTION VALUE="D"&gt; Descending<br />
-  &lt;/SELECT&gt;<br />
-  &lt;SELECT NAME="V"&gt;<br />
-    &lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br />
-    &lt;OPTION VALUE="1"&gt; in Version order<br />
-  &lt;/SELECT&gt;<br />
-  Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br />
-  &lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br />
-&lt;/FORM&gt;
-</code></p></div>
+<div class="example"><pre>
+&lt;form action="" method="get"&gt;
+  Show me a &lt;select name="F"&gt;
+    &lt;option value="0"&gt; Plain list&lt;/option&gt;
+    &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
+    &lt;option value="2"&gt; Table list&lt;/option&gt;
+  &lt;/select&gt;
+  Sorted by &lt;select name="C"&gt;
+    &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
+    &lt;option value="M"&gt; Date Modified&lt;/option&gt;
+    &lt;option value="S"&gt; Size&lt;/option&gt;
+    &lt;option value="D"&gt; Description&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="O"&gt;
+    &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
+    &lt;option value="D"&gt; Descending&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="V"&gt;
+    &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
+    &lt;option value="1"&gt; in Version order&lt;/option&gt;
+  &lt;/select&gt;
+  Matching &lt;input type="text" name="P" value="*" /&gt;
+  &lt;input type="submit" name="X" value="Go" /&gt;
+&lt;/form&gt;
+</pre></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Alternate text to display for a file, instead of an

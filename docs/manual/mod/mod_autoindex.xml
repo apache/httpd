@@ -125,31 +125,31 @@
     to assure the arguments are all parsed before mod_autoindex
     encounters the X=Go input.</p>
 
-<example>
-&lt;FORM METHOD="GET"&gt;<br />
-&nbsp;&nbsp;Show me a &lt;SELECT NAME="F"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="0"&gt; Plain list <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="2"&gt; Table list<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;Sorted by &lt;SELECT NAME="C"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="N" SELECTED&gt; Name<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="M"&gt; Date Modified<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="S"&gt; Size<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="D"&gt; Description<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;&lt;SELECT NAME="O"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="A" SELECTED&gt; Ascending<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="D"&gt; Descending<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;&lt;SELECT NAME="V"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="1"&gt; in Version order<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br />
-&nbsp;&nbsp;&lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br />
-&lt;/FORM&gt;
-</example>
+<example><pre>
+&lt;form action="" method="get"&gt;
+  Show me a &lt;select name="F"&gt;
+    &lt;option value="0"&gt; Plain list&lt;/option&gt;
+    &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
+    &lt;option value="2"&gt; Table list&lt;/option&gt;
+  &lt;/select&gt;
+  Sorted by &lt;select name="C"&gt;
+    &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
+    &lt;option value="M"&gt; Date Modified&lt;/option&gt;
+    &lt;option value="S"&gt; Size&lt;/option&gt;
+    &lt;option value="D"&gt; Description&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="O"&gt;
+    &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
+    &lt;option value="D"&gt; Descending&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="V"&gt;
+    &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
+    &lt;option value="1"&gt; in Version order&lt;/option&gt;
+  &lt;/select&gt;
+  Matching &lt;input type="text" name="P" value="*" /&gt;
+  &lt;input type="submit" name="X" value="Go" /&gt;
+&lt;/form&gt;
+</pre></example>
 
 </section>
 
