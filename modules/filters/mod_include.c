@@ -223,7 +223,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     *do_cleanup = 0;
 
     do {
-        apr_status_t rv;
+        apr_status_t rv = 0;
         int read_done = 0;
 
         if (APR_BUCKET_IS_EOS(dptr)) {
@@ -340,7 +340,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     const char *str = ENDING_SEQUENCE;
 
     do {
-        apr_status_t rv;
+        apr_status_t rv = 0;
         int read_done = 0;
 
         if (APR_BUCKET_IS_EOS(dptr)) {
