@@ -4585,6 +4585,11 @@ static void register_hooks(apr_pool_t *p)
      */
     static const char * const aszPre[]={ "mod_proxy.c", NULL };
 
+    /* check type before mod_mime, so that [T=foo/bar] will not be
+     * overridden by AddType definitions.
+     */
+    static const char * const ct_aszSucc[]={ "mod_mime.c", NULL };
+
     APR_REGISTER_OPTIONAL_FN(ap_register_rewrite_mapfunc);
 
     ap_hook_handler(handler_redirect, NULL, NULL, APR_HOOK_MIDDLE);
@@ -4594,7 +4599,7 @@ static void register_hooks(apr_pool_t *p)
 
     ap_hook_fixups(hook_fixup, aszPre, NULL, APR_HOOK_FIRST);
     ap_hook_translate_name(hook_uri2file, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_type_checker(hook_mimetype, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_type_checker(hook_mimetype, NULL, ct_aszSucc, APR_HOOK_MIDDLE);
 }
 
     /* the main config structure */
