@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/06 08:28:24 $]
+Last modified at [$Date$]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -25,17 +25,7 @@ Contributors looking for a mission:
 
 CURRENT RELEASE NOTES:
 
-    * When the CVS->SVN is done, there's a bogus avendor branch that should be
-      removed from most files.  The branch was created 4/27/2004.  It's safest
-      (and easiest) for now just to leave it in there; the MAIN branch and the
-      APACHE_2_0_BRANCH are untouched and unharmed.  --jwoolley
-
 RELEASE SHOWSTOPPERS:
-
-    * Convert httpd-2.x to Subversion.  Yes, we've voted on this a billion
-      times on dev@httpd, but let's make this one official.  Majority rules.
-
-      +1: jerenkrantz, pquerna
 
     * Handling of non-trailing / config by non-default handler is broken
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
