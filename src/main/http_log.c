@@ -299,7 +299,7 @@ API_EXPORT(void) log_printf (const server_rec *s, const char *fmt, ...)
 API_EXPORT(void) log_reason (const char *reason, const char *file, request_rec *r) 
 {
     aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		"access to %s failed for %s, reason: %s\n",
+		"access to %s failed for %s, reason: %s",
 		file,
 		get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
 		reason);
