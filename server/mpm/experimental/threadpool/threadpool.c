@@ -2104,7 +2104,7 @@ static const char *set_max_clients (cmd_parms *cmd, void *dummy,
                     server_limit);
        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " Automatically lowering MaxClients to %d.  To increase,",
-                    server_limit);
+                    server_limit * ap_threads_per_child);
        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " please see the ServerLimit directive.");
        ap_daemons_limit = server_limit;
