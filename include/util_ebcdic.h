@@ -96,6 +96,14 @@ void ap_xlate_proto_to_ascii(char *buffer, apr_size_t len);
  */
 void ap_xlate_proto_from_ascii(char *buffer, apr_size_t len);
 
+/**
+ * Convert protocol data from the implementation charater
+ * set to ASCII, then send it.
+ * @param r   the current request
+ * @param ... the strings to write, followed by a NULL pointer
+ */
+int ap_rvputs_proto_in_ascii(request_rec *r, ...);
+
 #ifdef __cplusplus
 }
 #endif
@@ -104,6 +112,8 @@ void ap_xlate_proto_from_ascii(char *buffer, apr_size_t len);
 
 #define ap_xlate_proto_to_ascii(x,y)          /* NOOP */
 #define ap_xlate_proto_from_ascii(x,y)        /* NOOP */
+
+#define ap_rvputs_proto_in_ascii  ap_rvputs
 
 #endif  /* APR_CHARSET_EBCDIC */
     
