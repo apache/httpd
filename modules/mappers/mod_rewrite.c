@@ -2103,7 +2103,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  cookies:
      *  (`RewriteRule <pat> - [E=...,CO=...]')
      */
-    if (strcmp(output, "-") == 0) {
+    if (output[0] == '-' && !output[1]) {
         do_expand_env(r, p->env, briRR, briRC);
         do_expand_cookie(r, p->cookie, briRR, briRC);
         if (p->forced_mimetype != NULL) {
