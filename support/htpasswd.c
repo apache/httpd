@@ -215,8 +215,8 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     else {
         bufsize = sizeof(pwin);
 	if (apr_password_get("New password: ", pwin, &bufsize) != 0) {
-	    apr_snprintf(record, (rlen - 1), "password too long (>%d)",
-			sizeof(pwin) - 1);
+	    apr_snprintf(record, (rlen - 1), "password too long (>%" APR_SIZE_T_FMT
+	        ")", sizeof(pwin) - 1);
 	    return ERR_OVERFLOW;
 	}
         bufsize = sizeof(pwv);
@@ -492,8 +492,8 @@ int main(int argc, char *argv[])
 	}
 	strcpy(pwfilename, argv[i]);
 	if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
-	    fprintf(stderr, "%s: username too long (>%d)\n", argv[0],
-		    sizeof(user) - 1);
+	    fprintf(stderr, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
+	        argv[0], sizeof(user) - 1);
 	    return ERR_OVERFLOW;
 	}
     }
@@ -505,8 +505,8 @@ int main(int argc, char *argv[])
     }
     if (noninteractive) {
 	if (strlen(argv[i + 2]) > (sizeof(password) - 1)) {
-	    fprintf(stderr, "%s: password too long (>%d)\n", argv[0],
-		    sizeof(password) - 1);
+	    fprintf(stderr, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
+	        argv[0], sizeof(password) - 1);
 	    return ERR_OVERFLOW;
 	}
 	strcpy(password, argv[i + 2]);
