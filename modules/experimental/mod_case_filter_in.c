@@ -66,7 +66,7 @@
 
 #include <ctype.h>
 
-static const char s_szCaseFilterName[]="CaseFilter";
+static const char s_szCaseFilterName[]="CaseFilterIn";
 module AP_MODULE_DECLARE_DATA case_filter_in_module;
 
 typedef struct
@@ -92,28 +92,31 @@ static void CaseFilterInInsertFilter(request_rec *r)
 {
     CaseFilterInConfig *pConfig=ap_get_module_config(r->server->module_config,
 						     &case_filter_in_module);
-    CaseFilterInContext *pCtx;
-
     if(!pConfig->bEnabled)
 	return;
 
-    pCtx=apr_palloc(r->pool,sizeof *pCtx);
-    pCtx->pbbTmp=apr_brigade_create(r->pool);
-    ap_add_input_filter(s_szCaseFilterName,pCtx,r,NULL);
+    ap_add_input_filter(s_szCaseFilterName,NULL,r,NULL);
 }
 
 static apr_status_t CaseFilterInFilter(ap_filter_t *f,
 				       apr_bucket_brigade *pbbOut,
 				       ap_input_mode_t eMode,apr_off_t *nBytes)
 {
-    CaseFilterInContext *pCtx=f->ctx;
+    request_rec *r = f->r;
+    CaseFilterInContext *pCtx;
     apr_status_t ret;
 
-    ap_assert(APR_BRIGADE_EMPTY(pCtx->pbbTmp));
-    
-    ret=ap_get_brigade(f->next,pCtx->pbbTmp,eMode,nBytes);
-    if(eMode == AP_MODE_PEEK || ret != APR_SUCCESS)
-	return ret;
+    if (!(pCtx = f->ctx)) {
+        f->ctx = pCtx = apr_palloc(r->pool, sizeof *pCtx);
+        pCtx->pbbTmp = apr_brigade_create(r->pool);
+    }
+
+    if (APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
+        ret = ap_get_brigade(f->next,pCtx->pbbTmp,eMode,nBytes);
+
+        if(eMode == AP_MODE_PEEK || ret != APR_SUCCESS)
+            return ret;
+    }
 
     while(!APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
 	apr_bucket *pbktIn=APR_BRIGADE_FIRST(pCtx->pbbTmp);
