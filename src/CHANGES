@@ -4,6 +4,10 @@ Changes with Apache 1.2b3:
 
   *) Defined rlim_t and WANTHSREGEX=yes for NeXT.
 
+  *) Removed recent modification to promote the status code on internal
+     redirects, since the correct fix was to change the default log format
+     in mod_log_config so that it outputs the original status. [Rob Hartill]
+
 Changes with Apache 1.2b2:
   
   *) Update set_signals() to use sigaction() for setting handlers.
