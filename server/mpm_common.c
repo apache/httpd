@@ -403,7 +403,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
     }
     
     apr_sockaddr_info_get(&sa, "127.0.0.1", APR_UNSPEC, ap_listeners->bind_addr->port, 0, pod->p);
-    rv = apr_socket_create(&sock, sa->family, SOCK_STREAM, APR_NO_INHERIT, pod->p);
+    rv = apr_socket_create(&sock, sa->family, SOCK_STREAM, pod->p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "get socket to connect to listener");

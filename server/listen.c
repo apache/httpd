@@ -191,7 +191,7 @@ static void find_default_family(apr_pool_t *p)
     if (default_family == APR_UNSPEC) {
         apr_socket_t *tmp_sock;
 
-        if (apr_socket_create(&tmp_sock, APR_INET6, SOCK_STREAM, APR_INHERIT,
+        if (apr_socket_create(&tmp_sock, APR_INET6, SOCK_STREAM,
                               p) == APR_SUCCESS) {
             apr_socket_close(tmp_sock);
             default_family = APR_INET6;
@@ -254,11 +254,12 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
         return;
     }
     if ((status = apr_socket_create(&new->sd, new->bind_addr->sa.sin.sin_family, 
-                                    SOCK_STREAM, APR_INHERIT, process->pool)) != APR_SUCCESS) {
+                                    SOCK_STREAM, process->pool)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                      "alloc_listener: failed to get a socket for %s", addr);
         return;
     }
+    apr_socket_inherit_set();
     new->next = ap_listeners;
     ap_listeners = new;
 }
