@@ -919,6 +919,7 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
             if (!apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
                 if (psc->badopt == bad_error) {
                     /* Nope, it wasn't even an extra HTTP header. Give up. */
+                    r->headers_out = NULL;
                     return ;
                 }
                 else if (psc->badopt == bad_body) {
