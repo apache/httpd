@@ -1,5 +1,12 @@
 Changes with Apache 2.0.45
 
+  *) Fix possible segfaults under obscure error conditions within the
+     cgid daemon.  [Jeff Trawick, William Rowe]
+
+  *) SECURITY []: Close a Denial of Service vulnerability identified by
+     David Endler <DEndler@iDefense.com> affecting all platforms.
+     Details embargoed until their announcement on 2 April 2003.
+
   *) Added an rpm build script.
      [Graham Leggett, Joe Orton <jorton@redhat.com>]
 
