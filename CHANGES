@@ -1,5 +1,8 @@
 Changes with Apache 2.0.18-dev
 
+  *) Clean up the reporting of incorrect closing container tags.
+     [Barrie Slaymaker <barries@slaysys.com>]
+
   *) Simplify the configure process by moving all libtool stuff to APR
      and moving hints.m4 inline.  [Roy Fielding]
 

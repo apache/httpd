@@ -809,6 +809,13 @@ static const char * ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
 	return NULL;
     }
 
+    if ( cmd_name[1] != '/' ) {
+        char *lastc = cmd_name + strlen(cmd_name) - 1;
+        if (*lastc == '>') {
+            *lastc = '\0' ;
+        }
+    }
+
     newdir = apr_pcalloc(p, sizeof(ap_directive_t));
     newdir->filename = parms->config_file->name;
     newdir->line_num = parms->config_file->line_number;
