@@ -834,7 +834,7 @@ environment variable</td></tr>
 
           <p>Once a connection has been made to a server, that
           connection remains active for the life of the
-          <code>httpd</code> process, or until the LDAP server goes
+          <code class="program"><a href="../programs/httpd.html">httpd</a></code> process, or until the LDAP server goes
           down.</p>
 
           <p>If the LDAP server goes down and breaks an existing

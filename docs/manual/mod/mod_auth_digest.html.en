@@ -70,7 +70,7 @@
     URI(s) for this protection space.</p>
 
     <p>Appropriate user (text) files can be created using the
-    <a href="../programs/htdigest.html">htdigest</a> tool.</p>
+    <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
 
     <div class="example"><h3>Example:</h3><p><code>
       &lt;Location /private/&gt;<br />

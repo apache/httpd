@@ -34,8 +34,8 @@ SSI pages</td></tr>
 
     <p>This module allows for control of the environment that will
     be provided to CGI scripts and SSI pages. Environment variables
-    may be passed from the shell which invoked the httpd process.
-    Alternatively, environment variables may be set or unset within
+    may be passed from the shell which invoked the <code class="program"><a href="../programs/httpd.html">httpd</a></code>
+    process. Alternatively, environment variables may be set or unset within
     the configuration process.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -62,7 +62,7 @@ SSI pages</td></tr>
 </table>
     <p>Specifies one or more environment variables to pass to CGI
     scripts and SSI pages from the environment of the shell which
-    invoked the httpd process.</p>
+    invoked the <code class="program"><a href="../programs/httpd.html">httpd</a></code> process.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       PassEnv LD_LIBRARY_PATH

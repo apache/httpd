@@ -64,7 +64,7 @@
 
     <ol>
       <li>
-        Run <code>configure</code> with <code>--enable-example</code>
+        Run <code class="program"><a href="../programs/configure.html">configure</a></code> with <code>--enable-example</code>
         option.</li>
 
       <li>Make the server (run "<code>make</code>").</li>

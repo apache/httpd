@@ -22,6 +22,8 @@
 <a href="../ja/vhosts/ip-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">システム要件</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Apache の設定方法</a></li>

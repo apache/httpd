@@ -39,7 +39,7 @@ by other LDAP modules</td></tr>
 
     <p>To enable this module, LDAP support must be compiled into
     apr-util. This is achieved by adding the <code>--with-ldap</code>
-    flag to the <code>./configure</code> script when building
+    flag to the <code class="program"><a href="../programs/configure.html">configure</a></code> script when building
     Apache.</p>
 
     <p>SSL support requires that <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> be linked
@@ -192,9 +192,9 @@ by other LDAP modules</td></tr>
       <p>By fetching the URL <code>http://servername/cache-info</code>,
       the administrator can get a status report of every cache that is used
       by <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> cache. Note that if Apache does not
-      support shared memory, then each <code>httpd</code> instance has its
+      support shared memory, then each <code class="program"><a href="../programs/httpd.html">httpd</a></code> instance has its
       own cache, so reloading the URL will result in different
-      information each time, depending on which <code>httpd</code>
+      information each time, depending on which <code class="program"><a href="../programs/httpd.html">httpd</a></code>
       instance processes the request.</p>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

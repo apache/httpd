@@ -97,15 +97,15 @@ do?</a></li>
     might want to put the password file(s) in
     <code>/usr/local/apache/passwd</code>.</p>
 
-    <p>To create the file, use the <a href="../programs/htpasswd.html">htpasswd</a> utility that came
-    with Apache. This will be located in the <code>bin</code> directory
+    <p>To create the file, use the <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> utility that
+    came with Apache. This will be located in the <code>bin</code> directory
     of wherever you installed Apache. To create the file, type:</p>
 
     <div class="example"><p><code>
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
     </code></p></div>
 
-    <p><code>htpasswd</code> will ask you for the password, and
+    <p><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> will ask you for the password, and
     then ask you to type it again to confirm it:</p>
 
     <div class="example"><p><code>
@@ -115,7 +115,7 @@ do?</a></li>
       Adding password for user rbowen
     </code></p></div>
 
-    <p>If <code>htpasswd</code> is not in your path, of course
+    <p>If <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> is not in your path, of course
     you'll have to type the full path to the file to get it to run.
     On my server, it's located at
     <code>/usr/local/apache/bin/htpasswd</code></p>
@@ -167,12 +167,12 @@ do?</a></li>
 
     <p>The <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
     directive sets the path to the password file that we just
-    created with <code>htpasswd</code>. If you have a large number
+    created with <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>. If you have a large number
     of users, it can be quite slow to search through a plain text
     file to authenticate the user on each request. Apache also has
     the ability to store user information in fast database files.
     The <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> module provides the <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> directive. These
-    files can be created and manipulated with the <a href="../programs/dbmmanage.html">dbmmanage</a> program. Many
+    files can be created and manipulated with the <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> program. Many
     other types of authentication options are available from third
     party modules in the <a href="http://modules.apache.org/">Apache Modules
     Database</a>.</p>

@@ -213,7 +213,7 @@ requests</td></tr>
     </div>
 
     <p>Special note: Use of this directive in <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> is no longer supported. To
-    configure your server for <a href="mod_suexec.html">suexec</a> use
+    configure your server for <code class="program"><a href="../programs/suexec.html">suexec</a></code> use
     <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>.</p>
 
     <div class="note"><h3>Note</h3>
@@ -567,8 +567,7 @@ of the daemon</td></tr>
     warnings about log file placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>As of Apache 2 it is recommended to use only the <a href="../programs/apachectl.html">apachectl</a> script for
-      (re-)starting or stopping the server.</p>
+      <p>As of Apache 2 it is recommended to use only the <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> script for (re-)starting or stopping the server.</p>
     </div>
 
 </div>
@@ -891,7 +890,7 @@ requests</td></tr>
     <code class="directive"><a href="../mod/perchild.html#assignuserid">AssignUserID</a></code> directive.</p>
 
     <p>Special note: Use of this directive in <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> is no longer supported. To
-    configure your server for <a href="../suexec.html">suexec</a> use
+    configure your server for <code class="program"><a href="../programs/suexec.html">suexec</a></code> use
     <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>.</p>
 
     <div class="note"><h3>Note</h3>

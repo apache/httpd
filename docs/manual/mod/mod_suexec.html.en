@@ -33,7 +33,7 @@ and Group</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0 and later</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module, in combination with the <a href="../programs/suexec.html">suexec support program</a> allows
+    <p>This module, in combination with the <code class="program"><a href="../programs/suexec.html">suexec</a></code> support program allows
     CGI scripts to run as a specified user and Group.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
