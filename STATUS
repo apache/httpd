@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/08 01:38:04 $]
+Last modified at [$Date: 2001/12/12 10:09:58 $]
 
 Release:
 
@@ -94,6 +94,13 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
+    * FreeBSD, threads, and worker MPM.  All seems to work fine 
+      if you only have one worker process with many threads.  Add 
+      a second worker process and the accept lock seems to be
+      lost.  This might be an APR issue with how it deals with
+      the child_init hook (i.e. the fcntl lock needs to be resynced).
+      More examination and analysis is required.
+     
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.
       Reasons include sole-function servers that need to die if
