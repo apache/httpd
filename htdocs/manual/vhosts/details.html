@@ -77,7 +77,9 @@ holds the hostname aliases (CNAMEs) for your name-based vhosts via a
 <CODE>NameVirtualHost</CODE> directive in your configuration file.
 
 <P>Multiple <CODE>NameVirtualHost</CODE> directives can be used each
-with a set of <CODE>VirtualHost</CODE> directives.
+with a set of <CODE>VirtualHost</CODE> directives but only one
+<CODE>NameVirtualHost</CODE> directive should be used for each
+specific IP:port pair.
 
 <P>The ordering of <CODE>NameVirtualHost</CODE> and 
 <CODE>VirtualHost</CODE> directives is not important which makes the

@@ -91,9 +91,10 @@ document, or in the <CODE>src/CHANGES</CODE> file.
   <LI>Folks using HTTP/1.1-style virtual hosting will need to list the
     ip:port pairs that are supposed to have HTTP/1.1-style virtual hosting
     via the <A HREF="mod/core.html#namevirtualhost"><CODE>
-    NameVirtualHost</CODE></A> directive.  Previously this support was
-    given implicitly on the "main server address".  Now it has to be
-    explicitly listed so as to avoid many problems that users had.
+    NameVirtualHost</CODE></A> directive (one directive per pair).
+    Previously this support was given implicitly on the "main server
+    address".  Now it has to be explicitly listed so as to avoid many
+    problems that users had.
     Please see the <A HREF="vhosts/index.html">Apache Virtual Host
     documentation</A> for further details on configuration.
 
