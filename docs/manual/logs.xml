@@ -40,8 +40,8 @@
     
     <related>
       <directivelist>
-        <directive module="mod_core">ErrorLog</directive>
-        <directive module="mod_core">LogLevel</directive>
+        <directive module="core">ErrorLog</directive>
+        <directive module="core">LogLevel</directive>
       </directivelist>
     </related>
     
@@ -145,17 +145,17 @@
     <p>Various versions of Apache httpd have used other modules and
     directives to control access logging, including
     mod_log_referer, mod_log_agent, and the
-    <code>TransferLog</code> directive. The <code>CustomLog</code>
-    directive now subsumes the functionality of all the older
-    directives.</p>
+    <code>TransferLog</code> directive. The <directive
+	module="mod_log_config">CustomLog</directive> directive now subsumes
+	the functionality of all the older directives.</p>
 
     <p>The format of the access log is highly configurable. The
-    format is specified using a <directive module="mod_log_config">
-    CustomLog</directive> that
+    format is specified using a <directive
+	module="mod_log_config">CustomLog</directive> that
     looks much like a C-style printf(1) format string. Some
     examples are presented in the next sections. For a complete
     list of the possible contents of the format string, see the <a
-    href="mod/mod_log_config.html">mod_log_config
+    href="mod/mod_log_config.html#formats">mod_log_config
     documentation</a>.</p>
     
     <section id="common">
@@ -181,11 +181,11 @@
       control characters "<code>\n</code>" for new-line and
       "<code>\t</code>" for tab.</p>
 
-      <p>The <code>CustomLog</code> directive sets up a new log file
-      using the defined <em>nickname</em>. The filename for the
-      access log is relative to the <directive
-      module="core">ServerRoot</directive> unless it begins
-      with a slash.</p>
+      <p>The <directive	module="mod_log_config">CustomLog</directive>
+	  directive sets up a new log file using the defined
+	  <em>nickname</em>. The filename for the access log is relative to
+	  the <directive module="core">ServerRoot</directive> unless it
+	  begins with a slash.</p>
     
       <p>The above configuration will write log entries in a format
       known as the Common Log Format (CLF). This standard format can
@@ -205,7 +205,7 @@
 
         <dd>This is the IP address of the client (remote host) which
         made the request to the server. If <directive
-	module="core">HostnameLookups</directive> is
+        module="core">HostnameLookups</directive> is
         set to <code>On</code>, then the server will try to determine
         the hostname and log it in place of the IP address. However,
         this configuration is not recommended since it can
@@ -228,7 +228,7 @@
         almost never be used except on tightly controlled internal
         networks. Apache httpd will not even attempt to determine
         this information unless <directive
-	module="core">IdentityCheck</directive> is set
+        module="core">IdentityCheck</directive> is set
         to <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
@@ -352,15 +352,15 @@
       <title>Multiple Access Logs</title>
       
       <p>Multiple access logs can be created simply by specifying
-      multiple <directive module="core">CustomLog</directive> 
+      multiple <directive module="mod_log_config">CustomLog</directive> 
       directives in the configuration
       file. For example, the following directives will create three
       access logs. The first contains the basic CLF information,
       while the second and third contain referer and browser
       information. The last two <directive
-      module="core">CustomLog</directive> lines show how
-      to mimic the effects of the <directive module="core">ReferLog</directive> 
-      and <directive module="core">AgentLog</directive> directives.</p>
+      module="mod_log_config">CustomLog</directive> lines show how
+      to mimic the effects of the <code>ReferLog</code> and <code
+	  >AgentLog</code> directives.</p>
 
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
@@ -370,9 +370,10 @@
       </example>
 
       <p>This example also shows that it is not necessary to define a
-      nickname with the <code>LogFormat</code> directive. Instead,
-      the log format can be specified directly in the 
-      <directive module="core">CustomLog</directive> directive.</p>
+      nickname with the <directive
+	  module="mod_log_config">LogFormat</directive> directive. Instead,
+      the log format can be specified directly in the <directive
+	  module="mod_log_config">CustomLog</directive> directive.</p>
     </section>
     
     <section id="conditional">
@@ -385,9 +386,10 @@
       environment variable must be set to indicate that the request
       meets certain conditions. This is usually accomplished with 
       <directive module="mod_setenvif">SetEnvIf</directive>. Then the
-      <code>env=</code> clause of the <code>CustomLog</code>
-      directive is used to include or exclude requests where the
-      environment variable is set. Some examples:</p>
+      <code>env=</code> clause of the <directive
+	  module="mod_log_config">CustomLog</directive> directive is used to
+	  include or exclude requests where the environment variable is
+	  set. Some examples:</p>
 
       <example>
         # Mark requests from the loop-back interface<br />
@@ -526,7 +528,7 @@
     hosts.</p>
 
     <p>If <directive module="mod_log_config">CustomLog</directive> 
-    or <directive module="mod_log_config">ErrorLog</directive>
+    or <directive module="core">ErrorLog</directive>
     directives are placed inside a
     <directive module="core" type="section">VirtualHost</directive>
     section, all requests or errors for that virtual host will be
@@ -567,12 +569,12 @@
         <module>mod_rewrite</module>
       </modulelist>
       <directivelist>
-        <directive module="core">PidFile</directive>
+        <directive module="mpm_common">PidFile</directive>
         <directive module="mod_rewrite">RewriteLog</directive>
         <directive module="mod_rewrite">RewriteLogLevel</directive>
         <directive module="mod_cgi">ScriptLog</directive>
+        <directive module="mod_cgi">ScriptLogBuffer</directive>
         <directive module="mod_cgi">ScriptLogLength</directive>
-        <directive module="mod_cgi">ScriptBuffer</directive>
       </directivelist>
     </related>
     
@@ -581,8 +583,8 @@
     
       <p>On startup, Apache httpd saves the process id of the parent
       httpd process to the file <code>logs/httpd.pid</code>. This
-      filename can be changed with the <directive module="core">PidFile
-      </directive> directive. The
+      filename can be changed with the <directive
+	  module="mpm_common">PidFile</directive> directive. The
       process-id is for use by the administrator in restarting and
       terminating the daemon by sending signals to the parent
       process; on Windows, use the -k command line option instead.
@@ -598,7 +600,7 @@
       allows you to record the input to and output from CGI scripts.
       This should only be used in testing - not for live servers.
       More information is available in the <a
-      href="mod/mod_cgi.html">mod_cgi documentation</a>.</p>
+      href="mod/mod_cgi.html">mod_cgi</a> documentation.</p>
     </section>
     
     <section id="rewritelog">
