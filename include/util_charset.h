@@ -59,8 +59,6 @@
 #ifndef APACHE_UTIL_CHARSET_H
 #define APACHE_UTIL_CHARSET_H
 
-#ifdef APACHE_XLATE
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -68,6 +66,10 @@ extern "C" {
 /**
  * @package charset conversion
  */
+#include "apr.h"
+
+#if APR_CHARSET_EBCDIC
+
 #include "apr_xlate.h"
 
 /** On EBCDIC machine this is a translation handle used to translate the 
@@ -78,19 +80,11 @@ extern apr_xlate_t *ap_hdrs_to_ascii;
  *  headers from ASCII to the local machine format after network transmission.
  *  On an ASCII machine this is NULL */
 extern apr_xlate_t *ap_hdrs_from_ascii;
-/** On EBCDIC machine this is a translation handle used to translate the 
- *  content from the local machine format to ASCII for network transmission.
- *  On an ASCII machine this is NULL */
-extern apr_xlate_t *ap_locale_to_ascii;
-/** On EBCDIC machine this is a translation handle used to translate the
- *  content from ASCII to the local machine format after network transmission.
- *  On an ASCII machine this is NULL */
-extern apr_xlate_t *ap_locale_from_ascii;
 
+#endif  /* APR_CHARSET_EBCDIC */
+    
 #ifdef __cplusplus
 }
 #endif
 
-#endif  /* APACHE_XLATE */
-    
 #endif  /* !APACHE_UTIL_CHARSET_H */

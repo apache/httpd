@@ -284,8 +284,4 @@
 #define AP_HAVE_RELIABLE_PIPED_LOGS TRUE
 #endif
 
-#if APR_CHARSET_EBCDIC && !defined(APACHE_XLATE)
-#define APACHE_XLATE
-#endif
-
 #endif /* AP_CONFIG_H */

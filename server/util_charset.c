@@ -58,7 +58,7 @@
 
 #include "ap_config.h"
 
-#ifdef APACHE_XLATE
+#if APR_CHARSET_EBCDIC
 
 #include "httpd.h"
 #include "http_log.h"
@@ -81,19 +81,4 @@
  
 apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
 
-/* ap_locale_to_ascii, ap_locale_from_ascii
- *
- * These handles are used for the translation of content, unless a
- * configuration module overrides them.
- *
- * For an EBCDIC machine, these are valid handles which are set up at
- * initialization to translate between ISO-8859-1 and the code page of
- * the httpd process's locale.
- *
- * For an ASCII machine, these remain NULL so that no translation is
- * performed (unless a configuration module does something, of course).
- */
-
-apr_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
-
-#endif /*APACHE_XLATE*/
+#endif /*APR_CHARSET_EBCDIC */
