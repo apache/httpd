@@ -678,7 +678,6 @@ static void child_main(int child_num_arg)
 	 * because it let's us deal with tid better.
 	 */
     }
-    apr_pool_create(&my_info->tpool, pchild);
     my_info = (proc_info *)malloc(sizeof(proc_info));
     if (my_info == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
@@ -688,6 +687,9 @@ static void child_main(int child_num_arg)
     my_info->pid = my_child_num;
     my_info->tid = i;
     my_info->sd = 0;
+    apr_pool_create(&my_info->tpool, pchild);
+    ap_update_child_status(my_child_num, i, SERVER_STARTING, 
+                           (request_rec *) NULL);
     worker_thread(my_info);
 }
 
