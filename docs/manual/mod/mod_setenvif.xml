@@ -39,7 +39,9 @@ on characteristics of the request</description>
 <syntax>BrowserMatch <em>regex env-variable</em>[=<em>value</em>]
 [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <default><i>none</i></default>
-<context>server config, virtual host, directory, .htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Apache 1.2 and
     above (in Apache 1.2 this directive was found in the
@@ -102,7 +104,9 @@ respect to case</description>
 <syntax>BrowserMatchNoCase  <em>regex env-variable</em>[=<em>value</em>]
     [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <default><em>none</em></default>
-<context>server config, virtual host, directory, .htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Apache 1.2 and
     above (in Apache 1.2 this directive was found in the
@@ -140,7 +144,9 @@ respect to case</description>
     regex env-variable</em>[=<em>value</em>]
     [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <default><em>none</em></default>
-<context> server config, virtual host, directory, .htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Apache 1.3 and
     above; the Request_Protocol keyword and environment-variable
@@ -234,7 +240,9 @@ without respect to case</description>
 <syntax>SetEnvIfNoCase <em>attribute regex env-variable</em>[=<em>value</em>]
     [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <default><em>none</em></default>
-<context>server config, virtual host, directory, .htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Apache 1.3 and above</compatibility>
 

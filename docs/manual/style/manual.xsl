@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
+<!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   version="1.0">
 
@@ -16,9 +16,15 @@
   <xsl:template match="modulesynopsis">
 
     <html>
+
+<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        This file is generated from xml source: DO NOT EDIT
+     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
+
     <head>
-    <xsl:apply-templates select="meta"/>
-    <title><xsl:value-of select="name"/> - Apache HTTP Server</title>
+      <xsl:apply-templates select="meta"/>
+      <title><xsl:value-of select="name"/> - Apache HTTP Server</title>
+      <link rel="stylesheet" type="text/css" href="../style/manual.css" />
     </head>
     <body>
 
@@ -36,14 +42,16 @@
 <table bgcolor="#cccccc" cellpadding="0" cellspacing="1">
 <tr><td>
 <table bgcolor="#ffffff">
-<tr><td><strong>Description:</strong> </td>
+<tr><td><span class="help">Description:</span> </td>
 <td><xsl:apply-templates select="description"/></td></tr>
-<tr><td><a class="help" href="module-dict.html#Status"><strong>Status:</strong></a> </td>
+<tr><td><a class="help" href="module-dict.html#Status">Status:</a> </td>
 <td><xsl:value-of select="status"/></td></tr>
-<tr><td><a class="help" href="module-dict.html#ModuleIdentifier"><strong>Module Identifier:</strong></a> </td>
+<tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a> </td>
 <td><xsl:value-of select="identifier"/></td></tr>
-<tr><td><a class="help" href="module-dict.html#Compatibility"><strong>Compatibility:</strong></a> </td>
+<xsl:if test="compatibility">
+<tr><td><a class="help" href="module-dict.html#Compatibility">Compatibility:</a> </td>
 <td><xsl:apply-templates select="compatibility"/></td></tr>
+</xsl:if>
 </table>
 </td></tr>
 </table>
@@ -123,22 +131,28 @@
 <table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
 <tr><td>
 <table bgcolor="#ffffff" width="100%">
-<tr><td><strong>Description:</strong> </td>
+<tr><td>Description: </td>
 <td><xsl:value-of select="description"/></td></tr>
 <tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a> </td>
 <td><xsl:apply-templates select="syntax"/></td></tr>
+<xsl:if test="default">
 <tr><td><a class="help" href="directive-dict.html#Default">Default:</a> </td>
 <td><code><xsl:value-of select="default"/></code></td></tr>
+</xsl:if>
 <tr><td><a class="help" href="directive-dict.html#Context">Context:</a> </td>
-<td><xsl:value-of select="context"/></td></tr>
+<td><xsl:apply-templates select="contextlist"/></td></tr>
+<xsl:if test="override">
 <tr><td><a class="help" href="directive-dict.html#Override">Override:</a> </td>
 <td><xsl:value-of select="override"/></td></tr>
+</xsl:if>
 <tr><td><a class="help" href="directive-dict.html#Status">Status:</a> </td>
 <td><xsl:value-of select="/modulesynopsis/status"/></td></tr>
 <tr><td><a class="help" href="directive-dict.html#Module">Module:</a> </td>
 <td><xsl:value-of select="/modulesynopsis/name"/></td></tr>
+<xsl:if test="compatibility">
 <tr><td><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a> </td>
 <td><xsl:value-of select="compatibility"/></td></tr>
+</xsl:if>
 </table>
 </td></tr></table>
 <xsl:apply-templates select="usage"/>
@@ -154,6 +168,15 @@
 
 <hr />
 </xsl:template>
+
+  <xsl:template match="contextlist">
+    <xsl:apply-templates select="context"/>
+  </xsl:template>
+
+  <xsl:template match="context">
+    <xsl:value-of select="." />
+    <xsl:if test="not(position()=last())">, </xsl:if>
+  </xsl:template>
 
   <xsl:template match="example">
   <blockquote>
@@ -181,7 +204,7 @@
   </xsl:template>
 
   <xsl:template match="directive">
-    <code>
+    <code class="directive">
     <xsl:if test="@module">
       <xsl:variable name="module">
         <xsl:value-of select="./@module"/>
@@ -190,10 +213,10 @@
         <xsl:value-of select="."/>
       </xsl:variable>
       <xsl:if test="@module=/modulesynopsis/name">
-        <a href="#{$directive}"><xsl:value-of select="."/></a>
+        <a class="directive" href="#{$directive}"><xsl:value-of select="."/></a>
       </xsl:if>
       <xsl:if test="@module!=/modulesynopsis/name">
-        <a href="{$module}.html#{$directive}"><xsl:value-of select="."/></a>
+        <a class="directive" href="{$module}.html#{$directive}"><xsl:value-of select="."/></a>
       </xsl:if>
     </xsl:if>
     <xsl:if test="not(@module)">
