@@ -73,8 +73,6 @@
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*APR_CHARSET_EBCDIC*/
 
-module AP_MODULE_DECLARE_DATA includes_module;
-
 /* just need some arbitrary non-NULL pointer which can't also be a request_rec */
 #define NESTED_INCLUDE_MAGIC	(&includes_module)
 
