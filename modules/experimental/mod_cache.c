@@ -249,7 +249,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
 static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
-    int rv;
+    int rv = !OK;
     int date_in_errhdr = 0;
     request_rec *r = f->r;
     cache_request_rec *cache;
@@ -259,7 +259,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
-    cache_info *info;
+    cache_info *info = NULL;
     char *reason;
     apr_pool_t *p;
 
