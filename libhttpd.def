@@ -376,6 +376,7 @@ EXPORTS
         ap_hook_post_config
         ap_hook_open_logs
         ap_hook_child_init
+        ap_hook_handler
 
         ap_get_status_table
         ap_run_default_port

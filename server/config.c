@@ -132,8 +132,8 @@ AP_IMPLEMENT_HOOK_VOID(open_logs,
 AP_IMPLEMENT_HOOK_VOID(child_init,
                        (apr_pool_t *pchild, server_rec *s),(pchild,s))
 
-AP_IMPLEMENT_HOOK_RUN_FIRST(int,handler,(const char *handler,request_rec *r),
-			    (handler,r),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,handler,(request_rec *r),
+			    (r),DECLINED)
 
 /****************************************************************
  *
@@ -283,11 +283,9 @@ int ap_invoke_handler(request_rec *r)
     char *p2;
     int result;
     char hbuf[MAX_STRING_LEN];
+    const char *old_handler = r->handler;
 
-    if (r->handler) {
-        handler = r->handler;
-    }
-    else {
+    if (!r->handler) {
         handler = r->content_type ? r->content_type : ap_default_type(r);
         if ((p=ap_strchr_c(handler, ';')) != NULL) {
 	    apr_cpystrn(hbuf, handler, sizeof hbuf);
@@ -298,9 +296,12 @@ int ap_invoke_handler(request_rec *r)
 	        --p2;		/* strip trailing spaces */
 	    *p2='\0';
 	}
+        r->handler = handler;
     }
 
-    result = ap_run_handler(handler ,r);
+    result = ap_run_handler(r);
+
+    r->handler = old_handler;
 
     if (result == DECLINED && r->handler && r->filename) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,

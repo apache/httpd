@@ -993,12 +993,11 @@ AP_DECLARE_HOOK(void,child_init,(apr_pool_t *pchild, server_rec *s))
 
 /**
  * Run the handler functions for each module
- * @param handler The handler string (a MIME type or a handler)
  * @param r The request_rec
- * @deffunc void ap_run_handler(const char *handler,request_rec *r)
+ * @deffunc void ap_run_handler(request_rec *r)
  * @tip non-wildcard handlers should HOOK_MIDDLE, wildcard HOOK_LAST
  */
-AP_DECLARE_HOOK(int,handler,(const char *handler,request_rec *r))
+AP_DECLARE_HOOK(int,handler,(request_rec *))
 
 #ifdef __cplusplus
 }

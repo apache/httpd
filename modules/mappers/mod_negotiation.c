@@ -2566,14 +2566,14 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
     return OK;
 }
 
-static int handle_map_file(const char *handler,request_rec *r)
+static int handle_map_file(request_rec *r)
 {
     negotiation_state *neg;
     var_rec *best;
     int res;
     char *udir;
 
-    if(strcmp(handler,MAP_FILE_MAGIC_TYPE) && strcmp(handler,"type-map"))
+    if(strcmp(r->handler,MAP_FILE_MAGIC_TYPE) && strcmp(r->handler,"type-map"))
 	return DECLINED;
 
     neg = parse_accept_headers(r);

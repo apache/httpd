@@ -262,6 +262,5 @@ module AP_MODULE_DECLARE_DATA headers_module =
     create_headers_config,      /* server config */
     merge_headers_config,       /* merge server configs */
     headers_cmds,               /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

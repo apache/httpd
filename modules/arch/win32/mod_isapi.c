@@ -347,15 +347,20 @@ static int isapi_unload(isapi_loaded* isa, int force)
 
 apr_status_t isapi_handler (request_rec *r)
 {
-    isapi_server_conf *sconf = ap_get_module_config(r->server->module_config, 
-                                                    &isapi_module);
-    apr_table_t *e = r->subprocess_env;
+    isapi_server_conf * sconf;
+    apr_table_t *e;
     apr_status_t rv;
     isapi_loaded *isa;
     isapi_cid *cid;
     DWORD read;
     int res;
     
+    if(strcmp(r->handler, "isapi-isa"))
+        return DECLINED;    
+
+    sconf = ap_get_module_config(r->server->module_config, &isapi_module);
+    e = r->subprocess_env;
+
     /* Use similar restrictions as CGIs
      *
      * If this fails, it's pointless to load the isapi dll.
@@ -1262,6 +1267,7 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
 static void isapi_hooks(void)
 {
     ap_hook_post_config(isapi_post_config, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_handler(isapi_handler, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
 static const command_rec isapi_cmds[] = {
@@ -1278,11 +1284,6 @@ AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, RSRC_CONF,
 { NULL }
 };
 
-handler_rec isapi_handlers[] = {
-    { "isapi-isa", isapi_handler },
-    { NULL}
-};
-
 module isapi_module = {
    STANDARD20_MODULE_STUFF,
    NULL,                        /* create per-dir config */
@@ -1290,6 +1291,5 @@ module isapi_module = {
    create_isapi_server_config,  /* server config */
    NULL,                        /* merge server config */
    isapi_cmds,                  /* command apr_table_t */
-   isapi_handlers,              /* handlers */
    isapi_hooks                  /* register hooks */
 };

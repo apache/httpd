@@ -409,7 +409,6 @@ module db_auth_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     db_auth_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     register_hooks		/* register hooks */
 };
 

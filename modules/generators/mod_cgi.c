@@ -498,7 +498,7 @@ static apr_status_t build_command_line(const char **cmd, request_rec *r,
     return APR_SUCCESS;
 }
 
-static int cgi_handler(const char *handler, request_rec *r)
+static int cgi_handler(request_rec *r)
 {
     int retval, nph, dbpos = 0;
     const char *argv0;
@@ -514,7 +514,7 @@ static int cgi_handler(const char *handler, request_rec *r)
     cgi_server_conf *conf;
     apr_status_t rv;
 
-    if(strcmp(handler,CGI_MAGIC_TYPE) && strcmp(handler,"cgi-script"))
+    if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
 	return DECLINED;
 
     p = r->main ? r->main->pool : r->pool;

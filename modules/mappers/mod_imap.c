@@ -612,7 +612,7 @@ static void menu_footer(request_rec *r)
     ap_rputs("\n\n</body>\n</html>\n", r);         /* finish the menu */
 }
 
-static int imap_handler(const char *handler,request_rec *r)
+static int imap_handler(request_rec *r)
 {
     char input[MAX_STRING_LEN];
     char *directive;
@@ -640,8 +640,8 @@ static int imap_handler(const char *handler,request_rec *r)
 
     configfile_t *imap; 
 
-    if (r->method_number != M_GET || (strcmp(handler,IMAP_MAGIC_TYPE)
-				      && strcmp(handler, "imap-file")))
+    if (r->method_number != M_GET || (strcmp(r->handler,IMAP_MAGIC_TYPE)
+				      && strcmp(r->handler, "imap-file")))
 	return DECLINED;
 
     icr = ap_get_module_config(r->per_dir_config, &imap_module);

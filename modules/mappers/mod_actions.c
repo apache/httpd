@@ -158,7 +158,7 @@ static const command_rec action_cmds[] =
     {NULL}
 };
 
-static int action_handler(const char *handler,request_rec *r)
+static int action_handler(request_rec *r)
 {
     action_dir_config *conf = (action_dir_config *)
         ap_get_module_config(r->per_dir_config, &action_module);

@@ -84,6 +84,10 @@ static int status_handler(request_rec *r)
     apr_array_header_t *server_status;
     ap_status_table_row_t *status_rows;
 
+    if (strcmp(r->handler, STATUS_MAGIC_TYPE) && strcmp(r->handler, "server-status")) {
+        return DECLINED;
+    }
+
     r->allowed = (1 << M_GET);
     if (r->method_number != M_GET)
 	return DECLINED;
@@ -120,12 +124,10 @@ static int status_handler(request_rec *r)
     return 0;
 }
 
-static const handler_rec status_handlers[] =
+static void register_hooks(void)
 {
-    {STATUS_MAGIC_TYPE, status_handler},
-    {"server-status", status_handler},
-    {NULL}
-};
+    ap_hook_handler(status_handler, NULL, NULL, AP_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA status_module =
 {
@@ -135,6 +137,5 @@ module AP_MODULE_DECLARE_DATA status_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     NULL,			/* command table */
-    status_handlers,		/* handlers */
-    NULL                        /* register hooks */
+    register_hooks	/* register hooks */
 };

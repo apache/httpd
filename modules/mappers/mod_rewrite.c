@@ -210,14 +210,9 @@ static const command_rec command_table[] = {
     { NULL }
 };
 
-    /* the apr_table_t of content handlers we provide */
-static const handler_rec handler_table[] = {
-    { "redirect-handler", handler_redirect },
-    { NULL }
-};
-
 static void register_hooks(void)
 {
+    ap_hook_handler(handler_redirect, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_post_config(init_module,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_child_init(init_child,NULL,NULL,AP_HOOK_MIDDLE);
 
@@ -234,7 +229,6 @@ module AP_MODULE_DECLARE_DATA rewrite_module = {
    config_server_create,        /* create per-server config structures */
    config_server_merge,         /* merge  per-server config structures */
    command_table,               /* apr_table_t of config file commands  */
-   handler_table,               /* [#8] MIME-typed-dispatched handlers */
    register_hooks               /* register hooks                      */
 };
 
@@ -1628,6 +1622,10 @@ static int hook_fixup(request_rec *r)
 
 static int handler_redirect(request_rec *r)
 {
+    if (strcmp(r->handler, "redirect-handler")) {
+        return DECLINED;
+    }
+
     /* just make sure that we are really meant! */
     if (strncmp(r->filename, "redirect:", 9) != 0) {
         return DECLINED;
