@@ -1,5 +1,7 @@
 Changes with Apache 2.0.33-dev
 
+  *) Introduce AddOutputFilterByType directive.  [Justin Erenkrantz]
+
   *) Fix DEBUG_CGI support in mod_cgi.  PR 9670, 9671.
      [David MacKenzie <djm@pix.net>]
 
