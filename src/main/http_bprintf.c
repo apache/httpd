@@ -62,8 +62,10 @@ int vbprintf(BUFF *bp, const char *format, va_list arg)
     {
     const char *f,*fStop,*percentPtr,*p;
     char *fmtBuffPtr, *buffPtr;
-    int op, performedOp, sizeModifier, buffCount, buffLen, specifierLength;
-    int fastPath, n, auxBuffLen, buffReqd, minWidth, precision, exp;
+    int op, performedOp, sizeModifier, buffLen, specifierLength;
+    int fastPath, n, buffReqd, minWidth, precision, exp;
+    int buffCount = 0;
+    int auxBuffLen = 0;
     char *auxBuffPtr = NULL;
     int streamCount = 0;
     char fmtBuff[FMT_BUFFLEN];
@@ -75,13 +77,13 @@ int vbprintf(BUFF *bp, const char *format, va_list arg)
     unsigned unsignedArg;
     unsigned long uLongArg;
     unsigned short uShortArg;
-    char *charPtrArg;
+    char *charPtrArg = NULL;
     void *voidPtrArg;
     int *intPtrArg;
     long *longPtrArg;
     short *shortPtrArg;
-    double doubleArg;
-    LONG_DOUBLE lDoubleArg;
+    double doubleArg = 0.0;
+    LONG_DOUBLE lDoubleArg = 0.0;
 
     fmtBuff[0] = '%';
     f=format;
