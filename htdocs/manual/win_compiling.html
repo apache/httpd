@@ -20,7 +20,7 @@
    See <A HREF="windows.html">Using Apache with Microsoft Windows</A>
    before you begin.</P>
 
-<P>Compiling Apache requires Microsoft Visual C++ 5.0 (or 6.0) to be properly
+<P>Compiling Apache requires Microsoft Visual C++ 5.0 or 6.0 to be properly
    installed. It is easiest to compile with the command-line tools
    (nmake, <EM>etc.</EM>..). Consult the VC++ manual to determine how 
    to install them.  Be especially aware that the vcvars32.bat file
@@ -44,18 +44,37 @@
    track down problems.</P>
 
 <P>If you get an error such as "the name specified is not recognized..."
- then you need to run vcvars32.bat first. Enter the following command;<br>
-  "c:\Program Files\Microsoft Visual Studio\VC98\Bin\VCVARS32.BAT"<br>
- (you will need to adjust this so it matches where your VC was installed) then
- try the nmake command again.</P>
+   then you need to run vcvars32.bat first. Enter the following command;
+<PRE>
+  "c:\Program Files\DevStudio\VC\Bin\VCVARS32.BAT"
+</PRE>
+   (you will need to adjust this command so it matches the directory where 
+   your VC was installed.)  Then try the nmake command again.</P>
 
 <P>Apache can also be compiled using VC++'s Visual Studio development
    environment.  To simplify this process, a Visual Studio workspace,
-   Apache.dsw, is provided in the src folder.  This workspace exposes
-   the entire list of working .dsp projects that are required for the
+   Apache.dsw, is provided in the <CODE>src</CODE> folder.  This workspace 
+   exposes the entire list of working .dsp projects that are required for the
    complete Apache binary release.  It includes dependencies between
    the projects to assure that they are built in the appropriate order.</P>
-   
+
+<P>These .dsp project files are distributed in Visual C++ 6.0 format.  Visual
+   C++ 5.0 (97) will recognize them with the single exception of the /ZI flag,
+   which corresponds to the VC 5.0 /Zi flag for debugging symbols.  To quickly
+   prepare the .dsp files for the Visual Studio 5.0 (97), you can use the
+   perl scripts distributed in the <CODE>src\helpers</CODE> folder:
+<PRE>
+  cd src\helpers
+  cvstodsp5.pl
+</PRE>
+   This command assumes you have a Perl interpreter installed and registered
+   for files of type .pl.  The list of converted .dsp project files will
+   be displayed as they are converted.  If you contribute back a patch that
+   offers revised project files, please convert them back with the script
+   dsp5tocvs.pl, which puts the projects back to Visual Studio 6.0 format.</P>
+
+<P>The core .dsp projects that are build by Apache.dsw or makefile.win are:</P>
+
  <OL>
    <LI><CODE>os\win32\ApacheOS.dsp</CODE>
    <LI><CODE>regex\regex.dsp</CODE>
@@ -69,7 +88,7 @@
  </OL>
 
 <P>In addition, the <CODE>os\win32</CODE> subdirectory contains
-   project files for the optional modules.</P>
+   project files for the optional modules, all of which require ApacheCore.</P>
 
 <OL>
   <LI><CODE>os\win32\ApacheModuleAuthAnon.dsp</CODE>
@@ -87,8 +106,8 @@
 </OL>
 
    The <CODE>support\</CODE> folder contains project files for additional
-   programs that are not part of the apache runtime, but are used by
-   the administrator to test Apache and maintain password and log files.</P>
+   programs that are not part of the Apache runtime, but are used by
+   the administrator to maintain password and log files.</P>
 
 <OL>
   <LI><CODE>support\htdigest.dsp</CODE>
@@ -103,6 +122,7 @@
 
 <P>To install the files into the <CODE>c:\ServerRoot</CODE> directory
    automatically, use one the following nmake commands (see above):</P>
+
 <UL>
 <LI><CODE>nmake /f Makefile.win installr INSTDIR=<EM>c:\ServerRoot</EM></CODE>
  (for release build)
@@ -110,17 +130,20 @@
  (for debug build)
 </UL>
 
-The <EM>c:\ServerRoot</EM> argument to INSTDIR gives the installation directory (it can
-be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>).
+<P>The <EM>c:\ServerRoot</EM> argument to INSTDIR gives the installation 
+   directory (it can be omitted if Apache is to be installed into 
+   <SAMP>\Apache</SAMP>).</P>
 
 <P>This will install the following:</P>
 
 <UL>
   <LI><CODE><EM>c:\ServerRoot</EM>\Apache.exe</CODE> - Apache executable
-  <LI><CODE><EM>c:\ServerRoot</EM>\ApacheCore.dll</CODE> - Main Apache shared library
-  <LI><CODE><EM>c:\ServerRoot</EM>\modules\ApacheModule*.dll</CODE> - Loadable Apache
-      modules
-  <LI><CODE><EM>c:\ServerRoot</EM>\bin\*.exe</CODE> - Administrator support executables
+  <LI><CODE><EM>c:\ServerRoot</EM>\ApacheCore.dll</CODE> - Main Apache 
+      shared library
+  <LI><CODE><EM>c:\ServerRoot</EM>\modules\ApacheModule*.dll</CODE> - 
+      Loadable Apache modules
+  <LI><CODE><EM>c:\ServerRoot</EM>\bin\*.exe</CODE> - Administrator support 
+      executables from support
   <LI><CODE><EM>c:\ServerRoot</EM>\conf</CODE> - Empty configuration directory
   <LI><CODE><EM>c:\ServerRoot</EM>\logs</CODE> - Empty logging directory
 </UL>
@@ -143,30 +166,28 @@ be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>).
    The default from within the InstallBin.dsp project is one level up
    (..) from the src tree.</P>
 
-<P>
-Before running the server you must fill out the conf directory.
-Copy the *.conf-dist-win from the distribution conf directory
-and rename them to *.conf.  You will need to copy over the conf/magic
-and conf/mime.types files as well. In order to serve documents
-you will need to create a htdocs\index.html or just copy over the standard Apache
-ones (This is a good idea as then you get the full Apache documentation on line).
-If you have previously run Apache from the c:\ServerRoot directory then please make
-sure you backup any files you wish to retain or only copy the files you want replaced.
-The following commands will copy all the required files to your
-c:\ServerRoot directory (***over-writing any that were there***);<br><br>
+<P>Before running the server you must fill out the conf directory.  Copy the 
+   *.conf-dist-win from the distribution conf directory and rename them to 
+   *.conf.  You will need to copy over the conf/magic and conf/mime.types 
+   files as well. In order to serve documents you will need to create a 
+   htdocs\index.html or just copy over the standard Apache ones (This is a 
+   good idea as then you get the full Apache documentation on line).  If you 
+   have previously run Apache from the c:\ServerRoot directory then please make
+   sure you backup any files you wish to retain or only copy the files you want
+   replaced. The following commands will copy all the required files to your
+   c:\ServerRoot directory (***over-writing any that were there***);</P>
 
 <UL>
-<LI><CODE>xcopy ..\conf\*.conf-dist-win c:\ServerRoot\conf\*.conf</CODE><br>
-<LI><CODE>xcopy ..\conf\magic c:\ServerRoot\conf\</CODE><br>
-<LI><CODE>xcopy ..\conf\mime.types c:\ServerRoot\conf\</CODE><br>
-<LI><CODE>xcopy ..\htdocs\*.* c:\ServerRoot\htdocs\ /E</CODE><br>
+<LI><CODE>copy ..\conf\*.conf-dist-win <EM>c:\ServerRoot</EM>\conf\*.conf</CODE>
+<LI><CODE>copy ..\conf\magic <EM>c:\ServerRoot</EM>\conf\</CODE>
+<LI><CODE>copy ..\conf\mime.types <EM>c:\ServerRoot</EM>\conf\</CODE>
+<LI><CODE>copy ..\htdocs\*.* <EM>c:\ServerRoot</EM>\htdocs\ /s</CODE>
 </UL>
-(adjust these so c:\ServerRoot matches the INSTDIR used above)
+<P>(adjust these so <EM>c:\ServerRoot</EM> matches the INSTDIR used above.)</P>
 
-<P>
-Edit the @@ServerRoot@@ entries in c:\ServerRoot\conf\httpd.conf to your
-actual server root (for example "c:/ServerRoot" Note: you must use forward
-slashes in Apache configuration files).<br>
+<P>Change the @@ServerRoot@@ entries in <EM>c:\ServerRoot</EM>\conf\httpd.conf 
+   to your actual server root (for example "<EM>c:/ServerRoot</EM>" Note: you 
+   must use forward slashes in Apache configuration files!)</P>
 
 <!--#include virtual="footer.html" -->
 </BODY>
