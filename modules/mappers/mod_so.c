@@ -256,7 +256,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      */
     if ((status = ap_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
         char my_error[256];
-        ap_strerror(ap_canonical_error(status), my_error, 256);
+        ap_strerror(status, my_error, sizeof(my_error));
         return ap_pstrcat (cmd->pool, "Cannot load ", szModuleFile,
                            " into server: ", 
                            my_error ? my_error : "(reason unknown)",
@@ -274,7 +274,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         char my_err[256];
 	return ap_pstrcat(cmd->pool, "Can't locate API module structure `", modname,
 		       "' in file ", szModuleFile, ": ", 
-                       ap_strerror(ap_canonical_error(status), my_err, 256), NULL);
+                       ap_strerror(status, my_err, sizeof(my_error)), NULL);
     }
     modp = (module*) modsym;
     modp->dynamic_load_handle = (ap_dso_handle_t *)modhandle;
