@@ -99,7 +99,7 @@ static OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 int ap_max_requests_per_child=0;
 int ap_daemons_to_start=0;
 
-event *exit_event;
+static event *exit_event;
 ap_lock_t *start_mutex;
 int my_pid;
 int parent_pid;
@@ -166,44 +166,6 @@ static void destroy_semaphore(semaphore *semaphore_id)
     CloseHandle(semaphore_id);
 }
 
-
-static event *
-create_event(int manual, int initial, char *name)
-{
-    return(CreateEvent(NULL, manual, initial, name));
-}
-
-static event *
-open_event(char *name)
-{
-    return(OpenEvent(EVENT_ALL_ACCESS, FALSE, name));
-}
-
-
-static int acquire_event(event *event_id)
-{
-    int rv;
-    
-    rv = WaitForSingleObject(event_id, INFINITE);
-    
-    return(map_rv(rv));
-}
-
-static int set_event(event *event_id)
-{
-    return(SetEvent(event_id));
-}
-
-static int reset_event(event *event_id)
-{
-    return(ResetEvent(event_id));
-}
-
-
-static void destroy_event(event *event_id)
-{
-    CloseHandle(event_id);
-}
 
 /* To share the semaphores with other processes, we need a NULL ACL
  * Code from MS KB Q106387
@@ -1483,15 +1445,14 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
                          "Parent: BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
         }
         /* Now, send the AcceptEx completion port to the child */
-        DuplicateHandle(GetCurrentProcess(), 
-                        AcceptExCompPort, 
-                        pi.hProcess,
-                        &hDupedCompPort, 
-                        0,
-                        TRUE, // handle can be inherited
-                        DUPLICATE_SAME_ACCESS);
+        if (!DuplicateHandle(GetCurrentProcess(), AcceptExCompPort, 
+                             pi.hProcess, &hDupedCompPort,  0,
+                             TRUE, DUPLICATE_SAME_ACCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+                         "Parent: Unable to duplicate AcceptEx completion port. Shutting down.");
+            return -1;
+        }
         WriteFile(hPipeWrite, &hDupedCompPort, (DWORD) sizeof(hDupedCompPort), &BytesWritten, (LPOVERLAPPED) NULL);
-        CloseHandle(hDupedCompPort);
     }
 
     CloseHandle(hPipeRead);
@@ -1716,14 +1677,16 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
         }
         else {
             ap_child_init_lock(&start_mutex, signal_name_prefix, pconf);
-            exit_event = open_event(exit_event_name);
+            exit_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, exit_event_name);
+            ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
+                         "Child %d: exit_event_name = %s", my_pid, exit_event_name);        
         }
         ap_assert(start_mutex);
         ap_assert(exit_event);
 
         child_main();
 
-        destroy_event(exit_event);
+        CloseHandle(exit_event);
         AMCSocketCleanup();
         restart = 0;
     }
