@@ -99,7 +99,7 @@ void add_include_vars(request_rec *r, char *timefmt)
       table_set(e, "USER_NAME", pw->pw_name);
     } else {
       char uid[16];
-      sprintf(uid, "user#%ld", r->finfo.st_uid);
+      sprintf(uid, "user#%ld", (unsigned long)r->finfo.st_uid);
       table_set(e, "USER_NAME", uid);
     }
 
