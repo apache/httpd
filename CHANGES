@@ -1,4 +1,9 @@
 Changes with Apache 2.0b1
+  *) Modify the install directory layout.  Modules are now installed in
+     modules/.  Shared libraries should be installed in libraries/, but
+     we don't have any of those on Unix yet.  All install directories
+     are modifyable at configure time. [Ryan Bloom]
+
   *) Install all header files in the same directory on Unix. [Ryan Bloom]
 
   *) Get the functions in server/linked into the server, regardless of
