@@ -1745,7 +1745,7 @@ void ap_show_modules(void)
     for (n = 0; ap_loaded_modules[n]; ++n) {
 	printf("  %s\n", ap_loaded_modules[n]->name);
     }
-#if !defined(WIN32) && !defined(NETWARE)
+#if !defined(WIN32) && !defined(NETWARE) && !defined(TPF)
     printf("suexec: %s\n",
 	   ap_suexec_enabled
 	       ? "enabled; valid wrapper " SUEXEC_BIN

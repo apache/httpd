@@ -3200,7 +3200,7 @@ static int init_suexec(void)
 {
     int result = 0;
 
-#if !defined(WIN32) && !defined(NETWARE)
+#if !defined(WIN32) && !defined(NETWARE) && !defined(TPF)
     struct stat wrapper;
 
     if ((stat(SUEXEC_BIN, &wrapper)) != 0) {
@@ -3665,6 +3665,9 @@ static void show_compile_settings(void)
     printf("Server's Module Magic Number: %u:%u\n",
 	   MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
     printf("Server compiled with....\n");
+#ifdef TPF
+    show_os_specific_compile_settings();
+#endif
 #ifdef BIG_SECURITY_HOLE
     printf(" -D BIG_SECURITY_HOLE\n");
 #endif
@@ -3682,12 +3685,6 @@ static void show_compile_settings(void)
 #endif
 #ifdef USE_SHMGET_SCOREBOARD
     printf(" -D USE_SHMGET_SCOREBOARD\n");
-#endif
-#ifdef USE_TPF_SCOREBOARD
-    printf(" -D USE_TPF_SCOREBOARD\n");
-#endif
-#ifdef NO_SAWNC
-    printf(" -D NO_SAWNC\n");
 #endif
 #ifdef USE_OS2_SCOREBOARD
     printf(" -D USE_OS2_SCOREBOARD\n");
@@ -3754,7 +3751,7 @@ static void show_compile_settings(void)
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
 #endif
-#ifdef SUEXEC_BIN
+#if defined(SUEXEC_BIN) && !defined(TPF)
     printf(" -D SUEXEC_BIN=\"" SUEXEC_BIN "\"\n");
 #endif
 #if defined(SHARED_CORE) && defined(SHARED_CORE_DIR)
@@ -4795,9 +4792,15 @@ static void standalone_main(int argc, char **argv)
 
 	    perform_idle_server_maintenance();
 #ifdef TPF
-        shutdown_pending = os_check_server(tpf_server_name);
-        ap_check_signals();
-        sleep(1);
+            ap_check_signals();
+            if (!shutdown_pending) {
+                if (os_check_server(tpf_server_name)) {
+                    shutdown_pending++;
+                } else {
+                    sleep(1);
+                    ap_check_signals();
+                }
+            }
 #endif /*TPF */
 	}
 

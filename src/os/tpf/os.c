@@ -103,6 +103,7 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts, struc
     ap_check_signals();
     if ((no_reads + no_writes + no_excepts == 0) &&
         (tv) && (tv->tv_sec + tv->tv_usec != 0)) {
+#ifdef TPF_HAVE_SAWNC
         /* TPF's select immediately returns if the sum of
            no_reads, no_writes, and no_excepts is zero.
            This means that the select calls in http_main.c
@@ -110,7 +111,6 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts, struc
            The following code makes TPF's select work a little closer
            to everyone else's select:
         */
-#ifndef NO_SAWNC
         struct ev0bk evnblock;
 
         timeout = tv->tv_sec;
@@ -202,6 +202,14 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
    TPF_FORK_CHILD           *cld = (TPF_FORK_CHILD *) data;
    array_header             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
    table_entry              *elts = (table_entry *) env_arr->elts;
+#ifdef TPF_FORK_EXTENDED
+   char                     *args[2];
+   char                     **envp = NULL;
+   pool                     *subpool = NULL;
+
+#include "util_script.h"
+
+#endif /* TPF_FORK_EXTENDED */ 
 
    if (func) {
       if (result=func(data, NULL)) {
@@ -233,12 +241,22 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
       dup2(err_fds[1], STDERR_FILENO);
    }
 
+/* set up environment variables for the tpf_fork */
    if (cld->subprocess_env) {
+#ifdef TPF_FORK_EXTENDED
+   /* with extended tpf_fork( ) we pass the pointer to a list of pointers */
+   /* that point to "key=value" strings for each env variable             */ 
+      subpool = ap_make_sub_pool(p);
+      envp = ap_create_environment(subpool, cld->subprocess_env);
+#else
+   /* without extended tpf_fork( ) we setenv( ) each env variable */
+   /* so the child inherits them                                  */
       for (i = 0; i < env_arr->nelts; ++i) {
            if (!elts[i].key)
                continue;
            setenv (elts[i].key, elts[i].val, 1);
        }
+#endif /* TPF_FORK_EXTENDED */
    }
 
    fork_input.program = (const char*) cld->filename;
@@ -248,8 +266,15 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
    fork_input.ebw_data = NULL;
    fork_input.parm_data = NULL;
 
-
+#ifdef TPF_FORK_EXTENDED
+   args[0] = cld->filename;
+   args[1] = NULL;
+   if ((pid = tpf_fork(&fork_input,
+                       (const char **)args,
+                       (const char **)envp)) < 0) {
+#else
    if ((pid = tpf_fork(&fork_input)) < 0) {
+#endif /* TPF_FORK_EXTENDED */
        save_errno = errno;
        if (pipe_out) {
            close(out_fds[0]);
@@ -264,6 +289,11 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
        pid = 0;
    }
 
+#ifdef TPF_FORK_EXTENDED
+   if (subpool) {
+       ap_destroy_pool(subpool);
+   }
+#else 
    if (cld->subprocess_env) {
        for (i = 0; i < env_arr->nelts; ++i) {
             if (!elts[i].key)
@@ -271,6 +301,7 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
             unsetenv (elts[i].key);
        }
    }
+#endif /* TPF_FORK_EXTENDED */
 
    if (pipe_out) {
        close(out_fds[1]);
@@ -354,7 +385,11 @@ pid_t os_fork(server_rec *s, int slot)
     fork_input.istream = TPF_FORK_IS_BALANCE;
     fork_input.ebw_data_length = sizeof(input_parms);
     fork_input.parm_data = "-x";
+#ifdef TPF_FORK_EXTENDED
+    return tpf_fork(&fork_input, NULL, NULL);
+#else
     return tpf_fork(&fork_input);
+#endif /* TPF_FORK_EXTENDED */
 }
 
 void ap_tpf_zinet_checks(int standalone,
@@ -713,4 +748,38 @@ int killpg(pid_t pgrp, int sig)
     }
 
     return(0);
+}
+
+/*
+   This function augments http_main's show_compile_settings function.
+   This way definitions that are only shown on TPF won't clutter up
+   main line code.
+*/
+void show_os_specific_compile_settings(void)
+{
+
+#ifdef USE_TPF_SCOREBOARD
+    printf(" -D USE_TPF_SCOREBOARD\n");
+#endif
+
+#ifdef TPF_FORK_EXTENDED
+    printf(" -D TPF_FORK_EXTENDED\n"); 
+#endif
+
+#ifdef TPF_HAVE_NONSOCKET_SELECT
+    printf(" -D TPF_HAVE_NONSOCKET_SELECT\n"); 
+#endif
+
+#ifdef TPF_NO_NONSOCKET_SELECT 
+    printf(" -D TPF_NO_NONSOCKET_SELECT\n"); 
+#endif
+
+#ifdef TPF_HAVE_SAWNC
+    printf(" -D TPF_HAVE_SAWNC\n"); 
+#endif
+
+#ifdef TPF_NO_SAWNC
+    printf(" -D TPF_NO_SAWNC\n"); 
+#endif
+
 }

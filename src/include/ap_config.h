@@ -914,6 +914,7 @@ typedef int rlim_t;
 #define S_IREAD S_IRUSR
 #define S_IWRITE S_IWUSR
 #define S_IEXEC S_IXUSR
+#include <unistd.h>
 #define crypt(buf,salt) ((char *)buf)
 #undef  offsetof
 #define offsetof(s_type,field) ((size_t)&(((s_type*)0)->field))

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.21
 
+  *) (TPF only) Take advantage of improvements to select(), fork(), and
+     exec() in the TPF operating system.  
+     [David McCreedy <McCreedy@us.ibm.com>]
+
   *) (Cygwin only) Fix problems with signals sent to child processes;
      Improve auto-configuration for Cygwin.
      [Stipe Tolj <tolj@wapme-systems.de>]

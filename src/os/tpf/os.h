@@ -1,7 +1,57 @@
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
+/*
+ * This file is included in all Apache source code. It contains definitions
+ * of facilities available on _this_ operating system (HAVE_* macros),
+ * and prototypes of OS specific functions defined in os.c or os-inline.c
+ */
+
 #define PLATFORM "TPF"
+
+/************************************************************************
+ *  PJ26895 provides support for non_socket_select.
+ *  You can determine if this apar is applied to your system by looking
+ *  at i$pwbl.h.  If the function non_socket_select is defined,
+ *  then add #define TPF_HAVE_NONSOCKET_SELECT
+ *  else add #define TPF_NO_NONSOCKET_SELECT
+ *
+ *  One of these two #defines is required and must be added here in os.h
+ *  before the following check.
+ ************************************************************************/
+
+#if !defined(TPF_HAVE_NONSOCKET_SELECT) && !defined(TPF_NO_NONSOCKET_SELECT)
+   #error "You must define whether your system supports non_socket_select()"
+   #error "See src/os/tpf/os.h for instructions"
+#endif
+
+#if defined(TPF_HAVE_NONSOCKET_SELECT) && defined(TPF_NO_NONSOCKET_SELECT)
+   #error "TPF_HAVE_NONSOCKET_SELECT and TPF_NO_NONSOCKET_SELECT"
+   #error "cannot both be defined"
+   #error "See src/os/tpf/os.h for instructions"
+#endif
+
+/************************************************************************
+ *  PJ27387 or PJ26188 provides support for tpf_sawnc.
+ *  You can determine if this apar is applied to your system by looking at
+ *  tpfapi.h or i$fsdd.h.  If the function tpf_sawnc is defined,
+ *  then add #define TPF_HAVE_SAWNC
+ *  else add #define TPF_NO_SAWNC
+ *
+ *  One of these two #defines is required and must be added here in os.h
+ *  before the following check.
+ ************************************************************************/
+
+#if !defined(TPF_HAVE_SAWNC) && !defined(TPF_NO_SAWNC)
+   #error "You must define whether your system supports tpf_sawnc()"
+   #error "See src/os/tpf/os.h for instructions"
+#endif
+
+#if defined(TPF_HAVE_SAWNC) && defined(TPF_NO_SAWNC)
+   #error "TPF_HAVE_SAWNC and TPF_NO_SAWNC"
+   #error "cannot both be defined"
+   #error "See src/os/tpf/os.h for instructions"
+#endif
 
 /* if the compiler defined errno then undefine it
    and pick up the correct definition from errno.h */
@@ -10,12 +60,16 @@
 #include <errno.h>
 #endif
 
-/*
- * This file is included in all Apache source code. It contains definitions
- * of facilities available on _this_ operating system (HAVE_* macros),
- * and prototypes of OS specific functions defined in os.c or os-inline.c
- */
+/* If APAR PJ27277 (which shipped on PUT13) has been applied */
+/* then we want to #define TPF_FORK_EXTENDED so Perl CGIs will work. */
+/* Rather than hardcoding it we'll check for "environ" in stdlib.h, */
+/* which was also added by PJ27277. */
+#include <stdlib.h>
+#if defined(environ) && !defined(TPF_FORK_EXTENDED)
+#define TPF_FORK_EXTENDED
+#endif
 
+#include <sysapi.h>  
 #include "ap_config.h"
 
 #ifdef HAVE_ISNAN
@@ -127,6 +181,7 @@ void ap_tpf_zinet_checks(int standalone,
                          const char *servername,
                          struct server_rec *s);
 int os_check_server(char *server);
+void show_os_specific_compile_settings(void);
 char *getpass(const char *prompt);
 int killpg(pid_t pgrp, int sig);
 extern char *ap_server_argv0;

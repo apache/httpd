@@ -2269,13 +2269,16 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     long total_bytes_sent = 0;
     register int n, w, o, len, fd;
     fd_set fds;
+#ifdef TPF
+    struct timeval tv;
+#endif 
 
     if (length == 0)
         return 0;
 
     /* Make fb unbuffered and non-blocking */
     ap_bsetflag(fb, B_RD, 0);
-#ifndef TPF    
+#ifndef TPF_NO_NONSOCKET_SELECT
     ap_bnonblock(fb, B_RD);
 #endif
     fd = ap_bfileno(fb, B_RD);
@@ -2334,7 +2337,13 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
              * we don't care what select says, we might as well loop back
              * around and try another read
              */
+#ifdef TPF_HAVE_NONSOCKET_SELECT
+            tv.tv_sec =  1;
+            tv.tv_usec = 0;
+            ap_select(fd + 1, &fds, NULL, NULL, &tv);
+#else
             ap_select(fd + 1, &fds, NULL, NULL, NULL);
+#endif  
 #ifdef NDELAY_PIPE_RETURNS_ZERO
 	    afterselect = 1;
 #endif
