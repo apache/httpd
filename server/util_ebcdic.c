@@ -58,15 +58,52 @@
 
 #include "ap_config.h"
 
-#ifdef CHARSET_EBCDIC
+#ifdef APACHE_XLATE
 
 #include "httpd.h"
 #include "http_log.h"
 #include "http_core.h"
 #include "util_ebcdic.h"
 
+/* Note: these variables really belong in util_charset.c, but it seems silly
+ * to create util_charset.c at the moment since it would only contain the
+ * variables.
+ */
+
+/* ap_hdrs_to_ascii, ap_hdrs_from_ascii
+ *
+ * These are the translation handles used to translate between the network
+ * format of protocol headers and the local machine format.
+ *
+ * For an EBCDIC machine, these are valid handles which are set up at
+ * initialization to translate between ISO-8859-1 and the code page of
+ * the source code.
+ *
+ * For an ASCII machine, these remain NULL so that when they are stored
+ * in the BUFF via ap_bsetop(BO_WXLATE or BO_RXLATE) it ensures that no
+ * translation is performed.
+ */
+ 
 ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
+
+/* ap_locale_to_ascii, ap_locale_from_ascii
+ *
+ * These handles are used for the translation of content, unless a
+ * configuration module overrides them.
+ *
+ * For an EBCDIC machine, these are valid handles which are set up at
+ * initialization to translate between ISO-8859-1 and the code page of
+ * the httpd process's locale.
+ *
+ * For an ASCII machine, these remain NULL so that no translation is
+ * performed (unless a configuration module does something, of course).
+ */
+
 ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
+
+#endif /*APACHE_XLATE*/
+
+#ifdef CHARSET_EBCDIC
 
 ap_status_t ap_init_ebcdic(ap_pool_t *pool)
 {
