@@ -61,6 +61,7 @@
 #include "apr_getopt.h"
 #include "apr_general.h"
 #include "apr_lib.h"
+#include "apr_md5.h"
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
