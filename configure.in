@@ -16,10 +16,6 @@ APACHE_SUBST(APACHE_VERSION)
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 test "$prefix" = "NONE" && prefix='/usr/local'
 
-dnl XXX - make will sometimes die as annoyingly as automake with this option.
-dnl just remake and continue
-dnl AM_MAINTAINER_MODE
-
 dnl We want this one before the checks, so the checks can modify CFLAGS
 test -z "$CFLAGS" && auto_cflags=1
 
