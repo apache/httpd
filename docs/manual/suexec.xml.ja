@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.12 (outdated: 1.13) -->
+<!-- English Revision: 1.13 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -518,6 +518,11 @@
 
   <section id="usage"><title>suEXEC の使用</title>
 
+    <p>CGI プログラムへのリクエストが suEXEC ラッパーを呼ぶのは、
+    <directive module="mod_suexec">SuexecUserGroup</directive> ディレクティブを
+    含むバーチャルホストへのリクエストか、<module>mod_userdir</module> により
+    処理されたリクエストの場合に限ります。</p>
+
     <p><strong>仮想ホスト:</strong><br />
     suEXEC wrapper の使い方として、
     <directive module="core">VirtualHost</directive> 設定での
@@ -533,14 +538,14 @@
     メインサーバのユーザ ID が想定されます。</p>
 
     <p><strong>ユーザディレクトリ:</strong><br />
-    suEXEC wrapper は、リクエスト先のユーザとして CGI
-    を実行するためにも使えます。これは期待する実行権限のユーザ ID
-    の前に、"<strong><code>~</code></strong>"
-    文字を置くことで実現されます。
+    <module>mod_userdir</module> により処理されたリクエストは
+    リクエストされたユーザディレクトリのユーザ ID で CGI プログラムを
+    実行するために suEXEC ラッパーを呼びます。
     この機能を動作させるために必要なことは、CGI
     をそのユーザで実行できること、そのスクリプトが上記の<a
     href="#model">セキュリティ検査</a>をパスできることです。
-    </p>
+    <a href="#install">コンパイル
+     時のオプション</a> <code>--with-suexec-userdir</code> も参照してください。</p>
   </section>
 
   <section id="debug"><title>suEXEC のデバッグ</title>
