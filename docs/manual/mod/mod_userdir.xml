@@ -16,6 +16,8 @@
 
 <seealso><a href="../urlmapping.html">Mapping URLs to the
 Filesystem</a></seealso>
+<seealso><a href="../howto/public_html.html">public_html
+tutorial</a></seealso>
 
 <directivesynopsis>
 
@@ -113,6 +115,9 @@ UserDir disabled user4 user5 user6
 </example>
 
 </usage>
+
+<seealso><a href="../howto/public_html.html">public_html
+tutorial</a></seealso>
 
 </directivesynopsis>
 </modulesynopsis>
