@@ -110,7 +110,7 @@ proxy_c2hex(int ch, char *x)
 char *
 proxy_canonenc(pool *p, const char *x, int len, enum enctype t, int isenc)
 {
-    int i, j, ispath, ch;
+    int i, j, ch;
     char *y;
     const char *allowed;  /* characters which should not be encoded */
     const char *reserved;  /* characters which much not be en/de-coded */
@@ -133,7 +133,6 @@ proxy_canonenc(pool *p, const char *x, int len, enum enctype t, int isenc)
     else reserved = "";
 
     y = palloc(p, 3*len+1);
-    ispath = (t == enc_path);
 
     for (i=0, j=0; i < len; i++, j++)
     {
