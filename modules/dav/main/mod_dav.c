@@ -433,7 +433,8 @@ static const char *dav_cmd_davdepthinfinity(cmd_parms *cmd, void *config,
 /*
  * Command handler for the DAVLockDB directive, which is TAKE1
  */
-static const char *dav_cmd_davlockdb(cmd_parms *cmd, void *config, char *arg1)
+static const char *dav_cmd_davlockdb(cmd_parms *cmd, void *config,
+                                     const char *arg1)
 {
     dav_server_conf *conf;
 
@@ -449,7 +450,7 @@ static const char *dav_cmd_davlockdb(cmd_parms *cmd, void *config, char *arg1)
  * Command handler for DAVMinTimeout directive, which is TAKE1
  */
 static const char *dav_cmd_davmintimeout(cmd_parms *cmd, void *config,
-                                         char *arg1)
+                                         const char *arg1)
 {
     dav_dir_conf *conf = (dav_dir_conf *) config;
 
@@ -464,7 +465,7 @@ static const char *dav_cmd_davmintimeout(cmd_parms *cmd, void *config,
  * Command handler for DAVParam directive, which is TAKE2
  */
 static const char *dav_cmd_davparam(cmd_parms *cmd, void *config,
-                                    char *arg1, char *arg2)
+                                    const char *arg1, const char *arg2)
 {
     dav_dir_conf *conf = (dav_dir_conf *) config;
 
@@ -477,7 +478,7 @@ static const char *dav_cmd_davparam(cmd_parms *cmd, void *config,
  * Command handler for LimitXMLRequestBody directive, which is TAKE1
  */
 static const char *dav_cmd_limitxmlrequestbody(cmd_parms *cmd, void *config,
-                                               char *arg1)
+                                               const char *arg1)
 {
     dav_dir_conf *conf = (dav_dir_conf *) config;
 
@@ -536,7 +537,7 @@ static const char *dav_xml_escape_uri(ap_pool_t *p, const char *uri)
     const char *e_uri = ap_escape_uri(p, uri);
 
     /* check the easy case... */
-    if (strchr(e_uri, '&') == NULL)
+    if (ap_strchr_c(e_uri, '&') == NULL)
 	return e_uri;
 
     /* more work needed... sigh. */
@@ -812,18 +813,19 @@ static dav_error * dav_open_lockdb(request_rec *r, int ro, dav_lockdb **lockdb)
 static int dav_parse_range(request_rec *r,
                            off_t *range_start, off_t *range_end)
 {
-    const char *range;
+    const char *range_c;
+    char *range;
     char *dash;
     char *slash;
 
-    range = ap_table_get(r->headers_in, "content-range");
-    if (range == NULL)
+    range_c = ap_table_get(r->headers_in, "content-range");
+    if (range_c == NULL)
         return 0;
 
-    range = ap_pstrdup(r->pool, range);
+    range = ap_pstrdup(r->pool, range_c);
     if (strncasecmp(range, "bytes ", 6) != 0
-        || (dash = strchr(range, '-')) == NULL
-        || (slash = strchr(range, '/')) == NULL) {
+        || (dash = ap_strchr(range, '-')) == NULL
+        || (slash = ap_strchr(range, '/')) == NULL) {
         /* malformed header. ignore it (per S14.16 of RFC2616) */
         return 0;
     }
@@ -3258,54 +3260,35 @@ static void register_hooks(void)
 
 static const command_rec dav_cmds[] =
 {
-    {
-	"DAV",
-	dav_cmd_dav,
-	NULL,
-	ACCESS_CONF,            /* per directory/location */
-	FLAG,
-	"turn DAV on/off for a directory or location"
-    },
-    {
-	"DAVLockDB",
-	dav_cmd_davlockdb,
-	NULL,
-	RSRC_CONF,              /* per server */
-	TAKE1,
-	"specify a lock database"
-    },
-    {
-	"DAVMinTimeout",
-	dav_cmd_davmintimeout,
-	NULL,
-	ACCESS_CONF|RSRC_CONF,  /* per directory/location, or per server */
-	TAKE1,
-	"specify minimum allowed timeout"
-    },
-    {
-	"DAVDepthInfinity",
-	dav_cmd_davdepthinfinity,
-	NULL,
-	ACCESS_CONF|RSRC_CONF,  /* per directory/location, or per server */
-	FLAG,
-	"allow Depth infinity PROPFIND requests"
-    },
-    {
-	"DAVParam",
-	dav_cmd_davparam,
-	NULL,
-	ACCESS_CONF|RSRC_CONF,  /* per directory/location, or per server */
-	TAKE2,
-	"DAVParam <parameter name> <parameter value>"
-    },
-    {
-	"LimitXMLRequestBody",
-	dav_cmd_limitxmlrequestbody,
-	NULL,
-	ACCESS_CONF|RSRC_CONF,  /* per directory/location, or per server */
-	TAKE1,
-	"Limit (in bytes) on maximum size of an XML-based request body"
-    },
+    /* per directory/location */
+    AP_INIT_FLAG("DAV", dav_cmd_dav, NULL, ACCESS_CONF,
+                 "turn DAV on/off for a directory or location"),
+
+    /* per server */
+    AP_INIT_TAKE1("DAVLockDB", dav_cmd_davlockdb, NULL,	RSRC_CONF,
+                  "specify a lock database"),
+
+    /* per directory/location, or per server */
+    AP_INIT_TAKE1("DAVMinTimeout", dav_cmd_davmintimeout, NULL,
+                  ACCESS_CONF|RSRC_CONF,
+                  "specify minimum allowed timeout"),
+
+    /* per directory/location, or per server */
+    AP_INIT_FLAG("DAVDepthInfinity", dav_cmd_davdepthinfinity, NULL,
+                 ACCESS_CONF|RSRC_CONF,
+                 "allow Depth infinity PROPFIND requests"),
+
+    /* per directory/location, or per server */
+    AP_INIT_TAKE2("DAVParam", dav_cmd_davparam, NULL,
+                  ACCESS_CONF|RSRC_CONF,
+                  "DAVParam <parameter name> <parameter value>"),
+
+    /* per directory/location, or per server */
+    AP_INIT_TAKE1("LimitXMLRequestBody", dav_cmd_limitxmlrequestbody, NULL,
+                  ACCESS_CONF|RSRC_CONF,
+                  "Limit (in bytes) on maximum size of an XML-based request "
+                  "body"),
+
     { NULL }
 };
 

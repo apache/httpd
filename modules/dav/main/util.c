@@ -851,7 +851,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
     char *list;
     const char *state_token;
     const char *uri = NULL;	/* scope of current production; NULL=no-tag */
-    size_t uri_len;
+    size_t uri_len = 0;
     dav_if_header *ih = NULL;
     uri_components parsed_uri;
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
