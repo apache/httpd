@@ -108,6 +108,4 @@ accepting requests on network sockets</td></tr><tr><td nowrap="nowrap"><a href="
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
     always a bad idea.</p>
-
-    <p>This directive has no effect on Microsoft Windows.</p>
 <p><strong>See also </strong></p><ul><li><a href="#maxspareservers" class="directive"><code class="directive">MaxSpareServers</code></a></li><li><a href="mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>

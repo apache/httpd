@@ -215,8 +215,6 @@ accepting requests on network sockets</description>
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
     always a bad idea.</p>
-
-    <p>This directive has no effect on Microsoft Windows.</p>
 </usage>
 <seealso><directive module="prefork">MaxSpareServers</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
