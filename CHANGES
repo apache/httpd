@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_ssl: Fix segfaults at startup if other modules which use OpenSSL
+     are also loaded.  [Joe Orton]
+
   *) mod_ssl: Use human-readable OpenSSL error strings in logs; use
      thread-safe interface for retrieving error strings.  [Joe Orton]
 

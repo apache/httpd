@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/02 14:21:26 $]
+Last modified at [$Date: 2003/12/02 14:23:23 $]
 
 Release:
 
@@ -79,13 +79,6 @@ PATCHES TO BACKPORT FROM 2.1
       server/mpm/winnt/mpm.h: r1.14
       +1: stoddard
       +1 (concept): trawick (looks reasonable when compared with worker)
-
-    * Don't leave the OpenSSL "id_callback" pointer dangling after
-      unloading mod_ssl; this fixes segfaults during startup if
-      other modules (or libraries used by other modules, e.g. PHP
-      stuff) use OpenSSL.
-      modules/ssl/ssl_util.c: r1.40
-      +1: jorton, trawick, stoddard
 
     * Prevent mod_proxy from sending an invalid status-line to clients
       in some cases.
