@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/28 15:38:28 $]
+Last modified at [$Date: 2003/07/28 16:46:11 $]
 
 Release:
 
@@ -288,7 +288,7 @@ PATCHES TO PORT FROM 2.1
 
     * Install config.nice to make minor version upgrades easier.
         Makefile.in: r1.135
-      +1: slive
+      +1: slive, erikabele
 
 CURRENT RELEASE NOTES:
 
