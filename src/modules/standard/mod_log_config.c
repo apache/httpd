@@ -165,7 +165,7 @@
 module config_log_module;
 
 static int xfer_flags = ( O_WRONLY | O_APPEND | O_CREAT );
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
 /* OS/2 dosen't support users and groups */
 static mode_t xfer_mode = ( S_IREAD | S_IWRITE );
 #else
@@ -673,16 +673,22 @@ command_rec config_log_cmds[] = {
 { NULL }
 };
 
-void config_log_child (void *cmd)
+static int config_log_child (void *cmd)
 {
     /* Child process code for 'TransferLog "|..."';
      * may want a common framework for this, since I expect it will
      * be common for other foo-loggers to want this sort of thing...
      */
-    
+    int child_pid = 0;
+
     cleanup_for_exec();
+#ifdef SIGHUP
     signal (SIGHUP, SIG_IGN);
-#ifdef __EMX__
+#endif
+#if defined(WIN32)
+    child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
+#elif defined(__EMX__)
     /* For OS/2 we need to use a '/' */
     execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else
@@ -691,6 +697,7 @@ void config_log_child (void *cmd)
     perror ("exec");
     fprintf (stderr, "Exec of shell for logging failed!!!\n");
     exit (1);
+    return(child_pid);
 }
 
 config_log_state *open_config_log (server_rec *s, pool *p,

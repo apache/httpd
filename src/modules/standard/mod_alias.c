@@ -263,7 +263,7 @@ int translate_alias_redir(request_rec *r)
     char *ret;
     int status;
 
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
     /* Add support for OS/2 drive names */
     if ((r->uri[0] != '/' && r->uri[0] != '\0') && r->uri[1] != ':')
 #else    

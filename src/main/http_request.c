@@ -86,15 +86,15 @@
  */
 
 int check_symlinks (char *d, int opts)
-{
-    struct stat lfi, fi;
-    char *lastp;
-    int res;
-  
-#ifdef __EMX__
+{ 
+#if defined(__EMX__) || defined(WIN32)
     /* OS/2 dosen't have symlinks */
     return OK;
 #else
+    struct stat lfi, fi;
+    char *lastp;
+    int res;
+ 
   
     if (opts & OPT_SYM_LINKS) return OK;
 
@@ -259,7 +259,7 @@ int directory_walk (request_rec *r)
      * for the moment, that's not worth the trouble.
      */
 
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
     /* Add OS/2 drive name support */
     if ((test_filename[0] != '/') && (test_filename[1] != ':'))
 #else
@@ -763,7 +763,7 @@ void die(int type, request_rec *r)
     }
        
     r->status = type;
-
+    
     /* Two types of custom redirects --- plain text, and URLs.
      * Plain text has a leading '"', so the URL code, here, is triggered
      * on its absence

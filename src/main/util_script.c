@@ -421,7 +421,7 @@ void send_size(size_t size, request_rec *r) {
     rputs(ss, r);
 }
 
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
 static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 {
     register int x,n;
@@ -452,8 +452,9 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 #endif
 
 
-void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
+int call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
+    int pid = 0;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
 
@@ -506,7 +507,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
             /* write(2, err_string, strlen(err_string)); */
             /* exit(0); */
             log_unixerr("fopen", NULL, err_string, r->server);
-            return;
+            return(pid);
         }
         fgets (interpreter, 2048, program);
         fclose (program);
@@ -561,6 +562,109 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execv(r->filename,
 	          create_argv(r->pool, NULL, NULL, NULL, argv0, r->args));
     }
+    return(pid);
+    }
+#elif defined(WIN32)
+    {
+        /* Adapted from work by Alec Kloss, to allow exec'ing of scripts under OS/2 */
+        int is_script = 0;
+        int is_binary = 0;
+        char interpreter[2048]; /* hope this is large enough for the interpreter path */
+        FILE * program;
+        int i, sz;
+        char *dot;
+        char *exename;
+        int is_exe = 0;
+
+        interpreter[0] = 0;
+
+        exename = strrchr(r->filename, '/');
+        if(!exename)
+            exename = strrchr(r->filename, '\\');
+        if(!exename)
+            exename = r->filename;
+        else
+            exename++;
+        dot = strrchr(exename, '.');
+        if(dot)
+        {
+            if(!strcasecmp(dot, ".BAT") ||
+                !strcasecmp(dot, ".EXE") ||
+                !strcasecmp(dot, ".COM"))
+                is_exe = 1;
+        }
+        if(!is_exe)
+        {
+            program = fopen (r->filename, "rb");
+            if (!program) {
+                char err_string[HUGE_STRING_LEN];
+                ap_snprintf(err_string, sizeof(err_string), "open of %s failed, errno is %d\n", r->filename, errno);
+                /* write(2, err_string, strlen(err_string)); */
+                /* exit(0); */
+                log_unixerr("fopen", NULL, err_string, r->server);
+                return(pid);
+            }
+            sz = fread (interpreter, 1, 2047, program);
+            if(sz < 0) {
+                char err_string[HUGE_STRING_LEN];
+                ap_snprintf(err_string, sizeof(err_string), "open of %s failed, errno is %d\n", r->filename, errno);
+                log_unixerr("fread", NULL, err_string, r->server);
+                fclose(program);
+                return(pid);
+            }
+            interpreter[sz] = 0;
+            fclose (program);
+            if (!strncmp (interpreter, "#!", 2)) {
+                is_script = 1;
+                for(i=2; i<2048; i++)
+                {
+                    if((interpreter[i] == '\r') ||
+                            (interpreter[i] == '\n'))
+                        break;
+                }
+                interpreter[i] = 0;
+            } else {
+                /*
+                 * check and see how many control chars. On
+                 * that basis, I will classify it as a text
+                 * or binary file
+                 */
+                int ctrl = 0;
+
+                for(i=0; i<sz; i++)
+                {
+                    static char *spec = "\r\n\t";
+                    if(iscntrl(interpreter[i]) && !strchr(spec, interpreter[i]))
+                        ctrl++;
+                }
+                if(ctrl > sz/10)
+                    is_binary = 1;
+                else
+                    is_binary = 0;
+                
+            }
+        }
+
+        if ((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) {
+            if (is_exe || is_binary) {
+                pid = spawnle(_P_NOWAIT, r->filename, r->filename, NULL, env);
+            } else if(is_script) {
+	        pid = spawnle(_P_NOWAIT, interpreter+2, interpreter+2, r->filename, NULL, env);
+            } else {             
+                pid = spawnle(_P_NOWAIT, "CMD.EXE", "CMD.EXE", "/C", r->filename, NULL, env);
+            }
+        }
+        else {
+            if (is_exe || is_binary) {
+                pid = spawnve(_P_NOWAIT, r->filename, create_argv(r->pool, argv0, NULL, NULL, r->args, (void *)NULL), env);
+            } else if(is_script) {
+	        assert(0);
+                pid = spawnve(_P_NOWAIT, interpreter+2, create_argv(r->pool, interpreter+2, NULL, NULL, r->filename, r->args), env);
+            } else {  
+                pid = spawnve(_P_NOWAIT, "CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename), env);
+            }
+        }
+        return(pid);
     }
 #else
     if ( suexec_enabled &&
@@ -581,14 +685,14 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 
 	    if ((pw = getpwnam(username)) == NULL) {
 	        log_unixerr("getpwnam",username,"invalid username",r->server);
-	        return;
+	        return(pid);
 	    }
 	    execuser = pstrcat(r->pool, "~", pw->pw_name, NULL);
 	    user_gid = pw->pw_gid;
 
 	    if ((gr = getgrgid(user_gid)) == NULL) {
 	        if ((grpname = palloc (r->pool, 16)) == NULL) 
-	            return;
+	            return(pid);
 	        else
 	            ap_snprintf(grpname, 16, "%d", user_gid);
 	    }
@@ -598,13 +702,13 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	else {
 	    if ((pw = getpwuid (r->server->server_uid)) == NULL) {
 		log_unixerr("getpwuid", NULL, "invalid userid", r->server);
-		return;
+		return(pid);
 	    }
 	    execuser = pstrdup(r->pool, pw->pw_name);
 
 	    if ((gr = getgrgid (r->server->server_gid)) == NULL) {
 		log_unixerr("getgrgid", NULL, "invalid groupid", r->server);
-		return;
+		return(pid);
 	    }
 	    grpname = gr->gr_name;
 	}
@@ -634,5 +738,6 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	           create_argv(r->pool, NULL, NULL, NULL, argv0, r->args),
 	           env);
     }
+    return(pid);
 #endif
 }

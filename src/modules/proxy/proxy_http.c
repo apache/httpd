@@ -224,7 +224,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	log_error("proxy: error creating socket", r->server);
 	return SERVER_ERROR;
     }
-    note_cleanups_for_fd(pool, sock);
+    note_cleanups_for_socket(pool, sock);
 
     
     j = 0;
@@ -244,7 +244,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     clear_connection(r->headers_in);	/* Strip connection-based headers */
 
-    f = bcreate(pool, B_RDWR);
+    f = bcreate(pool, B_RDWR, 1);
     bpushfd(f, sock, sock);
 
     hard_timeout ("proxy send", r);
@@ -281,7 +281,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     len = bgets(buffer, HUGE_STRING_LEN-1, f);
     if (len == -1 || len == 0)
     {
-	pclosef(pool, sock);
+	pclosesocket(pool, sock);
 	kill_timeout(r);
 	return proxyerror(r, "Error reading from remote server");
     }
@@ -292,7 +292,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 /* If not an HTTP/1 messsage or if the status line was > 8192 bytes */
 	if (buffer[5] != '1' || buffer[len-1] != '\n')
 	{
-	    pclosef(pool, sock);
+	    pclosesocket(pool, sock);
 	    kill_timeout(r);
 	    return BAD_GATEWAY;
 	}
@@ -354,7 +354,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     i = proxy_cache_update(c, resp_hdrs, inprotocol, nocache);
     if (i != DECLINED)
     {
-	pclosef(pool, sock);
+	pclosesocket(pool, sock);
 	return i;
     }
 
@@ -406,7 +406,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     proxy_cache_tidy(c);
 
-    pclosef(pool, sock);
+    pclosesocket(pool, sock);
 
     proxy_garbage_coll(r);
     return OK;

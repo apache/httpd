@@ -63,6 +63,9 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "util_script.h"
+#ifdef WIN32
+#include "nt/readdir.h"
+#endif
 
 /* define TCN_02 to allow for Holtman I-D transparent negotiation.
  * This file currently implements the draft-02, except for
@@ -678,7 +681,7 @@ int read_type_map (negotiation_state *neg, char *map_name)
 		set_mime_fields (&mime_info, &accept_info);
 	    }
 	    else if (!strncmp (buffer, "content-length:", 15)) {
-		mime_info.bytes = atoi(body);
+		mime_info.bytes = atof(body);
 	    }
 	    else if (!strncmp (buffer, "content-language:", 17)) {
 		mime_info.content_languages = 

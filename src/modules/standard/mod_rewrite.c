@@ -100,7 +100,9 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifndef WIN32
 #include <netinet/in.h>
+#endif
 
     /* from the Apache server ... */
 #include "httpd.h"
@@ -1684,7 +1686,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
                 rc = 1;
     }
     else if (strcmp(p->pattern, "-l") == 0) {
-#ifndef __EMX__
+#if !defined(__EMX__) && !defined(WIN32)
 /* OS/2 dosen't support links. */
         if (stat(input, &sb) == 0)
             if (S_ISLNK(sb.st_mode))
@@ -2278,17 +2280,23 @@ static void open_rewritelog(server_rec *s, pool *p)
 }
 
 /* Child process code for 'RewriteLog "|..."' */
-static void rewritelog_child(void *cmd)
+static int rewritelog_child(void *cmd)
 {
+    int child_pid = 0;
+
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
-#ifdef __EMX__
+#if defined(WIN32)
+    child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
+#elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
     exit(1);
+    return(child_pid);
 }
 
 static void rewritelog(request_rec *r, int level, const char *text, ...)
@@ -2425,17 +2433,23 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
 }
 
 /* child process code */
-static void rewritemap_program_child(void *cmd)
+static int rewritemap_program_child(void *cmd)
 {
+    int child_pid = 0;
+    
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
-#ifdef __EMX__
+#if defined(WIN32)
+    child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
+#elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
     exit(1);
+    return(0);
 }
 
 

@@ -55,6 +55,7 @@
 #include "mod_proxy.h"
 #include "http_main.h"
 #include "md5.h"
+#include "multithread.h"
 
 /* already called in the knowledge that the characters are hex digits */
 int
@@ -235,8 +236,14 @@ proxy_canon_netloc(pool *pool, char **const urlp, char **userp,
 	if (!isdigit(host[i]) && host[i] != '.')
 	    break;
  /* must be an IP address */
+#ifdef WIN32
+    if (host[i] == '\0' && (inet_addr(host) == -1))
+#else
     if (host[i] == '\0' && (inet_addr(host) == -1 || inet_network(host) == -1))
+#endif
+    {
 	    return "Bad IP address in URL";
+    }
 
     *urlp = url;
     *hostp = host;
@@ -419,6 +426,8 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
                 if (f2 != NULL) {
                     pclosef(c->req->pool, c->fp->fd);
                     c->fp = NULL; 
+                    f2 = NULL;
+                    con->aborted = 1;
                     unlink(c->tempfile);
                 }
                 break;
@@ -549,6 +558,62 @@ proxy_liststr(const char *list, const char *val)
     return 0;
 }
 
+#ifdef WIN32
+
+/*
+ * On NT, the file system is NOT case sensitive. So, a == A
+ * need to map to smaller set of characters
+ */
+void
+proxy_hash(const char *it, char *val,int ndepth,int nlength)
+{
+    MD5_CTX context;
+    unsigned char digest[16];
+    char tmp[26];
+    int i, k, d;
+    unsigned int x;
+    static const char table[32]= "abcdefghijklmnopqrstuvwxyz012345";
+
+    MD5Init(&context);
+    MD5Update(&context, (const unsigned char *)it, strlen(it));
+    MD5Final(digest, &context);
+
+/* encode 128 bits as 26 characters, using a modified uuencoding */
+/* the encoding is 5 bytes -> 8 characters
+ * i.e. 128 bits is 3 x 5 bytes + 1 byte -> 3 * 8 characters + 2 characters
+ */
+    for (i=0, k=0; i < 15; i += 5)
+    {
+	x = (digest[i] << 24) | (digest[i+1] << 16) | (digest[i+2] << 8) | digest[i+3];
+	tmp[k++] = table[x >> 27];
+	tmp[k++] = table[(x >> 22) & 0x1f];
+	tmp[k++] = table[(x >> 17) & 0x1f];
+        tmp[k++] = table[(x >> 12) & 0x1f];
+        tmp[k++] = table[(x >> 7) & 0x1f];
+        tmp[k++] = table[(x >> 2) & 0x1f];
+        x = ((x & 0x3) << 8) | digest[i+4];
+        tmp[k++] = table[x >> 5];
+	tmp[k++] = table[x & 0x1f];
+    }
+/* one byte left */
+    x = digest[15];
+    tmp[k++] = table[x >> 3];  /* use up 5 bits */
+    tmp[k++] = table[x & 0x7];
+    /* now split into directory levels */
+
+    for(i=k=d=0 ; d < ndepth ; ++d)
+	{
+	strncpy(&val[i],&tmp[k],nlength);
+	k+=nlength;
+	val[i+nlength]='/';
+	i+=nlength+1;
+	}
+    memcpy(&val[i],&tmp[k],22-k);
+    val[i+22-k]='\0';
+}
+
+#else
+
 void
 proxy_hash(const char *it, char *val,int ndepth,int nlength)
 {
@@ -592,6 +657,8 @@ proxy_hash(const char *it, char *val,int ndepth,int nlength)
     memcpy(&val[i],&tmp[k],22-k);
     val[i+22-k]='\0';
 }
+
+#endif /* WIN32 */
 
 /*
  * Converts 8 hex digits to a time integer
@@ -699,9 +766,9 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
     struct hostent *hp;
-    static struct hostent hpbuf;
-    static u_long ipaddr;
-    static char* charpbuf[2];
+    static __declspec( thread ) struct hostent hpbuf;
+    static __declspec( thread ) u_long ipaddr;
+    static __declspec( thread ) char* charpbuf[2];
 
     for (i=0; host[i] != '\0'; i++)
 	if (!isdigit(host[i]) && host[i] != '.')
@@ -737,8 +804,13 @@ proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
     int i;
 
     hard_timeout("proxy connect", r);
-    do	i = connect(sock, (struct sockaddr *)addr, sizeof(struct sockaddr_in));
-    while (i == -1 && errno == EINTR);
+    do {
+	i = connect(sock, (struct sockaddr *)addr, sizeof(struct sockaddr_in));
+#ifdef WIN32
+        if(i == SOCKET_ERROR)
+            errno = WSAGetLastError() - WSABASEERR;
+#endif /* WIN32 */
+    } while (i == -1 && errno == EINTR);
     if (i == -1) proxy_log_uerror("connect", NULL, NULL, r->server);
     kill_timeout(r);
 

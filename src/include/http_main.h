@@ -97,3 +97,5 @@ int get_child_status (int child_num);
 int count_busy_servers ();
 int count_idle_servers ();
 
+unsigned int set_callback_and_alarm(void (*fn)(int), int x);
+int check_alarm();

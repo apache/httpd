@@ -1020,6 +1020,17 @@ const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
+    threads_per_child = atoi (arg);
+    return NULL;
+}
+
+const char *set_excess_requests (cmd_parms *cmd, void *dummy, char *arg) {
+    excess_requests_per_child = atoi (arg);
+    return NULL;
+}
+
+
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC)
 static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
                        const char * arg2, int type)
@@ -1258,6 +1269,8 @@ command_rec core_cmds[] = {
 { "AddModule", add_module_command, NULL, RSRC_CONF, ITERATE,
   "the name of a module" },
 { "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF, NO_ARGS, NULL },
+{ "ThreadsPerChild", set_threads, NULL, RSRC_CONF, TAKE1, "Number of threads a child creates" },
+{ "ExcessRequestsPerChild", set_excess_requests, NULL, RSRC_CONF, TAKE1, "Maximum number of requests a particular child serves after it is ready to die." },
 { NULL },
 };
 
@@ -1325,8 +1338,8 @@ int default_handler (request_rec *r)
 	return NOT_FOUND;
     }
     if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;
-    
-#ifdef __EMX__
+	
+#if defined(__EMX__) || defined(WIN32)
     /* Need binary mode for OS/2 */
     f = pfopen (r->pool, r->filename, "rb");
 #else

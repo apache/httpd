@@ -50,7 +50,9 @@
  *
  */
 
+#ifndef WIN32
 #include <sys/times.h>
+#endif
 
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process

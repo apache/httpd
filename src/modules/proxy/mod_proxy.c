@@ -179,6 +179,15 @@ proxy_fixup(request_rec *r)
     else return OK; /* otherwise; we've done the best we can */
 }
 
+static int
+proxy_init(server_rec *r, pool *p)
+{
+    proxy_garbage_init(r, p);
+
+    return(0);
+} 
+
+
 /* -------------------------------------------------------------- */
 /* Invoke handler */
  
@@ -535,7 +544,7 @@ static command_rec proxy_cmds[] = {
 
 module proxy_module = {
    STANDARD_MODULE_STUFF,
-   NULL,                        /* initializer */
+   proxy_init,                        /* initializer */
    NULL,                        /* create per-directory config structure */
    NULL,                        /* merge per-directory config structures */
    create_proxy_config,         /* create per-server config structure */

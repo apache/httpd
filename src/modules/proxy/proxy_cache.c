@@ -58,7 +58,13 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_date.h"
+#ifdef WIN32
+#include <sys/utime.h>
+#include "nt/dirent.h"
+#else
 #include <utime.h>
+#endif /* WIN32 */
+#include "multithread.h"
 
 #define	abs(c)	((c) >= 0 ? (c) : -(c))
 
@@ -84,11 +90,46 @@ static int curbytes, cachesize, every;
 static unsigned long int curblocks;
 static time_t now, expire;
 static char *filename;
+static mutex *garbage_mutex = NULL;
+
+
+int
+proxy_garbage_init(server_rec *r, pool *p)
+{
+    if(!garbage_mutex)
+        garbage_mutex = create_mutex(NULL);
+
+    return(0);
+}
+
 
 static int sub_garbage_coll(request_rec *r,array_header *files,
 			    const char *cachedir,const char *cachesubdir);
+static void help_proxy_garbage_coll(request_rec *r);
 
 void proxy_garbage_coll(request_rec *r)
+{
+    static int inside = 0;
+
+    acquire_mutex(garbage_mutex);
+    if(inside == 1)
+    {
+        release_mutex(garbage_mutex);
+        return;
+    }
+    else
+        inside = 1;
+    release_mutex(garbage_mutex);
+
+    help_proxy_garbage_coll(r);
+
+    acquire_mutex(garbage_mutex);
+    inside = 0;
+    release_mutex(garbage_mutex);
+}
+
+
+void help_proxy_garbage_coll(request_rec *r)
     {
     const char *cachedir;
     void *sconf = r->server->module_config;
@@ -196,7 +237,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
     struct stat buf;
     int fd,i;
     DIR *dir;
-#if defined(NEXT)
+#if defined(NEXT) || defined(WIN32)
     struct DIR_TYPE *ent;
 #else
     struct dirent *ent;
@@ -244,7 +285,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	/*	if (strlen(ent->d_name) != HASH_LEN) continue; */
 
 /* read the file */
-	fd = open(filename, O_RDONLY);
+	fd = open(filename, O_RDONLY | O_BINARY);
 	if (fd == -1)
 	{
 	    if (errno  != ENOENT) proxy_log_uerror("open", filename,NULL,
@@ -421,7 +462,7 @@ int
 proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	     struct cache_req **cr)
 {
-    char hashfile[33], *imstr, *pragma, *p, *auth;
+    char hashfile[66], *imstr, *pragma, *p, *auth;
     struct cache_req *c;
     time_t now;
     BUFF *cachefp;
@@ -466,11 +507,11 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	    auth == NULL)
     {
         Explain1("Check file %s",c->filename);
-	cfd = open(c->filename, O_RDWR);
+	cfd = open(c->filename, O_RDWR | O_BINARY);
 	if (cfd != -1)
 	{
 	    note_cleanups_for_fd(r->pool, cfd);
-	    cachefp = bcreate(r->pool, B_RD | B_WR);
+	    cachefp = bcreate(r->pool, B_RD | B_WR, 0);
 	    bpushfd(cachefp, cfd, cfd);
 	} else if (errno != ENOENT)
 	    proxy_log_uerror("open", c->filename,
@@ -807,7 +848,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 
     Explain1("Create temporary file %s",c->tempfile);
 
-    i = open(c->tempfile, O_WRONLY | O_CREAT | O_EXCL, 0622);
+    i = open(c->tempfile, O_WRONLY | O_CREAT | O_EXCL | O_BINARY, 0622);
     if (i == -1)
     {
 	proxy_log_uerror("open", c->tempfile,
@@ -815,7 +856,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	return DECLINED;
     }
     note_cleanups_for_fd(r->pool, i);
-    c->fp = bcreate(r->pool, B_WR);
+    c->fp = bcreate(r->pool, B_WR, 0);
     bpushfd(c->fp, -1, i);
 
     if (bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1)
@@ -904,13 +945,17 @@ proxy_cache_tidy(struct cache_req *c)
 	    if(!p)
 		break;
 	    *p='\0';
+#ifdef WIN32
+	    if(mkdir(c->filename) < 0 && errno != EEXIST)
+#else
 	    if(mkdir(c->filename,S_IREAD|S_IWRITE|S_IEXEC) < 0 && errno != EEXIST)
+#endif /* WIN32 */
 		proxy_log_uerror("mkdir",c->filename,
 		    "proxy: error creating cache directory",s);
 	    *p='/';
 	    ++p;
 	    }
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
         /* Under OS/2 use rename. */            
         if (rename(c->tempfile, c->filename) == -1)
             proxy_log_uerror("rename", c->filename,

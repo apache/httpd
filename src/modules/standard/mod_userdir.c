@@ -142,14 +142,25 @@ int translate_userdir (request_rec *r)
       if (strchr(userdir, '*'))
 	x = getword(r->pool, &userdir, '*');
 
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
       /* Add support for OS/2 drive letters */
       if ((userdir[0] == '/') || (userdir[1] == ':') || (userdir[0] == '\0')) {
 #else
       if ((userdir[0] == '/') || (userdir[0] == '\0')) {
 #endif
 	if (x) {
+#ifdef WIN32
+          /*
+           * Crummy hack. Need to figure out whether we have
+           * been redirected to a URL or to a file on some
+           * drive. Since I know of no protocols that are a
+           * single letter, if the : is the second character,
+           * I will assume a file was specified
+           */
+          if (strchr(x+2, ':')) {
+#else
 	  if (strchr(x, ':')) {
+#endif /* WIN32 */
 	    redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
 	    table_set (r->headers_out, "Location", redirect);
 	    return REDIRECT;
@@ -166,6 +177,10 @@ int translate_userdir (request_rec *r)
 	return REDIRECT;
       }
       else {
+#ifdef WIN32
+          /* Need to figure out home dirs on NT */
+          return DECLINED;
+#else /* WIN32 */
 	struct passwd *pw;
 	if((pw=getpwnam(w)))
 #ifdef __EMX__
@@ -174,7 +189,7 @@ int translate_userdir (request_rec *r)
 #else
 	  filename = pstrcat (r->pool, pw->pw_dir, "/", userdir, NULL);
 #endif
-
+#endif /* WIN32 */
       }
 
       /* Now see if it exists, or we're at the last entry. If we are at the

@@ -96,16 +96,20 @@ command_rec agent_log_cmds[] = {
 { NULL }
 };
 
-void agent_log_child (void *cmd)
+static int agent_log_child (void *cmd)
 {
     /* Child process code for 'AgentLog "|..."';
      * may want a common framework for this, since I expect it will
      * be common for other foo-loggers to want this sort of thing...
      */
-    
+    int child_pid = 0;
+
     cleanup_for_exec();
     signal (SIGHUP, SIG_IGN);
-#ifdef __EMX__    
+#if defined(WIN32)
+    child_pid = spawnl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
+#elif defined(__EMX__)    
     /* For OS/2 we need to use a '/' */
     execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else    
@@ -114,6 +118,7 @@ void agent_log_child (void *cmd)
     perror ("exec");
     fprintf (stderr, "Exec of shell for logging failed!!!\n");
     exit (1);
+    return(child_pid);
 }
 
 void open_agent_log (server_rec *s, pool *p)

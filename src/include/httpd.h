@@ -171,7 +171,7 @@
 
 /* The path to the Bourne shell, for parsed docs */
 #ifndef SHELL_PATH
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
 /* Set default for OS/2 file system */ 
 #define SHELL_PATH "CMD.EXE"
 #else
@@ -236,6 +236,9 @@
  */
 
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 0
+
+#define DEFAULT_THREADS_PER_CHILD 50
+#define DEFAULT_EXCESS_REQUESTS_PER_CHILD 0
 
 /* If you have altered Apache and wish to change the SERVER_VERSION
  * identifier below, please keep to the HTTP specification.  This states that

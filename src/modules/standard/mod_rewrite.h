@@ -122,7 +122,7 @@
 #endif
 #if !defined(USE_FCNTL) && !defined(USE_FLOCK)
 #define USE_FLOCK 1
-#ifndef MPE
+#if !defined(MPE) && !defined(WIN32)
 #include <sys/file.h>
 #endif
 #ifndef LOCK_UN

@@ -65,22 +65,31 @@
 
 #include <stdarg.h>
 
-void error_log_child (void *cmd)
+static int
+error_log_child (void *cmd)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
      * be common for other foo-loggers to want this sort of thing...
      */
-    
+    int child_pid = 0;
+
     cleanup_for_exec();
+#ifdef SIGHUP
+    /* No concept of a child process on Win32 */
     signal (SIGHUP, SIG_IGN);
-#ifdef __EMX__
+#endif /* ndef SIGHUP */
+#if defined(WIN32)
+    child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
+#elif defined(__EMX__)
     /* For OS/2 we need to use a '/' */
     execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else    
     execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif    
     exit (1);
+    return(child_pid);
 }
 
 void open_error_log(server_rec *s, pool *p)

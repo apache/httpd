@@ -55,7 +55,7 @@
  * See README for a listing of what they mean
  */
 
-#if !defined(QNX) && !defined(MPE)
+#if !defined(QNX) && !defined(MPE) && !defined(WIN32)
 #include <sys/param.h>
 #endif
 
@@ -500,6 +500,52 @@ typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
+#elif defined(WIN32)     
+/* Put your NT stuff here - Ambarish */
+
+/* temporarily replace crypt */
+//char *crypt(const char *pw, const char *salt);
+#define crypt(buf,salt)	    (buf)
+
+/* Although DIR_TYPE is dirent (see nt/readdir.h) we need direct.h for
+   chdir() */
+#include <direct.h>
+
+#define WIN32_LEAN_AND_MEAN
+#define STRICT
+#define NO_UNISTD_H
+#define NO_WRITEV
+#define NO_SETSID
+#define NO_USE_SIGACTION
+#define NEED_PROCESS_H
+#define USE_LONGJMP
+#define HAVE_MMAP
+#define MULTITHREAD
+typedef int uid_t;
+typedef int gid_t;
+typedef int pid_t;
+typedef int mode_t;
+typedef char * caddr_t;
+#define strcasecmp(s1, s2) stricmp(s1, s2)
+#define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
+#define lstat(x, y) stat(x, y)
+#define S_ISLNK(m) (0)
+#define S_ISREG(m) ((m & _S_IFREG) == _S_IFREG)
+#ifndef S_ISDIR
+#define S_ISDIR(m) (((m) & S_IFDIR) == S_IFDIR)
+#endif
+#ifndef S_ISREG
+#define S_ISREG(m)      (((m)&(S_IFREG)) == (S_IFREG))
+#endif
+#define STDIN_FILENO  0
+#define STDOUT_FILENO 1
+#define STDERR_FILENO 2
+#define JMP_BUF jmp_buf
+#define sleep(t) Sleep(t*1000)
+#define O_CREAT _O_CREAT
+#define O_RDWR _O_RDWR
+#define SIGPIPE 17
+#include <stddef.h>
 /* Unknown system - Edit these to match */
 #else
 #ifdef BSD
@@ -545,43 +591,58 @@ int ap_snprintf(char *buf, size_t len, const char *format,...);
 int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
 #endif
 
-#if !defined(NEXT) && !defined(CONVEXOS)
+#if !defined(NEXT) && !defined(CONVEXOS) && !defined(WIN32)
 #include <dirent.h>
 #define DIR_TYPE dirent
-#else
+#elif !defined(WIN32)
 #include <sys/dir.h>
 #define DIR_TYPE direct
+#else
+#define DIR_TYPE dirent
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#ifndef MPE
+#include <ctype.h>
+#if !defined(MPE) && !defined(WIN32)
 #include <sys/file.h>
 #endif
+#ifndef WIN32
 #include <sys/socket.h>
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
-#endif
-#include <ctype.h>
+#endif /* HAVE_SYS_SELECT_H */
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
 #ifndef MPE
 #include <arpa/inet.h>  /* for inet_ntoa */
-#endif
-#include <time.h>  /* for ctime */
-#include <signal.h>
-#include <errno.h>
+#endif /* ndef MPE */
 #include <sys/wait.h>
 #include <pwd.h>
 #include <grp.h>
 #include <fcntl.h>
 #include <limits.h>
+#define closesocket(s) close(s)
+#define O_BINARY (0)
+
+#else /* WIN32 */
+#include <winsock.h>
+#include <malloc.h>
+#include <io.h>
+#include <fcntl.h>
+#endif /* ndef WIN32 */
+
+#include <time.h>  /* for ctime */
+#include <signal.h>
+#include <errno.h>
 #if !defined(QNX) && !defined(CONVEXOS11) && !defined(NEXT)
 #include <memory.h>
 #endif
+
+
 #ifdef NEED_PROCESS_H
 #include <process.h>
 #endif
@@ -596,7 +657,7 @@ int setrlimit( int, struct rlimit *);
 #endif
 #endif
 #ifdef HAVE_MMAP
-#ifndef __EMX__
+#if !defined(__EMX__) && !defined(WIN32)
 /* This file is not needed for OS/2 */
 #include <sys/mman.h>
 #endif
@@ -613,7 +674,7 @@ int setrlimit( int, struct rlimit *);
 #define LOGNAME_MAX 25
 #endif
 
-#ifndef NEXT
+#if !defined(NEXT) && !defined(WIN32)
 #include <unistd.h>
 #endif
 
@@ -749,4 +810,4 @@ char *mktemp (char *);
      
 long vfprintf (FILE *, char *, va_list);
      
-#endif
+#endif /* SUNOS_LIB_PROTOTYPES */

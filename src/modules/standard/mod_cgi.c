@@ -272,12 +272,13 @@ struct cgi_child_stuff {
     char *argv0;
 };
 
-void cgi_child (void *child_stuff)
+static int cgi_child (void *child_stuff)
 {
     struct cgi_child_stuff *cld = (struct cgi_child_stuff *)child_stuff;
     request_rec *r = cld->r;
     char *argv0 = cld->argv0;
     int nph = cld->nph;
+    int child_pid;
 
 #ifdef DEBUG_CGI    
 #ifdef __EMX__
@@ -309,7 +310,7 @@ void cgi_child (void *child_stuff)
     if (!cld->debug)
       error_log2stderr (r->server);
 
-#ifndef __EMX__
+#if !defined(__EMX__) && !defined(WIN32)
     if (nph) client_to_stdout (r->connection);
 #endif    
 
@@ -319,7 +320,10 @@ void cgi_child (void *child_stuff)
     
     cleanup_for_exec();
     
-    call_exec(r, argv0, env, 0);
+    child_pid = call_exec(r, argv0, env, 0);
+#ifdef WIN32
+    return(child_pid);
+#else
 
     /* Uh oh.  Still here.  Where's the kaboom?  There was supposed to be an
      * EARTH-shattering kaboom!
@@ -336,6 +340,9 @@ void cgi_child (void *child_stuff)
 	    "exec of %s failed, errno is %d\n", r->filename, errno);
     write(2, err_string, strlen(err_string));
     exit(0);
+    /* NOT REACHED */
+    return(0);
+#endif
 }
 
 int cgi_handler (request_rec *r)
@@ -375,7 +382,7 @@ int cgi_handler (request_rec *r)
     if (S_ISDIR(r->finfo.st_mode))
 	return log_scripterror(r, conf, FORBIDDEN,
 			       "attempt to invoke directory as script");
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
     /* Allow for cgi files without the .EXE extension on them under OS/2 */
     if (r->finfo.st_mode == 0) {
         struct stat statbuf;
@@ -414,7 +421,7 @@ int cgi_handler (request_rec *r)
 	  spawn_child_err (r->main ? r->main->pool : r->pool, cgi_child,
 			    (void *)&cld,
 			   nph ? just_wait : kill_after_timeout,
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
 			   &script_out, &script_in, &script_err))) {
 #else
 			   &script_out, nph ? NULL : &script_in,
@@ -434,7 +441,7 @@ int cgi_handler (request_rec *r)
      */
     
      if (should_client_block(r)) {
-        void (*handler)();
+        void (*handler)(int);
 	int dbsize, len_read;
 
 	if (conf->logname) {
@@ -443,7 +450,9 @@ int cgi_handler (request_rec *r)
 	}
 
         hard_timeout ("copy script args", r);
+#ifdef SIGPIPE
         handler = signal (SIGPIPE, SIG_IGN);
+#endif
     
 	while ((len_read =
                 get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0)
@@ -536,7 +545,7 @@ int cgi_handler (request_rec *r)
     }
 
     if (nph) {
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
         while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL) {
             bputs(argsbuffer, r->connection->client);
         }

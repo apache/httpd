@@ -62,6 +62,8 @@ extern gid_t group_id;
 extern gid_t group_id_list[NGROUPS_MAX];
 #endif
 extern int max_requests_per_child;
+extern int threads_per_child;
+extern int excess_requests_per_child;
 extern struct in_addr bind_address;
 extern listen_rec *listeners;
 extern int daemons_to_start;

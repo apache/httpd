@@ -703,7 +703,7 @@ char *escape_shell_cmd(pool *p, const char *s) {
     
     for(x=0;cmd[x];x++) {
     
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
         /* Don't allow '&' in parameters under OS/2. */
         /* This can be used to send commands to the shell. */
         if (cmd[x] == '&') {
@@ -941,7 +941,7 @@ int can_exec(const struct stat *finfo) {
 #ifdef MULTIPLE_GROUPS
   int cnt;
 #endif
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
     /* OS/2 dosen't have Users and Groups */
     return 1;
 #else    
@@ -1087,6 +1087,9 @@ void str_tolower(char *str) {
 }
         
 uid_t uname2id(const char *name) {
+#ifdef WIN32
+    return(1);
+#else
     struct passwd *ent;
 
     if(name[0] == '#') 
@@ -1097,9 +1100,13 @@ uid_t uname2id(const char *name) {
         exit(1);
     }
     return(ent->pw_uid);
+#endif
 }
 
 gid_t gname2id(const char *name) {
+#ifdef WIN32
+    return(1);
+#else
     struct group *ent;
 
     if(name[0] == '#') 
@@ -1110,6 +1117,7 @@ gid_t gname2id(const char *name) {
         exit(1);
     }
     return(ent->gr_gid);
+#endif
 }
 
 #if 0

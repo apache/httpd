@@ -3,3 +3,6 @@ Makefile
 modules.c
 httpd
 Makefile.config
+apache.mdp
+apache.ncb
+Release

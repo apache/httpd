@@ -503,7 +503,7 @@ void parse_uri (request_rec *r, const char *uri)
 {
     const char *s;
 
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
     /* Variable for OS/2 fix below. */
     int loop;
 #endif
@@ -527,7 +527,7 @@ void parse_uri (request_rec *r, const char *uri)
 	r->proxyreq = 0;
 	r->uri = getword (r->pool, &uri, '?');
 
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
     /* Handle path translations for OS/2 and plug security hole. */
     /* This will prevent "http://www.wherever.com/..\..\/" from
        returning a directory for the root drive. */
@@ -627,7 +627,9 @@ int read_request_line (request_rec *r)
 	}
     }
     /* we've probably got something to do, ignore graceful restart requests */
+#ifdef SIGUSR1
     signal (SIGUSR1, SIG_IGN);
+#endif /* SIGUSR1 */
     bsetflag( conn->client, B_SAFEREAD, 0 );
     if (len == (HUGE_STRING_LEN - 1)) {
         log_printf(r->server, "request failed for %s, reason: URI too long",
@@ -1209,7 +1211,7 @@ void send_http_header(request_rec *r)
                           "byteranges; boundary=", r->boundary, NULL));
     else if (r->content_type)
         table_set(r->headers_out, "Content-Type", r->content_type);
-    else 
+    else
         table_set(r->headers_out, "Content-Type", default_type(r));
     
     if (r->content_encoding)

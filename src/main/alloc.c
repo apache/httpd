@@ -60,8 +60,10 @@
 
 #include "conf.h"
 #include "alloc.h"
+#include "multithread.h"
 
 #include <stdarg.h>
+#include <assert.h>
 
 /*****************************************************************
  *
@@ -97,7 +99,8 @@ union block_hdr
 };
 
 union block_hdr *block_freelist = NULL;
-
+mutex *alloc_mutex = NULL;
+mutex *spawn_mutex = NULL;
 
 
 /* Get a completely new block from the system pool. Note that we rely on
@@ -143,10 +146,12 @@ void free_blocks (union block_hdr *blok)
    * in the chain to point to the free blocks we already had.
    */
   
-  union block_hdr *old_free_list = block_freelist;
+  union block_hdr *old_free_list;
 
   if (blok == NULL) return;	/* Sanity check --- freeing empty pool? */
   
+  acquire_mutex(alloc_mutex);
+  old_free_list = block_freelist;
   block_freelist = blok;
   
   /*
@@ -167,6 +172,7 @@ void free_blocks (union block_hdr *blok)
   /* Finally, reset next pointer to get the old free blocks back */
 
   blok->h.next = old_free_list;
+  release_mutex(alloc_mutex);
 }
 
 
@@ -264,6 +270,8 @@ struct pool *make_sub_pool (struct pool *p)
   pool *new_pool;
 
   block_alarms();
+
+  acquire_mutex(alloc_mutex);
   
   blok = new_block (0);
   new_pool = (pool *)blok->h.first_avail;
@@ -280,12 +288,18 @@ struct pool *make_sub_pool (struct pool *p)
     p->sub_pools = new_pool;
   }
   
+  release_mutex(alloc_mutex);
   unblock_alarms();
   
   return new_pool;
 }
 
-void init_alloc() { permanent_pool = make_sub_pool (NULL); }
+void init_alloc()
+{
+    alloc_mutex = create_mutex(NULL);
+    spawn_mutex = create_mutex(NULL);
+    permanent_pool = make_sub_pool (NULL);
+}
 
 void clear_pool (struct pool *a)
 {
@@ -359,9 +373,15 @@ void *palloc (struct pool *a, int reqsize)
   /* Nope --- get a new one that's guaranteed to be big enough */
   
   block_alarms();
+  
+  acquire_mutex(alloc_mutex);
+
   blok = new_block (size);
   a->last->h.next = blok;
   a->last = blok;
+  
+  release_mutex(alloc_mutex);
+
   unblock_alarms();
 
   first_avail = blok->h.first_avail;
@@ -771,9 +791,20 @@ static void cleanup_pool_for_exec (pool *p)
 
 void cleanup_for_exec()
 {
+#ifndef WIN32
+    /*
+     * Don't need to do anything on NT, because I
+     * am actually going to spawn the new process - not
+     * exec it. All handles that are not inheritable, will
+     * be automajically closed. The only problem is with
+     * file handles that are open, but there isn't much
+     * I can do about that (except if the child decides
+     * to go out and close them
+     */
   block_alarms();
   cleanup_pool_for_exec (permanent_pool);
   unblock_alarms();
+#endif /* ndef WIN32 */
 }
 
 /*****************************************************************
@@ -837,6 +868,13 @@ FILE *pfopen(pool *a, const char *name, const char *mode)
 {
   FILE *fd = NULL;
   int baseFlag, desc;
+  int modeFlags = 0;
+
+#ifdef WIN32
+  modeFlags = _S_IREAD | _S_IWRITE;
+#else
+  modeFlags = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+#endif
 
   block_alarms();
 
@@ -844,7 +882,7 @@ FILE *pfopen(pool *a, const char *name, const char *mode)
     /* Work around faulty implementations of fopen */
     baseFlag = (*(mode+1) == '+') ? O_RDWR : O_WRONLY;
     desc = open(name, baseFlag | O_APPEND | O_CREAT,
-		S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+		modeFlags);
     if (desc >= 0) {
       fd = fdopen(desc, mode);
     }
@@ -880,6 +918,46 @@ int pfclose(pool *a, FILE *fd)
   unblock_alarms();
   return res;
 }
+
+/*****************************************************************
+ *
+ * Files and file descriptors; these are just an application of the
+ * generic cleanup interface.
+ */
+
+static void socket_cleanup (void *fdv)
+{
+    int rv;
+    
+    rv = closesocket((int)fdv);
+}
+
+void note_cleanups_for_socket (pool *p, int fd) {
+  register_cleanup (p, (void *)fd, socket_cleanup, socket_cleanup);
+}
+
+void kill_cleanups_for_socket(pool *p,int sock)
+{
+    kill_cleanup(p,(void *)sock,socket_cleanup);
+}
+
+int pclosesocket(pool *a, int sock)
+{
+  int res;
+  int save_errno;
+  
+  block_alarms();
+  res = closesocket(sock);
+#ifdef WIN32
+  errno = WSAGetLastError() - WSABASEERR;
+#endif /* WIN32 */
+  save_errno = errno;
+  kill_cleanup(a, (void *)sock, socket_cleanup);
+  unblock_alarms();
+  errno = save_errno;
+  return res;
+}
+
 
 /*
  * Here's a pool-based interface to POSIX regex's regcomp().
@@ -939,7 +1017,13 @@ void note_subprocess (pool *a, int pid, enum kill_conditions how)
   a->subprocesses = new;
 }
 
-int spawn_child_err (pool *p, void (*func)(void *), void *data,
+#ifdef WIN32
+#define enc_pipe(fds) _pipe(fds, 512, O_TEXT | O_NOINHERIT)
+#else
+#define enc_pipe(fds) pipe(fds)
+#endif /* WIN32 */
+
+int spawn_child_err (pool *p, int (*func)(void *), void *data,
 		     enum kill_conditions kill_how,
 		     FILE **pipe_in, FILE **pipe_out, FILE **pipe_err)
 {
@@ -951,7 +1035,7 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
 
   block_alarms();
   
-  if (pipe_in && pipe (in_fds) < 0)
+  if (pipe_in && enc_pipe (in_fds) < 0)
   {
       save_errno = errno;
       unblock_alarms();
@@ -959,7 +1043,7 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
       return 0;
   }
   
-  if (pipe_out && pipe (out_fds) < 0) {
+  if (pipe_out && enc_pipe (out_fds) < 0) {
     save_errno = errno;
     if (pipe_in) {
       close (in_fds[0]); close (in_fds[1]);
@@ -969,7 +1053,7 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
     return 0;
   }
 
-  if (pipe_err && pipe (err_fds) < 0) {
+  if (pipe_err && enc_pipe (err_fds) < 0) {
     save_errno = errno;
     if (pipe_in) {
       close (in_fds[0]); close (in_fds[1]);
@@ -981,6 +1065,86 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
     errno = save_errno;
     return 0;
   }
+
+#ifdef WIN32
+
+  {
+      HANDLE thread_handle;
+      int hStdIn, hStdOut, hStdErr;
+      int old_priority;
+      
+      acquire_mutex(spawn_mutex);
+      thread_handle = GetCurrentThread(); /* doesn't need to be closed */
+      old_priority = GetThreadPriority(thread_handle);
+      SetThreadPriority(thread_handle, THREAD_PRIORITY_HIGHEST);
+      /* Now do the right thing with your pipes */
+      if(pipe_in)
+      {
+          hStdIn = dup(fileno(stdin));
+          dup2(in_fds[0], fileno(stdin));
+          close(in_fds[0]);
+      }
+      if(pipe_out)
+      {
+          hStdOut = dup(fileno(stdout));
+          dup2(out_fds[1], fileno(stdout));
+          close(out_fds[1]);
+      }
+      if(pipe_err)
+      {
+          hStdErr = dup(fileno(stderr));
+          dup2(err_fds[1], fileno(stderr));
+          close(err_fds[1]);
+      }
+
+      pid = (*func)(data);
+      if(!pid)
+      {
+          save_errno = errno;
+          close(in_fds[1]);
+          close(out_fds[0]);
+          close(err_fds[0]);
+      }
+
+      /* restore the original stdin, stdout and stderr */
+      if(pipe_in)
+          dup2(hStdIn, fileno(stdin));
+      if(pipe_out)
+          dup2(hStdOut, fileno(stdout));
+      if(pipe_err)
+          dup2(hStdErr, fileno(stderr));
+
+      if(pid)
+      {
+          note_subprocess(p, pid, kill_how);
+          if(pipe_in)
+          {
+              *pipe_in = fdopen(in_fds[1], "wb");
+              if(*pipe_in)
+                  note_cleanups_for_file(p, *pipe_in);
+          }
+          if(pipe_out)
+          {
+              *pipe_out = fdopen(out_fds[0], "rb");
+              if(*pipe_out)
+                  note_cleanups_for_file(p, *pipe_out);
+          }
+          if(pipe_err)
+          {
+              *pipe_err = fdopen(err_fds[0], "rb");
+              if(*pipe_err)
+                  note_cleanups_for_file(p, *pipe_err);
+          }
+      }
+      SetThreadPriority(thread_handle, old_priority);
+      release_mutex(spawn_mutex);
+      /*
+       * go on to the end of the function, where you can
+       * unblock alarms and return the pid
+       */
+
+  }
+#else
 
   if ((pid = fork()) < 0) {
     save_errno = errno;
@@ -1065,6 +1229,7 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
   
     if (*pipe_err) note_cleanups_for_file (p, *pipe_err);
   }
+#endif /* WIN32 */
 
   unblock_alarms();
   return pid;
@@ -1089,7 +1254,40 @@ static void free_proc_chain (struct process_chain *procs)
    * don't waste any more cycles doing whatever it is that they shouldn't
    * be doing anymore.
    */
+#ifdef WIN32
+  /* Pick up all defunct processes */
+  for (p = procs; p; p = p->next) {
+    if (GetExitCodeProcess((HANDLE)p->pid, &status)) {
+      p->kill_how = kill_never;
+    }
+  }
 
+
+  for (p = procs; p; p = p->next) {
+    if (p->kill_how == kill_after_timeout) {
+	need_timeout = 1;
+    } else if (p->kill_how == kill_always) {
+      TerminateProcess((HANDLE)p->pid, 1);
+    }
+  }
+  /* Sleep only if we have to... */
+
+  if (need_timeout) sleep (3);
+
+  /* OK, the scripts we just timed out for have had a chance to clean up
+   * --- now, just get rid of them, and also clean up the system accounting
+   * goop...
+   */
+
+  for (p = procs; p; p = p->next){
+    if (p->kill_how == kill_after_timeout) 
+      TerminateProcess((HANDLE)p->pid, 1);
+  }
+
+  for (p = procs; p; p = p->next){
+    CloseHandle((HANDLE)p->pid);
+  }
+#else
 #ifndef NEED_WAITPID
   /* Pick up all defunct processes */
   for (p = procs; p; p = p->next) {
@@ -1126,5 +1324,6 @@ static void free_proc_chain (struct process_chain *procs)
     if (p->kill_how != kill_never)
       waitpid (p->pid, &status, 0);
   }
+#endif /* WIN32 */
 }
 

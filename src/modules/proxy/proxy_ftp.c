@@ -497,14 +497,14 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    r->server);
 	return SERVER_ERROR;
     }
-    note_cleanups_for_fd(pool, sock);
+    note_cleanups_for_socket(pool, sock);
 
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&one,
 		   sizeof(int)) == -1)
     {
 	proxy_log_uerror("setsockopt", NULL,
 	    "proxy: error setting reuseaddr option", r->server);
-	pclosef(pool, sock);
+	pclosesocket(pool, sock);
 	return SERVER_ERROR;
     }
 
@@ -520,7 +520,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (i == -1)
 	return proxyerror(r, "Could not connect to remote machine");
 
-    f = bcreate(pool, B_RDWR);
+    f = bcreate(pool, B_RDWR, 1);
     bpushfd(f, sock, sock);
 /* shouldn't we implement telnet control options here? */
 
@@ -667,11 +667,11 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     { 
 	proxy_log_uerror("socket", NULL, "proxy: error creating PASV socket",
 	    r->server);
-	pclosef(pool, sock);
+	pclosesocket(pool, sock);
 	kill_timeout(r);
         return SERVER_ERROR;
     }
-    note_cleanups_for_fd(pool, dsock);
+    note_cleanups_for_socket(pool, dsock);
 
     bputs("PASV\015\012", f);
     bflush(f);
@@ -683,8 +683,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     {
 	proxy_log_uerror("command", NULL, "PASV: control connection is toast",
 	    r->server);
-	pclosef(pool, dsock);
-	pclosef(pool, sock);
+	pclosesocket(pool, dsock);
+	pclosesocket(pool, sock);
 	kill_timeout(r);
 	return SERVER_ERROR;
     } else
@@ -721,12 +721,12 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		return proxyerror(r, "Could not connect to remote machine");
 	    }
 	    else {
-	        data = bcreate(pool, B_RDWR); 
+	        data = bcreate(pool, B_RDWR, 1); 
 	        bpushfd(data, dsock, dsock);
 	        pasvmode = 1;
 	    }
 	} else
-	    pclosef(pool, dsock);	/* and try the regular way */
+	    pclosesocket(pool, dsock);	/* and try the regular way */
     }
 
     if (!pasvmode)	/* set up data connection */
@@ -736,7 +736,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         {
 	    proxy_log_uerror("getsockname", NULL,
 	        "proxy: error getting socket address", r->server);
-	    pclosef(pool, sock);
+	    pclosesocket(pool, sock);
 	    kill_timeout(r);
 	    return SERVER_ERROR;
         }
@@ -746,7 +746,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         {
 	    proxy_log_uerror("socket", NULL, "proxy: error creating socket",
 	        r->server);
-	    pclosef(pool, sock);
+	    pclosesocket(pool, sock);
 	    kill_timeout(r);
 	    return SERVER_ERROR;
         }
@@ -757,8 +757,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         {
 	    proxy_log_uerror("setsockopt", NULL,
 	        "proxy: error setting reuseaddr option", r->server);
-	    pclosef(pool, dsock);
-	    pclosef(pool, sock);
+	    pclosesocket(pool, dsock);
+	    pclosesocket(pool, sock);
 	    kill_timeout(r);
 	    return SERVER_ERROR;
         }
@@ -771,8 +771,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    ap_snprintf(buff, sizeof(buff), "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
 	    proxy_log_uerror("bind", buff,
 	        "proxy: error binding to ftp data socket", r->server);
-    	    pclosef(pool, sock);
-    	    pclosef(pool, dsock);
+    	    pclosesocket(pool, sock);
+    	    pclosesocket(pool, dsock);
         }
         listen(dsock, 2); /* only need a short queue */
     }
@@ -912,8 +912,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     if (i != DECLINED)
     {
-	pclosef(pool, dsock);
-	pclosef(pool, sock);
+	pclosesocket(pool, dsock);
+	pclosesocket(pool, sock);
 	return i;
     }
     cache = c->fp;
@@ -928,14 +928,14 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         {
 	    proxy_log_uerror("accept", NULL,
 	        "proxy: failed to accept data connection", r->server);
-	    pclosef(pool, dsock);
-	    pclosef(pool, sock);
+	    pclosesocket(pool, dsock);
+	    pclosesocket(pool, sock);
 	    kill_timeout(r);
 	    proxy_cache_error(c);
 	    return BAD_GATEWAY;
         }
-        note_cleanups_for_fd(pool, csd);
-        data = bcreate(pool, B_RDWR);
+        note_cleanups_for_socket(pool, csd);
+        data = bcreate(pool, B_RDWR, 1);
         bpushfd(data, csd, -1);
 	kill_timeout(r);
     }
@@ -986,7 +986,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	bputs("ABOR\015\012", f);
 	bflush(f);
 	if (!pasvmode)
-            pclosef(pool, csd);
+            pclosesocket(pool, csd);
         Explain0("FTP: ABOR");
 /* responses: 225, 226, 421, 500, 501, 502 */
 	i = ftp_getrc(f);
@@ -1003,9 +1003,9 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* responses: 221, 500 */    
 
     if (!pasvmode)
-        pclosef(pool, csd);
-    pclosef(pool, dsock);
-    pclosef(pool, sock);
+        pclosesocket(pool, csd);
+    pclosesocket(pool, dsock);
+    pclosesocket(pool, sock);
 
     proxy_garbage_coll(r);
 

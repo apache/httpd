@@ -84,6 +84,7 @@
 #include "http_conf_globals.h"
 #include "http_core.h"          /* for get_remote_host */
 #include "scoreboard.h"
+#include "multithread.h"
 #include <assert.h>
 #include <sys/stat.h>
 #ifdef HAVE_SHMGET
@@ -96,7 +97,11 @@
 #include <sys/audit.h>
 #include <prot.h>
 #endif
+#ifdef WIN32
+#include "nt/getopt.h"
+#else
 #include <netinet/tcp.h>
+#endif
 
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
@@ -107,6 +112,11 @@
 #if !defined(max)
 #define max(a,b)        (a > b ? a : b)
 #endif
+
+#ifdef WIN32
+#include "nt/service.h"
+#endif
+
 
 #ifdef __EMX__
     /* Add MMAP style functionality to OS/2 */
@@ -136,6 +146,8 @@ gid_t group_id;
 gid_t group_id_list[NGROUPS_MAX];
 #endif
 int max_requests_per_child;
+int threads_per_child;
+int excess_requests_per_child;
 char *pid_fname;
 char *scoreboard_fname;
 char *server_argv0;
@@ -154,7 +166,7 @@ char server_confname[MAX_STRING_LEN];
 /* *Non*-shared http_main globals... */
 
 server_rec *server_conf;
-JMP_BUF jmpbuffer;
+JMP_BUF __declspec( thread ) jmpbuffer;
 int sd;
 static fd_set listenfds;
 static int listenmaxfd;
@@ -175,11 +187,15 @@ int one_process = 0;
 
 /* small utility macros to make things easier to read */
 
+#ifdef WIN32
+#define ap_killpg(x, y)
+#else 
 #ifdef NO_KILLPG
 #define ap_killpg(x, y)		(kill (-(x), (y)))
 #else
 #define ap_killpg(x, y)		(killpg ((x), (y)))
 #endif
+#endif /* WIN32 */
 
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it;
@@ -335,11 +351,11 @@ void usage(char *bin)
  * one timeout in progress at a time...
  */
 
-static conn_rec *current_conn;
-static request_rec *timeout_req;
-static char *timeout_name = NULL;
-static int alarms_blocked = 0;
-static int alarm_pending = 0;
+static  __declspec( thread ) conn_rec * current_conn;
+static __declspec( thread ) request_rec *timeout_req;
+static __declspec( thread ) char *timeout_name = NULL;
+static __declspec( thread ) int alarms_blocked = 0;
+static __declspec( thread ) int alarm_pending = 0;
 
 #ifndef NO_USE_SIGACTION
 /*
@@ -440,40 +456,69 @@ void unblock_alarms() {
     }
 }
 
-void keepalive_timeout (char *name, request_rec *r)
+
+static __declspec( thread ) void (*alarm_fn)(int) = NULL;
+#ifdef WIN32
+static __declspec( thread ) unsigned int alarm_expiry_time = 0;
+#endif /* WIN32 */
+
+unsigned int
+set_callback_and_alarm(void (*fn)(int), int x)
 {
-    timeout_req = r;
-    timeout_name = name;
-    
-    signal(SIGALRM, timeout);
-    if (r->connection->keptalive) 
-       alarm (r->server->keep_alive_timeout);
+    unsigned int old;
+
+#ifdef WIN32
+    old = alarm_expiry_time;
+    if(old)
+        old -= time(0);
+    if(x == 0)
+    {
+        alarm_fn = NULL;
+        alarm_expiry_time = 0;
+    }
     else
-       alarm (r->server->timeout);
+    {
+        alarm_fn = fn;
+        alarm_expiry_time = time(NULL) + x;
+    }
+#else
+    if(x)
+	alarm_fn = fn;
+    signal(SIGALRM, fn);
+    old = alarm(x);
+#endif
+    return(old);
 }
 
-void hard_timeout (char *name, request_rec *r)
+
+int
+check_alarm()
 {
-    timeout_req = r;
-    timeout_name = name;
-    
-    signal(SIGALRM, timeout);
-    alarm (r->server->timeout);
+#ifdef WIN32
+    if(alarm_expiry_time)
+    {
+        unsigned int t;
+
+        t = time(NULL);
+        if(t >= alarm_expiry_time)
+        {
+            alarm_expiry_time = 0;
+            (*alarm_fn)(0);
+            return(-1);
+        }
+        else
+        {
+            return(alarm_expiry_time - t);
+        }
+    }
+    else
+        return(0);
+#else
+    return(0);
+#endif /* WIN32 */
 }
 
-void soft_timeout (char *name, request_rec *r)
-{
-    timeout_name = name;
-    
-    signal(SIGALRM, timeout);
-    alarm (r->server->timeout);
-}
 
-void kill_timeout (request_rec *dummy) {
-    alarm (0);
-    timeout_req = NULL;
-    timeout_name = NULL;
-}
 
 /* reset_timeout (request_rec *) resets the timeout in effect,
  * as long as it hasn't expired already.
@@ -483,11 +528,53 @@ void reset_timeout (request_rec *r) {
     int i;
 
     if (timeout_name) { /* timeout has been set */
-        i = alarm(r->server->timeout);
+        i = set_callback_and_alarm(alarm_fn, r->server->timeout);
         if (i == 0) /* timeout already expired, so set it back to 0 */
-	    alarm(0);
+	    set_callback_and_alarm(alarm_fn, 0);
     }
 }
+
+
+
+
+void keepalive_timeout (char *name, request_rec *r)
+{
+    unsigned int to;
+
+    timeout_req = r;
+    timeout_name = name;
+
+    if (r->connection->keptalive) 
+       to = r->server->keep_alive_timeout;
+    else
+       to = r->server->timeout;
+    set_callback_and_alarm(timeout, to);
+
+}
+
+void hard_timeout (char *name, request_rec *r)
+{
+    timeout_req = r;
+    timeout_name = name;
+    
+    set_callback_and_alarm(timeout, r->server->timeout);
+
+}
+
+void soft_timeout (char *name, request_rec *r)
+{
+    timeout_name = name;
+    
+    set_callback_and_alarm(timeout, r->server->timeout);
+
+}
+
+void kill_timeout (request_rec *dummy) {
+    set_callback_and_alarm(NULL, 0);
+    timeout_req = NULL;
+    timeout_name = NULL;
+}
+
 
 /*
  * More machine-dependent networking gooo... on some systems,
@@ -538,8 +625,7 @@ static void sock_enable_linger (int s)
 
 /* Special version of timeout for lingering_close */
 
-static void lingerout(sig)
-int sig;
+static void lingerout(int sig)
 {
     if (alarms_blocked) {
 	alarm_pending = 1;
@@ -557,8 +643,7 @@ static void linger_timeout ()
 {
     timeout_name = "lingering close";
     
-    signal(SIGALRM, lingerout);
-    alarm(MAX_SECS_TO_LINGER);
+    set_callback_and_alarm(lingerout, MAX_SECS_TO_LINGER);
 }
 
 /* Since many clients will abort a connection instead of closing it,
@@ -653,6 +738,35 @@ static void lingering_close (request_rec *r)
  * We begin with routines which deal with the file itself... 
  */
 
+#ifdef MULTITHREAD
+/*
+ * In the multithreaded mode, have multiple threads - not multiple
+ * processes that need to talk to each other. Just use a simple
+ * malloc. But let the routines that follow, think that you have
+ * shared memory (so they use memcpy etc.)
+ */
+#undef HAVE_MMAP
+#define HAVE_MMAP 1
+static scoreboard *scoreboard_image = NULL;
+
+void reinit_scoreboard (pool *p)
+{
+    assert(!scoreboard_image);
+    scoreboard_image = (scoreboard *)calloc(HARD_SERVER_LIMIT, sizeof(short_score));
+}
+
+void cleanup_scoreboard ()
+{
+    assert(scoreboard_image);
+    free(scoreboard_image);
+    scoreboard_image = NULL;
+}
+
+void sync_scoreboard_image ()
+{}
+
+
+#else /* MULTITHREAD */
 #if defined(HAVE_MMAP)
 static scoreboard *scoreboard_image=NULL;
 
@@ -941,6 +1055,8 @@ void sync_scoreboard_image ()
 #endif
 }
 
+#endif /* MULTITHREAD */
+
 int update_child_status (int child_num, int status, request_rec *r)
 {
     int old_status;
@@ -1110,6 +1226,7 @@ int find_child_by_pid (int pid)
 
 void reclaim_child_processes ()
 {
+#ifndef MULTITHREAD
     int i, status;
     int my_pid = getpid();
 
@@ -1169,6 +1286,7 @@ void reclaim_child_processes ()
 	    }
 	}
     }
+#endif /* ndef MULTITHREAD */
 }
 
 #if defined(BROKEN_WAIT) || defined(NEED_WAITPID)
@@ -1203,6 +1321,40 @@ int reap_children ()
 
 static int wait_or_timeout ()
 {
+#ifdef WIN32
+#define MAXWAITOBJ MAXIMUM_WAIT_OBJECTS
+    HANDLE h[MAXWAITOBJ];
+    int e[MAXWAITOBJ];
+    int round, pi, hi, rv, err;
+    for(round=0; round<=(HARD_SERVER_LIMIT-1)/MAXWAITOBJ+1; round++)
+    {
+        hi = 0;
+        for(pi=round*MAXWAITOBJ;
+                (pi<(round+1)*MAXWAITOBJ) && (pi<HARD_SERVER_LIMIT);
+                pi++)
+        {
+            if(scoreboard_image->servers[pi].status != SERVER_DEAD)
+            {
+                e[hi] = pi;
+                h[hi++] = (HANDLE)scoreboard_image->servers[pi].pid;
+            }
+
+        }
+        if(hi > 0)
+        {
+            rv = WaitForMultipleObjects(hi, h, FALSE, 10000);
+            if(rv == -1)
+                err = GetLastError();
+            if((WAIT_OBJECT_0 <= (unsigned int)rv) && ((unsigned int)rv < (WAIT_OBJECT_0 + hi)))
+                return(scoreboard_image->servers[e[rv - WAIT_OBJECT_0]].pid);
+            else if((WAIT_ABANDONED_0 <= (unsigned int)rv) && ((unsigned int)rv < (WAIT_ABANDONED_0 + hi)))
+                return(scoreboard_image->servers[e[rv - WAIT_ABANDONED_0]].pid);
+
+        }
+    }
+    return(-1);
+
+#else /* WIN32 */
 #ifndef NEED_WAITPID
     int ret;
 
@@ -1221,13 +1373,16 @@ static int wait_or_timeout ()
     }
     return -1;
 #endif
+#endif /* WIN32 */
 }
 
 
 void sig_term() {
     log_error("httpd: caught SIGTERM, shutting down", server_conf);
     cleanup_scoreboard();
+#ifdef SIGKILL
     ap_killpg (pgrp, SIGKILL);
+#endif /* SIGKILL */
     close(sd);
     exit(1);
 }
@@ -1283,7 +1438,11 @@ static volatile int generation;
 
 static void restart (int sig)
 {
+#ifdef WIN32
+    is_graceful = 0;
+#else
     is_graceful = (sig == SIGUSR1);
+#endif /* WIN32 */
     restart_pending = 1;
 }
 
@@ -1327,13 +1486,19 @@ void set_signals()
 	log_unixerr ("sigaction(SIGUSR1)", NULL, NULL, server_conf);
 #else
     if(!one_process) {
-	signal (SIGSEGV, (void (*)())seg_fault);
-    	signal (SIGBUS, (void (*)())bus_error);
+	signal (SIGSEGV, (void (*)(int))seg_fault);
+#ifdef SIGBUS
+    	signal (SIGBUS, (void (*)(int))bus_error);
+#endif /* SIGBUS */
     }
 
-    signal (SIGTERM, (void (*)())sig_term);
-    signal (SIGHUP, (void (*)())restart);
+    signal (SIGTERM, (void (*)(int))sig_term);
+#ifdef SIGHUP
+    signal (SIGHUP, (void (*)(int))restart);
+#endif /* SIGHUP */
+#ifdef SIGUSR1
     signal (SIGUSR1, (void (*)())restart);
+#endif /* SIGUSR1 */
 #endif
 }
 
@@ -1344,6 +1509,7 @@ void set_signals()
 
 void detach()
 {
+#ifndef WIN32
     int x;
 
     chdir("/");
@@ -1371,8 +1537,8 @@ void detach()
         exit(1);
     }
 #elif defined(__EMX__)
-    /* OS/2 doesn't support process group IDs */
-    pgrp=getpid();
+    /* OS/2 don't support process group IDs */
+    pgrp=-getpid();
 #elif defined(MPE)
     /* MPE uses negative pid for process group */
     pgrp=-getpid();
@@ -1382,7 +1548,8 @@ void detach()
         fprintf(stderr,"httpd: setpgrp failed\n");
         exit(1);
     }
-#endif
+#endif    
+#endif /* ndef WIN32 */
 }
 
 /* Reset group privileges, after rereading the config files
@@ -1399,6 +1566,7 @@ void detach()
   
 static void set_group_privs()
 {
+#ifndef WIN32
   if(!geteuid()) {
     char *name;
   
@@ -1437,11 +1605,13 @@ static void set_group_privs()
     }
 #endif 
   }
+#endif /* ndef WIN32 */
 }
 
 /* check to see if we have the 'suexec' setuid wrapper installed */
 int init_suexec ()
 {
+#ifndef WIN32
     struct stat wrapper;
     
     if ((stat(SUEXEC_BIN, &wrapper)) != 0)
@@ -1451,7 +1621,7 @@ int init_suexec ()
       suexec_enabled = 1;
       fprintf(stderr, "Configuring Apache for use with suexec wrapper.\n");
     }
-
+#endif /* ndef WIN32 */
     return (suexec_enabled);
 }
 
@@ -1637,6 +1807,195 @@ static void sock_disable_nagle (int s)
 #define sock_disable_nagle(s) /* NOOP */
 #endif
 
+static int make_sock(pool *pconf, const struct sockaddr_in *server)
+{
+    int s;
+    int one = 1;
+
+    if ((s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
+        log_unixerr("socket", NULL, "Failed to get a socket, exiting child",
+                    server_conf);
+        exit(1);
+    }
+
+    note_cleanups_for_socket(pconf, s); /* arrange to close on exec or restart */
+    
+#ifndef MPE
+/* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
+    if (setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) {
+        log_unixerr("setsockopt", "(SO_REUSEADDR)", NULL, server_conf);
+        exit(1);
+    }
+    one = 1;
+    if (setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&one,sizeof(int)) < 0) {
+        log_unixerr("setsockopt", "(SO_KEEPALIVE)", NULL, server_conf);
+        exit(1);
+    }
+#endif
+
+    sock_disable_nagle(s);
+    sock_enable_linger(s);
+    
+    /*
+     * To send data over high bandwidth-delay connections at full
+     * speed we must force the TCP window to open wide enough to keep the
+     * pipe full.  The default window size on many systems
+     * is only 4kB.  Cross-country WAN connections of 100ms
+     * at 1Mb/s are not impossible for well connected sites.
+     * If we assume 100ms cross-country latency,
+     * a 4kB buffer limits throughput to 40kB/s.
+     *
+     * To avoid this problem I've added the SendBufferSize directive
+     * to allow the web master to configure send buffer size.
+     *
+     * The trade-off of larger buffers is that more kernel memory
+     * is consumed.  YMMV, know your customers and your network!
+     *
+     * -John Heidemann <johnh@isi.edu> 25-Oct-96
+     *
+     * If no size is specified, use the kernel default.
+     */
+    if (server_conf->send_buffer_size) {
+        if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
+              (char *)&server_conf->send_buffer_size, sizeof(int)) < 0) {
+            log_unixerr("setsockopt", "(SO_SNDBUF)",
+                        "Failed to set SendBufferSize, using default",
+                        server_conf);
+	    /* not a fatal error */
+	}
+    }
+
+#ifdef MPE
+/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
+    if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
+#endif
+    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
+    {
+        perror("bind");
+#ifdef MPE
+        if (ntohs(server->sin_port) < 1024) GETUSERMODE();
+#endif
+	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
+	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
+		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
+	else
+	    fprintf(stderr,"httpd: could not bind to port %d\n",
+		    ntohs(server->sin_port));
+        exit(1);
+    }
+#ifdef MPE
+    if (ntohs(server->sin_port) < 1024) GETUSERMODE();
+#endif
+    listen(s, 512);
+    return s;
+}
+
+static listen_rec *old_listeners;
+
+static void copy_listeners(pool *p)
+    {
+    listen_rec *lr;
+
+    assert(old_listeners == NULL);
+    for(lr=listeners ; lr ; lr=lr->next)
+	{
+	listen_rec *nr=malloc(sizeof *nr);
+	if (nr == NULL) {
+	  fprintf (stderr, "Ouch!  malloc failed in copy_listeners()\n");
+	  exit (1);
+	}
+	*nr=*lr;
+	kill_cleanups_for_socket(p,nr->fd);
+	nr->next=old_listeners;
+	assert(!nr->used);
+	old_listeners=nr;
+	}
+    }
+
+static int find_listener(listen_rec *lr)
+    {
+    listen_rec *or;
+
+    for(or=old_listeners ; or ; or=or->next)
+	if(!memcmp(&or->local_addr,&lr->local_addr,sizeof or->local_addr))
+	    {
+	    or->used=1;
+	    return or->fd;
+	    }
+    return -1;
+    }
+
+static void close_unused_listeners()
+    {
+    listen_rec *or,*next;
+
+    for(or=old_listeners ; or ; or=next)
+	{
+	next=or->next;
+	if(!or->used)
+	    closesocket(or->fd);
+	free(or);
+	}
+    old_listeners=NULL;
+    }
+
+
+static int s_iInitCount = 0;
+
+int
+AMCSocketInitialize()
+{
+#ifdef WIN32
+    int iVersionRequested;
+    WSADATA wsaData;
+    int err;
+    
+    if(s_iInitCount > 0)
+    {
+        s_iInitCount++;
+        return(0);
+    }
+    else if(s_iInitCount < 0)
+        return(s_iInitCount);
+
+    /* s_iInitCount == 0. Do the initailization */
+    iVersionRequested = MAKEWORD(1, 1);
+    err = WSAStartup((WORD)iVersionRequested, &wsaData);
+    if(err)
+    {
+        s_iInitCount = -1;
+        return(s_iInitCount);
+    }
+    if ( LOBYTE( wsaData.wVersion ) != 1 || 
+        HIBYTE( wsaData.wVersion ) != 1 )
+    { 
+        s_iInitCount = -2; 
+        WSACleanup(); 
+        return(s_iInitCount); 
+    }
+#else
+    signal(SIGPIPE, SIG_IGN);
+#endif /* WIN32 */
+
+    s_iInitCount++;
+    return(s_iInitCount);
+
+}
+
+
+void
+AMCSocketCleanup()
+{
+#ifdef WIN32
+    if(--s_iInitCount == 0)
+        WSACleanup();
+#else /* not WIN32 */
+    s_iInitCount--;
+#endif /* WIN32 */
+    return;
+}
+
+#ifndef MULTITHREAD
 /*****************************************************************
  * Child process main loop.
  * The following vars are static to avoid getting clobbered by longjmp();
@@ -1831,7 +2190,7 @@ void child_main(int child_num_arg)
 	(void)update_child_status(child_num, SERVER_BUSY_READ,
 	                          (request_rec*)NULL);
 
-	conn_io = bcreate(ptrans, B_RDWR);
+	conn_io = bcreate(ptrans, B_RDWR, 1);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
 	if ((dupped_csd = dup(csd)) < 0) {
@@ -1970,137 +2329,6 @@ int make_child(server_rec *server_conf, int child_num)
     return 0;
 }
 
-static int make_sock(pool *pconf, const struct sockaddr_in *server)
-{
-    int s;
-    int one = 1;
-
-    if ((s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
-        log_unixerr("socket", NULL, "Failed to get a socket, exiting child",
-                    server_conf);
-        exit(1);
-    }
-
-    note_cleanups_for_fd(pconf, s); /* arrange to close on exec or restart */
-    
-#ifndef MPE
-/* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
-    if (setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) {
-        log_unixerr("setsockopt", "(SO_REUSEADDR)", NULL, server_conf);
-        exit(1);
-    }
-    one = 1;
-    if (setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&one,sizeof(int)) < 0) {
-        log_unixerr("setsockopt", "(SO_KEEPALIVE)", NULL, server_conf);
-        exit(1);
-    }
-#endif
-
-    sock_disable_nagle(s);
-    sock_enable_linger(s);
-    
-    /*
-     * To send data over high bandwidth-delay connections at full
-     * speed we must force the TCP window to open wide enough to keep the
-     * pipe full.  The default window size on many systems
-     * is only 4kB.  Cross-country WAN connections of 100ms
-     * at 1Mb/s are not impossible for well connected sites.
-     * If we assume 100ms cross-country latency,
-     * a 4kB buffer limits throughput to 40kB/s.
-     *
-     * To avoid this problem I've added the SendBufferSize directive
-     * to allow the web master to configure send buffer size.
-     *
-     * The trade-off of larger buffers is that more kernel memory
-     * is consumed.  YMMV, know your customers and your network!
-     *
-     * -John Heidemann <johnh@isi.edu> 25-Oct-96
-     *
-     * If no size is specified, use the kernel default.
-     */
-    if (server_conf->send_buffer_size) {
-        if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
-              (char *)&server_conf->send_buffer_size, sizeof(int)) < 0) {
-            log_unixerr("setsockopt", "(SO_SNDBUF)",
-                        "Failed to set SendBufferSize, using default",
-                        server_conf);
-	    /* not a fatal error */
-	}
-    }
-
-#ifdef MPE
-/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
-    if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
-#endif
-    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
-    {
-        perror("bind");
-#ifdef MPE
-        if (ntohs(server->sin_port) < 1024) GETUSERMODE();
-#endif
-	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
-	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
-		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
-	else
-	    fprintf(stderr,"httpd: could not bind to port %d\n",
-		    ntohs(server->sin_port));
-        exit(1);
-    }
-#ifdef MPE
-    if (ntohs(server->sin_port) < 1024) GETUSERMODE();
-#endif
-    listen(s, 512);
-    return s;
-}
-
-static listen_rec *old_listeners;
-
-static void copy_listeners(pool *p)
-    {
-    listen_rec *lr;
-
-    assert(old_listeners == NULL);
-    for(lr=listeners ; lr ; lr=lr->next)
-	{
-	listen_rec *nr=malloc(sizeof *nr);
-	if (nr == NULL) {
-	  fprintf (stderr, "Ouch!  malloc failed in copy_listeners()\n");
-	  exit (1);
-	}
-	*nr=*lr;
-	kill_cleanups_for_fd(p,nr->fd);
-	nr->next=old_listeners;
-	assert(!nr->used);
-	old_listeners=nr;
-	}
-    }
-
-static int find_listener(listen_rec *lr)
-    {
-    listen_rec *or;
-
-    for(or=old_listeners ; or ; or=or->next)
-	if(!memcmp(&or->local_addr,&lr->local_addr,sizeof or->local_addr))
-	    {
-	    or->used=1;
-	    return or->fd;
-	    }
-    return -1;
-    }
-
-static void close_unused_listeners()
-    {
-    listen_rec *or,*next;
-
-    for(or=old_listeners ; or ; or=next)
-	{
-	next=or->next;
-	if(!or->used)
-	    close(or->fd);
-	free(or);
-	}
-    old_listeners=NULL;
-    }
 
 /*****************************************************************
  * Executive routines.
@@ -2439,7 +2667,7 @@ main(int argc, char *argv[])
 	    exit(1);
 	}
 	server_conf->port =ntohs(((struct sockaddr_in *)&sa_server)->sin_port);
-	cio = bcreate(ptrans, B_RDWR);
+	cio = bcreate(ptrans, B_RDWR, 1);
 #ifdef MPE
 /* HP MPE 5.5 inetd only passes the incoming socket as stdin (fd 0), whereas
    HPUX inetd passes the incoming socket as stdin (fd 0) and stdout (fd 1).
@@ -2515,4 +2743,821 @@ caddr_t get_shared_heap (const char *Name)
 }
 #endif
 #endif
+
+#else /* ndef MULTITHREAD */
+
+
+
+
+typedef struct joblist_s
+{
+    struct joblist_s *next;
+    int sock;
+} joblist;
+
+typedef struct globals_s
+{
+    int exit_now;
+    semaphore *jobsemaphore;
+    joblist *jobhead;
+    joblist *jobtail;
+    mutex *jobmutex;
+    int jobcount;
+} globals;
+
+
+globals allowed_globals = { 0, NULL, NULL, NULL, 0 };
+
+
+void
+add_job(int sock)
+{
+    joblist *new_job;
+    
+    assert(allowed_globals.jobmutex);
+    /* TODO: If too many jobs in queue, sleep, check for problems */
+    acquire_mutex(allowed_globals.jobmutex);
+    new_job = (joblist *)malloc(sizeof(joblist));
+    new_job->next = NULL;
+    new_job->sock = sock;
+    if(allowed_globals.jobtail != NULL)
+        allowed_globals.jobtail->next = new_job;
+    allowed_globals.jobtail = new_job;
+    if(!allowed_globals.jobhead)
+        allowed_globals.jobhead = new_job;
+    allowed_globals.jobcount++;
+    release_semaphore(allowed_globals.jobsemaphore);
+    release_mutex(allowed_globals.jobmutex);
+}
+
+int
+remove_job()
+{
+    joblist *job;
+    int sock;
+    
+    assert(allowed_globals.jobmutex);
+    acquire_semaphore(allowed_globals.jobsemaphore);
+    acquire_mutex(allowed_globals.jobmutex);
+    if(allowed_globals.exit_now && !allowed_globals.jobhead)
+    {
+        release_mutex(allowed_globals.jobmutex);
+        return(-1);
+    }
+    job = allowed_globals.jobhead;
+    assert(job);
+    allowed_globals.jobhead = job->next;
+    if(allowed_globals.jobhead == NULL)
+        allowed_globals.jobtail = NULL;
+    release_mutex(allowed_globals.jobmutex);
+    sock = job->sock;
+    free(job);
+    return(sock);
+}
+
+
+
+void child_sub_main(int child_num, int srv,
+                    int csd, int dupped_csd,
+                    int requests_this_child, pool *pchild)
+{
+#if defined(UW)
+    size_t clen;
+#else
+    int clen;
+#endif
+    struct sockaddr sa_server;
+    struct sockaddr sa_client;
+
+    csd = -1;
+    dupped_csd = -1;
+    requests_this_child = 0;
+    (void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
+
+    /*
+     * Setup the jump buffers so that we can return here after
+     * a signal or a timeout (yeah, I know, same thing).
+     */
+#if defined(USE_LONGJMP)
+    setjmp(jmpbuffer);
+#else
+    sigsetjmp(jmpbuffer,1);
+#endif
+#ifdef SIGURG
+    signal(SIGURG, timeout);
+#endif
+    
+
+    pchild = make_sub_pool(NULL);
+
+    while (1) {
+	BUFF *conn_io;
+	request_rec *r;
+      
+        /*
+         * (Re)initialize this child to a pre-connection state.
+         */
+
+        set_callback_and_alarm(NULL, 0); /* Cancel any outstanding alarms. */
+        timeout_req = NULL;	/* No request in progress */
+	current_conn = NULL;
+#ifdef SIGPIPE
+        signal(SIGPIPE, timeout);  
+#endif
+        
+	clear_pool (pchild);
+
+	(void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
+
+        csd = remove_job();
+        if(csd == -1)
+            break; /* time to exit */
+        requests_this_child++;
+
+	note_cleanups_for_socket(pchild,csd);
+
+        /*
+         * We now have a connection, so set it up with the appropriate
+         * socket options, file descriptors, and read/write buffers.
+         */
+
+	clen = sizeof(sa_server);
+	if (getsockname(csd, &sa_server, &clen) < 0) {
+	    log_unixerr("getsockname", NULL, NULL, server_conf);
+	    continue;
+	}
+        clen = sizeof(sa_client);
+	if ((getpeername(csd, &sa_client, &clen)) < 0)
+	{
+            /* get peername will fail if the input isn't a socket */
+	    perror("getpeername");
+	    memset(&sa_client, '\0', sizeof(sa_client));
+	}
+
+	sock_disable_nagle(csd);
+
+	(void)update_child_status(child_num, SERVER_BUSY_READ,
+	                          (request_rec*)NULL);
+
+	conn_io = bcreate(pchild, B_RDWR, 1);
+	dupped_csd = csd;
+#if defined(NEED_DUPPED_CSD)
+	if ((dupped_csd = dup(csd)) < 0) {
+	    log_unixerr("dup", NULL, "couldn't duplicate csd", server_conf);
+	    dupped_csd = csd;   /* Oh well... */
+	}
+	note_cleanups_for_socket(pchild,dupped_csd);
+#endif
+	bpushfd(conn_io, csd, dupped_csd);
+
+	current_conn = new_connection (pchild, server_conf, conn_io,
+				       (struct sockaddr_in *)&sa_client,
+				       (struct sockaddr_in *)&sa_server,
+				       child_num);
+
+        /*
+         * Read and process each request found on our connection
+         * until no requests are left or we decide to close.
+         */
+
+        while ((r = read_request(current_conn)) != NULL) {
+            (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
+
+            process_request(r);
+#if defined(STATUS)
+            increment_counts(child_num, r);
+#endif
+            if (!current_conn->keepalive || current_conn->aborted)
+                break;
+
+            destroy_pool(r->pool);
+            (void)update_child_status(child_num, SERVER_BUSY_KEEPALIVE,
+                                      (request_rec*)NULL);
+
+            sync_scoreboard_image();
+        }
+
+        /*
+         * Close the connection, being careful to send out whatever is still
+         * in our buffers.  If possible, try to avoid a hard close until the
+         * client has ACKed our FIN and/or has stopped sending us data.
+         */
+        kill_cleanups_for_socket(pchild,csd);
+
+#ifdef NO_LINGCLOSE
+        bclose(conn_io);        /* just close it */
+#else
+        if (r &&  r->connection
+            && !r->connection->aborted
+            &&  r->connection->client
+            && (r->connection->client->fd >= 0)) {
+
+            lingering_close(r);
+        }
+        else {
+            bsetflag(conn_io, B_EOUT, 1);
+            bclose(conn_io);
+        }
+#endif
+    }
+    destroy_pool(pchild);
+    (void)update_child_status(child_num,SERVER_DEAD, NULL);
+}
+
+
+void
+child_main(int child_num_arg)
+{
+    
+    int srv = 0;
+    int csd = 0;
+    int dupped_csd = 0;
+    int requests_this_child = 0;
+    pool *ppool = NULL;
+
+    /*
+     * Only reason for this function, is to pass in
+     * arguments to child_sub_main() on its stack so
+     * that longjump doesn't try to corrupt its local
+     * variables and I don't need to make those
+     * damn variables static/global
+     */
+    child_sub_main(child_num_arg, srv,
+                        csd, dupped_csd,
+                        requests_this_child, ppool);
+
+}
+
+
+
+void
+cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
+{
+    int i;
+    
+    free_thread(handles[thread_to_clean]);
+    for(i=thread_to_clean; i<((*thread_cnt)-1); i++)
+        handles[i] = handles[i+1];
+    (*thread_cnt)--;
+}
+
+/*****************************************************************
+ * Executive routines.
+ */
+
+event *exit_event;
+mutex *start_mutex;
+
+void worker_main()
+{
+    /*
+     * I am writing this stuff specifically for NT.
+     * have pulled out a lot of the restart and
+     * graceful restart stuff, because that is only
+     * useful on Unix (not sure it even makes sense
+     * in a multi-threaded env.
+     */
+    int saved_sd;
+    int nthreads;
+    fd_set main_fds;
+    int srv;
+    int clen;
+    int csd;
+    struct sockaddr_in sa_server;
+    struct sockaddr_in sa_client;
+    int total_jobs = 0;
+    thread **child_handles;
+    int rv;
+    time_t end_time;
+    int i;
+    struct timeval tv;
+    int wait_time = 100;
+    int start_exit = 0;
+    int count_down = 0;
+    int start_mutex_released = 0;
+    int max_jobs_per_exe;
+    int max_jobs_after_exit_request;
+
+    standalone = 1;
+    sd = listenmaxfd = -1;
+    nthreads = threads_per_child;
+    max_jobs_after_exit_request = excess_requests_per_child;
+    max_jobs_per_exe = max_requests_per_child;
+    if(nthreads <= 0)
+        nthreads = 40;
+    if(max_jobs_per_exe <= 0)
+        max_jobs_per_exe = 0;
+    if(max_jobs_after_exit_request <= 0)
+        max_jobs_after_exit_request = max_jobs_per_exe/10;
+    
+    if (!one_process) detach(); 
+    
+    ++generation;
+  
+    copy_listeners(pconf);
+    saved_sd=sd;
+    restart_time = time(NULL);
+
+    reinit_scoreboard(pconf);
+    default_server_hostnames (server_conf);
+
+    acquire_mutex(start_mutex);
+    {
+        listenmaxfd = -1;
+	FD_ZERO(&listenfds);
+
+        if (listeners == NULL) {
+	    memset((char *) &sa_server, 0, sizeof(sa_server));
+	    sa_server.sin_family=AF_INET;
+	    sa_server.sin_addr=bind_address;
+	    sa_server.sin_port=htons(server_conf->port);
+
+	    sd = make_sock(pconf, &sa_server);
+            FD_SET(sd, &listenfds);
+            listenmaxfd = sd;
+        }
+        else {
+	    listen_rec *lr;
+	    int fd;
+
+	    
+	    for (lr=listeners; lr != NULL; lr=lr->next)
+	    {
+	        fd=find_listener(lr);
+	        if(fd < 0)
+                {
+		    fd = make_sock(pconf, &lr->local_addr);
+                }
+	        FD_SET(fd, &listenfds);
+	        if (fd > listenmaxfd) listenmaxfd = fd;
+	        lr->fd=fd;
+	    }
+	    close_unused_listeners();
+	    sd = -1;
+        }
+    }
+
+    set_signals();
+
+    /*
+     * - Initialize allowed_globals
+     * - Create the thread table
+     * - Spawn off threads
+     * - Create listen socket set (done above)
+     * - loop {
+     *       wait for request
+     *       create new job
+     *   } while (!time to exit)
+     * - Close all listeners
+     * - Wait for all threads to complete
+     * - Exit
+     */
+
+    allowed_globals.jobsemaphore = create_semaphore(0);
+    allowed_globals.jobmutex = create_mutex(NULL);
+
+    /* spawn off the threads */
+    child_handles = (thread *)alloca(nthreads * sizeof(int));
+    {
+        int i;
+
+        for(i=0; i<nthreads; i++)
+        {
+            child_handles[i] = create_thread((void (*)(void *))child_main, (void *)i);
+        }
+    }
+
+    /* main loop */
+    for(;;)
+    {
+        if(max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit)
+        {
+            start_exit = 1;
+            wait_time = 1;
+            count_down = max_jobs_after_exit_request;
+            release_mutex(start_mutex);
+            start_mutex_released = 1;
+            /* set the listen queue to 1 */
+            {
+                if (listeners == NULL) {
+	            listen(sd, 1);
+                }
+                else {
+	            listen_rec *lr;
+	            
+	            for (lr=listeners; lr != NULL; lr=lr->next)
+	            {
+	                if(lr->used)
+                        {
+                            listen(lr->fd, 1);
+                        }
+	            }
+                }
+            }
+        }
+        if(!start_exit)
+        {
+            rv = WaitForSingleObject(exit_event, 0);
+            assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
+            if(rv == WAIT_OBJECT_0)
+                break;
+            rv = WaitForMultipleObjects(nthreads, child_handles, 0, 0);
+            if(rv != WAIT_TIMEOUT)
+            {
+                rv = rv - WAIT_OBJECT_0;
+                assert((rv >= 0) && (rv < nthreads));
+                cleanup_thread(child_handles, &nthreads, rv);
+                break;
+            }
+        }
+        if(start_exit && max_jobs_after_exit_request && (count_down-- < 0))
+            break;
+        tv.tv_sec = wait_time;
+        tv.tv_usec = 0;
+
+        memcpy(&main_fds, &listenfds, sizeof(fd_set));
+#ifdef SELECT_NEEDS_CAST
+        srv = select(listenmaxfd+1, (int*)&main_fds, NULL, NULL, &tv);
+#else
+        srv = select(listenmaxfd+1, &main_fds, NULL, NULL, &tv);
+#endif
+#ifdef WIN32
+        if(srv == SOCKET_ERROR)
+            errno = WSAGetLastError() - WSABASEERR;
+#endif /* WIN32 */
+
+        if (srv < 0 && errno != EINTR)
+            log_unixerr("select", "(listen)", NULL, server_conf);
+
+        if (srv < 0)
+            continue;
+        if(srv == 0)
+        {
+            if(start_exit)
+                break;
+            else
+                continue;
+        }
+
+        if (listeners != NULL) {
+	    listen_rec *lr;
+	    int fd;
+	    
+	    for (lr=listeners; lr != NULL; lr=lr->next)
+	    {
+	        if(!lr->used)
+                    continue;
+                fd=lr->fd;
+	        
+	        FD_ISSET(fd, &listenfds);
+	        sd = fd;
+                break;
+	    }
+        }
+
+        do {
+            clen = sizeof(sa_client);
+            csd  = accept(sd, (struct sockaddr *)&sa_client, &clen);
+#ifdef WIN32
+            if(csd == SOCKET_ERROR)
+            {
+                csd = -1;
+                errno = WSAGetLastError() - WSABASEERR;
+            }
+#endif /* WIN32 */
+        } while (csd < 0 && errno == EINTR);
+
+        if (csd < 0) {
+
+#if defined(EPROTO) && defined(ECONNABORTED)
+            if ((errno != EPROTO) && (errno != ECONNABORTED))
+#elif defined(EPROTO)
+                if (errno != EPROTO)
+#elif defined(ECONNABORTED)
+                    if (errno != ECONNABORTED)
+#endif
+                        log_unixerr("accept", "(client socket)", NULL, server_conf);
+        }
+        else
+        {
+            add_job(csd);
+            total_jobs++;
+        }
+    }
+
+    /* Get ready to shutdown and exit */
+    allowed_globals.exit_now = 1;
+    if(!start_mutex_released)
+    {
+        release_mutex(start_mutex);
+    }
+            
+    {
+        if (listeners == NULL) {
+	    closesocket(sd);
+        }
+        else {
+	    listen_rec *lr;
+	    
+	    for (lr=listeners; lr != NULL; lr=lr->next)
+	    {
+	        if(lr->used)
+                {
+                    closesocket(lr->fd);
+                    lr->fd = -1;
+                }
+	    }
+        }
+    }
+
+    for(i=0; i<nthreads; i++)
+    {
+        add_job(-1);
+    }
+
+    /* Wait for all your children */
+    end_time = time(NULL) + 180;
+    while(nthreads)
+    {
+        rv = WaitForMultipleObjects(nthreads, child_handles, 0, (end_time-time(NULL))*1000);
+        if(rv != WAIT_TIMEOUT)
+        {
+            rv = rv - WAIT_OBJECT_0;
+            assert((rv >= 0) && (rv < nthreads));
+            cleanup_thread(child_handles, &nthreads, rv);
+            continue;
+        }
+        break;
+    }
+
+    for(i=0; i<nthreads; i++)
+    {
+        kill_thread(child_handles[i]);
+        free_thread(child_handles[i]);
+    }
+    destroy_semaphore(allowed_globals.jobsemaphore);
+    destroy_mutex(allowed_globals.jobmutex);
+    cleanup_scoreboard();
+    exit(0);
+
+
+} /* standalone_main */
+
+
+int
+create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, char* prefix)
+{
+    int pid = getpid();
+    char buf[40], mod[200];
+    int i, rv;
+    char **pass_argv = (char **)alloca(sizeof(char *)*(argc+3));
+
+    sprintf(buf, "%s_%d", prefix, ++(*child_num));
+    _flushall();
+    *ev = create_event(0, 0, buf);
+    assert(*ev);
+    pass_argv[0] = argv[0];
+    pass_argv[1] = "-c";
+    pass_argv[2] = buf;
+    for(i=1; i<argc; i++)
+    {
+        pass_argv[i+2] = argv[i];
+    }
+    pass_argv[argc+2] = NULL;
+
+
+    GetModuleFileName(NULL, mod, 200);
+    rv = spawnv(_P_NOWAIT, mod, pass_argv);
+
+    return(rv);
+}
+
+
+static int service_pause = 0;
+static int service_stop = 0;
+
+
+int
+master_main(int argc, char **argv)
+{
+    /*
+     * 1. Create exit events for children
+     * 2. Spawn children
+     * 3. Wait for either of your children to die
+     * 4. Close hand to dead child & its event
+     * 5. Respawn that child
+     */
+
+    int nchild = daemons_to_start;
+    event **ev;
+    int *child;
+    int child_num = 0;
+    int rv, cld;
+    char buf[100];
+    int i;
+    time_t tmstart;
+
+    sprintf(buf, "Apache%d", getpid());
+    start_mutex = create_mutex(buf);
+    ev = (event **)alloca(sizeof(event *)*nchild);
+    child = (int *)alloca(sizeof(int)*nchild);
+    for(i=0; i<nchild; i++)
+    {
+        service_set_status(SERVICE_START_PENDING);
+        child[i] = create_event_and_spawn(argc, argv, &ev[i], &child_num, buf);
+        assert(child[i]);
+    }
+    service_set_status(SERVICE_RUNNING);
+
+    for(;!service_stop;)
+    {
+        rv = WaitForMultipleObjects(nchild, (HANDLE *)child, FALSE, 2000);
+        assert(rv != WAIT_FAILED);
+        if(rv == WAIT_TIMEOUT)
+            continue;
+        cld = rv - WAIT_OBJECT_0;
+        assert(rv < nchild);
+        CloseHandle((HANDLE)child[rv]);
+        CloseHandle(ev[rv]);
+        child[rv] = create_event_and_spawn(argc, argv, &ev[rv], &child_num, buf);
+        assert(child[rv]);
+    }
+
+    /*
+     * Tell all your kids to stop. Wait for them for some time
+     * Kill those that haven't yet stopped
+     */
+    for(i=0; i<nchild; i++)
+    {
+        SetEvent(ev[i]);
+    }
+
+    for(tmstart=time(NULL); nchild && (tmstart < (time(NULL) + 60));)
+    {
+        service_set_status(SERVICE_STOP_PENDING);
+        rv = WaitForMultipleObjects(nchild, (HANDLE *)child, FALSE, 2000);
+        assert(rv != WAIT_FAILED);
+        if(rv == WAIT_TIMEOUT)
+            continue;
+        cld = rv - WAIT_OBJECT_0;
+        assert(rv < nchild);
+        CloseHandle((HANDLE)child[rv]);
+        CloseHandle(ev[rv]);
+        for(i=rv; i<(nchild-1); i++)
+        {
+            child[i] = child[i+1];
+            ev[i] = ev[i+1];
+        }
+        nchild--;
+    }
+    for(i=0; i<nchild; i++)
+    {
+        TerminateProcess((HANDLE)child[i], 1);
+    }
+    service_set_status(SERVICE_STOPPED);          
+
+
+    destroy_mutex(start_mutex);
+    return(0);
+}
+
+
+
+
+
+
+int
+main(int argc, char *argv[])
+{
+    int c;
+    int child = 0;
+    char *cp;
+    int run_as_service = 1;
+    int install = 0;
+
+#ifdef AUX
+    (void)set42sig();
+#endif
+
+#ifdef SecureWare
+    if(set_auth_parameters(argc,argv) < 0)
+    	perror("set_auth_parameters");
+    if(getluid() < 0)
+	if(setluid(getuid()) < 0)
+	    perror("setluid");
+    if(setreuid(0, 0) < 0)
+	perror("setreuid");
+#endif
+
+#ifdef WIN32
+    /* Initialize the stupid sockets */
+    AMCSocketInitialize();
+#endif /* WIN32 */
+
+    init_alloc();
+    pconf = permanent_pool;
+    ptrans = make_sub_pool(pconf);
+
+    server_argv0 = argv[0];
+    strncpy (server_root, HTTPD_ROOT, sizeof(server_root)-1);
+    server_root[sizeof(server_root)-1] = '\0';
+    strncpy (server_confname, SERVER_CONFIG_FILE, sizeof(server_root)-1);
+    server_confname[sizeof(server_confname)-1] = '\0';
+
+    while((c = getopt(argc,argv,"Xd:f:vhlc:ius")) != -1) {
+        switch(c) {
+#ifdef WIN32
+        case 'c':
+            exit_event = open_event(optarg);
+            cp = strchr(optarg, '_');
+            assert(cp);
+            *cp = 0;
+            start_mutex = open_mutex(optarg);
+            child = 1;
+            break;
+        case 'i':
+            install = 1;
+            break;
+        case 'u':
+            install = -1;
+            break;
+        case 's':
+            run_as_service = 0;
+            break;
+#endif /* WIN32 */
+          case 'd':
+            strncpy (server_root, optarg, sizeof(server_root)-1);
+            server_root[sizeof(server_root)-1] = '\0';
+            break;
+          case 'f':
+            strncpy (server_confname, optarg, sizeof(server_confname)-1);
+            server_confname[sizeof(server_confname)-1] = '\0';
+            break;
+          case 'v':
+            printf("Server version %s.\n",SERVER_VERSION);
+            exit(0);
+          case 'h':
+	    show_directives();
+	    exit(0);
+	  case 'l':
+	    show_modules();
+	    exit(0);
+	  case 'X':
+	    ++one_process;	/* Weird debugging mode. */
+	    break;
+          case '?':
+            usage(argv[0]);
+        }
+    }
+
+#ifdef __EMX__
+    printf("%s \n",SERVER_VERSION);
+    printf("OS/2 port by Garey Smiley <garey@slink.com> \n");
+#endif
+#ifdef WIN32
+    if(!child)
+    {
+        printf("%s \n",SERVER_VERSION);
+        printf("WIN32 port by Ambarish Malpani <ambarish@valicert.com> and the Apache Group.\n");
+    }
+#endif
+    if(!child && run_as_service)
+    {
+        service_cd();
+    }
+    setup_prelinked_modules();
+
+    server_conf = read_config (pconf, ptrans, server_confname);
+    suexec_enabled = init_suexec();
+    open_logs(server_conf, pconf);
+    set_group_privs();
+
+    if(one_process && !exit_event)
+        exit_event = create_event(0, 0, NULL);
+    if(one_process && !start_mutex)
+        start_mutex = create_mutex(NULL);
+    /*
+     * In the future, the main will spawn off a couple
+     * of children and monitor them. As soon as a child
+     * exits, it spawns off a new one
+     */
+    if(child || one_process)
+    {
+        if(!exit_event || !start_mutex)
+            exit(-1);
+        worker_main();
+        destroy_mutex(start_mutex);
+        destroy_event(exit_event);
+    }
+    else
+    {
+        service_main(master_main, argc, argv,
+                &service_pause, &service_stop, "Apache", install, run_as_service);
+    }    
+
+    return(0);
+}
+
+
+#endif /* ndef MULTITHREAD */
 

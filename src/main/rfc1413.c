@@ -75,8 +75,9 @@
 #include "httpd.h"    /* for server_rec, conn_rec, ap_longjmp, etc. */
 #include "http_log.h" /* for log_unixerr */
 #include "rfc1413.h"
+#include "http_main.h" /* set_callback_and_alarm */
 
-#ifndef SCO
+#if !defined(SCO) && !defined(WIN32)
 extern char *strchr();
 extern char *inet_ntoa();
 #endif
@@ -100,7 +101,7 @@ int rfc1413_timeout = RFC1413_TIMEOUT;  /* Global so it can be changed */
 JMP_BUF timebuf;
 
 /* bind_connect - bind both ends of a socket */
-
+/* Ambarish fix this. Very broken */
 static int
 get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 	  const struct sockaddr_in *rmt_sin, char user[256], server_rec *srv)
@@ -209,17 +210,16 @@ rfc1413(conn_rec *conn, server_rec *srv)
      */
     if (ap_setjmp(timebuf) == 0)
     {
-	signal(SIGALRM, ident_timeout);
-	alarm(rfc1413_timeout);
+        set_callback_and_alarm(ident_timeout, rfc1413_timeout);
 	
 	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user,
 		      srv)
 	    >= 0)
 	    result = user;
 
-	alarm(0);
+	set_callback_and_alarm(NULL, 0);
     }
-    close(sock);
+    closesocket(sock);
     conn->remote_logname = result;
 
     return conn->remote_logname;

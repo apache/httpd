@@ -76,6 +76,7 @@
 #include "http_main.h"
 #include "http_protocol.h"
 #include "util_script.h"
+#include "http_conf_globals.h"
 
 typedef struct mod_info_config_lines {
 	char *cmd;
@@ -318,6 +319,10 @@ int display_info(request_rec *r) {
 			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>Max Requests:</strong> <tt>per child: %d &nbsp;&nbsp; keep alive: %s &nbsp;&nbsp; max per connection: %d</tt><br>\n",max_requests_per_child,serv->keep_alive ? "on":"off", serv->keep_alive_max);
 			rputs(buf,r);
+                        ap_snprintf(buf, sizeof(buf), "<strong>Threads:</strong> <tt>per child: %d &nbsp;&nbsp; </tt><br>\n",threads_per_child);
+			rputs(buf,r);
+                        ap_snprintf(buf, sizeof(buf), "<strong>Excess requests:</strong> <tt>per child: %d &nbsp;&nbsp; </tt><br>\n",excess_requests_per_child);
+			rputs(buf,r);                        
 			ap_snprintf(buf, sizeof(buf), "<strong>Timeouts:</strong> <tt>connection: %d &nbsp;&nbsp; keep-alive: %d</tt><br>",serv->timeout,serv->keep_alive_timeout);
 			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>Server Root:</strong> <tt>%s</tt><br>\n",server_root);

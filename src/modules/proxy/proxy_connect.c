@@ -221,7 +221,7 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
       else break;
     }
 
-    pclosef(r->pool,sock);
+    pclosesocket(r->pool,sock);
     
     return OK;
 }     

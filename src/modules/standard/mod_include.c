@@ -104,7 +104,9 @@ static int get_directive(FILE *in, char *d, pool *p);
 
 void add_include_vars(request_rec *r, char *timefmt)
 {
+#ifndef WIN32
     struct passwd *pw;
+#endif /* ndef WIN32 */
     table *e = r->subprocess_env;
     char *t;
     time_t date = r->request_time;
@@ -114,6 +116,7 @@ void add_include_vars(request_rec *r, char *timefmt)
     table_set(e, "LAST_MODIFIED",ht_time(r->pool,r->finfo.st_mtime,timefmt,0));
     table_set(e, "DOCUMENT_URI", r->uri);
     table_set(e, "DOCUMENT_PATH_INFO", r->path_info);
+#ifndef WIN32
     pw = getpwuid(r->finfo.st_uid);
     if (pw) {
       table_set(e, "USER_NAME", pw->pw_name);
@@ -122,6 +125,7 @@ void add_include_vars(request_rec *r, char *timefmt)
       ap_snprintf(uid, sizeof(uid), "user#%lu", (unsigned long)r->finfo.st_uid);
       table_set(e, "USER_NAME", uid);
     }
+#endif /* ndef WIN32 */
 
     if((t = strrchr(r->filename, '/')))
         table_set (e, "DOCUMENT_NAME", ++t);
@@ -590,11 +594,12 @@ typedef struct {
     char *s;
 } include_cmd_arg;
 
-void include_cmd_child (void *arg)
+int include_cmd_child (void *arg)
 {
     request_rec *r =  ((include_cmd_arg *)arg)->r;
     char *s = ((include_cmd_arg *)arg)->s;
     table *env = r->subprocess_env;
+    int child_pid = 0;
 #ifdef DEBUG_INCLUDE_CMD    
     FILE *dbg = fopen ("/dev/tty", "w");
 #endif    
@@ -636,8 +641,10 @@ void include_cmd_child (void *arg)
 #endif    
     cleanup_for_exec();
     /* set shellcmd flag to pass arg to SHELL_PATH */
-    call_exec(r, s, create_environment (r->pool, env), 1);
-    
+    child_pid = call_exec(r, s, create_environment (r->pool, env), 1);
+#ifdef WIN32
+    return(child_pid);
+#else    
     /* Oh, drat.  We're still here.  The log file descriptors are closed,
      * so we have to whimper a complaint onto stderr...
      */
@@ -650,6 +657,9 @@ void include_cmd_child (void *arg)
 	SHELL_PATH,errno);
     write (2, err_string, strlen(err_string));
     exit(0);
+    /* NOT REACHED */
+    return(child_pid);
+#endif /* WIN32 */
 }
 
 int include_cmd(char *s, request_rec *r) {
@@ -1799,7 +1809,7 @@ int send_parsed_file(request_rec *r)
     }
 
     if (*state == xbithack_full
-#ifndef __EMX__    
+#if !defined(__EMX__) && !defined(WIN32)
     /*  OS/2 dosen't support Groups. */
 	&& (r->finfo.st_mode & S_IXGRP)
 #endif
@@ -1845,7 +1855,7 @@ int xbithack_handler (request_rec *r)
 {
     enum xbithack *state;
 	
-#ifdef __EMX__
+#if defined(__EMX__) || defined(WIN32)
     /* OS/2 dosen't currently support the xbithack. This is being worked on. */
     return DECLINED;
 #else

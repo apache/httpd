@@ -270,4 +270,5 @@ BUFF *proxy_cache_error(struct cache_req *r);
 int proxyerror(request_rec *r, const char *message);
 const char *proxy_host2addr(const char *host, struct hostent *reqhp);
 int proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r);
+int proxy_garbage_init(server_rec *, pool *);
 

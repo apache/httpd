@@ -213,6 +213,10 @@ void note_cleanups_for_file (pool *, FILE *);
 void note_cleanups_for_fd (pool *, int);
 void kill_cleanups_for_fd (pool *p, int fd);
 
+void note_cleanups_for_socket (pool *, int);
+void kill_cleanups_for_socket (pool *p, int sock);
+int pclosesocket(pool *a, int sock);
+
 regex_t *pregcomp (pool *p, const char *pattern, int cflags);
 void pregfree (pool *p, regex_t *reg);
 
@@ -235,7 +239,7 @@ int pclosef(struct pool *, int fd);
      
 enum kill_conditions { kill_never, kill_always, kill_after_timeout, just_wait};
 
-int spawn_child_err (pool *, void (*)(void *), void *,
+int spawn_child_err (pool *, int (*)(void *), void *,
 		 enum kill_conditions, FILE **pipe_in, FILE **pipe_out,
                  FILE **pipe_err);
 #define spawn_child(p,f,v,k,in,out) spawn_child_err(p,f,v,k,in,out,NULL)

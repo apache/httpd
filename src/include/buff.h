@@ -94,13 +94,14 @@ struct buff_struct
 /* could also put pointers to the basic I/O routines here */
     int fd;                /* the file descriptor */
     int fd_in;             /* input file descriptor, if different */
+    int is_socket;         /* whether fd/fd_in are sockets */
 };
 
 /* Options to bset/getopt */
 #define BO_BYTECT (1)
 
 /* Stream creation and modification */
-extern BUFF *bcreate(pool *p, int flags);
+extern BUFF *bcreate(pool *p, int flags, int is_socket);
 extern void bpushfd(BUFF *fb, int fd_in, int fd_out);
 extern int bsetopt(BUFF *fb, int optname, const void *optval);
 extern int bgetopt(BUFF *fb, int optname, void *optval);
