@@ -995,7 +995,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
 
     values = (apr_array_header_t *)d;
 
-    e = apr_pstrdup(values->cont, val);
+    e = apr_pstrdup(values->pool, val);
 
     do {
         /* Find a non-empty fieldname */
@@ -1940,7 +1940,7 @@ AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
     imethods = (char **) src->method_list->elts;
     for (i = 0; i < src->method_list->nelts; ++i) {
         omethods = (char **) apr_array_push(dest->method_list);
-        *omethods = apr_pstrdup(dest->method_list->cont, imethods[i]);
+        *omethods = apr_pstrdup(dest->method_list->pool, imethods[i]);
     }
 }
  
