@@ -4,10 +4,13 @@ trap 'rm -f Makefile dummy testfunc.c testfunc; exit $exstat' 0 1 2 3 15
 #
 # Yet another Apache Configure helper script.
 # This script tests certain aspects of the compilation
-# process. Right now, it can perform 2 tests:
+# process. Right now, it can perform 3 tests:
 #
 # ./helpers/TestCompile lib <libname>
 #    Which checks to see if <libname> exists on this system
+#
+# ./helpers/TestCompile func <function>
+#    Which checks to see if <function> exists
 #
 # ./helpers/TestCompile sanity
 #    Which does a simple sanity check/test compile
@@ -70,7 +73,11 @@ case "$1" in
 	    exit
 	fi
 	TLIB=""
-	ERRDIR='2>/dev/null'
+	if [ "$VERBOSE" = "yes" ]; then
+	    ERRDIR=""
+	else
+	    ERRDIR='2>/dev/null'
+	fi
 	TARGET='testfunc'
 	cat <<EOF >testfunc.c
 void main(void) {
