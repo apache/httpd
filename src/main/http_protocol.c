@@ -151,7 +151,7 @@ int set_content_length (request_rec *r, long clength)
 {
     char ts[MAX_STRING_LEN];
     
-    sprintf (ts, "%ld", (long)r->finfo.st_size);
+    sprintf (ts, "%ld", clength);
     table_set (r->headers_out, "Content-length", pstrdup (r->pool, ts));
     return 0;
 }
