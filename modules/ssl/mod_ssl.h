@@ -89,32 +89,7 @@
  * Power up our brain...
  */
 
-/* OS headers */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <time.h>
-/* XXX: these better go away */
-#include <assert.h>
-
-/* OpenSSL headers */
-#include <ssl.h>
-#include <err.h>
-#include <x509.h>
-#include <x509v3.h>
-#include <pem.h>
-#include <crypto.h>
-#include <evp.h>
-#include <rand.h>
-#ifdef SSL_EXPERIMENTAL_ENGINE
-#include <engine.h>
-#endif
-
 /* Apache headers */
-#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -132,7 +107,19 @@
 #include "apr_fnmatch.h"
 #include "apr_strings.h"
 #include "apr_dbm.h"
-#undef CORE_PRIVATE
+
+/* OpenSSL headers */
+#include <ssl.h>
+#include <err.h>
+#include <x509.h>
+#include <x509v3.h>
+#include <pem.h>
+#include <crypto.h>
+#include <evp.h>
+#include <rand.h>
+#ifdef SSL_EXPERIMENTAL_ENGINE
+#include <engine.h>
+#endif
 
 /* mod_ssl headers */
 #include "ssl_expr.h"
@@ -693,10 +680,14 @@ void         ssl_die(void);
 
 /*  Variables  */
 void         ssl_var_register(void);
-#if 0 /* XXX */
-void         ssl_var_unregister(void);
-#endif /* XXX */
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
+void         ssl_var_log_config_register(apr_pool_t *p);
+
+/*  Extensions  */
+#if 0 /* XXX */
+void         ssl_ext_proxy_register(apr_pool_t *p);
+void         ssl_ext_ms_register(apr_pool_t *p);
+#endif /* -0- */
 
 /*  I/O  */
 void         ssl_io_filter_init(conn_rec *, SSL *);
@@ -705,12 +696,6 @@ long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
 
 /*  PRNG  */
 int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
-
-/*  Extensions  */
-void         ssl_ext_register(apr_pool_t *p);
-#if 0 /* XXX */
-void         ssl_ext_unregister(void);
-#endif
 
 /*  Utility Functions  */
 char        *ssl_util_vhostid(apr_pool_t *, server_rec *);

@@ -175,3 +175,48 @@ void ssl_scache_expire(server_rec *s)
 #endif
     return;
 }
+
+/*  _________________________________________________________________
+**
+**  SSL Extension to mod_status
+**  _________________________________________________________________
+*/
+
+static void ssl_ext_ms_display(request_rec *, int, int);
+
+static void ssl_scache_status_register(void)
+{
+    /* XXX point mod_status to this update, when it grows the opt fn */
+#if 0
+    ap_hook_register("ap::mod_status::display", ssl_ext_ms_display, AP_HOOK_NOCTX);
+#endif
+    return;
+}
+
+static void ssl_ext_ms_display_cb(char *str, void *_r)
+{
+    request_rec *r = (request_rec *)_r;
+    if (str != NULL)
+        ap_rputs(str, r);
+    return;
+}
+
+static void ssl_ext_ms_display(request_rec *r, int no_table_report, int short_report)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(r->server);
+
+    if (sc == NULL)
+        return;
+    if (short_report)
+        return;
+    ap_rputs("<hr>\n", r);
+    ap_rputs("<table cellspacing=0 cellpadding=0>\n", r);
+    ap_rputs("<tr><td bgcolor=\"#000000\">\n", r);
+    ap_rputs("<b><font color=\"#ffffff\" face=\"Arial,Helvetica\">SSL/TLS Session Cache Status:</font></b>\r", r);
+    ap_rputs("</td></tr>\n", r);
+    ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
+    ssl_scache_status(r->server, r->pool, ssl_ext_ms_display_cb, r);
+    ap_rputs("</td></tr>\n", r);
+    ap_rputs("</table>\n", r);
+    return;
+}

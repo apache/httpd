@@ -92,14 +92,6 @@ void ssl_var_register(void)
     return;
 }
 
-void ssl_var_unregister(void)
-{
-#if 0 /* XXX */
-    ap_hook_unregister("ap::mod_ssl::var_lookup", ssl_var_lookup);
-#endif /* XXX */
-    return;
-}
-
 char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -605,3 +597,76 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
     }
     return result;
 }
+
+/*  _________________________________________________________________
+**
+**  SSL Extension to mod_log_config
+**  _________________________________________________________________
+*/
+
+#include "../../modules/loggers/mod_log_config.h"
+
+static const char *ssl_var_log_handler_c(request_rec *r, char *a);
+static const char *ssl_var_log_handler_x(request_rec *r, char *a);
+
+/*
+ * register us for the mod_log_config function registering phase
+ * to establish %{...}c and to be able to expand %{...}x variables.
+ */
+void ssl_var_log_config_register(apr_pool_t *p)
+{
+    static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
+
+    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
+
+    if (log_pfn_register) {
+        log_pfn_register(p, "c", ssl_var_log_handler_c, 0);
+        log_pfn_register(p, "x", ssl_var_log_handler_x, 0);
+    }
+    return;
+}
+
+/*
+ * implement the %{..}c log function
+ * (we are the only function)
+ */
+static const char *ssl_var_log_handler_c(request_rec *r, char *a)
+{
+    char *result;
+
+    if (apr_table_get(r->connection->notes, "ssl") == NULL)
+        return NULL;
+    result = NULL;
+    if (strEQ(a, "version"))
+        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_PROTOCOL");
+    else if (strEQ(a, "cipher"))
+        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CIPHER");
+    else if (strEQ(a, "subjectdn") || strEQ(a, "clientcert"))
+        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_S_DN");
+    else if (strEQ(a, "issuerdn") || strEQ(a, "cacert"))
+        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_I_DN");
+    else if (strEQ(a, "errcode"))
+        result = "-";
+    else if (strEQ(a, "errstr"))
+        result = (char *)apr_table_get(r->connection->notes, "ssl::verify::error");
+    if (result != NULL && result[0] == NUL)
+        result = NULL;
+    return result;
+}
+
+/*
+ * extend the implementation of the %{..}x log function
+ * (there can be more functions)
+ */
+static const char *ssl_var_log_handler_x(request_rec *r, char *a)
+{
+    char *result;
+
+    result = NULL;
+    if (apr_table_get(r->connection->notes, "ssl") != NULL)
+        result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
+    if (result != NULL && result[0] == NUL)
+        result = NULL;
+    return result;
+}
+
