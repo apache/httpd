@@ -1560,8 +1560,8 @@ API_EXPORT(void) ap_register_cleanup(pool *p, void *data, void (*plain_cleanup) 
 {
     struct cleanup *c = (struct cleanup *) ap_palloc(p, sizeof(struct cleanup));
     c->data = data;
-    c->plain_cleanup = (plain_cleanup != NULL ? plain_cleanup : ap_null_cleanup);
-    c->child_cleanup = (child_cleanup != NULL ? child_cleanup : ap_null_cleanup);
+    c->plain_cleanup = plain_cleanup;
+    c->child_cleanup = child_cleanup;
     c->next = p->cleanups;
     p->cleanups = c;
 }
