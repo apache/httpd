@@ -95,7 +95,6 @@ void ap_reclaim_child_processes(int terminate)
 {
     int i;
     long int waittime = 1024 * 16;      /* in usecs */
-    struct timeval tv;
     ap_status_t waitret;
     int tries;
     int not_dead_yet;
@@ -110,10 +109,8 @@ void ap_reclaim_child_processes(int terminate)
          * necessary, but we need to allow children a few moments to exit.
          * Set delay with an exponential backoff.
          */
-        tv.tv_sec = waittime / 1000000;
-        tv.tv_usec = waittime % 1000000;
         waittime = waittime * 4;
-        ap_select(0, NULL, NULL, NULL, &tv);
+        ap_sleep(waittime);
 
         /* now see who is done */
         not_dead_yet = 0;
@@ -203,7 +200,6 @@ static int wait_or_timeout_counter;
 
 void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p)
 {
-    struct timeval tv;
     ap_status_t rv;
 
     ++wait_or_timeout_counter;
@@ -226,9 +222,7 @@ void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p)
         return;
     }
 #endif
-    tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
-    tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
-    ap_select(0, NULL, NULL, NULL, &tv);
+    ap_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     ret->pid = -1;
     return;
 }
