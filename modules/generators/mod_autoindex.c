@@ -2000,7 +2000,7 @@ static int index_directory(request_rec *r,
         colargs = "";
     }
     else {
-        char fval[5], vval[5], *ppre = "";
+        char fval[5], vval[5], *ppre = "", *epattern = "";
         fval[0] = '\0'; vval[0] = '\0';
         qstring = r->args;
 
@@ -2053,33 +2053,40 @@ static int index_directory(request_rec *r,
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'P' && qstring[1] == '=') {
-                const char *eos = qstring + 2;
+                const char *eos = qstring += 2; /* for efficiency */
 
                 while (*eos && *eos != '&' && *eos != ';') {
                     ++eos;
                 }
 
-                if (*eos) {
-                    pstring = apr_pstrndup(r->pool, qstring + 2,
-                                           eos - qstring - 2);
-                    qstring = eos + 1;
-                }
-                else {
-                    pstring = apr_pstrdup(r->pool, qstring + 2);
-                    qstring = NULL;
-                }
-                if (*pstring) {
-                    ppre = ";P=";
-                }
-                else {
+                if (eos == qstring) {
                     pstring = NULL;
+                }
+                else {
+                    pstring = apr_pstrndup(r->pool, qstring, eos - qstring);
+                    if (ap_unescape_url(pstring) != OK) {
+                        /* ignore the pattern, if it's bad. */
+                        pstring = NULL;
+                    }
+                    else {
+                        ppre = ";P=";
+                        /* be correct */
+                        epattern = ap_escape_uri(r->pool, pstring);
+                    }
+                }
+
+                if (*eos && *++eos) {
+                    qstring = eos;
+                }
+                else {
+                    qstring = NULL;
                 }
             }
             else {              /* Syntax error?  Ignore the remainder! */
                 qstring = NULL;
             }
         }
-        colargs = apr_pstrcat(r->pool, fval, vval, ppre, pstring, NULL);
+        colargs = apr_pstrcat(r->pool, fval, vval, ppre, epattern, NULL);
     }
 
     /* Spew HTML preamble */
