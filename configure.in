@@ -83,10 +83,6 @@ grp.h \
 )
 AC_HEADER_SYS_WAIT
 
-dnl ## Check for C preprocessor symbols
-
-AC_CHECK_DEFINE(EAGAIN, errno.h)
-
 dnl ## Check for typedefs, structures, and compiler characteristics.
 
 AC_C_CONST
