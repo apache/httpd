@@ -1,3 +1,8 @@
+Changes with Apache 2.0.28-dev
+ 
+  *) Optimize usage of strlen and strcat in ap_directory_walk.
+     [Brian Pane <bpane@pacbell.net>]
+
 Changes with Apache 2.0.27
 
   *) Introduce an Apache mod_ssl initial configuration template 
