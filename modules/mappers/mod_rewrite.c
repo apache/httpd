@@ -1158,43 +1158,43 @@ static cache *init_cache(apr_pool_t *p)
  * +-------------------------------------------------------+
  */
 
+/*
+ * General Note: key is already a fresh string, created (expanded) just
+ * for the purpose to be passed in here. So one can modify key itself.
+ */
+
 static char *rewrite_mapfunc_toupper(request_rec *r, char *key)
 {
-    char *value, *cp;
+    char *p;
 
-    for (cp = value = apr_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
-         cp++) {
-        *cp = apr_toupper(*cp);
+    for (p = key; *p; ++p) {
+        *p = apr_toupper(*p);
     }
-    return value;
+
+    return key;
 }
 
 static char *rewrite_mapfunc_tolower(request_rec *r, char *key)
 {
-    char *value, *cp;
+    char *p;
 
-    for (cp = value = apr_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
-         cp++) {
-        *cp = apr_tolower(*cp);
+    for (p = key; *p; ++p) {
+        *p = apr_tolower(*p);
     }
-    return value;
+
+    return key;
 }
 
 static char *rewrite_mapfunc_escape(request_rec *r, char *key)
 {
-    char *value;
-
-    value = ap_escape_uri(r->pool, key);
-    return value;
+    return ap_escape_uri(r->pool, key);
 }
 
 static char *rewrite_mapfunc_unescape(request_rec *r, char *key)
 {
-    char *value;
+    ap_unescape_url(key);
 
-    value = apr_pstrdup(r->pool, key);
-    ap_unescape_url(value);
-    return value;
+    return key;
 }
 
 static void rewrite_rand_init(void)
