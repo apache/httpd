@@ -77,12 +77,43 @@ fast pipes)
 <p><hr>
 
 <A name="files"><h2>&lt;Files&gt;</h2></A>
-<strong>Syntax:</strong> &lt;Files <em>regexp</em>&gt;<BR>
-<strong>Context:</strong> server config, virtualhost, directory<br>
-<strong>Status:</strong> Core. <p>
+<strong>Syntax:</strong> &lt;Files <em>filename</em>&gt;
+... &lt;/Files&gt;<br>
+<strong>Context:</strong> server config, virtual host, htaccess<br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> only available in Apache
+1.2 and above.<p>
 
-The File container applies the directives within to files
-which match the regexp.
+<p>The &lt;Files&gt; directive provides for access control by
+filename. It is comparable to the <a
+href="#directory">&lt;Directory&gt;</a> directive and
+<a href="#location">&lt;Location&gt;</a> directives. It
+should be matched with a &lt;/Files&gt; directive. Directives that
+apply to the filename given should be listed
+within. <code>&lt;Files&gt;</code> sections are processed in the
+order they appear in the configuration file, after the
+&lt;Directory&gt; sections and <code>.htaccess</code> files are
+read, but before &lt;Location&gt; sections.</p>
+
+<p>The <em>filename</em> argument should include a filename, or a 
+wildcard string, where `?' matches any single character, and `*' matches any
+sequences of characters. Extended regular expressions can also be used, with the addition of
+the <code>~</code> character. For example:</p>
+
+<pre>
+   &lt;Files ~ &quot;\.(gif|jpe?g|png)$&quot;&gt;
+</pre>
+
+would match most common Internet graphics formats.
+
+<p>Note that unlike <a
+href="#directory"><code>&lt;Directory&gt;</code></a> and <a
+href="#location"><code>&lt;Location&gt;</code></a> sections,
+<code>&lt;Files&gt;</code> sections can be used inside .htaccess
+files. This allows users to control access to their own files, at a
+file-by-file level. When used in an .htaccess file, if the
+<em>filename</em> does not begin with a <code>/</code> character,
+the directory being applied will be prefixed automatically.
 
 <p> <hr>
 
@@ -303,8 +334,7 @@ with filenames missing the .gif extension.<p><hr>
 
 <A name="directory"><h2>&lt;Directory&gt; directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Directory} section directive&gt; -->
-<strong>Syntax:</strong> &lt;Directory <em>directory</em>&gt; ...
-&lt;/Directory&gt; <br>
+<strong>Syntax:</strong> &lt;Directory <em>directory</em>&gt; ... &lt;/Directory&gt; <br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Core. <p>
 
@@ -314,12 +344,23 @@ of that directory. Any directive which is allowed in a directory
 context may be used. <em>Directory</em> is either the full path to a directory,
 or a wildcard string. In a wildcard string, `?' matches any single character,
 and `*' matches any sequences of characters. Example:
-<blockquote>
-<code>
-&lt;Directory /usr/local/httpd/htdocs&gt;<br>
-Options Indexes FollowSymLinks<br>
-&lt;/Directory&gt;</code></blockquote>
-If multiple directory sections match the directory (or its parents) containing
+<pre>
+   &lt;Directory /usr/local/httpd/htdocs&gt;
+   Options Indexes FollowSymLinks
+   &lt;/Directory&gt;
+</pre>
+
+<p><strong>Apache 1.2 and above:</strong>
+Extended regular expressions can also be used, with the addition of the
+<code>~</code> character. For example:</p>
+
+<pre>
+   &lt;Directory ~ &quot;^/www/.*/[0-9]{3}&quot;&gt;
+</pre>
+
+would match directories in /www/ that consisted of three numbers.<p>
+
+<p>If multiple directory sections match the directory (or its parents) containing
 a document, then the directives are applied in the order of shortest match
 first, interspersed with the directives from the
 <A HREF="#accessfilename">.htaccess</A> files. For example, with
@@ -530,7 +571,8 @@ then it applies to all access methods.<p><hr>
 
 <h2><a name="location">&lt;Location&gt;</a></h2>
 
-<strong>Syntax:</strong> &lt;Location <em>URL prefix</em>&gt;<br>
+<strong>Syntax:</strong> &lt;Location <em>URL</em>&gt;
+... &lt;/Location&gt;<br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> Location is only available in Apache
@@ -554,9 +596,21 @@ file, or a number of files), and can include wildcards.  In a wildcard
 string, `?' matches any single character, and `*' matches any
 sequences of characters.
 
-<p>This functionality is especially useful when combined with the
-<code><a href="mod_mime.html#sethandler">SetHandler</a></code>
-directive. For example, to enable status requests, but allow them only
+<p><strong>Apache 1.2 and above:</strong>
+Extended regular expressions can also be used, with the addition of
+the
+<code>~</code> character. For example:</p>
+
+<pre>
+   &lt;Location ~ &quot;/(extra|special)/data&quot;&gt;
+</pre>
+
+would match URLs that contained the substring "/extra/data" or
+"/special/data".</p>
+
+<p>The <code>Location</code> functionality is especially useful when
+combined with the <code><a
+href="mod_mime.html#sethandler">SetHandler</a></code> directive. For example, to enable status requests, but allow them only
 from browsers at foo.com, you might use:
 
 <pre>
