@@ -477,7 +477,7 @@ typedef int rlim_t;
 #define NO_TIMEZONE
 #include <stdio.h>
 #include <sys/types.h>
-#define JMB_BUF jmp_buf
+#define JMP_BUF jmp_buf
 typedef int rlim_t;
 
 #elif defined(ISC)
