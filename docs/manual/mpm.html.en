@@ -24,7 +24,7 @@
 </div>
 
 <p>This document describes what a Multi-Processing Module is and
-how they are using by the Apache HTTP Server.</p>
+how they are used by the Apache HTTP Server.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#choosing">Choosing an MPM</a></li>
