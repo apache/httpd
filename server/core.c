@@ -2846,11 +2846,10 @@ static apr_status_t writev_it_all(apr_socket_t *s,
     /* XXX handle checking for non-blocking socket */
     while (bytes_written != len) {
         rv = apr_socket_sendv(s, vec + i, nvec - i, &n);
+        *nbytes += n;
         bytes_written += n;
         if (rv != APR_SUCCESS)
             return rv;
-
-        *nbytes += n;
 
         /* If the write did not complete, adjust the iovecs and issue
          * apr_socket_sendv again
@@ -3002,8 +3001,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
 
         rv = writev_it_all(c->client_socket, hdtr->headers, hdtr->numheaders,
                            sendlen, &bytes_sent);
-        if (rv == APR_SUCCESS)
-            *nbytes += bytes_sent;     /* track total bytes sent */
+        *nbytes += bytes_sent;     /* track total bytes sent */
     }
 
     /* Seek the file to 'offset' */
@@ -3020,10 +3018,10 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
         while (rv == APR_SUCCESS && sendlen) {
             bytes_sent = sendlen;
             rv = apr_socket_send(c->client_socket, &buffer[o], &bytes_sent);
+            *nbytes += bytes_sent;
             if (rv == APR_SUCCESS) {
                 sendlen -= bytes_sent; /* sendlen != bytes_sent ==> partial write */
                 o += bytes_sent;       /* o is where we are in the buffer */
-                *nbytes += bytes_sent;
                 togo -= bytes_sent;    /* track how much of the file we've sent */
             }
         }
@@ -3040,8 +3038,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
         }
         rv = writev_it_all(c->client_socket, hdtr->trailers, hdtr->numtrailers,
                            sendlen, &bytes_sent);
-        if (rv == APR_SUCCESS)
-            *nbytes += bytes_sent;
+        *nbytes += bytes_sent;
     }
 
     return rv;
