@@ -7,7 +7,7 @@
     <title>Apache のハンドラの使用</title>
 
   </head>
-  <!-- English revision: 1.23 -->
+  <!-- English revision: 1.24 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
@@ -139,7 +139,7 @@
     name="programmer">プログラマ向けのメモ</a></h2>
 
     <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
-    <a href="misc/api.html">Apache API</a>
+    <a href="developer/API.html">Apache API</a>
     に追加されました。詳しく言うと、<code>request_rec</code>
     構造体に新しいレコードが追加されたということです。</p>
 <pre>
