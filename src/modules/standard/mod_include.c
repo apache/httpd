@@ -73,6 +73,7 @@
 
 #ifdef USE_PERL_SSI
 #include "config.h"
+#undef VOIDUSED
 #ifdef USE_SFIO
 #undef USE_SFIO
 #define USE_STDIO
