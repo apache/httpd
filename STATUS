@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/21 00:29:26 $]
+Last modified at [$Date: 2003/05/21 02:06:14 $]
 
 Release:
 
@@ -143,7 +143,7 @@ PATCHES TO PORT FROM 2.1
          states that q defaults to 1. (see 14.1 - 14.4). So should wrong
          qvalues be returned as 1.0 or 0.0 (as atof() did)?
          1.0: nd
-         0.0: 
+         0.0: jim (a default != an "errored" value)
 
     * Keep the same SSLMutex for the lifetime of the parent process
       (instead of having children using different mutexes and failing
@@ -169,7 +169,7 @@ PATCHES TO PORT FROM 2.1
       one)
       configure.in: r1.250
       docs/conf/ssl-std.conf.in: r1.1
-      +1: thommay, jerenkrantz, striker
+      +1: thommay, jerenkrantz, striker, jim
        0: nd, trawick
           nd: The runtime files (e.g. cache) should be in runtimedir, since the
               logfilefir should not be writable for the httpd user.
@@ -194,12 +194,12 @@ PATCHES TO PORT FROM 2.1
       [Andreas Leimbacher <andreasl67@yahoo.de>, Madhusudan
       Mathihalli]
       modules/ssl/ssl_util_table.c: r1.9
-      +1: jerenkrantz, striker
+      +1: jerenkrantz, striker, jim
 
     * If mod_mime_magic does not know the content-type, do not attempt to
       guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
       modules/metadata/mod_mime_magic.c: r1.61
-      +1: jerenkrantz, nd
+      +1: jerenkrantz, nd, jim
 
     * Assure that we block on the read BIO when we invoke the read BIO for both
       first-use cases (via ssl_io_input_add_filter) and when we are writing and
@@ -239,7 +239,7 @@ PATCHES TO PORT FROM 2.1
     * Allow httpd's configure to recognize libtool 1.5 as capable of
       producing DSOs.
       configure.in: r1.252
-      +1: jerenkrantz, trawick, striker
+      +1: jerenkrantz, trawick, striker, jim
 
     * Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
       when a MKACTIVITY request comes in.
