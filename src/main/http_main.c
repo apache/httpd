@@ -1538,7 +1538,7 @@ void cleanup_scoreboard(void)
  * anyway.
  */
 
-inline void sync_scoreboard_image(void)
+ap_inline void sync_scoreboard_image(void)
 {
 #ifdef SCOREBOARD_FILE
     lseek(scoreboard_fd, 0L, 0);
@@ -1553,7 +1553,7 @@ API_EXPORT(int) exists_scoreboard_image(void)
     return (scoreboard_image ? 1 : 0);
 }
 
-static inline void put_scoreboard_info(int child_num,
+static ap_inline void put_scoreboard_info(int child_num,
 				       short_score *new_score_rec)
 {
 #ifdef SCOREBOARD_FILE
@@ -2170,7 +2170,7 @@ int init_suexec(void)
  *
  * Hash function provided by David Hankins.
  */
-static inline unsigned hash_inaddr(unsigned key)
+static ap_inline unsigned hash_inaddr(unsigned key)
 {
     key ^= (key >> 16);
     return ((key >> 8) ^ key) % VHASH_TABLE_SIZE;
@@ -2680,7 +2680,7 @@ static void setup_listeners(pool *p)
  * Find a listener which is ready for accept().  This advances the
  * head_listener global.
  */
-static inline listen_rec *find_ready_listener(fd_set * main_fds)
+static ap_inline listen_rec *find_ready_listener(fd_set * main_fds)
 {
     listen_rec *lr;
 

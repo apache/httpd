@@ -182,7 +182,7 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
 #endif /* WIN32 */
 
 /* the lowest level reading primitive */
-static inline int buff_read(BUFF *fb, void *buf, int nbyte)
+static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 {
     int rv;
 
@@ -201,7 +201,7 @@ static inline int buff_read(BUFF *fb, void *buf, int nbyte)
 }
 
 /* the lowest level writing primitive */
-static inline int buff_write(BUFF *fb, const void *buf, int nbyte)
+static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
 {
     int rv;
 
@@ -483,7 +483,7 @@ API_EXPORT(void) bhalfduplex(BUFF *fb)
     }
 }
 
-static inline int saferead_guts(BUFF *fb, void *buf, int nbyte)
+static ap_inline int saferead_guts(BUFF *fb, void *buf, int nbyte)
 {
     int rv;
 

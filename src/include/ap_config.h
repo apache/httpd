@@ -69,7 +69,6 @@
 /* Define one of these according to your system. */
 #if defined(MPE)
 #include <sys/times.h>
-#define JMP_BUF sigjmp_buf
 #define NO_SETSID
 #define NO_KILLPG
 #define NO_WRITEV
@@ -90,7 +89,6 @@ extern char *inet_ntoa();
 #undef NO_SETSID
 char *crypt(const char *pw, const char *salt);
 char *mktemp(char *template);
-#define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define USE_MMAP_FILES
 #include <sys/time.h>
@@ -108,7 +106,6 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define HAVE_SYS_RESOURCE_H
 #define bzero(a,b) memset(a,0,b)
-#define JMP_BUF sigjmp_buf
 /*#define USE_FCNTL_SERIALIZED_ACCEPT */
 /*#define USE_SYSVSEM_SERIALIZED_ACCEPT */
 #if SOLARIS2 < 250
@@ -129,7 +126,6 @@ int gethostname(char *name, int namelen);
  * there's some weird conflict with non-BSD signals */
 #define NO_KILLPG
 #undef NO_SETSID
-#define JMP_BUF sigjmp_buf
 /*#define USE_FCNTL_SERIALIZED_ACCEPT */
 #define USE_SYSVSEM_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
@@ -148,7 +144,6 @@ int gethostname(char *name, int namelen);
 #ifndef _HIUX_SOURCE
 #define _HIUX_SOURCE
 #endif
-#define JMP_BUF sigjmp_buf
 #define HAVE_SHMGET
 #define SELECT_NEEDS_CAST
 #define HAVE_SYSLOG
@@ -161,7 +156,6 @@ int gethostname(char *name, int namelen);
 #ifndef _HPUX_SOURCE
 #define _HPUX_SOURCE
 #endif
-#define JMP_BUF sigjmp_buf
 #define HAVE_SHMGET
 #define HAVE_SYSLOG
 #ifndef HPUX10
@@ -174,7 +168,6 @@ typedef int rlim_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #define HAVE_SYS_SELECT_H
-#define JMP_BUF sigjmp_buf
 #ifndef __ps2__
 #define HAVE_MMAP
 #define USE_MMAP_FILES
@@ -200,14 +193,12 @@ typedef int rlim_t;
 #ifndef __ultrix__		/* Hack to check for pre-Ultrix 4.4 cc */
 #define const			/* Not implemented */
 #endif
-#define JMP_BUF sigjmp_buf
 #define HAVE_SYSLOG
 
 #elif defined(OSF1)
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
@@ -218,7 +209,6 @@ typedef int rlim_t;
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
@@ -289,7 +279,6 @@ typedef u_long n_long;
 #define STDERR_FILENO 2
 #define waitpid(a,b,c) wait4((a) == -1 ? 0 : (a),(union wait *)(b),c,NULL)
 typedef int pid_t;
-#define JMP_BUF jmp_buf
 #define USE_LONGJMP
 #define NO_USE_SIGACTION
 #define HAVE_SYSLOG
@@ -315,7 +304,6 @@ typedef int rlim_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NEED_STRDUP
-#define JMP_BUF sigjmp_buf
 #include <sys/time.h>
 #define HAVE_SYSLOG
 
@@ -325,14 +313,12 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define NEED_INITGROUPS
 #define NO_WRITEV
-#define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1		/* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
 #include <sys/time.h>
 #define HAVE_SYSLOG
 
 #elif defined(SCO5)
 
-#define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1
 #define HAVE_SYS_SELECT_H
 #define USE_FCNTL_SERIALIZED_ACCEPT
@@ -366,7 +352,6 @@ extern char *crypt();
 #undef NO_KILLPG
 #undef NO_SETSID
 #define NEED_STRDUP
-#define JMP_BUF sigjmp_buf
 /* fcntl() locking is expensive with NFS */
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
@@ -391,7 +376,6 @@ extern char *crypt();
 #define NEED_STRNCASECMP
 #endif
 #define bzero(a,b) memset(a,0,b)
-#define JMP_BUF sigjmp_buf
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SYSLOG
@@ -407,7 +391,6 @@ extern char *crypt();
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
-#define JMP_BUF sigjmp_buf
 #define HAVE_RESOURCE
 #define HAVE_MMAP
 #define USE_MMAP_FILES
@@ -427,7 +410,6 @@ extern char *crypt();
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
-#define JMP_BUF sigjmp_buf
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define ap_inet_addr inet_network
@@ -438,7 +420,6 @@ extern char *crypt();
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define JMP_BUF sigjmp_buf
 #define HAVE_SYSLOG
 #ifndef DEFAULT_USER
 #define DEFAULT_USER "nobody"
@@ -474,7 +455,6 @@ extern char *crypt();
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define USE_MMAP_FILES
 #ifndef DEFAULT_USER
@@ -507,7 +487,6 @@ int initgroups(char *, int);
 #define NEED_PROCESS_H
 #define HAVE_SYS_SELECT_H
 #include <unix.h>
-#define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define HAVE_SYSLOG
 
@@ -517,7 +496,6 @@ int initgroups(char *, int);
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
 #define NEED_INITGROUPS
-#define JMP_BUF jmp_buf
 #define HAVE_SYSLOG
 
 #elif defined(UXPDS)
@@ -529,7 +507,6 @@ int initgroups(char *, int);
 #undef NO_SETSID
 #define HAVE_RESOURCE 1
 #define bzero(a,b) memset(a,0,b)
-#define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
 #define USE_MMAP_FILES
@@ -538,7 +515,6 @@ int initgroups(char *, int);
 
 #elif defined(__EMX__)
 /* Defines required for EMX OS/2 port. */
-#define JMP_BUF sigjmp_buf
 #define NO_KILLPG
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
@@ -553,7 +529,6 @@ int initgroups(char *, int);
 
 #elif defined(__MACHTEN__)
 typedef int rlim_t;
-#define JMP_BUF sigjmp_buf
 #undef NO_KILLPG
 #define NO_SETSID
 #define HAVE_GMTOFF
@@ -563,6 +538,7 @@ typedef int rlim_t;
 #endif
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define NO_USE_SIGACTION
+#define JMP_BUF sigjmp_buf
 #define USE_LONGJMP
 #undef NEED_STRDUP
 #else
@@ -583,7 +559,6 @@ typedef int rlim_t;
 #define NO_TIMEZONE
 #include <stdio.h>
 #include <sys/types.h>
-#define JMP_BUF jmp_buf
 typedef int rlim_t;
 
 #elif defined(ISC)
@@ -592,7 +567,6 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define HAVE_SHMGET
 #define SIGURG SIGUSR1
-#define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SYSLOG
 
@@ -600,7 +574,6 @@ typedef int rlim_t;
 #define HAVE_SYS_RESOURCE_H
 #define HAVE_SHMGET
 #define USE_LONGJMP
-#define JMP_BUF jmp_buf
 #define NO_SETSID
 #define NO_USE_SIGACTION
 #define NEED_WAITPID
@@ -615,7 +588,6 @@ typedef int mode_t;
 
 #elif defined(RISCIX)
 #include <sys/time.h>
-#define JMP_BUF jmp_buf
 typedef int rlim_t;
 #define NO_USE_SIGACTION
 #define USE_LONGJMP
@@ -626,7 +598,6 @@ typedef int rlim_t;
 #elif defined(BEOS)
 #include <stddef.h>
 
-#define JMP_BUF sigjmp_buf
 #define NO_WRITEV
 #define NO_KILLPG
 #define NEED_INITGROUPS
@@ -831,9 +802,15 @@ Sigfunc *signal(int signo, Sigfunc * func);
 #if defined(USE_LONGJMP)
 #define ap_longjmp(x, y)        longjmp((x), (y))
 #define ap_setjmp(x)            setjmp(x)
+#ifndef JMP_BUF
+#define JMP_BUF jmp_buf
+#endif
 #else
 #define ap_longjmp(x, y)        siglongjmp((x), (y))
 #define ap_setjmp(x)            sigsetjmp((x), 1)
+#ifndef JMP_BUF
+#define JMP_BUF sigjmp_buf
+#endif
 #endif
 
 #ifdef SELECT_NEEDS_CAST
@@ -849,7 +826,9 @@ Sigfunc *signal(int signo, Sigfunc * func);
 
 /* so that we can use inline on some critical functions */
 #if !defined(__GNUC__)
-#define inline
+#define ap_inline
+#else
+#define ap_inline __inline__
 #endif
 
 #ifdef NO_OTHER_CHILD

@@ -8,7 +8,7 @@
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
  */
-#define INLINE extern inline
+#define INLINE extern __inline__
 #include "os-inline.c"
 #endif
 
