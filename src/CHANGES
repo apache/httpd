@@ -127,7 +127,7 @@ Changes with Apache 1.3.27
      UseCanonicalName is set to Off and a server is being run at
      a domain that allows wildcard DNS.  [Matthew Murphy]
 
-  *) SECURITY CAN-2002-0843 (cve.mitre.org)
+  *) SECURITY: CAN-2002-0843 (cve.mitre.org)
      Fix some possible overflows in ab.c that could be exploited by
      a malicious server. Reported by David Wagner. [Jim Jagielski]
 
@@ -146,7 +146,7 @@ Changes with Apache 1.3.27
      cruft. This patch allows us to tailor/control this properly by
      allowing simple wildcards such as *.conf. [Dirk-Willem van Gulik]
 
-  *) SECURITY CAN-2002-0839 (cve.mitre.org)
+  *) SECURITY: CAN-2002-0839 (cve.mitre.org)
      Add the new directive 'ShmemUIDisUser'. By default, Apache
      will no longer set the uid/gid of SysV shared memory scoreboard
      to User/Group, and it will therefore stay the uid/gid of
@@ -243,7 +243,7 @@ Changes with Apache 1.3.26
 
 Changes with Apache 1.3.25
 
-  *) SECURITY: CAN-2002-0392 (cve.mitre.org) [CERT VU#944335]
+  *) SECURITY: CVE-2002-0392 (cve.mitre.org) [CERT VU#944335]
      Code changes required to address and close chunked 
      encoding security issues.  To support this, we utilize the ANSI 
      functionality of strtol, and provide ap_strtol for completeness.
@@ -348,7 +348,7 @@ Changes with Apache 1.3.24
   *) Fixed a segfault in mod_include when #if, #elif, #else, or #endif
      directives were improperly terminated.  [Cliff Woolley]
 
-  *) Win32 SECURITY: CAN-2002-0061 (cve.mitre.org)
+  *) Win32 SECURITY: CVE-2002-0061 (cve.mitre.org)
      Introduce proper escaping of command.com and cmd.exe for Win32.
      These patches close vulnerability CAN-2002-0061, identified and
      reported by Ory Segal <ory.segal@sanctuminc>, by which any CGI
@@ -738,7 +738,7 @@ Changes with Apache 1.3.21
      just happened to be  index.html.zh.Big5.
      [Bill Stoddard, Bill Rowe] PR #8130
 
-  *) SECURITY: CAN-2001-0731 (cve.mitre.org)
+  *) SECURITY: CVE-2001-0731 (cve.mitre.org)
      Close autoindex /?M=D directory listing hole reported
      in bugtraq id 3009.  In some configurations where multiviews and 
      indexes are enabled for a directory, requesting URI /?M=D could
@@ -850,7 +850,7 @@ Changes with Apache 1.3.21
      before contacting the next proxy, and was thus unusable for
      SSL proxying.  [Martin Kraemer]
 
-  *) SECURITY: CAN-2001-0730 (cve.mitre.org)
+  *) SECURITY: CVE-2001-0730 (cve.mitre.org)
      Make support/split-logfile use the default log file if
      "/" or "\" are present in the virtual host name.  This prevents
      the possible use of specially crafted virtual host names in
@@ -925,7 +925,7 @@ Changes with Apache 1.3.20
   *) Autodetect if platforms have isnan() and/or isinf() for use in
      ap_snprintf.c. [Jim Jagielski]
 
-  *) SECURITY DoS: CAN-2001-1342 (cve.mitre.org)
+  *) SECURITY DoS: CVE-2001-1342 (cve.mitre.org)
      Correct a vulnerability in the Win32 and OS2 ports, by which a 
      client submitting a carefully constructed URI could cause a GP
      (segment) fault in the child process, which would have to be
@@ -3789,11 +3789,11 @@ Changes with Apache 1.3.2
      run-time configurable using the ExtendedStatus directive.
      [Jim Jagielski]
 
-  *) SECURITY: Eliminate O(n^2) space DoS attacks (and other O(n^2)
+  *) SECURITY: CAN-1999-1199 (cve.mitre.org)
+     Eliminate O(n^2) space DoS attacks (and other O(n^2)
      cpu time attacks) in header parsing.  Add ap_overlap_tables(),
      a function which can be used to perform bulk update operations
-     on tables in a more efficient manner.  CAN-1999-1199 (cve.mitre.org)
-     [Dean Gaudet]
+     on tables in a more efficient manner.  [Dean Gaudet]
 
   *) SECURITY: Added compile-time and configurable limits for
      various aspects of reading a client request to avoid some simple
