@@ -2530,15 +2530,12 @@ static int default_handler(request_rec *r)
     if (r->method_number != M_GET) {
         return METHOD_NOT_ALLOWED;
     }
-/*	
+	
     if ((status = ap_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
-    }*/
-
-    ap_setup_input(r);
-
+    }
     ap_update_mtime(r, r->finfo.mtime);
     ap_set_last_modified(r);
     ap_set_etag(r);
@@ -2586,7 +2583,7 @@ static int default_handler(request_rec *r)
 	
 	if (!r->header_only) {
 	    if (!rangestatus) {
-		ap_send_fb(r->input, r);
+		ap_send_fd(fd, r);
 	    }
 	    else {
 		long     length;
@@ -2637,6 +2634,7 @@ static int default_handler(request_rec *r)
     }
 #endif
 
+    ap_close(fd);
     return OK;
 }
 
