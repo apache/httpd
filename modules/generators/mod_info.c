@@ -192,7 +192,8 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
     while (tmptree != NULL) {
 	cmd = cmds;
 	while (cmd->name) {
-	    if (!strcasecmp(cmd->name, tmptree->directive)) {
+	    if ((cmd->name[0] != '<') && 
+                (strcasecmp(cmd->name, tmptree->directive) == 0)) {
 		if (nest > block_start) {
 		    block_start++;
 		    apr_snprintf(htmlstring, sizeof(htmlstring), "%s %s",

@@ -1,5 +1,9 @@
 Changes with Apache 2.0.14-dev
 
+  *) Fix mod_info, so that <Directory> and <Location> directives are
+     not displayed twice when displaying the current configuration.
+     [Ryan Morgan <rmorgan@covalent.net>]
+
   *) Add config directives to override DEFAULT_ERROR_MSG and
      DEFAULT_TIME_FORMAT.  This was sent in as PR 6193.
      [Dan Rench <drench@xnet.com>]
