@@ -1,11 +1,11 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
-<!--#set var="TITLE" value="Anfrage nicht ausführbar!" -->
+<!--#set var="TITLE" value="Anfrage nicht ausf&uuml;hrbar!" -->
 <!--#include virtual="include/top.html" -->
 
     Die vom Browser angeforderte Aktion wird vom Server
-    nicht unterstützt.
+    nicht unterst&uuml;tzt.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--

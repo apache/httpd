@@ -1,12 +1,12 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
-<!--#set var="TITLE" value="Übergebene Daten zu groß!" -->
+<!--#set var="TITLE" value="&Uuml;bergebene Daten zu gro&szlig;!" -->
 <!--#include virtual="include/top.html" -->
 
-    Die bei der Anfrage übermittelnden Daten sind für
+    Die bei der Anfrage &uuml;bermittelten Daten sind f&uuml;r
     die <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->-Methode nicht erlaubt
-    oder die Datenmenge hat das Maximum überschritten.
+    oder die Datenmenge hat das Maximum &uuml;berschritten.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--

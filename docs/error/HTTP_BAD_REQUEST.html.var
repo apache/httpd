@@ -4,7 +4,7 @@ Body:----------de--
 <!--#set var="TITLE" value="Fehlerhafte Anfrage!" -->
 <!--#include virtual="include/top.html" -->
 
-    Ihr Browser (oder Proxy) hat eine ungültige Anfrage gesendet,
+    Ihr Browser (oder Proxy) hat eine ung&uuml;ltige Anfrage gesendet,
     die vom Server nicht beantwortet werden kann.
 
 <!--#include virtual="include/bottom.html" -->
@@ -37,7 +37,7 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html
 Body:----------fr--
-<!--#set var="TITLE" value="demande incorrecte!" -->
+<!--#set var="TITLE" value="Demande incorrecte!" -->
 <!--#include virtual="include/top.html" -->
 
     Votre navigateur (ou votre proxy) a envoy&eacute; une demande que ce serveur n'a pas comprise.

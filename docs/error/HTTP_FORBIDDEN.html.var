@@ -6,15 +6,15 @@ Body:----------de--
 
   <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
-    Der Zugriff auf das angeforderte Verzeichnis ist nicht möglich.
+    Der Zugriff auf das angeforderte Verzeichnis ist nicht m&ouml;glich.
     Entweder ist kein Index-Dokument vorhanden oder das Verzeichnis
-    ist zugriffsgeschützt.
+    ist zugriffsgesch&uuml;tzt.
 
   <!--#else -->
 
-    Der Zugriff auf das angeforderte Objekt ist nicht möglich.
+    Der Zugriff auf das angeforderte Objekt ist nicht m&ouml;glich.
     Entweder kann es vom Server nicht gelesen werden oder es
-    ist zugriffsgeschützt.
+    ist zugriffsgesch&uuml;tzt.
 
   <!--#endif -->
 

@@ -1,13 +1,13 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
-<!--#set var="TITLE" value="Zeitlimit überschritten!" -->
+<!--#set var="TITLE" value="Zeitlimit &uuml;berschritten!" -->
 <!--#include virtual="include/top.html" -->
 
-    Der Server konnte nicht mehr länger auf die Beendigung
-    der Browseranfrage warten, die Netzwerkverbindung wurde
+    Der Server konnte nicht mehr l&auml;nger auf die Beendigung
+    der Browseranfrage warten; die Netzwerkverbindung wurde
     vom Server geschlossen.
-    
+
 <!--#include virtual="include/bottom.html" -->
 ----------de--
 

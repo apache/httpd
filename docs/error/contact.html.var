@@ -3,7 +3,7 @@ Content-type: text/html
 Body:----------de--
  Sofern Sie dies f&uuml;r eine Fehlfunktion des Servers halten,
  informieren Sie bitte den
- <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A>
+ <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">Webmaster</A>
  hier&uuml;ber.
 ----------de--
 
