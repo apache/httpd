@@ -146,8 +146,6 @@ static int is_scriptaliased(request_rec *r)
 #define DEFAULT_BUFBYTES 1024 
 #define DEFAULT_SOCKET "logs/cgisock"
 
-#define SHELL_PATH "/bin/sh"
-
 #define CGI_REQ 1
 #define SSI_REQ 2
 
