@@ -2349,6 +2349,16 @@ static void set_signals(void)
     if (sigaction(SIGINT, &sa, NULL) < 0)
         aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGINT)");
 #endif
+#ifdef SIGXCPU
+    sa.sa_handler = SIG_DFL;
+    if (sigaction(SIGXCPU, &sa, NULL) < 0)
+	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGXCPU)");
+#endif
+#ifdef SIGXFSZ
+    sa.sa_handler = SIG_DFL;
+    if (sigaction(SIGXFSZ, &sa, NULL) < 0)
+	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGXFSZ)");
+#endif
 
     /* we want to ignore HUPs and USR1 while we're busy processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
@@ -2370,6 +2380,12 @@ static void set_signals(void)
 #ifdef SIGABRT
 	signal(SIGABRT, sig_coredump);
 #endif /* SIGABRT */
+#ifdef SIGXCPU
+	signal(SIGXCPU, SIG_DFL);
+#endif /* SIGXCPU */
+#ifdef SIGXFSZ
+	signal(SIGXFSZ, SIG_DFL);
+#endif /* SIGXFSZ */
     }
 
     signal(SIGTERM, sig_term);

@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) SIGXCPU and SIGXFSZ are now reset to SIG_DFL at boot-time.  This
+     is necessary on at least Solaris where the /etc/rc?.d scripts
+     are run with these signals ignored, and "SIG_IGN" settings are
+     maintained across exec().
+     [Rein Tollevik <reint@sys.sol.no>] PR#2009
+
   *) Fix the check for symbolic links in ``RewriteCond ... -l'': stat() was
      used instead of lstat() and thus this flag didn't work as expected.
      [Rein Tollevik <reint@sys.sol.no>, PR#2010]
