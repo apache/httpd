@@ -35,6 +35,9 @@ Body:----------en--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
+    The server encountered an internal error and was 
+    unable to complete your request.
+
     <!--#include virtual="include/spacer.html" -->
 
     Error message:
@@ -43,7 +46,7 @@ Body:----------en--
   <!--#else -->
 
     The server encountered an internal error and was 
-    unable to complete your request. The server is either
+    unable to complete your request. Either the server is
     overloaded or there was an error in a CGI script.
 
   <!--#endif -->
