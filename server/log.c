@@ -255,6 +255,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
 
 void ap_open_logs(server_rec *s_main, ap_context_t *p)
 {
+    ap_status_t rc = APR_SUCCESS;
     server_rec *virt, *q;
     int replace_stderr;
     ap_file_t *errfile = NULL;
@@ -263,15 +264,26 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 
     replace_stderr = 1;
     if (s_main->error_log) {
+#ifdef WIN32
+        HANDLE hFile;
+        ap_get_os_file(&hFile, s_main->error_log);
+        FlushFileBuffers(hFile);
+        if (!SetStdHandle(STD_ERROR_HANDLE, hFile)) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), s_main,
+                         "unable to replace stderr with error_log");
+        }
+        replace_stderr = 0;
+#else
         /* replace stderr with this new log */
         fflush(stderr); /* ToDo: replace this with an APR call... */
         ap_open_stderr(&errfile, p);        
-        if (ap_dupfile(&errfile, s_main->error_log) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,
+        if ((rc = ap_dupfile(&errfile, s_main->error_log)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
                          "unable to replace stderr with error_log");
         } else {
             replace_stderr = 0;
         }
+#endif
     }
     /* note that stderr may still need to be replaced with something
      * because it points to the old error log, or back to the tty
@@ -302,7 +314,7 @@ API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
     ap_file_t *errfile = NULL;
 
     ap_open_stderr(&errfile, s->process->pool);        
-    if (   s->error_log != NULL) {
+    if (s->error_log != NULL) {
         ap_dupfile(&(s->error_log), errfile);
     }
 }
