@@ -182,8 +182,11 @@ typedef union ap_filter_func {
  * the ordering is equivalent to the order of calls to ap_add_*_filter().
  */
 typedef enum {
-    AP_FTYPE_CONTENT,
-    AP_FTYPE_CONNECTION
+    AP_FTYPE_CONTENT     = 10,
+    AP_FTYPE_HTTP_HEADER = 20,
+    AP_FTYPE_TRANSCODE   = 30,
+    AP_FTYPE_CONNECTION  = 40,
+    AP_FTYPE_NETWORK     = 50
 } ap_filter_type;
 
 /*
