@@ -884,6 +884,8 @@ typedef int rlim_t;
 #define NEED_STRDUP
 
 #elif defined(BEOS)
+#undef PLATFORM
+#define PLATFORM "BeOS"
 #include <stddef.h>
 
 #define NO_WRITEV
