@@ -81,8 +81,9 @@
     <h2><a name="the prerequisites">The prerequisites</a></h2>
 
     <p>The directives discussed in this article will need to go either
-    in your main server configuration file, or in per-directory
-    configuration files (<code>.htaccess</code> files).</p>
+    in your main server configuration file (typically in a
+    &lt;Directory&gt; section), or in per-directory configuration
+    files (<code>.htaccess</code> files).</p>
 
     <p>If you plan to use <code>.htaccess</code> files, you will need to
     have a server configuration that permits putting authentication
@@ -113,16 +114,16 @@
     server.</p>
 
     <p>You'll need to create a password file. This file should be
-    placed somewhere outside of your document directory. This is so
+    placed somewhere not accessible from the web. This is so
     that folks cannot download the password file. For example, if
     your documents are served out of
     <code>/usr/local/apache/htdocs</code> you might want to put the
     password file(s) in <code>/usr/local/apache/passwd</code>.</p>
 
-    <p>To create the file, use the <code>htpasswd</code> utility
-    that came with Apache. This be located in the <code>bin</code>
-    directory of wherever you installed Apache. To create the file,
-    type:</p>
+    <p>To create the file, use the <a
+    href="../programs/htpasswd.html">htpasswd</a> utility that came
+    with Apache. This be located in the <code>bin</code> directory of
+    wherever you installed Apache. To create the file, type:</p>
 <pre>
         htpasswd -c /usr/local/apache/passwd/password rbowen
 </pre>
@@ -141,36 +142,87 @@
     On my server, it's located at
     <code>/usr/local/apache/bin/htpasswd</code></p>
 
-    <p>Next, you'll need to create a file in the directory you want
-    to protect. This file is usually called <code>.htaccess</code>,
-    although on Windows it's called <code>htaccess</code> (without
-    the leading period.) <code>.htaccess</code> needs to contain
-    the following lines:</p>
+    <p>Next, you'll need to configure the server to request a password
+    and tell the server which users are allowed access.  You can do
+    this either by editing the <code>httpd.conf</code> file or using
+    an <code>.htaccess</code> file.  For example, if you wish to
+    protect the directory
+    <code>/usr/local/apache/htdocs/secret</code>, you can use the
+    following directives, either placed in the file
+    <code>/usr/local/apache/htdocs/secret/.htaccess</code>, or placed
+    in httpd.conf inside a &lt;Directory
+    /usr/local/apache/apache/htdocs/secret&gt; section.</p>
 <pre>
         AuthType Basic
-        AuthName "By Invitation Only"
+        AuthName "Restricted Files"
         AuthUserFile /usr/local/apache/passwd/passwords
-        AuthGroupFile /dev/null
         require user rbowen
 </pre>
 
-    <p>The next time that you load a file from that directory, you
-    should see the familiar username/password dialog box pop up. If
-    you don't chances are pretty good that you are not permitted to
-    use <code>.htaccess</code> files in the directory in
-    question.</p>
+    <p>Let's examine each of those directives individually.  The <a
+    href="../mod/core.html#authtype">AuthType</a> directive selects
+    that method that is used to authenticate the user.  The most
+    common method is <code>Basic</code>, and this is the method
+    implemented by <a href="../mod/mod_auth.html">mod_auth</a>.  It is
+    important to be aware, however, that Basic authentication sends
+    the password from the client to the browser unencrypted.  This
+    method should therefore not be used for highly sensitive data.
+    Apache supports one other authentication method: <code>AuthType
+    Digest</code>.  This method is implemented by <a
+    href="../mod/mod_auth_digest.html">mod_auth_digest</a> and is much
+    more secure.  Only the most recent versions of clients are known
+    to support Digest authentication.</p>
+
+    <p>The <a href="../mod/core.html#authname">AuthName</a> directive
+    sets the <em>Realm</em> to be used in the authentication.  The
+    realm serves two major functions.  First, the client often
+    presents this information to the user as part of the password
+    dialog box.  Second, it is used by the client to determine what
+    password to send for a given authenticated area.  So, for example,
+    once a client has authenticated in the <code>"Restricted
+    Files"</code> area, it will automatically retry the same password
+    for any area on the same server that is marked with the
+    <code>"Restricted Files"</code> Realm.  Therefore, you can prevent
+    a user from being prompted more than once for a password by
+    letting multiple restricted areas share the same realm.  Of
+    course, for security reasons, the client will always need to ask
+    again for the password whenever the hostname of the server
+    changes.</p>
+
+    <p>The <a
+    href="../mod/mod_auth.html#authuserfile">AuthUserFile</a>
+    directive sets the path to the password file that we just created
+    with <code>htpasswd</code>.  If you have a large number of users,
+    it can be quite slow to search through a plain text file to
+    authenticate the user on each request.  Apache also has the
+    ability to store user information in fast database files.  The
+    modules <a href="../mod/mod_auth_db.html">mod_auth_db</a> and <a
+    href="../mod/mod_auth_dbm.html">mod_auth_dbm</a> provide the <a
+    href="../mod/mod_auth_db.html#authdbuserfile">AuthDBUserFile</a>
+    and <a
+    href="../mod/mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a>
+    directives respectively.  These files can be created and
+    manipulated with the <a
+    href="../programs/dbmmanage.html">dbmmanage</a> program.  Many
+    other types of authentication options are available from third
+    party modules in the <a href="http://modules.apache.org/">Apache
+    Modules Database</a>.</p>
+
+    <p>Finally, the <a href="../mod/core.html#require">require</a>
+    directive provides the authorization part of the process by
+    setting the user that is allowed to access this region of the
+    server.  In the next section, we discuss various ways to
+    use the <code>require</code> directive.</p>
 
     <h2><a name="letting more than one person in">Letting more than
     one person in</a></h2>
 
-    <p>The directives above only let one person (specifically
-    someone with a username of <code>rbowen</code>) into the
-    directory. In most cases, you'll want to let more than one
-    person in. This is where the <code>AuthGroupFile</code> comes
-    in. In the example above, we've pointed
-    <code>AuthGroupFile</code> to <code>/dev/null</code>, which is
-    Unix-speak for "nowhere", or "off into space." (The Windows
-    NT equivalent of this is <code>nul</code>.)</p>
+    <p>The directives above only let one person (specifically someone
+    with a username of <code>rbowen</code>) into the directory. In
+    most cases, you'll want to let more than one person in. This is
+    where the <a
+    href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a> comes
+    in.</p>
 
     <p>If you want to let more than one person in, you'll need to
     create a group file that associates group names with a list of
@@ -227,7 +279,7 @@
     files, and remember to reference th right one in the
     <code>AuthUserFile</code> directive.</p>
 
-    <h2><a name="possible problems">Possible problems</a></h2>
+     <h2><a name="possible problems">Possible problems</a></h2>
 
     <p>Because of the way that Basic authentication is specified,
     your username and password must be verified every time you
