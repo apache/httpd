@@ -8,7 +8,7 @@
   <!--#include virtual="header.html" -->
   <H1>Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.50 $ ($Date: 1997/05/04 14:43:08 $)
+  $Revision: 1.51 $ ($Date: 1997/05/04 16:44:08 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -60,10 +60,6 @@
 <!--   do so via a username and password?                           -->
 <!-- - Why do I get "send lost connection" messages in my error     -->
 <!--   log?                                                         -->
-<!-- - Why won't Apache compile using the (SunOS|HPUX|etc...)       -->
-<!--   compiler that comes with the OS?                             -->
-
-
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -166,6 +162,9 @@
    </LI>
    <LI><A HREF="#midi">How do I get Apache to send a MIDI file so the
     browser can play it?</A>
+   </LI>
+   <LI><A HREF="#cantbuild">Why won't Apache compile with my
+    system's <SAMP>cc</SAMP>?</A>
    </LI>
   </OL>
  </LI>
@@ -1216,6 +1215,60 @@
     </P>
    </LI>
   </OL>
+  <HR>
+ </LI>
+ <LI><A NAME="cantbuild">
+       <STRONG>Why won't Apache compile with my system's
+       <SAMP>cc</SAMP>?</STRONG>
+      </A>
+  <P>
+  If the server won't compile on your system, it is probably due to one
+  of the following causes:
+  </P>
+  <UL>
+   <LI><STRONG>The <SAMP>Configure</SAMP> script doesn't recognize your system
+    environment.</STRONG>
+    <BR>
+    This might be either because it's completely unknown or because
+    the specific environment (include files, OS version, <EM>et
+    cetera</EM>) isn't explicitly handled.  If this happens, you may
+    need to port the server to your OS yourself.
+   </LI>
+   <LI><STRONG>Your system's C compiler is garbage.</STRONG>
+    <BR>
+    Some operating systems include a default C compiler that is either
+    not ANSI C-compliant or suffers from other deficiencies.  The usual
+    recommendation in cases like this is to acquire, install, and use
+    <SAMP>gcc</SAMP>.
+   </LI>
+   <LI><STRONG>Your <SAMP>include</SAMP> files may be confused.</STRONG>
+    <BR>
+    In some cases, we have found that a compiler installation or system
+    upgrade has left the C header files in an inconsistent state.  Make
+    sure that your include directory tree is in sync with the compiler and
+    the operating system.
+   </LI>
+   <LI><STRONG>Your operating system or compiler may be out of
+    revision.</STRONG> 
+    <BR>
+    Software vendors (including those that develop operating systems)
+    issue new releases for a reason; sometimes to add functionality, but
+    more often to fix bugs that have been discovered.  Try upgrading
+    your compiler and/or your operating system.
+   </LI>
+  </UL>
+  <P>
+  The Apache Group tests the ability to build the server on many
+  different platforms.  Unfortunately, we can't test all of the OS
+  platforms there are.  If you have verified that none of the above
+  issues is the cause of your problem, and it hasn't been reported
+  before, please submit a
+  <A
+   HREF="http://www.apache.org/bugdb.cgi"
+  >problem report</A>.
+  Be sure to include <EM>complete</EM> details, such as the compiler
+  &amp; OS versions and exact error messages.
+  </P>
   <HR>
   <!-- Don't forget to add HR tags at the end of each list item.. -->
  </LI>
