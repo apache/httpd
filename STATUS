@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/13 21:30:15 $]
+Last modified at [$Date: 2002/06/14 22:31:08 $]
 
 Release:
 
@@ -48,8 +48,8 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    2.0.38: Cliff plans on tagging TONIGHT (6/13/02).  Let's get this thing
-            wrapped up (again).
+    2.0.38: Will roll as soon as an important bug that cropped up
+            at the last minute is resolved.
 
 RELEASE SHOWSTOPPERS:
 
