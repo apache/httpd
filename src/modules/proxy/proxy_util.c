@@ -280,7 +280,7 @@ char *
 	if (!ap_isdigit(host[i]) && host[i] != '.')
 	    break;
     /* must be an IP address */
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
     if (host[i] == '\0' && (inet_addr(host) == -1))
 #else
     if (host[i] == '\0' && (ap_inet_addr(host) == -1 || inet_network(host) == -1))
@@ -1242,7 +1242,7 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
     ap_hard_timeout("proxy connect", r);
     do {
 	i = connect(sock, (struct sockaddr *) addr, sizeof(struct sockaddr_in));
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
 	if (i == SOCKET_ERROR)
 	    errno = WSAGetLastError();
 #endif /* WIN32 */

@@ -79,7 +79,9 @@
  */
 
 #include "ap_config.h"
+#ifndef NETWARE
 #include <sys/types.h>
+#endif
 #include <signal.h>
 #include <errno.h>
 #include "ap.h"

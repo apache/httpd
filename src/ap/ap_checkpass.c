@@ -97,7 +97,7 @@ API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 	/*
 	 * It's not our algorithm, so feed it to crypt() if possible.
 	 */
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
 	/*
 	 * On Windows, the only alternative to our MD5 algorithm is plain
 	 * text.

@@ -129,7 +129,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
               ap_ht_time(r->pool, r->finfo.st_mtime, timefmt, 0));
     ap_table_setn(e, "DOCUMENT_URI", r->uri);
     ap_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     pw = getpwuid(r->finfo.st_uid);
     if (pw) {
         ap_table_setn(e, "USER_NAME", ap_pstrdup(r->pool, pw->pw_name));

@@ -87,6 +87,8 @@ extern "C" {
 #define HTTPD_ROOT "/apache"
 #elif defined(BEOS)
 #define HTTPD_ROOT "/boot/home/apache"
+#elif defined(NETWARE)
+#define HTTPD_ROOT "sys:/apache"
 #else
 #define HTTPD_ROOT "/usr/local/apache"
 #endif
@@ -928,7 +930,7 @@ struct listen_rec {
     listen_rec *next;
     struct sockaddr_in local_addr;	/* local IP address and port */
     int fd;
-    int used;			/* Only used during restart */
+    int used;			/* Only used during restart */        
 /* more stuff here, like which protocol is bound to the port */
 };
 

@@ -1992,7 +1992,7 @@ API_EXPORT(int) ap_pclosesocket(pool *a, int sock)
 
     ap_block_alarms();
     res = closesocket(sock);
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
     errno = WSAGetLastError();
 #endif /* WIN32 */
     save_errno = errno;
@@ -2072,7 +2072,7 @@ how) {
 #endif /* WIN32 */
 
 /* for ap_fdopen, to get binary mode */
-#if defined (OS2) || defined (WIN32)
+#if defined (OS2) || defined (WIN32) || defined (NETWARE)
 #define BINMODE	"b"
 #else
 #define BINMODE
@@ -2197,6 +2197,10 @@ static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
 	 */
 
     }
+#elif defined(NETWARE)
+     /* NetWare currently has no pipes yet. This will
+        be solved with the new libc for NetWare soon. */
+     pid = 0;
 #elif defined(OS2)
     {
         int save_in=-1, save_out=-1, save_err=-1;
@@ -2658,6 +2662,7 @@ static void free_proc_chain(struct process_chain *procs)
     for (p = procs; p; p = p->next) {
 	CloseHandle((HANDLE) p->pid);
     }
+#elif defined(NETWARE)
 #else
 #ifndef NEED_WAITPID
     /* Pick up all defunct processes */

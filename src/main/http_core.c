@@ -2171,6 +2171,8 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, char *arg)
 {
 #ifdef WIN32
     fprintf(stderr, "WARNING: StartServers has no effect on Win32\n");
+#elif defined(NETWARE)
+    fprintf(stderr, "WARNING: StartServers has no effect on NetWare\n");
 #else
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -2390,12 +2392,25 @@ static const char *set_bind_address(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+#ifdef NETWARE
+static const char *set_threadstacksize(cmd_parms *cmd, void *dummy, char *stacksize)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    
+    ap_thread_stack_size = atoi(stacksize);    
+    return NULL;
+}
+#endif
+
 static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
     char *ports;
     unsigned short port;
-
+    
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
@@ -2881,6 +2896,10 @@ static const command_rec core_cmds[] = {
    OR_ALL, TAKE12, "soft/hard limits for max number of processes per uid" },
 { "BindAddress", set_bind_address, NULL, RSRC_CONF, TAKE1,
   "'*', a numeric IP address, or the name of a host with a unique IP address"},
+#ifdef NETWARE
+{ "ThreadStackSize", set_threadstacksize, NULL, RSRC_CONF, TAKE1,
+  "Stack size each created thread will use."},
+#endif
 { "Listen", set_listener, NULL, RSRC_CONF, TAKE1,
   "A port number or a numeric IP address and a port number"},
 { "SendBufferSize", set_send_buffer_size, NULL, RSRC_CONF, TAKE1,
@@ -3054,7 +3073,7 @@ static int default_handler(request_rec *r)
         return METHOD_NOT_ALLOWED;
     }
 	
-#if defined(OS2) || defined(WIN32)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
     /* Need binary mode for OS/2 */
     f = ap_pfopen(r->pool, r->filename, "rb");
 #else

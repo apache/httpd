@@ -210,7 +210,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 	/* Soak up script output */
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	    continue;
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
         /* Soak up stderr and redirect it to the error log.
          * Script output to stderr is already directed to the error log
          * on Unix, thanks to the magic of fork().

@@ -19,7 +19,11 @@ typedef void event;
  * I believe this is terribly ugly
  */
 #ifdef MULTITHREAD
+#ifdef NETWARE
+#define APACHE_TLS
+#else
 #define APACHE_TLS __declspec( thread )
+#endif
 
 thread *create_thread(void (thread_fn) (void *thread_arg), void *thread_arg);
 int kill_thread(thread *thread_id);

@@ -67,7 +67,9 @@
  */
 
 #include "ap_config.h"
+#ifndef NETWARE
 #include <sys/types.h>
+#endif
 #include "ap.h"
 #include "ap_md5.h"
 #if defined(MPE) || defined(QNX) || defined(WIN32) || defined(__TANDEM)
@@ -92,6 +94,7 @@
 #define MAX_STRING_LEN 256
 
 char *tn;
+
 
 static void getword(char *word, char *line, char stop)
 {
@@ -189,6 +192,18 @@ static void interrupted(void)
     exit(1);
 }
 
+
+#ifdef NETWARE
+static void copy_file(FILE *target, FILE *source)
+{
+    static char line[MAX_STRING_LEN];
+
+    while (!(getline(line, MAX_STRING_LEN, source))) {  
+	putline(target, line);
+    }
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     FILE *tfp, *f;
@@ -257,15 +272,29 @@ int main(int argc, char *argv[])
     if (!found) {
 	printf("Adding user %s in realm %s\n", user, realm);
 	add_password(user, realm, tfp);
-    }
+    }   
     fclose(f);
     fclose(tfp);
+#ifndef NETWARE
 #if defined(OS2) || defined(WIN32)
     sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
 #else
     sprintf(command, "cp %s %s", tn, argv[1]);
 #endif
     system(command);
+#else
+    if (!(tfp = fopen(tn, "r"))) {
+    fprintf(stderr, "Could not open temp file.\n");
+    exit(1);
+    }
+    
+    if (!(f = fopen(argv[1], "w"))) {
+    fprintf(stderr, "Could not open %s.\n", argv[1]);    
+    exit(1);    
+    }
+    
+    copy_file(f, tfp);
+#endif
     unlink(tn);
     return 0;
 }

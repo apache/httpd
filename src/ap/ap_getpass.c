@@ -62,7 +62,9 @@
  */
 
 #include "ap_config.h"
+#ifndef NETWARE
 #include <sys/types.h>
+#endif
 #include <errno.h>
 #include "ap.h"
 
@@ -104,7 +106,7 @@ static char *getpass(const char *prompt)
 
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
 /*
  * Windows lacks getpass().  So we'll re-implement it here.
  */

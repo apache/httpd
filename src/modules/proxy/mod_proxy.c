@@ -955,3 +955,11 @@ module MODULE_VAR_EXPORT proxy_module =
     NULL,			/* child_exit */
     proxy_detect		/* post read-request */
 };
+
+
+#ifdef NETWARE
+int main(int argc, char *argv[]) 
+{
+    ExitThread(TSR_THREAD, 0);
+}
+#endif

@@ -92,7 +92,9 @@
 #include "mod_rewrite.h"
 
 #ifndef NO_WRITEV
+#ifndef NETWARE
 #include <sys/types.h>
+#endif
 #include <sys/uio.h>
 #endif
 
@@ -1200,7 +1202,7 @@ static int hook_uri2file(request_rec *r)
             /* it was finally rewritten to a local path */
 
             /* expand "/~user" prefix */
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
             r->filename = expand_tildepaths(r, r->filename);
 #endif
             rewritelog(r, 2, "local path result: %s", r->filename);
@@ -2509,7 +2511,7 @@ static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
 **  Unix /etc/passwd database information
 **
 */
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
 static char *expand_tildepaths(request_rec *r, char *uri)
 {
     char user[LONG_STRING_LEN];
@@ -3274,7 +3276,7 @@ static void rewritelock_create(server_rec *s, pool *p)
                      "file %s", lockname);
         exit(1);
     }
-#if !defined(OS2) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32) && !defined(NETWARE)
     /* make sure the childs have access to this file */
     if (geteuid() == 0 /* is superuser */)
         chown(lockname, ap_user_id, -1 /* no gid change */);
@@ -3437,6 +3439,8 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
             child_pid = pi.dwProcessId;
         }
     }
+#elif defined(NETWARE)
+   // Need something here!!! Spawn????
 #elif defined(OS2)
     /* IBM OS/2 */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
@@ -3709,7 +3713,7 @@ static char *lookup_variable(request_rec *r, char *var)
         LOOKAHEAD(ap_sub_req_lookup_file)
     }
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     /* Win32 has a rather different view of file ownerships.
        For now, just forget it */
 
@@ -3744,7 +3748,7 @@ static char *lookup_variable(request_rec *r, char *var)
             }
         }
     }
-#endif /* ndef WIN32 */
+#endif /* ndef WIN32 && NETWARE*/
 
     if (result == NULL) {
         return ap_pstrdup(r->pool, "");
@@ -4259,5 +4263,11 @@ static int compare_lexicography(char *cpNum1, char *cpNum2)
     return 0;
 }
 
+#ifdef NETWARE
+int main(int argc, char *argv[]) 
+{
+    ExitThread(TSR_THREAD, 0);
+}
+#endif
 
 /*EOF*/

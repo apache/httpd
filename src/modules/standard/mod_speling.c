@@ -557,3 +557,10 @@ module MODULE_VAR_EXPORT speling_module =
     NULL,                       /* child_exit */
     NULL                        /* post read-request */
 };
+
+#ifdef NETWARE
+int main(int argc, char *argv[]) 
+{
+    ExitThread(TSR_THREAD, 0);
+}
+#endif

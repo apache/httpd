@@ -1377,7 +1377,7 @@ API_EXPORT(char *) ap_escape_shell_cmd(pool *p, const char *str)
     s = (const unsigned char *)str;
     for (; *s; ++s) {
 
-#if defined(OS2) || defined(WIN32)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
 	/* Don't allow '&' in parameters under OS/2. */
 	/* This can be used to send commands to the shell. */
 	if (*s == '&') {
@@ -1637,7 +1637,7 @@ API_EXPORT(int) ap_can_exec(const struct stat *finfo)
 #ifdef MULTIPLE_GROUPS
     int cnt;
 #endif
-#if defined(OS2) || defined(WIN32)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
     /* OS/2 dosen't have Users and Groups */
     return 1;
 #else
@@ -1746,7 +1746,7 @@ char *strstr(char *s1, char *s2)
 #ifdef NEED_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
-#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM)
+#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM) || defined(NETWARE)
 /* QNX, MPE and BeOS do not appear to support supplementary groups. */
     return 0;
 #else /* ndef QNX */
@@ -1826,7 +1826,7 @@ API_EXPORT(void) ap_str_tolower(char *str)
 
 API_EXPORT(uid_t) ap_uname2id(const char *name)
 {
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
     return (1);
 #else
     struct passwd *ent;
@@ -1844,7 +1844,7 @@ API_EXPORT(uid_t) ap_uname2id(const char *name)
 
 API_EXPORT(gid_t) ap_gname2id(const char *name)
 {
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
     return (1);
 #else
     struct group *ent;

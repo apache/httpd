@@ -72,6 +72,9 @@ extern int ap_docrootcheck;
 extern uid_t ap_user_id;
 extern char *ap_user_name;
 extern gid_t ap_group_id;
+#ifdef NETWARE
+extern unsigned int ap_thread_stack_size;
+#endif
 #ifdef MULTIPLE_GROUPS
 extern gid_t group_id_list[NGROUPS_MAX];
 #endif

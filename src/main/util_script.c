@@ -1045,7 +1045,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
         }
         return (pid);
     }
-
+#elif defined(NETWARE)
 #else
     if (ap_suexec_enabled
 	&& ((r->server->server_uid != ap_user_id)

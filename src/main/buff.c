@@ -119,7 +119,7 @@
  * futher I/O will be done
  */
 
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
 
 /*
   select() sometimes returns 1 even though the write will block. We must work around this.
@@ -137,12 +137,13 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
     if (!(tv.tv_sec = ap_check_alarm()))
 	return (send(sock, buf, len, flags));
 
-    rv = ioctlsocket(sock, FIONBIO, &iostate);
+    rv = ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
     iostate = 0;
     if (rv) {
 	err = WSAGetLastError();
 	ap_assert(0);
     }
+
     rv = send(sock, buf, len, flags);
     if (rv == SOCKET_ERROR) {
 	err = WSAGetLastError();
@@ -157,27 +158,36 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 		if (rv == SOCKET_ERROR)
 		    err = WSAGetLastError();
 		else if (rv == 0) {
- 		    ioctlsocket(sock, FIONBIO, &iostate);
+ 		    ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
 		    if(ap_check_alarm() < 0) {
 			WSASetLastError(EINTR);	/* Simulate an alarm() */
 			return (SOCKET_ERROR);
 		    }
-		}
+ 		}
 		else {
 		    rv = send(sock, buf, len, flags);
 		    if (rv == SOCKET_ERROR) {
 		        err = WSAGetLastError();
 			if(err == WSAEWOULDBLOCK) {
-			    ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
-				"select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
+			    
 			    retry=1;
+#ifdef NETWARE
+                ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
+				    "select claimed we could write, but in fact we couldn't.");
+				ThreadSwitchWithDelay();
+#else
+                ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
+				    "select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
 			    Sleep(100);
+#endif
 			}
 		    }
 		}
 	    } while(retry);
     }
-    ioctlsocket(sock, FIONBIO, &iostate);
+
+    ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
+
     if (rv == SOCKET_ERROR)
 	WSASetLastError(err);
     return (rv);
@@ -195,9 +205,10 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
     if (!(tv.tv_sec = ap_check_alarm()))
 	return (recv(sock, buf, len, flags));
 
-    rv = ioctlsocket(sock, FIONBIO, &iostate);
+    rv = ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
     iostate = 0;
     ap_assert(!rv);
+
     rv = recv(sock, buf, len, flags);
     if (rv == SOCKET_ERROR) {
 	err = WSAGetLastError();
@@ -209,7 +220,7 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
 	    if (rv == SOCKET_ERROR)
 		err = WSAGetLastError();
 	    else if (rv == 0) {
-		ioctlsocket(sock, FIONBIO, &iostate);
+		ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
 		ap_check_alarm();
 		WSASetLastError(WSAEWOULDBLOCK);
 		return (SOCKET_ERROR);
@@ -221,7 +232,9 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
 	    }
 	}
     }
-    ioctlsocket(sock, FIONBIO, &iostate);
+
+    ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
+
     if (rv == SOCKET_ERROR)
 	WSASetLastError(err);
     return (rv);
@@ -251,7 +264,7 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 {
     int rv;
 
-#if defined (WIN32)
+#if defined (WIN32) || defined(NETWARE)
     if (fb->flags & B_SOCKET) {
 	rv = recvwithtimeout(fb->fd_in, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
@@ -312,7 +325,7 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
 {
     int rv;
 
-#if defined(WIN32)
+#if defined(WIN32) || defined(NETWARE)
     if (fb->flags & B_SOCKET) {
 	rv = sendwithtimeout(fb->fd, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
@@ -1432,7 +1445,7 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	rc1 = ap_bflush(fb);
     else
 	rc1 = 0;
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
     if (fb->flags & B_SOCKET) {
 	rc2 = ap_pclosesocket(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
@@ -1442,10 +1455,12 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	    rc3 = 0;
 	}
     }
+#ifndef NETWARE
     else if (fb->hFH != INVALID_HANDLE_VALUE) {
 	    rc2 = ap_pcloseh(fb->pool, fb->hFH);
 	    rc3 = 0;
     }
+#endif
     else {
 #elif defined(BEOS)
     if (fb->flags & B_SOCKET) {
@@ -1465,7 +1480,7 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	else {
 	    rc3 = 0;
 	}
-#if defined(WIN32) || defined (BEOS)
+#if defined(WIN32) || defined (BEOS) || defined(NETWARE)
     }
 #endif
 

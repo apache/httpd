@@ -62,7 +62,9 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#ifndef NETWARE
 #include <sys/types.h>
+#endif
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
@@ -130,7 +132,7 @@ static char *ap_cvt(double arg, int ndigits, int *decpt, int *sign, int eflag, c
     register int r2;
     double fi, fj;
     register char *p, *p1;
-
+    
     if (ndigits >= NDIG - 1)
 	ndigits = NDIG - 2;
     r2 = 0;

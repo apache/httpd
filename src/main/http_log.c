@@ -168,7 +168,10 @@ static int error_log_child(void *cmd, child_info *pinfo)
     /* No concept of a child process on Win32 */
     signal(SIGHUP, SIG_IGN);
 #endif /* ndef SIGHUP */
-#if defined(WIN32)
+#if defined(NETWARE)
+    child_pid = spawnlp(P_NOWAIT, SHELL_PATH, (char *)cmd);
+    return(child_pid);
+#elif defined(WIN32)
     child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)
@@ -726,7 +729,10 @@ static int piped_log_child(void *cmd, child_info *pinfo)
 #ifdef SIGHUP
     signal(SIGHUP, SIG_IGN);
 #endif
-#if defined(WIN32)
+#if defined(NETWARE)
+    child_pid = spawnlp(P_NOWAIT, SHELL_PATH, (char *)cmd);
+    return(child_pid);
+#elif defined(WIN32)
     child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)

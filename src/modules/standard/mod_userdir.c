@@ -290,10 +290,10 @@ static int translate_userdir(request_rec *r)
             return REDIRECT;
         }
         else {
-#ifdef WIN32
-            /* Need to figure out home dirs on NT */
+#if defined(WIN32) || defined(NETWARE)
+            /* Need to figure out home dirs on NT and NetWare */
             return DECLINED;
-#else                           /* WIN32 */
+#else                           /* WIN32 & NetWare */
             struct passwd *pw;
             if ((pw = getpwnam(w))) {
 #ifdef OS2
@@ -303,7 +303,7 @@ static int translate_userdir(request_rec *r)
                 filename = ap_pstrcat(r->pool, pw->pw_dir, "/", userdir, NULL);
 #endif
             }
-#endif                          /* WIN32 */
+#endif                          /* WIN32 & NetWare */
         }
 
         /*

@@ -123,7 +123,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 			    const char *cachedir, const char *cachesubdir);
 static void help_proxy_garbage_coll(request_rec *r);
 static int should_proxy_garbage_coll(request_rec *r);
-#if !defined(WIN32) && !defined(MPE) && !defined(OS2)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE)
 static void detached_proxy_garbage_coll(request_rec *r);
 #endif
 
@@ -143,7 +143,7 @@ void ap_proxy_garbage_coll(request_rec *r)
 
     ap_block_alarms();		/* avoid SIGALRM on big cache cleanup */
     if (should_proxy_garbage_coll(r))
-#if !defined(WIN32) && !defined(MPE) && !defined(OS2)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE)
         detached_proxy_garbage_coll(r);
 #else
         help_proxy_garbage_coll(r);
@@ -203,7 +203,7 @@ static int gcdiff(const void *ap, const void *bp)
 	return 0;
 }
 
-#if !defined(WIN32) && !defined(MPE) && !defined(OS2)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2) && !defined(NETWARE)
 static void detached_proxy_garbage_coll(request_rec *r)
 {
     pid_t pid;
@@ -1141,7 +1141,7 @@ void ap_proxy_cache_tidy(cache_req *c)
 	    if (!p)
 		break;
 	    *p = '\0';
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
 	    if (mkdir(c->filename) < 0 && errno != EEXIST)
 #elif defined(__TANDEM)
 	    if (mkdir(c->filename, S_IRWXU | S_IRWXG | S_IRWXO) < 0 && errno != EEXIST)
@@ -1154,7 +1154,7 @@ void ap_proxy_cache_tidy(cache_req *c)
 	    *p = '/';
 	    ++p;
 	}
-#if defined(OS2) || defined(WIN32)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
 	/* Under OS/2 use rename. */
 	if (rename(c->tempfile, c->filename) == -1)
 	    ap_log_error(APLOG_MARK, APLOG_ERR, s,

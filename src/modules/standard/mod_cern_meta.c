@@ -150,7 +150,9 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#ifndef NETWARE
 #include <sys/types.h>
+#endif
 #include <sys/stat.h>
 #include "util_script.h"
 #include "http_log.h"
@@ -393,3 +395,11 @@ module MODULE_VAR_EXPORT cern_meta_module =
     NULL,			/* child_exit */
     NULL			/* post read-request */
 };
+
+
+#ifdef NETWARE
+int main(int argc, char *argv[]) 
+{
+    ExitThread(TSR_THREAD, 0);
+}
+#endif
