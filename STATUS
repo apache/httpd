@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/10/19 18:00:34 $]
+  Last modified at [$Date: 2003/10/20 19:52:50 $]
 
 Release:
 
@@ -45,11 +45,11 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
    * isn't ap_die() broken with recognizing recursive errors
        Message-Id: <3F8C56E3.8050501@attglobal.net>
         +1: jeff, jim
-
-RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
    * Current vote on 3 PRs for inclusion:
       Bugz #17877 (passing chunked encoding thru proxy)
