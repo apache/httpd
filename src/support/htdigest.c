@@ -10,6 +10,7 @@
 #include <sys/signal.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 /* This is probably the easiest way to do it */
 #include "../src/md5c.c"
