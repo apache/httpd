@@ -186,12 +186,14 @@
 #define RULEFLAG_NOCASE             1<<12
 #define RULEFLAG_NOESCAPE           1<<13
 #define RULEFLAG_NOSUB              1<<14
+#define RULEFLAG_STATUS             1<<15
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
  */
 #define ACTION_NORMAL               1<<0
 #define ACTION_NOESCAPE             1<<1
+#define ACTION_STATUS               1<<2
 
 
 #define MAPTYPE_TXT                 1<<0
@@ -3211,9 +3213,19 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
                 }
                 else if (apr_isdigit(*val)) {
                     status = atoi(val);
+                    if (status != HTTP_INTERNAL_SERVER_ERROR) {
+                        int idx =
+                            ap_index_of_response(HTTP_INTERNAL_SERVER_ERROR);
+
+                        if (ap_index_of_response(status) == idx) {
+                            return apr_psprintf(p, "RewriteRule: invalid HTTP "
+                                                   "response code '%s' for "
+                                                   "flag 'R'",
+                                                val);
+                        }
+                    }
                     if (!ap_is_HTTP_REDIRECT(status)) {
-                        return "RewriteRule: invalid HTTP response code "
-                               "for flag 'R'";
+                        cfg->flags |= (RULEFLAG_STATUS | RULEFLAG_NOSUB);
                     }
                 }
                 cfg->forced_responsecode = status;
@@ -3608,6 +3620,13 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
             }
         }
 
+        if (p->flags & RULEFLAG_STATUS) {
+            rewritelog((r, 2, ctx->perdir, "forcing responsecode %d for %s",
+                        p->forced_responsecode, r->filename));
+
+            r->status = p->forced_responsecode;
+        }
+
         return 2;
     }
 
@@ -3756,7 +3775,14 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
             }
 
             /*
-             *  Indicate a change if this was not a match-only rule.
+             * The rule sets the response code (implies match-only)
+             */
+            if (p->flags & RULEFLAG_STATUS) {
+                return ACTION_STATUS;
+            }
+
+            /*
+             * Indicate a change if this was not a match-only rule.
              */
             if (rc != 2) {
                 changed = ((p->flags & RULEFLAG_NOESCAPE)
@@ -4095,8 +4121,16 @@ static int hook_uri2file(request_rec *r)
 
     if (rulestatus) {
         unsigned skip;
-        apr_size_t flen = strlen(r->filename);
+        apr_size_t flen;
 
+        if (ACTION_STATUS == rulestatus) {
+            int n = r->status;
+
+            r->status = HTTP_OK;
+            return n;
+        }
+
+        flen = strlen(r->filename);
         if (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should be go on as an internal proxy request */
 
@@ -4334,8 +4368,15 @@ static int hook_fixup(request_rec *r)
     rulestatus = apply_rewrite_list(r, dconf->rewriterules, dconf->directory);
     if (rulestatus) {
         unsigned skip;
-        l = strlen(r->filename);
 
+        if (ACTION_STATUS == rulestatus) {
+            int n = r->status;
+
+            r->status = HTTP_OK;
+            return n;
+        }
+
+        l = strlen(r->filename);
         if (l > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should go on as an internal proxy request */
 
