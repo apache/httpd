@@ -547,13 +547,14 @@ static int ftp_cleanup_and_return(request_rec *r, BUFF *ctrl, BUFF *data, int cs
  */
 int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 {
-    char *host, *path, *strp, *parms;
+    char *desthost, *path, *strp, *parms;
+    char *strp2;
     char *cwd = NULL;
     char *user = NULL;
 /*    char *account = NULL; how to supply an account in a URL? */
     const char *password = NULL;
     const char *err;
-    int port, i, j, len, rc, nocache = 0;
+    int destport, i, j, len, rc, nocache = 0;
     int csd = 0, sock = -1, dsock = -1;
     struct sockaddr_in server;
     struct hostent server_hp;
@@ -562,6 +563,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     BUFF *ctrl = NULL;
     BUFF *data = NULL;
     pool *p = r->pool;
+    char *destportstr = NULL;
+    const char *urlptr = NULL;
     int one = 1;
     NET_SIZE_T clen;
     char xfer_type = 'A';       /* after ftp login, the default is ASCII */
@@ -593,17 +596,34 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
 /* We break the URL into host, port, path-search */
 
-    host = r->parsed_uri.hostname;
-    port = (r->parsed_uri.port != 0)
-        ? r->parsed_uri.port
-        : ap_default_port_for_request(r);
-    path = ap_pstrdup(p, r->parsed_uri.path);
-    if (path == NULL)
-        path = "";
-    else
-        while (*path == '/')
-            ++path;
+    urlptr = strstr(url, "://");
+    if (urlptr == NULL)
+        return HTTP_BAD_REQUEST;
+    urlptr += 3;
+    destport = 21;
+    strp = strchr(urlptr, '/');
+    if (strp == NULL) {
+        desthost = ap_pstrdup(p, urlptr);
+        urlptr = "/";
+    }
+    else {
+        char *q = ap_palloc(p, strp - urlptr + 1);
+        memcpy(q, urlptr, strp - urlptr);
+        q[strp - urlptr] = '\0';
+        urlptr = strp;
+        desthost = q;
+    }
 
+    strp2 = strchr(desthost, ':');
+    if (strp2 != NULL) {
+        *(strp2++) = '\0';
+        if (ap_isdigit(*strp2)) {
+            destport = atoi(strp2);
+            destportstr = strp2;
+        }
+    }
+    path = strchr(urlptr, '/')+1;
+    
     /*
      * The "Authorization:" header must be checked first. We allow the user
      * to "override" the URL-coded user [ & password ] in the Browsers'
@@ -643,25 +663,25 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     }
 
     /* check if ProxyBlock directive on this host */
-    destaddr.s_addr = ap_inet_addr(host);
+    destaddr.s_addr = ap_inet_addr(desthost);
     for (i = 0; i < conf->noproxies->nelts; i++) {
         if (destaddr.s_addr == npent[i].addr.s_addr ||
             (npent[i].name != NULL &&
-          (npent[i].name[0] == '*' || strstr(host, npent[i].name) != NULL)))
+          (npent[i].name[0] == '*' || strstr(desthost, npent[i].name) != NULL)))
             return ap_proxyerror(r, HTTP_FORBIDDEN,
                                  "Connect to remote machine blocked");
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, r->server, "FTP: connect to %s:%d", host, port);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, r->server, "FTP: connect to %s:%d", desthost, destport);
 
-    parms = strchr(path, ';');
+    parms = strchr(url, ';');
     if (parms != NULL)
         *(parms++) = '\0';
 
     memset(&server, 0, sizeof(struct sockaddr_in));
     server.sin_family = AF_INET;
-    server.sin_port = htons((unsigned short)port);
-    err = ap_proxy_host2addr(host, &server_hp);
+    server.sin_port = htons((unsigned short)destport);
+    err = ap_proxy_host2addr(desthost, &server_hp);
     if (err != NULL)
         return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, err);
 
@@ -1293,7 +1313,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
             if (destaddr.s_addr == ncent[i].addr.s_addr ||
                 (ncent[i].name != NULL &&
                  (ncent[i].name[0] == '*' ||
-                  strstr(host, ncent[i].name) != NULL))) {
+                  strstr(desthost, ncent[i].name) != NULL))) {
                 nocache = 1;
                 break;
             }
