@@ -134,7 +134,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     apr_int16_t pollevent;
     apr_sockaddr_t *uri_addr, *connect_addr;
 
-    apr_uri_components uri;
+    apr_uri_t uri;
     const char *connectname;
     int connectport = 0;
 
@@ -155,7 +155,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
      */
 
     /* we break the URL into host, port, uri */
-    if (APR_SUCCESS != apr_uri_parse_hostinfo_components(p, url, &uri)) {
+    if (APR_SUCCESS != apr_uri_parse_hostinfo(p, url, &uri)) {
 	return ap_proxyerror(r, HTTP_BAD_REQUEST,
 			     apr_pstrcat(p, "URI cannot be parsed: ", url, NULL));
     }
@@ -190,8 +190,8 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     if (conf->allowed_connect_ports->nelts == 0) {
 	/* Default setting if not overridden by AllowCONNECT */
 	switch (uri.port) {
-	    case APU_URI_HTTPS_DEFAULT_PORT:
-	    case APU_URI_SNEWS_DEFAULT_PORT:
+	    case APR_URI_HTTPS_DEFAULT_PORT:
+	    case APR_URI_SNEWS_DEFAULT_PORT:
 		break;
 	    default:
 		return HTTP_FORBIDDEN;
