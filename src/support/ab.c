@@ -520,7 +520,7 @@ static void output_results(void)
     if (timetaken) {
 	printf("Requests per second:    %.2f [#/sec] (mean)\n", 1000 * (float) (done) / timetaken);
 	printf("Time per request:       %.2f [ms] (mean)\n", concurrency * timetaken / (float) done);
-	printf("Time per request:       %.2f [ms] (mean, across all concurent requests)\n", timetaken / (float) done);
+	printf("Time per request:       %.2f [ms] (mean, across all concurrent requests)\n", timetaken / (float) done);
 	printf("Transfer rate:          %.2f [Kbytes/sec] received\n",
 	       (float) (totalread) / timetaken);
 	if (posting > 0) {
@@ -1323,14 +1323,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.51 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.52 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.51 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.52 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
