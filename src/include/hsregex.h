@@ -7,6 +7,8 @@ extern "C" {
 
 #ifdef WIN32
 #define API_EXPORT(type)    __declspec(dllexport) type __stdcall
+#else
+#define API_EXPORT(type)    type
 #endif
 
 /* === regex2.h === */
