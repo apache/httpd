@@ -328,6 +328,7 @@ extern char *crypt();
  * even on heavy systems sbrk() would be called at all...
  */
 #define NO_LINGCLOSE
+#define NO_SLACK
 
 #elif defined(SVR4)
 #define NO_KILLPG
