@@ -1317,21 +1317,18 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	}
 
 	/* restore the original stdin, stdout and stderr */
-	if (pipe_in)
-	    {
+	if (pipe_in) {
 	    dup2(hStdIn, fileno(stdin));
 	    close(hStdIn);
-	    }
-	if (pipe_out)
-	    {
+        }
+	if (pipe_out) {
 	    dup2(hStdOut, fileno(stdout));
 	    close(hStdOut);
-	    }
-	if (pipe_err)
-	    {
+	}
+	if (pipe_err) {
 	    dup2(hStdErr, fileno(stderr));
 	    close(hStdErr);
-	    }
+	}
 
         if (pid) {
 	    note_subprocess(p, pid, kill_how);
