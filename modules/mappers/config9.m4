@@ -17,7 +17,7 @@ APACHE_MODULE(rewrite, regex URL translation, , , most, [
   APR_ADDTO(CFLAGS,-DNO_DBM_REWRITEMAP)
 ])
 
-dnl mod_so should only be built as a static DSO
+dnl mod_so should only be built as a static module
 if test "$enable_so" = "yes"; then
     enable_so="static"
 elif test "$enable_so" = "shared"; then
