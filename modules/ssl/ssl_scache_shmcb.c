@@ -443,12 +443,6 @@ void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen)
     ssl_mutex_off(s);
 }
 
-void ssl_scache_shmcb_expire(server_rec *s)
-{
-    /* NOP */
-    return;
-}
-
 void ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(r->server);

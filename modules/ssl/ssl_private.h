@@ -546,7 +546,6 @@ void         ssl_scache_kill(server_rec *);
 BOOL         ssl_scache_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_expire(server_rec *);
 
 char        *ssl_scache_id2sz(UCHAR *, int);
 void         ssl_scache_dbm_init(server_rec *, apr_pool_t *);
@@ -554,7 +553,6 @@ void         ssl_scache_dbm_kill(server_rec *);
 BOOL         ssl_scache_dbm_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_dbm_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_dbm_expire(server_rec *);
 void         ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *pool);
 
 void         ssl_scache_shmcb_init(server_rec *, apr_pool_t *);
@@ -562,7 +560,6 @@ void         ssl_scache_shmcb_kill(server_rec *);
 BOOL         ssl_scache_shmcb_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_shmcb_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_shmcb_expire(server_rec *);
 void         ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *pool);
 
 void         ssl_scache_dc_init(server_rec *, apr_pool_t *);
@@ -570,7 +567,6 @@ void         ssl_scache_dc_kill(server_rec *);
 BOOL         ssl_scache_dc_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_dc_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_dc_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_dc_expire(server_rec *);
 void         ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool);
 
 /* Proxy Support */
