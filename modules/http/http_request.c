@@ -845,6 +845,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     rnew->server         = r->server;
     rnew->request_config = ap_create_request_config(rnew->pool);
     rnew->htaccess       = r->htaccess;
+    rnew->chunked        = r->chunked;
 
     ap_set_sub_req_protocol(rnew, r);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);

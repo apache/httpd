@@ -2016,16 +2016,21 @@ API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
     long len;
 #ifdef HAVE_SENDFILE
-    ap_bflush(r->connection->client);
-    if (ap_get_filesize(&len, fd) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "ap_send_fd: ap_get_filesize failed.");
-        return 0;
+    if (!r->chunked) {
+        ap_bflush(r->connection->client);
+        if (ap_get_filesize(&len, fd) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                          "ap_send_fd: ap_get_filesize failed.");
+            return 0;
+        }
+        if (iol_sendfile(r->connection->client->iol, fd, len,
+                         NULL, 0, 0) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                          "ap_send_fd: iol_sendfile failed.");
+        }
     }
-    if (iol_sendfile(r->connection->client->iol, fd, len,
-                     NULL, 0, 0) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "ap_send_fd: iol_sendfile failed.");
+    else {
+        len = ap_send_fd_length(fd, r, -1);
     }
 #else
     len = ap_send_fd_length(fd, r, -1);
