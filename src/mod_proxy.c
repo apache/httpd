@@ -1243,10 +1243,10 @@ static void
 log_uerror(const char *routine, const char *file, const char *err,
 	   server_rec *s)
 {
-    const char *p, *q;
+    char *p, *q;
 
     q = get_time();
-    (char *)p = strerror(errno);
+    p = strerror(errno);
 
     if (err != NULL)
     {
