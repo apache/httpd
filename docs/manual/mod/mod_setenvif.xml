@@ -189,7 +189,10 @@ of</p>
     <p>In the first form, the value will be set to "1". The second
     will remove the given variable if already defined, and the
     third will set the variable to the literal value given by
-    <code><em>value</em></code>.</p>
+    <code><em>value</em></code>. Since version 2.1 Apache will
+    recognize occurrences of <code>$1</code>..<code>$9</code> within
+    <var>value</var> and replace them by parenthesized subexpressions
+    of <var>regex</var>.</p>
 
 <example>
 <title>Example:</title>
