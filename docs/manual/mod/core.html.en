@@ -1354,7 +1354,7 @@ the server configuration files</td></tr>
     files in a directory that can cause <code>httpd</code> to
     fail.</p>
 
-    <p>The file path specified may be a absolute path (i.e.
+    <p>The file path specified may be an absolute path (i.e.
     starting with a slash), or may be relative to the
     <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory.</p>
 
