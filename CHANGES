@@ -1,5 +1,11 @@
 Changes with Apache 2.0.17-dev
 
+  *) Changed the threaded mpm to have child_main join to each of the
+     worker threads to make sure the kids are all gone before child_main
+     exits after a signal (cleanup from perform_idle_server_maintenance).
+     This is an extension of Ryans recent commit to make the child_main
+     the signal thread.
+
   *) Add more options to the ap_mpm_query function.  This also allows MPMs to
      report if their threads are dynamic or static.  Finally, this also
      implements a new API, ap_show_mpm, which returns the MPM that was
