@@ -83,9 +83,7 @@ areas</td></tr>
       (<code>Anonymous_LogEmail</code>)</li>
     </ul>
 
-    <p>Excerpt of httpd.conf:</p>
-
-    <div class="example"><p><code>
+    <div class="example"><h3>Excerpt of httpd.conf:</h3><p><code>
       Anonymous_NoUserId off<br />
       Anonymous_MustGiveEmail on<br />
       Anonymous_VerifyEmail on<br />
@@ -133,12 +131,12 @@ password verification</td></tr>
     userIDs.</p>
 
     <div class="example"><h3>Example:</h3><p><code>
-      Anonymous anonymous "Not Registered" 'I don\'t know'
+      Anonymous anonymous "Not Registered" "I don't know"
     </code></p></div>
 
     <p>This would allow the user to enter without password
-    verification by using the userId's 'anonymous',
-    'AnonyMous','Not Registered' and 'I Don't Know'.</p>
+    verification by using the userIDs "anonymous",
+    "AnonyMous", "Not Registered" and "I Don't Know".</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -146,22 +144,22 @@ password verification</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures if authorization will fall-through
 to other methods</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_Authoritative on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_Authoritative off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_Authoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_Authoritative Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_anon</td></tr>
 </table>
-    <p>When set 'on', there is no fall-through to other authorization
-    methods. So if a userID does not match the values specified in the
-    <code class="directive"><a href="#anonymous">Anonymous</a></code> directive,
-    access is denied.</p>
+    <p>When set <code>On</code>, there is no fall-through to other
+    authentication methods. So if a userID does not match the values
+    specified in the <code class="directive"><a href="#anonymous">Anonymous</a></code>
+    directive, access is denied.</p>
 
     <p>Be sure you know what you are doing when you decide to
-    switch it on. And remember that it is the linking order of the
-    modules (in the Configuration / Make file) which details the
-    order in which the Authorization modules are queried.</p>
+    switch it on. And remember that the order in which the Authentication
+    modules are queried is defined in the modules.c files at compile
+    time.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -169,14 +167,14 @@ to other methods</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether the password entered will be logged in the
 error log</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_LogEmail on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_LogEmail on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_LogEmail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_LogEmail On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_anon</td></tr>
 </table>
-    <p>When set <code>on</code>, the default, the 'password' entered
+    <p>When set <code>On</code>, the default, the 'password' entered
     (which hopefully contains a sensible email address) is logged in
     the error log.</p>
 
@@ -185,8 +183,8 @@ error log</td></tr>
 <div class="directive-section"><h2><a name="Anonymous_MustGiveEmail" id="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail" id="anonymous_mustgiveemail">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies whether blank passwords are allowed</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_MustGiveEmail on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_MustGiveEmail on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_MustGiveEmail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_MustGiveEmail On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -200,14 +198,14 @@ error log</td></tr>
 <div class="directive-section"><h2><a name="Anonymous_NoUserID" id="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid" id="anonymous_nouserid">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether the userID field may be empty</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_NoUserID on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_NoUserID off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_NoUserID On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_NoUserID Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_anon</td></tr>
 </table>
-    <p>When set <code>on</code>, users can leave the userID (and
+    <p>When set <code>On</code>, users can leave the userID (and
     perhaps the password field) empty. This can be very convenient for
     MS-Explorer users who can just hit return or click directly on the
     OK button; which seems a natural reaction.</p>
@@ -218,14 +216,14 @@ error log</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether to check the password field for a correctly
 formatted email address</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_VerifyEmail on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_VerifyEmail off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Anonymous_VerifyEmail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Anonymous_VerifyEmail Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_anon</td></tr>
 </table>
-    <p>When set <code>on</code> the 'password' entered is checked for
+    <p>When set <code>On</code> the 'password' entered is checked for
     at least one '@' and a '.' to encourage users to enter valid email
     addresses (see the above <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>).</p>
 

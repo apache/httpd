@@ -116,13 +116,13 @@ the proxy</td></tr>
 .htaccess files</td></tr>
 <tr><td><a href="mod_auth_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies userIDs that areallowed access without
 password verification</td></tr>
-<tr class="odd"><td><a href="mod_auth_anon.html#anonymous_authoritative">Anonymous_Authoritative on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures if authorization will fall-through
+<tr class="odd"><td><a href="mod_auth_anon.html#anonymous_authoritative">Anonymous_Authoritative On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures if authorization will fall-through
 to other methods</td></tr>
-<tr><td><a href="mod_auth_anon.html#anonymous_logemail">Anonymous_LogEmail on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the password entered will be logged in the
+<tr><td><a href="mod_auth_anon.html#anonymous_logemail">Anonymous_LogEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the password entered will be logged in the
 error log</td></tr>
-<tr class="odd"><td><a href="mod_auth_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies whether blank passwords are allowed</td></tr>
-<tr><td><a href="mod_auth_anon.html#anonymous_nouserid">Anonymous_NoUserID on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
-<tr class="odd"><td><a href="mod_auth_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
+<tr class="odd"><td><a href="mod_auth_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies whether blank passwords are allowed</td></tr>
+<tr><td><a href="mod_auth_anon.html#anonymous_nouserid">Anonymous_NoUserID On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
+<tr class="odd"><td><a href="mod_auth_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
 <tr><td><a href="perchild.html#assignuserid">AssignUserID <var>user_id</var> <var>group_id</var></a></td><td /><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_auth.html#authauthoritative">AuthAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are

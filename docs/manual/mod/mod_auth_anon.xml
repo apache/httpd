@@ -53,9 +53,7 @@ areas</description>
       (<code>Anonymous_LogEmail</code>)</li>
     </ul>
 
-    <p>Excerpt of httpd.conf:</p>
-
-    <example>
+    <example><title>Excerpt of httpd.conf:</title>
       Anonymous_NoUserId off<br />
       Anonymous_MustGiveEmail on<br />
       Anonymous_VerifyEmail on<br />
@@ -103,12 +101,12 @@ password verification</description>
     userIDs.</p>
 
     <example><title>Example:</title>
-      Anonymous anonymous "Not Registered" 'I don\'t know'
+      Anonymous anonymous "Not Registered" "I don't know"
     </example>
 
     <p>This would allow the user to enter without password
-    verification by using the userId's 'anonymous',
-    'AnonyMous','Not Registered' and 'I Don't Know'.</p>
+    verification by using the userIDs "anonymous",
+    "AnonyMous", "Not Registered" and "I Don't Know".</p>
 </usage>
 </directivesynopsis>
 
@@ -116,22 +114,22 @@ password verification</description>
 <name>Anonymous_Authoritative</name>
 <description>Configures if authorization will fall-through
 to other methods</description>
-<syntax>Anonymous_Authoritative on|off</syntax>
-<default>Anonymous_Authoritative off</default>
+<syntax>Anonymous_Authoritative On|Off</syntax>
+<default>Anonymous_Authoritative Off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>When set 'on', there is no fall-through to other authorization
-    methods. So if a userID does not match the values specified in the
-    <directive module="mod_auth_anon">Anonymous</directive> directive,
-    access is denied.</p>
+    <p>When set <code>On</code>, there is no fall-through to other
+    authentication methods. So if a userID does not match the values
+    specified in the <directive module="mod_auth_anon">Anonymous</directive>
+    directive, access is denied.</p>
 
     <p>Be sure you know what you are doing when you decide to
-    switch it on. And remember that it is the linking order of the
-    modules (in the Configuration / Make file) which details the
-    order in which the Authorization modules are queried.</p>
+    switch it on. And remember that the order in which the Authentication
+    modules are queried is defined in the modules.c files at compile
+    time.</p>
 </usage>
 </directivesynopsis>
 
@@ -139,14 +137,14 @@ to other methods</description>
 <name>Anonymous_LogEmail</name>
 <description>Sets whether the password entered will be logged in the
 error log</description>
-<syntax>Anonymous_LogEmail on|off</syntax>
-<default>Anonymous_LogEmail on</default>
+<syntax>Anonymous_LogEmail On|Off</syntax>
+<default>Anonymous_LogEmail On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>When set <code>on</code>, the default, the 'password' entered
+    <p>When set <code>On</code>, the default, the 'password' entered
     (which hopefully contains a sensible email address) is logged in
     the error log.</p>
 </usage>
@@ -155,8 +153,8 @@ error log</description>
 <directivesynopsis>
 <name>Anonymous_MustGiveEmail</name>
 <description>Specifies whether blank passwords are allowed</description>
-<syntax>Anonymous_MustGiveEmail on|off</syntax>
-<default>Anonymous_MustGiveEmail on</default>
+<syntax>Anonymous_MustGiveEmail On|Off</syntax>
+<default>Anonymous_MustGiveEmail On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -170,14 +168,14 @@ error log</description>
 <directivesynopsis>
 <name>Anonymous_NoUserID</name>
 <description>Sets whether the userID field may be empty</description>
-<syntax>Anonymous_NoUserID on|off</syntax>
-<default>Anonymous_NoUserID off</default>
+<syntax>Anonymous_NoUserID On|Off</syntax>
+<default>Anonymous_NoUserID Off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>When set <code>on</code>, users can leave the userID (and
+    <p>When set <code>On</code>, users can leave the userID (and
     perhaps the password field) empty. This can be very convenient for
     MS-Explorer users who can just hit return or click directly on the
     OK button; which seems a natural reaction.</p>
@@ -188,14 +186,14 @@ error log</description>
 <name>Anonymous_VerifyEmail</name>
 <description>Sets whether to check the password field for a correctly
 formatted email address</description>
-<syntax>Anonymous_VerifyEmail on|off</syntax>
-<default>Anonymous_VerifyEmail off</default>
+<syntax>Anonymous_VerifyEmail On|Off</syntax>
+<default>Anonymous_VerifyEmail Off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>When set <code>on</code> the 'password' entered is checked for
+    <p>When set <code>On</code> the 'password' entered is checked for
     at least one '@' and a '.' to encourage users to enter valid email
     addresses (see the above <directive
     module="mod_auth_anon">Anonymous_LogEmail</directive>).</p>
