@@ -19,6 +19,7 @@
       <tr>
         <td valign="top"><strong>Related Modules</strong><br />
          <br />
+         <a href="mod/mod_deflate.html">mod_defalte</a><br />
          <a href="mod/mod_ext_filter.html">mod_ext_filter</a><br />
          <a href="mod/mod_include.html">mod_include</a><br />
          </td>
@@ -41,27 +42,35 @@
       </tr>
     </table>
 
-    <p>A <em>filter</em> is a process which is applied to data that
+    <p>A <em>filter</em> is a process that is applied to data that
     is sent or received by the server. Data sent by clients to the
     server is processed by <em>input filters</em> while data sent
     by the server to the client is processed by <em>output
     filters</em>. Multiple filters can be applied to the data, and
     the order of the filters can be explicitly specified.</p>
 
-    <p>Filters are used internally by Apache to perform functions
-    such as chunking and byte-range request handling. In addition,
-    modules can provide filters which are selectable using run-time
-    configuration directives. The set of filters which apply to
-    data can be manipulated with the <code>SetInputFilter</code>
-    and <code>SetOutputFilter</code> directives.</p>
+    <p>Filters are used internally by Apache to perform functions such
+    as chunking and byte-range request handling. In addition, modules
+    can provide filters that are selectable using run-time
+    configuration directives. The set of filters that apply to data
+    can be manipulated with the <code>SetInputFilter</code>,
+    <code>SetOutputFilter</code>, <code>AddInputFilter</code>, and
+    <code>AddOutputFilter</code> directives.</p>
 
-    <p>The only configurable filter currently included with the
-    Apache distribution is the <code>INCLUDES</code> filter which
-    is provided by <a href="mod/mod_include.html">mod_include</a>
-    to process output for Server Side Includes. There is also an
-    experimental module called <a
-    href="mod/mod_ext_filter.html">mod_ext_filter</a> which allows
+    <p>The following user-selectable filters are currently provided
+    with the Apache HTTP Server distribution.</p>
+
+<dl>
+<dt>INCLUDES</dt> <dd>Server-Side Includes processing by <a
+href="mod/mod_include.html">mod_include</dd>
+<dt>DEFLATE</dt> <dd>Compress output before sending it to
+the client using <a href="mod/mod_deflate.html">mod_deflate</a></dd>
+</dl>
+
+    <p>In addition, the module <a
+    href="mod/mod_ext_filter.html">mod_ext_filter</a> allows
     for external programs to be defined as filters.</p>
+
     <!--#include virtual="footer.html" -->
   </body>
 </html>
