@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/20 19:52:41 $]
+Last modified at [$Date: 2003/11/20 20:26:15 $]
 
 Release:
 
@@ -66,27 +66,32 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    * Make Win32 MPM honor MaxMemFree for transaction pools
+      server/mpm/winnt/child.c: r1.17
+      server/mpm/winnt/mpm.h: r1.14
+      +1: stoddard
+
     * Don't leave the OpenSSL "id_callback" pointer dangling after
       unloading mod_ssl; this fixes segfaults during startup if
       other modules (or libraries used by other modules, e.g. PHP
       stuff) use OpenSSL.
       modules/ssl/ssl_util.c: r1.40
-      +1: jorton, trawick
+      +1: jorton, trawick, stoddard
 
     * Fix logging of human-readable error strings in mod_ssl, and use the
       thread-safe interface for retrieving them.
       modules/ssl/ssl_engine_log.c: r1.23
       modules/ssl/mod_ssl.c: r1.88
-      +1: jorton, trawick
+      +1: jorton, trawick, stoddard
 
     * Prevent mod_proxy from sending an invalid status-line to clients
       in some cases.
       modules/proxy/proxy_http.c: r1.172
-      +1: jorton, trawick
+      +1: jorton, trawick, stoddard
 
     * Fix timezone handling in mod_log_config.  PR 23642
       modules/loggers/mod_log_config.c: r1.107
-      +1: jorton
+      +1: jorton, stoddard
 
     * parsed_uri.port is only valid iff parsed_uri.port_str != NULL.
       Old code simply checked if it was non-zero, not if it
@@ -181,7 +186,8 @@ PATCHES TO BACKPORT FROM 2.1
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
 
-    * Backport wildcard ExpiresByType from 2.0.46
+    * Backport wildcard ExpiresByType patch
+      modules/metadata/mod_expires.c r1.45
       +1: ken, stoddard
 
     * mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
