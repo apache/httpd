@@ -80,6 +80,11 @@
  * group are the first three arguments to be passed; if not, all three
  * must be NULL.  The query info is split into separate arguments, where
  * "+" is the separator between keyword arguments.
+ *
+ * XXXX: note that the WIN32 code uses one of the suexec strings 
+ * to pass an interpreter name.  Remember this if changing the way they
+ * are handled in create_argv.
+ *
  */
 static char **create_argv(pool *p, char *path, char *user, char *group,
 			  char *av0, const char *args)
@@ -756,7 +761,7 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	    }
 	    else if (is_script) {
 		pid = spawnve(_P_NOWAIT, interpreter + 2,
-			      create_argv(r->pool, NULL, NULL, NULL,
+			      create_argv(r->pool, interpreter + 2, NULL, NULL,
 					  r->filename, r->args), env);
 	    }
 	    else {
