@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/29 17:59:27 $]
+Last modified at [$Date: 2003/07/01 00:13:28 $]
 
 Release:
 
@@ -69,14 +69,6 @@ PATCHES TO PORT FROM 2.1
       server/protocol.c: r1.132
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.131&r2=1.132&diff_format=h
       +1: brianp, jerenkrantz
-
-    * core_output_filter: don't split the brigade after a FLUSH bucket
-      if it's the last bucket.  This prevents creating unneccessary empty
-      brigades which may not be destroyed until the end of a keepalive
-      connection.
-      server/core.c: r1.238
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.237&r2=1.238
-      +1: brianp, trawick, jerenkrantz
 
     * Backport LimitInteralRecursion to 2.0 and 1.3.
       (1.3 patch is here: <http://cvs.apache.org/~nd/recursion13.patch>)
