@@ -550,7 +550,7 @@ API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
  */
 API_EXPORT(char *) ap_make_dirstr_parent(ap_pool_t *p, const char *s)
 {
-    char *last_slash = strrchr(s, '/');
+    const char *last_slash = ap_strrchr_c(s, '/');
     char *d;
     int l;
 
@@ -608,7 +608,7 @@ API_EXPORT(void) ap_chdir_file(const char *file)
     const char *x;
     char buf[HUGE_STRING_LEN];
 
-    x = strrchr(file, '/');
+    x = ap_strrchr_c(file, '/');
     if (x == NULL) {
 	chdir(file);
     }
