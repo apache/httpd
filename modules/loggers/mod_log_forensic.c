@@ -222,6 +222,10 @@ static int log_before(request_rec *r)
     int n;
     apr_status_t rv;
 
+    if (!cfg->fd) {
+        return DECLINED;
+    }
+
     if (!(id = apr_table_get(r->subprocess_env, "UNIQUE_ID"))) {
         /* we make the assumption that we can't go through all the PIDs in
            under 1 second */
@@ -269,6 +273,10 @@ static int log_after(request_rec *r)
     char *s;
     int l,n;
     apr_status_t rv;
+
+    if (!cfg->fd) {
+        return DECLINED;
+    }
 
     s = apr_pstrcat(r->pool, "-", id, "\n", NULL);
     l = n = strlen(s);
