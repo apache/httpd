@@ -245,7 +245,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
                                  || add->encodings_remove)) {
             apr_hash_t *copyhash = new->extension_mappings;
             new->extension_mappings = apr_hash_make(p);
-            /* XXX as slow as can be... just use an apr_hash_dup! */
+            /* ### as slow as can be... just use an apr_hash_dup! */
             overlay_extension_mappings(p, copyhash, new->extension_mappings);
             new->copy_mappings = 1;
         }
@@ -788,22 +788,29 @@ static int find_ct(request_rec *r)
     const char *orighandler = r->handler;
     const char *type;
     const char *charset = NULL;
+    apr_array_header_t *exception_list =
+        apr_array_make(r->pool, 2, sizeof(char *));
 
     if (r->finfo.filetype == APR_DIR) {
         r->content_type = DIR_MAGIC_TYPE;
         return OK;
     }
 
-    /* TM -- FIXME
-     * if r->filename does not contain a '/', the following passes a null
-     * pointer to getword, causing a SEGV ..
+    /* Always drop the leading element
      */
-
-    if (fn == NULL) {
+    if (fn == NULL)
 	fn = r->filename;
-    }
+    else
+        ++fn;
 
-    /* Parse filename extensions, which can be in any order */
+    /* always add a note that we have parsed exceptions,
+     * the base name is the first exception.
+     */
+    ext= ap_getword(r->pool, &fn, '.');
+    *((const char **) apr_array_push(exception_list)) = ext;
+
+    /* Parse filename extensions which can be in any order 
+     */
     while ((ext = ap_getword(r->pool, &fn, '.')) && *ext) {
         int found = 0;
         extension_info *exinfo;
@@ -848,7 +855,7 @@ static int find_ct(request_rec *r)
             if (!r->content_encoding)
                 r->content_encoding = type;
             else
-                /* XXX: should eliminate duplicate entities */
+                /* XXX should eliminate duplicate entities */
                 r->content_encoding = apr_pstrcat(r->pool, r->content_encoding,
                                                   ", ", type, NULL);
             found = 1;
@@ -861,20 +868,19 @@ static int find_ct(request_rec *r)
             found = 1;
         }
 
-        /* This is to deal with cases such as foo.gif.bak, which we want
-         * to not have a type. So if we find an unknown extension, we
-         * zap the type/language/encoding and reset the handler
-         * XXX: This is an unexpected, unplesant surprize for some!
+        /* Not good... nobody claims it.
          */
+        if (!found)
+            *((const char **) apr_array_push(exception_list)) = ext;
+    }
 
-        if (!found) {
-            r->content_type = NULL;
-            r->content_language = NULL;
-            r->content_languages = NULL;
-            r->content_encoding = NULL;
-            r->handler = orighandler;
-	    charset = NULL;
-	}
+    /*
+     * Need to set a notes entry on r for unrecognized elements.
+     * Somebody better claim them!
+     */
+    if (exception_list->nelts) {
+        apr_table_setn(r->notes, "ap-mime-exceptions-list", 
+                       (void *)exception_list);
     }
 
     if (r->content_type) {
