@@ -857,7 +857,7 @@ static void ssl_check_public_cert(server_rec *s,
     if (SSL_X509_getCN(ptemp, cert, &cn)) {
         int fnm_flags = FNM_PERIOD|FNM_CASE_BLIND;
 
-        if (apr_is_fnmatch(cn) &&
+        if (apr_fnmatch_test(cn) &&
             (apr_fnmatch(cn, s->server_hostname,
                          fnm_flags) == FNM_NOMATCH))
         {

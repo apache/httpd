@@ -986,7 +986,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->r = r;
     conf->p = cmd->path;
-    conf->p_is_fnmatch = apr_is_fnmatch(conf->p);
+    conf->p_is_fnmatch = apr_fnmatch_test(conf->p);
 
     ap_add_per_proxy_conf(cmd->server, new_dir_conf);
 
