@@ -1302,18 +1302,26 @@ void default_server_hostnames(server_rec *s)
     server_addr_rec *sar;
     int has_inaddr_any;
     int mainport = s->port;
+    int from_local=0;  
 
     /* Main host first */
     
     if (!s->server_hostname) {
 	s->server_hostname = get_local_host(pconf);
+	from_local = 1;
     }
 
     def_hostname = s->server_hostname;
     h = gethostbyname(def_hostname);
     if( h == NULL ) {
-	fprintf(stderr,"httpd: cannot determine local host name.\n");
-	fprintf(stderr,"Use ServerName to set it manually.\n");
+	fprintf(stderr,"httpd: cannot determine the IP address of ");
+	if (from_local) {
+	   fprintf(stderr,"the local host (%s). Use ServerName to set it manually.\n",
+		s->server_hostname ? s->server_hostname : "<NULL>");
+	} else {
+	   fprintf(stderr,"the specified ServerName (%s).\n",
+		s->server_hostname ? s->server_hostname : "<NULL>");
+	};
 	exit(1);
     }
     /* we need to use gethostbyaddr below... and since it shares a static
