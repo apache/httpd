@@ -1,5 +1,10 @@
 Changes with Apache 2.0.36
 
+  *) Major improvements in concurrent processing for AB by enabling
+     non-blocking connect()s and preventing APR from doing blocking
+     read()s. Also implement fatal error checking for apr_recv().
+     [Aaron Bannert]
+
   *) Fix Win32 NTFS Junctions (symlinks).  PR 8014  [William Rowe]
 
   *) Fix Win32 'short name' aliases in httpd.conf directives.
