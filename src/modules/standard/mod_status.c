@@ -290,10 +290,10 @@ static int status_handler(request_rec *r)
 	score_record = scoreboard_image->servers[i];
 	ps_record = scoreboard_image->parent[i];
 	res = score_record.status;
-	stat_buffer[i] = (res == SERVER_UNKNOWN) ? '?' : status_flags[res];
+	stat_buffer[i] = status_flags[res];
 	if (res == SERVER_READY)
 	    ready++;
-	else if (res != SERVER_DEAD && res != SERVER_UNKNOWN)
+	else if (res != SERVER_DEAD)
 	    busy++;
 #if defined(STATUS)
 	lres = score_record.access_count;

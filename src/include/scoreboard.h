@@ -68,11 +68,10 @@
  * Status values:
  */
 
-#define SERVER_UNKNOWN (-1)	/* should never be in this state */
 #define SERVER_DEAD 0
-#define SERVER_READY 1		/* Waiting for connection (or accept() lock) */
-#define SERVER_STARTING 3	/* Server Starting up */
-#define SERVER_BUSY_READ 2	/* Reading a client request */
+#define SERVER_STARTING 1	/* Server Starting up */
+#define SERVER_READY 2		/* Waiting for connection (or accept() lock) */
+#define SERVER_BUSY_READ 3	/* Reading a client request */
 #define SERVER_BUSY_WRITE 4	/* Processing a client request */
 #define SERVER_BUSY_KEEPALIVE 5	/* Waiting for more requests via keepalive */
 #define SERVER_BUSY_LOG 6	/* Logging the request */
@@ -101,7 +100,7 @@ typedef struct {
     vtime_t cur_vtime;		/* the child's current vtime */
     unsigned short timeout_len;	/* length of the timeout */
 #endif
-    signed char status;
+    unsigned char status;
 #if defined(STATUS)
     unsigned long access_count;
     unsigned long bytes_served;

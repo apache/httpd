@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) A few changes to scoreboard definitions which helps gcc generate
+     better code.  [Dean Gaudet]
+
   *) ANSI C doesn't guarantee that "int foo : 2" in a structure will
      be a signed bitfield.  So mark a few bitfields as signed to
      ensure correct code.  [Dean Gaudet]

@@ -3581,35 +3581,37 @@ static void perform_idle_server_maintenance(void)
 
     sync_scoreboard_image();
     for (i = 0; i < daemons_limit; ++i) {
+	int status;
+
 	if (i >= max_daemons_limit && free_length == idle_spawn_rate)
 	    break;
 	ss = &scoreboard_image->servers[i];
-	switch (ss->status) {
-	    /* We consider a starting server as idle because we started it
-	     * at least a cycle ago, and if it still hasn't finished starting
-	     * then we're just going to swamp things worse by forking more.
-	     * So we hopefully won't need to fork more if we count it.
-	     */
-	case SERVER_STARTING:
-	case SERVER_READY:
-	    ++ idle_count;
-	    /* always kill the highest numbered child if we have to...
-	     * no really well thought out reason ... other than observing
-	     * the server behaviour under linux where lower numbered children
-	     * tend to service more hits (and hence are more likely to have
-	     * their data in cpu caches).
-	     */
-	    to_kill = i;
-	    break;
-	case SERVER_DEAD:
+	status = ss->status;
+	if (status == SERVER_DEAD) {
 	    /* try to keep children numbers as low as possible */
 	    if (free_length < idle_spawn_rate) {
 		free_slots[free_length] = i;
 		++free_length;
 	    }
-	    break;
 	}
-	if (ss->status != SERVER_DEAD) {
+	else {
+	    /* We consider a starting server as idle because we started it
+	     * at least a cycle ago, and if it still hasn't finished starting
+	     * then we're just going to swamp things worse by forking more.
+	     * So we hopefully won't need to fork more if we count it.
+	     * This depends on the ordering of SERVER_READY and SERVER_STARTING.
+	     */
+	    if (status <= SERVER_READY) {
+		++ idle_count;
+		/* always kill the highest numbered child if we have to...
+		 * no really well thought out reason ... other than observing
+		 * the server behaviour under linux where lower numbered children
+		 * tend to service more hits (and hence are more likely to have
+		 * their data in cpu caches).
+		 */
+		to_kill = i;
+	    }
+
 	    ++total_non_dead;
 	    last_non_dead = i;
 #ifdef OPTIMIZE_TIMEOUTS

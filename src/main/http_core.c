@@ -495,7 +495,7 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
     struct hostent *hptr;
     int hostname_lookups;
 #ifdef STATUS
-    int old_stat = SERVER_UNKNOWN;
+    int old_stat = SERVER_DEAD;	/* we shouldn't ever be in this state */
 #endif
 
     /* If we haven't checked the host name, and we want to */
@@ -542,7 +542,7 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
 	}
     }
 #ifdef STATUS
-    if (old_stat != SERVER_UNKNOWN) {
+    if (old_stat != SERVER_DEAD) {
 	(void)update_child_status(conn->child_num,old_stat,(request_rec*)NULL);
     }
 #endif /* STATUS */
