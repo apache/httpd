@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache の keep-alive サポート</title>
+    <!-- English revision:1.12 -->
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache でサポートする keep-alive</h1>
+    <hr />
+
+    <h2>keep-alive とは</h2>
+    <code>HTTP/1.1</code> ドラフトに定義されているように、HTTP
+    の拡張機能である keep-alive によって持続的なコネクションが可能になります。
+    これらの持続的な HTTP セッションのおかげで、複数のリクエストを同一の
+    TCP コネクションを経由して送信することが可能となります。
+    多数のイメージを貼り付けてある HTML ドキュメントを送信するときに、
+    場合によっては、待ち時間がほぼ 50% となるほど速くなることが示されています。
+
+    <h2>Keep-Alive のサポートを有効にする</h2>
+    Apache 1.1 ではデフォルトで keep-alive のサポートは有効になっています。
+    これだけではなく、Apache の動作を変更できるディレクティブが
+    以下のようにいくつかあります。
+
+    <p><strong>注意</strong>: Apache 1.2 では <a
+    href="mod/core.html#keepalive">KeepAlive</a>
+    ディレクティブの構文は異なります。</p>
+
+    <h3>KeepAlive</h3>
+    <a href="mod/directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> KeepAlive
+    <em>max-requests</em><br />
+     <a href="mod/directive-dict.html#default"
+    rel="help"><strong>デフォルト:</strong></a> <code>KeepAlive
+    5</code><br />
+     <a href="mod/directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="mod/directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Core
+
+    <p>このディレクティブで keep-alive のサポートを有効にします。
+    <em>max-requests</em> については Apache に受け入れさせたい
+    1 コネクション当たりのリクエストの最大数を設定してください。
+    制限を設けてクライアントにサーバの資源を浪費させないようにします。
+    サポートを無効にするにはこの項目に <code>0</code> を設定してください。</p>
+
+    <h3>KeepAliveTimeout</h3>
+    <a href="mod/directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> KeepAliveTimeout
+    <em>seconds</em><br />
+     <a href="mod/directive-dict.html#default"
+    rel="help"><strong>デフォルト:</strong></a> <code>KeepAliveTimeout
+    15</code><br />
+     <a href="mod/directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="mod/directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Core
+
+    <p>Apache に後続のリクエストが到着するのを <em>seconds</em>
+    秒だけ待たせた後、(リクエストが到着しない場合には)
+    コネクションをクローズします。リクエストを受信した場合には、
+    <a href="mod/core.html#timeout"><code>Timeout</code></a>
+    ディレクティブで指定した timeout 値を適用します。</p>
+
+    <h2>keep-alive が使用される場合</h2>
+    keep-alive サポートを使用するには、まず、ブラウザが keep-alive をサポート
+    していなければなりません。現在の多くのブラウザ、例えば Netscape Navigator
+    2.0 や (Microsoft Internet Explorer などの) Spyglass Mosaic
+    に基づくブラウザはこの機能をサポートしています。しかし、Windows 95
+    ベースのいくつかのブラウザは、keep-alive をサポートしているサーバに
+    対して誤動作することに注意してください。これらのブラウザはコネクト
+    時にハングすることがあります。この誤動作はいくつかの Windows
+    のブラウザに見られ、Apache だけではなく keep-alive をサポートする
+    すべてのサーバとコネクトするときに発生します。Netscape 3.0b5
+    以降のバージョンについてはこの問題への対処がなされています。
+
+    <p>ただし、 keep-alive サポートが有効になるのは、
+    あらかじめ長さが判明しているファイルに対してのみです。
+    そのため、大部分の CGI スクリプト、サーバサイドインクルードファイル、
+    ディレクトリリストでは、keep-alive プロトコルを使用しないことになります。
+    これはエンドユーザには完全に透過的になっているべきものですが、
+    ウェブマスタは知っておいた方が良いことでしょう。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

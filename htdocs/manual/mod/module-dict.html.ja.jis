@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache モジュールの解説で使用する用語</title>
+
+  </head>
+  <!-- English revision: 1.2 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache モジュールの解説で使用する用語</h1>
+
+    <p>Apache モジュールについての解説は、
+    いずれも以下の共通の書式で記述されています:</p>
+
+    <dl>
+      <dd><a href="#status" rel="help"><strong>ステータス:</strong></a>
+      <em>status</em><br />
+       <a href="#sourcefile" rel="help"><strong>ソースファイル:</strong></a>
+      <em>source-file</em><br />
+       <a href="#moduleidentifier"
+      rel="help"><strong>モジュール識別子:</strong></a>
+      <em>module-identifier</em><br />
+       <a href="#Compatibility"
+      rel="help"><strong>互換性:</strong></a>
+      <em>compatibility notes</em></dd>
+    </dl>
+    <p>このドキュメントではそれぞれの属性を説明しています。
+    取り得るすべての値も記述しています。</p>
+
+    <h2>モジュールの用語</h2>
+
+    <ul>
+      <li><a href="#status">ステータス</a></li>
+
+      <li><a href="#sourcefile">ソースファイル</a></li>
+
+      <li><a href="#moduleidentifier">モジュール識別子</a></li>
+
+      <li><a href="#Compatibility">互換性</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="status" name="status">ステータス</a></h2>
+
+    <p>これは、そのモジュールが Apache
+    ウェブサーバにどれくらい密接に組み込まれているかを示します。
+    言い換えれば、モジュールを組み込み、その機能を利用するために、
+    サーバを再コンパイルする必要があるかもしれないということを示します。
+    この属性が取り得る値は以下のものです:</p>
+    <dl>
+      <dt><strong>Base</strong></dt>
+
+      <dd>ステータスが &quot;Base&quot;
+      のモジュールは、デフォルトでコンパイルされて、わざわざ設定から
+      モジュールを削除していない限り、通常は利用可能です。
+      </dd>
+
+      <dt><strong>Extension</strong></dt>
+
+      <dd>ステータスが &quot;Extension&quot; のモジュールは、
+      デフォルトではコンパイルされず、サーバにも読み込まれません。
+      そのモジュールとその機能を有効にするには、
+      サーバをビルドするための設定を変更して、Apache
+      を再コンパイルする必要があります。</dd>
+      <dt><strong>Experimental</strong></dt>
+
+      <dd>ステータスが &quot;Experimental&quot; のモジュールは、
+      Apache 配布物に同梱されていますが、
+      使用する場合は自己責任で行なう必要があります。
+      そのモジュールは、ドキュメントも完成に向けて作成中ですし、
+      サポートされるているとは限りません。</dd>
+      <dt><strong>External</strong></dt>
+
+      <dd>ステータスが &quot;External&quot; のモジュールは、基本 Apache
+      配布に同梱されません (&quot;サードパーティーモジュール&quot;)。
+      そのため、我々に責任はありませんし、
+      そのモジュールのサポートもしていません。</dd>
+    </dl>
+    <hr />
+
+    <h2><a id="sourcefile" name="sourcefile">ソースファイル</a></h2>
+
+    <p>これは単純に、
+    そのモジュールに必要なコードを含むソースファイルの名前を列挙したものです。
+    これは、<a href="core.html#ifmodule"><code>&lt;IfModule&gt;</code></a>
+    ディレクティブで使用される名前でもあります。
+    </p>
+    <hr />
+
+    <h2><a id="moduleidentifier"
+    name="moduleidentifier">モジュール識別子</a></h2>
+
+    <p>この文字列は、モジュールの動的読み込みを行なうときに使用する <a
+    href="mod_so.html#loadmodule">LoadModule</a>
+    ディレクティブにおいて使用されるモジュールの識別子です。
+    詳しく書くと、ソースファイル内の module タイプの外部変数の名前です。
+    </p>
+    <hr />
+
+    <h2><a id="Compatibility" name="Compatibility">互換性</a></h2>
+
+    <p>あるモジュールが Apache バージョン 1
+    の配布に含まれていなかった場合、
+    そのモジュールが導入されたバージョンがここに書かれています。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

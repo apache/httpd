@@ -1,0 +1,1195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Authentication, Authorization, and Access Control</title>
+  </head>
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+<h1 align="center">Authentication, Authorization, and Access
+Control</h1>
+
+    <a name="TOC"></a>
+
+    <ul>
+      <li><a href="#intro">Introduction</a></li>
+      <li>
+        <a href="#basic">Basic authentication</a>
+
+        <ul>
+          <li><a href="#basicworks">How basic
+          authentication works</a></li>
+
+          <li>
+            <a href="#basicconfig">Configuration:
+            Protecting content with basic authentication</a>
+
+          </li>
+
+          <li>
+            <a href="#basicfaq">Frequently asked
+            questions about basic auth</a>
+          </li>
+
+          <li><a href="#basiccaveat">Security
+          caveat</a></li>
+        </ul>
+        <br />
+      </li>
+
+      <li>
+        <a href="#digest">Digest authentication</a>
+
+        <ul>
+          <li><a href="#digestworks">How digest auth
+          works</a></li>
+
+          <li>
+            <a href="#digestconfig">Configuration:
+            Protecting content with digest authentication</a>
+          </li>
+
+          <li><a href="#digestcaveat">Caveats</a></li>
+        </ul>
+        <br />
+      </li>
+
+      <li>
+        <a href="#database">Database authentication
+        modules</a>
+
+        <ul>
+          <li><a href="#modauthdb">mod_auth_db and
+          mod_auth_dbm</a></li>
+
+          <li><a href="#dbfiles">Berkeley DB files</a></li>
+
+          <li><a href="#installauthdb">Installing mod_auth_db</a></li>
+
+          <li>
+            <a href="#authdbconfig">Protecting a
+            directory with mod_auth_db</a>
+          </li>
+        </ul>
+        <br />
+      </li>
+
+      <li>
+        <a href="#access">Access control</a>
+
+        <ul>
+          <li><a href="#allowdeny">Allow and Deny</a></li>
+
+          <li><a href="#satisfy">Satisfy</a></li>
+        </ul>
+        <br />
+      </li>
+
+      <li><a href="#summary">Summary</a></li>
+    </ul>
+    <!--End of Table of Child-Links-->
+    <hr />
+
+    <h1><a name="auth"></a><br />
+     Authentication, Authorization, and Access Control</h1>
+
+    <h1><a name="intro">Introduction</a></h1>
+
+    <p>Apache has three distinct ways of dealing with the question
+    of whether a particular request for a resource will result in
+    that resource actually be returned. These criteria are called
+    <i>Authorization</i>, <i>Authentication</i>, and <i>Access
+    control</i>.</p>
+
+    <p>Authentication is any process by which you verify that
+    someone is who they claim they are. This usually involves a
+    username and a password, but can include any other method of
+    demonstrating identity, such as a smart card, retina scan,
+    voice recognition, or fingerprints. Authentication is
+    equivalent to showing your drivers license at the ticket
+    counter at the airport.</p>
+
+    <p>Authorization is finding out if the person, once identified,
+    is permitted to have the resource. This is usually determined
+    by finding out if that person is a part of a particular group,
+    if that person has paid admission, or has a particular level of
+    security clearance. Authorization is equivalent to checking the
+    guest list at an exclusive party, or checking for your ticket
+    when you go to the opera.</p>
+
+    <p>Finally, access control is a much more general way of
+    talking about controlling access to a web resource. Access can
+    be granted or denied based on a wide variety of criteria, such
+    as the network address of the client, the time of day, the
+    phase of the moon, or the browser which the visitor is using.
+    Access control is analogous to locking the gate at closing
+    time, or only letting people onto the ride who are more than 48
+    inches tall - it's controlling entrance by some arbitrary
+    condition which may or may not have anything to do with the
+    attributes of the particular visitor.</p>
+
+    <p>Because these three techniques are so closely related in
+    most real applications, it is difficult to talk about them
+    separate from one another. In particular, authentication and
+    authorization are, in most actual implementations,
+    inextricable.</p>
+
+    <p>If you have information on your web site that is sensitive,
+    or intended for only a small group of people, the techniques in
+    this tutorial will help you make sure that the people that see
+    those pages are the people that you wanted to see them.</p>
+
+    <h1><a name="basic"></a>Basic authentication</h1>
+
+    <p>As the name implies, basic authentication is the simplest
+    method of authentication, and for a long time was the most
+    common authentication method used. However, other methods of
+    authentication have recently passed basic in common usage, due
+    to usability issues that will be discussed in a minute.</p>
+
+    <h2><a name="basicworks"></a><br />
+     How basic authentication works</h2>
+
+    <p>When a particular resource has been protected using basic
+    authentication, Apache sends a <tt>401 Authentication
+    Required</tt> header with the response to the request, in order
+    to notify the client that user credentials must be supplied in
+    order for the resource to be returned as requested.</p>
+
+    <p>Upon receiving a <tt>401</tt> response header, the client's
+    browser, if it supports basic authentication, will ask the user
+    to supply a username and password to be sent to the server. If
+    you are using a graphical browser, such as Netscape or Internet
+    Explorer, what you will see is a box which pops up and gives
+    you a place to type in your username and password, to be sent
+    back to the server. If the username is in the approved list,
+    and if the password supplied is correct, the resource will be
+    returned to the client.</p>
+
+    <p>Because the HTTP protocol is stateless, each request will be
+    treated in the same way, even though they are from the same
+    client. That is, every resource which is requested from the
+    server will have to supply authentication credentials over
+    again in order to receive the resource.</p>
+
+    <p>Fortunately, the browser takes care of the details here, so
+    that you only have to type in your username and password one
+    time per browser session - that is, you might have to type it
+    in again the next time you open up your browser and visit the
+    same web site.</p>
+
+    <p>Along with the <tt>401</tt> response, certain other
+    information will be passed back to the client. In particular,
+    it sends a name which is associated with the protected area of
+    the web site. This is called the <i>realm</i>, or just the
+    authentication name. The client
+    browser caches the username and password that you supplied, and
+    stores it along with the authentication realm, so that if other
+    resources are requested from the same realm, the same username
+    and password can be returned to authenticate that request
+    without requiring the user to type them in again. This caching
+    is usually just for the current browser session, but some
+    browsers allow you to store them permanently, so that you never
+    have to type in your password again.</p>
+
+    <p>The authentication name, or realm, will appear in the pop-up
+    box, in order to identify what the username and password are
+    being requested for.</p>
+
+    <h2><a name="basicconfig"></a>
+     Configuration: Protecting content with basic
+    authentication</h2>
+
+    <p>There are two configuration steps which you must complete in
+    order to protect a resource using basic authentication. Or
+    three, depending on what you are trying to do.</p>
+
+    <ol>
+      <li>Create a password file</li>
+
+      <li>Set the configuration to use this password file</li>
+
+      <li>Optionally, create a group file</li>
+    </ol>
+
+    <h3><a name="htpasswd"></a><br />
+     Create a password file</h3>
+
+    <p>In order to determine whether a particular username/password
+    combination is valid, the username and password supplied by the
+    user will need to be compared to some authoritative listing of
+    usernames and password. This is the password file, which you
+    will need to create on the server side, and populate with valid
+    users and their passwords.</p>
+
+    <p>Because this file contains sensitive information, it should
+    be stored outside of the document directory. Although, as you
+    will see in a moment, the passwords are encrypted in the file,
+    if a cracker were to gain access to the file, it would be an
+    aid in their attempt to figure out the passwords. And, because
+    people tend to be sloppy with the passwords that they choose,
+    and use the same password for web site authentication as for
+    their bank account, this potentially be a very serious breach
+    of security, even if the content on your web site is not
+    particularly sensitive.</p>
+
+    <p><b>Caution:</b> Encourage your users to use a different
+    password for your web site than for other more essential
+    things. For example, many people tend to use two passwords -
+    one for all of their extremely important things, such as the
+    login to their desktop computer, and for their bank account,
+    and another for less sensitive things, the compromise of which
+    would be less serious.</p>
+
+    <p>To create the password file, use the <tt>htpasswd</tt>
+    utility that came with Apache. This will be located in the
+    <tt>bin</tt> directory of wherever you installed Apache. For
+    example, it will probably be located at
+    <tt>/usr/local/apache/bin/htpasswd</tt> if you installed Apache
+    from source.</p>
+
+    <p>To create the file, type:</p>
+<pre>
+htpasswd -c /usr/local/apache/passwd/passwords username
+</pre>
+
+    <p><tt>htpasswd</tt> will ask you for the password, and then
+    ask you to type it again to confirm it:</p>
+<pre>
+# htpasswd -c /usr/local/apache/passwd/passwords rbowen
+New password: mypassword
+Re-type new password: mypassword
+Adding password for user rbowen
+</pre>
+
+    <p>Note that in the example shown, a password file is being
+    created containing a user called <tt>rbowen</tt>, and this
+    password file is being placed in the location
+    <tt>/usr/local/apache/passwd/passwords</tt>. You will
+    substitute the location, and the username, which you want to
+    use to start your password file.</p>
+
+    <p>If <tt>htpasswd</tt> is not in your path, you will have to
+    type the full path to the file to get it to run. That is, in
+    the example above, you would replace <tt>htpasswd</tt> with
+    <tt>/usr/local/apache/bin/htpasswd</tt></p>
+
+    <p>The <tt>-c</tt> flag is used only when you are creating a
+    new file. After the first time, you will omit the <tt>-c</tt>
+    flag, when you are adding new users to an already-existing
+    password file.</p>
+<pre>
+htpasswd /usr/local/apache/passwd/passwords sungo
+</pre>
+
+    <p>The example just shown will add a user named <tt>sungo</tt>
+    to a password file which has already been created earlier. As
+    before, you will be asked for the password at the command line,
+    and then will be asked to confirm the password by typing it
+    again.</p>
+
+    <p><b>Caution:</b> Be very careful when you add new users to an
+    existing password file that you don't use the <tt>-c</tt> flag
+    by mistake. Using the <tt>-c</tt> flag will create a new
+    password file, even if you already have an existing file of
+    that name. That is, it will remove the contents of the file
+    that is there, and replace it with a new file containing only
+    the one username which you were adding.</p>
+
+    <p>The password is stored in the password file in encrypted
+    form, so that users on the system will not be able to read the
+    file and immediately determine the passwords of all the users.
+    Nevertheless, you should store the file in as secure a location
+    as possible, with whatever minimum permissions on the file so
+    that the web server itself can read the file. For example, if
+    your server is configured to run as user <tt>nobody</tt> and
+    group <tt>nogroup</tt>, then you should set permissions on the
+    file so that only the webserver can read the file and only
+    root can write to it:</p>
+<pre>
+chown root.nogroup /usr/local/apache/passwd/passwords
+chmod 640 /usr/local/apache/passwd/passwords
+</pre>
+
+    <p>On Windows, a similar precaution should be taken, changing
+    the ownership of the password file to the web server user, so
+    that other users cannot read the file.</p>
+
+    <h3><a name="htpasswdconfig"></a><br />
+     Set the configuration to use this password file</h3>
+
+    <p>Once you have created the password file, you need to tell
+    Apache about it, and tell Apache to use this file in order to
+    require user credentials for admission. This configuration is
+    done with the following directives:</p>
+
+    <table cellpadding="3">
+      <tr>
+        <td align="left">AuthType</td>
+
+        <td align="left" valign="top" width="360">Authentication
+        type being used. In this case, it will be set to
+        <tt>Basic</tt></td>
+      </tr>
+
+      <tr>
+        <td align="left">AuthName</td>
+
+        <td align="left" valign="top" width="360">The
+        authentication realm or name</td>
+      </tr>
+
+      <tr>
+        <td align="left">AuthUserFile</td>
+
+        <td align="left" valign="top" width="360">The location of
+        the password file</td>
+      </tr>
+
+      <tr>
+        <td align="left">AuthGroupFile</td>
+
+        <td align="left" valign="top" width="360">The location of
+        the group file, if any</td>
+      </tr>
+
+      <tr>
+        <td align="left">Require</td>
+
+        <td align="left" valign="top" width="360">The
+        requirement(s) which must be satisfied in order to grant
+        admission</td>
+      </tr>
+    </table>
+
+    <p>These directives may be placed in a <tt>.htaccess</tt> file
+    in the particular directory being protected, or may go in the
+    main server configuration file, in a <tt>&lt;Directory&gt;</tt>
+    section, or other scope container.</p>
+
+    <p>The example shown below defines an authentication realm
+    called ``By Invitation Only''. The password file located at
+    <tt>/usr/local/apache/passwd/passwords</tt> will be used to
+    verify the user's identity. Only users named <tt>rbowen</tt> or
+    <tt>sungo</tt> will be granted access, and even then only if
+    they provide a password which matches the password stored in
+    the password file.</p>
+<pre>
+AuthType Basic
+AuthName "By Invitation Only"
+AuthUserFile /usr/local/apache/passwd/passwords
+Require user rbowen sungo
+</pre>
+
+    <p>The phrase ``By Invitation Only'' will be displayed in the
+    password pop-up box, where the user will have to type their
+    credentials.</p>
+
+    <p>You will need to restart your Apache server in order for the
+    new configuration to take effect, if these directives were put
+    in the main server configuration file. Directives placed in
+    <tt>.htaccess</tt> files take effect immediately, since
+    <tt>.htaccess</tt> files are parsed each time files are
+    served.</p>
+
+    <p>The next time that you load a file from that directory, you
+    will see the familiar username/password dialog box pop up,
+    requiring that you type the username and password before you
+    are permitted to proceed.</p>
+
+    <p>Note that in addition to specifically listing the users to
+    whom you want to grant access, you can specify that any valid
+    user should be let in. This is done with the
+    <tt>valid-user</tt> keyword:</p>
+<pre>
+Require valid-user
+</pre>
+
+    <h3><a name="basicgroupfile"></a><br />
+     Optionally, create a group file</h3>
+
+    <p>Most of the time, you will want more than one, or two, or
+    even a dozen, people to have access to a resource. You want to
+    be able to define a group of people that have access to that
+    resource, and be able to manage that group of people, adding
+    and removing members, without having to edit the server
+    configuration file, and restart Apache, each time.</p>
+
+    <p>This is handled using authentication groups. An
+    authentication group is, as you would expect, a group name
+    associated with a list of members. This list is stored in a
+    group file, which should be stored in the same location as the
+    password file, so that you are able to keep track of these
+    things.</p>
+
+    <p>The format of the group file is exceedingly simple. A group
+    name appears first on a line, followed by a colon, and then a
+    list of the members of the group, separated by spaces. For
+    example:</p>
+<pre>
+authors: rich daniel allan
+</pre>
+
+    <p>Once this file has been created, you can <tt>Require</tt>
+    that someone be in a particular group in order to get the
+    requested resource. This is done with the
+    <tt>AuthGroupFile</tt> directive, as shown in the following
+    example.</p>
+<pre>
+AuthType Basic
+AuthName "Apache Admin Guide Authors"
+AuthUserFile /usr/local/apache/passwd/passwords
+AuthGroupFile /usr/local/apache/passwd/groups
+Require group authors
+</pre>
+
+    <p>The authentication process is now one step more involved.
+    When a request is received, and the requested username and
+    password are supplied, the group file is first checked to see
+    if the supplied username is even in the required group. If it
+    is, then the password file will be checked to see if the
+    username is in there, and if the supplied password matches the
+    password stored in that file. If any of these steps fail,
+    access will be forbidden.</p>
+
+    <h2><a name="basicfaq"></a><br />
+     Frequently asked questions about basic auth</h2>
+
+    <p>The following questions tend to get asked very frequently
+    with regard to basic authentication. It should be understood
+    that basic authentication is very basic, and so is limited to
+    the set of features that has been presented above. Most of the
+    more interesting things that people tend to want, need to be
+    implemented using some alternate authentication scheme.</p>
+
+    <h3><a name="logout"></a><br />
+     How do I log out?</h3>
+
+    <p>Since browsers first started implementing basic
+    authentication, website administrators have wanted to know how
+    to let the user log out. Since the browser caches the username
+    and password with the authentication realm, as described
+    earlier in this tutorial, this is not a function of the server
+    configuration, but is a question of getting the browser to
+    forget the credential information, so that the next time the
+    resource is requested, the username and password must be
+    supplied again. There are numerous situations in which this is
+    desirable, such as when using a browser in a public location,
+    and not wishing to leave the browser logged in, so that the
+    next person can get into your bank account.</p>
+
+    <p>However, although this is perhaps the most frequently asked
+    question about basic authentication, thus far none of the major
+    browser manufacturers have seen this as being a desirable
+    feature to put into their products.</p>
+
+    <p>Consequently, the answer to this question is, you can't.
+    Sorry.</p>
+
+    <h3><a name="passworddialog"></a><br />
+     How can I change what the password box looks like?</h3>
+
+    <p>The dialog that pops up for the user to enter their username
+    and password is ugly. It contains text that you did not
+    indicate that you wanted in there. It looks different in
+    Internet Explorer and Netscape, and contains different text.
+    And it asks for fields that the user might not understand -
+    for example, Netscape asks the user to type in their ``User
+    ID'', and they might not know what that means. Or, you might
+    want to provide additional explanatory text so that the user
+    has a better idea what is going on.</p>
+
+    <p>Unfortunately, these things are features of the browser, and
+    cannot be controlled from the server side. If you want the
+    login to look different, then you will need to implement your
+    own authentication scheme. There is no way to change what this
+    login box looks like if you are using basic authentication.</p>
+
+    <h3><a name="persistpass"></a><br />
+     How to I make it not ask me for my password the next
+    time?</h3>
+
+    <p>Because most browsers store your password information only
+    for the current browser session, when you close your browser it
+    forgets your username and password. So, when you visit the same
+    web site again, you will need to re-enter your username and
+    password.</p>
+
+    <p>There is nothing that can be done about this on the server
+    side.</p>
+
+    <p>However, the most recent versions of the major browsers
+    contain the ability to remember your password forever, so that
+    you never have to log in again. While it is debatable whether
+    this is a good idea, since it effectively overrides the entire
+    point of having security in the first place, it is certainly
+    convenient for the user, and simplifies the user
+    experience.</p>
+
+    <h3><a name="passwordtwice"></a><br />
+     Why does it sometimes ask me for my password twice?</h3>
+
+    <p>When entering a password-protected web site for the first
+    time, you will occasionally notice that you are asked for your
+    password twice. This may happen immediately after you entered
+    the password the first time, or it may happen when you click on
+    the first link after authenticating the first time.</p>
+
+    <p>This happens for a very simple, but nonetheless confusing,
+    reason, again having to do with the way that the browser caches
+    the login information.</p>
+
+    <p>Login information is stored on the browser based on the
+    authentication realm, specified by the <tt>AuthName</tt>
+    directive, and by the server name. In this way, the browser can
+    distinguish between the <tt>Private</tt> authentication realm
+    on one site and on another. So, if you go to a site using one
+    name for the server, and internal links on the server refer to
+    that server by a different name, the browser has no way to know
+    that they are in fact the same server.</p>
+
+    <p>For example, if you were to visit the URL
+    <tt>http://example.com/private/</tt>, which required
+    authentication, your browser would remember the supplied
+    username and password, associated with the hostname
+    <tt>example.com</tt>. If, by virtue of an internal redirect, or
+    fully-qualified HTML links in pages, you are then sent to the
+    URL <tt>http://www.example.com/private/</tt>, even though this
+    is really exactly the same URL, the browser does not know this
+    for sure, and is forced to request the authentication
+    information again, since <tt>example.com</tt> and
+    <tt>www.example.com</tt> are not exactly the same hostname.
+    Your browser has no particular way to know that these are the
+    same web site.</p>
+
+    <h2><a name="basiccaveat"></a><br />
+     Security caveat</h2>
+
+    <p>Basic authentication should not be considered secure for any
+    particularly rigorous definition of secure.</p>
+
+    <p>Although the password is stored on the server in encrypted
+    format, it is passed from the client to the server in plain
+    text across the network. Anyone listening with any variety of
+    packet sniffer will be able to read the username and password
+    in the clear as it goes across.</p>
+
+    <p>Not only that, but remember that the username and password
+    are passed with every request, not just when the user first
+    types them in. So the packet sniffer need not be listening at a
+    particularly strategic time, but just for long enough to see
+    any single request come across the wire.</p>
+
+    <p>And, in addition to that, the content itself is also going
+    across the network in the clear, and so if the web site
+    contains sensitive information, the same packet sniffer would
+    have access to that information as it went past, even if the
+    username and password were not used to gain direct access to
+    the web site.</p>
+
+    <p>Don't use basic authentication for anything that requires
+    real security. It is a detriment for most users, since very few
+    people will take the trouble, or have the necessary software
+    and/or equipment, to find out passwords. However, if someone
+    had a desire to get in, it would take very little for them to
+    do so.</p>
+
+    <p>Basic authentication across an SSL connection, however, will be
+    secure, since everything is going to be encrypted, including the
+    username and password.</p>
+
+    <h1><a name="digest"></a>Digest authentication</h1>
+
+    <p>Addressing one of the security caveats of basic
+    authentication, digest authentication provides an alternate
+    method for protecting your web content. However, it to has a
+    few caveats.</p>
+
+    <h2><a name="digestworks">How digest auth works</a></h2>
+
+    <p>Digest authentication is implemented by the module
+    <tt>mod_auth_digest</tt>. There is an older module,
+    <tt>mod_digest</tt>, which implemented an older version of the
+    digest authentication specification, but which will probably
+    not work with newer browsers.</p>
+
+    <p>Using digest authentication, your password is never sent
+    across the network in the clear, but is always transmitted as
+    an MD5 digest of the user's password. In this way, the password
+    cannot be determined by sniffing network traffic.</p>
+
+    <p>The full specification of digest authentication can be seen
+    in the internet standards document RFC 2617, which you can see
+    at <tt>http://www1.ics.uci.edu/pub/ietf/http/rfc2617.txt</tt>.
+    Additional information and resources about MD5 can be found at
+    <tt>http://userpages.umbc.edu/&nbsp;mabzug1/cs/md5/md5.html</tt></p>
+
+    <h2><a name="digestconfig"></a>Configuration:
+    Protecting content with digest authentication</h2>
+
+    <p>The steps for configuring your server for digest
+    authentication are very similar for those for basic
+    authentication.</p>
+
+    <ol>
+      <li>Create the password file</li>
+
+      <li>Set the configuration to use this password file</li>
+
+      <li>Optionally, create a group file</li>
+    </ol>
+
+    <h3><a name="htdigest"></a>Creating a password file</h3>
+
+    <p>As with basic authentication, a simple utility is provided
+    to create and maintain the password file which will be used to
+    determine whether a particular user's name and password are
+    valid. This utility is called <tt>htdigest</tt>, and will be
+    located in the <tt>bin</tt> directory of wherever you installed
+    Apache. If you installed Apache from some variety of package
+    manager, <tt>htdigest</tt> is likely to have been placed
+    somewhere in your path.</p>
+
+    <p>To create a new digest password file, type:</p>
+<pre>
+htdigest -c /usr/local/apache/passwd/digest realm username
+</pre>
+
+    <p><tt>htdigest</tt> will ask you for the desired password, and
+    then ask you to type it again to confirm it.</p>
+
+    <p>Note that the realm for which the authentication will be
+    required is part of the argument list.</p>
+
+    <p>Once again, as with basic authentication, you are encouraged
+    to place the generated file somewhere outside of the document
+    directory.</p>
+
+    <p>And, as with the <tt>htpasswd</tt> utility, the <tt>-c</tt>
+    flag creates a new file, or, if a file of that name already
+    exists, deletes the contents of that file and generates a new
+    file in its place. Omit the <tt>-c</tt> flag in order to add
+    new user information to an existing password file.</p>
+
+    <h3><a name="htdigestconfig"></a>Set the configuration
+    to use this password file</h3>
+
+    <p>Once you have created a password file, you need to tell
+    Apache about it in order to start using it as a source of
+    authenticated user information. This configuration is done with
+    the following directives:</p>
+
+    <table cellpadding="3">
+      <tr>
+        <td align="left">AuthType</td>
+
+        <td align="left" valign="top" width="360">Authentication
+        type being used. In this case, it will be set to
+        <tt>Digest</tt></td>
+      </tr>
+
+      <tr>
+        <td align="left">AuthName</td>
+
+        <td align="left" valign="top" width="360">The
+        authentication realm or name</td>
+      </tr>
+
+      <tr>
+        <td align="left">AuthDigestFile</td>
+
+        <td align="left" valign="top" width="360">The location of
+        the password file</td>
+      </tr>
+
+      <tr>
+        <td align="left">AuthDigestGroupFile</td>
+
+        <td align="left" valign="top" width="360">Location of the
+        group file, if any</td>
+      </tr>
+
+      <tr>
+        <td align="left">Require</td>
+
+        <td align="left" valign="top" width="360">The
+        requirement(s) which must be satisfied in order to grant
+        admission</td>
+      </tr>
+    </table>
+
+    <p>These directives may be placed in a <tt>.htaccess</tt> file
+    in the particular directory being protected, or may go in the
+    main server configuration file, in a <tt>&lt;Directory&gt;</tt>
+    section, or another scope container.</p>
+
+    <p>The following example defines an authentication realm called
+    "Private". The password file located at
+    <tt>/usr/local/apache/passwd/digest</tt> will be used to verify
+    the user's identity. Only users named <tt>drbacchus</tt> or
+    <tt>dorfl</tt> will be granted access, if they provide a
+    password that patches the password stored in the password
+    file.</p>
+<pre>
+AuthType Digest
+AuthName "Private"
+AuthDigestFile /usr/local/apache/passwd/digest
+Require user drbacchus dorfl
+</pre>
+
+    <p>The phrase "Private" will be displayed in the password
+    pop-up box, where the user will have to type their
+    credentials.</p>
+
+    <h3><a name="digestgroup"></a>Optionally, create a group file</h3>
+
+    <p>As you have observed, there are not many differences between
+    this configuration process and that required by basic
+    authentication, described in the previous section. This is true
+    also of group functionality. The group file used for digest
+    authentication is exactly the same as that used for basic
+    authentication. That is to say, lines in the group file consist
+    the name of the group, a colon, and a list of the members of
+    that group. For example:</p>
+<pre>
+admins: jim roy ed anne
+</pre>
+
+    <p>Once this file has been created, you can <tt>Require</tt>
+    that someone be in a particular group in order to get the
+    requested resource. This is done with the
+    <tt>AuthDigestGroupFile</tt> directive, as shown in the
+    following example.</p>
+<pre>
+AuthType Digest
+AuthName "Private"
+AuthDigestFile /usr/local/apache/passwd/digest
+AuthDigestGroupFile /usr/local/apache/passwd/digest.groups
+Require group admins
+</pre>
+
+    <p>The authentication process is the same as that used by basic
+    authentication. It is first verified that the user is in the
+    required group, and, if this is true, then the password is
+    verified.</p>
+
+    <h2><a name="digestcaveat">Caveats</a></h2>
+
+    <p>Before you leap into using digest authentication instead of
+    basic authentication, there are a few things that you should
+    know about.</p>
+
+    <p>Most importantly, you need to know that, although digest
+    authentication has this great advantage that you don't send
+    your password across the network in the clear, it is not
+    supported by all major browsers in use today, and so you should
+    not use it on a web site on which you cannot control the
+    browsers that people will be using, such as on your intranet
+    site. In particular, Opera 4.0 or later, Microsoft Internet
+    Explorer 5.0 or later, Mozilla 1.0.1 and Netscape 7 or later
+    as well as Amaya support digest authentication, while various
+    other browsers do not.</p>
+
+    <p>Next, with regard to security considerations, you should
+    understand two things. Although your password is not passed in
+    the clear, all of your data is, and so this is a rather small
+    measure of security. And, although your password is not really
+    sent at all, but a digest form of it, someone very familiar
+    with the workings of HTTP could use that information - just
+    your digested password - and use that to gain access to the
+    content, since that digested password is really all the
+    information required to access the web site.</p>
+
+    <p>The moral of this is that if you have content that really
+    needs to be kept secure, use SSL.</p>
+
+    <h1><a name="database">Database authentication
+    modules</a></h1>
+
+    <p>Basic authentication and digest authentication both suffer
+    from the same major flaw. They use text files to store the
+    authentication information. The problem with this is that
+    looking something up in a text file is very slow. It's rather
+    like trying to find something in a book that has no index. You
+    have to start at the beginning, and work through it one page at
+    a time until you find what you are looking for. Now imagine
+    that the next time you need to find the same thing, you don't
+    remember where it was before, so you have to start at the
+    beginning again, and work through one page at a time until you
+    find it again. And the next time. And the time after that.</p>
+
+    <p>Since HTTP is stateless, authentication has to be verified
+    every time that content is requested. And so every time a
+    document is accessed which is secured with basic or digest
+    authentication, Apache has to open up those text password files
+    and look through them one line at a time, until it finds the
+    user that is trying to log in, and verifies their password. In
+    the worst case, if the username supplied is not in there at
+    all, every line in the file will need to be checked. On
+    average, half of the file will need to be read before the user
+    is found. This is very slow.</p>
+
+    <p>While this is not a big problem for small sets of users,
+    when you get into larger numbers of users (where "larger" means
+    a few hundred) this becomes prohibitively slow. In many cases,
+    in fact, valid username/password combinations will get rejected
+    because the authentication module just had to spend so much
+    time looking for the username in the file that Apache will just
+    get tired of waiting and return a failed authentication.</p>
+
+    <p>In these cases, you need an alternative, and that
+    alternative is to use some variety of database. Databases are
+    optimized for looking for a particular piece of information in
+    a very large data set. It builds indexes in order to rapidly
+    locate a particular record, and they have query languages for
+    swiftly locating records that match particular criteria.</p>
+
+    <p>There are numerous modules available for Apache to
+    authenticate using a variety of different databases. In this
+    section, we'll just look at two modules which ship with Apache.
+    </p>
+
+    <h2><a name="modauthdb"></a>mod_auth_db and mod_auth_dbm</h2>
+
+    <p><tt>mod_auth_db</tt> and <tt>mod_auth_dbm</tt> are modules
+    which lets you keep your usernames and passwords in DB or DBM
+    files. There are few practical differences between DB files and
+    DBM files. And, on some operating systems, such as various
+    BSDs, and Linux, they are exactly the same thing. You should
+    pick whichever of the two modules makes the most sense on your
+    particular platform of choice. If you do not have DB support on
+    your platform, you may need to install it. You download an
+    implementation of DB at <tt>http://www.sleepycat.com/</tt>.
+
+    <h2><a name="dbfiles"></a>Berkeley DB files</h2>
+
+    <p>DB files, also known as Berkeley database files, are the
+    simplest form of database, and are rather ideally suited for
+    the sort of data that needs to be stored for HTTP
+    authentication. DB files store key/value pairs. That is, the
+    name of a variable, and the value of that variable. While other
+    databases allow the storage of many fields in a given record, a
+    DB file allows only this pairing of key and value.<a
+    name="foot1_return" href="#foot1"><sup>1</sup></a> This is ideal for
+    authentication, which requires only the pair of a username and
+    password.</p>
+
+    <h2><a name="installauthdb">Installing mod_auth_db</a></h2>
+
+    <p>For the purposes of this tutorial, we'll talk about
+    installing and configuring <tt>mod_auth_db</tt>. However,
+    everything that is said here can be directly applied to
+    <tt>mod_auth_dbm</tt> by simply replacing 'db' with 'dbm' and
+    'DB' with 'DBM' in the various commands, file names, and
+    directives.</p>
+
+    <p>Since <tt>mod_auth_db</tt> is not compiled in by default,
+    you will need to rebuild Apache in order to get the
+    functionality, unless you built in everything when we started.
+    Note that if you installed Apache with shared object
+    support, you may be able to just build the module and load it
+    in to Apache.</p>
+
+    <p>To build Apache from scratch with <tt>mod_auth_db</tt> built
+    in, use the following <tt>./configure</tt> line in your apache
+    source code directory.</p>
+<pre>
+./configure --enable-module=auth_db
+</pre>
+
+    <p>Or, if you had a more complex <tt>configure</tt> command
+    line, you can just add the <tt>-enable-module=auth_db</tt>
+    option to that command line, and you'll get
+    <tt>mod_auth_db</tt> built into your server.</p>
+
+    <h2><a name="authdbconfig">Protecting a directory with
+    mod_auth_db</a></h2>
+
+    <p>Once you have compiled the <tt>mod_auth_db</tt> module, and
+    loaded it into your web server, you'll find that there's very
+    little difference between using regular authentication and
+    using <tt>mod_auth_db</tt> authentication. The procedure is the
+    same as that we went through with basic and digest
+    authentication:</p>
+
+    <ol>
+      <li>Create the user file.</li>
+
+      <li>Configure Apache to use that file for
+      authentication.</li>
+
+      <li>Optionally, create a group file.</li>
+    </ol>
+
+    <h3><a name="dbmmanage"></a>Create the user file</h3>
+
+    <p>The user file for authentication is, this time, not a flat
+    text file, but is a DB file<a name="foot2_return"
+    href="#foot2"><sup>2</sup></a>. Fortunately, once again,
+    Apache provides us with a simple utility for the purpose of
+    managing this user file. This time, the utility is called
+    <tt>dbmmanage</tt>, and will be located in the <tt>bin</tt>
+    subdirectory of wherever you installed Apache.</p>
+
+    <p><tt>dbmmanage</tt> is somewhat more complicated to use than
+    <tt>htpasswd</tt> or <tt>htdigest</tt>, but it is still fairly
+    simple. The syntax which you will usually be using is as
+    follows:</p>
+<pre>
+dbmmanage passwords.dat adduser montressor
+</pre>
+
+    <p>As with <tt>htpasswd</tt>, you will at this point be
+    prompted for a password, and then asked to confirm that
+    password by typing it again. The main difference here is that
+    rather than a text file being created, you are creating a
+    binary file containing the information that you have
+    supplied.</p>
+
+    <p>Type <tt>dbmmanage</tt> with no arguments to get the full
+    list of options available with this utility.</p>
+
+    <h3><a name="perl_dbfile">Creating your user file with
+    Perl</a></h3>
+
+    <p>Note that, if you are so inclined, you can manage your user
+    file with Perl, or any other language which has a DB-file
+    module, for interfacing with this type of database. This covers
+    a number of popular programming languages.</p>
+
+    <p>The following Perl code, for example, will add a user
+    'rbowen', with password 'mypassword', to your password
+    file:</p>
+<pre>
+use DB_File;
+tie %database, 'DB_File', "passwords.dat"
+    or die "Can't initialize database: $!\n";
+
+$username = 'rbowen';
+$password = 'mypassword';
+@chars=(0..9,'a'..'z');
+$salt = $chars[int rand @chars] . $chars[int rand @chars];
+
+$crypt = crypt($password, $salt);
+$database{$username} = $crypt;
+
+untie %database;
+</pre>
+
+    <p>As you can imagine, this makes it very simple to write tools
+    to manage the user and password information stored in these
+    files.</p>
+
+    <p>Passwords are stored in Unix <tt>crypt</tt> format, just as
+    they were in the "regular" password files. The 'salt' that is
+    created in the middle there is part of the process, generating
+    a random starting point for that encryption. The technique
+    being used is called a 'tied hash'. The idea is to tie a
+    built-in data structure to the contents of the file, such that
+    when the data structure is changed, the file is automatically
+    modified at the same time.</p>
+
+    <h3><a name="authdbuserfile"></a>Configuring Apache
+    to use this password file</h3>
+
+    <p>Once you have created the password file, you need to tell
+    Apache about it, and tell Apache to use this file to verify
+    user credentials. This configuration will look almost the same
+    as that for basic authentication. This configuration can go in
+    a <tt>.htaccess</tt> file in the directory to be protected, or
+    can go in the main server configuration, in a
+    <tt>&lt;Directory&gt;</tt> section, or other scope container
+    directive.</p>
+
+    <p>The configuration will look something like the
+    following:</p>
+<pre>
+AuthName "Members Only"
+AuthType Basic
+AuthDBUserFile /usr/local/apache/passwd/passwords.dat
+require user rbowen
+</pre>
+
+    <p>Now, users accessing the directory will be required to
+    authenticate against the list of valid users who are in
+    <tt>/usr/local/apache/passwd/passwords.dat</tt>.</p>
+
+    <h3><a name="authdbgroupfile"></a><br />
+     Optionally, create a group file</h3>
+
+    <p>As mentioned earlier, DB files store a key/value pair. In
+    the case of group files, the key is the name of the user, and
+    the value is a comma-separated list of the groups to which the
+    user belongs.</p>
+
+    <p>While this is the opposite of the way that group files are
+    stored elsewhere, note that we will primarily be looking up
+    records based on the username, so it is more efficient to index
+    the file by username, rather than by the group name.</p>
+
+    <p>Groups can be added to your group file using
+    <tt>dbmmanage</tt> and the <tt>add</tt> command:</p>
+<pre>
+dbmmanage add groupfile rbowen one,two,three
+</pre>
+
+    <p>In the above example, <tt>groupfile</tt> is the literal name
+    of the group file, <tt>rbowen</tt> is the user being added, and
+    <tt>one</tt>, <tt>two</tt>, and <tt>three</tt> are names of
+    three groups to which this user belongs.</p>
+
+    <p>Once you have your groups in the file, you can require a
+    group in the regular way:</p>
+<pre>
+AuthName "Members Only"
+AuthType Basic
+AuthDBUserFile /usr/local/apache/passwd/passwords.dat
+AuthDBGroupFile /usr/local/apache/passwd/groups.dat
+require group three
+</pre>
+
+    <p>Note that if you want to use the same file for both password
+    and group information, you can do so, but this is a little more
+    complicated to manage, as you have to encrypt the password
+    yourself before you feed it to the <tt>dbmmanage</tt>
+    utility.</p>
+
+    <h1><a name="access"></a>Access control</h1>
+
+    <p>Authentication by username and password is only part of the
+    story. Frequently you want to let people in based on something
+    other than who they are. Something such as where they are
+    coming from. Restricting access based on something other than
+    the identity of the user is generally referred to as <i>Access
+    Control</i>.</p>
+
+    <h2><a name="allowdeny"></a>Allow and Deny</h2>
+
+    <p>The <tt>Allow</tt> and <tt>Deny</tt> directives let you
+    allow and deny access based on the host name, or host address,
+    of the machine requesting a document. The directive goes
+    hand-in-hand with these is the <tt>Order</tt> directive, which
+    tells Apache in which order to apply the filters.</p>
+
+    <p>The usage of these directives is:</p>
+<pre>
+allow from address
+</pre>
+
+    <p>where <i>address</i> is an IP address (or a partial IP
+    address) or a fully qualified domain name (or a partial domain
+    name); you may provide multiple addresses or domain names, if
+    desired.</p>
+
+    <p>For example, if you have someone spamming your message
+    board, and you want to keep them out, you could do the
+    following:</p>
+<pre>
+deny from 11.22.33.44
+</pre>
+
+    <p>Visitors coming from that address will not be able to see
+    the content behind this directive. If, instead, you have a
+    machine name, rather than an IP address, you can use that.
+    </p>
+<pre>
+deny from hostname.example.com
+</pre>
+
+    <p>And, if you'd like to block access from an entire domain,
+    or even from an entire tld (top level domain, such as .com or .gov)
+    you can specify just part of an address or domain name:</p>
+<pre>
+deny from 192.101.205
+deny from exampleone.com exampletwo.com
+deny from tld
+</pre>
+
+    <p>Using <tt>Order</tt> will let you be sure that you are
+    actually restricting things to the group that you want to let
+    in, by combining a <tt>deny</tt> and an <tt>allow</tt>
+    directive:</p>
+<pre>
+Order Deny,Allow
+Deny from all
+Allow from hostname.example.com
+</pre>
+
+    <p>Listing just the <tt>allow</tt> directive would not do what
+    you want, because it will let users from that host in, in
+    addition to letting everyone in. What you want is to let in
+    <i>only</i> users from that host.</p>
+
+    <h2><a name="satisfy"></a>Satisfy</h2>
+
+    <p>The <tt>Satisfy</tt> directive can be used to specify that
+    several criteria may be considered when trying to decide if a
+    particular user will be granted admission. <tt>Satisfy</tt> can
+    take as an argument one of two options - <tt>all</tt> or
+    <tt>any</tt>. By default, it is assumed that the value is
+    <tt>all</tt>. This means that if several criteria are
+    specified, then all of them must be met in order for someone to
+    get in. However, if set to <tt>any</tt>, then several criteria
+    may be specified, but if the user satisfies any of these, then
+    they will be granted entrance.</p>
+
+    <p>A very good example of this is using access control to
+    assure that, although a resource is password protected from
+    outside your network, all hosts inside the network will be
+    given free access to the resource. This would be accomplished
+    by using the <tt>Satisfy</tt> directive, as shown below.</p>
+<pre>
+&lt;Directory /usr/local/apache/htdocs/sekrit&gt;
+  AuthType Basic
+  AuthName intranet
+  AuthUserFile /www/passwd/users
+  AuthGroupFile /www/passwd/groups
+  Require group customers
+  Order allow,deny
+  Allow from internal.com
+  Satisfy any
+&lt;/Directory&gt;
+</pre>
+
+    <p>In this scenario, users will be let in if they either have a
+    password, or if they are in the internal network.</p>
+
+    <h1><a name="summary">Summary</a></h1>
+
+    <p>The various authentication modules provide a number of ways
+    to restrict access to your host based on the identity of the
+    user. They offer a somewhat standard interface to this
+    functionality, but provide different back-end mechanisms for
+    actually authenticating the user.</p>
+
+    <p>And the access control mechanism allows you to restrict
+    access based on criteria unrelated to the identity of the
+    user.<br />
+    </p>
+    <hr />
+
+    <h4>Footnotes</h4>
+
+    <dl>
+      <dt><a name="foot1">... value.</a><a
+      href="#foot1_return"><sup>1</sup></a></dt>
+
+      <dd>There are actually a number of implementations that get
+      around this limitation. MLDBM is one of them, for example.
+      However, for the purposes of this discussion, we'll just deal
+      with standard Berkeley DB, which is likely to have shipped
+      with whatever operating system you are already running.</dd>
+
+      <dt><a name="foot2">... file</a><a
+      href="#foot2_return"><sup>2</sup></a></dt>
+
+      <dd>Or, if you are using mod_auth_dbm, a DBM file.</dd>
+    </dl>
+    <hr />
+
+  </body>
+</html>

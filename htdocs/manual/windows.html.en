@@ -1,0 +1,625 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Using Apache with Microsoft Windows</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER"><a id="help" name="help">Using Apache With
+    Microsoft Windows</a></h1>
+
+    <p>This document explains how to install, configure and run
+    Apache 1.3 under Microsoft Windows. Most of this document
+    assumes that you are installing Windows from a binary
+    distribution. If you want to compile Apache yourself (possibly
+    to help with development, or to track down bugs), see <a
+    href="win_compiling.html">Compiling Apache for Microsoft
+    Windows</a>.</p>
+
+    <p>If you find any bugs, please document them on our <a
+    href="http://httpd.apache.org/bug_report.html">bug reporting
+    page.</a> Contributions are welcomed, please submit your code
+    or suggestions to the bug report page, or join the new-httpd
+    mailing list.</p>
+
+    <p>The bug reporting page and new-httpd mailing list are
+    <em>not</em> provided to answer questions about configuration
+    or running Apache. Before you submit a bug report or request,
+    first consult this document, the <a
+    href="misc/FAQ.html">Frequently Asked Questions</a> page and
+    the other relevant documentation topics. If you still have a
+    question or problem, post it to the <a
+    href="news:comp.infosystems.www.servers.ms-windows">comp.infosystems.www.servers.ms-windows</a>
+    newsgroup, where many Apache users and several contributions
+    are more than willing to answer new and obscure questions about
+    using Apache on Windows.</p>
+
+    <p><a
+    href="http://groups.google.com/groups?hl=en&amp;lr=&amp;safe=off&amp;group=comp.infosystems.www.servers.ms-windows">
+    groups.google.com's newsgroup archive</a> offers easy browsing
+    of previous questions. Searching the newsgroup archives, you
+    will usually find your question was already asked and answered
+    by other users!</p>
+
+    <p><strong>Warning: Apache on NT has not yet been optimized for
+    performance.</strong> Apache still performs best, and is most
+    reliable on Unix platforms. Over time NT performance has
+    improved, and great progress is being made in the upcoming
+    version 2.0 of Apache for the Windows platforms. Folks doing
+    comparative reviews of webserver performance are still asked to
+    compare against Apache on a Unix platform such as Solaris,
+    FreeBSD, or Linux.</p>
+    <hr />
+
+    <ul>
+      <li><a href="#req">Requirements</a></li>
+
+      <li><a href="#down">Downloading Apache for Windows</a></li>
+
+      <li><a href="#inst">Installing Apache for Windows (binary
+      install)</a></li>
+
+      <li><a href="#run">Running Apache for Windows</a></li>
+
+      <li><a href="#test">Testing Apache for Windows</a></li>
+
+      <li><a href="#use">Configuring Apache for Windows</a></li>
+
+      <li><a href="#cmdline">Running Apache in a Console
+      Window</a></li>
+
+      <li><a href="#signal">Controlling Apache in a Console
+      Window</a></li>
+
+      <li><a href="win_service.html">Running Apache for Windows as
+      a Service</a></li>
+
+      <li><a href="win_service.html#signal">Controlling Apache as a
+      Service</a></li>
+
+      <li><a href="win_compiling.html">Compiling Apache for
+      Microsoft Windows</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="req" name="req">Requirements</a></h2>
+
+    <p>Apache 1.3 is designed to run on Windows NT 4.0 and Windows
+    2000. The binary installer will only work with the x86 family
+    of processors, such as Intel's. Apache may also run on Windows
+    95 and 98, but these have not been tested. In all cases TCP/IP
+    networking must be installed.</p>
+
+    <p>If running on NT 4.0, installing Service Pack 3 or 6 is
+    recommended, as Service Pack 4 created known issues with
+    TCP/IP and WinSock integrity that were resolved in Service
+    Pack 5 and later.</p>
+
+    <p><strong>Note: "Winsock2" is required for Apache 1.3.7 and
+    later.</strong></p>
+
+    <p>If running on Windows 95, the "Winsock2" upgrade must be
+    installed before Apache will run. "Winsock2" for Windows 95 is
+    available <a
+    href="http://www.microsoft.com/windows95/downloads/contents/WUAdminTools/S_WUNetworkingTools/W95Sockets2/Default.asp">
+    here</a> or via <a
+    href="http://www.microsoft.com/windows95/downloads/">here</a>.
+    Be warned that the Dialup Networking 1.2 (MS DUN) updates
+    include a Winsock2 that is entirely insufficient, and the
+    Winsock2 update must be reinstalled after installing Windows 95
+    dialup networking.  Windows 98, NT (Service Pack 3 or later) and
+    2000 users need to take no special action, those versions provide
+    Winsock2 as distributed.</p>
+
+    <h2><a id="down" name="down">Downloading Apache for
+    Windows</a></h2>
+
+    <p>Information on the latest version of Apache can be found on
+    the Apache web server at <a
+    href="http://httpd.apache.org/">http://httpd.apache.org/</a>.
+    This will list the current release, any more recent alpha or
+    beta-test releases, together with details of mirror web and
+    anonymous FTP sites.</p>
+
+    <p>You should download the binary build of Apache for Windows
+    named as <code>apache_1_3_#-win32-src.msi</code> if you are
+    interested in the source code, or simply
+    <code>apache_1_3_#-win32-no_src.msi</code> if you don't plan to
+    do anything with the source code and appreciate a faster
+    download. Each of these files contains the complete Apache
+    runtime. You must have the Microsoft Installer version 1.10
+    installed on your PC before you can install the Apache runtime
+    distributions. Windows 2000 and Windows ME are both delivered
+    with the Microsoft Installer support, others will need to
+    download it.  For more information, visit the main download
+    page at <a
+    href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>.
+    Instructions on locating the Microsoft Installer,
+    as well as the binary distributions of Apache, are found at 
+    <a href="http://www.apache.org/dyn/closer.cgi/httpd/binaries/win32/"
+      >the win32 download directory on the mirrors.</a></p>
+
+    <p>The source code is available in the <code>-src.msi</code>
+    distribution, or from the
+    <a href="http://www.apache.org/dyn/closer.cgi/httpd/"
+      >distribution directory</a> as a <code>.zip</code> file. If you plan
+    on compiling Apache yourself, there is no need to install
+    either <code>.msi</code> package. The <code>.zip</code> file
+    contains only source code, with MS-DOS line endings (that is
+    cr/lf line endings, instead of the single lf used for Unix
+    files distributed in .tar.gz or .tar.Z archives.)</p>
+
+    <p>While the source is also available as a <samp>.tar.gz</samp>
+    <samp>.tar.Z</samp> archive, these contain unix lf line endings
+    that cause grief for Windows users. To use those archives, you
+    must convert at least the <samp>.mak</samp> and
+    <samp>.dsp</samp> files to have DOS line endings before MSVC
+    can understand them. Please stick with the <samp>.zip</samp>
+    file to spare yourself the headache.</p>
+
+    <p>Note: prior to 1.3.17 Apache was distributed as an
+    InstallShield 2.0 <samp>.exe</samp> file. With an increasing
+    number of users unable to run the InstallShield package [on
+    Windows ME or Windows 2000] the binaries were repackaged into
+    the readily available Microsoft Installer <samp>.msi</samp>
+    format.</p>
+
+    <h2><a id="inst" name="inst">Installing Apache for
+    Windows</a></h2>
+
+    <p>Run the Apache <samp>.msi</samp> file you downloaded above.
+    This will prompt you for:</p>
+
+    <ul>
+      <li>whether or not you want to run Apache for all users
+      (installing Apache as a Service), or if you want it installed
+      to run in a console window when you choose the Start Apache
+      shortcut.</li>
+
+      <li>your Server name, Domain name and administrative email
+      account.</li>
+
+      <li>the directory to install Apache into (the default is
+      <code>C:\Program Files\Apache Group\Apache</code> although
+      you can change this to any other directory you wish)</li>
+
+      <li>the installation type. The "Complete" option installs
+      everything, including the source code if you downloaded the
+      <samp>-src.msi</samp> package. Choose the "Custom" install if
+      you choose not to install the documentation, or the source
+      code from that package.</li>
+    </ul>
+
+    <p>During the installation, Apache will configure the files in
+    the <samp>conf</samp> directory for your chosen installation
+    directory. However if any of the files in this directory
+    already exist they will <strong>not</strong> be overwritten.
+    Instead the new copy of the corresponding file will be left
+    with the extension <samp>.default.conf</samp>. So, for example,
+    if <samp>conf\httpd.conf</samp> already exists it will not be
+    altered, but the version which would have been installed will
+    be left in <samp>conf\httpd.default.conf</samp>. After the
+    installation has finished you should manually check to see what
+    in new in the <samp>.default.conf</samp> file, and if necessary
+    update your existing configuration files.</p>
+
+    <p>Also, if you already have a file called
+    <samp>htdocs\index.html</samp> then it will not be overwritten
+    (no <samp>index.html.default</samp> file will be installed
+    either). This should mean it is safe to install Apache over an
+    existing installation (but you will have to stop the existing
+    server running before doing the installation, then start the
+    new one after the installation is finished).</p>
+
+    <p>After installing Apache, you should edit the configuration
+    files in the <samp>conf</samp> directory as required. These
+    files will be configured during the install ready for Apache to
+    be run from the directory where it was installed, with the
+    documents served from the subdirectory <samp>htdocs</samp>.
+    There are lots of other options which should be set before you
+    start really using Apache. However to get started quickly the
+    files should work as installed.</p>
+
+    <p>If you eventually uninstall Apache, your configuration and log 
+    files will not be removed. You will need to delete the installation
+    directory tree ("C:\Program Files\Apache Group" by default)
+    yourself if you do not care to keep your configuration and
+    other web files. Since the httpd.conf file is your
+    accumulated effort in using Apache, you need to take the effort
+    to remove it. The same happens for all other files you may have
+    created, as well as any log files Apache created.</p>
+
+    <h2><a id="run" name="run">Running Apache for Windows</a></h2>
+
+    <p>There are two ways you can run Apache:</p>
+
+    <ul>
+      <li>As a <a href="win_service.html">"service"</a>. This is
+      the best option if you want Apache to automatically start
+      when your machine boots, and to keep Apache running when you
+      log-off.</li>
+
+      <li>From a <a href="#cmdline">console window</a>. Closing
+      this console window will terminate the Apache server.</li>
+    </ul>
+
+    <p><strong>Complete the steps below before you attempt to start
+    Apache as a Windows "<a
+    href="win_service.html">service</a>"!</strong></p>
+
+    <p>To run Apache from a console window, select the "Start
+    Apache as console app" option from the Start menu (in Apache
+    1.3.4 and earlier, this option was called "Apache Server").
+    This will open a console window and start Apache running inside
+    it. The window will remain active until you stop Apache. To
+    stop Apache running, either press select the "Shutdown Apache
+    console app" icon option from the Start menu (this is not
+    available in Apache 1.3.4 or earlier), or see <a
+    href="#signal">Controlling Apache in a Console Window</a> for
+    commands to control Apache in a console window.</p>
+
+    <p>In Apache 1.3.13 and above it is now quite safe to press
+    Ctrl+C or Ctrl+Break to stop the Apache in the console window.
+    And on Windows NT/2000 with version 1.3.13, Apache will stop if
+    you select 'Close' from the system menu (clicking the icon on
+    the top-left corner of the console window) or click the close
+    (X) button on the top-right corner. The Close menu item and
+    close (X) button also work on Windows 95/98 as of Apache
+    version 1.3.15. But do <em>not</em> try any of these approaches
+    on earlier versions of the Apache server, since Apache would
+    not clean up.</p>
+
+    <h2><a id="test" name="test">Testing Apache for
+    Windows</a></h2>
+
+    <p>If you have trouble starting Apache please use the following
+    steps to isolate the problem. This applies if you started
+    Apache using the "Start Apache as a console app" shortcut from
+    the Start menu and the Apache console window closes immediately
+    (or unexpectedly) or if you have trouble starting Apache as a
+    service.</p>
+
+    <p>Run the "Command Prompt" from the Start Menu - Programs
+    list. Change to the folder to which you installed Apache, type
+    the command apache, and read the error message. Then review the
+    error.log file for configuration mistakes. If you accepted the
+    defaults when you installed Apache, the commands would be:</p>
+<pre>
+  c:
+  cd "\program files\apache group\apache"
+  apache
+  <em>Wait for Apache to exit, or press</em> Ctrl+C
+  more &lt;logs\error.log
+</pre>
+
+    <p>After looking at the error.log you will probably have a good
+    chance of working out what went wrong and be able to fix the
+    problem and try again. If you are unable to work it out then
+    please follow the <a href="#help">guidelines for assistance</a>
+    at the top of this document or in the <a
+    href="misc/FAQ.html#what2do">FAQ</a>. Many users discover that
+    the nature of the httpd.conf file is easier to manage and audit
+    than page after page of configuration dialog boxes.</p>
+
+    <p>After starting Apache running (either in a console window or
+    as a service) it will be listening to port 80 (unless you
+    changed the <samp>Port</samp>, <samp>Listen</samp> or
+    <samp>BindAddress</samp> directives in the configuration
+    files). To connect to the server and access the default page,
+    launch a browser and enter this URL:</p>
+<pre>
+  http://localhost/
+</pre>
+
+    <p>This should respond with a welcome page, and a link to the
+    Apache manual. If nothing happens or you get an error, look in
+    the <samp>error.log</samp> file in the <samp>logs</samp>
+    directory. If your host isn't connected to the net, you may
+    have to use this URL:</p>
+<pre>
+  http://127.0.0.1/
+</pre>
+
+    <p>Once your basic installation is working, you should
+    configure it properly by editing the files in the
+    <samp>conf</samp> directory.</p>
+
+    <p>Because Apache <em>CANNOT</em> share the same port with
+    another TCP/IP application, you may need to stop or uninstall
+    certain services first. These include (but are not limited to)
+    other web servers, and firewall products such as BlackIce. If
+    you can only start Apache with these services disabled,
+    reconfigure either Apache or the other product so that they do
+    not listen on the same TCP/IP ports. You may find the Windows
+    "netstat -an" command useful in finding out what ports are in
+    use.</p>
+
+    <h2><a id="use" name="use">Configuring Apache for
+    Windows</a></h2>
+
+    <p>Apache is configured by files in the <samp>conf</samp>
+    directory. These are the same as files used to configure the
+    Unix version, but there are a few different directives for
+    Apache on Windows. See the <a href="./">Apache
+    documentation</a> for all the available directives.</p>
+
+    <p>Begin configuring the Apache server by reviewing
+    <code>httpd.conf</code> and its directives. Although the files
+    <code>access.conf</code> and <code>srm.conf</code> both exist,
+    these are old files which are no longer used by most
+    administrators, and you will find no directives there.</p>
+
+    <p><code>httpd.conf</code> contains a great deal of
+    documentation itself, followed by the default configuration
+    directives recommended when starting with the Apache server.
+    Begin by reading these comments to understand the configuration
+    file, and make small changes, starting Apache in a console
+    window with each change. If you make a mistake, it will be
+    easier to back up to configuration that last worked. You will
+    have a better idea of which change caused the server to
+    fail.</p>
+
+    <p>The main differences in Apache for Windows are:</p>
+
+    <ul>
+      <li>
+        Because Apache for Windows is multithreaded, it does not
+        use a separate process for each request, as Apache does
+        with Unix. Instead there are usually only two Apache
+        processes running: a parent process, and a child which
+        handles the requests. Within the child each request is
+        handled by a separate thread. So, "process"-management
+        directives are different: 
+
+        <ul>
+          <li><a
+          href="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</a>
+          - Like the Unix directive, this controls how many
+          requests a process will serve before exiting. However,
+          unlike Unix, a process serves all the requests at once,
+          not just one, so if this is set, it is recommended that a
+          very high number is used. The recommended default,
+          <code>MaxRequestsPerChild 0</code>, does not cause the
+          process to ever exit.</li>
+
+          <li><a
+          href="mod/core.html#threadsperchild">ThreadsPerChild</a>
+          - This directive is new, and tells the server how many
+          threads it should use. This is the maximum number of
+          connections the server can handle at once; be sure and
+          set this number high enough for your site if you get a
+          lot of hits. The recommended default is
+          <code>ThreadsPerChild 50</code>.</li>
+        </ul>
+      </li>
+
+      <li>The directives that accept filenames as arguments now
+      must use Windows filenames instead of Unix ones. However,
+      because Apache uses Unix-style names internally, you must use
+      forward slashes, not backslashes. Drive letters can be used;
+      if omitted, the drive with the Apache executable will be
+      assumed.</li>
+
+      <li>
+        Apache for Windows has the ability to load modules at
+        runtime, without recompiling the server. If Apache is
+        compiled normally, it will install a number of optional
+        modules in the <code>modules</code> directory. To activate
+        these, or other modules, the new <a
+        href="mod/mod_so.html#loadmodule">LoadModule</a> directive
+        must be used. For example, to activate the status module, use
+        the following (in addition to the status-activating
+        directives in <code>httpd.conf</code> - see <a
+        href="mod/mod_status.html">the mod_status docs</a> for more
+        details.): 
+<pre>
+    LoadModule status_module modules/mod_status.so
+</pre>
+
+        <p>Information on <a
+        href="mod/mod_so.html#creating">creating loadable
+        modules</a> is also available. Note that some 3rd party
+        modules may be distributed in the old style names,
+        ApacheModuleFoo.dll. Always set the LoadModule command as
+        directed by the 3rd party module's own documentation.</p>
+      </li>
+
+      <li>Apache for Windows version 1.3 series is implemented in
+      synchronous calls. This poses an enormous problem for CGI
+      authors, who won't see unbuffered results sent immediately to
+      the browser. This is not the behavior described for CGI in
+      Apache, but it is a side-effect of the Windows port. Apache
+      2.0 is making progress to implement the expected asynchronous
+      behavior, and we hope to discover that the NT/2000
+      implementation allows CGI's to behave as documented.</li>
+
+      <li>
+        <p>Apache can also load ISAPI Extensions (<em>i.e.</em>,
+        Internet Server Applications), such as those used by
+        Microsoft's IIS, and other Windows servers. <a
+        href="mod/mod_isapi.html">More information is
+        available.</a> Note that Apache <em>CANNOT</em> load ISAPI
+        Filters.</p>
+      </li>
+
+      <li>When running CGI scripts, the method Apache uses to find
+      the interpreter for the script is configurable using the <a
+      href="mod/core.html#scriptinterpretersource">ScriptInterpreterSource</a>
+      directive.</li>
+
+      <li>Since it is often difficult to manage files with names
+      like <code>.htaccess</code> under windows, you may find it
+      useful to change the name of this configuration file using
+      the <a href="mod/core.html#accessfilename">AccessFilename</a>
+      directive.</li>
+    </ul>
+
+    <h2><a id="cmdline" name="cmdline">Running Apache in a Console
+    Window</a></h2>
+
+    <p>The Start menu icons and the NT Service manager can provide
+    a simple interface for administering Apache. But in some cases
+    it is easier to work from the command line.</p>
+
+    <p>When working with Apache it is important to know how it will
+    find the configuration files. You can specify a configuration
+    file on the command line in two ways:</p>
+
+    <ul>
+      <li>-f specifies a path to a particular configuration
+      file:</li>
+    </ul>
+<pre>
+    apache -f "c:\my server\conf\my.conf"
+</pre>
+<pre>
+    apache -f test\test.conf
+</pre>
+
+    <ul>
+      <li>-n specifies the configuration file of an installed
+      Apache service (Apache 1.3.7 and later):</li>
+    </ul>
+<pre>
+    apache -n "service name"
+</pre>
+
+    <p>In these cases, the proper ServerRoot should be set in the
+    configuration file.</p>
+
+    <p>If you don't specify a configuration file name with -f or
+    -n, Apache will use the file name compiled into the server,
+    usually "conf/httpd.conf". Invoking Apache with the -V switch
+    will display this value labeled as SERVER_CONFIG_FILE. Apache
+    will then determine its ServerRoot by trying the following, in
+    this order:</p>
+
+    <ul>
+      <li>A ServerRoot directive via a -C switch.</li>
+
+      <li>The -d switch on the command line.</li>
+
+      <li>The current working directory</li>
+
+      <li>A registry entry, created if you did a binary
+      install.</li>
+
+      <li>The server root compiled into the server.</li>
+    </ul>
+
+    <p>The server root compiled into the server is usually
+    "/apache". invoking apache with the -V switch will display this
+    value labeled as HTTPD_ROOT.</p>
+
+    <p>When invoked from the start menu, Apache is usually passed
+    no arguments, so using the registry entry is the preferred
+    technique for console Apache.</p>
+
+    <p>During a binary installation, a registry key will have been
+    installed, for example:</p>
+<pre>
+  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3.13\ServerRoot
+</pre>
+
+    <p>This key is compiled into the server and can enable you to
+    test new versions without affecting the current version. Of
+    course you must take care not to install the new version on top
+    of the old version in the file system.</p>
+
+    <p>If you did not do a binary install then Apache will in some
+    scenarios complain about the missing registry key. This warning
+    can be ignored if it otherwise was able to find its
+    configuration files.</p>
+
+    <p>The value of this key is the "ServerRoot" directory,
+    containing the <samp>conf</samp> directory. When Apache starts
+    it will read the <samp>httpd.conf</samp> file from this
+    directory. If this file contains a <samp>ServerRoot</samp>
+    directive which is different from the directory obtained from
+    the registry key above, Apache will forget the registry key and
+    use the directory from the configuration file. If you copy the
+    Apache directory or configuration files to a new location it is
+    vital that you update the <samp>ServerRoot</samp> directory in
+    the <samp>httpd.conf</samp> file to the new location.</p>
+
+    <p>To run Apache from the command line as a console
+    application, use the following command:</p>
+<pre>
+    apache 
+</pre>
+
+    <p>Apache will execute, and will remain running until it is
+    stopped by pressing control-C.</p>
+
+    <h2><a id="signal" name="signal">Controlling Apache in a
+    Console Window</a></h2>
+
+    <p>You can tell a running Apache to stop by opening another
+    console window and running:</p>
+<pre>
+    apache -k shutdown
+</pre>
+
+    <p><strong>Note: This option is only available with Apache
+    1.3.3 and later.</strong></p>
+
+    <p>For earlier versions, you must use Control-C in the Apache
+    console window to shut down the server.</p>
+
+    <p>From version 1.3.3 through 1.3.12, this should be used
+    instead of pressing Control-C in a running Apache console
+    window, because it allowed Apache to end any current
+    transactions and cleanup gracefully.</p>
+
+    <p>As of version 1.3.13 pressing Control-C in the running
+    window will cleanup Apache quite gracefully, and you may use -k
+    stop as an alias for -k shutdown. Earlier versions do not
+    understand -k stop.</p>
+
+    <p>You can also tell Apache to restart. This makes it re-read
+    the configuration files. Any transactions in progress are
+    allowed to complete without interruption. To restart Apache,
+    run:</p>
+<pre>
+    apache -k restart
+</pre>
+
+    <p><strong>Note: This option is only available with Apache
+    1.3.3 and later. For earlier versions, you need to use
+    Control-C in the Apache console window to shut down the server,
+    and then restart the server with the Apache
+    command.</strong></p>
+
+    <p>Another <em>very useful</em> feature is the configuration
+    files test option. To test the Apache configuration files,
+    run:</p>
+<pre>
+    apache -t
+</pre>
+
+    <p>This is especially useful following alterations to the
+    configuration files while Apache is still running. You can make
+    the changes, confirm that the syntax is good by issuing the
+    "apache -t" command, then restart Apache with "apache -k
+    restart". Apache will re-read the configuration files, allowing
+    any transactions in progress to complete without interruption.
+    Any new request will then be served using the new
+    configuration.</p>
+
+    <p>Note: for people familiar with the Unix version of Apache,
+    these commands provide a Windows equivalent to <code>kill -TERM
+    <em>pid</em></code> and <code>kill -USR1 <em>pid</em></code>.
+    The command line option used, <code>-k</code>, was chosen as a
+    reminder of the "kill" command used on Unix.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

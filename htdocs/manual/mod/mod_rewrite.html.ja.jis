@@ -1,0 +1,2078 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--%hypertext -->
+<!-- mod_rewrite.html                                 -->
+<!-- Documentation for the mod_rewrite Apache module  -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_rewrite</title>
+  </head>
+  <!-- English revision: 1.65 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <blockquote>
+      <!-- page indentation -->
+      <!--#include virtual="header.html" -->
+      <br />
+
+      <h1 align="center">mod_rewrite モジュール<br />
+       URL 書き換えエンジン</h1>
+
+      <p>このモジュールは、要求された URL
+      をリアルタイムで書き換えるための、
+      ルールベースの書き換えエンジンを提供します。
+      </p>
+
+      <p><a href="module-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="module-dict.html#SourceFile"
+      rel="Help"><strong>ソースファイル:</strong></a>
+      mod_rewrite.c<br />
+       <a href="module-dict.html#ModuleIdentifier"
+      rel="Help"><strong>モジュール識別子:</strong></a>
+      rewrite_module<br />
+       <a href="module-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache 1.2 以降で使用可能</p>
+      <hr noshade="noshade" size="1" />
+      <br />
+
+      <h2>概要</h2>
+
+      <blockquote>
+        <blockquote>
+          <blockquote>
+            <em>`` mod_rewrite のすばらしいところは、
+            Sendmail のような設定性と柔軟性を与えてくれるところだろう。
+            また、mod_rewrite のよくないところは、
+            Sendmail のような設定性と柔軟性を与えてくれるところだろう。''</em>
+
+            <div align="right">
+              -- Brian Behlendorf<br />
+               Apache Group
+            </div>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+
+      <blockquote>
+        <blockquote>
+          <blockquote>
+            <em>`` 膨大な設定例やドキュメントがあるにもかかわらず、
+            mod_rewrite は黒魔術である。かなりイケてるっぽい黒魔術だが、
+            やっぱり黒魔術である。''</em> 
+
+            <div align="right">
+              -- Brian Moore<br />
+               bem@news.cmc.net
+            </div>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+      URL を操作するためのスイス製のアーミーナイフ、mod_rewrite
+      へようこそ!
+
+      <p>このモジュールは、(正規表現パーサに基づく)
+      ルールベースの書き換えエンジンを使い、要求された URL
+      を適宜書き換えます。サポートするルールの数、
+      および各ルールを適用する際のルール条件の数に制限はなく、
+      本当に柔軟でかつ強力な URL 操作メカニズムを提供します。この URL
+      操作に先立ち、次のようにいろいろな評価を行うことができます。
+      例えばサーバ変数、環境変数、HTTP ヘッダ、タイムスタンプ、
+      さらに外部データベースの検索結果までを評価の対象として、
+      各種のフォーマットを使った細粒度の URL マッチングを実現できます。
+      </p>
+
+      <p>このモジュールは、サーバ単位のコンテキスト
+      (<code>httpd.conf</code>) およびディレクトリ単位のコンテキスト
+      (<code>.htaccess</code>) において (PATH-INFO 部分を含む) フル
+      URL に対する操作を行いますが、
+      さらに結果としてクエリー文字列部分を生成することもできます。
+      出力された結果を内部のサブプロセスや外部リクエストのリダイレクション、
+      さらには内部のプロキシ処理ルーチンに渡すこともできます。
+      </p>
+
+      <p>ただ、これらすべての機能や柔軟性が、
+      欠点である複雑さの元にもなっています。なので、このモジュール
+      全体を一日程度で覚えようなどとは思わないほうがいいでしょう。
+      </p>
+
+      <p>このモジュールは 1996 年の 4 月に</p>
+
+      <blockquote>
+        <a href="http://www.engelschall.com/"><code>Ralf S.
+        Engelschall</code></a><br />
+         <a
+        href="mailto:rse@engelschall.com"><code>rse@engelschall.com</code></a><br />
+         <a
+        href="http://www.engelschall.com/"><code>www.engelschall.com</code></a>
+      </blockquote>
+
+      <p>らにより考案されてオリジナルが書かれ、<br />
+      1997 年の 7 月に、The Apache Group
+      に対して独占的に贈呈されました。</p>
+      <hr noshade="noshade" size="1" />
+
+      <h2>目次</h2>
+
+      <p><strong>内部処理</strong></p>
+
+      <ul>
+        <li><a href="#InternalAPI">API フェーズ</a></li>
+
+        <li><a href="#InternalRuleset">ルールセット処理</a></li>
+
+        <li><a href="#InternalBackRefs">正規表現の後方参照が可能</a></li>
+      </ul>
+
+      <p><strong>設定ディレクティブ</strong></p>
+
+      <ul>
+        <li><a href="#RewriteEngine">RewriteEngine</a></li>
+
+        <li><a href="#RewriteOptions">RewriteOptions</a></li>
+
+        <li><a href="#RewriteLog">RewriteLog</a></li>
+
+        <li><a href="#RewriteLogLevel">RewriteLogLevel</a></li>
+
+        <li><a href="#RewriteLock">RewriteLock</a></li>
+
+        <li><a href="#RewriteMap">RewriteMap</a></li>
+
+        <li><a href="#RewriteBase">RewriteBase</a></li>
+
+        <li><a href="#RewriteCond">RewriteCond</a></li>
+
+        <li><a href="#RewriteRule">RewriteRule</a></li>
+      </ul>
+      <strong>その他</strong> 
+
+      <ul>
+        <li><a href="#EnvVar">環境変数</a></li>
+
+        <li><a href="#Solutions">実例</a></li>
+      </ul>
+      <hr noshade="noshade" size="1" />
+
+      <center>
+        <h1><a id="Internal" name="Internal">内部処理</a></h1>
+      </center>
+      <hr noshade="noshade" size="1" />
+
+      <p>このモジュールの内部処理はとても複雑ですが、
+      ありがちなミスを避け、また全機能を活用できるように、
+      平均的ユーザに対しても一度は説明しておく必要があります。
+      </p>
+
+      <h2><a id="InternalAPI" name="InternalAPI">API フェーズ</a></h2>
+
+      <p>まずは、Apache が HTTP リクエストを処理する際に、
+      このモジュールがこのフェーズで行うことを理解しておかなければなりません。
+      Apache API では、これらの各フェーズに対するフックが提供されています。
+      mod_rewrite は以下の二つのフックを使います: HTTP
+      リクエストが読まれた後でかつすべての認証が開始される前に使われる
+      URL-to-filename 変換フック、そして、認証フェーズの後で
+      ディレクトリごとの設定ファイル (<code>.htaccess</code>)
+      が読まれた後、まだ content ハンドラが有効になる前に起動される
+      Fixup フックです。
+      </p>
+
+      <p>そして、あるリクエストが入って来て、Apache がこれに対応するサーバ
+      (若しくはバーチャルサーバ) を決定した後に、書き換えエンジンは、
+      サーバごとの設定を元に、URL-to-filename フェーズですべての
+      mod_rewrite ディレクティブの処理を開始します。
+      その後多少のステップを経て最後のデータディレクトリが見つかった時、
+      ディレクトリごとの mod_rewrite 設定ディレクティブが Fixup
+      フェーズで起動されます。
+      この各々のタイミングの間に特に明らかな違いはないのですが、それでも
+      mod_rewrite はいずれの時にも各 URL を新しい URL
+      またはファイル名に書き換えます。これはこの API
+      がデザインされた時に想定された使い方ではないのですが、Apache 1.x
+      においてはこれが mod_rewrite が動ける唯一の方法でした。
+      この点をよりはっきりさせるために、以下の 2
+      点について覚えておいてください:</p>
+
+      <ol>
+        <li>mod_rewrite は URL を URL へ、URL をファイル名へ、
+        さらにファイル名をファイル名へと書き換えますが、API
+        では現在のところ URL-to-filename フックのみを提供しています。
+        Apache 2.0 ではそれまでにはなかった二つのフックが追加され、
+        処理がより明確になりました。
+        しかしこの点ではユーザにとっての不利益はなく、
+        単に覚えておくべき事実としては: Apache は URL-to-filename
+        フックにおいて API が意図する以上のことを行います。</li>
+
+        <li>mod_rewrite では、信じられないことに、URL
+          がファイル名に変換されてからずっと後に辿り着くところにある、
+          ディレクトリごとのコンテキスト<em>すなわち</em>
+          <code>.htaccess</code> ファイルの中で URL
+          操作を行えるようになっていす。<code>.htaccess</code>
+          ファイルはファイルシステム中にあるために
+          処理の流れはすでにこの段階まで到達しているので、
+          このようになっているのです。つまりこの時点で API
+          フェーズに従えば、どの URL
+          を操作するにも既に遅きに失しているのです。
+          この鶏と卵問題を打開するため、mod_rewrite
+          ではちょっとしたトリックを使っています:
+          ディレクトリごとのコンテキストで URL / ファイル名の操作を行う際、
+          mod_rewrite はまずファイル名を対応する URL に戻し
+          (これは通常不可能ですが、これを可能にするトリックについては
+          <code>RewriteBase</code> を見てください) 、その新しい URL
+          で内部的に新しいサブリクエストを生成しているのです。これで
+          API フェーズ処理が再度起動されます。
+
+          <p>このように、mod_rewrite は複雑なステップを
+          ユーザに対して全般に透過的にしようとがんばっていますが、
+          とりあえず以下のことは覚えておくべきでしょう:
+          サーバごとのコンテキストにおける URL
+          操作は非常に高速でかつ効率が良いのに対し、
+          ディレクトリごとの書き換えは、
+          この鶏と卵の問題のため遅い上に低効率です。しかしこれは、
+          mod_rewrite がごく平均的なユーザに提供できる、
+          (ローカルに制限された) URL 操作のための唯一の方法なのです。
+          </p>
+        </li>
+      </ol>
+
+      <p>これら二つの点を忘れないでください!</p>
+
+      <h2><a id="InternalRuleset"
+      name="InternalRuleset">ルールセット処理</a></h2>
+      これら二つの API フェーズで mod_rewrite が起動されると、
+      mod_rewrite はまず自分自身の設定用構造体
+      (これは起動時のサーバごとのコンテキストか、Apache
+      カーネルがディレクトリ間を探索する途中のディレクトリごとの
+      コンテキストか、のいずれかにより生成される) 
+      より構成されたルールセットを読み込みます。そしてその中に入っている
+      ルールセット (条件を伴う一つ以上のルールの集まり)とともに URL
+      書き換えエンジンが開始されます。URL 書き換えエンジン自体は、
+      双方の設定コンテキストで全く同じように動作します。
+      最終結果の処理が異なるだけです。
+
+      <p>ルールセット中のルールの書き順は重要です。
+      これは、書き換えエンジンはそれらを特別な
+      (かつ、あまり分かりやすいとは言えない) 順序で処理するからです。
+      ルールは以下のように処理されます: 書き換えエンジンはルール
+      (<code>RewriteRule</code>ディレクティブ) を一つずつなめながら
+      ルールセット中をループしますが、あるルールがマッチしたら、
+      それに対応する条件 (<code>RewriteCond</code>ディレクティブ)
+      がある間その中をループします。
+      歴史的な理由によりまず条件が与えられるため、
+      制御フローがちょっとくどくなっています。詳細は図 1
+      をご覧ください。</p>
+
+      <div align="center">
+        <table cellspacing="0" cellpadding="2" border="0">
+          <tr>
+            <td bgcolor="#CCCCCC"><img
+            src="../images/mod_rewrite_fig1.gif" width="428"
+            height="385"
+            alt="[表示するにはグラフィック機能が必要です]" /></td>
+          </tr>
+
+          <tr>
+            <td align="center"><strong>図 1:</strong>
+            書き換えルールセットにおける制御フロー</td>
+          </tr>
+        </table>
+      </div>
+
+      <p>もうお分かりのように、まず URL を各ルールの <em>Pattern</em>
+      に対してマッチングします。マッチしない場合、mod_rewrite
+      はすぐにこのルールの処理を中止して次のルールを見に行きます。
+      <em>Pattern</em> にマッチすると、mod_rewrite
+      はそれに対応する条件を探します。もし何もなければ、単に URL
+      を <em>Substitution</em> 文字列から作られた新しい値に置換し、
+      ルールのループを続けます。何らかの条件があれば内部ループを開始し、
+      それらの条件が列挙されている順に処理を繰り返します。
+      条件文の場合はロジックが異なります: 現在の URL
+      に対してはパターンのマッチングを行いません。その代わり、
+      まず変数を展開し、後方参照を行い、
+      検索テーブルをマッピングする<em>など</em>して<em>テスト文字列</em>
+      を生成し、それに対して<em>条件パターン</em>とのマッチングを行います。
+      パターンにマッチしない場合、条件の組み合わせ全体とそれに対応する
+      ルールは成立しないことになります。パターンにマッチした場合、
+      次の条件が評価され、それが条件のある限り繰り返されます。
+      もしすべての条件にマッチすれば、URL は <em>Substitution</em>
+      文字列に置換され、処理が継続されます。</p>
+
+      <h2><a id="quoting" name="quoting">特殊文字のクウォート</a></h2>
+
+      <p>Apache 1.3.20 では、<em>テスト文字列</em>と <em>Substitution</em>
+      文字列の中の特殊文字は、その直前にバックスラッシュ ('\')
+      を置くことでエスケープ (すなわち、それらの持つ特殊な意味を打ち消して、
+      通常の文字として扱うこと) できるようになっています。
+      例えば、<em>置換対象</em>文字列の中でも '<code>\$</code>'
+      という文字列を使って本来のドル記号を入れることができるわけです。
+      これにより、mod_rewrite
+      がそれを後方参照として扱おうとするのを防ぐことができるわけです。
+      </p>
+
+      <h2><a id="InternalBackRefs"
+      name="InternalBackRefs">正規表現の後方参照を使う</a></h2>
+      ここでひとつ覚えておいて欲しいことがあります: <em>Pattern</em>
+      の中や <em>CondPattern</em> のうちのどこかで括弧を使えば、文字列
+      <code>$N</code> と <code>%N</code>
+      で使える後方参照が内部的に生成されます (後述)。これらは
+      <em>Substitution</em>
+      文字列や<em>テスト文字列</em>を生成するのに使えます。図 2
+      では、この後方参照が転送されて展開される場所について解説します。
+
+      <div align="center">
+        <table cellspacing="0" cellpadding="2" border="0">
+          <tr>
+            <td bgcolor="#CCCCCC"><img
+            src="../images/mod_rewrite_fig2.gif" width="381"
+            height="179"
+            alt="[表示するにはグラフィック機能が必要です]" /></td>
+          </tr>
+
+          <tr>
+            <td align="center"><strong>図 2:</strong> 
+            ルールを通した後方参照の流れ</td>
+          </tr>
+        </table>
+      </div>
+
+      <p>これまでは mod_rewrite
+      の内部処理に関する短期集中コースでした。
+      ここからは使用可能なディレクティブに関することが書かれています。
+      それらを読むときにここまでの知識が役立つはずです。</p>
+      <hr noshade="noshade" size="1" />
+
+      <center>
+        <h1><a id="Configuration"
+        name="Configuration">設定ディレクティブ</a></h1>
+      </center>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteEngine"
+      name="RewriteEngine">RewriteEngine</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteEngine
+      on|off<br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a> <code>RewriteEngine
+      off</code><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+      バーチャルホスト、ディレクトリ、.htaccess<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a> FileInfo<br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache
+      1.2<br />
+
+      <p><code>RewriteEngine</code> ディレクティブを使うと、
+      実行時の書き換えエンジンを有効にしたり無効にしたりできます。これが
+      <code>off</code> に設定されていると、このモジュールは実行時の
+      処理を一切行いません。また <code>SCRIPT_URx</code>
+      環境変数の更新さえもしなくなります。</p>
+
+      <p><code>RewriteRule</code> を全部コメントアウトしたりしないで、
+      このディレクティブを使ってくださいね。</p>
+
+      <p>デフォルトでは、rewrite の設定は継承されないので注意してください。
+      つまり、この機能を使いたいと思うバーチャルホストごとに
+      <code>RewriteEngine on</code>
+      ディレクティブを書かなければいけないということです。</p>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteOptions"
+      name="RewriteOptions">RewriteOptions</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteOptions
+      <em>オプション</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a> <code>RewriteOptions
+      MaxRedirects=10</code><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+      バーチャルホスト、ディレクトリ、.htaccess<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a> FileInfo<br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache
+      1.2。<code>MaxRedirects</code> は Apache 1.3.28 以降で使用可能<br />
+
+      <p><code>RewriteOptions</code> ディレクティブは、
+      現在のサーバ単位もしくはディレクトリ単位の設定で使用する、
+      特別なオプションをセットします。
+      <em>Option</em> 文字列は以下のいずれかです:</p>
+
+      <dl>
+        <dt><code>inherit</code></dt>
+        <dd>これは、現在の設定値を親の設定値から強制的に継承させます。
+        これにより、仮想サーバ単位のコンテキストにおいて、
+        メインサーバのマップ、条件、ルールが継承されることになります。
+        また、ディレクトリ単位のコンテキストでは、親ディレクトリの
+        <code>.htaccess</code>
+        設定に記述されている条件やルールが継承されることになります。</dd>
+
+      <dt><code>MaxRedirects=<var>number</var></code></dt>
+      <dd>ディレクトリ毎の <code>RewriteOptions</code> による内部リダイレクトの
+      無限ループを防ぐために、<code>mod_rewrite</code> はリダイレクトの
+      上限に達するとリクエストを中止し、500 Internal Server Error を応答として
+      返します。一つのリクエストに対して本当に 10 を越えるリダイレクトが必要な
+      場合は、望みの値まで増加させることができます。</dd>
+      </dl>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteLog" name="RewriteLog">RewriteLog</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteLog
+      <em>file-path</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a> <em>なし</em><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+      バーチャルホスト<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a> <em>適用不可</em><br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache
+      1.2<br />
+
+    　<p><code>RewriteLog</code> ディレクティブは、
+      行なわれたすべての書き換え動作を
+      サーバがログに書き込むための
+      ファイル名を設定します。この名前がスラッシュ
+      ('<code>/</code>') で始まらない場合は <em>Server Root</em>
+      からの相対パスであると見なされます。このディレクティブは
+      サーバ単位の設定の中で一度だけ記述されるべきものです。</p>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>注意</strong>:
+          書き換え動作のロギングを抑制するために <em>file-path</em> を
+          <code>/dev/null</code> にするのはお勧めできません。これは、
+          書き換えエンジンは実際にはログファイルへの出力を行わないのに、
+          未だ内部的にはログファイルへの出力を生成しているからです。
+          <strong>これは管理者に何の利点ももたらさずに
+          サーバのパフォーマンスを低下させるだけです!</strong>
+          ロギングを抑止する場合は <code>RewriteLog</code>
+          ディレクティブをコメントアウトするか、
+          <code>RewriteLogLevel 0</code> を使うようにしてください!</td>
+        </tr>
+      </table>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>セキュリティ</strong>:
+          ログファイルを格納するディレクトリが、
+          サーバを起動するユーザ以外にも書き込み可能である場合に、
+          なぜセキュリティが脅かされるかについての詳しい説明は、
+          <a href="../misc/security_tips.html">Apache のセキュリティの
+          こつ</a> ドキュメントをご覧ください。</td>
+        </tr>
+      </table>
+
+      <p><strong>例:</strong></p>
+
+      <blockquote>
+<pre>
+RewriteLog "/usr/local/var/apache/logs/rewrite.log"
+</pre>
+      </blockquote>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteLogLevel"
+      name="RewriteLogLevel">RewriteLogLevel</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteLogLevel
+      <em>Level</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a>
+      <code>RewriteLogLevel 0</code><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+      バーチャルホスト<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a> <em>適用不可</em><br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache
+      1.2<br />
+
+      <p><code>RewriteLogLevel</code> ディレクティブでは、
+      書き換え用のログファイルの冗長レベルを指定します。
+      デフォルトのレベルは
+      0 で、これは一切ログを書かないことを意味します。一方 9
+      もしくはそれ以上を指定すると、
+      事実上ほとんどすべての動作についてログが収集されます。</p>
+
+      <p>書き換えのログを取らないようにするには、単に
+      <em>Level</em> を 0
+      にします。これで書き換えに関するすべてのログが無効となります。
+      </p>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>注意:</strong> <em>Level</em>
+          に大きな値を指定すると、Apache サーバの動作速度が劇的に低下します!
+          書き換え時のログファイルで <em>Level</em> に 2
+          以上の値を指定するのはデバッグ時のみにしておいてください!</td>
+        </tr>
+      </table>
+
+      <p><strong>例:</strong></p>
+
+      <blockquote>
+<pre>
+RewriteLogLevel 3
+</pre>
+      </blockquote>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteLock"
+      name="RewriteLock">RewriteLock</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteLock
+      <em>file-path</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a> <em>なし</em><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a> <em>適用不可</em><br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache
+      1.3<br />
+
+      <p>このディレクティブは、mod_rewrite が <samp>RewriteMap</samp>
+      <em>プログラム</em>と通信するのに必要な、
+      同期用ロックファイルの名前をセットします。RewriteMap で
+      プログラムを使いたい場合には、このロックファイルに(NFS
+      マウントされたデバイスではなく)ローカルパスを設定します。
+      それ以外のタイプの RewriteMap を使う場合には、
+      設定する必要はありません。</p>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteMap" name="RewriteMap">RewriteMap</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteMap
+      <em>MapName</em> <em>MapType</em>:<em>MapSource</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a>デフォルトでは使用されない
+        <br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+      バーチャルホスト<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a> <em>適用不可</em><br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache 1.2
+      (一部のみ), Apache 1.3<br />
+       
+
+      <p><code>RewriteMap</code> ディレクティブは、
+      マッピング関数を使ってルール置換文字列の内部で使える
+      <em>書き換えマップ</em>を定義します。これにより、
+      キーを検索する際に、フィールドを挿入したり置換したりできます。
+      検索対象にはいろいろなタイプが使えます。</p>
+
+      <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a>
+      はマップの名前です。以下の書式のどちらかにより、
+      書き換えルールの置換文字列で使われる
+      マッピング関数を指定するのに使われます。</p>
+
+      <blockquote>
+        <strong><code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>}</code><br />
+         <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em>
+        <code>}</code></strong>
+      </blockquote>
+      このような書式が現れると、<em>MapName</em> という名前のマップの中のキー
+      <em>LookupKey</em> が検索されます。
+      キーが見つかれば、このマップ関数の書式の部分は <em>SubstValue</em>
+      により置換されます。キーが見つからない場合、
+      <em>DefaultValue</em> があればそれで置換され、<em>DefaultValue</em>
+      が指定されていなければ空文字列に置換されます。
+
+      <p>以下のような <em>MapType</em> と <em>MapSource</em>
+      を使った組み合わせを使用できます:</p>
+
+      <ul>
+        <li>
+          <strong>標準のプレーンテキスト</strong><br />
+           MapType: <code>txt</code>, MapSource:
+           Unix ファイルシステムの有効な通常ファイルへのパス
+
+          <p>これは標準の書き換えマップ機能です。
+          <em>MapSource</em> は空白行やコメント行(行頭が
+          '#' 文字で始まる行)、若しくは以下のような
+          ペアが一行毎に書かれているような普通の ASCII
+          ファイルです。</p>
+
+          <blockquote>
+            <strong><em>MatchingKey</em>
+            <em>SubstValue</em></strong>
+          </blockquote>
+
+          <p>例:</p>
+
+          <table border="0" cellspacing="1" cellpadding="5"
+          bgcolor="#F0F0F0">
+            <tr>
+              <td>
+<pre>
+##
+##  map.txt -- rewriting map
+##
+
+Ralf.S.Engelschall    rse   # Bastard Operator From Hell
+Mr.Joe.Average        joe   # Mr. Average
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table border="0" cellspacing="1" cellpadding="5"
+          bgcolor="#F0F0F0">
+            <tr>
+              <td>
+<pre>
+RewriteMap real-to-user txt:/path/to/file/map.txt
+</pre>
+              </td>
+            </tr>
+          </table>
+        </li>
+
+        <li>
+          <strong>ランダムなプレーンテキスト</strong><br />
+           MapType: <code>rnd</code>, MapSource:
+           Unix ファイルシステムの有効な通常ファイルへのパス
+
+          <p>これは前述の標準プレーンテキストとほぼ同じですが、それに加えて
+          専用の後処理機能を持っています: 値を検索した後、その値は ``or''
+          の意味を持つ ``<code>|</code>'' 文字にしたがってパースされます。
+          つまりこれらは変換候補を羅列しており、
+          実際に返される値はこれらの中からランダムに選ばれます。
+          これは一見妙な感じがして意味がなさそうに思えますが、
+          実際に検索した値がサーバ名になるような
+          リバースプロキシを用いた負荷分散用に
+          設計されています。
+          例えば:</p>
+
+          <table border="0" cellspacing="1" cellpadding="5"
+          bgcolor="#F0F0F0">
+            <tr>
+              <td>
+<pre>
+##
+##  map.txt -- rewriting map
+##
+
+static   www1|www2|www3|www4
+dynamic  www5|www6
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table border="0" cellspacing="1" cellpadding="5"
+          bgcolor="#F0F0F0">
+            <tr>
+              <td>
+<pre>
+RewriteMap servers rnd:/path/to/file/map.txt
+</pre>
+              </td>
+            </tr>
+          </table>
+        </li>
+
+        <li>
+          <strong>ハッシュファイル</strong><br />
+           MapType: <code>dbm</code>, MapSource:
+           Unix ファイルシステムの有効な通常ファイルへのパス
+
+          <p>ファイルの内容の意味は<em>プレーンテキスト</em>フォーマット
+          と同じですが、
+          高速な検索を行うために最適化が施された
+          NDBM フォーマットというバイナリファイル
+          をソースとして使うこともできます。このようなファイルは、
+          NDBM ツールを使ったり、以下のような perl
+          スクリプトを使って作ることができます。</p>
+
+          <table border="0" cellspacing="1" cellpadding="5"
+          bgcolor="#F0F0F0">
+            <tr>
+              <td>
+<pre>
+#!/path/to/bin/perl
+##
+##  txt2dbm -- convert txt map to dbm format
+##
+
+use NDBM_File;
+use Fcntl;
+
+($txtmap, $dbmmap) = @ARGV;
+
+open(TXT, "&lt;$txtmap") or die "Couldn't open $txtmap!\n";
+tie (%DB, 'NDBM_File', $dbmmap,O_RDWR|O_TRUNC|O_CREAT, 0644) or die "Couldn't create $dbmmap!\n";
+
+while (&lt;TXT&gt;) {
+  next if (/^\s*#/ or /^\s*$/);
+  $DB{$1} = $2 if (/^\s*(\S+)\s+(\S+)/);
+}
+
+untie %DB;
+close(TXT);
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <table border="0" cellspacing="1" cellpadding="5"
+          bgcolor="#F0F0F0">
+            <tr>
+              <td>
+<pre>
+$ txt2dbm map.txt map.db
+</pre>
+              </td>
+            </tr>
+          </table>
+        </li>
+
+        <li>
+          <strong>内部関数</strong><br />
+           MapType: <code>int</code>, MapSource: 内部 Apache 関数
+
+          <p>ソースとして、内部 Apache 関数を使うこともできます。
+          現時点ではエンドユーザが自分用に独自のものを作ることはできませんが、
+          以下のものが用意されています。</p>
+
+          <ul>
+            <li><strong>toupper</strong>:<br />
+             見つかったキーをすべて大文字に変換する。</li>
+
+            <li><strong>tolower</strong>:<br />
+             見つかったキーをすべて小文字に変換する。</li>
+
+            <li><strong>escape</strong>:<br />
+            見つかったキーの中の特殊文字を 16
+            進エンコーディングに変換する。</li>
+
+            <li><strong>unescape</strong>:<br />
+            見つかったキーの中の 16 進エンコーディングを特殊文字に戻す。</li>
+          </ul>
+        </li>
+
+        <li>
+          <strong>外部の書き換えプログラム</strong><br />
+           MapType: <code>prg</code>, MapSource:
+           Unix ファイルシステムの有効な通常ファイルへのパス
+
+          <p>ソースにはマップファイル以外にプログラムを使うこともできます。
+          プログラムは好きな言語を選択することができますが、
+          作成されたものは実行可能ファイル
+          (<em>すなわち</em>オブジェクトコード、若しくは 1 行目に '
+          <code>#!/path/to/interpreter</code>'
+          のようなマジッククッキートリックの入ったスクリプト)
+          でなければなりません。</p>
+
+          <p>このプログラムは Apache サーバの起動時に一度だけ起動され、
+          <code>stdin</code> および <code>stdout</code>
+          ファイルハンドルを通して、書き換えエンジンとのやりとりを行います。
+          このプログラムは、各々のマップ関数の検索のたびに、
+          検索対象のキーを、改行文字で終端された文字列として
+          <code>stdin</code> から受け取ります。
+          そして、値が見つかれば改行文字で終端された文字列を返し、
+          見つからなければ
+          (<em>すなわち</em>、与えられたキーに対応する値がない)、
+          4 文字の文字列 ``<code>NULL</code>'' を返さなければなりません。
+          1:1 のマップ(<em>すなわち</em>キー == 値)
+          を実現する単純なプログラム例としては、以下のようになります:</p>
+
+          <table border="0" cellspacing="1" cellpadding="5"
+          bgcolor="#F0F0F0">
+            <tr>
+              <td>
+<pre>
+#!/usr/bin/perl
+$| = 1;
+while (&lt;STDIN&gt;) {
+    # ...put here any transformations or lookups...
+    print $_;
+}
+</pre>
+              </td>
+            </tr>
+          </table>
+
+          <p>しかし、十分に気をつけてほしいことがあります:<br />
+          </p>
+
+          <ol>
+            <li>``<em>Keep it simple, stupid
+            (単純なままにしておけ、馬鹿野郎!)」</em>'' (KISS)
+            という原則に従ってください。もしこのプログラムがハングしてしまうと、
+            そのルールが現れた瞬間に Apache
+            サーバ自体がハングしてしまいます。</li>
+
+            <li>ありがちな間違いとしては: <code>stdout</code>
+            に対してバッファされた入出力を使ってはなりません!
+            これをやると無限ループにハマってしまいます!
+            だから上のコードでも ``<code>$|=1</code>''
+            とやってるんです…。</li>
+
+            <li><samp>RewriteLock</samp>
+            ディレクティブを使ってロックファイルを定義し、mod_rewrite
+            が当該プログラムへの通信に同期を取れるようにしてください。
+            デフォルトではそのような同期は行われません。</li>
+          </ol>
+        </li>
+      </ul>
+      <code>RewriteMap</code> ディレクティブは何度でも書くことができます。
+      マッピング関数ごとに <code>RewriteMap</code>
+      を使って書き換え用マップファイルを宣言します。
+      ディレクトリのコンテキスト内部でマップを<strong>宣言する</strong>
+      ことはできませんが、ディレクトリのコンテキストでこのマップを
+      <strong>使う</strong>ことはもちろん可能です。
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>注意:</strong> プレーンテキストと DBM フォーマット
+          のファイルに関しては、マップファイルの <code>mtime</code>
+          が変更されるかまたはサーバが再起動されるまで、
+          検索されたキーはメモリ内にキャッシュされます。
+          ですから、<strong>毎回の</strong>リクエストで使われる
+          マップ関数をルール内に書くことができます。
+          外部検索は一度しか行われないので、これでも大丈夫なのです。</td>
+        </tr>
+      </table>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteBase"
+      name="RewriteBase">RewriteBase</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteBase
+      <em>URL-path</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a> <em>デフォルトは物理
+    ディレクトリのパス</em><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ, .htaccess<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a>
+      <em>FileInfo</em><br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache
+      1.2<br />
+
+      <p><code>RewriteBase</code>
+      ディレクティブは、ディレクトリごとの書き換えにおいてベースとなる
+      URL を明示的に指定するものです。以下で示すように、
+      <code>RewriteRule</code> はディレクトリごとの設定ファイル
+      (<code>.htaccess</code>) で使えます。
+      そこでは、これはローカルに振る舞います。<em>すなわち</em>、
+      この処理段階ではローカルディレクトリの接頭辞が取り除かれ、
+      その残りの部分に対してのみ書き換えルールが適用されます。
+      そして書き換え後、取り除かれた部分が再度自動的にパスに付加されます。
+      </p>
+
+      <p>新しい URL に対する置換が発生すると、このモジュールは当該 URL
+      をサーバ処理に再投入しなければなりません。これを行うには、対応する
+      URL の接頭辞、若しくは URL
+      のベースが何なのかを知る必要があります。
+      デフォルトではこの接頭辞はファイルパスそのものに対応しています。
+      <strong>しかしながら、ほとんどの Web サイトでは URL 
+      は物理的なファイル名のパスを直接指している *わけではない*
+      ので、一般的にこの仮定は間違っていることになります</strong>。
+      そのため、<code>RewriteBase</code> ディレクティブを使って正しい
+      URL の接頭辞を指定してやらなければならないのです。</p>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>注意:</strong> もしあなたの Web サーバの URL
+          が物理的なファイルパスを直接指しているので<strong>なけ</strong>れば、
+          <code>RewriteRule</code>
+          ディレクティブを使おうとしているディレクトリすべてにおいて、各
+          <code>.htaccess</code> ファイルで <code>RewriteBase</code>
+          ディレクティブを使わなければなりません。</td>
+        </tr>
+      </table>
+
+      <p><strong>例:</strong></p>
+
+      <blockquote>
+        以下は、ディレクトリごとの設定ファイルだと思ってください：
+
+        <table border="0" cellspacing="1" cellpadding="5"
+        bgcolor="#F0F0F0">
+          <tr>
+            <td>
+<pre>
+#
+#  /abc/def/.htaccess -- ディレクトリ /abc/def のためのディレクトリ別設定ファイル
+#  参考：/abc/def は パス /xyz の物理パス名である。<em>すなわち</em>サーバには
+#       'Alias /xyz /abc/def' <em>といった</em>ディレクティブの設定がある。
+#
+
+RewriteEngine On
+
+#  物理的なパスの接頭辞である /abc/def でなく、/xyz を通して
+#  アクセスしていることをサーバに知らせる。
+RewriteBase   /xyz
+
+#  これが書き換えルール
+RewriteRule   ^oldstuff\.html$  newstuff.html
+</pre>
+            </td>
+          </tr>
+        </table>
+
+        <p>上記の例では、<code>/xyz/oldstuff.html</code>
+        へのリクエストで物理ファイル <code>/abc/def/newstuff.html</code>
+        への正しい書き換え操作が行われます。</p>
+
+        <table width="70%" border="0" bgcolor="#E0E0F0"
+        cellspacing="0" cellpadding="10">
+          <tr>
+            <td>
+              <font size="-1"><strong>Apache
+              ハッカーのための注釈:</strong><br />
+              以下のリストで示しているのは、
+              内部処理ステップに関する詳細情報です:</font> 
+<pre>
+<font size="-1">リクエスト:
+  /xyz/oldstuff.html
+
+内部処理：
+  /xyz/oldstuff.html     -&gt; /abc/def/oldstuff.html  (per-server Alias)
+  /abc/def/oldstuff.html -&gt; /abc/def/newstuff.html  (per-dir    RewriteRule)
+  /abc/def/newstuff.html -&gt; /xyz/newstuff.html      (per-dir    RewriteBase)
+  /xyz/newstuff.html     -&gt; /abc/def/newstuff.html  (per-server Alias)
+
+処理結果：
+  /abc/def/newstuff.html
+</font>
+</pre>
+              <font size="-1">これは非常に複雑に見えるものの、Apache
+              の内部処理に関する正しい動きです。なぜなら、
+              ディレクトリ単位の書き換え操作は処理の中において
+              来るのが遅すぎるからです。そのため書き換えが行なわれると、
+              (書き換えが行われた)リクエストは Apache
+              カーネルの中に再投入されなければなりません!
+              しかし: これは深刻なオーバーヘッドを伴うように見えるものの、
+              実際には大した事はありません。この再投入は完全に
+              Apache サーバの内部で起こる事であり、Apache
+              の内部におけるその他の多くの動作中にも同様のことが
+              起こっているからです。なので、
+              この設計と実装は正しいものなのです。
+              </font> 
+            </td>
+          </tr>
+        </table>
+      </blockquote>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteCond"
+      name="RewriteCond">RewriteCond</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteCond
+      <em>TestString</em> <em>CondPatter</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a> <em>なし</em><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+      バーチャルホスト、ディレクトリ、.htaccess<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a>
+      <em>FileInfo</em><br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache 1.2
+      (部分的に), Apache 1.3<br />
+       
+
+      <p><code>RewriteCond</code> ディレクティブはルール条件を定義します。
+      <code>RewriteRule</code> ディレクティブの前に一つ以上の
+      <code>RewriteCond</code> ディレクティブを置くことができます。
+      それ以降の書き換えルールは、そのパターンが現在の URI
+      の状態とマッチし、<strong>かつ</strong>これらの追加条件が
+      適用される場合にのみ使われます。</p>
+
+      <p><em>TestString</em>は文字列であり、プレーンテキストに加え、
+      以下の拡張構造を持つことができます:</p>
+
+      <ul>
+        <li>
+          <strong>RewriteRule 後方参照</strong>:
+          この書式で、後方参照を表します。
+
+          <blockquote>
+            <strong><code>$N</code></strong>
+          </blockquote>
+          (0 &lt;= N &lt;= 9) これは、対応する <code>RewriteRule</code>
+          ディレクティブ(現在の<code>RewriteCond</code>
+          ディレクティブのブロックの次にあるもの)の
+          (括弧で囲んで)グループ化されたパターンへのアクセスを提供します。
+        </li>
+
+        <li>
+          <strong>RewriteCond 後方参照</strong>:
+          この書式で、後方参照を表します。
+
+          <blockquote>
+            <strong><code>%N</code></strong>
+          </blockquote>
+          (1 &lt;= N &lt;= 9)
+          これは、現在の条件ブロックの中で<code>RewriteCond</code> ディレクティブ
+          に最後にマッチした
+          (括弧で囲んで)グループ化されたパターンへのアクセスを提供します。
+        </li>
+
+        <li>
+          <strong>RewriteMap 拡張</strong>:
+          この書式で、拡張を表します。
+
+          <blockquote>
+            <strong><code>${mapname:key|default}</code></strong>
+          </blockquote>
+          詳細は <a href="#mapfunc">RewriteMap
+          のドキュメント</a>を参照のこと。
+        </li>
+
+        <li>
+          <strong>サーバ変数</strong>: 以下は変数を表します。
+
+          <blockquote>
+            <strong><code>%{</code> <em>変数名</em>
+            <code>}</code></strong>
+          </blockquote>
+          <em>変数名</em>は以下の一覧にある文字列のいずれかです:
+
+          <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
+            <tr>
+              <td valign="top">
+                <strong>HTTP ヘッダ:</strong> 
+
+                <p><font size="-1">HTTP_USER_AGENT<br />
+                 HTTP_REFERER<br />
+                 HTTP_COOKIE<br />
+                 HTTP_FORWARDED<br />
+                 HTTP_HOST<br />
+                 HTTP_PROXY_CONNECTION<br />
+                 HTTP_ACCEPT<br />
+                </font></p>
+              </td>
+
+              <td valign="top">
+                <strong>コネクション &amp; リクエスト:</strong> 
+
+                <p><font size="-1">REMOTE_ADDR<br />
+                 REMOTE_HOST<br />
+                 REMOTE_USER<br />
+                 REMOTE_IDENT<br />
+                 REQUEST_METHOD<br />
+                 SCRIPT_FILENAME<br />
+                 PATH_INFO<br />
+                 QUERY_STRING<br />
+                 AUTH_TYPE<br />
+                </font></p>
+              </td>
+            </tr>
+
+            <tr>
+              <td valign="top">
+                <strong>サーバ内部変数:</strong> 
+
+                <p><font size="-1">DOCUMENT_ROOT<br />
+                 SERVER_ADMIN<br />
+                 SERVER_NAME<br />
+                 SERVER_ADDR<br />
+                 SERVER_PORT<br />
+                 SERVER_PROTOCOL<br />
+                 SERVER_SOFTWARE<br />
+                </font></p>
+              </td>
+
+              <td valign="top">
+                <strong>システム関連:</strong> 
+
+                <p><font size="-1">TIME_YEAR<br />
+                 TIME_MON<br />
+                 TIME_DAY<br />
+                 TIME_HOUR<br />
+                 TIME_MIN<br />
+                 TIME_SEC<br />
+                 TIME_WDAY<br />
+                 TIME<br />
+                </font></p>
+              </td>
+
+              <td valign="top">
+                <strong>特殊なもの:</strong> 
+
+                <p><font size="-1">API_VERSION<br />
+                 THE_REQUEST<br />
+                 REQUEST_URI<br />
+                 REQUEST_FILENAME<br />
+                 IS_SUBREQ<br />
+                </font></p>
+              </td>
+            </tr>
+          </table>
+
+          <table width="70%" border="0" bgcolor="#E0E0F0"
+          cellspacing="0" cellpadding="10">
+            <tr>
+              <td>
+                <p><strong>注意:</strong>
+                これらの変数は、すべて同様の名前を持つ HTTP MIME ヘッダや
+                Apache サーバの C 変数、または Unix システムの
+                <code>struct tm</code> フィールドに対応します。
+                ほとんどのものは、マニュアルや CGI
+                仕様のどこかに説明があります。この中で mode_rewrite
+                で特別な意味を持つものに以下のものがあります:</p>
+
+                <dl>
+                  <dt><code>IS_SUBREQ</code></dt>
+
+                  <dd>これは、サブリクエストを処理中は "true"
+                  に、そうでなければ "false" になります。
+                  与えられたタスクを完了するために追加のファイルや URI
+                  を解決する必要があるモジュールは、
+                  サブリクエストを生成する場合があります。</dd>
+
+                  <dt><code>API_VERSION</code></dt>
+
+                  <dd>これは現在の httpd のビルドにおける Apache
+                  モジュール API(サーバとモジュール間の内部インターフェース)
+                  のバージョンであり、include/ap_mmn.h で定義されています。
+                  モジュール API のバージョンは使用している Apache
+                  のバージョン(例えば Apche 1.3.14 であれば
+                  19990320:10) に対応しますが、
+                  これは主にモジュールの作者が関心を持つものです。</dd>
+
+                  <dt><code>THE_REQUEST</code></dt>
+
+                  <dd>ブラウザからサーバに送られた HTTP
+                  リクエストの完全なもの(例えば、
+                  "<code>GET /index.html HTTP/1.1</code>")。
+                  これには、ブラウザから送られた追加ヘッダは一切含みません。
+                  </dd>
+
+                  <dt><code>REQUEST_URI</code></dt>
+
+                  <dd>HTTP リクエスト行でリクエストされたリソース
+                  (上記の例では "/index.html" がそれにあたります)。</dd>
+
+                  <dt><code>REQUEST_FILENAME</code></dt>
+
+                  <dd>リクエストにマッチしたファイルまたはスクリプトの、
+                  完全なローカルファイルシステムのパス。</dd>
+                </dl>
+              </td>
+            </tr>
+          </table>
+        </li>
+      </ul>
+
+      <p>考慮事項:</p>
+
+      <ol>
+        <li>SCRIPT_FILENAME および REQUEST_FILENAME には同じ名前、
+        <em>すなわち</em>、Apache サーバの <code>request_rec</code>
+        内部構造体の中の <code>filename</code>
+        フィールドの値が入っています。前者は単によく知られている CGI
+        変数名であるのに対し、後者は (<code>request_rec</code>
+        フィールドの <code>uri</code> の値が入っている)REQUEST_URI
+        に対応するものです。</li>
+
+        <li><em>変数</em>に任意の環境変数を指定できる特別な書式
+        <code>%{ENV:変数}</code>
+        があります。これは Apache
+        の内部構造体若しくは(そこに存在しなければ)Apache
+        サーバプロセスが発行する <code>getenv()</code>
+        を通して検索されます。</li>
+
+        <li>
+        <em>ヘッダ</em>に任意の HTTP MIME ヘッダ名を指定できる特別な書式
+        <code>%{HTTP:ヘッダ}</code>があります。これは
+        HTTP リクエストから検索されます。
+        例: <code>%{HTTP:Proxy-Connection}</code> は HTTP ヘッダの
+        ``<code>Proxy-Connection:</code>'' の値です。</li>
+
+        <li>前方参照を行なって内部の(URL ベースの)
+        サブリクエストを実行して<em>変数</em>の最終値を決定する特別な書式
+        <code>%{LA-U:変数}</code> があります。
+        実際には API フェーズの後のほうでセットされるために、
+        現時点ではアクセスできないような変数を使って書き換えを
+        行ないたい場合に使用します。例えば、サーバ単位のコンテキスト
+        (<code>httpd.conf</code> ファイル) で <code>REMOTE_USER</code>
+        変数にしたがって書き換えを行いたい場合には、
+        <code>%{LA-U:REMOTE_USER}</code>
+        を使用しなければなりません。なぜなら、この変数は mod_rewrite
+        が動作する URL 変換フェーズの<em>後</em>にある認証フェーズで
+        セットされるものだからです。一方、ディレクトリ単位のコンテキスト
+        (<code>.htaccess</code> ファイル) では、mod_rewrite は API の Fixup
+        フェーズを通して実装されており、
+        認証フェーズはこのフェーズの<em>前</em>に行なわれるため、
+        そこでは単に <code>%{REMOTE_USER}</code>
+        とすることができるます。</li>
+
+        <li>内部の(ファイル名ベースの)
+        サブリクエストを実行して<em>変数</em>の最終値を決定する特別な書式
+        <code>%{LA-F:変数}</code> があります。
+        ほとんどの場合これは前述の LA-U と同じです。</li>
+      </ol>
+
+      <p><em>CondPattern</em> は、条件パターンで、
+      現在の <em>TestString</em> の実体に対して適用される正規表現です。
+      <em>TestString</em> は評価された後に <em>CondPattern</em>に対して
+      マッチングが行なわれます。</p>
+
+      <p><strong>備考:</strong> <em>CondPattern</em>は、
+      標準の<em>拡張正規表現</em>にいくつか追加を行ったものです:</p>
+
+      <ol>
+        <li>'<code>!</code>' 文字(エクスクラメーションマーク)
+        をパターン文字列の前につけることで、
+        マッチ<strong>しない</strong>パターンを指定できます。</li>
+
+        <li>
+        <em>CondPattern</em> のちょっとした変種もあります。
+        実際の正規表現文字列の代わりに以下のように使うことができます:
+
+          <ul>
+            <li>'<strong>&lt;CondPattern</strong>'
+            (字句の並び的に、より小さい)<br />
+            <em>CondPattern</em> を単なる文字列として扱い、
+            字句の並びとして <em>TestString</em> と比較します。
+            <em>TestString</em> が字句の並びとして
+            <em>CondPattern</em> より小さい場合に真になります。</li>
+
+            <li>'<strong>&gt;CondPattern</strong>'
+            (字句の並び的に、より大きい)<br />
+            <em>CondPattern</em> を単なる文字列として扱い、
+            字句の並びとして <em>TestString</em> と比較します。
+            <em>TestString</em> が字句の並びとして
+            <em>CondPattern</em> より大きい場合に真になります。</li>
+
+            <li>'<strong>=CondPattern</strong>'
+            (字句の並び的に等しい)<br />
+            <em>CondPattern</em> を単なる文字列として扱い、
+            字句の並びとして <em>TestString</em> と比較します。
+            <em>TestString</em> が字句の並びとして
+            <em>CondPattern</em> と等しい場合、すなわち、二つの文字列が
+            (1 文字ずつ比較して)正確に等しい場合に真になります。
+            もし <em>CondPattern</em> が単なる<samp>""</samp>
+            (二つの引用符)であれば、
+            <em>TestString</em> は空文字列と比較されます。</li>
+
+            <li>'<strong>-d</strong>' (ディレクトリ (<strong>d</strong>irectory))<br />
+            <em>TestString</em> をパス名として扱い、それが存在して、
+            かつディレクトリであれば真。</li>
+
+            <li>'<strong>-f</strong>' (通常のファイル (<strong>f</strong>ile))<br />
+            <em>TestString</em> をパス名として扱い、それが存在して、
+            かつ通常のファイルであれば真。</li>
+
+            <li>'<strong>-s</strong>' (大きさ (<strong>s</strong>ize)
+            のある通常のファイル)<br />
+            <em>TestString</em> をパス名として扱い、それが存在して、
+            かつ大きさが 0 より大きい通常ファイルであれば真。</li>
+
+            <li>'<strong>-l</strong>' (シンボリックリンク
+            (symbolic <strong>l</strong>ink))<br />
+            <em>TestString</em> をパス名として扱い、それが存在して、
+            かつシンボリックリンクであれば真。</li>
+
+            <li>'<strong>-F</strong>' (サブリクエストを通した既存ファイル)
+            <br />
+            <em>TestString</em> が有効なファイルであること、
+            そしてこのサーバにおいて、現時点で設定されているすべての
+            アクセス制御を通して、そのパス名でアクセスできるかどうかを
+            チェックします。これは内部のサブリクエストを使って
+            チェックを行うので、注意して使わないとサーバの
+            パフォーマンスを低下させることになりかねません!</li>
+
+            <li>'<strong>-U</strong>' (サブリクエストを通した既存 URL)
+            <br />
+            <em>TestString</em> が有効な URL であること、
+            そしてこのサーバにおいて、現時点で設定されているすべての
+            アクセス制御を通して、そのパス名でアクセスできるかどうかを
+            チェックします。これは内部のサブリクエストを使って
+            チェックを行うので、注意して使わないとサーバの
+            パフォーマンスを低下させることになりかねません!</li>
+          </ul>
+
+          <table width="70%" border="0" bgcolor="#E0E0F0"
+          cellspacing="0" cellpadding="10">
+            <tr>
+              <td><strong>注意: </strong>以上すべてのテストについて、
+              エクスクラメーションマーク ('!') を前に置くことにより
+              それらの意味を否定したマッチングを行なうことができます。</td>
+            </tr>
+          </table>
+        </li>
+      </ol>
+
+      <p>さらに、<code>RewriteCond</code>
+      ディレクティブへの第三引数として <em>CondPattern</em> に特別な</p>
+
+      <blockquote>
+        <strong><code>[</code><em>フラグ</em><code>]</code></strong>
+      </blockquote>
+      を追加することができます
+      <em>フラグ</em>は以下のものをカンマ区切りで並べたものです:
+
+      <ul>
+        <li>'<strong><code>nocase|NC</code></strong>'
+        (<strong>n</strong>o <strong>c</strong>ase)<br />
+        これは大文字小文字を区別せずにテストします。<em>すなわち、</em>
+        展開された<em>TestString</em> と <em>CondPattern</em> において、
+        'A-Z' および 'a-z' の間には違いはないものと見なされます。
+        このフラグは<em>TestString</em> と <em>CondPattern</em> の間の
+        比較においてのみ有効です。ファイルシステム上およびサブリクエスト
+        のチェックでは意味を持ちません。</li>
+
+        <li>
+          '<strong><code>ornext|OR</code></strong>'
+          (<strong>or</strong> next condition)<br />
+          ルール条件を結合するにあたり、暗黙の AND の代わりにローカルの
+          OR を使います。典型的な例として、以下を参照してください：
+
+          <blockquote>
+<pre>
+RewriteCond %{REMOTE_HOST}  ^host1.*  [OR]
+RewriteCond %{REMOTE_HOST}  ^host2.*  [OR]
+RewriteCond %{REMOTE_HOST}  ^host3.*
+RewriteRule ...これらのホストに関する特別な処理
+</pre>
+          </blockquote>
+          このフラグを使わない場合は、条件/ルールを
+          3 回書くことになってしまいます。
+        </li>
+      </ul>
+
+      <p><strong>使用例:</strong></p>
+
+      <blockquote>
+        リクエストの中の ``<code>User-Agent:</code>'' ヘッダに従って
+        サイトのホームページの書き換えを行なうには、以下のようにします：
+
+        <blockquote>
+<pre>
+RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla.*
+RewriteRule  ^/$                 /homepage.max.html  [L]
+
+RewriteCond  %{HTTP_USER_AGENT}  ^Lynx.*
+RewriteRule  ^/$                 /homepage.min.html  [L]
+
+RewriteRule  ^/$                 /homepage.std.html  [L]
+</pre>
+        </blockquote>
+        解釈: ブラウザとして(自分自身で 'Mozilla' と名乗っている)
+        ネットスケープナビゲータを使う場合、フレーム<em>など</em>を含む
+        max のホームページを見ることになります。(端末ベースの) Lynx
+        ブラウザを使う場合は、画像やテーブル<em>など</em>を含まない
+        min のホームページが表示されます。それ以外のブラウザの場合は標準
+        (std) のページが表示されます。
+      </blockquote>
+      <hr noshade="noshade" size="1" />
+
+      <h3><a id="RewriteRule"
+      name="RewriteRule">RewriteRule</a></h3>
+      <a href="directive-dict.html#Syntax"
+      rel="Help"><strong>書式:</strong></a> RewriteRule
+      <em>Pattern</em> <em>Substitution</em><br />
+       <a href="directive-dict.html#Default"
+      rel="Help"><strong>デフォルト:</strong></a> <em>なし</em><br />
+       <a href="directive-dict.html#Context"
+      rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+      バーチャルホスト、ディレクトリ、.htaccess<br />
+       <a href="directive-dict.html#Override"
+      rel="Help"><strong>オーバーライド:</strong></a>
+      <em>FileInfo</em><br />
+       <a href="directive-dict.html#Status"
+      rel="Help"><strong>ステータス:</strong></a> Extension<br />
+       <a href="directive-dict.html#Module"
+      rel="Help"><strong>モジュール:</strong></a> mod_rewrite.c<br />
+       <a href="directive-dict.html#Compatibility"
+      rel="Help"><strong>互換性:</strong></a> Apache 1.2
+      (partially), Apache 1.3<br />
+
+      <p><code>RewriteRule</code>
+      ディレクティブは、実際の書き換えを担当してくれる馬車馬です。
+      このディレクティブは複数回書くことができます。
+      各ディレクティブは一つの書き換えルールを定義します。
+      これらルールを<strong>定義する順序</strong>は重要です。
+      なぜなら、実行時にルールを適用する際、この順序で行なわれるからです。
+      </p>
+
+      <p><a id="patterns" name="patterns"><em>Pattern</em></a> は現在の
+      URL に適用される (Apache 1.1.x では System V8、Apache 1.2.x
+      以降では POSIX の)<a id="regexp" name="regexp">正規表現</a>です。
+      ここで「現在の」と言っているのは、ルールが適用される際の URL
+      の値のことです。これはリクエストされたオリジナルの URL
+      であるとは限りません。既に数多くのルールがマッチして、
+      それを書き換えた後かもしれないからです。</p>
+
+      <p>正規表現の文法に関するヒント:</p>
+
+      <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
+        <tr>
+          <td valign="top">
+<pre>
+<strong>テキスト: </strong>
+  <strong><code>.</code></strong>           任意の一文字
+  <strong><code>[</code></strong>chars<strong><code>]</code></strong>     文字クラス: いずれかの文字
+  <strong><code>[^</code></strong>chars<strong><code>]</code></strong>    文字クラス: これら以外の文字
+  text1<strong><code>|</code></strong>text2 選択肢: text1 または text2
+
+<strong>文字数指定:</strong>
+  <strong><code>?</code></strong>           直前の文字の 0 回または 1 回の繰り返し
+  <strong><code>*</code></strong>           直前の文字の 0 回以上の繰り返し
+  <strong><code>+</code></strong>           直前の文字の 1 回以上の繰り返し
+
+<strong>グルーピング:</strong>
+  <strong><code>(</code></strong>text<strong><code>)</code></strong>      テキストのグルーピング
+              (選択肢の境界を明示する、若しくは後方参照を作成するために使う。
+               <strong>N</strong>番目のグループは、RewriteRule の右側の表現で<code>$</code><strong>N</strong>として参照することが可能。）
+
+<strong>文字位置の指定:</strong>
+  <strong><code>^</code></strong>           行頭
+  <strong><code>$</code></strong>           行末
+
+<strong>エスケープ:</strong>
+  <strong><code>\</code></strong>char       特殊文字をエスケープ(効果を打ち消す)する
+              (例えば "<code>.[]()</code>" <em>など</em>)
+</pre>
+          </td>
+        </tr>
+      </table>
+
+      <p>正規表現に関する情報は、ローカルの regex(3) man ページかまたは
+      Apache 1.3 の配布物に含まれる<code>src/regex/regex.3</code>
+      を参照してください。もし正規表現やその変種 (POSIX 正規表現、
+      Perl 正規表現 <em>など</em>)に興味があれば、以下の専門書をご覧下さい:</p>
+
+      <blockquote>
+        <em>Mastering Regular Expressions</em><br />
+         Jeffrey E.F. Friedl<br />
+         Nutshell Handbook Series<br />
+         O'Reilly &amp; Associates, Inc. 1997<br />
+         ISBN 1-56592-257-3<br />
+      </blockquote>
+
+      <p>(訳注: 第2版の日本語版)</p>
+
+      <blockquote>
+        <em>詳説 正規表現 第2版</em><br />
+         Jeffrey E. F. Friedl 著<br />
+         田和 勝 訳<br />
+         オライリー・ジャパン 2003<br />
+         ISBN 4-87311-130-7<br />
+      </blockquote>
+
+      <p>さらに、mod_rewrite ではパターンの前に NOT 文字('<code>!</code>')
+      が使えます。これで後続のパターンを否定することができます。
+      例えていうならば、``<em>もし現在の URL
+      がこのパターンにマッチ<strong>しなければ</strong></em>''
+      ということです。これは、反対のパターンを表す方が簡単だったり、
+      最後のデフォルトルールとするなど、
+      例外的なケースを表現するのにも使えます。</p>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>注意:</strong> NOT
+          文字を使ってパターンを否定する場合はパターン中に
+          グループ化されたワイルドカード部分を入れることはできません。
+          これは、パターンがマッチ *しない* とき、
+          グループの中身は空になってしまうからです。その結果、
+          否定されたパターンを使う場合は、置き換え文字列の中で
+          <code>$N</code> は使えません!</td>
+        </tr>
+      </table>
+
+      <p>書き換えルールの <a id="rhs"
+      name="rhs"><em>Substitution</em></a> は、<em>Pattern</em>が
+      マッチした場合にオリジナルの URL から置き換えられる文字列です。
+      プレーンテキストの他に以下のものが使えます。</p>
+
+      <ol>
+        <li>RewriteRule パターンへの後方参照 <code>$N</code></li>
+
+        <li>最後にマッチした RewriteCond パターンへの後方参照
+        <code>%N</code></li>
+
+        <li>ルール条件のテスト文字列と同様のサーバ変数
+        (<code>%{変数名}</code>)</li>
+
+        <li><a href="#mapfunc">マッピング関数</a> の呼び出し
+        (<code>${mapname:key|default}</code>)</li>
+      </ol>
+      後方参照は <code>$</code><strong>N</strong>(<strong>N</strong>=0..9)
+      識別子で表します。これは、マッチした <em>Pattern</em> のグループの中で、
+      <strong>N</strong> 番目のものの内容に置き換えられます。サーバ変数は
+      <code>RewriteCond</code> ディレクティブの <em>TestString</em> と同じです。
+      マッピング関数は <code>RewriteMap</code> ディレクティブから来たもので、
+      そこで説明しています。これら 3 タイプの変数は、上記の順序で展開されます。
+
+      <p>前述のように、すべての書き換えルールが <em>Substitution</em> に対して
+      (設定ファイルに定義してある順に)適用されます。URL
+      は <em>Substitution</em> によって<strong>完全に置き換えられ</strong>、
+      書き換え処理は <code><strong>L</strong></code> フラグ -- 後述 --
+      によって明示的に終端されていない限り、
+      ルールがなくなるまで続けられます。</p>
+
+      <p>'<code>-</code>' と呼ばれる特殊な置き換え文字列があります。
+      これは、<strong>置換禁止</strong>! の意味です。変でしょ?
+      いいえ、これは URL のマッチング<strong>だけ</strong>を行ない、
+      置換を行なわないという機能を提供してくれるものです。
+      <em>すなわち</em>、<strong>C</strong> (chain)
+      フラグとないっしょに使うことによって、
+      置換が行なわれる前に複数のパターンを適用することができます。</p>
+
+      <p>もうひとつ注意事項: クエリー文字列部分を付加した置換文字列で
+      URL を生成することもできます。
+      単に、置換文字列の中にクエスチョンマークを入れるだけで、それ以降は
+      QUERY_STRING に入れるべきことを示します。
+      既存のクエリー文字列を消去したい場合は、
+      置換文字列をクエスチョンマークだけで終わらせるようにします。</p>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>注意</strong>: 特殊機能について述べます:
+          置換フィールドの前に
+          <code>http://</code><em>thishost</em>[<em>:thisport</em>]
+          を置くと、<strong>mod_rewrite</strong>
+          は自動的にこれを除去します。この暗黙の外部リダイレクト URL
+          における自動変換機能は、ホスト名部分を生成する
+          マッピング関数と同時に使う場合に便利かつ重要なものです。
+          これを理解するには、以下のサンプルの章の最初の例を見てください。
+          </td>
+        </tr>
+      </table>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>備考: この機能の影響で、</strong>
+          <code>http://thishost</code> 接頭辞の付いた
+          自分自身のサーバへの無条件の外部リダイレクションは、
+          動作しません。
+          このような自己リダイレクトを行うには、<strong>R</strong>
+          フラグを使う必要があります(後述)。</td>
+        </tr>
+      </table>
+
+      <p><code>RewriteRule</code> ディレクティブの第三引数として、
+      <em>Pattern</em> に対して上記以外にも以下のような</p>
+
+      <blockquote>
+        <strong><code>[</code><em>フラグ</em><code>]</code></strong>
+      </blockquote>
+      をつけることができます。
+      <em>フラグ</em>は以下のものをカンマで区切って指定します:
+
+      <ul>
+        <li>
+          '<strong><code>redirect|R</code>
+          [=<em>code</em>]</strong>' (強制 <a id="redirect"
+          name="redirect"><strong>r</strong>edirect</a>)<br />
+
+          <em>Substitution</em> の前に (新しい URL を URI にする)
+          <code>http://thishost[:thisport]/</code>
+          をつけることにより強制的な外部リダイレクションを行ないます。
+          <em>code</em> が指定されない場合、HTTP レスポンスの 302
+          (MOVED TEMPORARILY) が使われます。300 から 400
+          までの他のレスポンスコードを返したい場合は、
+          直接その番号を指定するか、シンボル名 <code>temp</code>
+          (デフォルト), <code>permanent</code>, <code>seeother</code>
+          のいずれかを使います。<em>例えば</em>、``<code>/~</code>''
+          を ``<code>/u/</code>'' に変換したり、常に <code>/u/</code>
+          <em>user</em> にスラッシュを追加するなどの、クライアントに 正規化
+          された URL を返すルールに使うことができます。<br />
+
+          <p><strong>注意:</strong>
+          このフラグを使う場合は、置換フィールドが有効な URL
+          であることを確認してください。もしそうでない場合、
+          無効な場所にリダイレクトしていることになってしまいます。
+          さらに、このフラグは、URL の前に
+          <code>http://thishost[:thisport]/</code>
+          を付加するだけで、その後も書き換え処理は続くことを
+          理解しておいてください。
+          通常はそこで書き換えをやめて即時にリダイレクトすることが望みの動作
+          でしょう。
+          書き換えを終了するには、
+          'L' フラグもいっしょに指定しなければなりません。</p>
+        </li>
+
+        <li>'<strong><code>forbidden|F</code></strong>' (URL を強制的に
+        <strong>f</strong>orbidden(禁止)にする)<br />
+        これは現在の URL を強制的にアクセス禁止にします。
+        <em>すなわち</em>、即時に HTTP レスポンスの 403 (FORBIDDEN)
+        を返します。このフラグは適切な RewriteCond
+        といっしょに使って、特定の URL に対する条件ブロックを行なうために
+        使います。</li>
+
+        <li>'<strong><code>gone|G</code></strong>' (URL を強制的に
+        <strong>g</strong>one(消去済み)にする)<br />
+        これは現在の URL を強制的に消去済み(gone)にします。
+        <em>すなわち</em>、即時に HTTP レスポンスの 410 (GONE)
+        を返します。このフラグはもはや存在しないページを
+        消去済みとしてマークするために使います。</li>
+
+        <li>
+          '<strong><code>proxy|P</code></strong>' (強制
+          <strong>p</strong>roxy)<br />
+          このフラグは、置換対象部を内部的なプロキシリクエスト
+          とみなし、その場で(<em>すなわち</em>、
+          ここで書き換えルールを停止して)<a
+          href="mod_proxy.html">プロキシモジュールを</a>通して出力します。
+          置換対象文字列は(<em>例えば</em>、普通は <code>http://</code>
+          <em>hostname</em>で始まるような)、Apache
+          プロキシモジュールで扱える有効な URI でなければなりません。
+          そうでなければ、プロキシモジュールからエラーが報告されます。
+          このフラグを使うことでより強力な <a
+          href="mod_proxy.html#proxypass">ProxyPass</a>
+          ディレクティブの実装を行なうことができ、リモートにあるものを
+          ローカルサーバの名前空間にマップすることができます。
+
+          <p>注意: この機能を使うにあたっては、ご自分の Apache サーバに
+          プロキシモジュールが組み込まれていることを
+          確認してください。確認方法がわからない場合は、``<code>httpd
+          -l</code>'' の出力の中に <code>mod_proxy.c</code>
+          があるかどうかを調べてみましょう。もしあれば、
+          mod_rewrite のこの機能を使えます。もしなければ、mod_proxy
+          を有効にして ``<code>httpd</code>''
+          プログラムを再構築する必要があります。</p>
+        </li>
+
+        <li>'<strong><code>last|L</code></strong>'
+        (<strong>l</strong>ast(最後の)ルール)<br />
+        ここで書き換え処理を中止し、
+        それ以上の書き換えルールを適用しないようにします。これは Perl
+        の <code>last</code> コマンドや C 言語の <code>break</code>
+        コマンドに対応するものです。このフラグを使うことで、
+        現在の書き換え後の URL が後続のルールによって
+        それ以上書き換えられることを防止します。
+        例えば、これを使ってルートパスの URL ('<code>/</code>')
+        を実際のもの、<em>例えば </em>'<code>/e/www/</code>'
+        に書き換えます。</li>
+
+        <li>'<strong><code>next|N</code></strong>'
+        (<strong>n</strong>ext(次の)一周)<br />
+        書き換え処理を(一番最初の書き換えルールから)再実行します。
+        ただしその際マッチングされる URL は当初の URL
+        ではなく、最後に書き換えられた URL です。これは Perl
+        の <code>next</code> コマンドや C 言語の <code>continue</code>
+        コマンドに対応するものです。
+        書き換え処理を再起動したいとき
+        <em>すなわち、</em>ループの先頭に戻りたいとき<br />に
+        このコマンドを使ってください。
+        <strong>ただし、無限ループを作らないように留意してください!
+        </strong></li>
+
+        <li>'<strong><code>chain|C</code></strong>'
+        (次のルールに <strong>c</strong>hained (チェイン))<br />
+        このフラグを指定すると、現在のルールは次のルールにチェインされます
+        (なお、次のルールも後続のルールに順番に
+        チェインすることができます)。これには以下の効果があります:
+        ルールがマッチすると、処理は通常どおり行われます。
+        <em>すなわち</em>フラグは何の影響も与えません。ルールがマッチ
+        <strong>しない</strong>場合、後続のすべてのルールはスキップされます。
+        例えば  (.www 部分が行なわれるべきでない)
+        外部リダイレクトを発生させた時に、
+        ディレクトリごとのルールセットの中から ``<code>.www</code>''
+        の部分を取り除くために使うことできます。
+        </li>
+
+        <li>
+        '<strong><code>type|T</code></strong>=<em>MIME-type</em>'
+        (MIME <strong>t</strong>ype の強制指定)<br />
+        ターゲットファイルの MIME タイプを強制的に <em>MIME-type</em>
+        にします。例えばこれを使って、<code>mod_alias</code>
+        のディレクティブである <code>ScriptAlias</code>
+        をシミュレートすることができます。これは、
+        マッピングされたディレクトリの中にあるすべてのファイルの MIME
+        タイプを、内部的に``<code>application/x-httpd-cgi</code>''
+        に強制セットするものです。</li>
+
+        <li>
+        '<strong><code>nosubreq|NS</code></strong>' (<strong>n</strong>o
+        <strong>s</strong>ub-request,
+        内部の
+        サブリクエストがない
+        ときのみ使われる)<br />
+        このフラグを使うと、クエストが内部のサブリクエストである場合に、
+        書き換えエンジンが書き換えルールをスキップするようにします。
+        サブリクエストは、例えば、<code>mod_include</code>
+        がディレクトリのデフォルトの候補となるファイルの情報
+        (<code>index.xxx</code>) を検索しようとする際に、Apache
+        の中で内部的に発生します。
+        サブリクエストにおいては書き換え操作は常に有用であるとは限らず、
+        すべてのルールが適用されてしまうと問題を起こしてしまう場合もあります。
+        そのようなルールはこのフラグを使って除外します。<br />
+
+        <p>以下のルールを使って、このフラグを使うかどうか決めてください:
+        CGI スクリプトの先頭になんらかの URL を付加して、それを CGI
+        スクリプトで処理させようとする場合、サブリクエストの際に問題が
+        起こったり (オーバーヘッドがかかったり) する可能性が高くなります。
+        このようなケースでは、このフラグを使ってください。</p>
+        </li>
+
+        <li>'<strong><code>nocase|NC</code></strong>'
+        (<strong>n</strong>o <strong>c</strong>ase)<br />
+        これは<em>パターン</em>について大文字小文字を区別しないようにします。
+        <em>すなわち</em>、<em>パターン</em>が現在の URL とマッチされる際、
+        'A-Z' と 'a-z' は区別されません。</li>
+
+        <li>'<strong><code>qsappend|QSA</code></strong>'
+        (<strong>q</strong>uery <strong>s</strong>tring
+        <strong>a</strong>ppend)<br />
+        このフラグは、既存のものを置き換えるのではなく、置換文字列の
+        クエリー文字列部分を追加するようにします。書き換えルールを通してクエリー
+        文字列に何かデータを追加したい場合にこのフラグを使います。</li>
+
+        <li>
+          '<strong><code>noescape|NE</code></strong>'
+          (<strong>n</strong>o URI <strong>e</strong>scaping of
+          output)<br />
+          このフラグは、mod_rewrite が書き換え結果に対して通常行なわれる
+          URL エスケープルールを適用しないようにします。通常は ('%',
+          '$', ';' といった) 特殊文字については、それらと等価の 16
+          進数文字列 (順に '%25', '%24', '%3B') にエスケープされます。
+          このフラグはこの動作を抑制します。
+          これにより、出力の中にパーセント文字を使うことができます。
+          以下に例を挙げます。
+<pre>
+    RewriteRule /foo/(.*) /bar?arg=P1\%3d$1 [R,NE]
+   
+</pre>
+          この例では、'<code>/foo/zed</code>' が安全なリクエストである
+          '<code>/bar?arg=P1=zed</code>' に変更されます。
+
+          <table width="70%" border="0" bgcolor="#E0E0F0"
+          cellspacing="0" cellpadding="10">
+            <tr>
+              <td><strong>注意:</strong>
+              <code>noescape</code> フラグは Apache 1.3.20
+              以降でのみ有効です。</td>
+            </tr>
+          </table>
+        </li>
+
+        <li>
+          '<strong><code>passthrough|PT</code></strong>'
+          (<strong>p</strong>ass <strong>t</strong>hrough to next
+          handler)<br />
+          このフラグは、内部の <code>request_rec</code> 構造体の
+          <code>uri</code> フィールドに <code>filename</code>
+          フィールドの値をセットするように、書き換えエンジンに指示します。
+          このフラグは単に、<code>RewriteRule</code>
+          ディレクティブの出力に対して、他の URI
+          からファイル名への変換処理を行う <code>Alias</code>, 
+          <code>ScriptAlias</code>, <code>Redirect</code>
+          <em>といった</em>ディレクティブによる後処理を入れるための小技です。
+          意味を示すための単純な例: <code>mod_rewrite</code>
+          の書き換えエンジンで <code>/abc</code> から <code>/def</code>
+          への変換を行ない、さらに <code>mod_alias</code> で
+          <code>/def</code> から <code>/ghi</code>
+          に書き換えるには、以下のようにします:
+<pre>
+    RewriteRule ^/abc(.*)  /def$1 [PT]
+    Alias       /def       /ghi
+   
+</pre>
+          もし <code>PT</code> フラグを指定するのを忘れてしまった場合、
+          <code>mod_rewrite</code> はちゃんとその仕事を行ないます。
+          <em>すなわち</em>、完全な API に準拠した URI-to-filename
+          変換ルーチンが行うべき、<code>uri=/abc/...</code> を
+          <code>filename=/def/...</code> に書き換え、を行ないます。その後
+          <code>mod_alias</code> が起動され、URI-to-filename
+          変換を試みますが、これは動作しません 。
+
+          <p>注意: <strong>URL-to-filename
+          変換を含む異なったモジュールのディレクティブを混用したい場合には、
+          このフラグを指定する必要があります。</strong>典型的な例としては、
+          <code>mod_alias</code> と <code>mod_rewrite</code>
+          の同時使用です。</p>
+        </li>
+
+        <li>'<strong><code>skip|S</code></strong>=<em>num</em>'
+        (<strong>s</strong>kip next rule(s))<br />
+         このフラグは書き換えエンジンに対し、現在のルールがマッチしたら、
+        次の <em>num</em> 個のルールをスキップするよう指示します。これを
+        使って、擬似的に if-then-else 構造を作ることができます: then-句
+        の最終ルールは <code>skip=N</code> となります。ここで N は
+        else-句 に入れるルールの数です。(これは 'chain|C' フラグとは
+        <strong>異なります</strong>!)。</li>
+
+        <li>
+        '<strong><code>env|E=</code></strong><em>VAR</em>:<em>VAL</em>'
+        (set <strong>e</strong>nvironment variable)<br />
+        これは <em>VAR</em> という名前の環境変数の値を <em>VAL</em>
+        にするよう指示します。ここで <em>VAL</em>
+        には、正規表現の後方参照として展開される <code>$N</code> と
+        <code>%N</code> を書くことができます。
+        このフラグを複数使って、複数の変数を定義することもできます。
+        この変数は多くの場合、通常後から XSSI (<code>&lt;!--#echo
+        var="VAR"--&gt;</code> を通して) または CGI (<em>例えば</em>
+        <code>$ENV{'VAR'}</code>) のように、参照されます。さらに、
+        RewriteCond パターン <code>%{ENV:VAR}</code>
+        を通して参照することもできます。これを使って URL
+         からの情報を切り取って記憶します。</li>
+      </ul>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td>
+            <strong>注意:</strong>
+            サーバ単位の設定ファイルの中では、<em>Pattern</em> は完全な
+            URL に適用されることを忘れないでください。
+            <strong>しかしながら、ディレクトリ単位の設定ファイルの中では、
+            パターンマッチングのためにディレクトリ単位の接頭辞
+            (これは特定のディレクトリでは常に同じものです!) が自動的に
+            <em>取り除かれ</em>、置換が終わった後に自動的に<em>付加</em>
+            されます。</strong>この機構は、さまざまな種類の書き換え操作に
+            おいて欠くことのできないものです。なぜなら、この接頭辞のスキップ
+            が行なわれないと、常に存在するとは限らない親ディレクトリとの
+            マッチングを行なわなければならなくなるからです。
+
+            <p>ひとつ例外があります: 置換文字列が ``<code>http://</code>''
+            で始まっている場合、ディレクトリ接頭辞は付加<strong>されず
+            </strong>、外部リダイレクトまたは (<strong>P</strong> フラグが
+            使われていれば!) プロキシ処理が強制的に行なわれます。</p>
+          </td>
+        </tr>
+      </table>
+
+      <table width="70%" border="0" bgcolor="#E0E0F0"
+      cellspacing="0" cellpadding="10">
+        <tr>
+          <td><strong>注意:</strong> ディレクトリ単位の設定ファイル
+        における書き換えエンジンを有効にする場合、これらのファイルに
+        ``<code>RewriteEngine On</code>'' をセットし、<strong>かつ
+        </strong>``<code>Options FollowSymLinks</code>'' を有効に
+        しなければなりません。あなたのところの管理者がユーザの
+        ディレクトリの <code>FollowSymLinks</code> のオーバーライド
+        を禁止していた場合、書き換えエンジンを使うことはできません。
+        この制限が必要なのは、セキュリティ関連の理由によります。</td>
+        </tr>
+      </table>
+
+      <p>以下に有効な置換の組合せと、それらの意味を示します:</p>
+
+      <p><strong>リクエスト ``<code>GET /somepath/pathinfo</code>''
+    が行なわれた場合の、<br />
+    サーバ単位の設定 (<code>httpd.conf</code>) の内部:</strong><br />
+      </p>
+
+      <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
+        <tr>
+          <td>
+<pre>
+<strong>与えられたルール</strong>                                      <strong>置換結果</strong>
+----------------------------------------------  ----------------------------------
+^/somepath(.*) otherpath$1                      無効なのでサポートしない
+
+^/somepath(.*) otherpath$1  [R]                 無効なのでサポートしない
+
+^/somepath(.*) otherpath$1  [P]                 無効なのでサポートしない
+----------------------------------------------  ----------------------------------
+^/somepath(.*) /otherpath$1                     /otherpath/pathinfo
+
+^/somepath(.*) /otherpath$1 [R]                 外部リダイレクション経由で
+                                                http://thishost/otherpath/pathinfo
+
+^/somepath(.*) /otherpath$1 [P]                 無意味なのでサポートしない
+----------------------------------------------  ----------------------------------
+^/somepath(.*) http://thishost/otherpath$1      /otherpath/pathinfo
+
+^/somepath(.*) http://thishost/otherpath$1 [R]  外部リダイレクション経由で
+                                                http://thishost/otherpath/pathinfo
+
+^/somepath(.*) http://thishost/otherpath$1 [P]  無意味なのでサポートしない
+----------------------------------------------  ----------------------------------
+^/somepath(.*) http://otherhost/otherpath$1     外部リダイレクション経由で
+                                                http://otherhost/otherpath/pathinfo
+
+^/somepath(.*) http://otherhost/otherpath$1 [R] 外部リダイレクション経由で
+                                                http://otherhost/otherpath/pathinfo
+                                                ([R] フラグは冗長)
+
+^/somepath(.*) http://otherhost/otherpath$1 [P] 内部プロキシ経由で
+                                                http://otherhost/otherpath/pathinfo
+</pre>
+          </td>
+        </tr>
+      </table>
+
+      <p><strong>リクエスト ``<code>GET /somepath/localpath/pathinfo</code>''
+    が行なわれた場合の、<br />
+    <code>/somepath</code> に関するディレクトリ単位の設定の内部:<br />
+    (<em>例えば</em>、
+    <code>/physical/path/to/somepath</code> ディレクトリにあって、<br />
+    <code>RewriteBase /somepath</code> の記述がある
+    <code>.htaccess</code> ファイル):</strong><br />
+      </p>
+
+      <table bgcolor="#F0F0F0" cellspacing="0" cellpadding="5">
+        <tr>
+          <td>
+<pre>
+<strong>与えられたルール</strong>                                      <strong>置換結果</strong>
+----------------------------------------------  ----------------------------------
+^localpath(.*) otherpath$1                      /somepath/otherpath/pathinfo
+
+^localpath(.*) otherpath$1  [R]                 外部リダイレクション経由で
+                                                http://thishost/somepath/otherpath/pathinfo
+
+^localpath(.*) otherpath$1  [P]                 無意味なのでサポートしない
+----------------------------------------------  ----------------------------------
+^localpath(.*) /otherpath$1                     /otherpath/pathinfo
+
+^localpath(.*) /otherpath$1 [R]                 外部リダイレクション経由で
+                                                http://thishost/otherpath/pathinfo
+
+^localpath(.*) /otherpath$1 [P]                 無意味なのでサポートしない
+----------------------------------------------  ----------------------------------
+^localpath(.*) http://thishost/otherpath$1      /otherpath/pathinfo
+
+^localpath(.*) http://thishost/otherpath$1 [R]  外部リダイレクション経由で
+                                                http://thishost/otherpath/pathinfo
+
+^localpath(.*) http://thishost/otherpath$1 [P]  無意味なのでサポートしない
+----------------------------------------------  ----------------------------------
+^localpath(.*) http://otherhost/otherpath$1     外部リダイレクション経由で
+                                                http://otherhost/otherpath/pathinfo
+
+^localpath(.*) http://otherhost/otherpath$1 [R] 外部リダイレクション経由で
+                                                http://otherhost/otherpath/pathinfo
+                                                ([R] フラグは冗長)
+
+^localpath(.*) http://otherhost/otherpath$1 [P] 内部プロキシ経由で
+                                                http://otherhost/otherpath/pathinfo
+</pre>
+          </td>
+        </tr>
+      </table>
+
+      <p><strong>例:</strong></p>
+
+      <blockquote>
+        ここでは、
+        <blockquote>
+          <code>/</code> <em>Language</em> <code>/~</code>
+          <em>Realname</em> <code>/.../</code> <em>File</em>
+        </blockquote>
+
+        という書式の URL を
+
+        <blockquote>
+          <code>/u/</code> <em>Username</em> <code>/.../</code>
+          <em>File</em> <code>.</code> <em>Language</em>
+        </blockquote>
+
+        に書き換えたいものとします。
+
+        <p>前述のマップファイルを <code>/path/to/file/map.txt</code>
+        という名前で保存しておきます。その後、Apache サーバ設定
+        ファイルに以下の行を追加するだけです:</p>
+
+        <blockquote>
+<pre>
+RewriteLog   /path/to/file/rewrite.log
+RewriteMap   real-to-user               txt:/path/to/file/map.txt
+RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
+</pre>
+        </blockquote>
+      </blockquote>
+      <hr noshade="noshade" size="1" />
+
+      <center>
+        <h1><a id="Miscelleneous"
+        name="Miscelleneous">その他の情報</a></h1>
+      </center>
+      <hr noshade="noshade" size="1" />
+
+      <h2><a id="EnvVar" name="EnvVar">環境変数</a></h2>
+      このモジュールは、<code>SCRIPT_URL</code> と
+      <code>SCRIPT_URI</code> という二つの (非標準の) CGI/SSI
+      環境変数を設定します。これらの中には現在のリソースへの<em>論理的な</em>
+      Web ビューが入っています。一方、標準の CGI/SSI 変数である
+      <code>SCRIPT_NAME</code> と <code>SCRIPT_FILENAME</code>
+      には、<em>物理的な</em>システムビューが入っています。
+
+      <p>注意: これらの変数の中には、<em>最初にリクエストを受けた時点</em>
+      <em>すなわち</em>、書き換えが行われる<em>前の</em> URI/URL
+      が保持されています。URL 書き換え処理は、論理的な URL
+      を物理的なパス名に書き換えるために使われることが多いため、
+      この点は重要です。</p>
+
+      <p><strong>例:</strong></p>
+
+      <blockquote>
+<pre>
+SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
+SCRIPT_FILENAME=/u/rse/.www/index.html
+SCRIPT_URL=/u/rse/
+SCRIPT_URI=http://en1.engelschall.com/u/rse/
+</pre>
+      </blockquote>
+      <hr noshade="noshade" size="1" />
+
+      <h2><a id="Solutions" name="Solutions">実践的な解決法</a></h2>
+      この文書以外にも、<a href="../misc/rewriteguide.html">URL
+      Rewriting Guide</a> という文書があります。この中には、URL
+      ベースの問題について、実践的な解決法が集められています。
+      ここで実際に役立つルールセットや mod_rewrite
+      に関する追加情報を見ることができるでしょう。
+    </blockquote>
+    <!--#include virtual="footer.html" -->
+    <!-- page indentation -->
+    <!--/%hypertext -->
+  </body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Using Apache with Cygwin</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER"><a id="help" name="help">Using Apache with
+    Cygwin</a></h1>
+
+    <p>This document explains how to install, configure and run
+    Apache 1.3 under the <a href="http://www.cygwin.com">Cygwin</a>
+    layer for Microsoft Windows. Cygwin is a POSIX.1 emulation
+    layer for 32-bit Microsoft Windows operating systems.</p>
+
+    <p>The Apache Group does not guarantee that this software will
+    work as documented, or even at all. If you find any bugs,
+    please document them on our <a
+    href="http://httpd.apache.org/bug_report.html">bug reporting
+    page.</a></p>
+
+    <p>Latest development news, pre-compiled distribution binaries,
+    and third-party modules as DLLs, may be found at <a
+    href="http://apache.dev.wapme.net/">http://apache.dev.wapme.net/</a>.
+    Contributions are highly welcome (please see <a
+    href="http://apache.dev.wapme.net/TODO.cygwin">TODO</a> list);
+    please submit your code or suggestions to the bug report page,
+    or join the dev@httpd.apache.org mailing list.</p>
+
+    <p>The <a href="windows.html">Win32 port</a> of Apache is built
+    on its own, custom code within Apache to assure
+    interoperability with Windows operating systems. While it is
+    considered release quality, it is slower and less thoroughly
+    tested than the Unix ports. The Cygwin alternative uses the
+    well tested Unix code by using the Cygwin portability layer for
+    POSIX.1 emulation. The Cygwin port may suffer from gaps in
+    security or reliability due to the interaction of the Cygwin
+    compatibility layer with the native Windows API.</p>
+
+    <p>The <a href="windows.html">Win32 port</a> will be more
+    familiar to most Windows users. The Cygwin port (including the
+    build environment) will be more familiar to Unix admins and
+    developers. Due to these two different code bases, the security
+    and reliability of the two ports are unrelated to each other.
+    The Win32 port should be considered the more secure of the two
+    at this time. The Win32 port is recommended for most Windows
+    users, however the Cygwin port offers an extra layer of
+    compatibility for Unix developers.</p>
+
+    <p>Apache still performs best, and is most reliable, on Unix
+    platforms. First benchmarks have shown that the same Apache
+    setup on Cygwin performs about 30% slower than the
+    corresponding native Windows version.</p>
+
+    <p>Most of this document assumes that you have a working Cygwin
+    installation and want to compile Apache yourself from the
+    original distribution sources.</p>
+    <hr />
+
+    <ul>
+      <li><a href="#hist">History of Apache for Cygwin</a></li>
+
+      <li><a href="#diff">Differences from Apache for Windows
+      (native)</a></li>
+
+      <li><a href="#req">Requirements</a></li>
+
+      <li><a href="#down">Downloading Apache for Cygwin</a></li>
+
+      <li><a href="#inst">Configuring and Installing Apache for
+      Cygwin</a></li>
+
+		<li><a href="#winsock">Using Win32 native socket implementation
+		instead</a></li>
+
+      <li><a href="#run">Running Apache for Cygwin</a></li>
+
+      <li><a href="#serv">Running Apache for Cygwin as a
+      Service</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="hist" name="hist">History of Apache for
+    Cygwin</a></h2>
+
+    <p>Cygwin support for Apache began with Apache 1.2.6 and Cygwin
+    b18.</p>
+
+    <p>Due to licensing issues there has not been an official
+    binary distribution until Red Hat Inc. (who merged with Cygnus
+    Solutions Inc.) changed their Cygwin license to ensure compiled
+    executables do not fall under GPL license if the distributed
+    software is considered as open source.</p>
+
+    <p>Cygwin is supported in the official source distributions
+    from Apache 1.3.20 and later. Pre-compiled binaries for the
+    Cygwin platform (without the <code>cygwin1.dll</code>) will be
+    supplied at <a
+    href="http://httpd.apache.org/">http://httpd.apache.org/</a>
+    for each released version.</p>
+
+    <h2><a id="diff" name="diff">Differences from Apache for
+    Windows (native)</a></h2>
+
+    <p>Both versions, Apache for Windows and Apache for Cygwin, are
+    designed to run on the same operating systems, the Windows NT
+    and Windows 2000 family. But there are considerable differences
+    between the two flavors.</p>
+
+    <p>While Apache for Windows is a native Windows port, Apache
+    for Cygwin relies on the Cygwin POSIX.1 emulation layer
+    provided by the <code>cygwin1.dll</code> dynamic library to
+    create a Unix compatible environment. Therefore we consider
+    Apache for Cygwin closer to the Unix side then to the Windows
+    side, even while it runs on Windows.</p>
+
+    <p>Most significant differences are the amount of changes to
+    the source code needed to compile and run Apache on the Cygwin
+    platform. While the native Windows port needs major changes and
+    platform specific additions, the Cygwin based port changes are
+    very small and most of the Unix source code can be used without
+    major changes on the Cygwin platform.</p>
+
+    <p><strong>When to use Apache for Cygwin and/or Apache versus
+    Windows?</strong><br />
+     Apache for Cygwin is intended to be most useful if you want a
+    seamless transition from Unix systems to Windows systems for
+    your HTTP services.</p>
+
+    <p>If you are using Windows NT or Windows 2000 for development
+    and office purposes, but your productive HTTP server
+    environments are Unix based systems, you may use Apache for
+    Cygwin to develop on Windows and simply copy whole Apache
+    configurations (<em>i.e.,</em> <code>httpd.conf</code>) and
+    Perl (<code>mod_perl</code>), PHP (<code>mod_php</code>) or
+    Python (<code>mod_snake</code>) applications to your productive
+    Unix systems.</p>
+
+    <p><strong>What about modules (<code>mod_foo</code>) for Apache
+    for Cygwin?</strong><br />
+     Apache for Cygwin can be built with most of the available
+    Apache modules with no or minimal changes. Many popular modules
+    have been compiled and tested with Apache for Cygwin, including
+    <code>mod_dav</code>, <code>mod_ssl</code>,
+    <code>mod_php</code>, <code>mod_perl</code>,
+    <code>mod_gzip</code>, and <code>mod_jserv</code>.</p>
+
+    <p>While there are developers who directly support the Windows
+    native port of Apache, very few module developers do. That is
+    why it is can be difficult to make a Unix-based Apache
+    installation with third-party modules work the same way on the
+    Windows side using the native port. Apache for Cygwin makes
+    this much easier.</p>
+
+    <p><strong>What are the differences in the configuration
+    files?</strong><br />
+     While the Apache for Windows port uses Windows native path
+    names to refer files and directories, like</p>
+<pre>
+  # httpd.conf (for Windows)
+  DocumentRoot "c:/apache/htdocs"
+</pre>
+    Apache for Cygwin can use unmodified POSIX style path names
+    like 
+<pre>
+  # httpd.conf (for Cygwin)
+  DocumentRoot "/usr/local/apache/htdocs"
+</pre>
+
+    <p><strong>What about performance?</strong><br />
+     Apache for Cygwin is not as high-performance as Apache for
+    Windows on the same hardware.</p>
+
+    <p>This is to be expected, because Cygwin emulates a Unix
+    environment on a "foreign" operating system, while Apache for
+    Windows uses Windows code in its own native environment. First
+    benchmark results have shown that Apache for Cygwin is about
+    30% slower than native Apache for Windows counterpart.</p>
+
+    <h2><a id="req" name="req">Requirements</a></h2>
+
+    <p>This Apache 1.3 port for Cygwin is designed to run on
+    Windows NT 4.0 and Windows 2000, <strong>NOT</strong> on
+    Windows 95 or 98. Windows NT 4.0 and Windows 2000 have both
+    been successfully tested and approved. In all cases TCP/IP
+    networking must be installed.</p>
+
+    <p>Cygwin 1.x is required to compile and run this version.
+    Cygwin 1.3.9 and 1.3.10 have been tested and approved on both
+    supported OSes. We suggest using Cygwin 1.3.9-2 and higher.</p> 
+
+    <p><strong>Note:</strong>If you want to compile shared DLL
+    modules using <a
+    href="programs/apxs.html"><code>apxs</code></a> you will need 
+	 Cygwin 1.3.9-2 or higher version, which includes a version of 
+	 <code>ld.exe</code> with <code>--auto-import</code> support.
+	 </p>
+
+
+    <h2><a id="down" name="down">Downloading Apache for
+    Cygwin</a></h2>
+
+    <p>The Cygwin platform is supported out of the box by Apache
+    1.3.20 and later. This means there is no extra download
+    required for the Cygwin platform. The latest version of Apache
+    can be found on the Apache httpd web site at <a
+    href="http://httpd.apache.org/">http://httpd.apache.org/</a>.
+    The site lists the current release, any more recent development
+    versions, and information on any mirror sites.</p>
+
+	 <p><strong>What about Cygwin Net Distribution binaries?</strong><br />
+    Apache for Cygwin is also available as pre-compiled binary 
+	 package for the Cygwin Net Distribution available at 
+	 <a href="http://www.cygwin.com/">http://www.cygwin.com/</a> and it's 
+	 <a href="http://www.cygwin.com/setup.exe"><code>setup.exe</code></a>
+	 installation process.</p>
+
+
+    <h2><a id="inst" name="inst">Configuring and Installing Apache
+    for Cygwin</a></h2>
+
+    <p>Apache on Cygwin is configured and compiled the same way as
+    on most Unix systems. Refer to the general <a
+    href="configuring.html">configuration</a> and <a
+    href="install.html">installation</a> documents for details.</p>
+
+    <p>There are three ways to configure and build Apache for
+    Cygwin, depending on how additional Apache modules should be
+    used:</p>
+
+    <ul>
+      <li>
+        <strong>Static linked version</strong> 
+
+        <p>To build a static linked version of <code>httpd</code>
+        including additional modules, use the following commands in
+        the shell:</p>
+<pre>
+  $ cd apache_1.3.x
+  $ ./configure [--enable-module=<i>module</i>|--add-module=<i>/path/to/module</i>]
+  $ make
+</pre>
+
+        <p>This will produce the required extra libraries or object
+        files for <i>module</i> and link everything to
+        <code>src/httpd.exe</code>.</p>
+      </li>
+
+      <li>
+        <strong>Shared core, DLL linked version ('one-for-all'
+        version)</strong> 
+
+        <p>To build a DLL version of <code>httpd</code> including
+        additional modules, use the following commands:</p>
+<pre>
+  $ cd apache_1.3.x
+  $ ./configure --enable-rule=SHARED_CORE \
+       [--enable-module=<i>module</i>|--add-module=<i>/path/to/module</i>]
+  $ make
+  $ make install
+</pre>
+
+        <p>This will produce the required extra libraries or object
+        files that hold all static linked code. Then
+        <code>dllwrap</code> and <code>dlltool</code> will export
+        all of those (including any additional module code) to the
+        shared <code>cyghttpd.dll</code> and create the
+        <code>libhttpd.a</code> import library which is required
+        for linking <code>httpd.exe</code>.</p>
+
+        <p><strong>Note:</strong> After <code>make install</code>
+        is performed you will find the resulting core DLL module
+        <code>cyghttpd.dll</code> within
+        <code>/usr/local/apache/libexec</code>. This is due to the
+        installation process. Please move the file to Apache's
+        <code>bin</code> directory, i.e.</p>
+<pre>
+  $ mv /usr/local/apache/libexec/cyghttpd.dll /usr/local/apache/bin
+</pre>
+        <p>or to an other place inside your <code>$PATH</code>, i.e.
+		  <code>/usr/bin</code> is used in the Cygwin Net Distribution
+		  layout. The core DLL module <code>cyghttpd.dll</code> is the
+        <i>only</i> file that should reside in
+        <code>/usr/local/apache/bin</code> directory. All other
+        shared DLL modules <code>mod_foo.dll</code> should be
+        located in <code>/usr/local/apache/libexec</code>.</p>
+      </li>
+
+      <li>
+        <strong>Shared DLL modules linked version</strong> 
+
+        <p>This method is <strong>ONLY</strong> supported using a 
+		  version of <code>ld.exe</code> which supports the 
+		  <code>--auto-import</code> option. Please see the 
+		  <a href="#req">requirements</a> section for more 
+		  information.</p>
+
+        <p>To build a dynamic loadable DLL version of
+        <code>httpd</code> which can load DLL modules on the fly
+        (at runtime), proceed as follows:</p>
+
+        <ul>
+          <li>
+            <p>First build Apache's shared core as follows:</p>
+<pre>
+  $ cd apache_1.3.x
+  $ ./configure --enable-rule=SHARED_CORE --enable-module=so \
+       [--enable-module=<i>module</i>|--add-module=<i>/path/to/module</i>] \
+       [--enable-shared=<i>module</i>]
+  $ make
+</pre>
+
+            <p>You will notice that there is a warning message
+            shown which lets you know that the shared core DLL
+            library <code>src/cyghttpd.dll</code> is missing while
+            trying to link the shared DLL modules
+            <code>mod_foo.dll</code>.</p>
+
+            <p>Unfortunately, during Apache's build process, the shared
+            modules are linked before the shared core import
+            library <code>src/cyghttpd.dll</code> has been made.
+            The shared modules depend on this import library, so
+            they cannot link for the first time you run
+            <code>make</code>.</p>
+          </li>
+
+          <li>
+            Re-run <code>make</code> to build the shared module
+            DLLs and install the whole package to the installation
+            directory: 
+<pre>
+  $ make
+  $ make install
+</pre>
+
+            <p>All shared modules are placed into
+            <code>libexec</code>, including the shared core DLL
+            <code>cyghttpd.dll</code>. When Apache's
+            <code>/bin/httpd</code> is started, it has to dynamically
+            link <code>cyghttpd.dll</code> during runtime; that is
+            why you have to place the shared core DLL
+            <code>cyghttpd.dll</code> to the same directory where
+            <code>httpd.exe</code> resides, i.e.
+            <code>/usr/local/apache/bin</code> or an other place
+				in your <code>$PATH</code>.</p>
+          </li>
+
+          <li>
+            Add configuration directives to
+            <code>conf/httpd.conf</code> to load and activate
+            shared DLL modules at runtime: 
+<pre>
+  # httpd.conf
+  [...]
+  LoadModule foo_module   libexec/mod_foo.dll
+  AddModule mod_foo.c
+  [...]
+</pre>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <strong>Using <code>apxs</code> to create shared DLL modules</strong> 
+
+        <p>To make the extending <code>httpd</code> with shared DLL
+        modules easier, you can use <a
+        href="programs/apxs.html"><code>apxs</code></a>.</p>
+
+        <p>Make sure you have configured
+        <code>$CFG_LDFLAGS_SHLIB</code> within <code>apxs</code> to
+        include the <code>--shared</code> directive and the path to
+        the shared code DLL <code>cyghttpd.dll</code>.</p>
+
+        <p>After performing <code>make install</code> you will
+        probably have the following lines within your
+        <code>apxs</code>:</p>
+<pre>
+  # apxs
+  [...]
+  my $CFG_LD_SHLIB      = q(dllwrap --export-all --output-def libhttpd.def --implib libhttpd.a --driver-name gcc);          # substituted via Makefile.tmpl
+  my $CFG_LDFLAGS_SHLIB = q(-g); # substituted via Makefile.tmpl 
+  my $CFG_LIBS_SHLIB    = q();        # substituted via Makefile.tmpl 
+  [...]
+</pre>
+        Change these to reflect the new compile options needed for
+        shared DLL modules as follows: 
+<pre>
+  # apxs
+  [...]
+  my $CFG_LD_SHLIB      = q(gcc);          # substituted via Makefile.tmpl
+  my $CFG_LDFLAGS_SHLIB = q(-g --shared); # substituted via Makefile.tmpl 
+  my $CFG_LIBS_SHLIB    = q(<i>/path/to/cyghttpd.dll</i>);        # substituted via Makefile.tmpl 
+  [...]
+</pre>
+
+        <p>Now you should be able to create a shared DLL module
+        from a <code>mod_foo.c</code> source file with:</p>
+<pre>
+  $ apxs -c mod_foo.c -o mod_foo.dll
+</pre>
+        Place the resulting DLL in Apache's <code>libexec</code>
+        directory, so the <code>dlopen()</code> function within the
+        compiled in <code>mod_so.c</code> module can find and load
+        it at runtime.
+      </li>
+    </ul>
+	 
+    
+	 <h2><a id="winsock" name="winsock">Using Win32 native socket 
+	 implementation instead</a></h2>
+
+    <p>Apache for Cygwin supports an option to use the Win32 native 
+	 socket calls instead of Cygwin's POSIX wrappers internally. To
+	 use the Win32 native socket calls configure Apache for Cygwin
+	 with the <code>CYGWIN_WINSOCK</code> configuration rule flag
+	 as follows:</p>
+<pre>
+  $ cd apache_1.3.x
+  $ ./configure --enable-rule=CYGWIN_WINSOCK [...]
+  $ make
+</pre>
+    <p>Using Win32 native socket calls is intended for performance
+	 reasons and as a hybrid way to interact with the underlying 
+	 native socket implementation.</p> 
+
+
+
+    <h2><a id="run" name="run">Running Apache for Cygwin</a></h2>
+
+    <p>Apache on Cygwin can be started and stopped in the same
+    manner as on Unix systems. You may also use the <a
+    href="programs/apachectl.html"><code>apachectl</code></a> tool
+    for starting and stopping Apache.</p>
+
+    <ul>
+      <li>
+        <strong>Starting Apache</strong> 
+
+        <p>If installed with the default Apache directory layout,
+        you can start <code>httpd</code> as follows:</p>
+<pre>
+  $ /usr/local/apache/bin/httpd
+</pre>
+
+        <p>An explicit background indicator (<code>&amp;</code>) is
+        not required. The parent process is automatically detached
+        from the current terminal. Check the global
+        <code>error_log</code> to see if Apache started cleanly
+        without any major problems.</p>
+      </li>
+
+      <li>
+        <strong>Stopping Apache</strong> 
+
+        <p>To stop Apache send at least a <code>SIGTERM</code>
+        signal to the parent <code>httpd</code> process:</p>
+<pre>
+  $ kill -TERM `cat /usr/local/apache/logs/httpd.pid`
+</pre>
+      </li>
+
+      <li>
+        <strong>Gracefully Restarting Apache</strong> 
+
+        <p>In order to update configuration directives and reload
+        the <code>httpd.conf</code> configuration file, send a
+        <code>SIGHUP</code> to the parent <code>httpd</code>
+        process:</p>
+<pre>
+  $ kill -HUP `cat /usr/local/apache/logs/httpd.pid`
+</pre>
+      </li>
+    </ul>
+
+    <h2><a id="serv" name="serv">Running Apache for Cygwin as a
+    Service</a></h2>
+
+    <p>Apache on Cygwin can be invoked as a Windows NT or Windows
+    2000 service. Cygwin has its own <code>cygrunsrv.exe</code>
+    facility to define, remove, start, and stop services as
+    follows:</p>
+
+    <ul>
+      <li>
+        <strong>Installing Apache as a new Service</strong> 
+
+        <p>Use the following statement to install
+        <code>httpd.exe</code> as a new service:</p>
+<pre>
+  $ cygrunsrv -I <i>service_name</i>-p /usr/local/apache/bin/httpd.exe [-a <i>arguments</i>] \
+      [-e <i>VAR=VALUE</i>] [-t auto|manual] [-u <i>user</i>] [-w <i>passwd</i>]
+</pre>
+
+        <p>Where <code>-a</code> is used to pass command line
+        arguments (such as <code>-DFOO</code> defines) to
+        <code>httpd.exe</code>, and <code>-e</code> is used to pass
+        environment variables. If necessary you may use the
+        <code>-t</code> options to set the autostart configuration
+        for the service. If you want the new service to run under a
+        different userid, you will have to supply the
+        <code>-u</code> and <code>-w</code> options.</p>
+      </li>
+
+      <li>
+        <strong>Starting Apache as a Service</strong> 
+
+        <p>After the new service is installed it can be started
+        using the following command:</p>
+<pre>
+  $ cygrunsrv -S <i>service_name</i>
+</pre>
+
+        <p>Check your process table and global
+        <code>error_log</code> file to ensure Apache has started
+        without any major problems.</p>
+      </li>
+
+      <li>
+        <strong>Stopping an Apache Service</strong> 
+
+        <p>A running Apache service may be stopped using the
+        following command:</p>
+<pre>
+  $ cygrunsrv -E <i>service_name</i>
+</pre>
+
+        <p>This will stop all running <code>httpd.exe</code>
+        processes and shutdown the HTTP service for the
+        machine.</p>
+      </li>
+
+      <li>
+        <strong>Removing an Apache Service</strong> 
+
+        <p>An installed Apache service may be removed from Windows
+        NT or Windows 2000 using the following command:</p>
+<pre>
+  $ cygrunsrv -R <i>service_name</i>
+</pre>
+
+        <p>This will remove your previously defined and installed
+        service from the machine.</p>
+      </li>
+    </ul>
+
+    <p>Please refer to the <code>man</code> page for
+    <code>cygrunsrv</code> and the Cygwin mailing list for further
+    details of how services are invoked.</p>
+
+    <p>Any additional contributions to this document and the Cygwin
+    support for Apache are highly welcome. Please send them to
+    Stipe Tolj <a
+    href="mailto:tolj&#64;wapme-systems.de">&lt;tolj&#64;wapme-systems.de&gt;</a>.</p>
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_info</title>
+
+  </head>
+  <!-- English revision: 1.14 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_info モジュール</h1>
+
+    <p>このモジュールはインストールされているすべてのモジュールや、
+    設定ファイルのディレクティブなど、サーバの設定の全体的な概要を
+    提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Extension<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a> mod_info.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    info_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a>
+    Apache 1.1 以降で使用可能。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#addmoduleinfo">AddModuleInfo</a></li>
+    </ul>
+
+    <h2>mod_info の使用法</h2>
+
+    <p>設定するには、以下を <code>access.conf</code>
+    ファイルに加えます。</p>
+<pre>
+&lt;Location /server-info&gt;
+SetHandler server-info
+&lt;/Location&gt;
+</pre>
+    サーバ設定の情報へのアクセスを制限するために、
+    <a href="core.html#location">location</a>
+    ディレクティブの中に <a href="core.html#limit">&lt;Limit&gt;</a>
+    節を入れるとよいかもしれません。
+
+    <p>いったん設定すると、<tt>http://your.host.dom/server-info</tt>
+    をアクセスするとサーバの情報を得られるようになります。</p>
+
+    <blockquote>
+      <p><strong>このモジュールは実行時に設定ファイルを読み込みます。
+      サーバの設定ファイルが最後にサーバに読み込まれた後に変更されている
+      場合には、表示されている内容は実行されているサーバの設定を反映して
+      <em>いない</em>かもしれないことに注意してください。
+      また、設定ファイルはサーバが実行されているユーザの権限で
+      読み込み許可が与えられている必要があります
+      (<a href="core.html#user"><samp>User</samp></a>
+      ディレクティブを参照してください)。
+      でなければ、ディレクティブの設定は表示されません。</strong></p>
+      <p><strong><samp>mod_info</samp>
+      がサーバに組み込まれている場合は、ディレクトリ<em>ごと</em>のファイル
+      (例えば、<samp>.htaccess</samp>) を含むすべての設定ファイルで
+      ハンドラを使用可能であるということにも注意してください。
+      これは、あなたのサイトではセキュリティに関連した問題があるかもしれません。
+      </strong></p>
+
+      <p>特に、このモジュールはシステムパス、ユーザ名/パスワード、
+      データベース名など、他の Apache モジュールの設定ディレクティブから
+      慎重に扱われるべき情報を漏らしてしまう可能性があります。
+      このモジュールがそのように動作するため、情報の流出を防ぐ方法はありません。
+      ですから、このモジュールはきちんとアクセス制御された環境でのみ
+      注意して使ってください。</p>
+
+    </blockquote>
+    <hr />
+
+    <h2><a id="addmoduleinfo"
+    name="addmoduleinfo">AddModuleInfo</a></h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> AddModuleInfo
+    <em>module-name string</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Extension<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_info<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> Apache 1.3 以降。
+
+
+    <p>これは、<em>string</em> の内容がモジュール <em>module-name</em>
+    の<strong>追加情報</strong> として HTML
+    として解釈され、表示されるようにします。例:</p>
+
+    <blockquote>
+<pre>
+AddModuleInfo mod_auth.c 'See &lt;A HREF="http://www.apache.org/docs/mod/mod_auth.html"&gt;http://www.apache.org/docs/mod/mod_auth.html&lt;/A&gt;'
+</pre>
+    </blockquote>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

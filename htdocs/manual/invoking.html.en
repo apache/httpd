@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Starting Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Starting Apache</h1>
+
+    <ul>
+      <li><a href="#windows">Starting Apache on Windows</a></li>
+
+      <li>
+        <a href="#unix">Starting Apache on Unix</a> 
+
+        <ul>
+          <li><a href="#errors">Errors During Start-up</a></li>
+
+          <li><a href="#boot">Starting at Boot-Time</a></li>
+
+          <li><a href="#info">Additional Information</a></li>
+        </ul>
+      </li>
+    </ul>
+    <hr />
+
+    <h2><a id="windows" name="windows">Starting Apache On
+    Windows</a></h2>
+
+    <p>On Windows, Apache is normally run as a service on Windows
+    NT, or as a console application on Windows 95. This does not
+    apply in its full extend for the Cygwin platform. For details,
+    see <a href="windows.html#run">running Apache for
+    Windows</a>.</p>
+
+    <h2><a id="unix" name="unix">Starting Apache on Unix</a></h2>
+
+    <p>On Unix, the <a href="programs/httpd.html">httpd</a> program
+    is run as a daemon which executes continuously in the
+    background to handle requests. It is possible to have Apache
+    invoked by the Internet daemon <code>inetd</code> each time a
+    connection to the HTTP service is made using the <a
+    href="mod/core.html#servertype">ServerType</a> directive, but
+    this is not recommended.</p>
+
+    <p>If the <a href="mod/core.html#port">Port</a> specified in
+    the configuration file is the default of 80 (or any other port
+    below 1024), then it is necessary to have root privileges in
+    order to start Apache, so that it can bind to this privileged
+    port. Once the server has started and completed a few
+    preliminary activities such as opening its log files, it will
+    launch several <em>child</em> processes which do the work of
+    listening for and answering requests from clients. The main
+    <code>httpd</code> process continues to run as the root user,
+    but the child processes run as a less privileged user. This is
+    controlled by Apache's <a
+    href="server-wide.html#process">process creation
+    directives</a>.</p>
+
+    <p>The first thing that <code>httpd</code> does when it is
+    invoked is to locate and read the <a
+    href="configuring.html">configuration file</a>
+    <code>httpd.conf</code>. The location of this file is set at
+    compile-time, but it is possible to specify its location at run
+    time using the <code>-f</code> command-line option as in</p>
+
+    <blockquote>
+      <code>/usr/local/apache/bin/httpd -f
+      /usr/local/apache/conf/httpd.conf</code>
+    </blockquote>
+
+    <p>As an alternative to invoking the <code>httpd</code> binary
+    directly, a shell script called <a
+    href="programs/apachectl.html">apachectl</a> is provided which
+    can be used to control the daemon process with simple commands
+    such as <code>apachectl start</code> and <code>apachectl
+    stop</code>.</p>
+
+    <p>If all goes well during startup, the server will detach from
+    the terminal and the command prompt will return almost
+    immediately. This indicates that the server is up and running.
+    You can then use your browser to connect to the server and view
+    the test page in the <a
+    href="mod/core.html#documentroot">DocumentRoot</a> directory
+    and the local copy of the documentation linked from that
+    page.</p>
+
+    <h3><a id="errors" name="errors">Errors During
+    Start-up</a></h3>
+
+    <p>If Apache suffers a fatal problem during startup, it will
+    write a message describing the problem either to the console or
+    to the <a href="mod/core.html#errorlog">ErrorLog</a> before
+    exiting. One of the most common error messages is "<code>Unable
+    to bind to Port ...</code>". This message is usually caused by
+    either:</p>
+
+    <ul>
+      <li>Trying to start the server on a privileged port when not
+      logged in as the root user; or</li>
+
+      <li>Trying to start the server when there is another instance
+      of Apache or some other web server already bound to the same
+      port.</li>
+    </ul>
+
+    <p>For further trouble-shooting instructions, consult the
+    Apache <a href="misc/FAQ.html">FAQ</a>.</p>
+
+    <h3><a id="boot" name="boot">Starting at Boot-Time</a></h3>
+
+    <p>If you want your server to continue running after a system
+    reboot, you should add a call to <code>httpd</code> or
+    <code>apachectl</code> to your system startup files (typically
+    <code>rc.local</code> or a file in an <code>rc.N</code>
+    directory). This will start Apache as root. Before doing this
+    ensure that your server is properly configured for security and
+    access restrictions. The <code>apachectl</code> script is
+    designed so that it can often be linked directly as an init
+    script, but be sure to check the exact requirements of your
+    system.</p>
+
+    <h3><a id="info" name="info">Additional Information</a></h3>
+
+    <p>Additional information about the command-line options of <a
+    href="programs/httpd.html">httpd</a> and <a
+    href="programs/apachectl.html">apachectl</a> as well as other
+    support programs included with the server is available on the
+    <a href="programs/">Server and Supporting Programs</a> page.
+    There is also documentation on all the <a
+    href="mod/">modules</a> included with the Apache distribution
+    and the <a href="mod/directives.html">directives</a> that they
+    provide.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_access</title>
+
+  </head>
+  <!-- English revision: 1.34 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_access モジュール</h1>
+
+    <p>このモジュールはクライアントのホスト名、IP
+    アドレス、その他のクライアントのリクエストの特徴に基づいた
+    アクセス制御機能を提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a> mod_access.c<br />
+     <a href="module-dict.html#moduleidentifier"
+     rel="help"><strong>モジュール識別子:</strong></a>
+     access_module</p>
+
+    <h2>概要</h2>
+
+    <p>mod_access により提供されるディレクティブはサーバの特定の部分への
+    アクセスを制御するために <code><a href="core.html#directory"
+    >&lt;Directory&gt;</a>, <a href="core.html#files">&lt;Files&gt;</a
+    ></code>, <code><a href="core.html#location">&lt;Location&gt;</a
+    ></code> と <code><a href="core.html#accessfilename">.htaccess</a
+    ></code> ファイルで使用されます。クライアントのホスト名、IP
+    アドレスや <a href="../env.html">環境変数</a
+    >として取得された、その他のリクエストの特徴に基づいて
+    アクセス制御を行なうことができます。<code>Allow</code> と
+    <code>Deny</code> ディレクティブはどのようなクライアントにアクセスを
+    許可する、しないかを指定するために使用されます。一方、
+    <code>Order</code> ディレクティブはデフォルトのアクセス状態と、
+    <code>Allow</code> ディレクティブと <code>Deny</code>
+    ディレクティブとのお互いへの影響の仕方を設定します。
+    </p>
+
+    <p>ホストによるアクセス制限とパスワードによる認証を同時に
+    行なうことが可能です。その場合、その二つの制限の関係を指定するために
+    <a href="core.html#satisfy">Satisfy</a>
+    ディレクティブを使用します。</p>
+
+    <p>一般的には、アクセス制限ディレクティブはすべてのアクセスメソッド
+    (<code>GET</code>, <code>PUT</code>, <code>POST</code> など)
+    に適用されます。そして、ほとんどの場合これが望ましい動作です。
+    しかし、<a href="core.html#limit">&lt;Limit&gt;</a>
+    セクションの中にディレクティブを書くことで、
+    一部のメソッドにのみ制限をかけることもできます。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#allow">Allow</a></li>
+
+      <li><a href="#deny">Deny</a></li>
+
+      <li><a href="#order">Order</a></li>
+    </ul>
+
+    <p><a href="core.html#satisfy">Satisfy</a> と
+    <a href="core.html#require">Require</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="allow" name="allow">Allow</a> <a id="allowfromenv"
+    name="allowfromenv">ディレクティブ</a></h2>
+
+    <p>
+     <a  href="directive-dict.html#syntax"
+    rel="Help"><strong>構文:</strong></a> Allow from 
+    all|<em>host</em>|env=<em>env-variablename</em> 
+    [<em>host</em>|env=<em>env-variablename</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、
+    .htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="Help"><strong>上書き:</strong></a> Limit<br />
+     <a href="directive-dict.html#status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="Help"><strong>モジュール:</strong></a> mod_access</p>
+
+    <p><code>Allow</code> ディレクティブはどのホストが
+    サーバのある領域をアクセスできるかに影響を与えます。
+    アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
+    環境変数として取得された、その他のクライアントのリクエストの
+    特徴によって制御することができます。</p> 
+
+    <p>このディレクティブの最初の引数は常に <code>from</code> です。
+    それに続く引数は三つの違った形式があります。<code>Allow from
+    all</code> が指定されていれば、すべてのホストにアクセスを許可し、
+    アクセス制限は下で説明されているように、<code>Deny</code>
+    ディレクティブと <code>Order</code>
+    ディレクティブの設定で決まります。
+    特定のホストやホスト群にのみサーバへのアクセスを許可するためには、
+    以下のどれかの形式で <em>host</em> を指定することができます:</p>
+
+    <dl>
+      <dt>ドメイン名 (の一部)</dt>
+
+      <dd>例: <code>Allow from apache.org</code><br />
+      この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
+      各部分が完全に合うものだけに適用されますので、上の例は
+      <code>foo.apache.org</code> にはマッチしますが、
+      <code>fooapache.org</code> にはマッチしません。
+      この設定をすると、サーバは
+      <a href="core.html#hostnamelookups">HostnameLookups</a>
+      の設定に関わらず、クライアントの IP アドレスに対して
+      DNS の二重の逆引きを行ないます。これは IP アドレスで DNS
+      の逆引きを行なってそれに関連付けられたホスト名を見つけ、
+      それからホスト名で正引きを行なってオリジナルの IP
+      アドレスと一致するか確認します。アクセスは正引きと逆引きに矛盾が無く、
+      ホスト名が一致した場合に限り許可されます。</dd>
+
+      <dt>完全な IP アドレス</dt>
+
+      <dd>例: <code>Allow from 10.1.2.3</code><br />
+      アクセスを許可する IP アドレスです。</dd>
+
+      <dt>IP アドレスの一部</dt>
+
+      <dd>例: <code>Allow from 10.1</code><br />
+      サブネットの制限用の、IP
+      アドレスの最初の一つから三つまでのバイトです。</dd>
+
+      <dt>ネットワーク/ネットマスク の対</dt>
+
+      <dd>例: <code>Allow from 10.1.0.0/255.255.0.0</code><br />
+      ネットワーク a.b.c.d とネットマスク w.x.y.z です。
+      より細粒度のサブネット制限用です。(Apache 1.3 以降)</dd>
+
+      <dt>ネットワーク/nnn CIDR 指定</dt>
+
+      <dd>例: <code>Allow from 10.1.0.0/16</code><br />
+      ネットマスクが nnn の上位ビットが 1
+      となっているものからなること以外は前のものと同じです。
+      (Apache 1.3 以降)</dd>
+    </dl>
+
+    <p>注: 最後の三つの例はまったく同じホストに合います。</p>
+
+
+    <p><code>Allow</code> ディレクティブの引数の三つ目の形式は、
+    <a href="../env.html">環境変数</a>
+    の存在によりアクセスの制御を行なえるようにするものです。
+    <code>Allow from env=</code><em>variablename</em>
+    が指定されていると、環境変数 <em>variablename</em>
+    が存在した場合にリクエストはアクセスを許可されます。サーバは
+    <a href="mod_setenvif.html">mod_setenvif</a>
+    のディレクティブにより、クライアントのリクエスト
+    の特徴に基づいて柔軟に環境変数を設定する機能を提供します。
+    ですから、このディレクティブはクライアントの
+    <code>User-Agent</code> (ブラウザの種類)、<code>Referer</code>
+    や他の HTTP リクエストのヘッダフィールドなどに基づいて
+    アクセス許可をするために使うことができます。
+    </p>
+
+    <p>例:</p>
+
+    <blockquote>
+<pre>
+SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+&lt;Directory /docroot&gt;
+    Order Deny,Allow
+    Deny from all
+    Allow from env=let_me_in
+&lt;/Directory&gt;
+</pre>
+    </blockquote>
+
+    <p>この場合、user-agent の文字列が <tt>KnockKnock/2.0</tt>
+    で始まるブラウザのみがアクセスを許可され、
+    他のものはアクセスを拒否されます。</p>
+
+    <p><a href="#deny">Deny</a>, <a href="#order">Order</a>,
+    <a href="mod_setenvif.html#setenvif">SetEnvIf</a>
+    ディレクティブも参照してください。</p>
+    <hr />
+
+    <h2><a id="deny" name="deny">Deny</a> <a id="denyfromenv"
+    name="denyfromenv">ディレクティブ</a></h2>
+
+    <p>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> Deny from 
+    all|<em>host</em>|env=<em>variablename</em> 
+    [<em>host</em>|env=<em>variablename</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a> ディレクトリ、
+    .htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> Limit<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_access</p>
+
+    <p>このディレクティブはホスト名、IP
+    アドレス、環境変数に基づいてサーバへのアクセスを制限します。
+    <code>Deny</code> ディレクティブの引数は <a href="#allow">Allow</a>
+    ディレクティブとまったく同じです。</p>
+
+    <p><a href="#allow">Allow</a>, <a href="#order">Order</a>,
+    <a href="mod_setenvif.html#setenvif">SetEnvIf</a>
+    も参照してください。</p>
+    <hr />
+
+    <h2><a id="order" name="order">Order ディレクティブ</a></h2>
+
+    <p>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> Order
+    <em>ordering</em><br />
+     <a href="directive-dict.html#default"
+    rel="help"><strong>デフォルト:</strong></a> <code>Order
+    Deny,Allow</code><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a> ディレクトリ、
+    .htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> Limit<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_access</p>
+
+    <p><code>Order</code> ディレクティブはデフォルトのアクセスの状態と
+    <a href="#allow">Allow</a> ディレクティブと <a href="#deny">Deny</a>
+    ディレクティブが評価される順番を制御します。
+    <em>Ordering</em> は以下のどれかです。</p>
+
+    <dl>
+      <dt>Deny,Allow</dt>
+
+      <dd><code>Deny</code> ディレクティブが <code>Allow</code>
+      ディレクティブの前に評価されます。
+      アクセスはデフォルトで許可されます。<code>Deny</code>
+      ディレクティブに合わないか、<code>Allow</code>
+      ディレクティブに合うクライアントはアクセスを許可されます。</dd>
+
+      <dt>Allow,Deny</dt>
+
+      <dd><code>Allow</code> ディレクティブが <code>Deny</code>
+      ディレクティブの前に評価されます。
+      アクセスはデフォルトで拒否されます。<code>Allow</code>
+      ディレクティブに合わないか、<code>Deny</code>
+      ディレクティブに合うクライアントはアクセスを拒否されます。
+      </dd>
+
+      <dt>Mutual-failure</dt>
+
+      <dd><code>Allow</code> のリストに現れて、<code>Deny</code>
+      のリストに現れないホストのみがアクセスを許可されます。
+      この順番付けは <code>Order Allow,Deny</code> と同じ効果を持ち、
+      その設定の方が好ましいために非推奨となっています。</dd>
+    </dl>
+
+    <p>キーワードはコンマで分離することだけが可能です。
+    間に空白があってはいけません。どの場合でも、<code>Allow</code> と
+    <code>Deny</code> 文は全て評価されるということに注意してください。
+    </p>
+
+    <p>以下の例では、apache.org
+    ドメインのすべてのホストはアクセスを許可されます。
+    他のすべてのホストはアクセスを拒否されます。</p>
+
+    <blockquote>
+      <code>Order Deny,Allow<br />
+       Deny from all<br />
+       Allow from apache.org<br />
+      </code>
+    </blockquote>
+
+    <p>次の例では、foo.apache.org サブドメインにあるホスト以外の、
+    apache.org ドメインのすべてのホストがアクセスを許可されます。
+    apache.org
+    ドメインでないホストは、デフォルトの状態がアクセス拒否のため、
+    サーバへのアクセスを拒否されます。</p>
+
+    <blockquote>
+      <code>Order Allow,Deny<br />
+       Allow from apache.org<br />
+       Deny from foo.apache.org<br />
+      </code>
+    </blockquote>
+
+    <p>一方、上の例の <code>Order</code> が <code>Deny,Allow</code>
+    に変わっていれば、すべのホストにアクセスが許可されます。
+    これは、設定ファイル中の実際の順番に関わらず、
+    <code>Allow from apache.org</code> が最後に評価されて、
+    <code>Deny from foo.apache.org</code> を上書きするからです。
+    <code>apache.org</code>
+    ドメインにないホストも、デフォルトの状態が <em>allow</em>
+    に変化するために、アクセスを許可されます。
+    </p>
+
+    <p><code>Order</code>
+    ディレクティブはデフォルトのアクセスの状態に影響を与えるので、
+    <code>Allow</code> ディレクティブと <code>Deny</code>
+    ディレクティブが無くても、サーバのアクセスに影響を与えることができます。
+    たとえば、</p>
+
+    <blockquote>
+      <code>&lt;Directory /www&gt;<br />
+       &nbsp;&nbsp;Order Allow,Deny<br />
+       &lt;/Directory&gt;</code>
+    </blockquote>
+
+    <p>はデフォルトのアクセス状態が <em>deny</em> になるため、
+    <code>/www</code> ディレクトリへのすべてのアクセスを拒否します。
+    </p>
+
+    <p><code>Order</code>
+    ディレクティブはサーバの設定処理の各段階でだけ
+    アクセスディレクティブの処理の順番を変更します。これは、たとえば、
+    <code>Order</code> ディレクティブの設定に関わらず、
+    &lt;Location&gt; セクションの <code>Allow</code> ディレクティブや
+    <code>Deny</code> ディレクティブは、&lt;Directory&gt; セクションや
+    <code>.htaccess</code> ファイルの <code>Allow</code>
+    ディレクティブや <code>Deny</code>
+    ディレクティブよりも常に後に評価されるということを意味します。
+    設定セクションのマージの詳細については、
+    <a href="../sections.html">Directory,Location, Files
+    セクションの動作方法</a> を参照してください。</p>
+
+    <p><a href="#deny">Deny</a> と <a href="#allow">Allow</a>
+    も参照してください。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Module mod_log_agent</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_log_agent</h1>
+
+    <p>This module provides for logging of the client user
+    agents.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_log_agent.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    agent_log_module</p>
+
+    <h2>Summary</h2>
+
+    <p>This module is provided strictly for compatibility with NCSA
+    httpd, and is deprecated. We recommend you use <a
+    href="mod_log_config.html">mod_log_config</a> instead.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#agentlog">AgentLog</a></li>
+    </ul>
+
+    <p>See also: <a
+    href="mod_log_config.html#customlog">CustomLog</a> and <a
+    href="mod_log_config.html#logformat">LogFormat</a>.</p>
+    <hr />
+
+    <h2><a id="agentlog" name="agentlog">AgentLog</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AgentLog
+    <em>file-pipe</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>AgentLog
+    logs/agent_log</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_log_agent 
+
+    <p>The AgentLog directive sets the name of the file to which
+    the server will log the UserAgent header of incoming requests.
+    <em>File-pipe</em> is one of</p>
+
+    <dl>
+      <dt>A filename</dt>
+
+      <dd>A filename relative to the <a
+      href="core.html#serverroot">ServerRoot</a>.</dd>
+
+      <dt>`|' followed by a command</dt>
+
+      <dd>A program to receive the agent log information on its
+      standard input. Note the a new program will not be started
+      for a VirtualHost if it inherits the AgentLog from the main
+      server.</dd>
+    </dl>
+    <strong>Security:</strong> if a program is used, then it will
+    be run under the user who started httpd. This will be root if
+    the server was started by root; be sure that the program is
+    secure. 
+
+    <p><strong>Security:</strong> See the <a
+    href="../misc/security_tips.html">security tips</a> document
+    for details on why your security could be compromised if the
+    directory where logfiles are stored is writable by anyone other
+    than the user that starts the server.</p>
+
+    <p>This directive is provided for compatibility with NCSA
+    1.4. The same result can be obtained by using the <a
+    href="mod_log_config.html#logformat">LogFormat</a> and <a
+    href="mod_log_config.html#customlog">CustomLog</a> directives as
+    shown in the following example:</p>
+
+<pre>
+    LogFormat "%{User-agent}i" agent
+    CustomLog logs/agent_log agent
+</pre>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

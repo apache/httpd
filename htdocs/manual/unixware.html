@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Compiling Apache under UnixWare</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Compiling Apache under UnixWare</h1>
+    To compile a working copy of Apache under UnixWare, there are
+    several other steps you may need to take. These prevent such
+    problems as zombie processes, bind errors, and accept errors,
+    to name a few. 
+
+    <h2>UnixWare 1.x</h2>
+    Make sure that USE_FCNTL_SERIALIZE_ACCEPT is defined (if not
+    defined by Apache autoconfiguration). If using the UnixWare
+    <em>cc</em> compiler, and you still see accept() errors, don't
+    use compiler optimization, or get <em>gcc</em>. 
+
+    <h2>UnixWare 2.0.x</h2>
+    SCO patch <a
+    href="ftp://ftp.sco.com/UW20/tf2163.txt">tf2163</a> is required
+    in order for Apache to work correctly on UnixWare 2.0.x. See <a
+    href="http://www.sco.com">http://www.sco.com</a> for UnixWare
+    patch information. 
+
+    <p>In addition, make sure that USE_FCNTL_SERIALIZE_ACCEPT is
+    defined (if not defined by Apache autoconfiguration). To reduce
+    instances of connections in FIN_WAIT_2 state, you may also want
+    to define NO_LINGCLOSE (Apache 1.2 only).</p>
+
+    <h2>UnixWare 2.1.x</h2>
+    SCO patch <a
+    href="ftp://ftp.sco.com/UW21/ptf3123b.txt">ptf3123</a> is
+    required in order for Apache to work correctly on UnixWare
+    2.1.x. See <a href="http://www.sco.com">http://www.sco.com</a>
+    for UnixWare patch information. 
+
+    <p><strong>NOTE:</strong> Unixware 2.1.2 and later already have
+    patch ptf3123 included</p>
+
+    <p>In addition, make sure that USE_FCNTL_SERIALIZE_ACCEPT is
+    defined (if not defined by Apache autoconfiguration). To reduce
+    instances of connections in FIN_WAIT_2 state, you may also want
+    to define NO_LINGCLOSE (Apache 1.2 only).</p>
+
+    <p>Thanks to Joe Doupnik &lt;JRD@cc.usu.edu&gt; and Rich Vaughn
+    &lt;rvaughn@aad.com&gt; for additional info for UnixWare
+    builds.</p>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

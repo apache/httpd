@@ -1,0 +1,4193 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache Core Features</title>
+  </head>
+  <!-- English Revision: 1.262 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
+  alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache コア機能</h1>
+
+    <p>以下のディレクティブは Apache
+    のコア機能をコントロールするもので、常に利用可能です。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#acceptfilter">AcceptFilter</a></li>
+
+      <li><a href="#acceptmutex">AcceptMutex</a></li>
+
+      <li><a href="#accessconfig">AccessConfig</a></li>
+
+      <li><a href="#accessfilename">AccessFileName</a></li>
+
+      <li><a href="#adddefaultcharset">AddDefaultCharset</a></li>
+
+      <li><a href="#addmodule">AddModule</a></li>
+
+      <li><a href="#allowoverride">AllowOverride</a></li>
+
+      <li><a href="#authname">AuthName</a></li>
+
+      <li><a href="#authtype">AuthType</a></li>
+
+      <li><a href="#AuthDigestRealmSeed">AuthDigestRealmSeed</a></li>
+
+      <li><a href="#bindaddress">BindAddress</a></li>
+
+      <li><a href="#bs2000account">BS2000Account</a></li>
+
+      <li><a href="#cgicommandargs">CGICommandArgs</a></li>
+
+      <li><a href="#clearmodulelist">ClearModuleList</a></li>
+
+      <li><a href="#contentdigest">ContentDigest</a></li>
+
+      <li><a href="#coredumpdirectory">CoreDumpDirectory</a></li>
+
+      <li><a href="#defaulttype">DefaultType</a></li>
+
+      <li><a href="#directory">&lt;Directory&gt;</a></li>
+
+      <li><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
+
+      <li><a href="#documentroot">DocumentRoot</a></li>
+
+      <li><a href="#ebcdicconvert">EBCDICConvert</a></li>
+
+      <li><a
+      href="#ebcdicconvertbytype">EBCDICConvertByType</a></li>
+
+      <li><a href="#ebcdickludge">EBCDICKludge</a></li>
+
+      <li><a href="#enableexceptionhook">EnableExceptionHook</a></li>
+
+      <li><a href="#errordocument">ErrorDocument</a></li>
+
+      <li><a href="#errorlog">ErrorLog</a></li>
+
+      <li><a href="#fileetag">FileETag</a></li>
+
+      <li><a href="#files">&lt;Files&gt;</a></li>
+
+      <li><a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+
+      <li><a href="#group">Group</a></li>
+
+      <li><a href="#hostnamelookups">HostnameLookups</a></li>
+
+      <li><a href="#identitycheck">IdentityCheck</a></li>
+
+      <li><a href="#ifdefine">&lt;IfDefine&gt;</a></li>
+
+      <li><a href="#ifmodule">&lt;IfModule&gt;</a></li>
+
+      <li><a href="#include">Include</a></li>
+
+      <li><a href="#keepalive">KeepAlive</a></li>
+
+      <li><a href="#keepalivetimeout">KeepAliveTimeout</a></li>
+
+      <li><a href="#limit">&lt;Limit&gt;</a></li>
+
+      <li><a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
+
+      <li><a href="#limitinternalrecursion">LimitInternalRecursion</a></li>
+
+      <li><a href="#limitrequestbody">LimitRequestBody</a></li>
+
+      <li><a href="#limitrequestfields">LimitRequestFields</a></li>
+
+      <li><a
+      href="#limitrequestfieldsize">LimitRequestFieldsize</a></li>
+
+      <li><a href="#limitrequestline">LimitRequestLine</a></li>
+
+      <li><a href="#listen">Listen</a></li>
+
+      <li><a href="#listenbacklog">ListenBacklog</a></li>
+
+      <li><a href="#location">&lt;Location&gt;</a></li>
+
+      <li><a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
+
+      <li><a href="#lockfile">LockFile</a></li>
+
+      <li><a href="#loglevel">LogLevel</a></li>
+
+      <li><a href="#maxclients">MaxClients</a></li>
+
+      <li><a
+      href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+
+      <li><a
+      href="#maxrequestsperchild">MaxRequestsPerChild</a></li>
+
+      <li><a href="#maxspareservers">MaxSpareServers</a></li>
+
+      <li><a href="#minspareservers">MinSpareServers</a></li>
+
+      <li><a href="#namevirtualhost">NameVirtualHost</a></li>
+
+      <li><a href="#options">Options</a></li>
+
+      <li><a href="#pidfile">PidFile</a></li>
+
+      <li><a href="#port">Port</a></li>
+
+      <li><a href="#protocolreqcheck">ProtocolReqCheck</a></li>
+
+      <li><a href="#require">Require</a></li>
+
+      <li><a href="#resourceconfig">ResourceConfig</a></li>
+
+      <li><a href="#rlimitcpu">RLimitCPU</a></li>
+
+      <li><a href="#rlimitmem">RLimitMEM</a></li>
+
+      <li><a href="#rlimitnproc">RLimitNPROC</a></li>
+
+      <li><a href="#satisfy">Satisfy</a></li>
+
+      <li><a href="#scoreboardfile">ScoreBoardFile</a></li>
+
+      <li><a
+      href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
+
+      <li><a href="#sendbuffersize">SendBufferSize</a></li>
+
+      <li><a href="#serveradmin">ServerAdmin</a></li>
+
+      <li><a href="#serveralias">ServerAlias</a></li>
+
+      <li><a href="#servername">ServerName</a></li>
+
+      <li><a href="#serverpath">ServerPath</a></li>
+
+      <li><a href="#serverroot">ServerRoot</a></li>
+
+      <li><a href="#serversignature">ServerSignature</a></li>
+
+      <li><a href="#servertokens">ServerTokens</a></li>
+
+      <li><a href="#servertype">ServerType</a></li>
+
+      <li><a href="#shmemuidisuser">ShmemUIDisUser</a></li>
+
+      <li><a href="#startservers">StartServers</a></li>
+
+      <li><a href="#threadsperchild">ThreadsPerChild</a></li>
+
+      <li><a href="#threadstacksize">ThreadStackSize</a></li>
+
+      <li><a href="#timeout">TimeOut</a></li>
+
+      <li><a href="#usecanonicalname">UseCanonicalName</a></li>
+
+      <li><a href="#user">User</a></li>
+
+      <li><a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="acceptfilter" name="acceptfilter">AcceptFilter
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AcceptFilter
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>AcceptFilter
+    on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br /> 
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> AcceptFilter は
+    Apache 1.3.22 以降で利用可能です。
+ 
+    <p><code>AcceptFilter</code> は、BSD
+    に特有のフィルタの最適化をコントロールします。
+    この機能はデフォルトで組み込まれます。
+    そして、システムがこの機能をサポート
+    (setsocketopt() で SO_ACCEPTFILTER オプションが利用できる) 
+    していれば、デフォルトで有効となります。
+    現在のところ、FreeBSD においてのみサポートされています。</p>
+
+    <p>詳しい情報を得るには、<a
+    href="../misc/perf-bsd44.html">性能のヒント</a>のフィルタセクションを
+    見てください。</p>
+
+    <p>なお、コンパイル時に <code>AP_ACCEPTFILTER_OFF</code>
+    フラグを利用すればデフォルトを無効にすることが可能です。
+    <code>httpd -V</code> と <code>httpd -L</code>
+    を利用することによって、コンパイル時のデフォルトと SO_ACCEPTFILTER
+    が有効になっているかどうかを参照することができます。</p>
+
+    <hr />
+
+    <h2><a id="acceptmutex" name="acceptmutex">AcceptMutex
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AcceptMutex
+    uslock|pthread|sysvsem|fcntl|flock|os2sem|tpfcore|none|default<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>AcceptMutex
+    default</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core <br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> AcceptMutex は
+    Apache 1.3.21 以降で利用可能です。
+
+    <p><code>AcceptMutex</code> は、accept() においてどの方法の
+    mutex を利用するのかを指定します。なお、利用できる mutex
+    はコンパイル時に決定され、
+    プラットフォームによってはすべての方法は利用できないことがあります。
+    利用できる mutex は、コマンドラインオプションで
+    <code>httpd -V</code> を指定すると一覧が表示されます。</p>
+
+    <p>コンパイル時のフラグとして
+    <code>-D HAVE_METHOD_SERIALIZED_ACCEPT</code> 
+    を指定することによって、異なる方法を追加することもでき、
+    特定のプラットフォーム向けに <code>include/ap_config.h</code>
+    を編集することも可能です。</p>
+
+    <p>このディレクティブは Microsoft Windows
+    に対して指定しても効果はありません</p>
+
+    <p>詳しい情報については<a
+     href="../misc/perf-tuning.html">パフォーマンスチューンニング</a>を
+    参照してください。</p>
+
+    <hr />
+
+    <h2><a id="accessconfig" name="accessconfig">AccessConfig
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AccessConfig
+    <em>file-path</em>|<em>directory-path</em>|<em>wildcard-path</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>AccessConfig
+    conf/access.conf</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core <br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>Apache 1.3.13
+    以降でのみ、ファイル名の代わりにディレクトリパスを指定できます。
+    このディレクティブはバージョン 2.0 以降には存在しません。
+
+    <p><a href="#resourceconfig">ResourceConfig</a> ファイルを読み込んだ後、
+    それに加えて多くのディレクティブをここで記したファイルから読み込みます。
+    <em>File-path</em> は、<a href="#serverroot">ServerRoot</a>
+    で記したパスからの、相対パスです。<br />
+    なお、この機能を無効にするには次のように指定します。</p>
+
+    <blockquote>
+      <code>AccessConfig /dev/null</code>
+    </blockquote>
+    Win32 の場合
+
+    <blockquote>
+      <code>AccessConfig nul</code>
+    </blockquote>
+
+    以前は、このファイルには <a href="#directory">&lt;Directory&gt;</a>
+    セクションのみが書かれていました。
+    現在ではサーバ設定ファイルに記述できることすべてが記述可能になっています。
+    ただ、Apache のバージョン 1.3.4 以降では、
+    Apache と共に配布されているデフォルトの <code>access.conf</code> 
+    ファイルにはコメントしか書かれておらず、
+    すべてのディレクティブが主となるサーバ設定ファイルの
+    <code>httpd.conf</code> に記述されています。
+
+    <p>
+    もし、この <code>AccessConfig</code>
+    ディレクティブに、ファイルではなくディレクトリが指定されれば、
+    Apache はそのディレクトリ内のすべてのファイルを読み込み、
+    それらを設定ファイルとして処理します。</p>
+    <p>代わりに、ワイルドカードを使って範囲を絞ることもできます。
+    すなわち、*.conf ファイルのみ、といったように。</p>
+    <p>デフォルトでは指定されたディレクトリの「<em>どのような</em>」
+    ファイルでも設定ファイルとして読み込まれます。</p>
+    <p>ですから誤って (例えばエディタでテンポラリファイルを作成する等)
+    ファイルを置かないように注意してください。</p>
+
+    <p><strong>参照:</strong> <a href="#include">Include</a>,<a
+    href="#resourceconfig">ResourceConfig</a>.</p>
+    <hr />
+
+    <h2><a id="accessfilename" name="accessfilename">AccessFileName
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AccessFileName
+    <em>filename</em> [<em>filename</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>AccessFileName
+    .htaccess</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> AccessFileName は Apache 1.3
+    以降においてのみ複数のファイル名を指定できます。
+
+    <p>ドキュメントをクライアントに返すとき、サーバはディレクトリに
+    対してアクセス設定ファイルが有効になっていれば、そのドキュメントへの
+    パス上にあるすべてのディレクトリからここで指定された名前の一覧の中で
+    最初に見つかったファイルを、それぞれアクセス制御ファイルとして読み込みます。
+    例えば:</p>
+
+    <blockquote>
+      <code>AccessFileName .acl</code>
+    </blockquote>
+    のように指定されていると、 /usr/local/web/index.html
+    を返す場合、以下のようにして無効にされていない限り、
+    ドキュメントを返す前に /.acl, /usr/.acl, /usr/local/.acl,
+    /usr/local/web/.acl からディレクティブを読み込みます。
+
+    <blockquote>
+      <code>&lt;Directory /&gt;<br />
+       AllowOverride None<br />
+       &lt;/Directory&gt;</code>
+    </blockquote>
+
+    <p><strong>参照:</strong> <a
+    href="#allowoverride">AllowOverride</a> 及び <a
+    href="../configuring.html">設定ファイル</a></p>
+    <hr />
+
+    <h2><a id="adddefaultcharset"
+    name="adddefaultcharset">AddDefaultCharset ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AddDefaultCharset
+    On|Off|<em>charset</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> すべて<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    <code>AddDefaultCharset Off</code><br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+    AddDefaultCharset は Apache 1.3.12 以降で利用可能です。
+
+    <p>このディレクティブは、HTTP ヘッダにコンテントタイプパラメータを
+    持たないレスポンスに追加される文字セットの名前を指定します。
+    これは、ドキュメント内の META
+    タグで指定されたどのような文字セットも無効にします。
+    <code>AddDefaultCharset Off</code>
+    という設定により、この機能は無効になります。
+    <code>AddDefaultCharset On</code> にすれば、ディレクティブの要求通り
+    Apache 内部のデフォルト文字セット <code>iso-8859-1</code>
+    に設定します。また、他の <em>charset</em> も指定できます。</p>
+    
+    <p>例:</p>
+
+    <blockquote>
+    <code>AddDefaultCharset utf-8</code>
+    </blockquote>
+
+    <p><b>注意:</b> これはデフォルトで Apache
+    が生成するステータスページ ('404 Not Found' や
+    '301 Moved Permanently' など) には影響<b>しません</b>。
+    それらは、(ページの内容がハードコードされて書かれている) <i>実際の</i>
+    文字セットがあるため、デフォルトが適用される必要はないからです。</p>
+
+    <hr />
+
+    <h2><a id="addmodule" name="addmodule">AddModule
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AddModule
+    <em>module</em> [<em>module</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル <br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> AddModule は Apache 1.2
+    以降で利用可能です。
+
+    <p>Apache
+    では、使用しないコンパイル済みのモジュールを持つことができます。
+    このディレクティブは、それらのモジュールを使用するようにできます。
+    起動後、あらかじめ使用モジュールのリストを作成していますが、
+    <a href="#clearmodulelist">ClearModuleList</a>
+    ディレクティブによりそのリストの中身を消すことができます。</p>
+
+    <p>例:</p>
+
+    <blockquote>
+    <code>AddModule mod_include.c</code>
+    </blockquote>
+
+    <p><code>AddModule</code> の順番は重要です。モジュールは優先度の
+    逆順に書きます―後に書かれているものは前の方に書かれているものの
+    振る舞いを上書きすることができます。これは、目に見える影響があります。
+    例えば、UserDir が Alias の後にあれば、ユーザのホームディレクトリの
+    エイリアスを作ることはできません。より詳しい情報と、推奨されている
+    順番については Apache ソース配布中の <code>src/Configuration.tmpl</code>
+    を参照してください。</p>
+
+    <p><strong>参照</strong>: <a
+    href="#clearmodulelist">ClearModuleList</a> と <a
+    href="mod_so.html#loadmodule">LoadModule</a></p>
+    <hr />
+
+    <h2><a id="allowoverride" name="allowoverride">AllowOverride
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AllowOverride
+    All|None|<em>directive-type</em> [<em>directive-type</em>]
+    ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>AllowOverride
+    All</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>サーバが (<a
+    href="#accessfilename">AccessFileName</a> によって指定された)
+    .htaccess ファイルを見つけた時、そのファイルの中で
+    宣言されたどのディレクティブがより前に定義されたアクセス情報を
+    上書きできるかを知る必要があります。</p>
+
+    <p><strong>Note:</strong> <code>AllowOverride</code> is only
+    valid in &lt;Directory&gt; sections, not in &lt;Location&gt; or
+    &lt;Files&gt; sections, as implied by the <strong>Context</strong>
+    section above.</p>
+
+    <p>このディレクティブを None に設定すると、.htaccess
+    ファイルは完全に無視されます。
+    この場合、サーバはファイルシステムの .htaccess
+    ファイルを読むことを試みさえしません。</p>
+
+    <p>このディレクティブが <code>All</code> に設定されているときには、
+    .htaccess という <a
+    href="directive-dict.html#Context">コンテキスト</a>
+    を持つすべてのディレクティブが利用できます。</p>
+
+    <p><em>directive-type</em>
+    には、以下のディレクティブ群のキーワードのどれかを指定します。</p>
+
+    <dl>
+      <dt>AuthConfig</dt>
+
+      <dd>
+
+      認証に関するディレクティブの使用を許可する (<a
+      href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a>,
+      <a
+      href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a>,
+      <a href="mod_auth.html#authgroupfile">AuthGroupFile</a>, <a
+      href="#authname">AuthName</a>, <a
+      href="#AuthDigestRealmSeed">AuthDigestRealmSeed</a>, <a
+      href="#authtype">AuthType</a>, <a
+      href="mod_auth.html#authuserfile">AuthUserFile</a>, <a
+      href="#require">Require</a> <em>など</em>)。</dd>
+
+      <dt>FileInfo</dt>
+
+      <dd>
+      ドキュメントタイプを制御するためのディレクティブの使用を許可する (<a
+      href="mod_mime.html#addencoding">AddEncoding</a>, <a
+      href="mod_mime.html#addlanguage">AddLanguage</a>, <a
+      href="mod_mime.html#addtype">AddType</a>, <a
+      href="#defaulttype">DefaultType</a>, <a
+      href="#errordocument">ErrorDocument</a>, <a
+      href="mod_negotiation.html#languagepriority">LanguagePriority</a>
+      <em>など</em>)。</dd>
+
+      <dt>Indexes</dt>
+
+      <dd>
+      ディレクトリインデックスを制御するためのディレクティブの使用を許可する
+      (<a
+      href="mod_autoindex.html#adddescription">AddDescription</a>,
+      <a href="mod_autoindex.html#addicon">AddIcon</a>, <a
+      href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding</a>,
+      <a href="mod_autoindex.html#addiconbytype">AddIconByType</a>,
+      <a href="mod_autoindex.html#defaulticon">DefaultIcon</a>, <a
+      href="mod_dir.html#directoryindex">DirectoryIndex</a>, <a
+      href="mod_autoindex.html#fancyindexing">FancyIndexing</a>, <a
+      href="mod_autoindex.html#headername">HeaderName</a>, <a
+      href="mod_autoindex.html#indexignore">IndexIgnore</a>, <a
+      href="mod_autoindex.html#indexoptions">IndexOptions</a>, <a
+      href="mod_autoindex.html#readmename">ReadmeName</a>
+      <em>など</em>)。</dd>
+
+      <dt>Limit</dt>
+
+      <dd>
+      ホストへのアクセス制御を行うためのディレクティブの使用を許可する (<a
+      href="mod_access.html#allow">Allow</a>,
+      <a href="mod_access.html#deny">Deny</a>
+      and <a href="mod_access.html#order">Order</a>).</dd>
+
+      <dt>Options</dt>
+
+      <dd>
+      特定のディレクトリにおける機能を指定するためのディレクティブの使用を許可する
+      (<a href="#options">Options</a> と <a
+      href="mod_include.html#xbithack">XBitHack</a>).</dd>
+    </dl>
+
+    <p>例:</p>
+    <blockquote><code>AllowOverride AuthConfig Indexes</code></blockquote>
+
+    <p><strong>参照:</strong> <a
+    href="#accessfilename">AccessFileName</a> 及び <a
+    href="../configuring.html">設定ファイルの記述</a></p>
+    <hr />
+
+    <h2><a id="authname" name="authname">AuthName
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AuthName
+    <em>auth-domain</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>このディレクティブはディレクトリに対する認可領域 (訳注: realm)
+    の名前を指定します。
+    認可領域は、利用者がどのユーザ名とパスワードを送信すればよいのかを
+    クライアントに教えるために利用します。
+    <samp>AuthName</samp> は一つの引数を取り、
+    スペースが含まれる場合には、引用符で囲まなければなりません。
+    このディレクティブは
+    <a href="#authtype">AuthType</a> ディレクティブや
+    <a href="#require">Require</a> ディレクティブ及び、
+    <a href="mod_auth.html#authuserfile">AuthUserFile</a> や <a
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a>
+    などのディレクティブと一緒に利用する必要があります。</p>
+
+    <p>例:</p>
+
+    <blockquote><code>AuthName "秘密のパスワード"</code></blockquote>
+
+    <p>ここで <code>AuthName</code> に指定した文字列が、
+    大部分のブラウザのパスワードダイアログに表示されます。</p>
+
+    <p><strong>訳注:</strong>
+    引数に与える文字列は英数字やハイフンなどの記号のみを利用するべきですが、2
+    バイト文字を指定した場合でも、
+    Apache は通常の文字列同様にクライアントへ送出します。
+    (ただサポートが表明されているわけではありません)</p>
+
+    <p><strong>参照:</strong> <a
+    href="../howto/auth.html">認証、承認、アクセス制御</a></p>
+    <hr />
+
+    <h2><a id="AuthDigestRealmSeed" name="AuthDigestRealmSeed">AuthDigestRealmSeed
+    directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AuthDigestRealmSeed
+    <em>secret-real-string</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> コア
+
+    <p>このディレクティブは認可領域ごとの秘密の一度きりの接頭辞を
+    設定します。これは Digest
+    交換の間に取得したユーザ名、パスワード、認可領域名文字列を、
+    他の場所で再利用できない様にします。</p>
+    <p>これは <a href="mod_digest.html">mod_digest.html</a> にしか適用されません。
+    実験的な
+    <a href="mod_auth_digest.html">mod_auth_digest.html</a>
+    は専用の再利用対策 (より進んだ、時間も考慮したもの) を実装しています。
+    </p>
+
+    <p>動作するためには <a href="#authtype">AuthType</a> に Digest のタイプ、
+    <a href="#require">Require</a> ディレクティブと
+    <a href="mod_auth.html#authuserfile">AuthUserFile</a> や <a
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a>
+    ディレクティブが設定されていることが必要です。</p>
+
+    <p><strong>参照:</strong> <a
+    href="../howto/auth.html">認証、承認、アクセス制御</a></p>
+    <hr />
+
+    <h2><a id="authtype" name="authtype">AuthType
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AuthType
+    Basic|Digest<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core
+
+    <p>このディレクティブは対象ディレクトリで利用するユーザー認証の種類を選びます。
+    ただ、現在のところは <code>Basic</code> 若しくは
+    <code>Digest</code> しか実装されていません。
+
+    このディレクティブは
+    <a href="#authtype">AuthType</a> ディレクティブや
+    <a href="#require">Require</a> ディレクティブ及び、
+    <a href="mod_auth.html#authuserfile">AuthUserFile</a> や <a
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a>
+    などのディレクティブと一緒に利用する必要があります。</p>
+
+    <p>AuthDigest が使われると <a
+     href="#AuthDigestRealmSeed">AuthDigestRealmSeed</a> もセットされます。</p>
+    <p><strong>参照:</strong> <a
+    href="../howto/auth.html">認証、承認、アクセス制御</a></p>
+    <hr />
+
+    <h2><a id="bindaddress" name="bindaddress">BindAddress
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> BindAddress
+    *|<em>IP-address</em>|<em>domain-name</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>BindAddress
+    *</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> BindAddress は
+    非推奨で Apache 2.0 では削除されます。
+
+    <p>Unix&reg; において HTTP サーバは、サーバのすべての IP
+    アドレスを listen することができ、一つの IP アドレスだけを
+    listen することもできます。このディレクティブに *
+    を指定すると、サーバはすべての IP アドレス上で listen
+    を行います。それ以外の場合は、特定の <em>IP-address</em> か
+    <em>domain-name</em> のみで listen します。</p>
+
+    <p>例:</p>
+
+    <code>BindAddress 192.168.15.48</code><br />
+
+    <p>なお、<code>BindAddress</code>
+    ディレクティブは一つしか利用できません。</p>
+
+    <p>このディレクティブは Apache 2.0 においては非推奨で、取り除かれています。
+    代わりに、同等の機能を持ちかつ複数のアドレスやポートにおいて
+    listen できるようになった
+    <code><a href="#listen">Listen</a></code>
+    ディレクティブを利用できます。</p>
+    <p>BindAddress は、<code><a
+    href="#virtualhost">&lt;VirtualHost&gt;</a></code>
+    セクションを使う代わりに、複数のサーバを起動して<a
+    href="../vhosts/">バーチャルホスト</a>をサポートする
+    ために利用することができます。</p>
+
+    <p><strong>参照:</strong>
+    <a href="../dns-caveats.html">DNS に関する問題</a><br />
+    <strong>参照:</strong> <a href="../bind.html">Apache
+    が利用するアドレスとポートの設定</a></p>
+    <hr />
+
+    <h2><a id="bs2000account" name="bs2000account">BS2000Account
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> BS2000Account
+    <em>account</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> BS2000Account は BS2000
+    マシンでかつ Apache 1.3.22 以降でのみ利用可能です。
+
+    <p><code>BS2000Account</code> ディレクティブは、BS2000
+    ホストでのみ有効であり、(<a href="#user">User</a>
+    ディレクティブを利用して) Apache 
+    を実行する権限を管理者以外のアカウント番号に指定する必要があります。
+    これは、CGI スクリプトが、通常 SYSROOT
+    である、サーバを起動した管理者権限を持つアカウントの
+    リソースにアクセスできないようにするために、
+    (サブログインによって、BS2000 のタスク環境下に置かれる) BS2000 の
+    POSIX サブシステムにおいて必要です。<code>BS2000Account</code>
+    ディレクティブは 1 回だけ利用できます。</p>
+
+    <p><strong>参照:</strong> <a href="../ebcdic.html">Apache の
+    EBCDIC への移植版</a></p>
+    <hr />
+
+    <h2><a id="cgicommandargs" name="cgicommandargs">CGICommandArgs
+    directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> CGICommandArgs On|Off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> CGICommandArgs On<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> Options<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache
+     1.3.24 以降で使用可能。
+
+    <p>昔々、インターネットがより安全で純粋だったときには、
+    サーバが '=' 文字を含まないクエリー文字列を受け取って解析し、
+    CGI プログラムへコマンドラインの引数として渡すと便利なことがありました。
+    例えば、<code>&lt;IsIndex&gt;</code> により生成された検索はよく
+    そのように動作していました。このような動作は今日では一般に
+    安全でないと見なされていますが、Apache のデフォルトの動作は
+    後方互換性のためにこの振る舞いを維持しています。たいていの CGI
+    プログラムはコマンドラインの引数を受け付けませんが、引数を
+    受け付けるものの中では、ほとんどがこの引数の渡し方に気付いておらず、
+    悪意のあるクライアントがこの方法を使って安全でないものを渡す
+    ことに対する脆弱性があります。そのようなスクリプトを
+    Apache の機能をほぼ損なうことなく保護するために、
+    <code>CGICommandArgs Off</code> と設定することが推奨されています。
+    </p>
+
+    <hr />
+
+    <h2><a id="clearmodulelist"
+    name="clearmodulelist">ClearModuleList ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ClearModuleList<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ClearModuleList
+    は Apache 1.2 以降で利用可能です。
+
+    <p>サーバはあらかじめ有効なモジュールの一覧を持っています。
+    このディレクティブはその一覧をクリアします。後で
+    <a href="#addmodule">AddModule</a> ディレクティブを使って
+    モジュールを一覧に再び加えることが期待されています。</p>
+
+    <p><strong>参照</strong>: <a
+    href="#addmodule">AddModule</a> と <a
+    href="mod_so.html#loadmodule">LoadModule</a></p>
+
+    <hr />
+
+    <h2><a id="contentdigest" name="contentdigest">ContentDigest
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ContentDigest
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ContentDigest
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> Options<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> experimental<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ContentDigest は Apache 1.1
+    以降で利用可能です。
+
+    <p>このディレクティブは、RFC1864 及び RFC2068 において定義されている
+    <code>Content-MD5</code> ヘッダの生成を有効にします。</p>
+
+    <p>MD5 は、任意長のデータの「メッセージダイジェスト」(「指紋」
+    と表現されることもある) を計算するアルゴリズムで、
+    データの変更があった場合には非常に高い信頼度で
+    メッセージダイジェストに変更が反映されます。</p>
+
+    <p><code>Content-MD5</code> ヘッダは、エンドツーエンドで
+    エンティティボディーに含まれるメッセージの完全性チェック
+    (Message Integrity Check - MIC) を提供します。
+    このヘッダを調べることで、プロキシやクライアントは、
+    途中経路におけるエンティティボディの予期せぬ変更などを
+    検出することができます。ヘッダの例:</p>
+<pre>
+   Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
+</pre>
+
+    <p>リクエストごとにメッセージダイジェストを計算する
+    (値はキャッシュされません) ことから、
+    サーバパフォーマンスが低下することについて注意してください。</p>
+
+    <p><code>Content-MD5</code >
+    は、コア機能により処理されたドキュメントを送るときのみ有効であり、
+    SSI ドキュメントや CGI スクリプトの出力、
+    バイトレンジを指定した応答の場合にはこのヘッダは付与されません。
+    </p>
+    <hr />
+
+    <h2><a id="coredumpdirectory"
+    name="coredumpdirectory">CoreDumpDirectory ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> CoreDumpDirectory
+    <em>ディレクトリパス</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> ServerRoot と同じ場所<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>これにより、Apache
+    がコアダンプをする前に移動するためのディレクトリを指定できます。
+    デフォルトの場合は、<a href="#serverroot">ServerRoot</a>
+    において指定したディレクトリとなるものの、
+    通常の場合はサーバを実行しているユーザによって書き込み権限が無く、
+    コアダンプが残されることはありません。
+    もし、デバッグのためにコアダンプが必要なのであれば、
+    このディレクティブにより違う場所に設定をすることができます。
+    </p>
+
+    <p>設定例:</p>
+
+    <blockquote>
+    <code>CoreDumpDirectory /tmp</code>
+    </blockquote>
+
+    <hr />
+
+    <h2><a id="defaulttype" name="defaulttype">DefaultType
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> DefaultType
+    <em>MIME-type</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>DefaultType
+    text/html</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>サーバは、MIME のタイプマップからは決定できない
+    ドキュメントの送信を要求されることがあります。</p>
+
+    <p>サーバは、ドキュメントのコンテントタイプをクライアントに
+    通知する必要がありますので、このようにタイプが未知の場合は
+    <code>DefaultType</code> で指定されたタイプを利用します。
+    設定例:</p>
+
+    <blockquote>
+      <code>DefaultType image/gif</code>
+    </blockquote>
+    これは .gif という拡張子がファイル名に含まれていない多くの
+    GIF 画像が含まれているディレクトリに適しているでしょう。
+
+    <p><strong>参照:</strong> <a
+    href="mod_mime.html#addtype">AddType</a> 及び <a
+    href="mod_mime.html#typesconfig">TypesConfig</a></p>
+
+    <hr />
+
+    <h2><a id="directory" name="directory">&lt;Directory&gt;
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;Directory
+    <em>directory-path</em>|proxy:<em>url-path</em>&gt;
+    ... &lt;/Directory&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+     バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core
+
+    <p>指定されたディレクトリ配下にのみディレクティブを適用させるために、
+    &lt;Directory&gt; 及び &lt;/Directory&gt;
+    を対として、ディレクティブ群を囲うことができます。
+    囲いの中では、ディレクトリコンテキストで許可されたすべての
+    ディレクティブが利用できます。<em>directive-path</em>
+    は、フルパス若しくはワイルドカードにて指定します。
+    `?' は任意の 1 文字、`*' は任意の文字列にマッチします。Apache 1.3
+    の場合、シェルにおける指定同様、文字の範囲指定を `[ ]' で可能です。
+    また、Apache 1.3では、UNIX のシェルの挙動に似せるために、
+    ワイルドカードは `/' 文字にはマッチしません。
+    例:</p>
+<pre>
+   &lt;Directory /usr/local/httpd/htdocs&gt;
+   Options Indexes FollowSymLinks
+   &lt;/Directory&gt;
+</pre>
+
+    <p><strong>Apache 1.2 以降の場合:</strong> <code>~</code>
+    という文字を付加することで拡張正規表現を利用することもできます。<br />
+    例えば、</p>
+<pre>
+   &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+</pre>
+    といった指定の場合、/www/ 以下にある数字 3
+    文字のディレクトリにマッチします。
+
+    <p>もし複数の (正規表現以外の) ディレクトリセクションが
+    ドキュメントを含むディレクトリ (やその上位ディレクトリ)
+    とマッチしたならば、<a href="#accessfilename">.htaccess</a>
+    ファイルのディレクティブも読み込みつつ、
+    短いパスから順に適用されます。
+    例えば、</p>
+
+    <blockquote>
+      <code>&lt;Directory /&gt;<br />
+       AllowOverride None<br />
+       &lt;/Directory&gt;<br />
+      <br />
+       &lt;Directory /home/*&gt;<br />
+       AllowOverride FileInfo<br />
+       &lt;/Directory&gt;</code>
+    </blockquote>
+    と設定し、ドキュメント <code>/home/web/dir/doc.html</code>
+    へのアクセスがあった場合には以下のように動作します:
+
+    <ul>
+      <li><code>AllowOverride None</code> が適用される。
+      (<code>.htaccess</code> ファイルは無効になる)</li>
+
+      <li><code>AllowOverride FileInfo</code> が適用される
+      (<code>/home/web</code> ディレクトリに対して)。</li>
+
+      <li><code>/home/web/.htaccess</code> の FileInfo
+      ディレクティブが適用される。</li>
+    </ul>
+
+    <p>ディレクトリセクションにおける正規表現については、Apache 1.2 と
+    1.3 で若干扱いが違います。</p>
+
+    <p>Apache 1.2 の場合、通常のディレクトリセクションが同じく、
+    設定ファイル内に現れる順に評価されます。正規表現のディレクトリセクションは、
+    一番短くマッチした場合に一度だけ適用されます。
+
+    Apache 1.3 では、
+    正規表現は、通常のセクションがすべて適用されるまで考慮されません。
+    その後、すべての正規表現が設定ファイルに現れた順で試されます。
+    例えば、以下のような場合に</p>
+
+    <blockquote>
+      <code>&lt;Directory ~ abc$&gt;<br />
+       ... directives here ...<br />
+       &lt;/Directory&gt;<br />
+      </code>
+    </blockquote>
+
+    アクセスされているファイル名が
+    <code>/home/abc/public_html/abc/index.html</code>
+    であるとしましょう。サーバは <code>/</code>, <code>/home</code>,
+    <code>/home/abc</code>, <code>/home/abc/public_html</code> 及び
+    <code>/home/abc/public_html/abc</code> の順に考慮します。
+    Apache 1.2 であれば、<code>/home/abc</code>
+    の評価をする際に、正規表現がマッチし適用されます。
+
+    Apache 1.3
+    の場合は正規表現はツリー上のその時点では全く考慮されません。
+    すべての通常の &lt;Directory&gt; と <code>.htaccess</code>
+    ファイルが評価されるまで、考慮されません。その後、正規表現は
+    <code>/home/abc/public_html/abc</code> にマッチし、適用されます。
+
+    <p><strong>Apache のデフォルトでは &lt;Directory /&gt;
+    へのアクセスは <samp>Allow from All</samp>
+    になっていることに注意してください。これは、URL
+    からマップされたどのファイルでも Apache は送るということです。
+    これは以下のようにして変更することが推奨されています。</strong></p>
+<pre>
+ &lt;Directory /&gt;
+     Order Deny,Allow
+     Deny from All
+ &lt;/Directory&gt;
+</pre>
+
+    <p><strong>そしてアクセスを<em>可能にしたい</em>
+    ディレクトリに対して個別に設定すればよいでしょう。
+    このあたりについては、<a href="../misc/security_tips.html"
+    >セキュリティに関するコツ</a>を参照してください。</strong></p>
+    &lt;Directory&gt; ディレクティブは入れ子にすることができず、
+    <a href="#limit">&lt;Limit&gt;</a> や <a
+    href="#limitexcept">&lt;LimitExcept&gt;</a>
+    セクションの中にも記述できません。
+
+   <p><a href="mod_proxy.html">mod_proxy</a> が有効になっている場合、
+   <code>proxy:</code> 構文を使って、プロキシされているコンテンツに
+   対して適用させることができます。この構文は設定を適用したい
+   プロキシされている URL を指定するか、プロキシされているコンテンツすべてに
+   適用させるために <code>*</code> を指定する、というようになっています:</p>
+
+   <p>すべてのプロキシされているコンテンツに適用させるには:</p>
+
+   <pre>
+   &lt;Directory proxy:*&gt;
+     ... directives here ...
+   &lt;/Directory&gt;
+   </pre>
+
+   <p>プロキシされているコンテンツの一部分にのみ適用させるには:</p>
+
+   <pre>
+   &lt;Directory proxy:http://www.example.com/&gt;
+     ... directives here ...
+   &lt;/Directory&gt;
+   </pre>
+
+    <p><strong>参照</strong>: リクエストを受けた際に、
+    異なる複数のセクションがどのようにして組み合わされるのかについては
+    <a href="../sections.html">Directory, Location 及び Files
+    セクションがどのように動作するのか</a></p>
+    <p><strong>参照</strong>: <a
+    href="#directorymatch">DirectoryMatch</a></p>
+    <hr />
+
+    <h2><a id="directorymatch"
+    name="directorymatch">&lt;DirectoryMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;DirectoryMatch
+    <em>regex</em>&gt; ... &lt;/DirectoryMatch&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3 以降で使用可能
+
+    <p>指定されたディレクトリ配下にのみディレクティブを適用させるために、
+    <a href="#directory">&lt;Directory&gt;</a> と同様に
+    &lt;DirectoryMatch&gt; 及び &lt;/DirectoryMatch&gt;
+    を対として、ディレクティブ群を囲うことができます。
+    ただし、引数は正規表現となります。例えば、</p>
+<pre>
+   &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+</pre>
+
+    <p>といった指定の場合は /www/ 以下にある数字 3
+    文字のディレクトリにマッチします。</p>
+
+    <p><strong>参照:</strong> 
+    通常の &lt;Directory&gt;
+    セクションと一緒に正規表現を利用するための解説としては
+    <a href="#directory">&lt;Directory&gt;</a><br />
+    <strong>参照</strong>: リクエストを受けた際に、
+    異なる複数のセクションがどのようにして組み合わされるのかについては
+    <a href="../sections.html">Directory, Location 及び Files
+    セクションがどのように動作するのか</a></p>
+    <hr />
+
+    <h2><a id="documentroot" name="documentroot">DocumentRoot
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> DocumentRoot
+    <em>directory-path</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>DocumentRoot
+    /usr/local/apache/htdocs</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>このディレクティブは、httpd
+    がファイルを提供するディレクトリを設定します。Alias
+    のようなディレクティブにマッチしない場合には、ドキュメントの
+    (訳注:ファイルシステム上の) パスを生成するために、リクエストされた
+    URL のパス部分をドキュメントルートに付与します。
+    例:</p>
+
+    <blockquote>
+      <code>DocumentRoot /usr/web</code>
+    </blockquote>
+    この場合、
+    <code>http://www.my.host.com/index.html</code> へのアクセスがあれば
+    <code>/usr/web/index.html</code> が返されます。
+
+    <p>ところで、DocumentRoot
+    の引数のパスの最後の文字にスラッシュが指定されていると
+    (<em>例えば</em>、"DocumentRoot /usr/web/" のように)
+    問題が起こるという mod_dir のバグがあるようです。
+    そのため、このような指定はしないようにしてください。</p>
+    <hr />
+
+    <h2><a id="ebcdicconvert"
+    name="ebcdicconvert">EBCDICConvert</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> EBCDICConvert
+    On|Off[=<em>direction</em>] <em>extension</em>
+    [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> EBCDICConvert は
+    Apache 1.3.19 以降でかつ EBCDIC
+    ベースのプラットフォームにおいてのみ利用可能です。
+
+    <p>EBCDICConvert
+    ディレクティブは与えられたファイルの拡張子を指定の変換設定
+     (<samp>On</samp> か <samp>Off</samp>) にマップします。
+    拡張子の最初のドットはあってもなくても構いません。</p>
+
+    <p>オプションの形式 <samp>On=<i>direction</i></samp> (や
+    <samp>Off=<i>direction</i></samp>) が指定されると (<i>direction</i>
+    は <samp>In</samp>, <samp>Out</samp>, <samp>InOut</samp> のどれか)、
+    ディレクティブは指定された向きにだけ適用されます (<samp>In</samp>: 
+    PUT や POST リクエストでコンテンツをアップロード、<samp>Out</samp>:
+    GET や POST リクエストで返されるコンテンツ、<samp>InOut</samp>: 
+    両方の向きで変換)。<br />
+    それ以外の形式では、<samp>InOut</samp> (両方の向きで変換)
+    であるとみなされます。</p>
+
+    <p>一般的な MIME に基づいたルールを、
+    より細かいファイルの拡張子に基づいたルールが上書きできるように、
+    拡張子に基づいた設定は MIME
+    タイプに基づいた設定より前に試されます。</p>
+
+    <p><strong>例</strong>:<br />
+    以下の設定では、普通の <samp>*.html</samp> ファイルは
+    EBCDIC エンコーディングの HTML で、<samp>*.ahtml</samp> ファイルは
+    ASCII エンコーディングの HTML です:</p>
+
+<pre>
+    # *.html と *.ahtml は HTML:
+    AddType  text/html  .html .ahtml
+
+    # *.ahtml は変換されない (既に ASCII になっている):
+    EBCDICConvert       Off .ahtml
+
+    # 他のすべての text/html ファイルは EBCDIC のはず:
+    EBCDICConvertByType On  text/html
+</pre>
+    <br />
+     <br />
+
+
+    <p><strong>参照</strong>: <a
+    href="#ebcdicconvertbytype">EBCDICConvertByType</a> と <a
+    href="../ebcdic.html#ebcdic">EBCDICConvertByType
+    変換関数の概要</a></p>
+    <hr />
+
+    <h2><a id="ebcdicconvertbytype"
+    name="ebcdicconvertbytype">EBCDICConvertByType</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> EBCDICConvertByType
+    On|Off[=<em>direction</em>] <em>mimetype</em>
+    [<em>mimetype</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> EBCDICConvertByType は
+    Apache 1.3.19 以降でかつ EBCDIC ベースのプラットフォームにおいてのみ
+    利用可能です。
+
+    <p>EBCDICConvertByType ディレクティブは与えられた MIME タイプ
+    (ワイルドカードも可) を指定された変換設定 (<samp>On</samp> か
+    <samp>Off</samp>) にマップします。</p>
+
+    <p>オプションの形式 <samp>On=<i>direction</i></samp> (や
+    <samp>Off=<i>direction</i></samp>) が指定されると (<i>direction</i>
+    は <samp>In</samp>, <samp>Out</samp>, <samp>InOut</samp> のどれか)、
+    ディレクティブは指定された向きにだけ適用されます (<samp>In</samp>:
+    PUT や POST リクエストでコンテンツをアップロード、<samp>Out</samp>:
+    GET や POST リクエストで返されるコンテンツ、<samp>InOut</samp>:
+    両方の向きで変換)。<br />
+    それ以外の形式では、<samp>InOut</samp> (両方の向きで変換)
+    であるとみなされます。</p>
+
+    <p><strong>例</strong>:<br />
+    有用な標準設定には以下のデフォルトがあるべきです:</p>
+<pre>
+    # すべてのテキストドキュメントは EBCDIF のファイル:
+    EBCDICConvertByType On  text/* message/* multipart/*
+    EBCDICConvertByType On  application/x-www-form-urlencoded \
+                model/vrml application/postscript
+    # すべての他のファイルはバイナリとみなす
+    EBCDICConvertByType Off */*
+</pre>
+    例えば NFS でマウントされた unix
+    サーバからドキュメントを送る、というように
+    ASCII のドキュメントのみを扱う場合は、以下のようにしてください:
+<pre>
+    # すべてのドキュメントは既に ASCII
+    EBCDICConvertByType Off */*
+</pre>
+
+    <p><strong>参照</strong>: <a
+    href="#ebcdicconvert">EBCDICConvert</a> と <a
+    href="../ebcdic.html#ebcdic">EBCDIC 変換関数の概要</a></p>
+    <hr />
+
+    <h2><a id="ebcdickludge"
+    name="ebcdickludge">EBCDICKludge</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> EBCDICKludge
+    On|Off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>EBCDICKludge
+    Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> EBCDICKludge は Apache
+    1.3.19 以降で EBCDIC ベースのプラットフォームでのみ使用可能です。
+    非推奨で、将来のバージョンでは削除される予定です。<br />
+
+    <p>EBCDICKludge は apache のバージョン 1.3.0 から 1.3.18
+    との互換性を保つために提供されています。それらのバージョンでは、
+    "text/", "message/", "multipart" で始まる MIME タイプと、
+    "application/x-www-form-urlencoded"
+    のすべてのファイルはデフォルトで変換され、
+    他のすべてのドキュメントは無変換で送られていました。
+    "<samp>text/<b>x-ascii-</b><i>subtype</i></samp>"
+    がドキュメントに対して設定されている場合にのみ、ドキュメントは
+    ASCII フォーマットであるとみなされ、再変換されませんでした。
+    変換する代わりに、"<samp><b>x-ascii-</b></samp>"
+    がタイプから取り除かれ、"<samp>text/<i>subtype</i></samp>"
+    がドキュメントの MIME タイプになっていました。</p>
+
+    <p>EBCDICKludge ディレクトリが <samp>On</samp> に設定されていて、
+    <a href="#ebcdicconvert">EBCDICConvert</a> ディレクティブがそこの
+    コンテキストにマッチすれば、サーバは
+    <samp><i>type/</i><b>x-ascii-</b><i>subtype</i></samp> という形式の
+    MIME タイプを調べます。ドキュメントにそのようなタイプがあれば、
+    "<samp><b>x-ascii-</b></samp>" が取り除かれて、変換は <samp>Off</samp>
+    に設定されます。例えば NFS でマウントされたディレクトリの
+    ASCII のドキュメントを送っているような場合に、これにより
+    すべてのテキストファイルは EBCDIC
+    であるという前提を変更することができます。<br />
+    EBCDICKludge では、他の MIME タイプ (<em>例えば</em> model/vrml) を
+    EBCDIC のテキストファイルとして扱うことはできません。
+    そのような変換には上記の <a
+     href="#ebcdicconvertbytype">EBCDICConvertByType</a>
+    ディレクティブの使用がより良い方法です。(Apache バージョン 1.3.19
+    より前では、バイナリドキュメントを EBCDIC
+    テキストファイルとして扱う方法は全くありませんでした)。</p>
+
+    <p><strong>参照</strong>: <a
+    href="#ebcdicconvert">EBCDICConvert</a>, <a
+    href="#ebcdicconvertbytype">EBCDICConvertByType</a> と <a
+    href="../ebcdic.html#ebcdic">EBCDIC 変換関数の概要</a></p>
+    <hr />
+
+    <h2><a id="enableexceptionhook" name="enableexceptionhook">
+    EnableExceptionHook directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> EnableExceptionHook
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>EnableExceptionHook
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> EnableExceptionHook
+    は Apache 1.3.30 以降で使用可能
+
+    <p><code>EnableExceptionHook</code> はモジュールに実装された
+    例外フックを子プロセスがクラッシュした後に呼ぶかどうかを制御します。
+    例外フックはモジュールがクラッシュの原因を決定するための診断情報を
+    ログ収集するできるようにします。</p>
+    <hr />
+
+    <h2><a id="errordocument" name="errordocument">ErrorDocument
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ErrorDocument
+    <em>error-code document</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ディレクトリ若しくは .htaccess
+    コンテキストにおいての指定は Apache 1.1 以降でのみ利用可能です。
+
+    <p>問題やエラーが発生したときの動作として、
+    Apache には以下の四つのうち一つの動作を設定することができます。</p>
+
+    <ol>
+      <li>Apache 標準の簡単なエラーメッセージを表示</li>
+
+      <li>自分で指定したメッセージを表示</li>
+
+      <li>問題やエラーの処理をする為に、自サーバ内の
+      <em>URL-path</em> へリダイレクト</li>
+
+      <li>問題やエラーの処理をする為に、外部の <em>URL</em>
+      へリダイレクト</li>
+    </ol>
+
+    <p>最初のものがデフォルトの動作で、2 番目から 4 番目は、
+    <code>ErrorDocument</code> ディレクティブにより、HTTP
+    のレスポンスコードと、メッセージか URL を指定することで設定します。</p>
+
+    <p><em>メッセージ</em>を記述する場合には、二重引用符 1 文字
+    (<code>"</code>) を最初に付与します。
+    二重引用符はメッセージには含まれません。
+    Apache は場合によって、問題やエラーについて付加的な情報を提供します。</p>
+
+    <p>URL の場合は、ローカルの URL の指定としてスラッシュで始まる (/)
+    パスか、クライアントが解釈できるフル URL を指定します。<br />
+    例:</p>
+
+    <blockquote>
+      <code>ErrorDocument 500
+      http://foo.example.com/cgi-bin/tester<br />
+       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
+       ErrorDocument 401 /subscription_info.html<br />
+       ErrorDocument 403 "Sorry can't allow you access today</code>
+    </blockquote>
+
+    <p>リモート URL (例えば、頭に http と付与した方法) を
+    <code>ErrorDocument</code> に指定するとき、
+    たとえ文書が同じサーバにあろうとも、ドキュメントがどこにあるかを通知するために、
+    Apache はリダイレクトをクライアントに送出するということに、注意してください。
+    これにはいろいろと関連して起こる問題があります。
+    中でも最も重要なのは、クライアントは元々のエラーステータスコードを受け取らず、
+    代わりにリダイレクトのステータスコードを受け取るということです。
+    これにより、ステータスコードを使って URL が有効であるかどうかを決定しようとする
+    ウェブロボットやその他クライアントを、混乱させるかもしれません。
+    さらに、<code>ErrorDocument 401</code> にリモートの URL を指定すると、
+    クライアントは 401 というステータスコードを受け取らないため、
+    パスワードをユーザに入力要求しなければならないことがわかりません。
+    従って、<strong>"ErrorDocument 401" というディレクティブを使う場合は、
+    必ずローカルな文書を参照しなければなりません。</strong></p>
+
+    <p>サーバが生成したエラーメッセージが「小さすぎる」と
+    Microsoft Internet Explorer (MSIC) はデフォルトでそれを無視し、
+    「親切な」エラーメッセージで置き換えます。しきい値はエラーの
+    種類によって異りますが、通常、エラードキュメントを 512 バイトより
+    大きくすると、MSIE はサーバが生成したエラーを隠さずに表示します。
+    より詳しい情報は Microsoft Knowledgebase の記事 <a
+    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
+    >Q294807</a> にあります。</p>
+
+    <p>参照: <a href="../custom-error.html">レスポンスをカスタマイズする方法についての解説。</a>
+    ステータスコードとその意味の完全なリストは <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP
+    仕様書</a>を参照してください。</p>
+    <hr />
+
+    <h2><a id="errorlog" name="errorlog">ErrorLog
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ErrorLog
+    <em>file-pathh</em>|syslog[:<em>facility</em>] <br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ErrorLog
+    logs/error_log</code> (Unix)<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ErrorLog
+    logs/error.log</code> (Windows and OS/2)<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>エラーログディレクティブは、サーバに生じたさまざまなエラーを
+    記録するためのファイルの名前を設定します。
+    <em>file-path</em> がスラッシュ (/) から始まらない場合は、<a
+    href="#serverroot">ServerRoot</a> からの相対パスとみなされます。
+    <em>file-path</em> がパイプ (|) から始まる場合は、
+    エラーログを処理するために実行されるコマンドが
+    指定されていると解釈されます。</p>
+
+    <p>例</p>
+
+    <p><code>ErrorLog logs/vhost1.error</code></p>
+
+    or
+
+    <p><code>ErrorLog |/usr/local/bin/errorlog.pl</code></p>
+
+    <p><strong>Apache 1.3 以降の場合:</strong> ファイル名の代わりに
+    <code>syslog</code> と指定することによって、
+    システムがサポートしていれば syslogd(8)
+    を利用したロギングが有効になります。デフォルトでは、
+    <code>local7</code> ファシリティとなりますが、
+    <code>syslog:</code><em>facility</em>
+    といった形で記述することにより、通常 syslog(1)
+    のドキュメントで説明されているファシリティの一つを使うように
+    することができます。</p>
+
+    <p>例:</p>
+
+    <p><code>ErrorLog syslog</code></p>
+
+    or
+
+    <p><code>ErrorLog syslog:user</code></p>
+
+    <p>セキュリティ: 
+    ログファイルを格納するディレクトリが、サーバを起動したユーザ以外の
+    ユーザによって書き込める場合にセキュリティが破られる可能性があることに
+    関する詳細は <a
+    href="../misc/security_tips.html#serverroot">セキュリティに関するコツ</a>
+    を参照してください。</p>
+
+
+    <p><strong>参照:</strong> <a href="#loglevel">LogLevel</a>
+    及び <a href="../logs.html">Apache のログファイル</a></p>
+    <hr />
+
+    <h2><a id="fileetag" name="fileetag">FileETag ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> FileETag
+    <i>component</i> ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3.23 以降で利用可能です。
+
+    <p>FileETag
+    ディレクティブはドキュメントがファイルに基づいたものであるときに、
+    ETag (エンティティタグ) 応答ヘッダフィールドを作成するときに使用する
+    ファイルの属性を設定します。 (ETag の値はネットワークの帯域を節約するための
+    キャッシュの管理で使われます。) Apache 1.3.22 以前では、ETag の値は
+    <i>常に</i>ファイルの inode, サイズ、最終修正時刻 (mtime) から作成
+    されていました。FileETag ディレクティブにより、これらのどれを使うかを
+    選ぶことができます。認識されるキーワードは:
+    </p>
+    <dl compact="compact">
+     <dt><b>INode</b></dt>
+     <dd>ファイルの inode 番号を計算に使います</dd>
+     <dt><b>MTime</b></dt>
+     <dd>ファイルの最終修正時刻を使います</dd>
+     <dt><b>Size</b></dt>
+     <dd>ファイルの中身のバイト数を使います</dd>
+     <dt><b>All</b></dt>
+     <dd>使用可能なすべてのフィールドを使います
+     ('<code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>' と等価です)</dd>
+     <dt><b>None</b></dt>
+     <dd>ドキュメントがファイルに基づいたものでも、ETag フィールドを
+    応答に付加しません</dd>
+    </dl>
+    <p>
+    INode, MTime, Size キーワードには '+' や '-' を前に付けて
+    指定することもできます。この場合は、より広い範囲から継承された
+    デフォルトの設定に変更を加えるようになります。そのような接頭辞の
+    無いキーワードを指定すると、即座に継承した設定を無効にします。</p>
+    <p>
+    あるディレクトリの設定に
+    '<code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>' があり、
+    サブディレクトリの設定に '<code>FileETag&nbsp;-INode</code>' があるときは、
+    そのサブディレクトリの設定は (設定が上書きされなければサブディレクトリの
+    サブディレクトリにも継承されます) '<code>FileETag&nbsp;MTime&nbsp;Size</code>'
+    と同じになります。</p>
+    <hr />
+
+    <h2><a id="files" name="files">&lt;Files&gt; ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;Files
+    <em>filename</em>&gt; ... &lt;/Files&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.2 以降で利用可能です。
+
+    <p>&lt;Files&gt; ディレクティブは、ファイル名によるアクセス制御を行うもので、<a
+    href="#directory">&lt;Directory&gt;</a> ディレクティブや <a
+    href="#location">&lt;Location&gt;</a> ディレクティブと同じような機能を持ちます。
+    これは、&lt;/Files&gt; ディレクティブと対になっていなければなりません。
+    このセクション中のディレクティブは、ベース名 (ファイル名の最後の部分)
+    が指定されたファイル名にマッチするすべてのオブジェクトに適用されます。
+
+    <code>&lt;Files&gt;</code> セクションは &lt;Directory&gt;
+    セクションと <code>.htaccess</code> が読み込まれた後、
+    &lt;Location&gt;
+    セクションよりは先に設定ファイルに現れた順に適用されます。
+    &lt;Files&gt; は、&lt;Directory&gt;
+    セクション内にネストさせることができ、
+    ファイルシステムの一部にのみ限定して適用させることができます。</p>
+
+    <p><em>filename</em>
+    引数は、ファイル名かワイルドカード文字列で、ワイルドカードでは
+    `?' は一つの文字、`*' は任意の文字列にマッチします。<code>~</code>
+    という文字を付加することで拡張正規表現を使うこともできます。
+    例えば、</p>
+<pre>
+   &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+</pre>
+    とすることにより、一般的なインターネットの画像フォーマットにマッチします。
+    ただし、Apache 1.3 以降の場合には、
+    <a href="#filesmatch">&lt;FilesMatch&gt;</a> を使う方が推奨されています。
+
+    <p>ちなみに、<a
+    href="#directory"><code>&lt;Directory&gt;</code></a> 及び <a
+    href="#location"><code>&lt;Location&gt;</code></a> セクションとは異なり、
+    <code>&lt;Files&gt;</code>
+    は .htaccess ファイル内で利用することができます。
+    これにより、ユーザがファイル毎にアクセスの制御を行なうことができるように
+    なっています。
+    例えば、ディレクトリ内にある一つのファイルに対してパスワードによる保護を行なうには、
+    <code>.htaccess</code> に以下のような設定を追加すれば良いでしょう。</p>
+
+    <pre>
+    &lt;Files admin.cgi&gt;
+    Require group admin
+    &lt;/Files&gt;</pre>
+
+    <p>なお、このディレクティブはサブディレクトリにも適用され、
+    上の例の場合には、特に設定が上書きされない限り、
+    サブディレクトリ中の <code>admin.cgi</code>
+    というファイルにも保護がかかるということを忘れないでください。</p>
+
+    <p>(<code>Require</code> ディレクティブの使い方については、<a
+     href="#require">Require</a>を参照してください。)</p>
+
+    <p><strong>参照</strong>: 
+    リクエストを受けた際に、異なる複数のセクションがどのようにして
+    組み合わされるのかについては <a href="../sections.html">
+    Directory, Location, Files セクションの動作方法</a></p>
+    <hr />
+
+    <h2><a id="filesmatch"
+    name="filesmatch">&lt;FilesMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;FilesMatch
+    <em>regex</em>&gt; ... &lt;/FilesMatch&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3 以降で利用可能です。
+
+    <p>&lt;FilesMatch&gt; ディレクティブは、<a href="#files">&lt;Files&gt;</a>
+    ディレクティブ同様にファイル名によるアクセス制御の機能を提供します。ただし、
+    このディレクティブには正規表現を指定します。
+    例えば:</p>
+<pre>
+   &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+</pre>
+
+    <p>は一般的なインターネットの画像形式にマッチします。</p>
+    <p><strong>参照</strong>: 
+    リクエストを受けた際に、異なる複数のセクションがどのようにして
+    組み合わされるのかについては <a href="../sections.html">
+    Directory, Location, Files セクションの動作方法</a></p>
+    <hr />
+
+    <h2><a id="group" name="group">Group ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Group
+    <em>unix-group</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>Group
+    #-1</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>Group
+    ディレクティブは、サーバがリクエストに応答する際のグループを設定します。
+    このディレクティブを使うためには、スタンドアローンサーバを root
+    で起動しなければなりません。
+    <em>Unix-group</em> は、以下のどちらかをとります。</p>
+
+    <dl>
+      <dt>グループ名</dt>
+
+      <dd>名前でグループを指定します。</dd>
+
+      <dt># を先頭にグループ ID</dt>
+
+      <dd>数字でグループを指定します。</dd>
+    </dl>
+    <p>サーバを実行するために新しいグループを作成することが推奨されています。
+    <code>nobody</code> と指定する管理者もいますが、そのユーザは利用可能でない
+    場合もありますし、望ましくもありません。</p>
+
+    <p>例:</p>
+
+    <code>Group www-group</code>
+
+    <p>注意点: root ユーザ以外でサーバを起動された場合、
+    指定したグループへ移ることができず、そのままのユーザで実行されます。</p>
+
+    <p>特に注意すべき点: &lt;VirtualHost&gt;
+    内でこのディレクティブを使用するためには、<a href="../suexec.html">suEXEC
+    ラッパー</a>が設定されていなければなりません。
+    この場合、CGI を実行するときにのみ、指定したグループが利用されます。
+    CGI 以外の場合には、メイン設定における Group
+    ディレクティブで指定されたグループで処理されます。</p>
+
+    <p>セキュリティ: セキュリティに関する解説は <a href="#user">User</a>
+    を参照してください。</p>
+    <hr />
+
+    <h2><a id="hostnamelookups"
+    name="hostnamelookups">HostnameLookups ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> HostnameLookups
+    on|off|double<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>HostnameLookups
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト、ディレクトリ<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+    <code>double</code> は Apache 1.3 以降で利用可能です。<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3 より前はデフォルトが
+    <code>on</code> になっています。
+
+    <p>このディレクティブは、ホスト名をログ収集できるように DNS
+    ルックアップを有効にします (さらに、CGI/SSI に
+    <code>REMOTE_HOST</code> 変数として渡します)。<code>double</code>
+    を指定した場合、二重の逆引きを行います。つまり、逆引きの後に、
+    その結果に対して正引きを行います。正引きの結果の IP
+    アドレスの中にオリジナルのアドレスと一致するものがなければなりません
+    ("tcpwrappers" の用語では PARANOID と呼ばれています)。</p>
+
+    <p>ちなみに、<a href="mod_access.html">mod_access</a>
+    でホスト名によるアクセス制御を行う場合には、設定の如何によらず
+    二重の逆引きが実行されます。
+    これは、セキュリティを保つために必要です。
+    <code>HostnameLookups double</code> を設定しない限り、
+    他の部分はこの二重逆引きの結果を使うことはできません。例えば、
+    <code>HostnameLookups on</code> と設定してある状態で、
+    ホスト名によるアクセス制限を行ったオブジェクトへの
+    リクエストを受けたとすると、二重の逆引きが成功するか否かによらず、
+    <code>REMOTE_HOST</code> には通常の逆引き結果が渡されます。</p>
+
+    <p>Apache 1.3 より前のバージョンでは、このディレクティブのデフォルトは
+    <code>on</code> でしたが、
+    本当に逆引きを必要としているわけではないサイトの
+    ネットワークトラフィックを低減させるために、<code>off</code>
+    に変更されました。ルックアップによる余計な遅延がなくなるため、
+    エンドユーザにとっても良いでしょう。
+    DNS のルックアップには、かなりの時間が必要となる場合が多く、
+    負荷の高いサイトではこのディレクティブは <code>off</code>
+    にすべきです。なお、<em>/support</em> ディレクトリに含まれる
+    <a href="../programs/logresolve.html">logresolve</a>
+    ユーティリティにより、Apache の動作とは別に、ログに残されている
+    IP アドレスからホスト名をルックアップすることが可能です。</p>
+    <hr />
+
+    <h2><a id="identitycheck" name="identitycheck">IdentityCheck
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> IdentityCheck
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>IdentityCheck
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>このディレクティブは、クライアントマシン上で
+    identd やそれに類似したデーモンが動作しているときに、
+    それぞれの接続に対して RFC 1413
+    に準処したリモートユーザの名前のロギングを行なうようにします。
+    この情報は、アクセスログに収集されます。</p>
+
+    <p>ここで得られた情報は簡単なユーザ追跡に使う以外は、
+    全く信頼するべきではありません。</p>
+
+    <p>すべてのリクエストに対してルックアップが行なわれますので、
+    深刻な遅延の問題を起こすかもしれないことに注意してください。
+    (訳注: 例えばクライアント側に) ファイアウォールがあると、
+    ルックアップが失敗し、各リクエストに 30
+    秒の遅延が加わることになる可能性があります。
+    従って、一般的にはインターネットからアクセス可能なパブリックなサーバで
+    有益なものではありません。</p>
+    <hr />
+
+    <h2><a id="ifdefine" name="ifdefine">&lt;IfDefine&gt;
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;IfDefine
+    [!]<em>parameter-name</em>&gt; <em>...</em>
+    &lt;/IfDefine&gt;<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> None<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> すべて<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> &lt;IfDefine&gt;
+    は Apache 1.3.1 以降で利用可能です。
+
+    <p>&lt;IfDefine <em>test</em>&gt;...&lt;/IfDefine&gt;
+    セクションは、ディレクティブを条件付きで指定するために利用します。
+    IfDefine セクションに含まれるディレクティブは、<em>test</em>
+    が定義されているときのみ処理されます。もし、<em>test</em>
+    が定義されていなければ、
+    開始と終了の指定の間のディレクティブは無視されます。</p>
+
+    <p>&lt;IfDefine&gt; セクションディレクティブに指定する
+    <em>test</em> は、次の二つの形式のうちの一つをとります。</p>
+
+    <ul>
+      <li><em>parameter-name</em></li>
+
+      <li><code>!</code><em>parameter-name</em></li>
+    </ul>
+
+    <p>前者のケースでは、もし <em>parameter-name</em>
+    と名付けられたパラメータが定義されていれば、
+    開始と終了の間のディレクティブが処理されます。後者の場合は逆で、
+    <em>parameter-name</em>
+    が指定されて<strong>いない</strong>場合に処理されます。</p>
+
+    <p><em>parameter-name</em> 引数は、サーバを起動する際に
+    <code>httpd</code> のコマンドラインに
+    <code>-D</code><em>parameter-</em> という形で指定すると定義されます。 </p>
+
+    <p>&lt;IfDefine&gt; セクションは入れ子にすることができ、
+    複数のパラメータによるテストをするために使用できます。
+    例:</p>
+<pre>
+  $ httpd -DReverseProxy ...
+
+  # httpd.conf
+  &lt;IfDefine ReverseProxy&gt;
+  LoadModule rewrite_module libexec/mod_rewrite.so
+  LoadModule proxy_module   libexec/libproxy.so
+  &lt;/IfDefine&gt;
+</pre>
+    <hr />
+
+    <h2><a id="ifmodule" name="ifmodule">&lt;IfModule&gt;
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;IfModule
+    [!]<em>module-name</em>&gt; <em>...</em>
+    &lt;/IfModule&gt;<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> None<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> すべて<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> IfModule は Apache 1.2
+    以降で利用可能です。
+
+    <p>&lt;IfModule <em>test</em>&gt;...&lt;/IfModule&gt;
+    セクションは、ディレクティブを条件付きで指定するために利用します。
+    IfModule セクションに含まれるディレクティブは、<em>test</em>
+    で指定するモジュールが組み込まれているときのみ処理されます。もし
+    <em>test</em> が組み込まれていなければ、開始と終了の間のディレクティブ
+    は無視されます。</p>
+
+    <p>&lt;IfModule&gt; セクションディレクティブに指定する
+    <em>test</em> は、次の二つの形式のうちの一つをとります。</p>
+
+    <ul>
+      <li><em>module name</em></li>
+
+      <li>!<em>module name</em></li>
+    </ul>
+
+    <p>前者のケースでは、もし <em>module name</em>
+    と名付けられたモジュールが Apache に組み込まれていれば
+    (コンパイル済みのものと、<a
+    href="mod_so.html#loadmodule">LoadModule</a>
+    を利用して動的に読み込んだものの両方)、
+    開始と終了の間のディレクティブが処理されます。後者の場合は逆で、
+    <em>module name</em>
+    が組み込まれて<strong>いない</strong>場合に処理されます。</p>
+
+    <p><em>module name</em>
+    引数は、コンパイルをした時のモジュールのファイル名で、例えば
+    <code>mod_rewrite.c</code> といった形になります。</p>
+
+    <p>&lt;IfModule&gt; セクションは入れ子にすることが可能であり、
+    複数のモジュールのテストを行なうために使用できます。</p>
+    <hr />
+
+    <h2><a id="include" name="include">Include ディレクティブ</a></h2>
+    <strong>構文:</strong> Include
+    <em>file-path</em>|<em>directory-path</em>|<em>wildcard-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Include は Apache 1.3
+    以降で利用可能です。ワイルドカードはバージョン 1.3.27
+    で導入されました。
+
+    <p>このディレクティブにより、サーバの設定ファイルから
+    他の設定ファイルをインクルードすることができます。</p>
+
+    <p><em>file-path</em> は、(スラッシュから始まる) フルパスか、
+    <code>ServerRoot</code> からの相対パスで指定します。</p>
+
+    <p>Apache 1.3.13 から、<code>Include</code> にファイルの代わりに
+    ディレクトリを指定することによって、
+    ディレクトリとそのサブディレクトリ内のすべてのファイルを
+    読み込んで処理できるようになりました。</p>
+    <p>ワイルドカードを使うことで、これを例えば '*.conf'
+    ファイルのみに制限することができます。</p>
+
+    <p>例:</p>
+
+    <blockquote>
+    <code>Include /usr/local/apache/conf/ssl.conf<br />
+    Include /usr/local/apache/conf/vhosts/
+    </code>
+    </blockquote>
+
+    <p><code>ServerRoot</code> からの相対パスの場合は:</p>
+
+    <blockquote>
+    <code>Include conf/ssl.conf<br />
+    Include conf/vhosts/
+    </code>
+    </blockquote>
+
+    <p>なお、ディレクトリを指定する際は、エディタのテンポラリファイルなど、
+    目的外のファイルを置かないようにしなければなりません。
+    そのようなファイルがあると、Apache はそれらからディレクティブを
+    読み込もうとして、起動に失敗するかもしれません。
+    <code>apachectl configtest</code> を実行すると、設定をチェックしている時に
+    読み込まれたファイルのリストが表示されます:</p>
+
+<pre>
+root@host# apachectl configtest
+ Processing config directory: /usr/local/apache/conf/vhosts
+ Processing config file: /usr/local/apache/conf/vhosts/vhost1
+ Processing config file: /usr/local/apache/conf/vhosts/vhost2
+Syntax OK
+</pre>
+
+    <p>これにより、設定の一部として意図したファイルだけが
+    使われているかどうかを確認できます。</p>
+    <p><strong>参照</strong>: <a
+    href="../programs/apachectl.html">apachectl</a></p>
+
+    <hr />
+
+    <h2><a id="keepalive" name="keepalive">KeepAlive
+    ディレクティブ</a></h2>
+    <strong>構文: (Apache 1.1)</strong> KeepAlive
+    <em>max-requests</em><br />
+     <strong>デフォルト: (Apache 1.1)</strong> <code>KeepAlive
+    5</code><br />
+     <strong>構文: (Apache 1.2)</strong> KeepAlive on|off<br />
+     <strong>デフォルト: (Apache 1.2)</strong> <code>KeepAlive
+    On</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> KeepAlive は Apache 1.1 以降で利用可能です。
+
+    <p>HTTP/1.0 の Keep-Alive 拡張と HTTP/1.1
+    の持続的接続の機能は、複数のリクエストが同じ TCP
+    の接続で送られる、長時間持続する HTTP
+    セッションを提供します。たくさんの画像が含まれる HTML
+    ドキュメントでは場合によっては遅延時間が 50%
+    短縮される結果もでています。Apache 1.2 以降で Keep-Alive
+    接続を有効にするには <code>KeepAlive On</code> と設定します。</p>
+
+    <p>HTTP/1.0 に対応したクライアントの際には、
+    クライアントより特に要求があった場合のみ Keep-Alive 接続となります。
+    さらに、HTTP/1.0 クライアントでは、コンテンツの容量が先に
+    (訳注: 要求に対して応答を返す前に) わかる場合のみ Keep-Alive
+    接続を利用できます。これは、CGI の出力や SSI のページ、
+    サーバが生成したディレクトリのリストのような動的コンテンツを
+    HTTP/1.0 クライアントに送る場合には Keep-Alive
+    接続を使えないことを意味します。HTTP/1.1
+     に対応したクライアントの際には、
+    特に指定されない限りはデフォルトとして持続的な接続が行なわれます。
+    クライアントが要求すれば、コンテンツの容量を判別できないものを
+    持続的な接続を通して送るために、チャンクエンコーディングが用いられます。</p>
+
+    <p><strong>Apache 1.1 のみ</strong>:
+    Apache が接続ごとに受付できる要求の最大数を <em>max-requests</em>
+    にて指定できます。
+    制限は、サーバのリソースを多大に利用するようなクライアントを防ぐために
+    行ないます。
+    <code>0</code> に設定すると制限値はなくなります。
+    Apache 1.2 及び 1.3 の場合には、MaxKeepAliveRequests 
+    ディレクティブにより制御します。</p>
+
+    <p>参照 <a
+    href="#maxkeepaliverequests">MaxKeepAliveRequests</a></p>
+    <hr />
+
+    <h2><a id="keepalivetimeout"
+    name="keepalivetimeout">KeepAliveTimeout ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> KeepAliveTimeout
+    <em>seconds</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>KeepAliveTimeout
+    15</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> KeepAliveTimeout
+    は Apache 1.1 以降で利用可能です。
+
+    <p>接続を閉じる前に、Apache が次のリクエストを何秒待つかを指定します。
+    リクエストを受け付けた後は、<a
+    href="#timeout"><code>Timeout</code></a> ディレクティブによって
+    指定されたタイムアウト値が使われます。</p>
+
+    <p><code>KeepAliveTimeout</code> を大きな値に設定すると、
+    負荷の高いサーバにおいてはパフォーマンスの問題を引き起こす場合があります。
+    タイムアウトが長ければ長いほど、より多くのサーバプロセスが
+    活発でないクライアントからの接続の終了を待ち続けることになります。</p>
+    <hr />
+
+    <h2><a id="limit" name="limit">&lt;Limit&gt; ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;Limit
+    <em>method</em> [<em>method</em>] ... &gt; ...
+    &lt;/Limit&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> any<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>アクセス制御は、通常<strong>すべての</strong>アクセスメソッドに対して
+    影響し、普通はこれが望ましい挙動です。
+    <strong>そうしたことから、大部分の場合にはアクセス制御に関わるディレクティブを
+    <code>&lt;limit&gt;</code> セクション内に書くべきではありません。 </strong></p>
+
+    <p>&lt;Limit&gt;
+    ディレクティブの目的は、アクセス制御の範囲を指定された HTTP
+    メソッドに限定するためです。それ以外のメソッドは、&lt;Limit&gt;
+    で囲われたアクセス制御の<strong>影響を受けません</strong>。
+    以下の例は、POST, PUT, DELETE
+    のメソッドに対してのみアクセスの制御を行い、
+    それ以外のメソッドについては制限しません:</p>
+
+    <blockquote>
+      <code>&lt;Limit POST PUT DELETE&gt;<br />
+       Require valid-user<br />
+       &lt;/Limit&gt;</code>
+    </blockquote>
+    <p>メソッドの名前には、GET, POST, PUT, DELETE, CONNECT, OPTIONS,
+    PATCH, PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, UNLOCK
+    の中から、一つ以上を列挙することができます。
+    <strong>メソッドの名前は、大文字小文字を区別します。</strong>
+    また、GET を指定すると HEAD に関しても制限がかかります。
+    TRACE メソッドを制限することはできません。</p>
+
+    <p><strong>警告:</strong> アクセス制限を行なうときは <a
+    href="#limit">&lt;Limit&gt;</a> よりも <a
+    href="#limitexcept">&lt;LimitExcept&gt;</a> セクションを
+    使うようにしてください。<a href="#limitexcept">&lt;LimitExcept&gt;</a>
+    セクションは任意のメソッドに対する保護は行ないませんので。</p>
+
+    <hr />
+
+    <h2><a id="limitexcept" name="limitexcept">&lt;LimitExcept&gt;
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;LimitExcept
+    <em>method</em> [<em>method</em>] ... &gt; ...
+    &lt;/LimitExcept&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> any<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3.5 以降で利用可能です。
+
+    <p>&lt;LimitExcept&gt; と &lt;/LimitExcept&gt;
+    は、引数に<strong>含まれていない</strong> HTTP
+    のアクセスメソッドに適用するためのアクセス制御
+    ディレクティブを囲むために利用します。<em>つまり</em>、<a
+    href="#limit">&lt;Limit&gt;</a> セクションの反対の動作をし、
+    標準のメソッドと標準外や未認識のメソッドの場合の両方を設定できます。
+    <a href="#limit">&lt;Limit&gt;</a>
+    のドキュメントも併せて参照してください。</p>
+
+    <p>例:</p>
+
+    <pre>
+    &lt;LimitExcept POST GET&gt;
+    Require valid-user
+    &lt;/LimitExcept&gt;
+    </pre>
+
+    <hr />
+
+    <h2><a id="limitinternalrecursion"
+    name="limitinternalrecursion">LimitInternalRecursion directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LimitInternalRecursion
+    <em>number</em> [<em>number</em>]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>LimitInternalRecursion
+    20</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> LimitInternalRecursion
+    is は Apache 1.3.28 以降でのみ使用可能です。
+
+    <p>内部リダイレクトは、例えば、オリジナルのリクエストを
+    CGI スクリプトに内部リダイレクトする <a
+    href="mod_actions.html#action">Action</a>
+    ディレクティブを使った場合に発生します。
+    サブリクエストはある URI
+    がリクエストされた場合に何が起きるのかを突き止めるための Apache
+    の方法です。例えば、<a href="mod_dir.html">mod_dir</a>
+    は <a
+    href="mod_dir.html#directoryindex">DirectoryIndex</a>
+    に挙げられているファイルを探すためにサブリクエストを使います。</p>
+
+    <p><code>LimitInternalRecursion</code> は内部リダイレクトや
+    サブリクエストが無限ループに陥った場合に
+    サーバがクラッシュするのを防ぎます。
+    このようなループは通常、設定ミスが原因で起こります。</p>
+
+    <p>このディレクティブは二つの異なる制限値を保存します。それぞれの値は、
+    リクエスト単位で評価されます。最初の <em>number</em> は後に続くことのできる
+    内部リダイレクトの上限を設定します。二つめの <em>number</em> は
+    サブリクエストの入れ子構造の深さを設定します。<em>Number</em> を
+    一つだけ指定した場合は、その値が両方の制限値に使用されます。
+    値 <code>0</code> は「無制限」を意味します。</p>
+
+    <p><strong>例</strong></p>
+    <pre>
+    LimitInternalRecursion 5
+    </pre>
+
+    <hr />
+    <h2><a id="limitrequestbody"
+    name="limitrequestbody">LimitRequestBody ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LimitRequestBody
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>LimitRequestBody
+    0</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> LimitRequestBody
+    は Apache 1.3.2 以降で利用可能です。
+
+    <p>このディレクティブは、リクエストボディにおいて許される 0
+    (無制限を意味します) から 2147483647 (2GB)
+    までのバイト数、<em>bytes</em> を指定します。</p>
+
+    <p>LimitRequestBody ディレクティブは、指定されたコンテキスト
+    (サーバ全体、ディレクトリ、ファイル、ロケーション) 内において
+    HTTP リクエストメッセージボディの許容されるサイズに制限をかけることができます。
+    クライアントのリクエストがその制限値を超えていれば、
+    サーバはリクエストを処理せずにエラーを返します。
+    通常のリクエストメッセージボディのサイズは、リソースの種類や
+    許可されているメソッドによって大きく変わります。
+    CGI スクリプトは、よくサーバへフォーム情報を送信するために
+    メッセージボディを使います。
+    PUT メソッドの実装は、このディレクティブの値として
+    少なくともあるリソースに対してサーバが受け付けようとする
+    表現の大きさほどの値を必要とします。</p>
+
+    <p>このディレクティブは、
+    管理者がクライアントからの異常なリクエストを制御できるようにし、
+    何らかの形のサービス拒否攻撃 (訳注:DoS) を避けるのに有効です。</p>
+
+    <p>ある場所へのファイルアップロードを許可するとした場合に、
+    アップロードできるファイルのサイズを 100K に制限したければ、
+    以下のように指定すればよいでしょう。</p>
+
+    <pre>LimitRequestBody 102400</pre>
+    
+    <hr />
+
+    <h2><a id="limitrequestfields"
+    name="limitrequestfields">LimitRequestFields ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LimitRequestFields
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    <code>LimitRequestFields 100</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+    LimitRequestFields はApache 1.3.2 以降で利用可能です。
+
+    <p><em>number</em>には、0 (無制限を意味します) から 32767
+    までの数値を指定します。
+    デフォルト値は、定数 <code>DEFAULT_LIMIT_REQUEST_FIELDS</code>
+    によりコンパイル時に定義されます (配布時には 100 と指定されています)。</p>
+
+    <p>LimitRequestBody ディレクティブは、サーバ管理者が HTTP
+    リクエスト中において許可するリクエストヘッダフィールド数を指定します。
+    サーバはこの値には通常のクライアントからのリクエストに含まれるであろう
+    フィールドの数より大きな値を必要とします。
+    クライアントにより使われた要求ヘッダーフィールドの数が
+    20 を超えることはほとんどありませんが、
+    これは種々のクライアントの実装によって変わり、
+    詳細なコンテントネゴシエーションをするためのブラウザの設定にまでも
+    影響されることがあります。オプションの HTTP
+    拡張はリクエストヘッダフィールドを使って現される場合が
+    多くあります。</p>
+
+    <p>このディレクティブは、
+    管理者がクライアントからの異常なリクエストを制御できるようにし、
+    何らかの形のサービス拒否攻撃 (訳注:DoS) を避けるのに有効です。</p>
+
+    <p>例:</p>
+
+    <pre>LimitRequestFields 50</pre>
+
+    <hr />
+
+    <h2><a id="limitrequestfieldsize"
+    name="limitrequestfieldsize">LimitRequestFieldsize
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LimitRequestFieldsize
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    <code>LimitRequestFieldsize 8190</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+    LimitRequestFieldsize は Apache 1.3.2 以降で利用可能です。
+
+    <p>このディレクティブは、HTTP
+    リクエストヘッダ内に含めることのできるバイト、<em>bytes</em> を
+    0 からコンパイル時に定義される定数
+    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (配布時には 8192 と指定)
+    で指定された値までの数字で指定します。</p>
+
+    <p>LimitRequestFieldsize ディレクティブは、
+    サーバのコンパイル時に指定したインプットバッファ容量以下に
+    HTTP リクエストヘッダの許容されるサイズを制限することができます。
+    サーバは、このディレクティブの値として、
+    通常のクライアントリクエストから送られた個々のヘッダフィールドに
+    十分足る大きさを必要とします。
+    普通のリクエストヘッダのサイズは、個々のクライアントにより大きく変わり、
+    詳細なコンテントネゴシエーションをするためのブラウザの設定にまでも
+    影響されることがあります。
+    </p>
+
+    <p>このディレクティブは、
+    管理者がクライアントからの異常なリクエストを制御できるようにし、
+    何らかの形のサービス拒否攻撃 (訳注:DoS) を避けるのに有効です。</p>
+
+    <p>例:</p>
+
+    <pre>LimitRequestFieldSize 16380</pre>
+
+    <p>通常はデフォルトから変更する必要はないでしょう。</p>
+    <hr />
+
+    <h2><a id="limitrequestline"
+    name="limitrequestline">LimitRequestLine ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LimitRequestLine
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>LimitRequestLine
+    8190</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> LimitRequestLine
+    は Apache 1.3.2 以降で利用可能です。
+
+    <p>このディレクティブは、HTTP リクエスト行内で許容されるバイト数
+    <em>bytes</em> を 0 からコンパイル時の定数
+    <code>DEFAULT_LIMIT_REQUEST_LINE</code> (配布時には 8192 と指定)
+    で指定された値までの数字で指定します。</p>
+
+    <p>LimitRequestLine ディレクティブにより、サーバ管理者は
+    サーバのコンパイル時に指定したインプットバッファ容量以下に
+    クライアントからの HTTP
+    リクエスト行のサイズの制限を行うことができます。リクエスト行は、
+    HTTP メソッド、URI, プロトコルバージョンから成っており、
+    LimitRequestLine はサーバへのリクエストに対して許容するリクエスト
+    URI の長さを制限することになります。サーバは、GET
+    リクエストのクエリ部分も含めて、リソースの名前が入るに足る
+    大きさを必要とします。</p>
+
+    <p>このディレクティブは、
+    管理者がクライアントからの異常なリクエストを制御できるようにし、
+    何らかの形のサービス拒否攻撃 (訳注:DoS) を避けるのに有効です。</p>
+
+    <p>例:</p>
+
+    <pre>LimitRequestLine 16380</pre>
+
+    <p>通常の場合には、デフォルトから変更する必要ないでしょう。</p>
+    <hr />
+
+    <h2><a id="listen" name="listen">Listen ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Listen
+    [<em>IP-address</em>:]<em>port</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Listen は Apache 1.1
+    以降で利用可能です。
+
+    <p>Listen ディレクティブは、Apache が複数の IP アドレスやポートを
+    listen するように指示します。デフォルトでは、すべての
+    IP インターフェースへのリクエストに応答し、<code><a
+    href="#port">Port</a></code> ディレクティブが指定したポートのみを
+    listen することになります。</p>
+    <tt><a
+    href="#bindaddress">BindAddress</a></tt> や <tt>Port</tt>
+    の代わりに <tt>Listen</tt> を使用することができます。
+    <tt>Listen</tt> は特定のポート若しくはアドレスとポートの組合わせにより
+    リクエストの受け付けを指定することが可能です。
+    最初のポート番号のみの指定方法を利用した場合には、
+    サーバは <tt>Port</tt> ディレクティブで与えられたポートに代わり、
+    すべてのインターフェース上で指定されたポートを listen 
+    します。もし、ポートと一緒に IP アドレスが指定されていれば、
+    指定されたインターフェースのポートを listen します。
+
+    <p>なお、Apache が自分のサーバを指す URL を正しく生成できるように
+    <tt>Port</tt> ディレクティブも使う必要があるかもしれないことに
+    注意してください。</p>
+
+    <p>Listen する複数のアドレスとポートを指定するために、
+    複数の Listen ディレクティブを使用することができます。
+    その場合、サーバは指定されたすべてのアドレスとポートで、
+    リクエストに対する応答を行ないます。</p>
+
+    <p>サーバが 80 番ポートと 8000 番ポートの両方で接続を受け付ける設定の例:</p>
+<pre>
+   Listen 80
+   Listen 8000
+</pre>
+    二つのインターフェースとポート番号において接続を受け付ける設定の例:
+<pre>
+   Listen 192.170.2.1:80
+   Listen 192.170.2.5:8000
+</pre>
+
+    <p><strong>参照:</strong> <a href="../dns-caveats.html">DNS に関する問題</a><br />
+     <strong>参照:</strong> <a href="../bind.html">Apache が利用するアドレスとポートの設定</a><br />
+     <strong>参照:</strong> <a
+    href="http://httpd.apache.org/info/known_bugs.html#listenbug">既知のバグ</a></p>
+    <hr />
+
+    <h2><a id="listenbacklog" name="listenbacklog">ListenBacklog
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ListenBacklog
+    <em>backlog</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ListenBacklog
+    511</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ListenBacklog は Apache 1.2.0
+    以降で利用可能です。
+
+    <p>受け付けできていない接続を待機させる際の最大数を指定します。
+    通常は変更の必要はありませんし、変更することは望ましくありません。
+    しかし、システムによっては TCP SYN フラッド攻撃を受けているときに
+    この数値を増やした方が良い場合があります。<code>listen(2)</code>
+    システムコールの backlog パラメータを参照してください。</p>
+
+    <p>この数値は、OS によって小さな値に制限されていることがよくあり、
+    OS によってさまざまです。さらに、多くの OS は backlog
+    で指定された値そのものを使うのではなく、それに基づく値
+     (通常はより大きな値) を使うということにも注意してください。</p>
+    <hr />
+
+    <h2><a id="location" name="location">&lt;Location&gt;
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;Location
+    <em>URL-path</em>|<em>URL</em>&gt; ... &lt;/Location&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Location は Apache 1.1
+    以降で利用可能です。
+
+    <p>&lt;Location&gt; ディレクティブは、URL
+    によるアクセス制御を提供します。<a
+    href="#directory">&lt;Directory&gt;</a> ディレクティブと似ていて、
+    &lt;/Location&gt; ディレクティブで終了するサブセクションを開始します。
+    <code>&lt;Location&gt;</code> セクションは、&lt;Directory&gt;
+    セクションと <code>.htaccess</code> の読み込みの後、&lt;Files&gt;
+    セクションを適用した後に、設定ファイルに現れた順に処理されます。</p>
+
+    <p>URL はファイルシステムに対応する必要はなく、&lt;Location&gt;
+    は完全にファイルシステムに関係せず動作することを強調しておきます。</p>
+
+    <p>すべてのリクエスト (プロキシを除く) に対し、URL は
+    <code>/path/</code> という、<code>http://servername</code>
+    という接頭辞を含まない形でマッチします。
+    プロキシリクエストの場合には、<code>scheme://servername/path</code>
+    という接頭辞を含む形でマッチし、接頭辞を含めて指定する必要があります。</p>
+
+    <p>URL にはワイルドカードを利用することができます。
+    `?' は任意の一文字、`*' は任意の文字列にマッチします。 </p>
+
+    <p><strong>Apache 1.2 以降の場合:</strong>
+    <code>~</code> という文字を追加することで、拡張正規表現を
+    利用することもできます。
+    例えば、</p>
+<pre>
+   &lt;Location ~ "/(extra|special)/data"&gt;
+</pre>
+
+    <p>は URL に "/extra/data" か "/special/data"
+    という文字列が含まれている場合にマッチします。そして、
+    Apache 1.3 以降の場合には、<code>&lt;Location&gt;</code>
+    の正規表現版と全く同じ動作をする <a
+    href="#locationmatch">&lt;LocationMatch&gt;</a>
+    という新しいディレクティブがあります。</p>
+
+    <p><code>Location</code> 機能は、<code><a
+    href="mod_mime.html#sethandler">SetHandler</a></code>
+    ディレクティブと組合わせて利用すると特に便利です。
+    例えば、foo.com のブラウザからのみステータスの参照を有効にしたければ、
+    次のようにすれば良いでしょう。</p>
+<pre>
+    &lt;Location /status&gt;
+    SetHandler server-status
+    Order Deny,Allow
+    Deny from all
+    Allow from .foo.com
+    &lt;/Location&gt;
+</pre>
+
+    <p><strong>Apache 1.3 以降における / (スラッシュ)
+    の取り扱いについての注意:</strong>
+    スラッシュ文字は、URL
+    内に現れる場所に応じて変わる特別な意味を持っています。
+    ファイルシステムにおいて利用する場合には複数のスラッシュでも一つの
+    スラッシュとして扱われますが、(例えば、<code>/home///foo</code>
+    は <code>/home/foo</code> といったように) URL
+    においては必ずしもそうなるわけではありません。
+    <code>&lt;LocationMatch&gt;</code>
+    ディレクティブや正規表現を利用した <code>&lt;Location&gt;</code>
+    ディレクティブでそのような動作をさせたければ、
+    明示的に複数のスラッシュを記述する必要があります。
+    例えば、<code>&lt;LocationMatch ^/abc&gt;</code> は、
+    <code>/abc</code> というリクエスト URL にマッチしますが、
+    <code>//abc</code> というリクエスト URL にはマッチしません。
+    (正規表現でない) <code>&lt;Location&gt;</code> ディレクティブは、
+    Proxy リクエストに対して利用する際には同様のふるまいをしますが、
+    (正規表現でない) <code>&lt;Location&gt;</code> を Proxy
+    でないリクエストに対して利用する際には、
+    一つのスラッシュで複数のスラッシュにマッチします。
+    例えば、<code>&lt;Location /abc/def&gt;</code> と指定し、
+    <code>/abc//def</code>
+    というリクエストがあれば、マッチすることになります。</p>
+
+    <p><strong>参照</strong>: リクエストを受けた際に、
+    異なる複数のセクションがどのようにして
+    組み合わされるのかについては <a href="../sections.html">
+    Directory, Location, Files セクションの動作法</a></p>
+    <hr />
+
+    <h2><a id="locationmatch"
+    name="locationmatch">&lt;LocationMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;LocationMatch
+    <em>regex</em>&gt; ... &lt;/LocationMatch&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> LocationMatch は Apache 1.3
+    以降で利用可能です。
+
+    <p>
+    &lt;LocationMatch&gt; ディレクティブは、<a
+    href="#location">&lt;Location&gt;</a> と同じ様に
+    URL によるアクセス制御を提供します。
+    ただし、引数は普通の文字列ではなく、正規表現となります。例えば、</p>
+<pre>
+   &lt;LocationMatch "/(extra|special)/data"&gt;
+</pre>
+
+    <p>は URL に "/extra/data" か "/special/data" という文字列が
+    含まれている場合にマッチします。</p>
+    <p><strong>参照</strong>: リクエストを受けた際に、
+    異なる複数のセクションがどのようにして
+    組み合わされるのかについては <a href="../sections.html">
+    Directory, Location, Files セクションの動作法</a></p>
+    <hr />
+
+    <h2><a id="lockfile" name="lockfile">LockFile
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LockFile
+    <em>ファイルパス</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>LockFile
+    logs/accept.lock</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>LockFile ディレクティブは Apache が USE_FCNTL_SERIALIZED_ACCEPT
+    か USE_FLOCK_SERIALIZED_ACCEPT
+    でコンパイルされたときに使うロックファイルへのパスを指定します。
+    このディレクティブは通常はデフォルト値のままにしておくべきです。
+    これを変える主な理由は、<code>logs</code> ディレクトリが NFS
+    マウントされている、というものです。これは、<strong>ロックファイルは
+    ローカルディスク上に作られなければならない</strong>からです。
+    主サーバプロセスの PID がファイル名の後に追加されます。</p>
+
+    <p><strong>セキュリティ</strong> <code>/var/tmp</code>
+    のような皆が書き込めるディレクトリは避けるのが賢明です。
+    これは、サーバが作成しようとするロックファイルと同じ名前のファイルを
+    作成することで、サーバの起動を阻止する、というサービス拒否攻撃を
+    行うことが可能になるからです。</p>
+    <hr />
+
+    <h2><a id="loglevel" name="loglevel">LogLevel
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LogLevel
+    <em>level</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>LogLevel
+    warn</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> LogLevel は Apache 1.3
+    以降で利用可能です。
+
+    <p>LogLevel は、エラーログへ記録するメッセージの冗長性を指定します
+    (<a href="#errorlog">ErrorLog</a> ディレクティブを見てください)。
+    以下の <em>level</em> を指定でき、順に重要度が下がっていきます。</p>
+
+    <table>
+      <tr>
+        <th align="left"><strong>レベル</strong> </th>
+
+        <th align="left"><strong>説明</strong> </th>
+        <th align="left"><strong>例</strong> </th>
+      </tr>
+
+      <tr>
+        <td><code>emerg</code> </td>
+
+        <td>緊急 - システムが利用できない</td>
+        <td>Child cannot open lock file. Exiting
+        (子プロセスがロックファイルを開けないため終了した)</td>
+      </tr>
+
+      <tr>
+        <td><code>alert</code> </td>
+
+        <td>直ちに対処が必要</td>
+        <td>getpwuid: couldn't determine user name from uid
+        (getpwuid: UID からユーザ名を特定できなかった)</td>
+      </tr>
+
+      <tr>
+        <td><code>crit</code> </td>
+
+        <td>致命的な状態</td>
+       <td>socket: Failed to get a socket, exiting child
+       (socket: ソケットが得られないため、子プロセスを終了させた)</td>
+      </tr>
+
+      <tr>
+        <td><code>error</code> </td>
+
+        <td>エラー</td>
+        <td>Premature end of script headers
+        (スクリプトのヘッダが足りないままで終わった)</td>
+      </tr>
+
+      <tr>
+        <td><code>warn</code> </td>
+
+        <td>警告</td>
+        <td>child process 1234 did not exit, sending another SIGHUP
+        (子プロセス 1234 が終了しなかった。もう一度 SIGHUP を送る)</td>
+      </tr>
+
+      <tr>
+        <td><code>notice</code> </td>
+
+        <td>普通だが、重要な情報</td>
+        <td>httpd: caught SIGBUS, attempting to dump core in ...
+        (httpd: SIGBUS シグナルを受け、... へコアダンプをした)</td>
+      </tr>
+
+      <tr>
+        <td><code>info</code> </td>
+
+        <td>追加情報</td>
+        <td>"Server seems busy, (you may need to increase
+        StartServers, or Min/MaxSpareServers)..." (「サーバは負荷が高い、
+        (StartServers や Min/MaxSpareServers の値を増やす必要があるかも)」)</td>
+      </tr>
+
+      <tr>
+        <td><code>debug</code> </td>
+
+        <td>デバッグメッセージ</td>
+        <td>"Opening config file ..." (設定ファイルを開いている...)</td>
+      </tr>
+    </table>
+
+    <p>特定のレベルが指定された場合、それより高いレベルのすべての
+    メッセージが報告されます。
+    <em>例えば</em>、<code>LogLevel info</code> に指定すると、
+    <code>notice</code> と <code>warn</code> も報告されます。</p>
+
+    <p>なお <code>crit</code> 以上を指定することが推奨されます。</p>
+
+    <p>例:</p>
+
+    <pre>LogLevel notice</pre>
+
+    <p><strong>注:</strong> 通常のファイルに記録する場合レベル
+    <code>notice</code> のメッセージは抑制することができず、
+    常に記録されます。しかし、これは <code>syslog</code>
+    を使ってログ収集を行なう場合にはあてはまりません。</p>
+
+    <hr />
+
+    <h2><a id="maxclients" name="maxclients">MaxClients
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> MaxClients
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>MaxClients
+    256</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>MaxClients
+    ディレクティブは、同時にサポートできる最大リクエスト数を設定します。
+    子サーバプロセスは、これより多くは作成されません。
+    なお、256 クライアントより大きな数値を指定するためには、httpd.h の
+    HARD_SERVER_LIMIT を編集して再コンパイルしなければなりません。</p>
+
+    <p>MaxClients の制限を超えた接続は、通常は <a
+    href="#listenbacklog">ListenBacklog</a>
+    ディレクティブで指定した数までキューに入れられます。
+    そして、別のリクエストを終了し子プロセスが解放された時点で、
+    接続が受け付けられます。</p>
+    <hr />
+
+    <h2><a id="maxkeepaliverequests"
+    name="maxkeepaliverequests">MaxKeepAliveRequests
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> MaxKeepAliveRequests
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    <code>MaxKeepAliveRequests 100</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.2 以降で利用可能です。
+
+    <p>MaxKeepAliveRequests ディレクティブは、<a
+    href="#keepalive">KeepAlive</a> が有効な場合に、
+    一回の接続で受け付け可能なリクエストの数を制限します。
+    "<code>0</code>" に設定していれば、受け付けるリクエストは無制限になります。
+    この設定は、サーバ性能を向上させるために、大きな数値を指定することを勧めます。
+    なお、Apache 1.1 ではこの値は、KeepAlive
+    ディレクティブのオプションとして指定されていました。</p>
+
+    <p>例</p>
+
+    <pre>MaxKeepAliveRequests 500</pre>
+
+    <hr />
+
+    <h2><a id="maxrequestsperchild"
+    name="maxrequestsperchild">MaxRequestsPerChild
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> MaxRequestsPerChild
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    <code>MaxRequestsPerChild 0</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>MaxRequestsPerChild ディレクティブは、
+    個々の子サーバープロセスが処理できるリクエストの最大数を設定します。
+    MaxRequestsPerChild
+    で指定された数のリクエストを処理すると、子プロセスは終了します。
+    なお、0 を指定すると、プロセスは限りなく動きつづけます。</p>
+
+    <p>MaxRequestsPerChild により、最大数を 0
+    以外の値に設定することは、二つの有益な効果があります：</p>
+
+    <ul>
+      <li>(予期せぬ) メモリリークによってプロセスが消費する
+      メモリの総量を制限することができます。</li>
+
+      <li>プロセスの実行時間制限が設けられることにより、
+      サーバの負荷低減時にプロセスの数を減少させることを助けます。</li>
+    </ul>
+
+    <p>ただし、Win32 においてはこれを 0 に設定した方が良いでしょう。
+    0 以外を指定すると、リクエストの制限に到達したときに子プロセスが終了し、
+    子プロセスがもう一度作られ、その際に設定ファイルを読み直します。
+    これにより、設定ファイルを修正後に、
+    まだ修正内容が適用されるのを期待していないときに
+    予期せぬ振る舞いをすることがあります。
+    <a href="#threadsperchild">ThreadsPerChild</a> も参照してください。</p>
+
+    <p><strong>注意:</strong> <em>KeepAlive</em> リクエストの場合、
+    最初のリクエストのみカウントされます。
+    実質的には子プロセスあたりの<em>接続数</em>を指定するものといえます。</p>
+    <hr />
+
+    <h2><a id="maxspareservers"
+    name="maxspareservers">MaxSpareServers ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> MaxSpareServers
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>MaxSpareServers
+    10</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>MaxSpareServers ディレクティブは、<em>アイドル状態</em>である
+    子サーバプロセスの望ましい最大数を指定します。
+    アイドル状態のプロセスとは、リクエストを処理していないプロセスのことです。
+    MaxSpareServers で指定した数以上がアイドル状態であれば、
+    親プロセスは増えすぎたプロセスを kill します。</p>
+
+    <p>この数値の変更は、とてもアクセスの多いサイトにおいてのみ必要となるでしょう。
+    大きな数値を指定することは、ほとんどの場合には良くない設定です。</p>
+
+    <p>なお、これは<em>予備</em>サーバの最大数であり、
+    クライアントからのリクエストを一度にどれだけ処理できるのかの最大数を
+    指定するものではありません。
+    もし、そういった最大数を指定したいのであれば、<a
+    href="#maxclients">MaxClients</a> ディレクティブを参照してください。</p>
+
+    <p>このディレクティブは、Microsoft Windows プラットフォームにおける
+    Apache サーバでは意味を持ちません。</p>
+
+    <p><a href="#minspareservers">MinSpareServers</a>、<a
+    href="#startservers">StartServers</a>、<a
+    href="#maxclients">MaxClients</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="minspareservers"
+    name="minspareservers">MinSpareServers ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> MinSpareServers
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>MinSpareServers
+    5</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>MinSpareServers ディレクティブは、<em>アイドル状態</em>である
+    子サーバプロセスの望ましい最小数を指定します。
+    アイドル状態のプロセスとは、リクエストを処理していないプロセスのことです。
+    もし MinSpareServers で指定した数よりアイドル状態のサーバが少なければ、
+    親プロセスは 1 秒間に 1 個を限度として新しい子プロセスを生成します。</p>
+
+    <p>この数値の変更は、とてもアクセスの多いサイトにおいてのみ必要となるでしょう。
+    大きな数値を指定することは、ほとんどの場合には良くない設定です。</p>
+
+    <p>なお、このディレクティブにおいてある数値 <i>m</i> を指定したとすると、
+    <i>n</i> という数の稼動中のクライアントリクエストがある時に、
+    <i>n + m</i> 以上の <code>httpd</code>
+    プロセスが確実に保持されるようにします。</p>
+
+    <p>このディレクティブは、Microsoft Windows
+    プラットフォームでは意味を持ちません。</p>
+
+    <p><a href="#minspareservers">MinSpareServers</a>、<a
+    href="#startservers">StartServers</a>、<a
+    href="#maxclients">MaxClients</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="namevirtualhost"
+    name="namevirtualhost">NameVirtualHost ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> NameVirtualHost
+    <em>addr</em>[:<em>port</em>]<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> NameVirtualHost
+    は Apache 1.3 以降で利用可能です。
+
+    <p>NameVirtualHost ディレクティブは、
+    <a href="../vhosts/">名前ベースのバーチャルホスト</a>の設定を行いたい場合に
+    必要となるものです。</p>
+
+    <p><em>addr</em> にはホスト名を指定できますが、常に IP
+    アドレスかワイルドカードを指定するのが推奨されます。
+    <em>例えば、</em></p>
+
+    <blockquote>
+      <code>NameVirtualHost 111.22.33.44</code>
+    </blockquote>
+    NameVirtualHost ディレクティブは、名前ベースのバーチャルホストを
+    利用してリクエストを受け付ける IP アドレスを指定します。
+    これは、普通は名前ベースのバーチャルホストアドレスです。
+    ただし、ファイアーウォールや他のプロキシがリクエストを受け付け、
+    違う IP アドレスのサーバにフォワードするという場合は、
+    リクエストを提供したいマシン上の物理インターフェースの
+    IP アドレスを指定する必要があります。
+    複数のアドレスで複数の名前ベースのバーチャルホストを指定する場合は
+    各アドレスに対してディレクティブを書いてください。
+
+    <p>「主サーバ」や、どの _default_ サーバも、
+    NameVirtualHost で指定した IP アドレスへのリクエスト
+    を処理することは<strong>ありません</strong> (なぜか NameVirtualHost
+    を指定したけどそのアドレスに VirtualHost を定義しなかった場合を除く)。</p>
+
+    <p>なお、名前ベースのバーチャルホストにポート番号を指定することも可能です。<br />
+    例えば、</p>
+
+    <blockquote>
+      <code>NameVirtualHost 111.22.33.44:8080</code>
+    </blockquote>
+    Apache 1.3.13 以上の場合には、<em>addr</em> に <code>*</code>
+    を指定することができます。
+    これにより、NameVirtualHostディレクティブや <a
+    href="#virtualhost">&lt;VirtualHost&gt;</a> セクションで指定されなかった、
+    より細かく設定されているアドレス以外のすべてのアドレスへの接続にマッチします。
+    名前ベースのバーチャルホストだけを利用したい場合や、
+    設定ファイル中にサーバの IP
+    アドレスを記述することを望まない場合に有用でしょう。
+
+    <p><strong>参照:</strong> <a href="../vhosts/">Apache バーチャルホスト解説書</a></p>
+    <hr />
+
+    <h2><a id="options" name="options">Options ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Options
+    [+|-]<em>option</em> [[+|-]<em>option</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> Options<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>Options ディレクティブは、特定のディレクトリに対して
+    どの機能を有効にするのかを制御します。</p>
+
+    <p><em>option</em> を <code>None</code>
+    に指定すると、特別な機能はすべて無効になります。また、以下の示す
+    1 個以上のものを指定できます。</p>
+
+    <dl>
+      <dt>All</dt>
+
+      <dd>MultiViews を除いたすべての機能が有効となります。
+      これがデフォルトです。</dd>
+
+      <dt>ExecCGI</dt>
+
+      <dd>
+      CGI スクリプトの実行を許可します。</dd>
+
+      <dt>FollowSymLinks</dt>
+
+      <dd>
+      サーバが、このディレクトリ内でシンボリックリンクをたどれるようにします。<br />
+      <strong>注意点</strong>:
+      サーバがシンボリックリンクをたどる場合でも、
+      <code>&lt;Directory&gt;</code>
+      セクションにマッチさせるためのパス名は<em>変更されません</em>。<br />
+      <strong>注意点</strong>: &lt;Location&gt;
+      内にこのオプションを指定しても無視されます。</dd>
+
+      <dt>Includes</dt>
+
+      <dd>
+      SSI を有効にします。</dd>
+
+      <dt>IncludesNOEXEC</dt>
+
+      <dd>
+      SSI は有効になりますが、#exec コマンド と #exec CGI
+      は無効になります。ただし、#include virtual により、ScriptAlias
+      されたディレクトリで CGI を実行することは可能です。</dd>
+
+      <dt>Indexes</dt>
+
+      <dd>
+      もし、URL がディレクトリにマップするリクエストであって、かつ
+      DirectoryIndex で指定したファイル (例えば、index.html) が
+      ディレクトリ内に無ければ、
+      ディレクトリ内の一覧を整形して返せるようにします。</dd>
+
+      <dt>MultiViews</dt>
+
+      <dd>
+      <a href="../content-negotiation.html">コンテントネゴシエーション</a> 
+      された MultiViews を許可します。</dd>
+
+      <dt>SymLinksIfOwnerMatch</dt>
+
+      <dd>
+      シンボリック先のファイルまたはディレクトリが、
+      シンボリックリンクの所有ユーザ ID
+      と同じ場合にのみシンボリックリンクをたどれるようにします。<br />
+      <strong>注意点</strong>: &lt;Location&gt;
+      内にこのオプションを指定しても無視されます。</dd>
+    </dl>
+    通常、ディレクトリに対して複数の <code>Options</code>
+    が適用可能な場合、最も近いもの一つのみが適用されます。
+    複数の指定がマージされるわけではありません。しかし、すべての
+    <code>Options</code> ディレクティブが + や -
+    付きで指定された場合はオプションの値はマージされます。
+    + を頭につければ現在の設定に加えられ、-
+    を付ければ現在の設定から削除されます。
+
+    <p>例えば、+ や - を利用しない場合は:</p>
+
+    <blockquote>
+      <code>&lt;Directory /web/docs&gt;<br />
+       Options Indexes FollowSymLinks<br />
+       &lt;/Directory&gt;<br />
+       &lt;Directory /web/docs/spec&gt;<br />
+       Options Includes<br />
+       &lt;/Directory&gt;</code>
+    </blockquote>
+
+    /web/docs/spec というディレクトリには、<code>Includes</code>
+    だけが適用されます。しかし、2 番目の <code>Options</code> で
+    + や - を利用してみると:
+
+    <blockquote>
+      <code>&lt;Directory /web/docs&gt;<br />
+       Options Indexes FollowSymLinks<br />
+       &lt;/Directory&gt;<br />
+       &lt;Directory /web/docs/spec&gt;<br />
+       Options +Includes -Indexes<br />
+       &lt;/Directory&gt;</code>
+    </blockquote>
+
+    /web/docs/spec というディレクトリには、 <code>FollowSymLinks</code>
+    と <code>Includes</code> が適用されます。
+    
+
+    <p><strong>注意:</strong> <code>-IncludesNOEXEC</code> 若しくは
+    <code>-Includes</code>
+    を指定すると、前の設定がどのようになっていようとも SSI
+    は無効となります。</p>
+
+    <p>どのような設定もされていなければ、デフォルトでは
+    <code>All</code> になります。</p>
+    <hr />
+
+    <h2><a id="pidfile" name="pidfile">PidFile ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> PidFile
+    <em>ファイルパス</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>PidFile
+    logs/httpd.pid</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>PidFile ディレクティブはサーバがデーモンのプロセス ID
+    を記録するファイルを設定します。ファイル名がスラッシュ
+    (/) から始められていなければ、ServerRoot からの相対パスとなります。
+    PidFile は <a href="#servertype">standalone</a>
+    モードでのみ使用できます。</p>
+
+    <p><a
+    href="#errorlog">ErrorLog</a> と TransferLog を閉じて開き直して、
+    設定ファイルを再読み込みさせることができるようにサーバに
+    シグナルを送ることができれば便利なことがあります。
+    これは、SIGHUP (kill -1) シグナルを PidFile
+    に記載されているプロセス ID に送ることによって可能です。</p>
+
+    <p>PidFile はログファイルの場所と <a
+    href="../misc/security_tips.html#serverroot">安全性</a>と同じような
+    注意が必要です。</p>
+    <hr />
+
+    <h2><a id="port" name="port">Port ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Port
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>Port
+    80</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p><em>number</em>には、0 から 65535
+    までの番号を指定します。いくつかのポート番号 (特に1024番以前) 
+    は、特定のプロトコルのために予約されています。
+    <code>/etc/services</code>
+    を見ると、定義されているポートの一覧があります。通常、HTTP
+    プロトコルの標準のポートは 80 です。</p>
+
+    <p>Port ディレクティブは、二つの意味を持っており、一つは
+    NCSA の上位互換としての必要性です (Apache
+    の設定では混同しやすい点です)</p>
+    <ul>
+      <li>ポート番号を指定している <a href="#listen">Listen</a> や <a
+      href="#bindaddress">BindAddress</a> がなければ、主サーバ内
+      (<a href="#virtualhost">&lt;VirtualHost&gt;</a> セクション外)
+      に記述することによって、サーバが listen
+      するポートの番号を指定できます。Listen 若しくは BindAddress
+      において <code>:number</code> といった指定がされていれば、Port
+      はサーバが listen するポートには影響しません。</li>
+
+      <li>Port ディレクティブの値は、<code>SERVER_PORT</code> 環境変数
+      (<a href="mod_cgi.html">CGI</a> や
+      <a href="mod_include.html">SSI</a> において設定される)
+      を設定し、サーバが自分自身を参照する URL を生成する
+      (例えば、自分自身へ外部リダイレクトを作成する場合など)
+      場合に利用されます。この動作は <a
+      href="#usecanonicalname">UseCanonicalName</a>
+      により変更できます。</li>
+    </ul>
+
+    Port ディレクティブの主な動作は、<a href="#servername">ServerName</a>
+    ディレクティブと同様のものとみなすことができます。
+    ServerName と Port
+    は、サーバの<em>正式な</em>アドレスが、何であるかを指定します。
+
+    <p>80 番ポートは、UNIX の特別なポートの一つです。1024
+    番未満のすべてのポートはシステムが使用するために予約されています。
+    <em>すなわち</em>、一般ユーザ (root 以外) は使用することができません。
+    一般ユーザはそれ以上のポートしか使用できません。そのため、
+    80 番ポートを使用するには、root
+    アカウントでサーバを起動しなければなりません。
+    起動後に、ポートをバインドした後、リクエストを受け付ける前に
+    Apache は <a href="#user">User
+    ディレクティブ</a>で指定された、より特権の低いユーザに移行します。</p>
+
+    <p>もし、80 番ポートを使用できない場合には、
+    使用していない他の任意のポートを選んでください。root 以外のユーザなら、
+    8000 などのように 1023 より上のポートを選んで下さい。</p>
+
+    <p>セキュリティ: もし、root によってサーバを起動したなら、
+    <a href="#user">User</a> を root 以外に設定してください。接続を
+    root で扱うと、サイトは重大なセキュリティ攻撃にさらされる
+    可能性があります。 </p>
+    <hr />
+
+    <h2><a id="protocolreqcheck" name="protocolreqcheck">ProtocolReqCheck
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ProtocolReqCheck
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ProtocolReqCheck
+    on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル
+    <br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+    <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+    ProtocolReqCheck は Apache 1.3.27 以降でのみ使用可能です。
+
+    <p>このディレクティブは Request 行の Protocol
+    フィールドの厳密なチェックを行うようにします。Apache の 1.3.26
+    以前のバージョンは (<code>HTTP-1.1</code> のような) 間違った
+    Protocol を黙って受け付けて、<code>HTTP/1.0</code>
+    とみなしていました。このバージョンではそうではなく、Protocol
+    フィールドは正しいものでなければならなくなりました。
+    1.3.26 以前の動作が望ましかったり、必要だったりする場合は
+    <code>ProtocolReqCheck off</code>
+    と設定することにより厳密なチェックをしないようにできます。</p>
+
+     <hr />
+
+    <h2><a id="require" name="require">Require ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Require
+    <em>entity-name</em> [<em>entity-name</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>このディレクティブは、どの認証済みのユーザがリソースに
+    アクセスすることができるかを指定します。
+    以下のような構文になります。</p>
+
+    <ul>
+      <li>
+        Require user <em>userid</em> [<em>userid</em>] ... 
+
+        <p>指定されたユーザのみ、リソースへのアクセスを許可します。</p>
+      </li>
+
+      <li>
+        Require group <em>group-name</em> [<em>group-name</em>] ...
+        
+
+        <p>指定されたグループに属するユーザのみ、リソースへのアクセスを許可します。</p>
+      </li>
+
+      <li>
+        Require valid-user 
+
+        <p>すべての認証されたユーザに、リソースへのアクセスを許可します。</p>
+      </li>
+      <li>file-owner
+        <p>名前がファイルの所有者のシステムでの名前に合うユーザだけが
+        リソースをアクセスできます。<br />
+        [Apache 1.3.20 以降で使用可能]</p>
+      </li>
+      <li>file-group
+        <p>ファイルの所有者のグループのシステムでの名前に合うグループのメンバだけが
+        リソースにアクセスできます。<br />[Apache 1.3.20 以降で使用可能]</p>
+      </li>
+    </ul>
+
+    <p>Require は、正しく動作するためには <a
+    href="#authname">AuthName</a> 及び <a
+    href="#authtype">AuthType</a> ディレクティブや、
+    <a
+    href="mod_auth.html#authuserfile">AuthUserFile</a> 及び <a 
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a>
+    (ユーザとグループを指定するために) といったディレクティブと共に
+    指定する必要があります。
+    例えば:</p>
+
+    <blockquote>
+      <code>AuthType Basic<br />
+       AuthName "Restricted Directory"<br />
+       AuthUserFile /web/users<br />
+       AuthGroupFile /web/groups<br />
+       Require group admin<br />
+      </code>
+    </blockquote>
+    アクセス制御は、<strong>すべての</strong>メソッドに対して行われます。
+    <strong>通常は、これが望ましい動作です。</strong>
+    もし、特定のメソッドに対してのみアクセスの制御を適用し、
+    他のメソッドは制限しない場合には、<a
+    href="#limit">&lt;Limit&gt;</a> セクション内に <code>Require</code>
+    を指定してください。
+
+    <p><a href="#satisfy">Satisfy</a> 及び <a
+    href="mod_access.html">mod_access</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="resourceconfig" name="resourceconfig">ResourceConfig
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ResourceConfig
+    <em>file-path</em>|<em>directory-path</em>|<em>wildcard-path</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ResourceConfig
+    conf/srm.conf</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core <br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ファイル名ではなく、
+    ディレクトリを指定する機能は Apache 1.3.13 以降でのみ使用可能です。
+
+    <p>サーバは httpd.conf ファイルを読み込んだ後、
+    追加のディレクティブをここで記したファイルから読み込みます。
+    <em>File-path</em>は、<a href="#serverroot">ServerRoot</a>
+    からの相対パスです。<br />
+    この機能を無効にするには次のように指定します。</p>
+
+    <blockquote>
+      <code>ResourceConfig /dev/null</code>
+    </blockquote>
+    Win32 の場合
+
+    <blockquote>
+      <code>ResourceConfig nul</code>
+    </blockquote>
+
+    以前は、サーバ設定に関するディレクティブと <a
+    href="#directory">&lt;ディレクトリ&gt;</a>
+    セクション以外のほとんどのディレクティブが書かれていました。
+    実際、現在では「サーバ設定ファイル」コンテキストに記述できることすべてが
+    記述可能になっています。
+    ただ、Apache のバージョン 1.3.4 以降で配布されているデフォルトの 
+    <code>srm.conf</code> ではこのファイル内にはコメントしか書かれておらず、
+    すべてのディレクティブがサーバ設定ファイルの <code>httpd.conf</code>
+    に記述されています。
+
+    <p>
+    <code>ResourceConfig</code>
+    がファイルではなくディレクトリを指定していれば、Apache
+    はそのディレクトリ内とすべてのサブディレクトリ内のすべてのファイルを
+    読み込み、それらを設定ファイルとして処理します。</p>
+    <p>代わりに、ワイルドカードを使って範囲を絞ることもできます。
+    すなわち、*.conf ファイルのみ、といったように。</p>
+    <p>デフォルトでは指定されたディレクトリの「<em>どのような</em>」
+    ファイルでも設定ファイルとして読み込まれます。</p>
+    <p>ですから誤って (例えばエディタでテンポラリファイルを作成する等)
+    ファイルを置かないように注意してください。</p>
+
+    <p><strong>参照:</strong> <a href="#accessconfig">AccessConfig</a></p>
+    <hr />
+
+    <h2><a id="rlimit" name="rlimit">RLimitCPU</a> <a
+    id="rlimitcpu" name="rlimitcpu">ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> RLimitCPU
+    <em>number</em>|max [<em>number</em>|max] <br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <em>Unset; uses
+    operating system defaults</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> RLimitCPU は Apache 1.2
+    以降で利用可能です。
+
+    <p>一つか二つのパラメータを指定できます。
+    最初のパラメータは全プロセスに対するリソースのソフトリミットを設定し、
+    2 番目のパラメータは最大のリソースリミットを設定します。
+    パラメータには数字か、オペレーティングシステムの最大となる
+    <code>max</code> のどちらかを指定することができます。
+    最大のリソースリミットを上げるためには、サーバを root
+    で実行するか、root によって起動されなければいけません。 </p>
+
+    <p>ちなみに、この設定は Apache
+    の子プロセス自体ではなく、リクエストを受け付けた Apache
+    の子プロセスから fork されたプロセスに適用されます。これには
+    CGI や SSI から実行されたコマンドが含まれますが、Apache
+    の親プロセスから fork されたログのパイププロセスなどには適用されません。</p>
+
+    <p>CPU リソースのリミットはプロセスあたりの秒数で表わされます。</p>
+
+    <p><a href="#rlimitmem">RLimitMEM</a> や <a
+    href="#rlimitnproc">RLimitNPROC</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="rlimitmem" name="rlimitmem">RLimitMEM
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> RLimitMEM
+    <em>number</em>|max [<em>number</em>|max]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <em>Unset; uses
+    operating system defaults</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> RLimitMEM は Apache 1.2 以降で利用可能です。
+
+    <p>一つか二つのパラメータを指定できます。
+    最初のパラメータは全プロセスに対するリソースのソフトリミットを設定し、
+    2 番目のパラメータは最大のリソースリミットを設定します。
+    パラメータには数字か、オペレーティングシステムの最大となる
+    <code>max</code> のどちらかを指定することができます。
+    最大のリソースリミットを上げるためには、サーバを root
+    で実行するか、root によって起動されなければいけません。 </p>
+
+    <p>ちなみに、この設定は Apache
+    の子プロセス自体ではなく、リクエストを受け付けた Apache
+    の子プロセスから fork されたプロセスに適用されます。これには
+    CGI や SSI から実行されたコマンドが含まれますが、Apache
+    の親プロセスから fork されたログのパイププロセスなどには適用されません。</p>
+
+    <p>メモリリソースのリミットはプロセスあたりのバイト数で表されます。</p>
+
+    <p><a href="#rlimitcpu">RLimitCPU</a> や <a
+    href="#rlimitnproc">RLimitNPROC</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="rlimitnproc" name="rlimitnproc">RLimitNPROC
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> RLimitNPROC
+    <em>number</em>|max [<em>number</em>|max]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <em>Unset; uses
+    operating system defaults</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> RLimitNPROC は Apache 1.2 以降で利用可能です。
+
+    <p>一つか二つのパラメータを指定できます。
+    最初のパラメータは全プロセスに対するリソースのソフトリミットを設定し、
+    2 番目のパラメータは最大のリソースリミットを設定します。
+    パラメータには数字か、オペレーティングシステムの最大となる
+    <code>max</code> のどちらかを指定することができます。
+    最大のリソースリミットを上げるためには、サーバを root
+    で実行するか、root によって起動されなければいけません。 </p>
+
+    <p>ちなみに、この設定は Apache
+    の子プロセス自体ではなく、リクエストを受け付けた Apache
+    の子プロセスから fork されたプロセスに適用されます。これには
+    CGI や SSI から実行されたコマンドが含まれますが、Apache 
+    の親プロセスから fork されたログのパイププロセスなどには適用されません。</p>
+
+    <p>プロセスの制限は、ユーザあたりのプロセス数で制御されます。</p>
+
+    <p>注意点: CGI プロセスがウェブサーバのユーザ ID
+    以外で実行されるので<strong>無ければ</strong>、このディレクティブは、
+    サーバ自身が生成できるプロセスの数を制限することになります。
+    そのような状況になっているかどうかは、エラーログの中の
+    <strong><em>cannot fork</em></strong>
+    というメッセージにより確認することができます。</p>
+
+    <p><a href="#rlimitcpu">RLimitCPU</a> や <a
+    href="#rlimitcpu">RLimitCPU</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="satisfy" name="satisfy">Satisfy ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Satisfy any|all<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> Satisfy all<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Satisfy は Apache 1.2
+    以降で利用可能です。
+
+    <p><code>Allow</code> と <code>Require</code>
+    の両方が使われているときのアクセスポリシーを設定します。パラメータは
+    <em>'all'</em> か <em>'any'</em>
+    です。このディレクティブはある場所へのアクセスがユーザ名/パスワード
+    <em>と</em>クライアントのホストのアドレスで制限されているときにのみ
+    役立ちます。デフォルトの動作 ("all")
+    はクライアントがアドレスによるアクセス制限を満たし、
+    <em>かつ</em>正しいユーザ名とパスワードを入力することを要求します。
+    "any" では、クライアントはホストの制限を満たすか、
+    正しいユーザ名とパスワードの入力をするかをすればアクセスを許可されます。
+    これは、ある場所をパスワードで保護するけれど、特定のアドレスからの
+    クライアントにはパスワードの入力を要求せずにアクセスを許可する、
+    というようなときに使用できます。</p>
+
+    <p><a href="#require">Require</a> と <a
+    href="mod_access.html#allow">Allow</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="scoreboardfile" name="scoreboardfile">ScoreBoardFile
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ScoreBoardFile
+    <em>ファイルパス</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ScoreBoardFile
+    logs/apache_status</code> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>アーキテクチャによっては、サーバの親プロセスと子プロセスが
+    通信するためのファイルを置く場所を指定するために ScoreBoardFile
+    ディレクティブを使う必要があることがあります。
+    使用しているアーキテクチャが scoreboard
+    ファイルを必要としているかどうかを調べる一番簡単な方法は Apache
+    を実行してこのディレクティブで指定されている
+    ファイルを作成するかどうかを見ることです。
+    使用しているアーキテクチャでこれが必要な場合は、このファイルを使う
+    Apache は一つだけであることを確実にする必要があります。</p>
+
+    <p>ScoreBoardFile を使う必要がある場合は、それを RAM
+    ディスク上に置くことで速度が向上するでしょう。
+    ただし、ログファイルの位置と
+    <a href="../misc/security_tips.html">セキュリティ</a>に関する
+    警告を十分注意する必要があります。</p>
+
+    <p>Apache 1.2 以降:</p>
+
+    <p>Linux 1.x ユーザは <code>Configuration</code> の
+    <code>EXTRA_CFLAGS</code> に <code>-DHAVE_SHMGET</code> を
+    設定することができるかもしれません。これは、1.x
+    のいくつかでは動作しますが、
+    すべてで動作するというわけではありません。(1.3b4 より前では
+    <code>HAVE_SHMGET</code> で十分でした。)</p>
+
+    <p>SVR4 ユーザは <code>Configuration</code> の
+    <code>EXTRA_CFLAGS</code> に <code>-DUSE_SHMGET_SCOREBOARD</code>
+    を追加することを考慮した方が良いでしょう。
+    これは動作すると考えられていますが、1.2
+    のリリースまでにテストをすることはできませんでした。(1.3b4
+    より前では <code>HAVE_SHMGET</code> で十分でした。)</p>
+
+    <p><strong>参照</strong>: <a
+    href="../stopping.html">Apache の停止と再起動</a></p>
+    <hr />
+
+    <h2><a id="scriptinterpretersource"
+    name="scriptinterpretersource">ScriptInterpreterSource
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ScriptInterpreterSource
+    registry|script<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a>
+    <code>ScriptInterpreterSource script</code> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core (Windows のみ) 
+
+    <p>このディレクティブは、Apache 1.3.5 以降で CGI
+    スクリプトを実行する場合に利用するインタープリタを、
+    どのように探し出すかについて制御するために使用します。
+    デフォルトの場合はスクリプトの #!
+    行に指されているインタープリタを使用しますが
+    ScriptInterpreterSource registry
+    を指定すると、スクリプトファイルの拡張子 (例えば、 .pl)
+    をキーとして、Windows のレジストリを検索するようになります。</p>
+    <hr />
+
+    <h2><a id="sendbuffersize" name="sendbuffersize">SendBufferSize
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> SendBufferSize
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>サーバは、TCP
+    バッファのサイズを指定されたバイト数に設定します。高速で大きな遅延
+    (<em>例えば</em>、100ms 程度あるような高速な大陸横断回線など)
+    のある場合に、サイズを標準の OS
+    のデフォルト以上に大きくするために非常に有用です。</p>
+    <hr />
+
+    <h2><a id="serveradmin" name="serveradmin">ServerAdmin
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerAdmin
+    <em>email-address</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>ServerAdmin
+    は、クライアントに返すさまざまなエラーメッセージ中に記述する、
+    電子メールのアドレスを設定します。</p>
+
+    <p>その際、これのために専用のアドレスを設定するのが良いでしょう。
+    <em>例えば、</em></p>
+
+    <blockquote>
+      <code>ServerAdmin www-admin@foo.bar.com</code>
+    </blockquote>
+    といったようにします。ユーザはいつもサーバに関する話であるということを
+    明記してくるわけではありませんので。
+
+    <hr />
+
+    <h2><a id="serveralias" name="serveralias">ServerAlias
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerAlias
+    <em>hostname</em> [<em>hostname</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ServerAlias は Apache 1.1
+    以降で利用可能です。
+
+    <p>ServerAliasディレクティブは、<a
+    href="../vhosts/name-based.html">ネームベースのバーチャルホスト</a>において
+    使用するホストの別名を指定します。</p>
+
+    <p>例:</p>
+
+    <pre>
+    &lt;VirtualHost *&gt;
+    ServerName server.domain.com
+    ServerAlias server server2.domain.com server2
+    ...
+    &lt;/VirtualHost&gt;
+    </pre>
+
+    <p><strong>参照:</strong> <a href="../vhosts/">Apache バーチャルホスト説明書</a></p>
+    <hr />
+
+    <h2><a id="servername" name="servername">ServerName
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerName
+    <em>fully-qualified-domain-name</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>ServerName ディレクティブは、サーバのホスト名を設定します。
+    これは、リダイレクトする URL を生成する際に利用されます。
+    特に指定がなされていなかった場合には、自サーバに付与されている
+    IP アドレスから推測しますが、これは確実な方法ではなく、
+    正しいホスト名を返すとも限りません。<br />
+    例えば:</p>
+    
+    <blockquote>
+      <code>ServerName www.example.com</code>
+    </blockquote>
+    を、マシンに対する正しい (メインの) 名前が、
+    <code>simple.example.com</code> であるときに使うことができます。
+
+    <p><a href="../vhosts/name-based.html">名前ベースのバーチャルホスト</a>
+    を利用している場合、<a
+    href="#virtualhost"><code>&lt;VirtualHost&gt;</code></a>
+    セクション内の <code>ServerName</code>
+    はこのバーチャルホストにマッチするために何がリクエストの
+    Host: ヘッダに現れる必要があるのかを指定します。</p>
+
+    <p><strong>参照</strong>:<br />
+     <a href="../dns-caveats.html">DNS に関する問題</a><br />
+     <a href="../vhosts/">Apacheバーチャルホスト説明書</a><br />
+     <a href="#usecanonicalname">UseCanonicalName</a><br />
+     <a href="#namevirtualhost">NameVirtualHost</a><br />
+     <a href="#serveralias">ServerAlias</a><br />
+    </p>
+    <hr />
+
+    <h2><a id="serverpath" name="serverpath">ServerPath
+    ディレクティブ</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerPath
+    <em>ディレクトリパス</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ServerPath は Apache 1.1
+    以降で利用可能です。
+
+    <p>ServerPath ディレクティブは、<a
+    href="../vhosts/">ネームベースのバーチャルホスト</a>において利用する
+    レガシーな URL パス名を設定します。</p>
+
+    <p><strong>参照:</strong> <a href="../vhosts/">Apache
+    バーチャルホスト説明書</a></p>
+    <hr />
+
+    <h2><a id="serverroot" name="serverroot">ServerRoot
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerRoot
+    <em>ディレクトリパス</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ServerRoot
+    /usr/local/apache</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>ServerRoot
+    ディレクティブは、サーバが主に利用するディレクトリを設定します。
+    通常、<code>conf/</code> や <code>logs/</code>
+    といったサブディレクトリが含まれます。
+    また、他の設定ファイルにおける相対パスは、
+    このディレクトリからとなります。</p>
+
+    <p><a href="../invoking.html">httpd の <code>-d</code> について</a>
+    を参照してください。</p>
+
+    <p>ServerRoot の権限をどのように設定するかについては <a
+    href="../misc/security_tips.html#serverroot">セキュリティに関する覚書</a>
+    に情報があります。</p>
+    <hr />
+
+    <h2><a id="serversignature"
+    name="serversignature">ServerSignature ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerSignature
+    On|Off|EMail<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ServerSignature
+    Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ServerSignature
+    は Apache 1.3 以降で利用可能です。
+
+    <p>ServerSignature ディレクティブは、サーバが生成するドキュメント
+    (エラーメッセージ、mod_proxy における FTP のディレクトリリスト、
+    mod_info の出力、等々)
+    の最下行に付与するフッタの設定を行ないます。
+    そのような、フッタ行を有効にしたい理由としては、
+    プロキシが複数連なっている場合に、ユーザはどのサーバが返した
+    エラーメッセージかを知る手段がほとんど無いからです。<br />
+    デフォルトである <samp>Off</samp>
+    に設定をすると、エラーの際の行が抑制されます。
+    (そして、Apache-1.2 以前と互換の動作をします)
+    <samp>On</samp> に設定した場合は、単にドキュメントの中に、
+    サーバのバージョン、稼動中のバーチャルホストの <a
+    href="#servername">ServerName</a> の書かれた行を追加し、
+    <samp>EMail</samp> にした場合はさらに参照されたドキュメントに対する <a
+    href="#serveradmin">ServerAdmin</a> を指す "mailto:" が追加されます。</p>
+    <hr />
+
+    <h2><a id="servertokens" name="servertokens">ServerTokens
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerTokens
+    Minimal|ProductOnly|OS|Full<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ServerTokens
+    Full</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル <br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ServerTokens は Apache 1.3
+    以降で利用可能です。
+    また、<code>ProductOnly</code> キーワードは Apache 1.3.12
+    以降で利用可能です。
+
+    <p>このディレクティブは、クライアントに送り返す <samp>Server</samp>
+    レスポンスヘッダ内に、サーバの一般的な OS
+    種別や、コンパイルされて組み込まれているモジュールの情報を
+    含めるかどうかを指定します。</p>
+
+    <dl>
+      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
+
+      <dd>サーバは (例えば): <samp>Server:
+      Apache</samp> といったように送ります。</dd>
+
+      <dt><code>ServerTokens Min[imal]</code></dt>
+
+      <dd>サーバは (例えば): <samp>Server:
+      Apache/1.3.0</samp> といったように送ります。</dd>
+
+      <dt><code>ServerTokens OS</code></dt>
+
+      <dd>サーバは (例えば): <samp>Server: Apache/1.3.0
+      (Unix)</samp> といったように送ります。</dd>
+
+      <dt><code>ServerTokens Full</code> (もしくは未指定)</dt>
+
+      <dd>サーバは (例えば): <samp>Server: Apache/1.3.0
+      (Unix) PHP/3.0 MyMod/1.2</samp> といったように送ります。</dd>
+    </dl>
+
+    <p>この設定はサーバ全体に適用され、
+    バーチャルホスト上で有効にしたり無効にしたりはできません。</p>
+    <hr />
+
+    <h2><a id="servertype" name="servertype">ServerType
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ServerType
+    <em>type</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ServerType
+    standalone</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>ServerType ディレクティブは、サーバがシステムにどのように
+    実行されるかを指定します。
+    <em>Type</em> には、次のどちらかを指定します。</p>
+
+    <dl>
+      <dt>inetd</dt>
+
+      <dd>サーバは、inetd プロセスから実行され、
+      <code>/etc/inetd.conf</code> に起動するコマンドを記述します。</dd>
+
+      <dt>standalone</dt>
+
+      <dd>サーバは、デーモンプロセスとして実行し、
+      システムのスタートアップスクリプト
+      (<code>/etc/rc.local</code> か <code>/etc/rc3.d/...</code>)
+      に起動するコマンドを記述します。</dd>
+    </dl>
+
+    Inetd は、あまり利用されません。
+    その設定では、HTTP 接続を受ける度に、サーバが 1
+    から立ち上げられ、接続が終了した後にプログラムも終了します。
+    これは、接続の度にとても負荷がかかりますが、
+    セキュリティを理由にこのオプションを好む管理者もいます。
+    <font color="red">ただ、Inetd モードは推奨されておらず、
+    今後もずっと利用可能というわけではありません。
+    可能な限り使わないでください。</font> 
+
+    <p>Standalone は、ずっと効率的であるため、ServerType
+    の標準的な設定となっています。
+    サーバは一度起動されると、すべての接続を処理します。
+    もし、負荷の高いサイトで Apache を利用するつもりであれば、
+    standalone は唯一のオプションといえるでしょう。</p>
+    <hr />
+
+    <h2><a id="shmemuidisuser" name="shmemuidisuser">ShmemUIDisUser
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ShmemUIDisUser
+    <em>on|off</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ShmemUIDisUser
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+    <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+
+    <p>ShmemUIDisUser ディレクティブは System V
+    共有メモリに基づいたスコアボードの、所有者の <code>uid</code> と
+    <code>gid</code> をサーバの設定の <a href="#user">User</a> と
+    <a href="#group">Group</a> に変更するかどうかを制御します。
+    Apache 1.3.26 までのリリースはデフォルトでこれを行っていました。
+    子プロセスは既に共有メモリセグメントにアタッチされていますので、
+    その動作は Apache の通常の動作には必要ではなく、攻撃を防ぐためにも、
+    Apache はそのような動作をしなくなりました。しかし、特別な場合には
+    以前の動作が必要になることもあり、それはこのディレクティブを
+    <code>on</code> にすることで実現できます。</p>
+
+    <p>このディレクティブはSystem V に基づいたスコアボードではない、
+    <code>mmap</code> のようなシステムでは効力はありません。
+
+    </p>
+    
+     <hr />
+
+    <h2><a id="startservers" name="startservers">StartServers
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> StartServers
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>StartServers
+    5</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>StartServers ディレクティブは、起動時にどれだけのサーバ子プロセスを
+    実行するのかを指定します。
+    プロセスの数は、負荷によって動的に制御されるため、
+    普通はこのパラメータを変更する理由はほとんどありません。</p>
+
+    <p>Microsoft Windows
+    で実行する場合には、このディレクティブは意味を持ちません。
+    Windows では常に一つの子プロセスがすべてのリクエストを扱います。
+    子プロセスの内部では、リクエストはスレッドで処理されます。
+    <a href="#threadsperchild">ThreadsPerChild</a> ディレクティブは
+    リクエストを扱う最大の子スレッドの数を制御しますので、UNIX で
+    <samp>StartServers</samp> を指定したのと同じような効果になります。</p>
+
+    <p><a href="#minspareservers">MinSpareServers</a> や
+    <a href="#maxspareservers">MaxSpareServers</a> も参照してください。</p>
+    <hr />
+
+    <h2><a id="threadsperchild"
+    name="threadsperchild">ThreadsPerChild</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ThreadsPerChild
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ThreadsPerChild
+    50</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core (Windows,
+    NetWare)<br />
+    <strong>互換性:</strong> Windows 上で動作する Apache 1.3
+    以降においてのみ有効
+
+    <p>このディレクティブは、サーバがどれだけのスレッドを使用するのかを
+    指示します。
+    これが、サーバが処理できる最大接続数になります。
+    たくさんのヒットがあるサイトの場合には数値を増やす必要があります。</p>
+
+    <p>なお、このディレクティブは UNIX システム上では意味を持ちません。
+    UNIX の場合には、 <a href="#startservers">StartServers</a> や <a
+    href="#maxrequestsperchild">MaxRequestsPerChild</a>
+    を参照してください。</p>
+    <hr />
+
+    <h2><a id="threadstacksize"
+    name="threadstacksize">ThreadStackSize</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ThreadStackSize
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>ThreadStackSize
+    65536</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core (NetWare)<br />
+    <strong>互換性:</strong> NetWare 上で動作する Apache 1.3
+    以降においてのみ有効
+
+    <p>このディレクティブは、各スレッドのスタックのサイズをサーバに指示します。
+    スタックがオーバフローするようであれば、より大きな数値に設定する
+    必要があります。</p>
+
+    <p>このディレクティブは、他のシステムの場合には意味を持ちません。</p>
+    <hr />
+
+    <h2><a id="timeout" name="timeout">TimeOut ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> TimeOut
+    <em>数値</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>TimeOut
+    300</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>TimeOut ディレクティブは、現在のところ
+    以下の三つの待ち時間についての定義を行います:</p>
+
+    <ol>
+      <li>GET リクエストを受け取るのにかかる総時間</li>
+
+      <li>POST や PUTリクエストにおいて、次の TCP
+      パケットが届くまでの待ち時間</li>
+
+      <li>レスポンスを返す際、TCP の ACK が帰ってくるまでの時間</li>
+    </ol>
+    将来には別々の設定をすることが可能にできるよう考案中です。
+    Apache 1.2 以前においてはタイマーは 1200 がデフォルトでしたが、
+    300 に下げられました。300 でもほとんどの場合は十分すぎる値です。
+    コード中の変な場所にまだパケットを送る際にタイマをリセットしない
+    場所があるかもしれないので、デフォルトをより小さい値にはしていません。
+    <hr />
+
+    <h2><a id="usecanonicalname"
+    name="usecanonicalname">UseCanonicalName ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> UseCanonicalName
+    on|off|dns<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>UseCanonicalName
+    on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト、ディレクトリ<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> Options<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> UseCanonicalName
+    は Apache 1.3 以降で利用可能です。
+
+    <p>多くの状況で Apache は<em>自己参照</em>
+    URL、すなわち同じサーバを指す URL、を作成する必要があります。
+    <code>UseCanonicalName on</code> を使うと (1.3
+    より前のすべてのバージョンでも) Apache は <a
+    href="#servername">ServerName</a> ディレクティブと <a
+    href="#port">Port</a>
+    ディレクティブを使ってサーバの正式な名前を作成します。
+    この名前がすべての自己参照 URL で使われ、CGI の
+    <code>SERVER_NAME</code> と <code>SERVER_PORT</code>
+    にも使われます。</p>
+
+    <p>例えば、<a href="#servername">ServerName</a> が
+    <code>www.example.com</code> に設定されていて、<a
+    href="#port">Port</a> が <code>9090</code>
+    に設定されている場合は、サーバの<em>正式な名前</em>は
+    <code>www.example.com:9090</code> になります。<code>Port</code>
+    の値がデフォルトの <code>80</code> であるときは、
+    <code>:80</code> は<em>正式な名前</em>からは省かれます。</p>
+
+    <p><code>UseCanonicalName off</code> では Apache
+    はクライアントがホスト名とポートを提供した場合にはそれらを元に自己参照
+    URL を作成します (提供されていない場合は上で定義されているように
+    正式な名前を使います)。
+    これらの値は<a href="../vhosts/name-based.html">名前ベースの
+    バーチャルホスト</a>を実装するのに使われているのと同じ値で、
+    同じクライアントから取得できる値です。CGI 変数
+    <code>SERVER_NAME</code> と <code>SERVER_PORT</code>
+    もクライアントから与えられた値から作成されます。</p>
+
+    <p>これが有用な場合の例は、イントラネットのサーバで、<code>www</code>
+    のような短い名前でユーザがマシンに接続しているときです。
+    ユーザが短い名前を入力して、URL
+    が<em>最後のスラッシュ無しの</em>ディレクトリへのものであるときに、
+    Apache はリクエストを <code>http://www.domain.com/splat/</code>
+    へリダイレクトすることに気付くでしょう。
+    認証をするように設定していると、この場合ユーザは
+    2 回認証をしなければならなくなります (<code>www</code> に対して
+    1 回、<code>www.domain.com</code> に対してもう一回 -- 
+    より詳しい情報は <a href="../misc/FAQ.html#prompted-twice">この話題の
+    FAQ</a> を参照してください)。しかし、<code>UseCanonicalName</code>
+    が off になっていると、Apache は <code>htttp://www/splat/</code>
+    にリダイレクトします。</p>
+
+    <p>三つ目のオプション <code>UseCanonicalName DNS</code> は、
+    <code>Host:</code>
+    ヘッダを提供しない古いクライアントをサポートした大規模な IP
+    ベースのバーチャルホスティングで使用されることを意図しています。
+    このオプションでは、Apache はクライアントが接続した IP アドレスに
+    DNS の逆引きを行なって自己参照 URL を作成します。</p>
+
+    <p><strong>警告:</strong> CGI が <code>SERVER_NAME</code> 
+    に関する仮定を行なっているときは、
+    このオプションの設定で動作しなくなるかもしれません。
+    クライアントは実質的にはホスト名にとして
+    何でも望みの値を指定することができます。しかし、CGI が
+    <code>SERVER_NAME</code> のみを使って自己参照 URL
+    を作成している場合はどの設定を行なっても大丈夫なはずです。</p>
+
+    <p><strong>参照:</strong> <a
+    href="#servername">ServerName</a>, <a href="#port">Port</a></p>
+    <hr />
+
+    <h2><a id="user" name="user">User ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> User
+    <em>unix-userid</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>User
+    #-1</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> core 
+
+    <p>User ディレクティブはサーバがリクエストに応答するときのユーザ
+    ID を設定します。このディレクティブを使うためには、standalone
+    サーバが root として起動されていなければなりません。
+    <em>Unix-userid</em> は以下のどれかです:</p>
+
+    <dl>
+      <dt>ユーザ名</dt>
+
+      <dd>名前でユーザを指定。</dd>
+
+      <dt># の後にユーザ番号。</dt>
+
+      <dd>番号でユーザを指定。</dd>
+    </dl>
+    ユーザは外の世界から見られることを意図していないファイルをアクセス
+    できてしまうような権限が無いものにすべきで、同様に httpd のリクエスト
+    に対して意図されていないコードを実行できないようなものにすべきです。
+    サーバを実行するためだけに新しい専用のユーザとグループを設定することを
+    お勧めします。管理者の中には <code>nobody</code> を使う人もいますが、
+    このユーザは常に使用可能というわけではなく、望ましいわけでもありません。
+    例えば、mod_proxy のキャッシュを使用しているときは、
+    それをこのユーザがアクセスできる必要があります
+    (<a href="mod_proxy.html#cacheroot"><code>CacheRoot</code>
+    ディレクティブ</a> を参照)。
+
+    <p>注意: root でないユーザでサーバを実行した場合は、より少ない権限の
+    ユーザへの変更に失敗し、元々のユーザとして実行し続けます。
+    root でサーバを実行したときは、親プロセスが root
+    のまま実行し続けるのは正常な動作です。</p>
+
+    <p>特別な注意: このディレクティブを &lt;VirtualHost&gt;
+    内で使うには適切に設定された <a href="../suexec.html">suEXEC
+    ラッパー</a>が必要です。このように &lt;VirtualHost&gt;
+    の中で使われたときは CGI を実行するユーザだけが影響を受けます。
+    CGI 以外のリクエストは依然として主 User
+    ディレクティブで指定されたユーザで処理されます。</p>
+
+    <p>セキュリティ: 自分が何をやっているかを完全に理解していて
+    どのような危険性があるかを理解していない場合は、
+    User (もしくは <a href="#group">Group</a>) を root
+    にしないでください。</p>
+
+    <hr />
+
+    <h2><a id="virtualhost" name="virtualhost">&lt;VirtualHost&gt;
+    ディレクティブ</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;VirtualHost
+    <em>addr</em>[:<em>port</em>] [<em>addr</em>[:<em>port</em>]]
+    ...&gt; ... &lt;/VirtualHost&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Core.<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> IP アドレスベースでないバーチャルホストは、
+    Apache 1.1 以降で利用可能です。<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> 複数のアドレスの指定は Apache 1.2
+    以降でのみ可能です。
+
+    <p>&lt;VirtualHost&gt; 及び &lt;/VirtualHost&gt; は、
+    あるバーチャルホストに対してのみ適用されるディレクティブ群を囲む
+    ために使われます。
+    バーチャルホストコンテキストで許可されるすべてのディレクティブを指定可能です。
+    サーバが、指定されたバーチャルホストにあるドキュメントへのリクエストを受け付けた場合、
+    &lt;VirtualHost&gt; セクションの中にあるディレクティブが適用されます。
+
+     <em>Addr</em>　は、次のものが利用できます。</p>
+
+    <ul>
+      <li>バーチャルホストの IP アドレス</li>
+
+      <li>バーチャルホストの IP に対応する完全なドメイン名</li>
+    </ul>
+    例: 
+
+    <blockquote>
+      <code>&lt;VirtualHost 10.1.2.3&gt;<br />
+       ServerAdmin webmaster@host.foo.com<br />
+       DocumentRoot /www/docs/host.foo.com<br />
+       ServerName host.foo.com<br />
+       ErrorLog logs/host.foo.com-error_log<br />
+       TransferLog logs/host.foo.com-access_log<br />
+       &lt;/VirtualHost&gt;</code>
+    </blockquote>
+    各々のバーチャルホストにはそれぞれ違う IP
+    アドレス、ポート番号若しくはホスト名に対応する必要があり、
+    1 番目の場合には複数のアドレスで IP
+    パケットを受信できるようにサーバマシンを設定しなければなりません。
+    (もし、マシンが複数のネットワークインターフェースを持たない場合は、
+     (OSがサポートしていれば) <code>ifconfig alias</code> コマンドや
+    <a href="../misc/vif-info.html">VIF</a> のようなカーネルパッチ
+     (SunOS(TM) 4.1.x 用) により達成できます)。
+
+    <p>複数の IP アドレスを定義することもできます。
+    二つのインタフェースに対して同じ名前で応答しているときに有用でしょう。
+    例えば、内部向け (イントラネット) と
+    外部向け (インターネット) にバーチャルホストをしている場合です。<br />
+    設定例:</p>
+
+    <blockquote>
+      <code>&lt;VirtualHost 192.168.1.2 204.255.176.199&gt;<br />
+       DocumentRoot /www/docs/host.foo.com<br />
+       ServerName host.foo.com<br />
+       ServerAlias host<br />
+       &lt;/VirtualHost&gt;</code>
+    </blockquote>
+
+    <code>_default_</code> という特別な名前を指定することにより、
+    他のバーチャルホストで指定されていない IP
+    アドレスすべてに対してマッチさせることが可能です。_default_
+    バーチャルホストが無いときは、もしどこにもマッチしないと VirtualHost
+    セクションの外の定義からなる「主」サーバ設定が使用されます。
+
+    <p><code>:port</code>
+    といった形式で記述することにより、マッチさせるポートを変更可能です。
+    この指定をしない場合には、主サーバ設定における一番最後に
+    <code><a href="#port">Port</a></code>
+    で指定されたポートがデフォルトとなります。
+    <code>:*</code> を指定することにより、
+    アドレス上のすべてのポートにマッチします。(<code>_default_</code>
+    のときはこれを使うことが推奨されています。)</p>
+
+    <p><strong>セキュリティに関して</strong>: 
+    サーバーを起動した以外のユーザがログファイルが保管されるディレクトリに
+    書き込み可能なときになぜセキュリティが破られる可能性があるかの詳細は
+    <a href="../misc/security_tips.html">セキュリティに関するコツ</a>
+    を参照してください。</p>
+
+    <p><strong>注意点</strong>: &lt;VirtualHost&gt; は Apache が
+    Listen する IP アドレスには影響を与え<strong>ません</strong>。
+    <a href="#bindaddress">BindAddress</a> か
+    <a href="#listen">Listen</a> を使って Apache が正しいアドレスを
+    listen するように設定する必要があるかもしれません。</p>
+
+    <p><strong>参照:</strong> <a href="../vhosts/">Apache バーチャルホスト説明書</a><br />
+     <strong>参照:</strong> <a
+    href="../dns-caveats.html">DNS に関する問題</a><br />
+     <strong>参照:</strong> <a href="../bind.html">Apache が利用するアドレスとポートを設定する</a><br />
+     <strong>参照</strong>: 
+    リクエストを受けた際に、異なる複数のセクションがどのようにして組み合わされるのかについては
+    <a href="../sections.html">Directory, Location, Files セクションの動作法</a>
+    </p>
+        <hr />
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
+
+

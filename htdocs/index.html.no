@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Testside Apache-installasjon</title>
+ </head>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <body
+  bgcolor="#FFFFFF"
+  text="#000000"
+  link="#0000FF"
+  vlink="#000080"
+  alink="#FF0000"
+ >
+  <h1 align="CENTER">
+   Det gikk bra! Apache er nå installert på denne maskinen!
+  </h1>
+  <p>
+  Hvis du kan se denne siden har den eller de som driver dette nettstedet
+  installert <a href="http://www.apache.org/foundation/preFAQ.html">Apache Web server</a>.
+  Nå må denne testsiden erstattes med virkelig innhold.
+  </p>
+  <hr>
+  <blockquote>
+  Hvis du hadde ventet å se en annen side enn denne bør du  
+  <strong>ta kontakt med den som har ansvaret for nettstedet.</strong>
+   (Prøv å sende e-post til <samp>&lt;webmaster@<em>domene</em>&gt;</samp>.)
+   Selv om dette nettstedet kjøres på Apache, har det ingen annen 
+   tilknytning til Apache-gruppen som har utviklet programvaren.
+   Vennligst ikke send post angående dette nettstedet eller dets
+   innhold til Apache-gruppens programmerere. I så fall vil din henvendelse
+   bli <strong><big>ignorert</big></strong>.  
+  </blockquote>   
+  <hr>
+  <p>
+  <a
+   href="manual/index.html"
+  >Dokumentasjon</a>
+  for Apache er inkludert i denne pakken.
+  </p>
+  <p>
+  Logoen under kan benyttes på en hvilken som helst maskin som kjører Apache.
+  Takk for at du benytter Apache!
+  </p>
+  <div align="CENTER">
+   <img src="apache_pb.gif" alt="">
+  </div>
+ </body>
+</html>

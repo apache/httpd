@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Module mod_actions</title>
+
+  </head>
+  <!-- English revision: 1.19 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_actions モジュール</h1>
+
+    <p>このモジュールはメディアタイプやリクエストメソッドに応じて
+    CGI スクリプトを実行する機能を提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a>
+    mod_actions.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    action_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a>
+    Apache 1.1 以降でのみ使用可能。</p>
+
+    <h2>概要</h2>
+
+    <p>このモジュールには二つのディレクティブがあります。Action
+    ディレクティブは特定のタイプのファイルをリクエストされた場合に
+    CGI スクリプトが実行されるようにします。Script
+    ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
+    スクリプトが実行されるようにします。
+    これはファイルを処理するスクリプトの実行をずっと簡単にします。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#action">Action</a></li>
+      <li><a href="#script">Script</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="action" name="action">Action ディレクティブ</a></h2>
+
+    <p><a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> Action <em>action-type
+    cgi-script</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、 ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_actions<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a>
+    Apache 1.1 以降でのみ使用可能。</p>
+
+    <p>このディレクティブは <em>action-type</em>
+    がリクエストされたときに <em>cgi-script</em>
+    が実行されるという動作を追加します。<i>cgi-script</i> は
+    <code>ScriptAlias</code> や <code>AddHandler</code> によって
+    CGI スクリプトに設定されたリソースへの URL-path です。
+    <em>Action-type</em> には
+    <a href="../handler.html">handler</a> か MIME
+    コンテントタイプを指定できます。リクエストされたドキュメントの URL
+    とファイルのパスは標準 CGI 環境変数 PATH_INFO と PATH_TRANSLATED
+    を使って伝えられます。</p>
+
+    <p>例:</p>
+    <pre>
+    # Requests for files of a particular type:
+    Action image/gif /cgi-bin/images.cgi
+
+    # Files of a particular file extension
+    AddHandler my-file-type .xyz
+    Action my-file-type /cgi-bin/program.cgi
+    </pre>
+
+    <p>最初の例では、MIME コンテントタイプが <code>image/gif</code>
+    のファイルへのリクエストは、そのファイルの代わりに指定されたスクリプト
+    <code>/cgi-bin/images.cgi</code> が呼ばれます。</p>
+
+    <p>2 番目の例では、拡張子が <code>.xyz</code> のファイルへのリクエストは、
+    そのファイルの代わりに指定されたスクリプト
+    <code>/cgi-bin/program.cgi</code> が呼ばれます。</p>
+
+    <p><a href="mod_mime.html#addhandler">AddHandler</a>
+    も<strong>参照</strong>してください</p>
+
+    <hr />
+
+    <h2><a id="script" name="script">Script ディレクティブ</a></h2>
+
+    <p><a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> Script <em>method
+    cgi-script</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、 ディレクトリ<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_actions<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> Script は Apache 1.1
+    以降でのみ使用可能。任意のメソッドの使用は 1.3.10
+    以降でのみ使用可能。</p>
+
+    <p>このディレクティブは <i>method</i>
+    というメソッドを使ってリクエストが行なわれたときに
+    <i>cgi-script</i> を実行するという動作を追加します。
+    <i>cgi-script</i> は
+    <code>ScriptAlias</code> や <code>AddHandler</code> によって
+    CGI スクリプトに設定されたリソースへの URL-path です。
+    リクエストされたドキュメントの URL とファイルのパスは標準 CGI
+    環境変数 PATH_INFO と PATH_TRANSLATED を使って伝えられます。</p>
+
+    <blockquote>
+      Apache 1.3.10 より前では、<i>method</i> は <code>GET</code>,
+      <code>POST</code>, <code>PUT</code>, <code>DELETE</code>
+      だけが指定可能でした。1.3.10
+      では、任意のメソッド名を使用することができます。
+      <b>メソッド名は大文字小文字を区別します</b>。ですから、
+      <code>Script&nbsp;PUT</code> と <code>Script&nbsp;put</code>
+      はまったく違った効果になります。
+    </blockquote>
+
+    <p>Script コマンドはデフォルトの動作を追加するだけであることに
+    注意してください。もし CGI スクリプトが呼ばれたり、リクエストされた
+    メソッドを内部で扱うことのできる他のリソースがあれば、それが行なわれます。
+    <code>GET</code> メソッドの Script は問合せ引数がある場合にのみ
+    (<em>たとえば</em>、foo.html?hi) 呼ばれるということにも注意してください。
+    そうでない場合は、リクエストは通常通り処理されます。</p>
+
+    <p>例:</p>
+<pre>
+    # For &lt;ISINDEX&gt;-style searching
+    Script GET /cgi-bin/search
+    # A CGI PUT handler
+    Script PUT /~bob/put.cgi
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

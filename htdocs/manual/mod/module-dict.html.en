@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Definitions of terms used to describe Apache
+    modules</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Terms Used to Describe Apache Modules</h1>
+
+    <p>Each Apache module is described using a common format that
+    looks like this:</p>
+
+    <dl>
+      <dd><a href="#Status" rel="Help"><strong>Status:</strong></a>
+      <em>status</em><br />
+       <a href="#SourceFile" rel="Help"><strong>Source
+      File:</strong></a> <em>source-file</em><br />
+       <a href="#ModuleIdentifier" rel="Help"><strong>Module
+      Identifier:</strong></a> <em>module-identifier</em><br />
+       <a href="#Compatibility"
+      rel="Help"><strong>Compatibility:</strong></a>
+      <em>compatibility notes</em></dd>
+    </dl>
+
+    <p>Each of the attributes, complete with values where possible,
+    are described in this document.</p>
+
+    <h2>Module Terms</h2>
+
+    <ul>
+      <li><a href="#Status">Status</a></li>
+
+      <li><a href="#SourceFile">Source File</a></li>
+
+      <li><a href="#ModuleIdentifier">Module Identifier</a></li>
+
+      <li><a href="#Compatibility">Compatibility</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="Status" name="Status">Status</a></h2>
+
+    <p>This indicates how tightly bound into the Apache Web server
+    the module is; in other words, you may need to recompile the
+    server in order to gain access to the module and its
+    functionality. Possible values for this attribute are:</p>
+
+    <dl>
+      <dt><strong>Base</strong></dt>
+
+      <dd>A module labeled as having "Base" status is compiled and
+      loaded into the server by default, and is therefore normally
+      available unless you have taken steps to remove the module
+      from your configuration.</dd>
+
+      <dt><strong>Extension</strong></dt>
+
+      <dd>A module with "Extension" status is not normally compiled
+      and loaded into the server. To enable the module and its
+      functionality, you may need to change the server build
+      configuration files and re-compile Apache.</dd>
+
+      <dt><strong>Experimental</strong></dt>
+
+      <dd>"Experimental" status indicates that the module is
+      available as part of the Apache kit, but you are on your own
+      if you try to use it. The module is being documented for
+      completeness, and is not necessarily supported.</dd>
+
+      <dt><strong>External</strong></dt>
+
+      <dd>Modules which are not included with the base Apache
+      distribution ("third-party modules") may use the "External"
+      status. We are not responsible, nor do we support such
+      modules.</dd>
+    </dl>
+    <hr />
+
+    <h2><a id="SourceFile" name="SourceFile">Source File</a></h2>
+
+    <p>This quite simply lists the name of the source file which
+    contains the code for the module. This is also the name used by
+    the <a
+    href="core.html#ifmodule"><code>&lt;IfModule&gt;</code></a>
+    directive.</p>
+    <hr />
+
+    <h2><a id="ModuleIdentifier" name="ModuleIdentifier">Module
+    Identifier</a></h2>
+
+    <p>This is a string which identifies the module for use in the
+    <a href="mod_so.html#loadmodule">LoadModule</a> directive when
+    dynamically loading modules. In particular, it is the name of
+    the external variable of type module in the source file.</p>
+    <hr />
+
+    <h2><a id="Compatibility"
+    name="Compatibility">Compatibility</a></h2>
+
+    <p>If the module was not part of the original Apache version 1
+    distribution, the version in which it was introduced should be
+    listed here.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

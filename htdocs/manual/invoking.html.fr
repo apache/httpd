@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--English revision 1.34 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>D&eacute;marrage d'Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">D&eacute;marrage d'Apache</h1>
+
+    <ul>
+      <li><a href="#windows">D&eacute;marrage d'Apache sur
+      Windows</a></li>
+
+      <li>
+        <a href="#unix">D&eacute;marrage d'Apache sur Unix</a> 
+
+        <ul>
+          <li><a href="#errors">Erreurs durant
+          l'initialisation</a></li>
+
+          <li><a href="#boot">D&eacute;marrage &agrave;
+          l'initialisation du syst&egrave;me</a></li>
+
+          <li><a href="#info">Informations
+          compl&eacute;mentaires</a></li>
+        </ul>
+      </li>
+    </ul>
+    <hr />
+
+    <h2><a id="windows" name="windows">D&eacute;marrage d'Apache
+    sur Windows</a></h2>
+
+    <p>Sur Windows, Apache est normalement lanc&eacute; en tant que
+    service sur Windows NT, ou en tant qu'application en mode
+    console sur Windows 95. Pour plus de d&eacute;tails, voir <a
+    href="windows.html#run">lancer Apache pour Windows</a>.</p>
+
+    <h2>D&eacute;marrage d'Apache sur Unix</h2>
+
+    <p>Sur Unix, le programme <code>httpd</code> est lanc&eacute;
+    en tant que d&eacute;mon qui s'ex&eacute;cute en t&acirc;che de
+    fond pour traiter les requ&ecirc;tes. Il est possible
+    d'invoquer Apache par le d&eacute;mon Internet
+    <code>inetd</code> &agrave; chaque fois qu'une connexion au
+    service HTTP est faite (if faut pour cela utiliser la directive
+    <a href="mod/core.html#servertype">ServerType</a>) mais cela
+    n'est pas recommand&eacute;.</p>
+
+    <p>Si le <a href="mod/core.html#port">Port</a>
+    sp&eacute;cifi&eacute; dans le fichier de configuration est le
+    port par d&eacute;faut 80 (ou tout autre port in&eacute;rieur
+    &agrave; 1024), il est alors n&eacute;cessaire d'avoir les
+    privil&egrave;ges root pour lancer Apache. Une fois que
+    l'initialisation du serveur s'est achev&eacute;e ainsi que
+    quelques activit&eacute;s pr&eacute;liminaires telles que
+    l'ouverture des fichiers de trace, le serveur lance un certain
+    nombre de processus <em>fils</em> ayant pour r&ocirc;le
+    d'attendre et de r&eacute;pondre aux requ&ecirc;tes des
+    clients. Le processus p&egrave;re <code>httpd</code> continue
+    &agrave; s'ex&eacute;cuter avec les privil&egrave;ges root,
+    mais les processus fils s'ex&eacute;cute sous un utilisateur
+    avec moins de privil&egrave;ges. Ceci est contr&ocirc;l&eacute;
+    par les directives de cr&eacute;ation de <a
+    href="server-wide.html#process">processus</a></p>
+
+    <p>La premi&egrave;re chose qu'<code>httpd</code> fait
+    lorsqu'il est appel&eacute; est de chercher et lire le <a
+    href="configuring.html">fichier de configuration</a>
+    <code>httpd.conf</code>. L'emplacement de ce fichier est
+    d&eacute;fini &agrave; la compilation, mais il est possible de
+    sp&eacute;cifier son emplacement &agrave; l'ex&eacute;cution en
+    utilisant l'option <code>-f</code>. Exemple :</p>
+
+    <blockquote>
+      <code>/usr/local/apache/bin/httpd -f
+      /usr/local/apache/conf/httpd.conf</code>
+    </blockquote>
+
+    <p>Comme alternative &agrave; l'appel direct de
+    l'ex&eacute;cutable <code>httpd</code> un script appel&eacute;
+    <a href="programs/apachectl.html">apachectl</a> est fourni qui
+    permet de contr&ocirc;ler le processus d&eacute;mon avec des
+    commandes simples telles que <code>apachectl start</code> ou
+    <code>apachectl stop</code>.</p>
+
+    <p>Si tout ce passe correctement durant l'initialisation, le
+    serveur se d&eacute;tache du terminal et l'invite de commande
+    r&eacute;appara&icirc;t presque imm&eacute;diatement. Ceci
+    indique que le serveur est actif et s'ex&eacute;cute. Vous
+    pouvez utiliser un navigateur pour vous connecter au serveur et
+    voir la page de test situ&eacute;e dans le r&eacute;pertoire <a
+    href="mod/core.html#documentroot">DocumentRoot</a> ainsi qu'une
+    copie locale de la documentation &agrave; partir d'un lien de
+    cette page.</p>
+
+    <h3><a id="errors" name="errors">Erreurs durant
+    l'initialisation</a></h3>
+
+    <p>Si Apache rencontre un probl&egrave;me fatal durant
+    l'initialisation, il &eacute;crira, avant de se terminer, un
+    message d&eacute;crivant le probl&egrave;me, soit sur la
+    console, soit dans le fichier <a
+    href="mod/core.html#errorlog">ErrorLog</a>. Un des messages les
+    plus courants est "<code>Unable to bind to Port ...</code>". Ce
+    message est g&eacute;n&eacute;ralement d&ucirc; &agrave;</p>
+
+    <ul>
+      <li>une tentative de lancer le serveur sur un port
+      privil&eacute;gi&eacute; alors que vous n'&ecirc;tes pas
+      connect&eacute; comme utilisateur root, ou &agrave;</li>
+
+      <li>une tentative de lancer le serveur alors qu'une autre
+      instance d'Apache ou d'un autre serveur web est
+      d&eacute;j&agrave; connect&eacute;e &agrave; ce port.</li>
+    </ul>
+
+    <p>Pour plus d'informations sur la correction des
+    probl&egrave;mes, consultez la <a href="misc/FAQ.html">FAQ</a>
+    d'Apache.</p>
+
+    <h3><a id="boot" name="boot">D&eacute;marrage &agrave;
+    l'initialisation du syst&egrave;me</a></h3>
+
+    <p>Si vous souhaitez que votre serveur continue &agrave;
+    s'ex&eacute;cuter apr&egrave;s une relance du syst&egrave;me,
+    vous devez ajouter un appel &agrave; <code>httpd</code> ou
+    <code>apachectl</code> dans votre fichier de lancement du
+    syst&egrave;me (g&eacute;n&eacute;ralement
+    <code>rc.local</code> ou un fichier dans un r&eacute;pertoire
+    <code>rc.N</code>). Ceci lancera Apache sous l'utilisateur
+    root. Avant de le faire, v&eacute;rifiez que votre serveur est
+    correctement configur&eacute; en termes de
+    s&eacute;curit&eacute; et de restrictions d'acc&egrave;s. Le
+    script <code>apachectl</code> est con&ccedil;u de
+    mani&egrave;re &agrave; ce qu'il soit directement li&eacute;
+    comme script d'initialisation, mais assurez vous qu'il
+    correspond aux besoins pr&eacute;cis de votre
+    syst&egrave;me.</p>
+
+    <h3><a id="info" name="info">Informations
+    compl&eacute;mentaires</a></h3>
+
+    <p>Des informations compl&eacute;mentaires sur les options en
+    ligne de commande d'<a href="programs/httpd.html">httpd</a> et
+    d'<a href="programs/apachectl.html">apachectl</a> ainsi que des
+    autres programmes d'assistance inclus avec le serveur, sont
+    disponibles &agrave; la page <a href="programs/">Serveur et
+    programmes d'assistance</a>. Il existe &eacute;galement une
+    documentation de tous les <a href="mod/">modules</a> inclus
+    dans la distribution Apache ainsi que les <a
+    href="mod/directives.html">directives</a> qu'ils
+    fournissent.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

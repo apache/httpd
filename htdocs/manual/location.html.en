@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Access Control by URL</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Access Control by URL</h1>
+
+    <h2><a id="location" name="location">The
+    <code>&lt;Location&gt;</code> Directive</a></h2>
+    <a href="mod/directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> &lt;Location <em>URL
+    prefix</em>&gt;<br />
+     <a href="mod/directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="mod/directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core<br />
+     
+
+    <p>The &lt;Location&gt; directive provides for access control
+    by URL. It is comparable to the <a
+    href="mod/core.html#directory">&lt;Directory&gt;</a> directive,
+    and should be matched with a &lt;/Location&gt; directive.
+    Directives that apply to the URL given should be listed between
+    them. <code>&lt;Location&gt;</code> sections are processed in
+    the order they appear in the configuration file, after the
+    &lt;Directory&gt; sections and <code>.htaccess</code> files are
+    read.</p>
+
+    <p>Note that, due to the way HTTP functions, <em>URL
+    prefix</em> should, save for proxy requests, be of the form
+    <code>/path/</code>, and should not include the
+    <code>http://servername</code>. It doesn't necessarily have to
+    protect a directory (it can be an individual file, or a number
+    of files), and can include wild-cards. In a wild-card string,
+    `?' matches any single character, and `*' matches any sequences
+    of characters.</p>
+
+    <p>This functionality is especially useful when combined with
+    the <code><a
+    href="mod/mod_mime.html#sethandler">SetHandler</a></code>
+    directive. For example, to enable status requests, but allow
+    them only from browsers at foo.com, you might use:</p>
+<pre>
+    &lt;Location /status&gt;
+    SetHandler server-status
+    Order Deny,Allow
+    Deny from all
+    Allow from .foo.com
+    &lt;/Location&gt;
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--Traduction anglais 1.4 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>Termes utilis&eacute;s pour d&eacute;crire les
+    directives Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Termes utilis&eacute;s pour d&eacute;crire
+    les directives Apache</h1>
+
+    <p>Chaque directive de configuration d'Apache est
+    d&eacute;crite selon un format de pr&eacute;sentation commun
+    ressemblant &agrave; ceci :</p>
+
+    <dl>
+      <dd><a href="#Syntax"
+      rel="Help"><strong>Syntaxe:</strong></a>
+      <em>nomDirective</em> <em>arguments</em><br />
+       <a href="#Default"
+      rel="Help"><strong>D&eacute;faut:</strong></a>
+      <samp><em>nomDirective
+      valeursParD&eacute;faut</em></samp><br />
+       <a href="#Context" rel="Help"><strong>Contexte:</strong></a>
+      <em>listeDeContextes</em><br />
+       <a href="#Override"
+      rel="Help"><strong>Surcharge:</strong></a>
+      <em>DirectivesSurcharg&eacute;es</em><br />
+       <a href="#Status" rel="Help"><strong>Statut:</strong></a>
+      <em>statut</em><br />
+       <a href="#Module" rel="Help"><strong>Module:</strong></a>
+      <em>nomModule</em><br />
+       <a href="#Compatibility"
+      rel="Help"><strong>Compatibilit&eacute;:</strong></a>
+      <em>notes concernant la compatibilit&eacute;</em></dd>
+    </dl>
+
+    <p>Chacun des attributs possibles pour les directives, avec
+    toutes leurs valeurs possibles sont d&eacute;crites dans ce
+    document.</p>
+
+    <h2>Termes employ&eacute;s pour les directives</h2>
+
+    <ul>
+      <li><a href="#Syntax">Syntaxe</a></li>
+
+      <li><a href="#Default">D&eacute;faut</a></li>
+
+      <li><a href="#Context">Contexte</a></li>
+
+      <li><a href="#Override">Surcharge</a></li>
+
+      <li><a href="#Status">Statut</a></li>
+
+      <li><a href="#Module">Module</a></li>
+
+      <li><a href="#Compatibility">Compatibilit&eacute;</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="Syntax" name="Syntax">Syntaxe</a></h2>
+
+    <p>Indique le format dans laquelle la directive doit &ecirc;tre
+    inscrite dans les fichiers de configuration. Cette syntaxe est
+    tr&egrave;s sp&eacute;cifique pour chaque directive, et est
+    d&eacute;crite en d&eacute;tail dans la d&eacute;finition de la
+    directive. G&eacute;n&eacute;ralement, le nom de la directive
+    est suivi d'un ou de plusieurs arguments. Les arguments
+    optionnels sont entour&eacute;s de crochets Quand un argument
+    peut prendre plus d'une valeur possible, les valeurs possibles
+    sont s&eacute;par&eacute;es par une barre verticale. Les
+    valeurs litt&eacute;rales sont affich&eacute;e avec la fontes
+    par d&eacute;faut, tandis qur les type d'arguments pour
+    lesquels une substitution doit &ecirc;tre faite sont en
+    italique. Les diretrives pouvant avoir un nombre variable
+    d'arguments se terminent avec "..." indiquant que le dernier
+    argument se r&eacute;p&egrave;te.</p>
+    <hr />
+
+    <h2><a id="Default" name="Default">D&eacute;faut</a></h2>
+
+    <p>Si la directive a une valeur par d&eacute;faut
+    (<em>c-&agrave;-d.</em>, si elle n'apparait pas du tout dans le
+    fichier de configuration, le serveur Apache se comportera comme
+    si cette directive avait &eacute;t&eacute; &eacute;crite en
+    mentionnant cette valeur), elle est sp&eacute;cifi&eacute;e
+    ici. Si aucune valeur n'est d&eacute;finie par d&eacute;faut,
+    cette section pr&eacute;cisera "<em>Non
+    pr&eacute;cis&eacute;</em>".</p>
+    <hr />
+
+    <h2><a id="Context" name="Context">Contexte</a></h2>
+
+    <p>Indique l&agrave; ou l'implantation de la directive dans le
+    fichier de configuration est licite. Il est exprim&eacute;
+    comme une liste s&eacute;par&eacute;e par des virgules, et
+    pouvant contenir les &eacute;l&eacute;ments suivants :</p>
+
+    <dl>
+      <dt><strong>configuration serveur</strong></dt>
+
+      <dd>La directive peut &ecirc;tre utilis&eacute;e dans le
+      fichier de configuration du serveur (<em>ex.</em>,
+      <samp>httpd.conf</samp>, <samp>srm.conf</samp>, et
+      <samp>access.conf</samp>), mais dans <strong>aucune</strong>
+      des sections int&eacute;rieures des containers
+      <samp>&lt;VirtualHost&gt;</samp> ni &lt;Directory&gt;. Elle
+      n'est pas permise dans aucun des fichiers
+      <samp>.htaccess</samp>.</dd>
+
+      <dt><strong>h&ocirc;te virtuel</strong></dt>
+
+      <dd>Dans ce contexte, la directive peut appara&icirc;tre dans
+      les containers <samp>&lt;VirtualHost&gt;</samp> &eacute;crits
+      dans les fichiers de configuration du serveur.</dd>
+
+      <dt><strong>r&eacute;pertoire</strong></dt>
+
+      <dd>La directive peut appara&icirc;tre dans les containers
+      <samp>&lt;Directory&gt;</samp> &eacute;crits dans les
+      fichiers de configuration du serveur.</dd>
+
+      <dt><strong>.htaccess</strong></dt>
+
+      <dd>La directive peut appara&icirc;tre dans les fichiers
+      <samp>.htaccess</samp> situ&eacute; dans chacun des
+      r&eacute;pertoires. Elle peut ou ne pas &ecirc;tre
+      interpr&eacute;t&eacute;e, suivant la configuration des
+      directives <a href="#Override" rel="Help">de
+      surcharge</a>.</dd>
+    </dl>
+
+    <p>Les directives ne sont autoris&eacute;es <em>que</em> dans
+    les contextes cit&eacute;s ; si vous essayez de les
+    &eacute;crire ailleurs, vous provoquerez une erreur de
+    configuration qui soit conduira le serveur &agrave; ignorer les
+    requ&ecirc;tes dans le contexte sp&eacute;cifi&eacute;, soit
+    peut emp&ecirc;cher le serveur de fonctionner --
+    <em>c-&agrave;-d.</em>, le serveur refusera de
+    d&eacute;marrer.</p>
+
+    <p>Les emplacements valides pour les directives sont le
+    r&eacute;sultat d'un OU bool&eacute;en de tous les contextes
+    cit&eacute;s. En d'autres termes, une directive marqu&eacute;e
+    comma &eacute;tant valide dans le contexte "<samp>configuration
+    serveur, .htaccess</samp>" peut &ecirc;tre utilis&eacute;e dans
+    le fichier <samp>httpd.conf</samp> et dans les fichiers
+    <samp>.htaccess</samp>, mais pas dans le container
+    &lt;Directory&gt; ni &lt;VirtualHost&gt;.</p>
+    <hr />
+
+    <h2><a id="Override" name="Override">Surcharge</a></h2>
+
+    <p>Cet attribut de directive pr&eacute;cise quelle surcharge
+    doit &ecirc;tre permise pour que la directive puisse &ecirc;tre
+    interpr&eacute;t&eacute;e lorsqu'elle appara&icirc;t dans un
+    fichier <samp>.htaccess</samp>. Si le <a href="#Context"
+    rel="Help">contexte</a> de directive ne permet pas une
+    &eacute;criture dans les fichiers <samp>.htaccess</samp>, cet
+    attribut doit mentionner "<em>Non applicable</em>".</p>
+
+    <p>Les surcharges sont g&eacute;r&eacute;es par la directive <a
+    href="core.html#allowoverrides"
+    rel="Help"><samp>AllowOverrides</samp></a>, et ont une
+    port&eacute;e d&eacute;finie, par exemple un r&eacute;pertoire
+    donn&eacute; et tous ses descendants, sauf si la configuration
+    de surcharge est chang&eacute;e &agrave; un endroit de la
+    descendance par une directive <samp>AllowOverrides</samp> d'un
+    niveau inf&eacute;rieur. La documentation pour cette directive
+    liste aussi les noms possibles de surcharges disponibles.</p>
+    <hr />
+
+    <h2><a id="Status" name="Status">Statut</a></h2>
+
+    <p>Indique &agrave; quel module du serveur Apache Web la
+    directive est rattach&eacute;e ; en d'autres termes, vous
+    devrez peut &ecirc;tre recompiler le serveur en
+    pr&eacute;cisant un ensemble plus large de modules pour pouvoir
+    b&eacute;n&eacute;ficier de cette fonctionnalit&eacute;. Les
+    valeurs possibles pour cet attribut sont :</p>
+
+    <dl>
+      <dt><strong>Noyau</strong></dt>
+
+      <dd>Il s'agit d'une directive du noyau d'Apache et est de ce
+      fait toujours disponible.</dd>
+
+      <dt><strong>Base</strong></dt>
+
+      <dd>La directive est impl&eacute;ment&eacute;e dans un module
+      d'Apache faisant partie de l'ensemble de compilation de base,
+      et est normalement disponible sauf si vous avez explicitement
+      enlev&eacute; ce module &agrave; la compilation.</dd>
+
+      <dt><strong>Extension</strong></dt>
+
+      <dd>La directive est impl&eacute;ment&eacute;e par un module
+      faisant partie de l'Apache Server Kit, mais ce module n'est
+      pas compil&eacute; par d&eacute;faut. Pour activer cette
+      directive, et rendre op&eacute;rationnelle cette
+      fonctionnalit&eacute;, vous devrez modifier le fichier de
+      configuration de compilation et recompiler Apache.</dd>
+
+      <dt><strong>Exp&eacute;rimental</strong></dt>
+
+      <dd>Le statut "Experimental" indique que la directive est
+      disponible dans le Kit Apache, mais que vous ne pouvez
+      l'utiliser qu'&agrave; vos risques et p&eacute;rils. La
+      directive est document&eacute; dans un souci
+      d'exhaustivit&eacute; mais n'est pas forc&eacute;ment
+      support&eacute;e. Le module qui donne acc&egrave;s &agrave;
+      cette directive peut &ecirc;tre ou ne pas &ecirc;tre
+      compil&eacute; par d&eacute;faut ; reportez vous en
+      t&ecirc;te de la page qui d&eacute;crit la directive et le
+      module pour toute remarque concernant sa
+      disponibilit&eacute;.</dd>
+    </dl>
+    <hr />
+
+    <h2><a id="Module" name="Module">Module</a></h2>
+
+    <p>Donne simplement le nom du module ou est
+    impl&eacute;ment&eacute;e cette fonctionnalit&eacute;.</p>
+    <hr />
+
+    <h2><a id="Compatibility"
+    name="Compatibility">Compatibilit&eacute;</a></h2>
+
+    <p>Si la directive ne faisait pas partie de la version 1
+    d'Apache, le num&eacute;ro indique la version dans laquelle
+    elle a &eacute;t&eacute; introduite. Si la directive a le
+    m&ecirc;me nom qu'une ancienne directive du serveur HTTPd du
+    NCSA, toute diff&eacute;rence de comportement y sera
+    mentionn&eacute;e. Dans les autres cas, cette rubrique
+    affichera "<em>Pas de remarques sur
+    compatiblit&eacute;.</em>"</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

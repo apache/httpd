@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Why We Took PEM Out of Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Why We Took PEM Out of Apache</h1>
+    On May 17th, 1995, we were asked by a representative of NCSA to
+    remove any copies of NCSA httpd prior to 1.4.1 from our web
+    site. They were mandated by the NSA to inform us that
+    redistribution of pre-1.4.1 code violated the same laws that
+    make distributing Phill Zimmerman's PGP package to other
+    countries illegal. There was <strong>no</strong> encryption in
+    NCSA's httpd, only hooks to publicly available libraries of PEM
+    code. By the NSA's rules, even hooks to this type of
+    application is illegal. 
+
+    <p>Because Apache is based on NCSA code, and we had basically
+    not touched that part of the software, we were informed that
+    Apache was also illegal to distribute to foreign countries, and
+    advised (not mandated) by NCSA to remove it. So, we removed
+    both the copies of the NCSA httpd we had, and all versions of
+    Apache previous to 0.6.5.</p>
+
+    <p>The Apache members are strong advocates of the right to
+    digital privacy, so the decision to submit to the NSA and
+    remove the code was not an easy one. Here are some elements in
+    our rationale:</p>
+
+    <ul>
+      <li>The PEM code in httpd was not widely used. No major site
+      relied upon its use, so its loss is not a blow to encryption
+      and security on the world wide web. There are other efforts
+      designed to give much more flexible security - SSL and SHTTP
+      - so this wasn't a function whose absence would really be
+      missed on a functional level.</li>
+
+      <li>We didn't feel like being just a couple more martyrs in a
+      fight being fought very well by many other people. Rather
+      than have the machine that supports the project confiscated
+      or relocated to South Africa, <em>etc.</em>, we think there
+      are more efficient methods to address the issue.</li>
+    </ul>
+    It kind of sickens us that we had to do it, but so be it. 
+
+    <p>Patches that re-implement the PEM code may be available at a
+    foreign site soon. If it does show up, we'll point to it - that
+    can't be illegal!</p>
+
+    <p>Finally, here is a compendium of pointers to sites related
+    to encryption and export law. We can't promise this list will
+    be up to date, so send us mail when you see a problem or want a
+    link added. Thanks.</p>
+
+    <ul>
+      <li><a
+      href="http://dir.yahoo.com/Computers_and_Internet/security_and_encryption/">
+      Yahoo - Science: Mathematics: Security and
+      Encryption</a></li>
+
+      <li><a href="http://www.eff.org/Privacy/Crypto/">EFF
+      Crypto/Privacy/Security Archive</a></li>
+
+      <li><a
+      href="http://www.quadralay.com/www/Crypt/Crypt.html">Crypto
+      page at Quadralay</a></li>
+
+      <li><a
+      href="ftp://ftp.cygnus.com/pub/export/export.html">Cryptography
+      Export Control Archives (Cygnus)</a></li>
+
+      <li><a href="http://www.law.indiana.edu/law/iclu.html">ICLU -
+      Your Rights in Cyberspace</a></li>
+    </ul>
+    <a href="http://www.behlendorf.com/~brian/">Brian</a>, <a
+    href="mailto:brian@hyperreal.com">brian@hyperreal.com</a> 
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

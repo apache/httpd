@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_dir</title>
+
+  </head>
+  <!-- English revision: 1.16 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_dir モジュール</h1>
+
+    <p>このモジュールは、スラッシュで終わる URL へのリクエストがあった際に、
+    ディレクトリインデックスファイルへリダイレクトして提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a> mod_dir.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    dir_module</p>
+
+    <h2>概要</h2>
+    <p>ディレクトリインデックスは、次の二つのうちどちらかが利用されます。</p>
+
+    <ul>
+      <li>一つ目は、ユーザが作成したファイルを用いるもので、通常
+      <code>index.html</code> というファイル名を使います。このファイル名は、
+      <a href="#directoryindex">DirectoryIndex</a> ディレクティブで
+      指定することができます。この機能は <code>mod_dir</code>
+      モジュールで提供されます。</li>
+
+      <li>もう一つの方法は、
+      サーバによって自動的に生成されるディレクトリリストを用いる場合です。
+      この機能は、<a href="mod_autoindex.html"><code>mod_autoindex</code></a>
+      モジュールにより提供されます。</li>
+    </ul>
+    自動的なインデックス生成機能を削除 (もしくは交換)
+    できるように、この二つの機能は分離されています。
+
+    <p>なお <samp>http://servername/foo/dirname</samp> という URL
+    へのリクエストがあった際に、<samp>dirname</samp>
+    というディレクトリがあれば、「最後にスラッシュをつけた形」の URL
+    へのリダイレクトを送出します。
+    ディレクトリへのアクセスはスラッシュで終わっている必要があり、
+    <code>mod_dir</code> は、<samp>http://servername/foo/dirname/</samp>
+    へのリダイレクトを送出することになります。</p>
+
+    <h2>ディレクティブ</h2>
+    <ul>
+      <li><a href="#directoryindex">DirectoryIndex</a></li>
+    </ul>
+    <hr />
+
+    <h2><a name="directoryindex" id="directoryindex">DirectoryIndex</a>
+    ディレクティブ</h2>
+    <!--%plaintext &lt;?INDEX {\tt DirectoryIndex} directive&gt; -->
+    <p><a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> DirectoryIndex
+    <em>local-url</em> [<em>local-url</em>] ...<br />
+     <a href="directive-dict.html#default"
+    rel="help"><strong>デフォルト:</strong></a> <code>DirectoryIndex
+    index.html</code><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> Indexes<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_dir</p>
+
+    <p>
+    クライアントが、ディレクトリ名の最後に「/」
+    を指定してディレクトリインデックスを要求する場合に探すリソースのリストを
+    DirectoryIndex ディレクティブで設定します。<em>Local-url</em>
+    は、リクエストされたディレクトリに対応する、サーバ上のドキュメントの
+    (% エンコードされた) URL で、普通はディレクトリ中のファイルの名前です。
+    複数の URL が設定された場合には、最初に見つかったものを返します。
+    それらが見つからず、<code>Indexes</code>
+    オプションがセットされている場合、ディレクトリのリストを生成します。
+    </p>
+
+    <p>例:</p>
+    <blockquote>
+      <code>DirectoryIndex index.html</code>
+    </blockquote>
+    <code>http://myserver/docs/</code> へのアクセスがあり、
+    <code>http://myserver/docs/index.html</code>
+    が存在すれば、この URL が返されます。
+    もし存在しなければ、ディレクトリのリストが返されます。
+
+    <p>注: ドキュメントは同じディレクトリ内に存在する必要ありません。
+    </p>
+
+    <blockquote>
+      <code>DirectoryIndex index.html index.txt
+      /cgi-bin/index.pl</code>
+    </blockquote>
+    とした場合、<code>index.html</code> と <code>index.txt</code>
+    のどちらもディレクトリ内で存在しない場合、CGI スクリプト
+    <code>/cgi-bin/index.pl</code> が実行されます。
+
+    <!--#include virtual="footer.html" -->
+
+  </body>
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Content Negotiation</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Content Negotiation</h1>
+
+    <p>Apache's support for content negotiation has been updated to
+    meet the HTTP/1.1 specification. It can choose the best
+    representation of a resource based on the browser-supplied
+    preferences for media type, languages, character set and
+    encoding. It is also implements a couple of features to give
+    more intelligent handling of requests from browsers which send
+    incomplete negotiation information.</p>
+
+    <p>Content negotiation is provided by the <a
+    href="mod/mod_negotiation.html">mod_negotiation</a> module,
+    which is compiled in by default.</p>
+    <hr />
+
+    <h2>About Content Negotiation</h2>
+
+    <p>A resource may be available in several different
+    representations. For example, it might be available in
+    different languages or different media types, or a combination.
+    One way of selecting the most appropriate choice is to give the
+    user an index page, and let them select. However it is often
+    possible for the server to choose automatically. This works
+    because browsers can send as part of each request information
+    about what representations they prefer. For example, a browser
+    could indicate that it would like to see information in French,
+    if possible, else English will do. Browsers indicate their
+    preferences by headers in the request. To request only French
+    representations, the browser would send</p>
+<pre>
+  Accept-Language: fr
+</pre>
+
+    <p>Note that this preference will only be applied when there is
+    a choice of representations and they vary by language.</p>
+
+    <p>As an example of a more complex request, this browser has
+    been configured to accept French and English, but prefer
+    French, and to accept various media types, preferring HTML over
+    plain text or other text types, and preferring GIF or JPEG over
+    other media types, but also allowing any other media type as a
+    last resort:</p>
+<pre>
+  Accept-Language: fr; q=1.0, en; q=0.5
+  Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6,
+        image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
+</pre>
+    Apache 1.2 supports 'server driven' content negotiation, as
+    defined in the HTTP/1.1 specification. It fully supports the
+    Accept, Accept-Language, Accept-Charset and Accept-Encoding
+    request headers. Apache 1.3.4 also supports 'transparent'
+    content negotiation, which is an experimental negotiation
+    protocol defined in RFC 2295 and RFC 2296. It does not offer
+    support for 'feature negotiation' as defined in these RFCs. 
+
+    <p>A <strong>resource</strong> is a conceptual entity
+    identified by a URI (RFC 2396). An HTTP server like Apache
+    provides access to <strong>representations</strong> of the
+    resource(s) within its namespace, with each representation in
+    the form of a sequence of bytes with a defined media type,
+    character set, encoding, etc. Each resource may be associated
+    with zero, one, or more than one representation at any given
+    time. If multiple representations are available, the resource
+    is referred to as <strong>negotiable</strong> and each of its
+    representations is termed a <strong>variant</strong>. The ways
+    in which the variants for a negotiable resource vary are called
+    the <strong>dimensions</strong> of negotiation.</p>
+
+    <h2>Negotiation in Apache</h2>
+
+    <p>In order to negotiate a resource, the server needs to be
+    given information about each of the variants. This is done in
+    one of two ways:</p>
+
+    <ul>
+      <li>Using a type map (<em>i.e.</em>, a <code>*.var</code>
+      file) which names the files containing the variants
+      explicitly, or</li>
+
+      <li>Using a 'MultiViews' search, where the server does an
+      implicit filename pattern match and chooses from among the
+      results.</li>
+    </ul>
+
+    <h3>Using a type-map file</h3>
+
+    <p>A type map is a document which is associated with the
+    handler named <code>type-map</code> (or, for
+    backwards-compatibility with older Apache configurations, the
+    mime type <code>application/x-type-map</code>). Note that to
+    use this feature, you must have a handler set in the
+    configuration that defines a file suffix as
+    <code>type-map</code>; this is best done with a</p>
+<pre>
+  AddHandler type-map .var
+</pre>
+    in the server configuration file. See the comments in the
+    sample config file for more details. 
+
+    <p>Type map files have an entry for each available variant;
+    these entries consist of contiguous HTTP-format header lines.
+    Entries for different variants are separated by blank lines.
+    Blank lines are illegal within an entry. It is conventional to
+    begin a map file with an entry for the combined entity as a
+    whole (although this is not required, and if present will be
+    ignored). An example map file is shown below. In this example, the
+    file would be named <code>foo.var</code> and would be placed in the
+    same directory with the various variants of the resource
+    <code>foo</code>.</p>
+<pre>
+  URI: foo
+
+  URI: foo.en.html
+  Content-type: text/html
+  Content-language: en
+
+  URI: foo.fr.de.html
+  Content-type: text/html;charset=iso-8859-2
+  Content-language: fr, de
+</pre>
+    If the variants have different source qualities, that may be
+    indicated by the "qs" parameter to the media type, as in this
+    picture (available as jpeg, gif, or ASCII-art): 
+<pre>
+  URI: foo
+
+  URI: foo.jpeg
+  Content-type: image/jpeg; qs=0.8
+
+  URI: foo.gif
+  Content-type: image/gif; qs=0.5
+
+  URI: foo.txt
+  Content-type: text/plain; qs=0.01
+</pre>
+
+    <p>qs values can vary in the range 0.000 to 1.000. Note that
+    any variant with a qs value of 0.000 will never be chosen.
+    Variants with no 'qs' parameter value are given a qs factor of
+    1.0. The qs parameter indicates the relative 'quality' of this
+    variant compared to the other available variants, independent
+    of the client's capabilities. For example, a jpeg file is
+    usually of higher source quality than an ascii file if it is
+    attempting to represent a photograph. However, if the resource
+    being represented is an original ascii art, then an ascii
+    representation would have a higher source quality than a jpeg
+    representation. A qs value is therefore specific to a given
+    variant depending on the nature of the resource it
+    represents.</p>
+
+    <p>The full list of headers recognized is:</p>
+
+    <dl>
+      <dt><code>URI:</code></dt>
+
+      <dd>uri of the file containing the variant (of the given
+      media type, encoded with the given content encoding). These
+      are interpreted as URLs relative to the map file; they must
+      be on the same server (!), and they must refer to files to
+      which the client would be granted access if they were to be
+      requested directly.</dd>
+
+      <dt><code>Content-Type:</code></dt>
+
+      <dd>media type --- charset, level and "qs" parameters may be
+      given. These are often referred to as MIME types; typical
+      media types are <code>image/gif</code>,
+      <code>text/plain</code>, or
+      <code>text/html;&nbsp;level=3</code>.</dd>
+
+      <dt><code>Content-Language:</code></dt>
+
+      <dd>The languages of the variant, specified as an Internet
+      standard language tag from RFC 1766 (<em>e.g.</em>,
+      <code>en</code> for English, <code>kr</code> for Korean,
+      <em>etc.</em>).</dd>
+
+      <dt><code>Content-Encoding:</code></dt>
+
+      <dd>If the file is compressed, or otherwise encoded, rather
+      than containing the actual raw data, this says how that was
+      done. Apache only recognizes encodings that are defined by an
+      <a href="mod/mod_mime.html#addencoding">AddEncoding</a>
+      directive. This normally includes the encodings
+      <code>x-compress</code> for compress'd files, and
+      <code>x-gzip</code> for gzip'd files. The <code>x-</code>
+      prefix is ignored for encoding comparisons.</dd>
+
+      <dt><code>Content-Length:</code></dt>
+
+      <dd>The size of the file. Specifying content lengths in the
+      type-map allows the server to compare file sizes without
+      checking the actual files.</dd>
+
+      <dt><code>Description:</code></dt>
+
+      <dd>A human-readable textual description of the variant. If
+      Apache cannot find any appropriate variant to return, it will
+      return an error response which lists all available variants
+      instead. Such a variant list will include the human-readable
+      variant descriptions.</dd>
+    </dl>
+
+    <h3>Multiviews</h3>
+
+    <p><code>MultiViews</code> is a per-directory option, meaning
+    it can be set with an <code>Options</code> directive within a
+    <code>&lt;Directory&gt;</code>, <code>&lt;Location&gt;</code>
+    or <code>&lt;Files&gt;</code> section in
+    <code>access.conf</code>, or (if <code>AllowOverride</code> is
+    properly set) in <code>.htaccess</code> files. Note that
+    <code>Options All</code> does not set <code>MultiViews</code>;
+    you have to ask for it by name.</p>
+
+    <p>The effect of <code>MultiViews</code> is as follows: if the
+    server receives a request for <code>/some/dir/foo</code>, if
+    <code>/some/dir</code> has <code>MultiViews</code> enabled, and
+    <code>/some/dir/foo</code> does <em>not</em> exist, then the
+    server reads the directory looking for files named foo.*, and
+    effectively fakes up a type map which names all those files,
+    assigning them the same media types and content-encodings it
+    would have if the client had asked for one of them by name. It
+    then chooses the best match to the client's requirements.</p>
+
+    <p><code>MultiViews</code> may also apply to searches for the
+    file named by the <code>DirectoryIndex</code> directive, if the
+    server is trying to index a directory. If the configuration
+    files specify</p>
+<pre>
+  DirectoryIndex index
+</pre>
+    then the server will arbitrate between <code>index.html</code>
+    and <code>index.html3</code> if both are present. If neither
+    are present, and <code>index.cgi</code> is there, the server
+    will run it. 
+
+    <p>If one of the files found when reading the directive is a
+    CGI script, it's not obvious what should happen. The code gives
+    that case special treatment --- if the request was a POST, or a
+    GET with QUERY_ARGS or PATH_INFO, the script is given an
+    extremely high quality rating, and generally invoked; otherwise
+    it is given an extremely low quality rating, which generally
+    causes one of the other views (if any) to be retrieved.</p>
+
+    <h2>The Negotiation Methods</h2>
+    After Apache has obtained a list of the variants for a given
+    resource, either from a type-map file or from the filenames in
+    the directory, it invokes one of two methods to decide on the
+    'best' variant to return, if any. It is not necessary to know
+    any of the details of how negotiation actually takes place in
+    order to use Apache's content negotiation features. However the
+    rest of this document explains the methods used for those
+    interested. 
+
+    <p>There are two negotiation methods:</p>
+
+    <ol>
+      <li><strong>Server driven negotiation with the Apache
+      algorithm</strong> is used in the normal case. The Apache
+      algorithm is explained in more detail below. When this
+      algorithm is used, Apache can sometimes 'fiddle' the quality
+      factor of a particular dimension to achieve a better result.
+      The ways Apache can fiddle quality factors is explained in
+      more detail below.</li>
+
+      <li><strong>Transparent content negotiation</strong> is used
+      when the browser specifically requests this through the
+      mechanism defined in RFC 2295. This negotiation method gives
+      the browser full control over deciding on the 'best' variant,
+      the result is therefore dependent on the specific algorithms
+      used by the browser. As part of the transparent negotiation
+      process, the browser can ask Apache to run the 'remote
+      variant selection algorithm' defined in RFC 2296.</li>
+    </ol>
+
+    <h3>Dimensions of Negotiation</h3>
+
+    <table>
+      <tr valign="top">
+        <th>Dimension</th>
+
+        <th>Notes</th>
+      </tr>
+
+      <tr valign="top">
+        <td>Media Type</td>
+
+        <td>Browser indicates preferences with the Accept header
+        field. Each item can have an associated quality factor.
+        Variant description can also have a quality factor (the
+        "qs" parameter).</td>
+      </tr>
+
+      <tr valign="top">
+        <td>Language</td>
+
+        <td>Browser indicates preferences with the Accept-Language
+        header field. Each item can have a quality factor. Variants
+        can be associated with none, one or more than one
+        language.</td>
+      </tr>
+
+      <tr valign="top">
+        <td>Encoding</td>
+
+        <td>Browser indicates preference with the Accept-Encoding
+        header field. Each item can have a quality factor.</td>
+      </tr>
+
+      <tr valign="top">
+        <td>Charset</td>
+
+        <td>Browser indicates preference with the Accept-Charset
+        header field. Each item can have a quality factor. Variants
+        can indicate a charset as a parameter of the media
+        type.</td>
+      </tr>
+    </table>
+
+    <h3>Apache Negotiation Algorithm</h3>
+
+    <p>Apache can use the following algorithm to select the 'best'
+    variant (if any) to return to the browser. This algorithm is
+    not further configurable. It operates as follows:</p>
+
+    <ol>
+      <li>First, for each dimension of the negotiation, check the
+      appropriate <em>Accept*</em> header field and assign a
+      quality to each variant. If the <em>Accept*</em> header for
+      any dimension implies that this variant is not acceptable,
+      eliminate it. If no variants remain, go to step 4.</li>
+
+      <li>
+        Select the 'best' variant by a process of elimination. Each
+        of the following tests is applied in order. Any variants
+        not selected at each test are eliminated. After each test,
+        if only one variant remains, select it as the best match
+        and proceed to step 3. If more than one variant remains,
+        move on to the next test. 
+
+        <ol>
+          <li>Multiply the quality factor from the Accept header
+          with the quality-of-source factor for this variant's
+          media type, and select the variants with the highest
+          value.</li>
+
+          <li>Select the variants with the highest language quality
+          factor.</li>
+
+          <li>Select the variants with the best language match,
+          using either the order of languages in the
+          Accept-Language header (if present), or else the order of
+          languages in the <code>LanguagePriority</code> directive
+          (if present).</li>
+
+          <li>Select the variants with the highest 'level' media
+          parameter (used to give the version of text/html media
+          types).</li>
+
+          <li>Select variants with the best charset media
+          parameters, as given on the Accept-Charset header line.
+          Charset ISO-8859-1 is acceptable unless explicitly
+          excluded. Variants with a <code>text/*</code> media type
+          but not explicitly associated with a particular charset
+          are assumed to be in ISO-8859-1.</li>
+
+          <li>Select those variants which have associated charset
+          media parameters that are <em>not</em> ISO-8859-1. If
+          there are no such variants, select all variants
+          instead.</li>
+
+          <li>Select the variants with the best encoding. If there
+          are variants with an encoding that is acceptable to the
+          user-agent, select only these variants. Otherwise if
+          there is a mix of encoded and non-encoded variants,
+          select only the unencoded variants. If either all
+          variants are encoded or all variants are not encoded,
+          select all variants.</li>
+
+          <li>Select the variants with the smallest content
+          length.</li>
+
+          <li>Select the first variant of those remaining. This
+          will be either the first listed in the type-map file, or
+          when variants are read from the directory, the one whose
+          file name comes first when sorted using ASCII code
+          order.</li>
+        </ol>
+      </li>
+
+      <li>The algorithm has now selected one 'best' variant, so
+      return it as the response. The HTTP response header Vary is
+      set to indicate the dimensions of negotiation (browsers and
+      caches can use this information when caching the resource).
+      End.</li>
+
+      <li><p>To get here means no variant was selected (because none
+      are acceptable to the browser). Return a 406 status (meaning
+      "No acceptable representation") with a response body
+      consisting of an HTML document listing the available
+      variants. Also set the HTTP Vary header to indicate the
+      dimensions of variance.</p>
+
+      <p>You should be aware that the error message returned by Apache is
+      necessarily rather terse and might confuse some users (even though it
+      lists the available alternatives). If you want to avoid users seeing this
+      error page, you should organize your documents such that a document in a
+      default language (or with a default encoding etc.) is always returned if a
+      document is not available in any of the languages, encodings etc. the
+      browser asked for.</p>
+
+      <p>In particular, if you want a document in a default language to
+      be returned if a document is not available in any of the languages
+      a browser asked for, you should create a document with no language
+      attribute set.  See <a href="#nolanguage">Variants with no
+      Language</a> below for details.</p></li>
+    </ol>
+
+    <h2><a id="better" name="better">Fiddling with Quality
+    Values</a></h2>
+
+    <p>Apache sometimes changes the quality values from what would
+    be expected by a strict interpretation of the Apache
+    negotiation algorithm above. This is to get a better result
+    from the algorithm for browsers which do not send full or
+    accurate information. Some of the most popular browsers send
+    Accept header information which would otherwise result in the
+    selection of the wrong variant in many cases. If a browser
+    sends full and correct information these fiddles will not be
+    applied.</p>
+
+    <h3>Media Types and Wildcards</h3>
+
+    <p>The Accept: request header indicates preferences for media
+    types. It can also include 'wildcard' media types, such as
+    "image/*" or "*/*" where the * matches any string. So a request
+    including:</p>
+<pre>
+  Accept: image/*, */*
+</pre>
+    would indicate that any type starting "image/" is acceptable,
+    as is any other type (so the first "image/*" is redundant).
+    Some browsers routinely send wildcards in addition to explicit
+    types they can handle. For example: 
+<pre>
+  Accept: text/html, text/plain, image/gif, image/jpeg, */*
+</pre>
+    The intention of this is to indicate that the explicitly listed
+    types are preferred, but if a different representation is
+    available, that is ok too. However under the basic algorithm,
+    as given above, the */* wildcard has exactly equal preference
+    to all the other types, so they are not being preferred. The
+    browser should really have sent a request with a lower quality
+    (preference) value for *.*, such as: 
+<pre>
+  Accept: text/html, text/plain, image/gif, image/jpeg, */*; q=0.01
+</pre>
+    The explicit types have no quality factor, so they default to a
+    preference of 1.0 (the highest). The wildcard */* is given a
+    low preference of 0.01, so other types will only be returned if
+    no variant matches an explicitly listed type. 
+
+    <p>If the Accept: header contains <em>no</em> q factors at all,
+    Apache sets the q value of "*/*", if present, to 0.01 to
+    emulate the desired behaviour. It also sets the q value of
+    wildcards of the format "type/*" to 0.02 (so these are
+    preferred over matches against "*/*". If any media type on the
+    Accept: header contains a q factor, these special values are
+    <em>not</em> applied, so requests from browsers which send the
+    correct information to start with work as expected.</p>
+
+    <h3><a id="nolanguage" name="nolanguage">Variants with no Language</a></h3>
+
+    <p>If some of the variants for a particular resource have a
+    language attribute, and some do not, those variants with no
+    language are given a very low language quality factor of
+    0.001.</p>
+
+    <p>The reason for setting this language quality factor for variant
+    with no language to a very low value is to allow for a default
+    variant which can be supplied if none of the other variants match
+    the browser's language preferences. This allows you to avoid users
+    seeing a "406" error page if their browser is set to only accept
+    languages which you do not offer for the resource that was
+    requested.</p>
+
+    <p>For example, consider the situation with Multiviews enabled and
+    three variants:</p>
+
+    <ul>
+      <li>foo.en.html, language en</li>
+
+      <li>foo.fr.html, language fr</li>
+
+      <li>foo.html, no language</li>
+    </ul>
+
+    <p>The meaning of a variant with no language is that it is always
+    acceptable to the browser. If the request is for <code>foo</code>
+    and the Accept-Language header includes either en or fr (or both)
+    one of foo.en.html or foo.fr.html will be returned. If the browser
+    does not list either en or fr as acceptable, foo.html will be
+    returned instead.  If the client requests <code>foo.html</code>
+    instead, then no negotiation will occur since the exact match
+    will be returned.  To avoid this problem, it is sometimes helpful
+    to name the "no language" variant <code>foo.html.html</code> to assure
+    that Multiviews and language negotiation will come into play.</p>
+
+    <h2>Extensions to Transparent Content Negotiation</h2>
+    Apache extends the transparent content negotiation protocol
+    (RFC 2295) as follows. A new <code>{encoding ..}</code> element
+    is used in variant lists to label variants which are available
+    with a specific content-encoding only. The implementation of
+    the RVSA/1.0 algorithm (RFC 2296) is extended to recognize
+    encoded variants in the list, and to use them as candidate
+    variants whenever their encodings are acceptable according to
+    the Accept-Encoding request header. The RVSA/1.0 implementation
+    does not round computed quality factors to 5 decimal places
+    before choosing the best variant. 
+
+    <h2>Note on hyperlinks and naming conventions</h2>
+
+    <p>If you are using language negotiation you can choose between
+    different naming conventions, because files can have more than
+    one extension, and the order of the extensions is normally
+    irrelevant (see <a href="mod/mod_mime.html">mod_mime</a>
+    documentation for details).</p>
+
+    <p>A typical file has a MIME-type extension (<em>e.g.</em>,
+    <samp>html</samp>), maybe an encoding extension (<em>e.g.</em>,
+    <samp>gz</samp>), and of course a language extension
+    (<em>e.g.</em>, <samp>en</samp>) when we have different
+    language variants of this file.</p>
+
+    <p>Examples:</p>
+
+    <ul>
+      <li>foo.en.html</li>
+
+      <li>foo.html.en</li>
+
+      <li>foo.en.html.gz</li>
+    </ul>
+
+    <p>Here some more examples of filenames together with valid and
+    invalid hyperlinks:</p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <tr>
+        <th>Filename</th>
+
+        <th>Valid hyperlink</th>
+
+        <th>Invalid hyperlink</th>
+      </tr>
+
+      <tr>
+        <td><em>foo.html.en</em></td>
+
+        <td>foo<br />
+         foo.html</td>
+
+        <td>-</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.en.html</em></td>
+
+        <td>foo</td>
+
+        <td>foo.html</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.html.en.gz</em></td>
+
+        <td>foo<br />
+         foo.html</td>
+
+        <td>foo.gz<br />
+         foo.html.gz</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.en.html.gz</em></td>
+
+        <td>foo</td>
+
+        <td>foo.html<br />
+         foo.html.gz<br />
+         foo.gz</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.gz.html.en</em></td>
+
+        <td>foo<br />
+         foo.gz<br />
+         foo.gz.html</td>
+
+        <td>foo.html</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.html.gz.en</em></td>
+
+        <td>foo<br />
+         foo.html<br />
+         foo.html.gz</td>
+
+        <td>foo.gz</td>
+      </tr>
+    </table>
+
+    <p>Looking at the table above you will notice that it is always
+    possible to use the name without any extensions in a hyperlink
+    (<em>e.g.</em>, <samp>foo</samp>). The advantage is that you
+    can hide the actual type of a document rsp. file and can change
+    it later, <em>e.g.</em>, from <samp>html</samp> to
+    <samp>shtml</samp> or <samp>cgi</samp> without changing any
+    hyperlink references.</p>
+
+    <p>If you want to continue to use a MIME-type in your
+    hyperlinks (<em>e.g.</em> <samp>foo.html</samp>) the language
+    extension (including an encoding extension if there is one)
+    must be on the right hand side of the MIME-type extension
+    (<em>e.g.</em>, <samp>foo.html.en</samp>).</p>
+
+    <h2>Note on Caching</h2>
+
+    <p>When a cache stores a representation, it associates it with
+    the request URL. The next time that URL is requested, the cache
+    can use the stored representation. But, if the resource is
+    negotiable at the server, this might result in only the first
+    requested variant being cached and subsequent cache hits might
+    return the wrong response. To prevent this, Apache normally
+    marks all responses that are returned after content negotiation
+    as non-cacheable by HTTP/1.0 clients. Apache also supports the
+    HTTP/1.1 protocol features to allow caching of negotiated
+    responses.</p>
+
+    <p>For requests which come from a HTTP/1.0 compliant client
+    (either a browser or a cache), the directive
+    <tt>CacheNegotiatedDocs</tt> can be used to allow caching of
+    responses which were subject to negotiation. This directive can
+    be given in the server config or virtual host, and takes no
+    arguments. It has no effect on requests from HTTP/1.1 clients. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_setenvif</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_setenvif</h1>
+
+    <p>This module provides the ability to set environment
+    variables based upon attributes of the request.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_setenvif.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    setenvif_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>The <samp>mod_setenvif</samp> module allows you to set
+    environment variables according to whether different aspects of
+    the request match <a href="../misc/FAQ.html#regex">regular
+    expressions</a> you specify. These environment variables can be
+    used by other parts of the server to make decisions about
+    actions to be taken.</p>
+
+    <p>The directives are considered in the order they appear in
+    the configuration files. So more complex sequences can be used,
+    such as this example, which sets <code>netscape</code> if the
+    browser is mozilla but not MSIE.</p>
+
+    <blockquote>
+<pre>
+  BrowserMatch ^Mozilla netscape
+  BrowserMatch MSIE !netscape
+ 
+</pre>
+    </blockquote>
+
+    <p>For additional information, we provide a document on <a
+    href="../env.html">Environment Variables in Apache</a>.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#browsermatch">BrowserMatch</a></li>
+
+      <li><a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
+
+      <li><a href="#setenvif">SetEnvIf</a></li>
+
+      <li><a href="#setenvifnocase">SetEnvIfNoCase</a></li>
+    </ul>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="browsermatch" name="browsermatch">BrowserMatch
+    directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> BrowserMatch <em>regex
+    env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <i>none</i><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.2 and
+    above (in Apache 1.2 this directive was found in the
+    now-obsolete mod_browser module); use in .htaccess files only
+    supported with 1.3.13 and later</p>
+
+    <p>The BrowserMatch directive defines environment variables
+    based on the <samp>User-Agent</samp> HTTP request header field.
+    The first argument should be a POSIX.2 extended regular
+    expression (similar to an <samp>egrep</samp>-style regex). The
+    rest of the arguments give the names of variables to set, and
+    optionally values to which they should be set. These take the
+    form of</p>
+
+    <ol>
+      <li><samp><em>varname</em></samp>, or</li>
+
+      <li><samp>!<em>varname</em></samp>, or</li>
+
+      <li><samp><em>varname</em>=<em>value</em></samp></li>
+    </ol>
+
+    <p>In the first form, the value will be set to "1". The second
+    will remove the given variable if already defined, and the
+    third will set the variable to the value given by
+    <samp><em>value</em></samp>. If a <samp>User-Agent</samp>
+    string matches more than one entry, they will be merged.
+    Entries are processed in the order in which they appear, and
+    later entries can override earlier ones.</p>
+
+    <p>For example:</p>
+<pre>
+    BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+    BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+    BrowserMatch MSIE !javascript
+ 
+</pre>
+
+    <p>Note that the regular expression string is
+    <strong>case-sensitive</strong>. For case-INsensitive matching,
+    see the <a
+    href="#browsermatchnocase"><samp>BrowserMatchNoCase</samp></a>
+    directive.</p>
+
+    <p>The <samp>BrowserMatch</samp> and
+    <samp>BrowserMatchNoCase</samp> directives are special cases of
+    the <a href="#setenvif"><samp>SetEnvIf</samp></a> and <a
+    href="#setenvifnocase"><samp>SetEnvIfNoCase</samp></a>
+    directives. The following two lines have the same effect:</p>
+<pre>
+   BrowserMatchNoCase Robot is_a_robot
+   SetEnvIfNoCase User-Agent Robot is_a_robot
+ 
+</pre>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="browsermatchnocase"
+    name="browsermatchnocase">BrowserMatchNoCase directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> BrowserMatchNoCase
+    <em>regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.2 and
+    above (in Apache 1.2 this directive was found in the
+    now-obsolete mod_browser module)</p>
+
+    <p>The <samp>BrowserMatchNoCase</samp> directive is
+    semantically identical to the <a
+    href="#BrowserMatch"><samp>BrowserMatch</samp></a> directive.
+    However, it provides for case-insensitive matching. For
+    example:</p>
+<pre>
+    BrowserMatchNoCase mac platform=macintosh
+    BrowserMatchNoCase win platform=windows
+ 
+</pre>
+
+    <p>The <samp>BrowserMatch</samp> and
+    <samp>BrowserMatchNoCase</samp> directives are special cases of
+    the <a href="#setenvif"><samp>SetEnvIf</samp></a> and <a
+    href="#SetEnvIfNoCase"><samp>SetEnvIfNoCase</samp></a>
+    directives. The following two lines have the same effect:</p>
+<pre>
+   BrowserMatchNoCase Robot is_a_robot
+   SetEnvIfNoCase User-Agent Robot is_a_robot
+ 
+</pre>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="setenvif" name="setenvif">SetEnvIf
+    directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SetEnvIf <em>attribute
+    regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3 and
+    above; the Request_Protocol keyword and environment-variable
+    matching are only available with 1.3.7 and later; use in
+    .htaccess files only supported with 1.3.13 and later</p>
+
+    <p>The <samp>SetEnvIf</samp> directive defines environment
+    variables based on attributes of the request. These attributes
+    can be the values of various HTTP request header fields (see <a
+    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
+    for more information about these), or of other aspects of the
+    request, including the following:</p>
+
+    <ul>
+      <li><samp>Remote_Host</samp> - the hostname (if available) of
+      the client making the request</li>
+
+      <li><samp>Remote_Addr</samp> - the IP address of the client
+      making the request</li>
+
+      <li><samp>Request_Method</samp> - the name of the method
+      being used (<samp>GET</samp>, <samp>POST</samp>, <em>et
+      cetera</em>)</li>
+
+      <li><samp>Request_Protocol</samp> - the name and version of
+      the protocol with which the request was made (<em>e.g.</em>,
+      "HTTP/0.9", "HTTP/1.1", <em>etc.</em>)</li>
+
+      <li><samp>Request_URI</samp> - the portion of the URL
+      following the scheme and host portion</li>
+    </ul>
+
+    <p>Some of the more commonly used request header field names
+    include <samp>Host</samp>, <samp>User-Agent</samp>, and
+    <samp>Referer</samp>.</p>
+
+    <p>If the <em>attribute</em> name doesn't match any of the
+    special keywords, nor any of the request's header field names,
+    it is tested as the name of an environment variable in the list
+    of those associated with the request. This allows
+    <code>SetEnvIf</code> directives to test against the result of
+    prior matches.</p>
+
+    <blockquote>
+      <strong>Only those environment variables defined by earlier
+      <code>SetEnvIf[NoCase]</code> directives are available for
+      testing in this manner. 'Earlier' means that they were
+      defined at a broader scope (such as server-wide) or
+      previously in the current directive's scope.</strong>
+    </blockquote>
+
+    <p>Example:</p>
+<pre>
+   SetEnvIf Request_URI "\.gif$" object_is_image=gif
+   SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
+   SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
+        :
+   SetEnvIf Referer www\.mydomain\.com intra_site_referral
+        :
+   SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+ 
+</pre>
+
+    <p>The first three will set the environment variable
+    <samp>object_is_image</samp> if the request was for an image
+    file, and the fourth sets <samp>intra_site_referral</samp> if
+    the referring page was somewhere on the
+    <samp>www.mydomain.com</samp> Web site.</p>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="setenvifnocase" name="setenvifnocase">SetEnvIfNoCase
+    directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SetEnvIfNoCase
+    <em>attribute regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3 and
+    above; the Request_Protocol keyword and environment-variable
+    matching are only available with 1.3.7 and later; use in
+    .htaccess files only supported with 1.3.13 and later</p>
+
+    <p>The <samp>SetEnvIfNoCase</samp> is semantically identical to
+    the <a href="#setenvif"><samp>SetEnvIf</samp></a> directive,
+    and differs only in that the regular expression matching is
+    performed in a case-insensitive manner. For example:</p>
+<pre>
+   SetEnvIfNoCase Host Apache\.Org site=apache
+ 
+</pre>
+
+    <p>This will cause the <samp>site</samp> environment variable
+    to be set to "<samp>apache</samp>" if the HTTP request header
+    field <samp>Host:</samp> was included and contained
+    <samp>Apache.Org</samp>, <samp>apache.org</samp>, or any other
+    combination.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

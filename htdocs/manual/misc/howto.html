@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta name="description"
+    content="Some 'how to' tips for the Apache httpd server" />
+    <meta name="keywords"
+    content="apache,redirect,robots,rotate,logfiles" />
+
+    <title>Apache HOWTO documentation</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache HOWTO documentation</h1>
+    How to: 
+
+    <ul>
+      <li><a href="#redirect">redirect an entire server or
+      directory to a single URL</a></li>
+
+      <li><a href="#logreset">reset your log files</a></li>
+
+      <li><a href="#stoprob">stop/restrict robots</a></li>
+
+      <li><a href="#proxyssl">proxy SSL requests <em>through</em>
+      your non-SSL server</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="redirect" name="redirect">How to redirect an entire
+    server or directory to a single URL</a></h2>
+
+    <p>There are two chief ways to redirect all requests for an
+    entire server to a single location: one which requires the use
+    of <code>mod_rewrite</code>, and another which uses a CGI
+    script.</p>
+
+    <p>First: if all you need to do is migrate a server from one
+    name to another, simply use the <code>Redirect</code>
+    directive, as supplied by <code>mod_alias</code>:</p>
+
+    <blockquote>
+<pre>
+  Redirect / http://www.apache.org/
+</pre>
+    </blockquote>
+
+    <p>Since <code>Redirect</code> will forward along the complete
+    path, however, it may not be appropriate - for example, when
+    the directory structure has changed after the move, and you
+    simply want to direct people to the home page.</p>
+
+    <p>The best option is to use the standard Apache module
+    <code>mod_rewrite</code>. If that module is compiled in, the
+    following lines</p>
+
+    <blockquote>
+<pre>
+RewriteEngine On
+RewriteRule /.* http://www.apache.org/ [R]
+</pre>
+    </blockquote>
+    will send an HTTP 302 Redirect back to the client, and no
+    matter what they gave in the original URL, they'll be sent to
+    "http://www.apache.org/". 
+
+    <p>The second option is to set up a <code>ScriptAlias</code>
+    pointing to a <strong>CGI script</strong> which outputs a 301
+    or 302 status and the location of the other server.</p>
+
+    <p>By using a <strong>CGI script</strong> you can intercept
+    various requests and treat them specially, <em>e.g.</em>, you
+    might want to intercept <strong>POST</strong> requests, so that
+    the client isn't redirected to a script on the other server
+    which expects POST information (a redirect will lose the POST
+    information.) You might also want to use a CGI script if you
+    don't want to compile mod_rewrite into your server.</p>
+
+    <p>Here's how to redirect all requests to a script... In the
+    server configuration file,</p>
+
+    <blockquote>
+<pre>
+ScriptAlias / /usr/local/httpd/cgi-bin/redirect_script/
+</pre>
+    </blockquote>
+    and here's a simple perl script to redirect requests: 
+
+    <blockquote>
+<pre>
+#!/usr/local/bin/perl
+
+print "Status: 302 Moved Temporarily\r\n" .
+      "Location: http://www.some.where.else.com/\r\n" .
+      "\r\n";
+
+</pre>
+    </blockquote>
+    <hr />
+
+    <h2><a id="logreset" name="logreset">How to reset your log
+    files</a></h2>
+
+    <p>Sooner or later, you'll want to reset your log files
+    (access_log and error_log) because they are too big, or full of
+    old information you don't need.</p>
+
+    <p><code>access.log</code> typically grows by 1Mb for each
+    10,000 requests.</p>
+
+    <p>Most people's first attempt at replacing the logfile is to
+    just move the logfile or remove the logfile. This doesn't
+    work.</p>
+
+    <p>Apache will continue writing to the logfile at the same
+    offset as before the logfile moved. This results in a new
+    logfile being created which is just as big as the old one, but
+    it now contains thousands (or millions) of null characters.</p>
+
+    <p>The correct procedure is to move the logfile, then signal
+    Apache to tell it to reopen the logfiles.</p>
+
+    <p>Apache is signaled using the <strong>SIGHUP</strong> (-1)
+    signal. <em>e.g.</em></p>
+
+    <blockquote>
+      <code>mv access_log access_log.old<br />
+       kill -1 `cat httpd.pid`</code>
+    </blockquote>
+
+    <p>Note: <code>httpd.pid</code> is a file containing the
+    <strong>p</strong>rocess <strong>id</strong> of the Apache
+    httpd daemon, Apache saves this in the same directory as the
+    log files.</p>
+
+    <p>Many people use this method to replace (and backup) their
+    logfiles on a nightly or weekly basis.</p>
+    <hr />
+
+    <h2><a id="stoprob" name="stoprob">How to stop or restrict
+    robots</a></h2>
+
+    <p>Ever wondered why so many clients are interested in a file
+    called <code>robots.txt</code> which you don't have, and never
+    did have?</p>
+
+    <p>These clients are called <strong>robots</strong> (also known
+    as crawlers, spiders and other cute names) - special automated
+    clients which wander around the web looking for interesting
+    resources.</p>
+
+    <p>Most robots are used to generate some kind of <em>web
+    index</em> which is then used by a <em>search engine</em> to
+    help locate information.</p>
+
+    <p><code>robots.txt</code> provides a means to request that
+    robots limit their activities at the site, or more often than
+    not, to leave the site alone.</p>
+
+    <p>When the first robots were developed, they had a bad
+    reputation for sending hundreds/thousands of requests to each
+    site, often resulting in the site being overloaded. Things have
+    improved dramatically since then, thanks to <a
+    href="http://www.robotstxt.org/wc/guidelines.html">
+    Guidelines for Robot Writers</a>, but even so, some robots may
+    exhibit unfriendly behavior which the webmaster isn't willing
+    to tolerate, and will want to stop.</p>
+
+    <p>Another reason some webmasters want to block access to
+    robots, is to stop them indexing dynamic information. Many
+    search engines will use the data collected from your pages for
+    months to come - not much use if you're serving stock quotes,
+    news, weather reports or anything else that will be stale by
+    the time people find it in a search engine.</p>
+
+    <p>If you decide to exclude robots completely, or just limit
+    the areas in which they can roam, create a
+    <code>robots.txt</code> file; refer to the <a
+    href="http://www.robotstxt.org/wc/robots.html">
+    robot information pages</a> provided by Martijn Koster for the
+    syntax.</p>
+    <hr />
+
+    <h2><a id="proxyssl" name="proxyssl">How to proxy SSL requests
+    <em>through</em> your non-SSL Apache server</a><br />
+     <small>(<em>submitted by David Sedlock</em>)</small></h2>
+
+    <p>SSL uses port 443 for requests for secure pages. If your
+    browser just sits there for a long time when you attempt to
+    access a secure page over your Apache proxy, then the proxy may
+    not be configured to handle SSL. You need to instruct Apache to
+    listen on port 443 in addition to any of the ports on which it
+    is already listening:</p>
+<pre>
+    Listen 80
+    Listen 443
+</pre>
+
+    <p>Then set the security proxy in your browser to 443. That
+    might be it!</p>
+
+    <p>If your proxy is sending requests to another proxy, then you
+    may have to set the directive ProxyRemote differently. Here are
+    my settings:</p>
+<pre>
+    ProxyRemote http://nicklas:80/ http://proxy.mayn.franken.de:8080
+    ProxyRemote http://nicklas:443/ http://proxy.mayn.franken.de:443
+</pre>
+
+    <p>Requests on port 80 of my proxy <samp>nicklas</samp> are
+    forwarded to <samp>proxy.mayn.franken.de:8080</samp>, while
+    requests on port 443 are forwarded to
+    <samp>proxy.mayn.franken.de:443</samp>. If the remote proxy is
+    not set up to handle port 443, then the last directive can be
+    left out. SSL requests will only go over the first proxy.</p>
+
+    <p>Note that your Apache does NOT have to be set up to serve
+    secure pages with SSL. Proxying SSL is a different thing from
+    using it.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

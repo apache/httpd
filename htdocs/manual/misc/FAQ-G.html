@@ -1,0 +1,461 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.11 $ ($Date: 2003/01/13 03:29:32 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="7">
+        <strong>Authentication and Access Restrictions</strong> 
+
+        <ol>
+          <li><a href="#dnsauth">Why isn't restricting access by
+          host or domain name working correctly?</a></li>
+
+          <li><a href="#user-authentication">How do I set up Apache
+          to require a username and password to access certain
+          documents?</a></li>
+
+          <li><a href="#remote-auth-only">How do I set up Apache to
+          allow access to certain documents only if a site is
+          either a local site <em>or</em> the user supplies a
+          password and username?</a></li>
+
+          <li><a href="#authauthoritative">Why does my
+          authentication give me a server error?</a></li>
+
+          <li><a href="#auth-on-same-machine">Do I have to keep the
+          (mSQL) authentication information on the same
+          machine?</a></li>
+
+          <li><a href="#msql-slow">Why is my mSQL authentication
+          terribly slow?</a></li>
+
+          <li><a href="#passwdauth">Can I use my
+          <samp>/etc/passwd</samp> file for Web page
+          authentication?</a></li>
+
+          <li><a href="#prompted-twice">Why does Apache ask for my
+          password twice before serving a file?</a></li>
+
+          <li><a href="#image-theft">How can I prevent people from
+          "stealing" the images from my web site?</a></li>
+
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>G. Authentication and Access Restrictions</h3>
+
+    <ol>
+      <li>
+        <a id="dnsauth" name="dnsauth"><strong>Why isn't
+        restricting access by host or domain name working
+        correctly?</strong></a> 
+
+        <p>Two of the most common causes of this are:</p>
+
+        <ol>
+          <li><strong>An error, inconsistency, or unexpected
+          mapping in the DNS registration</strong><br />
+           This happens frequently: your configuration restricts
+          access to <samp>Host.FooBar.Com</samp>, but you can't get
+          in from that host. The usual reason for this is that
+          <samp>Host.FooBar.Com</samp> is actually an alias for
+          another name, and when Apache performs the
+          address-to-name lookup it's getting the <em>real</em>
+          name, not <samp>Host.FooBar.Com</samp>. You can verify
+          this by checking the reverse lookup yourself. The easiest
+          way to work around it is to specify the correct host name
+          in your configuration.</li>
+
+          <li>
+            <strong>Inadequate checking and verification in your
+            configuration of Apache</strong><br />
+             If you intend to perform access checking and
+            restriction based upon the client's host or domain
+            name, you really need to configure Apache to
+            double-check the origin information it's supplied. You
+            do this by adding the <samp>-DMAXIMUM_DNS</samp> clause
+            to the <samp>EXTRA_CFLAGS</samp> definition in your
+            <samp>Configuration</samp> file. For example: 
+
+            <dl>
+              <dd><code>EXTRA_CFLAGS=-DMAXIMUM_DNS</code></dd>
+            </dl>
+
+            <p>This will cause Apache to be very paranoid about
+            making sure a particular host address is
+            <em>really</em> assigned to the name it claims to be.
+            Note that this <em>can</em> incur a significant
+            performance penalty, however, because of all the name
+            resolution requests being sent to a nameserver.</p>
+          </li>
+        </ol>
+        <hr />
+      </li>
+
+      <li>
+        <a id="user-authentication"
+        name="user-authentication"><strong>How do I set up Apache
+        to require a username and password to access certain
+        documents?</strong></a> 
+
+        <p>There are several ways to do this; some of the more
+        popular ones are to use the <a
+        href="../mod/mod_auth.html">mod_auth</a>, <a
+        href="../mod/mod_auth_db.html">mod_auth_db</a>, or <a
+        href="../mod/mod_auth_dbm.html">mod_auth_dbm</a>
+        modules.</p>
+
+        <p>For an explanation on how to implement these
+        restrictions, see <a
+        href="http://www.apacheweek.com/"><cite>Apache
+        Week</cite></a>'s articles on <a
+        href="http://www.apacheweek.com/features/userauth"><cite>Using
+        User Authentication</cite></a> or <a
+        href="http://www.apacheweek.com/features/dbmauth"><cite>DBM
+        User Authentication</cite></a>, or see the <a
+        href="../howto/auth.html">authentication tutorial</a> in the
+        Apache documentation.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="remote-auth-only"
+        name="remote-auth-only"><strong>How do I set up Apache to
+        allow access to certain documents only if a site is either
+        a local site <em>or</em> the user supplies a password and
+        username?</strong></a> 
+
+        <p>Use the <a href="../mod/core.html#satisfy">Satisfy</a>
+        directive, in particular the <code>Satisfy Any</code>
+        directive, to require that only one of the access
+        restrictions be met. For example, adding the following
+        configuration to a <samp>.htaccess</samp> or server
+        configuration file would restrict access to people who
+        either are accessing the site from a host under domain.com
+        or who can supply a valid username and password:</p>
+
+        <dl>
+          <dd><code>Deny from all<br />
+           Allow from .domain.com<br />
+           AuthType Basic<br />
+           AuthUserFile /usr/local/apache/conf/htpasswd.users<br />
+           AuthName "special directory"<br />
+           Require valid-user<br />
+           Satisfy any</code></dd>
+        </dl>
+
+        <p>See the <a href="#user-authentication">user
+        authentication</a> question and the <a
+        href="../mod/mod_access.html">mod_access</a> module for
+        details on how the above directives work.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="authauthoritative"
+        name="authauthoritative"><strong>Why does my authentication
+        give me a server error?</strong></a> 
+
+        <p>Under normal circumstances, the Apache access control
+        modules will pass unrecognized user IDs on to the next
+        access control module in line. Only if the user ID is
+        recognized and the password is validated (or not) will it
+        give the usual success or "authentication failed"
+        messages.</p>
+
+        <p>However, if the last access module in line 'declines'
+        the validation request (because it has never heard of the
+        user ID or because it is not configured), the
+        <samp>http_request</samp> handler will give one of the
+        following, confusing, errors:</p>
+
+        <ul>
+          <li><samp>check access</samp></li>
+
+          <li><samp>check user. No user file?</samp></li>
+
+          <li><samp>check access. No groups file?</samp></li>
+        </ul>
+
+        <p>This does <em>not</em> mean that you have to add an
+        '<samp>AuthUserFile&nbsp;/dev/null</samp>' line as some
+        magazines suggest!</p>
+
+        <p>The solution is to ensure that at least the last module
+        is authoritative and <strong>CONFIGURED</strong>. By
+        default, <samp>mod_auth</samp> is authoritative and will
+        give an OK/Denied, but only if it is configured with the
+        proper <samp>AuthUserFile</samp>. Likewise, if a valid
+        group is required. (Remember that the modules are processed
+        in the reverse order from that in which they appear in your
+        compile-time <samp>Configuration</samp> file.)</p>
+
+        <p>A typical situation for this error is when you are using
+        the <samp>mod_auth_dbm</samp>, <samp>mod_auth_msql</samp>,
+        <samp>mod_auth_mysql</samp>, <samp>mod_auth_anon</samp> or
+        <samp>mod_auth_cookie</samp> modules on their own. These
+        are by default <strong>not</strong> authoritative, and this
+        will pass the buck on to the (non-existent) next
+        authentication module when the user ID is not in their
+        respective database. Just add the appropriate
+        '<samp><em>XXX</em>Authoritative yes</samp>' line to the
+        configuration.</p>
+
+        <p>In general it is a good idea (though not terribly
+        efficient) to have the file-based <samp>mod_auth</samp> a
+        module of last resort. This allows you to access the web
+        server with a few special passwords even if the databases
+        are down or corrupted. This does cost a file
+        open/seek/close for each request in a protected area.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="auth-on-same-machine"
+        name="auth-on-same-machine"><strong>Do I have to keep the
+        (mSQL) authentication information on the same
+        machine?</strong></a> 
+
+        <p>Some organizations feel very strongly about keeping the
+        authentication information on a different machine than the
+        webserver. With the <samp>mod_auth_msql</samp>,
+        <samp>mod_auth_mysql</samp>, and other SQL modules
+        connecting to (R)DBMses this is quite possible. Just
+        configure an explicit host to contact.</p>
+
+        <p>Be aware that with mSQL and Oracle, opening and closing
+        these database connections is very expensive and time
+        consuming. You might want to look at the code in the
+        <samp>auth_*</samp> modules and play with the compile time
+        flags to alleviate this somewhat, if your RDBMS licences
+        allow for it.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="msql-slow" name="msql-slow"><strong>Why is my mSQL
+        authentication terribly slow?</strong></a> 
+
+        <p>You have probably configured the Host by specifying a
+        FQHN, and thus the <samp>libmsql</samp> will use a full
+        blown TCP/IP socket to talk to the database, rather than a
+        fast internal device. The <samp>libmsql</samp>, the mSQL
+        FAQ, and the <samp>mod_auth_msql</samp> documentation warn
+        you about this. If you have to use different hosts, check
+        out the <samp>mod_auth_msql</samp> code for some compile
+        time flags which might - or might not - suit you.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="passwdauth" name="passwdauth"><strong>Can I use my
+        <samp>/etc/passwd</samp> file for Web page
+        authentication?</strong></a> 
+
+        <p>Yes, you can - but it's a <strong>very bad
+        idea</strong>. Here are some of the reasons:</p>
+
+        <ul>
+          <li>The Web technology provides no governors on how often
+          or how rapidly password (authentication failure) retries
+          can be made. That means that someone can hammer away at
+          your system's <samp>root</samp> password using the Web,
+          using a dictionary or similar mass attack, just as fast
+          as the wire and your server can handle the requests. Most
+          operating systems these days include attack detection
+          (such as <em>n</em> failed passwords for the same account
+          within <em>m</em> seconds) and evasion (breaking the
+          connection, disabling the account under attack, disabling
+          <em>all</em> logins from that source, <em>et
+          cetera</em>), but the Web does not.</li>
+
+          <li>An account under attack isn't notified (unless the
+          server is heavily modified); there's no "You have 19483
+          login failures" message when the legitimate owner logs
+          in.</li>
+
+          <li>Without an exhaustive and error-prone examination of
+          the server logs, you can't tell whether an account has
+          been compromised. Detecting that an attack has occurred,
+          or is in progress, is fairly obvious, though -
+          <em>if</em> you look at the logs.</li>
+
+          <li>Web authentication passwords (at least for Basic
+          authentication) generally fly across the wire, and
+          through intermediate proxy systems, in what amounts to
+          plain text. "O'er the net we go/Caching all the way;/O
+          what fun it is to surf/Giving my password away!"</li>
+
+          <li>Since HTTP is stateless, information about the
+          authentication is transmitted <em>each and every
+          time</em> a request is made to the server. Essentially,
+          the client caches it after the first successful access,
+          and transmits it without asking for all subsequent
+          requests to the same server.</li>
+
+          <li>It's relatively trivial for someone on your system to
+          put up a page that will steal the cached password from a
+          client's cache without them knowing. Can you say
+          "password grabber"?</li>
+        </ul>
+
+        <p>If you still want to do this in light of the above
+        disadvantages, the method is left as an exercise for the
+        reader. It'll void your Apache warranty, though, and you'll
+        lose all accumulated UNIX guru points.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="prompted-twice" name="prompted-twice"><strong>Why
+        does Apache ask for my password twice before serving a
+        file?</strong></a> 
+
+        <p>If the hostname under which you are accessing the server
+        is different than the hostname specified in the <a
+        href="../mod/core.html#servername"><code>ServerName</code></a>
+        directive, then depending on the setting of the <a
+        href="../mod/core.html#usecanonicalname"><code>UseCanonicalName</code></a>
+        directive, Apache will redirect you to a new hostname when
+        constructing self-referential URLs. This happens, for
+        example, in the case where you request a directory without
+        including the trailing slash.</p>
+
+        <p>When this happens, Apache will ask for authentication
+        once under the original hostname, perform the redirect, and
+        then ask again under the new hostname. For security
+        reasons, the browser must prompt again for the password
+        when the host name changes.</p>
+
+        <p>To eliminate this problem you should</p>
+
+        <ol>
+          <li>Always use the trailing slash when requesting
+          directories;</li>
+
+          <li>Change the <code>ServerName</code> to match the name
+          you are using in the URL; and/or</li>
+
+          <li>Set <code>UseCanonicalName off</code>.</li>
+        </ol>
+        <hr />
+      </li>
+
+      <li>
+        <a id="image-theft" name="image-theft"><strong>How can I prevent
+        people from "stealing" the images from my web site?</strong></a> 
+
+        <p>The goal here is to prevent people from inlining your images
+        directly from their web site, but accessing them only if they
+        appear inline in your pages.<p>
+
+        <p>This can be accomplished with a combination of SetEnvIf and
+        the Deny and Allow directives. However, it is important to 
+        understand that any access restriction based on the REFERER
+        header is intrinsically problematic due to the fact that 
+        browsers can send an incorrect REFERER, either because they 
+        want to circumvent your restriction or simply because they don't
+        send the right thing (or anything at all).</p>
+
+        <p>The following configuration will produce the desired effect
+        if the browser passes correct REFERER headers.</p>
+
+<pre>
+SetEnvIf REFERER "www\.mydomain\.com" linked_from_here
+SetEnvIf REFERER "^$" linked_from_here
+
+&lt;Directory /www/images&gt;
+    Order deny,allow
+    Deny from all
+    Allow from env=linked_from_here
+&lt;/Directory&gt;
+</pre>
+
+<p>Further examples can be found in the <a 
+href="../env.html#examples">Environment Variables</a> documentation.</p>
+
+        <hr />
+      </li>
+
+
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_so</title>
+
+  </head>
+  <!-- English Revision: 1.14 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_so モジュール</h1>
+
+    <p>このモジュールは、サーバの起動時や再起動時に実行コードと
+    モジュールをサーバに読み込む機能を提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a>
+    Base (Windows); Experimental (Unix)<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a> mod_so.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    so_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a>
+    Apache 1.3 以降で使用可能。</p>
+
+    <h2>概要</h2>
+
+    <p>これは実験的なモジュールです。
+    オペレーティングシステムによっては、サーバの再コンパイルをする代わりに、
+    <a href="../dso.html">Dynamic Shared Object</a>
+    (DSO) 機構により、実行時に Apache にモジュールを読み込む、ということを
+    行なうためにこのモジュールを使用することができます。</p>
+    <p>Unix 上では、読み込まれるコードは通常はシェアードオブジェクトファイル
+    (普通 <samp>.so</samp> という拡張子が付いています) からです。
+    一方、Windows 上ではこのモジュールは <samp>DLL</samp>
+    ファイルを読み込みます。このモジュールは
+    Apache 1.3 以降のみで使用可能です。</p>
+    <p>以前のリリースでは、このモジュールの機能は Unix では mod_dld、
+    Windows では mod_dll により提供されていました。Windows では、
+    mod_dll は 1.3b1 から 1.3b5 までのベータリリースで使用されていました。
+    mod_so はすべてのオペレーティングシステム用に、
+    この二つのモジュールを一つのモジュールにまとめたものです。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#loadfile">LoadFile</a></li>
+
+      <li><a href="#loadmodule">LoadModule</a></li>
+    </ul>
+
+    <h2><a id="creating" name="creating">Windows 用の DLL
+    モジュールを作成する</a></h2>
+
+    <p>Apache のモジュール API は UNIX と Windows とで変更されていません。
+    多くのモジュールは全く変更なし、もしくは簡単な変更により Windows 
+    で実行できるようになります。ただし、それ以外の Windows には無い Unix
+    アーキテクチャーの機能に依存したモジュールは動作しません。</p>
+
+    <p>モジュールが実際に動作するときは、
+    二つの方法のどちらかでサーバに追加することができます。まず、Unix
+    と同様にサーバにコンパイルして組み込むことができます。Windows
+    用の Apache は Unix 用の Apache にある <code>Configure</code>
+    プログラムがありませんので、モジュールのソースファイルを
+    ApacheCore プロジェクトファイルに追加し、シンボルを
+    <code>os\win32\modules.c</code> ファイルに追加する必要があります。</p>
+
+    <p>二つ目はモジュールを DLL としてコンパイルする方法です。
+    DLL はシェアードライブラリで、実行時に
+    <code><a href="#loadmodule">LoadModule</a></code>
+    ディレクティブによりサーバに読み込むことができます。これらのモジュール
+    DLL は配布することが可能で、サーバを再コンパイルすることなく、Windows
+    用の Apache のすべてのインストールで実行することができます。</p>
+
+    <p>モジュール DLL を作成するためには、
+    モジュールの作成に小さな変更を行なう必要があります。
+    つまり、モジュールのレコードが DLL (これは後で作成されます。
+    以下を参照してください) からエクスポートされなければなりません。
+    これを行なうには、<code>MODULE_VAR_EXPORT</code> (Apache
+    のヘッダファイルで定義されています) をモジュールのモジュールレコード
+    定義の部分に追加してください。たとえば、モジュールに</p>
+<pre>
+    module foo_module;
+</pre>
+
+    <p>があるとすると、それを次のもので置き換えてください。</p>
+<pre>
+    module MODULE_VAR_EXPORT foo_module;
+</pre>
+
+    <p>もし Unix 上でこのモジュールを使用したくなっても、
+    変更無しで使い続けられるように、このマクロは Windows
+    上でのみ効力を持つということに注意してください。<code>.DEF</code>
+    ファイルの方を良く知っているという場合は、
+    代わりにそれを使ってモジュールレコードを
+    エクスポートすることもできます。</p>
+    <p>ここで、あなたのモジュールの DLL を作成してください。これを、
+    ApacheCore.dll シェアードライブラリがコンパイルされたときに作成された
+    ApacheCore.lib エクスポートライブラリとリンクしてください。この時に、
+    Apache のヘッダファイルが正しい位置にあるように、
+    コンパイラの設定を変える必要があるかもしれません。</p>
+
+    <p>これで DLL 版のモジュールが作成されているはずです。
+    さあ、サーバルートの <samp>modules</samp>
+    ディレクトリにモジュールを置いて、<code><a
+    href="#loadmodule">LoadModule</a></code>
+    ディレクティブを使って読み込んでください。</p>
+    <hr />
+
+    <h2><a id="loadfile" name="loadfile">LoadFile</a>
+    ディレクティブ</h2>
+
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> LoadFile
+    <em>filename</em> [<em>filename</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_so
+
+    <p>LoadFile ディレクティブは、サーバが起動されたときや再起動されたときに、
+    指定されたオブジェクトファイルやライブラリをリンクします。
+    これはモジュールが動作するために必要になるかもしれない追加の
+    コードを読み込むために使用されます。<em>Filename</em> は絶対パスか、<a
+    href="core.html#serverroot">ServerRoot</a> からの相対パスです。</p>
+
+    <p>例:</p>
+    <code>LoadFile libexec/libxmlparse.so</code>
+
+    <hr />
+
+    <h2><a id="loadmodule" name="loadmodule">LoadModule</a>
+    ディレクティブ</h2>
+
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> LoadModule <em>module
+    filename</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>サーバ設定ファイル<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_so
+
+    <p>LoadModule ディレクティブは <em>filename</em>
+    というオブジェクトファイルおよびライブラリをリンクし、<em>module</em>
+    という名前のモジュールの構造をアクティブなモジュールのリストに追加します。
+    <em>Module</em> はファイル中の <code>module</code>
+    型の外部変数の名前で、モジュールのドキュメントに
+    <a href="module-dict.html#moduleidentifier"
+    >モジュール識別子</a>として書かれているものです。例
+    (Unix と Apache 1.3.15 以降の Windows):</p>
+
+    <blockquote>
+      <code>LoadModule status_module modules/mod_status.so</code>
+    </blockquote>
+
+    <p>例 (Apache 1.3.15 以前の
+    Windows, サードパーティモジュールの一部):</p>
+
+    <blockquote>
+      <code>LoadModule foo_module modules/ApacheModuleFoo.dll<br />
+      </code>
+    </blockquote>
+
+    <p><strong>Apache 1.3.15 の時点で Apache Win32 バイナリ配布に付属している
+    すべてのモジュールの名前が変更されたことに注意してください</strong>。
+    </p>
+
+    <p>Win32 Apache モジュールはしばしば古い形式の名前で配布されることがあり、
+    libfoo.dll のような名前で配布されたりすることさえあります。
+    モジュールの名前に関係なく、LoadModule
+    ディレクティブは正確なファイル名を要求します。
+    ファイル名の拡張子に関しては何の仮定も行ないません。</p>
+    <!--#include virtual="footer.html" -->
+
+    <p><strong>参照</strong>: <a
+    href="core.html#addmodule">AddModule</a> と <a
+    href="core.html#clearmodulelist">ClearModuleList</a></p>
+
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Server Pool Management</title>
+
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <!-- English revision: 1.12 -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">予備サーバの管理</h1>
+    <hr />
+
+    <p>多くの人が &quot;MaxServers&quot;
+    に対して高すぎるまたは低すぎる値を設定し、
+    それを使い続けていたということがわかりました。
+    私達が採用しているモデルは、
+    なるべく fork を最小にし、プロセスが長く生存するような方法に
+    基づいたままですが、
+    以前の決まった数の持続的なプロセスを指定するという方法の代わりに、
+    「予備」となるプロセスの最大値と最小値をウェブマスターが
+    指定できるようにしました。つまり、親プロセスが数秒ごとに予備の
+    サーバの実際の数をチェックし、それに応じてサーバの数を調整します。
+    これにより、fork の数を最小限に抑えつつ、
+    サーバの数を比較的少ない状態に保つことができるはずです。</p>
+
+    <p>現在の StartServers は MinSpareServers という名前になり、
+    別個に、名前の通りの意味をもつ、StartServers パラメータが作成され、
+    MaxServers は MaxSpareServers という名前になりました (古い名前も
+    NCSA 1.4 からの互換性を保つためにまだ動作します)。
+    古い名前は一般に紛らわしすぎると考えられていました。</p>
+
+    <p>それぞれのデフォルトの値は以下のとおりです</p>
+<pre>
+MinSpareServers         5
+MaxSpareServers         10
+StartServers            5
+</pre>
+    <p>同時に許容される子プロセスの数はコンパイル時に制限される
+    絶対的な最大値 (デフォルトで 256 となっています) と
+    &quot;MaxClients&quot; ディレクティブにより定義されます。
+    MaxClients は最大でコンパイル時の制限値 (httpd.h で定義される
+    HARD_SERVER_LIMIT) まで調整できます。同時に 256
+    以上の子プロセスが必要な場合は HARD_SERVER_LIMIT と MaxClients
+    の両方を変更する必要があります。
+    </p>
+
+    <p>1.2 以前のバージョンでは HARD_SERVER_LIMIT のデフォルトは
+    150 になっています。</p>
+
+    <p>以下が当てはまらない場合は、
+    この値のどちらかを変更することは薦められません。</p>
+
+    <ol>
+      <li>より多くを扱うためのサーバのリソースが有ることが分かっている。
+      </li>
+
+      <li>マシンを他の目的にも使用するので Apache が使用する
+      メモリの量を制限しなくてはならない。</li>
+    </ol>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

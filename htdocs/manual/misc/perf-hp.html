@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Running a High-Performance Web Server on HPUX</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <a id="initial" name="initial">&nbsp;</a> 
+    <!--#include virtual="header.html" -->
+     
+
+    <h1 align="center">Running a High-Performance Web Server for
+    HPUX</h1>
+<pre>
+Date: Wed, 05 Nov 1997 16:59:34 -0800
+From: Rick Jones &lt;<a
+href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>&gt;
+Reply-To: raj@cup.hp.com
+Organization: Network Performance
+Subject: HP-UX tuning tips
+</pre>
+    Here are some tuning tips for HP-UX to add to the tuning page. 
+
+    <p>For HP-UX 9.X: Upgrade to 10.20<br />
+     For HP-UX 10.[00|01|10]: Upgrade to 10.20</p>
+
+    <p>For HP-UX 10.20:</p>
+
+    <p>Install the latest cumulative ARPA Transport Patch. This
+    will allow you to configure the size of the TCP connection
+    lookup hash table. The default is 256 buckets and must be set
+    to a power of two. This is accomplished with adb against the
+    *disc* image of the kernel. The variable name is tcp_hash_size.
+    Notice that it's critically important that you use "W" to write
+    a 32 bit quantity, not "w" to write a 16 bit value when
+    patching the disc image because the tcp_hash_size variable is a
+    32 bit quantity.</p>
+
+    <p>How to pick the value? Examine the output of <a
+    href="ftp://ftp.cup.hp.com/dist/networking/tools/connhist">ftp://ftp.cup.hp.com/dist/networking/tools/connhist</a>
+    and see how many total TCP connections exist on the system. You
+    probably want that number divided by the hash table size to be
+    reasonably small, say less than 10. Folks can look at HP's
+    SPECweb96 disclosures for some common settings. These can be
+    found at <a
+    href="http://www.specbench.org/">http://www.specbench.org/</a>.
+    If an HP-UX system was performing at 1000 SPECweb96 connections
+    per second, the TIME_WAIT time of 60 seconds would mean 60,000
+    TCP "connections" being tracked.</p>
+
+    <p>Folks can check their listen queue depths with <a
+    href="ftp://ftp.cup.hp.com/dist/networking/misc/listenq">ftp://ftp.cup.hp.com/dist/networking/misc/listenq</a>.</p>
+
+    <p>If folks are running Apache on a PA-8000 based system, they
+    should consider "chatr'ing" the Apache executable to have a
+    large page size. This would be "chatr +pi L &lt;BINARY&gt;."
+    The GID of the running executable must have MLOCK privileges.
+    Setprivgrp(1m) should be consulted for assigning MLOCK. The
+    change can be validated by running Glance and examining the
+    memory regions of the server(s) to make sure that they show a
+    non-trivial fraction of the text segment being locked.</p>
+
+    <p>If folks are running Apache on MP systems, they might
+    consider writing a small program that uses mpctl() to bind
+    processes to processors. A simple pid % numcpu algorithm is
+    probably sufficient. This might even go into the source
+    code.</p>
+
+    <p>If folks are concerned about the number of FIN_WAIT_2
+    connections, they can use nettune to shrink the value of
+    tcp_keepstart. However, they should be careful there -
+    certainly do not make it less than oh two to four minutes. If
+    tcp_hash_size has been set well, it is probably OK to let the
+    FIN_WAIT_2's take longer to timeout (perhaps even the default
+    two hours) - they will not on average have a big impact on
+    performance.</p>
+
+    <p>There are other things that could go into the code base, but
+    that might be left for another email. Feel free to drop me a
+    message if you or others are interested.</p>
+
+    <p>sincerely,</p>
+
+    <p>rick jones<br />
+     <a
+    href="http://www.cup.hp.com/netperf/NetperfPage.html">http://www.cup.hp.com/netperf/NetperfPage.html</a>
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

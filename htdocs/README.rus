@@ -1,0 +1,18 @@
+Apache test page, russian translation by Pavel Polischouk <pavelp@iil.intel.com>
+Different russian encodings provided:
+
+ Name		   iconv's codepage
+
++index.html.dos  - CP-866 aka ibm866; used by DOS and OS/2. 
+*index.html.iso  - ISO-8859-5
+*index.html.koi  - KOI8-R; used by UNIX flavours and Mac.
+ index.html.ucs2 - UCS-2 aka UNICODE aka UNICODEBIG aka UTF-16
+ index.html.ucs4 - UCS-4
+*index.html.utf8 - UTF-8
+*index.html.win  - CP-1251 aka windows-1251 aka MS-CYRILLIC; used by Windows
+
+* - supported by Netscape 4.72. 
++ - Netscape is supposed to support this encoding, but fails to 
+read this page on Linux. Should be OK on systems like DOS and OS/2 where this
+encoding is the default.
+Does anyone need the UCS-2 and UCS-4?

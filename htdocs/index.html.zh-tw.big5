@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>安裝 Apache 的測試網頁</title>
+ </head>
+ <!-- Background white, links blue (unvisited), navy (visited), red (active)-->
+ <body
+  bgcolor="#FFFFFF"
+  text="#000000"
+  link="#0000FF"
+  vlink="#000080"
+  alink="#FF0000"
+ >
+
+
+<p>
+如果你可以看見此頁，這表示你的 
+<a href="http://www.apache.org/foundation/preFAQ.html">Apache Web Server</a>
+已經安裝成功。
+你可以增加內容到這個目錄，或把這個網頁換掉。<p>
+
+<p><hr width="50%" size="8">
+
+<h2 align="CENTER">沒有看到你想看的網站嗎 ?</h2>
+
+<p>
+這個網頁之所以會在這裏，那是因為網站管理者已經更改這個網站的設定。
+若有問題, 請與 <strong>維護這個伺服器的人員聯絡</strong>。
+Apache 軟體基金會，也就是開發這套軟體的單位，與此網站並無任何關係，
+而且也無法幫你解決設定上的問題。
+
+<p><hr width="50%" size="8">
+
+<p>
+Apache 的
+<a href="manual/index.html">文件</a>
+已經包含在該版本中。
+
+<p>
+你可以在使用 Apache 的網站伺服器上，自由的使用下面之圖示，
+感謝您使用 Apache！
+<br><br>
+<div align="CENTER"><img src="apache_pb.gif" alt=""></div>
+
+</body>
+</html>

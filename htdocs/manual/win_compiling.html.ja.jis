@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Microsoft Windows での Apache のコンパイル</title>
+
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <!-- English revision: 1.16 -->
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Microsoft Windows での Apache のコンパイル</h1>
+
+    <p>Apache のコンパイルを始めるにあたって、多くの重要なポイントがあります。
+    始める前に、<a href="windows.html">Microsoft Windows での Apache
+    の使用</a>を見てください。</p>
+
+    <p>Apache をコンパイルするには Microsoft Visual C++ 5.0
+    または 6.0 が適切にインストールされていることが必要です。
+    ビルドはコマンドラインツール、または Visual Studio
+    環境で可能です。インストールの方法は、VC++
+    のマニュアルを参考にしてください。コマンドラインでのビルド
+    (例えば nmake の使用)では、コマンドラインツールの準備に Program
+    Files/DevStudio/VC/bin フォルダにある vcvars32.bat 及び Platform
+    SDK の setenv.bat のファイルが必要になるであろうことについて、
+    特に注意してください。Makefile.win や Visual Studio IDE の
+    InstallBin プロジェクトを使って Apache をインストールする場合は、
+    awk ユーティリティも必要になります。Visual Studio 7.0 (.net)
+    を使う場合は、Apache.dsw を読み込み .msproj
+    フォーマットに変換してください。プロジェクトファイル (.dsp)
+    に変更があった場合は Apache.dsw
+    を一から変換し直さなければなりません。</p>
+
+    <p>まず、IDE を使うつもりならパスが通り、DevStudio
+    環境が解釈できるところに awk.exe をインストールしてください。
+    Windows で利用可能な awk は様々なバージョンがあります。
+    一番インストールしやすいものは Brian Kernighan の <a
+    href="http://cm.bell-labs.com/cm/cs/who/bwk/"
+    >http://cm.bell-labs.com/cm/cs/who/bwk/</a> サイトから入手可能です。
+    このサイトから <a href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe"
+    >http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a>
+    をダウンロードした場合は、awk95.exe を awk.exe
+    という名前で保存しなければなりません。</p>
+
+    <p>Developer Studio IDE はツール (<u>T</u>) メニューのオプション
+    (<u>O</u>) 以下の、ディレクトリタブ (Developer Studio 7.0 では
+    Projects - VC++ Directories)
+    の実行可能ファイルにリストされた場所にある場合にのみ、awk.exe
+    を見つけられることに注意してください。必要に応じ、awk.exe
+    へのパスをこのリスト、システムの環境変数 PATH に追加してください。</p>
+
+    <p>それから、適切なディレクトリに Apache の配布を展開してください。
+    コマンドプロンプトを開き、Apache 配布サブディレクトリ
+    <code>src</code> に移動してください</p>
+
+    <p><code>Makefile.win</code> ファイルには Apache の makefile
+    の元となる指示が含まれています。WindowsNT で Apache
+    をコンパイルするには、単に以下のコマンドのうちの一つを使ってください</p>
+
+    <ul>
+      <li><code>nmake /f Makefile.win _apacher</code>
+      (リリースビルド)</li>
+
+      <li><code>nmake /f Makefile.win _apached</code>
+      (デバッグビルド)</li>
+    </ul>
+
+    <p>これらはどちらも Apache をコンパイルします。
+     後者では、出力されたファイルにデバッグ情報が含まれ、
+     バグを見つけたり問題を追跡したりしやすくなります。</p>
+
+    <p>もし、「...として認識されていません」
+    のようなエラーが出た場合はまず、vcvars32.bat を実行する必要があります。
+    以下のコマンドを入力してください</p>
+<pre>
+  &quot;c:\Program Files\DevStudio\VC\Bin\VCVARS32.bat&quot;
+</pre>
+
+    <p>(このコマンドは VC がインストールされたディレクトリに合わせて
+    調整する必要があります。)</p>
+
+    <p>Visual C++ 5.0 ユーザで、かつ、最近のプラットフォーム SDK
+    をインストールしている場合は、以下のコマンドを入力する必要があるでしょう
+    (Platform SDK アップデートがインストールされているディレクトリに合わせて
+    調整する必要があります)</p>
+<pre>
+  "c:\Program Files\Platform SDK\SETENV.BAT"
+</pre>
+
+    <p>それから、再び nmake コマンドを試してください。</p>
+
+    <p>サポートされたすべての mod_isapi 機能を有効にするには Windows
+    Platform SDK の更新が必要になることに<strong>注意してください</strong>。
+    Microsoft Visual C++ 5.0 とともに配布された SDK ファイルは古いために
+    使えません。
+    最近のアップデートがなされていない場合、Apache は MSVC++ 5.0 では、
+    mod_isapi 機能がいくつか使用不可になることを警告します。
+    アップデートに関しては <a
+    href="http://msdn.microsoft.com/platformsdk/"
+    >http://msdn.micro soft.com/platformsdk/</a> で探してください。</p>
+
+    <p>Apache は、VC++ の Visual Studio 開発環境を使ってコンパイル
+    することもできます。このプロセスを簡素化するために、Visual Studio
+    workspace (Apache.dsw) が <code>src</code> フォルダにおいて
+    提供されています。
+    この workspace は、完全な Apache のバイナリリリースに必要な .dsp
+    プロジェクトの全体のリストが書かれています。
+    また、それらが適切な順序でビルドされるようにするために、
+    プロジェクトの間の依存関係も含まれています。
+    InstallBin が、他のすべてのプロジェクトをビルドし、
+    コンパイルされたファイルを適切な位置にインストールする、
+    トップレベルのプロジェクトです。</p>
+
+    <p>これらの .dsp プロジェクトファイルは Visual C++ 6.0
+    のフォーマットで配布されます。Visual C++ 5.0(97) は
+    唯一の例外、デバッグシンボル用のフラグである /ZI
+    フラグを除いてこのフォーマットを認識します。
+    VC 5.0 では /Zi フラグがこれに相当します。
+    Visual Studio 5.0 (97) の .dsp ファイルをすぐに準備するには、
+    <code>src\helpers</code> フォルダにて配布されている perl
+    スクリプトを使うことができます</p>
+<pre>
+  cd src\helpers
+  cvstodsp5.pl
+</pre>
+
+    <p>このコマンドは、Perl インタプリタがインストールされていて、
+    .pl のファイルタイプが登録されていると仮定します。変換された .dsp
+    プロジェクトファイルのリストはそれらが変換されるにつれて表示されていきます。
+    改訂されたプロジェクトファイルを提供するパッチを寄与するときは、
+    Visual Studio6.0 フォーマットにプロジェクトを戻すスクリプト
+    dsp5tocvs.pl によってそれらを変換してください。</p>
+
+    <p>Apache.dsw 及び makefile.win によりビルドされるコアの .dsp
+    プロジェクトは以下の通りです</p>
+
+    <ul>
+      <li><code>os\win32\ApacheOS.dsp</code></li>
+      <li><code>os\win32\Win9xConHook.dsp</code></li>
+      <li><code>regex\regex.dsp</code></li>
+      <li><code>ap\ap.dsp</code></li>
+      <li><code>lib\expat-lite\xmltok.dsp</code></li>
+      <li><code>lib\expat-lite\xmlparse.dsp <em>xmltok が必要</em></code></li>
+      <li><code>lib\sdbm.dsp</code></li>
+      <li><code>main\gen_uri_delims.dsp</code></li>
+      <li><code>main\gen_test_char.dsp</code></li>
+      <li><code>ApacheCore.dsp <em>以上全てが必要</em></code></li>
+      <li><code>Apache.dsp <em>ApacheCore が必要</em></code></li>
+    </ul>
+
+    <p>さらに <code>os\win32</code> サブディレクトリには、
+       オプションのモジュールすべてのプロジェクトファイルが含まれます。
+       これらはすべて ApacheCore を必要とします。
+    </p>
+
+    <ul>
+      <li><code>os\win32\mod_auth_anon.dsp</code></li>
+      <li><code>os\win32\mod_auth_dbm.dsp <em>sdbm も必要</em></code></li>
+      <li><code>os\win32\mod_auth_digest.dsp</code></li>
+      <li><code>os\win32\mod_cern_meta.dsp</code></li>
+      <li><code>os\win32\mod_digest.dsp</code></li>
+      <li><code>os\win32\mod_expires.dsp</code></li>
+      <li><code>os\win32\mod_headers.dsp</code></li>
+      <li><code>os\win32\mod_info.dsp</code></li>
+      <li><code>os\win32\mod_mime_magic.dsp</code></li>
+      <li><code>os\win32\mod_proxy.dsp</code></li>
+      <li><code>os\win32\mod_rewrite.dsp</code></li>
+      <li><code>os\win32\mod_speling.dsp</code></li>
+      <li><code>os\win32\mod_status.dsp</code></li>
+      <li><code>os\win32\mod_unique_id.dsp</code></li>
+      <li><code>os\win32\mod_usertrack.dsp</code></li>
+      <li><code>os\win32\mod_vhost_alias.dsp</code></li>
+    </ul>
+
+    <p><code>support\</code> フォルダは、Apache
+    ランタイムの一部ではないけれども、パスワードとログファイルを
+    管理するために、管理者により使用される追加のプログラムの
+    プロジェクトファイルが含まれます。</p>
+
+    <ul>
+      <li><code>support\htdigest.dsp</code></li>
+      <li><code>support\htpasswd.dsp</code></li>
+      <li><code>support\logresolve.dsp</code></li>
+      <li><code>support\rotatelogs.dsp</code></li>
+    </ul>
+
+    <p>Apache がコンパイルできたらサーバルートディレクトリにインストール
+    する必要があります。デフォルトは現在のハードディスクのディレクトリ
+    <code>\Apache</code> です。</p>
+
+    <p>自動的に <code>c:\ServerRoot</code>
+    にファイルをインストールするには、以下の nmake
+    コマンド(上部参照)のどちらかを使ってください。</p>
+
+    <ul>
+      <li><code>nmake /f Makefile.win installr
+      INSTDIR=<em>c:\ServerRoot</em></code> (リリース版ビルド用)
+      </li>
+      <li><code>nmake /f Makefile.win installd
+      INSTDIR=<em>c:\ServerRoot</em></code> (デバッグ版ビルド用)</li>
+    </ul>
+
+    <p>INSTDIR への<em>c:\ServerRoot</em>
+    引数がインストールディレクトリを指定します (Apache を <samp>\Apache</samp>
+    にインストールする場合は省略可)。</p>
+
+    <p>これにより以下がインストールされます</p>
+
+    <ul>
+      <li><code><em>c:\ServerRoot</em>\Apache.exe</code> - Apache
+      プログラム</li>
+      <li><code><em>c:\ServerRoot</em>\ApacheCore.dll</code> -
+      Apache ランタイム [共有ライブラリ]</li>
+      <li><code><em>c:\ServerRoot</em>\Win9xConHook.dll</code> -
+      Win9x console fixups [共有ライブラリ]</li>
+      <li><code><em>c:\ServerRoot</em>\xmlparse.dll</code> - XML
+      パーサ [共有ライブラリ]</li>
+      <li><code><em>c:\ServerRoot</em>\xmltok.dll</code> - XML
+      トークンエンジン [共有ライブラリ]</li>
+      <li><code><em>c:\ServerRoot</em>\bin\*.exe</code> -
+      管理用プログラム</li>
+      <li><code><em>c:\ServerRoot</em>\cgi-bin</code> - CGI
+      スクリプトの例</li>
+      <li><code><em>c:\ServerRoot</em>\conf</code> - 設定ファイル
+      ディレクトリ</li>
+      <li><code><em>c:\ServerRoot</em>\icons</code> - FancyIndexing
+      用のアイコン</li>
+      <li><code><em>c:\ServerRoot</em>\include\*.h</code> - Apache
+      ヘッダファイル</li>
+      <li><code><em>c:\ServerRoot</em>\htdocs</code> - ようこそ、の
+      index.html ページ</li>
+      <li><code><em>c:\ServerRoot</em>\htdocs\manual</code> -
+      Apache ドキュメント</li>
+      <li><code><em>c:\ServerRoot</em>\lib</code> - 静的ライブラリ
+      </li>
+      <li><code><em>c:\ServerRoot</em>\libexec</code> - 動的ライブラリ
+      </li>
+      <li><code><em>c:\ServerRoot</em>\logs</code> - 空のログディレクトリ
+      </li>
+      <li><code><em>c:\ServerRoot</em>\modules\mod_*.dll</code> -
+      ロード可能な Apache モジュール</li>
+    </ul>
+
+    <p>もし nmake を持っていないか、違うディレクトリにインストール
+    したい場合は、必ず同様の命名体系を使ってください。</p>
+
+    <p>プロセスの簡素化のためすべてのプロジェクトの間の依存関係は
+    Microsoft Visual Studio workspace ファイルにおいて定義されています</p>
+<pre>
+   src/Apache.dsw
+</pre>
+
+    <p>これは、より低位のソースは Visual Studio
+    内で再ビルドされることを保証します。最上位のプロジェクトは InstallBin
+    であり、Makefile.win を実行してコンパイルされた実行ファイルと dll
+    を移動します。InstallBin の、「設定」から、「一般」タブにある、
+    「コマンドライン」エントリで INSTDIR= を変更することができます。
+    InstallBin.dsp プロジェクト内のデフォルトは、src ツリーから
+    1 階層上 (..) です。InstallBin 設定を修正し、
+    INSTDIR= を目的のディレクトリへと編集してください。
+    </p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
