@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Add a missing manualdir entry in the Debian config.layout.
+     [Thom May <thom@planetarytramp.net>]
+
   *) Stop installing libtool for APR and tell APR where it should place
      its copy of libtool (via our installbuildpath layout variable).
      [Justin Erenkrantz]
