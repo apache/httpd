@@ -271,7 +271,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
 }
 #endif /* AP_MPM_WANT_PROCESS_CHILD_STATUS */
 
-#if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
+#if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF) && !defined(WIN32)
 void ap_sock_disable_nagle(apr_socket_t *s)
 {
     /* The Nagle algorithm says that we should delay sending partial
@@ -485,8 +485,8 @@ void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
 #ifdef AP_MPM_WANT_SET_PIDFILE
 const char *ap_pid_fname = NULL;
 
-AP_DECLARE(const char *)ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
-					    const char *arg)
+const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
+                               const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -532,8 +532,8 @@ AP_DECLARE(const char *) ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_MAX_REQUESTS
 int ap_max_requests_per_child = 0;
-AP_DECLARE(const char *) ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
-						 const char *arg)
+const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
+                                    const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -548,8 +548,8 @@ AP_DECLARE(const char *) ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
 char ap_coredump_dir[MAX_STRING_LEN];
-AP_DECLARE(const char *) ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
-						const char *arg)
+const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
+                                   const char *arg)
 {
     apr_finfo_t finfo;
     const char *fname;

@@ -409,6 +409,10 @@ SOURCE=.\include\ap_mpm.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\mpm_common.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\listen.c
 # End Source File
 # Begin Source File

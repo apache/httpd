@@ -225,27 +225,27 @@ AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num);
  * process handles before dying off
  */
 #ifdef AP_MPM_WANT_SET_MAX_REQUESTS
-extern int               ap_max_requests_per_child;
-AP_DECLARE(const  char *) ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
-						  const char *arg);
+extern int ap_max_requests_per_child;
+const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
+                                    const char *arg);
 #endif
 
 /**
  * The filename used to store the process id.
  */
 #ifdef AP_MPM_WANT_SET_PIDFILE
-extern const char        *ap_pid_fname;
-AP_DECLARE(const char *) ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
-					    const char *arg);
+extern const char *ap_pid_fname;
+const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
+                               const char *arg);
 #endif
 
 /**
  * The name of lockfile used when Apache needs to lock the accept() call.
  */
 #ifdef AP_MPM_WANT_SET_LOCKFILE
-extern const char        *ap_lock_fname;
-AP_DECLARE(const char *) ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
-					     const char *arg);
+extern const char *ap_lock_fname;
+const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
+                                const char *arg);
 #endif
 
 /**
@@ -253,16 +253,16 @@ AP_DECLARE(const char *) ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
  */
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 extern apr_lockmech_e_np accept_lock_mech;
-AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd, void *dummy,
-						     const char *arg);
+const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd, void *dummy,
+                                        const char *arg);
 #endif
 
 /*
  * Set the scorboard file.
  */
 #ifdef AP_MPM_WANT_SET_SCOREBOARD
-AP_DECLARE(const char *) ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
-					       const char *arg);
+const char *ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
+                                  const char *arg);
 #endif
 
 /*
@@ -270,8 +270,8 @@ AP_DECLARE(const char *) ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
  */
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
 extern char ap_coredump_dir[MAX_STRING_LEN];
-AP_DECLARE(const char *) ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
-						const char *arg);
+const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
+                                   const char *arg);
 #endif
 
 #ifdef __cplusplus
