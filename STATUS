@@ -187,6 +187,15 @@ Open issues:
 	the few hours I did while writing apapi_vformatter is
 	making me puke.  So many extra characters, so much wasted
 	screen width, and keystrokes. -Dean
+      -1: Jim. We should make some sort of logical effort to
+        keep things straight and organized. Taken to it's logical
+	conclusion, this argument could be used to keep all variable
+	and function names to 6 chars or less to cut down on all
+	that nasty typing. So instead of something like
+	'lingering_close', we would use something like 'lcs' :)
+	We should make some effort to make our code reader and
+	maintainer friendly, because we aren't, and won't be,
+	the only one's to maintain this.
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
