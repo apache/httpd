@@ -120,7 +120,7 @@ href="./">Version 2.0</a></div>
                 Sections</a></td></tr>
               
                 <tr><td><a href="content-negotiation.html">Content
-                negotiation</a> </td></tr>
+                Negotiation</a> </td></tr>
               
                 <tr><td><a href="dso.html">Dynamic Shared 
                 Objects (DSO)</a> </td></tr>
@@ -135,10 +135,10 @@ href="./">Version 2.0</a></div>
                 Filesystem</a> </td></tr>
               
                 <tr><td><a href="misc/perf-tuning.html">Performance 
-                hints</a> </td></tr>
+                Tuning</a> </td></tr>
               
                 <tr><td><a href="misc/security_tips.html">Security
-                tips</a> </td></tr>
+                Tips</a> </td></tr>
               
                 <tr><td><a href="server-wide.html">Server-Wide
                 Configuration</a> </td></tr>
@@ -174,7 +174,7 @@ href="./">Version 2.0</a></div>
                 <tr><td><a href="howto/ssi.html">Server Side
                 Includes (SSI)</a> </td></tr>
               
-                <tr><td><a href="howto/public_html.html">User web
+                <tr><td><a href="howto/public_html.html">Per-user web
                 directories (<code>public_html</code>)</a> </td></tr>
               
 
@@ -199,7 +199,7 @@ href="./">Version 2.0</a></div>
                 <tr><td><a href="faq/">Frequently Asked Questions</a>
                 </td></tr>
               
-                <tr><td><a href="sitemap.html">SiteMap</a>
+                <tr><td><a href="sitemap.html">Sitemap</a>
                 </td></tr>
               
                 <tr><td><a href="misc/tutorials.html">Tutorials</a>

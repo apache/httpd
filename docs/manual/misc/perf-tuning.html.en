@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache Performance Notes - Apache HTTP Server</title>
+<title>Apache Performance Tuning - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache Performance Notes</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache Performance Tuning</h1>
 
     <div class="warning"><h3>Warning:</h3>
       <p>This document has not been fully updated
