@@ -2148,7 +2148,7 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
     request_rec *r = parm->r;
     ap_pool_t *child_context = cntxt;
     ap_procattr_t *procattr;
-    ap_proc_t *procnew = NULL;
+    ap_proc_t *procnew;
     ap_iol *iol;
 
     env = ap_create_environment(child_context, r->subprocess_env);
@@ -2172,6 +2172,7 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
             close(STDERR_FILENO);
         }
 
+        procnew = ap_pcalloc(child_context, sizeof(*procnew));
         rc = ap_create_process(procnew, compr[parm->method].argv[0],
                                new_argv, env, procattr, child_context);
 
