@@ -58,7 +58,7 @@ performance</description>
     these statistics does not exist within standard Apache.</p>
 </summary>
 
-<section>
+<section id="enable">
     <title>Enabling Status Support</title>
 
     <p>To enable status reports only for browsers from the foo.com
@@ -84,7 +84,7 @@ performance</description>
     <a href="core.html#servertype">inetd</a> mode.</p></note>
 </section>
 
-<section>
+<section id="autoupdate">
 
     <title>Automatic Updates</title>
     <p>You can get the status page to update itself automatically if
@@ -94,7 +94,7 @@ performance</description>
 
 </section>
 
-<section>
+<section id="machinereadable">
 
     <title>Machine Readable Status File</title>
     <p>A machine-readable version of the status file is available by

@@ -22,7 +22,7 @@ identifier for each request</description>
     document.</p>
 </summary>
 
-<section>
+<section id="theory">
     <title>Theory</title>
 
     <p>First a brief recap of how the Apache server works on Unix
