@@ -2060,6 +2060,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     int replaced;
     int src_parent_was_writable = 0;
     int dst_parent_was_writable = 0;
+    int resource_state;
 
     /* Ask repository module to resolve the resource */
     result = dav_get_resource(r, &resource);
@@ -2329,6 +2330,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
     /* New resource will be same kind as source */
     resnew->collection = resource->collection;
 
+    resource_state = dav_get_resource_state(lookup.rnew, resnew);
+
     /* If target exists, remove it first (we know Ovewrite must be TRUE).
      * Then try to copy/move the resource.
      */
@@ -2392,7 +2395,6 @@ static int dav_method_copymove(request_rec *r, int is_move)
 
     /* propagate any indirect locks at the target */
     if (lockdb != NULL) {
-	int resource_state = dav_get_resource_state(lookup.rnew, resnew);
 
 	/* notify lock system that we have created/replaced a resource */
 	err = dav_notify_created(r, lockdb, resnew, resource_state, depth);
