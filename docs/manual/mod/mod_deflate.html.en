@@ -34,6 +34,7 @@ client</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#compressionlevel">CompressionLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
@@ -211,6 +212,23 @@ client</td></tr>
     <div class="example"><h3>Example</h3><p><code>
       Header set Vary *
     </code></p></div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CompressionLevel" id="CompressionLevel">CompressionLevel</a> <a name="compressionlevel" id="compressionlevel">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much compression do we apply to the output</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CompressionLevel<var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Zlib's default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+</table>
+    <p>The <code class="directive">CompressionLevel</code> directive specifies
+        what level of compression should be used, the higher the value, 
+        the better the compression, but the more CPU time is required to
+        achieve this.</p>
+    <p>The value must between 1 (less compression) and 9 (more compression).</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2>

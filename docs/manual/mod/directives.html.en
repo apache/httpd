@@ -134,6 +134,7 @@
 <li><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
 <li><a href="perchild.html#childperuserid">ChildPerUserID</a></li>
+<li><a href="mod_deflate.html#compressionlevel">CompressionLevel</a></li>
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
