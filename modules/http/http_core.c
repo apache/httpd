@@ -2547,11 +2547,10 @@ static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec,
         if (bytes_written < len) {
             /* Skip over the vectors that have already been written */
             apr_size_t cnt = vec[i].iov_len;
-            while (n >= cnt) {
+            while (n >= cnt && i + 1 < nvec) {
                 i++;
                 cnt += vec[i].iov_len;
             }
-
             if (n < cnt) {
                 /* Handle partial write of vec i */
                 vec[i].iov_base = (char *) vec[i].iov_base + 
@@ -3383,6 +3382,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
             rv = writev_it_all(r->connection->client->bsock, 
                                vec, nvec, 
                                nbytes, &bytes_sent);
+            nbytes = 0; /* in case more points to another brigade */
         }
 
         ap_brigade_destroy(b);
