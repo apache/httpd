@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/25 16:19:09 $]
+Last modified at [$Date: 2004/05/25 16:31:21 $]
 
 Release:
 
@@ -75,13 +75,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) Allow LimitRequestBody to be reset to unlimited. PR 29106
          server/core.c: r1.279
        +1: nd
-
-    *) Fix a segfault when requests for shared memory fails and returns
-       NULL. Fix a segfault caused by a lack of bounds checking on the
-       cache.
-         modules/experimental/util_ldap_cache_mgr.c r1.16
-       PR 24801
-       +1: minfrin, bnicholes, jim
 
     *) Small fix to allow reverse proxying to an ftp server. Previously
        an attempt to do this would try and connect to 0.0.0.0, regardless
