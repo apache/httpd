@@ -43,7 +43,7 @@ AllowOverride None
 Options None
 </Directory>
 
-# Allow server status reports, with the URL of http://servername/status
+# Allow server status reports, with the URL of http://servername/server-status
 # Change the ".your_domain.com" to match your domain to enable.
 
 #<Location /server-status>
