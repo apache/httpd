@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/29 03:47:16 $]
+Last modified at [$Date: 2004/03/29 04:00:16 $]
 
 Release:
 
@@ -303,6 +303,9 @@ CURRENT RELEASE NOTES:
       get feedback and then commit to APACHE_2_0_BRANCH.
 
 CURRENT VOTES:
+
+    * Backport mod_log_forensic.
+      +1: ben
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
