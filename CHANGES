@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_file_cache: fixed a segfault when multiple MMapFile directives
+     were used.  PR 16313.  [Cliff Woolley]
+
   *) Move RFC 1413 ident requests from core to new module mod_ident.
      [André Malo]
 
