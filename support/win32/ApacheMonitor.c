@@ -940,7 +940,8 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
             hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
             g_hwndStdoutList = GetDlgItem(hDlg, IDL_STDOUT);
-            hStatusBar = CreateStatusWindow(SBT_TOOLTIPS | WS_CHILD | WS_VISIBLE,
+            hStatusBar = CreateStatusWindow(0x0800 /* SBT_TOOLTIPS */
+                                          | WS_CHILD | WS_VISIBLE,
                                             "", hDlg, IDC_STATBAR);            
             if (GetApacheServicesStatus())
             {
