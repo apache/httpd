@@ -1309,10 +1309,16 @@ AP_DECLARE(int) ap_is_url(const char *u);
 
 /**
  * Unescape a URL
- * @param url The url to unescapte
+ * @param url The url to unescape
  * @return 0 on success, non-zero otherwise
  */
 AP_DECLARE(int) ap_unescape_url(char *url);
+/**
+ * Unescape a URL, but leaving %2f (slashes) escaped
+ * @param url The url to unescape
+ * @return 0 on success, non-zero otherwise
+ */
+AP_DECLARE(int) ap_unescape_url_keep2f(char *url);
 /**
  * Convert all double slashes to single slashes
  * @param name The string to convert
