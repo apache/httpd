@@ -54,11 +54,6 @@ Changes with Apache 2.1.0-dev
   *) Enable the option to support anonymous shared memory in mod_ldap.
      This makes the cache work on Linux again. [Graham Leggett]
 
-  *) Small fix to allow reverse proxying to an ftp server. Previously
-     an attempt to do this would try and connect to 0.0.0.0, regardless
-     of the server specified. PR 24922
-     [Pascal Terjan <pterjan@linuxfr.org>]
-
   *) External rewrite map responses are no longer limited to 2048
      bytes.  [André Malo]
 
@@ -390,6 +385,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Small fix to allow reverse proxying to an ftp server. Previously
+     an attempt to do this would try and connect to 0.0.0.0, regardless
+     of the server specified. PR 24922
+     [Pascal Terjan <pterjan@linuxfr.org>]
 
   *) Add the NOTICE file to the rpm spec file in compliance with the
      Apache v2.0 license. [Graham Leggett]
