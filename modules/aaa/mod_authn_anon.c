@@ -119,6 +119,7 @@ typedef struct {
     int logemail;
     int verifyemail;
     int mustemail;
+    int anyuserid;
 } authn_anon_config_rec;
 
 static void *create_authn_anon_dir_config(apr_pool_t *p, char *d)
@@ -129,6 +130,7 @@ static void *create_authn_anon_dir_config(apr_pool_t *p, char *d)
     conf->users = NULL;
 
     conf->nouserid = 0;
+    conf->anyuserid = 0;
     conf->logemail = 1;
     conf->verifyemail = 0;
     conf->mustemail = 1;
@@ -146,10 +148,17 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
     }
 
     /* squeeze in a record */
-    first = conf->users;
-    conf->users = apr_palloc(cmd->pool, sizeof(*conf->users));
-    conf->users->user = apr_pstrdup(cmd->pool, arg);
-    conf->users->next = first;
+    if (!conf->anyuserid) {
+        if (!strcmp(arg, "*")) {
+            conf->anyuserid = 1;
+        }
+        else {
+            first = conf->users;
+            conf->users = apr_palloc(cmd->pool, sizeof(*conf->users));
+            conf->users->user = apr_pstrdup(cmd->pool, arg);
+            conf->users->next = first;
+        }
+    }
 
     return NULL;
 }
@@ -193,6 +202,9 @@ static authn_status check_anonymous(request_rec *r, const char *user,
         if (conf->nouserid) {
             res = AUTH_USER_FOUND;
         }
+    }
+    else if (conf->anyuserid) {
+        res = AUTH_USER_FOUND;
     }
     else {
         anon_auth_user *p = conf->users;
