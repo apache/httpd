@@ -1058,11 +1058,12 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         }
         
         argc += 1;
-        start_argv = malloc(argc * sizeof(const char **));
+        start_argv = malloc((argc + 1) * sizeof(const char **));
         start_argv[0] = mpm_service_name;
         if (argc > 1)
             memcpy(start_argv + 1, argv, (argc - 1) * sizeof(const char **));
-        
+        start_argv[argc] = NULL;
+
         rv = APR_EINIT;
         if (StartService(schService, argc, start_argv)
             && signal_service_transition(schService, 0, /* test only */
