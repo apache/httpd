@@ -1129,7 +1129,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
         if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
             memcpy((char *) finfo, (const char *) &rr->finfo,
-                   sizeof(struct stat));
+                   sizeof(rr->finfo));
             ap_destroy_sub_req(rr);
             return 0;
         }
