@@ -52,8 +52,10 @@ added.</p>
 <H2>Directives</H2>
 
 <UL>
+<li><a href="#cookiedomain">CookieDomain</a></li>
 <LI><A HREF="#cookieexpires">CookieExpires</A>
 <LI><A HREF="#cookiename">CookieName</A>
+<li><a href="#cookiestyle">CookieStyle</a></li>
 <LI><A HREF="#cookietracking">CookieTracking</A>
 </UL>
 
@@ -63,7 +65,7 @@ added.</p>
 own logging, using the <TT>CookieLog</TT> directive. In this release,
 this module does no logging at all. Instead, a configurable log
 format file should be used to log user click-streams. This is possible
-because the logging module allows multiple log files. The cookie itself is
+because the logging module now allows multiple log files. The cookie itself is
 logged by using the text <TT>%{cookie}n </TT>
 in the log file format. For example:
 <PRE>
@@ -115,6 +117,37 @@ form, but also understands 4-digit years, which can probably reach up until
 time late in the year "37".
 </PRE>
 
+<hr>
+
+<h2><a name="cookiedomain">CookieDomain</a> directive</h2>
+<a
+ href="directive-dict.html#Syntax"
+ rel="Help"
+><b>Syntax:</b></a> CookieDomain <i>domain</i><br>
+<a
+ href="directive-dict.html#Context"
+ rel="Help"
+><b>Context:</b></a> server config, virtual host, directory, .htaccess<br>
+<a
+ href="directive-dict.html#Status"
+ rel="Help"
+><b>Status:</b></a> optional<br>
+<a
+ href="directive-dict.html#Module"
+ rel="Help"
+><b>Module:</b></a> mod_usertrack
+
+<p>
+This directive controls the setting of the domain to which the
+tracking cookie applies.  If not present, no domain is included
+in the cookie header field.
+</p>
+<p>
+The domain string <b>must</b> begin with a dot, and <b>must</b>
+include at least one embedded dot.  That is, ".foo.com" is legal,
+but "foo.bar.com" and ".com" are not.
+</p>
+
 <HR>
 
 <H2><A NAME="cookieexpires">CookieExpires</A> directive</H2>
@@ -125,7 +158,9 @@ time late in the year "37".
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+><STRONG>Context:</STRONG></A>
+<b>1.3.20 and earlier:</b> server config, virtual host; 
+<b>1.3.21 and later:</b> server config, virtual host, directory, .htaccess<br>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
@@ -186,6 +221,45 @@ You must specify a valid cookie name; results are unpredictable if
 you use a name containing unusual characters.  Valid characters
 include A-Z, a-z, 0-9, "_", and "-".
 </P>
+
+<hr>
+
+<h2><a name="cookiestyle">CookieStyle</a> directive</h2>
+<a
+ href="directive-dict.html#Syntax"
+ rel="Help"
+><b>Syntax:</b></a> CookieStyle <i>Netscape|Cookie|Cookie2|RFC2109|RFC2965</i><br>
+<a
+ href="directive-dict.html#Context"
+ rel="Help"
+><b>Context:</b></a> server config, virtual host, directory, .htaccess<br>
+<a
+ href="directive-dict.html#Status"
+ rel="Help"
+><b>Status:</b></a> optional<br>
+<a
+ href="directive-dict.html#Module"
+ rel="Help"
+><b>Module:</b></a> mod_usertrack
+
+<p>
+This directive controls the format of the cookie header field.
+The three formats allowed are:
+</p>
+<ul>
+ <li><b>Netscape</b>, which is the original but now deprecated
+  syntax.  This is the default, and the syntax Apache has
+  historically used.</li>
+ <li><b>Cookie</b> or <b>RFC2109</b>, which is the syntax that
+  superseded the Netscape syntax.</li>
+ <li><b>Cookie2</b> or <b>RFC2965</b>, which is the most current
+  cookie syntax.</li>
+</ul>
+
+<p>
+Not all clients can understand all of these formats. but you should use
+the newest one that is generally acceptable to your users' browsers.
+</p>
 
 <hr>
 <H2><A NAME="cookietracking">CookieTracking</A> directive</H2>
