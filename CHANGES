@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Catch an edge case, where strange subsequent RewriteRules
+     could lead to a 400 (Bad Request) response.  [André Malo]
+
   *) mod_rewrite: Fix LA-U and LA-F lookups in directory context. Previously
      the current rewrite state was just used as lookup path, which lead to
      strange and often useless results. Related to PR 8493.  [André Malo]
