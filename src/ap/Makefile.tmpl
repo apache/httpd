@@ -59,6 +59,8 @@ ap_md5c.o: ap_md5c.c $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
  $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(OSDIR)/os-inline.c \
  $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h $(INCDIR)/ap_md5.h \
  $(INCDIR)/ap.h
+ap_sha1.o: ap_sha1.c $(INCDIR)/ap_config.h $(INCDIR)/ap_sha1.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(OSDIR)/os-inline.c
 ap_signal.o: ap_signal.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
  $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
  $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
