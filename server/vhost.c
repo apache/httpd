@@ -745,6 +745,11 @@ static void fix_hostname(request_rec *r)
     apr_port_t port;
     apr_status_t rv;
 
+    /* According to RFC 2616, Host header field CAN be blank. */
+    if (!*r->hostname) {
+        return;
+    }
+
     rv = apr_parse_addr_port(&host, &scope_id, &port, r->hostname, r->pool);
     if (rv != APR_SUCCESS || scope_id) {
         goto bad;
