@@ -2383,7 +2383,7 @@ API_EXPORT(int) ap_rflush(request_rec *r)
  * and 5xx (server error) messages that have not been redirected to another
  * handler via the ErrorDocument feature.
  */
-void ap_send_error_response(request_rec *r, int recursive_error)
+API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 {
     int status = r->status;
     int idx = ap_index_of_response(status);

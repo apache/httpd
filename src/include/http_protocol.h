@@ -103,7 +103,7 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r);
  * problem with the ErrorDocument.
  */
 
-void ap_send_error_response(request_rec *r, int recursive_error);
+API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error);
 
 /* Set last modified header line from the lastmod date of the associated file.
  * Also, set content length.
