@@ -5,6 +5,11 @@ list or otherwise improving the documentation, please join the
 apache-docs mailing list by mailing to 
 apache-docs-subscribe@apache.org
 
+- XHTML conversion
+        Status: James A Sutherland <jas88@cam.ac.uk> was going
+                to spearhead this.  Some work is still needed
+                to determine what the SSIs should look like.
+
 - MPM documentation
    - Each MPM needs to have a documentation file in manual/mod/
      which lists the directives it provides, and some details
