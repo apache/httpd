@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Fix FileETags none operation.  PR 12207.
+     [Justin Erenkrantz, Andrew Ho <andrew@tellme.com>]
+
   *) Restored the experimental leader/followers MPM to working
      condition and converted its thread synchronization from
      mutexes to atomic CAS.  [Brian Pane]

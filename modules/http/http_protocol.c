@@ -2659,6 +2659,11 @@ AP_DECLARE(void) ap_set_etag(request_rec *r)
 
     if (!r->vlist_validator) {
         etag = ap_make_etag(r, 0);
+    
+        /* If we get a blank etag back, don't set the header. */
+        if (!etag[0]) {
+            return;
+        }
     }
     else {
         /* If we have a variant list validator (vlv) due to the
@@ -2682,8 +2687,12 @@ AP_DECLARE(void) ap_set_etag(request_rec *r)
 
         variant_etag = ap_make_etag(r, vlv_weak);
 
-        /* merge variant_etag and vlv into a structured etag */
+        /* If we get a blank etag back, don't append vlv and stop now. */
+        if (!variant_etag[0]) {
+            return;
+        }
 
+        /* merge variant_etag and vlv into a structured etag */
         variant_etag[strlen(variant_etag) - 1] = '\0';
         if (vlv_weak) {
             vlv += 3;
