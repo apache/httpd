@@ -57,6 +57,7 @@
 
 #include "apr_network_io.h"
 #include "http_config.h"
+#include "mpm.h"
 
 typedef struct ap_listen_rec ap_listen_rec;
 struct ap_listen_rec {
@@ -72,7 +73,7 @@ struct ap_listen_rec {
 extern ap_listen_rec *ap_listeners;
 
 void ap_listen_pre_config(void);
-#ifndef WIN32
+#if !defined(WIN32) && !defined(PREFORK_MPM)
 int ap_setup_listeners(server_rec *s);
 #else
 int ap_listen_open(process_rec *process, unsigned port);
