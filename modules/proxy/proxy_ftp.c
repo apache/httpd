@@ -59,6 +59,9 @@
 /* FTP routines for Apache proxy */
 
 #include "mod_proxy.h"
+#if APR_HAVE_TIME_H
+#include <time.h>
+#endif
 
 #define AUTODETECT_PWD
 /* Automatic timestamping (Last-Modified header) based on MDTM is used if:
