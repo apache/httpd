@@ -509,6 +509,14 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         /* Block all outgoing Via: headers */
         apr_table_unset(r->headers_in, "Via");
     } else if (conf->viaopt != via_off) {
+        const char *server_name = ap_get_server_name(r);
+        /* If USE_CANONICAL_NAME_OFF was configured for the proxy virtual host,
+         * then the server name returned by ap_get_server_name() is the
+         * origin server name (which does make too much sense with Via: headers)
+         * so we use the proxy vhost's name instead.
+         */
+        if (server_name == r->hostname)
+            server_name = r->server->server_hostname;
         /* Create a "Via:" request header entry and merge it */
         /* Generate outgoing Via: header with/without server comment: */
         apr_table_mergen(r->headers_in, "Via",
@@ -516,12 +524,12 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                          ? apr_psprintf(p, "%d.%d %s%s (%s)",
                                         HTTP_VERSION_MAJOR(r->proto_num),
                                         HTTP_VERSION_MINOR(r->proto_num),
-                                        ap_get_server_name(r), server_portstr,
+                                        server_name, server_portstr,
                                         AP_SERVER_BASEVERSION)
                          : apr_psprintf(p, "%d.%d %s%s",
                                         HTTP_VERSION_MAJOR(r->proto_num),
                                         HTTP_VERSION_MINOR(r->proto_num),
-                                        ap_get_server_name(r), server_portstr)
+                                        server_name, server_portstr)
         );
     }
 
@@ -902,19 +910,27 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             /* handle Via header in response */
             if (conf->viaopt != via_off && conf->viaopt != via_block) {
+                const char *server_name = ap_get_server_name(r);
+                /* If USE_CANONICAL_NAME_OFF was configured for the proxy virtual host,
+                 * then the server name returned by ap_get_server_name() is the
+                 * origin server name (which does make too much sense with Via: headers)
+                 * so we use the proxy vhost's name instead.
+                 */
+                if (server_name == r->hostname)
+                    server_name = r->server->server_hostname;
                 /* create a "Via:" response header entry and merge it */
                 apr_table_mergen(r->headers_out, "Via",
                                  (conf->viaopt == via_full)
                                      ? apr_psprintf(p, "%d.%d %s%s (%s)",
                                            HTTP_VERSION_MAJOR(r->proto_num),
                                            HTTP_VERSION_MINOR(r->proto_num),
-                                           ap_get_server_name(r),
+                                           server_name,
                                            server_portstr,
                                            AP_SERVER_BASEVERSION)
                                      : apr_psprintf(p, "%d.%d %s%s",
                                            HTTP_VERSION_MAJOR(r->proto_num),
                                            HTTP_VERSION_MINOR(r->proto_num),
-                                           ap_get_server_name(r),
+                                           server_name,
                                            server_portstr)
                 );
             }
