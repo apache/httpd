@@ -295,13 +295,6 @@ static int ap_process_http_connection(conn_rec *c)
     return OK;
 }
 
-static void ap_http_insert_filter(request_rec *r)
-{
-    ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
-    ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
-    ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,
@@ -311,7 +304,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_http_method(http_method,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
 
-    ap_hook_insert_filter(ap_http_insert_filter, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_register_input_filter("HTTP_IN", ap_http_filter, AP_FTYPE_CONNECTION);
     ap_register_input_filter("DECHUNK", ap_dechunk_filter, AP_FTYPE_TRANSCODE);
     ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 

@@ -517,6 +517,10 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->output_filters  = r->connection->output_filters;
     new->input_filters   = r->connection->input_filters;
 
+    ap_add_output_filter("BYTERANGE", NULL, new, new->connection);
+    ap_add_output_filter("CONTENT_LENGTH", NULL, new, new->connection);
+    ap_add_output_filter("HTTP_HEADER", NULL, new, new->connection);
+      
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
 	apr_psprintf(r->pool, "%d", r->status));
 
