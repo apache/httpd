@@ -8,6 +8,10 @@ Changes with Apache 1.3b6
      various bits of code which used ap_snprintf()/pstrdup().
      [Dean Gaudet]
 
+  *) PORT: HAVE_SNPRINTF doesn't do anything any longer.  This is because
+     ap_snprintf() has different semantics and formatting codes than
+     snprintf().  [Dean Gaudet]
+
   *) SIGXCPU and SIGXFSZ are now reset to SIG_DFL at boot-time.  This
      is necessary on at least Solaris where the /etc/rc?.d scripts
      are run with these signals ignored, and "SIG_IGN" settings are

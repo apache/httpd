@@ -51,8 +51,10 @@ ap_slack.o: ap_slack.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
  $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h $(INCDIR)/http_log.h
-ap_snprintf.o: ap_snprintf.c $(INCDIR)/conf.h ../os/unix/os.h \
- $(INCDIR)/hide.h $(INCDIR)/hsregex.h
+ap_snprintf.o: ap_snprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
 ap_strings.o: ap_strings.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
  $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
