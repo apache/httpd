@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.11 (outdated: 1.19) -->
+<!-- English Revision: 1.19 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -20,6 +20,7 @@
 -->
 
 <modulesynopsis metafile="worker.xml.meta">
+
 <name>worker</name>
 <description>マルチスレッドとマルチプロセスのハイブリッド型
 ウェブサーバを実装したマルチプロセッシングモジュール</description>
@@ -48,15 +49,12 @@
 の使用するアドレスとポートの設定</a></seealso>
 
 <section id="how-it-works"><title>動作方法</title>
-    <p>プロセスは決まった数のスレッドを持ちます。
-    負荷への適応はプロセスの数を増減により対応します。</p>
-
-    <p>一つの制御用プロセスが子プロセスを起動します。
+    <p>一つの制御用プロセス (親) が子プロセスを起動します。
     子プロセスは
     <directive module="mpm_common">ThreadsPerChild</directive>
-    ディレクティブで指定された一定数のスレッドを作ります。
-    それから、個々のスレッドがコネクションに対して listen
-    して、しかるべき時に動作します。</p>
+    ディレクティブで指定された一定数のサーバスレッドと接続を
+    listen するスレッドを一つ作ります。
+    Listener スレッドは接続が来たときにサーバプロセスに渡します。</p>
 
     <p>Apache は<dfn>スペアの</dfn>、つまりアイドルなサーバスレッドの
     プールを常に維持していて、それらは入ってくるリクエストに
@@ -77,25 +75,55 @@
     同時に応答することのできるクライアント数の最大数
     (つまり全プロセス中の総スレッド数の最大値) は
     <directive module="mpm_common">MaxClients</directive>
-    ディレクティブで決定されていて、
-    一方で起動することのできるプロセス数の最大値は
-    <directive module="mpm_common">ServerLimit</directive>
-    ディレクティブで設定されています。
-    <directive module="mpm_common">ServerLimit</directive> と
-    <directive module="mpm_common">ThreadsPerChild</directive> との積は、
-    <directive module="mpm_common">MaxClients</directive>
-    と等しいかそれより大きい必要があります。</p>
+    ディレクティブで決定されます。
+    活動中の子プロセス数の最大値は
+    <directive module="mpm_common">MaxClients</directive> を
+    <directive module="mpm_common">ThreadsPerChild</directive> で割った
+    ものになります。</p>
     
+    <p>活動中の子プロセスの数と子プロセス中のサーバスレッドの数の越えられない
+    上限を設定するディレクティブが二つあります。これらはサーバを
+    完全に停止して、再起動することでしか変更することはできません。
+    <directive module="mpm_common">ServerLimit
+    </directive> は活動中の子プロセスの越えられない上限を設定し、
+    <directive module="mpm_common">MaxClients</directive> ディレクティブ
+    の値を <directive module="mpm_common">
+    ThreadsPerChild</directive> の値で割った値以上である
+    必要があります。<directive module="mpm_common">ThreadLimit</directive> は
+    サーバスレッドの越えられない上限で、<directive 
+    module="mpm_common">ThreadsPerChild</directive> ディレクティブの
+    値以上である必要があります。デフォルト以外の値を指定する場合は
+    他の <module>worker</module> ディレクティブよりも前に書かれている
+    必要があります。</p>
+
+    <p>活動中の子プロセス群に加えて、少なくとも一つのサーバスレッドが
+    既存のクライアントからの接続を扱っている終了しようとしている
+    子プロセスがある可能性があります。終了中のプロセスは <directive 
+    module="mpm_common">MaxClients</directive> で指定された数まで
+    存在できますが、実際に期待される数はずっと少なくなります。この
+    振舞いは各子プロセスを終了させないようにすることで回避できます。
+    これは以下の様にして実現できます。</p>
+     
+    <ul>
+      <li><directive module="mpm_common">
+      MaxRequestsPerChild</directive> の値を 0 に設定する</li>
+
+      <li><directive module="mpm_common">
+      MaxSpareThreads</directive> の値を
+      <directive module="mpm_common">MaxClients</directive>
+      と同じ値にする</li>
+    </ul>
+
     <p><module>worker</module> MPM の典型的なプロセス・スレッド制御の
     設定では、次のようになります。</p>
 
     <example>
+      ServerLimit         16<br />
       StartServers         2<br />
       MaxClients         150<br />
       MinSpareThreads     25<br />
       MaxSpareThreads     75<br />
-      ThreadsPerChild     25<br />
-      ServerLimit         16
+      ThreadsPerChild     25
     </example>
 
     <p>通常 Unix では親プロセスは 80 番ポートにバインドするために
@@ -118,6 +146,8 @@
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Group</name>
 </directivesynopsis>
@@ -150,6 +180,8 @@
 <directivesynopsis location="mpm_common"><name>ThreadLimit</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>User</name>
 </directivesynopsis>
