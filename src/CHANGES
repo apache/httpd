@@ -1,5 +1,10 @@
 Changes with Apache 1.3.5
 
+  *) Move the directive `ExtendedStatus' in httpd.conf-dist-win _after_ the
+     DSO/DLL section because it's a directive from mod_status and isn't
+     available before the DLL of mod_status is loaded.
+     [Martin POESCHL <mpoeschl@gmx.net>] PR#3936
+ 
   *) Fix a bug in the calculation of the buffer size for the line continuation
      facility in Apache's configuration files which could lead to a buffer
      overflow situation. [Thomas Devanneaux <Thomas.Devanneaux@enst.fr>] PR#3617

@@ -89,13 +89,6 @@ ScoreBoardFile logs/apache_status
 #AccessConfig conf/access.conf
 
 #
-# ExtendedStatus controls whether Apache will generate "full" status
-# information (ExtendedStatus On) or just basic information (ExtendedStatus
-# Off) when the "server-status" handler is called. The default is Off.
-#
-#ExtendedStatus On
-
-#
 # Timeout: The number of seconds before receives and sends time out.
 #
 Timeout 300
@@ -185,6 +178,13 @@ ThreadsPerChild 50
 #LoadModule speling_module modules/ApacheModuleSpeling.dll
 #LoadModule status_module modules/ApacheModuleStatus.dll
 #LoadModule usertrack_module modules/ApacheModuleUserTrack.dll
+
+#
+# ExtendedStatus controls whether Apache will generate "full" status
+# information (ExtendedStatus On) or just basic information (ExtendedStatus
+# Off) when the "server-status" handler is called. The default is Off.
+#
+#ExtendedStatus On
 
 ### Section 2: 'Main' server configuration
 #
