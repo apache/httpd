@@ -84,7 +84,9 @@
  *   - expired nonces give amaya fits.  
  */
 
+#ifndef WIN32
 #include "ap_config_auto.h"
+#endif
 #include "httpd.h"
 #include "http_config.h"
 #include "http_conf_globals.h"
@@ -257,7 +259,7 @@ static void initialize_secret(server_rec *s)
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
 		     "Digest: error generating secret: %s", 
 		     /*ap_strerror(status)*/ "need ap_strerror here");
-	exit(EXIT_FAILURE);
+	exit(1);
     }
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Digest: done");

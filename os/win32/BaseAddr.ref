@@ -13,7 +13,7 @@ aprlib               0x6FFA0000    0x00060000
 ApacheCore           0x6FF00000    0x000A0000
 mod_auth_anon        0x6FEF0000    0x00010000
 mod_cern_meta        0x6FEE0000    0x00010000
-mod_digest           0x6FED0000    0x00010000
+mod_auth_digest      0x6FED0000    0x00010000
 mod_expires          0x6FEC0000    0x00010000
 mod_headers          0x6FEB0000    0x00010000
 mod_info             0x6FEA0000    0x00010000
