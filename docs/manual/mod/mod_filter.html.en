@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /><!--
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_filter - Apache HTTP Server</title>
-<link title="Main stylesheet" type="text/css" media="all" rel="stylesheet" href="../style/css/manual.css" />
-<link title="No Sidebar - Default font size" type="text/css" media="all" rel="alternate stylesheet" href="../style/css/manual-loose-100pc.css" />
-<link type="text/css" media="print" rel="stylesheet" href="../style/css/manual-print.css" />
-<link rel="shortcut icon" href="../images/favicon.ico" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.1</p>
-<img src="../images/feather.gif" alt="" /></div>
-<div class="up"><a href="./"><img src="../images/left.gif" alt="&lt;-" title="&lt;-" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
@@ -44,23 +44,23 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img src="../images/down.gif" alt="" /> <a href="#filterchain">FilterChain</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#filterdeclare">FilterDeclare</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#filterprotocol">FilterProtocol</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#filterprovider">FilterProvider</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#filtertrace">FilterTrace</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterchain">FilterChain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterdeclare">FilterDeclare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterprotocol">FilterProtocol</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterprovider">FilterProvider</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filtertrace">FilterTrace</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img src="../images/down.gif" alt="" /> <a href="#smart">Smart Filtering</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#terms">Filter Declarations, Providers and Chains</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#config">Configuring the Chain</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#examples">Examples</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#protocol">Protocol Handling</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#smart">Smart Filtering</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#terms">Filter Declarations, Providers and Chains</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#config">Configuring the Chain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol Handling</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="smart" name="smart">Smart Filtering</a></h2>
+<h2><a name="smart" id="smart">Smart Filtering</a></h2>
     <p>In the traditional filtering model, filters are inserted unconditionally
     using <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> and family.
     Each filter then needs to determine whether to run, and there is little
@@ -76,9 +76,9 @@
     content generator.  The ability to dispatch based on Environment
     Variables offers the full flexibility of configuration with
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to anyone who needs it.</p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="terms" name="terms">Filter Declarations, Providers and Chains</a></h2>
+<h2><a name="terms" id="terms">Filter Declarations, Providers and Chains</a></h2>
     <p class="figure">
     <img src="../images/mod_filter_old.gif" width="160" height="310" alt="[This image displays the traditional filter model]" /><br />
     <dfn>Figure 1:</dfn> The traditional filter model</p>
@@ -106,9 +106,9 @@
     harness, each of which may have any number of providers.  A special
     case is that of a single provider with unconditional dispatch: this
     is equivalent to inserting the provider filter directly into the chain.</p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="config" name="config">Configuring the Chain</a></h2>
+<h2><a name="config" id="config">Configuring the Chain</a></h2>
     <p>There are three stages to configuring a filter chain with
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. For details of the directives, see below.</p>
 
@@ -137,9 +137,9 @@
     filters declared, offering the flexibility to insert filters at the
     beginning or end of the chain, remove a filter, or clear the chain.</dd>
 </dl>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="examples" name="examples">Examples</a></h2>
+<h2><a name="examples" id="examples">Examples</a></h2>
     <dl>
     <dt>Server side Includes (SSI)</dt>
     <dd>A simple case of using <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> in place of
@@ -192,9 +192,9 @@
     </code></p></div>
     </dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="protocol" name="protocol">Protocol Handling</a></h2>
+<h2><a name="protocol" id="protocol">Protocol Handling</a></h2>
     <p>Historically, each filter is responsible for ensuring that whatever
     changes it makes are correctly represented in the HTTP response headers,
     and that it does not run when it would make an illegal change.  This
@@ -226,8 +226,8 @@
     default (i.e. in the absence of any <code class="directive"><a href="#filterprotocol">FilterProtocol</a></code> directives), <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>
     will leave the headers untouched.</p>
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="FilterChain" name="FilterChain">FilterChain</a> <a id="filterchain" name="filterchain">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterChain" id="FilterChain">FilterChain</a> <a name="filterchain" id="filterchain">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the filter chain</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterChain [+=-@!]<var>filter-name</var> <var>...</var></code></td></tr>
@@ -262,8 +262,8 @@
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="FilterDeclare" name="FilterDeclare">FilterDeclare</a> <a id="filterdeclare" name="filterdeclare">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterDeclare" id="FilterDeclare">FilterDeclare</a> <a name="filterdeclare" id="filterdeclare">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare a smart filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterDeclare <var>filter-name</var> <var>[type]</var></code></td></tr>
@@ -286,8 +286,8 @@
     or <code>NETWORK</code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="FilterProtocol" name="FilterProtocol">FilterProtocol</a> <a id="filterprotocol" name="filterprotocol">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterProtocol" id="FilterProtocol">FilterProtocol</a> <a name="filterprotocol" id="filterprotocol">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Deal with correct HTTP protocol handling</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
@@ -335,8 +335,8 @@
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="FilterProvider" name="FilterProvider">FilterProvider</a> <a id="filterprovider" name="filterprovider">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterProvider" id="FilterProvider">FilterProvider</a> <a name="filterprovider" id="filterprovider">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Register a content filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProvider <var>filter-name</var> <var>provider-name</var>
@@ -392,8 +392,8 @@
 </table>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="FilterTrace" name="FilterTrace">FilterTrace</a> <a id="filtertrace" name="filtertrace">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FilterTrace" id="FilterTrace">FilterTrace</a> <a name="filtertrace" id="filtertrace">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Get debug/diagnostic information from
     mod_filter</td></tr>
@@ -416,7 +416,7 @@
     <dd><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> will record buckets and brigades
     passing through the filter to the error log, before the provider has
     processed them. This is similar to the information generated by
-    <a href="@href">mod_diagnostics</a>.
+    <a href="http://apache.webthing.com/mod_diagnostics/">mod_diagnostics</a>.
     </dd>
 
     <dt><code>2</code> (not yet implemented)</dt>
