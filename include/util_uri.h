@@ -71,7 +71,7 @@ extern "C" {
  * @package Apache URI library
  */
 
-typedef struct schemes_t;
+typedef struct schemes_t schemes_t;
 
 /** Structure to store various schemes and their default ports */
 struct schemes_t {
