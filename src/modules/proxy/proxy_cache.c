@@ -846,7 +846,8 @@ int ap_proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    c->fp = NULL;
 	}
 /* delete the previously cached file */
-	unlink(c->filename);
+        if (c->filename)
+            unlink(c->filename);
 	return DECLINED;	/* send data to client but not cache */
     }
 
