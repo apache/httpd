@@ -1527,7 +1527,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else if (cmd->path[strlen(cmd->path) - 1] != '/') {
-        cmd->path = apr_pstrcat(cmd->pool, cmd->path, "/");
+        cmd->path = apr_pstrcat(cmd->pool, cmd->path, "/", NULL);
 
         if (!strcmp(cmd->path, "/") == 0) 
         {
