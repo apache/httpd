@@ -46,26 +46,35 @@ The headers allowed are:
 
 <DL>
 <DT>Content-Encoding:
-<DD>The encoding of the file. Currently only two encodings are recognized
-by http; <CODE>x-compress</CODE> for compressed files, and <CODE>x-gzip</CODE>
-for gzipped files.
+<DD>The encoding of the file. Apache only recognizes encodings that are
+defined by an <A HREF="mod_mime.html#addencoding">AddEncoding</A> directive.
+This normally includes the encodings <CODE>x-compress</CODE> for compress'd
+files, and <CODE>x-gzip</CODE> for gzip'd files.  The <CODE>x-</CODE> prefix
+is ignored for encoding comparisons.
 <DT>Content-Language:
-<DD>The language of the variant, as an Internet standard language code, such
-as <CODE>en</CODE>.
+<DD>The language of the variant, as an Internet standard language tag
+(RFC 1766).  An example is <CODE>en</CODE>, meaning English.
 <DT>Content-Length:
 <DD>The length of the file, in bytes. If this header is not present, then
 the actual length of the file is used.
 <DT>Content-Type:
 <DD>The MIME media type of the document, with optional parameters.
-parameters are separated from the media type and from one another by
-semi-colons. Parameter syntax is name=value; allowed parameters are:
+Parameters are separated from the media type and from one another by a
+semi-colon, with a syntax of <CODE>name=value</CODE>. Common parameters
+include:
 <DL>
 <DT>level
-<DD>the value is an integer, which specifies the version of the media type.
+<DD>an integer specifying the version of the media type.
 For <CODE>text/html</CODE> this defaults to 2, otherwise 0.
 <DT>qs
-<DD>the value is a floating-point number with value between 0. and 1.
-It indications the 'quality' of this variant.
+<DD>a floating-point number with a value in the range 0.0 to 1.0,
+    indicating the relative 'quality' of this variant
+    compared to the other available variants, independent of the client's
+    capabilities.  For example, a jpeg file is usually of higher source
+    quality than an ascii file if it is attempting to represent a
+    photograph.  However, if the resource being represented is ascii art,
+    then an ascii file would have a higher source quality than a jpeg file.
+    All qs values are therefore specific to a given resource.
 </DL>
 Example:
 <BLOCKQUOTE><CODE>Content-Type: image/jpeg; qs=0.8</CODE></BLOCKQUOTE>
@@ -91,6 +100,14 @@ requirements, and returns that document.<P>
 <LI><A HREF="#cachenegotiateddocs">CacheNegotiatedDocs</A>
 <LI><A HREF="#languagepriority">LanguagePriority</A>
 </UL>
+
+<STRONG>See also</STRONG>:
+<A HREF="./mod_mime.html#defaultlanguage">DefaultLanguage</A>,
+<A HREF="./mod_mime.html#addencoding">AddEncoding</A>,
+<A HREF="./mod_mime.html#addlanguage">AddLanguage</A>,
+<A HREF="./mod_mime.html#addtype">AddType</A>, and
+<A HREF="core.html#options">Option</A>.
+
 <HR>
 
 

@@ -70,12 +70,17 @@ the HTTP/1.1 specification. It fully supports the Accept,
 Accept-Language, Accept-Charset and Accept-Encoding request headers.
 <P>
 
-The terms used in content negotiation are: a <STRONG>resource</STRONG> is an
-item which can be requested of a server, which might be selected as
-the result of a content negotiation algorithm. If a resource is
-available in several formats, these are called <STRONG>representations</STRONG>
-or <STRONG>variants</STRONG>. The ways in which the variants for a particular
-resource vary are called the <STRONG>dimensions</STRONG> of negotiation.
+A <STRONG>resource</STRONG> is a conceptual entity identified by a URI
+(RFC 2396).  An HTTP server like Apache provides access to
+<STRONG>representations</STRONG> of the resource(s) within its namespace,
+with each representation in the form of a sequence of bytes with a
+defined media type, character set, encoding, etc.  Each resource may be
+associated with zero, one, or more than one representation
+at any given time.  If multiple representations are available,
+the resource is referred to as <STRONG>negotiable</STRONG> and each of its
+representations is termed a <STRONG>variant</STRONG>. The ways in which the
+variants for a negotiable resource vary are called the
+<STRONG>dimensions</STRONG> of negotiation.
 
 <H2>Negotiation in Apache</H2>
 
@@ -86,9 +91,9 @@ ways:
 
 <UL>
   <LI> Using a type map (<EM>i.e.</EM>, a <CODE>*.var</CODE> file) which
-       names the files containing the variants explicitly
-  <LI> Or using a 'MultiViews' search, where the server does an implicit
-       filename pattern match, and chooses from among the results.
+       names the files containing the variants explicitly, or
+  <LI> Using a 'MultiViews' search, where the server does an implicit
+       filename pattern match and chooses from among the results.
 </UL>
 
 <H3>Using a type-map file</H3>
@@ -98,25 +103,25 @@ A type map is a document which is associated with the handler
 named <CODE>type-map</CODE> (or, for backwards-compatibility with
 older Apache configurations, the mime type
 <CODE>application/x-type-map</CODE>).  Note that to use this feature,
-you've got to have a <CODE>SetHandler</CODE> some place which defines a
+you must have a handler set in the configuration that defines a
 file suffix as <CODE>type-map</CODE>; this is best done with a
+
 <PRE>
-
   AddHandler type-map var
-
 </PRE>
-in <CODE>srm.conf</CODE>.  See comments in the sample config files for
-details. <P>
+
+in the server configuration file.  See the comments in the sample config
+file for more details. <P>
 
 Type map files have an entry for each available variant; these entries
-consist of contiguous RFC822-format header lines.  Entries for
+consist of contiguous HTTP-format header lines.  Entries for
 different variants are separated by blank lines.  Blank lines are
 illegal within an entry.  It is conventional to begin a map file with
 an entry for the combined entity as a whole (although this
 is not required, and if present will be ignored). An example
 map file is:
-<PRE>
 
+<PRE>
   URI: foo
 
   URI: foo.en.html
@@ -124,13 +129,14 @@ map file is:
   Content-language: en
 
   URI: foo.fr.de.html
-  Content-type: text/html; charset=iso-8859-2
+  Content-type: text/html;charset=iso-8859-2
   Content-language: fr, de
 </PRE>
 
 If the variants have different source qualities, that may be indicated
 by the "qs" parameter to the media type, as in this picture (available
 as jpeg, gif, or ASCII-art):
+
 <PRE>
   URI: foo
 
@@ -142,14 +148,22 @@ as jpeg, gif, or ASCII-art):
 
   URI: foo.txt
   Content-type: text/plain; qs=0.01
-
 </PRE>
 <P>
 
-qs values can vary between 0.000 and 1.000. Note that any variant with
+qs values can vary in the range 0.000 to 1.000. Note that any variant with
 a qs value of 0.000 will never be chosen. Variants with no 'qs'
-parameter value are given a qs factor of 1.0.  <P>
+parameter value are given a qs factor of 1.0. The qs parameter indicates
+the relative 'quality' of this variant compared to the other available
+variants, independent of the client's capabilities.  For example, a jpeg
+file is usually of higher source quality than an ascii file if it is
+attempting to represent a photograph.  However, if the resource being
+represented is an original ascii art, then an ascii representation would
+have a higher source quality than a jpeg representation.  A qs value
+is therefore specific to a given variant depending on the nature of
+the resource it represents.
 
+<P>
 The full list of headers recognized is:
 
 <DL>
@@ -160,22 +174,24 @@ The full list of headers recognized is:
        the same server (!), and they must refer to files to which the
        client would be granted access if they were to be requested
        directly.
-  <DT> <CODE>Content-type:</CODE>
+  <DT> <CODE>Content-Type:</CODE>
   <DD> media type --- charset, level and "qs" parameters may be given.  These
        are often referred to as MIME types; typical media types are
        <CODE>image/gif</CODE>, <CODE>text/plain</CODE>, or
        <CODE>text/html;&nbsp;level=3</CODE>.
-  <DT> <CODE>Content-language:</CODE>
+  <DT> <CODE>Content-Language:</CODE>
   <DD> The languages of the variant, specified as an Internet standard
-       language code (<EM>e.g.</EM>, <CODE>en</CODE> for English,
+       language tag from RFC 1766 (<EM>e.g.</EM>, <CODE>en</CODE> for English,
        <CODE>kr</CODE> for Korean, <EM>etc.</EM>).
-  <DT> <CODE>Content-encoding:</CODE>
+  <DT> <CODE>Content-Encoding:</CODE>
   <DD> If the file is compressed, or otherwise encoded, rather than
        containing the actual raw data, this says how that was done.
-       For compressed files (the only case where this generally comes
-       up), content encoding should be
-       <CODE>x-compress</CODE>, or <CODE>x-gzip</CODE>, as appropriate.
-  <DT> <CODE>Content-length:</CODE>
+       Apache only recognizes encodings that are defined by an
+       <A HREF="mod/mod_mime.html#addencoding">AddEncoding</A> directive.
+       This normally includes the encodings <CODE>x-compress</CODE>
+       for compress'd files, and <CODE>x-gzip</CODE> for gzip'd files.
+       The <CODE>x-</CODE> prefix is ignored for encoding comparisons.
+  <DT> <CODE>Content-Length:</CODE>
   <DD> The size of the file.  Clients can ask to receive a given media
        type only if the variant isn't too big; specifying a content
        length in the map allows the server to compare against these
@@ -185,17 +201,15 @@ The full list of headers recognized is:
 <H3>Multiviews</H3>
 
 <P>
-This is a per-directory option, meaning it can be set with an
-<CODE>Options</CODE> directive within a <CODE>&lt;Directory&gt;</CODE>,
+<CODE>MultiViews</CODE> is a per-directory option, meaning it can be set with
+an <CODE>Options</CODE> directive within a <CODE>&lt;Directory&gt;</CODE>,
 <CODE>&lt;Location&gt;</CODE> or <CODE>&lt;Files&gt;</CODE>
 section in <CODE>access.conf</CODE>, or (if <CODE>AllowOverride</CODE>
 is properly set) in <CODE>.htaccess</CODE> files.  Note that
 <CODE>Options All</CODE> does not set <CODE>MultiViews</CODE>; you
-have to ask for it by name.  (Fixing this is a one-line change to
-<CODE>http_core.h</CODE>).
+have to ask for it by name.
 
 <P>
-
 The effect of <CODE>MultiViews</CODE> is as follows: if the server
 receives a request for <CODE>/some/dir/foo</CODE>, if
 <CODE>/some/dir</CODE> has <CODE>MultiViews</CODE> enabled, and
@@ -204,23 +218,22 @@ directory looking for files named foo.*, and effectively fakes up a
 type map which names all those files, assigning them the same media
 types and content-encodings it would have if the client had asked for
 one of them by name.  It then chooses the best match to the client's
-requirements, and forwards them along.
+requirements.
 
 <P>
-
-This applies to searches for the file named by the
+<CODE>MultiViews</CODE> may also apply to searches for the file named by the
 <CODE>DirectoryIndex</CODE> directive, if the server is trying to
-index a directory; if the configuration files specify
+index a directory. If the configuration files specify
+
 <PRE>
-
   DirectoryIndex index
+</PRE>
 
-</PRE> then the server will arbitrate between <CODE>index.html</CODE>
+then the server will arbitrate between <CODE>index.html</CODE>
 and <CODE>index.html3</CODE> if both are present.  If neither are
 present, and <CODE>index.cgi</CODE> is there, the server will run it.
 
 <P>
-
 If one of the files found when reading the directive is a CGI script,
 it's not obvious what should happen.  The code gives that case
 special treatment --- if the request was a POST, or a GET with
@@ -233,7 +246,7 @@ to be retrieved.
 
 After Apache has obtained a list of the variants for a given resource,
 either from a type-map file or from the filenames in the directory, it
-applies a algorithm to decide on the 'best' variant to return, if
+applies an algorithm to decide on the 'best' variant to return, if
 any. To do this it calculates a quality value for each variant in each
 of the dimensions of variance. It is not necessary to know any of the
 details of how negotiation actually takes place in order to use Apache's
@@ -247,22 +260,28 @@ fiddle quality factors is explained in more detail below.
 <H3>Dimensions of Negotiation</H3>
 
 <TABLE>
-<TR><TH>Dimension
+<TR valign="top">
+<TH>Dimension
 <TH>Notes
-<TR><TD>Media Type
-<TD>Browser indicates preferences on Accept: header. Each item
+<TR valign="top">
+<TD>Media Type
+<TD>Browser indicates preferences with the Accept header field. Each item
 can have an associated quality factor. Variant description can also
-have a quality factor.
-<TR><TD>Language
-<TD>Browser indicates preferences on Accept-Language: header. Each
-item
-can have a quality factor. Variants can be associated with none, one
-or more languages.
-<TR><TD>Encoding
-<TD>Browser indicates preference with Accept-Encoding: header.
-<TR><TD>Charset
-<TD>Browser indicates preference with Accept-Charset: header. Variants
-can indicate a charset as a parameter of the media type.
+have a quality factor (the "qs" parameter).
+<TR valign="top">
+<TD>Language
+<TD>Browser indicates preferences with the Accept-Language header field.
+Each item can have a quality factor. Variants can be associated with none, one
+or more than one language.
+<TR valign="top">
+<TD>Encoding
+<TD>Browser indicates preference with the Accept-Encoding header field.
+Each item can have a quality factor.
+<TR valign="top">
+<TD>Charset
+<TD>Browser indicates preference with the Accept-Charset header field.
+Each item can have a quality factor.
+Variants can indicate a charset as a parameter of the media type.
 </TABLE>
 
 <H3>Apache Negotiation Algorithm</H3>
@@ -270,13 +289,13 @@ can indicate a charset as a parameter of the media type.
 <P>
 Apache uses an algorithm to select the 'best' variant (if any) to
 return to the browser. This algorithm is not configurable. It operates
-like this:
+as follows:
 
 <OL>
 <LI>
-Firstly, for each dimension of the negotiation, the appropriate
-Accept header is checked and a quality assigned to this each
-variant. If the Accept header for any dimension means that this
+First, for each dimension of the negotiation, the appropriate
+<EM>Accept*</EM> header field is checked and a quality assigned to each
+variant. If the <EM>Accept*</EM> header for any dimension means that this
 variant is not acceptable, eliminate it. If no variants remain, go
 to step 4.
 
@@ -284,7 +303,7 @@ to step 4.
 the following tests is applied in order. Any variants not selected at
 each stage are eliminated. After each test, if only one variant
 remains, it is selected as the best match. If more than one variant
-remains, move onto the next test.
+remains, move on to the next test.
 
 <OL>
 <LI>Multiply the quality factor from the Accept header with the
@@ -301,6 +320,11 @@ remains, move onto the next test.
 <LI>Select the variants with the highest 'level' media parameter
   (used to give the version of text/html media types).
 
+<LI>Select only variants with acceptable charset media parameters,
+  as given on the Accept-Charset header line. Charset ISO-8859-1
+  is acceptable unless explicitly excluded. Variants not associated
+  with a particular charset are assumed to be in ISO-8859-1.
+
 <LI>Select the variants with the best encoding. If there are
   variants with an encoding that is acceptable to the user-agent,
   select only these variants. Otherwise if there is a mix of encoded
@@ -308,16 +332,11 @@ remains, move onto the next test.
   If either all variants are encoded or all variants are not encoded, 
   select all variants.
 
-<LI>Select only variants with acceptable charset media parameters,
-  as given on the Accept-Charset header line. Charset ISO-8859-1
-  is always acceptable. Variants not associated with a particular
-  charset are assumed to be in ISO-8859-1.
-
 <LI>Select the variants with the smallest content length
 
 <LI>Select the first variant of those remaining (this will be either the
-first listed in the type-map file, or the first read from the directory)
-and go to stage 3.
+  first listed in the type-map file, or the first read from the directory)
+  and go to stage 3.
 
 </OL>
 
@@ -326,7 +345,7 @@ and go to stage 3.
   dimensions of negotiation (browsers and caches can use this
   information when caching the resource). End.
 
-<LI>To get here means no variant was selected (because non are acceptable
+<LI>To get here means no variant was selected (because none are acceptable
   to the browser). Return a 406 status (meaning "No acceptable representation")
   with a response body consisting of an HTML document listing the
   available variants. Also set the HTTP Vary header to indicate the
@@ -508,12 +527,11 @@ if there is one) must be on the right hand side of the MIME-type extension
 <H2>Note on Caching</H2>
 
 <P>
-When a cache stores a document, it associates it with the request URL.
+When a cache stores a representation, it associates it with the request URL.
 The next time that URL is requested, the cache can use the stored
-document, provided it is still within date. But if the resource is
-subject to content negotiation at the server, this would result in
-only the first requested variant being cached, and subsequent cache
-hits could return the wrong response. To prevent this,
+representation. But, if the resource is negotiable at the server,
+this might result in only the first requested variant being cached and
+subsequent cache hits might return the wrong response. To prevent this,
 Apache normally marks all responses that are returned after content negotiation
 as non-cacheable by HTTP/1.0 clients. Apache also supports the HTTP/1.1
 protocol features to allow caching of negotiated responses. <P>
@@ -522,8 +540,7 @@ For requests which come from a HTTP/1.0 compliant client (either a
 browser or a cache), the directive <TT>CacheNegotiatedDocs</TT> can be
 used to allow caching of responses which were subject to negotiation.
 This directive can be given in the server config or virtual host, and
-takes no arguments. It has no effect on requests from HTTP/1.1
-clients.
+takes no arguments. It has no effect on requests from HTTP/1.1 clients.
 
 <!--#include virtual="footer.html" -->
 </BODY>
