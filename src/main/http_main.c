@@ -1461,7 +1461,7 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
         exit(1);
     }
 
-    /*    note_cleanups_for_fd (pconf, s); /* arrange to close on exec or restart */
+    /*    note_cleanups_for_fd (pconf, s); don't arrange to close on exec or restart */
     
     if((setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(one)))
        == -1) {
