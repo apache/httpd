@@ -2684,14 +2684,16 @@ static int core_override_type(request_rec *r)
 
     /* Deal with the poor soul who is trying to force path_info to be
      * accepted within the core_handler, where they will let the subreq
-     * address it's contents.  This can only be toggled on by the user,
-     * and modules can't override the user's discresion, except in their
-     * own module fixup phase.
+     * address it's contents.  This is toggled by the user in the very
+     * beginning of the fixup phase, so modules should override the user's 
+     * discresion in their own module fixup phase.  It is tristate, if
+     * the user doesn't specify, the result is 2 (which the module may
+     * interpret to it's own customary behavior.)  It won't be tounched
+     * if the value is no longer undefined (2), so any module changing
+     * the value prior to the fixup phase OVERRIDES the user's choice.
      */
-    if (!r->used_path_info & (conf->accept_path_info & 1)) {
+    if (r->used_path_info == 2)
         r->used_path_info = conf->accept_path_info;
-    }
-
     return OK;
 }
 
@@ -2754,7 +2756,7 @@ static int default_handler(request_rec *r)
                       "File does not exist: %s", r->filename);
         return HTTP_NOT_FOUND;
     }
-    if (!r->used_path_info && r->path_info && *r->path_info) {
+    if (!(r->used_path_info & 1) && r->path_info && *r->path_info) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
                       "File does not exist: %s",
                       apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
@@ -3396,6 +3398,11 @@ static int core_create_req(request_rec *r)
     }
 
     ap_add_input_filter("NET_TIME", NULL, r, r->connection);
+    
+    /* Begin by presuming any module can make it's own path_info assumptions,
+     * until some module interjects and changes the value.
+     */
+    r->used_path_info = 2;
     return OK;
 }
 
