@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/03/29 18:23:03 $]
+  Last modified at [$Date: 2004/03/29 18:25:03 $]
 
 Release:
 
@@ -50,15 +50,15 @@ RELEASE SHOWSTOPPERS:
   *  PR: 27023 Cookie could not delivered if the cookie made before
          proxy module.
 
-RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
    * ap_custom_response memory corruption
       discussion:
        Message-ID: <4062E7F3.7010707@attglobal.net>
        Subject: [1.3 PATCH] fix ap_custom_response() memory corruption issue
       patch:
        http://www.apache.org/~trawick/13_custom_response_patch
-        +1: trawick, stoddard
+        +1: trawick, stoddard, jim
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
    * isn't ap_die() broken with recognizing recursive errors
        Message-Id: <3F8C56E3.8050501@attglobal.net>
