@@ -2268,7 +2268,7 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
     ap_bucket *dptr = AP_BRIGADE_FIRST(bb);
     ap_bucket *tagbuck, *dptr2;
     ap_bucket *endsec;
-    ap_bucket_brigade *before_tag = NULL;
+    ap_bucket_brigade *tag_and_after;
     int ret;
 
     apr_cpystrn(error, DEFAULT_ERROR_MSG, sizeof(error));
@@ -2316,8 +2316,9 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
 		ap_rputs(error, r);
                 return;
             }
-            before_tag = ap_brigade_split(bb, dptr);
-            ap_pass_brigade(f->next, before_tag);
+            tag_and_after = ap_brigade_split(bb, dptr);
+            ap_pass_brigade(f->next, bb); /* process what came before the tag */
+            bb = tag_and_after;
             if (!strcmp(directive, "if")) {
                 if (!printing) {
                     if_nesting++;
