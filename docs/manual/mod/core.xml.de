@@ -2227,7 +2227,7 @@ virtueller Hosts</description>
 
 <directivesynopsis>
 <name>Options</name>
-<description>Definiert, welche Eigenscahften oder Funktionen in einem
+<description>Definiert, welche Eigenschaften oder Funktionen in einem
 bestimmten Verzeichnis verf&uuml;gbar sind</description>
 <syntax>Options
     [+|-]<var>Option</var> [[+|-]<var>Option</var>] ...</syntax>
