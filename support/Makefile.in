@@ -1,6 +1,8 @@
 DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 	logresolve.pl phf_abuse_log.cgi split-logfile envvars-std
 
+CLEAN_TARGETS = suexec
+
 PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid htdbm
 TARGETS  = $(PROGRAMS)
 
