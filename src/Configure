@@ -1,5 +1,5 @@
 #!/bin/sh
-trap 'rm -f $tmpfile $tmpfile2 $tmpfile3; exit' 0 1 2 3 15
+trap 'rm -f $tmpfile $tmpfile2 $tmpfile3 $awkfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
 # Don't like it?  Inspired to do something better?  Go for it.
@@ -24,6 +24,7 @@ file=Configuration
 tmpfile=htconf.$$
 tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
+awkfile=$tmpfile.4
 SRCDIR=`pwd`
 
 ####################################################################
@@ -856,36 +857,45 @@ done
 
 # Add the module targets to the Makefile. Do not add individual object
 # targets for auto-generated directories.
-awk -v AUTODIRS="$AUTODIRS" >>Makefile <$tmpfile '\
-   BEGIN { split ( AUTODIRS, tmp, / /); \
-		for ( key in tmp ) { autodirs[tmp[key]] = 1; } } \
-   /^Module/ { modules[n++] = $3 } \
-   /^%Module/ { modules[n++] = $3 } \
-   END { print "MODULES= \\";  \
-	 for (i = 0; i < n; ++i) { \
-	     split ( modules[i], pp, /\//); \
-	     dir = pp[1] "/" pp[2] ; \
-	     if ( dir in autodirs ) { continue; }\
-	     else printf ("  %s \\\n", modules[i]); \
-	 } \
-       }'
+
+cat > $awkfile <<EOF1
+   BEGIN { split ( "$AUTODIRS", tmp, / / );
+EOF1
+cat >> $awkfile <<'EOF2'
+	   for ( key in tmp ) { autodirs[tmp[key]] = 1; }
+	 }
+   /^Module/ { modules[n++] = $3 }
+   /^%Module/ { modules[n++] = $3 }
+   END { print "MODULES= \\";
+	 for (i = 0; i < n; ++i) {
+	     split ( modules[i], pp, /\//);
+	     dir = pp[1] "/" pp[2] ;
+	     if ( dir in autodirs ) { continue; }
+	     else printf ("  %s \\\n", modules[i]);
+	 }
+       }
+EOF2
+awk -f $awkfile >>Makefile <$tmpfile
 
 # Now add the auto-generated library targets.  Need to use awk so we
 # don't hang a continuation on the last line.
 
-awk -v AUTOLIBS="$AUTOLIBS" >>Makefile </dev/null '\
-    BEGIN { \
-	split ( AUTOLIBS, libs ); \
-	z = 0; \
-	for ( lib in libs ) { \
-	    if (z != 0) { printf (" \\\n") } \
-	    z++; \
-	    printf ("  %s", libs[lib]); \
-	} \
-    } \
-    END { \
-	printf ("\n"); \
-    }'
+cat > $awkfile <<EOF3
+    BEGIN { split ( "$AUTOLIBS", libs );
+EOF3
+cat >> $awkfile <<'EOF4'
+	z = 0;
+	for ( lib in libs ) {
+	    if (z != 0) { printf (" \\\n"); }
+	    z++;
+	    printf ("  %s", libs[lib]);
+	}
+    }
+    END {
+	printf ("\n");
+    }
+EOF4
+awk -f $awkfile >>Makefile </dev/null
 
 ####################################################################
 # Continue building Makefile.config.
