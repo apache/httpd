@@ -177,14 +177,14 @@ int get_path_info(request_rec *r)
 	    *cp = '\0';
 	    return OK;
 	}
-#if defined(ENOENT)
-	else if (errno == ENOENT) {
+#if defined(ENOENT) && defined(ENOTDIR)
+	else if (errno == ENOENT || errno == ENOTDIR) {
 #else
-#error ENOENT not defined -- check the comment below this line in the source for details
+#error ENOENT || ENOTDIR not defined -- check the comment below this line in the source for details
 	/*
-	 * If ENOENT is not defined in one of the your OS's include
-	 * files, Apache does not know how to check to see why the
-	 * stat() of the index file failed; there are cases where
+	 * If ENOENT || ENOTDIR is not defined in one of the your OS's
+	 * include files, Apache does not know how to check to see why
+	 * the stat() of the index file failed; there are cases where
 	 * it can fail even though the file exists.  This means
 	 * that it is possible for someone to get a directory
 	 * listing of a directory even though there is an index
@@ -206,9 +206,9 @@ int get_path_info(request_rec *r)
 	    while (cp > path && cp[-1] == '/')
 		--cp;
 	} 
-#if defined(ENOENT)
+#if defined(ENOENT) && defined(ENOTDIR)
 	else {
-	    log_reason("unable to determine if index file exists (stat() returned unexpected error)", r->filename, r);
+	    log_printf(r->server, "access to %s failed for client; unable to determine if index file exists (stat() returned unexpected error[%d])", r->filename, errno);
 	    return HTTP_FORBIDDEN;
 	}
 #endif
