@@ -12,9 +12,11 @@ Contributed by Ben Laurie <ben@algroup.co.uk>
 #define MAX_PATH	1024
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 void main(int argc,char **argv)
     {
@@ -64,7 +66,7 @@ void main(int argc,char **argv)
 	if(nLogFD < 0)
 	    {
 	    time_t tLogStart=(time(NULL)/tRotation)*tRotation;
-	    sprintf(buf2,"%s.%d",szLogRoot,tLogStart);
+	    sprintf(buf2,"%s.%d",szLogRoot,(int)tLogStart);
 	    tLogEnd=tLogStart+tRotation;
 	    nLogFD=open(buf2,O_WRONLY|O_CREAT|O_APPEND,0666);
 	    if(nLogFD < 0)
