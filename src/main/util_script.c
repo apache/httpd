@@ -755,13 +755,13 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	else {
 	    if (is_exe || is_binary) {
 		pid = spawnve(_P_NOWAIT, r->filename,
-			      create_argv(r->pool, argv0, NULL, NULL, r->args,
-					  (void *) NULL), env);
+			      create_argv(r->pool, NULL, NULL, NULL, argv0, 
+					  r->args), env);
 	    }
 	    else if (is_script) {
 		ap_assert(0);
 		pid = spawnve(_P_NOWAIT, interpreter + 2,
-			      create_argv(r->pool, interpreter + 2, NULL, NULL,
+			      create_argv(r->pool, NULL, NULL, NULL,
 					  r->filename, r->args), env);
 	    }
 	    else {
