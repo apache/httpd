@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Modify mod_rewrite to update the Vary response field if it Does
+     Anything based upon request fields.  [Ken Coar]  PR#1644
+
   *) Document the special APACI behavior for installation paths where
      ``/apache'' is appended to paths under some (well defined, of course)
      situations to prevent pollution of system locations with Apache files.
