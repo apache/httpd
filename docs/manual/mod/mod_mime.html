@@ -36,11 +36,11 @@ are all used to map file extensions onto the meta-information for that
 file.  Respectively they set the content-encoding, handler,
 content-language and MIME-type (content-type) of documents.  The
 directive <A HREF="#typesconfig">TypesConfig</A> is used to specify a
-file which also maps extensions onto mime types. The directives <A
+file which also maps extensions onto MIME types. The directives <A
 HREF="#forcetype">ForceType</A> and <A
 HREF="#sethandler">SetHandler</A> are used to associated all the files
 in a given location (<EM>e.g.</EM>, a particular directory) onto a particular
-mime type or handler.
+MIME type or handler.
 
 <P>
 
@@ -90,6 +90,7 @@ mod_imap imagemap file.
 <LI><A HREF="#addhandler">AddHandler</A>
 <LI><A HREF="#addlanguage">AddLanguage</A>
 <LI><A HREF="#addtype">AddType</A>
+<LI><A HREF="#defaultlanguage">DefaultLanguage</A>
 <LI><A HREF="#forcetype">ForceType</A>
 <LI><A HREF="#sethandler">SetHandler</A>
 <LI><A HREF="#typesconfig">TypesConfig</A>
@@ -121,7 +122,7 @@ mod_imap imagemap file.
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
 The AddEncoding directive maps the given filename extensions to the
-specified encoding type. <EM>Mime-enc</EM> is the mime encoding to use
+specified encoding type. <EM>MIME-enc</EM> is the MIME encoding to use
 for documents containing the <EM>extension</EM>. This mapping is added
 to any already in force, overriding any mappings that already exist
 for the same <EM>extension</EM>.
@@ -227,7 +228,7 @@ multiple extensions</A>
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
 The AddLanguage directive maps the given filename extensions to the
-specified content language. <EM>Mime-lang</EM> is the mime language of
+specified content language. <EM>MIME-lang</EM> is the MIME language of
 filenames containing <EM>extension</EM>.  This mapping is added to any
 already in force, overriding any mappings that already exist for the
 same <EM>extension</EM>.
@@ -275,21 +276,60 @@ multiple extensions</A>
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
 The AddType directive maps the given filename extensions onto the
-specified content type. <EM>Mime-enc</EM> is the mime type to use for
+specified content type. <EM>MIME-enc</EM> is the MIME type to use for
 filenames containing <EM>extension</EM>.  This mapping is added to any
 already in force, overriding any mappings that already exist for the
 same <EM>extension</EM>. This directive can be used to add mappings
-not listed in the mime types file (see the <CODE><A
+not listed in the MIME types file (see the <CODE><A
 HREF="#typesconfig">TypesConfig</A></CODE> directive).
 
 Example:
 <BLOCKQUOTE><CODE>
 AddType image/gif GIF
 </CODE></BLOCKQUOTE>
-It is recommended that new mime types be added using the AddType directive
+It is recommended that new MIME types be added using the AddType directive
 rather than changing the <A HREF="#typesconfig">TypesConfig</A> file.<P>
 Note that, unlike the NCSA httpd, this directive cannot be used to set the
 type of particular files.<P>
+
+<P>
+
+<STRONG>See also</STRONG>: <A HREF="#multipleext">Files with
+multiple extensions</A>
+
+<HR>
+
+<H2><A NAME="defaultlanguage">DefaultLanguage</A></H2>
+<!--%plaintext &lt;?INDEX {\tt DefaultLanguage} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> DefaultLanguage <EM>MIME-lang</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> FileInfo<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_mime<P>
+
+The DefaultLanguage directive tells Apache that all files in the
+directive's scope (<EM>e.g.</EM>, all files covered by the current
+<CODE>&lt;Directory&gt;</CODE> container) that don't have an explicit language
+extension (such as <SAMP>.fr</SAMP> or <SAMP>.de</SAMP>) should be
+considered to be the specified <EM>MIME-lang</EM> language
+by default, rather than English.  This allows entire directories
+to be marked as containing Dutch content, for instance, without
+having to rename each file.
 
 <P>
 
@@ -389,7 +429,7 @@ called, you might put the following into access.conf:
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>TypesConfig conf/mime.types</CODE><BR>
+><STRONG>Default:</STRONG></A> <CODE>TypesConfig conf/MIME.types</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -403,7 +443,7 @@ called, you might put the following into access.conf:
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_mime<P>
 
-The TypesConfig directive sets the location of the mime types configuration
+The TypesConfig directive sets the location of the MIME types configuration
 file. <EM>Filename</EM> is relative to the
 <A HREF="core.html#serverroot">ServerRoot</A>. This file sets the default list of
 mappings from filename extensions to content types; changing this file is not
