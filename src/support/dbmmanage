@@ -50,77 +50,135 @@
 # For more information on the Apache Group and the Apache HTTP server
 # project, please see <http://www.apache.org/>.
 
-
-# usage: dbmmanage <DBMfile> <command> <key> <value> <group>
+#for more functionality see the HTTPD::UserAdmin module:
+# http://www.perl.com/CPAN/modules/by-module/HTTPD/HTTPD-Tools-x.xx.tar.gz
 #
-# commands: add, delete, view, adduser
-#
-# no values needed for delete, no keys or values needed for view.
-# to change a value, simply use "add".
-# adduser encrypts the password:
-# dbmmanage <dbm file> adduser <person> <password>
-#
-# <group> is optional, and may also be supplied to add the user
-# to a specified group:
-# dbmmanage <dbm file> adduser <person> <password> <group>
+# usage: dbmmanage <DBMfile> <command> <key> <value>
 
-if (scalar(@ARGV) < 2) {
-	print "Too few arguments.\n";
-	exit;
+package dbmmanage;
+#                               -ldb    -lndbm    -lgdbm
+BEGIN { @AnyDBM_File::ISA = qw(DB_File NDBM_File GDBM_File) }
+use strict;
+use Fcntl;
+use AnyDBM_File ();
+
+my($file,$command,$key,$crypted_pwd) = @ARGV;
+
+usage() unless $file and $command and defined &{$dbmc::{$command}};
+
+# if your osname is in $newstyle_salt, then use new style salt (starts with '_' and contains
+# four bytes of iteration count and four bytes of salt).  Otherwise, just use
+# the traditional two-byte salt.
+# see the man page on your system to decide if you have a newer crypt() lib.
+# I believe that 4.4BSD derived systems do (at least BSD/OS 2.0 does).
+# The new style crypt() allows up to 20 characters of the password to be
+# significant rather than only 8.
+my $newstyle_salt = join '|', qw{bsdos}; #others?
+
+# remove extension if any
+my $chop = join '|', qw{db.? pag dir};
+$file =~ s/\.($chop)$//;
+
+my $is_update = $command eq "update";
+my $Is_Win32  = $^O eq "MSWin32"; 
+my %DB = ();
+my @range = ();
+my($mode, $flags) = $command =~ 
+    /^(?:view|check)$/ ? (undef, O_RDONLY) : (0644, O_RDWR|O_CREAT);
+
+tie %DB, "AnyDBM_File", $file, $flags, $mode;
+dbmc->$command();
+untie %DB;
+
+sub usage {
+    my $cmds = join "|", sort keys %dbmc::;
+    die "usage: $0 filename [$cmds] [username]\n";
 }
 
-$file=$ARGV[0];
-$command=$ARGV[1];
-$key=$ARGV[2];
-$value=$ARGV[3];
-$group=$ARGV[4];
-
-# create a random salt
-@range=('0'..'9','a'..'z','A'..'Z');
-srand($$|time);
-$salt=$range[rand(int($#range)+1)] . $range[rand(int($#range)+1)];
-
-if ($command eq "add") {
-        dbmopen(%DB, $file, 0664) || die "Error: $!\n";
-        $value .= ":$group" if $group ne "";
-        $DB{$key} = $value;
-        dbmclose(%DB);
-	print "Entry $key added with value $value.\n";
-	exit;
+my $x;
+sub genseed {
+    my $psf;
+    for (qw(-xlwwa -le)) { 
+	`ps $_ 2>/dev/null`;
+	$psf = $_, last unless $?;
+    }
+    srand (time ^ $$ ^ unpack("%L*", `ps $psf | gzip -f`));
+    @range = (qw(. /), '0'..'9','a'..'z','A'..'Z');
+    $x = int scalar @range;
 }
 
-if ($command eq "adduser") {
-	$hash = crypt($value, "$salt");
-        dbmopen(%DB, $file, 0664) || die "Error: $!\n";
-        $hash .= ":$group" if $group ne "";
-        $value .= ":$group" if $group ne "";
-        $DB{$key} = $hash;
-        dbmclose(%DB);
-	print "User $key added with password $value, encrypted to $hash\n";
-	exit;
+sub randchar { 
+    join '', map $range[rand $x], 1..shift||1;
 }
 
-if ($command eq "delete") {
-        dbmopen(%DB, $file, 0664) || die "Error: $!\n";
-        delete($DB{$key});
-        dbmclose(%DB);
-	exit;
+sub salt {
+    my $newstyle = $^O =~ /(?:$newstyle_salt)/;
+    genseed() unless @range; 
+    return $newstyle ? 
+	join '', "_", randchar, "a..", randchar(4) :
+        randchar(2);
 }
 
-if ($command eq "view") {
-        dbmopen(%DB, $file, undef) || die "Error: $!\n";
-        $return_status = 1;
-        unless ($key) {
-                while (($nkey,$val) = each %DB) {
-                        print "$nkey = $val\n";
-                }
-        } else {
-                $return_status = 0 if defined $DB{$key};
-                print "$key = $DB{$key}\n";
-        } 
-        dbmclose(%DB);
-	exit($return_status);
+sub getpass {
+    my $prompt = shift || "Enter password:";
+
+    unless($Is_Win32) { 
+	open STDIN, "/dev/tty" or warn "couldn't open /dev/tty $!\n";
+	system "stty -echo;";
+    }
+
+    my($c,$pwd);
+    print STDERR $prompt;
+    while ($c = getc(STDIN) and $c ne "\n" and $c ne "\r") {
+	$pwd .= $c;
+    }
+
+    system "stty echo" unless $Is_Win32;
+    print STDERR "\n";
+    die "Can't use empty password!\n" unless length $pwd;
+    return $pwd;
 }
 
-print "Command unrecognized - must be one of: view, add, adduser, delete.\n";
+sub dbmc::update {
+    die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
+    dbmc->adduser;
+}
+
+sub dbmc::add {
+    die "Can't use empty password!\n" unless $crypted_pwd;
+    unless($is_update) {
+	die "Sorry, user `$key' already exists!\n" if $DB{$key};
+    }
+    $DB{$key} = $crypted_pwd;
+    my $action = $is_update ? "updated" : "added";
+    print "User $key $action with password encrypted to $DB{$key}\n";
+}
+
+sub dbmc::adduser {
+    my $value = getpass "New password:";
+    die "They don't match, sorry.\n" unless getpass("Re-type new password:") eq $value;
+    $crypted_pwd = crypt $value, caller->salt;
+    dbmc->add;
+}
+
+sub dbmc::delete {
+    die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
+    delete $DB{$key}, print "`$key' deleted\n";
+}
+
+sub dbmc::view {
+    print $key ? "$key:$DB{$key}\n" : map { "$_:$DB{$_}\n" if $DB{$_} } keys %DB;
+}
+
+sub dbmc::check {
+    die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
+    print crypt(getpass(), $DB{$key}) eq $DB{$key} ? "password ok\n" : "password mismatch\n";
+}
+
+sub dbmc::import {
+    while(defined($_ = <STDIN>) and chomp) {
+	($key,$crypted_pwd) = split /:/, $_, 2;
+	dbmc->add;
+    }
+}
 

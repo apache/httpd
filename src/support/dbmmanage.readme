@@ -1,7 +1,140 @@
+08/01/97 - functionality of dbmmanage and dbmmanage.new are merged,
+along with adding some more goodies.
 
-Two versions of the dbmmanage script are included with this release.
-One is the old faithful version, which should continue to work if you've
-been using it; the other is a newer cut, which can be easily modified to
-support the newer extended crypt routines which are present on some
-systems (including 4.4BSD derivatives); this newer version is, for the
-nonce, experimental...
+There's a chance dbmmanage along with htpasswd, htdigest could be
+replaced by something like the (prototype) script below, which allow
+one to add passwords for:
+
+mod_auth
+mod_auth_digest
+mod_auth_dbm
+mod_auth_db
+mod_auth_msql
+mod_auth_mysql
+mod_auth_pg95
+Apache::AuthenDBI (mod_perl)
+
+and possibly others provided you have the required Perl modules
+installed available from CPAN.
+
+---8<---
+
+#!/opt/perl5/bin/perl
+
+BEGIN { @AnyDBM_File::ISA = qw(DB_File NDBM_File GDBM_File) }
+use strict;
+use HTTPD::UserAdmin ();
+use AnyDBM_File ();
+use File::Basename;
+
+my(%attr,@args);
+my $script = basename $0;
+
+#names of old various programs, just symlinks now
+$attr{DBTYPE} = {
+    dbmmanage => "DBM",
+    htpasswd  => "Text",
+    htdigest  => "Text",
+}->{$script};
+
+$attr{ENCRYPT} = "MD5" if $script eq "htdigest";
+
+do {
+    if(s/^-//) {
+	$attr{uc $_} = shift;
+    }
+    else {
+	push @args, $_ if $_;
+    }
+} while $_ = shift;
+
+my($db,$command,$key,$crypted_pwd) = @args;
+my $realm = $crypted_pwd if $attr{ENCRYPT} eq "MD5";
+
+usage() unless $db and $command and defined &{$dbmc::{$command}};
+
+if($attr{DBTYPE} eq "DBM") {
+    #remove extension if any
+    my $chop = join '|', qw{db.? pag dir};
+    $db =~ s/\.($chop)$//;
+}
+
+($attr{Mode}, $attr{Flags}) = $command =~ 
+    /^(?:view|check)$/ ? (undef, "r") : (0644, "rwc");
+
+$attr{DB} = $db;
+my $u = HTTPD::UserAdmin->new(DBMF => "AnyDBM", %attr);
+dbmc->$command();
+
+sub usage {
+    my $cmds = join "|", sort keys %dbmc::;
+    die "usage: $0 filename [$cmds] [username] [crypted password|digest realm]\n";
+}
+
+sub dbmc::update {
+    print "User `$key' updated\n" if $u->update($key,getpass());
+}
+
+sub dbmc::add {
+    print "Entry $key added with value $crypted_pwd.\n" if $u->add($key, $crypted_pwd, 1);
+}
+
+sub dbmc::adduser {
+    my $value = getpass("New password:");
+    die "They don't match, sorry.\n" unless getpass("Re-type new password:") eq $value;
+    $value = "$key:$realm:$value" if $realm; #md5
+    $u->add($key, $value);
+    print "User $key added with encrypted to ", 
+    $u->password($key), "\n";
+}
+
+sub dbmc::delete {
+    print "$key deleted\n" if $u->delete($key);
+}
+
+sub dbmc::view {
+    printf "$key:%s\n", $u->password($key) and return if $key; 
+    for ($u->list) {
+	print "$_:", $u->password($_), "\n";
+    }
+}
+
+sub dbmc::check {
+    require HTTPD::Authen;
+    print HTTPD::Authen->new($u)->basic->check($key, getpass()) ?
+	"password ok\n" : "password mismatch\n";
+}
+
+sub dbmc::import {
+    while(defined($_ = <STDIN>) and chomp) {
+	($key,$crypted_pwd) = split /:/, $_, 2;
+	dbmc->add;
+    }
+}
+
+my $Is_Win32  = $^O eq "MSWin32"; 
+sub getpass {
+    my $prompt = shift || "Enter password:";
+
+    unless($Is_Win32) { 
+	open STDIN, "/dev/tty" or warn "couldn't open /dev/tty $!\n";
+	system "stty -echo;";
+    }
+
+    my($c,$pwd);
+    print STDERR $prompt;
+    while ($c = getc(STDIN) and $c ne "\n" and $c ne "\r") {
+	$pwd .= $c;
+    }
+
+    system "stty echo" unless $Is_Win32;
+    print STDERR "\n";
+    die "Can't use empty password!\n" unless length $pwd;
+    return $pwd;
+}
+
+
+
+
+
+
