@@ -106,7 +106,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     apr_socket_t *sock;
     apr_status_t err, rv;
     char buffer[HUGE_STRING_LEN];
-    int i;
+    int i, o;
     apr_size_t nbytes;
 
     apr_pollfd_t *pollfd;
@@ -326,14 +326,15 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                              "proxy: CONNECT: sock was set");*/
                 nbytes = sizeof(buffer);
                 if (apr_recv(sock, buffer, &nbytes) == APR_SUCCESS) {
-                    int o = 0;
-                    while(nbytes)
+                    o = 0;
+                    i = nbytes;
+                    while(i > 0)
                     {
+                        nbytes = i;
 			if (apr_send(r->connection->client_socket, buffer + o, &nbytes) != APR_SUCCESS)
 			    break;
-                        i = nbytes;
-                        o += i;
-                        nbytes -= i;
+                        o += nbytes;
+                        i -= nbytes;
                     }
                 }
                 else
@@ -349,14 +350,15 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                              "proxy: CONNECT: client was set");*/
                 nbytes = sizeof(buffer);
                 if (apr_recv(r->connection->client_socket, buffer, &nbytes) == APR_SUCCESS) {
-                    int o = 0;
-                    while(nbytes)
+                    o = 0;
+                    i = nbytes;
+                    while(i > 0)
                     {
+			nbytes = i;
 			if (apr_send(sock, buffer + o, &nbytes) != APR_SUCCESS)
 			    break;
-                        i = nbytes;
-                        o += i;
-                        nbytes -= i;
+                        o += nbytes;
+                        i -= nbytes;
                     }
                 }
                 else
