@@ -1622,127 +1622,148 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     }
 }
 
+/*
+ * <!--#include virtual|file="..." [virtual|file="..."] ... -->
+ */
 static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
                                    apr_bucket_brigade *bb)
 {
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    char *parsed_string;
-    int loglevel = APLOG_ERR;
     request_rec *r = f->r;
 
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-            if (!tag || !tag_val) {
-                return APR_SUCCESS;
-            }
+    if (!ctx->argc) {
+        ap_log_rerror(APLOG_MARK,
+                      (ctx->flags & SSI_FLAG_PRINTING)
+                          ? APLOG_ERR : APLOG_WARNING,
+                      0, r, "missing argument for include element in %s",
+                      r->filename);
+    }
 
-            if (!strcmp(tag, "virtual") || !strcmp(tag, "file")) {
-                request_rec *rr = NULL;
-                char *error_fmt = NULL;
+    if (!(ctx->flags & SSI_FLAG_PRINTING)) {
+        return APR_SUCCESS;
+    }
 
-                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
-                                                    MAX_STRING_LEN,
-                                                    SSI_EXPAND_DROP_NAME);
-                if (tag[0] == 'f') {
-                    /* XXX: Port to apr_filepath_merge
-                     * be safe; only files in this directory or below allowed 
-                     */
-                    if (!is_only_below(parsed_string)) {
-                        error_fmt = "unable to include file \"%s\" "
-                                    "in parsed file %s";
-                    }
-                    else {
-                        rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
-                    }
-                }
-                else {
-                    rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
-                }
+    if (!ctx->argc) {
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
 
-                if (!error_fmt && rr->status != HTTP_OK) {
-                    error_fmt = "unable to include \"%s\" in parsed file %s";
-                }
+    while (1) {
+        char *tag     = NULL;
+        char *tag_val = NULL;
+        request_rec *rr = NULL;
+        char *error_fmt = NULL;
+        char *parsed_string;
 
-                if (!error_fmt && (ctx->flags & SSI_FLAG_NO_EXEC) && 
-                    rr->content_type && 
-                    (strncmp(rr->content_type, "text/", 5))) {
-                    error_fmt = "unable to include potential exec \"%s\" "
-                        "in parsed file %s";
-                }
-                if (error_fmt == NULL) {
-                    /* try to avoid recursive includes.  We do this by walking
-                     * up the r->main list of subrequests, and at each level
-                     * walking back through any internal redirects.  At each
-                     * step, we compare the filenames and the URIs.  
-                     *
-                     * The filename comparison catches a recursive include
-                     * with an ever-changing URL, eg.
-                     * <!--#include virtual=
-                     *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x" -->
-                     * which, although they would eventually be caught because
-                     * we have a limit on the length of files, etc., can 
-                     * recurse for a while.
-                     *
-                     * The URI comparison catches the case where the filename
-                     * is changed while processing the request, so the 
-                     * current name is never the same as any previous one.
-                     * This can happen with "DocumentRoot /foo" when you
-                     * request "/" on the server and it includes "/".
-                     * This only applies to modules such as mod_dir that 
-                     * (somewhat improperly) mess with r->filename outside 
-                     * of a filename translation phase.
-                     */
-                    int founddupe = 0;
-                    request_rec *p;
-                    for (p = r; p != NULL && !founddupe; p = p->main) {
-                        request_rec *q;
-                        for (q = p; q != NULL; q = q->prev) {
-                            if ((q->filename && rr->filename && 
-                                (strcmp(q->filename, rr->filename) == 0)) ||
-                                ((*q->uri == '/') && 
-                                 (strcmp(q->uri, rr->uri) == 0)))
-                            {
-                                founddupe = 1;
-                                break;
-                            }
-                        }
-                    }
+        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+        if (!tag || !tag_val) {
+            break;
+        }
 
-                    if (p != NULL) {
-                        error_fmt = "Recursive include of \"%s\" "
-                            "in parsed file %s";
-                    }
-                }
+        if (strcmp(tag, "virtual") && strcmp(tag, "file")) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter "
+                          "\"%s\" to tag include in %s", tag, r->filename);
+            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            break;
+        }
 
-                /* See the Kludge in send_parsed_file for why */
-                /* Basically, it puts a bread crumb in here, then looks */
-                /*   for the crumb later to see if its been here.       */
-                if (rr) 
-                    ap_set_module_config(rr->request_config, 
-                                         &include_module, r);
-
-                if (!error_fmt && ap_run_sub_req(rr)) {
-                    error_fmt = "unable to include \"%s\" in parsed file %s";
-                }
-                if (error_fmt) {
-                    ap_log_rerror(APLOG_MARK, loglevel,
-                                  0, r, error_fmt, tag_val, r->filename);
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                }
-
-                /* destroy the sub request */
-                if (rr != NULL) {
-                    ap_destroy_sub_req(rr);
-                }
+        parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL,
+                                            MAX_STRING_LEN,
+                                            SSI_EXPAND_DROP_NAME);
+        if (tag[0] == 'f') {
+            /* XXX: Port to apr_filepath_merge
+             * be safe; only files in this directory or below allowed 
+             */
+            if (!is_only_below(parsed_string)) {
+                error_fmt = "unable to include file \"%s\" in parsed file %s";
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "unknown parameter \"%s\" to tag include in %s",
-                            tag, r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
             }
+        }
+        else {
+            rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
+        }
+
+        if (!error_fmt && rr->status != HTTP_OK) {
+            error_fmt = "unable to include \"%s\" in parsed file %s";
+        }
+
+        if (!error_fmt && (ctx->flags & SSI_FLAG_NO_EXEC) &&
+            rr->content_type && strncmp(rr->content_type, "text/", 5)) {
+
+            error_fmt = "unable to include potential exec \"%s\" in parsed "
+                        "file %s";
+        }
+
+        if (!error_fmt) {
+            int founddupe = 0;
+            request_rec *p, *q;
+
+            /* try to avoid recursive includes.  We do this by walking
+             * up the r->main list of subrequests, and at each level
+             * walking back through any internal redirects.  At each
+             * step, we compare the filenames and the URIs.  
+             *
+             * The filename comparison catches a recursive include
+             * with an ever-changing URL, eg.
+             * <!--#include virtual=
+             *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x" -->
+             * which, although they would eventually be caught because
+             * we have a limit on the length of files, etc., can 
+             * recurse for a while.
+             *
+             * The URI comparison catches the case where the filename
+             * is changed while processing the request, so the 
+             * current name is never the same as any previous one.
+             * This can happen with "DocumentRoot /foo" when you
+             * request "/" on the server and it includes "/".
+             * This only applies to modules such as mod_dir that 
+             * (somewhat improperly) mess with r->filename outside 
+             * of a filename translation phase.
+             */
+             for (p = r; p && !founddupe; p = p->main) {
+                for (q = p; q; q = q->prev) {
+                    if ((q->filename && rr->filename && 
+                        (strcmp(q->filename, rr->filename) == 0)) ||
+                        ((*q->uri == '/') && 
+                        (strcmp(q->uri, rr->uri) == 0))) {
+
+                        founddupe = 1;
+                        break;
+                    }
+                }
+            }
+
+            if (p) {
+                error_fmt = "Recursive include of \"%s\" in parsed file %s";
+            }
+        }
+
+        /* See the Kludge in includes_filter for why.
+         * Basically, it puts a bread crumb in here, then looks
+         * for the crumb later to see if its been here.
+         */
+        if (rr) {
+            ap_set_module_config(rr->request_config, &include_module, r);
+        }
+
+        if (!error_fmt && ap_run_sub_req(rr)) {
+            error_fmt = "unable to include \"%s\" in parsed file %s";
+        }
+
+        if (error_fmt) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error_fmt, tag_val,
+                          r->filename);
+            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        }
+
+        /* destroy the sub request */
+        if (rr) {
+            ap_destroy_sub_req(rr);
+        }
+
+        if (error_fmt) {
+            break;
         }
     }
 
