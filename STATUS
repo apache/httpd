@@ -12,11 +12,14 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-WIN32 1.3.1 RELEASE SHOWSTOPPERS:
+WIN32 1.3.2 RELEASE SHOWSTOPPERS:
 
     * can not build tarball until someone verifies the final code
       will build on win32.  Want to avoid changes-after-tag that 
       happened with 1.3.0.
+
+    * fix O(n^2) attack in mod_isapi.c ... i.e. recopy the code from
+      scan_script_headers_err_core.
 
 Documentation that needs writing:
 
