@@ -170,7 +170,7 @@ void hold_console_open_on_error(void)
 
 /* Console Control handler for processing Ctrl-C/Ctrl-Break and
  * on Windows NT also user logoff and system shutdown,
- * this is not used for the WinNT or Win9x hidden service processes
+ * this also used for the Win9x hidden service and child process
  */
 static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
 {
@@ -234,13 +234,8 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 
 void stop_child_monitor(void)
 {
-    if (isWindowsNT()) {
-        /* Nothing to unhook */
-        return;
-    }
-    FixConsoleCtrlHandler(ap_control_handler, FALSE);
-    if (!die_on_logoff)
-        RegisterWindows9xService(FALSE);
+    if (!isWindowsNT())
+        FixConsoleCtrlHandler(ap_control_handler, 0);
 }
 
 /*
@@ -252,6 +247,8 @@ void stop_child_monitor(void)
  */
 void ap_start_child_console(int is_child_of_service)
 {
+    int maxwait = 100;
+
     /* The child is never exactly a service */
     is_service = 0;
     
@@ -290,19 +287,23 @@ void ap_start_child_console(int is_child_of_service)
 
     FreeConsole();
     AllocConsole();
-    while (!console_wnd)
+    while (maxwait-- > 0) { 
         EnumWindows(EnumttyWindow, (long)(&console_wnd));
-    ShowWindow(console_wnd, SW_HIDE);
-    if (!die_on_logoff)
-        RegisterWindows9xService(TRUE);    
-    FixConsoleCtrlHandler(ap_control_handler, TRUE);
+        if (console_wnd) {
+            ShowWindow(console_wnd, SW_HIDE);
+            break;
+        }
+        Sleep(100);
+    }
+    
+    FixConsoleCtrlHandler(ap_control_handler, die_on_logoff ? 1 : 2);
 }
 
 
 void stop_console_monitor(void)
 {
     if (!isWindowsNT)
-        FixConsoleCtrlHandler(ap_control_handler, FALSE);
+        FixConsoleCtrlHandler(ap_control_handler, 0);
 
     /* Remove the control handler at the end of the day. */
     SetConsoleCtrlHandler(ap_control_handler, FALSE);
@@ -343,7 +344,7 @@ void ap_start_console_monitor(void)
     SetConsoleCtrlHandler(ap_control_handler, TRUE);
 
     if (!isWindowsNT())
-        FixConsoleCtrlHandler(ap_control_handler, TRUE);
+        FixConsoleCtrlHandler(ap_control_handler, die_on_logoff ? 1 : 2);
 
     atexit(stop_console_monitor);
 }
@@ -371,7 +372,7 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     /* Prevent holding open the (hidden) console */
     real_exit_code = 0;
 
-    Windows9xServiceCtrlHandler(ap_control_handler, TRUE);
+    Windows9xServiceCtrlHandler(ap_control_handler, service_name);
 
     atexit(stop_service_monitor);
     

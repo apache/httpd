@@ -55,35 +55,36 @@
  *
  */
 
-/* You should (generally) not need this function, as the full
- * Windows9xServiceCtrlHandler will register the application as a
- * service, allowing it to survive user logoff.
- */
-LRESULT WINAPI RegisterWindows9xService(BOOL is_service);
 
-/* Windows9xServiceCtrlHandler registers a handler routine, freeing
- * the console window, creating a hidden window and passing the 
- * WM_SHUTDOWN message through the CTRL_SHUTDOWN event.
+/* Windows9xServiceCtrlHandler registers a handler routine, frees the
+ * console window, and registers this process as a service in Win9x.
+ * It creats a hidden window of class "ApacheWin95ServiceMonitor"
+ * and titled by the name passed, which passes the WM_SHUTDOWN message 
+ * through the given HandlerRoutine's CTRL_SHUTDOWN event.
+ * Call with name of NULL to remove the Service handler.
  */
-BOOL WINAPI Windows9xServiceCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
+BOOL WINAPI Windows9xServiceCtrlHandler(PHANDLER_ROUTINE phandler, LPCSTR name);
+
 
 /* FixConsoleControlHandler registers a handler routine with the
  * Win9xConHook.dll, creating a hidden window and forwarding the
- * WM_ENDSESSION and WM_CLOSE messages to the registered handler
+ * WM_ENDSESSION and WM_CLOSE messages to the given HandlerRoutine
  * as CTRL_SHUTDOWN_EVENT, CTRL_LOGOFF_EVENT and CTRL_CLOSE_EVENT. 
  * The application should still use SetConsoleCtrlHandler to grab
- * the CTRL_BREAK_EVENT and CTRL_C_EVENT.
+ * the CTRL_BREAK_EVENT and CTRL_C_EVENT, if desired.
  */
 BOOL WINAPI FixConsoleCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
 
-/*
- * PostMessage Hook, don't use this directly:
- */
-LRESULT CALLBACK GetMsgProc(INT hc, WPARAM wParam, LPARAM lParam);
-
 
 /*
- * SendMessage Hook, don't use this directly:
+ * Exported PostMessage Hook, never use this directly:
+ *
+ * LRESULT CALLBACK GetMsgProc(INT hc, WPARAM wParam, LPARAM lParam);
  */
-LRESULT CALLBACK CallWndProc(INT hc, WPARAM wParam, LPARAM lParam);
 
+
+/*
+ * Exported SendMessage Hook, never use this directly:
+ *
+ * LRESULT CALLBACK CallWndProc(INT hc, WPARAM wParam, LPARAM lParam);
+ */
