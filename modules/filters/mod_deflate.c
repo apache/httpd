@@ -247,6 +247,7 @@ typedef struct deflate_ctx_t
     apr_bucket_brigade *bb, *proc_bb;
 } deflate_ctx;
 
+static void* const deflate_yes = (void*)"YES";
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
 {
@@ -258,7 +259,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     int eos_only = 1;
     apr_bucket *bkt;
     char *token;
-    const char *encoding;
+    const char *encoding = NULL;
     deflate_filter_config *c = ap_get_module_config(r->server->module_config,
                                                     &deflate_module);
 
@@ -389,9 +390,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          * if we get eos_only and come round again, we want to avoid redoing
          * what we've already done, so set f->ctx to a flag here
          */
-        f->ctx = ctx = (void*)-1;
+        f->ctx = ctx = deflate_yes;
     }
-    if (ctx == (void*)-1) {
+    if (ctx == deflate_yes) {
         /* deal with the pathological case of lots of empty brigades and
          * no knowledge of whether content will follow
          */
@@ -415,7 +416,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
     }
-    if (!ctx || (ctx==(void*)-1)) {
+    if (!ctx || (ctx==deflate_yes)) {
 
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
