@@ -42,6 +42,7 @@ XCFLAGS		+= \
 # These defines will come after DEFINES
 #
 XDEFINES	+= \
+	-DAP_WANT_DIR_TRANSLATION \
 			$(EOLIST)
 
 #
