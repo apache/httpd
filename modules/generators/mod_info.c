@@ -358,9 +358,6 @@ static int display_info(request_rec *r)
 	return DECLINED;
 
     ap_set_content_type(r, "text/html");
-    if (r->header_only) {
-        return 0;
-    }
 
     ap_rputs(DOCTYPE_HTML_3_2
 	     "<html><head><title>Server Information</title></head>\n", r);
