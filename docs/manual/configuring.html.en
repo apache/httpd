@@ -12,24 +12,15 @@ HTTP server.</p>
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
     <p>Apache is configured by placing <a href="mod/directives.html">directives</a> in plain text
-    configuration files. The main configuration file is usually
-    called <code>httpd.conf</code>. The location of this file is
-    set at compile-time, but may be overridden with the
-    <code>-f</code> command line flag. In addition, other
-    configuration files may be added using the <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive. Any
-    directive may be placed in any of these configuration files.
-    Changes to the main configuration files are only recognized by
-    Apache when it is started or restarted.</p>
-
-    <p>New with Apache 1.3.13 is a feature where if any
-    configuration file is actually a directory, Apache will enter
-    that directory and parse any files (and subdirectories) found
-    there as configuration files. One possible use for this would
-    be to add VirtualHosts by creating small configuration files
-    for each host, and placing them in such a configuration
-    directory. Thus, you can add or remove VirtualHosts without
-    editing any files at all, simply adding or deleting them. This
-    makes automating such processes much easier.</p>
+    configuration files. The main configuration file is usually called
+    <code>httpd.conf</code>. The location of this file is set at
+    compile-time, but may be overridden with the <code>-f</code>
+    command line flag. In addition, other configuration files may be
+    added using the <code class="directive"><a href="./mod/core.html#include">Include</a></code>
+    directive, and wildcards can be used to include many configuration
+    files. Any directive may be placed in any of these configuration
+    files.  Changes to the main configuration files are only
+    recognized by Apache when it is started or restarted.</p>
 
     <p>The server also reads a file containing mime document types;
     the filename is set by the <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code> directive,
@@ -45,7 +36,7 @@ HTTP server.</p>
 
     <p>Directives in the configuration files are case-insensitive,
     but arguments to directives are often case sensitive. Lines
-    which begin with the hash character "#" are considered
+    that begin with the hash character "#" are considered
     comments, and are ignored. Comments may <strong>not</strong> be
     included on a line after a configuration directive. Blank lines
     and white space occurring before a directive are ignored, so
@@ -127,6 +118,5 @@ HTTP server.</p>
     directive in the main configuration files.</p>
 
     <p>For more information on <code>.htaccess</code> files, see
-    Ken Coar's tutorial on <a href="http://apache-server.com/tutorials/ATusing-htaccess.html">
-    Using .htaccess Files with Apache</a>.</p>
+    the <a href="howto/htaccess.html">.htaccess tutorial</a>.</p>
   </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
