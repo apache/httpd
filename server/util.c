@@ -69,8 +69,9 @@
  */
 
 #include "httpd.h"
-#include "http_conf_globals.h"	/* for user_id & group_id */
+#include "http_main.h"
 #include "http_log.h"
+#include "http_protocol.h"
 #if defined(SUNOS4)
 /* stdio.h has been read in ap_config.h already. Add missing prototypes here: */
 extern int fgetc(FILE *);
@@ -189,14 +190,56 @@ API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt)
 API_EXPORT(char *) ap_gm_timestr_822(pool *p, time_t sec)
 {
     struct tm *tms;
+    char *date_str = ap_palloc(p, 48 * sizeof(char));
+    char *date_str_ptr = date_str;
+    int real_year;
 
-    tms = gmtime(&sec);
+    tms = gmtime(&sec);    /* ZZZ replace with AP time routine */
 
+    /* Assumption: this is always 3 */
+    /* i = strlen(ap_day_snames[tms->tm_wday]); */
+    memcpy(date_str_ptr, ap_day_snames[tms->tm_wday], 3);
+    date_str_ptr += 3;
+    *date_str_ptr++ = ',';
+    *date_str_ptr++ = ' ';
+    *date_str_ptr++ = tms->tm_mday / 10 + '0';
+    *date_str_ptr++ = tms->tm_mday % 10 + '0';
+    *date_str_ptr++ = ' ';
+    /* Assumption: this is also always 3 */
+    /* i = strlen(ap_month_snames[tms->tm_mon]); */
+    memcpy(date_str_ptr, ap_month_snames[tms->tm_mon], 3);
+    date_str_ptr += 3;
+    *date_str_ptr++ = ' ';
+    real_year = 1900 + tms->tm_year;
+    /* This routine isn't y10k ready. */
+    *date_str_ptr++ = real_year / 1000 + '0';
+    *date_str_ptr++ = real_year % 1000 / 100 + '0';
+    *date_str_ptr++ = real_year % 100 / 10 + '0';
+    *date_str_ptr++ = real_year % 10 + '0';
+    *date_str_ptr++ = ' ';
+    *date_str_ptr++ = tms->tm_hour / 10 + '0';
+    *date_str_ptr++ = tms->tm_hour % 10 + '0';
+    *date_str_ptr++ = ':';
+    *date_str_ptr++ = tms->tm_min / 10 + '0';
+    *date_str_ptr++ = tms->tm_min % 10 + '0';
+    *date_str_ptr++ = ':';
+    *date_str_ptr++ = tms->tm_sec / 10 + '0';
+    *date_str_ptr++ = tms->tm_sec % 10 + '0';
+    *date_str_ptr++ = ' ';
+    *date_str_ptr++ = 'G';
+    *date_str_ptr++ = 'M';
+    *date_str_ptr++ = 'T';
+    *date_str_ptr = '\0';
+
+    return date_str;
     /* RFC date format; as strftime '%a, %d %b %Y %T GMT' */
+
+    /* The equivalent using sprintf. Use this for more legible but slower code
     return ap_psprintf(p,
 		"%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[tms->tm_wday],
 		tms->tm_mday, ap_month_snames[tms->tm_mon], tms->tm_year + 1900,
 		tms->tm_hour, tms->tm_min, tms->tm_sec);
+    */
 }
 
 /* What a pain in the ass. */
@@ -1428,27 +1471,34 @@ static char x2c(const char *what)
  */
 API_EXPORT(int) ap_unescape_url(char *url)
 {
-    register int x, y, badesc, badpath;
+    register int badesc, badpath;
+    char *x, *y;
 
     badesc = 0;
     badpath = 0;
-    for (x = 0, y = 0; url[y]; ++x, ++y) {
-	if (url[y] != '%')
-	    url[x] = url[y];
+    /* Initial scan for first '%'. Don't bother writing values before
+     * seeing a '%' */
+    y = strchr(url, '%');
+    if (y == NULL) {
+        return OK;
+    }
+    for (x = y; *y; ++x, ++y) {
+	if (*y != '%')
+	    *x = *y;
 	else {
-	    if (!ap_isxdigit(url[y + 1]) || !ap_isxdigit(url[y + 2])) {
+	    if (!ap_isxdigit(*(y + 1)) || !ap_isxdigit(*(y + 2))) {
 		badesc = 1;
-		url[x] = '%';
+		*x = '%';
 	    }
 	    else {
-		url[x] = x2c(&url[y + 1]);
+		*x = x2c(y + 1);
 		y += 2;
-		if (url[x] == '/' || url[x] == '\0')
+		if (*x == '/' || *x == '\0')
 		    badpath = 1;
 	    }
 	}
     }
-    url[x] = '\0';
+    *x = '\0';
     if (badesc)
 	return BAD_REQUEST;
     else if (badpath)
