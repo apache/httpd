@@ -106,14 +106,14 @@ AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines;
 AP_DECLARE_DATA ap_directive_t *ap_conftree;
 
 APR_HOOK_STRUCT(
-	       APR_HOOK_LINK(header_parser)
-	       APR_HOOK_LINK(pre_config)
-	       APR_HOOK_LINK(post_config)
-	       APR_HOOK_LINK(open_logs)
-	       APR_HOOK_LINK(child_init)
-	       APR_HOOK_LINK(handler)
-               APR_HOOK_LINK(quick_handler)
-	       APR_HOOK_LINK(optional_fn_retrieve)
+           APR_HOOK_LINK(header_parser)
+           APR_HOOK_LINK(pre_config)
+           APR_HOOK_LINK(post_config)
+           APR_HOOK_LINK(open_logs)
+           APR_HOOK_LINK(child_init)
+           APR_HOOK_LINK(handler)
+           APR_HOOK_LINK(quick_handler)
+           APR_HOOK_LINK(optional_fn_retrieve)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,
@@ -124,6 +124,58 @@ AP_IMPLEMENT_HOOK_VOID(pre_config,
 AP_IMPLEMENT_HOOK_VOID(post_config,
 		       (apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp,
                         server_rec *s),(pconf,plog,ptemp,s))
+/* During the course of debugging I expanded this macro out, so
+ * rather than remove all the useful information there is in the
+ * following lines, I'm going to leave it here in case anyone
+ * else finds it useful.
+ *
+ * Ben has looked at it and thinks it correct :)
+ *
+AP_DECLARE(void) ap_hook_post_config(ap_HOOK_post_config_t *pf,
+                                     const char * const *aszPre,
+                                     const char * const *aszSucc,
+                                     int nOrder)
+{
+    ap_LINK_post_config_t *pHook;
+
+    if(!_hooks.link_post_config) { 
+        _hooks.link_post_config=apr_array_make(apr_global_hook_pool,1,
+	                                           sizeof(ap_LINK_post_config_t));
+	    apr_hook_sort_register("post_config",&_hooks.link_post_config);
+	}
+
+    pHook=apr_array_push(_hooks.link_post_config);
+    pHook->pFunc=pf;
+    pHook->aszPredecessors=aszPre;
+    pHook->aszSuccessors=aszSucc;
+    pHook->nOrder=nOrder;
+    pHook->szName=apr_current_hooking_module;
+
+    if(apr_debug_module_hooks)
+        apr_show_hook("post_config",aszPre,aszSucc);
+}
+
+AP_DECLARE(apr_array_header_t *) ap_hook_get_post_config(void) {
+    return _hooks.link_post_config;
+}
+
+AP_DECLARE(void) ap_run_post_config (apr_pool_t *pconf,
+                                     apr_pool_t *plog,
+                                     apr_pool_t *ptemp,
+                                     server_rec *s)
+{
+    ap_LINK_post_config_t *pHook;
+    int n;
+
+    if(!_hooks.link_post_config)
+        return;
+
+    pHook=(ap_LINK_post_config_t *)_hooks.link_post_config->elts;
+    for(n=0 ; n < _hooks.link_post_config->nelts ; ++n)
+        pHook[n].pFunc (pconf, plog, ptemp, s);
+}
+ */
+
 AP_IMPLEMENT_HOOK_VOID(open_logs,
 		       (apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, 
                         server_rec *s),(pconf,plog,ptemp,s))
