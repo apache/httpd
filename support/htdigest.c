@@ -212,7 +212,8 @@ int main(int argc, const char * const argv[])
     if (argc == 5) {
         if (strcmp(argv[1], "-c"))
             usage();
-        rv = apr_file_open(&f, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
+        rv = apr_file_open(&f, argv[2], APR_WRITE | APR_CREATE,
+                           APR_OS_DEFAULT, cntxt);
         if (rv != APR_SUCCESS) {
             char errmsg[120];
 
@@ -242,7 +243,7 @@ int main(int argc, const char * const argv[])
         exit(1);
     }
 
-    if (apr_file_open(&f, argv[1], APR_READ, -1, cntxt) != APR_SUCCESS) {
+    if (apr_file_open(&f, argv[1], APR_READ, APR_OS_DEFAULT, cntxt) != APR_SUCCESS) {
         apr_file_printf(errfile,
                 "Could not open passwd file %s for reading.\n", argv[1]);
         apr_file_printf(errfile, "Use -c option to create new one.\n");
