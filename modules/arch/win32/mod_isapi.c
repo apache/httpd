@@ -86,6 +86,7 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "mod_core.h"
+#include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
 #include "apr_buckets.h"
@@ -509,13 +510,14 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
 /* Our "Connection ID" structure */
 typedef struct isapi_cid {
     EXTENSION_CONTROL_BLOCK *ecb;
-    isapi_dir_conf dconf;
-    isapi_loaded *isa;
-    request_rec  *r;
+    isapi_dir_conf           dconf;
+    isapi_loaded            *isa;
+    request_rec             *r;
+    int                      headers_sent;
 #ifdef FAKE_ASYNC
-    PFN_HSE_IO_COMPLETION completion;
-    void                 *completion_arg;
-    apr_thread_mutex_t   *completed;
+    PFN_HSE_IO_COMPLETION    completion;
+    void                    *completion_arg;
+    apr_thread_mutex_t      *completed;
 #endif
 } isapi_cid;
 
@@ -640,11 +642,11 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
     if ((flags & HSE_IO_ASYNC) && cid->completion) {
         if (rv == OK) {
             cid->completion(cid->ecb, cid->completion_arg, 
-                            ERROR_SUCCESS, *buf_size);
+                            *buf_size, ERROR_SUCCESS);
         }
         else {
             cid->completion(cid->ecb, cid->completion_arg, 
-                            ERROR_WRITE_FAULT, *buf_size);
+                            *buf_size, ERROR_WRITE_FAULT);
         }
     }
 #endif
@@ -685,26 +687,65 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
                                         apr_size_t statlen,
                                         apr_size_t headlen)
 {
+    int head_present = 1;
     int termarg;
     char *termch;
+    apr_size_t ate = 0;
+
+    if (!head || headlen == 0 || !*head) {
+        head = stat;
+        stat = NULL;
+        headlen = statlen;
+        statlen = 0;
+        head_present = 0; /* Don't eat the header */
+    }
 
     if (!stat || statlen == 0 || !*stat) {
-        stat = "Status: 200 OK";
+        if (head && headlen && *head && ((stat = memchr(head, '\r', headlen))
+                                      || (stat = memchr(head, '\n', headlen))
+                                      || (stat = memchr(head, '\0', headlen))
+                                      || (stat = head + headlen))) {
+            statlen = stat - head;
+            if (memchr(head, ':', statlen)) {
+                stat = "Status: 200 OK";
+                statlen = strlen(stat);
+            }
+            else {
+                char *flip = head;
+                head = stat;
+                stat = flip;
+                headlen -= statlen;
+                ate += statlen;
+                if (*head == '\r' && headlen)
+                    ++head, --headlen, ++ate;
+                if (*head == '\n' && headlen)
+                    ++head, --headlen, ++ate;
+            }
+        }
     }
-    else {
-        char *newstat;
-        newstat = apr_palloc(cid->r->pool, statlen + 9);
+
+    if (stat && (statlen > 0) && *stat) {
+        char *newstat = apr_palloc(cid->r->pool, statlen + 9);
+        char *stattok = (char*)memchr(stat, ' ', statlen - 1) + 1;
         strcpy(newstat, "Status: ");
+        /* Now decide if we follow the xxx message 
+         * or the http/x.x xxx message format 
+         */
+        if (!apr_isdigit(*stat) && stattok && apr_isdigit(*stattok)) {
+            statlen -= stattok - (char*)stat;
+            stat = stattok;
+        }
         apr_cpystrn(newstat + 8, stat, statlen + 1);
         stat = newstat;
     }
 
     if (!head || headlen == 0 || !*head) {
         head = "\r\n";
+        headlen = 2;
     }
     else
     {
-        if (head[headlen]) {
+        if (head[headlen - 1] && head[headlen]) {
             /* Whoops... not NULL terminated */
             head = apr_pstrndup(cid->r->pool, head, headlen);
         }
@@ -716,25 +757,40 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
      *
      * Parse them out, or die trying 
      */
-    cid->r->status= ap_scan_script_header_err_strs(cid->r, NULL, &termch,
-                                                  &termarg, stat, head, NULL);
+    if (stat) {
+        cid->r->status = ap_scan_script_header_err_strs(cid->r, NULL, 
+                                        &termch, &termarg, stat, head, NULL);
+    }
+    else {
+        cid->r->status = ap_scan_script_header_err_strs(cid->r, NULL, 
+                                        &termch, &termarg, head, NULL);
+    }
     cid->ecb->dwHttpStatusCode = cid->r->status;
     if (cid->r->status == HTTP_INTERNAL_SERVER_ERROR)
         return -1;
-    
-    /* Headers will actually go when they are good and ready */
 
-    /* If all went well, tell the caller we consumed the headers complete */
-    if (!termch)
-        return(headlen);
-
-    /* Any data left is sent directly by the caller, all we
-     * give back is the size of the headers we consumed
+    /* If only Status was passed, we consumed nothing 
      */
-    if (termch && (termarg == 1) && head + headlen > termch) {
-        return termch - head;
+    if (!head_present)
+        return 0;
+
+    cid->headers_sent = 1;
+
+    /* If all went well, tell the caller we consumed the headers complete 
+     */
+    if (!termch)
+        return(ate + headlen);
+
+    /* Any data left must be sent directly by the caller, all we
+     * give back is the size of the headers we consumed (which only
+     * happens if the parser got to the head arg, which varies based
+     * on whether we passed stat+head to scan, or only head.
+     */
+    if (termch && (termarg == (stat ? 1 : 0))
+               && head_present && head + headlen > termch) {
+        return ate + termch - head;
     }
-    return 0;
+    return ate;
 }
 
 int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid, 
@@ -748,7 +804,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
     request_rec *subreq;
 
     switch (HSE_code) {
-    case 1: /* HSE_REQ_SEND_URL_REDIRECT_RESP */
+    case HSE_REQ_SEND_URL_REDIRECT_RESP:
         /* Set the status to be returned when the HttpExtensionProc()
          * is done.
          * WARNING: Microsoft now advertises HSE_REQ_SEND_URL_REDIRECT_RESP
@@ -756,8 +812,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          *          They most definately are not, even in their own samples.
          */
         apr_table_set (r->headers_out, "Location", buf_data);
-        cid->r->status = cid->ecb->dwHttpStatusCode 
-                                               = HTTP_MOVED_TEMPORARILY;
+        cid->r->status = cid->ecb->dwHttpStatusCode = HTTP_MOVED_TEMPORARILY;
         return 1;
 
     case HSE_REQ_SEND_URL:
@@ -816,7 +871,6 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
 #ifdef FAKE_ASYNC
         if (cid->completed) {
             apr_thread_mutex_unlock(cid->completed);
-            cid->completed = NULL;
         }
 #endif
         return 1;
@@ -891,16 +945,16 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
     case HSE_REQ_TRANSMIT_FILE:
     {
         HSE_TF_INFO *tf = (HSE_TF_INFO*)buf_data;
+        apr_uint32_t sent = 0;
+        apr_ssize_t ate = 0;
         apr_status_t rv;
         apr_bucket_brigade *bb;
         apr_bucket *b;
         apr_file_t *fd;
+        apr_off_t fsize;
 
 #ifdef FAKE_ASYNC
-        if ((tf->dwFlags & HSE_IO_ASYNC) && cid->isa->fakeasync) {
-            /* TBD */
-        }
-        else /* if (!cid->isa->fakeasync && ... */
+        if (!cid->isa->fakeasync)
 #endif
         if (tf->dwFlags & HSE_IO_ASYNC)
         {
@@ -912,54 +966,84 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             return 0;
         }
         
-        if ((rv = apr_os_file_put(&fd, tf->hFile, 0, r->pool)) != APR_SUCCESS) {
+        if ((rv = apr_os_file_put(&fd, &tf->hFile, 0, r->pool)) != APR_SUCCESS) {
             return 0;
+        }
+        if (tf->BytesToWrite) {
+            fsize = tf->BytesToWrite;
+        }
+        else {
+            apr_finfo_t fi;
+            if (apr_file_info_get(&fi, APR_FINFO_SIZE, fd) != APR_SUCCESS) {
+                SetLastError(ERROR_INVALID_PARAMETER);
+                return 0;
+            }
+            fsize = fi.size - tf->Offset;
         }
         
         /* apr_dupfile_oshandle (&fd, tf->hFile, r->pool); */
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-        if (tf->dwFlags & HSE_IO_SEND_HEADERS) 
-        {
-            /* According to MS: if calling HSE_REQ_TRANSMIT_FILE with the
-             * HSE_IO_SEND_HEADERS flag, then you can't otherwise call any
-             * HSE_SEND_RESPONSE_HEADERS* fn, but if you don't use the flag,
-             * you must have done so.  They document that the pHead headers
-             * option is valid only for HSE_IO_SEND_HEADERS - we are a bit
-             * more flexible and assume with the flag, pHead are the
-             * response headers, and without, pHead simply contains text
-             * (handled after this case).
-             */
-            apr_ssize_t ate = send_response_header(cid, tf->pszStatusCode, 
-                                                   (char*)tf->pHead,
-                                                   strlen(tf->pszStatusCode), 
-                                                   tf->HeadLength);
+        /* According to MS: if calling HSE_REQ_TRANSMIT_FILE with the
+         * HSE_IO_SEND_HEADERS flag, then you can't otherwise call any
+         * HSE_SEND_RESPONSE_HEADERS* fn, but if you don't use the flag,
+         * you must have done so.  They document that the pHead headers
+         * option is valid only for HSE_IO_SEND_HEADERS - we are a bit
+         * more flexible and assume with the flag, pHead are the
+         * response headers, and without, pHead simply contains text
+         * (handled after this case).
+         */
+        if ((tf->dwFlags & HSE_IO_SEND_HEADERS) && tf->pszStatusCode) {
+            ate = send_response_header(cid, tf->pszStatusCode,  
+                                            (char*)tf->pHead,
+                                            strlen(tf->pszStatusCode),
+                                            tf->HeadLength);
+        }
+        else if (!cid->headers_sent && tf->pHead && tf->HeadLength 
+                                    && *(char*)tf->pHead) {
+            ate = send_response_header(cid, NULL, (char*)tf->pHead,
+                                            0, tf->HeadLength);
             if (ate < 0)
             {
                 apr_brigade_destroy(bb);
                 SetLastError(ERROR_INVALID_PARAMETER);
                 return 0;
             }
-            if ((apr_size_t)ate < tf->HeadLength)
-            {
-                b = apr_bucket_transient_create((char*)tf->pHead + ate, 
-                                                tf->HeadLength - ate,
-                                                c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, b);
-            }
         }
-        else if (tf->pHead && tf->HeadLength) {
-            b = apr_bucket_transient_create((char*)tf->pHead, 
-                                            tf->HeadLength,
-                                            c->bucket_alloc);
+
+        if (tf->pHead && (apr_size_t)ate < tf->HeadLength) {
+            sent = tf->HeadLength - ate;
+            b = apr_bucket_transient_create((char*)tf->pHead + ate, 
+                                            sent, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
 
-        b = apr_bucket_file_create(fd, tf->Offset, 
-                                   tf->BytesToWrite, r->pool, c->bucket_alloc);
+        sent += (apr_uint32_t)fsize;
+#if APR_HAS_LARGE_FILES
+        if (r->finfo.size > AP_MAX_SENDFILE) {
+            /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
+             * no greater than MAX(apr_size_t), and more granular than that
+             * in case the brigade code/filters attempt to read it directly.
+             */
+            b = apr_bucket_file_create(fd, tf->Offset, AP_MAX_SENDFILE, 
+                                       r->pool, c->bucket_alloc);
+            while (fsize > AP_MAX_SENDFILE) {
+                apr_bucket *bc;
+                apr_bucket_copy(b, &bc);
+                APR_BRIGADE_INSERT_TAIL(bb, bc);
+                b->start += AP_MAX_SENDFILE;
+                fsize -= AP_MAX_SENDFILE;
+            }
+            b->length = (apr_size_t)fsize; /* Resize just the last bucket */
+        }
+        else
+#endif
+            b = apr_bucket_file_create(fd, tf->Offset, (apr_size_t)fsize, 
+                                       r->pool, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         
         if (tf->pTail && tf->TailLength) {
+            sent += tf->TailLength;
             b = apr_bucket_transient_create((char*)tf->pTail, 
                                             tf->TailLength, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -980,26 +1064,26 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             if (tf->pfnHseIO) {
                 if (rv == OK) {
                     tf->pfnHseIO(cid->ecb, tf->pContext, 
-                                 ERROR_SUCCESS, *buf_size);
+                                 ERROR_SUCCESS, sent);
                 }
                 else {
                     tf->pfnHseIO(cid->ecb, tf->pContext, 
-                                 ERROR_WRITE_FAULT, *buf_size);
+                                 ERROR_WRITE_FAULT, sent);
                 }
             }
-            else {
+            else if (cid->completion) {
                 if (rv == OK) {
                     cid->completion(cid->ecb, cid->completion_arg, 
-                                    ERROR_SUCCESS, *buf_size);
+                                    sent, ERROR_SUCCESS);
                 }
                 else {
                     cid->completion(cid->ecb, cid->completion_arg, 
-                                    ERROR_WRITE_FAULT, *buf_size);
+                                    sent, ERROR_WRITE_FAULT);
                 }
             }
         }
 #endif
-        return 1;
+        return (rv == OK);
     }
 
     case HSE_REQ_REFRESH_ISAPI_ACL:
@@ -1016,16 +1100,45 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         return 1;
 
     case HSE_REQ_ASYNC_READ_CLIENT:
+    {
+        apr_uint32_t read = 0;
 #ifdef FAKE_ASYNC
-        /* TBD: Fake it */
-#else
-        if (cid->dconf.log_unsupported)
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI: asynchronous I/O not supported: %s", 
-                          r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
-        return 0;
+        int res;
+        if (!cid->isa->fakeasync)
 #endif
+        {
+            if (cid->dconf.log_unsupported) 
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
+                            "ISAPI: asynchronous I/O not supported: %s", 
+                            r->filename);
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return 0;
+        }
+
+#ifdef FAKE_ASYNC
+        if (r->remaining < *buf_size) {
+            *buf_size = (apr_size_t)r->remaining;
+        }
+
+        while (read < *buf_size &&
+            ((res = ap_get_client_block(r, (char*)buf_data + read,
+                                        *buf_size - read)) > 0)) {
+            read += res;
+        }
+
+        if ((*data_type & HSE_IO_ASYNC) && cid->completion) {
+            if (res >= 0) {
+                cid->completion(cid->ecb, cid->completion_arg, 
+                                read, ERROR_SUCCESS);
+            }
+            else {
+                cid->completion(cid->ecb, cid->completion_arg, 
+                                read, ERROR_READ_FAULT);
+            }
+        }
+        return (res >= 0);
+#endif
+    }
 
     case HSE_REQ_GET_IMPERSONATION_TOKEN:  /* Added in ISAPI 4.0 */
         if (cid->dconf.log_unsupported)
@@ -1126,9 +1239,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
     {
         HSE_SEND_HEADER_EX_INFO *shi = (HSE_SEND_HEADER_EX_INFO*)buf_data;
 
-    /*  XXX: ignore shi->fKeepConn?  We shouldn't need the advise
-     *  r->connection->keepalive = shi->fKeepConn; 
-     */
+        /*  Ignore shi->fKeepConn - we don't want the advise
+         */
         apr_ssize_t ate = send_response_header(cid, shi->pszStatus, 
                                                shi->pszHeader,
                                                shi->cchStatus, 
@@ -1250,7 +1362,9 @@ apr_status_t isapi_handler (request_rec *r)
         apr_table_setn(e, "SERVER_PORT_SECURE", "0");
     apr_table_setn(e, "URL", r->uri);
 
-    /* Set up connection structure and ecb */
+    /* Set up connection structure and ecb,
+     * NULL or zero out most fields.
+     */
     cid = apr_pcalloc(r->pool, sizeof(isapi_cid));
     
     /* Fixup defaults for dconf */
@@ -1268,32 +1382,31 @@ apr_status_t isapi_handler (request_rec *r)
     cid->isa = isa;
     cid->r = r;
     cid->r->status = 0;
-#ifdef FAKE_ASYNC
-    cid->completed = NULL;
-    cid->completion = NULL;
-#endif
     
     cid->ecb->cbSize = sizeof(EXTENSION_CONTROL_BLOCK);
     cid->ecb->dwVersion = isa->report_version;
     cid->ecb->dwHttpStatusCode = 0;
     strcpy(cid->ecb->lpszLogData, "");
-    // TODO: are copies really needed here?
-    cid->ecb->lpszMethod = apr_pstrdup(r->pool, (char*) r->method);
-    cid->ecb->lpszQueryString = apr_pstrdup(r->pool, 
-                                (char*) apr_table_get(e, "QUERY_STRING"));
-    cid->ecb->lpszPathInfo = apr_pstrdup(r->pool, 
-                             (char*) apr_table_get(e, "PATH_INFO"));
-    cid->ecb->lpszPathTranslated = apr_pstrdup(r->pool, 
-                                   (char*) apr_table_get(e, "PATH_TRANSLATED"));
-    cid->ecb->lpszContentType = apr_pstrdup(r->pool, 
-                                (char*) apr_table_get(e, "CONTENT_TYPE"));
+    /* TODO: are copies really needed here?
+     */
+    cid->ecb->lpszMethod = (char*) r->method;
+    cid->ecb->lpszQueryString = (char*) apr_table_get(e, "QUERY_STRING");
+    cid->ecb->lpszPathInfo = (char*) apr_table_get(e, "PATH_INFO");
+    cid->ecb->lpszPathTranslated = (char*) apr_table_get(e, "PATH_TRANSLATED");
+    cid->ecb->lpszContentType = (char*) apr_table_get(e, "CONTENT_TYPE");
+    
+    /* Based on some examples I've noticed, NULL is expected here. 
+     */
+    if (!*cid->ecb->lpszQueryString) {
+        cid->ecb->lpszQueryString = NULL;
+    }
+
     /* Set up the callbacks */
     cid->ecb->GetServerVariable = GetServerVariable;
     cid->ecb->WriteClient = WriteClient;
     cid->ecb->ReadClient = ReadClient;
     cid->ecb->ServerSupportFunction = ServerSupportFunction;
 
-    
     /* Set up client input */
     res = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR);
     if (res) {
@@ -1373,7 +1486,7 @@ apr_status_t isapi_handler (request_rec *r)
 #ifdef FAKE_ASYNC
             /* emulating async behavior...
              *
-             * Create a cid->completed event and wait on it for some timeout
+             * Create a cid->completed mutex and wait on it for some timeout
              * so that the app thinks is it running async.
              *
              * All async ServerSupportFunction calls will be handled through
@@ -1384,21 +1497,24 @@ apr_status_t isapi_handler (request_rec *r)
              */
             if (isa->fakeasync) 
             {
+                apr_thread_mutex_t *comp;
+
                 rv = apr_thread_mutex_create(&cid->completed, 
                                              APR_THREAD_MUTEX_DEFAULT, 
                                              r->pool);
-                if (rv != APR_SUCCESS 
-                        || (rv = apr_thread_mutex_lock(cid->completed)) 
-                               != APR_SUCCESS) {
-                    /* TODO: If this gets hung, then do we kill our own
-                     * thread to force its death?  No timeout options for
-                     * thread_mutex locks???  The module is still hanging
-                     * on to our ecb and cid gook, and it won't be good to
-                     * just destroy that pool.  Outch.
-                     */
+                comp = cid->completed;
+                if (cid->completed && (rv == APR_SUCCESS)) {
+                    rv = apr_thread_mutex_lock(comp);
+                }
+                /* The completion port is now locked.  When we regain the
+                 * lock, we may destroy the request.
+                 */
+                if (cid->completed && (rv == APR_SUCCESS)) {
+                    rv = apr_thread_mutex_lock(comp);
                 }
                 break;
             }
+            else
 #endif
             if (cid->dconf.log_unsupported)
             {
@@ -1428,7 +1544,7 @@ apr_status_t isapi_handler (request_rec *r)
         cid->r->status = cid->ecb->dwHttpStatusCode;
     }
 
-    return OK;		/* NOT r->status, even if it has changed. */
+    return cid->r->status;
 }
 
 /**********************************************************
