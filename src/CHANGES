@@ -1,5 +1,11 @@
 Changes with Apache 1.3.24
 
+  *) NetWare: Added the module mod_log_nw to handle log rotation.
+     This module adds LogRotateDaily and LogRotateInterval to allow
+     all of the custom logs to be either rotated on a daily basis or
+     on a specific interval. Based on a patch by Bertrand Demiddelaer.
+     [Brad Nicholes bnicholes@novell.com]
+
   *) Fix typo in rotatelogs.8.  [Will Lowe <harpo@thebackrow.net>]
 
   *) Clean up warnings in mod_proxy [Chuck Murcko <chuck@topsail.org>]
