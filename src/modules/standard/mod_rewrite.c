@@ -1245,8 +1245,11 @@ static int hook_uri2file(request_rec *r)
 #endif
             rewritelog(r, 2, "local path result: %s", r->filename);
 
-            /* the filename has to start with a slash! */
-            if (!ap_os_is_path_absolute(r->filename)) {
+            /* the filename must be either an absolute local path or an
+             * absolute local URL.
+             */
+            if (   *r->filename != '/'
+                && !ap_os_is_path_absolute(r->filename)) {
                 return BAD_REQUEST;
             }
 
@@ -1441,14 +1444,39 @@ static int hook_fixup(request_rec *r)
                     ;
                 /* skip '://' */
                 cp += 3;
-                if ((cp = strchr(cp, '/')) != NULL) {
+                if ((cp = strchr(cp, '/')) != NULL && *(++cp)) {
                     rewritelog(r, 2,
                                "[per-dir %s] trying to replace "
                                "prefix %s with %s",
                                dconf->directory, dconf->directory,
                                dconf->baseurl);
-                    cp2 = subst_prefix_path(r, cp, dconf->directory,
-                                            dconf->baseurl);
+
+                    /* I think, that hack needs an explanation:
+                     * well, here is it:
+                     * mod_rewrite was written for unix systems, were
+                     * absolute file-system paths start with a slash.
+                     * URL-paths _also_ start with slashes, so they
+                     * can be easily compared with system paths.
+                     *
+                     * the following assumes, that the actual url-path
+                     * may be prefixed by the current directory path and
+                     * tries to replace the system path with the RewriteBase
+                     * URL.
+                     * That assumption is true if we use a RewriteRule like
+                     *
+                     * RewriteRule ^foo bar [R]
+                     *
+                     * (see apply_rewrite_rule function)
+                     * However on systems that don't have a / as system
+                     * root this will never match, so we skip the / after the
+                     * hostname and compare/substitute only the stuff after it.
+                     *
+                     * (note that cp was already increased to the right value)
+                     */
+                    cp2 = subst_prefix_path(r, cp, (*dconf->directory == '/')
+                                                   ? dconf->directory + 1
+                                                   : dconf->directory,
+                                            dconf->baseurl + 1);
                     if (strcmp(cp2, cp) != 0) {
                         *cp = '\0';
                         r->filename = ap_pstrcat(r->pool, r->filename,
@@ -1530,8 +1558,11 @@ static int hook_fixup(request_rec *r)
                 r->filename = ap_pstrdup(r->pool, r->filename+12);
             }
 
-            /* the filename has to start with a slash! */
-            if (!ap_os_is_path_absolute(r->filename)) {
+            /* the filename must be either an absolute local path or an
+             * absolute local URL.
+             */
+            if (   *r->filename != '/'
+                && !ap_os_is_path_absolute(r->filename)) {
                 return BAD_REQUEST;
             }
 
@@ -2067,12 +2098,12 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
 
     /*
-     *   Again add the previously stripped per-directory location
-     *   prefix if the new URI is not a new one for this
-     *   location, i.e. if it's not starting with either a slash
-     *   or a fully qualified URL scheme.
+     *  Add the previously stripped per-directory location
+     *  prefix if the new URI is not a new one for this
+     *  location, i.e. if it's not an absolute URL (!) path nor
+     *  a fully qualified URL scheme.
      */
-    if (prefixstrip && !ap_os_is_path_absolute(r->filename)
+    if (prefixstrip && *r->filename != '/'
 	&& !is_absolute_uri(r->filename)) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
