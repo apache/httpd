@@ -93,6 +93,7 @@
 #include <pwd.h>
 #include <pthread.h>
 #include <sys/stat.h>
+#include <sys/un.h>
 #include <signal.h>
 #include <setjmp.h>
 #include <stropts.h>
@@ -120,12 +121,13 @@ static jmp_buf jmpbuffer;
 struct child_info_t {
     uid_t uid;
     gid_t gid;
-    int   readpipe;
+    int sd;
 };
 
 typedef struct {
-    int        readpipe;
-    int        writepipe;
+    const char *sockname;    /* The base name for the socket */
+    const char *fullsockname;   /* socket base name + extension */
+    int        sd;       /* The socket descriptor */
 } perchild_server_conf;
 
 typedef struct child_info_t child_info_t;
@@ -669,19 +671,25 @@ fflush(stderr);
             }
             pthread_mutex_unlock(&idle_thread_count_mutex);
             if (thread_socket_table[thread_num] == -2) {
-                int sd;
-                int pd;
-                struct strrecvfd recvfd;
+                char cbuf[CMSG_SPACE(sizeof(int))];
+                struct msghdr mh = {0};
+                struct cmsghdr *cm;
+                int *dp, ret, sd;
 fprintf(stderr, "Got a request from a different child\n");
 fflush(stderr);
+                mh.msg_control = cbuf;
+                mh.msg_controllen = sizeof cbuf;
+                cm = CMSG_FIRSTHDR(&mh);
+                cm->cmsg_len = CMSG_LEN(sizeof(int));
+                cm->cmsg_level = SOL_SOCKET;
+                cm->cmsg_type = SCM_RIGHTS;
                 
                 apr_get_os_sock(&sd, csd);
-                ioctl(sd, I_RECVFD, &recvfd);
+                ret = recvmsg(sd, &mh, 0);
 
-                pd = recvfd.fd;
-                ioctl(pd, I_RECVFD, &recvfd);
+                dp = (int *)CMSG_DATA(cm);
 
-                thread_socket_table[thread_num] = recvfd.fd;
+                thread_socket_table[thread_num] = *dp;
             }
             if (setjmp(jmpbuffer) != 1) {
                 process_socket(ptrans, csd, conn_id);
@@ -855,7 +863,7 @@ static void child_main(int child_num_arg)
 #endif
 
     /* The child socket */
-    apr_put_os_sock(&listenfds[1], &child_info_table[child_num].readpipe, pchild);
+    apr_put_os_sock(&listenfds[1], &child_info_table[child_num].sd, pchild);
 
     num_listenfds++;
     for (lr = ap_listeners, i = 2; i <= num_listenfds; lr = lr->next, ++i)
@@ -1321,7 +1329,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
     for (i = 0; i < HARD_SERVER_LIMIT; i++) {
         child_info_table[i].uid = -1;
         child_info_table[i].gid = -1;
-        child_info_table[i].readpipe = -1;
+        child_info_table[i].sd = -1;
     }
     for (i = 0; i < HARD_THREAD_LIMIT; i++) {
         thread_socket_table[i] = -1;
@@ -1330,40 +1338,107 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 
 static int pass_request(request_rec *r)
 {
-    /* Add 2 to the length.  1 for the socket, and one for a 0 byte. */
-    int len = r->connection->client->inptr - r->connection->client->inbase + 2;
-    char *foo = apr_palloc(r->pool, len);
+    char cbuf[CMSG_SPACE(sizeof(int))];
+    int len = r->connection->client->inptr - r->connection->client->inbase;
     apr_socket_t *thesock = ap_iol_get_socket(r->connection->client->iol);
+    struct msghdr mh = {0};
+    struct cmsghdr *cm;
+    struct iovec iov;
+    int *dp;
     int sfd;
-    int realfds[2];
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
 
-    pipe(realfds);
-    if (ioctl(sconf->writepipe, I_SENDFD, realfds[0]) < 0);
-
     apr_get_os_sock(&sfd, thesock);
-    foo[0] = sfd;
-    foo[1] = 0; 
-    apr_cpystrn(foo + 2, r->connection->client->inbase, len);
-    
-    if (write(realfds[1], foo, len) != len) {
-        apr_destroy_pool(r->pool);
-        return -1;
-    }
 
-    if (ioctl(sconf->writepipe, I_SENDFD, sfd) < 0) {
-fprintf(stderr, "Could not send %d %d\n", errno, sconf->writepipe);
+    mh.msg_control = cbuf;
+    mh.msg_controllen = sizeof cbuf;
+    cm = CMSG_FIRSTHDR(&mh);
+    cm->cmsg_len = CMSG_LEN(sizeof(int));
+    cm->cmsg_level = SOL_SOCKET;
+    cm->cmsg_type = SCM_RIGHTS;
+
+    dp = (int *)(CMSG_DATA(cm));
+    *dp = sfd;
+
+    apr_cpystrn(iov.iov_base, r->connection->client->inbase, len);
+    iov.iov_len = len;
+    mh.msg_iov = &iov;
+    mh.msg_iovlen = 1; 
+    
+    if (sendmsg(sconf->sd, &mh, 0) == -1) {
+fprintf(stderr, "Could not send %d %d %d \n", errno, sconf->sd, len);
 fflush(stderr);
         apr_destroy_pool(r->pool);
         return -1;
     }
- 
-fprintf(stderr, "SUCCESS\n");
-fflush(stderr);
     apr_destroy_pool(r->pool);
     return 1;
+}
+
+static char *make_perchild_socket(const char *fullsockname, int *sd)
+{
+    struct sockaddr_un unix_addr;
+    int rc;
+
+    if (unlink(fullsockname) < 0 && errno != ENOENT) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
+                     "Couldn't unlink unix domain socket %s",
+                     fullsockname);
+        /* Just a warning; don't bail out */
+    }
+
+    if ((*sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+        return "Couldn't create unix domain socket";
+    }
+
+    memset(&unix_addr, 0, sizeof(unix_addr));
+    unix_addr.sun_family = AF_UNIX;
+    strcpy(unix_addr.sun_path, fullsockname);
+
+    rc = bind(*sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
+    if (rc < 0) {
+        return  "Couldn't bind unix domain socket";
+    }
+
+    if (listen(*sd, DEFAULT_PERCHILD_LISTENBACKLOG) < 0) {
+        return "Couldn't listen on unix domain socket";
+    }
+    return NULL;
+}
+
+
+static void perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    int i;
+    server_rec *sr;
+    perchild_server_conf *sconf;
+    int def_sd = -1;
+    
+
+
+    for (sr = s; sr; sr = sr->next) {
+        sconf = (perchild_server_conf *)ap_get_module_config(sr->module_config,
+                                                      &mpm_perchild_module);
+
+        if (sconf->sd == -1) {
+            sconf->fullsockname = apr_pstrcat(sr->process->pool, 
+                                             sconf->sockname, ".DEFAULT", NULL);
+            if (def_sd == -1) {
+                if (!make_perchild_socket(sconf->fullsockname, &def_sd)) {
+                    /* log error */
+                }
+            }
+            sconf->sd = def_sd;
+        }
+    }
+
+    for (i = 0; i < num_daemons; i++) {
+        if (child_info_table[i].uid == -1) {
+            child_info_table[i].sd = def_sd;
+        }
+    }
 }
 
 static int perchild_post_read(request_rec *r)
@@ -1390,11 +1465,7 @@ fflush(stderr);
         return OK;
     }
     else {
-        if (sconf->readpipe != child_info_table[child_num].readpipe) {
-
-fprintf(stderr, "This isn't for me.  :-) %d %d\n", sconf->readpipe, getpid());
-fflush(stderr);
-sleep(1000000);
+        if (sconf->sd != child_info_table[child_num].sd) {
             if (pass_request(r) == -1) {
                 ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0,
                              ap_server_conf, "Could not pass request to proper "
@@ -1415,6 +1486,7 @@ static void perchild_hooks(void)
     one_process = 0;
 
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
+    ap_hook_post_config(perchild_post_config, NULL, NULL, AP_HOOK_MIDDLE); 
     /* This must be run absolutely first.  If this request isn't for this
      * server then we need to forward it to the proper child.  No sense
      * tying up this server running more post_read request hooks if it is
@@ -1638,23 +1710,22 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
                                    const char *gid)
 {
     int i;
-    int fds[2];
     int u = atoi(uid);
     int g = atoi(gid);
+    const char *errstr;
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(cmd->server->module_config, 
                                                  &mpm_perchild_module);
-    
-    if (pipe(fds) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
-                     "Could not create pipe to pass request through");
+
+    sconf->fullsockname = apr_pstrcat(cmd->pool, sconf->sockname, ".", uid, ":", gid, NULL);
+
+    if ((errstr = make_perchild_socket(sconf->fullsockname, &sconf->sd))) {
+        return errstr;
     }
-    sconf->readpipe = fds[0];
-    sconf->writepipe = fds[1];
 
     for (i = 0; i < num_daemons; i++) {
         if (u == child_info_table[i].uid && g == child_info_table[i].gid) {
-            child_info_table[i].readpipe = sconf->readpipe;
+            child_info_table[i].sd = sconf->sd;
         }
     }
 
@@ -1699,9 +1770,9 @@ static void *perchild_create_config(apr_pool_t *p, server_rec *s)
     perchild_server_conf *c =
     (perchild_server_conf *) apr_pcalloc(p, sizeof(perchild_server_conf));
 
-    c->readpipe = -1;
-    c->writepipe = -1; 
-
+    c->sockname = ap_server_root_relative(p, DEFAULT_PERCHILD_SOCKET);
+    c->fullsockname = NULL;
+    c->sd = -1;
     return c;
 }
 
