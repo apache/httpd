@@ -12,9 +12,17 @@ Release:
 Current Modes:
 
     o Commit-Then-Review (see <http://dev.apache.org/guidelines.html#ctr>
-    o NO lazy voting
 
 Plan:
+
+    Let's shoot for release of 1.3b4 on January 31, 1998.
+    Concern: Should we hold off on any new code changes
+     in order to try to get 1.3.0 out the door asap? Once
+     that's done, we can split off 2.0 from the present CVS
+     tree and start working on that, while putting some
+     patches into 1.3.1b1-dev. Let's get 1.3.0 out soon so
+     we can really start playing with the code, which isn't
+     wise when we're trying to push a release out.
 
 Showstoppers:
 
@@ -112,6 +120,14 @@ Committed Code Changes:
     * Roy's [PATCH] protocol/1399: failing to read body
     * PR#1082, 1282, 1499, 1553: unixware cleanup
     * mod_spelling added to win32 build
+    * Jim's rename of SAFE_UNSERIALIZED_ACCEPT to
+      SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+    * Jim's addition of USE_MMAP_SCOREBOARD and USE_SHMGET_SCOREBOARD in
+      conjunction with HAVE_MMAP and HAVE_SHMGET to select scoreboard
+      type.
+    * Jim's [PATCH] A/UX can use SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+    * Jim's [PATCH] force Unixware to use mmap() scoreboard (before
+      was dependent on ordering of the #defines in http_main.c)
 
 Available Patches:
 
