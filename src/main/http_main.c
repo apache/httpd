@@ -384,6 +384,7 @@ static int my_child_num;
 #ifdef TPF
 int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
+char tpf_mutex_key[TPF_MUTEX_KEY_SIZE];
 #endif /* TPF */
 
 scoreboard *ap_scoreboard_image = NULL;
@@ -1080,7 +1081,7 @@ static int tpf_core_held;
 static void accept_mutex_cleanup_tpfcore(void *foo)
 {
     if(tpf_core_held)
-        coruc(RESOURCE_KEY);
+        deqc(tpf_mutex_key, QUAL_S);
 }
 
 #define accept_mutex_init_tpfcore(x)
@@ -1093,14 +1094,14 @@ static void accept_mutex_child_init_tpfcore(pool *p)
 
 static void accept_mutex_on_tpfcore(void)
 {
-    corhc(RESOURCE_KEY);
+    enqc(tpf_mutex_key, ENQ_WAIT, 0, QUAL_S);
     tpf_core_held = 1;
     ap_check_signals();
 }
 
 static void accept_mutex_off_tpfcore(void)
 {
-    coruc(RESOURCE_KEY);
+    deqc(tpf_mutex_key, QUAL_S);
     tpf_core_held = 0;
     ap_check_signals();
 }
@@ -5456,6 +5457,7 @@ int REALMAIN(int argc, char *argv[])
         memcpy(tpf_server_name, input_parms.parent.servname,
                INETD_SERVNAME_LENGTH);
         tpf_server_name[INETD_SERVNAME_LENGTH + 1] = '\0';
+        sprintf(tpf_mutex_key, "%.*x", TPF_MUTEX_KEY_SIZE - 1, getpid());
         ap_open_logs(server_conf, plog);
         ap_tpf_zinet_checks(ap_standalone, tpf_server_name, server_conf);
         ap_tpf_save_argv(argc, argv);    /* save argv parms for children */

@@ -125,7 +125,7 @@ typedef struct fd_set {
 #define FD_SET(n, p) (0)
 #endif
 
-#define  RESOURCE_KEY ((void*) 0xC1C2C1C3)
+#define TPF_MUTEX_KEY_SIZE (sizeof(pid_t)*2+1)
 
 /* TPF doesn't have, or need, tzset (it is used in mod_expires.c) */
 #define tzset()
@@ -219,7 +219,7 @@ void ap_tpf_save_argv(int argc, char **argv);
 #endif
 
 #define TPF_UNABLE_TO_DETERMINE_ZINET_MODEL \
-        "Unable to determine ZINET model: inetd_getServer call failed" \
-        " -- Apache startup aborted"
+        "Unable to determine ZINET model: inetd_getServer(\"%s\") " \
+        "call failed -- Apache startup aborted"
 
 #endif /*! APACHE_OS_H*/

@@ -423,7 +423,7 @@ void ap_tpf_zinet_checks(int standalone,
         free(idct);
     } else {
         ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, s,
-                     TPF_UNABLE_TO_DETERMINE_ZINET_MODEL);
+                     TPF_UNABLE_TO_DETERMINE_ZINET_MODEL, servername);
         exit(1); /* abort start-up of server */
     }
 
@@ -498,11 +498,14 @@ void ap_tpf_save_argv(int argc, char **argv) {
 }
 
 void os_tpf_child(APACHE_TPF_INPUT *input_parms) {
+    extern char tpf_mutex_key[TPF_MUTEX_KEY_SIZE];
+
     tpf_child = 1;
     ap_my_generation = input_parms->generation;
     ap_restart_time = input_parms->restart_time;
     tpf_fds = input_parms->tpf_fds;
     tpf_shm_static_ptr = input_parms->shm_static_ptr;
+    sprintf(tpf_mutex_key, "%.*x", TPF_MUTEX_KEY_SIZE - 1, getppid());
 }
 
 #ifndef __PIPE_
