@@ -1,5 +1,11 @@
 Changes with Apache 1.3.15
 
+  *) WinNT/2K service can be started from the command line with any
+     desired args (e.g. Apache -k start -n apache-1.3 -D FOO will
+     start the service with the -D FOO option.)  This extends what
+     Apache on Win9x already does, even running as a service.
+     [William Rowe]
+
   *) WinNT/2K can be started from the Services control panel adding
      whatever args are desired (e.g. -D ARG) in the 'Start Parameters'
      box of the start service dialog.  These will be passed on and

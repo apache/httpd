@@ -94,7 +94,7 @@ static int   is_service = -1;
 static void WINAPI service_main_fn(DWORD, LPTSTR *);
 static void WINAPI service_ctrl(DWORD ctrlCode);
 static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
-static int ap_start_service(SC_HANDLE);
+static int ap_start_service(SC_HANDLE, DWORD argc, char **argv);
 static int ap_stop_service(SC_HANDLE);
 static int ap_restart_service(SC_HANDLE);
 
@@ -991,7 +991,8 @@ BOOL isWindowsNT(void)
     return isNT;
 }
 
-int send_signal_to_service(char *display_name, char *sig) 
+int send_signal_to_service(char *display_name, char *sig, 
+                           int argc, char **argv)
 {
     DWORD       service_pid;
     HANDLE      hwnd;
@@ -1083,7 +1084,19 @@ int send_signal_to_service(char *display_name, char *sig)
                      || ((action == restart) 
                             && (globdat.ssStatus.dwCurrentState 
                                     == SERVICE_STOPPED)))
-                success = ap_start_service(schService);
+            {
+                /* start NT service needs service args */
+                char **args = malloc(argc * sizeof(char*));
+                int i, j;
+                for (i = 1, j = 0; i < argc; i++) {
+                    if ((argv[i][0] == '-') && ((argv[i][1] == 'k') 
+                                             || (argv[i][1] == 'n')))
+                        ++i;
+                    else
+                        args[j++] = argv[i];
+                }
+                success = ap_start_service(schService, j, args);
+            }
             else if (action == restart)
                 success = ap_restart_service(schService);
         }
@@ -1163,8 +1176,8 @@ int ap_stop_service(SC_HANDLE schService)
     return FALSE;
 }
 
-int ap_start_service(SC_HANDLE schService) {
-    if (StartService(schService, 0, NULL)) {
+int ap_start_service(SC_HANDLE schService, DWORD argc, char **argv) {
+    if (StartService(schService, argc, argv)) {
         Sleep(1000);
         while(QueryServiceStatus(schService, &globdat.ssStatus)) {
             if(globdat.ssStatus.dwCurrentState == SERVICE_START_PENDING)

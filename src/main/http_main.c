@@ -6950,7 +6950,7 @@ int REALMAIN(int argc, char *argv[])
      * Die if we failed, are on NT, or are not "start"ing the service
      */
     if (service_name && signal_to_send) {
-        if (send_signal_to_service(service_name, signal_to_send))
+        if (send_signal_to_service(service_name, signal_to_send, argc, argv))
             clean_parent_exit(0);
         if (isWindowsNT() || strcasecmp(signal_to_send, "start"))
             clean_parent_exit(1);
