@@ -172,7 +172,7 @@ static PSECURITY_ATTRIBUTES GetNullACL()
         LocalFree( sa );
         return NULL;
     }
-    if (!SetSecurityDescriptorDacl(pSD, APR_TRUE, (PACL) NULL, APR_FALSE)
+    if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
 	|| GetLastError()) {
         LocalFree( pSD );
         LocalFree( sa );
@@ -180,7 +180,7 @@ static PSECURITY_ATTRIBUTES GetNullACL()
     }
     sa->nLength = sizeof(sa);
     sa->lpSecurityDescriptor = pSD;
-    sa->bInheritHandle = APR_TRUE;
+    sa->bInheritHandle = TRUE;
     return sa;
 }
 
@@ -204,7 +204,7 @@ static DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
     time_t tStopTime;
     DWORD dwRet = WAIT_TIMEOUT;
     DWORD dwIndex=0;
-    BOOL bFirst = APR_TRUE;
+    BOOL bFirst = TRUE;
   
     tStopTime = time(NULL) + dwSeconds;
   
@@ -212,7 +212,7 @@ static DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
         if (!bFirst)
             Sleep(1000);
         else
-            bFirst = APR_FALSE;
+            bFirst = FALSE;
           
         for (dwIndex = 0; dwIndex * MAXIMUM_WAIT_OBJECTS < nCount; dwIndex++) {
             dwRet = WaitForMultipleObjects( 
@@ -279,7 +279,7 @@ static void signal_parent(int type)
     case 1: signal_name = signal_restart_name; break;
     default: return;
     }
-    e = OpenEvent(EVENT_ALL_ACCESS, APR_FALSE, signal_name);
+    e = OpenEvent(EVENT_ALL_ACCESS, FALSE, signal_name);
     if (!e) {
 	/* Um, problem, can't signal the parent, which means we can't
 	 * signal ourselves to die. Ignore for now...
@@ -819,7 +819,7 @@ static int create_acceptex_context(ap_pool_t *_pconf, ap_listen_rec *lr)
 
     /* initialize the completion context */
     context->lr = lr;
-    context->Overlapped.hEvent = CreateEvent(NULL, APR_TRUE, APR_FALSE, NULL); 
+    context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
     if (context->Overlapped.hEvent == NULL) {
         ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
                      "create_acceptex_context: CreateEvent() failed. Process will exit.");
@@ -1130,7 +1130,7 @@ static void child_main()
     if (one_process) {
         /* Single process mode */
         ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,pconf);
-        exit_event = CreateEvent(NULL, APR_TRUE, APR_FALSE, exit_event_name);
+        exit_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
 
         setup_listeners(server_conf);
         bind_listeners_to_completion_port();
@@ -1138,7 +1138,7 @@ static void child_main()
     else {
         /* Child process mode */
         ap_child_init_lock(&start_mutex, signal_name_prefix, pconf);
-        exit_event = OpenEvent(EVENT_ALL_ACCESS, APR_FALSE, exit_event_name);
+        exit_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, exit_event_name);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: exit_event_name = %s", my_pid, exit_event_name);
 
@@ -1146,7 +1146,7 @@ static void child_main()
     }
 
     /* Initialize the child_events */
-    maintenance_event = CreateEvent(NULL, APR_TRUE, APR_FALSE, NULL);
+    maintenance_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     child_events[0] = exit_event;
     child_events[1] = maintenance_event;
 
@@ -1206,7 +1206,7 @@ static void child_main()
      *    number of completion contexts, etc.)
      */
     while (!workers_may_exit) {
-        rv = WaitForMultipleObjects(2, (HANDLE *) child_events, APR_FALSE, INFINITE);
+        rv = WaitForMultipleObjects(2, (HANDLE *) child_events, FALSE, INFINITE);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
@@ -1220,7 +1220,7 @@ static void child_main()
             Sleep(1000);
 
             /* Drain any remaining contexts. May loose a few connections here. */
-            drain_acceptex_complport(AcceptExCompPort, APR_FALSE);
+            drain_acceptex_complport(AcceptExCompPort, FALSE);
         }
         else if (rv == WAIT_TIMEOUT) {
             /* Hey, this cannot happen */
@@ -1365,7 +1365,7 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
     SECURITY_ATTRIBUTES sa = {0};  
 
     sa.nLength = sizeof(sa);
-    sa.bInheritHandle = APR_TRUE;
+    sa.bInheritHandle = TRUE;
     sa.lpSecurityDescriptor = NULL;
 
     /* Build the command line. Should look something like this:
@@ -1409,7 +1409,7 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
     si.hStdInput   = hPipeRead;
 
     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
-                       APR_TRUE,               /* Inherit handles */
+                       TRUE,               /* Inherit handles */
                        CREATE_SUSPENDED,   /* Creation flags */
                        NULL,               /* Environment block */
                        NULL,
@@ -1436,9 +1436,9 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
 
         /* Create the exit_event, apCchild_pid */
         sa.nLength = sizeof(sa);
-        sa.bInheritHandle = APR_TRUE;
+        sa.bInheritHandle = TRUE;
         sa.lpSecurityDescriptor = NULL;        
-        kill_event = CreateEvent(&sa, APR_TRUE, APR_FALSE, ap_psprintf(pconf,"apC%d", pi.dwProcessId));
+        kill_event = CreateEvent(&sa, TRUE, FALSE, ap_psprintf(pconf,"apC%d", pi.dwProcessId));
         if (!kill_event) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                          "Parent: Could not create exit event for child process");
@@ -1486,7 +1486,7 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
             /* Now, send the AcceptEx completion port to the child */
             if (!DuplicateHandle(GetCurrentProcess(), AcceptExCompPort, 
                                  pi.hProcess, &hDupedCompPort,  0,
-                                 APR_TRUE, DUPLICATE_SAME_ACCESS)) {
+                                 TRUE, DUPLICATE_SAME_ACCESS)) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                              "Parent: Unable to duplicate AcceptEx completion port. Shutting down.");
                 return -1;
@@ -1540,7 +1540,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     process_handles[current_live_processes+1] = restart_event;
 
     rv = WaitForMultipleObjects(current_live_processes+2, (HANDLE *)process_handles, 
-                                APR_FALSE, INFINITE);
+                                FALSE, INFINITE);
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
         /* Something serious is wrong */
@@ -1608,7 +1608,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
 
         /* Drain the AcceptEx completion port of any outstanding I/O pending for the dead 
          * process. */
-        drain_acceptex_complport(AcceptExCompPort, APR_FALSE);
+        drain_acceptex_complport(AcceptExCompPort, FALSE);
     }
 
 die_now:
@@ -1623,7 +1623,7 @@ die_now:
         }
 
         while (current_live_processes && ((tmstart+60) > time(NULL))) {
-            rv = WaitForMultipleObjects(current_live_processes, (HANDLE *)process_handles, APR_FALSE, 2000);
+            rv = WaitForMultipleObjects(current_live_processes, (HANDLE *)process_handles, FALSE, 2000);
             if (rv == WAIT_TIMEOUT)
                 continue;
             ap_assert(rv != WAIT_FAILED);
@@ -1709,7 +1709,7 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
             /* Create shutdown event, apPID_shutdown, where PID is the parent 
              * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
              */
-            shutdown_event = CreateEvent(sa, FALSE, APR_FALSE, signal_shutdown_name);
+            shutdown_event = CreateEvent(sa, FALSE, FALSE, signal_shutdown_name);
             if (!shutdown_event) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
                              "Parent: Cannot create shutdown event %s", signal_shutdown_name);
@@ -1720,7 +1720,7 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
             /* Create restart event, apPID_restart, where PID is the parent 
              * Apache process ID. Restart is signaled by 'apache -k restart'.
              */
-            restart_event = CreateEvent(sa, FALSE, APR_FALSE, signal_restart_name);
+            restart_event = CreateEvent(sa, FALSE, FALSE, signal_restart_name);
             if (!restart_event) {
                 CloseHandle(shutdown_event);
                 ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
