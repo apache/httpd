@@ -53,13 +53,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /map /debug /debugtype:both /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /debug /debugtype:both /machine:I386 /pdbtype:sept
 # Begin Custom Build - Extracting .dbg symbols from $(InputPath)
 InputPath=.\Release\ApacheMonitor.so
 SOURCE="$(InputPath)"
 
 ".\Release\ApacheMonitor.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
+	rebase -q -p -b 0x00400000 -x ".\Release" $(InputPath)
 	echo rebased > ".\Release\ApacheMonitor.dbr"
 
 # End Custom Build
@@ -88,7 +88,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /debug /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /incremental:no /map /debug /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /incremental:no /debug /machine:I386
 
 !ENDIF 
 
