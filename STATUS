@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/16 01:00:07 $]
+Last modified at [$Date: 2003/09/16 13:01:06 $]
 
 Release:
 
@@ -240,14 +240,14 @@ PATCHES TO PORT FROM 2.1
       +1: fielding, nd, jerenkrantz, erikabele
 
     * mod_ssl: Fix a problem setting variables that represent the
-      client certificate chain.  PR 21397
+      client certificate chain.  PR 21371
         modules/ssl/ssl_engine_vars.c:  r1.24
-      +1: trawick, nd
+      +1: trawick, nd, jorton
 
     * mod_ssl: Fix segfaults after renegotiation failure.  PR 21370
         modules/ssl/ssl_engine_io.c:  r1.110
         modules/ssl/ssl_engine_kernel.c: r1.196
-      +1: trawick
+      +1: trawick, jorton
 
     * use the appropriate folder icon, even if there's a directoryindex
       listed file in the particular folder. PR 9587
@@ -308,11 +308,11 @@ PATCHES TO PORT FROM 2.1
       token and to skip token parameters. PR 21523.
       Don't compress if there was *any* non-identity endoding applied before.
         modules/filters/mod_deflate.c: r1.37, r1.38
-      +1: nd, striker, trawick
+      +1: nd, striker, trawick, jorton
 
     * Fix mod_log_config's %b format to write "-" in case of bytes_sent == 0.
         modules/loggers/mod_log_config.c: r1.106
-      +1: nd
+      +1: nd, jorton
 
     * Overhaul of mod_include's filter parser.
         modules/filters/mod_include.c: r1.235, r1.236
