@@ -47,7 +47,7 @@ ALL : "$(OUTDIR)\Apache.exe"
 !ENDIF 
 
 CLEAN :
-	-@erase "$(INTDIR)\dummy.obj"
+	-@erase "$(INTDIR)\main_win32.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\Apache.exe"
 
@@ -68,7 +68,7 @@ LINK32_FLAGS=CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  /incremental:no /pdb:"$(OUTDIR)\Apache.pdb" /machine:I386\
  /out:"$(OUTDIR)\Apache.exe" 
 LINK32_OBJS= \
-	"$(INTDIR)\dummy.obj"
+	"$(INTDIR)\main_win32.obj"
 
 "$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -94,7 +94,7 @@ ALL : "$(OUTDIR)\Apache.exe"
 !ENDIF 
 
 CLEAN :
-	-@erase "$(INTDIR)\dummy.obj"
+	-@erase "$(INTDIR)\main_win32.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\Apache.exe"
@@ -118,7 +118,7 @@ LINK32_FLAGS=CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  /incremental:yes /pdb:"$(OUTDIR)\Apache.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\Apache.exe" 
 LINK32_OBJS= \
-	"$(INTDIR)\dummy.obj"
+	"$(INTDIR)\main_win32.obj"
 
 "$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -159,9 +159,9 @@ LINK32_OBJS= \
 
 
 !IF "$(CFG)" == "Apache - Win32 Release" || "$(CFG)" == "Apache - Win32 Debug"
-SOURCE=.\main\dummy.c
+SOURCE=.\os\win32\main_win32.c
 
-"$(INTDIR)\dummy.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\main_win32.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
