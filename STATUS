@@ -2,8 +2,10 @@ Apache 1.3 STATUS:
 
 Release:
 
-    1.3.2: In development. Release proposed for Friday, September 18th, 1998
-           Ralf is volunteering as the release manager.
+    1.3.2: In preparation for a release.
+           - Tarball rolling proposed for Friday, September 18th, 1998
+           - Release and announcement proposed for Monday, September 21th, 1998
+           - Ralf is the release manager.
 
     1.3.1: Tagged and rolled on July 19. Announced and released.
 
@@ -24,30 +26,8 @@ WIN32 1.3.2 RELEASE SHOWSTOPPERS:
 
 Unix 1.3.2 RELEASE SHOWSTOPPERS:
 
-    * header detection is broken; eg. sys/resource.h often requires 
-      other includes first, etc.  This breaks things like RLimit*
-      on many platforms.  
+    * none
 
-      -- Ralf already hacked on this, but it's even more complicated
-         than we initially though. Because src/Configure has to check how CPP
-         can be called. On gcc systems that's gcc -E, on others there is a cpp
-         in PATH. But on the remaining systems there is neither the canonical
-         -E nor cpp. I need more time for figuring out what's the best
-         approach.  But currently I'm totally busy with mod_ssl and a
-         presentation I've to do on next Monday. I expect to finish this
-         before the 18th of September (1.3.2 release date).
-
-      -- Also, the return type of main is wrong in the test code and a
-      "test test" needs to be done to ensure we can be successful with
-      any (eg. stdio.h) header and print an error if not.  Otherwise, you
-      have _very_ difficult to resolve problems if you do something
-      like: link in a library on Solaris that also requires -lsocket
-      but don't explicitly put that on your EXTRA_LIBS line; then
-      the final result will link fine because Apache adds them for itself,
-      but all the testcompiles will fail because they aren't there at
-      that stage.
-
-      
 Documentation that needs writing:
 
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
