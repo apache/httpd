@@ -756,13 +756,6 @@ ServerSignature On
     #</Location>
 </IfModule>
 
-#
-# Bring in additional module-specific configurations
-#
-<IfModule ssl_module>
-    Include @rel_sysconfdir@/ssl.conf
-</IfModule>
-
 
 ### Section 3: Virtual Hosts
 #
@@ -806,10 +799,22 @@ ServerSignature On
 # here and change as necessary.
 
 # Multi-language error messages
-# Include extra/httpd-multilang-error.conf
+# Include @relsysconfdir@/extra/httpd-multilang-error.conf
 
 # Fancy directory listings
-# Include extra/httpd-autoindex.conf
+# Include @relsysconfdir@/extra/httpd-autoindex.conf
 
 # Language settings
-# Include extra/httpd-languages.conf
+# Include @relsysconfdir@/extra/httpd-languages.conf
+
+#
+# Secure (SSL/TLS) connections
+# Include @rel_sysconfdir@/extra/httpd-ssl.conf
+# Note: The following must must be present to support
+#       starting without SSL on platforms with no /dev/random equivalent
+#       but a statically compiled-in mod_ssl.
+#
+<IfModule ssl_module>
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+</IfModule>
