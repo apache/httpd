@@ -1172,7 +1172,6 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                           WPARAM wParam, LPARAM lParam)
 {
-    
     if (message == g_bUiTaskbarCreated)
     {
         /* restore the tray icon on shell restart */
@@ -1184,8 +1183,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
         case WM_CREATE:
             GetApacheServicesStatus();
             ShowNotifyIcon(hWnd, NIM_ADD);
-            SetTimer(hWnd, WM_TIMER_REFRESH, REFRESH_TIME, (TIMERPROC)WndProc);
-            SetTimer(hWnd, WM_TIMER_RESCAN,  RESCAN_TIME, (TIMERPROC)WndProc);
+            SetTimer(hWnd, WM_TIMER_REFRESH, REFRESH_TIME, NULL);
+            SetTimer(hWnd, WM_TIMER_RESCAN,  RESCAN_TIME, NULL);
             g_hwndServiceDlg = NULL;                      
             break;
         case WM_TIMER:
@@ -1194,7 +1193,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                 case WM_TIMER_RESCAN:
                 {
                     int nPrev = 0, nNew = 0;
-                    OutputDebugString("Rescan");
                     EnterCriticalSection(&g_stcSection);
                     if (FindRunningServices() || g_bRescanServices)
                     {
@@ -1273,21 +1271,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             }
             break;
         case WM_COMMAND:
-            if (LOWORD(wParam) & IDM_SM_START)
+            if ((LOWORD(wParam) & IDM_SM_START) == IDM_SM_START)
             {
                 ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_START].szServiceName,
                                     g_stServices[LOWORD(wParam) - IDM_SM_START].szImagePath,
                                     SERVICE_CONTROL_CONTINUE);                
                 return TRUE;
             }
-            else if (LOWORD(wParam) & IDM_SM_STOP)
+            else if ((LOWORD(wParam) & IDM_SM_STOP) == IDM_SM_STOP)
             {
                 ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_STOP].szServiceName,
                                     g_stServices[LOWORD(wParam) - IDM_SM_STOP].szImagePath,
                                     SERVICE_CONTROL_STOP);                
                 return TRUE;
             }
-            else if (LOWORD(wParam) & IDM_SM_RESTART)
+            else if ((LOWORD(wParam) & IDM_SM_RESTART) == IDM_SM_RESTART)
             {
                 ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_RESTART].szServiceName,
                                     g_stServices[LOWORD(wParam) - IDM_SM_RESTART].szImagePath,
