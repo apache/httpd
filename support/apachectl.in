@@ -38,7 +38,7 @@ fi
 # a command that outputs a formatted text version of the HTML at the
 # url given on the command line.  Designed for lynx, however other
 # programs may work.  
-LYNX="lynx -dump"
+LYNX="@LYNX_PATH@ -dump"
 #
 # the URL to your server's mod_status status page.  If you do not
 # have one, then status and fullstatus will not work.

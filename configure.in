@@ -237,6 +237,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
 dnl AC_PATH_PROG(PERL_PATH, perl)
+AC_CHECK_PROGS(LYNX_PATH,[lynx links elinks], [lynx])
 
 dnl various OS checks that apparently set required flags
 AC_AIX
