@@ -3003,7 +3003,7 @@ AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF, \
 #endif
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF, \
-              "The system mutex implementation to use for the accept mutex"),
+              ap_valid_accept_mutex_string),
 #endif
 { NULL }
 };
