@@ -334,15 +334,36 @@ const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
     char *cdata;
     char *s;
     apr_size_t tlen;
+    const char *found_text;
+    int found_count = 0;
 
-    for (scan = elem->first_cdata.first; scan != NULL; scan = scan->next)
-        len += strlen(scan->text);
+    for (scan = elem->first_cdata.first; scan != NULL; scan = scan->next) {
+        found_text = scan->text;
+        ++found_count;
+        len += strlen(found_text);
+    }
 
     for (child = elem->first_child; child != NULL; child = child->next) {
         for (scan = child->following_cdata.first;
              scan != NULL;
-             scan = scan->next)
-            len += strlen(scan->text);
+             scan = scan->next) {
+            found_text = scan->text;
+            ++found_count;
+            len += strlen(found_text);
+        }
+    }
+
+    /* some fast-path cases:
+     * 1) zero-length cdata
+     * 2) a single piece of cdata with no whitespace to strip
+     */
+    if (len == 0)
+        return "";
+    if (found_count == 1) {
+        if (!strip_white
+            || (!apr_isspace(*found_text)
+                && !apr_isspace(found_text[len - 1])))
+            return found_text;
     }
 
     cdata = s = apr_palloc(pool, len + 1);
@@ -365,7 +386,7 @@ const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
 
     *s = '\0';
 
-    if (strip_white && len > 0) {
+    if (strip_white) {
         /* trim leading whitespace */
         while (apr_isspace(*cdata))     /* assume: return false for '\0' */
             ++cdata;
