@@ -154,30 +154,21 @@ static int find_code_page(request_rec *r)
 {
     charset_dir_t *dc = ap_get_module_config(r->per_dir_config, &charset_lite_module);
     ap_status_t rv;
-    ap_xlate_t *xlate;
+    ap_xlate_t *input_xlate, *output_xlate;
     const char *mime_type;
     int debug = dc->debug == DEBUG;
 
-    mime_type = r->content_type ? r->content_type : ap_default_type(r);
-
     if (debug) {
         ap_log_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                     "Entering handler, URI: %s FILENAME: %s ARGS: %s PATH_INFO: %s "
+                     "Entering handler, URI: %s FILENAME: %s METHOD: %d ARGS: %s PATH_INFO: %s "
                      "MIMETYPE: %s FLAGS: %d SUBREQ: %s, REDIR: %s, PROXY: %s",
-                     r->uri, r->filename, r->args, r->path_info, mime_type,
+                     r->uri, r->filename, r->method_number, r->args, r->path_info, 
+                     r->content_type ? r->content_type : "(unknown)",
                      r->rrx ? 1 : 0,
                      r->main?"YES":"NO",r->prev?"YES":"NO",
                      r->proxyreq ? "YES" : "NO");
     }
 
-    /* catch proxy requests */
-    if (r->proxyreq) return DECLINED;
-    /* mod_rewrite indicators */
-    if (!strncmp(r->filename, "redirect:", 9)) return DECLINED; 
-    if (!strncmp(r->filename, "gone:", 5)) return DECLINED; 
-    if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED; 
-    if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED; 
-    
     /* If we don't have a full directory configuration, bail out.
      */
     if (!dc->charset_source || !dc->charset_default) {
@@ -190,6 +181,14 @@ static int find_code_page(request_rec *r)
         return DECLINED;
     }
 
+    /* catch proxy requests */
+    if (r->proxyreq) return DECLINED;
+    /* mod_rewrite indicators */
+    if (!strncmp(r->filename, "redirect:", 9)) return DECLINED; 
+    if (!strncmp(r->filename, "gone:", 5)) return DECLINED; 
+    if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED; 
+    if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED; 
+    
     /* If this is a subrequest, bail out.  We don't want to be setting up 
      * translation just because something like mod_autoindex wants to find the
      * mime type for directory objects.
@@ -203,6 +202,8 @@ static int find_code_page(request_rec *r)
         }
         return DECLINED;
     }
+
+    mime_type = r->content_type ? r->content_type : ap_default_type(r);
 
     /* If mime type isn't text or message, bail out.
      */
@@ -224,18 +225,41 @@ static int find_code_page(request_rec *r)
                      dc && dc->charset_default ? dc->charset_default : "(none)");
     }
 
-    rv = ap_xlate_open(&xlate, dc->charset_default, dc->charset_source, r->pool);
+    rv = ap_xlate_open(&output_xlate, dc->charset_default, dc->charset_source, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "can't open translation %s->%s, error %d\n",
                      dc->charset_source, dc->charset_default, rv);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    rv = ap_set_content_xlate(r, 1, xlate);
+    rv = ap_set_content_xlate(r, 1, output_xlate);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "can't set content translation, error %d\n", rv);
+                     "can't set content output translation, error %d\n", rv);
         return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    switch (r->method_number) {
+    case M_PUT:
+    case M_POST:
+        /* Set up input translation.  Note: A request body can be included 
+         * with the OPTIONS method, but for now we don't set up translation 
+         * of it.
+         */
+        rv = ap_xlate_open(&input_xlate, dc->charset_source, 
+                           dc->charset_default, r->pool);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "can't open translation %s->%s, error %d\n",
+                         dc->charset_default, dc->charset_source, rv);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        rv = ap_set_content_xlate(r, 0, input_xlate);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "can't set content input translation, error %d\n", rv);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
     }
 
     return DECLINED;
