@@ -417,6 +417,9 @@ static void *get_shared_mem(apr_size_t size)
 #else
 #include <sys/types.h>
 #include <sys/ipc.h>
+#ifdef HAVE_SYS_MUTEX_H
+#include <sys/mutex.h>
+#endif
 #include <sys/shm.h>
 
 static void *get_shared_mem(apr_size_t size)
