@@ -282,3 +282,24 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)
     return ap_pass_brigade(f->next, bb);
 }
 
+AP_DECLARE(int) ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
+{
+    va_list args;
+    int res;
+
+    va_start(args, bb);
+    res = apr_brigade_vputstrs(bb, ap_filter_flush, f->next, args);
+    va_end(args);
+    return res;
+}
+
+AP_DECLARE(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...){
+    va_list args;
+    int res;
+
+    va_start(args, fmt);
+    res = apr_brigade_vprintf(bb, ap_filter_flush, f->next, fmt, args);
+    va_end(args);
+    return res;
+}
+
