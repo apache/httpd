@@ -905,7 +905,6 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
  done:
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
-    worker_stack_awaken_next(idle_worker_stack);
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
         (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
