@@ -55,6 +55,7 @@
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "util_date.h"
 
 /*
  * Canonicalise http-like URLs.
@@ -228,7 +229,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     }
 
 /* Is it an HTTP/1 response? */
-    if (proxy_checkmask(buffer,  "HTTP/#.# ### *"))
+    if (checkmask(buffer,  "HTTP/#.# ### *"))
     {
 /* If not an HTTP/1 messsage or if the status line was > 8192 bytes */
 	if (buffer[5] != '1' || buffer[len-1] != '\n')

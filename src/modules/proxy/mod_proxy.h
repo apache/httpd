@@ -265,9 +265,6 @@ void proxy_del_header(array_header *hdrs_arr, const char *field);
 void proxy_send_headers(BUFF *fp, const char *respline, array_header *hdrs_arr);
 int proxy_liststr(const char *list, const char *val);
 void proxy_hash(const char *it, char *val,int ndepth,int nlength);
-int proxy_checkmask(const char *data, const char *mask);
-int proxy_tm2sec(const struct tm *t);
-int proxy_parsedate(const char *date, struct tm *d);
 int proxy_hex2sec(const char *x);
 void proxy_sec2hex(int t, char *y);
 void proxy_log_uerror(const char *routine, const char *file, const char *err,

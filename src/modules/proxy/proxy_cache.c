@@ -57,6 +57,7 @@
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "util_date.h"
 #include <utime.h>
 
 struct gc_ent
@@ -272,7 +273,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	close(fd);
 	line[i] = '\0';
 	expire = proxy_hex2sec(line+18);
-	if (!proxy_checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") ||
+	if (!checkmask(line, "&&&&&&&& &&&&&&&& &&&&&&&&") ||
 	  expire == -1)
 	{
 	    /* bad file */
@@ -341,7 +342,7 @@ rdcache(pool *pool, BUFF *cachefp, struct cache_req *c)
     if (len == 0 || urlbuff[len-1] != '\n') return 0;
     urlbuff[len-1] = '\0';
 
-    if (!proxy_checkmask(urlbuff,
+    if (!checkmask(urlbuff,
       "&&&&&&&& &&&&&&&& &&&&&&&& &&&&&&&& &&&&&&&&"))
 	return 0;
 
@@ -428,7 +429,7 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     {
 /* this may modify the value in the original table */
 	imstr = proxy_date_canon(r->pool, imstr);
-	c->ims = proxy_parsedate(imstr, NULL);
+	c->ims = parseHTTPdate(imstr);
 	if (c->ims == -1)  /* bad or out of range date; remove it */
 	    table_set(r->headers_in, "If-Modified-Since", NULL);
     }
@@ -582,7 +583,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
  * read it
  */
     expire = proxy_get_header(resp_hdrs, "Expires");
-    if (expire != NULL) expc = proxy_parsedate(expire->value, NULL);
+    if (expire != NULL) expc = parseHTTPdate(expire->value);
     else expc = -1;
 
 /*
@@ -591,7 +592,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     lmods = proxy_get_header(resp_hdrs, "Last-Modified");
     if (lmods != NULL)
     {
-	lmod = proxy_parsedate(lmods->value, NULL);
+	lmod = parseHTTPdate(lmods->value);
 	if (lmod == -1)
 	{
 /* kill last modified date */
@@ -636,7 +637,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
  * Read the date. Generate one if one is not supplied
  */
     dates = proxy_get_header(resp_hdrs, "Date");
-    if (dates != NULL) date = proxy_parsedate(dates->value, NULL);
+    if (dates != NULL) date = parseHTTPdate(dates->value);
     else date = -1;
 	
     now = time(NULL);
@@ -671,7 +672,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     if (expire == NULL && c->fp != NULL)  /* no expiry data sent in response */
     {
 	expire = proxy_get_header(c->hdrs, "Expires");
-	if (expire != NULL) expc = proxy_parsedate(expire->value, NULL);
+	if (expire != NULL) expc = parseHTTPdate(expire->value);
     }
 /* so we now have the expiry date */
 /* if no expiry date then

@@ -83,4 +83,5 @@ clean:
 $(OBJS): mod_proxy.h $(INCDIR)/httpd.h $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h
 proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o proxy_util.o: $(INCDIR)/http_main.h
 proxy_cache.o proxy_connect.o proxy_http.o: $(INCDIR)/http_log.h
+proxy_cache.o proxy_http.o: $(INCDIR)/util_date.h
 proxy_cache.o proxy_util.o: $(INCDIR)/md5.h
