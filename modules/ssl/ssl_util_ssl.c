@@ -444,8 +444,13 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
                              STACK_OF(X509_INFO) *sk,
                              const char *pathname)
 {
+    /* XXX: this dir read code is exactly the same as that in
+     * ssl_engine_init.c, only the call to handle the fullname is different,
+     * should fold the duplication.
+     */
     apr_dir_t *dir;
     apr_finfo_t dirent;
+    apr_int32_t finfo_flags = APR_FINFO_MIN|APR_FINFO_NAME;
     const char *fullname;
     BOOL ok = FALSE;
 
@@ -453,14 +458,14 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
         return FALSE;
     }
 
-    while ((apr_dir_read(&dirent, APR_FINFO_DIRENT, dir)) == APR_SUCCESS) {
+    while ((apr_dir_read(&dirent, finfo_flags, dir)) == APR_SUCCESS) {
+        if (dirent.filetype == APR_DIR) {
+            continue; /* don't try to load directories */
+        }
+
         fullname = apr_pstrcat(ptemp,
                                pathname, "/", dirent.name,
                                NULL);
-
-        if (dirent.filetype != APR_REG) {
-            continue;
-        }
 
         if (SSL_X509_INFO_load_file(ptemp, sk, fullname)) {
             ok = TRUE;
