@@ -200,12 +200,12 @@ module MODULE_VAR_EXPORT anon_auth_module;
 int anon_authenticate_basic_user (request_rec *r)
 {
     anon_auth_config_rec *sec =
-      (anon_auth_config_rec *)get_module_config (r->per_dir_config,
-						&anon_auth_module);
+	(anon_auth_config_rec *)get_module_config(r->per_dir_config,
+						   &anon_auth_module);
     conn_rec *c = r->connection;
     char *send_pw;
     char errstr[MAX_STRING_LEN];
-    int res=DECLINED;
+    int res = DECLINED;
 
     if ((res=get_basic_auth_pw (r,&send_pw)))
 	return res;
@@ -216,52 +216,51 @@ int anon_authenticate_basic_user (request_rec *r)
     /* Do we allow an empty userID and/or is it the magic one
      */
     
-    if ( (!(c->user[0])) && (sec->auth_anon_nouserid) ) {
-      res=OK;
-    } else {
-      auth_anon *p=sec->auth_anon_passwords;
-      res=DECLINED;
-      while ((res == DECLINED) && (p !=NULL)) {
-	if (!(strcasecmp(c->user,p->password)))
-	  res=OK;
-	p=p->next;
-      }
+    if ((!(c->user[0])) && (sec->auth_anon_nouserid)) {
+	res = OK;
+    }
+    else {
+	auth_anon *p=sec->auth_anon_passwords;
+	res = DECLINED;
+	while ((res == DECLINED) && (p !=NULL)) {
+	    if (!(strcasecmp(c->user,p->password)))
+		res = OK;
+	    p = p->next;
+	}
     }
     if (
 	/* username is OK */
-	(res == OK) &&
+	(res == OK)
 	/* password been filled out ? */ 
-	( (!sec->auth_anon_mustemail) || strlen(send_pw)  ) &&
+	&& ((!sec->auth_anon_mustemail) || strlen(send_pw))
 	/* does the password look like an email address ? */
-	( (!sec->auth_anon_verifyemail) || 
-	     ((strpbrk("@",send_pw) != NULL) 
-	      &&
-	      (strpbrk(".",send_pw) != NULL))
-	  ) 
-	) {
-      if (sec->auth_anon_logemail && is_initial_req(r)) {
-	ap_snprintf(errstr, sizeof(errstr), "Anonymous: Passwd <%s> Accepted", 
+	&& ((!sec->auth_anon_verifyemail)
+	    || ((strpbrk("@",send_pw) != NULL) 
+		&& (strpbrk(".",send_pw) != NULL))))
+    {
+	if (sec->auth_anon_logemail && is_initial_req(r)) {
+	    ap_snprintf(errstr, sizeof(errstr), "Anonymous: Passwd <%s> Accepted", 
 			send_pw ? send_pw : "\'none\'");
-	log_error (errstr, r->server );
-      }
-      return OK;
-    } else {
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server, errstr);
+	}
+	return OK;
+    }
+    else {
         if (sec->auth_anon_authoritative) {
-	ap_snprintf(errstr, sizeof(errstr),
-		"Anonymous: Authoritative, Passwd <%s> not accepted",
-		send_pw ? send_pw : "\'none\'");
-	log_error(errstr,r->server);
-	return AUTH_REQUIRED;
+	    ap_snprintf(errstr, sizeof(errstr),
+			"Anonymous: Authoritative, Passwd <%s> not accepted",
+			send_pw ? send_pw : "\'none\'");
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server, errstr);
+	    return AUTH_REQUIRED;
 	}
 	/* Drop out the bottom to return DECLINED */
     }
      
-
-   return DECLINED;
+    return DECLINED;
 }
     
-int check_anon_access (request_rec *r) {
-
+int check_anon_access (request_rec *r)
+{
 #ifdef NOTYET
     conn_rec *c = r->connection;
     anon_auth_config_rec *sec =
