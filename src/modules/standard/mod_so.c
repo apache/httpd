@@ -213,6 +213,11 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     moduleinfo *modie;
     int i;
 
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    
     /* 
      * check for already existing module
      * If it already exists, we have nothing to do 
@@ -294,6 +299,11 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
     ap_os_dso_handle_t handle;
     char *file;
 
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    
     file = ap_server_root_relative(cmd->pool, filename);
     
     if (!(handle = ap_os_dso_load(file))) {
