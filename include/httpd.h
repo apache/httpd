@@ -694,10 +694,8 @@ struct request_rec {
 
     /** sending chunked transfer-coding */
     int chunked;
-    /** number of byte ranges */
-    int byterange;
     /** multipart/byteranges boundary */
-    char *boundary;
+    const char *boundary;
     /** The Range: header */
     const char *range;
     /** The "real" content length */
