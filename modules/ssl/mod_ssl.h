@@ -107,23 +107,7 @@
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
 
-/* OpenSSL headers */
-#include <ssl.h>
-#include <err.h>
-#include <x509.h>
-#include <pem.h>
-#include <crypto.h>
-#include <evp.h>
-#include <rand.h>
-#ifdef SSL_EXPERIMENTAL_ENGINE
-#include <engine.h>
-#endif
-
 #include "ssl_toolkit_compat.h"
-
-#ifdef HAVE_SSL_X509V3_H
-#include <x509v3.h>
-#endif
 
 /* mod_ssl headers */
 #include "ssl_expr.h"
