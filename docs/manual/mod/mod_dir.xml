@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.10 $ -->
+<!-- $Revision: 1.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -121,6 +121,7 @@ a directory</description>
     the path in the link, it would point to the wrong path.</li>
     <li><directive module="mod_dir">DirectoryIndex</directive> will be evaluated
     <em>only</em> for directories requested with trailing slash.</li>
+    <li>Relative URL references inside html pages will work correctly.</li>
     </ul>
 
     <p>Well, if you don't want this effect <em>and</em> the reasons above don't
