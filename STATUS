@@ -59,6 +59,7 @@ Committed Code Changes:
     * Ralf's adjustments to `configure --compat' to be even more "compatible"
     * Ralf/Jim's enhanced "make install" carefulness for DocRoot, PR#2084
     * Ralf's back-compat in configure for EXTRA_xxx parameter names
+    * Ralf's configure fix to avoid side-effects in Configure on exported vars
 
 Available Patches:
 

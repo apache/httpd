@@ -157,13 +157,13 @@
      override the corresponding default entries in the src/Configuration.tmpl
      file (see there for more information about their usage).
 
-         Note: The syntax ``KEY=VALUE ./configure ...'' is the GNU Autoconf
-               compatible way of specifying defines and can be used with
-               Bourne shell compatible shells only (sh, bash, ksh). If you use
-               a different type of shell either use ``env KEY=VALUE
-               ./configure ...'' when the `env' command is available on your
-               system or use ``setenv KEY VALUE; ./configure ...'' if you use
-               one of the C-shell variants (csh, tcsh).
+         Note: The syntax ``KEY=VALUE ./configure ...'' (one single line!) is
+               the GNU Autoconf compatible way of specifying defines and can
+               be used with Bourne shell compatible shells only (sh, bash,
+               ksh). If you use a different type of shell either use ``env
+               KEY=VALUE ./configure ...'' when the `env' command is available
+               on your system or use ``setenv KEY VALUE; ./configure ...'' if
+               you use one of the C-shell variants (csh, tcsh).
 
          Note: The above parameter names are the canonical ones used in
                Autoconf-style interfaces. But because src/Configuration.tmpl

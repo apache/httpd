@@ -212,6 +212,7 @@ for var in CFLAGS LDFLAGS LIBS INCLUDES; do
     eval "val=\$EXTRA_$var"
     if [ ".$val" != . ]; then
         eval "$var=\$val"
+        eval "EXTRA_$var=\"\"; export EXTRA_$var"
         echo " + Hint: please use $var instead of EXTRA_$var next time"
     fi
 done
@@ -765,16 +766,21 @@ rm -f sedsubst 2>/dev/null
 touch sedsubst
 
 #   generate settings from imported environment variables
-IFS=' '
+IFS='
+'
 for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LDFLAGS_SHLIB \
            LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB; do
     eval "val=\$$var";
     if [ ".$val" != . ]; then
         case $var in 
-            CFLAGS|LDFLAGS|LIBS|INCLUDES) var="EXTRA_$var" ;;
+            CFLAGS|LDFLAGS|LIBS|INCLUDES) 
+                echo "s%^#*\\(EXTRA_$var=\\).*%\\1$val%g" >>sedsubst
+                ;;
+            *)
+                echo "s%^#*\\($var=\\).*%\\1$val%g" >>sedsubst
+                ;;
         esac
-        echo "s%^#*\\($var=\\).*%\\1$val%g" >>sedsubst
-        eval "$var="
+        eval "$var=\"\"; export $var"
     fi
 done
 
