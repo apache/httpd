@@ -1,6 +1,7 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
+<!--#set var="CONTENT_LANGUAGE" value="de" -->
 <!--#set var="TITLE" value="&Uuml;bergebene Daten zu gro&szlig;!" -->
 <!--#include virtual="include/top.html" -->
 
@@ -27,6 +28,7 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
+<!--#set var="CONTENT_LANGUAGE" value="es" -->
 <!--#set var="TITLE" value="Request entity too large!" -->
 <!--#include virtual="include/top.html" -->
 
@@ -41,6 +43,7 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html
 Body:----------fr--
+<!--#set var="CONTENT_LANGUAGE" value="fr" -->
 <!--#set var="TITLE" value="Volume de la demande trop grand!" -->
 <!--#include virtual="include/top.html" -->
 
@@ -54,6 +57,7 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html
 Body:----------nl--
+<!--#set var="CONTENT_LANGUAGE" value="nl" -->
 <!--#set var="TITLE" value="Volume van gevraagde entiteit te groot!" -->
 <!--#include virtual="include/top.html" -->
 
@@ -66,6 +70,7 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html
 Body:----------sv--
+<!--#set var="CONTENT_LANGUAGE" value="sv" -->
 <!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!" -->
 <!--#include virtual="include/top.html" -->
 
@@ -78,6 +83,7 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html
 Body:----------it--
+<!--#set var="CONTENT_LANGUAGE" value="it" -->
 <!--#set var="TITLE" value="Richiesta troppo grande!" -->
 <!--#include virtual="include/top.html" -->
 
