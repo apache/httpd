@@ -1091,7 +1091,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
 		       r->content_encoding);
     }
 
-    if (r->content_languages && r->content_languages->nelts) {
+    if (!apr_is_empty_table(r->content_languages)) {
         char **languages = (char **)(r->content_languages->elts);
         for (i = 0; i < r->content_languages->nelts; ++i) {
             apr_table_mergen(r->headers_out, "Content-Language", languages[i]);
