@@ -373,34 +373,38 @@ static int find_code_page(request_rec *r)
     return DECLINED;
 }
 
-static int configured_on_input(request_rec *r, const char *filter_name)
+static int configured_in_list(request_rec *r, const char *filter_name,
+                              const char *filter_list)
 {
-    int i;
-    core_dir_config *conf =
-        (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
-    char **items = (char **)conf->input_filters->elts;
+    const char *filter;
 
-    for (i = 0; i < conf->input_filters->nelts; i++) {
-        if (!strcmp(items[i], filter_name))
-            return 1;
+    if (filter_list) {
+        while ((filter = ap_getword(r->pool, &filter_list, ';')) && filter[0]) {
+            /* yeah, I'm an ass and expect them to type it correctly (all caps)
+             */
+            if (!strcmp(filter, filter_name))
+                return 1;
+        }
     }
     return 0;
 }
 
-static int configured_on_output(request_rec *r, const char *filter_name)
+static int configured_on_input(request_rec *r, const char *filter_name)
 {
-    int i;
     core_dir_config *conf =
         (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
-    char **items = (char **)conf->output_filters->elts;
 
-    for (i = 0; i < conf->output_filters->nelts; i++) {
-        if (!strcmp(items[i], filter_name))
-            return 1;
-    }
-    return 0;
+    return configured_in_list(r, filter_name, conf->input_filters);
+}
+
+static int configured_on_output(request_rec *r, const char *filter_name)
+{
+    core_dir_config *conf =
+        (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                &core_module);
+
+    return configured_in_list(r, filter_name, conf->output_filters);
 }
 
 /* xlate_insert_filter() is a filter hook which decides whether or not
