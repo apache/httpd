@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) Allow proxying of resources that are invoked via DirectoryIndex.
+     PR 14648, 15112, 29961.  [André Malo]
+
   *) util_ldap: Switched the lock types on the shared memory cache 
      from thread reader/writer locks to global mutexes in order to 
      provide cross process cache protection. [Brad Nicholes]

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/14 11:08:20 $]
+Last modified at [$Date: 2004/08/15 21:35:15 $]
 
 Release:
 
@@ -155,10 +155,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_dir: Backport DirectorySlash directive to work around problems
        with <Location>-SetHandler combinations and trailing slash redirects.
          modules/mappers/mod_dir.c: r1.48
-       +1: nd, jerenkrantz, trawick
-
-    *) mod_dir: Allow proxied DirectoryIndexes. PR 14648, 15112, 29961
-         modules/mappers/mod_dir.c: r1.44
        +1: nd, jerenkrantz, trawick
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
