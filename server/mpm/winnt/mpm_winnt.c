@@ -549,7 +549,7 @@ static int set_listeners_noninheritable(apr_pool_t *p)
              * problem by not altering the handle identifier.  But this won't
              * work on 9x - it's unsupported.
              */
-            if (!SetHandleInformation(nsd, HANDLE_FLAG_INHERIT, 0)) {
+            if (!SetHandleInformation((HANDLE)nsd, HANDLE_FLAG_INHERIT, 0)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
                              "set_listeners_noninheritable: SetHandleInformation failed.");
             }
