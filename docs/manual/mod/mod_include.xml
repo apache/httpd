@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.18.2.7 $ -->
+<!-- $Revision: 1.18.2.8 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -661,10 +661,11 @@ directive]&quot;</default>
     different times).</p> 
 
     <example><title>Example</title>
-      SSIStartTag "&lt;%"
+      SSIStartTag "&lt;%"<br />
+      SSIEndTag   "%&gt;"
     </example>
 
-    <p>The example given above, in conjunction with a matching
+    <p>The example given above, which also specifies a matching
     <directive module="mod_include">SSIEndTag</directive>, will 
     allow you to use SSI directives as shown in the example 
     below:</p>
