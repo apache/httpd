@@ -103,6 +103,7 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf);
  */
 AP_DECLARE(void) ap_send_http_header(request_rec *l);
 
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, ap_bucket_brigade *b);
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b);
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *, 
                                                               ap_bucket_brigade *);
@@ -435,22 +436,6 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r);
 
 /* Sending a byterange */
 
-/**
- * Setup the request to send Byte Range requests
- * @param r the current request
- * @return 1 if request was setup for byte range requests, 0 otherwise
- * @deffunc int ap_set_byterange(request_rec *r)
- */
-AP_DECLARE(int) ap_set_byterange(request_rec *r);
-/**
- * Send one byte range chunk for a byte range request
- * @param r The current request
- * @param offset Set to the position it should be after the chunk is sent
- * @param length Set to the length in should be after the chunk is sent
- * @deffunc int ap_each_byterange(request_rec *r, apr_off_t *offset, apr_size_t *length)
- */
-AP_DECLARE(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
-				  apr_size_t *length);
 /**
  * Setup the output headers so that the client knows how to authenticate
  * itself the next time, if an authentication request failed.  This function
