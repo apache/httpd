@@ -219,7 +219,10 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
         port = default_port;
     }
 
-    if (strcasecmp(host, "_default_") == 0
+    if (strcmp(host, "*") == 0) {
+        rv = apr_getaddrinfo(&my_addr, NULL, APR_INET, port, 0, p);
+        my_addr->sa.sin.sin_addr.s_addr = htonl(INADDR_ANY);
+    } else if (strcasecmp(host, "_default_") == 0
         || strcmp(host, "255.255.255.255") == 0) {
         rv = apr_getaddrinfo(&my_addr, NULL, APR_INET, port, 0, p);
         ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
