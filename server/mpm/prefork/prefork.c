@@ -787,7 +787,7 @@ static void child_main(int child_num_arg)
         }
 #endif
 
-	current_conn = ap_run_create_connection(ptrans, csd, my_child_num);
+	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num);
         if (current_conn) {
             ap_process_connection(current_conn);
         }

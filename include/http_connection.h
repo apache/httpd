@@ -130,7 +130,7 @@ AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
  * @return An allocated connection record or NULL.
  */
 AP_DECLARE_HOOK(conn_rec *, create_connection,
-                (apr_pool_t *p, apr_socket_t *csd, int conn_id))
+                (apr_pool_t *p, server_rec *server, apr_socket_t *csd, int conn_id))
 
 #ifdef __cplusplus
 }
