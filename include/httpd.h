@@ -942,6 +942,14 @@ API_EXPORT(char *) ap_pbase64encode(ap_pool_t *p, char *string);
 API_EXPORT(char *) ap_uudecode(ap_pool_t *p, const char *bufcoded);
 API_EXPORT(char *) ap_uuencode(ap_pool_t *p, char *string); 
 
+#ifndef HAVE_STRCASECMP
+int strcasecmp(const char *a, const char *b);
+#endif
+
+#ifndef HAVE_STRNCASECMP
+int strncasecmp(const char *a, const char *b, int n);
+#endif
+
 /* Regexes */
 #if defined(AP_USE_HSREGEX) || defined(WIN32)
 #include "hsregex.h"
