@@ -1,221 +1,83 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- English revision: 1.45 -->
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
-
-<title>Dokumentation zum Apache HTTP Server Version 2.1</title><link
-href="./style/css/manual.css" rel="stylesheet" media="all"
-type="text/css" title="Main stylesheet" />
-<style type="text/css" media="all">
-<!--
-/* undo move content left */
-div#page-content {
-    margin-right: 2em;
-    padding-right: 0px;
-    margin-left: 2em;
-}
-
-th {
-    background-color: #e5ecf3;
-}
-
-td {
-    padding-top: .4em;
-}
--->
-</style>
-
-<link
-href="./images/favicon.ico" rel="shortcut icon" /></head><body
-id="manual-page"><div id="page-header"><p class="menu"><a
-href="./mod/">Module</a> | <a
-href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a>
-| <a href="./glossary.html">Glossar</a> | <a
-href="./sitemap.html">Seitenindex</a></p><p class="apache">Apache HTTP
-Server Version 2.1</p><img alt="" src="./images/feather.gif"
-/></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-"
-src="./images/left.gif" /></a></div><div id="path"><a
-href="http://www.apache.org/">Apache</a> &gt; <a
-href="http://httpd.apache.org/">HTTP Server</a> &gt; <a
-href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a
-href="./">Version 2.1</a></div>
-
-<div id="page-content">
-<h1>Dokumentation zum Apache HTTP Server Version 2.1</h1>
-
-
-
-<div align="center"><form method="post" action="http://search.apache.org/">
-              <input type="hidden" name="what"
-              value="httpd.apache.org" /> <input type="hidden"
-              name="results" value="20" /> <input type="hidden"
-              name="version" value="2" /> <input type="text"
-              name="keyword" size="20" /> <input type="submit"
-              value="Suchen" />
-            </form></div>
-
-
-<table style="border: 0">
-<tr><td style="width: 33%">
-
-<table style="width: 100%">
-<tr>
-<th>Hinweise zur Version</th>
-</tr>
-<tr><td>
-<a href="new_features_2_0.html">Neue Funktionen in Version 2.0</a></td></tr>
-
-<tr><td><a href="upgrading.html">Upgrade auf Version 2.0</a> </td></tr>
-
-<tr><td><a href="LICENSE">Apache-Lizenz</a> </td>
-
-</tr>
-<tr><td>&nbsp;</td></tr>
-<tr>
-<th>Bedienungsanleitung</th>
-</tr>
-
-                <tr><td><a href="install.html">Kompilieren und
-                Installieren</a> </td></tr>
-
-                <tr><td><a href="invoking.html">Starten</a> </td></tr>
-
-                <tr><td><a href="stopping.html">Stoppen und
-                Neustarten</a> </td></tr>
-
-                <tr><td><a href="mod/directives.html">
-                Konfigurationsanweisungen</a> </td></tr>
-
-                <tr><td><a href="mod/quickreference.html">Kurzreferenz
-                der Direktiven</a></td></tr>
-
-                <tr><td><a href="mod/">Module</a> </td></tr>
-
-                <tr><td><a href="mpm.html">Multi-Processing-Module
-                (MPMs)</a> </td></tr>
-
-                <tr><td><a href="filter.html">Filter</a> </td></tr>
-
-                <tr><td><a href="handler.html">Handler</a> </td></tr>
-
-                <tr><td><a href="programs/">Server und
-                Hilfsprogramme</a> </td></tr>
-
-                <tr><td><a href="glossary.html">Glossar</a> </td></tr>
-</table>
-</td>
-
-<td style="width: 33%">
-<table style="width: 100%">
-<tr>
-<th>Benutzerhandbuch</th>
-</tr>
-
-                <tr><td><a href="bind.html">Bindung</a></td></tr>
-
-                <tr><td><a href="configuring.html">
-                Konfigurationsdateien</a> </td></tr>
-
-                <tr><td><a href="sections.html">
-                Konfigurationsabschnitte</a></td></tr>
-
-                <tr><td><a href="content-negotiation.html">Content
-                Negotiation</a> </td></tr>
-
-                <tr><td><a href="dso.html">Dynamic Shared
-                Objects (DSO)</a> </td></tr>
-
-                <tr><td><a href="env.html">Umgebungsvariablen</a>
-                </td></tr>
-
-
-                <tr><td><a href="logs.html">Log-Dateien</a> </td></tr>
-
-                <tr><td><a href="urlmapping.html">URLs auf das Dateisystem
-                abbilden</a> </td></tr>
-
-                <tr><td><a href="misc/perf-tuning.html">
-                Performance-Hinweise</a> </td></tr>
-
-                <tr><td><a href="misc/security_tips.html">Tipps zur
-                Sicherheit</a> </td></tr>
-
-                <tr><td><a href="server-wide.html">Serverweite
-                Konfiguration</a> </td></tr>
-
-                <tr><td><a href="ssl/">
-                SSL/TLS-Verschl&uuml;sselung</a></td></tr>
-
-                <tr><td><a href="suexec.html">Suexec
-                f&uuml;r CGI</a> </td></tr>
-
-                <tr><td><a href="misc/rewriteguide.html">Einf&uuml;hrung in
-                die URL-Manipulation</a> </td></tr>
-
-                <tr><td><a href="vhosts/">Virtual-Hosts</a> </td></tr>
-
-</table>
-</td>
-<td style="width: 33%">
-<table style="width: 100$">
-<tr>
-<th>Praxis / Anleitungen</th>
-</tr>
-
-                <tr><td><a href="howto/auth.html">Authentisierung,
-                Autorisierung und Zugriffskontrolle</a></td></tr>
-
-                <tr><td><a href="howto/cgi.html">CGI: Dynamische
-                Inhalte</a> </td></tr>
-
-                <tr><td><a
-                href="howto/htaccess.html"><code>.htaccess</code>-Dateien</a>
-                </td></tr>
-
-                <tr><td><a href="howto/ssi.html">Server Side
-                Includes (SSI)</a> </td></tr>
-
-                <tr><td><a href="howto/public_html.html">Web-Verzeichnisse
-                f&uuml;r Benutzer (<code>public_html</code>)</a> </td></tr>
-
-
-<tr><td>&nbsp;</td></tr>
-<tr>
-<th>Plattform-spezifische Anmerkungen</th>
-</tr>
-                <tr><td><a href="platform/windows.html">Microsoft
-                Windows</a> </td></tr>
-
-                <tr><td><a href="platform/netware.html">Novell NetWare
-                </a> </td></tr>
-
-                <tr><td><a href="platform/ebcdic.html">EBCDIC-Portierung
-                </a> </td></tr>
-
-<tr><td>&nbsp;</td></tr>
-<tr>
-<th>Weitere Themen</th>
-</tr>
-
-                <tr><td><a href="faq/">H&auml;ufig gestellte Fragen (FAQ)</a>
-                </td></tr>
-
-                <tr><td><a href="sitemap.html">Seitenindex</a>
-                </td></tr>
-
-                <tr><td><a href="developer/">Dokumentation f&uuml;r
-                Entwickler</a> </td></tr>
-
-                <tr><td><a href="misc/">Sonstiges</a> </td></tr>
-</table>
-
-</td></tr></table>
-
-</div>
-<div id="footer"><p class="apache">Gepflegt durch das <a
-href="http://httpd.apache.org/docs-project/">Apache HTTP Server
-Documentation Project</a></p><p class="menu"><a
-href="./mod/">Module</a> | <a
-href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a>
-| <a href="./glossary.html">Glossar</a> | <a
-href="./sitemap.html">Seitenindex</a></p></div></body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Dokumentation zum Apache HTTP Server Version 2.1 - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="index-page">
+<div id="page-header">
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a></div>
+<div id="page-content"><h1>Dokumentation zum Apache HTTP Server Version 2.1</h1>
+<form action="http://search.apache.org/" method="post"><p><input value="httpd.apache.org" name="what" type="hidden" /><input value="20" name="results" type="hidden" /><input value="2" name="version" type="hidden" /><input size="20" name="keyword" type="text" /> <input value="Suchen" type="submit" /></p></form>
+<table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Hinweise zur Version</a></h2>
+<ul><li><a href="new_features_2_0.html">Neue Funktionen in Version 2.0</a></li>
+<li><a href="upgrading.html">Upgrade auf Version 2.0</a></li>
+<li><a href="LICENSE">Apache-Lizenz</a></li>
+</ul>
+</div><div class="category"><h2><a name="manual" id="manual">Bedienungsanleitung</a></h2>
+<ul><li><a href="install.html">Kompilieren und Installieren</a></li>
+<li><a href="invoking.html">Starten</a></li>
+<li><a href="stopping.html">Stoppen und Neustarten</a></li>
+<li><a href="mod/directives.html">Konfigurationsanweisungen</a></li>
+<li><a href="mod/quickreference.html">Kurzreferenz der Direktiven</a></li>
+<li><a href="mod/">Module</a></li>
+<li><a href="mpm.html">Multi-Processing-Module (MPMs)</a></li>
+<li><a href="filter.html">Filter</a></li>
+<li><a href="handler.html">Handler</a></li>
+<li><a href="programs/">Server und Hilfsprogramme</a></li>
+<li><a href="glossary.html">Glossar</a></li>
+</ul>
+</div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">Benutzerhandbuch</a></h2>
+<ul><li><a href="bind.html">Bindung</a></li>
+<li><a href="configuring.html">Konfigurationsdateien</a></li>
+<li><a href="sections.html">Konfigurationsabschnitte</a></li>
+<li><a href="content-negotiation.html">Content Negotiation</a></li>
+<li><a href="dso.html">Dynamic Shared Objects (DSO)</a></li>
+<li><a href="env.html">Umgebungsvariablen</a></li>
+<li><a href="logs.html">Log-Dateien</a></li>
+<li><a href="urlmapping.html">URLs auf das Dateisystem abbilden</a></li>
+<li><a href="misc/perf-tuning.html">Performance-Hinweise</a></li>
+<li><a href="misc/security_tips.html">Tipps zur Sicherheit</a></li>
+<li><a href="server-wide.html">Serverweite Konfiguration</a></li>
+<li><a href="ssl/">SSL/TLS-Verschlüsselung</a></li>
+<li><a href="suexec.html">Suexec für CGI</a></li>
+<li><a href="misc/rewriteguide.html">Einführung in die
+    URL-Manipulation</a></li>
+<li><a href="vhosts/">Virtual-Hosts</a></li>
+</ul>
+</div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">Praxis / Anleitungen</a></h2>
+<ul><li><a href="howto/auth.html">Authentisierung, Autorisierung und
+    Zugriffskontrolle</a></li>
+<li><a href="howto/cgi.html">CGI: Dynamische Inhalte</a></li>
+<li><a href="howto/htaccess.html">.htaccess-Dateien</a></li>
+<li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
+<li><a href="howto/public_html.html">Web-Verzeichnisse für Benutzer
+    (public_html)</a></li>
+</ul>
+</div><div class="category"><h2><a name="platform" id="platform">Plattform-spezifische Anmerkungen</a></h2>
+<ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
+<li><a href="platform/netware.html">Novell NetWare</a></li>
+<li><a href="platform/ebcdic.html">EBCDIC-Portierung</a></li>
+</ul>
+</div><div class="category"><h2><a name="other" id="other">Weitere Themen</a></h2>
+<ul><li><a href="faq/">Häufig gestellte Fragen (FAQ)</a></li>
+<li><a href="sitemap.html">Seitenindex</a></li>
+<li><a href="developer/">Dokumentation für Entwickler</a></li>
+<li><a href="misc/">Sonstiges</a></li>
+</ul>
+</div></td></tr></table></div>
+<div id="footer">
+<p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>
+</body></html>
