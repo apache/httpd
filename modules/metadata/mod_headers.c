@@ -386,15 +386,25 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
                "'echo'.";
 
     if (new->action == hdr_unset) {
-        if (value)
-            return "header unset takes two arguments";
+        if (value) {
+            if (envclause) {
+                return "header unset takes two arguments";
+            }
+            envclause = value;
+            value = NULL;
+        }
     }
     else if (new->action == hdr_echo) {
         regex_t *regex;
 
-        if (value)
-            return "Header echo takes two arguments";
-        else if (cmd->info != &hdr_out && cmd->info != &hdr_err)
+        if (value) {
+            if (envclause) {
+                return "Header echo takes two arguments";
+            }
+            envclause = value;
+            value = NULL;
+        }
+        if (cmd->info != &hdr_out && cmd->info != &hdr_err)
             return "Header echo only valid on Header and ErrorHeader "
                    "directives";
         else {
