@@ -27,6 +27,6 @@ typedef struct {
 } DIR;
 
 /* Function prototypes */
-DIR *opendir(char *);
+DIR *opendir(const char *);
 struct dirent *readdir(DIR *);
 int closedir(DIR *);

@@ -17,7 +17,7 @@
  * The DIR typedef is not compatible with Unix.
  **********************************************************************/
 
-DIR *opendir(char *dir)
+DIR *opendir(const char *dir)
 {
     DIR *dp;
     char *filespec;
