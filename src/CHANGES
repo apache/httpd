@@ -1,5 +1,9 @@
 Changes with Apache 1.2b3:
 
+  *) Improve the accuracy of request duration timings by setting
+     r->request_time in read_request_line() instead of read_request().
+     [Dean Gaudet]
+
   *) Reset timeout while reading via get_client_block() in mod_cgi.c
      Fixes problem with timed out transfers of large files. [Rasmus Lerdorf]
 

@@ -518,6 +518,7 @@ int read_request_line (request_rec *r)
     if (len == (HUGE_STRING_LEN - 1))
         return 0;               /* Should be a 414 error status instead */
 
+    r->request_time = time(NULL);
     r->the_request = pstrdup (r->pool, l);
     r->method = getword_white(r->pool, &ll);
     uri = getword_white(r->pool, &ll);
@@ -619,8 +620,6 @@ request_rec *read_request (conn_rec *conn)
 {
     request_rec *r = (request_rec *)pcalloc (conn->pool, sizeof(request_rec));
 
-    r->request_time = time(NULL);
-  
     r->connection = conn;
     r->server = conn->server;
     r->pool = make_sub_pool(conn->pool);
