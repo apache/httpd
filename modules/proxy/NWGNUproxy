@@ -22,9 +22,9 @@ XINCDIRS	+= \
 			$(AP_WORK)/modules/arch/netware \
 			$(AP_WORK)/modules/ssl \
 			$(AP_WORK)/modules/generators \
-			$(AP_WORK)/srclib/apr/include \
-			$(AP_WORK)/srclib/apr-util/include \
-			$(AP_WORK)/srclib/apr \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(APR) \
 			$(EOLIST)
 
 #

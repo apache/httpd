@@ -46,8 +46,8 @@ cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NW
 	@echo -I..\modules\aaa >> $@
 	@echo -I..\os\netware >> $@
 	@echo -I..\server\mpm\netware >> $@
-	@echo -I..\srclib\apr\include >> $@
-	@echo -I..\srclib\apr-util\include >> $@
+	@echo -I$(APR_WORK)\include >> $@
+	@echo -I$(APRUTIL)\include >> $@
 	@echo -ir $(NOVELLLIBC) >> $@
 
 $(APR)/include/%.h: $(subst /,\,$(APR))\include\%.hnw

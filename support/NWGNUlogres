@@ -18,10 +18,10 @@ endif
 XINCDIRS	+= \
 			$(NWOS) \
 			$(AP_WORK)/include \
-			$(AP_WORK)/srclib/apr/include \
-			$(AP_WORK)/srclib/apr-util/include \
-			$(AP_WORK)/srclib/apr/misc/netware \
-			$(AP_WORK)/srclib/apr \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(APR)/misc/netware \
+			$(APR) \
 			$(EOLIST)
 
 #

@@ -18,9 +18,9 @@ endif
 XINCDIRS	+= \
 			$(AP_WORK)/include \
 			$(NWOS) \
-			$(AP_WORK)/srclib/apr/include \
-			$(AP_WORK)/srclib/apr-util/include \
-			$(AP_WORK)/srclib/apr \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(APR) \
 			$(LDAPSDK)/inc \
 			$(EOLIST)
 
