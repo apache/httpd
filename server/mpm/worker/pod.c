@@ -87,9 +87,6 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
 */
     (*pod)->p = p;
     
-    apr_sockaddr_info_get(&(*pod)->sa, ap_listeners->bind_addr->hostname,
-                          APR_UNSPEC, ap_listeners->bind_addr->port, 0, p);
-
     return APR_SUCCESS;
 }
 
@@ -147,75 +144,9 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod, int graceful)
     return rv;
 }
 
-/* This function connects to the server, then immediately closes the connection.
- * This permits the MPM to skip the poll when there is only one listening
- * socket, because it provides a alternate way to unblock an accept() when
- * the pod is used.
- */
-
-static apr_status_t dummy_connection(ap_pod_t *pod)
-{
-    apr_status_t rv;
-    apr_socket_t *sock;
-    apr_pool_t *p;
-    
-    /* create a temporary pool for the socket.  pconf stays around too long */
-    rv = apr_pool_create(&p, pod->p);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    
-    rv = apr_socket_create(&sock, pod->sa->family, SOCK_STREAM, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
-                     "get socket to connect to listener");
-        return rv;
-    }
-    /* on some platforms (e.g., FreeBSD), the kernel won't accept many
-     * queued connections before it starts blocking local connects...
-     * we need to keep from blocking too long and instead return an error,
-     * because the MPM won't want to hold up a graceful restart for a
-     * long time
-     */
-    rv = apr_setsocketopt(sock, APR_SO_TIMEOUT, 3 * APR_USEC_PER_SEC);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
-                     "set timeout on socket to connect to listener");
-        apr_socket_close(sock);
-        return rv;
-    }
-    
-    rv = apr_connect(sock, pod->sa);    
-    if (rv != APR_SUCCESS) {
-        int log_level = APLOG_WARNING;
-
-        if (APR_STATUS_IS_TIMEUP(rv)) {
-            /* probably some server processes bailed out already and there 
-             * is nobody around to call accept and clear out the kernel 
-             * connection queue; usually this is not worth logging
-             */
-            log_level = APLOG_DEBUG;
-        }
-	
-        ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf,
-                     "connect to listener");
-    }
-
-    apr_socket_close(sock);
-    apr_pool_destroy(p);
-
-    return rv;
-}
-
 AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod, int graceful)
 {
-    apr_status_t rv;
-
-    rv = pod_signal_internal(pod, graceful);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    return dummy_connection(pod);
+    return pod_signal_internal(pod, graceful);
 }
 
 AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num, int graceful)
@@ -225,11 +156,6 @@ AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num, int graceful)
 
     for (i = 0; i < num && rv == APR_SUCCESS; i++) {
         rv = pod_signal_internal(pod, graceful);
-    }
-    if (rv == APR_SUCCESS) {
-        for (i = 0; i < num && rv == APR_SUCCESS; i++) {
-             rv = dummy_connection(pod);
-        }
     }
 }
 
