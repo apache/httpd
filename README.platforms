@@ -6,29 +6,29 @@
 
 ================
   Darwin (OS X):
-   Apache 2.0 relies heavily on the use of autoconf and libtool to provide
-   a build environment.  Darwin provides these tools,  but they are
-   an earlier release,  and for the most part,  do not work well.
-   If you are interested in developing under Darwin,  we recommend
-   that you obtain and install replacement versions of what are
-   normally installed on Darwin (and OS X, as of v10.1.4).  If you
-   build your own versions of autoconf 2.52 and libtool 1.4.2,  be
-   aware that there are some Darwin specific patchs to the official
+   Apache 2.0 relies heavily on the use of autoconf and libtool to
+   provide a build environment.  Darwin provides these tools, but
+   they are an earlier release, and for the most part, do not work
+   well.  If you are interested in developing under Darwin, we
+   recommend that you obtain and install replacement versions of what
+   are normally installed on Darwin (and OS X, as of v10.1.4).  If
+   you build your own versions of autoconf 2.52 and libtool 1.4.2, be
+   aware that there are some Darwin specific patches to the official
    code that still must be applied for them to fully work.  A useful
    page to check out is:
 
       http://fink.sourceforge.net/doc/porting/libtool.php
 
    Pier Fumagalli also provides pre-built Darwin packages of the
-   patched autoconf and libtool suites,  available at:
+   patched autoconf and libtool suites, available at:
 
       http://www.apache.org/~pier/macosx/
 
    You will note that GNU libtool should actually be installed as
    glibtool, to avoid conflict with a Darwin program of the same
    name.  Pier's packages have this change already.  All files are
-   installed under /usr/local/ so to use these versions,  be sure that
-   /usr/local/bin is earlier in your PATH.
+   installed under /usr/local/ so to use these versions, and be sure
+   that /usr/local/bin is earlier in your PATH.
 
    There have been some reports that autoconf 2.52 prevents Apache's
    build system from correctly handling passing multi-value envvars
