@@ -125,6 +125,27 @@ is available only in Apache 2.0</compatibility>
 </section>
 
 <directivesynopsis>
+<name>ErrorHeader</name>
+<description>Configure HTTP response headers also for error responses</description>
+<syntax>ErrorHeader set|append|add|unset|echo <var>header</var>
+[<var>value</var> [env=[!]<var>variable</var>]]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+<p>This directive can replace, merge or remove HTTP response headers also during
+<code>3<var>xx</var></code>, <code>4<var>xx</var></code> and
+<code>5<var>xx</var></code> replies. For normal replies use the <directive
+module="mod_headers">Header</directive> directive.</p>
+
+<p>This directive is identical to the <directive
+module="mod_headers">Header</directive> directive in all other respects.
+Consult this directive for more information on the syntax.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
