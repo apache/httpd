@@ -152,6 +152,9 @@ static void show_compile_settings(void)
 #ifdef CHARSET_EBCDIC
     printf(" -D CHARSET_EBCDIC\n");
 #endif
+#ifdef APACHE_XLATE
+    printf(" -D APACHE_XLATE\n");
+#endif
 #ifdef NEED_HASHBANG_EMUL
     printf(" -D NEED_HASHBANG_EMUL\n");
 #endif
