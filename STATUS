@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/06 21:46:40 $]
+Last modified at [$Date: 2000/06/07 02:06:49 $]
 
 Release:
 
@@ -22,6 +22,10 @@ RELEASE SHOWSTOPPERS:
             default cgi module on Unix with a threaded MPM is the cgid
             module.  This should be override-able of course.
           Status: Jim Jagielski is looking into this.
+
+      - Fix up ./configure to properly detect the various dynamic load
+          libraries/flags on the different platforms (current, we default
+          to -ldl which is wrong).
 
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
@@ -58,10 +62,6 @@ RELEASE SHOWSTOPPERS:
         Status: The best known candidate would be something from
 	BIND v9.
         Status: Greg asks, "why? doesn't gethostname_r() handle this?"
-
-    * Fix up ./configure to properly detect the various dynamic load
-        libraries/flags on the different platforms (current, we default to
-        -ldl which is wrong).
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * OS/2: Get loadable modules working again. Requires shared core support
