@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.15 1996/08/20 11:50:51 paul Exp $ */
+/* $Id: http_request.c,v 1.16 1996/10/08 20:43:31 brian Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -713,9 +713,9 @@ void die(int type, request_rec *r)
 	    r->status = REDIRECT;
 	    table_set (r->headers_out, "Location", custom_response);
 	} else if ( custom_response[0] == '/') {
-	    r->no_cache = 1;	/* Do NOT send USE_LOCAL_COPY for
-				 * error documents!
-				 */
+	    r->no_local_copy = 1; /* Do NOT send USE_LOCAL_COPY for
+				   * error documents!
+				   */
 	    /* This redirect needs to be a GET no matter what the original
 	     * method was.
 	     */
@@ -950,6 +950,7 @@ request_rec *internal_internal_redirect (char *new_uri, request_rec *r)
     new->no_cache = r->no_cache; /* If we've already made up our minds
 				  * about this, don't change 'em back!
 				  */
+    new->no_local_copy = r->no_local_copy;
 
     sprintf (t, "%d", r->status);
     table_set (new->subprocess_env, "REDIRECT_STATUS", pstrdup (r->pool, t));

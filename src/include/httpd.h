@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: httpd.h,v 1.51 1996/09/30 05:56:26 brian Exp $ */
+/* $Id: httpd.h,v 1.52 1996/10/08 20:43:32 brian Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -409,6 +409,7 @@ struct request_rec {
   char *content_language;
   
   int no_cache;
+  int no_local_copy;
   
   /* What object is being requested (either directly, or via include
    * or content-negotiation mapping).

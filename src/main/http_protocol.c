@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.51 1996/09/30 05:56:25 brian Exp $ */
+/* $Id: http_protocol.c,v 1.52 1996/10/08 20:43:33 brian Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -357,7 +357,7 @@ int set_last_modified(request_rec *r, time_t mtime)
      * not allowing conditional GETs.
      */
 
-    if (r->no_cache) return OK;
+    if (r->no_local_copy) return OK;
 
     /* Check for conditional GETs --- note that we only want this check
      * to succeed if the GET was successful; ErrorDocuments *always* get sent.
@@ -705,7 +705,7 @@ request_rec *read_request (conn_rec *conn)
 void set_sub_req_protocol (request_rec *rnew, request_rec *r)
 {
     rnew->assbackwards = 1;	/* Don't send headers from this. */
-    rnew->no_cache = 1;		/* Don't try to send USE_LOCAL_COPY for a
+    rnew->no_local_copy = 1;	/* Don't try to send USE_LOCAL_COPY for a
 				 * fragment.
 				 */
     rnew->method = "GET"; rnew->method_number = M_GET;
