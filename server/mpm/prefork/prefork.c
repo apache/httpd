@@ -557,14 +557,6 @@ static void child_main(int child_num_arg)
     apr_signal(SIGHUP, just_die);
     apr_signal(SIGTERM, just_die);
 
-#ifdef OS2
-/* Stop Ctrl-C/Ctrl-Break signals going to child processes */
-    {
-        unsigned long ulTimes;
-        DosSetSignalExceptionFocus(0, &ulTimes);
-    }
-#endif
-
     while (!ap_graceful_stop_signalled()) {
 
 	/* Prepare to receive a SIGWINCH due to graceful restart so that
