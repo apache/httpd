@@ -215,6 +215,11 @@ static void interrupted(void)
     exit(1);
 }
 
+static void terminate(void)
+{
+    apr_terminate();
+}
+
 int main(int argc, char *argv[])
 {
     apr_file_t *tfp = NULL, *f;
@@ -234,7 +239,7 @@ int main(int argc, char *argv[])
                 apr_strerror(rv, line, sizeof(line)), rv);
         exit(1);
     }
-    atexit(apr_terminate); 
+    atexit(terminate); 
     apr_create_pool(&cntxt, NULL);
 
 #if APR_CHARSET_EBCDIC
