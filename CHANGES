@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) mod_ext_filter: Set additional environment variables for use by
+     the external filter.  PR 20944.  [Andrew Ho, Jeff Trawick]
+
   *) Fix buildconf errors when libtool version changes.  [Jeff Trawick]
 
   *) Remember an authenticated user during internal redirects if the

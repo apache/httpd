@@ -478,6 +478,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
      * and QUERY_STRING_UNESCAPED
      */
     ap_add_cgi_vars(f->r);
+    ap_add_common_vars(f->r);
     apr_table_setn(f->r->subprocess_env, "DOCUMENT_URI", f->r->uri);
     apr_table_setn(f->r->subprocess_env, "DOCUMENT_PATH_INFO", f->r->path_info);
     if (f->r->args) {
