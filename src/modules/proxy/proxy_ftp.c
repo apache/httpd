@@ -228,7 +228,7 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
     tempurl = pstrdup(r->pool, url);
     if ((n = strcspn(tempurl, "@")) != strlen(tempurl))	/* hide user/passwd */
     {
-	bcopy(tempurl, tempurl + (n - 5), 6);
+	memmove(tempurl + (n - 5), tempurl, 6);
 	tempurl += n - 5;	/* leave room for ftp:// */
     }
 
