@@ -66,7 +66,7 @@
 #include "http_protocol.h"
 
 
-dav_error *dav_new_error(pool *p, int status, int error_id, const char *desc)
+dav_error *dav_new_error(ap_pool_t *p, int status, int error_id, const char *desc)
 {
     int save_errno = errno;
     dav_error *err = ap_pcalloc(p, sizeof(*err));
@@ -81,7 +81,7 @@ dav_error *dav_new_error(pool *p, int status, int error_id, const char *desc)
     return err;
 }
 
-dav_error *dav_push_error(pool *p, int status, int error_id, const char *desc,
+dav_error *dav_push_error(ap_pool_t *p, int status, int error_id, const char *desc,
 			  dav_error *prev)
 {
     dav_error *err = ap_pcalloc(p, sizeof(*err));
@@ -94,7 +94,7 @@ dav_error *dav_push_error(pool *p, int status, int error_id, const char *desc,
     return err;
 }
 
-void dav_text_append(pool * p, dav_text_header *hdr, const char *text)
+void dav_text_append(ap_pool_t * p, dav_text_header *hdr, const char *text)
 {
     dav_text *t = ap_palloc(p, sizeof(*t));
 
@@ -112,7 +112,7 @@ void dav_text_append(pool * p, dav_text_header *hdr, const char *text)
     }
 }
 
-void dav_check_bufsize(pool * p, dav_buffer *pbuf, size_t extra_needed)
+void dav_check_bufsize(ap_pool_t * p, dav_buffer *pbuf, size_t extra_needed)
 {
     /* grow the buffer if necessary */
     if (pbuf->cur_len + extra_needed > pbuf->alloc_len) {
@@ -125,7 +125,7 @@ void dav_check_bufsize(pool * p, dav_buffer *pbuf, size_t extra_needed)
     }
 }
 
-void dav_set_bufsize(pool * p, dav_buffer *pbuf, size_t size)
+void dav_set_bufsize(ap_pool_t * p, dav_buffer *pbuf, size_t size)
 {
     /* NOTE: this does not retain prior contents */
 
@@ -146,14 +146,14 @@ void dav_set_bufsize(pool * p, dav_buffer *pbuf, size_t size)
 
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
-void dav_buffer_init(pool *p, dav_buffer *pbuf, const char *str)
+void dav_buffer_init(ap_pool_t *p, dav_buffer *pbuf, const char *str)
 {
     dav_set_bufsize(p, pbuf, strlen(str));
     memcpy(pbuf->buf, str, pbuf->cur_len + 1);
 }
 
 /* append a string to the end of the buffer, adjust length */
-void dav_buffer_append(pool *p, dav_buffer *pbuf, const char *str)
+void dav_buffer_append(ap_pool_t *p, dav_buffer *pbuf, const char *str)
 {
     size_t len = strlen(str);
 
@@ -163,7 +163,7 @@ void dav_buffer_append(pool *p, dav_buffer *pbuf, const char *str)
 }
 
 /* place a string on the end of the buffer, do NOT adjust length */
-void dav_buffer_place(pool *p, dav_buffer *pbuf, const char *str)
+void dav_buffer_place(ap_pool_t *p, dav_buffer *pbuf, const char *str)
 {
     size_t len = strlen(str);
 
@@ -172,7 +172,7 @@ void dav_buffer_place(pool *p, dav_buffer *pbuf, const char *str)
 }
 
 /* place some memory on the end of a buffer; do NOT adjust length */
-void dav_buffer_place_mem(pool *p, dav_buffer *pbuf, const void *mem,
+void dav_buffer_place_mem(ap_pool_t *p, dav_buffer *pbuf, const void *mem,
                           size_t amt, size_t pad)
 {
     dav_check_bufsize(p, pbuf, amt + pad);
@@ -379,7 +379,7 @@ static int dav_text_size(const dav_text *t)
 }
 
 static size_t dav_elem_size(const dav_xml_elem *elem, int style,
-                            array_header *namespaces, int *ns_map)
+                            ap_array_header_t *namespaces, int *ns_map)
 {
     size_t size;
 
@@ -487,7 +487,7 @@ static char *dav_write_text(char *s, const dav_text *t)
 }
 
 static char *dav_write_elem(char *s, const dav_xml_elem *elem, int style,
-			    array_header *namespaces, int *ns_map)
+			    ap_array_header_t *namespaces, int *ns_map)
 {
     const dav_xml_elem *child;
     size_t len;
@@ -576,10 +576,10 @@ static char *dav_write_elem(char *s, const dav_xml_elem *elem, int style,
 }
 
 /* convert an element to a text string */
-void dav_xml2text(pool * p,
+void dav_xml2text(ap_pool_t * p,
 		  const dav_xml_elem *elem,
 		  int style,
-		  array_header *namespaces,
+		  ap_array_header_t *namespaces,
 		  int *ns_map,
 		  const char **pbuf,
 		  size_t *psize)
@@ -596,7 +596,7 @@ void dav_xml2text(pool * p,
 	*psize = size;
 }
 
-const char *dav_empty_elem(pool * p, const dav_xml_elem *elem)
+const char *dav_empty_elem(ap_pool_t * p, const dav_xml_elem *elem)
 {
     if (elem->ns == DAV_NS_NONE) {
 	/*
@@ -618,7 +618,7 @@ const char *dav_empty_elem(pool * p, const dav_xml_elem *elem)
 ** quotes is typically set to true for XML strings that will occur within
 ** double quotes -- attribute values.
 */
-const char * dav_quote_string(pool *p, const char *s, int quotes)
+const char * dav_quote_string(ap_pool_t *p, const char *s, int quotes)
 {
     const char *scan;
     int len = 0;
@@ -678,7 +678,7 @@ const char * dav_quote_string(pool *p, const char *s, int quotes)
     return qstr;
 }
 
-void dav_quote_xml_elem(pool *p, dav_xml_elem *elem)
+void dav_quote_xml_elem(ap_pool_t *p, dav_xml_elem *elem)
 {
     dav_text *scan_txt;
     dav_xml_attr *scan_attr;
@@ -766,7 +766,7 @@ time_t dav_get_timeout(request_rec *r)
 
 /* add_if_resource returns a new if_header, linking it to next_ih.
  */
-static dav_if_header *dav_add_if_resource(pool *p, dav_if_header *next_ih,
+static dav_if_header *dav_add_if_resource(ap_pool_t *p, dav_if_header *next_ih,
 					  const char *uri, size_t uri_len)
 {
     dav_if_header *ih;
@@ -783,7 +783,7 @@ static dav_if_header *dav_add_if_resource(pool *p, dav_if_header *next_ih,
 
 /* add_if_state adds a condition to an if_header.
  */
-static dav_error * dav_add_if_state(pool *p, dav_if_header *ih,
+static dav_error * dav_add_if_state(ap_pool_t *p, dav_if_header *ih,
 				    const char *state_token,
 				    dav_if_state_type t, int condition,
 				    const dav_hooks_locks *locks_hooks)
@@ -1050,7 +1050,7 @@ static int dav_find_submitted_locktoken(const dav_if_header *if_header,
 /* dav_validate_resource_state:
  *    Returns NULL if path/uri meets if-header and lock requirements
  */
-static dav_error * dav_validate_resource_state(pool *p,
+static dav_error * dav_validate_resource_state(ap_pool_t *p,
 					       const dav_resource *resource,
 					       dav_lockdb *lockdb,
 					       const dav_if_header *if_header,
@@ -1393,12 +1393,12 @@ static dav_error * dav_validate_resource_state(pool *p,
                     ** to manipulate a resource.
                     */
                     if (lock->auth_user && 
-                        (!r->connection->user ||
-                         strcmp(lock->auth_user, r->connection->user))) {
+                        (!r->user ||
+                         strcmp(lock->auth_user, r->user))) {
                         const char *errmsg;
 
                         errmsg = ap_pstrcat(p, "User \"",
-                                            r->connection->user, 
+                                            r->user, 
                                             "\" submitted a locktoken created "
                                             "by user \"",
                                             lock->auth_user, "\".", NULL);
@@ -2111,7 +2111,7 @@ dav_error *dav_revert_resource_writability(request_rec *r,
 }
 
 /* return the URI's (existing) index, or insert it and return a new index */
-int dav_insert_uri(array_header *uri_array, const char *uri)
+int dav_insert_uri(ap_array_header_t *uri_array, const char *uri)
 {
     int i;
     const char **pelt;

@@ -58,13 +58,21 @@
 
 #include <string.h>
 
+/* ### this stuff is temporary... need APR */
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#ifndef O_BINARY
+#define O_BINARY (0)
+#endif
+
 #include "httpd.h"
 #include "http_log.h"
 #include "http_protocol.h"	/* for ap_set_* (in dav_fs_set_headers) */
 #include "http_request.h"       /* for ap_update_mtime() */
 
-#include "mod_dav.h"
-#include "dav_fs_repos.h"
+#include "../main/mod_dav.h"
+#include "repos.h"
 
 
 /* to assist in debugging mod_dav's GET handling */
@@ -75,9 +83,9 @@
 
 /* context needed to identify a resource */
 struct dav_resource_private {
-    pool *pool;             /* memory storage pool associated with request */
+    ap_pool_t *pool;        /* memory storage pool associated with request */
     const char *pathname;   /* full pathname to resource */
-    struct stat finfo;      /* filesystem info */
+    ap_finfo_t finfo;       /* filesystem info */
 };
 
 /* private context for doing a filesystem walk */
@@ -172,7 +180,7 @@ static const dav_fs_liveprop_name dav_fs_props[] =
 
 /* define the dav_stream structure for our use */
 struct dav_stream {
-    pool *p;
+    ap_pool_t *p;
     int fd;
     const char *pathname;	/* we may need to remove it at close time */
 };
@@ -184,7 +192,7 @@ static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth);
 **
 ** PRIVATE REPOSITORY FUNCTIONS
 */
-pool *dav_fs_pool(const dav_resource *resource)
+ap_pool_t *dav_fs_pool(const dav_resource *resource)
 {
     return resource->info->pool;
 }
@@ -268,7 +276,7 @@ static int dav_sync_write(int fd, const char *buf, ssize_t bufsize)
 
 static dav_error * dav_fs_copymove_file(
     int is_move,
-    pool * p,
+    ap_pool_t * p,
     const char *src,
     const char *dst,
     dav_buffer *pbuf)
@@ -383,13 +391,13 @@ static dav_error * dav_fs_copymove_file(
 /* ### need more buffers to replace the pool argument */
 static dav_error * dav_fs_copymove_state(
     int is_move,
-    pool * p,
+    ap_pool_t * p,
     const char *src_dir, const char *src_file,
     const char *dst_dir, const char *dst_file,
     dav_buffer *pbuf)
 {
-    struct stat src_finfo;	/* finfo for source file */
-    struct stat dst_state_finfo;	/* finfo for STATE directory */
+    ap_finfo_t src_finfo;	/* finfo for source file */
+    ap_finfo_t dst_state_finfo;	/* finfo for STATE directory */
     const char *src;
     const char *dst;
 
@@ -397,7 +405,7 @@ static dav_error * dav_fs_copymove_state(
     src = ap_pstrcat(p, src_dir, "/" DAV_FS_STATE_DIR "/", src_file, NULL);
 
     /* the source file doesn't exist */
-    if (stat(src, &src_finfo) != 0) {
+    if (ap_stat(&src_finfo, src, p) != 0) {
 	return NULL;
     }
 
@@ -416,7 +424,7 @@ static dav_error * dav_fs_copymove_state(
     }
 
     /* get info about the state directory */
-    if (stat(dst, &dst_state_finfo) != 0) {
+    if (ap_stat(&dst_state_finfo, dst, p) != 0) {
 	/* Ack! Where'd it go? */
 	/* ### use something besides 500? */
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -424,7 +432,7 @@ static dav_error * dav_fs_copymove_state(
     }
 
     /* The mkdir() may have failed because a *file* exists there already */
-    if (!S_ISDIR(dst_state_finfo.st_mode)) {
+    if (dst_state_finfo.filetype != APR_DIR) {
 	/* ### try to recover by deleting this file? (and mkdir again) */
 	/* ### use something besides 500? */
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -435,6 +443,9 @@ static dav_error * dav_fs_copymove_state(
     dst = ap_pstrcat(p, dst, "/", dst_file, NULL);
 
     /* copy/move the file now */
+#if 0
+    /* ### need st_dev from APR */
+
     if (is_move && src_finfo.st_dev == dst_state_finfo.st_dev) {
 	/* simple rename is possible since it is on the same device */
 	if (rename(src, dst) != 0) {
@@ -443,7 +454,9 @@ static dav_error * dav_fs_copymove_state(
 				 "Could not move state file.");
 	}
     }
-    else {
+    else
+#endif
+    {
 	/* gotta copy (and delete) */
 	return dav_fs_copymove_file(is_move, p, src, dst, pbuf);
     }
@@ -451,7 +464,7 @@ static dav_error * dav_fs_copymove_state(
     return NULL;
 }
 
-static dav_error *dav_fs_copymoveset(int is_move, pool *p,
+static dav_error *dav_fs_copymoveset(int is_move, ap_pool_t *p,
 				     const dav_resource *src,
 				     const dav_resource *dst,
 				     dav_buffer *pbuf)
@@ -509,7 +522,7 @@ static dav_error *dav_fs_copymoveset(int is_move, pool *p,
     return err;
 }
 
-static dav_error *dav_fs_deleteset(pool *p, const dav_resource *resource)
+static dav_error *dav_fs_deleteset(ap_pool_t *p, const dav_resource *resource)
 {
     const char *dirpath;
     const char *fname;
@@ -578,7 +591,8 @@ static dav_resource * dav_fs_get_resource(
     ctx->finfo = r->finfo;
 
     /* Preserve case on OSes which fold canonical filenames */
-#if MODULE_MAGIC_NUMBER_MAJOR > 19990320 || (MODULE_MAGIC_NUMBER_MAJOR == 19990320 && MODULE_MAGIC_NUMBER_MINOR >= 8)
+#if 0
+    /* ### not available in Apache 2.0 yet */
     filename = r->case_preserved_filename;
 #else
     filename = r->filename;
@@ -616,9 +630,9 @@ static dav_resource * dav_fs_get_resource(
 	resource->uri = r->uri;
     }
 
-    if (r->finfo.st_mode != 0) {
+    if (r->finfo.protection != 0) {
         resource->exists = 1;
-        resource->collection = S_ISDIR(r->finfo.st_mode);
+        resource->collection = r->finfo.filetype == APR_DIR;
 
 	/* unused info in the URL will indicate a null resource */
 
@@ -647,7 +661,7 @@ static dav_resource * dav_fs_get_resource(
 
 	    /* retain proper integrity across the structures */
 	    if (!resource->exists) {
-		ctx->finfo.st_mode = 0;
+		ctx->finfo.protection = 0;
 	    }
 	}
     }
@@ -695,7 +709,7 @@ static dav_resource * dav_fs_get_parent_resource(const dav_resource *resource)
 	parent_resource->uri = uri;
     }
 
-    if (stat(parent_ctx->pathname, &parent_ctx->finfo) == 0) {
+    if (ap_stat(&parent_ctx->finfo, parent_ctx->pathname, ctx->pool) == 0) {
         parent_resource->exists = 1;
     }
 
@@ -715,8 +729,8 @@ static int dav_fs_is_same_resource(
 #ifdef WIN32
     return stricmp(ctx1->pathname, ctx2->pathname) == 0;
 #else
-    if (ctx1->finfo.st_mode != 0)
-        return ctx1->finfo.st_ino == ctx2->finfo.st_ino;
+    if (ctx1->finfo.protection != 0)
+        return ctx1->finfo.inode == ctx2->finfo.inode;
     else
         return strcmp(ctx1->pathname, ctx2->pathname) == 0;
 #endif
@@ -746,7 +760,7 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 				      dav_stream_mode mode,
 				      dav_stream **stream)
 {
-    pool *p = resource->info->pool;
+    ap_pool_t *p = resource->info->pool;
     dav_stream *ds = ap_palloc(p, sizeof(*ds));
     int flags;
 
@@ -773,7 +787,11 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "An error occurred while opening a resource.");
     }
+
+    /* ### need to fix this */
+#if 0
     ap_note_cleanups_for_fd(p, ds->fd);
+#endif
 
     *stream = ds;
     return NULL;
@@ -781,7 +799,10 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 
 static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
 {
+    /* ### need to fix this */
+#if 0
     ap_kill_cleanups_for_fd(stream->p, stream->fd);
+#endif
     close(stream->fd);
 
     if (!commit) {
@@ -851,7 +872,7 @@ static dav_error * dav_fs_set_headers(request_rec *r,
 	return NULL;
 
     /* make sure the proper mtime is in the request record */
-    ap_update_mtime(r, resource->info->finfo.st_mtime);
+    ap_update_mtime(r, resource->info->finfo.mtime);
 
     /* ### note that these use r->filename rather than <resource> */
     ap_set_last_modified(r);
@@ -861,7 +882,7 @@ static dav_error * dav_fs_set_headers(request_rec *r,
     ap_table_setn(r->headers_out, "Accept-Ranges", "bytes");
 
     /* set up the Content-Length header */
-    ap_set_content_length(r, resource->info->finfo.st_size);
+    ap_set_content_length(r, resource->info->finfo.size);
 
     /* ### how to set the content type? */
     /* ### until this is resolved, the Content-Type header is busted */
@@ -885,7 +906,7 @@ static void dav_fs_free_file(void *free_handle)
     /* nothing to free ... */
 }
 
-static dav_error * dav_fs_create_collection(pool *p, dav_resource *resource)
+static dav_error * dav_fs_create_collection(ap_pool_t *p, dav_resource *resource)
 {
     dav_resource_private *ctx = resource->info;
 
@@ -1071,10 +1092,14 @@ static dav_error * dav_fs_move_resource(
     }
 #endif
 
+#if 0
+    /* ### we need st_dev in ap_finfo_t */
+
     /* determine whether a simple rename will work.
      * Assume source exists, else we wouldn't get called.
      */
     if (dstinfo->finfo.st_mode != 0) {
+        /* ### APR does not expose the st_dev concept! */
 	if (dstinfo->finfo.st_dev == srcinfo->finfo.st_dev) {
 	    /* target exists and is on the same device. */
 	    can_rename = 1;
@@ -1093,6 +1118,7 @@ static dav_error * dav_fs_move_resource(
 	    can_rename = 1;
 	}
     }
+#endif
 
     /* if we can't simply renamed, then do it the hard way... */
     if (!can_rename) {
@@ -1329,7 +1355,7 @@ dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	dav_buffer_place_mem(wctx->pool,
 			     &fsctx->path1, ep->d_name, len + 1, 0);
 
-	if (lstat(fsctx->path1.buf, &fsctx->info1.finfo) != 0) {
+	if (ap_lstat(&fsctx->info1.finfo, fsctx->path1.buf, wctx->pool) != 0) {
 	    /* woah! where'd it go? */
 	    /* ### should have a better error here */
 	    err = dav_new_error(wctx->pool, HTTP_NOT_FOUND, 0, NULL);
@@ -1354,14 +1380,14 @@ dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	fsctx->res1.uri = wctx->uri.buf;
 
 	/* ### for now, only process regular files (e.g. skip symlinks) */
-	if (S_ISREG(fsctx->info1.finfo.st_mode)) {
+	if (fsctx->info1.finfo.filetype == APR_REG) {
 	    /* call the function for the specified dir + file */
 	    if ((err = (*wctx->func)(wctx, DAV_CALLTYPE_MEMBER)) != NULL) {
 		/* ### maybe add a higher-level description? */
 		break;
 	    }
 	}
-	else if (S_ISDIR(fsctx->info1.finfo.st_mode)) {
+	else if (fsctx->info1.finfo.filetype == APR_DIR) {
 	    size_t save_path_len = fsctx->path1.cur_len;
 	    size_t save_uri_len = wctx->uri.cur_len;
 	    size_t save_path2_len = fsctx->path2.cur_len;
@@ -1602,14 +1628,14 @@ static const char *dav_fs_getetag(const dav_resource *resource)
     if (!resource->exists) 
 	return ap_pstrdup(ctx->pool, "");
 
-    if (ctx->finfo.st_mode != 0) {
+    if (ctx->finfo.protection != 0) {
         return ap_psprintf(ctx->pool, "\"%lx-%lx-%lx\"",
-			   (unsigned long) ctx->finfo.st_ino,
-			   (unsigned long) ctx->finfo.st_size,
-			   (unsigned long) ctx->finfo.st_mtime);
+			   (unsigned long) ctx->finfo.inode,
+			   (unsigned long) ctx->finfo.size,
+			   (unsigned long) ctx->finfo.mtime);
     }
 
-    return ap_psprintf(ctx->pool, "\"%lx\"", (unsigned long) ctx->finfo.st_mtime);
+    return ap_psprintf(ctx->pool, "\"%lx\"", (unsigned long) ctx->finfo.mtime);
 }
 
 static const dav_hooks_repository dav_hooks_repository_fs =
@@ -1671,7 +1697,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     const char *value;
     const char *s;
     dav_prop_insert which;
-    pool *p = resource->info->pool;
+    ap_pool_t *p = resource->info->pool;
     const dav_fs_liveprop_name *scan;
     int ns;
 
@@ -1705,7 +1731,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	** create the file), then we should be pretty safe here.
 	*/
 	dav_format_time(DAV_STYLE_ISO8601,
-                        resource->info->finfo.st_ctime,
+                        resource->info->finfo.ctime,
                         buf);
 	value = buf;
 	break;
@@ -1715,7 +1741,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	if (resource->collection)
 	    return DAV_PROP_INSERT_NOTDEF;
 
-	(void) sprintf(buf, "%ld", resource->info->finfo.st_size);
+	(void) sprintf(buf, "%ld", resource->info->finfo.size);
 	value = buf;
 	break;
 
@@ -1725,7 +1751,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 
     case DAV_PROPID_FS_getlastmodified:
 	dav_format_time(DAV_STYLE_RFC822,
-                        resource->info->finfo.st_mtime,
+                        resource->info->finfo.mtime,
                         buf);
 	value = buf;
 	break;
@@ -1740,7 +1766,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	    return DAV_PROP_INSERT_NOTDEF;
 
 	/* the files are "ours" so we only need to check owner exec privs */
-	if (resource->info->finfo.st_mode & DAV_FS_MODE_XUSR)
+	if (resource->info->finfo.protection & APR_UEXECUTE)
 	    value = "T";
 	else
 	    value = "F";
@@ -1908,8 +1934,8 @@ static dav_error *dav_fs_patch_exec(dav_resource *resource,
 				    dav_liveprop_rollback **rollback_ctx)
 {
     int value = context != NULL;
-    mode_t mode = resource->info->finfo.st_mode;
-    int old_value = (resource->info->finfo.st_mode & DAV_FS_MODE_XUSR) != 0;
+    ap_fileperms_t perms = resource->info->finfo.protection;
+    int old_value = (perms & APR_UEXECUTE) != 0;
 
     /* assert: prop == executable. operation == SET. */
 
@@ -1917,19 +1943,22 @@ static dav_error *dav_fs_patch_exec(dav_resource *resource,
     if (value == old_value)
 	return NULL;
 
-    mode &= ~DAV_FS_MODE_XUSR;
+    perms &= ~APR_UEXECUTE;
     if (value)
-	mode |= DAV_FS_MODE_XUSR;
+	perms |= APR_UEXECUTE;
 
+#if 0
+    /* ### crap... APR does not have a chmod() ... skip for now. */
     if (chmod(resource->info->pathname, mode) == -1) {
 	return dav_new_error(resource->info->pool,
 			     HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "Could not set the executable flag of the "
 			     "target resource.");
     }
+#endif
 
     /* update the resource and set up the rollback context */
-    resource->info->finfo.st_mode = mode;
+    resource->info->finfo.protection = perms;
     *rollback_ctx = (dav_liveprop_rollback *)old_value;
 
     return NULL;
@@ -1948,24 +1977,27 @@ static dav_error *dav_fs_patch_rollback(dav_resource *resource,
 					void *context,
 					dav_liveprop_rollback *rollback_ctx)
 {
-    mode_t mode = resource->info->finfo.st_mode & ~DAV_FS_MODE_XUSR;
+    ap_fileperms_t perms = resource->info->finfo.protection & ~APR_UEXECUTE;
     int value = rollback_ctx != NULL;
 
     /* assert: prop == executable. operation == SET. */
 
     /* restore the executable bit */
     if (value)
-	mode |= DAV_FS_MODE_XUSR;
+	perms |= APR_UEXECUTE;
 
+#if 0
+    /* ### crap... APR does not have a chmod() ... skip for now. */
     if (chmod(resource->info->pathname, mode) == -1) {
 	return dav_new_error(resource->info->pool,
 			     HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "After a failure occurred, the resource's "
 			     "executable flag could not be restored.");
     }
+#endif
 
     /* restore the resource's state */
-    resource->info->finfo.st_mode = mode;
+    resource->info->finfo.protection = perms;
 
     return NULL;
 }

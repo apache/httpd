@@ -240,7 +240,7 @@ typedef struct {
 struct dav_propdb {
     int version;		/* *minor* version of this db */
 
-    pool *p;			/* the pool we should use */
+    ap_pool_t *p;		/* the pool we should use */
     request_rec *r;		/* the request record */
 
     dav_resource *resource;	/* the target resource */
@@ -252,7 +252,7 @@ struct dav_propdb {
     short ns_count;		/* number of entries in table */
     int ns_table_dirty;		/* ns_table was modified */
 
-    array_header *ns_xlate;	/* translation of an elem->ns to URI */
+    ap_array_header_t *ns_xlate;	/* translation of an elem->ns to URI */
     int *ns_map;		/* map elem->ns to propdb ns values */
     int incomplete_map;		/* some mappings do not exist */
 
@@ -762,7 +762,7 @@ static int dav_find_dav_id(dav_propdb *propdb)
     return -1;
 }
 
-static void dav_insert_xmlns(pool *p, const char *pre_prefix, int ns,
+static void dav_insert_xmlns(ap_pool_t *p, const char *pre_prefix, int ns,
 			     const char *ns_uri, dav_text_header *phdr)
 {
     const char *s;
@@ -789,7 +789,7 @@ static void dav_get_propdb_xmlns(dav_propdb *propdb, dav_text_header *phdr)
 
 /* add a namespace decl from one of the namespace tables */
 static void dav_add_marked_xmlns(dav_propdb *propdb, char *marks, int ns,
-				 array_header *ns_table,
+				 ap_array_header_t *ns_table,
 				 const char *pre_prefix,
 				 dav_text_header *phdr)
 {
@@ -945,7 +945,7 @@ dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 			   dav_resource *resource,
 			   int ro,
-			   array_header * ns_xlate,
+			   ap_array_header_t * ns_xlate,
 			   dav_propdb **p_propdb)
 {
     dav_propdb *propdb = ap_pcalloc(r->pool, sizeof(*propdb));

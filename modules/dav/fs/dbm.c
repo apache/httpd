@@ -70,12 +70,16 @@
 #ifdef DAV_USE_GDBM
 #include <gdbm.h>
 #else
+
+/* ### need to APR-ize */
 #include <fcntl.h>		/* for O_RDONLY, O_WRONLY */
-#include "sdbm/sdbm.h"
+#include <sys/stat.h>           /* for S_IRUSR, etc */
+/* ### ACK! fix this... */
+#include "../../../lib/sdbm/sdbm.h"
 #endif
 
-#include "mod_dav.h"
-#include "dav_fs_repos.h"
+#include "../main/mod_dav.h"
+#include "repos.h"
 
 
 #ifdef DAV_USE_GDBM
@@ -107,14 +111,14 @@ typedef DBM *dav_dbm_file;
 #endif
 
 struct dav_db {
-    pool *pool;
+    ap_pool_t *pool;
     dav_dbm_file file;
 };
 
 #define D2G(d)	(*(datum*)&(d))
 
 
-void dav_dbm_get_statefiles(pool *p, const char *fname,
+void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
 			    const char **state1, const char **state2)
 {
     char *work;
@@ -144,7 +148,7 @@ void dav_dbm_get_statefiles(pool *p, const char *fname,
 #endif
 }
 
-static dav_error * dav_fs_dbm_error(dav_db *db, pool *p)
+static dav_error * dav_fs_dbm_error(dav_db *db, ap_pool_t *p)
 {
     int save_errno = errno;
     int errcode;
@@ -172,20 +176,20 @@ static dav_error * dav_fs_dbm_error(dav_db *db, pool *p)
 
 /* ensure that our state subdirectory is present */
 /* ### does this belong here or in dav_fs_repos.c ?? */
-void dav_fs_ensure_state_dir(pool * p, const char *dirname)
+void dav_fs_ensure_state_dir(ap_pool_t * p, const char *dirname)
 {
     const char *pathname = ap_pstrcat(p, dirname, "/" DAV_FS_STATE_DIR, NULL);
 
     /* ### do we need to deal with the umask? */
 
     /* just try to make it, ignoring any resulting errors */
-    mkdir(pathname, DAV_FS_MODE_DIR);
+    (void) ap_make_dir(pathname, APR_OS_DEFAULT, p);
 }
 
 /* dav_dbm_open_direct:  Opens a *dbm database specified by path.
  *    ro = boolean read-only flag.
  */
-dav_error * dav_dbm_open_direct(pool *p, const char *pathname, int ro,
+dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb)
 {
     dav_dbm_file file;
@@ -221,8 +225,8 @@ dav_error * dav_dbm_open_direct(pool *p, const char *pathname, int ro,
     return NULL;
 }
 
-static dav_error * dav_dbm_open(pool * p, const dav_resource *resource, int ro,
-				dav_db **pdb)
+static dav_error * dav_dbm_open(ap_pool_t * p, const dav_resource *resource,
+                                int ro, dav_db **pdb)
 {
     const char *dirpath;
     const char *fname;

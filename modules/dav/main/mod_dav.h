@@ -135,7 +135,7 @@ typedef struct dav_error {
     struct dav_error *prev;	/* previous error (in stack) */
 
     /* deferred computation of the description */
-    void (*compute_desc)(struct dav_error *err, pool *p);
+    void (*compute_desc)(struct dav_error *err, ap_pool_t *p);
     int ctx_i;
     const char *ctx_s;
     void *ctx_p;
@@ -146,7 +146,7 @@ typedef struct dav_error {
 ** Create a new error structure. save_errno will be filled with the current
 ** errno value.
 */
-dav_error *dav_new_error(pool *p, int status, int error_id, const char *desc);
+dav_error *dav_new_error(ap_pool_t *p, int status, int error_id, const char *desc);
 
 /*
 ** Push a new error description onto the stack of errors.
@@ -161,7 +161,7 @@ dav_error *dav_new_error(pool *p, int status, int error_id, const char *desc);
 ** <error_id> can specify a new error_id since the topmost description has
 ** changed.
 */
-dav_error *dav_push_error(pool *p, int status, int error_id, const char *desc,
+dav_error *dav_push_error(ap_pool_t *p, int status, int error_id, const char *desc,
 			  dav_error *prev);
 
 
@@ -309,22 +309,22 @@ typedef struct
 #define DAV_BUFFER_PAD		64	/* amount of pad when growing */
 
 /* set the cur_len to the given size and ensure space is available */
-void dav_set_bufsize(pool *p, dav_buffer *pbuf, size_t size);
+void dav_set_bufsize(ap_pool_t *p, dav_buffer *pbuf, size_t size);
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
-void dav_buffer_init(pool *p, dav_buffer *pbuf, const char *str);
+void dav_buffer_init(ap_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* check that the buffer can accomodate <extra_needed> more bytes */
-void dav_check_bufsize(pool *p, dav_buffer *pbuf, size_t extra_needed);
+void dav_check_bufsize(ap_pool_t *p, dav_buffer *pbuf, size_t extra_needed);
 
 /* append a string to the end of the buffer, adjust length */
-void dav_buffer_append(pool *p, dav_buffer *pbuf, const char *str);
+void dav_buffer_append(ap_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* place a string on the end of the buffer, do NOT adjust length */
-void dav_buffer_place(pool *p, dav_buffer *pbuf, const char *str);
+void dav_buffer_place(ap_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* place some memory on the end of a buffer; do NOT adjust length */
-void dav_buffer_place_mem(pool *p, dav_buffer *pbuf, const void *mem,
+void dav_buffer_place_mem(ap_pool_t *p, dav_buffer *pbuf, const void *mem,
                           size_t amt, size_t pad);
 
 
@@ -374,7 +374,7 @@ typedef struct
 } dav_lookup_result;
 
 
-void dav_text_append(pool *p, dav_text_header *hdr, const char *text);
+void dav_text_append(ap_pool_t *p, dav_text_header *hdr, const char *text);
 
 dav_lookup_result dav_lookup_uri(const char *uri, request_rec *r);
 
@@ -405,7 +405,7 @@ typedef struct
     void *m_context;	/* module-level context (i.e. managed globals) */
 
     void *d_context;	/* per-directory context */
-    table *d_params;	/* per-directory DAV config parameters */
+    ap_table_t *d_params;	/* per-directory DAV config parameters */
 
     int *ns_map;	/* for LIVEPROP, map provider URI to global URI */
 
@@ -529,13 +529,13 @@ const dav_dyn_module *dav_find_module(const char *name);
 **
 ** NOTE: the pool should be the "configuration pool"
 */
-void dav_process_builtin_modules(pool *p);
-void dav_process_module(pool *p, const dav_dyn_module *mod);
+void dav_process_builtin_modules(ap_pool_t *p);
+void dav_process_module(ap_pool_t *p, const dav_dyn_module *mod);
 
-int * dav_collect_liveprop_uris(pool *p, const dav_hooks_liveprop *hooks);
-extern array_header *dav_liveprop_uris;
+int * dav_collect_liveprop_uris(ap_pool_t *p, const dav_hooks_liveprop *hooks);
+extern ap_array_header_t *dav_liveprop_uris;
 
-void *dav_prepare_scan(pool *p, const dav_dyn_module *mod);
+void *dav_prepare_scan(ap_pool_t *p, const dav_dyn_module *mod);
 int dav_scan_providers(void *ctx,
 		       const dav_dyn_provider **provider,
 		       dav_dyn_hooks *output);
@@ -734,8 +734,8 @@ typedef struct dav_xml_elem
 
 typedef struct dav_xml_doc
 {
-    dav_xml_elem *root;		/* root element */
-    array_header *namespaces;	/* array of namespaces used */
+    dav_xml_elem *root;                 /* root element */
+    ap_array_header_t *namespaces;      /* array of namespaces used */
 
 } dav_xml_doc;
 
@@ -749,10 +749,10 @@ dav_xml_elem *dav_find_child(
     const char *tagname);
 
 void dav_xml2text(
-    pool *p,
+    ap_pool_t *p,
     const dav_xml_elem *elem,
     int style,
-    array_header *namespaces,
+    ap_array_header_t *namespaces,
     int *ns_map,
     const char **pbuf,
     size_t *psize
@@ -762,9 +762,9 @@ void dav_xml2text(
 #define DAV_X2T_LANG_INNER	2	/* xml:lang + inner contents */
 #define DAV_X2T_FULL_NS_LANG	3	/* FULL + ns defns + xml:lang */
 
-const char *dav_empty_elem(pool *p, const dav_xml_elem *elem);
-void dav_quote_xml_elem(pool *p, dav_xml_elem *elem);
-const char * dav_quote_string(pool *p, const char *s, int quotes);
+const char *dav_empty_elem(ap_pool_t *p, const dav_xml_elem *elem);
+void dav_quote_xml_elem(ap_pool_t *p, dav_xml_elem *elem);
+const char * dav_quote_string(ap_pool_t *p, const char *s, int quotes);
 
 
 /* --------------------------------------------------------------------
@@ -955,7 +955,7 @@ typedef struct
 /* hook functions to enable pluggable databases */
 struct dav_hooks_db
 {
-    dav_error * (*open)(pool *p, const dav_resource *resource, int ro,
+    dav_error * (*open)(ap_pool_t *p, const dav_resource *resource, int ro,
 			dav_db **pdb);
     void (*close)(dav_db *db);
 
@@ -1140,7 +1140,7 @@ struct dav_hooks_locks
      * in the given pool.
      */
     dav_error * (*parse_locktoken)(
-        pool *p,
+        ap_pool_t *p,
         const char *char_token,
         dav_locktoken **locktoken_p
     );
@@ -1151,7 +1151,7 @@ struct dav_hooks_locks
      * Always returns non-NULL.
      */
     const char * (*format_locktoken)(
-        pool *p,
+        ap_pool_t *p,
         const dav_locktoken *locktoken
     );
 
@@ -1344,7 +1344,7 @@ dav_error *dav_open_propdb(
     dav_lockdb *lockdb,
     dav_resource *resource,
     int ro,
-    array_header *ns_xlate,
+    ap_array_header_t *ns_xlate,
     dav_propdb **propdb);
 
 void dav_close_propdb(dav_propdb *db);
@@ -1449,7 +1449,7 @@ typedef struct dav_walker_ctx
 #define DAV_CALLTYPE_LOCKNULL	3	/* called for a locknull resource */
 #define DAV_CALLTYPE_POSTFIX	4	/* postfix call for a collection */
 
-    struct pool *pool;
+    ap_pool_t *pool;
 
     request_rec *r;			/* original request */
     dav_buffer uri;			/* current URI */
@@ -1666,7 +1666,7 @@ struct dav_hooks_repository
      * is a collection.
      */
     dav_error * (*create_collection)(
-        pool *p, dav_resource *resource
+        ap_pool_t *p, dav_resource *resource
     );
 
     /* Copy one resource to another. The destination must not exist.
@@ -1830,7 +1830,7 @@ struct dav_hooks_vsn
 */
 
 /* allow providers access to the per-directory parameters */
-table *dav_get_dir_params(const request_rec *r);
+ap_table_t *dav_get_dir_params(const request_rec *r);
 
 /* fetch the "LimitXMLRequestBody" in force for this resource */
 size_t dav_get_limit_xml_body(const request_rec *r);
@@ -1838,7 +1838,7 @@ size_t dav_get_limit_xml_body(const request_rec *r);
 /* manage an array of unique URIs: dav_insert_uri() and DAV_GET_URI_ITEM() */
 
 /* return the URI's (existing) index, or insert it and return a new index */
-int dav_insert_uri(array_header *uri_array, const char *uri);
+int dav_insert_uri(ap_array_header_t *uri_array, const char *uri);
 #define DAV_GET_URI_ITEM(ary, i)    (((const char * const *)(ary)->elts)[i])
 
 
