@@ -67,7 +67,12 @@ PROPOSED PATCHES FOR THIS RELEASE:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-   *  PR: 27023 Cookie could not delivered if the cookie made before
+   * backport fix for mod_log_config logging "0" for %b
+       [1.3 PATCH] backport 2.0 fix to log "-" for %b...
+       Message-ID: <cc67648e0412210644542f55dc@mail.gmail.com>
+        +1: trawick, nd
+
+   * PR: 27023 Cookie could not delivered if the cookie made before
          proxy module.
 
    * isn't ap_die() broken with recognizing recursive errors
