@@ -158,3 +158,12 @@ API_EXPORT(int) bfilbuf(BUFF *fb);
 #define bputc(c, fb) ((((fb)->flags & (B_EOUT|B_WRERR|B_WR)) != B_WR || \
 		     (fb)->outcnt == (fb)->bufsiz) ? bflsbuf(c, (fb)) : \
 		     ((fb)->outbase[(fb)->outcnt++] = (c), 0))
+
+API_EXPORT(int) spawn_child_err_buff (pool *, int (*)(void *), void *,
+           	  enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
+                  BUFF **pipe_err);
+
+/* enable non-blocking operations */
+API_EXPORT(int) bnonblock(BUFF *fb, int direction);
+/* and get an fd to select() on */
+API_EXPORT(int) bfileno(BUFF *fb, int direction);

@@ -1629,6 +1629,85 @@ API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
     return total_bytes_sent;
 }
 
+/*
+ * Send the body of a response to the client.
+ */
+API_EXPORT(long) send_fb(BUFF *fb, request_rec *r) {
+    return send_fb_length(fb, r, -1);
+}
+
+API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
+{
+    char buf[IOBUFSIZE];
+    long total_bytes_sent = 0;
+    register int n, w, o, len, fd;
+    fd_set fds;
+    
+    if (length == 0) return 0;
+
+    /* Make fb unbuffered and non-blocking */
+    bsetflag (fb, B_RD, 0);
+    bnonblock (fb, B_RD);
+    fd = bfileno (fb, B_RD);
+
+    soft_timeout("send body", r);
+
+    while (!r->connection->aborted) {
+	if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
+	    len = length - total_bytes_sent;
+	else len = IOBUFSIZE;
+
+	do {
+	    n = bread (fb, buf, len);
+	    if (n >= 0) break;
+	    if (n < 0 && errno != EAGAIN) break;
+	    /* we need to block, so flush the output first */
+	    bflush (r->connection->client);
+	    FD_ZERO (&fds);
+	    FD_SET (fd, &fds);
+	    /* we don't care what select says, we might as well loop back
+	     * around and try another read
+	     */
+	    ap_select (fd+1, &fds, NULL, NULL, NULL);
+	} while (!r->connection->aborted);
+
+	if (n < 1 || r->connection->aborted) {
+	    break;
+	}
+
+        o=0;
+	total_bytes_sent += n;
+
+        while (n && !r->connection->aborted) {
+            w = bwrite(r->connection->client, &buf[o], n);
+            if (w > 0) {
+                reset_timeout(r); /* reset timeout after successful write */
+                n-=w;
+                o+=w;
+            }
+            else if (w < 0) {
+                if (r->connection->aborted)
+                    break;
+                else if (errno == EAGAIN)
+                    continue;
+                else {
+                    log_unixerr("send body lost connection to",
+                                get_remote_host(r->connection,
+                                    r->per_dir_config, REMOTE_NAME),
+                                NULL, r->server);
+                    bsetflag(r->connection->client, B_EOUT, 1);
+                    r->connection->aborted = 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    kill_timeout(r);
+    SET_BYTES_SENT(r);
+    return total_bytes_sent;
+}
+
 API_EXPORT(int) rputc (int c, request_rec *r)
 {
     if (r->connection->aborted) return EOF;

@@ -1,3 +1,23 @@
+Changes with Apache 1.3a2
+
+  *) "nph-" CGIs were not compatible with HTTP/1.1 or SSL support because
+     they were passed a socket that connected directly to the client.
+     As such they would have to implement the transport level details
+     such as encryption or chunking in order to work properly.
+     This isn't part of the CGI spec so CGIs generally don't do this.
+     The most common use of nph- CGIs is when the programmer wants an
+     unbuffered connection to the client; regular CGIs have always been
+     fully buffered.  Apache now provides an unbuffered connection to
+     all CGIs.  Given that most CGIs are written in a language that by
+     default does buffering (i.e. perl) this shouldn't have a detrimental
+     effect on performance.  The programmer can still use nph- CGIs,
+     and they're still responsible for sending valid HTTP/1.1 responses.
+     [Dean Gaudet, Sameer Parekh, Roy Fielding]
+
+  *) If a BUFF is switched from buffered to unbuffered reading the first
+     bread() will return whatever remained in the buffer prior to the
+     switch. [Dean Gaudet]
+
 Changes with Apache 1.3a1
 
   *) Added another Configure helper script: TestLib. It determines

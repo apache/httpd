@@ -183,7 +183,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf *conf, int ret,
 }
 
 static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
-	       char *dbuf, char *sbuf, FILE *script_in, FILE *script_err)
+		    char *dbuf, char *sbuf, BUFF *script_in, BUFF *script_err)
 {
     table *hdrs_arr = r->headers_in;
     table_entry *hdrs = (table_entry *)hdrs_arr->elts;
@@ -197,9 +197,9 @@ static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
 	((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
 		     "a")) == NULL)) {
       /* Soak up script output */
-      while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	continue;
-      while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
 	continue;
       return ret;
     }
@@ -207,7 +207,7 @@ static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
     fprintf(f, "%%%% [%s] %s %s%s%s %s\n", get_time(), r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
-    /* "%% 500 /usr/local/etc/httpd/cgi-bin */
+    /* "%% 500 /usr/local/etc/httpd/cgi-bin" */
     fprintf(f, "%%%% %d %s\n", ret, r->filename);
 
     fputs("%request\n", f);
@@ -216,7 +216,7 @@ static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
       fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
     }
     if ((r->method_number == M_POST || r->method_number == M_PUT)
-	&& dbuf && *dbuf) {
+	&& *dbuf) {
       fprintf(f, "\n%s\n", dbuf);
     }
 
@@ -232,28 +232,24 @@ static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
     if (sbuf && *sbuf)
       fprintf(f, "%s\n", sbuf);
 
-    *argsbuffer = '\0';
-    fgets(argsbuffer, HUGE_STRING_LEN-1, script_in);
-    if (*argsbuffer) {
+    if (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
       fputs("%stdout\n", f);
       fputs(argsbuffer, f);
-      while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	fputs(argsbuffer, f);
       fputs("\n", f);
     }
 
-    *argsbuffer = '\0';
-    fgets(argsbuffer, HUGE_STRING_LEN-1, script_err);
-    if (*argsbuffer) {
+    if (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
       fputs("%stderr\n", f);
       fputs(argsbuffer, f);
-      while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
 	fputs(argsbuffer, f);
       fputs("\n", f);
     }
 
-    pfclose(r->main ? r->main->pool : r->pool, script_in);
-    pfclose(r->main ? r->main->pool : r->pool, script_err);
+    bclose(script_in);
+    bclose(script_err);
 
     pfclose(r->pool, f);
     return ret;
@@ -277,7 +273,6 @@ static int cgi_child (void *child_stuff)
     struct cgi_child_stuff *cld = (struct cgi_child_stuff *)child_stuff;
     request_rec *r = cld->r;
     char *argv0 = cld->argv0;
-    int nph = cld->nph;
     int child_pid;
 
 #ifdef DEBUG_CGI    
@@ -311,10 +306,6 @@ static int cgi_child (void *child_stuff)
     chdir_file (r->filename);
     if (!cld->debug)
       error_log2stderr (r->server);
-
-#if !defined(__EMX__) && !defined(WIN32)
-    if (nph) client_to_stdout (r->connection);
-#endif    
 
     /* Transumute outselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
@@ -352,7 +343,7 @@ int cgi_handler (request_rec *r)
 {
     int retval, nph, dbpos = 0;
     char *argv0, *dbuf = NULL;
-    FILE *script_out, *script_in, *script_err;
+    BUFF *script_out, *script_in, *script_err;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp (r->protocol, "INCLUDED");
     void *sconf = r->server->module_config;
@@ -415,21 +406,16 @@ int cgi_handler (request_rec *r)
     cld.argv0 = argv0; cld.r = r; cld.nph = nph;
     cld.debug = conf->logname ? 1 : 0;
     
+    /*
+     * we spawn out of r->main if it's there so that we can avoid
+     * waiting for free_proc_chain to cleanup in the middle of an
+     * SSI request -djg
+     */
     if (!(child_pid =
-	  /*
-	   * we spawn out of r->main if it's there so that we can avoid
-	   * waiting for free_proc_chain to cleanup in the middle of an
-	   * SSI request -djg
-	   */
-	  spawn_child_err (r->main ? r->main->pool : r->pool, cgi_child,
-			    (void *)&cld,
-			   nph ? just_wait : kill_after_timeout,
-#if defined(__EMX__) || defined(WIN32)
-			   &script_out, &script_in, &script_err))) {
-#else
-			   &script_out, nph ? NULL : &script_in,
-	    		   &script_err))) {
-#endif
+	  spawn_child_err_buff (r->main ? r->main->pool : r->pool, cgi_child,
+				(void *)&cld,
+				kill_after_timeout,
+				&script_out, &script_in, &script_err))) {
         log_reason ("couldn't spawn child process", r->filename, r);
         return SERVER_ERROR;
     }
@@ -471,7 +457,7 @@ int cgi_handler (request_rec *r)
 		dbpos += dbsize;
 	    }
 	    reset_timeout(r);
-	    if (fwrite(argsbuffer, sizeof(char), len_read, script_out)
+	    if (bwrite(script_out, argsbuffer, len_read)
 	            < (size_t)len_read) {
 	        /* silly script stopped reading, soak up remaining message */
 	        while (get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0)
@@ -480,20 +466,20 @@ int cgi_handler (request_rec *r)
 	    }
 	}
 
-	fflush (script_out);
+	bflush (script_out);
 	signal (SIGPIPE, handler);
 	
 	kill_timeout (r);
     }
     
-    pfclose (r->main ? r->main->pool : r->pool, script_out);
+    bclose(script_out);
     
     /* Handle script return... */
     if (script_in && !nph) {
         char *location, sbuf[MAX_STRING_LEN];
 	int ret;
       
-        if ((ret = scan_script_header_err(r, script_in, sbuf)))
+        if ((ret = scan_script_header_err_buff(r, script_in, sbuf)))
 	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
 	
 	location = table_get (r->headers_out, "Location");
@@ -502,11 +488,9 @@ int cgi_handler (request_rec *r)
 	  
 	    /* Soak up all the script output */
 	    hard_timeout ("read from script", r);
-	    while (fread(argsbuffer, sizeof(char), HUGE_STRING_LEN, script_in)
-	           > 0)
+	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	        continue;
-	    while (fread(argsbuffer, sizeof(char), HUGE_STRING_LEN, script_err)
-	           > 0)
+	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
 	        continue;
 	    kill_timeout (r);
 
@@ -535,24 +519,19 @@ int cgi_handler (request_rec *r)
 	
 	send_http_header(r);
 	if (!r->header_only)
-	    send_fd(script_in, r);
-	pfclose (r->main ? r->main->pool : r->pool, script_in);
+	    send_fb(script_in, r);
+	bclose(script_in);
 
-	/* Soak up stderr */
 	soft_timeout("soaking script stderr", r);
-	while (!r->connection->aborted &&
-	  (fread(argsbuffer, sizeof(char), HUGE_STRING_LEN, script_err) > 0))
-	    continue;
+	while(bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	      continue;
 	kill_timeout(r);
-	pfclose (r->main ? r->main->pool : r->pool, script_err);
+	bclose(script_err);
     }
 
-    if (nph) {
-#if defined(__EMX__) || defined(WIN32)
-        while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL) {
-            bputs(argsbuffer, r->connection->client);
-        }
-#else
+    if (script_in && nph) {
+	send_fb(script_in, r);
+#if !defined(__EMX__) && !defined(WIN32)
 	waitpid(child_pid, (int*)0, 0);
 #endif
     }    

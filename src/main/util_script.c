@@ -312,7 +312,9 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
     }
 }
 
-API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer)
+
+static int scan_script_header_err_core (request_rec *r, char *buffer,
+    int (*getsfunc)(char *, int, void *), void *getsfunc_data)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
@@ -325,7 +327,7 @@ API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer)
     
     while(1) {
 
-	if (fgets(w, MAX_STRING_LEN-1, f) == NULL) {
+	if ((*getsfunc)(w, MAX_STRING_LEN-1, getsfunc_data) == 0) {
 	    kill_timeout (r);
 	    log_reason ("Premature end of script headers", r->filename, r);
 	    return SERVER_ERROR;
@@ -354,7 +356,7 @@ API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer)
 
 	    if (!buffer)
 	      /* Soak up all the script output --- may save an outright kill */
-	      while (fgets(w, MAX_STRING_LEN-1, f) != NULL)
+	      while ((*getsfunc)(w, MAX_STRING_LEN-1, getsfunc_data))
 		continue;
 	    
 	    kill_timeout (r);
@@ -401,6 +403,28 @@ API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer)
         }
     }
 }
+
+static int getsfunc_FILE (char *buf, int len, void *f)
+{
+    return fgets (buf, len, (FILE *)f) != NULL;
+}
+
+API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer)
+{
+    return scan_script_header_err_core (r, buffer, getsfunc_FILE, f);
+}
+
+static int getsfunc_BUFF (char *w, int len, void *fb)
+{
+    return bgets (w, len, (BUFF *)fb) > 0;
+}
+
+API_EXPORT(int) scan_script_header_err_buff(request_rec *r, BUFF *fb,
+    char *buffer)
+{
+    return scan_script_header_err_core (r, buffer, getsfunc_BUFF, fb);
+}
+
 
 API_EXPORT(void) send_size(size_t size, request_rec *r) {
     char ss[20];

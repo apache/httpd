@@ -110,6 +110,9 @@ API_EXPORT(int) set_last_modified (request_rec *r, time_t mtime);
 
 API_EXPORT(long) send_fd(FILE *f, request_rec *r);
 API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length);
+
+API_EXPORT(long) send_fb(BUFF *f, request_rec *r);
+API_EXPORT(long) send_fb_length(BUFF *f, request_rec *r, long length);
      
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.

@@ -1067,9 +1067,16 @@ API_EXPORT(void) note_subprocess (pool *a, int pid, enum kill_conditions how)
 #define enc_pipe(fds) pipe(fds)
 #endif /* WIN32 */
 
-API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
+/* for fdopen, to get binary mode */
+#if defined (__EMX__) || defined (WIN32)
+#define BINMODE	"b"
+#else
+#define BINMODE
+#endif
+
+static int spawn_child_err_core (pool *p, int (*func)(void *), void *data,
 		     enum kill_conditions kill_how,
-		     FILE **pipe_in, FILE **pipe_out, FILE **pipe_err)
+		     int *pipe_in, int *pipe_out, int *pipe_err)
 {
   int pid;
   int in_fds[2];
@@ -1077,13 +1084,7 @@ API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
   int err_fds[2];
   int save_errno;
 
-  block_alarms();
-  
-  if (pipe_in && enc_pipe (in_fds) < 0)
-  {
-      save_errno = errno;
-      unblock_alarms();
-      errno = save_errno;
+  if (pipe_in && enc_pipe (in_fds) < 0) {
       return 0;
   }
   
@@ -1092,7 +1093,6 @@ API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
     if (pipe_in) {
       close (in_fds[0]); close (in_fds[1]);
     }
-    unblock_alarms();
     errno = save_errno;
     return 0;
   }
@@ -1105,7 +1105,6 @@ API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
     if (pipe_out) {
       close (out_fds[0]); close (out_fds[1]);
     }
-    unblock_alarms();
     errno = save_errno;
     return 0;
   }
@@ -1161,23 +1160,14 @@ API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
       if(pid)
       {
           note_subprocess(p, pid, kill_how);
-          if(pipe_in)
-          {
-              *pipe_in = fdopen(in_fds[1], "wb");
-              if(*pipe_in)
-                  note_cleanups_for_file(p, *pipe_in);
+          if(pipe_in) {
+	      *pipe_in = in_fds[1];
           }
-          if(pipe_out)
-          {
-              *pipe_out = fdopen(out_fds[0], "rb");
-              if(*pipe_out)
-                  note_cleanups_for_file(p, *pipe_out);
+          if(pipe_out) {
+	      *pipe_out = out_fds[0];
           }
-          if(pipe_err)
-          {
-              *pipe_err = fdopen(err_fds[0], "rb");
-              if(*pipe_err)
-                  note_cleanups_for_file(p, *pipe_err);
+          if(pipe_err) {
+              *pipe_err = err_fds[0];
           }
       }
       SetThreadPriority(thread_handle, old_priority);
@@ -1201,7 +1191,6 @@ API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
     if (pipe_err) {
       close (err_fds[0]); close (err_fds[1]);
     }
-    unblock_alarms();
     errno = save_errno;
     return 0;
   }
@@ -1240,43 +1229,106 @@ API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
   
   if (pipe_out) {
     close (out_fds[1]);
-#ifdef __EMX__
-    /* Need binary mode set for OS/2. */
-    *pipe_out = fdopen (out_fds[0], "rb");
-#else
-    *pipe_out = fdopen (out_fds[0], "r");
-#endif  
-  
-    if (*pipe_out) note_cleanups_for_file (p, *pipe_out);
+    *pipe_out = out_fds[0];
   }
 
   if (pipe_in) {
     close (in_fds[0]);
-#ifdef __EMX__
-    /* Need binary mode set for OS/2 */
-    *pipe_in = fdopen (in_fds[1], "wb");
-#else
-    *pipe_in = fdopen (in_fds[1], "w");
-#endif
-    
-    if (*pipe_in) note_cleanups_for_file (p, *pipe_in);
+    *pipe_in = in_fds[1];
   }
 
   if (pipe_err) {
     close (err_fds[1]);
-#ifdef __EMX__
-    /* Need binary mode set for OS/2. */
-    *pipe_err = fdopen (err_fds[0], "rb");
-#else
-    *pipe_err = fdopen (err_fds[0], "r");
-#endif
-  
-    if (*pipe_err) note_cleanups_for_file (p, *pipe_err);
+    *pipe_err = err_fds[0];
   }
 #endif /* WIN32 */
 
-  unblock_alarms();
   return pid;
+}
+
+
+API_EXPORT(int) spawn_child_err (pool *p, int (*func)(void *), void *data,
+		     enum kill_conditions kill_how,
+		     FILE **pipe_in, FILE **pipe_out, FILE **pipe_err)
+{
+    int fd_in, fd_out, fd_err;
+    int pid, save_errno;
+
+    block_alarms();
+
+    pid = spawn_child_err_core (p, func, data, kill_how,
+	    pipe_in ? &fd_in : NULL,
+	    pipe_out ? &fd_out : NULL,
+	    pipe_err ? &fd_err : NULL );
+
+    if (pid == 0) {
+	save_errno = errno;
+	unblock_alarms();
+	errno = save_errno;
+	return 0;
+    }
+
+    if (pipe_out) {
+	*pipe_out = fdopen (fd_out, "r" BINMODE);
+	if (*pipe_out) note_cleanups_for_file (p, *pipe_out);
+	else close (fd_out);
+    }
+
+    if (pipe_in) {
+	*pipe_in = fdopen (fd_in, "w" BINMODE);
+	if (*pipe_in) note_cleanups_for_file (p, *pipe_in);
+	else close (fd_in);
+    }
+
+    if (pipe_err) {
+	*pipe_err = fdopen (fd_err, "r" BINMODE);
+	if (*pipe_err) note_cleanups_for_file (p, *pipe_err);
+	else close (fd_err);
+    }
+
+    unblock_alarms();
+    return pid;
+}
+
+
+API_EXPORT(int) spawn_child_err_buff (pool *p, int (*func)(void *), void *data,
+			  enum kill_conditions kill_how,
+			  BUFF **pipe_in, BUFF **pipe_out, BUFF **pipe_err)
+{
+    int fd_in, fd_out, fd_err;
+    int pid, save_errno;
+
+    block_alarms();
+
+    pid = spawn_child_err_core (p, func, data, kill_how,
+	    pipe_in ? &fd_in : NULL,
+	    pipe_out ? &fd_out : NULL,
+	    pipe_err ? &fd_err : NULL );
+
+    if (pid == 0) {
+	save_errno = errno;
+	unblock_alarms();
+	errno = save_errno;
+	return 0;
+    }
+  
+    if (pipe_out) {
+	*pipe_out = bcreate(p, B_RD);
+	bpushfd(*pipe_out, fd_out, fd_out);
+    }
+
+    if (pipe_in) {
+	*pipe_in = bcreate(p, B_WR);
+	bpushfd(*pipe_in, fd_in, fd_in);
+    }
+
+    if (pipe_err) {
+	*pipe_err = bcreate(p, B_RD);
+	bpushfd(*pipe_err, fd_err, fd_err);
+    }
+
+    unblock_alarms();
+    return pid;
 }
 
 static void free_proc_chain (struct process_chain *procs)

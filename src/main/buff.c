@@ -415,16 +415,36 @@ API_EXPORT(int) bsetflag(BUFF *fb, int flag, int value)
 {
     if (value) {
 	fb->flags |= flag;
-	if( flag & B_CHUNK ) {
+	if (flag & B_CHUNK) {
 	    start_chunk(fb);
 	}
     } else {
 	fb->flags &= ~flag;
-	if( flag & B_CHUNK ) {
+	if (flag & B_CHUNK) {
 	    end_chunk(fb);
 	}
     }
     return value;
+}
+
+
+API_EXPORT(int) bnonblock(BUFF *fb, int direction)
+{
+    int fd;
+
+    fd = ( direction == B_RD ) ? fb->fd_in : fb->fd;
+#if defined(O_NONBLOCK)
+    return fcntl (fd, F_SETFL, O_NONBLOCK);
+#elif defined(F_NDELAY)
+    return fcntl (fd, F_SETFL, F_NDELAY);
+#else
+    return 0;
+#endif
+}
+
+API_EXPORT(int) bfileno(BUFF *fb, int direction)
+{
+    return (direction == B_RD) ? fb->fd_in : fb->fd;
 }
 
 /*
@@ -521,10 +541,18 @@ API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
     if (fb->flags & B_RDERR) return -1;
     if (nbyte == 0) return 0;
 
-    if (!(fb->flags & B_RD))
-    {
-/* Unbuffered reading */
+    if (!(fb->flags & B_RD)) {
+	/* Unbuffered reading.  First check if there was something in the
+	 * buffer from before we went unbuffered. */
+	if (fb->incnt) {
+	    i = (fb->incnt > nbyte) ? nbyte : fb->incnt;
+	    memcpy (buf, fb->inptr, i);
+	    fb->incnt -= i;
+	    fb->inptr += i;
+	    return i;
+	}
 	i = saferead( fb, buf, nbyte );
+	if (i == 0) fb->flags |= B_EOF;
 	if (i == -1 && errno != EAGAIN) doerror(fb, B_RD);
 	return i;
     }
