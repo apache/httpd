@@ -445,8 +445,8 @@ static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
     return NULL;
 }
 
-static const char *filter_provider(cmd_parms *cmd, void *CFG,
-        const char *fname, const char *pname, const char *match)
+static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
+                                   const char *pname, const char *match)
 {
     int flags;
     ap_filter_provider_t *provider;
