@@ -145,6 +145,9 @@
  o The complete EAPI-based SSL_VENDOR stuff was removed.
  o The complete EAPI-based SSL_COMPAT stuff was removed.
  o The <IfDefine> variable MOD_SSL is no longer provided automatically 
+ o The complete SSL_CONSERVATIVE stuff was removed, i.e.,
+   SSL renegotiations in combination with POST request are not supported
+   unless the problem is solved again, but this time through layered I/O.
 
  MAJOR CHANGES 
 

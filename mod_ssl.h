@@ -778,9 +778,6 @@ char        *ssl_var_lookup(pool *, server_rec *, conn_rec *, request_rec *, cha
 void         ssl_io_register(void);
 void         ssl_io_unregister(void);
 long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
-#ifndef SSL_CONSERVATIVE
-void         ssl_io_suck(request_rec *, SSL *);
-#endif
 
 /*  PRNG  */
 int          ssl_rand_seed(server_rec *, pool *, ssl_rsctx_t, char *);
