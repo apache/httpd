@@ -359,9 +359,9 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
     }
 
     if (!argtaken) {
-        char *cgiargs = cgiarg;
+        char *cgiarg = cgiargs;
         for (;;) {
-            char *w = ap_getword_nulls(p, &cgiargs, '+');
+            char *w = ap_getword_nulls(p, &cgiarg, '+');
             if (!*w)
                 break;
             ap_unescape_url(w);
