@@ -780,6 +780,9 @@ fi
 conf_group="#-1"
 if [ ".`egrep ^nobody: /etc/group`" != . ]; then
     conf_group="nobody"
+    if [ ".`egrep ^nogroup: /etc/group`" != . ]; then
+        conf_group="nogroup"
+    fi
 fi
 conf_port="80"
 if [ ".`id | grep root`" = . ]; then
@@ -808,15 +811,15 @@ fi
 hostname="`echo $hostname | sed -e 's/\..*//'`"
 domainname="";
 if [ -f /etc/resolv.conf ]; then
-    domainname="`egrep '^[  ]*domain' /etc/resolv.conf |\
-                 sed -e 's/.*domain//' -e 's/^[     ]*//' \
-                     -e 's/^ *//' -e 's/^   *//' \
+    domainname="`egrep '^[ 	]*domain' /etc/resolv.conf |\
+                 sed -e 's/.*domain//' -e 's/^[ 	]*//' \
+                     -e 's/^ *//' -e 's/^	*//' \
                      -e 's/^\.//' -e 's/^/./'`"
     if [ ".$domainname" = . ]; then
         domainname="`egrep '^[ 	]*search' /etc/resolv.conf |\
-		             sed -e 's/.*search//' -e 's/^[ 	]*//' \
-					     -e 's/^ *//' -e 's/^	*//' \
-						 -e 's/ .*//' -e 's/^\.//' -e 's/^/./'`"
+                     sed -e 's/.*search//' -e 's/^[ 	]*//' \
+                         -e 's/^ *//' -e 's/^	*//' \
+                         -e 's/ .*//' -e 's/^\.//' -e 's/^/./'`"
     fi
 fi
 conf_serveradmin="$username@$hostname$domainname"
@@ -902,13 +905,13 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@suexec@%$suexec%g" \
 -e "s%@suexec_caller@%$suexec_caller%g" \
 -e "s%@suexec_userdir@%$suexec_userdir%g" \
+-e "s%@suexec_uidmin@%$suexec_uidmin%g" \
+-e "s%@suexec_gidmin@%$suexec_gidmin%g" \
+-e "s%@suexec_safepath@%$suexec_safepath%g" \
 -e "s%@conf_group@%$conf_group%g" \
 -e "s%@conf_port@%$conf_port%g" \
 -e "s%@conf_serveradmin@%$conf_serveradmin%g" \
 -e "s%@conf_servername@%$conf_servername%g" \
--e "s%@suexec_uidmin@%$suexec_uidmin%g" \
--e "s%@suexec_gidmin@%$suexec_gidmin%g" \
--e "s%@suexec_safepath@%$suexec_safepath%g" \
 -e "s%@build_support@%$build_support%g" \
 -e "s%@install_support@%$install_support%g" \
 -e "s%@clean_support@%$clean_support%g" \
