@@ -72,7 +72,7 @@
 #define CORE_PRIVATE
 
 #include "ap_config.h"
-#include "ap.h"
+#include "ap_base64.h"
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
