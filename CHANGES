@@ -93,9 +93,6 @@ Changes with Apache 2.1.0-dev
      is set in r->subprocess_env allow mismatched query strings to pass.
      PR 27758.  [Paul Querna <chip force-elite.com>, Geoffrey Young]
 
-  *) mod_dav: Fix a problem that could cause crashes when manipulating 
-     locks on some platforms.  [Jeff Trawick]
-
   *) Satisfy directives now can be influenced by a surrounding <Limit>
      container.  PR 14726.  [André Malo]
 
@@ -121,15 +118,8 @@ Changes with Apache 2.1.0-dev
      AUTH_GENERAL_ERROR.
      [Geoffrey Young]
 
-  *) mod_isapi: GetServerVariable returned improperly terminated header 
-     fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
-     [Jesse Pelton <jsp pkc.com>]
-
   *) mod_isapi: send_response_header() failed to copy status string's 
      last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
-
-  *) mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
-     size.  PR 20617.  [Jesse Pelton <jsp pkc.com>]
 
   *) The whole codebase was relicensed and is now available under
      the Apache License, Version 2.0 (http://www.apache.org/licenses).
@@ -362,6 +352,16 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) mod_isapi: GetServerVariable returned improperly terminated header 
+     fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
+     [Jesse Pelton <jsp pkc.com>]
+
+  *) mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
+     size.  PR 20617.  [Jesse Pelton <jsp pkc.com>]
+
+  *) mod_dav: Fix a problem that could cause crashes when manipulating 
+     locks on some platforms.  [Jeff Trawick]
 
   *) mod_headers no longer crashes if an empty header value should
      be added.  [André Malo]
