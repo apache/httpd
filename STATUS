@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/05/21 22:11:19 $]
+  Last modified at [$Date: 2001/05/23 14:47:44 $]
 
 Release:
 
@@ -346,7 +346,7 @@ Binaries (1.3.20):
  i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
  i386-unknown-sco3             no      Ben Laurie
  i386-unknown-sco5             no      Ben Laurie
- i386-siemens-sinix5.4         no      Martin Kraemer
+ i386-siemens-sinix5.4         yes     Martin Kraemer
  i386-dg-dgux5.4R2.01          no      Randy Terbush
  x86-qnx-4.x                   no      Randy Terbush
  x86-bsdos-3.x                 no      Randy Terbush
@@ -360,7 +360,7 @@ Binaries (1.3.20):
  mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
  mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
  mips-sgi-irix6.4              no      Lars Eilebrecht
- mips-siemens-reliantunix5.4   no      Martin Kraemer
+ mips-siemens-reliantunix5.4   yes     Martin Kraemer
  netware                       no      Brad Nicholes <bnicholes@novell.com>
  OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
