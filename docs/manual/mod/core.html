@@ -2432,55 +2432,6 @@ disabled on a virtualhost-by-virtualhost basis.
 
 <HR>
 
-<H2><A NAME="servertype">ServerType directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt ServerType} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerType <EM>type</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>ServerType standalone</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
-
-The ServerType directive sets how the server is executed by the system.
-<EM>Type</EM> is one of
-<DL>
-<DT>inetd
-<DD>The server will be run from the system process inetd; the command to start
-the server is added to <CODE>/etc/inetd.conf</CODE>
-<DT>standalone
-<DD>The server will run as a daemon process; the command to start the server
-is added to the system startup scripts. (<CODE>/etc/rc.local</CODE> or
-<CODE>/etc/rc3.d/...</CODE>.)
-</DL>
-
-Inetd is the lesser used of the two options. For each http
-connection received, a new copy of the server is started from scratch;
-after the connection is complete, this program exits. There is a high price to
-pay per connection, but for security reasons, some admins prefer this option.
-<FONT COLOR="red">Inetd mode is no longer recommended and does not always
-work properly.  Avoid it if at all possible.</FONT>
-<P>
-
-Standalone is the most common setting for ServerType since
-it is far more efficient. The server is started once, and services all
-subsequent connections. If you intend running Apache to serve a busy site,
-standalone will probably be your only option.<P>
-<HR>
-
 <H2><A NAME="setinputfilter">SetInputFilter directive</A></H2>
 <P><A
  HREF="directive-dict.html#Syntax"
