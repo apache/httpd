@@ -2959,6 +2959,9 @@ void child_main(int child_num_arg)
 
     child_init_modules(pchild, server_conf);
 
+    /* done with the initialization critical section */
+    unblock_alarms();
+
     (void) update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
 
     /*
@@ -2981,9 +2984,6 @@ void child_main(int child_num_arg)
         DosSetSignalExceptionFocus(0, &ulTimes);
     }
 #endif
-
-    /* done with the initialization critical section */
-    unblock_alarms();
 
     while (1) {
 	BUFF *conn_io;
