@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/09 11:47:13 $]
+Last modified at [$Date: 2003/07/09 15:31:49 $]
 
 Release:
 
@@ -234,7 +234,7 @@ PATCHES TO PORT FROM 2.1
 
     * Backport FreeBSD layout. PR 21100.
         config.layout: r1.22
-      +1: nd, brianp, erikabele
+      +1: nd, brianp, erikabele, kess
 
     * ab: fix NULL-pointer issue when parsing incomplete response. PR 21085.
       (2.0 + 1.3)
