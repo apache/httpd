@@ -63,23 +63,28 @@ installdll:
 
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
-	cd lib\apr
+	cd srclib\apr
 #	 aprlibdll creates the dynamic aprlib.dll from the static library project aprlib.dsp
 	 $(MAKE) $(MAKEOPT) -f aprlib.mak CFG="aprlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd lib\expat-lite
+	cd srclib\apr-util
+#	 aprlibdll creates the dynamic aprlib.dll from the static library project aprlib.dsp
+	 $(MAKE) $(MAKEOPT) -f aprlib.mak CFG="aprlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd srclib\expat-lite
 	 $(MAKE) $(MAKEOPT) -f expatlib.mak CFG="expatlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd lib\pcre
+	cd srclib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcre.mak CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcreposix.mak CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd lib\sdbm
+	cd srclib\sdbm
 	 $(MAKE) $(MAKEOPT) -f sdbmlib.mak CFG="sdbmlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
         cd ..\..
-	cd main
+	cd server
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
@@ -88,21 +93,35 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f ApacheCore.mak CFG="ApacheCore - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f ApacheCoreDll.mak CFG="ApacheCoreDll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd os\win32
+	cd modules\aaa
 	 $(MAKE) $(MAKEOPT) -f mod_auth_anon.mak CFG="mod_auth_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f mod_auth_dbm.mak CFG="mod_auth_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_dav.mak CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_expires.mak CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\cache
 	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\dav\main
+#	 $(MAKE) $(MAKEOPT) -f mod_dav.mak CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
+	cd modules\dav\fs
+#	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
+	cd modules\generators
 #        $(MAKE) $(MAKEOPT) -f mod_info.mak CFG"=mod_info - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_speling.mak CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f mod_status.mak CFG="mod_status - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\mappers
          $(MAKE) $(MAKEOPT) -f mod_rewrite.mak CFG="mod_rewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_speling.mak CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\metadata
+	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_expires.mak CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\proxy
 #        $(MAKE) $(MAKEOPT) -f mod_proxy.mak CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
         cd ..\..
 	cd support
@@ -121,23 +140,24 @@ _install:
 	-mkdir $(INSTDIR)\bin
 	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
 	copy Core$(SHORT)\ApacheCore.dll $(INSTDIR)
-	copy lib\apr\$(LONG)\aprlib.dll $(INSTDIR)
-        copy lib\expat-lite\expatlib$(SHORT)\expatlib.dll $(INSTDIR)
-        copy os\win32\mod_auth_anon$(SHORT)\mod_auth_anon.dll $(INSTDIR)\modules
-	copy os\win32\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
-	copy os\win32\mod_auth_digest$(SHORT)\mod_auth_digest.dll $(INSTDIR)\modules
-	copy os\win32\mod_cern_meta$(SHORT)\mod_cern_meta.dll $(INSTDIR)\modules
-        copy os\win32\mod_dav$(SHORT)\mod_dav.dll $(INSTDIR)\modules
-        copy os\win32\mod_dav_fs$(SHORT)\mod_dav_fs.dll $(INSTDIR)\modules
-	copy os\win32\mod_expires$(SHORT)\mod_expires.dll $(INSTDIR)\modules
-	copy os\win32\mod_file_cache$(SHORT)\mod_file_cache.dll $(INSTDIR)\modules
-	copy os\win32\mod_headers$(SHORT)\mod_headers.dll $(INSTDIR)\modules
-#       copy os\win32\mod_info$(SHORT)\mod_info.dll $(INSTDIR)\modules
-        copy os\win32\mod_rewrite$(SHORT)\mod_rewrite.dll $(INSTDIR)\modules
-	copy os\win32\mod_speling$(SHORT)\mod_speling.dll $(INSTDIR)\modules
-        copy os\win32\mod_status$(SHORT)\mod_status.dll $(INSTDIR)\modules
-	copy os\win32\mod_usertrack$(SHORT)\mod_usertrack.dll $(INSTDIR)\modules
-#       copy os\win32\mod_proxy$(SHORT)\mod_proxy.dll $(INSTDIR)\modules
+	copy srclib\apr\$(LONG)\aprlib.dll $(INSTDIR)
+        copy srclib\apr-util\$(LONG)\aprutil.dll $(INSTDIR)
+        copy srclib\expat-lite\expatlib$(SHORT)\expatlib.dll $(INSTDIR)
+        copy modules\aaa\mod_auth_anon$(SHORT)\mod_auth_anon.dll $(INSTDIR)\modules
+	copy modules\aaa\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
+	copy modules\aaa\mod_auth_digest$(SHORT)\mod_auth_digest.dll $(INSTDIR)\modules
+	copy modules\cache\mod_file_cache$(SHORT)\mod_file_cache.dll $(INSTDIR)\modules
+#       copy modules\dav\fs\mod_dav_fs$(SHORT)\mod_dav_fs.dll $(INSTDIR)\modules
+#       copy modules\dav\main\mod_dav$(SHORT)\mod_dav.dll $(INSTDIR)\modules
+#       copy modules\generators\mod_info$(SHORT)\mod_info.dll $(INSTDIR)\modules
+        copy modules\generators\mod_status$(SHORT)\mod_status.dll $(INSTDIR)\modules
+        copy modules\mappers\mod_rewrite$(SHORT)\mod_rewrite.dll $(INSTDIR)\modules
+	copy modules\mappers\mod_speling$(SHORT)\mod_speling.dll $(INSTDIR)\modules
+	copy modules\metadata\mod_cern_meta$(SHORT)\mod_cern_meta.dll $(INSTDIR)\modules
+	copy modules\metadata\mod_expires$(SHORT)\mod_expires.dll $(INSTDIR)\modules
+	copy modules\metadata\mod_headers$(SHORT)\mod_headers.dll $(INSTDIR)\modules
+	copy modules\metadata\mod_usertrack$(SHORT)\mod_usertrack.dll $(INSTDIR)\modules
+#       copy modules\proxy\mod_proxy$(SHORT)\mod_proxy.dll $(INSTDIR)\modules
         copy support\$(LONG)\ab.exe $(INSTDIR)\bin
         copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
 	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
