@@ -1,6 +1,8 @@
 Name: db_auth_module
 ConfigStart
-    if ! ./helpers/TestCompile func dbopen; then
+    if ./helpers/TestCompile func dbopen; then
+        :
+    else
 	case "$PLAT" in
 	    *-linux*)
 		# many systems have -ldb installed

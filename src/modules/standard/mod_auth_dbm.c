@@ -79,7 +79,9 @@
  * MODULE-DEFINITION-START
  * Name: dbm_auth_module
  * ConfigStart
-    if ! ./helpers/TestCompile func dbm_open; then
+    if ./helpers/TestCompile func dbm_open; then
+        :
+    else
 	case "$PLAT" in
 	    *-linux*)
 		# many systems don't have -ldbm
