@@ -602,7 +602,7 @@ struct process_rec {
     ap_pool_t *pool;  /* Global pool. Please try to cleared on _all_ exits */
     ap_pool_t *pconf; /* aka configuration pool, cleared on restarts */
     int argc;
-    const char **argv;
+    char *const *argv;
     const char *short_name;
 };
 
