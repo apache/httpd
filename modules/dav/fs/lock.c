@@ -59,6 +59,7 @@
 #include "httpd.h"
 #include "http_log.h"
 #include "apr_file_io.h"
+#include "apr_strings.h"
 
 #include "mod_dav.h"
 #include "dav_opaquelock.h"

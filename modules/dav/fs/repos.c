@@ -56,9 +56,8 @@
 ** DAV filesystem-based repository provider
 */
 
-#include <string.h>
-
 #include "apr_file_io.h"
+#include "apr_strings.h"
 
 #include "httpd.h"
 #include "http_log.h"

@@ -65,6 +65,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 
+#include "apr_strings.h"
 
 dav_error *dav_new_error(apr_pool_t *p, int status, int error_id, const char *desc)
 {
