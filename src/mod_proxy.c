@@ -72,7 +72,7 @@ two passes). Consider doing them the first time round.
 Ben Laurie <ben@algroup.co.uk> 30 Mar 96
 */
 
-#define TESTING	0
+#define TESTING	1
 
 #include "httpd.h"
 #include "http_config.h"
@@ -1348,8 +1348,8 @@ static void garbage_coll(request_rec *r)
 	    if (errno != ENOENT)
 		log_uerror("unlink", filename, NULL, r->server);
 	}
-#endif
 	else
+#endif
 	{
 	    curblocks -= fent->len >> 10;
 	    curbytes -= fent->len & 0x3FF;
@@ -1401,8 +1401,12 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	    } else if (now != -1 && buf.st_atime > now + 86400 &&
 		       buf.st_mtime > now + 86400)
 		{
-		Explain0("GC Unlink");
+		Explain1("GC unlink %s",filename);
+#if TESTING
+		fprintf(stderr,"Would unlink %s\n",filename);
+#else
 		unlink(filename);
+#endif
 		}
 	    continue;
 	}
