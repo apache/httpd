@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -63,6 +63,8 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+
+#include <stdarg.h>
 
 void open_error_log(server_rec *s, pool *p)
 {
@@ -119,6 +121,37 @@ void log_pid(pool *p, char *pid_fname) {
 void log_error(char *err, server_rec *s) {
     fprintf(s->error_log, "[%s] %s\n",get_time(),err);
     fflush(s->error_log);
+}
+
+void
+log_unixerr(const char *routine, const char *file, const char *msg,
+	    server_rec *s)
+{
+    const char *p, *q;
+
+    p = strerror(errno);
+    q = get_time();
+
+    if (file != NULL)
+	fprintf(s->error_log, "[%s] %s: %s: %s\n", q, routine, file, p);
+    else
+	fprintf(s->error_log, "[%s] %s: %s\n", q, routine, p);
+    if (msg != NULL) fprintf(s->error_log, "[%s] - %s\n", q, msg);
+
+    fflush(s->error_log);
+}
+
+void
+log_printf(const server_rec *s, const char *fmt, ...)
+{
+    va_list args;
+    
+    fprintf(s->error_log, "[%s] ", get_time());
+    va_start (args, fmt);
+    vfprintf (s->error_log, fmt, args);
+    va_end (args);
+
+    fputc('\n', s->error_log);
 }
 
 void log_reason(char *reason, char *file, request_rec *r) {

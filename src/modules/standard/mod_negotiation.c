@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -680,7 +680,7 @@ int read_types_multi (negotiation_state *neg)
 	 */
 	
 	mime_info.sub_req = sub_req;
-	mime_info.file_name = dir_entry->d_name;
+	mime_info.file_name = pstrdup(neg->pool, dir_entry->d_name);
 	mime_info.content_encoding = sub_req->content_encoding;
 	mime_info.content_language = sub_req->content_language;
 	

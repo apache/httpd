@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -75,7 +75,7 @@
  * This would be considerably easier if strptime or timegm were portable...
  */
 
-static char *months[] = {
+const char month_snames[12][4] = {
     "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
 };
 
@@ -83,7 +83,7 @@ int find_month(char *mon) {
     register int x;
 
     for(x=0;x<12;x++)
-        if(!strcmp(months[x],mon))
+        if(!strcmp(month_snames[x],mon))
             return x;
     return -1;
 }
@@ -151,10 +151,33 @@ int set_content_length (request_rec *r, long clength)
     return 0;
 }
 
+int set_keepalive(request_rec *r)
+{
+  char *conn = table_get (r->headers_in, "Connection");
+  char *length = table_get (r->headers_out, "Content-length");
+
+  if (conn && length && !strncasecmp(conn, "Keep-Alive", 10) &&
+      r->server->keep_alive_timeout &&
+      (r->server->keep_alive > r->connection->keepalives)) {
+    char header[26];
+    int left = r->server->keep_alive - r->connection->keepalives;
+
+    r->connection->keepalive = 1;
+    r->connection->keepalives++;
+    sprintf(header, "timeout=%d, max=%d", r->server->keep_alive_timeout,
+	    left);
+    table_set (r->headers_out, "Connection", "Keep-Alive");
+    table_set (r->headers_out, "Keep-Alive", pstrdup(r->pool, header));
+
+    return 1;
+  }
+
+      return 0;
+}
+
 int set_last_modified(request_rec *r, time_t mtime)
 {
-    struct tm *tms;
-    char ts[MAX_STRING_LEN];
+    char *ts;
     char *if_modified_since = table_get (r->headers_in, "If-modified-since");
 
     /* Cacheing proxies use the absence of a Last-modified header
@@ -169,16 +192,15 @@ int set_last_modified(request_rec *r, time_t mtime)
     
     if (r->no_cache) return OK;
     
-    tms = gmtime(&mtime);
-    strftime(ts,MAX_STRING_LEN,HTTP_TIME_FORMAT,tms);
-    table_set (r->headers_out, "Last-modified", pstrdup (r->pool, ts));
+    ts = gm_timestr_822(r->pool, mtime);
+    table_set (r->headers_out, "Last-modified", ts);
 
     /* Check for conditional GETs --- note that we only want this check
      * to succeed if the GET was successful; ErrorDocuments *always* get sent.
      */
     
     if (r->status == 200 &&
-	if_modified_since && later_than(tms, if_modified_since))
+	if_modified_since && later_than(gmtime(&mtime), if_modified_since))
       
         return USE_LOCAL_COPY;
     else
@@ -206,6 +228,7 @@ char *getline (char *s, int n, FILE *in)
 
 void parse_uri (request_rec *r, char *uri)
 {
+    const char *s;
     /* If we ever want to do byte-ranges a la Netscape & Franks,
      * this is the place to parse them; with proper support in
      * rprintf and rputc, and the sub-request setup and finalizers
@@ -216,9 +239,22 @@ void parse_uri (request_rec *r, char *uri)
      * But for now...
      */
 
-    r->uri = getword (r->pool, &uri, '?');
-    if (*uri) r->args= uri;
-    else r->args = NULL;
+/* A proxy request contains a ':' early on, but not as first character */
+    for (s=uri; s != '\0'; s++)
+	if (!isalnum(*s) && *s != '+' && *s != '-' && *s != '.') break;
+
+    if (*s == ':' && s != uri)
+    {
+	r->proxyreq = 1;
+	r->uri = uri;
+	r->args = NULL;
+    } else
+    {
+	r->proxyreq = 0;
+	r->uri = getword (r->pool, &uri, '?');
+	if (*uri) r->args= uri;
+	else r->args = NULL;
+    }
 }
 
 int read_request_line (request_rec *r)
@@ -261,13 +297,20 @@ void get_mime_headers(request_rec *r)
     }
 }
 
-request_rec *read_request (conn_rec *conn)
+request_rec *read_request (conn_rec *conn, request_rec *back)
 {
     request_rec *r = (request_rec *)pcalloc (conn->pool, sizeof(request_rec));
   
     r->connection = conn;
     r->server = conn->server;
     r->pool = conn->pool;
+
+    r->back = back;
+    conn->keptalive = conn->keepalive;
+    conn->keepalive = 0;
+
+    conn->user = NULL;
+    conn->auth_type = NULL;
 
     r->headers_in = make_table (r->pool, 50);
     r->subprocess_env = make_table (r->pool, 50);
@@ -290,7 +333,11 @@ request_rec *read_request (conn_rec *conn)
     hard_timeout ("read", r);
     if (!read_request_line (r)) return NULL;
     if (!r->assbackwards) get_mime_headers(r);
+
+/* handle Host header here, to get virtual server */
+
     kill_timeout (r);
+    conn->keptalive = 0;   /* We now have a request - so no more short timeouts */
     
     if(!strcmp(r->method, "HEAD")) {
         r->header_only=1;
@@ -379,13 +426,14 @@ int get_basic_auth_pw (request_rec *r, char **pw)
 
     t = uudecode (r->pool, auth_line);
     r->connection->user = getword (r->pool, &t, ':');
+    r->connection->auth_type = "Basic";
 
     *pw = t;
 
     return OK;
 }
 
-#define RESPONSE_CODE_LIST " 200 302 304 400 401 403 404 500 503 501 "
+#define RESPONSE_CODE_LIST " 200 302 304 400 401 403 404 500 503 501 502 "
 
 /* New Apache routine to map error responses into array indicies 
  *  e.g.  400 -> 0,  500 -> 1,  502 -> 2 ...                     
@@ -403,6 +451,7 @@ char *status_lines[] = {
    "500 Server error",
    "503 Out of resources",
    "501 Not Implemented",
+   "502 Bad Gateway"
 }; 
 
 char *response_titles[] = {
@@ -415,7 +464,8 @@ char *response_titles[] = {
    "File Not found",
    "Server Error",
    "Out of resources",
-   "Method not implemented"
+   "Method not implemented",
+   "Bad Gateway"
 };
 
 int index_of_response(int err_no) { 
@@ -498,6 +548,8 @@ void send_http_header(request_rec *r)
     }
     
     basic_http_header (r);
+
+    set_keepalive (r);
     
     if (r->content_type)
         fprintf (fd, "Content-type: %s\015\012",
@@ -522,6 +574,8 @@ void send_http_header(request_rec *r)
     }
 
     fputs("\015\012",fd);
+
+    fflush(r->connection->client);
 
     r->bytes_sent = 0;		/* Whatever follows is real body stuff... */
 }
@@ -553,6 +607,8 @@ long send_fd(FILE *f, request_rec *r)
 	
         while(n && !r->connection->aborted) {
             w=fwrite(&buf[o],sizeof(char),n,c->client);
+	    if (w)
+	        reset_timeout(r); /* reset timeout after successfule write */
             n-=w;
             o+=w;
         }
@@ -606,6 +662,8 @@ void send_error_response (request_rec *r, int recursive_error)
 	 */
 	
 	if (status == USE_LOCAL_COPY) {
+	    if (set_keepalive(r))
+	      fprintf(c->client, "Connection: Keep-Alive\015\012");
 	    fprintf (c->client, "\015\012");
 	    return;
 	}
@@ -635,8 +693,8 @@ void send_error_response (request_rec *r, int recursive_error)
 	
         switch (r->status) {
 	case REDIRECT:
-	    fprintf (fd,"The document has moved <A HREF=\"%s\">here</A>.<P>%c",
-		     location, LF);
+	    fprintf (fd,"The document has moved <A HREF=\"%s\">here</A>.<P>\n",
+		     escape_html(r->pool, location));
 	    break;
 	case AUTH_REQUIRED:
 	    fprintf (fd, "This server could not verify that you%c", LF);
@@ -651,28 +709,33 @@ void send_error_response (request_rec *r, int recursive_error)
 	    fprintf (fd, "this server could not understand.<P>%c", LF);
 	    break;
 	case FORBIDDEN:
-	    fprintf (fd, "You don't have permission to access %s%c",
-		     r->uri, LF);
+	    fprintf (fd, "You don't have permission to access %s\n",
+		     escape_html(r->pool, r->uri));
 	    fprintf (fd, "on this server.<P>%c", LF);
 	    break;
 	case NOT_FOUND:
 	    fprintf (fd,
-		     "The requested URL %s was not found on this server.<P>%c",
-		     r->uri, LF);
+		     "The requested URL %s was not found on this server.<P>\n",
+		     escape_html(r->pool, r->uri));
 	    break;
 	case SERVER_ERROR:
 	    fprintf(fd,"The server encountered an internal error or%c",LF);
 	    fprintf(fd,"misconfiguration and was unable to complete%c",LF);
 	    fprintf(fd,"your request.<P>%c",LF);
 	    fprintf(fd,"Please contact the server administrator,%c",LF);
-	    fprintf(fd," %s ", r->server->server_admin);
+	    fprintf(fd," %s ", escape_html(r->pool, r->server->server_admin));
 	    fprintf(fd,"and inform them of the time the error occurred,%c",LF);
 	    fprintf(fd,"and anything you might have done that may have%c",LF);
 	    fprintf(fd,"caused the error.<P>%c",LF);
 	    break;
 	case NOT_IMPLEMENTED:
-	    fprintf(fd,"%s to %s not supported.<P>%c", r->method,
-		    r->uri, LF);
+	    fprintf(fd,"%s to %s not supported.<P>\n",
+		    escape_html(r->pool, r->method),
+		    escape_html(r->pool, r->uri));
+	    break;
+	case BAD_GATEWAY:
+	    fprintf(fd,"The proxy server received an invalid\015\012");
+	    fprintf(fd,"response from an upstream server.<P>\015\012");
 	    break;
 	}
 

@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -83,9 +83,11 @@
  * implemented in http_main.c).
  *
  * kill_timeout() will disarm either variety of timeout.
+ *
+ * reset_timeout() resets the timeout in progress.
  */
 
 void hard_timeout (char *, request_rec *);
 void soft_timeout (char *, request_rec *);
 void kill_timeout (request_rec *);     
-
+void reset_timeout (request_rec *);

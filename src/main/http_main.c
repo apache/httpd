@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -99,8 +99,10 @@ char *user_name;
 gid_t group_id;
 int max_requests_per_child;
 char *pid_fname;
+char *scoreboard_fname;
 char *server_argv0;
 struct in_addr bind_address;
+listen_rec *listeners;
 int daemons_to_start;
 int daemons_min_free;
 int daemons_max_free;
@@ -115,6 +117,8 @@ server_rec *server_conf;
 JMP_BUF jmpbuffer;
 JMP_BUF restart_buffer;
 int sd;
+static fd_set listenfds;
+static int listenmaxfd;
 pid_t pgrp;
 
 /* one_process --- debugging mode variable; can be set from the command line
@@ -171,8 +175,8 @@ void accept_mutex_on()
 	continue;
 
     if (ret < 0) {
-	log_error ("Unknown failure grabbing accept lock.  Exiting!",
-		   server_conf);
+	log_unixerr("fcntl", "F_SETLKW", "Error getting accept lock. Exiting!",
+		    server_conf);
 	exit(1);
     }
 }
@@ -181,7 +185,8 @@ void accept_mutex_off()
 {
     if (fcntl (lock_fd, F_SETLKW, &unlock_it) < 0)
     {
-	log_error("Error freeing accept lock.  Exiting!", server_conf);
+	log_unixerr("fcntl", "F_SETLKW", "Error freeing accept lock. Exiting!",
+		    server_conf);
 	exit(1);
     }
 }
@@ -211,7 +216,7 @@ void usage(char *bin)
 
 static conn_rec *current_conn;
 static request_rec *timeout_req;
-static char *timeout_name;
+static char *timeout_name = NULL;
 static int alarms_blocked = 0;
 static int alarm_pending = 0;
 
@@ -235,11 +240,18 @@ int sig;
 #endif
     }
     
-    sprintf(errstr,"%s timed out for %s",
+    if (sig == SIGPIPE) {
+        sprintf(errstr,"%s lost connection to client %s",
 	    timeout_name ? timeout_name : "request",
 	    current_conn->remote_name);
+    } else {
+        sprintf(errstr,"%s timed out for %s",
+	    timeout_name ? timeout_name : "request",
+	    current_conn->remote_name);
+    }
     
-    log_error(errstr, current_conn->server);
+    if (!current_conn->keptalive) 
+       log_error(errstr, current_conn->server);
       
     if (timeout_req) {
 	/* Someone has asked for this transaction to just be aborted
@@ -254,7 +266,8 @@ int sig;
 	    else log_req = log_req->prev;
 	}
 	
-	log_transaction(log_req);
+	if (!current_conn->keptalive) 
+            log_transaction(log_req);
 
 	pfclose (timeout_req->connection->pool,
 		 timeout_req->connection->client);
@@ -297,7 +310,10 @@ void hard_timeout (char *name, request_rec *r)
     timeout_name = name;
     
     signal(SIGALRM,(void (*)())timeout);
-    alarm (r->server->timeout);
+    if (r->connection->keptalive) 
+       alarm (r->server->keep_alive_timeout);
+    else
+       alarm (r->server->timeout);
 }
 
 void soft_timeout (char *name, request_rec *r)
@@ -313,7 +329,21 @@ void kill_timeout (request_rec *dummy) {
     timeout_req = NULL;
     timeout_name = NULL;
 }
- 
+
+/* reset_timeout (request_rec *) resets the timeout in effect,
+ * as long as it hasn't expired already.
+ */
+
+void reset_timeout (request_rec *r) {
+    int i;
+
+    if (timeout_name) { /* timeout has been set */
+        i = alarm(r->server->timeout);
+        if (i == 0) /* timeout already expired, so set it back to 0 */
+	    alarm(0);
+    }
+}
+
 /*****************************************************************
  *
  * Dealing with the scoreboard... a lot of these variables are global
@@ -323,8 +353,10 @@ void kill_timeout (request_rec *dummy) {
  * We begin with routines which deal with the file itself... 
  */
 
+#ifdef HAVE_MMAP
+static short_score *scoreboard_image=NULL;
+#else
 static short_score scoreboard_image[HARD_SERVER_MAX];
-static char scoreboard_fname[] = "/tmp/htstatus.XXXXXX";
 static int have_scoreboard_fname = 0;
 static int scoreboard_fd;
 
@@ -357,15 +389,52 @@ static int force_read (int fd, char *buffer, int bufsz)
     
     return rv < 0? rv : orig_sz - bufsz;
 }
+#endif
 
+/* Called by parent process */
 void reinit_scoreboard (pool *p)
 {
-    if (!have_scoreboard_fname && (mktemp(scoreboard_fname) == NULL ||
-				   scoreboard_fname[0] == '\0')) {
-	fprintf (stderr, "Cannot assign name to scoreboard file!\n");
-	exit (1);
+#ifdef HAVE_MMAP
+    if (scoreboard_image == NULL)
+    {
+	caddr_t m;
+#if defined(MAP_ANON) || defined(MAP_FILE)
+/* BSD style */
+	m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
+		 PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
+	if (m == (caddr_t)-1)
+	{
+	    perror("mmap");
+	    fprintf(stderr, "httpd: Could not mmap memory\n");
+	    exit(1);
+	}
+#else
+/* Sun style */
+	int fd;
+
+	fd = open("/dev/zero", O_RDWR);
+	if (fd == -1)
+	{
+	    perror("open");
+	    fprintf(stderr, "httpd: Could not open /dev/zero\n");
+	    exit(1);
+	}
+	m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
+		 PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (m == (caddr_t)-1)
+	{
+	    perror("mmap");
+	    fprintf(stderr, "httpd: Could not mmap /dev/zero\n");
+	    exit(1);
+	}
+	close(fd);
+#endif
+	scoreboard_image = (short_score *)m;
     }
-    
+    memset(scoreboard_image, 0, HARD_SERVER_MAX*sizeof(short_score));
+#else
+    scoreboard_fname = server_root_relative (p, scoreboard_fname);
+
     have_scoreboard_fname = 1;
     
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_RDWR, 0644);
@@ -379,10 +448,13 @@ void reinit_scoreboard (pool *p)
     memset ((char*)scoreboard_image, 0, sizeof(scoreboard_image));
     force_write (scoreboard_fd, (char*)scoreboard_image,
 		 sizeof(scoreboard_image));
+#endif
 }
 
+/* called by child */
 void reopen_scoreboard (pool *p)
 {
+#ifndef HAVE_MMAP
     if (scoreboard_fd != -1) pclosef (p, scoreboard_fd);
     
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_RDWR, 0666);
@@ -392,11 +464,14 @@ void reopen_scoreboard (pool *p)
 	perror (scoreboard_fname);
 	exit (1);
     }
+#endif
 }
 
 void cleanup_scoreboard ()
 {
+#ifndef HAVE_MMAP
     unlink (scoreboard_fname);
+#endif
 }
 
 /* Routines called to deal with the scoreboard image
@@ -412,9 +487,11 @@ void cleanup_scoreboard ()
 
 void sync_scoreboard_image ()
 {
+#ifndef HAVE_MMAP
     lseek (scoreboard_fd, 0L, 0);
     force_read (scoreboard_fd, (char*)scoreboard_image,
 		sizeof(scoreboard_image));
+#endif
 }
 
 void update_child_status (int child_num, int status)
@@ -423,8 +500,12 @@ void update_child_status (int child_num, int status)
     new_score_rec.pid = getpid();
     new_score_rec.status = status;
 
+#ifdef HAVE_MMAP
+    memcpy(&scoreboard_image[child_num], &new_score_rec, sizeof(short_score));
+#else
     lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
     force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
+#endif
 }
 
 int count_idle_servers ()
@@ -433,7 +514,8 @@ int count_idle_servers ()
     int res = 0;
 
     for (i = 0; i < HARD_SERVER_MAX; ++i)
-	if (scoreboard_image[i].status == SERVER_READY)
+	if (scoreboard_image[i].status == SERVER_READY
+	  || scoreboard_image[i].status == SERVER_STARTING)
 	    ++res;
 
     return res;
@@ -538,12 +620,17 @@ void detach()
         exit(1);
     }
 #else
+#ifdef __EMX__
+    /* OS/2 doesn't support process group IDs */
+    pgrp=getpid();
+#else
     if((pgrp=setpgrp(getpid(),0)) == -1) {
         fprintf(stderr,"httpd: setpgrp failed\n");
         perror("setpgrp");
         exit(1);
     }
 #endif    
+#endif
 #endif
 }
 
@@ -610,17 +697,21 @@ static void set_group_privs()
       name = ent->pw_name;
     } else name = user_name;
 
+#ifndef __EMX__ 
+    /* OS/2 dosen't support groups. */
+
     /* Reset `groups' attributes. */
     
     if (initgroups(name, group_id) == -1) {
-        log_error ("unable to set groups", server_conf);
+	log_unixerr("initgroups", NULL, "unable to set groups", server_conf);
 	exit (1);
     }
 
     if (setgid(group_id) == -1) {
-        log_error ("unable to set group id", server_conf);
+	log_unixerr("setgid", NULL, "unable to set group id", server_conf);
 	exit (1);
     }
+#endif 
   }
 }
 
@@ -652,12 +743,15 @@ void set_signals() {
 pool *pconf;			/* Pool for config stuff */
 pool *ptrans;			/* Pool for per-transaction stuff */
 
-server_rec *find_virtual_server (struct in_addr server_ip, server_rec *server)
+server_rec *find_virtual_server (struct in_addr server_ip, int port,
+				 server_rec *server)
 {
     server_rec *virt;
 
     for (virt = server->next; virt; virt = virt->next)
-	if (virt->host_addr.s_addr == server_ip.s_addr)
+	if ((virt->host_addr.s_addr == htonl(INADDR_ANY) ||
+	     virt->host_addr.s_addr == server_ip.s_addr) &&
+	    (virt->host_port == 0 || virt->host_port == port))
 	    return virt;
 
     return server;
@@ -665,20 +759,27 @@ server_rec *find_virtual_server (struct in_addr server_ip, server_rec *server)
 
 void default_server_hostnames(server_rec *s)
 {
+    struct hostent *h;
+    char *def_hostname;
     /* Main host first */
     
     if (!s->server_hostname)
 	s->server_hostname = get_local_host(pconf);
 
+    def_hostname = s->server_hostname;
+
     /* Then virtual hosts */
     
     for (s = s->next; s; s = s->next)
 	if (!s->server_hostname) {
-	    struct hostent *h = gethostbyaddr ((char *)&(s->host_addr),
-					       sizeof (struct in_addr),
-					       AF_INET);
-	    if (h != NULL) {
-		s->server_hostname = pstrdup (pconf, (char *)h->h_name);
+	    if (s->host_addr.s_addr == htonl(INADDR_ANY))
+		s->server_hostname = def_hostname;
+	    else
+	    {
+		h = gethostbyaddr ((char *)&(s->host_addr),
+				   sizeof (struct in_addr), AF_INET);
+		if (h != NULL)
+		    s->server_hostname = pstrdup (pconf, (char *)h->h_name);
 	    }
 	}
 }
@@ -703,7 +804,8 @@ conn_rec *new_connection (pool *p, server_rec *server, FILE *in, FILE *out,
     conn = (conn_rec *)pcalloc(p, sizeof(conn_rec));
     
     conn->pool = p;
-    conn->server = find_virtual_server (saddr->sin_addr, server);
+    conn->server = find_virtual_server(saddr->sin_addr, ntohs(saddr->sin_port),
+				       server);
     conn->client = out;
     conn->request_in = in;
     
@@ -744,7 +846,7 @@ void child_main(int child_num_arg)
 
     /* Only try to switch if we're running as root */
     if(!geteuid() && setuid(user_id) == -1) {
-        log_error ("unable to change uid", server_conf);
+        log_unixerr("setuid", NULL, "unable to change uid", server_conf);
 	exit (1);
     }
 
@@ -753,7 +855,9 @@ void child_main(int child_num_arg)
 #else
     sigsetjmp(jmpbuffer,1);
 #endif
+#ifndef __EMX__
     signal(SIGURG, timeout);
+#endif    
 
     while (1) {
 	FILE *conn_in, *conn_out;
@@ -779,23 +883,44 @@ void child_main(int child_num_arg)
 	update_child_status (child_num, SERVER_READY);
 	
 	accept_mutex_on();  /* Lock around "accept", if necessary */
-	
-	while ((csd=accept(sd, &sa_client, &clen)) == -1) 
-           if (errno != EINTR) 
-		log_error("socket error: accept failed", server_conf);
+
+	if (listeners != NULL)
+	{
+	    fd_set fds;
+
+	    for (;;) {
+		memcpy(&fds, &listenfds, sizeof(fd_set));
+		csd = select(listenmaxfd+1, &fds, NULL, NULL, NULL);
+		if (csd == -1 && errno != EINTR)
+		    log_error("select error", server_conf);
+		if (csd <= 0) continue;
+		for (sd=listenmaxfd; sd >= 0; sd--)
+		    if (FD_ISSET(sd, &fds)) break;
+		if (sd < 0) continue;
+
+		clen=sizeof(sa_client);
+		do csd=accept(sd, &sa_client, &clen);
+		while (csd == -1 && errno == EINTR);
+		if (csd != -1) break;
+		log_unixerr("accept", "(client socket)", NULL, server_conf);
+	    }
+	} else
+	    while ((csd=accept(sd, &sa_client, &clen)) == -1) 
+		if (errno != EINTR) 
+		    log_error("socket error: accept failed", server_conf);
 
 	accept_mutex_off(); /* unlock after "accept" */
 
 	clen = sizeof(sa_server);
 	if(getsockname(csd, &sa_server, &clen) < 0) {
-	    log_error("getsockname: failed", server_conf);
+	    log_unixerr("getsockname", NULL, NULL, server_conf);
 	    continue;
 	}
 	
 	dupped_csd = csd;
 #if defined(AUX) || defined(SCO)
 	if ((dupped_csd = dup(csd)) < 0) {
-	    log_error("couldn't duplicate csd", server_conf);
+	    log_unixerr("dup", NULL, "couldn't duplicate csd", server_conf);
 	    dupped_csd = csd;	/* Oh well... */
 	}
 #endif
@@ -811,15 +936,19 @@ void child_main(int child_num_arg)
 		rfc931((struct sockaddr_in *)&sa_client,
 		       (struct sockaddr_in *)&sa_server);
 	
-	r = read_request (current_conn);
+	r = read_request (current_conn, NULL);
 	if (r) process_request (r); /* else premature EOF --- ignore */
-		
-	if (bytes_in_pool (ptrans) > 80000) {
-	    char errstr[MAX_STRING_LEN];
-	    sprintf (errstr, "Memory hog alert: allocated %ld bytes for %s",
-	             bytes_in_pool (ptrans), r->the_request);
-            log_error (errstr, r->server);
-        }
+
+	while (r && current_conn->keepalive) {
+	  fflush(conn_out);
+	  r = read_request (current_conn, r);
+	  if (r) process_request (r);
+	}
+	
+	if (bytes_in_pool (ptrans) > 80000)
+	    log_printf(r->server,
+		       "Memory hog alert: allocated %ld bytes for %s",
+		       bytes_in_pool (ptrans), r->the_request);
 		
 	fflush (conn_out);
 	pfclose (ptrans,conn_in);
@@ -838,7 +967,7 @@ void make_child(server_rec *server_conf, int child_num)
     }
 
     if ((pid = fork()) == -1) {
-	log_error("Unable to fork new process", server_conf);
+	log_unixerr("fork", NULL, "Unable to fork new process", server_conf);
 	return;
     } 
     
@@ -849,12 +978,54 @@ void make_child(server_rec *server_conf, int child_num)
     }
 }
 
+static int
+make_sock(pool *pconf, const struct sockaddr_in *server)
+{
+    int s;
+    const int one = 1;
+    const int keepalive_value = 1;  
+
+    if ((s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
+        perror("socket");
+        fprintf(stderr,"httpd: could not get socket\n");
+        exit(1);
+    }
+
+    note_cleanups_for_fd (pconf, s); /* arrange to close on exec or restart */
+    
+    if((setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(one)))
+       == -1) {
+        perror("setsockopt");
+        fprintf(stderr,"httpd: could not set socket option\n");
+        exit(1);
+    }
+    if((setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&keepalive_value,
+        sizeof(keepalive_value))) == -1) {
+        perror("setsockopt"); 
+        fprintf(stderr,"httpd: could not set socket option SO_KEEPALIVE\n"); 
+        exit(1); 
+    }
+
+    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
+    {
+        perror("bind");
+	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
+	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
+		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));
+	else
+	    fprintf(stderr,"httpd: could not bind to port %d\n",
+		    ntohs(server->sin_port));
+        exit(1);
+    }
+    listen(s, 512);
+    return s;
+}
+
+
 /*****************************************************************
  * Executive routines.
  */
 
-static int keepalive_value = 1;  
-static int one = 1;
 static int num_children = 0;
 
 void standalone_main(int argc, char **argv)
@@ -897,42 +1068,29 @@ void standalone_main(int argc, char **argv)
     
     default_server_hostnames (server_conf);
 
-    if ((sd = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
-        fprintf(stderr,"httpd: could not get socket\n");
-        perror("socket");
-        exit(1);
-    }
+    if (listeners == NULL)
+    {
+	memset((char *) &sa_server, 0, sizeof(sa_server));
+	sa_server.sin_family=AF_INET;
+	sa_server.sin_addr=bind_address;
+	sa_server.sin_port=htons(server_conf->port);
 
-    note_cleanups_for_fd (pconf, sd); /* arrange to close on exec or restart */
-    
-    if((setsockopt(sd,SOL_SOCKET,SO_REUSEADDR,(const char *)&one,sizeof(one)))
-       == -1) {
-        fprintf(stderr,"httpd: could not set socket option\n");
-        perror("setsockopt");
-        exit(1);
-    }
-    if((setsockopt(sd,SOL_SOCKET,SO_KEEPALIVE,(const void *)&keepalive_value,
-        sizeof(keepalive_value))) == -1) {
-        fprintf(stderr,"httpd: could not set socket option SO_KEEPALIVE\n"); 
-        perror("setsockopt"); 
-        exit(1); 
-    }
+	sd = make_sock(pconf, &sa_server);
+    } else
+    {
+	listen_rec *lr;
+	int fd;
 
-    memset((char *) &sa_server, 0, sizeof(sa_server));
-    sa_server.sin_family=AF_INET;
-    sa_server.sin_addr=bind_address;
-    sa_server.sin_port=htons(server_conf->port);
-    if(bind(sd,(struct sockaddr *) &sa_server,sizeof(sa_server)) == -1) {
-	if (bind_address.s_addr != htonl(INADDR_ANY))
-	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
-		    inet_ntoa(bind_address), server_conf->port);
-	else
-	    fprintf(stderr,"httpd: could not bind to port %d\n",
-		    server_conf->port);
-        perror("bind");
-        exit(1);
+	listenmaxfd = -1;
+	FD_ZERO(&listenfds);
+	for (lr=listeners; lr != NULL; lr=lr->next)
+	{
+	    fd = make_sock(pconf, &lr->local_addr);
+	    FD_SET(fd, &listenfds);
+	    if (fd > listenmaxfd) listenmaxfd = fd;
+	}
+	sd = -1;
     }
-    listen(sd, 512);
 
     set_signals();
     log_pid(pconf, pid_fname);
@@ -963,7 +1121,10 @@ void standalone_main(int argc, char **argv)
 	if ((count_idle_servers() < daemons_min_free)
 	    && (child_slot = find_free_child_num()) >= 0
 	    && child_slot <= daemons_limit)
+	    {
+	    update_child_status(child_slot,SERVER_STARTING);
 	    make_child(server_conf, child_slot);
+	    }
     }
 
 } /* standalone_main */
@@ -1003,6 +1164,11 @@ main(int argc, char *argv[])
         }
     }
 
+#ifdef __EMX__
+    printf("%s \n",SERVER_VERSION);
+    printf("OS/2 port by Garey Smiley <garey@slink.com> \n");
+#endif
+
     setup_prelinked_modules();
     
     server_conf = read_config (pconf, ptrans, server_confname);
@@ -1032,8 +1198,14 @@ main(int argc, char *argv[])
 	server_conf->port =ntohs(((struct sockaddr_in *)&sa_server)->sin_port);
 	conn = new_connection (ptrans, server_conf, stdin, stdout,
 			       (struct sockaddr_in *)&sa_server);
-	r = read_request (conn);
+	r = read_request (conn, NULL);
 	if (r) process_request (r); /* else premature EOF (ignore) */
+
+        while (r && conn->keepalive) {
+	  fflush(stdout);
+          r = read_request (conn, r);
+          if (r) process_request (r);
+        }
     }
     exit (0);
 }

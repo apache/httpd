@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -85,7 +85,7 @@ static char sccsid[] = "@(#) rfc931.c 1.8 93/12/13 22:23:20";
 /* System libraries. */
 
 #include <stdio.h>
-#ifndef QNX
+#if !defined(QNX) && !defined(UW2) && !defined(__EMX__)
 #include <syslog.h>
 #endif
 #include <sys/types.h>
@@ -123,7 +123,7 @@ int     rfc931_timeout = RFC931_TIMEOUT;/* Global so it can be changed */
 
 static jmp_buf timebuf;
 
-#ifdef QNX
+#if defined(QNX) || defined(UW2) || defined(__EMX__)
 
 /*
 Gasp! QNX doesn't support syslog() (out of the box). Replace with output to
@@ -132,6 +132,11 @@ need considerable hacking.
 
 9 Oct 95
 Ben Laurie <ben@algroup.co.uk>
+
+Same goes for UnixWare 2.x. Sigh.
+
+12 Dec 95
+Chuck Murcko <chuck@telebase.com>
 */
 #include <assert.h>
 
@@ -149,7 +154,7 @@ void syslog(int err,const char *str)
   fprintf(stderr,"%ssystem error %d",logbuf,errno);
 }
 
-#endif /* def QNX */
+#endif /* defined(QNX) || defined(UW2) */
 
 /* fsocket - open stdio stream on top of socket */
 

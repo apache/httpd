@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -126,7 +126,19 @@ char *ht_time(pool *p, time_t t, char *fmt, int gmt) {
 }
 
 char *gm_timestr_822(pool *p, time_t sec) {
-    return ht_time(p, sec, HTTP_TIME_FORMAT, 1);
+    static const char *const days[7]=
+       {"Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    char ts[50];
+    struct tm *tms;
+
+    tms = gmtime(&sec);
+
+/* RFC date format; as strftime '%a, %d %b %Y %T GMT' */
+    sprintf(ts, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", days[tms->tm_wday],
+	    tms->tm_mday, month_snames[tms->tm_mon], tms->tm_year + 1900,
+	    tms->tm_hour, tms->tm_min, tms->tm_sec);
+
+    return pstrdup (p, ts);
 }
 
 /* What a pain in the ass. */
@@ -138,10 +150,19 @@ struct tm *get_gmtoff(long *tz) {
     t = localtime(&tt);
 #if defined(HAS_GMTOFF)
     *tz = t->tm_gmtoff;
-#else
+#elif !defined(NO_TIMEZONE)
     *tz = - timezone;
     if(t->tm_isdst)
         *tz += 3600;
+#else
+  {
+    static struct tm loc_t;
+
+    loc_t = *t;   /* save it */
+    t = gmtime(&tt);
+    *tz = mktime(&loc_t) - mktime(t);
+    t = &loc_t; /* return pointer to saved time */
+  }
 #endif
     return t;
 }
@@ -427,6 +448,15 @@ char *escape_shell_cmd(pool *p, char *s) {
     strcpy (cmd, s);
     
     for(x=0;cmd[x];x++) {
+    
+#ifdef __EMX__
+        /* Don't allow '&' in parameters under OS/2. */
+        /* This can be used to send commands to the shell. */
+        if (cmd[x] == '&') {
+            cmd[x] = ' ';
+        }
+#endif
+
         if(ind("&;`'\"|*?~<>^()[]{}$\\",cmd[x]) != -1){
             for(y=l+1;y>x;y--)
                 cmd[y] = cmd[y-1];
@@ -584,6 +614,39 @@ char *escape_uri(pool *p, char *uri) {
     return copy;
 }
 
+char *
+escape_html(pool *p, const char *s)
+{
+    int i, j;
+    char *x;
+
+/* first, count the number of extra characters */
+    for (i=0, j=0; s[i] != '\0'; i++)
+	if (s[i] == '<' || s[i] == '>') j += 3;
+	else if (s[i] == '&') j += 4;
+
+    if (j == 0) return pstrdup(p, s);
+    x = palloc(p, i + j + 1);
+    for (i=0, j=0; s[i] != '\0'; i++, j++)
+	if (s[i] == '<')
+	{
+	    memcpy(&x[j], "&lt;", 4);
+	    j += 3;
+	} else if (s[i] == '>')
+	{
+	    memcpy(&x[j], "&gt;", 4);
+	    j += 3;
+	} else if (s[i] == '&')
+	{
+	    memcpy(&x[j], "&amp;", 5);
+	    j += 4;
+	} else
+            x[j] = s[i];
+
+    x[j] = '\0';
+    return x;
+}
+
 #ifdef NOTDEF
 
 void escape_url(char *url) {
@@ -637,6 +700,10 @@ int is_url(char *u) {
 }
 
 int can_exec(struct stat *finfo) {
+#ifdef __EMX__
+    /* OS/2 dosen't have Users and Groups */
+    return (finfo->st_mode & S_IEXEC);
+#else    
     if(user_id == finfo->st_uid)
         if(finfo->st_mode & S_IXUSR)
             return 1;
@@ -644,6 +711,7 @@ int can_exec(struct stat *finfo) {
         if(finfo->st_mode & S_IXGRP)
             return 1;
     return (finfo->st_mode & S_IXOTH);
+#endif    
 }
 
 #ifdef NEED_STRDUP
@@ -709,6 +777,8 @@ Ben <ben@algroup.co.uk> */
   struct group *g;
   int index = 0;
 
+  setgrent();
+
   groups[index++] = basegid;
 
   while (index < NGROUPS_MAX && ((g = getgrent()) != NULL))
@@ -720,6 +790,8 @@ Ben <ben@algroup.co.uk> */
         if (!strcmp(*names, name))
           groups[index++] = g->gr_gid;
     }
+
+  endgrent();
 
   return setgroups(index, groups);
 #endif /* def QNX */
@@ -819,16 +891,35 @@ struct in_addr get_local_addr(int sd) {
 }
 #endif
 
-unsigned long get_virthost_addr (char *w, int wild_allowed) {
+/*
+ * Parses a host of the form <address>[:port]
+ * :port is permitted if 'port' is not NULL
+ */
+unsigned long get_virthost_addr (char *w, short int *ports) {
     struct hostent *hep;
     unsigned long my_addr;
-    
-    if (wild_allowed && !strcmp(w, "*")) 
+    char *p;
+
+    p = strchr(w, ':');
+    if (ports != NULL)
+    {
+	*ports = 0;
+	if (p != NULL && strcmp(p+1, "*") != 0) *ports = atoi(p+1);
+    }
+
+    if (p != NULL) *p = '\0';
+    if (strcmp(w, "*") == 0)
+    {
+	if (p != NULL) *p = ':';
 	return htonl(INADDR_ANY);
+    }
 	
     my_addr = inet_addr(w);
     if (my_addr != ((unsigned long) 0xffffffff))
+    {
+	if (p != NULL) *p = ':';
 	return my_addr;
+    }
 
     hep = gethostbyname(w);
 	    
@@ -844,6 +935,8 @@ unsigned long get_virthost_addr (char *w, int wild_allowed) {
 	exit(1);
     }
 	    
+    if (p != NULL) *p = ':';
+
     return ((struct in_addr *)(hep->h_addr))->s_addr;
 }
 
@@ -864,9 +957,7 @@ void get_remote_host(conn_rec *conn)
     struct sockaddr addr;
     int len;
     struct in_addr *iaddr;
-#if defined(MAXIMUM_DNS) || !defined(MINIMAL_DNS)
     struct hostent *hptr;
-#endif
 
     len = sizeof(struct sockaddr);
 
@@ -877,16 +968,16 @@ void get_remote_host(conn_rec *conn)
     }
 
     iaddr = &(((struct sockaddr_in *)&addr)->sin_addr);
-#ifndef MINIMAL_DNS
-    hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
-    if(hptr) {
-        conn->remote_host = pstrdup(conn->pool, (void *)hptr->h_name);
-        conn->remote_name = conn->remote_host;
-        str_tolower (conn->remote_host);
+
+    conn->remote_host = NULL;
+    if (conn->server->hostname_lookups) {
+       hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
+       if(hptr) {
+          conn->remote_host = pstrdup(conn->pool, (void *)hptr->h_name);
+          conn->remote_name = conn->remote_host;
+          str_tolower (conn->remote_host);
+       }
     }
-    else 
-#endif
-        conn->remote_host = NULL;
 
 #ifdef MAXIMUM_DNS
     /* Grrr. Check THAT name to make sure it's really the name of the addr. */
@@ -919,7 +1010,7 @@ void get_remote_host(conn_rec *conn)
 char *get_remote_logname(FILE *fd) {
     int len;
     char *result;
-#if defined(NEXT) || defined(BSD4_4) || defined(SOLARIS2) || defined(LINUX)
+#if defined(NEXT) || defined(BSD4_4) || defined(SOLARIS2) || defined(LINUX) || defined(__EMX__)
     struct sockaddr sa_server, sa_client;
 #else
     struct sockaddr_in sa_server,sa_client;
@@ -1029,3 +1120,41 @@ char *uudecode(pool *p, char *bufcoded) {
     bufplain[nbytesdecoded] = '\0';
     return bufplain;
 }
+
+#ifdef __EMX__
+void os2pathname(char *path) {
+    char newpath[MAX_STRING_LEN];
+    int loop;
+    int offset;
+
+    offset = 0;
+    for (loop=0; loop < (strlen(path) + 1); loop++) {
+        if (path[loop] == '/') {
+            newpath[offset] = '\\';
+            /*
+            offset = offset + 1;
+            newpath[offset] = '\\';
+            */
+        } else
+            newpath[offset] = path[loop];
+        offset = offset + 1;
+    };
+    /* Debugging code */
+    /* fprintf(stderr, "%s \n", newpath); */
+
+    strcpy(path, newpath);
+};
+#endif
+
+
+#ifdef NEED_STRERROR
+char *
+strerror (int err) {
+
+    char *p;
+    extern char *const sys_errlist[];
+
+    p = sys_errlist[err];
+    return (p);
+}
+#endif

@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -56,12 +56,15 @@
 #include "httpd.h"
 #include "http_config.h"
 
-#define DEFAULT_AGENTLOG "logs/agent_log"
-
 module agent_log_module;
 
 static int xfer_flags = ( O_WRONLY | O_APPEND | O_CREAT );
+#ifdef __EMX__
+/* OS/2 dosen't support users and groups */
+static mode_t xfer_mode = ( S_IREAD | S_IWRITE );
+#else
 static mode_t xfer_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
+#endif
 
 typedef struct {
     char *fname;
@@ -73,7 +76,7 @@ void *make_agent_log_state (pool *p, server_rec *s)
     agent_log_state *cls =
       (agent_log_state *)palloc (p, sizeof (agent_log_state));
 
-    cls->fname = DEFAULT_AGENTLOG;
+    cls->fname = "";
     cls->agent_fd = -1;
 
 
@@ -130,10 +133,12 @@ void open_agent_log (server_rec *s, pool *p)
 
 	cls->agent_fd = fileno (dummy);
     }
-    else if((cls->agent_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
-        fprintf(stderr,"httpd: could not open transfer log file %s.\n", fname);
+    else if(*cls->fname != '\0') {
+      if((cls->agent_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+        fprintf(stderr,"httpd: could not open agent log file %s.\n", fname);
         perror("open");
         exit(1);
+      }
     }
 }
 
@@ -156,6 +161,8 @@ int agent_log_transaction(request_rec *orig)
 
     for (r = orig; r->next; r = r->next)
         continue;
+    if (*cls->fname == '\0')	/* Don't log agent */
+	return DECLINED;
 
     agent = table_get(orig->headers_in, "User-Agent");
     if(agent != NULL) 

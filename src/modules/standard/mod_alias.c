@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -129,7 +129,7 @@ command_rec alias_cmds[] = {
     "a fakename and a realname"},
 { "ScriptAlias", add_alias, CGI_MAGIC_TYPE, RSRC_CONF, TAKE2, 
     "a fakename and a realname"},
-{ "Redirect", add_redirect, NULL, RSRC_CONF, TAKE2, 
+{ "Redirect", add_redirect, NULL, OR_FILEINFO, TAKE2, 
     "a document to be redirected, then the destination URL" },
 { NULL }
 };
@@ -201,7 +201,12 @@ int translate_alias_redir(request_rec *r)
         (alias_server_conf *)get_module_config(sconf, &alias_module);
     char *ret;
 
+#ifdef __EMX__
+    /* Add support for OS/2 drive names */
+    if ((r->uri[0] != '/' && r->uri[0] != '\0') && r->uri[1] != ':')
+#else    
     if (r->uri[0] != '/' && r->uri[0] != '\0') 
+#endif    
         return BAD_REQUEST;
 
     if ((ret = try_alias_list (r, conf->redirects, 1)) != NULL) {
@@ -214,6 +219,23 @@ int translate_alias_redir(request_rec *r)
         return OK;
     }
     
+    return DECLINED;
+}
+
+int fixup_redir(request_rec *r)
+{
+    void *sconf = r->server->module_config;
+    alias_server_conf *conf =
+        (alias_server_conf *)get_module_config(sconf, &alias_module);
+    char *ret;
+
+    /* It may have changed since last time, so try again */
+
+    if ((ret = try_alias_list (r, conf->redirects, 1)) != NULL) {
+        table_set (r->headers_out, "Location", ret);
+        return REDIRECT;
+    }
+
     return DECLINED;
 }
 
@@ -239,6 +261,6 @@ module alias_module = {
    NULL,			/* check auth */
    NULL,			/* check access */
    type_forced_alias,		/* type_checker */
-   NULL,			/* fixups */
+   fixup_redir,			/* fixups */
    NULL				/* logger */
 };

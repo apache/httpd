@@ -18,6 +18,10 @@ ServerType standalone
 
 Port 80
 
+# HostnameLookups: Log the names of clients or just their IP numbers
+#   e.g.   www.apache.org (on) or 204.62.129.132 (off)
+HostnameLookups on
+
 # If you wish httpd to run as a different user or group, you must run
 # httpd as root initially and it will switch.  
 
@@ -56,6 +60,9 @@ TransferLog logs/access_log
 # PidFile: The file the server should log its pid to
 PidFile logs/httpd.pid
 
+# ScoreBoardFile: File used to store internal server process information
+ScoreBoardFile logs/apache_status
+
 # ServerName allows you to set a host name which is sent back to clients for
 # your server if it's different than the one the program would get (i.e. use
 # "www" instead of the host's real name).
@@ -77,6 +84,15 @@ PidFile logs/httpd.pid
 #  n.b. the compiled default is 1200 (20 minutes !)
 
 Timeout 400
+
+# KeepAlive: The number of Keep-Alive persistent requests to accept
+# per connection. Set to 0 to deactivate Keep-Alive support
+
+KeepAlive 5
+
+# KeepAliveTimeout: Number of seconds to wait for the next request
+
+KeepAliveTimeout 15
 
 # Server-pool size regulation.  Rather than making you guess how many
 # server processes you need, Apache dynamically adapts to the load it
@@ -113,6 +129,26 @@ MaxClients 150
 #  in the libraries.
 
 MaxRequestsPerChild 30
+
+# Proxy Server directives. Uncomment the following line to
+# enable the proxy server:
+
+#ProxyRequests On
+
+# To enable the cache as well, edit and uncomment the following lines:
+
+#CacheRoot /usr/local/etc/httpd/proxy
+#CacheSize 5
+#CacheGcInterval 4
+#CacheMaxExpire 24
+#CacheLastModifiedFactor 0.1
+#CacheDefaultExpire 1
+
+# Listen: Allows you to bind Apache to specific IP addresses and/or
+# ports, in addition to the default. See also the VirtualHost command
+
+#Listen 3000
+#Listen 12.34.56.78:80
 
 # VirtualHost: Allows the daemon to respond to requests for more than one
 # server address, if your server machine is configured to accept IP packets

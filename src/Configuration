@@ -20,13 +20,22 @@ CC= gcc
 
 # CFLAGS, compile flags.
 
-# If you want no reverse hostname resolution, use -DMINIMAL_DNS
+# -DMINIMAL_DNS is now obsolete. Use httpd.conf settings of
+# HostnameLookups on
+# or
+# HostnameLookups off
+#
 # If you want to have more secure hostname resolution at the cost of some 
 # performance, use -DMAXIMUM_DNS.
 # If you want setting the xbit of a file to cause it to be treated as
 # server-included HTML (unless it is a CGI script), say -DXBITHACK.  Note
 # that this is a run-time option, per-directory, either way (via the XBITHACK
 # command); this option only sets the default.
+
+# If you find that your OS can't cope with mmap (compiles OKAY but refuses
+# to run and moans "httpd: Could not mmap memory" .. or similar) try
+# disabling use of shared memory for process management (scoreboard with
+# -DNO_MMAP
 
 # [Some other former Apache compile-time options are now treated differently;
 #  the virtual host code is always present; DBM auth is an optional module, and
@@ -49,7 +58,7 @@ EXTRA_LIBS=
 # SETTINGS FOR THE SYSTEM FLAGS. IF YOU DON'T, BAD THINGS WILL HAPPEN.
 
 # For SunOS 4
-AUX_CFLAGS= -DSUNOS4
+#AUX_CFLAGS= -DSUNOS4
 # For Solaris 2.
 #AUX_CFLAGS= -DSOLARIS2
 #AUX_LIBS= -lsocket -lnsl
@@ -74,16 +83,22 @@ AUX_CFLAGS= -DSUNOS4
 # For A/UX
 #AUX_CFLAGS= -DAUX -D_POSIX_SOURCE
 #AUX_LIBS= -lposix -lbsd -s
-# For SCO ODT
+# For SCO ODT 3
 # libcrypt_i available from sosco.sco.com, files /SLS/lng225b.Z and
 # /SLS/lng225b.ltr.Z
 # the -Oe option causes cc to die compiling mod_imap (using 3.0.0a of the dev sys)
 #CFLAGS= -Oacgiltz
 #AUX_CFLAGS= -DSCO
 #AUX_LIBS= -lPW -lsocket -lmalloc -lcrypt_i
+# For SCO OpenServer Release 5
+#AUX_CFLAGS= -DSCO5
+#AUX_LIBS=-lsocket -lmalloc
 # For SVR4
 #AUX_CFLAGS= -DSVR4
 #AUX_LIBS= -lsocket -lnsl -lc
+# For UnixWare 2.x, no longer just SVR4 (sigh) - use cc, not gcc
+# AUX_CFLAGS= -DSVR4 -DUW2
+# AUX_LIBS= -lsocket -lnsl -lcrypt
 # For Amdahl UTS 2.1
 # -Xa enables ANSI mode, -eft is expanded types
 #AUX_CFLAGS= -Xa -eft -DUTS21
@@ -98,6 +113,15 @@ AUX_CFLAGS= -DSUNOS4
 # For QNX
 #AUX_CFLAGS= -DQNX
 #AUX_LFLAGS= -N 0x20000
+# For LynxOS
+#AUX_CFLAGS= -DLYNXOS
+#EXTRA_LIBS=-lbsd -ldes -lc_p
+
+# For EMX OS/2 port
+#AUX_CFLAGS= -Zbsd-signals -Zbin-files
+#-DNO_KILLPG -DNEED_STRCASECMP -DNO_SETSID
+#-g
+#AUX_LIBS= -lsocket -llibufc -lgdbm -lbsd
 
 ################################################################
 # Module configuration
@@ -122,11 +146,21 @@ Module common_log_module   mod_log_common.o
 
 # Modules which implement Apache extensions:
 # These can be commented out if you don't want them
-# (or don't have the decade-old "new" DBM libs).
 
 Module asis_module        mod_asis.o
 Module imap_module        mod_imap.o
+Module action_module      mod_actions.o
+Module proxy_module       mod_proxy.o
+Module cern_meta_module   mod_cern_meta.o
+Module anon_auth_module   mod_auth_anon.o
+
+# Optional authentication modules, which should only be
+# uncommented out if you have the neccessary system support.
+# (if you don't have the decade-old "new" DBM libs, for example)
+
 # Module dbm_auth_module  mod_auth_dbm.o
+# Module db_auth_module   mod_auth_db.o
+# Module msql_auth_module mod_auth_msql.o
 
 # Optional modules for *full* NCSA compatibility --- we think these log
 # files are a bad idea, but reasonable people seem to disagree:

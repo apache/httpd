@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -72,13 +72,14 @@
 union align
 {
   /* Types which are likely to have the longest RELEVANT alignment
-   * restrictions... we don't do much with doubles.
+   * restrictions...
    */
   
   char *cp;
   void (*f)();
   long l;
   FILE *fp;
+  double d;
 };
 
 #define CLICK_SZ (sizeof(union align))
@@ -374,7 +375,7 @@ void *pcalloc(struct pool *a, int size)
   return res;
 }
 
-char *pstrdup(struct pool *a, char *s)
+char *pstrdup(struct pool *a, const char *s)
 {
   char *res;
   if (s == NULL) return NULL;
@@ -544,6 +545,8 @@ char *table_get (table *t, char *key)
     table_entry *elts = (table_entry *)t->elts;
     int i;
 
+    if (key == NULL) return NULL;
+    
     for (i = 0; i < t->nelts; ++i)
         if (!strcasecmp (elts[i].key, key))
 	    return elts[i].val;
@@ -875,6 +878,15 @@ static void free_proc_chain (struct process_chain *procs)
    * be doing anymore.
    */
 
+#ifndef NEED_WAITPID
+  /* Pick up all defunct processes */
+  for (p = procs; p; p = p->next) {
+    if (waitpid (p->pid, (int *) 0, WNOHANG) > 0) {
+      p->kill_how = kill_never;
+    }
+  }
+#endif
+
   for (p = procs; p; p = p->next) {
     if (p->kill_how == kill_after_timeout) {
       /* Subprocess may be dead already.  Only need the timeout if not. */
@@ -903,3 +915,97 @@ static void free_proc_chain (struct process_chain *procs)
       waitpid (p->pid, &status, 0);
   }
 }
+
+#ifdef __EMX__
+int spawn_child_os2 (pool *p, void (*func)(void *), void *data,
+         enum kill_conditions kill_how,
+         FILE **pipe_in, FILE **pipe_out, char *buffer, int lenp)
+{
+  int pid;
+  int in_fds[2];
+  int out_fds[2];
+
+  block_alarms();
+  
+  if (pipe_in && pipe (in_fds) < 0)
+  {
+      unblock_alarms();
+      return 0;
+  }
+  
+  if (pipe_out && pipe (out_fds) < 0) {
+    if (pipe_in) {
+      close (in_fds[0]); close (in_fds[1]);
+    }
+    unblock_alarms();
+    return 0;
+  }
+
+  if ((pid = fork()) < 0) {
+    if (pipe_in) {
+      close (in_fds[0]); close (in_fds[1]);
+    }
+    if (pipe_out) {
+      close (out_fds[0]); close (out_fds[1]);
+    }
+    unblock_alarms();
+    return 0;
+  }
+
+  if (!pid) {
+    int stdinpipe[2];
+    /* Due to a limitation of EMX, inheriting socket handles is not
+    allowed so we need to read the input and place it in a pipe and 
+    then pass that handle instead of the socket. */
+    
+    if (lenp > 0) {
+        pipe(stdinpipe);
+        write(stdinpipe[1], buffer, lenp);
+        close(stdinpipe[1]);
+        in_fds[0] = dup(stdinpipe[0]);
+        close(stdinpipe[0]);
+    }
+                                
+    /* Child process */
+    
+    if (pipe_out) {
+      close (out_fds[0]);
+      dup2 (out_fds[1], STDOUT_FILENO);
+      close (out_fds[1]);
+    }
+
+    if (pipe_in) {
+      close (in_fds[1]);
+      dup2 (in_fds[0], STDIN_FILENO);
+      close (in_fds[0]);
+    }
+
+    /* HP-UX SIGCHLD fix goes here, if someone will remind me what it is... */
+    signal (SIGCHLD, SIG_DFL);    /* Was that it? */
+    
+    func (data);
+    exit (0);            /* Should never get here... */
+  }
+
+  /* Parent process */
+
+  note_subprocess (p, pid, kill_how);
+  
+  if (pipe_out) {
+    close (out_fds[1]);
+    *pipe_out = fdopen (out_fds[0], "r");
+    
+    if (*pipe_out) note_cleanups_for_file (p, *pipe_out);
+  }
+
+  if (pipe_in) {
+    close (in_fds[0]);
+    *pipe_in = fdopen (in_fds[1], "w");
+    
+    if (*pipe_in) note_cleanups_for_file (p, *pipe_in);
+  }
+
+  unblock_alarms();
+  return pid;
+}
+#endif

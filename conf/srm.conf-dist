@@ -32,19 +32,32 @@ FancyIndexing on
 # extensions
 
 AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
+
 AddIconByType (TXT,/icons/text.gif) text/*
 AddIconByType (IMG,/icons/image2.gif) image/*
 AddIconByType (SND,/icons/sound2.gif) audio/*
 AddIconByType (VID,/icons/movie.gif) video/*
-AddIcon /icons/text.gif .ps .shtml
-AddIcon /icons/movie.gif .mpg .qt
-AddIcon /icons/binary.gif .bin   
-AddIcon /icons/burst.gif .wrl    
-AddIcon /icons/binhex.gif .hqx .sit
-AddIcon /icons/uu.gif .uu 
-AddIcon /icons/tar.gif .tar  .tar
+
+AddIcon /icons/binary.gif .bin .exe
+AddIcon /icons/binhex.gif .hqx
+AddIcon /icons/tar.gif .tar
+AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
+AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
+AddIcon /icons/a.gif .ps .ai .eps
+AddIcon /icons/layout.gif .html .shtml .htm .pdf
+AddIcon /icons/text.gif .txt
+AddIcon /icons/c.gif .c
+AddIcon /icons/p.gif .pl .py
+AddIcon /icons/f.gif .for
+AddIcon /icons/dvi.gif .dvi
+AddIcon /icons/uuencoded.gif .uu
+AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
+AddIcon /icons/tex.gif .tex
+AddIcon /icons/bomb.gif core
+
 AddIcon /icons/back.gif ..
-AddIcon /icons/dir.gif ^^DIRECTORY^^
+AddIcon /icons/hand.right.gif README
+AddIcon /icons/folder.gif ^^DIRECTORY^^
 AddIcon /icons/blank.gif ^^BLANKICON^^
 
 # DefaultIcon is which icon to show for files which do not have an icon
@@ -152,6 +165,32 @@ ScriptAlias /cgi-bin/ /usr/local/etc/httpd/cgi-bin/
 # If you wish to use server-parsed imagemap files, use
 
 #AddType application/x-httpd-imap map
+
+# Action lets you define media types that will execute a script whenever
+# a matching file is called. This eliminates the need for repeated URL
+# pathnames for oft-used CGI file processors.
+# Format: Action type/subtype /cgi-script/location
+
+# For example, to add a footer (footer.html in your document root) to all
+# HTML files, uncomment the following:
+
+#Action text/html /cgi-bin/footer
+
+# If you want to do this for only files with extension ".fhtml", use
+
+#AddType httpd/footer-html fhtml
+#Action httpd/footer-html /cgi-bin/footer
+
+# MetaDir: specifies the name of the directory in which Apache can find
+# meta information files. These files contain additional HTTP headers
+# to include when sending the document
+
+MetaDir .web
+
+# MetaSuffix: specifies the file name suffix for the file containing the
+# meta information.
+
+MetaSuffix .meta
 
 # Customizable error response (Apache style)
 #  these come in three flavors

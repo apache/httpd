@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -120,7 +120,7 @@ void *create_core_server_config (pool *a, server_rec *s)
 {
     core_server_config *conf =
       (core_server_config *)pcalloc(a, sizeof(core_server_config));
-    int is_virtual = is_virtual_server (s);
+    int is_virtual = s->is_virtual;
   
     conf->access_name = is_virtual ? NULL : DEFAULT_ACCESS_FNAME;
     conf->document_root = is_virtual ? NULL : DOCUMENT_LOCATION;
@@ -446,7 +446,7 @@ char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 
     if (endp) *endp = '\0';
     
-    if (is_virtual_server (main_server))
+    if (main_server->is_virtual)
 	return "<VirtualHost> doesn't nest!";
     
     s = init_virtual_host (p, arg);
@@ -514,13 +514,33 @@ char *set_timeout (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy, char *arg) {
+    cmd->server->keep_alive_timeout = atoi (arg);
+    return NULL;
+}
+
+char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
+    cmd->server->keep_alive = atoi (arg);
+    return NULL;
+}
+
 char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
     pid_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
+char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
+    scoreboard_fname = pstrdup (cmd->pool, arg);
+    return NULL;
+}
+
 char *set_idcheck (cmd_parms *cmd, void *dummy, int arg) {
     cmd->server->do_rfc931 = arg;
+    return NULL;
+}
+
+char *set_hostname_lookups (cmd_parms *cmd, void *dummy, int arg) {
+    cmd->server->hostname_lookups = (short) arg;
     return NULL;
 }
 
@@ -531,6 +551,13 @@ char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
 
 char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_min_free = atoi (arg);
+    if (daemons_min_free <= 0) {
+       fprintf(stderr, "WARNING: detected MinSpareServers set to non-positive.\n");
+       fprintf(stderr, "Resetting to 1 to avoid almost certain Apache failure.\n");
+       fprintf(stderr, "Please read the documentation.\n");
+       daemons_min_free = 1;
+    }
+       
     return NULL;
 }
 
@@ -550,7 +577,35 @@ char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
-    bind_address.s_addr = get_virthost_addr (arg, 1);
+    bind_address.s_addr = get_virthost_addr (arg, NULL);
+    return NULL;
+}
+
+char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
+{
+    listen_rec *new;
+    char *ports;
+
+    if (cmd->server->is_virtual) return "Listen not allowed in <VirtualHost>";
+    ports=strchr(ips, ':');
+    if (ports != NULL)
+    {
+	if (ports == ips) return "Missing IP address";
+	else if (ports[0] == '\0')
+	    return "Address must end in :<port-number>";
+	*(ports++) = '\0';
+    } else
+	ports = ips;
+
+    new=palloc(cmd->pool, sizeof(listen_rec));
+    new->local_addr.sin_family = AF_INET;
+    if (ports == ips) /* no address */
+	new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    else
+	new->local_addr.sin_addr.s_addr = get_virthost_addr(ips, NULL);
+    new->local_addr.sin_port = htons(atoi(ports));
+    new->next = listeners;
+    listeners = new;
     return NULL;
 }
 
@@ -588,6 +643,7 @@ command_rec core_cmds[] = {
 
 { "ServerType", server_type, NULL, RSRC_CONF, TAKE1,"'inetd' or 'standalone'"},
 { "Port", server_port, NULL, RSRC_CONF, TAKE1, "a TCP port number"},
+{ "HostnameLookups", set_hostname_lookups, NULL, RSRC_CONF, FLAG, NULL },
 { "User", set_user, NULL, RSRC_CONF, TAKE1, "a username"},
 { "Group", set_group, NULL, RSRC_CONF, TAKE1, "a group name"},
 { "ServerAdmin", set_server_string_slot,
@@ -602,6 +658,8 @@ command_rec core_cmds[] = {
   "the filename of the error log" },
 { "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
     "a file for logging the server process ID"},
+{ "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
+    "a file for apache to maintain runtime process management information"},
 { "AccessConfig", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, access_confname), RSRC_CONF, TAKE1,
   "the filename of the access config file" },
@@ -609,6 +667,8 @@ command_rec core_cmds[] = {
   (void *)XtOffsetOf (server_rec, srm_confname), RSRC_CONF, TAKE1,
   "the filename of the resource config file" },
 { "Timeout", set_timeout, NULL, RSRC_CONF, TAKE1, "timeout duration (sec)"},
+{ "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
+{ "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Maximum Keep-Alive requests per connection (0 to disable)" },
 { "IdentityCheck", set_idcheck, NULL, RSRC_CONF, FLAG, NULL },
 { "CacheNegotiatedDocs", },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1, NULL },
@@ -620,6 +680,8 @@ command_rec core_cmds[] = {
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1, NULL },
 { "BindAddress", set_bind_address, NULL, RSRC_CONF, TAKE1,
   "'*', a numeric IP address, or the name of a host with a unique IP address"},
+{ "Listen", set_listener, NULL, RSRC_CONF, TAKE1,
+      "a port number or a numeric IP address and a port number"},
 { "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS, NULL },
 { "</VirtualHost>", end_virtualhost_section, NULL, RSRC_CONF, NO_ARGS, NULL },
 { NULL },
@@ -635,6 +697,7 @@ int core_translate (request_rec *r)
     void *sconf = r->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
   
+    if (r->proxyreq) return NOT_IMPLEMENTED;
     if (r->uri[0] != '/') return BAD_REQUEST;
     
     r->filename = pstrcat (r->pool, conf->document_root, r->uri, NULL);
@@ -665,7 +728,12 @@ int default_handler (request_rec *r)
 	|| (errstatus = set_last_modified (r, r->finfo.st_mtime)))
         return errstatus;
     
+#ifdef __EMX__
+    /* Need binary mode for OS/2 */
+    f = fopen (r->filename, "rb");
+#else
     f = fopen (r->filename, "r");
+#endif
 
     if (f == NULL) {
         log_reason("file permissions deny server access", r->filename, r);

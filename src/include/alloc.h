@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -94,7 +94,7 @@ void cleanup_for_exec ();
 
 void *palloc(struct pool *, int nbytes);
 void *pcalloc(struct pool *, int nbytes);
-char *pstrdup(struct pool *, char *s);
+extern char *pstrdup(struct pool *, const char *s);
 char *pstrcat(struct pool *, ...); /* all '...' must be char* */
 
 /* array and alist management... keeping lists of things.
@@ -224,6 +224,10 @@ enum kill_conditions { kill_never, kill_always, kill_after_timeout, just_wait};
 
 int spawn_child (pool *, void (*)(void *), void *,
 		 enum kill_conditions, FILE **pipe_in, FILE **pipe_out);
+#ifdef __EMX__
+int spawn_child_os2 (pool *, void (*)(void *), void *,
+         enum kill_conditions, FILE **pipe_in, FILE **pipe_out, char *buffer, int lenp);
+#endif
 
 /* magic numbers --- only one so far, min free bytes in a new pool block */
 

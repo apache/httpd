@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -59,7 +59,7 @@
 
 /* Read a request and fill in the fields. */
 
-request_rec *read_request (conn_rec *c);     
+request_rec *read_request (conn_rec *c, request_rec *back);
 
 /* Send header for http response */
 
@@ -82,6 +82,7 @@ void send_error_response (request_rec *r, int recursive_error);
  */
 
 int set_content_length (request_rec *r, long length);
+int set_keepalive (request_rec *r);
 int set_last_modified (request_rec *r, time_t mtime);
 
 void add_env_var (array_header *env, char *header_name, char *val);

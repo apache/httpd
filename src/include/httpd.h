@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -66,10 +66,20 @@
 /* Define this to be the default server home dir. Anything later in this
  * file with a relative pathname will have this added.
  */
+#ifdef __EMX__
+/* Set default for OS/2 file system */ 
+#define HTTPD_ROOT "/os2httpd"
+#else
 #define HTTPD_ROOT "/usr/local/etc/httpd"
+#endif
 
 /* Root of server */
+#ifdef __EMX__
+/* Set default for OS/2 file system */ 
+#define DOCUMENT_LOCATION "/os2httpd/docs"
+#else
 #define DOCUMENT_LOCATION "/usr/local/etc/httpd/htdocs"
+#endif
 
 /* Max. number of dynamically loaded modules */
 #define DYNAMIC_MODULE_LIMIT 64
@@ -97,9 +107,20 @@
 #define DEFAULT_GROUP "#-1"
 
 /* The name of the log files */
+#ifdef __EMX__
+/* Set default for OS/2 file system */ 
+#define DEFAULT_XFERLOG "logs/access.log"
+#else
 #define DEFAULT_XFERLOG "logs/access_log"
+#endif
+#ifdef __EMX__
+/* Set default for OS/2 file system */ 
+#define DEFAULT_ERRORLOG "logs/error.log"
+#else
 #define DEFAULT_ERRORLOG "logs/error_log"
+#endif
 #define DEFAULT_PIDLOG "logs/httpd.pid"
+#define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
 
 /* Define this to be what your HTML directory content files are called */
 #define DEFAULT_INDEX "index.html"
@@ -112,7 +133,12 @@
 #define DEFAULT_TYPE "text/html"
 
 /* Define this to be what your per-directory security files are called */
+#ifdef __EMX__
+/* Set default for OS/2 file system */ 
+#define DEFAULT_ACCESS_FNAME "htaccess"
+#else
 #define DEFAULT_ACCESS_FNAME ".htaccess"
+#endif
 
 /* The name of the server config file */
 #define SERVER_CONFIG_FILE "conf/httpd.conf"
@@ -135,7 +161,12 @@
 #define DEFAULT_PATH "/bin:/usr/bin:/usr/ucb:/usr/bsd:/usr/local/bin"
 
 /* The path to the Bourne shell, for parsed docs */
+#ifdef __EMX__
+/* Set default for OS/2 file system */ 
+#define SHELL_PATH "CMD.EXE"
+#else
 #define SHELL_PATH "/bin/sh"
+#endif
 
 /* The default string lengths */
 #define MAX_STRING_LEN HUGE_STRING_LEN
@@ -144,14 +175,17 @@
 /* The timeout for waiting for messages */
 #define DEFAULT_TIMEOUT 1200
 
+/* The timeout for waiting for keepalive timeout until next request */
+#define DEFAULT_KEEPALIVE_TIMEOUT 15
+
+/* The number of requests to entertain per connection */
+#define DEFAULT_KEEPALIVE 5
+
 /* The size of the server's internal read-write buffers */
 #define IOBUFSIZE 8192
 
 /* The number of header lines we will accept from a client */
 #define MAX_HEADERS 200
-
-/* RFC 1123 format for date - this is what HTTP/1.0 wants */
-#define HTTP_TIME_FORMAT "%a, %d %b %Y %T GMT"
 
 /* Number of servers to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
@@ -184,7 +218,7 @@
 
 /* ------------------------------ error types ------------------------------ */
 
-#define SERVER_VERSION "Apache/1.0.0"
+#define SERVER_VERSION "Apache/1.1b0a"
 #define SERVER_PROTOCOL "HTTP/1.0"
 #define SERVER_SUPPORT "http://www.apache.org/"
 
@@ -200,6 +234,7 @@
 #define NOT_FOUND 404
 #define SERVER_ERROR 500
 #define NOT_IMPLEMENTED 501
+#define BAD_GATEWAY 502
 #define SERVICE_UNAVAILABLE 503
 #define RESPONSE_CODES 10
 
@@ -216,6 +251,7 @@
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 #define ASIS_MAGIC_TYPE "httpd/send-as-is"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
+#define PROXY_MAGIC_TYPE "httpd/proxy"
 
 /* Just in case your linefeed isn't the one the other end is expecting. */
 #define LF 10
@@ -234,9 +270,23 @@
  * pointer is, in fact, zero.
  */
 
+/* This represents the result of calling htaccess; these are cached for
+ * each request.
+ */
+struct htaccess_result
+{
+    char *dir;              /* the directory to which this applies */
+    int override;           /* the overrides allowed for the .htaccess file */
+    void *htaccess;         /* the configuration directives */
+/* the next one, or NULL if no more; N.B. never change this */
+    const struct htaccess_result *next;
+};
+
+
 typedef struct conn_rec conn_rec;
 typedef struct server_rec server_rec;
 typedef struct request_rec request_rec;
+typedef struct listen_rec listen_rec;
 
 struct request_rec {
 
@@ -255,12 +305,18 @@ struct request_rec {
 				 * pointer back to the main request.
 				 */
 
+  request_rec *back;		/* If this is part of a persistent con-
+				 * nection (Keep-Alive), pointer to the
+				 * previous one.
+				 */
+
   /* Info about the request itself... we begin with stuff that only
    * protocol.c should ever touch...
    */
   
   char *the_request;		/* First line of request, so we can log it */
   int assbackwards;		/* HTTP/0.9, "simple" request */
+  int proxyreq;                 /* A proxy request */
   int header_only;		/* HEAD request, as opposed to GET */
   char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */
   
@@ -304,8 +360,9 @@ struct request_rec {
   /* What object is being requested (either directly, or via include
    * or content-negotiation mapping).
    */
-  
-  char *uri;
+
+  char *uri;                    /* complete URI for a proxy req, or
+                                   URL path for a non-proxy req */
   char *filename;
   char *path_info;
   char *args;			/* QUERY_ARGS, if any */
@@ -318,7 +375,14 @@ struct request_rec {
   
   void *per_dir_config;		/* Options set in config files, etc. */
   void *request_config;		/* Notes on *this* request */
-  
+
+/*
+ * a linked list of the configuration directives in the .htaccess files
+ * accessed by this request.
+ * N.B. always add to the head of the list, _never_ to the end.
+ * that way, a sub request's list can (temporarily) point to a parent's list
+ */
+  const struct htaccess_result *htaccess;
 };
 
 
@@ -350,6 +414,10 @@ struct conn_rec {
 				 * that there's only one user per connection(!)
 				 */
   char *auth_type;		/* Ditto. */
+
+  int keepalive;		/* Are we using HTTP Keep-Alive? */
+  int keptalive;		/* Did we use HTTP Keep-Alive? */
+  int keepalives;		/* How many times have we used it? */
 };
 
 /* Per-vhost config... */
@@ -367,6 +435,7 @@ struct server_rec {
   
   char *server_admin;
   char *server_hostname;
+  short port;                    /* for redirects, etc. */
   
   /* Log files --- note that transfer log is now in the modules... */
   
@@ -375,6 +444,7 @@ struct server_rec {
   
   /* Module-specific configuration for server, and defaults... */
 
+  int is_virtual;               /* true if this is the virtual server */
   void *module_config;		/* Config vector containing pointers to
 				 * modules' per-server config structures.
 				 */
@@ -382,18 +452,29 @@ struct server_rec {
 				 * checking per-directory info.
 				 */
   /* Transaction handling */
+  short hostname_lookups;
 
-  short port;
-  struct in_addr host_addr;	/* Specific address, if "virtual" server */
+  struct in_addr host_addr;	/* The bound address, for this server */
+  short host_port;              /* The bound port, for this server */
   int timeout;			/* Timeout, in seconds, before we give up */
+  int keep_alive_timeout;	/* Seconds we'll wait for another request */
+  int keep_alive;		/* Maximum requests per connection */
   int do_rfc931;		/* See if client is advertising a username? */
   
+};
+
+/* These are more like real hosts than virtual hosts */
+struct listen_rec {
+    listen_rec *next;
+    struct sockaddr_in local_addr; /* local IP address and port */
+/* more stuff here, like which protocol is bound to the port */
 };
 
 /* Prototypes for utilities... util.c.
  */
 
 /* Time */
+extern const char month_snames[12][4];
 
 struct tm *get_gmtoff(long *tz);
 char *get_time();
@@ -412,6 +493,7 @@ void getparents(char *name);
 char *escape_path_segment(pool *p, const char *s);
 char *os_escape_path(pool *p,const char *path);
 char *escape_uri (pool *p, char *s);
+extern char *escape_html(pool *p, const char *s);
 char *construct_url (pool *p, char *path, server_rec *s);     
 char *escape_shell_cmd (pool *p, char *s);
      
@@ -439,7 +521,7 @@ void chdir_file(char *file);
      
 char *get_local_host(pool *);
 struct in_addr get_local_addr (int sd);
-unsigned long get_virthost_addr (char *hostname, int wild_allowed);
+unsigned long get_virthost_addr (char *hostname, short int *port);
 void get_remote_host(conn_rec *conn);
 int get_portnum(int sd);
      

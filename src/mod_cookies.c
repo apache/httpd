@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -114,7 +114,13 @@ int spot_cookie(request_rec *r)
 }
 
 static int cookie_flags = ( O_WRONLY | O_APPEND | O_CREAT );
+
+#ifdef __EMX__
+/* OS/2 lacks support for users and groups */
+static mode_t cookie_mode = ( S_IREAD | S_IWRITE );
+#else
 static mode_t cookie_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
+#endif
 
 typedef struct {
     char *fname;
@@ -153,7 +159,13 @@ void open_cookie_log (server_rec *s, pool *p)
     char *fname = server_root_relative (p, cls->fname);
 
     if (cls->log_fd > 0) return; 
-    cls->log_fd = popenf(p, fname, cookie_flags, cookie_mode);
+    if(*cls->fname != '\0') {
+      if((cls->log_fd = popenf(p, fname, cookie_flags, cookie_mode)) < 0) {
+	fprintf(stderr, "httpd: could not open cookie log file %s.\n", fname);
+	perror("open");
+	exit(1);
+      }
+    }
 }
 
 void init_cookie_log (server_rec *s, pool *p)
@@ -165,7 +177,7 @@ int cookie_log_transaction(request_rec *orig)
 {
     cookie_log_state *cls = get_module_config (orig->server->module_config,
                            &cookies_module);
-    char str[HUGE_STRING_LEN];
+    char *str;
     long timz;
     struct tm *t;
     char tstr[MAX_STRING_LEN],sign;
@@ -174,8 +186,8 @@ int cookie_log_transaction(request_rec *orig)
 
     for (r = orig; r->next; r = r->next)
         continue;
-    if ((cls->log_fd)<0)	/* Don't log cookies */
-	return DECLINED;
+    if (*cls->fname == '\0')	/* Don't log cookies */
+      return DECLINED;
 
     if (!(cookie = table_get (r->headers_in, "Cookie")))
         return DECLINED;    /* Theres no cookie, don't bother logging */
@@ -186,21 +198,16 @@ int cookie_log_transaction(request_rec *orig)
     if(timz < 0) 
         timz = -timz;
 
-    strftime(tstr,MAX_STRING_LEN,"%d/%b/%Y:%H:%M:%S",t);
-
-    sprintf(str,"%s \"%s\" [%s %c%02ld%02ld] ",
-	    cookie+2,		/* Ignore s= */
-	    orig->the_request,
-            tstr,
-            sign,
-            timz/3600,
-            timz%3600);
-    
+    strftime(tstr,MAX_STRING_LEN,"\" [%d/%b/%Y:%H:%M:%S ",t);
     if (r->status != -1)
-        sprintf(str,"%s%d\n",str,r->status);
-    else
-        strcat(str,"-\n");
+	sprintf(&tstr[strlen(tstr)], "%c%02ld%02ld] %d\n", sign, timz/3600,
+		timz%3600, r->status);
+	sprintf(&tstr[strlen(tstr)], "%c%02ld%02ld] -\n", sign, timz/3600,
+		timz%3600);
 
+/* ignore s= on cookie */
+    str = pstrcat(orig->pool, cookie + 2, " \"", orig->the_request, tstr, NULL);
+    
     write(cls->log_fd, str, strlen(str));
 
     return OK;

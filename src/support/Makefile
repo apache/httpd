@@ -10,13 +10,18 @@ CFLAGS= -g
 # For SCO ODT
 #EXTRA_LIBS= -lcrypt_i
 
+INCLUDES= -I../src
+
 RM= /bin/rm -f
 #--- You shouldn't have to edit anything else. ---
 
 .c.o: 
-	$(CC) -c $(CFLAGS) $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $<
 
-all: htpasswd unescape inc2shtml
+all: htpasswd unescape inc2shtml httpd_monitor
+
+aux: $(OBJS)
+	make all CC=gcc CFLAGS=-O2
 
 ibm: $(OBJS)
 	make all CC=gcc
@@ -48,6 +53,9 @@ unescape: unescape.c
 inc2shtml: inc2shtml.c
 	$(CC) $(CFLAGS) inc2shtml.c -o inc2shtml
 	
+httpd_monitor: httpd_monitor.c
+	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
+	
 clean:
-	rm -f htpasswd unescape inc2shtml
+	rm -f htpasswd unescape inc2shtml httpd_monitor
 

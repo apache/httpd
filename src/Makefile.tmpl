@@ -4,7 +4,8 @@
 # by the configure script to make the actual Makefile.
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
-  http_log.o http_protocol.o rfc931.o util.o util_script.o modules.o $(MODULES)
+  http_log.o http_protocol.o rfc931.o util.o util_script.o modules.o buff.o\
+  md5c.o $(MODULES)
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $<
@@ -44,13 +45,19 @@ mod_dld.o: http_conf_globals.h
 mod_ai_backcompat.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
 mod_imap.o mod_include.o mod_negotiation.o: http_core.h
 mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
-mod_imap.o mod_include.o mod_negotiation.o: http_log.h
-mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: http_main.h
-mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_protocol.h
+mod_proxy.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
+mod_proxy.o mod_asis.o mod_cgi.o mod_dir.o mod_imap.o: http_main.h
+mod_include.o: http_main.h
+mod_proxy.o mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h
+mod_dir.o: http_protocol.h
 mod_imap.o mod_include.o: http_protocol.h
 mod_cgi.o mod_dir.o mod_imap.o mod_include.o mod_negotiation.o: http_request.h
+mod_proxy.o: buff.h
+mod_proxy.o: md5.h
 mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: util_script.h
 
 #Utils
+buff.o: buff.h
+md5c.o: md5.h
 util.o: http_conf_globals.h
 util_script.o: http_core.h http_main.h http_protocol.h util_script.h

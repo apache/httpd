@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -116,7 +116,12 @@ int translate_userdir (request_rec *r)
 	 */
 	
 	if (dname[-1] == '/') --dname;
-	r->filename = pstrcat (r->pool, pw->pw_dir, "/", userdir, dname, NULL);
+#ifdef __EMX__
+    /* Need to manually add user name for OS/2. */
+    r->filename = pstrcat (r->pool, pw->pw_dir, w, "/", userdir, dname, NULL);
+#else
+    r->filename = pstrcat (r->pool, pw->pw_dir, "/", userdir, dname, NULL);
+#endif    
 
 	return OK;
     }

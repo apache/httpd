@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -526,7 +526,12 @@ cmd_parms default_parms = { NULL, 0, -1, NULL, 0, NULL, NULL, NULL, NULL };
 
 char *server_root_relative (pool *p, char *file)
 {
+#ifdef __EMX__
+    /* Add support for OS/2 drive names */
+    if ((file[0] == '/') || (file[1] == ':')) return file;
+#else
     if (file[0] == '/') return file;
+#endif    
     return make_full_path (p, server_root, file);
 }
 
@@ -575,6 +580,17 @@ int parse_htaccess(void **result, request_rec *r, int override,
     FILE *f;
     cmd_parms parms;
     char *errmsg;
+    const struct htaccess_result *cache;
+    struct htaccess_result *new;
+    void *dc;
+
+/* firstly, search cache */
+    for (cache=r->htaccess; cache != NULL; cache=cache->next)
+	if (cache->override == override && strcmp(cache->dir, d) == 0)
+	{
+	    if (cache->htaccess != NULL) *result = cache->htaccess;
+	    return OK;
+	}
 
     parms = default_parms;
     parms.override = override;
@@ -584,7 +600,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
     parms.path = d;
 
     if((f=pfopen(r->pool, filename, "r"))) {
-        void *dc = create_per_dir_config (r->pool);
+        dc = create_per_dir_config (r->pool);
 	
         parms.infile = f;
 	parms.config_file = filename;
@@ -599,10 +615,19 @@ int parse_htaccess(void **result, request_rec *r, int override,
 	}
 	
 	*result = dc;
-	return OK;
-    }
-    else
-        return OK;
+    } else
+	dc = NULL;
+
+/* cache it */
+    new = palloc(r->pool, sizeof(struct htaccess_result));
+    new->dir = pstrdup(r->pool, d);
+    new->override = override;
+    new->htaccess = dc;
+/* add to head of list */
+    new->next = r->htaccess;
+    r->htaccess = new;
+
+    return OK;
 }
 
 /*****************************************************************
@@ -626,7 +651,7 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     }
 #endif
 
-    s->port = 0;
+    s->hostname_lookups = 2;  /* binary, but will use 2 as an "unset = on" */
     s->server_admin = NULL;
     s->server_hostname = NULL; 
     s->error_fname = NULL;
@@ -634,7 +659,8 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     s->access_confname = NULL;
     s->timeout = 0;
     s->do_rfc931 = 0;
-    s->host_addr.s_addr = get_virthost_addr (hostname, 0);
+    s->host_addr.s_addr = get_virthost_addr (hostname, &s->host_port);
+    s->port = s->host_port;  /* set them the same, by default */
     s->next = NULL;
 
     s->module_config = create_empty_config (p);
@@ -645,7 +671,7 @@ server_rec *init_virtual_host (pool *p, char *hostname)
 
 int is_virtual_server (server_rec *s)
 {
-    return s->host_addr.s_addr != htonl (INADDR_ANY);
+    return s->is_virtual;
 }
 
 void fixup_virtual_hosts (pool *p, server_rec *main_server)
@@ -663,6 +689,9 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 	if (virt->port == 0)
 	    virt->port = main_server->port;
 
+	if (virt->hostname_lookups == 2)
+	    virt->hostname_lookups = main_server->hostname_lookups;
+	    
 	if (virt->server_admin == NULL)
 	    virt->server_admin = main_server->server_admin;
 
@@ -698,8 +727,10 @@ void init_config_globals (pool *p)
     daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
     daemons_limit = DEFAULT_SERVER_LIMIT;
     pid_fname = DEFAULT_PIDLOG;
+    scoreboard_fname = DEFAULT_SCOREBOARD;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     bind_address.s_addr = htonl(INADDR_ANY);
+    listeners = NULL;
 }
 
 server_rec *init_server_config(pool *p)
@@ -707,18 +738,22 @@ server_rec *init_server_config(pool *p)
     server_rec *s = (server_rec *)pcalloc (p, sizeof (server_rec));
 
     s->port = DEFAULT_PORT;
+    s->hostname_lookups = 1;
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL; 
     s->error_fname = DEFAULT_ERRORLOG;
     s->srm_confname = RESOURCE_CONFIG_FILE;
     s->access_confname = ACCESS_CONFIG_FILE;
     s->timeout = DEFAULT_TIMEOUT;
+    s->keep_alive_timeout = DEFAULT_KEEPALIVE_TIMEOUT;
+    s->keep_alive = DEFAULT_KEEPALIVE;
     s->do_rfc931 = DEFAULT_RFC931;
     s->next = NULL;
     s->host_addr.s_addr = htonl (INADDR_ANY); /* NOT virtual host;
 					       * don't match any real network
 					       * interface.
 					       */
+    s->host_port = 0; /* matches any port */
 
     s->module_config = create_server_config (p, s);
     s->lookup_defaults = create_default_per_dir_config (p);

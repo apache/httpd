@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -92,6 +92,11 @@ int check_symlinks (char *d, int opts)
     char *lastp;
     int res;
   
+#ifdef __EMX__
+    /* OS/2 dosen't have symlinks */
+    return OK;
+#else
+  
     if (opts & OPT_SYM_LINKS) return OK;
 
     /* Strip trailing '/', if any, off what we're checking; trailing
@@ -126,6 +131,8 @@ int check_symlinks (char *d, int opts)
     if (stat (d, &fi) < 0) return FORBIDDEN;
     
     return (fi.st_uid == lfi.st_uid) ? OK : FORBIDDEN;
+
+#endif    
 }
     
 /* Dealing with the file system to get PATH_INFO
@@ -201,6 +208,44 @@ int directory_walk (request_rec *r)
      * save us a call to get_path_info (with the attendant stat()s); however,
      * for the moment, that's not worth the trouble.
      */
+
+    if (test_filename[0] != '/')
+    {
+/* fake filenames only match Directory sections */
+        void *this_conf, *entry_config;
+        core_dir_config *entry_core;
+	char *entry_dir;
+	int j;
+
+/* 
+ * we apply the directive sections in some order; should really try them
+ * with the most general first.
+ */
+	for (j = 0; j < num_sec; ++j) {
+
+	    entry_config = sec[j];
+	    if (!entry_config) continue;
+	    
+	    entry_core =(core_dir_config *)
+		get_module_config(entry_config, &core_module);
+	    entry_dir = entry_core->d;
+
+	    this_conf = NULL;
+	    if (is_matchexp(entry_dir))
+		if (strcmp_match(test_filename, entry_dir) == 0)
+		    this_conf = entry_config;
+	    else if (strcmp (test_filename, entry_dir) == 0)
+	        this_conf = entry_config;
+
+	    if (this_conf)
+		per_dir_defaults = merge_per_dir_configs (r->pool,
+					   per_dir_defaults, this_conf);
+	}
+
+	r->per_dir_config = per_dir_defaults;
+
+	return OK;
+    }
 
     no2slash (test_filename);
     num_dirs = count_dirs(test_filename);
@@ -366,6 +411,7 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
     rnew->connection = r->connection; 
     rnew->server = r->server;
     rnew->request_config = create_request_config (rnew->pool);
+    rnew->htaccess = r->htaccess; /* copy htaccess cache */
     set_sub_req_protocol (rnew, r);
 	
     if (new_file[0] == '/')
@@ -397,9 +443,7 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
      * However, we'd need to test that the old and new filenames contain the
      * same directory components, so it would require duplicating the start
      * of translate_name.
-     * Maybe it would be easier to implement a cache for directory and
-     * .htaccess stats, or perhaps pass the old request to translate_name()
-     * for it to do the optimisation.
+     * Instead we rely on the cache of .htaccess results.
      */
     
     if ((res = directory_walk (rnew))
@@ -436,6 +480,7 @@ request_rec *sub_req_lookup_file (char *new_file, request_rec *r)
     rnew->connection = r->connection; /* For now... */
     rnew->server = r->server;
     rnew->request_config = create_request_config (rnew->pool);
+    rnew->htaccess = r->htaccess; /* copy htaccess cache */
     set_sub_req_protocol (rnew, r);
 	
     rnew->uri = "INTERNALLY GENERATED file-relative req";
@@ -564,15 +609,18 @@ void process_request_internal (request_rec *r)
 	die (BAD_REQUEST, r);
 	return;
     }
-    
-    access_status = unescape_url(r->uri);
-    if (access_status)
-    {
-	die(access_status, r);
-	return;
-    }
 
-    getparents(r->uri);		/* OK --- shrinking transformations... */
+    if (!r->proxyreq)
+    {
+	access_status = unescape_url(r->uri);
+	if (access_status)
+	{
+	    die(access_status, r);
+	    return;
+	}
+
+	getparents(r->uri);	/* OK --- shrinking transformations... */
+    }
 
     if ((access_status = translate_name (r))) {
         decl_die (access_status, "translate", r);
@@ -678,6 +726,7 @@ void internal_redirect (char *new_uri, request_rec *r)
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env = rename_original_env (r->pool, r->subprocess_env);
     new->notes = make_table (r->pool, 5);
+    new->htaccess = r->htaccess; /* copy .htaccess cache */
     
     new->no_cache = r->no_cache; /* If we've already made up our minds
 				  * about this, don't change 'em back!

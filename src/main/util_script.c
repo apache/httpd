@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -239,7 +239,7 @@ int scan_script_header(request_rec *r, FILE *f)
             r->status_line = pstrdup(r->pool, l);
         }
         else {
-	    table_set (r->headers_out, w, l);
+	    table_merge (r->headers_out, w, l);
         }
     }
 }
@@ -256,4 +256,33 @@ void send_size(size_t size, request_rec *r) {
     else
         rprintf(r, "%4dM", size / 1048576);
 }
+
+#ifdef __EMX__
+char **create_argv_cmd(pool *p, char *av0, char *args, char *path) {
+    register int x,n;
+    char **av;
+    char *w;
+
+    for(x=0,n=2;args[x];x++)
+        if(args[x] == '+') ++n;
+
+    /* Add extra strings to array. */
+    n = n + 2;
+
+    av = (char **)palloc(p, (n+1)*sizeof(char *));
+    av[0] = av0;
+
+    /* Now insert the extra strings we made room for above. */
+    av[1] = strdup("/C");
+    av[2] = strdup(path);
+
+    for(x=(1+2);x<n;x++) {
+        w = getword(p, &args, '+');
+        unescape_url(w);
+        av[x] = escape_shell_cmd(p, w);
+    }
+    av[n] = NULL;
+    return av;
+}
+#endif
 

@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -63,11 +63,15 @@
 /* Define one of these according to your system. */
 #if defined(SUNOS4)
 #define HAS_GMTOFF
+#define HAVE_RESOURCE 1
 #undef NO_KILLPG
 #undef NO_SETSID
 char *crypt(char *pw, char *salt);
 #define JMP_BUF sigjmp_buf
-     
+#define HAVE_MMAP
+#include <sys/time.h>     
+#define NEED_STRERROR
+
 #elif defined(SOLARIS2)
 #undef HAS_GMTOFF
 #define NO_KILLPG
@@ -77,6 +81,7 @@ char *crypt(char *pw, char *salt);
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define JMP_BUF sigjmp_buf
 #define FCNTL_SERIALIZED_ACCEPT
+#define HAVE_MMAP
 
 #elif defined(IRIX)
 #undef HAS_GMTOFF
@@ -86,6 +91,7 @@ char *crypt(char *pw, char *salt);
 #define FCNTL_SERIALIZED_ACCEPT
  
 #elif defined(HPUX)
+#define HAVE_RESOURCE 1
 #undef HAS_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
@@ -94,6 +100,7 @@ char *crypt(char *pw, char *salt);
 #endif
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define JMP_BUF sigjmp_buf
+#define HAVE_MMAP
 
 #elif defined(AIX)
 #undef HAS_GMTOFF
@@ -119,6 +126,7 @@ char *crypt(char *pw, char *salt);
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
+#define HAVE_MMAP
 
 #elif defined(SEQUENT)
 #define HAS_GMTOFF
@@ -179,6 +187,7 @@ typedef int pid_t;
 #undef NEED_STRDUP
 #define JMP_BUF sigjmp_buf
 #define FCNTL_SERIALIZED_ACCEPT
+#include <sys/time.h>     
 
 #elif defined(SCO)
 #undef HAS_GMTOFF
@@ -188,6 +197,11 @@ typedef int pid_t;
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1 /* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
+
+#elif defined(SCO5)
+
+#define JMP_BUF sigjmp_buf
+#define SIGURG SIGUSR1
 
 #elif defined(CONVEXOS)
 #define HAS_GMTOFF
@@ -241,12 +255,32 @@ typedef int pid_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
+#define HAVE_MMAP
 
 #elif defined(QNX)
 #undef NO_KILLPG
 #undef NO_SETSID
 #define NEED_INITGROUPS
 #define JMP_BUF sigjmp_buf
+
+#elif defined(LYNXOS)
+#undef NO_KILLPG
+#undef NO_SETSID
+#define NO_TIMEZONE
+#define NEED_STRCASECMP
+#define NEED_STRNCASECMP
+#define NEED_INITGROUPS
+#define JMP_BUF jmp_buf
+
+#elif defined(__EMX__)
+/* Defines required for EMX OS/2 port. */
+#define JMP_BUF sigjmp_buf
+#define NO_KILLPG
+#define NEED_STRCASECMP
+#define NEED_STRNCASECMP
+#define NO_SETSID
+/* Add some drive name support */
+#define chdir _chdir2
 
 /* Unknown system - Edit these to match */
 #else
@@ -318,6 +352,20 @@ typedef int pid_t;
 
 #if HAVE_RESOURCE
 #include <sys/resource.h>
+#ifdef SUNOS4
+int getrlimit( int, struct rlimit *);
+int setrlimit( int, struct rlimit *);
+#endif
+#endif
+#ifdef HAVE_MMAP
+#include <sys/mman.h>
+#endif
+#if !defined(MAP_ANON) && defined(MAP_ANONYMOUS)
+#define MAP_ANON MAP_ANONYMOUS
+#endif
+
+#if defined(HAVE_MMAP) && defined(NO_MMAP)
+#undef HAVE_MMAP
 #endif
 
 #ifndef LOGNAME_MAX

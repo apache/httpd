@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -425,7 +425,33 @@ int insert_readme(char *name, char *readme_fname, int rule, request_rec *r) {
     else if(rule) rprintf(r,"<HR>%c",LF);
     if(!(f = pfopen(r->pool,fn,"r")))
         return 0;
-    send_fd(f, r);
+    if (!plaintext)
+	send_fd(f, r);
+    else
+    {
+	char buf[IOBUFSIZE+1];
+	int i, n, c, ch;
+	while (!feof(f))
+	{
+	    do n = fread(buf, sizeof(char), IOBUFSIZE, f);
+	    while (n == -1 && ferror(f) && errno == EINTR);
+	    if (n == -1 || n == 0) break;
+	    buf[n] = '\0';
+	    c = 0;
+	    while (c < n)
+	    {
+		for (i=c; i < n; i++)
+		    if (buf[i] == '<' || buf[i] == '>' || buf[i] == '&') break;
+		ch = buf[i];
+		buf[i] = '\0';
+		rprintf(r, "%s", &buf[c]);
+		if (ch == '<') rprintf(r, "&lt;");
+		else if (ch == '>') rprintf(r, "&gt;");
+		else if (ch == '&') rprintf(r, "&amp;");
+		c = i + 1;
+	    }
+	}
+    }
     pfclose(r->pool, f);
     if(plaintext)
         rprintf(r,"</PRE>%c",LF);
@@ -461,39 +487,6 @@ char *find_title(request_rec *r) {
     }
     return NULL;
 }
-
-
-#ifdef NOTDEF
-
-/* The only call to this function anyplace is commented out in the base
- * code below.  It could be fixed along the same lines as the shell_escape
- * stuff in util.c, but for now, why bother?
- */
-
-void escape_html(char *fn) {
-    register int x,y;
-    char copy[MAX_STRING_LEN];
-
-    strcpy(copy,fn);
-    for(x=0,y=0;copy[y];x++,y++) {
-        if(copy[y] == '<') {
-            strcpy(&fn[x],"&lt;");
-            x+=3;
-        }
-        else if(copy[y] == '>') {
-            strcpy(&fn[x],"&gt;");
-            x+=3;
-        }
-        else if(copy[y] == '&') {
-            strcpy(&fn[x],"&amp;");
-            x+=4;
-        }
-        else
-            fn[x] = copy[y];
-    }
-    fn[x] = '\0';
-}
-#endif
 
 struct ent *make_dir_entry(char *name, int dir_opts,
 			   dir_config_rec *d, request_rec *r)
@@ -573,7 +566,7 @@ char *terminate_description(dir_config_rec *d, char *desc, int dir_opts) {
 void output_directories(struct ent **ar, int n,
 			dir_config_rec *d, request_rec *r, int dir_opts)
 {
-    int x;
+    int x, len;
     char *name = r->uri;
     char *tp;
     pool *scratch = make_sub_pool (r->pool);
@@ -583,7 +576,8 @@ void output_directories(struct ent **ar, int n,
     if(dir_opts & FANCY_INDEXING) {
         rprintf (r, "<PRE>");
         if((tp = find_default_icon(d,"^^BLANKICON^^")))
-            rprintf(r, "<IMG SRC=\"%s\" ALT=\"     \"> ", tp);
+            rprintf(r, "<IMG SRC=\"%s\" ALT=\"     \"> ",
+		    escape_html(scratch, tp));
         rprintf (r, "Name                   ");
         if(!(dir_opts & SUPPRESS_LAST_MOD))
             rprintf(r, "Last modified     ");
@@ -606,21 +600,30 @@ void output_directories(struct ent **ar, int n,
             char *t = make_full_path (scratch, name, "../");
             getparents(t);
             if(t[0] == '\0') t = "/";
-	    anchor = pstrcat (scratch, "<A HREF=\"", os_escape_path(scratch, t),
+	    anchor = pstrcat (scratch, "<A HREF=\"",
+			      escape_html(scratch, os_escape_path(scratch, t)),
 			      "\">", NULL);
-	    t2 = "Parent Directory</A>";
+	    t2 = "Parent Directory</A>       ";
         }
         else {
 	    t = ar[x]->name;
-	    t2 = pstrdup(scratch, t);
-            if(strlen(t2) > 21) {
-                t2[21] = '\0';
-		t2 = pstrcat (scratch, t2, "</A>..", NULL);
+	    len = strlen(t);
+            if(len > 23) {
+		t2 = pstrdup(scratch, t);
+		t2[21] = '.';
+		t2[22] = '.';
+                t2[23] = '\0';
+		t2 = escape_html(scratch, t2);
+		t2 = pstrcat(scratch, t2, "</A>", NULL);
             } else 
-            /* screws up formatting, but some need it. should fix. */
-	    /* escape_html(t2); */
-            t2 = pstrcat(scratch, t2, "</A>", NULL);
-	    anchor = pstrcat (scratch, "<A HREF=\"", os_escape_path(scratch, t),
+	    {
+		char buff[23]="                       ";
+		t2 = escape_html(scratch, t);
+		buff[23-len] = '\0';
+		t2 = pstrcat(scratch, t2, "</A>", buff, NULL);
+	    }
+	    anchor = pstrcat (scratch, "<A HREF=\"",
+			      escape_html(scratch, os_escape_path(scratch, t)),
 			      "\">", NULL);
         }
 
@@ -629,13 +632,14 @@ void output_directories(struct ent **ar, int n,
                 rprintf (r,"%s",anchor);
             if((ar[x]->icon) || d->default_icon) {
                 rprintf(r, "<IMG SRC=\"%s\" ALT=\"[%s]\">",
-			ar[x]->icon ? ar[x]->icon : d->default_icon,
+			escape_html(scratch, ar[x]->icon ?
+				    ar[x]->icon : d->default_icon),
 			ar[x]->alt ? ar[x]->alt : "   ");
             }
             if(dir_opts & ICONS_ARE_LINKS) 
                 rprintf (r, "</A>");
 
-            rprintf(r," %s%-27.29s", anchor, t2);
+            rprintf(r," %s%s", anchor, t2);
             if(!(dir_opts & SUPPRESS_LAST_MOD)) {
                 if(ar[x]->lm != -1) {
 		    char time[MAX_STRING_LEN];
@@ -679,7 +683,7 @@ int dsortf(struct ent **s1,struct ent **s2)
     
 int index_directory(request_rec *r, dir_config_rec *dir_conf)
 {
-    char *title_name = pstrdup (r->pool, r->uri);
+    char *title_name = escape_html(r->pool, r->uri);
     char *title_endp;
     char *name = r->filename;
     
@@ -768,7 +772,14 @@ int handle_dir (request_rec *r)
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
     
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri)-1] != '/') {
-        char* ifile = pstrcat (r->pool, r->uri, "/", NULL);
+	char* ifile;
+	if (r->args != NULL)
+        	ifile = pstrcat (r->pool, escape_uri(r->pool, r->uri),
+			"/", "?", r->args, NULL);
+	else
+        	ifile = pstrcat (r->pool, escape_uri(r->pool, r->uri),
+			 "/", NULL);
+
 	table_set (r->headers_out, "Location",
 		   construct_url(r->pool, ifile, r->server));
 	return REDIRECT;
@@ -787,7 +798,13 @@ int handle_dir (request_rec *r)
 	request_rec *rr = sub_req_lookup_uri (name_ptr, r);
            
 	if (rr->status == 200 && rr->finfo.st_mode != 0) {
-            char *new_uri = escape_uri(r->pool, rr->uri);
+	    char* new_uri = escape_uri(r->pool, rr->uri);
+
+	    if (rr->args != NULL)
+		new_uri = pstrcat(r->pool, new_uri, "?", rr->args, NULL);
+	    else if (r->args != NULL)
+		new_uri = pstrcat(r->pool, new_uri, "?", r->args, NULL);
+	
 	    destroy_sub_req (rr);
 	    internal_redirect (new_uri, r);
 	    return OK;

@@ -1,3 +1,143 @@
+Changes with Apache 1.1b0
+
+  *) Use mmap() to allocated shared memory for the scoreboard on
+     Solaris, SunOS, Digital UNIX, BSDI and HP/UX. It should work on
+     most of the other architectures. [David Robinson]
+
+  *) Cache the contents of .htaccess file for the duration of a request.
+     [David Robinson]
+
+  *) Avoid use of strftime() whilst processing request. [David Robinson]
+
+  *) Add the ability to have media type-based CGI script actions,
+     as well as an example and relevent srm.conf entries. [Alexei Kosut]
+
+  *) Update to the icon set, and apache_pb (Powered by Apache!) logo
+     added [Alexei Kosut]
+
+  *) Added an extra variable for use in mod_include: FILE_OWNER
+     which contains the owner of the file.  [Nick Williams]
+
+  *)  Adds support for Keep-Alive persistent connections, as defined
+      in the HTTP/1.1 draft and implemented by several existing browsers
+      and servers. [Alexei Kosut and Rob Hartill]
+
+  *) "HostnameLookups" is a new httpd.conf setting (on/off) to make obsolete
+     -DMINIMAL_DNS and enable name lookups to be switched
+     on/off without recompiling Apache. [Rob Hartill]
+
+  *) Allows Redirect entries in .htaccess files, allowing users to
+     add their own redirects without using CGI scripts, asis files, or
+     access to the main server conf file. [Alexei Kosut]
+
+  *) Scoreboard monitor program (C version) in support/ directory
+     [Jim Jagielski]
+
+  *) A module to implement a caching HTTP and FTP proxy server
+     [David Robinson]
+
+  *) Adds OS/2 support [Garey Smiley]
+
+  *) Add Listen directive, causing Apache to bind to the address and
+     port specified. Allow <VirtualHost *>, <VirtualHost *:port>,
+     VirtualHost addr:*> syntaxes [David Robinson]
+
+  *) Allow anonymous HTTP logins [Dirk van Gulik]
+
+  *) Authentication using Berkeley DB [Andrew Cohen]
+
+  *) Authentication using mSQL [Dirk van Gulik]
+
+  *) Emulate the CERN HTTPD metafile semantics, allowing the ability
+     to manipulate HTTP headers for individual files. [Andrew Wilson[
+
+Changes with Apache 1.0.3
+
+  *) Internal redirects which occur in mod_dir.c now preserve the
+     query portion of a request (the bit after the question mark).
+     [Adam Sussman]
+
+  *) Escape active characters '<', '>' and '&' in html output in
+     directory listings, error messages and redirection links.
+     [David Robinson]
+
+  *) Apache will now work with LynxOS 2.3 and later [Steven Watt]
+
+  *) Fix for POSIX compliance in waiting for processes in alloc.c.
+     [Nick Williams]
+
+  *) setsockopt no longer takes a const declared argument [Martijn Koster]
+
+  *) Reset timeout timer after each successful fwrite() to the network.
+     This patch adds a reset_timeout() procedure that is called by
+     send_fd() to reset the timeout ever time data is written to the net.
+     [Nathan Schrenk]
+
+  *) timeout() signal handler now checks for SIGPIPE and reports
+     lost connections in a more user friendly way. [Rob Hartill]
+
+  *) Location of the "scoreboard" file which used to live in /tmp is
+     now configurable (for OSes that can't use mmap) via ScoreBoardFile
+     which works similar to PidFile (in httpd.conf) [Rob Hartill]
+
+  *) Include sys/resource.h in the correct place for SunOS4 [Samerr Parekh]
+
+  *) the pstrcat call in mod_cookies.c didn't have an ending NULL,
+     which caused a SEGV with cookies enabled
+
+  *) Output warning when MinSpareServers is set to <= 0 and change it to 1
+     [Rob Hartill]
+
+  *) Log the UNIX textual error returned by some system calls, in
+     particular errors from accept() [David Robinson]
+
+  *) Add strerror function to util.c for SunOS4 [Randy Terbush]
+
+Changes with Apache 1.0.2
+
+  *) patch to get Apache compiled on UnixWare 2.x, recommended as 
+     a temporary measure, pending rewrite of rfc931.c. [Chuck Murcko]
+
+  *) Fix get_basic_auth_pw() to set the auth_type of the request.
+     [David Robinson]
+
+  *) past changes to http_config.c to only use the 
+     setrlimit function on systems defining RLIMIT_NOFILE
+     broke the feature on SUNOS4. Now defines HAVE_RESOURCE
+     for SUNOS and prototypes the needed functions.
+
+  *) Remove uses of MAX_STRING_LEN/HUGE_STRING_LEN from several routines.
+     [David Robinson]
+
+  *) Fix use of pointer to scratch memory. [Cliff Skolnick]
+
+  *) Merge multiple headers from CGI scripts instead of taking last
+     one. [David Robinson]
+
+  *) Add support for SCO 5. [Ben Laurie]
+
+Changes with Apache 1.0.1
+
+  *) Silence mod_log_referer and mod_log_agent if not configured
+     [Randy Terbush]
+
+  *) Recursive includes can occur if the client supplies PATH_INFO data
+     and the server provider uses relative links; as file.html
+     relative to /doc.shtml/pathinfo is /doc.shtml/file.html. [David Robinson]
+
+  *) The replacement for initgroups() did not call {set,end}grent(). This
+     had two implications: if anything else used getgrent(), then
+     initgroups() would fail, and it was consuming a file descriptor.
+     [Ben Laurie]
+
+  *) On heavily loaded servers it was possible for the scoreboard to get 
+     out of sync with reality, as a result of a race condition.
+     The observed symptoms are far more Apaches running than should
+     be, and heavy system loads, generally followed by catastrophic
+     system failure. [Ben Laurie]
+
+  *) Fix typo in licence. [David Robinson]
+
 Changes with Apache 1.0.0
 
   *) 'dbmmanage' script now takes fourth command-line argument, which is

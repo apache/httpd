@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -59,7 +59,13 @@
 module common_log_module;
 
 static int xfer_flags = ( O_WRONLY | O_APPEND | O_CREAT );
+
+#ifdef __EMX__
+/* OS/2 lacks support for users and groups */
+static mode_t xfer_mode = ( S_IREAD | S_IWRITE );
+#else
 static mode_t xfer_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
+#endif
 
 typedef struct {
     char *fname;
@@ -145,10 +151,10 @@ int common_log_transaction(request_rec *orig)
     common_log_state *cls = get_module_config (orig->server->module_config,
 					       &common_log_module);
   
-    char str[HUGE_STRING_LEN];
+    char *str;
     long timz;
     struct tm *t;
-    char tstr[MAX_STRING_LEN],sign;
+    char tstr[MAX_STRING_LEN], status[MAX_STRING_LEN], sign;
     conn_rec *c = orig->connection;
     request_rec *r;
 
@@ -167,28 +173,26 @@ int common_log_transaction(request_rec *orig)
     if(timz < 0) 
         timz = -timz;
 
-    strftime(tstr,MAX_STRING_LEN,"%d/%b/%Y:%H:%M:%S",t);
+    sprintf(tstr, " [%.2d/%s/%d:%.2d:%.2d:%.2d %c%02ld%02ld] \"", t->tm_mday,
+	    month_snames[t->tm_mon], t->tm_year + 1900, t->tm_hour, t->tm_min,
+	    t->tm_sec, sign, timz/3600, timz%3600);
 
-    sprintf(str,"%s %s %s [%s %c%02ld%02ld] \"%s\" ",
-            c->remote_name,
-            (c->remote_logname ? c->remote_logname : "-"),
-	    (c->user ? c->user : "-"),
-            tstr,
-            sign,
-            timz/3600,
-            timz%3600,
-            (orig->the_request ? orig->the_request : "NULL") );
-    
-    if (r->status != -1)
-        sprintf(str,"%s%d ",str,r->status);
-    else
-        strcat(str,"- ");
+    if (r->status != -1) sprintf(status,"%d ", r->status);
+    else                 strcpy(status, "- ");
 
     if(r->bytes_sent != -1)
-        sprintf(str,"%s%d\n",str,r->bytes_sent);
+	sprintf(&status[strlen(status)], "%d\n", r->bytes_sent);
     else
-        strcat(str,"-\n");
+        strcat(status, "-\n");
 
+    str = pstrcat(orig->pool, c->remote_name, " ",
+		  (c->remote_logname != NULL ? c->remote_logname : "-"),
+		  " ",
+		  (c->user != NULL ? c->user : "-"),
+		  tstr, 
+		  (orig->the_request != NULL ? orig->the_request : "NULL"), 
+		  "\" ", status, NULL);
+    
     write(cls->log_fd, str, strlen(str));
 
     return OK;

@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -155,7 +155,12 @@ void cgi_child (void *child_stuff)
     int nph = cld->nph;
 
 #ifdef DEBUG_CGI    
+#ifdef __EMX__
+    /* Under OS/2 need to use device con. */
+    FILE *dbg = fopen ("con", "w");
+#else    
     FILE *dbg = fopen ("/dev/tty", "w");
+#endif    
     int i;
 #endif
     
@@ -177,7 +182,10 @@ void cgi_child (void *child_stuff)
     
     chdir_file (r->filename);
     error_log2stderr (r->server);
+
+    #ifndef __EMX__
     if (nph) client_to_stdout (r->connection);
+    #endif    
     
     /* Transumute outselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
@@ -185,10 +193,48 @@ void cgi_child (void *child_stuff)
     
     cleanup_for_exec();
     
+#ifdef __EMX__    
+    if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) {
+            int emxloop;
+            char *emxtemp;
+
+            /* For OS/2 place the variables in the current
+            enviornment then it will be inherited. This way
+            the program will also get all of OS/2's other SETs. */
+            for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
+                putenv(emxtemp);
+                
+            if (strstr(strupr(r->filename), ".CMD") > 0) {
+                /* Special case to allow use of REXX commands as scripts. */
+                os2pathname(r->filename);
+                execl("CMD.EXE", "CMD.EXE", "/C", r->filename, NULL);
+            } else {
+                execl(r->filename, argv0, NULL);
+            }
+    } else {
+            int emxloop;
+            char *emxtemp;
+            
+            /* For OS/2 place the variables in the current
+            enviornment then it will be inherited. This way
+            the program will also get all of OS/2's other SETs. */
+            for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
+                putenv(emxtemp);
+                
+            if (strstr(strupr(r->filename), ".CMD") > 0) {
+                /* Special case to allow use of REXX commands as scripts. */
+                os2pathname(r->filename);
+                execv("CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename));
+            } else {
+                execv(r->filename, create_argv(r->pool, argv0, r->args));
+            }
+    }
+#else
     if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) 
         execle(r->filename, argv0, NULL, env);
     else 
         execve(r->filename, create_argv(r->pool, argv0, r->args), env);
+#endif        
 
     /* Uh oh.  Still here.  Where's the kaboom?  There was supposed to be an
      * EARTH-shattering kaboom!
@@ -254,12 +300,36 @@ int cgi_handler (request_rec *r)
     add_common_vars (r);
     cld.argv0 = argv0; cld.r = r; cld.nph = nph;
     
-    if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
+#ifdef __EMX__
+    if (r->method_number == M_POST || r->method_number == M_PUT) {
+        int len_to_read = atoi (lenp);
+    
+        if (len_to_read > HUGE_STRING_LEN) len_to_read = HUGE_STRING_LEN;
+        read_client_block (r, argsbuffer, len_to_read);
+
+        if (!spawn_child_os2 (r->connection->pool, cgi_child, (void *)&cld,
+                  nph ? just_wait : kill_after_timeout, 
+                  &script_out, &script_in, argsbuffer, atoi(lenp))) { 
+            log_reason ("couldn't spawn child process", r->filename, r);
+            return SERVER_ERROR;
+        }
+    } else {
+        if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
+                  nph ? just_wait : kill_after_timeout,
+                  &script_out, &script_in)) {
+            log_reason ("couldn't spawn child process", r->filename, r);
+            return SERVER_ERROR;
+        }
+    }
+    
+#else
+     if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
 		      nph ? just_wait : kill_after_timeout,
 		      &script_out, nph ? NULL : &script_in)) {
         log_reason ("couldn't spawn child process", r->filename, r);
         return SERVER_ERROR;
     }
+#endif
 
     /* Transfer any put/post args, CERN style...
      * Note that if a buggy script fails to read everything we throw
@@ -270,6 +340,7 @@ int cgi_handler (request_rec *r)
      * spurious newline).
      */
     
+#ifndef __EMX__
     if (r->method_number == M_POST || r->method_number == M_PUT) {
         void (*handler)();
 	int remaining = atoi (lenp);
@@ -293,11 +364,11 @@ int cgi_handler (request_rec *r)
 	
 	kill_timeout (r);
     }
+#endif    
     
     pfclose (r->connection->pool, script_out);
     
     /* Handle script return... */
-    
     if (script_in && !nph) {
         char *location;
 	int ret;
@@ -331,6 +402,14 @@ int cgi_handler (request_rec *r)
 	kill_timeout (r);
 	pfclose (r->connection->pool, script_in);
     }
+
+#ifdef __EMX__
+    if (nph) {
+        while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL) {
+            fputs(argsbuffer, r->connection->client);
+        }
+    }    
+#endif
 
     return OK;			/* NOT r->status, even if it has changed. */
 }

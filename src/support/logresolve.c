@@ -1,13 +1,17 @@
 /***                                                                      ***\
 
-    logresolve 1.0
+    logresolve 1.1
 
     Tom Rathborne - tomr@uunet.ca - http://www.uunet.ca/~tomr/
     UUNET Canada, April 16, 1995
 
-    Usage: logresolve [arguments] < access_log > new_log
+    Rewritten by David Robinson. (drtr@ast.cam.ac.uk)
 
-    Arguments: if you give any arguments, statistics are printed to STDERR.
+    Usage: logresolve [-s filename] [-c] < access_log > new_log
+
+    Arguments:
+       -s filename     name of a file to record statistics
+       -c              check the DNS for a matching A record for the host.
 
     Notes:
 
@@ -28,24 +32,39 @@
 
     To minimize impact on your nameserver, logresolve has its very own
     internal hash-table cache. This means that each IP number will only
-    be looked up the first time it is found in the log file. As noted
-    above, giving any command-line arguments to logresolve (anything at
-    all!) will give you some statistics on the log file and the cache,
-    printed to STDERR.
+    be looked up the first time it is found in the log file.
+
+    The -c option causes logresolve to apply the same check as httpd
+    compiled with -DMAXIMUM_DNS; after finding the hostname from the IP
+    address, it looks up the IP addresses for the hostname and checks
+    that one of these matches the original address.
 
 \***                                                                      ***/
 
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <ctype.h>
 #include <netdb.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+static void cgethost(struct in_addr ipnum, char *string, int check);
+static int getline(char *s, int n);
+static void stats(FILE *output);
+
 
 /* maximum line length */
 #define MAXLINE 1024
 
-/* maximum length of an IP number as a string */
-#define IPSTRLEN 16
+/* maximum length of a domain name */
+#ifndef MAXDNAME
+#define MAXDNAME 256
+#endif
 
 /* number of buckets in cache hash table */
 #define BUCKETS 256
@@ -58,215 +77,276 @@
  */
 
 struct nsrec {
-	unsigned char   ipnum[4];
-	char           *hostname;
-	int             noname;
-	struct nsrec   *next;
-}              *nscache[BUCKETS];
+    struct in_addr ipnum;
+    char *hostname;
+    int	noname;
+    struct nsrec *next;
+} *nscache[BUCKETS];
 
 /*
  * statistics - obvious
  */
 
-int             cachehits = 0;
-int             cachesize = 0;
-int             entries = 0;
-int             resolves = 0;
-int             withname = 0;
-int             yucky = 0;
-int             noname = 0;
+/* largeste value for h_errno */
+#define MAX_ERR (NO_ADDRESS)
+#define UNKNOWN_ERR (MAX_ERR+1)
+#define NO_REVERSE  (MAX_ERR+2)
 
-/*
- * ipsame - takes two IP numbers and returns TRUE if they're the same
- */
-
-int
-ipsame(ipnum1, ipnum2)
-	unsigned char   ipnum1[4];
-	unsigned char   ipnum2[4];
-{
-	return (ipnum1[0] == ipnum2[0]
-		&& ipnum1[1] == ipnum2[1]
-		&& ipnum1[2] == ipnum2[2]
-		&& ipnum1[3] == ipnum2[3]);
-}
-
-/*
- * ipbuild - makes an IP number char array from 4 integers
- */
-
-ipbuild(ipnum, a, b, c, d)
-	unsigned char   ipnum[4];
-	unsigned int    a, b, c, d;
-{
-	ipnum[0] = a;
-	ipnum[1] = b;
-	ipnum[2] = c;
-	ipnum[3] = d;
-}
-
-/*
- * ipstr - converts an IP number to a string
- */
-
-char           *
-ipstr(string, ipnum)
-	char           *string;
-	unsigned char   ipnum[4];
-{
-	sprintf(string, "%d.%d.%d.%d", ipnum[0], ipnum[1], ipnum[2], ipnum[3]);
-	return (string);
-}
+static int cachehits = 0;
+static int cachesize = 0;
+static int entries = 0;
+static int resolves = 0;
+static int withname = 0;
+static int errors[MAX_ERR+3];
 
 /*
  * cgethost - gets hostname by IP address, caching, and adding unresolvable
  * IP numbers with their IP number as hostname, setting noname flag
  */
 
-cgethost(string, ipnum)
-	char           *string;
-	unsigned char   ipnum[4];
+static void
+cgethost(ipnum, string, check)
+struct in_addr ipnum;
+char *string;
+int check;
 {
-	struct nsrec   *current;
-	struct hostent *hostdata;
+    struct nsrec **current, *new;
+    struct hostent *hostdata;
+    char *name;
+    extern int h_errno;  /* some machines don't have this in their headers */
 
-	current = nscache[((ipnum[0] + ipnum[1] + ipnum[2] + ipnum[3]) % BUCKETS)];
+    current = &nscache[((ipnum.s_addr + (ipnum.s_addr >> 8) +
+	       	(ipnum.s_addr >> 16) + (ipnum.s_addr >> 24)) % BUCKETS)];
 
-	while (current->next && !ipsame(ipnum, current->next->ipnum))
-		current = current->next;
+    while (*current != NULL && ipnum.s_addr != (*current)->ipnum.s_addr)
+	current = & (*current)->next;
 
-	if (!current->next) {
-		cachesize++;
-		current->next = (struct nsrec *) malloc(sizeof(struct nsrec));
-		current = current->next;
-		current->next = 0;
-		current->noname = 0;
-
-		current->ipnum[0] = ipnum[0];
-		current->ipnum[1] = ipnum[1];
-		current->ipnum[2] = ipnum[2];
-		current->ipnum[3] = ipnum[3];
-
-		if (hostdata = gethostbyaddr((const char *) ipnum, 4, AF_INET)) {
-			current->hostname = (char *) malloc(strlen(hostdata->h_name) + 1);
-			strcpy(current->hostname, hostdata->h_name);
-		} else {
-			noname++;
-			current->noname = 1;
-			current->hostname = (char *) malloc(IPSTRLEN);
-			ipstr(current->hostname, current->ipnum);
-		}
-	} else {
-		current = current->next;
-		cachehits++;
+    if (*current == NULL)
+    {
+	cachesize++;
+	new = (struct nsrec *) malloc(sizeof(struct nsrec));
+	if (new == NULL)
+	{
+	    perror("malloc");
+	    fprintf(stderr, "Insufficient memory\n");
+	    exit(1);
 	}
-	strcpy(string, current->hostname);
-}
+	*current = new;
+	new->next = NULL;
 
-/*
- * gets a line from stdin
- */
+	new->ipnum = ipnum;
+	
+	hostdata = gethostbyaddr((const char *) &ipnum, sizeof(struct in_addr),
+				 AF_INET);
+	if (hostdata == NULL)
+	{
+	    if (h_errno > MAX_ERR) errors[UNKNOWN_ERR]++;
+	    else errors[h_errno]++;
+	    new->noname = h_errno;
+	    name = strdup(inet_ntoa(ipnum));
+	} else
+	{
+	    new->noname = 0;
+	    name = strdup(hostdata->h_name);
+	    if (check)
+	    {
+		if (name == NULL)
+		{
+		    perror("strdup");
+		    fprintf(stderr, "Insufficient memory\n");
+		    exit(1);
+		}
+		hostdata = gethostbyname(name);
+		if (hostdata != NULL)
+		{
+		    char **hptr;
+		    
+		    for (hptr=hostdata->h_addr_list; *hptr != NULL; hptr++)
+			if(((struct in_addr *)(*hptr))->s_addr == ipnum.s_addr)
+			    break;
+		    if (*hptr == NULL) hostdata = NULL;
+		}
+		if (hostdata == NULL)
+		{
+		    fprintf(stderr, "Bad host: %s != %s\n", name,
+			    inet_ntoa(ipnum));
+		    new->noname = NO_REVERSE;
+		    free(name);
+		    name = strdup(inet_ntoa(ipnum));
+		    errors[NO_REVERSE]++;
+		}
+	    }
+	}
+	new->hostname = name;
+	if (new->hostname == NULL)
+	{
+	    perror("strdup");
+	    fprintf(stderr, "Insufficient memory\n");
+	    exit(1);
+	}
+    } else
+	cachehits++;
 
-int
-getline(s, n)
-	char           *s;
-	int             n;
-{
-	char           *cp;
-
-	if (!fgets(s, n, stdin))
-		return (1);
-	if (cp = strchr(s, '\n'))
-		*cp = '\0';
-	return (0);
+    strcpy(string, (*current)->hostname);
 }
 
 /*
  * prints various statistics to output
  */
 
+static void
 stats(output)
-	FILE           *output;
+FILE *output;
 {
-	int             i, ipstring[IPSTRLEN];
-	struct nsrec   *current;
+    int i;
+    char *ipstring;
+    struct nsrec *current;
+    char *errstring[MAX_ERR+3];
 
-	fprintf(output, "logresolve Statistics:\n");
+    for (i=0; i < MAX_ERR+3; i++) errstring[i] = "Unknown error";
+    errstring[HOST_NOT_FOUND] = "Host not found";
+    errstring[TRY_AGAIN] = "Try again";
+    errstring[NO_RECOVERY] = "Non recoverable error";
+    errstring[NO_DATA] = "No data record";
+    errstring[NO_ADDRESS] = "No address";
+    errstring[NO_REVERSE] = "No reverse entry";
+    
+    fprintf(output, "logresolve Statistics:\n");
 
-	fprintf(output, "Entries: %d\n", entries);
-	fprintf(output, "    With name : %d\n", withname);
-	fprintf(output, "    Resolves  : %d\n", resolves);
-	fprintf(output, "    - Yucky   : %d\n", yucky);
-	fprintf(output, "    - No name : %d\n", noname);
-	fprintf(output, "Cache hits    : %d\n", cachehits);
-	fprintf(output, "Cache size    : %d\n", cachesize);
-	fprintf(output, "Cache buckets :     IP number * hostname\n");
+    fprintf(output, "Entries: %d\n", entries);
+    fprintf(output, "    With name   : %d\n", withname);
+    fprintf(output, "    Resolves    : %d\n", resolves);
+    if (errors[HOST_NOT_FOUND])
+	fprintf(output, "    - Not found : %d\n", errors[HOST_NOT_FOUND]);
+    if (errors[TRY_AGAIN])
+	fprintf(output, "    - Try again : %d\n", errors[TRY_AGAIN]);
+    if (errors[NO_DATA])
+	fprintf(output, "    - No data   : %d\n", errors[NO_DATA]);
+    if (errors[NO_ADDRESS])
+	fprintf(output, "    - No address: %d\n", errors[NO_ADDRESS]);
+    if (errors[NO_REVERSE])
+	fprintf(output, "    - No reverse: %d\n", errors[NO_REVERSE]);
+    fprintf(output, "Cache hits      : %d\n", cachehits);
+    fprintf(output, "Cache size      : %d\n", cachesize);
+    fprintf(output, "Cache buckets   :     IP number * hostname\n");
 
-	for (i = 0; i < BUCKETS; i++) {
-		current = nscache[i];
-		while (current->next) {
-			ipstr(ipstring, current->next->ipnum);
-			if (current->next->noname)
-				fprintf(output, "         %3d  %15s ! %s\n", i, ipstring, current->next->hostname);
-			else
-				fprintf(output, "         %3d  %15s - %s\n", i, ipstring, current->next->hostname);
-			current = current->next;
-		}
+    for (i = 0; i < BUCKETS; i++)
+	for (current = nscache[i]; current != NULL; current = current->next)
+	{
+	    ipstring = inet_ntoa(current->ipnum);
+	    if (current->noname == 0)
+		fprintf(output, "  %3d  %15s - %s\n", i, ipstring,
+			current->hostname);
+	    else
+	    {
+		if (current->noname > MAX_ERR+2)
+		    fprintf(output, "  %3d  %15s : Unknown error\n", i,
+			    ipstring);
+		else
+		    fprintf(output, "  %3d  %15s : %s\n", i, ipstring,
+			    errstring[current->noname]);
+	    }
 	}
 }
 
+
+/*
+ * gets a line from stdin
+ */
+
+static int
+getline(s, n)
+char *s;
+int n;
+{
+    char *cp;
+    
+    if (!fgets(s, n, stdin))
+	return (0);
+    cp = strchr(s, '\n');
+    if (cp)
+	*cp = '\0';
+    return (1);
+}
 
 int
 main(argc, argv)
-	int             argc;
-	char           *argv[];
+int argc;
+char *argv[];
 {
-	unsigned char   ipnum[4];
-	char           *foo, *bar, hoststring[MAXLINE], ipstring[IPSTRLEN], line[MAXLINE],
-	                nl[MAXLINE];
-	int             i, ip;
+    struct in_addr ipnum;
+    char *bar, hoststring[MAXDNAME+1], line[MAXLINE], *statfile;
+    int i, check;
 
-	for (i = 0; i < BUCKETS; i++) {
-		nscache[i] = (struct nsrec *) malloc(sizeof(struct nsrec));
-		nscache[i]->next = 0;
-		nscache[i]->noname = 0;
+    check = 0;
+    statfile = NULL;
+    for (i=1; i < argc; i++)
+    {
+	if (strcmp(argv[i], "-c") == 0) check = 1;
+	else if (strcmp(argv[i], "-s") == 0)
+	{
+	    if (i == argc-1)
+	    {
+		fprintf(stderr, "logresolve: missing filename to -s\n");
+		exit(1);
+	    }
+	    i++;
+	    statfile = argv[i];
+	}
+	else
+	{
+	    fprintf(stderr, "Usage: logresolve [-s statfile] [-c] < input > output");
+	    exit(0);
+	}
+    }
+    
+
+    for (i = 0; i < BUCKETS; i++) nscache[i] = NULL;
+    for (i=0; i < MAX_ERR+2; i++) errors[i] = 0;
+
+    while (getline(line, MAXLINE))
+    {
+	if (line[0] == '\0') continue;
+	entries++;
+	if (!isdigit(line[0]))
+	{ /* short cut */
+	    puts(line);
+	    withname++;
+	    continue;
+	}
+	bar = strchr(line, ' ');
+	if (bar != NULL) *bar = '\0';
+	ipnum.s_addr = inet_addr(line);
+	if (ipnum.s_addr == 0xffffffffu)
+	{
+	    if (bar != NULL) *bar = ' ';
+	    puts(line);
+	    withname++;
+	    continue;
 	}
 
-	while (!getline(line, MAXLINE) && *line) {
-		entries++;
-		if ((*line < '0') || (*line > '9')) {
-			printf("%s\n", line);
-			withname++;
-		} else {
-			resolves++;
-			ip = 1;
-			strcpy(nl, line);
-			foo = nl;
-			bar = nl;
-			for (i = 0; (i < 4) && ip; i++) {
-				while (*bar != '.' && *bar != ' ')
-					bar++;
-				*bar = 0;
-				ipnum[i] = atoi(foo);
-				foo = ++bar;
-				if (((*bar < '0') || (*bar > '9')) && i < 3)
-					ip = 0;
-			}
-			if (ip) {
-				cgethost(hoststring, ipnum);
-				printf("%s %s\n", hoststring, bar);
-			} else {
-				yucky++;
-				printf("%s\n", line);
-			}
-		}
+	resolves++;
+
+	cgethost(ipnum, hoststring, check);
+	if (bar != NULL)
+	    printf("%s %s\n", hoststring, bar+1);
+	else
+	    puts(hoststring);
+    }
+    
+    if (statfile != NULL)
+    {
+	FILE *fp;
+	fp = fopen(statfile, "w");
+	if (fp == NULL)
+	{
+	    fprintf(stderr, "logresolve: could not open statistics file '%s'\n"
+		    , statfile);
+	    exit(1);
 	}
-
-	if (--argc)
-		stats(stderr);
-
-	return (0);
+	stats(fp);
+	fclose(fp);
+    }
+    
+    return (0);
 }
--- end
-
-

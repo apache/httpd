@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -84,6 +84,7 @@ static int get_directive(FILE *in, char *d);
 
 void add_include_vars(request_rec *r, char *timefmt)
 {
+    struct passwd *pw;
     table *e = r->subprocess_env;
     char *t;
     time_t date = time(NULL);
@@ -93,6 +94,15 @@ void add_include_vars(request_rec *r, char *timefmt)
     table_set(e, "LAST_MODIFIED",ht_time(r->pool,r->finfo.st_mtime,timefmt,0));
     table_set(e, "DOCUMENT_URI", r->uri);
     table_set(e, "DOCUMENT_PATH_INFO", r->path_info);
+    pw = getpwuid(r->finfo.st_uid);
+    if (pw) {
+      table_set(e, "USER_NAME", pw->pw_name);
+    } else {
+      char uid[16];
+      sprintf(uid, "user#%d", r->finfo.st_uid);
+      table_set(e, "USER_NAME", uid);
+    }
+
     if((t = strrchr(r->filename, '/')))
         table_set (e, "DOCUMENT_NAME", ++t);
     else
@@ -344,6 +354,7 @@ int include_cgi(char *s, request_rec *r)
     
     if (run_sub_req (rr) == REDIRECT) {
         char *location = table_get (rr->headers_out, "Location");
+	location = escape_html(rr->pool, location);
 	rprintf(r,"<A HREF=\"%s\">%s</A>",location,location);
     }
     
@@ -353,7 +364,7 @@ int include_cgi(char *s, request_rec *r)
 }
 
 int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
-    char tag[MAX_STRING_LEN],errstr[MAX_STRING_LEN];
+    char tag[MAX_STRING_LEN];
     char *tag_val;
 
     while(1) {
@@ -381,13 +392,22 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
 		&& (strncmp (rr->content_type, "text/", 5)))
 	        error_fmt =
 		  "unable to include potential exec %s in parsed file %s";
+
+	    if (error_fmt == NULL)
+	    {
+		request_rec *p;
+
+		for (p=r; p != NULL; p=p->main)
+		    if (strcmp(p->filename, rr->filename) == 0) break;
+		if (p != NULL)
+		    error_fmt = "Recursive include of %s in parsed file %s";
+	    }
 	    
 	    if (!error_fmt && run_sub_req (rr))
 	        error_fmt = "unable to include %s in parsed file %s";
 		    
             if (error_fmt) {
-                sprintf(errstr, error_fmt, tag_val, r->filename);
-                log_error (errstr, r->server);
+                log_printf(r->server, error_fmt, tag_val, r->filename);
                 rprintf(r,"%s",error);
             }            
 
@@ -396,9 +416,8 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            sprintf(errstr,"unknown parameter %s to tag include in %s",tag,
-		    r->filename);
-            log_error (errstr, r->server);
+            log_printf(r->server, "unknown parameter %s to tag include in %s",
+		       tag, r->filename);
             rprintf(r,"%s",error);
         }
     }
@@ -415,7 +434,12 @@ void include_cmd_child (void *arg)
     char *s = ((include_cmd_arg *)arg)->s;
     table *env = r->subprocess_env;
 #ifdef DEBUG_INCLUDE_CMD    
-    FILE *dbg = fopen ("/dev/tty", "w");
+#ifdef __EMX__
+    /* under OS/2 /dev/tty is referenced as con */
+    FILE *dbg = fopen ("con", "w");
+#else
+        FILE *dbg = fopen ("/dev/tty", "w");
+#endif    
 #endif    
     char err_string [MAX_STRING_LEN];
 
@@ -485,7 +509,7 @@ int include_cmd(char *s, request_rec *r) {
 
 int handle_exec(FILE *in, request_rec *r, char *error)
 {
-    char tag[MAX_STRING_LEN],errstr[MAX_STRING_LEN];
+    char tag[MAX_STRING_LEN];
     char *tag_val;
     char *file = r->filename;
 
@@ -494,8 +518,8 @@ int handle_exec(FILE *in, request_rec *r, char *error)
             return 1;
         if(!strcmp(tag,"cmd")) {
             if(include_cmd(tag_val, r) == -1) {
-                sprintf(errstr,"failed command exec %s in %s",tag_val,file);
-                log_error (errstr, r->server);
+                log_printf(r->server, "failed command exec %s in %s",
+			   tag_val, file);
                 rprintf(r,"%s",error);
             }
             /* just in case some stooge changed directories */
@@ -503,8 +527,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         } 
         else if(!strcmp(tag,"cgi")) {
             if(include_cgi(tag_val, r) == -1) {
-                sprintf(errstr,"invalid CGI ref %s in %s",tag_val,file);
-                log_error (errstr, r->server);
+                log_printf(r->server, "invalid CGI ref %s in %s",tag_val,file);
                 rprintf(r,"%s",error);
             }
             /* grumble groan */
@@ -513,9 +536,8 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            char errstr[MAX_STRING_LEN];
-            sprintf(errstr,"unknown parameter %s to tag exec in %s",tag,file);
-            log_error (errstr, r->server);
+            log_printf(r->server, "unknown parameter %s to tag exec in %s",
+		       tag, file);
             rprintf(r, "%s",error);
         }
     }
@@ -537,10 +559,8 @@ int handle_echo (FILE *in, request_rec *r, char *error) {
         } else if(!strcmp(tag,"done"))
             return 0;
         else {
-            char errstr[MAX_STRING_LEN];
-            sprintf(errstr,"unknown parameter %s to tag echo in %s",
+            log_printf(r->server, "unknown parameter %s to tag echo in %s",
 		    tag, r->filename);
-            log_error(errstr, r->server);
             rprintf (r, "%s", error);
         }
     }
@@ -574,10 +594,8 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            char errstr[MAX_STRING_LEN];
-            sprintf(errstr,"unknown parameter %s to tag config in %s",
+            log_printf(r->server, "unknown parameter %s to tag config in %s",
                     tag, r->filename);
-            log_error(errstr, r->server);
             rprintf (r,"%s",error);
         }
     }
@@ -588,7 +606,7 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
 int find_file(request_rec *r, char *directive, char *tag, 
               char *tag_val, struct stat *finfo, char *error)
 {
-    char errstr[MAX_STRING_LEN], dir[MAX_STRING_LEN];
+    char dir[MAX_STRING_LEN];
     char *to_send;
 
     if(!strcmp(tag,"file")) {
@@ -596,10 +614,9 @@ int find_file(request_rec *r, char *directive, char *tag,
         getwd(dir);
         to_send = make_full_path (r->pool, dir, tag_val);
         if(stat(to_send,finfo) == -1) {
-            sprintf(errstr,
+            log_printf(r->server,
                     "unable to get information about %s in parsed file %s",
                     to_send, r->filename);
-            log_error (errstr, r->server);
             rprintf (r,"%s",error);
             return -1;
         }
@@ -613,19 +630,17 @@ int find_file(request_rec *r, char *directive, char *tag,
 	    destroy_sub_req (rr);
 	    return 0;
         } else {
-            sprintf(errstr,
+            log_printf(r->server,
                     "unable to get information about %s in parsed file %s",
                     tag_val, r->filename);
-            log_error(errstr, r->server);
             rprintf(r,"%s",error);
 	    destroy_sub_req (rr);
             return -1;
         }
     }
     else {
-        sprintf(errstr,"unknown parameter %s to tag %s in %s",
+        log_printf(r->server, "unknown parameter %s to tag %s in %s",
                 tag, directive, r->filename);
-        log_error(errstr, r->server);
         rprintf(r,"%s",error);
         return -1;
     }
@@ -691,7 +706,7 @@ int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
 void send_parsed_content(FILE *f, request_rec *r)
 {
     char directive[MAX_STRING_LEN], error[MAX_STRING_LEN];
-    char timefmt[MAX_STRING_LEN], errstr[MAX_STRING_LEN];
+    char timefmt[MAX_STRING_LEN];
     int noexec = allow_options (r) & OPT_INCNOEXEC;
     int ret, sizefmt;
 
@@ -707,9 +722,9 @@ void send_parsed_content(FILE *f, request_rec *r)
                 return;
             if(!strcmp(directive,"exec")) {
                 if(noexec) {
-                    sprintf(errstr,"httpd: exec used but not allowed in %s",
-                            r->filename);
-                    log_error (errstr, r->server);
+                    log_printf(r->server,
+			       "httpd: exec used but not allowed in %s",
+			       r->filename);
                     rprintf(r,"%s",error);
                     ret = find_string(f,ENDING_SEQUENCE,NULL);
                 } else 
@@ -726,16 +741,15 @@ void send_parsed_content(FILE *f, request_rec *r)
             else if(!strcmp(directive,"flastmod"))
                 ret=handle_flastmod(f, r, error, timefmt);
             else {
-                sprintf(errstr,"httpd: unknown directive %s in parsed doc %s",
-                        directive,r->filename);
-                log_error (errstr, r->server);
+                log_printf(r->server, 
+			   "httpd: unknown directive %s in parsed doc %s",
+			   directive, r->filename);
                 rprintf (r,"%s",error);
                 ret=find_string(f,ENDING_SEQUENCE,NULL);
             }
             if(ret) {
-                sprintf(errstr,"httpd: premature EOF in parsed file %s",
-			r->filename);
-                log_error(errstr, r->server);
+                log_printf(r->server, "httpd: premature EOF in parsed file %s",
+			   r->filename);
                 return;
             }
         } else 
@@ -789,7 +803,10 @@ int send_parsed_file(request_rec *r)
     if (r->finfo.st_mode == 0) return NOT_FOUND;
 	
     if (*state == xbithack_full
+#ifndef __EMX__    
+    /*  OS/2 dosen't support Groups. */
 	&& (r->finfo.st_mode & S_IXGRP)
+#endif
 	&& (errstatus = set_last_modified (r, r->finfo.st_mtime)))
         return errstatus;
     
@@ -833,6 +850,11 @@ int xbithack_handler (request_rec *r)
 {
     enum xbithack *state;
 	
+#ifdef __EMX__
+    /* OS/2 dosen't currently support the xbithack. This is being worked on. */
+    return DECLINED;
+#else
+
     if (!(r->finfo.st_mode & S_IXUSR)) return DECLINED;
 
     state = (enum xbithack *)get_module_config(r->per_dir_config,
@@ -840,6 +862,7 @@ int xbithack_handler (request_rec *r)
     
     if (*state == xbithack_off) return DECLINED;
     return send_parsed_file (r);
+#endif    
 }
 
 command_rec includes_cmds[] = {

@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -56,12 +56,16 @@
 #include "httpd.h"
 #include "http_config.h"
 
-#define DEFAULT_REFERERLOG "logs/referer_log"
-
 module referer_log_module;
 
 static int xfer_flags = ( O_WRONLY | O_APPEND | O_CREAT );
+
+#ifdef __EMX__
+/* OS/2 lacks support for users and groups */
+static mode_t xfer_mode = ( S_IREAD | S_IWRITE );
+#else
 static mode_t xfer_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
+#endif
 
 typedef struct {
     char *fname;
@@ -74,7 +78,7 @@ void *make_referer_log_state (pool *p, server_rec *s)
     referer_log_state *cls =
       (referer_log_state *)palloc (p, sizeof (referer_log_state));
 
-    cls->fname = DEFAULT_REFERERLOG;
+    cls->fname = "";
     cls->referer_fd = -1;
     cls->referer_ignore_list = make_array(p, 1, sizeof(char *));
     return (void *)cls;
@@ -144,10 +148,12 @@ void open_referer_log (server_rec *s, pool *p)
 
 	cls->referer_fd = fileno (dummy);
     }
-    else if((cls->referer_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
-        fprintf(stderr,"httpd: could not open transfer log file %s.\n", fname);
+    else if(*cls->fname != '\0') {
+      if((cls->referer_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+        fprintf(stderr,"httpd: could not open referer log file %s.\n", fname);
         perror("open");
         exit(1);
+      }
     }
 }
 
@@ -162,7 +168,7 @@ int referer_log_transaction(request_rec *orig)
     referer_log_state *cls = get_module_config (orig->server->module_config,
 					       &referer_log_module);
   
-    char str[HUGE_STRING_LEN];
+    char *str;
     char *referer;
     request_rec *r;
 
@@ -171,6 +177,8 @@ int referer_log_transaction(request_rec *orig)
 
     for (r = orig; r->next; r = r->next)
         continue;
+    if (*cls->fname == '\0')	/* Don't log referer */
+	return DECLINED;
     
     referer = table_get(orig->headers_in, "Referer");
     if(referer != NULL)
@@ -197,8 +205,7 @@ int referer_log_transaction(request_rec *orig)
 	    }
 	  
 	  
-	  sprintf(str, "%s -> %s\n", referer,
-		  r->uri);
+	  str = pstrcat(orig->pool, referer, " -> ", r->uri, "\n", NULL);
 	  write(cls->referer_fd, str, strlen(str));
       }
 

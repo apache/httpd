@@ -32,7 +32,7 @@
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
- * IT'S CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -62,12 +62,14 @@ extern char *user_name;
 extern gid_t group_id;
 extern int max_requests_per_child;
 extern struct in_addr bind_address;
+extern listen_rec *listeners;
 extern int daemons_to_start;
 extern int daemons_min_free;
 extern int daemons_max_free;
 extern int daemons_limit;
 
 extern char *pid_fname;
+extern char *scoreboard_fname;
 extern char *server_argv0;
 
 /* Trying to allocate these in the config pool gets us into some *nasty*
