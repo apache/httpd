@@ -1,5 +1,10 @@
 Changes with Apache 1.3.23
 
+  *) Prevent an Apache module from being loaded or added twice due
+     to duplicate LoadModule or AddModule directives (or a missing
+     ClearModuleList directive).
+     [William Rowe, Brian Pane <bpane@pacbell.net>]
+
   *) Add checkgid app to do run-time validation of Group directive
      values which might cause the server to fall over, but which
      are syntactically correct.  [Ken Coar]

@@ -1908,9 +1908,18 @@ static const char *set_server_alias(cmd_parms *cmd, void *dummy,
 
 static const char *add_module_command(cmd_parms *cmd, void *dummy, char *arg)
 {
+    module *modp;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
+    }
+
+    for (modp = top_module; modp; modp = modp->next) {
+        if (modp->name != NULL && strcmp(modp->name, arg) == 0) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, cmd->server,
+                          "module %s is already added, skipping", arg);
+            return NULL;
+        }
     }
 
     if (!ap_add_named_module(arg)) {
