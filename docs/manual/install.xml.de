@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.10 -->
+<!-- English revision: 1.11.2.1 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -524,7 +524,7 @@
 
 <section id="dbm"><title>DBM</title>
 
-    <p>Verschiedene Apache-Features, darunter <module>mod_authn_dbm</module>
+    <p>Verschiedene Apache-Features, darunter <module>mod_auth_dbm</module>
     und DBM <directive module="mod_rewrite">RewriteMap</directive> aus
     <module>mod_rewrite</module>, verwenden einfache
     Schl&#252;ssel/Wert-Datenbanken f&#252;r eine schnelle Suche nach

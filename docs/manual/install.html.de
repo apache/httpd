@@ -498,7 +498,7 @@
 
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
-    <p>Verschiedene Apache-Features, darunter <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>
+    <p>Verschiedene Apache-Features, darunter <code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code>
     und DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> aus
     <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>, verwenden einfache
     Schlüssel/Wert-Datenbanken für eine schnelle Suche nach
