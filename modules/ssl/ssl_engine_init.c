@@ -856,11 +856,12 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *skCAList,
     sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(file);
 
     for (n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
+        char name_buf[256];
         X509_NAME *name = sk_X509_NAME_value(sk, n);
 
         ssl_log(s, SSL_LOG_TRACE,
                 "CA certificate: %s",
-                X509_NAME_oneline(name, NULL, 0));
+                X509_NAME_oneline(name, name_buf, sizeof(name_buf)));
 
         if (sk_X509_NAME_find(skCAList, name) < 0) {
             /* this will be freed when skCAList is */
