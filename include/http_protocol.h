@@ -561,7 +561,7 @@ struct ap_bucket_error {
     /** The error code */
     int status;
     /** The error string */
-    const char    *start;
+    const char    *data;
 };
 
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
