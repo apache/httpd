@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/09/02 20:10:36 $]
+  Last modified at [$Date: 2003/09/18 19:49:46 $]
 
 Release:
 
@@ -196,11 +196,7 @@ Open issues:
                 the cmd="" argument as argv[0], which means it is -only- the
                 file name to execute (with spaces allowed in the name.)
       
-Win32 specific issues:
-
-    * rfc1413.c has static storage which won't work multithreaded
-        Status: this is a pretty significant rewrite.  Apache 2.0 is
-                already using apr's network_io and threadsafe storage.
+Win32/Netware specific issues:
 
     * mod_rewrite's cache isn't threadsafe, needs a mutex on Win32/Netware
       (and OS/2?)
