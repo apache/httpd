@@ -94,6 +94,11 @@ PATCHES TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are! ]
   [ please append new backports at the end of this list not the top. ]
 
+    *) htdigest: Fix permissions of created files
+       http://svn.apache.org/viewcvs.cgi?rev=155681&view=rev
+       PR: 33765
+       +1: jorton
+
     *) mod_ssl: Set r->user from SSLUsername earlier so that it's
        actually useful.
        http://svn.apache.org/viewcvs.cgi?rev=153280&view=rev
