@@ -303,9 +303,10 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
 conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, 
                                 apr_socket_t *conn_socket, long id)
 {
-    struct sockaddr_in *sa_local, *sa_remote;
+    apr_sockaddr_t *sa_local, *sa_remote;
 
-    apr_get_local_name(&sa_local, conn_socket);
-    apr_get_remote_name(&sa_remote, conn_socket);
-    return ap_new_connection(p, server, conn_socket, sa_remote, sa_local, id);
+    apr_get_sockaddr(&sa_local, APR_LOCAL, conn_socket);
+    apr_get_sockaddr(&sa_remote, APR_REMOTE, conn_socket);
+    return ap_new_connection(p, server, conn_socket, 
+                             &sa_remote->sa.sin, &sa_local->sa.sin, id);
 }
