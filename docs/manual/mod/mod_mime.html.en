@@ -370,6 +370,11 @@ later.</td></tr>
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#removeinputfilter">RemoveInputFilter</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">Directive</a></h2>
@@ -464,6 +469,7 @@ later.</td></tr>
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#removeoutputfilter">RemoveOutputFilter</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -764,6 +770,11 @@ later.</td></tr>
     <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#addinputfilter">AddInputFilter</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">Directive</a></h2>
