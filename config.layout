@@ -58,30 +58,6 @@
     proxycachedir: ${localstatedir}/proxy
 </Layout>
 
-#   Apache binary distribution path layout
-<Layout BinaryDistribution>
-    prefix:        /usr/local/apache2
-    exec_prefix:
-    bindir:        bin
-    sbindir:       bin
-    libdir:        lib
-    libexecdir:    libexec
-    mandir:        man
-    sysconfdir:    conf
-    datadir:
-    installbuilddir: build
-    errordir:      error
-    iconsdir:      icons
-    htdocsdir:     htdocs
-    manualdir:     manual
-    cgidir:        cgi-bin
-    includedir:    include
-    localstatedir:
-    runtimedir:    logs
-    logfiledir:    logs
-    proxycachedir: proxy
-</Layout>
-
 #   Mac OS X Server (Rhapsody)
 <Layout Mac OS X Server>
     prefix:        /Local/Library/WebServer
