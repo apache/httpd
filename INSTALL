@@ -79,10 +79,10 @@
         platform-dependent. The current state is this:
 
         o Out-of-the-box supported platforms are:
-           - Linux     - SunOS         - UnixWare     - Mac OS X Server
-           - FreeBSD   - Solaris       - AIX          - Mac OS
-           - OpenBSD   - IRIX          - SCO          - OpenStep/Mach
-           - NetBSD    - HPUX          - ReliantUNIX  - DYNIX/ptx
+           - Linux     - SunOS         - UnixWare     - Mac OS X
+           - FreeBSD   - Solaris       - AIX          - OpenStep/Mach
+           - OpenBSD   - IRIX          - SCO          - DYNIX/ptx
+           - NetBSD    - HPUX          - ReliantUNIX
            - BSDI      - Digital Unix  - DGUX
 
         o Entirely unsupported platforms are:
