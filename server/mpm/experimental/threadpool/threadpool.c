@@ -173,6 +173,7 @@ static int listener_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
 static int resource_shortage = 0;
+static int mpm_state = AP_MPMQ_STARTING;
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
@@ -466,6 +467,7 @@ static void signal_threads(int mode)
         return;
     }
     terminate_mode = mode;
+    mpm_state = AP_MPMQ_STOPPING;
 
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
@@ -521,6 +523,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
         case AP_MPMQ_MAX_DAEMONS:
             *result = ap_daemons_limit;
             return APR_SUCCESS;
+        case AP_MPMQ_MPM_STATE:
+            *result = mpm_state;
+            return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
 }
@@ -529,6 +534,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
+    mpm_state = AP_MPMQ_STOPPING;
     if (pchild) {
         apr_pool_destroy(pchild);
     }
@@ -572,6 +578,7 @@ ap_generation_t volatile ap_my_generation;
 
 static void ap_start_shutdown(void)
 {
+    mpm_state = AP_MPMQ_STOPPING;
     if (shutdown_pending == 1) {
         /* Um, is this _probably_ not an error, if the user has
          * tried to do a shutdown twice quickly, so we won't
@@ -585,7 +592,7 @@ static void ap_start_shutdown(void)
 /* do a graceful restart if graceful == 1 */
 static void ap_start_restart(int graceful)
 {
-
+    mpm_state = AP_MPMQ_STOPPING;
     if (restart_pending == 1) {
         /* Probably not an error - don't bother reporting it */
         return;
@@ -1272,6 +1279,9 @@ static void child_main(int child_num_arg)
     apr_threadattr_t *thread_attr;
     apr_thread_t *start_thread_id;
 
+    mpm_state = AP_MPMQ_STARTING; /* for benefit of any hooks that run as this
+                                   * child initializes
+                                   */
     ap_my_pid = getpid();
     ap_fatal_signal_child_setup(ap_server_conf);
     apr_pool_create(&pchild, pconf);
@@ -1350,6 +1360,8 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
+    mpm_state = AP_MPMQ_RUNNING;
+    
     /* If we are only running in one_process mode, we will want to
      * still handle signals. */
     if (one_process) {
@@ -1755,6 +1767,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create accept lock");
+        mpm_state = AP_MPMQ_STOPPING;
         return 1;
     }
 
@@ -1769,12 +1782,14 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                          "Couldn't set permissions on cross-process lock; "
                          "check User and Group directives");
+            mpm_state = AP_MPMQ_STOPPING;
             return 1;
         }
     }
 
     if (!is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
+            mpm_state = AP_MPMQ_STOPPING;
             return 1;
         }
         /* fix the generation number in the global score; we just got a new,
@@ -1822,8 +1837,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		apr_proc_mutex_defname());
 #endif
     restart_pending = shutdown_pending = 0;
+    mpm_state = AP_MPMQ_RUNNING;
 
     server_main_loop(remaining_children_to_start);
+    mpm_state = AP_MPMQ_STOPPING;
 
     if (shutdown_pending) {
         /* Time to gracefully shut down:
@@ -1934,6 +1951,8 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_directive_t *max_clients = NULL;
     apr_status_t rv;
 
+    mpm_state = AP_MPMQ_STARTING;
+    
     /* make sure that "ThreadsPerChild" gets set before "MaxClients" */
     for (pdir = ap_conftree; pdir != NULL; pdir = pdir->next) {
         if (strncasecmp(pdir->directive, "ThreadsPerChild", 15) == 0) {
@@ -2028,7 +2047,10 @@ static void threadpool_hooks(apr_pool_t *p)
     one_process = 0;
 
     ap_hook_open_logs(worker_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
-    ap_hook_pre_config(worker_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    /* we need to set the MPM state before other pre-config hooks use MPM query
+     * to retrieve it, so register as REALLY_FIRST
+     */
+    ap_hook_pre_config(worker_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,
