@@ -384,6 +384,11 @@ typedef int pid_t;
 #define NO_USE_SIGACTION
 #define HAVE_SYSLOG 1
 
+#if defined(__DYNAMIC__)
+#define HAVE_DYLD
+#define DYLD_CANT_UNLOAD
+#endif
+
 #elif defined(MAC_OS) || defined(MAC_OS_X_SERVER) /* Mac OS (>= 10.0) and Mac OS X Server (<= 5.x) */
 #ifdef MAC_OS_X_SERVER
 #define PLATFORM "Mac OS X Server"

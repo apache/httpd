@@ -483,9 +483,6 @@ case "$PLAT" in
 	CC='cc'
 	OPTIM='-O'
 	CFLAGS="$CFLAGS -DNEXT"
-	CFLAGS_SHLIB='-dynamic -fno-common'
-	LD_SHLIB='cc'
-	LDFLAGS_SHLIB='-dynamiclib -undefined warning'
 	DEF_WANTHSREGEX=yes
 	;;
     *-apple-rhapsody*)
@@ -1005,6 +1002,13 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-shared"
 	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
 	    ;;
+ 	*-next-openstep*)
+ 	    LD_SHLIB='cc'
+ 	    CFLAGS_SHLIB='-dynamic -fno-common'
+ 	    LDFLAGS_SHLIB='-bundle -undefined warning'
+ 	    LDFLAGS_SHLIB_EXPORT=''
+ 	    SHLIB_SUFFIX_DEPTH=0
+ 	    ;;
 	*-apple-rhapsody* | *-apple-macos* )
 	    LD_SHLIB="cc"
 	    CFLAGS_SHLIB=""
