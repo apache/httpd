@@ -129,7 +129,7 @@
  * the children don't die off.
  */
 #ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
+#define DEFAULT_MAX_REQUESTS_PER_CHILD 0
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
