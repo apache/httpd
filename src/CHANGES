@@ -1,5 +1,8 @@
 Changes with Apache 1.3.13
 
+  *) Add some more error reporting to htpasswd in the case of problems
+     generating or accessing the temporary file.  [Ken Coar]
+
   *) PORT: Add recognition of the GNU/Hurd platform.
      [Adam Farrell <skate111@stampede.org>]
 
