@@ -28,12 +28,12 @@ REL="Help"
 <A
 HREF="module-dict.html#SourceFile"
 REL="Help"
-><STRONG>Source File:</STRONG></A> mpmt_pthread.c
+><STRONG>Source File:</STRONG></A> dexter.c
 <BR>
 <A
 HREF="module-dict.html#ModuleIdentifier"
 REL="Help"
-><STRONG>Module Identifier:</STRONG></A> mpm_mpmt_pthread_module
+><STRONG>Module Identifier:</STRONG></A> mpm_dexter_module
 </P>
 
 <H2>Summary</H2>
@@ -47,7 +47,7 @@ or decreasing the number of threads.</p>
 
 <H2>Directives</H2>
 <UL>
-<li><a href="#connectionstatus">ConnectionStatus</a></li>
+<li><a href="mpm_common.html#connectionstatus">ConnectionStatus</a></li>
 <li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><a href="mpm_common.html#group">Group</a></li>
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
@@ -57,90 +57,12 @@ or decreasing the number of threads.</p>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
-<li><a href="#numservers">NumServers</a></li>
+<li><a href="mpm_common.html#numservers">NumServers</a></li>
 <li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
 <li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
-<li><a href="#startthreads">StartThreads</a></li>
+<li><a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><a href="mpm_common.html#user">User</a></li>
 </UL>
-
-
-<H2><A NAME="connectionstatus">ConnectionStatus directive</A></H2>
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> MPM<P>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> dexter</p>
-
-<p>Whether or not to maintain status information on current 
-connections</p>
-
-<p><hr></p>
-
-<H2><A NAME="numservers">NumServers directive</A></H2>
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> MPM<P>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> dexter</p>
-
-<p>Number of children alive at the same time.</p>
-
-<p><hr></p>
-
-<H2><A NAME="startthreads">StartThreads directive</A></H2>
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> MPM<P>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> dexter</p>
-
-<p>Number of threads each child creates.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
