@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/10/30 19:27:56 $]
+Last modified at [$Date: 2002/10/30 20:29:49 $]
 
 Release:
 
@@ -69,14 +69,15 @@ CURRENT VOTES:
       modules are deferred for the next minor version bump (e.g. 2.1, 2.2 
       or 3.0).
         +1: wrowe, jerenkrantz, aaron, brianp, trawick, stoddard, jwoolley,
-            rbowen
+            rbowen, rederpj
          0: 
         -1: 
 
     * Defer the Auth module overhaul to the next minor version bump
       (e.g. 2.1, 2.2, 3.0) on the condition that forward compatibility
       resolution is adopted.
-        +1: wrowe, aaron, trawick, stoddard, jwoolley, rbowen, gregames
+        +1: wrowe, aaron, trawick, stoddard, jwoolley, rbowen, gregames,
+            rederpj
          0: jerenkrantz
         -1: 
 
@@ -87,14 +88,14 @@ CURRENT VOTES:
       patches are (generally) first applied to the development branch,
       tested, and then (after vote) applied to the stable branch.
         +1: wrowe, jerenkrantz, aaron, trawick, stoddard, jwoolley, rbowen,
-            gregames
+            gregames, rederpj
          0: 
         -1: 
 
     * Branch APACHE_2_0_BRANCH today, changing the version in CVS HEAD
       to 2.1.0-dev.
         +1 [from APACHE_2_0_43]: wrowe, aaron, trawick, stoddard, jwoolley,
-                                 gregames
+                                 gregames, rederpj
         +1 [from HEAD]: 
          0: jerenkrantz
         -1: 
@@ -131,16 +132,16 @@ CURRENT VOTES:
 
       Self-destruct: Ken, Martin
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, Jim, Justin, wrowe
+      Make it runtime configurable: Aaron, Jim, Justin, wrowe, rederpj
       Have 2 parents: +1: Jim
-                      -1: Justin, wrowe
+                      -1: Justin, wrowe, rederpj
                       +0: Martin (while standing by, could it do
                                   something useful?)
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Ian, Cliff, BillS, striker, wrowe
       +0:   BrianP, Aaron (mutex contention is looking better with the
-            latest code, let's continue tuning and testing)
+            latest code, let's continue tuning and testing), rederpj
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
@@ -521,6 +522,14 @@ EXPERIMENTAL MODULES:
 
     * mod_mem_cache fd caching is broken on Unix. The cached fd cannot
       be used across multiple threads except for use on sendfile().
+
+    * mod_mem_cache/mod_disk_cache: Complete implementing config
+      directives (mod_disk_cache: CacheExpiryCheck and GC directives
+      including CacheGc*, CacheSize, CacheMaxFileSize, CacheMinFileSize,
+      and, CacheTimeMargin) (mod_mem_cache: MCacheMaxObjectCount) and
+      (mod_cache: cacheForceCompletion). 
+
+    * mod_cache/mod_mem_cache/mod_disk_cache: Documentation.
 
     mod_auth_ldap/util_ldap:
     
