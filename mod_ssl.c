@@ -220,26 +220,26 @@ static void ssl_hook_post_config(
 static int ssl_hook_pre_connection(conn_rec *r)
 {
     /* unused */
-    return;
+    return DECLINED;
 }
 
 static int ssl_hook_process_connection(conn_rec *r)
 {
     /* call ssl_hook_NewConnection */
     /* hook ssl_hook_CloseConnection() */
-    return;
+    return DECLINED;
 }
 
 static int ssl_hook_handler(request_rec *r)
 {
     /* ssl_hook_Handler() */
-    return;
+    return DECLINED;
 }
 
 static int ssl_hook_translate_name(request_rec *r)
 {
     /* ssl_hook_Translate() */
-    return;
+    return DECLINED;
 }
 
 static void ssl_hook_init_child(apr_pool_t *pchild, server_rec *s)
@@ -251,31 +251,31 @@ static void ssl_hook_init_child(apr_pool_t *pchild, server_rec *s)
 static int ssl_hook_auth_checker(request_rec *r)
 {
     /* ssl_hook_Auth() */
-    return;
+    return DECLINED;
 }
 
 static int ssl_hook_check_user_id(request_rec *r)
 {
     /* ssl_hook_UserCheck */
-    return;
+    return DECLINED;
 }
 
 static int ssl_hook_access_checker(request_rec *r)
 {
     /* ssl_hook_Access() */
-    return;
+    return DECLINED;
 }
 
 static int ssl_hook_fixups(request_rec *r)
 {
     /* ssl_hook_Fixup() */
-    return;
+    return DECLINED;
 }
 
 static int ssl_hook_post_read_request(request_rec *r)
 {
     /* ssl_hook_ReadReq() */
-    return;
+    return DECLINED;
 }
 
 static void ssl_hook_child_init(apr_pool_t *pchild, server_rec *s)
