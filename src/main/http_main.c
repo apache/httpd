@@ -1725,6 +1725,8 @@ void child_main(int child_num_arg)
 
         accept_mutex_off(); /* unlock after "accept" */
 
+	note_cleanups_for_fd(ptrans,csd);
+
         /*
          * We now have a connection, so set it up with the appropriate
          * socket options, file descriptors, and read/write buffers.
@@ -1748,6 +1750,7 @@ void child_main(int child_num_arg)
 	    log_unixerr("dup", NULL, "couldn't duplicate csd", server_conf);
 	    dupped_csd = csd;   /* Oh well... */
 	}
+	note_cleanups_for_fd(ptrans,dupped_csd);
 #endif
 	bpushfd(conn_io, csd, dupped_csd);
 

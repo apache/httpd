@@ -1,5 +1,11 @@
 Changes with Apache 1.2b8
- 
+
+  *) bpushfd() no longer notes cleanups for the file descriptors it is handed.
+     Module authors may need to adjust their code for proper cleanup to take
+     place (that is, call note_cleanups_for_fd()). This change fixes problems
+     with file descriptors being erroneously closed when the proxy module was
+     in use. [Ben Laurie]
+
   *) Fix bug in suexec reintroduced by changes in 1.2b7 which allows
      initgroups() to hose the group information needed for later
      comparisons. [Randy Terbush]
