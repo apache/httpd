@@ -73,10 +73,14 @@
 #include "ap_listen.h"
 #include "iol_socket.h"
 #include "apr_portable.h"
+#include "mpm_common.h"
 
 #include <os2.h>
 #include <stdlib.h>
 #include <sys/signal.h>
+#include <process.h>
+#include <time.h>
+#include <io.h>
 
 /* config globals */
 
@@ -297,7 +301,6 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 void ap_time_process_request(int child_num, int status)
 {
     short_score *ss;
-    ap_time_t tms_blk;
 
     if (child_num < 0)
 	return;
@@ -1606,7 +1609,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    ap_file_t finfo;
+    ap_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
