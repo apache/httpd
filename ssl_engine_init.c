@@ -178,11 +178,8 @@ static void ssl_tmp_key_init_dh(server_rec *s,
 #define MODSSL_TMP_KEY_INIT_DH(s, bits) \
     ssl_tmp_key_init_dh(s, bits, SSL_TMP_KEY_DH_##bits)
 
-static void ssl_tmp_keys_init(server_rec *s, apr_pool_t *p)
+static void ssl_tmp_keys_init(server_rec *s)
 {
-    /* seed PRNG */
-    ssl_rand_seed(s, p, SSL_RSCTX_STARTUP, "Init: ");
-
     ssl_log(s, SSL_LOG_INFO,
             "Init: Generating temporary RSA private keys (512/1024 bits)");
 
@@ -264,8 +261,16 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_util_thread_setup(base_server, p);
 #endif
 
+    /*
+     * Seed the Pseudo Random Number Generator (PRNG)
+     * only need ptemp here; nothing inside allocated from the pool
+     * needs to live once we return from ssl_rand_seed().
+     */
+    ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
+
     ssl_pphrase_Handle(base_server, p);
-    ssl_tmp_keys_init(base_server, p);
+
+    ssl_tmp_keys_init(base_server);
 
     /*
      * SSL external crypto device ("engine") support
@@ -296,11 +301,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * initialize session caching
      */
     ssl_scache_init(base_server, p);
-
-    /*
-     * Seed the Pseudo Random Number Generator (PRNG)
-     */
-    ssl_rand_seed(base_server, p, SSL_RSCTX_STARTUP, "Init: ");
 
     /*
      *  initialize servers
