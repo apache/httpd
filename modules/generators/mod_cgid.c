@@ -681,7 +681,7 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
         ((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0) 
          && (finfo.st_size > conf->logbytes)) || 
          (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
-                      APR_APPEND, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
+                  APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         return ret; 
     } 
 
@@ -713,12 +713,14 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
         ((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0) 
          && (finfo.st_size > conf->logbytes)) || 
          (ap_open(&f, ap_server_root_relative(r->pool, conf->logname), 
-                  APR_APPEND, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
+                  APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         /* Soak up script output */ 
         while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) 
             continue; 
-        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) 
-            continue; 
+        if (script_err) {
+            while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) 
+                continue; 
+        }
         return ret; 
     } 
 
@@ -761,16 +763,20 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
         ap_puts("\n", f); 
     } 
 
-    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) { 
-        ap_puts("%stderr\n", f); 
-        ap_puts(argsbuffer, f); 
-        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) 
+    if (script_err) {
+        if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) { 
+            ap_puts("%stderr\n", f); 
             ap_puts(argsbuffer, f); 
-        ap_puts("\n", f); 
-    } 
+            while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) 
+                ap_puts(argsbuffer, f); 
+            ap_puts("\n", f); 
+        } 
+    }
 
     ap_bclose(script_in); 
-    ap_bclose(script_err); 
+    if (script_err) {
+        ap_bclose(script_err); 
+    }
 
     ap_close(f); 
     return ret; 
