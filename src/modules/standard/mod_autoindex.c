@@ -544,7 +544,6 @@ static int insert_readme(char *name, char *readme_fname, char *title, int hrule,
 	plaintext = 1;
 	if (hrule)
 	    rputs("<HR>\n", r);
-	rputs("<PRE>\n", r);
     }
     else if (hrule)
 	rputs("<HR>\n", r);
@@ -570,6 +569,7 @@ static int insert_readme(char *name, char *readme_fname, char *title, int hrule,
     else {
 	char buf[IOBUFSIZE + 1];
 	int i, n, c, ch;
+	rputs("<PRE>\n", r);
 	while (!feof(f)) {
 	    do
 		n = fread(buf, sizeof(char), IOBUFSIZE, f);
