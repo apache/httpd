@@ -85,8 +85,7 @@ select="$metafile/basename"/>
 <xsl:text>\begin{list}{}{\topsep 0pt\rightmargin 0pt\leftmargin 2em}
 \item[] </xsl:text>
 <xsl:apply-templates/>
-<xsl:text>\end{list}
-</xsl:text>
+<xsl:text>\end{list}</xsl:text>
 </xsl:template>
 
 <!-- ==================================================================== -->
