@@ -158,19 +158,6 @@ static int listenmaxfd;
 
 static int one_process = 0;
 
-#ifdef HAS_OTHER_CHILD
-/* used to maintain list of children which aren't part of the scoreboard */
-typedef struct other_child_rec other_child_rec;
-struct other_child_rec {
-    other_child_rec *next;
-    int pid;
-    void (*maintenance) (int, void *, ap_wait_t);
-    void *data;
-    int write_fd;
-};
-static other_child_rec *other_children;
-#endif
-
 static ap_context_t *pconf;		/* Pool for config stuff */
 static ap_context_t *pchild;		/* Pool for httpd child stuff */
 
@@ -796,115 +783,6 @@ static void accept_mutex_off(void)
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
 
-
-/*****************************************************************
- * dealing with other children
- */
-
-#ifdef HAS_OTHER_CHILD
-API_EXPORT(void) ap_register_other_child(int pid,
-		       void (*maintenance) (int reason, void *, ap_wait_t status),
-			  void *data, int write_fd)
-{
-    other_child_rec *ocr;
-
-    ocr = ap_palloc(pconf, sizeof(*ocr));
-    ocr->pid = pid;
-    ocr->maintenance = maintenance;
-    ocr->data = data;
-    ocr->write_fd = write_fd;
-    ocr->next = other_children;
-    other_children = ocr;
-}
-
-/* note that since this can be called by a maintenance function while we're
- * scanning the other_children list, all scanners should protect themself
- * by loading ocr->next before calling any maintenance function.
- */
-API_EXPORT(void) ap_unregister_other_child(void *data)
-{
-    other_child_rec **pocr, *nocr;
-
-    for (pocr = &other_children; *pocr; pocr = &(*pocr)->next) {
-	if ((*pocr)->data == data) {
-	    nocr = (*pocr)->next;
-	    (*(*pocr)->maintenance) (OC_REASON_UNREGISTER, (*pocr)->data, -1);
-	    *pocr = nocr;
-	    /* XXX: um, well we've just wasted some space in pconf ? */
-	    return;
-	}
-    }
-}
-
-/* test to ensure that the write_fds are all still writable, otherwise
- * invoke the maintenance functions as appropriate */
-static void probe_writable_fds(void)
-{
-    fd_set writable_fds;
-    int fd_max;
-    other_child_rec *ocr, *nocr;
-    struct timeval tv;
-    int rc;
-
-    if (other_children == NULL)
-	return;
-
-    fd_max = 0;
-    FD_ZERO(&writable_fds);
-    do {
-	for (ocr = other_children; ocr; ocr = ocr->next) {
-	    if (ocr->write_fd == -1)
-		continue;
-	    FD_SET(ocr->write_fd, &writable_fds);
-	    if (ocr->write_fd > fd_max) {
-		fd_max = ocr->write_fd;
-	    }
-	}
-	if (fd_max == 0)
-	    return;
-
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
-	rc = ap_select(fd_max + 1, NULL, &writable_fds, NULL, &tv);
-    } while (rc == -1 && errno == EINTR);
-
-    if (rc == -1) {
-	/* XXX: uhh this could be really bad, we could have a bad file
-	 * descriptor due to a bug in one of the maintenance routines */
-	ap_log_unixerr("probe_writable_fds", "select",
-		    "could not probe writable fds", server_conf);
-	return;
-    }
-    if (rc == 0)
-	return;
-
-    for (ocr = other_children; ocr; ocr = nocr) {
-	nocr = ocr->next;
-	if (ocr->write_fd == -1)
-	    continue;
-	if (FD_ISSET(ocr->write_fd, &writable_fds))
-	    continue;
-	(*ocr->maintenance) (OC_REASON_UNWRITABLE, ocr->data, -1);
-    }
-}
-
-/* possibly reap an other_child, return 0 if yes, -1 if not */
-static int reap_other_child(int pid, ap_wait_t status)
-{
-    other_child_rec *ocr, *nocr;
-
-    for (ocr = other_children; ocr; ocr = nocr) {
-	nocr = ocr->next;
-	if (ocr->pid != pid)
-	    continue;
-	ocr->pid = -1;
-	(*ocr->maintenance) (OC_REASON_DEATH, ocr->data, status);
-	return 0;
-    }
-    return -1;
-}
-#endif
-
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
 
@@ -1156,9 +1034,6 @@ static void reclaim_child_processes(int terminate)
     struct timeval tv;
     int waitret, tries;
     int not_dead_yet;
-#ifdef HAS_OTHER_CHILD
-    other_child_rec *ocr, *nocr;
-#endif
 
     ap_sync_scoreboard_image();
 
@@ -1230,28 +1105,7 @@ static void reclaim_child_processes(int terminate)
 		break;
 	    }
 	}
-#ifdef HAS_OTHER_CHILD
-	for (ocr = other_children; ocr; ocr = nocr) {
-	    nocr = ocr->next;
-	    if (ocr->pid == -1)
-		continue;
-
-	    waitret = waitpid(ocr->pid, &status, WNOHANG);
-	    if (waitret == ocr->pid) {
-		ocr->pid = -1;
-		(*ocr->maintenance) (OC_REASON_DEATH, ocr->data, status);
-	    }
-	    else if (waitret == 0) {
-		(*ocr->maintenance) (OC_REASON_RESTART, ocr->data, -1);
-		++not_dead_yet;
-	    }
-	    else if (waitret == -1) {
-		/* uh what the heck? they didn't call unregister? */
-		ocr->pid = -1;
-		(*ocr->maintenance) (OC_REASON_LOST, ocr->data, -1);
-	    }
-	}
-#endif
+        ap_check_other_child();
 	if (!not_dead_yet) {
 	    /* nothing left to wait for */
 	    break;
