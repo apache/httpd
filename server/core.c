@@ -2790,6 +2790,20 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
     apr_size_t len;
     int keptalive = f->c->keepalive == 1;
 
+    if (mode == AP_MODE_INIT) {
+        /*
+         * this mode is for filters that might need to 'initialize'
+         * a connection before reading request data from a client.
+         * NNTP over SSL for example needs to handshake before the 
+         * server sends the welcome message.
+         * such filters would have changed the mode before this point
+         * is reached.  however, protocol modules such as NNTP should
+         * not need to know anything about SSL.  given the example, if
+         * SSL is not in the filter chain, AP_MODE_INIT is a noop.
+         */
+        return APR_SUCCESS;
+    }
+
     if (!ctx)
     {
         ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));

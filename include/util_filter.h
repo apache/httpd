@@ -97,7 +97,12 @@ typedef enum {
      *  ::APR_EOF otherwise.  The filter must not return any buckets of
      *  data.  Data returned on a subsequent call, when mode is
      *  ::AP_MODE_BLOCKING or ::AP_MODE_NONBLOCKING. */
-    AP_MODE_PEEK
+    AP_MODE_PEEK,
+    /*
+     * the filter should initialize the connection if needed,
+     * NNTP or FTP over SSL for example.
+     */
+    AP_MODE_INIT
 } ap_input_mode_t;
 
 /**
