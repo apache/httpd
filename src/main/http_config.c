@@ -1228,7 +1228,11 @@ CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p
 	 * for this.
 	 */
 	fprintf(stderr, "Processing config directory: %s\n", fname);
+#ifdef NETWARE
+	dirp = ap_popendir(p, fname);
+#else
 	dirp = ap_popendir(p, path);
+#endif
 	if (dirp == NULL) {
 	    perror("fopen");
 	    fprintf(stderr, "%s: could not open config directory %s\n",
