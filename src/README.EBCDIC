@@ -2,8 +2,8 @@
 
 This version of Apache comes with a first-cut (working, but not
 fully tested) port to a mainframe machine which uses the EBCDIC
-character set as its native codeset (It is the SIEMENS NIXDORF
-family of mainframes running the BS2000 operating system. This
+character set as its native codeset (It is the SIEMENS family 
+of mainframes running the BS2000 operating system. This
 mainframe OS nowadays features a SVR4-like POSIX subsystem).
 
 The port was started initially to
@@ -22,7 +22,7 @@ decisions of the port to this machine.
   #ifdef CHARSET_EBCDIC     Code which is needed for any EBCDIC
 			    based machine
   #ifdef _OSD_POSIX         Code which is needed for the BS2000
-			    SIEMENS NIXDORF mainframe platform only.
+			    SIEMENS mainframe platform only.
 
 * The possibility to translate between ASCII and EBCDIC at the
   socket level (on BS2000 POSIX, there is a socket option which
@@ -88,56 +88,6 @@ decisions of the port to this machine.
   An example for the latter case is the wwwcount program which we ported
   as well.
 
-What works:
-- In the following list,
-    + means: works, tested
-    - means: doesn't work for some reason
-    ? means: compiled-in, but untested
-
-  http_core.c       +
-  mod_access.c      +
-  mod_actions.c     ?
-  mod_alias.c       +
-  mod_asis.c        ?
-  mod_auth.c        +
-  mod_auth_anon.c   +
-  mod_auth_db.c     ? with own libdb.a
-  mod_auth_dbm.c    ? with own libdb.a
-  mod_autoindex.c   +
-  mod_cern_meta.c   ?
-  mod_cgi.c         +
-  mod_digest.c      - / MD5 not ported yet
-  mod_dir.c         +
-  mod_env.c         +
-  mod_example.c     - / not tried yet
-  mod_expires.c     +
-  mod_headers.c     +
-  mod_imap.c        +
-  mod_include.c     +
-  mod_info.c        +
-  mod_log_agent.c   +
-  mod_log_config.c  +
-  mod_log_referer.c +
-  mod_mime.c        +
-  mod_mime_magic.c  - / not tried yet
-  mod_negotiation.c +
-  mod_proxy.c       +
-  mod_rewrite.c     ? / untested
-  mod_setenvif.c    +
-  mod_so.c          - / no shared libs
-  mod_speling.c     +
-  mod_status.c      +
-  mod_unique_id.c   +
-  mod_userdir.c     +
-  mod_usertrack.c   ? / untested
-
-Additional (third-party) modules:                    See:
-  mod_jserv.c       - / JAVA still being ported  http://java.apache.org/
-  mod_php.c         - / not ported yet           http://www.php.net/
-  mod_put.c         ? / untested                 http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html
-  mod_session.c     ? / untested                 ftp://hachiman.vidya.com/pub/apache/mod_session.tar.gz
-
-
 Notes:
     To use the mod_auth_db functionality, you will need a working libdb.a.
 On the system where I did the port none was available, so I ported the
@@ -145,4 +95,6 @@ standard db-1.85.14 with little problems. Note however that you will need
 a working perl5 as well if you want to use Apache's dbmmanage script to
 maintain db user databases.
 
-			    Martin Kraemer, 31-Mar-1998
+See also the ebcdic.html document which is part of the apache documentation.
+
+			    Martin Kraemer, 1-Oct-1998

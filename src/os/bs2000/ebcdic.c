@@ -62,8 +62,7 @@
 /*
 	   Initial Port for  Apache-1.3 by <Martin.Kraemer@Mch.SNI.De>
 
-"BS2000 OSD" is a POSIX on a main frame.
-It is made by Siemens Nixdorf AG, Germany.
+"BS2000 OSD" is a POSIX on a main frame. It is made by Siemens AG, Germany.
 Within the POSIX subsystem, the same character set was chosen as in
 "native BS2000", namely EBCDIC.
 
