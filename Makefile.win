@@ -244,10 +244,7 @@ _install:
 	-mkdir "$(INSTDIR)\htdocs\manual"
 	-mkdir "$(INSTDIR)\icons"
 	-mkdir "$(INSTDIR)\include"
-	-mkdir "$(INSTDIR)\include\xml"
-	-mkdir "$(INSTDIR)\include\pcre"
 	-mkdir "$(INSTDIR)\lib"
-	-mkdir "$(INSTDIR)\libexec"
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
 #	-mkdir "$(INSTDIR)\proxy"
@@ -351,16 +348,17 @@ A
         xcopy docs\manual "$(INSTDIR)\htdocs\manual" /s /d < <<
 A
 <<
-	xcopy include\*.h "$(INSTDIR)\include" /d < <<
+	xcopy srclib\pcre\pcre*.h "$(INSTDIR)\include" /d < <<
 A
 <<
+	copy srclib\apr-util\xml\expat\lib\expat.h "$(INSTDIR)\include"
 	xcopy srclib\apr\include\*.h "$(INSTDIR)\include" /d < <<
 A
 <<
 	xcopy srclib\apr-util\include\*.h "$(INSTDIR)\include" /d < <<
 A
 <<
-	xcopy srclib\pcre\*.h "$(INSTDIR)\include\pcre" /d < <<
+	xcopy include\*.h "$(INSTDIR)\include" /d < <<
 A
 <<
         xcopy docs\icons "$(INSTDIR)\icons" /s /d < <<
@@ -370,14 +368,17 @@ A
 	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib"
 	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib"
 	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib "$(INSTDIR)\lib"
-	copy srclib\apr\$(LONG)\libapr.lib "$(INSTDIR)\libexec"
-	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\libexec"
-	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\libexec"
-	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\libexec"
-	copy $(LONG)\libhttpd.exp "$(INSTDIR)\libexec"
-	copy $(LONG)\libhttpd.lib "$(INSTDIR)\libexec"
-	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\libexec"
-	copy modules\dav\main\$(LONG)\mod_dav.lib "$(INSTDIR)\libexec"
+#       ### until we determine if it's safe to change expat>libexpat and xml>expat
+#       within our cvs tree... at least remain consistent to our naming conventions;
+	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib\expat.lib"
+	copy srclib\apr\$(LONG)\libapr.lib "$(INSTDIR)\lib"
+	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\lib"
+	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\lib"
+	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\lib"
+	copy $(LONG)\libhttpd.exp "$(INSTDIR)\lib"
+	copy $(LONG)\libhttpd.lib "$(INSTDIR)\lib"
+	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\lib"
+	copy modules\dav\main\$(LONG)\mod_dav.lib "$(INSTDIR)\lib"
 	copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
         if not exist "$(INSTDIR)\conf\magic" \
             copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
