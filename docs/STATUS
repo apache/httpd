@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/06 19:07:36 $
+Last modified: $Date: 2002/09/06 19:15:07 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -115,7 +115,6 @@ header.html                        # delete after finishing manual/
 custom-error.html.en
 index.html.en                      # leave in html?
 cgi_path.html.en
-sitemap.html.en
 howto/cgi.html.en
 howto/ssi.html.en
 howto/auth.html.en
