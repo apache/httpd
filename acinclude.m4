@@ -45,6 +45,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(includedir)
   APACHE_SUBST(iconsdir)
   APACHE_SUBST(sysconfdir)
+  APACHE_SUBST(installbuilddir)
   APACHE_SUBST(other_targets)
   APACHE_SUBST(progname)
   APACHE_SUBST(prefix)
@@ -255,7 +256,7 @@ AC_DEFUN(APACHE_LAYOUT,[
   rm $pldconf
   for var in prefix exec_prefix bindir sbindir libexecdir mandir \
              sysconfdir datadir iconsdir htdocsdir cgidir includedir \
-             localstatedir runtimedir logfiledir proxycachedir; do
+             localstatedir runtimedir logfiledir proxycachedir installbuilddir; do
     eval "val=\"\$$var\""
     case $val in
       *+)
@@ -304,6 +305,7 @@ if test -z "$LAYOUT"; then
   libexecdir='${prefix}/modules'
   mandir='${prefix}/man'
   layout_name=Apache
+  installbuilddir='${prefix}/build'
 else 
   APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
 fi
