@@ -16,6 +16,6 @@ APACHE_MODULE(auth_db, DB-based access databases, , , , [
 
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most)
 
-APR_ADDTO(LTFLAGS,-export-dynamic)
+APR_ADDTO(LT_LDFLAGS,-export-dynamic)
 
 APACHE_MODPATH_FINISH
