@@ -108,7 +108,7 @@
        for Apache 1.2 and higher there is a Spencer POSIX library
        in the distribution */
 #ifndef HAS_APACHE_REGEX_LIB
-#include "regexp/regexp.h"
+#include "regex/regex.h"
 #endif
 
 
