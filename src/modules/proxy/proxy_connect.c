@@ -71,6 +71,9 @@ DEF_Explain
  * "Tunneling SSL Through a WWW Proxy" currently at
  * http://www.mcom.com/newsref/std/tunneling_ssl.html.
  *
+ * If proxyhost and proxyport are set, we send a CONNECT to 
+ * the specified proxy..  
+ *
  * FIXME: this is bad, because it does its own socket I/O
  *        instead of using the I/O in buff.c.  However,
  *        the I/O in buff.c blocks on reads, and because
@@ -90,7 +93,8 @@ DEF_Explain
  */ 
  
 int
-proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
+proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
+    const char *proxyhost, int proxyport)
 {
     struct sockaddr_in server;
     struct in_addr destaddr;
@@ -140,10 +144,15 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
 	    return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    Explain2("CONNECT to %s on port %d", host, port);
+    if (proxyhost) {
+	Explain2("CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
+    } else {
+    	Explain2("CONNECT to %s on port %d", host, port);
+    }
  
-    server.sin_port = htons(port);
-    err = proxy_host2addr(host, &server_hp);
+    server.sin_port = (proxyport ? htons(proxyport) : htons(port));
+    err = proxy_host2addr(proxyhost ? proxyhost : host, &server_hp);
+
     if (err != NULL)
 	return proxyerror(r, err); /* give up */
  
@@ -169,11 +178,27 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
         return proxyerror(r, "Could not connect to remote machine");
     }
  
-    Explain0("Returning 200 OK Status");
- 
-    rvputs(r, "HTTP/1.0 200 Connection established\015\012", NULL);
-    rvputs(r, "Proxy-agent: ", SERVER_VERSION, "\015\012\015\012", NULL);
-    bflush(r->connection->client);
+    /* If we are connecting through a remote proxy, we need to pass
+     * the CONNECT request on to it.
+     */
+    if (proxyport) {
+	/* FIXME: We should not be calling write() directly, but we currently
+	 * have no alternative.  Error checking ignored.  Also, we force
+	 * a HTTP/1.0 request to keep things simple.
+	 */
+	Explain0("Sending the CONNECT request to the remote proxy");
+	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0\015\012", 
+	    r->uri); 
+	write(sock, buffer, strlen(buffer));
+	ap_snprintf(buffer, sizeof(buffer),
+	    "Proxy-agent: %s\015\012\015\012", SERVER_VERSION);
+	write(sock, buffer, strlen(buffer));
+    } else {
+	Explain0("Returning 200 OK Status");
+	rvputs(r, "HTTP/1.0 200 Connection established\015\012", NULL);
+	rvputs(r, "Proxy-agent: ", SERVER_VERSION, "\015\012\015\012", NULL);
+	bflush(r->connection->client);
+    }
 
     while (1) /* Infinite loop until error (one side closes the connection) */
     {

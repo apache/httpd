@@ -1,5 +1,13 @@
 Changes with Apache 1.3a2
 
+  *) The proxy now properly handles CONNECT requests which are sent
+     to proxy servers when using ProxyRemote.  [Marc Slemko, PR#1024]
+
+  *) A script called apachectl has been added to the support 
+     directory.  This script allows you to do things such as 
+     "apachectl start" and "apachectl restart" from the command
+     line.  [Marc Slemko]
+
   *) Modules and core routines are now put into libraries, which
      simplifies the link line tremendously (among other advantages).
      [Paul Sutton]

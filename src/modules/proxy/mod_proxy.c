@@ -331,8 +331,14 @@ proxy_handler(request_rec *r)
 	    (p != NULL &&
 	       strncmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0))
 	{
+	    /* CONNECT is a special method that bypasses the normal
+	     * proxy code.
+	     */
+	    if (r->method_number == M_CONNECT)
+		rc = proxy_connect_handler(r, cr, url, ents[i].hostname,
+		    ents[i].port);
 /* we only know how to handle communication to a proxy via http */
-	    if (strcmp(ents[i].protocol, "http") == 0)
+	    else if (strcmp(ents[i].protocol, "http") == 0)
 		rc = proxy_http_handler(r, cr, url, ents[i].hostname,
 		    ents[i].port);
 	    else rc = DECLINED;
@@ -349,7 +355,7 @@ proxy_handler(request_rec *r)
  */
     /* handle the scheme */
     if (r->method_number == M_CONNECT)
-	return proxy_connect_handler(r, cr, url);
+	return proxy_connect_handler(r, cr, url, NULL, 0);
     if (strcmp(scheme, "http") == 0)
 	return proxy_http_handler(r, cr, url, NULL, 0);
     if (strcmp(scheme, "ftp") == 0)

@@ -237,7 +237,8 @@ void proxy_garbage_coll(request_rec *r);
 
 /* proxy_connect.c */
 
-int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url);
+int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url, 
+    const char *proxyhost, int proxyport);
 
 /* proxy_ftp.c */
 
