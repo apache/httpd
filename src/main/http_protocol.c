@@ -282,16 +282,16 @@ int set_keepalive(request_rec *r)
     char *conn = table_get (r->headers_in, "Connection");
     char *length = table_get (r->headers_out, "Content-length");
 
+    if ((r->server->keep_alive > r->connection->keepalives) &&
+	(r->server->keep_alive_timeout > 0) &&
+	(r->header_only || length ||
+	 ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1)))) &&
+	(!find_token(r->pool, conn, "close")) &&
 #ifdef FORHTTP11
-    if ((((r->proto_num >= 1001) && (!find_token(r->pool, conn, "close")))
-	 || (find_token(r->pool, conn, "keep-alive")))
+	((proto_num >= 1001) || find_token(r->pool, conn, "keep-alive"))) {
 #else
-    if ((find_token(r->pool, conn, "keep-alive"))
+	(find_token(r->pool, conn, "keep-alive"))) {
 #endif
-	&& (r->header_only || length ||
-	    ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1))))
-	&& (r->server->keep_alive_timeout &&
-	    (r->server->keep_alive > r->connection->keepalives))) {
 	char header[26];
 	int left = r->server->keep_alive - r->connection->keepalives;
 	
