@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Try to log an error if a piped log program fails.  Try to
+     restart a piped log program in more failure situations.  PR 15761
+     [Jeff Trawick]
+
   *) Fix mod_cern_meta to not create empty metafiles when the
      metafile searched for does not exist.  PR 12353
      [Owen Rees <owen_rees@hp.com>]
