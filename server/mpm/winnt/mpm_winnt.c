@@ -702,7 +702,7 @@ static void accept_and_queue_connections(void * dummy)
 
 	rc = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 
-        if (rc == 0 || (rc == SOCKET_ERROR && h_errno == WSAEINTR)) {
+        if (rc == 0 || (rc == SOCKET_ERROR && APR_STATUS_IS_EINTR(apr_get_netos_error()))) {
             count_select_errors = 0;    /* reset count of errors */            
             continue;
         }
@@ -711,12 +711,12 @@ static void accept_and_queue_connections(void * dummy)
              * select errors. This count is used to ensure we don't go into
              * a busy loop of continuous errors.
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, h_errno, server_conf, 
-                         "select failed with errno %d", h_errno);
+            ap_log_error(APLOG_MARK, APLOG_INFO, apr_get_netos_error(), server_conf, 
+                         "select failed with error %d", apr_get_netos_error());
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
                 shutdown_in_progress = 1;
-                ap_log_error(APLOG_MARK, APLOG_ERR, h_errno, server_conf,
+                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), server_conf,
                              "Too many errors in select loop. Child process exiting.");
                 break;
             }
@@ -736,11 +736,11 @@ static void accept_and_queue_connections(void * dummy)
             if (csd == INVALID_SOCKET) {
                 csd = -1;
             }
-        } while (csd < 0 && h_errno == WSAEINTR);
+        } while (csd < 0 && APR_STATUS_IS_EINTR(apr_get_netos_error()));
 
 	if (csd < 0) {
-            if (h_errno != WSAECONNABORTED) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, h_errno, server_conf,
+            if (apr_get_netos_error() == APR_FROM_OS_ERROR(WSAECONNABORTED)) {
+		ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), server_conf,
 			    "accept: (client socket)");
             }
 	}
@@ -1615,7 +1615,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
                      "Parent: Duplicating socket %d and sending it to child process %d", nsd, pi.dwProcessId);
         if (WSADuplicateSocket(nsd, pi.dwProcessId,
                                lpWSAProtocolInfo) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), server_conf,
                          "Parent: WSADuplicateSocket failed for socket %d.", lr->sd );
             return -1;
         }
