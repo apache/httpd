@@ -211,7 +211,7 @@ static int proxy_fixup(request_rec *r)
 
     p = strchr(url, ':');
     if (p == NULL || p == url)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
 
     return OK;		/* otherwise; we've done the best we can */
 }
@@ -311,14 +311,8 @@ static int proxy_handler(request_rec *r)
 	int ii;
 	struct dirconn_entry *list = (struct dirconn_entry *) conf->dirconn->elts;
 
-/*        if (*++p == '/' && *++p == '/')   */
-
 	for (direct_connect = ii = 0; ii < conf->dirconn->nelts && !direct_connect; ii++) {
 	    direct_connect = list[ii].matcher(&list[ii], r);
-#if DEBUGGING
-	    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r->server,
-			"URI and NoProxy: %s: %s", r->uri, list[ii].name);
-#endif
 	}
 #if DEBUGGING
 	{
