@@ -971,7 +971,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     /* is it for us? */
     if (strncasecmp(url, "http:", 5)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                     "proxy: HTTP: rejecting URL %s", url);
+                     "proxy: HTTP: declining URL %s", url);
         return DECLINED; /* only interested in HTTP */
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
