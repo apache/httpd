@@ -11,7 +11,7 @@
 <category id="release"><title>Hinweise zur Version</title>
     <page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
     <page href="upgrading.html">Upgrade auf Version 2.0</page>
-    <page href="LICENSE">Apache-Lizenz</page>
+    <page href="license.html">Apache-Lizenz</page>
 </category>
 
 <category id="manual"><title>Bedienungsanleitung</title>

@@ -23,7 +23,7 @@
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Hinweise zur Version</a></h2>
 <ul><li><a href="new_features_2_0.html">Neue Funktionen in Version 2.0</a></li>
 <li><a href="upgrading.html">Upgrade auf Version 2.0</a></li>
-<li><a href="LICENSE">Apache-Lizenz</a></li>
+<li><a href="license.html">Apache-Lizenz</a></li>
 </ul>
 </div><div class="category"><h2><a name="manual" id="manual">Bedienungsanleitung</a></h2>
 <ul><li><a href="install.html">Kompilieren und Installieren</a></li>
