@@ -66,7 +66,7 @@
 #error This module does not currently compile unless you have a thread-capable APR. Sorry!
 #endif
 
-#define MAX_CACHE 5000
+static apr_size_t max_cache_entry_size = 5000;
 module AP_MODULE_DECLARE_DATA mem_cache_module;
 
 /* 
@@ -93,8 +93,12 @@ typedef struct {
 
 typedef struct mem_cache_object {
     cache_type_e type;
-    apr_ssize_t num_headers;
-    cache_header_tbl_t *tbl;
+    apr_ssize_t num_header_out;
+    apr_ssize_t num_subprocess_env;
+    apr_ssize_t num_notes;
+    cache_header_tbl_t *header_out;
+    cache_header_tbl_t *subprocess_env;
+    cache_header_tbl_t *notes;
     apr_size_t m_len;
     void *m;
 } mem_cache_object_t;
@@ -113,10 +117,9 @@ static mem_cache_conf *sconf;
 
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
-static int write_headers(cache_handle_t *h, request_rec *r, cache_info *i,
-                         apr_table_t *headers);
+static int write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
 static int write_body(cache_handle_t *h, apr_bucket_brigade *b);
-static int read_headers(cache_handle_t *h, request_rec *r, apr_table_t *headers);
+static int read_headers(cache_handle_t *h, request_rec *r);
 static int read_body(cache_handle_t *h, apr_bucket_brigade *bb);
 
 static void cleanup_cache_object(cache_object_t *obj)
@@ -166,9 +169,18 @@ static void cleanup_cache_object(cache_object_t *obj)
     if (mobj->m) {
         free(mobj->m);
     }
-
+    /* XXX should freeing of the info be done here or in cache_storage ? 
+    if (obj->info.content_type ) {
+        free((char*)obj->info.content_type );
+        obj->info.content_type =NULL;
+    }
+    if (obj->info.filename ) {
+        free( (char*)obj->info.filename );
+        obj->info.filename= NULL;
+    }
+    */
     /* XXX Cleanup the headers */
-    if (mobj->num_headers) {
+    if (mobj->num_header_out) {
         
     }
     free(mobj);
@@ -199,10 +211,6 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
 
     sconf = apr_pcalloc(p, sizeof(mem_cache_conf));
     sconf->space = DEFAULT_CACHE_SPACE;
-#if 0
-    sconf->maxexpire = DEFAULT_CACHE_MAXEXPIRE;
-    sconf->defaultexpire = DEFAULT_CACHE_EXPIRE;
-#endif
 
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
     if (threaded_mpm) {
@@ -214,7 +222,10 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static int create_entity(cache_handle_t *h, const char *type, char *key, apr_size_t len) 
+static int create_entity(cache_handle_t *h, 
+                         const char *type, 
+                         const char *key, 
+                         apr_size_t len) 
 {
     cache_object_t *obj, *tmp_obj;
     mem_cache_object_t *mobj;
@@ -226,7 +237,7 @@ static int create_entity(cache_handle_t *h, const char *type, char *key, apr_siz
     /* XXX Check len to see if it is withing acceptable bounds 
      * max cache check should be configurable variable.
      */
-    if (len < 0 || len > MAX_CACHE) {
+    if (len < 0 || len > max_cache_entry_size) {
         return DECLINED;
     }
     /* XXX Check total cache size and number of entries. Are they within the
@@ -256,7 +267,9 @@ static int create_entity(cache_handle_t *h, const char *type, char *key, apr_siz
         cleanup_cache_object(obj);
     }
     memset(mobj,'\0', sizeof(*mobj));
-    obj->vobj = mobj;    /* Reference the mem_cache_object_t out of cache_object_t */
+    obj->vobj = mobj;    /* Reference the mem_cache_object_t out of 
+                          * cache_object_t 
+                          */
     mobj->m_len = len;    /* Duplicates info in cache_object_t info */
 
 
@@ -268,7 +281,9 @@ static int create_entity(cache_handle_t *h, const char *type, char *key, apr_siz
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    tmp_obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
+    tmp_obj = (cache_object_t *) apr_hash_get(sconf->cacheht, 
+                                              key, 
+                                              APR_HASH_KEY_STRING);
     if (!tmp_obj) {
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
     }
@@ -296,7 +311,7 @@ static int create_entity(cache_handle_t *h, const char *type, char *key, apr_siz
     return OK;
 }
 
-static int open_entity(cache_handle_t *h, const char *type, char *key) 
+static int open_entity(cache_handle_t *h, const char *type, const char *key) 
 {
     cache_object_t *obj;
 
@@ -307,7 +322,9 @@ static int open_entity(cache_handle_t *h, const char *type, char *key)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
+    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, 
+                                          key, 
+                                          APR_HASH_KEY_STRING);
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
@@ -343,9 +360,69 @@ static int remove_entity(cache_handle_t *h)
     
     return OK;
 }
+static int serialize_table( cache_header_tbl_t **obj, 
+                            int*nelts, 
+                            apr_table_t *table) 
+{
+   apr_table_entry_t *elts = (apr_table_entry_t *) table->a.elts;
+   apr_ssize_t i;
+   apr_size_t len = 0;
+   apr_size_t idx = 0;
+   char *buf;
+   
+   *nelts = table->a.nelts;
+   if (*nelts ==0 ) {
+       *obj=NULL;
+       return OK;
+   }
+    *obj = malloc(sizeof(cache_header_tbl_t) * table->a.nelts);
+    if (NULL == *obj) {
+        /* cleanup_cache_obj(h->cache_obj); */
+        return DECLINED;
+    }
+    for (i = 0; i < table->a.nelts; ++i) {
+        len += strlen(elts[i].key);
+        len += strlen(elts[i].val);
+        len += 2;  /* Extra space for NULL string terminator for key and val */
+    }
 
+    /* Transfer the headers into a contiguous memory block */
+    buf = malloc(len);
+    if (!buf) {
+        free(obj);
+        *obj = NULL;
+        /* cleanup_cache_obj(h->cache_obj); */
+        return DECLINED;
+    }
+
+    for (i = 0; i < *nelts; ++i) {
+        (*obj)[i].hdr = &buf[idx];
+        len = strlen(elts[i].key) + 1;              /* Include NULL terminator */
+        strncpy(&buf[idx], elts[i].key, len);
+        idx+=len;
+
+        (*obj)[i].val = &buf[idx];
+        len = strlen(elts[i].val) + 1;
+        strncpy(&buf[idx], elts[i].val, len);
+        idx+=len;
+    }
+    return OK;
+ 
+}
+static int unserialize_table( cache_header_tbl_t *ctbl, 
+                              int num_headers, 
+                              apr_table_t *t )
+{
+    int i;
+
+    for (i = 0; i < num_headers; ++i) {
+        apr_table_setn(t, ctbl[i].hdr, ctbl[i].val);
+    } 
+
+    return OK;
+}
 /* Define request processing hook handlers */
-static int remove_url(const char *type, char *key) 
+static int remove_url(const char *type, const char *key) 
 {
     cache_object_t *obj;
 
@@ -363,7 +440,9 @@ static int remove_url(const char *type, char *key)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
+    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, 
+                                          key, 
+                                          APR_HASH_KEY_STRING);
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
@@ -386,16 +465,25 @@ static int remove_url(const char *type, char *key)
     return OK;
 }
 
-static int read_headers(cache_handle_t *h, request_rec *r, apr_table_t *headers) 
+static int read_headers(cache_handle_t *h, request_rec *r) 
 {
+    int rc;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
-    int i;
 
-    for (i = 0; i < mobj->num_headers; ++i) {
-        apr_table_setn(headers, mobj->tbl[i].hdr, mobj->tbl[i].val);
-    } 
+    r->headers_out = apr_table_make(r->pool,mobj->num_header_out);
+    r->subprocess_env = apr_table_make(r->pool, mobj->num_subprocess_env);
+    r->notes = apr_table_make(r->pool, mobj->num_notes);
+    rc = unserialize_table( mobj->header_out,
+                            mobj->num_header_out, 
+                            r->headers_out);
+    rc = unserialize_table( mobj->subprocess_env, 
+                            mobj->num_subprocess_env, 
+                            r->subprocess_env);
+    rc = unserialize_table( mobj->notes,
+                            mobj->num_notes,
+                            r->notes);
+    return rc;
 
-    return OK;
 }
 
 static int read_body(cache_handle_t *h, apr_bucket_brigade *bb) 
@@ -411,49 +499,33 @@ static int read_body(cache_handle_t *h, apr_bucket_brigade *bb)
     return OK;
 }
 
-static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info, apr_table_t *headers)
+
+static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
-    apr_table_entry_t *elts = (apr_table_entry_t *) headers->a.elts;
-    apr_ssize_t i;
-    apr_size_t len = 0;
-    apr_size_t idx = 0;
-    char *buf;
+    int rc;
 
     /* Precompute how much storage we need to hold the headers */
-    mobj->tbl = malloc(sizeof(cache_header_tbl_t) * headers->a.nelts);
-    if (NULL == mobj->tbl) {
-        /* cleanup_cache_obj(h->cache_obj); */
-        return DECLINED;
+    rc = serialize_table(&mobj->header_out, 
+                         &mobj->num_header_out, 
+                         r->headers_out);   
+    if (rc != OK ) {
+        return rc;
     }
-    for (i = 0; i < headers->a.nelts; ++i) {
-        len += strlen(elts[i].key);
-        len += strlen(elts[i].val);
-        len += 2;        /* Extra space for NULL string terminator for key and val */
-    }
-
-    /* Transfer the headers into a contiguous memory block */
-    buf = malloc(len);
-    if (!buf) {
-        free(mobj->tbl);
-        mobj->tbl = NULL;
-        /* cleanup_cache_obj(h->cache_obj); */
-        return DECLINED;
-    }
-    mobj->num_headers = headers->a.nelts;
-    for (i = 0; i < mobj->num_headers; ++i) {
-        mobj->tbl[i].hdr = &buf[idx];
-        len = strlen(elts[i].key) + 1;              /* Include NULL terminator */
-        strncpy(&buf[idx], elts[i].key, len);
-        idx+=len;
-
-        mobj->tbl[i].val = &buf[idx];
-        len = strlen(elts[i].val) + 1;
-        strncpy(&buf[idx], elts[i].val, len);
-        idx+=len;
+    rc = serialize_table(&mobj->subprocess_env,
+                         &mobj->num_subprocess_env, 
+                         r->subprocess_env );
+    if (rc != OK ) {
+        return rc;
     }
 
+    rc = serialize_table(&mobj->notes, &mobj->num_notes, r->notes);
+    if (rc != OK ) {
+        return rc;
+    }
+
+ 
     /* Init the info struct */
     if (info->date) {
         obj->info.date = info->date;
@@ -471,6 +543,15 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info, ap
             return DECLINED;
         }
         strcpy((char*) obj->info.content_type, info->content_type);
+    }
+    if ( info->filename) {
+        obj->info.filename = (char*) malloc(strlen(info->filename )+1);
+        if (!obj->info.filename ) {
+            free( (char*)obj->info.content_type );
+            obj->info.content_type =NULL;
+            return DECLINED;
+        }
+        strcpy((char*) obj->info.filename, info->filename );
     }
 
     return OK;
@@ -522,7 +603,6 @@ static int write_body(cache_handle_t *h, apr_bucket_brigade *b)
          */
         AP_DEBUG_ASSERT(h->cache_obj->count > mobj->m_len);
     }
-
     return OK;
 }
 
@@ -537,45 +617,19 @@ static const char
     sconf->space = val;
     return NULL;
 }
-#if 0
-static const char
-*set_cache_factor(cmd_parms *parms, void *dummy, char *arg)
+static const char 
+*set_cache_entry_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    double val;
+    int val;
 
-    if (sscanf(arg, "%lg", &val) != 1)
-        return "CacheLastModifiedFactor value must be a float";
-    sconf->lmfactor = val;
-
+    if (sscanf(arg, "%d", &val) != 1) {
+        return "CacheSize value must be an integer (bytes)";
+    }
+    max_cache_entry_size = val;
     return NULL;
 }
-#endif
-#if 0
-static const char
-*set_cache_maxex(cmd_parms *parms, void *dummy, char *arg)
-{
-    mem_cache_conf *pc = ap_get_module_config(parms->server->module_config, &mem_cache_module);
-    double val;
 
-    if (sscanf(arg, "%lg", &val) != 1)
-        return "CacheMaxExpire value must be a float";
-    sconf->maxexpire = (apr_time_t) (val * MSEC_ONE_HR);
-    return NULL;
-}
-#endif
-#if 0
-static const char
-*set_cache_defex(cmd_parms *parms, void *dummy, char *arg)
-{
-    mem_cache_conf *pc = ap_get_module_config(parms->server->module_config, &mem_cache_module);
-    double val;
 
-    if (sscanf(arg, "%lg", &val) != 1)
-        return "CacheDefaultExpire value must be a float";
-    pc->defaultexpire = (apr_time_t) (val * MSEC_ONE_HR);
-    return NULL;
-}
-#endif
 static const command_rec cache_cmds[] =
 {
     /* XXX
@@ -585,8 +639,10 @@ static const command_rec cache_cmds[] =
      * max entry size, and max size of the cache should
      * be managed by this module. 
      */
-    AP_INIT_TAKE1("CacheSizeMem", set_cache_size, NULL, RSRC_CONF,
-     "The maximum disk space used by the cache in Kb"),
+    AP_INIT_TAKE1("CacheMemSize", set_cache_size, NULL, RSRC_CONF,
+     "The maximum space used by the cache in Kb"),
+    AP_INIT_TAKE1("CacheMemEntrySize", set_cache_entry_size, NULL, RSRC_CONF,
+     "The maximum size (in bytes) that a entry can take"),
     {NULL}
 };
 

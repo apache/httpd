@@ -72,7 +72,7 @@ int ap_cache_request_is_conditional(request_rec *r)
         apr_table_get(r->headers_in, "If-Modified-Since") ||
         apr_table_get(r->headers_in, "If-Unmodified-Since")) {
 
-	return 1;
+        return 1;
     }
     return 0;
 }
@@ -97,33 +97,37 @@ void ap_cache_reset_output_filters(request_rec *r)
     }
 }
 
-const char *ap_cache_get_cachetype(request_rec *r, cache_server_conf *conf, const char *url)
+const char *ap_cache_get_cachetype(request_rec *r, 
+                                   cache_server_conf *conf, 
+                                   const char *url)
 {
     const char *type = NULL;
     int i;
 
     /* loop through all the cacheenable entries */
     for (i = 0; i < conf->cacheenable->nelts; i++) {
-	struct cache_enable *ent = (struct cache_enable *) conf->cacheenable->elts;
-	const char *thisurl = ent[i].url;
-	const char *thistype = ent[i].type;
-	if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
-	    if (!type) {
-		type = thistype;
-	    }
-	    else {
-		type = apr_pstrcat(r->pool, type, ",", thistype, NULL);
-	    }
-	}
+        struct cache_enable *ent = 
+                                (struct cache_enable *)conf->cacheenable->elts;
+        const char *thisurl = ent[i].url;
+        const char *thistype = ent[i].type;
+        if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
+            if (!type) {
+                type = thistype;
+            }
+            else {
+                type = apr_pstrcat(r->pool, type, ",", thistype, NULL);
+            }
+        }
     }
 
     /* then loop through all the cachedisable entries */
     for (i = 0; i < conf->cachedisable->nelts; i++) {
-	struct cache_disable *ent = (struct cache_disable *) conf->cachedisable->elts;
-	const char *thisurl = ent[i].url;
-	if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
-	    type = NULL;
-	}
+        struct cache_disable *ent = 
+                               (struct cache_disable *)conf->cachedisable->elts;
+        const char *thisurl = ent[i].url;
+        if ((thisurl) && !strncasecmp(thisurl, url, strlen(thisurl))) {
+            type = NULL;
+        }
     }
 
     return type;
@@ -145,35 +149,35 @@ int ap_cache_liststr(const char *list, const char *key, char **val)
     len = strlen(key);
 
     while (list != NULL) {
-	p = strchr((char *) list, ',');
-	if (p != NULL) {
-	    i = p - list;
-	    do
-		p++;
-	    while (ap_isspace(*p));
-	}
-	else
-	    i = strlen(list);
+        p = strchr((char *) list, ',');
+        if (p != NULL) {
+            i = p - list;
+            do
+            p++;
+            while (ap_isspace(*p));
+        }
+        else
+            i = strlen(list);
 
-	while (i > 0 && ap_isspace(list[i - 1]))
-	    i--;
-	if (i == len && strncasecmp(list, key, len) == 0) {
-	    if (val) {
-		p = strchr((char *) list, ',');
-		while (ap_isspace(*list)) {
-		    list++;
-		}
-		if ('=' == list[0])
-		    list++;
-		while (ap_isspace(*list)) {
-		    list++;
-		}
-		strncpy(valbuf, list, MIN(p-list, sizeof(valbuf)-1));
-		*val = valbuf;
-	    }
-	    return 1;
-	}
-	list = p;
+        while (i > 0 && ap_isspace(list[i - 1]))
+            i--;
+        if (i == len && strncasecmp(list, key, len) == 0) {
+            if (val) {
+            p = strchr((char *) list, ',');
+            while (ap_isspace(*list)) {
+                list++;
+            }
+            if ('=' == list[0])
+                list++;
+            while (ap_isspace(*list)) {
+                list++;
+            }
+            strncpy(valbuf, list, MIN(p-list, sizeof(valbuf)-1));
+            *val = valbuf;
+            }
+            return 1;
+        }
+        list = p;
     }
     return 0;
 }
@@ -186,21 +190,22 @@ const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
 
     s = ap_strchr_c(list, ',');
     if (s != NULL) {
-	i = s - list;
-	do
-	    s++;
-	while (apr_isspace(*s));
+        i = s - list;
+        do
+            s++;
+        while (apr_isspace(*s))
+            ; /* noop */
     }
     else
-	i = strlen(list);
+        i = strlen(list);
 
     while (i > 0 && apr_isspace(list[i - 1]))
-	i--;
+        i--;
 
     *str = s;
     if (i)
-	return apr_pstrndup(p, list, i);
+        return apr_pstrndup(p, list, i);
     else
-	return NULL;
+        return NULL;
 
 }
