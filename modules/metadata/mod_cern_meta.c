@@ -248,7 +248,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
     apr_table_t *tmp_headers;
 
     tmp_headers = apr_make_table(r->pool, 5);
-    while (apr_fgets(w, MAX_STRING_LEN - 1, f) != APR_SUCCESS) {
+    while (apr_fgets(w, MAX_STRING_LEN - 1, f) == APR_SUCCESS) {
 
 	/* Delete terminal (CR?)LF */
 
