@@ -137,10 +137,10 @@ regardless of extension, you might put the following into an
     SetHandler imap-file
 </PRE>
 <P>Another example: if you wanted to have the server display a status
-report whenever a URL of <CODE>http://servername/status</CODE> was
+report whenever a URL of <CODE>http://servername/server-status</CODE> was
 called, you might put the following into access.conf:
 <PRE>
-    &lt;Location /status&gt;
+    &lt;Location /server-status&gt;
     SetHandler server-status
     &lt;/Location&gt;
 </PRE>
