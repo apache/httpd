@@ -1108,21 +1108,21 @@ command_rec core_cmds[] = {
 #else
  no_set_limit, NULL,
 #endif
-      OR_ALL, RAW_ARGS, "soft/hard limits for max CPU usage in seconds" },
+      OR_ALL, TAKE12, "soft/hard limits for max CPU usage in seconds" },
 { "RLimitMEM",
 #if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
  set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
 #else
  no_set_limit, NULL,
 #endif
-      OR_ALL, RAW_ARGS, "soft/hard limits for max memory usage per process" },
+      OR_ALL, TAKE12, "soft/hard limits for max memory usage per process" },
 { "RLimitNPROC",
 #ifdef RLIMIT_NPROC
  set_limit_nproc, (void*)XtOffsetOf(core_dir_config, limit_nproc),
 #else
  no_set_limit, NULL,
 #endif
-      OR_ALL, RAW_ARGS, "soft/hard limits for max number of processes per uid" },
+      OR_ALL, TAKE12, "soft/hard limits for max number of processes per uid" },
 { "BindAddress", set_bind_address, NULL, RSRC_CONF, TAKE1,
   "'*', a numeric IP address, or the name of a host with a unique IP address"},
 { "Listen", set_listener, NULL, RSRC_CONF, TAKE1,
