@@ -898,7 +898,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
         return status;
 
     if (finfo.filetype != APR_REG &&
-#if defined(WIN32) || defined(OS2)
+#if defined(WIN32) || defined(OS2) || defined(NETWARE)
         strcasecmp(apr_filename_of_pathname(name), "nul") != 0) {
 #else
         strcmp(name, "/dev/null") != 0) {
