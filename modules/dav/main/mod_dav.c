@@ -101,6 +101,9 @@
 /* ### what is the best way to set this? */
 #define DAV_DEFAULT_PROVIDER    "filesystem"
 
+/* used to denote that mod_dav will be handling this request */
+#define DAV_HANDLER_NAME "dav-handler"
+
 enum {
     DAV_ENABLED_UNSET = 0,
     DAV_ENABLED_OFF,
@@ -4423,37 +4426,10 @@ static int dav_method_bind(request_rec *r)
  */
 static int dav_handler(request_rec *r)
 {
-    dav_dir_conf *conf = ap_get_module_config(r->per_dir_config, &dav_module);
-
-    /* if DAV is not enabled, then we've got nothing to do */
-    if (conf->provider == NULL) {
+    if (strcmp(r->handler, DAV_HANDLER_NAME) != 0)
         return DECLINED;
-    }
-
-    if (r->method_number == M_GET) {
-        /*
-         * ### need some work to pull Content-Type and Content-Language
-         * ### from the property database.
-         */
-
-        /*
-         * If the repository hasn't indicated that it will handle the
-         * GET method, then just punt.
-         *
-         * ### this isn't quite right... taking over the response can break
-         * ### things like mod_negotiation. need to look into this some more.
-         */
-        if (!conf->provider->repos->handle_get) {
-            return DECLINED;
-        }
-    }
 
     /* ### do we need to do anything with r->proxyreq ?? */
-
-    /* quickly ignore any HTTP/0.9 requests which aren't subreqs. */
-    if (r->assbackwards && !r->main) {
-        return DECLINED;
-    }
 
     /*
      * ### anything else to do here? could another module and/or
@@ -4618,10 +4594,56 @@ static int dav_handler(request_rec *r)
     return DECLINED;
 }
 
+static int dav_fixups(request_rec *r)
+{
+    dav_dir_conf *conf;
+
+    /* quickly ignore any HTTP/0.9 requests which aren't subreqs. */
+    if (r->assbackwards && !r->main) {
+        return DECLINED;
+    }
+
+    conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
+                                                &dav_module);
+
+    /* if DAV is not enabled, then we've got nothing to do */
+    if (conf->provider == NULL) {
+        return DECLINED;
+    }
+
+    /* We are going to handle almost every request. In certain cases,
+       the provider maps to the filesystem (thus, handle_get is
+       FALSE), and core Apache will handle it. a For that case, we
+       just return right away.  */
+    if (r->method_number == M_GET) {
+        /*
+         * ### need some work to pull Content-Type and Content-Language
+         * ### from the property database.
+         */
+
+        /*
+         * If the repository hasn't indicated that it will handle the
+         * GET method, then just punt.
+         *
+         * ### this isn't quite right... taking over the response can break
+         * ### things like mod_negotiation. need to look into this some more.
+         */
+        if (!conf->provider->repos->handle_get) {
+            return DECLINED;
+        }
+    }
+
+    /* We are going to be handling the response for this resource. */
+    r->handler = DAV_HANDLER_NAME;
+
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(dav_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(dav_init_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups(dav_fixups, NULL, NULL, APR_HOOK_MIDDLE);
 
     dav_hook_find_liveprop(dav_core_find_liveprop, NULL, NULL, APR_HOOK_LAST);
     dav_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
