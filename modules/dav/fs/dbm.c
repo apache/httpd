@@ -67,6 +67,7 @@
 ** DAV_FS_STATE_FILE_FOR_DIR (.state_for_dir) for the directory itself.
 */
 
+#include "apr_strings.h"
 #include "sdbm.h"
 
 #include "mod_dav.h"

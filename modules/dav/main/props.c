@@ -182,6 +182,7 @@
 
 #include "http_log.h"
 #include "http_request.h"
+#include "apr_strings.h"
 
 /*
 ** There is some rough support for writeable DAV:getcontenttype and

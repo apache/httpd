@@ -55,6 +55,7 @@
 #include "apr_pools.h"
 #include "apr_hash.h"
 #include "apr_errno.h"
+#include "apr_strings.h"
 
 #include "ap_hooks.h"   /* ### for ap_global_hook_pool */
 #include "util_xml.h"   /* for ap_text_header */

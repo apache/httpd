@@ -88,6 +88,7 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "util_script.h"
+#include "apr_strings.h"
 
 #include "mod_dav.h"
 
