@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/19 18:21:52 $]
+Last modified at [$Date: 2002/06/21 13:54:10 $]
 
 Release:
 
@@ -869,7 +869,7 @@ Binaries (2.0.39):
  FreeBSD 4.1                   no      Ryan Bloom
  i386-unknown-freebsd4.5       no      Aaron Bannert
  powerpc-apple-darwin5.5       yes     Aaron Bannert
- Solaris 8.x/sparc             no      Jim Jagielski
+ Solaris 8.x/sparc             yes     Jim Jagielski
  i686-pc-linux-gnu             yes     Aaron Bannert
  i686-pc-linux-gnu-rh70        yes     Aaron Bannert
  i386-pc-solaris2.8            yes     Aaron Bannert
