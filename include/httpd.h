@@ -918,6 +918,7 @@ API_EXPORT(char *) ap_getword_nulls(ap_context_t *p, const char **line, char sto
 API_EXPORT(char *) ap_getword_nulls_nc(ap_context_t *p, char **line, char stop);
 API_EXPORT(char *) ap_getword_conf(ap_context_t *p, const char **line);
 API_EXPORT(char *) ap_getword_conf_nc(ap_context_t *p, char **line);
+API_EXPORT(char *) ap_resolve_env(ap_context_t *p, const char * word); 
 
 API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
 API_EXPORT(char *) ap_get_list_item(ap_context_t *p, const char **field);
