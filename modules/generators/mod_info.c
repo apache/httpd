@@ -84,6 +84,8 @@
  * 
  */
 
+#define CORE_PRIVATE
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -106,9 +108,6 @@ typedef struct {
 } info_svr_conf;
 
 module AP_MODULE_DECLARE_DATA info_module;
-
-extern module *top_module;
-extern ap_directive_t *ap_conftree;
 
 static void *create_info_config(apr_pool_t *p, server_rec *s)
 {
