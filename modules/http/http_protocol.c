@@ -1327,9 +1327,11 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
 static void end_output_stream(request_rec *r)
 {
     ap_bucket_brigade *bb;
+    ap_bucket *b;
 
     bb = ap_brigade_create(r->pool);
-    ap_brigade_add_bucket(bb, ap_bucket_create_eos());
+    b = ap_bucket_create_eos();
+    AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->filters, bb);
 }
 
@@ -2513,13 +2515,15 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
     ap_bucket_brigade *bb = NULL;
-    
+    ap_bucket *b;
+
     /* WE probably need to do something to make sure we are respecting the
      * offset and length.  I think I know how to do this, but I will wait
      * until after the commit to actually write the code.
      */
     bb = ap_brigade_create(r->pool);
-    ap_brigade_add_bucket(bb, ap_bucket_create_mmap(mm, 0, mm->size));
+    b = ap_bucket_create_mmap(mm, 0, mm->size);
+    AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->filters, bb);
 
     return mm->size; /* XXX - change API to report apr_status_t? */
@@ -2529,13 +2533,15 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 API_EXPORT(int) ap_rputc(int c, request_rec *r)
 {
     ap_bucket_brigade *bb = NULL;
+    ap_bucket *b;
     char c2 = (char)c;
 
     if (r->connection->aborted)
         return EOF;
 
     bb = ap_brigade_create(r->pool);
-    ap_brigade_add_bucket(bb, ap_bucket_create_transient(&c2, 1)); 
+    b = ap_bucket_create_transient(&c2, 1);
+    AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->filters, bb);
 
     return c;
@@ -2544,6 +2550,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
 API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 {
     ap_bucket_brigade *bb = NULL;
+    ap_bucket *b;
     apr_size_t len;
 
     if (r->connection->aborted)
@@ -2553,7 +2560,8 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 
     len = strlen(str);
     bb = ap_brigade_create(r->pool);
-    ap_brigade_add_bucket(bb, ap_bucket_create_transient(str, len));
+    b = ap_bucket_create_transient(str, len);
+    AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->filters, bb);
 
     return len;
@@ -2562,6 +2570,7 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
     ap_bucket_brigade *bb = NULL;
+    ap_bucket *b;
 
     if (r->connection->aborted)
         return EOF;
@@ -2569,7 +2578,8 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
         return 0;
 
     bb = ap_brigade_create(r->pool);
-    ap_brigade_add_bucket(bb, ap_bucket_create_transient(buf, nbyte)); 
+    b = ap_bucket_create_transient(buf, nbyte);
+    AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->filters, bb);
     return nbyte;
 }

@@ -485,7 +485,8 @@ static int cgi_handler(request_rec *r)
     char **argv = NULL;
 
     apr_file_t *script_out = NULL, *script_in = NULL, *script_err = NULL;
-    ap_bucket_brigade *bb = NULL;
+    ap_bucket_brigade *bb;
+    ap_bucket *b;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp(r->protocol, "INCLUDED");
     void *sconf = r->server->module_config;
@@ -656,10 +657,12 @@ static int cgi_handler(request_rec *r)
 	ap_send_http_header(r);
 	if (!r->header_only) {
             bb = ap_brigade_create(r->pool);
-            ap_brigade_add_bucket(bb, ap_bucket_create_pipe(script_in));
-            ap_brigade_add_bucket(bb, ap_bucket_create_eos());
+	    b = ap_bucket_create_pipe(script_in);
+	    AP_BRIGADE_INSERT_TAIL(bb, b);
+            b = ap_bucket_create_eos();
+	    AP_BRIGADE_INSERT_TAIL(bb, b);
+	    ap_pass_brigade(r->filters, bb);
 	}
-        ap_pass_brigade(r->filters, bb);
 
         log_script_err(r, script_err);
 	apr_close(script_err);
@@ -667,8 +670,10 @@ static int cgi_handler(request_rec *r)
 
     if (script_in && nph) {
         bb = ap_brigade_create(r->pool);
-        ap_brigade_add_bucket(bb, ap_bucket_create_pipe(script_in));
-        ap_brigade_add_bucket(bb, ap_bucket_create_eos());
+	b = ap_bucket_create_pipe(script_in);
+	AP_BRIGADE_INSERT_TAIL(bb, b);
+	b = ap_bucket_create_eos();
+	AP_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->filters, bb);
     }
 

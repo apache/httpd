@@ -175,7 +175,7 @@ API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f,
     /* join the two brigades together.  *b is now empty so we can 
      * safely destroy it. 
      */
-    ap_brigade_catenate(bb, *b);
+    AP_BRIGADE_CONCAT(bb, *b);
     ap_brigade_destroy(*b);
     /* clear out the filter's context pointer.  If we don't do this, then
      * when we save more data to the filter, we will be appended to what is
@@ -201,6 +201,6 @@ API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
     AP_RING_FOREACH(e, &bb->list, ap_bucket, link) {
 	e->setaside(e);
     }
-    ap_brigade_catenate(bb, *b);
+    AP_BRIGADE_CONCAT(bb, *b);
     f->ctx = bb;
 }
