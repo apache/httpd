@@ -970,9 +970,9 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
     /* XXX: there should be an ap_srand() function */
     srand((unsigned int)time(NULL));
 
-     /* open the mutex lockfile */
-     ssl_mutex_reinit(s, p);
-     return;
+    /* open the mutex lockfile */
+    ssl_mutex_reinit(s, p);
+    return;
 }
 
 apr_status_t ssl_init_ChildKill(void *data)
@@ -991,8 +991,6 @@ apr_status_t ssl_init_ModuleKill(void *data)
      * Drop the session cache and mutex
      */
     ssl_scache_kill(s);
-
-    ssl_mutex_kill(s);
 
     /* 
      * Destroy the temporary keys and params
