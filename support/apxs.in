@@ -108,8 +108,8 @@ my $opt_q = 0;
 my $opt_h = 0;
 
 #   this subroutine is derived from Perl's getopts.pl with the enhancement of
-#   the "+" metacharater at the format string to allow a list to be build by
-#   subsequent occurance of the same option.
+#   the "+" metacharacter at the format string to allow a list to be built by
+#   subsequent occurrences of the same option.
 sub Getopts {
     my ($argumentative, @ARGV) = @_;
     my $errs = 0;
@@ -436,6 +436,9 @@ if ($opt_c) {
     foreach $opt_l (@opt_l) {
         $opt .= " -l$opt_l";
     }
+
+    # special DSO settings on a few platforms
+    $opt .= " $config_vars{'SH_LDFLAGS'}";
 
     push(@cmds, "$prefix/build/libtool --silent --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
 
