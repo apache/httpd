@@ -1,5 +1,11 @@
 Changes with Apache 1.3b3
 
+  *) Various improvements in detecting config file errors (missing closing
+     directives for <Directory>, <Files> etc. blocks, prohibiting global
+     server settings in <VirtualHost> blocks, flagging unhandled multiple
+     arguments to <Directory>, <Files> etc.)
+     [Martin Kraemer]
+
   *) Add support to suexec wrapper program for mod_unique_id's UNIQUE_ID
      variable to provide this one to suexec'd CGIs, too.
 	 [Ralf S. Engelschall] PR#1284
