@@ -334,10 +334,12 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     /* only use stored info for top-level pages. Sub requests don't share 
      * in keepalives
      */
+#if 0
     if (!r->main) {
         backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config,
                                                       &proxy_ajp_module);
     }
+#endif
     /* create space for state information */
     if (!backend) {
         status = ap_proxy_acquire_connection(scheme, &backend, worker, r->server);
@@ -364,11 +366,12 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 
     if (status != OK)
         goto cleanup;
-
     /* Step Two: Make the Connection */
     status = ap_proxy_connect_backend(scheme, backend, worker, r->server);
     if (status != OK)
         goto cleanup;
+#if 0
+    /* XXX: we don't need to create the bound client connection */
 
     /* Step Three: Create conn_rec */
     if (!backend->connection) {
@@ -376,6 +379,7 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
         if (status != OK)
             goto cleanup;
     }
+#endif
    
    
     /* Step Four: Send the Request */
@@ -388,8 +392,10 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     status = ap_proxy_ajp_process_response(p, r, origin, backend,
                                            conf, server_portstr);
 cleanup:
+#if 0
     /* Clear the module config */
     ap_set_module_config(c->conn_config, &proxy_ajp_module, NULL);
+#endif
     /* Do not close the socket */
     ap_proxy_release_connection(scheme, backend, r->server);
     return status;
