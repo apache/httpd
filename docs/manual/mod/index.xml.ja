@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English revision: 1.3 -->
+
+<moduleindex>
+  <title>モジュール一覧</title>
+  <summary>
+    <p>
+      以下は Apache の配布の一部として配られているすべてのモジュールの
+      一覧です。すべての <a href="directives.html">Apache
+      ディレクティブ</a> のアルファベット順のリストも見てください。
+    </p>
+  </summary>
+  &allmodules;
+</moduleindex>
