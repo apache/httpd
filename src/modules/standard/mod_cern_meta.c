@@ -236,41 +236,42 @@ int scan_meta_file(request_rec *r, FILE *f)
 	    else w[p-1] = '\0';
 	}
 
-        if(w[0] == '\0') {
+        if (w[0] == '\0') {
 	    return OK;
 	}
                                    
 	/* if we see a bogus header don't ignore it. Shout and scream */
 	
-        if(!(l = strchr(w,':'))) {
-	    log_reason ("malformed header in meta file", r->filename, r);
+        if (!(l = strchr(w,':'))) {
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"malformed header in meta file: %s", r->filename);
 	    return SERVER_ERROR;
         }
 
         *l++ = '\0';
 	while (*l && isspace (*l)) ++l;
 	
-        if(!strcasecmp(w,"Content-type")) {
+        if (!strcasecmp(w,"Content-type")) {
 
 	    /* Nuke trailing whitespace */
 	    
 	    char *endp = l + strlen(l) - 1;
 	    while (endp > l && isspace(*endp)) *endp-- = '\0';
 	    
-	    r->content_type = pstrdup (r->pool, l);
+	    r->content_type = pstrdup(r->pool, l);
 	}
-        else if(!strcasecmp(w,"Status")) {
+        else if (!strcasecmp(w,"Status")) {
             sscanf(l, "%d", &r->status);
             r->status_line = pstrdup(r->pool, l);
         }
         else {
-	    table_set (r->headers_out, w, l);
+	    table_set(r->headers_out, w, l);
         }
     }
     return OK;
 }
 
-int add_cern_meta_data(request_rec *r)
+int add_cern_meta_data (request_rec *r)
 {
     char *metafilename;
     char *last_slash;
@@ -281,7 +282,7 @@ int add_cern_meta_data(request_rec *r)
     int rv;
     request_rec *rr;
 
-    dconf = get_module_config (r->per_dir_config, &cern_meta_module); 
+    dconf = get_module_config(r->per_dir_config, &cern_meta_module); 
 
     if (!dconf->metafiles) {
         return DECLINED;
@@ -308,9 +309,11 @@ int add_cern_meta_data(request_rec *r)
 	real_file = last_slash;
 	real_file++;
 	*last_slash = '\0';
-    } else {
+    }
+    else {
 	/* no last slash, buh?! */
-        log_reason("internal error in mod_cern_meta", r->filename, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "internal error in mod_cern_meta", r->filename);
 	/* should really barf, but hey, let's be friends... */
 	return DECLINED;
     };
@@ -326,19 +329,20 @@ int add_cern_meta_data(request_rec *r)
      * A better solution might be a "safe open" feature of pfopen to avoid
      * pipes, symlinks, and crap like that.
      */
-    rr = sub_req_lookup_file (metafilename, r);
+    rr = sub_req_lookup_file(metafilename, r);
     if (rr->status != HTTP_OK) {
-	destroy_sub_req (rr);
+	destroy_sub_req(rr);
 	return DECLINED;
     }
-    destroy_sub_req (rr);
+    destroy_sub_req(rr);
 
-    f = pfopen (r->pool, metafilename, "r");
+    f = pfopen(r->pool, metafilename, "r");
     if (f == NULL) {
 	if (errno == ENOENT) {
 	    return DECLINED;
 	}
-        log_reason("meta file permissions deny server access", metafilename, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "meta file permissions deny server access: %s", metafilename);
         return FORBIDDEN;
     };
 
