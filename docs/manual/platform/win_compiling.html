@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <title>Compiling Apache for Microsoft Windows</title>
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -210,11 +210,11 @@
     You must build the projects first in order to create all dynamic 
     auto-generated targets, so that dependencies can be parsed 
     correctly.  Run the following command to fix the paths so they 
-    will build anywhere;
+    will build anywhere;</p>
 <pre>
      perl srclib\apr\build\fixwin32mak.pl
 </pre>
-    You must type this command from the <em>top level</em>
+    <p>You must type this command from the <em>top level</em>
     directory of the httpd source tree. Every .mak and .dep project 
     file within the current directory and below will be corrected,
     and the timestamps adjusted to reflect the .dsp.</p>
