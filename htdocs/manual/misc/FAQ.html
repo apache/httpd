@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.86 $ ($Date: 1997/08/02 21:57:40 $)
+  $Revision: 1.87 $ ($Date: 1997/08/25 16:13:15 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -609,7 +609,7 @@
   allow all files named &quot;<SAMP>*.cgi</SAMP>&quot; to be executable.
   Perhaps all you want is to enable a particular file in a normal directory to
   be executable. This can be alternatively accomplished 
-  via 
+  <EM>via</EM>
   <A
    HREF="../mod/mod_rewrite.html"
   ><SAMP>mod_rewrite</SAMP></A> 
@@ -1351,10 +1351,13 @@
   </P>
   <P>
   The canonical location for Apache's core-dump files is the
-  <A
-   HREF="../mod/core.html#serverroot"
-  >ServerRoot</A>
-  directory.
+  <A HREF="../mod/core.html#serverroot">ServerRoot</A>
+  directory. As of Apache version 1.3, the location can be set <EM>via</EM>
+  the
+  <A HREF="../mod/core.html#coredumpdirectory">CoreDumpDirectory</A>
+  directive to a different directory. Make sure that this directory is
+  writable by the user the server runs as (as opposed to the user the server
+  is <EM>started</EM> as).
   </P>
   <HR>
  </LI>
@@ -1986,8 +1989,10 @@
      </A>
   <P>
   You can't! The reason is: First, case translations for arbitrary length URLs
-  cannot be done via regex patterns and corresponding substitutions. One need
-  a per-character pattern like sed/Perl <SAMP>tr|..|..|</SAMP> feature.  Second, just
+  cannot be done <EM>via</EM> regex patterns and corresponding substitutions.
+  One need
+  a per-character pattern like sed/Perl <SAMP>tr|..|..|</SAMP> feature. 
+  Second, just
   making URLs always upper or lower case will not resolve the complete problem
   of case-INSENSITIVE URLs, because actually the URLs had to be rewritten to
   the correct case-variant residing on the filesystem because in later
