@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/14 02:42:10 $]
+Last modified at [$Date: 2002/02/14 03:15:42 $]
 
 Release:
 
@@ -106,14 +106,6 @@ FINAL RELEASE SHOWSTOPPERS:
         Status: Aaron has committed this for all the support binaries,
                 but is hesitant to do the same for the httpd binary.
         Message-ID: <20020207142751.T31582@clove.org>
-
-    * [Aaron] All signals have been removed from the worker MPM, which
-      makes the code significantly cleaner, but there are a couple of
-      lingering problems:
-        * mod_cgid doesn't die at shutdown
-        * httpd -X and -DONE_PROCESS is broken
-        Justin says: JRE_1 does not have the signal-less worker MPM.
-        Status: Aaron volunteers. (This is a -1 for beta from him)
 
 CURRENT VOTES:
 
