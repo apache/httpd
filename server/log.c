@@ -564,7 +564,7 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                  "[%s] file %s, line %d, assertion \"%s\" failed",
 	         time_str, szFile, nLine, szExp);
-#ifndef WIN32
+#if !defined(WIN32) && !defined(NETWARE)
     /* unix assert does an abort leading to a core dump */
     abort();
 #else
