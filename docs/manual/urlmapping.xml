@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+
+<manualpage>
+  <relativepath href="."/>
+
+  <title>Mapping URLs to Filesystem Locations</title>
+
+  <summary>
+    <p>This document explains how Apache uses the URL of a request
+    to determine the filesystem location from which to serve a
+    file.</p>
+  </summary>
+
+<section id="related"><title>Related Modules and Directives</title>
+
+<related>
+<modulelist>
+<module>mod_alias</module>
+<module>mod_proxy</module>
+<module>mod_rewrite</module>
+<module>mod_userdir</module>
+<module>mod_speling</module>
+<module>mod_vhost_alias</module>
+</modulelist>
+<directivelist>
+<directive module="mod_alias">Alias</directive>
+<directive module="mod_alias">AliasMatch</directive>
+<directive module="mod_speling">CheckSpelling</directive>
+<directive module="core">DocumentRoot</directive>
+<directive module="core">ErrorDocument</directive>
+<directive module="core">Options</directive>
+<directive module="mod_proxy">ProxyPass</directive>
+<directive module="mod_proxy">ProxyPassReverse</directive>
+<directive module="mod_alias">Redirect</directive>
+<directive module="mod_alias">RedirectMatch</directive>
+<directive module="mod_rewrite">RewriteCond</directive>
+<directive module="mod_rewrite">RewriteMatch</directive>
+<directive module="mod_alias">ScriptAlias</directive>
+<directive module="mod_alias">ScriptAliasMatch</directive>
+<directive module="mod_userdir">UserDir</directive>
+</directivelist>
+</related>
+</section>
+
+<section id="documentroot"><title>DocumentRoot</title>
+
+    <p>In deciding what file to serve for a given request, Apache's
+    default behavior is to take the URL-Path for the request (the part
+    of the URL following the hostname and port) and add it to the end
+    of the <directive module="core">DocumentRoot</directive> specified
+    in your configuration files. Therefore, the files and directories
+    underneath the <directive module="core">DocumentRoot</directive>
+    make up the basic document tree which will be visible from the
+    web.</p>
+
+    <p>Apache is also capable of <a href="vhosts/">Virtual
+    Hosting</a>, where the server receives requests for more than one
+    host. In this case, a different <directive
+    module="core">DocumentRoot</directive> can be specified for each
+    virtual host, or alternatively, the directives provided by the
+    module <module>mod_vhost_alias</module> can
+    be used to dynamically determine the appropriate place from which
+    to serve content based on the requested IP address or
+    hostname.</p>
+</section>
+
+<section id="outside"><title>Files Outside the DocumentRoot</title>
+
+    <p>There are frequently circumstances where it is necessary to
+    allow web access to parts of the filesystem that are not strictly
+    underneath the <directive
+    module="core">DocumentRoot</directive>. Apache offers several
+    different ways to accomplish this. On Unix systems, symbolic links
+    can bring other parts of the filesystem under the <directive
+    module="core">DocumentRoot</directive>. For security reasons,
+    Apache will follow symbolic links only if the <directive
+    module="core">Options</directive> setting for the relevant
+    directory includes <code>FollowSymLinks</code> or
+    <code>SymLinksIfOwnerMatch</code>.</p>
+
+    <p>Alternatively, the <directive
+    module="mod_alias">Alias</directive> directive will map any part
+    of the filesystem into the web space. For example, with</p>
+
+<example>Alias /docs /var/web</example>
+
+    <p>the URL <code>http://www.example.com/docs/dir/file.html</code>
+    will be served from <code>/var/web/dir/file.html</code>. The
+    <directive module="mod_alias">ScriptAlias</directive> directive
+    works the same way, with the additional effect that all content
+    located at the target path is treated as CGI scripts.</p>
+
+    <p>For situations where you require additional flexibility, you
+    can use the <directive module="mod_alias">AliasMatch</directive> and 
+    <directive module="mod_alias">ScriptAliasMatch</directive>
+    directives to do powerful regular-expression based matching and
+    substitution. For example,</p>
+
+<example>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
+      /home/$1/cgi-bin/$2</example>
+
+    <p>will map a request to
+    <code>http://example.com/~user/cgi-bin/script.cgi</code> to the
+    path <code>/home/user/cgi-bin/script.cgi</code> and will treat
+    the resulting file as a CGI script.</p>
+</section>
+
+<section id="user"><title>User Directories</title>
+
+    <p>Traditionally on Unix systems, the home directory of a
+    particular <em>user</em> can be referred to as
+    <code>~user/</code>. The module <module>mod_userdir</module>
+    extends this idea to the web by allowing files under each user's
+    home directory to be accessed using URLs such as the
+    following.</p>
+
+<example>http://www.example.com/~user/file.html</example>
+
+    <p>For security reasons, it is inappropriate to give direct
+    access to a user's home directory from the web. Therefore, the
+    <directive module="mod_userdir">UserDir</directive> directive
+    specifies a directory underneath the user's home directory
+    where web files are located. Using the default setting of
+    <code>Userdir public_html</code>, the above URL maps to a file
+    at a directory like
+    <code>/home/user/public_html/file.html</code> where
+    <code>/home/user/</code> is the user's home directory as
+    specified in <code>/etc/passwd</code>.</p>
+
+    <p>There are also several other forms of the
+    <code>Userdir</code> directive which you can use on systems
+    where <code>/etc/passwd</code> does not contain the location of
+    the home directory.</p>
+
+    <p>Some people find the "~" symbol (which is often encoded on the
+    web as <code>%7e</code>) to be awkward and prefer to use an
+    alternate string to represent user directories. This functionality
+    is not supported by mod_userdir. However, if users' home
+    directories are structured in a regular way, then it is possible
+    to use the <directive module="mod_alias">AliasMatch</directive>
+    directive to achieve the desired effect. For example, to make
+    <code>http://www.example.com/upages/user/file.html</code> map to
+    <code>/home/user/public_html/file.html</code>, use the following
+    <code>AliasMatch</code> directive:</p>
+
+<example>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
+      /home/$1/public_html/$2</example>
+</section>
+
+<section id="redirect"><title>URL Redirection</title>
+
+    <p>The configuration directives discussed in the above sections
+    tell Apache to get content from a specific place in the filesystem
+    and return it to the client. Sometimes, it is desirable instead to
+    inform the client that the requested content is located at a
+    different URL, and instruct the client to make a new request with
+    the new URL. This is called <em>redirection</em> and is
+    implemented by the <directive
+    module="mod_alias">Redirect</directive> directive. For example, if
+    the contents of the directory <code>/foo/</code> under the
+    <directive module="mod_alias">DocumentRoot</directive> are moved
+    to the new directory <code>/bar/</code>, you can instruct clients
+    to request the content at the new location as follows:</p>
+
+<example>Redirect permanent /foo/
+      http://www.example.com/bar/</example>
+
+    <p>This will redirect any URL-Path starting in
+    <code>/foo/</code> to the same URL path on the
+    <code>www.example.com</code> server with <code>/bar/</code>
+    substituted for <code>/foo/</code>. You can redirect clients to
+    any server, not only the origin server.</p>
+
+    <p>Apache also provides a <directive
+    module="mod_alias">RedirectMatch</directive> directive for more
+    complicated rewriting problems. For example, to redirect requests
+    for the site home page to a different site, but leave all other
+    requests alone, use the following configuration:</p>
+
+<example>RedirectMatch permanent ^/$
+      http://www.example.com/startpage.html</example>
+
+    <p>Alternatively, to temporarily redirect all pages on a site
+    to one particular page, use the following:</p>
+
+<example>RedirectMatch temp .*
+      http://www.example.com/startpage.html</example>
+</section>
+
+<section id="proxy"><title>Reverse Proxy</title>
+
+<p>Apache also allows you to bring remote documents into the URL space
+of the local server.  This technique is called <em>reverse
+proxying</em> because the web server acts like a proxy server by
+fetching the documents from a remote server and returning them to the
+client.  It is different from normal proxying because, to the client,
+it appears the documents originate at the reverse proxy server.</p>
+
+<p>In the following example, when clients request documents under the
+<code>/foo/</code> directory, the server fetches those documents from
+the <code>/bar/</code> directory on <code>internal.example.com</code>
+and returns them to the client as if they were from the local
+server.</p>
+
+<example>
+ProxyPass /foo/ http://internal.example.com/bar/<br />
+ProxyPassReverse /foo/ http://internal.example.com/bar/
+</example>
+
+<p>The <directive module="mod_proxy">ProxyPass</directive> configures
+the server to fetch the appropriate documents, while the
+<directive module="mod_proxy">ProxyPassReverse</directive>
+directive rewrites redirects originating at
+<code>internal.examle.com</code> so that they target the appropriate
+directory on the local server.  It is important to note, however, that
+links inside the documents will not be rewritten.  So any absolute
+links on <code>internal.example.com</code> will result in the client
+breaking out of the proxy server and requesting directly from
+<code>internal.example.com</code>.</p>
+</section>
+
+<section id="rewrite"><title>Rewriting Engine</title>
+
+    <p>When even more powerful substitution is required, the rewriting
+    engine provided by <module>mod_rewrite</module>
+    can be useful. The directives provided by this module use
+    characteristics of the request such as browser type or source IP
+    address in deciding from where to serve content. In addition,
+    mod_rewrite can use external database files or programs to
+    determine how to handle a request. The rewriting engine is capable
+    of performing all three types of mappings discussed above:
+    internal redirects (aliases), external redirects, and proxying.
+    Many practical examples employing mod_rewrite are discussed in the
+    <a href="misc/rewriteguide.html">URL Rewriting Guide</a>.</p>
+</section>
+
+<section id="notfound"><title>File Not Found</title>
+
+    <p>Inevitably, URLs will be requested for which no matching
+    file can be found in the filesystem. This can happen for
+    several reasons. In some cases, it can be a result of moving
+    documents from one location to another. In this case, it is
+    best to use <a href="#redirect">URL redirection</a> to inform
+    clients of the new location of the resource. In this way, you
+    can assure that old bookmarks and links will continue to work,
+    even though the resource is at a new location.</p>
+
+    <p>Another common cause of "File Not Found" errors is
+    accidental mistyping of URLs, either directly in the browser,
+    or in HTML links. Apache provides the module
+    <module>mod_speling</module> (sic) to help with
+    this problem. When this module is activated, it will intercept
+    "File Not Found" errors and look for a resource with a similar
+    filename. If one such file is found, mod_speling will send an
+    HTTP redirect to the client informing it of the correct
+    location. If several "close" files are found, a list of
+    available alternatives will be presented to the client.</p>
+
+    <p>An especially useful feature of mod_speling, is that it will
+    compare filenames without respect to case. This can help
+    systems where users are unaware of the case-sensitive nature of
+    URLs and the unix filesystem. But using mod_speling for
+    anything more than the occasional URL correction can place
+    additional load on the server, since each "incorrect" request
+    is followed by a URL redirection and a new request from the
+    client.</p>
+
+    <p>If all attempts to locate the content fail, Apache returns
+    an error page with HTTP status code 404 (file not found). The
+    appearance of this page is controlled with the
+    <directive module="core">ErrorDocument</directive> directive
+    and can be customized in a flexible manner as discussed in the
+    <a href="custom-error.html">Custom error responses</a> and <a
+    href="misc/custom_errordocs.html">International Server Error
+    Responses</a> documents.</p>
+</section>
+
+</manualpage>
