@@ -2581,7 +2581,8 @@ messages sent to the client</td></tr>
 </table>
     <p>The <code class="directive">ServerAdmin</code> sets the contact address
     that the server includes in any error messages it returns to the
-    client. If the httpd doesn't recognize the supplied argument as an URL, it
+    client. If the <code>httpd</code> doesn't recognize the supplied argument
+    as an URL, it
     assumes, that it's an <var>email-address</var> and prepends it with
     <code>mailto:</code> in hyperlink targets. However, it's recommended to
     actually use an email address, since there are a lot of CGI scripts that
