@@ -4,7 +4,7 @@ Changes with Apache 1.3.7
      [Randy Terbush <randy@covalent.net>]
  
   *) Add the new mass-vhost module (mod_vhost_alias.c) developed and
-     used by Demon Internet, LTD. [Tony Finch <fanf@demon.net>]
+     used by Demon Internet, Ltd. [Tony Finch <fanf@demon.net>]
 
   *) Better GCC detection for DSO flags under Solaris 2 where the `cc' 
      command potentially _is_ GCC. [Ralf S. Engelschall]
