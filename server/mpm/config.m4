@@ -27,10 +27,10 @@ fi
 
 APACHE_CHECK_SIGWAIT_ONE_ARG
 
-APACHE_FAST_OUTPUT(modules/mpm/Makefile)
+APACHE_FAST_OUTPUT(server/mpm/Makefile)
 
 MPM_NAME=$apache_cv_mpm
-MPM_DIR=modules/mpm/$MPM_NAME
+MPM_DIR=server/mpm/$MPM_NAME
 MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 
 APACHE_SUBST(MPM_NAME)

@@ -1,5 +1,5 @@
 
-SUBDIRS = ap lib main modules os support
+SUBDIRS = modules os server srclib support test
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c buildmark.c
@@ -9,7 +9,6 @@ PROGRAM_DEPENDENCIES = \
   $(MPM_LIB) \
   main/libmain.la \
   os/$(OS_DIR)/libos.la \
-  ap/libap.la \
   $(AP_LIBS)
 
 PROGRAMS        = $(PROGRAM_NAME)
@@ -49,7 +48,7 @@ htdocs-srcdir = $(srcdir)/../htdocs
 
 docs: include/*.h
 	mkdir -p ./docs/api
-	lib/apr/helpers/scandoc -ihelpers/default.pl -p./docs/api/ ./include/*.h
+	srclib/apr/helpers/scandoc -ihelpers/default.pl -p./docs/api/ ./include/*.h
 
 install-htdocs:
 	@echo Installing HTML documents
@@ -103,6 +102,6 @@ install-include:
             cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(includedir); \
         fi;
 	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
-	@cp -p $(srcdir)/lib/expat-lite/*.h $(includedir)/xml
-	@cp -p lib/apr/include/*.h $(srcdir)/lib/apr/include/*.h $(includedir)/apr
+	@cp -p $(srcdir)/srclib/expat-lite/*.h $(includedir)/xml
+	@cp -p srclib/apr/include/*.h $(srcdir)/srclib/apr/include/*.h $(includedir)/apr
 	@chmod 644 $(includedir)/*.h $(includedir)/xml/*.h $(includedir)/apr/*.h

@@ -173,20 +173,19 @@ AC_ARG_WITH(program-name,
 dnl ### util_xml is always included, so we always need Expat (for now)
 apache_need_expat=yes
 
-dnl AP_LIB_DIRS specifies the additional libs from src/lib/ that we need
+dnl AP_LIB_DIRS specifies the additional libs from srclib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
-AP_LIBS="lib/pcre/libpcre.la lib/aputil/libaputil.la"
-INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/aputil"
+AP_LIBS="srclib/pcre/libpcre.la"
 
 if test "$apache_need_sdbm" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS sdbm"
-  AP_LIBS="$AP_LIBS lib/sdbm/libsdbm.la"
-  INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/sdbm"
+  AP_LIBS="$AP_LIBS srclib/sdbm/libsdbm.la"
+  INCLUDES="$INCLUDES -I\$(top_srcdir)/srclib/sdbm"
 fi
 if test "$apache_need_expat" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS expat-lite"
-  AP_LIBS="$AP_LIBS lib/expat-lite/libexpat.la"
-  INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/expat-lite"
+  AP_LIBS="$AP_LIBS srclib/expat-lite/libexpat.la"
+  INCLUDES="$INCLUDES -I\$(top_srcdir)/srclib/expat-lite"
 fi
 
 dnl APR should go after the other libs, so the right symbols can be picked up
@@ -210,12 +209,12 @@ else
 		[byte order is unknown due to cross-compilation])
 fi
 
-APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile)
-APACHE_FAST_OUTPUT(modules/Makefile os/Makefile)
+APACHE_FAST_OUTPUT(Makefile modules/Makefile) 
+APACHE_FAST_OUTPUT(os/beos/Makefile os/os2/Makefile)
+APACHE_FAST_OUTPUT(os/unix/Makefile server/Makefile)
 APACHE_FAST_OUTPUT(support/Makefile test/Makefile)
-APACHE_FAST_OUTPUT(lib/pcre/Makefile lib/aputil/Makefile)
 for i in $AP_LIB_DIRS; do
-  APACHE_FAST_OUTPUT(lib/$i/Makefile)
+  APACHE_FAST_OUTPUT(srclib/$i/Makefile)
 done
 
 dnl ## Run configure for packages Apache uses
