@@ -214,9 +214,6 @@
 /* XXX: not used at all. We should do a check somewhere and/or cut the cookie */
 #define MAX_COOKIE_LEN 4096
 
-/* max number of regex captures */
-#define MAX_NMATCH 10
-
 /* default maximum number of internal redirects */
 #define REWRITE_REDIRECT_LIMIT 10
 
@@ -368,7 +365,7 @@ typedef struct {
 typedef struct backrefinfo {
     char *source;
     int nsub;
-    regmatch_t regmatch[10];
+    regmatch_t regmatch[AP_MAX_REG_MATCH];
 } backrefinfo;
 
 /* single linked list used for
@@ -2152,7 +2149,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
             backrefinfo *bri = (*p == '$') ? &ctx->briRR : &ctx->briRC;
 
             /* see ap_pregsub() in server/util.c */
-            if (bri->source && n <= bri->nsub
+            if (bri->source && n < AP_MAX_REG_MATCH
                 && bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
                 span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
 
@@ -3356,7 +3353,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
     char *input = do_expand(p->input, ctx);
     apr_finfo_t sb;
     request_rec *rsub, *r = ctx->r;
-    regmatch_t regmatch[MAX_NMATCH];
+    regmatch_t regmatch[AP_MAX_REG_MATCH];
     int rc = 0;
 
     switch (p->ptype) {
@@ -3437,7 +3434,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 
     default:
         /* it is really a regexp pattern, so apply it */
-        rc = !ap_regexec(p->regexp, input, p->regexp->re_nsub+1, regmatch, 0);
+        rc = !ap_regexec(p->regexp, input, AP_MAX_REG_MATCH, regmatch, 0);
 
         /* update briRC backref info */
         if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
@@ -3466,7 +3463,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
  */
 static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 {
-    regmatch_t regmatch[MAX_NMATCH];
+    regmatch_t regmatch[AP_MAX_REG_MATCH];
     apr_array_header_t *rewriteconds;
     rewritecond_entry *conds;
     int i, rc;
@@ -3505,7 +3502,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     rewritelog((r, 3, ctx->perdir, "applying pattern '%s' to uri '%s'",
                 p->pattern, ctx->uri));
 
-    rc = !ap_regexec(p->regexp, ctx->uri, p->regexp->re_nsub+1, regmatch, 0);
+    rc = !ap_regexec(p->regexp, ctx->uri, AP_MAX_REG_MATCH, regmatch, 0);
     if (! (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
            (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) ) {
         return 0;

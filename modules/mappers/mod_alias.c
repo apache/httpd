@@ -354,7 +354,7 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                             int doesc, int *status)
 {
     alias_entry *entries = (alias_entry *) aliases->elts;
-    regmatch_t regm[10];
+    regmatch_t regm[AP_MAX_REG_MATCH];
     char *found = NULL;
     int i;
 
@@ -363,11 +363,10 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
         int l;
 
         if (p->regexp) {
-            if (!ap_regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm,
-                            0)) {
+            if (!ap_regexec(p->regexp, r->uri, AP_MAX_REG_MATCH, regm, 0)) {
                 if (p->real) {
                     found = ap_pregsub(r->pool, p->real, r->uri,
-                                    p->regexp->re_nsub + 1, regm);
+                                       AP_MAX_REG_MATCH, regm);
                     if (found && doesc) {
                         apr_uri_t uri;
                         apr_uri_parse(r->pool, found, &uri);

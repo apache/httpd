@@ -489,7 +489,7 @@ static int match_headers(request_rec *r)
     apr_size_t val_len = 0;
     int i, j;
     char *last_name;
-    regmatch_t regm[10];
+    regmatch_t regm[AP_MAX_REG_MATCH];
 
     if (!ap_get_module_config(r->request_config, &setenvif_module)) {
         ap_set_module_config(r->request_config, &setenvif_module,
@@ -577,8 +577,8 @@ static int match_headers(request_rec *r)
         }
 
         if ((b->pattern && apr_strmatch(b->pattern, val, val_len)) ||
-            (!b->pattern && !ap_regexec(b->preg, val, b->preg->re_nsub + 1,
-                                        regm, 0))) {
+            (!b->pattern && !ap_regexec(b->preg, val, AP_MAX_REG_MATCH, regm,
+                                        0))) {
             const apr_array_header_t *arr = apr_table_elts(b->features);
             elts = (const apr_table_entry_t *) arr->elts;
 
@@ -589,7 +589,7 @@ static int match_headers(request_rec *r)
                 else {
                     if (!b->pattern) {
                         char *replaced = ap_pregsub(r->pool, elts[j].val, val,
-                                                    b->preg->re_nsub + 1, regm);
+                                                    AP_MAX_REG_MATCH, regm);
                         if (replaced) {
                             apr_table_setn(r->subprocess_env, elts[j].key,
                                            replaced);
