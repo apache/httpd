@@ -104,10 +104,6 @@ SOURCE=.\ssl_engine_dh.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\ssl_engine_ds.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\ssl_engine_ext.c
 # End Source File
 # Begin Source File
