@@ -147,10 +147,9 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
         return rv;
     }
 
-    if ((rv = apr_setsocketopt(*newsock, APR_SO_TIMEOUT, 
-                               (apr_int32_t)(ap_rfc1413_timeout 
-                                              * APR_USEC_PER_SEC)))
-        != APR_SUCCESS) {
+    if ((rv = apr_socket_timeout_set(*newsock, APR_SO_TIMEOUT, 
+                                     apr_time_from_sec(ap_rfc1413_timeout)))
+            != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: error setting query socket timeout");
         apr_socket_close(*newsock);

@@ -178,8 +178,8 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
      * not send us bytes within 2 seconds (a value pulled from Apache 1.3
      * which seems to work well), close the connection.
      */
-    timeout = SECONDS_TO_LINGER * APR_USEC_PER_SEC;
-    apr_setsocketopt(csd, APR_SO_TIMEOUT, timeout);
+    timeout = apr_time_from_sec(SECONDS_TO_LINGER);
+    apr_socket_timeout_set(csd, timeout);
     apr_setsocketopt(csd, APR_INCOMPLETE_READ, 1);
     while (1) {
         nbytes = sizeof(dummybuf);

@@ -494,7 +494,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
      * because the MPM won't want to hold up a graceful restart for a
      * long time
      */
-    rv = apr_setsocketopt(sock, APR_SO_TIMEOUT, 3 * APR_USEC_PER_SEC);
+    rv = apr_socket_timeout_set(sock, apr_time_from_sec(3));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "set timeout on socket to connect to listener");

@@ -2686,11 +2686,11 @@ static apr_status_t sendfile_it_all(core_net_rec *c,
 {
     apr_status_t rv;
 #ifdef AP_DEBUG
-    apr_int32_t timeout = 0;
+    apr_interval_time_t timeout = 0;
 #endif
 
-    AP_DEBUG_ASSERT((apr_getsocketopt(c->client_socket, APR_SO_TIMEOUT,
-                                      &timeout) == APR_SUCCESS)
+    AP_DEBUG_ASSERT((apr_socket_timeout_get(c->client_socket, &timeout) 
+                         == APR_SUCCESS)
                     && timeout > 0);  /* socket must be in timeout mode */
 
     do {
@@ -3308,16 +3308,15 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (mode != AP_MODE_INIT && mode != AP_MODE_EATCRLF) {
         if (*first_line) {
-            apr_setsocketopt(csd, APR_SO_TIMEOUT,
-                             (int)(keptalive
-                      ? f->c->base_server->keep_alive_timeout
-                      : f->c->base_server->timeout));
+            apr_socket_timeout_set(csd, 
+                                   keptalive
+                                      ? f->c->base_server->keep_alive_timeout
+                                      : f->c->base_server->timeout);
             *first_line = 0;
         }
         else {
             if (keptalive) {
-                apr_setsocketopt(csd, APR_SO_TIMEOUT,
-                                 (int)(f->c->base_server->timeout));
+                apr_socket_timeout_set(csd, f->c->base_server->timeout);
             }
         }
     }
