@@ -448,25 +448,25 @@ void ap_tpf_zinet_checks(int standalone,
 int os_check_server(char *server) {
     int *current_acn;
 
-    if (zinet_model == INETD_IDCF_MODEL_NOLISTEN) {
-        /* if NOLISTEN model, check with ZINET for status */
-        if (inetd_getServerStatus(server) == INETD_SERVER_STATUS_INACTIVE) {
-            return 1;
-        }
-        /* and check that program activation number hasn't changed */
+    /* check that the program activation number hasn't changed */
         current_acn = (int *)cinfc_fast(CINFC_CMMACNUM);
         if (ecbp2()->ce2acn != *current_acn) {
-            return 1;
+        return 1;  /* shutdown */
         }
 
-    } else {
-        /* if DAEMON model, just make sure parent is still around */
+    /* check our InetD status */
+    if (inetd_getServerStatus(server) != INETD_SERVER_STATUS_ACTIVE) {
+        return 1;  /* shutdown */
+    }
+
+    /* if DAEMON model, make sure parent is still around */
+    if (zinet_model == INETD_IDCF_MODEL_DAEMON) {
         if (getppid() == 1) {
-            return 1;
+            return 1;  /* shutdown */
         }
     }
 
-    return 0;
+    return 0;  /* keep on running... */
 }
 
 void os_note_additional_cleanups(pool *p, int sd) {
