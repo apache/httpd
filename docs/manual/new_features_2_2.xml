@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $Revision: 1.1 $ -->
+
+<!--
+ Copyright 2002-2004 The Apache Software Foundation
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_2.xml.meta">
+
+<title>Overview of new features in Apache 2.2</title>
+
+<summary>
+  <p>This document describes some of the major changes between the
+     2.0 and 2.2 versions of the Apache HTTP Server. For new features since
+     version 1.3, see the <a href="new_features_2_0.html">2.0 new features</a>
+     document.</p>
+</summary>
+
+  <section id="core">
+    <title>Core Enhancements</title>
+    <dl>
+
+      <dt>Authn/Authz</dt>
+      <dd>...</dd>
+
+      <dt>Caching</dt>
+      <dd>...</dd>
+
+      <dt>Proxying</dt>
+      <dd>The new <module>mod_proxy_balancer</module> module provides 
+          load balancing services for <module>mod_proxy</module>.
+          The new <module>mod_proxy_ajp</module> module adds support for the
+          <code>Apache JServ Protocol version 1.3</code> used by 
+          <a href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a>.</dd>
+
+      <dt>Smart Filters</dt>
+      <dd>...</dd>
+
+    </dl>
+  </section>
+
+  <section id="module">
+    <title>Module Enhancements</title>
+    <dl>
+      <dt><module>mod_authnz_ldap</module></dt>
+      <dd>This module is a port of the 2.0 
+          <code>mod_auth_ldap</code> module to the 2.2 <code>Authn/Authz</code> 
+          framework.  New features include using LDAP attribute values and 
+          complicated search filters in the 
+          <directive module="core">Require</directive> directive.</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd>Added a new <code>?config</code> argument which will show
+          the configuration directives as parsed by Apache, including
+          their file name and line number.  The module also 
+          shows the order of all request hooks and additional
+          build information, similar to <code>httpd -V</code>.</dd>
+    </dl>
+  </section>
+
+  <section id="developer">
+    <title>Module Developer Changes</title>
+    <dl>
+      <dt>APR 1.0 API</dt>
+
+      <dd>Apache 2.2 uses the APR 1.0 API.  All depreciated functions and 
+          symbols have been removed from <code>APR</code> and 
+          <code>APR-Util</code>. For details, see the 
+          <a href="http://apr.apache.org/">APR Website</a>.</dd>
+
+      <dt>Connection Error Logging</dt>
+
+      <dd>A new function, <code>ap_log_cerror</code> has been added to log
+          errors that occure with the client's connection.  When logged, 
+          the message includes the client IP address.</dd>
+
+      <dt>Test Configuration Hook Added</dt>
+
+      <dd>A new hook, <code>test_config</code> has been added to aid
+          modules that want to execute special code only when the user passes
+          <code>-t</code> to httpd.</dd>
+
+      <dt>Set Threaded MPM's Stacksize</dt>
+
+      <dd>A new directive, <code>ThreadStackSize</code> has been added to 
+          set the stack size on all threaded MPMs.  This is required
+          for some third-party modules on platforms with small default
+          thread stack size.</dd>
+    </dl>
+  </section>
+</manualpage>
