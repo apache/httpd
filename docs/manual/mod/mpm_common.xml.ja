@@ -562,7 +562,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <name>MinSpareThreads</name>
 <description>$B%j%/%(%9%H$K1~Ez$9$k$3$H$N$G$-$k(B
 $B%"%$%I%k%9%l%C%I?t$N:G>.?t(B</description>
-<syntax>MinSpareServers <var>number</var></syntax>
+<syntax>MinSpareThread <var>number</var></syntax>
 <default>$B>\:Y$O;HMQJ}K!$r$4Mw2<$5$$!#(B</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
