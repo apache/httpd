@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/25 17:20:59 $]
+Last modified at [$Date: 2002/04/25 17:29:19 $]
 
 Release:
 
@@ -77,7 +77,8 @@ CURRENT VOTES:
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Ian, Cliff, BillS
-      -0:   Aaron (premature decision, needs more discussion), Lars
+      -0:   Lars
+      -1:   Aaron (premature decision, needs more discussion and bug fixes)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -379,7 +380,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
 EXPERIMENTAL MODULES:
     Experimental modules should eventually be be promoted to fully supported
-    status of removed from the repository entirely (ie, the
+    status or removed from the repository entirely (ie, the
     'experiment' failed). This section tracks what needs to happen to 
     get the modules promoted to fully supported status.
 
