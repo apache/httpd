@@ -70,7 +70,7 @@ Committed Code Changes:
     * Dean's [PATCH] ap_snprintf should be more sane (fwd)
     * Jim's/Ken's move of main/util_snprintf.c to ap/ap_snprintf.c
     * [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
-    * Dean's [PATCH] fix Rasmus' chunking error
+    * Dean's [PATCH] fix Rasmus' chunking error (take 2, really fix it)
     * [PATCH] PR#1366: fix result of send_fd_length
     * Ben Hyde's [PATCH] Finish suite of mutex ops for non-threaded platforms
     * Ben Hyde's [PATCH] Serialize the update to pool.sub_* in destroy_pool

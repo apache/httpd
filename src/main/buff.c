@@ -71,7 +71,21 @@
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
 
+#ifndef DEFAULT_BUFSIZE
 #define DEFAULT_BUFSIZE (4096)
+#endif
+
+/* bwrite()s of greater than this size can result in a large_write() call,
+ * which can result in a writev().  It's a little more work to set up the
+ * writev() rather than copy bytes into the buffer, so we don't do it for small
+ * writes.  This is especially important when chunking (which is a very likely
+ * source of small writes if it's a module using bputc/bputs)... because we
+ * have the expense of actually building two chunks for each writev().
+ */
+#ifndef LARGE_WRITE_THRESHOLD
+#define LARGE_WRITE_THRESHOLD 31
+#endif
+
 
 /*
  * Buffered I/O routines.
@@ -347,7 +361,13 @@ API_EXPORT(int) bgetopt(BUFF *fb, int optname, void *optval)
 }
 
 /*
- * start chunked encoding
+ * Start chunked encoding.
+ *
+ * Note that in order for bputc() to be an efficient macro we have to guarantee
+ * that start_chunk() has always been called on the buffer before we leave any
+ * routine in this file.  Said another way, if a routine here uses end_chunk()
+ * and writes something on the wire, then it has to call start_chunk() or set
+ * an error condition before returning.
  */
 static void start_chunk(BUFF *fb)
 {
@@ -865,16 +885,9 @@ API_EXPORT(int) bskiplf(BUFF *fb)
 API_EXPORT(int) bflsbuf(int c, BUFF *fb)
 {
     char ss[1];
-    int rc;
 
     ss[0] = c;
-    rc = bwrite(fb, ss, 1);
-    /* We do start_chunk() here so that the bputc macro can be smaller
-     * and faster
-     */
-    if (rc == 1 && (fb->flags & B_CHUNK))
-	start_chunk(fb);
-    return rc;
+    return bwrite(fb, ss, 1);
 }
 
 /*
@@ -1069,7 +1082,6 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
     int nvec;
     char chunksize[16];
 
-    nvec = 0;
     /* it's easiest to end the current chunk */
     if (fb->flags & B_CHUNK) {
 	end_chunk(fb);
@@ -1103,7 +1115,13 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
     }
 
     fb->outcnt = 0;
-    return writev_it_all(fb, vec, nvec) ? -1 : nbyte;
+    if (writev_it_all(fb, vec, nvec)) {
+	return -1;
+    }
+    else if (fb->flags & B_CHUNK) {
+	start_chunk(fb);
+    }
+    return nbyte;
 }
 #endif
 
@@ -1154,7 +1172,8 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
  * us to use writev() too frequently.  In those cases we really should just
  * start a new buffer.
  */
-    if (fb->outcnt > 0 && nbyte > 1 && nbyte + fb->outcnt >= fb->bufsiz) {
+    if (fb->outcnt > 0 && nbyte > LARGE_WRITE_THRESHOLD
+	&& nbyte + fb->outcnt >= fb->bufsiz) {
 	return large_write(fb, buf, nbyte);
     }
 #endif
@@ -1215,6 +1234,10 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
  * original buffer until there is less than bufsiz left.  Note that we
  * use bcwrite() to do this for us, it will do the chunking so that
  * we don't have to dink around building a chunk in our own buffer.
+ *
+ * Note also that bcwrite never does a partial write if we're chunking,
+ * so we're guaranteed to either end in an error state, or make it
+ * out of this loop and call start_chunk() below.
  */
     while (nbyte >= fb->bufsiz) {
 	i = bcwrite(fb, buf, nbyte);
@@ -1279,6 +1302,10 @@ API_EXPORT(int) bflush(BUFF *fb)
 	 */
 	if (fb->flags & B_EOUT)
 	    return -1;
+    }
+
+    if (fb->flags & B_CHUNK) {
+	start_chunk(fb);
     }
 
     return 0;

@@ -241,11 +241,21 @@ Changes with Apache 1.3b4
   *) send_fd_length() did not calculate total_bytes_sent properly.
      [Ben Reser <breser@regnow.com>] PR#1366
 
-  *) The large_write() changes tickled a bug in bputc(), this would
-     show up as certain modules not working with Internet Explorer 4.0.
-     Fix this bug, and also fix a performance bug related to bputc()
-     causing a large_write() -- don't do large_write() unless there's
-     at least two bytes to write.  [Dean Gaudet]
+  *) The bputc() macro was not properly integrated with the chunking
+     code; in many cases modules using bputc() could cause completely
+     bogus chunked output.  (Typically this will show up as problems
+     with Internet Explorer 4.0 reading a page, but other browsers
+     having no problem.) [Dean Gaudet]
+
+  *) Create LARGE_WRITE_THRESHOLD define which determines how many
+     bytes have to be supplied to bwrite() before it will consider
+     doing a writev() to assemble multiple buffers in one system
+     call.  This is critical for modules such as mod_include,
+     mod_autoindex, mod_php3 which all use bputc()/bputs() of smaller
+     strings in some cases.  The result would be extra effort
+     setting up writev(), and in many cases extra effort building
+     chunks.  The default is 31, it can be override at compile
+     time. [Dean Gaudet]
 
   *) Move the gid switching code into the child so that log files
      and pid files are opened with the root gid.
