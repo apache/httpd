@@ -91,12 +91,18 @@
  * disabled, except those explicitly turned on with the "enabled" keyword.
  */
 
+#if !defined(WIN32) && !defined(OS2)
+#define HAVE_UNIX_SUEXEC
+#endif
+
 #include "apr_strings.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
-#include "suexec.h"
+#ifdef HAVE_UNIX_SUEXEC
+#include "suexec.h"        /* Contains the suexec_identity hook used on Unix */
+#endif
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
@@ -352,6 +358,7 @@ static int translate_userdir(request_rec *r)
     return DECLINED;
 }
 
+#ifdef HAVE_UNIX_SUEXEC
 static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
 {
     const char *username = apr_table_get(r->notes, "mod_userdir_user");
@@ -371,13 +378,16 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
     
     return ugid;
 }
+#endif /* HAVE_UNIX_SUEXEC */
 
 static void register_hooks(void)
 {
     static const char * const aszSucc[]={ "mod_alias.c",NULL };
 
     ap_hook_translate_name(translate_userdir,NULL,aszSucc,AP_HOOK_MIDDLE);
+#ifdef HAVE_UNIX_SUEXEC
     ap_hook_get_suexec_identity(get_suexec_id_doer,NULL,NULL,AP_HOOK_MIDDLE);
+#endif
 }
 
 module userdir_module = {
