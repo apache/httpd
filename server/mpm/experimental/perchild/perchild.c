@@ -1328,6 +1328,14 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_server_conf = s;
 
+    if ((ap_accept_lock_mech == APR_LOCK_SYSVSEM) || 
+        (ap_accept_lock_mech == APR_LOCK_POSIXSEM)) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                     "Server configured for an accept lock mechanism that "
+                     "cannot be used with perchild.  Falling back to FCNTL.");
+        ap_accept_lock_mech = APR_LOCK_FCNTL;
+    }
+
     /* Initialize cross-process accept lock */
     ap_lock_fname = apr_psprintf(_pconf, "%s.%u",
                                  ap_server_root_relative(_pconf, ap_lock_fname),
