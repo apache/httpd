@@ -2,6 +2,10 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) add response code 226 constant (HTTP_IM_USED) and status
+     line ("226 IM Used").  PR 31128.
+     [Garrett Rooney <rooneg electricjellyfish.net>]
+
 Changes with Apache 2.1.2
 
   *) mod_proxy: Respect errors reported by pre_connection hooks.

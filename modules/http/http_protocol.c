@@ -85,7 +85,26 @@ static const char * const status_lines[RESPONSE_CODES] =
     "205 Reset Content",
     "206 Partial Content",
     "207 Multi-Status",
-#define LEVEL_300 11
+    "208 unused",
+    "209 unused",
+    "210 unused",
+    "211 unused",
+    "212 unused",
+    "213 unused",
+    "214 unused",
+    "215 unused",
+    "216 unused",
+    "217 unused",
+    "218 unused",
+    "219 unused",
+    "220 unused",
+    "221 unused",
+    "222 unused",
+    "223 unused",
+    "224 unused",
+    "225 unused",
+    "226 IM Used",
+#define LEVEL_300 30
     "300 Multiple Choices",
     "301 Moved Permanently",
     "302 Found",
@@ -94,7 +113,7 @@ static const char * const status_lines[RESPONSE_CODES] =
     "305 Use Proxy",
     "306 unused",
     "307 Temporary Redirect",
-#define LEVEL_400 19
+#define LEVEL_400 38
     "400 Bad Request",
     "401 Authorization Required",
     "402 Payment Required",
@@ -125,7 +144,7 @@ static const char * const status_lines[RESPONSE_CODES] =
      */
     "425 No code",
     "426 Upgrade Required",
-#define LEVEL_500 46
+#define LEVEL_500 65
     "500 Internal Server Error",
     "501 Method Not Implemented",
     "502 Bad Gateway",
