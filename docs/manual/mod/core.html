@@ -371,7 +371,7 @@ Extended regular expressions can also be used, with the addition of the
    &lt;Directory ~ &quot;^/www/.*/[0-9]{3}&quot;&gt;
 </pre>
 
-would match directories in /www/ that consisted of three numbers.</p>
+would match directories in /www/ that consisted of three numbers.
 
 <p>If multiple (non-regular expression) directory sections match the
 directory (or its parents) containing
@@ -1029,8 +1029,11 @@ the <code>logs</code> directory is NFS mounted, since <b>the lockfile
 must be stored on a local disk</b>.  The PID of the main
 server process is automatically appended to the filename. <p>
 
-The LockFile is subject to the same warnings about log file placement and
-<a href="../misc/security_tips.html#serverroot">security</a>.
+<STRONG>SECURITY:</STRONG> It is best to avoid putting this file in a 
+world writable directory such as <CODE>/var/tmp</CODE> because someone 
+could create a denial of service attack and prevent the server from
+starting by creating a lockfile with the same name as the one the 
+server will try to create.<p>
 
 <P><HR>
 
@@ -1369,7 +1372,7 @@ See also <A HREF="#accessconfig">AccessConfig</A>.<p><hr>
 <H2><A name="rlimit">RLimitCPU</A> <A NAME="rlimitcpu">directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
 <strong>Syntax:</strong> RLimitCPU <em># or 'max'</em> <em>[# or 'max']</em><br>
-<strong>Default:</strong> <e>Unset; uses operating system defaults</e><br>
+<strong>Default:</strong> <em>Unset; uses operating system defaults</em><br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> RLimitCPU is only available in Apache 1.2 and later<p>
@@ -1388,7 +1391,7 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitnproc">RLimitNPRO
 <h2><A name="rlimitmem">RLimitMEM directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RLimitMEM} directive&gt; -->
 <strong>Syntax:</strong> RLimitMEM <em># or 'max'</em> <em>[# or 'max']</em><br>
-<strong>Default:</strong> <e>Unset; uses operating system defaults</e><br>
+<strong>Default:</strong> <em>Unset; uses operating system defaults</em><br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> RLimitMEM is only available in Apache 1.2 and later<p>
@@ -1407,7 +1410,7 @@ See also <A HREF="#rlimitcpu">RLimitCPU</A> or <A HREF="#rlimitnproc">RLimitNPRO
 <h2><A name="rlimitnproc">RLimitNPROC directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RLimitNPROC} directive&gt; -->
 <strong>Syntax:</strong> RLimitNPROC <em># or 'max'</em> <em>[# or 'max']</em><br>
-<strong>Default:</strong> <e>Unset; uses operating system defaults</e><br>
+<strong>Default:</strong> <em>Unset; uses operating system defaults</em><br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> RLimitNPROC is only available in Apache 1.2 and later<p>
@@ -1605,16 +1608,14 @@ Inetd is the lesser used of the two options. For each http
 connection received, a new copy of the server is started from scratch;
 after the connection is complete, this program exits. There is a high price to
 pay per connection, but for security reasons, some admins prefer this option.
+<FONT COLOR="red">Inetd mode is no longer recommended and does not always
+work properly.  Avoid it if at all possible.</FONT>
 <p>
 
 Standalone is the most common setting for ServerType since
 it is far more efficient. The server is started once, and services all
 subsequent connections. If you intend running Apache to serve a busy site,
 standalone will probably be your only option.<p>
-
-SECURITY: if you are paranoid about security, run in inetd mode. Security
-cannot be guaranteed in either, but whilst most people are happy to use
-standalone, inetd is probably least prone to attack.<p><hr>
 
 <h2><A name="startservers">StartServers directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt StartServers} directive&gt; -->
