@@ -117,27 +117,29 @@ void ssl_scache_shmht_init(server_rec *s, apr_pool_t *p)
      * Create shared memory segment
      */
     if (mc->szSessionCacheDataFile == NULL) {
-        ssl_log(s, SSL_LOG_ERROR, "SSLSessionCache required");
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                     "SSLSessionCache required");
         ssl_die();
     }
 
     if ((rv = apr_shm_create(&(mc->pSessionCacheDataMM), 
                    mc->nSessionCacheDataSize, 
                    mc->szSessionCacheDataFile, mc->pPool)) != APR_SUCCESS) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Cannot allocate shared memory: %d", rv);
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "Cannot allocate shared memory");
         ssl_die();
     }
 
     if ((rv = apr_rmm_init(&(mc->pSessionCacheDataRMM), NULL,
                    apr_shm_baseaddr_get(mc->pSessionCacheDataMM),
                    mc->nSessionCacheDataSize, mc->pPool)) != APR_SUCCESS) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Cannot initialize rmm: %d", rv);
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "Cannot initialize rmm");
         ssl_die();
     }
-ssl_log(s, SSL_LOG_ERROR, "initialize MM %ld RMM %ld",
-        mc->pSessionCacheDataMM, mc->pSessionCacheDataRMM);
+    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                 "initialize MM %p RMM %p",
+                 mc->pSessionCacheDataMM, mc->pSessionCacheDataRMM);
 
     /*
      * Create hash table in shared memory segment
@@ -155,9 +157,9 @@ ssl_log(s, SSL_LOG_ERROR, "initialize MM %ld RMM %ld",
                           ssl_scache_shmht_calloc, 
                           ssl_scache_shmht_realloc, 
                           ssl_scache_shmht_free, s )) == NULL) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Cannot allocate hash table in shared memory: %s",
-                table_strerror(ta_errno));
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                     "Cannot allocate hash table in shared memory: %s",
+                     table_strerror(ta_errno));
         ssl_die();
     }
 
@@ -169,9 +171,10 @@ ssl_log(s, SSL_LOG_ERROR, "initialize MM %ld RMM %ld",
     /*
      * Log the done work
      */
-    ssl_log(s, SSL_LOG_INFO, 
-            "Init: Created hash-table (%d buckets) "
-            "in shared memory (%d bytes) for SSL session cache", n, avail);
+    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s, 
+                 "Init: Created hash-table (%d buckets) "
+                 "in shared memory (%d bytes) for SSL session cache",
+                 n, avail);
     return;
 }
 
@@ -337,9 +340,10 @@ void ssl_scache_shmht_expire(server_rec *s)
         /* (vpKeyThis != vpKey) && (nKeyThis != nKey) */
     }
     ssl_mutex_off(s);
-    ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache (SHMHT) Expiry: "
-            "old: %d, new: %d, removed: %d",
-            nElements, nElements-nDeleted, nDeleted);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+                 "Inter-Process Session Cache (SHMHT) Expiry: "
+                 "old: %d, new: %d, removed: %d",
+                 nElements, nElements-nDeleted, nDeleted);
     return;
 }
 
