@@ -260,7 +260,7 @@ char *check_fulluri (request_rec *r, char *uri) {
 
   /* This routine parses full URLs, if they match the server */
   if (strncmp(uri, "http://", 7)) return uri;
-  name = pstrcat(r->pool, uri + 7,NULL);
+  name = pstrdup(r->pool, uri + 7);
   
   /* Find the hostname, assuming a valid request */
   i = ind(name, '/');
