@@ -1,5 +1,9 @@
 Changes with Apache 2.0.40
 
+  *) Fixed the Content-Length filter so that HTTP/1.0 requests to CGI
+     scripts would not result in a truncated response.
+     [Ryan Bloom, Justin Erenkrantz, Cliff Woolley]
+
   *) Add a filter_init parameter to the filter registration functions
      so that a filter can execute arbitrary code before the handlers
      are invoked.  This resolves a problem where mod_include requests
