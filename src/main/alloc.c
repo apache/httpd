@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: alloc.c,v 1.15 1996/10/06 17:29:55 ben Exp $ */
+/* $Id: alloc.c,v 1.16 1996/10/13 13:35:28 ben Exp $ */
 
 
 /*
@@ -681,7 +681,7 @@ void kill_cleanup (pool *p, void *data, void (*cleanup)(void *))
   }
 }
 
-void run_cleanup (pool *p, void *data, void (*cleanup)(void *))
+static void run_cleanup (pool *p, void *data, void (*cleanup)(void *))
 {
   block_alarms();		/* Run cleanup only once! */
   (*cleanup)(data);
@@ -738,7 +738,7 @@ void kill_cleanups_for_fd(pool *p,int fd)
     kill_cleanup(p,(void *)fd,fd_cleanup);
     }
 
-int popenf(struct pool *a, char *name, int flg, int mode)
+int popenf(pool *a, const char *name, int flg, int mode)
 {
   int fd;
 
@@ -749,7 +749,7 @@ int popenf(struct pool *a, char *name, int flg, int mode)
   return fd;
 }
 
-int pclosef(struct pool *a, int fd)
+int pclosef(pool *a, int fd)
 {
   int res;
   
@@ -768,11 +768,11 @@ int pclosef(struct pool *a, int fd)
 static void file_cleanup (void *fpv) { fclose ((FILE *)fpv); }
 static void file_child_cleanup (void *fpv) { close (fileno ((FILE *)fpv)); }
 
-void note_cleanups_for_file (struct pool *p, FILE *fp) {
+void note_cleanups_for_file (pool *p, FILE *fp) {
   register_cleanup (p, (void *)fp, file_cleanup, file_child_cleanup);
 }
 
-FILE *pfopen(struct pool *a, char *name, char *mode)
+FILE *pfopen(pool *a, const char *name, const char *mode)
 {
   FILE *fd = NULL;
   int baseFlag, desc;
@@ -796,7 +796,7 @@ FILE *pfopen(struct pool *a, char *name, char *mode)
   return fd;
 }
 
-FILE *pfdopen(struct pool *a,int fd,char *mode)
+FILE *pfdopen(pool *a,int fd, const char *mode)
 {
   FILE *f;
 
@@ -809,7 +809,7 @@ FILE *pfdopen(struct pool *a,int fd,char *mode)
 }
 
 
-int pfclose(struct pool *a, FILE *fd)
+int pfclose(pool *a, FILE *fd)
 {
   int res;
   

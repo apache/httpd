@@ -51,7 +51,7 @@
  *
  */
 
-/* $Id: alloc.h,v 1.11 1996/10/06 17:29:55 ben Exp $ */
+/* $Id: alloc.h,v 1.12 1996/10/13 13:35:29 ben Exp $ */
 
 /*
  * Resource allocation routines...
@@ -201,9 +201,9 @@ extern void unblock_alarms();
  * the note_cleanups_for_foo routines are for 
  */
 
-FILE *pfopen(struct pool *, char *name, char *fmode);
-FILE *pfdopen(struct pool *, int fd, char *fmode);
-int popenf(struct pool *, char *name, int flg, int mode); 
+FILE *pfopen(struct pool *, const char *name, const char *fmode);
+FILE *pfdopen(struct pool *, int fd, const char *fmode);
+int popenf(struct pool *, const char *name, int flg, int mode); 
 
 void note_cleanups_for_file (pool *, FILE *);
 void note_cleanups_for_fd (pool *, int);

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: util.c,v 1.22 1996/10/02 00:31:52 jim Exp $ */
+/* $Id: util.c,v 1.23 1996/10/13 13:35:30 ben Exp $ */
 
 /*
  * str.c: string utility things
@@ -76,7 +76,7 @@ char *get_time() {
     return (time_string);
 }
 
-char *ht_time(pool *p, time_t t, char *fmt, int gmt) {
+char *ht_time(pool *p, time_t t, const char *fmt, int gmt) {
     char ts[MAX_STRING_LEN];
     struct tm *tms;
 
@@ -134,7 +134,7 @@ struct tm *get_gmtoff(long *tz) {
 /* Based loosely on sections of wildmat.c by Rich Salz
  * Hmmm... shouldn't this really go component by component?
  */
-int strcmp_match(char *str, char *exp) {
+int strcmp_match(const char *str, const char *exp) {
     int x,y;
 
     for(x=0,y=0;exp[y];++y,++x) {
@@ -157,7 +157,7 @@ int strcmp_match(char *str, char *exp) {
     return (str[x] != '\0');
 }
 
-int strcasecmp_match(char *str, char *exp) {
+int strcasecmp_match(const char *str, const char *exp) {
     int x,y;
 
     for(x=0,y=0;exp[y];++y,++x) {
@@ -180,7 +180,7 @@ int strcasecmp_match(char *str, char *exp) {
     return (str[x] != '\0');
 }
 
-int is_matchexp(char *str) {
+int is_matchexp(const char *str) {
     register int x;
 
     for(x=0;str[x];x++)
@@ -189,7 +189,7 @@ int is_matchexp(char *str) {
     return 0;
 }
 
-/* This function substitues for $0-$9, filling in regular expression
+/* This function substitutes for $0-$9, filling in regular expression
  * submatches. Pass it the same nmatch and pmatch arguments that you
  * passed regexec(). pmatch should not be greater than the maximum number
  * of subexpressions - i.e. one more than the re_nsub member of regex_t.
@@ -335,7 +335,7 @@ void no2slash(char *name) {
 	else x++;
 }
 
-char *make_dirstr(pool *p, char *s, int n) {
+char *make_dirstr(pool *p, const char *s, int n) {
     register int x,f;
     char *res;
 
@@ -356,7 +356,7 @@ char *make_dirstr(pool *p, char *s, int n) {
         return pstrcat (p, s, "/", NULL);
 }
 
-int count_dirs(char *path) {
+int count_dirs(const char *path) {
     register int x,n;
 
     for(x=0,n=0;path[x];x++)
@@ -365,14 +365,14 @@ int count_dirs(char *path) {
 }
 
 
-void chdir_file(char *file) {
+void chdir_file(const char *file) {
     int i;
 
     if((i = rind(file,'/')) == -1)
         return;
-    file[i] = '\0';
+    ((char *)file)[i] = '\0';
     chdir(file);
-    file[i] = '/';
+    ((char *)file)[i] = '/';
 }
 
 char *getword(pool* atrans, char **line, char stop) {
@@ -449,7 +449,7 @@ char *getword_nulls(pool* atrans, char **line, char stop) {
  * all honored
  */
 
-char *substring_conf (pool *p, char *start, int len, char quote)
+static char *substring_conf (pool *p, char *start, int len, char quote)
 {
     char *result = palloc (p, len + 2);
     char *resp = result;
@@ -502,6 +502,9 @@ char *getword_conf(pool* p, char **line) {
     return res;
 }
 
+#ifdef UNDEF
+/* this function is dangerous, and superceded by getword_white, so don't use it
+ */
 void cfg_getword(char *word, char *line) {
     int x=0,y;
     
@@ -520,6 +523,7 @@ void cfg_getword(char *word, char *line) {
     while(line[x] && isspace(line[x])) ++x;
     for(y=0;(line[y] = line[x]);++x,++y);
 }
+#endif
 
 int
 cfg_getline(char *s, int n, FILE *f) {
@@ -632,13 +636,14 @@ static char *next_token (char **toks) {
     return ret;
 }
 
-int find_token (pool *p, char *line, char *tok) {
+int find_token (pool *p, const char *line, const char *tok) {
     char *ltok;
+    char *lcopy;
 
     if (!line) return 0;
 
-    line = pstrdup (p, line);
-    while ((ltok = next_token (&line)))
+    lcopy = pstrdup (p, line);
+    while ((ltok = next_token (&lcopy)))
         if (!strcasecmp (ltok, tok))
             return 1;
 
@@ -646,7 +651,7 @@ int find_token (pool *p, char *line, char *tok) {
 }
 
 
-char *escape_shell_cmd(pool *p, char *s) {
+char *escape_shell_cmd(pool *p, const char *s) {
     register int x,y,l;
     char *cmd;
 
@@ -688,7 +693,7 @@ void spacetoplus(char *str) {
     for(x=0;str[x];x++) if(str[x] == ' ') str[x] = '+';
 }
 
-char x2c(char *what) {
+static char x2c(const char *what) {
     register char digit;
 
     digit = ((what[0] >= 'A') ? ((what[0] & 0xdf) - 'A')+10 : (what[0] - '0'));
@@ -735,18 +740,18 @@ unescape_url(char *url) {
     else return OK;
 }
 
-char *construct_server(pool *p, char *hostname, int port) {
+char *construct_server(pool *p, const char *hostname, int port) {
     char portnum[10];		/* Long enough.  Really! */
   
     if (port == 80)
-	return hostname;
+	return (char *)hostname;
     else {
         sprintf (portnum, "%d", port);
 	return pstrcat (p, hostname, ":", portnum, NULL);
     }
 }
 
-char *construct_url(pool *p, char *uri, server_rec *s) {
+char *construct_url(pool *p, const char *uri, const server_rec *s) {
     return pstrcat (p, "http://",
 		    construct_server(p, s->server_hostname, s->port),
 		    uri, NULL);
@@ -819,7 +824,7 @@ char *os_escape_path(pool *p,const char *path,int partial) {
   return copy;
 }
 
-char *escape_uri(pool *p, char *uri) {
+char *escape_uri(pool *p, const char *uri) {
     register int x,y;
     char *copy = palloc (p, 3 * strlen (uri) + 1);
             
@@ -887,7 +892,7 @@ void escape_url(char *url) {
 
 #endif
 
-int is_directory(char *path) {
+int is_directory(const char *path) {
     struct stat finfo;
 
     if(stat(path,&finfo) == -1)
@@ -896,7 +901,7 @@ int is_directory(char *path) {
     return(S_ISDIR(finfo.st_mode));
 }
 
-char *make_full_path(pool *a, char *src1,char *src2) {
+char *make_full_path(pool *a, const char *src1, const char *src2) {
     register int x;
 
     x = strlen(src1);
@@ -906,7 +911,7 @@ char *make_full_path(pool *a, char *src1,char *src2) {
     else return pstrcat (a, src1, src2, NULL);
 }
 
-int is_url(char *u) {
+int is_url(const char *u) {
     register int x;
 
     for(x=0;u[x] != ':';x++)
@@ -918,7 +923,7 @@ int is_url(char *u) {
     else return 0;
 }
 
-int can_exec(struct stat *finfo) {
+int can_exec(const struct stat *finfo) {
 #ifdef MULTIPLE_GROUPS
   int cnt;
 #endif
@@ -944,7 +949,7 @@ int can_exec(struct stat *finfo) {
 }
 
 #ifdef NEED_STRDUP
-char *strdup (char *str)
+char *strdup (const char *str)
 {
   char *dup;
 
@@ -1068,7 +1073,7 @@ void str_tolower(char *str) {
     }
 }
         
-uid_t uname2id(char *name) {
+uid_t uname2id(const char *name) {
     struct passwd *ent;
 
     if(name[0] == '#') 
@@ -1081,7 +1086,7 @@ uid_t uname2id(char *name) {
     return(ent->pw_uid);
 }
 
-gid_t gname2id(char *name) {
+gid_t gname2id(const char *name) {
     struct group *ent;
 
     if(name[0] == '#') 
@@ -1124,7 +1129,7 @@ struct in_addr get_local_addr(int sd) {
  * Parses a host of the form <address>[:port]
  * :port is permitted if 'port' is not NULL
  */
-unsigned long get_virthost_addr (char *w, short int *ports) {
+unsigned long get_virthost_addr (const char *w, short int *ports) {
     struct hostent *hep;
     unsigned long my_addr;
     char *p;
@@ -1246,7 +1251,7 @@ const int pr2six[256]={
     64,64,64,64,64,64,64,64,64,64,64,64,64
 };
 
-char *uudecode(pool *p, char *bufcoded) {
+char *uudecode(pool *p, const char *bufcoded) {
     int nbytesdecoded;
     register unsigned char *bufin;
     register char *bufplain;

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: httpd.h,v 1.53 1996/10/10 09:02:43 fielding Exp $ */
+/* $Id: httpd.h,v 1.54 1996/10/13 13:35:29 ben Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -590,7 +590,7 @@ extern const char month_snames[12][4];
 
 struct tm *get_gmtoff(long *tz);
 char *get_time();
-char *ht_time (pool *p, time_t t, char *fmt, int gmt);     
+char *ht_time (pool *p, time_t t, const char *fmt, int gmt);     
 char *gm_timestr_822(pool *p, time_t t);
      
 /* String handling */     
@@ -601,28 +601,28 @@ char *getword_nulls (pool *p, char **line, char stop);
 char *getword_conf (pool *p, char **line);      
 
 char *get_token (pool *p, char **accept_line, int accept_white);
-int find_token (pool *p, char *line, char *tok);
+int find_token (pool *p, const char *line, const char *tok);
      
-int is_url(char *u);
+int is_url(const char *u);
 extern int unescape_url(char *url);
 void no2slash(char *name);
 void getparents(char *name);
 char *escape_path_segment(pool *p, const char *s);
 char *os_escape_path(pool *p,const char *path,int partial);
-char *escape_uri (pool *p, char *s);
+char *escape_uri (pool *p, const char *s);
 extern char *escape_html(pool *p, const char *s);
-char *construct_server(pool *p, char *hostname, int port);
-char *construct_url (pool *p, char *path, server_rec *s);     
-char *escape_shell_cmd (pool *p, char *s);
+char *construct_server(pool *p, const char *hostname, int port);
+char *construct_url (pool *p, const char *path, const server_rec *s);     
+char *escape_shell_cmd (pool *p, const char *s);
      
-int count_dirs(char *path);
-char *make_dirstr(pool *a, char *s, int n);
-char *make_full_path(pool *a, char *dir, char *f);
+int count_dirs(const char *path);
+char *make_dirstr(pool *a, const char *s, int n);
+char *make_full_path(pool *a, const char *dir, const char *f);
      
-int is_matchexp(char *str);
-int strcmp_match(char *str, char *exp);
-int strcasecmp_match(char *str, char *exp);
-char *uudecode (pool *, char *);
+int is_matchexp(const char *str);
+int strcmp_match(const char *str, const char *exp);
+int strcasecmp_match(const char *str, const char *exp);
+char *uudecode (pool *, const char *);
 
 char *pregsub(pool *p, const char *input, const char *source,
 	      size_t nmatch, regmatch_t pmatch[]);
@@ -635,13 +635,13 @@ int cfg_getline(char *s, int n, FILE *f);
      
 /* Misc system hackery */
      
-uid_t uname2id(char *name);
-gid_t gname2id(char *name);
-int is_directory(char *name);
-int can_exec(struct stat *);     
-void chdir_file(char *file);
+uid_t uname2id(const char *name);
+gid_t gname2id(const char *name);
+int is_directory(const char *name);
+int can_exec(const struct stat *);     
+void chdir_file(const char *file);
      
 char *get_local_host(pool *);
-unsigned long get_virthost_addr (char *hostname, short int *port);
+unsigned long get_virthost_addr (const char *hostname, short int *port);
 
 extern time_t restart_time;
