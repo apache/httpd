@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_log_common</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_log_common</H1>
+
+This module is contained in the <CODE>mod_log_common.c</CODE> file,
+and is compiled in by default. It provides for logging of the requests
+made to the server using the Common Logfile Format. This module has
+been replaced by mod_log_config in Apache 1.2
+
+<H2>Log file format</H2>
+The log file contains a separate line for each request. A line is composed
+of several tokens separated by spaces:
+<BLOCKQUOTE>
+host ident authuser date request status bytes
+</BLOCKQUOTE>
+If a token does not have a value then it is represented by a hyphen (-).
+The meanings and values of these tokens are as follows:
+<DL>
+<DT>host
+<DD>The fully-qualified domain name of the client, or its IP number if the
+name is not available.
+<DT>ident
+<DD>If <A HREF="core.html#identitycheck">IdentityCheck</A> is enabled and the
+client machine runs identd, then this is the identity information reported
+by the client.
+<DT>authuser
+<DD>If the request was for an password protected document, then this is
+the userid used in the request.
+<DT>date
+<DD>The date and time of the request, in the following format:
+<DL><DD><BLOCKQUOTE><CODE> date = [day/month/year:hour:minute:second zone] <BR>
+day = 2*digit<BR>
+month = 3*letter<BR>
+year = 4*digit<BR>
+hour = 2*digit<BR>
+minute = 2*digit<BR>
+second = 2*digit<BR>
+zone = (`+' | `-') 4*digit</CODE></BLOCKQUOTE></DL>
+<DT>request
+<DD>The request line from the client, enclosed in double quotes
+(<CODE>&quot;</CODE>).
+<DT>status
+<DD>The three digit status code returned to the client.
+<DT>bytes
+<DD>The number of bytes in the object returned to the client, not including
+any headers.
+</DL>
+
+
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#transferlog">TransferLog</A>
+</UL>
+<HR>
+
+
+<H2><A NAME="transferlog">TransferLog</A></H2>
+<!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> TransferLog <EM>file-pipe</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>TransferLog logs/transfer_log</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_common<P>
+
+The TransferLog directive sets the name of the file to which the server will
+log the incoming requests. <EM>File-pipe</EM> is one
+of
+<DL><DT>A filename
+<DD>A filename relative to the <A HREF="core.html#serverroot">ServerRoot</A>.
+<DT> `|' followed by a command
+<DD>A program to receive the agent log information on its standard input.
+Note the a new program will not be started for a VirtualHost if it inherits
+the TransferLog from the main server.  See, just as an example,
+<A HREF="http://www.ford-mason.co.uk/resources/cronolog/">cronolog</A>.
+
+</DL>
+<STRONG>Security:</STRONG> if a program is used, then it will be
+run under the user who started httpd. This will be root if the server
+was started by root; be sure that the program is secure.<P>
+
+<STRONG>Security:</STRONG> See the <A
+HREF="../misc/security_tips.html">security tips</A> document for
+details on why your security could be compromised if the directory
+where logfiles are stored is writable by anyone other than the user
+that starts the server.<P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

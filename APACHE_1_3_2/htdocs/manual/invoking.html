@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Starting Apache</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Starting Apache</H1>
+
+<H2>Invoking Apache</H2>
+The <CODE>httpd</CODE> program is usually run as a daemon which executes
+continuously, handling requests.  It is possible to invoke Apache by
+the Internet daemon <CODE>inetd</CODE> each time a connection to the HTTP
+service is made (use the
+<A HREF="mod/core.html#servertype">ServerType</A> directive)
+but this is not recommended.
+
+<H2>Command line options</H2>
+The following options are recognized on the httpd command line:
+<DL>
+<DT><CODE>-d</CODE> <EM>serverroot</EM>
+<DD>Set the initial value for the
+<A HREF="mod/core.html#serverroot">ServerRoot</A> variable to
+<EM>serverroot</EM>. This can be overridden by the ServerRoot command in the
+configuration file. The default is <CODE>/usr/local/apache</CODE>.
+
+<DT><CODE>-D</CODE> <EM>name</EM>
+<DD>Define a name for use in in 
+<A HREF="mod/core.html#ifdefine">IfDefine</A> directives.
+This option can be used to optionally enable certain functionality in the
+configuration file, or to use a common configuration for
+several independent hosts, where host specific information is enclosed in
+&lt;IfDefine&gt; sections.
+
+<DT><CODE>-f</CODE> <EM>config</EM>
+<DD>Execute the commands in the file <EM>config</EM> on startup. If
+<EM>config</EM> does not begin with a <CODE>/</CODE>, then it is taken to be a
+path relative to the <A HREF="mod/core.html#serverroot">ServerRoot</A>. The
+default is <CODE>conf/httpd.conf</CODE>.
+
+<DT><CODE>-C</CODE> <EM>"directive"</EM>
+<DD>Process the given apache "directive" (just as if it had been part of a
+configuration file) <STRONG>before</STRONG> actually reading the regular configuration files.
+
+<DT><CODE>-c</CODE> <EM>"directive"</EM>
+<DD>Process the given apache "directive" <STRONG>after</STRONG> reading
+all the regular configuration files.
+
+<DT><CODE>-X</CODE>
+<DD>Run in single-process mode, for internal debugging purposes only; the
+daemon does not detach from the terminal or fork any children. Do <EM>NOT</EM>
+use this mode to provide ordinary web service.
+
+<DT><CODE>-v</CODE>
+<DD>Print the version of httpd and its build date, and then exit.
+
+<DT><A NAME="version"><CODE>-V</CODE></A>
+<DD>Print the base version of httpd, its
+build date, and a list of compile time settings which influence the
+behavior and performance of the apache server (<EM>e.g.</EM>,
+<SAMP>-DUSE_MMAP_FILES</SAMP>),
+then exit.
+
+<DT><A NAME="help"><CODE>-h</CODE></A>
+<DD>Give a list of directives together with expected arguments and
+places where the directive is valid. (New in Apache 1.2)
+
+<DT><CODE>-l</CODE>
+<DD>Give a list of all modules compiled into the server.
+
+<DT><CODE>-S</CODE>
+<DD>Show the settings as parsed from the config file (currently only
+shows a breakdown of the vhost settings).
+
+<DT><CODE>-t</CODE>
+<DD>Test the configuration file syntax (<EM>i.e.</EM>, read all configuration files
+and interpret them) but do not start the server. If the configuration contains
+errors, display an error message and exit with a non-zero exit status,
+otherwise display "Syntax OK" and terminate with a zero exit status.
+
+<DT><CODE>-?</CODE>
+<DD>Print a list of the httpd options, and then exit.
+</DL>
+
+<H2>Configuration files</H2>
+The server will read three files for configuration directives. Any directive
+may appear in any of these files. The the names of these files are taken
+to be relative to the server root; this is set by the
+<A HREF="mod/core.html#serverroot">ServerRoot</A> directive, or the
+<CODE>-d</CODE> command line flag.
+
+Conventionally, the files are:
+<DL>
+<DT><CODE>conf/httpd.conf</CODE>
+<DD>Contains directives that control the operation of the server daemon.
+The filename may be overridden with the <CODE>-f</CODE> command line flag.
+
+<DT><CODE>conf/srm.conf</CODE>
+<DD>Contains directives that control the specification of documents that
+the server can provide to clients. The filename may be overridden with
+the <A HREF="mod/core.html#resourceconfig">ResourceConfig</A> directive.
+
+<DT><CODE>conf/access.conf</CODE>
+<DD>Contains directives that control access to documents.
+The filename may be overridden with the
+<A HREF="mod/core.html#accessconfig">AccessConfig</A> directive.
+</DL>
+However, these conventions need not be adhered to.
+<P>
+The server also reads a file containing mime document types; the filename
+is set by the <A HREF="mod/mod_mime.html#typesconfig">TypesConfig</A>
+directive,
+and is <CODE>conf/mime.types</CODE> by default.
+
+<H2>Log files</H2>
+<H3>security warning</H3>
+Anyone who can write to the directory where Apache is writing a
+log file can almost certainly gain access to the uid that the server is
+started as, which is normally root.  Do <EM>NOT</EM> give people write
+access to the directory the logs are stored in without being aware of
+the consequences; see the <A HREF="misc/security_tips.html">security tips</A>
+document for details.
+<H3>pid file</H3>
+On daemon startup, it saves the process id of the parent httpd process to
+the file <CODE>logs/httpd.pid</CODE>. This filename can be changed with the
+<A HREF="mod/core.html#pidfile">PidFile</A> directive. The process-id is for
+use by the administrator in restarting and terminating the daemon;
+A HUP or USR1 signal causes the daemon to re-read its configuration files and
+a TERM signal causes it to die gracefully.  For more information
+see the <A HREF="stopping.html">Stopping and Restarting</A> page.
+<P>
+If the process dies (or is killed) abnormally, then it will be necessary to
+kill the children httpd processes.
+
+<H3>Error log</H3>
+The server will log error messages to a log file, <CODE>logs/error_log</CODE>
+by default. The filename can be set using the
+<A HREF="mod/core.html#errorlog">ErrorLog</A> directive; different error logs
+can
+be set for different <A HREF="mod/core.html#virtualhost">virtual hosts</A>.
+
+<H3>Transfer log</H3>
+The server will typically log each request to a transfer file,
+<CODE>logs/access_log</CODE> by default. The filename can be set using a
+<A HREF="mod/mod_log_config.html#transferlog">TransferLog</A> directive;
+different transfer logs can be set for different
+<A HREF="mod/core.html#virtualhost">virtual hosts</A>.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

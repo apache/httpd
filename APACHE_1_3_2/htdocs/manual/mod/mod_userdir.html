@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_userdir</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_userdir</H1>
+
+This module is contained in the <CODE>mod_userdir.c</CODE> file, and
+is compiled in by default. It provides for user-specific directories.
+
+
+<UL>
+<LI><A HREF="#userdir">UserDir</A>
+</UL>
+<HR>
+
+
+<H2><A NAME="userdir">UserDir</A></H2>
+<!--%plaintext &lt;?INDEX {\tt UserDir} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> UserDir <EM>directory/filename</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>UserDir public_html</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_userdir<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> All forms except the <CODE>UserDir
+public_html</CODE> form are only available in Apache 1.1 or above.  Use
+of the <SAMP>enabled</SAMP> keyword, or <SAMP>disabled</SAMP> with a
+list of usernames, is only available in Apache 1.3 and above.<P>
+
+The UserDir directive sets the real directory in a user's home directory
+to use when a request for a document for a user is received.
+<EM>Directory/filename</EM> is one of the following:
+</P>
+<UL>
+ <LI>The name of a directory or a pattern such as those shown below.
+ </LI>
+ <LI>The keyword <SAMP>disabled</SAMP>.  This turns off <EM>all</EM>
+  username-to-directory translations except those explicitly named with
+  the <SAMP>enabled</SAMP> keyword (see below).
+ </LI>
+ <LI>The keyword <SAMP>disabled</SAMP> followed by a space-delimited
+  list of usernames.  Usernames that appear in such a list will
+  <EM>never</EM> have directory translation performed, even if they
+  appear in an <SAMP>enabled</SAMP> clause.
+ </LI>
+ <LI>The keyword <SAMP>enabled</SAMP> followed by a space-delimited list
+  of usernames.  These usernames will have directory translation
+  performed even if a global disable is in effect, but not if they also
+  appear in a <SAMP>disabled</SAMP> clause.
+ </LI>
+</UL>
+<P>
+If neither the <SAMP>enabled</SAMP> nor the <SAMP>disabled</SAMP>
+keywords appear in the <SAMP>Userdir</SAMP> directive, the argument is
+treated as a filename pattern, and is used to turn the name into a
+directory specification.  A request for
+<CODE>http://www.foo.com/~bob/one/two.html</CODE> will be translated to:
+<PRE>
+UserDir public_html     -&gt; ~bob/public_html/one/two.html
+UserDir /usr/web        -&gt; /usr/web/bob/one/two.html
+UserDir /home/*/www     -&gt; /home/bob/www/one/two.html
+</PRE>
+The following directives will send redirects to the client:
+<PRE>
+UserDir http://www.foo.com/users -&gt; http://www.foo.com/users/bob/one/two.html
+UserDir http://www.foo.com/*/usr -&gt; http://www.foo.com/bob/usr/one/two.html
+UserDir http://www.foo.com/~*/   -&gt; http://www.foo.com/~bob/one/two.html
+</PRE>
+</P>
+<BLOCKQUOTE>
+ <STRONG>
+ Be careful when using this directive; for instance,
+ <SAMP>&quot;UserDir&nbsp;./&quot;</SAMP> would map
+ <SAMP>&quot;/~root&quot;</SAMP> to
+ <SAMP>&quot;/&quot;</SAMP> - which is probably undesirable.  If you are
+ running Apache 1.3 or above, it is strongly recommended that your
+ configuration include a
+ &quot;<SAMP>UserDir&nbsp;disabled&nbsp;root</SAMP>&quot; declaration.
+ See also
+ the
+ <A
+  HREF="core.html#directory"
+ >&lt;Directory&gt;</A>
+ directive and the
+ <A
+  HREF="../misc/security_tips.html"
+ >Security Tips</A>
+ page for more information.
+ </STRONG>
+</BLOCKQUOTE>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
