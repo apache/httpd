@@ -87,7 +87,7 @@ extern int os_is_path_absolute(const char *f);
  * Abstraction layer for dynamic loading of modules (mod_so.c)
  */
 
-#if defined(LINUX) || defined(__FreeBSD__) || defined(SOLARIS) || \
+#if defined(LINUX) || defined(__FreeBSD__) || defined(SOLARIS2) || \
     defined(__bsdi__) || defined(IRIX)
 # define HAS_DLFCN
 #endif
