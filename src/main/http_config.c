@@ -1520,10 +1520,9 @@ void show_directives()
 
     for (n = 0; preloaded_modules[n]; ++n)
 	for (pc = preloaded_modules[n]->cmds; pc && pc->name; ++pc) {
-	    printf("%s\n", pc->name);
+	    printf("%s (%s)\n", pc->name, preloaded_modules[n]->name);
 	    if (pc->errmsg)
 		printf("\t%s\n", pc->errmsg);
-	    printf("\t%s\n", preloaded_modules[n]->name);
 	    show_overrides(pc, preloaded_modules[n]);
 	}
 }

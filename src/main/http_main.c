@@ -777,15 +777,24 @@ static void accept_mutex_off(void)
 
 void usage(char *bin)
 {
-    fprintf(stderr, "Usage: %s [-d directory] [-f file] [-C \"directive\"] [-c \"directive\"] [-v] [-h] [-l]\n", bin);
-    fprintf(stderr, "-d directory : specify an alternate initial ServerRoot\n");
-    fprintf(stderr, "-f file : specify an alternate ServerConfigFile\n");
-    fprintf(stderr, "-C \"directive\" : process directive before reading config files\n");
-    fprintf(stderr, "-c \"directive\" : process directive after reading config files\n");
-    fprintf(stderr, "-v : show version number\n");
-    fprintf(stderr, "-V : show compile settings\n");
-    fprintf(stderr, "-h : list directives\n");
-    fprintf(stderr, "-l : list modules\n");
+    char pad[MAX_STRING_LEN];
+    int i;
+
+    for (i = 0; i < strlen(bin); i++)
+	pad[i] = ' ';
+    pad[i] = '\0';
+    fprintf(stderr, "Usage: %s [-d directory] [-f file]\n", bin);
+    fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l]\n", pad);
+    fprintf(stderr, "Options:\n");
+    fprintf(stderr, "  -d directory     : specify an alternate initial ServerRoot\n");
+    fprintf(stderr, "  -f file          : specify an alternate ServerConfigFile\n");
+    fprintf(stderr, "  -C \"directive\"   : process directive before reading config files\n");
+    fprintf(stderr, "  -c \"directive\"   : process directive after  reading config files\n");
+    fprintf(stderr, "  -v               : show version number\n");
+    fprintf(stderr, "  -V               : show compile settings\n");
+    fprintf(stderr, "  -h               : list available configuration directives\n");
+    fprintf(stderr, "  -l               : list compiled-in modules\n");
     exit(1);
 }
 
@@ -2867,12 +2876,13 @@ void AMCSocketCleanup(void)
 static void show_compile_settings(void)
 {
 #ifdef SERVER_SUBVERSION
-    printf("Server base version: \"%s\"\n", SERVER_BASEVERSION);
-    printf("Server sub-version:  \"%s\"\n", SERVER_SUBVERSION);
+    printf("Server base version: %s\n", SERVER_BASEVERSION);
+    printf("Server sub-version:  %s\n", SERVER_SUBVERSION);
+    printf("Server built:        %s\n", apapi_get_server_built());
 #else
-    printf("Server version \"%s\"\n", apapi_get_server_version());
+    printf("Server version: %s\n", apapi_get_server_version());
+    printf("Server built:   %s\n", apapi_get_server_built());
 #endif
-    printf("Server built:  %s\n", apapi_get_server_built());
     printf("Server's Module Magic Number: %u\n", MODULE_MAGIC_NUMBER);
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
@@ -2953,7 +2963,6 @@ static void show_compile_settings(void)
 #ifdef NEED_HASHBANG_EMUL
     printf(" -D NEED_HASHBANG_EMUL\n");
 #endif
-    printf("\n");
 }
 
 
@@ -3882,8 +3891,8 @@ int main(int argc, char *argv[])
 	    ap_cpystrn(server_confname, optarg, sizeof(server_confname));
 	    break;
 	case 'v':
-	    printf("Server version %s.\n", apapi_get_server_version());
-	    printf("Server built:  %s\n", apapi_get_server_built());
+	    printf("Server version: %s\n", apapi_get_server_version());
+	    printf("Server built:   %s\n", apapi_get_server_built());
 	    exit(0);
 	case 'V':
 	    show_compile_settings();
@@ -4979,8 +4988,8 @@ int main(int argc, char *argv[])
 	    ap_cpystrn(server_confname, optarg, sizeof(server_confname));
 	    break;
 	case 'v':
-	    printf("Server version %s.\n", apapi_get_server_version());
-	    printf("Server built:  %s\n", apapi_get_server_built());
+	    printf("Server version: %s\n", apapi_get_server_version());
+	    printf("Server built:   %s\n", apapi_get_server_built());
 	    exit(0);
 	case 'V':
 	    show_compile_settings();
