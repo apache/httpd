@@ -4964,6 +4964,11 @@ int REALMAIN(int argc, char *argv[])
 
     child_timeouts = !ap_standalone || one_process;
 
+#ifdef BEOS
+    /* make sure we're running in single_process mode - Yuck! */
+    one_process = 1;
+#endif
+
 #ifndef TPF
     if (ap_standalone) {
 	ap_open_logs(server_conf, plog);
