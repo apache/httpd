@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/05 19:42:19 $]
+Last modified at [$Date: 2002/06/06 01:08:06 $]
 
 Release:
 
@@ -508,373 +508,326 @@ EXPERIMENTAL MODULES:
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
 
-    * PR#76: general
-      missing call to "setlocale();"
-        Status: 
-
-    * PR#78: mod_include
-      Additional status for XBitHack directive
-        Status: 
-
-    * PR#362: mod_proxy
-      Mod_proxy doesn't allow change of error pages
-        Status: 
-
-    * PR#370: mod_env
-      Modified PATH environemnt variable is not passed, instead
-      system's is used
-        Status: 
-
-    * PR#440: mod_proxy
-      Proxy doesn't deliver documents if not connected
-        Status: 
-
-    * PR#534: mod_proxy
-      proxy converts ~name to %7Ename when name starts with a dot (.)
-        Status: 
-
-    * PR#537: mod_access
-      mod_access syntax allows hosts that should be restricted
-        Status: 
-
-    * PR#557: mod_auth-any
-      ~UserHome directories are not honored in absolute pathname
-      requests (.htaccess)
-        Status: 
-
-    * PR#612: mod_proxy
-      Proxy FTP Authentication Fails
-        Status: 
-
-    * PR#623: mod_include
-      A smarter "Last Modified" value for SSI documents (see PR number 600)
-        Status: 
-
-    * PR#628: config
-      Request of "Options SymLinksIfGroupMatch"
-        Status: 
-
-    * PR#700: mod_proxy
-      Proxy doesn't do links right for OpenVMS files through ftp:
-        Status: 
-
-    * PR#759: mod_imap
-      imap should read <MAP><AREA>*</MAP> too!
-        Status: 
-
-    * PR#793: general
-      RLimitCPU and RLimitMEM don't apply to all children like they should
-        Status: 
-
-    * PR#921: suexec
-      Uses cwd before filling it in, doesn't use syslog
-        Status: 
-
-    * PR#922: config
-      it is useful to allow specifiction that root-owned symlinks
-      should always be followed
-        Status: 
-
-    * PR#980: mod_proxy
-      Controlling Access to Remote Proxies would be nice...
-        Status: 
-
-    * PR#994: mod_proxy
-      Adding authentication "on the fly" through the proxy module
-        Status: 
-
-    * PR#1004: apache-api
-      request_config field in request_rec is moderately bogus
-        Status: 
-
-    * PR#1028: other
-      DoS attacks involving memory consumption
-        Status: 
-
-    * PR#1050: mod_log-any
-      Logging of virtual server to error_log as well
-        Status: 
-
-    * PR#1085: mod_proxy
-      ProxyRemote make a dead cycle.
-        Status: 
-
-    * PR#1117: mod_auth-any
-      Using NIS passwd.byname dbm files with AuthDBMUserFile
-        Status: 
-
-    * PR#1120: suexec
-      suexec does not parse arguments to #exec cmd
-        Status: 
-
-    * PR#1145: mod_include
-      Allow for Last-Modified: without resorting to XBitHack
-        Status: 
-
-    * PR#1158: apache-api
-      improvements to child spawning API
-        Status: 
-
-    * PR#1166: mod_proxy
-      ``nph-'' not honored (no buffering) for ProxyRemote mapping
-        Status: 
-
-    * PR#1176: mod_cgi
-      Apache cannot handle continuation line in headers
-        Status: 
-
-    * PR#1191: general
-      setlogin() is not called, causing problems with e.g. identd
-        Status: 
-
-    * PR#1204: general
-      regerror() exists, use it
-        Status: 
-
-    * PR#1233: apache-api
-      there is no way to keep per-connection per-module state
-        Status: 
-
-    * PR#1263: mod_autoexec
-      Add frame-safe anchor attribute to mod_autoindex links
-        Status: 
-
-    * PR#1268: suexec
-      CGI scripts running as Apache user: security (suexec etc.)
-        Status: 
-
-    * PR#1285: suexec
-      Error messages could be easier to spot in cgi.log file for suexec.c
-        Status: 
-
-    * PR#1287: mod_access
-      add allow,deny/deny,allow warning to mod_access
-        Status: 
-
-    * PR#1290: mod_proxy
-      Need to know "hit-rate" on proxy cache
-        Status: 
-
-    * PR#1358: mod_log-any
-      Selective url-encode of log fields (or maybe a pseudo
-      log_rewrite module?)
-        Status: 
-
-    * PR#1383: mod_headers
-      I make mod_headers to modify request headers as well as
-      response ones.
-        Status: 
-
-    * PR#1532: mod_proxy
-      Proxy transfer logging
-        Status: 
-
-    * PR#1547: mod_proxy
-      No HTTP_X_FORWARDED_FOR set...
-        Status: 
-
-    * PR#1567: mod_proxy
-      ProxyRemote proxy requests fail authentication by firewall
-        Status: 
-
-    * PR#1582: mod_rewrite
-      mod_rewrite forms REQUEST_URI different than mod_cgi does
-        Status: 
-
-    * PR#1677: mod_headers
-      mod_headers should allow mod_log_config-style formats in
-      header values
-        Status: 
-
-    * PR#1702: mod_proxy
-      mod_proxy to support persistent conns?
-        Status: 
-
-    * PR#1803: mod_include
-      patches to mod_include to allow for file tests
-        Status: 
-
-    * PR#1809: mod_auth-any
-      Suggestion for improving authentication modules and core source
-      code, problem with 401 and ErrorDocument
-        Status: 
-
-    * PR#1878: mod_proxy
-      listing of proxy cache content
-        Status: 
-
-    * PR#1905: suexec
-      Allow modules to set user:group for execution.
-        Status: 
-
-    * PR#2024: apache-api
-      adding auth_why to conn_rec
-        Status: 
-
-    * PR#2073: mod_log-any
-      pipelined connections are not logged correctly
-        Status: 
-
-    * PR#2074: mod_rewrite
-      mod_rewrite doesn't pass Proxy Throughput on internal subrequests
-        Status: 
-
-    * PR#2113: config
-      HTTP Server Rebuild Line Needs Changing for the better
-        Status: 
-
-    * PR#2138: mod_status
-      mod_status always displays 256 possible connection slots
-        Status: 
-
-    * PR#2221: documentation
-      Make online documentation search link back to my installation
-        Status: 
-
-    * PR#2284: general
-      Can not POST to ErrorDocument - Apache/1.3b6
-        Status: 
-
-    * PR#2314: mod_proxy
-      patterns in ProxyRemote
-        Status: 
-
-    * PR#2343: mod_status
-      Status module averages are for entire uptime
-        Status: 
-
-    * PR#2360: suexec
-      suexec for general access of user content?
-        Status: 
-
-    * PR#2396: general
-      Proposal for TimeZone directive
-        Status: 
-
-    * PR#2415: mod_info
-      /server-info doesn't check for the virtual host to list the info
-        Status: 
-
-    * PR#2421: config
-      problem specifying ndbm library for build ?with autoconfigure
-        Status: 
-
-    * PR#2431: general
-      A small addition to rotatelogs.c to improve program functionality.
-        Status: 
-
-    * PR#2446: config
-      AllowOverride FileInfo is too coarse
-        Status: 
-
-    * PR#2460: mod_cgi
-      TimeOut applies to output of CGI scripts
-        Status: 
-
-    * PR#2512: mod_access
-      &lt;IfDenied&gt; directive wanted
-        Status: 
-
-    * PR#2573: suexec
-      CGI's for general use still have to be run as another user
-      with suExec
-        Status: 
-
-    * PR#2648: general
-      Cache file names in Proxy module
-        Status: 
-
-    * PR#2760: config
-      [PATCH] User/Group for <Directory> and <Location> i.e. not only
-      in global and <Virtual>.
-        Status: 
-
-    * PR#2763: general
-      mailto tags and bundling bug report script
-        Status: 
-
-    * PR#2785: os-aix
-      Support for System Resource Controller
-        Status: 
-
-    * PR#2793: protocol
-      When will Apache support P3P? Any Plans?
-        Status: 
-
-    * PR#2873: config
-      Feedback/Comment on APACI
-        Status: 
+    * documentation and Q&A
 
-    * PR#2889: general
-      Inclusion of RPM spec file in CVS/distributions
+      PR#2221: Make online documentation search link back to my installation
         Status: 
 
-    * PR#2906: general
-      Propose that Apache recommend $UNIQUE_ID for all "session id"
+      PR#2906: Propose that Apache recommend $UNIQUE_ID for all "session id"
       algorithms
         Status: 
 
-    * PR#2907: config
-      suggestion: power up your Include directive :)
+      PR#2793: When will Apache support P3P? Any Plans?
         Status: 
 
-    * PR#3018: general
-      cannot limit some HTTP methods
+    * build
+
+      PR#2113: HTTP Server Rebuild Line Needs Changing for the better
         Status: 
 
-    * PR#3143: apache-api
-      No module specific data hook for per-connection data
+      PR#2421: problem specifying ndbm library for build ?with autoconfigure
         Status: 
 
-    * PR#3191: mod_negotiation
-      no way to set global quality-of-source (qs) coneg values
-      with multiviews
+    * config
+
+      PR#76: missing call to "setlocale();"
         Status: 
 
-    * PR#3568: mod_proxy
-      Accessing URL through proxy server corrupts data.
+      PR#628: Request of "Options SymLinksIfGroupMatch"
         Status: 
 
-    * PR#3605: mod_proxy
-      Some anonymous FTP URLs ask for authentication
+      PR#793: RLimitCPU and RLimitMEM don't apply to all children like they should
         Status: 
 
-    * PR#3677: general
-      New ErrorDocumentMatch directive
+      PR#922:  it is useful to allow specifiction that root-owned symlinks
+      should always be followed
         Status: 
 
-    * PR#4241: config
-      Need to be able to override shebang line to make CGI scripts
-      more portable.
+      PR#1028: DoS attacks involving memory consumption
         Status: 
 
-    * PR#4244: config
-      "Files" and "FilesMatch" regexp does not recognize bang as
+      PR#1191: setlogin() is not called, causing problems with e.g. identd
+        Status: 
+
+      PR#1204: regerror() exists, use it
+        Status: 
+
+      PR#2284: Can not POST to ErrorDocument - Apache/1.3b6
+        Status: 
+
+      PR#2396: Proposal for TimeZone directive
+        Status: 
+
+      PR#2446: AllowOverride FileInfo is too coarse
+        Status: 
+
+      PR#2760: [PATCH] User/Group for <Directory> and <Location> i.e. not only
+      in global and <Virtual>.
+        Status: 
+
+      PR#2907: suggestion: power up your Include directive :)
+        Status: 
+
+      PR#3018: cannot limit some HTTP methods
+        Status: 
+
+      PR#3677: New ErrorDocumentMatch directive
+        Status: 
+
+      PR#4244: "Files" and "FilesMatch" regexp does not recognize bang as
       negation operator
         Status: 
 
-    * PR#4448: mod_log-any
-      Please allow CGI env variables (QUERY_STRING, ...) to be logged
+      PR#5993: AllowOverride should have a 'CheckNone' and 'AllowNone' argument
+      instead of only 'None'
+        Status: 
+
+    * mod_access
+
+      PR#537: mod_access syntax allows hosts that should be restricted
+        Status: 
+
+      PR#1287: add allow,deny/deny,allow warning to mod_access
+        Status: 
+
+      PR#2512: <IfDenied> directive wanted
+        Status: 
+
+    * mod_auth-any
+
+      PR#557: ~UserHome directories are not honored in absolute pathname
+      requests (.htaccess)
+        Status: 
+
+      PR#1117: Using NIS passwd.byname dbm files with AuthDBMUserFile
+        Status: 
+
+      PR#1809: Suggestion for improving authentication modules and core source
+      code, problem with 401 and ErrorDocument
+        Status: 
+
+    * mod_autoindex
+
+      PR#1263: Add frame-safe anchor attribute to mod_autoindex links
+        Status: 
+
+    * mod_cgi (and suexec)
+
+      PR#921: suexec Uses cwd before filling it in, doesn't use syslog
+        Status: 
+
+      PR#1176: Apache cannot handle continuation line in headers
+        Status: 
+
+      PR#1120: suexec does not parse arguments to #exec cmd
+        Status: 
+
+      PR#1268: CGI scripts running as Apache user: security (suexec etc.)
+        Status: 
+
+      PR#1285: Error messages could be easier to spot in cgi.log file for suexec.c
+        Status: 
+
+      PR#1905: suexec - Allow modules to set user:group for execution.
+        Status: 
+
+      PR#2360: suexec for general access of user content?
+        Status: 
+
+      PR#2460: TimeOut applies to output of CGI scripts
+        Status: 
+
+      PR#2573: CGI's for general use still have to be run as another user
+      with suExec
+        Status: 
+
+      PR#4241: Need to be able to override shebang line to make CGI scripts
+      more portable.
+        Status: 
+
+      PR#4490: mod_cgi prevents handling of OPTIONS requests
+        Status: 
+
+    * mod_env
+
+      PR#370: Modified PATH environemnt variable is not passed, instead
+      system's is used
+        Status: 
+
+    * mod_headers
+
+      PR#1383: I make mod_headers to modify request headers as well as
+      response ones.
+        Status: 
+
+      PR#1677: mod_headers should allow mod_log_config-style formats in
+      header values
+        Status: 
+
+    * mod_imap
+
+      PR#759: imap should read <MAP><AREA>*</MAP> too!
+        Status: 
+
+    * mod_include
+
+      PR#78: Additional status for XBitHack directive
+        Status: 
+
+      PR#623: A smarter "Last Modified" value for SSI documents (see PR number 600)
+        Status: 
+
+      PR#1145: mod_include
+      Allow for Last-Modified: without resorting to XBitHack
+        Status: 
+
+      PR#1803: patches to mod_include to allow for file tests
+        Status: 
+
+      PR#4459: Suggestion for better handling of Last-modified headers
+        Status: 
+
+    * mod_info
+
+      PR#2415: /server-info doesn't check for the virtual host to list the info
+        Status: 
+
+    * mod_log-any
+
+      PR#1050: Logging of virtual server to error_log as well
+        Status: 
+
+      PR#1358: Selective url-encode of log fields (or maybe a pseudo
+      log_rewrite module?)
+        Status: 
+
+      PR#2073: pipelined connections are not logged correctly
+        Status: 
+
+      PR#4448: Please allow CGI env variables (QUERY_STRING, ...) to be logged
       with %{}e
         Status: 
 
-    * PR#4459: mod_include
-      Suggestion for better handling of Last-modified headers
+    * mod_negotiation
+
+      PR#3191: no way to set global quality-of-source (qs) coneg values
+      with multiviews
         Status: 
 
-    * PR#4490: mod_cgi
-      mod_cgi prevents handling of OPTIONS requests
+    * mod_proxy
+
+      PR#362: Mod_proxy doesn't allow change of error pages
         Status: 
 
-    * PR#5713: os-windows
-      [PATCH] install as win32 service with domain account
+      PR#440: Proxy doesn't deliver documents if not connected
+        Status: 
+
+      PR#534: proxy converts ~name to %7Ename when name starts with a dot (.)
+        Status: 
+
+      PR#612: Proxy FTP Authentication Fails
+        Status: 
+
+      PR#700: Proxy doesn't do links right for OpenVMS files through ftp:
+        Status: 
+
+      PR#980: Controlling Access to Remote Proxies would be nice...
+        Status: 
+
+      PR#994: Adding authentication "on the fly" through the proxy module
+        Status: 
+
+      PR#1085: ProxyRemote make a dead cycle.
+        Status: 
+
+      PR#1166: ``nph-'' not honored (no buffering) for ProxyRemote mapping
+        Status: 
+
+      PR#1290: Need to know "hit-rate" on proxy cache
+        Status: 
+
+      PR#1532: Proxy transfer logging
+        Status: 
+
+      PR#1547: No HTTP_X_FORWARDED_FOR set...
+        Status: 
+
+      PR#1567: ProxyRemote proxy requests fail authentication by firewall
+        Status: 
+
+      PR#1702: mod_proxy to support persistent conns?
+        Status: 
+
+      PR#1878: listing of proxy cache content
+        Status: 
+
+      PR#2314: patterns in ProxyRemote
+        Status: 
+
+      PR#2648: Cache file names in Proxy module
+        Status: 
+
+      PR#3568: Accessing URL through proxy server corrupts data.
+        Status: 
+
+      PR#3605: Some anonymous FTP URLs ask for authentication
+        Status: 
+
+    * mod_rewrite
+
+      PR#1582: mod_rewrite forms REQUEST_URI different than mod_cgi does
+        Status: 
+
+      PR#2074: mod_rewrite doesn't pass Proxy Throughput on internal subrequests
+        Status: 
+
+    * mod_status
+
+      PR#2138: mod_status always displays 256 possible connection slots
+        Status: 
+
+      PR#2343: Status module averages are for entire uptime
+        Status: 
+
+    * apache-api
+
+      PR#1004: request_config field in request_rec is moderately bogus
+        Status: 
+
+      PR#1158: improvements to child spawning API
+        Status: 
+
+      PR#1233: there is no way to keep per-connection per-module state
+        Status: 
+
+      PR#2024: adding auth_why to conn_rec
+        Status: 
+
+      PR#2873: Feedback/Comment on APACI
+        Status: 
+
+      PR#3143: No module specific data hook for per-connection data
+        Status: 
+
+    * generally odds and ends
+
+      PR#2431: A small addition to rotatelogs.c to improve program functionality.
+        Status: 
+
+      PR#2763: mailto tags and bundling bug report script
+        Status: 
+
+      PR#2785: os-aix Support for System Resource Controller
+        Status: 
+
+      PR#2889: Inclusion of RPM spec file in CVS/distributions
+        Status: 
+
+      PR#5713: os-windows [PATCH] install as win32 service with domain account
         Status: Cannot accept password-as-arg, we should prompt the
                 user when -k install/-k config with a user argument.
 
-    * PR#5993: general
-      AllowOverride should have a 'CheckNone' and 'AllowNone' argument
-      instead of only 'None'
-        Status: 
+
 
 Other bugs that need fixing:
 
