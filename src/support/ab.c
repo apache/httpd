@@ -501,6 +501,7 @@ static int compwait(struct data * a, struct data * b)
 static void output_results(void)
 {
     long timetaken;
+    long i;
 
     gettimeofday(&endtime, 0);
     timetaken = timedif(endtime, start);
@@ -547,7 +548,6 @@ static void output_results(void)
     }
     if (requests>1) {
 	/* work out connection times */
-	long i;
 	double totalcon = 0, total = 0, totald = 0, totalwait = 0;
 	long mincon = 9999999, mintot = 999999, mind = 99999, minwait = 99999;
 	long maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
@@ -596,7 +596,6 @@ static void output_results(void)
 
 	if (gnuplot) {
 	    FILE *out = fopen(gnuplot, "w");
-	    long i;
 	    if (!out) {
 		perror("Cannot open gnuplot output file");
 		exit(1);
@@ -707,7 +706,6 @@ static void output_results(void)
 	};
 	if (csvperc) {
 	    FILE *out = fopen(csvperc, "w");
-	    long i;
 	    if (!out) {
 		perror("Cannot open CSV output file");
 		exit(1);
@@ -735,6 +733,7 @@ static void output_results(void)
 static void output_html_results(void)
 {
     long timetaken;
+    long i;
 
     gettimeofday(&endtime, 0);
     timetaken = timedif(endtime, start);
@@ -809,7 +808,6 @@ static void output_html_results(void)
 	}
     } {
 	/* work out connection times */
-	long i;
 	long totalcon = 0, total = 0;
 	long mincon = 9999999, mintot = 999999;
 	long maxcon = 0, maxtot = 0;
@@ -1334,14 +1332,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.57 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.58 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.57 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.58 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1393,35 +1391,35 @@ static void usage(char *progname)
 
 /* split URL into parts */
 
-static int parse_url(char *url)
+static int parse_url(char * purl)
 {
     char *cp;
     char *h;
     char *p = NULL;
 
-    if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
-	url += 7;
+    if (strlen(purl) > 7 && strncmp(purl, "http://", 7) == 0)
+	purl += 7;
     else
 #if USE_SSL
-    if (strlen(url) > 8 && strncmp(url, "https://", 8) == 0) {
-	url += 8;
+    if (strlen(purl) > 8 && strncmp(purl, "https://", 8) == 0) {
+	purl += 8;
 	ssl = 1;
 	port = 443;
     }
 #else
-    if (strlen(url) > 8 && strncmp(url, "https://", 8) == 0) {
+    if (strlen(purl) > 8 && strncmp(purl, "https://", 8) == 0) {
 	fprintf(stderr, "SSL not compiled in; no https support\n");
 	exit(1);
     }
 #endif
 
-    h = url;
-    if ((cp = strchr(url, ':')) != NULL) {
+    h = purl;
+    if ((cp = strchr(purl, ':')) != NULL) {
 	*cp++ = '\0';
 	p = cp;
-	url = cp;
+	purl = cp;
     }
-    if ((cp = strchr(url, '/')) == NULL)
+    if ((cp = strchr(purl, '/')) == NULL)
 	return 1;
     strcpy(path, cp);
     *cp = '\0';
