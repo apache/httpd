@@ -51,7 +51,7 @@
  *
  */
 
-/* CONNECT method SSL handling for Apache proxy */
+/* CONNECT method for Apache proxy */
 
 #include "mod_proxy.h"
 #include "http_log.h"
