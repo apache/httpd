@@ -5398,57 +5398,45 @@ static void setup_inherited_listeners(pool *p)
     WSAPROTOCOL_INFO WSAProtocolInfo;
     DWORD BytesRead;
 
+    /* Setup the listeners */
+    listenmaxfd = -1;
+    FD_ZERO(&listenfds);
+
     /* Open the pipe to the parent process to receive the inherited socket
      * data. The sockets have been set to listening in the parent process.
      */
     pipe = GetStdHandle(STD_INPUT_HANDLE);
-
-    /* Setup the listeners */
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-    lr = ap_listeners;
-
-    FD_ZERO(&listenfds);
-
-    for (;;) {
-	fd = find_listener(lr);
-	if (fd < 0) {
-            if (!ReadFile(pipe, 
-                          &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO),
-                          &BytesRead,
-                          (LPOVERLAPPED) NULL)){
-                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
-                             "setup_inherited_listeners: Unable to read socket data from parent");
-                exit(1);
-            }
-            fd = WSASocket(FROM_PROTOCOL_INFO,
-                           FROM_PROTOCOL_INFO,
-                           FROM_PROTOCOL_INFO,
-                           &WSAProtocolInfo,
-                           0,
-                           0);
-            if (fd == INVALID_SOCKET) {
-                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
-                             "setup_inherited_listeners: WSASocket failed to get inherit the socket.");
-                exit(1);
-            }
-            APD2("setup_inherited_listeners: WSASocket() returned socket %d", fd);
-	}
-	else {
-	    ap_note_cleanups_for_socket(p, fd);
-	}
-	if (fd >= 0) {
-	    FD_SET(fd, &listenfds);
-	    if (fd > listenmaxfd)
-		listenmaxfd = fd;
-	}
-	lr->fd = fd;
-	if (lr->next == NULL)
-	    break;
-	lr = lr->next;
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
+                      &BytesRead, (LPOVERLAPPED) NULL)) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                         "setup_inherited_listeners: Unable to read socket data from parent");
+            signal_parent(0);	/* tell parent to die */
+            exit(1);
+        }
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+                         "BytesRead = %d WSAProtocolInfo = %x20", BytesRead, WSAProtocolInfo);
+        fd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
+                       &WSAProtocolInfo, 0, 0);
+        if (fd == INVALID_SOCKET) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                         "setup_inherited_listeners: WSASocket failed to open the inherited socket.");
+            signal_parent(0);	/* tell parent to die */
+            exit(1);
+        }
+        if (fd >= 0) {
+            FD_SET(fd, &listenfds);
+            if (fd > listenmaxfd)
+                listenmaxfd = fd;
+        }
+        ap_note_cleanups_for_socket(p, fd);
+        lr->fd = fd;
+        if (lr->next == NULL) {
+            /* turn the list into a ring */
+            lr->next = ap_listeners;
+            break;
+        }
     }
-    /* turn the list into a ring */
-    lr->next = ap_listeners;
     head_listener = ap_listeners;
     close_unused_listeners();
     CloseHandle(pipe);
