@@ -130,12 +130,17 @@ _build:
 _install:
 	-mkdir "$(INSTDIR)"
 	-mkdir "$(INSTDIR)\bin"
+	-mkdir "$(INSTDIR)\cgi-bin"
 	-mkdir "$(INSTDIR)\conf"
+	-mkdir "$(INSTDIR)\htdocs"
+	-mkdir "$(INSTDIR)\htdocs\manual"
+	-mkdir "$(INSTDIR)\icons"
+	-mkdir "$(INSTDIR)\include"
+	-mkdir "$(INSTDIR)\lib"
+	-mkdir "$(INSTDIR)\libexec"
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
 #	-mkdir "$(INSTDIR)\proxy"
-	-mkdir "$(INSTDIR)\htdocs"
-	-mkdir "$(INSTDIR)\htdocs\manual"
 	copy Apache$(SHORT)\Apache.exe "$(INSTDIR)"
 	copy Core$(SHORT)\ApacheCore.dll "$(INSTDIR)"
 	copy srclib\apr\$(LONG)\aprlib.dll "$(INSTDIR)"
@@ -161,8 +166,10 @@ _install:
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
+        copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
         xcopy docs\docroot "$(INSTDIR)\htdocs" /dy
         xcopy docs\manual "$(INSTDIR)\htdocs\manual" /sdy
+        xcopy docs\icons "$(INSTDIR)\icons" /sdy
         copy docs\conf\magic "$(INSTDIR)\conf\magic.default"
         if not exist "$(INSTDIR)\conf\magic" \
             copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
