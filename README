@@ -95,8 +95,10 @@ INCOMPATIBILITIES
 
 MAJOR CHANGES 
 
- The following major changes were made between mod_ssl 2.x
- from Apache 1.3 and this mod_ssl version for Apache 2.0:
+ For a complete history of changes for Apache 2.0 mod_ssl, see the 
+ CHANGES file in the top-level httpd-2.0 directory.  The following 
+ is a condensed summary of the major changes were made between 
+ mod_ssl 2.x from Apache 1.3 and this mod_ssl version for Apache 2.0:
 
  o The DBM based session cache is now based on APR's DBM API only.
  o The shared memory based session cache is now based on APR's APIs.
