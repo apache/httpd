@@ -1237,7 +1237,16 @@ static void child_main()
 
     /* Setup the listening sockets */
     if (one_process) {
+        ap_listen_rec *lr;
         setup_listeners(server_conf);
+
+        /* Associate the socket with the IO Completion port */
+        for (lr = ap_listeners; lr; lr = lr->next) {
+            int nsd;
+            ap_get_os_sock(&nsd,lr->sd);
+            CreateIoCompletionPort((HANDLE) nsd, AcceptExCompPort, 0, 0);
+        }
+  
     } else {
         setup_inherited_listeners(server_conf);
     }
@@ -1745,7 +1754,18 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
         AMCSocketInitialize();
         exit_event_name = ap_psprintf(pconf, "apC%d", my_pid);
         setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
+
         if (one_process) {
+            /* Create the IO CompletionPort */
+            if (AcceptExCompPort == NULL) {
+                AcceptExCompPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
+                                                          NULL, 0, 0); 
+                if (AcceptExCompPort == NULL) {
+                    ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                                 "Unable to create the AcceptExCompletionPort -- process will exit");
+                    return -1;
+                }
+            }
             ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,pconf);
             exit_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
         }
