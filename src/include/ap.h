@@ -117,7 +117,7 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
  * appropriate, re-initialize curpos and endpos, and return 0.
  *
  * Note that flush_func is only invoked as a result of attempting to
- * write another byte at curpos when curpos == endpos.  So for
+ * write another byte at curpos when curpos >= endpos.  So for
  * example, it's possible when the output exactly matches the buffer
  * space available that curpos == endpos will be true when
  * ap_vformatter returns.
