@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/25 19:22:23 $]
+Last modified at [$Date: 2004/05/25 23:45:45 $]
 
 Release:
 
@@ -81,18 +81,18 @@ PATCHES TO BACKPORT FROM 2.1
        of the server specified.
          modules/proxy/proxy_ftp.c r1.143
        PR 24922 [Pascal Terjan <pterjan@linuxfr.org>]
-       +1: minfrin
+       +1: minfrin, nd
 
     *) Fix handling of IPv6 numeric strings in mod_proxy.
          modules/proxy/proxy_ftp.c r1.141, r1.142
          modules/proxy/proxy_http.c r1.186
          modules/proxy/proxy_util.c r1.107
-       +1: trawick, minfrin
+       +1: trawick, minfrin, nd
 
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.
-       build/rpm/httpd.spec.in 
-       +1: minfrin
+       build/rpm/httpd.spec.in: r1.5
+       +1: minfrin, nd
  
     *) Use APR_LARGEFILE when opening log files, and not APR_WRITE,
        allowing >2Gb log files on some platforms with a 32-bit off_t
@@ -124,7 +124,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
-       +1: ake, trawick
+       +1: ake, trawick, nd
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -395,7 +395,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_isapi: send_response_header() failed to copy status string's 
       last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.97&r2=1.98
-      +1: trawick, stoddard
+      +1: trawick, stoddard, nd
 
     * Unix MPMs: Stop dropping connections when the file descriptor
       is at least FD_SETSIZE
