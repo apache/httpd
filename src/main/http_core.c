@@ -1047,24 +1047,22 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, char *arg)
 #endif /*GPROF*/
 
 static const char *set_add_default_charset(cmd_parms *cmd, 
-	core_dir_config *d, int arg)
-{
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-    if (err != NULL) {
-        return err;
-    }
-    d->add_default_charset = arg != 0;
-    return NULL;
-}
-
-static const char *set_add_default_charset_name(cmd_parms *cmd, 
 	core_dir_config *d, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
-    d->add_default_charset_name = arg;
+    if (!strcasecmp(arg, "None"))
+       d->add_default_charset = 0;
+    else if (!strcasecmp(arg, "Default")) {
+       d->add_default_charset = 1;
+       d->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
+    }
+    else {
+       d->add_default_charset = 1;
+       d->add_default_charset_name = arg;
+    }
     return NULL;
 }
 
@@ -2819,10 +2817,8 @@ static const command_rec core_cmds[] = {
 { "GprofDir", set_gprof_dir, NULL, RSRC_CONF, TAKE1,
   "Directory to plop gmon.out files" },
 #endif
-{ "AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, FLAG,
-  "whether or not to add a default charset to any Content-Type without one" },
-{ "AddDefaultCharsetName", set_add_default_charset_name, NULL, OR_FILEINFO, 
-  TAKE1, "The name of the charset to add if AddDefaultCharset is enabled" },
+{ "AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, 
+  TAKE1, "The name of the default charset to add to any Content-Type without one or 'None' to disable" },
 
 /* Old resource config file commands */
   
