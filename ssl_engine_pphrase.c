@@ -109,7 +109,7 @@ static apr_status_t exists_and_readable(char *fname, apr_pool_t *pool, apr_time_
 static char *asn1_table_vhost_key(SSLModConfigRec *mc, apr_pool_t *p,
                                   char *id, char *an)
 {
-    /* 'p' pool used here is cleared on restarts */
+    /* 'p' pool used here is cleared on restarts (or sooner) */
     char *key = apr_psprintf(p, "%s:%s", id, an);
     void *keyptr = apr_hash_get(mc->tVHostKeys, key,
                                 APR_HASH_KEY_STRING);
