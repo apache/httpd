@@ -190,14 +190,14 @@ then
   echo "ERROR: Failed to build Apache. See \"build.log\" for details."
   exit 1;
 else
-  if [ ".$GTAR" != . ]
+  if [ "x$GTAR" != "x" ]
   then
     $GTAR -zcf ../apache-$VER-$OS.tar.gz -C .. --owner=root --group=root apache-$VER
   else
-    if [ ".$TAR" != . ]
+    if [ "x$TAR" != "x" ]
     then
       $TAR -cf ../apache-$VER-$OS.tar -C .. apache-$VER
-      if [ ".$GZIP" != . ]
+      if [ "x$GZIP" != "x" ]
       then
         $GZIP ../apache-$VER-$OS.tar
       fi
