@@ -272,6 +272,16 @@ typedef enum {
 } ssl_mutexmode_t;
 
 /*
+ * Define the SSL enabled state
+ */
+typedef enum {
+    SSL_ENABLED_UNSET    = UNSET,
+    SSL_ENABLED_FALSE    = 0,
+    SSL_ENABLED_TRUE     = 1,
+	SSL_ENABLED_OPTIONAL = 3
+} ssl_enabled_t;
+
+/*
  * Define the SSL requirement structure
  */
 typedef struct {
@@ -420,7 +430,7 @@ typedef struct {
 
 struct SSLSrvConfigRec {
     SSLModConfigRec *mc;
-    BOOL             enabled;
+    ssl_enabled_t    enabled;
     BOOL             proxy_enabled;
     const char      *vhost_id;
     int              vhost_id_len;

@@ -171,7 +171,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     SSLSrvConfigRec *sc = apr_palloc(p, sizeof(*sc));
 
     sc->mc                     = NULL;
-    sc->enabled                = FALSE;
+    sc->enabled                = SSL_ENABLED_FALSE;
     sc->proxy_enabled          = UNSET;
     sc->vhost_id               = NULL;  /* set during module init */
     sc->vhost_id_len           = 0;     /* set during module init */
@@ -257,7 +257,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     SSLSrvConfigRec *mrg  = ssl_config_server_new(p);
 
     cfgMerge(mc, NULL);
-    cfgMergeBool(enabled);
+    cfgMerge(enabled, SSL_ENABLED_UNSET);
     cfgMergeBool(proxy_enabled);
     cfgMergeInt(session_cache_timeout);
 
@@ -606,15 +606,15 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     if (!strcasecmp(arg, "On")) {
-        sc->enabled = TRUE;
+        sc->enabled = SSL_ENABLED_TRUE;
     return NULL;
     }
     else if (!strcasecmp(arg, "Off")) {
-        sc->enabled = FALSE;
+        sc->enabled = SSL_ENABLED_FALSE;
         return NULL;
     }
     else if (!strcasecmp(arg, "Optional")) {
-        sc->enabled = UNSET;
+        sc->enabled = SSL_ENABLED_OPTIONAL;
         return NULL;
     }
 
