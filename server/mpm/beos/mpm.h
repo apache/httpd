@@ -63,23 +63,14 @@
 
 #define MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE()
-#define MPM_CHILD_PID(i) (ap_child_table[i].pid)
+#define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 
 extern int ap_max_child_assigned;
 #include "scoreboard.h"
 
-#define SERVER_DEAD 0
-#define SERVER_DYING 1
-#define SERVER_ALIVE 2
-
-typedef struct ap_ctable{
-    pid_t pid;
-    unsigned char status;
-} ap_ctable;
-
-extern ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 extern server_rec *ap_server_conf;
 extern char ap_coredump_dir[MAX_STRING_LEN];
+extern int ap_threads_per_child;
 
 #endif /* APACHE_MPM_BEOS_H */
