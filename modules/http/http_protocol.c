@@ -2417,7 +2417,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     buff = apr_pcalloc(r->pool, len);
     e = ap_bucket_create_pool(buff, len, r->pool);
     ap_basic_http_header(r, buff);
-    buff += strlen(buff) + 1;
+    buff += strlen(buff);
 
     h.r = r;
     h.buf = buff;
