@@ -1570,22 +1570,22 @@ static const char *get_canned_error_string(int status,
 	case HTTP_MOVED_TEMPORARILY:
 	case HTTP_TEMPORARY_REDIRECT:
 	    return(apr_pstrcat(p,
-                           "The document has moved <A HREF=\"",
+                           "The document has moved <a href=\"",
 		                   ap_escape_html(r->pool, location), 
-						   "\">here</A>.<P>\n",
+						   "\">here</a>.<P>\n",
                            NULL));
 	case HTTP_SEE_OTHER:
 	    return(apr_pstrcat(p,
-                           "The answer to your request is located <A HREF=\"",
+                           "The answer to your request is located <a href=\"",
 		                   ap_escape_html(r->pool, location), 
-                           "\">here</A>.<P>\n",
+                           "\">here</a>.<P>\n",
                            NULL));
 	case HTTP_USE_PROXY:
 	    return(apr_pstrcat(p,
                            "This resource is only accessible "
 		                   "through the proxy\n",
 		                   ap_escape_html(r->pool, location),
-		                   "<BR>\nYou will need to "
+		                   "<br />\nYou will need to "
 		                   "configure your client to use that proxy.<P>\n",
 						   NULL));
 	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
@@ -1657,25 +1657,25 @@ static const char *get_canned_error_string(int status,
 		return(add_optional_notes(r, s1, "error-notes", "<P>\n"));
 	case HTTP_VARIANT_ALSO_VARIES:
 	    return(apr_pstrcat(p,
-                           "A variant for the requested resource\n<PRE>\n",
+                           "A variant for the requested resource\n<pre>\n",
 		                   ap_escape_html(r->pool, r->uri),
-		                   "\n</PRE>\nis itself a negotiable resource. "
+		                   "\n</pre>\nis itself a negotiable resource. "
 		                   "This indicates a configuration error.<P>\n",
                            NULL));
 	case HTTP_REQUEST_TIME_OUT:
 	    return("I'm tired of waiting for your request.\n");
 	case HTTP_GONE:
 	    return(apr_pstrcat(p,
-                           "The requested resource<BR>",
+                           "The requested resource<br />",
 		                   ap_escape_html(r->pool, r->uri),
-		                   "<BR>\nis no longer available on this server "
+		                   "<br />\nis no longer available on this server "
 		                   "and there is no forwarding address.\n"
 		                   "Please remove all references to this resource.\n",
                            NULL));
 	case HTTP_REQUEST_ENTITY_TOO_LARGE:
 	    return(apr_pstrcat(p,
-                           "The requested resource<BR>",
-		                   ap_escape_html(r->pool, r->uri), "<BR>\n",
+                           "The requested resource<br />",
+		                   ap_escape_html(r->pool, r->uri), "<br />\n",
 		                   "does not allow request data with ", 
                            r->method,
                            " requests, or the amount of data provided in\n"
@@ -1696,8 +1696,8 @@ static const char *get_canned_error_string(int status,
 	    return(apr_pstrcat(p, 
                            "The expectation given in the Expect request-header"
 	                       "\nfield could not be met by this server.<P>\n"
-	                       "The client sent<PRE>\n    Expect: ",
-	                       apr_table_get(r->headers_in, "Expect"), "\n</PRE>\n"
+	                       "The client sent<pre>\n    Expect: ",
+	                       apr_table_get(r->headers_in, "Expect"), "\n</pre>\n"
 	                       "but we only allow the 100-continue expectation.\n",
 	                       NULL));
 	case HTTP_UNPROCESSABLE_ENTITY:
@@ -1923,8 +1923,8 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
 
         ap_rvputs_proto_in_ascii(rlast,
                   DOCTYPE_HTML_2_0
-                  "<HTML><HEAD>\n<TITLE>", title,
-                  "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
+                  "<html><head>\n<title>", title,
+                  "</title>\n</head><body>\n<h1>", h1, "</h1>\n",
                   NULL);
         
         ap_rvputs_proto_in_ascii(rlast,
@@ -1937,8 +1937,8 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                       "\nerror was encountered while trying to use an "
                       "ErrorDocument to handle the request.\n", NULL);
         }
-        ap_rvputs_proto_in_ascii(rlast, ap_psignature("<HR>\n", r), NULL);
-        ap_rvputs_proto_in_ascii(rlast, "</BODY></HTML>\n", NULL);
+        ap_rvputs_proto_in_ascii(rlast, ap_psignature("<hr />\n", r), NULL);
+        ap_rvputs_proto_in_ascii(rlast, "</body></html>\n", NULL);
     }
     ap_finalize_request_protocol(r);
 }
