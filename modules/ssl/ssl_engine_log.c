@@ -212,7 +212,7 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     if (add & SSL_NO_TIMESTAMP)
         tstr[0] = NUL;
     else {
-        apr_explode_localtime(&t, apr_time_now());
+        apr_time_exp_lt(&t, apr_time_now());
         apr_strftime(tstr, &len, 80, "[%d/%b/%Y %H:%M:%S", &t);
         apr_snprintf(tstr + strlen(tstr), 80 - strlen(tstr), " %05d] ", 
                      (unsigned int)getpid());

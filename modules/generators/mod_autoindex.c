@@ -1682,7 +1682,7 @@ static void output_directories(struct ent **ar, int n,
                 if (ar[x]->lm != -1) {
                     char time_str[MAX_STRING_LEN];
                     apr_time_exp_t ts;
-                    apr_explode_localtime(&ts, ar[x]->lm);
+                    apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, MAX_STRING_LEN, 
                                  "</td><td align=\"right\">%d-%b-%Y %H:%M  ", &ts);
                     ap_rputs(time_str, r);
@@ -1765,7 +1765,7 @@ static void output_directories(struct ent **ar, int n,
                 if (ar[x]->lm != -1) {
                     char time_str[MAX_STRING_LEN];
                     apr_time_exp_t ts;
-                    apr_explode_localtime(&ts, ar[x]->lm);
+                    apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, MAX_STRING_LEN, 
                                 "%d-%b-%Y %H:%M  ", &ts);
                     ap_rputs(time_str, r);

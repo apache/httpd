@@ -3244,7 +3244,7 @@ static char *current_logtime(request_rec *r)
     char tstr[80];
     apr_size_t len;
 
-    apr_explode_localtime(&t, apr_time_now());
+    apr_time_exp_lt(&t, apr_time_now());
 
     apr_strftime(tstr, &len, 80, "[%d/%b/%Y:%H:%M:%S ", &t);
     apr_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]",
@@ -3527,12 +3527,12 @@ static char *lookup_variable(request_rec *r, char *var)
 /* XXX: wow this has gotta be slow if you actually use it for a lot, recalculates exploded time for each variable */
     /* underlaying Unix system stuff */
     else if (strcasecmp(var, "TIME_YEAR") == 0) {
-        apr_explode_localtime(&tm, apr_time_now());
+        apr_time_exp_lt(&tm, apr_time_now());
         apr_snprintf(resultbuf, sizeof(resultbuf), "%04d", tm.tm_year + 1900);
         result = resultbuf;
     }
 #define MKTIMESTR(format, tmfield) \
-    apr_explode_localtime(&tm, apr_time_now()); \
+    apr_time_exp_lt(&tm, apr_time_now()); \
     apr_snprintf(resultbuf, sizeof(resultbuf), format, tm.tmfield); \
     result = resultbuf;
     else if (strcasecmp(var, "TIME_MON") == 0) {
@@ -3554,7 +3554,7 @@ static char *lookup_variable(request_rec *r, char *var)
         MKTIMESTR("%d", tm_wday)
     }
     else if (strcasecmp(var, "TIME") == 0) {
-        apr_explode_localtime(&tm, apr_time_now());
+        apr_time_exp_lt(&tm, apr_time_now());
         apr_snprintf(resultbuf, sizeof(resultbuf),
                      "%04d%02d%02d%02d%02d%02d", tm.tm_year + 1900,
                      tm.tm_mon+1, tm.tm_mday,
