@@ -88,7 +88,7 @@ extern MODULE_VAR_EXPORT char *server_argv0;
 extern char server_root[MAX_STRING_LEN];
 extern char server_confname[MAX_STRING_LEN];
 
-/* We want this to have the least chance of being correupted if there
+/* We want this to have the least chance of being corrupted if there
  * is some memory corruption, so we allocate it statically.
  */
 extern char coredump_dir[MAX_STRING_LEN];
