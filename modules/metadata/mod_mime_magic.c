@@ -2143,14 +2143,14 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
                             apr_file_t **pipe_in)
 {
     int rc = 1;
-    char *new_argv[4];
-    char **env;
+    const char *new_argv[4];
+    const char *const *env;
     request_rec *r = parm->r;
     apr_pool_t *child_context = cntxt;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
-    env = ap_create_environment(child_context, r->subprocess_env);
+    env = (const char *const *)ap_create_environment(child_context, r->subprocess_env);
 
     if ((apr_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
         (apr_setprocattr_io(procattr, APR_FULL_BLOCK, 
