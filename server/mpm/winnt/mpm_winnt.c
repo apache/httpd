@@ -671,11 +671,6 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
     if (context == NULL) {
         /* allocate the completion context and the transaction pool */
         context = apr_pcalloc(pconf, sizeof(COMP_CONTEXT));
-        if (!context) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), ap_server_conf,
-                         "win9x_get_connection: apr_pcalloc() failed. Process will exit.");
-            return NULL;
-        }
         apr_pool_create(&context->ptrans, pconf);
     }
     
@@ -1291,10 +1286,13 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
 
     /* Make our end of the handle non-inherited */
     if (DuplicateHandle(hCurrentProcess, hPipeWrite, hCurrentProcess,
-                        &hPipeWriteDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
-    {
+                        &hPipeWriteDup, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
         CloseHandle(hPipeWrite);
         hPipeWrite = hPipeWriteDup;
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to duplicate pipe to child.\n");
     }
 
     /* Open a null handle to soak info from the child */
@@ -1302,9 +1300,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                              FILE_SHARE_READ | FILE_SHARE_WRITE, 
                              &sa, OPEN_EXISTING, 0, NULL);
     if (hNullOutput == INVALID_HANDLE_VALUE) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, APR_FROM_OS_ERROR(rv), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Unable to create null output pipe for child process.\n");
-        return -1;
     }
 
     /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
@@ -1320,9 +1317,18 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                 rv = apr_get_os_error();
             }
         }
-        if (rv != APR_SUCCESS || hShareError == INVALID_HANDLE_VALUE) {
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                         "Parent: Unable to share error log with child.\n");
+        }
+        else if (hShareError == INVALID_HANDLE_VALUE) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, ap_server_conf,
+                         "Parent: Failed to share error log with child.\n");
+        }
+        else {
             hShareError = GetStdHandle(STD_ERROR_HANDLE);
         }
+
     }
 
     /* Give the read end of the pipe (hPipeRead) to the child as stdin. The 
