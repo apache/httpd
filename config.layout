@@ -285,3 +285,25 @@
     logfiledir:    $prefix/logs
     proxycachedir: $prefix/proxy
 </Layout>
+
+# Debian layout
+<Layout Debian>
+    prefix:        
+    exec_prefix:   $prefix/usr
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/sbin
+    libexecdir:    $exec_prefix/lib/apache2/modules
+    mandir:        $exec_prefix/share/man
+    sysconfdir:    $prefix/etc/apache2
+    datadir:       $exec_prefix/share/apache2
+    iconsdir:      $datadir/icons
+    htdocsdir:     $prefix/usr/share/apache2/default-site/htdocs
+    cgidir:        $prefix/usr/lib/cgi-bin
+    includedir:    $exec_prefix/include/apache2
+    localstatedir: $prefix/var/run
+    runtimedir:    $prefix/var/run
+    logfiledir:    $prefix/var/log/apache2
+    proxycachedir: $prefix/var/cache/apache2/proxy
+    infodir:       $exec_prefix/share/info
+    installbuilddir: $prefix/etc/apache2/build
+</Layout>
