@@ -1,5 +1,10 @@
 Changes with Apache 2.0.45
 
+  *) While processing filters on internal redirects, remember seen EOS
+     buckets also in the request structure of the redirect issuer(s). This
+     prevents filters (such as mod_deflate) from adding garbage to the
+     response. PR 14451.  [André Malo]
+
   *) suexec: Be more pedantic when cleaning environment. Clean it
      immediately after startup. PR 2790, 10449.
      [Jeff Stewart <jws@purdue.edu>, André Malo]
