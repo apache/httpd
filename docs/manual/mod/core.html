@@ -837,12 +837,18 @@ ErrorDocument 403 &quot;Sorry can't allow you access today&quot;
 
 <P>Note that when you specify an <CODE>ErrorDocument</CODE> that
 points to a remote URL (ie. anything with a method such as "http" in
-front of it) Apache will send a redirect to the client to tell it
+front of it), Apache will send a redirect to the client to tell it
 where to find the document, even if the document ends up being on the
-same server. This has several implications, the most important being
-that <STRONG>if you use an "ErrorDocument 401" directive then it must
-refer to a local document.</STRONG> This results from the nature of
-the HTTP basic authentication scheme.
+same server.  This has several implications, the most important being
+that the client will not receive the original error status code, but
+instead will receive a redirect status code.  This in turn can confuse
+web robots and other clients which try to determine if a URL is valid
+using the status code.  In addition, if you use a remote URL in an
+<code>ErrorDocument 401</code>, the client will not know to prompt the
+user for a password since it will not receive the 401 status
+code. Therefore, <STRONG>if you use an "ErrorDocument 401" directive
+then it must refer to a local document.</STRONG>
+
 
 <P>Prior to version 2.0, messages were indicated by prefixing them
 with a single unmatched double quote character.
