@@ -357,23 +357,27 @@ Issues</a> page, here are some further tips:
 <li>Place all main_server definitions before any VirtualHost definitions.
 (This is to aid the readability of the configuration -- the post-config
 merging process makes it non-obvious that definitions mixed in around
-virtualhosts might affect all virtualhosts.)</p>
+virtualhosts might affect all virtualhosts.)
+<p>
 
 <li>Arrange your VirtualHosts such
 that all name-based virtual hosts come first, followed by IP-based
-virtual hosts, followed by any <SAMP>_default_</SAMP> virtual host</p>
+virtual hosts, followed by any <SAMP>_default_</SAMP> virtual host
+<p>
 
 <li>Avoid <code>ServerPaths</code> which are prefixes of other
 <code>ServerPaths</code>.  If you cannot avoid this then you have to
 ensure that the longer (more specific) prefix vhost appears earlier in
 the configuration file than the shorter (less specific) prefix
 (<EM>i.e.</EM>, &quot;ServerPath /abc&quot; should appear after
-&quot;ServerPath /abcdef&quot;). </p>
+&quot;ServerPath /abcdef&quot;).
+<p>
 
 <li>Do not use <i>port-based</i> vhosts in the same server as
 name-based vhosts.  A loose definition for port-based is a vhost which
 is determined by the port on the server (<em>i.e.</em> one server with
-ports 8000, 8080, and 80 all of which have different configurations).</p>
+ports 8000, 8080, and 80 all of which have different configurations).
+<p>
 
 </ul>
 
