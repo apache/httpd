@@ -362,6 +362,9 @@ apr_status_t isapi_handler (request_rec *r)
     if (r->finfo.filetype != APR_REG)
         return HTTP_FORBIDDEN;
 
+    if (r->path_info && *r->path_info && !r->used_path_info)
+        return HTTP_NOT_FOUND;
+
     /* Load the isapi extention without caching (sconf == NULL) 
      * but note that we will recover an existing cached module.
      */

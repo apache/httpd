@@ -907,6 +907,11 @@ static int cgid_handler(request_rec *r)
     if (r->finfo.filetype == APR_DIR) 
         return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
                                "attempt to invoke directory as script"); 
+
+    if (r->path_info && *r->path_info && !r->used_path_info) {
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
+                               "AcceptPathInfo off disallows user's path");
+    }
 /*
     if (!ap_suexec_enabled) { 
         if (!ap_can_exec(&r->finfo)) 
