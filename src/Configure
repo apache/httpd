@@ -811,28 +811,42 @@ if [ "x$using_shlib" = "x1" ] ; then
             ##  We take a second chance by guessing the compiler
             ##  and linker flags from the Perl installation
             ##  if it exists.
-            if [ ".`perl -V:dlsrc 2>/dev/null | grep dlopen`" != . ]; then
-                #   cool, Perl is installed on this platform
-                #   and actually uses the dlopen-style interface,
-                #   so we can guess the flags from its knowledge
-                CFLAGS_SHLIB="`perl -V:cccdlflags | cut -d\' -f2`"
-                LDFLAGS_SHLIB="`perl -V:lddlflags | cut -d\' -f2`"
-                LDFLAGS_SHLIB_EXPORT="`perl -V:ccdlflags | cut -d\' -f2`"
-                #   but additionally we have to inform the
-                #   user that we are just guessing the flags
-                echo ""
-                echo "** WARNING: We have no explicit knowledge about shared object"
-                echo "** support for your particular platform. But perhaps you have"
-                echo "** luck: We were able to guess the compiler and linker flags"
-                echo "** for creating shared objects from your Perl installation."
-                echo "** If they actually work, please send the following information"
-                echo "** for inclusion into later releases to apache@apache.org or"
-                echo "** make a suggestion report at http://bugs.apache.org/:"
-                echo "**     PLATFORM=$PLAT"
-                echo "**     CFLAGS_SHLIB=$CFLAGS_SHLIB"
-                echo "**     LDFLAGS_SHLIB=$LDFLAGS_SHLIB"
-                echo "**     LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT"
-                echo ""
+            PERL=
+            for dir in `echo $PATH | sed -e 's/:/ /g'`
+            do
+                if [ -f "$dir/perl5" ]; then
+                    PERL="$dir/perl5"
+                    break
+                fi
+                if [ -f "$dir/perl" ]; then
+                    PERL="$dir/perl"
+                    break
+                fi
+            done
+            if [ ".$PERL" != . ]; then
+                #   cool, Perl is installed on this platform...
+                if [ ".`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != . ]; then
+                    #   ...and actually uses the dlopen-style interface,
+                    #   so we can guess the flags from its knowledge
+                    CFLAGS_SHLIB="`perl -V:cccdlflags | cut -d\' -f2`"
+                    LDFLAGS_SHLIB="`perl -V:lddlflags | cut -d\' -f2`"
+                    LDFLAGS_SHLIB_EXPORT="`perl -V:ccdlflags | cut -d\' -f2`"
+                    #   but additionally we have to inform the
+                    #   user that we are just guessing the flags
+                    echo ""
+                    echo "** WARNING: We have no explicit knowledge about shared object"
+                    echo "** support for your particular platform. But perhaps you have"
+                    echo "** luck: We were able to guess the compiler and linker flags"
+                    echo "** for creating shared objects from your Perl installation."
+                    echo "** If they actually work, please send the following information"
+                    echo "** for inclusion into later releases to apache@apache.org or"
+                    echo "** make a suggestion report at http://bugs.apache.org/:"
+                    echo "**     PLATFORM=$PLAT"
+                    echo "**     CFLAGS_SHLIB=$CFLAGS_SHLIB"
+                    echo "**     LDFLAGS_SHLIB=$LDFLAGS_SHLIB"
+                    echo "**     LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT"
+                    echo ""
+                fi
             fi
             ;;
     esac
