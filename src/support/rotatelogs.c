@@ -1,5 +1,7 @@
 /*
 
+$Id: rotatelogs.c,v 1.3 1996/08/20 13:25:09 paul Exp $
+
 Simple program to rotate Apache logs without having to kill the server.
 
 Contributed by Ben Laurie <ben@algroup.co.uk>

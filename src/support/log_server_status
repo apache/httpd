@@ -1,4 +1,5 @@
 #!/usr/local/bin/perl
+# $Id: log_server_status,v 1.3 1996/08/20 13:25:08 paul Exp $
 
 # ====================================================================
 # Copyright (c) 1995 The Apache Group.  All rights reserved.

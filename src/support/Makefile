@@ -1,3 +1,4 @@
+# $Id: Makefile,v 1.11 1996/08/20 13:25:02 paul Exp $
 # For gcc
 CC= gcc
 # For ANSI compilers

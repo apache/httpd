@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -50,6 +49,8 @@
  * project, please see <http://www.apache.org/>.
  *
  */
+
+/* $Id: suexec.c,v 1.2 1996/08/20 13:25:10 paul Exp $ */
 
 /*
  * suexec.c -- "Wrapper" support program for suEXEC behaviour for Apache

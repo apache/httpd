@@ -4,6 +4,8 @@
  * by Alexei Kosut, based on htpasswd.c, by Rob McCool
  */
 
+/* $Id: htdigest.c,v 1.3 1996/08/20 13:25:05 paul Exp $ */
+
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
