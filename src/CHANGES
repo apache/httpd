@@ -1,3 +1,5 @@
+Changes with Apache 1.3.24
+
 Changes with Apache 1.3.23
 
   *) Fixed a number of mismatched int sizes and signedness problems.
