@@ -439,11 +439,11 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     /* copy output headers from subrequest, but leave negotiation headers */
     r->notes = apr_table_overlay(r->pool, rr->notes, r->notes);
     r->headers_out = apr_table_overlay(r->pool, rr->headers_out,
-                                    r->headers_out);
+                                       r->headers_out);
     r->err_headers_out = apr_table_overlay(r->pool, rr->err_headers_out,
-                                        r->err_headers_out);
+                                           r->err_headers_out);
     r->subprocess_env = apr_table_overlay(r->pool, rr->subprocess_env,
-                                       r->subprocess_env);
+                                          r->subprocess_env);
 
     r->output_filters = rr->output_filters;
     r->input_filters = rr->input_filters;
