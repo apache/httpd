@@ -197,14 +197,14 @@
 #define CACHE_TLB_ROWS 1024
 #define CACHE_TLB_COLS 4
 
-#ifndef FALSE
-#define FALSE 0
-#define TRUE  !FALSE
+#ifndef APR_FALSE
+#define APR_FALSE 0
+#define APR_TRUE  !APR_FALSE
 #endif
 
 #ifndef NO
-#define NO    FALSE
-#define YES   TRUE
+#define NO    APR_FALSE
+#define YES   APR_TRUE
 #endif
 
 #ifndef RAND_MAX

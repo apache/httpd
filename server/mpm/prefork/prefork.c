@@ -691,7 +691,7 @@ static void accept_mutex_child_init(ap_pool_t *p)
  */
 static void accept_mutex_init(ap_pool_t *p)
 {
-    int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
+    int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, APR_FALSE);
 
     if (rc != 0) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,

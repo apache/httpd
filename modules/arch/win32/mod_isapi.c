@@ -348,15 +348,15 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
             if (strlen(result) > *lpdwSizeofBuffer) {
                 *lpdwSizeofBuffer = strlen(result);
                 SetLastError(ERROR_INSUFFICIENT_BUFFER);
-                return FALSE;
+                return APR_FALSE;
             }
             strncpy(lpvBuffer, result, *lpdwSizeofBuffer);
-            return TRUE;
+            return APR_TRUE;
     }
 
     /* Didn't find it */
     SetLastError(ERROR_INVALID_INDEX);
-    return FALSE;
+    return APR_FALSE;
 }
 
 BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
@@ -370,22 +370,22 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, ERROR_INVALID_PARAMETER, r,
                       "ISAPI asynchronous I/O not supported: %s", r->filename);
             SetLastError(ERROR_INVALID_PARAMETER);
-            return FALSE;
+            return APR_FALSE;
     }
 
     if ((writ = ap_rwrite(Buffer, *lpwdwBytes, r)) == EOF) {
             SetLastError(WSAEDISCON); /* TODO: Find the right error code */
-            return FALSE;
+            return APR_FALSE;
     }
 
     *lpwdwBytes = writ;
-    return TRUE;
+    return APR_TRUE;
 }
 
 BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
 {
     /* Doesn't need to do anything; we've read all the data already */
-    return TRUE;
+    return APR_TRUE;
 }
 
 /* XXX: There is an O(n^2) attack possible here. */
@@ -404,7 +404,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
          */
         ap_table_set (r->headers_out, "Location", lpvBuffer);
         cid->status = cid->r->status = cid->ecb->dwHttpStatusCode = REDIRECT;
-        return TRUE;
+        return APR_TRUE;
 
     case HSE_REQ_SEND_URL:
         /* Read any additional input */
@@ -423,7 +423,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
         ap_table_unset(r->headers_in, "Content-Length");
 
         ap_internal_redirect((char *)lpvBuffer, r);
-        return TRUE;
+        return APR_TRUE;
 
     case HSE_REQ_SEND_RESPONSE_HEADER:
             r->status_line = lpvBuffer ? lpvBuffer : ap_pstrdup(r->pool, "200 OK");
@@ -439,7 +439,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
              */
             if (!lpdwDataType) {
                 ap_send_http_header(r);
-                return TRUE;
+                return APR_TRUE;
             }
 
             /* Make a copy - don't disturb the original */
@@ -458,7 +458,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                                     "ISA sent invalid headers: %s", r->filename);
                         SetLastError(TODO_ERROR);
-                        return FALSE;
+                        return APR_FALSE;
                 }
 
                 /* Get rid of \n and \r */
@@ -480,7 +480,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                         SetLastError(TODO_ERROR);
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, SERVER_ERROR, r,
                                           "ISA sent invalid headers", r->filename);
-                        return FALSE;
+                        return APR_FALSE;
                 }
 
                 *value++ = '\0';
@@ -532,7 +532,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             /* Any data left should now be sent directly */
             ap_rputs(data, r);
 
-            return TRUE;
+            return APR_TRUE;
 
     case HSE_REQ_MAP_URL_TO_PATH:
             /* Map a URL to a filename */
@@ -550,13 +550,13 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                     ((char *)lpvBuffer)[l + 1] = '\0';
             }
 
-            return TRUE;
+            return APR_TRUE;
 
     case HSE_REQ_DONE_WITH_SESSION:
             /* Do nothing... since we don't support async I/O, they'll
              * return from HttpExtensionProc soon
              */
-            return TRUE;
+            return APR_TRUE;
 
     /* We don't support all this async I/O, Microsoft-specific stuff */
     case HSE_REQ_IO_COMPLETION:
@@ -565,7 +565,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                         "ISAPI asynchronous I/O not supported: %s", r->filename);
     default:
             SetLastError(ERROR_INVALID_PARAMETER);
-            return FALSE;
+            return APR_FALSE;
     }
 }
 

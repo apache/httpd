@@ -906,7 +906,7 @@ static const char *
     return host;		/* ought to return the port, too */
 }
 
-/* Return TRUE if addr represents an IP address (or an IP network address) */
+/* Return APR_TRUE if addr represents an IP address (or an IP network address) */
 int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_pool_t *p)
 {
     const char *addr = This->name;
@@ -1010,7 +1010,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_pool_t *p)
 	return (*addr == '\0');	/* okay iff we've parsed the whole string */
 }
 
-/* Return TRUE if addr represents an IP address (or an IP network address) */
+/* Return APR_TRUE if addr represents an IP address (or an IP network address) */
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 {
     int i;
@@ -1102,7 +1102,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
     return 0;
 }
 
-/* Return TRUE if addr represents a domain name */
+/* Return APR_TRUE if addr represents a domain name */
 int ap_proxy_is_domainname(struct dirconn_entry *This, ap_pool_t *p)
 {
     char *addr = This->name;
@@ -1135,7 +1135,7 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, ap_pool_t *p)
     return 1;
 }
 
-/* Return TRUE if host "host" is in domain "domain" */
+/* Return APR_TRUE if host "host" is in domain "domain" */
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 {
     const char *host = proxy_get_host_of_request(r);
@@ -1156,7 +1156,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 	&& strncasecmp(&host[h_len - d_len], This->name, d_len) == 0;
 }
 
-/* Return TRUE if addr represents a host name */
+/* Return APR_TRUE if addr represents a host name */
 int ap_proxy_is_hostname(struct dirconn_entry *This, ap_pool_t *p)
 {
     struct hostent host;
@@ -1191,7 +1191,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, ap_pool_t *p)
     return 1;
 }
 
-/* Return TRUE if host "host" is equal to host2 "host2" */
+/* Return APR_TRUE if host "host" is equal to host2 "host2" */
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 {
     char *host = This->name;
@@ -1223,14 +1223,14 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 	&& strncasecmp(host, host2, h1_len) == 0;
 }
 
-/* Return TRUE if addr is to be matched as a word */
+/* Return APR_TRUE if addr is to be matched as a word */
 int ap_proxy_is_word(struct dirconn_entry *This, ap_pool_t *p)
 {
     This->matcher = proxy_match_word;
     return 1;
 }
 
-/* Return TRUE if string "str2" occurs literally in "str1" */
+/* Return APR_TRUE if string "str2" occurs literally in "str1" */
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
 {
     const char *host = proxy_get_host_of_request(r);
