@@ -198,8 +198,8 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 {
     int pid = 0;
     int errfileno = STDERR_FILENO;
-
-    /* the fd on r->server->error_log is closed, but we need somewhere to            * put the error messages from the log_* functions. So, we use stderr,
+    /* the fd on r->server->error_log is closed, but we need somewhere to            
+     * put the error messages from the log_* functions. So, we use stderr,
      * since that is better than allowing errors to go unnoticed. 
      */
     ap_put_os_file(&r->server->error_log, &errfileno, r->pool);
@@ -332,7 +332,7 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
 
     read(fd, &j, sizeof(int)); 
     read(fd, &len, sizeof(int)); 
-    data = ap_pcalloc(r->pool, len); 
+    data = ap_pcalloc(r->pool, len + 1); /* get a cleared byte for final '\0' */
     i = read(fd, data, len); 
 
     r->filename = ap_getword(r->pool, (const char **)&data, '\n'); 
@@ -508,11 +508,18 @@ static int cgid_server(void *data)
                        main_server->module_config, &cgid_module); 
 
     ap_signal(SIGCHLD, SIG_IGN); 
-    unlink(sconf->sockname); 
+    if (unlink(sconf->sockname) < 0 &&
+        errno != ENOENT) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+                     "Couldn't unlink unix domain socket %s",
+                     sconf->sockname);
+        /* just a warning; don't bail out */
+    }
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
-                     "Couldn't create unix domain socket"); 
+                     "Couldn't create unix domain socket");
+        return errno;
     } 
 
     memset(&unix_addr, 0, sizeof(unix_addr));
@@ -521,16 +528,20 @@ static int cgid_server(void *data)
 
     if (bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
-                     "Couldn't bind unix domain socket"); 
+                     "Couldn't bind unix domain socket %s",
+                     sconf->sockname); 
+        return errno;
     } 
     /* Most implementations silently enforce a value of 5 anyway.  
      * This way, it'll work the same everywhere. */
     if (listen(sd, 5) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                      "Couldn't listen on unix domain socket"); 
+        return errno;
     } 
 
-    while (1) { 
+    while (1) {
+        len = sizeof(unix_addr);
         sd2 = accept(sd, (struct sockaddr *)&unix_addr, &len);
         if (sd2 < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, (server_rec *)data,
