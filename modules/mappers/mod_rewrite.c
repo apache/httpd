@@ -1203,7 +1203,9 @@ static int hook_uri2file(request_rec *r)
             }
 
             /* now make sure the request gets handled by the proxy handler */
-            r->proxyreq = PROXYREQ_REVERSE;
+            if (PROXYREQ_NONE == r->proxyreq) {
+                r->proxyreq = PROXYREQ_REVERSE;
+            }
             r->handler  = "proxy-server";
 
             rewritelog(r, 1, "go-ahead with proxy request %s [OK]",
@@ -1465,7 +1467,9 @@ static int hook_fixup(request_rec *r)
             }
 
             /* now make sure the request gets handled by the proxy handler */
-            r->proxyreq = PROXYREQ_REVERSE;
+            if (PROXYREQ_NONE == r->proxyreq) {
+                r->proxyreq = PROXYREQ_REVERSE;
+            }
             r->handler  = "proxy-server";
 
             rewritelog(r, 1, "[per-dir %s] go-ahead with proxy request "

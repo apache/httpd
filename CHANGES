@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_rewrite no longer turns forward proxy requests into reverse proxy
+     requests. PR 28125  [ast domdv.de, André Malo]
+
   *) ap_set_sub_req_protocol and ap_finalize_sub_req_protocol are now
      exported on Win32 and Netware as well (minor MMN bump).  PR 28523.
      [Edward Rudd <eddie omegaware.com>, André Malo]
