@@ -11,17 +11,26 @@ Release:
            o FreeBSD 2.2.6 ...................... Ok (Ralf S. Engelschall)
            o FreeBSD 2.2.7 ...................... Ok (Jim Jagielski)
            o Debian GNU/Linux 1.3 ............... Ok (Ralf S. Engelschall)
+           o RedHat 5.1 ......................... Ok (Shane Owenby)
            o HPUX 10.20 ......................... Ok (Ralf S. Engelschall)
            o AIX 4.1.5 .......................... Ok (Jens-Uwe Mager)
+           o AIX 4.1.5 / gcc 2.7.2.2 ............ Ok (Shane Owenby)
+           o AIX 4.1.5 / xlC 3.6.4 .............. Fails (Shane Owenby) [KNOWN PROBLEM]
            o AIX 4.2.1 .......................... Ok (Bill Stoddard)
-           o Solaris 2.6 ........................ Ok (Ralf S. Engelschall)
+           o AIX 4.2.1 / xlC 3.1.4 .............. Ok (Shane Owenby)
+           o AIX 4.3.1 / xlC 3.1.4 .............. Ok (Shane Owenby)
+           o Solaris 2.6 / gcc .................. Ok (Ralf S. Engelschall)
+           o Solaris 2.6 / SPARCWorks compiler .. Ok (Shane Owenby)
+           o Solaris 2.5.1 / gcc ................ Ok (Shane Owenby)
+           o Solaris 2.5.1 / SPARCWorks comp. ... Ok (Shane Owenby)
            o SunOS 4.1.3 ........................ Ok (Ralf S. Engelschall)
-           o Digital Unix 4.0 ................... ?? (??)
+           o Digital Unix 4.0D / gcc  & DEC C ... Ok (Charles Randall)
+           o Digital Unix 4.0B / DEC C .......... Ok (Charles Randall)
            o IRIX 6.2 ........................... ?? (??)
            o OS\2 ............................... Ok (Brian Havard)
            o Windows NT (general)................ Ok (Bill Stoddard)
-           o Netwinder .......................... Fails (Rasmus Lerdorf)
-	   o A/UX 3.1.1 ......................... Ok (Jim Jagielski)
+           o Netwinder .......................... Fails (Rasmus Lerdorf) [NOT CRITICAL]
+           o A/UX 3.1.1 ......................... Ok (Jim Jagielski)
 
     1.3.1: Tagged and rolled on July 19. Announced and released.
 
