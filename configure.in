@@ -81,7 +81,6 @@ APR_SETIFNULL(CPP, `$apr_config --cpp`)
 APR_ADDTO(CFLAGS, `$apr_config --cflags`)
 APR_ADDTO(CPPFLAGS, `$apr_config --cppflags`)
 APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
-APR_ADDTO(INCLUDES, `$apr_config --includes`)
 SHLIBPATH_VAR=`$apr_config --shlib-path-var`
 APR_BINDIR=`$apr_config --bindir`
 APR_INCLUDEDIR=`$apr_config --includedir`
@@ -106,7 +105,6 @@ if test "$apu_found" = "reconfig"; then
 fi
 
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
-APR_ADDTO(INCLUDES, `$apu_config --includes`)
 APU_BINDIR=`$apu_config --bindir`
 APU_INCLUDEDIR=`$apu_config --includedir`
 APU_VERSION=`$apu_config --version`
@@ -139,6 +137,12 @@ if test "$abs_builddir" != "$abs_srcdir"; then
 fi
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/server/mpm/\$(MPM_SUBDIR_NAME) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/filters -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/include -I\$(top_srcdir)/modules/generators -I\$(top_srcdir)/modules/mappers])
+
+# apr/apr-util --includes may pick up system paths for dependent
+# libraries, so ensure these are later in INCLUDES than local source
+# directories.
+APR_ADDTO(INCLUDES, `$apr_config --includes`)
+APR_ADDTO(INCLUDES, `$apu_config --includes`)
 
 echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
 
