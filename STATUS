@@ -269,13 +269,20 @@ Available Patches:
       worth adding it by weighting on the advantages and disadvantages.
       
       Votes for including APACI (in general): 
-         Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1, Jim +1, Chuck +0
+         Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1, Jim +1, Chuck +0,
+         Randy +0
 
       Votes for commit variants:
-         CV1: Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1 Jim +1, Chuck +0 
+         CV1: Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1 Jim +1, Chuck +0,
+              Randy +0
          CV2: Ralf +0
 
       Notes:
+       Randy:  Given the amount of work that Ralf has clearly done on this,
+               I would not veto it. However, I don't think this is something
+               that should go in for 1.3.0 general and I don't feel that the
+               current system is lacking enough that it needs replacing.
+               We're asking for trouble.
        Chuck:  What the heck. We're not releasing soon anymore. Let users
                get used to it if there's time.
          Jim:  [the +1] iff we remove the "present" top-level build
@@ -428,8 +435,14 @@ Open issues:
 	Proposal: the next release should be named 1.3b6, and labelled "release
 	    candidate on unix, beta on NT".  The release after that will be
 	    called 1.3.0 "stable on unix, beta on NT".
-	    +1: Jim, Ralf
+	    +1: Jim, Ralf, Randy
 	    +0: Dean
+
+            Notes:
+            Randy: APACI should go in a beta release if it is to go in at all.
+                   I would also argue that 1.3b6 is _not_ stable. I've been 
+                   having real fits keeping it alive on a dual processor
+                   machine. Could be OS problems..
 
 Win32 specific issues:
 
