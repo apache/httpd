@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/04/10 23:30:52 $
+Last modified: $Date: 2003/04/19 00:30:42 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -36,7 +36,7 @@ Decisions pending
     - Perhaps we can use the newly created Wiki for this. (SubWiki,
       with the possibility to get nice commit mails.)
        nd: someone should try to convince me, what the heck is
-           so cool with wikis -- nd
+           so cool with wikis
        erik: it lowers the entry barrier and therefore users are able to
              contribute (handy for a FAQ, see PHP site)
        nd: yes, good bad example. The PHP docs would mostly be
@@ -150,9 +150,6 @@ Documentation improvements
 * Autogeneration of PDF
   - André is working on this, Erik volunteers to help out
 
-* Windows help file
-  - David Shane Holden was working on this
-
 * Improving the "security docs"
   - More content and better organisation.
     - mod_dav ressources are owned by the httpd
@@ -186,8 +183,6 @@ expand.pl                          # delete after finishing everything
 # These will require manual.xsl changes
 faq/footer.html                    
 faq/header.html
-faq/index.html
-faq/support.html
 
 # Perhaps these should be left in html to allow the developers to
 # play with them
@@ -202,7 +197,6 @@ programs/footer.html
 programs/header.html
 programs/htdigest.html
 programs/htpasswd.html
-programs/index.html
 programs/logresolve.html
 programs/other.html
 programs/rotatelogs.html
