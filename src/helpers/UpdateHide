@@ -18,6 +18,7 @@ $listend    = '\n#endif\n';
     main errno environ optarg
     dlclose dlerror dlopen dlsym
     start end atexit exit etext edata
+    regcomp regerror regexec regfree
 );
 @included   = qw(
     D:db_auth_module
@@ -35,6 +36,10 @@ elsif ($gnutriple =~ m|.*-solaris2.*|) {
 }
 elsif ($gnutriple =~ m|.*-hpux.*|) {
     $nm_cmd   = '/usr/ccs/bin/nm -p -g';
+    $us_strip = 0;
+}
+elsif ($gnutriple =~ /linux/) {
+    $nm_cmd   = '/usr/bin/nm -g';
     $us_strip = 0;
 }
 else {
@@ -57,7 +62,7 @@ close(FP);
 %ST = ();
 @L = `$nm_cmd $httpdbinary`;
 foreach $l (@L) {
-    if ($l =~ m|^.*\s+([BDT])\s+(\S+)\s*$|) {
+    if ($l =~ m|^.*\s+([BDRT])\s+(\S+)\s*$|) {
         ($type, $name) = ($1, $2);
 
         #   remove leading underscore (C linker convention)
@@ -73,7 +78,7 @@ foreach $l (@L) {
 
         #   insert the symbol into our lists
         $SB{$name}++ if $type eq 'B';
-        $SD{$name}++ if $type eq 'D';
+        $SD{$name}++ if $type eq 'D' or $type eq 'R';
         $ST{$name}++ if $type eq 'T';
     }
 }
