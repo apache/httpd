@@ -289,7 +289,7 @@ icon selected by MIME content-type</td></tr><tr><th><a href="directive-dict.html
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Icon to display next to files selected by MIME 
 content-encoding</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddIconByEncoding <var>icon MIME-encoding</var>
+              </a></th><td><code>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
