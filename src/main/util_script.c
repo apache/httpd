@@ -505,6 +505,27 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
 	/* if we see a bogus header don't ignore it. Shout and scream */
 
+#ifdef CHARSET_EBCDIC
+	    /* Chances are that we received an ASCII header text instead of
+	     * the expected EBCDIC header lines. Try to auto-detect:
+	     */
+	if (!(l = strchr(w, ':'))) {
+	    int maybeASCII = 0, maybeEBCDIC = 0;
+	    char *cp;
+
+	    for (cp = w; *cp != '\0'; ++cp) {
+		if (isprint(*cp) && !isprint(os_toebcdic[*cp]))
+		    ++maybeEBCDIC;
+		if (!isprint(*cp) && isprint(os_toebcdic[*cp]))
+		    ++maybeASCII;
+		}
+	    if (maybeASCII > maybeEBCDIC) {
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+			 "CGI Interface Error: Script headers apparently ASCII: (CGI = %s)", r->filename);
+		ascii2ebcdic(w, w, cp - w);
+	    }
+	}
+#endif
 	if (!(l = strchr(w, ':'))) {
 	    char malformed[(sizeof MALFORMED_MESSAGE) + 1
 			   + MALFORMED_HEADER_LENGTH_TO_SHOW];
