@@ -267,12 +267,8 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 #if APR_HAS_SHARED_MEMORY
     apr_status_t result;
 
-    if (!st->cache_file) {
-    	return -1;
-    }
-
     result = apr_shm_create(&st->cache_shm, st->cache_bytes, st->cache_file, st->pool);
-    if (result == EEXIST) {
+    if (result == APR_EEXIST) {
         /*
          * The cache could have already been created (i.e. we may be a child process).  See
          * if we can attach to the existing shared memory
