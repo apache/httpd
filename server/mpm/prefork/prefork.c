@@ -541,8 +541,8 @@ static void accept_mutex_init(ap_context_t *p)
     unlock_it.l_pid = 0;		/* pid not actually interesting */
 
     expand_lock_fname(p);
-    ap_open(&tempfile, p, ap_lock_fname, APR_CREATE | APR_WRITE | APR_EXCL,
-            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD);
+    ap_open(&tempfile, ap_lock_fname, APR_CREATE | APR_WRITE | APR_EXCL,
+            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p);
     ap_get_os_file(&lock_fd, tempfile);
     if (lock_fd == -1) {
 	perror("open");
@@ -604,7 +604,7 @@ static void accept_mutex_child_init(ap_context_t *p)
 {
     ap_file_t *tempfile;
 
-    ap_open(&tempfile, p, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE);
+    ap_open(&tempfile, ap_lock_fname, APR_WRITE, APR_UREAD|APR_UWRITE, p);
     if (!tempfile) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Child cannot open lock file: %s", ap_lock_fname);
@@ -623,8 +623,8 @@ static void accept_mutex_init(ap_context_t *p)
 
     expand_lock_fname(p);
     unlink(ap_lock_fname);
-    ap_open(&tempfile, p, ap_lock_fname, APR_CREATE|APR_WRITE|APR_EXCL,
-	    APR_UREAD|APR_UWRITE);
+    ap_open(&tempfile, ap_lock_fname, APR_CREATE|APR_WRITE|APR_EXCL,
+	    APR_UREAD|APR_UWRITE, p);
     if (!tempfile) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Parent cannot open lock file: %s", ap_lock_fname);

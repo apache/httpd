@@ -782,8 +782,8 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     /* We are not using multiviews */
     neg->count_multiviews_variants = 0;
 
-    if (ap_open(&map, neg->pool, rr->filename, APR_READ | APR_BUFFERED,
-                APR_OS_DEFAULT) != APR_SUCCESS) {
+    if (ap_open(&map, rr->filename, APR_READ | APR_BUFFERED,
+                APR_OS_DEFAULT, neg->pool) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                       "cannot access type map file: %s", rr->filename);
         return HTTP_FORBIDDEN;

@@ -986,8 +986,8 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		 * the file's contents, any HTML header it had won't end up
 		 * where it belongs.
 		 */
-		if (ap_open(&f, r->pool, rr->filename, APR_READ | APR_BUFFERED,
-                            APR_OS_DEFAULT) == APR_SUCCESS) {
+		if (ap_open(&f, rr->filename, APR_READ | APR_BUFFERED,
+                            APR_OS_DEFAULT, r->pool) == APR_SUCCESS) {
 		    emit_preamble(r, title);
 		    emit_amble = 0;
 		    do_emit_plain(r, f);
@@ -1054,8 +1054,8 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 		/*
 		 * If we can open the file, suppress the signature.
 		 */
-		if (ap_open(&f, r->pool, rr->filename, APR_READ | APR_BUFFERED,
-                            APR_OS_DEFAULT) == APR_SUCCESS) {
+		if (ap_open(&f, rr->filename, APR_READ | APR_BUFFERED,
+                            APR_OS_DEFAULT, r->pool) == APR_SUCCESS) {
 		    do_emit_plain(r, f);
 		    ap_close(f);
 		    suppress_sig = 1;
@@ -1090,8 +1090,8 @@ static char *find_title(request_rec *r)
 			"text/html")
 	    || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
 	&& !r->content_encoding) {
-        if (ap_open(&thefile, r->pool, r->filename, APR_READ | APR_BUFFERED,
-                    APR_OS_DEFAULT) != APR_SUCCESS) {
+        if (ap_open(&thefile, r->filename, APR_READ | APR_BUFFERED,
+                    APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
 	    return NULL;
 	}
         n = sizeof(char) * (MAX_STRING_LEN - 1);

@@ -2515,7 +2515,7 @@ static int default_handler(request_rec *r)
         return METHOD_NOT_ALLOWED;
     }
 	
-    if (ap_open (&fd, r->pool, r->filename, APR_READ | APR_BINARY, 0) != APR_SUCCESS) {
+    if (ap_open (&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
