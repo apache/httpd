@@ -1,5 +1,11 @@
 Changes with Apache 2.0.37
 
+  *) Fix the working directory *for WinNT/2K/XP services only* to
+     change to the Apache directory (one level above the location 
+     of Apache.exe, in the case that Apache.exe resides in bin/.)
+     Solves the case of ServerRoot /foo paths where /foo was not
+     on the same drive as /winnt/system32.  [William Rowe]
+
   *) Make 2.0's "AcceptMutex" startup message now "completely"
      match how 1.3 does it. [Jim Jagielski]
 
