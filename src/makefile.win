@@ -63,10 +63,8 @@ _build:
 #	echo LONG $(LONG) SHORT $(SHORT) x
 	cd os\win32
 	 $(MAKE) $(MAKEOPT) -f ApacheOS.mak CFG="ApacheOS - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-        cd os\win32\win9xconhook
 	 $(MAKE) $(MAKEOPT) -f Win9xConHook.mak CFG="Win9xConHook - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..\..
+	cd ..\..
 	cd regex
 	 $(MAKE) $(MAKEOPT) -f regex.mak CFG="regex - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
@@ -128,7 +126,7 @@ _install:
 	-mkdir "$(INSTDIR)\proxy"
 	copy $(LONG)\Apache.exe "$(INSTDIR)"
 	copy $(LONG)\ApacheCore.dll "$(INSTDIR)"
-	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.dll "$(INSTDIR)"
+	copy os\win32\$(LONG)\Win9xConHook.dll "$(INSTDIR)"
 	copy lib\expat-lite\$(LONG)\xmltok.dll "$(INSTDIR)"
 	copy lib\expat-lite\$(LONG)\xmlparse.dll "$(INSTDIR)"
 	copy os\win32\$(LONG)\ApacheModuleStatus.dll "$(INSTDIR)\modules"
@@ -148,22 +146,22 @@ _install:
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
-        -xcopy ..\htdocs "$(INSTDIR)\htdocs" /sdy
+        -xcopy ..\htdocs "$(INSTDIR)\htdocs" /s /d /q
 	copy ..\cgi-bin\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
-	xcopy include\*.h "$(INSTDIR)\include" /dy
-	xcopy os\win32\*.h "$(INSTDIR)\include" /dy
-	xcopy regex\*.h "$(INSTDIR)\include\regex" /dy
-	xcopy lib\sdbm\*.h "$(INSTDIR)\include\sdbm" /dy
-	xcopy lib\expat-lite\*.h "$(INSTDIR)\include\xml" /dy
-        -xcopy ..\icons "$(INSTDIR)\icons" /sdy
+	xcopy include\*.h "$(INSTDIR)\include" /d /q
+	xcopy os\win32\*.h "$(INSTDIR)\include" /d /q
+	xcopy regex\*.h "$(INSTDIR)\include\regex" /d /q
+	xcopy lib\sdbm\*.h "$(INSTDIR)\include\sdbm" /d /q
+	xcopy lib\expat-lite\*.h "$(INSTDIR)\include\xml" /d /q
+        -xcopy ..\icons "$(INSTDIR)\icons" /s /d /q
 	copy ap\Lib$(SHORT)\ap.lib "$(INSTDIR)\lib"
 	copy os\win32\Lib$(SHORT)\ApacheOS.lib "$(INSTDIR)\lib"
 	copy regex\Lib$(SHORT)\regex.lib "$(INSTDIR)\lib"
 	copy lib\sdbm\Lib$(SHORT)\sdbm.lib "$(INSTDIR)\lib"
 	copy $(LONG)\ApacheCore.exp "$(INSTDIR)\libexec"
 	copy $(LONG)\ApacheCore.lib "$(INSTDIR)\libexec"
-	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.exp "$(INSTDIR)\libexec"
-	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.lib "$(INSTDIR)\libexec"
+	copy os\win32\$(LONG)\Win9xConHook.exp "$(INSTDIR)\libexec"
+	copy os\win32\$(LONG)\Win9xConHook.lib "$(INSTDIR)\libexec"
 	copy lib\expat-lite\$(LONG)\xmltok.exp "$(INSTDIR)\libexec"
 	copy lib\expat-lite\$(LONG)\xmltok.lib "$(INSTDIR)\libexec"
 	copy lib\expat-lite\$(LONG)\xmlparse.exp "$(INSTDIR)\libexec"

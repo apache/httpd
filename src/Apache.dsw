@@ -333,7 +333,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Win9xConHook"=".\os\win32\win9xconhook\Win9xConHook.dsp" - Package Owner=<4>
+Project: "Win9xConHook"=".\os\win32\Win9xConHook.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
