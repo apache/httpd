@@ -958,7 +958,7 @@ static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
 /* ensure that path is relative, and does not contain ".." elements
  * ensentially ensure that it does not match the regex:
  * (^/|(^|/)\.\.(/|$))
- * XXX: Needs to become apr_is_path_relative() test
+ * XXX: Simply replace with apr_filepath_merge                    
  */
 static int is_only_below(const char *path)
 {
@@ -1024,7 +1024,9 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 ap_ssi_parse_string(r, tag_val, parsed_string, 
                                     sizeof(parsed_string), 0);
                 if (tag[0] == 'f') {
-                    /* be safe; only files in this directory or below allowed */
+                    /* XXX: Port to apr_filepath_merge
+                     * be safe; only files in this directory or below allowed 
+                     */
                     if (!is_only_below(parsed_string)) {
                         error_fmt = "unable to include file \"%s\" "
                                     "in parsed file %s";
@@ -1298,7 +1300,9 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     apr_status_t rv = APR_SUCCESS;
 
     if (!strcmp(tag, "file")) {
-        /* be safe; only files in this directory or below allowed */
+        /* XXX: Port to apr_filepath_merge
+         * be safe; only files in this directory or below allowed 
+         */
         if (!is_only_below(tag_val)) {
             error_fmt = "unable to access file \"%s\" "
                         "in parsed file %s";
