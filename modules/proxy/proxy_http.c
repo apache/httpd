@@ -588,7 +588,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     }
 
     /* add empty line at the end of the headers */
-    e = apr_bucket_pool_create(CRLF, strlen(CRLF), p);
+    e = apr_bucket_immortal_create(CRLF, sizeof(CRLF)-1);
     APR_BRIGADE_INSERT_TAIL(bb, e);
     e = apr_bucket_flush_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
