@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.74 $ ($Date: 1997/06/26 12:17:20 $)
+  $Revision: 1.75 $ ($Date: 1997/06/28 20:55:42 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1481,6 +1481,15 @@
   file, then re-running <CODE>Configure</CODE>, should resolve the
   problem.
   </P>
+  <p><b>Note:</b> As of BIND 8.1.1, the bind libraries and files are
+  installed under <code>/usr/local/bind</code> by default.  So you
+  should not run into this problem.  Should you want to use the bind
+  resolvers you'll have to add the following to the respective lines:
+  <blockquote><pre>
+  EXTRA_CFLAGS=-I/usr/local/bind/include
+  EXTRA_LFLAGS=-L/usr/local/bind/lib
+  EXTRA_LIBS=-lbind
+  </pre></blockquote>
   <HR>
  </LI>
  <LI><A NAME="set-servername">
