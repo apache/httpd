@@ -70,8 +70,8 @@ _build:
 	cd ..\..
 	cd srclib\apr-util
 #	 aprlibdll creates the dynamic aprlib.dll from the static library project aprlib.dsp
-	 $(MAKE) $(MAKEOPT) -f aprlib.mak CFG="aprlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f aprutil.mak CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f aprutildll.mak CFG="aprutildll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\expat-lite
 	 $(MAKE) $(MAKEOPT) -f expatlib.mak CFG="expatlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
