@@ -1015,17 +1015,18 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	}
 	else if (i == 229) {
 	    char *pstr;
+	    char *tok_cntx;
 
 	    pstr = apr_pstrdup(p, buffer);
-	    pstr = strtok(pstr, " ");	/* separate result code */
+	    pstr = apr_strtok(pstr, " ", &tok_cntx); /* separate result code */
 	    if (pstr != NULL) {
 		if (*(pstr + strlen(pstr) + 1) == '=') {
 		    pstr += strlen(pstr) + 2;
 		}
 		else {
-		    pstr = strtok(NULL, "(");  /* separate address & port params */
+		    pstr = apr_strtok(NULL, "(", &tok_cntx);  /* separate address & port params */
 		    if (pstr != NULL)
-			pstr = strtok(NULL, ")");
+			pstr = apr_strtok(NULL, ")", &tok_cntx);
 		}
 	    }
 
@@ -1103,19 +1104,20 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	else if (i == 227) {
 	    unsigned int h0, h1, h2, h3, p0, p1;
 	    char *pstr;
+	    char *tok_cntx;
 
 /* FIXME: Check PASV against RFC1123 */
 
 	    pstr = apr_pstrdup(p, buffer);
-	    pstr = strtok(pstr, " ");	/* separate result code */
+	    pstr = apr_strtok(pstr, " ", &tok_cntx); /* separate result code */
 	    if (pstr != NULL) {
 		if (*(pstr + strlen(pstr) + 1) == '=') {
 		    pstr += strlen(pstr) + 2;
 		}
 		else {
-		    pstr = strtok(NULL, "(");  /* separate address & port params */
+		    pstr = apr_strtok(NULL, "(", &tok_cntx);  /* separate address & port params */
 		    if (pstr != NULL)
-			pstr = strtok(NULL, ")");
+			pstr = apr_strtok(NULL, ")", &tok_cntx);
 		}
 	    }
 
