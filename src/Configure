@@ -437,6 +437,11 @@ case "$PLAT" in
 	DBM_LIB=""
 	DB_LIB=""
 	;;
+    *-bsdi3)
+        if [ "x$using_shlib" = "x1" ] ; then
+            CC="shlicc2"
+        fi
+        ;;
     *-bsdi*)
 	OS='BSDI'
 	DBM_LIB=""
@@ -984,6 +989,10 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-Bshareable"
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=2
+	    ;;
+	*-bsdi3)
+	    LD_SHLIB="shlicc2"
+	    LDFLAGS_SHLIB="-r"
 	    ;;
 	*-bsdi)
 	    CFLAGS_SHLIB="-fPIC"

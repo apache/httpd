@@ -114,7 +114,11 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "i486-whatever-bsdi"; exit 0
 	;;
 
-    BSD/386:*|BSD/OS:*)
+	BSD/386|BSD/OS:3.*)
+	echo "${MACHINE}-whatever-bsdi3"; exit 0
+	;;
+
+	BSD/386:*|BSD/OS:*)
 	echo "${MACHINE}-whatever-bsdi"; exit 0
 	;;
 
