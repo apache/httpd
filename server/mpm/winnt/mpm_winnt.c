@@ -531,66 +531,31 @@ static void bind_listeners_to_completion_port()
 }
 
 /**********************************************************************
- * Multithreaded implementation
+ * Child Process Notes
  *
- * This code is fairly specific to Win32.
+ * The child process in the mpm_winnt consists of one 'master' thread
+ * and one or more worker threads.  The master thread is responsible for
+ * creating the worker threads, performing server maintenance, and for 
+ * listening for the parent process to signal the child process to 
+ * shutdown. The master thread runs and sleeps in child_main(). The worker
+ * threads run in worker_main().
  *
- * The model used to handle requests is a set of threads. One "main"
- * thread listens for new requests. When something becomes
- * available, it does a select and places the newly available socket
- * onto a list of "jobs" (add_job()). Then any one of a fixed number
- * of "worker" threads takes the top job off the job list with
- * remove_job() and handles that connection to completion. After
- * the connection has finished the thread is free to take another
- * job from the job list.
+ * mpm_winnt implements two seperate models for binding connections to
+ * threads: one specific to Windows 95/98 and another specific to Windows 
+ * NT/2000. 
  *
- * In the code, the "main" thread is running within the child_main()
- * function. The first thing this function does is create the
- * worker threads, which operate in the child_sub_main() function. The
- * main thread then goes into a loop within child_main() where they
- * do a select() on the listening sockets. The select times out once
- * per second so that the thread can check for an "exit" signal
- * from the parent process (see below). If this signal is set, the 
- * thread can exit, but only after it has accepted all incoming
- * connections already in the listen queue (since Win32 appears
- * to through away listened but unaccepted connections when a 
- * process dies).
+ * On Windows 95/98 a single thread (the accept thread, created by the 
+ * master thread in child_main()) "accepts" connections off the listining 
+ * socket. When a connection is accepted, the accepted socket is placed 
+ * onto a queue of "jobs" (add_job()). The worker threads consume from 
+ * the top of this job queue with remove_job() and handle requests coming 
+ * in on that connection until the connection is taken down.
  *
- * Because the main and worker threads exist within a single process
- * they are vulnerable to crashes or memory leaks (crashes can also
- * be caused within modules, of course). There also needs to be a 
- * mechanism to perform restarts and shutdowns. This is done by
- * creating the main & worker threads within a subprocess. A
- * main process (the "parent process") creates one (or more) 
- * processes to do the work, then the parent sits around waiting
- * for the working process to die, in which case it starts a new
- * one. The parent process also handles restarts (by creating
- * a new working process then signalling the previous working process 
- * exit ) and shutdowns (by signalling the working process to exit).
- * The parent process operates within the master_main() function. This
- * process also handles requests from the service manager (NT only).
- *
- * Signalling between the parent and working process uses a Win32
- * event. Each child has a unique name for the event, which is
- * passed to it with the -Z argument when the child is spawned. The
- * parent sets (signals) this event to tell the child to die.
- * At present all children do a graceful die - they finish all
- * current jobs _and_ empty the listen queue before they exit.
- * A non-graceful die would need a second event. The -Z argument in
- * the child is also used to create the shutdown and restart events,
- * since the prefix (apPID) contains the parent process PID.
- *
- * The code below starts with functions at the lowest level -
- * worker threads, and works up to the top level - the main()
- * function of the parent process.
- *
- * The scoreboard (in process memory) contains details of the worker
- * threads (within the active working process). There is no shared
- * "scoreboard" between processes, since only one is ever active
- * at once (or at most, two, when one has been told to shutdown but
- * is processes outstanding requests, and a new one has been started).
- * This is controlled by a "start_mutex" which ensures only one working
- * process is active at once.
+ * Windows NT/2000 uses an advanced Winsock2 APIs (AcceptEx() and
+ * completion ports) to handle dispatching connections to worker 
+ * threads. add_job/remove_job are not used by the NT/2000 specific
+ * code path. Instead, each worker thread is responsible for calling
+ * AcceptEx().
  **********************************************************************/
 
 
@@ -1447,23 +1412,6 @@ static void child_main()
     apr_pool_destroy(pchild);
     CloseHandle(exit_event);
 }
-
-/*
- * Spawn a child Apache process. The child process has the command line arguments from
- * argc and argv[], plus a -Z argument giving the name of an event. The child should
- * open and poll or wait on this event. When it is signalled, the child should die.
- * prefix is a prefix string for the event name.
- * 
- * The child_num argument on entry contains a serial number for this child (used to create
- * a unique event name). On exit, this number will have been incremented by one, ready
- * for the next call. 
- *
- * On exit, the value pointed to be *ev will contain the event created
- * to signal the new child process.
- *
- * The return value is the handle to the child process if successful, else -1. If -1 is
- * returned the error will already have been logged by ap_log_error().
- */
 
 /**********************************************************************
  * master_main - this is the parent (main) process. We create a
