@@ -276,6 +276,7 @@ typedef enum {
     CONDPAT_FILE_SIZE,
     CONDPAT_FILE_LINK,
     CONDPAT_FILE_DIR,
+    CONDPAT_FILE_XBIT,
     CONDPAT_LU_URL,
     CONDPAT_LU_FILE,
     CONDPAT_STR_GT,
@@ -3040,6 +3041,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
             case 's': newcond->ptype = CONDPAT_FILE_SIZE;   break;
             case 'l': newcond->ptype = CONDPAT_FILE_LINK;   break;
             case 'd': newcond->ptype = CONDPAT_FILE_DIR;    break;
+            case 'x': newcond->ptype = CONDPAT_FILE_XBIT;   break;
             case 'U': newcond->ptype = CONDPAT_LU_URL;      break;
             case 'F': newcond->ptype = CONDPAT_LU_FILE;     break;
             }
@@ -3410,6 +3412,13 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
     case CONDPAT_FILE_DIR:
         if (   apr_stat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
             && sb.filetype == APR_DIR) {
+            rc = 1;
+        }
+        break;
+
+    case CONDPAT_FILE_XBIT:
+        if (   apr_stat(&sb, input, APR_FINFO_PROT, r->pool) == APR_SUCCESS
+            && (sb.protection & (APR_UEXECUTE | APR_GEXECUTE | APR_WEXECUTE))) {
             rc = 1;
         }
         break;
