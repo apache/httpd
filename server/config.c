@@ -328,9 +328,7 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
 {
     const char *handler;
     const char *p;
-    char *p2;
     int result;
-    char hbuf[MAX_STRING_LEN];
     const char *old_handler = r->handler;
 
     /*
@@ -346,9 +344,10 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
     if (!r->handler) {
         handler = r->content_type ? r->content_type : ap_default_type(r);
         if ((p=ap_strchr_c(handler, ';')) != NULL) {
-	    apr_cpystrn(hbuf, handler, sizeof hbuf);
-	    p2 = hbuf+(handler-p);
-	    handler = hbuf;
+            char *new_handler = (char *)apr_pmemdup(r->pool, handler,
+                                                    p - handler + 1);
+            char *p2 = new_handler + (p - handler);
+            handler = new_handler;
 	    /* MIME type arguments */
             while (p2 > handler && p2[-1] == ' ')
 	        --p2;		/* strip trailing spaces */
