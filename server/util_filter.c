@@ -139,11 +139,16 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
 {
     if (reg_filter_set) {
         ap_filter_rec_t *frec;
+        apr_pool_t *p;
         int len = strlen(name);
         int size = len + 1;
-        char name_lower[size];
-        char *dst = name_lower;
+        char *name_lower;
+        char *dst;
         const char *src = name;
+
+        p = r ? r->pool : c->pool;
+        name_lower = apr_palloc(p, size);
+        dst = name_lower;
 
         /* Normalize the name to all lowercase to match register_filter() */
         do {
@@ -153,7 +158,6 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
         frec = (ap_filter_rec_t *)apr_hash_get(reg_filter_set,
                                                name_lower, len);
         if (frec) {
-            apr_pool_t *p = r ? r->pool : c->pool;
             ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
             ap_filter_t **outf = r ? r_filters : c_filters;
 
