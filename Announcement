@@ -38,11 +38,22 @@ For more information, please check out http://www.apache.org/httpd.html
 
 Known problems with Apache 2.0b1
 
+  *) WARNING: Apache 2.0b1 is not expected to run on Windows 95, 98 or ME.
+     The intitial production release of Apache 2.0 is expected to run on
+     these consumer operating systems, but they cannot be recommended as
+     production environments due to the lack of integrated security and
+     robustness.
+
   *) The canonical paths are being overhauled.  This affects especially
      Win32 users with this release.  Due to this transitional state,
      file with names containing non-ASCII characters may refuse serve.
      This is in preparation for the next release, users will be able to 
      serve any Unicode named files with Apache/Win32 on Windows NT/2000.
+
+  *) Win32 users will see no message when Apache 2.0b1 is started as a
+     console.  While normal for unix, this differs from the behavior in
+     Apache 1.3 on Windows.
+
 
 Changes with Apache 2.0b1
 
