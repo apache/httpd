@@ -1,5 +1,9 @@
 Changes with Apache 2.0.54
 
+  *) core_input_filter: Move buckets to a persistent brigade instead of
+     creating a new brigade. This stop a memory leak when proxying a 
+     Streaming Media Server. PR 33382. [Paul Querna]
+
   *) mod_win32: Ignore both PATH_INFO as well as PATH_TRANSLATED to avoid 
      hiccups from additional path information passed in non-utf-8 format.
      [Richard Donkin <rd9 donkin.org]
