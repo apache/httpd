@@ -11,6 +11,13 @@ Release:
 
 FINAL RELEASE SHOWSTOPPERS:
 
+    * Ralf's "[PATCH] Fix module execution order for DSO situation (take 2)":
+      This is the final patch for 1.3b7 to make sure the module execution
+      order is correct even when the DSO mechanism is used. This is mainly
+      achieved by fixing the AddModule command.
+      See: http://www.engelschall.com/sw/apache/ [dsoexecorder]
+      Status: Ralf +1
+
     * proxy security fixes from 1.2.5 need to be brought forward.
       Note: off-by-one error in ap_proxy_date_canon() in
             proxy_util.c was fixed.  any others???
@@ -65,13 +72,6 @@ Documentation that needs writing:
 	virtualhosting.  (If it exists already I can't find it easily.)
 
 Available Patches:
-
-    * Ralf's "[PATCH] Fix module execution order for DSO situation (take 2)":
-      This is the final patch for 1.3b7 to make sure the module execution
-      order is correct even when the DSO mechanism is used. This is mainly
-      achieved by fixing the AddModule command.
-      <19980504161025.A794@engelschall.com>
-      Status: Ralf +1
 
     * Ed Korthof's patch to fix protocol issues surrounding 400, 408, and
       414 responses.
