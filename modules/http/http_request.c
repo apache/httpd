@@ -420,6 +420,11 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
 
     r->output_filters = rr->output_filters;
     r->input_filters = rr->input_filters;
+
+    if (r->main) {
+        ap_add_output_filter_handle(ap_subreq_core_filter_handle,
+                                    NULL, r, r->connection);
+    }
 }
 
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
