@@ -197,8 +197,8 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_proc_t *procnew;
 
     if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS)
-        && ((rc == apr_procattr_cmdtype_set(procattr,
-                                            APR_PROGRAM_ENV)) == APR_SUCCESS)
+        && ((rc = apr_procattr_cmdtype_set(procattr,
+                                           APR_PROGRAM_ENV)) == APR_SUCCESS)
         && ((rc = apr_procattr_io_set(procattr,
                                       APR_FULL_BLOCK,
                                       APR_NO_PIPE,
