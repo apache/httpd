@@ -974,6 +974,8 @@ void os2pathname(char *path);
 
 API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
+API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, 
+                               char *errbuf, size_t errbuf_size);
 API_EXPORT(char *) ap_pregsub(pool *p, const char *input, const char *source,
                               size_t nmatch, regmatch_t pmatch[]);
 
