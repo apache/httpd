@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache Tutorials - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorials</h1>
+
+    <div class="warning"><h3>Warning:</h3>
+      <p>This document has not been fully updated
+      to take into account changes made in the 2.0 version of the
+      Apache HTTP Server. Some of the information may still be
+      relevant, but please use it with care.</p>
+    </div>
+
+    <p>The following documents give you step-by-step instructions
+    on how to accomplish common tasks with the Apache HTTP server.
+    Many of these documents are located at external sites and are
+    not the work of the Apache Software Foundation. Copyright to
+    documents on external sites is owned by the authors or their
+    assignees. Please consult the <a href="../">official Apache
+    Server documentation</a> to verify what you read on external
+    sites.</p>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#starting">Installation &amp; Getting Started</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#basics">Basic Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Security</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi_ssi">CGI and SSI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#other">Other Features</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="starting" id="starting">Installation &amp; Getting Started</a></h2>
+
+    
+
+    <ul>
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-06-1-001-01-NW-DP-LF">
+      Getting Started with Apache 1.3</a> (ApacheToday)</li>
+
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-07-10-001-01-NW-LF-SW">
+      Configuring Your Apache Server Installation</a>
+      (ApacheToday)</li>
+
+      <li><a href="http://www.onlamp.com/pub/a/apache/2000/02/24/installing_apache.html">
+      Getting, Installing, and Running Apache (on Unix)</a>
+      (O'Reilly Network Apache DevCenter)</li>
+
+      <li><a href="http://www.builder.com/Servers/Apache/ss01.html">Maximum
+      Apache: Getting Started</a> (CNET Builder.com)</li>
+
+      <li><a href="http://www.devshed.com/Server_Side/Administration/APACHE/">
+      How to Build the Apache of Your Dreams</a> (Developer
+      Shed)</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="basics" id="basics">Basic Configuration</a></h2>
+
+    
+
+    <ul>
+      <li><a href="http://www.onlamp.com/pub/a/apache/2000/03/02/configuring_apache.html">
+      An Amble Through Apache Configuration</a> (O'Reilly Network
+      Apache DevCenter)</li>
+
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-07-19-002-01-NW-LF-SW">
+      Using .htaccess Files with Apache</a> (ApacheToday)</li>
+
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-07-17-001-01-PS">
+      Setting Up Virtual Hosts</a> (ApacheToday)</li>
+
+      <li><a href="http://www.builder.com/Servers/Apache/ss02.html">Maximum
+      Apache: Configure Apache</a> (CNET Builder.com)</li>
+
+      <li><a href="http://www.devshed.com/Server_Side/Administration/MoreApache/">
+      Getting More Out of Apache</a> (Developer Shed)</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Security</a></h2>
+
+    
+
+    <ul>
+      <li><a href="http://www.linuxplanet.com/linuxplanet/tutorials/1527/1/">
+      Security and Apache: An Essential Primer</a>
+      (LinuxPlanet)</li>
+
+      <li><a href="http://www.apacheweek.com/features/userauth">Using User
+      Authentication</a> (Apacheweek)</li>
+
+      <li><a href="http://www.apacheweek.com/features/dbmauth">DBM
+      User Authentication</a> (Apacheweek)</li>
+
+      <li><a href="http://linux.com/security/newsitem.phtml?sid=12&amp;aid=3549">
+      An Introduction to Securing Apache</a> (Linux.com)</li>
+
+      <li><a href="http://linux.com/security/newsitem.phtml?sid=12&amp;aid=3667">
+      Securing Apache - Access Control</a> (Linux.com)</li>
+
+      <li>Apache Authentication <a href="http://apachetoday.com/news_story.php3?ltsn=2000-07-24-002-01-NW-LF-SW">
+      Part 1</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-07-31-001-01-NW-DP-LF">
+      Part 2</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-08-07-001-01-NW-LF-SW">
+      Part 3</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-08-14-001-01-NW-LF-SW">
+      Part 4</a> (ApacheToday)</li>
+
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-11-13-003-01-SC-LF-SW">
+      mod_access: Restricting Access by Host</a> (ApacheToday)</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logging" id="logging">Logging</a></h2>
+
+    
+
+    <ul>
+      <li><a href="http://www.onlamp.com/pub/a/apache/2000/03/10/log_rhythms.html">
+      Log Rhythms</a> (O'Reilly Network Apache DevCenter)</li>
+
+      <li><a href="http://www.apacheweek.com/features/logfiles">Gathering
+      Visitor Information: Customising Your Logfiles</a>
+      (Apacheweek)</li>
+
+      <li>Apache Guide: Logging <a href="http://apachetoday.com/news_story.php3?ltsn=2000-08-21-003-01-NW-LF-SW">
+      Part 1</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-08-28-001-01-NW-LF-SW">
+      Part 2</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-09-05-001-01-NW-LF-SW">
+      Part 3</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-09-18-003-01-NW-LF-SW">
+      Part 4</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-09-25-001-01-NW-LF-SW">
+      Part 5</a> (ApacheToday)</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cgi_ssi" id="cgi_ssi">CGI and SSI</a></h2>
+
+    
+
+    <ul>
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-06-05-001-10-NW-LF-SW">
+      Dynamic Content with CGI</a> (ApacheToday)</li>
+
+      <li><a href="http://www.cpan.org/doc/FAQs/cgi/idiots-guide.html">
+      The Idiot's Guide to Solving Perl CGI Problems</a>
+      (CPAN)</li>
+
+      <li><a href="http://www.linuxplanet.com/linuxplanet/tutorials/1445/1/">
+      Executing CGI Scripts as Other Users</a> (LinuxPlanet)</li>
+
+      <li><a href="http://www.htmlhelp.org/faq/cgifaq.html">CGI
+      Programming FAQ</a> (Web Design Group)</li>
+
+      <li>Introduction to Server Side Includes <a href="http://apachetoday.com/news_story.php3?ltsn=2000-06-12-001-01-PS">
+      Part 1</a> - <a href="http://apachetoday.com/news_story.php3?ltsn=2000-06-19-002-01-NW-LF-SW">
+      Part 2</a> (ApacheToday)</li>
+
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-06-26-001-01-NW-LF-SW">
+      Advanced SSI Techniques</a> (ApacheToday)</li>
+
+      <li><a href="http://www.builder.com/Servers/ApacheFiles/082400/">Setting
+      up CGI and SSI with Apache</a> (CNET Builder.com)</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="other" id="other">Other Features</a></h2>
+
+    
+
+    <ul>
+      <li><a href="http://www.apacheweek.com/features/negotiation">Content
+      Negotiation Explained</a> (Apacheweek)</li>
+
+      <li><a href="http://www.apacheweek.com/features/imagemaps">Using
+      Apache Imagemaps</a> (Apacheweek)</li>
+
+      <li><a href="http://apachetoday.com/news_story.php3?ltsn=2000-06-14-002-01-PS">
+      Keeping Your Images from Adorning Other Sites</a>
+      (ApacheToday)</li>
+
+      <li><a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
+      Negotiation Notes</a> (Alan J. Flavell)</li>
+    </ul>
+
+    <p>If you have a pointer to an accurate and well-written
+    tutorial not included here, please let us know by submitting it
+    to the <a href="http://bugs.apache.org/">Apache Bug
+    Database</a>.</p>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
