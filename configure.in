@@ -299,6 +299,7 @@ if test "$enable_so" = "yes"; then
   case $host in
     *-ibm-aix*)
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-uXML_Parse -Wl,-bE:$abs_builddir/server/httpd.exp"
+      SH_LDFLAGS="$SH_LDFLAGS \$(EXTRA_LDFLAGS) \$(EXTRA_LIBS)"
       UTIL_LDFLAGS="$UTIL_LDFLAGS -Wl,-uXML_Parse"
       ;;
     *beos)
