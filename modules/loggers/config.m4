@@ -7,7 +7,7 @@ APACHE_MODPATH_INIT(loggers)
 APACHE_MODULE(log_config, logging configuration, , , yes)
 APACHE_MODULE(log_forensic, forensic logging)
 
-if test $enable_log_forensic != no; then
+if test "x$enable_log_forensic" != "xno"; then
     # mod_log_forensic needs test_char.h
     APR_ADDTO(INCLUDES, [-I\$(top_builddir)/server])
 fi   
