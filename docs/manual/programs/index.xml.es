@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 106090:106849 (outdated) -->
+<!-- English Revision: 106849 -->
 
 <!--
- Copyright 2004 The Apache Software Foundation
+ Copyright 2004-2005 The Apache Software Foundation or it licensors,
+                     as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,7 +25,7 @@
 
   <title>El Servidor Apache y Programas de Soporte</title>
 
-<summary>
+<summary> 
     <p>Esta p&#225;gina contiene toda la documentaci&#243;n sobre los programas
     ejecutables incluidos en el servidor Apache.</p>
 </summary>
@@ -32,52 +33,52 @@
 <section id="index"><title>&#205;ndice</title>
 
     <dl>
-      <dt><a href="httpd.html">httpd</a></dt>
+      <dt><program>httpd</program></dt>
 
       <dd>Servidor Apache del Protocolo de Transmisi&#243;n de
       Hipertexto (HTTP)</dd>
 
-      <dt><a href="apachectl.html">apachectl</a></dt>
+      <dt><program>apachectl</program></dt>
 
       <dd>Interfaz de control del servidor HTTP Apache </dd>
 
-      <dt><a href="ab.html">ab</a></dt>
+      <dt><program>ab</program></dt>
 
       <dd>Herramienta de benchmarking del Servidor HTTP Apache</dd>
 
-      <dt><a href="apxs.html">apxs</a></dt>
+      <dt><program>apxs</program></dt>
 
       <dd>Herramienta de Extensi&#243;n de Apache</dd>
 
-      <dt><a href="configure.html">configure</a></dt>
+      <dt><program>configure</program></dt>
 
       <dd>Configuraci&#243;n de la estructura de directorios de Apache</dd>
 
-      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+      <dt><program>dbmmanage</program></dt>
 
       <dd>Crea y actualiza los archivos de autentificaci&#243;n de usuarios
       en formato DBM para autentificaci&#243;n b&#225;sica</dd>
 
-      <dt><a href="htdigest.html">htdigest</a></dt>
+      <dt><program>htdigest</program></dt>
 
       <dd>Crea y actualiza los ficheros de autentificaci&#243;n de usuarios
       para autentificaci&#243;n tipo digest</dd>
 
-      <dt><a href="htpasswd.html">htpasswd</a></dt>
+      <dt><program>htpasswd</program></dt>
 
       <dd>Crea y actualiza los ficheros de autentificaci&#243;n de usuarios
       para autentificaci&#243;n b&#225;sica</dd>
 
-      <dt><a href="logresolve.html">logresolve</a></dt>
+      <dt><program>logresolve</program></dt>
 
       <dd>Resuelve los nombres de host para direcciones IP que est&#233;n
       en los ficheros log de Apache</dd>
 
-      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+      <dt><program>rotatelogs</program></dt>
 
       <dd>Renueva los logs de Apache sin parar el servidor</dd>
 
-      <dt><a href="suexec.html">suexec</a></dt>
+      <dt><program>suexec</program></dt>
 
       <dd>Switch User For Exec. Programa para cambiar la identidad de
       usuario con la que se ejecuta un CGI</dd>

@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 106090:106849 (outdated) -->
+<!-- English Revision: 106849 -->
 
 <!--
- Copyright 2004 The Apache Software Foundation
+ Copyright 2004-2005 The Apache Software Foundation or it licensors,
+                     as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -34,17 +35,17 @@
      sobre como controlar Apache en esas plataformas.</p>
 </summary>
 
-<seealso><a href="programs/httpd.html">httpd</a></seealso>
-<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="introduction"><title>Introducci&#243;n</title>
 
     <p>Para parar y reiniciar Apache, hay que enviar la se&#241;al
-    apropiada al proceso padre <code>httpd</code> que se est&#233;
+    apropiada al proceso padre <program>httpd</program> que se est&#233;
     ejecutando.  Hay dos maneras de enviar estas se&#241;ales.  En
     primer lugar, puede usar el comando de Unix <code>kill</code> que
     env&#237;a se&#241;ales directamente a los procesos. Puede que
-    tenga varios procesos <code>httpd</code> ejecutandose en su
+    tenga varios procesos <program>httpd</program> ejecutandose en su
     sistema, pero las se&#241;ales deben enviarse solamente al proceso
     padre, cuyo pid est&#225; especificado en la directiva <directive
     module="mpm_common">PidFile</directive>. Esto quiere decir que no
@@ -61,17 +62,16 @@
 <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
     <p>La segunda manera de enviar se&#241;ales a los procesos
-    <code>httpd</code> es usando las opciones de l&#237;nea de
+    <program>httpd</program> es usando las opciones de l&#237;nea de
     comandos <code>-k</code>: <code>stop</code>, <code>restart</code>,
     y <code>graceful</code>, como se muestra m&#225;s abajo.  Estas
-    opciones se le pueden pasar al binario <a
-    href="programs/httpd.html">httpd</a>, pero se recomienda que se
-    pasen al script de control <a
-    href="programs/apachectl.html">apachectl</a>, que a su vez los
-    pasar&#225; a <code>httpd</code>.</p>
+    opciones se le pueden pasar al binario <program>httpd</program>,
+    pero se recomienda que se pasen al script de control
+    <program>apachectl</program>, que a su vez los pasar&#225; a
+    <code>httpd</code>.</p>
 
     <p>Despu&#233;s de haber enviado las se&#241;ales que desee a
-    <code>httpd</code>, puede ver como progresa el proceso
+    <program>httpd</program>, puede ver c&#243;mo progresa el proceso
     escribiendo:</p>
 
 <example>tail -f /usr/local/apache2/logs/error_log</example>
@@ -172,19 +172,18 @@
     servidor -- no ser&#225; posible conectarse a la lista de puertos
     de escucha. Antes de reiniciar, puede comprobar que la sintaxis de
     sus ficheros de configuracion es correcta con la opci&#243;n de
-    l&#237;nea de comandos <code>-t</code> (consulte <a
-    href="programs/httpd.html">httpd</a>). No obstante, esto no
-    garantiza que el servidor se reinicie correctamente. Para
-    comprobar que no hay errores en los ficheros de
-    configuraci&#243;n, puede intentar iniciar <code>httpd</code> con
-    un usuario diferente a root. Si no hay errores, intentar&#225;
-    abrir sus sockets y logs y fallar&#225; porque el usuario no es
-    root (o porque el <code>httpd</code> que se est&#225; ejecutando
-    en ese momento ya est&#225; conectado a esos puertos). Si falla
-    por cualquier otra raz&#243;n, entonces casi seguro que hay
-    alg&#250;n error en alguno de los ficheros de configuraci&#243;n y
-    debe corregir ese o esos errores antes de hacer un reinicio
-    graceful.</note>
+    l&#237;nea de comandos <code>-t</code> (consulte
+    <program>httpd</program>). No obstante, esto no garantiza que el
+    servidor se reinicie correctamente. Para comprobar que no hay
+    errores en los ficheros de configuraci&#243;n, puede intentar
+    iniciar <program>httpd</program> con un usuario diferente a root. Si no
+    hay errores, intentar&#225; abrir sus sockets y logs y
+    fallar&#225; porque el usuario no es root (o porque el
+    <program>httpd</program> que se est&#225; ejecutando en ese momento ya
+    est&#225; conectado a esos puertos). Si falla por cualquier otra
+    raz&#243;n, entonces casi seguro que hay alg&#250;n error en
+    alguno de los ficheros de configuraci&#243;n y debe corregir ese o
+    esos errores antes de hacer un reinicio graceful.</note>
 </section>
 
 <section id="hup"><title>Reiniciar Apache</title>
