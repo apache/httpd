@@ -99,7 +99,7 @@ static BIO_bucket_t *BIO_bucket_new(SSLFilterRec *frec, conn_rec *c)
 
     b->frec = frec;
     b->c = c;
-    b->bb = apr_brigade_create(c->pool);
+    b->bb = apr_brigade_create(c->pool, c->bucket_alloc);
     b->blen = 0;
     b->length = 0;
 
@@ -111,24 +111,25 @@ static BIO_bucket_t *BIO_bucket_new(SSLFilterRec *frec, conn_rec *c)
 static int BIO_bucket_flush(BIO *bio)
 {
     BIO_bucket_t *b = BIO_bucket_ptr(bio);
+    apr_bucket *e;
 
     if (!(b->blen || b->length)) {
         return APR_SUCCESS;
     }
 
     if (b->blen) {
-        apr_bucket *bucket = 
-            apr_bucket_transient_create(b->buffer,
-                                        b->blen);
+        e = apr_bucket_transient_create(b->buffer, b->blen,
+                                        b->bb->bucket_alloc);
         /* we filled this buffer first so add it to the 
          * head of the brigade
          */
-        APR_BRIGADE_INSERT_HEAD(b->bb, bucket);
+        APR_BRIGADE_INSERT_HEAD(b->bb, e);
         b->blen = 0;
     }
 
     b->length = 0;
-    APR_BRIGADE_INSERT_TAIL(b->bb, apr_bucket_flush_create());
+    e = apr_bucket_flush_create(b->bb->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(b->bb, e);
 
     return ap_pass_brigade(b->frec->pOutputFilter->next, b->bb);
 }
@@ -187,7 +188,8 @@ static int bio_bucket_write(BIO *bio, const char *in, int inl)
          * need to flush since we're using SSL's malloc-ed buffer 
          * which will be overwritten once we leave here
          */
-        apr_bucket *bucket = apr_bucket_transient_create(in, inl);
+        apr_bucket *bucket = apr_bucket_transient_create(in, inl,
+                                                         b->bb->bucket_alloc);
 
         b->length += inl;
         APR_BRIGADE_INSERT_TAIL(b->bb, bucket);
@@ -732,9 +734,10 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
 #define HTTP_ON_HTTPS_PORT \
     "GET /mod_ssl:error:HTTP-request HTTP/1.0\r\n\r\n"
 
-#define HTTP_ON_HTTPS_PORT_BUCKET() \
+#define HTTP_ON_HTTPS_PORT_BUCKET(alloc) \
     apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, \
-                               sizeof(HTTP_ON_HTTPS_PORT) - 1)
+                               sizeof(HTTP_ON_HTTPS_PORT) - 1, \
+                               alloc)
 
 static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
@@ -750,7 +753,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                     "trying to send HTML error page");
 
             /* fake the request line */
-            bucket = HTTP_ON_HTTPS_PORT_BUCKET();
+            bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
             break;
 
       default:
@@ -824,7 +827,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 
     if (len > 0) {
         apr_bucket *bucket =
-            apr_bucket_transient_create(ctx->buffer, len);
+            apr_bucket_transient_create(ctx->buffer, len, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
 
@@ -847,7 +850,7 @@ static void ssl_io_input_add_filter(SSLFilterRec *frec, conn_rec *c,
     ctx->inbio.ssl = ssl;
     ctx->inbio.wbio = frec->pbioWrite;
     ctx->inbio.f = frec->pInputFilter;
-    ctx->inbio.bb = apr_brigade_create(c->pool);
+    ctx->inbio.bb = apr_brigade_create(c->pool, c->bucket_alloc);
     ctx->inbio.bucket = NULL;
     ctx->inbio.cbuf.length = 0;
 
