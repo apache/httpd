@@ -75,10 +75,6 @@ directives should be placed at the end of httpd.conf, with the one for
 Equivalent functionality is provided with the more flexible <code><a
 href="mod/mpm_common.html#listen">Listen</a></code> directive.
 
-<li>The <code>ExtendedStatus</code> directive no longer exists.
-Status reporting has been completely rewritten to take advantage
-of the new MPM system.</li>
-
 <li>The <code>ServerType</code> directive no longer exists.
 The method used to serve requests is now determined by the selection
 of MPM.  There is currently no MPM designed to be launched by
