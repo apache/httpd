@@ -386,7 +386,6 @@ ap_vformatter
 ap_vrprintf
 ap_vsnprintf
 core_module
-regerror
 top_module
 XML_DefaultCurrent
 XML_ErrorString
