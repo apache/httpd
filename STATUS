@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/23 19:15:28 $]
+Last modified at [$Date: 2002/11/23 20:50:04 $]
 
 Release:
 
@@ -79,6 +79,16 @@ RELEASE SHOWSTOPPERS:
       be reverted to their 2.0.43 names.  The new hooks remain.
 
 CURRENT VOTES:
+
+    * Develop in Review-Then-Commit mode on APACHE_2_0_BRANCH
+       +1:
+       -0: BrianP
+       -1:
+
+    * Remove experimental modules (modules/experimental and
+      server/mpm/experimental) from the 2.0 stable release
+       +1:
+       -1: BrianP
 
     * httpd-std.conf and friends;
 
