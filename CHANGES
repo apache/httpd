@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Fix If header parsing when a non-mod_dav lock token is passed to it.
+     PR 16452.  [Justin Erenkrantz]
+
   *) mod_auth_digest no longer tries to guess AuthDigestDomain, if it's
      not specified. Now it assumes "/" as already documented. PR 16937.
      [André Malo]

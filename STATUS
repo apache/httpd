@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/20 12:13:06 $]
+Last modified at [$Date: 2003/02/22 01:02:17 $]
 
 Release:
 
@@ -90,10 +90,6 @@ PATCHES TO PORT FROM 2.1
       matched value. This is related to the backport proposal above ... ;-)
       modules/metadata/mod_setenvif.c r1.42
       +1: nd
-
-    * Fix If header handling to ignore non-mod_dav locks. (PR 16452)
-      modules/dav/main/util.c: r1.44
-      +1: jerenkrantz, trawick, nd
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
