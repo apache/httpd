@@ -214,7 +214,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
     mime_dir_config *base = (mime_dir_config *) basev;
     mime_dir_config *add = (mime_dir_config *) addv;
-    mime_dir_config *new = apr_pcalloc(p, sizeof(mime_dir_config));
+    mime_dir_config *new = apr_palloc(p, sizeof(mime_dir_config));
 
     int i;
     attrib_info *suffix;
@@ -224,7 +224,6 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
             new->extension_mappings = base->extension_mappings;
         else {
             new->extension_mappings = apr_hash_make(p);
-            /* XXX as slow as can be... just use an apr_hash_dup! */
             overlay_extension_mappings(p, base->extension_mappings,
                                        new->extension_mappings);
         }
@@ -264,7 +263,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
                     extension_info *copyinfo = exinfo;
                     exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
                     apr_hash_set(new->extension_mappings,  suffix[i].name, 
-                                APR_HASH_KEY_STRING, exinfo);
+                                 APR_HASH_KEY_STRING, exinfo);
                     memcpy(exinfo, copyinfo, sizeof(*exinfo));
                     exinfo->copy = 1;
                 }
@@ -272,7 +271,8 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
             }
         }
     }
-    
+    new->handlers_remove = NULL;
+
     if (add->types_remove) {
         suffix = (attrib_info *) add->types_remove->elts;
         for (i = 0; i < add->types_remove->nelts; i++) {
@@ -285,7 +285,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
                     extension_info *copyinfo = exinfo;
                     exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
                     apr_hash_set(new->extension_mappings,  suffix[i].name, 
-                                APR_HASH_KEY_STRING, exinfo);
+                                 APR_HASH_KEY_STRING, exinfo);
                     memcpy(exinfo, copyinfo, sizeof(*exinfo));
                     exinfo->copy = 1;
                 }
@@ -293,6 +293,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
             }
         }
     }
+    new->types_remove = NULL;
 
     if (add->encodings_remove) {
         suffix = (attrib_info *) add->encodings_remove->elts;
@@ -306,7 +307,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
                     extension_info *copyinfo = exinfo;
                     exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
                     apr_hash_set(new->extension_mappings,  suffix[i].name, 
-                                APR_HASH_KEY_STRING, exinfo);
+                                 APR_HASH_KEY_STRING, exinfo);
                     memcpy(exinfo, copyinfo, sizeof(*exinfo));
                     exinfo->copy = 1;
                 }
@@ -314,6 +315,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
             }
         }
     }
+    new->encodings_remove = NULL;
 
     new->type = add->type ? add->type : base->type;
     new->handler = add->handler ? add->handler : base->handler;
@@ -323,95 +325,75 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static extension_info *get_extension_info(apr_pool_t *p, mime_dir_config *m,
-                                          const char* key)
+static extension_info *add_extension_info(cmd_parms *cmd, void *m_, 
+                                          const char* ext)
 {
+    mime_dir_config *m=m_;
     extension_info *exinfo;
-    
+    char *key = apr_pstrdup(cmd->temp_pool, ext);
+
+#ifdef CASE_BLIND_FILESYSTEM
+    ap_str_tolower(key);
+#endif
+    if (*key == '.')
+	++key;
     exinfo = (extension_info*)apr_hash_get(m->extension_mappings, key,
                                            APR_HASH_KEY_STRING);
     if (!exinfo) {
         /* pcalloc sets ->copy to false */
-        exinfo = apr_pcalloc(p, sizeof(extension_info));
-        apr_hash_set(m->extension_mappings, apr_pstrdup(p, key),
+        exinfo = apr_pcalloc(cmd->pool, sizeof(extension_info));
+        key = apr_pstrdup(cmd->pool, key);
+        apr_hash_set(m->extension_mappings, key,
                      APR_HASH_KEY_STRING, exinfo);
     }
     return exinfo;
 }
  
-static const char *add_type(cmd_parms *cmd, void *m_, const char *ct_,
+static const char *add_type(cmd_parms *cmd, void *m, const char *value,
                             const char *ext)
 {
-    mime_dir_config *m=m_;
-    char *ct=apr_pstrdup(cmd->pool,ct_);
-    extension_info* exinfo;
-
-    if (*ext == '.')
-	++ext;
-    exinfo = get_extension_info(cmd->pool, m, ext);
+    extension_info* exinfo = add_extension_info(cmd, m, ext);
+    char *ct = apr_pstrdup(cmd->pool, value);
     ap_str_tolower(ct);
     exinfo->forced_type = ct;
     return NULL;
 }
 
-static const char *add_encoding(cmd_parms *cmd, void *m_, const char *enc_,
+static const char *add_encoding(cmd_parms *cmd, void *m, const char *value,
 				const char *ext)
 {
-    mime_dir_config *m=m_;
-    char *enc=apr_pstrdup(cmd->pool,enc_);
-    extension_info* exinfo;
-
-    if (*ext == '.')
-        ++ext;
-    exinfo = get_extension_info(cmd->pool, m, ext);
+    extension_info* exinfo = add_extension_info(cmd, m, ext);
+    char *enc = apr_pstrdup(cmd->pool, value);
     ap_str_tolower(enc);
     exinfo->encoding_type = enc;
     return NULL;
 }
 
-static const char *add_charset(cmd_parms *cmd, void *m_, const char *charset_,
+static const char *add_charset(cmd_parms *cmd, void *m, const char *value,
 			       const char *ext)
 {
-    mime_dir_config *m=m_;
-    char *charset=apr_pstrdup(cmd->pool,charset_);
-    extension_info* exinfo;
-
-    if (*ext == '.') {
-	++ext;
-    }
-    exinfo = get_extension_info(cmd->pool, m, ext);
+    extension_info* exinfo = add_extension_info(cmd, m, ext);
+    char *charset = apr_pstrdup(cmd->pool, value);
     ap_str_tolower(charset);
     exinfo->charset_type = charset;
     return NULL;
 }
 
-static const char *add_language(cmd_parms *cmd, void *m_, const char *lang_,
+static const char *add_language(cmd_parms *cmd, void *m, const char *value,
                                 const char *ext)
 {
-    mime_dir_config *m=m_;
-    char *lang=apr_pstrdup(cmd->pool,lang_);
-    extension_info* exinfo;
-
-    if (*ext == '.') {
-	++ext;
-    }
-    exinfo = get_extension_info(cmd->pool, m, ext);
+    extension_info* exinfo = add_extension_info(cmd, m, ext);
+    char *lang = apr_pstrdup(cmd->pool, value);
     ap_str_tolower(lang);
     exinfo->language_type = lang;
     return NULL;
 }
 
-static const char *add_handler(cmd_parms *cmd, void *m_, const char *hdlr_,
+static const char *add_handler(cmd_parms *cmd, void *m, const char *value,
                                const char *ext)
 {
-    mime_dir_config *m=m_;
-    char *hdlr=apr_pstrdup(cmd->pool,hdlr_);
-    extension_info* exinfo;
-
-    if (*ext == '.') {
-        ++ext;
-    }
-    exinfo = get_extension_info(cmd->pool, m, ext);
+    extension_info* exinfo = add_extension_info(cmd, m, ext);
+    char *hdlr = apr_pstrdup(cmd->pool, value);
     ap_str_tolower(hdlr);
     exinfo->handler = hdlr;
     return NULL;
@@ -422,20 +404,28 @@ static const char *add_handler(cmd_parms *cmd, void *m_, const char *hdlr_,
  * will keep the association from being inherited, as well, but not
  * from being re-added at a subordinate level.
  */
-static const char *remove_handler(cmd_parms *cmd, void *m, const char *ext)
+static void remove_extension_info(cmd_parms *cmd, 
+                                  apr_array_header_t **m_array,
+                                  const char* ext)
 {
-    mime_dir_config *mcfg = (mime_dir_config *) m;
     attrib_info *suffix;
 
-    if (*ext == '.') {
+    if (*ext == '.')
         ++ext;
+    if (*m_array == NULL) {
+        *m_array = apr_array_make(cmd->pool, 4, sizeof(*suffix));
     }
-    if (mcfg->handlers_remove == NULL) {
-        mcfg->handlers_remove =
-            apr_array_make(cmd->pool, 4, sizeof(attrib_info));
-    }
-    suffix = (attrib_info *) apr_array_push(mcfg->handlers_remove);
+    suffix = (attrib_info *) apr_array_push(*m_array);
     suffix->name = apr_pstrdup(cmd->pool, ext);
+#ifdef CASE_BLIND_FILESYSTEM
+    ap_str_tolower(suffix->name);
+#endif
+}
+
+static const char *remove_handler(cmd_parms *cmd, void *m_, const char *ext)
+{
+    mime_dir_config *m = (mime_dir_config *) m_;
+    remove_extension_info(cmd, &m->handlers_remove, ext);
     return NULL;
 }
 
@@ -443,20 +433,10 @@ static const char *remove_handler(cmd_parms *cmd, void *m, const char *ext)
  * Just like the previous function, except that it records encoding
  * associations to be undone.
  */
-static const char *remove_encoding(cmd_parms *cmd, void *m, const char *ext)
+static const char *remove_encoding(cmd_parms *cmd, void *m_, const char *ext)
 {
-    mime_dir_config *mcfg = (mime_dir_config *) m;
-    attrib_info *suffix;
-
-    if (*ext == '.') {
-        ++ext;
-    }
-    if (mcfg->encodings_remove == NULL) {
-        mcfg->encodings_remove =
-            apr_array_make(cmd->pool, 4, sizeof(attrib_info));
-    }
-    suffix = (attrib_info *) apr_array_push(mcfg->encodings_remove);
-    suffix->name = apr_pstrdup(cmd->pool, ext);
+    mime_dir_config *m = (mime_dir_config *) m_;
+    remove_extension_info(cmd, &m->encodings_remove, ext);
     return NULL;
 }
 
@@ -464,19 +444,10 @@ static const char *remove_encoding(cmd_parms *cmd, void *m, const char *ext)
  * Similar to the previous functions, except that it deals with filename
  * suffix/MIME-type associations.
  */
-static const char *remove_type(cmd_parms *cmd, void *m, const char *ext)
+static const char *remove_type(cmd_parms *cmd, void *m_, const char *ext)
 {
-    mime_dir_config *mcfg = (mime_dir_config *) m;
-    attrib_info *suffix;
-
-    if (*ext == '.') {
-        ++ext;
-    }
-    if (mcfg->types_remove == NULL) {
-        mcfg->types_remove = apr_array_make(cmd->pool, 4, sizeof(attrib_info));
-    }
-    suffix = (attrib_info *) apr_array_push(mcfg->types_remove);
-    suffix->name = apr_pstrdup(cmd->pool, ext);
+    mime_dir_config *m = (mime_dir_config *) m_;
+    remove_extension_info(cmd, &m->types_remove, ext);
     return NULL;
 }
 
@@ -877,6 +848,7 @@ static int find_ct(request_rec *r)
             if (!r->content_encoding)
                 r->content_encoding = type;
             else
+                /* XXX: should eliminate duplicate entities */
                 r->content_encoding = apr_pstrcat(r->pool, r->content_encoding,
                                                   ", ", type, NULL);
             found = 1;
@@ -892,6 +864,7 @@ static int find_ct(request_rec *r)
         /* This is to deal with cases such as foo.gif.bak, which we want
          * to not have a type. So if we find an unknown extension, we
          * zap the type/language/encoding and reset the handler
+         * XXX: This is an unexpected, unplesant surprize for some!
          */
 
         if (!found) {
