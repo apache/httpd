@@ -1,34 +1,29 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-
-    <title>Apache が使用するアドレスとポートの設定</title>
-  </head>
-  <!-- English revision: 1.20 -->
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
-  vlink="#000080" alink="#ff0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="center">Apache が使用するアドレスとポートの設定</h1>
-
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>バインド - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">バインド</h1>
+    <p>Apache が使用するアドレスとポートの設定をします。</p>
+  <ul><li><a href="#overview">概要</a></li><li><a href="#ipv6">IPv6 の特記事項</a></li><li><a href="#virtualhost">バーチャルホストに対してどう働くのか</a></li></ul><hr/><p><strong>参照 </strong></p><ul><li><a href="vhosts/">バーチャルホスト</a></li><li><a href="dns-caveats.html">DNS の問題</a></li></ul><h2><a name="overview">概要</a></h2>
+    
+    
+    <table border="1"><tr><td valign="top"><strong>関連モジュール</strong><br/><br/><code><a href="./mod/core.html">core</a></code><br/><code><a href="./mod/mpm_common.html">mpm_common</a></code><br/></td><td valign="top"><strong>関連ディレクティブ</strong><br/><br/><a href="./mod/core.html#virtualhost" class="directive"><code class="directive">VirtualHost</code></a><br/><a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a><br/></td></tr></table>
+    
+    
     <p>Apache は起動時に、ローカルマシンのあるポートあよびアドレス
-    に対して接続し、リクエストが来るのを待ちます。
+    に対して接続し、リクエストが来るのを待ちます。
     デフォルトではマシンのすべてのアドレスに対して listen します。
     しかしながら、特定のポートか、特定のアドレスのみか、
-    またはそれらの組み合わせのいずれかを listen するようにする必要があります。
+    またはそれらの組み合わせのいずれかを listen するようにする必要があります。
     これは、異なる IP アドレス、ホスト名、ポートに対する Apache
     の応答方法を決定するバーチャルホスト機能と組み合わせて使われます。</p>
 
-    <p><code>Listen</code> ディレクティブは特定のポートや
-    アドレス・ポートの組からのみ入ってくるリクエストを
-    受け付けるようにできます。
-    もしポート番号のみが <code>Listen</code> ディレクティブで
-    指定された場合は、すべてのインターフェースの与えられたポート番号を
+    <p><a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
+    ディレクティブで、特定のポートやアドレス・ポートの組からのみ入ってくる
+    リクエストを受け付けるようにできます。
+    もしポート番号のみが <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
+    ディレクティブで指定された場合は、
+    すべてのインターフェースの与えられたポート番号を
     listen します。 IP アドレスがポート番号と同時に与えられた場合は、
     サーバは与えられたポートとインターフェースを listen します。
     複数の Listen ディレクティブを用いて
@@ -37,83 +32,93 @@
     対して応答します。</p>
 
     <p>たとえば、ポート 80 と 8000 の両方に対しての接続を受け付けるには</p>
-<pre>
-   Listen 80
-   Listen 8000
-</pre>
-    とします。
-    二つの指定されたインタフェースとポート番号に対しての接続を受け付けるには
-<pre>
-   Listen 192.170.2.1:80
-   Listen 192.170.2.5:8000
-</pre>
-    とします。
-    IPv6 アドレスは、角括弧で次の例のように囲まなければいけません。
-<pre>
-   Listen [fe80::a00:20ff:fea7:ccea]:80
-</pre>
 
-    <h2>IPv6 の特記事項</h2>
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen 80<br>
+      Listen 8000
+    </code></td></tr></table></blockquote>
 
-    APR が IPv6 をサポートする場合は、Apache はデフォルトで IPv6
+    <p>とします。
+    二つの指定されたインタフェースとポート番号に対しての接続を受け付けるには、
+    </p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen 192.170.2.1:80<br>
+      Listen 192.170.2.5:8000
+    </code></td></tr></table></blockquote>
+
+    <p>とします。
+    IPv6 アドレスは、角括弧で次の例のように囲まなければいけません。</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen [fe80::a00:20ff:fea7:ccea]:80
+    </code></td></tr></table></blockquote>
+  <h2><a name="ipv6">IPv6 の特記事項</a></h2>
+    
+
+    <p>APR が IPv6 をサポートする場合は、Apache はデフォルトで IPv6
     を listen するソケットを作ります (例えば Listen ディレクティブで
     IP アドレスが無指定の場合)。
-    つまり、APR が IPv6 をサポートする場合、
-<pre>
-   Listen 80
-</pre>
-    は
-<pre>
-   Listen [::]:80
-</pre>
-    と同等です。APR が IPv6 をサポートしない場合は、
-<pre>
-   Listen 80
-</pre>
-    は
-<pre>
-   Listen 0.0.0.0:80
-</pre>
-    と同等です。
-    NetBSD 等のいくつかのプラットホームでは、IPv6
-    のワイルドカードアドレス (「::」) のバインドでは IPv4
+    つまり、APR が IPv6 をサポートしている場合、</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen 80
+    </code></td></tr></table></blockquote>
+
+    <p>は、次と同じ意味になります。</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen [::]:80
+    </code></td></tr></table></blockquote>
+
+    <p>APR が IPv6 をサポートしていない場合は、</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen 80
+    </code></td></tr></table></blockquote>
+
+    <p>は、次と同じ意味になります。</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen 0.0.0.0:80
+    </code></td></tr></table></blockquote>
+
+    <p>NetBSD 等のいくつかのプラットホームでは、IPv6
+    のワイルドカードアドレス (「::」) のバインドでは IPv4
     インターフェースにコネクションを張れません。
     このような状況では、次のように複数の Listen ディレクティブが必要になります。
-<pre>
-   Listen 0.0.0.0:80
-   Listen [::]:80
-</pre>
-    Apache は現在これを自動検出することができないので、
-    そのような場合は
-    Listen 命令文は管理者が手動で編集しないといけません。
+    </p>
 
-    <h2>バーチャルホストに対してどう働くのか</h2>
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      Listen 0.0.0.0:80<br>
+      Listen [::]:0
+    </code></td></tr></table></blockquote>
+
+    <p>Apache は現在これを自動検出することができないので、
+    そのような場合は
+    Listen 命令文は管理者が手動で編集しないといけません。</p>
+  <h2><a name="virtualhost">バーチャルホストに対してどう働くのか</a></h2>
+    
 
     <p>Listen でバーチャルホストが実装されるわけではありません。
     Listen は単にメインサーバにどのアドレスとポートを listen すべきかを
     教えるだけです。
-    &lt;VirtualHost&gt; ディレクティブが使われない場合は、
+    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+    ディレクティブが使われない場合は、
     受け入れたリクエストすべてに対して全く同じ挙動をします。
-    しかしながら &lt;VirtualHost&gt; 使って、
+    しかしながら
+    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+    を使って、
     一つ以上のアドレスやポートに対して異なる挙動をするように
     指定することができます。
     VirtualHost を実装するには、使用するアドレスとポートを
     まず初めにサーバに通知しなければなりません。
     そして、その指定したアドレスとポートでの
     このバーチャルホストの挙動を設定するために、
-    &lt;VirtualHost&gt; セクションを作ります。
-    もし &lt;VirtualHost&gt; が listen していないアドレスとポートに対して
+    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+    セクションを作ります。もし
+    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+    が listen していないアドレスとポートに対して
     設定されてしまうと、
-    アクセスすることができないということに注意してください。</p>
-
-    <h2>関連項目</h2>
-    <a
-    href="mod/mpm_common.html#listen">Listen ディレクティブ</a>、<a
-    href="vhosts/">バーチャルホスト</a>、<a
-    href="dns-caveats.html">DNS の問題</a> と <a
-    href="mod/core.html#virtualhost">&lt;VirtualHost&gt;
-    セクション</a>の文書もご覧下さい。
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+    それにはアクセスできないということに注意してください。</p>
+  <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="索引"/></a><a href="./"><img src="./images/home.gif" alt="ホーム"/></a></body></html>
