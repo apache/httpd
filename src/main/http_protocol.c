@@ -1181,7 +1181,7 @@ request_rec *ap_read_request(conn_rec *conn)
         r->status = HTTP_BAD_REQUEST;
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                       "client sent HTTP/1.1 request without hostname "
-                      "(see RFC2068 section 9, and 14.23): %s", r->uri);
+                      "(see RFC2616 section 14.23): %s", r->uri);
     }
     if (r->status != HTTP_OK) {
         ap_send_error_response(r, 0);
