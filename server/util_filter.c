@@ -85,7 +85,7 @@
 typedef struct filter_trie_node filter_trie_node;
 
 typedef struct {
-    char c;
+    int c;
     filter_trie_node *child;
 } filter_trie_child_ptr;
 
@@ -105,7 +105,7 @@ struct filter_trie_node {
 /* Link a trie node to its parent
  */
 static void trie_node_link(apr_pool_t *p, filter_trie_node *parent,
-                           filter_trie_node *child, char c)
+                           filter_trie_node *child, int c)
 {
     int i, j;
 
