@@ -11,7 +11,7 @@ INCDIR=../include
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o buff.o \
-  md5c.o util_md5.o explain.o http_bprintf.o util_date.o \
+  md5c.o util_md5.o http_bprintf.o util_date.o \
   fnmatch.o http_vhost.o
 
 .c.o:
@@ -55,9 +55,6 @@ alloc.o: alloc.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
 buff.o: buff.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
  $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
  $(INCDIR)/ap.h $(INCDIR)/http_main.h $(INCDIR)/http_log.h
-explain.o: explain.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/explain.h
 fnmatch.o: fnmatch.c $(INCDIR)/fnmatch.h
 http_bprintf.o: http_bprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
