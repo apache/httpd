@@ -347,7 +347,7 @@ static void ssl_util_thr_lock(int mode, int type, const char *file, int line)
     }
 }
 
-static unsigned long ssl_util_thr_id()
+static unsigned long ssl_util_thr_id(void)
 {
     return (unsigned long) apr_os_thread_current();
 }
