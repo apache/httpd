@@ -232,19 +232,20 @@ void dav_fs_dir_file_name(
 
 /* Note: picked up from ap_gm_timestr_822() */
 /* NOTE: buf must be at least DAV_TIMEBUF_SIZE chars in size */
-static void dav_format_time(int style, time_t sec, char *buf)
+static void dav_format_time(int style, ap_time_t sec, char *buf)
 {
-    struct tm *tms;
-
-    tms = gmtime(&sec);
+    ap_exploded_time_t tms;
+    
+    /* ### what to do if fails? */
+    (void) ap_explode_gmt(&tms, sec);
 
     if (style == DAV_STYLE_ISO8601) {
 	/* ### should we use "-00:00" instead of "Z" ?? */
 
 	/* 20 chars plus null term */
 	sprintf(buf, "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
-		tms->tm_year + 1900, tms->tm_mon + 1, tms->tm_mday,
-		tms->tm_hour, tms->tm_min, tms->tm_sec);
+               tms.tm_year + 1900, tms.tm_mon + 1, tms.tm_mday,
+               tms.tm_hour, tms.tm_min, tms.tm_sec);
         return;
     }
 
@@ -253,10 +254,10 @@ static void dav_format_time(int style, time_t sec, char *buf)
     /* 29 chars plus null term */
     sprintf(buf,
 	    "%s, %.2d %s %d %.2d:%.2d:%.2d GMT",
-	    ap_day_snames[tms->tm_wday],
-	    tms->tm_mday, ap_month_snames[tms->tm_mon],
-	    tms->tm_year + 1900,
-	    tms->tm_hour, tms->tm_min, tms->tm_sec);
+           ap_day_snames[tms.tm_wday],
+           tms.tm_mday, ap_month_snames[tms.tm_mon],
+           tms.tm_year + 1900,
+           tms.tm_hour, tms.tm_min, tms.tm_sec);
 }
 
 static int dav_sync_write(int fd, const char *buf, ssize_t bufsize)
