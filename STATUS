@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1998/12/30 21:37:35 $]
+  Last modified at [$Date: 1998/12/30 23:40:21 $]
 
 Release:
 
@@ -19,9 +19,6 @@ RELEASE SHOWSTOPPERS:
 
     * configure breakage
 	mod_perl build is broken (CFLAGS not picked up from libperl.module)
-	other oddities:
-	(under linux)  ./configure: [: too many arguments
-	(under solaris)	./configure: test: unknown operator --enable-module=unique_id
 
     * Version component misbehaviour
         See: <36738822.D2FD6C0@lyra.org>
