@@ -450,9 +450,16 @@ typedef struct {
     apr_bucket_brigade *b;                  /* decrypted input */
 } SSLFilterRec;
 
+typedef enum {
+    SSL_SHUTDOWN_TYPE_STANDARD,
+    SSL_SHUTDOWN_TYPE_UNCLEAN,
+    SSL_SHUTDOWN_TYPE_ACCURATE
+} ssl_shutdown_type_e;
+
 typedef struct {
     SSL *ssl;
     const char *client_dn;
+    ssl_shutdown_type_e shutdown_type;
 } SSLConnRec;
 
 typedef struct {
