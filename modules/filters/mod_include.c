@@ -210,10 +210,6 @@ static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
                      * on what we are searching for.
                      */
                     if (str[0] == '<') {
-                        if (c - buf - strlen(str) == 0) {
-                            /* first thing in bucket is tag; nothing to split */
-                            return dptr;
-                        }
                         dptr->split(dptr, c - buf - strlen(str));
                     }
                     else {
