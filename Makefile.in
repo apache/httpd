@@ -44,10 +44,12 @@ install-conf:
 		fi; \
 	done
 
+htdocs-srcdir = $(srcdir)/../htdocs
+	
 install-htdocs:
 	@echo Installing HTML documents
 	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)
-	@(cd $(srcdir)/../htdocs && cp -rp * $(htdocsdir))
+	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(htdocsdir))
 
 install-icons:
 	@echo Installing icons
