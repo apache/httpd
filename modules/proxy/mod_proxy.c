@@ -457,12 +457,6 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     return HTTP_MOVED_PERMANENTLY;
 }
 
-static apr_status_t worker_cleanup(void *theworker)
-{
-    
-    return APR_SUCCESS;
-}
-
 /* -------------------------------------------------------------- */
 /* Invoke handler */
 
@@ -527,8 +521,11 @@ static int proxy_handler(request_rec *r)
 
     url = r->filename + 6;
     p = strchr(url, ':');
-    if (p == NULL)
+    if (p == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "proxy_handler no URL in %s", r->filename);
         return HTTP_BAD_REQUEST;
+    }
 
     /* If the host doesn't have a domain name, add one and redirect. */
     if (conf->domain != NULL) {
@@ -578,12 +575,6 @@ static int proxy_handler(request_rec *r)
             ap_set_module_config(r->connection->conn_config,
                                  &proxy_module, mconf);
         }
-#if 0
-        /* register the connection->pool cleanup */
-        apr_pool_cleanup_register(r->connection->pool,
-                                  (void *)mconf, worker_cleanup,
-                                   apr_pool_cleanup_null);      
-#endif
     }
     /* use the current balancer and worker. 
      * the proxy_conn will be set in particular scheme handler
