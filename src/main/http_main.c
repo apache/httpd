@@ -313,42 +313,44 @@ static void lingering_close (request_rec *r)
 {
     int dummybuf[512];
     struct timeval tv;
-    fd_set fds, fds_read, fds_err;
+    fd_set lfds, fds_read, fds_err;
     int select_rv = 0, read_rv = 0;
-    int sd = r->connection->client->fd;
+    int lsd;
 
-    if (sd < 0)          /* Don't do anything if the socket is invalid */
-        return;
+    /* Prevent a slow-drip client from holding us here indefinitely */
 
-    kill_timeout(r);     /* Remove any leftover timeouts */
+    kill_timeout(r);                 /* Remove any leftover timeouts */
+    hard_timeout("lingering_close", r);
 
-    /* Close our half of the connection --- send client a FIN and
+    /* Send any leftover data to the client, but never try to again */
+
+    bflush(r->connection->client);
+    bsetflag(r->connection->client, B_EOUT, 1);
+
+    /* Close our half of the connection --- send the client a FIN and
      * set the socket to non-blocking for later reads.
      */
+    lsd = r->connection->client->fd;
 
-    if (((shutdown(sd, 1)) != 0) || (fcntl(sd, F_SETFL, FNDELAY) == -1)) {
+    if (((shutdown(lsd, 1)) != 0) || (fcntl(lsd, F_SETFL, FNDELAY) == -1)) {
 	/* if it fails, no need to go through the rest of the routine */
 	if (errno != ENOTCONN)
 	    log_unixerr("shutdown", NULL, "lingering_close", r->server);
-	close(sd);
+	bclose(r->connection->client);
 	return;
     }
 
     /* Set up to wait for readable data on socket... */
 
-    FD_ZERO(&fds);
-    FD_SET(sd, &fds);
+    FD_ZERO(&lfds);
+    FD_SET(lsd, &lfds);
 
     /* Wait for readable data or error condition on socket;
      * slurp up any data that arrives...  We exit when we go for 
      * an interval of tv length without getting any more data, get an
-     * error from select(), get an exception on sd, get an error or EOF
+     * error from select(), get an exception on lsd, get an error or EOF
      * on a read, or the timer expires.
      */
-
-    /* Prevent a slow-drip client from holding us here indefinitely */
-
-    hard_timeout("lingering_close", r);
 
     do {
         /* We use a 1 second timeout because current (Feb 97) browsers
@@ -363,18 +365,18 @@ static void lingering_close (request_rec *r)
         tv.tv_sec  = 1;
         tv.tv_usec = 0;
         read_rv    = 0;
-        fds_read   = fds;
-        fds_err    = fds;
+        fds_read   = lfds;
+        fds_err    = lfds;
     
 #ifdef SELECT_NEEDS_CAST
-        select_rv = select(sd + 1, (int*)&fds_read, NULL, (int*)&fds_err, &tv);
+        select_rv = select(lsd+1, (int*)&fds_read, NULL, (int*)&fds_err, &tv);
 #else
-        select_rv = select(sd + 1, &fds_read, NULL, &fds_err, &tv);
+        select_rv = select(lsd+1, &fds_read, NULL, &fds_err, &tv);
 #endif
     } while ((select_rv > 0) &&           /* Something to see on socket    */
-             !FD_ISSET(sd, &fds_err) &&   /* that isn't an error condition */
-             FD_ISSET(sd, &fds_read) &&   /* and is worth trying to read   */
-             ((read_rv = read(sd, dummybuf, sizeof dummybuf)) > 0));
+             !FD_ISSET(lsd, &fds_err) &&   /* that isn't an error condition */
+             FD_ISSET(lsd, &fds_read) &&   /* and is worth trying to read   */
+             ((read_rv = read(lsd, dummybuf, sizeof dummybuf)) > 0));
 
     /* Log any errors that occurred (client close or reset is not an error) */
     
@@ -385,8 +387,7 @@ static void lingering_close (request_rec *r)
 
     /* Should now have seen final ack.  Safe to finally kill socket */
 
-    if (close(sd) < 0)
-        log_unixerr("close", NULL, "lingering_close", r->server);
+    bclose(r->connection->client);
 
     kill_timeout(r);
 }
@@ -1521,10 +1522,12 @@ static void sock_disable_nagle (int s)
  * they are really private to child_main.
  */
 
+static int srv;
 static int csd;
 static int dupped_csd;
 static int requests_this_child;
 static int child_num;
+static fd_set main_fds;
 
 void child_main(int child_num_arg)
 {
@@ -1540,8 +1543,9 @@ void child_main(int child_num_arg)
     dupped_csd = -1;
     child_num = child_num_arg;
     requests_this_child = 0;
-    reopen_scoreboard (pconf);
-    (void)update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
+
+    reopen_scoreboard(pconf);
+    (void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
 
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
@@ -1551,7 +1555,7 @@ void child_main(int child_num_arg)
             GETUSERMODE();
 #else
     /* Only try to switch if we're running as root */
-    if(!geteuid() && setuid(user_id) == -1) {
+    if (!geteuid() && setuid(user_id) == -1) {
 #endif
         log_unixerr("setuid", NULL, "unable to change uid", server_conf);
 	exit (1);
@@ -1561,6 +1565,10 @@ void child_main(int child_num_arg)
     }
 #endif
 
+    /*
+     * Setup the jump buffers so that we can return here after
+     * a signal or a timeout (yeah, I know, same thing).
+     */
 #ifdef NEXT
     setjmp(jmpbuffer);
 #else
@@ -1574,6 +1582,10 @@ void child_main(int child_num_arg)
 	BUFF *conn_io;
 	request_rec *r;
       
+        /*
+         * (Re)initialize this child to a pre-connection state.
+         */
+
         alarm(0);		/* Cancel any outstanding alarms. */
         timeout_req = NULL;	/* No request in progress */
 	current_conn = NULL;
@@ -1582,9 +1594,7 @@ void child_main(int child_num_arg)
 	clear_pool (ptrans);
 	
 	sync_scoreboard_image();
-
-	/*fprintf(stderr,"%d check %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
-	if(scoreboard_image->global.exit_generation >= generation)
+	if (scoreboard_image->global.exit_generation >= generation)
 	    exit(0);
 	
 	if ((count_idle_servers() >= daemons_max_free)
@@ -1594,83 +1604,82 @@ void child_main(int child_num_arg)
 	    exit(0);
 	}
 
-	(void)update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
-	
-	accept_mutex_on();  /* Lock around "accept", if necessary */
+	(void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
 
-	if (listeners != NULL)
-	{
-	    fd_set fds;
+        if (listeners == NULL) {
+            FD_ZERO(&listenfds);
+            FD_SET(sd, &listenfds);
+            listenmaxfd = sd;
+        }
 
-	    for (;;) {
-		memcpy(&fds, &listenfds, sizeof(fd_set));
+        /*
+         * Wait for an acceptable connection to arrive.
+         */
+
+        accept_mutex_on();  /* Lock around "accept", if necessary */
+
+        for (;;) {
+            memcpy(&main_fds, &listenfds, sizeof(fd_set));
 #ifdef SELECT_NEEDS_CAST
-		csd = select(listenmaxfd+1, (int*)&fds, NULL, NULL, NULL);
+            srv = select(listenmaxfd+1, (int*)&main_fds, NULL, NULL, NULL);
 #else
-                csd = select(listenmaxfd+1, &fds, NULL, NULL, NULL);
+            srv = select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
 #endif
-		if (csd < 0 && errno != EINTR)
-		    log_unixerr("select",NULL,"select error", server_conf);
+            sync_scoreboard_image();
+            if (scoreboard_image->global.exit_generation >= generation)
+                exit(0);
 
-		/*fprintf(stderr,"%d check(2a) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
-		if(scoreboard_image->global.exit_generation >= generation)
-		    exit(0);
+            if (srv < 0 && errno != EINTR)
+                log_unixerr("select", "(listen)", NULL, server_conf);
 
-		if (csd <= 0) continue;
-		for (sd=listenmaxfd; sd >= 0; sd--)
-		    if (FD_ISSET(sd, &fds)) break;
-		if (sd < 0) continue;
+            if (srv <= 0)
+                continue;
 
-                do {
-                    clen = sizeof(sa_client);
-                    csd  = accept(sd, &sa_client, &clen);
-                } while (csd < 0 && errno == EINTR);
-                if (csd > 0) break;
-		log_unixerr("accept", "(client socket)", NULL, server_conf);
-	    }
-	}
-	else {
-	    fd_set fds;
-
-	    do {
-                FD_ZERO(&fds);
-                FD_SET(sd,&fds);
-#ifdef SELECT_NEEDS_CAST
-		csd = select(sd+1, (int*)&fds, NULL, NULL, NULL);
-#else
-		csd = select(sd+1, &fds, NULL, NULL, NULL);
-#endif
-            } while (csd < 0 && errno == EINTR);
-
-            if (csd < 0) {
-		log_unixerr("select","(listen)",NULL,server_conf);
-		exit(0);
+            if (listeners != NULL) {
+                for (sd = listenmaxfd; sd >= 0; sd--)
+                    if (FD_ISSET(sd, &main_fds)) break;
+                if (sd < 0)
+                    continue;
             }
-	    /*fprintf(stderr,"%d check(2a) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
-	    sync_scoreboard_image();
-	    if(scoreboard_image->global.exit_generation >= generation)
-		exit(0);
 
             do {
                 clen = sizeof(sa_client);
                 csd  = accept(sd, &sa_client, &clen);
             } while (csd < 0 && errno == EINTR);
-            if (csd < 0)
-                log_unixerr("accept", NULL, "socket error: accept failed",
-                            server_conf);
-	}
 
-	accept_mutex_off(); /* unlock after "accept" */
+            if (csd >= 0)
+                break;      /* We have a socket ready for reading */
+            else {
+
+#if defined(EPROTO) && defined(ECONNABORTED)
+              if ((errno != EPROTO) && (errno != ECONNABORTED))
+#elif defined(EPROTO)
+              if (errno != EPROTO)
+#elif defined(ECONNABORTED)
+              if (errno != ECONNABORTED)
+#endif
+                log_unixerr("accept", "(client socket)", NULL, server_conf);
+            }
+        }
+
+        accept_mutex_off(); /* unlock after "accept" */
+
+        /*
+         * We now have a connection, so set it up with the appropriate
+         * socket options, file descriptors, and read/write buffers.
+         */
 
 	clen = sizeof(sa_server);
-	if(getsockname(csd, &sa_server, &clen) < 0) {
+	if (getsockname(csd, &sa_server, &clen) < 0) {
 	    log_unixerr("getsockname", NULL, NULL, server_conf);
 	    continue;
 	}
 
 	sock_disable_nagle(csd);
 
-	(void)update_child_status (child_num, SERVER_BUSY_READ, (request_rec*)NULL);
+	(void)update_child_status(child_num, SERVER_BUSY_READ,
+	                          (request_rec*)NULL);
+
 	conn_io = bcreate(ptrans, B_RDWR);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
@@ -1686,49 +1695,58 @@ void child_main(int child_num_arg)
 				       (struct sockaddr_in *)&sa_server,
 				       child_num);
 
-	r = read_request (current_conn);
-	(void)update_child_status (child_num, SERVER_BUSY_WRITE, r);
-	if (r) process_request (r); /* else premature EOF --- ignore */
-#if defined(STATUS)
-        if (r) increment_counts(child_num,r,1);
-#endif
-	while (r && current_conn->keepalive) {
-	    destroy_pool(r->pool);
-	    (void)update_child_status (child_num, SERVER_BUSY_KEEPALIVE,
-	     (request_rec*)NULL);
-	    r = read_request (current_conn);
-	    (void)update_child_status (child_num, SERVER_BUSY_WRITE, r);
-	    if (r) process_request (r);
-#if defined(STATUS)
-	    if (r) increment_counts(child_num,r,0);
-#endif
-	  sync_scoreboard_image();
-	  if(scoreboard_image->global.exit_generation >= generation)
-	      exit(0);
-	  /*fprintf(stderr,"%d check(3) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
+        /*
+         * Read and process each request found on our connection
+         * until no requests are left or we decide to close.
+         */
 
-	}
-#if 0	
-	if (bytes_in_pool (ptrans) > 80000)
-	    log_printf(r->server,
-		       "Memory hog alert: allocated %ld bytes for %s",
-		       bytes_in_pool (ptrans), r->the_request);
-#endif		
-	bflush(conn_io);
+        for (;;) {
+            r = read_request(current_conn);
+            (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
+
+            if (r) process_request(r); /* else premature EOF --- ignore */
+#if defined(STATUS)
+            if (r) increment_counts(child_num,r,1);
+#endif
+            if (!r || !current_conn->keepalive)
+                break;
+
+            destroy_pool(r->pool);
+            (void)update_child_status(child_num, SERVER_BUSY_KEEPALIVE,
+                                      (request_rec*)NULL);
+
+            sync_scoreboard_image();
+            if (scoreboard_image->global.exit_generation >= generation) {
+                bclose(conn_io);
+                exit(0);
+            }
+        }
+
+        /*
+         * Close the connection, being careful to send out whatever is still
+         * in our buffers.  If possible, try to avoid a hard close until the
+         * client has ACKed our FIN and/or has stopped sending us data.
+         */
 
 #ifdef NO_LINGCLOSE
-	bclose(conn_io);	/* just close it */
+        bclose(conn_io);        /* just close it */
 #else
-        if (r && !r->connection->aborted) {
-	    /* if the connection was aborted by a soft_timeout, it has
-	     * already been shutdown() so we don't need to go through
-	     * lingering_close
-	     */
-	    lingering_close(r);
-	} else {
-	    close(conn_io->fd);
-	}
-#endif	
+        if (r &&  r->connection
+              && !r->connection->aborted
+              &&  r->connection->client
+              && (r->connection->client->fd >= 0)) {
+
+            lingering_close(r);
+        }
+        else {
+            /* if the connection was aborted by a soft_timeout, it has
+             * already been shutdown() so we don't need to go through
+             * lingering_close
+             */
+            bsetflag(conn_io, B_EOUT, 1);
+            bclose(conn_io);
+        }
+#endif
     }    
 }
 
@@ -2207,7 +2225,6 @@ main(int argc, char *argv[])
             if (r) process_request (r);
         }
 
-	bflush(cio);
 	bclose(cio);
     }
     exit (0);

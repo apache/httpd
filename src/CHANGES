@@ -16,6 +16,15 @@ Changes with Apache 1.2b7
      read causing the child to hang, and stopped logging of errors if
      the socket is not connected (reset by client).  [Roy Fielding]
 
+  *) Rearranged main child loop to remove duplication of code in
+     select/accept and keep-alive requests, fixed several bugs regarding
+     checking scoreboard_image for exit indication and failure to
+     account for all success conditions and trap all error conditions,
+     prevented multiple flushes before closing the socket; close the entire
+     socket buffer instead of just one descriptor, prevent logging of
+     EPROTO and ECONNABORTED on platforms where supported, and generally
+     improved readability.  [Roy Fielding]
+
   *) Extensive performance improvements. Cleaned up inefficient use of
      auto initializers, multiple is_matchexp calls on a static string,
      and excessive merging of response_code_strings. [Dean Gaudet]
