@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/31 18:15:09 $]
+Last modified at [$Date: 2002/01/31 19:54:53 $]
 
 Release:
 
@@ -103,9 +103,6 @@ RELEASE SHOWSTOPPERS:
       variable, but ab, htpasswd, etc. don't know how to pick up apr,
       apr-util, etc.
         Message-ID: <20020116000226.GA15991@ebuilt.com>
-
-    * Redirected autoindex requests no longer work. Example:
-      http://jakarta.apache.org/builds/tomcat/  mod_dir is a suspect.
 
     * mod_alias redirections are issuing invalid Location:
       response header fields (they're not absoluteURI values).
