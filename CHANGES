@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Set the scoreboard state to indicate logging prior to running 
+     logging hooks so that server-status will show 'L' for hung loggers
+     instead of 'W'.  [Jeff Trawick]
+
   *) mod_include: fix segfault which occured if the filename was not
      set, for example, when processing some error conditions.
      PR 23836.  [Brian Akins <bakins@web.turner.com>, André Malo]
