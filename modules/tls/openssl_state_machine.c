@@ -162,6 +162,12 @@ SSLStateMachine *SSLStateMachine_new(const char *szCertificateFile,
     return pMachine;
     }
 
+void SSLStateMachine_destroy(SSLStateMachine *pMachine)
+{
+    SSL_free(pMachine->pSSL);
+    free(pMachine);
+}
+
 void SSLStateMachine_read_inject(SSLStateMachine *pMachine,
 				 const unsigned char *aucBuf,int nBuf)
     {
