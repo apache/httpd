@@ -230,7 +230,7 @@
       meta-information describing the content.
     </dd> 
     
-    <dt><a name=".htaccess" id=".htaccess">.htaccess</a></dt> 
+    <dt><a name="htaccess" id="htaccess">.htaccess</a></dt> 
     <dd>A <glossary ref="configurationfile">configuration file</glossary> that
       is placed inside the web tree and applies configuration <glossary
       ref="directive">directives</glossary> to the directory where it is
