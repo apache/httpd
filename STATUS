@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/09 06:15:01 $]
+Last modified at [$Date: 2002/02/09 06:20:53 $]
 
 Release:
 
@@ -278,43 +278,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
              and graceless events, and it is also easy to open that pipe
              to both parent and child for writing.  Then we just need to
              figure out how to do graceless on non-threaded MPMs.
-
-    * revamp the input filter behavior, per discussions since
-      February (and especially at the hackathon last
-      April). Specifically, ap_get_brigade will return a brigade with
-      *up to* a specific number of bytes, or a "line" of data. The
-      read may be blocking or nonblocking. ap_getline() will be
-      refactored into apr_brigade_getline(), and then DECHUNK can use
-      f->next (ap_getline will always read "top of input stack"). Also 
-      fix the bug where request body content will end up closing the
-      connection (buggering up persistent conns).
-        Status: Justin is working on this as fast as he can.
-              The core input filters, HTTP-related filters, mod_ssl,
-              mod_proxy, and ap_[r]getline are switched to the new logic.  
-
-      - socket bucket and core input filter changes. see end of
-        message ID (Feb 27): <20010227075326.S2297@lyra.org>
-
-      - fix up ap_get_brigade() semantics, fix bug in DECHUNK /
-        ap_getline. many messages (plus their threads) (Apr/May):
-          Message-ID: <20010402101207.J27539@lyra.org>
-          Message-ID: <3AF7F921.D2EEC41A@algroup.co.uk>
-          Message-ID: <20010508190029.E18404@lyra.org>
-
-      - further work with combining/tweaking the builtin filters:
-          Message-ID: <20010509115445.D1374@lyra.org>
-
-      - thoughts on filter modes:
-          Message-ID: <021b01c14dee$09782af0$93c0b0d0@roweclan.net>
-
-      - proposal for getline rewrite:
-          Message-ID: <20011231104019.GD3904@ebuilt.com>
-
-      - patch for getline rewrite:
-          Message-ID: <20020122072605.GF28051@ebuilt.com>
-
-      - Change ap_get_brigade prototype:
-          Message-ID: <20020120115136.GI17601@ebuilt.com>
 
     * Allow the DocumentRoot directive within <Location > scopes?  This
       allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
