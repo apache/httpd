@@ -2753,7 +2753,6 @@ static int init_suexec(void)
 
     if ((wrapper.st_mode & S_ISUID) && wrapper.st_uid == 0) {
 	ap_suexec_enabled = 1;
-	fprintf(stderr, "Configuring Apache for use with suexec wrapper.\n");
     }
 #endif /* ndef WIN32 */
     return (ap_suexec_enabled);
@@ -4066,6 +4065,10 @@ static void standalone_main(int argc, char **argv)
 		    ap_get_server_version());
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
 		    "Server built: %s", ap_get_server_built());
+	if (ap_suexec_enabled) {
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+		         "suEXEC mechanism enabled (wrapper: %s)", SUEXEC_BIN);
+	}
 	restart_pending = shutdown_pending = 0;
 
 	while (!restart_pending && !shutdown_pending) {
