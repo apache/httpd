@@ -25,6 +25,7 @@
 <td valign="top">
 <strong>Related Directives</strong><br><br>
 
+<a href="mod/mod_mime.html#addinputfilter">AddInputFilter</a><br>
 <a href="mod/mod_mime.html#addoutputfilter">AddOutputFilter</a><br>
 <a href="mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></br>
 <a href="mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a><br>
