@@ -418,7 +418,7 @@ files</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
 <tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">File name suffix for the file containg CERN-style
 meta information</td></tr>
-<tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
+<tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
 <tr><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td>  5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
