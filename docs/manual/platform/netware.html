@@ -24,7 +24,7 @@
 	<p>The bug reporting page and dev-httpd mailing list are <em>not</em> 
 	   provided to answer questions about configuration or running Apache.  
 	   Before you submit a bug report or request, first consult this document, the
-    <a href="faq/index.html">Frequently Asked Questions</a> page and the other 
+    <a href="/manual/faq/index.html">Frequently Asked Questions</a> page and the other 
 	   relevant documentation topics.  If you still have a question or problem, 
 	   post it to the <a href="news://developer-forums.novell.com/novell.devsup.webserver">
 	   novell.devsup.webserver</a> newsgroup, where many 
@@ -246,7 +246,7 @@
     Apache is configured by files in the <samp>conf</samp>
     directory. These are the same as files used to configure the
     Unix version, but there are a few different directives for
-    Apache on NetWare. See the <a href="./">Apache
+    Apache on NetWare. See the <a href="/manual">Apache
     documentation</a> for all the available directives. 
 
     <p>The main differences in Apache for NetWare are:</p>
@@ -260,7 +260,7 @@
         different:</p>
 
         <p><a
-        href="mod/mpm_netware.html#maxrequestsperchild">MaxRequestsPerChild</a>
+        href="/manual/mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a>
         - Like the Unix directive, this controls how many requests
         a worker thread will serve before exiting. The recommended default, <code>MaxRequestsPerChild
         0</code>, causes the thread to continue servicing request indefinitely.&nbsp;
@@ -268,30 +268,30 @@
         this directive always remain set to 0.&nbsp;&nbsp;</p>
 
         <p><a
-        href="mod/mpm_netware.html#startthreads">StartThreads</a> -
+        href="/manual/mod/mpm_common.html#startthreads">StartThreads</a> -
         This directive tells the server how many
         threads it should start initially. The recommended default is <code>StartThreads
         50</code>.</p>
         
         <p><a
-        href="mod/mpm_netware.html#minsparethreads">MinSpareThreads</a> -
+        href="/manual/mod/mpm_common.html#minsparethreads">MinSpareThreads</a> -
         This directive instructs the server to spawn additional worker threads
         if the number of idle threads ever falls below this value. The recommended default is
         <code>MinSpareThreads 10</code>.</p>
         
         <p><a
-        href="mod/mpm_netware.html#maxsparethreads">MaxSpareThreads</a> -
+        href="/manual/mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a> -
         This directive instructs the server to begin terminating worker threads
         if the number of idle threads ever exceeds this value. The recommended default is
         <code>MaxSpareThreads 100</code>.</p>
         
         <p><a
-        href="mod/mpm_netware.html#maxthreads">MaxThreads</a> -
+        href="/manual/mod/mpm_netware.html#maxthreads">MaxThreads</a> -
         This directive limits the total number of work threads to a maximum
         value. The recommended default is <code>ThreadsPerChild 250</code>.</p>
         
         <p><a 
-        href="mod/mpm_netware.html#threadstacksize">ThreadStackSize</a>
+        href="/manual/mod/mpm_netware.html#threadstacksize">ThreadStackSize</a>
         - This directive tells the server what size of stack to use
         for the individual worker thread. The recommended default is
         <code>ThreadStackSize 65536</code>.</p>
@@ -312,7 +312,7 @@
         compiled normally, it will install a number of optional
         modules in the <code>\Apache2\modules</code> directory. To
         activate these, or other modules, the <a
-        href="mod/mod_so.html#loadmodule">LoadModule</a> directive
+        href="/manual/mod/mod_so.html#loadmodule">LoadModule</a> directive
         must be used. For example, to active the status module, use
         the following (in addition to the status-activating
         directives in <code>access.conf</code>):</p>
@@ -321,7 +321,7 @@
 </pre>
 
         <p>Information on <a
-        href="mod/mod_so.html#creating">creating loadable
+        href="/manual/mod/mod_so.html#creating">creating loadable
         modules</a> is also available.</p>
       </li>
     </ul>
@@ -333,7 +333,7 @@
 
     <ul>
       <li><a 
-        href="mod/core.html#cgimapextension">CGIMapExtension</a>
+        href="/manual/mod/core.html#cgimapextension">CGIMapExtension</a>
         - This directive maps a CGI file extension to a script interpreter.</li>
     </ul>
 
