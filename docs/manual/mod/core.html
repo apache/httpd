@@ -1290,13 +1290,15 @@ and later.
 This directive allows inclusion of other configuration files from within the
 server configuration files.
 
+<P>If <CODE>Include</CODE> points to a directory, rather than a file,
+Apache will read all files in that directory, and any subdirectory,
+and parse those as configuration files.
+
 <P> <HR>
 
 <H2><A NAME="keepalive">KeepAlive directive</A></H2>
-<STRONG>Syntax: (Apache 1.1)</STRONG> KeepAlive <EM>max-requests</EM><BR>
-<STRONG>Default: (Apache 1.1)</STRONG> <CODE>KeepAlive 5</CODE><BR>
-<STRONG>Syntax: (Apache 1.2)</STRONG> KeepAlive <EM>on/off</EM><BR>
-<STRONG>Default: (Apache 1.2)</STRONG> <CODE>KeepAlive On</CODE><BR>
+<STRONG>Syntax:</STRONG> KeepAlive <EM>on/off</EM><BR>
+<STRONG>Default:</STRONG> <CODE>KeepAlive On</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -1311,18 +1313,27 @@ server configuration files.
 ><STRONG>Compatibility:</STRONG></A> KeepAlive is only available in Apache
 1.1 and later.<P>
 
-This directive enables
-<A HREF="../keepalive.html">Keep-Alive</A>
-support.
+<p>The Keep-Alive extension to HTTP/1.0 and the persistent connection
+feature of <CODE>HTTP/1.1</CODE> provide long-lived HTTP sessions
+which allow multiple requests to be sent over the same TCP connection.
+In some cases this been shown to result in an almost 50% speedup in
+latency times for HTML documents with many images.</p>
 
-<P><STRONG>Apache 1.1</STRONG>: Set <EM>max-requests</EM>
-to the maximum number of requests you want Apache to entertain per
-request. A limit is imposed to prevent a client from hogging your
-server resources. Set this to <CODE>0</CODE> to disable support.
+<p>In order for Keep-Alive support to be used:
+<ul>
+<li>Keep-Alive support must be enabled by setting this directive
+to <code>On</code>.</li>
+<li>The client must support Keep-Alive requests.  Most current
+clients do support Keep-Alive requests.</li>
+<li>The length of the file must be know in advance.  This means that most 
+CGI scripts, server-parsed pages (SSI), and server-generated directory 
+listings, will not use the Keep-Alive protocol.</li>
+</ul>
 
-<P><STRONG>Apache 1.2 and later</STRONG>: Set to "On" to enable
-persistent connections, "Off" to disable. See also the <A
-HREF="#maxkeepaliverequests">MaxKeepAliveRequests</A> directive.</P><HR>
+<p>See also  <A
+HREF="#maxkeepaliverequests">MaxKeepAliveRequests</A>.</P>
+
+<HR>
 
 <H2><A NAME="keepalivetimeout">KeepAliveTimeout directive</A></H2>
 <A
@@ -1347,11 +1358,17 @@ HREF="#maxkeepaliverequests">MaxKeepAliveRequests</A> directive.</P><HR>
 ><STRONG>Compatibility:</STRONG></A> KeepAliveTimeout is only available in
 Apache 1.1 and later.<P>
 
-The number of seconds Apache will wait for a subsequent request before
-closing the connection. Once a request has been received, the timeout
-value specified by the <A
-HREF="#timeout"><CODE>Timeout</CODE></A> directive
-applies.
+<p>The number of seconds Apache will wait for a subsequent request
+before closing the connection. Once a request has been received, the
+timeout value specified by the <A
+HREF="#timeout"><CODE>Timeout</CODE></A> directive applies.</p>
+
+<p>Setting <code>KeepAliveTimeout</code> to a high value may
+cause performance problems in heavily loaded servers.  The
+higher is the timeout, the more server processes will be kept
+occupied waiting on connections with idle clients.</p>
+
+
 <HR>
 
 <H2><A NAME="limit">&lt;Limit&gt; directive</A></H2>
