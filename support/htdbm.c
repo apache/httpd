@@ -370,7 +370,7 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
             to64(&salt[0], rand(), 8);
             salt[8] = '\0';
             apr_cpystrn(cpw, (char *)crypt(htdbm->userpass, salt), sizeof(cpw) - 1);
-            fprintf(stderr, "CRYPT is now depriciated, use MD5 instead !\n");
+            fprintf(stderr, "CRYPT is now deprecated, use MD5 instead!\n");
 #endif
         default:
         break;
@@ -410,13 +410,13 @@ static void htdbm_usage(void)
     fprintf(stderr, "                -x[m"CRYPT_OPTION"ps]    [-TDBTYPE] database username\n");
     fprintf(stderr, "                -l                       [-TDBTYPE] database\n");
     fprintf(stderr, "Options:\n");
-    fprintf(stderr, "   -b   Use the password from the command line rather"
+    fprintf(stderr, "   -b   Use the password from the command line rather "
                     "than prompting for it.\n");
     fprintf(stderr, "   -c   Create a new database.\n");
     fprintf(stderr, "   -n   Don't update database; display results on stdout.\n");
     fprintf(stderr, "   -m   Force MD5 encryption of the password (default).\n");
 #if APR_HAVE_CRYPT_H
-    fprintf(stderr, "   -d   Force CRYPT encryption of the password (now depriciated).\n");
+    fprintf(stderr, "   -d   Force CRYPT encryption of the password (now deprecated).\n");
 #endif
     fprintf(stderr, "   -p   Do not encrypt the password (plaintext).\n");
     fprintf(stderr, "   -s   Force SHA encryption of the password.\n");
@@ -584,7 +584,7 @@ int main(int argc, const char *argv[])
         case HTDBM_VERIFY:
             if ((rv = htdbm_verify(h)) != APR_SUCCESS) {
                 if(rv == APR_ENOENT) {
-                    fprintf(stderr, "The user '%s' cold not be found in database\n", h->username);
+                    fprintf(stderr, "The user '%s' could not be found in database\n", h->username);
                     exit(ERR_BADUSER);
                 }
                 else {
@@ -624,5 +624,5 @@ int main(int argc, const char *argv[])
     htdbm_terminate(h);
     apr_terminate();
     
-    return 0; /* Supress compiler warning. */
+    return 0; /* Suppress compiler warning. */
 }
