@@ -1,9 +1,9 @@
-const ENCODING *NS(XmlGetUtf8InternalEncoding)()
+const ENCODING *NS(XmlGetUtf8InternalEncoding)(void)
 {
   return &ns(internal_utf8_encoding).enc;
 }
 
-const ENCODING *NS(XmlGetUtf16InternalEncoding)()
+const ENCODING *NS(XmlGetUtf16InternalEncoding)(void)
 {
 #if XML_BYTE_ORDER == 12
   return &ns(internal_little2_encoding).enc;
