@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.1 $ -->
+<!-- $Revision: 1.2 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -47,8 +47,12 @@
           <code>Apache JServ Protocol version 1.3</code> used by 
           <a href="http://jakarta.apache.org/tomcat/">Apache Tomcat</a>.</dd>
 
-      <dt>Smart Filters</dt>
-      <dd>...</dd>
+      <dt>Smart Filtering</dt>
+      <dd><module>mod_filter</module> introduces dynamic configuration
+          to the output filter chain.  It enables filters to be conditionally
+          inserted, based on any Request or Response header or environment
+          variable, and dispenses with the more problematic dependencies and
+          ordering problems in the 2.0 architecture.</dd>
 
     </dl>
   </section>
@@ -100,6 +104,15 @@
           set the stack size on all threaded MPMs.  This is required
           for some third-party modules on platforms with small default
           thread stack size.</dd>
+
+      <dt>Protocol handling for output filters</dt>
+
+      <dd>In the past, every filter has been responsible for ensuring 
+          that it generates the correct response headers where it affects
+          them.  Filters can now delegate common protocol management to
+          <module>mod_filter</module>, using the
+          <code>ap_register_output_filter_protocol</code> or
+          <code>ap_filter_protocol</code> calls.</dd>
     </dl>
   </section>
 </manualpage>
