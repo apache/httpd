@@ -208,6 +208,7 @@ typedef struct {
     conn_rec *connection;
     char *hostname;
     apr_port_t port;
+    int is_ssl;
 } proxy_conn_rec;
 
 typedef struct {
@@ -273,5 +274,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
 PROXY_DECLARE(void) ap_proxy_reset_output_filters(conn_rec *c);
 PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key);
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, server_rec *, apr_pool_t *);
+PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 
 #endif /*MOD_PROXY_H*/
