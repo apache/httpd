@@ -1,5 +1,9 @@
 Changes with Apache 2.0.14
 
+  *) Add a -V flag to suexec, which causes it to display the
+     compile-time settings with which it was built.  (Only
+     usable by root or the AP_HTTPD_USER username.)  [Ken Coar]
+
   *) Mod_include should always unset the content-length if the file is
      going to be passed through send_parsed_content.  There is no to
      determine if the content will change before actually scanning the
