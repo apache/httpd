@@ -339,7 +339,8 @@ static void expand_lock_fname(pool *p)
 {
     char buf[20];
 
-    ap_snprintf(buf, sizeof(buf), ".%lu", getpid());
+    /* XXXX possibly bogus cast */
+    ap_snprintf(buf, sizeof(buf), ".%lu", (unsigned long)getpid());
     lock_fname = pstrcat(p, server_root_relative(p, lock_fname), buf, NULL);
 }
 #endif
