@@ -3220,7 +3220,7 @@ static int include_fixup(request_rec *r)
             return DECLINED;
         }
 
-        if (!r->handler || strcmp(r->handler, "text/html")) {
+        if (r->handler && strcmp(r->handler, "text/html")) {
             return DECLINED;
         }
     }
