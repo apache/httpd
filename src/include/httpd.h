@@ -551,13 +551,13 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * LimitRequestFieldSize, and LimitRequestBody configuration directives.
  */
 #ifndef DEFAULT_LIMIT_REQUEST_LINE
-#define DEFAULT_LIMIT_REQUEST_LINE 8190
+#define DEFAULT_LIMIT_REQUEST_LINE 8192
 #endif /* default limit on bytes in Request-Line (Method+URI+HTTP-version) */
 #ifndef DEFAULT_LIMIT_REQUEST_FIELDS
 #define DEFAULT_LIMIT_REQUEST_FIELDS 100
 #endif /* default limit on number of header fields */
 #ifndef DEFAULT_LIMIT_REQUEST_FIELDSIZE
-#define DEFAULT_LIMIT_REQUEST_FIELDSIZE 8190
+#define DEFAULT_LIMIT_REQUEST_FIELDSIZE 8192
 #endif /* default limit on bytes in any one field  */
 #ifndef DEFAULT_LIMIT_REQUEST_BODY
 #define DEFAULT_LIMIT_REQUEST_BODY 33554432ul

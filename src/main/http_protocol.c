@@ -635,7 +635,7 @@ static int read_request_line(request_rec *r)
     pool *tmp;
 
     tmp = ap_make_sub_pool(r->pool);
-    l = ap_palloc(tmp, r->server->limit_req_line + 2);
+    l = ap_palloc(tmp, r->server->limit_req_line);
     ll = l;
 
     /* Read past empty lines until we get a real request line,
@@ -653,7 +653,7 @@ static int read_request_line(request_rec *r)
      * have to block during a read.
      */
     ap_bsetflag(conn->client, B_SAFEREAD, 1);
-    while ((len = getline(l, r->server->limit_req_line + 2, conn->client, 0)) <= 0) {
+    while ((len = getline(l, r->server->limit_req_line, conn->client, 0)) <= 0) {
         if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
             ap_bsetflag(conn->client, B_SAFEREAD, 0);
 	    ap_destroy_pool(tmp);
@@ -764,7 +764,7 @@ static void get_mime_headers(request_rec *r)
     arr = ap_make_array(tmp, 50, sizeof(mime_key));
     order = 0;
 
-    field = ap_palloc(tmp, r->server->limit_req_fieldsize + 2);
+    field = ap_palloc(tmp, r->server->limit_req_fieldsize);
 
     /* If headers_in is non-empty (i.e. we're parsing a trailer) then
      * we have to merge.  Have I mentioned that I think this is a lame part
@@ -794,7 +794,7 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    while ((len = getline(field, r->server->limit_req_fieldsize + 2,
+    while ((len = getline(field, r->server->limit_req_fieldsize,
 			c->client, 1)) > 0) {
 
         if (++fields_read > r->server->limit_req_fields) {
@@ -804,7 +804,7 @@ static void get_mime_headers(request_rec *r)
 	    ap_destroy_pool(tmp);
             return;
         }
-        if (len >= r->server->limit_req_fieldsize + 1) { 
+        if (len >= r->server->limit_req_fieldsize) { 
             r->status = HTTP_BAD_REQUEST;
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Size of a request header field exceeds server limit.<P>\n"
