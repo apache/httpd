@@ -1,5 +1,8 @@
 Changes with Apache 1.3.22
 
+  *) Additional correction for the mutex changes on the TPF platform.
+     [David McCreedy <McCreedy@us.ibm.com>]
+
   *) mod_proxy - remove Explain*; replace with ap_log_*
      [Chuck Murcko <chuck@topsail.org>]
 
