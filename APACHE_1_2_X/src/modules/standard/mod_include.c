@@ -520,6 +520,7 @@ int include_cgi(char *s, request_rec *r)
     }
     
     destroy_sub_req (rr);
+    chdir_file(r->filename);
     
     return 0;
 }
@@ -567,6 +568,7 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
 	    
 	    if (!error_fmt && run_sub_req (rr))
 	        error_fmt = "unable to include %s in parsed file %s";
+	    chdir_file(r->filename);
 		    
             if (error_fmt) {
                 log_printf(r->server, error_fmt, tag_val, r->filename);
