@@ -11,7 +11,7 @@
 # Nov 30, 1996 - Alexei Kosut <akosut@apache.org>
 
 # ====================================================================
-# Copyright (c) 1996-1998 The Apache Group.  All rights reserved.
+# Copyright (c) 1996-1999 The Apache Group.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
