@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a nasty segfault in mmap_bucket_setaside() caused by passing
+     an incompatible pointer type to mmap_bucket_destroy().  PR 16533.
+     [Gerard Eviston <geviston@bigpond.net.au>]
+
   *) Allow mod_dav to do weak entity comparison functions.
      [Justin Erenkrantz]
 
