@@ -111,8 +111,8 @@ expressions</td></tr>
     all|<var>host</var>|env=<var>env-variable</var>
     [<var>host</var>|env=<var>env-variable</var>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts can access an area of the
 server</td></tr>
-<tr><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <em>port</em> [<em>port</em>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through
-the proxy</td></tr>
+<tr><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <var>port</var> [<var>port</var>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
+proxy</td></tr>
 <tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Types of directives that are allowed in
 <code>.htaccess</code> files</td></tr>
@@ -434,8 +434,8 @@ components as part of the filename</td></tr>
 a matching file with MultiViews</td></tr>
 <tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>addr</var>[:<var>port</var>]</a></td><td /><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Designates an IP address for name-virtual
 hosting</td></tr>
-<tr><td><a href="mod_proxy.html#noproxy">NoProxy <em>host</em> [<em>host</em>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected
-to directly</td></tr>
+<tr><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
+directly</td></tr>
 <tr class="odd"><td><a href="perchild.html#numservers">NumServers <var>number</var></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Total number of children alive at the same time</td></tr>
 <tr><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td /><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">List of additional client certificates</td></tr>
 <tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
@@ -449,35 +449,32 @@ evaluated.</td></tr>
 <tr><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">File where the server records the process ID
 of the daemon</td></tr>
 <tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td /><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
-<tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to proxied 
-resources</td></tr>
+<tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how to handle bad header lines in a
 response</td></tr>
-<tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<em>word|host|domain</em>
-[<em>word|host|domain</em>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Words, hosts, or domains that are banned from being
+<tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
+[<var>word</var>|<var>host</var>|<var>domain</var>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Words, hosts, or domains that are banned from being
 proxied</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxydomain">ProxyDomain <em>Domain</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default domain name for proxied requests</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domain</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default domain name for proxied requests</td></tr>
 <tr><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Override error pages for proxied content</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <em>bytes</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">IO buffer size for outgoing HTTP and FTP 
-connections</td></tr>
-<tr><td><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch <em>regex</em>&gt; ...&lt;/ProxyMatch&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to regular-expression-matched 
+<tr class="odd"><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <var>bytes</var></a></td><td> 8192 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine size of internal data throughput buffer</td></tr>
+<tr><td><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to regular-expression-matched 
 proxied resources</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <em>number</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximium number of proxies that a request can be forwarded
+<tr class="odd"><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximium number of proxies that a request can be forwarded
 through</td></tr>
-<tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<em>path</em>] !|<em>url</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server 
-URL-space</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse [<em>path</em>] <em>url</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adjusts the URL in HTTP response headers sent from
-a reverse proxied server</td></tr>
-<tr><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost on|off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Use incoming Host HTTP request header for
-proxy request</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <em>bytes</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network buffer size for outgoing HTTP and FTP 
+<tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var></a></td><td /><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse [<var>path</var>] <var>url</var></a></td><td /><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adjusts the URL in HTTP response headers sent from a reverse
+proxied server</td></tr>
+<tr><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Use incoming Host HTTP request header for proxy
+request</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network buffer size for proxied HTTP and FTP
 connections</td></tr>
-<tr><td><a href="mod_proxy.html#proxyremote">ProxyRemote <em>match remote-server</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Remote proxy used to handle certain requests</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch <em>regex remote-server</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remote proxy used to handle requests
-matched by regular expressions</td></tr>
-<tr><td><a href="mod_proxy.html#proxyrequests">ProxyRequests on|off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables forward (standard) proxy requests</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network timeout for proxied requests</td></tr>
-<tr><td><a href="mod_proxy.html#proxyvia">ProxyVia on|off|full|block</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Information provided in the <code>Via</code> HTTP response
+<tr><td><a href="mod_proxy.html#proxyremote">ProxyRemote <var>match</var> <var>remote-server</var></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Remote proxy used to handle certain requests</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch <var>regex</var> <var>remote-server</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remote proxy used to handle requests matched by regular
+expressions</td></tr>
+<tr><td><a href="mod_proxy.html#proxyrequests">ProxyRequests On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables forward (standard) proxy requests</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network timeout for proxied requests</td></tr>
+<tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Information provided in the <code>Via</code> HTTP response
 header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the end
 of the index listing</td></tr>
