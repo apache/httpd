@@ -72,17 +72,32 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
+/* If a request includes query info in the URL (stuff after "?"), and
+ * the query info does not contain "=" (indicative of a FORM submission),
+ * then this routine is called to create the argument list to be passed
+ * to the CGI script.  When suexec is enabled, the suexec path, user, and
+ * group are the first three arguments to be passed; if not, all three
+ * must be NULL.  The query info is split into separate arguments, where
+ * "+" is the separator between keyword arguments.
+ */
 static char **create_argv(pool *p, char *path, char *user, char *group,
-                          char *av0, const char *reqargs)
+                          char *av0, const char *args)
 {
+    int x, numwords;
     char **av;
-    char *t;
-    char *args = pstrdup(p, reqargs);
+    char *w;
     int idx = 0;
-    char *strtok_arg = args;
 
-    av = (char **)palloc(p, APACHE_ARG_MAX * sizeof(char *));
-    
+    /* count the number of keywords */
+
+    for (x = 0, numwords = 1; args[x]; x++)
+        if (args[x] == '+') ++numwords;
+
+    if (numwords > APACHE_ARG_MAX - 4) {
+        numwords = APACHE_ARG_MAX - 4; /* Truncate args to prevent overrun */
+    }
+    av = (char **)palloc(p, (numwords + 4) * sizeof(char *));
+
     if (path)
         av[idx++] = path;
     if (user)
@@ -91,16 +106,16 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
         av[idx++] = group;
 
     av[idx++] = av0;
-    
-    while ((idx < APACHE_ARG_MAX) && ((t = strtok(strtok_arg, "+")) != NULL)) {
-        strtok_arg = NULL;
-	unescape_url(t);
-	av[idx++] = escape_shell_cmd(p, t);
-    }
 
+    for (x = 1; x <= numwords; x++) {
+        w = getword_nulls(p, &args, '+');
+        unescape_url(w);
+        av[idx++] = escape_shell_cmd(p, w);
+    }
     av[idx] = NULL;
     return av;
 }
+
 
 static char *http2env(pool *a, char *w)
 {

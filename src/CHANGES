@@ -11,10 +11,10 @@ Changes with Apache 1.2b10
      config, in case the hostent struct returned is trash.
      [Chuck Murcko] PR #491
 
-  *) Fixed a showstopper CGI problem in 1.2b9.  This change caused the rev
-     to 1.2b10, 1.2b9 was never announced.  [Marc Slemko]
+  *) Fixed the fix in 1.2b9 for parsing URL query info into args for CGI
+     scripts.  [Dean Gaudet, Roy Fielding, Marc Slemko]
 
-Changes with Apache 1.2b9
+Changes with Apache 1.2b9  [never announced]
 
   *) Reset the MODULE_MAGIC_NUMBER to account for the unsigned port
      changes and in anticipation of 1.2 final release.  [Roy Fielding]

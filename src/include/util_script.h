@@ -50,10 +50,12 @@
  *
  */
 
+#ifndef APACHE_ARG_MAX
 #ifdef _POSIX_ARG_MAX
 #define APACHE_ARG_MAX _POSIX_ARG_MAX
 #else
 #define APACHE_ARG_MAX 512
+#endif
 #endif
 
 char **create_environment(pool *p, table *t);
