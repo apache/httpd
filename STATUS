@@ -94,6 +94,12 @@ PATCHES TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are! ]
   [ please append new backports at the end of this list not the top. ]
 
+    *) core_input_filter: Fix leak of a brigade by moving buckets to an 
+       existing brigade instead of calling brigade_split which creates a 
+       new brigade. PR 33382. r154200
+       Patch for 2.0: http://www.apache.org/~pquerna/c-i-f-leak.patch
+       +1: pquerna
+
     *) dummy_connection tweak: directly use the address of the first
        listener rather than extracting through getnameinfo(), and log
        the address for better diagnostics in error cases.
