@@ -231,19 +231,19 @@ authentication</description>
 <usage>
     <p>The <directive>AuthDigestDomain</directive> directive allows
     you to specify one or more URIs which are in the same protection
-    space (i.e. use the same realm and username/password info). The
-    specified URIs are prefixes, i.e. the client will assume that all
-    URIs "below" these are also protected by the same
-    username/password. The URIs may be either absolute URIs
-    (i.e. inluding a scheme, host, port, etc) or relative URIs.</p>
+    space (<em>i.e.</em> use the same realm and username/password info).
+    The specified URIs are prefixes, <em>i.e.</em> the client will assume
+    that all URIs "below" these are also protected by the same
+    username/password. The URIs may be either absolute URIs (<em>i.e.</em>
+    inluding a scheme, host, port, etc) or relative URIs.</p>
 
     <p>This directive <em>should</em> always be specified and
     contain at least the (set of) root URI(s) for this space.
     Omitting to do so will cause the client to send the
     Authorization header for <em>every request</em> sent to this
     server. Apart from increasing the size of the request, it may
-    also have a detrimental effect on performance if
-    "AuthDigestNcCheck" is on.</p>
+    also have a detrimental effect on performance if <directive
+    module="mod_auth_digest">AuthDigestNcCheck</directive> is on.</p>
 
     <p>The URIs specified can also point to different servers, in
     which case clients (which understand this) will then share
@@ -279,7 +279,7 @@ of clients</description>
     <example>
       AuthDigestShmemSize 1048576<br />
       AuthDigestShmemSize 1024K<br />
-      AuthDigestShmemSize 1M<br />
+      AuthDigestShmemSize 1M
     </example>
 </usage>
 </directivesynopsis>
