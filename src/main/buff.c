@@ -433,7 +433,7 @@ static void start_chunk(BUFF *fb)
 	/* already chunking */
 	return;
     }
-    if (!(fb->flags & B_WR) || (fb->flags & (B_WRERR | B_EOUT))) {
+    if ((fb->flags & (B_WRERR | B_EOUT | B_WR)) != B_WR) {
 	/* unbuffered writes */
 	return;
     }
@@ -1362,10 +1362,7 @@ API_EXPORT(int) ap_bflush(BUFF *fb)
 {
     int ret;
 
-    if (!(fb->flags & B_WR) || (fb->flags & B_EOUT))
-	return -1;
-
-    if (fb->flags & B_WRERR)
+    if ((fb->flags & (B_WRERR | B_EOUT | B_WR)) != B_WR)
 	return -1;
 
     if (fb->flags & B_CHUNK)
