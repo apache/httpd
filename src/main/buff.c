@@ -562,14 +562,22 @@ static int saferead(BUFF *fb, char *buf, int nbyte)
 #endif
 
 
-/* note we assume the caller has ensured that fb->fd_in <= FD_SETSIZE */
+/* Test the descriptor and flush the output buffer if it looks like
+ * we will block on the next read.
+ *
+ * Note we assume the caller has ensured that fb->fd_in <= FD_SETSIZE
+ */
 API_EXPORT(void) ap_bhalfduplex(BUFF *fb)
 {
     int rv;
     fd_set fds;
     struct timeval tv;
 
-    if (fb->incnt > 0 || fb->outcnt == 0) {
+    /* We don't need to do anything if the connection has been closed
+     * or there is something readable in the incoming buffer
+     * or there is nothing flushable in the output buffer.
+     */
+    if (fb == NULL || fb->fd_in < 0 || fb->incnt > 0 || fb->outcnt == 0) {
 	return;
     }
     /* test for a block */
@@ -579,7 +587,8 @@ API_EXPORT(void) ap_bhalfduplex(BUFF *fb)
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
 	rv = ap_select(fb->fd_in + 1, &fds, NULL, NULL, &tv);
-    } while (rv < 0 && errno == EINTR);
+    } while (rv < 0 && errno == EINTR && !(fb->flags & B_EOUT));
+
     /* treat any error as if it would block as well */
     if (rv != 1) {
 	ap_bflush(fb);
