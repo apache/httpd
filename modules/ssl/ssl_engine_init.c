@@ -407,6 +407,7 @@ static void ssl_init_ctx(server_rec *s,
                          modssl_ctx_t *mctx)
 {
     SSL_CTX *ctx = NULL;
+    SSL_METHOD *method = NULL;
     char *cp;
     int protocol = mctx->protocol;
 
@@ -430,10 +431,16 @@ static void ssl_init_ctx(server_rec *s,
             "Creating new SSL context (protocols: %s)", cp);
 
     if (protocol == SSL_PROTOCOL_SSLV2) {
-        ctx = SSL_CTX_new(SSLv2_server_method());  /* only SSLv2 is left */
+        method = mctx->pkp ?
+            SSLv2_client_method() : /* proxy */
+            SSLv2_server_method();  /* server */
+        ctx = SSL_CTX_new(method);  /* only SSLv2 is left */
     }
     else {
-        ctx = SSL_CTX_new(SSLv23_server_method()); /* be more flexible */
+        method = mctx->pkp ?
+            SSLv23_client_method() : /* proxy */
+            SSLv23_server_method();  /* server */
+        ctx = SSL_CTX_new(method); /* be more flexible */
     }
 
     mctx->ssl_ctx = ctx;
