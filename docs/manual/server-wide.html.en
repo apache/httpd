@@ -77,7 +77,7 @@
          <a href="mod/core.html#lockfile">Lockfile</a><br />
          <a href="mod/core.html#pidfile">PidFile</a><br />
          <a
-        href="mod/core.html#scoreboardfile">ScoreBoardFile</a><br />
+        href="mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a><br />
          <a href="mod/core.html#serverroot">ServerRoot</a><br />
          </td>
       </tr>
