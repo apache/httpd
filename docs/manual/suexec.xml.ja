@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.14 (outdated: 1.15) -->
+<!-- English Revision: 1.15 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -425,23 +425,6 @@
       デフォルト値は "/usr/local/bin:/usr/bin:/bin" です。
       </dd>
     </dl>
-
-    <p><strong>suEXEC 設定の確認</strong>
-    <br />
-    suEXEC wrapper をコンパイルしてインストールする前に、設定内容を
-    <code>--layout</code> オプションで確認できます。<br />
-    出力例:</p>
-<example>
-    suEXEC setup:<br />
-            suexec binary: /usr/local/apache2/sbin/suexec<br />
-            document root: /usr/local/apache2/share/htdocs<br />
-           userdir suffix: public_html<br />
-                  logfile: /usr/local/apache2/var/log/suexec_log<br />
-                safe path: /usr/local/bin:/usr/bin:/bin<br />
-                caller ID: www<br />
-          minimum user ID: 100<br />
-         minimum group ID: 100<br />
-</example>
 
     <p><strong>suEXEC wrapper
     のコンパイルとインストール</strong><br />
