@@ -1488,7 +1488,7 @@ command_rec core_cmds[] = {
 { "<Files", filesection, NULL, OR_ALL, RAW_ARGS, "Container for directives affecting files matching specified patterns" },
 { "</Files>", end_filesection, NULL, OR_ALL, NO_ARGS, "Marks end of <Files>" },
 { "<Limit", limit_section, NULL, OR_ALL, RAW_ARGS, "Container for authentication directives when accessed using specified HTTP methods" },
-{ "</Limit>", endlimit_section, NULL, OR_ALL, RAW_ARGS, "Marks end of <Limit>" },
+{ "</Limit>", endlimit_section, NULL, OR_ALL, NO_ARGS, "Marks end of <Limit>" },
 { "<IfModule", start_ifmod, NULL, OR_ALL, RAW_ARGS, "Container for directives based on existance of specified modules" },
 { "</IfModule>", end_ifmod, NULL, OR_ALL, NO_ARGS, "Marks end of <IfModule>" },
 { "<DirectoryMatch", dirsection, (void*)1, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources located in the specified directories" },
