@@ -93,6 +93,7 @@ static ap_status_t cleanup_shared_mem(void *d)
     ap_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
     ap_shm_destroy(scoreboard_shm);
+    return APR_SUCCESS;
 }
 
 static void setup_shared_mem(ap_pool_t *p)
