@@ -100,7 +100,7 @@ Other major contributors
    Kevin Hughes (creator of all those nifty icons),
    Henry Spencer (author of the regex library), Garey Smiley (OS/2 port),
    Ralf S. Engelschall (mod_rewrite), Howard Fear (mod_include),
-   Florent Guillaume (language negotiation).
+   Florent Guillaume (language negotiation), Ambarish Malpani (NT port).
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
