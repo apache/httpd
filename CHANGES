@@ -1,4 +1,4 @@
-Changes with Apache 2.0.16-dev
+Changes with Apache 2.0.16
 
   *) Change the default installation directory to /usr/local/apache2,
      as now defined by the "Apache" layout in config.layout. [Marc Slemko]
