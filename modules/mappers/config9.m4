@@ -41,6 +41,10 @@ if test "x$enable_so" = "xyes"; then
     enable_so="static"
 fi
 
+if test "x$enable_so" = "xstatic"; then
+    APR_ADDTO(HTTPD_LDFLAGS, [-export-dynamic])
+fi
+
 if test "$sharedobjs" = "yes"; then
     if test $ac_cv_define_APR_HAS_DSO = "no"; then
         AC_MSG_ERROR([shared objects have been requested but cannot be built since mod_so cannot be built])

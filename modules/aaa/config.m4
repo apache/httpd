@@ -44,6 +44,4 @@ APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   fi
 ])
 
-APR_ADDTO(LT_LDFLAGS,-export-dynamic)
-
 APACHE_MODPATH_FINISH
