@@ -460,23 +460,21 @@ void ap_log_pid (pool *p, char *fname)
 
 API_EXPORT(void) ap_log_error_old (const char *err, server_rec *s)
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, s, err);
+    ap_log_error(APLOG_MARK, APLOG_ERR, s, "%s", err);
 }
 
 API_EXPORT(void) ap_log_unixerr (const char *routine, const char *file,
 			      const char *msg, server_rec *s)
 {
-    ap_log_error(file, 0, APLOG_ERR, s, msg);
+    ap_log_error(file, 0, APLOG_ERR, s, "%s", msg);
 }
 
 API_EXPORT(void) ap_log_printf (const server_rec *s, const char *fmt, ...)
 {
-    char buf[MAX_STRING_LEN];
     va_list args;
     
     va_start(args, fmt);
-    ap_vsnprintf(buf, sizeof(buf), fmt, args);
-    ap_log_error(APLOG_MARK, APLOG_ERR, s, buf);
+    log_error_core(APLOG_MARK, APLOG_ERR, s, NULL, fmt, args);
     va_end(args);
 }
 

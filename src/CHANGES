@@ -1,5 +1,11 @@
 Changes with Apache 1.3.2
 
+  *) Fix the ap_log_error_old(), ap_log_unixerr() and ap_log_printf()
+     functions: First all three functions no longer fail on strings containing
+     "%" chars and second ap_log_printf() no longer does a double-formatting
+     (instead it directly passes through the message to be formatted to the
+     real internal formatting function). [Ralf S. Engelschall] PR#2941
+
   *) Allow "Include" directives anywhere in the server config
      files (but not .htaccess files).  [Ken Coar] PR#2727
 
