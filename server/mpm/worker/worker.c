@@ -885,10 +885,39 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     return NULL;
 }
 
+static void join_workers(apr_thread_t **threads)
+{
+    int i;
+    apr_status_t rv, thread_rv;
+
+    for (i = 0; i < ap_threads_per_child; i++) {
+        if (threads[i]) { /* if we ever created this thread */
+            rv = apr_thread_join(&thread_rv, threads[i]);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                             "apr_thread_join: unable to join worker "
+                             "thread %d",
+                             i);
+            }
+        }
+    }
+}
+
+static void join_start_thread(apr_thread_t *start_thread_id)
+{
+    apr_status_t rv, thread_rv;
+
+    rv = apr_thread_join(&thread_rv, start_thread_id);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "apr_thread_join: unable to join the start "
+                     "thread");
+    }
+}
+
 static void child_main(int child_num_arg)
 {
     apr_thread_t **threads;
-    int i;
     apr_status_t rv;
     thread_starter *ts;
     apr_threadattr_t *thread_attr;
@@ -961,7 +990,6 @@ static void child_main(int child_num_arg)
     ts->child_num_arg = child_num_arg;
     ts->threadattr = thread_attr;
 
-    
     rv = apr_thread_create(&start_thread_id, thread_attr, start_threads,
                            ts, pchild);
     if (rv != APR_SUCCESS) {
@@ -979,6 +1007,10 @@ static void child_main(int child_num_arg)
     if (one_process) {
         /* Set up a signal handler for this thread. */
         apr_signal_thread(check_signal);
+        /* make sure the start thread has finished; signal_workers() 
+         * and join_workers() depend on that
+         */
+        join_start_thread(start_thread_id);
         signal_workers(); /* helps us terminate a little more quickly when
                            * the dispatch of the signal thread
                            * beats the Pipe of Death and the browsers
@@ -990,18 +1022,17 @@ static void child_main(int child_num_arg)
          *   If the worker hasn't exited, then this blocks until
          *   they have (then cleans up).
          */
-        apr_thread_join(&rv, start_thread_id);
-        for (i = 0; i < ap_threads_per_child; i++) {
-            if (threads[i]) { /* if we ever created this thread */
-                apr_thread_join(&rv, threads[i]);
-            }
-        }
+        join_workers(threads);
     }
     else { /* !one_process */
         /* Watch for any messages from the parent over the POD */
         while (1) {
             rv = ap_mpm_pod_check(pod);
             if (rv == AP_GRACEFUL || rv == AP_RESTART) {
+                /* make sure the start thread has finished; 
+                 * signal_workers() and join_workers depend on that
+                 */
+                join_start_thread(start_thread_id);
                 signal_workers();
                 break;
             }
@@ -1015,12 +1046,7 @@ static void child_main(int child_num_arg)
              *   If the worker hasn't exited, then this blocks until
              *   they have (then cleans up).
              */
-            apr_thread_join(&rv, start_thread_id);
-            for (i = 0; i < ap_threads_per_child; i++) {
-                if (threads[i]) { /* if we ever created this thread */
-                    apr_thread_join(&rv, threads[i]);
-                }
-            }
+            join_workers(threads);
         }
     }
 
