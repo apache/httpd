@@ -217,7 +217,6 @@ _install:
 	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin"
 	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin"
 !ENDIF
-        copy support\$(LONG)\ "$(INSTDIR)\bin"
         copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
         copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
