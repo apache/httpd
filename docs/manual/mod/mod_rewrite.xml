@@ -939,6 +939,7 @@ Result:
                  REQUEST_URI<br />
                  REQUEST_FILENAME<br />
                  IS_SUBREQ<br />
+                 HTTPS<br />
               </td>
             </tr>
           </table>
@@ -1012,6 +1013,11 @@ Result:
         any environment variable. This is looked-up via internal
         Apache structures and (if not found there) via
         <code>getenv()</code> from the Apache server process.</li>
+
+        <li>There is the special format:
+        <code>%{SSL:variable}</code> where <em>variable</em> can be
+        any SSL environment variable. This is looked-up via internal
+        SSL structures from the Apache server process.</li>
 
         <li>There is the special format:
         <code>%{HTTP:header}</code> where <em>header</em> can be
