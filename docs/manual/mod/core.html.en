@@ -210,7 +210,7 @@ available</td></tr>
 <div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default charset parameter to be added when a response
-content-type is "text/plain" or "text/html"</td></tr>
+content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddDefaultCharset On|Off|<var>charset</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AddDefaultCharset Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -221,9 +221,9 @@ content-type is "text/plain" or "text/html"</td></tr>
     <p>This directive specifies a default value for the media type
     charset parameter (the name of a character encoding) to be added
     to a response if and only if the response's content-type is either
-    "text/plain" or "text/html".  This should override any charset
-    specified in the body of the document via a <code>META</code> tag,
-    though the exact behavior is often dependent on the user's client
+    <code>text/plain</code> or <code>text/html</code>.  This should override
+    any charset specified in the body of the response via a <code>META</code>
+    element, though the exact behavior is often dependent on the user's client
     configuration. A setting of <code>AddDefaultCharset Off</code>
     disables this functionality. <code>AddDefaultCharset On</code> enables
     a default charset of <code>iso-8859-1</code>. Any other value is assumed
@@ -236,7 +236,7 @@ content-type is "text/plain" or "text/html"</td></tr>
       AddDefaultCharset utf-8
     </code></p></div>
 
-    <p><code>AddDefaultCharset</code> should only be used when all
+    <p><code class="directive">AddDefaultCharset</code> should only be used when all
     of the text resources to which it applies are known to be in that
     character encoding and it is too inconvenient to label their charset
     individually. One such example is to add the charset parameter
