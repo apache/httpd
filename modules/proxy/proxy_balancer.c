@@ -372,8 +372,301 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     return OK;
 } 
 
+static void recalc_factors(proxy_balancer *balancer,
+                           proxy_runtime_worker *fixed)
+{
+    int i;
+    double median, ffactor = 0.0;
+    proxy_runtime_worker *workers;    
+
+
+    /* Recalculate lbfactors */
+    workers = (proxy_runtime_worker *)balancer->workers->elts;
+    /* Special case if there is only one worker it's
+     * load factor will always be 100
+     */
+    if (balancer->workers->nelts == 1) {
+        workers->s->lbstatus = workers->s->lbfactor = 100.0;
+        return;
+    }
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        if (workers[i].s->lbfactor > 100.0)
+            workers[i].s->lbfactor = 100.0;
+        ffactor += workers[i].s->lbfactor;
+    }
+    if (ffactor < 100.0) {
+        median = (100.0 - ffactor) / (balancer->workers->nelts - 1);
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (&(workers[i]) != fixed)
+                workers[i].s->lbfactor += median;
+        }
+    }
+    else if (fixed->s->lbfactor < 100.0) {
+        median = (ffactor - 100.0) / (balancer->workers->nelts - 1);
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (workers[i].s->lbfactor > median &&
+                &(workers[i]) != fixed)
+                workers[i].s->lbfactor -= median;
+        }
+    } 
+    else {
+        median = (ffactor - 100.0) / balancer->workers->nelts;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            workers[i].s->lbfactor -= median;
+        }
+    } 
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        /* Update the status entires */
+        workers[i].s->lbstatus = workers[i].s->lbfactor;
+    }
+}
+
+/* Invoke handler */
+static int balancer_handler(request_rec *r)
+{
+    void *sconf = r->server->module_config;
+    proxy_server_conf *conf = (proxy_server_conf *)
+        ap_get_module_config(sconf, &proxy_module);
+    apr_array_header_t *proxies = conf->proxies;
+    struct proxy_remote *ents = (struct proxy_remote *)proxies->elts;
+    proxy_balancer *balancer, *bsel = NULL;
+    proxy_runtime_worker *worker, *wsel = NULL;
+    apr_table_t *params = apr_table_make(r->pool, 10);
+    int access_status;
+    int i, n;
+    const char *name;
+
+    /* is this for us? */
+    if (strcmp(r->handler, "balancer-manager"))
+        return DECLINED;
+    r->allowed = (AP_METHOD_BIT << M_GET);
+    if (r->method_number != M_GET)
+        return DECLINED;
+
+    if (r->args) {
+        char *args = apr_pstrdup(r->pool, r->args);
+        char *tok, *val;
+        while (args && *args) {
+            if ((val = ap_strchr_c(args, '='))) {
+                *val++ = '\0';
+                if ((tok = ap_strchr_c(val, '&')))
+                    *tok++ = '\0';
+                if ((access_status = ap_unescape_url(val)) != OK)
+                    return access_status;
+                apr_table_setn(params, args, val);
+                args = tok;
+            }
+            else
+                return HTTP_BAD_REQUEST;
+        }
+    }
+    if ((name = apr_table_get(params, "b")))
+        bsel = ap_proxy_get_balancer(r->pool, conf,
+            apr_pstrcat(r->pool, "balancer://", name, NULL));
+    if ((name = apr_table_get(params, "w"))) {
+        const char *sc = apr_table_get(params, "s");
+        char *asname = NULL;
+        proxy_worker *ws = NULL;
+        if (sc) {
+            asname = apr_pstrcat(r->pool, sc, "://", name, NULL);
+            ws = ap_proxy_get_worker(r->pool, conf, asname);
+        }
+        if (ws) {
+            worker = (proxy_runtime_worker *)bsel->workers->elts;
+            for (n = 0; n < bsel->workers->nelts; n++) {
+                if (strcasecmp(worker->w->name, ws->name) == 0) {
+                    wsel = worker;
+                    break;
+                }
+                ++worker;
+            }
+        }
+    }
+    /* First set the params */
+    if (bsel) {
+        const char *val;
+        if ((val = apr_table_get(params, "ss"))) {
+            if (strlen(val))
+                bsel->sticky = apr_pstrdup(conf->pool, val);
+            else
+                bsel->sticky = NULL;
+        }
+        if ((val = apr_table_get(params, "tm"))) {
+            int ival = atoi(val);
+            if (ival >= 0)
+                bsel->timeout = apr_time_from_sec(ival);
+        }
+    }
+    if (wsel) {
+        const char *val;
+        if ((val = apr_table_get(params, "lf"))) {
+            char *ep;
+            double dval = strtod(val, &ep);
+            if (dval > 1) {
+                wsel->s->lbfactor = dval;
+                if (bsel)
+                    recalc_factors(bsel, wsel);
+            }
+        }
+        if ((val = apr_table_get(params, "wr"))) {
+            if (strlen(val))
+                wsel->w->route = apr_pstrdup(conf->pool, val);
+            else
+                wsel->w->route = NULL;
+        }
+        if ((val = apr_table_get(params, "rr"))) {
+            if (strlen(val))
+                wsel->w->redirect = apr_pstrdup(conf->pool, val);
+            else
+                wsel->w->redirect = NULL;
+        }
+        if ((val = apr_table_get(params, "dw")))
+            wsel->w->status |= PROXY_WORKER_DISABLED;
+        else
+            wsel->w->status &= ~PROXY_WORKER_DISABLED;
+
+    }
+    if (apr_table_get(params, "xml")) {
+        ap_set_content_type(r, "text/xml");
+        ap_rputs("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n", r);
+        ap_rputs("<httpd:manager xmlns:httpd=\"http://httpd.apache.org\">\n", r);
+        ap_rputs("  <httpd:balancers>\n", r);
+        balancer = (proxy_balancer *)conf->balancers->elts;
+        for (i = 0; i < conf->balancers->nelts; i++) {
+            ap_rputs("    <httpd:balancer>\n", r);
+            ap_rvputs(r, "      <httpd:name>", balancer->name, "</httpd:name>\n", NULL);
+            ap_rputs("      <httpd:workers>\n", r);
+            worker = (proxy_runtime_worker *)balancer->workers->elts;
+            for (n = 0; n < balancer->workers->nelts; n++) {
+                ap_rputs("        <httpd:worker>\n", r);
+                ap_rvputs(r, "          <httpd:scheme>", worker->w->scheme,
+                          "</httpd:scheme>\n", NULL);                
+                ap_rvputs(r, "          <httpd:hostname>", worker->w->hostname,
+                          "</httpd:hostname>\n", NULL);                
+               ap_rprintf(r, "          <httpd:loadfactor>%.2f</httpd:loadfactor>\n",
+                          worker->s->lbfactor);
+                ap_rputs("        </httpd:worker>\n", r);
+                ++worker;
+            }
+            ap_rputs("      </httpd:workers>\n", r);
+            ap_rputs("    </httpd:balancer>\n", r);
+            ++balancer;
+        }
+        ap_rputs("  </httpd:balancers>\n", r);
+        ap_rputs("</httpd:manager>", r);         
+    }
+    else {
+        ap_set_content_type(r, "text/html");
+        ap_rputs(DOCTYPE_HTML_3_2
+                 "<html><head><title>Balancer Manager</title></head>\n", r);
+        ap_rputs("<body><h1>Load Balancer Manager for ", r);
+        ap_rvputs(r, ap_get_server_name(r), "</h1>\n\n", NULL);
+        ap_rvputs(r, "<dl><dt>Server Version: ",
+                  ap_get_server_version(), "</dt>\n", NULL);
+        ap_rvputs(r, "<dt>Server Built: ",
+                  ap_get_server_built(), "\n</dt></dl>\n", NULL);
+        balancer = (proxy_balancer *)conf->balancers->elts;
+        for (i = 0; i < conf->balancers->nelts; i++) {
+            ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
+            ap_rvputs(r, "<a href=\"", r->uri, "?b=",
+                      balancer->name + sizeof("balancer://") - 1,
+                      "\">", NULL); 
+            ap_rvputs(r, balancer->name, "</a></h3>\n\n", NULL);
+            ap_rputs("\n\n<table border=\"0\"><tr>"
+                "<th>StickySesion</th><th>Timeout</th>"
+                "</tr>\n<tr>", r);                
+            ap_rvputs(r, "<td>", balancer->sticky, NULL);
+            ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>\n",
+                apr_time_sec(balancer->timeout));
+            ap_rputs("</table>\n", r);
+            ap_rputs("\n\n<table border=\"0\"><tr>"
+                "<th>Scheme</th><th>Host</th>"
+                "<th>Route</th><th>RouteRedir</th>"
+                "<th>Factor</th><th>Status</th>"
+                "</tr>\n", r);
+
+            worker = (proxy_runtime_worker *)balancer->workers->elts;
+            for (n = 0; n < balancer->workers->nelts; n++) {
+
+                ap_rvputs(r, "<tr>\n<td>", worker->w->scheme, "</td><td>", NULL);
+                ap_rvputs(r, "<a href=\"", r->uri, "?b=", 
+                          balancer->name + sizeof("balancer://") - 1,
+                          "&s=", worker->w->scheme, "&w=", worker->w->hostname,
+                          "\">", NULL); 
+                ap_rvputs(r, worker->w->hostname, "</a></td>", NULL);
+                ap_rvputs(r, "<td>", worker->w->route, NULL);
+                ap_rvputs(r, "</td><td>", worker->w->redirect, NULL);
+                ap_rprintf(r, "</td><td>%.2f</td><td>", worker->s->lbfactor);
+                if (worker->w->status & PROXY_WORKER_DISABLED)
+                    ap_rputs("Dis", r);
+                else if (worker->w->status & PROXY_WORKER_IN_ERROR)
+                    ap_rputs("Err", r);
+                else if (worker->w->status & PROXY_WORKER_INITIALIZED)
+                    ap_rputs("Ok", r);
+                else
+                    ap_rputs("-", r);
+                ap_rputs("</td></tr>\n", r);
+
+                ++worker;
+            }
+            ap_rputs("</table>\n", r);
+            ++balancer;
+        }
+        ap_rputs("<hr />\n", r);
+        if (wsel && bsel) {
+            ap_rputs("<h3>Edit worker settings for ", r);
+            ap_rvputs(r, wsel->w->name, "</h3>\n", NULL);
+            ap_rvputs(r, "<form method=\"GET\" action=\"", NULL);
+            ap_rvputs(r, r->uri, "\">\n<dl>", NULL); 
+            ap_rputs("<table><tr><td>Load factor:</td><td><input name=\"lf\" type=text ", r);
+            ap_rprintf(r, "value=\"%.2f\"></td><tr>\n", wsel->s->lbfactor);            
+            ap_rputs("<tr><td>Route:</td><td><input name=\"wr\" type=text ", r);
+            ap_rvputs(r, "value=\"", wsel->w->route, NULL); 
+            ap_rputs("\"></td><tr>\n", r);            
+            ap_rputs("<tr><td>Route Redirect:</td><td><input name=\"rr\" type=text ", r);
+            ap_rvputs(r, "value=\"", wsel->w->redirect, NULL); 
+            ap_rputs("\"></td><tr>\n", r);            
+            ap_rputs("<tr><td>Disabled:</td><td><input name=\"dw\" type=checkbox", r);
+            if (wsel->w->status & PROXY_WORKER_DISABLED)
+                ap_rputs(" checked", r);
+            ap_rputs("></td><tr>\n", r);            
+            ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
+            ap_rvputs(r, "</table>\n<input type=hidden name=\"s\" ", NULL);
+            ap_rvputs(r, "value=\"", wsel->w->scheme, "\">\n", NULL);
+            ap_rvputs(r, "<input type=hidden name=\"w\" ", NULL);
+            ap_rvputs(r, "value=\"", wsel->w->hostname, "\">\n", NULL);
+            ap_rvputs(r, "<input type=hidden name=\"b\" ", NULL);
+            ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
+                      "\">\n</form>\n", NULL);
+            ap_rputs("<hr />\n", r);
+        }
+        else if (bsel) {
+            ap_rputs("<h3>Edit balancer settings for ", r);
+            ap_rvputs(r, bsel->name, "</h3>\n", NULL);
+            ap_rvputs(r, "<form method=\"GET\" action=\"", NULL);
+            ap_rvputs(r, r->uri, "\">\n<dl>", NULL); 
+            ap_rputs("<table><tr><td>StickySession Identifier:</td><td><input name=\"ss\" type=text ", r);
+            if (bsel->sticky)
+                ap_rvputs(r, "value=\"", bsel->sticky, "\"", NULL);
+            ap_rputs("></td><tr>\n<tr><td>Timeout:</td><td><input name=\"tm\" type=text ", r);
+            ap_rprintf(r, "value=\"%" APR_TIME_T_FMT "\"></td></tr>\n",
+                       apr_time_sec(bsel->timeout));
+            ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
+            ap_rvputs(r, "</table>\n<input type=hidden name=\"b\" ", NULL);
+            ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
+                      "\">\n</form>\n", NULL);
+            ap_rputs("<hr />\n", r);
+        }
+        ap_rputs(ap_psignature("",r), r);
+        ap_rputs("</body></html>\n", r);
+    }
+    return OK;
+}
+
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
+    /* manager handler */
+    ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_pre_request(proxy_balancer_pre_request, NULL, NULL, APR_HOOK_FIRST);    
     proxy_hook_post_request(proxy_balancer_post_request, NULL, NULL, APR_HOOK_FIRST);    
 }
