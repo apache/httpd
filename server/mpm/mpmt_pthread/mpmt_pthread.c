@@ -527,7 +527,7 @@ static void check_pipe_of_death(void)
     if (!workers_may_exit) {
         ap_status_t ret;
         char pipe_read_char;
-	int n=1;
+	ap_ssize_t n = 1;
 
         ret = ap_recv(listensocks[0], &pipe_read_char, &n);
         if (ap_canonical_error(ret) == APR_EAGAIN) {
