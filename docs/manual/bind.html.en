@@ -112,7 +112,7 @@
     Listen directives, as in the following examples:</p>
 
     <div class="example"><p><code>
-      Listen 0.0.0.0:80
+      Listen 0.0.0.0:80<br />
       Listen 192.170.2.1:80
     </code></p></div>
 
@@ -122,7 +122,7 @@
     directives like the following:</p>
 
     <div class="example"><p><code>
-      Listen [::]:80
+      Listen [::]:80<br />
       Listen 0.0.0.0:80
     </code></p></div>
 
