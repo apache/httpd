@@ -370,26 +370,18 @@ static int add_cern_meta_data(request_rec *r)
 
     return rv;
 }
-
+static void register_hooks(void)
+{
+    ap_hook_fixups(add_cern_meta_data,NULL,NULL,HOOK_MIDDLE);
+}
 module MODULE_VAR_EXPORT cern_meta_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
-    create_cern_meta_dir_config,	/* dir config creater */
-    merge_cern_meta_dir_configs,	/* dir merger --- default is to override */
+    STANDARD20_MODULE_STUFF,
+    create_cern_meta_dir_config,/* dir config creater */
+    merge_cern_meta_dir_configs,/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server configs */
     cern_meta_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* filename translation */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    add_cern_meta_data,		/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    register_hooks		/* register hooks */
 };

@@ -353,25 +353,17 @@ static const command_rec cookie_log_cmds[] = {
      "name of the tracking cookie"},
     {NULL}
 };
-
+static void register_hooks(void)
+{
+    ap_hook_fixups(spot_cookie,NULL,NULL,HOOK_MIDDLE);
+}
 module MODULE_VAR_EXPORT usertrack_module = {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     make_cookie_dir,            /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     make_cookie_log_state,      /* server config */
     NULL,                       /* merge server configs */
     cookie_log_cmds,            /* command table */
     NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    spot_cookie,                /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    register_hooks		/* register hooks */
 };
