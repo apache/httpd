@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_info.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_info
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map/debug /out:"Debug/mod_info.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_info
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_info.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_info
 
 !ENDIF 
 
