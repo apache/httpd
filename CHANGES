@@ -1,5 +1,8 @@
 Changes with Apache 2.0.54
 
+  *) mod_ssl: If SSLUsername is used, set r->user earlier.  PR 31418.
+     [David Reid]
+
   *) htdigest: Fix permissions of created files.  PR 33765.  [Joe Orton]
 
   *) core_input_filter: Move buckets to a persistent brigade instead of
