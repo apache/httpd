@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/15 14:10:47 $]
+  Last modified at [$Date: 2002/05/15 14:13:29 $]
 
 Release:
 
@@ -188,15 +188,6 @@ Open issues:
     * Release builds: Should we provide Configuration or not?
       Should we 'make all suexec' in src/support?
 	+1: Brian, Jim, Dirkx, Ken +1 (possible suexec path issue, though)
-
-    * root's environment is inherited by the Apache server. Jim & Ken
-      think we should recommend using 'env' to build the
-      appropriate environment. Marc and Alexei don't see any
-      big deal. Martin says that not every "env" has a -u flag. 
-      Also:  TZ should not be dealt with specially any longer now that we 
-      "have PassEnv".  See
-      <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
-      Status: To be handled in 2.0
 
     * Marc's socket options like source routing (kill them?)
 	Marc, Martin say Yes
