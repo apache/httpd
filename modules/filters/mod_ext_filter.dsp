@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_ext_filter.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_ext_filter.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_ext_filter.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_ext_filter.dbgmark"
+	echo rebased > ".\Release\mod_ext_filter.dbr"
 
 # End Custom Build
 

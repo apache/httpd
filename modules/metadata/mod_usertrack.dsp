@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_usertrack.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_usertrack.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_usertrack.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_usertrack.dbgmark"
+	echo rebased > ".\Release\mod_usertrack.dbr"
 
 # End Custom Build
 

@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\mod_mime.so
 SOURCE="$(InputPath)"
 
-".\Release\mod_mime.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\mod_mime.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_mime.dbgmark"
+	echo rebased > ".\Release\mod_mime.dbr"
 
 # End Custom Build
 

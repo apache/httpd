@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\libhttpd.dll
 SOURCE="$(InputPath)"
 
-".\Release\libhttpd.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\libhttpd.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "./os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\libhttpd.dbgmark"
+	echo rebased > ".\Release\libhttpd.dbr"
 
 # End Custom Build
 # Begin Special Build Tool

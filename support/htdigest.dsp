@@ -55,9 +55,9 @@ LINK32=link.exe
 InputPath=.\Release\htdigest.so
 SOURCE="$(InputPath)"
 
-".\Release\htdigest.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\htdigest.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\htdigest.dbgmark"
+	echo rebased > ".\Release\htdigest.dbr"
 
 # End Custom Build
 

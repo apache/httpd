@@ -58,9 +58,9 @@ LINK32=link.exe
 InputPath=.\Release\util_ldap.so
 SOURCE="$(InputPath)"
 
-".\Release\util_ldap.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+".\Release\util_ldap.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\util_ldap.dbgmark"
+	echo rebased > ".\Release\util_ldap.dbr"
 
 # End Custom Build
 
