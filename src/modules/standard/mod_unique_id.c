@@ -69,6 +69,7 @@
 #include "multithread.h"
 
 #ifdef MULTITHREAD
+/* Change to #pragma warning("") to get compile this as we port */
 #error sorry this module does not support multithreaded servers yet
 #endif
 
