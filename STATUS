@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/01/24 12:22:13 $]
+  Last modified at [$Date: 2004/01/28 18:26:38 $]
 
 Release:
 
@@ -57,7 +57,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
          http://www.apache.org/~trawick/13_fatal_exception_patch.20040124
        proof-of-concept modules described at
          http://www.apache.org/~trawick/exception_hook_13.html
-       +1: trawick
+       +1: trawick, stoddard
 
    * isn't ap_die() broken with recognizing recursive errors
        Message-Id: <3F8C56E3.8050501@attglobal.net>
