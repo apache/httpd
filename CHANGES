@@ -1,5 +1,8 @@
 Changes with Apache 2.0.17-dev
 
+  *) Make ab work again by changing its native types to apr types and formats.
+     [Justin Erenkrantz <jerenkrantz@ebuilt.com>]
+
   *) Move the byterange filter and all of the supporting functions back
      to the HTTP module.  The byterange filter turned out to be very
      HTTP specific, and it belongs in the HTTP module.  [Greg Stein]
