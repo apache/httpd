@@ -4060,7 +4060,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
     net->client_socket = csd;
 
     ap_set_module_config(net->c->conn_config, &core_module, csd);
-    ap_add_input_filter("CORE_IN", net, NULL, net->c);
+    ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
     ap_add_output_filter("CORE", net, NULL, net->c);
     return DONE;
 }
