@@ -151,12 +151,12 @@ static other_child_rec *other_children;
 #endif
 
 static pool *pconf;		/* Pool for config stuff */
-static pool *pchild;		/* Pool for httpd child stuff */
 static int my_pid;	/* it seems silly to call getpid all the time */
 static scoreboard *ap_scoreboard_image = NULL;
 static int volatile exit_after_unblock = 0;
 
 struct thread_globals {
+    pool *pchild;		/* Pool for httpd child stuff */
     int srv;
     int csd;
     int requests_this_child;
@@ -188,13 +188,12 @@ void cleanup_scoreboard(void)
 
 
 /* a clean exit from a child with proper cleanup */
-static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
-    if (pchild) {
-	ap_destroy_pool(pchild);
+    if (THREAD_GLOBAL(pchild)) {
+	ap_destroy_pool(THREAD_GLOBAL(pchild));
     }
-    exit(code);
+    _endthread();
 }
 
 
@@ -232,7 +231,7 @@ static void accept_mutex_child_init(pool *p)
 static void accept_mutex_init(pool *p)
 {
     int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
-fprintf(stderr, "Created mutex\n");
+    
     if (rc != 0) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
 		    "Parent cannot create lock semaphore, rc=%d", rc);
@@ -532,7 +531,6 @@ static int wait_or_timeout_counter;
 
 static int wait_or_timeout(ap_wait_t *status)
 {
-    struct timeval tv;
     int ret;
 
     ++wait_or_timeout_counter;
@@ -549,9 +547,8 @@ static int wait_or_timeout(ap_wait_t *status)
     if (ret > 0) {
 	return ret;
     }
-    tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
-    tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
-    ap_select(0, NULL, NULL, NULL, &tv);
+    
+    DosSleep(SCOREBOARD_MAINTENANCE_INTERVAL / 1000);
     return -1;
 }
 
@@ -905,15 +902,15 @@ static void child_main(void *child_num_arg)
     NET_SIZE_T clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
-    ap_listen_rec *lr;
-    ap_listen_rec *last_lr;
+    ap_listen_rec *lr = NULL;
+    ap_listen_rec *first_lr = NULL;
     pool *ptrans;
     conn_rec *current_conn;
     int my_child_num = (int)child_num_arg;
     ap_iol *iol;
+    pool *pchild;
 
     my_pid = getpid();
-    last_lr = NULL;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
      * Note that since restart() just notes that a restart has been
@@ -928,6 +925,7 @@ static void child_main(void *child_num_arg)
      */
     pchild = ap_make_sub_pool(pconf);
     *ppthread_globals = (struct thread_globals *)ap_palloc(pchild, sizeof(struct thread_globals));
+    THREAD_GLOBAL(pchild) = pchild;
     THREAD_GLOBAL(ap_my_generation) = 0;
     THREAD_GLOBAL(requests_this_child) = 0;
     THREAD_GLOBAL(csd) = -1;
@@ -997,23 +995,27 @@ static void child_main(void *child_num_arg)
 
 		/* we remember the last_lr we searched last time around so that
 		   we don't end up starving any particular listening socket */
-		if (last_lr == NULL) {
-		    lr = ap_listeners;
+		if (first_lr == NULL) {
+		    first_lr = ap_listeners;
 		}
-		else {
-		    lr = last_lr->next;
-		}
-		while (lr != last_lr) {
+		
+                lr = first_lr;
+		
+		do {
 		    if (!lr) {
 			lr = ap_listeners;
 		    }
-		    if (FD_ISSET(lr->fd, &THREAD_GLOBAL(main_fds))) break;
+		    
+		    if (FD_ISSET(lr->fd, &THREAD_GLOBAL(main_fds))) {
+                        first_lr = lr->next;
+		        break;
+		    }
 		    lr = lr->next;
-		}
-		if (lr == last_lr) {
+		} while (lr != first_lr);
+		
+		if (lr == first_lr) {
 		    continue;
 		}
-		last_lr = lr;
 		sd = lr->fd;
 	    }
 	    else {
@@ -1181,7 +1183,6 @@ static int make_child(server_rec *s, int slot, time_t now)
     }
 
     ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
-fprintf(stderr, "Starting thread %d\n", slot);
 
     if ((tid = _beginthread(child_main, NULL, 65536, (void *)slot)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, s, "_beginthread: Unable to create new thread");
