@@ -1,9 +1,8 @@
 Changes with Apache 1.3.1
 
-  *) Disable a too problematic entry for application/msword in the magic file
-     for mod_mime_magic. It matched also other Office documents for which
-     application/msword is incorrect.
-     [Ralf S. Engelschall] PR#2608
+  *) Disable the incorrect entry for application/msword in the 
+     mod_mime_magic "magic" file because it also matches other Office
+     documents.  [Ralf S. Engelschall] PR#2608
 
   *) Fix broken RANLIB handling in src/Configure (the entry from
      src/Configuration.tmpl was ignored) and additionally force RANLIB to
