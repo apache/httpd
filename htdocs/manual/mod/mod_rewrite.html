@@ -15,54 +15,86 @@
  VLINK="#000080"
  ALINK="#FF0000"
 >
+<BLOCKQUOTE>
 <!--#include virtual="header.html" -->
 
-<H1 ALIGN="CENTER">Module mod_rewrite</H1>
+<BR>
+<H1 ALIGN="CENTER">Module mod_rewrite<BR>URL Rewriting Engine</H1>
 
 This module is contained in the <CODE>mod_rewrite.c</CODE> file, with Apache
-1.2 and later.  It provides a rule-based rewriting engine to rewrite requested
-URLs on the fly.   <CODE>mod_rewrite</CODE> is not compiled into the server by
-default. To use <CODE>mod_rewrite</CODE> you have to enable the following line
-in the server build Configuration file:
+1.2 and later. It provides a rule-based rewriting engine to rewrite requested
+URLs on the fly. It is not compiled into the server by default. To use
+<CODE>mod_rewrite</CODE> you have to enable the following line in the server
+build <CODE>Configuration</CODE> file:
 <PRE>
     AddModule  modules/standard/mod_rewrite.o
 </PRE>
 
+<HR NOSHADE SIZE=1>
+
+<BR>
 <H2>Summary</H2>
 
-This module uses a rule-based rewriting engine (based on a
-regular-expression parser) to rewrite requested URLs on the fly.
+<BLOCKQUOTE>
+<BLOCKQUOTE>
+<BLOCKQUOTE>
+<EM>,,The great thing about mod_rewrite is it gives you all the
+configurability and flexibility of Sendmail. The downside to
+mod_rewrite is that it gives you all the configurability and
+flexibility of Sendmail.''</EM>
+<DIV ALIGN=RIGHT>
+-- Brian Behlendorf<BR>
+Apache Group
+</DIV>
+</BLOCKQUOTE>
+</BLOCKQUOTE>
+</BLOCKQUOTE>
+
+Welcome to mod_rewrite, the Swiss Army Knife of URL manipulation!
 
 <P>
-It supports an unlimited number of additional rule conditions (which can
-operate on a lot of variables, including HTTP headers) for granular
-matching and external database lookups (either via plain text
-tables, DBM hash files or external processes) for advanced URL
-substitution.
+This module uses a rule-based rewriting engine (based on a regular-expression
+parser) to rewrite requested URLs on the fly. It supports an unlimited number
+of rules and an unlimited number of attached rule conditions for each rule to
+provide a really flexible and powerful URL manipulation mechanism.  The URL
+manipulations can depend on various tests, for instance server variables,
+environment variables, HTTP headers, timestamps and even external database
+lookups in various formats can be used to achieve a really granular URL
+matching. 
 
 <P>
-It operates on the full URLs (including the PATH_INFO part) both in per-server
-context (httpd.conf) and per-dir context (.htaccess) and even can generate
-QUERY_STRING parts on result.   The rewritten result can lead to internal
-sub-processing, external request redirection or to internal proxy throughput.
+This module operates on the full URLs (including the path-info part) both in
+per-server context (<CODE>httpd.conf</CODE>) and per-directory context
+(<CODE>.htaccess</CODE>) and even can generate query-string parts on result.
+The rewritten result can lead to internal sub-processing, external request
+redirection or even to an internal proxy throughput.
 
 <P>
-This module was originally written in April 1996 and 
-gifted exclusively to the The Apache Group in July 1997 by
+But all this functionality and flexibility has its drawback: complexity. So
+don't expect to understand this module in it's whole in just one day.
+<P>
+This module was invented and originally written in April 1996<BR>
+and gifted exclusively to the The Apache Group in July 1997 by
 <P>
 <BLOCKQUOTE>
-    <EM>Ralf S. Engelschall</EM><BR>
+    <A HREF="http://www.engelschall.com/"><TT>Ralf S. Engelschall</TT></A><BR>
     <A HREF="mailto:rse@engelschall.com"><TT>rse@engelschall.com</TT></A><BR>
     <A HREF="http://www.engelschall.com/"><TT>www.engelschall.com</TT></A>
 </BLOCKQUOTE>
 
-<!--%hypertext -->
-<HR>
-<!--/%hypertext -->
+<HR NOSHADE SIZE=1>
+
+<H2>Table Of Contents</H2>
 
 <P>
-<H2>Directives</H2>
-
+<STRONG>Internal Processing</STRONG>
+<UL>
+    <LI><A HREF="#InternalAPI">API Phases</A>
+    <LI><A HREF="#InternalRuleset">Ruleset Processing</A>
+    <LI><A HREF="#InternalBackRefs">Regex Back-Reference Availability</A>
+</UL>
+<P>
+<STRONG>Configuration Directives</STRONG>
 <UL>
     <LI><A HREF="#RewriteEngine">RewriteEngine</A>
     <LI><A HREF="#RewriteOptions">RewriteOptions</A>
@@ -74,15 +106,173 @@ gifted exclusively to the The Apache Group in July 1997 by
     <LI><A HREF="#RewriteCond">RewriteCond</A>
     <LI><A HREF="#RewriteRule">RewriteRule</A>
 </UL>
+<STRONG>Miscellaneous</STRONG>
+<UL>
+    <LI><A HREF="#EnvVar">Environment Variables</A>
+    <LI><A HREF="#Solutions">Practical Solutions</A>
+</UL>
 
-<!--%hypertext -->
-<HR>
-<!--/%hypertext -->
+<HR NOSHADE SIZE=1>
 
+<CENTER>
+<H1><A NAME="Internal">Internal Processing</A></H1>
+</CENTER>
+
+<HR NOSHADE SIZE=1>
+
+<P>
+The internal processing of this module is very complex but needs to be
+explained once even to the average user to avoid common mistakes and to let
+you exploit its full funtionality. 
+
+<H2><A NAME="InternalAPI">API Phases</A></H2>
+
+<P>
+First you have to understand that when Apache processes a HTTP request it does
+this in phases. A hook for each of these phases is provided by the Apache API.
+Mod_rewrite uses two of these hooks: the URL-to-filename translation hook
+which is used after the HTTP request was read and before any authorization
+starts and the Fixup hook which is triggered after the authorization phases
+and after the per-directory config files (<CODE>.htaccess</CODE>) where read,
+but before the content handler is activated.
+
+<P>
+So, after a request comes in and Apache has determined the corresponding
+server (or virtual server) the rewriting engine start processing of all
+mod_rewrite directives from the per-server configuration in the
+URL-to-filename phase. A few steps later when the final data directories are
+found, the per-directory configuration directives of mod_rewrite are triggered
+in the Fixup phase. In both situations mod_rewrite either rewrites URLs to new
+URLs or to filenames, although there is no obvious distinction between them.
+This is a usage of the API which was not intended this way when the API
+was designed, but as of Apache 1.x this is the only way mod_rewrite can
+operate. To make this point more clear remember the following two points:
+
+<OL>
+<LI>The API currently provides only a URL-to-filename hook. Although
+    mod_rewrite rewrites URLs to URLs, URLs to filenames and even
+    filenames to filenames. In Apache 2.0 the two missing hooks 
+    will be added to make the processing more clear. But this
+    point has no drawbacks for the user, it is just a fact which
+    should be remembered: Apache does more in the URL-to-filename hook
+    then the API intends for it.
+<P>
+<LI>Unbelievably mod_rewrite provides URL manipulations in per-directory
+    context, i.e. within <CODE>.htaccess</CODE> files, although these are
+    reached a very long time after the URLs were translated to filenames (this
+    has to be this way, because <CODE>.htaccess</CODE> files stay in the
+    filesystem, so processing has already been reached this stage of
+    processing). In other words: According to the API phases at this time it
+    is too late for any URL manipulations.  To overcome this chicken and egg
+    problem mod_rewrite uses a trick: When you manipulate a URL/filename in
+    per-directory context mod_rewrite first rewrites the filename back to its
+    corresponding URL (which it usually impossible, but see the
+    <CODE>RewriteBase</CODE> directive below for the trick to achieve this)
+    and then initiates a new internal sub-request with the new URL. This leads
+    to a new processing of the API phases from the beginning. 
+    <P>
+    Again mod_rewrite tries hard to make this complicated step totally
+    transparent to the user, but you should remember here: While URL
+    manipulations in per-server context are really fast and efficient,
+    per-directory rewrites are slow and inefficient due to this chicken and
+    egg problem. But on the other hand this is the only way mod_rewrite can
+    provide (locally restricted) URL manipulatiuons to the avarage user.
+</OL>
+
+<P>
+Don't forget these two points!
+
+<H2><A NAME="InternalRuleset">Ruleset Processing</A></H2>
+
+Now when mod_rewrite is triggered in these two API phases, it reads the
+configured rulesets from its configuration structure (which itself was either
+created on startup for per-server context or while the directory walk of the
+Apache kernel for per-directory context).  Then the URL rewriting engine is
+started with the contained ruleset (one or more rules together with their
+conditions). The operation of the URL rewriting engine itself is exactly the
+same for both configuration contexts. Just the final result processing is
+different.
+
+<P>
+The order of rules in the ruleset is important because the rewriting engine
+processes them in a special order. And this order is not very obvious. The
+rule is this: The rewriting engine loops through the ruleset rule by rule
+(<CODE>RewriteRule</CODE> directives!) and when a particular rule matched it
+optionally loops through existing corresponding conditions
+(<CODE>RewriteCond</CODE> directives). Because of historical reasons the 
+conditions are given first, the control flow is a little bit winded. See
+Figure 1 for more details.
+
+<P>
+<DIV ALIGN=CENTER>
+<table cellspacing=0 cellpadding=2 border=0>
+<tr>
+<td bgcolor="#cccccc"><img src="../images/mod_rewrite_fig1.gif"
+                           alt="[Needs graphics capability to display]"></td>
+</tr>
+<tr>
+<td align=center>
+<strong>Figure 1:</strong> The control flow through the rewriting ruleset
+</td>
+</tr>
+</table>
+</DIV>
+
+<P>
+As you can see, first the URL is matched against the <EM>Pattern</EM> of each
+rule. When it fails mod_rewrite immediately stops processing this rule and
+continues with the next rule. If the <EM>Pattern</EM> matched, mod_rewrite
+looks for corresponding rule conditions. If none are present, it just
+substitutes the URL with a new value which is constructed from the string
+<EM>Substitution</EM> and goes on with its rule-looping. But if conditions But
+if conditions exists, it starts an inner loop for processing them in order
+they are listed. For conditions the logic is different: We don't match a
+pattern against the current URL. Instead we first create a string
+<EM>TestString</EM> by expanding variables, back-references, map lookups, etc.
+and then we try to match <EM>TestPattern</EM> against it. If the pattern
+doesn't match, the complete set of conditions and the corresponding rule fails.
+If the pattern matches, then the next condition is processed until no more
+condition is available. If all conditions matched processing is continued with
+the substitution of the URL with <EM>Substitution</EM>.
+
+<H2><A NAME="InternalBackRefs">Regex Back-Reference Availability</A></H2>
+
+One important thing here has to be rememberd: Whenever you
+use parenthesis in <EM>Pattern</EM> or in one of the <EM>TestPattern</EM>
+back-reference are internally created which can be used with the
+strings <CODE>$N</CODE> and <CODE>%N</CODE> (see below). And these
+are available for creating the strings <EM>Substitution</EM> and
+<EM>TestCond</EM>. Figure 2 shows at which locations the back-references are
+transfered to for expansion.
+
+<P>
+<DIV ALIGN=CENTER>
+<table  cellspacing=0 cellpadding=2 border=0>
+<tr>
+<td bgcolor="#cccccc"><img src="../images/mod_rewrite_fig2.gif"
+                           alt="[Needs graphics capability to display]"></td>
+</tr>
+<tr>
+<td align=center>
+<strong>Figure 2:</strong> The back-reference flow through a rule
+</td>
+</tr>
+</table>
+</DIV>
+
+<P>
+We know, this was a crash course of mod_rewrite's internal processing.  But
+you will benefit from this knowledge when reading the following documentation
+of the available directives.
+
+<P>
+<HR NOSHADE SIZE=1>
 
 <CENTER>
 <H1><A NAME="Configuration">Configuration Directives</A></H1>
 </CENTER>
+
+<HR NOSHADE SIZE=1>
 
 <H3><A NAME="RewriteEngine">RewriteEngine</A></H3>
 <A
@@ -111,8 +301,7 @@ all <TT>RewriteRule</TT> directives!
 <P>
 Note that, by default, rewrite configurations are not inherited.
 This means that you need to have a <TT>RewriteEngine on</TT>
-directive for each virtual host you wish to use it in, unless <A
-HREF="#RewriteOptions">RewriteOptions inherit</A> is enabled.
+directive for each virtual host you wish to use it in.
 
 <P>
 <hr noshade size=1>
@@ -172,9 +361,9 @@ with a slash ('<TT>/</TT>') then it is assumed to be relative to the
 config.
 
 <P>
-<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-To disable the logging of rewriting actions it is not recommended
+<STRONG>Notice</STRONG>: To disable the logging of rewriting actions it is not recommended
 to set <EM>Filename</EM>
 to <CODE>/dev/null</CODE>, because although the rewriting engine does
 not create output to a logfile it still creates the logfile
@@ -186,9 +375,9 @@ To disable logging either remove or comment out the
 </TABLE>
 
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-SECURITY: See the <A
+<STRONG>Security</STRONG>: See the <A
 HREF="../misc/security_tips.html">Apache Security
 Tips</A> document for details on why your security could be compromised if the
 directory where logfiles are stored is writable by anyone other than the user
@@ -232,7 +421,7 @@ To disable the logging of rewriting actions simply set <EM>Level</EM> to 0.
 This disables all rewrite action logs.
 
 <P>
-<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
 <STRONG>Notice:</STRONG> Using a high value for <EM>Level</EM> will slow down your Apache
 server dramatically! Use the rewriting logfile only for debugging or at least
@@ -325,16 +514,16 @@ can be used:
 <LI><STRONG>Standard Plain Text</STRONG><BR>
     MapType: <CODE>txt</CODE>, MapSource: Unix filesystem path to valid regular file
     <P>
-	This is the standard rewriting map feature where the <EM>MapSource</EM> is
-	a plain ASCII file containing either blank lines, comment lines (starting
-	with a '#' character) or pairs like the following - one per line.
+    This is the standard rewriting map feature where the <EM>MapSource</EM> is
+    a plain ASCII file containing either blank lines, comment lines (starting
+    with a '#' character) or pairs like the following - one per line.
 
     <BLOCKQUOTE><STRONG>
     <EM>MatchingKey</EM>  <EM>SubstValue</EM>
     </STRONG></BLOCKQUOTE>
 
     <P>
-	Example:
+    Example:
 <P>
 <table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <TR><TD><PRE>
@@ -358,14 +547,14 @@ RewriteMap real-to-host txt:/path/to/file/map.txt
 <LI><STRONG>Randomized Plain Text</STRONG><BR>
     MapType: <CODE>rnd</CODE>, MapSource: Unix filesystem path to valid regular file
     <P>
-	This is identical to the Standard Plain Text variant above but with a special
-	post-processing feature: After looking up a value it is parsed according
+    This is identical to the Standard Plain Text variant above but with a special
+    post-processing feature: After looking up a value it is parsed according
     to contained ``<TT>|</TT>'' characters which have the meaning of ``or''.  Or
     in other words: they indicate a set of alternatives from which the actual
     returned value is choosen randomly. Although this sounds crazy and useless, it
     was actually designed for load balancing in a reverse proxy situation where
     the looked up values are server names.
-	Example:
+    Example:
 <P>
 <table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
 <TR><TD><PRE>
@@ -389,8 +578,8 @@ RewriteMap servers rnd:/path/to/file/map.txt
 <LI><STRONG>Hash File</STRONG><BR>
     MapType: <CODE>dbm</CODE>, MapSource: Unix filesystem path to valid regular file
     <P>
-	Here the source is a binary NDBM format file containing the same contents
-	as a <EM>Plain Text</EM> format file, but in a special representation
+    Here the source is a binary NDBM format file containing the same contents
+    as a <EM>Plain Text</EM> format file, but in a special representation
     which is optimized for really fast lookups. You can create such a file with
     any NDBM tool or with the following Perl script:
     <P>
@@ -411,7 +600,7 @@ while (&lt;TXT&gt;) {
 dbmclose(%DB);
 close(TXT)</PRE></TD></TR>
     </TABLE>
-	<P>
+    <P>
     <table border=0 cellspacing=1 cellpadding=5 bgcolor="#f0f0f0">
     <TR><TD><PRE>$ txt2dbm map.txt map.db </PRE></TD></TR>
     </TABLE>
@@ -479,9 +668,9 @@ context it is of course possible to <STRONG>use</STRONG> this map in per-directo
 context.
 
 <P>
-<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-For plain text and DBM format files the looked-up keys are cached in-core
+<STRONG>Notice:</STRONG> For plain text and DBM format files the looked-up keys are cached in-core
 until the <TT>mtime</TT> of the mapfile changes or the server does a
 restart. This way you can have map-functions in rules which are used
 for <STRONG>every</STRONG> request. This is no problem, because the external lookup
@@ -526,9 +715,9 @@ will be usually be wrong!</STRONG> There you have to use the <TT>RewriteBase</TT
 directive to specify the correct URL-prefix.
 
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-So, if your webserver's URLs are <STRONG>not</STRONG> directly
+<STRONG>Notice:</STRONG> If your webserver's URLs are <STRONG>not</STRONG> directly
 related to physical file paths, you have to use <TT>RewriteBase</TT> in every
 <TT>.htaccess</TT> files where you want to use <TT>RewriteRule</TT>
 directives.
@@ -566,10 +755,10 @@ In the above example, a request to <TT>/xyz/oldstuff.html</TT> gets correctly
 rewritten to the physical file <TT>/abc/def/newstuff.html</TT>.
 
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
 <font size=-1>
-<STRONG>For the Apache hackers:</STRONG><BR>
+<STRONG>Notice - For the Apache hackers:</STRONG><BR>
 The following list gives detailed information about the internal
 processing steps:
 
@@ -626,7 +815,7 @@ The <TT>RewriteCond</TT> directive defines a rule condition. Precede a
 directives.
 
 The following rewriting rule is only used if its pattern matches the current
-state of the URI <STRONG>AND</STRONG> if these additional conditions apply, too.
+state of the URI <STRONG>and</STRONG> if these additional conditions apply, too.
 
 <P>
 <EM>TestString</EM> is a string which can contains the following
@@ -741,11 +930,11 @@ IS_SUBREQ<BR>
 </TABLE>
 
 <P>
-<table width="70%" border=0 bgcolor="#f0f0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-These variables all correspond to the similar named HTTP MIME-headers, C
-variables of the Apache server or <TT>struct tm</TT> fields of the Unix
-system.
+<STRONG>Notice:</STRONG> These variables all correspond to the similar named
+HTTP MIME-headers, C variables of the Apache server or <TT>struct tm</TT>
+fields of the Unix system.
 </TD></TR>
 </TABLE>
 
@@ -861,8 +1050,13 @@ subrequest to determine the check, so use it with care because it decreases
 your servers performance!
 </UL>
 <P>
-Notice: All of these tests can also be prefixed by a not ('!') character
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
+<TR><TD>
+<STRONG>Notice:</STRONG>
+All of these tests can also be prefixed by a not ('!') character
 to negate their meaning.
+</TD></TR>
+</TABLE>
 </OL>
 
 <P>
@@ -986,9 +1180,9 @@ for special cases where it is better to match the negative pattern or as a
 last default rule.
 
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-<STRONG>Notice!</STRONG> When using the NOT character to negate a pattern you cannot
+<STRONG>Notice:</STRONG> When using the NOT character to negate a pattern you cannot
 have grouped wildcard parts in the pattern. This is impossible because when
 the pattern does NOT match, there are no contents for the groups. In
 consequence, if negated patterns are used, you cannot use <TT>$N</TT> in the
@@ -1038,7 +1232,7 @@ QUERY_STRING.  When you want to erase an existing query string, end the
 substitution string with just the question mark.
 
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
 <STRONG>Notice</STRONG>: There is a special feature. When you prefix a substitution
 field with <TT>http://</TT><EM>thishost</EM>[<EM>:thisport</EM>] then
@@ -1047,7 +1241,11 @@ implicit external redirect URLs is a useful and important feature when
 used in combination with a mapping-function which generates the hostname
 part.  Have a look at the first example in the example section below to
 understand this.
+</TD></TR>
+</TABLE>
 <P>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
+<TR><TD>
 <STRONG>Remember:</STRONG> An unconditional external redirect to your own server will
 not work with the prefix <TT>http://thishost</TT> because of this feature.
 To achieve such a self-redirect, you have to use the <STRONG>R</STRONG>-flag (see
@@ -1066,7 +1264,7 @@ as the third argument to the <TT>RewriteRule</TT> directive. <EM>Flags</EM> is a
 comma-separated list of the following flags:
 
 <UL>
-<LI>'<STRONG><CODE>redirect|R</CODE>[=<EM>code</EM>]</STRONG>' (force <A NAME="redirect"><STRONG>r</STRONG>edirect</A>)<BR>
+<LI>'<STRONG><CODE>redirect|R</CODE> [=<EM>code</EM>]</STRONG>' (force <A NAME="redirect"><STRONG>r</STRONG>edirect</A>)<BR>
     Prefix <EM>Substitution</EM>
     with <CODE>http://thishost[:thisport]/</CODE> (which makes the new URL a URI) to
     force a external redirection. If no <EM>code</EM> is given a HTTP response
@@ -1193,10 +1391,10 @@ comma-separated list of the following flags:
     typical example is the use of <TT>mod_alias</TT> and
     <TT>mod_rewrite</TT>..
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
 <font size=-1>
-    <STRONG>For the Apache hackers:</STRONG><BR>
+    <STRONG>Notice - For the Apache hackers:</STRONG><BR>
     If the current Apache API had a
     filename-to-filename hook additionally to the URI-to-filename hook then
     we wouldn't need this flag!  But without  such a hook this flag is the
@@ -1214,21 +1412,21 @@ comma-separated list of the following flags:
     (This is <STRONG>not</STRONG> the same as the 'chain|C' flag!)
 <P>
 <LI>'<STRONG><CODE>env|E=</CODE></STRONG><EM>VAR</EM>:<EM>VAL</EM>' (set <STRONG>e</STRONG>nvironment variable)<BR>
-	This forces an environment variable named <EM>VAR</EM> to be set to the
-	value <EM>VAL</EM>, where <EM>VAL</EM> can contain regexp backreferences
-	<TT>$N</TT> and <TT>%N</TT> which will be expanded. You can use this flag
-	more than once to set more than one variable. The variables can be later
-	dereferenced at a lot of situations, but the usual location will be from
-	within XSSI (via <TT>&lt;!--#echo var="VAR"--&gt;</TT>) or CGI (e.g.
-	<TT>$ENV{'VAR'}</TT>).  But additionally you can also dereference it in a
-	following RewriteCond pattern via <TT>%{ENV:VAR}</TT>. Use this to strip
-	but remember information from URLs.
+    This forces an environment variable named <EM>VAR</EM> to be set to the
+    value <EM>VAL</EM>, where <EM>VAL</EM> can contain regexp backreferences
+    <TT>$N</TT> and <TT>%N</TT> which will be expanded. You can use this flag
+    more than once to set more than one variable. The variables can be later
+    dereferenced at a lot of situations, but the usual location will be from
+    within XSSI (via <TT>&lt;!--#echo var="VAR"--&gt;</TT>) or CGI (e.g.
+    <TT>$ENV{'VAR'}</TT>).  But additionally you can also dereference it in a
+    following RewriteCond pattern via <TT>%{ENV:VAR}</TT>. Use this to strip
+    but remember information from URLs.
 </UL>
 
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-Remember: Never forget that <EM>Pattern</EM> gets applied to a complete URL
+<STRONG>Notice:</STRONG> Never forget that <EM>Pattern</EM> gets applied to a complete URL
 in per-server configuration files. <STRONG>But in per-directory configuration
 files, the per-directory prefix (which always is the same for a specific
 directory!) gets automatically <EM>removed</EM> for the pattern matching and
@@ -1243,9 +1441,9 @@ external redirect or proxy throughput (if flag <STRONG>P</STRONG> is used!) is f
 </TABLE>
 
 <P>
-<table width="70%" border=0 bgcolor="#fff0f0" cellspacing=0 cellpadding=10>
+<table width="70%" border=0 bgcolor="#e0e0f0" cellspacing=0 cellpadding=10>
 <TR><TD>
-Notice!  To enable the rewriting engine for per-directory configuration files
+<STRONG>Notice:</STRONG> To enable the rewriting engine for per-directory configuration files
 you need to set ``<TT>RewriteEngine On</TT>'' in these files <STRONG>and</STRONG>
 ``<TT>Option FollowSymLinks</TT>'' enabled. If your administrator has
 disabled override of <TT>FollowSymLinks</TT> for a user's directory, then
@@ -1381,14 +1579,13 @@ RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
 </BLOCKQUOTE>
 </BLOCKQUOTE>
 
-
-<!--%hypertext -->
-<HR>
-<!--/%hypertext -->
+<HR NOSHADE SIZE=1>
 
 <CENTER>
-<H1><A NAME="Additional">Additional Features</A></H1>
+<H1><A NAME="Miscelleneous">Miscellaneous</A></H1>
 </CENTER>
+
+<HR NOSHADE SIZE=1>
 
 <H2><A NAME="EnvVar">Environment Variables</A></H2>
 
@@ -1416,8 +1613,22 @@ SCRIPT_URI=http://en2.en.sdm.de/u/rse/
 </PRE>
 </BLOCKQUOTE>
 
+<HR NOSHADE SIZE=1>
+
+<H2><A NAME="Solutions">Practical Solutions</A></H2>
+
+There is a comprehensive collection of practical solutions for URL-based
+problems available by the author of mod_rewrite.  Here you will find real-life
+rulesets and additional information.
+
+<BLOCKQUOTE>
+<STRONG>Apache URL Rewriting Guide</STRONG><BR>
+<STRONG><A HREF="http://www.engelschall.com/pw/apache/rewriteguide/"
+        >http://www.engelschall.com/pw/apache/rewriteguide/</A></STRONG>
+</BLOCKQUOTE>
 
 <!--#include virtual="footer.html" -->
+<BLOCKQUOTE>
 </BODY>
 </HTML>
 <!--/%hypertext -->
