@@ -164,10 +164,10 @@
   <p>
   Embedded scripting options which run as part of the server itself,
   such as mod_php, mod_perl, mod_tcl, and mod_python, run under the
-  identify of the server itself, (see the <directive 
-  module="mpm_common">User</directive> directive) and therefore
+  identity of the server itself (see the <directive 
+  module="mpm_common">User</directive> directive), and therefore
   scripts executed by these engines potentially can access anything the
-  server user can. some scripting engines may provide restrictions, but
+  server user can. Some scripting engines may provide restrictions, but
   it is better to be safe and assume not.</p>
 
   </section>
