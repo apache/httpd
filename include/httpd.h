@@ -852,6 +852,7 @@ struct conn_rec {
 
     /** Connection to the client */
     BUFF *client;
+    apr_socket_t *client_socket;
 
     /* Who is the client? */
 

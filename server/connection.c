@@ -258,11 +258,14 @@ int ap_process_http_connection(conn_rec *c)
    structure, but for now...
 */
 
-conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
+conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, 
+                            apr_socket_t *inout,
 			    const struct sockaddr_in *remaddr,
 			    const struct sockaddr_in *saddr, long id)
 {
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
+    BUFF *conn_io = ap_bcreate(p, B_RDWR);
+    ap_bpush_socket(conn_io, inout);
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
@@ -276,7 +279,8 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
     conn->local_ip = apr_pstrdup(conn->pool,
 				inet_ntoa(conn->local_addr.sin_addr));
     conn->base_server = server;
-    conn->client = inout;
+    conn->client = conn_io;
+    conn->client_socket = inout;
 
     conn->remote_addr = *remaddr;
     conn->remote_ip = apr_pstrdup(conn->pool,
@@ -289,12 +293,12 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
 
 
 
-conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
+conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, 
                                 apr_socket_t *conn_socket, long id)
 {
     struct sockaddr_in *sa_local, *sa_remote;
 
     apr_get_local_name(&sa_local, conn_socket);
     apr_get_remote_name(&sa_remote, conn_socket);
-    return ap_new_connection(p, server, inout, sa_remote, sa_local, id);
+    return ap_new_connection(p, server, conn_socket, sa_remote, sa_local, id);
 }
