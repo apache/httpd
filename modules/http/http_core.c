@@ -3480,16 +3480,14 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
              * return APR_ENOTIMPL seems the cleanest way to handle this 
              * case.
              */
-            if (rv == APR_ENOTIMPL) {
+            if (rv == APR_ENOTIMPL)
 #endif
+            {
                 apr_size_t unused_bytes_sent;
 
                 rv = send_the_file(c, fd, &hdtr, foffset, flen,
                                    &unused_bytes_sent);
-    
-#if APR_HAS_SENDFILE
             }
-#endif
             fd = NULL;
         }
         else {
