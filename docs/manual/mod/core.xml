@@ -140,25 +140,6 @@ response without an explicit character set</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AddModule</name>
-<syntax>AddModule <em>module</em> [<em>module</em>] ...</syntax>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>The server can have modules compiled in which are not
-    actively in use. This directive can be used to enable the use
-    of those modules. The server comes with a pre-loaded list of
-    active modules; this list can be cleared with the <directive
-    module="core">ClearModuleList</directive> directive.</p>
-
-    <p>For example:</p>
-<example>
-AddDefaultCharset utf-8
-</example>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>AllowOverride</name>
 <description>Sets the types of directives that are allowed in
 .htaccess files</description>
