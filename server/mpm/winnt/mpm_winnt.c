@@ -431,6 +431,8 @@ static int set_listeners_noninheritable(apr_pool_t *p)
     SOCKET nsd;
     HANDLE hProcess = GetCurrentProcess();
 
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "set_listeners_noninheritable: Marking listeners.");
     for (lr = ap_listeners; lr; lr = lr->next) {
         apr_os_sock_get(&nsd,lr->sd);
         if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 0,
@@ -474,7 +476,7 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
 /*
  *
  */
-static int get_scoreboard_from_parent(server_rec *s)
+void get_scoreboard_from_parent(server_rec *s)
 {
     apr_status_t rv;
     HANDLE pipe;
@@ -482,30 +484,31 @@ static int get_scoreboard_from_parent(server_rec *s)
     DWORD BytesRead;
     void *sb_shared;
 
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "Child %d: Retrieving scoreboard from parent.", my_pid);
+
     pipe = GetStdHandle(STD_INPUT_HANDLE);
     if (!ReadFile(pipe, &sb_os_shm, sizeof(sb_os_shm),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(sb_os_shm))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "child: Unable to access scoreboard handle from parent");
-        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-        exit(1);
+                     "Child %d: Unable to retrieve the scoreboard from the parent", my_pid);
+        exit(APEXIT_CHILDINIT);
     }
     if ((rv = apr_os_shm_put(&ap_scoreboard_shm, &sb_os_shm, s->process->pool)) 
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                     "child: Unable to access scoreboard handle from parent");
-        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-        exit(1);
+                     "Child %d: Unable to access the scoreboard from the parent", my_pid);
+        exit(APEXIT_CHILDINIT);
     }
 
     rv = ap_reopen_scoreboard(pchild, &ap_scoreboard_shm, 1);
     if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, "Looks like we're gonna die %d %x", rv, ap_scoreboard_shm);
-        exit(APEXIT_INIT); /* XXX need to return an error from this function */
+	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, 
+                     "Child %d: Unable to reopen the scoreboard from the parent", my_pid);
+        exit(APEXIT_CHILDINIT);
     }
     ap_init_scoreboard(sb_shared);
-    return 1;
 }
 
 /* 
@@ -514,21 +517,22 @@ static int get_scoreboard_from_parent(server_rec *s)
  * exclusively in the child process, receives them from the parent and
  * makes them availeble in the child.
  */
-static int get_listeners_from_parent(server_rec *s)
+void get_listeners_from_parent(server_rec *s)
 {
     WSAPROTOCOL_INFO WSAProtocolInfo;
     HANDLE pipe;
     ap_listen_rec *lr;
     DWORD BytesRead;
-    int num_listeners = 0;
+    int lcnt = 0;
     SOCKET nsd;
+
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "Child %d: getting listeners from parent", my_pid);
 
     /* Set up a default listener if necessary */
     if (ap_listeners == NULL) {
         ap_listen_rec *lr;
         lr = apr_palloc(s->process->pool, sizeof(ap_listen_rec));
-        if (!lr)
-            return 0;
         lr->sd = NULL;
         lr->next = ap_listeners;
         ap_listeners = lr;
@@ -539,34 +543,30 @@ static int get_listeners_from_parent(server_rec *s)
      */
     pipe = GetStdHandle(STD_INPUT_HANDLE);
 
-    for (lr = ap_listeners; lr; lr = lr->next) {
+    for (lr = ap_listeners; lr; lr = lr->next, ++lcnt) {
         if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
                       &BytesRead, (LPOVERLAPPED) NULL)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                          "setup_inherited_listeners: Unable to read socket data from parent");
-            ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-            exit(1);
+            exit(APEXIT_CHILDINIT);
         }
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "Child %d: setup_inherited_listener() read = %d bytes of WSAProtocolInfo.", my_pid);
         nsd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
                         &WSAProtocolInfo, 0, 0);
         if (nsd == INVALID_SOCKET) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf,
                          "Child %d: setup_inherited_listeners(), WSASocket failed to open the inherited socket.", my_pid);
-            ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-            exit(1);
+            exit(APEXIT_CHILDINIT);
         }
         apr_os_sock_put(&lr->sd, &nsd, pconf);
-        num_listeners++;
     }
     CloseHandle(pipe);
 
     if (!set_listeners_noninheritable(pconf)) {
-        return 1;
+        exit(APEXIT_CHILDINIT);
     }
 
-    return num_listeners;
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "Child %d: retrieved %d listeners from parent", my_pid, lcnt);
 }
 
 
@@ -1094,8 +1094,7 @@ static void child_main()
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK,APLOG_ERR, status, ap_server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
-        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-        exit(0);
+        exit(APEXIT_CHILDINIT);
     }
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Acquired the start mutex.", my_pid);
@@ -1277,6 +1276,78 @@ static void child_main()
     CloseHandle(exit_event);
 }
 
+static int send_scoreboard_to_child(apr_pool_t *p, HANDLE hProcess, HANDLE hPipeWrite)
+{
+    apr_status_t rv;
+    HANDLE sb_os_shm;
+    HANDLE dup_os_shm;
+    HANDLE hCurrentProcess = GetCurrentProcess();
+    DWORD BytesWritten;
+
+    if ((rv = apr_os_shm_get(&sb_os_shm, ap_scoreboard_shm)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Unable to retrieve the scoreboard handle");
+        return -1;
+    }
+    if (!DuplicateHandle(hCurrentProcess, sb_os_shm, hProcess, &dup_os_shm,
+                         0, FALSE, DUPLICATE_SAME_ACCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to duplicate the scoreboard handle to the child");
+        return -1;
+    }
+    if (!WriteFile(hPipeWrite, &dup_os_shm, sizeof(dup_os_shm),
+                   &BytesWritten, (LPOVERLAPPED) NULL)
+        || (BytesWritten != sizeof(dup_os_shm))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to send the scoreboard handle to the child");
+        return -1;
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "Parent: Sent the scoreboard to the child");
+    return 0;
+}
+
+static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPipeWrite)
+{
+    int lcnt = 0;
+    ap_listen_rec *lr;
+    LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
+    DWORD BytesWritten;
+
+    /* Run the chain of open sockets. For each socket, duplicate it 
+     * for the target process then send the WSAPROTOCOL_INFO 
+     * (returned by dup socket) to the child.
+     */
+    for (lr = ap_listeners; lr; lr = lr->next, ++lcnt) {
+        int nsd;
+        lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
+        apr_os_sock_get(&nsd,lr->sd);
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+                     "Parent: Duplicating socket %d and sending it to child process %d", 
+                     nsd, dwProcessId);
+        if (WSADuplicateSocket(nsd, dwProcessId,
+                               lpWSAProtocolInfo) == SOCKET_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf,
+                         "Parent: WSADuplicateSocket failed for socket %d. Check the FAQ.", lr->sd );
+            return -1;
+        }
+
+        if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
+                       &BytesWritten,
+                       (LPOVERLAPPED) NULL)
+                || BytesWritten != sizeof(WSAPROTOCOL_INFO)) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                         "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
+            return -1;
+        }
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "Parent: Sent the %d listeners to child %d", lcnt, dwProcessId);
+    return 0;
+}
+
 static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_event)
 {
     int rv;
@@ -1289,8 +1360,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
     PROCESS_INFORMATION pi;   /* filled in on call to CreateProcess */
 
-    ap_listen_rec *lr;
-    DWORD BytesWritten;
     HANDLE hPipeRead;
     HANDLE hPipeWrite;
     HANDLE hPipeWriteDup;
@@ -1298,11 +1367,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     HANDLE hShareError;
     HANDLE hShareErrorDup;
     HANDLE hCurrentProcess = GetCurrentProcess();
-    HANDLE sb_os_shm;
-    HANDLE dup_os_shm;
     SECURITY_ATTRIBUTES sa = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
-
-    LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
 
     sa.nLength = sizeof(sa);
     sa.bInheritHandle = TRUE;
@@ -1419,36 +1484,32 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     si.hStdOutput  = hNullOutput;
     si.hStdError   = hShareError;
 
-    if (!CreateProcess(NULL, pCommand, NULL, NULL, 
+    rv = CreateProcess(NULL, pCommand, NULL, NULL, 
                        TRUE,               /* Inherit handles */
                        CREATE_SUSPENDED,   /* Creation flags */
                        pEnvBlock,          /* Environment block */
                        NULL,
-                       &si, &pi)) {
+                       &si, &pi);
+
+    /* Undo everything we created for the child only
+     */
+    CloseHandle(hPipeRead);
+    CloseHandle(hNullOutput);
+    CloseHandle(hShareError);
+    _putenv("AP_PARENT_PID=");
+    _putenv("AP_MY_GENERATION=");
+
+    if (!rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Not able to create the child process.");
-        /*
-         * We must close the handles to the new process and its main thread
-         * to prevent handle and memory leaks.
-         */ 
+                     "Parent: Failed to create the child process.");
         CloseHandle(hPipeWrite);
-        CloseHandle(hPipeRead);
-        CloseHandle(hNullOutput);
-        CloseHandle(hShareError);
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
         return -1;
     }
 
-    CloseHandle(hPipeRead);
-    CloseHandle(hNullOutput);
-    CloseHandle(hShareError);
-
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", pi.dwProcessId);
-
-    SetEnvironmentVariable("AP_PARENT_PID",NULL);
-    *child_proc = pi.hProcess;
 
     /* Create the child_exit_event, apCchild_pid. */
     sa.nLength = sizeof(sa);
@@ -1477,55 +1538,19 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      */
     Sleep(1000);
 
-    if ((rv = apr_os_shm_get(&sb_os_shm, ap_scoreboard_shm)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                     "Parent: Unable to retrieve the scoreboard handle");
-        return -1;
-    }
-    if (!DuplicateHandle(hCurrentProcess, sb_os_shm, pi.hProcess, &dup_os_shm,
-                         0, FALSE, DUPLICATE_SAME_ACCESS)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to duplicate the scoreboard handle to the child");
-        return -1;
-    }
-    if (!WriteFile(hPipeWrite, &dup_os_shm, sizeof(dup_os_shm),
-                   &BytesWritten, (LPOVERLAPPED) NULL)
-        || (BytesWritten != sizeof(dup_os_shm))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to send the scoreboard handle to the child");
+    if (send_scoreboard_to_child(p, pi.hProcess, hPipeWrite)) {
+        CloseHandle(hPipeWrite);
         return -1;
     }
 
-    /* Run the chain of open sockets. For each socket, duplicate it 
-     * for the target process then send the WSAPROTOCOL_INFO 
-     * (returned by dup socket) to the child.
-     */
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        int nsd;
-        lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
-        apr_os_sock_get(&nsd,lr->sd);
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "Parent: Duplicating socket %d and sending it to child process %d", 
-                     nsd, pi.dwProcessId);
-        if (WSADuplicateSocket(nsd, pi.dwProcessId,
-                               lpWSAProtocolInfo) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf,
-                         "Parent: WSADuplicateSocket failed for socket %d. Check the FAQ.", lr->sd );
-            return -1;
-        }
-
-        if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
-                       &BytesWritten,
-                       (LPOVERLAPPED) NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                         "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
-            return -1;
-        }
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "Parent: BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
+    if (send_listeners_to_child(p, pi.dwProcessId, hPipeWrite)) {
+        CloseHandle(hPipeWrite);        
+        return -1;
     }
 
     CloseHandle(hPipeWrite);        
+
+    *child_proc = pi.hProcess;
 
     return 0;
 }
@@ -1653,9 +1678,23 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     }
     else {
         /* The child process exited prematurely due to a fatal error. */
-        restart_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf, 
-                     "Parent: CHILD PROCESS FAILED -- Restarting the child process.");
+        DWORD exitcode;
+        if (!GetExitCodeProcess(event_handles[CHILD_HANDLE], &exitcode)) {
+            /* HUH? We did exit, didn't we? */
+            exitcode = APEXIT_CHILDFATAL;
+        }
+        if (   exitcode == APEXIT_CHILDFATAL 
+            || exitcode == APEXIT_CHILDINIT
+            || exitcode == APEXIT_INIT) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+                         "Parent: child process exited with status %u -- Aborting.", exitcode);
+        }
+        else {
+            restart_pending = 1;
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+                         "Parent: child process exited with status %u -- Restarting.", exitcode);
+        }
+        CloseHandle(event_handles[CHILD_HANDLE]);
         event_handles[CHILD_HANDLE] = NULL;
         ++ap_my_generation;
     }
@@ -1817,7 +1856,7 @@ void winnt_rewrite_args(process_rec *process)
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK,APLOG_CRIT, rv, NULL, 
                      "Failed to get the path of Apache.exe");
-        exit(1);
+        exit(APEXIT_INIT);
     }
     /* WARNING: There is an implict assumption here that the
      * executable resides in ServerRoot or ServerRoot\bin
@@ -1936,7 +1975,7 @@ void winnt_rewrite_args(process_rec *process)
         {
             ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
                  "%s: Service is already installed.", service_name);
-            exit(1);
+            exit(APEXIT_INIT);
         }
     }
     else if (running_as_service)
@@ -1960,14 +1999,14 @@ void winnt_rewrite_args(process_rec *process)
         {
             ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL,
                  "No installed service named \"%s\".", service_name);
-            exit(1);
+            exit(APEXIT_INIT);
         }
     }
     if (strcasecmp(signal_arg, "install") && service_set && service_set != SERVICE_UNSET) 
     {
         ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL,
              "No installed service named \"%s\".", service_name);
-        exit(1);
+        exit(APEXIT_INIT);
     }
     
     /* Track the args actually entered by the user.
@@ -2004,8 +2043,7 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
         ap_log_error(APLOG_MARK,APLOG_CRIT, service_to_start_success, NULL, 
                      "%s: Unable to start the service manager.",
                      service_name);
-        /* XXX: return HTTP_INTERNAL_SERVER_ERROR? */
-        exit(1);
+        exit(APEXIT_INIT);
     }
 
     if (!strcasecmp(signal_arg, "uninstall")) {
@@ -2163,14 +2201,12 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
 
 static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_conf)
 {
-    /* This is the child process or we are running in single process mode. */
+    /* This is a child process, not in single process mode */
     if (!one_process) {
         /* Set up the scoreboard. */
         get_scoreboard_from_parent(ap_server_conf);
 
         /* Set up the listeners. */
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "getting listeners child_main, pid %d", my_pid);
         get_listeners_from_parent(ap_server_conf);
 
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
