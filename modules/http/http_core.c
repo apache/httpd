@@ -3414,7 +3414,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e) || (AP_BUCKET_IS_EOS(e) && c->keepalive)) {
+        if ((!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && !AP_BUCKET_IS_FLUSH(e))
+            || (AP_BUCKET_IS_EOS(e) && c->keepalive)) {
             
             /* NEVER save an EOS in here.  If we are saving a brigade with an
              * EOS bucket, then we are doing keepalive connections, and we want
