@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/06 01:24:36 $]
+Last modified at [$Date: 2003/05/06 09:34:26 $]
 
 Release:
 
@@ -258,7 +258,7 @@ PATCHES TO PORT FROM 2.1
     * mod_auth_ldap: Use generic whitespace character class when parsing
       "require" directives, instead of literal spaces only. PR 17135.
       modules/experimental/mod_auth_ldap.c r1.16
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
