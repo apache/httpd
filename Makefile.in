@@ -6,7 +6,7 @@ VPATH     = @srcdir@
 
 SUBDIRS = ap lib main modules os $(REGEX_DIR)
 
-PROGRAM_NAME         = @progname@
+PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c buildmark.c
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = \
