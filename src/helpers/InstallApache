@@ -44,10 +44,11 @@ cp src/httpd $SERVERROOT
 for I in access.conf httpd.conf srm.conf
 do
   if [ ! -f $SERVERROOT/conf/$I ]; then
-    sed -e "s#@@ServRoot@@#${SERVERROOT}#g" < conf/${I}-dist \
+    sed -e "s#@@ServerRoot@@#${SERVERROOT}#g" < conf/${I}-dist \
   	> $SERVERROOT/conf/$I
   fi
 done
+cp conf/mime.types $SERVERROOT/conf
 
 if [ -d $SERVERROOT/src ]; then
   mv $SERVERROOT/src $SERVERROOT/src.bak
