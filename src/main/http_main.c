@@ -3301,7 +3301,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
 #ifdef BEOS
-    closesocket(s);
+	closesocket(s);
 #else
 	close(s);
 #endif
@@ -3315,7 +3315,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
 #ifdef BEOS
-    closesocket(s);
+	closesocket(s);
 #else
 	close(s);
 #endif
@@ -3374,7 +3374,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif
 
 #ifdef BEOS
-    closesocket(s);
+	closesocket(s);
 #else
 	close(s);
 #endif
@@ -3390,7 +3390,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
 	    "make_sock: unable to listen for connections on %s", addr);
 #ifdef BEOS
-    closesocket(s);
+	closesocket(s);
 #else
 	close(s);
 #endif
@@ -3414,7 +3414,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	    "found, you probably need to rebuild Apache with a "
 	    "larger FD_SETSIZE", addr, s, FD_SETSIZE);
 #ifdef BEOS
-    closesocket(s);
+	closesocket(s);
 #else
 	close(s);
 #endif
