@@ -182,7 +182,7 @@ static int handle_dir(request_rec *r)
         return error_notfound;
 
     if (r->method_number != M_GET)
-        return NOT_IMPLEMENTED;
+        return DECLINED;
 
     /* nothing for us to do, pass on through */
 

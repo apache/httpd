@@ -1104,7 +1104,7 @@ static int handle_autoindex(request_rec *r)
     int allow_opts = allow_options(r);
 
     if (r->method_number != M_GET)
-	return NOT_IMPLEMENTED;
+	return DECLINED;
 
     /* OK, nothing easy.  Trot out the heavy artillery... */
 
