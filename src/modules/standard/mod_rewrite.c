@@ -3047,16 +3047,8 @@ static void rewrite_rand_init(void)
 
 static int rewrite_rand(int l, int h)
 {
-    int i;
-    char buf[50];
-
     rewrite_rand_init();
-    ap_snprintf(buf, sizeof(buf), "%.0f", 
-                (((double)(rand()%RAND_MAX)/RAND_MAX)*(h-l)));
-    i = atoi(buf)+1;
-    if (i < l) i = l;
-    if (i > h) i = h;
-    return i;
+    return rand() % (h - l + 1) + l;
 }
 
 static char *select_random_value_part(request_rec *r, char *value)
