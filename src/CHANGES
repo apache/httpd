@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) mod_browser has been removed, since it's replaced by mod_setenvif.
+     [Ken Coar]
+
   *) PORT: Timings show that on Linux 2.0.30 flock is slightly cheaper than
      fcntl file locking.  So use flock for the mutexes. [Dean Gaudet]
 
