@@ -1453,6 +1453,7 @@ AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp);
  * @param s1 The string to search
  * @param s2 The substring to search for
  * @return A pointer to the beginning of the substring
+ * @remark See apr_strmatch() for a faster alternative
  */
 AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2);
 

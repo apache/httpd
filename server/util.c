@@ -327,7 +327,7 @@ AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2)
 	/* found first character of s2, see if the rest matches */
         p1 = (char *)s1;
         p2 = (char *)s2;
-        while (apr_tolower(*++p1) == apr_tolower(*++p2)) {
+        for (++p1, ++p2; apr_tolower(*p1) == apr_tolower(*p2); ++p1, ++p2) {
             if (*p1 == '\0') {
                 /* both strings ended together */
                 return((char *)s1);
