@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/08 23:35:21 $]
+Last modified at [$Date: 2002/02/09 06:15:01 $]
 
 Release:
 
@@ -43,110 +43,15 @@ on related projects:
 CURRENT RELEASE NOTES:
 
     * 32 status:
-        Justin is waiting for Win32 to become functional.  As potential
-        RM for .32, he considers it a showstopper.  Once Win32 is
-        operational (per EitherBills), .32 will be rolled.  If the group
-        thinks that we could have a good beta without Win32 support, please
-        note so here.  If a majority agree that Win32 is not required for
-        a beta, Justin will roll .32 ASAP.  (And, if you agree with the
-        fact that Win32 is a showstopper, please note that here too.)
+      Proposed tag is JRE_1.  A proposed tarball is at:
+        http://www.apache.org/~jerenkrantz/2.0.32-jre/httpd-2.0.32-JRE-1-alpha.tar.gz
+      Win32 is not expected to work.
 
-        trawick: not a showstopper IMO; unmaintained platforms
-                 shouldn't hold up the availability of a beta for the
-                 users of maintained platforms; maybe "unmaintained"
-                 seems drastic, but it seems to me that we are limited to
-                 narrow windows of opportunity in which (a) the server
-                 is truly stable and (b) a number of people are
-                 confident that the server is truly stable; if a
-                 particular platform can't reach stability during
-                 that window then tough, and we'll hope that the
-                 maintainers will get things resolved before the next
-                 release
-
-    * Proposed BETA possibilities
-      31 + fixes for all resolved problems and call it 32 (instead of HEAD)
+    * 31 + fixes for all resolved problems and call it 32 (instead of HEAD)
         See: http://www.apache.org/~jerenkrantz/httpd-2.0.jre.patch
         +1: trawick, Justin, Ian
         +0:
         -1:
-
-    * 31 BETA STATUS:
-        running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
-        Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, 
-                      Linux 2.2 & 2.4, HPUX
-        Broken on: Win32 [no error logging within service, other bugs]
-        for beta
-            +1 : Aaron
-            +0 : Lars, Justin, trawick
-            -0 : OtherBill
-            -1 : BillS, gregames, BrianP, Jim
-        bumps since original tag:
-            * mod-dir patch
-            * scoreboard x2 : 1 to fix gracefull restarts
-                              1 to fix netware
-            * win32/locks.c : to fix mod_rewrite on win32
-
-        problems with v31:
-            * libtool/binbuild on AIX -- possible addition of patched 
-                    binbuild.sh to 31-beta roll
-                +1: Ian, Justin
-                +0:
-                -1:
-                Jeff says: We can't do anything about libtool since AIX
-                           needs a version that won't work on some
-                           platforms.  Handle this in the README.
-                           The binbuild issue isn't AIX.  It is
-                           something that could happen anywhere that
-                           the binbuild-er has their own expat.
-                           Handle this by patching binbuild.sh for a
-                           beta roll or putting a patch in the README for
-                           use by people who want to do binbuild but
-                           have expat installed locally.
-                gregames:  why can't we roll a second tarball with the
-                           appropriate libtool version?  doesn't
-                           Darwin need it as well as AIX? 
-
-            * erroneous check in an AP_DEBUG_ASSERT() call.  Only happens
-              in maintainer mode.  Fixed in modules/http/http_protocol.c
-              revision 1.391
-
-            * seg faults in core_input_filter when the client goes away
-              before any POST body bytes are received.
-                Jeff committed a fix with server/core.c revision 1.144.
-                Justin committed a fix with server/protocol.c revision 1.78
-                (server/protocol.c revision 1.81 demotes a potentially
-                 annoying error message)
-
-            * FirstBill reports problem [re]starting as-a-service, shared
-              score is suspect.  OtherBill is investigating... has found
-                 . created restart and shutdown events, only restart
-                   survived initialization on XP, although breaking into 
-                   the debugger interferes with reproducing the bug.  
-                   Perhaps in FirstBill's example _restart didn't survive.
-                 . Scoreboard appears irrelevant to the problem.
-                 . This looks like handle corruption in NT/XP
-                 . Args are not initialized correctly when the -k install
-                   is given.
-              OtherBill will not create Win32 binaries due to this bug.
-
-            * mod_auth_dbm can't open a Berkeley DB password file on Unix
-                Justin postulates that this might be related to the fact
-                that mod_auth_dbm wasn't using apr-util.  See
-                modules/aaa/mod_auth_dbm.c revision 1.42 and
-                module/aaa/config.m4 revision 1.54.  Also, FreeBSD's DB
-                variant was not properly detected.  See
-                apr-util/build/apu-conf.m4 revision 1.31 and
-                apr-util/dbm/apr_dbm_berkeleydb.c revision 1.17.
-            
-            * Madhu reports that the worker MPM doesn't shutdown nicely
-              after a stress test.
-
-            * mod_autoindex displays the wrong icon for subdirectories
-              on Unix
-                possible fix in modules/generators/mod_autoindex.c r1.93.
-
-            * anon shared memory not allocating enough 
-                (fix is apr/shm/unix/shm.c 1.14)
 
 FINAL RELEASE SHOWSTOPPERS:
 
