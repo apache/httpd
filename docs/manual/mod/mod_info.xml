@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.18 $ -->
+<!-- $Revision: 1.19 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -57,7 +57,7 @@ configuration</description>
     this module should <strong>only</strong> be
     used in a controlled environment and always with caution.</p>
 
-    <p>You will probably want to use <module>mod_access</module> 
+    <p>You will probably want to use <module>mod_authz_host</module> 
     to limit access to your server configuration information.</p>
       
     <example><title>Access control</title>
