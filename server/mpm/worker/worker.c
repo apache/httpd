@@ -701,7 +701,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     got_fd:
         if (!workers_may_exit) {
             /* create a new transaction pool for each accepted socket */
-            apr_pool_create_ex(&ptrans, tpool, NULL, APR_POOL_FNEW_ALLOCATOR);
+            apr_pool_create_ex(&ptrans, NULL, NULL, APR_POOL_FNEW_ALLOCATOR);
             apr_pool_tag(ptrans, "transaction");
 
             rv = lr->accept_func(&csd, lr, ptrans);
