@@ -1,0 +1,14 @@
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>mod_suexec- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_suexec</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>指定されたユーザとグループで CGI スクリプトを実行する</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>拡張</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>suexec_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Apache 2.0 以降で使用可能</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
+    <p>このモジュールは CGI スクリプトが指定されたユーザとグループで
+    実行されるようにできます。</p>
+<h2>Directives</h2><ul><li><a href="#suexecusergroup">SuexecUserGroup</a></li></ul><hr><h2><a name="SuexecUserGroup">SuexecUserGroup</a> <a name="suexecusergroup">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td></td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SuexecUserGroup <em>User Group</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>拡張</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_suexec</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>SuexecUserGroup は 2.0 以降でのみ使用可能。</td></tr></table></td></tr></table>
+    <p><code class="directive">SuexecUserGroup</code> ディレクティブは CGI プログラム
+    が実行されるユーザとグループを指定できるようにします。CGI 以外の
+    リクエストは User ディレクティブで指定されたユーザのままで処理されます。
+    このディレクティブは VirtualHosts の中で User ディレクティブと
+    Group ディレクティブを使う用法の代わりになります。</p>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
