@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/06/30 19:38:40 $
+Last modified: $Date: 2003/07/11 19:36:01 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -8,6 +8,23 @@ Project, please see http://httpd.apache.org/docs-project/
 
 Decisions pending
 =================
+
+- Remove manual/search/manual-index.cgi from the distribution and
+  httpd-2.0-docs/ repository?  These can be maintained in the httpd-site
+  repository but don't belong in distributions unless we introduce the
+  tools to generate the index database or keep a current database checked
+  into cvs.
+  +1: wrowe, nd
+
+- Remove several out-of-place files into somewhere in the tree outside
+  of the actual web site content?  Erik suggests we merge the two icons
+  readmes into one.  Perhaps all of these go into httpd-2.0/docs/README?
+    error/readme
+    icons/readme
+    icons/small/readme.txt
+  Votes for a single top-level README reference?
+  +1: wrowe
+
 
 Things That Need Fixing
 =======================
