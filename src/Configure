@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.24 1996/10/01 14:31:23 chuck Exp $
+# $Id: Configure,v 1.25 1996/10/08 06:26:30 brian Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -184,6 +184,7 @@ case "$PLAT" in
 	fi
 	;;
     *-linux*)
+	DEF_WANTHSREGEX=yes
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX"
 	;;
@@ -246,6 +247,7 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSUNOS4"
 	;;
     *-unixware*)
+	DEF_WANTHSREGEX=yes
 	OS='Unixware'
 	CFLAGS="$CFLAGS -DSVR4"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
