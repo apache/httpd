@@ -66,6 +66,12 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 /* -------------------------------------------------------------- */
 
 
+/* Handles for cache filters, resolved at startup to eliminate
+ * a name-to-function mapping on each request
+ */
+static ap_filter_rec_t *cache_in_filter_handle;
+static ap_filter_rec_t *cache_out_filter_handle;
+static ap_filter_rec_t *cache_conditional_filter_handle;
 
 /*
  * CACHE handler
@@ -196,7 +202,8 @@ static int cache_url_handler(request_rec *r, int lookup)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "cache: no cache - add cache_in filter and DECLINE");
             /* add cache_in filter to cache this request */
-            ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
+            ap_add_output_filter_handle(cache_in_filter_handle, NULL, r,
+                                        r->connection);
         }
         return DECLINED;
     }
@@ -229,7 +236,8 @@ static int cache_url_handler(request_rec *r, int lookup)
              * filters have been set. So lets run the insert_filter hook.
              */
             ap_run_insert_filter(r);
-            ap_add_output_filter("CACHE_OUT", NULL, r, r->connection);
+            ap_add_output_filter_handle(cache_out_filter_handle, NULL,
+                                        r, r->connection);
 
             /* kick off the filter stack */
             out = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -259,7 +267,8 @@ static int cache_url_handler(request_rec *r, int lookup)
                              "cache: conditional - add cache_in filter and "
                              "DECLINE");
                 /* Why not add CACHE_CONDITIONAL? */
-                ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
+                ap_add_output_filter_handle(cache_in_filter_handle, NULL,
+                                            r, r->connection);
 
                 return DECLINED;
             }
@@ -291,7 +300,8 @@ static int cache_url_handler(request_rec *r, int lookup)
                                  "cache: nonconditional - no cached "
                                  "etag/lastmods - add cache_in and DECLINE");
 
-                    ap_add_output_filter("CACHE_IN", NULL, r, r->connection);
+                    ap_add_output_filter_handle(cache_in_filter_handle, NULL,
+                                                r, r->connection);
 
                     return DECLINED;
                 }
@@ -300,10 +310,10 @@ static int cache_url_handler(request_rec *r, int lookup)
                              r->server,
                              "cache: nonconditional - add cache_conditional "
                              "and DECLINE");
-                ap_add_output_filter("CACHE_CONDITIONAL", 
-                                     NULL, 
-                                     r, 
-                                     r->connection);
+                ap_add_output_filter_handle(cache_conditional_filter_handle,
+                                            NULL, 
+                                            r, 
+                                            r->connection);
 
                 return DECLINED;
             }
@@ -377,11 +387,13 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     if (f->r->status == HTTP_NOT_MODIFIED) {
         /* replace ourselves with CACHE_OUT filter */
-        ap_add_output_filter("CACHE_OUT", NULL, f->r, f->r->connection);
+        ap_add_output_filter_handle(cache_out_filter_handle, NULL,
+                                    f->r, f->r->connection);
     }
     else {
         /* replace ourselves with CACHE_IN filter */
-        ap_add_output_filter("CACHE_IN", NULL, f->r, f->r->connection);
+        ap_add_output_filter_handle(cache_in_filter_handle, NULL,
+                                    f->r, f->r->connection);
     }
     ap_remove_output_filter(f);
 
@@ -987,22 +999,25 @@ static void register_hooks(apr_pool_t *p)
      * Make them AP_FTYPE_CONTENT for now.
      * XXX ianhH:they should run AFTER all the other content filters.
      */
-    ap_register_output_filter("CACHE_IN", 
-                              cache_in_filter, 
-                              NULL,
-                              AP_FTYPE_CONTENT_SET-1);
+    cache_in_filter_handle = 
+        ap_register_output_filter("CACHE_IN", 
+                                  cache_in_filter, 
+                                  NULL,
+                                  AP_FTYPE_CONTENT_SET-1);
     /* CACHE_OUT must go into the filter chain before SUBREQ_CORE to
      * handle subrequsts. Decrementing filter type by 1 ensures this 
      * happens.
      */
-    ap_register_output_filter("CACHE_OUT", 
-                              cache_out_filter, 
-                              NULL,
-                              AP_FTYPE_CONTENT_SET-1);
-    ap_register_output_filter("CACHE_CONDITIONAL", 
-                              cache_conditional_filter, 
-                              NULL,
-                              AP_FTYPE_CONTENT_SET);
+    cache_out_filter_handle = 
+        ap_register_output_filter("CACHE_OUT", 
+                                  cache_out_filter, 
+                                  NULL,
+                                  AP_FTYPE_CONTENT_SET-1);
+    cache_conditional_filter_handle =
+        ap_register_output_filter("CACHE_CONDITIONAL", 
+                                  cache_conditional_filter, 
+                                  NULL,
+                                  AP_FTYPE_CONTENT_SET);
     ap_hook_post_config(cache_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
