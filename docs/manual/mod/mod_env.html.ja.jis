@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>mod_env - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_env</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
+                      </span></td><td>CGI スクリプト及び SSI
+    ページに渡される環境変数を変更する機能を提供する</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
+                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
+                        </a></td><td>env_module</td></tr></table></td></tr></table><h2>概要</h2>
+    <p>このモジュールにより CGI スクリプトと SSI
+    ページに適用される環境変数を制御することができるようになります。
+    環境変数は httpd プロセスを起動したシェルから渡されます。また、
+    設定ファイルで環境変数を設定したり、削除したりすることができます。
+    </p>
+  <h2>ディレクティブ</h2><ul><li><a href="#passenv">PassEnv</a></li><li><a href="#setenv">SetEnv</a></li><li><a href="#unsetenv">UnsetEnv</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../env.html">環境変数</a></li></ul><hr/><h2><a name="PassEnv">PassEnv</a> <a name="passenv">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+                  </strong></td><td>シェルからの環境変数を渡す</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </a></td><td>PassEnv
+    <em>env-variable</em> [<em>env-variable</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
+                  </a></td><td>mod_env</td></tr></table></td></tr></table>
+
+    <p>httpd プロセスを起動したシェルの環境から CGI スクリプトと
+    SSI ページに渡す環境変数を一つ以上指定します。例:
+    </p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    PassEnv LD_LIBRARY_PATH
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SetEnv">SetEnv</a> <a name="setenv">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+                  </strong></td><td>環境変数を設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </a></td><td>SetEnv <em>env-variable value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
+                  </a></td><td>mod_env</td></tr></table></td></tr></table>
+    <p>環境変数を設定し、それを CGI スクリプトと SSI
+    ページに渡すようにします。例:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    SetEnv SPECIAL_PATH /foo/bin
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="UnsetEnv">UnsetEnv</a> <a name="unsetenv">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+                  </strong></td><td>環境から変数を取り除く</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </a></td><td>UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
+                  </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
+                    </a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
+                  </a></td><td>mod_env</td></tr></table></td></tr></table>
+    <p>CGI スクリプトと SSI
+    ページに渡される環境変数から指定された環境変数を取り除きます。例:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    UnsetEnv LD_LIBRARY_PATH
+</code></td></tr></table></blockquote>
+<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"/></a><a href="../"><img src="../images/home.gif" alt="ホーム"/></a></body></html>
