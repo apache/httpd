@@ -94,6 +94,8 @@
 #include "apr_uri.h"
 #include "apr_date.h"
 #include "apr_fnmatch.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "httpd.h"
 #include "http_config.h"
