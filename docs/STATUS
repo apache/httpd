@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2004/04/02 21:08:29 $
+Last modified: $Date: 2004/09/05 05:01:40 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -8,16 +8,6 @@ Project, please see http://httpd.apache.org/docs-project/
 
 Decisions pending
 =================
-
-- Remove several out-of-place files into somewhere in the tree outside
-  of the actual web site content?  Erik suggests we merge the two icons
-  readmes into one.  Perhaps all of these go into httpd-2.0/docs/README?
-    error/readme
-    icons/readme
-    icons/small/readme.txt
-  Votes for a single top-level README reference?
-  +1: wrowe, slive, nd, erikabele, kess, mads
-
 
 Things That Need Fixing
 =======================
@@ -36,8 +26,6 @@ Things That Need Fixing
 
 - modules docs
     - mod_suexec: very little documentation
-    - mod_status: updates for 2.0
-    - mod_example: updates for 2.0
     - mod_rewrite: explain, when which variables are actually available
       (PR 16402)
     
@@ -54,9 +42,6 @@ Things That Need Fixing
               ?
 
 - Individual docs will need some cleanup. 
-     - misc/custom_errordocs.html needs to be updated to
-       essentially describe how the international error
-       docs included in 2.0 work
      - misc/perf-tuning.html - needs major rewrite for 2.0
      - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
      - platform/ebcdic.xml - needs major rework for 2.0
