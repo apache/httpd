@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP
 ==================
-Last modified at [$Date: 2002/10/18 16:55:52 $]
+Last modified at [$Date: 2002/10/18 16:58:14 $]
 
 
 INTRODUCTION
@@ -98,10 +98,10 @@ Any new code, new API features or new ('experimental') modules may be
 promoted at any time to the next stable release, by a vote of the project
 contributors.  This vote is based on the technical stability of the new
 code and the stability of the interface.  Once moved to stable, that feature
-cannot change for the remainder of that lifetime of that stable versions,
-so the vote must reflect that the final decisions on the behavior and naming
-of that new feature were reached.  Vetos continue to apply to this choice
-of introducing the new work to the stable version.
+cannot change for the remainder of that stable release cycle, so the vote must
+reflect that the final decisions on the behavior and naming of that new
+feature were reached.  Vetos continue to apply to this choice of introducing
+the new work to the stable version.
 
 At any given time, when the quality of changes to the development branch
 is considered release quality, that version may become a candidate for the
