@@ -106,43 +106,44 @@ available</td></tr>
     pathname information that follows an actual filename (or
     non-existent file in an existing directory) will be accepted or
     rejected.  The trailing pathname information can be made
-    available to scripts in the PATH_INFO environment variable.</p>
+    available to scripts in the <code>PATH_INFO</code> environment
+    variable.</p>
 
     <p>For example, assume the location <code>/test/</code> points to
     a directory that contains only the single file
     <code>here.html</code>.  Then requests for
     <code>/test/here.html/more</code> and
     <code>/test/nothere.html/more</code> both collect
-    <code>/more</code> as PATH_INFO.</p>
+    <code>/more</code> as <code>PATH_INFO</code>.</p>
 
     <p>The three possible arguments for the
     <code class="directive">AcceptPathInfo</code> directive are:</p>
     <dl>
-    <dt><code>off</code></dt><dd>A request will only be accepted if it
+    <dt><code>Off</code></dt><dd>A request will only be accepted if it
     maps to a literal path that exists.  Therefore a request with
     trailing pathname information after the true filename such as
     <code>/test/here.html/more</code> in the above example will return
     a 404 NOT FOUND error.</dd>
 
-    <dt><code>on</code></dt><dd>A request will be accepted if a
+    <dt><code>On</code></dt><dd>A request will be accepted if a
     leading path component maps to a file that exists.  The above
     example <code>/test/here.html/more</code> will be accepted if
     <code>/test/here.html</code> maps to a valid file.</dd>
-    
-    <dt><code>default</code></dt><dd>The treatment of requests with
+
+    <dt><code>Default</code></dt><dd>The treatment of requests with
     trailing pathname information is determined by the <a href="../handler.html">handler</a> responsible for the request.
-    The core handler for normal files defaults to rejecting PATH_INFO.
-    Handlers that serve scripts, such as <a href="mod_cgi.html">cgi-script</a> and <a href="mod_isapi.html">isapi-isa</a>, generally accept PATH_INFO by
-    default.</dd>
+    The core handler for normal files defaults to rejecting
+    <code>PATH_INFO</code>. Handlers that serve scripts, such as <a href="mod_cgi.html">cgi-script</a> and <a href="mod_isapi.html">isapi-isa</a>, generally accept
+    <code>PATH_INFO</code> by default.</dd>
     </dl>
 
     <p>The primary purpose of the <code>AcceptPathInfo</code>
     directive is to allow you to override the handler's choice of
-    accepting or rejecting PATH_INFO.  This override is required, for
-    example, when you use a <a href="../filter.html">filter</a>, such
+    accepting or rejecting <code>PATH_INFO</code>. This override is required,
+    for example, when you use a <a href="../filter.html">filter</a>, such
     as <a href="mod_include.html">INCLUDES</a>, to generate content
-    based on PATH_INFO.  The core handler would usually reject the
-    request, so you can use the following configuration to enable
+    based on <code>PATH_INFO</code>.  The core handler would usually reject
+    the request, so you can use the following configuration to enable
     such a script:</p>
 
     <div class="example"><p><code>
@@ -230,8 +231,8 @@ response without an explicit character set</td></tr>
 <div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigns an output filter to a particular MIME-type</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
-[<var>MIME-type</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
+<var>MIME-type</var> [<var>MIME-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -241,10 +242,11 @@ response without an explicit character set</td></tr>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
     response MIME-type.</p>
 
-    <p>The following example uses the DEFLATE filter, which is provided by
-    <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>. It will compress all output (either static
-    or dynamic) which is labeled as <code>text/html</code> or
-    <code>text/plain</code> before it is sent to the client.</p>
+    <p>The following example uses the <code>DEFLATE</code> filter, which
+    is provided by <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>. It will compress all
+    output (either static or dynamic) which is labeled as
+    <code>text/html</code> or <code>text/plain</code> before it is sent
+    to the client.</p>
 
     <div class="example"><p><code>
       AddOutputFilterByType DEFLATE text/html text/plain
@@ -256,8 +258,9 @@ response without an explicit character set</td></tr>
     them.</p>
 
     <p>The configuration below causes all script output labeled as
-    <code>text/html</code> to be processed at first by the INCLUDES filter
-    and then by the DEFLATE filter.</p>
+    <code>text/html</code> to be processed at first by the
+    <code>INCLUDES</code> filter and then by the <code>DEFLATE</code>
+    filter.</p>
 
     <div class="example"><p><code>
     &lt;Location /cgi-bin/&gt;<br />
@@ -294,31 +297,32 @@ response without an explicit character set</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Types of directives that are allowed in
 .htaccess files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverride All|None|<var>directive-type</var> 
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowOverride All</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>When the server finds an .htaccess file (as specified by <code class="directive"><a href="#accessfilename">AccessFileName</a></code>) it needs to know
-    which directives declared in that file can override earlier
-    access information.</p>
+    <p>When the server finds an <code>.htaccess</code> file (as
+    specified by <code class="directive"><a href="#accessfilename">AccessFileName</a></code>)
+    it needs to know which directives declared in that file can override
+    earlier access information.</p>
 
     <div class="note"><h3>Only available in Directory sections</h3>
     <code class="directive">AllowOverride</code> is valid only in
-    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> 
+    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
     sections, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
     </div>
 
     <p>When this directive is set to <code>None</code>, then
-    .htaccess files are completely ignored. In this case, the
-    server will not even attempt to read .htaccess files in the
-    filesystem.</p>
+    <a href="#accessfilename">.htaccess</a> files are completely ignored.
+    In this case, the server will not even attempt to read
+    <code>.htaccess</code> files in the filesystem.</p>
 
     <p>When this directive is set to <code>All</code>, then any
     directive which has the .htaccess <a href="directive-dict.html#Context">Context</a> is allowed in
-    .htaccess files.</p>
+    <code>.htaccess</code> files.</p>
 
     <p>The <var>directive-type</var> can be one of the following
     groupings of directives.</p>
@@ -442,9 +446,9 @@ and Access Control</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Technique for locating the interpreter for CGI 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Technique for locating the interpreter for CGI
 scripts</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CGIMapExtension cgi-path .extension</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CGIMapExtension <var>cgi-path</var> <var>.extension</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -453,8 +457,10 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>NetWare only</td></tr>
 </table>
     <p>This directive is used to control how Apache finds the
-    interpreter used to run CGI scripts. For example, setting <code>CGIMapExtension sys:\foo.nlm .foo</code> will
-    cause all CGI script files with a .foo extension to be passed to the FOO interpreter.</p>
+    interpreter used to run CGI scripts. For example, setting
+    <code>CGIMapExtension sys:\foo.nlm .foo</code> will
+    cause all CGI script files with a .foo extension to be passed to the
+    FOO interpreter.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -462,8 +468,8 @@ scripts</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables the generation of Content-MD5 HTTP Response
 headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ContentDigest on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ContentDigest off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ContentDigest On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ContentDigest Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -492,9 +498,9 @@ headers</td></tr>
     values are not cached).</p>
 
     <p><code>Content-MD5</code> is only sent for documents served
-    by the core, and not by any module. For example, SSI documents,
-    output from CGI scripts, and byte range responses do not have
-    this header.</p>
+    by the <code class="module"><a href="../mod/core.html">core</a></code>, and not by any module. For example,
+    SSI documents, output from CGI scripts, and byte range responses
+    do not have this header.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -522,7 +528,7 @@ server cannot determine a type in any other way</td></tr>
     </code></p></div>
 
     <p>would be appropriate for a directory which contained many gif
-    images with filenames missing the .gif extension.</p>
+    images with filenames missing the <code>.gif</code> extension.</p>
 
     <p>Note that unlike <code class="directive"><a href="#forcetype">ForceType</a></code>, this directive is only
     provides the default mime-type. All other mime-type definitions,
@@ -547,10 +553,10 @@ named file-system directory and sub-directories</td></tr>
     sub-directories of that directory. Any directive that is allowed
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
-    Unix shell-style matching. In a wild-card string, `?' matches any
-    single character, and `*' matches any sequences of characters.
-    You may also use `[]' character ranges. None of the wildcards
-    match a `/' character, so <code>&lt;Directory
+    Unix shell-style matching. In a wild-card string, <code>?</code> matches
+    any single character, and <code>*</code> matches any sequences of
+    characters. You may also use <code>[]</code> character ranges. None
+    of the wildcards match a `/' character, so <code>&lt;Directory
     /*/public_html&gt;</code> will not match
     <code>/home/user/public_html</code>, but <code>&lt;Directory
     /home/*/public_html&gt;</code> will match. Example:</p>
@@ -567,8 +573,8 @@ named file-system directory and sub-directories</td></tr>
       <p>Be careful with the <var>directory-path</var> arguments:
       They have to literally match the filesystem path which Apache uses
       to access the files. Directives applied to a particular
-      &lt;Directory&gt; will not apply to files accessed from that same
-      directory via a different path, such as via different symbolic
+      <code>&lt;Directory&gt;</code> will not apply to files accessed from
+      that same directory via a different path, such as via different symbolic
       links.</p>
     </div>
 
@@ -580,8 +586,8 @@ named file-system directory and sub-directories</td></tr>
       &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
     </code></p></div>
 
-    <p>would match directories in /www/ that consisted of three
-    numbers.</p>
+    <p>would match directories in <code>/www/</code> that consisted of
+    three numbers.</p>
 
     <p>If multiple (non-regular expression) directory sections
     match the directory (or its parents) containing a document,
@@ -631,13 +637,13 @@ named file-system directory and sub-directories</td></tr>
     </code></p></div>
 
     <p>The regular expression section won't be considered until after
-    all normal &lt;Directory&gt;s and <code>.htaccess</code> files
-    have been applied. Then the regular expression will match on
+    all normal <code>&lt;Directory&gt;</code>s and <code>.htaccess</code>
+    files have been applied. Then the regular expression will match on
     <code>/home/abc/public_html/abc</code> and be applied.</p>
 
    <p><strong>Note that the default Apache access for
-    &lt;Directory /&gt; is <code>Allow from All</code>. This means
-    that Apache will serve any file mapped from an URL. It is
+    <code>&lt;Directory /&gt;</code> is <code>Allow from All</code>.
+    This means that Apache will serve any file mapped from an URL. It is
     recommended that you change this with a block such
     as</strong></p>
 
@@ -652,11 +658,10 @@ named file-system directory and sub-directories</td></tr>
 
     <p><strong>and then override this for directories you
     <em>want</em> accessible. See the <a href="../misc/security_tips.html">Security Tips</a> page for more
-    details.</strong></p> 
+    details.</strong></p>
 
-    <p>The directory sections typically occur in
-    the access.conf file, but they may appear in any configuration
-    file.  <code class="directive">&lt;Directory&gt;</code> directives
+    <p>The directory sections occur in the <code>httpd.conf</code> file.
+    <code class="directive">&lt;Directory&gt;</code> directives
     cannot nest, and cannot appear in a <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> or <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section.</p>
 
 <h3>See also</h3>
@@ -713,10 +718,10 @@ from the web</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>This directive sets the directory from which httpd will
-    serve files. Unless matched by a directive like Alias, the
-    server appends the path from the requested URL to the document
-    root to make the path to the document. Example:</p>
+    <p>This directive sets the directory from which <code>httpd</code>
+    will serve files. Unless matched by a directive like <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, the server appends the
+    path from the requested URL to the document root to make the
+    path to the document. Example:</p>
 
     <div class="example"><p><code>
       DocumentRoot /usr/web
@@ -739,18 +744,18 @@ Location</a></li>
 <div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use memory-mapping to read files during delivery</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableMMAP on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnableMMAP on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableMMAP On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnableMMAP On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>This directive controls whether the httpd may use
+    <p>This directive controls whether the <code>httpd</code> may use
     memory-mapping if it needs to read the contents of a file during
     delivery.  By default, when the handling of a request requires
-    access to the data within a file-- for example, when delivering a
-    server-parsed file using <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>-- Apache
+    access to the data within a file -- for example, when delivering a
+    server-parsed file using <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> -- Apache
     memory-maps the file if the OS supports it.</p>
 
     <p>This memory-mapping sometimes yields a performance improvement.
@@ -759,17 +764,18 @@ Location</a></li>
 
     <ul>
     <li>On some multiprocessor systems, memory-mapping can reduce the
-    performance of the httpd.</li>
+    performance of the <code>httpd</code>.</li>
     <li>With an NFS-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code>,
-    the httpd may crash due to a segmentation fault if a file is deleted
-    or truncated while the httpd has it memory-mapped.</li>
+    the <code>httpd</code> may crash due to a segmentation fault if a file
+    is deleted or truncated while the <code>httpd</code> has it
+    memory-mapped.</li>
     </ul>
 
     <p>For server configurations that are vulnerable to these problems,
     you should disable memory-mapping of delivered files by specifying:</p>
 
     <div class="example"><p><code>
-      EnableMMAP off
+      EnableMMAP Off
     </code></p></div>
 
     <p>For NFS mounted files, this feature may be disabled explicitly for
@@ -777,7 +783,7 @@ Location</a></li>
 
     <div class="example"><p><code>
       &lt;Directory "/path-to-nfs-files"&gt;
-            EnableMMAP off
+            EnableMMAP Off
       &lt;/Directory&gt;
     </code></p></div>
 
@@ -786,15 +792,15 @@ Location</a></li>
 <div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the kernel sendfile support to deliver files to the client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableSendfile on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnableSendfile on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableSendfile On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnableSendfile On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.44 and later</td></tr>
 </table>
-    <p>This directive controls whether httpd may use the sendfile
+    <p>This directive controls whether <code>httpd</code> may use the sendfile
     support from the kernel to transmit file contents to the client.
     By default, when the handling of a request requires no access
     to the data within a file -- for example, when delivering a
@@ -820,15 +826,15 @@ Location</a></li>
     you should disable this feature by specifying:</p>
 
     <div class="example"><p><code>
-      EnableSendfile off
+      EnableSendfile Off
     </code></p></div>
 
-    <p>For NFS or SMB mounted files, this feature may be disabled explicitly 
+    <p>For NFS or SMB mounted files, this feature may be disabled explicitly
     for the offending files by specifying:</p>
 
     <div class="example"><p><code>
       &lt;Directory "/path-to-nfs-files"&gt;<br />
-            EnableSendfile off<br />
+            EnableSendfile Off<br />
       &lt;/Directory&gt;
     </code></p></div>
 
@@ -880,7 +886,7 @@ in case of an error</td></tr>
 
     <p>Note that when you specify an <code class="directive">ErrorDocument</code>
     that points to a remote URL (ie. anything with a method such as
-    "http" in front of it), Apache will send a redirect to the
+    <code>http</code> in front of it), Apache will send a redirect to the
     client to tell it where to find the document, even if the
     document ends up being on the same server. This has several
     implications, the most important being that the client will not
@@ -894,9 +900,9 @@ in case of an error</td></tr>
     "ErrorDocument 401" directive then it must refer to a local
     document.</strong></p>
 
-    <p>Microsoft Internet Explorer (MSIE) will ignore server-generated
-    error messages when they are "too small" and substitute its own
-    "friendly" error messages.  The size threshold varies depending on
+    <p>Microsoft Internet Explorer (MSIE) will by default ignore
+    server-generated error messages when they are "too small" and substitute
+    its own "friendly" error messages. The size threshold varies depending on
     the type of error, but in general, if you make your error document
     greater than 512 bytes, then MSIE will show the server-generated
     error rather than masking it.  More information is available in
@@ -975,13 +981,14 @@ HTTP response header</td></tr>
 </table>
     <p>
     The <code class="directive">FileETag</code> directive configures the file
-    attributes that are used to create the ETag (entity tag) response
-    header field when the document is based on a file.  (The ETag
-    value is used in cache management to save network bandwidth.)  In
-    Apache 1.3.22 and earlier, the ETag value was <em>always</em> formed
-    from the file's inode, size, and last-modified time (mtime).  The
-    FileETag directive allows you to choose which of these -- if any
-    -- should be used.  The recognized keywords are:
+    attributes that are used to create the <code>ETag</code> (entity
+    tag) response header field when the document is based on a file.
+    (The <code>ETag</code> value is used in cache management to save
+    network bandwidth.) In Apache 1.3.22 and earlier, the
+    <code>ETag</code> value was <em>always</em> formed
+    from the file's inode, size, and last-modified time (mtime). The
+    <code class="directive">FileETag</code> directive allows you to choose
+    which of these -- if any -- should be used. The recognized keywords are:
     </p>
 
     <dl>
@@ -995,8 +1002,8 @@ HTTP response header</td></tr>
      <dd>All available fields will be used. This is equivalent to:
          <div class="example"><p><code>FileETag INode MTime Size</code></p></div></dd>
      <dt><strong>None</strong></dt>
-     <dd>If a document is file-based, no ETag field will be included in the
-      response</dd>
+     <dd>If a document is file-based, no <code>ETag</code> field will be
+       included in the response</dd>
     </dl>
 
     <p>The <code>INode</code>, <code>MTime</code>, and <code>Size</code>
@@ -1040,8 +1047,8 @@ filenames</td></tr>
     portion of the filesystem they apply to.</p>
 
     <p>The <var>filename</var> argument should include a filename, or
-    a wild-card string, where `?' matches any single character, and
-    `*' matches any sequences of characters. Extended regular
+    a wild-card string, where <code>?</code> matches any single character,
+    and <code>*</code> matches any sequences of characters. Extended regular
     expressions can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
@@ -1053,8 +1060,8 @@ filenames</td></tr>
     and later, <code class="directive"><a href="#filesmatch">&lt;FilesMatch&gt;</a></code> is preferred, however.</p>
 
     <p>Note that unlike <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> and <code class="directive"><a href="#location">&lt;Location&gt;</a></code> sections, <code class="directive">&lt;Files&gt;</code> sections can be used inside
-    .htaccess files. This allows users to control access to their own
-    files, at a file-by-file level.</p>
+    <code>.htaccess</code> files. This allows users to control access to
+    their own files, at a file-by-file level.</p>
 
 
 <h3>See also</h3>
@@ -1108,13 +1115,13 @@ MIME content-type</td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, or
-    <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or 
+    <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or
     <code class="directive"><a href="#files">&lt;Files&gt;</a></code>
     section, this directive forces all matching files to be served
     with the content type identification given by
     <var>MIME-type</var>. For example, if you had a directory full of
-    GIF files, but did not want to label them all with ".gif", you
-    might want to use:</p>
+    GIF files, but did not want to label them all with <code>.gif</code>,
+    you might want to use:</p>
 
     <div class="example"><p><code>
       ForceType image/gif
@@ -1148,15 +1155,15 @@ MIME content-type</td></tr>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables DNS lookups on client IP addresses</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HostnameLookups on|off|double</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HostnameLookups off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HostnameLookups On|Off|Double</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HostnameLookups Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>This directive enables DNS lookups so that host names can be
     logged (and passed to CGIs/SSIs in <code>REMOTE_HOST</code>).
-    The value <code>double</code> refers to doing double-reverse
+    The value <code>Double</code> refers to doing double-reverse
     DNS. That is, after a reverse lookup is performed, a forward
     lookup is then performed on that result. At least one of the ip
     addresses in the forward lookup must match the original
@@ -1167,18 +1174,18 @@ MIME content-type</td></tr>
     used for controlling access by hostname, a double reverse lookup
     will be performed.  This is necessary for security. Note that the
     result of this double-reverse isn't generally available unless you
-    set <code>HostnameLookups double</code>. For example, if only
-    <code>HostnameLookups on</code> and a request is made to an object
+    set <code>HostnameLookups Double</code>. For example, if only
+    <code>HostnameLookups On</code> and a request is made to an object
     that is protected by hostname restrictions, regardless of whether
     the double-reverse fails or not, CGIs will still be passed the
     single-reverse result in <code>REMOTE_HOST</code>.</p>
 
-    <p>The default is off in order to save the network
+    <p>The default is <code>Off</code> in order to save the network
     traffic for those sites that don't truly need the reverse
     lookups done. It is also better for the end users because they
     don't have to suffer the extra latency that a lookup entails.
     Heavily loaded sites should leave this directive
-    <code>off</code>, since DNS lookups can take considerable
+    <code>Off</code>, since DNS lookups can take considerable
     amounts of time. The utility <a href="../programs/logresolve.html">logresolve</a>, provided in
     the <var>/support</var> directory, can be used to look up host
     names from logged IP addresses offline.</p>
@@ -1187,10 +1194,10 @@ MIME content-type</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a> <a name="identitycheck" id="identitycheck">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables logging of the RFC1413 identity of the remote 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables logging of the RFC1413 identity of the remote
 user</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IdentityCheck on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>IdentityCheck off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IdentityCheck On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>IdentityCheck Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -1278,8 +1285,8 @@ presence or absence of a specific module</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>The <code>&lt;IfModule <var>test</var>&gt;...&lt;/IfModule&gt;</code>
-    section is used to mark directives that are conditional on the presence of a 
-    specific module. The directives within an <code class="directive">&lt;IfModule&gt;</code> section are only processed if the <var>test</var>
+    section is used to mark directives that are conditional on the presence of
+    a specific module. The directives within an <code class="directive">&lt;IfModule&gt;</code> section are only processed if the <var>test</var>
     is true. If <var>test</var> is false, everything between the start and
     end markers is ignored.</p>
 
@@ -1310,7 +1317,7 @@ presence or absence of a specific module</td></tr>
 
     <div class="note">This section should only be used if you need to have one
     configuration file that works whether or not a specific module
-    is available.  In normal operation, directives need not be
+    is available. In normal operation, directives need not be
     placed in <code class="directive">&lt;IfModule&gt;</code>
     sections.</div>
 
@@ -1330,7 +1337,7 @@ the server configuration files</td></tr>
     from within the server configuration files.</p>
 
     <p>Shell-style (fnmatch) wildcard characters can be used to
-    include several files at once, in alphabetical order.  In
+    include several files at once, in alphabetical order. In
     addition, if <code class="directive">Include</code> points to a directory,
     rather than a file, Apache will read all files in that directory
     and any subdirectory.  But including entire directories is not
@@ -1377,7 +1384,7 @@ the server configuration files</td></tr>
 <div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables HTTP persistent connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>KeepAlive on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>KeepAlive On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>KeepAlive On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1453,8 +1460,9 @@ methods</td></tr>
     nominated HTTP methods. For all other methods, the access
     restrictions that are enclosed in the <code>&lt;Limit&gt;</code>
     bracket <strong>will have no effect</strong>. The following
-    example applies the access control only to the methods POST, PUT,
-    and DELETE, leaving all other methods unprotected:</p>
+    example applies the access control only to the methods <code>POST</code>,
+    <code>PUT</code>, and <code>DELETE</code>, leaving all other methods
+    unprotected:</p>
 
     <div class="example"><p><code>
       &lt;Limit POST PUT DELETE&gt;<br />
@@ -1533,9 +1541,9 @@ from the client</td></tr>
     request message body will vary greatly depending on the nature of
     the resource and the methods allowed on that resource. CGI scripts
     typically use the message body for passing form information to the
-    server. Implementations of the PUT method will require a value at
-    least as large as any representation that the server wishes to
-    accept for that resource.</p>
+    server. Implementations of the <code>PUT</code> method will require
+    a value at least as large as any representation that the server
+    wishes to accept for that resource.</p>
 
     <p>This directive gives the server administrator greater
     control over abnormal client request behavior, which may be
@@ -1661,7 +1669,7 @@ from the client</td></tr>
     restriction on the length of a request-URI allowed for a request
     on the server. A server needs this value to be large enough to
     hold any of its resource names, including any information that
-    might be passed in the query part of a GET request.</p>
+    might be passed in the query part of a <code>GET</code> request.</p>
 
     <p>This directive gives the server administrator greater
     control over abnormal client request behavior, which may be
@@ -1705,7 +1713,7 @@ from the client</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Applies the enclosed directives only to matching
 URLs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Location
-    URL-path|URL&gt; ... &lt;/Location&gt;</code></td></tr>
+    <var>URL-path</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -1719,7 +1727,7 @@ URLs</td></tr>
     <code>.htaccess</code> files are read, and after the <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.</p>
 
     <p>Note that URLs do not have to line up with the filesystem at
-    all, it should be emphasized that &lt;Location&gt; operates
+    all, it should be emphasized that <code>&lt;Location&gt;</code> operates
     completely outside the filesystem.</p>
 
     <p>For all origin (non-proxy) requests, the URL to be matched is a
@@ -1729,8 +1737,8 @@ URLs</td></tr>
     <code>scheme://servername/path</code>, and you must include the
     prefix.</p>
 
-    <p>The URL may use wildcards In a wild-card string, `?' matches
-    any single character, and `*' matches any sequences of
+    <p>The URL may use wildcards In a wild-card string, <code>?</code> matches
+    any single character, and <code>*</code> matches any sequences of
     characters.</p>
 
     <p>Extended regular
@@ -1741,8 +1749,8 @@ URLs</td></tr>
       &lt;Location ~ "/(extra|special)/data"&gt;
     </code></p></div>
 
-    <p>would match URLs that contained the substring "/extra/data" or
-    "/special/data". In Apache 1.3 and above, a new directive
+    <p>would match URLs that contained the substring <code>/extra/data</code>
+    or <code>/special/data</code>. In Apache 1.3 and above, a new directive
     <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
     exists which behaves identical to the regex version of
     <code class="directive">&lt;Location&gt;</code>.</p>
@@ -1751,7 +1759,7 @@ URLs</td></tr>
     functionality is especially useful when combined with the
     <code class="directive"><a href="#sethandler">SetHandler</a></code>
     directive. For example, to enable status requests, but allow them
-    only from browsers at foo.com, you might use:</p>
+    only from browsers at <code>foo.com</code>, you might use:</p>
 
     <div class="example"><p><code>
       &lt;Location /status&gt;<br />
@@ -1945,7 +1953,7 @@ connection</td></tr>
     <p>The <code class="directive">MaxKeepAliveRequests</code> directive
     limits the number of requests allowed per connection when
     <code class="directive"><a href="#keepalive">KeepAlive</a></code> is on. If it is
-    set to "<code>0</code>", unlimited requests will be allowed. We
+    set to <code>0</code>, unlimited requests will be allowed. We
     recommend that this setting be kept to a high value for maximum
     server performance.</p>
 
@@ -1986,11 +1994,11 @@ hosting</td></tr>
     servicing the requests. If you have multiple name-based hosts on
     multiple addresses, repeat the directive for each address.</p>
 
-    <p>Note: the "main server" and any _default_ servers will
+    <p>Note: the "main server" and any <code>_default_</code> servers will
     <strong>never</strong> be served for a request to a
     <code class="directive">NameVirtualHost</code> IP Address (unless for some
     reason you specify <code class="directive">NameVirtualHost</code> but then
-    don't define any VirtualHosts for that address).</p>
+    don't define any <code class="directive">VirtualHost</code>s for that address).</p>
 
     <p>Optionally you can specify a port number on which the
     name-based virtual hosts should be used, e.g.</p>
@@ -2001,20 +2009,21 @@ hosting</td></tr>
 
     <p>IPv6 addresses must be enclosed in square brackets, as shown
     in the following example:</p>
- 
+
     <div class="example"><p><code>
       NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
     </code></p></div>
 
     <p>To receive requests on all interfaces, you can use an argument of
-    *</p>
+    <code>*</code></p>
 
     <div class="example"><p><code>
       NameVirtualHost *
     </code></p></div>
 
-    <div class="note"><h3>Argument to &lt;VirtualHost&gt; directive</h3>
-      <p>Note that the argument to the &lt;VirtualHost&gt; directive must
+    <div class="note"><h3>Argument to <code class="directive">&lt;VirtualHost&gt;</code>
+      directive</h3>
+      <p>Note that the argument to the <code class="directive">&lt;VirtualHost&gt;</code> directive must
       exactly match the argument to the <code class="directive">NameVirtualHost</code> directive.</p>
 
       <div class="example"><p><code>
@@ -2054,7 +2063,7 @@ directory</td></tr>
     <dl>
       <dt>All</dt>
 
-      <dd>All options except for MultiViews. This is the default
+      <dd>All options except for <code>MultiViews</code>. This is the default
       setting.</dd>
 
       <dt>ExecCGI</dt>
@@ -2084,23 +2093,24 @@ directory</td></tr>
 
       <dd>
 
-      Server-side includes are permitted, but the #exec command and
-      #exec CGI are disabled. It is still possible to #include
-      virtual CGI scripts from ScriptAliase'd directories.</dd>
+      Server-side includes are permitted, but the <code>#exec cmd</code>
+      and <code>#exec cgi</code> are disabled. It is still possible to
+      <code>#include virtual</code> CGI scripts from
+      <code class="directive">ScriptAlias</code>e'd directories.</dd>
 
       <dt>Indexes</dt>
 
       <dd>
       If a URL which maps to a directory is requested, and the
-      there is no DirectoryIndex (<em>e.g.</em>, index.html) in
-      that directory, then the server will return a formatted
-      listing of the directory.</dd>
+      there is no <code class="directive">DirectoryIndex</code> (<em>e.g.</em>,
+      <code>index.html</code>) in that directory, then the server will
+      return a formatted listing of the directory.</dd>
 
       <dt>MultiViews</dt>
 
       <dd>
       <a href="../content-negotiation.html">Content negotiated</a>
-      MultiViews are allowed.</dd>
+      "MultiViews" are allowed.</dd>
 
       <dt>SymLinksIfOwnerMatch</dt>
 
@@ -2114,13 +2124,14 @@ directory</td></tr>
     <p>Normally, if multiple <code class="directive">Options</code> could apply to a
     directory, then the most specific one is taken complete; the
     options are not merged. However if <em>all</em> the options on
-    the <code class="directive">Options</code> directive are preceded by a + or -
-    symbol, the options are merged. Any options preceded by a + are
-    added to the options currently in force, and any options
-    preceded by a - are removed from the options currently in
+    the <code class="directive">Options</code> directive are preceded by a
+    <code>+</code> or <code>-</code>
+    symbol, the options are merged. Any options preceded by a <code>+</code>
+    are added to the options currently in force, and any options
+    preceded by a <code>-</code> are removed from the options currently in
     force. </p>
 
-    <p>For example, without any + and - symbols:</p>
+    <p>For example, without any <code>+</code> and <code>-</code> symbols:</p>
 
     <div class="example"><p><code>
       &lt;Directory /web/docs&gt;<br />
@@ -2137,8 +2148,9 @@ directory</td></tr>
     </code></p></div>
 
     <p>then only <code>Includes</code> will be set for the
-    /web/docs/spec directory. However if the second
-    <code class="directive">Options</code> directive uses the + and - symbols:</p> 
+    <code>/web/docs/spec</code> directory. However if the second
+    <code class="directive">Options</code> directive uses the <code>+</code> and
+    <code>-</code> symbols:</p>
 
     <div class="example"><p><code>
       &lt;Directory /web/docs&gt;<br />
@@ -2155,8 +2167,9 @@ directory</td></tr>
     </code></p></div>
 
     <p>then the options <code>FollowSymLinks</code> and
-    <code>Includes</code> are set for the /web/docs/spec directory.</p>
-    
+    <code>Includes</code> are set for the <code>/web/docs/spec</code>
+    directory.</p>
+
 
     <p><strong>Note:</strong> Using <code>-IncludesNOEXEC</code> or
     <code>-Includes</code> disables server-side includes completely
@@ -2347,22 +2360,22 @@ processes launched by Apache children</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interaction between host-level access control and 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interaction between host-level access control and
 user authentication</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Satisfy any|all</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Satisfy all</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Satisfy Any|All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Satisfy All</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>Access policy if both <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="#require">Require</a></code> used. The parameter can be
-    either <var>all</var> or <var>any</var>. This directive is only
+    either <code>All</code> or <code>Any</code>. This directive is only
     useful if access to a particular area is being restricted by both
     username/password <em>and</em> client host address. In this case
-    the default behavior (<var>all</var>) is to require that the client passes
-    the address access restriction <em>and</em> enters a valid
-    username and password. With the "any" option the client will be
+    the default behavior (<code>All</code>) is to require that the client
+    passes the address access restriction <em>and</em> enters a valid
+    username and password. With the <code>Any</code> option the client will be
     granted access if they either pass the host restriction or enter a
     valid username and password. This can be used to password restrict
     an area, but to let clients from particular addresses in without
@@ -2376,9 +2389,9 @@ user authentication</td></tr>
     <div class="example"><p><code>
       Require valid-user<br />
       Allow from 192.168.1<br />
-      Satisfy any
+      Satisfy Any
     </code></p></div>
-   
+
 
 <h3>See also</h3>
 <ul>
@@ -2389,22 +2402,29 @@ user authentication</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Technique for locating the interpreter for CGI 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Technique for locating the interpreter for CGI
 scripts</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptInterpreterSource registry|script</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScriptInterpreterSource script</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptInterpreterSource Registry|Registry-Strict|Script</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScriptInterpreterSource Script</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Win32 only</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Win32 only
+option Registry-Strict is available in Apache 2.0 and later</td></tr>
 </table>
     <p>This directive is used to control how Apache finds the
     interpreter used to run CGI scripts. The default technique is to
-    use the interpreter pointed to by the #! line in the
-    script. Setting <code>ScriptInterpreterSource registry</code> will
+    use the interpreter pointed to by the <code>#!</code> line in the
+    script.</p>
+
+    <p>Setting <code>ScriptInterpreterSource Registry</code> will
     cause the Windows Registry to be searched using the script file
-    extension (e.g., .pl) as a search key.</p>
+    extension (e.g., <code>.pl</code>) as a search key.</p>
+
+    <p>The option <code>Registry-Strict</code> which is new in Apache 2.0
+    does the same as <code>Registry</code> but uses a more strict registry
+    search.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2471,7 +2491,7 @@ itself</td></tr>
 </table>
     <p>The <code class="directive">ServerName</code> directive sets the hostname and
     port that the server uses to identify itself.  This is used when
-    creating redirection URLs.  For example, if the name of the
+    creating redirection URLs. For example, if the name of the
     machine hosting the webserver is <code>simple.example.com</code>,
     but the machine also has the DNS alias <code>www.example.com</code>
     and you wish the webserver to be so identified, the following
@@ -2483,9 +2503,9 @@ itself</td></tr>
 
     <p>If no <code class="directive">ServerName</code> is specified, then the
     server attempts to deduce the hostname by performing a reverse
-    lookup on the IP address.  If no port is specified in the
+    lookup on the IP address. If no port is specified in the
     servername, then the server will use the port from the incoming
-    request.  For optimal reliability and predictability, you should
+    request. For optimal reliability and predictability, you should
     specify an explicit hostname and port using the
     <code class="directive">ServerName</code> directive.</p>
 
@@ -2515,7 +2535,7 @@ itself</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Legacy URL pathname for a name-virtual host that
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Legacy URL pathname for a name-based virtual host that
 is accessed by an incompatible browser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerPath <var>URL-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
@@ -2573,11 +2593,11 @@ is accessed by an incompatible browser</td></tr>
 </table>
     <p>The <code class="directive">ServerSignature</code> directive allows the
     configuration of a trailing footer line under server-generated
-    documents (error messages, mod_proxy ftp directory listings,
-    mod_info output, ...). The reason why you would want to enable
-    such a footer line is that in a chain of proxies, the user often
-    has no possibility to tell which of the chained servers actually
-    produced a returned error message.<br /> The <code>Off</code>
+    documents (error messages, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> ftp directory
+    listings, <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> output, ...). The reason why you
+    would want to enable such a footer line is that in a chain of proxies,
+    the user often has no possibility to tell which of the chained servers
+    actually produced a returned error message.<br /> The <code>Off</code>
     setting, which is the default, suppresses the error line (and is
     therefore compatible with the behavior of Apache-1.2 and
     below). The <code>On</code> setting simply adds a line with the
@@ -2598,7 +2618,7 @@ is accessed by an incompatible browser</td></tr>
 <div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the Server HTTP response header</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Minimal|ProductOnly|OS|Full</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ServerTokens Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -2657,7 +2677,7 @@ is accessed by an incompatible browser</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Forces all matching files to be processed by a
 handler</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetHandler <var>handler-name</var>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetHandler <var>handler-name</var>|None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -2800,8 +2820,8 @@ certain events before failing a request</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures how the server determines its own name and
 port</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UseCanonicalName on|off|dns</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>UseCanonicalName on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UseCanonicalName On|Off|DNS</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>UseCanonicalName On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2814,7 +2834,7 @@ port</td></tr>
     is used in all self-referential URLs, and for the values of
     <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in CGIs.</p>
 
-    <p>With <code>UseCanonicalName off</code> Apache will form
+    <p>With <code>UseCanonicalName Off</code> Apache will form
     self-referential URLs using the hostname and port supplied by
     the client if any are supplied (otherwise it will use the
     canonical name, as defined above). These values are the same
@@ -2834,8 +2854,8 @@ port</td></tr>
     authenticate twice (once for <code>www</code> and once again
     for <code>www.domain.com</code> -- see <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">the
     FAQ on this subject for more information</a>). But if
-    <code class="directive">UseCanonicalName</code> is set off, then Apache will
-    redirect to <code>http://www/splat/</code>.</p>
+    <code class="directive">UseCanonicalName</code> is set <code>Off</code>, then
+    Apache will redirect to <code>http://www/splat/</code>.</p>
 
     <p>There is a third option, <code>UseCanonicalName DNS</code>,
     which is intended for use with mass IP-based virtual hosting to
@@ -2885,7 +2905,7 @@ hostname or IP address</td></tr>
       <li>A fully qualified domain name for the IP address of the
       virtual host;</li>
 
-      <li>The character *, which is used only in combination with
+      <li>The character <code>*</code>, which is used only in combination with
       <code>NameVirtualHost *</code> to match all IP addresses; or</li>
 
       <li>The string <code>_default_</code>, which is used only
@@ -2931,7 +2951,7 @@ hostname or IP address</td></tr>
 
     <div class="note"><h3>Note</h3>
     <p>The use of <code class="directive">&lt;VirtualHost&gt;</code> does
-    <strong>not</strong> affect what addresses Apache listens on.  You
+    <strong>not</strong> affect what addresses Apache listens on. You
     may need to ensure that Apache is listening on the correct addresses
     using <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
     </div>
@@ -2940,11 +2960,12 @@ hostname or IP address</td></tr>
     <code>_default_</code> can be specified in
     which case this virtual host will match any IP address that is
     not explicitly listed in another virtual host. In the absence
-    of any _default_ virtual host the "main" server config,
+    of any <code>_default_</code> virtual host the "main" server config,
     consisting of all those definitions outside any VirtualHost
     section, is used when no IP-match occurs.  (But note that any IP
     address that matches a <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code> directive will use neither
-    the "main" server config nor the _default_ virtual host.  See the <a href="../vhosts/name-based.html">name-based virtual hosting</a>
+    the "main" server config nor the <code>_default_</code> virtual host.
+    See the <a href="../vhosts/name-based.html">name-based virtual hosting</a>
     documentation for further details.)</p>
 
     <p>You can specify a <code>:port</code> to change the port that is
