@@ -129,7 +129,7 @@ define dump_bucket_ex
         if $bucket->type == &apr_bucket_type_pool
             set $refcount = ((apr_bucket_refcount *)$bucket->data)->refcount
             set $p = (apr_bucket_pool *)$bucket->data
-            if $p->pool != NULL
+            if !$p->pool
                 set $p = (apr_bucket_heap *)$bucket->data
             end
             set $data = $p->base+$bucket->start
