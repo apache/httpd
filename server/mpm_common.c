@@ -728,6 +728,8 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
         if (rv != APR_ENOENT) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rv, NULL,
                          "Error retrieving pid file %s", ap_pid_fname);
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                         "Remove it before continuing if it is corrupted.");
             *exit_status = 1;
             return 1;
         }
