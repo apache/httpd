@@ -1,4 +1,10 @@
 Changes with Apache 2.0.31-dev
+  *) Change in quick_hanlder behavior for subrequests. it now passes DONE
+     (as it does for a normal request). quick_handled sub-requests now work
+     in mod-include [Ian Holsman]
+
+  *) Change SUBREQ_CORE so that it is a 'HTTP_HEADER' filter instead of
+     'CONTENT' one, as it needs to run AFTER all content headers
 
   *) Rename BeOS MPM directive RequestsPerThread to MaxRequestsPerThread.
      [Lars Eilebrecht]
