@@ -1010,10 +1010,9 @@ expanded constructs in addition to plain text:
 <CODE>$N</CODE>
 </STRONG></BLOCKQUOTE>
 
-(1 &lt;= N &lt;= 9) which provide access to the grouped parts (parenthesis!)
-of the
-pattern from the corresponding <CODE>RewriteRule</CODE> directive (the one
-following the current bunch of <CODE>RewriteCond</CODE> directives).
+(0 &lt;= N &lt;= 9) which provide access to the grouped parts (parenthesis!)
+of the pattern from the corresponding <CODE>RewriteRule</CODE> directive (the
+one following the current bunch of <CODE>RewriteCond</CODE> directives).
 
 <P>
 <LI><STRONG>RewriteCond backreferences</STRONG>: These are backreferences of
@@ -1431,7 +1430,7 @@ which is substituted for (or replaces) the original URL for which
 <LI><A HREF="#mapfunc">mapping-function</A> calls (<CODE>${mapname:key|default}</CODE>)
 </OL>
 
-Back-references are <CODE>$</CODE><STRONG>N</STRONG> (<STRONG>N</STRONG>=1..9) identifiers which
+Back-references are <CODE>$</CODE><STRONG>N</STRONG> (<STRONG>N</STRONG>=0..9) identifiers which
 will be replaced by the contents of the <STRONG>N</STRONG>th group of the matched
 <EM>Pattern</EM>. The server-variables are the same as for the
 <EM>TestString</EM> of a <CODE>RewriteCond</CODE> directive. The
