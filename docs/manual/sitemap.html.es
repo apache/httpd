@@ -146,7 +146,6 @@ Apache</a></li>
 <li><a href="misc/fin_wait_2.html">Conexiones en FIN_WAIT_2 y Apache</a></li>
 <li><a href="misc/known_client_problems.html">Problemas conocidos de clientes</a></li>
 <li><a href="misc/descriptors.html">Descriptores y Apache</a></li>
-<li><a href="cgi_path.html">Cambios en PATH_INFO en el entorno CGI</a></li>
 <li><a href="misc/relevant_standards.html">Estándares Importantes</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

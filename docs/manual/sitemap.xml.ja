@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.12.2.16 (outdated: 1.12.2.19) -->
+<!-- English Revision: 1.12.2.16 (outdated: 1.12.2.20) -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -134,7 +134,6 @@
 <page href="misc/fin_wait_2.html">FIN_WAIT_2 のコネクションと Apache</page>
 <page href="misc/known_client_problems.html">クライアントの既知の問題</page>
 <page href="misc/descriptors.html">記述子と Apache</page>
-<page href="cgi_path.html">CGI 環境の PATH_INFO の変更</page>
 <page href="misc/relevant_standards.html">関連する標準規格</page>
 </category>
 

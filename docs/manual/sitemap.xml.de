@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1.12.2.19 -->
+<!-- English Revision: 1.12.2.20 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -137,7 +137,6 @@ HPUX betreiben</page>
 <page href="misc/fin_wait_2.html">Verbindungen im FIN_WAIT_2 und Apache</page>
 <page href="misc/known_client_problems.html">Bekannte Client-Probleme</page>
 <page href="misc/descriptors.html">Deskriptoren und Apache</page>
-<page href="cgi_path.html">PATH_INFO-&#196;nderungen in der CGI-Umgebung</page>
 <page href="misc/relevant_standards.html">Wichtige Standards</page>
 </category>
 

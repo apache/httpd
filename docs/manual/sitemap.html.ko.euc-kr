@@ -148,7 +148,6 @@
 <li><a href="misc/known_client_problems.html">클라이언트의 이미
 알려진 문제점</a></li>
 <li><a href="misc/descriptors.html">파일기술자와 아파치</a></li>
-<li><a href="cgi_path.html">CGI 환경에서 PATH_INFO의 변화</a></li>
 <li><a href="misc/relevant_standards.html">관련된 표준들</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

@@ -145,7 +145,6 @@
 <li><a href="misc/fin_wait_2.html">FIN_WAIT_2 のコネクションと Apache</a></li>
 <li><a href="misc/known_client_problems.html">クライアントの既知の問題</a></li>
 <li><a href="misc/descriptors.html">記述子と Apache</a></li>
-<li><a href="cgi_path.html">CGI 環境の PATH_INFO の変更</a></li>
 <li><a href="misc/relevant_standards.html">関連する標準規格</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

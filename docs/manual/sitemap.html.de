@@ -146,7 +146,6 @@ HPUX betreiben</a></li>
 <li><a href="misc/fin_wait_2.html">Verbindungen im FIN_WAIT_2 und Apache</a></li>
 <li><a href="misc/known_client_problems.html">Bekannte Client-Probleme</a></li>
 <li><a href="misc/descriptors.html">Deskriptoren und Apache</a></li>
-<li><a href="cgi_path.html">PATH_INFO-Änderungen in der CGI-Umgebung</a></li>
 <li><a href="misc/relevant_standards.html">Wichtige Standards</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

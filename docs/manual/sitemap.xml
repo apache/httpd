@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.12.2.19 $ -->
+<!-- $Revision: 1.12.2.20 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -135,7 +135,6 @@ Server on HPUX</page>
 <page href="misc/fin_wait_2.html">Connections in FIN_WAIT_2 and Apache</page>
 <page href="misc/known_client_problems.html">Known Client Problems</page>
 <page href="misc/descriptors.html">Descriptors and Apache</page>
-<page href="cgi_path.html">PATH_INFO Changes in the CGI Environment</page>
 <page href="misc/relevant_standards.html">Relevant Standards</page>
 </category>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1.12.2.19 -->
+<!-- English Revision: 1.12.2.20 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -135,7 +135,6 @@ Apache</page>
 <page href="misc/fin_wait_2.html">Conexiones en FIN_WAIT_2 y Apache</page>
 <page href="misc/known_client_problems.html">Problemas conocidos de clientes</page>
 <page href="misc/descriptors.html">Descriptores y Apache</page>
-<page href="cgi_path.html">Cambios en PATH_INFO en el entorno CGI</page>
 <page href="misc/relevant_standards.html">Est&#225;ndares Importantes</page>
 </category>
 
