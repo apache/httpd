@@ -79,6 +79,18 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="TITLE" value="Zbyt d³ugie URI!"
+--><!--#include virtual="include/top.html" -->
+
+    D³ugo¶æ ¿±danego URLa przekracza limit ustanowiony dla tego
+    serwera. ¯±danie nie mo¿e zostaæ zrealizowane.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
