@@ -155,6 +155,11 @@ struct proxy_services {
 };
 #endif
 
+/* different HTTP versions we need to care about */
+#define HTTP_0_9			0009
+#define HTTP_1_0			1000
+#define HTTP_1_1			1001
+
 /* static information about a remote proxy */
 struct proxy_remote {
     const char *scheme;		/* the schemes handled by this proxy, or '*' */
