@@ -43,6 +43,14 @@ SetHandler server-info<br>
       files, including <em>per</em>-directory files (<em>e.g.</em>,
       <code>.htaccess</code>). This may have security-related
       ramifications for your site.</p>
+
+      <p>In particular, this module can leak sensitive information
+      from the configuration directives of other Apache modules such as
+      system paths, usernames/passwords, database names, etc.  Due to
+      the way this module works there is no way to block information
+      from it.  Therefore, this module should ONLY be used in a controlled
+      environment and always with caution.</p>
+
     </td></tr></table></blockquote>
 <h2>Directives</h2><ul><li><a href="#addmoduleinfo">AddModuleInfo</a></li></ul><hr><h2><a name="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Allows additional information to be added to the module
