@@ -3062,9 +3062,13 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     /* ### This is bad. */
     APR_BRIGADE_NORMALIZE(ctx->b);
 
-    /* check for empty brigade *AFTER* APR_BRIGADE_NORMALIZE() */
+    /* check for empty brigade *AFTER* APR_BRIGADE_NORMALIZE()
+     * If we have lost our socket bucket (see above), we are EOF.
+     *
+     * Ideally, this should be returning SUCCESS with EOS bucket, but
+     * some higher-up APIs (spec. read_request_line via ap_rgetline)
+     * want an error code. */
     if (APR_BRIGADE_EMPTY(ctx->b)) {
-        /* hit EOF on socket already */
         return APR_EOF;
     }
     
@@ -3150,6 +3154,22 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
         else if (rv != APR_SUCCESS) {
             return rv;
+        } else if (block == APR_BLOCK_READ && len == 0) {
+            /* We wanted to read some bytes in blocking mode.  We read
+             * 0 bytes.  Hence, we now assume we are EOS.
+             *
+             * When we are in normal mode, return an EOS bucket to the
+             * caller.
+             * When we are in speculative mode, leave ctx->b empty, so
+             * that the next call returns an EOS bucket.
+             */
+            apr_bucket_delete(e);
+
+            if (mode == AP_MODE_READBYTES) {
+                e = apr_bucket_eos_create();
+                APR_BRIGADE_INSERT_TAIL(b, e);
+            }
+            return APR_SUCCESS;
         }
 
         /* We can only return at most what we read. */
