@@ -219,6 +219,7 @@ static ap_inline void debug_verify_filled(const char *ptr,
 static union block_hdr *malloc_block(int size)
 {
     union block_hdr *blok;
+    int request_size;
 
 #ifdef ALLOC_DEBUG
     /* make some room at the end which we'll fill and expect to be
@@ -230,9 +231,11 @@ static union block_hdr *malloc_block(int size)
     ++num_malloc_calls;
     num_malloc_bytes += size + sizeof(union block_hdr);
 #endif
-    blok = (union block_hdr *) malloc(size + sizeof(union block_hdr));
+    request_size = size + sizeof(union block_hdr);
+    blok = (union block_hdr *) malloc(request_size);
     if (blok == NULL) {
-	fprintf(stderr, "Ouch!  malloc failed in malloc_block()\n");
+	fprintf(stderr, "Ouch!  malloc(%d) failed in malloc_block()\n",
+                request_size);
 	exit(1);
     }
     debug_fill(blok, size + sizeof(union block_hdr));
