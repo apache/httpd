@@ -237,7 +237,7 @@ static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
     if (pchild) {
-	apr_destroy_pool(pchild);
+	apr_pool_destroy(pchild);
     }
     chdir_for_gprof();
     exit(code);
@@ -257,7 +257,7 @@ static void accept_mutex_child_init(apr_pool_t *p)
 {
     apr_status_t rv;
 
-    rv = apr_child_init_lock(&accept_lock, ap_lock_fname, p);
+    rv = apr_lock_child_init(&accept_lock, ap_lock_fname, p);
     if (rv) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, 
                      "couldn't do child init for accept mutex");
@@ -273,7 +273,7 @@ static void accept_mutex_init(apr_pool_t *p)
     apr_status_t rv;
 
     expand_lock_fname(p);
-    rv = apr_create_lock(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, ap_lock_fname, p);
+    rv = apr_lock_create(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, ap_lock_fname, p);
     if (rv) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't create accept mutex");
         exit(APEXIT_INIT);
@@ -282,7 +282,7 @@ static void accept_mutex_init(apr_pool_t *p)
 
 static void accept_mutex_on(void)
 {
-    apr_status_t rv = apr_lock(accept_lock);
+    apr_status_t rv = apr_lock_aquire(accept_lock);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't grab the accept mutex");
         exit(APEXIT_CHILDFATAL);
@@ -291,7 +291,7 @@ static void accept_mutex_on(void)
 
 static void accept_mutex_off(void)
 {
-    apr_status_t rv = apr_unlock(accept_lock);
+    apr_status_t rv = apr_lock_release(accept_lock);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't release the accept mutex");
         exit(APEXIT_CHILDFATAL);
@@ -398,7 +398,7 @@ static void restart(int sig)
     }
     restart_pending = 1;
     if ((is_graceful = (sig == SIGWINCH))) {
-        apr_kill_cleanup(pconf, NULL, ap_cleanup_scoreboard);
+        apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
     }
 }
 
@@ -545,9 +545,9 @@ static void child_main(int child_num_arg)
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    apr_create_pool(&pchild, pconf);
+    apr_pool_create(&pchild, pconf);
 
-    apr_create_pool(&ptrans, pchild);
+    apr_pool_create(&ptrans, pchild);
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);
@@ -634,7 +634,7 @@ static void child_main(int child_num_arg)
 		}
 		first_lr=lr;
 		do {
-                    apr_get_os_sock(&sockdes, lr->sd);
+                    apr_os_sock_get(&sockdes, lr->sd);
 		    if (FD_ISSET(sockdes, &main_fds))
 			goto got_listener;
 		    lr = lr->next;
@@ -786,7 +786,7 @@ static void child_main(int child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
-        apr_get_os_sock(&sockdes, csd);
+        apr_os_sock_get(&sockdes, csd);
 
         if (sockdes >= FD_SETSIZE) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
@@ -794,7 +794,7 @@ static void child_main(int child_num_arg)
                          "to rebuild Apache with a larger FD_SETSIZE "
                          "(currently %d)", 
                          sockdes, FD_SETSIZE);
-	    apr_close_socket(csd);
+	    apr_socket_close(csd);
 	    continue;
         }
 
@@ -1058,7 +1058,7 @@ static int setup_listeners(server_rec *s)
     listenmaxfd = -1;
     FD_ZERO(&listenfds);
     for (lr = ap_listeners; lr; lr = lr->next) {
-        apr_get_os_sock(&sockdes, lr->sd);
+        apr_os_sock_get(&sockdes, lr->sd);
 	FD_SET(sockdes, &listenfds);
 	if (sockdes > listenmaxfd) {
 	    listenmaxfd = sockdes;
@@ -1161,7 +1161,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		}
 #if APR_HAS_OTHER_CHILD
 	    }
-	    else if (apr_reap_other_child(&pid, status) == 0) {
+	    else if (apr_proc_other_child_read(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -1295,7 +1295,7 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
 	is_graceful = 0;
 
 	if (!one_process && !no_detach) {
-	    apr_detach();
+	    apr_proc_detach();
 	}
 
 	ap_my_pid = getpid();

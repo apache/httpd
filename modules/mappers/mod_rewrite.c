@@ -188,7 +188,7 @@ static cache *cachep;
 static int proxy_available;
 
 static const char *lockname;
-static apr_lock_t *rewrite_mapr_lock = NULL;
+static apr_lock_t *rewrite_mapr_lock_aquire = NULL;
 static apr_lock_t *rewrite_log_lock = NULL;
 
 /*
@@ -216,9 +216,9 @@ static void *config_server_create(apr_pool_t *p, server_rec *s)
     a->rewritelogfile  = NULL;
     a->rewritelogfp    = NULL;
     a->rewriteloglevel = 0;
-    a->rewritemaps     = apr_make_array(p, 2, sizeof(rewritemap_entry));
-    a->rewriteconds    = apr_make_array(p, 2, sizeof(rewritecond_entry));
-    a->rewriterules    = apr_make_array(p, 2, sizeof(rewriterule_entry));
+    a->rewritemaps     = apr_array_make(p, 2, sizeof(rewritemap_entry));
+    a->rewriteconds    = apr_array_make(p, 2, sizeof(rewritecond_entry));
+    a->rewriterules    = apr_array_make(p, 2, sizeof(rewriterule_entry));
     a->server          = s;
 
     return (void *)a;
@@ -250,11 +250,11 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
         a->rewritelogfp    = overrides->rewritelogfp != NULL 
                              ? overrides->rewritelogfp 
                              : base->rewritelogfp;
-        a->rewritemaps     = apr_append_arrays(p, overrides->rewritemaps,
+        a->rewritemaps     = apr_array_append(p, overrides->rewritemaps,
                                               base->rewritemaps);
-        a->rewriteconds    = apr_append_arrays(p, overrides->rewriteconds,
+        a->rewriteconds    = apr_array_append(p, overrides->rewriteconds,
                                               base->rewriteconds);
-        a->rewriterules    = apr_append_arrays(p, overrides->rewriterules,
+        a->rewriterules    = apr_array_append(p, overrides->rewriterules,
                                               base->rewriterules);
     }
     else {
@@ -289,8 +289,8 @@ static void *config_perdir_create(apr_pool_t *p, char *path)
     a->state           = ENGINE_DISABLED;
     a->options         = OPTION_NONE;
     a->baseurl         = NULL;
-    a->rewriteconds    = apr_make_array(p, 2, sizeof(rewritecond_entry));
-    a->rewriterules    = apr_make_array(p, 2, sizeof(rewriterule_entry));
+    a->rewriteconds    = apr_array_make(p, 2, sizeof(rewritecond_entry));
+    a->rewriterules    = apr_array_make(p, 2, sizeof(rewriterule_entry));
 
     if (path == NULL) {
         a->directory = NULL;
@@ -323,9 +323,9 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
     a->baseurl   = overrides->baseurl;
 
     if (a->options & OPTION_INHERIT) {
-        a->rewriteconds = apr_append_arrays(p, overrides->rewriteconds,
+        a->rewriteconds = apr_array_append(p, overrides->rewriteconds,
                                            base->rewriteconds);
-        a->rewriterules = apr_append_arrays(p, overrides->rewriterules,
+        a->rewriterules = apr_array_append(p, overrides->rewriterules,
                                            base->rewriterules);
     }
     else {
@@ -432,7 +432,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
     sconf = (rewrite_server_conf *)
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
-    newmap = apr_push_array(sconf->rewritemaps);
+    newmap = apr_array_push(sconf->rewritemaps);
 
     newmap->name = a1;
     newmap->func = NULL;
@@ -553,10 +553,10 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
 
     /*  make a new entry in the internal temporary rewrite rule list */
     if (cmd->path == NULL) {   /* is server command */
-        newcond = apr_push_array(sconf->rewriteconds);
+        newcond = apr_array_push(sconf->rewriteconds);
     }
     else {                     /* is per-directory command */
-        newcond = apr_push_array(dconf->rewriteconds);
+        newcond = apr_array_push(dconf->rewriteconds);
     }
 
     /*  parse the argument line ourself */
@@ -698,10 +698,10 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
 
     /*  make a new entry in the internal rewrite rule list */
     if (cmd->path == NULL) {   /* is server command */
-        newrule = apr_push_array(sconf->rewriterules);
+        newrule = apr_array_push(sconf->rewriterules);
     }
     else {                     /* is per-directory command */
-        newrule = apr_push_array(dconf->rewriterules);
+        newrule = apr_array_push(dconf->rewriterules);
     }
 
     /*  parse the argument line ourself */
@@ -757,12 +757,12 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
      */
     if (cmd->path == NULL) {  /* is server command */
         newrule->rewriteconds   = sconf->rewriteconds;
-        sconf->rewriteconds = apr_make_array(cmd->pool, 2,
+        sconf->rewriteconds = apr_array_make(cmd->pool, 2,
                                             sizeof(rewritecond_entry));
     }
     else {                    /* is per-directory command */
         newrule->rewriteconds   = dconf->rewriteconds;
-        dconf->rewriteconds = apr_make_array(cmd->pool, 2,
+        dconf->rewriteconds = apr_array_make(cmd->pool, 2,
                                             sizeof(rewritecond_entry));
     }
 
@@ -936,18 +936,18 @@ static void init_module(apr_pool_t *p,
     int first_time = 0;
     const char *userdata_key = "rewrite_init_module";
 
-    apr_get_userdata(&data, userdata_key, s->process->pool);
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
         first_time = 1;
-        apr_set_userdata((const void *)1, userdata_key,
-                         apr_null_cleanup, s->process->pool);
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                         apr_pool_cleanup_null, s->process->pool);
     }
 
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
 
     /* create the rewriting lockfiles in the parent */
-    if ((rv = apr_create_lock (&rewrite_log_lock, APR_MUTEX, APR_LOCKALL,
+    if ((rv = apr_lock_create (&rewrite_log_lock, APR_MUTEX, APR_LOCKALL,
                                NULL, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "mod_rewrite: could not create rewrite_log_lock");
@@ -955,7 +955,7 @@ static void init_module(apr_pool_t *p,
     }
 
     rewritelock_create(s, p);
-    apr_register_cleanup(p, (void *)s, rewritelock_remove, apr_null_cleanup);
+    apr_pool_cleanup_register(p, (void *)s, rewritelock_remove, apr_pool_cleanup_null);
 
     /* step through the servers and
      * - open each rewriting logfile
@@ -982,10 +982,10 @@ static void init_child(apr_pool_t *p, server_rec *s)
 
     if (lockname != NULL && *(lockname) != '\0')
     {
-        rv = apr_child_init_lock (&rewrite_mapr_lock, lockname, p);
+        rv = apr_lock_child_init (&rewrite_mapr_lock_aquire, lockname, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "mod_rewrite: could not init rewrite_mapr_lock "
+                         "mod_rewrite: could not init rewrite_mapr_lock_aquire "
                          "in child");
         }
     }
@@ -2816,12 +2816,12 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
     char *curkey;
     char *curval;
 
-    rc = apr_open(&fp, file, APR_READ, APR_OS_DEFAULT, r->pool);
+    rc = apr_file_open(&fp, file, APR_READ, APR_OS_DEFAULT, r->pool);
     if (rc != APR_SUCCESS) {
        return NULL;
     }
 
-    while (apr_fgets(line, sizeof(line), fp) == APR_SUCCESS) {
+    while (apr_file_gets(line, sizeof(line), fp) == APR_SUCCESS) {
         if (line[0] == '#')
             continue; /* ignore comments */
         cpT = line;
@@ -2847,7 +2847,7 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
         value = apr_pstrdup(r->pool, curval);
         break;
     }
-    apr_close(fp);
+    apr_file_close(fp);
     return value;
 }
 
@@ -2901,16 +2901,16 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
 
     /* take the lock */
 
-    if (rewrite_mapr_lock) {
-        apr_lock(rewrite_mapr_lock);
+    if (rewrite_mapr_lock_aquire) {
+        apr_lock_aquire(rewrite_mapr_lock_aquire);
     }
 
     /* write out the request key */
 #ifdef NO_WRITEV
     nbytes = strlen(key);
-    apr_write(fpin, key, &nbytes);
+    apr_file_write(fpin, key, &nbytes);
     nbytes = 1;
-    apr_write(fpin, "\n", &nbytes);
+    apr_file_write(fpin, "\n", &nbytes);
 #else
     iova[0].iov_base = key;
     iova[0].iov_len = strlen(key);
@@ -2918,26 +2918,26 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     iova[1].iov_len = 1;
 
     niov = 2;
-    apr_writev(fpin, iova, niov, &nbytes);
+    apr_file_writev(fpin, iova, niov, &nbytes);
 #endif
 
     /* read in the response value */
     i = 0;
     nbytes = 1;
-    apr_read(fpout, &c, &nbytes);
+    apr_file_read(fpout, &c, &nbytes);
     while (nbytes == 1 && (i < LONG_STRING_LEN-1)) {
         if (c == '\n') {
             break;
         }
         buf[i++] = c;
 
-        apr_read(fpout, &c, &nbytes);
+        apr_file_read(fpout, &c, &nbytes);
     }
     buf[i] = '\0';
 
     /* give the lock back */
-    if (rewrite_mapr_lock) {
-        apr_unlock(rewrite_mapr_lock);
+    if (rewrite_mapr_lock_aquire) {
+        apr_lock_release(rewrite_mapr_lock_aquire);
     }
 
     if (strcasecmp(buf, "NULL") == 0) {
@@ -3098,7 +3098,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
         conf->rewritelogfp = ap_piped_log_write_fd(pl);
     }
     else if (*conf->rewritelogfile != '\0') {
-        rc = apr_open(&conf->rewritelogfp, fname, rewritelog_flags, rewritelog_mode, p);
+        rc = apr_file_open(&conf->rewritelogfp, fname, rewritelog_flags, rewritelog_mode, p);
         if (rc != APR_SUCCESS)  {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s, 
                          "mod_rewrite: could not open RewriteLog "
@@ -3188,10 +3188,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                 (unsigned long)(r->server), (unsigned long)r,
                 type, redir, level, str2);
 
-    apr_lock(rewrite_log_lock);
+    apr_lock_aquire(rewrite_log_lock);
     nbytes = strlen(str3);
-    apr_write(conf->rewritelogfp, str3, &nbytes);
-    apr_unlock(rewrite_log_lock);
+    apr_file_write(conf->rewritelogfp, str3, &nbytes);
+    apr_lock_release(rewrite_log_lock);
 
     va_end(ap);
     return;
@@ -3203,7 +3203,7 @@ static char *current_logtime(request_rec *r)
     char tstr[80];
     apr_size_t len;
 
-    apr_explode_localtime(&t, apr_now());
+    apr_explode_localtime(&t, apr_time_now());
 
     apr_strftime(tstr, &len, 80, "[%d/%b/%Y:%H:%M:%S ", &t);
     apr_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]",
@@ -3238,7 +3238,7 @@ static void rewritelock_create(server_rec *s, apr_pool_t *p)
     lockname = ap_server_root_relative(p, lockname);
 
     /* create the lockfile */
-    rc = apr_create_lock (&rewrite_mapr_lock, APR_MUTEX, APR_LOCKALL, lockname, p);
+    rc = apr_lock_create (&rewrite_mapr_lock_aquire, APR_MUTEX, APR_LOCKALL, lockname, p);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                      "mod_rewrite: Parent could not create RewriteLock "
@@ -3257,8 +3257,8 @@ static apr_status_t rewritelock_remove(void *data)
     }
 
     /* destroy the rewritelock */
-    apr_destroy_lock (rewrite_mapr_lock);
-    rewrite_mapr_lock = NULL;
+    apr_lock_destroy (rewrite_mapr_lock_aquire);
+    rewrite_mapr_lock_aquire = NULL;
     lockname = NULL;
     return(0);
 }
@@ -3337,22 +3337,22 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname
 #endif
 
     
-    if (((rc = apr_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_io(procattr, APR_FULL_BLOCK,
+    if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_io_set(procattr, APR_FULL_BLOCK,
                                   APR_FULL_NONBLOCK,
                                   APR_FULL_NONBLOCK)) != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_dir(procattr, 
+        ((rc = apr_procattr_dir_set(procattr, 
                                    ap_make_dirstr_parent(p, progname)))
          != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_cmdtype(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
+        ((rc = apr_procattr_cmdtype_set(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
     }
     else {
         procnew = apr_pcalloc(p, sizeof(*procnew));
-        rc = apr_create_process(procnew, progname, NULL, NULL, procattr, p);
+        rc = apr_proc_create(procnew, progname, NULL, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
-            apr_note_subprocess(p, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(p, procnew, kill_after_timeout);
 
             if (fpin) {
                 (*fpin) = procnew->in;
@@ -3493,12 +3493,12 @@ static char *lookup_variable(request_rec *r, char *var)
 /* XXX: wow this has gotta be slow if you actually use it for a lot, recalculates exploded time for each variable */
     /* underlaying Unix system stuff */
     else if (strcasecmp(var, "TIME_YEAR") == 0) {
-        apr_explode_localtime(&tm, apr_now());
+        apr_explode_localtime(&tm, apr_time_now());
         apr_snprintf(resultbuf, sizeof(resultbuf), "%04d", tm.tm_year + 1900);
         result = resultbuf;
     }
 #define MKTIMESTR(format, tmfield) \
-    apr_explode_localtime(&tm, apr_now()); \
+    apr_explode_localtime(&tm, apr_time_now()); \
     apr_snprintf(resultbuf, sizeof(resultbuf), format, tm.tmfield); \
     result = resultbuf;
     else if (strcasecmp(var, "TIME_MON") == 0) {
@@ -3520,7 +3520,7 @@ static char *lookup_variable(request_rec *r, char *var)
         MKTIMESTR("%d", tm_wday)
     }
     else if (strcasecmp(var, "TIME") == 0) {
-        apr_explode_localtime(&tm, apr_now());
+        apr_explode_localtime(&tm, apr_time_now());
         apr_snprintf(resultbuf, sizeof(resultbuf),
 		    "%04d%02d%02d%02d%02d%02d", tm.tm_year + 1900,
 		    tm.tm_mon+1, tm.tm_mday,
@@ -3636,9 +3636,9 @@ static cache *init_cache(apr_pool_t *p)
     cache *c;
 
     c = (cache *)apr_palloc(p, sizeof(cache));
-    if (apr_create_pool(&c->pool, p) != APR_SUCCESS)
+    if (apr_pool_create(&c->pool, p) != APR_SUCCESS)
 		return NULL;
-    c->lists = apr_make_array(c->pool, 2, sizeof(cachelist));
+    c->lists = apr_array_make(c->pool, 2, sizeof(cachelist));
     return c;
 }
 
@@ -3759,10 +3759,10 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
 
     /* create a needed new list */
     if (!found_list) {
-        l = apr_push_array(c->lists);
+        l = apr_array_push(c->lists);
         l->resource = apr_pstrdup(c->pool, res);
-        l->entries  = apr_make_array(c->pool, 2, sizeof(cacheentry));
-        l->tlb      = apr_make_array(c->pool, CACHE_TLB_ROWS,
+        l->entries  = apr_array_make(c->pool, 2, sizeof(cacheentry));
+        l->tlb      = apr_array_make(c->pool, CACHE_TLB_ROWS,
                                     sizeof(cachetlbentry));
         for (i=0; i<CACHE_TLB_ROWS; ++i) {
             t = &((cachetlbentry *)l->tlb->elts)[i];
@@ -3775,7 +3775,7 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
     for (i = 0; i < c->lists->nelts; i++) {
         l = &(((cachelist *)c->lists->elts)[i]);
         if (strcmp(l->resource, res) == 0) {
-            e = apr_push_array(l->entries);
+            e = apr_array_push(l->entries);
             e->time  = ce->time;
             e->key   = apr_pstrdup(c->pool, ce->key);
             e->value = apr_pstrdup(c->pool, ce->value);

@@ -127,8 +127,8 @@ static void *create_access_dir_config(apr_pool_t *p, char *dummy)
 
     for (i = 0; i < METHODS; ++i)
 	conf->order[i] = DENY_THEN_ALLOW;
-    conf->allows = apr_make_array(p, 1, sizeof(allowdeny));
-    conf->denys = apr_make_array(p, 1, sizeof(allowdeny));
+    conf->allows = apr_array_make(p, 1, sizeof(allowdeny));
+    conf->denys = apr_array_make(p, 1, sizeof(allowdeny));
 
     return (void *) conf;
 }
@@ -172,7 +172,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     if (strcasecmp(from, "from"))
 	return "allow and deny must be followed by 'from'";
 
-    a = (allowdeny *) apr_push_array(cmd->info ? d->allows : d->denys);
+    a = (allowdeny *) apr_array_push(cmd->info ? d->allows : d->denys);
     a->x.from = where;
     a->limited = cmd->limited;
 

@@ -178,7 +178,7 @@ static apr_file_t *stderr_log;
 
 AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p)
 {
-    apr_open_stderr(&stderr_log, p);
+    apr_file_open_stderr(&stderr_log, p);
 }
 
 static int log_child(apr_pool_t *p, const char *progname,
@@ -197,8 +197,8 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_signal(SIGHUP, SIG_IGN);
 #endif /* ndef SIGHUP */
 
-    if (((rc = apr_createprocattr_init(&procattr, p)) == APR_SUCCESS) &&
-        ((rc = apr_setprocattr_io(procattr,
+    if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS) &&
+        ((rc = apr_procattr_io_set(procattr,
                                   APR_FULL_BLOCK,
                                   APR_NO_PIPE,
                                   APR_NO_PIPE)) == APR_SUCCESS)) {
@@ -208,11 +208,11 @@ static int log_child(apr_pool_t *p, const char *progname,
         apr_tokenize_to_argv(progname, &args, p);
         pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *) apr_pcalloc(p, sizeof(*procnew));
-        rc = apr_create_process(procnew, pname, (const char * const *)args,
+        rc = apr_proc_create(procnew, pname, (const char * const *)args,
                                 NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
-            apr_note_subprocess(p, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(p, procnew, kill_after_timeout);
             (*fpin) = procnew->in;
         }
     }
@@ -262,7 +262,7 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
 #endif
     else {
 	fname = ap_server_root_relative(p, s->error_fname);
-        rc = apr_open(&s->error_log, fname, 
+        rc = apr_file_open(&s->error_log, fname, 
                       APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
                       APR_OS_DEFAULT, p);
         if (rc != APR_SUCCESS) {
@@ -286,9 +286,9 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
     replace_stderr = 1;
     if (s_main->error_log) {
         /* replace stderr with this new log */
-        apr_flush(s_main->error_log);
-        apr_open_stderr(&errfile, p);        
-        if ((rc = apr_dupfile(&errfile, s_main->error_log, p)) != APR_SUCCESS) {
+        apr_file_flush(s_main->error_log);
+        apr_file_open_stderr(&errfile, p);        
+        if ((rc = apr_file_dup(&errfile, s_main->error_log, p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
                          "unable to replace stderr with error_log");
         } else {
@@ -323,9 +323,9 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
 AP_DECLARE(void) ap_error_log2stderr(server_rec *s) {
     apr_file_t *errfile = NULL;
 
-    apr_open_stderr(&errfile, s->process->pool);        
+    apr_file_open_stderr(&errfile, s->process->pool);        
     if (s->error_log != NULL) {
-        apr_dupfile(&(s->error_log), errfile, s->process->pool);
+        apr_file_dup(&(s->error_log), errfile, s->process->pool);
     }
 }
 
@@ -384,7 +384,7 @@ static void log_error_core(const char *file, int line, int level,
 
     if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
 	errstr[0] = '[';
-	apr_ctime(errstr + 1, apr_now());
+	apr_ctime(errstr + 1, apr_time_now());
 	errstr[1 + APR_CTIME_LEN - 1] = ']';
 	errstr[1 + APR_CTIME_LEN    ] = ' ';
 	len = 1 + APR_CTIME_LEN + 1;
@@ -448,8 +448,8 @@ static void log_error_core(const char *file, int line, int level,
         if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR))
             len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
         strcpy(errstr + len, APR_EOL_STR);
-        apr_puts(errstr, logf);
-	apr_flush(logf);
+        apr_file_puts(errstr, logf);
+	apr_file_flush(logf);
     }
 #ifdef HAVE_SYSLOG
     else {
@@ -536,7 +536,7 @@ void ap_log_pid(apr_pool_t *p, const char *fname)
 			       );
     }
 
-    if ((rv = apr_open(&pid_file, fname, APR_WRITE | APR_CREATE | APR_TRUNCATE,
+    if ((rv = apr_file_open(&pid_file, fname, APR_WRITE | APR_CREATE | APR_TRUNCATE,
                       APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
                      "could not create %s", fname);
@@ -545,8 +545,8 @@ void ap_log_pid(apr_pool_t *p, const char *fname)
 		     ap_server_argv0, fname);
         exit(1);
     }
-    apr_fprintf(pid_file, "%ld" APR_EOL_STR, (long)mypid);
-    apr_close(pid_file);
+    apr_file_printf(pid_file, "%ld" APR_EOL_STR, (long)mypid);
+    apr_file_close(pid_file);
     saved_pid = mypid;
 }
 
@@ -554,7 +554,7 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
     char time_str[APR_CTIME_LEN];
 
-    apr_ctime(time_str, apr_now());
+    apr_ctime(time_str, apr_time_now());
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                  "[%s] file %s, line %d, assertion \"%s\" failed",
 	         time_str, szFile, nLine, szExp);
@@ -582,8 +582,8 @@ static int piped_log_spawn(piped_log *pl)
 #ifdef SIGHUP
     apr_signal(SIGHUP, SIG_IGN);
 #endif
-    if (((status = apr_createprocattr_init(&procattr, pl->p)) != APR_SUCCESS) ||
-        ((status = apr_setprocattr_childin(procattr, ap_piped_log_read_fd(pl), 
+    if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
+        ((status = apr_procattr_child_in_set(procattr, ap_piped_log_read_fd(pl), 
                                 ap_piped_log_write_fd(pl)))  != APR_SUCCESS)) {
         char buf[120];
         /* Something bad happened, give up and go away. */
@@ -599,17 +599,17 @@ static int piped_log_spawn(piped_log *pl)
         apr_tokenize_to_argv(pl->program, &args, pl->p);
         pname = apr_pstrdup(pl->p, args[0]);
         procnew = apr_pcalloc(pl->p, sizeof(apr_proc_t));
-        rc = apr_create_process(procnew, pname, (const char * const *) args,
+        rc = apr_proc_create(procnew, pname, (const char * const *) args,
                                 NULL, procattr, pl->p);
     
         if (rc == APR_SUCCESS) {            
             /* pjr - This no longer happens inside the child, */
-            /*   I am assuming that if apr_create_process was  */
+            /*   I am assuming that if apr_proc_create was  */
             /*   successful that the child is running.        */
             RAISE_SIGSTOP(PIPED_LOG_SPAWN); 
             pl->pid = procnew;
             ap_piped_log_write_fd(pl) = procnew->in;
-            apr_register_other_child(procnew, piped_log_maintenance, pl, 
+            apr_proc_other_child_register(procnew, piped_log_maintenance, pl, 
                                     ap_piped_log_write_fd(pl), pl->p);
         }
     }
@@ -626,7 +626,7 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
     switch (reason) {
     case APR_OC_REASON_DEATH:
 	pl->pid = NULL;
-	apr_unregister_other_child(pl);
+	apr_proc_other_child_unregister(pl);
 	if (pl->program == NULL) {
 	    /* during a restart */
 	    break;
@@ -634,7 +634,7 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
         break;
     case APR_OC_REASON_LOST:
 	pl->pid = NULL;
-	apr_unregister_other_child(pl);
+	apr_proc_other_child_unregister(pl);
 	if (pl->program == NULL) {
 	    /* during a restart */
 	    break;
@@ -657,7 +657,7 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
     case APR_OC_REASON_RESTART:
 	pl->program = NULL;
 	if (pl->pid != NULL) {
-	    apr_kill(pl->pid, SIGTERM);
+	    apr_proc_kill(pl->pid, SIGTERM);
 	}
 	break;
 
@@ -672,11 +672,11 @@ static apr_status_t piped_log_cleanup(void *data)
     piped_log *pl = data;
 
     if (pl->pid != NULL) {
-	apr_kill(pl->pid, SIGTERM);
+	apr_proc_kill(pl->pid, SIGTERM);
     }
-    apr_unregister_other_child(pl);
-    apr_close(ap_piped_log_read_fd(pl));
-    apr_close(ap_piped_log_write_fd(pl));
+    apr_proc_other_child_unregister(pl);
+    apr_file_close(ap_piped_log_read_fd(pl));
+    apr_file_close(ap_piped_log_write_fd(pl));
     return APR_SUCCESS;
 }
 
@@ -685,8 +685,8 @@ static apr_status_t piped_log_cleanup_for_exec(void *data)
 {
     piped_log *pl = data;
 
-    apr_close(ap_piped_log_read_fd(pl));
-    apr_close(ap_piped_log_write_fd(pl));
+    apr_file_close(ap_piped_log_read_fd(pl));
+    apr_file_close(ap_piped_log_write_fd(pl));
     return APR_SUCCESS;
 }
 
@@ -698,15 +698,15 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     pl->p = p;
     pl->program = apr_pstrdup(p, program);
     pl->pid = NULL;
-    if (apr_create_pipe(&ap_piped_log_read_fd(pl), &ap_piped_log_write_fd(pl), p) != APR_SUCCESS) {
+    if (apr_file_pipe_create(&ap_piped_log_read_fd(pl), &ap_piped_log_write_fd(pl), p) != APR_SUCCESS) {
 	return NULL;
     }
-    apr_register_cleanup(p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
+    apr_pool_cleanup_register(p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
     if (piped_log_spawn(pl) == -1) {
 	int save_errno = errno;
-	apr_kill_cleanup(p, pl, piped_log_cleanup);
-	apr_close(ap_piped_log_read_fd(pl));
-	apr_close(ap_piped_log_write_fd(pl));
+	apr_pool_cleanup_kill(p, pl, piped_log_cleanup);
+	apr_file_close(ap_piped_log_read_fd(pl));
+	apr_file_close(ap_piped_log_write_fd(pl));
 	errno = save_errno;
 	return NULL;
     }
@@ -719,7 +719,7 @@ static apr_status_t piped_log_cleanup(void *data)
 {
     piped_log *pl = data;
 
-    apr_close(ap_piped_log_write_fd(pl));
+    apr_file_close(ap_piped_log_write_fd(pl));
     return APR_SUCCESS;
 }
 
@@ -740,7 +740,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     pl->p = p;
     ap_piped_log_read_fd(pl) = NULL;
     ap_piped_log_write_fd(pl) = dummy;
-    apr_register_cleanup(p, pl, piped_log_cleanup, piped_log_cleanup);
+    apr_pool_cleanup_register(p, pl, piped_log_cleanup, piped_log_cleanup);
 
     return pl;
 }
@@ -749,6 +749,6 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 
 AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 {
-    apr_run_cleanup(pl->p, pl, piped_log_cleanup);
+    apr_pool_cleanup_run(pl->p, pl, piped_log_cleanup);
 }
 

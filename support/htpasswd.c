@@ -216,13 +216,13 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     }
     else {
         bufsize = sizeof(pwin);
-	if (apr_getpass("New password: ", pwin, &bufsize) != 0) {
+	if (apr_password_get("New password: ", pwin, &bufsize) != 0) {
 	    apr_snprintf(record, (rlen - 1), "password too long (>%d)",
 			sizeof(pwin) - 1);
 	    return ERR_OVERFLOW;
 	}
         bufsize = sizeof(pwv);
-	apr_getpass("Re-type new password: ", pwv, &bufsize);
+	apr_password_get("Re-type new password: ", pwv, &bufsize);
 	if (strcmp(pwin, pwv) != 0) {
 	    apr_cpystrn(record, "password verification error", (rlen - 1));
 	    return ERR_PWMISMATCH;
@@ -242,7 +242,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
-	apr_MD5Encode((const char *)pw, (const char *)salt,
+	apr_md5_encode((const char *)pw, (const char *)salt,
 		     cpw, sizeof(cpw));
 	break;
 
@@ -402,7 +402,7 @@ int main(int argc, char *argv[])
 
     apr_initialize();
     atexit(apr_terminate);
-    apr_create_pool(&pool, NULL);
+    apr_pool_create(&pool, NULL);
 
     rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {

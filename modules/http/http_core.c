@@ -155,7 +155,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     conf->limit_req_body = 0;
     conf->limit_xml_body = AP_LIMIT_UNSET;
-    conf->sec = apr_make_array(a, 2, sizeof(void *));
+    conf->sec = apr_array_make(a, 2, sizeof(void *));
 #ifdef WIN32
     conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
 #endif
@@ -165,8 +165,8 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->add_default_charset = ADD_DEFAULT_CHARSET_UNSET;
     conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
 
-    conf->output_filters = apr_make_array(a, 2, sizeof(void *));
-    conf->input_filters = apr_make_array(a, 2, sizeof(void *));
+    conf->output_filters = apr_array_make(a, 2, sizeof(void *));
+    conf->input_filters = apr_array_make(a, 2, sizeof(void *));
     return (void *)conf;
 }
 
@@ -284,7 +284,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     else
         conf->limit_xml_body = base->limit_xml_body;
 
-    conf->sec = apr_append_arrays(a, base->sec, new->sec);
+    conf->sec = apr_array_append(a, base->sec, new->sec);
 
     if (new->satisfy != SATISFY_NOSPEC) {
         conf->satisfy = new->satisfy;
@@ -306,9 +306,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 	    conf->add_default_charset_name = new->add_default_charset_name;
 	}
     }
-    conf->output_filters = apr_append_arrays(a, base->output_filters, 
+    conf->output_filters = apr_array_append(a, base->output_filters, 
                                              new->output_filters);
-    conf->input_filters = apr_append_arrays(a, base->input_filters,
+    conf->input_filters = apr_array_append(a, base->input_filters,
                                             new->input_filters);
 
     return (void*)conf;
@@ -325,8 +325,8 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 #endif
     conf->access_name = is_virtual ? NULL : DEFAULT_ACCESS_FNAME;
     conf->ap_document_root = is_virtual ? NULL : DOCUMENT_LOCATION;
-    conf->sec = apr_make_array(a, 40, sizeof(void *));
-    conf->sec_url = apr_make_array(a, 40, sizeof(void *));
+    conf->sec = apr_array_make(a, 40, sizeof(void *));
+    conf->sec_url = apr_array_make(a, 40, sizeof(void *));
     
     return (void *)conf;
 }
@@ -345,8 +345,8 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (!conf->ap_document_root) {
         conf->ap_document_root = base->ap_document_root;
     }
-    conf->sec = apr_append_arrays(p, base->sec, virt->sec);
-    conf->sec_url = apr_append_arrays(p, base->sec_url, virt->sec_url);
+    conf->sec = apr_array_append(p, base->sec, virt->sec);
+    conf->sec_url = apr_array_append(p, base->sec_url, virt->sec_url);
 
     return conf;
 }
@@ -359,7 +359,7 @@ AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config)
 {
     core_server_config *sconf = ap_get_module_config(s->module_config,
 						     &core_module);
-    void **new_space = (void **)apr_push_array(sconf->sec);
+    void **new_space = (void **)apr_array_push(sconf->sec);
     
     *new_space = dir_config;
 }
@@ -368,14 +368,14 @@ AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config)
 {
     core_server_config *sconf = ap_get_module_config(s->module_config,
 						     &core_module);
-    void **new_space = (void **)apr_push_array(sconf->sec_url);
+    void **new_space = (void **)apr_array_push(sconf->sec_url);
     
     *new_space = url_config;
 }
 
 AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
 {
-    void **new_space = (void **)apr_push_array(conf->sec);
+    void **new_space = (void **)apr_array_push(conf->sec);
     
     *new_space = url_config;
 }
@@ -465,7 +465,7 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
     elts = (void **)sec->elts;
 
     /* we have to allocate tmp space to do a stable sort */
-    apr_create_pool(&tmp, p);
+    apr_pool_create(&tmp, p);
     sortbin = apr_palloc(tmp, sec->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
 	sortbin[i].orig_index = i;
@@ -479,7 +479,7 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
       elts[i] = sortbin[i].elt;
     }
 
-    apr_destroy_pool(tmp);
+    apr_pool_destroy(tmp);
 }
 
 /*****************************************************************
@@ -598,7 +598,7 @@ static apr_inline void do_double_reverse (conn_rec *conn)
 	conn->double_reverse = -1;
 	return;
     }
-    rv = apr_getaddrinfo(&sa, conn->remote_host, APR_UNSPEC, 0, 0, conn->pool);
+    rv = apr_sockaddr_info_get(&sa, conn->remote_host, APR_UNSPEC, 0, 0, conn->pool);
     if (rv == APR_SUCCESS) {
         while (sa) {
             if (sa->ipaddr_len == conn->remote_addr->ipaddr_len &&
@@ -638,7 +638,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
         apr_sockaddr_t *remote_addr;
 
-        apr_get_sockaddr(&remote_addr, APR_REMOTE, conn->client_socket);
+        apr_socket_addr_get(&remote_addr, APR_REMOTE, conn->client_socket);
 	if (apr_getnameinfo(&conn->remote_host, remote_addr, 0) == APR_SUCCESS) {
 	    ap_str_tolower(conn->remote_host);
 	   
@@ -727,7 +727,7 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
         if (conn->local_host == NULL) {
             apr_sockaddr_t *local_addr;
 
-            apr_get_sockaddr(&local_addr, APR_LOCAL, conn->client_socket);
+            apr_socket_addr_get(&local_addr, APR_LOCAL, conn->client_socket);
             if (apr_getnameinfo(&conn->local_host, local_addr, 0) != APR_SUCCESS)
                 conn->local_host = apr_pstrdup(conn->pool, r->server->server_hostname);
             else {
@@ -753,8 +753,8 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
         if (r->hostname) {
             apr_sockaddr_t *localsa;
 
-            apr_get_sockaddr(&localsa, APR_LOCAL, r->connection->client_socket);
-            apr_get_port(&port, localsa);
+            apr_socket_addr_get(&localsa, APR_LOCAL, r->connection->client_socket);
+            apr_sockaddr_port_get(&port, localsa);
         }
     }
     /* default */
@@ -1430,9 +1430,9 @@ static const char *require(cmd_parms *cmd, void *c_, const char *arg)
     core_dir_config *c=c_;
 
     if (!c->ap_requires) {
-        c->ap_requires = apr_make_array(cmd->pool, 2, sizeof(require_line));
+        c->ap_requires = apr_array_make(cmd->pool, 2, sizeof(require_line));
     }
-    r = (require_line *)apr_push_array(c->ap_requires);
+    r = (require_line *)apr_array_push(c->ap_requires);
     r->requirement = apr_pstrdup(cmd->pool, arg);
     r->method_mask = cmd->limited;
     return NULL;
@@ -1466,10 +1466,10 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dumm
 	     */
 	    if (!tog) {
 		if (cmd->limited_xmethods == NULL) {
-		    cmd->limited_xmethods = apr_make_array(cmd->pool, 2,
+		    cmd->limited_xmethods = apr_array_make(cmd->pool, 2,
 							   sizeof(char *));
 		}
-		xmethod = (char **) apr_push_array(cmd->limited_xmethods);
+		xmethod = (char **) apr_array_push(cmd->limited_xmethods);
 		*xmethod = apr_pstrdup(cmd->pool, method);
 	    }
 	    /*
@@ -1868,10 +1868,10 @@ static const char *set_server_alias(cmd_parms *cmd, void *dummy,
     while (*arg) {
 	char **item, *name = ap_getword_conf(cmd->pool, &arg);
 	if (ap_is_matchexp(name)) {
-	    item = (char **)apr_push_array(cmd->server->wild_names);
+	    item = (char **)apr_array_push(cmd->server->wild_names);
 	}
 	else {
-	    item = (char **)apr_push_array(cmd->server->names);
+	    item = (char **)apr_array_push(cmd->server->names);
 	}
 	*item = name;
     }
@@ -1883,7 +1883,7 @@ static const char *add_filter(cmd_parms *cmd, void *dummy, const char *arg)
     core_dir_config *conf = dummy;
     char **newfilter;
     
-    newfilter = (char **)apr_push_array(conf->output_filters);
+    newfilter = (char **)apr_array_push(conf->output_filters);
     *newfilter = apr_pstrdup(cmd->pool, arg);
     return NULL;
 }
@@ -1893,7 +1893,7 @@ static const char *add_input_filter(cmd_parms *cmd, void *dummy, const char *arg
     core_dir_config *conf = dummy;
     char **newfilter;
     
-    newfilter = (char **)apr_push_array(conf->input_filters);
+    newfilter = (char **)apr_array_push(conf->input_filters);
     *newfilter = apr_pstrdup(cmd->pool, arg);
     return NULL;
 }
@@ -2270,8 +2270,8 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
          * we are adding the original SERVER_BASEVERSION string.
          */
         if (server_version == NULL) {
-            apr_register_cleanup(pconf, NULL, reset_version,
-                                apr_null_cleanup);
+            apr_pool_cleanup_register(pconf, NULL, reset_version,
+                                apr_pool_cleanup_null);
             server_version = apr_pstrdup(pconf, component);
         }
         else {
@@ -2677,7 +2677,7 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
 
     /* Seek the file to 'offset' */
     if (offset != 0 && rv == APR_SUCCESS) {
-        rv = apr_seek(fd, APR_SET, &offset);
+        rv = apr_file_seek(fd, APR_SET, &offset);
     }
 
     /* Send the file, making sure to handle partial writes */
@@ -2685,7 +2685,7 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
     while (rv == APR_SUCCESS && togo) {
         sendlen = togo > sizeof(buffer) ? sizeof(buffer) : togo;
         o = 0;
-        rv = apr_read(fd, buffer, &sendlen);
+        rv = apr_file_read(fd, buffer, &sendlen);
         while (rv == APR_SUCCESS && sendlen) {
             bytes_sent = sendlen;
             rv = apr_send(c->client_socket, &buffer[o], &bytes_sent);
@@ -3006,7 +3006,7 @@ static int default_handler(request_rec *r)
         return HTTP_METHOD_NOT_ALLOWED;
     }
 	
-    if ((status = apr_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->connection->pool)) != APR_SUCCESS) {
+    if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->connection->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
         return HTTP_FORBIDDEN;
@@ -3017,7 +3017,7 @@ static int default_handler(request_rec *r)
     apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
     ap_set_content_length(r, r->finfo.size); 
     if ((errstatus = ap_meets_conditions(r)) != OK) {
-        apr_close(fd);
+        apr_file_close(fd);
         return errstatus;
     }
 
@@ -3027,10 +3027,10 @@ static int default_handler(request_rec *r)
     }
 
     bb = apr_brigade_create(r->pool);
-    e = apr_bucket_create_file(fd, 0, r->finfo.size);
+    e = apr_bucket_file_create(fd, 0, r->finfo.size);
 
     APR_BRIGADE_INSERT_HEAD(bb, e);
-    e = apr_bucket_create_eos();
+    e = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     return ap_pass_brigade(r->output_filters, bb);
@@ -3139,7 +3139,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
     if (pass_the_brigade) {
         /* Insert ctx->buf into the correct spot in the brigade */
-        e = apr_bucket_create_pool(ctx->buf, ctx->cnt, p);
+        e = apr_bucket_pool_create(ctx->buf, ctx->cnt, p);
         if (insert_first) {
             APR_BRIGADE_INSERT_HEAD(b, e);
         } 
@@ -3245,14 +3245,14 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%qx" CRLF, (apr_uint64_t)bytes);
             ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
-            e = apr_bucket_create_transient(chunk_hdr, hdr_len);
+            e = apr_bucket_transient_create(chunk_hdr, hdr_len);
             APR_BRIGADE_INSERT_HEAD(b, e);
 
             /*
              * Insert the end-of-chunk CRLF before the EOS bucket, or
              * appended to the brigade
              */
-            e = apr_bucket_create_immortal(ASCII_CRLF, 2);
+            e = apr_bucket_immortal_create(ASCII_CRLF, 2);
             if (eos != NULL) {
                 APR_BUCKET_INSERT_BEFORE(eos, e);
             }
@@ -3276,7 +3276,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          */
         if (eos != NULL) {
             /* XXX: (2) trailers ... does not yet exist */
-            e = apr_bucket_create_immortal(ASCII_ZERO ASCII_CRLF /* <trailers> */ ASCII_CRLF, 5);
+            e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF /* <trailers> */ ASCII_CRLF, 5);
             APR_BUCKET_INSERT_BEFORE(eos, e);
         }
 
@@ -3296,7 +3296,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
     
     if (!f->ctx) {    /* If we haven't passed up the socket yet... */
         f->ctx = (void *)1;
-        e = apr_bucket_create_socket(f->c->client_socket);
+        e = apr_bucket_socket_create(f->c->client_socket);
         APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
@@ -3474,7 +3474,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                  flags);   /* apr_sendfile flags        */
     
             /* If apr_sendfile() returns APR_ENOTIMPL, call send_the_file()
-             * to loop on apr_read/apr_send to send the file. Our Windows 
+             * to loop on apr_file_read/apr_send to send the file. Our Windows 
              * binary distributions (which work on Windows 9x/NT) are 
              * compiled on Windows NT. TransmitFile is not available on 
              * Windows 95/98 and we discover this at runtime when 
@@ -3517,8 +3517,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
 static void core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    apr_init_bucket_types(pconf);
-    apr_insert_bucket_type(&ap_bucket_type_error);
+    apr_bucket_init_types(pconf);
+    apr_bucket_insert_type(&ap_bucket_type_error);
 }
 
 static void core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)

@@ -1303,12 +1303,12 @@ void ap_process_resource_config(server_rec *s, const char *fname,
                     apr_strerror(rv, errmsg, sizeof errmsg));
 	    exit(1);
 	}
-	candidates = apr_make_array(p, 1, sizeof(fnames));
+	candidates = apr_array_make(p, 1, sizeof(fnames));
         while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
             /* strip out '.' and '..' */
 	    if (strcmp(dirent.name, ".") &&
 		strcmp(dirent.name, "..")) {
-		fnew = (fnames *) apr_push_array(candidates);
+		fnew = (fnames *) apr_array_push(candidates);
 		fnew->fname = ap_make_full_path(p, fname, dirent.name);
 	    }
 	}
@@ -1485,8 +1485,8 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, const char *ho
     s->next = NULL;
 
     s->is_virtual = 1;
-    s->names = apr_make_array(p, 4, sizeof(char **));
-    s->wild_names = apr_make_array(p, 4, sizeof(char **));
+    s->names = apr_array_make(p, 4, sizeof(char **));
+    s->wild_names = apr_array_make(p, 4, sizeof(char **));
 
     s->module_config = create_empty_config(p);
     s->lookup_defaults = ap_create_per_dir_config(p);
@@ -1551,7 +1551,7 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     apr_status_t rv;
     server_rec *s = (server_rec *) apr_pcalloc(p, sizeof(server_rec));
 
-    apr_open_stderr(&s->error_log, p);
+    apr_file_open_stderr(&s->error_log, p);
     s->process = process;
     s->port = 0;
     s->server_admin = DEFAULT_ADMIN;
@@ -1568,7 +1568,7 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     s->next = NULL;
     s->addrs = apr_pcalloc(p, sizeof(server_addr_rec));
     /* NOT virtual host; don't match any real network interface */
-    rv = apr_getaddrinfo(&s->addrs->host_addr,
+    rv = apr_sockaddr_info_get(&s->addrs->host_addr,
                          NULL, APR_INET, 0, 0, p);
     ap_assert(rv == APR_SUCCESS); /* otherwise: bug or no storage */
     s->addrs->host_port = 0;	/* matches any port */

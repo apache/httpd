@@ -293,7 +293,7 @@ AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 	return NULL;
     }
 
-    apr_register_cleanup(p, (void *) preg, regex_cleanup, regex_cleanup);
+    apr_pool_cleanup_register(p, (void *) preg, regex_cleanup, regex_cleanup);
 
     return preg;
 }
@@ -301,7 +301,7 @@ AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 AP_DECLARE(void) ap_pregfree(apr_pool_t *p, regex_t * reg)
 {
     regfree(reg);
-    apr_kill_cleanup(p, (void *) reg, regex_cleanup);
+    apr_pool_cleanup_kill(p, (void *) reg, regex_cleanup);
 }
 
 /*
@@ -839,14 +839,14 @@ AP_DECLARE(int) ap_cfg_closefile(configfile_t *cfp)
 static apr_status_t cfg_close(void *param)
 {
     apr_file_t *cfp = (apr_file_t *) param;
-    return (apr_close(cfp));
+    return (apr_file_close(cfp));
 }
 
 static int cfg_getch(void *param)
 {
     char ch;
     apr_file_t *cfp = (apr_file_t *) param;
-    if (apr_getc(&ch, cfp) == APR_SUCCESS)
+    if (apr_file_getc(&ch, cfp) == APR_SUCCESS)
         return ch;
     return (int)EOF;
 }
@@ -855,7 +855,7 @@ static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
     apr_file_t *cfp = (apr_file_t *) param;
     apr_status_t rv;
-    rv = apr_fgets(buf, bufsiz, cfp);
+    rv = apr_file_gets(buf, bufsiz, cfp);
     if (rv == APR_SUCCESS || (rv == APR_EOF && strcmp(buf, "")))
         return buf;
     return NULL;
@@ -885,7 +885,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p,
      * it was the admin's choice to assign the .htaccess file's name.
      */
 
-    status = apr_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
+    status = apr_file_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL,
                 "Opening config file %s (%s)",
@@ -895,7 +895,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p,
     if (status != APR_SUCCESS)
         return status;
 
-    status = apr_getfileinfo(&finfo, APR_FINFO_TYPE, file);
+    status = apr_file_info_get(&finfo, APR_FINFO_TYPE, file);
     if (status != APR_SUCCESS)
         return status;
 
@@ -910,7 +910,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p,
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
-        apr_close(file);
+        apr_file_close(file);
         return APR_EBADF;
     }
 
@@ -1828,8 +1828,8 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
     char *decoded;
     int l;
 
-    decoded = (char *) apr_palloc(p, 1 + apr_base64decode_len(bufcoded));
-    l = apr_base64decode(decoded, bufcoded);
+    decoded = (char *) apr_palloc(p, 1 + apr_base64_decode_len(bufcoded));
+    l = apr_base64_decode(decoded, bufcoded);
     decoded[l] = '\0'; /* make binary sequence into string */
 
     return decoded;
@@ -1840,8 +1840,8 @@ AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string)
     char *encoded;
     int l = strlen(string);
 
-    encoded = (char *) apr_palloc(p, 1 + apr_base64encode_len(l));
-    l = apr_base64encode(encoded, string, l);
+    encoded = (char *) apr_palloc(p, 1 + apr_base64_encode_len(l));
+    l = apr_base64_encode(encoded, string, l);
     encoded[l] = '\0'; /* make binary sequence into string */
 
     return encoded;

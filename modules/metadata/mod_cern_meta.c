@@ -250,8 +250,8 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
     int p;
     apr_table_t *tmp_headers;
 
-    tmp_headers = apr_make_table(r->pool, 5);
-    while (apr_fgets(w, MAX_STRING_LEN - 1, f) == APR_SUCCESS) {
+    tmp_headers = apr_table_make(r->pool, 5);
+    while (apr_file_gets(w, MAX_STRING_LEN - 1, f) == APR_SUCCESS) {
 
 	/* Delete terminal (CR?)LF */
 
@@ -299,7 +299,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
 	    apr_table_set(tmp_headers, w, l);
 	}
     }
-    apr_overlap_tables(r->headers_out, tmp_headers, APR_OVERLAP_TABLES_SET);
+    apr_table_overlap(r->headers_out, tmp_headers, APR_OVERLAP_TABLES_SET);
     return OK;
 }
 
@@ -369,7 +369,7 @@ static int add_cern_meta_data(request_rec *r)
     }
     ap_destroy_sub_req(rr);
 
-    retcode = apr_open(&f, metafilename, APR_READ | APR_CREATE, APR_OS_DEFAULT, r->pool);
+    retcode = apr_file_open(&f, metafilename, APR_READ | APR_CREATE, APR_OS_DEFAULT, r->pool);
     if (retcode != APR_SUCCESS) {
 	if (APR_STATUS_IS_ENOENT(retcode)) {
 	    return DECLINED;
@@ -381,7 +381,7 @@ static int add_cern_meta_data(request_rec *r)
 
     /* read the headers in */
     rv = scan_meta_file(r, f);
-    apr_close(f);
+    apr_file_close(f);
 
     return rv;
 }

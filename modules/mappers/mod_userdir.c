@@ -138,8 +138,8 @@ static void *create_userdir_config(apr_pool_t *p, server_rec *s)
 
     newcfg->globally_disabled = 0;
     newcfg->userdir = DEFAULT_USER_DIR;
-    newcfg->enabled_users = apr_make_table(p, 4);
-    newcfg->disabled_users = apr_make_table(p, 4);
+    newcfg->enabled_users = apr_table_make(p, 4);
+    newcfg->disabled_users = apr_table_make(p, 4);
     return (void *) newcfg;
 }
 

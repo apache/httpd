@@ -168,7 +168,7 @@
  *			  added limit_req_body to core_dir_config and
  *			  ap_get_limit_req_body() to get its value.
  * 19980812 (1.3.2-dev)	- split off MODULE_MAGIC_NUMBER
- * 19980812.2           - add apr_overlap_tables()
+ * 19980812.2           - add apr_table_overlap()
  * 19980816 (1.3.2-dev)	- change proxy to use tables for headers, change
  *                        struct cache_req to typedef cache_req.
  *                        Delete ap_proxy_get_header(), ap_proxy_add_header(),
@@ -205,8 +205,8 @@
  *                      - reordered entries in request_rec that were waiting
  *                        for a non-binary-compatible release.
  *          (1.3.5-dev)
- * 19990108.1           - add apr_MD5Encode() for MD5 password handling.
- * 19990108.2           - add apr_validate_password() and change apr_MD5Encode()
+ * 19990108.1           - add apr_md5_encode() for MD5 password handling.
+ * 19990108.2           - add apr_password_validate() and change apr_md5_encode()
  *                        to use a stronger algorithm.
  * 19990108.4           - add ap_size_list_item(), ap_get_list_item(), and
  *                        ap_find_list_item()
@@ -221,11 +221,11 @@
  * 19990320.3           - add ap_regexec() and ap_regerror()
  * 19990320.4           - add ap_field_noparam()
  * 19990320.5           - add local_ip/host to conn_rec for mass-vhost
- * 19990320.6           - add apr_SHA1Final(), apr_SHA1Init(),
- *                        apr_SHA1Update_binary(), apr_SHA1Update(),
- *                        apr_base64encode(), apr_base64encode_binary(),
- *                        apr_base64encode_len(), apr_base64decode(),
- *                        apr_base64decode_binary(), apr_base64decode_len(),
+ * 19990320.6           - add apr_sha1_final(), apr_sha1_init(),
+ *                        apr_sha1_update_binary(), apr_sha1_update(),
+ *                        apr_base64_encode(), apr_base64_encode_binary(),
+ *                        apr_base64_encode_len(), apr_base64_decode(),
+ *                        apr_base64_decode_binary(), apr_base64_decode_len(),
  *                        ap_pbase64decode(), ap_pbase64encode()
  */
 
@@ -242,13 +242,13 @@
  * specified value.
  * <PRE>
  * Useful for testing for features.
- * For example, suppose you wish to use the apr_overlap_tables
+ * For example, suppose you wish to use the apr_table_overlap
  *    function.  You can do this:
  * 
  * #if MODULE_MAGIC_AT_LEAST(19980812,2)
- *     ... use apr_overlap_tables()
+ *     ... use apr_table_overlap()
  * #else
- *     ... alternative code which doesn't use apr_overlap_tables()
+ *     ... alternative code which doesn't use apr_table_overlap()
  * #endif
  * </PRE>
  * @param major The major module magic number

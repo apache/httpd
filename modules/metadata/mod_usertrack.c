@@ -141,7 +141,7 @@ static void make_cookie(request_rec *r)
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
 
     /* XXX: hmm, this should really tie in with mod_unique_id */
-    apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%qd", rname, apr_now());
+    apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%qd", rname, apr_time_now());
 
     if (cls->expires) {
 	apr_exploded_time_t tms;

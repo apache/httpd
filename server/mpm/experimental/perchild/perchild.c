@@ -220,7 +220,7 @@ AP_DECLARE(int) ap_get_max_daemons(void)
 static void clean_child_exit(int code)
 {
     if (pchild) {
-	apr_destroy_pool(pchild);
+	apr_pool_destroy(pchild);
     }
     exit(code);
 }
@@ -296,7 +296,7 @@ static void ap_start_restart(int graceful)
     restart_pending = 1;
     is_graceful = graceful;
     if (is_graceful) {
-        apr_kill_cleanup(pconf, NULL, ap_cleanup_scoreboard);
+        apr_pool_cleanup_kill(pconf, NULL, ap_cleanup_scoreboard);
     }
 }
 
@@ -438,8 +438,8 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     apr_status_t rv;
     int thread_num = conn_id % HARD_THREAD_LIMIT;
 
-    if ((rv = apr_get_os_sock(&csd, sock)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "apr_get_os_sock");
+    if ((rv = apr_os_sock_get(&csd, sock)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "apr_os_sock_get");
     }
 
     if (csd >= FD_SETSIZE) {
@@ -448,7 +448,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
                      "to rebuild Apache with a larger FD_SETSIZE "
                      "(currently %d)", 
                      csd, FD_SETSIZE);
-        apr_close_socket(sock);
+        apr_socket_close(sock);
         return;
     }
 
@@ -549,13 +549,13 @@ static void *worker_thread(void *arg)
     apr_status_t rv;
 
     pthread_mutex_lock(&thread_pool_parent_mutex);
-    apr_create_pool(&tpool, thread_pool_parent);
+    apr_pool_create(&tpool, thread_pool_parent);
     pthread_mutex_unlock(&thread_pool_parent_mutex);
-    apr_create_pool(&ptrans, tpool);
+    apr_pool_create(&ptrans, tpool);
 
-    apr_setup_poll(&pollset, num_listenfds+1, tpool);
+    apr_poll_setup(&pollset, num_listenfds+1, tpool);
     for(n=0 ; n <= num_listenfds ; ++n) {
-        apr_add_poll_socket(pollset, listenfds[n], APR_POLLIN);
+        apr_poll_socket_add(pollset, listenfds[n], APR_POLLIN);
     }
 
     while (!workers_may_exit) {
@@ -580,10 +580,10 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&thread_accept_mutex);
             break;
         }
-        if ((rv = SAFE_ACCEPT(apr_lock(process_accept_mutex)))
+        if ((rv = SAFE_ACCEPT(apr_lock_aquire(process_accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                         "apr_lock failed. Attempting to shutdown "
+                         "apr_lock_aquire failed. Attempting to shutdown "
                          "process gracefully.");
             workers_may_exit = 1;
         }
@@ -605,7 +605,7 @@ static void *worker_thread(void *arg)
             }
             if (workers_may_exit) break;
 
-            apr_get_revents(&event, listenfds[0], pollset);
+            apr_poll_revents_get(&event, listenfds[0], pollset);
             if (event & APR_POLLIN) {
                 /* A process got a signal on the shutdown pipe. Check if we're
                  * the lucky process to die. */
@@ -613,7 +613,7 @@ static void *worker_thread(void *arg)
                 continue;
             }
             
-            apr_get_revents(&event, listenfds[1], pollset);
+            apr_poll_revents_get(&event, listenfds[1], pollset);
             if (event & APR_POLLIN || event & APR_POLLOUT) {
                 /* This request is from another child in our current process.
                  * We should set a flag here, and then below we will read
@@ -636,7 +636,7 @@ static void *worker_thread(void *arg)
                         curr_pollfd = 1;
                     }
                     /* XXX: Should we check for POLLERR? */
-                    apr_get_revents(&event, listenfds[curr_pollfd], pollset);
+                    apr_poll_revents_get(&event, listenfds[curr_pollfd], pollset);
                     if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
                         sd = listenfds[curr_pollfd];
@@ -650,10 +650,10 @@ static void *worker_thread(void *arg)
             if ((rv = apr_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, "apr_accept");
             }
-            if ((rv = SAFE_ACCEPT(apr_unlock(process_accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_lock_release(process_accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_unlock failed. Attempting to shutdown "
+                             "apr_lock_release failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
@@ -695,7 +695,7 @@ static void *worker_thread(void *arg)
                 memcpy(&dp, CMSG_DATA(cmsg), sizeof(dp));
 
                 thread_socket_table[thread_num] = dp;
-                apr_put_os_sock(&csd, &child_info_table[child_num].sd, ptrans);
+                apr_os_sock_put(&csd, &child_info_table[child_num].sd, ptrans);
             }
             if (setjmp(jmpbuffer) != 1) {
                 process_socket(ptrans, csd, conn_id);
@@ -705,10 +705,10 @@ static void *worker_thread(void *arg)
             }  
             requests_this_child--;
 	} else {
-            if ((rv = SAFE_ACCEPT(apr_unlock(process_accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_lock_release(process_accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
-                             "apr_unlock failed. Attempting to shutdown "
+                             "apr_lock_release failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
@@ -722,7 +722,7 @@ static void *worker_thread(void *arg)
     }
 
     pthread_mutex_lock(&thread_pool_parent_mutex);
-    apr_destroy_pool(tpool);
+    apr_pool_destroy(tpool);
     pthread_mutex_unlock(&thread_pool_parent_mutex);
     pthread_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count--;
@@ -821,11 +821,11 @@ static void child_main(int child_num_arg)
 
     my_pid = getpid();
     child_num = child_num_arg;
-    apr_create_pool(&pchild, pconf);
+    apr_pool_create(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
-    rv = SAFE_ACCEPT(apr_child_init_lock(&process_accept_mutex, lock_fname,
+    rv = SAFE_ACCEPT(apr_lock_child_init(&process_accept_mutex, lock_fname,
                                         pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
@@ -869,7 +869,7 @@ static void child_main(int child_num_arg)
 #endif
 
     /* The child socket */
-    apr_put_os_sock(&listenfds[1], &child_info_table[child_num].sd, pchild);
+    apr_os_sock_put(&listenfds[1], &child_info_table[child_num].sd, pchild);
 
     num_listenfds++;
     for (lr = ap_listeners, i = 2; i <= num_listenfds; lr = lr->next, ++i)
@@ -885,7 +885,7 @@ static void child_main(int child_num_arg)
     for (i = 0; i < max_threads; i++) {
         worker_thread_free_ids[i] = i;
     }
-    apr_create_pool(&thread_pool_parent, pchild);
+    apr_pool_create(&thread_pool_parent, pchild);
     pthread_mutex_init(&thread_pool_parent_mutex, NULL);
     pthread_mutex_init(&idle_thread_count_mutex, NULL);
     pthread_mutex_init(&worker_thread_count_mutex, NULL);
@@ -1096,7 +1096,7 @@ static void server_main_loop(int remaining_children_to_start)
 		}
 #if APR_HAS_OTHER_CHILD
 	    }
-	    else if (apr_reap_other_child(&pid, status) == 0) {
+	    else if (apr_proc_other_child_read(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -1144,17 +1144,17 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     pconf = _pconf;
     ap_server_conf = s;
-    if ((rv = apr_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf)) 
+    if ((rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out, pconf)) 
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "apr_create_pipe (pipe_of_death)");
+                     "apr_file_pipe_create (pipe_of_death)");
         exit(1);
     }
-    if ((rv = apr_set_pipe_timeout(pipe_of_death_in, 0)) != APR_SUCCESS) {
+    if ((rv = apr_file_pipe_timeout_set(pipe_of_death_in, 0)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "apr_set_pipe_timeout (pipe_of_death)");
+                     "apr_file_pipe_timeout_set (pipe_of_death)");
         exit(1);
     }
     ap_server_conf = s;
@@ -1170,7 +1170,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lock_fname = apr_psprintf(_pconf, "%s.%u",
                              ap_server_root_relative(_pconf, lock_fname),
                              my_pid);
-    rv = SAFE_ACCEPT(apr_create_lock(&process_accept_mutex, APR_MUTEX,
+    rv = SAFE_ACCEPT(apr_lock_create(&process_accept_mutex, APR_MUTEX,
                                     APR_CROSS_PROCESS, lock_fname, _pconf));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
@@ -1270,7 +1270,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	}
 	/* give the children the signal to die */
         for (i = 0; i < num_daemons;) {
-            if ((rv = apr_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
+            if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
                 if (APR_STATUS_IS_EINTR(rv)) continue;
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                              "write pipe_of_death");
@@ -1308,7 +1308,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 	is_graceful = 0;
 
 	if (!one_process && !no_detach) {
-	    apr_detach();
+	    apr_proc_detach();
 	}
 
 	my_pid = getpid();
@@ -1354,13 +1354,13 @@ static int pass_request(request_rec *r)
     char *foo;
     int len;
 
-    apr_get_userdata((void **)&foo, "PERCHILD_BUFFER", r->connection->pool);
+    apr_pool_userdata_get((void **)&foo, "PERCHILD_BUFFER", r->connection->pool);
     len = strlen(foo);
 
-    apr_set_userdata(NULL, "PERCHILD_BUFFER", apr_null_cleanup, 
+    apr_pool_userdata_set(NULL, "PERCHILD_BUFFER", apr_pool_cleanup_null, 
                      r->connection->pool);
 
-    apr_get_os_sock(&sfd, thesock);
+    apr_os_sock_get(&sfd, thesock);
 
     iov.iov_base = NULL;
     iov.iov_len = 0;
@@ -1382,7 +1382,7 @@ static int pass_request(request_rec *r)
     msg.msg_flags=0;
 
     if (sendmsg(sconf->sd2, &msg, 0) == -1) {
-        apr_destroy_pool(r->pool);
+        apr_pool_destroy(r->pool);
         return -1;
     }
 
@@ -1398,7 +1398,7 @@ static int pass_request(request_rec *r)
         }
     }
 
-    apr_destroy_pool(r->pool);
+    apr_pool_destroy(r->pool);
     return 1;
 }
 
@@ -1462,7 +1462,7 @@ static int perchild_post_read(request_rec *r)
     if (thread_socket_table[thread_num] != -1) {
         apr_socket_t *csd = NULL;
 
-        apr_put_os_sock(&csd, &thread_socket_table[thread_num], 
+        apr_os_sock_put(&csd, &thread_socket_table[thread_num], 
                              r->connection->pool);
         ap_sock_disable_nagle(csd);
         r->connection->client_socket = csd;
@@ -1494,7 +1494,7 @@ static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b, ap_in
         return rv;
     }
 
-    apr_get_userdata((void **)&buffer, "PERCHILD_BUFFER", f->c->pool);
+    apr_pool_userdata_get((void **)&buffer, "PERCHILD_BUFFER", f->c->pool);
 
     APR_BRIGADE_FOREACH(e, b) {
         if (e->length != 0) {
@@ -1509,7 +1509,7 @@ static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b, ap_in
             } 
         }
     }
-    apr_set_userdata(buffer, "PERCHILD_BUFFER", apr_null_cleanup, f->c->pool);
+    apr_pool_userdata_set(buffer, "PERCHILD_BUFFER", apr_pool_cleanup_null, f->c->pool);
     
     return APR_SUCCESS;
 }

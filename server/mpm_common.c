@@ -115,7 +115,7 @@ void ap_reclaim_child_processes(int terminate)
                 continue;
 
             proc.pid = pid;
-            waitret = apr_wait_proc(&proc, APR_NOWAIT);
+            waitret = apr_proc_wait(&proc, APR_NOWAIT);
             if (waitret != APR_CHILD_NOTDONE) {
                 MPM_NOTE_CHILD_KILLED(i);
                 continue;
@@ -168,7 +168,7 @@ void ap_reclaim_child_processes(int terminate)
                 break;
             }
         }
-        apr_check_other_child();
+        apr_proc_other_child_check();
         if (!not_dead_yet) {
             /* nothing left to wait for */
             break;
@@ -191,10 +191,10 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p)
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
         wait_or_timeout_counter = 0;
 #if APR_HAS_OTHER_CHILD
-        apr_probe_writable_fds();
+        apr_proc_probe_writable_fds();
 #endif
     }
-    rv = apr_wait_all_procs(ret, status, APR_NOWAIT, p);
+    rv = apr_proc_wait_all_procs(ret, status, APR_NOWAIT, p);
     if (APR_STATUS_IS_EINTR(rv)) {
         ret->pid = -1;
         return;

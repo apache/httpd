@@ -306,7 +306,7 @@ static dav_error * dav_fs_copymove_file(
 
     dav_set_bufsize(p, pbuf, DAV_FS_COPY_BLOCKSIZE);
 
-    if ((apr_open(&inf, src, APR_READ | APR_BINARY, APR_OS_DEFAULT, p)) 
+    if ((apr_file_open(&inf, src, APR_READ | APR_BINARY, APR_OS_DEFAULT, p)) 
 	!= APR_SUCCESS) {
 	/* ### use something besides 500? */
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -314,9 +314,9 @@ static dav_error * dav_fs_copymove_file(
     }
 
     /* ### do we need to deal with the umask? */
-    if ((apr_open(&outf, dst, APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BINARY,
+    if ((apr_file_open(&outf, dst, APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BINARY,
 		 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
-	apr_close(inf);
+	apr_file_close(inf);
 
 	/* ### use something besides 500? */
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -327,12 +327,12 @@ static dav_error * dav_fs_copymove_file(
 	apr_ssize_t len = DAV_FS_COPY_BLOCKSIZE;
 	apr_status_t status;
 
-	status = apr_read(inf, pbuf->buf, &len);
+	status = apr_file_read(inf, pbuf->buf, &len);
 	if (status != APR_SUCCESS && status != APR_EOF) {
-	    apr_close(inf);
-	    apr_close(outf);
+	    apr_file_close(inf);
+	    apr_file_close(outf);
 	    
-	    if (apr_remove_file(dst, p) != APR_SUCCESS) {
+	    if (apr_file_remove(dst, p) != APR_SUCCESS) {
 		/* ### ACK! Inconsistent state... */
 
 		/* ### use something besides 500? */
@@ -348,13 +348,13 @@ static dav_error * dav_fs_copymove_file(
 	}
 
         /* write any bytes that were read (applies to APR_EOF, too) */
-        if (apr_full_write(outf, pbuf->buf, len, NULL) != APR_SUCCESS) {
+        if (apr_file_write_full(outf, pbuf->buf, len, NULL) != APR_SUCCESS) {
             int save_errno = errno;
 
-	    apr_close(inf);
-	    apr_close(outf);
+	    apr_file_close(inf);
+	    apr_file_close(outf);
 
-	    if (apr_remove_file(dst, p) != 0) {
+	    if (apr_file_remove(dst, p) != 0) {
 		/* ### ACK! Inconsistent state... */
 
 		/* ### use something besides 500? */
@@ -379,8 +379,8 @@ static dav_error * dav_fs_copymove_file(
             break;
     }
 
-    apr_close(inf);
-    apr_close(outf);
+    apr_file_close(inf);
+    apr_file_close(outf);
 
     if (is_move && remove(src) != 0) {
 	dav_error *err;
@@ -437,7 +437,7 @@ static dav_error * dav_fs_copymove_state(
     /* ### do we need to deal with the umask? */
 
     /* ensure that it exists */
-    rv = apr_make_dir(dst, APR_OS_DEFAULT, p);
+    rv = apr_dir_make(dst, APR_OS_DEFAULT, p);
     if (rv != APR_SUCCESS) {
 	if (!APR_STATUS_IS_EEXIST(rv)) {
 	    /* ### use something besides 500? */
@@ -468,7 +468,7 @@ static dav_error * dav_fs_copymove_state(
     /* copy/move the file now */
     if (is_move && src_finfo.device == dst_state_finfo.device) {
 	/* simple rename is possible since it is on the same device */
-	if (apr_rename_file(src, dst, p) != APR_SUCCESS) {
+	if (apr_file_rename(src, dst, p) != APR_SUCCESS) {
 	    /* ### use something besides 500? */
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "Could not move state file.");
@@ -817,7 +817,7 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 
     ds->p = p;
     ds->pathname = resource->info->pathname;
-    if (apr_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, 
+    if (apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, 
 		ds->p) != APR_SUCCESS) {
 	/* ### use something besides 500? */
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -832,10 +832,10 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 
 static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
 {
-    apr_close(stream->f);
+    apr_file_close(stream->f);
 
     if (!commit) {
-	if (apr_remove_file(stream->pathname, stream->p) != 0) {
+	if (apr_file_remove(stream->pathname, stream->p) != 0) {
 	    /* ### use a better description? */
             return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "There was a problem removing (rolling "
@@ -850,7 +850,7 @@ static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
 static dav_error * dav_fs_read_stream(dav_stream *stream,
 				      void *buf, apr_size_t *bufsize)
 {
-    if (apr_read(stream->f, buf, (apr_ssize_t *)bufsize) != APR_SUCCESS) {
+    if (apr_file_read(stream->f, buf, (apr_ssize_t *)bufsize) != APR_SUCCESS) {
 	/* ### use something besides 500? */
 	return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "An error occurred while reading from a "
@@ -864,7 +864,7 @@ static dav_error * dav_fs_write_stream(dav_stream *stream,
 {
     apr_status_t status;
 
-    status = apr_full_write(stream->f, buf, bufsize, NULL);
+    status = apr_file_write_full(stream->f, buf, bufsize, NULL);
     if (status == APR_ENOSPC) {
         return dav_new_error(stream->p, HTTP_INSUFFICIENT_STORAGE, 0,
                              "There is not enough storage to write to "
@@ -881,8 +881,8 @@ static dav_error * dav_fs_write_stream(dav_stream *stream,
 
 static dav_error * dav_fs_seek_stream(dav_stream *stream, apr_off_t abs_pos)
 {
-    if (apr_seek(stream->f, APR_SET, &abs_pos) != APR_SUCCESS) {
-	/* ### should check whether apr_seek set abs_pos was set to the
+    if (apr_file_seek(stream->f, APR_SET, &abs_pos) != APR_SUCCESS) {
+	/* ### should check whether apr_file_seek set abs_pos was set to the
 	 * correct position? */
 	/* ### use something besides 500? */
 	return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -940,7 +940,7 @@ static dav_error * dav_fs_create_collection(dav_resource *resource)
     dav_resource_private *ctx = resource->info;
     apr_status_t status;
 
-    status = apr_make_dir(ctx->pathname, APR_OS_DEFAULT, ctx->pool);
+    status = apr_dir_make(ctx->pathname, APR_OS_DEFAULT, ctx->pool);
     if (status == ENOSPC) {
         return dav_new_error(ctx->pool, HTTP_INSUFFICIENT_STORAGE, 0,
 			     "There is not enough storage to create "
@@ -977,7 +977,7 @@ static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
 	}
         else {
 	    /* copy/move of a collection. Create the new, target collection */
-            if (apr_make_dir(dstinfo->pathname, APR_OS_DEFAULT,
+            if (apr_dir_make(dstinfo->pathname, APR_OS_DEFAULT,
                              ctx->pool) != APR_SUCCESS) {
 		/* ### assume it was a permissions problem */
 		/* ### need a description here */
@@ -1174,7 +1174,7 @@ static dav_error * dav_fs_move_resource(
     *response = NULL;
 
     /* ### APR has no rename? */
-    if (apr_rename_file(srcinfo->pathname, dstinfo->pathname,
+    if (apr_file_rename(srcinfo->pathname, dstinfo->pathname,
                        srcinfo->pool) != APR_SUCCESS) {
 	/* ### should have a better error than this. */
 	return dav_new_error(srcinfo->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -1194,7 +1194,7 @@ static dav_error * dav_fs_move_resource(
     }
 
     /* error occurred during properties move; try to put resource back */
-    if (apr_rename_file(dstinfo->pathname, srcinfo->pathname,
+    if (apr_file_rename(dstinfo->pathname, srcinfo->pathname,
                        srcinfo->pool) != APR_SUCCESS) {
 	/* couldn't put it back! */
 	return dav_push_error(srcinfo->pool,
@@ -1937,7 +1937,7 @@ static dav_error *dav_fs_patch_exec(const dav_resource *resource,
     if (value)
 	perms |= APR_UEXECUTE;
 
-    if (apr_setfileperms(resource->info->pathname, perms) != APR_SUCCESS) {
+    if (apr_file_perms_set(resource->info->pathname, perms) != APR_SUCCESS) {
 	return dav_new_error(resource->info->pool,
 			     HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "Could not set the executable flag of the "
@@ -1973,7 +1973,7 @@ static dav_error *dav_fs_patch_rollback(const dav_resource *resource,
     if (value)
 	perms |= APR_UEXECUTE;
 
-    if (apr_setfileperms(resource->info->pathname, perms) != APR_SUCCESS) {
+    if (apr_file_perms_set(resource->info->pathname, perms) != APR_SUCCESS) {
 	return dav_new_error(resource->info->pool,
 			     HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "After a failure occurred, the resource's "
@@ -2010,7 +2010,7 @@ static const dav_provider dav_fs_provider =
 void dav_fs_gather_propsets(apr_array_header_t *uris)
 {
 #ifndef WIN32
-    *(const char **)apr_push_array(uris) =
+    *(const char **)apr_array_push(uris) =
         "<http://apache.org/dav/propset/fs/1>";
 #endif
 }

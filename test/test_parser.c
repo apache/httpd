@@ -46,7 +46,7 @@ int main (void)
     char *newstr;
     char instr[512];
 
-    p = apr_init_alloc();
+    p = apr_pool_alloc_init();
 
     while (gets(instr)) {
         printf("  [%s] ==\n", instr);

@@ -93,7 +93,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
 		    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
                      server->bind_addr);
-	apr_close_socket(s);
+	apr_socket_close(s);
 	return stat;
     }
     
@@ -102,7 +102,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
 		    "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)", 
                      server->bind_addr);
-	apr_close_socket(s);
+	apr_socket_close(s);
 	return stat;
     }
 
@@ -144,7 +144,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
                      "make_sock: could not bind to address %pI", 
                      server->bind_addr);
-	apr_close_socket(s);
+	apr_socket_close(s);
 	return stat;
     }
 
@@ -152,7 +152,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	ap_log_perror(APLOG_MARK, APLOG_ERR, stat, p,
 	    "make_sock: unable to listen for connections on address %pI", 
                      server->bind_addr);
-	apr_close_socket(s);
+	apr_socket_close(s);
 	return stat;
     }
 
@@ -167,7 +167,7 @@ static apr_status_t close_listeners_on_exec(void *v)
     ap_listen_rec *lr;
 
     for (lr = ap_listeners; lr; lr = lr->next) {
-	apr_close_socket(lr->sd);
+	apr_socket_close(lr->sd);
 	lr->active = 0;
     }
     return APR_SUCCESS;
@@ -184,9 +184,9 @@ static void find_default_family(apr_pool_t *p)
     if (default_family == APR_UNSPEC) {
         apr_socket_t *tmp_sock;
 
-        if (apr_create_socket(&tmp_sock, APR_INET6, SOCK_STREAM, 
+        if (apr_socket_create(&tmp_sock, APR_INET6, SOCK_STREAM, 
                               p) == APR_SUCCESS) {
-            apr_close_socket(tmp_sock);
+            apr_socket_close(tmp_sock);
             default_family = APR_INET6;
         }
         else {
@@ -224,9 +224,9 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
-        apr_get_sockaddr(&sa, APR_LOCAL, (*walk)->sd);
-        apr_get_port(&oldport, sa);
-	apr_get_ipaddr(&oldaddr, sa);
+        apr_socket_addr_get(&sa, APR_LOCAL, (*walk)->sd);
+        apr_sockaddr_port_get(&oldport, sa);
+	apr_sockaddr_ip_get(&oldaddr, sa);
 	if (!strcmp(oldaddr, addr) && port == oldport) {
 	    /* re-use existing record */
 	    new = *walk;
@@ -240,21 +240,21 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     /* this has to survive restarts */
     new = apr_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if ((status = apr_getaddrinfo(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
+    if ((status = apr_sockaddr_info_get(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
                                   process->pool)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                      "alloc_listener: failed to set up sockaddr for %s", addr);
         return;
     }
-    if ((status = apr_create_socket(&new->sd, new->bind_addr->sa.sin.sin_family, 
+    if ((status = apr_socket_create(&new->sd, new->bind_addr->sa.sin.sin_family, 
                                     SOCK_STREAM, process->pool)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                      "alloc_listener: failed to get a socket for %s", addr);
         return;
     }
-    apr_get_sockaddr(&sa, APR_LOCAL, new->sd);
-    apr_set_port(sa, port);
-    apr_set_ipaddr(sa, addr);
+    apr_socket_addr_get(&sa, APR_LOCAL, new->sd);
+    apr_sockaddr_port_set(sa, port);
+    apr_sockaddr_ip_set(sa, addr);
     new->next = ap_listeners;
     ap_listeners = new;
 }
@@ -289,14 +289,14 @@ int ap_listen_open(process_rec *process, apr_port_t port)
 
     /* close the old listeners */
     for (lr = old_listeners; lr; lr = next) {
-	apr_close_socket(lr->sd);
+	apr_socket_close(lr->sd);
 	lr->active = 0;
 	next = lr->next;
 /*	free(lr);*/
     }
     old_listeners = NULL;
 
-    apr_register_cleanup(pconf, NULL, apr_null_cleanup, close_listeners_on_exec);
+    apr_pool_cleanup_register(pconf, NULL, apr_pool_cleanup_null, close_listeners_on_exec);
 
     return num_open ? 0 : -1;
 }

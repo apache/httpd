@@ -142,7 +142,7 @@ struct thread_control_t {
 static void clean_child_exit(int code)
 {
     if (THREAD_GLOBAL(pchild)) {
-        apr_destroy_pool(THREAD_GLOBAL(pchild));
+        apr_pool_destroy(THREAD_GLOBAL(pchild));
     }
 
     thread_control[THREAD_GLOBAL(thread_num)].deferred_die = 0;
@@ -156,7 +156,7 @@ static apr_lock_t *accept_mutex = NULL;
 
 static apr_status_t accept_mutex_child_cleanup(void *foo)
 {
-    return apr_unlock(accept_mutex);
+    return apr_lock_release(accept_mutex);
 }
 
 /*
@@ -165,7 +165,7 @@ static apr_status_t accept_mutex_child_cleanup(void *foo)
  */
 static void accept_mutex_child_init(apr_pool_t *p)
 {
-    apr_register_cleanup(p, NULL, accept_mutex_child_cleanup, apr_null_cleanup);
+    apr_pool_cleanup_register(p, NULL, accept_mutex_child_cleanup, apr_pool_cleanup_null);
 }
 
 /*
@@ -174,7 +174,7 @@ static void accept_mutex_child_init(apr_pool_t *p)
  */
 static void accept_mutex_init(apr_pool_t *p)
 {
-    apr_status_t rc = apr_create_lock(&accept_mutex, APR_MUTEX, APR_INTRAPROCESS, NULL, p);
+    apr_status_t rc = apr_lock_create(&accept_mutex, APR_MUTEX, APR_INTRAPROCESS, NULL, p);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,
@@ -185,7 +185,7 @@ static void accept_mutex_init(apr_pool_t *p)
 
 static void accept_mutex_on(void)
 {
-    apr_status_t rc = apr_lock(accept_mutex);
+    apr_status_t rc = apr_lock_aquire(accept_mutex);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,
@@ -196,7 +196,7 @@ static void accept_mutex_on(void)
 
 static void accept_mutex_off(void)
 {
-    apr_status_t rc = apr_unlock(accept_mutex);
+    apr_status_t rc = apr_lock_release(accept_mutex);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,
@@ -253,7 +253,7 @@ static int wait_or_timeout(apr_wait_t *status)
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
 	wait_or_timeout_counter = 0;
 #if APR_HAS_OTHER_CHILD
-	apr_probe_writable_fds();
+	apr_proc_probe_writable_fds();
 #endif
     }
 
@@ -611,10 +611,10 @@ static int setup_listen_poll(apr_pool_t *pchild, apr_pollfd_t **listen_poll)
         numfds++;
     }
 
-    apr_setup_poll(listen_poll, numfds, pchild);
+    apr_poll_setup(listen_poll, numfds, pchild);
 
     for (lr = ap_listeners; lr; lr = lr->next) {
-	apr_add_poll_socket(*listen_poll, lr->sd, APR_POLLIN);
+	apr_poll_socket_add(*listen_poll, lr->sd, APR_POLLIN);
     }
     return 0;
 }
@@ -646,11 +646,11 @@ static void thread_main(void *thread_num_arg)
     /* Get a sub pool for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    apr_create_pool(&pchild, pconf);
+    apr_pool_create(&pchild, pconf);
     *ppthread_globals = (struct thread_globals *)apr_palloc(pchild, sizeof(struct thread_globals));
     THREAD_GLOBAL(thread_num) = (int)thread_num_arg;
     THREAD_GLOBAL(pchild) = pchild;
-    apr_create_pool(&ptrans, pchild);
+    apr_pool_create(&ptrans, pchild);
 
     if (setup_listen_poll(pchild, &listen_poll)) {
 	clean_child_exit(1);
@@ -734,7 +734,7 @@ static void thread_main(void *thread_num_arg)
 			lr = ap_listeners;
 		    }
 
-                    apr_get_revents(&event, lr->sd, listen_poll);
+                    apr_poll_revents_get(&event, lr->sd, listen_poll);
 
 		    if (event == APR_POLLIN) {
                         first_lr = lr->next;
@@ -1166,7 +1166,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_listen_rec *lr;
 
         for (lr = ap_listeners; lr; lr = lr->next) {
-            apr_close_socket(lr->sd);
+            apr_socket_close(lr->sd);
             DosSleep(0);
         }
 

@@ -129,16 +129,16 @@ static int getline(char *s, int n, apr_file_t *f)
     char ch;
 
     while (1) {
-	apr_getc(&ch, f);
+	apr_file_getc(&ch, f);
             s[i] = ch;
 
 	if (s[i] == CR)
-	    apr_getc(&ch, f);
+	    apr_file_getc(&ch, f);
             s[i] = ch;
 
 	if ((s[i] == 0x4) || (s[i] == LF) || (i == (n - 1))) {
 	    s[i] = '\0';
-            if (apr_eof(f) == APR_EOF) {
+            if (apr_file_eof(f) == APR_EOF) {
                 return 1;
             }
             return 0;
@@ -152,8 +152,8 @@ static void putline(apr_file_t *f, char *l)
     int x;
 
     for (x = 0; l[x]; x++)
-	apr_putc(l[x], f);
-    apr_putc('\n', f);
+	apr_file_putc(l[x], f);
+    apr_file_putc('\n', f);
 }
 
 
@@ -168,36 +168,36 @@ static void add_password(char *user, char *realm, apr_file_t *f)
     unsigned int i;
     size_t len = sizeof(pwin);
 
-    if (apr_getpass("New password: ", pwin, &len) != APR_SUCCESS) {
+    if (apr_password_get("New password: ", pwin, &len) != APR_SUCCESS) {
 	fprintf(stderr, "password too long");
 	exit(5);
     }
     len = sizeof(pwin);
-    apr_getpass("Re-type new password: ", pwv, &len);
+    apr_password_get("Re-type new password: ", pwv, &len);
     if (strcmp(pwin, pwv) != 0) {
 	fprintf(stderr, "They don't match, sorry.\n");
 	if (tn) {
-	    apr_remove_file(tn, cntxt);
+	    apr_file_remove(tn, cntxt);
 	}
 	exit(1);
     }
     pw = pwin;
-    apr_fprintf(f, "%s:%s:", user, realm);
+    apr_file_printf(f, "%s:%s:", user, realm);
 
     /* Do MD5 stuff */
     sprintf(string, "%s:%s:%s", user, realm, pw);
 
-    apr_MD5Init(&context);
+    apr_md5_init(&context);
 #if APR_CHARSET_EBCDIC
-    apr_MD5SetXlate(&context, to_ascii);
+    apr_md5_set_xlate(&context, to_ascii);
 #endif
-    apr_MD5Update(&context, (unsigned char *) string, strlen(string));
-    apr_MD5Final(digest, &context);
+    apr_md5_update(&context, (unsigned char *) string, strlen(string));
+    apr_md5_final(digest, &context);
 
     for (i = 0; i < 16; i++)
-	apr_fprintf(f, "%02x", digest[i]);
+	apr_file_printf(f, "%02x", digest[i]);
 
-    apr_fprintf(f, "\n");
+    apr_file_printf(f, "\n");
 }
 
 static void usage(void)
@@ -211,7 +211,7 @@ static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
     if (tn)
-	apr_remove_file(tn, cntxt);
+	apr_file_remove(tn, cntxt);
     exit(1);
 }
 
@@ -240,7 +240,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
     atexit(terminate); 
-    apr_create_pool(&cntxt, NULL);
+    apr_pool_create(&cntxt, NULL);
 
 #if APR_CHARSET_EBCDIC
     rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
     if (argc == 5) {
 	if (strcmp(argv[1], "-c"))
 	    usage();
-	rv = apr_open(&tfp, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
+	rv = apr_file_open(&tfp, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
         if (rv != APR_SUCCESS) {
             char errmsg[120];
 
@@ -267,19 +267,19 @@ int main(int argc, char *argv[])
 	}
 	printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
 	add_password(argv[4], argv[3], tfp);
-	apr_close(tfp);
+	apr_file_close(tfp);
 	exit(0);
     }
     else if (argc != 4)
 	usage();
 
     tn = tmpnam(NULL);
-    if (apr_open(&tfp, tn, APR_WRITE | APR_CREATE, -1, cntxt)!= APR_SUCCESS) {
+    if (apr_file_open(&tfp, tn, APR_WRITE | APR_CREATE, -1, cntxt)!= APR_SUCCESS) {
 	fprintf(stderr, "Could not open temp file.\n");
 	exit(1);
     }
 
-    if (apr_open(&f, argv[1], APR_READ, -1, cntxt) != APR_SUCCESS) {
+    if (apr_file_open(&f, argv[1], APR_READ, -1, cntxt) != APR_SUCCESS) {
 	fprintf(stderr,
 		"Could not open passwd file %s for reading.\n", argv[1]);
 	fprintf(stderr, "Use -c option to create new one.\n");
@@ -311,14 +311,14 @@ int main(int argc, char *argv[])
 	printf("Adding user %s in realm %s\n", user, realm);
 	add_password(user, realm, tfp);
     }
-    apr_close(f);
-    apr_close(tfp);
+    apr_file_close(f);
+    apr_file_close(tfp);
 #if defined(OS2) || defined(WIN32)
     sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
 #else
     sprintf(command, "cp %s %s", tn, argv[1]);
 #endif
     system(command);
-    apr_remove_file(tn, cntxt);
+    apr_file_remove(tn, cntxt);
     return 0;
 }

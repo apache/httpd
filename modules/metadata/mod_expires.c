@@ -228,7 +228,7 @@ static void *create_dir_expires_config(apr_pool_t *p, char *dummy)
     (expires_dir_config *) apr_pcalloc(p, sizeof(expires_dir_config));
     new->active = ACTIVE_DONTCARE;
     new->expiresdefault = "";
-    new->expiresbytype = apr_make_table(p, 4);
+    new->expiresbytype = apr_table_make(p, 4);
     return (void *) new;
 }
 
@@ -408,7 +408,7 @@ static void *merge_expires_dir_configs(apr_pool_t *p, void *basev, void *addv)
         new->expiresdefault = add->expiresdefault;
     };
 
-    new->expiresbytype = apr_overlay_tables(p, add->expiresbytype,
+    new->expiresbytype = apr_table_overlay(p, add->expiresbytype,
                                         base->expiresbytype);
     return new;
 }

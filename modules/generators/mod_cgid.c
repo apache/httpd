@@ -227,12 +227,12 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
         case APR_OC_REASON_LOST:
             /* stop gap to make sure everything else works.  In the end,
              * we'll just restart the cgid server. */
-            apr_destroy_pool(pcgi);
+            apr_pool_destroy(pcgi);
             kill(getppid(), SIGWINCH);
             break;
         case APR_OC_REASON_RESTART:
         case APR_OC_REASON_UNREGISTER:
-            apr_destroy_pool(pcgi);
+            apr_pool_destroy(pcgi);
             kill(*sd, SIGHUP);
             break;
     }
@@ -328,7 +328,7 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
      * to actually fill this out, but for now we just don't want suexec to
      * seg fault.
      */
-    r->notes = apr_make_table(r->pool, 1);
+    r->notes = apr_table_make(r->pool, 1);
 } 
 
 
@@ -510,14 +510,14 @@ static int cgid_server(void *data)
             continue;
         }
        
-        apr_create_pool(&p, pcgi); 
+        apr_pool_create(&p, pcgi); 
 
         r = apr_pcalloc(p, sizeof(request_rec)); 
         procnew = apr_pcalloc(p, sizeof(*procnew));
         r->pool = p; 
         get_req(sd2, r, &filename, &argv0, &env, &req_type); 
-        apr_put_os_file(&r->server->error_log, &errfileno, r->pool);
-        apr_put_os_file(&inout, &sd2, r->pool);
+        apr_os_file_put(&r->server->error_log, &errfileno, r->pool);
+        apr_os_file_put(&inout, &sd2, r->pool);
 
         if (req_type == SSI_REQ) {
             in_pipe  = APR_NO_PIPE;
@@ -526,18 +526,18 @@ static int cgid_server(void *data)
             cmd_type = APR_SHELLCMD;
         }
 
-        if (((rc = apr_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
+        if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
             ((req_type == CGI_REQ) && 
-             (((rc = apr_setprocattr_io(procattr,
+             (((rc = apr_procattr_io_set(procattr,
                                         in_pipe,
                                         out_pipe,
                                         err_pipe)) != APR_SUCCESS) ||
-              ((rc = apr_setprocattr_childerr(procattr, r->server->error_log, NULL)) != APR_SUCCESS) ||
-              ((rc = apr_setprocattr_childin(procattr, inout, NULL)) != APR_SUCCESS))) ||
-            ((rc = apr_setprocattr_childout(procattr, inout, NULL)) != APR_SUCCESS) ||
-            ((rc = apr_setprocattr_dir(procattr,
+              ((rc = apr_procattr_child_err_set(procattr, r->server->error_log, NULL)) != APR_SUCCESS) ||
+              ((rc = apr_procattr_child_in_set(procattr, inout, NULL)) != APR_SUCCESS))) ||
+            ((rc = apr_procattr_child_out_set(procattr, inout, NULL)) != APR_SUCCESS) ||
+            ((rc = apr_procattr_dir_set(procattr,
                                   ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
-            ((rc = apr_setprocattr_cmdtype(procattr, cmd_type)) != APR_SUCCESS)) {
+            ((rc = apr_procattr_cmdtype_set(procattr, cmd_type)) != APR_SUCCESS)) {
             /* Something bad happened, tell the world. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                       "couldn't set child process attributes: %s", r->filename);
@@ -569,15 +569,15 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     const char *userdata_key = "cgid_init";
     module **m;
 
-    apr_get_userdata(&data, userdata_key, main_server->process->pool);
+    apr_pool_userdata_get(&data, userdata_key, main_server->process->pool);
     if (!data) {
         first_time = 1;
-        apr_set_userdata((const void *)1, userdata_key,
-                         apr_null_cleanup, main_server->process->pool);
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                         apr_pool_cleanup_null, main_server->process->pool);
     }
 
     if (!first_time) {
-        apr_create_pool(&pcgi, p); 
+        apr_pool_create(&pcgi, p); 
 
         total_modules = 0;
         for (m = ap_preloaded_modules; *m != NULL; m++)
@@ -595,9 +595,9 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         procnew = apr_pcalloc(p, sizeof(*procnew));
         procnew->pid = pid;
         procnew->err = procnew->in = procnew->out = NULL;
-        apr_note_subprocess(p, procnew, kill_after_timeout);
+        apr_pool_note_subprocess(p, procnew, kill_after_timeout);
 #if APR_HAS_OTHER_CHILD
-        apr_register_other_child(procnew, cgid_maint, &procnew->pid, NULL, p);
+        apr_proc_other_child_register(procnew, cgid_maint, &procnew->pid, NULL, p);
 #endif
 
         cgid_pfn_reg_with_ssi = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
@@ -700,21 +700,21 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
     if (!conf->logname || 
         ((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0) 
          && (finfo.st_size > conf->logbytes)) || 
-         (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
+         (apr_file_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         return ret; 
     } 
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */ 
-    apr_ctime(time_str, apr_now());
-    apr_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
+    apr_ctime(time_str, apr_time_now());
+    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
             r->args ? "?" : "", r->args ? r->args : "", r->protocol); 
     /* "%% 500 /usr/local/apache/cgid-bin */ 
-    apr_fprintf(f, "%%%% %d %s\n", ret, r->filename); 
+    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename); 
 
-    apr_fprintf(f, "%%error\n%s\n", error); 
+    apr_file_printf(f, "%%error\n%s\n", error); 
 
-    apr_close(f); 
+    apr_file_close(f); 
     return ret; 
 } 
 
@@ -732,73 +732,73 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     if (!conf->logname || 
         ((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0) 
          && (finfo.st_size > conf->logbytes)) || 
-         (apr_open(&f, ap_server_root_relative(r->pool, conf->logname), 
+         (apr_file_open(&f, ap_server_root_relative(r->pool, conf->logname), 
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         /* Soak up script output */ 
-        while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) 
+        while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) 
             continue; 
         if (script_err) {
-            while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) 
+            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) 
                 continue; 
         }
         return ret; 
     } 
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */ 
-    apr_ctime(time_str, apr_now());
-    apr_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
+    apr_ctime(time_str, apr_time_now());
+    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
             r->args ? "?" : "", r->args ? r->args : "", r->protocol); 
     /* "%% 500 /usr/local/apache/cgid-bin" */ 
-    apr_fprintf(f, "%%%% %d %s\n", ret, r->filename); 
+    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename); 
 
-    apr_puts("%request\n", f); 
+    apr_file_puts("%request\n", f); 
     for (i = 0; i < hdrs_arr->nelts; ++i) { 
         if (!hdrs[i].key) 
             continue; 
-        apr_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
+        apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
     } 
     if ((r->method_number == M_POST || r->method_number == M_PUT) 
         && *dbuf) { 
-        apr_fprintf(f, "\n%s\n", dbuf); 
+        apr_file_printf(f, "\n%s\n", dbuf); 
     } 
 
-    apr_puts("%response\n", f); 
+    apr_file_puts("%response\n", f); 
     hdrs_arr = apr_table_elts(r->err_headers_out); 
     hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
 
     for (i = 0; i < hdrs_arr->nelts; ++i) { 
         if (!hdrs[i].key) 
             continue; 
-        apr_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
+        apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
     } 
 
     if (sbuf && *sbuf) 
-        apr_fprintf(f, "%s\n", sbuf); 
+        apr_file_printf(f, "%s\n", sbuf); 
 
-    if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) { 
-        apr_puts("%stdout\n", f); 
-        apr_puts(argsbuffer, f); 
-        while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) 
-            apr_puts(argsbuffer, f); 
-        apr_puts("\n", f); 
+    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) { 
+        apr_file_puts("%stdout\n", f); 
+        apr_file_puts(argsbuffer, f); 
+        while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) 
+            apr_file_puts(argsbuffer, f); 
+        apr_file_puts("\n", f); 
     } 
 
     if (script_err) {
-        if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) { 
-            apr_puts("%stderr\n", f); 
-            apr_puts(argsbuffer, f); 
-            while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) 
-                apr_puts(argsbuffer, f); 
-            apr_puts("\n", f); 
+        if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) { 
+            apr_file_puts("%stderr\n", f); 
+            apr_file_puts(argsbuffer, f); 
+            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) 
+                apr_file_puts(argsbuffer, f); 
+            apr_file_puts("\n", f); 
         } 
     }
 
-    apr_close(script_in); 
+    apr_file_close(script_in); 
     if (script_err) {
-        apr_close(script_err); 
+        apr_file_close(script_err); 
     }
 
-    apr_close(f); 
+    apr_file_close(f); 
     return ret; 
 } 
 
@@ -897,7 +897,7 @@ static int cgid_handler(request_rec *r)
     /* We are putting the tempsock variable into a file so that we can use
      * a pipe bucket to send the data to the client.
      */
-    apr_put_os_file(&tempsock, &sd, r->pool);
+    apr_os_file_put(&tempsock, &sd, r->pool);
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 
@@ -932,7 +932,7 @@ static int cgid_handler(request_rec *r)
                 dbpos += dbsize; 
             } 
             nbytes = len_read;
-            apr_write(tempsock, argsbuffer, &nbytes);
+            apr_file_write(tempsock, argsbuffer, &nbytes);
             if (nbytes < len_read) { 
                 /* silly script stopped reading, soak up remaining message */ 
                 while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) { 
@@ -959,7 +959,7 @@ static int cgid_handler(request_rec *r)
         if (location && location[0] == '/' && r->status == 200) { 
 
             /* Soak up all the script output */ 
-            while (apr_fgets(argsbuffer, HUGE_STRING_LEN, tempsock) > 0) { 
+            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, tempsock) > 0) { 
                 continue; 
             } 
             /* This redirect needs to be a GET no matter what the original 
@@ -987,9 +987,9 @@ static int cgid_handler(request_rec *r)
         ap_send_http_header(r); 
         if (!r->header_only) { 
             bb = apr_brigade_create(r->pool);
-            b = apr_bucket_create_pipe(tempsock);
+            b = apr_bucket_pipe_creat(tempsock);
             APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_create_eos();
+            b = apr_bucket_eos_create();
             APR_BRIGADE_INSERT_TAIL(bb, b);
             ap_pass_brigade(r->output_filters, bb);
         } 
@@ -997,14 +997,14 @@ static int cgid_handler(request_rec *r)
 
     if (nph) {
         bb = apr_brigade_create(r->pool);
-        b = apr_bucket_create_pipe(tempsock);
+        b = apr_bucket_pipe_creat(tempsock);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_create_eos();
+        b = apr_bucket_eos_create();
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
     } 
 
-    apr_close(tempsock);
+    apr_file_close(tempsock);
 
     return OK; /* NOT r->status, even if it has changed. */ 
 } 
@@ -1059,15 +1059,15 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
         location = ap_escape_html(rr->pool, location);
         len_loc = strlen(location);
 
-        tmp_buck = apr_bucket_create_immortal("<A HREF=\"", sizeof("<A HREF=\""));
+        tmp_buck = apr_bucket_immortal_create("<A HREF=\"", sizeof("<A HREF=\""));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1, &h_wrt);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_immortal("\">", sizeof("\">"));
+        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">"));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1, &h_wrt);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_immortal("</A>", sizeof("</A>"));
+        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>"));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
 
         if (*inserted_head == NULL) {
@@ -1147,7 +1147,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     /* We are putting the tempsock variable into a file so that we can use
      * a pipe bucket to send the data to the client.
      */
-    apr_put_os_file(&tempsock, &sd, r->pool);
+    apr_os_file_put(&tempsock, &sd, r->pool);
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 
@@ -1158,7 +1158,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
         char argsbuffer[HUGE_STRING_LEN]; 
 
         /* Soak up all the script output */ 
-        while (apr_fgets(argsbuffer, HUGE_STRING_LEN, tempsock) > 0) { 
+        while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, tempsock) > 0) { 
             continue; 
         } 
         /* This redirect needs to be a GET no matter what the original 
@@ -1186,7 +1186,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     ap_send_http_header(r); 
     if (!r->header_only) { 
         bcgi = apr_brigade_create(r->pool);
-        b    = apr_bucket_create_pipe(tempsock);
+        b    = apr_bucket_pipe_creat(tempsock);
         APR_BRIGADE_INSERT_TAIL(bcgi, b);
         ap_pass_brigade(f->next, bcgi);
     } 

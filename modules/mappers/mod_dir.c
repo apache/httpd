@@ -84,9 +84,9 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
     dir_config_rec *d = dummy;
 
     if (!d->index_names) {
-	d->index_names = apr_make_array(cmd->pool, 2, sizeof(char *));
+	d->index_names = apr_array_make(cmd->pool, 2, sizeof(char *));
     }
-    *(const char **)apr_push_array(d->index_names) = arg;
+    *(const char **)apr_array_push(d->index_names) = arg;
     return NULL;
 }
 
@@ -187,10 +187,10 @@ static int handle_dir(request_rec *r)
 
             apr_pool_join(r->pool, rr->pool);
             error_notfound = rr->status;
-            r->notes = apr_overlay_tables(r->pool, r->notes, rr->notes);
-            r->headers_out = apr_overlay_tables(r->pool, r->headers_out,
+            r->notes = apr_table_overlay(r->pool, r->notes, rr->notes);
+            r->headers_out = apr_table_overlay(r->pool, r->headers_out,
                                             rr->headers_out);
-            r->err_headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
+            r->err_headers_out = apr_table_overlay(r->pool, r->err_headers_out,
                                                 rr->err_headers_out);
             return error_notfound;
         }

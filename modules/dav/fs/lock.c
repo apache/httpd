@@ -258,7 +258,7 @@ static dav_lock *dav_fs_alloc_lock(dav_lockdb *lockdb, dav_datum key,
 
     if (locktoken == NULL) {
 	comb->pub.locktoken = &comb->token;
-        apr_get_uuid(&comb->token.uuid);
+        apr_uuid_get(&comb->token.uuid);
     }
     else {
 	comb->pub.locktoken = locktoken;
@@ -288,7 +288,7 @@ static dav_error * dav_fs_parse_locktoken(
     char_token += 16;
 
     locktoken = apr_pcalloc(p, sizeof(*locktoken));
-    if (apr_parse_uuid(&locktoken->uuid, char_token)) {
+    if (apr_uuid_parse(&locktoken->uuid, char_token)) {
 	return dav_new_error(p, HTTP_BAD_REQUEST, DAV_ERR_LOCK_PARSE_TOKEN,
 			     "The opaquelocktoken has an incorrect format "
 			     "and could not be parsed.");
@@ -309,7 +309,7 @@ static const char *dav_fs_format_locktoken(
 {
     char buf[APR_UUID_FORMATTED_LENGTH + 1];
 
-    apr_format_uuid(buf, &locktoken->uuid);
+    apr_uuid_format(buf, &locktoken->uuid);
     return apr_pstrcat(p, "opaquelocktoken:", buf, NULL);
 }
 
@@ -828,12 +828,12 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
     /* reset this in case we leave w/o reading into the buffer */
     pbuf->cur_len = 0;
 
-    if (apr_open(&file, pbuf->buf, APR_READ | APR_BINARY, APR_OS_DEFAULT,
+    if (apr_file_open(&file, pbuf->buf, APR_READ | APR_BINARY, APR_OS_DEFAULT,
                 p) != APR_SUCCESS) {
 	return NULL;
     }
 
-    if (apr_getfileinfo(&finfo, APR_FINFO_NORM, file) != APR_SUCCESS) {
+    if (apr_file_info_get(&finfo, APR_FINFO_NORM, file) != APR_SUCCESS) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			    apr_psprintf(p,
 					"Opened but could not stat file %s",
@@ -843,7 +843,7 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 
     dav_set_bufsize(p, pbuf, finfo.size);
     amt = finfo.size;
-    if (apr_read(file, pbuf->buf, &amt) != APR_SUCCESS
+    if (apr_file_read(file, pbuf->buf, &amt) != APR_SUCCESS
         || amt != finfo.size) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			    apr_psprintf(p,
@@ -856,7 +856,7 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
     }
 
   loaderror:
-    apr_close(file);
+    apr_file_close(file);
     return err;
 }
 
@@ -884,7 +884,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
 
     if (pbuf->cur_len == 0) {
 	/* delete the file if cur_len == 0 */
-	if (apr_remove_file(pathname, p) != 0) {
+	if (apr_file_remove(pathname, p) != 0) {
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 apr_psprintf(p,
 					     "Error removing %s", pathname));
@@ -892,7 +892,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
 	return NULL;
     }
 
-    if (apr_open(&file, pathname,
+    if (apr_file_open(&file, pathname,
                 APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BINARY,
                 APR_OS_DEFAULT, p) != APR_SUCCESS) {
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -902,7 +902,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
     }
 
     amt = pbuf->cur_len;
-    if (apr_write(file, pbuf->buf, &amt) != APR_SUCCESS
+    if (apr_file_write(file, pbuf->buf, &amt) != APR_SUCCESS
         || amt != pbuf->cur_len) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			    apr_psprintf(p,
@@ -910,7 +910,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
 					pbuf->cur_len, pathname));
     }
 
-    apr_close(file);
+    apr_file_close(file);
     return err;
 }
 

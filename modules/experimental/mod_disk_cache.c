@@ -78,14 +78,14 @@ static int disk_serve(request_rec *r)
 
     filename = ap_server_root_relative(r->pool, 
                         apr_pstrcat(r->pool, "proxy", r->uri, NULL));
-    if ((rv = apr_open(&fd, filename, APR_READ, 
+    if ((rv = apr_file_open(&fd, filename, APR_READ, 
                  APR_UREAD, r->connection->pool)) != APR_SUCCESS) {
         return DECLINED;
     }
 
     /* skip the cached headers. */
     do {
-        apr_fgets(str, 256, fd);
+        apr_file_gets(str, 256, fd);
         offset += strlen(str);
     } while (strcmp(str, CRLF));
 
@@ -98,10 +98,10 @@ static int disk_serve(request_rec *r)
         }
     }
 
-    e = apr_bucket_create_file(fd, offset, r->finfo.size);
+    e = apr_bucket_file_create(fd, offset, r->finfo.size);
 
     APR_BRIGADE_INSERT_HEAD(bb, e);
-    e = apr_bucket_create_eos();
+    e = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     ap_pass_brigade(r->output_filters, bb);
@@ -124,14 +124,14 @@ static int disk_cache(request_rec *r, apr_bucket_brigade *bb, void **cf)
     }
     if (ctx->filename == NULL) {
         apr_status_t rv;
-        apr_make_dir(ap_server_root_relative(r->pool, "proxy"), APR_UREAD | APR_UWRITE | APR_UEXECUTE | APR_GREAD | APR_GWRITE, r->pool);
+        apr_dir_make(ap_server_root_relative(r->pool, "proxy"), APR_UREAD | APR_UWRITE | APR_UEXECUTE | APR_GREAD | APR_GWRITE, r->pool);
 
         /* currently, we are using the uri as the cache key.  This is
          * probably wrong, but it is much better than a hard-coded filename.
          */
         ctx->filename = ap_server_root_relative(r->pool, 
                             apr_pstrcat(r->pool, "proxy", r->uri, NULL));
-        if ((rv = apr_open(&ctx->fd, ctx->filename, 
+        if ((rv = apr_file_open(&ctx->fd, ctx->filename, 
                      APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BUFFERED,
                      APR_UREAD | APR_UWRITE, r->pool)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -145,10 +145,10 @@ static int disk_cache(request_rec *r, apr_bucket_brigade *bb, void **cf)
         apr_ssize_t length;
 
         apr_bucket_read(e, &str, &length, 0);
-        apr_write(ctx->fd, str, &length);
+        apr_file_write(ctx->fd, str, &length);
     }
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-        apr_close(ctx->fd);
+        apr_file_close(ctx->fd);
     }
     return OK;	
 }

@@ -173,7 +173,7 @@ typedef struct include_filter_ctx {
 #define CREATE_ERROR_BUCKET(cntx, t_buck, h_ptr, ins_head)        \
 {                                                                 \
     apr_size_t e_wrt;                                             \
-    t_buck = apr_bucket_create_heap(cntx->error_str,              \
+    t_buck = apr_bucket_heap_create(cntx->error_str,              \
                                    ctx->error_length, 1, &e_wrt); \
     APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                      \
                                                                   \

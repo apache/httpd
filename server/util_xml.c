@@ -381,7 +381,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
     ctx.p = r->pool;
     ctx.doc = apr_pcalloc(ctx.p, sizeof(*ctx.doc));
 
-    ctx.doc->namespaces = apr_make_array(ctx.p, 5, sizeof(const char *));
+    ctx.doc->namespaces = apr_array_make(ctx.p, 5, sizeof(const char *));
     ap_xml_insert_uri(ctx.doc->namespaces, "DAV:");
 
     /* ### we should get the encoding from Content-Encoding */
@@ -863,7 +863,7 @@ AP_DECLARE(int) ap_xml_insert_uri(apr_array_header_t *uri_array,
 	    return i;
     }
 
-    pelt = apr_push_array(uri_array);
+    pelt = apr_array_push(uri_array);
     *pelt = uri;		/* assume uri is const or in a pool */
     return uri_array->nelts - 1;
 }

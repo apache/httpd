@@ -216,22 +216,22 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
         ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
                    APR_FINFO_SIZE, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
-          (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
+          (apr_file_open(&f, ap_server_root_relative(r->pool, conf->logname),
                    APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool)
               != APR_SUCCESS)) {
 	return ret;
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    apr_ctime(time_str, apr_now());
-    apr_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
+    apr_ctime(time_str, apr_time_now());
+    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin */
-    apr_fprintf(f, "%%%% %d %s\n", ret, r->filename);
+    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename);
 
-    apr_fprintf(f, "%%error\n%s\n", error);
+    apr_file_printf(f, "%%error\n%s\n", error);
 
-    apr_close(f);
+    apr_file_close(f);
     return ret;
 }
 
@@ -242,7 +242,7 @@ static void log_script_err(request_rec *r, apr_file_t *script_err)
     char argsbuffer[HUGE_STRING_LEN];
     char *newline;
 
-    while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
+    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
         newline = strchr(argsbuffer, '\n');
         if (newline) {
             *newline = '\0';
@@ -268,10 +268,10 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
         ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
                    APR_FINFO_SIZE, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
-         (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
+         (apr_file_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
-	while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
+	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
 	    continue;
 
         log_script_err(r, script_err);
@@ -279,56 +279,56 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     }
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
-    apr_ctime(time_str, apr_now());
-    apr_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
+    apr_ctime(time_str, apr_time_now());
+    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
     /* "%% 500 /usr/local/apache/cgi-bin" */
-    apr_fprintf(f, "%%%% %d %s\n", ret, r->filename);
+    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename);
 
-    apr_puts("%request\n", f);
+    apr_file_puts("%request\n", f);
     for (i = 0; i < hdrs_arr->nelts; ++i) {
 	if (!hdrs[i].key)
 	    continue;
-	apr_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+	apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
     }
     if ((r->method_number == M_POST || r->method_number == M_PUT)
 	&& *dbuf) {
-	apr_fprintf(f, "\n%s\n", dbuf);
+	apr_file_printf(f, "\n%s\n", dbuf);
     }
 
-    apr_puts("%response\n", f);
+    apr_file_puts("%response\n", f);
     hdrs_arr = apr_table_elts(r->err_headers_out);
     hdrs = (apr_table_entry_t *) hdrs_arr->elts;
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {
 	if (!hdrs[i].key)
 	    continue;
-	apr_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+	apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
     }
 
     if (sbuf && *sbuf)
-	apr_fprintf(f, "%s\n", sbuf);
+	apr_file_printf(f, "%s\n", sbuf);
 
-    if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
-	apr_puts("%stdout\n", f);
-	apr_puts(argsbuffer, f);
-	while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
-	    apr_puts(argsbuffer, f);
-	apr_puts("\n", f);
+    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
+	apr_file_puts("%stdout\n", f);
+	apr_file_puts(argsbuffer, f);
+	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
+	    apr_file_puts(argsbuffer, f);
+	apr_file_puts("\n", f);
     }
 
-    if (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
-	apr_puts("%stderr\n", f);
-	apr_puts(argsbuffer, f);
-	while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_err) == 0)
-	    apr_puts(argsbuffer, f);
-	apr_puts("\n", f);
+    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
+	apr_file_puts("%stderr\n", f);
+	apr_file_puts(argsbuffer, f);
+	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0)
+	    apr_file_puts(argsbuffer, f);
+	apr_file_puts("\n", f);
     }
 
-    apr_close(script_in);
-    apr_close(script_err);
+    apr_file_close(script_in);
+    apr_file_close(script_err);
 
-    apr_close(f);
+    apr_file_close(f);
     return ret;
 }
 
@@ -415,23 +415,23 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     /* Transmute ourselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
      */
-    if (((rc = apr_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_io(procattr,
+    if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_io_set(procattr,
                                   e_info->in_pipe,
                                   e_info->out_pipe,
                                   e_info->err_pipe)) != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_dir(procattr, 
+        ((rc = apr_procattr_dir_set(procattr, 
                                   ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
 #ifdef RLIMIT_CPU
-        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_CPU, conf->limit_cpu)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_CPU, conf->limit_cpu)) != APR_SUCCESS) ||
 #endif
 #if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_MEM, conf->limit_mem)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_MEM, conf->limit_mem)) != APR_SUCCESS) ||
 #endif
 #ifdef RLIMIT_NPROC
-        ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
 #endif
-        ((rc = apr_setprocattr_cmdtype(procattr, e_info->cmd_type)) != APR_SUCCESS)) {
+        ((rc = apr_procattr_cmdtype_set(procattr, e_info->cmd_type)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
 		      "couldn't set child process attributes: %s", r->filename);
@@ -450,23 +450,23 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
-            apr_note_subprocess(p, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(p, procnew, kill_after_timeout);
 
             *script_in = procnew->out;
             if (!script_in)
                 return APR_EBADF;
-            apr_set_pipe_timeout(*script_in, (int)(r->server->timeout * APR_USEC_PER_SEC));
+            apr_file_pipe_timeout_set(*script_in, (int)(r->server->timeout * APR_USEC_PER_SEC));
 
             if (e_info->prog_type == RUN_AS_CGI) {
                 *script_out = procnew->in;
                 if (!*script_out)
                     return APR_EBADF;
-                apr_set_pipe_timeout(*script_out, (int)(r->server->timeout * APR_USEC_PER_SEC));
+                apr_file_pipe_timeout_set(*script_out, (int)(r->server->timeout * APR_USEC_PER_SEC));
 
                 *script_err = procnew->err;
                 if (!*script_err)
                     return APR_EBADF;
-                apr_set_pipe_timeout(*script_err, (int)(r->server->timeout * APR_USEC_PER_SEC));
+                apr_file_pipe_timeout_set(*script_err, (int)(r->server->timeout * APR_USEC_PER_SEC));
             }
         }
     }
@@ -709,7 +709,7 @@ static int cgi_handler(request_rec *r)
             bytes_written = 0;
             do {
                 bytes_to_write = len_read - bytes_written;
-                rv = apr_write(script_out, argsbuffer + bytes_written, 
+                rv = apr_file_write(script_out, argsbuffer + bytes_written, 
                                &bytes_to_write);
                 bytes_written += bytes_to_write;
             } while (rv == APR_SUCCESS && bytes_written < len_read);
@@ -721,10 +721,10 @@ static int cgi_handler(request_rec *r)
 		break;
 	    }
 	}
-	apr_flush(script_out);
+	apr_file_flush(script_out);
     }
 
-    apr_close(script_out);
+    apr_file_close(script_out);
 
     /* Handle script return... */
     if (script_in && !nph) {
@@ -741,7 +741,7 @@ static int cgi_handler(request_rec *r)
 	if (location && location[0] == '/' && r->status == 200) {
 
 	    /* Soak up all the script output */
-	    while (apr_fgets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
+	    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
 		continue;
 	    }
             log_script_err(r, script_err);
@@ -770,22 +770,22 @@ static int cgi_handler(request_rec *r)
 	ap_send_http_header(r);
 	if (!r->header_only) {
             bb = apr_brigade_create(r->pool);
-	    b = apr_bucket_create_pipe(script_in);
+	    b = apr_bucket_pipe_creat(script_in);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_create_eos();
+            b = apr_bucket_eos_create();
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(r->output_filters, bb);
 	}
 
         log_script_err(r, script_err);
-	apr_close(script_err);
+	apr_file_close(script_err);
     }
 
     if (script_in && nph) {
         bb = apr_brigade_create(r->pool);
-	b = apr_bucket_create_pipe(script_in);
+	b = apr_bucket_pipe_creat(script_in);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
-	b = apr_bucket_create_eos();
+	b = apr_bucket_eos_create();
 	APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
     }
@@ -840,15 +840,15 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
         location = ap_escape_html(rr->pool, location);
         len_loc = strlen(location);
 
-        tmp_buck = apr_bucket_create_immortal("<A HREF=\"", sizeof("<A HREF=\""));
+        tmp_buck = apr_bucket_immortal_create("<A HREF=\"", sizeof("<A HREF=\""));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1, &h_wrt);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_immortal("\">", sizeof("\">"));
+        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">"));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1, &h_wrt);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_create_immortal("</A>", sizeof("</A>"));
+        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>"));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
 
         if (*inserted_head == NULL) {
@@ -896,7 +896,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     }
 
     bcgi = apr_brigade_create(r->pool);
-    b = apr_bucket_create_pipe(script_in);
+    b = apr_bucket_pipe_creat(script_in);
     APR_BRIGADE_INSERT_TAIL(bcgi, b);
     ap_pass_brigade(f->next, bcgi);
 

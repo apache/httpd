@@ -165,7 +165,7 @@ static void *create_setenvif_config(apr_pool_t *p)
 {
     sei_cfg_rec *new = (sei_cfg_rec *) apr_palloc(p, sizeof(sei_cfg_rec));
 
-    new->conditionals = apr_make_array(p, 20, sizeof(sei_entry));
+    new->conditionals = apr_array_make(p, 20, sizeof(sei_entry));
     return (void *) new;
 }
 
@@ -184,7 +184,7 @@ static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
     sei_cfg_rec *a = apr_pcalloc(p, sizeof(sei_cfg_rec));
     sei_cfg_rec *base = basev, *overrides = overridesv;
 
-    a->conditionals = apr_append_arrays(p, base->conditionals,
+    a->conditionals = apr_array_append(p, base->conditionals,
 				       overrides->conditionals);
     return a;
 }
@@ -252,7 +252,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 
 	/* no match, create a new entry */
 
-	new = apr_push_array(sconf->conditionals);
+	new = apr_array_push(sconf->conditionals);
 	new->name = fname;
 	new->regex = regex;
 	new->icase = icase;
@@ -263,7 +263,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	    return apr_pstrcat(cmd->pool, cmd->cmd->name,
 			      " regex could not be compiled.", NULL);
 	}
-	new->features = apr_make_table(cmd->pool, 2);
+	new->features = apr_table_make(cmd->pool, 2);
 
 	if (!strcasecmp(fname, "remote_addr")) {
 	    new->special_type = SPECIAL_REMOTE_ADDR;

@@ -86,7 +86,7 @@
 #define OUTPUT_XLATE_BUF_SIZE (16*1024) /* size of translation buffer used on output */
 #define INPUT_XLATE_BUF_SIZE  (8*1024)  /* size of translation buffer used on input */
 
-/* XXX this works around an issue with the heap bucket: apr_bucket_create_heap will 
+/* XXX this works around an issue with the heap bucket: apr_bucket_heap_create will 
  *     copy only the first 4096 bytes
  */
 #undef INPUT_XLATE_BUF_SIZE         /* XXX */
@@ -461,7 +461,7 @@ static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t 
     apr_status_t rv;
 
     bb = apr_brigade_create(f->r->pool);
-    b = apr_bucket_create_transient(tmp, len);
+    b = apr_bucket_transient_create(tmp, len);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(f->next, bb);
     if (rv != APR_SUCCESS) {
@@ -478,7 +478,7 @@ static apr_status_t send_eos(ap_filter_t *f)
     apr_status_t rv;
 
     bb = apr_brigade_create(f->r->pool);
-    b = apr_bucket_create_eos();
+    b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(f->next, bb);
     if (rv != APR_SUCCESS) {
@@ -1075,7 +1075,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
         if (buffer_size < INPUT_XLATE_BUF_SIZE) { /* do we have output? */
             apr_bucket *e;
 
-            e = apr_bucket_create_heap(ctx->tmp, 
+            e = apr_bucket_heap_create(ctx->tmp, 
                                       INPUT_XLATE_BUF_SIZE - buffer_size, 1, 
                                       NULL);
             /* make sure we insert at the head, because there may be

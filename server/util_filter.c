@@ -104,7 +104,7 @@ static void register_filter(const char *name,
     frec->next = *reg_filter_list;
     *reg_filter_list = frec;
 
-    apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, apr_null_cleanup);
+    apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, apr_pool_cleanup_null);
 }
 
 AP_DECLARE(void) ap_register_input_filter(const char *name,

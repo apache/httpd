@@ -220,15 +220,15 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     }
 
     if (strcmp(host, "*") == 0) {
-        rv = apr_getaddrinfo(&my_addr, NULL, APR_INET, port, 0, p);
+        rv = apr_sockaddr_info_get(&my_addr, NULL, APR_INET, port, 0, p);
         my_addr->sa.sin.sin_addr.s_addr = htonl(INADDR_ANY);
     } else if (strcasecmp(host, "_default_") == 0
         || strcmp(host, "255.255.255.255") == 0) {
-        rv = apr_getaddrinfo(&my_addr, NULL, APR_INET, port, 0, p);
+        rv = apr_sockaddr_info_get(&my_addr, NULL, APR_INET, port, 0, p);
         ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
         my_addr->sa.sin.sin_addr.s_addr = DEFAULT_VHOST_ADDR;
     } else {
-        rv = apr_getaddrinfo(&my_addr, host, APR_UNSPEC, port, 0, p);
+        rv = apr_sockaddr_info_get(&my_addr, host, APR_UNSPEC, port, 0, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                 "Cannot resolve host name %s --- ignoring!", host);
@@ -237,7 +237,7 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     }
 
     /* XXX Gotta go through *all* addresses for the host name! 
-     * Fix apr_getaddrinfo() to save them! */
+     * Fix apr_sockaddr_info_get() to save them! */
 
     sar = apr_pcalloc(p, sizeof(server_addr_rec));
     **paddr = sar;
@@ -457,22 +457,22 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
 	buf[len-1] = '*';
     }
     if (ic->names == NULL) {
-	apr_fprintf(f, "%-22s %s (%s:%u)\n", buf, ic->server->server_hostname,
+	apr_file_printf(f, "%-22s %s (%s:%u)\n", buf, ic->server->server_hostname,
 		ic->server->defn_name, ic->server->defn_line_number);
 	return;
     }
-    apr_fprintf(f, "%-22s is a NameVirtualHost\n"
+    apr_file_printf(f, "%-22s is a NameVirtualHost\n"
 	    "%8s default server %s (%s:%u)\n",
 	    buf, "", ic->server->server_hostname,
 	    ic->server->defn_name, ic->server->defn_line_number);
     for (nc = ic->names; nc; nc = nc->next) {
 	if (nc->sar->host_port) {
-	    apr_fprintf(f, "%8s port %u ", "", nc->sar->host_port);
+	    apr_file_printf(f, "%8s port %u ", "", nc->sar->host_port);
 	}
 	else {
-	    apr_fprintf(f, "%8s port * ", "");
+	    apr_file_printf(f, "%8s port * ", "");
 	}
-	apr_fprintf(f, "namevhost %s (%s:%u)\n", nc->server->server_hostname,
+	apr_file_printf(f, "namevhost %s (%s:%u)\n", nc->server->server_hostname,
 		nc->server->defn_name, nc->server->defn_line_number);
     }
 }
@@ -482,14 +482,14 @@ static void dump_vhost_config(apr_file_t *f)
     ipaddr_chain *ic;
     int i;
 
-    apr_fprintf(f, "VirtualHost configuration:\n");
+    apr_file_printf(f, "VirtualHost configuration:\n");
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
 	for (ic = iphash_table[i]; ic; ic = ic->next) {
 	    dump_a_vhost(f, ic);
 	}
     }
     if (default_list) {
-	apr_fprintf(f, "wildcard NameVirtualHosts and _default_ servers:\n");
+	apr_file_printf(f, "wildcard NameVirtualHosts and _default_ servers:\n");
 	for (ic = default_list; ic; ic = ic->next) {
 	    dump_a_vhost(f, ic);
 	}
@@ -679,7 +679,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 		       ServerName, and their DNS isn't working. -djg */
                     char *ipaddr_str;
 
-                    apr_get_ipaddr(&ipaddr_str, s->addrs->host_addr);
+                    apr_sockaddr_ip_get(&ipaddr_str, s->addrs->host_addr);
 		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, main_s,
                                  "Failed to resolve server name "
                                  "for %s (check DNS) -- or specify an explicit "
@@ -705,7 +705,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 #endif
     if (ap_exists_config_define("DUMP_VHOSTS")) {
         apr_file_t *thefile = NULL;
-        apr_open_stderr(&thefile, p);
+        apr_file_open_stderr(&thefile, p);
 	dump_vhost_config(thefile);
     }
 }
@@ -875,8 +875,8 @@ static void check_hostalias(request_rec *r)
     apr_sockaddr_t *localsa;
 
     last_s = NULL;
-    apr_get_sockaddr(&localsa, APR_LOCAL, r->connection->client_socket);
-    apr_get_port(&port, localsa);
+    apr_socket_addr_get(&localsa, APR_LOCAL, r->connection->client_socket);
+    apr_sockaddr_port_get(&port, localsa);
 
     /* Recall that the name_chain is a list of server_addr_recs, some of
      * whose ports may not match.  Also each server may appear more than
@@ -933,8 +933,8 @@ static void check_serverpath(request_rec *r)
     apr_port_t port;
     apr_sockaddr_t *localsa;
 
-    apr_get_sockaddr(&localsa, APR_LOCAL, r->connection->client_socket);
-    apr_get_port(&port, localsa);
+    apr_socket_addr_get(&localsa, APR_LOCAL, r->connection->client_socket);
+    apr_sockaddr_port_get(&port, localsa);
    
     /*
      * This is in conjunction with the ServerPath code in http_core, so we
@@ -1008,7 +1008,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     /* maybe there's a default server or wildcard name-based vhost
      * matching this port
      */
-    apr_get_port(&port, conn->local_addr);
+    apr_sockaddr_port_get(&port, conn->local_addr);
     trav = find_default_server(port);
     if (trav) {
 	conn->vhost_lookup_data = trav->names;

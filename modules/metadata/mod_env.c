@@ -120,7 +120,7 @@ static void *create_env_dir_config(apr_pool_t *p, char *dummy)
 {
     env_dir_config_rec *new =
     (env_dir_config_rec *) apr_palloc(p, sizeof(env_dir_config_rec));
-    new->vars = apr_make_table(p, 50);
+    new->vars = apr_table_make(p, 50);
     new->unsetenv = "";
     new->vars_present = 0;
     return (void *) new;
@@ -150,7 +150,7 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
      * }
      */
 
-    new_table = apr_copy_table(p, base->vars);
+    new_table = apr_table_copy(p, base->vars);
 
     arr = apr_table_elts(add->vars);
     elts = (apr_table_entry_t *)arr->elts;
@@ -249,7 +249,7 @@ static int fixup_env_module(request_rec *r)
     if (!sconf->vars_present)
         return DECLINED;
 
-    r->subprocess_env = apr_overlay_tables(r->pool, e, vars);
+    r->subprocess_env = apr_table_overlay(r->pool, e, vars);
 
     return OK;
 }

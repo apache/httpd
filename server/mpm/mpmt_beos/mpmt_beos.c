@@ -149,7 +149,7 @@ AP_DECLARE(int) ap_get_max_daemons(void)
 void clean_child_exit(int code)
 {
     if (pchild) {
-	apr_destroy_pool(pchild);
+	apr_pool_destroy(pchild);
     }
     exit(code);
 }
@@ -324,11 +324,11 @@ static int32 worker_thread(void * dummy)
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
 
-    apr_create_pool(&ptrans, tpool);
+    apr_pool_create(&ptrans, tpool);
 
-    apr_lock(worker_thread_count_mutex);
+    apr_lock_aquire(worker_thread_count_mutex);
     worker_thread_count++;
-    apr_unlock(worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -336,7 +336,7 @@ static int32 worker_thread(void * dummy)
         workers_may_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
 
-        apr_lock(accept_mutex);
+        apr_lock_aquire(accept_mutex);
         while (!workers_may_exit) {
             srv = poll(listenfds, num_listenfds + 1, -1);
             if (srv < 0) {
@@ -368,7 +368,7 @@ static int32 worker_thread(void * dummy)
                     /* XXX: Should we check for POLLERR? */
                     if (listenfds[curr_pollfd].revents & POLLIN) {
                         last_pollfd = curr_pollfd;
-                        apr_put_os_sock(&sd, &listenfds[curr_pollfd].fd, tpool); 
+                        apr_os_sock_put(&sd, &listenfds[curr_pollfd].fd, tpool); 
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
@@ -377,27 +377,27 @@ static int32 worker_thread(void * dummy)
     got_fd:
         if (!workers_may_exit) {
             apr_accept(&csd, sd, ptrans);
-            apr_unlock(accept_mutex);
+            apr_lock_release(accept_mutex);
             process_socket(ptrans, csd, process_slot,
                        thread_slot);
             requests_this_child--;
         }
         else {
-            apr_unlock(accept_mutex);
+            apr_lock_release(accept_mutex);
             break;
         }
         apr_clear_pool(ptrans);
     }
 
-    apr_destroy_pool(tpool);
-    apr_lock(worker_thread_count_mutex);
+    apr_pool_destroy(tpool);
+    apr_lock_aquire(worker_thread_count_mutex);
     worker_thread_count--;
     if (worker_thread_count == 0) {
         /* All the threads have exited, now finish the shutdown process
          * by signalling the sigwait thread */
         kill(my_pid, SIGTERM);
     }
-    apr_unlock(worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
 
     return (0);
 }
@@ -417,7 +417,7 @@ static int32 child_main(void * data)
     apr_status_t rv;
         
     my_pid = getpid();
-    apr_create_pool(&pchild, pconf);
+    apr_pool_create(&pchild, pconf);
 
     if (beosd_setup_child()) {
 	clean_child_exit(APEXIT_CHILDFATAL);
@@ -436,7 +436,7 @@ static int32 child_main(void * data)
     /* Set up the pollfd array */
     listenfds = apr_palloc(pchild, sizeof(struct pollfd) * (num_listenfds));
     for (lr = ap_listeners, i = 0; i < num_listenfds; lr = lr->next, ++i) {
-        apr_get_os_sock(&listenfds[i].fd , lr->sd);
+        apr_os_sock_get(&listenfds[i].fd , lr->sd);
         listenfds[i].events = POLLIN; /* should we add POLLPRI ?*/
         listenfds[i].revents = 0;
     }
@@ -444,7 +444,7 @@ static int32 child_main(void * data)
     /* Setup worker threads */
 
     worker_thread_count = 0;
-    if ((rv = apr_create_lock(&worker_thread_count_mutex, APR_MUTEX, 
+    if ((rv = apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, 
         APR_CROSS_PROCESS, NULL, pchild)) != APR_SUCCESS) {
         /* Oh dear, didn't manage to create a worker thread mutex, 
            so there's no point on going on with this child... */
@@ -461,7 +461,7 @@ static int32 child_main(void * data)
         my_info->pid = my_child_num;
         my_info->tid = i;
         my_info->sd = 0;
-        apr_create_pool(&my_info->tpool, pchild);
+        apr_pool_create(&my_info->tpool, pchild);
 
         /* We are creating threads right now */
         if ((thread = spawn_thread(worker_thread, "httpd_worker_thread",
@@ -635,7 +635,7 @@ static void server_main_loop(int remaining_children_to_start)
 		}
 #if APR_HAS_OTHER_CHILD
 	    }
-	    else if (apr_reap_other_child(&pid, status) == 0) {
+	    else if (apr_proc_other_child_read(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -690,7 +690,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* create the accept_mutex */
-    if ((rv = apr_create_lock(&accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
+    if ((rv = apr_lock_create(&accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
         NULL, pconf)) != APR_SUCCESS) {
         /* tsch tsch, can't have more than one thread in the accept loop
            at a time so we need to fall on our sword... */

@@ -45,7 +45,7 @@ int main (void)
     char line[512];
     char tok[512];
 
-    p = apr_init_alloc();
+    p = apr_pool_alloc_init();
 
     printf("Enter field value to find items within:\n");
     if (!gets(line))

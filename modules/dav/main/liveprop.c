@@ -76,8 +76,8 @@ static void dav_register_liveprop_namespace(apr_pool_t *p, const char *uri)
     int value;
 
     if (dav_liveprop_uris == NULL) {
-        dav_liveprop_uris = apr_make_hash(p);
-        apr_register_cleanup(p, NULL, dav_cleanup_liveprops, apr_null_cleanup);
+        dav_liveprop_uris = apr_hash_make(p);
+        apr_pool_cleanup_register(p, NULL, dav_cleanup_liveprops, apr_pool_cleanup_null);
     }
 
     value = (int)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
