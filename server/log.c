@@ -176,12 +176,11 @@ static int log_child(ap_context_t *p, const char *progname,
     signal(SIGHUP, SIG_IGN);
 #endif /* ndef SIGHUP */
 
-    if ((ap_createprocattr_init(&procattr, p)          != APR_SUCCESS) ||
+    if ((ap_createprocattr_init(&procattr, p) != APR_SUCCESS) ||
         (ap_setprocattr_io(procattr,
-                           APR_NO_PIPE,
                            APR_FULL_BLOCK,
-                           APR_NO_PIPE) != APR_SUCCESS) ||
-        (ap_setprocattr_dir(procattr, progname)        != APR_SUCCESS)) {
+                           APR_NO_PIPE,
+                           APR_NO_PIPE) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
         rc = -1;
     }
@@ -264,15 +263,15 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 
     replace_stderr = 1;
     if (s_main->error_log) {
-	/* replace stderr with this new log */
-	fflush(stderr);
+        /* replace stderr with this new log */
+        fflush(stderr); /* ToDo: replace this with an APR call... */
         ap_open_stderr(&errfile, p);        
-	if (ap_dupfile(&errfile, s_main->error_log) != APR_SUCCESS) {
-	    ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,
-		"unable to replace stderr with error_log");
-	} else {
-	    replace_stderr = 0;
-	}
+        if (ap_dupfile(&errfile, s_main->error_log) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,
+                         "unable to replace stderr with error_log");
+        } else {
+            replace_stderr = 0;
+        }
     }
     /* note that stderr may still need to be replaced with something
      * because it points to the old error log, or back to the tty
