@@ -250,18 +250,18 @@ void clean_var_rec (var_rec *mime_info)
     mime_info->description = "";
 
     mime_info->is_pseudo_html = 0;
-    mime_info->level = 0.0;
-    mime_info->level_matched = 0.0;
-    mime_info->bytes = 0;
+    mime_info->level = 0.0f;
+    mime_info->level_matched = 0.0f;
+    mime_info->bytes = 0.0f;
     mime_info->lang_index = -1;
     mime_info->mime_stars = 0;
     mime_info->definite = 1;
 
-    mime_info->charset_quality = 1.0;
-    mime_info->type_quality = 0.0;
+    mime_info->charset_quality = 1.0f;
+    mime_info->type_quality = 0.0f;
     mime_info->encoding_quality = 1;
-    mime_info->lang_quality = 1.0;
-    mime_info->accept_type_quality = 1.0;
+    mime_info->lang_quality = 1.0f;
+    mime_info->accept_type_quality = 1.0f;
 }
 
 /* Initializing the relevant fields of a variant record from the
@@ -294,9 +294,9 @@ void set_mime_fields (var_rec *var, accept_rec *mime_info)
 
 char *get_entry (pool *p, accept_rec *result, char *accept_line)
 {
-    result->quality = 1.0;
-    result->max_bytes = 0.0;
-    result->level = 0.0;
+    result->quality = 1.0f;
+    result->max_bytes = 0.0f;
+    result->level = 0.0f;
     result->charset = "";
     
     /* Note that this handles what I gather is the "old format",
@@ -321,11 +321,11 @@ char *get_entry (pool *p, accept_rec *result, char *accept_line)
 	
     if (!strcmp (result->type_name, "text/html")
 	&& result->level == 0.0)
-	result->level = 2.0;
+	result->level = 2.0f;
     else if (!strcmp (result->type_name, INCLUDES_MAGIC_TYPE))
-	result->level = 2.0;
+	result->level = 2.0f;
     else if (!strcmp (result->type_name, INCLUDES_MAGIC_TYPE3))
-	result->level = 3.0;
+	result->level = 3.0f;
 
     while (*accept_line == ';') {
 	/* Parameters ... */
@@ -509,18 +509,18 @@ void maybe_add_default_encodings(negotiation_state *neg, int prefer_scripts)
     accept_rec *new_accept = (accept_rec *)push_array (neg->accepts); 
   
     new_accept->type_name = CGI_MAGIC_TYPE;
-    new_accept->quality = prefer_scripts ? 1e-20 : 1e20;
-    new_accept->level = 0.0;
-    new_accept->max_bytes = 0.0;
+    new_accept->quality = prefer_scripts ? 1e-20f : 1e20f;
+    new_accept->level = 0.0f;
+    new_accept->max_bytes = 0.0f;
 
     if (neg->accepts->nelts > 1) return;
     
     new_accept = (accept_rec *)push_array (neg->accepts); 
     
     new_accept->type_name = "*/*";
-    new_accept->quality = 1.0;
-    new_accept->level = 0.0;
-    new_accept->max_bytes = 0.0;
+    new_accept->quality = 1.0f;
+    new_accept->level = 0.0f;
+    new_accept->max_bytes = 0.0f;
 }
 
 /*****************************************************************
@@ -1006,12 +1006,12 @@ void set_default_lang_quality(negotiation_state *neg)
 	    var_rec *variant = &avail_recs[j];
 	    if (variant->content_languages && 
 		variant->content_languages->nelts) {
-		neg->default_lang_quality = 0.001;
+		neg->default_lang_quality = 0.001f;
 		return;
 	    }
 	}
 	  
-    neg->default_lang_quality = 1.0;
+    neg->default_lang_quality = 1.0f;
 }
 
 /* Set the language_quality value in the variant record. Also
@@ -1081,7 +1081,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
 	 * from all the languages on the variant description.
 	 */
 	int j;
-	float fiddle_q = 0.0;
+	float fiddle_q = 0.0f;
 	accept_rec *accs = (accept_rec *)neg->accept_langs->elts;
 	accept_rec *best = NULL, *star = NULL;
 	char *p;
@@ -1148,7 +1148,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
 		    if ((p = strchr(accs[i].type_name, '-'))) {
 			int plen = p - accs[i].type_name;
 			if (!strncmp(lang, accs[i].type_name, plen))
-			    fiddle_q = 0.001;
+			    fiddle_q = 0.001f;
 		    }
   		}
   	    }
@@ -1190,7 +1190,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
  * machinery.  At some point, that ought to be fixed.
  */
 
-int find_content_length(negotiation_state *neg, var_rec *variant)
+float find_content_length(negotiation_state *neg, var_rec *variant)
 {
     struct stat statb;
 
@@ -1198,7 +1198,8 @@ int find_content_length(negotiation_state *neg, var_rec *variant)
         char *fullname = make_full_path (neg->pool, neg->dir_name,
                                          variant->file_name);
         
-        if (stat (fullname, &statb) >= 0) variant->bytes = statb.st_size;
+        if (stat (fullname, &statb) >= 0)
+	    variant->bytes = (float)statb.st_size;    /* Note, precision may be lost */
     }
 
     return variant->bytes;
@@ -1214,7 +1215,7 @@ void set_accept_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     accept_rec *accept_recs = (accept_rec *)neg->accepts->elts;
-    float q = 0.0;
+    float q = 0.0f;
     int q_definite = 1;
 
     /* if no Accept: header, leave quality alone (will
@@ -1261,8 +1262,8 @@ void set_accept_quality(negotiation_state *neg, var_rec *variant)
          * of ending up with them if there's something better.
          */
 
-        if (!neg->accept_q && variant->mime_stars == 1) q = 0.01;
-        else if (!neg->accept_q && variant->mime_stars == 2) q = 0.02;
+        if (!neg->accept_q && variant->mime_stars == 1) q = 0.01f;
+        else if (!neg->accept_q && variant->mime_stars == 2) q = 0.02f;
         else q = type->quality;
 
         q_definite = (variant->mime_stars == 3);
@@ -1317,9 +1318,9 @@ void set_charset_quality(negotiation_state *neg, var_rec *variant)
     }
     /* If this variant is in charset iso-8859-1, the default is 1.0 */
     if (strcmp(charset, "iso-8859-1") == 0) {
-        variant->charset_quality = 1.0;
+        variant->charset_quality = 1.0f;
     } else {
-        variant->charset_quality = 0.0;
+        variant->charset_quality = 0.0f;
     }
 }
 
@@ -1458,7 +1459,7 @@ int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best
  * (just about). 
  */
 
-float is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
+int is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best, float *p_bestq)
 {
     float bestq = *p_bestq, q;
     int levcmp;
@@ -1568,7 +1569,7 @@ int best_match(negotiation_state *neg, var_rec **pbest)
 {
     int j;
     var_rec *best = NULL;
-    float bestq = 0.0;
+    float bestq = 0.0f;
     enum algorithm_results algorithm_result = na_not_applied;
     
     var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
@@ -1724,7 +1725,7 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
             else if (strcmp(sample_charset, variant->content_charset))
                 vary_by_charset = 1;
         }
-        if ((len = find_content_length(neg, variant)) != 0) {
+        if ((len = (long)find_content_length(neg, variant)) != 0) {
             ap_snprintf(lenstr, sizeof(lenstr), "%ld", len);
             rec = pstrcat(r->pool, rec, " {length ", lenstr, "}", NULL);
         }

@@ -561,7 +561,7 @@ struct ent *make_dir_entry(char *name, int dir_opts,
 
     p=(struct ent *)pcalloc(r->pool, sizeof(struct ent));
     p->name = pstrdup (r->pool, name);
-    p->size = -1;
+    p->size = 0;
     p->icon = NULL;
     p->alt = NULL;
     p->desc = NULL;
@@ -577,7 +577,7 @@ struct ent *make_dir_entry(char *name, int dir_opts,
                     p->icon = find_default_icon(d,"^^DIRECTORY^^");
                 if(!(p->alt = find_alt(d,rr,1)))
                     p->alt = "DIR";
-                p->size = -1;
+                p->size = 0;
 		p->name = pstrcat (r->pool, name, "/", NULL);
             }
             else {
