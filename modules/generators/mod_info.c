@@ -97,6 +97,7 @@
 #include "apr_lib.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "ap_mpm.h"
 
 typedef struct {
     const char *name;                 /* matching module name */
@@ -305,6 +306,8 @@ static int display_info(request_rec *r)
 
         }
         if (!r->args || !strcasecmp(r->args, "server")) {
+            int max_daemons, forked, threaded;
+
             ap_rprintf(r, "<a name=\"server\"><strong>Server Version:</strong> "
                         "<font size=+1><tt>%s</tt></a></font><br>\n",
                         ap_get_server_version());
@@ -321,6 +324,13 @@ static int display_info(request_rec *r)
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt><br>",
                         serv->timeout, serv->keep_alive_timeout);
+            ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons);
+            ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
+            ap_mpm_query(AP_MPMQ_IS_FORKED, &forked);
+            ap_rprintf(r, "<strong>MPM Information:</strong> "
+		       "<tt>Max Daemons: %d Threaded: %s Forked: %s</tt><br>\n",
+                       max_daemons, threaded ? "yes" : "no",
+                       forked ? "yes" : "no");
             ap_rprintf(r, "<strong>Server Root:</strong> "
                         "<tt>%s</tt><br>\n", ap_server_root);
             ap_rprintf(r, "<strong>Config File:</strong> "

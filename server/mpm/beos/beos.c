@@ -140,11 +140,6 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
-AP_DECLARE(int) ap_get_max_daemons(void)
-{
-    return ap_max_child_assigned;
-}
-
 /* a clean exit from a child with proper cleanup 
    static void clean_child_exit(int code) __attribute__ ((noreturn)); */
 static void clean_child_exit(int code)
@@ -631,6 +626,22 @@ static void server_main_loop(int remaining_threads_to_start)
          }
          perform_idle_server_maintenance();
     }
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+{
+    switch(query_code){
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = ap_max_daemons_limit;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_THREADED:
+            *result = 1;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_FORKED:
+            *result = 1;
+            return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
 }
 
 int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)

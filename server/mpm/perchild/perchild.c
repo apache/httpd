@@ -215,9 +215,20 @@ static apr_lock_t *process_accept_mutex;
 static const char *lock_fname;
 static apr_lock_t *thread_accept_mutex;
 
-AP_DECLARE(int) ap_get_max_daemons(void)
+AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
-    return ap_max_daemons_limit;
+    switch(query_code){
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = ap_max_daemons_limit;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_THREADED:
+            *result = 1;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_FORKED:
+            *result = 1;
+            return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
 }
 
 /* a clean exit from a child with proper cleanup */

@@ -217,11 +217,6 @@ static void accept_mutex_off(void)
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
 
-AP_DECLARE(int) ap_get_max_daemons(void)
-{
-    return max_daemons_limit;
-}
-
 static int find_thread_by_tid(int tid)
 {
     int i;
@@ -883,6 +878,21 @@ static void perform_idle_server_maintenance(void)
     }
 }
 
+AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+{
+    switch(query_code){
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = max_daemons_limit;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_THREADED:
+            *result = 1;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_FORKED:
+            *result = 0;
+            return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
+} 
 
 /*****************************************************************
  * Executive routines.

@@ -126,10 +126,6 @@ DWORD parent_pid;
  * code
  */
 ap_generation_t volatile ap_my_generation=0; /* Used by the scoreboard */
-AP_DECLARE(int) ap_get_max_daemons(void)
-{
-    return 1;
-}
 
 /* This is the helper code to resolve late bound entry points 
  * missing from one or more releases of the Win32 API...
@@ -1779,6 +1775,22 @@ apr_array_header_t *mpm_new_argv;
  * Remember inst_argc and inst_argv for installing or starting the
  * service after we preflight the config.
  */
+
+AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+{
+    switch(query_code){
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = MAXIMUM_WAIT_OBJECTS;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_THREADED:
+            *result = 1;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_FORKED:
+            *result = 0;
+            return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
+} 
 
 static apr_status_t service_to_start_success;
 static int inst_argc;

@@ -1,5 +1,10 @@
 Changes with Apache 2.0.14-dev
 
+  *) Allow modules to query the MPM about it's execution profile.  This
+     query API can and should be extended in the future, but for now,
+     max_daemons, and threading or forking is a very good start.
+     [Jon Travis <jtravis@covalent.net>]
+
   *) Modify mod_include to send blocks of data no larger than 9k.
      Without this, mod_include will wait until the whole file is parsed,
      or the first tag is found to send any data to the client.
