@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/06 15:49:58 $]
+Last modified at [$Date: 2004/04/06 18:09:21 $]
 
 Release:
 
@@ -92,7 +92,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Check to make sure that if auth_ldap is loaded, mod_ldap is 
        also loaded. 
          modules/experimental/mod_auth_ldap.c: r1.22
-       +1: bnicholes
+       +1: bnicholes, minfrin
        
     *) util_ldap_connection_find() locks each cached connection while 
        testing to see if it matches the specified criteria.  But then 
@@ -102,7 +102,7 @@ PATCHES TO BACKPORT FROM 2.1
        requests. This patch unlocks the connection if it doesn't meet
        the connection criteria.
          modules/experimental/util_ldap.c: r1.23
-       +1: bnicholes
+       +1: bnicholes, minfrin
        
     *) Update the ldc->binddn and ldc->bindpw associated with the LDAP 
        connection to match the authenticating user DN and password after
@@ -112,7 +112,7 @@ PATCHES TO BACKPORT FROM 2.1
        fact it is bound to a completely different user DN who may not have 
        sufficient rights to complete the requested search.
          modules/experimental/util_ldap.c: r1.22
-       +1: bnicholes
+       +1: bnicholes, minfrin
     
     *) mod_ssl: Fix segfaults when doing shutdown from a cleanup.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.121&r2=1.122
