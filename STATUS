@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/04 14:35:52 $]
+  Last modified at [$Date: 1999/01/05 01:03:03 $]
 
 Release:
 
@@ -51,7 +51,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
          Already known discussion points:
          - should src/httpd be renamed or not because a lot
            of PRs say they cannot find the httpd :-(
-         Status: Ralf -0, Ken +0
+         Status: Ralf -0, Ken +0, Randy -1
 
       2. The way some other projects release binary tarballs, i.e.
          a package containing the installed (binary) files.
@@ -71,7 +71,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	 - the paths don't match the original Apache style, nor the Win32
 	   paths
 	 - should suexec be prebuilt in a binary tarball?
-         Status: Ralf +1, Martin +1, Roy -1, Ken +1 (IFF source is included,
+         Status: Randy, +1, Ralf +1, Martin +1, Roy -1,
+                 Ken +1 (IFF source is included,
 		 there's no usr/local/apache prefix in the tarball, AND the
 		 old-style [common with Win32] paths are used)
 
@@ -83,6 +84,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
          Status: Roy +1, Jim +1 (still need to define which modules
 	 	 are built)
                  Ralf -0 (I dislike mixed source+binary tarballs)
+                 Randy -1 (those wanting binary dists don't want source)
 
 Documentation that needs writing:
 
