@@ -4,7 +4,10 @@ APACHE_MODPATH_INIT(dav/fs)
 
 dnl ### we want to default this based on whether dav is being used...
 dnl ### but there is no ordering to the config.m4 files right now...
-APACHE_MODULE(dav_fs, DAV provider for the filesystem, , , no)
+APACHE_MODULE(dav_fs, DAV provider for the filesystem,
+	mod_dav_fs.lo dbm.lo lock.lo repos.lo
+	, , no)
+
 if test "$enable_dav_fs" = "yes"; then
   apache_need_sdbm=yes
 fi
