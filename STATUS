@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/01 09:23:05 $]
+Last modified at [$Date: 2002/03/02 19:10:07 $]
 
 Release:
 
@@ -73,6 +73,9 @@ FINAL RELEASE SHOWSTOPPERS:
         we need to look at halting this in the 'default handler' case,
         and that implies pushing the 'handler election' into the request
         internal processing phase from the run request phase.
+        Jim asks: would a stopgap be something bogus like adding another
+        flag to request_rec ala eos_sent and before we OK, if not set
+        force 500?
 
     * We need to find out the right place to add the AddOutputFilterByType
       directive.  mod_mime?  No.  core with fixups?  That's what it is now.
