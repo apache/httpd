@@ -73,11 +73,11 @@ ALL_INCLUDES = $(INCLUDES) $(EXTRA_INCLUDES)
 COMPILE      = $(CC)  $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(ALL_INCLUDES)
 CXX_COMPILE  = $(CXX) $(ALL_CXXFLAGS) $(ALL_CPPFLAGS) $(ALL_INCLUDES)
 
-SH_COMPILE     = $(SH_LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
-SH_CXX_COMPILE = $(SH_LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
+SH_COMPILE     = $(LIBTOOL) --mode=compile $(COMPILE) -prefer-pic -c $< && touch $@
+SH_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -prefer-pic-c $< && touch $@
 
-LT_COMPILE     = $(LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
-LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
+LT_COMPILE     = $(LIBTOOL) --mode=compile $(COMPILE) -prefer-non-pic -static -c $< && touch $@
+LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -prefer-non-pic -static -c $< && touch $@
 
 # Link-related commands
 
