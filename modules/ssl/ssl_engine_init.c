@@ -67,9 +67,9 @@
 **  _________________________________________________________________
 */
 
-static char * ssl_add_version_component(apr_pool_t *p,
-                                        server_rec *s,
-                                        char *name)
+static char *ssl_add_version_component(apr_pool_t *p,
+                                       server_rec *s,
+                                       char *name)
 {
     char *val = ssl_var_lookup(p, s, NULL, NULL, name);
 
@@ -187,7 +187,7 @@ static void ssl_tmp_keys_init(server_rec *s)
     MODSSL_TMP_KEY_INIT_RSA(s, 1024);
 
     ssl_log(s, SSL_LOG_INFO,
-            "Init: Configuring temporary DH parameters (512/1024 bits)");
+            "Init: Generating temporary DH parameters (512/1024 bits)");
 
     MODSSL_TMP_KEY_INIT_DH(s, 512);
     MODSSL_TMP_KEY_INIT_DH(s, 1024);
@@ -581,8 +581,8 @@ void ssl_init_ConfigureServer(server_rec *s,
                 vhost_id);
 
         sc->pRevocationStore =
-                SSL_X509_STORE_create((char *)sc->szCARevocationFile,
-                                      (char *)sc->szCARevocationPath);
+            SSL_X509_STORE_create((char *)sc->szCARevocationFile,
+                                  (char *)sc->szCARevocationPath);
 
         if (!sc->pRevocationStore) {
             ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
