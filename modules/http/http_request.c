@@ -1403,7 +1403,6 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 					       request_rec *r) {
     int access_status;
     core_request_config *req_cfg;
-    ap_filter_t *fdel;
     request_rec *new = (request_rec *) apr_pcalloc(r->pool,
 						   sizeof(request_rec));
 
@@ -1464,18 +1463,6 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->output_filters  = r->connection->output_filters;
     new->input_filters   = r->connection->input_filters;
     ap_add_output_filter("HTTP_HEADER", NULL, new, new->connection);
-
-    /* On an internal redirect, the redirect will take care of the headers,
-     * so we have to remove the main-request's HTTP_HEADER filter
-     */
-    fdel = r->output_filters;
-    while (fdel) {
-        if (!strcmp(fdel->frec->name, "HTTP_HEADER")) {
-            ap_remove_output_filter(fdel);
-            break;
-        }
-        fdel = fdel->next;
-    }
 
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
 	apr_psprintf(r->pool, "%d", r->status));

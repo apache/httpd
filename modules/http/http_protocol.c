@@ -2331,6 +2331,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
  */
 AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r)
 {
+    while (r->next) {
+        r = r->next;
+    }
     /* tell the filter chain there is no more content coming */
     if (!r->eos_sent) {
         end_output_stream(r);
