@@ -255,7 +255,6 @@ AP_CORE_DECLARE_NONSTD(int) ap_process_http_connection(conn_rec *c)
             break;
     }
 
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_READY, NULL);
     return OK;
 }
 
