@@ -60,6 +60,7 @@
 
 #include "httpd.h"
 #include "multithread.h"
+#include "http_log.h"
 
 #include <stdarg.h>
 
@@ -1217,9 +1218,9 @@ API_EXPORT(void) note_subprocess(pool *a, int pid, enum kill_conditions how)
 }
 
 #ifdef WIN32
-#define enc_pipe(fds) _pipe(fds, 512, O_TEXT | O_NOINHERIT)
+#define os_pipe(fds) _pipe(fds, 512, O_BINARY | O_NOINHERIT)
 #else
-#define enc_pipe(fds) pipe(fds)
+#define os_pipe(fds) pipe(fds)
 #endif /* WIN32 */
 
 /* for fdopen, to get binary mode */
@@ -1239,11 +1240,11 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
     int err_fds[2];
     int save_errno;
 
-    if (pipe_in && enc_pipe(in_fds) < 0) {
+    if (pipe_in && os_pipe(in_fds) < 0) {
 	return 0;
     }
 
-    if (pipe_out && enc_pipe(out_fds) < 0) {
+    if (pipe_out && os_pipe(out_fds) < 0) {
 	save_errno = errno;
 	if (pipe_in) {
 	    close(in_fds[0]);
@@ -1253,7 +1254,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	return 0;
     }
 
-    if (pipe_err && enc_pipe(err_fds) < 0) {
+    if (pipe_err && os_pipe(err_fds) < 0) {
 	save_errno = errno;
 	if (pipe_in) {
 	    close(in_fds[0]);
@@ -1281,22 +1282,27 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	/* Now do the right thing with your pipes */
 	if (pipe_in) {
 	    hStdIn = dup(fileno(stdin));
-	    dup2(in_fds[0], fileno(stdin));
+	    if(dup2(in_fds[0], fileno(stdin)))
+		aplog_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdin) failed");
 	    close(in_fds[0]);
 	}
 	if (pipe_out) {
 	    hStdOut = dup(fileno(stdout));
-	    dup2(out_fds[1], fileno(stdout));
+	    close(fileno(stdout));
+	    if(dup2(out_fds[1], fileno(stdout)))
+		aplog_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdout) failed");
 	    close(out_fds[1]);
 	}
 	if (pipe_err) {
 	    hStdErr = dup(fileno(stderr));
-	    dup2(err_fds[1], fileno(stderr));
+	    if(dup2(err_fds[1], fileno(stderr)))
+		aplog_error(APLOG_MARK, APLOG_ERR, NULL, "dup2(stdin) failed");
 	    close(err_fds[1]);
 	}
 
 	pid = (*func) (data);
-	if (!pid) {
+	if (pid == -1) {
+	    /* If we are going to save it, we ought to do something with it later, right? - Ben */
 	    save_errno = errno;
 	    close(in_fds[1]);
 	    close(out_fds[0]);
@@ -1311,7 +1317,9 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	if (pipe_err)
 	    dup2(hStdErr, fileno(stderr));
 
-	if (pid) {
+	if(pid == -1)
+	    aplog_error(APLOG_MARK, APLOG_ERR, NULL, "spawn failed");
+	else {
 	    note_subprocess(p, pid, kill_how);
 	    if (pipe_in) {
 		*pipe_in = in_fds[1];
