@@ -13,13 +13,22 @@
  * limitations under the License.
  */
 
-/* The new BeOS MPM!
+/* The BeOS MPM!
  *
- * This one basically is a single process multi threaded model, but 
- * I couldn't be bothered adding the spmt_ to the front of the name!
- * Anyway, this is still under development so it isn't yet the default
- * choice.
- */
+ * This is a single process, with multiple worker threads.
+ *
+ * Under testing I found that given the inability of BeOS to handle threads
+ * and forks it didn't make sense to try and have a set of "children" threads
+ * that spawned the "worker" threads, so just missed out the middle mand and
+ * somehow arrived here.
+ *
+ * For 2.1 this has been rewritten to have simpler logic, though there is still
+ * some simplification that can be done. It's still a work in progress!
+ *
+ * TODO Items
+ *
+ * - on exit most worker threads segfault trying to access a kernel page.
+ */ 
  
 #define CORE_PRIVATE 
  
@@ -88,23 +97,19 @@ static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_thread_limit=0;
 static int num_listening_sockets = 0;
-static apr_socket_t ** listening_sockets;
+static int mpm_state = AP_MPMQ_STARTING;
 apr_thread_mutex_t *accept_mutex = NULL;
 
 static apr_pool_t *pconf;		/* Pool for config stuff */
-static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 
 static int server_pid; 
 
-/* Keep track of the number of worker threads currently active */
+/* Keep track of the number of worker threads currently active 
+ * Is this still needed? Need to do some more checking but I suspect
+ * that this could be removed all together.
+ */
 static int worker_thread_count;
 apr_thread_mutex_t *worker_thread_count_mutex;
-
-/* The structure used to pass unique initialization info to each thread */
-typedef struct {
-    int slot;
-    apr_pool_t *tpool;
-} proc_info;
 
 static void check_restart(void *data);
 
@@ -130,29 +135,13 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
-/* a clean exit from a child with proper cleanup 
-   static void clean_child_exit(int code) __attribute__ ((noreturn)); */
+/* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code)
 {
-    if (pchild)
-        apr_pool_destroy(pchild);
+	mpm_state = AP_MPMQ_STOPPING;
     exit(code);
 }
 
-/* handle all varieties of core dumping signals */
-static void sig_coredump(int sig)
-{
-    chdir(ap_coredump_dir);
-    signal(sig, SIG_DFL);
-    kill(server_pid, sig);
-    /* At this point we've got sig blocked, because we're still inside
-     * the signal handler.  When we leave the signal handler it will
-     * be unblocked, and we'll take the signal... and coredump or whatever
-     * is appropriate for this particular Unix.  In addition the parent
-     * will see the real signal we received -- whereas if we called
-     * abort() here, the parent would only see SIGABRT.
-     */
-}
 
 /*****************************************************************
  * Connection structures and accounting...
@@ -186,13 +175,14 @@ ap_generation_t volatile ap_my_generation = 0;
 
 static void ap_start_shutdown(void)
 {
-    if (shutdown_pending == 1) {
-	/* Um, is this _probably_ not an error, if the user has
-	 * tried to do a shutdown twice quickly, so we won't
-	 * worry about reporting it.
-	 */
-	return;
-    }
+    /* If the user tries to shut us down twice in quick succession then we
+     * may well get triggered while we are working through previous attempt
+     * to shutdown. We won't worry about even reporting it as it seems a little
+     * pointless.
+     */ 
+    if (shutdown_pending == 1)
+        return;
+       
     shutdown_pending = 1;
 }
 
@@ -208,6 +198,24 @@ static void ap_start_restart(int graceful)
     is_graceful = graceful;
 }
 
+/* sig_coredump attempts to handle all the potential signals we
+ * may get that should result in a core dump. This is called from
+ * the signal handler routine, so when we enter we are essentially blocked
+ * on the signal. Once we exit we will allow the signal to be processed by
+ * system, which may or may not produce a .core file. All this function does
+ * is try and respect the users wishes about where that file should be
+ * located (chdir) and then signal the parent with the signal.
+ *
+ * If we called abort() the parent would only see SIGABRT which doesn't provide
+ * as much information.
+ */
+static void sig_coredump(int sig)
+{
+    chdir(ap_coredump_dir);
+    signal(sig, SIG_DFL);
+    kill(server_pid, sig);
+}
+
 static void sig_term(int sig)
 {
     ap_start_shutdown();
@@ -216,6 +224,117 @@ static void sig_term(int sig)
 static void restart(int sig)
 {
     ap_start_restart(sig == AP_SIG_GRACEFUL);
+}
+
+/* Handle queries about our inner workings... */
+AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+{
+    switch(query_code){
+        case AP_MPMQ_MAX_DAEMON_USED:
+            *result = ap_max_child_assigned;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_THREADED:
+            *result = AP_MPMQ_DYNAMIC;
+            return APR_SUCCESS;
+        case AP_MPMQ_IS_FORKED:
+            *result = AP_MPMQ_NOT_SUPPORTED;
+            return APR_SUCCESS;
+        case AP_MPMQ_HARD_LIMIT_DAEMONS:
+            *result = HARD_SERVER_LIMIT;
+            return APR_SUCCESS;
+        case AP_MPMQ_HARD_LIMIT_THREADS:
+            *result = HARD_THREAD_LIMIT;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_THREADS:
+            *result = HARD_THREAD_LIMIT;
+            return APR_SUCCESS;
+        case AP_MPMQ_MIN_SPARE_DAEMONS:
+            *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MIN_SPARE_THREADS:    
+            *result = max_spare_threads;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_SPARE_DAEMONS:
+            *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_SPARE_THREADS:
+            *result = min_spare_threads;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_REQUESTS_DAEMON:
+            *result = ap_max_requests_per_thread;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_DAEMONS:
+            *result = HARD_SERVER_LIMIT;
+            return APR_SUCCESS;
+        case AP_MPMQ_MPM_STATE:
+            *result = mpm_state;
+            return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
+}
+
+/* This accepts a connection and allows us to handle the error codes better than
+ * the previous code, while also making it more obvious.
+ */
+static apr_status_t beos_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *ptrans)
+{
+    apr_socket_t *csd;
+    apr_status_t status;
+    int sockdes;
+
+    *accepted = NULL;
+    status = apr_socket_accept(&csd, lr->sd, ptrans);
+    if (status == APR_SUCCESS) { 
+        *accepted = csd;
+        apr_os_sock_get(&sockdes, csd);
+        return status;
+    }
+
+    if (APR_STATUS_IS_EINTR(status)) {
+        return status;
+    }
+	/* This switch statement provides us with better error details. */
+    switch (status) {
+#ifdef ECONNABORTED
+        case ECONNABORTED:
+#endif
+#ifdef ETIMEDOUT
+        case ETIMEDOUT:
+#endif
+#ifdef EHOSTUNREACH
+        case EHOSTUNREACH:
+#endif
+#ifdef ENETUNREACH
+        case ENETUNREACH:
+#endif
+            break;
+#ifdef ENETDOWN
+        case ENETDOWN:
+            /*
+             * When the network layer has been shut down, there
+             * is not much use in simply exiting: the parent
+             * would simply re-create us (and we'd fail again).
+             * Use the CHILDFATAL code to tear the server down.
+             * @@@ Martin's idea for possible improvement:
+             * A different approach would be to define
+             * a new APEXIT_NETDOWN exit code, the reception
+             * of which would make the parent shutdown all
+             * children, then idle-loop until it detected that
+             * the network is up again, and restart the children.
+             * Ben Hyde noted that temporary ENETDOWN situations
+             * occur in mobile IP.
+             */
+            ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
+                         "apr_socket_accept: giving up.");
+            return APR_EGENERAL;
+#endif /*ENETDOWN*/
+
+        default:
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
+                         "apr_socket_accept: (client socket)");
+            return APR_EGENERAL;
+    }
+    return status;
 }
 
 static void tell_workers_to_exit(void)
@@ -236,25 +355,29 @@ static void set_signals(void)
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
 
+    /* The first batch get handled by sig_coredump */
     if (!one_process) {
-	sa.sa_handler = sig_coredump;
+        sa.sa_handler = sig_coredump;
 
-	if (sigaction(SIGSEGV, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGSEGV)");
-	if (sigaction(SIGBUS, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGBUS)");
-	if (sigaction(SIGABRT, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGABRT)");
-	if (sigaction(SIGILL, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGILL)");
-	sa.sa_flags = 0;
+        if (sigaction(SIGSEGV, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGSEGV)");
+        if (sigaction(SIGBUS, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGBUS)");
+        if (sigaction(SIGABRT, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGABRT)");
+        if (sigaction(SIGILL, &sa, NULL) < 0)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGILL)");
+        sa.sa_flags = 0;
     }
+
+    /* These next two are handled by sig_term */
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
     if (sigaction(SIGINT, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGINT)");
     
+    /* We ignore SIGPIPE */
     sa.sa_handler = SIG_IGN;
     if (sigaction(SIGPIPE, &sa, NULL) < 0)
     	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGPIPE)");
@@ -276,241 +399,237 @@ static void set_signals(void)
 
 int ap_graceful_stop_signalled(void)
 {
-    /* XXX - Does this really work? - Manoj */
     return is_graceful;
 }
 
-/*****************************************************************
- * Child process main loop.
- */
-
-static void process_socket(apr_pool_t *p, apr_socket_t *sock,
-                           int my_child_num, apr_bucket_alloc_t *bucket_alloc)
+/* This is the thread that actually does all the work. */
+static int32 worker_thread(void *dummy)
 {
-    conn_rec *current_conn;
-    long conn_id = my_child_num;
-    int csd;
-    ap_sb_handle_t *sbh;
-
-    (void)apr_os_sock_get(&csd, sock);
-    
-    if (csd >= FD_SETSIZE) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
-                     "filedescriptor (%u) larger than FD_SETSIZE (%u) "
-                     "found, you probably need to rebuild Apache with a "
-                     "larger FD_SETSIZE", csd, FD_SETSIZE);
-        apr_socket_close(sock);
-        return;
-    }
-
-    ap_create_sb_handle(&sbh, p, 0, my_child_num);
-    current_conn = ap_run_create_connection(p, ap_server_conf,
-                                            sock, conn_id, sbh,
-                                            bucket_alloc);
-
-    if (current_conn) {
-        ap_process_connection(current_conn, sock);
-        ap_lingering_close(current_conn);
-    }
-}
-
-static int32 worker_thread(void * dummy)
-{
-    proc_info * ti = dummy;
-    int child_slot = ti->slot;
-    apr_pool_t *tpool = ti->tpool;
+    int worker_slot = *(int *)dummy;
     apr_allocator_t *allocator;
-    apr_socket_t *csd = NULL;
-    apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
     apr_bucket_alloc_t *bucket_alloc;
-    apr_socket_t *sd = NULL;
     apr_status_t rv = APR_EINIT;
-    int srv , n;
-    int curr_pollfd = 0, last_pollfd = 0;
+    int last_poll_idx = 0;
     sigset_t sig_mask;
-    int requests_this_child = ap_max_requests_per_thread;
-    apr_pollfd_t *pollset;
+    int requests_this_child = 0;
+    apr_pollset_t *pollset = NULL;
+    ap_listen_rec *lr = NULL;
+    ap_sb_handle_t *sbh = NULL;
+    int i;
     /* each worker thread is in control of its own destiny...*/
-    int this_worker_should_exit = 0; 
-    free(ti);
+    int this_worker_should_exit = 0;
+    /* We have 2 pools that we create/use throughout the lifetime of this
+     * worker. The first and longest lived is the pworker pool. From
+     * this we create the ptrans pool, the lifetime of which is the same
+     * as each connection and is reset prior to each attempt to
+     * process a connection.
+     */ 
+    apr_pool_t *ptrans = NULL;
+    apr_pool_t *pworker = NULL;
 
-    on_exit_thread(check_restart, (void*)child_slot);
+    mpm_state = AP_MPMQ_STARTING; /* for benefit of any hooks that run as this
+                                  * child initializes
+                                  */
+
+    on_exit_thread(check_restart, (void*)worker_slot);
           
     /* block the signals for this thread */
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
 
+    /* Each worker thread is fully in control of it's destinay and so
+     * to allow each thread to handle the lifetime of it's own resources
+     * we create and use a subcontext for every thread.
+     * The subcontext is a child of the pconf pool.
+     */
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    apr_pool_create_ex(&ptrans, tpool, NULL, allocator);
-    apr_allocator_owner_set(allocator, ptrans);
+    apr_pool_create_ex(&pworker, pconf, NULL, allocator);
+    apr_allocator_owner_set(allocator, pworker);
 
+    apr_pool_create(&ptrans, pworker);
     apr_pool_tag(ptrans, "transaction");
 
-    bucket_alloc = apr_bucket_alloc_create_ex(allocator);
-
+    /* Is this still needed? */
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count++;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
 
-    (void) ap_update_child_status_from_indexes(0, child_slot, SERVER_STARTING,
-                                               (request_rec*)NULL);
-                                  
-    apr_poll_setup(&pollset, num_listening_sockets + 1, tpool);
-    for(n=0 ; n <= num_listening_sockets ; n++)
-        apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
+    ap_create_sb_handle(&sbh, pworker, 0, worker_slot);
+    (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
+                               
+    /* We add an extra socket here as we add the udp_sock we use for signalling
+     * death. This gets added after the others.
+     */
+    apr_pollset_create(&pollset, num_listening_sockets + 1, pworker, 0);
 
-    while (1) {
-        /* If we're here, then chances are (unless we're the first thread created) 
-         * we're going to be held up in the accept mutex, so doing this here
-         * shouldn't hurt performance.
-         */
-
-        this_worker_should_exit |= (ap_max_requests_per_thread != 0) && (requests_this_child <= 0);
+    for (lr = ap_listeners, i = num_listening_sockets; i--; lr = lr->next) {
+        apr_pollfd_t pfd = {0};
         
-        if (this_worker_should_exit) break;
-
-        (void) ap_update_child_status_from_indexes(0, child_slot, SERVER_READY,
-                                                   (request_rec*)NULL);
-
-        apr_thread_mutex_lock(accept_mutex);
-
-        while (!this_worker_should_exit) {
-            apr_int16_t event;
-            apr_status_t ret;
-
-            ret = apr_poll(pollset, num_listening_sockets + 1, &srv, -1);
-
-            if (ret != APR_SUCCESS) {
-                if (APR_STATUS_IS_EINTR(ret)) {
-                    continue;
-                }
-                /* poll() will only return errors in catastrophic
-                 * circumstances. Let's try exiting gracefully, for now. */
-                ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
-                             ap_server_conf, "apr_poll: (listen)");
-                this_worker_should_exit = 1;
-            } else {
-                /* if we've bailed in apr_poll what's the point of trying to use the data? */
-                apr_poll_revents_get(&event, listening_sockets[0], pollset);
-
-                if (event & APR_POLLIN){
-                    apr_sockaddr_t *rec_sa;
-                    apr_size_t len = 5;
-                    char *tmpbuf = apr_palloc(ptrans, sizeof(char) * 5);
-                    apr_sockaddr_info_get(&rec_sa, "127.0.0.1", APR_UNSPEC, 7772, 0, ptrans);
-                    
-                    if ((ret = apr_socket_recvfrom(rec_sa, listening_sockets[0], 0, tmpbuf, &len))
-                        != APR_SUCCESS){
-                        ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL, 
-                            "error getting data from UDP!!");
-                    }else {
-                        /* add checking??? */              
-                    }
-                    this_worker_should_exit = 1;
-                }
-            }
-          
-            if (this_worker_should_exit) break;
-
-            if (num_listening_sockets == 1) {
-                sd = ap_listeners->sd;
-                goto got_fd;
-            }
-            else {
-                /* find a listener */
-                curr_pollfd = last_pollfd;
-                do {
-                    curr_pollfd++;
-
-                    if (curr_pollfd > num_listening_sockets)
-                        curr_pollfd = 1;
-                    
-                    /* Get the revent... */
-                    apr_poll_revents_get(&event, listening_sockets[curr_pollfd], pollset);
-                    
-                    if (event & APR_POLLIN) {
-                        last_pollfd = curr_pollfd;
-                        sd = listening_sockets[curr_pollfd];
-                        goto got_fd;
-                    }
-                } while (curr_pollfd != last_pollfd);
-            }
-        }
-    got_fd:
-
-        if (!this_worker_should_exit) {
-            rv = apr_socket_accept(&csd, sd, ptrans);
-
-            apr_thread_mutex_unlock(accept_mutex);
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                  "apr_socket_accept");
-            } else {
-                process_socket(ptrans, csd, child_slot, bucket_alloc);
-                requests_this_child--;
-            }
-        }
-        else {
-            apr_thread_mutex_unlock(accept_mutex);
-            break;
-        }
-        apr_pool_clear(ptrans);
+        pfd.desc_type = APR_POLL_SOCKET;
+        pfd.desc.s = lr->sd;
+        pfd.reqevents = APR_POLLIN;
+        pfd.client_data = lr;
+        
+        apr_pollset_add(pollset, &pfd);
+    }
+    {
+        apr_pollfd_t pfd = {0};
+        
+        pfd.desc_type = APR_POLL_SOCKET;
+        pfd.desc.s = udp_sock;
+        pfd.reqevents = APR_POLLIN;
+        
+        apr_pollset_add(pollset, &pfd);
     }
 
-    ap_update_child_status_from_indexes(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
+    bucket_alloc = apr_bucket_alloc_create(pworker);
 
-    apr_bucket_alloc_destroy(bucket_alloc);
+    mpm_state = AP_MPMQ_RUNNING;
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL,
-                 "worker_thread %ld exiting", find_thread(NULL));
-    
+	while (!this_worker_should_exit) {
+        conn_rec *current_conn;
+        void *csd;
+
+        /* (Re)initialize this child to a pre-connection state. */
+        apr_pool_clear(ptrans);
+
+        if ((ap_max_requests_per_child > 0 
+             && requests_this_child++ >= ap_max_requests_per_child))
+            clean_child_exit(0);
+
+        (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
+        
+        apr_thread_mutex_lock(accept_mutex);
+
+        /* We always (presently) have at least 2 sockets we listen on, so
+         * we don't have the ability for a fast path for a single socket
+         * as some MPM's allow :(
+         */
+        for (;;) {
+            apr_int32_t numdesc = 0;
+            const apr_pollfd_t *pdesc = NULL;
+
+            rv = apr_pollset_poll(pollset, -1, &numdesc, &pdesc);
+            if (rv != APR_SUCCESS) {
+                if (APR_STATUS_IS_EINTR(rv)) {
+                    if (one_process && shutdown_pending)
+                        return;
+                    continue;
+                }
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv,
+                             ap_server_conf, "apr_pollset_poll: (listen)");
+    	        clean_child_exit(1);
+            }
+            /* We can always use pdesc[0], but sockets at position N
+             * could end up completely starved of attention in a very
+             * busy server. Therefore, we round-robin across the
+             * returned set of descriptors. While it is possible that
+             * the returned set of descriptors might flip around and
+             * continue to starve some sockets, we happen to know the
+             * internal pollset implementation retains ordering
+             * stability of the sockets. Thus, the round-robin should
+             * ensure that a socket will eventually be serviced.
+             */
+            if (last_poll_idx >= numdesc)
+                last_poll_idx = 0;
+
+            /* Grab a listener record from the client_data of the poll
+             * descriptor, and advance our saved index to round-robin
+             * the next fetch.
+             *
+             * ### hmm... this descriptor might have POLLERR rather
+             * ### than POLLIN
+             */
+            
+            lr = pdesc[last_poll_idx++].client_data;
+
+            /* The only socket we add without client_data is the first, the UDP socket
+             * we listen on for restart signals. If we've therefore gotten a hit on that
+             * listener lr will be NULL here and we know we've been told to die.
+             * Before we jump to the end of the while loop with this_worker_should_exit
+             * set to 1 (causing us to exit normally we hope) we release the accept_mutex
+             * as we want every thread to go through this same routine :)
+             * Bit of a hack, but compared to what I had before...
+             */
+            if (lr == NULL) {
+                this_worker_should_exit = 1;
+                apr_thread_mutex_unlock(accept_mutex);
+                goto got_a_black_spot;
+            }
+            goto got_fd;
+        }
+got_fd:
+        /* Run beos_accept to accept the connection and set things up to
+         * allow us to process it. We always release the accept_lock here,
+         * even if we failt o accept as otherwise we'll starve other workers
+         * which would be bad.
+         */
+        rv = beos_accept(&csd, lr, ptrans);
+        apr_thread_mutex_unlock(accept_mutex);
+
+        if (rv == APR_EGENERAL) {
+            /* resource shortage or should-not-occur occured */
+            clean_child_exit(1);
+        } else if (rv != APR_SUCCESS)
+            continue;
+
+        current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, worker_slot, sbh, bucket_alloc);
+        if (current_conn) {
+            ap_process_connection(current_conn, csd);
+            ap_lingering_close(current_conn);
+        }
+        
+        if (ap_my_generation !=
+                 ap_scoreboard_image->global->running_generation) { /* restart? */
+            /* yeah, this could be non-graceful restart, in which case the
+             * parent will kill us soon enough, but why bother checking?
+             */
+            this_worker_should_exit = 1;
+        }
+got_a_black_spot:
+    }
+
+    /* Is this needed any longer? */
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count--;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
 
-    return (0);
+   	apr_pool_destroy(ptrans);
+    apr_pool_destroy(pworker);
+    	
+    clean_child_exit(0);
 }
 
 static int make_worker(int slot)
 {
     thread_id tid;
-    proc_info *my_info = (proc_info *)malloc(sizeof(proc_info)); /* freed by thread... */
 
-    if (my_info == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-            "malloc: out of memory");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
-    
-    my_info->slot = slot;
-    apr_pool_create(&my_info->tpool, pchild);
-    
     if (slot + 1 > ap_max_child_assigned)
 	    ap_max_child_assigned = slot + 1;
+
+    (void) ap_update_child_status_from_indexes(0, slot, SERVER_STARTING, (request_rec*)NULL);
 
     if (one_process) {
     	set_signals();
         ap_scoreboard_image->parent[0].pid = getpid();
+        ap_scoreboard_image->servers[0][slot].tid = find_thread(NULL);
         return 0;
     }
 
-    (void) ap_update_child_status_from_indexes(0, slot, SERVER_STARTING, (request_rec*)NULL);
     tid = spawn_thread(worker_thread, "apache_worker", B_NORMAL_PRIORITY,
-        my_info);
+                       (void *)&slot);
     if (tid < B_NO_ERROR) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL, 
             "spawn_thread: Unable to start a new thread");
-        /* In case system resources are maxxed out, we don't want
+        /* In case system resources are maxed out, we don't want
          * Apache running away with the CPU trying to fork over and
          * over and over again. 
          */
         (void) ap_update_child_status_from_indexes(0, slot, SERVER_DEAD, 
                                                    (request_rec*)NULL);
         
-    	sleep(10);
-        free(my_info);
-        
+    	sleep(10);       
     	return -1;
     }
     resume_thread(tid);
@@ -519,29 +638,37 @@ static int make_worker(int slot)
     return 0;
 }
 
+/* When a worker thread exits, this function is called. If we are not in
+ * a shutdown situation then we restart the worker in the slot that was
+ * just vacated.
+ */
 static void check_restart(void *data)
 {
     if (!restart_pending && !shutdown_pending) {
         int slot = (int)data;
         make_worker(slot);
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, 
-            "spawning a new worker thread in slot %d", slot);
+                     "spawning a new worker thread in slot %d", slot);
     }
 }
 
-/* start up a bunch of children */
+/* Start number_to_start children. This is used to start both the
+ * initial 'pool' of workers but also to replace existing workers who
+ * have reached the end of their time. It walks through the scoreboard to find
+ * an empty slot and starts the worker thread in that slot.
+ */
 static void startup_threads(int number_to_start)
 {
     int i;
 
     for (i = 0; number_to_start && i < ap_thread_limit; ++i) {
-	if (ap_scoreboard_image->servers[0][i].tid) {
-	    continue;
-	}
-	if (make_worker(i) < 0) {
-	    break;
-	}
-	--number_to_start;
+        if (ap_scoreboard_image->servers[0][i].tid)
+            continue;
+
+        if (make_worker(i) < 0)
+	        break;
+
+        --number_to_start;
     }
 }
 
@@ -642,12 +769,12 @@ static void server_main_loop(int remaining_threads_to_start)
                     make_worker(child_slot);
                     --remaining_threads_to_start;
 		        }
+/* TODO
 #if APR_HAS_OTHER_CHILD
             }
-            else if (apr_proc_other_child_alert(&pid, APR_OC_REASON_DEATH,
-                                                status) == 0) {
-    		/* handled */
+            else if (apr_proc_other_child_refresh(&pid, status) == 0) {
 #endif
+*/
             }
             else if (is_graceful) {
                 /* Great, we've probably just lost a slot in the
@@ -682,49 +809,6 @@ static void server_main_loop(int remaining_threads_to_start)
     }
 }
 
-AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
-{
-    switch(query_code){
-        case AP_MPMQ_MAX_DAEMON_USED:
-            *result = ap_max_child_assigned;
-            return APR_SUCCESS;
-        case AP_MPMQ_IS_THREADED:
-            *result = AP_MPMQ_DYNAMIC;
-            return APR_SUCCESS;
-        case AP_MPMQ_IS_FORKED:
-            *result = AP_MPMQ_NOT_SUPPORTED;
-            return APR_SUCCESS;
-        case AP_MPMQ_HARD_LIMIT_DAEMONS:
-            *result = HARD_SERVER_LIMIT;
-            return APR_SUCCESS;
-        case AP_MPMQ_HARD_LIMIT_THREADS:
-            *result = HARD_THREAD_LIMIT;
-            return APR_SUCCESS;
-        case AP_MPMQ_MAX_THREADS:
-            *result = HARD_THREAD_LIMIT;
-            return APR_SUCCESS;
-        case AP_MPMQ_MIN_SPARE_DAEMONS:
-            *result = 0;
-            return APR_SUCCESS;
-        case AP_MPMQ_MIN_SPARE_THREADS:    
-            *result = max_spare_threads;
-            return APR_SUCCESS;
-        case AP_MPMQ_MAX_SPARE_DAEMONS:
-            *result = 0;
-            return APR_SUCCESS;
-        case AP_MPMQ_MAX_SPARE_THREADS:
-            *result = min_spare_threads;
-            return APR_SUCCESS;
-        case AP_MPMQ_MAX_REQUESTS_DAEMON:
-            *result = ap_max_requests_per_thread;
-            return APR_SUCCESS;
-        case AP_MPMQ_MAX_DAEMONS:
-            *result = HARD_SERVER_LIMIT;
-            return APR_SUCCESS;
-    }
-    return APR_ENOTIMPL;
-}
-
 int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int remaining_threads_to_start, i,j;
@@ -742,11 +826,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     /* BeOS R5 doesn't support pipes on select() calls, so we use a 
-       UDP socket as these are supported in both R5 and BONE.  If we only cared
-       about BONE we'd use a pipe, but there it is.
-       As we have UDP support in APR, now use the APR functions and check all the
-       return values...
-      */
+     * UDP socket as these are supported in both R5 and BONE.  If we only cared
+     * about BONE we'd use a pipe, but there it is.
+     * As we have UDP support in APR, now use the APR functions and check all the
+     * return values...
+     */
     if (apr_sockaddr_info_get(&udp_sa, "127.0.0.1", APR_UNSPEC, 7772, 0, _pconf)
         != APR_SUCCESS){
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
@@ -754,7 +838,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         return 1;
     }
     if (apr_socket_create(&udp_sock, udp_sa->family, SOCK_DGRAM, 0,
-                          _pconf) != APR_SUCCESS){
+                      _pconf) != APR_SUCCESS){
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
             "couldn't create control socket, shutting down");
         return 1;
@@ -791,7 +875,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     /* worker_thread_count_mutex
-     * locks the worker_thread_count so we have ana ccurate count...
+     * locks the worker_thread_count so we have an accurate count...
      */
     rv = apr_thread_mutex_create(&worker_thread_count_mutex, 0, pconf);
     if (rv != APR_SUCCESS) {
@@ -840,30 +924,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    remaining_threads_to_start = ap_thread_limit;
     }
 
-    /* setup the child pool to use for the workers.  Each worker creates
-     * a seperate pool of its own to use.
-     */
-    apr_pool_create(&pchild, pconf);
-
-    /* Now that we have the child pool (pchild) we can allocate
-     * the listenfds and creat the pollset...
-     */
-    listening_sockets = apr_palloc(pchild,
-       sizeof(*listening_sockets) * (num_listening_sockets + 1));
-
-    listening_sockets[0] = udp_sock;
-    for (lr = ap_listeners, i = 1; i <= num_listening_sockets; lr = lr->next, ++i)
-	    listening_sockets[i]=lr->sd;
-
-    /* we assume all goes OK...hmm might want to check that! */
     /* if we're in one_process mode we don't want to start threads
      * do we??
      */
     if (!is_graceful && !one_process) {
 	    startup_threads(remaining_threads_to_start);
 	    remaining_threads_to_start = 0;
-    }
-    else {
+    } else {
 	    /* give the system some time to recover before kicking into
 	     * exponential mode */
         hold_off_on_exponential_spawning = 10;
@@ -881,23 +948,24 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     restart_pending = shutdown_pending = 0;
 
-    /*
-     * main_loop until it's all over
+    mpm_state = AP_MPMQ_RUNNING;
+
+    /* We sit in the server_main_loop() until we somehow manage to exit. When
+     * we do, we need to kill the workers we have, so we start by using the
+     * tell_workers_to_exit() function, but as it sometimes takes a short while
+     * to accomplish this we have a pause builtin to allow them the chance to 
+     * gracefully exit.
      */
     if (!one_process) {
-        server_main_loop(remaining_threads_to_start);
-    
-        tell_workers_to_exit(); /* if we get here we're exiting... */
-        sleep(1); /* give them a brief chance to exit */
+        server_main_loop(remaining_threads_to_start);   
+        tell_workers_to_exit();
+        snooze(1000000);
     } else {
-        proc_info *my_info = (proc_info *)malloc(sizeof(proc_info));
-        my_info->slot = 0;
-        apr_pool_create(&my_info->tpool, pchild);
-        worker_thread(my_info);
+        worker_thread((void*)NULL);
     }
         
     /* close the UDP socket we've been using... */
-    apr_socket_close(listening_sockets[0]);
+    apr_socket_close(udp_sock);
 
     if ((one_process || shutdown_pending) && !child_fatal) {
         const char *pidfile = NULL;
@@ -966,6 +1034,8 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     static int restart_num = 0;
     int no_detach, debug, foreground;
     apr_status_t rv;
+
+    mpm_state = AP_MPMQ_STARTING;
 
     debug = ap_exists_config_define("DEBUG");
 
