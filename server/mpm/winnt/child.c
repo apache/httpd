@@ -536,11 +536,14 @@ static void winnt_accept(void *lr_)
                 continue;
             }
 
-            /* Wait for pending i/o. Wake up once per second to check for shutdown */
+            /* Wait for pending i/o. 
+             * Wake up once per second to check for shutdown .
+             * XXX: We should be waiting on exit_event instead of polling
+             */
             while (1) {
                 rv = WaitForSingleObject(context->Overlapped.hEvent, 1000);
                 if (rv == WAIT_OBJECT_0) {
-                    if (!GetOverlappedResult(context->Overlapped.hEvent, 
+                    if (!GetOverlappedResult(context->accept_socket, 
                                              &context->Overlapped, 
                                              &BytesRead, FALSE)) {
                         ap_log_error(APLOG_MARK,APLOG_WARNING, GetLastError(), ap_server_conf,
