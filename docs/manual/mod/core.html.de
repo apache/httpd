@@ -24,9 +24,6 @@
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -998,6 +995,23 @@ sich im Apache 2.0 geändert</td></tr>
       ErrorDocument 404 /cgi-bin/falsche_urls.pl<br />
       ErrorDocument 401 /info_zur_anmeldung.html<br />
       ErrorDocument 403 "Der Zugriff ist nicht erlaubt."
+    </code></p></div>
+
+    <p>Außerdem kann auch der Spezialwert <code>default</code> verwendet
+      werden, um die schlichte, im Apache hartkodierte Nachricht anzugeben.
+      Während es normalerweise nicht benötigt wird, stellt
+      <code>default</code> die einfache, hartkodierte Nachricht des Apache
+      bei Konfigurationen wieder her, bei denen andernfalls eine bestehende
+      <code class="directive">ErrorDocument</code>-Anweisung übernommen
+      würde.</p>
+
+    <div class="example"><p><code>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
+      &lt;Directory /web/docs&gt;<br />
+      <span class="indent">
+        ErrorDocument 404 default<br />
+      </span>
+      &lt;/Directory&gt;
     </code></p></div>
 
     <p>Wenn Sie eine <code class="directive">ErrorDocument</code>-Anweisung

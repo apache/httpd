@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.46.2.36 (outdated: 1.46.2.37) -->
+<!-- English Revision: 1.46.2.37 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -947,6 +947,23 @@ sich im Apache 2.0 ge&auml;ndert</compatibility>
       ErrorDocument 404 /cgi-bin/falsche_urls.pl<br />
       ErrorDocument 401 /info_zur_anmeldung.html<br />
       ErrorDocument 403 "Der Zugriff ist nicht erlaubt."
+    </example>
+
+    <p>Au&szlig;erdem kann auch der Spezialwert <code>default</code> verwendet
+      werden, um die schlichte, im Apache hartkodierte Nachricht anzugeben.
+      W&auml;hrend es normalerweise nicht ben&ouml;tigt wird, stellt
+      <code>default</code> die einfache, hartkodierte Nachricht des Apache
+      bei Konfigurationen wieder her, bei denen andernfalls eine bestehende
+      <directive>ErrorDocument</directive>-Anweisung &uuml;bernommen
+      w&uuml;rde.</p>
+
+    <example>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
+      &lt;Directory /web/docs&gt;<br />
+      <indent>
+        ErrorDocument 404 default<br />
+      </indent>
+      &lt;/Directory&gt;
     </example>
 
     <p>Wenn Sie eine <directive>ErrorDocument</directive>-Anweisung
