@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.4.2.6 $ -->
+<!-- $Revision: 1.4.2.7 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -66,7 +66,7 @@ a directory</description>
 <usage>
     <p>The <directive>DirectoryIndex</directive> directive sets the
     list of resources to look for, when the client requests an index
-    of the directory by specifying a / at the end of the a directory
+    of the directory by specifying a / at the end of the directory
     name.  <var>Local-url</var> is the (%-encoded) URL of a document on
     the server relative to the requested directory; it is usually the
     name of a file in the directory. Several URLs may be given, in
