@@ -622,7 +622,7 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
     min = sizeof(*client_list) + sizeof(client_entry*) + sizeof(client_entry);
     if (size < min)
 	return apr_psprintf(cmd->pool, "size in AuthDigestShmemSize too small: "
-			   "%ld < %ld", size, min, NULL);
+			   "%ld < %ld", size, min);
 
     shmem_size  = size;
     num_buckets = (size - sizeof(*client_list)) /
