@@ -68,15 +68,13 @@
 #include "http_log.h"
 #include "multithread.h"
 
-#ifdef MULTITHREAD
-/* Change to #pragma warning("") to get compile this as we port */
-#error sorry this module does not support multithreaded servers yet
-#endif
-
 typedef struct {
     unsigned int stamp;
     unsigned int in_addr;
     unsigned int pid;
+#ifdef MULTITHREAD
+    unsigned int tid;
+#endif
     unsigned short counter;
 } unique_id_rec;
 
@@ -93,8 +91,7 @@ typedef struct {
  *
  * We also further assume that pids fit in 32-bits.  If something uses more
  * than 32-bits, the fix is trivial, but it requires the unrolled uuencoding
- * loop to be extended.  * A similar fix is needed to support multithreaded
- * servers, using a pid/tid combo.
+ * loop to be extended.
  *
  * Together, the in_addr and pid are assumed to absolutely uniquely identify
  * this one child from all other currently running children on all servers
@@ -152,7 +149,11 @@ static APACHE_TLS unique_id_rec cur_unique_id;
 /*
  * Number of elements in the structure unique_id_rec.
  */
+#ifdef MULTITHREAD
+#define UNIQUE_ID_REC_MAX 5
+#else
 #define UNIQUE_ID_REC_MAX 4
+#endif
 
 static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_size[UNIQUE_ID_REC_MAX],
@@ -179,10 +180,20 @@ static void unique_id_global_init(server_rec *s, pool *p)
     unique_id_rec_size[1] = sizeof(cur_unique_id.in_addr);
     unique_id_rec_offset[2] = XtOffsetOf(unique_id_rec, pid);
     unique_id_rec_size[2] = sizeof(cur_unique_id.pid);
+#ifdef MULTITHREAD
+    unique_id_rec_offset[3] = XtOffsetOf(unique_id_rec, tid);
+    unique_id_rec_size[3] = sizeof(cur_unique_id.tid);
+    unique_id_rec_offset[4] = XtOffsetOf(unique_id_rec, counter);
+    unique_id_rec_size[4] = sizeof(cur_unique_id.counter);
+    unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1]
+                             + unique_id_rec_size[2] + unique_id_rec_size[3]
+                             + unique_id_rec_size[4];
+#else
     unique_id_rec_offset[3] = XtOffsetOf(unique_id_rec, counter);
     unique_id_rec_size[3] = sizeof(cur_unique_id.counter);
-    unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1] +
-                               unique_id_rec_size[2] + unique_id_rec_size[3];
+    unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1]
+                             + unique_id_rec_size[2] + unique_id_rec_size[3];
+#endif
 
     /*
      * Calculate the size of the structure when encoded.
@@ -244,6 +255,9 @@ static void unique_id_global_init(server_rec *s, pool *p)
 static void unique_id_child_init(server_rec *s, pool *p)
 {
     pid_t pid;
+#ifdef MULTITHREAD
+    tid_t tid;
+#endif
 #ifndef NO_GETTIMEOFDAY
     struct timeval tv;
 #endif
@@ -253,9 +267,6 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * physical machine there are multiple servers (i.e. using Listen). But
      * it's guaranteed that none of them will share the same pids between
      * children.
-     * 
-     * XXX: for multithread this needs to use a pid/tid combo and probably
-     * needs to be expanded to 32 bits
      */
     pid = getpid();
     cur_unique_id.pid = pid;
@@ -266,10 +277,21 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * of them.  It would have been really nice to test this during
      * global_init ... but oh well.
      */
-    if (cur_unique_id.pid != pid) {
+    if ((pid_t)cur_unique_id.pid != pid) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
 		     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
+
+#ifdef MULTITHREAD
+    /*
+     * Note that we use the pid because it's possible that on the same
+     * physical machine there are multiple servers (i.e. using Listen). But
+     * it's guaranteed that none of them will share the same pid+tids between
+     * children.
+     */
+    tid = gettid();
+    cur_unique_id.tid = tid;
+#endif
 
     cur_unique_id.in_addr = global_in_addr;
 
@@ -298,6 +320,9 @@ static void unique_id_child_init(server_rec *s, pool *p)
      * orderings.  Note in_addr is already in network order.
      */
     cur_unique_id.pid = htonl(cur_unique_id.pid);
+#ifdef MULTITHREAD
+    cur_unique_id.tid = htonl(cur_unique_id.tid);
+#endif
     cur_unique_id.counter = htons(cur_unique_id.counter);
 }
 
