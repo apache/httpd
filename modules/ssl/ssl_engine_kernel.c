@@ -710,7 +710,9 @@ int ssl_hook_Access(request_rec *r)
 
             cert_stack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
 
-            if (!cert_stack && (cert = SSL_get_peer_certificate(ssl))) {
+            cert = SSL_get_peer_certificate(ssl);
+
+            if (!cert_stack && cert) {
                 /* client cert is in the session cache, but there is
                  * no chain, since ssl3_get_client_certificate()
                  * sk_X509_shift-ed the peer cert out of the chain.
@@ -736,7 +738,10 @@ int ssl_hook_Access(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
-            cert = sk_X509_value(cert_stack, 0);
+            if (!cert) {
+                cert = sk_X509_value(cert_stack, 0);
+            }
+
             X509_STORE_CTX_init(&cert_store_ctx, cert_store, cert, cert_stack);
             depth = SSL_get_verify_depth(ssl);
 
