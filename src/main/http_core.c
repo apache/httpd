@@ -1014,7 +1014,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 	return;
     }
     
-    if ((str = getword_conf(cmd->pool, &arg2)))
+    if (arg2 && (str = getword_conf(cmd->pool, &arg2)))
 	max = atol(str);
 
     /* if we aren't running as root, cannot increase max */
