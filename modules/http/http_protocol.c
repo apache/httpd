@@ -2854,13 +2854,6 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 
 AP_DECLARE(int) ap_rflush(request_rec *r)
 {
-    apr_status_t rv;
-
-    if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
-        check_first_conn_error(r, "rflush", rv);
-        return EOF;
-    }
-#if USE_FLUSH_BUCKET
     /* we should be using a flush bucket to flush the stack, not buff code. */
     ap_bucket_brigade *bb;
     ap_bucket *b;
@@ -2869,7 +2862,6 @@ AP_DECLARE(int) ap_rflush(request_rec *r)
     b = ap_bucket_create_flush();
     AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
-#endif
     return 0;
 }
 
