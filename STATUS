@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/21 00:52:24 $]
+Last modified at [$Date: 2003/01/21 13:59:24 $]
 
 Release:
 
@@ -77,7 +77,7 @@ PATCHES TO PORT FROM 2.1
     * Insure that ap_get_mime_headers passes a null terminated string
       to ap_escape_html if ap_rgetline exits abnormally (e.g. header too long).
       The patch is r1.123 thru r1.125 of server/protocol.c.
-      +1: gregames
+      +1: gregames, trawick
 
 CURRENT RELEASE NOTES:
 
