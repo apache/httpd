@@ -1686,21 +1686,13 @@ certain events before failing a request</td></tr><tr><td nowrap="nowrap"><a href
     the timer is not reset when a packet is sent. </p>
 <hr/><h2><a name="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Configures how the server determines its own name and
 port</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>UseCanonicalName on|off|dns</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>UseCanonicalName on</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>core</td></tr></table></td></tr></table>
-    <p>In many situations Apache has to construct a
-    <em>self-referential</em> URL. That is, a URL which refers back to
+    <p>In many situations Apache must construct a
+    <em>self-referential</em> URL -- that is, a URL that refers back to
     the same server. With <code>UseCanonicalName on</code> Apache will
     use the hostname and port specified in the <a href="#servername" class="directive"><code class="directive">ServerName</code></a> directive to construct the canonical
     name for the server. This name is used in all self-referential
     URLs, and for the values of <code>SERVER_NAME</code> and
     <code>SERVER_PORT</code> in CGIs.</p>
-
-    <p>For example, if <code class="directive">ServerName</code> is set to
-    <code>www.example.com</code> and <code class="directive">Port</code> is set
-    to <code>9090</code>, then the <em>canonical name</em> of the server
-    is <code>www.example.com:9090</code>. In the event that
-    <code class="directive">Port</code> has its default value of
-    <code>80</code>, the <code>:80</code> is ommitted from the
-    <em>canonical name</em>.</p>
 
     <p>With <code>UseCanonicalName off</code> Apache will form
     self-referential URLs using the hostname and port supplied by
