@@ -1590,51 +1590,6 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     return;
 }
 
-/* ensure that path is relative, and does not contain ".." elements
- * ensentially ensure that it does not match the regex:
- * (^/|(^|/)\.\.(/|$))
- * XXX: Simply replace with apr_filepath_merge                    
- */
-static int is_only_below(const char *path)
-{
-#ifdef HAVE_DRIVE_LETTERS
-    if (path[1] == ':') 
-        return 0;
-#endif
-#ifdef NETWARE
-    if (ap_strchr_c(path, ':'))
-        return 0;
-#endif
-    if (path[0] == '/') {
-        return 0;
-    }
-    while (*path) {
-        int dots = 0;
-        while (path[dots] == '.')
-            ++dots;
-#if defined(WIN32) 
-        /* If the name is canonical this is redundant
-         * but in security, redundancy is worthwhile.
-         * Does OS2 belong here (accepts ... for ..)?
-         */
-        if (dots > 1 && (!path[dots] || path[dots] == '/'))
-            return 0;
-#else
-        if (dots == 2 && (!path[dots] || path[dots] == '/'))
-            return 0;
-#endif
-        path += dots;
-        /* Advance to either the null byte at the end of the
-         * string or the character right after the next slash,
-         * whichever comes first
-         */
-        while (*path && (*path++ != '/')) {
-            continue;
-        }
-    }
-    return 1;
-}
-
 static int find_file(request_rec *r, const char *directive, const char *tag,
                      char *tag_val, apr_finfo_t *finfo)
 {
@@ -1645,19 +1600,22 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     apr_status_t rv = APR_SUCCESS;
 
     if (!strcmp(tag, "file")) {
-        /* XXX: Port to apr_filepath_merge
-         * be safe; only files in this directory or below allowed 
-         */
-        if (!is_only_below(tag_val)) {
+        char *newpath;
+
+        /* be safe; only files in this directory or below allowed */
+        rv = apr_filepath_merge(&newpath, NULL, tag_val,
+                                APR_FILEPATH_NOTABOVEROOT |
+                                APR_FILEPATH_SECUREROOTTEST |
+                                APR_FILEPATH_NOTABSOLUTE, r->pool);
+
+        if (!APR_STATUS_IS_SUCCESS(rv)) {
             error_fmt = "unable to access file \"%s\" "
                         "in parsed file %s";
         }
         else {
-            ap_getparents(tag_val);    /* get rid of any nasties */
-
             /* note: it is okay to pass NULL for the "next filter" since
                we never attempt to "run" this sub request. */
-            rr = ap_sub_req_lookup_file(tag_val, r, NULL);
+            rr = ap_sub_req_lookup_file(newpath, r, NULL);
 
             if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
                 to_send = rr->filename;
@@ -1696,18 +1654,16 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
             return 0;
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                        "unable to get information about \"%s\" "
-                        "in parsed file %s",
-                        tag_val, r->filename);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unable to get "
+                          "information about \"%s\" in parsed file %s",
+                          tag_val, r->filename);
             ap_destroy_sub_req(rr);
             return -1;
         }
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                    "unknown parameter \"%s\" to tag %s in %s",
-                    tag, directive, r->filename);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter \"%s\" "
+                      "to tag %s in %s", tag, directive, r->filename);
         return -1;
     }
 }
@@ -1759,14 +1715,20 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
         parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                             SSI_EXPAND_DROP_NAME);
         if (tag[0] == 'f') {
-            /* XXX: Port to apr_filepath_merge
-             * be safe; only files in this directory or below allowed 
-             */
-            if (!is_only_below(parsed_string)) {
+            char *newpath;
+            apr_status_t rv;
+
+            /* be safe; only files in this directory or below allowed */
+            rv = apr_filepath_merge(&newpath, NULL, tag_val,
+                                    APR_FILEPATH_NOTABOVEROOT |
+                                    APR_FILEPATH_SECUREROOTTEST |
+                                    APR_FILEPATH_NOTABSOLUTE, ctx->dpool);
+
+            if (!APR_STATUS_IS_SUCCESS(rv)) {
                 error_fmt = "unable to include file \"%s\" in parsed file %s";
             }
             else {
-                rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
+                rr = ap_sub_req_lookup_file(newpath, r, f->next);
             }
         }
         else {
