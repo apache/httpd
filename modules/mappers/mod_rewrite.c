@@ -182,25 +182,27 @@
 
     /* the apr_table_t of commands we provide */
 static const command_rec command_table[] = {
-    { "RewriteEngine",   cmd_rewriteengine,   NULL, OR_FILEINFO, FLAG,
-      "On or Off to enable or disable (default) the whole rewriting engine" },
-    { "RewriteOptions",  cmd_rewriteoptions,  NULL, OR_FILEINFO, ITERATE,
-      "List of option strings to set" },
-    { "RewriteBase",     cmd_rewritebase,     NULL, OR_FILEINFO, TAKE1,
-      "the base URL of the per-directory context" },
-    { "RewriteCond",     cmd_rewritecond,     NULL, OR_FILEINFO, RAW_ARGS,
-      "an input string and a to be applied regexp-pattern" },
-    { "RewriteRule",     cmd_rewriterule,     NULL, OR_FILEINFO, RAW_ARGS,
-      "an URL-applied regexp-pattern and a substitution URL" },
-    { "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,   TAKE2,
-      "a mapname and a filename" },
-    { "RewriteLock",     cmd_rewritelock,     NULL, RSRC_CONF,   TAKE1,
-      "the filename of a lockfile used for inter-process synchronization"},
-    { "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,   TAKE1,
-      "the filename of the rewriting logfile" },
-    { "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,   TAKE1,
-      "the level of the rewriting logfile verbosity "
-      "(0=none, 1=std, .., 9=max)" },
+    AP_INIT_FLAG(    "RewriteEngine",   cmd_rewriteengine,  NULL, OR_FILEINFO,
+                     "On or Off to enable or disable (default) the whole "
+                     "rewriting engine"),
+    AP_INIT_ITERATE( "RewriteOptions",  cmd_rewriteoptions,  NULL, OR_FILEINFO,
+                     "List of option strings to set"),
+    AP_INIT_TAKE1(   "RewriteBase",     cmd_rewritebase,     NULL, OR_FILEINFO, 
+                     "the base URL of the per-directory context"),
+    AP_INIT_RAW_ARGS("RewriteCond",     cmd_rewritecond,     NULL, OR_FILEINFO,
+                     "an input string and a to be applied regexp-pattern"),
+    AP_INIT_RAW_ARGS("RewriteRule",     cmd_rewriterule,     NULL, OR_FILEINFO,
+                     "an URL-applied regexp-pattern and a substitution URL"),
+    AP_INIT_TAKE2(   "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,
+                     "a mapname and a filename"),
+    AP_INIT_TAKE1(   "RewriteLock",     cmd_rewritelock,     NULL, RSRC_CONF,
+                     "the filename of a lockfile used for inter-process "
+                     "synchronization"),
+    AP_INIT_TAKE1(   "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,
+                     "the filename of the rewriting logfile"),
+    AP_INIT_TAKE1(   "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,
+                     "the level of the rewriting logfile verbosity "
+                     "(0=none, 1=std, .., 9=max)"),
     { NULL }
 };
 
@@ -396,8 +398,9 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
 */
 
 static const char *cmd_rewriteengine(cmd_parms *cmd,
-                                     rewrite_perdir_conf *dconf, int flag)
+                                     void *in_dconf, int flag)
 {
+    rewrite_perdir_conf *dconf = in_dconf;
     rewrite_server_conf *sconf;
 
     sconf = 
@@ -415,8 +418,9 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
 }
 
 static const char *cmd_rewriteoptions(cmd_parms *cmd,
-                                      rewrite_perdir_conf *dconf, char *option)
+                                      void *in_dconf, const char *option)
 {
+    rewrite_perdir_conf *dconf = in_dconf;
     rewrite_server_conf *sconf;
     const char *err;
 
@@ -436,7 +440,7 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
 }
 
 static const char *cmd_rewriteoptions_setoption(apr_pool_t *p, int *options,
-                                                char *name)
+                                                const char *name)
 {
     if (strcasecmp(name, "inherit") == 0) {
         *options |= OPTION_INHERIT;
@@ -448,7 +452,7 @@ static const char *cmd_rewriteoptions_setoption(apr_pool_t *p, int *options,
     return NULL;
 }
 
-static const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
+static const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, const char *a1)
 {
     rewrite_server_conf *sconf;
 
@@ -460,7 +464,7 @@ static const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
     return NULL;
 }
 
-static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
+static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, const char *a1)
 {
     rewrite_server_conf *sconf;
 
@@ -472,8 +476,8 @@ static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
     return NULL;
 }
 
-static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
-                                  char *a2)
+static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
+                                  const char *a2)
 {
     rewrite_server_conf *sconf;
     rewritemap_entry *newmap;
@@ -550,7 +554,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
     return NULL;
 }
 
-static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1)
+static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, const char *a1)
 {
     const char *error;
 
@@ -562,9 +566,11 @@ static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1)
     return NULL;
 }
 
-static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
-                                   char *a1)
+static const char *cmd_rewritebase(cmd_parms *cmd, void *in_dconf,
+                                   const char *a1)
 {
+    rewrite_perdir_conf *dconf = in_dconf;
+
     if (cmd->path == NULL || dconf == NULL) {
         return "RewriteBase: only valid in per-directory config files";
     }
@@ -580,9 +586,11 @@ static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     return NULL;
 }
 
-static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
-                                   char *str)
+static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
+                                   const char *in_str)
 {
+    rewrite_perdir_conf *dconf = in_dconf;
+    char *str = apr_pstrdup(cmd->pool, in_str);
     rewrite_server_conf *sconf;
     rewritecond_entry *newcond;
     regex_t *regexp;
@@ -723,9 +731,11 @@ static const char *cmd_rewritecond_setflag(apr_pool_t *p, rewritecond_entry *cfg
     return NULL;
 }
 
-static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
-                                   char *str)
+static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
+                                   const char *in_str)
 {
+    rewrite_perdir_conf *dconf = in_dconf;
+    char *str = apr_pstrdup(cmd->pool, in_str);
     rewrite_server_conf *sconf;
     rewriterule_entry *newrule;
     regex_t *regexp;
@@ -2900,7 +2910,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     return NULL;
 }
 
-static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
+static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
 {
     apr_file_t *fp = NULL;
     apr_status_t rc;
@@ -2947,7 +2957,7 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
 }
 
 #ifndef NO_DBM_REWRITEMAP
-static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
+static char *lookup_map_dbmfile(request_rec *r, const char *file, char *key)
 {
     DBM *dbmfp = NULL;
     datum dbmkey;
@@ -3415,7 +3425,7 @@ static void run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 }
 
 /* child process code */
-static int rewritemap_program_child(apr_pool_t *p, char *progname,
+static int rewritemap_program_child(apr_pool_t *p, const char *progname,
                                     apr_file_t **fpout, apr_file_t **fpin,
                                     apr_file_t **fperr)
 {
@@ -3808,7 +3818,7 @@ static cache *init_cache(apr_pool_t *p)
     return c;
 }
 
-static void set_cache_string(cache *c, char *res, int mode, time_t t,
+static void set_cache_string(cache *c, const char *res, int mode, time_t t,
                              char *key, char *value)
 {
     cacheentry ce;
@@ -3820,7 +3830,7 @@ static void set_cache_string(cache *c, char *res, int mode, time_t t,
     return;
 }
 
-static char *get_cache_string(cache *c, char *res, int mode,
+static char *get_cache_string(cache *c, const char *res, int mode,
                               time_t t, char *key)
 {
     cacheentry *ce;
@@ -3886,7 +3896,7 @@ static void cache_tlb_replace(cachetlbentry *tlb, cacheentry *elt,
     tlb->t[0] = e - elt;
 }
 
-static void store_cache_string(cache *c, char *res, cacheentry *ce)
+static void store_cache_string(cache *c, const char *res, cacheentry *ce)
 {
     int i;
     int j;
@@ -3955,7 +3965,7 @@ static void store_cache_string(cache *c, char *res, cacheentry *ce)
     return;
 }
 
-static cacheentry *retrieve_cache_string(cache *c, char *res, char *key)
+static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key)
 {
     int i;
     int j;
@@ -3994,7 +4004,7 @@ static cacheentry *retrieve_cache_string(cache *c, char *res, char *key)
 */
 
 static char *subst_prefix_path(request_rec *r, char *input, char *match,
-                               char *subst)
+                               const char *subst)
 {
     char matchbuf[LONG_STRING_LEN];
     char substbuf[LONG_STRING_LEN];
