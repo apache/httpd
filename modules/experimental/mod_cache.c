@@ -363,7 +363,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_remove_output_filter(f);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                 "cache: serving cached version of %s", r->uri);
+                 "cache: serving %s", r->uri);
     return ap_pass_brigade(f->next, bb);
 }
 
