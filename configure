@@ -252,7 +252,7 @@ case "$*" in
     *--with-layout=* ) 
         ;;
     * ) 
-        if [ "x$@" = x ]; then
+        if [ ".$*" = . ]; then
             set -- '--with-layout=Apache'
         else
             set -- '--with-layout=Apache' "$@"
