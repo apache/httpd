@@ -952,8 +952,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 /* Wake up the sleeping worker. */
                 apr_thread_mutex_lock(worker->mutex);
                 worker->csd = (apr_socket_t *)csd;
-                /* We must own the lock associated with the condition
-                 * variable that we are signaling. */
+                /* Posix allows us to signal this condition without
+                 * owning the associated mutex, but in that case it can
+                 * not guarantee predictable scheduling. See
+                 * _UNIX Network Programming: Interprocess Communication_
+                 * by W. Richard Stevens, Vol 2, 2nd Ed, pp. 170-171. */
                 apr_thread_cond_signal(worker->cond);
                 apr_thread_mutex_unlock(worker->mutex);
                 worker = NULL;
@@ -975,8 +978,11 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     worker_stack_interrupt_all(idle_worker_stack);
     if (worker) {
         apr_thread_mutex_lock(worker->mutex);
-        /* We must own the lock associated with the condition
-         * variable that we are signaling. */
+        /* Posix allows us to signal this condition without
+         * owning the associated mutex, but in that case it can
+         * not guarantee predictable scheduling. See
+         * _UNIX Network Programming: Interprocess Communication_
+         * by W. Richard Stevens, Vol 2, 2nd Ed, pp. 170-171. */
         apr_thread_cond_signal(worker->cond);
         apr_thread_mutex_unlock(worker->mutex);
     }
