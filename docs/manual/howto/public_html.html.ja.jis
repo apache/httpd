@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>ユーザ毎のウェブディレクトリ - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>ユーザ毎のウェブディレクトリ</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+
+<p>複数のユーザのいるシステムでは、<code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブを使って
+    各ユーザがホームディレクトリにウェブサイトを構築できるように設定することが
+    可能です。URL <code>http://example.com/~username/</code> を訪れた人は
+    "<code>username</code>" というユーザの <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブで指定された
+    サブディレクトリからコンテンツを得ることになります。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">ユーザ毎のウェブディレクトリ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir を使ってファイルのパスを設定する</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">この機能を使用できるユーザを制限する</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi">ユーザ毎の CGI ディレクトリ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">ユーザによる設定変更を許可</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL からファイルシステムへのマッピング</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">ユーザ毎のウェブディレクトリ</a></h2>
+    
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></li><li><code class="directive"><a href="../mod/core.html#directorymatch">DirectoryMatch</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="userdir" id="userdir">UserDir を使ってファイルのパスを設定する</a></h2>
+    
+
+    <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブは
+    ユーザ毎のコンテンツが読み込まれるディレクトリを指定します。
+    このディレクティブはいろいろ違った形式を取ることができます。</p>
+
+    <p>スラッシュで始まらないパスが与えられたときは、ユーザのホームディレクトリ
+    からの相対パスとみなされます。次の設定があったときに:</p>
+
+    <div class="example"><p><code>
+      UserDir public_html
+    </code></p></div>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/home/rbowen/public_html/file.html</code> へ
+    変換されます。</p>
+
+    <p>パスがスラッシュで始まるときは、ディレクトリパスはそのパスに
+    ユーザ名を加えたものからなります。次の設定のとき:</p>
+
+    <div class="example"><p><code>
+      UserDir /var/html
+    </code></p></div>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/var/html/rbowen/file.html</code> へ変換されます。</p>
+
+    <p>アスタリスク (*) を含むパスが指定されたときは、アスタリスクを
+    ユーザ名で置換したものが使用されます。このような設定だと:</p>
+
+    <div class="example"><p><code>
+      UserDir /var/www/*/docs
+    </code></p></div>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/var/www/rbowen/docs/file.html</code> へ変換されます。</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">この機能を使用できるユーザを制限する</a></h2>
+    
+
+    <p>UserDir のドキュメントに示されている構文を使うことで、
+    どのユーザがこの機能を使うことができるかを制限することができます:</p>
+
+    <div class="example"><p><code>
+      UserDir enabled<br />
+      UserDir disabled root jro fish
+    </code></p></div>
+
+    <p>上の設定は <code>dissabled</code> 文のユーザ以外のすべてのユーザに
+    対して UserDir の機能を有効にします。同様にして、以下のように
+    数名のユーザ以外に対してこの機能を無効にすることもできます:</p>
+
+    <div class="example"><p><code>
+      UserDir disabled<br />
+      UserDir enabled rbowen krietz
+    </code></p></div>
+
+    <p>他の例は <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
+    の説明を参照してください。</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cgi" id="cgi">ユーザ毎の CGI ディレクトリ</a></h2>
+  
+
+   <p>それぞれのユーザに専用の cgi-bin ディレクトリを与えるために、
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    を使ってユーザのホームディレクトリの指定された領域に対して CGI を有効に
+    することができます。</p>
+
+    <div class="example"><p><code>
+      &lt;Directory /home/*/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/Directory&gt;
+    </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">ユーザによる設定変更を許可</a></h2>
+    
+
+    <p>ユーザに彼らのウェブ空間でのサーバの設定の変更を許可する場合、
+    ユーザは <code>.htaccess</code> ファイルを使って設定を変更する必要があります。
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> の値を
+    ユーザが変更することを許可したいディレクティブに対して十分なものに
+    設定していることを確認してください。この機能がどのようにして動作しているか
+    の詳細は <a href="htaccess.html">.htaccess チュートリアル</a> を読んで
+    ください。</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
