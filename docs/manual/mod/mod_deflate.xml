@@ -6,12 +6,12 @@
 <name>mod_deflate</name>
 <description>Compress content before
     it is delivered to the client</description>
-<status>experimental</status>
+<status>Extension</status>
 <sourcefile>mod_deflate.c</sourcefile>
 <identifier>deflate_module</identifier>
 
 <summary>
-    <p>The experimental <module>mod_deflate</module> module provides
+    <p>The <module>mod_deflate</module> module provides
     the <code>DEFLATE</code> output filter that allows output from
     your server to be compressed before being sent to the client over
     the network.</p>
@@ -59,15 +59,27 @@ SetOutputFilter DEFLATE
 </directivesynopsis>
 
 <directivesynopsis>
+<name>DeflateBufferSize</name>
+<description>Fragment size to be compressed at one time by zlib</description>
+<syntax>DeflateBufferSize <em>value</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>DeflateBufferSize</directive> directive specifies
+    the size in bytes of the fragments that zlib should compress at one
+    time.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>DeflateWindowSize</name>
 <description>Zlib compression window size</description>
 <syntax>DeflateWindowSize <em>value</em></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <!-- XXX: Ummm... What unit??? -->
     <p>The <directive>DeflateWindowSize</directive> directive specifies the
-    zlib compression window size.</p>
+    zlib compression window size (a value between 1 and 15).</p>
 </usage>
 </directivesynopsis>
 
@@ -78,9 +90,8 @@ SetOutputFilter DEFLATE
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <!-- XXX: Ummm... What unit??? -->
     <p>The <directive>DeflateMemLevel</directive> directive specifies
-    the amount of memory available to zlib for compression.</p>
+    the amount of memory in bytes available to zlib for compression.</p>
 </usage>
 </directivesynopsis>
 
