@@ -4633,10 +4633,20 @@ static int dav_fixups(request_rec *r)
         }
     }
 
-    /* We are going to be handling the response for this resource. */
-    r->handler = DAV_HANDLER_NAME;
+    /* ### this is wrong.  We should only be setting the r->handler for the
+     * requests that mod_dav knows about.  If we set the handler for M_POST
+     * requests, then CGI scripts that use POST will return the source for the
+     * script.  However, mod_dav DOES handle POST, so something else needs 
+     * to be fixed.
+     */
+    if (r->method_number != M_POST) {
 
-    return OK;
+        /* We are going to be handling the response for this resource. */
+        r->handler = DAV_HANDLER_NAME;
+        return OK;
+    }
+
+    return DECLINED;
 }
 
 static void register_hooks(apr_pool_t *p)
