@@ -1087,7 +1087,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     return cls;
 }
 
-int open_multi_logs(server_rec *s, apr_pool_t *p)
+static int open_multi_logs(server_rec *s, apr_pool_t *p)
 {
     int i;
     multi_log_state *mls = ap_get_module_config(s->module_config,
