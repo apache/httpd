@@ -32,9 +32,7 @@
     <p>This module provides for HTTP Basic Authentication, where
     the usernames and passwords are stored in DBM type database
     files. It is an alternative to the plain text password files
-    provided by <a href="mod_auth.html">mod_auth</a> and the
-    Berkely DB password files provided by <a
-    href="mod_auth_db.html">mod_auth_db</a>.</p>
+    provided by <a href="mod_auth.html">mod_auth</a>.</p>
 
     <h2>Directives</h2>
 
@@ -155,7 +153,7 @@
     problem.</p>
 
     <p>A perl script called
-    href="../programs/dbmmanage.html"&gt;dbmmanage is included with
+    <a href="../programs/dbmmanage.html">dbmmanage</a> is included with
     Apache. This program can be used to create and update DBM
     format password files for use with this module.</p>
     See also <a href="core.html#authname">AuthName</a>, <a
@@ -165,14 +163,12 @@
 
     <h2><a id="authdbmtype"
     name="authdbmtype">AuthDBMType</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt AuthDBMType} directive&gt; -->
     <a href="directive-dict.html#Syntax"
     rel="Help"><strong>Syntax:</strong></a> AuthDBMType
-    <em>type of DBM being used</em><br />
+    default|SDBM|GDBM|DB<br />
      <a href="directive-dict.html#Default"
     rel="Help"><strong>Default:</strong></a>
-<code>AuthDBMType default</code>(which sets it to the default DBM compiled in)<br />
-
+     <code>AuthDBMType default</code><br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> directory,
     .htaccess<br />
@@ -182,7 +178,15 @@
     rel="Help"><strong>Status:</strong></a> Extension<br />
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_auth_dbm 
-<p>Setting this directive allows the user to change the type of DBM file which holds the user data. Current valid values are (SDBM | GDBM | DB) these may not all be available on your system</p>
+
+<p>Sets the type of database file that is used to store the passwords.
+The default database type is determined at compile time.  The
+availability of other types of database files also depends on
+compile-time settings.</p>
+
+<p>It is crucial that whatever program you use to create your password
+files is configured to use the same type of database.</p>
+
 	<hr /> 
     <h2><a id="authdbmauthoritative"
     name="authdbmauthoritative">AuthDBMAuthoritative</a></h2>
