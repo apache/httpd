@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/10/28 04:53:44 $]
+Last modified at [$Date: 2002/10/28 06:00:15 $]
 
 Release:
 
@@ -68,7 +68,7 @@ CURRENT VOTES:
       such that MMN changes and eliminating non-experimental modules 
       are deferred for the next minor version bump (e.g. 2.1, 2.2 
       or 3.0).
-        +1: wrowe
+        +1: wrowe, jerenkrantz
          0: 
         -1: 
 
@@ -76,7 +76,7 @@ CURRENT VOTES:
       (e.g. 2.1, 2.2, 3.0) on the condition that forward compatibility
       resolution is adopted.
         +1: wrowe
-         0: 
+         0: jerenkrantz
         -1: 
 
     * Adopt an even/odd release paradigm (see VERSIONING) such that
@@ -85,7 +85,7 @@ CURRENT VOTES:
       Perl, etc.  In pratical terms, this implies C-T-R-T-C, where
       patches are (generally) first applied to the development branch,
       tested, and then (after vote) applied to the stable branch.
-        +1: wrowe
+        +1: wrowe, jerenkrantz
          0: 
         -1: 
 
@@ -93,7 +93,7 @@ CURRENT VOTES:
       to 2.1.0-dev.
         +1 [from APACHE_2_0_43]: wrowe
         +1 [from HEAD]: 
-         0: 
+         0: jerenkrantz
         -1: 
 
     * httpd-std.conf and friends
