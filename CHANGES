@@ -1,4 +1,9 @@
 Changes with Apache 2.0.41
+
+  *) The content-length filter no longer tries to buffer up
+     the entire output of a long-running request before sending
+     anything to the client.  [Brian Pane]
+
   *) Win32: Lower the default stack size from 1MB to 256K. This will
      allow around 8000 threads to be started per child process. 
      'EDITBIN /STACK:size apache.exe' can be used to change this 
