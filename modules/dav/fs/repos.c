@@ -227,7 +227,7 @@ void dav_fs_dir_file_name(
 /* NOTE: buf must be at least DAV_TIMEBUF_SIZE chars in size */
 static void dav_format_time(int style, apr_time_t sec, char *buf)
 {
-    ap_exploded_time_t tms;
+    apr_exploded_time_t tms;
     
     /* ### what to do if fails? */
     (void) apr_explode_gmt(&tms, sec);
