@@ -2,9 +2,9 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_ext_filter- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ext_filter</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Pass the response body
+        --><title>mod_ext_filter- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ext_filter</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Pass the response body
     through an external program before delivery to the
-    client</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>ext_filter_module</td></tr></table></td></tr></table><h2>Summary</h2>
+    client</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>ext_filter_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This is an <strong>experimental</strong> module and should
     be used with care. Test your <code><a href="mod_ext_filter.html">mod_ext_filter</a></code>
     configuration carefully to ensure that it performs the desired
@@ -105,6 +105,24 @@
 </code></td></tr></table></blockquote>
 
 
+<h3>Using sed to replace text in the response</h3>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<pre>
+  # mod_ext_filter directive to define a filter which replaces text in
+  # the response
+  ExtFilterDefine fixtext mode=output cmd="/bin/sed s/verdana/arial/g" intype=text/html
+
+  &lt;Location /&gt;
+
+  # core directive to cause the fixtext filter to be run on output
+  # output
+  SetOutputFilter fixtext
+
+  &lt;/Location&gt;
+</pre>
+</code></td></tr></table></blockquote>
+
+
 <hr/><h2><a name="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ExtFilterDefine <em>filtername</em> <em>parameters</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ext_filter</td></tr></table></td></tr></table>
     <p>The <code class="directive">ExtFilterDefine</code> directive defines the
     characteristics of an external filter, including the program to
@@ -128,7 +146,9 @@
       <dd>The <code>cmd=</code> keyword allows you to specify the
       external command to run. If there are arguments after the
       program name, the command line should be surrounded in
-      quotation marks.</dd>
+      quotation marks (e.g., <em>cmd="/bin/mypgm arg1 arg2"</em>.
+      Normal shell quoting is not necessary since the program is
+      run directly, bypassing the shell.</dd>
 
       <dt>mode=<em>mode</em></dt>
 
