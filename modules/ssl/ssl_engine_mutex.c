@@ -68,26 +68,25 @@
 int ssl_mutex_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
     apr_status_t rv;
-#endif
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE) 
         return TRUE;
 
-    if (apr_global_mutex_create(&mc->pMutex, mc->szMutexFile,
-                                APR_LOCK_DEFAULT, p) != APR_SUCCESS) {
-        ssl_log(s, SSL_LOG_ERROR,
-                   "Cannot create SSLMutex file `%s'",
-                    mc->szMutexFile);
+    if ((rv = apr_global_mutex_create(&mc->pMutex, mc->szMutexFile,
+                                APR_LOCK_DEFAULT, p)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "Cannot create SSLMutex file `%s'",
+                     mc->szMutexFile);
         return FALSE;
     }
 
 #if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
     rv = unixd_set_global_mutex_perms(mc->pMutex);
     if (rv != APR_SUCCESS) {
-        ssl_log(s, SSL_LOG_ERROR, "Could not set permissions on "
-                     "ssl_mutex; check User and Group directives");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "Could not set permissions on ssl_mutex; check User "
+                     "and Group directives");
         return FALSE;
     }
 #endif
@@ -110,11 +109,13 @@ int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
 int ssl_mutex_on(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
+    apr_status_t rv;
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
-    if (apr_global_mutex_lock(mc->pMutex) != APR_SUCCESS) {
-        ssl_log(s, SSL_LOG_WARN, "Failed to acquire global mutex lock");
+    if ((rv = apr_global_mutex_lock(mc->pMutex)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                     "Failed to acquire global mutex lock");
         return FALSE;
     }
     return TRUE;
@@ -123,11 +124,13 @@ int ssl_mutex_on(server_rec *s)
 int ssl_mutex_off(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
+    apr_status_t rv;
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
-    if (apr_global_mutex_unlock(mc->pMutex) != APR_SUCCESS) {
-        ssl_log(s, SSL_LOG_WARN, "Failed to release global mutex lock");
+    if ((rv = apr_global_mutex_unlock(mc->pMutex)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                     "Failed to release global mutex lock");
         return FALSE;
     }
     return TRUE;

@@ -78,9 +78,9 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
      * But we can operate without it, of course.
      */
     if (mc->nSessionCacheMode == SSL_SCMODE_UNSET) {
-        ssl_log(s, SSL_LOG_WARN,
-                "Init: Session Cache is not configured "
-                "[hint: SSLSessionCache]");
+        ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, s,
+                     "Init: Session Cache is not configured "
+                     "[hint: SSLSessionCache]");
         mc->nSessionCacheMode = SSL_SCMODE_NONE;
         return;
     }

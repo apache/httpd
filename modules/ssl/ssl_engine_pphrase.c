@@ -189,6 +189,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     char *cp;
     apr_time_t pkey_mtime = 0;
     int isterm = 1;
+    apr_status_t rv;
     /*
      * Start with a fresh pass phrase array
      */
@@ -206,17 +207,17 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             continue;
 
         cpVHostID = ssl_util_vhostid(p, pServ);
-        ssl_log(pServ, SSL_LOG_INFO|SSL_INIT,
-                "Loading certificate & private key of SSL-aware server");
+        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, pServ,
+                     "Loading certificate & private key of SSL-aware server");
 
         /*
          * Read in server certificate(s): This is the easy part
          * because this file isn't encrypted in any way.
          */
         if (sc->server->pks->cert_files[0] == NULL) {
-            ssl_log(pServ, SSL_LOG_ERROR|SSL_INIT,
-                    "Server should be SSL-aware but has no certificate configured "
-                    "[Hint: SSLCertificateFile]");
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, pServ,
+                         "Server should be SSL-aware but has no certificate "
+                         "configured [Hint: SSLCertificateFile]");
             ssl_die();
         }
         algoCert = SSL_ALGO_UNKNOWN;
@@ -224,13 +225,14 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->server->pks->cert_files[i] != NULL; i++) {
 
             apr_cpystrn(szPath, sc->server->pks->cert_files[i], sizeof(szPath));
-            if ( exists_and_readable(szPath, p, NULL) != APR_SUCCESS ) {
-                ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
-                        "Init: Can't open server certificate file %s", szPath);
+            if ((rv = exists_and_readable(szPath, p, NULL)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                             "Init: Can't open server certificate file %s",
+                             szPath);
                 ssl_die();
             }
             if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
-                ssl_log(s, SSL_LOG_ERROR,
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
                         "Init: Unable to read server certificate from file %s", szPath);
                 ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
@@ -243,8 +245,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(pX509Cert, NULL);
             an = ssl_util_algotypestr(at);
             if (algoCert & at) {
-                ssl_log(s, SSL_LOG_ERROR,
-                        "Init: Multiple %s server certificates not allowed", an);
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                             "Init: Multiple %s server certificates not "
+                             "allowed", an);
                 ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
@@ -316,9 +319,11 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * the callback function which serves the pass
                  * phrases to OpenSSL
                  */
-                if ( exists_and_readable(szPath, p, &pkey_mtime) != APR_SUCCESS ) {
-                     ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
-                         "Init: Can't open server private key file %s",szPath);
+                if ((rv = exists_and_readable(szPath, p,
+                                              &pkey_mtime)) != APR_SUCCESS ) {
+                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                                  "Init: Can't open server private key file "
+                                  "%s",szPath);
                      ssl_die();
                 }
 
@@ -352,10 +357,11 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                             ssl_asn1_table_get(mc->tPrivateKey, key_id);
                     
                         if (asn1 && (asn1->source_mtime == pkey_mtime)) {
-                            ssl_log(pServ, SSL_LOG_INFO,
-                                    "%s reusing existing "
-                                    "%s private key on restart",
-                                    cpVHostID, ssl_asn1_keystr(i));
+                            ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO,
+                                         0, pServ,
+                                         "%s reusing existing "
+                                         "%s private key on restart",
+                                         cpVHostID, ssl_asn1_keystr(i));
                             return;
                         }
                     }
@@ -411,8 +417,10 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 }
 #ifdef WIN32
                 if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN) {
-                    ssl_log(s, SSL_LOG_ERROR,
-                            "Init: PassPhraseDialog BuiltIn not supported in server private key from file %s", szPath);
+                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                                 "Init: PassPhraseDialog BuiltIn not "
+                                 "supported in server private key from file "
+                                 "%s", szPath);
                     ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                     ssl_die();
                 }
@@ -425,13 +433,16 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     if (nPassPhraseDialogCur && pkey_mtime &&
                         !(isterm = isatty(fileno(stdout)))) /* XXX: apr_isatty() */
                     {
-                        ssl_log(pServ, SSL_LOG_ERROR,
-                                "Init: Unable read passphrase "
-                                "[Hint: key introduced or changed before restart?]");
+                        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                                     pServ,
+                                     "Init: Unable read passphrase "
+                                     "[Hint: key introduced or changed "
+                                     "before restart?]");
                         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
                     }
                     else {
-                        ssl_log(pServ, SSL_LOG_ERROR, "Init: Private key not found");
+                        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                                     pServ, "Init: Private key not found");
                         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
                     }
                     if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
@@ -441,7 +452,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     }
                 }
                 else {
-                    ssl_log(pServ, SSL_LOG_ERROR, "Init: Pass phrase incorrect");
+                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                                 pServ, "Init: Pass phrase incorrect");
                     ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
 
                     if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
@@ -454,8 +466,10 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             }
 
             if (pPrivateKey == NULL) {
-                ssl_log(s, SSL_LOG_ERROR,
-                        "Init: Unable to read server private key from file %s [Hint: Perhaps it is in a separate file?  See SSLCertificateKeyFile]", szPath);
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                            "Init: Unable to read server private key from "
+                            "file %s [Hint: Perhaps it is in a separate file? "
+                            "  See SSLCertificateKeyFile]", szPath);
                 ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
@@ -467,8 +481,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(NULL, pPrivateKey);
             an = ssl_util_algotypestr(at);
             if (algoKey & at) {
-                ssl_log(s, SSL_LOG_ERROR,
-                        "Init: Multiple %s server private keys not allowed", an);
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                             "Init: Multiple %s server private keys not "
+                             "allowed", an);
                 ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
@@ -478,20 +493,22 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * Log the type of reading
              */
             if (nPassPhraseDialogCur == 0) {
-                ssl_log(pServ, SSL_LOG_TRACE|SSL_INIT, 
-                        "unencrypted %s private key - pass phrase not required", 
-                        an);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, pServ, 
+                             "unencrypted %s private key - pass phrase not "
+                             "required", an);
             }
             else {
                 if (cpPassPhraseCur != NULL) {
-                    ssl_log(pServ, SSL_LOG_TRACE|SSL_INIT, 
-                            "encrypted %s private key - pass phrase requested", 
-                            an);
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
+                                 pServ, 
+                                 "encrypted %s private key - pass phrase "
+                                 "requested", an);
                 }
                 else {
-                    ssl_log(pServ, SSL_LOG_TRACE|SSL_INIT, 
-                            "encrypted %s private key - pass phrase reused", 
-                            an);
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
+                                 pServ, 
+                                 "encrypted %s private key - pass phrase"
+                                 " reused", an);
                 }
             }
 
@@ -546,8 +563,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
      */
     if (aPassPhrase->nelts) {
         pphrase_array_clear(aPassPhrase);
-        ssl_log(s, SSL_LOG_INFO,
-                "Init: Wiped out the queried pass phrases from memory");
+        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s,
+                     "Init: Wiped out the queried pass phrases from memory");
     }
 
     /* Close the pipes if they were opened
@@ -683,21 +700,21 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
 
         if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
             if (!readtty) {
-                ssl_log(s, SSL_LOG_INFO,
-                        "Init: Creating pass phrase dialog pipe child '%s'",
-                        sc->server->pphrase_dialog_path);
+                ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s,
+                             "Init: Creating pass phrase dialog pipe child "
+                             "'%s'", sc->server->pphrase_dialog_path);
 	        if (ssl_pipe_child_create(p, sc->server->pphrase_dialog_path)
                         != APR_SUCCESS) {
-                    ssl_log(s, SSL_LOG_ERROR,
-                            "Init: Failed to create pass phrase pipe '%s'",
-                            sc->server->pphrase_dialog_path);
+                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                                 "Init: Failed to create pass phrase pipe '%s'",
+                                 sc->server->pphrase_dialog_path);
                     PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
                     memset(buf, 0, (unsigned int)bufsize);
                     return (-1);
                 }
             }
-            ssl_log(s, SSL_LOG_INFO,
-                    "Init: Requesting pass phrase via piped dialog");
+            ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s,
+                         "Init: Requesting pass phrase via piped dialog");
         }
         else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */ 
 #ifdef WIN32
@@ -713,8 +730,9 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
              */
             apr_file_open_stdout(&writetty, p);
 
-            ssl_log(s, SSL_LOG_INFO,
-                    "Init: Requesting pass phrase via builtin terminal dialog");
+            ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s,
+                         "Init: Requesting pass phrase via builtin terminal "
+                         "dialog");
 #endif
         }
 
@@ -771,9 +789,9 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
         const char **argv = apr_palloc(p, sizeof(char *) * 4);
         char *result;
 
-        ssl_log(s, SSL_LOG_INFO,
-                "Init: Requesting pass phrase from dialog filter program (%s)",
-                cmd);
+        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s,
+                     "Init: Requesting pass phrase from dialog filter "
+                     "program (%s)", cmd);
 
         argv[0] = cmd;
         argv[1] = cpVHostID;
