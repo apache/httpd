@@ -34,6 +34,17 @@ Changes with Apache 1.3a2
      now supported and selectable by new Configuration Rule: IRIXN32;
      We no longer default to -O2 optimization.  [Jim Jagielski]
 
+  *) Updated Configure: Configuration now uses AddModule to specify
+     module source or binary file location, relative to src directory.
+     Modules can be dropped into modules/extra, or in their own 
+     directory, and modules can come with a Makefile or Configure can 
+     create one.  Modules can add compiler or library information to 
+     generated Makefiles. [Paul Sutton]
+
+  *) Source core re-organisation: distibuted modules are now in 
+     modules/standard. All other source code is in core. OS-specific
+     code is in os/{unix,emx,win32} directories. [Paul Sutton]
+
   *) mod_browser has been removed, since it's replaced by mod_setenvif.
      [Ken Coar]
 
