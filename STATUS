@@ -41,6 +41,8 @@ Committed:
     * Ben Hyde's [PATCH] Let CVS ignore MSDev's ApacheOS[DR] directories
     * Dean's [PATCH] mod_negotiation small bug fix
     * Ken's stage 2 of moving ap_*() to src/ap (ap_slack() move)
+    * Brian Havard's [PATCH] mod_mime_magic and OS/2
+    * Igor Tatarinov's [PATCH] usage patch (-V)
 
 Available:
 
@@ -64,10 +66,6 @@ Available:
 	<Pine.LNX.3.95dg3.971220023128.4924E-100000@twinlark.arctic.org>
 	Status: Dean +1, Jim +1
 
-    * Brian Havard's [PATCH] mod_mime_magic and OS/2
-	<199712200305.OAA17028@silk.apana.org.au>
-	Status: Dean +1, Jim +1
-
     * Dean's [PATCH] child_timeout not correctly defined
 	<Pine.LNX.3.95dg3.971213000430.29165E-100000@twinlark.arctic.org>
 	Status: Jim +1, Dean +1
@@ -75,10 +73,6 @@ Available:
     * Dean's [PATCH] mod_info minor cleanups (take 2)
 	<Pine.LNX.3.95dg3.971218190142.1275B-100000@twinlark.arctic.org>
 	Status: Dean +1
-
-    * Igor Tatarinov's [PATCH] usage patch (-V)
-	<3499939F.F3C9E81D@prairie.nodak.edu>
-	Dean +1
 
     * Martin's [PATCH] 36kB: Make apache compile & run on an EBCDIC mainframe
 	<19971217184646.62136@deejai.mch.sni.de>
