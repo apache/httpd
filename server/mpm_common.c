@@ -603,7 +603,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 #endif
 
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-apr_lockmech_e_np ap_accept_lock_mech = APR_LOCK_DEFAULT;
+apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
 AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 						     void *dummy,
 						     const char *arg)

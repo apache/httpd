@@ -988,7 +988,7 @@ static void child_main()
     if (one_process) {
         /* Single process mode */
         apr_lock_create(&start_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-                        signal_name_prefix, pconf);
+                        APR_LOCK_DEFAULT, signal_name_prefix, pconf);
         exit_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
     }
     else {
@@ -1013,7 +1013,8 @@ static void child_main()
     ap_run_child_init(pchild, ap_server_conf);
     
     allowed_globals.jobsemaphore = CreateSemaphore(NULL, 0, 1000000, NULL);
-    apr_lock_create(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
+    apr_lock_create(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, 
+                    APR_LOCK_DEFAULT, NULL, pchild);
 
     /*
      * Wait until we have permission to start accepting connections.
@@ -1040,7 +1041,8 @@ static void child_main()
                                                     NULL,
                                                     0,
                                                     0); /* CONCURRENT ACTIVE THREADS */
-        apr_lock_create(&qlock, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
+        apr_lock_create(&qlock, APR_MUTEX, APR_INTRAPROCESS, APR_LOCK_DEFAULT, 
+                        NULL, pchild);
     }
 
     /* 
@@ -1993,8 +1995,9 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-            apr_lock_create(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS, signal_name_prefix,
-                               ap_server_conf->process->pool);
+            apr_lock_create(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS, 
+                            APR_LOCK_DEFAULT, signal_name_prefix, 
+                            ap_server_conf->process->pool);
         }
     }
     else /* parent_pid != my_pid */

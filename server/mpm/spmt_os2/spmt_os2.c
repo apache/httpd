@@ -187,7 +187,8 @@ static void accept_mutex_child_init(apr_pool_t *p)
  */
 static void accept_mutex_init(apr_pool_t *p)
 {
-    apr_status_t rc = apr_lock_create(&accept_mutex, APR_MUTEX, APR_INTRAPROCESS, NULL, p);
+    apr_status_t rc = apr_lock_create(&accept_mutex, APR_MUTEX, APR_INTRAPROCESS, 
+                                      APR_LOCK_DEFAULT, NULL, p);
 
     if (rc != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, ap_server_conf,

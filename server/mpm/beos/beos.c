@@ -813,7 +813,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * in select at a time
      */
     if ((rv = apr_lock_create(&accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-        NULL, pconf)) != APR_SUCCESS) {
+                              APR_LOCK_DEFAULT, NULL, pconf)) != APR_SUCCESS) {
         /* tsch tsch, can't have more than one thread in the accept loop
            at a time so we need to fall on our sword... */
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
@@ -825,7 +825,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * locks the worker_thread_count so we have ana ccurate count...
      */
     if ((rv = apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-        NULL, pconf)) != APR_SUCCESS) {
+                              APR_LOCK_DEFAULT, NULL, pconf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create worker thread count lock");
         return 1;
