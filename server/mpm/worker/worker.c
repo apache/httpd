@@ -183,6 +183,7 @@ static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 
 static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main 
                            thread. Use this instead */
+static pid_t parent_pid;
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
 static apr_lock_t *worker_thread_count_mutex;
@@ -262,6 +263,18 @@ static void sig_coredump(int sig)
 {
     chdir(ap_coredump_dir);
     apr_signal(sig, SIG_DFL);
+    if (ap_my_pid == parent_pid) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+                     0, ap_server_conf,
+                     "seg fault or similar nasty error detected "
+                     "in the parent process");
+        
+        /* XXX we can probably add some rudimentary cleanup code here,
+         * like getting rid of the pid file.  If any additional bad stuff
+         * happens, we are protected from recursive errors taking down the
+         * system since this function is no longer the signal handler   GLA
+         */
+    }
     kill(ap_my_pid, sig);
     /* At this point we've got sig blocked, because we're still inside
      * the signal handler.  When we leave the signal handler it will
@@ -1403,7 +1416,7 @@ static void worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
 	if (!one_process && !no_detach) {
 	    apr_proc_detach();
 	}
-	ap_my_pid = getpid();
+	parent_pid = ap_my_pid = getpid();
     }
 
     unixd_pre_config(ptemp);
