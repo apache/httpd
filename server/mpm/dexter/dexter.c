@@ -595,6 +595,7 @@ static void *worker_thread(void *arg)
     got_fd:
         if (!workers_may_exit) {
             if ((rv = ap_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
+                csd = NULL;
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, "ap_accept");
             }
             if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
@@ -615,8 +616,10 @@ static void *worker_thread(void *arg)
                 }
             }
             pthread_mutex_unlock(&idle_thread_count_mutex);
-            process_socket(ptrans, csd, conn_id);
-            requests_this_child--;
+            if (csd != NULL) {
+                process_socket(ptrans, csd, conn_id);
+                requests_this_child--;
+            }
 	} else {
             if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
                 != APR_SUCCESS) {
