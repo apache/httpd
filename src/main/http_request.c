@@ -1051,8 +1051,11 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
     }
 
     /*
-     * We need to ensure that r->connection->keepalive is valid in
-     * order to determine if we can discard the request body below.
+     * We need to ensure that r->connection->keepalive is set in order
+     * to determine if we need to call ap_discard_request_body() to read
+     * the rest of the request body for this request.  There is no point
+     * reading the body for this request if we are not in keepalive mode
+     * since we are in ap_die() and about to toss this request anyway.
      */
     ap_set_keepalive(r);
 
