@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/09 18:10:30 $]
+  Last modified at [$Date: 1999/12/09 23:26:29 $]
 
 Release:
 
@@ -119,7 +119,7 @@ Available Patches:
 		Randy +1 (please choose name other than "hook")
                 Doug +1 on concept (untested), Lars +1 on concept,
 		Martin +1 (untested), Ken -1 for 1.3.7 (too controversial,
-		esp. w/KEAPI offered as well)
+		esp. w/KEAPI offered as well), Fred +1
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
