@@ -1,5 +1,11 @@
 Changes with Apache 2.0b1
 
+  *) Get mod_cgid and mod_rewrite to work as DSOs by changing the way
+     they keep track of whether or not their  post config hook has been
+     called before.  Instead of a static variable (which is replaced when 
+     the DSO is loaded a second time), use userdata in the process pool.
+     [Jeff Trawick]
+
 Changes with Apache 2.0a9
 
   *) Win32 now requires perl to complete the final install step for users
