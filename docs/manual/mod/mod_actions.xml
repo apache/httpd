@@ -30,12 +30,14 @@ media type or request method.</description>
 <name>Action</name>
 <description>Activates a CGI script for a particular handler or
 content-type</description>
-<syntax>Action <var>action-type</var> <var>cgi-script</var></syntax>
+<syntax>Action <var>action-type</var> <var>cgi-script</var> [virtual]</syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>The <code>virtual</code> modifier was introduced in Apache
+2.1</compatibility>
 
 <usage>
     <p>This directive adds an action, which will activate
@@ -66,6 +68,20 @@ content-type</description>
     <p>In the second example, requests for files with a file extension of
     <code>.xyz</code> are handled instead by the specified cgi script 
     <code>/cgi-bin/program.cgi</code>.</p>
+
+    <p>The optional <code>virtual</code> modifier turns off the check
+    whether the requested file really exists. This is useful, for example,
+    if you want to use the <directive>Action</directive> directive in
+    virtual locations.</p>
+
+    <example><title>Example</title>
+      &lt;Location /news&gt;<br />
+      <indent>
+        SetHandler news-handler
+        Action news-handler /cgi-bin/news.cgi virtual
+      </indent>
+      &lt;/Location&gt;
+    </example>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
