@@ -318,6 +318,12 @@ listens to</description>
     <example>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </example>
+
+    <note type="warning"><title>Error condition</title>
+      Multiple <code>Listen</code> directives for the same ip address and
+      port will result in an 'Address already in use' error message.
+    </note>
+
 </usage>
 <seealso><a href="../dns-caveats.html">DNS Issues</a></seealso>
 <seealso><a href="../bind.html">Setting which addresses and ports Apache
