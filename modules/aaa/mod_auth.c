@@ -122,9 +122,10 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     configfile_t *f;
     char l[MAX_STRING_LEN];
     const char *rpw, *w;
+    ap_status_t status;
 
-    if (!(f = ap_pcfg_openfile(r->pool, auth_pwfile))) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    if ((status = ap_pcfg_openfile(&f, r->pool, auth_pwfile)) != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
@@ -150,8 +151,9 @@ static ap_table_t *groups_for_user(ap_context_t *p, char *user, char *grpfile)
     ap_context_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
+    ap_status_t status;
 
-    if (!(f = ap_pcfg_openfile(p, grpfile))) {
+    if ((status = ap_pcfg_openfile(&f, p, grpfile)) != APR_SUCCESS) {
 /*add?	aplog_error(APLOG_MARK, APLOG_ERR, NULL,
 		    "Could not open group file: %s", grpfile);*/
 	return NULL;

@@ -855,41 +855,40 @@ static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 }
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
-API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
+API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_context_t *p, const char *name)
 {
     configfile_t *new_cfg;
     ap_file_t *file;
-    int saved_errno;
     ap_status_t stat;
     ap_filetype_e type;
 
     if (name == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                "Internal error: pcfg_openfile() called with NULL filename");
-        return NULL;
+        return APR_EBADF;
     }
 
     if (!ap_os_is_filename_valid(name)) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                     "Access to config file %s denied: not a valid filename",
                     name);
-	errno = EACCES;
-        return NULL;
+        return APR_EACCES;
     }
- 
+
     stat = ap_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG
-    saved_errno = errno;
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
                 "Opening config file %s (%s)",
                 name, (stat != APR_SUCCESS) ? strerror(errno) : "successful");
-    errno = saved_errno;
 #endif
     if (stat != APR_SUCCESS)
-        return NULL;
+        return stat;
 
-    if (ap_get_filetype(&type, file) == APR_SUCCESS &&
-        type != APR_REG &&
+    stat = ap_get_filetype(&type, file);
+    if (stat != APR_SUCCESS)
+        return stat;
+
+    if (type != APR_REG &&
 #if defined(WIN32) || defined(OS2)
         !(strcasecmp(name, "nul") == 0 ||
           (strlen(name) >= 4 &&
@@ -897,13 +896,11 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
-	saved_errno = errno;
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
         ap_close(file);
-	errno = saved_errno;
-        return NULL;
+        return APR_EBADF;
     }
 
     new_cfg = ap_palloc(p, sizeof(*new_cfg));
@@ -913,7 +910,8 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
     new_cfg->getstr = (void *(*)(void *, size_t, void *)) cfg_getstr;
     new_cfg->close = (int (*)(void *)) cfg_close;
     new_cfg->line_number = 0;
-    return new_cfg;
+    *ret_cfg = new_cfg;
+    return APR_SUCCESS;
 }
 
 

@@ -245,14 +245,15 @@ static void mime_post_config(ap_context_t *p, ap_context_t *plog, ap_context_t *
     char l[MAX_STRING_LEN];
     int x;
     const char *types_confname = ap_get_module_config(s->module_config, &mime_module);
+    ap_status_t status;
 
     if (!types_confname)
         types_confname = TYPES_CONFIG_FILE;
 
     types_confname = ap_server_root_relative(p, types_confname);
 
-    if (!(f = ap_pcfg_openfile(p, types_confname))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, s,
+    if ((status = ap_pcfg_openfile(&f, p, types_confname)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
 		     "could not open mime types log file %s.", types_confname);
         exit(1);
     }
