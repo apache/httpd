@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_status.c,v 1.29 1996/08/20 11:51:20 paul Exp $ */
+/* $Id: mod_status.c,v 1.30 1996/10/01 12:05:48 mjc Exp $ */
 
 /* Status Module.  Provide a way of getting at the internal Apache
  * status information without having to worry where the scoreboard is
@@ -365,43 +365,42 @@ int status_handler (request_rec *r)
 	    rputs("/request",r);
 	}
 
-	rputs("<p>\n",r);
+	rputs("<br>\n",r);
     } /* short_report */
 #endif /* STATUS */
 
-    /* send the scoreboard 'table' out */
+    if (!short_report)
+        rprintf(r,"\n%d requests currently being processed, %d idle servers\n"
+		,busy,ready);
+    else
+        rprintf(r,"BusyServers: %d\nIdleServers: %d\n",busy,ready);
 
-    rputs("Scoreboard: \n",r);
+    /* send the scoreboard 'table' out */
 
     if(!short_report)
 	rputs("<PRE>",r);
-
-    rputs("\n",r);
+    else
+        rputs("Scoreboard: ",r);
 
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
     {
 	rputc(stat_buffer[i], r);
-	if(i%STATUS_MAXLINE == (STATUS_MAXLINE - 1))
+	if((i%STATUS_MAXLINE == (STATUS_MAXLINE - 1))&&!short_report)
 	    rputs("\n",r);
     }
 
     if (short_report)
-    {
-        rprintf(r,"\nBusyServers: %d\nIdleServers: %d\n",busy,ready);
-    }
-    else 
-    {
+        rputs("\n",r);
+    else {
 	rputs("</PRE>\n",r);
-	rputs("Key:<br> \n",r);
-	rputs("\"<code>_</code>\" Waiting for Connection, \n",r);
-	rputs("\"<code>S</code>\" Starting up,<br> \n",r);
-	rputs("\"<code>R</code>\" Reading Request, \n",r);
-	rputs("\"<code>W</code>\" Sending Reply,<br> \n",r);
-	rputs("\"<code>K</code>\" Keepalive (read), \n",r);
-	rputs("\"<code>D</code>\" DNS Lookup, \n",r);
-	rputs("\"<code>L</code>\" Logging<p>\n",r);
-        rprintf(r,"\n%d requests currently being processed, %d idle servers\n"
-		,busy,ready);
+	rputs("Scoreboard Key: <br>\n",r);
+	rputs("\"<B><code>_</code></B>\" Waiting for Connection, \n",r);
+	rputs("\"<B><code>S</code></B>\" Starting up, \n",r);
+	rputs("\"<B><code>R</code></B>\" Reading Request,<BR>\n",r);
+	rputs("\"<B><code>W</code></B>\" Sending Reply, \n",r);
+	rputs("\"<B><code>K</code></B>\" Keepalive (read), \n",r);
+	rputs("\"<B><code>D</code></B>\" DNS Lookup, \n",r);
+	rputs("\"<B><code>L</code></B>\" Logging<p>\n",r);
     }
 
 #if defined(STATUS)
