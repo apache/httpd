@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/26 17:17:42 $]
+Last modified at [$Date: 2002/04/26 17:30:05 $]
 
 Release:
 
@@ -51,6 +51,10 @@ RELEASE SHOWSTOPPERS:
 
     * worker MPM segfaults because the apr_bucket_alloc_t is cleaned
       up twice.
+
+    * The atomics code produces binaries that are not forward compatible
+      on Solaris (eg. Solaris 5.6 binaries can fail on older hardware
+      running on Solaris 7). (See APR's STATUS file.)
 
 CURRENT VOTES:
 
