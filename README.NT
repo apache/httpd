@@ -69,9 +69,12 @@ in the src directory. To install Apache to the \Apache directory, run
 
    nmake -f Makefile.nt installr
 
-You cannot easily use a different installation directory. You can also
-build debug versions of Apache, with the targets "_apached" and
-"installd".
+To specify a different install directory, use
+
+   nmake -f Makefile.nt installr INSTDIR=c:\mydir
+
+You can also build and install debug versions of Apache, with the
+targets "_apached" and "installd".
 
 Make sure that before you run "nmake" that you've run VCVARS32.BAT
 so that your environment is configured to run nmake from the command
@@ -93,7 +96,36 @@ directory.
 Installing a Binary Release
 ---------------------------
 
-The binary release is not yet available.
+Since this file is installed as part of the install process, you have
+probably already figured out how to install the binary. But for
+reference, here are the instructions:
+
+Run the Apache distribution file. This will ask for a location to
+install Apache into (the default is \Program Files\Apache
+Group\Apache), for a start menu name (default is Apache Web Server)
+and for a choice of installations. The Typical installation installs
+everything except the source code. The Minimum installations does not
+install the manuals either. Choose Custom install if you want to
+install the source code.
+
+After installation is completed, there are three new items on the
+start menu. On NT you should run the "Install Apache as Service"
+program, then start Apache as a normal service. On Windows 95 or if
+you do not want to run Apache as a service, click on the "Apache
+Server" option. This will start Apache running in a console window,
+where it will print its version number, then wait to start serving
+requests. The third start menu option accessing the manual, if it was
+installed. If it was not installed, you can access the Apache manual
+at the URL http://www.apache.org/.
+
+Once Apache is running (either in a console window, or as a service),
+if you have not edited the configuration files, it will be listening
+on port 80, so you can connect to it at this URL:
+
+  http://localhost/
+
+To configure Apache, go into the directory where you installed it and
+edit the "httpd.conf" file in the "conf" directory. 
 
 Running Apache
 --------------
