@@ -171,8 +171,10 @@ apr_status_t ap_cleanup_scoreboard(void *d) {
  *
  * Create or reinit an existing scoreboard. The MPM can control whether
  * the scoreboard is shared across multiple processes or not
+ *
+ * ###: Is there any reason to export this symbol in the first place?
  */
-AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
+AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     int running_gen = 0;
     if (ap_scoreboard_image)
