@@ -1,8 +1,8 @@
 #
 # Declare the sub-directories to be built here
 #
-# To build the experimental modules, add "experimental \" 
-# to the list below.
+# To build with exerimental modules set the environment 
+#  variable EXPERIMENTAL=1
 
 SUBDIRS = \
 	aaa \
