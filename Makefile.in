@@ -183,4 +183,7 @@ install-suexec:
 suexec:
 	cd support && $(MAKE) suexec
 
+x-local-distclean:
+	$(RM) -r autom4te.cache
+
 include $(top_srcdir)/os/os2/core.mk
