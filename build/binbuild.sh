@@ -55,7 +55,7 @@ echo "Platform is \"$OS\"..."
   make clean && \
   echo "----------------------------------------------------------------------" && \
   echo "[EOF]" \
-) > build.log 2>&1
+) 2>&1 | tee build.log
 
 if [ ! -f ./bindist/bin/httpd ]
 then
@@ -197,7 +197,10 @@ cp README.bindist ../httpd-$VER-$OS.README
   echo "lmkdir \$SR/proxy 750" && \
   echo "lmkdir \$SR/logs 750" && \
   echo "lcopy bindist/man \$SR/man 755 644" && \
-  echo "lcopy bindist/modules \$SR/modules 750 644" && \
+  echo "if [ -d bindist/modules ]" && \
+  echo "then" && \
+  echo "  lcopy bindist/modules \$SR/modules 750 644" && \
+  echo "fi" && \
   echo "lcopy bindist/include \$SR/include 755 644" && \
   echo "lcopy bindist/icons \$SR/icons 755 644" && \
   echo "lcopy bindist/cgi-bin \$SR/cgi-bin 750 750" && \
