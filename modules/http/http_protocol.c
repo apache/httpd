@@ -1771,79 +1771,44 @@ static long get_chunk_size(char *b)
  * to read past the data provided by the client, since these reads block.
  * Returns 0 on End-of-body, -1 on error or premature chunk end.
  *
- * Reading the chunked encoding requires a buffer size large enough to
- * hold a chunk-size line, including any extensions. For now, we'll leave
- * that to the caller, at least until we can come up with a better solution.
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
                                      apr_size_t bufsiz)
 {
-    apr_size_t total;
     apr_status_t rv;
-    apr_bucket *b;
-    const char *tempbuf;
-    core_request_config *req_cfg =
-        (core_request_config *)ap_get_module_config(r->request_config,
-                                                    &core_module);
-    apr_bucket_brigade *bb = req_cfg->bb;
+    apr_bucket_brigade *bb;
 
-    /* read until we get a non-empty brigade */
-    while (APR_BRIGADE_EMPTY(bb)) {
-        if (ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
-                           APR_BLOCK_READ, bufsiz) != APR_SUCCESS) {
-            /* if we actually fail here, we want to just return and
-             * stop trying to read data from the client.
-             */
-            r->connection->keepalive = -1;
-            apr_brigade_destroy(bb);
-            return -1;
-        }
-    }
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-    b = APR_BRIGADE_FIRST(bb);
-    if (APR_BUCKET_IS_EOS(b)) { /* reached eos on previous invocation */
-        apr_bucket_delete(b);
-        return 0;
-    }
-
-    /* ### it would be nice to replace the code below with "consume N bytes
-       ### from this brigade, placing them into that buffer." there are
-       ### other places where we do the same...
-       ###
-       ### alternatively, we could partition the brigade, then call a
-       ### function which serializes a given brigade into a buffer. that
-       ### semantic is used elsewhere, too...
-    */
-
-    total = 0;
-    while (total < bufsiz
-           && b != APR_BRIGADE_SENTINEL(bb)
-           && !APR_BUCKET_IS_EOS(b)) {
-        apr_size_t len_read;
-        apr_bucket *old;
-
-        if ((rv = apr_bucket_read(b, &tempbuf, &len_read,
-                                  APR_BLOCK_READ)) != APR_SUCCESS) {
-            return -1;
-        }
-        if (total + len_read > bufsiz) {
-            apr_bucket_split(b, bufsiz - total);
-            len_read = bufsiz - total;
-        }
-        memcpy(buffer, tempbuf, len_read);
-        buffer += len_read;
-        total += len_read;
-        /* XXX the next field shouldn't be mucked with here,
-         * as it is in terms of bytes in the unfiltered body;
-         * gotta see if anybody else actually uses it
+    rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                        APR_BLOCK_READ, bufsiz);
+  
+    /* We lose the failure code here.  This is why ap_get_client_block should
+     * not be used.
+     */
+    if (rv != APR_SUCCESS) { 
+        /* if we actually fail here, we want to just return and
+         * stop trying to read data from the client.
          */
-        r->read_length += len_read; /* XXX yank me? */
-        old = b;
-        b = APR_BUCKET_NEXT(b);
-        apr_bucket_delete(old);
+        r->connection->keepalive = -1;
+        return -1;
     }
 
-    return total;
+    /* If this fails, it means that a filter is written incorrectly and that
+     * it needs to learn how to properly handle APR_BLOCK_READ requests by
+     * returning data when requested.
+     */
+    AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(bb));
+ 
+    rv = apr_brigade_flatten(bb, buffer, &bufsiz);
+    if (rv != APR_SUCCESS) {
+        return -1;
+    }
+
+    /* XXX yank me? */
+    r->read_length += bufsiz;
+
+    return bufsiz;
 }
 
 /* In HTTP/1.1, any method can have a body.  However, most GET handlers
