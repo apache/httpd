@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.116 $ ($Date: 1998/05/20 14:22:39 $)
+  $Revision: 1.117 $ ($Date: 1998/05/25 17:35:26 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -284,6 +284,9 @@
    </LI>
    <LI><A HREF="#regex">What are "regular expressions"?</A>
    </LI>
+   <li><a href="#broken-gcc">I'm using gcc and I get some compilation errors, what
+	is wrong?</a>
+   </li>
   </OL>
  </LI>
 </UL>
@@ -2297,6 +2300,23 @@
 
   <HR>
   </LI>
+ <li><a name="broken-gcc"><strong>I'm using gcc and I get some
+	compilation errors, what is wrong?</strong></a>
+    <p>
+    GCC parses your system header files and produces a modified subset which
+    it uses for compiling.  This behaviour ties GCC tightly to the version
+    of your operating system.  So, for example, if you were running IRIX 5.3
+    when you built GCC and then upgrade to IRIX 6.2 later, you will have to
+    rebuild GCC.  Similarly for Solaris 2.4, 2.5, or 2.5.1 when you upgrade
+    to 2.6.  Sometimes you can type "gcc -v" and it will tell you the version
+    of the operating system it was built against.
+    <p>
+    If you fail to do this, then it is very likely that Apache will fail
+    to build.  One of the most common errors is with <code>readv</code>,
+    <code>writev</code>, or <code>uio.h</code>.  This is <b>not</b> a
+    bug with Apache.  You will need to re-install GCC.
+   <hr>
+   </li>
 
   <!-- Don't forget to add HR tags at the end of each list item.. -->
 
