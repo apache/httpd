@@ -13,7 +13,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Apache module mod_proxy</h1>
+<H1 ALIGN="CENTER">Module mod_proxy</H1>
 
 This module is contained in the <code>mod_proxy.c</code> file for Apache 1.1.x,
 or the <code>modules/proxy</code> subdirectory for Apache 1.2, and
@@ -28,7 +28,7 @@ stability is <i>greatly</i> improved.<p>
 <h2>Summary</h2>
 
 This module implements a proxy/cache for Apache. It implements
-proxying capability for 
+proxying capability for
 <code>FTP</code>,
 <code>CONNECT</code> (for SSL),
 <code>HTTP/0.9</code>, and
@@ -58,7 +58,7 @@ and other protocols.
 <A name="proxyrequests"><h2>ProxyRequests</h2></A>
 <strong>Syntax:</strong> ProxyRequests <em>on/off</em><br>
 <strong>Default:</strong> <code>ProxyRequests Off</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyRequest is only available in
@@ -70,7 +70,7 @@ href="#proxypass">ProxyPass</a> directive.
 
 <A name="proxyremote"><h2>ProxyRemote</h2></A>
 <strong>Syntax:</strong> ProxyRemote <em>&lt;match&gt; &lt;remote-server&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyRemote is only available in
@@ -102,7 +102,7 @@ them.
 
 <A name="proxypass"><h2>ProxyPass</h2></A>
 <strong>Syntax:</strong> ProxyPass <em>&lt;path&gt; &lt;url&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyPass is only available in
@@ -122,7 +122,7 @@ internally converted into a proxy request to http://foo.com/bar
 
 <A name="proxyblock"><h2>ProxyBlock</h2></A>
 <strong>Syntax:</strong> ProxyBlock <em>&lt;word/host/domain list&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyBlock is only available in
@@ -152,7 +152,7 @@ blocks connections to all sites.
 
 <A name="cacheroot"><h2>CacheRoot</h2></A>
 <strong>Syntax:</strong> CacheRoot <em>&lt;directory&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheRoot is only available in
@@ -165,7 +165,7 @@ by the httpd server.
 <A name="cachesize"><h2>CacheSize</h2></A>
 <strong>Syntax:</strong> CacheSize <em>&lt;size&gt;</em><br>
 <strong>Default:</strong> <code>CacheSize 5</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheSize is only available in
@@ -177,7 +177,7 @@ until the usage is at or below this setting.
 
 <A name="cachegcinterval"><h2>CacheGcInterval</h2></A>
 <strong>Syntax:</strong> CacheGcInterval <em>&lt;time&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheGcinterval is only available in
@@ -189,7 +189,7 @@ usage is greater than that set by CacheSize.
 <A name="cachemaxexpire"><h2>CacheMaxExpire</h2></A>
 <strong>Syntax:</strong> CacheMaxExpire <em>&lt;time&gt;</em><br>
 <strong>Default:</strong> <code>CacheMaxExpire 24</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheMaxExpire is only available in
@@ -203,7 +203,7 @@ was supplied with the document.
 <A name="cachelastmodifiedfactor"><h2>CacheLastModifiedFactor</h2></A>
 <strong>Syntax:</strong> CacheLastModifiedFactor <em>&lt;factor&gt;</em><br>
 <strong>Default:</strong> <code>CacheLastModifiedFactor 0.1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheLastModifiedFactor is only available in
@@ -223,7 +223,7 @@ then the latter takes precedence.
 <A name="cachedirlevels"><h2>CacheDirLevels</h2></A>
 <strong>Syntax:</strong> CacheDirLevels <em>&lt;levels&gt;</em><br>
 <strong>Default:</strong> <code>CacheDirLevels 3</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheDirLevels is only available in
@@ -235,7 +235,7 @@ Cached data will be saved this many directory levels below CacheRoot.
 <A name="cachedirlength"><h2>CacheDirLength</h2></A>
 <strong>Syntax:</strong> CacheDirLength <em>&lt;length&gt;</em><br>
 <strong>Default:</strong> <code>CacheDirLength 1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheDirLength is only available in
@@ -246,7 +246,7 @@ CacheDirLength sets the number of characters in proxy cache subdirectory names.
 <A name="cachedefaultexpire"><h2>CacheDefaultExpire</h2></A>
 <strong>Syntax:</strong> CacheDefaultExpire <em>&lt;time&gt;</em><br>
 <strong>Default:</strong> <code>CacheDefaultExpire 1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheDefaultExpire is only available in
@@ -259,7 +259,7 @@ override.
 
 <A name="nocache"><h2>NoCache</h2></A>
 <strong>Syntax:</strong> NoCache <em>&lt;word/host/domain list&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> NoCache is only available in
@@ -297,7 +297,7 @@ disables caching completely.<p>
 <li><a href="#shortname">Using Netscape hostname shortcuts</a>
 <li><a href="#mimetypes">Why doesn't file type <i>xxx</i> download via FTP?</a>
 <li><a href="#startup">Why does Apache start more slowly when using the
-	proxy module?</a>
+        proxy module?</a>
 <li><a href="#socks">Can I use the Apache proxy module with my SOCKS proxy?</a>
 </ul>
 
@@ -337,7 +337,7 @@ application/octet-stream        bin dms lha lzh exe class tgz taz
 </pre>
 
 <h2><a name="startup">Why does Apache start more slowly when using the
-	proxy module?</a></h2>
+        proxy module?</a></h2>
 
 If you're using the <code>ProxyBlock</code> or <code>NoCache</code>
 directives, hostnames' IP addresses are looked up and cached during
@@ -347,7 +347,7 @@ depending on the speed with which the hostname lookups occur.<p>
 <h2><a name="socks">Can I use the Apache proxy module with my SOCKS proxy?</a></h2>
 
 Yes. Just build Apache with the rule <code>SOCKS4=yes</code> in your
-<i>Configuration</i> file, and follow the instructions there. SOCKS5 
+<i>Configuration</i> file, and follow the instructions there. SOCKS5
 capability can be added in a similar way (there's no <code>SOCKS5</code>
 rule yet), so use the <code>EXTRA_LFLAGS</code> definition, or build Apache
 normally and run it with the <i>runsocks</i> wrapper provided with SOCKS5,

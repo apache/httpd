@@ -30,21 +30,10 @@ href="http://www.apache.org/bugdb.cgi">let us know.</a>
 
 <OL>
 
-<LI>The basic mod_auth <CODE>AuthGroupFile</CODE>-specified group file 
+<LI>The basic mod_auth <CODE>AuthGroupFile</CODE>-specified group file
     format allows commas between user names - Apache does not.<BR>
     <I>- added 12/1/96</I>
-
-<LI><CODE>AddType</CODE> only accepts one file extension per line, without
-any dots (<code>.</code>) in the extension, and does not take full filenames.
-If you need multiple extensions per type, use multiple lines, e.g.
-<blockquote><code>
-AddType application/foo foo<br>
-AddType application/foo bar
-</code></blockquote>
-To map <code>.foo</code> and <code>.bar</code> to <code>application/foo</code>
-<p>
-
-
+  <p>
 
   <LI><P>If you follow the NCSA guidelines for setting up access restrictions
   based on client domain, you may well have added entries for,
@@ -62,7 +51,7 @@ To map <code>.foo</code> and <code>.bar</code> to <code>application/foo</code>
   <LI><CODE>AuthUserFile</CODE> requires a full pathname. In earlier
       versions of NCSA httpd and Apache, you could use a filename
       relative to the .htaccess file. This could be a major security hole,
-      as it made it trivially easy to make a ".htpass" file in the a 
+      as it made it trivially easy to make a ".htpass" file in the a
       directory easily accessible by the world. We recommend you store
       your passwords outside your document tree.
 
@@ -89,18 +78,32 @@ To map <code>.foo</code> and <code>.bar</code> to <code>application/foo</code>
 
   <P>
 
-  <LI>Icons for FancyIndexing broken - well, no, they're not broken, we've just upgraded the
-  icons from flat .xbm files to pretty and much smaller .gif files, courtesy of 
+  <LI>Icons for FancyIndexing broken - well, no, they're not broken,
+  we've just upgraded the
+  icons from flat .xbm files to pretty and much smaller .gif files, courtesy of
 <a href="mailto:kevinh@eit.com">Kevin Hughes</a> at
-<a href="http://www.eit.com">EIT</a>.
-  If you are using the same srm.conf from an old distribution, make sure you add the new
-  AddIcon, AddIconByType, and DefaultIcon commands.
+<a href="http://www.eit.com/">EIT</a>.
+  If you are using the same srm.conf from an old distribution, make sure
+  you add the new
+  <A
+   HREF="../mod/mod_autoindex.html#addicon"
+  >AddIcon</A>,
+  <A
+   HREF="../mod/mod_autoindex.html#addiconbytype"
+  >AddIconByType</A>,
+  and
+  <A
+   HREF="../mod/mod_autoindex.html#defaulticon"
+  >DefaultIcon</A>
+  directives.
 
   <P>
 
-  <LI>Under IRIX, the "Group" directive in httpd.conf needs to be a valid group name 
-  (i.e. "nogroup") not the numeric group ID.  The distribution httpd.conf, and earlier 
-  ones, had the default Group be "#-1", which was causing silent exits at startup.<p>
+  <LI>Under IRIX, the "Group" directive in httpd.conf needs to be a
+  valid group name
+  (<EM>i.e.</EM>, "nogroup") not the numeric group ID.  The distribution
+  httpd.conf, and earlier  ones, had the default Group be "#-1", which
+  was causing silent exits at startup.<p>
 
 <li><code>.asis</code> files: Apache 0.6.5 did not require a Status header;
 it added one automatically if the .asis file contained a Location header.
@@ -111,7 +114,19 @@ it added one automatically if the .asis file contained a Location header.
   files if the last line does not have a trailing newline. This affects
   configuration files (httpd.conf, access.conf and srm.conf), and
   htpasswd and htgroup files.
- 
+  </LI>
+
+  <LI>Apache does not permit commas delimiting the methods in &lt;Limit&gt;.
+
+  <LI>Apache's <CODE>&lt;VirtualHost&gt;</CODE> treats all addresses as
+  "optional" (i.e. the server should continue booting if it can't resolve
+  the address).  Whereas in NCSA the default is to fail booting unless
+  an added <code>optional</code> keyword is included.
+
+  <LI>Apache does not implement <CODE>OnDeny</CODE> use
+  <a href="../mod/core.html#errordocument"><code>ErrorDocument</code></a>
+  instead.
+
 </OL>
 
 More to come when we notice them....

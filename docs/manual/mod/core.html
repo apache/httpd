@@ -44,6 +44,7 @@ always available.
 <li><A HREF="#limit">&lt;Limit&gt;</A>
 <li><A HREF="#listen">Listen</A>
 <li><A HREF="#location">&lt;Location&gt;</A>
+<li><A HREF="#lockfile">LockFile</A>
 <li><A HREF="#maxclients">MaxClients</A>
 <li><A HREF="#maxkeepaliverequests">MaxKeepAliveRequests</a>
 <li><A HREF="#maxrequestsperchild">MaxRequestsPerChild</A>
@@ -714,7 +715,7 @@ the
    &lt;Location ~ &quot;/(extra|special)/data&quot;&gt;
 </pre>
 
-would match URLs that contained the substring "/extra/data" or
+<p>would match URLs that contained the substring "/extra/data" or
 "/special/data".</p>
 
 <p>The <code>Location</code> functionality is especially useful when
@@ -732,7 +733,23 @@ from browsers at foo.com, you might use:
 </pre>
 <hr>
 
-<A name="maxclients"><h2>MaxClients directive</h2></A>
+<A NAME="lockfile"><H2>LockFile</H2></A>
+<strong>Syntax:</strong> LockFile <em>filename</em><BR>
+<strong>Default:</strong> <code>LockFile logs/accept.lock</code><BR>
+<strong>Context:</strong> server config<BR>
+<strong>Status:</strong> core<P>
+
+The LockFile directive sets the path to the lockfile used when
+Apache is compiled with either USE_FCNTL_SERIALIZED_ACCEPT or
+USE_FLOCK_SERIALIZED_ACCEPT.  This directive should normally be
+left at its default value.  The main reason for changing it is if
+the <code>logs</code> directory is NFS mounted, since the lockfile
+should be stored on a local disk if possible.  The PID of the main
+server process is automatically appended to the filename.
+
+<P><HR>
+
+<A name="maxclients"><h2>MaxClients</h2></A>
 <!--%plaintext &lt;?INDEX {\tt MaxClients} directive&gt; -->
 <strong>Syntax:</strong> MaxClients <em>number</em><br>
 <strong>Default:</strong> <code>MaxClients 256</code><br>
@@ -836,6 +853,9 @@ Execution of CGI scripts is permitted.
 <dd>
 <!--%plaintext &lt;?INDEX {\tt FollowSymLinks} option&gt; -->
 The server will follow symbolic links in this directory.
+<b>Note</b>: even though the server follows the symlink it does <i>not</i>
+change the pathname used to match against <code>&lt;Directory&gt;</code>
+sections.
 <dt>Includes
 <dd>
 <!--%plaintext &lt;?INDEX {\tt Includes} option&gt; -->
@@ -1031,7 +1051,7 @@ sections; in fact it can now contain any server directive allowed in the
 
 See also <A HREF="#accessconfig">AccessConfig</A>.<p><hr>
 
-<A name="rlimit">
+<A name="rlimit"> </A>
 <A name="rlimitcpu"><h2>RLimitCPU directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
 <strong>Syntax:</strong> RLimitCPU <em># or 'max'</em> <em>[# or 'max']</em><br>
@@ -1158,7 +1178,7 @@ release.<p>
 <A name="sendbuffersize"><h2>SendBufferSize directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt SendBufferSize} directive&gt; -->
 <strong>Syntax:</strong> SendBufferSize <em>bytes</em><br>
-<strong>Context:</strong> server config, virtual host<br>
+<strong>Context:</strong> server config<br>
 <strong>Status:</strong> core<p>
 
 The server will set the TCP buffer size to the number of bytes

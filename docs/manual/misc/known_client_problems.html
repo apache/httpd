@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache HTTP Server Project</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Known Problems in Clients</H1>
+
+<p>Over time the Apache Group has discovered or been notified of problems
+with various clients which we have had to work around.  This document
+describes these problems and the workarounds available.  It's not arranged
+in any particular order.  Some familiarity with the standards is assumed,
+but not necessary.
+
+<p>For brevity, <i>Navigator</i> will refer to Netscape's Navigator
+product, and <i>MSIE</i> will refer to Microsoft's Internet Explorer
+product.  All trademarks and copyrights belong to their respective
+companies.  We welcome input from the various client authors to correct
+inconsistencies in this paper, or to provide us with exact version
+numbers where things are broken/fixed.
+
+<p>For reference,
+<a href="ftp://ds.internic.net/rfc/rfc1945.txt">RFC1945</a>
+defines HTTP/1.0, and
+<a href="ftp://ds.internic.net/rfc/rfc2068.txt">RFC2068</a>
+defines HTTP/1.1.  Apache as of version 1.2 is an HTTP/1.1 server (with an 
+optional HTTP/1.0 proxy).
+
+<p>Various of these workarounds are triggered by environment variables.
+The admin typically controls which are set, and for which clients, by using 
+<a href="../mod/mod_browser.html">mod_browser</a>.  Unless otherwise
+noted all of these workarounds exist in versions 1.2 and later.
+
+<a name="trailing-crlf"><H3>Trailing CRLF on POSTs</H3></a>
+
+<p>This is a legacy issue.  The CERN webserver required <code>POST</code>
+data to have an extra <code>CRLF</code> following it.  Thus many
+clients send an extra <code>CRLF</code> that
+is not included in the <code>Content-Length</code> of the request.
+Apache works around this problem by eating any empty lines which
+appear before a request.
+
+<a name="broken-keepalive"><h3>Broken keepalive</h3></a>
+
+<p>Various clients have had broken implementations of <i>keepalive</i>
+(persistent connections).  In particular the Windows versions of
+Navigator 2.0 get very confused when the server times out an
+idle connection.  The workaround is present in the default config files:
+<blockquote><code>
+BrowserMatch Mozilla/2 nokeepalive
+</code></blockquote>
+Note that this matches some earlier versions of MSIE, which began the
+practice of calling themselves <i>Mozilla</i> in their user-agent
+strings just like Navigator.
+
+<p>MSIE 4.0b2, which claims to support HTTP/1.1, does not properly
+support keepalive when it is used on 301 or 302 (redirect)
+responses.  Unfortunately Apache's <code>nokeepalive</code> code
+prior to 1.2.2 would not work with HTTP/1.1 clients.  You must apply
+<a href="http://www.apache.org/dist/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch">this
+patch</a> to version 1.2.1.  Then add this to your config:
+<blockquote><code>
+BrowserMatch "MSIE 4\.0b2;" nokeepalive
+</code></blockquote>
+
+<a name="force-response-1.0"><h3>Incorrect interpretation of <code>HTTP/1.1</code> in response</h3></a>
+
+<p>To quote from section 3.1 of RFC1945:
+<blockquote>
+HTTP uses a "<major>.<minor>" numbering scheme to indicate versions
+of the protocol. The protocol versioning policy is intended to allow
+the sender to indicate the format of a message and its capacity for
+understanding further HTTP communication, rather than the features
+obtained via that communication.
+</blockquote>
+Since Apache is an HTTP/1.1 server, it indicates so as part of its
+response.  Many client authors mistakenly treat this part of the response
+as an indication of the protocol that the response is in, and then refuse
+to accept the response.
+
+<p>The first major indication of this problem was with AOL's proxy servers.
+When Apache 1.2 went into beta it was the first wide-spread HTTP/1.1
+server.  After some discussion, AOL fixed their proxies.  In
+anticipation of similar problems, the <code>force-response-1.0</code>
+environment variable was added to Apache.  When present Apache will
+indicate "HTTP/1.0" in response to an HTTP/1.0 client,
+but will not in any other way change the response.
+
+<p>The pre-1.1 Java Development Kit (JDK) that is used in many clients
+(including Navigator 3.x and MSIE 3.x) exhibits this problem.  As do some
+of the early pre-releases of the 1.1 JDK.  We think it is fixed in the
+1.1 JDK release.  In any event the workaround:
+<blockquote><code>
+BrowserMatch Java1.0 force-response-1.0 <br>
+BrowserMatch JDK/1.0 force-response-1.0 
+</code></blockquote>
+
+<p>RealPlayer 4.0 from Progressive Networks also exhibits this problem.
+However they have fixed it in version 4.01 of the player, but version
+4.01 uses the same <code>User-Agent</code> as version 4.0.  The
+workaround is still:
+<blockquote><code>
+BrowserMatch "RealPlayer 4.0" force-response-1.0
+</code></blockquote>
+
+<a name="msie4.0b2"><h3>Requests use HTTP/1.1 but responses must be in HTTP/1.0</h3></a>
+
+<p>MSIE 4.0b2 has this problem.  Its Java VM makes requests in HTTP/1.1
+format but the responses must be in HTTP/1.0 format (in particular, it
+does not understand <i>chunked</i> responses).  The workaround
+is to fool Apache into believing the request came in HTTP/1.0 format.
+<blockquote><code>
+BrowserMatch "MSIE 4\.0b2;" downgrade-1.0 force-response-1.0
+</code></blockquote>
+This workaround is available in 1.2.2, and in a
+<a href="http://www.apache.org/dist/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch">patch
+</a> against 1.2.1.
+
+<a name="257th-byte"><h3>Boundary problems with header parsing</h3></a>
+
+<p>All versions of Navigator from 2.0 through 4.0b2 (and possibly later)
+have a problem if the trailing CRLF of the response header starts at
+the 256th or 257th byte of the response.  A BrowserMatch for this would
+match on nearly every hit, so the workaround is enabled automatically
+on all responses.  The workaround is to detect when this condition would
+occur in a response and add extra padding to the header to push the
+trailing CRLF past the 257th byte of the response.
+
+<a name="boundary-string"><h3>Multipart responses and Quoted Boundary Strings</h3></a>
+
+<p>On multipart responses some clients will not accept quotes (")
+around the boundary string.  The MIME standard recommends that
+such quotes be used.  But the clients were probably written based
+on one of the examples in RFC2068, which does not include quotes.
+Apache does not include quotes on its boundary strings to workaround
+this problem.
+
+<a name="byterange-requests"><h3>Byterange requests</h3></a>
+
+<p>A byterange request is used when the client wishes to retrieve a
+portion of an object, not necessarily the entire object.  There
+was a very old draft which included these byteranges in the URL.
+Old clients such as Navigator 2.0b1 and MSIE 3.0 for the MAC
+exhibit this behaviour, and
+it will appear in the servers' access logs as (failed) attempts to
+retrieve a URL with a trailing ";xxx-yyy".  Apache does not attempt
+to implement this at all.
+
+<p>A subsequent draft of this standard defines a header
+<code>Request-Range</code>, and a response type
+<code>multipart/x-byteranges</code>.  The HTTP/1.1 standard includes
+this draft with a few fixes, and it defines the header
+<code>Range</code> and type <code>multipart/byteranges</code>.
+
+<p>Navigator (versions 2 and 3) sends both <code>Range</code> and
+<code>Request-Range</code> headers (with the same value), but does not
+accept a <code>multipart/byteranges</code> response.  The response must
+be <code>multipart/x-byteranges</code>.  As a workaround, if Apache
+receives a <code>Request-Range</code> header it considers it "higher
+priority" than a <code>Range</code> header and in response uses
+<code>multipart/x-byteranges</code>.
+
+<p>The Adobe Acrobat Reader plugin makes extensive use of byteranges and
+prior to version 3.01 supports only the <code>multipart/x-byterange</code>
+response.  Unfortunately there is no clue that it is the plugin
+making the request.  If the plugin is used with Navigator, the above
+workaround works fine.  But if the plugin is used with MSIE 3 (on
+Windows) the workaround won't work because MSIE 3 doesn't give the
+<code>Range-Request</code> clue that Navigator does.  To workaround this,
+Apache special cases "MSIE 3" in the <code>User-Agent</code> and serves
+<code>multipart/x-byteranges</code>.  Note that the necessity for this
+with MSIE 3 is actually due to the Acrobat plugin, not due to the browser.
+
+<p>Netscape Communicator appears to not issue the non-standard
+<code>Request-Range</code> header.  When an Acrobat plugin prior to
+version 3.01 is used with it, it will not properly understand byteranges.
+The user must upgrade their Acrobat reader to 3.01.
+
+<a name="cookie-merge"><h3><code>Set-Cookie</code> header is unmergeable</h3></a>
+
+<p>The HTTP specifications say that it is legal to merge headers with
+duplicate names into one (separated by semicolon).  Some browsers
+that support Cookies don't like merged headers and prefer that each
+<code>Set-Cookie</code> header is sent separately.  When parsing the
+headers returned by a CGI, Apache will explicitly avoid merging any
+<code>Set-Cookie</code> headers.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

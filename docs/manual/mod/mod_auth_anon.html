@@ -61,23 +61,23 @@ allows users to share URLs.
 <strong>Status:</strong> Extension<br>
 <strong>Module:</strong> mod_auth_anon<p>
 
-	A list of one or more 'magic' userIDs which are allowed access
-	without password verification. The userIDs are space separated.
-	It is possible to use the ' and " quotes to allow a space in
-	a userID as well as the \ escape character.
-	<p>
-	Please note that the comparison is <b>case-IN-sensitive</b>.
-	<br>
-	I strongly suggest that the magic username '<code>anonymous</code>'
-	is always one of the allowed userIDs.
-	<p>
-	Example:<br>
-	<code>
-	Anonymous: anonymous "Not Registered" 'I don\'t know'
-	</code><p>
-	This would allow the user to enter without password verification
-	by using the userId's 'anonymous', 'AnonyMous','Not Registered' and
-	'I Don't Know'.
+        A list of one or more 'magic' userIDs which are allowed access
+        without password verification. The userIDs are space separated.
+        It is possible to use the ' and " quotes to allow a space in
+        a userID as well as the \ escape character.
+        <p>
+        Please note that the comparison is <b>case-IN-sensitive</b>.
+        <br>
+        I strongly suggest that the magic username '<code>anonymous</code>'
+        is always one of the allowed userIDs.
+        <p>
+        Example:<br>
+        <code>
+        Anonymous: anonymous "Not Registered" 'I don\'t know'
+        </code><p>
+        This would allow the user to enter without password verification
+        by using the userId's 'anonymous', 'AnonyMous','Not Registered' and
+        'I Don't Know'.
 <HR>
 
 <A name="Authoritative"><h2>Anonymous_Authoritative</h2></A>
@@ -91,12 +91,12 @@ allows users to share URLs.
         When set 'on', there is no
         fall-through to other authorization methods. So if a
         userID does not match the values specified in the
-	<code>Anonymous</code> directive, access is denied.
-	<p>
-	Be sure you know what you are doing when you decide to switch 
-	it on. And remember that it is the linking order of the modules
-	(in the Configuration / Make file) which details the order
-	in which the Authorization modules are queried.
+        <code>Anonymous</code> directive, access is denied.
+        <p>
+        Be sure you know what you are doing when you decide to switch 
+        it on. And remember that it is the linking order of the modules
+        (in the Configuration / Make file) which details the order
+        in which the Authorization modules are queried.
 <hr>
 
 <A name="LogEmail"><h2>Anonymous_LogEmail</h2></A>
@@ -107,8 +107,8 @@ allows users to share URLs.
 <strong>Status:</strong> Extension<br>
 <strong>Module:</strong> mod_auth_anon<p>
 
-	When set 'on', the default, the 'password' entered (which hopefully
-	contains a sensible email address) is logged in the httpd-log file.
+        When set 'on', the default, the 'password' entered (which hopefully
+        contains a sensible email address) is logged in the httpd-log file.
 <hr>
 
 <A name="MustGiveEmail"><h2>Anonymous_MustGiveEmail</h2></a>
@@ -120,8 +120,8 @@ allows users to share URLs.
 <strong>Status:</strong> Extension<br>
 <strong>Module:</strong> mod_auth_anon<p>
 
-	Specifies whether the user must specify an email
-	address as the password.  This prohibits blank passwords.
+        Specifies whether the user must specify an email
+        address as the password.  This prohibits blank passwords.
 <HR>
 
 <A name="NoUserID"><h2>Anonymous_NoUserID</h2></A>
@@ -132,11 +132,11 @@ allows users to share URLs.
 <strong>Status:</strong> Extension<br>
 <strong>Module:</strong> mod_auth_anon<p>
 
-	When set 'on', users can leave
-	the userID (and perhaps the password field) empty. This
-	can be very convenient for MS-Explorer users who can
-	just hit return or click directly on the OK button; which
-	seems a natural reaction.
+        When set 'on', users can leave
+        the userID (and perhaps the password field) empty. This
+        can be very convenient for MS-Explorer users who can
+        just hit return or click directly on the OK button; which
+        seems a natural reaction.
 
 <hr>
 
@@ -148,9 +148,9 @@ allows users to share URLs.
 <strong>Status:</strong> Extension<br>
 <strong>Module:</strong> mod_auth_anon<p>
 
-	When set 'on' the 'password' entered is
-	checked for at least one '@' and a '.' to encourage users to enter
-	valid email addresses (see the above <code>Auth_LogEmail</code>).
+        When set 'on' the 'password' entered is
+        checked for at least one '@' and a '.' to encourage users to enter
+        valid email addresses (see the above <code>Auth_LogEmail</code>).
 
 <hr><a name="Example"><h2>Example</h2></a>
 
@@ -180,10 +180,10 @@ Excerpt of access.conf:
 <dl>
 <dt><code>
 Anonymous        anonymous guest www test welcome<p>
-Anonymous_MustGiveEmail	on<br>
+Anonymous_MustGiveEmail on<br>
 Anonymous_VerifyEmail    on<br>
-Anonymous_NoUserId    	off<br>
-Anonymous_LogEmail    	on<br>
+Anonymous_NoUserId      off<br>
+Anonymous_LogEmail      on<br>
 <p>
 AuthName                Use 'anonymous' & Email address for guest entry<br>
 AuthType                basic<p>
@@ -217,8 +217,8 @@ This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
     </dd>
 <dt>Version 0.5<br></dt>
     <dd>Added 'VerifyEmail' and 'LogEmail' options. Multiple
-	'anonymous' tokens allowed. more docs. Added Authoritative
-	functionality.
+        'anonymous' tokens allowed. more docs. Added Authoritative
+        functionality.
     </dd>
 </dl>
 
