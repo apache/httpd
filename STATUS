@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/28 16:11:42 $]
+Last modified at [$Date: 2004/08/28 16:20:08 $]
 
 Release:
 
@@ -261,25 +261,6 @@ PATCHES TO BACKPORT FROM 2.1
       +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
-
-    * ab: catch out of memory (reasoning report ID 29)
-        support/ab.c: r1.125
-      +1: nd, erikabele, ianh
-       0: trawick, who is not about to stand in anybody's way on this,
-          but has two comments nonetheless:
-          a) with no abort function specified for the pools, this is just
-             one of many possible failures
-          b) my guess is that a heap shortage encountered by ab is
-             much more likely to be caused by an ab bug instead of by a
-             user setup error (ulimit) or system resource shortage...
-             is an error message better than a coredump in that case?
-
-          nd: hmm. This one is a pure (and obvious) malloc. Once we may
-              decide to use a pool-abort_fn; then the situation turns
-              around... :)
-              Yes, I think, a useful error message is better than
-              a coredump in this case.
-          jerenkrantz: Oh, bah.  Let 'em segfault.  Use flood!
 
     * mod_ssl: fix a link failure when the openssl-engine libraries are
       present but the engine headers are missing.
