@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.34 1996/09/08 13:55:08 ben Exp $
+# $Id: Configuration.tmpl,v 1.35 1996/09/08 17:18:43 jim Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -55,19 +55,21 @@ RANLIB=ranlib
 # These are used to let Configure know that we want certain
 # functions. The format is: Rule RULE=value
 #
-# At present, only the following RULES are known: REGEX, SOCKS, STATUS
-# and BADMMAP.
+# At present, only the following RULES are known: WANTHSREGEX, SOCKS,
+# STATUS and BADMMAP.
 #
 # For all Rules, if set to "yes", then Configure knows we want that
-# capability and does what is required to add it in. If set to anything
-# else, or not present, then nothing is done.
+# capability and does what is required to add it in. If set to "default"
+# then Configure makes a "best guess"; if set to anything else, or not
+# present, then nothing is done.
 #
-# HSREGEX:
+# WANTHSREGEX:
 #  Apache requires a POSIX regex implementation. Harry Spencer's
 #  excellent regex package is included with Apache and can be used
 #  if desired. If your OS has a decent regex, you can elect to
-#  not use this one by setting HSREGEX to 'no' or commenting
-#  out the Rule
+#  not use this one by setting WANTHSREGEX to 'no' or commenting
+#  out the Rule. The "default" action is "no" unless overruled
+#  by OS specifics
 #
 # SOCKS:
 #  If SOCKS is set to 'yes', be sure that you add the sock library
@@ -94,7 +96,7 @@ Rule SOCKS=no
 # If you have to do this, please let us know what you set and what your
 # platform is, by sending mail to apache-bugs@apache.org.
 
-Rule HSREGEX=default
+Rule WANTHSREGEX=default
 Rule BADMMAP=default
 
 ###############

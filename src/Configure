@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.15 1996/09/08 16:14:55 jim Exp $
+# $Id: Configure,v 1.16 1996/09/08 17:18:45 jim Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -105,8 +105,8 @@ awk >>Makefile <$tmpfile '\
 # options) as required. Setting CC and OPTIM here has no effect
 # if they were set in Configure.
 #
-# Also, we set DEF_HSREGEX and DEF_BADMMAP to the appropriate value for each
-# platform.
+# Also, we set DEF_WANTHSREGEX and DEF_BADMMAP to the appropriate
+# value for each platform.
 #
 # As more PLATFORMs are added to Configuration.tmpl, be sure to
 # add the required lines below.
@@ -125,6 +125,8 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DAUX -D_POSIX_SOURCE"
 	LIBS="$LIBS -lposix -lbsd"
 	LFLAGS="$LFLAGS -s"
+	DEF_WANTHSREGEX=no
+	DEF_BADMMAP=no
 	;;
     AIX)
 	OS='IBM AIX'
@@ -207,7 +209,7 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSCO5"
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
 	OSBPRINTF="-K noinline"
-	DEF_HSREGEX=no
+	DEF_WANTHSREGEX=no
 	DEF_BADMMAP=no
 	;;
     SOLARIS2)
@@ -245,16 +247,16 @@ esac
 
 # Extract the rules
 
-RULE_HSREGEX=`./CutRule HSREGEX`
+RULE_WANTHSREGEX=`./CutRule WANTHSREGEX`
 RULE_STATUS=`./CutRule STATUS`
 RULE_SOCKS=`./CutRule SOCKS`
 RULE_BADMMAP=`./CutRule BADMMAP`
 
-if [ "$RULE_HSREGEX" = "default" ]; then
-	if [ "x$DEF_HSREGEX" = "x" ]; then
-		RULE_HSREGEX=no
+if [ "$RULE_WANTHSREGEX" = "default" ]; then
+	if [ "x$DEF_WANTHSREGEX" = "x" ]; then
+		RULE_WANTHSREGEX=no
 	else
-		RULE_HSREGEX=$DEF_HSREGEX
+		RULE_WANTHSREGEX=$DEF_WANTHSREGEX
 	fi
 fi
 
@@ -270,7 +272,7 @@ fi
 
 echo "# Platform: $OS" >> Makefile
 echo "# Final Rules:" >> Makefile
-echo "# Rule HSREGEX=$RULE_HSREGEX" >> Makefile
+echo "# Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile
 echo "# Rule BADMMAP=$RULE_BADMMAP" >> Makefile
 echo "###############" >> Makefile
 
@@ -316,7 +318,7 @@ fi
 #
 # Now HS's POSIX regex implementation if needed/wanted
 #
-if [ "$RULE_HSREGEX" = "yes" ]; then
+if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
     INCLUDES="$INCLUDES -Iregex"
 fi
