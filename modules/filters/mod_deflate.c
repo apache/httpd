@@ -380,7 +380,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         if (APR_BUCKET_IS_EOS(e)) {
             char *buf, *p;
-            char crc_array[4], len_array[4];
+            unsigned char crc_array[4], len_array[4];
             unsigned int deflate_len;
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
