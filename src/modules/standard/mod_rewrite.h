@@ -487,6 +487,7 @@ static char  *subst_prefix_path(request_rec *r, char *input, char *match,
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
+static int    subreq_ok(request_rec *r);
 
     /* File locking */
 static void fd_lock(request_rec *r, int fd);

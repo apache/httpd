@@ -2124,12 +2124,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
     else if (strcmp(p->pattern, "-U") == 0) {
         /* avoid infinite subrequest recursion */
-        if (strlen(input) > 0               /* nonempty path, and            */
-            && (   r->main == NULL          /* - either not in a subrequest  */
-                || (   r->main->uri != NULL /* - or in a subrequest...       */
-                    && r->uri != NULL       /*   ...and URIs aren't NULL...  */
-                                            /*   ...and sub/main URIs differ */
-                    && strcmp(r->main->uri, r->uri) != 0) ) ) {
+        if (strlen(input) > 0 && subreq_ok(r)) {
 
             /* run a URI-based subrequest */
             rsub = ap_sub_req_lookup_uri(input, r);
@@ -2148,12 +2143,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
     else if (strcmp(p->pattern, "-F") == 0) {
         /* avoid infinite subrequest recursion */
-        if (strlen(input) > 0               /* nonempty path, and            */
-            && (   r->main == NULL          /* - either not in a subrequest  */
-                || (   r->main->uri != NULL /* - or in a subrequest...       */
-                    && r->uri != NULL       /*   ...and URIs aren't NULL...  */
-                                            /*   ...and sub/main URIs differ */
-                    && strcmp(r->main->uri, r->uri) != 0) ) ) {
+        if (strlen(input) > 0 && subreq_ok(r)) {
 
             /* process a file-based subrequest:
              * this differs from -U in that no path translation is done.
@@ -3999,6 +3989,23 @@ static void add_env_variable(request_rec *r, char *s)
     }
 }
 
+
+/*
+**
+**  check that a subrequest won't cause infinite recursion
+**
+*/
+
+static int subreq_ok(request_rec *r)
+{
+    /*
+     * either not in a subrequest, or in a subrequest
+     * and URIs aren't NULL and sub/main URIs differ
+     */
+    return (r->main == NULL ||
+	    (r->main->uri != NULL && r->uri != NULL &&
+	     strcmp(r->main->uri, r->uri) != 0));
+}
 
 
 /*
