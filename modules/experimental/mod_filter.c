@@ -720,16 +720,17 @@ static void *filter_merge(apr_pool_t *pool, void *BASE, void *ADD)
 }
 
 static const command_rec filter_cmds[] = {
-    AP_INIT_TAKE23("FilterDeclare", filter_declare, NULL, OR_ALL,
-        "filter-name, dispatch-criterion [, filter-type]") ,
-    AP_INIT_TAKE3("FilterProvider", filter_provider, NULL, OR_ALL,
-        "filter-name, provider-name, dispatch-match") ,
-    AP_INIT_ITERATE("FilterChain", filter_chain, NULL, OR_ALL,
-        "list of filter names with optional [+-=!@]") ,
-    AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, OR_ALL, "Debug level") ,
+    AP_INIT_TAKE23("FilterDeclare", filter_declare, NULL, OR_OPTIONS,
+        "filter-name, dispatch-criterion [, filter-type]"),
+    AP_INIT_TAKE3("FilterProvider", filter_provider, NULL, OR_OPTIONS,
+        "filter-name, provider-name, dispatch-match"),
+    AP_INIT_ITERATE("FilterChain", filter_chain, NULL, OR_OPTIONS,
+        "list of filter names with optional [+-=!@]"),
+    AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, RSRC_CONF | ACCESS_CONF,
+        "Debug level"),
 #ifndef NO_PROTOCOL
-    AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_ALL,
-        "filter-name [provider-name] protocol-args") ,
+    AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_OPTIONS,
+        "filter-name [provider-name] protocol-args"),
 #endif
     { NULL }
 };
