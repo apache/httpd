@@ -59,6 +59,9 @@
 #include "apr_strings.h"
 #include "apr_md5.h"            /* for apr_password_validate */
 #include "apr_lib.h"            /* for apr_isspace */
+#include "apr_base64.h"         /* for apr_base64_decode et al */
+#define APR_WANT_STRFUNC        /* for strcasecmp */
+#include "apr_want.h"
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -202,8 +205,6 @@ static int authenticate_basic_user(request_rec *r)
     auth_basic_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                        &auth_basic_module);
     const char *sent_user, *sent_pw, *current_auth;
-    char *real_pw;
-    apr_status_t invalid_pw;
     int res;
     authn_status auth_result;
 
