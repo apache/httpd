@@ -69,6 +69,8 @@
 #include "apr_getopt.h"
 #include "ap_mpm.h"
 
+ap_directive_t *ap_conftree;
+
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place 
  *          extern functions and global data in another appropriate module.
  *
@@ -289,7 +291,6 @@ int main(int argc, char *argv[])
     apr_pool_t *pcommands; /* Pool for -D, -C and -c switches */
     apr_getopt_t *opt;
     module **mod;
-    ap_directive_t *conftree = NULL;
     const char *optarg;
 
     apr_initialize();
@@ -382,9 +383,9 @@ int main(int argc, char *argv[])
        for example, to settle down. */
 
     ap_server_root = def_server_root;
-    server_conf = ap_read_config(process, ptemp, confname, &conftree);
+    server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
     ap_run_pre_config(pconf, plog, ptemp);
-    ap_process_config_tree(server_conf, conftree, process->pconf, ptemp); 
+    ap_process_config_tree(server_conf, ap_conftree, process->pconf, ptemp); 
     ap_fixup_virtual_hosts(pconf, server_conf);
     ap_fini_vhost_config(pconf, server_conf);
     ap_sort_hooks();
@@ -407,12 +408,12 @@ int main(int argc, char *argv[])
          * the config file once and just operates on the tree already in
          * memory.  rbb
          */
-        conftree = NULL;
+        ap_conftree = NULL;
 	apr_create_pool(&ptemp, pconf);
 	ap_server_root = def_server_root;
-        server_conf = ap_read_config(process, ptemp, confname, &conftree);
+        server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
 	ap_run_pre_config(pconf, plog, ptemp);
-        ap_process_config_tree(server_conf, conftree, process->pconf, ptemp); 
+        ap_process_config_tree(server_conf, ap_conftree, process->pconf, ptemp);
         ap_fixup_virtual_hosts(pconf, server_conf);
         ap_fini_vhost_config(pconf, server_conf);
         ap_sort_hooks();

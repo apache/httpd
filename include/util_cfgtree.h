@@ -95,6 +95,12 @@ struct ap_directive_t {
 };
 
 /**
+ * The root of the configuration tree
+ * @defvar ap_directive_t *conftree
+ */
+extern AP_DECLARE_DATA ap_directive_t *ap_conftree;
+
+/**
  * Add a node to the configuration tree.
  * @param parent The current parent node.  If the added node is a first_child,
                  then this is changed to the current node
