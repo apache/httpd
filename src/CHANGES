@@ -1,4 +1,11 @@
 Changes with Apache 1.3b8
+
+  *) Transform the configure message "You need root priviledges for suEXEC"
+     from a fatal error into a (more friendly) warning because the building
+     ("make") of Apache we can allow, of course. Root priviledges are needed
+     only for the installation step ("make install"). So make sure the
+     user is aware of this fact but let him proceed as long as he can.
+     [Ralf S. Engelschall] PR#2288
   
   *) Renamed three more functions to common ap_ prefix which we missed at the
      Big Symbol Renaming because they're #defines and not real C functions:

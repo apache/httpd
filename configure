@@ -564,10 +564,6 @@ do
                     esac
                     ;;
                 suexec ) 
-                    if [ ".`id | grep root`" = . ]; then
-                        echo "configure:Error: suEXEC support needs root priviledges for installation" 1>&2
-                        exit 1
-                    fi
                     suexec=1
                     ;;
             esac
@@ -685,6 +681,12 @@ fi
 ##
 ##  a few warnings
 ##
+if [ ".$suexec" = .1 ]; then
+    if [ ".`id | grep root`" = . ]; then
+        echo " + Warning: You enabled the suEXEC feature. Be aware that you need" 1>&2
+        echo " + root priviledges for this, at the latest at the installation step." 1>&2
+    fi
+fi
 if [ ".$PERL" = .no-perl-on-this-system ]; then
     if [ .$quiet = .no ]; then
         echo " + Warning: no Perl interpreter available for support scripts."
