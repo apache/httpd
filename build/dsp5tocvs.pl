@@ -36,7 +36,7 @@ sub tovc6 {
 	if ($verchg) {
 	    unlink $_;
 	    rename $tname, $_;
-	    print "Converted VC6 project " . $_ . " to VC5 in " . $File::Find::dir . "\n"; 
+	    print "Converted VC5 project " . $_ . " to VC6 in " . $File::Find::dir . "\n"; 
 	}
 	else {
 	    unlink $tname;
