@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.11 (outdated: 1.12) -->
+<!-- English Revision: 1.12 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -76,7 +76,9 @@
       </example>
     </note>
 
-    <p>これらのファイルに書くことのできるディレクティブは <directive
+    <p>一般に、<code>.htaccess</code> ファイルの構文は
+    <a href="../configuring.html#syntax">主設定ファイル</a>
+    と同じです。これらのファイルに書くことのできるディレクティブは <directive
     module="core">AllowOverride</directive> ディレクティブにより決まります。
     このディレクティブは、<code>.htaccess</code> ファイルに
     書かれたディレクティブの中で、、
