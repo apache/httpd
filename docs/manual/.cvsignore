@@ -3,4 +3,5 @@ _zip
 build
 *.zip
 *.chm
-
+*.tex
+*.aux
