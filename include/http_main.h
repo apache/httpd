@@ -62,8 +62,7 @@
 extern "C" {
 #endif
 
-extern MODULE_VAR_EXPORT char *ap_server_argv0;
-
+extern MODULE_VAR_EXPORT const char *ap_server_argv0;
 extern API_VAR_EXPORT const char *ap_server_root;
 
 /* for -C, -c and -D switches */
