@@ -1,5 +1,11 @@
 Changes with Apache 1.3.13
 
+  *) Prevent the source code for CGIs from being revealed when using
+     mod_vhost_alias and the CGI directory is under the document root
+     and a user makes a request like http://www.example.com//cgi-bin/cgi
+     as reported in <news:960999105.344321@ernani.logica.co.uk>
+     [Tony Finch]
+
   *) Under Win32, The console input mode is fixed to ignore mouse events 
      and always listen for a Ctrl+C interrupt, even if the console window
      defaults to another mode. [William Rowe]
