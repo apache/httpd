@@ -505,8 +505,8 @@ AP_DECLARE(int) directory_walk(request_rec *r)
             return HTTP_FORBIDDEN;
         }
         if (strcmp(r->filename, test_filename) != 0)
-            r->filename = apr_pstrdup(test_filename);
-        r->canonical_filename = r->test_filename;
+            r->filename = apr_pstrdup(r->pool, test_filename);
+        r->canonical_filename = r->filename;
     }
 
     num_dirs = ap_count_dirs(test_filename);
