@@ -334,17 +334,18 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_clear_pool(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
     ap_post_config_hook(pconf, plog, ptemp, server_conf);
-    ap_clear_pool(ptemp);
+    ap_destroy_pool(ptemp);
 
     for (;;) {
+	ap_create_context(&ptemp, pconf);
 	ap_clear_pool(pconf);
-	ap_clear_pool(ptemp);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
 	server_conf = ap_read_config(pconf, ptemp, confname);
 	ap_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
+	ap_destroy_pool(ptemp);
 
 	if (ap_mpm_run(pconf, plog, server_conf)) break;
     }
