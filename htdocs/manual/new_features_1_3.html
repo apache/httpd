@@ -29,7 +29,47 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
 1.3</a> has the following specific new user features:</p>
 
 <ul>
-
+<LI><A
+     HREF="mod/mod_autoindex.html"
+    ><STRONG>Sortable Directory Listings</STRONG></A>
+ <BR>
+ If a directory listing is displayed using
+ <A
+  HREF="mod/mod_autoindex.html#indexoptions"
+ >FancyIndexing</A>,
+ clicking on a column title will now sort the listing in
+ order by the values in that column.  Selecting the column
+ repeatedly will toggle between ascending and descending order.
+</LI>
+<LI><A
+     HREF="mod/mod_autoindex.html#indexoptions"
+    ><STRONG><SAMP>SuppressHTMLPreamble</SAMP> Option for
+    FancyIndexed Directories</STRONG></A>
+ <BR>
+ If a directory is marked for display with FancyIndexing, the listing
+ page usually follows a predefined format using server-generated HTML.
+ <STRONG>If</STRONG> the IndexOptions directive for the directory
+ includes the <SAMP>SuppressHTMLPreamble</SAMP> option,
+ <STRONG>and</STRONG> a file specified by the
+ <A
+  HREF="mod/mod_autoindex.html#headername"
+ >HeaderName</A>
+ directive is found in the directory, <STRONG>and</STRONG> the header
+ file is recognized as containing HTML (determined by the file
+ extension), <STRONG>then</STRONG> the module will assume that the
+ header file contains the necessary introductory HTML tags and will not
+ generate them itself.
+</LI>
+<LI><STRONG>Less Buffering of CGI Script Output</STRONG>
+ <BR>
+ In previous versions of Apache, the output from CGI scripts would be
+ internally buffered by the server, and wouldn't be forwarded to the
+ client until either the buffers were full or the CGI script completed.
+ As of Apache 1.3, the buffer to the client is flushed any time it
+ contains something and the server is waiting for more information from
+ the script.  This allows CGI script to provide partial status reports
+ during long processing operations.
+</LI>
 <li><b><a href="windows.html">Support for Windows NT/95</a></b><br>
 Apache now supports the Windows NT and Windows 95 operating systems,
 as well as the Unix systems supported in previos releases. Although the

@@ -1,13 +1,17 @@
 Changes with Apache 1.3a2
-  
+
+  *) mod_autoindex now allows sorting of FancyIndexed directory listings
+     by the various fields (name, size, et cetera), either in ascending
+     or descending order.  Just click on the column header.  [Ken Coar]
+
   *) PORT: Various tweaks to eliminate pointer-int casting warnings on 64-bit
-     cpus like the alpha.  Apache still stores ints in pointers, but that's
+     CPUs like the Alpha.  Apache still stores ints in pointers, but that's
      the relatively safe direction.  [Dean Gaudet] PR#344
 
   *) PORT: QNX mmap() support for faster/more reliable scoreboard handling.
      [Igor N Kovalenko <infoh@mail.wplus.net>] PR#683
 
-  *) child_main avoids an uneeded call to select() when there is only one
+  *) child_main avoids an unneeded call to select() when there is only one
      listening socket.  [Dean Gaudet]
 
   *) In the event that the server is starved for idle servers it will
