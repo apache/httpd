@@ -299,7 +299,8 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
          ap_find_last_token(r->pool,
                          ap_table_get(r->headers_out, "Transfer-Encoding"),
                          "chunked") ||
-         ((r->proto_num >= HTTP_VERSION(1,1)) && (r->chunked = 1))) &&
+         ((r->proto_num >= HTTP_VERSION(1,1)) &&
+	  (r->chunked = 1))) && /* THIS CODE IS CORRECT, see comment above. */
         r->server->keep_alive &&
         (r->server->keep_alive_timeout > 0) &&
         ((r->server->keep_alive_max == 0) ||
