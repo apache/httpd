@@ -1,5 +1,11 @@
 Changes with Apache 1.3b3
 
+  *) If ap_slack fails to allocate above the low slack line it's a good
+     indication that further problems will occur; it's a better indication
+     than many external libraries give us when we actually run out of
+     descriptors.  So report it to the user once per restart.
+     [Dean Gaudet] PR#1181
+
   *) Change mod_include and mod_autoindex to use Y2K-safe date formats
      by default.  [Ken Coar]
 
