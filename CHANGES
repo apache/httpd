@@ -1,4 +1,12 @@
+Changes with Apache 2.0.42
+
+  *) mod_dav: Check for versioning hooks before using them.
+     [Greg Stein]
+
 Changes with Apache 2.0.41
+
+  *) The protocol version (eg: HTTP/1.1) in the request line parsing
+     is now case insensitive. [Jim Jagielski]
 
   *) Allow AddOutputFilterByType to add multiple filters per directive.
      [Justin Erenkrantz]
@@ -25,9 +33,6 @@ Changes with Apache 2.0.41
 
   *) Fix memory leak in core_output_filter.  [Justin Erenkrantz]
 
-  *) Rewrite of aaa modules to an authn/authz model.
-     [Dirk-Willem van Gulik, Justin Erenkrantz]
-  
   *) Update OpenSSL detection to work on Darwin.
      [Sander Temme <sctemme@covalent.net>]
 
