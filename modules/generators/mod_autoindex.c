@@ -109,6 +109,7 @@ module AP_MODULE_DECLARE_DATA autoindex_module;
 #define TRACK_MODIFIED      0x1000
 #define FANCY_INDEXING      0x2000
 #define TABLE_INDEXING      0x4000
+#define IGNORE_CLIENT       0x8000
 
 #define K_NOADJUST 0
 #define K_ADJUST 1
@@ -121,9 +122,11 @@ module AP_MODULE_DECLARE_DATA autoindex_module;
 #define K_LAST_MOD 'M'		/* Last modification date */
 #define K_SIZE 'S'		/* Size (absolute, not as displayed) */
 #define K_DESC 'D'		/* Description */
+#define K_VALID "NMSD"          /* String containing _all_ valid K_ opts */
 
 #define D_ASCENDING 'A'
 #define D_DESCENDING 'D'
+#define D_VALID "AD"            /* String containing _all_ valid D_ opts */
 
 /*
  * These are the dimensions of the default icons supplied with Apache.
@@ -154,9 +157,9 @@ typedef struct ai_desc_t {
 typedef struct autoindex_config_struct {
 
     char *default_icon;
-    int opts;
-    int incremented_opts;
-    int decremented_opts;
+    apr_int32_t opts;
+    apr_int32_t incremented_opts;
+    apr_int32_t decremented_opts;
     int name_width;
     int name_adjust;
     int desc_width;
@@ -340,9 +343,9 @@ static const char *add_readme(cmd_parms *cmd, void *d, const char *name)
 static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 {
     char *w;
-    int opts;
-    int opts_add;
-    int opts_remove;
+    apr_int32_t opts;
+    apr_int32_t opts_add;
+    apr_int32_t opts_remove;
     char action;
     autoindex_config_rec *d_cfg = (autoindex_config_rec *) d;
 
@@ -371,8 +374,20 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	else if (!strcasecmp(w, "IconsAreLinks")) {
 	    option = ICONS_ARE_LINKS;
 	}
+        else if (!strcasecmp(w, "IgnoreClient")) {
+            option = IGNORE_CLIENT;
+	}
 	else if (!strcasecmp(w, "ScanHTMLTitles")) {
 	    option = SCAN_HTML_TITLES;
+	}
+        else if (!strcasecmp(w, "SuppressColumnSorting")) {
+            option = SUPPRESS_COLSORT;
+	}
+	else if (!strcasecmp(w, "SuppressDescription")) {
+	    option = SUPPRESS_DESC;
+	}
+	else if (!strcasecmp(w, "SuppressHTMLPreamble")) {
+	    option = SUPPRESS_PREAMBLE;
 	}
 	else if (!strcasecmp(w, "SuppressIcon")) {
 	    option = SUPPRESS_ICON;
@@ -382,15 +397,6 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	}
 	else if (!strcasecmp(w, "SuppressSize")) {
 	    option = SUPPRESS_SIZE;
-	}
-	else if (!strcasecmp(w, "SuppressDescription")) {
-	    option = SUPPRESS_DESC;
-	}
-	else if (!strcasecmp(w, "SuppressHTMLPreamble")) {
-	    option = SUPPRESS_PREAMBLE;
-	}
-        else if (!strcasecmp(w, "SuppressColumnSorting")) {
-            option = SUPPRESS_COLSORT;
 	}
         else if (!strcasecmp(w, "SuppressRules")) {
             option = SUPPRESS_RULES;
@@ -565,7 +571,7 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_ITERATE2("AddAltByEncoding", add_alt, BY_ENCODING, DIR_CMD_PERMS,
                      "alternate descriptive text followed by one or more content encodings"),
     AP_INIT_RAW_ARGS("IndexOptions", add_opts, NULL, DIR_CMD_PERMS,
-                     "one or more index options"),
+                     "one or more index options [+|-][]"),
     AP_INIT_TAKE2("IndexOrderDefault", set_default_order, NULL, DIR_CMD_PERMS,
                   "{Ascending,Descending} {Name,Size,Description,Date}"),
     AP_INIT_ITERATE("IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS,
@@ -683,6 +689,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
 	new->name_width = add->name_width;
 	new->name_adjust = add->name_adjust;
     }
+
     /* 
      * Likewise for DescriptionWidth. 
      */ 
@@ -1171,7 +1178,7 @@ static char *find_title(request_rec *r)
     return NULL;
 }
 
-static struct ent *make_parent_entry(int autoindex_opts,
+static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
  				     autoindex_config_rec *d,
                                      request_rec *r, char keyid, 
                                      char direction)
@@ -1219,7 +1226,8 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
                                         int autoindex_opts,
 					autoindex_config_rec *d,
 					request_rec *r, char keyid,
-					char direction)
+					char direction,
+                                        const char *pattern)
 {
     request_rec *rr;
     struct ent *p;
@@ -1229,11 +1237,29 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         || ((dirent->name[1] == '.') && !dirent->name[2])))
 	return (NULL);
 
+#ifndef CASE_BLIND_FILESYSTEM
+    if (pattern && (apr_fnmatch(pattern, dirent->name, 
+                                FNM_NOESCAPE | FNM_PERIOD)
+                        != APR_SUCCESS))
+        return (NULL);
+#else  /* !CASE_BLIND_FILESYSTEM */
+	/*
+	 * On some platforms, the match must be case-blind.  This is really
+	 * a factor of the filesystem involved, but we can't detect that
+	 * reliably - so we have to granularise at the OS level.
+	 */
+    if (pattern && (apr_fnmatch(pattern, dirent->name, 
+                                FNM_NOESCAPE | FNM_PERIOD | FNM_CASE_BLIND) 
+                        != APR_SUCCESS))
+        return (NULL);
+#endif /* !CASE_BLIND_FILESYSTEM */
+
     if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, dirent->name)))
         return (NULL);
 
-    if (!(rr = ap_sub_req_lookup_dirent(dirent, r, NULL)))
+    if (!(rr = ap_sub_req_lookup_dirent(dirent, r, NULL))) {
         return (NULL);
+    }
 
     if ((rr->finfo.filetype != APR_DIR && rr->finfo.filetype != APR_REG)
         || !(rr->status == OK || ap_is_HTTP_SUCCESS(rr->status)
@@ -1252,7 +1278,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     p->isdir = 0;
     p->key = apr_toupper(keyid);
     p->ascending = (apr_toupper(direction) == D_ASCENDING);
-    p->version_sort = autoindex_opts & VERSION_SORT;
+    p->version_sort = !!(autoindex_opts & VERSION_SORT);
 
     if (autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING))
     {
@@ -1295,7 +1321,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 }
 
 static char *terminate_description(autoindex_config_rec *d, char *desc,
-				   int autoindex_opts, int desc_width)
+				   apr_int32_t autoindex_opts, int desc_width)
 {
     int maxsize = desc_width;
     register int x;
@@ -1353,20 +1379,26 @@ static char *terminate_description(autoindex_config_rec *d, char *desc,
  * current request, the link changes its meaning to reverse the order when
  * selected again.  Non-active fields always start in ascending order.
  */
-static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
-                      char curdirection, int nosort)
+static void emit_link(request_rec *r, const char *anchor, char column, 
+                      char curkey, char curdirection, 
+                      const char *colargs, int nosort)
 {
-    char qvalue[5];
+    char qvalue[9];
     int reverse;
 
     if (!nosort) {
+	reverse = ((curkey == column) && (curdirection == D_ASCENDING));
 	qvalue[0] = '?';
-	qvalue[1] = fname;
+	qvalue[1] = 'C';
 	qvalue[2] = '=';
-	qvalue[4] = '\0';
-	reverse = ((curkey == fname) && (curdirection == D_ASCENDING));
-	qvalue[3] = reverse ? D_DESCENDING : D_ASCENDING;
-	ap_rvputs(r, "<a href=\"", qvalue, "\">", anchor, "</a>", NULL);
+	qvalue[3] = column;
+	qvalue[4] = '&';
+	qvalue[5] = 'O';
+	qvalue[6] = '=';
+	qvalue[7] = reverse ? D_DESCENDING : D_ASCENDING;
+	qvalue[8] = '\0';
+	ap_rvputs(r, "<a href=\"", qvalue, colargs ? colargs : "", 
+                     "\">", anchor, "</a>", NULL);
     }
     else {
         ap_rputs(anchor, r);
@@ -1375,13 +1407,14 @@ static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
 
 static void output_directories(struct ent **ar, int n,
 			       autoindex_config_rec *d, request_rec *r,
-			       int autoindex_opts, char keyid, char direction)
+			       apr_int32_t autoindex_opts, char keyid, 
+                               char direction, const char *colargs)
 {
     int x;
     apr_size_t rv;
     char *name = r->uri;
     char *tp;
-    int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
+    int static_columns = !!(autoindex_opts & SUPPRESS_COLSORT);
     apr_pool_t *scratch;
     int name_width;
     int desc_width;
@@ -1443,20 +1476,24 @@ static void output_directories(struct ent **ar, int n,
             ++cols;
         }
         ap_rputs("<th>", r);
-        emit_link(r, "Name", K_NAME, keyid, direction, static_columns);
+        emit_link(r, "Name", K_NAME, keyid, direction, 
+                  colargs, static_columns);
 	if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
             ap_rputs("</th><th>", r);
-	    emit_link(r, "Last modified", K_LAST_MOD, keyid, direction, static_columns);
+	    emit_link(r, "Last modified", K_LAST_MOD, keyid, direction, 
+                      colargs, static_columns);
 	    ++cols;
 	}
 	if (!(autoindex_opts & SUPPRESS_SIZE)) {
             ap_rputs("</th><th>", r);
-	    emit_link(r, "Size", K_SIZE, keyid, direction, static_columns);
+	    emit_link(r, "Size", K_SIZE, keyid, direction, 
+                      colargs, static_columns);
 	    ++cols;
 	}
 	if (!(autoindex_opts & SUPPRESS_DESC)) {
             ap_rputs("</th><th>", r);
-	    emit_link(r, "Description", K_DESC, keyid, direction, static_columns);
+	    emit_link(r, "Description", K_DESC, keyid, direction, 
+                      colargs, static_columns);
 	    ++cols;
 	}
         if (!(autoindex_opts & SUPPRESS_RULES))
@@ -1481,7 +1518,8 @@ static void output_directories(struct ent **ar, int n,
             else
 	        ap_rputs("      ", r);
         }
-        emit_link(r, "Name", K_NAME, keyid, direction, static_columns);
+        emit_link(r, "Name", K_NAME, keyid, direction, 
+                  colargs, static_columns);
 	ap_rputs(pad_scratch + 4, r);
 	/*
 	 * Emit the guaranteed-at-least-one-space-between-columns byte.
@@ -1489,16 +1527,17 @@ static void output_directories(struct ent **ar, int n,
 	ap_rputs(" ", r);
 	if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
             emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
-                      static_columns);
+                      colargs, static_columns);
 	    ap_rputs("      ", r);
 	}
 	if (!(autoindex_opts & SUPPRESS_SIZE)) {
-            emit_link(r, "Size", K_SIZE, keyid, direction, static_columns);
+            emit_link(r, "Size", K_SIZE, keyid, direction, 
+                      colargs, static_columns);
 	    ap_rputs("  ", r);
 	}
 	if (!(autoindex_opts & SUPPRESS_DESC)) {
             emit_link(r, "Description", K_DESC, keyid, direction,
-                      static_columns);
+                      colargs, static_columns);
 	}
 	if (!(autoindex_opts & SUPPRESS_RULES))
             ap_rputs("<hr />", r);
@@ -1768,6 +1807,7 @@ static int index_directory(request_rec *r,
     char *title_name = ap_escape_html(r->pool, r->uri);
     char *title_endp;
     char *name = r->filename;
+    char *pstring = NULL;
     apr_finfo_t dirent;
     apr_dir_t *thedir;
     apr_status_t status;
@@ -1775,9 +1815,10 @@ static int index_directory(request_rec *r,
     struct ent *head, *p;
     struct ent **ar = NULL;
     const char *qstring;
-    int autoindex_opts = autoindex_conf->opts;
+    apr_int32_t autoindex_opts = autoindex_conf->opts;
     char keyid;
     char direction;
+    char *colargs;
 
     if ((status = apr_dir_open(&thedir, name, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
@@ -1809,8 +1850,85 @@ static int index_directory(request_rec *r,
     direction = autoindex_conf->default_direction 
                 ? autoindex_conf->default_direction : D_ASCENDING;
 
-    /* Spew HTML preamble */
+    /*
+     * Figure out what sort of indexing (if any) we're supposed to use.
+     *
+     * If no QUERY_STRING was specified or client query strings have been
+     * explicitly disabled.  
+     * If we are ignoring the client, suppress column sorting as well.
+     */
+    if (autoindex_opts & IGNORE_CLIENT) {
+        qstring = NULL;
+        autoindex_opts |= SUPPRESS_COLSORT;
+        colargs = "";
+    }
+    else {
+        char fval[5], vval[5], *ppre = "";
+        fval[0] = '\0'; vval[0] = '\0';
+        qstring = r->args;
 
+        while (qstring && *qstring) {
+            if (qstring[0] == 'C' && qstring[1] == '='
+                    && qstring[2] && strchr(K_VALID, qstring[2])
+                    && (qstring[3] == '&' || !qstring[3])) {
+	        keyid = qstring[2];
+                qstring += qstring[3] ? 4 : 3;
+            }
+            else if (qstring[0] == 'O' && qstring[1] == '='
+                    && ((qstring[2] == D_ASCENDING)
+                     || (qstring[2] == D_DESCENDING)) 
+                    && (qstring[3] == '&' || !qstring[3])) {
+	        direction = qstring[2];
+                qstring += qstring[3] ? 4 : 3;
+            }
+            else if (qstring[0] == 'F' && qstring[1] == '='
+                    && qstring[2] && strchr("012", qstring[2])
+                    && (qstring[3] == '&' || !qstring[3])) {
+                if (qstring[2] == '0')
+                    autoindex_opts &= ~(FANCY_INDEXING | TABLE_INDEXING);
+                else if (qstring[2] == '1')
+                    autoindex_opts = (autoindex_opts | FANCY_INDEXING)
+                                                    & ~TABLE_INDEXING;
+                else if (qstring[2] == '2')
+                    autoindex_opts |= FANCY_INDEXING | TABLE_INDEXING;
+                strcpy(fval, "&F= "); 
+                fval[3] = qstring[2];
+                qstring += qstring[3] ? 4 : 3;
+            }
+            else if (qstring[0] == 'V' && qstring[1] == '='
+                    && (qstring[2] == '0' || qstring[2] == '1')
+                    && (qstring[3] == '&' || !qstring[3])) {
+                if (qstring[2] == '0')
+                    autoindex_opts &= ~VERSION_SORT;
+                else if (qstring[2] == '1')
+                    autoindex_opts |= VERSION_SORT;
+                strcpy(fval, "&V= "); 
+                vval[3] = qstring[2];
+                qstring += qstring[3] ? 4 : 3;
+            }
+            else if (qstring[0] == 'P' && qstring[1] == '=') {
+                char *eos = strchr(qstring, '&');
+                if (eos) {
+                    pstring = apr_pstrndup(r->pool, qstring + 2, 
+                                           eos - qstring - 2);
+                    qstring = eos + 1;
+                }
+                else {
+                    pstring = apr_pstrdup(r->pool, qstring + 2);
+                    qstring = NULL;
+                }
+                if (*pstring)
+                    ppre = "&P="; 
+                else
+                    pstring = NULL;
+            }
+            else /* Syntax error?  Ignore the remainder! */
+                qstring = NULL;
+        }
+        colargs = apr_pstrcat(r->pool, fval, vval, ppre, pstring, NULL);
+    }
+
+    /* Spew HTML preamble */
     title_endp = title_name + strlen(title_name) - 1;
 
     while (title_endp > title_name && *title_endp == '/') {
@@ -1819,31 +1937,6 @@ static int index_directory(request_rec *r,
 
     emit_head(r, find_header(autoindex_conf, r),
 	      autoindex_opts & SUPPRESS_PREAMBLE, title_name);
-
-    /*
-     * Figure out what sort of indexing (if any) we're supposed to use.
-     *
-     * If no QUERY_STRING was specified or column sorting has been
-     * explicitly disabled, we use the default specified by the
-     * IndexOrderDefault directive (if there is one); otherwise,
-     * we fall back to ascending by name.
-     */
-    if (!(autoindex_opts & SUPPRESS_COLSORT))
-        qstring = r->args;
-    else
-        qstring = NULL;
-
-    /*
-     * If there is no specific ordering defined for this directory,
-     * take the defaults above.
-     */
-    if ((qstring != NULL) && (*qstring != '\0')) {
-	keyid = *qstring;
-	ap_getword(r->pool, &qstring, '=');
-	if (qstring != '\0') {
-	    direction = *qstring;
-	}
-    }
 
     /* 
      * Since we don't know how many dir. entries there are, put them into a 
@@ -1857,8 +1950,8 @@ static int index_directory(request_rec *r,
 	num_ent++;
     }
     while (apr_dir_read(&dirent, APR_FINFO_DIRENT, thedir) == APR_SUCCESS) {
-	p = make_autoindex_entry(&dirent, autoindex_opts,
-				 autoindex_conf, r, keyid, direction);
+	p = make_autoindex_entry(&dirent, autoindex_opts, autoindex_conf, r, 
+                                 keyid, direction, pstring);
 	if (p != NULL) {
 	    p->next = head;
 	    head = p;
@@ -1878,8 +1971,8 @@ static int index_directory(request_rec *r,
 	qsort((void *) ar, num_ent, sizeof(struct ent *),
 	      (int (*)(const void *, const void *)) dsortf);
     }
-    output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, keyid,
-		       direction);
+    output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, 
+                       keyid, direction, colargs);
     apr_dir_close(thedir);
 
     emit_tail(r, find_readme(autoindex_conf, r),

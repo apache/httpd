@@ -1,5 +1,19 @@
 Changes with Apache 2.0.23-dev
 
+  *) All mod_autoindex query parsing is now quietly quashed with the 
+     IndexOption IgnoreClient.  The IndexOption SuppressColumnSorting 
+     still drops the column sort <a href>'s for the column headers, but 
+     IgnoreClient is required to ignore these Query options entirely.  
+     [William Rowe]
+
+  *) Introduced new mod_autoindex query argument parsing for F=[0|1|2]
+     to allow the client to select plain, FancyIndexing or HTMLTable
+     formatting, V=[0|1] to inhibit or enable version sorting, and 
+     P=pattern to return only specific files.  The old Query Arguments
+     were reorganized as C=f for sorting column 'f' (same N, D, S, or M
+     as before), and O=A|D for ordering ascending or descending.  
+     [William Rowe]
+
   *) Fixed an error in mod_include's directive parsing routines which
      caused #if, #elif, and #else expressions containing backslashes
      to be improperly evaluated.  [Cliff Woolley]
