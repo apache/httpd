@@ -239,6 +239,16 @@ static const char *set_balancer_param(apr_pool_t *p,
             return "timeout must be at least one second";
         balancer->timeout = apr_time_from_sec(ival);
     }
+    else if (!strcasecmp(key, "maxattempts")) {
+        /* Maximum number of failover attempts before
+         * giving up.
+         */
+        ival = atoi(val);
+        if (ival < 0)
+            return "maximum number of attempts must be a positive number";
+        balancer->max_attempts = ival;
+        balancer->max_attempts_set = 1;
+    }
     else {
         return "unknown Balancer parameter";
     }
@@ -578,6 +588,7 @@ static int proxy_handler(request_rec *r)
     long maxfwd;
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
+    int attempts = 0, max_attempts = 0;
 
     /* is this for us? */
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
@@ -621,81 +632,98 @@ static int proxy_handler(request_rec *r)
     apr_table_set(r->headers_in, "Max-Forwards", 
                   apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
 
-    url = r->filename + 6;
-    p = strchr(url, ':');
-    if (p == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "proxy_handler no URL in %s", r->filename);
-        return HTTP_BAD_REQUEST;
-    }
-
-    /* If the host doesn't have a domain name, add one and redirect. */
-    if (conf->domain != NULL) {
-        rc = proxy_needsdomain(r, url, conf->domain);
-        if (ap_is_HTTP_REDIRECT(rc))
-            return HTTP_MOVED_PERMANENTLY;
-    }
-
-    *p = '\0';
-    scheme = apr_pstrdup(r->pool, url);
-    *p = ':';
-
-    /* Check URI's destination host against NoProxy hosts */
-    /* Bypass ProxyRemote server lookup if configured as NoProxy */
-    /* we only know how to handle communication to a proxy via http */
-    /*if (strcasecmp(scheme, "http") == 0) */
-    {
-        int ii;
-        struct dirconn_entry *list = (struct dirconn_entry *) conf->dirconn->elts;
-
-        for (direct_connect = ii = 0; ii < conf->dirconn->nelts && !direct_connect; ii++) {
-            direct_connect = list[ii].matcher(&list[ii], r);
+    do {
+        url = r->filename + 6;
+        p = strchr(url, ':');
+        if (p == NULL) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "proxy_handler no URL in %s", r->filename);
+            return HTTP_BAD_REQUEST;
         }
+
+        /* If the host doesn't have a domain name, add one and redirect. */
+        if (conf->domain != NULL) {
+            rc = proxy_needsdomain(r, url, conf->domain);
+            if (ap_is_HTTP_REDIRECT(rc))
+                return HTTP_MOVED_PERMANENTLY;
+        }
+
+        *p = '\0';
+        scheme = apr_pstrdup(r->pool, url);
+        *p = ':';
+
+        /* Check URI's destination host against NoProxy hosts */
+        /* Bypass ProxyRemote server lookup if configured as NoProxy */
+        /* we only know how to handle communication to a proxy via http */
+        /*if (strcasecmp(scheme, "http") == 0) */
+        {
+            int ii;
+            struct dirconn_entry *list = (struct dirconn_entry *)
+                                                conf->dirconn->elts;
+
+            for (direct_connect = ii = 0; ii < conf->dirconn->nelts &&
+                                               !direct_connect; ii++) {
+                direct_connect = list[ii].matcher(&list[ii], r);
+            }
 #if DEBUGGING
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       (direct_connect) ? "NoProxy for %s" : "UseProxy for %s",
                       r->uri);
 #endif
-    }
+        }
     
-    /* Try to obtain the most suitable worker */
-    access_status = ap_proxy_pre_request(&worker, &balancer, r, conf, &url);
-    if (access_status != OK)
-        return access_status;
-    
-    /* firstly, try a proxy, unless a NoProxy directive is active */
-    if (!direct_connect) {
-        for (i = 0; i < proxies->nelts; i++) {
-            p2 = ap_strchr_c(ents[i].scheme, ':');  /* is it a partial URL? */
-            if (strcmp(ents[i].scheme, "*") == 0 ||
-                (ents[i].use_regex && ap_regexec(ents[i].regexp, url, 0,NULL, 0)) ||
-                (p2 == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
-                (p2 != NULL &&
-                 strncasecmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
+        /* Try to obtain the most suitable worker */
+        access_status = ap_proxy_pre_request(&worker, &balancer, r, conf, &url);
+        if (access_status != OK)
+            return access_status;
+        if (balancer && balancer->max_attempts_set && !max_attempts)
+            max_attempts = balancer->max_attempts;
+        /* firstly, try a proxy, unless a NoProxy directive is active */
+        if (!direct_connect) {
+            for (i = 0; i < proxies->nelts; i++) {
+                p2 = ap_strchr_c(ents[i].scheme, ':');  /* is it a partial URL? */
+                if (strcmp(ents[i].scheme, "*") == 0 ||
+                    (ents[i].use_regex && ap_regexec(ents[i].regexp, url,
+                                                     0,NULL, 0)) ||
+                    (p2 == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
+                    (p2 != NULL &&
+                    strncasecmp(url, ents[i].scheme,
+                                strlen(ents[i].scheme)) == 0)) {
 
-                /* handle the scheme */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                             "Trying to run scheme_handler against proxy");
-                access_status = proxy_run_scheme_handler(r, worker, conf, url, ents[i].hostname, ents[i].port);
+                    /* handle the scheme */
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "Trying to run scheme_handler against proxy");
+                    access_status = proxy_run_scheme_handler(r, worker,
+                                                             conf, url,
+                                                             ents[i].hostname,
+                                                             ents[i].port);
 
-                /* an error or success */
-                if (access_status != DECLINED && access_status != HTTP_BAD_GATEWAY) {
-                    goto cleanup;
+                    /* an error or success */
+                    if (access_status != DECLINED &&
+                        access_status != HTTP_BAD_GATEWAY) {
+                        goto cleanup;
+                    }
+                    /* we failed to talk to the upstream proxy */
                 }
-                /* we failed to talk to the upstream proxy */
             }
         }
-    }
 
-    /* otherwise, try it direct */
-    /* N.B. what if we're behind a firewall, where we must use a proxy or
-     * give up??
-     */
+        /* otherwise, try it direct */
+        /* N.B. what if we're behind a firewall, where we must use a proxy or
+        * give up??
+        */
 
-    /* handle the scheme */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "Trying to run scheme_handler");
-    access_status = proxy_run_scheme_handler(r, worker, conf, url, NULL, 0);
+        /* handle the scheme */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "Running scheme %s handler (attempt %d)",
+                     scheme, attempts);
+        if ((access_status = proxy_run_scheme_handler(r, worker, conf,
+                                                      url, NULL, 0)) == OK)
+            break;
+        
+    } while (!PROXY_WORKER_IS_USABLE(worker) && 
+             max_attempts > attempts++);
+
     if (DECLINED == access_status) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
                     "proxy: No protocol handler was valid for the URL %s. "
@@ -705,7 +733,6 @@ static int proxy_handler(request_rec *r)
         access_status = HTTP_FORBIDDEN;
         goto cleanup;
     }
-
 cleanup:
     if (balancer) {
         int post_status = proxy_run_post_request(worker, balancer, r, conf);
