@@ -74,11 +74,6 @@ void ssl_hook_AddModule(module *m)
 {
     if (m == &ssl_module) {
         /*
-         * Announce us for the configuration files
-         */
-        ap_add_config_define("MOD_SSL");
-
-        /*
          * Link ourself into the Apache kernel
          */
         ssl_var_register();
