@@ -119,6 +119,7 @@ install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
             test -d $(sbindir) || $(MKINSTALLDIRS) $(sbindir); \
             cp -p $(srcdir)/support/suexec $(sbindir); \
+            chmod 4755 $(sbindir)/suexec; \
 	fi
 
 suexec:
