@@ -138,7 +138,7 @@ typedef struct piped_log {
     ap_context_t *p;
 #ifndef NO_RELIABLE_PIPED_LOGS
     char *program;
-    int pid;
+    ap_proc_t *pid;
     ap_file_t fds[2];
 #else
     ap_file_t *write_f;

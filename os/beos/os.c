@@ -11,22 +11,6 @@ int ap_os_is_path_absolute(const char *file)
   return file[0] == '/';
 }
 
-int ap_spawnvp(const char *file, char *const argv[])
-{
-    int pid;
-
-    if ((pid = fork()) == -1) {
-        return pid;
-    } else if (pid == 0) {
-        if (execvp(file, argv) == -1)
-            return -1;
-        else
-            return -1;  /* If we get, we have a real error, but this keeps
-                           us from getting a warning during compile time. */
-    } else 
-        return pid;
-}
-
 
 /* some linkers complain unless there's at least one function in each
  * .o file... and extra prototype is for gcc -Wmissing-prototypes
