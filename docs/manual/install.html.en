@@ -193,7 +193,7 @@
     <p>Apache can be downloaded from the <a
     href="http://www.apache.org/dist/httpd/">Apache Software
     Foundation download site</a> or from a <a
-    href="http://www.apache.org/dyn/closer.cgi">nearby
+    href="http://www.apache.org/dyn/closer.cgi/httpd/">nearby
     mirror</a>.</p>
 
     <p>Version numbers that end in <code>alpha</code> indicate
