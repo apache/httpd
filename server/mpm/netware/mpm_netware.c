@@ -904,7 +904,7 @@ void netware_rewrite_args(process_rec *process)
 {
     char *def_server_root;
     char optbuf[3];
-    const char *optarg;
+    const char *opt_arg;
     apr_getopt_t *opt;
     apr_array_header_t *mpm_new_argv;
 
@@ -946,14 +946,14 @@ void netware_rewrite_args(process_rec *process)
             optbuf[0] = '-';
             optbuf[2] = '\0';
             apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
-            while (apr_getopt(opt, AP_SERVER_BASEARGS, optbuf + 1, &optarg) == APR_SUCCESS) {
+            while (apr_getopt(opt, AP_SERVER_BASEARGS, optbuf + 1, &opt_arg) == APR_SUCCESS) {
                 switch (optbuf[1]) {
                 default:
                     *(const char **)apr_array_push(mpm_new_argv) =
                         apr_pstrdup(process->pool, optbuf);
 
-                    if (optarg) {
-                        *(const char **)apr_array_push(mpm_new_argv) = optarg;
+                    if (opt_arg) {
+                        *(const char **)apr_array_push(mpm_new_argv) = opt_arg;
                     }
                     break;
                 }
