@@ -56,10 +56,18 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#define CORE_PRIVATE
-#include "ap_config.h"
+#include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_fnmatch.h"
+#include "apr_thread_proc.h"    /* for RLIMIT stuff */
+
+#if APR_HAVE_SYS_UIO_H
+#include <sys/uio.h>            /* for iovec */
+#endif
+
+#define CORE_PRIVATE
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -70,12 +78,12 @@
 #include "http_log.h"
 #include "rfc1413.h"
 #include "util_md5.h"
-#include "apr_fnmatch.h"
 #include "http_connection.h"
 #include "ap_buckets.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "mpm.h"
+
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
@@ -2524,7 +2532,8 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 }
 #endif
 
-static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec, 
+static apr_status_t writev_it_all(apr_socket_t *s,
+                                  struct iovec *vec, int nvec,
                                   apr_size_t len, apr_size_t *nbytes)
 {
     apr_size_t bytes_written = 0;

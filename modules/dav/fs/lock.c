@@ -56,11 +56,13 @@
 ** DAV filesystem lock implementation
 */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_file_io.h"
+#include "apr_uuid.h"
+
 #include "httpd.h"
 #include "http_log.h"
-#include "apr_file_io.h"
-#include "apr_strings.h"
-#include "apr_uuid.h"
 
 #include "mod_dav.h"
 #include "repos.h"
@@ -882,7 +884,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
 
     if (pbuf->cur_len == 0) {
 	/* delete the file if cur_len == 0 */
-	if (remove(pathname) != 0) {
+	if (apr_remove_file(pathname, p) != 0) {
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 apr_psprintf(p,
 					     "Error removing %s", pathname));

@@ -178,11 +178,17 @@
 **       entries from the property database.
 */
 
+#include "apr.h"
+#include "apr_strings.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for sprintf() */
+#endif
+
 #include "mod_dav.h"
 
 #include "http_log.h"
 #include "http_request.h"
-#include "apr_strings.h"
 
 /*
 ** There is some rough support for writable DAV:getcontenttype and

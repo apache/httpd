@@ -60,11 +60,17 @@
 /* James Clark's Expat parser */
 #include "xmlparse.h"
 
+#include "apr.h"
+#include "apr_strings.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for fprintf(), sprintf() */
+#endif
+
 #include "httpd.h"
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_core.h"
-#include "apr_strings.h"
 
 #include "util_xml.h"
 

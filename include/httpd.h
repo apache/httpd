@@ -77,12 +77,14 @@ extern "C" {
 
 /* Headers in which EVERYONE has an interest... */
 #include "ap_config.h"
+#include "ap_mmn.h"
+
 #include "os.h"
-#include "apr_general.h"
-#include "apr_lib.h"
+
+#include "apr_tables.h"
+#include "apr_pools.h"
 #include "apr_time.h"
 #include "apr_network_io.h"
-#include "ap_mmn.h"
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>

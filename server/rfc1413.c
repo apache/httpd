@@ -79,16 +79,24 @@
 
 /* Rewritten by David Robinson */
 
+#include "apr.h"
+#include "apr_network_io.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
 #include "ap_config.h"
+
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+
 #include "httpd.h"		/* for server_rec, conn_rec, etc. */
 #include "http_log.h"		/* for aplog_error */
 #include "rfc1413.h"
 #include "http_main.h"		/* set_callback_and_alarm */
 #include "util_ebcdic.h"
-#include "apr_network_io.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
 
 /* Local stuff. */
 /* Semi-well-known port */

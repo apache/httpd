@@ -64,8 +64,15 @@
  * by Alexei Kosut, based on htpasswd.c, by Rob McCool
  */
 
-#include "apr_lib.h"
+#include "apr.h"
+#include "apr_file_io.h"
 #include "apr_md5.h"
+#include "apr_lib.h"            /* for apr_getpass() */
+#include "apr_general.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>
+#endif
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

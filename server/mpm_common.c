@@ -67,19 +67,15 @@
  * does not belong in src/os/unix
  */
 
+#include "apr.h"
 #include "apr_thread_proc.h"
+#include "apr_general.h"        /* for signal stuff */
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "mpm.h"
 #include "mpm_common.h"
-
-#if HAVE_SYS_TIME_H
-#include <sys/time.h> /* for timeval definitions */
-#endif
-#if HAVE_SYS_SOCKET_H
-#include <sys/socket.h> /* for setsockopt prototype */
-#endif
 
 #ifdef MPM_NEEDS_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate)

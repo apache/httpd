@@ -92,7 +92,13 @@
  * Mark Cox, mark@ukweb.com, Allow relative URLs even when no base specified
  */
 
+#include "apr.h"
 #include "apr_strings.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for sscanf() */
+#endif
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

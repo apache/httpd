@@ -125,6 +125,10 @@
  *
  */
 
+#include "apr.h"
+#include "apr_dso.h"
+#include "apr_strings.h"
+#include "apr_errno.h"
 
 #define CORE_PRIVATE
 #include "ap_config.h"
@@ -132,8 +136,6 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "ap_config.h"
-#include "apr_dso.h"
-#include "apr_strings.h"
 
 module AP_MODULE_DECLARE_DATA so_module;
 

@@ -63,9 +63,15 @@
  * rst
  */
 
-#include "ap_config.h"
+#include "apr.h"
 #include "apr_strings.h"
 #include "apr_file_io.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for EOF */
+#endif
+
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"

@@ -69,9 +69,12 @@
  * they fail.
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_thread_proc.h"    /* for RLIMIT stuff */
+
 #define CORE_PRIVATE
 
-#include "apr_strings.h"
 #include "ap_buckets.h"
 #include "util_filter.h"
 #include "ap_config.h"

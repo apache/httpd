@@ -56,6 +56,15 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_getopt.h"
+#include "apr_general.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
 #define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h" 
@@ -65,8 +74,6 @@
 #include "http_vhost.h"
 #include "util_uri.h" 
 #include "util_ebcdic.h"
-#include "apr_strings.h"
-#include "apr_getopt.h"
 #include "ap_mpm.h"
 
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place 
