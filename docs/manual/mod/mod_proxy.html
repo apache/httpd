@@ -528,6 +528,13 @@ file. A useful line can be<p>
 application/octet-stream        bin dms lha lzh exe class tgz taz
 </pre>
 
+<h2><a name="type">How can I force an FTP ASCII download of File <EM>xxx</EM>?</a></h2>
+
+In the rare situation where you must download a specific file using the FTP
+<STRONG>ASCII</STRONG> transfer method (while the default transfer is in
+<STRONG>binary</STRONG> mode), you can override mod_proxy's default by
+suffixing the request with <SAMP>;type=a</SAMP> to force an ASCII transfer.<p>
+
 <h2><a name="startup">Why does Apache start more slowly when using the
         proxy module?</a></h2>
 
