@@ -142,7 +142,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     /* is this for us? */
     if (r->method_number != M_CONNECT) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: CONNECT: rejecting URL %s", url);
+		     "proxy: CONNECT: declining URL %s", url);
 	return DECLINED;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
