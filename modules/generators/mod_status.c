@@ -384,9 +384,8 @@ static int status_handler(request_rec *r)
     }
 
     /* up_time in seconds */
-    up_time = (apr_uint32_t) ((nowtime -
-                               ap_scoreboard_image->global->restart_time)
-                              / APR_USEC_PER_SEC);
+    up_time = (apr_uint32_t) apr_time_sec(nowtime -
+                               ap_scoreboard_image->global->restart_time);
 
     if (!short_report) {
         ap_rputs(DOCTYPE_HTML_3_2
@@ -648,8 +647,8 @@ static int status_handler(request_rec *r)
                                ws_record->times.tms_cutime / tick,
                                ws_record->times.tms_cstime / tick,
 #endif
-                               (long)((nowtime - ws_record->last_used) /
-                                      APR_USEC_PER_SEC),
+                               (long)apr_time_sec(nowtime -
+                                                  ws_record->last_used),
                                (long) req_time);
 
                     format_byte_out(r, conn_bytes);
@@ -733,8 +732,8 @@ static int status_handler(request_rec *r)
                                 ws_record->times.tms_cutime +
                                 ws_record->times.tms_cstime) / tick,
 #endif
-                               (long)((nowtime - ws_record->last_used) /
-                                      APR_USEC_PER_SEC),
+                               (long)apr_time_sec(nowtime -
+                                                  ws_record->last_used),
                                (long)req_time);
                     
                     ap_rprintf(r, "</td><td>%-1.1f</td><td>%-2.2f</td><td>%-2.2f\n",
