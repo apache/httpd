@@ -1141,7 +1141,7 @@ static char *make_allow(request_rec *r)
                        NULL);
 }
 
-int ap_send_http_trace(request_rec *r)
+API_EXPORT(int) ap_send_http_trace(request_rec *r)
 {
     int rv;
 
@@ -1304,7 +1304,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
  * information for any wrappers around the response message body
  * (i.e., transfer encodings).  It should have been named finalize_response.
  */
-void ap_finalize_request_protocol(request_rec *r)
+API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
     if (r->chunked && !r->connection->aborted) {
         /*

@@ -873,7 +873,7 @@ API_EXPORT(void) ap_destroy_sub_req(request_rec *r)
  * Mainline request processing...
  */
 
-void ap_die(int type, request_rec *r)
+API_EXPORT(void) ap_die(int type, request_rec *r)
 {
     int error_index = ap_index_of_response(type);
     char *custom_response = ap_response_code_string(r, error_index);

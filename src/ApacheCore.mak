@@ -28,10 +28,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 OUTDIR=.\CoreR
@@ -101,12 +97,46 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I ".\include" /D "WIN32" /D "NDEBUG" /D\
  "_WINDOWS" /Fp"$(INTDIR)\ApacheCore.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
  /FD /c 
 CPP_OBJS=.\CoreR/
 CPP_SBRS=.
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
@@ -284,12 +314,46 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\include" /D "WIN32" /D "_DEBUG"\
  /D "_WINDOWS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\ApacheCore.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\CoreD/
 CPP_SBRS=.\CoreD/
+
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
@@ -401,36 +465,6 @@ LINK32_OBJS= \
 
 !ENDIF 
 
-.c{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_OBJS)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(CPP_SBRS)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
 
 !IF "$(CFG)" == "ApacheCore - Win32 Release" || "$(CFG)" ==\
  "ApacheCore - Win32 Debug"
@@ -441,8 +475,9 @@ SOURCE=.\main\alloc.c
 DEP_CPP_ALLOC=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
@@ -450,9 +485,6 @@ DEP_CPP_ALLOC=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_ALLOC=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\alloc.obj" : $(SOURCE) $(DEP_CPP_ALLOC) "$(INTDIR)"
@@ -464,8 +496,9 @@ NODEP_CPP_ALLOC=\
 DEP_CPP_ALLOC=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
@@ -473,9 +506,14 @@ DEP_CPP_ALLOC=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_ALLOC=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\alloc.obj"	"$(INTDIR)\alloc.sbr" : $(SOURCE) $(DEP_CPP_ALLOC)\
@@ -492,8 +530,9 @@ SOURCE=.\main\buff.c
 DEP_CPP_BUFF_=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
@@ -501,9 +540,6 @@ DEP_CPP_BUFF_=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_BUFF_=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\buff.obj" : $(SOURCE) $(DEP_CPP_BUFF_) "$(INTDIR)"
@@ -515,8 +551,9 @@ NODEP_CPP_BUFF_=\
 DEP_CPP_BUFF_=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
@@ -524,9 +561,14 @@ DEP_CPP_BUFF_=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_BUFF_=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\buff.obj"	"$(INTDIR)\buff.sbr" : $(SOURCE) $(DEP_CPP_BUFF_)\
@@ -543,16 +585,14 @@ SOURCE=.\buildmark.c
 DEP_CPP_BUILD=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_BUILD=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\buildmark.obj" : $(SOURCE) $(DEP_CPP_BUILD) "$(INTDIR)"
@@ -563,16 +603,22 @@ NODEP_CPP_BUILD=\
 DEP_CPP_BUILD=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_BUILD=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\buildmark.obj"	"$(INTDIR)\buildmark.sbr" : $(SOURCE)\
@@ -606,8 +652,9 @@ SOURCE=.\main\http_config.c
 DEP_CPP_HTTP_=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\explain.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
@@ -620,9 +667,6 @@ DEP_CPP_HTTP_=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_HTTP_=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\http_config.obj" : $(SOURCE) $(DEP_CPP_HTTP_) "$(INTDIR)"
@@ -634,8 +678,9 @@ NODEP_CPP_HTTP_=\
 DEP_CPP_HTTP_=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\explain.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
@@ -648,9 +693,14 @@ DEP_CPP_HTTP_=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_HTTP_=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\http_config.obj"	"$(INTDIR)\http_config.sbr" : $(SOURCE)\
@@ -667,9 +717,10 @@ SOURCE=.\main\http_core.c
 DEP_CPP_HTTP_C=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\ap_md5.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\fnmatch.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
@@ -687,9 +738,6 @@ DEP_CPP_HTTP_C=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_HTTP_C=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\http_core.obj" : $(SOURCE) $(DEP_CPP_HTTP_C) "$(INTDIR)"
@@ -701,8 +749,10 @@ NODEP_CPP_HTTP_C=\
 DEP_CPP_HTTP_C=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_md5.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\fnmatch.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
@@ -720,10 +770,14 @@ DEP_CPP_HTTP_C=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_HTTP_C=\
-	".\include\hide.h"\
-	".\include\md5.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\http_core.obj"	"$(INTDIR)\http_core.sbr" : $(SOURCE)\
@@ -740,8 +794,9 @@ SOURCE=.\main\http_log.c
 DEP_CPP_HTTP_L=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -751,9 +806,6 @@ DEP_CPP_HTTP_L=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_HTTP_L=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\http_log.obj" : $(SOURCE) $(DEP_CPP_HTTP_L) "$(INTDIR)"
@@ -765,8 +817,9 @@ NODEP_CPP_HTTP_L=\
 DEP_CPP_HTTP_L=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -776,9 +829,14 @@ DEP_CPP_HTTP_L=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_HTTP_L=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\http_log.obj"	"$(INTDIR)\http_log.sbr" : $(SOURCE) $(DEP_CPP_HTTP_L)\
@@ -795,8 +853,9 @@ SOURCE=.\main\http_main.c
 DEP_CPP_HTTP_M=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\explain.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
@@ -817,9 +876,6 @@ DEP_CPP_HTTP_M=\
 	".\os\win32\readdir.h"\
 	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
-	
-NODEP_CPP_HTTP_M=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\http_main.obj" : $(SOURCE) $(DEP_CPP_HTTP_M) "$(INTDIR)"
@@ -831,8 +887,9 @@ NODEP_CPP_HTTP_M=\
 DEP_CPP_HTTP_M=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\explain.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
@@ -853,9 +910,14 @@ DEP_CPP_HTTP_M=\
 	".\os\win32\readdir.h"\
 	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_HTTP_M=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\http_main.obj"	"$(INTDIR)\http_main.sbr" : $(SOURCE)\
@@ -872,8 +934,9 @@ SOURCE=.\main\http_protocol.c
 DEP_CPP_HTTP_P=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -888,9 +951,6 @@ DEP_CPP_HTTP_P=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_HTTP_P=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\http_protocol.obj" : $(SOURCE) $(DEP_CPP_HTTP_P) "$(INTDIR)"
@@ -902,8 +962,9 @@ NODEP_CPP_HTTP_P=\
 DEP_CPP_HTTP_P=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -918,9 +979,14 @@ DEP_CPP_HTTP_P=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_HTTP_P=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\http_protocol.obj"	"$(INTDIR)\http_protocol.sbr" : $(SOURCE)\
@@ -937,8 +1003,9 @@ SOURCE=.\main\http_request.c
 DEP_CPP_HTTP_R=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\fnmatch.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
@@ -952,9 +1019,6 @@ DEP_CPP_HTTP_R=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_HTTP_R=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\http_request.obj" : $(SOURCE) $(DEP_CPP_HTTP_R) "$(INTDIR)"
@@ -966,8 +1030,9 @@ NODEP_CPP_HTTP_R=\
 DEP_CPP_HTTP_R=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\fnmatch.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
@@ -981,9 +1046,14 @@ DEP_CPP_HTTP_R=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_HTTP_R=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\http_request.obj"	"$(INTDIR)\http_request.sbr" : $(SOURCE)\
@@ -1000,8 +1070,9 @@ SOURCE=.\main\http_vhost.c
 DEP_CPP_HTTP_V=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -1012,9 +1083,6 @@ DEP_CPP_HTTP_V=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_HTTP_V=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\http_vhost.obj" : $(SOURCE) $(DEP_CPP_HTTP_V) "$(INTDIR)"
@@ -1026,8 +1094,9 @@ NODEP_CPP_HTTP_V=\
 DEP_CPP_HTTP_V=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -1038,9 +1107,14 @@ DEP_CPP_HTTP_V=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_HTTP_V=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\http_vhost.obj"	"$(INTDIR)\http_vhost.sbr" : $(SOURCE)\
@@ -1055,13 +1129,11 @@ SOURCE=.\main\md5c.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MD5C_=\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\ap_md5.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\os\win32\os.h"\
-	
-NODEP_CPP_MD5C_=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\md5c.obj" : $(SOURCE) $(DEP_CPP_MD5C_) "$(INTDIR)"
@@ -1071,13 +1143,18 @@ NODEP_CPP_MD5C_=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MD5C_=\
-	".\include\conf.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_md5.h"\
 	".\include\hsregex.h"\
 	".\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MD5C_=\
-	".\include\hide.h"\
-	".\include\md5.h"\
+	".\include\ap_config_auto.h"\
+	".\include\os.h"\
+	".\main\ebcdic.h"\
 	
 
 "$(INTDIR)\md5c.obj"	"$(INTDIR)\md5c.sbr" : $(SOURCE) $(DEP_CPP_MD5C_)\
@@ -1094,8 +1171,9 @@ SOURCE=.\modules\standard\mod_access.c
 DEP_CPP_MOD_A=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1105,9 +1183,6 @@ DEP_CPP_MOD_A=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_A=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_access.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
@@ -1119,8 +1194,9 @@ NODEP_CPP_MOD_A=\
 DEP_CPP_MOD_A=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1130,9 +1206,14 @@ DEP_CPP_MOD_A=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_A=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_access.obj"	"$(INTDIR)\mod_access.sbr" : $(SOURCE)\
@@ -1149,8 +1230,9 @@ SOURCE=.\modules\standard\mod_actions.c
 DEP_CPP_MOD_AC=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1163,9 +1245,6 @@ DEP_CPP_MOD_AC=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_AC=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_actions.obj" : $(SOURCE) $(DEP_CPP_MOD_AC) "$(INTDIR)"
@@ -1177,8 +1256,9 @@ NODEP_CPP_MOD_AC=\
 DEP_CPP_MOD_AC=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1191,9 +1271,14 @@ DEP_CPP_MOD_AC=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_AC=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_actions.obj"	"$(INTDIR)\mod_actions.sbr" : $(SOURCE)\
@@ -1210,17 +1295,15 @@ SOURCE=.\modules\standard\mod_alias.c
 DEP_CPP_MOD_AL=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_AL=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_alias.obj" : $(SOURCE) $(DEP_CPP_MOD_AL) "$(INTDIR)"
@@ -1232,17 +1315,23 @@ NODEP_CPP_MOD_AL=\
 DEP_CPP_MOD_AL=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_AL=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_alias.obj"	"$(INTDIR)\mod_alias.sbr" : $(SOURCE)\
@@ -1259,8 +1348,9 @@ SOURCE=.\modules\standard\mod_asis.c
 DEP_CPP_MOD_AS=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
@@ -1272,9 +1362,6 @@ DEP_CPP_MOD_AS=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_AS=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_asis.obj" : $(SOURCE) $(DEP_CPP_MOD_AS) "$(INTDIR)"
@@ -1286,8 +1373,9 @@ NODEP_CPP_MOD_AS=\
 DEP_CPP_MOD_AS=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
@@ -1299,9 +1387,14 @@ DEP_CPP_MOD_AS=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_AS=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_asis.obj"	"$(INTDIR)\mod_asis.sbr" : $(SOURCE) $(DEP_CPP_MOD_AS)\
@@ -1318,8 +1411,9 @@ SOURCE=.\modules\standard\mod_auth.c
 DEP_CPP_MOD_AU=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1329,9 +1423,6 @@ DEP_CPP_MOD_AU=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_AU=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_auth.obj" : $(SOURCE) $(DEP_CPP_MOD_AU) "$(INTDIR)"
@@ -1343,8 +1434,9 @@ NODEP_CPP_MOD_AU=\
 DEP_CPP_MOD_AU=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1354,9 +1446,14 @@ DEP_CPP_MOD_AU=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_AU=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_auth.obj"	"$(INTDIR)\mod_auth.sbr" : $(SOURCE) $(DEP_CPP_MOD_AU)\
@@ -1373,8 +1470,9 @@ SOURCE=.\modules\standard\mod_autoindex.c
 DEP_CPP_MOD_AUT=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1387,9 +1485,6 @@ DEP_CPP_MOD_AUT=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_AUT=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_autoindex.obj" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
@@ -1401,8 +1496,9 @@ NODEP_CPP_MOD_AUT=\
 DEP_CPP_MOD_AUT=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1415,9 +1511,14 @@ DEP_CPP_MOD_AUT=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_AUT=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_autoindex.obj"	"$(INTDIR)\mod_autoindex.sbr" : $(SOURCE)\
@@ -1434,8 +1535,9 @@ SOURCE=.\modules\standard\mod_cgi.c
 DEP_CPP_MOD_C=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -1449,9 +1551,6 @@ DEP_CPP_MOD_C=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_C=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_cgi.obj" : $(SOURCE) $(DEP_CPP_MOD_C) "$(INTDIR)"
@@ -1463,8 +1562,9 @@ NODEP_CPP_MOD_C=\
 DEP_CPP_MOD_C=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -1478,9 +1578,14 @@ DEP_CPP_MOD_C=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_C=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_cgi.obj"	"$(INTDIR)\mod_cgi.sbr" : $(SOURCE) $(DEP_CPP_MOD_C)\
@@ -1497,8 +1602,9 @@ SOURCE=.\modules\standard\mod_dir.c
 DEP_CPP_MOD_D=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1511,9 +1617,6 @@ DEP_CPP_MOD_D=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_D=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_dir.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
@@ -1525,8 +1628,9 @@ NODEP_CPP_MOD_D=\
 DEP_CPP_MOD_D=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1539,9 +1643,14 @@ DEP_CPP_MOD_D=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_D=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_dir.obj"	"$(INTDIR)\mod_dir.sbr" : $(SOURCE) $(DEP_CPP_MOD_D)\
@@ -1558,17 +1667,15 @@ SOURCE=.\modules\standard\mod_env.c
 DEP_CPP_MOD_E=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_E=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_env.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
@@ -1580,17 +1687,23 @@ NODEP_CPP_MOD_E=\
 DEP_CPP_MOD_E=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_E=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_env.obj"	"$(INTDIR)\mod_env.sbr" : $(SOURCE) $(DEP_CPP_MOD_E)\
@@ -1607,8 +1720,9 @@ SOURCE=.\modules\standard\mod_imap.c
 DEP_CPP_MOD_I=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1621,9 +1735,6 @@ DEP_CPP_MOD_I=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_I=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_imap.obj" : $(SOURCE) $(DEP_CPP_MOD_I) "$(INTDIR)"
@@ -1635,8 +1746,9 @@ NODEP_CPP_MOD_I=\
 DEP_CPP_MOD_I=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1649,9 +1761,14 @@ DEP_CPP_MOD_I=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_I=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_imap.obj"	"$(INTDIR)\mod_imap.sbr" : $(SOURCE) $(DEP_CPP_MOD_I)\
@@ -1668,8 +1785,9 @@ SOURCE=.\modules\standard\mod_include.c
 DEP_CPP_MOD_IN=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1682,9 +1800,6 @@ DEP_CPP_MOD_IN=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_IN=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_include.obj" : $(SOURCE) $(DEP_CPP_MOD_IN) "$(INTDIR)"
@@ -1696,8 +1811,9 @@ NODEP_CPP_MOD_IN=\
 DEP_CPP_MOD_IN=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1710,9 +1826,16 @@ DEP_CPP_MOD_IN=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_IN=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
+	".\modules\standard\config.h"\
+	".\modules\standard\modules\perl\mod_perl.h"\
 	
 
 "$(INTDIR)\mod_include.obj"	"$(INTDIR)\mod_include.sbr" : $(SOURCE)\
@@ -1729,8 +1852,9 @@ SOURCE=.\os\win32\mod_isapi.c
 DEP_CPP_MOD_IS=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1742,9 +1866,6 @@ DEP_CPP_MOD_IS=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_IS=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_isapi.obj" : $(SOURCE) $(DEP_CPP_MOD_IS) "$(INTDIR)"
@@ -1756,8 +1877,9 @@ NODEP_CPP_MOD_IS=\
 DEP_CPP_MOD_IS=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1769,9 +1891,13 @@ DEP_CPP_MOD_IS=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_IS=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_isapi.obj"	"$(INTDIR)\mod_isapi.sbr" : $(SOURCE)\
@@ -1788,8 +1914,9 @@ SOURCE=.\modules\standard\mod_log_config.c
 DEP_CPP_MOD_L=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1798,9 +1925,6 @@ DEP_CPP_MOD_L=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_L=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_log_config.obj" : $(SOURCE) $(DEP_CPP_MOD_L) "$(INTDIR)"
@@ -1812,8 +1936,9 @@ NODEP_CPP_MOD_L=\
 DEP_CPP_MOD_L=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1822,9 +1947,14 @@ DEP_CPP_MOD_L=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_L=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_log_config.obj"	"$(INTDIR)\mod_log_config.sbr" : $(SOURCE)\
@@ -1841,8 +1971,9 @@ SOURCE=.\modules\standard\mod_mime.c
 DEP_CPP_MOD_M=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
@@ -1850,9 +1981,6 @@ DEP_CPP_MOD_M=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_M=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_mime.obj" : $(SOURCE) $(DEP_CPP_MOD_M) "$(INTDIR)"
@@ -1864,17 +1992,24 @@ NODEP_CPP_MOD_M=\
 DEP_CPP_MOD_M=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
+	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_M=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_mime.obj"	"$(INTDIR)\mod_mime.sbr" : $(SOURCE) $(DEP_CPP_MOD_M)\
@@ -1891,8 +2026,9 @@ SOURCE=.\modules\standard\mod_negotiation.c
 DEP_CPP_MOD_N=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1903,9 +2039,6 @@ DEP_CPP_MOD_N=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_N=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_negotiation.obj" : $(SOURCE) $(DEP_CPP_MOD_N) "$(INTDIR)"
@@ -1917,8 +2050,9 @@ NODEP_CPP_MOD_N=\
 DEP_CPP_MOD_N=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1929,9 +2063,14 @@ DEP_CPP_MOD_N=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_N=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_negotiation.obj"	"$(INTDIR)\mod_negotiation.sbr" : $(SOURCE)\
@@ -1948,8 +2087,9 @@ SOURCE=.\modules\standard\mod_setenvif.c
 DEP_CPP_MOD_S=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1958,9 +2098,6 @@ DEP_CPP_MOD_S=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_S=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_setenvif.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
@@ -1972,8 +2109,9 @@ NODEP_CPP_MOD_S=\
 DEP_CPP_MOD_S=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1982,9 +2120,14 @@ DEP_CPP_MOD_S=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_S=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_setenvif.obj"	"$(INTDIR)\mod_setenvif.sbr" : $(SOURCE)\
@@ -2001,8 +2144,9 @@ SOURCE=.\modules\standard\mod_so.c
 DEP_CPP_MOD_SO=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
@@ -2010,9 +2154,6 @@ DEP_CPP_MOD_SO=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_SO=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_so.obj" : $(SOURCE) $(DEP_CPP_MOD_SO) "$(INTDIR)"
@@ -2024,8 +2165,9 @@ NODEP_CPP_MOD_SO=\
 DEP_CPP_MOD_SO=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
@@ -2033,9 +2175,14 @@ DEP_CPP_MOD_SO=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_SO=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_so.obj"	"$(INTDIR)\mod_so.sbr" : $(SOURCE) $(DEP_CPP_MOD_SO)\
@@ -2052,17 +2199,15 @@ SOURCE=.\modules\standard\mod_userdir.c
 DEP_CPP_MOD_U=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MOD_U=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\mod_userdir.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
@@ -2074,17 +2219,23 @@ NODEP_CPP_MOD_U=\
 DEP_CPP_MOD_U=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MOD_U=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_userdir.obj"	"$(INTDIR)\mod_userdir.sbr" : $(SOURCE)\
@@ -2101,17 +2252,15 @@ SOURCE=.\os\win32\modules.c
 DEP_CPP_MODUL=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_MODUL=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
@@ -2123,17 +2272,22 @@ NODEP_CPP_MODUL=\
 DEP_CPP_MODUL=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MODUL=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\modules.obj"	"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL)\
@@ -2148,13 +2302,11 @@ SOURCE=.\os\win32\multithread.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MULTI=\
-	".\include\conf.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\hsregex.h"\
 	".\include\multithread.h"\
 	".\os\win32\os.h"\
-	
-NODEP_CPP_MULTI=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\multithread.obj" : $(SOURCE) $(DEP_CPP_MULTI) "$(INTDIR)"
@@ -2164,13 +2316,16 @@ NODEP_CPP_MULTI=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MULTI=\
-	".\include\conf.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\hsregex.h"\
 	".\include\multithread.h"\
 	".\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_MULTI=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
 	
 
 "$(INTDIR)\multithread.obj"	"$(INTDIR)\multithread.sbr" : $(SOURCE)\
@@ -2209,17 +2364,15 @@ SOURCE=.\os\win32\registry.c
 DEP_CPP_REGIS=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_REGIS=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\registry.obj" : $(SOURCE) $(DEP_CPP_REGIS) "$(INTDIR)"
@@ -2231,17 +2384,22 @@ NODEP_CPP_REGIS=\
 DEP_CPP_REGIS=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_REGIS=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\registry.obj"	"$(INTDIR)\registry.sbr" : $(SOURCE) $(DEP_CPP_REGIS)\
@@ -2258,8 +2416,9 @@ SOURCE=.\main\rfc1413.c
 DEP_CPP_RFC14=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
@@ -2268,9 +2427,6 @@ DEP_CPP_RFC14=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_RFC14=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\rfc1413.obj" : $(SOURCE) $(DEP_CPP_RFC14) "$(INTDIR)"
@@ -2282,8 +2438,9 @@ NODEP_CPP_RFC14=\
 DEP_CPP_RFC14=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
@@ -2292,9 +2449,14 @@ DEP_CPP_RFC14=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_RFC14=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\rfc1413.obj"	"$(INTDIR)\rfc1413.sbr" : $(SOURCE) $(DEP_CPP_RFC14)\
@@ -2311,8 +2473,9 @@ SOURCE=.\os\win32\service.c
 DEP_CPP_SERVI=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
@@ -2324,9 +2487,6 @@ DEP_CPP_SERVI=\
 	".\os\win32\readdir.h"\
 	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
-	
-NODEP_CPP_SERVI=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\service.obj" : $(SOURCE) $(DEP_CPP_SERVI) "$(INTDIR)"
@@ -2338,8 +2498,9 @@ NODEP_CPP_SERVI=\
 DEP_CPP_SERVI=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
@@ -2351,9 +2512,13 @@ DEP_CPP_SERVI=\
 	".\os\win32\readdir.h"\
 	".\os\win32\registry.h"\
 	".\os\win32\service.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_SERVI=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\service.obj"	"$(INTDIR)\service.sbr" : $(SOURCE) $(DEP_CPP_SERVI)\
@@ -2370,8 +2535,9 @@ SOURCE=.\main\util.c
 DEP_CPP_UTIL_=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
@@ -2380,9 +2546,6 @@ DEP_CPP_UTIL_=\
 	".\main\test_char.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_UTIL_=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\util.obj" : $(SOURCE) $(DEP_CPP_UTIL_) "$(INTDIR)"
@@ -2394,18 +2557,25 @@ NODEP_CPP_UTIL_=\
 DEP_CPP_UTIL_=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
+	".\main\test_char.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_UTIL_=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\util.obj"	"$(INTDIR)\util.sbr" : $(SOURCE) $(DEP_CPP_UTIL_)\
@@ -2420,13 +2590,11 @@ SOURCE=.\main\util_date.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_D=\
-	".\include\conf.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\hsregex.h"\
 	".\include\util_date.h"\
 	".\os\win32\os.h"\
-	
-NODEP_CPP_UTIL_D=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\util_date.obj" : $(SOURCE) $(DEP_CPP_UTIL_D) "$(INTDIR)"
@@ -2436,13 +2604,17 @@ NODEP_CPP_UTIL_D=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_D=\
-	".\include\conf.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\hsregex.h"\
 	".\include\util_date.h"\
 	".\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_UTIL_D=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\os.h"\
 	
 
 "$(INTDIR)\util_date.obj"	"$(INTDIR)\util_date.sbr" : $(SOURCE)\
@@ -2459,18 +2631,16 @@ SOURCE=.\main\util_md5.c
 DEP_CPP_UTIL_M=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\ap_md5.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
 	".\include\util_md5.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_UTIL_M=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\util_md5.obj" : $(SOURCE) $(DEP_CPP_UTIL_M) "$(INTDIR)"
@@ -2482,18 +2652,24 @@ NODEP_CPP_UTIL_M=\
 DEP_CPP_UTIL_M=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_md5.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
 	".\include\util_md5.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_UTIL_M=\
-	".\include\hide.h"\
-	".\include\md5.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\util_md5.obj"	"$(INTDIR)\util_md5.sbr" : $(SOURCE) $(DEP_CPP_UTIL_M)\
@@ -2510,8 +2686,9 @@ SOURCE=.\main\util_script.c
 DEP_CPP_UTIL_S=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -2526,9 +2703,6 @@ DEP_CPP_UTIL_S=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_UTIL_S=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\util_script.obj" : $(SOURCE) $(DEP_CPP_UTIL_S) "$(INTDIR)"
@@ -2540,8 +2714,9 @@ NODEP_CPP_UTIL_S=\
 DEP_CPP_UTIL_S=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -2556,9 +2731,14 @@ DEP_CPP_UTIL_S=\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_UTIL_S=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\util_script.obj"	"$(INTDIR)\util_script.sbr" : $(SOURCE)\
@@ -2575,8 +2755,9 @@ SOURCE=.\main\util_uri.c
 DEP_CPP_UTIL_U=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
@@ -2585,9 +2766,6 @@ DEP_CPP_UTIL_U=\
 	".\main\uri_delims.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_UTIL_U=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\util_uri.obj" : $(SOURCE) $(DEP_CPP_UTIL_U) "$(INTDIR)"
@@ -2599,18 +2777,25 @@ NODEP_CPP_UTIL_U=\
 DEP_CPP_UTIL_U=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
+	".\main\uri_delims.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_UTIL_U=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\util_uri.obj"	"$(INTDIR)\util_uri.sbr" : $(SOURCE) $(DEP_CPP_UTIL_U)\
@@ -2627,16 +2812,15 @@ SOURCE=.\os\win32\util_win32.c
 DEP_CPP_UTIL_W=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
+	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
-	
-NODEP_CPP_UTIL_W=\
-	".\include\apctype.h"\
 	
 
 "$(INTDIR)\util_win32.obj" : $(SOURCE) $(DEP_CPP_UTIL_W) "$(INTDIR)"
@@ -2648,16 +2832,22 @@ NODEP_CPP_UTIL_W=\
 DEP_CPP_UTIL_W=\
 	".\include\alloc.h"\
 	".\include\ap.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
 	".\include\buff.h"\
-	".\include\conf.h"\
 	".\include\hsregex.h"\
+	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_UTIL_W=\
-	".\include\hide.h"\
+	".\include\ap_config_auto.h"\
+	".\include\ebcdic.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\util_win32.obj"	"$(INTDIR)\util_win32.sbr" : $(SOURCE)\

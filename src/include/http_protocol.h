@@ -89,12 +89,12 @@ API_EXPORT(void) ap_send_http_header(request_rec *l);
 
 /* Send the response to special method requests */
 
-int ap_send_http_trace(request_rec *r);
+API_EXPORT(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
 
 /* Finish up stuff after a request */
 
-void ap_finalize_request_protocol(request_rec *r);
+API_EXPORT(void) ap_finalize_request_protocol(request_rec *r);
 
 /* Send error back to client... last arg indicates error status in case
  * we get an error in the process of trying to deal with an ErrorDocument
