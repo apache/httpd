@@ -322,8 +322,8 @@ Open issues:
             apm_xxx:   +1: Ralf
 
         Notes: 
-	    - Ken: I'm vetoing the 'same prefix for everything' idea
-	      because it means that everything is part of the API, and
+	    - Ken: I'm vetoing the 'same prefix for everything' proposed
+	      patch because it means that everything is part of the API, and
 	      every single change - even to things which aren't supposed
 	      to be used by modules - will require a bump to MMN.  Either
 	      we do it right, and distinguish by name between what's for
