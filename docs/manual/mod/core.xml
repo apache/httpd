@@ -1036,7 +1036,8 @@ presence of absence of a specific module</description>
 <usage>
     <p>The <code>&lt;IfModule
     <em>test</em>&gt;...&lt;/IfModule&gt;</code> section is used to
-    mark directives that are conditional. The directives within an
+    mark directives that are conditional on the presence of a 
+    specific module. The directives within an
     <directive type="section">IfModule</directive> section are only
     processed if the <em>test</em> is true. If <em>test</em> is false,
     everything between the start and end markers is ignored.</p>
@@ -1060,12 +1061,20 @@ presence of absence of a specific module</description>
     name</em> is <strong>not</strong> included.</p>
 
     <p>The <em>module name</em> argument is the file name of the
-    module, at the time it was compiled.
-    For example, <code>mod_rewrite.c</code>.</p>
+    module, at the time it was compiled.  For example,
+    <code>mod_rewrite.c</code>.  If a module consists of several
+    source files, use the name of the file containing the string
+    <code>STANDARD20_MODULE_STUFF</code>.</p>
 
     <p><directive type="section">IfModule</directive> sections are
     nest-able, which can be used to implement simple multiple-module
     tests.</p>
+
+    <note>This section should only be used if you need to have one
+    configuration file that works whether or not a specific module
+    is available.  In normal operation, directives need not be
+    placed in <directive type="section">IfModule</directive>
+    sections.</note>
 </usage>
 </directivesynopsis>
 
