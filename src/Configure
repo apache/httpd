@@ -13,11 +13,17 @@ trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 # Uses 3 supplemental scripts located in ./helpers: CutRule,
 # GuessOS and PrintPath
 #
-
+#
+# Setup some defaults
+#
 file=Configuration
 tmpfile=htconf.$$
 makefile_tmpl=Makefile.tmpl
 
+#
+# Now handle any arguments, which, for now, are -file and -make
+# to select alternate Configuration and Makefile.tmpl files
+#
 while [ "x$1" != "x" ]; do
   if [ "x$1" = "x-file" ] ; then
     shift 1; file=$1; shift 1
@@ -44,18 +50,22 @@ if [ ! -r $file ]; then
   exit 1
 fi
 
-# First, strip comments and blank lines and then change Rules to comments
-# and then remove whitespace before Module declarations
-
+#
+# First, strip comments and blank lines, remove whitespace around
+# "=" assignments, change Rules to comments and then remove whitespace
+# before Module declarations
+#
 sed 's/#.*//' $file | \
  sed '/^[ 	]*$/d' | \
  sed 's/[ 	]*$//' | \
+ sed 's/[ 	]*=[ 	]*/=/' | \
  sed 's/^Rule[ 	]*/##Rule:/' | \
  sed 's/^[ 	]*Module/Module/' | \
  sed 's/^[        ]*%Module/%Module/' > $tmpfile
 
+#
 # Check for syntax errors...
-
+#
 if egrep -v '^%?Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile \
    | grep -v = > /dev/null
 then
@@ -67,11 +77,16 @@ then
    exit 1
 fi
 
+#
 # File is OK --- make backup copies of things and then get the new ones:
-
+#
 if [ -f Makefile ] ; then mv Makefile Makefile.bak; fi
 if [ -f modules.c ] ; then mv modules.c modules.c.bak; fi
 
+#
+# Start building the modules.c file from what was included
+# in Configuration
+#
 sed -e 's/_module//' $tmpfile | awk >modules.c '\
    BEGIN { modules[n++] = "core" ; pmodules[pn++] = "core"} \
    /^Module/ { modules[n++] = $2 ; pmodules[pn++] = $2 } \
@@ -102,7 +117,8 @@ sed -e 's/_module//' $tmpfile | awk >modules.c '\
    }'
 
 #
-# Add module set only
+# Start creating the Makefile. We add some comments and
+# then fold in the modules
 #
 echo "#" > Makefile
 echo "# Makefile automatically generated from $makefile_tmpl" >> Makefile
@@ -122,7 +138,8 @@ awk >>Makefile <$tmpfile '\
 	 print "" \
        }'
 #
-# Now add Makefile additions and Rules
+# Now we create a stub file, called Makefile.config, which
+# just includes those assignments (eg: CC=gcc) in Configuration
 #
 awk >Makefile.config <$tmpfile '\
     BEGIN { print "# Makefile options inherited from Configure"; \
@@ -140,6 +157,19 @@ RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 
 #
+# Preset some "constants"; can be overridden on a per-platform basis below.
+#
+DBM_LIB="-ldbm"
+DB_LIB="-ldb"
+SHELL="/bin/sh"
+if ./helpers/PrintPath -s ranlib; then
+    RANLIB="ranlib"
+else
+    RANLIB="true"
+fi
+
+#
+#
 # Now we determine the OS/Platform automagically, thanks to
 # GuessOS, a home-brewed OS-determiner ala config.guess
 #
@@ -155,36 +185,6 @@ RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 #
 
 PLAT=`./helpers/GuessOS`
-
-# Preset DBM_LIB. Can be overridden on a per-platform basis.
-
-DBM_LIB="-ldbm"
-
-#
-# Look for ranlib. Do it early in case we want to override it below
-#
-if ./helpers/PrintPath -s ranlib; then
-    RANLIB="ranlib"
-else
-    RANLIB="true"
-fi
-
-#
-# We now look for popular compilers. As with ranlib, we
-# do this early because some options may depend
-# on which compiler we use/find
-#
-for compilers in "gcc" "cc" "acc" "c89"
-do
-    lookedfor="$lookedfor $compilers"
-    if ./helpers/PrintPath -s $compilers; then
-	COMPILER="$compilers"
-    	break
-    fi
-done
-
-#
-SHELL="/bin/sh"
 
 case "$PLAT" in
     *MPE/iX*)
@@ -232,28 +232,14 @@ case "$PLAT" in
     *-hi-hiux)
 	OS='HI-UX'
 	CFLAGS="$CFLAGS -DHIUX"
-	# if we're using the HIUX compiler, add a few flags.
-	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
-	    CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
-	    OPTIM=" "
-	fi
 	;;
     *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
-	# if we're using the HPUX compiler, add a few flags.
-	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
-	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
-	    OPTIM=" "
-	fi
 	;;
     *-hp-hpux*)
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
-	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
-	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
-	    OPTIM=" "
-	fi
 	;;
     *-sgi-irix64)
 # Note: We'd like to see patches to compile 64-bit, but for now...
@@ -375,9 +361,6 @@ case "$PLAT" in
 	OS='SCO 5'
 	CFLAGS="$CFLAGS -DSCO5"
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
-	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
-	    OSBPRINTF="-K noinline"
-	fi
 	DEF_WANTHSREGEX=no
 	;;
     *-solaris2*)
@@ -454,9 +437,6 @@ case "$PLAT" in
 	CFLAGS="-DULTRIX"
 	DEF_WANTHSREGEX=yes
 	SHELL="/bin/sh5"
-	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
-	    CFLAGS="$CFLAGS -std"
-	fi
 	;;
     *powerpc-tenon-machten*)
 	OS='MachTen PPC'
@@ -522,8 +502,14 @@ if [ "$RULE_WANTHSREGEX" = "default" ]; then
 	fi
 fi
 
-# Show the final values of the rules
+#
+# Now that _that's_ done, get on with it
+#
+echo " + configured for $OS platform"
 
+#
+# Show the final values of the rules
+#
 echo "###############" >> Makefile.config
 echo "# Platform: $OS" >> Makefile.config
 echo "# Final Rules:" >> Makefile.config
@@ -531,45 +517,112 @@ echo "#  Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile.config
 echo "###############" >> Makefile.config
 
 #
-# Now that _that's_ done, get on with it
-#
-
-echo " + configured for $OS platform"
-
-#
 # Now we determine the C-compiler and optimization level
 # to use. Settings of CC and OPTIM in Configuration have
 # the highest precedence; next comes any settings from
 # the above "OS-specific" section. If still unset,
-# then we use the "found" location of COMPILERS above
+# then we look for a known compiler somewhere in PATH
 # and set a "safe" optimization level
 #
-TCC=`egrep '^CC[ 	]*=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-if [ "x$CC" = "x" ]; then
-    if [ "x$COMPILER" = "x" ]; then
-	echo "Error: could not find any of these C compilers"
-	echo " anywhere in your PATH: $lookedfor"
-	echo "Configure terminated"
-	exit 1
+#
+# First, look for a CC=<whatever> setting in Configure (recall, we
+# copied these to Makefile.config)
+#
+TCC=`egrep '^CC=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+if [ "x$TCC" = "x" ]; then
+    if [ "x$CC" = "x" ]; then
+    #
+    # At this point, CC is not set in Configure or above, so we
+    # try to find one
+    #
+	for compilers in "gcc" "cc" "acc" "c89"
+	do
+	    lookedfor="$lookedfor $compilers"
+	    if ./helpers/PrintPath -s $compilers; then
+		COMPILER="$compilers"
+		break
+	    fi
+	done
+	if [ "x$COMPILER" = "x" ]; then
+	    echo "Error: could not find any of these C compilers"
+	    echo " anywhere in your PATH: $lookedfor"
+	    echo "Configure terminated"
+	    exit 1
+	fi
+	CC=$COMPILER
     fi
-    CC=$COMPILER
+    echo " + setting C compiler to $CC"
 fi
-echo " + setting C compiler to $CC"
-
 #
 # Ditto for optimization
 #
-TOPTIM=`egrep '^OPTIM[ 	]*=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 if [ "x$TOPTIM" = "x" ]; then
-    OPTIM="-O2"
-else
-    OPTIM=$TOPTIM
+    if [ "x$OPTIM" = "x" ]; then
+	OPTIM="-O2"
+    fi
+    echo " + setting C compiler optimization-level to $OPTIM"
 fi
-echo " + setting C compiler optimization-level to $OPTIM"
+
+#
+# Set the value of CC if need be; don't worry about OPTIM yet
+#
+if [ "x$TCC" = "x" ]; then
+    echo "CC=$CC" >> Makefile.config
+fi
+
+#
+# Now we do some OS specific adjustments... for some OSs, we need
+# to adjust CFLAGS and/or OPTIM depending on which compiler we
+# are going to use. This is easy, since this can be gleamed from
+# Makefile.config
+#
+TCC=`egrep '^CC=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+case "$OS" in
+    'ULTRIX')
+	if [ "$TCC" = "cc" ]; then
+	    CFLAGS="$CFLAGS -std"
+	fi
+	;;
+    'SCO 5')
+	if [ "$TCC" = "cc" ]; then
+	    OSBPRINTF="-K noinline"
+	fi
+	;;
+    'HI-UX')
+	if [ "$TCC" = "cc" ]; then
+	    CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
+	    OPTIM=" "
+	    TOPTIM=""
+	fi
+	;;
+    'HP-UX'|'HP-UX 10')
+	if [ "$TCC" = "cc" ]; then
+	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
+	    OPTIM=" "
+	    TOPTIM=""
+	fi
+	;;
+esac
+
+#
+# OK, now we can write OPTIM
+#
+if [ "x$TOPTIM" = "x" ]; then
+    echo "OPTIM=$OPTIM" >> Makefile.config
+fi
+
+#
+# Now we do some general checks and some intelligent Configuration
+# control.
+#
+# First, we adjust as needed depending on which modules are
+# being used.
+#
 
 #
 # Are they using the status monitor module? If so, check
-# for STATUS rule...
+# for STATUS rule and add if needed.
 #
 STAT_MOD="mod_status"
 if grep "$STAT_MOD" Makefile > /dev/null; then
@@ -579,10 +632,13 @@ if grep "$STAT_MOD" Makefile > /dev/null; then
 fi
 
 #
-# Are they using dbm auth? If so, add DBM library.
+# Are they using dbm/db auth? If so, add DBM/DB library.
 #
 if grep mod_auth_dbm Makefile > /dev/null; then
     LIBS="$LIBS $DBM_LIB"
+fi
+if grep mod_auth_db Makefile > /dev/null; then
+    LIBS="$LIBS $DB_LIB"
 fi
 
 #
@@ -613,18 +669,8 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
 fi
 
 #
-# Good enough
+# FINALLY, finish building Makefile.config
 #
-# Add the CC and OPTIM values if they weren't specified in the
-# Configuration file and we had to calculate them.
-#
-echo  >> Makefile
-if [ "x$TCC" = "x" ]; then
-    echo "CC=$CC" >> Makefile.config
-fi
-if [ "x$TOPTIM" = "x" ]; then
-    echo "OPTIM=$OPTIM" >> Makefile.config
-fi
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
 echo "LIBS1=$LIBS">> Makefile.config
