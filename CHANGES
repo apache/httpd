@@ -1,5 +1,10 @@
 Changes with Apache 2.0.26-dev
 
+  *) Eliminate the depreciated r->content_language, in favor of the array
+     r->content_languages introduced many years ago.  Module authors must
+     substantially overhaul their modules, so this needs to be upgraded
+     if the module still relied on backwards-brokeness.  [William Rowe]
+
   *) Allow configure help strings to work with autoconf 2.50+ and 2.13.
      [Justin Erenkrantz]
 

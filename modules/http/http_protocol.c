@@ -1097,10 +1097,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
             apr_table_mergen(r->headers_out, "Content-Language", languages[i]);
         }
     }
-    else if (r->content_language) {
-        apr_table_setn(r->headers_out, "Content-Language",
-		       r->content_language);
-    }
 
     /*
      * Control cachability for non-cachable responses if not already set by
@@ -1774,7 +1770,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
             }
         }
 
-        r->content_language = NULL;
         r->content_languages = NULL;
         r->content_encoding = NULL;
         r->clength = 0;

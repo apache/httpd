@@ -806,9 +806,9 @@ struct request_rec {
     /** Notes from one module to another */
     apr_table_t *notes;
 
-    /* content_type, handler, content_encoding, content_language, and all
-     * content_languages MUST be lowercased strings.  They may be pointers
-     * to static strings; they should not be modified in place.
+    /* content_type, handler, content_encoding, and all content_languages 
+     * MUST be lowercased strings.  They may be pointers to static strings;
+     * they should not be modified in place.
      */
     /** The content-type for the current request */
     const char *content_type;	/* Break these out --- we dispatch on 'em */
@@ -817,8 +817,6 @@ struct request_rec {
 
     /** How to encode the data */
     const char *content_encoding;
-    /** for back-compat. only -- do not use */
-    const char *content_language;
     /** array of (char*) representing the content languages */
     apr_array_header_t *content_languages;
 

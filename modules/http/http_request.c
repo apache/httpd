@@ -424,7 +424,6 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     r->content_type = rr->content_type;
     r->content_encoding = rr->content_encoding;
     r->content_languages = rr->content_languages;
-    r->content_language = rr->content_language;
     r->finfo = rr->finfo;
     r->per_dir_config = rr->per_dir_config;
     /* copy output headers from subrequest, but leave negotiation headers */
