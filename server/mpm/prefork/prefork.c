@@ -918,7 +918,7 @@ static int make_child(server_rec *s, int slot)
 
     ap_scoreboard_image->parent[slot].pid = pid;
 #ifdef SCOREBOARD_FILE
-    lseek(scoreboard_fd, XtOffsetOf(scoreboard, parent[slot]), 0);
+    lseek(scoreboard_fd, APR_XtOffsetOf(scoreboard, parent[slot]), 0);
     force_write(scoreboard_fd, &ap_scoreboard_image->parent[slot],
 		sizeof(process_score));
 #endif
