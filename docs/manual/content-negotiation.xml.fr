@@ -1,0 +1,699 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 151405 -->
+<!-- French translation by Vincent Deffontaines, review by alain B -->
+
+<!--
+ Copyright 2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="content-negotiation.xml.meta">
+
+<title>Négociation de Contenus</title>
+
+<summary>
+
+    <p>Apache suit les spécifications HTTP/1.1 en ce qui concerne 
+    les négociations de contenus. Il est ainsi possible d'utiliser
+    les informations fournies par le navigateur (préférences de langues,
+    jeu de caractères, encodage et types de médias). Apache essaye
+    aussi d'optimiser les cas des navigateurs envoyant des 
+    informations incomplètes.</p>
+
+    <p>C'est le module <module>mod_negotiation</module> qui fournit
+    la négociation de contenus&nbsp;; ce module est inclus dans Apache 
+    par défaut.</p>
+</summary>
+
+<section id="about"><title>À propos de la Négociation de Contenus</title>
+
+    <p>Différentes représentations peuvent être utilisées pour 
+    communiquer une ressource. Par exemple, plusieurs langues peuvent
+    être disponibles, ou plusieurs types de médias, voire parfois une
+    combinaison de ces possibilités.
+    Une méthode pour gérer cela est de donner le choix au visiteur,
+    en lui proposant un index général, qui lui permet par exemple de
+    choisir sa langue. Cependant, il est souvent possible de faire ce 
+    choix de manière automatique car les navigateurs peuvent préciser 
+    avec leurs requêtes, la représentation qu'ils préfèrent recevoir. Par
+    exemple, un navigateur pourrait spécifier qu'il préfère recevoir les
+    informations en français si elles sont disponibles, ou en anglais 
+    dans le cas contraire. Ce type d'information est communiqué par les
+    navigateurs, dans les en-têtes de chaque requête. Un navigateur ne
+    demandant que des documents en français enverrait</p>
+    
+<example>Accept-Language: fr</example>
+
+    <p>Notez que cette préférence ne sera gérée par le serveur que
+    s'il existe un choix de langues du côté du serveur.</p>
+
+    <p>Voici un exemple plus complet, où le navigateur est configuré pour
+    accepter le français et l'anglais, mais avec une préférence pour le
+    français, et pour accepter divers types de médias, en préférant le 
+    HTML au texte brut, et en préférant le GIF ou le JPEG aux autres types
+    de médias (sans pour autant refuser ces derniers, le cas échéant)&nbsp;:</p>
+
+<example>
+  Accept-Language: fr; q=1.0, en; q=0.5<br />
+  Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
+</example>
+
+    <p>Apache supporte les négociations de contenus 'gérés par
+    le serveur', telles que spécifiées dans HTTP/1.1. Les en-têtes
+    <code>Accept</code>, <code>Accept-Language</code>, 
+    <code>Accept-Charset</code> et <code>Accept-Encoding</code> 
+    sont gérés. Apache supporte également les négociations de 
+    contenus 'transparentes', telles que définies dans les RFC
+    2295 et 2296. En revanche les fonctions de 'feature 
+    negotiation' définies dans ces RFCs ne sont pas supportées.</p>
+    
+    <p>On appelle <strong>ressource</strong> une entité conceptuelle
+    identifiée par un URI (RFC 2396). Le travail d'un serveur HTTP,
+    tel Apache, est de donner un accès à des 
+    <strong>représentations</strong> des ressources à sa disposition,
+    chaque représentation étant envoyée sous la forme d'une séquence 
+    d'octets définie selon un type de média, un jeu de caractères, 
+    un encodage, etc. À tout moment, chaque ressource est associée 
+    à zéro, une ou plusieurs représentations. Si plusieurs représentations
+    sont disponibles pour une ressource, on dit que cette dernière est
+    <strong>négociable</strong> et chacune de ses représentations
+    possibles est appelée une <strong>variante</strong>.
+    Les différentes possibilités de choisir les variantes d'une ressource
+    négociable sont appelées <strong>dimensions</strong> de la 
+    négociation.</p>
+</section>
+
+<section id="negotiation"><title>Négociations avec Apache</title>
+
+    <p>Pour qu'Apache puisse procéder à la négociation d'une ressource,
+    il faut qu'il dispose d'informations à propos de chacune des variantes.
+    Deux méthodes sont possibles&nbsp;:</p>
+
+    <ul>
+      <li>Réaliser une "Table de Types" (<em>c'est-à-dire</em>,
+      un fichier <code>*.var</code>) qui précise explicitement les fichiers
+      définissant les variantes, ou</li>
+      
+      <li>Utiliser une recherche 'MultiViews', méthode par laquelle
+      le serveur réalise une recherche par motifs implicites,
+      et choisit parmi les résultats.</li>
+    </ul>
+
+   <section id="type-map"><title>Utilisation d'une Table de Types (Type Map)</title>
+
+    <p>Une table de types est un document qui est associé avec le 
+    gestionnaire <code>type-map</code> (ou, dans les plus anciennes 
+    versions d'Apache, le type mime <code>application/x-type-map</code>).
+    Notez que pour implémenter cette méthode, un 'handler' doit être
+    défini dans la configuration pour associer une extension de fichier à 
+    <code>type-map</code>&nbsp;; ce qui est généralement obtenu au moyen de</p>
+    
+<example>AddHandler type-map .var</example>
+
+    <p>dans le fichier de configuration du serveur.</p>
+
+    <p>Les fichiers de table de types portent généralement le nom de la 
+    ressource qu'ils décrivent, et contiennent une entrée correspondant
+    à chaque variante possible&nbsp;; ces entrées sont constituées de lignes
+    au format d'en-têtes HTTP. Les entrées de deux variantes distinctes
+    sont à séparer par des lignes vides. Il n'est pas permis d'utiliser
+    des lignes vides au sein d'une entrée. Il est courant de placer en 
+    début de fichier une entrée pour l'entité combinée 
+    dans son ensemble (bien que cela ne soit pas nécessaire, et ignoré
+    par Apache). Un exemple de fichier de table est donné en exemple
+    ci-après. Le nom de ce fichier serait <code>foo.var</code>, puisque
+    le fichier décrit une ressource appelée <code>foo</code>.</p>
+    
+<example>
+  URI: foo<br />
+<br />
+  URI: foo.en.html<br />
+  Content-type: text/html<br />
+  Content-language: en<br />
+<br />
+  URI: foo.fr.de.html<br />
+  Content-type: text/html;charset=iso-8859-2<br />
+  Content-language: fr, de<br />
+</example>
+
+    <p>Notez que les fichiers de table de types sont toujours
+    utilisés en priorité par Apache par rapport à l'extension du
+    nom du fichier, et ce même si l'option Multiviews est activée.
+    Des variantes présentant des qualités inégales peuvent être indiquées
+    au moyen du paramètre de type de média&nbsp;: "qs", comme dans le cas de 
+    cette image (disponible en JPEG, GIF ou ASCII-art)&nbsp;: </p>
+    
+<example>
+  URI: foo<br />
+<br />
+  URI: foo.jpeg<br />
+  Content-type: image/jpeg; qs=0.8<br />
+<br />
+  URI: foo.gif<br />
+  Content-type: image/gif; qs=0.5<br />
+<br />
+  URI: foo.txt<br />
+  Content-type: text/plain; qs=0.01<br />
+</example>
+
+    <p>Les valeurs de qs acceptables sont comprises entre 0.000
+    et 1.000. Notez qu'une variante avec un qs de 0.000 ne sera
+    jamais choisie. La valeur de qs par défaut est de 1.0. Le
+    paramètre qs sert à indiquer la qualité de la variante, par
+    rapport aux autres variantes disponibles, et ce indépendamment
+    des possibilités du navigateur. Par exemple, un fichier JPEG
+    est généralement de meilleure qualité qu'un fichier ASCII, si
+    les 2 documents sont destinés à représenter une photographie.
+    Bien sûr, si la ressource originale est elle-même un fichier
+    ASCII, la représentation ASCII sera considéré comme de meilleure
+    qualité que la représentation JPEG. La valeur de qs dépend donc
+    de la nature de la ressource que l'on souhaite représenter.</p>
+    
+    <p>La liste complète des en-têtes utilisables est disponible
+    dans la documentation de 
+    <a href="mod/mod_negotiation.html#typemaps">mod_negotation</a>.</p>
+</section>
+
+<section id="multiviews"><title>Multiviews</title>
+
+    <p>L'option <code>MultiViews</code> est à spécifier par répertoire,
+    ce qui signifie qu'elle peut être utilisée au moyen d'une directive
+    <directive module="core">Options</directive> dans une section 
+    <directive module="core" type="section">Directory</directive>, 
+    <directive module="core" type="section">Location</directive> ou 
+    <directive module="core" type="section">Files</directive> 
+    du fichier <code>httpd.conf</code>, ou dans les fichiers 
+    <code>.htaccess</code> (à condition que l'option <directive
+    module="core">AllowOverride</directive> soit paramétrée pour cela).
+    Notez que <code>Options All</code> n'active pas l'option
+    <code>MultiViews</code>&nbsp;; cette dernière doit être positionnée
+    explicitement.</p>
+    
+    <p>Voici comment fonctionne <code>MultiViews</code>&nbsp;: supposons qu'un
+    serveur reçoive une requête pour <code>/some/dir/foo</code>, que l'option
+    <code>MultiViews</code> soit activée pour <code>/some/dir</code>, 
+    et que le fichier <code>/some/dir/foo</code> <em>n'</em>existe 
+    <em>pas</em>&nbsp;; alors le serveur cherche les fichiers nommés foo.* 
+    dans le répertoire /some/dir, et construit une table de types à 
+    partir de ces noms de fichiers. Dans la table, chaque fichier se 
+    voit assigner les types de médias et les encodages de contenu 
+    tels qu'ils seraient envoyés si le client les demandait par leur
+    nom propre. Apache choisit alors la meilleure représentation à 
+    envoyer au client, en fonction de ses préférences.</p>
+    
+    <p>L'option <code>MultiViews</code> sert aussi lors du choix d'un
+    index, lorsque la directive <directive
+    module="mod_dir">DirectoryIndex</directive> est précisée. 
+    Par exemple, si la configuration contient</p>
+<example>DirectoryIndex index</example>
+    <p>le serveur devra choisir entre les fichiers <code>index.html</code> et
+    <code>index.html3</code>, dans le cas où ces deux fichiers existent. Si
+    aucun de ces fichiers n'existe, mais qu'un fichier <code>index.cgi</code>
+    est présent, ce dernier sera exécuté par le serveur.</p>
+
+    <p>Si à la lecture du répertoire, un fichier est trouvé 
+    dont l'extension n'est pas reconnue par <code>mod_mime</code> 
+    comme précisant son jeu de caractères, sa langue, son type de 
+    contenu (Content-Type) ou son encodage, alors tout dépendra de la 
+    directive <directive module="mod_mime">MultiViewsMatch</directive>.
+    Cette directive précise en effet quels gestionnaires, filtres, et
+    autres types d'extensions peuvent contribuer à la négociation
+    MultiViews.</p>
+</section>
+</section>
+
+<section id="methods"><title>Méthodes de Négociations</title>
+
+    <p>Après qu'Apache ait défini la liste de variantes possibles 
+    pour une ressource, que ce soit via un fichier de tables de 
+    types ou à partir des noms de fichiers contenus dans le répertoire, 
+    deux méthodes peuvent être invoquées pour choisir la 'meilleure' 
+    variante qui sera envoyée, pour autant qu'il en existe au moins 
+    une. Il n'est pas nécessaire de connaître ce fonctionnement pour 
+    utiliser les négociations de contenu avec Apache&nbsp;; cependant pour 
+    le lecteur intéressé la suite de ce document s'attache à décrire 
+    ce fonctionnement.</p>
+    
+    <p>Il existe deux méthodes de négociations&nbsp;:</p>
+
+    <ol>
+      <li><strong>La négociation menée par le serveur, selon 
+      l'algorithme d'Apache</strong>, est utilisée dans la plupart 
+      des cas. L'algorithme d'Apache est détaillé dans la suite de 
+      ce document. Dans les cas où cet algorithme est utilisé, il 
+      arrive qu'Apache 'triche' sur le facteur qualité (qs) d'une 
+      dimension donnée pour parvenir à un meilleur résultat. Les cas 
+      où cela se produit sont présentés dans la suite de ce document.</li>
+
+      <li><strong>La négociation transparente de contenu</strong> 
+      est utilisée sur demande spécifique du navigateur, selon la 
+      méthode définie dans la RFC 2295. Cette méthode de négociation 
+      donne au navigateur les pleins pouvoirs pour choisir la 
+      'meilleure' variante, les résultats dépendent donc des algorithmes 
+      de choix propres à chaque navigateur. Cette méthode permet 
+      également au navigateur de demander à Apache d'utiliser 
+      l'algorithme de 'sélection de variante à distance', tel que défini 
+      par la RFC 2296.</li>
+    </ol>
+      
+<section id="dimensions"><title>Dimensions d'une Négociation</title>
+
+    <table>
+      <columnspec><column width=".15"/><column width=".85"/></columnspec>
+      <tr valign="top">
+        <th>Dimension</th>
+
+        <th>Notes</th>
+      </tr>
+
+      <tr valign="top">
+        <td>Type de Média</td>
+
+        <td>Le navigateur présente ses préférences au moyen du 
+        champ <code>Accept</code> de l'en-tête. À chaque élément peut être 
+        associé un facteur de qualité. De la même manière, la description 
+        de la variante peut présenter un facteur de qualité (le 
+        paramètre "qs").</td>
+      </tr>
+
+      <tr valign="top">
+        <td>Langues</td>
+
+        <td>Le navigateur présente ses préférences au moyen du champ 
+        <code>Accept-Language</code> de l'en-tête. À chaque élément 
+        peut être associé un facteur de qualité. Les différentes 
+        variantes peuvent également être associées ou non à une 
+        ou plusieurs langues.</td>
+      </tr>
+
+      <tr valign="top">
+        <td>Encodage</td>
+
+        <td>Le navigateur présente ses préférences au moyen du champ 
+        <code>Accept-Encoding</code> de l'en-tête. À chaque élément 
+        peut être associé un facteur de qualité.</td>
+      </tr>
+
+      <tr valign="top">
+        <td>Jeu de caractères</td>
+
+        <td>Le navigateur présente ses préférences au moyen du champ 
+        <code>Accept-Charset</code> de l'en-tête. À chaque élément 
+        peut être associé un facteur de qualité. Les différentes 
+        variantes peuvent se voir associer un jeu de caractères 
+        comme type de média.</td>
+      </tr>
+    </table>
+</section>
+
+<section id="algorithm"><title>Algorithme de Négociation d'Apache</title>
+
+    <p>Apache peut utiliser l'algorithme présenté ci-après pour choisir la
+    'meilleure' variante, si elle existe, à renvoyer au navigateur. Cet
+    algorithme n'est pas configurable. Il fonctionne de cette manière&nbsp;:</p>
+
+    <ol>
+      <li>En premier lieu, pour chaque dimension de la négociation, 
+      vérifier le champ d'en-tête <em>Accept*</em> approprié et 
+      attribuer un facteur de qualité à chacune des variantes. Si 
+      l'en-tête <em>Accept*</em> d'une dimension indique que cette 
+      variante n'est pas acceptable, éliminer cette variante. S'il 
+      ne reste aucune variante, aller à l'étape 4.</li>
+
+      <li>
+        Choisir la 'meilleure' des variantes par élimination. 
+        Chacun des tests suivants est appliqué dans cet ordre. 
+        Toutes les variantes ne passant pas un test sont 
+        systématiquement éliminées. Après chacun des tests, s'il 
+        ne reste qu'une variante, la choisir comme la meilleure 
+        et aller à l'étape 3. S'il reste plus d'une variante, aller 
+        à l'étape suivante.
+	
+        <ol>
+          <li>Multiplier le facteur de qualité de l'en-tête 
+          <code>Accept</code> par le facteur qualité de la source du 
+          type de média de cette variante, et choisir les variantes 
+          avec le plus grand résultat.</li>
+	  
+          <li>Choisir les variantes qui présentent le plus grand 
+          facteur de qualité de langue.</li>
+
+          <li>Choisir les variantes dont la langue correspond le 
+          mieux, soit à l'ordre de préférence des langues dans 
+          l'en-tête <code>Accept-Language</code> (s'il existe), 
+          soit à l'ordre des langues de la directive 
+          <code>LanguagePriority</code> (si elle existe).</li>
+	  
+          <li>Choisir les variantes présentant le paramètre de niveau 
+          ('level') de média le plus grand (c'est ce qui est utilisé 
+          pour connaître la version des types de médias text/html).</li>
+
+          <li>Choisir les variantes dont le jeu de caractères est le 
+          meilleur, par rapport à l'en-tête <code>Accept-Charset</code>. 
+          Le jeu de caractères ISO-8859-1 est toujours acceptable, à 
+          moins qu'il n'ait été explicitement refusé. Les variantes 
+          avec un type de média <code>test/*</code> et qui ne sont 
+          pas explicitement associées à un jeu de caractère donné 
+          sont supposées encodées en ISO-8859-1.</li>
+
+          <li>Choisir les variantes qui ont un jeu de caractères 
+          défini et qui <em>n'</em>est <em>pas</em> ISO-8859-1. 
+          S'il n'existe pas de telles variantes, alors les 
+          choisir toutes.</li>
+
+          <li>Choisir les variantes présentant le meilleur encodage. 
+          S'il existe des variantes avec un encodage acceptable par 
+          le 'user-agent' du navigateur, choisir ces variantes seules. 
+          Dans le cas contraire, s'il existe à la fois des variantes 
+          encodées et non encodées, ne choisir que les variantes 
+          non encodées. Dans les autres cas, choisir toutes les 
+          variantes.</li>
+
+          <li>Choisir les variantes présentant la plus petite taille.</li>
+
+          <li>Choisir la première variante de celles qui restent. Ce 
+          sera donc soit la première variante listée dans le fichier 
+          des tables de types, soit, si les variantes sont lues d'un 
+          répertoire, celle dont le nom apparaît en premier dans un 
+          classement par code ASCII.</li>
+        </ol>
+      </li>
+
+      <li>Cet algorithme a permis de choisir la 'meilleure' des 
+      variantes, qui est renvoyée en réponse à la requête du 
+      navigateur. L'en-tête <code>Vary</code> de la réponse HTTP 
+      est utilisé pour indiquer les dimensions de la négociation 
+      (les navigateurs et les serveurs mandataires sont capables de 
+      prendre en compte cette information quand il gardent une 
+      ressource en cache). Fin des opérations.</li>
+      
+      <li>Arriver à ce point signifie qu'aucune variante n'a pu être 
+      choisie, car aucune n'est acceptable aux yeux du navigateur. 
+      Renvoyer une erreur 406 ("No acceptable representation" - NdT&nbsp;: 
+      "Aucune représentation acceptable") dans un document HTML 
+      présentant les diverses variantes possibles. L'en-tête HTTP 
+      <code>Vary</code> est également renseigné pour présenter les 
+      dimensions de la négociation.</li>
+    </ol>
+</section>
+</section>
+
+<section id="better"><title>Tricher sur les Facteurs de Qualité</title>
+
+    <p>Il arrive qu'Apache modifie les facteurs de qualité par rapport 
+    à la valeur qu'ils devraient avoir en suivant strictement 
+    l'algorithme décrit plus haut. Ceci permet d'obtenir de meilleurs 
+    résultats pour gérer les navigateurs qui n'envoient pas toutes 
+    les informations ou envoient des informations erronées. Ainsi, 
+    certains navigateurs, parmi les plus répandus du marché, envoient 
+    des en-têtes <code>Accept</code> qui entraîneraient l'envoi de la 
+    mauvaise variante dans de nombreux cas. Si le navigateur envoie 
+    des informations correctes, Apache ne trichera pas sur les facteurs 
+    de qualité.</p>
+
+<section id="wildcards"><title>Types de Médias et Jokers</title>
+
+    <p>L'en-tête de requête <code>Accept:</code> indique les préférences 
+    des types de médias. Elle peut comporter des 'jokers' tels que 
+    "image/*" ou "*/*", où * signifie "n'importe quoi". Ainsi, une 
+    requête présentant&nbsp;:</p>
+
+<example>Accept: image/*, */*</example>
+
+    <p>signifierait que tout type commençant par "image/" est 
+    acceptable, comme serait acceptable tout autre type. Certains 
+    navigateurs envoient sans arrêt des jokers en plus des types 
+    qu'ils peuvent effectivement gérer. Par exemple&nbsp;:</p>
+
+<example>
+  Accept: text/html, text/plain, image/gif, image/jpeg, */*
+</example>
+    <p>Le but de ces informations est d'indiquer que les types 
+    explicitement cités sont les préférés mais que le 
+    navigateur accepte également d'autres représentations. 
+    En utilisant les facteurs de qualité, voici ce que devrait 
+    envoyer le navigateur&nbsp;:</p>
+<example>
+  Accept: text/html, text/plain, image/gif, image/jpeg, */*; q=0.01
+</example>
+    <p>Les types explicitement cités ne présentent pas de facteur 
+    de qualité, ils reçoivent donc la valeur par défaut de 1.0 
+    (la plus haute valeur possible). Les jokers sont affectés 
+    d'une préférence très basse de 0.01, si bien que les autres 
+    types ne seront utilisés que si aucune des variantes ne 
+    correspond à un des types explicitement préférés.</p>
+
+    <p>Si le champ d'en-tête <code>Accept:</code> <em>ne</em> 
+    contient <em>aucun</em> facteur de qualité, Apache modifie 
+    le facteur de qualité de "*/*" (s'il est présent) en 0.01 
+    afin d'émuler le comportement souhaité. Apache positionne 
+    également le facteur de qualité des jokers qui se présentent 
+    sous la forme "type/*" en 0.02 (afin que ces derniers soient 
+    préférés à "*/*"). Si un seul ou plusieurs types de média de 
+    l'en-tête <code>Accept:</code> présente un facteur de qualité, 
+    ces modifications <em>ne</em> sont <em>pas</em> effectuées, 
+    afin que les requêtes des navigateurs qui envoient des 
+    informations correctes fonctionnent comme prévu.</p>
+</section>
+
+<section id="exceptions"><title>Exceptions aux Négociations sur la Langue</title>
+
+    <p>À partir d'Apache 2.0, certaines exceptions ont été ajoutées 
+    à l'algorithme de négociation afin de retomber élégamment sur 
+    nos pattes dans les cas où la négociation sur la langue 
+    n'aboutit pas.</p>
+    
+    <p>Si un client demande une page du serveur, sans que ce dernier 
+    ne puisse déterminer une page correspondant au champ 
+    <code>Accept-language</code> envoyé par le navigateur, le serveur 
+    doit renvoyer une réponse parmi "Pas de Variante Acceptable" 
+    et "Choix Multiples" au client. Afin d'éviter ces messages 
+    d'erreur, il est possible de configurer Apache pour qu'il ignore 
+    le champ <code>Accept-language</code> dans ces cas et qu'il 
+    fournisse au client un document qui ne correspond pas 
+    explicitement à sa requête. La directive 
+    <directive module="mod_negotiation">ForceLanguagePriority</directive> 
+    peut être utilisée pour passer outre à ces deux messages d'erreur 
+    et modifier la réponse du serveur au moyen de la directive 
+    <directive module="mod_negotiation">LanguagePriority</directive>.</p>
+
+    <p>Le serveur va également essayer de modifier la sous-classe 
+    de langue si aucune correspondance n'est trouvée. Par exemple, 
+    dans le cas où un client demande des documents avec le langage 
+    <code>en-GB</code> pour "British English", le protocole HTTP/1.1 
+    n'autorise pas le serveur à répondre par un document qui serait 
+    marqué par <code>en</code>. (Notez que présenter 
+    <code>en-GB</code> dans l'en-tête <code>Accept-language</code> 
+    est loin d'être pertinent, il semble très peu probable que le 
+    lecteur comprenne l'anglais "British" et ne comprenne pas 
+    l'anglais "tout court". Il se trouve malheureusement que 
+    beaucoup de navigateurs présentent ce comportement.) Bref, 
+    si aucune autre langue ne correspond et que le serveur 
+    s'apprêterait normalement à envoyer une réponse d'erreur 
+    "No Acceptable Variants", ou à utiliser la méthode 
+    <directive module="mod_negociation">LanguagePriority</directive> 
+    présentée ci-avant, le serveur va ignorer la sous-classe de 
+    langue <code>GB</code> et considérer que la requête 
+    <code>en-GB</code> correspond bien au document <code>en</code>. 
+    Implicitement, Apache ajoute la langue parente (<code>en</code>) 
+    à la liste des langues considérées comme acceptables par le 
+    navigateur, avec un facteur de qualité très faible. Notez 
+    cependant que si le client demande "en-GB; qs=0.9, fr; qs=0.8", 
+    et que le serveur dispose de documents marqués comme "en" et 
+    "fr", alors le document en français sera renvoyé par le serveur. 
+    Ce comportement est nécessaire, afin de garder la compatibilité 
+    avec HTTP/1.1 et fonctionner avec les navigateurs correctement 
+    configurés.</p>
+    
+    <p>Pour supporter les techniques avancées de détection de
+    préférence de langues de l'utilisateur (telles que les 
+    Cookies, ou les chemins d'URL spéciaux), Apache reconnaît 
+    depuis la version 2.0.47 la <a href="env.html">variable 
+    d'environnement</a> <code>prefer-language</code>. Si cette 
+    variable existe, et qu'elle précise une langue valide, 
+    <module>mod_negociation</module> cherchera une variante qui 
+    y corresponde. S'il n'en trouve pas, le processus de 
+    négociation normal se déroulera.</p>
+
+    <example><title>Exemple</title>
+      SetEnvIf Cookie "language=en" prefer-language=en<br />
+      SetEnvIf Cookie "language=fr" prefer-language=fr
+    </example>
+</section>
+</section>
+
+<section id="extensions"><title>Extensions vers la Négociation de Contenu
+Transparente</title>
+
+<p>Apache complète le protocole de négociation de contenu (RFC 2295) 
+comme décrit ici. Un nouvel élément <code>{encoding ..}</code> est 
+utilisé dans la liste des variantes pour nommer celles qui ne sont 
+disponibles que sous un encodage spécifique. L'implémentation de 
+l'algorithme RVSA/1.0 (RFC 2296) est étendue afin d'intégrer les 
+variantes encodées dans la liste, et de les proposer comme 
+candidates quand leur encodage est acceptable au vu de l'en-tête 
+<code>Accept-Encoding</code>. L'implémentation RVSA/1.0 ne tronque 
+pas les facteurs de qualité à 5 décimales avant de choisir la 
+meilleure des variantes.</p>
+</section>
+
+<section id="naming"><title>À propos des liens hypertextes et des conventions de nommage</title>
+
+    <p>Dans le cas où la négociation de langues est utilisée, il est 
+    possible de choisir diverses conventions de nommage, car les 
+    fichiers peuvent présenter plus d'une extension, et l'ordre des 
+    extensions n'est normalement pas significatif (voir la 
+    documentation <a href="mod/mod_mime.html#multipleext">mod_mime</a> 
+    pour plus de détails).</p>
+
+    <p>Habituellement, un fichier a une extension pour son type MIME 
+    (par exemple, <code>html</code>), parfois une extension pour son 
+    encodage (par exemple, <code>gz</code>), et bien sûr une extension 
+    de langue (par exemple, <code>en</code>) pour distinguer les 
+    diverses variantes.</p>
+
+    <p>Exemples&nbsp;:</p>
+
+    <ul>
+      <li>foo.en.html</li>
+
+      <li>foo.html.en</li>
+
+      <li>foo.en.html.gz</li>
+    </ul>
+
+    <p>Voici d'autres exemples de noms de fichiers ainsi que des liens
+    hypertextes valides et invalides&nbsp;:</p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <columnspec><column width=".2"/><column width=".2"/>
+        <column width=".2"/></columnspec>
+      <tr>
+        <th>Nom de Fichier</th>
+
+        <th>Lien valide</th>
+
+        <th>Lien invalide</th>
+      </tr>
+
+      <tr>
+        <td><em>foo.html.en</em></td>
+
+        <td>foo<br />
+         foo.html</td>
+
+        <td>-</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.en.html</em></td>
+
+        <td>foo</td>
+
+        <td>foo.html</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.html.en.gz</em></td>
+
+        <td>foo<br />
+         foo.html</td>
+
+        <td>foo.gz<br />
+         foo.html.gz</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.en.html.gz</em></td>
+
+        <td>foo</td>
+
+        <td>foo.html<br />
+         foo.html.gz<br />
+         foo.gz</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.gz.html.en</em></td>
+
+        <td>foo<br />
+         foo.gz<br />
+         foo.gz.html</td>
+
+        <td>foo.html</td>
+      </tr>
+
+      <tr>
+        <td><em>foo.html.gz.en</em></td>
+
+        <td>foo<br />
+         foo.html<br />
+         foo.html.gz</td>
+
+        <td>foo.gz</td>
+      </tr>
+    </table>
+
+    <p>Le tableau ci-dessus montre qu'il est toujours possible de 
+    spécifier le lien sans aucune extension dans un lien hypertexte. 
+    (par exemple, <code>foo</code>). L'avantage en est qu'il est 
+    ainsi possible de ne pas montrer le type d'un document, et de 
+    le modifier ultérieurement, par exemple le passer de <code>html</code> 
+    à <code>shtml</code> ou <code>cgi</code> sans avoir besoin de 
+    modifier aucun lien.</p>
+    
+    <p>Pour continuer à utiliser les types MIME dans les liens 
+    (par exemple, <code>foo.html</code>), l'extension correspondant 
+    à la langue (ainsi que l'extension d'encodage, si elle existe) 
+    doit être du coté droit de l'extension du type MIME (par exemple, 
+    <code>foo.html.en</code>).</p>
+</section>
+
+<section id="caching"><title>À propos des Caches</title>
+
+    <p>Quand un cache garde en mémoire une représentation, il l'associe 
+    à l'URL de la requête. Quand la même URL vient à être redemandée, 
+    le cache peut utiliser la représentation gardée en mémoire, plutôt 
+    que de refaire une requête au serveur. Cependant, si la ressource 
+    est négociable coté serveur, le résultat pourrait en être que la 
+    réponse à la première requête mise en cache serait renvoyée de 
+    façon erronée. Pour prévenir ce problème, Apache marque toutes 
+    les réponses issues d'une négociation comme "non-cachables" par 
+    les clients HTTP/1.0. Apache supporte les spécifications du 
+    protocole HTTP/1.1 en ce qui concerne la mise en cache des 
+    réponses négociées.</p>
+
+    <p>Les requêtes venant d'un client conforme au protocole HTTP/1.0 
+    (qu'il s'agisse d'un navigateur ou d'un serveur cache) peuvent 
+    être rendues "cachables" si la directive <directive 
+    module="mod_negociation">CacheNegotiatedDocs</directive> est 
+    utilisée. Cette directive peut être spécifiée aussi bien dans 
+    la configuration principale du serveur que dans un serveur 
+    virtuel, et ne nécessite pas d'argument. Elle n'a aucun impact 
+    sur les requêtes des clients fonctionnant en HTTP/1.1.</p>
+</section>
+
+<section id="more"><title>Plus d'Information</title>
+
+    <p>Pour plus d'informations au sujet de la négociation de contenu, voir
+    <a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
+    Negotiation Notes</a> de Alan J. Flavell. Notez que ce 
+    document ne sera peut-être pas mis à jour en fonction des 
+    changements intervenus dans Apache 2.0.</p>
+</section>
+
+</manualpage>

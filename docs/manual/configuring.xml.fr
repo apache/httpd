@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 151405 -->
+<!-- french translation by Vincent Deffontaines, review by alain B -->
+
+<!--
+ Copyright 2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="configuring.xml.meta">
+
+  <title>Fichiers de Configuration</title>
+
+<summary>
+<p>Ce document présente les fichiers utilisés pour la configuration
+du serveur HTTP Apache.</p>
+</summary>
+
+  <section id="main">
+    <title>Fichiers de Configuration principaux</title>
+    <related>
+      <modulelist>
+        <module>mod_mime</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">IfDefine</directive>
+        <directive module="core">Include</directive>
+        <directive module="mod_mime">TypesConfig</directive>
+      </directivelist>
+    </related>
+
+    <p>Apache se configure en positionnant des <a
+    href="mod/directives.html">directives</a> dans des fichiers de
+    configurations, au format texte. Le fichier de configuration principal 
+    est habituellement nommé <code>httpd.conf</code>. 
+    L'emplacement de ce fichier est défini lors de la compilation 
+    mais il est possible de le modifier en ligne de commande au lancement 
+    d'Apache au moyen de l'option <code>-f</code>.
+    De plus, il est possible d'ajouter d'autres fichiers de configuration au
+    moyen de la directive <directive module="core">Include</directive>,
+    qui accepte des jokers, rendant possible la lecture de multiples 
+    fichiers de configuration. Cette directive peut être incluse dans 
+    n'importe quel fichier de configuration. Les changements apportés 
+    aux fichiers de configuration principale ne seront pris en compte 
+    qu'au démarrage d'Apache ou à son redémarrage.</p>
+    
+    <p>Le serveur lit également un fichier contenant les types de documents
+    mime&nbsp;; le nom de ce fichier est défini au moyen de la directive
+    <directive module="mod_mime">TypesConfig</directive>, et son nom
+    par défaut est <code>mime.types</code>.</p>
+  </section>
+
+  <section id="syntax">
+    <title>Syntaxe des fichiers de configuration</title>
+
+    <p>Les fichiers de configuration d'Apache contiennent une directive par
+    ligne. Il est possible d'utiliser le caractère antislash "\" à la fin
+    d'une ligne pour signaler que celle-ci se continue sur la ligne suivante.
+    Dans ce cas l'antislash doit impérativement être le tout dernier 
+    caractère de la ligne et ne doit pas être suivi d'espaces.</p>
+    
+    <p>Les directives placées dans les fichiers de configuration 
+    ne sont pas sensibles à la casse, mais leurs arguments le sont. 
+    Les lignes commençant par le caractère "#" sont considérées comme 
+    des commentaires, et sont donc ignorées. Il <strong>n'</strong>est 
+    <strong>pas</strong> possible d'ajouter un commentaire en fin de 
+    ligne, après une directive. Les lignes vides, ainsi que les 
+    espaces précédant les directives, sont ignorés, ce qui vous 
+    permet d'indenter le fichier pour de simplifier sa lecture.</p>
+        
+    <p>Vous pouvez tester vos fichiers de configuration sans 
+    avoir à démarrer le serveur en utilisant la commande 
+    <code>apachectl configtest</code> ou en appelant Apache 
+    avec l'option <code>-t</code>.</p>
+  </section>
+
+  <section id="modules">
+    <title>Modules</title>
+
+    <related>
+      <modulelist>
+        <module>mod_so</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">IfModule</directive>
+        <directive module="mod_so">LoadModule</directive>
+      </directivelist>
+    </related>
+
+    <p>Apache est un serveur modulaire, ce qui signifie que le 
+    noyau du serveur ne dispose que des fonctions des plus basiques. 
+    Toutes les fonctions étendues sont possibles grâce à des <a 
+    href="mod/">modules</a>, qui peuvent être chargés par Apache. 
+    Par défaut, un <a href="mod/module-dict.html#Status">certain 
+    nombre</a> de modules est fourni et compilé avec le serveur. 
+    Dans le cas où le serveur a été compilé avec le <a href="dso.html">
+    support dynamique des modules</a>, il est possible de compiler 
+    des modules à part et de les charger au moyen de la directive 
+    <directive module="mod_so">LoadModule</directive>. Dans le cas 
+    contraire, il faudra recompiler tout Apache pour lui ajouter ou 
+    lui enlever des modules. Des directives peuvent être incluses de 
+    façon conditionnelle selon la présence d'un module particulier en 
+    les positionnant dans un bloc <directive module="core" 
+    type="section">IfModule</directive>.</p>
+        
+    <p>L'option <code>-l</code>, à passer en ligne de commande, provoque
+    l'affichage des modules qui sont compilés dans Apache.</p>
+  </section>
+
+  <section id="scope">
+    <title>Directives Possibles</title>
+
+    <related>
+      <directivelist>
+        <directive module="core" type="section">Directory</directive>
+        <directive module="core" type="section">DirectoryMatch</directive>
+        <directive module="core" type="section">Files</directive>
+        <directive module="core" type="section">FilesMatch</directive>
+        <directive module="core" type="section">Location</directive>
+        <directive module="core" type="section">LocationMatch</directive>
+        <directive module="core" type="section">VirtualHost</directive>
+      </directivelist>
+    </related>
+
+    <p>Les directives positionnées dans les fichiers de configuration principaux
+    s'appliquent au serveur dans son ensemble. Pour spécifier des directives
+    spécifiques à une partie du serveur, il est possible de les positionner à
+    l'intérieur d'une des sections <directive module="core"
+    type="section">Directory</directive>, <directive module="core"
+    type="section">DirectoryMatch</directive>, <directive module="core"
+    type="section">Files</directive>, <directive module="core"
+    type="section">FilesMatch</directive>, <directive module="core"
+    type="section">Location</directive>, ou <directive module="core"
+    type="section">LocationMatch</directive>.
+    Chacune de ces sections limite la validité des directives qu'elle
+    contient à la partie du système de fichier ou de l'URL qu'elle
+    contient. Ces sections peuvent également se contenir les unes les autres,
+    ce qui permet une configuration très fine.</p>
+
+    <p>Il est possible d'utiliser un seul serveur Apache pour servir plusieurs 
+    sites web, ce qu'on appelle des <a href="vhosts/">Serveurs Virtuels</a>.
+    Les différentes directives peuvent être positionnées à l'intérieur de
+    sections <directive module="core" type="section">VirtualHost</directive>,
+    afin qu'elles régulent le fonctionnement d'un site (dit virtuel)
+    particulier.</p>
+    
+    <p>La plupart des directives peuvent être positionnées dans toutes les
+    sections présentées ci-dessus, sauf dans certains cas. Par exemple, 
+    les directives qui contrôlent la création du processus Apache ne
+    peuvent être placées que dans le contexte du serveur principal. Les
+    sections possibles pour chaque directive sont décrites au niveau du <a
+    href="mod/directive-dict.html#Context">Contexte</a> de celle-ci.
+    Des informations plus complètes au sujet du fonctionnement des sections
+    <a href="sections.html">Directory, Location et Files</a> 
+    sont disponibles ailleurs.</p>
+  </section>
+
+  <section id="htaccess">
+    <title>Fichiers .htaccess</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">AccessFileName</directive>
+        <directive module="core">AllowOverride</directive>
+      </directivelist>
+    </related>
+
+    <p>Apache permet de délocaliser la gestion de la configuration, au
+    moyen de fichiers spéciaux, placés directement dans l'arborescence Web.
+    Ces fichiers spéciaux portent le plus souvent le nom <code>.htaccess</code>,
+    mais il est bien sûr possible de changer ce nom au moyen de la directive
+    <directive module="core">AccessFileName</directive>.
+    Les directives positionnées dans un fichier <code>.htaccess</code>
+    s'appliquent au répertoire le contenant ainsi qu'à tous ses
+    sous-répertoires. La syntaxe à employer dans un fichier
+    <code>.htaccess</code> est identique à la syntaxe des fichiers de
+    configuration principaux. De plus, les fichiers <code>.htaccess</code> 
+    étant lus au moment de chaque requête les concernant, toute 
+    modification de ces fichiers prend effet immédiatement sans qu'il soit
+    nécessaire de redémarrer le serveur.</p>
+    
+    <p>Pour savoir si une directive peut être placée dans un fichier
+    <code>.htaccess</code>, il suffit de vérifier son <a
+    href="mod/directive-dict.html#Context">Contexte</a>. Il est possible à
+    l'administrateur du serveur de spécifier quelles directives sont 
+    autorisées ou non dans les fichiers <code>.htaccess</code>, au moyen 
+    de la directive <directive module="core">AllowOverride</directive>, 
+    positionnée dans les fichiers de configuration principaux.</p>
+
+    <p>Des informations plus complètes concernant les fichiers 
+    <code>.htaccess</code> sont disponible dans le 
+    <a href="howto/htaccess.html">tutoriel .htaccess</a>.</p>
+
+  </section>
+</manualpage>
+
