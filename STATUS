@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/21 03:51:32 $]
+Last modified at [$Date: 2003/11/21 18:32:38 $]
 
 Release:
 
@@ -88,6 +88,8 @@ PATCHES TO BACKPORT FROM 2.1
       in some cases.
       modules/proxy/proxy_http.c: r1.172
       +1: jorton, trawick, stoddard
+      trawick: whoever merges this please create CHANGES entry in both
+               "trees" and reference PR 18573
 
     * Fix timezone handling in mod_log_config.  PR 23642
       modules/loggers/mod_log_config.c: r1.107
