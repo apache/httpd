@@ -83,7 +83,7 @@ typedef struct {
     const char *fake;
     char *handler;
     regex_t *regexp;
-    int redir_status;		/* 301, 302, 303, 410, etc */
+    int redir_status;                /* 301, 302, 303, 410, etc */
 } alias_entry;
 
 typedef struct {
@@ -119,7 +119,8 @@ static void *merge_alias_config(apr_pool_t *p, void *basev, void *overridesv)
 {
     alias_server_conf *a =
     (alias_server_conf *) apr_pcalloc(p, sizeof(alias_server_conf));
-    alias_server_conf *base = (alias_server_conf *) basev, *overrides = (alias_server_conf *) overridesv;
+    alias_server_conf *base = (alias_server_conf *) basev;
+    alias_server_conf *overrides = (alias_server_conf *) overridesv;
 
     a->aliases = apr_array_append(p, overrides->aliases, base->aliases);
     a->redirects = apr_array_append(p, overrides->redirects, base->redirects);
@@ -130,14 +131,15 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
 {
     alias_dir_conf *a =
     (alias_dir_conf *) apr_pcalloc(p, sizeof(alias_dir_conf));
-    alias_dir_conf *base = (alias_dir_conf *) basev, *overrides = (alias_dir_conf *) overridesv;
+    alias_dir_conf *base = (alias_dir_conf *) basev;
+    alias_dir_conf *overrides = (alias_dir_conf *) overridesv;
     a->redirects = apr_array_append(p, overrides->redirects, base->redirects);
     return a;
 }
 
 static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
-				      const char *f, const char *r,
-				      int use_regex)
+                                      const char *f, const char *r,
+                                      int use_regex)
 {
     server_rec *s = cmd->server;
     alias_server_conf *conf = ap_get_module_config(s->module_config,
@@ -147,9 +149,9 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
 
     if (use_regex) {
-	new->regexp = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
-	if (new->regexp == NULL)
-	    return "Regular expression could not be compiled.";
+        new->regexp = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
+        if (new->regexp == NULL)
+            return "Regular expression could not be compiled.";
         new->real = r;
     }
     else {
@@ -167,20 +169,20 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 }
 
 static const char *add_alias(cmd_parms *cmd, void *dummy, const char *f,
-			     const char *r)
+                             const char *r)
 {
     return add_alias_internal(cmd, dummy, f, r, 0);
 }
 
 static const char *add_alias_regex(cmd_parms *cmd, void *dummy, const char *f,
-				   const char *r)
+                                   const char *r)
 {
     return add_alias_internal(cmd, dummy, f, r, 1);
 }
 
 static const char *add_redirect_internal(cmd_parms *cmd,
-					 alias_dir_conf *dirconf,
-					 const char *arg1, const char *arg2, 
+                                         alias_dir_conf *dirconf,
+                                         const char *arg1, const char *arg2, 
                                          const char *arg3, int use_regex)
 {
     alias_entry *new;
@@ -193,41 +195,41 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     const char *url = arg3;
 
     if (!strcasecmp(arg1, "gone"))
-	status = HTTP_GONE;
+        status = HTTP_GONE;
     else if (!strcasecmp(arg1, "permanent"))
-	status = HTTP_MOVED_PERMANENTLY;
+        status = HTTP_MOVED_PERMANENTLY;
     else if (!strcasecmp(arg1, "temp"))
-	status = HTTP_MOVED_TEMPORARILY;
+        status = HTTP_MOVED_TEMPORARILY;
     else if (!strcasecmp(arg1, "seeother"))
-	status = HTTP_SEE_OTHER;
+        status = HTTP_SEE_OTHER;
     else if (apr_isdigit(*arg1))
-	status = atoi(arg1);
+        status = atoi(arg1);
     else {
-	f = arg1;
-	url = arg2;
+        f = arg1;
+        url = arg2;
     }
 
     if (use_regex) {
-	r = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
-	if (r == NULL)
-	    return "Regular expression could not be compiled.";
+        r = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
+        if (r == NULL)
+            return "Regular expression could not be compiled.";
     }
 
     if (ap_is_HTTP_REDIRECT(status)) {
-	if (!url)
-	    return "URL to redirect to is missing";
-	if (!use_regex && !ap_is_url(url))
-	    return "Redirect to non-URL";
+        if (!url)
+            return "URL to redirect to is missing";
+        if (!use_regex && !ap_is_url(url))
+            return "Redirect to non-URL";
     }
     else {
-	if (url)
-	    return "Redirect URL not valid for this status";
+        if (url)
+            return "Redirect URL not valid for this status";
     }
 
     if (cmd->path)
-	new = apr_array_push(dirconf->redirects);
+        new = apr_array_push(dirconf->redirects);
     else
-	new = apr_array_push(serverconf->redirects);
+        new = apr_array_push(serverconf->redirects);
 
     new->fake = f;
     new->real = url;
@@ -238,20 +240,20 @@ static const char *add_redirect_internal(cmd_parms *cmd,
 
 static const char *add_redirect(cmd_parms *cmd, void *dirconf,
                                 const char *arg1, const char *arg2,
-				const char *arg3)
+                                const char *arg3)
 {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 0);
 }
 
 static const char *add_redirect2(cmd_parms *cmd, void *dirconf,
-                                const char *arg1, const char *arg2)
+                                 const char *arg1, const char *arg2)
 {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, NULL, 0);
 }
 
 static const char *add_redirect_regex(cmd_parms *cmd, void *dirconf,
-				      const char *arg1, const char *arg2,
-				      const char *arg3)
+                                      const char *arg1, const char *arg2,
+                                      const char *arg3)
 {
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 1);
 }
@@ -275,7 +277,7 @@ static const command_rec alias_cmds[] =
                    "an optional status, then a regular expression and "
                    "destination URL"),
     AP_INIT_TAKE2("RedirectTemp", add_redirect2,
-		  (void *) HTTP_MOVED_TEMPORARILY, OR_FILEINFO,
+                  (void *) HTTP_MOVED_TEMPORARILY, OR_FILEINFO,
                   "a document to be redirected, then the destination URL"),
     AP_INIT_TAKE2("RedirectPermanent", add_redirect2, 
                   (void *) HTTP_MOVED_PERMANENTLY, OR_FILEINFO,
@@ -288,29 +290,29 @@ static int alias_matches(const char *uri, const char *alias_fakename)
     const char *aliasp = alias_fakename, *urip = uri;
 
     while (*aliasp) {
-	if (*aliasp == '/') {
-	    /* any number of '/' in the alias matches any number in
-	     * the supplied URI, but there must be at least one...
-	     */
-	    if (*urip != '/')
-		return 0;
+        if (*aliasp == '/') {
+            /* any number of '/' in the alias matches any number in
+             * the supplied URI, but there must be at least one...
+             */
+            if (*urip != '/')
+                return 0;
 
-	    while (*aliasp == '/')
-		++aliasp;
-	    while (*urip == '/')
-		++urip;
-	}
-	else {
-	    /* Other characters are compared literally */
-	    if (*urip++ != *aliasp++)
-		return 0;
-	}
+            while (*aliasp == '/')
+                ++aliasp;
+            while (*urip == '/')
+                ++urip;
+        }
+        else {
+            /* Other characters are compared literally */
+            if (*urip++ != *aliasp++)
+                return 0;
+        }
     }
 
     /* Check last alias path component matched all the way */
 
     if (aliasp[-1] != '/' && *urip != '\0' && *urip != '/')
-	return 0;
+        return 0;
 
     /* Return number of characters from URI which matched (may be
      * greater than length of alias, since we may have matched
@@ -320,7 +322,8 @@ static int alias_matches(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
-static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doesc, int *status)
+static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
+                            int doesc, int *status)
 {
     alias_entry *entries = (alias_entry *) aliases->elts;
     regmatch_t regm[10];
@@ -328,15 +331,16 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
     int i;
 
     for (i = 0; i < aliases->nelts; ++i) {
-	alias_entry *p = &entries[i];
-	int l;
+        alias_entry *p = &entries[i];
+        int l;
 
-	if (p->regexp) {
-	    if (!ap_regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm, 0)) {
-		if (p->real) {
-		    found = ap_pregsub(r->pool, p->real, r->uri,
-				    p->regexp->re_nsub + 1, regm);
-		    if (found && doesc) {
+        if (p->regexp) {
+            if (!ap_regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm,
+                            0)) {
+                if (p->real) {
+                    found = ap_pregsub(r->pool, p->real, r->uri,
+                                    p->regexp->re_nsub + 1, regm);
+                    if (found && doesc) {
                         apr_uri_t uri;
                         apr_uri_parse(r->pool, found, &uri);
                         /* Do not escape the query string or fragment. */
@@ -351,34 +355,34 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
                             found = apr_pstrcat(r->pool, found, "#", 
                                                 uri.fragment, NULL);
                         }
-		    }
-		}
-		else {
-		    /* need something non-null */
-		    found = apr_pstrdup(r->pool, "");
-		}
-	    }
-	}
-	else {
-	    l = alias_matches(r->uri, p->fake);
+                    }
+                }
+                else {
+                    /* need something non-null */
+                    found = apr_pstrdup(r->pool, "");
+                }
+            }
+        }
+        else {
+            l = alias_matches(r->uri, p->fake);
 
-	    if (l > 0) {
-		if (doesc) {
-		    char *escurl;
-		    escurl = ap_os_escape_path(r->pool, r->uri + l, 1);
+            if (l > 0) {
+                if (doesc) {
+                    char *escurl;
+                    escurl = ap_os_escape_path(r->pool, r->uri + l, 1);
 
-		    found = apr_pstrcat(r->pool, p->real, escurl, NULL);
-		}
-		else
-		    found = apr_pstrcat(r->pool, p->real, r->uri + l, NULL);
-	    }
-	}
+                    found = apr_pstrcat(r->pool, p->real, escurl, NULL);
+                }
+                else
+                    found = apr_pstrcat(r->pool, p->real, r->uri + l, NULL);
+            }
+        }
 
-	if (found) {
-	    if (p->handler) {	/* Set handler, and leave a note for mod_cgi */
-		r->handler = p->handler;
-		apr_table_setn(r->notes, "alias-forced-type", r->handler);
-	    }
+        if (found) {
+            if (p->handler) {    /* Set handler, and leave a note for mod_cgi */
+                r->handler = p->handler;
+                apr_table_setn(r->notes, "alias-forced-type", r->handler);
+            }
             /* XXX This is as SLOW as can be, next step, we optimize
              * and merge to whatever part of the found path was already
              * canonicalized.  After I finish eliminating os canonical.
@@ -388,10 +392,10 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
                 found = ap_server_root_relative(r->pool, found);
             }
             if (found) {
-	        *status = p->redir_status;
+                *status = p->redir_status;
             }
-	    return found;
-	}
+            return found;
+        }
 
     }
 
@@ -405,23 +409,24 @@ static int translate_alias_redir(request_rec *r)
     char *ret;
     int status;
 
-    if (r->uri[0] != '/' && r->uri[0] != '\0')
-	return DECLINED;
+    if (r->uri[0] != '/' && r->uri[0] != '\0') {
+        return DECLINED;
+    }
 
     if ((ret = try_alias_list(r, serverconf->redirects, 1, &status)) != NULL) {
-	if (ap_is_HTTP_REDIRECT(status)) {
-	    /* include QUERY_STRING if any */
-	    if (r->args) {
-		ret = apr_pstrcat(r->pool, ret, "?", r->args, NULL);
-	    }
-	    apr_table_setn(r->headers_out, "Location", ret);
-	}
-	return status;
+        if (ap_is_HTTP_REDIRECT(status)) {
+            /* include QUERY_STRING if any */
+            if (r->args) {
+                ret = apr_pstrcat(r->pool, ret, "?", r->args, NULL);
+            }
+            apr_table_setn(r->headers_out, "Location", ret);
+        }
+        return status;
     }
 
     if ((ret = try_alias_list(r, serverconf->aliases, 0, &status)) != NULL) {
-	r->filename = ret;
-	return OK;
+        r->filename = ret;
+        return OK;
     }
 
     return DECLINED;
@@ -459,7 +464,7 @@ static int fixup_redir(request_rec *r)
                 apr_table_setn(r->headers_out, "Location", ret);
             }
         }
-	return status;
+        return status;
     }
 
     return DECLINED;
@@ -467,7 +472,7 @@ static int fixup_redir(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    static const char * const aszSucc[]={ "mod_userdir.c",NULL };
+    static const char * const aszSucc[]={ "mod_userdir.c", NULL };
 
     ap_hook_translate_name(translate_alias_redir,NULL,aszSucc,APR_HOOK_MIDDLE);
     ap_hook_fixups(fixup_redir,NULL,NULL,APR_HOOK_MIDDLE);
@@ -476,10 +481,10 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA alias_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_alias_dir_config,	/* dir config creater */
-    merge_alias_dir_config,	/* dir merger --- default is to override */
-    create_alias_config,	/* server config */
-    merge_alias_config,		/* merge server configs */
-    alias_cmds,			/* command apr_table_t */
-    register_hooks		/* register hooks */
+    create_alias_dir_config,       /* dir config creater */
+    merge_alias_dir_config,        /* dir merger --- default is to override */
+    create_alias_config,           /* server config */
+    merge_alias_config,            /* merge server configs */
+    alias_cmds,                    /* command apr_table_t */
+    register_hooks                 /* register hooks */
 };
