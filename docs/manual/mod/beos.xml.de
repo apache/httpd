@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English revision: 1.1.2.3 -->
+
+<modulesynopsis metafile="beos.xml.meta">
+<name>beos</name>
+<description>Dieses Multi-Processing-Modul ist f&uuml;r BeOS
+  optimiert.</description>
+<status>MPM</status>
+<sourcefile>beos.c</sourcefile>
+<identifier>mpm_beos_module</identifier>
+
+<summary>
+   <p>Dieses Multi-Processing-Modul (MPM) ist das Standardmodul f&uuml;r BeOS.
+     Es benutzt einen einzelnen Steuerprozess welcher Threads f&uuml;r die
+     Bedienung der Anfragen erzeugt.</p>
+</summary>
+<seealso><a href="../bind.html">Adress- und Port-Einstellungen</a>
+</seealso>
+
+<directivesynopsis location="mpm_common"><name>User</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxClients</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxRequestsPerThread</name>
+<description>Die maximale Anzahl von Anfragen, die ein einzelner Thread
+  w&auml;hrend seiner Lebensdauer bedient.</description>
+<syntax>MaxRequestsPerThread <var>Anzahl</var></syntax>
+<default>MaxRequestsPerThread 0</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+  <p>Die Direktive <directive>MaxRequestsPerThread</directive> legt die 
+    Anzahl der Anfragen fest, die ein einzelner Server-Thread bedient. Nach 
+    Erreichen der angegebenen Anzahl von Anfragen wird der Thread beendet. 
+    Wird f&uuml;r <directive>MaxRequestsPerThread</directive> der Wert 
+    <code>0</code> angegeben, wird der Thread niemals beendet.</p>
+
+    <p>Das Setzen von <directive>MaxRequestsPerThread</directive> auf einen
+    Wert ungleich null hat zwei Vorteile:</p>
+
+    <ul>
+      <li>Die Menge des von einem Thread ben&ouml;tigten Speicherplatzes
+       bei (unvorhergesehenen) Speicherproblemen kann begrenzt werden;</li>
+
+      <li>Threads mit begrenzter Lebensdauer reduzieren die Anzahl 
+      der Threads bei reduzierter Serverlast.</li>
+    </ul>
+
+    <note><title>Hinweis:</title>
+      <p>Bei <directive module="core">KeepAlive</directive>-Anfragen wird nur die
+      erste Anfrage auf das Maximum angerechnet. Das f&uuml;hrt dazu, dass
+      die Anzahl der <em>Verbindungen</em>
+      pro Thread reduziert wird.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

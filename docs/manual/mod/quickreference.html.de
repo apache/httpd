@@ -62,8 +62,8 @@
   Kindprozesse, die Anfragen an Netzwerk-Sockets entgegennehmen.</td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Ressourcen lassen angehängte Pfadangaben zu</td></tr>
 <tr><td><a href="core.html#accessfilename">AccessFileName <var>Dateiname</var> [<var>Dateiname</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name der dezentralen Konfigurationsdateien</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#action">Action <var>action-type</var> <var>cgi-script</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular handler or
-content-type</td></tr>
+<tr class="odd"><td><a href="mod_actions.html#action">Action <var>Aktionstyp </var> <var>CGI-Skript</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Aktiviert ein CGI-Skript für einen bestimmten Handler oder
+  Inhaltstyp</td></tr>
 <tr><td><a href="mod_autoindex.html#addalt">AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Alternate text to display for a file, instead of an
 icon selected by filename</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#addaltbyencoding">AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
@@ -110,11 +110,11 @@ zuordnen</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
-<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps URLs to filesystem locations using regular 
-expressions</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-Pfad</var>|
+<var>Dateipfad</var>|<var>Verzeichnispfad</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Ordnet URLs Positionen im Dateisystem zu</td></tr>
+<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>Regulärer Ausdruck </var>
+<var>Dateipfad</var>|<var>Verzeichnispfad</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Weist URLs mit regulären Ausdrücken Positionen im
+  Dateisystem zu</td></tr>
 <tr class="odd"><td><a href="mod_access.html#allow"> Allow from
     all|<var>host</var>|env=<var>env-variable</var>
     [<var>host</var>|env=<var>env-variable</var>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts can access an area of the
@@ -136,9 +136,9 @@ error log</td></tr>
 <tr class="odd"><td><a href="mod_auth_anon.html#anonymous_nouserid">Anonymous_NoUserID On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
 <tr><td><a href="mod_auth_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
-<tr class="odd"><td><a href="perchild.html#assignuserid">AssignUserID <var>user-id</var> <var>group-id</var></a></td><td /><td>v</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Tie a virtual host to a user and group ID</td></tr>
-<tr><td><a href="mod_auth.html#authauthoritative">AuthAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization and authentication are
-passed to lower level modules</td></tr>
+<tr class="odd"><td><a href="perchild.html#assignuserid">AssignUserID <var>User-Id </var> <var>Group-ID</var></a></td><td /><td>v</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bindet einen virtuellen Host an eine User- und Group-ID.</td></tr>
+<tr><td><a href="mod_auth.html#authauthoritative">AuthAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Gibt an, ob die Berechtigung und Authentifizierung an Module
+  niedrigerer Ebene weitergereicht wird.</td></tr>
 <tr class="odd"><td><a href="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authentication and authorization will be
 passwed on to lower level modules</td></tr>
 <tr><td><a href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the database file containing the list
@@ -163,8 +163,8 @@ server</td></tr>
 authentication</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 1000 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
 of clients</td></tr>
-<tr><td><a href="mod_auth.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the name of a text file containing the list
-of user groups for authentication</td></tr>
+<tr><td><a href="mod_auth.html#authgroupfile">AuthGroupFile <var>Dateipfad</var></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Legt den Namen der Textdatei fest, die die Liste der
+  Benutzergruppen für die Authentifizierung enthält.</td></tr>
 <tr class="odd"><td><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Prevent other authentication modules from
 authenticating the user if this one fails</td></tr>
 <tr><td><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
@@ -183,8 +183,8 @@ environment variable</td></tr>
 <tr class="odd"><td><a href="core.html#authname">AuthName <var>auth-Bereich</var></a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Autorisierungsbereich zur Verwendung in der
 HTTP-Authentisierung</td></tr>
 <tr><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Art der Authentisierung</td></tr>
-<tr class="odd"><td><a href="mod_auth.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a text file containing the list of users and
-passwords for authentication</td></tr>
+<tr class="odd"><td><a href="mod_auth.html#authuserfile">AuthUserFile <var>Dateipfad</var></a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Gibt den Namen der Textdatei mit der Benutzerliste und den
+  Passwörtern für die Authentifizierung an.</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
 [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables conditional on HTTP User-Agent
 </td></tr>
@@ -239,9 +239,9 @@ CGI-Skripte</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td /><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
 <tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables the spelling 
 module</td></tr>
-<tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user-id</var> <var>group-id</var>
-<var>num-children</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Specify user ID and group ID for a number of child
-processes</td></tr>
+<tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <var>User-ID </var> <var>Group-ID</var>
+<var>AnzahlKindprozesse</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Angabe von User- und Group-ID für eine Reihe von 
+Kindprozessen.</td></tr>
 <tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Aktiviert die Generierung von <code>Content-MD5</code>
 HTTP-Response-Headern</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
@@ -417,13 +417,13 @@ zulässig sind</td></tr>
   aufzurufen</td></tr>
 <tr><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>number</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Obergrenze für die Anzahl von Anfragen, die ein einzelner
   Kindprozess während seines Lebens bearbeitet</td></tr>
-<tr class="odd"><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of requests that an individual thread
-will handle during its life</td></tr>
+<tr class="odd"><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>Anzahl</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Die maximale Anzahl von Anfragen, die ein einzelner Thread
+  während seiner Lebensdauer bedient.</td></tr>
 <tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>Anzahl</var><br /></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximale Anzahl der unbeschäftigten Kindprozesse des
   Servers</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Anzahl unbeschäftigter Threads</td></tr>
-<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
-<tr class="odd"><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
+<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>Anzahl</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Setz die maximale Anzahl der Worker-Threads.</td></tr>
+<tr class="odd"><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>Anzahl</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Anzahl von Threads pro Kindprozess</td></tr>
 <tr><td><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount <var>value</var></a></td><td> 1009 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The maximum number of objects allowed to be placed in the
 cache</td></tr>
 <tr class="odd"><td><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize <var>bytes</var></a></td><td> 10000 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of a document allowed in the
@@ -457,7 +457,7 @@ a matching file with MultiViews</td></tr>
 virtueller Hosts</td></tr>
 <tr><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
 directly</td></tr>
-<tr class="odd"><td><a href="perchild.html#numservers">NumServers <var>number</var></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Total number of children alive at the same time</td></tr>
+<tr class="odd"><td><a href="perchild.html#numservers">NumServers <var>Anzahl</var></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Gesamtzahl der gleichzeitig aktiven Kindprozesse</td></tr>
 <tr><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td /><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">List of additional client certificates</td></tr>
 <tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
     [+|-]<var>Option</var> [[+|-]<var>Option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Definiert, welche Eigenscahften oder Funktionen in einem
@@ -499,16 +499,17 @@ expressions</td></tr>
 header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the end
 of the index listing</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
-<var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
-a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
-<var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect based on a regular expression match 
-of the current URL</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external permanent redirect asking the client to fetch
-a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
-a different URL</td></tr>
+<tr><td><a href="mod_alias.html#redirect">Redirect [<var>Status</var>] <var>URL-Pfad </var>
+<var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sendet eine externe Umleitung, die vom Client eine andere URL
+  anfordert.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>Status</var>] <var>Regulärer Ausdruck </var>
+<var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Übergibt einen externen Redirect, der auf einer
+  Übereinstimmung mit einem regulären Ausdruck für den aktuellen
+  URL basiert.</td></tr>
+<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-Pfad </var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">übergibt einen externen permanenten Redirect und fordert den
+  Client auf, eine andere URL zu wählen.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-Pfad </var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Übergibt einen externen temporären Redirect und fordert
+  den Client auf, eine andere URL zu wählen.</td></tr>
 <tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
 ...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
 extensions</td></tr>
@@ -561,14 +562,15 @@ wurden</td></tr>
 Benutzerauthentisierung</td></tr>
 <tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>Dateipfad</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ablageort der Datei, die zur Speicherung von Daten zur
   Koordinierung der Kindprozesse verwendet wird</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
-method.</td></tr>
-<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
-target as a CGI script</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location using a regular expression
-and designates the target as a CGI script</td></tr>
+<tr class="odd"><td><a href="mod_actions.html#script">Script <var>Methode</var> <var>CGI-Skript</var></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Aktiviert ein CGI-Skript für eine bestimmte
+  Anforderungsmethode.</td></tr>
+<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-Pfad</var>
+<var>Dateipfad</var>|<var>Verzeichnispfad</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Ordnet eine URL einer Position im Dateisystem zu und kennzeichnet
+  das Zielobjekt als CGI-Skript.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>Regulärer Ausdruck </var>
+<var>Dateipfad</var>|<var>Verzeichnispfad</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Ordnet eine URL mit Hilfe eines regulären Ausdrucks eine
+  Position im Dateisystem zu und kennzeichnet das Zielobjekt als
+  CGI-Skript.</td></tr>
 <tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Methode zur Ermittlung des Interpreters von
 CGI-Skripten</td></tr>
 <tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
@@ -677,7 +679,8 @@ Certificate verification</td></tr>
   pro Kindprozess</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>Anzahl</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Anzahl der Threads, die mit jedem Kindprozess gestartet
   werden</td></tr>
-<tr><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <var>number</var></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Determine the stack size for each thread</td></tr>
+<tr><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <var>Anzahl</var></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Legt die Stackgröße für alle Threads
+      fest</td></tr>
 <tr class="odd"><td><a href="core.html#timeout">TimeOut <var>Sekunden</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
 bevor er die Anfrage abbricht</td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify location of a log file</td></tr>

@@ -46,17 +46,17 @@
 Servers</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Eine Sammlung von Direktiven, die in mehr als einem
   Multi-Processing-Modul (MPM) implementiert sind.</dd>
-<dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
-<dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
-<dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
-    server optimized for Novell NetWare</dd>
-<dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
-<dt><a href="perchild.html">perchild</a></dt><dd>Multi-Processing Module allowing for daemon processes serving
-requests to be assigned a variety of different userids</dd>
+<dt><a href="beos.html">beos</a></dt><dd>Dieses Multi-Processing-Modul ist für BeOS
+  optimiert.</dd>
+<dt><a href="leader.html">leader</a></dt><dd>Eine experimentelle Variante des standardmäßigen
+<code class="module"><a href="../mod/worker.html">worker</a></code>-MPM</dd>
+<dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Dieses Multi-Processing-Modul implementiert einen für 
+	Novell NetWare optimierten Webserver-Thread.</dd>
+<dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrides Multi-Processing-, Multi-Threaded-MPM für OS/2</dd>
+<dt><a href="perchild.html">perchild</a></dt><dd>Dieses Multi-Processing-Modul erlaubt es, Daemon-Prozessen, die Anfragen bedienen, unterschiedliche User-IDs zuzuweisen.</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implementiert einen im Voraus forkenden Webserver ohne
   Thread-Unterstützung</dd>
-<dt><a href="threadpool.html">threadpool</a></dt><dd>Yet another experimental variant of the standard
+<dt><a href="threadpool.html">threadpool</a></dt><dd>Eine weitere experimentelle Variante des Standardmoduls 
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd> Das Multi-Processing-Modul ist optimiert für
   Windows NT.</dd>
@@ -68,13 +68,13 @@ requests to be assigned a variety of different userids</dd>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
 <dl><dt><a href="mod_access.html" id="A" name="A">mod_access</a></dt><dd>Provides access control based on client hostname, IP
 address, or other characteristics of the client request.</dd>
-<dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
-media type or request method.</dd>
-<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
-    filesystem in the document tree and for URL redirection</dd>
-<dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
-HTTP headers</dd>
-<dt><a href="mod_auth.html">mod_auth</a></dt><dd>User authentication using text files</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>Dieses Modul ermöglicht die Ausführung von CGI-Skripten
+  in Abhängigkeit von Medientyp und Anfragemethode.</dd>
+<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Zuweisung unterschiedlicher Teile des Host-Dateisystems 
+  im Dokumentbaum zu URLs und URL-Umleitung</dd>
+<dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sendet Dateien, die ihre eigenen HTTP-Header
+  enthalten.</dd>
+<dt><a href="mod_auth.html">mod_auth</a></dt><dd>Nutzerauthentifizierung mit Hilfe von Textdateien</dd>
 <dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt><dd>Allows "anonymous" user access to authenticated
 areas</dd>
 <dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt><dd>Provides for user authentication using DBM
