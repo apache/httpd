@@ -115,17 +115,27 @@ interpreted in pre -->
 </xsl:text>
 </xsl:template>
 
+<!-- XXX: We need to deal with table headers -->
+
 <xsl:template match="table">
 <xsl:text>\begin{tabular}{</xsl:text>
-<xsl:for-each select="columnspec/column">
-  <xsl:text>l</xsl:text>
-</xsl:for-each>
+<xsl:choose>
+<xsl:when test="columnspec">
+  <xsl:for-each select="columnspec/column">
+    <xsl:text>l</xsl:text>
+  </xsl:for-each>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:for-each select="tr[1]/*">
+    <xsl:text>l</xsl:text>
+  </xsl:for-each>
+</xsl:otherwise>
+</xsl:choose>
 <xsl:text>}</xsl:text>
 <xsl:apply-templates select="tr"/>
 <xsl:text>\end{tabular}
 </xsl:text>
 </xsl:template>
-
 
 <xsl:template match="tr">
   <xsl:apply-templates select="td"/>
@@ -135,8 +145,15 @@ interpreted in pre -->
 
 <xsl:template match="td">
     <xsl:variable name="pos" select="position()"/>
-    <xsl:text>\begin{minipage}{</xsl:text>
-    <xsl:value-of select="../../columnspec/column[$pos]/@width"/>
+    <xsl:text>\begin{minipage}[t]{</xsl:text>
+    <xsl:choose>
+    <xsl:when test="../../columnspec">
+      <xsl:value-of select="../../columnspec/column[$pos]/@width"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="1 div last()"/>
+    </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>\linewidth}</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{minipage}</xsl:text>
@@ -179,14 +196,16 @@ interpreted in pre -->
   </xsl:choose>
 </xsl:variable>
 <xsl:choose>
-<xsl:when test="starts-with(@href, 'http:')">
+
+<xsl:when test="starts-with(@href, 'http:') or starts-with(@href, 'news:') or starts-with(@href, 'mailto:')">
   <xsl:if test="not(.=@href)">
-    <xsl:text>\footnote{\href{</xsl:text>
+    <xsl:text>\footnote{</xsl:text>
+      <xsl:text>\href{</xsl:text>
       <xsl:value-of select="@href"/>
-    <xsl:text>}{</xsl:text>
-      <xsl:call-template name="ltescape">
-        <xsl:with-param name="string" select="@href"/>
-      </xsl:call-template>
+      <xsl:text>}{</xsl:text>
+    <xsl:call-template name="htescape">
+      <xsl:with-param name="string" select="@href"/>
+    </xsl:call-template>
     <xsl:text>}}</xsl:text>
   </xsl:if>
 </xsl:when>
