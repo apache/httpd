@@ -395,6 +395,16 @@ Allows additional information to be listed along with a specified module.
     An option to <code>spawn_child</code> functions which prevents Apache
     from aggressively trying to kill off the child.
 
+    <li><strong><code>alloc debugging code</code></strong><br>
+    Defining <code>ALLOC_DEBUG</code> provides a rudimentary memory
+    debugger which can be used on live servers with low impact --
+    it sets all allocated and freed memory bytes to 0xa5.  Defining
+    <code>ALLOC_USE_MALLOC</code> will cause the alloc code to use
+    <code>malloc()</code> and <code>free()</code> for each object.  This
+    is far more expensive and should only be used for testing with tools
+    such as Electric Fence and Purify.  See <code>main/alloc.c</code>
+    for more details.
+
     </ul>
 
 </ul>

@@ -1,5 +1,13 @@
 Changes with Apache 1.3b1
 
+  *) Add debugging code to alloc.c.  Defining ALLOC_DEBUG provides a
+     rudimentary memory debugger which can be used on live servers with
+     low impact -- it sets all allocated and freed memory bytes to 0xa5.
+     Defining ALLOC_USE_MALLOC will cause the alloc code to use malloc()
+     and free() for each object.  This is far more expensive and should
+     only be used for testing with tools such as Electric Fence and
+     Purify.  See main/alloc.c for more details.  [Dean Gaudet]
+
   *) Configure uses a sh trap and didn't set its exitcode properly.
      [Dean Gaudet] PR#1159
 
