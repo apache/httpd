@@ -775,7 +775,7 @@ static void *example_merge_dir_config(ap_pool_t *p, void *parent_conf,
     merged_config->loc = ap_pstrdup(p, nconf->loc);
     /*
      * Others, like the setting of the `congenital' flag, get ORed in.  The
-     * setting of that particular flag, for instance, is TRUE if it was ever
+     * setting of that particular flag, for instance, is APR_TRUE if it was ever
      * true anywhere in the upstream configuration.
      */
     merged_config->congenital = (pconf->congenital | pconf->local);
