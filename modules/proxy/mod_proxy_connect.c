@@ -342,8 +342,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                         i = nbytes;
 #ifdef DEBUGGING
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                                     "proxy: CONNECT: read %d from client", 
-                                     );
+                                     "proxy: CONNECT: read %d from client", i);
 #endif
                         while(i > 0)
                         {
