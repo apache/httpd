@@ -187,7 +187,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
         switch ((rv = cache_run_open_entity(h, r, type, key))) {
         case OK: {
             char *vary = NULL;
-            char *varyhdr = NULL;
+            const char *varyhdr = NULL;
             if (cache_read_entity_headers(h, r) != APR_SUCCESS) {
                 /* TODO: Handle this error */
                 return DECLINED;

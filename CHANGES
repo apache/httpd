@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a couple of AIX xlc_r compiler issues in the code I just
+     committed. [Paul J. Reder]
+
   *) Modified the cache code to be header-location agnostic. Also
      fixed a number of other cache code bugs related to PR 15852.
      Includes a patch submitted by Sushma Rai <rsushma@novell.com>.
