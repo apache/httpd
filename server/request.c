@@ -1492,7 +1492,12 @@ static request_rec *make_sub_request(const request_rec *r,
 
     /* start with the same set of output filters */
     if (next_filter) {
-        /* no input filters for a subrequest */
+        /* while there are no input filters for a subrequest, we will
+         * try to insert some, so if we don't have valid data, the code
+         * will seg fault.
+         */
+        rnew->input_filters  = r->input_filters;
+        rnew->proto_input_filters  = r->proto_input_filters;
         rnew->output_filters = next_filter;
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
                                     NULL, rnew, rnew->connection); 

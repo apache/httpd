@@ -291,108 +291,6 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
     return register_filter(name, f, ftype, &registered_output_filters);
 }
 
-static ap_filter_t *add_any_filter(const char *name, void *ctx, 
-                                   request_rec *r, conn_rec *c, 
-                                   const filter_trie_node *reg_filter_set,
-                                   ap_filter_t **r_filters, 
-                                   ap_filter_t **p_filters,
-                                   ap_filter_t **c_filters)
-{
-    if (reg_filter_set) {
-        const char *n;
-        const filter_trie_node *node;
-
-        node = reg_filter_set;
-        for (n = name; *n; n++) {
-            int start, end;
-            start = 0;
-            end = node->nchildren - 1;
-            while (end >= start) {
-                int middle = (end + start) / 2;
-                char ch = node->children[middle].c;
-                if (*n == ch) {
-                    node = node->children[middle].child;
-                    break;
-                }
-                else if (*n < ch) {
-                    end = middle - 1;
-                }
-                else {
-                    start = middle + 1;
-                }
-            }
-            if (end < start) {
-                node = NULL;
-                break;
-            }
-        }
-
-        if (node && node->frec) {
-            apr_pool_t* p = r ? r->pool : c->pool;
-            ap_filter_t *f = apr_palloc(p, sizeof(*f));
-            ap_filter_t **outf;
-
-            if (node->frec->ftype < AP_FTYPE_HTTP_HEADER) {
-                if (r) {
-                    outf = r_filters;
-                }
-                else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                                 "a content filter was added without a request: %s", name);
-                    return NULL;
-                }
-            }
-            else if (node->frec->ftype < AP_FTYPE_CONNECTION) {
-                if (r) {
-                    outf = p_filters;
-                }
-                else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                                 "a protocol filter was added without a request: %s", name);
-                    return NULL;
-                }
-            }
-            else {
-                outf = c_filters;
-            }
-
-            f->frec = node->frec;
-            f->ctx = ctx;
-            f->r = r;
-            f->c = c;
-
-            if (INSERT_BEFORE(f, *outf)) {
-                f->next = *outf;
-                if ((*outf) && (*outf)->prev) {
-                    f->prev = (*outf)->prev;
-                    (*outf)->prev->next = f;
-                    (*outf)->prev = f;
-                }
-                else {
-                    f->prev = NULL;
-                }
-                *outf = f;
-            }
-            else {
-                ap_filter_t *fscan = *outf;
-                while (!INSERT_BEFORE(f, fscan->next))
-                    fscan = fscan->next;
-
-                f->next = fscan->next;
-                f->prev = fscan;
-                fscan->next->prev = f;
-                fscan->next = f;
-            }
-
-            return f;
-        }
-    }
-
-    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                 "an unknown filter was not added: %s", name);
-    return NULL;
-}
-
 static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx, 
                                           request_rec *r, conn_rec *c, 
                                           ap_filter_t **r_filters,
@@ -431,16 +329,33 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
     f->ctx = ctx;
     f->r = r;
     f->c = c;
+    f->next = f->prev = NULL;
 
     if (INSERT_BEFORE(f, *outf)) {
         f->next = *outf;
-        if ((*outf) && (*outf)->prev) {
-            f->prev = (*outf)->prev;
-            (*outf)->prev->next = f;
-            (*outf)->prev = f;
-        }
-        else {
-            f->prev = NULL;
+
+        if (*outf) {
+            ap_filter_t *first = NULL;
+
+            if (r) {
+                /* If we are adding our first non-connection filter,
+                 * Then don't try to find the right location, it is
+                 * automatically first.
+                 */
+                if (*r_filters != *c_filters) {
+                    first = *r_filters;
+                    while (first && first->next && (first->next != (*outf))) {
+                        first = first->next;
+                    }
+                }
+            }
+            if (first && first != (*outf)) {
+                first->next = f;
+                f->prev = first;
+            }
+            if (*outf && ((*outf)->prev == first)) {
+                (*outf)->prev = f;
+            }
         }
         *outf = f;
     }
@@ -450,12 +365,61 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             fscan = fscan->next;
 
         f->next = fscan->next;
-        f->prev = fscan;
-        fscan->next->prev = f;
-        fscan->next = f;
+        if (fscan->next->prev == fscan) {
+            f->prev = fscan;
+            fscan->next->prev = f;
+            fscan->next = f;
+        }
     }
 
     return f;
+}
+
+static ap_filter_t *add_any_filter(const char *name, void *ctx, 
+                                   request_rec *r, conn_rec *c, 
+                                   const filter_trie_node *reg_filter_set,
+                                   ap_filter_t **r_filters, 
+                                   ap_filter_t **p_filters,
+                                   ap_filter_t **c_filters)
+{
+    if (reg_filter_set) {
+        const char *n;
+        const filter_trie_node *node;
+
+        node = reg_filter_set;
+        for (n = name; *n; n++) {
+            int start, end;
+            start = 0;
+            end = node->nchildren - 1;
+            while (end >= start) {
+                int middle = (end + start) / 2;
+                char ch = node->children[middle].c;
+                if (*n == ch) {
+                    node = node->children[middle].child;
+                    break;
+                }
+                else if (*n < ch) {
+                    end = middle - 1;
+                }
+                else {
+                    start = middle + 1;
+                }
+            }
+            if (end < start) {
+                node = NULL;
+                break;
+            }
+        }
+
+        if (node && node->frec) {
+            add_any_filter_handle(node->frec, ctx, r, c, r_filters, p_filters,
+                                  c_filters);
+        }
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                 "an unknown filter was not added: %s", name);
+    return NULL;
 }
 
 AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
@@ -502,6 +466,7 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt,
 
     if (*curr == f) {
         *curr = (*curr)->next;
+        (*curr)->prev = NULL;
         return;
     }
 
@@ -512,6 +477,7 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt,
     }
 
     fscan->next = f->next;
+    f->next->prev = fscan;
 }
 
 AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
