@@ -1775,7 +1775,6 @@ API_EXPORT(void) ap_method_list_remove(ap_method_list_t *l,
 				       const char *method)
 {
     int methnum;
-    const char **xmethod;
     char **methods;
 
     /*

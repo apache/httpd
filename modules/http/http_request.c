@@ -1445,10 +1445,9 @@ API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
     }
 }
 
-API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) {
-    int mnum;
+API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) 
+{
     const char *method;
-    const char **xmethod;
     va_list methods;
 
     /*
