@@ -196,6 +196,9 @@ distclean: distclean-recursive clean-x
 	rm -f config.cache config.log config.status config_vars.mk \
 	stamp-h Makefile shlibtool .deps $(DISTCLEAN_TARGETS)
 
+extraclean: distclean
+	rm -f $(EXTRACLEAN_TARGETS)
+
 include $(builddir)/.deps
 
 .PHONY: all-recursive clean-recursive install-recursive \

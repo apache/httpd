@@ -1,5 +1,8 @@
 Changes with Apache 2.0.17-dev
 
+  *) Make clean, distclean, and extraclean consistently according to the
+     Gnu makefile guidelines.  [Justin Erenkrantz <jerenkrantz@ebuilt.com>]
+
   *) Fix errors in the renaming of the apr_threadattr_detach_xxx functions.
      This may have been causing problems stopping processes in the threaded
      mpm's. [Greg Ames]
