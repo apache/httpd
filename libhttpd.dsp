@@ -1,5 +1,5 @@
 # Microsoft Developer Studio Project File - Name="libhttpd" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 6.00
+# Microsoft Developer Studio Generated Build File, Format Version 5.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
@@ -22,7 +22,6 @@ CFG=libhttpd - Win32 Release
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
@@ -68,8 +67,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /Zi /c
+# ADD CPP /nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /Zi /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -87,7 +86,7 @@ LINK32=link.exe
 
 # Name "libhttpd - Win32 Release"
 # Name "libhttpd - Win32 Debug"
-# Begin Group "Configuration"
+# Begin Group "core"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
@@ -108,7 +107,43 @@ SOURCE=.\server\buildmark.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\config.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\connection.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\http_conf_globals.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_connection.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_log.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_vhost.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\httpd.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\log.c
 # End Source File
 # Begin Source File
 
@@ -118,8 +153,16 @@ SOURCE=.\os\win32\modules.c
 
 SOURCE=.\os\win32\os.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\server\scoreboard.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\vhost.c
+# End Source File
 # End Group
-# Begin Group "Generated Files"
+# Begin Group "generated"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -153,91 +196,10 @@ InputPath=.\server\gen_test_char.exe
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\gen_uri_delims.exe
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# Begin Custom Build - Generating uri_delims.h
-InputPath=.\server\gen_uri_delims.exe
-
-".\server\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\server\gen_uri_delims.exe >.\server\uri_delims.h 
-	echo Generated uri_delims.h from gen_uri_delims.exe 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# Begin Custom Build - Generating uri_delims.h
-InputPath=.\server\gen_uri_delims.exe
-
-".\server\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\server\gen_uri_delims.exe >.\server\uri_delims.h 
-	echo Generated uri_delims.h from gen_uri_delims.exe 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\test_char.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\uri_delims.h
 # End Source File
 # End Group
 # Begin Group "httpd"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\server\config.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\connection.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_config.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_connection.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_log.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_main.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_vhost.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\httpd.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\log.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\scoreboard.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\vhost.c
-# End Source File
-# End Group
-# Begin Group "modules"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -264,6 +226,10 @@ SOURCE=.\modules\http\http_request.c
 
 SOURCE=.\include\http_request.h
 # End Source File
+# End Group
+# Begin Group "modules"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\modules\aaa\mod_access.c
@@ -350,19 +316,19 @@ SOURCE=.\modules\mappers\mod_userdir.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\server\error_bucket.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\core.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\request.c
+SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\server\protocol.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\request.c
 # End Source File
 # Begin Source File
 
@@ -423,14 +389,6 @@ SOURCE=.\server\util_script.c
 # Begin Source File
 
 SOURCE=.\include\util_script.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\util_uri.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_uri.h
 # End Source File
 # Begin Source File
 
