@@ -188,8 +188,10 @@ static int get_path_info(request_rec *r)
     }
 
 #ifdef WIN32
-    /* If the path is x:/, then convert it to x:/., coz that's what stat needs to work properly */
-    if(strlen(path) == 3 && path[1] == ':') {
+    /* If the path is x:/, then convert it to x:/., coz that's what stat
+     * needs to work properly
+     */
+    if (strlen(path) == 3 && path[1] == ':') {
 	strcpy(buf,path);
 	buf[3]='.';
 	buf[4]='\0';
@@ -826,7 +828,14 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * file may not have a uri associated with it -djg
          */
         rnew->uri = "INTERNALLY GENERATED file-relative req";
+#ifdef WIN32
+        rnew->filename = ((new_file[0] == '/'
+                           || (ap_isalpha(new_file[0])
+                               && new_file[1] == ':'
+                               && new_file[2] == '/')) ?
+#else
         rnew->filename = ((new_file[0] == '/') ?
+#endif
                           ap_pstrdup(rnew->pool, new_file) :
                           ap_make_full_path(rnew->pool, fdir, new_file));
         rnew->per_dir_config = r->server->lookup_defaults;
