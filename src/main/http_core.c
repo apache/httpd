@@ -1031,7 +1031,8 @@ static const char *set_document_root_check(cmd_parms *cmd, void *dummy, int arg)
         return err;
     }
 
-    ap_documentroot_check = arg != 0;
+    if (!ap_configtestonly)
+        ap_documentroot_check = arg != 0;
     return NULL;
 }
 

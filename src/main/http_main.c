@@ -231,6 +231,7 @@ void *ap_dummy_mutex = &ap_dummy_mutex;
 
 int ap_standalone=0;
 int ap_documentroot_check=1;
+int ap_configtestonly=0;
 uid_t ap_user_id=0;
 char *ap_user_name=NULL;
 gid_t ap_group_id=0;
@@ -4634,7 +4635,6 @@ extern int optind;
 int REALMAIN(int argc, char *argv[])
 {
     int c;
-    int configtestonly = 0;
     int sock_in;
     int sock_out;
     char *s;
@@ -4743,7 +4743,7 @@ int REALMAIN(int argc, char *argv[])
 	    ap_dump_settings = 1;
 	    break;
 	case 't':
-	    configtestonly = 1;
+	    ap_configtestonly = 1;
 	    break;
 	case 'h':
 	    usage(argv[0]);
@@ -4755,7 +4755,7 @@ int REALMAIN(int argc, char *argv[])
     ap_suexec_enabled = init_suexec();
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
 
-    if (configtestonly) {
+    if (ap_configtestonly) {
         fprintf(stderr, "Syntax OK\n");
         exit(0);
     }
@@ -6132,7 +6132,6 @@ int REALMAIN(int argc, char *argv[])
     char *s;
     char *service_name = NULL;
     int install = 0;
-    int configtestonly = 0;
     int conf_specified = 0;
     char *signal_to_send = NULL;
     char cwd[MAX_STRING_LEN];
@@ -6252,7 +6251,7 @@ int REALMAIN(int argc, char *argv[])
 	    ++one_process;	/* Weird debugging mode. */
 	    break;
 	case 't':
-	    configtestonly = 1;
+	    ap_configtestonly = 1;
 	    break;
 	case 'h':
 	    usage(ap_server_argv0);
@@ -6313,7 +6312,7 @@ int REALMAIN(int argc, char *argv[])
 #endif
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
 
-    if (configtestonly) {
+    if (ap_configtestonly) {
         fprintf(stderr, "%s: Syntax OK\n", ap_server_root_relative(pcommands, ap_server_confname));
         clean_parent_exit(0);
     }

@@ -4,7 +4,9 @@ Changes with Apache 1.3.7
 
   *) New directive, DocumentRootCheck, added to determine if
      we bother doing the stat of each DocumentRoot during
-     startup. [Mathijs Maassen <mathijs@xs4all.nl>. Jim Jagielski]
+     startup. Ignored when using the '-t' command line option
+     to perform a configuration test. [Mathijs Maassen <mathijs@xs4all.nl>.
+     Jim Jagielski]
 
   *) Win32: The query switch "apache -S" didn't exit after showing the
      vhost settings. That was inconsistent with the other query functions.
