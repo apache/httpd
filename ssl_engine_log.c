@@ -95,6 +95,7 @@ void ssl_log_open(server_rec *s_main, server_rec *s, apr_pool_t *p)
         if (strEQ(sc->szLogFile, "/dev/null"))
             return;
         else if (sc->szLogFile[0] == '|') {
+            /* XXX:This is broken, may have arguments! */
             szLogFile = ap_server_root_relative(p, sc->szLogFile+1);
             if ((pl = ap_open_piped_log(p, szLogFile)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,

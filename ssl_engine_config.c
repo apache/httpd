@@ -338,6 +338,7 @@ const char *ssl_cmd_SSLPassPhraseDialog(
     }
     else if (strlen(arg) > 5 && strEQn(arg, "exec:", 5)) {
         sc->nPassPhraseDialogType  = SSL_PPTYPE_FILTER;
+        /* XXX This is broken, exec: may contain args! */
         sc->szPassPhraseDialogPath = (char *)ap_server_root_relative(cmd->pool, arg+5);
         if (!ssl_util_path_check(SSL_PCM_EXISTS, sc->szPassPhraseDialogPath, cmd->pool))
             return ((const char *)apr_pstrcat(cmd->pool, "SSLPassPhraseDialog: file '",
@@ -402,16 +403,16 @@ const char *ssl_cmd_SSLRandomSeed(
                            "invalid context: `", arg1, "'");
     if (strlen(arg2) > 5 && strEQn(arg2, "file:", 5)) {
         pRS->nSrc   = SSL_RSSRC_FILE;
-        pRS->cpPath = apr_pstrdup(mc->pPool, ap_server_root_relative(cmd->pool, arg2+5));
+        pRS->cpPath = ap_server_root_relative(mc->pPool, arg2+5);
     }
     else if (strlen(arg2) > 5 && strEQn(arg2, "exec:", 5)) {
         pRS->nSrc   = SSL_RSSRC_EXEC;
-        pRS->cpPath = apr_pstrdup(mc->pPool, ap_server_root_relative(cmd->pool, arg2+5));
+        pRS->cpPath = ap_server_root_relative(mc->pPool, arg2+5);
     }
 #if SSL_LIBRARY_VERSION >= 0x00905100
     else if (strlen(arg2) > 4 && strEQn(arg2, "egd:", 4)) {
         pRS->nSrc   = SSL_RSSRC_EGD;
-        pRS->cpPath = apr_pstrdup(mc->pPool, ap_server_root_relative(cmd->pool, arg2+4));
+        pRS->cpPath = ap_server_root_relative(mc->pPool, arg2+4);
     }
 #endif
     else if (strcEQ(arg2, "builtin")) {
@@ -420,7 +421,7 @@ const char *ssl_cmd_SSLRandomSeed(
     }
     else {
         pRS->nSrc   = SSL_RSSRC_FILE;
-        pRS->cpPath = apr_pstrdup(mc->pPool, ap_server_root_relative(cmd->pool, arg2));
+        pRS->cpPath = ap_server_root_relative(mc->pPool, arg2);
     }
     if (pRS->nSrc != SSL_RSSRC_BUILTIN)
         if (!ssl_util_path_check(SSL_PCM_EXISTS, pRS->cpPath, cmd->pool))
@@ -465,10 +466,10 @@ const char *ssl_cmd_SSLCertificateFile(
     cmd_parms *cmd, void *ctx, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
     int i;
 
-    cpPath = (char *)ap_server_root_relative(cmd->pool, arg);
+    cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISREG|SSL_PCM_ISNONZERO, cpPath, cmd->pool))
         return apr_pstrcat(cmd->pool, "SSLCertificateFile: file '",
                           cpPath, "' not exists or empty", NULL);
@@ -486,10 +487,10 @@ const char *ssl_cmd_SSLCertificateKeyFile(
     cmd_parms *cmd, void *ctx, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
     int i;
 
-    cpPath = (char *)ap_server_root_relative(cmd->pool, arg);
+    cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISREG|SSL_PCM_ISNONZERO, cpPath, cmd->pool))
         return apr_pstrcat(cmd->pool, "SSLCertificateKeyFile: file '",
                           cpPath, "' not exists or empty", NULL);
@@ -508,9 +509,9 @@ const char *ssl_cmd_SSLCertificateChainFile(
     cmd_parms *cmd, void *ctx, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
-    cpPath = (char *)ap_server_root_relative(cmd->pool, arg);
+    cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISREG|SSL_PCM_ISNONZERO, cpPath, cmd->pool))
         return apr_pstrcat(cmd->pool, "SSLCertificateChainFile: file '",
                           cpPath, "' not exists or empty", NULL);
@@ -525,9 +526,9 @@ const char *ssl_cmd_SSLCACertificatePath(
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
 #endif
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
-    cpPath = (char *)ap_server_root_relative(cmd->pool, arg);
+    cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISDIR, cpPath, cmd->pool))
         return apr_pstrcat(cmd->pool, "SSLCACertificatePath: directory '",
                            cpPath, "' not exists", NULL);
@@ -549,9 +550,9 @@ const char *ssl_cmd_SSLCACertificateFile(
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
 #endif
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
-    cpPath = (char *)ap_server_root_relative(cmd->pool, arg);
+    cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISREG|SSL_PCM_ISNONZERO, cpPath, cmd->pool))
         return apr_pstrcat(cmd->pool, "SSLCACertificateFile: file '",
                            cpPath, "' not exists or empty", NULL);
@@ -570,9 +571,9 @@ const char *ssl_cmd_SSLCARevocationPath(
     cmd_parms *cmd, void *ctx, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
-    cpPath = (char *)ap_server_root_relative(cmd->pool, arg);
+    cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISDIR, cpPath, cmd->pool))
         return apr_pstrcat(cmd->pool, "SSLCARecocationPath: directory '",
                            cpPath, "' not exists", NULL);
@@ -584,9 +585,9 @@ const char *ssl_cmd_SSLCARevocationFile(
     cmd_parms *cmd, void *ctx, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
-    cpPath = (char *)ap_server_root_relative(cmd->pool, arg);
+    cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISREG|SSL_PCM_ISNONZERO, cpPath, cmd->pool))
         return apr_pstrcat(cmd->pool, "SSLCARevocationFile: file '",
                            cpPath, "' not exists or empty", NULL);
@@ -654,8 +655,7 @@ const char *ssl_cmd_SSLSessionCache(
     }
     else if (strlen(arg) > 4 && strcEQn(arg, "dbm:", 4)) {
         mc->nSessionCacheMode      = SSL_SCMODE_DBM;
-        mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool,
-                                     ap_server_root_relative(cmd->pool, arg+4));
+        mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+4);
     }
     else if (   (strlen(arg) > 4 && strcEQn(arg, "shm:",   4)) 
              || (strlen(arg) > 6 && strcEQn(arg, "shmht:", 6))) {
@@ -665,8 +665,7 @@ const char *ssl_cmd_SSLSessionCache(
 #endif
         mc->nSessionCacheMode      = SSL_SCMODE_SHMHT;
         colon = ap_strchr_c(arg, ':');
-        mc->szSessionCacheDataFile = (char *)apr_pstrdup(mc->pPool,
-                                     ap_server_root_relative(cmd->pool, colon+1));
+        mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, colon+1);
         mc->tSessionCacheDataTable = NULL;
         mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
         if ((cp = strchr(mc->szSessionCacheDataFile, '(')) != NULL) {
@@ -693,8 +692,7 @@ const char *ssl_cmd_SSLSessionCache(
             return "SSLSessionCache: shared memory cache not useable on this platform";
 #endif
         mc->nSessionCacheMode      = SSL_SCMODE_SHMCB;
-        mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool,
-                                     ap_server_root_relative(cmd->pool, arg+6));
+        mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+6);
         mc->tSessionCacheDataTable = NULL;
         mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
         if ((cp = strchr(mc->szSessionCacheDataFile, '(')) != NULL) {
@@ -965,7 +963,7 @@ const char *ssl_cmd_SSLProxyCACertificateFile(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
     cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISREG|SSL_PCM_ISNONZERO, cpPath, cmd->pool))
@@ -979,7 +977,7 @@ const char *ssl_cmd_SSLProxyCACertificatePath(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
     cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISDIR, cpPath, cmd->pool))
@@ -993,7 +991,7 @@ const char *ssl_cmd_SSLProxyMachineCertificateFile(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
     cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISREG|SSL_PCM_ISNONZERO, cpPath, cmd->pool))
@@ -1007,7 +1005,7 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(
     cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    char *cpPath;
+    const char *cpPath;
 
     cpPath = ap_server_root_relative(cmd->pool, arg);
     if (!ssl_util_path_check(SSL_PCM_EXISTS|SSL_PCM_ISDIR, cpPath, cmd->pool))
