@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) SECURITY: Do a more complete check in mod_include to avoid 
+     an infinite loop of recursive SSI includes.  [Marc Slemko] PR#3323
+
   *) Add APACI --suexec-docroot and --suexec-logfile options which can be
      used to set the document root directory (DOC_ROOT) and the suexec
      logfile (LOG_EXEC), respectively. Additionally the --layout option
