@@ -70,9 +70,6 @@ rotatelogs: rotatelogs.c
 logresolve: logresolve.c
 	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve $(EXTRA_LIBS)
 
-suexec: suexec.c
-	$(CC) $(INCLUDES) $(CFLAGS) suexec.c -o suexec
-
 clean:
 	rm -f $(TARGETS)
 
