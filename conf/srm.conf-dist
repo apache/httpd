@@ -17,7 +17,7 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 # UserDir: The name of the directory which is appended onto a user's home
 # directory if a ~user request is recieved.
 
-UserDir "@@UserDir@@"
+UserDir public_html
 
 # DirectoryIndex: Name of the file or files to use as a pre-written HTML
 # directory index.  Separate multiple entries with spaces.
