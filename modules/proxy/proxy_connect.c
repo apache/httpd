@@ -105,7 +105,8 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     apr_pool_t *p = r->pool;
     apr_socket_t *sock;
     char buffer[HUGE_STRING_LEN];
-    int nbytes, i, err;
+    int i, err;
+    apr_size_t nbytes;
 
 #if 0
     apr_socket_t *client_sock = NULL;
@@ -331,7 +332,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                     while(nbytes)
                     {
                         i = nbytes;
-			if (apr_send(r->connection->client_socket, buffer + o, &i) != APR_SUCCESS)
+			if (apr_send(r->connection->client_socket, buffer + o, &nbytes) != APR_SUCCESS)
 			    break;
                         o += i;
                         nbytes -= i;
@@ -354,7 +355,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                     while(nbytes)
                     {
                         i = nbytes;
-			if (apr_send(sock, buffer + o, &i) != APR_SUCCESS)
+			if (apr_send(sock, buffer + o, &nbytes) != APR_SUCCESS)
 			    break;
                         o += i;
                         nbytes -= i;
