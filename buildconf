@@ -5,8 +5,8 @@ export BUILD_BASE
 
 rm -f generated_lists
 
-case "`./config.guess`" in
-*bsdi*)
+case "`uname`" in
+*BSD/OS*)
     ./build/bsd_makefile;;
 esac
 
