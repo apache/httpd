@@ -172,6 +172,7 @@ static pid_t parent_pid;
 #ifndef MULTITHREAD
 static int my_child_num;
 #endif
+ap_generation_t volatile ap_my_generation=0;
 
 #ifdef TPF
 int tpf_child = 0;
@@ -239,8 +240,17 @@ static void accept_mutex_on(void)
 {
     apr_status_t rv = apr_proc_mutex_lock(accept_mutex);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't grab the accept mutex");
-        exit(APEXIT_CHILDFATAL);
+        const char *msg = "couldn't grab the accept mutex";
+
+        if (ap_my_generation != 
+            ap_scoreboard_image->global->running_generation) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, msg);
+            clean_child_exit(0);
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, msg);
+            exit(APEXIT_CHILDFATAL);
+        }
     }
 }
 
@@ -248,8 +258,20 @@ static void accept_mutex_off(void)
 {
     apr_status_t rv = apr_proc_mutex_unlock(accept_mutex);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't release the accept mutex");
-        exit(APEXIT_CHILDFATAL);
+        const char *msg = "couldn't release the accept mutex";
+
+        if (ap_my_generation != 
+            ap_scoreboard_image->global->running_generation) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, msg);
+            /* don't exit here... we have a connection to
+             * process, after which point we'll see that the
+             * generation changed and we'll exit cleanly
+             */
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, msg);
+            exit(APEXIT_CHILDFATAL);
+        }
     }
 }
 
@@ -364,7 +386,6 @@ static void just_die(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
-ap_generation_t volatile ap_my_generation=0;
 
 static void sig_term(int sig)
 {

@@ -1,5 +1,10 @@
 Changes with Apache 2.0.38
 
+  *) prefork MPM: Ignore mutex errors during graceful restart.  For
+     certain types of mutexes (particularly SysV semaphores), we
+     should expect to occasionally fail to obtain or release the
+     mutex during restart processing.  [Jeff Trawick]
+
   *) Fix install-bindist.sh so that it finds any perl instead of just
      early perl 5.x versions.  This is consistent with a build/install
      from source, and it allows the perl scripts installed by a bindist 
