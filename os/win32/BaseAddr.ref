@@ -57,3 +57,6 @@ mod_charset_lite.so     0x6FB80000    0x00010000
 mod_logio.so            0x6FB70000    0x00010000
 util_ldap.so            0x6FB60000    0x00010000
 mod_auth_ldap.so        0x6FB50000    0x00010000
+mod_log_forensic.so     0x6FB40000    0x00010000
+mod_bucketeer.so        0x6FB30000    0x00010000
+mod_echo.so             0x6FB20000    0x00010000
