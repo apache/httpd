@@ -353,7 +353,7 @@ static int status_handler(request_rec *r)
 	ap_rvputs(r, "Restart Time: ",
 	  ap_ht_time(r->pool, ap_restart_time, DEFAULT_TIME_FORMAT, 0), 
 	  "<br>\n", NULL);
-	ap_rprintf(r, "Server Generation: %d <br>\n", (int) ap_my_generation);
+	ap_rprintf(r, "Parent Server Generation: %d <br>\n", (int) ap_my_generation);
 	ap_rputs("Server uptime: ", r);
 	show_time(r, up_time);
 	ap_rputs("<br>\n", r);
@@ -682,7 +682,7 @@ static int status_handler(request_rec *r)
 	    ap_rputs("</table>\n \
 <hr> \
 <table>\n \
-<tr><th>Srv<td>Server number - generation\n \
+<tr><th>Srv<td>Child Server number - generation\n \
 <tr><th>PID<td>OS process ID\n \
 <tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
 <tr><th>M<td>Mode of operation\n \
@@ -696,7 +696,7 @@ static int status_handler(request_rec *r)
 	    ap_rputs("</table>\n \
 <hr> \
 <table>\n \
-<tr><th>Srv<td>Server number\n \
+<tr><th>Srv<td>Child Server number - generation\n \
 <tr><th>PID<td>OS process ID\n \
 <tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
 <tr><th>M<td>Mode of operation\n \
