@@ -1832,7 +1832,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               conn_rec *c,
                                               server_rec *s)
 {
-    proxy_worker *worker = conn->worker;
     apr_sockaddr_t *backend_addr = conn->addr;
 
     /* The socket is now open, create a new backend server connection 
