@@ -2590,7 +2590,7 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
  * Insert filters requested by the AddOutputFiltersByType 
  * configuration directive. We cannot add filters based 
  * on content-type until after the handler has started 
- * to run. Only then do we reliabily know the content-type.
+ * to run. Only then do we reliably know the content-type.
  */
 void ap_add_output_filters_by_type(request_rec *r)
 {
