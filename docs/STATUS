@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2002/12/08 21:05:55 $
+Last modified: $Date: 2002/12/12 22:19:39 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -15,6 +15,13 @@ tutorial on how to get started with making your contribution.
 Things That Need Fixing
 =======================
 
+- Website
+    - decide, whether to stick with httpd.apache.org/docs-x.y/
+      scheme or choose another
+      - /manual/x.y/
+      - /x.y/manual/
+      - ?
+
 - XML
     - Rewriting of the remainder of the manual into xml is in
       progress.  See the bottom of this file for status info.
@@ -25,12 +32,7 @@ Things That Need Fixing
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
 
 - New Auth system
-    (Wait on this until the code has stabalized a little)
-    - With the new auth system, we have a bunch of directives that are
-      duplicated in multiple modules, where one of the modules is obsolete.
-      We probably need to mark the old modules as <status>obsolete</status>
-      and key on that to omit them from the directive index, etc.
-    - Much clean-up and enhancement of docs
+    - Much clean-up and enhancement of aaa howto
     - Independent note on how to upgrade to new auth system
 
 - Figure out what to do about the 2.0 FAQ
@@ -45,8 +47,6 @@ Things That Need Fixing
     - mod_proxy: updates for 2.0
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
-    - mod_file_cache: missing documentation
-
     
 - man pages
     - Convert from nroff to our xml format.  See list at bottom.
@@ -59,6 +59,18 @@ Things That Need Fixing
 - MPM documentation
      - Non unix/windows MPMs still need to be completed.
      - the perchild directives in threaded/worker need docs
+       - both in progress --nd
+
+     - explain what the following command line options do
+       (perhaps in the developer/debugging docs):
+        -D DEBUG
+        -D ONE_PROCESS
+              one-process-mode == no threads, i.e. only one
+              process handling the requests in a single loop?
+        -D NO_DETACH (not in every MPM avail.)
+              no daemon, but detached from terminal?
+        -D FOREGROUND (not in every MPM avail.)
+              ?
 
 - Individual docs will need some cleanup. 
      - misc/custom_errordocs.html needs to be updated to
@@ -102,9 +114,11 @@ Documentation improvements
     style in the css.
   - New index: directives by context, including listing which directives
     are available for each AllowOverride setting.
+  - New index: backout modules by type (aaa, mappers, loggers etc.)
+    probably by introducing a <category> element in modulesynopsis
   - Use a tag like <var> in place of <em> for things like the 
     <syntax> listing.
-    - nd volunteers
+    - in progress
   - add letter links to glossary and quickreference, 
     perhaps also a term overview (sidebar)
   - cross references between the different languages,
@@ -127,6 +141,7 @@ Documentation improvements
 
 * Improving the "security docs"
   - More content and better organisation.
+    - mod_dav ressources are owned by the httpd
 
 * General cleaning and improving of module docs
 
