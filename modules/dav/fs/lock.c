@@ -591,7 +591,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 {
     apr_pool_t *p = lockdb->info->pool;
     dav_error *err;
-    size_t offset = 0;
+    apr_size_t offset = 0;
     int need_save = DAV_FALSE;
     dav_datum val = { 0 };
     dav_lock_discovery *dp;
@@ -921,8 +921,8 @@ static dav_error * dav_fs_remove_locknull_member(apr_pool_t *p,
 						 dav_buffer *pbuf)
 {
     dav_error *err;
-    size_t len;
-    size_t scanlen;
+    apr_size_t len;
+    apr_size_t scanlen;
     char *scan;
     const char *scanend;
     char *dirpath = apr_pstrdup(p, filename);

@@ -243,7 +243,7 @@ void dav_fs_dir_file_name(
     }
     else {
         char *dirpath = ap_make_dirstr_parent(ctx->pool, ctx->pathname);
-        size_t dirlen = strlen(dirpath);
+        apr_size_t dirlen = strlen(dirpath);
 
         if (fname_p != NULL)
             *fname_p = ctx->pathname + dirlen;
@@ -598,7 +598,7 @@ static dav_resource * dav_fs_get_resource(
     dav_resource *resource;
     char *s;
     char *filename;
-    size_t len;
+    apr_size_t len;
 
     /* ### optimize this into a single allocation! */
 
@@ -759,8 +759,8 @@ static int dav_fs_is_parent_resource(
 {
     dav_resource_private *ctx1 = res1->info;
     dav_resource_private *ctx2 = res2->info;
-    size_t len1 = strlen(ctx1->pathname);
-    size_t len2;
+    apr_size_t len1 = strlen(ctx1->pathname);
+    apr_size_t len2;
 
     if (res1->hooks != res2->hooks)
 	return 0;
@@ -1349,7 +1349,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     }
     while ((apr_readdir(dirp)) == APR_SUCCESS) {
 	char *name;
-	size_t len;
+	apr_size_t len;
 
 	apr_get_dir_filename(&name, dirp);
 	len = strlen(name);
@@ -1410,9 +1410,9 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    }
 	}
 	else if (fsctx->info1.finfo.filetype == APR_DIR) {
-	    size_t save_path_len = fsctx->path1.cur_len;
-	    size_t save_uri_len = fsctx->uri_buf.cur_len;
-	    size_t save_path2_len = fsctx->path2.cur_len;
+	    apr_size_t save_path_len = fsctx->path1.cur_len;
+	    apr_size_t save_uri_len = fsctx->uri_buf.cur_len;
+	    apr_size_t save_path2_len = fsctx->path2.cur_len;
 
 	    /* adjust length to incorporate the subdir name */
 	    fsctx->path1.cur_len += len;
@@ -1453,7 +1453,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	return err;
 
     if (params->walk_type & DAV_WALKTYPE_LOCKNULL) {
-	size_t offset = 0;
+	apr_size_t offset = 0;
 
 	/* null terminate the directory name */
 	fsctx->path1.buf[fsctx->path1.cur_len - 1] = '\0';
@@ -1475,7 +1475,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	memset(&fsctx->info1.finfo, 0, sizeof(fsctx->info1.finfo));
 
 	while (offset < fsctx->locknull_buf.cur_len) {
-	    size_t len = strlen(fsctx->locknull_buf.buf + offset);
+	    apr_size_t len = strlen(fsctx->locknull_buf.buf + offset);
 	    dav_lock *locks = NULL;
 
 	    /*
