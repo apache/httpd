@@ -440,7 +440,7 @@ void parse_uri (request_rec *r, const char *uri)
     }
 }
 
-char *check_fulluri (request_rec *r, char *uri) {
+const char *check_fulluri (request_rec *r, const char *uri) {
   char *name, *host;
   int i, port;
 
@@ -494,7 +494,7 @@ char *check_fulluri (request_rec *r, char *uri) {
 int read_request_line (request_rec *r)
 {
     char l[HUGE_STRING_LEN];
-    char *ll = l, *uri;
+    const char *ll = l, *uri;
     conn_rec *conn = r->connection;
     int major = 1, minor = 0;	/* Assume HTTP/1.0 if non-"HTTP" protocol*/
     
@@ -783,7 +783,7 @@ int get_basic_auth_pw (request_rec *r, char **pw)
     }
 
     t = uudecode (r->pool, auth_line);
-    r->connection->user = getword_nulls (r->pool, &t, ':');
+    r->connection->user = getword_nulls_nc (r->pool, &t, ':');
     r->connection->auth_type = "Basic";
 
     *pw = t;

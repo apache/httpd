@@ -399,7 +399,12 @@ char *getword(pool* atrans, const char **line, char stop) {
     return res;
 }
 
-char *getword_white(pool* atrans, char **line) {
+char *getword_white_nc(pool* atrans, char **line)
+{
+    return getword_white(atrans,(const char **)line);
+}
+
+char *getword_white(pool* atrans, const char **line) {
     int pos = -1, x;
     char *res;
 
@@ -427,7 +432,12 @@ char *getword_white(pool* atrans, char **line) {
     return res;
 }
 
-char *getword_nulls(pool* atrans, char **line, char stop) {
+char *getword_nulls_nc(pool* atrans, char **line, char stop)
+{
+    return getword_nulls(atrans,(const char **)line,stop);
+}
+
+char *getword_nulls(pool* atrans, const char **line, char stop) {
     int pos = ind(*line, stop);
     char *res;
 

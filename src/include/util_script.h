@@ -50,9 +50,9 @@
  *
  */
 
-/* $Id: util_script.h,v 1.6 1996/08/20 11:51:25 paul Exp $ */
+/* $Id: util_script.h,v 1.7 1996/10/20 20:45:53 ben Exp $ */
 
-char **create_argv(pool *p, char *av0, char *args);
+char **create_argv(pool *p, char *av0, const char *args);
 #ifdef __EMX__
 char **create_argv_cmd(pool *p, char *av0, char *args, char *path);
 #endif

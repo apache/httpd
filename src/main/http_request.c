@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.23 1996/10/20 18:03:32 ben Exp $ */
+/* $Id: http_request.c,v 1.24 1996/10/20 20:45:51 ben Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -516,7 +516,7 @@ request_rec *make_sub_request (const request_rec *r)
     return rr;
 }
 
-request_rec *sub_req_lookup_simple (char *new_file, request_rec *r)
+request_rec *sub_req_lookup_simple (const char *new_file, const request_rec *r)
 {
     /* This handles the simple case, common to ..._lookup_uri and _file,
      * of looking up another file in the same directory.
@@ -625,7 +625,7 @@ request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
     return rnew;
 }
 
-request_rec *sub_req_lookup_file (char *new_file, request_rec *r)
+request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
 {
     request_rec *rnew;
     int res;
@@ -650,7 +650,7 @@ request_rec *sub_req_lookup_file (char *new_file, request_rec *r)
 	
     rnew->uri = "INTERNALLY GENERATED file-relative req";
     rnew->filename = ((new_file[0] == '/') ?
-		      new_file :
+		      pstrdup(rnew->pool,new_file) :
 		      make_full_path (rnew->pool, fdir, new_file));
 	
     if ((res = directory_walk (rnew))
@@ -925,7 +925,7 @@ table *rename_original_env (pool *p, table *t)
     return new;
 }
 
-request_rec *internal_internal_redirect (char *new_uri, request_rec *r)
+request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
 {
     request_rec *new = (request_rec *)pcalloc(r->pool, sizeof(request_rec));
     char t[10];			/* Long enough... */
@@ -980,7 +980,7 @@ request_rec *internal_internal_redirect (char *new_uri, request_rec *r)
     return new;
 }
 
-void internal_redirect (char *new_uri, request_rec *r)
+void internal_redirect (const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     process_request_internal (new);
@@ -991,7 +991,7 @@ void internal_redirect (char *new_uri, request_rec *r)
  * an internal redirect.
  */
 
-void internal_redirect_handler (char *new_uri, request_rec *r)
+void internal_redirect_handler (const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     if (r->handler)

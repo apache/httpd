@@ -605,8 +605,10 @@ char **) */
      
 char *getword(pool *p, const char **line, char stop);
 char *getword_nc(pool *p, char **line, char stop);
-char *getword_white(pool *p, char **line);
-char *getword_nulls (pool *p, char **line, char stop);
+char *getword_white(pool *p, const char **line);
+char *getword_white_nc(pool *p, char **line);
+char *getword_nulls (pool *p, const char **line, char stop);
+char *getword_nulls_nc (pool *p, char **line, char stop);
 char *getword_conf (pool *p, const char **line);      
 char *getword_conf_nc (pool *p, char **line);      
 

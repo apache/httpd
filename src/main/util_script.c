@@ -72,7 +72,7 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
-char **create_argv(pool *p, char *av0, char *args) {
+char **create_argv(pool *p, char *av0, const char *args) {
     register int x,n;
     char **av;
     char *w;

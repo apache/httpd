@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.h,v 1.5 1996/10/20 18:03:32 ben Exp $ */
+/* $Id: http_request.h,v 1.6 1996/10/20 20:45:51 ben Exp $ */
 
 /* http_request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
@@ -73,7 +73,7 @@
  */
 
 request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r);
-request_rec *sub_req_lookup_file (char *new_file, request_rec *r);
+request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r);
 int run_sub_req (request_rec *r);
 void destroy_sub_req (request_rec *r);
      
@@ -83,8 +83,8 @@ void destroy_sub_req (request_rec *r);
  * If so, call this from a handler, and then immediately return OK.
  */
 
-void internal_redirect (char *new_uri, request_rec *);     
-void internal_redirect_handler (char *new_uri, request_rec *);
+void internal_redirect (const char *new_uri, request_rec *);     
+void internal_redirect_handler (const char *new_uri, request_rec *);
 
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */
