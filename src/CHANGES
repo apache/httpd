@@ -488,7 +488,24 @@ Changes with Apache 1.3a1
   *) PORT: Added Windows NT support
      [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
 
+Changes with Apache 1.2.4
+
+  *) The ProxyRemote change in 1.2.3 introduced a bug resulting in the proxy
+     always making requests with the full-URI instead of just the URI path.
+     [Marc Slemko, Roy Fielding]
+
+  *) Add -lm for AIX versions >= 4.2 to allow Apache to link properly
+     on this platform.  [Marc Slemko]
+
 Changes with Apache 1.2.3
+
+  *) The request to a remote proxy was mangled if it was generated as the
+     result of a ProxyPass directive. URL schemes other than http:// were not
+     supported when ProxyRemote was used. PR#260, PR#656, PR#699, PR#713,
+     PR#812 [Lars Eilebrecht]
+
+  *) Fixed proxy-pass-through feature of mod_rewrite; Added error logging
+     information for case where proxy module is not available. [Marc Slemko]
 
   *) Force proxy to always respond as HTTP/1.0, which it was failing to
      do for errors and cached responses.  [Roy Fielding]
