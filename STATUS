@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/13 00:38:55 $]
+Last modified at [$Date: 2000/04/13 14:38:55 $]
 
 Release:
 
@@ -170,6 +170,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * The connection status table is not very efficient. Also, very few stats
       are exported to the connection status table (easy to fix), and mod_status
       is ugly.
+
+    * Optimise the name-based <VirtualHost> implementation so that it uses
+      a hash table instead of a linear linked list scan.
+
+    * Mass vhosting version of suEXEC.
 
 Other bugs that need fixing:
 
