@@ -565,14 +565,14 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason = "HTTP Status 304 Not Modified";
     }
     else if (r->status == HTTP_OK && lastmods == NULL && etag == NULL 
-             && (conf->no_last_mod_ignore ==0)) {
-        /* 200 OK response from HTTP/1.0 and up without a Last-Modified
-         * header/Etag 
+             && (exps == NULL) && (conf->no_last_mod_ignore ==0)) {
+        /* 200 OK response from HTTP/1.0 and up without Last-Modified,
+         * Etag, or Expires headers.
          */
-        /* XXX mod-include clears last_modified/expires/etags - this
+        /* Note: mod-include clears last_modified/expires/etags - this
          * is why we have an optional function for a key-gen ;-) 
          */
-        reason = "No Last-Modified or Etag header";
+        reason = "No Last-Modified, Etag, or Expires headers";
     }
     else if (r->header_only) {
         /* HEAD requests */
@@ -760,7 +760,6 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     info->request_time = r->request_time;
 
     /* check last-modified date */
-    /* XXX FIXME we're referencing date on a path where we didn't set it */
     if (lastmod != APR_DATE_BAD && lastmod > date) {
         /* if it's in the future, then replace by date */
         lastmod = date;
