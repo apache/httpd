@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.5 -->
 
 <name>mod_authn_file</name>
 <description>テキストファイルを用いたユーザ認証</description>
@@ -12,7 +12,6 @@
 <compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-
     <p>本モジュールは <module>mod_auth_digest</module> や
     <module>mod_auth_basic</module> といった認証フロントエンドに対して、
     プレインテキストのパスワードファイル内からユーザを検索することで、
@@ -23,57 +22,63 @@
     を使用する際には、
     <directive module="mod_auth_basic">AuthBasicProvider</directive> や
     <directive module="mod_auth_digest">AuthDigestPrivider</directive>
-    で「 file 」と指定することでこのモジュールは起動されます。</p>
-
+    で <code>file</code> と指定することでこのモジュールは起動されます。</p>
 </summary>
-<seealso><directive module="core">AuthName</directive></seealso>
-<seealso><directive module="core">AuthType</directive></seealso>
 <seealso>
   <directive module="mod_auth_basic">AuthBasicProvider</directive>
 </seealso>
 <seealso>
   <directive module="mod_auth_digest">AuthDigestProvider</directive>
 </seealso>
+<seealso><a href="../programs/htpasswd.html">htpasswd</a></seealso>
+<seealso><a href="../programs/htdigest.html">htdigest</a></seealso>
  
 <directivesynopsis>
 <name>AuthUserFile</name>
 <description>認証に使用するユーザとパスワードの一覧が格納されている、
 テキストファイルの名前を設定する</description>
-<syntax>AuthUserFile <em>file-path</em></syntax>
-<contextlist>
-  <context>directory</context>
-  <context>.htaccess</context>
+<syntax>AuthUserFile <var>file-path</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
     <p><directive>AuthUserFile</directive> ディレクティブは、
     ユーザ認証のためのユーザとパスワードの一覧を格納した
-    テキストファイルの名前を設定します。<em>file-path</em>
+    テキストファイルの名前を設定します。<var>file-path</var>
     はユーザファイルへのパスです。
-    もし絶対パスでなければ
-    (<em>つまり</em> スラッシュで始まらないパスであれば)
-    、<directive module="core">ServerRoot</directive>
+    もし絶対パスでなければ、
+    <directive module="core">ServerRoot</directive>
     からの相対パスとして扱われます。</p>
 
     <p>ユーザファイルの各行には、ユーザ名、コロン、
-    <code>crypt()</code> で暗号化したパスワードを記述します。
-    同一ユーザが複数回登録された時の挙動は定義されていません。</p>
+    暗号化したパスワードを記述します。
+    同一ユーザ ID が複数回登録された時は、
+    <module>mod_authn_file</module>
+    は最初に見つかったパスワードを使用して認証します。</p>
 
     <p>バイナリ配布の一部としてインストールされるか、
     あるいは <code>src/support</code> にある
     <a href="../programs/htpasswd.html">htpasswd</a>
-    ユーティリティで、このパスワードファイルをメインテナンスします。
-    詳細は <code>man</code> ページをご覧頂くとして、簡単には:</p>
+    ユーティリティで、この <em>HTTP 基本認証</em>
+    用パスワードファイルをメインテナンスします。
+    詳細は <a href="../programs/htpasswd.html">man
+    ページ</a>をご覧頂くとして、簡単には:</p>
 
     <p>初期 ID <code>username</code> で、<code>Filename</code>
     というパスワードファイルを生成します。
     次のコマンドを発行するとパスワードが要求されます:</p>
-    <example>htpasswd -c Filename username</example>
+
+    <example>
+      htpasswd -c Filename username
+    </example>
 
     <p>パスワードファイル <code>Filename</code> に、<code>username2</code>
     を追加したり修正したりします:</p>
-    <example>htpasswd Filename username2</example>
+
+    <example>
+      htpasswd Filename username2
+    </example>
 
     <p>(訳注: 非常に多くのユーザを登録すると大きなファイルになりますが)
     大きなテキストファイルを検索するのは<em>非常に効率が悪い</em>
@@ -81,10 +86,18 @@
     <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
     を代わりに使ってください。</p>
 
-    <note><title>セキュリティ</title>
+    <p><em>HTTP ダイジェスト認証</em>を使用する場合は、
+    <a href="../programs/htpasswd.html">htpasswd</a>
+    プログラムでは不十分です。その代わりに
+    <a href="../programs/htdigest.html">htdigest</a>
+    を使用してください。ダイジェスト認証用のデータと
+    基本認証用のデータを同一ファイルに混ぜて保存できない、
+    ということに注意してください。</p>
+
+    <note type="warning"><title>セキュリティ</title>
     <p><directive>AuthUserFile </directive>
         は、ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
-        保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+        保護しようとしているディレクトリ以下には、<strong>置かないで下さい</strong>。
         そうしないと <directive>AuthUserFile</directive> は
         ダウンロードできてしまいます。</p>
     </note>
