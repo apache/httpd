@@ -56,11 +56,13 @@ media type or request method.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activates a CGI script for a particular handler or
 content-type</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var> [virtual]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>virtual</code> modifier was introduced in Apache
+2.1</td></tr>
 </table>
     <p>This directive adds an action, which will activate
     <var>cgi-script</var> when <var>action-type</var> is triggered by the
@@ -87,6 +89,20 @@ content-type</td></tr>
     <p>In the second example, requests for files with a file extension of
     <code>.xyz</code> are handled instead by the specified cgi script 
     <code>/cgi-bin/program.cgi</code>.</p>
+
+    <p>The optional <code>virtual</code> modifier turns off the check
+    whether the requested file really exists. This is useful, for example,
+    if you want to use the <code class="directive">Action</code> directive in
+    virtual locations.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      &lt;Location /news&gt;<br />
+      <span class="indent">
+        SetHandler news-handler
+        Action news-handler /cgi-bin/news.cgi virtual
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
 
 <h3>See also</h3>
 <ul>
