@@ -93,7 +93,7 @@
 #endif
 #include "util_ebcdic.h"
 
-
+module AP_MODULE_DECLARE_DATA includes_module;
 static apr_hash_t *include_hash;
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
 
