@@ -217,9 +217,15 @@
  * 19990320.1           - add ap_vrprintf()
  * 19990320.2           - add cmd_parms.context, ap_set_config_vectors, 
  *                        export ap_add_file_conf
- * 19990320.3           - add ap_regexec()
- * 19990604.4           - add ap_field_noparam()
- * 19990621.5           - add local_ip/host to conn_rec for mass-vhost
+ * 19990320.3           - add ap_regexec() and ap_regerror()
+ * 19990320.4           - add ap_field_noparam()
+ * 19990320.5           - add local_ip/host to conn_rec for mass-vhost
+ * 19990320.6           - add ap_SHA1Final(), ap_SHA1Init(),
+ *                        ap_SHA1Update_binary(), ap_SHA1Update(),
+ *                        ap_base64encode(), ap_base64encode_binary(),
+ *                        ap_base64encode_len(), ap_base64decode(),
+ *                        ap_base64decode_binary(), ap_base64decode_len(),
+ *                        ap_pbase64decode(), ap_pbase64encode()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -227,7 +233,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */
