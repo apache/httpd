@@ -1,5 +1,7 @@
 Changes with Apache 2.0b1
 
+  *) Change handlers to use hooks. [Ben Laurie]
+
   *) Stop returning copies of filenames from both apr_file_t and
      apr_dir_t.  We pstrdup the filenames that we store in the
      actual structures, so we don't need to pstrdup the strings again.
