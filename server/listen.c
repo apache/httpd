@@ -273,11 +273,10 @@ int ap_listen_open(process_rec *process, apr_port_t port)
     ap_listen_rec *next;
     int num_open;
 
-    /* allocate a default listener if necessary */
-    if (ap_listeners == NULL) {
-	alloc_listener(process, NULL, (apr_port_t)(port ? port : DEFAULT_HTTP_PORT));
-    }
-
+    /* Don't allocate a default listener.  If we need to listen to a
+     * port, then the user needs to have a Listen directive in their
+     * config file.
+     */
     num_open = 0;
     for (lr = ap_listeners; lr; lr = lr->next) {
 	if (lr->active) {

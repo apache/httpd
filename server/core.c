@@ -1603,15 +1603,27 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *server_port(cmd_parms *cmd, void *dummy, const char *arg)
+static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *portstr;
+    const char *server;
     int port;
 
     if (err != NULL) {
 	return err;
     }
-    port = atoi(arg);
+    portstr = ap_strchr_c(arg, ':');
+    if (portstr) {
+        cmd->server->server_hostname = apr_pstrndup(cmd->pool, arg, 
+                                                    portstr - arg);
+        portstr++;
+        port = atoi(portstr);
+    }
+    else {
+        cmd->server->server_hostname = apr_pstrdup(cmd->pool, arg);
+        port = 80;
+    }
     if (port <= 0 || port >= 65536) { /* 65536 == 1<<16 */
 	return apr_pstrcat(cmd->temp_pool, "The port number \"", arg, 
 			  "\" is outside the appropriate range "
@@ -2411,7 +2423,8 @@ AP_INIT_TAKE1("DefaultType", ap_set_string_slot,
 
 /* Old server config file commands */
 
-AP_INIT_TAKE1("Port", server_port, NULL, RSRC_CONF, "A TCP port number"),
+AP_INIT_TAKE1("Port", ap_set_deprecated, NULL, RSRC_CONF, 
+  "Port was replaced with Listen in Apache 2.0"),
 AP_INIT_TAKE1("HostnameLookups", set_hostname_lookups, NULL,
   ACCESS_CONF|RSRC_CONF,
   "\"on\" to enable, \"off\" to disable reverse DNS lookups, or \"double\" to "
@@ -2419,9 +2432,8 @@ AP_INIT_TAKE1("HostnameLookups", set_hostname_lookups, NULL,
 AP_INIT_TAKE1("ServerAdmin", set_server_string_slot,
   (void *)APR_XtOffsetOf (server_rec, server_admin), RSRC_CONF,
   "The email address of the server administrator"),
-AP_INIT_TAKE1("ServerName", set_server_string_slot,
-  (void *)APR_XtOffsetOf (server_rec, server_hostname), RSRC_CONF,
-  "The hostname of the server"),
+AP_INIT_TAKE1("ServerName", server_hostname_port, NULL, RSRC_CONF,
+  "The hostname and port of the server"),
 AP_INIT_TAKE1("ServerSignature", set_signature_flag, NULL, OR_ALL,
   "En-/disable server signature (on|off|email)"),
 AP_INIT_TAKE1("ServerRoot", set_server_root, NULL, RSRC_CONF,
