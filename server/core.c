@@ -3099,6 +3099,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                             apr_brigade_destroy(temp_brig);
                             e = temp;
                             nvec = 0;
+                            apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
                         }
                         vec[nvec].iov_base = (char*) str;
                         vec[nvec].iov_len = n;
