@@ -672,7 +672,11 @@ int ind (const char *, char);	/* Sigh... */
 int rind (const char *, char);     
 
 int cfg_getline(char *s, int n, FILE *f);
-     
+
+#ifdef NEED_STRERROR
+char *strerror (int err);
+#endif
+
 /* Misc system hackery */
      
 uid_t uname2id(const char *name);
