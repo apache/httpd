@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/12 15:32:55 $]
+Last modified at [$Date: 2003/02/12 18:31:08 $]
 
 Release:
 
@@ -94,6 +94,12 @@ PATCHES TO PORT FROM 2.1
       server/log.c: r1.129 and r1.130
       +1: trawick
 
+    * Better report problems with external scripts
+      modules/filters/mod_ext_filter.c: r1.4
+      modules/generators/mod_cgi.c: r1.151
+      modules/generators/mod_cgid.c: r1.148
+      +1: trawick
+
     * Fix mod_auth_digest not to use local paths for the domain parameter
       on non-unix systems, affects 2.0 and 1.3 (PR 16937)
       modules/aaa/mod_auth_digest.c: r1.78
@@ -103,7 +109,6 @@ PATCHES TO PORT FROM 2.1
     * Fix suexec compile error on SUNOS4 (no strerror()) for 2.0 and 1.3
       support/suexec.c: r1.24
       +1: nd
-
 
 CURRENT RELEASE NOTES:
 
