@@ -691,8 +691,13 @@ static void fix_hostname(request_rec *r)
                 goto bad;
             else {
                 /* a known "good" port value */
+                int iport;
+                iport = atoi(port_str);
+                if (iport < 1 || iport > 65535) {
+                    goto bad;
+                }
                 r->parsed_uri.port_str = ap_pstrdup(r->pool, port_str);
-                r->parsed_uri.port = atoi(r->parsed_uri.port_str);
+                r->parsed_uri.port = iport;
                 break;
             }
         }
