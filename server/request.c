@@ -279,6 +279,7 @@ static int check_safe_file(request_rec *r)
     return HTTP_FORBIDDEN;
 }
 
+#ifdef REPLACE_PATH_INFO_METHOD
 /*
  * resolve_symlink must _always_ be called on an APR_LNK file type!
  * It will resolve the actual target file type, modification date, etc, 
@@ -326,6 +327,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     memcpy(lfi, &fi, sizeof(fi));
     return OK;
 }
+#endif /* REPLACE_PATH_INFO_METHOD */
 
 #ifndef REPLACE_PATH_INFO_METHOD
 
