@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) Add mod_deflate to experimental.  
+     [Ian Holsman, Justin Erenkrantz]
+
   *) Bail out at configure time if an invalid MPM was specified.
      [jean-frederic clere <jfrederic.clere@fujitsu-siemens.com>]
 
