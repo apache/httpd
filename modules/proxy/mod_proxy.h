@@ -89,6 +89,7 @@
 #undef EXPLAIN
 
 #include "apr_compat.h"
+#include "apr_lib.h"
 #include "apr_strings.h"
 
 #if APR_HAVE_NETDB_H
