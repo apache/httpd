@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/05 16:51:50 $]
+Last modified at [$Date: 2001/12/07 15:33:58 $]
 
 Release:
 
@@ -93,6 +93,12 @@ RELEASE SHOWSTOPPERS:
       errors on some other platforms.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * There is increasing demand from module writers for an API
+      that will allow them to control the server à la apachectl.
+      Reasons include sole-function servers that need to die if
+      an external dependency (e.g., a database) fails, et cetera.
+      Perhaps something in the (ever more abused) scoreboard?
 
     * revamp the input filter behavior, per discussions since
       February (and especially at the hackathon last
