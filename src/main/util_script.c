@@ -305,10 +305,18 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 	 * is pointing to an object which doesn't exist.
 	 */
 	
-	if (pa_req->filename)
-	    table_set (e, "PATH_TRANSLATED",
-		       pstrcat (r->pool, pa_req->filename, pa_req->path_info,
-				NULL));
+	if (pa_req->filename) {
+	    char buffer[HUGE_STRING_LEN];
+	    char *pt = pstrcat (r->pool, pa_req->filename, pa_req->path_info,
+				NULL);
+#ifdef WIN32
+	    /* We need to make this a real Windows path name */
+	    GetFullPathName(pt, HUGE_STRING_LEN, buffer, NULL);
+	    table_set (e, "PATH_TRANSLATED", pstrdup(r->pool, buffer));
+#else
+	    table_set (e, "PATH_TRANSLATED", pt);
+#endif
+	}
     }
 }
 
