@@ -470,8 +470,6 @@
 #define uname2id                       AP_uname2id
 #define unblock_alarms                 AP_unblock_alarms
 #define unescape_url                   AP_unescape_url
-#define unload_file                    AP_unload_file
-#define unload_module                  AP_unload_module
 #define unparse_uri_components         AP_unparse_uri_components
 #define unregister_other_child         AP_unregister_other_child
 #define update_child_status            AP_update_child_status

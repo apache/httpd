@@ -177,7 +177,7 @@ static void *so_sconf_create(pool *p, server_rec *s)
  * This is called as a cleanup function from the core.
  */
 
-void unload_module(moduleinfo *modi)
+static void unload_module(moduleinfo *modi)
 {
     /* only unload if module information is still existing */
     if (modi->modp == NULL)
@@ -201,26 +201,12 @@ void unload_module(moduleinfo *modi)
  * or include the filename in error message.
  */
 
-void unload_file(void *handle)
+static void unload_file(void *handle)
 {
     /* The Linux manpage doesn't give any way to check the success of
      * dlclose() */
     os_dl_unload((os_dl_module_handle_type)handle);
 }
-
-#ifdef WIN32
-/* 
- * This is a cleanup which does nothing. On Win32 using the API-provided
- * null_cleanup() function gives a "pointers to functions 
- * with different attributes" error during compilation.
- */
-void mod_so_null_cleanup(module *modp)
-{
-    /* This function left intentionally blank */
-}
-#else
-# define mod_so_null_cleanup null_cleanup
-#endif
 
 /* 
  * This is called for the directive LoadModule and actually loads
@@ -292,7 +278,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * shared object to be unloaded.
      */
     register_cleanup(cmd->pool, modi, 
-		     (void (*)(void*))unload_module, mod_so_null_cleanup);
+		     (void (*)(void*))unload_module, null_cleanup);
 
     /* 
      * Finally we need to run the configuration functions 
@@ -331,7 +317,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
     aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded file %s", filename);
 
-    register_cleanup(cmd->pool, handle, unload_file, mod_so_null_cleanup);
+    register_cleanup(cmd->pool, handle, unload_file, null_cleanup);
 
     return NULL;
 }
