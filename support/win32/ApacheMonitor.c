@@ -109,8 +109,8 @@ typedef struct _st_APACHE_SERVICE
 
 /* Global variables */
 HINSTANCE         g_hInstance = NULL;
-TCHAR             g_szTitle[MAX_LOADSTRING];          /* The title bar text */
-TCHAR             g_szWindowClass[MAX_LOADSTRING];    /* Window Class Name  */
+TCHAR             *g_szTitle;          /* The title bar text */
+TCHAR             *g_szWindowClass;    /* Window Class Name  */
 HICON             g_icoStop;
 HICON             g_icoRun;
 UINT              g_bUiTaskbarCreated;
@@ -137,58 +137,9 @@ LANGID            g_LangID;
 PROCESS_INFORMATION g_lpRedirectProc;
 CRITICAL_SECTION    g_stcSection;
 
-static enum g_idMessages {
-        AM_MSG_APPRUNNING,
-        AM_LBL_SERVICE,
-        AM_BTN_OK,
-        AM_BTN_START,
-        AM_BTN_STOP,
-        AM_BTN_RESTART,
-        AM_BTN_EXIT,
-        AM_MSG_ERROR,
-        AM_MSG_RUNNINGALL,
-        AM_MSG_RUNNING,
-        AM_MSG_RUNNINGNONE,
-        AM_MSG_NOSERVICES,
-        AM_MSG_MNUSHOW,
-        AM_MSG_MNUEXIT,
-        AM_MSG_SRVSTART,
-        AM_MSG_SRVSTARTED,
-        AM_MSG_SRVSTOP,
-        AM_MSG_SRVSTOPPED,
-        AM_MSG_SRVRESTART,
-        AM_MSG_SRVRESTARTED,
-        AM_MSG_SRVFAILED
-    };
 
 /* locale language support */
-static CHAR      
-    *g_lpEnMessages[] = {
-        "Apache monitor is allready started",
-        "Service status:",
-        "&OK",
-        "&Start",
-        "S&top",
-        "&Restart",
-        "E&xit",
-        "Error",
-        "Running all Apache services",
-        "Running %d from %d Apache services",
-        "Running none from %d Apache services",
-        "No services installed",
-        "&Show Services...",
-        "&Exit...",
-        "The %s is starting.",
-        "The %s has started.",
-        "The %s is stopping.",
-        "The %s has stopped.",
-        "The %s is restarting.",
-        "The %s has restarted."
-        "The requested operation has failed!"
-    };
-
-
-static CHAR **g_lpMsg;
+static CHAR *g_lpMsg[IDS_MSG_LAST - IDS_MSG_FIRST + 1];
 
 void am_ClearServicesSt()
 {
@@ -213,7 +164,7 @@ void ErrorMessage(LPCSTR szError, BOOL bFatal)
 {
     LPVOID lpMsgBuf  = NULL;
     if (szError)
-        MessageBox(NULL, szError, g_lpMsg[AM_MSG_ERROR],
+        MessageBox(NULL, szError, g_lpMsg[IDS_MSG_ERROR-IDS_MSG_FIRST],
                     MB_OK | (bFatal ? MB_ICONERROR : MB_ICONEXCLAMATION));
     else
     {
@@ -224,7 +175,7 @@ void ErrorMessage(LPCSTR szError, BOOL bFatal)
             GetLastError(),
             g_LangID,
             (LPSTR) &lpMsgBuf, 0, NULL);
-        MessageBox(NULL, (LPCSTR)lpMsgBuf, g_lpMsg[AM_MSG_ERROR],
+        MessageBox(NULL, (LPCSTR)lpMsgBuf, g_lpMsg[IDS_MSG_ERROR-IDS_MSG_FIRST],
                     MB_OK | (bFatal ? MB_ICONERROR : MB_ICONEXCLAMATION));
         LocalFree(lpMsgBuf);
     }
@@ -308,13 +259,13 @@ static VOID ShowNotifyIcon(HWND hWnd, DWORD dwMessage)
     else
         nid.hIcon = NULL;
     if (n == i && n > 0)
-        lstrcpy(nid.szTip, g_lpMsg[AM_MSG_RUNNINGALL]);
+        lstrcpy(nid.szTip, g_lpMsg[IDS_MSG_RUNNINGALL-IDS_MSG_FIRST]);
     else if (n)
-        sprintf(nid.szTip, g_lpMsg[AM_MSG_RUNNING], n, i);
+        sprintf(nid.szTip, g_lpMsg[IDS_MSG_RUNNING-IDS_MSG_FIRST], n, i);
     else if (i)
-        sprintf(nid.szTip, g_lpMsg[AM_MSG_RUNNINGNONE], i);
+        sprintf(nid.szTip, g_lpMsg[IDS_MSG_RUNNINGNONE-IDS_MSG_FIRST], i);
     else
-        lstrcpy(nid.szTip, g_lpMsg[AM_MSG_NOSERVICES]);
+        lstrcpy(nid.szTip, g_lpMsg[IDS_MSG_NOSERVICES-IDS_MSG_FIRST]);
     Shell_NotifyIcon(dwMessage, &nid);
 }
 
@@ -346,9 +297,11 @@ void ShowTryPopupMenu(HWND hWnd)
 
     if (hMenu)
     {
-        appendMenuItem(hMenu,  IDM_RESTORE, g_lpMsg[AM_MSG_MNUSHOW], TRUE);
-        appendMenuItem(hMenu,  0, "", FALSE);
-        appendMenuItem(hMenu,  IDM_EXIT,  g_lpMsg[AM_MSG_MNUEXIT], FALSE);
+        appendMenuItem(hMenu, IDM_RESTORE, g_lpMsg[IDS_MSG_MNUSHOW-IDS_MSG_FIRST], TRUE);
+        if (g_dwOSVersion >= OS_VERSION_WINNT)
+            appendMenuItem(hMenu, IDC_SMANAGER, g_lpMsg[IDS_MSG_MNUSERVICES-IDS_MSG_FIRST], FALSE);
+        appendMenuItem(hMenu, 0, "", FALSE);
+        appendMenuItem(hMenu, IDM_EXIT,  g_lpMsg[IDS_MSG_MNUEXIT-IDS_MSG_FIRST], FALSE);
 
         GetCursorPos(&pt);
         SetForegroundWindow(NULL);
@@ -580,7 +533,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
                 lstrcat(szBuf, " -k stop -n ");
                 break;
             case SERVICE_CONTROL_CONTINUE:
-                sprintf(szMsg, g_lpMsg[AM_MSG_SRVSTART], szServiceName);
+                sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTART-IDS_MSG_FIRST], szServiceName);
                 addListBoxString(g_hwndStdoutList, szMsg);
                 lstrcat(szBuf, " -k start -n ");
                 serviceFlag = FALSE;
@@ -606,7 +559,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
         }
         else if (!serviceFlag)
         {
-            sprintf(szMsg, g_lpMsg[AM_MSG_SRVSTARTED], szServiceName);
+            sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTARTED-IDS_MSG_FIRST], szServiceName);
             addListBoxString(g_hwndStdoutList, szMsg);
             g_bConsoleRun = FALSE;
             SetCursor(g_hCursorArrow);
@@ -643,7 +596,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
             switch (dwCommand)
             {
                 case SERVICE_CONTROL_STOP:
-                    sprintf(szMsg, g_lpMsg[AM_MSG_SRVSTOP], szServiceName);
+                    sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTOP-IDS_MSG_FIRST], szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
                     if(ControlService(schService, SERVICE_CONTROL_STOP, &schSStatus)) 
                     {
@@ -661,13 +614,13 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
                         if(schSStatus.dwCurrentState == SERVICE_STOPPED)
                         {
                             retValue = TRUE;
-                            sprintf(szMsg, g_lpMsg[AM_MSG_SRVSTOPPED], szServiceName);
+                            sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTOPPED-IDS_MSG_FIRST], szServiceName);
                             addListBoxString(g_hwndStdoutList, szMsg);
                         }
                     }
                 break;                
                 case SERVICE_CONTROL_CONTINUE:
-                    sprintf(szMsg, g_lpMsg[AM_MSG_SRVSTART], szServiceName);
+                    sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTART-IDS_MSG_FIRST], szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
                     args = (char **)malloc(3 * sizeof(char*));
                     args[0] = szBuf;
@@ -694,7 +647,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
                         if(schSStatus.dwCurrentState == SERVICE_RUNNING)
                         {
                             retValue = TRUE;
-                            sprintf(szMsg, g_lpMsg[AM_MSG_SRVSTARTED], szServiceName);
+                            sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTARTED-IDS_MSG_FIRST], szServiceName);
                             addListBoxString(g_hwndStdoutList, szMsg);
                         }
                     }
@@ -702,7 +655,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
                     free(args);
                 break;                
                 case SERVICE_APACHE_RESTART:
-                    sprintf(szMsg, g_lpMsg[AM_MSG_SRVRESTART], szServiceName);
+                    sprintf(szMsg, g_lpMsg[IDS_MSG_SRVRESTART-IDS_MSG_FIRST], szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
                     if(ControlService(schService, SERVICE_APACHE_RESTART, &schSStatus)) 
                     {
@@ -725,7 +678,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
                     if(schSStatus.dwCurrentState == SERVICE_RUNNING)
                     {
                         retValue = TRUE;
-                        sprintf(szMsg, g_lpMsg[AM_MSG_SRVRESTARTED], szServiceName);
+                        sprintf(szMsg, g_lpMsg[IDS_MSG_SRVRESTARTED-IDS_MSG_FIRST], szServiceName);
                         addListBoxString(g_hwndStdoutList, szMsg);
                     }
                 break;                
@@ -733,7 +686,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, DWORD dwComma
             CloseServiceHandle(schService);
             CloseServiceHandle(schSCManager);
             if (!retValue)
-                ErrorMessage(g_lpMsg[AM_MSG_SRVFAILED], FALSE);
+                ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED-IDS_MSG_FIRST], FALSE);
             g_bConsoleRun = FALSE;
             SetCursor(g_hCursorArrow);
             return retValue;
@@ -926,11 +879,10 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
             Button_Enable(GetDlgItem(hDlg, IDC_SSTART), FALSE);
             Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
             Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), FALSE);
-            SetWindowText(GetDlgItem(hDlg, IDC_SSTART), g_lpMsg[AM_BTN_START]); 
-            SetWindowText(GetDlgItem(hDlg, IDC_SSTOP), g_lpMsg[AM_BTN_STOP]); 
-            SetWindowText(GetDlgItem(hDlg, IDC_SRESTART), g_lpMsg[AM_BTN_RESTART]); 
-            SetWindowText(GetDlgItem(hDlg, IDC_SEXIT), g_lpMsg[AM_BTN_EXIT]); 
-            SetWindowText(GetDlgItem(hDlg, IDC_SSTATUS), g_lpMsg[AM_LBL_SERVICE]); 
+
+            if (g_dwOSVersion < OS_VERSION_WINNT)
+                ShowWindow(GetDlgItem(hDlg, IDC_SMANAGER), SW_HIDE);
+
             hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
             g_hwndStdoutList = GetDlgItem(hDlg, IDL_STDOUT);
             hStatusBar = CreateStatusWindow(SBT_TOOLTIPS | WS_CHILD | WS_VISIBLE,
@@ -1131,6 +1083,12 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
                     }
                     Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), TRUE);
                     return TRUE;
+                case IDC_SMANAGER: 
+                    if (g_dwOSVersion >= OS_VERSION_WIN2K)
+                        ShellExecute(hDlg, "open", "services.msc", "/s", NULL, SW_NORMAL);
+                    else
+                        WinExec("Control.exe SrvMgr.cpl Services", SW_NORMAL);
+                    return TRUE;
                 case IDC_SEXIT: 
                     EndDialog( hDlg, TRUE);
                     SendMessage( g_hwndMain, WM_COMMAND, (WPARAM)IDM_EXIT, 0);
@@ -1161,52 +1119,6 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 }
 
 
-VOID CALLBACK MainTimerProc(HWND hWnd, UINT uMsg, UINT idEvent, DWORD dwTime)
-{
-    int nPrev = 0, nNew = 0;
-    EnterCriticalSection(&g_stcSection);
-    if (idEvent == WM_TIMER_RESCAN)
-    {
-        if (FindRunningServices() || g_bRescanServices)
-        {
-            ShowNotifyIcon(hWnd, NIM_MODIFY);
-            if (g_hwndServiceDlg)
-                PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
-        }
-        /* check if services list changed */
-        while (g_stServices[nPrev].szServiceName != NULL)
-            ++nPrev;
-        GetApacheServicesStatus();
-        while (g_stServices[nNew].szServiceName != NULL)
-            ++nNew;
-        if (nPrev != nNew)
-        {
-            ShowNotifyIcon(hWnd, NIM_MODIFY);
-            if (g_hwndServiceDlg)
-                PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
-        }
-    }
-    else if (idEvent == WM_TIMER_REFRESH)
-    {
-        if (g_bRescanServices)
-        {
-            GetApacheServicesStatus();
-            ShowNotifyIcon(hWnd, NIM_MODIFY);
-            if (g_hwndServiceDlg)
-                PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
-        }
-        else if (FindRunningServices())
-        {
-            ShowNotifyIcon(hWnd, NIM_MODIFY);
-            if (g_hwndServiceDlg)
-                PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
-        }
-    }
-    LeaveCriticalSection(&g_stcSection);
-
-}
-
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                           WPARAM wParam, LPARAM lParam)
 {
@@ -1222,13 +1134,58 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
         case WM_CREATE:
             GetApacheServicesStatus();
             ShowNotifyIcon(hWnd, NIM_ADD);
-            SetTimer(hWnd, WM_TIMER_REFRESH, REFRESH_TIME, (TIMERPROC)MainTimerProc);
-            SetTimer(hWnd, WM_TIMER_RESCAN,  RESCAN_TIME, (TIMERPROC)MainTimerProc);
+            SetTimer(hWnd, WM_TIMER_REFRESH, REFRESH_TIME, (TIMERPROC)WndProc);
+            SetTimer(hWnd, WM_TIMER_RESCAN,  RESCAN_TIME, (TIMERPROC)WndProc);
             g_hwndServiceDlg = NULL;                      
-        break;
+            break;
+        case WM_TIMER_RESCAN:
+        {
+            int nPrev = 0, nNew = 0;
+            EnterCriticalSection(&g_stcSection);
+            if (FindRunningServices() || g_bRescanServices)
+            {
+                ShowNotifyIcon(hWnd, NIM_MODIFY);
+                if (g_hwndServiceDlg)
+                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+            }
+            /* check if services list changed */
+            while (g_stServices[nPrev].szServiceName != NULL)
+                ++nPrev;
+            GetApacheServicesStatus();
+            while (g_stServices[nNew].szServiceName != NULL)
+                ++nNew;
+            if (nPrev != nNew)
+            {
+                ShowNotifyIcon(hWnd, NIM_MODIFY);
+                if (g_hwndServiceDlg)
+                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+            }
+            LeaveCriticalSection(&g_stcSection);
+            break;
+        }
+        case WM_TIMER_REFRESH:
+        {
+            int nPrev = 0, nNew = 0;
+            EnterCriticalSection(&g_stcSection);
+            if (g_bRescanServices)
+            {
+                GetApacheServicesStatus();
+                ShowNotifyIcon(hWnd, NIM_MODIFY);
+                if (g_hwndServiceDlg)
+                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+            }
+            else if (FindRunningServices())
+            {
+                ShowNotifyIcon(hWnd, NIM_MODIFY);
+                if (g_hwndServiceDlg)
+                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+            }
+            LeaveCriticalSection(&g_stcSection);
+            break;
+        }
         case WM_QUIT:
             ShowNotifyIcon(hWnd, NIM_DELETE);
-        break;
+            break;
         case WM_TRAYMESSAGE:
             switch(lParam)
             {
@@ -1270,7 +1227,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                    }
                    else if (g_hwndServiceDlg)
                        SetFocus(g_hwndServiceDlg);
-               break;
+                   break;
+                case IDC_SMANAGER: 
+                    if (g_dwOSVersion >= OS_VERSION_WIN2K)
+                        ShellExecute(NULL, "open", "services.msc", "/s", NULL, SW_NORMAL);
+                    else
+                        WinExec("Control.exe SrvMgr.cpl Services", SW_NORMAL);
+                    return TRUE;
                case IDM_EXIT:
                    ShowNotifyIcon(hWnd, NIM_DELETE);
                    PostQuitMessage(0);
@@ -1326,34 +1289,25 @@ int WINAPI WinMain(HINSTANCE hInstance,
                     LPSTR lpCmdLine,
                     int nCmdShow)
 {
+    TCHAR szTmp[MAX_LOADSTRING];
     MSG     msg;
     /* single instance mutex */
     HANDLE hMutex;
+    int i;
+
     g_LangID = GetUserDefaultLangID();
-    switch (g_LangID & 0xFF)
-    {
-        case LANG_ENGLISH:
-            g_lpMsg = g_lpEnMessages;
-            break;
-        default:
-            g_LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
-            g_lpMsg = g_lpEnMessages;
-            break;
-    }        
-    hMutex = CreateMutex(NULL, FALSE, "APSRVMON_MUTEX");
-    if((hMutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS))
-    {
-        ErrorMessage(g_lpMsg[AM_MSG_APPRUNNING], FALSE);
-        if (hMutex)
-            CloseHandle(hMutex);
-
-        return 0;
+    if ((g_LangID & 0xFF) != LANG_ENGLISH)
+        g_LangID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
+    
+    for (i = IDS_MSG_FIRST; i <= IDS_MSG_LAST; ++i) {
+        LoadString(hInstance, i, szTmp, MAX_LOADSTRING);
+        g_lpMsg[i - IDS_MSG_FIRST] = strdup(szTmp);
     }
-    InitCommonControls();
-    g_hInstance = hInstance;
+    LoadString(hInstance, IDS_APMONITORTITLE, szTmp, MAX_LOADSTRING);
+    g_szTitle = strdup(szTmp);
+    LoadString(hInstance, IDS_APMONITORCLASS, szTmp, MAX_LOADSTRING);
+    g_szWindowClass = strdup(szTmp);
 
-    LoadString(hInstance, IDS_APMONITORTITLE, g_szTitle, MAX_LOADSTRING);
-    LoadString(hInstance, IDS_APMONITORCLASS,  g_szWindowClass, MAX_LOADSTRING);
     g_icoStop          = LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICOSTOP),
                                    IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
     g_icoRun           = LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICORUN),
@@ -1363,7 +1317,19 @@ int WINAPI WinMain(HINSTANCE hInstance,
     g_hCursorArrow     = LoadImage(NULL, MAKEINTRESOURCE(OCR_NORMAL), IMAGE_CURSOR,
                                    LR_DEFAULTSIZE, LR_DEFAULTSIZE, LR_SHARED);
 
+    hMutex = CreateMutex(NULL, FALSE, "APSRVMON_MUTEX");
+    if((hMutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS))
+    {
+        ErrorMessage(g_lpMsg[IDS_MSG_APPRUNNING-IDS_MSG_FIRST], FALSE);
+        if (hMutex)
+            CloseHandle(hMutex);
+
+        return 0;
+    }
+
     ZeroMemory(g_stServices, sizeof(ST_APACHE_SERVICE) * MAX_APACHE_SERVICES);
+    InitCommonControls();
+    g_hInstance = hInstance;
     g_hwndMain = CreateMainWindow(hInstance);
     InitializeCriticalSection(&g_stcSection);
     if (g_hwndMain != NULL)
