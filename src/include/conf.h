@@ -731,6 +731,13 @@ Sigfunc *signal(int signo, Sigfunc *func);
 #define ap_setjmp(x)            sigsetjmp((x), 1)
 #endif
 
+#ifdef SELECT_NEEDS_CAST
+#define ap_select(_a, _b, _c, _d, _e)	\
+    select((_a), (int *)(_b), (int *)(_c), (int *)(_d), (_e))
+#else
+#define ap_select	select
+#endif
+
 /* Finding offsets of elements within structures.
  * Taken from the X code... they've sweated portability of this stuff
  * so we don't have to.  Sigh...

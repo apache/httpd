@@ -704,11 +704,7 @@ static void lingering_close (request_rec *r)
         fds_read   = lfds;
         fds_err    = lfds;
     
-#ifdef SELECT_NEEDS_CAST
-        select_rv = select(lsd+1, (int*)&fds_read, NULL, (int*)&fds_err, &tv);
-#else
-        select_rv = select(lsd+1, &fds_read, NULL, &fds_err, &tv);
-#endif
+        select_rv = ap_select(lsd+1, &fds_read, NULL, &fds_err, &tv);
     } while ((select_rv > 0) &&            /* Something to see on socket    */
              !FD_ISSET(lsd, &fds_err) &&   /* that isn't an error condition */
              FD_ISSET(lsd, &fds_read) &&   /* and is worth trying to read   */
@@ -1248,7 +1244,7 @@ void reclaim_child_processes ()
 		       tv.tv_sec = waittime / 1000000;
 		       tv.tv_usec = waittime % 1000000;
 		       waittime = waittime * 2;
-		       select(0, NULL, NULL, NULL, &tv);
+		       ap_select(0, NULL, NULL, NULL, &tv);
 		}
 		if (waitret == 0) {
 		    switch (tries) {
@@ -2093,11 +2089,7 @@ void child_main(int child_num_arg)
 
         for (;;) {
             memcpy(&main_fds, &listenfds, sizeof(fd_set));
-#ifdef SELECT_NEEDS_CAST
-            srv = select(listenmaxfd+1, (int*)&main_fds, NULL, NULL, NULL);
-#else
-            srv = select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
-#endif
+            srv = ap_select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
             errsave = errno;
 
             sync_scoreboard_image();
@@ -3129,11 +3121,7 @@ void worker_main()
         tv.tv_usec = 0;
 
         memcpy(&main_fds, &listenfds, sizeof(fd_set));
-#ifdef SELECT_NEEDS_CAST
-        srv = select(listenmaxfd+1, (int*)&main_fds, NULL, NULL, &tv);
-#else
-        srv = select(listenmaxfd+1, &main_fds, NULL, NULL, &tv);
-#endif
+        srv = ap_select(listenmaxfd+1, &main_fds, NULL, NULL, &tv);
 #ifdef WIN32
         if(srv == SOCKET_ERROR)
             errno = WSAGetLastError() - WSABASEERR;

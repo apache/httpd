@@ -448,11 +448,7 @@ saferead( BUFF *fb, void *buf, int nbyte )
 	    FD_SET( fb->fd_in, &fds );
 	    tv.tv_sec = 0;
 	    tv.tv_usec = 0;
-#ifdef SELECT_NEEDS_CAST
-	    rv = select( fb->fd_in + 1, (int *)&fds, NULL, NULL, &tv );
-#else
-	    rv = select( fb->fd_in + 1, &fds, NULL, NULL, &tv );
-#endif
+	    rv = ap_select( fb->fd_in + 1, &fds, NULL, NULL, &tv );
 	} while( rv < 0 && errno == EINTR );
 	/* treat any error as if it would block as well */
 	if( rv != 1 ) {
