@@ -10,8 +10,6 @@
 # Usage:
 #  PrintPath [-s] [-pPATHNAME] program [program ...]
 #
-# Blame Jim; he wrote it.
-#
 # This script falls under the Apache License.
 # See http://www.apache.org/docs/LICENSE
 

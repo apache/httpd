@@ -54,21 +54,6 @@
 ## For more information on the Apache Group and the Apache HTTP server
 ## project, please see <http://www.apache.org/>.
 
-# HISTORY:
-#
-# Apache configuration script, first cut --- rst.
-# Don't like it?  Inspired to do something better?  Go for it.
-#
-# second cut --- jmj
-# At this point we change what Configuration contains. It maintain
-# contains comments, specific compiler flags, a list of included
-# modules and "rules". These rules are used to allow Configure to
-# be totally configured from Configuration.
-#
-# third cut --- rse
-# Big cleanup of the generated Makefiles and remove of
-# some old kludges
-
 # Uses 6 supplemental scripts located in ./helpers:
 #	CutRule: Determines the value for a specified Rule
 #	GuessOS: Uses uname to determine OS/platform
