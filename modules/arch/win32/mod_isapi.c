@@ -515,21 +515,21 @@ typedef struct isapi_cid {
     request_rec  *r;
 #ifdef FAKE_ASYNC
     PFN_HSE_IO_COMPLETION completion;
-    PVOID  completion_arg;
+    void  *completion_arg;
     HANDLE complete;
 #endif
 } isapi_cid;
 
-int APR_THREAD_FUNC GetServerVariable (isapi_cid *cid, 
-                                       char *lpszVariableName,
-                                       void *lpvBuffer, 
-                                       apr_uint32_t *lpdwSizeofBuffer)
+int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid, 
+                                       char         *variable_name,
+                                       void         *buf_data, 
+                                       apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
     const char *result;
     apr_uint32_t len;
 
-    if (!strcmp(lpszVariableName, "ALL_HTTP")) 
+    if (!strcmp(variable_name, "ALL_HTTP")) 
     {
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of HTTP_ vars 
@@ -544,29 +544,29 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid *cid,
             }
         }
   
-        if (*lpdwSizeofBuffer < len + 1) {
-            *lpdwSizeofBuffer = len + 1;
+        if (*buf_size < len + 1) {
+            *buf_size = len + 1;
             SetLastError(ERROR_INSUFFICIENT_BUFFER);
             return 0;
         }
     
         for (i = 0; i < arr->nelts; i++) {
             if (!strncmp(elts[i].key, "HTTP_", 5)) {
-                strcpy(lpvBuffer, elts[i].key);
-                ((char*)lpvBuffer) += strlen(elts[i].key);
-                *(((char*)lpvBuffer)++) = ':';
-                strcpy(lpvBuffer, elts[i].val);
-                ((char*)lpvBuffer) += strlen(elts[i].val);
-                *(((char*)lpvBuffer)++) = '\n';
+                strcpy(buf_data, elts[i].key);
+                ((char*)buf_data) += strlen(elts[i].key);
+                *(((char*)buf_data)++) = ':';
+                strcpy(buf_data, elts[i].val);
+                ((char*)buf_data) += strlen(elts[i].val);
+                *(((char*)buf_data)++) = '\n';
             }
         }
 
-        *(((char*)lpvBuffer)++) = '\0';
-        *lpdwSizeofBuffer = len;
+        *(((char*)buf_data)++) = '\0';
+        *buf_size = len;
         return 1;
     }
     
-    if (!strcmp(lpszVariableName, "ALL_RAW")) 
+    if (!strcmp(variable_name, "ALL_RAW")) 
     {
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of the raw request header
@@ -579,38 +579,38 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid *cid,
             len += strlen(elts[i].key) + strlen(elts[i].val) + 2;
         }
   
-        if (*lpdwSizeofBuffer < len + 1) {
-            *lpdwSizeofBuffer = len + 1;
+        if (*buf_size < len + 1) {
+            *buf_size = len + 1;
             SetLastError(ERROR_INSUFFICIENT_BUFFER);
             return 0;
         }
     
         for (i = 0; i < arr->nelts; i++) {
-            strcpy(lpvBuffer, elts[i].key);
-            ((char*)lpvBuffer) += strlen(elts[i].key);
-            *(((char*)lpvBuffer)++) = ':';
-            *(((char*)lpvBuffer)++) = ' ';
-            strcpy(lpvBuffer, elts[i].val);
-            ((char*)lpvBuffer) += strlen(elts[i].val);
-            *(((char*)lpvBuffer)++) = '\n';
+            strcpy(buf_data, elts[i].key);
+            ((char*)buf_data) += strlen(elts[i].key);
+            *(((char*)buf_data)++) = ':';
+            *(((char*)buf_data)++) = ' ';
+            strcpy(buf_data, elts[i].val);
+            ((char*)buf_data) += strlen(elts[i].val);
+            *(((char*)buf_data)++) = '\n';
         }
-        *(((char*)lpvBuffer)++) = '\0';
-        *lpdwSizeofBuffer = len;
+        *(((char*)buf_data)++) = '\0';
+        *buf_size = len;
         return 1;
     }
     
     /* Not a special case */
-    result = apr_table_get(r->subprocess_env, lpszVariableName);
+    result = apr_table_get(r->subprocess_env, variable_name);
 
     if (result) {
         len = strlen(result);
-        if (*lpdwSizeofBuffer < len + 1) {
-            *lpdwSizeofBuffer = len + 1;
+        if (*buf_size < len + 1) {
+            *buf_size = len + 1;
             SetLastError(ERROR_INSUFFICIENT_BUFFER);
             return 0;
         }
-        strcpy(lpvBuffer, result);
-        *lpdwSizeofBuffer = len;
+        strcpy(buf_data, result);
+        *buf_size = len;
         return 1;
     }
 
@@ -619,21 +619,23 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid *cid,
     return 0;
 }
 
-int APR_THREAD_FUNC WriteClient(isapi_cid *ConnID, 
-                                void *Buffer, 
-                                apr_uint32_t *lpdwBytes, 
-                                apr_uint32_t dwReserved)
+int APR_THREAD_FUNC WriteClient(isapi_cid    *cid, 
+                                void         *buf_data, 
+                                apr_uint32_t *buf_size, 
+                                apr_uint32_t  flags)
 {
-    request_rec *r = ((isapi_cid *)ConnID)->r;
+    request_rec *r = cid->r;
     conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
-    if (dwReserved == HSE_IO_SYNC)
+#ifdef FAKE_ASYNC
+    if (flags & HSE_IO_SYNC)
         ; /* XXX: Fake it */
+#endif
 
     bb = apr_brigade_create(r->pool, c->bucket_alloc);
-    b = apr_bucket_transient_create(Buffer, *lpdwBytes, c->bucket_alloc);
+    b = apr_bucket_transient_create(buf_data, *buf_size, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -642,25 +644,25 @@ int APR_THREAD_FUNC WriteClient(isapi_cid *ConnID,
     return 1;
 }
 
-int APR_THREAD_FUNC ReadClient(isapi_cid *ConnID, 
-                               void *lpvBuffer, 
-                               apr_uint32_t *lpdwSize)
+int APR_THREAD_FUNC ReadClient(isapi_cid    *cid, 
+                               void         *buf_data, 
+                               apr_uint32_t *buf_size)
 {
-    request_rec *r = ((isapi_cid *)ConnID)->r;
+    request_rec *r = cid->r;
     apr_uint32_t read = 0;
     int res;
 
-    if (r->remaining < *lpdwSize) {
-        *lpdwSize = (apr_size_t)r->remaining;
+    if (r->remaining < *buf_size) {
+        *buf_size = (apr_size_t)r->remaining;
     }
 
-    while (read < *lpdwSize &&
-           ((res = ap_get_client_block(r, (char*)lpvBuffer + read,
-                                       *lpdwSize - read)) > 0)) {
+    while (read < *buf_size &&
+           ((res = ap_get_client_block(r, (char*)buf_data + read,
+                                       *buf_size - read)) > 0)) {
         read += res;
     }
 
-    *lpdwSize = read;
+    *buf_size = read;
     return 1;
 }
 
@@ -725,17 +727,17 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     return 0;
 }
 
-int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid, 
-                                          apr_uint32_t dwHSERequest,
-                                          void        *lpvBuffer, 
-                                          apr_uint32_t *lpdwSize,
-                                          apr_uint32_t *lpdwDataType)
+int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid, 
+                                          apr_uint32_t  HSE_code,
+                                          void         *buf_data, 
+                                          apr_uint32_t *buf_size,
+                                          apr_uint32_t *data_type)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
     request_rec *subreq;
 
-    switch (dwHSERequest) {
+    switch (HSE_code) {
     case 1: /* HSE_REQ_SEND_URL_REDIRECT_RESP */
         /* Set the status to be returned when the HttpExtensionProc()
          * is done.
@@ -743,7 +745,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
          *          and HSE_REQ_SEND_URL as equivalant per the Jan 2000 SDK.
          *          They most definately are not, even in their own samples.
          */
-        apr_table_set (r->headers_out, "Location", lpvBuffer);
+        apr_table_set (r->headers_out, "Location", buf_data);
         cid->r->status = cid->ecb->dwHttpStatusCode 
                                                = HTTP_MOVED_TEMPORARILY;
         return 1;
@@ -763,8 +765,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
         apr_table_unset(r->headers_in, "Content-Length");
 
         /* AV fault per PR3598 - redirected path is lost! */
-        (char*)lpvBuffer = apr_pstrdup(r->pool, (char*)lpvBuffer);
-        ap_internal_redirect((char*)lpvBuffer, r);
+        (char*)buf_data = apr_pstrdup(r->pool, (char*)buf_data);
+        ap_internal_redirect((char*)buf_data, r);
         return 1;
 
     case HSE_REQ_SEND_RESPONSE_HEADER:
@@ -772,12 +774,12 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
         /* Parse them out, or die trying */
         apr_size_t statlen = 0, headlen = 0;
         apr_ssize_t ate;
-        if (lpvBuffer)
-            statlen = strlen((char*) lpvBuffer);
-        if (lpdwDataType)
-            headlen = strlen((char*) lpdwDataType);
-        ate = send_response_header(cid, (char*) lpvBuffer,
-                                   (char*) lpdwDataType,
+        if (buf_data)
+            statlen = strlen((char*) buf_data);
+        if (data_type)
+            headlen = strlen((char*) data_type);
+        ate = send_response_header(cid, (char*) buf_data,
+                                   (char*) data_type,
                                    statlen, headlen);
         if (ate < 0) {
             SetLastError(ERROR_INVALID_PARAMETER);
@@ -787,7 +789,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
             apr_bucket_brigade *bb;
             apr_bucket *b;
             bb = apr_brigade_create(cid->r->pool, c->bucket_alloc);
-	    b = apr_bucket_transient_create((char*) lpdwDataType + ate, 
+	    b = apr_bucket_transient_create((char*) data_type + ate, 
                                            headlen - ate, c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create(c->bucket_alloc);
@@ -809,22 +811,22 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
     case HSE_REQ_MAP_URL_TO_PATH:
     {
         /* Map a URL to a filename */
-        char *file = (char *)lpvBuffer;
+        char *file = (char *)buf_data;
         apr_uint32_t len;
-        subreq = ap_sub_req_lookup_uri(apr_pstrndup(r->pool, file, *lpdwSize),
+        subreq = ap_sub_req_lookup_uri(apr_pstrndup(r->pool, file, *buf_size),
                                        r, NULL);
 
-        len = apr_cpystrn(file, subreq->filename, *lpdwSize) - file;
+        len = apr_cpystrn(file, subreq->filename, *buf_size) - file;
 
 
         /* IIS puts a trailing slash on directories, Apache doesn't */
         if (subreq->finfo.filetype == APR_DIR) {
-            if (len < *lpdwSize - 1) {
+            if (len < *buf_size - 1) {
                 file[len++] = '\\';
                 file[len] = '\0';
             }
         }
-        *lpdwSize = len;
+        *buf_size = len;
         return 1;
     }
 
@@ -837,19 +839,19 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
         return 0;
         
     case HSE_APPEND_LOG_PARAMETER:
-        /* Log lpvBuffer, of lpdwSize bytes, in the URI Query (cs-uri-query) field
+        /* Log buf_data, of buf_size bytes, in the URI Query (cs-uri-query) field
          */
-        apr_table_set(r->notes, "isapi-parameter", (char*) lpvBuffer);
+        apr_table_set(r->notes, "isapi-parameter", (char*) buf_data);
         if (cid->dconf.log_to_query) {
             if (r->args)
-                r->args = apr_pstrcat(r->pool, r->args, (char*) lpvBuffer, NULL);
+                r->args = apr_pstrcat(r->pool, r->args, (char*) buf_data, NULL);
             else
-                r->args = apr_pstrdup(r->pool, (char*) lpvBuffer);
+                r->args = apr_pstrdup(r->pool, (char*) buf_data);
         }
         if (cid->dconf.log_to_errlog)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
                           "ISAPI: %s: %s", cid->r->filename,
-                          (char*) lpvBuffer);
+                          (char*) buf_data);
         return 1;
         
     case HSE_REQ_IO_COMPLETION:
@@ -857,12 +859,12 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
          * user defined arg, we will call this after any async request 
          * (e.g. transmitfile) as if the request executed async.
          * Per MS docs... HSE_REQ_IO_COMPLETION replaces any prior call
-         * to HSE_REQ_IO_COMPLETION, and lpvBuffer may be set to NULL.
+         * to HSE_REQ_IO_COMPLETION, and buf_data may be set to NULL.
          */
 #ifdef FAKE_ASYNC
         if (cid->isa->fakeasync) {
-            cid->completion = (PFN_HSE_IO_COMPLETION) lpvBuffer;
-            cid->completion_arg = (PVOID) lpdwDataType;
+            cid->completion = (PFN_HSE_IO_COMPLETION) buf_data;
+            cid->completion_arg = (PVOID) data_type;
             return 1;
         }
 #endif
@@ -875,7 +877,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
 
     case HSE_REQ_TRANSMIT_FILE:
     {
-        HSE_TF_INFO *tf = (HSE_TF_INFO*)lpvBuffer;
+        HSE_TF_INFO *tf = (HSE_TF_INFO*)buf_data;
         apr_status_t rv;
         apr_bucket_brigade *bb;
         apr_bucket *b;
@@ -978,7 +980,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
         return 0;
 
     case HSE_REQ_IS_KEEP_CONN:
-        *((int *)lpvBuffer) = (r->connection->keepalive == 1);
+        *((int *)buf_data) = (r->connection->keepalive == 1);
         return 1;
 
     case HSE_REQ_ASYNC_READ_CLIENT:
@@ -1005,8 +1007,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
     case HSE_REQ_MAP_URL_TO_PATH_EX:
     {
         /* Map a URL to a filename */
-        HSE_URL_MAPEX_INFO *info = (HSE_URL_MAPEX_INFO*)lpdwDataType;
-        char* test_uri = apr_pstrndup(r->pool, (char *)lpvBuffer, *lpdwSize);
+        HSE_URL_MAPEX_INFO *info = (HSE_URL_MAPEX_INFO*)data_type;
+        char* test_uri = apr_pstrndup(r->pool, (char *)buf_data, *buf_size);
 
         subreq = ap_sub_req_lookup_uri(test_uri, r, NULL);
         info->cchMatchingURL = strlen(test_uri);        
@@ -1090,7 +1092,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
 
     case HSE_REQ_SEND_RESPONSE_HEADER_EX:  /* Added in ISAPI 4.0 */
     {
-        HSE_SEND_HEADER_EX_INFO *shi = (HSE_SEND_HEADER_EX_INFO*)lpvBuffer;
+        HSE_SEND_HEADER_EX_INFO *shi = (HSE_SEND_HEADER_EX_INFO*)buf_data;
 
     /*  XXX: ignore shi->fKeepConn?  We shouldn't need the advise
      *  r->connection->keepalive = shi->fKeepConn; 
@@ -1131,7 +1133,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
         /* Returns True if client is connected c.f. MSKB Q188346
          * assuming the identical return mechanism as HSE_REQ_IS_KEEP_CONN
          */
-        *((int *)lpvBuffer) = (r->connection->aborted == 0);
+        *((int *)buf_data) = (r->connection->aborted == 0);
         return 1;
 
     case HSE_REQ_EXTENSION_TRIGGER:  /* Added after ISAPI 4.0 */
@@ -1149,7 +1151,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid   *cid,
         if (cid->dconf.log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                           "ISAPI: ServerSupportFunction (%d) not supported: "
-                          "%s", dwHSERequest, r->filename);
+                          "%s", HSE_code, r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return 0;
     }
