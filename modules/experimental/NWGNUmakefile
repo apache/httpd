@@ -157,6 +157,7 @@ TARGET_nlm = \
 	$(OBJDIR)/mod_cach.nlm \
 	$(OBJDIR)/mem_cach.nlm \
 	$(OBJDIR)/dsk_cach.nlm \
+	$(OBJDIR)/mod_filter.nlm \
 	$(EOLIST)
 	
 #
