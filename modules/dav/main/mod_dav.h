@@ -393,6 +393,11 @@ typedef struct dav_resource {
 
     const dav_hooks_repository *hooks;	/* hooks used for this resource */
 
+    /* When allocating items related specifically to this resource, the
+       following pool should be used. Its lifetime will be at least as
+       long as the dav_resource structure. */
+    apr_pool_t *pool;
+
 } dav_resource;
 
 /*
