@@ -711,7 +711,6 @@ int          ssl_mutex_kill(server_rec *);
 
 /*  Logfile Support  */
 void         ssl_log_open(server_rec *, server_rec *, apr_pool_t *);
-BOOL         ssl_log_applies(server_rec *, int);
 void         ssl_log(server_rec *, int, const char *, ...);
 void         ssl_die(void);
 
