@@ -219,7 +219,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec) {
 
 	/* force fast access over /dev/msql */
 	if ((host) && (!(strcasecmp(host,"localhost"))))
-		*host=NULL;
+		*host=(int)NULL;
 
     	if ((sock=msqlConnect(host)) == -1) {
 		sprintf (msql_errstr,

@@ -1813,7 +1813,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
     if (c->fp != NULL)
     {
 	pclosef(r->pool, c->fp->fd);
-	c->fp->fd = NULL;
+	c->fp->fd =(int) NULL;
     }
     c->version = 0;
     sec2hex(0, buff+27);
