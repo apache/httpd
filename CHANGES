@@ -1,5 +1,15 @@
 Changes with Apache 2.0.44
 
+  *) Introduce the EnableSendfile directive, allowing users of NFS 
+     shares to disable sendfile mechanics when they either fail
+     outright or provide intermitantly corrupted data.  PR 
+     [William Rowe]
+
+  *) Resolve the error "An operation was attempted on something 
+     that is not a socket.  : winnt_accept: AcceptEx failed. 
+     Attempting to recover." for users of various firewall and
+     anti-virus software on Windows.  PR 8325  [William Rowe]
+
   *) Add the ProxyBadHeader directive, which gives the admin some
      control on how mod_proxy should handle bogus HTTP headers from
      proxied servers. This allows 2.0 to "emulate" 1.3's behavior if
