@@ -163,7 +163,7 @@ static int ftp_check_string(const char *x)
         if (ch == '\r' || ch == '\n')
             return 0;
         buf[0] = ch;
-        ap_xlate_proto_to_ascii(buf);
+        ap_xlate_proto_to_ascii(buf, 1);
         if (buf[0] & 0x80)
 #endif                          /* APR_CHARSET_EBCDIC */
             return 0;
