@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache のハンドラの使用 - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache のハンドラの使用</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/handler.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+
+    <p>Apache のハンドラの使用に関して記述しています。</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">ハンドラとは</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#examples">例</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#programmer">プログラマ向けのメモ</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="definition" id="definition">ハンドラとは</a></h2>
+    
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imap.html">mod_imap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
+
+
+    <p>「ハンドラ」とは、ファイルが呼ばれたときに実行される動作の
+    Apache における内部表現です。
+    通常、ファイルはファイル型に基づいた暗黙のハンドラがあります。
+    普通はすべてのファイルは単にサーバに扱われますが、
+    ファイルタイプの中には別に「ハンドル」(訳注: 扱う)
+    されるものもあります。</p>
+
+    <p>Apache 1.1 では、ハンドラを明示的に使用する機能が追加されました。
+    ファイルの拡張子や置いている場所に基づいて、
+    ファイル型と関係なくハンドラを指定することができます。
+    これはより優雅な解決法という点と、ファイルにタイプ<strong>と</strong>ハンドラの両方を関連付けることができるという点で優れています。
+    (<a href="mod/mod_mime.html#multipleext">複数の拡張子のあるファイル</a>も参照してください)。</p>
+
+    <p>ハンドラはサーバに組み込んだり、モジュールとして含めたり、
+    <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code>
+    ディレクティブとして追加したりすることができます。
+    以下は標準配布に組み込まれているハンドラです。
+    </p>
+
+    <ul>
+      <li><strong>default-handler</strong>:<code>default_handelr()</code>
+      を使ってファイルを送ります。
+      静的なコンテンツを扱うときにデフォルトで使用されるハンドラです。
+      (<code class="module"><a href="./mod/core.html">core</a></code>)</li>
+
+      <li><strong>send-as-is</strong>:
+      HTTP ヘッダのあるファイルをそのまま送ります。
+      (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
+
+      <li><strong>cgi-script</strong>: ファイルを CGI
+      スクリプトとして扱います。
+      (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
+
+      <li><strong>imap-file</strong>:
+      イメージマップのルールファイルとして解析します。
+      (<code class="module"><a href="./mod/mod_imap.html">mod_imap</a></code>)</li>
+
+      <li><strong>server-info</strong>: サーバの設定情報を取得します。
+      (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
+
+      <li><strong>server-status</strong>: サーバの状態報告を取得します。
+      (<code class="module"><a href="./mod/mod_status.html">mod_status</a></code>)</li>
+
+      <li><strong>type-map</strong>:
+      コンテントネゴシエーションのためのタイプマップとして解析します。
+      (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">例</a></h2>
+    
+
+    <h3><a name="example1" id="example1">CGI スクリプトを用いて静的なコンテンツを変更する</a></h3>
+      
+
+      <p>以下のディレクティブによって、拡張子が <code>html</code>
+      であるファイルは <code>footer.pl</code>
+      CGI スクリプトを起動するようになります。</p>
+
+      <div class="example"><p><code>
+        Action add-footer /cgi-bin/footer.pl<br />
+        AddHandler add-footer .html
+      </code></p></div>
+
+      <p>CGI スクリプトは希望の修正や追加を行なって、元々要求された文書
+      (環境変数 <code>PATH_TRANSLATED</code>
+      で指されています) を送る責任があります。
+      </p>
+
+    
+    <h3><a name="example2" id="example2">HTTP ヘッダのあるファイル</a></h3>
+      
+
+      <p>以下のディレクティブは <code>send-as-is</code>
+      ハンドラを使用するように指示します。このハンドラは自分自身の HTTP
+      ヘッダを持っているファイルに使用されます。ここでは、拡張子に関わらず、
+      <code>/web/htdocs/asis</code> ディレクトリにある全てのファイルは
+      <code>send-as-is</code> ハンドラによって扱われます。</p>
+
+      <div class="example"><p><code>
+        &lt;Directory /web/htdocs/asis&gt;<br />
+        SetHandler send-as-is<br />
+        &lt;/Directory&gt;
+      </code></p></div>
+
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="programmer" id="programmer">プログラマ向けのメモ</a></h2>
+    
+
+    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
+    <a href="developer/API.html">Apache API</a>
+    に追加されました。詳しく言うと、<code>request_rec</code>
+    構造体に新しいレコードが追加されたということです。</p>
+
+    <div class="example"><p><code>
+     char *handler
+    </code></p></div>
+
+    <p>もしモジュールがハンドラに関わりたい場合、
+    やらなければならないことは、リクエストが <code>invoke_handler</code>
+    ステージに達する以前に <code>r-&gt;handler</code>
+    を設定することだけです。ハンドラはコンテントタイプの代わりに
+    ハンドラ名を使うようになっていること以外は、以前と同じように実装されています。
+    必ず要求されているわけではありませんが、メディアタイプ
+    の名前空間を侵さないように、ハンドラの名前にはスラッシュを含まない、
+    ダッシュ (訳注: "-") で分離された名前を付ける習慣になっています。</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/handler.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>
