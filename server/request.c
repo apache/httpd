@@ -115,7 +115,7 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,access_checker,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
                             (request_rec *r),(r),DECLINED)
 AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
-AP_IMPLEMENT_HOOK_VOID(create_request, (request_rec *r), (r))
+AP_IMPLEMENT_HOOK_RUN_ALL(int,create_request,(request_rec *r),(r),OK,DECLINED)
 
 /*****************************************************************
  *

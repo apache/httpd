@@ -3248,7 +3248,7 @@ static void core_insert_filter(request_rec *r)
     }
 }
 
-static void core_create_req(request_rec *r)
+static int core_create_req(request_rec *r)
 {
     if (r->main) {
         ap_set_module_config(r->request_config, &core_module,
@@ -3261,6 +3261,7 @@ static void core_create_req(request_rec *r)
         req_cfg->bb = apr_brigade_create(r->pool);
         ap_set_module_config(r->request_config, &core_module, req_cfg);
     }
+    return OK;
 }
 
 static void register_hooks(apr_pool_t *p)
