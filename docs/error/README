@@ -2,12 +2,13 @@
  Multi Language Custom Error Documents
  -------------------------------------
 
- The 'error' directory in the document root directory contains HTTP error
- messages in multiple languages. If the preferred language of client is
- available it is selected automatically via the MultiViews feature.
+ The 'error' directory contains HTTP error messages in multiple languages.
+ If the preferred language of a client is available it is selected
+ automatically via the MultiViews feature. This feature is enabled
+ by default via the Options, Language and ErrorDocument directives.
+
  You may configure the design and markup of the documents by modifying
- the HTML files in the directory '/error/includes', especially the
- file 'config.html'.
+ the HTML files in the directory 'error/includes'.
 
 
  Supported Languages:
