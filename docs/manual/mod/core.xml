@@ -217,6 +217,15 @@ response without an explicit character set</description>
     which directives declared in that file can override earlier
     access information.</p>
 
+    <note><title>Only available in Location sections</title>
+    <directive>AllowOverride</directive> is valid only in
+    <directive type="section" module="core">Directory</directive> 
+    sections, not in <directive type="section" 
+    module="core">Location</directive> or <directive type="section"
+    module="core">Files</directive> sections, as implied by the
+    <strong>Context</strong> section above.
+    </note>
+
     <p>When this directive is set to <code>None</code>, then
     .htaccess files are completely ignored. In this case, the
     server will not even attempt to read .htaccess files in the
