@@ -1,5 +1,11 @@
 Changes with Apache 2.0.15-dev
 
+  *) Change the way the beos MPM handles polling to allow it to stop and
+     restart.  Problem was the sockets being polled were being reset by
+     the select call, so once it had accepted a connection it was no
+     longer listening on the UDP socket we use for shutdown instructions.
+     APR needs to be altered, patch on it's way. [David Reid]
+
   *) Empty out the brigade shared by ap_getline()/ap_get_client_block()
      on error exit from ap_getline().  Some other code got upset because
      the wrong data was in the brigade.  [Greg Ames, Jeff Trawick]
