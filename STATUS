@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/05/17 12:37:15 $]
+Last modified at [$Date: 2001/05/17 15:22:09 $]
 
 Release:
 
@@ -50,6 +50,14 @@ DAEDALUS 2.0 PROBLEMS:
       User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90)
       Host: www.apache.org
       Connection: Keep-Alive
+
+      But Greg added a trap to look for such problems right after they occur and
+      we now have a corefile showing the bad request:
+
+      TRACE / HTTP/1.0
+      Max-Forwards: 0
+
+      The list getting trashed is default_list->names.
 
     * core dump from 20010418
 
