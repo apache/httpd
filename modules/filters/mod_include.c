@@ -1179,7 +1179,7 @@ static int is_only_below(const char *path)
             return 0;
 #endif
         path += dots;
-        while (*path && *(path++) != '/')
+        while (*path && *(path+1) != '/')
             ++path;
     }
     return 1;
