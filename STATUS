@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/14 19:29:09 $]
+  Last modified at [$Date: 1999/06/21 21:41:37 $]
 
 Release:
 
@@ -106,8 +106,9 @@ Available Patches:
 		Randy +1 (please choose name other than "hook")
                 Doug +1 on concept (untested), Lars +1 on concept,
 		Martin +1 (untested),
-		Ken -1 for pre-2.0 if it will force a new release of
-		mod_perl or mod_php in order to maintain compatibility
+		Ken -1 for pre-2.0 if it will: a) force a new release of
+		mod_perl or mod_php in order to maintain compatibility OR
+		b) require a version bump to 1.4.0 and a beta cycle
 
     * Tony Finch's patch to support mass virtual hosting
 	Message-ID: <E10kXMV-00011I-00@fanf.noc.demon.net>
