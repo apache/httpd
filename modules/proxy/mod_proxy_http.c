@@ -849,6 +849,7 @@ static void process_proxy_header(request_rec* r, proxy_server_conf* c,
         { "Location", ap_proxy_location_reverse_map } ,
         { "Content-Location", ap_proxy_location_reverse_map } ,
         { "URI", ap_proxy_location_reverse_map } ,
+        { "Destination", ap_proxy_location_reverse_map } ,
         { "Set-Cookie", ap_proxy_cookie_reverse_map } ,
         { NULL, NULL }
     } ;

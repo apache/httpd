@@ -535,10 +535,12 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         if (!strcasecmp(stringname, "Set-Cookie")) {
             value = ap_proxy_cookie_reverse_map(r, conf, value);
         }
-        /* Location, Content-Location and URI need additional processing */
+        /* Location, Content-Location, URI and Destination need additional
+         * processing */
         else if (!strcasecmp(stringname, "Location")
                  || !strcasecmp(stringname, "Content-Location")
-                 || !strcasecmp(stringname, "URI"))
+                 || !strcasecmp(stringname, "URI")
+                 || !strcasecmp(stringname, "Destination"))
         {
           value = ap_proxy_location_reverse_map(r, conf, value);
         }
