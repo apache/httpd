@@ -233,7 +233,16 @@ response (which modules can add to at will), and environment variables
 for any subprocesses which are spawned off in the course of servicing
 the request.  These tables are manipulated using the
 <code>table_get</code> and <code>table_set</code> routines. <p>
-
+<BLOCKQUOTE>
+ Note that the <SAMP>Content-type</SAMP> header value <EM>cannot</EM> be
+ set by module content-handlers using the <SAMP>table_*()</SAMP>
+ routines.  Rather, it is set by pointing the <SAMP>content_type</SAMP>
+ field in the <SAMP>request_rec</SAMP> structure to an appropriate
+ string.  <EM>E.g.</EM>,
+ <PRE>
+  r-&gt;content_type = "text/html";
+ </PRE>
+</BLOCKQUOTE>
 Finally, there are pointers to two data structures which, in turn,
 point to per-module configuration structures.  Specifically, these
 hold pointers to the data structures which the module has built to
