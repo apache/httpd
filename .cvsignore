@@ -24,6 +24,6 @@ LibD
 LibR
 Apache.ncb
 Apache.opt
-InstallBin.plg
 apachecore.dll
 *.x
+*.plg
