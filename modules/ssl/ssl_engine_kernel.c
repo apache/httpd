@@ -706,6 +706,7 @@ int ssl_hook_Access(request_rec *r)
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "Re-negotiation request failed");
 
+                r->connection->aborted = 1;
                 return HTTP_FORBIDDEN;
             }
 
@@ -724,6 +725,7 @@ int ssl_hook_Access(request_rec *r)
                              "Re-negotiation handshake failed: "
                         "Not accepted by client!?");
 
+                r->connection->aborted = 1;
                 return HTTP_FORBIDDEN;
             }
         }
