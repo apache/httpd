@@ -317,7 +317,7 @@ host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class
     nickname, it doesn't actually apply the format and make it the
     default. Therefore, it will not affect subsequent
     <code class="directive">TransferLog</code> directives.  In addition,
-    <code class="directive">TransferLog</code> cannot use one nickname
+    <code class="directive">LogFormat</code> cannot use one nickname
     to define another nickname.</p>
 
     <p>For example:</p>
