@@ -445,9 +445,9 @@ proxy server:</p>
 
 <div class="example"><p><code>
 &lt;Proxy *&gt;<br />
-  Order Deny,Allow<br />
-  Deny from all<br />
-  Allow from yournetwork.example.com<br />
+&nbsp;&nbsp;Order Deny,Allow<br />
+&nbsp;&nbsp;Deny from all<br />
+&nbsp;&nbsp;Allow from yournetwork.example.com<br />
 &lt;/Proxy&gt;
 </code></p></div>
 
@@ -457,7 +457,7 @@ proxy server:</p>
 server:</p>
 <div class="example"><p><code>
 &lt;Proxy http://example.com/foo/*&gt;<br />
-  SetOutputFilter INCLUDES<br />
+&nbsp;&nbsp;SetOutputFilter INCLUDES<br />
 &lt;/Proxy&gt;
 </code></p></div>
 

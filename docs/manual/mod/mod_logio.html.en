@@ -57,7 +57,7 @@
     the format string, which are replaced in the log file by the values as
     follows:</p>
 
-    <table class="bordered"><tr class="header"><th>Format String</th>
+    <table class="bordered"><tr class="header"><th>Format&nbsp;String</th>
         <th>Description</th></tr>
 <tr><td><code>%...I</code></td>
         <td>Bytes received, including request and headers, cannot be

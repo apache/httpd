@@ -176,11 +176,11 @@
       </code></p></div>
     
       <p>If the script is dedicated to handling a particular error
-      condition, such as <code>404 Not Found</code>, it can
+      condition, such as <code>404&nbsp;Not&nbsp;Found</code>, it can
       use the specific code and error text instead.</p>
 
       <p>Note that the script <em>must</em> emit an appropriate
-      <code>Status:</code> header (such as <code>302 Found</code>), if the
+      <code>Status:</code> header (such as <code>302&nbsp;Found</code>), if the
       response contains a <code>Location:</code> header (in order to issue a
       client side redirect). Otherwise the <code>Location:</code> header may
       have no effect.</p>

@@ -515,7 +515,7 @@ foot.shtml.en
   [&lt;!--#echo var="REDIRECT_STATUS" --&gt;] 
   &lt;!--#echo var="title" --&gt; <br />
   &lt;img src="&lt;!--#echo var="IMG_CorpLogo" --&gt;" <br />
-    alt="&lt;!--#echo var="ALT_CorpLogo" --&gt;" align="right"&gt; <br />
+  &nbsp;&nbsp;alt="&lt;!--#echo var="ALT_CorpLogo" --&gt;" align="right"&gt; <br />
   &lt;/h1&gt; <br />
 <br />
   &lt;hr /&gt;
@@ -542,7 +542,7 @@ foot.shtml.en
   <span class="indent">
     &lt;a href="&lt;!--#echo var="DOC_Apache" --&gt;"&gt; <br />
     &lt;img src="&lt;!--#echo var="IMG_Apache" --&gt;" border="0" align="bottom" <br />
-      alt="Powered by &lt;!--#echo var="SERVER_SOFTWARE" --&gt;"&gt;&lt;/a&gt; <br />
+    &nbsp;&nbsp;alt="Powered by &lt;!--#echo var="SERVER_SOFTWARE" --&gt;"&gt;&lt;/a&gt; <br />
   &lt;br /&gt;<br />
 
   &lt;small&gt;&lt;!--#set var="var" value="Powered by $SERVER_SOFTWARE -- <br />

@@ -70,7 +70,7 @@
     placing "<code>%</code>" directives in the format string, which are
     replaced in the log file by the values as follows:</p>
 
-    <table class="bordered"><tr class="header"><th>Format String</th>
+    <table class="bordered"><tr class="header"><th>Format&nbsp;String</th>
         <th>Description</th></tr>
 <tr><td><code>%%</code></td>
         <td>The percent sign (<em>Apache 2.0.44 and later</em>)</td></tr>

@@ -1094,12 +1094,12 @@ ETag verwendet werden</td></tr>
     hebt die ererbte Einstellung sofort und vollständig auf.</p>
 
     <p>Wenn die Konfiguration für ein Verzeichnis
-    <code>FileETag INode MTime Size</code> enthält
-    und die eines Unterverzeichnisses <code>FileETag -INode</code>,
+    <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code> enthält
+    und die eines Unterverzeichnisses <code>FileETag&nbsp;-INode</code>,
     dann ist die Einstellung für das Unterverzeichnis (die an
     jedes Unter-Unterverzeichnis weitervererbt wird, welches dies nicht
     überschreibt) äquivalent mit
-    <code>FileETag MTime Size</code>.</p>
+    <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -45,25 +45,25 @@
 
     <div class="example"><p><code>
       /**<br />
-  * return the final element of the pathname<br />
-  * @param pathname The path to get the final element of<br />
-  * @return the final element of the path<br />
-  * @tip Examples:<br />
-  * &lt;pre&gt;<br />
-  *                 "/foo/bar/gum"   -&amp;gt; "gum"<br />
-  *                 "/foo/bar/gum/"  -&amp;gt; ""<br />
-  *                 "gum"            -&amp;gt; "gum"<br />
-  *                 "wi\\n32\\stuff" -&amp;gt; "stuff"<br />
-  * &lt;/pre&gt;<br />
-  * @deffunc const char * ap_filename_of_pathname(const char *pathname)<br />
-  */
+ &nbsp;* return the final element of the pathname<br />
+ &nbsp;* @param pathname The path to get the final element of<br />
+ &nbsp;* @return the final element of the path<br />
+ &nbsp;* @tip Examples:<br />
+ &nbsp;* &lt;pre&gt;<br />
+ &nbsp;*                 "/foo/bar/gum"   -&amp;gt; "gum"<br />
+ &nbsp;*                 "/foo/bar/gum/"  -&amp;gt; ""<br />
+ &nbsp;*                 "gum"            -&amp;gt; "gum"<br />
+ &nbsp;*                 "wi\\n32\\stuff" -&amp;gt; "stuff"<br />
+ &nbsp;* &lt;/pre&gt;<br />
+ &nbsp;* @deffunc const char * ap_filename_of_pathname(const char *pathname)<br />
+ &nbsp;*/
     </code></p></div>
 
     <p>At the top of the header file, always include:</p>
     <div class="example"><p><code>
       /**<br />
-  * @package Name of library header<br />
-  */
+ &nbsp;* @package Name of library header<br />
+ &nbsp;*/
     </code></p></div>
 
     <p>Doxygen uses a new HTML file for each package. The HTML files are named

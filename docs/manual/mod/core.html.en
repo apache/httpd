@@ -1028,11 +1028,11 @@ HTTP response header</td></tr>
     immediately and completely cancels the inherited setting.</p>
 
     <p>If a directory's configuration includes
-    <code>FileETag INode MTime Size</code>, and a
-    subdirectory's includes <code>FileETag -INode</code>,
+    <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>, and a
+    subdirectory's includes <code>FileETag&nbsp;-INode</code>,
     the setting for that subdirectory (which will be inherited by
     any sub-subdirectories that don't override it) will be equivalent to
-    <code>FileETag MTime Size</code>.</p>
+    <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
