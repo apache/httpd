@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/16 00:38:47 $]
+  Last modified at [$Date: 1999/03/16 22:40:08 $]
 
 Release:
 
@@ -47,6 +47,9 @@ Documentation that needs writing:
       TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
+    * Keith Wannamaker's NT multiple services patch
+	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
+	Status: Bill +1 (on concept)
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
