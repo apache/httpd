@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/08 17:49:05 $]
+Last modified at [$Date: 2002/03/08 21:34:20 $]
 
 Release:
 
@@ -62,6 +62,12 @@ FINAL RELEASE SHOWSTOPPERS:
         Jim asks: would a stopgap be something bogus like adding another
         flag to request_rec ala eos_sent and before we OK, if not set
         force 500?
+        Jeff says: reviewing the original message and the one
+        follow-up (also from OtherBill) it looks like OtherBill had a
+        good handle on the problem, though I wonder why not just put a
+        simple check in default_handler to see if dir/file_walk has
+        been done (a footprint left by dir/file_walk doesn't have to
+        be in request_rec; a better place is core_request_config)
 
     * We need to find out the right place to add the AddOutputFilterByType
       directive.  mod_mime?  No.  core with fixups?  That's what it is now.
