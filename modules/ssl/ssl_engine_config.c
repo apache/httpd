@@ -591,7 +591,7 @@ static const char *ssl_cmd_check_aidx_max(cmd_parms *parms,
                                           int idx)
 {
     SSLSrvConfigRec *sc = mySrvConfig(parms->server);
-    const char *err, *desc, **files;
+    const char *err, *desc=NULL, **files=NULL;
     int i;
 
     if ((err = ssl_cmd_check_file(parms, &arg))) {
@@ -837,7 +837,6 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
     SSLModConfigRec *mc = myModConfig(cmd->server);
     const char *err, *colon;
     char *cp, *cp2;
-    int maxsize;
     int arglen = strlen(arg);
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
@@ -857,7 +856,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
         mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+4);
         if (!mc->szSessionCacheDataFile) {
             return apr_psprintf(cmd->pool,
-                                "SSLSessionCache: Invalid cache file path ",
+                                "SSLSessionCache: Invalid cache file path %s",
                                 arg+4);
         }
     }
@@ -871,7 +870,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
             ap_server_root_relative(mc->pPool, colon+1);
         if (!mc->szSessionCacheDataFile) {
             return apr_psprintf(cmd->pool,
-                                "SSLSessionCache: Invalid cache file path ",
+                                "SSLSessionCache: Invalid cache file path %s",
                                 colon+1);
         }
         mc->tSessionCacheDataTable = NULL;
@@ -898,7 +897,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
                 return apr_psprintf(cmd->pool,
                                     "SSLSessionCache: Invalid argument: "
                                     "size has to be < %d bytes on this "
-                                    "platform", maxsize);
+                                    "platform", APR_SHM_MAXSIZE);
             }
         }
     }
@@ -913,7 +912,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
             ap_server_root_relative(mc->pPool, colon+1);
         if (!mc->szSessionCacheDataFile) {
             return apr_psprintf(cmd->pool,
-                                "SSLSessionCache: Invalid cache file path ",
+                                "SSLSessionCache: Invalid cache file path %s",
                                 colon+1);
         }
         mc->tSessionCacheDataTable = NULL;
@@ -941,7 +940,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd, void *ctx,
                 return apr_psprintf(cmd->pool,
                                     "SSLSessionCache: Invalid argument: "
                                     "size has to be < %d bytes on this "
-                                    "platform", maxsize);
+                                    "platform", APR_SHM_MAXSIZE);
 
             }
         }
