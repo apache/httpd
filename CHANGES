@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Ensure LDAP version is set to v3 on every bind. PR 14235.
+     [Sergey A. Lipnevich <sergeyli@pisem.net>]
+
   *) Fix mod_ldap to open an existing shared memory file should one
      already exist. PR 12757. [Scooter Morris <scooter@gene.com>,
      Graham Leggett]
