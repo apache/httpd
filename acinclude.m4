@@ -12,8 +12,8 @@ AC_DEFUN(APACHE_MODULE,[
     MOD_SUBDIRS="$MOD_SUBDIRS $1"
     if test "$2" != "shared" -a "$2" != "yes"; then
       libname=$(basename $1)
-      _extlib="lib${libname}.a"
-      MOD_LTLIBS="$MOD_LTLIBS modules/$1/lib${libname}.la"
+      _extlib="libapachemod_${libname}.a"
+      MOD_LTLIBS="$MOD_LTLIBS modules/$1/libapachemod_${libname}.la"
       MOD_LIBS="$MOD_LIBS $1/$_extlib"
       MOD_STATIC="$MOD_STATIC $1"
     else
