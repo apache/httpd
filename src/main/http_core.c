@@ -1149,6 +1149,15 @@ static const char *end_nested_section(cmd_parms *cmd, void *dummy)
     return cmd->end_token;
 }
 
+/*
+ * Report a missing-'>' syntax error.
+ */
+static char *unclosed_directive(cmd_parms *cmd)
+{
+    return ap_pstrcat(cmd->pool, cmd->cmd->name,
+		      "> directive missing closing '>'", NULL);
+}
+
 static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *errmsg;
@@ -1167,9 +1176,11 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
         return err;
     }
 
-    if (endp) {
-        *endp = '\0';
+    if (endp == NULL) {
+	return unclosed_directive(cmd);
     }
+
+    *endp = '\0';
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
 #ifdef OS2
@@ -1238,9 +1249,11 @@ static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
         return err;
     }
 
-    if (endp) {
-        *endp = '\0';
+    if (endp == NULL) {
+	return unclosed_directive(cmd);
     }
+
+    *endp = '\0';
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
@@ -1304,9 +1317,11 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
         return err;
     }
 
-    if (endp) {
-        *endp = '\0';
+    if (endp == NULL) {
+	return unclosed_directive(cmd);
     }
+
+    *endp = '\0';
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     /* Only if not an .htaccess file */
@@ -1376,9 +1391,12 @@ static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
     module *found;
     int nest = 1;
 
-    if (endp) {
-        *endp = '\0';
+    if (endp == NULL) {
+	return unclosed_directive(cmd);
     }
+
+    *endp = '\0';
+
     if (not) {
         arg++;
     }
@@ -1433,9 +1451,12 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
     int nest = 1;
 
     endp = strrchr(arg, '>');
-    if (endp) {
-	*endp = '\0';
+    if (endp == NULL) {
+	return unclosed_directive(cmd);
     }
+
+    *endp = '\0';
+
     if (arg[0] == '!') {
         not = 1;
 	arg++;
@@ -1477,9 +1498,11 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    if (endp) {
-        *endp = '\0';
+    if (endp == NULL) {
+	return unclosed_directive(cmd);
     }
+
+    *endp = '\0';
     
     /* FIXME: There's another feature waiting to happen here -- since you
 	can now put multiple addresses/names on a single <VirtualHost>
