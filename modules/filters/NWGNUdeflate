@@ -39,7 +39,6 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
-			-prefix pre_nw.h \
 			$(EOLIST)
 
 #
@@ -181,14 +180,19 @@ FILES_nlm_objs = \
 	$(OBJDIR)/crc32.o \
 	$(OBJDIR)/deflate.o \
 	$(OBJDIR)/inflate.o \
-	$(OBJDIR)/infblock.o \
-	$(OBJDIR)/infcodes.o \
 	$(OBJDIR)/inffast.o \
 	$(OBJDIR)/inftrees.o \
-	$(OBJDIR)/infutil.o \
 	$(OBJDIR)/trees.o \
 	$(OBJDIR)/zutil.o \
 	$(EOLIST)
+
+ifeq "$(wildcard $(ZLIBSDK)/infblock.c)" "$(ZLIBSDK)/infblock.c"
+FILES_nlm_objs += \
+	$(OBJDIR)/infblock.o \
+	$(OBJDIR)/infcodes.o \
+	$(OBJDIR)/infutil.o \
+	$(EOLIST)
+endif
 
 #
 # These are the LIB files needed to create the NLM target above.
@@ -264,11 +268,7 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
-ifneq "$(ZLIBSDK)" ""
-$(OBJDIR)/%.o: $(ZLIBSDK)/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
-	@echo Compiling $<
-	$(CC) $(ZLIBSDK)\$(<F) -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
-endif
+vpath %.c $(ZLIBSDK)
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
