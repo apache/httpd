@@ -712,7 +712,7 @@ int imap_handler(request_rec *r)
 
     vertex = 0;
     while ( vertex < MAXVERTS &&  
-     sscanf(string_pos, "%lf, %lf",
+     sscanf(string_pos, "%lf%*[, ]%lf",
      &pointarray[vertex][X], &pointarray[vertex][Y])   == 2)
     {
 	/* Now skip what we just read... we can't use ANSIism %n */

@@ -1,4 +1,8 @@
 Changes with Apache 1.3
+
+  *) Support the image map format of FrontPage.  For example:
+	rect /url.hrm 10 20 30 40
+     ["Chris O'Byrne" <obyrne@iol.ie>] PR#807
   
   *) PORT: -lresolv and -lsocks were in the wrong order for Solaris.
      ["Darren O'Shaughnessy" <darren@aaii.oz.au>] PR#846
