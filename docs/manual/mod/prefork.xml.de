@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.16 (outdated: 1.17) -->
+<!-- English Revision: 1.17 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -142,10 +142,11 @@
     <p>Eine Feineinstellung dieses Parameters sollte nur bei sehr
     besch&auml;ftigten Angeboten notwendig sein. Es ist nahezu immer eine
     schlechte Idee, den Parameter auf einen hohen Wert zu setzen. Wenn Sie
-    versuchen, den Wert niedriger als <directive
+    versuchen, den Wert kleiner oder gleich <directive
     module="prefork">MinSpareServers</directive> zu setzen, wird der Apache
     ihn automatisch auf <directive
-    module="prefork">MinSpareServers</directive> + 1 korrigieren.</p>
+      module="prefork">MinSpareServers</directive> <code>+ 1</code>
+    korrigieren.</p>
 </usage>
 <seealso><directive module="prefork">MinSpareServers</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>

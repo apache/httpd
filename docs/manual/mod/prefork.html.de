@@ -25,9 +25,6 @@
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Implementiert einen im Voraus forkenden Webserver ohne
   Thread-Unterstützung</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
@@ -143,8 +140,9 @@
     <p>Eine Feineinstellung dieses Parameters sollte nur bei sehr
     beschäftigten Angeboten notwendig sein. Es ist nahezu immer eine
     schlechte Idee, den Parameter auf einen hohen Wert zu setzen. Wenn Sie
-    versuchen, den Wert niedriger als <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> zu setzen, wird der Apache
-    ihn automatisch auf <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> + 1 korrigieren.</p>
+    versuchen, den Wert kleiner oder gleich <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> zu setzen, wird der Apache
+    ihn automatisch auf <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> <code>+ 1</code>
+    korrigieren.</p>
 
 <h3>Siehe auch</h3>
 <ul>
