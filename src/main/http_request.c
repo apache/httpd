@@ -364,8 +364,10 @@ int directory_walk(request_rec *r)
      * We will use test_dirname as scratch space while we build directory
      * names during the walk.  Profiling shows directory_walk to be a busy
      * function so we try to avoid allocating lots of extra memory here.
+     * We need 2 extra bytes, one for trailing \0 and one because
+     * make_dirstr_prefix will add potentially one extra /.
      */
-    test_dirname = palloc(r->pool, test_filename_len + 1);
+    test_dirname = palloc(r->pool, test_filename_len + 2);
 
     /* j keeps track of which section we're on, see core_reorder_directories */
     j = 0;
