@@ -1,5 +1,9 @@
 Changes with Apache 2.0.49
 
+  *) Set the scoreboard state to indicate logging prior to running 
+     logging hooks so that server-status will show 'L' for hung loggers
+     instead of 'W'.  [Jeff Trawick]
+
 Changes with Apache 2.0.48
   
   *) SECURITY [CAN-2003-0789]: mod_cgid: Resolve some mishandling of

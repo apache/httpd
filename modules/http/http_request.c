@@ -86,6 +86,7 @@
 #include "util_charset.h"
 
 #include "mod_core.h"
+#include "scoreboard.h"
 
 #if APR_HAVE_STDARG_H
 #include <stdarg.h>
@@ -309,6 +310,7 @@ void ap_process_request(request_rec *r)
      * it's the application that's stalled.
      */
     check_pipeline_flush(r);
+    ap_update_child_status(r->connection->sbh, SERVER_BUSY_LOG, r);
     ap_run_log_transaction(r);
 }
 
