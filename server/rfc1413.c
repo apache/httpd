@@ -119,7 +119,7 @@ static int get_rfc1413(apr_socket_t *sock, apr_pool_t *p,
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
     int buflen;
-    apr_sockaddr_t *destsa;
+    apr_sockaddr_t *localsa, *destsa;
 
     /*
      * Bind the local and remote ends of the query socket to the same
@@ -130,10 +130,16 @@ static int get_rfc1413(apr_socket_t *sock, apr_pool_t *p,
      * addresses from the query socket.
      */
 
-    apr_set_port(sock, APR_LOCAL, ANY_PORT);
-    apr_set_ipaddr(sock, APR_LOCAL, local_ip);
+    if ((status = apr_getaddrinfo(&localsa, local_ip, APR_INET, 0, 0, p)) 
+        != APR_SUCCESS) {
+        /* This should not fail since we have a numeric address string
+         * as the host. */
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
+                     "rfc1413: apr_getaddrinfo() failed");
+        return -1;
+    }
 
-    if ((status = apr_bind(sock)) != APR_SUCCESS) {
+    if ((status = apr_bind(sock, localsa)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		    "bind: rfc1413: Error binding to local port");
 	return -1;
@@ -235,7 +241,8 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 
     result = FROM_UNKNOWN;
 
-    if ((status = apr_create_tcp_socket(&sock, conn->pool)) != APR_SUCCESS) {
+    if ((status = apr_create_socket(&sock, APR_INET, SOCK_STREAM, 
+                                    conn->pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		    "socket: rfc1413: error creating socket");
 	conn->remote_logname = result;
