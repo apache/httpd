@@ -1260,7 +1260,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
 
                     APR_BRIGADE_INSERT_TAIL(b, flush);
                     rv = ap_pass_brigade(f->next, b);
-                    if (rv != APR_SUCCESS) {
+                    if (rv != APR_SUCCESS || f->c->aborted) {
                         apr_brigade_destroy(split);
                         return rv;
                     }
