@@ -233,12 +233,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\aaa"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\aaa"
@@ -246,12 +246,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\aaa"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\aaa"
@@ -261,13 +261,13 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "libaprutil - Win32 Release" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
  
    cd "..\..\modules\aaa"
 
 "libaprutil - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Release" RECURSE=1 
    cd "..\..\modules\aaa"
@@ -275,12 +275,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "libaprutil - Win32 Debug" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
    cd "..\..\modules\aaa"
 
 "libaprutil - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr-util"
+   cd "..\..\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Debug" RECURSE=1 
    cd "..\..\modules\aaa"
@@ -290,12 +290,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_auth_dbm - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\aaa"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
  CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\aaa"
@@ -303,12 +303,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_auth_dbm - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\aaa"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\aaa"
@@ -353,8 +353,6 @@ DEP_CPP_MOD_A=\
 	"..\..\srclib\apr\include\apr_time.h"\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_A=\
 	"..\..\include\ap_config_auto.h"\

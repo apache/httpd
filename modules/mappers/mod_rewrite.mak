@@ -227,12 +227,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_rewrite - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\mappers"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\mappers"
@@ -240,12 +240,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_rewrite - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\mappers"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0\srclib\apr"
+   cd "..\..\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\mappers"
@@ -255,12 +255,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_rewrite - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\mappers"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
  CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\mappers"
@@ -268,12 +268,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_rewrite - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\mappers"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "\clean\httpd-2.0"
+   cd "..\.."
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\mappers"
@@ -321,8 +321,6 @@ DEP_CPP_MOD_R=\
 	"..\..\srclib\apr\include\apr_user.h"\
 	"..\..\srclib\apr\include\apr_want.h"\
 	".\mod_rewrite.h"\
-	{$(INCLUDE)}"arpa\inet.h"\
-	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_R=\
 	"..\..\include\ap_config_auto.h"\
