@@ -116,13 +116,6 @@ typedef int mode_t;
 typedef char * caddr_t;
 
 #define HAVE_MEMMOVE
-#define HAVE_STRCASECMP
-#define HAVE_STRNCASECMP
-#define HAVE_STRDUP
-#define HAVE_STRSTR
-
-#define strcasecmp(s1, s2) stricmp(s1, s2)
-#define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
 
 #define HAVE_SYS_STAT_H
 #define lstat(x, y) stat(x, y)
