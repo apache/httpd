@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/10 17:34:32 $]
+Last modified at [$Date: 2003/09/11 15:16:17 $]
 
 Release:
 
@@ -64,6 +64,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * Modifies the cache code to be header-location agnostic. Also
+      fixes a number of other cache code bugs related to PR 15852
+      (an RFC 2616 violation).
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/cache_storage.c.diff?r1=1.28&r2=1.29
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/cache_util.c.diff?r1=1.27&r2=1.28
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c.diff?r1=1.74&r2=1.75
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.h.diff?r1=1.39&r2=1.40
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_disk_cache.c.diff?r1=1.46&r2=1.47
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_mem_cache.c.diff?r1=1.93&r2=1.94
+      +1: rederpj
+      
 
     * Correct the code in ap_check_cache_feshness to check max_age, smax_age,
       and expires correctly. This is a RFC 2616 compliance issue.
