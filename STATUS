@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/05/14 15:34:51 $]
+  Last modified at [$Date: 2003/05/22 14:37:28 $]
 
 Release:
 
@@ -47,7 +47,9 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-   * Current vote on 2 PRs for inclusion:
+   * Current vote on 3 PRs for inclusion:
+      Bugz #17877 (passing chunked encoding thru proxy)
+        +1: jim, chuck, minfrin
       Bugz #9181 (Unable to set headers on non-2XX responses)
         +1: Martin, Jim
       Gnats #10246 (Add ProxyConnAllow directive)
