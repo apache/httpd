@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/30 00:52:30 $]
+Last modified at [$Date: 1999/12/02 06:33:05 $]
 
 Release:
 
@@ -51,6 +51,11 @@ RELEASE SHOWSTOPPERS:
         Status: Ben Laurie is working on this.
 
     * Modules.  Which modules do not work yet, can we get a list?
+
+    * We need a thread-safe resolver, at least on Unix.
+        Status: The best known candidate would be something from BIND
+        (v8 or v9?) The only other option would be to mutex all the
+        resolver calls,
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
