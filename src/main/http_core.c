@@ -1892,9 +1892,9 @@ static const char *add_version_component(cmd_parms *cmd, void *mconfig,
  */
 
 static const char *enable_platform_announcement(cmd_parms *cmd, void *mconfig,
-						int bool)
+						int flag)
 {
-    ap_note_platform = bool;
+    ap_note_platform = flag;
     return NULL;
 }
 
