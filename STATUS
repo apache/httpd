@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/19 03:23:22 $]
+Last modified at [$Date: 2002/06/19 17:42:56 $]
 
 Release:
 
@@ -871,6 +871,7 @@ Binaries (2.0.39):
  powerpc-apple-darwin5.5       yes     Aaron Bannert
  Solaris 8.x/sparc             no      Jim Jagielski
  i686-pc-linux-gnu             yes     Aaron Bannert
+ i686-pc-linux-gnu-rh70        yes     Aaron Bannert
  i386-pc-solaris2.8            yes     Aaron Bannert
  powerpc-unknown-linux-gnu     no      Graham Leggett
  NetWare                       no      Brad Nicholes
