@@ -105,9 +105,6 @@ typedef char * caddr_t;
 #define S_ISDIR(m) (((m) & S_IFDIR) == S_IFDIR)
 #endif
 
-#define STDIN_FILENO  0
-#define STDOUT_FILENO 1
-#define STDERR_FILENO 2
 #define JMP_BUF jmp_buf
 #define O_CREAT _O_CREAT
 #define O_RDWR _O_RDWR
