@@ -74,8 +74,7 @@ lmkdir $SR 755
 lmkdir $SR/proxy 750
 lmkdir $SR/logs 755
 lmkdir $SR/build 755
-cp -p bindist/build/libtool $SR/build
-cp -p bindist/build/instdso.sh $SR/build
+lcopy bindist/build $SR/build 750 750
 lcopy bindist/man $SR/man 755 644
 if [ -d bindist/modules ]
 then
@@ -123,9 +122,9 @@ fi
  
 sed -e "s;^#!\@perlbin\@.*;#!$PERL;" -e "s;\@prefix\@;$SR;" \
 	support/apxs.in > $SR/bin/apxs
-PRE=`grep "^prefix = " build/config_vars.mk`
+PRE=`grep "^prefix = " bindist/build/config_vars.mk`
 PRE=`echo $PRE | sed -e "s;prefix = ;;"`
-sed -e "s;$PRE;$SR;" build/config_vars.mk > $SR/build/config_vars.mk
+sed -e "s;$PRE;$SR;" bindist/build/config_vars.mk > $SR/build/config_vars.mk
 sed -e "s;^#!/.*;#!$PERL;" bindist/bin/dbmmanage > $SR/bin/dbmmanage
 sed -e "s%@default_dir@%$SR%" \
         -e "s%^HTTPD=.*$%HTTPD=\"$SR/bin/httpd -d $SR\"%" bindist/bin/apachectl > $SR/bin/apachectl
