@@ -252,6 +252,23 @@
 
 
 <!-- ==================================================================== -->
+<!-- <section><section>                                                   -->
+<!-- process subsection                                                   -->
+<!-- ==================================================================== -->
+<xsl:template match="section/section">
+&lf;
+<xsl:text>.Sh "</xsl:text>
+    <xsl:call-template name="filter.escape">
+        <xsl:with-param name="text"
+            select="normalize-space(translate(title, $lowercase, $uppercase))"/>
+    </xsl:call-template>
+<xsl:text>"</xsl:text>&lf;
+<xsl:apply-templates />
+</xsl:template>
+<!-- /section/section -->
+
+
+<!-- ==================================================================== -->
 <!-- <summary>                                                            -->
 <!-- process summary section                                              -->
 <!-- ==================================================================== -->
