@@ -219,15 +219,6 @@ AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t)
     return APR_SUCCESS;
 }
 
-static const char month_snames[12][4] =
-{
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-};
-static const char day_snames[7][4] =
-{
-    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-};
-
 AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t)
 {
     /* ### This code is a clone of apr_rfc822_date(), except that it
@@ -242,7 +233,7 @@ AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t)
     /* example: "Sat, 08 Jan 2000 18:31:41 GMT" */
     /*           12345678901234567890123456789  */
 
-    s = &day_snames[xt.tm_wday][0];
+    s = &apr_day_snames[xt.tm_wday][0];
     *date_str++ = *s++;
     *date_str++ = *s++;
     *date_str++ = *s++;
@@ -251,7 +242,7 @@ AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t)
     *date_str++ = xt.tm_mday / 10 + '0';
     *date_str++ = xt.tm_mday % 10 + '0';
     *date_str++ = ' ';
-    s = &month_snames[xt.tm_mon][0];
+    s = &apr_month_snames[xt.tm_mon][0];
     *date_str++ = *s++;
     *date_str++ = *s++;
     *date_str++ = *s++;
