@@ -925,11 +925,17 @@ static int cgi_handler(request_rec *r)
 
         location = apr_table_get(r->headers_out, "Location");
 
-        if (location && location[0] == '/' && r->status == 200) {
+        if (location && r->status == 200) {
+            /* For a redirect whether internal or not, discard any
+             * remaining stdout from the script, and log any remaining
+             * stderr output, as normal. */
             discard_script_output(bb);
             apr_brigade_destroy(bb);
             apr_file_pipe_timeout_set(script_err, r->server->timeout);
             log_script_err(r, script_err);
+        }
+
+        if (location && location[0] == '/' && r->status == 200) {
             /* This redirect needs to be a GET no matter what the original
              * method was.
              */
@@ -949,8 +955,6 @@ static int cgi_handler(request_rec *r)
             /* XX Note that if a script wants to produce its own Redirect
              * body, it now has to explicitly *say* "Status: 302"
              */
-            discard_script_output(bb);
-            apr_brigade_destroy(bb);
             return HTTP_MOVED_TEMPORARILY;
         }
 
