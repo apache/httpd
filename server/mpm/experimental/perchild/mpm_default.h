@@ -59,6 +59,9 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
+#define AP_ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
+#define AP_CHILD_THREAD_FROM_ID(i)    (i / HARD_THREAD_LIMIT), (i % HARD_THREAD_LIMIT)
+
 /* Number of threads to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */

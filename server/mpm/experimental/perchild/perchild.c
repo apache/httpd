@@ -116,7 +116,6 @@ static int max_spare_threads = 0;
 static int max_threads = 0;
 static int max_requests_per_child = 0;
 static const char *ap_pid_fname=NULL;
-AP_DECLARE_DATA const char *ap_scoreboard_fname=NULL;
 static int num_daemons=0;
 static int curr_child_num=0;
 static int workers_may_exit = 0;
@@ -159,6 +158,7 @@ struct ap_ctable    ap_child_table[HARD_SERVER_LIMIT];
  * many child processes in this MPM.
  */
 int ap_max_daemons_limit = -1;
+int ap_threads_per_child = HARD_THREAD_LIMIT;
 
 char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -559,6 +559,9 @@ static void *worker_thread(void *arg)
     pthread_mutex_unlock(&thread_pool_parent_mutex);
     apr_pool_create(&ptrans, tpool);
 
+    (void) ap_update_child_status(child_num, thread_num, SERVER_STARTING,
+                                  (request_rec *) NULL);
+
     apr_poll_setup(&pollset, num_listenfds+1, tpool);
     for(n=0 ; n <= num_listenfds ; ++n) {
         apr_poll_socket_add(pollset, listenfds[n], APR_POLLIN);
@@ -581,6 +584,10 @@ static void *worker_thread(void *arg)
         else {
             thread_just_started = 0;
         }
+
+        (void) ap_update_child_status(child_num, thread_num, SERVER_READY,
+                                      (request_rec *) NULL);
+
         pthread_mutex_lock(&thread_accept_mutex);
         if (workers_may_exit) {
             pthread_mutex_unlock(&thread_accept_mutex);
@@ -728,6 +735,8 @@ static void *worker_thread(void *arg)
     }
 
     pthread_mutex_lock(&thread_pool_parent_mutex);
+    ap_update_child_status(child_num, thread_num, SERVER_DEAD,
+                           (request_rec *) NULL);
     apr_pool_destroy(tpool);
     pthread_mutex_unlock(&thread_pool_parent_mutex);
     pthread_mutex_lock(&worker_thread_count_mutex);
@@ -946,6 +955,7 @@ static int make_child(server_rec *s, int slot)
         ap_child_table[slot].status = SERVER_ALIVE;
 	child_main(slot);
     }
+    (void) ap_update_child_status(slot, 0, SERVER_STARTING, (request_rec *) NULL);
 
     if ((pid = fork()) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, s,
@@ -1080,17 +1090,14 @@ static void server_main_loop(int remaining_children_to_start)
             child_slot = -1;
             for (i = 0; i < ap_max_daemons_limit; ++i) {
         	if (ap_child_table[i].pid == pid.pid) {
-                    int j;
-
                     child_slot = i;
-                    for (j = 0; j < HARD_THREAD_LIMIT; j++) {
-                        ap_perchild_force_reset_connection_status(i * HARD_THREAD_LIMIT + j);
-                    }
                     break;
                 }
             }
             if (child_slot >= 0) {
                 ap_child_table[child_slot].pid = 0;
+                ap_update_child_status(child_slot, i, SERVER_DEAD, (request_rec *) NULL);
+
                 
 		if (remaining_children_to_start
 		    && child_slot < num_daemons) {
@@ -1331,7 +1338,6 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-    ap_perchild_set_maintain_connection_status(1);
     curr_child_num = 0;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
@@ -1703,18 +1709,6 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg
     return NULL;
 }
 
-static const char *set_maintain_connection_status(cmd_parms *cmd,
-                                                  void *dummy, int arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_perchild_set_maintain_connection_status(arg != 0);
-    return NULL;
-}
-
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy,
 				    const char *arg) 
 {
@@ -1806,8 +1800,6 @@ AP_INIT_TAKE1("MaxThreadsPerChild", set_max_threads, NULL, RSRC_CONF,
               "Maximum number of threads per child"),
 AP_INIT_TAKE1("MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
               "Maximum number of requests a particular child serves before dying."),
-AP_INIT_FLAG("ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF,
-             "Whether or not to maintain status information on current connections"),
 AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
 AP_INIT_TAKE3("ChildperUserID", set_child_per_uid, NULL, RSRC_CONF,
