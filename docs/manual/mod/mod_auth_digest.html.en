@@ -2,8 +2,8 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_auth_digest- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth_digest</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>User authentication using MD5
-    Digest Authentication.</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>auth_digest_module</td></tr></table></td></tr></table><h2>Summary</h2>
+        --><title>mod_auth_digest- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth_digest</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>User authentication using MD5
+    Digest Authentication.</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>auth_digest_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This module implements HTTP Digest Authentication.  However, it
     has not been extensively tested and is therefore marked
     experimental.</p>
@@ -26,17 +26,16 @@
   &lt;/Location&gt;
 </code></td></tr></table></blockquote>
 
-<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Note</strong></p>
-    <p>MD5 authentication provides a more
-    secure password system than Basic authentication, but only
-    works with supporting browsers. As of this writing (October 2001),
-    the only major browsers which support digest authentication are
-    <a href="http://www.opera.com/">Opera 4.0</a>,
-    <a href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer 5.0</a> and <a href="http://www.w3.org/Amaya/">Amaya</a>.
-    Therefore, we do not yet recommend using this feature on a large
-    Internet site. However, for personal and intra-net use, where
-    browser users can be controlled, it is ideal.</p>
+<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Note</strong></p> 
+    
+    <p>Digest authentication provides a more secure password system
+    than Basic authentication, but only works with supporting
+    browsers. As of July 2002, the major browsers that support digest
+    authentication are <a href="http://www.opera.com/">Opera</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet
+    Explorer</a> (fails when used with a query string), <a href="http://www.w3.org/Amaya/">Amaya</a> and <a href="http://www.mozilla.org">Mozilla</a>.  Since digest
+    authentication is not as widely implemented as basic
+    authentication, you should use it only in controlled settings.</p>
+
 </td></tr></table></blockquote>
 <hr/><h2><a name="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Selects the algorithm used to calculate the challenge and
 response hases in digest authentication</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AuthDigestAlgorithm MD5|MD5-sess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>AuthDigestAlgorithm MD5</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_digest</td></tr></table></td></tr></table>
