@@ -523,8 +523,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     if (nPassPhraseDialog > 0) {
         sc = mySrvConfig(s);
         if (writetty) {
-            apr_file_printf(writetty, "\n");
-            apr_file_printf(writetty, "Ok: Pass Phrase Dialog successful.\n");
+            apr_file_printf(writetty, "\n"
+                            "OK: Pass Phrase Dialog successful.\n");
         }
     }
 
@@ -718,7 +718,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
             apr_file_printf(writetty, "%s mod_ssl/%s (Pass Phrase Dialog)\n",
                             AP_SERVER_BASEVERSION, MOD_SSL_VERSION);
             apr_file_printf(writetty, "Some of your private key files are encrypted for security reasons.\n");
-            apr_file_printf(writetty, "In order to read them you have to provide us with the pass phrases.\n");
+            apr_file_printf(writetty, "In order to read them you have to provide the pass phrases.\n");
         }
         if (*pbPassPhraseDialogOnce) {
             *pbPassPhraseDialogOnce = FALSE;
