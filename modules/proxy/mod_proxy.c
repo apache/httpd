@@ -1,3 +1,4 @@
+#define FIX_15207
 /* Copyright 1999-2004 The Apache Software Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,10 +43,22 @@
 /* -------------------------------------------------------------- */
 /* Translate the URL into a 'filename' */
 
+#ifdef FIX_15207
+#define x2c(x) ((x>='0')&&(x<='9'))?(x-'0'):(((x>='a')&&(x<='f'))?(10+x-'a'):((x>='A')&&(x<='F'))?(10+x-'A'):0)
+static unsigned char hex2c(const char* p) {
+  char c1 = p[1] ;
+  char c2 = p[2] ;
+  int i1 =  x2c(c1) ;
+  int i2 =  x2c(c2) ;
+  unsigned char ret = (i1<<4) | i2 ;
+  return ret ;
+}
+#endif
 static int alias_match(const char *uri, const char *alias_fakename)
 {
     const char *end_fakename = alias_fakename + strlen(alias_fakename);
     const char *aliasp = alias_fakename, *urip = uri;
+    unsigned char uric, aliasc ;
 
     while (aliasp < end_fakename) {
         if (*aliasp == '/') {
@@ -61,9 +74,28 @@ static int alias_match(const char *uri, const char *alias_fakename)
                 ++urip;
         }
         else {
+#ifndef FIX_15207
             /* Other characters are compared literally */
             if (*urip++ != *aliasp++)
                 return 0;
+#else
+            /* Other characters are canonicalised and compared literally */
+            if ( *urip == '%' ) {
+                uric = hex2c(urip) ;
+                urip += 3 ;
+            } else {
+                uric = (unsigned char)*urip++ ;
+            }
+            if ( *aliasp == '%' ) {
+                aliasc = hex2c(aliasp) ;
+                aliasp += 3 ;
+            } else {
+                aliasc = (unsigned char)*aliasp++ ;
+            }
+	    if ( uric != aliasc ) {
+                return 0;
+            }
+#endif
         }
     }
 
@@ -94,9 +126,12 @@ static int alias_match(const char *uri, const char *alias_fakename)
 static int proxy_detect(request_rec *r)
 {
     void *sconf = r->server->module_config;
-    proxy_server_conf *conf;
-
-    conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+    proxy_server_conf *conf =
+	(proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+#ifdef FIX_15207
+    int i, len;
+    struct proxy_alias *ent = (struct proxy_alias *)conf->aliases->elts;
+#endif
 
     /* Ick... msvc (perhaps others) promotes ternary short results to int */
 
@@ -121,6 +156,21 @@ static int proxy_detect(request_rec *r)
         r->uri = r->unparsed_uri;
         r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
         r->handler = "proxy-server";
+#ifdef FIX_15207
+    } else {
+        /* test for a ProxyPass */
+        for (i = 0; i < conf->aliases->nelts; i++) {
+            len = alias_match(r->unparsed_uri, ent[i].fake);
+            if (len > 0) {
+                r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
+                                         r->unparsed_uri + len, NULL);
+                r->handler = "proxy-server";
+                r->proxyreq = PROXYREQ_REVERSE;
+                r->uri = r->unparsed_uri;
+                break;
+            }
+        }
+#endif
     }
     return DECLINED;
 }
@@ -139,7 +189,7 @@ static int proxy_trans(request_rec *r)
          */
         return OK;
     }
-
+#ifndef FIX_15207
     /* XXX: since r->uri has been manipulated already we're not really
      * compliant with RFC1945 at this point.  But this probably isn't
      * an issue because this is a hybrid proxy/origin server.
@@ -160,6 +210,7 @@ static int proxy_trans(request_rec *r)
            return OK;
        }
     }
+#endif
     return DECLINED;
 }
 
@@ -221,7 +272,7 @@ static int proxy_map_location(request_rec *r)
 
     return OK;
 }
-
+#ifndef FIX_15207
 /* -------------------------------------------------------------- */
 /* Fixup the filename */
 
@@ -235,6 +286,15 @@ static int proxy_fixup(request_rec *r)
 
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
+
+#ifdef FIX_15207
+/* We definitely shouldn't canonicalize a proxy_pass.
+ * But should we really canonicalize a STD_PROXY??? -- Fahree
+ */
+    if (r->proxyreq == PROXYREQ_REVERSE) {
+        return OK;
+    }
+#endif
 
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
     url = &r->filename[6];
@@ -250,7 +310,7 @@ static int proxy_fixup(request_rec *r)
 
     return OK;		/* otherwise; we've done the best we can */
 }
-
+#endif
 /* Send a redirection if the request contains a hostname which is not */
 /* fully qualified, i.e. doesn't have a domain name appended. Some proxy */
 /* servers like Netscape's allow this and access hosts from the local */
@@ -439,6 +499,10 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->proxies = apr_array_make(p, 10, sizeof(struct proxy_remote));
     ps->aliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
     ps->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    ps->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    ps->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    ps->cookie_path_str = apr_strmatch_precompile(p, "path=", 0) ;
+    ps->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0) ;
     ps->noproxies = apr_array_make(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = apr_array_make(p, 10, sizeof(struct dirconn_entry));
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
@@ -474,6 +538,12 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->sec_proxy = apr_array_append(p, base->sec_proxy, overrides->sec_proxy);
     ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
     ps->raliases = apr_array_append(p, base->raliases, overrides->raliases);
+    ps->cookie_paths
+        = apr_array_append(p, base->cookie_paths, overrides->cookie_paths);
+    ps->cookie_domains
+        = apr_array_append(p, base->cookie_domains, overrides->cookie_domains) ;
+    ps->cookie_path_str = base->cookie_path_str;
+    ps->cookie_domain_str = base->cookie_domain_str;
     ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
     ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
     ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
@@ -638,6 +708,34 @@ static const char *
     }
 
     return NULL;
+}
+static const char*
+    cookie_path(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+{
+    server_rec *s = cmd->server;
+    proxy_server_conf *conf;
+    struct proxy_alias *new;
+
+    conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
+                                                     &proxy_module);
+    new = apr_array_push(conf->cookie_paths) ;
+    new->fake = f;
+    new->real = r;
+    return NULL ;
+}
+static const char*
+    cookie_domain(cmd_parms *cmd, void *dummy, const char *f, const char *r)
+{
+    server_rec *s = cmd->server;
+    proxy_server_conf *conf;
+    struct proxy_alias *new;
+
+    conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
+                                                     &proxy_module);
+    new = apr_array_push(conf->cookie_domains) ;
+    new->fake = f;
+    new->real = r;
+    return NULL ;
 }
 
 static const char *
@@ -1005,6 +1103,10 @@ static const command_rec proxy_cmds[] =
      "a virtual path and a URL"),
     AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL for reverse proxy behaviour"),
+    AP_INIT_TAKE2("ProxyPassReverseCookiePath", cookie_path, NULL,
+       RSRC_CONF|ACCESS_CONF, "Path rewrite rule for proxying cookies") ,
+    AP_INIT_TAKE2("ProxyPassReverseCookieDomain", cookie_domain, NULL,
+       RSRC_CONF|ACCESS_CONF, "Domain rewrite rule for proxying cookies") ,
     AP_INIT_ITERATE("ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF,
      "A list of names, hosts or domains to which the proxy will not connect"),
     AP_INIT_TAKE1("ProxyReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF,
@@ -1081,8 +1183,10 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
     /* walk <Proxy > entries and suppress default TRACE behavior */
     ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
+#ifndef FIX_15207
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, aszSucc, APR_HOOK_FIRST);
+#endif
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
     /* post config handling */
