@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/02/16 17:31:24 $]
+  Last modified at [$Date: 2001/02/16 19:50:41 $]
 
 Release:
 
@@ -48,9 +48,9 @@ RELEASE SHOWSTOPPERS:
       seen at <Pine.LNX.4.31.0102081643540.160-200000@heat.dci>.
       The last is a rewrite of ap_unparse_uri_components(), which
       is <Pine.LNX.4.21.0102102350060.6815-200000@desktop>.
-      Status:  Fix#1: Jim +1
-               Fix#2:
-               Fix#3:
+      Status:  Fix#1 (ap_default_port_for_scheme): Jim +1
+               Fix#2 (util_uri.c/util_uri.h): 
+               Fix#3 (ap_unparse_uri_components):
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
