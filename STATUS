@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/01 16:29:56 $]
+Last modified at [$Date: 2003/11/01 18:14:44 $]
 
 Release:
 
@@ -233,10 +233,13 @@ PATCHES TO BACKPORT FROM 2.1
       +1: nd, brianp
       jwoolley suggests: Hang onto it for 2.2 series.
       brianp asks: Do we have an alternate fix to eliminate 2.0's segfaults?
-      nd adds: perhaps I'll find some time over the weekend to add more
-               wrapper code to the patch, which fills in the fields in question
-               with some valid "fake" values. Though I don't think that it's
-               really necessary -- how does this sound?
+      nd adds: I've found some time over the weekend to create the following
+               patch: <http://cvs.apache.org/~nd/ssi-redesign20.patch>.
+               It creates for backwards compat an ssi_tag_brigade on the fly
+               before executing the tag's handler function and fills that way
+               *_start_bucket/_index fields and ssi_tag_brigade. So nothing
+               should have been changed outside the module.
+               I'd really like to patch this one into 2.0.
 
     * mod_include's expression tokenizer: don't skip the first character of
       a string, it may be a backslash. (2.0 + 1.3)
