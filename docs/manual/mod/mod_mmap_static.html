@@ -15,15 +15,24 @@
   <H1 ALIGN="CENTER">Module mod_mmap_static</H1>
 
   <P>
-  This module is contained in the <CODE>mod_mmap_static.c</CODE> file, with
-  Apache 1.3 and later. It provides mmap()ing of a statically configured list
-  of frequently requested but not changed files.  It is not compiled into the
-  server by default. To use <CODE>mod_mmap_static</CODE> you have to enable
-  the following line in the server build <CODE>Configuration</CODE> file:
-  <PRE>
-    AddModule  modules/experimental/mod_mmap_static.o
-  </PRE>
-  </P>
+  This module provides mmap()ing of a statically configured list
+  of frequently requested but not changed files.  
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Experimental
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_mmap_static.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> mmap_static_module
+</P>
 
   <H2>Summary</H2>
   <P>
@@ -59,7 +68,7 @@
 
   <HR>
 
-  <H2><A NAME="mmapfile">MMapFile</A></H2>
+  <H2><A NAME="mmapfile">MMapFile</A> directive</H2>
   <P>
   <A
    HREF="directive-dict.html#Syntax"

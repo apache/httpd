@@ -15,9 +15,24 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_negotiation</H1>
 
-This module is contained in the <CODE>mod_negotiation.c</CODE> file,
-and is compiled in by default. It provides for <A
-HREF="../content-negotiation.html">content negotiation</A>.
+<p>This module provides for <A
+HREF="../content-negotiation.html">content negotiation</A>.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_negotiation.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> negotiation_module
+</P>
 
 <H2>Summary</H2>
 Content negotiation, or more accurately content selection, is the
@@ -32,7 +47,20 @@ which explicitly lists the files containing the variants.
 filename pattern match, and choose from amongst the results.
 </UL>
 
-<H3>Type maps</H3>
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#cachenegotiateddocs">CacheNegotiatedDocs</A>
+<LI><A HREF="#languagepriority">LanguagePriority</A>
+</UL>
+
+<STRONG>See also</STRONG>:
+<A HREF="./mod_mime.html#defaultlanguage">DefaultLanguage</A>,
+<A HREF="./mod_mime.html#addencoding">AddEncoding</A>,
+<A HREF="./mod_mime.html#addlanguage">AddLanguage</A>,
+<A HREF="./mod_mime.html#addtype">AddType</A>, and
+<A HREF="core.html#options">Option</A>.
+
+<H2>Type maps</H2>
 A type map has the same format as RFC822 mail headers. It contains document
 descriptions separated by blank lines, with lines beginning with a hash
 character ('#') treated as comments. A document description consists of
@@ -82,7 +110,7 @@ Example:
 <DD>The path to the file containing this variant, relative to the map file.
 </DL>
 
-<H3>MultiViews</H3>
+<H2>MultiViews</H2>
 A MultiViews search is enabled by the MultiViews
 <A HREF="core.html#options">Option</A>.
 If the server receives a request for <CODE>/some/dir/foo</CODE> and
@@ -95,23 +123,10 @@ requirements, and returns that document.<P>
 
 
 
-<H2>Directives</H2>
-<UL>
-<LI><A HREF="#cachenegotiateddocs">CacheNegotiatedDocs</A>
-<LI><A HREF="#languagepriority">LanguagePriority</A>
-</UL>
-
-<STRONG>See also</STRONG>:
-<A HREF="./mod_mime.html#defaultlanguage">DefaultLanguage</A>,
-<A HREF="./mod_mime.html#addencoding">AddEncoding</A>,
-<A HREF="./mod_mime.html#addlanguage">AddLanguage</A>,
-<A HREF="./mod_mime.html#addtype">AddType</A>, and
-<A HREF="core.html#options">Option</A>.
-
 <HR>
 
 
-<H2><A NAME="cachenegotiateddocs">CacheNegotiatedDocs</A></H2>
+<H2><A NAME="cachenegotiateddocs">CacheNegotiatedDocs</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -153,7 +168,7 @@ HTTP/1.1 requests.
 it was turned on by the presence of the directive by itself.
 
 
-<H2><A NAME="languagepriority">LanguagePriority</A></H2>
+<H2><A NAME="languagepriority">LanguagePriority</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt LanguagePriority} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
