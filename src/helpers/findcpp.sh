@@ -19,16 +19,16 @@ Syntax Error
 EOF
 
 #   some braindead systems have a CPP define for a directory :-(
-if [ ".$CPP" != . ]; then
+if [ "x$CPP" != "x" ]; then
     if [ -d "$CPP" ]; then
         CPP=''
     fi
 fi
-if [ ".$CPP" != . ]; then
+if [ "x$CPP" != "x" ]; then
     #   case 1: user provided a default CPP variable (we only check)
     (eval "$CPP conftest.c >/dev/null") 2>conftest.out
     my_error=`grep -v '^ *+' conftest.out`
-    if [ ".$my_error" != . ]; then
+    if [ "x$my_error" != "x" ]; then
         CPP=''
     fi
 else
@@ -37,21 +37,21 @@ else
     CPP="${CC-cc} -E"
     (eval "$CPP conftest.c >/dev/null") 2>conftest.out
     my_error=`grep -v '^ *+' conftest.out`
-    if [ ".$my_error" != . ]; then
+    if [ "x$my_error" != "x" ]; then
         #   2. try the -E option and GCC's -traditional-ccp option
         CPP="${CC-cc} -E -traditional-cpp"
         (eval "$CPP conftest.c >/dev/null") 2>conftest.out
         my_error=`grep -v '^ *+' conftest.out`
-        if [ ".$my_error" != . ]; then
+        if [ "x$my_error" != "x" ]; then
             #   3. try a standalone cpp command in $PATH and lib dirs
             CPP="`./helpers/PrintPath cpp`"
-            if [ ".$CPP" = . ]; then
+            if [ "x$CPP" = "x" ]; then
                 CPP="`./helpers/PrintPath -p/lib:/usr/lib:/usr/local/lib cpp`"
             fi
-            if [ ".$CPP" != . ]; then
+            if [ "x$CPP" != "x" ]; then
                 (eval "$CPP conftest.c >/dev/null") 2>conftest.out
                 my_error=`grep -v '^ *+' conftest.out`
-                if [ ".$my_error" != . ]; then
+                if [ "x$my_error" != "x" ]; then
                     #   ok, we gave up...
                     CPP=''
                 fi
@@ -64,7 +64,7 @@ fi
 rm -f conftest.*
 
 #   Ok, empty CPP variable now means it's not available
-if [ ".$CPP" = . ]; then
+if [ "x$CPP" = "x" ]; then
     CPP='NOT-AVAILABLE'
 fi
 

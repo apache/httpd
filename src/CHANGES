@@ -1,5 +1,14 @@
 Changes with Apache 1.3.5
 
+  *) A consistant and conservative style for all shell scripts has been
+     implemented. Basically, all shell string tests use the traditional
+     hack of 'if [ "x$var" != "x" ]' or 'if [ "x$var" = "xstring" ]'
+     to protect against bare null variable strings (ie: wrapping both
+     sides with double quotes and prepending 'x'). 'x' was chosen
+     because it's more universal and hopefully easier for old shell
+     prgrammers, as well as being easier to search for in 'vi' (/x\$) :)
+     [Jim Jagielski]
+
   *) The status module now prints out both the main server generation as
      well as the generation of each process. Also, the vhost info is
      printed with '?notable'. [Jim Jagielski]

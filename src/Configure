@@ -172,7 +172,7 @@ fi
 ## that the user was using the old default root directory
 ## and issue a notice about it.
 ##
-if [ $file != "Configuration.apaci" ]
+if [ "x$file" != "xConfiguration.apaci" ]
 then
   if [ -d /usr/local/etc/httpd/ ]
   then

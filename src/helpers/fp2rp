@@ -2,7 +2,7 @@
 ##
 ## fp2rp -- convert a standard forward path to a reverse dotted path
 ##
-if [ "x$1" = x. ]; then
+if [ "x$1" = "x." ]; then
     rp="."
 else
     rp=""

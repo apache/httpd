@@ -55,15 +55,15 @@ time_monthname=''
 #   determine username
 #
 username="$LOGNAME"
-if [ ".$username" = . ]; then
+if [ "x$username" = "x" ]; then
     username="$USER"
-    if [ ".$username" = . ]; then
+    if [ "x$username" = "x" ]; then
         username="`whoami 2>/dev/null |\
                    awk '{ printf("%s", $1); }'`"
-        if [ ".$username" = . ]; then
+        if [ "x$username" = "x" ]; then
             username="`who am i 2>/dev/null |\
                        awk '{ printf("%s", $1); }'`"
-            if [ ".$username" = . ]; then
+            if [ "x$username" = "x" ]; then
                 username='unknown'
             fi
         fi
@@ -75,10 +75,10 @@ fi
 #
 hostname="`uname -n 2>/dev/null |\
            awk '{ printf("%s", $1); }'`"
-if [ ".$hostname" = . ]; then
+if [ "x$hostname" = "x" ]; then
     hostname="`hostname 2>/dev/null |\
                awk '{ printf("%s", $1); }'`"
-    if [ ".$hostname" = . ]; then
+    if [ "x$hostname" = "x" ]; then
         hostname='unknown'
     fi
 fi
@@ -88,14 +88,14 @@ case $hostname in
         hostname="`echo $hostname | cut -d. -f1`"
         ;;
 esac
-if [ ".$domainname" = . ]; then
+if [ "x$domainname" = "x" ]; then
     if [ -f /etc/resolv.conf ]; then
         domainname="`egrep '^[ 	]*domain' /etc/resolv.conf | head -1 |\
                      sed -e 's/.*domain//' \
                          -e 's/^[ 	]*//' -e 's/^ *//' -e 's/^	*//' \
                          -e 's/^\.//' -e 's/^/./' |\
                      awk '{ printf("%s", $1); }'`"
-        if [ ".$domainname" = . ]; then
+        if [ "x$domainname" = "x" ]; then
             domainname="`egrep '^[ 	]*search' /etc/resolv.conf | head -1 |\
                          sed -e 's/.*search//' \
                              -e 's/^[ 	]*//' -e 's/^ *//' -e 's/^	*//' \
@@ -112,7 +112,7 @@ fi
 time_day="`date '+%d' | awk '{ printf("%s", $1); }'`"
 time_month="`date '+%m' | awk '{ printf("%s", $1); }'`"
 time_year="`date '+%Y' 2>/dev/null | awk '{ printf("%s", $1); }'`"
-if test ".$time_year" = .; then
+if [ "x$time_year" = "x" ]; then
     time_year="`date '+%y' | awk '{ printf("%s", $1); }'`"
     case $time_year in
         9[0-9]*) time_year="19$time_year" ;;
@@ -137,7 +137,7 @@ esac
 #
 #   create result string
 #
-if [ ".$newline" = .yes ]; then
+if [ "x$newline" = "xyes" ]; then
     echo $format_string |\
     sed -e "s;%u;$username;g" \
         -e "s;%h;$hostname;g" \

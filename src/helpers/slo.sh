@@ -47,7 +47,7 @@ IFS="$OIFS"
 #   set linker default directories
 #
 DIRS_DEFAULT='/lib:/usr/lib'
-if [ ".$LD_LIBRARY_PATH" != . ]; then
+if [ "x$LD_LIBRARY_PATH" != "x" ]; then
     DIRS_DEFAULT="$DIRS_DEFAULT:$LD_LIBRARY_PATH"
 fi
 
@@ -64,7 +64,7 @@ LIBS_DSO=''
 #    for each library...
 OIFS="$IFS" IFS=':'
 for lib in $LIBS; do
-    [ ".$lib" = . ] && continue
+    [ "x$lib" = "x" ] && continue
 
     found='no'
     found_indefdir='no'
@@ -74,14 +74,14 @@ for lib in $LIBS; do
     #    for each directory...
     OIFS2="$IFS" IFS=":$DIFS"
     for dir in ${DIRS} switch-to-defdirs ${DIRS_DEFAULT}; do
-        [ ".$dir" = . ] && continue
-        [ ".$dir" = .switch-to-defdirs ] && found_indefdir=yes
+        [ "x$dir" = "x" ] && continue
+        [ "x$dir" = "xswitch-to-defdirs" ] && found_indefdir=yes
         [ ! -d $dir ] && continue
 
         #    search the file
         OIFS3="$IFS" IFS="$DIFS"
         for file in '' `cd $dir && ls lib${lib}.* 2>/dev/null`; do
-             [ ".$file" = . ] && continue
+             [ "x$file" = "x" ] && continue
              case $file in
                  *.so|*.so.[0-9]*|*.sl|*.sl.[0-9]* )
                       found=yes;
@@ -93,7 +93,7 @@ for lib in $LIBS; do
                       found_type=PIC 
                       ;;
                  *.a )
-                      if [ ".$found_type" = . ]; then
+                      if [ "x$found_type" = "x" ]; then
                           found=yes
                           found_type=OBJ 
                       fi
@@ -101,15 +101,15 @@ for lib in $LIBS; do
              esac
         done
         IFS="$OIFS3"
-        if [ ".$found" = .yes ]; then
+        if [ "x$found" = "xyes" ]; then
             found_dir="$dir"
             break
         fi
     done
     IFS="$OIFS2"
 
-    if [ ".$found" = .yes ]; then
-        if [ ".$found_indefdir" != .yes ]; then
+    if [ "x$found" = "xyes" ]; then
+        if [ "x$found_indefdir" != "xyes" ]; then
             eval "dirlist=\"\${DIRS_${found_type}}:\""
             if [ ".`echo \"$dirlist\" | fgrep :$found_dir:`" = . ]; then
                 eval "DIRS_${found_type}=\"\$DIRS_${found_type}:${found_dir}\""
@@ -148,7 +148,7 @@ for type in OBJ PIC DSO; do
     eval "libs=\"\$LIBS_${type}\""
     opts=''
     for lib in $libs; do
-        [ ".$lib" = . ] && continue
+        [ "x$lib" = "x" ] && continue
         opts="$opts -l$lib"
     done
     eval "LIBS_${type}=\"$opts\""
@@ -156,7 +156,7 @@ for type in OBJ PIC DSO; do
     eval "dirs=\"\$DIRS_${type}\""
     opts=''
     for dir in $dirs; do
-        [ ".$dir" = . ] && continue
+        [ "x$dir" = "x" ] && continue
         opts="$opts -L$dir"
     done
     eval "DIRS_${type}=\"$opts\""
