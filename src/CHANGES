@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) Add a comment to mod_example.c showing the format of a FLAG command
+     handler.  [Ken Coar]
+
   *) Standardized the time format in mod_status to match that of other 
      places in the code (e.g. DATE_GMT).  PR#1551
 
