@@ -16,8 +16,8 @@
 
      <p>For further information about the concepts and and the security model
      of suexec please refer to the suexec documentation (<a
-     href="http://httpd.apache.org/docs-2.1/suexec.html"
-     >http://httpd.apache.org/docs-2.1/suexec.html</a>).</p>
+     href="http://httpd.apache.org/docs-2.0/suexec.html"
+     >http://httpd.apache.org/docs-2.0/suexec.html</a>).</p>
 </summary>
 
 <section id="synopsis"><title>Synopsis</title>

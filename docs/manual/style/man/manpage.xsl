@@ -170,6 +170,7 @@
 <xsl:text>"</xsl:text>&lf;
 
 <!-- reorder the paragraphs a bit -->
+<xsl:apply-templates select="title" />&lf;
 <xsl:apply-templates select="section[@id='synopsis']" />&lf;
 <xsl:apply-templates select="summary" />&lf;
 <xsl:apply-templates select="section[@id!='synopsis']" />&lf;
