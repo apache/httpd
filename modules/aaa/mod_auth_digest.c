@@ -508,7 +508,7 @@ static const char *set_group_file(cmd_parms *cmd, void *config,
 static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
-    const char **tmp;
+    char **tmp;
     int cnt;
 
     if (!strcasecmp(op, "none")) {
@@ -1401,7 +1401,7 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
 static int check_nonce(request_rec *r, digest_header_rec *resp,
 		       const digest_config_rec *conf)
 {
-    double dt;
+    apr_time_t dt;
     int len;
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
