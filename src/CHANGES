@@ -1,5 +1,18 @@
 Changes with Apache 1.3.7
 
+  *) proxy ftp: instead of using the hardwired string "text/plain" as
+     a fallback type for files served by the ftp proxy, use the
+     ap_default_type() function to determine the configured type.
+     This allows for special configurations like
+	<Directory proxy:ftp://some.host>
+	DefaultType gargle/blurb
+	</Directory>
+     Additionally, add the Content-Encoding: header to FTP proxy replies
+     when the encoding is defined (by the AddEncoding directive).
+     Because it was missing, it was almost impossible to browse compressed
+     files using the FTP proxy (works now perfectly in Communicator).
+     [Martin Kraemer]
+
   *) Be more smart in APACI's configure script when determining the UID/GID
      for User/Group directives and use the determined UID/GID to initialize
      the permissions on the proxycachedir.

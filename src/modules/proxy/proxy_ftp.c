@@ -1132,13 +1132,17 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	    Explain1("FTP: Content-Type set to %s", r->content_type);
 	}
 	else {
-	    ap_table_set(resp_hdrs, "Content-Type", "text/plain");
+	    ap_table_set(resp_hdrs, "Content-Type", ap_default_type(r));
 	}
 	if (parms[0] != 'a' && size != NULL) {
 	    /* We "trust" the ftp server to really serve (size) bytes... */
 	    ap_table_set(resp_hdrs, "Content-Length", size);
 	    Explain1("FTP: Content-Length set to %s", size);
 	}
+    }
+    if (r->content_encoding != NULL && r->content_encoding[0] != '\0') {
+	Explain1("FTP: Content-Encoding set to %s", r->content_encoding);
+	ap_table_set(resp_hdrs, "Content-Encoding", r->content_encoding);
     }
 
 /* check if NoCache directive on this host */
