@@ -70,7 +70,7 @@
 
     <ul>
       <li>It insists that the user enters a userID.
-      (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserId</a></code>)</li>
+      (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
 
       <li>It insists that the user enters a password.
       (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
@@ -81,7 +81,7 @@
 
       <li>The userID must be one of <code>anonymous guest www test
       welcome</code> and comparison is <strong>not</strong> case
-      sensitive. (<code class="directive"><a href="#anonymous">Anonymous</a></code></li>
+      sensitive. (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
 
       <li>And the Email addresses entered in the passwd field are
       logged to the error log file.
@@ -96,7 +96,7 @@
         AuthBasicProvider file anon<br />
         AuthUserFile /path/to/your/.htpasswd<br />
 	<br />
-        Anonymous_NoUserId off<br />
+        Anonymous_NoUserID off<br />
         Anonymous_MustGiveEmail on<br />
         Anonymous_VerifyEmail on<br />
         Anonymous_LogEmail on<br />

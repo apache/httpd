@@ -39,7 +39,7 @@
     <ul>
       <li>It insists that the user enters a userID.
       (<directive module="mod_authn_anon"
-      >Anonymous_NoUserId</directive>)</li>
+      >Anonymous_NoUserID</directive>)</li>
 
       <li>It insists that the user enters a password.
       (<directive module="mod_authn_anon"
@@ -53,7 +53,7 @@
       <li>The userID must be one of <code>anonymous guest www test
       welcome</code> and comparison is <strong>not</strong> case
       sensitive. (<directive module="mod_authn_anon"
-      >Anonymous</directive></li>
+      >Anonymous</directive>)</li>
 
       <li>And the Email addresses entered in the passwd field are
       logged to the error log file.
@@ -69,7 +69,7 @@
         AuthBasicProvider file anon<br />
         AuthUserFile /path/to/your/.htpasswd<br />
 	<br />
-        Anonymous_NoUserId off<br />
+        Anonymous_NoUserID off<br />
         Anonymous_MustGiveEmail on<br />
         Anonymous_VerifyEmail on<br />
         Anonymous_LogEmail on<br />
