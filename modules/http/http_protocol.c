@@ -890,8 +890,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
         }
         if (ctx->bytes_delivered == ctx->chunk_size) {
             AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(b));
-            APR_BUCKET_REMOVE(b);
-            apr_bucket_destroy(b);
+            apr_bucket_delete(b);
             ctx->state = WANT_TRL;
         }
     }
@@ -954,8 +953,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
                         c += 2;
                     else return APR_SUCCESS;
                 }
-                APR_BUCKET_REMOVE(e);
-                apr_bucket_destroy(e);
+                apr_bucket_delete(e);
             }
         }
     }
@@ -967,11 +965,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
     }
 
     if (f->c->remain) {
-        e = APR_BRIGADE_FIRST(ctx->b);
-        while (e != APR_BRIGADE_SENTINEL(ctx->b)) {
-            apr_bucket *old;
+        while (!APR_BRIGADE_EMPTY(ctx->b)) {
             const char *ignore;
 
+            e = APR_BRIGADE_FIRST(ctx->b);
             if ((rv = apr_bucket_read(e, &ignore, &len, mode)) != APR_SUCCESS) {
                 /* probably APR_IS_EAGAIN(rv); socket state isn't correct;
                  * remove log once we get this squared away */
@@ -992,11 +989,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
                 APR_BRIGADE_INSERT_TAIL(b, e);
                 break; /* once we've gotten some data, deliver it to caller */
             }
-
-            old = e;
-            e = APR_BUCKET_NEXT(e);
-            APR_BUCKET_REMOVE(old);
-            apr_bucket_destroy(old);
+            apr_bucket_delete(e);
         }
         if (f->c->remain == 0) {
             apr_bucket *eos = apr_bucket_eos_create();
@@ -1067,8 +1060,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
         }
         e = APR_BRIGADE_FIRST(b); 
         if (e->length == 0) {
-            APR_BUCKET_REMOVE(e);
-            apr_bucket_destroy(e);
+            apr_bucket_delete(e);
             continue;
         }
         retval = apr_bucket_read(e, &temp, &length, APR_BLOCK_READ);
@@ -1089,8 +1081,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
         last_char = pos + length - 1;
         if (last_char < beyond_buff) {
             memcpy(pos, temp, length);
-            APR_BUCKET_REMOVE(e);
-            apr_bucket_destroy(e);
+            apr_bucket_delete(e);
         }
         else {
             /* input line was larger than the caller's buffer */
@@ -2799,8 +2790,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     } while (APR_BRIGADE_EMPTY(bb));
 
     if (APR_BUCKET_IS_EOS(b)) {         /* reached eos on previous invocation */
-        APR_BUCKET_REMOVE(b);
-        apr_bucket_destroy(b);
+        apr_bucket_delete(b);
         return 0;
     }
 
@@ -2824,8 +2814,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         r->remaining -= len_read;        /* XXX yank me? */
         old = b;
         b = APR_BUCKET_NEXT(b);
-        APR_BUCKET_REMOVE(old);
-        apr_bucket_destroy(old);
+        apr_bucket_delete(old);
     }
 
     return total;

@@ -2355,8 +2355,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
 
                 while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                     tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                    APR_BUCKET_REMOVE(tmp_bkt);
-                    apr_bucket_destroy(tmp_bkt);
+                    apr_bucket_delete(tmp_bkt);
                 }
             }
 
@@ -2370,8 +2369,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
                     apr_bucket *free_bucket = dptr;
 
                     dptr = APR_BUCKET_NEXT (dptr);
-                    APR_BUCKET_REMOVE(free_bucket);
-                    apr_bucket_destroy(free_bucket);
+                    apr_bucket_delete(free_bucket);
                 }
             }
 
@@ -2445,16 +2443,14 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
                 if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                     while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                         tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                        APR_BUCKET_REMOVE(tmp_bkt);
-                        apr_bucket_destroy(tmp_bkt);
+                        apr_bucket_delete(tmp_bkt);
                     }
                 }
                 else {
                     do {
                         tmp_bkt  = tmp_dptr;
                         tmp_dptr = APR_BUCKET_NEXT (tmp_dptr);
-                        APR_BUCKET_REMOVE(tmp_bkt);
-                        apr_bucket_destroy(tmp_bkt);
+                        apr_bucket_delete(tmp_bkt);
                     } while ((tmp_dptr != dptr) &&
                              (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
                 }
@@ -2525,16 +2521,14 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                 while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                     tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                    APR_BUCKET_REMOVE(tmp_bkt);
-                    apr_bucket_destroy(tmp_bkt);
+                    apr_bucket_delete(tmp_bkt);
                 }
             }
             else {
                 do {
                     tmp_bkt  = tmp_dptr;
                     tmp_dptr = APR_BUCKET_NEXT (tmp_dptr);
-                    APR_BUCKET_REMOVE(tmp_bkt);
-                    apr_bucket_destroy(tmp_bkt);
+                    apr_bucket_delete(tmp_bkt);
                 } while ((tmp_dptr != content_head) &&
                          (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
             }
@@ -2558,8 +2552,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                 while (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                     tmp_bkt = APR_BRIGADE_FIRST(ctx->ssi_tag_brigade);
-                    APR_BUCKET_REMOVE(tmp_bkt);
-                    apr_bucket_destroy(tmp_bkt);
+                    apr_bucket_delete(tmp_bkt);
                 }
             }
 
@@ -2581,8 +2574,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             do {
                 free_bucket = dptr;
                 dptr = APR_BUCKET_NEXT (dptr);
-                APR_BUCKET_REMOVE(free_bucket);
-                apr_bucket_destroy(free_bucket);
+                apr_bucket_delete(free_bucket);
             } while (dptr != APR_BRIGADE_SENTINEL(*bb));
         }
         else { /* Otherwise pass it along... */

@@ -743,8 +743,7 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
     while (1) {
         if (!bucket_avail) { /* no bytes left to process in the current bucket... */
             if (consumed_bucket) {
-                APR_BUCKET_REMOVE(consumed_bucket);
-                apr_bucket_destroy(consumed_bucket);
+                apr_bucket_delete(consumed_bucket);
                 consumed_bucket = NULL;
             }
             b = APR_BRIGADE_FIRST(bb);
@@ -802,8 +801,7 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
                 if (bucket_avail) {
                     apr_bucket_split(b, bytes_in_bucket - bucket_avail);
                 }
-                APR_BUCKET_REMOVE(b);
-                apr_bucket_destroy(b);
+                apr_bucket_delete(b);
                 break;
             }
         }
@@ -894,8 +892,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     while (!done) {
         if (!cur_len) { /* no bytes left to process in the current bucket... */
             if (consumed_bucket) {
-                APR_BUCKET_REMOVE(consumed_bucket);
-                apr_bucket_destroy(consumed_bucket);
+                apr_bucket_delete(consumed_bucket);
                 consumed_bucket = NULL;
             }
             if (dptr == APR_BRIGADE_SENTINEL(bb)) {
