@@ -2,6 +2,15 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_proxy: Fix type error that prevents proxy-sendchunks from working.
+     [Justin Erenkrantz]
+
+  *) mod_proxy: Fix data corruption by properly setting aside buckets.
+     [Justin Erenkrantz]
+
+  *) mod_proxy: If a request has a blank body and has a 0 Content-Length
+     headers, pass that to the proxy.  [Justin Erenkrantz]
+
   *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
      is enabled.  Previously, such urls would still be rejected with
      404.  [Jeff Trawick]
