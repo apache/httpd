@@ -1311,7 +1311,6 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
 
 static void prefork_hooks(apr_pool_t *p)
 {
-    INIT_SIGLIST();
 #ifdef AUX3
     (void) set42sig();
 #endif

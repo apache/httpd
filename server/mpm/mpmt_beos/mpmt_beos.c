@@ -846,7 +846,6 @@ static void mpmt_beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t
 
 static void mpmt_beos_hooks(apr_pool_t *p)
 {
-    INIT_SIGLIST()
     one_process = 0;
     
     ap_hook_pre_config(mpmt_beos_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 

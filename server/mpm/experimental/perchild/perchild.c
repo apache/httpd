@@ -1528,7 +1528,6 @@ static int perchild_pre_connection(conn_rec *c)
 
 static void perchild_hooks(apr_pool_t *p)
 {
-    INIT_SIGLIST()
     one_process = 0;
 
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 

@@ -1194,7 +1194,6 @@ static void mpmt_pthread_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_poo
 
 static void mpmt_pthread_hooks(apr_pool_t *p)
 {
-    INIT_SIGLIST()
     one_process = 0;
 
     ap_hook_pre_config(mpmt_pthread_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
