@@ -860,13 +860,13 @@ typedef struct http_filter_ctx {
     ap_bucket_brigade *b;
 } http_ctx_t;
 
-apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
+apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length)
 {
 #define ASCII_CR '\015'
 #define ASCII_LF '\012'
     ap_bucket *e;
     char *buff;
-    apr_ssize_t length;
+    apr_ssize_t len;
     char *pos;
     http_ctx_t *ctx = f->ctx;
     ap_bucket_brigade *bb;
@@ -874,7 +874,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        if ((rv = ap_get_brigade(f->next, b)) != APR_SUCCESS) {
+        if ((rv = ap_get_brigade(f->next, b, AP_GET_ANY_AMOUNT)) != APR_SUCCESS) {
             return rv;
         }
     }
@@ -884,14 +884,14 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
             ctx->b = NULL; /* XXX we just leaked a brigade structure */
         }
         else {
-            if ((rv = ap_get_brigade(f->next, b)) != APR_SUCCESS) {
+            if ((rv = ap_get_brigade(f->next, b, AP_GET_LINE)) != APR_SUCCESS) {
                 return rv;
             }
         }
     }
 
-    if (f->c->remaining > 0) {
-        int remain = f->c->remaining;
+    if (length > 0) {
+        int remain = length;
         e = AP_BRIGADE_FIRST(b);
         while (remain > e->length && e != AP_BRIGADE_SENTINEL(b)) {
             remain -= e->length;
@@ -903,24 +903,22 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 remain = 0;
             }
             bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
-            f->c->remaining = remain;
             ctx->b = bb;
             return APR_SUCCESS;
         }
         else {
-            f->c->remaining = remain;
             ctx->b = NULL;
             return APR_SUCCESS;
         }
     }
 
     AP_BRIGADE_FOREACH(e, b) {
-        if ((rv = e->read(e, (const char **)&buff, &length, 0)) != APR_SUCCESS) {
+        if ((rv = e->read(e, (const char **)&buff, &len, 0)) != APR_SUCCESS) {
             return rv;
         }
 
         pos = buff;
-        while (pos < buff + length) {
+        while (pos < buff + len) {
             if (*pos == ASCII_LF) {
                 e->split(e, pos - buff + 1);
                 bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
@@ -960,7 +958,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 
     while (1) {
         if (AP_BRIGADE_EMPTY(b)) {
-            if (ap_get_brigade(c->input_filters, b) != APR_SUCCESS) {
+            if (ap_get_brigade(c->input_filters, b, AP_GET_LINE) != APR_SUCCESS) {
                 return -1;
             }
         }
@@ -2286,7 +2284,6 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         }
 
         r->remaining = atol(lenp);
-        r->connection->remaining = r->remaining;
     }
 
     if ((r->read_body == REQUEST_NO_BODY) &&
@@ -2407,8 +2404,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
             if (AP_BRIGADE_EMPTY(bb)) {
                 apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
                 apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
-                r->connection->remaining = len_to_read;
-                if (ap_get_brigade(r->input_filters, bb) != APR_SUCCESS) {
+                if (ap_get_brigade(r->input_filters, bb, len_to_read) != APR_SUCCESS) {
                     /* if we actually fail here, we want to just return and
                      * stop trying to read data from the client.
                      */

@@ -3303,7 +3303,12 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     return APR_SUCCESS;
 }
 
-static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
+/* This function only understands a length of AP_GET_ANY_AMOUNT.  It will
+ * ignore length values and always return the entire brigade.  This is
+ * pretty safe to do, because we know there always needs to be an intervening
+ * filter just above this that will only make requests for AP_GET_ANY_AMOUNT
+ */
+static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length)
 {
     apr_socket_t *csock = NULL;
     ap_bucket *e;
