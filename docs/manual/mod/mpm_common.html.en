@@ -642,8 +642,8 @@ Apache</a></li>
 
     <div class="note"><h3>Note</h3>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
-      into the server. This is intended to avoid nasty effects caused by
-      typos.</p>
+      into the server (for the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM 200000). This is
+      intended to avoid nasty effects caused by typos.</p>
     </div>
 
 <h3>See also</h3>
