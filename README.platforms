@@ -10,7 +10,7 @@
    provide a build environment.  Darwin provides these tools as part
    of the Developers Tools package. Under Darwin, however, GNUlibtool
    is installed as 'glibtool' to avoid conflicting with the Darwin
-   'libtool' program.  Apache 2.0 know about this so that's not
+   'libtool' program.  Apache 2.0 knows about this so that's not
    a problem.
 
    As of OS X 10.2 (Jaguar), the bundled versions work perfectly. Partly
