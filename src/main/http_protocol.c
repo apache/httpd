@@ -2024,7 +2024,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
             char *endstr;
             errno = 0;
             r->remaining = ap_strtol(lenp, &endstr, 10);
-            if (errno || (endstr && *endstr)) {
+            if (errno || (endstr && *endstr) || (r->remaining < 0)) {
                 conversion_error = 1;
             }
         }
