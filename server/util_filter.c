@@ -52,6 +52,7 @@
  * <http://www.apache.org/>.
  */
 
+#include "httpd.h"
 #include "util_filter.h"
 
 /*
@@ -73,8 +74,8 @@ typedef struct ap_filter_rec_t {
 } ap_filter_rec_t;
 
 /* ### make this visible for direct manipulation?
-   ### use a hash table
-*/
+ * ### use a hash table
+ */
 static ap_filter_rec_t *registered_filters = NULL;
 
 /* NOTE: Apache's current design doesn't allow a pool to be passed thu,
@@ -126,6 +127,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
             f->filter_func = frec->filter_func;
             f->ctx = ctx;
             f->ftype = frec->ftype;
+            f->r = r;
 
             if (INSERT_BEFORE(f, r->filters)) {
                 f->next = r->filters;
@@ -144,3 +146,63 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
     }
 }
 
+/* Pass the buckets to the next filter in the filter stack.  If the
+ * current filter is a handler, we should get NULL passed in instead of
+ * the current filter.  At that point, we can just call the first filter in
+ * the stack, or r->filters.
+ */
+API_EXPORT(int) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
+{
+    return next->filter_func(next, bb);
+}
+
+API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f, 
+                                                  ap_bucket_brigade **b)
+{
+    ap_bucket_brigade *bb = (ap_bucket_brigade *)f->ctx;
+
+    /* If we have never stored any data in the filter, then we had better
+     * create an empty bucket brigade so that we can concat.
+     */
+    if (!bb) {
+        bb = ap_brigade_create(f->r->pool);
+    }
+
+    /* join the two brigades together.  *b is now empty so we can 
+     * safely destroy it. 
+     */
+    ap_brigade_catenate(bb, *b);
+    ap_brigade_destroy(*b);
+    /* clear out the filter's context pointer.  If we don't do this, then
+     * when we save more data to the filter, we will be appended to what is
+     * currently there.  This will mean repeating data.... BAD!  :-)
+     */
+    f->ctx = NULL;
+    
+    return bb;
+}
+
+API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
+{
+    ap_bucket_brigade *bb = (ap_bucket_brigade *)f->ctx;
+    ap_bucket *dptr = bb->head;
+
+    /* If have never stored any data in the filter, then we had better
+     * create an empty bucket brigade so that we can concat.
+     */
+    if (!bb) {
+        bb = ap_brigade_create(f->r->pool);
+    }
+    
+    while (dptr) {
+        if (dptr->setaside) {
+            dptr->setaside(dptr);
+        }
+    }
+
+    /* Apend b to bb.  This means b is now empty, and we can destory it safely. 
+     */
+    ap_brigade_catenate(bb, *b);
+    ap_brigade_destroy(*b);
+    f->ctx = bb;
+}
