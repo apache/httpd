@@ -119,7 +119,6 @@ AC_ARG_WITH(maintainer-mode,[  --with-maintainer-mode  Turn on debugging and com
 
 APACHE_ENABLE_LAYOUT
 APACHE_ENABLE_MODULES
-APACHE_ENABLE_SHARED
 
 INCLUDES="-I\$(top_srcdir)/include -I\$(top_srcdir)/srclib/apr/include -I\$(top_srcdir)/srclib/apr-util/include"
 if test -n "$USE_VPATH"; then

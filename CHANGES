@@ -1,5 +1,8 @@
 Changes with Apache 2.0.12-dev
 
+  *) implement --enable-modules and --enable-mods-shared for "all" and
+     "most".  [Greg Stein]
+
   *) Move the threaded MPM to use APR locks instead of pthread locks.
      [Ryan Bloom]
 

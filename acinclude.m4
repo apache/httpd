@@ -260,14 +260,42 @@ EOF
     fi
   fi
 ])dnl
+
 dnl
 dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
+dnl
+dnl default is one of:
+dnl   yes  -- enabled by default. user must explicitly disable.
+dnl   no   -- disabled under default, most, all. user must explicitly enable.
+dnl   most -- disabled by default. enabled explicitly or with most or all.
+dnl   ""   -- disabled under default, most. enabled explicitly or with all.
+dnl
+dnl basically: yes/no is a hard setting. "most" means follow the "most"
+dnl            setting. otherwise, fall under the "all" setting.
+dnl            explicit yes/no always overrides.
+dnl
 AC_DEFUN(APACHE_MODULE,[
   AC_MSG_CHECKING(whether to enable mod_$1)
   define([optname],[  --]ifelse($5,yes,disable,enable)[-]translit($1,_,-))dnl
-  AC_ARG_ENABLE(translit($1,_,-),optname() substr([                         ],len(optname()))$2,,enable_$1=ifelse($5,,no,$5))
+  AC_ARG_ENABLE(translit($1,_,-),optname() substr([                         ],len(optname()))$2,,enable_$1=ifelse($5,,maybe-all,$5))
   undefine([optname])dnl
-  AC_MSG_RESULT($enable_$1)
+  _apmod_extra_msg=""
+  if test "$enable_$1" = "most"; then
+    if "$module_selection" = "most"; then
+      $enable_$1=$module_default
+      _apmod_extra_msg=" (most)"
+    else
+      $enable_$1=no
+    fi
+  elif test "$enable_$1" = "maybe-all"; then
+    if "$module_selection" = "all"; then
+      $enable_$1=$module_default
+      _apmod_extra_msg=" (all)"
+    else
+      $enable_$1=no
+    fi
+  fi
+  AC_MSG_RESULT($enable_$1$_apmod_extra_msg)
   if test "$enable_$1" != "no"; then
     case "$enable_$1" in
     shared*)
@@ -357,29 +385,38 @@ fi
 
 AC_MSG_CHECKING(for chosen layout)
 AC_MSG_RESULT($layout_name)
-])dnl
-dnl
-dnl APACHE_ENABLE_SHARED
-dnl
-AC_DEFUN(APACHE_ENABLE_SHARED,[
-AC_ARG_ENABLE(mods-shared,
-[  --enable-mods-shared=MODULE-LIST],[
-  for i in $enableval; do
-  	eval "enable_$i=shared"
-  done
 ])
-])dnl
+
 dnl
 dnl APACHE_ENABLE_MODULES
 dnl
 AC_DEFUN(APACHE_ENABLE_MODULES,[
-AC_ARG_ENABLE(modules,
-[  --enable-modules=MODULE-LIST],[
-  for i in $enableval; do
-    eval "enable_$i=yes"
-  done
+  module_selection=default
+  module_default=yes
+
+  AC_ARG_ENABLE(modules,
+  [  --enable-modules=MODULE-LIST],[
+    for i in $enableval; do
+      if test "$i" = "all" -o "$i" = "most"; then
+        module_selection=$i
+      else
+        eval "enable_$i=yes"
+      fi
+    done
+  ])
+  
+  AC_ARG_ENABLE(mods-shared,
+  [  --enable-mods-shared=MODULE-LIST],[
+    for i in $enableval; do
+      if test "$i" = "all" -o "$i" = "most"; then
+        module_selection=$i
+        module_default=shared
+      else
+    	eval "enable_$i=shared"
+      fi
+    done
+  ])
 ])
-])dnl
 
 AC_DEFUN(APACHE_REQUIRE_CXX,[
   if test -z "$apache_cxx_done"; then
