@@ -63,6 +63,10 @@
 module AP_MODULE_DECLARE_DATA cache_module;
 
 
+int ap_url_cache_handler(request_rec *r);
+int ap_cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb);
+int ap_cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in);
+int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in);
 
 /* -------------------------------------------------------------- */
 
