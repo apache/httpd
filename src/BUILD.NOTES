@@ -21,8 +21,9 @@ A/UX:
 -----
 AIX:
 -----
-  If compiling Apache on AIX (any version) using the xlC compiler version
-  3.6.X and you receive an error such as:
+  If you compiled Apache on AIX (any version) using the xlC compiler
+  version 3.6.X and you receive an error such as the following when
+  trying to start Apache:
 
     "Expected </Directory> but saw </Directory>"
   or
@@ -30,8 +31,9 @@ AIX:
 
   then you have encountered a bug in xlC.  This is a problem with the
   3.6.X versions of xlC, and is not a problem with the Apache code.
-  A set of PTF's which correct the problem are available from:
+  You need to update your xlC compiler and rebuild the server.  A
+  set of PTFs which correct the problem is available from:
   http://techsupport.services.ibm.com/rs6k/fixdb.html
-  The PTF's are:  U462005, U462006, U462007, and U462023 through
-  U462030.  The PTF's have been tested and do indeed fix the problem.
+  The PTFs are:  U462005, U462006, U462007, and U462023 through
+  U462030.  The PTFs have been tested and do indeed fix the problem.
 
