@@ -395,7 +395,10 @@ static const struct {
     { "G",     NID_givenName              },
     { "S",     NID_surname                },
     { "D",     NID_description            },
+/* This has been removed in OpenSSL 0.9.8-dev. */
+#ifdef NID_uniqueIdentifier
     { "UID",   NID_uniqueIdentifier       },
+#endif
     { "Email", NID_pkcs9_emailAddress     },
     { NULL,    0                          }
 };
