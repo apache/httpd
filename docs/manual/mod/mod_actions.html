@@ -13,8 +13,10 @@ media type or request method.</td></tr><tr><td><a class="help" href="module-dict
 <h2>Directives</h2><ul><li><a href="#action">Action</a></li><li><a href="#script">Script</a></li></ul><hr/><h2><a name="Action">Action</a> <a name="action">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Activates a CGI script for a particular handler or
 content-type</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>Action <em>action-type cgi-script</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_actions</td></tr></table></td></tr></table>
     <p>This directive adds an action, which will activate
-    <em>cgi-script</em> when <em>action-type</em> is triggered by
-    the request. The <em>action-type</em> can be either a <a href="../handler.html">handler</a> or a MIME content type. It
+    <em>cgi-script</em> when <em>action-type</em> is triggered by the
+    request.  The <em>cgi-script</em> is the URL-path to a resource
+    that has been designated as a CGI script using <a class="directive" href="mod_alias.html#scriptaliase"><code class="directive">ScriptAliase</code></a> or <a class="directive" href="mod_mime.html#addhandler"><code class="directive">AddHandler</code></a>.  The
+    <em>action-type</em> can be either a <a href="../handler.html">handler</a> or a MIME content type. It
     sends the URL and file path of the requested document using the
     standard CGI PATH_INFO and PATH_TRANSLATED environment
     variables.</p>
@@ -41,9 +43,10 @@ content-type</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">
 method.</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td> Script <em>method cgi-script</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_actions</td></tr></table></td></tr></table>
     <p>This directive adds an action, which will activate
     <em>cgi-script</em> when a file is requested using the method of
-    <em>method</em>. It sends the URL and file path of the requested
-    document using the standard CGI PATH_INFO and PATH_TRANSLATED
-    environment variables.</p>
+    <em>method</em>. The <em>cgi-script</em> is the URL-path to a
+    resource that has been designated as a CGI script using <a class="directive" href="mod_alias.html#scriptaliase"><code class="directive">ScriptAliase</code></a> or <a class="directive" href="mod_mime.html#addhandler"><code class="directive">AddHandler</code></a>.  The URL and
+    file path of the requested document is sent using the standard CGI
+    PATH_INFO and PATH_TRANSLATED environment variables.</p>
 
 <blockquote><table><tr><td bgcolor="#e0e5f5">
       Any arbitrary method name may be used. <strong>Method names are
