@@ -85,7 +85,7 @@ extern int ap_daemons_limit;
 extern MODULE_VAR_EXPORT int ap_suexec_enabled;
 extern int ap_listenbacklog;
 extern int ap_dump_settings;
-extern int ap_extended_status;
+extern API_VAR_EXPORT int ap_extended_status;
 
 extern char *ap_pid_fname;
 extern char *ap_scoreboard_fname;

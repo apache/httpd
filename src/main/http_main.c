@@ -247,7 +247,7 @@ time_t ap_restart_time;
 int ap_suexec_enabled = 0;
 int ap_listenbacklog;
 int ap_dump_settings;
-int ap_extended_status = 0;
+API_VAR_EXPORT int ap_extended_status = 0;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
