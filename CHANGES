@@ -1,5 +1,10 @@
 Changes with Apache 2.0.18-dev
 
+  *) Fix httpd's definition of LTFLAGS to be consistent with that of apr
+     and apr-util, allow it to be overridden by the configure command-line
+     (default="--silent") and introduce LT_LDFLAGS to replace what we were
+     formally abusing as LTFLAGS.  [Roy Fielding]
+
   *) Clean up the reporting of incorrect closing container tags.
      [Barrie Slaymaker <barries@slaysys.com>]
 

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/05/07 16:59:05 $]
+Last modified at [$Date: 2001/05/12 03:48:29 $]
 
 Release:
 
@@ -309,11 +309,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * (possibly) port the bug fix for PR 6942 (segv when LoadModule is put
       into a VirtualHost container) to 2.0.
-
-    * the LTFLAGS = -export-dynamic in the config.m4 is wrong. it is getting
-      added multiple times during the config process. The -export-dynamic
-      should probably move into build/special.mk (the make file used for
-      building Apache modules).
 
     * shift stuff to mod_core.h
 

@@ -103,8 +103,11 @@ case "$host_alias" in
       other_targets="$other_targets os2core"
       ;;
   *)
-      LIBTOOL='$(SHELL) $(top_builddir)/srclib/apr/libtool --silent'
-      SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool --silent'
+      if test "x$LTFLAGS" = "x"; then
+          LTFLAGS='--silent'
+      fi
+      LIBTOOL='$(SHELL) $(top_builddir)/srclib/apr/libtool $(LTFLAGS)'
+      SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool $(LTFLAGS)'
       ;;
 esac
 
