@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix segfault in mod_expires, which occured under certain
+     circumstances. PR 28047.  [André Malo]
+
   *) mod_logio no longer removes the EOS bucket. PR 27928.
      [Bojan Smojver <bojan rexursive.com>]
 
