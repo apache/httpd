@@ -1265,8 +1265,7 @@ void ap_process_request(request_rec *r)
      * this packet, then it'll appear like the link is stalled when really
      * it's the application that's stalled.
      */
-    /* TODO: Fix bhalfduplex to work in this case. */
-    /* ap_bhalfduplex(r->connection->client);  */
+    ap_bhalfduplex(r->connection->client);
     ap_run_log_transaction(r);
 }
 
