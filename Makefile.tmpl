@@ -80,7 +80,6 @@ CP              = cp
 LN              = ln
 RM              = rm -f
 TAR             = tar
-UMASK           = umask
 MKDIR           = $(TOP)/$(AUX)/mkdir.sh
 INSTALL         = $(TOP)/$(AUX)/install.sh -c
 INSTALL_PROGRAM = $(INSTALL) -s -m 755
@@ -328,10 +327,11 @@ install-support:
 #   install the Apache C header files
 install-include:
 	@echo "===> [include: Installing Apache C header files]"
-	$(UMASK) 022; $(CP) $(TOP)/$(SRC)/include/*.h $(root)$(includedir)/
+	$(CP) $(TOP)/$(SRC)/include/*.h $(root)$(includedir)/
 	@osdir=`grep '^OSDIR=' $(TOP)/$(SRC)/Makefile.config | sed -e 's:^OSDIR=.*/os:os:'`; \
-	echo "$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/"; \
-	$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/
+		echo "$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/"; \
+		$(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/
+	chmod 644 $(root)$(includedir)/*.h
 	@echo "<=== [include]"
 
 #   create an initial document root containing the Apache manual,
