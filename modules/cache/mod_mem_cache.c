@@ -66,14 +66,8 @@ typedef struct {
 typedef struct mem_cache_object {
     cache_type_e type;
     apr_ssize_t num_header_out;
-    apr_ssize_t num_err_header_out;
-    apr_ssize_t num_subprocess_env;
-    apr_ssize_t num_notes;
     apr_ssize_t num_req_hdrs;
     cache_header_tbl_t *header_out;
-    cache_header_tbl_t *err_header_out;
-    cache_header_tbl_t *subprocess_env;
-    cache_header_tbl_t *notes;
     cache_header_tbl_t *req_hdrs; /* for Vary negotiation */
     apr_size_t m_len;
     void *m;
@@ -226,21 +220,9 @@ static void cleanup_cache_object(cache_object_t *obj)
     if (obj->key) {
         free(obj->key);
     }
-    if (obj->info.content_type) {
-        free(obj->info.content_type);
-    }
-    if (obj->info.etag) {
-        free(obj->info.etag);
-    }
-    if (obj->info.lastmods) {
-        free(obj->info.lastmods);
-    }
-    if (obj->info.filename) {
-        free(obj->info.filename);
-    }
 
     free(obj);
-    
+
     /* Cleanup the mem_cache_object_t */
     if (mobj) {
         if (mobj->type == CACHE_TYPE_HEAP && mobj->m) {
@@ -257,21 +239,6 @@ static void cleanup_cache_object(cache_object_t *obj)
             if (mobj->header_out[0].hdr) 
                 free(mobj->header_out[0].hdr);
             free(mobj->header_out);
-        }
-        if (mobj->err_header_out) {
-            if (mobj->err_header_out[0].hdr) 
-                free(mobj->err_header_out[0].hdr);
-            free(mobj->err_header_out);
-        }
-        if (mobj->subprocess_env) {
-            if (mobj->subprocess_env[0].hdr) 
-                free(mobj->subprocess_env[0].hdr);
-            free(mobj->subprocess_env);
-        }
-        if (mobj->notes) {
-            if (mobj->notes[0].hdr) 
-                free(mobj->notes[0].hdr);
-            free(mobj->notes);
         }
         if (mobj->req_hdrs) {
             if (mobj->req_hdrs[0].hdr)
@@ -415,8 +382,6 @@ static int create_entity(cache_handle_t *h, cache_type_e type_e,
         return DECLINED;
     }
     memcpy(obj->key, key, key_len);
-    /* Safe cast: We tested < sconf->max_cache_object_size above */
-    obj->info.len = (apr_size_t)len;
 
     /* Allocate and init mem_cache_object_t */
     mobj = calloc(1, sizeof(*mobj));
@@ -669,32 +634,10 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
  
     h->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
     h->resp_hdrs = apr_table_make(r->pool, mobj->num_header_out);
-    h->resp_err_hdrs = apr_table_make(r->pool, mobj->num_err_header_out);
-    /* ### FIXME: These two items should not be saved. */
-    r->subprocess_env = apr_table_make(r->pool, mobj->num_subprocess_env);
-    r->notes = apr_table_make(r->pool, mobj->num_notes);
 
-    rc = unserialize_table(mobj->req_hdrs,
-                           mobj->num_req_hdrs,
-                           h->req_hdrs);
-    rc = unserialize_table( mobj->header_out,
-                            mobj->num_header_out, 
-                            h->resp_hdrs);
-    rc = unserialize_table( mobj->err_header_out,
-                            mobj->num_err_header_out, 
-                            h->resp_err_hdrs);
-    rc = unserialize_table( mobj->subprocess_env, 
-                            mobj->num_subprocess_env, 
-                            r->subprocess_env);
-    rc = unserialize_table( mobj->notes,
-                            mobj->num_notes,
-                            r->notes);
-
-    /* Content-Type: header may not be set if content is local since
-     * CACHE_IN runs before header filters....
-     */
-    h->content_type = h->cache_obj->info.content_type;
-    h->status = h->cache_obj->info.status;
+    rc = unserialize_table(mobj->req_hdrs, mobj->num_req_hdrs, h->req_hdrs);
+    rc = unserialize_table(mobj->header_out, mobj->num_header_out,
+                           h->resp_hdrs);
 
     return rc;
 }
@@ -727,7 +670,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
     int rc;
- 
+    apr_table_t *headers_out, *err_headers_out;
+
     /*
      * The cache needs to keep track of the following information: 
      * - Date, LastMod, Version, ReqTime, RespTime, ContentLength 
@@ -743,40 +687,20 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
 
     /* Precompute how much storage we need to hold the headers */
-    rc = serialize_table(&mobj->header_out, 
-                         &mobj->num_header_out, 
-                         ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
-                                                     r->server));
-    if (rc != APR_SUCCESS) {
-        return rc;
-    }
-    rc = serialize_table(&mobj->err_header_out, 
-                         &mobj->num_err_header_out, 
-                         ap_cache_cacheable_hdrs_out(r->pool,
-                                                     r->err_headers_out,
-                                                     r->server));
-    if (rc != APR_SUCCESS) {
-        return rc;
-    }
-    rc = serialize_table(&mobj->subprocess_env,
-                         &mobj->num_subprocess_env, 
-                         r->subprocess_env );
+    headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
+                                              r->server);
+    headers_out = apr_table_overlay(r->pool, headers_out, r->err_headers_out);
+
+    rc = serialize_table(&mobj->header_out, &mobj->num_header_out,
+                         headers_out);
     if (rc != APR_SUCCESS) {
         return rc;
     }
 
-    rc = serialize_table(&mobj->notes, &mobj->num_notes, r->notes);
-    if (rc != APR_SUCCESS) {
-        return rc;
-    }
- 
     /* Init the info struct */
     obj->info.status = info->status;
     if (info->date) {
         obj->info.date = info->date;
-    }
-    if (info->lastmod) {
-        obj->info.lastmod = info->lastmod;
     }
     if (info->response_time) {
         obj->info.response_time = info->response_time;
@@ -786,38 +710,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
     if (info->expire) {
         obj->info.expire = info->expire;
-    }
-    if (info->content_type) {
-        apr_size_t len = strlen(info->content_type) + 1;
-        obj->info.content_type = (char*) malloc(len);
-        if (!obj->info.content_type) {
-            return APR_ENOMEM;
-        }
-        memcpy(obj->info.content_type, info->content_type, len);
-    }
-    if (info->etag) {
-        apr_size_t len = strlen(info->etag) + 1;
-        obj->info.etag = (char*) malloc(len);
-        if (!obj->info.etag) {
-            return APR_ENOMEM;
-        }
-        memcpy(obj->info.etag, info->etag, len);
-    }
-    if (info->lastmods) {
-        apr_size_t len = strlen(info->lastmods) + 1;
-        obj->info.lastmods = (char*) malloc(len);
-        if (!obj->info.lastmods) {
-            return APR_ENOMEM;
-        }
-        memcpy(obj->info.lastmods, info->lastmods, len);
-    }
-    if ( info->filename) {
-        apr_size_t len = strlen(info->filename) + 1;
-        obj->info.filename = (char*) malloc(len);
-        if (!obj->info.filename ) {
-            return APR_ENOMEM;
-        }
-        memcpy(obj->info.filename, info->filename, len);
     }
 
     return APR_SUCCESS;

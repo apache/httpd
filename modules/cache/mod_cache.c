@@ -161,13 +161,6 @@ static int cache_url_handler(request_rec *r, int lookup)
         return DECLINED;
     }
 
-    /* We have located a suitable cache file now. */
-    info = &(cache->handle->cache_obj->info);
-
-    if (info && info->lastmod) {
-        ap_update_mtime(r, info->lastmod);
-    }
-
     rv = ap_meets_conditions(r);
     if (rv != OK) {
         /* Return cached status. */
@@ -356,7 +349,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         lastmods = apr_table_get(r->headers_out, "Last-Modified");
     }
     if (lastmods != NULL) {
-        if (APR_DATE_BAD == (lastmod = apr_date_parse_http(lastmods))) {
+        lastmod = apr_date_parse_http(lastmods);
+        if (lastmod == APR_DATE_BAD) {
             lastmods = NULL;
         }
     }
@@ -628,7 +622,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                      "cache: Last modified is in the future, "
                      "replacing with now");
     }
-    info->lastmod = lastmod;
 
     /* if no expiry date then
      *   if lastmod
@@ -654,11 +647,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
     }
     info->expire = exp;
-
-    info->content_type = apr_pstrdup(r->pool, r->content_type);
-    info->etag = apr_pstrdup(r->pool, etag);
-    info->lastmods = apr_pstrdup(r->pool, lastmods);
-    info->filename = apr_pstrdup(r->pool, r->filename);
 
     /*
      * Write away header information to cache.
