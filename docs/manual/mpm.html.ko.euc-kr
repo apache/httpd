@@ -12,7 +12,14 @@
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
   vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+        <div align="center">
+      <img src="images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+
+      <h3>Apache HTTP Server Version 2.1</h3>
+    </div>
+
+
+
 
     <h1 align="center">아파치 다중처리 모듈</h1>
 
@@ -79,7 +86,13 @@
 
       <li>윈도우즈: winnt</li>
     </ul>
-    <!--#include virtual="footer.html" -->
+        <hr />
+
+    <h3 align="center">Apache HTTP Server Version 2.1</h3>
+    <a href="./"><img src="images/index.gif" alt="Index" /></a>
+
+
+
   </body>
 </html>
 
