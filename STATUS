@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 05:50:50 $]
+Last modified at [$Date: 2002/02/01 06:05:51 $]
 
 Release:
 
@@ -64,13 +64,9 @@ RELEASE SHOWSTOPPERS:
           Still, it's probably in SetOutputFilter's behavior.
 
     * Test suite failures:
-      o perchild doesn't even build
       o worker is also failing some of the 'cgi' subtests
       (see <URL:http://Source-Zone.Org/Apache/regression/>):
-        Justin says: "Worker should be fine and passes httpd-test here.
-                      perchild may need a maintainer.  Are we willing 
-                      to release without perchild?  It could be officially
-                      added in a point release."
+        Justin says: "Worker should be fine and passes httpd-test here."
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
@@ -118,16 +114,33 @@ RELEASE SHOWSTOPPERS:
                       statically if you don't want to let libtool
                       handle it.  At most, I don't consider this a
                       a release showstopper as it is a packaging issue."
+        Status: Aaron volunteers: I'll commit a patch to allow all
+                the support binaries to be built statically against
+                libapr/libaprutil/etc and then enable it in binbuild.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate.
-
         Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
       +1:  Jim, Justin
       -1:  BrianP
+
+    * Make some modifications to the scoreboard creation routines,
+      prefer anonymous shared memory, and allow a configuration
+      directive to override the defaults.
+        Message-ID: <20020130080804.C16977@clove.org>
+      Status: Aaron volunteers
+
+    * Get perchild to work on platforms other than Linux. This
+      will require a portable mechanism to pass data and file/socket
+      descriptors between vhost child groups. An API was proposed
+      on dev@apr:
+        Message-ID: <20020111115006.K1529@clove.org>
+       Vote: Is a non-portable perchild going to hold up a GA release?
+        Yes:
+         No: Aaron
 
     * Modify the worker MPM so that it doesn't need to create and
       destroy a pool for each request--possibly by adopting a
