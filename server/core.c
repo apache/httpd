@@ -1491,7 +1491,7 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dumm
 	    else if ((cmd->limited_xmethods != NULL)
 		     && (cmd->limited_xmethods->nelts != 0)) {
 		xmethod = (char **) cmd->limited_xmethods->elts;
-		for (i = 0; i < cmd->limited_xmethods->nelts; ) {
+		for (i = 0; i < cmd->limited_xmethods->nelts; i++) {
 		    if (strcmp(xmethod[i], method) == 0) {
 			for (j = i, k = i + 1;
 			     k < cmd->limited_xmethods->nelts;
