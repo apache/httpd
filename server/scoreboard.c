@@ -282,7 +282,8 @@ int ap_update_child_status(int child_num, int thread_num, int status, request_re
     if ((status == SERVER_READY  || status == SERVER_ACCEPTING)
 	&& old_status == SERVER_STARTING) {
         ss->thread_num = child_num * HARD_SERVER_LIMIT + thread_num;
-	ps->worker_threads = ap_threads_per_child;
+        ps->generation = ap_my_generation;
+        ps->worker_threads = ap_threads_per_child;
     }
 
     if (ap_extended_status) {
