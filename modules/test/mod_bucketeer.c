@@ -115,7 +115,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
      * we're in better shape.
      */
     if (!ctx) {  
-        if (strncmp(r->content_type, "text/", 5)) {
+        if (!r->content_type || strncmp(r->content_type, "text/", 5)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
