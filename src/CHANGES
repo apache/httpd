@@ -3,6 +3,8 @@ Changes with Apache 1.3b4
   *) WIN32: Work around optimiser bug that killed ISAPI in release
      versions. [Ben Laurie] PR#1533
 
+  *) PORT: Update the MPE port [Mark Bixby, Jim Jagielski]
+
   *) Interim (slow) fix for p->sub_pool critical sections in
      alloc.c (affects win32 only).  [Ben Hyde]
   
@@ -199,7 +201,8 @@ Changes with Apache 1.3b3
 
   *) Fix problem with USE_FLOCK_SERIALIZED_ACCEPT not working
      properly. Each child needs to open the lockfile instead
-     of using the passed file-descriptor from the parent. PR#1056
+     of using the passed file-descriptor from the parent. 
+     [Jim Jagielski] PR#1056
 
   *) Fix the error logging in mod_cgi; the recent error log changes
      introduced a bug that prevented it from working correctly.
