@@ -1,4 +1,5 @@
 Changes with Apache 2.0.30-dev
+  *) Allow htdbm to work with multiple DBM types [Ian Holsman]
 
   *) Win32: Made change to apr_sendfile() to return APR_ENOTIMPL
      if oslevel < WINNT.  This should fix several problems reported

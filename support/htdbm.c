@@ -133,6 +133,7 @@ struct htdbm_t {
     char                    *username;
     char                    *userpass;
     char                    *comment;
+    char                    *type;
     int                     create;
     int                     rdonly;
     int                     alg;
@@ -198,16 +199,17 @@ static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm)
 
     /* Set MD5 as default */
     (*hdbm)->alg = ALG_APMD5;
+    (*hdbm)->type = "default";
     return APR_SUCCESS;
 }
 
 static apr_status_t htdbm_open(htdbm_t *htdbm) 
 {
     if (htdbm->create)
-        return apr_dbm_open(&htdbm->dbm, htdbm->filename, APR_DBM_RWCREATE, 
+        return apr_dbm_open_ex(&htdbm->dbm, htdbm->type, htdbm->filename, APR_DBM_RWCREATE, 
                             APR_OS_DEFAULT, htdbm->pool);
     else
-        return apr_dbm_open(&htdbm->dbm, htdbm->filename, 
+        return apr_dbm_open_ex(&htdbm->dbm, htdbm->type, htdbm->filename, 
                             htdbm->rdonly ? APR_DBM_READONLY : APR_DBM_READWRITE, 
                             APR_OS_DEFAULT, htdbm->pool);
 }
@@ -399,14 +401,14 @@ static void htdbm_usage(void)
 #define CRYPT_OPTION ""
 #endif
     fprintf(stderr, "htdbm -- program for manipulating DBM password databases.\n\n");
-    fprintf(stderr, "Usage: htdbm    [-cm"CRYPT_OPTION"pstvx] database username\n");
-    fprintf(stderr, "                -b[cm"CRYPT_OPTION"ptsv] database username password\n");
+    fprintf(stderr, "Usage: htdbm    [-cm"CRYPT_OPTION"pstvx] [-TDBTYPE] database username\n");
+    fprintf(stderr, "                -b[cm"CRYPT_OPTION"ptsv] [-TDBTYPE] database username password\n");
     fprintf(stderr, "                -n[m"CRYPT_OPTION"pst]   username\n");
     fprintf(stderr, "                -nb[m"CRYPT_OPTION"pst]  username password\n");
-    fprintf(stderr, "                -v[m"CRYPT_OPTION"ps]    database username\n");
-    fprintf(stderr, "                -vb[m"CRYPT_OPTION"ps]   database username password\n");
-    fprintf(stderr, "                -x[m"CRYPT_OPTION"ps]    database username\n");
-    fprintf(stderr, "                -l                       database\n");
+    fprintf(stderr, "                -v[m"CRYPT_OPTION"ps]    [-TDBTYPE] database username\n");
+    fprintf(stderr, "                -vb[m"CRYPT_OPTION"ps]   [-TDBTYPE] database username password\n");
+    fprintf(stderr, "                -x[m"CRYPT_OPTION"ps]    [-TDBTYPE] database username\n");
+    fprintf(stderr, "                -l                       [-TDBTYPE] database\n");
     fprintf(stderr, "Options:\n");
     fprintf(stderr, "   -b   Use the password from the command line rather"
                     "than prompting for it.\n");
@@ -418,6 +420,7 @@ static void htdbm_usage(void)
 #endif
     fprintf(stderr, "   -p   Do not encrypt the password (plaintext).\n");
     fprintf(stderr, "   -s   Force SHA encryption of the password.\n");
+    fprintf(stderr, "   -T   DBM Type (SDBM|GDBM|DB|default).\n");
     fprintf(stderr, "   -l   Display usernames from database on stdout.\n");
     fprintf(stderr, "   -t   The last param is username comment.\n");
     fprintf(stderr, "   -v   Verify the username/password.\n");
@@ -493,6 +496,12 @@ int main(int argc, const char *argv[])
                 need_cmnt = 1;
                 args_left++;
                 break;
+            case 'T':
+                h->type = apr_pstrdup(h->pool, ++arg);
+                while (*arg !='\0')
+                    *++arg;
+                *--arg; /* so incrementing this in the loop with find a null */
+                break;
             case 'v':
                 h->rdonly = 1;
                 cmd = HTDBM_VERIFY;
@@ -533,9 +542,10 @@ int main(int argc, const char *argv[])
         i--;
     else {
         h->filename = apr_pstrdup(h->pool, argv[i]);
-        if ((rv = htdbm_open(h)) != APR_SUCCESS) {
-            fprintf(stderr, "Error oppening database %s\n", argv[i]);
+            if ((rv = htdbm_open(h)) != APR_SUCCESS) {
+            fprintf(stderr, "Error opening database %s\n", argv[i]);
             apr_strerror(rv, errbuf, sizeof(errbuf));
+            fprintf(stderr,"%s\n",errbuf);
             exit(ERR_FILEPERM);
         }
     }
