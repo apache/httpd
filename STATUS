@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/23 19:13:15 $]
+Last modified at [$Date: 2002/01/24 04:52:49 $]
 
 Release:
 
@@ -127,11 +127,6 @@ RELEASE SHOWSTOPPERS:
 
       I was unable to recreate the problem with mod_cgi (yea!).
         Message-ID: <20020123070827.GV28051@ebuilt.com> (dev@apr)
-
-    * Aaron is working on an update to the scoreboard creation
-      routines that will be more "correct" in terms of using
-      anonymous shared memory vs. name-based shared memory on
-      the platforms that support either.
 
     * mod_negotiation seems to have out-of-control recursive subreqs.
 
