@@ -233,6 +233,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/util.o \
 	$(OBJDIR)/util_cfgtree.o \
 	$(OBJDIR)/util_charset.o \
+	$(OBJDIR)/util_debug.o \
 	$(OBJDIR)/util_filter.o \
 	$(OBJDIR)/util_md5.o \
 	$(OBJDIR)/util_nw.o \
