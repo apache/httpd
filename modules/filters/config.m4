@@ -4,7 +4,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(filters)
 
-APACHE_MODULE(include, Server Side Includes, , includes, yes)
+APACHE_MODULE(include, Server Side Includes, , , yes)
 
 LTFLAGS="$LTFLAGS -export-dynamic"
 

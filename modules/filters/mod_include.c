@@ -91,7 +91,7 @@
 #include "mod_include.h"
 #include "util_ebcdic.h"
 
-module AP_MODULE_DECLARE_DATA includes_module;
+module AP_MODULE_DECLARE_DATA include_module;
 static apr_hash_t *include_hash;
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
 
@@ -812,7 +812,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                 /* Basically, it puts a bread crumb in here, then looks */
                 /*   for the crumb later to see if its been here.       */
     	    if (rr) 
-    		ap_set_module_config(rr->request_config, &includes_module, r);
+    		ap_set_module_config(rr->request_config, &include_module, r);
 
                 if (!error_fmt) {
                     SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
@@ -829,7 +829,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
 
     	    /* destroy the sub request if it's not a nested include (crumb) */
                 if (rr != NULL
-    		&& ap_get_module_config(rr->request_config, &includes_module)
+    		&& ap_get_module_config(rr->request_config, &include_module)
     		    != NESTED_INCLUDE_MAGIC) {
     		ap_destroy_sub_req(rr);
                 }
@@ -2619,7 +2619,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
  * option only changes the default.
  */
 
-module includes_module;
+module include_module;
 enum xbithack {
     xbithack_off, xbithack_on, xbithack_full
 };
@@ -2662,7 +2662,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     request_rec *r = f->r;
     include_ctx_t *ctx = f->ctx;
     enum xbithack *state =
-    (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
+    (enum xbithack *) ap_get_module_config(r->per_dir_config, &include_module);
     request_rec *parent;
 
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
@@ -2701,7 +2701,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         ap_set_last_modified(r);
     }
 
-    if ((parent = ap_get_module_config(r->request_config, &includes_module))) {
+    if ((parent = ap_get_module_config(r->request_config, &include_module))) {
 	/* Kludge --- for nested includes, we want to keep the subprocess
 	 * environment of the base document (for compatibility); that means
 	 * torquing our own last_modified date as well so that the
@@ -2732,7 +2732,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
     if (parent) {
 	/* signify that the sub request should not be killed */
-	ap_set_module_config(r->request_config, &includes_module,
+	ap_set_module_config(r->request_config, &include_module,
 	    NESTED_INCLUDE_MAGIC);
     }
 
@@ -2785,7 +2785,7 @@ static void register_hooks(apr_pool_t *p)
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 
-module AP_MODULE_DECLARE_DATA includes_module =
+module AP_MODULE_DECLARE_DATA include_module =
 {
     STANDARD20_MODULE_STUFF,
     create_includes_dir_config, /* dir config creater */

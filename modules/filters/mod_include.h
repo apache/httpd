@@ -74,7 +74,7 @@
 #endif /*APR_CHARSET_EBCDIC*/
 
 /* just need some arbitrary non-NULL pointer which can't also be a request_rec */
-#define NESTED_INCLUDE_MAGIC	(&includes_module)
+#define NESTED_INCLUDE_MAGIC	(&include_module)
 
 /****************************************************************************
  * Used to keep context information during parsing of a request for SSI tags.

@@ -201,7 +201,7 @@
 
 #define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %>s %b"
 
-module AP_MODULE_DECLARE_DATA config_log_module;
+module AP_MODULE_DECLARE_DATA log_config_module;
 
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
@@ -952,7 +952,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 static int multi_log_transaction(request_rec *r)
 {
     multi_log_state *mls = ap_get_module_config(r->server->module_config,
-						&config_log_module);
+						&log_config_module);
     config_log_state *clsarray;
     int i;
 
@@ -1028,7 +1028,7 @@ static const char *log_format(cmd_parms *cmd, void *dummy, const char *fmt,
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
-						&config_log_module);
+						&log_config_module);
 
     /*
      * If we were given two arguments, the second is a name to be given to the
@@ -1054,7 +1054,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
-						&config_log_module);
+						&log_config_module);
     config_log_state *cls;
 
     cls = (config_log_state *) apr_array_push(mls->config_logs);
@@ -1151,7 +1151,7 @@ static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
 {
     int i;
     multi_log_state *mls = ap_get_module_config(s->module_config,
-                                             &config_log_module);
+                                             &log_config_module);
     config_log_state *clsarray;
     const char *dummy;
     const char *format;
@@ -1211,7 +1211,7 @@ static apr_status_t flush_all_logs(void *data)
     int i;
 
     for (; s; s = s->next) {
-        mls = ap_get_module_config(s->module_config, &config_log_module);
+        mls = ap_get_module_config(s->module_config, &log_config_module);
         log_list = NULL;
         if (mls->config_logs->nelts) {
             log_list = mls->config_logs;
@@ -1260,7 +1260,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_log_transaction(multi_log_transaction,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA config_log_module =
+module AP_MODULE_DECLARE_DATA log_config_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-dir config */

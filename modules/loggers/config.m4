@@ -4,6 +4,6 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(loggers)
 	
-APACHE_MODULE(log_config, logging configuration, , config_log, yes)
+APACHE_MODULE(log_config, logging configuration, , , yes)
 
 APACHE_MODPATH_FINISH
