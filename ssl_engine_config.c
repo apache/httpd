@@ -144,19 +144,22 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 
     sc->mc                     = ssl_config_global_create(s);
     sc->bEnabled               = UNSET;
+    sc->szVHostID              = NULL;
+    sc->nVHostID_length        = 0;
+    sc->szLogFile              = NULL;
+    sc->fileLogFile            = NULL;
+    sc->nLogLevel              = SSL_LOG_NONE;
+    sc->nSessionCacheTimeout   = UNSET;
+
     sc->szCACertificatePath    = NULL;
     sc->szCACertificateFile    = NULL;
     sc->szCertificateChain     = NULL;
-    sc->szLogFile              = NULL;
     sc->szCipherSuite          = NULL;
-    sc->nLogLevel              = SSL_LOG_NONE;
     sc->nVerifyDepth           = UNSET;
     sc->nVerifyClient          = SSL_CVERIFY_UNSET;
-    sc->nSessionCacheTimeout   = UNSET;
     sc->nPassPhraseDialogType  = SSL_PPTYPE_UNSET;
     sc->szPassPhraseDialogPath = NULL;
     sc->nProtocol              = SSL_PROTOCOL_ALL;
-    sc->fileLogFile            = NULL;
     sc->pSSLCtx                = NULL;
     sc->szCARevocationPath     = NULL;
     sc->szCARevocationFile     = NULL;
@@ -193,21 +196,22 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     SSLSrvConfigRec *mrg  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*mrg));
 
     cfgMerge(mc, NULL);
-    cfgMergeString(szVHostID);
     cfgMergeBool(bEnabled);
+    cfgMergeString(szVHostID);
+    cfgMergeString(szLogFile);
+    cfgMerge(fileLogFile, NULL);
+    cfgMerge(nLogLevel, SSL_LOG_NONE);
+    cfgMergeInt(nSessionCacheTimeout);
+
     cfgMergeString(szCACertificatePath);
     cfgMergeString(szCACertificateFile);
     cfgMergeString(szCertificateChain);
-    cfgMergeString(szLogFile);
     cfgMergeString(szCipherSuite);
-    cfgMerge(nLogLevel, SSL_LOG_NONE);
     cfgMergeInt(nVerifyDepth);
     cfgMerge(nVerifyClient, SSL_CVERIFY_UNSET);
-    cfgMergeInt(nSessionCacheTimeout);
     cfgMerge(nPassPhraseDialogType, SSL_PPTYPE_UNSET);
     cfgMergeString(szPassPhraseDialogPath);
     cfgMerge(nProtocol, SSL_PROTOCOL_ALL);
-    cfgMerge(fileLogFile, NULL);
     cfgMerge(pSSLCtx, NULL);
     cfgMerge(szCARevocationPath, NULL);
     cfgMerge(szCARevocationFile, NULL);
