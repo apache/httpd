@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) ap_base64decode_binary does not null-terminate the output anymore
+     [Bill Stoddard, Ronald Tschalär]
+
   *) WIN32: The following bugs introduced in Apache 1.3.9 have been fixed
      - CGIs broken if script calls other programs which deliver on stdout
        (Search this file for "DETACHED")
