@@ -27,6 +27,8 @@ open(HDR, ">$header") || die;
 print HDR <<'EOT';
 /*
 **  apapi.h -- Apache API prototypes
+**
+**  THIS IS NOT COMPLETE BECAUSE IT NEEDS MANUAL FIXUP!
 */
 
 #ifndef APAPI_H
@@ -39,14 +41,17 @@ while ($l = <CFG>) {
     if (($s1, $old, $s2, $new, $s3) = ($l =~ m|^(\s*)(\S+)(\s+)(\S+)(\s*)$|)) {
         if ($new =~ m|^API_|) {
             $new =~ s|^API_|ap_|;
-            $pt = &func_prototype($new);
-			if ($pt eq '') {
-				print STDERR "Sorry, prototype for `$new' cannot be found\n";
-				print HDR "/* prototype for `$new' cannot be found */\n";
-			}
-			else {
+            if ($pt eq '') {
+                print STDERR "Sorry, prototype for `$new' cannot be determined automatically\n";
+                print HDR "/* prototype for `$new' cannot be automatically determined */\n";
+            }
+            elsif ($pt eq 'extern ;') {
+                print STDERR "Sorry, prototype for `$new' cannot be determined automatically\n";
+                print HDR "/* prototype for `$new' cannot be automatically determined */\n";
+            }
+            else {
                 print HDR "$pt\n";
-			}
+            }
         }
     }
 }

@@ -2,7 +2,39 @@
 This stuff is only temporary. 
 It is used for the global symbol renaming in the Apache 1.3 sources.
 It replaces identifiers in our C source files according to
-the rename.cf file.
+the rename.cf file. 
+
+ ====================================================================
+
+The proposed steps for this big change are:
+
+    1. Roy:  - tag PRE_AP_PREFIX_RENAME
+             - make rename
+             - compile entire server (without the back-compat)
+             - check symbols
+             - check operation of server
+             - compile entire server with the back-compat
+             - check symbols
+             - check operation of server
+             - commit
+             - tag POST_AP_PREFIX_RENAME
+   
+    2. Ralf: - tag PRE_AP_PREFIX_RENAME_CLEANUP
+             - manually change exported module structure symbols for
+               mod_abc_def.c from def_abc_module to APM_abc_def (where APM_ is
+               the prefix in rename.cf) and adjust/simplify src/Configure,
+               mod_so.c accordingly etc.
+             - completely remove HIDE stuff because that's then obsolete
+             - compile entire server (without the back-compat)
+             - check symbols
+             - check operation of server
+             - compile entire server with the back-compat
+             - check symbols
+             - check operation of server
+             - commit
+             - tag POST_AP_PREFIX_RENAME_CLEANUP
+
+ ====================================================================
 
 This can be used directly by everyone:
 (but finally only by Roy!)

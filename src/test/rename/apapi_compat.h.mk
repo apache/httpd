@@ -57,9 +57,9 @@ foreach $s (sort(keys(%SUBST))) {
 print FP <<'EOT';
 
 /* 
- *   Mapping of Apache 1.2 symbols to 
- *   Apache 1.3 symbols which are
- *   _NO LONGER PART OF THE API_
+ *   Mapping of symbols which are private
+ *   to Apache httpd and should not be considered 
+ *   part of the public API
  */
 
 #ifdef APAPI_STRICT

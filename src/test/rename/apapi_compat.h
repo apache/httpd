@@ -44,12 +44,14 @@
 #define blookc                         ap_blookc
 #define bnonblock                      ap_bnonblock
 #define bonerror                       ap_bonerror
+#define bprintf                        ap_bprintf
 #define bpushfd                        ap_bpushfd
 #define bputs                          ap_bputs
 #define bread                          ap_bread
 #define bsetflag                       ap_bsetflag
 #define bsetopt                        ap_bsetopt
 #define bskiplf                        ap_bskiplf
+#define bvputs                         ap_bvputs
 #define bwrite                         ap_bwrite
 #define bytes_in_free_blocks           ap_bytes_in_free_blocks
 #define bytes_in_pool                  ap_bytes_in_pool
@@ -59,6 +61,7 @@
 #define cfg_getc                       ap_cfg_getc
 #define cfg_getline                    ap_cfg_getline
 #define chdir_file                     ap_chdir_file
+#define check_alarm                    ap_check_alarm
 #define check_cmd_context              ap_check_cmd_context
 #define checkmask                      ap_checkmask
 #define child_terminate                ap_child_terminate
@@ -75,6 +78,7 @@
 #define count_dirs                     ap_count_dirs
 #define create_environment             ap_create_environment
 #define create_per_dir_config          ap_create_per_dir_config
+#define day_snames                     ap_day_snames
 #define default_port_for_request       ap_default_port_for_request
 #define default_port_for_scheme        ap_default_port_for_scheme
 #define default_type                   ap_default_type
@@ -94,6 +98,7 @@
 #define find_path_info                 ap_find_path_info
 #define find_pool                      ap_find_pool
 #define find_token                     ap_find_token
+#define fnmatch                        ap_fnmatch
 #define get_basic_auth_pw              ap_get_basic_auth_pw
 #define get_client_block               ap_get_client_block
 #define get_gmtoff                     ap_get_gmtoff
@@ -122,6 +127,7 @@
 #define internal_redirect              ap_internal_redirect
 #define internal_redirect_handler      ap_internal_redirect_handler
 #define is_directory                   ap_is_directory
+#define is_fnmatch                     ap_is_fnmatch
 #define is_initial_req                 ap_is_initial_req
 #define is_matchexp                    ap_is_matchexp
 #define is_url                         ap_is_url
@@ -130,7 +136,7 @@
 #define kill_cleanups_for_socket       ap_kill_cleanups_for_socket
 #define kill_timeout                   ap_kill_timeout
 #define log_assert                     ap_log_assert
-#define log_error                      ap_log_error
+#define log_error                      ap_log_error_old
 #define log_printf                     ap_log_printf
 #define log_reason                     ap_log_reason
 #define log_unixerr                    ap_log_unixerr
@@ -143,6 +149,7 @@
 #define make_table                     ap_make_table
 #define matches_request_vhost          ap_matches_request_vhost
 #define meets_conditions               ap_meets_conditions
+#define month_snames                   ap_month_snames
 #define no2slash                       ap_no2slash
 #define note_auth_failure              ap_note_auth_failure
 #define note_basic_auth_failure        ap_note_basic_auth_failure
@@ -151,12 +158,14 @@
 #define note_cleanups_for_socket       ap_note_cleanups_for_socket
 #define note_digest_auth_failure       ap_note_digest_auth_failure
 #define note_subprocess                ap_note_subprocess
+#define null_cleanup                   ap_null_cleanup
 #define open_piped_log                 ap_open_piped_log
 #define os_escape_path                 ap_os_escape_path
 #define overlay_tables                 ap_overlay_tables
 #define palloc                         ap_palloc
 #define parseHTTPdate                  ap_parseHTTPdate
 #define parse_hostinfo_components      ap_parse_hostinfo_components
+#define parse_uri                      ap_parse_uri
 #define parse_uri_components           ap_parse_uri_components
 #define pcalloc                        ap_pcalloc
 #define pcfg_open_custom               ap_pcfg_open_custom
@@ -178,12 +187,15 @@
 #define pregsub                        ap_pregsub
 #define psignature                     ap_psignature
 #define psocket                        ap_psocket
+#define psprintf                       ap_psprintf
+#define pstrcat                        ap_pstrcat
 #define pstrdup                        ap_pstrdup
 #define pstrndup                       ap_pstrndup
 #define push_array                     ap_push_array
 #define pvsprintf                      ap_pvsprintf
 #define rationalize_mtime              ap_rationalize_mtime
 #define register_cleanup               ap_register_cleanup
+#define register_other_child           ap_register_other_child
 #define remove_module                  ap_remove_module
 #define requires                       ap_requires
 #define reset_timeout                  ap_reset_timeout
@@ -194,6 +206,7 @@
 #define rputs                          ap_rputs
 #define run_cleanup                    ap_run_cleanup
 #define run_sub_req                    ap_run_sub_req
+#define rvputs                         ap_rvputs
 #define rwrite                         ap_rwrite
 #define satisfies                      ap_satisfies
 #define scan_script_header_err         ap_scan_script_header_err
@@ -202,6 +215,7 @@
 #define send_fb_length                 ap_send_fb_length
 #define send_fd                        ap_send_fd
 #define send_fd_length                 ap_send_fd_length
+#define send_header_field              ap_send_header_field
 #define send_http_header               ap_send_http_header
 #define send_mmap                      ap_send_mmap
 #define send_size                      ap_send_size
@@ -209,9 +223,13 @@
 #define set_byterange                  ap_set_byterange
 #define set_content_length             ap_set_content_length
 #define set_etag                       ap_set_etag
+#define set_file_slot                  ap_set_file_slot
+#define set_flag_slot                  ap_set_flag_slot
 #define set_keepalive                  ap_set_keepalive
 #define set_last_modified              ap_set_last_modified
 #define set_module_config              ap_set_module_config
+#define set_string_slot                ap_set_string_slot
+#define set_string_slot_lower          ap_set_string_slot_lower
 #define setup_client_block             ap_setup_client_block
 #define should_client_block            ap_should_client_block
 #define soft_timeout                   ap_soft_timeout
@@ -227,6 +245,7 @@
 #define sync_scoreboard_image          ap_sync_scoreboard_image
 #define table_add                      ap_table_add
 #define table_addn                     ap_table_addn
+#define table_do                       ap_table_do
 #define table_get                      ap_table_get
 #define table_merge                    ap_table_merge
 #define table_mergen                   ap_table_mergen
@@ -238,14 +257,15 @@
 #define unblock_alarms                 ap_unblock_alarms
 #define unescape_url                   ap_unescape_url
 #define unparse_uri_components         ap_unparse_uri_components
+#define unregister_other_child         ap_unregister_other_child
 #define update_mtime                   ap_update_mtime
 #define uudecode                       ap_uudecode
 #define vbprintf                       ap_vbprintf
 
 /* 
- *   Mapping of Apache 1.2 symbols to 
- *   Apache 1.3 symbols which are
- *   _NO LONGER PART OF THE API_
+ *   Mapping of symbols which are private
+ *   to Apache httpd and should not be considered 
+ *   part of the public API
  */
 
 #ifdef APAPI_STRICT
@@ -253,10 +273,7 @@
 #define add_per_dir_conf               DO_NOT_USE_add_per_dir_conf
 #define add_per_url_conf               DO_NOT_USE_add_per_url_conf
 #define bind_address                   DO_NOT_USE_bind_address
-#define bprintf                        DO_NOT_USE_bprintf
-#define bvputs                         DO_NOT_USE_bvputs
 #define check_access                   DO_NOT_USE_check_access
-#define check_alarm                    DO_NOT_USE_check_alarm
 #define check_auth                     DO_NOT_USE_check_auth
 #define check_user_id                  DO_NOT_USE_check_user_id
 #define child_exit_modules             DO_NOT_USE_child_exit_modules
@@ -268,7 +285,6 @@
 #define daemons_max_free               DO_NOT_USE_daemons_max_free
 #define daemons_min_free               DO_NOT_USE_daemons_min_free
 #define daemons_to_start               DO_NOT_USE_daemons_to_start
-#define day_snames                     DO_NOT_USE_day_snames
 #define die                            DO_NOT_USE_die
 #define dummy_mutex                    DO_NOT_USE_dummy_mutex
 #define excess_requests_per_child      DO_NOT_USE_excess_requests_per_child
@@ -278,7 +294,6 @@
 #define find_command_in_modules        DO_NOT_USE_find_command_in_modules
 #define find_types                     DO_NOT_USE_find_types
 #define fini_vhost_config              DO_NOT_USE_fini_vhost_config
-#define fnmatch                        DO_NOT_USE_fnmatch
 #define force_library_loading          DO_NOT_USE_force_library_loading
 #define get_local_host                 DO_NOT_USE_get_local_host
 #define get_virthost_addr              DO_NOT_USE_get_virthost_addr
@@ -290,7 +305,6 @@
 #define init_vhost_config              DO_NOT_USE_init_vhost_config
 #define init_virtual_host              DO_NOT_USE_init_virtual_host
 #define invoke_handler                 DO_NOT_USE_invoke_handler
-#define is_fnmatch                     DO_NOT_USE_is_fnmatch
 #define keepalive_timeout              DO_NOT_USE_keepalive_timeout
 #define limit_section                  DO_NOT_USE_limit_section
 #define listenbacklog                  DO_NOT_USE_listenbacklog
@@ -300,12 +314,9 @@
 #define log_transaction                DO_NOT_USE_log_transaction
 #define max_requests_per_child         DO_NOT_USE_max_requests_per_child
 #define merge_per_dir_configs          DO_NOT_USE_merge_per_dir_configs
-#define month_snames                   DO_NOT_USE_month_snames
-#define null_cleanup                   DO_NOT_USE_null_cleanup
 #define open_logs                      DO_NOT_USE_open_logs
 #define os_is_path_absolute            DO_NOT_USE_os_is_path_absolute
 #define parse_htaccess                 DO_NOT_USE_parse_htaccess
-#define parse_uri                      DO_NOT_USE_parse_uri
 #define parse_vhost_addrs              DO_NOT_USE_parse_vhost_addrs
 #define pid_fname                      DO_NOT_USE_pid_fname
 #define process_request                DO_NOT_USE_process_request
@@ -344,22 +355,17 @@
 #define proxy_send_fb                  DO_NOT_USE_proxy_send_fb
 #define proxy_send_headers             DO_NOT_USE_proxy_send_headers
 #define proxyerror                     DO_NOT_USE_proxyerror
-#define psprintf                       DO_NOT_USE_psprintf
-#define pstrcat                        DO_NOT_USE_pstrcat
 #define read_config                    DO_NOT_USE_read_config
 #define read_request                   DO_NOT_USE_read_request
-#define register_other_child           DO_NOT_USE_register_other_child
 #define response_code_string           DO_NOT_USE_response_code_string
 #define restart_time                   DO_NOT_USE_restart_time
 #define rfc1413                        DO_NOT_USE_rfc1413
 #define rfc1413_timeout                DO_NOT_USE_rfc1413_timeout
 #define run_fixups                     DO_NOT_USE_run_fixups
 #define run_post_read_request          DO_NOT_USE_run_post_read_request
-#define rvputs                         DO_NOT_USE_rvputs
 #define scoreboard_fname               DO_NOT_USE_scoreboard_fname
 #define scoreboard_image               DO_NOT_USE_scoreboard_image
 #define send_error_response            DO_NOT_USE_send_error_response
-#define send_header_field              DO_NOT_USE_send_header_field
 #define send_http_options              DO_NOT_USE_send_http_options
 #define send_http_trace                DO_NOT_USE_send_http_trace
 #define server_argv0                   DO_NOT_USE_server_argv0
@@ -368,11 +374,7 @@
 #define server_pre_read_config         DO_NOT_USE_server_pre_read_config
 #define server_root                    DO_NOT_USE_server_root
 #define set_callback_and_alarm         DO_NOT_USE_set_callback_and_alarm
-#define set_file_slot                  DO_NOT_USE_set_file_slot
-#define set_flag_slot                  DO_NOT_USE_set_flag_slot
 #define set_name_virtual_host          DO_NOT_USE_set_name_virtual_host
-#define set_string_slot                DO_NOT_USE_set_string_slot
-#define set_string_slot_lower          DO_NOT_USE_set_string_slot_lower
 #define set_sub_req_protocol           DO_NOT_USE_set_sub_req_protocol
 #define setup_prelinked_modules        DO_NOT_USE_setup_prelinked_modules
 #define show_directives                DO_NOT_USE_show_directives
@@ -381,11 +383,9 @@
 #define start_restart                  DO_NOT_USE_start_restart
 #define start_shutdown                 DO_NOT_USE_start_shutdown
 #define suexec_enabled                 DO_NOT_USE_suexec_enabled
-#define table_do                       DO_NOT_USE_table_do
 #define threads_per_child              DO_NOT_USE_threads_per_child
 #define time_process_request           DO_NOT_USE_time_process_request
 #define translate_name                 DO_NOT_USE_translate_name
-#define unregister_other_child         DO_NOT_USE_unregister_other_child
 #define update_child_status            DO_NOT_USE_update_child_status
 #define update_vhost_from_headers      DO_NOT_USE_update_vhost_from_headers
 #define update_vhost_given_ip          DO_NOT_USE_update_vhost_given_ip
@@ -399,10 +399,7 @@
 #define add_per_dir_conf               apx_add_per_dir_conf
 #define add_per_url_conf               apx_add_per_url_conf
 #define bind_address                   apx_bind_address
-#define bprintf                        apx_bprintf
-#define bvputs                         apx_bvputs
 #define check_access                   apx_check_access
-#define check_alarm                    apx_check_alarm
 #define check_auth                     apx_check_auth
 #define check_user_id                  apx_check_user_id
 #define child_exit_modules             apx_child_exit_modules
@@ -414,7 +411,6 @@
 #define daemons_max_free               apx_daemons_max_free
 #define daemons_min_free               apx_daemons_min_free
 #define daemons_to_start               apx_daemons_to_start
-#define day_snames                     apx_day_snames
 #define die                            apx_die
 #define dummy_mutex                    apx_dummy_mutex
 #define excess_requests_per_child      apx_excess_requests_per_child
@@ -424,7 +420,6 @@
 #define find_command_in_modules        apx_find_command_in_modules
 #define find_types                     apx_find_types
 #define fini_vhost_config              apx_fini_vhost_config
-#define fnmatch                        apx_fnmatch
 #define force_library_loading          apx_force_library_loading
 #define get_local_host                 apx_get_local_host
 #define get_virthost_addr              apx_get_virthost_addr
@@ -436,7 +431,6 @@
 #define init_vhost_config              apx_init_vhost_config
 #define init_virtual_host              apx_init_virtual_host
 #define invoke_handler                 apx_invoke_handler
-#define is_fnmatch                     apx_is_fnmatch
 #define keepalive_timeout              apx_keepalive_timeout
 #define limit_section                  apx_limit_section
 #define listenbacklog                  apx_listenbacklog
@@ -446,12 +440,9 @@
 #define log_transaction                apx_log_transaction
 #define max_requests_per_child         apx_max_requests_per_child
 #define merge_per_dir_configs          apx_merge_per_dir_configs
-#define month_snames                   apx_month_snames
-#define null_cleanup                   apx_null_cleanup
 #define open_logs                      apx_open_logs
 #define os_is_path_absolute            apx_os_is_path_absolute
 #define parse_htaccess                 apx_parse_htaccess
-#define parse_uri                      apx_parse_uri
 #define parse_vhost_addrs              apx_parse_vhost_addrs
 #define pid_fname                      apx_pid_fname
 #define process_request                apx_process_request
@@ -490,22 +481,17 @@
 #define proxy_send_fb                  apx_proxy_send_fb
 #define proxy_send_headers             apx_proxy_send_headers
 #define proxyerror                     apx_proxyerror
-#define psprintf                       apx_psprintf
-#define pstrcat                        apx_pstrcat
 #define read_config                    apx_read_config
 #define read_request                   apx_read_request
-#define register_other_child           apx_register_other_child
 #define response_code_string           apx_response_code_string
 #define restart_time                   apx_restart_time
 #define rfc1413                        apx_rfc1413
 #define rfc1413_timeout                apx_rfc1413_timeout
 #define run_fixups                     apx_run_fixups
 #define run_post_read_request          apx_run_post_read_request
-#define rvputs                         apx_rvputs
 #define scoreboard_fname               apx_scoreboard_fname
 #define scoreboard_image               apx_scoreboard_image
 #define send_error_response            apx_send_error_response
-#define send_header_field              apx_send_header_field
 #define send_http_options              apx_send_http_options
 #define send_http_trace                apx_send_http_trace
 #define server_argv0                   apx_server_argv0
@@ -514,11 +500,7 @@
 #define server_pre_read_config         apx_server_pre_read_config
 #define server_root                    apx_server_root
 #define set_callback_and_alarm         apx_set_callback_and_alarm
-#define set_file_slot                  apx_set_file_slot
-#define set_flag_slot                  apx_set_flag_slot
 #define set_name_virtual_host          apx_set_name_virtual_host
-#define set_string_slot                apx_set_string_slot
-#define set_string_slot_lower          apx_set_string_slot_lower
 #define set_sub_req_protocol           apx_set_sub_req_protocol
 #define setup_prelinked_modules        apx_setup_prelinked_modules
 #define show_directives                apx_show_directives
@@ -527,11 +509,9 @@
 #define start_restart                  apx_start_restart
 #define start_shutdown                 apx_start_shutdown
 #define suexec_enabled                 apx_suexec_enabled
-#define table_do                       apx_table_do
 #define threads_per_child              apx_threads_per_child
 #define time_process_request           apx_time_process_request
 #define translate_name                 apx_translate_name
-#define unregister_other_child         apx_unregister_other_child
 #define update_child_status            apx_update_child_status
 #define update_vhost_from_headers      apx_update_vhost_from_headers
 #define update_vhost_given_ip          apx_update_vhost_given_ip
