@@ -643,7 +643,6 @@ DefaultLanguage en
 <context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
-<context>location</context>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
