@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Make apxs.pl more flexible (file extensions like .so or .dll are
+     no longer hardcoded). [Stipe Tolj <tolj@wapme-systems.de>]
+
   *) Add an intelligent error message should no proxy submodules be
      valid to handle a request. PR 8407 [Graham Leggett]
 

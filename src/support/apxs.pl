@@ -112,6 +112,12 @@ my $opt_a = 0;
 my $opt_A = 0;
 my $opt_q = 0;
 
+#   default for DSO file extension 
+my $dso_ext = "so";
+if ($^O eq "cygwin") {
+    $dso_ext = "dll";
+}
+
 #   this subroutine is derived from Perl's getopts.pl with the enhancement of
 #   the "+" metacharater at the format string to allow a list to be build by
 #   subsequent occurance of the same option.
@@ -270,6 +276,7 @@ if ($opt_g) {
     my $data = join('', <DATA>);
     $data =~ s|%NAME%|$name|sg;
     $data =~ s|%TARGET%|$CFG_TARGET|sg;
+    $data =~ s|%DSO_EXT%|$dso_ext|sg;
 
     my ($mkf, $src) = ($data =~ m|^(.+)-=#=-\n(.+)|s);
 
@@ -340,14 +347,14 @@ if ($opt_c) {
     if ($opt_o eq '') {
         if ($#srcs > -1) {
             $dso_file = $srcs[0];
-            $dso_file =~ s|\.[^.]+$|.so|;
+            $dso_file =~ s|\.[^.]+$|.$dso_ext|;
         }
         elsif ($#objs > -1) {
             $dso_file = $objs[0];
-            $dso_file =~ s|\.[^.]+$|.so|;
+            $dso_file =~ s|\.[^.]+$|.$dso_ext|;
         }
         else {
-            $dso_file = "mod_unknown.so";
+            $dso_file = "mod_unknown.$dso_ext";
         }
     }
     else {
@@ -452,7 +459,7 @@ if ($opt_i or $opt_e) {
     my @cmds = ();
     my $f;
     foreach $f (@args) {
-        if ($f !~ m|\.so$|) {
+        if ($f !~ m|\.$dso_ext$|) {
             print STDERR "apxs:Error: file $f is not a DSO\n";
             exit(1);
         }
@@ -592,20 +599,20 @@ APACHECTL=apachectl
 #LIB=-Lmy/lib/dir -lmylib
 
 #   the default target
-all: mod_%NAME%.so
+all: mod_%NAME%.%DSO_EXT%
 
 #   compile the DSO file
-mod_%NAME%.so: mod_%NAME%.c
+mod_%NAME%.%DSO_EXT%: mod_%NAME%.c
 	$(APXS) -c $(DEF) $(INC) $(LIB) mod_%NAME%.c
 
 #   install the DSO file into the Apache installation
 #   and activate it in the Apache configuration
 install: all
-	$(APXS) -i -a -n '%NAME%' mod_%NAME%.so
+	$(APXS) -i -a -n '%NAME%' mod_%NAME%.%DSO_EXT%
 
 #   cleanup
 clean:
-	-rm -f mod_%NAME%.o mod_%NAME%.so
+	-rm -f mod_%NAME%.o mod_%NAME%.%DSO_EXT%
 
 #   simple test
 test: reload
@@ -637,7 +644,7 @@ stop:
 **  for the URL /%NAME%, as follows:
 **
 **    #   %TARGET%.conf
-**    LoadModule %NAME%_module libexec/mod_%NAME%.so
+**    LoadModule %NAME%_module libexec/mod_%NAME%.%DSO_EXT%
 **    <Location /%NAME%>
 **    SetHandler %NAME%
 **    </Location>
