@@ -175,7 +175,7 @@ copy_table                     API_copy_table
 core_reorder_directories       APX_core_reorder_directories
 count_dirs                     API_count_dirs
 create_environment             API_create_environment
-create_per_dir_config          API_create_per_dir_config
+create_per_dir_config          APX_create_per_dir_config
 create_request_config          APX_create_request_config
 default_port_for_request       API_default_port_for_request
 default_port_for_scheme        API_default_port_for_scheme
@@ -448,5 +448,7 @@ apapi_get_server_version       API_get_server_version
 aplog_error                    API_log_error
 log_error                      API_log_error_old
 os_escape_path                 API_escape_path
-os_is_path_absolute            API_is_path_absolute
+
+#   specials: needs tag in source to become API_!
+os_is_path_absolute            APX_is_path_absolute
 
