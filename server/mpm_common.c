@@ -470,6 +470,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "set timeout on socket to connect to listener");
+        apr_socket_close(sock);
         return rv;
     }
     
