@@ -592,24 +592,10 @@ static APR_INLINE void do_double_reverse (conn_rec *conn)
     rv = apr_sockaddr_info_get(&sa, conn->remote_host, APR_UNSPEC, 0, 0, conn->pool);
     if (rv == APR_SUCCESS) {
         while (sa) {
-            if (sa->ipaddr_len == conn->remote_addr->ipaddr_len &&
-                !memcmp(sa->ipaddr_ptr, conn->remote_addr->ipaddr_ptr,
-                        sa->ipaddr_len)) {
+            if (apr_sockaddr_equal(sa, conn->remote_addr)) {
                 conn->double_reverse = 1;
                 return;
             }
-#if APR_HAVE_IPV6
-            /* match IPv4-mapped IPv6 addresses with IPv4 A record */
-            if (conn->remote_addr->sa.sin.sin_family == APR_INET6 &&
-                sa->sa.sin.sin_family == APR_INET &&
-                IN6_IS_ADDR_V4MAPPED((struct in6_addr *)conn->remote_addr->ipaddr_ptr) &&
-                !memcmp(&((struct in6_addr *)conn->remote_addr->ipaddr_ptr)->s6_addr[12],
-                        sa->ipaddr_ptr,
-                        sizeof (((struct in_addr *)0)->s_addr))) {
-                conn->double_reverse = 1;
-                return;
-            }
-#endif
             sa = sa->next;
         }
     }
