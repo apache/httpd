@@ -622,7 +622,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
     rv = ap_registry_get_array(p, conf_key, "ConfigArgs", &svc_args);
     if (rv != APR_SUCCESS) {
         if (rv == ERROR_FILE_NOT_FOUND) {
-            ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
                          "No ConfigArgs registered for %s, perhaps "
                          "this service is not installed?", 
                          mpm_service_name);

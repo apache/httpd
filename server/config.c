@@ -375,7 +375,7 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
     r->handler = old_handler;
 
     if (result == DECLINED && r->handler && r->filename) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
             "handler \"%s\" not found for: %s", r->handler, r->filename);
     }
 
@@ -422,10 +422,10 @@ AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
      */
 
     if (m->version != MODULE_MAGIC_NUMBER_MAJOR) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "%s: module \"%s\" is not compatible with this "
                      "version of Apache.", ap_server_argv0, m->name);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "Please contact the vendor for the correct version.");
         exit(1);
     }
@@ -440,10 +440,10 @@ AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
         dynamic_modules++;
 
         if (dynamic_modules > DYNAMIC_MODULE_LIMIT) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s: module \"%s\" could not be loaded, because"
                          " the dynamic", ap_server_argv0, m->name);
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "module limit was reached. Please increase "
                          "DYNAMIC_MODULE_LIMIT and recompile.");
             exit(1);
@@ -509,7 +509,7 @@ AP_DECLARE(void) ap_remove_module(module *m)
 
         if (!modp) {
             /* Uh-oh, this module doesn't exist */
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                          "Cannot remove module %s: not found in module list",
                          m->name);
             return;
@@ -599,7 +599,7 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
         sizeof(module *) * (total_modules + DYNAMIC_MODULE_LIMIT + 1));
 
     if (ap_loaded_modules == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "Ouch!  Out of memory in ap_setup_prelinked_modules()!");
     }
 
@@ -1378,7 +1378,7 @@ static void process_command_config(server_rec *s, apr_array_header_t *arr,
 
     errmsg = ap_build_config(&parms, p, ptemp, conftree);
     if (errmsg) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "Syntax error in -C/-c directive:" APR_EOL_STR "%s",
                      errmsg);
         exit(1);
@@ -1484,7 +1484,7 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
     if (ap_pcfg_openfile(&cfp, p, fname) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "%s: could not open document config file %s",
                      ap_server_argv0, fname);
         exit(1);
@@ -1495,11 +1495,11 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
     errmsg = ap_build_config(&parms, p, ptemp, conftree);
 
     if (errmsg != NULL) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "Syntax error on line %d of %s:",
                      parms.err_directive->line_num,
                      parms.err_directive->filename);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "%s", errmsg);
         exit(1);
     }
@@ -1523,11 +1523,11 @@ AP_DECLARE(void) ap_process_config_tree(server_rec *s,
 
     errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
     if (errmsg) {
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, p,
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
                      "Syntax error on line %d of %s:",
                      parms.err_directive->line_num,
                      parms.err_directive->filename);
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, p,
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
                      "%s", errmsg);
         exit(1);
     }
@@ -1584,7 +1584,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
             ap_cfg_closefile(f);
 
             if (errmsg) {
-                ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ALERT, 0, r,
                               "%s: %s", filename, errmsg);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }

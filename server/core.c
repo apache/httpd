@@ -1083,7 +1083,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
                            APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS
         || !ap_is_directory(cmd->pool, arg)) {
         if (cmd->server->is_virtual) {
-            ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0,
+            ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0,
                           cmd->pool,
                           "Warning: DocumentRoot [%s] does not exist",
                           arg);
@@ -1155,7 +1155,7 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
     /* The entry should be ignored if it is a full URL for a 401 error */
 
     if (error_number == 401 && what == REMOTE_PATH) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
                      "cannot use a full URL in a 401 ErrorDocument "
                      "directive --- ignoring!");
     }
@@ -2505,7 +2505,7 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
 static const char *no_set_limit(cmd_parms *cmd, void *conf_,
                                 const char *arg, const char *arg2)
 {
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
                 "%s not supported on this platform", cmd->cmd->name);
 
     return NULL;
@@ -3056,7 +3056,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         return HTTP_FORBIDDEN;
     }
     if (!r->uri || ((r->uri[0] != '/') && strcmp(r->uri, "*"))) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                      "Invalid URI in request %s", r->the_request);
         return HTTP_BAD_REQUEST;
     }
@@ -3200,7 +3200,7 @@ static int default_handler(request_rec *r)
 
     if (r->method_number == M_GET || r->method_number == M_POST) {
         if (r->finfo.filetype == 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "File does not exist: %s", r->filename);
             return HTTP_NOT_FOUND;
         }
@@ -3209,7 +3209,7 @@ static int default_handler(request_rec *r)
             r->path_info && *r->path_info)
         {
             /* default to reject */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "File does not exist: %s",
                           apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
             return HTTP_NOT_FOUND;
@@ -3274,7 +3274,7 @@ static int default_handler(request_rec *r)
     }
     else {              /* unusual method (not GET or POST) */
         if (r->method_number == M_INVALID) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Invalid method in request %s", r->the_request);
             return HTTP_NOT_IMPLEMENTED;
         }

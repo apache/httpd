@@ -206,7 +206,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         is_parent_process = TRUE;
 
         if (ap_setup_listeners(ap_server_conf) < 1) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s,
                          "no listening sockets available, shutting down");
             return 1;
         }
@@ -221,12 +221,12 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             const char *pidfile = ap_server_root_relative(pconf, ap_pid_fname);
 
             if (pidfile != NULL && remove(pidfile) == 0) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS,
+                ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS,
                              ap_server_conf, "removed PID file %s (pid=%d)",
                              pidfile, getpid());
             }
 
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                          "caught SIGTERM, shutting down");
             return 1;
         }
@@ -253,7 +253,7 @@ static char master_main()
     set_signals();
 
     if (ap_setup_listeners(ap_server_conf) < 1) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s,
                      "no listening sockets available, shutting down");
         return FALSE;
     }
@@ -310,13 +310,13 @@ static char master_main()
     }
 
     ap_scoreboard_image->global->restart_time = apr_time_now();
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
 		"AcceptMutex: %s", ap_valid_accept_mutex_string);
 #endif
     if (one_process) {
@@ -548,11 +548,11 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy,
     ap_min_spare_threads = atoi(arg);
 
     if (ap_min_spare_threads <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: detected MinSpareThreads set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Please read the documentation.");
        ap_min_spare_threads = 1;
     }

@@ -346,7 +346,7 @@ apr_status_t ap_registry_store_value(const char *key, const char *name, const ch
 		       (DWORD) strlen(value) + 1); /* for size of "value" */
 
     if (rv == ERROR_SUCCESS) {
-	ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO,rv,NULL,
+	ap_log_error(APLOG_MARK,APLOG_INFO,rv,NULL,
 	    "Registry stored HKLM\\" REGKEY "\\%s value %s", key, value);
     }
 
@@ -418,7 +418,7 @@ apr_status_t ap_registry_store_array(apr_pool_t *p,
 		       (DWORD) bufsize); /* for size of "value" */
 
     if (rv == ERROR_SUCCESS) {
-	ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO,rv,NULL,
+	ap_log_error(APLOG_MARK,APLOG_INFO,rv,NULL,
 	    "Registry stored HKLM\\" REGKEY "\\%s", key);
     }
 

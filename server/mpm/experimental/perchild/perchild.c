@@ -550,7 +550,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id,
     }
 
     if (csd >= FD_SETSIZE) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
                      "new file descriptor %d is too large; you probably need "
                      "to rebuild Apache with a larger FD_SETSIZE "
                      "(currently %d)", 
@@ -603,7 +603,7 @@ static int start_thread(void)
         static int reported = 0;
         
         if (!reported) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                          ap_server_conf,
                          "server reached MaxThreadsPerChild setting, "
                          "consider raising the MaxThreadsPerChild or "
@@ -1042,7 +1042,7 @@ static int make_child(server_rec *s, int slot)
         int status = bindprocessor(BINDPROCESS, (int)getpid(),
                                    PROCESSOR_CLASS_ANY);
         if (status != OK) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, 
                          ap_server_conf, "processor unbind failed %d", status);
         }
 #endif
@@ -1190,7 +1190,7 @@ static void server_main_loop(int remaining_children_to_start)
                 * child table.  Somehow we don't know about this
                 * child.
                 */
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, 
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, 
                              ap_server_conf,
                              "long lost child came home! (pid %ld)", 
                              (long)pid.pid);
@@ -1235,7 +1235,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     first_server_limit = server_limit;
     first_thread_limit = thread_limit;
     if (changed_limit_at_restart) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      "WARNING: Attempt to change ServerLimit or ThreadLimit "
                      "ignored during restart");
         changed_limit_at_restart = 0;
@@ -1319,13 +1319,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         hold_off_on_exponential_spawning = 10;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                  "%s configured -- resuming normal operations",
                  ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                  "Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
 		"AcceptMutex: %s", ap_valid_accept_mutex_string);
 #endif
     restart_pending = shutdown_pending = 0;
@@ -1347,13 +1347,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             const char *pidfile = NULL;
             pidfile = ap_server_root_relative (pconf, ap_pid_fname);
             if (pidfile != NULL && unlink(pidfile) == 0) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                              ap_server_conf,
                              "removed PID file %s (pid=%ld)",
                              pidfile, (long)getpid());
             }
     
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
                          ap_server_conf, "caught SIGTERM, shutting down");
         }
         return 1;
@@ -1370,7 +1370,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (is_graceful) {
         char char_of_death = '!';
 
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
                      ap_server_conf, AP_SIG_GRACEFUL_STRING " received.  "
                      "Doing graceful restart");
 
@@ -1404,7 +1404,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                          "killpg SIGTERM");
         }
         ap_reclaim_child_processes(1);      /* Start with SIGTERM */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
                      ap_server_conf, "SIGHUP received.  Attempting to restart");
     }
     return 0;
@@ -1421,7 +1421,7 @@ static int perchild_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_server_conf = s;
 
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0,
+        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0,
                      NULL, "no listening sockets available, shutting down");
         return DONE;
     }
@@ -1671,7 +1671,7 @@ static int perchild_post_read(request_rec *r)
          * needs to be passed to another child. */
         if (sconf->sd != child_info_table[child_num].sd) {
             if (pass_request(r) == -1) {
-                ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              ap_server_conf, "Could not pass request to proper "
                              "child, request will not be honored.");
             }
@@ -1714,18 +1714,18 @@ static const char *set_num_daemons(cmd_parms *cmd, void *dummy,
 
     num_daemons = atoi(arg);
     if (num_daemons > server_limit) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: NumServers of %d exceeds ServerLimit value "
                     "of %d servers,", num_daemons, server_limit);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " lowering NumServers to %d.  To increase, please "
                     "see the", server_limit);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " ServerLimit directive.");
        num_daemons = server_limit;
     } 
     else if (num_daemons < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require NumServers > 0, setting to 1");
         num_daemons = 1;
     }
@@ -1742,18 +1742,18 @@ static const char *set_threads_to_start(cmd_parms *cmd, void *dummy,
 
     threads_to_start = atoi(arg);
     if (threads_to_start > thread_limit) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: StartThreads of %d exceeds ThreadLimit value"
                      " of %d threads,", threads_to_start,
                      thread_limit);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      " lowering StartThreads to %d. To increase, please"
                      " see the", thread_limit);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      " ThreadLimit directive.");
     }
     else if (threads_to_start < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require StartThreads > 0, setting to 1");
         threads_to_start = 1;
     }
@@ -1770,11 +1770,11 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy,
 
     min_spare_threads = atoi(arg);
     if (min_spare_threads <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: detected MinSpareThreads set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Please read the documentation.");
        min_spare_threads = 1;
     }
@@ -1792,9 +1792,9 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy,
 
     max_spare_threads = atoi(arg);
     if (max_spare_threads >= thread_limit) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: detected MinSpareThreads set higher than");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "ThreadLimit. Resetting to %d", thread_limit);
        max_spare_threads = thread_limit;
     }
@@ -1810,9 +1810,9 @@ static const char *set_max_threads(cmd_parms *cmd, void *dummy, const char *arg)
 
     max_threads = atoi(arg);
     if (max_threads > thread_limit) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: detected MaxThreadsPerChild set higher than");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "ThreadLimit. Resetting to %d", thread_limit);
        max_threads = thread_limit;
     }
@@ -1906,15 +1906,15 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     server_limit = tmp_server_limit;
     
     if (server_limit > MAX_SERVER_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: ServerLimit of %d exceeds compile time limit "
                     "of %d servers,", server_limit, MAX_SERVER_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " lowering ServerLimit to %d.", MAX_SERVER_LIMIT);
        server_limit = MAX_SERVER_LIMIT;
     } 
     else if (server_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ServerLimit > 0, setting to 1");
 	server_limit = 1;
     }
@@ -1946,15 +1946,15 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     thread_limit = tmp_thread_limit;
     
     if (thread_limit > MAX_THREAD_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: ThreadLimit of %d exceeds compile time limit "
                     "of %d servers,", thread_limit, MAX_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " lowering ThreadLimit to %d.", MAX_THREAD_LIMIT);
        thread_limit = MAX_THREAD_LIMIT;
     } 
     else if (thread_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ThreadLimit > 0, setting to 1");
 	thread_limit = 1;
     }

@@ -126,7 +126,7 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, create_request,
 static int decl_die(int status, char *phase, request_rec *r)
 {
     if (status == DECLINED) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
                       "configuration error:  couldn't %s: %s", phase, r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -371,7 +371,7 @@ static int check_safe_file(request_rec *r)
         return OK;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "object is not a file, directory or symlink: %s",
                   r->filename);
     return HTTP_FORBIDDEN;
@@ -487,7 +487,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * handler.  Leave INFO notes here for module debugging.
      */
     if (r->filename == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                       "Module bug?  Request filename is missing for URI %s",
                       r->uri);
        return OK;
@@ -500,7 +500,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     if ((rv = apr_filepath_merge(&entry_dir, NULL, r->filename,
                                  APR_FILEPATH_NOTRELATIVE, r->pool))
                   != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                       "Module bug?  Request filename path %s is invalid or "
                       "or not absolute for uri %s",
                       r->filename, r->uri);
@@ -1029,7 +1029,7 @@ minimerge2:
                  */
                 if ((res = resolve_symlink(r->filename, &thisinfo,
                                            opts, r->pool)) != OK) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Symbolic link not allowed: %s",
                                   r->filename);
                     return r->status = res;
@@ -1043,7 +1043,7 @@ minimerge2:
                     break;
                 }
                 else if (thisinfo.filetype != APR_DIR) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "symlink doesn't point to a file or "
                                   "directory: %s",
                                   r->filename);
@@ -1146,7 +1146,7 @@ minimerge2:
  x   if (r->finfo.filetype != APR_DIR
  x       && (res = resolve_symlink(r->filename, r->info, ap_allow_options(r),
  x                                 r->pool))) {
- x       ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+ x       ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
  x                     "Symbolic link not allowed: %s", r->filename);
  x       return res;
  x   }

@@ -95,7 +95,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
 	while ((len = ap_get_client_block(r, buffer, READ_BLOCKSIZE)) > 0) {
 	    total_read += len;
 	    if (limit_xml_body && total_read > limit_xml_body) {
-		ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			      "XML request body is larger than the configured "
 			      "limit of %lu", (unsigned long)limit_xml_body);
 		goto read_error;
@@ -114,7 +114,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
     /* tell the parser that we're done */
     status = apr_xml_parser_done(parser, pdoc);
     if (status) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "XML parser error (at end). status=%d", status);
         return HTTP_BAD_REQUEST;
     }
@@ -123,7 +123,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
 
   parser_error:
     (void) apr_xml_parser_geterror(parser, errbuf, sizeof(errbuf));
-    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "%s", errbuf);
 
     /* FALLTHRU */

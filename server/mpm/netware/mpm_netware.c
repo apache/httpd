@@ -706,7 +706,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             static int reported = 0;
 
             if (!reported) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
                     "server reached MaxClients setting, consider"
                     " raising the MaxClients setting");
                 reported = 1;
@@ -715,7 +715,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
         }
         else {
             if (idle_spawn_rate >= 8) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                     "server seems busy, (you may need "
                     "to increase StartServers, or Min/MaxSpareServers), "
                     "spawning %d children, there are %d idle, and "
@@ -850,7 +850,7 @@ static int setup_listeners(server_rec *s)
     int sockdes;
 
     if (ap_setup_listeners(s) < 1 ) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
         return -1;
     }
@@ -893,7 +893,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_server_conf = s;
 
     if (setup_listeners(s)) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, status, s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, status, s,
             "no listening sockets available, shutting down");
         return -1;
     }
@@ -923,13 +923,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     startup_workers(ap_threads_to_start);
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
 		"AcceptMutex: %s", ap_valid_accept_mutex_string);
 #endif
     show_server_data();
@@ -947,7 +947,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     shutdown_listeners();*/
 
     if (shutdown_pending) { /* Got an unload from the console */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
             "caught SIGTERM, shutting down");
 
         DBPRINT0 ("Shutdown pending. Waiting for threads to terminate...\n");
@@ -964,7 +964,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ++ap_my_generation;
         ap_scoreboard_image->global->running_generation = ap_my_generation;
 
-    	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+    	ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		    "Graceful restart requested, doing restart");
 
         /* Wait for all of the threads to terminate before initiating the restart */
@@ -1213,11 +1213,11 @@ static const char *set_min_free_threads(cmd_parms *cmd, void *dummy, const char 
 
     ap_threads_min_free = atoi(arg);
     if (ap_threads_min_free <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: detected MinSpareServers set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Please read the documentation.");
        ap_threads_min_free = 1;
     }
@@ -1245,19 +1245,19 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
 
     ap_threads_limit = atoi(arg);
     if (ap_threads_limit > HARD_THREAD_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: MaxThreads of %d exceeds compile time limit "
                     "of %d threads,", ap_threads_limit, HARD_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " lowering MaxThreads to %d.  To increase, please "
                     "see the", HARD_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     " HARD_THREAD_LIMIT define in %s.",
                     AP_MPM_HARD_LIMITS_FILE);
        ap_threads_limit = HARD_THREAD_LIMIT;
     } 
     else if (ap_threads_limit < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
             "WARNING: Require MaxThreads > 0, setting to 1");
         ap_threads_limit = 1;
     }

@@ -836,7 +836,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp)
 {
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, 
         "Done with config file %s", cfp->name);
 #endif
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
@@ -879,14 +879,14 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
 #endif
 
     if (name == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                "Internal error: pcfg_openfile() called with NULL filename");
         return APR_EBADF;
     }
 
     status = apr_file_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                 "Opening config file %s (%s)",
                 name, (status != APR_SUCCESS) ? 
                 apr_strerror(status, buf, sizeof(buf)) : "successful");
@@ -904,7 +904,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
         apr_file_close(file);
@@ -955,7 +955,7 @@ AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *des
 {
     ap_configfile_t *new_cfg = apr_palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL, "Opening config handler %s", descr);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Opening config handler %s", descr);
 #endif
     new_cfg->param = param;
     new_cfg->name = descr;
@@ -1042,7 +1042,7 @@ AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
 	        ;
 
 #ifdef DEBUG_CFG_LINES
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, "Read config: %s", buf);
+	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Read config: %s", buf);
 #endif
 	return 0;
     } else {
@@ -1099,7 +1099,7 @@ AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
 		    --i;
 		buf[i] = '\0';
 #ifdef DEBUG_CFG_LINES
-		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, "Read config: %s", buf);
+		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Read config: %s", buf);
 #endif
 		return 0;
 	    }
@@ -1845,7 +1845,7 @@ char *ap_get_local_host(apr_pool_t *a)
     if (!server_hostname) 
         server_hostname = apr_pstrdup(a, "127.0.0.1");
 
-    ap_log_perror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO|APLOG_STARTUP, 0, a,
+    ap_log_perror(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0, a,
                  "%s: Could not determine the server's fully qualified "
                  "domain name, using %s for ServerName",
                  ap_server_argv0, server_hostname);
