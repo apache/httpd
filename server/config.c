@@ -926,6 +926,9 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
         if (*lastc == '>') {
             *lastc = '\0' ;
         }
+        if (cmd_name[0] == '<' && *args == '\0') {
+            args = ">";
+        }
     }
 
     newdir = apr_pcalloc(p, sizeof(ap_directive_t));
