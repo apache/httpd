@@ -62,7 +62,9 @@ When used, this directive sets an expiry time on the cookie generated
 by the usertrack module. The <i>expiry-period</i> can be given either
 as a number of seconds, or in the format such as "2 weeks 3 days 7
 hours".  Valid denominations are: years, months, weeks, hours, minutes
-and seconds.
+and seconds.  If the expiry time is in any format other than one
+number indicating the number of seconds, it must be enclosed by
+double quotes.
 
 <p>If this directive is not used, cookies last only for the current
 browser session.</p>
