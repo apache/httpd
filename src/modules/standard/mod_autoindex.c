@@ -140,20 +140,8 @@ static char c_by_encoding, c_by_type, c_by_path;
  * matches ".." or "../").  Hopefully this one call is significantly less
  * expensive than multiple strcmp() calls.
  */
-static int is_parent(const char *name)
+static ap_inline int is_parent(const char *name)
 {
-    /*
-     * If it's no name at all, it isn't our parent.
-     */
-    if (name == NULL) {
-        return 0;
-    }
-    /*
-     * Nor is it if the name isn't long enough.
-     */
-    if ((name[0] == '\0') || (name[1] == '\0')) {
-        return 0;
-    }
     /*
      * Now, IFF the first two bytes are dots, and the third byte is either
      * EOS (\0) or a slash followed by EOS, we have a match.
