@@ -1,4 +1,32 @@
 Changes with Apache 2.0.19-dev
+  *) Extend mod_headers to support conditional driven Header 
+     add, append and set. Use SetEnvIf to set an envar and conditionally
+     add/append/set headers based on this envar thusly:
+
+     SetEnvIf TSMyHeader value HAVE_TSMyHeader
+     Header add MyHeader "%t %D" env=HAVE_TSMyHeader
+
+     If the request contains header "TSMyHeader: value" then header
+     MyHeader: "t=xxxxxxxxxx D=yyyy" will be sent on the response.
+     [Bill Stoddard]
+
+  *) Extend mod_headers to support using format specifiers on Header
+     add, append and set header values. Two format specifiers are supported:
+
+     %t - reports, in UTC microseconds since the epoch, when the
+          request was received.
+
+     %D - reports the time, in microseconds, between when the request was 
+          received and the response sent. 
+
+     Examples:
+     Header add MyHeader "This request served in %D microseconds. %t"
+
+     results in a header being added to the response that looks like this:
+     
+     MyHeader: This request served in D=5438 microseconds. t=991424704447256
+
+     [Bill Stoddard]
 
   *) Fix reset_filter().  We need to be careful how we remove filters.
      If we set r->output_filters to NULL, we also have to reset the

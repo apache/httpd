@@ -153,6 +153,7 @@ typedef struct {
     char *header;
     apr_array_header_t *ta;   /* Array of format_tag structs */
     regex_t *regex;
+    const char *condition_var;
 } header_entry;
 
 /* echo_do is used for Header echo to iterate through the request headers*/
@@ -338,15 +339,16 @@ static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s
 /* handle RequestHeader and Header directive */
 static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
-                              const char *value)
+                              const char *value, const char* envclause)
 {
     headers_conf *dirconf = indirconf;
+    const char *condition_var;
+    char *colon;
     char *hdr = apr_pstrdup(cmd->pool, inhdr);
     header_entry *new;
     server_rec *s = cmd->server;
     headers_conf *serverconf = ap_get_module_config(s->module_config,
                                                     &headers_module);
-    char *colon;
 
     if (cmd->path) {
         new = (header_entry *) apr_array_push((hdr_in == inout) ? dirconf->fixup_in : dirconf->fixup_out);
@@ -389,20 +391,47 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
     else if (!value)
         return "header requires three arguments";
 
+    /* Handle the envclause on Header */
+    if (envclause != NULL) {
+        if (inout != hdr_out) {
+            return "error: envclause (env=...) only valid on Header directive";
+        }
+	if (strncasecmp(envclause, "env=", 4) != 0) {
+	    return "error: envclause should be in the form env=envar";
+	}
+	if ((envclause[4] == '\0')
+	    || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
+	    return "error: missing environment variable name. envclause should be in the form env=envar ";
+	}
+	condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
+    }
+    
     if ((colon = strchr(hdr, ':')))
         *colon = '\0';
 
     new->header = hdr;
+    new->condition_var = condition_var;
 
     return parse_format_string(cmd->pool, new, value);
 }
 
 /* Handle Header directive */
 static const char *header_cmd(cmd_parms *cmd, void *indirconf,
-                              const char *action, const char *inhdr,
-                              const char *value)
+                              const char *args)
 {
-    return header_inout_cmd(hdr_out, cmd, indirconf, action, inhdr, value);
+    char *s;
+    const char *action;
+    const char *hdr;
+    const char *val;
+    const char *envclause;
+
+    s = apr_pstrdup(cmd->pool, args);
+    action = ap_getword_conf(cmd->pool, &s);
+    hdr = ap_getword_conf(cmd->pool, &s);
+    val = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
+    envclause = *s ? ap_getword_conf(cmd->pool, &s) : NULL;
+
+    return header_inout_cmd(hdr_out, cmd, indirconf, action, hdr, val, envclause);
 }
 
 /* handle RequestHeader directive */
@@ -410,7 +439,7 @@ static const char *request_header_cmd(cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value)
 {
-    return header_inout_cmd(hdr_in, cmd, indirconf, action, inhdr, value);
+    return header_inout_cmd(hdr_in, cmd, indirconf, action, inhdr, value, NULL);
 }
 
 /*
@@ -458,6 +487,20 @@ static void do_headers_fixup(request_rec *r, hdr_inout inout,
 
     for (i = 0; i < fixup->nelts; ++i) {
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
+
+        /* Have any conditional envar-controlled Header processing to do? */
+        if (hdr->condition_var) {
+            const char *envar = hdr->condition_var;
+            if (*envar != '!') {
+                if (apr_table_get(r->subprocess_env, envar) == NULL)
+                    continue;
+            }
+            else {
+                if (apr_table_get(r->subprocess_env, &envar[1]) != NULL)
+                    continue;
+            }
+        }
+
         switch (hdr->action) {
         case hdr_add:
             apr_table_addn(headers, hdr->header, process_tags(hdr, r));
@@ -536,8 +579,8 @@ static apr_status_t ap_headers_fixup(request_rec *r)
                                         
 static const command_rec headers_cmds[] =
 {
-    AP_INIT_TAKE23("Header", header_cmd, NULL, OR_FILEINFO,
-                   "an action, header and value"),
+    AP_INIT_RAW_ARGS("Header", header_cmd, NULL, OR_FILEINFO,
+                   "an action, header and value followed by optional env clause"),
     AP_INIT_TAKE23("RequestHeader", request_header_cmd, NULL, OR_FILEINFO,
                    "an action, header and value"),
     {NULL}
