@@ -81,6 +81,7 @@
 static int threads_to_start = 0;         /* Worker threads per child */
 static int min_spare_threads = 0;
 static int max_spare_threads = 0;
+static int max_threads = 0;
 static int max_requests_per_child = 0;
 static char *ap_pid_fname=NULL;
 static int num_daemons=0;
@@ -842,19 +843,42 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd)
 
 static void *worker_thread(void *);
 
-static void start_thread(worker_thread_info *thread_info)
+/* Starts a thread as long as we're below max_threads */
+static int start_thread(worker_thread_info *thread_info)
 {
     pthread_t thread;
 
-    if (pthread_create(&thread, &(thread_info->attr), worker_thread, thread_info)) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-                     "pthread_create: unable to create worker thread");
-        /* In case system resources are maxxed out, we don't want
-           Apache running away with the CPU trying to fork over and
-           over and over again if we exit. */
-        sleep(10);
-        workers_may_exit = 1;
+    pthread_mutex_lock(&worker_thread_count_mutex);
+    if (worker_thread_count < max_threads) {
+        worker_thread_count++;
+        if (pthread_create(&thread, &(thread_info->attr), worker_thread, thread_info)) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+                         "pthread_create: unable to create worker thread");
+            /* In case system resources are maxxed out, we don't want
+               Apache running away with the CPU trying to fork over and
+               over and over again if we exit. */
+            sleep(10);
+            worker_thread_count--;
+            workers_may_exit = 1;
+            pthread_mutex_unlock(&worker_thread_count_mutex);
+            return 0;
+        }
     }
+    else {
+        static int reported = 0;
+        
+        if (!reported) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+                         "server reached MaxThreadsPerChild setting, consider raising the"
+                         " MaxThreadsPerChild or NumServers settings");
+            reported = 1;
+        }
+        pthread_mutex_unlock(&worker_thread_count_mutex);
+        return 0;
+    }
+    pthread_mutex_unlock(&worker_thread_count_mutex);
+    return 1;
+
 }
 
 /* idle_thread_count should be incremented before starting a worker_thread */
@@ -878,10 +902,6 @@ static void *worker_thread(void *arg)
     tpool = ap_make_sub_pool(thread_info->pool);
     pthread_mutex_unlock(&thread_info->mutex);
     ptrans = ap_make_sub_pool(tpool);
-
-    pthread_mutex_lock(&worker_thread_count_mutex);
-    worker_thread_count++;
-    pthread_mutex_unlock(&worker_thread_count_mutex);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -978,7 +998,9 @@ static void *worker_thread(void *arg)
                 idle_thread_count--;
             }
             else {
-                start_thread(thread_info);
+                if (!start_thread(thread_info)) {
+                    idle_thread_count--;
+                }
             }
             pthread_mutex_unlock(&idle_thread_count_mutex);
 	} else {
@@ -1053,6 +1075,9 @@ static void child_main(void)
 
     /* Setup worker threads */
 
+    if (threads_to_start > max_threads) {
+        threads_to_start = max_threads;
+    }
     idle_thread_count = threads_to_start;
     worker_thread_count = 0;
     thread_info.pool = ap_make_sub_pool(pconf);
@@ -1065,7 +1090,10 @@ static void child_main(void)
 
     /* We are creating worker threads right now */
     for (i=0; i < threads_to_start; i++) {
-        start_thread(&thread_info);
+        /* start_thread shouldn't fail here */
+        if (!start_thread(&thread_info)) {
+            break;
+        }
     }
 
     /* This thread will be the one responsible for handling signals */
@@ -1444,6 +1472,7 @@ static void dexter_pre_config(pool *pconf, pool *plog, pool *ptemp)
     threads_to_start = DEFAULT_START_THREAD;
     min_spare_threads = DEFAULT_MIN_SPARE_THREAD;
     max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
+    max_threads = HARD_THREAD_LIMIT;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
@@ -1556,6 +1585,22 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+static const char *set_max_threads(cmd_parms *cmd, void *dummy, char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    max_threads = atoi(arg);
+    if (max_threads >= HARD_THREAD_LIMIT) {
+       fprintf(stderr, "WARNING: detected MaxThreadsPerChild set higher than\n");
+       fprintf(stderr, "HARD_THREAD_LIMIT. Resetting to %d\n", HARD_THREAD_LIMIT);
+       max_threads = HARD_THREAD_LIMIT;
+    }
+    return NULL;
+}
+
 static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1635,6 +1680,8 @@ LISTEN_COMMANDS
   "Minimum number of idle threads per child, to handle request spikes" },
 { "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF, TAKE1,
   "Maximum number of idle threads per child" },
+{ "MaxThreadsPerChild", set_max_threads, NULL, RSRC_CONF, TAKE1,
+  "Maximum number of threads per child" },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
   "Maximum number of requests a particular child serves before dying." },
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
