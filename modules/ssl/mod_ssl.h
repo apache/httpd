@@ -102,6 +102,7 @@
 #include "apr_dbm.h"
 #include "apr_rmm.h"
 #include "apr_shm.h"
+#include "apr_global_mutex.h"
 #include "apr_optional.h"
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
@@ -449,7 +450,7 @@ typedef struct {
     apr_table_t    *tSessionCacheDataTable;
     ssl_mutexmode_t nMutexMode;
     const char     *szMutexFile;
-    apr_lock_t     *pMutex;
+    apr_global_mutex_t   *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
     void           *pTmpKeys[SSL_TMP_KEY_MAX];
