@@ -569,7 +569,7 @@ stop:
 **
 **    HTTP/1.1 200 OK
 **    Date: Tue, 31 Mar 1998 14:42:22 GMT
-**    Server: Apache/1.3b6-dev
+**    Server: Apache/1.3.4 (Unix)
 **    Connection: close
 **    Content-Type: text/html
 **  
