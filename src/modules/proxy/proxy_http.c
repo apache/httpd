@@ -171,7 +171,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 		       const char *proxyhost, int proxyport)
 {
     const char *strp;
-    char *strp2;
+    char *strp2, *pragma;
     const char *err, *desthost;
     int i, j, sock, len, backasswards;
     array_header *reqhdrs_arr;
@@ -472,6 +472,14 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	ap_table_set(resp_hdrs, "Location", proxy_location_reverse_map(r, datestr));
     if ((datestr = ap_table_get(resp_hdrs, "URI")) != NULL)
 	ap_table_set(resp_hdrs, "URI", proxy_location_reverse_map(r, datestr));
+
+ /* If "Pragma: no-cache" set nocache and make reply un-buffered to
+ /* ensure timely delivery */
+    if (((pragma = ap_table_get(resp_hdrs, "Pragma")) != NULL &&
+        ap_proxy_liststr(pragma, "no-cache"))) {
+        nocache = 1;
+        r->connection->client->flags &= ~B_WR;
+    }
 
 /* check if NoCache directive on this host */
     if (nocache == 0) {

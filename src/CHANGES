@@ -1,5 +1,8 @@
 Changes with Apache 1.3.21
 
+  *) mod_proxy - fix for Pragma: nocache (HTTP/1.0 only)
+     [Kim Bisgaard <kib@dmi.dk>] PR #5668
+
   *) PORT: Some Cygwin changes, esp. improvements for dynamic loading,
      and cleanups. [Stipe Tolj <tolj@wapme-systems.de>]
 
