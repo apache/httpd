@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="KOI8-R"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Мульти-процессные модули (МП-модули) - HTTP сервер Apache</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
+<p class="apache">HTTP сервер Apache Версия 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs-project/">Документация</a> &gt; <a href="./">Версия 2.0</a></div><div id="page-content"><div id="preamble"><h1>Мульти-процессные модули (МП-модули)</h1>
+<p>Этот документ описысывает, что такое мульти-процессные модули
+и как они используются в HTTP-сервере Apache.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Введение</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#choosing">Выбор МП-модуля</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#defaults">Подключённые по умолчанию МП-модули</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Введение</a></h2>
+
+    <p>HTTP-сервер Apache был разработан как мощный и гибкий веб-сервер,
+    который может работать на самых разных платформах и в рамках
+    различного окружения. Различные платформы и окружения часто
+    требуют и различных возможностей или могут предоставлять
+    различные пути реализации одной и той же возможности наиболее
+    эффективно. Apache всегда мог работать в различных
+    средах окружения за счёт своей модульной архитектуры, которая
+    позволяет вебмастеру выбрать всю необходимую функциональность,
+    которая будет реализовываться сервером после компиляции, при
+    помощи компилируемых или подключаемых модулей.</p>
+
+    <p>В Apache 2.0 модульная архитектура была расширена наиболее
+    общими функциями веб-сервера. Теперь сервер поставляется с 
+    набором мульти-процессных модулей (МП-модулей), ответственных
+    за соединение с сетевыми портами компьютера, за приём запросов
+    и за координацию их обработки дочерними процессами.</p>
+
+    <p>Расширение модульной архитектуры до этого уровня даёт
+    два важных преимущества:</p>
+
+    <ul>
+      <li>Apache может более аккуратно и эффективно работать
+      в самых разных операционных системах. В частности, 
+      версия Apache для Windows теперь работает намного более 
+      эффективно, благодаря тому, что МП-модуль
+      <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> может использовать собственные
+      сетевые функции Windows взамен сетевых функций уровня POSIX.
+      Эта касается и других операционных систем, для которых
+      разработаны специальные МП-модули.</li>
+
+      <li>Сервер может быть настрен более оптимально для нужд конкретного
+      сайта. Например, для сайтов, требующих значительной
+      масштабируемости, может быть выбран многопоточный МП-модуль,
+      такой как <code class="module"><a href="./mod/worker.html">worker</a></code>, а для сайтов, требующих
+      большей стабильности или совместимости со старым ПО, может
+      быть использован <code class="module"><a href="./mod/prefork.html">prefork</a></code>. Кроме того,
+      также предоставляются специальные возможности, такие как
+      обслуживание различных хостов процессамми с привилегиями
+      различных пользователей (<code class="module"><a href="./mod/perchild.html">perchild</a></code>).</li>
+    </ul>
+
+    <p>На уровне пользователя МП-модули почти не отличаются от 
+    всех остальных модулей Apache. Основное различие состоит
+    в том, что с сервером может быть скомпилирован один и только
+    один МП-модуль. Список доступных МП-модулей можно посмотреть
+    в <a href="mod/">каталоге модулей</a>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="choosing" id="choosing">Выбор МП-модуля</a></h2>
+
+    <p>МП-модуль должен быть выбран на этапе конфигурации,
+    а затем скомпилирован вместе с сервером, чтобы стать
+    его частью. Компиляторы способны оптимизировать 
+    многие функции при условии, что используются потоки,
+    однако они должны знать еще на этапе компиляции, используются ли
+    потоки или нет. Поскольку некоторые МП-модули используют
+    потоки в ОС Unix, а другие - нет, Apache будет работать
+    лучше, если МП-модуль был встроен в сервер на этапе
+    компиляции.</p>
+
+    <p>Чтобы подключить желаемый МП-модуль к Apache,
+    используйте аргумент --with-mpm=<em>название</em> 
+    скрипта <code>./configure</code>, где <em>название</em> -
+    это название желаемого МП-модуля.</p>
+
+    <p>Однажды откомпилировав сервер, всегда можно
+    определить, какой МП-модуль был выбран, используя команду
+    <code>./httpd -l</code>, которая выведет список 
+    всех модулей, откомпилированных вместе с сервером,
+    в том числе и название МП-модуля.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="defaults" id="defaults">Подключённые по умолчанию МП-модули</a></h2>
+
+<p>Приведённая ниже таблица показывает, какие МП-модули подключены
+по умолчанию для различных операционнах систем. В ней указан тот 
+МП-модуль, который будет выбран, если Вы на этапе компиляции не
+подключили другой МП-модуль.</p>
+
+<table>
+<tr><td>BeOS</td><td><code class="module"><a href="./mod/beos.html">beos</a></code></td></tr>
+<tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
+<tr><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
+<tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
+<tr><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
+</div></div>
+<div id="footer">
+<p class="apache">Поддержка осуществляется <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div>
+</body></html>

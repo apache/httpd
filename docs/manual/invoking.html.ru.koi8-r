@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="KOI8-R"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Запуск Apache - HTTP сервер Apache</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
+<p class="apache">HTTP сервер Apache Версия 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs-project/">Документация</a> &gt; <a href="./">Версия 2.0</a></div><div id="page-content"><div id="preamble"><h1>Запуск Apache</h1>
+    <p>На Windows платформах Apache обычно работает как сервис Windows NT/2000/XP
+    или как консольное приложение Windows 95/ME. Для получения более подробной
+    информации по этому вопросу, обратитесь к документам, объясняющим <a href="platform/windows.html#winsvc">работу Apache под Windows в качестве сервиса</a> и
+    <a href="platform/windows.xml#wincons">работу Apache под Windows в качестве консольного
+    приложения</a>.</p>
+
+    <p>В Unix программа <a href="programs/httpd.html">httpd</a> представляет собой
+    демона, выполняющегося в фоновом режиме и обслуживающего поступающие запросы.
+    О том, каким образом можно запустить <code>httpd</code> и что в результате этого
+    получится, и рассказывается в этом документе.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Что происходит в момент запуска Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#errors">Ошибки, которые могут возникнуть во время запуска</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#boot">Запуск сервера вместе с запуском всей системы</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#info">Дополнительная информация</a></li>
+</ul><h3>См. также</h3><ul class="seealso"><li><a href="stopping.html">Останов и перезапуск</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">Что происходит в момент запуска Apache</a></h2>
+
+    <p>Если в директиве <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    в конфигурационном файле указано значение 80 (задаваемое по умолчанию)
+    или любое другое значение порта меньшее 1024, то для запуска Apache,
+    необходимо быть привилегированным пользователем, так как Apache придется
+    подключаться к привилегированному порту. После того, как сервер запустился
+    и выполнил ряд подготовительных операций, таких как открытие своих log - файлов,
+    он порождает несколько <em>процессов потомков</em>, которые и будут выполнять
+    всю работу по обработке запросов от клиентов. Основной процесс <code>httpd</code>
+    выполняется с правами привилегированного пользователя, в то время как процессы
+    потомки имеют меньший приоритет. Все это контролируется <a href="mpm.html">МП -
+    модулем</a>, который компилируется вместе с сервером.</p>
+
+    <p>Для запуска демона <code>httpd</code> лучше всего использовать скрипт
+    <a href="programs/apachectl.html">apachectl</a>. Этот скрипт устанавливает некоторые
+    переменные окружения, необходимые для правильной работы сервера под некоторыми
+    операционными системами, а затем запускает исполняемый файл <code>httpd</code>.
+    Скрипт <code>apachectl</code> передаст серверу любую командную строку, так что,
+    при вызове можно указывать в его командной строке все необходимые для сервера опции.
+    Вы также можете вручную внести некоторые изменения в скрипт <code>apachectl</code>,
+    в частности, изменив значение переменной <code>HTTPD</code> для запуска Apache
+    из другого каталога, и указав опции, которые будут передаваться серверу <em>каждый раз</em>
+    при его запуске.</p>
+
+    <p>Первым делом <code>httpd</code> находит и считывает <a href="configuring.html">конфигурационный
+    файл</a> <code>httpd.conf</code>. Путь к этому файлу задается еще во время сборки сервера,
+    но его можно изменить и после этого, запустив сервер с опцией <code>-f</code>, как это показано
+    в следующем примере</p>
+
+<div class="example"><p><code>/usr/local/apache2/bin/apachectl -f
+      /usr/local/apache/conf/httpd.conf</code></p></div>
+
+    <p>Если во время запуска не возникло никаких проблем, то сервер отсоединится
+    от консоли и приглашение на ввод командной строки вернется к пользователю
+    практически мгновенно. Это указывает на то, что сервер запустился и теперь
+    выполняет свою работу. Теперь вы можете, используя браузер, подключиться к
+    нему и увидеть тестовую страницу, находящуюся в каталоге
+    <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>, а также локальную копию документации,
+    ссылку на которую вы найдете на той же странице.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="errors" id="errors">Ошибки, которые могут возникнуть во время запуска</a></h2>
+
+    <p>Если во время запуска Apache произойдет какая-либо фатальная ошибка,
+    то перед тем, как завершить свою работу, сервер пошлет на консоль или в
+    <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> сообщение, описывающее
+    данную ошибку. Наиболее распространенным сообщением об ошибке является
+    <code>"Unable to bind to Port ..."</code>. Подобная ошибка возникает в двух случаях:</p>
+
+    <ul>
+      <li>Если вы пытаетесь запустить сервер на привилегированном порту, будучи зарегестрированным
+      в системе, как обычный пользователь; или</li>
+
+      <li>Если вы пытаетесь запусть сервер, когда в системе уже есть выполняющийся демон Apache
+      или другой web-сервер, слушающий тот же самый порт</li>
+    </ul>
+
+    <p>Решение многих подобных проблем можно найти на странице
+    <a href="faq/">FAQ</a>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="boot" id="boot">Запуск сервера вместе с запуском всей системы</a></h2>
+
+    <p>Если вы хотите, чтобы сервер запускался автоматически после перезагрузки системы,
+    добавьте вызов скрипта <code>apachectl</code> в системные файлы, отвечающие за загрузку
+    операционной среды (обычно это <code>rc.local</code> или файлы в каталоге <code>rc.N</code>).
+    Это приведет к запуску Apache от имени привилегированного пользователя.
+    Во избежание проблем с безопасностью системы, убедитесь, что сервер сконфигурирован правильно.</p>
+
+    <p>Скрипт <code>apachectl</code> разработан таким образом, что он может
+    действовать как стандартный init-скрипт системы SysV; он может принимать
+    аргументы <code>start</code>, <code>restart</code>, и <code>stop</code>
+    и переводить их в соответствующие сигналы процессу <code>httpd</code>.
+    Поэтому чаще всего вам достаточно сделать ссылку на <code>apachectl</code>
+    в запускном каталоге процесса init. Но прежде чем делать это, узнайте
+    точные требования вашей системы.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="info" id="info">Дополнительная информация</a></h2>
+
+    <p>Дополнительную информацию по опциям командной строки <a href="programs/httpd.html">httpd</a>
+    и <a href="programs/apachectl.html">apachectl</a>, а также других
+    вспомогательных программ, вы можете найти на странице <a href="programs/">"Сервер
+    и вспомогательные программы"</a>. Имеется также <a href="mod/directives.html">документация</a>
+    на все модули, входящие в дистрибутив Apache, и все директивы, которые они предоставляют.</p>
+</div></div>
+<div id="footer">
+<p class="apache">Поддержка осуществляется <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div>
+</body></html>
