@@ -12,7 +12,7 @@ functions.
 
 Written by: Philip Hazel <ph10@cam.ac.uk>
 
-           Copyright (c) 1997-2000 University of Cambridge
+           Copyright (c) 1997-2001 University of Cambridge
 
 -----------------------------------------------------------------------------
 Permission is granted to anyone to use this software for any purpose on any
@@ -62,13 +62,13 @@ static int eint[] = {
   REG_BADRPT,  /* "operand of unlimited repeat could match the empty string" */
   REG_ASSERT,  /* "internal error: unexpected repeat" */
   REG_BADPAT,  /* "unrecognized character after (?" */
-  REG_ESIZE,   /* "too many capturing parenthesized sub-patterns" */
+  REG_ASSERT,  /* "unused error" */
   REG_EPAREN,  /* "missing )" */
   REG_ESUBREG, /* "back reference to non-existent subpattern" */
   REG_INVARG,  /* "erroffset passed as NULL" */
   REG_INVARG,  /* "unknown option bit(s) set" */
   REG_EPAREN,  /* "missing ) after comment" */
-  REG_ESIZE,   /* "too many sets of parentheses" */
+  REG_ESIZE,   /* "parentheses nested too deeply" */
   REG_ESIZE,   /* "regular expression too large" */
   REG_ESPACE,  /* "failed to get memory" */
   REG_EPAREN,  /* "unmatched brackets" */
@@ -80,7 +80,11 @@ static int eint[] = {
   REG_BADPAT,  /* "assertion expected after (?(" */
   REG_BADPAT,  /* "(?p must be followed by )" */
   REG_ECTYPE,  /* "unknown POSIX class name" */
-  REG_BADPAT   /* "POSIX collating elements are not supported" */
+  REG_BADPAT,  /* "POSIX collating elements are not supported" */
+  REG_INVARG,  /* "this version of PCRE is not compiled with PCRE_UTF8 support" */
+  REG_BADPAT,  /* "characters with values > 255 are not yet supported in classes" */
+  REG_BADPAT,  /* "character value in \x{...} sequence is too large" */
+  REG_BADPAT   /* "invalid condition (?(0)" */
 };
 
 /* Table of texts corresponding to POSIX error codes */
