@@ -766,13 +766,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             }
             apr_pool_tag(ptrans, "transaction");
             rv = lr->accept_func(&csd, lr, ptrans);
+            /* later we trash rv and rely on csd to indicate success/failure */
+            AP_DEBUG_ASSERT(rv == APR_SUCCESS || !csd);
 
-            /* If we were interrupted for whatever reason, just start
-             * the main loop over again.
-             */
-            if (APR_STATUS_IS_EINTR(rv)) {
-                continue;
-            }
             if (rv == APR_EGENERAL) {
                 /* E[NM]FILE, ENOMEM, etc */
                 resource_shortage = 1;

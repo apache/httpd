@@ -1,5 +1,9 @@
 Changes with Apache 2.0.36
 
+  *) worker MPM: Fix a situation where a child exited without releasing
+     the accept mutex.  Depending on the OS and mutex mechanism this 
+     could result in a hang.  [Jeff Trawick]
+
   *) Update the instructions for how to get started with mod_example.
      [Stas Bekman]
   
