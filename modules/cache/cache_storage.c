@@ -255,6 +255,10 @@ int cache_select_url(request_rec *r, char *url)
             if (!fresh) {
                 const char *etag, *lastmod;
 
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                  "Cached response for %s isn't fresh.  Adding/replacing "
+                  "conditional request headers.", r->uri);
+
                 /* Make response into a conditional */
                 cache->stale_headers = apr_table_copy(r->pool,
                                                       r->headers_in);
