@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!-- English revision: 1.29 -->
+<!-- English revision: 1.31 -->
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ja"> ]
 >
@@ -61,8 +61,8 @@
 <category id="faq">
 <title>Apache サーバのよくある質問</title>
 <page href="faq/">概略</page>
-<page separate="yes" href="faq/all_in_one.html">1 ページ版</page>
 <page href="faq/support.html">サポート</page>
+<page href="faq/error.html">エラーメッセージ</page>
 </category>
 
 <category id="ssl">
@@ -119,9 +119,8 @@
 
 <category id="modules">
 <title>Apache モジュール</title>
-<page href="mod/">モジュール索引</page>
-<page href="mod/directives.html">ディレクティブ索引</page>
-<page href="mod/quickreference.html">ディレクティブクイックリファレンス</page>
+<page href="mod/module-dict.html">Apache ディレクティブの説明に使われる用語</page>
+<page href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</page>
 &allmodules;
 </category>
 
@@ -139,12 +138,12 @@
 <page href="developer/filters.html">Apache 2.0 のフィルタの動作の仕方</page>
 </category>
 
-<category id="descriptive">
-<title>説明用の情報</title>
-<page href="mod/module-dict.html">Apache モジュールを説明するために使われている用語</page>
-<page href="mod/directive-dict.html">Apache ディレクティブを説明するために使われている用語</page>
+<category id="index">
+<title>用語集と索引</title>
 <page href="glossary.html">用語集</page>
-<page>サイトマップ (この文書)</page>
+<page href="mod/">モジュール索引</page>
+<page href="mod/directives.html">ディレクティブ索引</page>
+<page href="mod/quickreference.html">ディレクティブ クイックリファレンス</page>
 </category>
 
 </sitemap>

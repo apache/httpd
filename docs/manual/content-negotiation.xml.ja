@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="content-negotiation.xml.meta">
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.9 -->
 
 <title>コンテントネゴシエーション</title>
 
@@ -262,6 +262,7 @@
 <section id="dimensions"><title>ネゴシエーションの次元</title>
 
     <table>
+      <columnspec><column width=".15"/><column width=".85"/></columnspec>
       <tr valign="top">
         <th>次元</th>
 
@@ -503,7 +504,7 @@
 
     <p>より高度なテクニック (Cookie や特殊な URL パス等)
     においてもユーザの言語選択をサポートするため、
-    Apache 2.1 からは、<module>mod_negotiation</module>
+    Apache 2.0.47 からは、<module>mod_negotiation</module>
     が<a href="env.html">環境変数</a> <code>prefer-language</code>
     を認識するようになりました。
     この変数が存在して、適切な言語タグが代入されているのであれば、
@@ -563,6 +564,8 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     <p>ファイル名と、それに対して使えるリンクと使えないリンクの例です:</p>
 
     <table border="1" cellpadding="8" cellspacing="0">
+      <columnspec><column width=".2"/><column width=".2"/>
+        <column width=".2"/></columnspec>
       <tr>
         <th>ファイル名</th>
 
