@@ -598,6 +598,8 @@ const char  *ssl_cmd_SSLProxyVerify(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCARevocationPath(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 

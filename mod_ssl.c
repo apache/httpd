@@ -175,6 +175,12 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(ProxyCACertificatePath, TAKE1,
                "SSL Proxy: directory containing server certificates "
                "(`/path/to/dir' - contains PEM encoded certificates)")
+    SSL_CMD_SRV(ProxyCARevocationPath, TAKE1,
+                "SSL Proxy: CA Certificate Revocation List (CRL) path "
+                "(`/path/to/dir' - contains PEM encoded files)")
+    SSL_CMD_SRV(ProxyCARevocationFile, TAKE1,
+                "SSL Proxy: CA Certificate Revocation List (CRL) file "
+                "(`/path/to/file' - PEM encoded)")
     SSL_CMD_SRV(ProxyMachineCertificateFile, TAKE1,
                "SSL Proxy: file containing client certificates "
                "(`/path/to/file' - PEM encoded certificates)")
