@@ -28,16 +28,12 @@
 uses</a></seealso>
 
 <section id="how-it-works"><title>How it Works</title>
-    <p>Each process has a fixed
-    number of threads. The server adjusts to handle load by
-    increasing or decreasing the number of processes.</p>
-
-    <p>A single control process is responsible for launching child
-    processes. Each child process creates a fixed number of threads as
-    specified in the <directive
-    module="mpm_common">ThreadsPerChild</directive> directive. The
-    individual threads then listen for connections and serve them when
-    they arrive.</p>
+    <p>A single control process (the parent) is responsible for launching 
+    child processes. Each child process creates a fixed number of server
+    threads as specified in the <directive 
+    module="mpm_common">ThreadsPerChild</directive> directive, as well
+    as a listener thread which listens for connections and passes them
+    to a server thread for processing when they arrive.</p>
 
     <p>Apache always tries to maintain a pool of <dfn>spare</dfn> or
     idle server threads, which stand ready to serve incoming
@@ -54,25 +50,57 @@ uses</a></seealso>
     these directives from their default values. The maximum number of
     clients that may be served simultaneously (i.e., the maximum total
     number of threads in all processes) is determined by the
-    <directive module="mpm_common">MaxClients</directive> directive,
-    while the maximum number of processes that can be launched is set
-    by the <directive module="mpm_common">ServerLimit</directive>
-    directive.  <directive module="mpm_common">ServerLimit</directive>
-    multiplied by <directive
-    module="mpm_common">ThreadsPerChild</directive> must be greater
-    than or equal to <directive
-    module="mpm_common">MaxClients</directive></p>
+    <directive module="mpm_common">MaxClients</directive> directive.
+    The maximum number of active child processes is determined by
+    the <directive module="mpm_common">MaxClients</directive>
+    directive divided by the <directive module="mpm_common">
+    ThreadsPerChild</directive> directive.</p>
+
+    <p>Two directives set hard limits on the number of active child
+    processes and the number of server threads in a child process,
+    and can only be changed by fully stopping the server and then 
+    starting it again.  <directive module="mpm_common">ServerLimit
+    </directive> is a hard limit on the number of active child 
+    processes, and must be greater than or equal to the 
+    <directive module="mpm_common">MaxClients</directive>
+    directive divided by the <directive module="mpm_common">
+    ThreadsPerChild</directive> directive.  
+    <directive module="mpm_common">ThreadLimit</directive> is a hard
+    limit of the number of server threads, and must be greater than
+    or equal to the <directive 
+    module="mpm_common">ThreadsPerChild</directive> directive.  If 
+    non-default values are specified for these directives, they 
+    should appear before other <module>worker</module> directives.</p>
+
+    <p>In addition to a the set of active child processes, there may 
+    be additional child processes which are terminating but where at
+    least one server thread is still handling an existing client
+    connection.  Up to <directive 
+    module="mpm_common">MaxClient</directive> terminating processes 
+    may be present, though the actual number can be expected to be 
+    much smaller.  This behavior can be avoided by disabling the 
+    termination of individual child processes, which is achieved by 
+    the following:</p>
+
+    <ul>
+      <li>set the value of <directive module="mpm_common">
+      MaxRequestsPerChild</directive> to zero</li>
+
+      <li>set the value of <directive module="mpm_common">
+      MaxSpareThreads</directive> to the same value as
+      <directive module="mpm_common">MaxClients</directive></li>
+    </ul>
 
     <p>A typical configuration of the process-thread controls in
     the <module>worker</module> MPM could look as follows:</p>
 
     <example>
+      ServerLimit         16<br />
       StartServers         2<br />
       MaxClients         150<br />
       MinSpareThreads     25<br />
       MaxSpareThreads     75<br />
-      ThreadsPerChild     25<br />
-      ServerLimit         16
+      ThreadsPerChild     25
     </example>
 
     <p>While the parent process is usually started as <code>root</code>
