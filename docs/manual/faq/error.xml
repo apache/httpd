@@ -30,6 +30,7 @@
     <ul>
     <li><a href="#error.sendfile">Invalid argument:
     core_output_filter: writing data to the network</a></li>
+    <li><a href="#error.acceptex">AcceptEx failed</a></li>
     </ul>
 
     <section id="error.sendfile"><title>Invalid argument:
@@ -54,6 +55,14 @@
     help with similar problems.</p>
 
     </section>
+
+    <section id="error.acceptex"><title>AcceptEx Failed</title>
+
+    <p>If you get error messages related to the <code>AcceptEx</code> syscall
+    on win32, see the <directive module="mpm_winnt">Win32DisableAcceptEx</directive>
+    directive.</p>
+    </section>
+
 </section>
 
 </faq>
