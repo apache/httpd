@@ -377,7 +377,6 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->input_filters=NULL;
     rp->output_filters  = c->output_filters;
     rp->input_filters   = c->input_filters;
-    ap_proxy_pre_http_request(c,rp);
 
     rp->request_config  = ap_create_request_config(c->pool);
     req_cfg = apr_pcalloc(rp->pool, sizeof(core_request_config));
@@ -981,7 +980,6 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
 /* set up the minimal filter set */
 PROXY_DECLARE(int) ap_proxy_pre_http_connection(conn_rec *c)
 {
-//    ap_add_input_filter("HTTP_IN", NULL, r, c);
     ap_add_input_filter("CORE_IN", NULL, NULL, c);
     ap_add_output_filter("CORE", NULL, NULL, c);
     return OK;

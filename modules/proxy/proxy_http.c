@@ -699,6 +699,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                     r->content_type = apr_pstrdup(p, buf);
                 }            
+                ap_proxy_pre_http_request(origin,rp);
             }
 
             /* handle Via header in response */
@@ -793,29 +794,12 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             const char *buf;
             apr_off_t readbytes;
-
-            /* if chunked - insert DECHUNK filter */
             if (ap_proxy_liststr((buf = apr_table_get(r->headers_out,
                                   "Transfer-Encoding")), "chunked")) {
-                rp->read_chunked = 1;
-                apr_table_unset(r->headers_out, "Transfer-Encoding");
-                if ((buf = ap_proxy_removestr(r->pool, buf, "chunked"))) {
-                    apr_table_set(r->headers_out, "Transfer-Encoding", buf);
-                }
-                ap_add_input_filter("DECHUNK", NULL, rp, origin);
-                readbytes = -1;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                         "proxy: Transfer-Encoding Chunked!");
+                apr_table_unset(r->headers_out,"Content-Length");
             }
-            /* if content length - set the length to read */
-            else if ((buf = apr_table_get(r->headers_out, "Content-Length"))) {
-                readbytes = atol(buf);
-            }
-            /* no chunked / no length therefore read till EOF and
-             * cancel keepalive
-             */
-            else {
-                p_conn->close += 1;
-            }
-
             /* if keepalive cancelled, read to EOF */
             if (p_conn->close) {
                 readbytes = -1;
