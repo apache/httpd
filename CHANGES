@@ -1,5 +1,8 @@
 Changes with Apache 2.0.38
 
+  *) Fix apxs so that the makefile created by "apxs -g" works on AIX and
+     Tru64 (and probably some other platforms).  [Jeff Trawick]
+
   *) Allow CGI scripts to return their Content-Length.  This also fixes a
      hang on HEAD requests seen on certain platforms (such as FreeBSD).
      [Justin Erenkrantz]
