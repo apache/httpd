@@ -1,6 +1,6 @@
 Changes with Apache 2.0.31-dev
 
-  *) caching should now work on subrequests (still every experimental)
+  *) caching should now work on subrequests (still very experimental)
      [Ian Holsman]
   
   *) The Win32 mpm_winnt now has a shared scoreboard.  [William Rowe]
