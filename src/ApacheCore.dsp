@@ -145,6 +145,10 @@ SOURCE=.\main\http_request.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\main\http_vhost.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\md5c.c
 # End Source File
 # Begin Source File
@@ -318,6 +322,10 @@ SOURCE=.\main\http_protocol.h
 # Begin Source File
 
 SOURCE=.\main\http_request.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\http_vhost.h
 # End Source File
 # Begin Source File
 
