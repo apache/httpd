@@ -73,7 +73,7 @@ care must be taken in dealing with raw logs.</p>
 
 <p>The server error log, whose name and location is set by the <a
 href="mod/core.html#errorlog">ErrorLog</a> directive, is the most
-important log file.  This is the place where Apache HTTPD will send
+important log file.  This is the place where Apache httpd will send
 diagnostic information and record any errors that it encounters in
 processing requests.  It is the first place to look when a problem
 occurs with starting the server or with the operation of the server,
@@ -164,7 +164,7 @@ href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/"
 href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/"
 >Yahoo</a>.</p>
 
-<p>Various versions of Apache HTTPD have used other modules and
+<p>Various versions of Apache httpd have used other modules and
 directives to control access logging, including mod_log_referer,
 mod_log_agent, and the <code>TransferLog</code> directive.  The
 <code>CustomLog</code> directive now subsumes the functionality of all
@@ -236,7 +236,7 @@ available.  In this case, the information that is not available is the
 RFC 1413 identity of the client determined by <code>identd</code> on
 the clients machine.  This information is highly unreliable and should
 almost never be used except on tightly controlled internal networks.
-Apache HTTPD will not even attempt to determine this information
+Apache httpd will not even attempt to determine this information
 unless <a href="mod/core.html#identitycheck">IdentityCheck</a> is set
 to <code>On</code>.</dd>
 
@@ -431,7 +431,7 @@ logs</a> as discussed in the next section.</p>
 
 <h2><a name="piped">Piped Logs</a></h2>
 
-<p>Apache HTTPD is capable of writing error and access log files
+<p>Apache httpd is capable of writing error and access log files
 through a pipe to another process, rather than directly to a file.
 This capability dramatically increases the flexibility of logging,
 without adding code to the main server.  In order to write logs to a
@@ -442,7 +442,7 @@ piped-log process when the server starts, and will restart it if it
 crashes while the server is running.  (This last feature is why we can
 refer to this technique as "reliable piped logging".)</p>
 
-<p>Piped log processes are spawned by the parent Apache HTTPD process,
+<p>Piped log processes are spawned by the parent Apache httpd process,
 and inherit the userid of that process.  This means that piped log
 programs usually run as root.  It is therefore very important to keep
 the programs simple and secure.</p>
@@ -462,10 +462,10 @@ for the access log, the same technique can be used for the
 error log.</p>
 
 <p>One important use of piped logs is to allow log rotation without
-having to restart the server.  Apache HTTPD includes a simple program
-called <a href="programs/rotatelogs.html">rotatelogs</a> for this
-purpose.  For example, to rotate the logs every 24 hours, you can
-use:</p>
+having to restart the server.  The Apache HTTP Server includes a
+simple program called <a
+href="programs/rotatelogs.html">rotatelogs</a> for this purpose.  For
+example, to rotate the logs every 24 hours, you can use:</p>
 
 <blockquote><code>
 CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
@@ -547,7 +547,7 @@ log and using one error log per virtual host.</p>
 
 <h3><a name="pidfile">PID File</a></h3>
 
-<p>On startup, Apache HTTPD saves the process id of the parent httpd
+<p>On startup, Apache httpd saves the process id of the parent httpd
 process to the file <code>logs/httpd.pid</code>. This filename can be
 changed with the <A HREF="mod/core.html#pidfile">PidFile</A>
 directive. The process-id is for use by the administrator in
