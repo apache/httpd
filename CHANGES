@@ -1,5 +1,7 @@
 Changes with Apache 2.0.25-dev
 
+  *) Added a multi process, multi threaded OS/2 MPM mpmt_os2.  [Brian Havard]
+
   *) Added a default commented-out mod_ldap and mod_auth_ldap
      configuration to httpd-std.conf and httpd-win.conf
      [Graham Leggett]
