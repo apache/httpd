@@ -520,7 +520,6 @@ if ($opt_i or $opt_e) {
         }
 
         open(FP, "<$CFG_SYSCONFDIR/$CFG_TARGET.conf") || die;
-        open(FP, "httpd.conf") || die;
         my $content = join('', <FP>);
         close(FP);
 
