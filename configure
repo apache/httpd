@@ -66,6 +66,11 @@ DIFS='
 '
 
 ##
+##  avoid brain dead shells on Ultrix and friends
+##
+test -f /bin/sh5 && exec /bin/sh5 $0 "$@"
+
+##
 ##  the paths to the Apache source tree
 ##
 top=.

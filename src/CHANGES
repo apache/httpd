@@ -1,4 +1,7 @@
 Changes with Apache 1.3.7
+ 
+  *) Switch to /bin/sh5 in APACI on Ultrix and friends to avoid problems with
+     their brain-dead /bin/sh. [Ralf S. Engelschall] PR#4372
 
   *) Better DSO flags recognition on NetBSD platforms using ELF.
      [Todd Vierling <tv@pobox.com>] PR#4310
