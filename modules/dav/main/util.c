@@ -574,8 +574,16 @@ static dav_error * dav_add_if_state(apr_pool_t *p, dav_if_header *ih,
 
         if ((err = (*locks_hooks->parse_locktoken)(p, state_token,
                                                    &new_sl->locktoken)) != NULL) {
-            /* ### maybe add a higher-level description */
-            return err;
+            /* In cases where the state token is invalid, we'll just skip
+             * it rather than return 400.
+             */
+            if (err->error_id == DAV_ERR_LOCK_UNK_STATE_TOKEN) {
+                return NULL;
+            }
+            else {
+                /* ### maybe add a higher-level description */
+                return err;
+            }
         }
     }
     else
