@@ -1062,25 +1062,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
     return APR_SUCCESS;
 }
 
-/* remove other filters (like DECHUNK) from filter stack */
-PROXY_DECLARE(void) ap_proxy_reset_output_filters(conn_rec *c)
-{
-    ap_filter_t *f = c->output_filters;
-
-    while (f) {
-        if (!strcasecmp(f->frec->name, "CORE") ||
-            !strcasecmp(f->frec->name, "CONTENT_LENGTH") ||
-            !strcasecmp(f->frec->name, "HTTP_HEADER")) {
-            f = f->next;
-            continue;
-        }
-        else {
-            ap_remove_output_filter(f);
-            f = f->next;
-        }
-    }
-}
-
 /* unmerge an element in the table */
 PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key)
 {

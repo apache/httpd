@@ -326,9 +326,6 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         p_conn->sock = client_socket;
         new = 0;
 
-        /* reset the connection filters */
-        ap_proxy_reset_output_filters(*origin);
-
         /* save timeout */
         apr_getsocketopt(p_conn->sock, APR_SO_TIMEOUT, &current_timeout);
         /* set no timeout */
