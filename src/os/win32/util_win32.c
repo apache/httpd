@@ -424,7 +424,7 @@ API_EXPORT(int) os_spawnve(int mode, const char *cmdname,
     return _spawnve(mode, szCmd, aszArgs, envp);
 }
 
-API_EXPORT(int) os_spawnle(int mode, const char *cmdname, ...)
+API_EXPORT_NONSTD(int) os_spawnle(int mode, const char *cmdname, ...)
 {
     int n;
     va_list vlist;
