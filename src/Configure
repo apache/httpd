@@ -349,14 +349,14 @@ case "$PLAT" in
 	OS='HI-UX'
 	CFLAGS="$CFLAGS -DHIUX"
 	;;
-    *-hp-hpux11.*)
+    *-hp*-hpux11.*)
 	OS='HP-UX 11'
 	CFLAGS="$CFLAGS -DHPUX11"
 	RANLIB="/bin/true"
 	LIBS="$LIBS -lm -lpthread"
 	DEF_WANTHSREGEX=yes
 	;;
-    *-hp-hpux10.*)
+    *-hp*-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
 	RANLIB="/bin/true"
@@ -369,7 +369,7 @@ case "$PLAT" in
  	esac
 	DEF_WANTHSREGEX=yes
 	;;
-    *-hp-hpux*)
+    *-hp*-hpux*)
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
 	RANLIB="/bin/true"
