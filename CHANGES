@@ -1,5 +1,10 @@
 Changes with Apache 2.0.18-dev
 
+  *) Under certain circumstances, Apache did not supply the
+     right response headers when requiring authentication.
+     [Gertjan van Wingerde <Gertjan.van.Wingerde@cmg.nl>] PR#7114
+     (This is a port of the change that went into Apache 1.3.19.)
+
   *) Allow modules to specify their own logging tags.  This basically
      allows a module to tell mod_log_config that when %x is encountered
      a specific function should be called.  Currently, x can be any single
