@@ -418,7 +418,7 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     backend->close_on_recycle = 0;
 
     /* Step One: Determine Who To Connect To */
-    status = ap_proxy_determine_connection(p, r, conf, worker, backend, c->pool,
+    status = ap_proxy_determine_connection(p, r, conf, worker, backend,
                                            uri, &url, proxyname, proxyport,
                                            server_portstr,
                                            sizeof(server_portstr));

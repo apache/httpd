@@ -1219,7 +1219,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
 
     /* Step One: Determine Who To Connect To */
     if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
-                                                c->pool, uri, &url, proxyname,
+                                                uri, &url, proxyname,
                                                 proxyport, server_portstr,
                                                 sizeof(server_portstr))) != OK)
         goto cleanup;

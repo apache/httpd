@@ -495,7 +495,6 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
  * @param conf    current proxy server configuration
  * @param worker  worker used for processing request
  * @param conn    proxy connection struct
- * @param ppool   long living memory pool
  * @param uri     processed uri
  * @param url     request url
  * @param proxyname are we connecting directly or via s proxy
@@ -508,7 +507,6 @@ PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                                  proxy_server_conf *conf,
                                                  proxy_worker *worker,
                                                  proxy_conn_rec *conn,
-                                                 apr_pool_t *ppool,
                                                  apr_uri_t *uri,
                                                  char **url,
                                                  const char *proxyname,

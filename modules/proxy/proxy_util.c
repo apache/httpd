@@ -1321,9 +1321,11 @@ static apr_status_t connection_cleanup(void *theconn)
 
     /* deterimine if the connection need to be closed */
     if (conn->close_on_recycle || conn->close) {
-        if (conn->sock)
-            apr_socket_close(conn->sock);
-        conn->sock = NULL;
+        apr_pool_t *p = conn->pool;
+        apr_pool_clear(conn->pool);
+        memset(conn, 0, sizeof(proxy_conn_rec));
+        conn->pool = p;
+        conn->worker = worker;
     }
 #if APR_HAS_THREADS
     if (worker->hmax && worker->cp->res) {
@@ -1352,7 +1354,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
      * when disconnecting from backend.
      */
     apr_pool_create(&ctx, pool);
-    conn = apr_pcalloc(ctx, sizeof(proxy_conn_rec));
+    conn = apr_pcalloc(pool, sizeof(proxy_conn_rec));
 
     conn->pool   = ctx;
     conn->worker = worker;
@@ -1534,7 +1536,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                               proxy_server_conf *conf,
                               proxy_worker *worker,
                               proxy_conn_rec *conn,
-                              apr_pool_t *ppool,
                               apr_uri_t *uri,
                               char **url,
                               const char *proxyname,
@@ -1568,10 +1569,10 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      */
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
-        conn->hostname = apr_pstrdup(ppool, proxyname);
+        conn->hostname = apr_pstrdup(conn->pool, proxyname);
         conn->port = proxyport;
     } else {
-        conn->hostname = apr_pstrdup(ppool, uri->hostname);
+        conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
         conn->port = uri->port;
         *url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
                            uri->query ? uri->query : "",
@@ -1585,7 +1586,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
-                                    p);
+                                    conn->pool);
     }
     else if (!worker->cp->addr) {
         /* Worker can have the single constant backend adress.
