@@ -196,10 +196,9 @@ The full list of headers recognized is:
        for compress'd files, and <CODE>x-gzip</CODE> for gzip'd files.
        The <CODE>x-</CODE> prefix is ignored for encoding comparisons.
   <DT> <CODE>Content-Length:</CODE>
-  <DD> The size of the file.  Clients can ask to receive a given media
-       type only if the variant isn't too big; specifying a content
-       length in the map allows the server to compare against these
-       thresholds without checking the actual file.
+  <DD> The size of the file.  Specifying content
+       lengths in the type-map allows the server to compare file sizes
+       without checking the actual files.
   <DT> <CODE>Description:</CODE>
   <DD> A human-readable textual description of the variant.  If Apache cannot
        find any appropriate variant to return, it will return an error 

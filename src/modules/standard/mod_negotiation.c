@@ -140,7 +140,6 @@ static const command_rec negotiation_cmds[] =
 typedef struct accept_rec {
     char *name;                 /* MUST be lowercase */
     float quality;
-    float max_bytes;
     float level;
     char *charset;              /* for content-type only */
 } accept_rec;
@@ -315,7 +314,6 @@ static const char *get_entry(pool *p, accept_rec *result,
                              const char *accept_line)
 {
     result->quality = 1.0f;
-    result->max_bytes = 0.0f;
     result->level = 0.0f;
     result->charset = "";
 
@@ -391,10 +389,6 @@ static const char *get_entry(pool *p, accept_rec *result,
         if (parm[0] == 'q'
             && (parm[1] == '\0' || (parm[1] == 's' && parm[2] == '\0'))) {
             result->quality = atof(cp);
-        }
-        else if (parm[0] == 'm' && parm[1] == 'x' &&
-                 parm[2] == 'b' && parm[3] == '\0') {
-            result->max_bytes = atof(cp);
         }
         else if (parm[0] == 'l' && !strcmp(&parm[1], "evel")) {
             result->level = atof(cp);
@@ -613,7 +607,6 @@ static void maybe_add_default_accepts(negotiation_state *neg,
         new_accept->name = "*/*";
         new_accept->quality = 1.0f;
         new_accept->level = 0.0f;
-        new_accept->max_bytes = 0.0f;
     }    
 
     new_accept = (accept_rec *) ap_push_array(neg->accepts);
@@ -626,7 +619,6 @@ static void maybe_add_default_accepts(negotiation_state *neg,
         new_accept->quality = prefer_scripts ? 2.0f : 0.001f;
     }
     new_accept->level = 0.0f;
-    new_accept->max_bytes = 0.0f;
 }
 
 /*****************************************************************
@@ -1520,13 +1512,6 @@ static void set_accept_quality(negotiation_state *neg, var_rec *variant)
             }
         }
 
-        /* Check maxbytes -- not in HTTP/1.1 or TCN */
-
-        if (type->max_bytes > 0
-            && (find_content_length(neg, variant) > type->max_bytes)) {
-            continue;
-        }
-
         /* If we are allowed to mess with the q-values
          * and have no explicit q= parameters in the accept header,
          * make wildcards very low, so we have a low chance
@@ -2206,14 +2191,6 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
                         ap_array_pstrcat(r->pool, arr, '\0'));
     } 
 
-    /* Theoretically the negotiation result _always_ has a dependence on
-     * the contents of the Accept header because we do 'mxb='
-     * processing in set_accept_quality().  However, variations in mxb
-     * only affect the relative quality of several acceptable variants,
-     * so there is no reason to worry about an unacceptable variant
-     * being mistakenly prioritized.  We therefore ignore mxb in deciding
-     * whether or not to include Accept in the Vary field value.
-     */
     if (neg->is_transparent || vary_by_type || vary_by_language ||
         vary_by_language || vary_by_charset || vary_by_encoding) {
 

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) Remove "mxb" support from mod_negotiation -- it was a draft feature
+     never accepted into any standard, and it opens up certain DoS
+     attacks.  [Koen Holtman <Koen.Holtman@cern.ch>]
+
   *) The source is now quad (long long) aware as needed. Specifically,
      the Configure process determines the correct size of off_t and
      *void. When the OS/platform/compiler supports quads, ap_snprintf()
