@@ -9,8 +9,8 @@ APACHE_MODULE(auth, user-based access control, , , yes)
 APACHE_MODULE(auth_anon, anonymous user access, , , most)
 APACHE_MODULE(auth_dbm, DBM-based access databases, , , most, [
   AC_SEARCH_LIBS(dbm_open,[c db1],,enable_auth_dbm=no)
-  dnl Glibc 2.2's ndbm.h includes <db.h> in ndbm.h.  So, we need to find
-  dnl where ndbm.h lives.  (2.2.4 looks like it includes <db1/db.h>.)
+  dnl Glibc 2.1's ndbm.h includes <db.h> in ndbm.h.  So, we need to find
+  dnl where ndbm.h lives.  (glibc 2.2 includes <db1/db.h>.)
   AC_TRY_COMPILE([#include "ndbm.h"], [dbm_open("/dev/null", 0, 0)],
                  _good_db_path="yes", _good_db_path="no")
   if test "$_good_db_path" = "no"; then
