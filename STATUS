@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/07 13:47:20 $]
+Last modified at [$Date: 2000/06/08 04:15:47 $]
 
 Release:
 
@@ -131,12 +131,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       are exported to the connection status table (easy to fix), and mod_status
       is ugly.
 
-    * Optimise the name-based <VirtualHost> implementation so that it uses
-      a hash table instead of a linear linked list scan.
-
     * Mass vhosting version of suEXEC.
 
-    * Provide a sane API for handling the request's environment variables.
+    * Replace tables with a proper opaque ADT that has pluggable
+      implementations (including something like the existing data type,
+      plus hash tables for speed, with options for more later).
+	Status: fanf is working on this.
 
     * configuration option to use *DBM
       Status: Greg +1 (volunteers)
