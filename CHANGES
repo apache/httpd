@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_dav: Fix a problem that could cause crashes when manipulating 
+     locks on some platforms.  [Jeff Trawick]
+
   *) mod_headers no longer crashes if an empty header value should
      be added.  [André Malo]
 

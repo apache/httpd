@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/24 20:09:30 $]
+Last modified at [$Date: 2004/04/26 15:45:52 $]
 
 Release:
 
@@ -196,11 +196,6 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 27758
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/aaa/mod_auth_digest.c?r1=1.86&r2=1.87
        +1: geoff, nd
-
-    *) mod_dav: Fix a problem that could cause crashes when manipulating 
-       locks on some platforms. (especially Sparc!!!)
-           modules/dav/fs/lock.c: r1.31
-       +1: trawick, jorton, nd
 
     *) mod_dav: Fix a 2617 compliance issue
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/util.c?r1=1.53&r2=1.54
