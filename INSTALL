@@ -237,7 +237,7 @@
      following list (remove the "mod_" prefix to get the NAME).
 
      _________________________________________________________________________
-     LIST OF AVAILABLE MODULE
+     LIST OF AVAILABLE MODULES
 
      Environment creation
       (+) mod_env .......... Set environment variables for CGI/SSI scripts
