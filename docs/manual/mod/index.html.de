@@ -32,7 +32,8 @@
     </p>
   </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#core">Kernfunktionen und Multi-Processing-Module</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Andere Module</a></li></ul><h3>Siehe auch</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#core">Kernfunktionen und
+            Multi-Processing-Module</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Andere Module</a></li></ul><h3>Siehe auch</h3>
 <ul class="seealso">
 <li><a href="../mpm.html">Multi-Processing-Module (MPMs)</a>
   </li>
@@ -40,7 +41,8 @@
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="core" name="core">Kernfunktionen und Multi-Processing-Module</a></h2>
+<div class="section"><h2><a id="core" name="core">Kernfunktionen und
+            Multi-Processing-Module</a></h2>
 <dl>
 <dt><a href="core.html">core</a></dt><dd>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</dd>

@@ -23,7 +23,7 @@
 <a href="./ko/urlmapping.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
+            English version for recent changes.</div>
 
     <p>이 문서는 요청의 URL을 가지고 아파치가 어떻게 서비스할 
     파일의 파일시스템상 위치를 찾는지 설명한다.</p>
