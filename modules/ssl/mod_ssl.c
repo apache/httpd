@@ -206,8 +206,6 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     /* Register us to handle mod_log_config %c/%x variables */
     ssl_var_log_config_register(pconf);
 #if 0 /* XXX */
-    /* XXX: Register us to handle mod_proxy extensions that don't exist yet */
-    ssl_ext_proxy_register(pconf);
     /* XXX: Register us to handle mod_status extensions that don't exist yet */
     ssl_scache_status_register(pconf);
 #endif /* -0- */
