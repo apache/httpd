@@ -3691,7 +3691,6 @@ static void child_main(int child_num_arg)
 #endif
 #endif
     signal(SIGALRM, alrm_handler);
-    signal(SIGUSR2, alrm_handler);
 #ifdef TPF
     signal(SIGHUP, just_die);
     signal(SIGTERM, just_die);
@@ -4255,7 +4254,7 @@ static void perform_idle_server_maintenance(void)
 		else if (ps->last_rtime + ss->timeout_len < now) {
 		    /* no progress, and the timeout length has been exceeded */
 		    ss->timeout_len = 0;
-		    kill(ps->pid, SIGUSR2);
+		    kill(ps->pid, SIGALRM);
 		}
 	    }
 #endif
