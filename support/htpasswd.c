@@ -233,6 +233,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	apr_cpystrn(cpw,pw,sizeof(cpw));
 	break;
 
+#ifndef WIN32
     case ALG_CRYPT:
     default:
         (void) srand((int) time((time_t *) NULL));
@@ -241,6 +242,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 
 	apr_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
 	break;
+#endif
     }
     memset(pw, '\0', strlen(pw));
 
