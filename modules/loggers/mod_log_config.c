@@ -982,6 +982,8 @@ static config_log_state *open_config_log(server_rec *s, ap_context_t *p,
                                          config_log_state *cls,
                                          ap_array_header_t *default_format)
 {
+    ap_status_t status;
+
     if (cls->log_fd != NULL) {
         return cls;             /* virtual config shared w/main server */
     }
@@ -1001,8 +1003,9 @@ static config_log_state *open_config_log(server_rec *s, ap_context_t *p,
     }
     else {
         const char *fname = ap_server_root_relative(p, cls->fname);
-        if (ap_open(&cls->log_fd, fname, xfer_flags, xfer_mode, p) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, s,
+        if ((status = ap_open(&cls->log_fd, fname, xfer_flags, xfer_mode, p)) 
+            != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
                          "could not open transfer log file %s.", fname);
             exit(1);
         }

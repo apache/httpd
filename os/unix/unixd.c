@@ -146,7 +146,7 @@ static int set_group_privs(void)
 	    uid_t uid = atoi(&unixd_config.user_name[1]);
 
 	    if ((ent = getpwuid(uid)) == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+		ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			 "getpwuid: couldn't determine user name from uid %u, "
 			 "you probably need to modify the User directive",
 			 (unsigned)uid);
@@ -166,7 +166,7 @@ static int set_group_privs(void)
 	 * setgid() is known to zap the group list.
 	 */
 	if (setgid(unixd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			"setgid: unable to set group id to Group %u",
 			(unsigned)unixd_config.group_id);
 	    return -1;
@@ -175,7 +175,7 @@ static int set_group_privs(void)
 	/* Reset `groups' attributes. */
 
 	if (initgroups(name, unixd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			"initgroups: unable to set groups for User %s "
 			"and Group %u", name, (unsigned)unixd_config.group_id);
 	    return -1;
@@ -197,7 +197,7 @@ int unixd_setup_child(void)
 	GETPRIVMODE();
 	if (setuid(unixd_config.user_id) == -1) {
 	    GETUSERMODE();
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 			"setuid: unable to change to uid: %ld",
                         (long) unixd_config.user_id);
 	    exit(1);
@@ -211,7 +211,7 @@ int unixd_setup_child(void)
 	os_init_job_environment(server_conf, unixd_config.user_name, one_process) != 0 || 
 #endif
 	setuid(unixd_config.user_id) == -1)) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+	ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
 		    "setuid: unable to change to uid: %ld",
                     (long) unixd_config.user_id);
 	return -1;

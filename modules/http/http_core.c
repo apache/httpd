@@ -856,7 +856,7 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
         if (*interpreter)
             return eFileTypeSCRIPT;
         else {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
              "ScriptInterpreterSource config directive set to \"registry\".\n\t"
              "Registry was searched but interpreter not found. Trying the shebang line.");
         }
@@ -1079,7 +1079,7 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
 
     if (error_number == 401 &&
 	line[0] != '/' && line[0] != '"') { /* Ignore it... */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, cmd->server,
 		     "cannot use a full URL in a 401 ErrorDocument "
 		     "directive --- ignoring!");
     }
@@ -2407,7 +2407,7 @@ static int core_translate(request_rec *r)
         return HTTP_FORBIDDEN;
     }
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		     "Invalid URI in request %s", r->the_request);
 	return BAD_REQUEST;
     }
@@ -2453,7 +2453,7 @@ static ap_status_t mmap_cleanup(void *mmv)
     struct mmap_rec *mmd = mmv;
 
     if (munmap(mmd->mm, mmd->length) == -1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL,
                      "Failed to munmap memory of length %ld at 0x%lx",
                      (long) mmd->length, (long) mmd->mm);
     }
@@ -2476,6 +2476,7 @@ static int default_handler(request_rec *r)
     int rangestatus, errstatus;
     ap_file_t *fd = NULL;
     int fd_os;
+    ap_status_t status;
 #ifdef USE_MMAP_FILES
     caddr_t mm;
 #endif
@@ -2493,7 +2494,7 @@ static int default_handler(request_rec *r)
     r->allowed |= (1 << M_GET) | (1 << M_OPTIONS);
 
     if (r->method_number == M_INVALID) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "Invalid method in request %s", r->the_request);
 	return NOT_IMPLEMENTED;
     }
@@ -2505,7 +2506,7 @@ static int default_handler(request_rec *r)
     }
     /* ZZZ can we store if the file exists or not? */
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
 		      "File does not exist: %s",r->path_info ?
 		      ap_pstrcat(r->pool, r->filename, r->path_info, NULL)
 		      : r->filename);
@@ -2515,8 +2516,8 @@ static int default_handler(request_rec *r)
         return METHOD_NOT_ALLOWED;
     }
 	
-    if (ap_open (&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+    if ((status = ap_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
@@ -2542,7 +2543,7 @@ static int default_handler(request_rec *r)
 	mm = mmap(NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
 		  fd_os, 0);
 	if (mm == (caddr_t)-1) {
-	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
 			 "default_handler: mmap failed: %s", r->filename);
 	}
     }
@@ -2586,8 +2587,8 @@ static int default_handler(request_rec *r)
                 ap_off_t offset;
 
 		while (ap_each_byterange(r, &offset, &length)) {
-                    if (ap_seek(fd, APR_SET, &offset) != APR_SUCCESS) {
-		        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                    if ((status = ap_seek(fd, APR_SET, &offset)) != APR_SUCCESS) {
+		        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
 				  "error byteserving file: %s", r->filename);
 			ap_close(fd);
 			return HTTP_INTERNAL_SERVER_ERROR;

@@ -1505,6 +1505,7 @@ static int index_directory(request_rec *r,
     char *name = r->filename;
 
     ap_dir_t *d;
+    ap_status_t status;
     int num_ent = 0, x;
     struct ent *head, *p;
     struct ent **ar = NULL;
@@ -1513,8 +1514,8 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
 
-    if (ap_opendir(&d, name, r->pool) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+    if ((status = ap_opendir(&d, name, r->pool)) != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
     }
@@ -1642,7 +1643,7 @@ static int handle_autoindex(request_rec *r)
 	return index_directory(r, d);
     }
     else {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		     "Directory index forbidden by rule: %s", r->filename);
 	return HTTP_FORBIDDEN;
     }

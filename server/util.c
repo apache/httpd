@@ -864,13 +864,13 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
     ap_filetype_e type;
 
     if (name == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                "Internal error: pcfg_openfile() called with NULL filename");
         return NULL;
     }
 
     if (!ap_os_is_filename_valid(name)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                     "Access to config file %s denied: not a valid filename",
                     name);
 	errno = EACCES;
@@ -898,7 +898,7 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
 	saved_errno = errno;
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
         ap_close(file);

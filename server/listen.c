@@ -78,7 +78,7 @@ static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
 
     stat = ap_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
 		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
 	ap_close_socket(s);
 	return stat;
@@ -86,7 +86,7 @@ static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
     
     stat = ap_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
 	ap_close_socket(s);
 	return stat;
@@ -114,7 +114,7 @@ static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
     if (send_buffer_size) {
 	stat = ap_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, stat, NULL,
 			"make_sock: failed to set SendBufferSize for %s, "
 			"using default", addr);
 	    /* not a fatal error */
@@ -122,14 +122,14 @@ static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
     }
 
     if ((stat = ap_bind(s)) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
 	    "make_sock: could not bind to %s", addr);
 	ap_close_socket(s);
 	return stat;
     }
 
     if ((stat = ap_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
+	ap_log_error(APLOG_MARK, APLOG_ERR, stat, NULL,
 	    "make_sock: unable to listen for connections on %s", addr);
 	ap_close_socket(s);
 	return stat;
@@ -157,6 +157,7 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
 {
     ap_listen_rec **walk;
     ap_listen_rec *new;
+    ap_status_t status;
     char oldaddr[17];
     unsigned int oldport;
 
@@ -178,8 +179,8 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
     /* XXX - We need to deal with freeing this structure properly. */
     new = ap_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if (ap_create_tcp_socket(&new->sd, NULL) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+    if ((status = ap_create_tcp_socket(&new->sd, NULL)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
                  "make_sock: failed to get a socket for %s", addr);
         return;
     }

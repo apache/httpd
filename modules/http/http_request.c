@@ -123,7 +123,7 @@ static int check_safe_file(request_rec *r)
         || S_ISLNK(r->finfo.st_mode)) {
         return OK;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                 "object is not a file, directory or symlink: %s",
                 r->filename);
     return HTTP_FORBIDDEN;
@@ -306,7 +306,7 @@ static int get_path_info(request_rec *r)
 #if defined(EACCES)      /* ZZZ again, AP error checking. */
             if (errno != EACCES)
 #endif
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                             "access to %s failed", r->uri);
             return HTTP_FORBIDDEN;
         }
@@ -429,7 +429,7 @@ static int directory_walk(request_rec *r)
     num_dirs = ap_count_dirs(test_filename);
 
     if (!ap_os_is_filename_valid(r->filename)) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Filename is not valid: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
@@ -483,7 +483,7 @@ static int directory_walk(request_rec *r)
          */
 
         if ((res = check_symlinks(test_dirname, core_dir->opts))) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Symbolic link not allowed: %s", test_dirname);
             return res;
         }
@@ -580,7 +580,7 @@ static int directory_walk(request_rec *r)
      */
     if (!S_ISDIR(r->finfo.st_mode)   /* ZZZ use AP funcs and defines */
         && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "Symbolic link not allowed: %s", r->filename);
         return res;
     }
@@ -892,7 +892,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         }
         else {
             if ((res = check_symlinks(rnew->filename, ap_allow_options(rnew)))) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, rnew,
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
                             "Symbolic link not allowed: %s", rnew->filename);
                 rnew->status = res;
                 return rnew;
@@ -1073,7 +1073,7 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
              * dying with a recursive server error...
              */
             recursive_error = SERVER_ERROR;
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Invalid error redirection directive: %s",
                         custom_response);
         }
@@ -1084,7 +1084,7 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
 static void decl_die(int status, char *phase, request_rec *r)
 {
     if (status == DECLINED) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, r,
                     "configuration error:  couldn't %s: %s", phase, r->uri);
         ap_die(SERVER_ERROR, r);
     }

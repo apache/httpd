@@ -109,6 +109,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 {
     unsigned int rmt_port, our_port;
     unsigned int sav_rmt_port, sav_our_port;
+    ap_status_t status;
     int i;
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
@@ -126,8 +127,8 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
     ap_setport(sock, ANY_PORT);
     ap_setipaddr(sock, local_ip); 
 
-    if (ap_bind(sock) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
+    if ((status = ap_bind(sock)) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		    "bind: rfc1413: Error binding to local port");
 	return -1;
     }
@@ -155,12 +156,12 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
     i = 0;
     while(i < strlen(buffer)) {
         int j = strlen(buffer + i);
-        ap_status_t stat;
-	stat  = ap_send(sock, buffer+i, &j);
-	if (stat != APR_SUCCESS && stat != APR_EINTR) {
-	  ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
-		       "write: rfc1413: error sending request");
-	  return -1;
+        ap_status_t status;
+	status  = ap_send(sock, buffer+i, &j);
+	if (status != APR_SUCCESS && status != APR_EINTR) {
+	    ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
+		         "write: rfc1413: error sending request");
+	    return -1;
 	}
 	else if (j > 0) {
 	    i+=j; 
@@ -181,12 +182,12 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
      */
     while((cp = strchr(buffer, '\012')) == NULL && i < sizeof(buffer) - 1) {
         int j = sizeof(buffer) - 1 - i;
-        ap_status_t stat;
-	stat = ap_recv(sock, buffer+i, &j);
-	if (stat != APR_SUCCESS && stat != APR_EINTR) {
-	   ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
+        ap_status_t status;
+	status = ap_recv(sock, buffer+i, &j);
+	if (status != APR_SUCCESS && status != APR_EINTR) {
+	    ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 			"read: rfc1413: error reading response");
-	   return -1;
+	    return -1;
 	}
 	else if (j > 0) {
 	    i+=j; 
@@ -216,14 +217,15 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 /* rfc1413 - return remote user name, given socket structures */
 char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 {
+    ap_status_t status;
     static char user[RFC1413_USERLEN + 1];	/* XXX */
     static char *result;
     static ap_socket_t *sock;
 
     result = FROM_UNKNOWN;
 
-    if (ap_create_tcp_socket(&sock, conn->pool) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
+    if ((status = ap_create_tcp_socket(&sock, conn->pool)) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		    "socket: rfc1413: error creating socket");
 	conn->remote_logname = result;
     }

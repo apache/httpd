@@ -78,6 +78,7 @@
  *  6: Failure; username contains illegal or reserved characters
  */
 
+#include "apr_lib.h"
 #include "ap_config.h"
 #include <sys/types.h>
 #include <signal.h>
@@ -176,17 +177,20 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     char salt[9];
+    size_t bufsize;
 
     if (passwd != NULL) {
 	pw = passwd;
     }
     else {
-	if (ap_getpass("New password: ", pwin, sizeof(pwin)) != 0) {
+        bufsize = sizeof(pwin);
+	if (ap_getpass("New password: ", pwin, &bufsize) != 0) {
 	    ap_snprintf(record, (rlen - 1), "password too long (>%d)",
 			sizeof(pwin) - 1);
 	    return ERR_OVERFLOW;
 	}
-	ap_getpass("Re-type new password: ", pwv, sizeof(pwv));
+        bufsize = sizeof(pwv);
+	ap_getpass("Re-type new password: ", pwv, &bufsize);
 	if (strcmp(pwin, pwv) != 0) {
 	    ap_cpystrn(record, "password verification error", (rlen - 1));
 	    return ERR_PWMISMATCH;

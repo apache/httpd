@@ -352,7 +352,7 @@ int ap_invoke_handler(request_rec *r)
     }
 
     if (result == HTTP_INTERNAL_SERVER_ERROR && r->handler && r->filename) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
             "handler \"%s\" not found for: %s", r->handler, r->filename);
     }
     return HTTP_INTERNAL_SERVER_ERROR;
@@ -459,7 +459,7 @@ API_EXPORT(void) ap_remove_module(module *m)
 	}
 	if (!modp) {
 	    /* Uh-oh, this module doesn't exist */
-	    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
 		"Cannot remove module %s: not found in module list",
 		m->name);
 	    return;
@@ -1103,7 +1103,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
             ap_cfg_closefile(f);
 
             if (errmsg) {
-                ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, r,
                               "%s: %s", filename, errmsg);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -1111,7 +1111,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
             break;
         }
         else if (errno != ENOENT && errno != ENOTDIR) {
-            ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
                           "%s pcfg_openfile: unable to check htaccess file, "
                           "ensure it is readable",
                           filename);

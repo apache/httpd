@@ -751,7 +751,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     }
 
     if (!*cp) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Syntax error in type map --- no ':': %s", r->filename);
         return NULL;
     }
@@ -761,7 +761,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     } while (*cp && ap_isspace(*cp));
 
     if (!*cp) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Syntax error in type map --- no header body: %s",
                       r->filename);
         return NULL;
@@ -774,6 +774,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
 {
     request_rec *r = neg->r;
     ap_file_t *map;
+    ap_status_t status;
     char buffer[MAX_STRING_LEN];
     enum header_state hstate;
     struct var_rec mime_info;
@@ -782,9 +783,9 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     /* We are not using multiviews */
     neg->count_multiviews_variants = 0;
 
-    if (ap_open(&map, rr->filename, APR_READ | APR_BUFFERED,
-                APR_OS_DEFAULT, neg->pool) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+    if ((status = ap_open(&map, rr->filename, APR_READ | APR_BUFFERED,
+                APR_OS_DEFAULT, neg->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                       "cannot access type map file: %s", rr->filename);
         return HTTP_FORBIDDEN;
     }
@@ -891,6 +892,7 @@ static int read_types_multi(negotiation_state *neg)
     char *filp;
     int prefix_len;
     ap_dir_t *dirp;
+    ap_status_t status;
     struct var_rec mime_info;
     struct accept_rec accept_info;
     void *new_var;
@@ -908,8 +910,8 @@ static int read_types_multi(negotiation_state *neg)
     ++filp;
     prefix_len = strlen(filp);
 
-    if (ap_opendir(&dirp, neg->dir_name, neg->pool) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+    if ((status = ap_opendir(&dirp, neg->dir_name, neg->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
     }
@@ -2480,7 +2482,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
         }
         
         if (!*bestp) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                           "no acceptable variant: %s", r->filename);
             return NOT_ACCEPTABLE;
         }

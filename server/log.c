@@ -284,7 +284,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 	fflush(stderr);
         ap_get_os_file(&errfile, s_main->error_log);
 	if (dup2(errfile, STDERR_FILENO) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_CRIT, s_main,
+	    ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,
 		"unable to replace stderr with error_log");
 	} else {
 	    replace_stderr = 0;
@@ -295,7 +295,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
      * of the submitter.
      */
     if (replace_stderr && freopen("/dev/null", "w", stderr) == NULL) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, s_main,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,
 	    "unable to replace stderr with /dev/null");
     }
 
@@ -324,14 +324,12 @@ API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
         dup2(errfile, STDERR_FILENO);
 }
 
-static void log_error_core(const char *file, int line, int level,
-			   const server_rec *s, const request_rec *r,
-			   const char *fmt, va_list args)
+static void log_error_core(const char *file, int line, int level, 
+                           ap_status_t status, const server_rec *s, 
+                           const request_rec *r, const char *fmt, va_list args)
 {
     char errstr[MAX_STRING_LEN];
     size_t len;
-    /* change to AP errno funcs. */
-    int save_errno = errno;
     ap_file_t *logf = NULL;
     int errfileno = STDERR_FILENO;
 
@@ -421,14 +419,13 @@ static void log_error_core(const char *file, int line, int level,
 		"[client %s] ", r->connection->remote_ip);
     }
     if (!(level & APLOG_NOERRNO)
-	&& (save_errno != 0)
+	&& (status != 0)
 #ifdef WIN32
 	&& !(level & APLOG_WIN32ERROR)
 #endif
 	) {
-      /* ZZZ use AP funcs to set the errno and the error string. */
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
-		"(%d)%s: ", save_errno, strerror(save_errno));
+		"(%d)%s: ", status, strerror(status));
     }
 #ifdef WIN32
     if (level & APLOG_WIN32ERROR) {
@@ -493,22 +490,24 @@ static void log_error_core(const char *file, int line, int level,
 }
     
 API_EXPORT(void) ap_log_error(const char *file, int line, int level,
-			      const server_rec *s, const char *fmt, ...)
+			      ap_status_t status, const server_rec *s, 
+                              const char *fmt, ...)
 {
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, s, NULL, fmt, args);
+    log_error_core(file, line, level, status, s, NULL, fmt, args);
     va_end(args);
 }
 
 API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
-			       const request_rec *r, const char *fmt, ...)
+			       ap_status_t status, const request_rec *r, 
+                               const char *fmt, ...)
 {
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, r->server, r, fmt, args);
+    log_error_core(file, line, level, status, r->server, r, fmt, args);
     /*
      * IF the error level is 'warning' or more severe,
      * AND there isn't already error text associated with this request,
@@ -547,7 +546,7 @@ void ap_log_pid(ap_context_t *p, const char *fname)
        *      that may screw up scripts written to do something
        *      based on the last modification time of the pid file.
        */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
 		     ap_psprintf(p,
                                  "pid file %s overwritten -- Unclean shutdown of previous Apache run?",
                      fname)
@@ -567,13 +566,13 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 
 API_EXPORT(void) ap_log_error_old(const char *err, server_rec *s)
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, s, "%s", err);
+    ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, "%s", err);
 }
 
 API_EXPORT(void) ap_log_unixerr(const char *routine, const char *file,
 			      const char *msg, server_rec *s)
 {
-    ap_log_error(file, 0, APLOG_ERR, s, "%s", msg);
+    ap_log_error(file, 0, APLOG_ERR, errno, s, "%s", msg);
 }
 
 API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
@@ -581,13 +580,13 @@ API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
     va_list args;
     
     va_start(args, fmt);
-    log_error_core(APLOG_MARK, APLOG_ERR, s, NULL, fmt, args);
+    log_error_core(APLOG_MARK, APLOG_ERR, errno, s, NULL, fmt, args);
     va_end(args);
 }
 
 API_EXPORT(void) ap_log_reason(const char *reason, const char *file, request_rec *r) 
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+    ap_log_error(APLOG_MARK, APLOG_ERR, errno, r->server,
 		"access to %s failed for %s, reason: %s",
 		file,
 		ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),

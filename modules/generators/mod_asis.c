@@ -66,6 +66,7 @@
 static int asis_handler(request_rec *r)
 {
     ap_file_t *f;
+    ap_status_t status;
     const char *location;
     FILE *thefile;         /* XXX leave these alone until we convert */
     int thefd;             /* everything to use apr_file_t's. */ 
@@ -74,14 +75,14 @@ static int asis_handler(request_rec *r)
     if (r->method_number != M_GET)
 	return DECLINED;
     if (r->finfo.st_mode == 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "File does not exist: %s", r->filename);
 	return NOT_FOUND;
     }
 
-    if (ap_open(&f, r->filename, APR_READ | APR_BUFFERED, 
-                APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+    if ((status = ap_open(&f, r->filename, APR_READ | APR_BUFFERED, 
+                APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "file permissions deny server access: %s", r->filename);
 	return FORBIDDEN;
     }

@@ -221,7 +221,7 @@ static const char *get_addresses(ap_context_t *p, char *w, server_addr_rec ***pa
     hep = gethostbyname(w);
 
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
 	    "Cannot resolve host name %s --- ignoring!", w);
 	if (t != NULL)
 	    *t = ':';
@@ -534,7 +534,7 @@ void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
 
 		other = find_default_server(sar->host_port);
 		if (other && other->sar->host_port != 0) {
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, main_s,
 			    "_default_ VirtualHost overlap on port %u,"
 			    " the first has precedence", sar->host_port);
 		}
@@ -558,7 +558,7 @@ void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
 		    ic->server = s;
 		    if (sar->host_port != ic->sar->host_port) {
 			/* one of the two is a * port, the other isn't */
-			ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, main_s,
+			ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, main_s,
 				"VirtualHost %s:%u -- mixing * "
 				"ports and non-* ports with "
 				"a NameVirtualHost address is not supported,"
@@ -567,7 +567,7 @@ void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
 		    }
 		}
 		else if (ic) {
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, main_s,
 			    "VirtualHost %s:%u overlaps with "
 			    "VirtualHost %s:%u, the first has precedence, "
 			    "perhaps you need a NameVirtualHost directive",
@@ -612,7 +612,7 @@ void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
 		else {
 		    /* again, what can we do?  They didn't specify a
 		       ServerName, and their DNS isn't working. -djg */
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, main_s,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, main_s,
 			    "Failed to resolve server name "
 			    "for %s (check DNS) -- or specify an explicit "
 			    "ServerName",
@@ -634,7 +634,7 @@ void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
 	    ipaddr_chain *ic = *pic;
 
 	    if (ic->server == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, main_s,
 			"NameVirtualHost %s:%u has no VirtualHosts",
 			ic->sar->virthost, ic->sar->host_port);
 		*pic = ic->next;

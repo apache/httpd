@@ -124,7 +124,7 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     const char *rpw, *w;
 
     if (!(f = ap_pcfg_openfile(r->pool, auth_pwfile))) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
@@ -212,14 +212,14 @@ static int authenticate_basic_user(request_rec *r)
     if (!(real_pw = get_pw(r, r->user, sec->auth_pwfile))) {
 	if (!(sec->auth_authoritative))
 	    return DECLINED;
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "user %s not found: %s", r->user, r->uri);
 	ap_note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     invalid_pw = ap_validate_password(sent_pw, real_pw);
     if (invalid_pw != NULL) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "user %s: authentication failure for \"%s\": %s",
 		      r->user, r->uri, invalid_pw);
 	ap_note_basic_auth_failure(r);
@@ -289,7 +289,7 @@ static int check_user_access(request_rec *r)
 	     * That something could be a missing "AuthAuthoritative off", but
 	     * more likely is a typo in the require directive.
 	     */
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		"access to %s failed, reason: unknown require directive:"
 		"\"%s\"", r->uri, reqs[x].requirement);
 	}
@@ -301,7 +301,7 @@ static int check_user_access(request_rec *r)
     if (!(sec->auth_authoritative))
 	return DECLINED;
 
-    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 	"access to %s failed, reason: user %s not allowed access",
 	r->uri, user);
 	
