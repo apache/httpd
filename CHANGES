@@ -3,7 +3,7 @@ Changes with Apache 2.0.33-dev
   *) Fix CustomLog bytes-sent with HTTP 0.9.  [Justin Erenkrantz]
 
   *) Prevent Apache from ignoring SIGHUP due to some lingering 1.3
-     cruft in piped logs and rewrite child processes.
+     cruft in piped logs and rewritemap child processes.
      [William Rowe]
 
   *) All instances of apr_lock_t have been removed and converted
