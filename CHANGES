@@ -1,5 +1,10 @@
 Changes with Apache 2.0.32-dev
 
+  *) mod_cgid: Add retry logic for when the daemon can't fork fast
+     enough to keep up with new requests.  Start using 
+     HTTP_SERVER_UNAVAILABLE instead of HTTP_INTERNAL_SERVER_ERROR
+     when we can't talk to the daemon.  [Jeff Trawick]
+
   *) apxs: LTFLAGS envvar can override default libtool options.  Try
      "LTFLAGS=' ' apxs -c mod_foo.c" to see what libtool does under
      the covers.  [Jeff Trawick]
