@@ -280,6 +280,8 @@ static ulock_t uslock = NULL;
 
 #define accept_mutex_cleanup()
 
+#define accept_mutex_child_init(x)
+
 static void accept_mutex_init(pool *p)
 {
     ptrdiff_t old;
@@ -365,6 +367,8 @@ static void accept_mutex_cleanup(void)
     }
     accept_mutex = (void *)(caddr_t)-1;
 }
+
+#define accept_mutex_child_init(x)
 
 static void accept_mutex_init(pool *p)
 {
@@ -483,6 +487,7 @@ static void accept_mutex_cleanup(void)
     semctl(sem_id, 0, IPC_RMID, ick);
 }
 
+#define accept_mutex_child_init(x)
 
 static void accept_mutex_init(pool *p)
 {
@@ -556,6 +561,8 @@ static int lock_fd = -1;
 
 #define accept_mutex_cleanup()
 
+#define accept_mutex_child_init(x)
+
 /*
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
@@ -611,8 +618,25 @@ static void accept_mutex_off(void)
 
 static int lock_fd = -1;
 
-#define accept_mutex_cleanup()
+static void accept_mutex_cleanup(void)
+{
+    unlink(lock_fname);
+}
 
+/*
+ * Initialize mutex lock.
+ * Done by each child at it's birth
+ */
+static void accept_mutex_child_init(pool *p)
+{
+
+    lock_fd = popenf(p, lock_fname, O_WRONLY, 0600);
+    if (lock_fd == -1) {
+	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
+		    "Child cannot open lock file: %s\n", lock_fname);
+	exit(1);
+    }
+}
 /*
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
@@ -621,13 +645,13 @@ static void accept_mutex_init(pool *p)
 {
 
     expand_lock_fname(p);
-    lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
+    unlink(lock_fname);
+    lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0600);
     if (lock_fd == -1) {
 	aplog_error(APLOG_MARK, APLOG_EMERG, server_conf,
-		    "Cannot open lock file: %s\n", lock_fname);
+		    "Parent cannot open lock file: %s\n", lock_fname);
 	exit(1);
     }
-    unlink(lock_fname);
 }
 
 static void accept_mutex_on(void)
@@ -662,6 +686,7 @@ static void accept_mutex_off(void)
  * the sockets. */
 #define NO_SERIALIZED_ACCEPT
 #define accept_mutex_cleanup()
+#define accept_mutex_child_init(x)
 #define accept_mutex_init(x)
 #define accept_mutex_on()
 #define accept_mutex_off()
@@ -2672,6 +2697,7 @@ void child_main(int child_num_arg)
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pconf);
+    SAFE_ACCEPT(accept_mutex_child_init(pconf));
 
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
-  
+
+  *) Fix problem with USE_FLOCK_SERIALIZED_ACCEPT not working
+     properly. Each child needs to open the lockfile instead
+     of using the passed file-descriptor from the parent. PR#1056
+
   *) Fix the error logging in mod_cgi; the recent error log changes
      introduced a bug that prevented it from working correctly.
      [M.D.Parker] PR#1352
