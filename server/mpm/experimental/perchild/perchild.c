@@ -324,21 +324,6 @@ static void clean_child_exit(int code)
     exit(code);
 }
 
-/* handle all varieties of core dumping signals */
-static void sig_coredump(int sig)
-{
-    chdir(ap_coredump_dir);
-    apr_signal(sig, SIG_DFL);
-    kill(getpid(), sig);
-    /* At this point we've got sig blocked, because we're still inside
-     * the signal handler.  When we leave the signal handler it will
-     * be unblocked, and we'll take the signal... and coredump or whatever
-     * is appropriate for this particular Unix.  In addition the parent
-     * will see the real signal we received -- whereas if we called
-     * abort() here, the parent would only see SIGABRT.
-     */
-}
-
 static void just_die(int sig)
 {
     clean_child_exit(0);
@@ -418,42 +403,16 @@ static void set_signals(void)
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
+#endif
 
+    if (!one_process) {
+        ap_fatal_signal_setup(ap_server_conf, pconf);
+    }
+
+#ifndef NO_USE_SIGACTION
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
 
-    if (!one_process) {
-        sa.sa_handler = sig_coredump;
-#if defined(SA_ONESHOT)
-        sa.sa_flags = SA_ONESHOT;
-#elif defined(SA_RESETHAND)
-        sa.sa_flags = SA_RESETHAND;
-#endif
-        if (sigaction(SIGSEGV, &sa, NULL) < 0)
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
-                         "sigaction(SIGSEGV)");
-#ifdef SIGBUS
-        if (sigaction(SIGBUS, &sa, NULL) < 0)
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
-                         "sigaction(SIGBUS)");
-#endif
-#ifdef SIGABORT
-        if (sigaction(SIGABORT, &sa, NULL) < 0)
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
-                         "sigaction(SIGABORT)");
-#endif
-#ifdef SIGABRT
-        if (sigaction(SIGABRT, &sa, NULL) < 0)
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
-                         "sigaction(SIGABRT)");
-#endif
-#ifdef SIGILL
-        if (sigaction(SIGILL, &sa, NULL) < 0)
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
-                         "sigaction(SIGILL)");
-#endif
-        sa.sa_flags = 0;
-    }
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
@@ -495,19 +454,6 @@ static void set_signals(void)
                      "sigaction(" AP_SIG_GRACEFUL_STRING ")");
 #else
     if (!one_process) {
-        apr_signal(SIGSEGV, sig_coredump);
-#ifdef SIGBUS
-        apr_signal(SIGBUS, sig_coredump);
-#endif /* SIGBUS */
-#ifdef SIGABORT
-        apr_signal(SIGABORT, sig_coredump);
-#endif /* SIGABORT */
-#ifdef SIGABRT
-        apr_signal(SIGABRT, sig_coredump);
-#endif /* SIGABRT */
-#ifdef SIGILL
-        apr_signal(SIGILL, sig_coredump);
-#endif /* SIGILL */
 #ifdef SIGXCPU
         apr_signal(SIGXCPU, SIG_DFL);
 #endif /* SIGXCPU */
@@ -1025,6 +971,7 @@ static void child_main(int child_num_arg)
     ap_listen_rec *lr;
     
     my_pid = getpid();
+    ap_fatal_signal_child_setup(ap_server_conf);
     child_num = child_num_arg;
     apr_pool_create(&pchild, pconf);
 
