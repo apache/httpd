@@ -58,7 +58,10 @@ document, or in the <code>src/CHANGES</code> file.
 
   <li><code>mod_auth_msql</code> has been removed from the distribution.
 
-  <li>Some #defines changed names:
+  <li>Some #defines changed names for clarity. Specifically,
+      we want to make sure that developers know that we are
+      using shared memory for specific purposes and not as
+      a general "we have this capability" notice:
 
 <pre>
 	HAVE_MMAP                 -&gt;   USE_MMAP_SCOREBOARD
