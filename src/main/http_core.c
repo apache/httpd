@@ -1618,6 +1618,18 @@ const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg)
    return NULL;
 }
 
+/*
+ * Load an authorisation realm into our location configuration, applying the
+ * usual rules that apply to realms.
+ */
+static const char *set_authname(cmd_parms *cmd, void *mconfig, char *word1)
+{
+    core_dir_config *aconfig = (core_dir_config *)mconfig;
+
+    aconfig->auth_name = ap_escape_quotes(cmd->pool, word1);
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -1646,8 +1658,8 @@ command_rec core_cmds[] = {
 { "</FilesMatch>", end_filesection, NULL, OR_ALL, NO_ARGS, "Marks end of <FilesMatch>" },
 { "AuthType", set_string_slot, (void*)XtOffsetOf(core_dir_config, auth_type),
     OR_AUTHCFG, TAKE1, "An HTTP authorization type (e.g., \"Basic\")" },
-{ "AuthName", set_string_slot, (void*)XtOffsetOf(core_dir_config, auth_name),
-    OR_AUTHCFG, RAW_ARGS, "The authentication realm (e.g. \"Members Only\")" },
+{ "AuthName", set_authname, NULL, OR_AUTHCFG, TAKE1,
+    "The authentication realm (e.g. \"Members Only\")" },
 { "Require", require, NULL, OR_AUTHCFG, RAW_ARGS, "Selects which authenticated users or groups may access a protected space" },
 { "Satisfy", satisfy, NULL, OR_AUTHCFG, TAKE1,
     "access policy if both allow and require used ('all' or 'any')" },    

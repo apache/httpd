@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Correct handling of quotation marks in AuthName realm names; as a
+     byproduct, a new function: ap_escape_quotes().  [Ken Coar] PR#1195
+
   *) WIN32: Work around optimiser bug that killed ISAPI in release
      versions. [Ben Laurie] PR#1533
 

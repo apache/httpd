@@ -6,7 +6,7 @@ INCDIR=../main
 
 LIB=libap.a
 
-OBJS=ap_signal.o ap_slack.o ap_snprintf.o
+OBJS=ap_signal.o ap_slack.o ap_snprintf.o ap_strings.o
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
@@ -27,3 +27,4 @@ $(LIB): $(OBJS)
 ap_signal.o: $(INCDIR)/httpd.h
 ap_slack.o: $(INCDIR)/httpd.h $(INCDIR)/http_log.h
 ap_snprintf.o: $(INCDIR)/conf.h
+ap_strings.o: $(INCDIR)/httpd.h
