@@ -451,6 +451,14 @@ int main(int argc, char *argv[])
     }
 
     clean_env();
+
+    /* 
+     * Be sure to close the log file so the CGI can't
+     * mess with it.  If the exec fails, it will be reopened 
+     * automatically when log_err is called.
+     */
+    fclose(log);
+    log = NULL;
     
     /*
      * Execute the command, replacing our image with its own.
