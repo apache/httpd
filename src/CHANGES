@@ -1,5 +1,10 @@
 Changes with Apache 1.3.17
 
+  *) Normalize the Netware path names to close a potential security
+     hole in comparing paths when the adminstrator specifies both
+     sys:foo and sys:/foo formats in the same httpd.conf file.
+     [Brad Nicholes]
+
   *) Fix an unlikely segfault provided a zero length string in the
      translate_userdir() call on win32/os2, and accept backslashes
      in the UserDir directive on those platforms [William Rowe]
