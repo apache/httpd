@@ -269,15 +269,6 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         return access_status;
     }
 
-    /* The new insert_filter stage makes sense here IMHO.  We are sure that
-     * we are going to run the request now, so we may as well insert filters
-     * if any are available.  Since the goal of this phase is to allow all
-     * modules to insert a filter if they want to, this filter returns
-     * void.  I just can't see any way that this filter can reasonably
-     * fail, either your modules inserts something or it doesn't.  rbb
-     */
-    ap_run_insert_filter(r);
-
     return OK;
 }
 
