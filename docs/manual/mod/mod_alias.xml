@@ -158,8 +158,8 @@ a different URL</description>
 
 <note><title>Note</title> <p>Redirect directives take precedence over
 Alias and ScriptAlias directives, irrespective of their ordering in
-the configuration file. Also, <var>URL-path</var> must be an absolute
-path, not a relative path, even when used with .htaccess files or
+the configuration file. Also, <var>URL-path</var> must be a fully
+qualified URL, not a relative path, even when used with .htaccess files or
 inside of <directive type="section" module="core">Directory</directive>
 sections.</p></note>
 
