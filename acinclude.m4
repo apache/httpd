@@ -445,9 +445,9 @@ if test "x$ap_ssltk_configured" = "x"; then
   dnl Adjust apache's configuration based on what we found above.
   dnl (a) define preprocessor symbols
   if test "$ap_ssltk_type" = "openssl"; then
-    AC_DEFINE(HAVE_OPENSSL)
+    AC_DEFINE(HAVE_OPENSSL, 1, [Define if SSL is supported using OpenSSL])
   else
-    AC_DEFINE(HAVE_SSLC)
+    AC_DEFINE(HAVE_SSLC, 1, [Define if SSL is supported using SSL-C])
   fi
   dnl (b) hook up include paths
   if test "x$ap_ssltk_inc" != "x"; then
