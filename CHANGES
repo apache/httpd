@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Keep the subrequest filter in place when a subrequest is 
+     redirected.  PR 15423.  [Jeff Trawick]
+
   *) you can now specify the compression level for mod_deflate. 
      [Ian Holsman, Stephen Pierzchala <stephen@pierzchala.com>, 
      Michael Schroepl <Michael.Schroepl@telekurs.de>]
