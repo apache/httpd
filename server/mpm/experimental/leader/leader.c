@@ -1006,18 +1006,11 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     while (1) {
         for (i = 0; i < ap_threads_per_child; i++) {
             int status = ap_scoreboard_image->servers[child_num_arg][i].status;
-            worker_wakeup_info *wakeup;
 
             if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
                 continue;
             }
 
-            wakeup = worker_wakeup_create(pchild);
-            if (wakeup == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0,
-                             ap_server_conf, "worker_wakeup_create failed");
-                clean_child_exit(APEXIT_CHILDFATAL);
-            }
             my_info = (proc_info *)malloc(sizeof(proc_info));
             if (my_info == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
