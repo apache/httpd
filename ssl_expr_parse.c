@@ -237,7 +237,7 @@ static const short ssl_expr_yycheck[] = {    19,
 /* I don't know what this was needed for, but it pollutes the namespace.
    So I turned it off.   rms, 2 May 1997.  */
 /* #include <malloc.h>  */
- #pragma alloca
+#pragma alloca
 #define YYSTACK_USE_ALLOCA
 #else /* not MSDOS, or __TURBOC__, or _AIX */
 #if 0
