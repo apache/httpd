@@ -2410,6 +2410,9 @@ static int ap_set_byterange(request_rec *r)
     return num_ranges;
 }
 
+typedef struct header_filter_cts {
+    int headers_sent;
+} header_filter_ctx;
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     int i;
@@ -2420,8 +2423,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     ap_bucket_brigade *b2;
     apr_size_t len = 0;
     header_struct h;
+    header_filter_ctx *ctx = f->ctx;
 
     AP_DEBUG_ASSERT(!r->main);
+
+    if (!ctx) {
+        ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+    }
+
+    if (ctx->headers_sent) {
+        ap_brigade_destroy(b);
+        return AP_REQUEST_DONE;
+    }
 
     if (r->assbackwards) {
         r->bytes_sent = 0;
@@ -2519,6 +2532,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     e = ap_bucket_create_pool(buff_start, strlen(buff_start), r->pool);
     AP_BRIGADE_INSERT_HEAD(b2, e);
     ap_pass_brigade(f->next, b2);
+
+    if (r->header_only) {
+        ap_brigade_destroy(b);
+        return AP_REQUEST_DONE;
+    }
 
     if (r->chunked) {
         /* The coalesce filter is useful to coalesce content from the ap_r*
