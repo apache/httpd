@@ -1098,7 +1098,7 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     
     cls->log_writer = log_writer_init(p, s, cls->fname);
     if (cls->log_writer == NULL)
-        return NULL; 
+        exit(1); 
 
     return cls;
 }
@@ -1135,9 +1135,7 @@ static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
 		}
 	    }
 
-            if (open_config_log(s, p, cls, mls->default_format))
-                return (apr_pstrcat(p, "Failed to initialize custom log to ", 
-                                    cls->fname));
+            cls = open_config_log(s, p, cls, mls->default_format);
         }
     }
     else if (mls->server_config_logs) {
@@ -1152,9 +1150,7 @@ static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
 		}
 	    }
 
-            if (open_config_log(s, p, cls, mls->default_format))
-                return (apr_pstrcat(p, "Failed to initialize custom log to ", 
-                                    cls->fname));
+            cls = open_config_log(s, p, cls, mls->default_format);
         }
     }
 
