@@ -92,8 +92,9 @@ On daemon startup, it saves the process id of the parent httpd process to
 the file <code>logs/httpd.pid</code>. This filename can be changed with the
 <A HREF="mod/core.html#pidfile">PidFile</A> directive. The process-id is for
 use by the administrator in restarting and terminating the daemon;
-A HUP signal causes the daemon to re-read its configuration files and
-a TERM signal causes it to die gracefully.
+A HUP or USR1 signal causes the daemon to re-read its configuration files and
+a TERM signal causes it to die gracefully.  For more information
+see the <a href="stopping.html">Stopping and Restarting</a> page.
 <p>
 If the process dies (or is killed) abnormally, then it will be necessary to
 kill the children httpd processes.
