@@ -4,7 +4,7 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B - Apache HTTP $B%5!<%P(B</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="directive-index"><div id="page-header"><p class="menu"><a href="../mod/">$B%b(B$B%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p><p class="apache">Apache HTTP $B%5!<%P(B $B%P!<%8%g%s(B 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP $B%5!<%P(B</a> &gt; <a href="http://httpd.apache.org/docs-project/">$B%I%-%e%a%s%F!<%7%g%s(B</a> &gt; <a href="../">$B%P!<%8%g%s(B 2.0</a> &gt; <a href="./">$B%b(B$B%8%e!<%k(B</a></div><div id="preamble"><h1>$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B</h1>
+      --><title>$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B - Apache HTTP $B%5!<%P(B</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="directive-index"><div id="page-header"><p class="menu"><a href="../mod/">$B%b%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p><p class="apache">Apache HTTP $B%5!<%P(B $B%P!<%8%g%s(B 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP $B%5!<%P(B</a> &gt; <a href="http://httpd.apache.org/docs-project/">$B%I%-%e%a%s%F!<%7%g%s(B</a> &gt; <a href="../">$B%P!<%8%g%s(B 2.0</a> &gt; <a href="./">$B%b%8%e!<%k(B</a></div><div id="preamble"><h1>$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B</h1>
     <p>$B%G%#%l(B$B%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9$G$O!"3F(B Apache $B@_Dj%G%#%l(B$B%/%F%#%V$N(B
     $B;HMQJ}K!!"%G%U%)%k%HCM!"%9%F!<%?%9$H%3%s%F%-(B$B%9%H$r<($7$F$$$^$9!#(B
     $B3F%G%#%l%/%F%#%V$N!"$h$j>\$7$$>pJs(B$B$K4X$7$F$O(B
@@ -33,20 +33,20 @@
       <tr><th>E</th><td>Extension</td></tr>
       <tr><th>X</th><td>Experimental</td></tr>
     </table></td></tr></table>
-<table class="qref"><tr><td><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex default|<em>method</em></a></td><td> default </td><td /><td>M</td></tr><tr><td class="descr" colspan="4">$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
+<table class="qref"><tr><td><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex default|<em>method</em></a></td><td> default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
 accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$r(B$BD>Ns2=$9$k$?$a$K(B
 $B;H$&J}K!(B</td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Resources accept trailing pathname information</td></tr>
 <tr><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name of the distributed configuration file</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#action">Action <em>action-type cgi-script</em></a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%O%s%I%i$d%3%s%F%s%H%?%$%W$KBP$7$F(B CGI $B$r<B9T$9$k$h$&(B$B$K(B
+<tr class="odd"><td><a href="mod_actions.html#action">Action <em>action-type cgi-script</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%O%s%I%i$d%3%s%F%s%H%?%$%W$KBP$7$F(B CGI $B$r<B9T$9$k$h$&(B$B$K(B
 $B@_Dj(B</td></tr>
-<tr><td><a href="mod_autoindex.html#addalt">AddAlt <em>string file</em> [<em>file</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$K(B
+<tr><td><a href="mod_autoindex.html#addalt">AddAlt <em>string file</em> [<em>file</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$K(B
 $BI=<($5$l$k!"%U%!%$%kL>$GA*Br$5$l$?BeBX%F%-%9(B$B%H(B</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#addaltbyencoding">AddAltByEncoding <em>string MIME-encoding</em>
-[<em>MIME-encoding</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$KI=<($5$l$k!"(BMIME $BId9f2=J}K!$GA*Br$5$l$?(B
+[<em>MIME-encoding</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$KI=<($5$l$k!"(BMIME $BId9f2=J}K!$GA*Br$5$l$?(B
 $BBeBX%F%-%9%H(B</td></tr>
 <tr><td><a href="mod_autoindex.html#addaltbytype">AddAltByType <em>string
-    MIME-type</em> [<em>MIME-type</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$K(B
+    MIME-type</em> [<em>MIME-type</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%"%$%3%s$NBe$o$j$K(B
 $BI=<($5$l$k!"(BMIME $B%?%$%W$GA*Br$5$l$?BeBX(B$B%F%-%9%H(B</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <em>charset extension</em> 
 [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions
@@ -54,7 +54,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$r(B$BD>Ns2
 <tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Default character set to be added for a
 response without an explicit character set</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription
-    <em>string file</em> [<em>file</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k$KBP$7$FI=<($9$k@bL@(B</td></tr>
+    <em>string file</em> [<em>file</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k$KBP$7$FI=<($9$k@bL@(B</td></tr>
 <tr><td><a href="mod_mime.html#addencoding">AddEncoding
     <em>MIME-enc extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions
     to the specified encoding type</td></tr>
@@ -62,12 +62,12 @@ response without an explicit character set</td></tr>
     <em>handler-name extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the filename extensions
 to the specified handler</td></tr>
 <tr><td><a href="mod_autoindex.html#addicon">AddIcon <em>icon
-    name</em> [<em>name</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$KI=<($9$k%"%$%3%s$rL>A0$GA*Br(B</td></tr>
+    name</em> [<em>name</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$KI=<($9$k%"%$%3%s$rL>A0$GA*Br(B</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding
-    <em>icon MIME-encoding</em> [<em>MIME-encoding</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k$KI=<($9$k%"%$%3%s$r(B MIME 
+    <em>icon MIME-encoding</em> [<em>MIME-encoding</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%U%!%$%k$KI=<($9$k%"%$%3%s$r(B MIME 
 $BId9f2=J}K!$GA*Br(B</td></tr>
 <tr><td><a href="mod_autoindex.html#addiconbytype">AddIconByType
-    <em>icon MIME-type</em> [<em>MIME-type</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$NNY$KI=<($9$k%"%$%3%s$r(B
+    <em>icon MIME-type</em> [<em>MIME-type</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%U%!%$%k$NNY$KI=<($9$k%"%$%3%s$r(B
 MIME $B%?%$%W$K$h$C$FA*Br(B</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter
     <em>filter</em>[<em>;filter</em>...] extension
@@ -77,7 +77,7 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</td></tr>
 <tr><td><a href="mod_mime.html#addlanguage">AddLanguage
     <em>MIME-lang extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension
 to the specified content language</td></tr>
-<tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <em>module-name string</em></a></td><td /><td /><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">server-info $B%O%s%I%i$K$h$jI=<($5$l$k%b%8%e!<%k$N>pJs(B$B$K(B
+<tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <em>module-name string</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">server-info $B%O%s%I%i$K$h$jI=<($5$l$k%b%8%e!<%k$N>pJs(B$B$K(B
 $BDI2C$N>pJs$rIU$12C$($k(B</td></tr>
 <tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter
     <em>filter</em>[<em>;filter</em>...] extension
@@ -88,12 +88,12 @@ responses from the server</td></tr>
     extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions
 onto the specified content type</td></tr>
 <tr><td><a href="mod_alias.html#alias"> Alias <em>URL-path
-    file-path</em>|<em>directory-path</em></a></td><td /><td /><td>B</td></tr><tr><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
+    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <em>regex
-    file-path</em>|<em>directory-path</em></a></td><td /><td /><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B@55,I=8=$r;H$C$F(B URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
+    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B@55,I=8=$r;H$C$F(B URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</td></tr>
 <tr><td><a href="mod_authz_host.html#allow"> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%5!<%P$N$"$kNN0h$K%"%/%;%9$G$-$k%[%9%H$r@)8f$9$k(B</td></tr>
+    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%5!<%P$N$"$kNN0h$K%"%/%;%9$G$-$k%[%9%H$r@)8f$9$k(B</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <em>port</em> [<em>port</em>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through
 the proxy</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var> 
@@ -110,9 +110,9 @@ error log</td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
 <tr class="odd"><td><a href="perchild.html#assignuserid">AssignUserID <em>user_id</em> <em>group_id</em></a></td><td /><td>v</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
-<tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative on|off</a></td><td> on </td><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$BG'>Z$H>5G'$r!"$h$jDc$$%l%Y%k$N%b%8%e!<%k$K0\9T$5$;$k$+$r(B
+<tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative on|off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">$BG'>Z$H>5G'$r!"$h$jDc$$%l%Y%k$N%b%8%e!<%k$K0\9T$5$;$k$+$r(B
 $B@_Dj$7(B$B$^$9!#(B</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <em>provider-name</em></a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B$3$N0LCV$KBP$9$kG'>Z%W%m%P%$%@$r@_Dj$7$^$9!#(B</td></tr>
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <em>provider-name</em></a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B$3$N0LCV$KBP$9$kG'>Z%W%m%P%$%@$r@_Dj$7$^$9!#(B</td></tr>
 <tr><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <em>file-path</em></a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the database file containing the list
 of user groups for authentication</td></tr>
 <tr class="odd"><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the type of database file that is used to
@@ -153,17 +153,17 @@ environment variable</td></tr>
 <tr><td><a href="core.html#authname">AuthName <var>auth-domain</var></a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Authorization realm for use in HTTP
 authentication</td></tr>
 <tr class="odd"><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
-<tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <em>file-path</em></a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$BG'>Z$K;HMQ$9$k%f!<%6$H%Q%9%o!<%I$N0lMw$,3JG<$5$l$F$$$k!"(B
+<tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <em>file-path</em></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">$BG'>Z$K;HMQ$9$k%f!<%6$H%Q%9%o!<%I$N0lMw$,3JG<$5$l$F$$$k!"(B
 $B%F%-%9(B$B%H%U%!%$%k$NL>A0$r@_Dj$9$k(B</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level modules</td></tr>
 <tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
 store passwords</td></tr>
 <tr class="odd"><td><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level modules</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">HTTP User-Agent $B$K4p$E$$$F4D6-JQ?t$r@_Dj$9$k(B
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">HTTP User-Agent $B$K4p$E$$$F4D6-JQ?t$r@_Dj$9$k(B
 </td></tr>
 <tr class="odd"><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP User-Agent $B$K4p$E$$$FBgJ8;z>.J8;z$r6hJL$;$:(B$B$K(B
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP User-Agent $B$K4p$E$$$FBgJ8;z>.J8;z$r6hJL$;$:(B$B$K(B
 $B4D6-JQ?t$r@_Dj$9$k(B</td></tr>
 <tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <em>seconds</em></a></td><td> 3600 (one hour) </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <em>cache_type </em> <em> url-string</em></a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Disable caching of specified URLs by specified storage manager</td></tr>
@@ -176,7 +176,7 @@ store passwords</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <em>float</em></a></td><td> 0.1 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The factor used to estimate the Expires date from the LastModified date</td></tr>
 <tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <em>seconds</em></a></td><td> 86400 (one day) </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachemaxstreamingbuffer">CacheMaxStreamingBuffer <em>size_in_bytes</em></a></td><td> 0 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of a streamed response to buffer in memory before declaring the response uncacheable</td></tr>
-<tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs on|off</a></td><td> off </td><td /><td>B</td></tr><tr><td class="descr" colspan="4">$B%3%s%F%s%H%M%4%7%(!<%7%g%s$5$l$?%I%-%e%a%s%H$r%W%m%-%7%5!<%P$,(B
+<tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs on|off</a></td><td> off </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%3%s%F%s%H%M%4%7%(!<%7%g%s$5$l$?%I%-%e%a%s%H$r%W%m%-%7%5!<%P$,(B
 $B%-%c%C%7%e$G$-$k$h$&$K$9$k(B</td></tr>
 <tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension cgi-path .extension</a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI 
 scripts</td></tr>
@@ -184,7 +184,7 @@ scripts</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <em>option</em> [<em>option</em>] ...</a></td><td> DebugLevel=0 
 NoImp +</td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Configures charset tranlation behavior</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <em>charset</em></a></td><td /><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Source charset of files</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>h</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">spelling $B%b%8%e!<%k$r;HMQ$9$k$h$&$K$9$k(B</td></tr>
+<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">spelling $B%b%8%e!<%k$r;HMQ$9$k$h$&$K$9$k(B</td></tr>
 <tr><td><a href="perchild.html#childperuserid">ChildPerUserID <em>user_id</em>
 <em>group_id</em> <em>child_id</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="core.html#contentdigest">ContentDigest on|off</a></td><td> off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
@@ -196,7 +196,7 @@ headers</td></tr>
 <tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
     <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format of the cookie header field</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <em>directory</em></a></td><td /><td /><td>M</td></tr><tr><td class="descr" colspan="4">Apache $B$,%3%"%@%s%W$9$kA0$K0\F0$r;n$_$k%G%#%l%/%H%j(B
+<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <em>directory</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Apache $B$,%3%"%@%s%W$9$kA0$K0\F0$r;n$_$k%G%#%l%/%H%j(B
 </td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog 
     <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
@@ -206,25 +206,25 @@ headers</td></tr>
 <tr><td><a href="mod_dav.html#davlockdb">DavLockDB <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">DAV $B%m%C%/%G!<%?%Y!<%9$N0LCV$G$9(B</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <em>seconds</em></a></td><td> 0 </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">$B%5!<%P$,(B DAV $B%j%=!<%9$N%m%C%/$r0];}$9$k:G>.;~4V$G$9!#(B
 </td></tr>
-<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <em>url-path</em></a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$BFCDj$N%"%$%3%s$,2?$b@_Dj$5$l$F$$$J$$;~$K(B
+<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <em>url-path</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$BFCDj$N%"%$%3%s$,2?$b@_Dj$5$l$F$$$J$$;~$K(B
 $B%U%!%$%k$KI=<($9$k%"%$(B$B%3%s(B</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage
     <em>MIME-lang</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets all files in the given scope to the 
 specified language</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">MIME content-type that will be sent if the
 server cannot determine a type in any other way</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <em>value</em></a></td><td> 8096 </td><td /><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib $B$,0lEY$K05=L$9$k2t$NBg$-$5(B</td></tr>
-<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote <em>notename</em></a></td><td /><td /><td>E</td></tr><tr><td class="descr" colspan="4">$B%m%.%s%0MQ$K05=LHf$r%a%b$KDI2C(B</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <em>value</em></a></td><td> 9 </td><td /><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib $B$,05=L$K;H$&%a%b%j$N%l%Y%k$r;XDj(B</td></tr>
-<tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <em>value</em></a></td><td> 15 </td><td /><td>E</td></tr><tr><td class="descr" colspan="4">Zlib $B$N05=LMQ%&%#%s%I%&$NBg$-$5(B</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <em>value</em></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib $B$,0lEY$K05=L$9$k2t$NBg$-$5(B</td></tr>
+<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote <em>notename</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">$B%m%.%s%0MQ$K05=LHf$r%a%b$KDI2C(B</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <em>value</em></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib $B$,05=L$K;H$&%a%b%j$N%l%Y%k$r;XDj(B</td></tr>
+<tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <em>value</em></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib $B$N05=LMQ%&%#%s%I%&$NBg$-$5(B</td></tr>
 <tr class="odd"><td><a href="mod_authz_host.html#deny"> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%5!<%P$,%"%/%;%9$r5qH]$9$k%[%9%H$r@)8f$9$k(B</td></tr>
+    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%5!<%P$,%"%/%;%9$r5qH]$9$k%[%9%H$r@)8f$9$k(B</td></tr>
 <tr><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that apply only to the
 named file-system directory and sub-directories</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</a></td><td> index.html </td><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,%G%#%l%/%H%j$r%j%/%(%9%H$7$?$H$-$KD4$Y$k(B
+    <em>local-url</em> [<em>local-url</em>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,%G%#%l%/%H%j$r%j%/%(%9%H$7$?$H$-$KD4$Y$k(B
 $B%j%=!<%9(B$B$N%j%9%H(B</td></tr>
 <tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/Directory&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose directives that apply to 
@@ -254,14 +254,14 @@ HTTP response header</td></tr>
 filenames</td></tr>
 <tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply to regular-expression matched
 filenames</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BMW5a$K9g$&C1FH$N%I%-%e%a%s%H$,8+$D$+$i$J$+$C$?$H$-$K9T$J$&$3$H$r(B$B;XDj(B
+<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BMW5a$K9g$&C1FH$N%I%-%e%a%s%H$,8+$D$+$i$J$+$C$?$H$-$K9T$J$&$3$H$r(B$B;XDj(B
 </td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var></a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 MIME content-type</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <em>unix-group</em></a></td><td> #-1 </td><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k:]$K=jB0$9$k%0%k!<%W(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <em>unix-group</em></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k:]$K=jB0$9$k%0%k!<%W(B</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header set|append|add|unset|echo  <em>header</em> 
 [<em>value</em>]</a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <em>filename</em></a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">
+<tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <em>filename</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">
 $B%$%s%G%C%/%90lMw$N@hF,$KA^F~$5$l$k%U%!%$%k$NL>A0(B</td></tr>
 <tr><td><a href="core.html#hostnamelookups">HostnameLookups on|off|double</a></td><td> off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables DNS lookups on client IP addresses</td></tr>
 <tr class="odd"><td><a href="core.html#identitycheck" id="I" name="I">IdentityCheck on|off</a></td><td> off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables logging of the RFC1413 identity of the remote 
@@ -280,12 +280,12 @@ that are not explicitly mapped</td></tr>
 an imagemap</td></tr>
 <tr class="odd"><td><a href="core.html#include">Include <var>file-path</var>|<var>directory-path</var></a></td><td /><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Includes other configuration files from within
 the server configuration files</td></tr>
-<tr><td><a href="mod_autoindex.html#indexignore">IndexIgnore <em>file</em> [<em>file</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%G%#%l%/%H%j0lMw$r9T$J$&:]$KL5;k$9$Y$-(B
+<tr><td><a href="mod_autoindex.html#indexignore">IndexIgnore <em>file</em> [<em>file</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%G%#%l%/%H%j0lMw$r9T$J$&:]$KL5;k$9$Y$-(B
 $B%U%!%$%k%j%9%H$KDI2C(B</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexoptions">IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%G%#%l%/%H%j%$%s%G%C%/%9$NMM!9$J@_Dj9`L\(B
+<tr class="odd"><td><a href="mod_autoindex.html#indexoptions">IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%G%#%l%/%H%j%$%s%G%C%/%9$NMM!9$J@_Dj9`L\(B
 </td></tr>
 <tr><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault
-Ascending|Descending Name|Date|Size|Description</a></td><td> Ascending Name </td><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">
+Ascending|Descending Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">
 $B%G%#%l%/%H%j%$%s%G%C%/%9$NI8=`$N=gHVIU$1$r@_Dj(B</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
 extensions to the error log</td></tr>
@@ -300,7 +300,7 @@ extensions</td></tr>
 <tr class="odd"><td><a href="core.html#keepalive" id="K" name="K">KeepAlive on|off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
 <tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>seconds</var></a></td><td> 15 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,M%@hEY$r<($5$J$+$C$?$H$-$N8@8l$N(B variant $B$NM%@hEY$r(B
+<tr class="odd"><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,M%@hEY$r<($5$J$+$C$?$H$-$N8@8l$N(B variant $B$NM%@hEY$r(B
 $B;XDj(B</td></tr>
 <tr><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <em>number</em></a></td><td> 1024 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Maximum number of entires in the primary LDAP cache</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <em>seconds</em></a></td><td> 600 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Time that cached items remain valid</td></tr>
@@ -325,10 +325,10 @@ client</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limit the size of the HTTP request line that will be accepted
 from the client</td></tr>
 <tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>number</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the size of an XML-based request body</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listen">Listen [<em>IP-address</em>:]<em>portnumber</em></a></td><td /><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%5!<%P$,(B listen $B$9$k(BIP $B%"%I%l%9$H%]!<%HHV9f(B</td></tr>
-<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <em>backlog</em></a></td><td /><td /><td>M</td></tr><tr><td class="descr" colspan="4">$BJ]N1>uBV$N%3%M%/%7%g%s$N%-%e!<$N:GBgD9(B</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td /><td /><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">$B;XDj$5$l$?%*%V%8%'%/%H%U%!%$%k$d%i%$%V%i%j$r%j%s%/$9$k(B</td></tr>
-<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td /><td /><td>E</td></tr><tr><td class="descr" colspan="4">$B%*%V%8%'%/%H%U%!%$%k$d%i%$%V%i%j$r%j%s%/$7!";HMQ%b%8%e!<%k$N(B
+<tr class="odd"><td><a href="mpm_common.html#listen">Listen [<em>IP-address</em>:]<em>portnumber</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%5!<%P$,(B listen $B$9$k(BIP $B%"%I%l%9$H%]!<%HHV9f(B</td></tr>
+<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <em>backlog</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$BJ]N1>uBV$N%3%M%/%7%g%s$N%-%e!<$N:GBgD9(B</td></tr>
+<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td /><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">$B;XDj$5$l$?%*%V%8%'%/%H%U%!%$%k$d%i%$%V%i%j$r%j%s%/$9$k(B</td></tr>
+<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td /><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">$B%*%V%8%'%/%H%U%!%$%k$d%i%$%V%i%j$r%j%s%/$7!";HMQ%b%8%e!<%k$N(B
 $B%j(B$B%9%H$KDI2C$9$k(B</td></tr>
 <tr class="odd"><td><a href="core.html#location">&lt;Location
     URL-path|URL&gt; ... &lt;/Location&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to matching
@@ -336,21 +336,21 @@ URLs</td></tr>
 <tr><td><a href="core.html#locationmatch">&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/Location&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression 
 matching URLs</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <em>filename</em></a></td><td> logs/accept.lock </td><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B<uIU$rD>Ns2=$9$k$?$a$N%m%C%/%U%!%$%k$N0LCV(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <em>filename</em></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B<uIU$rD>Ns2=$9$k$?$a$N%m%C%/%U%!%$%k$N0LCV(B</td></tr>
 <tr><td><a href="mod_log_config.html#logformat">LogFormat
     <em>format</em>|<em>nickname</em> [<em>nickname</em>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Describes a format for use in a log file</td></tr>
 <tr class="odd"><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the verbosity of the ErrorLog</td></tr>
-<tr><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <em>number</em></a></td><td /><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k$?$a$K:n@.$5$l$k(B
+<tr><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k$?$a$K:n@.$5$l$k(B
 $B;R%W%m%;%9$N:GBg8D?t(B</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Number of requests allowed on a persistent 
 connection</td></tr>
-<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <em>number</em></a></td><td /><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B<g%a%b%j%"%m%1!<%?$,(B free() $B$r8F$P$:$KJ];}$7B3$1$i$l$k%a(B$B%b%j$N(B
+<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B<g%a%b%j%"%m%1!<%?$,(B free() $B$r8F$P$:$KJ];}$7B3$1$i$l$k%a(B$B%b%j$N(B
 $B:GBgNL(B</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <em>number</em></a></td><td> 10000 </td><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B8D!9$N;R%5!<%P$,2TF/Cf$K07$&%j%/%(%9%H?t$N>e8B(B</td></tr>
-<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <em>number</em><br /></a></td><td> 10 </td><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <em>number</em></a></td><td /><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%"%$%I%k%9%l%C%I$N:GBg?t(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <em>number</em></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B8D!9$N;R%5!<%P$,2TF/Cf$K07$&%j%/%(%9%H?t$N>e8B(B</td></tr>
+<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <em>number</em><br /></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%"%$%I%k%9%l%C%I$N:GBg?t(B</td></tr>
 <tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <em>number</em></a></td><td> 250 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild <em>number</em></a></td><td> 64 </td><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B;R%W%m%;%9Kh$N%9%l%C%I?t$N:GBg?t(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild <em>number</em></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B;R%W%m%;%9Kh$N%9%l%C%I?t$N:GBg?t(B</td></tr>
 <tr><td><a href="mod_cern_meta.html#metadir">MetaDir <em>directory</em></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
 files</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
@@ -358,8 +358,8 @@ files</td></tr>
 meta information</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
-<tr><td><a href="prefork.html#minspareservers">MinSpareServers <em>number</em></a></td><td>  5 </td><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:G>.8D?t(B</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareServers <em>number</em></a></td><td /><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k$3$H$N$G$-$k(B
+<tr><td><a href="prefork.html#minspareservers">MinSpareServers <em>number</em></a></td><td>  5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:G>.8D?t(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareServers <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k$3$H$N$G$-$k(B
 $B%"%$%I%k%9%l%C%I?t$N:G>.?t(B</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
@@ -370,17 +370,17 @@ searching for a matching file with MultiViews</td></tr>
 hosting</td></tr>
 <tr><td><a href="mod_proxy.html#noproxy">NoProxy <em>host</em> [<em>host</em>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected
 to directly</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#numservers">NumServers <em>number</em></a></td><td> 2 </td><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$BF1;~$K5/F0$7$F$$$k;R%W%m%;%9$NAm?t(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#numservers">NumServers <em>number</em></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$BF1;~$K5/F0$7$F$$$k;R%W%m%;%9$NAm?t(B</td></tr>
 <tr><td><a href="core.html#options" id="O" name="O">Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures what features are available in a particular
 directory</td></tr>
-<tr class="odd"><td><a href="mod_authz_host.html#order"> Order <em>ordering</em></a></td><td> Deny,Allow </td><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%G%U%)%k%H$N%"%/%;%92DG=$J>uBV$H!"(B<code class="directive">Allow</code> $B$H(B
+<tr class="odd"><td><a href="mod_authz_host.html#order"> Order <em>ordering</em></a></td><td> Deny,Allow </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%G%U%)%k%H$N%"%/%;%92DG=$J>uBV$H!"(B<code class="directive">Allow</code> $B$H(B
 <code class="directive">Deny</code> $B$,I>(B$B2A$5$l$k=gHV$r@)8f$9$k(B</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv
-    <em>env-variable</em> [<em>env-variable</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%7%'%k$+$i$N4D6-JQ?t$rEO$9(B</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <em>filename</em></a></td><td> logs/httpd.pid </td><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%G!<%b%s$N%W%m%;%9(B ID
+    <em>env-variable</em> [<em>env-variable</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%7%'%k$+$i$N4D6-JQ?t$rEO$9(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <em>filename</em></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%G!<%b%s$N%W%m%;%9(B ID
 $B$r%5!<%P$,5-O?$9$k$?$a$N%U%!%$%k(B</td></tr>
-<tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho <em>On|Off</em></a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">$B%(%3!<%5!<%P$NM-8zL58z$r@_Dj$7$^$9!#(B</td></tr>
+<tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho <em>On|Off</em></a></td><td /><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">$B%(%3!<%5!<%P$NM-8zL58z$r@_Dj$7$^$9!#(B</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to proxied 
 resources</td></tr>
 <tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<em>word|host|domain</em>
@@ -409,14 +409,14 @@ matched by regular expressions</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network timeout for proxied requests</td></tr>
 <tr><td><a href="mod_proxy.html#proxyvia">ProxyVia on|off|full|block</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Information provided in the <code>Via</code> HTTP response
 header for proxied requests</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <em>filename</em></a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%$%s%G%C%/%90lMw$N:G8e$KA^F~$5$l$k%U%!%$%k$NL>A0(B</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<em>status</em>] <em>URL-path URL</em></a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N%j%@%$%l%/%H(B$B$r(B
+<tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <em>filename</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%$%s%G%C%/%90lMw$N:G8e$KA^F~$5$l$k%U%!%$%k$NL>A0(B</td></tr>
+<tr><td><a href="mod_alias.html#redirect">Redirect [<em>status</em>] <em>URL-path URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N%j%@%$%l%/%H(B$B$r(B
 $BAw$k(B</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<em>status</em>] <em>regex URL</em></a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B8=:_$N(B URL $B$X$N@55,I=8=$N%^%C%A$K$h$j(B
+<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<em>status</em>] <em>regex URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B8=:_$N(B URL $B$X$N@55,I=8=$N%^%C%A$K$h$j(B
 $B30It$X$N%j%@%$%l%/%H(B$B$rAw$k(B</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <em>URL-path URL</em></a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N1J5WE*$J(B
+<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <em>URL-path URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N1J5WE*$J(B
 $B%j(B$B%@%$%l%/%H$rAw$k(B</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <em>URL-path URL</em></a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N0l;~E*$J(B
+<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <em>URL-path URL</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N0l;~E*$J(B
 $B%j(B$B%@%$%l%/%H$rAw$k(B</td></tr>
 <tr><td><a href="mod_mime.html#removecharset">RemoveCharset
     <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
@@ -467,28 +467,28 @@ by Apache children</td></tr>
 processes launched by Apache children</td></tr>
 <tr class="odd"><td><a href="core.html#satisfy" id="S" name="S">Satisfy any|all</a></td><td> all </td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and 
 user authentication</td></tr>
-<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <em>file-path</em></a></td><td> logs/apache_status </td><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B;R%W%m%;%9$HO"7H$9$k$?$a$N%G!<%?$rJ]B8$9$k(B
+<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <em>file-path</em></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B;R%W%m%;%9$HO"7H$9$k$?$a$N%G!<%?$rJ]B8$9$k(B
 $B%U%!%$%k$N0LCV(B</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#script"> Script <em>method cgi-script</em></a></td><td /><td /><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%j%/%(%9%H%a%=%C%I$KBP$7$F(B CGI $B%9%/%j%W%H$r(B
+<tr class="odd"><td><a href="mod_actions.html#script"> Script <em>method cgi-script</em></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$BFCDj$N%j%/%(%9%H%a%=%C%I$KBP$7$F(B CGI $B%9%/%j%W%H$r(B
 $B<B9T$9$k(B$B$h$&$K@_Dj(B</td></tr>
 <tr><td><a href="mod_alias.html#scriptalias">ScriptAlias 
-<em>URL-path file-path</em>|<em>directory-path</em></a></td><td /><td /><td>B</td></tr><tr><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C%W@h$r(B
+<em>URL-path file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL $B$r%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C%W@h$r(B
 CGI $B%9%/%j%W%H$K;XDj(B</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch
-<em>regex file-path</em>|<em>directory-path</em></a></td><td /><td /><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL $B$r@55,I=8=$r;H$C$F%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C(B$B%W@h$r(B
+<em>regex file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL $B$r@55,I=8=$r;H$C$F%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C(B$B%W@h$r(B
 CGI $B%9%/%j%W%H$K;XDj(B</td></tr>
 <tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource registry|script</a></td><td> script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI 
 scripts</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <em>file-path</em></a></td><td /><td /><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">CGI $B%9%/%j%W%H$N%(%i!<%m%0%U%!%$%k$N>l=j(B</td></tr>
-<tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <em>bytes</em></a></td><td> 1024 </td><td /><td>B</td></tr><tr><td class="descr" colspan="4">$B%9%/%j%W%H%m%0$K5-O?$5$l$k(B PUT $B$d(B POST $B%j%/%(%9%H$NFb(B$BMF$N>e8B(B</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <em>bytes</em></a></td><td> 10385760 </td><td /><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">CGI $B%9%/%j%W%H$N%m%0%U%!%$%k$NBg$-$5$N>e8B(B</td></tr>
+<tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <em>file-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">CGI $B%9%/%j%W%H$N%(%i!<%m%0%U%!%$%k$N>l=j(B</td></tr>
+<tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <em>bytes</em></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%9%/%j%W%H%m%0$K5-O?$5$l$k(B PUT $B$d(B POST $B%j%/%(%9%H$NFb(B$BMF$N>e8B(B</td></tr>
+<tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <em>bytes</em></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">CGI $B%9%/%j%W%H$N%m%0%U%!%$%k$NBg$-$5$N>e8B(B</td></tr>
 <tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <em>file-path</em></a></td><td> logs/cgisock </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <em>bytes</em></a></td><td /><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP $B%P%C%U%!%5%$%:(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <em>bytes</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP $B%P%C%U%!%5%$%:(B</td></tr>
 <tr><td><a href="core.html#serveradmin">ServerAdmin <var>email-address</var></a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Email address that the server includes in error
 messages sent to the client</td></tr>
 <tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>hostname</var> [<var>hostname</var>] ...</a></td><td /><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Alternate names for a host used when matching requests
 to name-virtual hosts</td></tr>
-<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <em>number</em></a></td><td> 256 (prefork), Serv +</td><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B@_Dj2DG=$J%5!<%P%W%m%;%9?t$N>e8B(B</td></tr>
+<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <em>number</em></a></td><td> 256 (prefork), Serv +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B@_Dj2DG=$J%5!<%P%W%m%;%9?t$N>e8B(B</td></tr>
 <tr class="odd"><td><a href="core.html#servername">ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Hostname and port that the server uses to identify
 itself</td></tr>
 <tr><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td /><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Legacy URL pathname for a name-virtual host that
@@ -496,14 +496,14 @@ is accessed by an incompatible browser</td></tr>
 <tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the server installation</td></tr>
 <tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures the footer on server-generated documents</td></tr>
 <tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Minimal|ProductOnly|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the Server HTTP response header</td></tr>
-<tr><td><a href="mod_env.html#setenv">SetEnv <em>env-variable value</em></a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B4D6-JQ?t$r@_Dj$9$k(B</td></tr>
+<tr><td><a href="mod_env.html#setenv">SetEnv <em>env-variable value</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B4D6-JQ?t$r@_Dj$9$k(B</td></tr>
 <tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$NB0@-$K4p$E$$$F4D6-JQ?t$r@_Dj$9$k(B
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$NB0@-$K4p$E$$$F4D6-JQ?t$r@_Dj$9$k(B
 </td></tr>
 <tr><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>h</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%j%/%(%9%H$NB0@-$K4p$E$$$FBgJ8;z>.J8;z$r6hJL$;$:$K4D6-JQ?t$r@_Dj(B$B$9$k(B</td></tr>
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%j%/%(%9%H$NB0@-$K4p$E$$$FBgJ8;z>.J8;z$r6hJL$;$:$K4D6-JQ?t$r@_Dj(B$B$9$k(B</td></tr>
 <tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var></a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be processed by a
 handler</td></tr>
 <tr><td><a href="core.html#setinputfilter">SetInputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Sets the filters that will process client requests and POST
@@ -569,22 +569,22 @@ in the Session Cache</td></tr>
 <tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
-<tr><td><a href="mpm_common.html#startservers">StartServers <em>number</em></a></td><td> 5 </td><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B5/F0;~$K@8@.$5$l$k;R%5!<%P%W%m%;%9$N?t(B</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <em>number</em></a></td><td /><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B5/F0;~$K@8@.$5$l$k%9%l%C%I$N?t(B</td></tr>
-<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td /><td /><td /></tr><tr><td class="descr" colspan="4">CGI $B%W%m%0%i%`$N%f!<%6%Q!<%_%C%7%g%s!"%0%k!<%W%Q!<%_%C%7%g%s(B</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <em>number</em></a></td><td /><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B@_Dj2DG=$J;R%W%m%;%9Kh$N%9%l%C%I?t$N>e8B$r(B
+<tr><td><a href="mpm_common.html#startservers">StartServers <em>number</em></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B5/F0;~$K@8@.$5$l$k;R%5!<%P%W%m%;%9$N?t(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B5/F0;~$K@8@.$5$l$k%9%l%C%I$N?t(B</td></tr>
+<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td /><td>sv</td><td /></tr><tr><td class="descr" colspan="4">CGI $B%W%m%0%i%`$N%f!<%6%Q!<%_%C%7%g%s!"%0%k!<%W%Q!<%_%C%7%g%s(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B@_Dj2DG=$J;R%W%m%;%9Kh$N%9%l%C%I?t$N>e8B$r(B
 $B@_Dj$7$^$9(B</td></tr>
-<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <em>number</em></a></td><td> 50 </td><td /><td>M</td></tr><tr><td class="descr" colspan="4">$B;R%W%m%;%9$=$l$>$l$K@8@.$5$l$k%9%l%C%I?t(B</td></tr>
+<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <em>number</em></a></td><td> 50 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">$B;R%W%m%;%9$=$l$>$l$K@8@.$5$l$k%9%l%C%I?t(B</td></tr>
 <tr class="odd"><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <em>number</em></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>number</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for
 certain events before failing a request</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <em>file</em>|<em>pipe</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specifly location of a log file</td></tr>
 <tr><td><a href="mod_mime.html#typesconfig">TypesConfig <em>file-path</em></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The location of the mime.types file</td></tr>
-<tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</a></td><td /><td>h</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B4D6-$+$iJQ?t$r<h$j=|$/(B</td></tr>
+<tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">$B4D6-$+$iJQ?t$r<h$j=|$/(B</td></tr>
 <tr><td><a href="core.html#usecanonicalname">UseCanonicalName on|off|dns</a></td><td> on </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures how the server determines its own name and
 port</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#user">User <em>unix-userid</em></a></td><td> #-1 </td><td /><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k:]$KMQ$$$k%f!<%6(B ID</td></tr>
-<tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em></a></td><td> public_html </td><td /><td>B</td></tr><tr><td class="descr" colspan="4">$B%f!<%6@lMQ%G%#%l%/%H%j$N0LCV(B</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#user">User <em>unix-userid</em></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">$B%j%/%(%9%H$K1~Ez$9$k:]$KMQ$$$k%f!<%6(B ID</td></tr>
+<tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em></a></td><td> public_html </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">$B%f!<%6@lMQ%G%#%l%/%H%j$N0LCV(B</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
 <tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the document root
@@ -599,4 +599,4 @@ a given virtual host</td></tr>
 a given virtual host</td></tr>
 <tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Parse SSI directives in files with the execute 
 bit set</td></tr>
-</table></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">$B%b(B$B%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p></div></body></html>
+</table></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">$B%b%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p></div></body></html>

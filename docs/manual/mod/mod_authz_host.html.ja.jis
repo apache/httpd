@@ -4,7 +4,7 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_authz_host - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_authz_host</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
+      --><title>mod_authz_host - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_authz_host</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
                   </a></th><td>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
                   </a></th><td>authz_host_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
@@ -39,12 +39,12 @@
 </div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>サーバのある領域にアクセスできるホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
     [<em>host</em>|env=<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_authz_host</td></tr></table>
@@ -141,12 +141,12 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
     で始まるブラウザのみがアクセスを許可され、
     他のものはアクセスを拒否されます。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>サーバがアクセスを拒否するホストを制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
     [<em>host</em>|env=<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_authz_host</td></tr></table>
@@ -154,12 +154,12 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
     アドレス、環境変数に基づいてサーバへのアクセスを制限します。
     <code class="directive">Deny</code> ディレクティブの引数は <code class="directive"><a href="#allow">Allow</a></code>
     ディレクティブとまったく同じです。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>デフォルトのアクセス可能な状態と、Allow と
 Deny が評価される順番を制御する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td><code> Order <em>ordering</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>Order Deny,Allow</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td>ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_authz_host</td></tr></table>
@@ -268,4 +268,4 @@ Deny が評価される順番を制御する</td></tr><tr><th><a href="directive-dict.h
     設定セクションのマージの詳細については、
     <a href="../sections.html">Directory,Location, Files
     セクションの動作方法</a> を参照してください。</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
