@@ -242,10 +242,10 @@ int status_handler (request_rec *r)
 		    rputs("Starting",r);
 		    break;
 		case SERVER_BUSY_READ:
-		    rputs("Read",r);
+		    rputs("<b>Read</b>",r);
 		    break;
 		case SERVER_BUSY_WRITE:
-		    rputs("Write",r);
+		    rputs("<b>Write</b>",r);
 		    break;
 		case SERVER_DEAD:
 		    rputs("Dead",r);
