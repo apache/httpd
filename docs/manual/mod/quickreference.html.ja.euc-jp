@@ -78,8 +78,8 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 表示される、MIME タイプで選択された代替テキスト</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子を指定された文字セットにマップする</td></tr>
-<tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">明示的に文字セットを指定していない応答に追加される
-デフォルトの文字セット</td></tr>
+<tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">レスポンスのコンテントタイプが <code>text/plain</code> あるいは
+<code>text/html</code> の場合に追加するデフォルトの charset パラメータ</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string</var> <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイルに対して表示する説明</td></tr>
 <tr><td><a href="mod_mime.html#addencoding">AddEncoding <var>MIME-enc</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル名の拡張子を指定されたエンコーディング

@@ -63,6 +63,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -187,24 +189,36 @@ manager</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore the fact that the client requested the content not be
-cached.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore request to not serve cached content to client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
-    <p>Ordinarily, documents with no-cache or no-store header values will not be stored in the cache.
-    The <code class="directive">CacheIgnoreCacheControl</code> directive allows this behavior to be overridden.
-    <code class="directive">CacheIgnoreCacheControl</code> On tells the server to attempt to cache the document
-    even if it contains no-cache or no-store header values. Documents requiring authorization will
-    <em>never</em> be cached.</p>
+    <p>Ordinarily, requests containing a Cache-Control: no-cache or
+    Pragma: no-cache header value will not be served from the cache.  The
+    <code class="directive">CacheIgnoreCacheControl</code> directive allows this
+    behavior to be overridden.  <code class="directive">CacheIgnoreCacheControl</code>
+    On tells the server to attempt to serve the resource from the cache even
+    if the request contains no-cache header values.  Resources requiring
+    authorization will <em>never</em> be cached.</p>
 
     <div class="example"><p><code>
       CacheIgnoreCacheControl On
     </code></p></div>
 
+    <div class="warning"><h3>Warning:</h3>
+       This directive will allow serving from the cache even if the client has
+       requested that the document not be served from the cache.  This might
+       result in stale content being served.
+    </div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#cachestoreprivate">CacheStorePrivate</a></code></li>
+<li><code class="directive"><a href="#cachestorenostore">CacheStoreNoStore</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreHeaders" id="CacheIgnoreHeaders">CacheIgnoreHeaders</a> <a name="cacheignoreheaders" id="cacheignoreheaders">Directive</a></h2>
@@ -340,6 +354,75 @@ LastModified date.</td></tr>
       CacheMaxExpire 604800
     </code></p></div>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a name="cachestorenostore" id="cachestorenostore">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Attempt to cache requests or responses that have been marked as no-store.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheStoreNoStore On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheStoreNoStore Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>Ordinarily, requests or responses with Cache-Control: no-store header
+       values will not be stored in the cache.  The
+       <code class="directive">CacheStoreNoCache</code> directive allows this
+       behavior to be overridden.  <code class="directive">CacheStoreNoCache</code> On
+       tells the server to attempt to cache the resource even if it contains
+       no-store header values.  Resources requiring authorization will
+       <em>never</em> be cached.</p>
+
+    <div class="example"><p><code>
+      CacheStoreNoStore On
+    </code></p></div>
+
+    <div class="warning"><h3>Warning:</h3>
+       As described in RFC 2616, the no-store directive is intended to
+       "prevent the inadvertent release or retention of sensitive information
+       (for example, on backup tapes)."  Enabling this option could store
+       sensitive information in the cache.  You are hereby warned.
+    </div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></code></li>
+<li><code class="directive"><a href="#cachestoreprivate">CacheStorePrivate</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheStorePrivate" id="CacheStorePrivate">CacheStorePrivate</a> <a name="cachestoreprivate" id="cachestoreprivate">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Attempt to cache responses that the server has marked as private</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheStorePrivate On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheStorePrivate Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>Ordinarily, responses with Cache-Control: private header values will not
+       be stored in the cache.  The <code class="directive">CacheStorePrivate</code>
+       directive allows this behavior to be overridden.
+       <code class="directive">CacheStorePrivate</code> On
+       tells the server to attempt to cache the resource even if it contains
+       private header values.  Resources requiring authorization will
+       <em>never</em> be cached.</p>
+
+    <div class="example"><p><code>
+      CacheStorePrivate On
+    </code></p></div>
+
+    <div class="warning"><h3>Warning:</h3>
+       This directive will allow caching even if the upstream server has
+       requested that the resource not be cached.  This directive is only
+       ideal for a 'private' cache.
+    </div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></code></li>
+<li><code class="directive"><a href="#cachestorenostore">CacheStoreNoStore</a></code></li>
+</ul>
 </div>
 </div>
 <div class="bottomlang">
