@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/20 23:04:06 $]
+Last modified at [$Date: 2003/06/21 20:25:39 $]
 
 Release:
 
@@ -69,12 +69,12 @@ PATCHES TO PORT FROM 2.1
       brigades which may not be destroyed until the end of a keepalive
       connection.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.237&r2=1.238
-      +1: brianp
+      +1: brianp, trawick
 
     * Win32: Whack the fully qualified names that appear in the log when
       loglevel debug is being used.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c.diff?r1=1.133&r2=1.134
-      +1: stoddard
+      +1: stoddard, trawick
 
     * Backport LimitInteralRecursion to 2.0 and 1.3.
       (1.3 patch is here: <http://cvs.apache.org/~nd/recursion13.patch>)
