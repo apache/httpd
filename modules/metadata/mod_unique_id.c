@@ -399,6 +399,5 @@ module AP_MODULE_DECLARE_DATA unique_id_module = {
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
     NULL,                       /* command apr_table_t */
-    NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

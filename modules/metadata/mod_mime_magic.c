@@ -2485,7 +2485,6 @@ module mime_magic_module =
     create_magic_server_config,        /* server config */
     merge_magic_server_config, /* merge server config */
     mime_magic_cmds,           /* command apr_table_t */
-    NULL,                      /* handlers */
     register_hooks              /* register hooks */
 };
 
