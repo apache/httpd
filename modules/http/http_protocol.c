@@ -1370,22 +1370,21 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
                                                     &core_module);
     apr_bucket_brigade *bb = req_cfg->bb;
 
-    do {
+    /* read until we get a non-empty brigade */
+    while (APR_BRIGADE_EMPTY(bb)) {
         apr_off_t len_read;
-        if (APR_BRIGADE_EMPTY(bb)) {
-            len_read = r->remaining;
-            if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
-                               &len_read) != APR_SUCCESS) {
-                /* if we actually fail here, we want to just return and
-                 * stop trying to read data from the client.
-                 */
-                r->connection->keepalive = -1;
-                apr_brigade_destroy(bb);
-                return -1;
-            }
-            r->remaining -= len_read;
+        len_read = r->remaining;
+        if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
+                           &len_read) != APR_SUCCESS) {
+            /* if we actually fail here, we want to just return and
+             * stop trying to read data from the client.
+             */
+            r->connection->keepalive = -1;
+            apr_brigade_destroy(bb);
+            return -1;
         }
-    } while (APR_BRIGADE_EMPTY(bb));
+        r->remaining -= len_read;
+    } 
 
     b = APR_BRIGADE_FIRST(bb);
     if (APR_BUCKET_IS_EOS(b)) { /* reached eos on previous invocation */
