@@ -83,7 +83,6 @@
 
 /* shared with mpm_winnt.c */
 extern DWORD my_pid;
-extern apr_pool_t *pconf;
 
 /* used by parent to signal the child to start and exit */
 /* shared with mpm_winnt.c, but should be private to child.c */
@@ -97,7 +96,7 @@ extern int volatile is_graceful;
 /* Queue for managing the passing of COMP_CONTEXTs between
  * the accept and worker threads.
  */
-static apr_pool_t *pchild = NULL;
+static apr_pool_t *pchild;
 static int shutdown_in_progress = 0;
 static int workers_may_exit = 0;
 static unsigned int g_blocked_threads = 0;
@@ -417,7 +416,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 
     if (context == NULL) {
         /* allocate the completion context and the transaction pool */
-        context = apr_pcalloc(pconf, sizeof(COMP_CONTEXT));
+        context = apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
         apr_pool_create(&context->ptrans, pchild);
         apr_pool_tag(context->ptrans, "ptrans");
         context->ba = apr_bucket_alloc_create(pchild);
@@ -757,7 +756,7 @@ static void create_listener_thread()
 }
 
 
-void child_main()
+void child_main(apr_pool_t *pconf)
 {
     apr_status_t status;
     apr_hash_t *ht;
