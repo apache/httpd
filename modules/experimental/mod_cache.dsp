@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /out:"Release/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache
 
 !ELSEIF  "$(CFG)" == "mod_cache - Win32 Debug"
 
@@ -92,6 +92,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\cache_hash.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cache_storage.c
 # End Source File
 # Begin Source File
@@ -106,6 +110,10 @@ SOURCE=.\mod_cache.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\cache_hash.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\mod_cache.h
