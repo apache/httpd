@@ -90,6 +90,9 @@ extern API_VAR_EXPORT int ap_daemons_max_free;
 extern API_VAR_EXPORT int ap_daemons_limit;
 extern API_VAR_EXPORT int ap_suexec_enabled;
 extern int ap_listenbacklog;
+#ifdef SO_ACCEPTFILTER
+extern int ap_acceptfilter;
+#endif
 extern int ap_dump_settings;
 extern API_VAR_EXPORT int ap_extended_status;
 

@@ -2521,6 +2521,21 @@ static const char *set_threadstacksize(cmd_parms *cmd, void *dummy, char *stacks
 }
 #endif
 
+/* Though the AcceptFilter functionality is not available across
+ * all platforms - we still allow the config directive to appear
+ * on all platforms and do intentionally not tie it to the compile
+ * time flag SO_ACCEPTFILTER. This makes configuration files significantly
+ * more portable; especially as an <IfModule http_core.c> or some
+ * other construct is not possible.
+ */
+static const char *set_acceptfilter(cmd_parms *cmd, void *dummy, int flag)
+{
+#ifdef SO_ACCEPTFILTER
+    ap_acceptfilter = flag;
+#endif
+    return NULL;
+}
+
 static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
@@ -3159,6 +3174,19 @@ static const command_rec core_cmds[] = {
   "to die." },
 { "ListenBacklog", set_listenbacklog, NULL, RSRC_CONF, TAKE1,
   "Maximum length of the queue of pending connections, as used by listen(2)" },
+{ "AcceptFilter", set_acceptfilter, NULL, RSRC_CONF, FLAG,
+  "Switch AcceptFiltering on/off (default is "
+#ifdef AP_ACCEPTFILTER_OFF
+	"off"
+#else
+	"on"
+#endif
+	")."
+#ifndef SO_ACCEPTFILTER
+	"This feature is currently not compiled in; so this directive "
+	"is ignored."
+#endif
+   },
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
   "The location of the directory Apache changes to before dumping core" },
 { "Include", include_config, NULL, (RSRC_CONF | ACCESS_CONF), TAKE1,

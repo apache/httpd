@@ -258,6 +258,15 @@ API_VAR_EXPORT int ap_daemons_limit=0;
 time_t ap_restart_time=0;
 API_VAR_EXPORT int ap_suexec_enabled = 0;
 int ap_listenbacklog;
+#ifdef SO_ACCEPTFILTER
+int ap_acceptfilter =
+#ifdef AP_ACCEPTFILTER_OFF
+	0;
+#else
+	1;
+#endif
+#endif
+
 int ap_dump_settings = 0;
 API_VAR_EXPORT int ap_extended_status = 0;
 
@@ -3430,7 +3439,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     }
 
 #ifdef SO_ACCEPTFILTER
-    {
+    if (ap_acceptfilter) {
 #ifndef ACCEPT_FILTER_NAME
 #define ACCEPT_FILTER_NAME "dataready"
 #endif
@@ -3443,12 +3452,9 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	};
 	if (setsockopt(s, SOL_SOCKET, SO_ACCEPTFILTER, &af, sizeof(af)) < 0
 	    && errno != ENOENT) {
-	    ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
 			 "make_sock: for %s, setsockopt: (SO_ACCEPTFILTER)",
 			 addr);
-	    close(s);
-	    ap_unblock_alarms();
-	    exit(1);
 	}
     }
 #endif
@@ -3745,6 +3751,13 @@ static void show_compile_settings(void)
 #endif
 #ifdef SHARED_CORE
     printf(" -D SHARED_CORE\n");
+#endif
+#ifdef SO_ACCEPTFILTER
+    printf(" -D SO_ACCEPTFILTER\n");
+    printf(" -D ACCEPT_FILTER_NAME=\"" ACCEPT_FILTER_NAME "\"\n");
+#endif
+#ifdef AP_ACCEPTFILTER_OFF
+    printf(" -D AP_ACCEPTFILTER_OFF\n");
 #endif
 
 /* This list displays the compiled-in default paths: */

@@ -1,5 +1,14 @@
 Changes with Apache 1.3.21
 
+  *) Added a directive: "AcceptFilter <on|off>". To control BSD 
+     acccept filters when at compile time SO_ACCEPT_FILTER is 
+     detected. The default is still 'on' except when AP_ACCEPT_FILTER_OFF
+     is defined. Also downgraded the fatal exit to a warning
+     when the associated setsocketopt() fails. This should make it
+     easier to move httpd binaries and config files across BSD
+     machines with varying acceptfilter support.
+     [Dirk-Willem van Gulik <dirkx@covalent.net>]
+
   *) Fix the <Files ~ "^\.ht"> container to *really* deny all access.
      Without the Satisfy All, .ht* files could still be fetched if
      they were within the scope of a Satisfy Any directive.
