@@ -106,3 +106,15 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Time-out al cererii!"
+--><!--#include virtual="include/top.html" -->
+
+    Serverul a terminat conexiunea cu browserul pentru ca acesta
+    nu a terminat cererea in limita timpului specificat.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

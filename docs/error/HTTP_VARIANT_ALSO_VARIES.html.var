@@ -109,3 +109,16 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Varianta deasemenea variaza!"
+--><!--#include virtual="include/top.html" -->
+
+    O varianta pentru entitatea ceruta
+    este ea insasi o resursa negociabila.
+    Accesul nu este posibil.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

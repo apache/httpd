@@ -58,3 +58,10 @@ por favor entre em contato com o
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+Va rugam sa il contactati pe
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>
+in cazul in care credeti ca aceasta este o eroare a serverului.
+----------ro--

@@ -98,3 +98,14 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Tip de date nesuportate!"
+--><!--#include virtual="include/top.html" -->
+
+    Serverul nu suporta tipul de date trimise in cerere.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

@@ -94,3 +94,15 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Content-Length invalid!"
+--><!--#include virtual="include/top.html" -->
+
+    O cerere cu metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    necesita un header <code>Content-Length</code> valid.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--
