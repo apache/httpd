@@ -6150,7 +6150,10 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     pCommand = ap_psprintf(p, "\"%s\" -Z %s -f \"%s\"", buf, exit_event_name, ap_server_confname);  
 
     for (i = 1; i < argc; i++) {
-        pCommand = ap_pstrcat(p, pCommand, " \"", argv[i], "\"", NULL);
+        if ((argv[i][0] == '-') && ((argv[i][1] == 'k') || (argv[i][1] == 'n')))
+            ++i;
+        else
+            pCommand = ap_pstrcat(p, pCommand, " \"", argv[i], "\"", NULL);
     }
 
     /* Create a pipe to send socket info to the child */
@@ -6602,25 +6605,25 @@ int REALMAIN(int argc, char *argv[])
     int child = 0;
     char *cp;
     char *s;
+    int conf_specified = 0;
+    char cwd[MAX_STRING_LEN];
+
+#ifdef WIN32
     char *service_name = NULL;
     int install = 0;
-    int conf_specified = 0;
     char *signal_to_send = NULL;
-    char cwd[MAX_STRING_LEN];
+
+    /* Service application under WinNT */
+    if (isWindowsNT() && isProcessService()) {
+        service_main(master_main, argc, argv);
+        clean_parent_exit(0);
+    }
+#endif
 
 #ifdef NETWARE
     init_name_space();
     signal(SIGTERM, signal_handler);
     init_tsd();
-#else
-    /* Service application
-     * Configuration file in registry at:
-     * HKLM\System\CurrentControlSet\Services\[Svc name]\Parameters\ConfPath
-     */
-    if (isProcessService()) {
-        service_main(master_main, argc, argv);
-        clean_parent_exit(0);
-    }
 #endif
 
     /* Console application or a child process. */
@@ -6822,8 +6825,8 @@ int REALMAIN(int argc, char *argv[])
      * or shutting down a running service 
      * (but do read the conf for the pidfile if we shutdown the console)
      */
-    if ((install >= 0) && (!service_name || !signal_to_send || !isWindowsNT()
-                           || strcasecmp(signal_to_send,"shutdown"))) {
+    if ((install >= 0) && (!service_name || !signal_to_send 
+                            || strcasecmp(signal_to_send,"shutdown"))) {
         server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
     }
 
@@ -6837,17 +6840,21 @@ int REALMAIN(int argc, char *argv[])
             RemoveService(service_name);
         clean_parent_exit(0);
     }
-    
-    if (service_name && signal_to_send && isWindowsNT()) {
-        send_signal_to_service(service_name, signal_to_send);
-        clean_parent_exit(0);
-    }
 
     if (service_name && !conf_specified) {
         printf("Unknown service: %s\n", service_name);
         clean_parent_exit(0);
     }
-#else
+
+    /* All NT signals, and all but the 9x start signal are handled entirely.
+     * Die if we failed, are on NT, or are not "start"ing the service
+     */
+    if (service_name && signal_to_send) {
+        if (!send_signal_to_service(service_name, signal_to_send)
+                || isWindowsNT() || strcasecmp(signal_to_send, "start"))
+            clean_parent_exit(0);
+    }
+#else /* ndef WIN32 */
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
 #endif
 
@@ -6861,13 +6868,13 @@ int REALMAIN(int argc, char *argv[])
     }
 
 #ifdef WIN32
-    /* Handle -k start [with or without -n arg] later */
+    /* Non-service Signals.  (Ignore -k start for now [with or without -n arg]) */
     if (signal_to_send && strcasecmp(signal_to_send, "start")) {
         send_signal(pconf, signal_to_send);
         clean_parent_exit(0);
     }
 #endif
-    
+
 #ifndef NETWARE
     if (!child && !ap_dump_settings) { 
         ap_log_pid(pconf, ap_pid_fname);
@@ -6900,7 +6907,7 @@ int REALMAIN(int argc, char *argv[])
 
     while((ap_thread_count) || (!shutdown_pending))
         ThreadSwitchWithDelay();
-#else
+#else 
     /*
      * In the future, the main will spawn off a couple
      * of children and monitor them. As soon as a child
@@ -6917,6 +6924,7 @@ int REALMAIN(int argc, char *argv[])
 	ap_destroy_mutex(start_mutex);
 	destroy_event(exit_event);
     } 
+#ifdef WIN32
     else if (service_name && signal_to_send && !isWindowsNT()
              && !strcasecmp(signal_to_send, "start")) {
         /* service95_main will call master_main() */
@@ -6924,14 +6932,18 @@ int REALMAIN(int argc, char *argv[])
     }
     else 
     {
-#ifdef WIN32
-	/* Let's go fishing for some signals including ctrl+c,
-         * ctrl+break, logoff, close and shutdown.
+	/* Let's go fishing for some signals including ctrl+c, ctrl+break,
+         * logoff, close and shutdown, while the server is running
 	 */
 	ap_start_console_monitor();
-#endif /* WIN32 */
         master_main(argc, argv);
     }
+#else /* ndef WIN32 */
+    else 
+    {
+        master_main(argc, argv);
+    }
+#endif /* ndef WIN32 */
 #endif /* ndef NETWARE */
 
     clean_parent_exit(0);

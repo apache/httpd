@@ -127,6 +127,8 @@ void ap_time_process_request(int child_num, int status);
 unsigned int ap_set_callback_and_alarm(void (*fn) (int), int x);
 API_EXPORT(int) ap_check_alarm(void);
 
+void setup_signal_names(char *prefix);
+
 #ifndef NO_OTHER_CHILD
 /*
  * register an other_child -- a child which the main loop keeps track of

@@ -14,6 +14,8 @@
 #include "service.h"
 #include "registry.h"
 
+#define SERVICE_APACHE_RESTART 128
+
 static struct
 {
     int (*main_fn)(int, char **);
@@ -32,12 +34,12 @@ static DWORD monitor_thread_id = 0;
 DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
 HINSTANCE    monitor_hkernel = NULL;
 
-
 static void WINAPI service_main_fn(DWORD, LPTSTR *);
 static void WINAPI service_ctrl(DWORD ctrlCode);
 static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
 static int ap_start_service(SC_HANDLE);
 static int ap_stop_service(SC_HANDLE);
+static int ap_restart_service(SC_HANDLE);
 
 int service_main(int (*main_fn)(int, char **), int argc, char **argv )
 {
@@ -274,6 +276,11 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
         case SERVICE_CONTROL_STOP:
             state = SERVICE_STOP_PENDING;
 	    ap_start_shutdown();
+            break;
+
+        case SERVICE_APACHE_RESTART:
+            state = SERVICE_START_PENDING;
+	    ap_start_restart(1);
             break;
 
         // Update the service status.
@@ -581,17 +588,25 @@ BOOL isValidService(char *display_name) {
 
 BOOL isWindowsNT(void)
 {
-    OSVERSIONINFO osver;
-    osver.dwOSVersionInfoSize = sizeof(osver);
-
-    if (GetVersionEx(&osver))
-        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
-            return TRUE;
-
-    return FALSE;
+    static BOOL once = FALSE;
+    static BOOL isNT = FALSE;
+    
+    if (!once) 
+    {
+        OSVERSIONINFO osver;
+        osver.dwOSVersionInfoSize = sizeof(osver);
+        if (GetVersionEx(&osver))
+            if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+                isNT = TRUE;
+        once = TRUE;
+    }
+    return isNT;
 }
 
-int send_signal_to_service(char *display_name, char *sig) {
+int send_signal_to_service(char *display_name, char *sig) 
+{
+    DWORD       service_pid;
+    HANDLE      hwnd;
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
     char       *service_name;
@@ -615,50 +630,117 @@ int send_signal_to_service(char *display_name, char *sig) {
     service_name = strdup(display_name);
     ap_remove_spaces(service_name, display_name);
 
-    schSCManager = OpenSCManager(
-                        NULL,                   // machine (NULL == local)
-                        NULL,                   // database (NULL == default)
-                        SC_MANAGER_ALL_ACCESS   // access required
-                        );
-    if (!schSCManager) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-        "OpenSCManager failed");
-    }
-    else {
+    if (isWindowsNT()) 
+    {
+        schSCManager = OpenSCManager(
+                            NULL,                   // machine (NULL == local)
+                            NULL,                   // database (NULL == default)
+                            SC_MANAGER_ALL_ACCESS   // access required
+                            );
+        if (!schSCManager) {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "OpenSCManager failed");
+            return FALSE;
+        }
+        
         schService = OpenService(schSCManager, service_name, SERVICE_ALL_ACCESS);
 
         if (schService == NULL) {
             /* Could not open the service */
-           ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-            "OpenService failed");
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "OpenService failed");
+            CloseServiceHandle(schSCManager);
+            return FALSE;
         }
-        else {
-            if (!QueryServiceStatus(schService, &globdat.ssStatus))
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-                             "QueryService failed");
-            else {
-                if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED && action == stop)
-                    printf("The %s service is not started.\n", display_name);
-                else if (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING && action == start)
-                    printf("The %s service has already been started.\n", display_name);
-                else {
-                    printf("The %s service is %s.\n", display_name, participle[action]);
+        
+        if (!QueryServiceStatus(schService, &globdat.ssStatus)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "QueryService failed");
+            CloseServiceHandle(schService);
+            CloseServiceHandle(schSCManager);
+        }
+    }
+    else /* !isWindowsNT() */
+    {
+        /* Locate the window named service_name of class ApacheWin95ServiceMonitor
+         * from the active top level windows
+         */
+        hwnd = FindWindow("ApacheWin95ServiceMonitor", service_name);
+        if (hwnd && GetWindowThreadProcessId(hwnd, &service_pid))
+            globdat.ssStatus.dwCurrentState = SERVICE_RUNNING;
+        else
+            globdat.ssStatus.dwCurrentState = SERVICE_STOPPED;
+    }
 
-                    if (action == stop || action == restart)
-                        success = ap_stop_service(schService);
-                    if (action == start || action == restart)
-                        success = ap_start_service(schService);
-                
-                    if( success )
-                        printf("The %s service has %s.\n", display_name, past[action]);
-                    else
-                        printf("Failed to %s the %s service.\n", sig, display_name);
+    if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED 
+            && action == stop) {
+        printf("The %s service is not started.\n", display_name);
+    }
+    else if (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING 
+                 && action == start) {
+       printf("The %s service has already been started.\n", display_name);
+    }
+    else
+    {
+        printf("The %s service is %s.\n", display_name, participle[action]);
+
+        if (isWindowsNT()) 
+        {
+            if (action == stop)
+                success = ap_stop_service(schService);
+            else if ((action == start) 
+                     || ((action == restart) 
+                            && (globdat.ssStatus.dwCurrentState 
+                                    == SERVICE_STOPPED)))
+                success = ap_start_service(schService);
+            else if (action == restart)
+                success = ap_restart_service(schService);
+        }
+        else /* !isWindowsNT()) */
+        {
+            char prefix[20];
+            ap_snprintf(prefix, sizeof(prefix), "ap%ld", (long)service_pid);
+            setup_signal_names(prefix);
+
+            if (action == stop) {
+                int ticks = 60;
+                ap_start_shutdown();
+                while (--ticks)
+                {
+                    if (!IsWindow(hwnd)) {
+                        success = TRUE;
+                        break;
+                    }
+                    Sleep(1000);
                 }
-
-                CloseServiceHandle(schService);
+            }
+            else /* !stop */
+            {   
+                /* This gets a bit tricky... start and restart (of stopped service)
+                 * will simply fall through and *THIS* process will fade into an
+                 * invisible 'service' process, detaching from the user's console.
+                 * We need to change the restart signal to "start", however,
+                 * if the service was not -yet- running.
+                 */
+                if (action == restart) 
+                {
+                    if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED) 
+                        strcpy(sig, "start");
+                    else
+                        ap_start_restart(1);
+                }
+                success = TRUE;
             }
         }
-        /* SCM removes registry parameters */
+
+        if( success )
+            printf("The %s service has %s.\n", display_name, past[action]);
+        else
+            printf("Failed to %s the %s service.\n", sig, display_name);
+    }
+
+    if (isWindowsNT()) {
+        CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
     }
     return success;
@@ -694,6 +776,26 @@ int ap_start_service(SC_HANDLE schService) {
     if (QueryServiceStatus(schService, &globdat.ssStatus))
         if (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING)
             return TRUE;
+    return FALSE;
+}
+
+int ap_restart_service(SC_HANDLE schService) 
+{
+    int ticks;
+    if (ControlService(schService, SERVICE_APACHE_RESTART, &globdat.ssStatus)) 
+    {
+        ticks = 60;
+        while (globdat.ssStatus.dwCurrentState == SERVICE_START_PENDING)
+        {
+            Sleep(1000);
+            if (!QueryServiceStatus(schService, &globdat.ssStatus)) 
+                return FALSE;
+            if (!--ticks)
+                break;
+        }
+    }
+    if (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING)
+        return TRUE;
     return FALSE;
 }
 
@@ -744,19 +846,38 @@ void stop_console_monitor(void)
 
 void ap_start_console_monitor(void)
 {
-    /* Under Windows NT, assure we properly accept Ctrl+C as an interrupt...
-     * Win/2000 definately makes the wrong assumption here, 
-     * disabling ctrl+c by default!
-     */
-    if (isWindowsNT()) {
-	SetConsoleCtrlHandler(NULL, FALSE);
-    }
-
-    /* Under 95/98 create a monitor window to watch for session end,
-     * pass NULL to WatchWindow so we do not appear to run as a service.
-     */
-    SetConsoleCtrlHandler(ap_control_handler, TRUE);
+    HANDLE console_input;
     
+    console_input = GetStdHandle(STD_INPUT_HANDLE);
+    /* Assure we properly accept Ctrl+C as an interrupt...
+     * Win/2000 definately makes some odd assumptions about 
+     * ctrl+c and the reserved console mode bits!
+     */
+    if (console_input != INVALID_HANDLE_VALUE)
+    {
+        /* The SetConsoleCtrlHandler(NULL... would fault under Win9x 
+         * WinNT also includes an undocumented 0x80 bit for console mode
+         * that preserves the console window behavior, and prevents the
+         * bogus 'selection' mode from being accedently triggered.
+         */
+        if (isWindowsNT()) {
+	    SetConsoleCtrlHandler(NULL, FALSE);
+            SetConsoleMode(console_input, ENABLE_LINE_INPUT 
+                                        | ENABLE_ECHO_INPUT 
+                                        | ENABLE_PROCESSED_INPUT
+                                        | 0x80);
+        }
+	else {
+            SetConsoleMode(console_input, ENABLE_LINE_INPUT 
+                                        | ENABLE_ECHO_INPUT 
+                                        | ENABLE_PROCESSED_INPUT);
+        }
+        SetConsoleCtrlHandler(ap_control_handler, TRUE);
+    }
+    
+    /* Under 95/98 create a monitor window to watch for session end,
+     * pass NULL to WatchWindow so we do not appear to be a service.
+     */
     if (!isWindowsNT()) {
         HANDLE thread;
         thread = CreateThread(NULL, 0, WatchWindow, NULL, 0, 
