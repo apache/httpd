@@ -1107,7 +1107,7 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, ap_context_t *p)
 	return 0;
 
     /* Strip trailing dots */
-    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; - ap_context_t )
+    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
 	addr[i] = '\0';
 
     This->matcher = proxy_match_domainname;
@@ -1162,7 +1162,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, ap_context_t *p)
     This->hostentry = ap_pduphostent (p, &host);
 
     /* Strip trailing dots */
-    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; - ap_context_t )
+    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
 	addr[i] = '\0';
 
     This->matcher = proxy_match_hostname;
