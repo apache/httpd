@@ -579,7 +579,7 @@ include command.</description>
 <description>Changes the string that mod_include displays when
 a variable isn't set.</description>
 <syntax>SSIUndefinedEcho <em>tag</em></syntax>
-<default>SSIUndefinedEcho &quot;&lt;-- undef --&gt;&quot;</default>
+<default>SSIUndefinedEcho &quot;&lt;!-- undef --&gt;&quot;</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>FileInfo</override>
@@ -611,10 +611,10 @@ a variable isn't set.</description>
     <p>The SSIErrorMsg directive changes the error message displayed
     when mod_include encounters an error. For production servers you
     may consider changing the default error message to
-    <code>&quot;&lt;-- Error --&gt;&quot;</code> so that the message
+    <code>&quot;&lt;!-- Error --&gt;&quot;</code> so that the message
     is not presented to the user.
     </p>
-    <p>This directive has the same effect as the <code>&lt;--#config
+    <p>This directive has the same effect as the <code>&lt;!--#config
     errmsg=<em>message</em> --&gt;</code> element.</p>
 
 </usage>
@@ -625,7 +625,7 @@ a variable isn't set.</description>
 <description></description>
 <syntax>Changes the string that mod_include looks for to start an
 include element</syntax>
-<default>SSIStartTag &quot;&lt;--!&quot;</default>
+<default>SSIStartTag &quot;&lt;!--&quot;</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -666,7 +666,7 @@ displayed</description>
     when echoing DATE environment variables.  The <em>formatstring</em>
     is as in strftime(3) from the C standard library.</p>
 
-    <p>This directive has the same effect as the <code>&lt;--#config
+    <p>This directive has the same effect as the <code>&lt;!--#config
     timefmt=<em>formatstring</em> --&gt;</code> element.</p>
 </usage>
 </directivesynopsis>
