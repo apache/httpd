@@ -91,7 +91,7 @@
  * disabled, except those explicitly turned on with the "enabled" keyword.
  */
 
-#if !defined(WIN32) && !defined(OS2)
+#if !defined(WIN32) && !defined(OS2) && !defined(BEOS)
 #define HAVE_UNIX_SUEXEC
 #endif
 
