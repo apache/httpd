@@ -3103,8 +3103,9 @@ static int default_handler(request_rec *r)
         apr_off_t fsize = r->finfo.size;
         e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool);
         while (fsize > AP_MAX_SENDFILE) {
-            APR_BRIGADE_INSERT_TAIL(bb, e);
-            apr_bucket_copy(e, &e);
+            apr_bucket *ce;
+            apr_bucket_copy(e, &ce);
+            APR_BRIGADE_INSERT_TAIL(bb, ce);
             e->start += AP_MAX_SENDFILE;
             fsize -= AP_MAX_SENDFILE;
         }
