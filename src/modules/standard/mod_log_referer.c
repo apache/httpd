@@ -162,7 +162,7 @@ static int referer_log_transaction(request_rec *orig)
                                                &referer_log_module);
 
     char *str;
-    char *referer;
+    char *referer, *referertest;
     request_rec *r;
 
     if (cls->referer_fd < 0)
@@ -176,7 +176,8 @@ static int referer_log_transaction(request_rec *orig)
     referer = ap_table_get(orig->headers_in, "Referer");
     if (referer != NULL) {
 
-        ap_str_tolower(referer);
+        referertest = ap_pstrdup(orig->pool, referer);
+        ap_str_tolower(referertest);
         /* The following is an upsetting mess of pointers, I'm sorry
            Anyone with the motiviation and/or the time should feel free
            to make this cleaner... */
@@ -191,7 +192,7 @@ static int referer_log_transaction(request_rec *orig)
         for (ptrptr = (char **) cls->referer_ignore_list->elts;
              ptrptr < ptrptr2;
              ptrptr = (char **) ((char *) ptrptr + cls->referer_ignore_list->elt_size)) {
-            if (strstr(referer, *ptrptr))
+            if (strstr(referertest, *ptrptr))
                 return OK;
         }
 
