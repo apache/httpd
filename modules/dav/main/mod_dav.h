@@ -1436,6 +1436,9 @@ typedef struct
     /* the client-provided context */
     void *walk_ctx;
 
+    /* pool to use for allocations in the callback */
+    apr_pool_t *pool;
+
     /* the current resource */
     const dav_resource *resource;
 

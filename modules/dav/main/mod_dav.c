@@ -1137,12 +1137,11 @@ static int dav_method_put(request_rec *r)
 DAV_DECLARE(void) dav_add_response(dav_walk_resource *wres,
                                    int status, dav_get_props_result *propstats)
 {
-    dav_walker_ctx *ctx = wres->walk_ctx;
     dav_response *resp;
 
     /* just drop some data into an dav_response */
-    resp = apr_pcalloc(ctx->w.pool, sizeof(*resp));
-    resp->href = apr_pstrdup(ctx->w.pool, wres->resource->uri);
+    resp = apr_pcalloc(wres->pool, sizeof(*resp));
+    resp->href = apr_pstrdup(wres->pool, wres->resource->uri);
     resp->status = status;
     if (propstats) {
 	resp->propresult = *propstats;
