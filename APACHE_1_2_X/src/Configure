@@ -421,6 +421,12 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lnsl"
 	DEF_WANTHSREGEX=yes
 	;;
+    *-tandem-sysv4*)
+	OS='SVR4'
+	CFLAGS="$CFLAGS -DSVR4"
+	LIBS="$LIBS -lsocket -lnsl"
+	DEF_WANTHSREGEX=yes
+	;;
     *-sysv4*)
 	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"
