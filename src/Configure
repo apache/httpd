@@ -1071,6 +1071,15 @@ if [ "x$using_shlib" = "x1" ] ; then
         *-ibm-aix* )
             DL_LIB="-lld"
             ;;
+        *-hp-hpux*)
+            if ./helpers/TestCompile func shl_load; then
+                :
+            else
+                if ./helpers/TestCompile lib dld; then
+                    DL_LIB="-ldld"
+                fi
+            fi
+            ;;
         * )
             if ./helpers/TestCompile func dlopen; then
                 :

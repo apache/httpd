@@ -1,4 +1,8 @@
 Changes with Apache 1.3.1
+  
+  *) Make sure the DSO emulation code for HPUX finds the proprietary shl_xxx()
+     functions which are in libdld under HPUX 9/10.
+     [Ralf S. Engelschall] PR#2378
 
   *) Make sure the "install" target of the top-level Makefile doesn't break
      because of a return code of 1 from an "if" (for instance under braindead
