@@ -16,7 +16,7 @@ LTLIBRARY_SOURCES = \
 	util_filter.c exports.c buildmark.c scoreboard.c \
 	error_bucket.c protocol.c core.c request.c
 
-targets = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE)
+TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE)
 
 include $(top_srcdir)/build/rules.mk
 include $(top_srcdir)/build/library.mk

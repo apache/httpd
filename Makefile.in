@@ -1,5 +1,6 @@
 
 SUBDIRS = srclib os server modules support
+CLEAN_SUBDIRS = test
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
@@ -13,14 +14,14 @@ PROGRAM_DEPENDENCIES = \
   $(AP_LIBS)
 
 PROGRAMS        = $(PROGRAM_NAME)
-targets         = $(PROGRAMS) $(shared_build) $(other_targets)
-phony_targets   = $(srcdir)/buildmark.c
-install_targets = install-conf install-htdocs install-icons install-other \
+TARGETS         = $(PROGRAMS) $(shared_build) $(other_targets)
+PHONY_TARGETS   = $(srcdir)/buildmark.c
+INSTALL_TARGETS = install-conf install-htdocs install-icons install-other \
 	install-cgi install-include install-suexec
+
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
-	modules.c libtool
-EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in \
-	generated_lists
+	modules.c config.cache config.log config.status config_vars.mk
+EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists
 
 include $(top_srcdir)/build/rules.mk
 include $(top_srcdir)/build/program.mk

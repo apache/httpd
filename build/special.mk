@@ -57,17 +57,17 @@
 all: all-recursive
 
 include $(builddir)/modules.mk
-targets = $(static)
-shared_targets = $(shared)
-install_targets = install-modules
+TARGETS = $(static)
+SHARED_TARGETS = $(shared)
+INSTALL_TARGETS = install-modules
 
 install-modules:
-	@shared='$(shared)'; \
-	builtin='$(BUILTIN_LIBS)'; \
+	@builtin='$(BUILTIN_LIBS)'; \
 	has_mod_so=`echo $$builtin|sed 's/^.*mod_so.*$$/has_mod_so/'`; \
 	if [ "x$$has_mod_so" = "xhas_mod_so" ]; then \
 		$(MKINSTALLDIRS) $(libexecdir); \
-		for i in $$shared; do \
+		@list='$(shared)'; \
+		for i in $$list; do \
 			$(SH_LIBTOOL) --mode=install cp $$i $(libexecdir); \
 		done; \
 	fi	

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.18-dev
 
+  *) Change the make targets and rules to be consistent in all of the
+     Apache-owned source trees.  [Roy Fielding]
+     
   *) Fix processing of the TRACE method.  Previously we passed bogus
      parms to form_header_field() and it overlaid some vhost structures,
      resulting in a segfault in check_hostalias(). 

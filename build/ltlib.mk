@@ -54,7 +54,7 @@
 # The build environment was provided by Sascha Schumann.
 #
 
-targets = $(LTLIBRARY_NAME)
+TARGETS = $(LTLIBRARY_NAME)
 
 include $(top_srcdir)/build/rules.mk
 include $(top_srcdir)/build/library.mk
