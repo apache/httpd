@@ -246,12 +246,14 @@ CHKNOT=cmd /C if not exist
 DEL = del /F
 DELTREE = cmd /C rd /s/q
 WINNT=1
+XCOPYSW = /E
 else
 CMD=command /C
 CHK=command /C if exist
 CHKNOT=command /C if not exist
 DEL = del
 DELTREE = deltree /y
+XCOPYSW = /E /Y
 endif
 
 
