@@ -165,4 +165,5 @@
    ssl_var_unregister();
    ssl_ext_unregister();
    ssl_io_unregister();
+ o We certainly need CRYPTO_set_locking_callback() now also under Unix!
 

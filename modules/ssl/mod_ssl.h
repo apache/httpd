@@ -125,6 +125,7 @@
 #include "scoreboard.h"
 #include "util_md5.h"
 #include "apr.h"
+#include "apr_lib.h"
 #include "apr_fnmatch.h"
 #include "apr_strings.h"
 #include "apr_pools.h"
@@ -196,11 +197,15 @@
 #define cfgMergeString(el)  cfgMerge(el, NULL)
 #define cfgMergeBool(el)    cfgMerge(el, UNSET)
 #define cfgMergeInt(el)     cfgMerge(el, UNSET)
+#endif /* XXX */
 
+#if 0 /* XXX */
 #define myModConfig()    (SSLModConfigRec *)ap_ctx_get(ap_global_ctx, "ssl_module")
+#endif /* XXX */
 #define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
 #define myDirConfig(req) (SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module)
 
+#if 0 /* XXX */
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
 #endif /* XXX */
@@ -280,8 +285,6 @@ typedef struct {
  * Define the certificate algorithm types
  */
 
-#if 0 /* XXX */
-
 typedef int ssl_algo_t;
 
 #define SSL_ALGO_UNKNOWN (0)
@@ -292,6 +295,8 @@ typedef int ssl_algo_t;
 #define SSL_AIDX_RSA     (0)
 #define SSL_AIDX_DSA     (1)
 #define SSL_AIDX_MAX     (2)
+
+#if 0 /* XXX */
 
 /*
  * Define IDs for the temporary RSA keys and DH params
@@ -350,6 +355,7 @@ typedef enum {
     SSL_PPTYPE_BUILTIN = 0,
     SSL_PPTYPE_FILTER  = 1
 } ssl_pphrase_t;
+#endif /* XXX */
 
 /*
  * Define the Path Checking modes
@@ -359,6 +365,8 @@ typedef enum {
 #define SSL_PCM_ISDIR      4
 #define SSL_PCM_ISNONZERO  8
 typedef unsigned int ssl_pathcheck_t;
+
+#if 0 /* XXX */
 
 /*
  * Define the SSL session cache modes and structures
@@ -453,8 +461,10 @@ typedef struct {
  * (i.e. the configuration for the main server
  *  and all <VirtualHost> contexts)
  */
+#endif /* XXX */
 typedef struct {
     BOOL         bEnabled;
+#if 0 /* XXX */
     char        *szPublicCertFile[SSL_AIDX_MAX];
     char        *szPrivateKeyFile[SSL_AIDX_MAX];
     char        *szCertificateChain;
@@ -489,8 +499,10 @@ typedef struct {
     SSL_CTX     *pSSLProxyCtx;
     STACK_OF(X509_INFO) *skProxyClientCerts;
 #endif
+#endif /* XXX */
 } SSLSrvConfigRec;
 
+#if 0 /* XXX */
 /*
  * Define the mod_ssl per-directory configuration structure
  * (i.e. the local configuration for all <Directory>
@@ -513,16 +525,14 @@ typedef struct {
 #endif
 #endif /* XXX */
 } SSLDirConfigRec;
-#if 0 /* XXX */
 
 /*
  *  function prototypes
  */
 
 /*  API glue structures  */
-extern module MODULE_VAR_EXPORT ssl_module;
+extern module AP_MODULE_DECLARE_DATA ssl_module;
 
-#endif /* XXX */
 /*  configuration handling   */
 void         ssl_config_global_create(void);
 void         ssl_config_global_fix(void);
@@ -686,21 +696,20 @@ int          ssl_rand_seed(server_rec *, pool *, ssl_rsctx_t, char *);
 void         ssl_ext_register(void);
 void         ssl_ext_unregister(void);
 
+#endif /* XXX */
+
 /*  Utility Functions  */
-char        *ssl_util_vhostid(pool *, server_rec *);
+char        *ssl_util_vhostid(apr_pool_t *, server_rec *);
 void         ssl_util_strupper(char *);
 void         ssl_util_uuencode(char *, const char *, BOOL);
 void         ssl_util_uuencode_binary(unsigned char *, const unsigned char *, int, BOOL);
-FILE        *ssl_util_ppopen(server_rec *, pool *, char *);
-int          ssl_util_ppopen_child(void *, child_info *);
-void         ssl_util_ppclose(server_rec *, pool *, FILE *);
-char        *ssl_util_readfilter(server_rec *, pool *, char *);
-BOOL         ssl_util_path_check(ssl_pathcheck_t, char *);
+apr_file_t  *ssl_util_ppopen(server_rec *, apr_pool_t *, char *);
+void         ssl_util_ppclose(server_rec *, apr_pool_t *, apr_file_t *);
+char        *ssl_util_readfilter(server_rec *, apr_pool_t *, char *);
+BOOL         ssl_util_path_check(ssl_pathcheck_t, char *, apr_pool_t *);
 ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *); 
 char        *ssl_util_algotypestr(ssl_algo_t);
-char        *ssl_util_ptxtsub(pool *, const char *, const char *, char *);
+char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
 void         ssl_util_thread_setup(void);
-
-#endif /* XXX */
 
 #endif /* __MOD_SSL_H__ */

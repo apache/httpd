@@ -63,15 +63,13 @@
                                             -- Calvin          */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Utility Functions
 **  _________________________________________________________________
 */
 
-char *ssl_util_vhostid(pool *p, server_rec *s)
+char *ssl_util_vhostid(apr_pool_t *p, server_rec *s)
 {
     char *id;
     SSLSrvConfigRec *sc;
@@ -88,14 +86,14 @@ char *ssl_util_vhostid(pool *p, server_rec *s)
         else
             port = DEFAULT_HTTP_PORT;
     }
-    id = ap_psprintf(p, "%s:%u", host, port);
+    id = apr_psprintf(p, "%s:%u", host, port);
     return id;
 }
 
 void ssl_util_strupper(char *s)
 {
     for (; *s; ++s)
-        *s = toupper(*s);
+        *s = apr_toupper(*s);
     return;
 }
 
@@ -136,62 +134,49 @@ void ssl_util_uuencode_binary(
     return;
 }
 
-FILE *ssl_util_ppopen(server_rec *s, pool *p, char *cmd)
+apr_file_t *ssl_util_ppopen(server_rec *s, apr_pool_t *p, char *cmd)
 {
-    FILE *fpout;
-    int rc;
+    apr_procattr_t *procattr;
+    apr_proc_t *proc;
 
-    fpout = NULL;
-    rc = ap_spawn_child(p, ssl_util_ppopen_child,
-                        (void *)cmd, kill_after_timeout,
-                        NULL, &fpout, NULL);
-    if (rc == 0 || fpout == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, s,
-                     "ssl_util_ppopen: could not run: %s", cmd);
+    if (apr_procattr_create(&procattr, p) != APR_SUCCESS) 
         return NULL;
-    }
-    return (fpout);
+    if (apr_procattr_io_set(procattr, APR_FULL_BLOCK, APR_FULL_BLOCK, 
+                            APR_FULL_BLOCK) != APR_SUCCESS)
+        return NULL;
+    if (apr_procattr_dir_set(procattr, 
+                             ap_make_dirstr_parent(p, cmd)) != APR_SUCCESS)
+        return NULL;
+    if (apr_procattr_cmdtype_set(procattr, APR_PROGRAM) != APR_SUCCESS)
+        return NULL;
+    if ((proc = (apr_proc_t *)apr_pcalloc(p, sizeof(apr_proc_t))) == NULL)
+        return NULL;
+    if (apr_proc_create(proc, cmd, NULL, NULL, procattr, p) != APR_SUCCESS)
+        return NULL;
+    return proc->out;
 }
 
-int ssl_util_ppopen_child(void *cmd, child_info *pinfo)
+void ssl_util_ppclose(server_rec *s, apr_pool_t *p, apr_file_t *fp)
 {
-    int child_pid = 1;
-
-    /*
-     * Prepare for exec
-     */
-    ap_cleanup_for_exec();
-#ifdef SIGHUP
-    signal(SIGHUP, SIG_IGN);
-#endif
-
-    /*
-     * Exec() the child program
-     */
-    execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
-    return (child_pid);
-}
-
-void ssl_util_ppclose(server_rec *s, pool *p, FILE *fp)
-{
-    ap_pfclose(p, fp);
+    apr_file_close(fp);
     return;
 }
 
 /*
  * Run a filter program and read the first line of its stdout output
  */
-char *ssl_util_readfilter(server_rec *s, pool *p, char *cmd)
+char *ssl_util_readfilter(server_rec *s, apr_pool_t *p, char *cmd)
 {
     static char buf[MAX_STRING_LEN];
-    FILE *fp;
+    apr_file_t *fp;
+    apr_size_t nbytes;
     char c;
     int k;
 
     if ((fp = ssl_util_ppopen(s, p, cmd)) == NULL)
         return NULL;
-    for (k = 0;    read(fileno(fp), &c, 1) == 1
-                && (k < MAX_STRING_LEN-1)       ; ) {
+    for (k = 0; apr_file_read(fp, &c, &nbytes) == APR_SUCCESS
+                && nbytes == 1 && (k < MAX_STRING_LEN-1)     ; ) {
         if (c == '\n' || c == '\r')
             break;
         buf[k++] = c;
@@ -202,19 +187,20 @@ char *ssl_util_readfilter(server_rec *s, pool *p, char *cmd)
     return buf;
 }
 
-BOOL ssl_util_path_check(ssl_pathcheck_t pcm, char *path)
+BOOL ssl_util_path_check(ssl_pathcheck_t pcm, char *path, apr_pool_t *p)
 {
-    struct stat sb;
+    apr_finfo_t finfo;
 
     if (path == NULL)
         return FALSE;
-    if (pcm & SSL_PCM_EXISTS && stat(path, &sb) != 0)
+    if (pcm & SSL_PCM_EXISTS && apr_stat(&finfo, path, 
+                                APR_FINFO_TYPE|APR_FINFO_SIZE, p) != 0)
         return FALSE;
-    if (pcm & SSL_PCM_ISREG && !S_ISREG(sb.st_mode))
+    if (pcm & SSL_PCM_ISREG && finfo.filetype != APR_REG)
         return FALSE;
-    if (pcm & SSL_PCM_ISDIR && !S_ISDIR(sb.st_mode))
+    if (pcm & SSL_PCM_ISDIR && finfo.filetype != APR_DIR)
         return FALSE;
-    if (pcm & SSL_PCM_ISNONZERO && sb.st_mode <= 0)
+    if (pcm & SSL_PCM_ISNONZERO && finfo.size <= 0)
         return FALSE;
     return TRUE;
 }
@@ -260,7 +246,7 @@ char *ssl_util_algotypestr(ssl_algo_t t)
 }
 
 char *ssl_util_ptxtsub(
-    pool *p, const char *cpLine, const char *cpMatch, char *cpSubst)
+    apr_pool_t *p, const char *cpLine, const char *cpMatch, char *cpSubst)
 {
 #define MAX_PTXTSUB 100
     char *cppMatch[MAX_PTXTSUB];
@@ -299,7 +285,7 @@ char *ssl_util_ptxtsub(
     /*
      * Pass 2: allocate memory and assemble result
      */
-    cpResult = ap_pcalloc(p, nResult+1);
+    cpResult = apr_pcalloc(p, nResult+1);
     for (cpI = (char *)cpLine, cpO = cpResult, i = 0; cppMatch[i] != NULL; i++) {
         ap_cpystrn(cpO, cpI, cppMatch[i]-cpI+1);
         cpO += (cppMatch[i]-cpI);
@@ -307,42 +293,8 @@ char *ssl_util_ptxtsub(
         cpO += nSubst;
         cpI = (cppMatch[i]+nMatch);
     }
-    ap_cpystrn(cpO, cpI, cpResult+nResult-cpO+1);
+    apr_cpystrn(cpO, cpI, cpResult+nResult-cpO+1);
 
     return cpResult;
 }
-
-/*  _________________________________________________________________
-**
-**  Special Functions for Win32/OpenSSL
-**  _________________________________________________________________
-*/
-
-#ifdef WIN32
-static HANDLE lock_cs[CRYPTO_NUM_LOCKS];
-
-static void win32_locking_callback(int mode, int type, char* file, int line)
-{
-    if (mode & CRYPTO_LOCK)
-        WaitForSingleObject(lock_cs[type], INFINITE);
-    else
-        ReleaseMutex(lock_cs[type]);
-    return;
-}
-#endif /* WIN32 */
-
-void ssl_util_thread_setup(void)
-{
-#ifdef WIN32
-    int i;
-
-    for (i = 0; i < CRYPTO_NUM_LOCKS; i++)
-        lock_cs[i] = CreateMutex(NULL, FALSE, NULL);
-    CRYPTO_set_locking_callback((void(*)(int, int, const char *, int))
-                                win32_locking_callback);
-#endif /* WIN32 */
-    return;
-}
-
-#endif /* XXX */
 
