@@ -3754,7 +3754,6 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
          */
         if (r->main != NULL &&
             (p->flags & RULEFLAG_IGNOREONSUBREQ ||
-             p->flags & RULEFLAG_PROXY          ||
              p->flags & RULEFLAG_FORCEREDIRECT    )) {
             continue;
         }
@@ -4270,11 +4269,6 @@ static int hook_fixup(request_rec *r)
 
     /* if there is no per-dir config we return immediately */
     if (dconf == NULL) {
-        return DECLINED;
-    }
-
-    /* we shouldn't do anything in subrequests */
-    if (r->main != NULL) {
         return DECLINED;
     }
 
