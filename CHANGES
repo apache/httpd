@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: CacheDisable will only disable the URLs it was meant to 
+     disable, not all caching. PR 31128.
+     [Edward Rudd <eddie omegaware.com>, Paul Querna]
+
   *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
      [Jeff Trawick]
 
