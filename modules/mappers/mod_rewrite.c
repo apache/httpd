@@ -220,6 +220,9 @@
 /* for rewrite lock file */
 #define REWRITELOCK_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
+/* max line length (incl.\n) in text rewrite maps */
+#define REWRITE_MAX_TXT_MAP_LINE 1024
+
 /*
  * +-------------------------------------------------------+
  * |                                                       |
@@ -1368,50 +1371,56 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
 {
     apr_file_t *fp = NULL;
-    apr_status_t rc;
-    char line[1024];
-    char *value = NULL;
-    char *cpT;
-    apr_size_t skip;
-    char *curkey;
-    char *curval;
+    char line[REWRITE_MAX_TXT_MAP_LINE + 1]; /* +1 for \0 */
+    char *value, *keylast;
 
-    rc = apr_file_open(&fp, file, APR_READ, APR_OS_DEFAULT, r->pool);
-    if (rc != APR_SUCCESS) {
-       return NULL;
+    if (apr_file_open(&fp, file, APR_READ, APR_OS_DEFAULT,
+                      r->pool) != APR_SUCCESS) {
+        return NULL;
     }
 
+    keylast = key + strlen(key);
+    value = NULL;
     while (apr_file_gets(line, sizeof(line), fp) == APR_SUCCESS) {
-        if (line[0] == '#') {
-            continue; /* ignore comments */
-        }
-        cpT = line;
-        curkey = cpT;
-        skip = strcspn(cpT," \t\r\n");
-        if (skip == 0) {
-            continue; /* ignore lines that start with a space, tab, CR, or LF */
-        }
-        cpT += skip;
-        *cpT = '\0';
-        if (strcmp(curkey, key) != 0) {
-            continue; /* key does not match... */
+        char *p, *c;
+
+        /* ignore comments and lines starting with whitespaces */
+        if (*line == '#' || apr_isspace(*line)) {
+            continue;
         }
 
-        /* found a matching key; now extract and return the value */
-        ++cpT;
-        skip = strspn(cpT, " \t\r\n");
-        cpT += skip;
-        curval = cpT;
-        skip = strcspn(cpT, " \t\r\n");
-        if (skip == 0) {
-            continue; /* no value... */
+        p = line;
+        c = key;
+        while (c < keylast && *p == *c && !apr_isspace(*p)) {
+            ++p;
+            ++c;
         }
-        cpT += skip;
-        *cpT = '\0';
-        value = apr_pstrdup(r->pool, curval);
+
+        /* key doesn't match - ignore. */
+        if (c != keylast || !apr_isspace(*p)) {
+            continue;
+        }
+
+        /* jump to the value */
+        while (*p && apr_isspace(*p)) {
+            ++p;
+        }
+
+        /* no value? ignore */
+        if (!*p) {
+            continue;
+        }
+
+        /* extract the value and return. */
+        c = p;
+        while (*p && !apr_isspace(*p)) {
+            ++p;
+        }
+        value = apr_pstrmemdup(r->pool, c, p - c);
         break;
     }
     apr_file_close(fp);
+
     return value;
 }
 
