@@ -9,3 +9,4 @@
 			(c-set-offset 'inextern-lang' 0)
 			)))
 (setq c++-mode-hook c-mode-hook)
+(setq-default indent-tabs-mode nil)
