@@ -1,5 +1,7 @@
 Changes with Apache 1.3b6
 
+  *) Build the libraries before building the rest of the tools. [Ben Hyde]
+
   *) Add "distclean" target to src/-Makefiles to provide "make distclean" also
      inside the src subtree (i.e. for non-APACI users). Following GNU Makefile
      conventions while "clean" removes only stuff created by "all" targets,

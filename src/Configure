@@ -90,7 +90,7 @@ tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
 awkfile=$tmpfile.4
 tmpconfig=$tmpfile.5
-SUBDIRS='$(OSDIR) main ap modules'
+SUBDIRS='$(OSDIR) ap main modules' 
 
 ####################################################################
 ## Now handle any arguments, which, for now, is -file
@@ -1142,7 +1142,7 @@ done
 ##
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
-    SUBDIRS="$SUBDIRS regex"
+    SUBDIRS="regex $SUBDIRS"
     CFLAGS="$CFLAGS -DUSE_HSREGEX"
 fi
 
