@@ -114,27 +114,28 @@ X509 *SSL_read_X509(char* filename, X509 **x509, int (*cb)(char*,int,int,void*))
     BIO *bioF;
 
     /* 1. try PEM (= DER+Base64+headers) */
-       if ((bioS=BIO_new_file(filename, "r")) == NULL)
-               return NULL;
-       rc=modssl_PEM_read_bio_X509 (bioS, x509, cb, NULL);
-       BIO_free(bioS);
+    if ((bioS=BIO_new_file(filename, "r")) == NULL)
+        return NULL;
+    rc = modssl_PEM_read_bio_X509 (bioS, x509, cb, NULL);
+    BIO_free(bioS);
 
     if (rc == NULL) {
         /* 2. try DER+Base64 */
-               if ((bioS=BIO_new_file(filename, "r")) == NULL)
-                       return NULL;
+        if ((bioS=BIO_new_file(filename, "r")) == NULL)
+            return NULL;
                       
-               if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
+        if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
             BIO_free(bioS);
             return NULL;
         }
         bioS = BIO_push(bioF, bioS);
         rc = d2i_X509_bio(bioS, NULL);
         BIO_free_all(bioS);
+
         if (rc == NULL) {
             /* 3. try plain DER */
-                       if ((bioS=BIO_new_file(filename, "r")) == NULL)
-                               return NULL;
+            if ((bioS=BIO_new_file(filename, "r")) == NULL)
+                return NULL;
             rc = d2i_X509_bio(bioS, NULL);
             BIO_free(bioS);
         }
@@ -164,27 +165,28 @@ EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, int (*cb)(char*,in
     BIO *bioF;
 
     /* 1. try PEM (= DER+Base64+headers) */
-       if ((bioS=BIO_new_file(filename, "r")) == NULL)
-               return NULL;
-       rc = modssl_PEM_read_bio_PrivateKey(bioS, key, cb, s);
-       BIO_free(bioS);
+    if ((bioS=BIO_new_file(filename, "r")) == NULL)
+        return NULL;
+    rc = modssl_PEM_read_bio_PrivateKey(bioS, key, cb, s);
+    BIO_free(bioS);
 
     if (rc == NULL) {
         /* 2. try DER+Base64 */
-               if ( (bioS = BIO_new_file(filename, "r")) == NULL )
-                       return NULL;
+        if ((bioS = BIO_new_file(filename, "r")) == NULL)
+            return NULL;
 
-               if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
+        if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
             BIO_free(bioS);
             return NULL;
         }
         bioS = BIO_push(bioF, bioS);
         rc = d2i_PrivateKey_bio(bioS, NULL);
         BIO_free_all(bioS);
+
         if (rc == NULL) {
             /* 3. try plain DER */
-                       if ( (bioS = BIO_new_file(filename, "r")) == NULL )
-                               return NULL;
+            if ((bioS = BIO_new_file(filename, "r")) == NULL)
+                return NULL;
             rc = d2i_PrivateKey_bio(bioS, NULL);
             BIO_free(bioS);
         }
@@ -239,14 +241,16 @@ X509_STORE *SSL_X509_STORE_create(char *cpFile, char *cpPath)
     if ((pStore = X509_STORE_new()) == NULL)
         return NULL;
     if (cpFile != NULL) {
-        if ((pLookup = X509_STORE_add_lookup(pStore, X509_LOOKUP_file())) == NULL) {
+        pLookup = X509_STORE_add_lookup(pStore, X509_LOOKUP_file());
+        if (pLookup == NULL) {
             X509_STORE_free(pStore);
             return NULL;
         }
         X509_LOOKUP_load_file(pLookup, cpFile, X509_FILETYPE_PEM);
     }
     if (cpPath != NULL) {
-        if ((pLookup = X509_STORE_add_lookup(pStore, X509_LOOKUP_hash_dir())) == NULL) {
+        pLookup = X509_STORE_add_lookup(pStore, X509_LOOKUP_hash_dir());
+        if (pLookup == NULL) {
             X509_STORE_free(pStore);
             return NULL;
         }
