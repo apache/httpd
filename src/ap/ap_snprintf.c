@@ -1158,6 +1158,10 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	fmt++;
     }
     vbuff->curpos = sp;
+    if (sp >= bep) {
+	if (flush_func(vbuff))
+	    return -1;
+    }
     return cc;
 }
 
