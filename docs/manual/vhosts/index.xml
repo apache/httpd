@@ -77,7 +77,7 @@ hosts</a></seealso>
     useful. That is, type the following command:</p>
 
     <example>
-    /usr/local/apache/bin/httpd -S
+    /usr/local/apache2/bin/httpd -S
     </example>
 
     <p>This command will dump out a description of how Apache parsed

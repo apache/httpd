@@ -78,7 +78,7 @@ hosts</a></li><li><a href="ip-based.html">IP-based virtual hosts</a></li><li><a 
     useful. That is, type the following command:</p>
 
     <div class="example"><p><code>
-    /usr/local/apache/bin/httpd -S
+    /usr/local/apache2/bin/httpd -S
     </code></p></div>
 
     <p>This command will dump out a description of how Apache parsed
