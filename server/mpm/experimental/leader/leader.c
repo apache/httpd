@@ -102,7 +102,6 @@
 #include "http_core.h"          /* for get_remote_host */ 
 #include "http_connection.h"
 #include "ap_mpm.h"
-#include "pod.h"
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
@@ -338,6 +337,7 @@ static apr_status_t worker_stack_awaken_next(worker_stack *stack)
 static worker_stack *idle_worker_stack;
 
 #define ST_INIT              0
+#define ST_RESTART           0
 #define ST_GRACEFUL          1
 #define ST_UNGRACEFUL        2
 
@@ -1171,24 +1171,24 @@ static void child_main(int child_num_arg)
                 /* see if termination was triggered while we slept */
                 switch(terminate_mode) {
                 case ST_GRACEFUL:
-                    rv = AP_GRACEFUL;
+                    rv = ST_GRACEFUL;
                     break;
                 case ST_UNGRACEFUL:
-                    rv = AP_RESTART;
+                    rv = ST_RESTART;
                     break;
                 }
             }
-            if (rv == AP_GRACEFUL || rv == AP_RESTART) {
+            if (rv == ST_GRACEFUL || rv == ST_RESTART) {
                 /* make sure the start thread has finished; 
                  * signal_threads() and join_workers depend on that
                  */
                 join_start_thread(start_thread_id);
-                signal_threads(rv == AP_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
+                signal_threads(rv == ST_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
                 break;
             }
         }
 
-        if (rv == AP_GRACEFUL) {
+        if (rv == ST_GRACEFUL) {
             /* A terminating signal was received. Now join each of the
              * workers to clean them up.
              *   If the worker already exited, then the join frees
@@ -1379,7 +1379,7 @@ static void perform_idle_server_maintenance(void)
 
     if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
-        ap_mpm_pod_signal(pod, TRUE);
+        ap_mpm_pod_signal(pod);
         idle_spawn_rate = 1;
     }
     else if (idle_thread_count < min_spare_threads) {
@@ -1609,7 +1609,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * (By "gracefully" we don't mean graceful in the same sense as 
          * "apachectl graceful" where we allow old connections to finish.)
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit);
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
 
         if (!child_fatal) {
@@ -1647,7 +1647,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
                      AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
         /* wake up the children...time to die.  But we'll have more soon */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit);
     
 
         /* This is mostly for debugging... so that we know what is still
@@ -1660,7 +1660,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit);
 
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
@@ -1673,7 +1673,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 /* This really should be a post_config hook, but the error log is already
  * redirected by that point, so we need to do this in the open_logs phase.
  */
-static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+static int leader_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
 
@@ -1696,7 +1696,7 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     return OK;
 }
 
-static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
+static int leader_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
                              apr_pool_t *ptemp)
 {
     static int restart_num = 0;
@@ -1786,17 +1786,17 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
-static void worker_hooks(apr_pool_t *p)
+static void leader_hooks(apr_pool_t *p)
 {
-    /* The worker open_logs phase must run before the core's, or stderr
+    /* The leader open_logs phase must run before the core's, or stderr
      * will be redirected to a file, and the messages won't print to the
      * console.
      */
     static const char *const aszSucc[] = {"core.c", NULL};
     one_process = 0;
 
-    ap_hook_open_logs(worker_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
-    ap_hook_pre_config(worker_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_open_logs(leader_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(leader_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,
@@ -2014,7 +2014,7 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
-static const command_rec worker_cmds[] = {
+static const command_rec leader_cmds[] = {
 UNIX_DAEMON_COMMANDS,
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
@@ -2034,14 +2034,14 @@ AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
 { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA mpm_worker_module = {
+module AP_MODULE_DECLARE_DATA mpm_leader_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    worker_cmds,                /* command apr_table_t */
-    worker_hooks                /* register_hooks */
+    leader_cmds,                /* command apr_table_t */
+    leader_hooks                /* register_hooks */
 };
 
