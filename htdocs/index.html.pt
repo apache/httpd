@@ -19,7 +19,7 @@
      <P>
      Se conseguir ver esta pagina, entao as pessoas que possuem este
    dominio acabaram
-     de instalar o software <A HREF="http://www.apache.org/httpd/">Apache Web
+     de instalar o software <A HREF="http://www.apache.org/httpd">Apache Web
    server</A>
      com sucesso.  Agora tem de adicionar o conteudo a esta directoria
      e substituir esta pagina "placeholder", ou apontar o servidor para o
