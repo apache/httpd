@@ -216,6 +216,9 @@ int main(int argc, char *argv[])
     gid_t gid;              /* target group placeholder  */
     char *target_uname;     /* target user name          */
     char *target_gname;     /* target group name         */
+    char *target_homedir;   /* target home directory     */
+    char *actual_uname;     /* actual user name            */
+    char *actual_gname;     /* actual group name           */
     char *prog;             /* name of this program      */
     char *cmd;              /* command to be executed    */
     char cwd[AP_MAXPATH];   /* current working directory */
@@ -297,21 +300,30 @@ int main(int argc, char *argv[])
     }
 
     /*
+     * Save these for later since initgroups will hose the struct
+     */
+    uid = pw->pw_uid;
+    gid = gr->gr_gid;
+    actual_uname = strdup(pw->pw_name);
+    actual_gname = strdup(gr->gr_name);
+    target_homedir = strdup(pw->pw_dir);
+
+    /*
      * Log the transaction here to be sure we have an open log 
      * before we setuid().
      */
     log_err("uid: (%s/%s) gid: (%s/%s) %s\n",
-             target_uname, pw->pw_name,
-             target_gname, gr->gr_name,
+             target_uname, actual_uname,
+             target_gname, actual_gname,
              cmd);
 
     /*
      * Error out if attempt is made to execute as root or as
      * a UID less than UID_MIN.  Tsk tsk.
      */
-    if ((pw->pw_uid == 0) ||
-        (pw->pw_uid < UID_MIN)) {
-	log_err("cannot run as forbidden uid (%d/%s)\n", pw->pw_uid, cmd);
+    if ((uid == 0) ||
+        (uid < UID_MIN)) {
+	log_err("cannot run as forbidden uid (%d/%s)\n", uid, cmd);
 	exit(107);
     }
 
@@ -319,9 +331,9 @@ int main(int argc, char *argv[])
      * Error out if attempt is made to execute as root group
      * or as a GID less than GID_MIN.  Tsk tsk.
      */
-    if ((gr->gr_gid == 0) ||
-        (gr->gr_gid < GID_MIN)) {
-	log_err("cannot run as forbidden gid (%d/%s)\n", gr->gr_gid, cmd);
+    if ((gid == 0) ||
+        (gid < GID_MIN)) {
+	log_err("cannot run as forbidden gid (%d/%s)\n", gid, cmd);
 	exit(108);
     }
 
@@ -331,9 +343,7 @@ int main(int argc, char *argv[])
      * Initialize the group access list for the target user,
      * and setgid() to the target group. If unsuccessful, error out.
      */
-    uid = pw->pw_uid;
-    gid = gr->gr_gid;
-    if (((setgid(gid)) != 0) || (initgroups(pw->pw_name,gid) != 0)) {
+    if (((setgid(gid)) != 0) || (initgroups(actual_uname,gid) != 0)) {
         log_err("failed to setgid (%ld: %s/%s)\n", gid, cwd, cmd);
         exit(109);
     }
@@ -360,12 +370,12 @@ int main(int argc, char *argv[])
     }
     
     if (userdir) {
-        if (((chdir(pw->pw_dir)) != 0) ||
+        if (((chdir(target_homedir)) != 0) ||
             ((chdir(USERDIR_SUFFIX)) != 0) ||
 	    ((getcwd(dwd, AP_MAXPATH)) == NULL) ||
             ((chdir(cwd)) != 0))
         {
-            log_err("cannot get docroot information (%s)\n", pw->pw_dir);
+            log_err("cannot get docroot information (%s)\n", target_homedir);
             exit(112);
         }
     }
@@ -428,13 +438,13 @@ int main(int argc, char *argv[])
      * Error out if the target name/group is different from
      * the name/group of the cwd or the program.
      */
-    if ((pw->pw_uid != dir_info.st_uid) ||
-	(gr->gr_gid != dir_info.st_gid) ||
-	(pw->pw_uid != prg_info.st_uid) ||
-	(gr->gr_gid != prg_info.st_gid))
+    if ((uid != dir_info.st_uid) ||
+	(gid != dir_info.st_gid) ||
+	(uid != prg_info.st_uid) ||
+	(gid != prg_info.st_gid))
     {
 	log_err("target uid/gid (%ld/%ld) mismatch with directory (%ld/%ld) or program (%ld/%ld)\n",
-		 pw->pw_uid, gr->gr_gid,
+		 uid, gid,
 		 dir_info.st_uid, dir_info.st_gid,
 		 prg_info.st_uid, prg_info.st_gid);
 	exit(120);
