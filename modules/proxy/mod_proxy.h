@@ -155,7 +155,7 @@ typedef struct {
     int preserve_host;
     int preserve_host_set;
     apr_interval_time_t timeout;
-    apr_interval_time_t timeout_set;
+    int timeout_set;
     enum {
       bad_error,
       bad_ignore,
@@ -228,6 +228,7 @@ struct proxy_worker {
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
                                  * may be available while exceeding the soft limit */
     apr_interval_time_t timeout; /* connection timeout */
+    int timeout_set;
     apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
     char                acquire_set;
     proxy_conn_pool *cp;        /* Connection pool to use */
@@ -352,6 +353,9 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker, proxy_balancer **
 PROXY_DECLARE(apr_status_t) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r, proxy_server_conf *conf, proxy_worker *worker, proxy_conn_rec *conn,
                                                           apr_pool_t *ppool, apr_uri_t *uri, char **url, const char *proxyname, apr_port_t proxyport,
                                                           char *server_portstr, int server_portstr_size);
+PROXY_DECLARE(apr_status_t) ap_proxy_destroy_connection(proxy_conn_rec *conn);
+PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
+
 
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
