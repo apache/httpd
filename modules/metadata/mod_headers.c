@@ -122,7 +122,8 @@ typedef enum {
     hdr_add = 'a',              /* add header (could mean multiple hdrs) */
     hdr_set = 's',              /* set (replace old value) */
     hdr_append = 'm',           /* append (merge into any old value) */
-    hdr_unset = 'u'             /* unset header */
+    hdr_unset = 'u',            /* unset header */
+    hdr_echo = 'e'              /* echo headers from request to response */
 } hdr_actions;
 
 typedef enum {
@@ -134,7 +135,14 @@ typedef struct {
     hdr_actions action;
     char *header;
     const char *value;
+    regex_t *regex;
 } header_entry;
+
+/* echo_do is used only with Header echo */
+typedef struct {
+    request_rec *r;
+    header_entry *hdr;
+} echo_do;
 
 /*
  * headers_conf is our per-module configuration. This is used as both
@@ -203,12 +211,28 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
         new->action = hdr_append;
     else if (!strcasecmp(action, "unset"))
         new->action = hdr_unset;
+    else if (!strcasecmp(action, "echo"))
+        new->action = hdr_echo;
     else
-        return "first argument must be add, set, append or unset.";
+        return "first argument must be add, set, append, unset or echo.";
 
     if (new->action == hdr_unset) {
         if (value)
             return "header unset takes two arguments";
+    }
+    else if (new->action == hdr_echo) {
+        regex_t *regex;
+        if (value)
+            return "Header echo takes two arguments";
+        else if (inout != hdr_out)
+            return "Header echo only valid on Header directive";
+        else {
+            regex = ap_pregcomp(cmd->pool, hdr, REG_EXTENDED | REG_NOSUB);
+            if (regex == NULL) {
+                return "Header echo regex could not be compiled";
+            }
+        }
+        new->regex = regex;
     }
     else if (!value)
         return "header requires three arguments";
@@ -238,11 +262,23 @@ static const char *request_header_cmd(cmd_parms *cmd, void *indirconf,
     return header_inout_cmd(hdr_in, cmd, indirconf, action, inhdr, value);
 }
 
+static int echo_header(echo_do *v, const char *key, const char *val)
+{
+    /* If the input header (key) matches the regex, echo it intact to 
+     * r->headers_out.
+     */
+    if (!ap_regexec(v->hdr->regex, key, 0, NULL, 0)) {
+        apr_table_addn(v->r->headers_out, key, val);
+    }
+    
+    return 0;
+}
 
-static void do_headers_fixup(apr_table_t *headers,
+static void do_headers_fixup(request_rec *r, hdr_inout inout,
                              apr_array_header_t *fixup)
 {
     int i;
+    apr_table_t *headers = (hdr_in == inout) ? r->headers_in : r->headers_out;
 
     for (i = 0; i < fixup->nelts; ++i) {
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
@@ -259,6 +295,15 @@ static void do_headers_fixup(apr_table_t *headers,
         case hdr_unset:
             apr_table_unset(headers, hdr->header);
             break;
+        case hdr_echo:
+        {
+            echo_do v;
+            v.r = r;
+            v.hdr = hdr;
+            apr_table_do((int (*) (void *, const char *, const char *)) 
+                         echo_header, (void *) &v, r->headers_in, NULL);
+            break;
+        }
         }
     }
 }
@@ -287,8 +332,8 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
 		 "headers: ap_headers_output_filter()");
 
     /* do the fixup */
-    do_headers_fixup(f->r->headers_out, serverconf->fixup_out);
-    do_headers_fixup(f->r->headers_out, dirconf->fixup_out);
+    do_headers_fixup(f->r, hdr_out, serverconf->fixup_out);
+    do_headers_fixup(f->r, hdr_out, dirconf->fixup_out);
 
     /* remove ourselves from the filter chain */
     ap_remove_output_filter(f);
@@ -306,8 +351,8 @@ static apr_status_t ap_headers_fixup(request_rec *r)
 
     /* do the fixup */
     if (serverconf->fixup_in->nelts || dirconf->fixup_in->nelts) {
-        do_headers_fixup(r->headers_in, serverconf->fixup_in);
-        do_headers_fixup(r->headers_in, dirconf->fixup_in);
+        do_headers_fixup(r, hdr_in, serverconf->fixup_in);
+        do_headers_fixup(r, hdr_in, dirconf->fixup_in);
     }
 
     return DECLINED;
