@@ -1,10 +1,16 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--#if expr="! $CONTENT_LANGUAGE" -->
+<!--#set var="CONTENT_LANGUAGE" value="en" -->
+<!--#endif -->
+<!--#if expr="! $CHARACTER_ENCODING" -->
+<!--#set var="CHARACTER_ENCODING" value="ISO-8859-1" -->
+<!--#endif -->
+<?xml version="1.0" encoding="<!--#echo var="CHARACTER_ENCODING" -->"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<!--#echo var="CONTENT_LANGUAGE" -->">
 <head>
 <title><!--#echo var="TITLE" --></title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=<!--#echo var="CHARACTER_ENCODING" -->" />
 <link rev="made" href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->" />
 <style type="text/css">
 <!--
