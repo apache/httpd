@@ -81,7 +81,7 @@
     <h2 align="center">MPM Defaults</h2>
 
     <ul>
-      <li>BeOS: mpmt_beos</li>
+      <li>BeOS: beos</li>
 
       <li>OS/2: mpmt_os2</li>
 
