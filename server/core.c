@@ -2240,12 +2240,15 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
         return apr_pstrcat(r->pool, prefix, "<address>" AP_SERVER_BASEVERSION
                            " Server at <a href=\"mailto:",
                            r->server->server_admin, "\">",
-                           ap_get_server_name(r), "</a> Port ", sport,
+                           ap_escape_html(r->pool, ap_get_server_name(r)),
+                           "</a> Port ", sport,
                            "</address>\n", NULL);
     }
 
     return apr_pstrcat(r->pool, prefix, "<address>" AP_SERVER_BASEVERSION
-                       " Server at ", ap_get_server_name(r), " Port ", sport,
+                       " Server at ",
+                       ap_escape_html(r->pool, ap_get_server_name(r)),
+                       " Port ", sport,
                        "</address>\n", NULL);
 }
 

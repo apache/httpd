@@ -1,5 +1,14 @@
 Changes with Apache 2.0.43
 
+  *) SECURITY: [CAN-2002-0840] HTML-escape the address produced by 
+     ap_server_signature() against this cross-site scripting 
+     vulnerability exposed by the directive 'UseCanonicalName Off'.  
+     Also HTML-escape the SERVER_NAME environment variable for CGI 
+     and SSI requests.  It's safe to escape as only the '<', '>', 
+     and '&' characters are affected, which won't appear in a valid 
+     hostname.  Reported by Matthew Murphy <mattmurphy@kc.rr.com>.
+     [Brian Pane]
+
   *) Fix a core dump in mod_cache when it attemtped to store uncopyable
      buckets. This happened, for instance, when a file to be cached
      contained SSI tags to execute a CGI script (passed as a pipe
@@ -14,8 +23,8 @@ Changes with Apache 2.0.43
      could lead to an infinite loop.  PR 12705  
      [amund.elstad@ergo.no (Amund Elstad), Jeff Trawick]
 
-  *) Allow POST requests and CGI scripts to work when DAV is enabled
-     on the location.  [Ryan Bloom]
+  *) SECURITY: Allow POST requests and CGI scripts to work when DAV 
+     is enabled on the location.  [Ryan Bloom]
 
   *) Allow the UserDir directive to accept a list of directories.
      This matches what Apache 1.3 does.  Also add documentation for
