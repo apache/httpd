@@ -171,7 +171,7 @@ by other LDAP modules</description>
     LDAPTrustedCAType</directive>. These directives specify the certificate
     file or database and the certificate type. Whenever the LDAP url
     includes <em>ldaps://</em>, <module>mod_ldap</module> will establish
-    a secure connection to the LDAP server.
+    a secure connection to the LDAP server.</p>
 
     <example>
       # Establish an SSL LDAP connection. Requires that <br />
