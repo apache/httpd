@@ -1327,16 +1327,21 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
 
 static void end_output_stream(request_rec *r)
 {
-    /*
-    ** ### place holder to tell filters that no more content will be
-    ** ### arriving. typically, they will flush any pending content
-    */
+    ap_bucket_brigade *bb;
+
+    bb = ap_brigade_create(r->pool);
+    ap_brigade_append_buckets(bb, ap_bucket_eos_create());
+    ap_pass_brigade(r->filters, bb);
 }
 
 void ap_finalize_sub_req_protocol(request_rec *sub)
 {
     /* tell the filter chain there is no more content coming */
-    end_output_stream(sub);
+    /* ### crap. we need to tell the subrequest's filters that no more
+       ### is coming. there is definitely more for the parent requests.
+       ### create a SUB_EOS bucket?
+    */
+    /* end_output_stream(sub); */
 
     SET_BYTES_SENT(sub->main);
 }
@@ -2550,12 +2555,14 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
 {
     ap_bucket_brigade *bb = NULL;
     apr_ssize_t written;
+    char c2 = (char)c;
 
     if (r->connection->aborted)
         return EOF;
 
     bb = ap_brigade_create(r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_transient_create(&c, 1, &written)); 
+    ap_brigade_append_buckets(bb,
+                              ap_bucket_transient_create(&c2, 1, &written)); 
     ap_pass_brigade(r->filters, bb);
 
     return c;
@@ -2641,11 +2648,18 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r, ...)
 
 API_EXPORT(int) ap_rflush(request_rec *r)
 {
-    ap_bucket_brigade *bb;
+    /* ### this is probably incorrect, but we have no mechanism for telling
+       ### the filter chain to flush any content they may be holding.
 
-    bb = ap_brigade_create(r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_eos_create());
-    ap_pass_brigade(r->filters, bb);
+       ### add a FLUSH bucket type?
+    */
+
+    apr_status_t rv;
+
+    if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
+        check_first_conn_error(r, "rflush", rv);
+        return EOF;
+    }
     return 0;
 }
 
