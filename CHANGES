@@ -1,5 +1,9 @@
 Changes with Apache 2.0.33-dev
 
+  *) Add the server-limit and thread-limit values to the scoreboard
+     for the sake of third-party applications.
+     [Adam Sussman <myddryn@vishnu.vidya.com>]
+
   *) Fix segfault when proxy recieves an invalid HTTP response [Ian Holsman]
 
   *) OS/390: Get make install to properly copy DSO modules.

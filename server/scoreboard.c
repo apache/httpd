@@ -158,6 +158,8 @@ void ap_init_scoreboard(void *shared_score)
         more_storage += thread_limit * sizeof(worker_score);
     }
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
+    ap_scoreboard_image->global->server_limit = server_limit;
+    ap_scoreboard_image->global->thread_limit = thread_limit;
 }
 
 /**
