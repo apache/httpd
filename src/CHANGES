@@ -1,5 +1,10 @@
 Changes with Apache 1.3.25
 
+  *) For supported versions of Darwin, place dynamically loaded
+     Apache extensions' public symbols into the global symbol
+     table. This allows dynamically loaded PHP extensions.
+     [Marko Karppinen <markonen@php.net>]
+
   *) Correct proxy to be able to handle the unexpected 100-continue
      reponses sent during PUT or POST requests. [Graham Leggett]
 
