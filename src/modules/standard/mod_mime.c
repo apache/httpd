@@ -62,7 +62,6 @@
 
 #include "httpd.h"
 #include "http_config.h"
-#include "mod_mime.h"
 
 typedef struct {
     table *forced_types;        /* Additional AddTyped stuff */
