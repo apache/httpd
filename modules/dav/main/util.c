@@ -2019,14 +2019,14 @@ dav_error *dav_auto_checkin(
     /* If parent resource was checked out, and auto-checkin is enabled,
      * then check it in.
      */
-    if (av_info->parent_resource != NULL && av_info->parent_resource->working
-        && (unlock || av_info->parent_checkedout)) {
+    if (!unlock
+        && av_info->parent_checkedout
+        && av_info->parent_resource != NULL
+        && av_info->parent_resource->working) {
 
         auto_version = (*vsn_hooks->auto_versionable)(av_info->parent_resource);
 
-        if (auto_version == DAV_AUTO_VERSION_ALWAYS ||
-            (unlock && (auto_version == DAV_AUTO_VERSION_LOCKED))) {
-
+        if (auto_version == DAV_AUTO_VERSION_ALWAYS) {
             if ((err = (*vsn_hooks->checkin)(av_info->parent_resource,
                                              0 /*keep_checked_out*/, NULL))
                 != NULL) {
