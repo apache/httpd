@@ -366,6 +366,9 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             break;
         }
 
+#if 0
+        /* XXX the bucket flush support is commented out for now
+         * because it was causing a segfault */
         if (APR_BUCKET_IS_FLUSH(dptr)) {
             apr_bucket *old = dptr; 
             dptr = APR_BUCKET_NEXT(old);
@@ -373,7 +376,9 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             ctx->output_now = 1;
             ctx->output_flush = 1;
         }
-        else if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+        else
+#endif /* 0 */
+        if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
             ctx->output_now = 1;
         }
         else if (ctx->bytes_parsed > 0) {
@@ -442,19 +447,16 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
 
             /* False alarm... 
              */
-            /* send out the unmatched part
-             */
-             
-            if ((ctx->parse_pos > 0) && (ctx->bytes_parsed == 0)) {
-                apr_bucket *tmp_buck;
-                tmp_buck = apr_bucket_pool_create(apr_pstrndup(ctx->pool,
-                                                               ctx->start_seq,
-                                                               ctx->parse_pos),
-                                                  ctx->parse_pos, 
-                                                  ctx->pool);
-                APR_BUCKET_INSERT_BEFORE(dptr, tmp_buck);
+            if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
+                for (;;) {
+                    apr_bucket *e = APR_BRIGADE_LAST(ctx->ssi_tag_brigade);
+                    if (e == APR_BRIGADE_SENTINEL(ctx->ssi_tag_brigade)) {
+                        break;
+                    }
+                    APR_BUCKET_REMOVE(e);
+                    APR_BRIGADE_INSERT_HEAD(bb, e);
+                }
             }
-
 
             ctx->state = PRE_HEAD;
         }
@@ -536,6 +538,9 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
+#if 0
+        /* XXX the bucket flush support is commented out for now
+         * because it was causing a segfault */
         if (APR_BUCKET_IS_FLUSH(dptr)) {
             apr_bucket *old = dptr; 
             dptr = APR_BUCKET_NEXT(old);
@@ -543,7 +548,9 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             ctx->output_now = 1;
             ctx->output_flush = 1;
         }
-        else if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+        else
+#endif /* 0 */
+        if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
             ctx->output_now = 1;
         }
         else if (ctx->bytes_parsed > 0) {
