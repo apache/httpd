@@ -53,7 +53,7 @@ available</description>
     trailing pathname information is determined by the <a
     href="../handler.html">handler</a> responsible for the request.
     The core handler for normal files defaults to rejecting
-    <code>PATH_INFO</code>. Handlers that serve scripts, such as <a
+    <code>PATH_INFO</code> requests. Handlers that serve scripts, such as <a
     href="mod_cgi.html">cgi-script</a> and <a
     href="mod_isapi.html">isapi-isa</a>, generally accept
     <code>PATH_INFO</code> by default.</dd>
@@ -93,8 +93,8 @@ available</description>
     <p>While processing a request the server looks for
     the first existing configuration file from this list of names in
     every directory of the path to the document, if distributed
-    configuration files are enabled for that directory. For
-    example:</p>
+    configuration files are <a href="#allowoverride">enabled for that
+    directory</a>. For example:</p>
 
     <example>
       AccessFileName .acl
@@ -174,10 +174,10 @@ response without an explicit character set</description>
       AddOutputFilterByType DEFLATE text/html text/plain
     </example>
 
-    <p>If you want the content to be processed by more than one filter, they
-    have to be separated by semicolons. It's also possible to use one
+    <p>If you want the content to be processed by more than one filter, their
+    names have to be separated by semicolons. It's also possible to use one
     <directive>AddOutputFilterByType</directive> directive for each of
-    them.</p>
+    these filters.</p>
 
     <p>The configuration below causes all script output labeled as
     <code>text/html</code> to be processed at first by the
@@ -196,9 +196,10 @@ response without an explicit character set</description>
     <note type="warning"><title>Note</title>
       <p>Enabling filters with <directive>AddOutputFilterByType</directive>
       may fail partially or completely in some cases. For expample, no
-      filters are applied if the content type falls back to the <directive
-      module="core">DefaultType</directive>, even if the <directive
-      module="core">DefaultType</directive> is the same.</p>
+      filters are applied if the MIME-type could not be determined  and falls
+      back to the <directive module="core">DefaultType</directive> setting,
+      even if the <directive module="core">DefaultType</directive> is the
+      same.</p>
 
       <p>However, if you want to make sure, that the filters will be
       applied, assign the content type to a resource explicitely, for
@@ -228,7 +229,7 @@ response without an explicit character set</description>
     <p>When the server finds an <code>.htaccess</code> file (as
     specified by <directive module="core">AccessFileName</directive>)
     it needs to know which directives declared in that file can override
-    earlier access information.</p>
+    earlier configuration directives.</p>
 
     <note><title>Only available in &lt;Directory&gt; sections</title>
     <directive>AllowOverride</directive> is valid only in
@@ -471,11 +472,11 @@ server cannot determine a type in any other way</description>
       DefaultType image/gif
     </example>
 
-    <p>would be appropriate for a directory which contained many gif
+    <p>would be appropriate for a directory which contained many GIF
     images with filenames missing the <code>.gif</code> extension.</p>
 
     <p>Note that unlike <directive
-    module="core">ForceType</directive>, this directive is only
+    module="core">ForceType</directive>, this directive only
     provides the default mime-type. All other mime-type definitions,
     including filename extensions, that might identify the media type
     will override this default.</p>
@@ -536,7 +537,7 @@ named file-system directory and sub-directories</description>
 
     <p>If multiple (non-regular expression) <directive
     type="section">Directory</directive> sections
-    match the directory (or its parents) containing a document,
+    match the directory (or one of its parents) containing a document,
     then the directives are applied in the order of shortest match
     first, interspersed with the directives from the <a
     href="#accessfilename">.htaccess</a> files. For example,
@@ -564,10 +565,11 @@ named file-system directory and sub-directories</description>
       (disabling <code>.htaccess</code> files).</li>
 
       <li>Apply directive <code>AllowOverride FileInfo</code> (for
-      directory <code>/home/web</code>).</li>
+      directory <code>/home</code>).</li>
 
       <li>Apply any <code>FileInfo</code> directives in
-      <code>/home/web/.htaccess</code></li>
+      <code>/home/.htaccess</code>, <code>/home/web/.htaccess</code> and
+      <code>/home/web/dir/.htaccess</code> in that order.</li>
     </ul>
 
     <p>Regular expressions are not considered until after all of the
@@ -584,9 +586,11 @@ named file-system directory and sub-directories</description>
     </example>
 
     <p>the regular expression section won't be considered until after
-    all normal <code>&lt;Directory&gt;</code>s and <code>.htaccess</code>
-    files have been applied. Then the regular expression will match on
-    <code>/home/abc/public_html/abc</code> and be applied.</p>
+    all normal <directive type="section">Directory</directive>s and
+    <code>.htaccess</code> files have been applied. Then the regular
+    expression will match on <code>/home/abc/public_html/abc</code> and
+    the corresponding <directive type="section">Directory</directive> will
+    be applied.</p>
 
    <p><strong>Note that the default Apache access for
     <code>&lt;Directory /&gt;</code> is <code>Allow from All</code>.
@@ -985,13 +989,12 @@ filenames</description>
 
 <usage>
     <p>The <directive type="section">Files</directive> directive
-    provides for access control by filename. It is comparable to the
-    <directive module="core" type="section">Directory</directive>
-    directive and <directive module="core"
-    type="section">Location</directive> directives. It should be
-    matched with a <directive type="section">Files</directive> directive. The
-    directives given within this section will be applied to any object
-    with a basename (last component of filename) matching the
+    limits the scope of the enclosed directives by filename. It is comparable
+    to the <directive module="core" type="section">Directory</directive>
+    and <directive module="core" type="section">Location</directive>
+    directives. It should be matched with a <code>&lt;/Files&gt;</code>
+    directive. The directives given within this section will be applied to
+    any object with a basename (last component of filename) matching the
     specified filename. <directive type="section">Files</directive>
     sections are processed in the order they appear in the
     configuration file, after the <directive module="core"
@@ -1042,8 +1045,8 @@ filenames</description>
 
 <usage>
     <p>The <directive type="section">FilesMatch</directive> directive
-    provides for access control by filename, just as the <directive
-    module="core" type="section">Files</directive> directive
+    limits the scope of the enclosed directives by filename, just as the
+    <directive module="core" type="section">Files</directive> directive
     does. However, it accepts a regular expression. For example:</p>
 
     <example>
@@ -1308,7 +1311,7 @@ the server configuration files</description>
     files in a directory that can cause <code>httpd</code> to
     fail.</p>
 
-    <p>The file path specified may be a fully qualified path (i.e.
+    <p>The file path specified may be a absolute path (i.e.
     starting with a slash), or may be relative to the
     <directive module="core">ServerRoot</directive> directory.</p>
 
@@ -1681,7 +1684,7 @@ URLs</description>
 
 <usage>
     <p>The <directive type="section">Location</directive> directive
-    provides for access control by URL. It is similar to the
+    limits the scope of the enclosed directives by URL. It is similar to the
     <directive type="section" module="core">Directory</directive>
     directive, and starts a subsection which is terminated with a
     <code>&lt;/Location&gt;</code> directive. <directive
@@ -1776,8 +1779,8 @@ matching URLs</description>
 
 <usage>
     <p>The <directive type="section">LocationMatch</directive> directive
-    provides for access control by URL, in an identical manner to
-    <directive module="core" type="section">Location</directive>. However,
+    limits the scope of the enclosed directives by URL, in an identical manner
+    to <directive module="core" type="section">Location</directive>. However,
     it takes a regular expression as an argument instead of a simple
     string. For example:</p>
 
