@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_ssl: Send the Close Alert message to the peer before closing
+     the SSL session.  PR 27428.  [Madhusudan Mathihalli, Joe Orton]
+
   *) SECURITY: CAN-2004-0113 (cve.mitre.org)
      mod_ssl: Fix a memory leak in plain-HTTP-on-SSL-port handling.
      PR 27106.  [Joe Orton]

@@ -401,6 +401,10 @@ SOURCE=.\os\win32\modules.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\server\eoc_bucket.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File

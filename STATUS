@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/08 16:40:42 $]
+Last modified at [$Date: 2004/03/08 17:40:34 $]
 
 Release:
 
@@ -80,18 +80,6 @@ PATCHES TO BACKPORT FROM 2.1
     * Win32 mpm: Fix broken find_ready_listener in Win32DisableAcceptEx path
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/child.c?r1=1.29&r2=1.30
       +1: stoddard, trawick, ake
-
-    * mod_ssl: Send the Close Alert message to the peer before closing
-      the SSL session.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_connection.h?r1=1.59&r2=1.60
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.118&r2=1.119
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/Makefile.in?r1=1.91&r2=1.92
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/connection.c?r1=1.114&r2=1.116
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.261&r2=1.263
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/eoc_bucket.c (new file) 
-      PR: 27428
-      +1: madhum, jerenkrantz, jorton
-      (jorton: needs libhttpd.dsp change for Win32 too)
 
     * mod_setenvif: remove support for remote_user variable which never
       worked at all. PR 25725 (2.0 + 1.3)
