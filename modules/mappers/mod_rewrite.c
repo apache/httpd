@@ -3621,7 +3621,7 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "SCRIPT_GROUP") == 0) {
         result = "<unknown>";
         if (r->finfo.valid & APR_FINFO_GROUP) {
-            apr_get_groupname((char **)&result, r->finfo.group, r->pool);
+            apr_group_name_get((char **)&result, r->finfo.group, r->pool);
         }
     }
 
