@@ -11,9 +11,12 @@
   <!--#config timefmt="%c" -->
   <small><!--#echo encoding="none" var="DATE_LOCAL" --></small>
   <BR>
-  <!--#if expr="0=1" -->
-  <!-- Add this back in if you want to have the Server's version show in
-       all error documents. -->
+
+  <!-- Set this value to 1 to display server version in all error
+  documents -->
+  <!--#set var="ShowVersion" value="0" -->
+
+  <!--#if expr="$ShowVersion = 1" -->
   <small><!--#echo encoding="none" var="SERVER_SOFTWARE" --></small>
   <!--#endif -->
 </ADDRESS>
