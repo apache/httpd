@@ -45,6 +45,17 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Niet ondersteund formaat!" -->
+<!--#include virtual="include/top.html" -->
+
+   De server ondersteunt het gevraagde formaat ( media type ) niet.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

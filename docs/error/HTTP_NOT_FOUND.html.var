@@ -107,6 +107,32 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Object niet gevonden!" -->
+<!--#include virtual="include/top.html" -->
+
+    De gevraagde URL was niet gevonden op deze server.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    De link op
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">deze pagina
+    pagina</a> is verkeerd of achterhaald. Gelieve de auteur van
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">die pagina</a>
+    in te lichten over deze fout.
+
+  <!--#else -->
+
+    Indien u de URL manueel hebt ingevuld, gelieve uw
+    spelling te controleren en probeer opnieuw.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

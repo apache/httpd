@@ -50,6 +50,19 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Variant varieert ook!" -->
+<!--#include virtual="include/top.html" -->
+
+    Een variant van het gevraagde object
+    is op zich ook een te onderhandelen variant.
+    Toegang is niet mogelijk.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

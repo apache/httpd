@@ -89,6 +89,26 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Toegang verboden!" -->
+<!--#include virtual="include/top.html" -->
+<!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+   U hebt niet de toestemming om toegang te krijgen tot de gevraagde map.
+   Er is of wel geen index document of de map is beveiligd tegen lezen.
+
+  <!--#else -->
+
+   U hebt niet de toestemming om toegang te krijgen tot de gevraagde map.
+   Die is ofwel beveiligd tegen lezen of onleesbaar door de server.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

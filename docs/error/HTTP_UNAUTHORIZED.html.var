@@ -82,6 +82,25 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+<!--#set var="TITLE" value="Authenticatie nodig!" -->
+<!--#include virtual="include/top.html" -->
+
+    De server kon niet controleren of u gemachtigd bent om toegang te krijgen
+    tot de URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    U hebt zich onvoldoende geauthenticeerd ( vb : verkeerd paswoord ), of
+    uw browser is niet in staat de nodige authentificatiegegevens door te geven.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    Indien u toch gemachtigd bent toegang te krijgen tot het document,
+    controleer uw gebruikersnaam en paswoord en probeer opnieuw.
+
+<!--#include virtual="include/bottom.html" -->
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--

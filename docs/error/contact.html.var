@@ -29,6 +29,13 @@ Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter le
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">gestionnaire du site</a>.
 ----------fr--
 
+Content-language: nl
+Content-type: text/html
+Body:----------nl--
+Indien u van oordeel bent dat deze server in fout is, gelieve
+de <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A> te contacteren.
+----------nl--
+
 Content-language: sv
 Content-type: text/html
 Body:----------sv--
