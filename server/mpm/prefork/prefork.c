@@ -1954,7 +1954,11 @@ int ap_graceful_stop_signalled(void)
 
 static void child_main(int child_num_arg)
 {
-    NET_SIZE_T clen;
+/* XXX replace int with NET_SIZE_T, this is defined in ap_config.h which
+   has macros we can't make visible to this file, but it is the original 
+   type for clen.
+*/
+    int clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
     ap_listen_rec *lr;
