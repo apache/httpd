@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/27 18:46:51 $]
+Last modified at [$Date: 2004/08/27 18:58:43 $]
 
 Release:
 
@@ -76,15 +76,20 @@ PATCHES TO BACKPORT FROM 2.1
     *) EOC bucket handling fix for core_output_filter (prevents possible variable use-
        after-free since .49).
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.276&r2=1.277
-       +1: jorton, trawick
+       +1: jorton, trawick, nd
        
     *) Don't link suexec against APR/etc libraries.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/Makefile.in?r1=1.38&r2=1.39
        +1: jorton, trawick
+       nd: what about the need of -static (dunno)?
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
        +1: jorton, trawick
+       nd: two comments:
+         (1) is the use of APR_ASCII_* ebcdic-safe? I.e. shouldn't we use the
+             native chars here and it will be converted later? (I'm not sure)
+         (2) I'd put out (null) only if val is NULL, not if it's empty.
 
     *) Escape errfn strings before sending them to the log file (and
        analogus patch to mod_cgid)
@@ -96,7 +101,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Add -l option to rotatelogs to let it use local time rather than
        UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
          support/rotatelogs.c: r1.33, r1.34, r1.35
-       +1: trawick
+       +1: trawick, nd
     
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
