@@ -76,25 +76,6 @@ CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r)
     return 0;
 }
 
-/* remove other filters from filter stack */
-CACHE_DECLARE(void) ap_cache_reset_output_filters(request_rec *r)
-{
-    ap_filter_t *f = r->output_filters;
-
-    while (f) {
-        if (!strcasecmp(f->frec->name, "CORE") ||
-            !strcasecmp(f->frec->name, "CONTENT_LENGTH") ||
-            !strcasecmp(f->frec->name, "HTTP_HEADER")) {
-            f = f->next;
-            continue;
-        }
-        else {
-            ap_remove_output_filter(f);
-            f = f->next;
-        }
-    }
-}
-
 CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r, 
                                                   cache_server_conf *conf, 
                                                   const char *url)
