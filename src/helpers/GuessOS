@@ -215,6 +215,10 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "arm-whatever-riscix"; exit 0;
 	;;
 
+    *:4.0:2:*)
+	echo "whatever-unisys-sysv4"; exit 0;
+	;;
+
 esac
 
 #

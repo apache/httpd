@@ -1,4 +1,7 @@
 Changes with Apache 1.3b1
+  
+  *) PORT: Support Unisys SVR4, whose uname returns mostly useless data.
+     ["Kaufman, Steven E" <Steven.Kaufman@unisys.com>]
 
   *) Inetd mode (which is buggy) uses timeouts without having setup the
      jmpbuffer. [Dean Gaudet] PR#1064
