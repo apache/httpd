@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/19 15:06:38 $]
+Last modified at [$Date: 2004/09/19 23:03:57 $]
 
 Release:
 
@@ -74,8 +74,12 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Fix a segfault in the LDAP cache purge.
+         modules/ldap/util_ldap_cache_mgr.c: 1.9
+       +1: minfrin
+
     *) Fix a segfault in the LDAP cache when it is configured switched off.
-       httpd-2.0/modules/ldap/util_ldap_cache_mgr.c: 1.7
+         modules/ldap/util_ldap_cache_mgr.c: 1.7
        +1: minfrin
 
     *) buildconf: Clean autoconf cache and do mod_ssl timestamp dance.
