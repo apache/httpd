@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_include no longer allows an ETag header on 304 responses.
+     PR 19355. [Geoffrey Young <geoff apache.org>, André Malo]
+
   *) EBCDIC: Convert header fields to ASCII before sending (broken
      since 2.0.44). [Martin Kraemer]
 

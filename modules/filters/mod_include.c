@@ -3335,7 +3335,13 @@ static int includes_setup(ap_filter_t *f)
         || !(f->r->finfo.protection & APR_GEXECUTE)) {
         f->r->no_local_copy = 1;
     }
-    
+
+    /* Don't allow ETag headers to be generated - see RFC2616 - 13.3.4.
+     * We don't know if we are going to be including a file or executing
+     * a program - in either case a strong ETag header will likely be invalid.
+     */
+     apr_table_setn(f->r->notes, "no-etag", "");
+
     return OK;
 }
 
@@ -3405,14 +3411,13 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
      */
     apr_table_unset(f->r->headers_out, "Content-Length");
 
-    /* Always unset the ETag/Last-Modified fields - see RFC2616 - 13.3.4.
+    /* Always unset the Last-Modified field - see RFC2616 - 13.3.4.
      * We don't know if we are going to be including a file or executing
      * a program which may change the Last-Modified header or make the 
      * content completely dynamic.  Therefore, we can't support these
      * headers.
      * Exception: XBitHack full means we *should* set the Last-Modified field.
      */
-    apr_table_unset(f->r->headers_out, "ETag");
 
     /* Assure the platform supports Group protections */
     if ((*conf->xbithack == xbithack_full)
