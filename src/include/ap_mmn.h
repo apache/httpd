@@ -234,7 +234,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 7                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 8                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */
