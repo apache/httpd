@@ -1,91 +1,90 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_asis</TITLE>
-</HEAD>
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org">
+    <title>Apache module mod_asis</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<H1 ALIGN="CENTER">Module mod_asis</H1>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink=
+  "#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<P>This module provides for sending files which contain their own
-HTTP headers.
+    <h1 align="CENTER">Module mod_asis</h1>
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Base
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_asis.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> asis_module
-</P>
+    <p>This module provides for sending files which contain their
+    own HTTP headers.</p>
 
-<H2>Summary</H2>
+    <p><a href="module-dict.html#Status" rel=
+    "Help"><strong>Status:</strong></a> Base<br>
+    <a href="module-dict.html#SourceFile" rel="Help"><strong>Source
+    File:</strong></a> mod_asis.c<br>
+    <a href="module-dict.html#ModuleIdentifier" rel=
+    "Help"><strong>Module Identifier:</strong></a> asis_module</p>
 
-<p>This module provides the handler <code>send-as-is</code> which
-causes Apache to send the document without adding most of the usual
-HTTP headers.</p>
+    <h2>Summary</h2>
 
-<P>This can be used to send any kind of data from the server,
-including redirects and other special HTTP responses, without
-requiring a cgi-script or an nph script.
+    <p>This module provides the handler <code>send-as-is</code>
+    which causes Apache to send the document without adding most of
+    the usual HTTP headers.</p>
 
-<p>For historical reasons, this module will also process any file with
-the mime type <code>httpd/send-as-is</code>.
+    <p>This can be used to send any kind of data from the server,
+    including redirects and other special HTTP responses, without
+    requiring a cgi-script or an nph script.</p>
 
-<H2>Directives</H2>
+    <p>For historical reasons, this module will also process any
+    file with the mime type <code>httpd/send-as-is</code>.</p>
 
-<P>This module provides no directives.
+    <h2>Directives</h2>
 
-<H2>Usage</H2>
+    <p>This module provides no directives.</p>
 
-<P>In the server configuration file, associate files with the
-<code>send-as-is</code> handler <EM>e.g.</EM>
-<BLOCKQUOTE><CODE>AddHandler send-as-is asis</CODE></BLOCKQUOTE>
-The contents of any file with a <CODE>.asis</CODE> extension will then
-be sent by Apache to the client with almost no changes. Clients will
-need HTTP headers to be attached, so do not forget them. A Status:
-header is also required; the data should be the 3-digit HTTP response
-code, followed by a textual message.
+    <h2>Usage</h2>
 
-<P>Here's an example of a file whose contents are sent <EM>as is</EM>
-so as to tell the client that a file has redirected.
-<BLOCKQUOTE><CODE> Status: 301 Now where did I leave that URL <BR>
-Location: http://xyz.abc.com/foo/bar.html <BR>
-Content-type: text/html
-<BR>
-<BR>
-&lt;HTML&gt; <BR>
-&lt;HEAD&gt; <BR>
-&lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt; <BR>
-&lt;/HEAD&gt; <BR>
-&lt;BODY&gt; <BR>
-&lt;H1&gt;Fred's exceptionally wonderful page has moved to <BR>
-&lt;A HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt; site.  <BR>
-&lt;/H1&gt; <BR>
-&lt;/BODY&gt; <BR>
-&lt;/HTML&gt;
-</CODE></BLOCKQUOTE>
+    <p>In the server configuration file, associate files with the
+    <code>send-as-is</code> handler <em>e.g.</em></p>
 
-<P>Notes: the server always adds a Date: and Server: header to the data returned
-to the client, so these should not be included in the file.
-The server does <EM>not</EM> add a Last-Modified header; it probably should.
+    <blockquote>
+      <code>AddHandler send-as-is asis</code>
+    </blockquote>
+    The contents of any file with a <code>.asis</code> extension
+    will then be sent by Apache to the client with almost no
+    changes. Clients will need HTTP headers to be attached, so do
+    not forget them. A Status: header is also required; the data
+    should be the 3-digit HTTP response code, followed by a textual
+    message. 
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p>Here's an example of a file whose contents are sent <em>as
+    is</em> so as to tell the client that a file has
+    redirected.</p>
+
+    <blockquote>
+      <code>Status: 301 Now where did I leave that URL<br>
+       Location: http://xyz.abc.com/foo/bar.html<br>
+       Content-type: text/html<br>
+      <br>
+       &lt;HTML&gt;<br>
+       &lt;HEAD&gt;<br>
+       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br>
+       &lt;/HEAD&gt;<br>
+       &lt;BODY&gt;<br>
+       &lt;H1&gt;Fred's exceptionally wonderful page has moved
+      to<br>
+       &lt;A
+      HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
+      site.<br>
+       &lt;/H1&gt;<br>
+       &lt;/BODY&gt;<br>
+       &lt;/HTML&gt;</code>
+    </blockquote>
+
+    <p>Notes: the server always adds a Date: and Server: header to
+    the data returned to the client, so these should not be
+    included in the file. The server does <em>not</em> add a
+    Last-Modified header; it probably should. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+
