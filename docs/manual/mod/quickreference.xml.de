@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY sitemap SYSTEM "../sitemap.xml.de"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English revision: 1.4 -->
+
+<quickreference>
+  <title>Kurzreferenz der Direktiven</title>
+  <summary>
+    <p>Die Kurzreferenz der Direktiven zeigt die Verwendung,
+    Voreinstellung, den Status und den Kontext aller
+    Apache-Konfigurationsanweisungen. F&uuml;r weitergehende Informationen
+    schauen Sie bitte im <a
+    href="directive-dict.html">Verzeichnis der Direktiven</a>.</p>
+
+    <p>Die erste Spalte enth&auml;lt den Namen und die Verwendung.
+    Die zweite Spalte zeigt die Voreinstellung der Direktive, sofern
+    eine Voreinstellung existiert. Wenn die Voreinstellung zu breit
+    f&uuml;r die Anzeige ist, werden die ersten Buchstaben angegeben,
+    gefolgt von einem "+".</p>
+
+    <p>Die dritte und vierte Spalte geben den Kontext an, in dem die
+    Direktive erlaubt ist, sowie den Status der Direktive entsprechend
+    der Legende.</p>
+  </summary>
+
+  <legend>
+    <table>
+      <tr><th>s</th><td>Serverkonfiguration</td></tr>
+      <tr><th>v</th><td>Virtual&#160;Host</td></tr>
+      <tr><th>d</th><td>Verzeichnis</td></tr>
+      <tr><th>h</th><td>.htaccess</td></tr>
+    </table>
+
+    <table>
+      <tr><th>C</th><td>Core</td></tr>
+      <tr><th>M</th><td>MPM</td></tr>
+      <tr><th>B</th><td>Basis</td></tr>
+      <tr><th>E</th><td>Erweiterung</td></tr>
+      <tr><th>X</th><td>experimentell</td></tr>
+    </table>
+  </legend>
+
+  &sitemap;
+</quickreference>
