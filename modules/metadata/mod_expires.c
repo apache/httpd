@@ -229,8 +229,10 @@ static void *create_dir_expires_config(apr_pool_t *p, char *dummy)
     return (void *) new;
 }
 
-static const char *set_expiresactive(cmd_parms *cmd, expires_dir_config * dir_config, int arg)
+static const char *set_expiresactive(cmd_parms *cmd, void *in_dir_config, int arg)
 {
+    expires_dir_config *dir_config = in_dir_config;
+
     /* if we're here at all it's because someone explicitly
      * set the active flag
      */
@@ -347,8 +349,10 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
     return NULL;
 }
 
-static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config * dir_config, char *mime, char *code)
+static const char *set_expiresbytype(cmd_parms *cmd, void *in_dir_config,
+                                     const char *mime, const char *code)
 {
+    expires_dir_config *dir_config = in_dir_config;
     char *response, *real_code;
 
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
@@ -359,8 +363,10 @@ static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config * dir_co
                  "'ExpiresByType ", mime, " ", code, "': ", response, NULL);
 }
 
-static const char *set_expiresdefault(cmd_parms *cmd, expires_dir_config * dir_config, char *code)
+static const char *set_expiresdefault(cmd_parms *cmd, void *in_dir_config,
+                                      const char *code)
 {
+    expires_dir_config * dir_config = in_dir_config;
     char *response, *real_code;
 
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
@@ -373,12 +379,12 @@ static const char *set_expiresdefault(cmd_parms *cmd, expires_dir_config * dir_c
 
 static const command_rec expires_cmds[] =
 {
-    {"ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS, FLAG,
-     "Limited to 'on' or 'off'"},
-    {"ExpiresBytype", set_expiresbytype, NULL, DIR_CMD_PERMS, TAKE2,
-     "a MIME type followed by an expiry date code"},
-    {"ExpiresDefault", set_expiresdefault, NULL, DIR_CMD_PERMS, TAKE1,
-     "an expiry date code"},
+    AP_INIT_FLAG("ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS,
+                 "Limited to 'on' or 'off'"),
+    AP_INIT_TAKE2("ExpiresBytype", set_expiresbytype, NULL, DIR_CMD_PERMS,
+                  "a MIME type followed by an expiry date code"),
+    AP_INIT_TAKE1("ExpiresDefault", set_expiresdefault, NULL, DIR_CMD_PERMS,
+                  "an expiry date code"),
     {NULL}
 };
 
