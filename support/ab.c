@@ -470,9 +470,9 @@ static void output_results(void)
     printf("Document Length:        %d bytes\n", doclen);
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
-    printf("Time taken for tests:   %" APR_TIME_T_FMT ".%03" APR_TIME_T_FMT " seconds\n",
-           (apr_interval_time_t) timetakenusec / APR_USEC_PER_SEC,
-           (apr_interval_time_t) timetakenusec % APR_USEC_PER_SEC);
+    printf("Time taken for tests:   %ld.%03ld seconds\n",
+           (long) (timetakenusec / APR_USEC_PER_SEC),
+           (long) (timetakenusec % APR_USEC_PER_SEC));
     printf("Complete requests:      %ld\n", done);
     printf("Failed requests:        %ld\n", bad);
     if (bad)
@@ -490,17 +490,19 @@ static void output_results(void)
 
     /* avoid divide by zero */
     if (timetaken) {
-	printf("Requests per second:    %.2f [#/sec] (mean)\n", done / timetaken);
-	printf("Time per request:       %.3f [ms] (mean)\n", concurrency * timetaken / done);
+	printf("Requests per second:    %.2f [#/sec] (mean)\n", 
+               (float) (done / timetaken));
+	printf("Time per request:       %.3f [ms] (mean)\n", 
+               (float) (concurrency * timetaken / done));
 	printf("Time per request:       %.3f [ms] (mean, across all concurrent requests)\n",
-	       timetaken / done);
+	       (float) (timetaken / done));
 	printf("Transfer rate:          %.2f [Kbytes/sec] received\n",
-	       totalread / 1024 / timetaken);
+	       (float) (totalread / 1024 / timetaken));
 	if (posting > 0) {
 	    printf("                        %.2f kb/s sent\n",
-		   (float) totalposted / timetaken / 1024);
+		   (float) (totalposted / timetaken / 1024));
 	    printf("                        %.2f kb/s total\n",
-		   (float) (totalread + totalposted) / timetaken / 1024);
+		   (float) ((totalread + totalposted) / timetaken / 1024));
 	}
     }
 
@@ -1289,14 +1291,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.74 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.75 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.74 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.75 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
