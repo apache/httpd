@@ -585,6 +585,7 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
     /*
      * Flag variables
      */
+    boolean_e is_short;
     boolean_e is_long;
     boolean_e is_quad;
     boolean_e alternate_form;
@@ -687,18 +688,25 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	    if (*fmt == 'q') {
 		is_quad = YES;
 		is_long = NO;
+		is_short = NO;
 		fmt++;
 	    }
 	    else if (*fmt == 'l') {
-		is_long = YES;
 		is_quad = NO;
+		is_long = YES;
+		is_short = NO;
+		fmt++;
+	    }
+	    else if (*fmt == 'h') {
+		is_quad = NO;
+		is_long = NO;
+		is_short = YES;
 		fmt++;
 	    }
 	    else {
-		if (*fmt == 'h')  /* "short" backward compatibility */
-		    ++fmt;
-		is_long = NO;
 		is_quad = NO;
+		is_long = NO;
+		is_short = NO;
 	    }
 
 	    /*
@@ -718,6 +726,8 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		    i_num = va_arg(ap, u_widest_int);
 		else if (is_long)
 		    i_num = (widest_int) va_arg(ap, u_wide_int);
+		else if (is_short)
+		    i_num = (widest_int) (unsigned short) va_arg(ap, unsigned int);
 		else
 		    i_num = (widest_int) va_arg(ap, unsigned int);
 		s = conv_10(i_num, 1, &is_negative,
@@ -731,6 +741,8 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		    i_num = va_arg(ap, widest_int);
 		else if (is_long)
 		    i_num = (widest_int) va_arg(ap, wide_int);
+		else if (is_short)
+		    i_num = (widest_int) (short) va_arg(ap, int);
 		else
 		    i_num = (widest_int) va_arg(ap, int);
 		s = conv_10(i_num, 0, &is_negative,
@@ -751,6 +763,8 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		    ui_num = va_arg(ap, u_widest_int);
 		else if (is_long)
 		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
+		else if (is_short)
+		    ui_num = (u_widest_int) (unsigned short) va_arg(ap, unsigned int);
 		else
 		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
 		s = conv_p2(ui_num, 3, *fmt,
@@ -769,6 +783,8 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		    ui_num = va_arg(ap, u_widest_int);
 		else if (is_long)
 		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
+		else if (is_short)
+		    ui_num = (u_widest_int) (unsigned short) va_arg(ap, unsigned int);
 		else
 		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
 		s = conv_p2(ui_num, 4, *fmt,
@@ -862,7 +878,14 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 
 	    case 'n':
-		*(va_arg(ap, int *)) = cc;
+	    	if (is_quad)
+		    *(va_arg(ap, widest_int *)) = cc;
+		else if (is_long)
+		    *(va_arg(ap, long *)) = cc;
+		else if (is_short)
+		    *(va_arg(ap, short *)) = cc;
+		else
+		    *(va_arg(ap, int *)) = cc;
 		break;
 
 		/*
