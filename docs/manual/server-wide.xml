@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<manualpage>
+<relativepath href="."/>
+
+  <title>Server-Wide Configuration</title>
+
+<summary>
+<p>This document explains some of the directives provided by
+the <module>core</module> server which are used to configure
+the basic operations of the server.</p>
+</summary>
+
+  <section id="identification">
+    <title>Server Identification</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">ServerName</directive>
+        <directive module="core">ServerAdmin</directive>
+        <directive module="core">ServerSignature</directive>
+        <directive module="core">ServerTokens</directive>
+        <directive module="core">UseCanonicalName</directive>
+      </directivelist>
+    </related>
+
+    <p>The <directive module="core">ServerAdmin</directive> and
+    <directive module="core">ServerTokens</directive> directives
+    control what information about the server will be presented
+    in server-generated documents such as error messages. The
+    <directive module="core">ServerTokens</directive> directive
+    sets the value of the Server HTTP response header field.</p>
+
+    <p>The <directive module="core">ServerName</directive> and
+    <directive module="core">UseCanonicalName</directive>
+    directives are used by the server to determine how to construct
+    self-referential URLs. For example, when a client requests a
+    directory, but does not include the trailing slash in the
+    directory name, Apache must redirect the client to the full
+    name including the trailing slash so that the client will
+    correctly resolve relative references in the document.</p>
+  </section>
+
+  <section id="locations">
+    <title>File Locations</title>
+
+    <related>
+      <directivelist>
+        <directive module="mpm_common">CoreDumpDirectory</directive>
+        <directive module="core">DocumentRoot</directive>
+        <directive module="core">ErrorLog</directive>
+        <directive module="mpm_common">LockFile</directive>
+        <directive module="mpm_common">PidFile</directive>
+        <directive module="mpm_common">ScoreBoardFile</directive>
+        <directive module="core">ServerRoot</directive>
+      </directivelist>
+    </related>
+
+    <p>These directives control the locations of the various files
+    that Apache needs for proper operation. When the pathname used
+    does not begin with a slash (/), the files are located relative
+    to the <directive module="core">ServerRoot</directive>. Be careful
+    about locating files in paths which are writable by non-root users.
+    See the <a href="misc/security_tips.html#serverroot">security tips</a>
+    documentation for more details.</p>
+  </section>
+
+  <section id="resource">
+    <title>Limiting Resource Usage</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">LimitRequestBody</directive>
+        <directive module="core">LimitRequestFields</directive>
+        <directive module="core">LimitRequestFieldsize</directive>
+        <directive module="core">LimitRequestLine</directive>
+        <directive module="core">RLimitCPU</directive>
+        <directive module="core">RLimitMEM</directive>
+        <directive module="core">RLimitNPROC</directive>
+        <directive module="mpm_netware">ThreadStackSize</directive>
+      </directivelist>
+    </related>
+
+    <p>The <directive>LimitRequest</directive>*
+    directives are used to place limits on the amount of resources
+    Apache will use in reading requests from clients. By limiting
+    these values, some kinds of denial of service attacks can be
+    mitigated.</p>
+
+    <p>The <directive>RLimit</directive>* directives
+    are used to limit the amount of resources which can be used by
+    processes forked off from the Apache children. In particular,
+    this will control resources used by CGI scripts and SSI exec
+    commands.</p>
+
+    <p>The <directive module="mpm_netware">ThreadStackSize</directive> directive
+    is used only on Netware to control the stack size.</p>
+  </section>
+</manualpage>
