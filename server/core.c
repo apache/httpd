@@ -2867,13 +2867,19 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
   
+    /* XXX We have already been here, or another module did the work
+     * for us.  At this moment, we will enable only file subrequests.
+     */
+    if (r->main && r->filename)
+        return OK;
+
     /* XXX this seems too specific, this should probably become
      * some general-case test 
      */
     if (r->proxyreq) {
         return HTTP_FORBIDDEN;
     }
-    if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
+    if (!r->uri || ((r->uri[0] != '/') && strcmp(r->uri, "*"))) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		     "Invalid URI in request %s", r->the_request);
 	return HTTP_BAD_REQUEST;
