@@ -345,7 +345,7 @@ static int is_token(char c)
 {
     int res;
 
-    res = (ap_isascii(c) && isgraph(c)
+    res = (ap_isascii(c) && ap_isgraph(c)
 	   && (strchr(tspecial, c) == NULL)) ? 1 : -1;
     return res;
 }
