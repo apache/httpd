@@ -124,7 +124,7 @@ AC_ARG_WITH(debug,[  --with-debug            Turn on debugging and compile time 
         [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall"; else CFLAGS="$CFLAGS -g"; fi])
 
 AC_ARG_WITH(maintainer-mode,[  --with-maintainer-mode   Turn on debugging and compile time warnings],
-        [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"; else CFLAGS="$CFLAGS -g"; fi])
+        [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -DAP_DEBUG"; else CFLAGS="$CFLAGS -g"; fi])
 
 APACHE_ENABLE_LAYOUT
 APACHE_ENABLE_MODULES

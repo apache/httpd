@@ -425,10 +425,10 @@ API_EXPORT(void) ap_add_module(module *m)
      * components (Unix and DOS), and remove them.
      */
 
-    if (strrchr(m->name, '/'))
-	m->name = 1 + strrchr(m->name, '/');
-    if (strrchr(m->name, '\\'))
-	m->name = 1 + strrchr(m->name, '\\');
+    if (ap_strrchr_c(m->name, '/'))
+	m->name = 1 + ap_strrchr_c(m->name, '/');
+    if (ap_strrchr_c(m->name, '\\'))
+	m->name = 1 + ap_strrchr_c(m->name, '\\');
 
 #ifdef _OSD_POSIX /* __FILE__="*POSIX(/home/martin/apache/src/modules/standard/mod_info.c)" */
     /* We cannot fix the string in-place, because it's const */
@@ -635,7 +635,7 @@ API_EXPORT(void) ap_clear_module_list()
  */
 
 static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
-			    void *mconfig, const char *args)
+			      void *mconfig, const char *args)
 {
     char *w, *w2, *w3;
     const char *errmsg;
@@ -651,16 +651,14 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 #ifdef RESOLVE_ENV_PER_TOKEN
 	args = ap_resolve_env(parms->pool,args);
 #endif
-	return ((const char *(*)(cmd_parms *, void *, const char *))
-		(cmd->func)) (parms, mconfig, args);
+	return cmd->AP_RAW_ARGS(parms, mconfig, args);
 
     case NO_ARGS:
 	if (*args != 0)
 	    return ap_pstrcat(parms->pool, cmd->name, " takes no arguments",
 			   NULL);
 
-	return ((const char *(*)(cmd_parms *, void *))
-		(cmd->func)) (parms, mconfig);
+	return cmd->AP_NO_ARGS(parms, mconfig);
 
     case TAKE1:
 	w = ap_getword_conf(parms->pool, &args);
@@ -669,11 +667,9 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 	    return ap_pstrcat(parms->pool, cmd->name, " takes one argument",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, const char *))
-		(cmd->func)) (parms, mconfig, w);
+	return cmd->AP_TAKE1(parms, mconfig, w);
 
     case TAKE2:
-
 	w = ap_getword_conf(parms->pool, &args);
 	w2 = ap_getword_conf(parms->pool, &args);
 
@@ -681,8 +677,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 	    return ap_pstrcat(parms->pool, cmd->name, " takes two arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, const char *,
-			const char *)) (cmd->func)) (parms, mconfig, w, w2);
+	return cmd->AP_TAKE2(parms, mconfig, w, w2);
 
     case TAKE12:
 
@@ -693,9 +688,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 	    return ap_pstrcat(parms->pool, cmd->name, " takes 1-2 arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *)) (cmd->func)) (parms, mconfig, w,
-							    *w2 ? w2 : NULL);
+	return cmd->AP_TAKE2(parms, mconfig, w, *w2 ? w2 : NULL);
 
     case TAKE3:
 
@@ -707,9 +700,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 	    return ap_pstrcat(parms->pool, cmd->name, " takes three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (cmd->func)) (parms,
-							mconfig, w, w2, w3);
+	return cmd->AP_TAKE3(parms, mconfig, w, w2, w3);
 
     case TAKE23:
 
@@ -722,9 +713,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 			    " takes two or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (cmd->func)) (parms,
-							mconfig, w, w2, w3);
+	return cmd->AP_TAKE3(parms, mconfig, w, w2, w3);
 
     case TAKE123:
 
@@ -737,9 +726,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 			    " takes one, two or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (cmd->func)) (parms,
-							mconfig, w, w2, w3);
+	return cmd->AP_TAKE3(parms, mconfig, w, w2, w3);
 
     case TAKE13:
 
@@ -752,16 +739,15 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 			    " takes one or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, const char *,
-			    const char *, const char *)) (cmd->func)) (parms,
-							mconfig, w, w2, w3);
+	return cmd->AP_TAKE3(parms, mconfig, w, w2, w3);
 
     case ITERATE:
 
 	while (*(w = ap_getword_conf(parms->pool, &args)) != '\0')
-	if   ((errmsg = ((const char *(*)(cmd_parms *, void *,
-			const char *)) (cmd->func)) (parms, mconfig, w)))
-		    return errmsg;
+	    {
+	    if ((errmsg = cmd->AP_TAKE1(parms, mconfig, w)))
+		return errmsg;
+	    }
 
 	return NULL;
 
@@ -774,12 +760,11 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 			    " requires at least two arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
-
 	while (*(w2 = ap_getword_conf(parms->pool, &args)) != '\0')
-	    if   ((errmsg = ((const char *(*)(cmd_parms *, void *,
-			    const char *, const char *)) (cmd->func)) (parms,
-							    mconfig, w, w2)))
-			return errmsg;
+	    {
+	    if ((errmsg = cmd->AP_TAKE2(parms, mconfig, w, w2)))
+		return errmsg;
+	    }
 
 	return NULL;
 
@@ -791,8 +776,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 	    return ap_pstrcat(parms->pool, cmd->name, " must be On or Off",
 			    NULL);
 
-	return ((const char *(*)(cmd_parms *, void *, int))
-		(cmd->func)) (parms, mconfig, strcasecmp(w, "off") != 0);
+	return cmd->AP_FLAG(parms, mconfig, strcasecmp(w, "off") != 0);
 
     default:
 
@@ -1101,12 +1085,13 @@ API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
  */
 
 API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
-						char *struct_ptr, char *arg)
+						   void *struct_ptr,
+						   const char *arg)
 {
     /* This one's pretty generic... */
 
     int offset = (int) (long) cmd->info;
-    *(char **) (struct_ptr + offset) = arg;
+    *(const char **) ((char *)struct_ptr + offset) = arg;
     return NULL;
 }
 

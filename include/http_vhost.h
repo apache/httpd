@@ -69,7 +69,8 @@ void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_server);
 const char *ap_parse_vhost_addrs(ap_pool_t *p, const char *hostname, server_rec *s);
 
 /* handle NameVirtualHost directive */
-const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);
+const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
+				      const char *arg);
 
 /* given an ip address only, give our best guess as to what vhost it is */
 void ap_update_vhost_given_ip(conn_rec *conn);

@@ -179,8 +179,8 @@ void ap_init_vhost_config(ap_pool_t *p)
  * *paddr is the variable used to keep track of **paddr between calls
  * port is the default port to assume
  */
-static const char *get_addresses(ap_pool_t *p, char *w, server_addr_rec ***paddr,
-			    unsigned port)
+static const char *get_addresses(ap_pool_t *p, const char *w,
+				 server_addr_rec ***paddr, unsigned port)
 {
     struct hostent *hep;
     unsigned long my_addr;
@@ -282,7 +282,8 @@ const char *ap_parse_vhost_addrs(ap_pool_t *p, const char *hostname, server_rec 
 }
 
 
-const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
+const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
+				      const char *arg)
 {
     /* use whatever port the main server has at this point */
     return get_addresses(cmd->pool, arg, &name_vhost_list_tail,
