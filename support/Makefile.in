@@ -4,7 +4,7 @@ DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid htdbm
 TARGETS  = $(PROGRAMS)
 
-PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
+PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
 PROGRAM_DEPENDENCIES = 
 
 include $(top_builddir)/build/rules.mk
