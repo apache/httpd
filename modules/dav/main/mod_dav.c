@@ -92,8 +92,6 @@
 
 #include "mod_dav.h"
 
-#include "dav_opaquelock.h"
-
 
 /* ### what is the best way to set this? */
 #define DAV_DEFAULT_PROVIDER    "filesystem"
@@ -118,7 +116,7 @@ typedef struct {
 
 /* per-server configuration */
 typedef struct {
-    uuid_state st;		/* UUID state for opaquelocktoken */
+    int unused;
 
 } dav_server_conf;
 
@@ -143,24 +141,21 @@ static void *dav_create_server_config(apr_pool_t *p, server_rec *s)
 
     newconf = (dav_server_conf *) apr_pcalloc(p, sizeof(*newconf));
 
-    dav_create_uuid_state(&newconf->st);
+    /* ### this isn't used at the moment... */
 
     return newconf;
 }
 
 static void *dav_merge_server_config(apr_pool_t *p, void *base, void *overrides)
 {
+#if 0
     dav_server_conf *child = overrides;
+#endif
     dav_server_conf *newconf;
 
     newconf = (dav_server_conf *) apr_pcalloc(p, sizeof(*newconf));
 
-    /* ### hmm. we should share the uuid state rather than copy it. if we
-       ### do another merge, then we'll just get the old one, rather than
-       ### an updated state.
-       ### of course... the UUID generation should move into APR
-    */
-    memcpy(&newconf->st, &child->st, sizeof(newconf->st));
+    /* ### nothing to merge right now... */
 
     return newconf;
 }
@@ -211,15 +206,6 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
 		      APR_OVERLAP_TABLES_SET);
 
     return newconf;
-}
-
-uuid_state *dav_get_uuid_state(const request_rec *r)
-{
-    dav_server_conf *conf;
-
-    conf = ap_get_module_config(r->server->module_config, &dav_module);
-
-    return &conf->st;
 }
 
 apr_table_t *dav_get_dir_params(const request_rec *r)

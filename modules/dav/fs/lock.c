@@ -60,9 +60,9 @@
 #include "http_log.h"
 #include "apr_file_io.h"
 #include "apr_strings.h"
+#include "apr_uuid.h"
 
 #include "mod_dav.h"
-#include "dav_opaquelock.h"
 #include "repos.h"
 
 
@@ -88,20 +88,20 @@
 ** VALUE
 **
 ** The value consists of a list of elements.
-**    DIRECT LOCK:     [char  (DAV_LOCK_DIRECT),
-**			char  (dav_lock_scope),
-**			char  (dav_lock_type),
-**			int    depth,
-**			time_t expires,
-**			uuid_t locktoken,
-**			char[] owner,
-**                      char[] auth_user]
+**    DIRECT LOCK:     [char      (DAV_LOCK_DIRECT),
+**			char      (dav_lock_scope),
+**			char      (dav_lock_type),
+**			int        depth,
+**			time_t     expires,
+**			apr_uuid_t locktoken,
+**			char[]     owner,
+**                      char[]     auth_user]
 **
-**    INDIRECT LOCK:   [char  (DAV_LOCK_INDIRECT),
-**			uuid_t locktoken,
-**			time_t expires,
-**			int    key_size,
-**			char[] key]
+**    INDIRECT LOCK:   [char      (DAV_LOCK_INDIRECT),
+**			apr_uuid_t locktoken,
+**			time_t     expires,
+**			int        key_size,
+**			char[]     key]
 **       The key is to the collection lock that resulted in this indirect lock
 */
 
@@ -128,8 +128,10 @@ static dav_error * dav_fs_remove_locknull_member(apr_pool_t *p,
 ** Use the opaquelock scheme for locktokens
 */
 struct dav_locktoken {
-    uuid_t uuid;
+    apr_uuid_t uuid;
 };
+#define dav_compare_locktoken(plt1, plt2) \
+		memcmp(&(plt1)->uuid, &(plt2)->uuid, sizeof((plt1)->uuid))
 
 
 /* #################################################################
@@ -181,13 +183,13 @@ typedef struct dav_lock_indirect
 ** prefix + Fixed length + lock token + 2 strings + 2 nulls (one for each string)
 */
 #define dav_size_direct(a)	(1 + sizeof(dav_lock_discovery_fixed) \
-				 + sizeof(uuid_t) \
+				 + sizeof(apr_uuid_t) \
 				 + ((a)->owner ? strlen((a)->owner) : 0) \
 				 + ((a)->auth_user ? strlen((a)->auth_user) : 0) \
 				 + 2)
 
 /* Stored indirect lock info - lock token and dav_datum */
-#define dav_size_indirect(a)	(1 + sizeof(uuid_t) \
+#define dav_size_indirect(a)	(1 + sizeof(apr_uuid_t) \
 				 + sizeof(time_t) \
 				 + sizeof(int) + (a)->key.dsize)
 
@@ -254,8 +256,7 @@ static dav_lock *dav_fs_alloc_lock(dav_lockdb *lockdb, dav_datum key,
 
     if (locktoken == NULL) {
 	comb->pub.locktoken = &comb->token;
-	dav_create_opaquelocktoken(dav_get_uuid_state(lockdb->info->r),
-                                   &comb->token.uuid);
+        apr_get_uuid(&comb->token.uuid);
     }
     else {
 	comb->pub.locktoken = locktoken;
@@ -285,7 +286,7 @@ static dav_error * dav_fs_parse_locktoken(
     char_token += 16;
 
     locktoken = apr_pcalloc(p, sizeof(*locktoken));
-    if (dav_parse_opaquelocktoken(char_token, &locktoken->uuid)) {
+    if (apr_parse_uuid(&locktoken->uuid, char_token)) {
 	return dav_new_error(p, HTTP_BAD_REQUEST, DAV_ERR_LOCK_PARSE_TOKEN,
 			     "The opaquelocktoken has an incorrect format "
 			     "and could not be parsed.");
@@ -304,8 +305,10 @@ static const char *dav_fs_format_locktoken(
     apr_pool_t *p,
     const dav_locktoken *locktoken)
 {
-    const char *uuid_token = dav_format_opaquelocktoken(p, &locktoken->uuid);
-    return apr_pstrcat(p, "opaquelocktoken:", uuid_token, NULL);
+    char buf[APR_UUID_FORMATTED_LENGTH + 1];
+
+    apr_format_uuid(buf, &locktoken->uuid);
+    return apr_pstrcat(p, "opaquelocktoken:", buf, NULL);
 }
 
 /*
@@ -317,7 +320,7 @@ static int dav_fs_compare_locktoken(
     const dav_locktoken *lt1,
     const dav_locktoken *lt2)
 {
-    return dav_compare_opaquelocktoken(lt1->uuid, lt2->uuid);
+    return dav_compare_locktoken(lt1, lt2);
 }
 
 /*
@@ -746,8 +749,7 @@ static dav_error * dav_fs_resolve(dav_lockdb *lockdb,
     }
 		
     for (; dir != NULL; dir = dir->next) {
-	if (!dav_compare_opaquelocktoken(indirect->locktoken->uuid, 
-					 dir->locktoken->uuid)) {
+	if (!dav_compare_locktoken(indirect->locktoken, dir->locktoken)) {
 	    *direct = dir;
 	    return NULL;
 	}
@@ -1174,8 +1176,7 @@ static dav_error * dav_fs_find_lock(dav_lockdb *lockdb,
     }
 
     for (; dp != NULL; dp = dp->next) {
-	if (!dav_compare_opaquelocktoken(locktoken->uuid,
-					 dp->locktoken->uuid)) {
+	if (!dav_compare_locktoken(locktoken, dp->locktoken)) {
 	    *lock = dav_fs_alloc_lock(lockdb, key, locktoken);
 	    (*lock)->is_locknull = !resource->exists;
 	    (*lock)->scope = dp->f.scope;
@@ -1189,8 +1190,7 @@ static dav_error * dav_fs_find_lock(dav_lockdb *lockdb,
     }
 
     for (; ip != NULL; ip = ip->next) {
-	if (!dav_compare_opaquelocktoken(locktoken->uuid,
-					 ip->locktoken->uuid)) {
+	if (!dav_compare_locktoken(locktoken, ip->locktoken)) {
 	    *lock = dav_fs_alloc_lock(lockdb, ip->key, locktoken);
 	    (*lock)->is_locknull = !resource->exists;
 
@@ -1356,8 +1356,7 @@ static dav_error * dav_fs_remove_lock(dav_lockdb *lockdb,
 	}
 
 	for (dp = dh; dp != NULL; dp = dp->next) {
-	    if (dav_compare_opaquelocktoken(locktoken->uuid,
-					    dp->locktoken->uuid) == 0) {
+	    if (dav_compare_locktoken(locktoken, dp->locktoken) == 0) {
 		if (dprev)
 		    dprev->next = dp->next;
 		else
@@ -1367,8 +1366,7 @@ static dav_error * dav_fs_remove_lock(dav_lockdb *lockdb,
 	}
 
 	for (ip = ih; ip != NULL; ip = ip->next) {
-	    if (dav_compare_opaquelocktoken(locktoken->uuid,
-					    ip->locktoken->uuid) == 0) {
+	    if (dav_compare_locktoken(locktoken, ip->locktoken) == 0) {
 		if (iprev)
 		    iprev->next = ip->next;
 		else
@@ -1413,8 +1411,7 @@ static int dav_fs_do_refresh(dav_lock_discovery *dp,
     int dirty = 0;
 
     for (; ltl != NULL; ltl = ltl->next) {
-	if (dav_compare_opaquelocktoken(dp->locktoken->uuid,
-					ltl->locktoken->uuid) == 0)
+	if (dav_compare_locktoken(dp->locktoken, ltl->locktoken) == 0)
 	{
 	    dp->f.timeout = new_time;
 	    dirty = 1;
