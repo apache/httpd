@@ -234,11 +234,14 @@ static cache *cachep;
     /* whether proxy module is available or not */
 static int proxy_available;
 
+    /* maximum nmatch parameter for regexec */
+#define MAX_NMATCH	(10)
+
     /* the txt mapfile parsing stuff */
 #define MAPFILE_PATTERN "^([^ \t]+)[ \t]+([^ \t]+).*$"
 #define MAPFILE_OUTPUT "$1,$2"
 static regex_t   *lookup_map_txtfile_regexp = NULL;
-static regmatch_t lookup_map_txtfile_regmatch[10];
+static regmatch_t lookup_map_txtfile_regmatch[MAX_NMATCH];
 
 
 /*
@@ -1542,7 +1545,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     char env[MAX_STRING_LEN];
     char port[32];
     regex_t *regexp;
-    regmatch_t regmatch[10];
+    regmatch_t regmatch[MAX_NMATCH];
     backrefinfo *briRR = NULL;
     backrefinfo *briRC = NULL;
     int prefixstrip;
@@ -1595,7 +1598,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
             briRR->source = pstrdup(r->pool, uri);
             briRR->nsub   = regexp->re_nsub;
             memcpy((void *)(briRR->regmatch), (void *)(regmatch),
-                   sizeof(regmatch_t)*10);
+                   sizeof(regmatch));
         }
 
         /* create the RewriteCond backrefinfo, but
@@ -1835,7 +1838,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     char input[MAX_STRING_LEN];
     struct stat sb;
     request_rec *rsub;
-    regmatch_t regmatch[10];
+    regmatch_t regmatch[MAX_NMATCH];
     int rc;
 
     /*
@@ -1954,7 +1957,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
             briRC->source = pstrdup(r->pool, input);
             briRC->nsub   = p->regexp->re_nsub;
             memcpy((void *)(briRC->regmatch), (void *)(regmatch),
-                   sizeof(regmatch_t)*10);
+                   sizeof(regmatch));
         }
     }
 
