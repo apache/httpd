@@ -311,7 +311,7 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
 static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
                                    const char *pname, const char *proto)
 {
-    static const char *sep = ";,\t";
+    static const char *sep = ";, \t";
     char *arg;
     char *tok = 0;
     unsigned int flags = 0;
