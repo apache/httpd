@@ -390,6 +390,11 @@
         프록시하는 서버에 보안연결할때 사용할 신뢰하는
         인증서(certificate)를 추가한다.</li>
       </ul>
+      <ul>
+        <li><code class="directive"><a href="../mod/mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable</a></code> -
+        특정 주소/포트로 맺어진 연결을 SSL 연결로 변경할 수
+        있다.</li>
+      </ul>
 
     
 

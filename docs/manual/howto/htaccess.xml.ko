@@ -266,7 +266,7 @@
 
     <example>
       AuthType Basic<br />
-      AuthName "암호가 필요합니다"<br />
+      AuthName "Password Required"<br />
       AuthUserFile /www/passwords/password.file<br />
       AuthGroupFile /www/passwords/group.file<br />
       Require Group admins

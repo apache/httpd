@@ -263,6 +263,7 @@
 <li><a href="mod_proxy.html#noproxy">NoProxy</a></li>
 <li><a href="perchild.html#numservers">NumServers</a></li>
 <li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
+<li><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
 <li><a href="mod_authz_host.html#order">Order</a></li>
 <li><a href="mod_env.html#passenv" id="P" name="P">PassEnv</a></li>

@@ -22,8 +22,6 @@
 <a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>이 문서는 아파치 <a href="directives.html">설정
     지시어</a>를 설명하는데 사용한 용어들을 설명한다.</p>
@@ -92,8 +90,8 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>문자를 검색할 패턴을 설명하는 정규표현식(regular
-      expression). 지시어는 <em>regex</em>로 무엇인가를 검색한다.</dd>
+      <dd>Perl 형식의 <a href="../glossary.html#regex">정규표현식(regular
+      expression)</a>. 지시어는 <em>regex</em>로 무엇인가를 검색한다.</dd>
 
       <dt><em>extension</em></dt>
 
