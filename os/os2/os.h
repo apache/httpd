@@ -96,21 +96,7 @@ char *ap_os_systemcase_filename(apr_pool_t *p, const char *szFile);
 /* FIXME: the following should be implemented on this platform */
 #define ap_os_is_filename_valid(f)         (1)
 
-/* Use a specialized kill() function */
-int ap_os_kill(int pid, int sig);
-
-/* Maps an OS error code to an error message */
-char *ap_os_error_message(int err);
-
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
-
-/* Dynamic loading functions */
-#define     ap_os_dso_handle_t  unsigned long
-void        ap_os_dso_init(void);
-ap_os_dso_handle_t ap_os_dso_load(const char *);
-void        ap_os_dso_unload(ap_os_dso_handle_t);
-void *      ap_os_dso_sym(ap_os_dso_handle_t, const char *);
-const char *ap_os_dso_error(void);
 
 #endif   /* ! APACHE_OS_H */
