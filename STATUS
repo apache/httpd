@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/10 07:47:22 $]
+Last modified at [$Date: 2004/07/12 17:16:00 $]
 
 Release:
 
@@ -174,13 +174,6 @@ PATCHES TO BACKPORT FROM 2.1
        (2.0 + 1.3)
          modules/metadata/mod_usertrack.c: r1.51
        +1: nd, trawick
-
-    *) Enable special ErrorDocument value 'default' which restores the
-       canned server response for the scope of the directive
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.270&r2=1.271
-         plus inheritance fix:
-         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.272&r2=1.273
-       +1: nd, stas, geoff
 
     *) Fix memory leak in mod_rewrite. PR 27862. (2.0 + 1.3)
          http://www.apache.org/~nd/mod_rewrite_fixleak.diff
