@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_dav_fs</name> 
+<description>filesystem provider for <module>mod_dav</module></description>
+<status>Extension</status>
+<sourcefile>mod_dav_fs.c</sourcefile>
+<identifier>dav_fs_module</identifier>
+
+<summary>
+    <p>This module <em>requires</em> the service of <module
+    >mod_dav</module>. It acts as a support module for <module
+    >mod_dav</module> and provides access to resources located in the
+    server's file system. The formal name of this provider is
+    <code>filesystem</code>. <module>mod_dav</module> backend providers
+    will be invoked by using the <directive module="mod_dav">Dav</directive>
+    directive:</p>
+
+    <example><title>Example</title>
+      Dav filesystem
+    </example>
+
+    <p>Since <code>filesystem</code> is the default provider for
+    <module>mod_dav</module>, you may simply use the value
+    <code>On</code> instead.</p>
+</summary>
+<seealso><module>mod_dav</module></seealso>
+
+<directivesynopsis>
+<name>DavLockDB</name>
+<description>Location of the DAV lock database</description>
+<syntax>DavLockDB <var>file-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Use the <directive>DavLockDB</directive> directive to specify
+    the full path to the lock database, excluding an extension. If
+    the path is not absolute, it will be taken relative to <directive
+    module="core">ServerRoot</directive>. The implementation of
+    <module>mod_dav_fs</module> uses a SDBM database to track user
+    locks.</p>
+
+    <!-- XXX: someone should add that tool to the support directory...
+    The utility <code>modules/dav/util/lockview</code> can be used from
+    the server to display all locks in a lock database.</p> -->
+
+    <example><title>Example</title>
+      DavLockDB logs/DavLock
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
