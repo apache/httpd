@@ -75,9 +75,9 @@ uses</a></seealso>
       ServerLimit         16
     </example>
 
-    <p>While the parent process is usually started as root under Unix
-    in order to bind to port 80, the child processes and threads are
-    launched by Apache as a less-privileged user. The <directive
+    <p>While the parent process is usually started as <code>root</code>
+    under Unix in order to bind to port 80, the child processes and threads
+    are launched by Apache as a less-privileged user. The <directive
     module="mpm_common">User</directive> and <directive
     module="mpm_common">Group</directive> directives are used to set
     the privileges of the Apache child processes. The child processes
