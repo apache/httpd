@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Fix error logging for the startup case where ap_log_error() still uses
+     stderr as the target. Now the default log level is honored here, too.
+     [Ralf S. Engelschall]
+    
   *) PORT: Make sure some AWK's don't fail in src/Configure with "string too
      long" errors when generating the MODULES entry for src/Makefile
      [Ben Hyde, Ralf S. Engelschall]

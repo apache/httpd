@@ -284,6 +284,14 @@ API_EXPORT(void) ap_log_error (const char *file, int line, int level,
     FILE *logf;
 
     if (s == NULL) {
+	/*
+	 * If we are doing stderr logging (startup), don't log messages that are
+	 * above the default server log level unless it is a startup/shutdown
+	 * notice
+	 */
+	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
+	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
+	    return;
 	logf = stderr;
     }
     else if (s->error_log) {
