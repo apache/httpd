@@ -219,7 +219,7 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, char *struct_ptr,
     return NULL;
 }
 
-static command_rec env_module_cmds[] =
+static const command_rec env_module_cmds[] =
 {
     {"PassEnv", add_env_module_vars_passed, NULL,
      RSRC_CONF, RAW_ARGS, "a list of environment variables to pass to CGI."},

@@ -144,7 +144,7 @@ static void *merge_imap_dir_configs(pool *p, void *basev, void *addv)
 }
 
 
-static command_rec imap_cmds[] =
+static const command_rec imap_cmds[] =
 {
     {"ImapMenu", set_string_slot,
      (void *) XtOffsetOf(imap_conf_rec, imap_menu), OR_INDEXES, TAKE1,
@@ -881,7 +881,7 @@ menu_bail:
 }
 
 
-static handler_rec imap_handlers[] =
+static const handler_rec imap_handlers[] =
 {
     {IMAP_MAGIC_TYPE, imap_handler},
     {"imap-file", imap_handler},

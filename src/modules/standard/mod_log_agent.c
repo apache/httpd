@@ -90,7 +90,7 @@ static const char *set_agent_log(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-static command_rec agent_log_cmds[] =
+static const command_rec agent_log_cmds[] =
 {
     {"AgentLog", set_agent_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the agent log"},

@@ -103,7 +103,7 @@ static const char *add_referer_ignore(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-static command_rec referer_log_cmds[] =
+static const command_rec referer_log_cmds[] =
 {
     {"RefererLog", set_referer_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the referer log"},

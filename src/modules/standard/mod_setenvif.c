@@ -245,7 +245,7 @@ static const char *add_browser(cmd_parms *cmd, void *mconfig, const char *args)
     return add_setenvif_core(cmd, mconfig, "User-Agent", args);
 }
 
-static command_rec setenvif_module_cmds[] =
+static const command_rec setenvif_module_cmds[] =
 {
     {"SetEnvIf", add_setenvif, NULL,
      RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables."},

@@ -354,7 +354,7 @@ static int mmap_static_handler(request_rec *r)
 }
 
 
-static handler_rec mmap_static_handlers[] =
+static const handler_rec mmap_static_handlers[] =
 {
     { "*/*", mmap_static_handler },
     { NULL }

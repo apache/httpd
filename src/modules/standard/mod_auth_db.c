@@ -113,7 +113,7 @@ static const char *set_db_slot(cmd_parms *cmd, void *offset, char *f, char *t)
     return set_file_slot(cmd, offset, f);
 }
 
-static command_rec db_auth_cmds[] =
+static const command_rec db_auth_cmds[] =
 {
     {"AuthDBUserFile", set_file_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),

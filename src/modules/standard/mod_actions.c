@@ -142,7 +142,7 @@ static const char *set_script(cmd_parms *cmd, action_dir_config * m, char *metho
     return NULL;
 }
 
-static command_rec action_cmds[] =
+static const command_rec action_cmds[] =
 {
     {"Action", add_action, NULL, OR_FILEINFO, TAKE2,
      "a media type followed by a script name"},
@@ -201,7 +201,7 @@ static int action_handler(request_rec *r)
     return OK;
 }
 
-static handler_rec action_handlers[] =
+static const handler_rec action_handlers[] =
 {
     {"*/*", action_handler},
     {NULL}

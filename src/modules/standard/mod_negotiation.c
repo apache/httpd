@@ -138,7 +138,7 @@ static int do_cache_negotiated_docs(server_rec *s)
     return (get_module_config(s->module_config, &negotiation_module) != NULL);
 }
 
-static command_rec negotiation_cmds[] =
+static const command_rec negotiation_cmds[] =
 {
     {"CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, NO_ARGS,
      "no arguments (either present or absent)"},
@@ -2222,7 +2222,7 @@ static int handle_multi(request_rec *r)
     return OK;
 }
 
-static handler_rec negotiation_handlers[] =
+static const handler_rec negotiation_handlers[] =
 {
     {MAP_FILE_MAGIC_TYPE, handle_map_file},
     {"type-map", handle_map_file},

@@ -320,7 +320,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 
 #define DIR_CMD_PERMS OR_INDEXES
 
-static command_rec autoindex_cmds[] =
+static const command_rec autoindex_cmds[] =
 {
     {"AddIcon", add_icon, BY_PATH, DIR_CMD_PERMS, ITERATE2,
      "an icon URL followed by one or more filenames"},
@@ -1167,7 +1167,7 @@ static int handle_autoindex(request_rec *r)
 }
 
 
-static handler_rec autoindex_handlers[] =
+static const handler_rec autoindex_handlers[] =
 {
     {DIR_MAGIC_TYPE, handle_autoindex},
     {NULL}

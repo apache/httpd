@@ -148,7 +148,7 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static command_rec cgi_cmds[] =
+static const command_rec cgi_cmds[] =
 {
     {"ScriptLog", set_scriptlog, NULL, RSRC_CONF, TAKE1,
      "the name of a log for script debugging info"},
@@ -558,7 +558,7 @@ static int cgi_handler(request_rec *r)
     return OK;			/* NOT r->status, even if it has changed. */
 }
 
-static handler_rec cgi_handlers[] =
+static const handler_rec cgi_handlers[] =
 {
     {CGI_MAGIC_TYPE, cgi_handler},
     {"cgi-script", cgi_handler},

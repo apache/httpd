@@ -149,7 +149,7 @@ error:
     return 0;
 }
 
-static handler_rec rndchunk_handlers[] =
+static const handler_rec rndchunk_handlers[] =
 {
     {"rndchunk", send_rndchunk},
     {NULL}

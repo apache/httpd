@@ -98,7 +98,7 @@ static const char *set_auth_slot(cmd_parms *cmd, void *offset, char *f, char *t)
     return set_file_slot(cmd, offset, f);
 }
 
-static command_rec auth_cmds[] =
+static const command_rec auth_cmds[] =
 {
     {"AuthUserFile", set_auth_slot,
      (void *) XtOffsetOf(auth_config_rec, auth_pwfile), OR_AUTHCFG, TAKE12,

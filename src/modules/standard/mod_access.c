@@ -253,7 +253,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 
 static char its_an_allow;
 
-static command_rec access_cmds[] =
+static const command_rec access_cmds[] =
 {
     {"order", order, NULL, OR_LIMIT, TAKE1,
      "'allow,deny', 'deny,allow', or 'mutual-failure'"},

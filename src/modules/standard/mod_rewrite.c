@@ -146,7 +146,7 @@
      */
 
     /* the table of commands we provide */
-static command_rec command_table[] = {
+static const command_rec command_table[] = {
     { "RewriteEngine",   cmd_rewriteengine,   NULL, OR_FILEINFO, FLAG,
       "On or Off to enable or disable (default) the whole rewriting engine" },
     { "RewriteOptions",  cmd_rewriteoptions,  NULL, OR_FILEINFO, ITERATE,
@@ -170,7 +170,7 @@ static command_rec command_table[] = {
 };
 
     /* the table of content handlers we provide */
-static handler_rec handler_table[] = {
+static const handler_rec handler_table[] = {
     { "redirect-handler", handler_redirect },
     { NULL }
 };

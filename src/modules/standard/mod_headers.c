@@ -191,7 +191,7 @@ static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *acti
     return NULL;
 }
 
-static command_rec headers_cmds[] =
+static const command_rec headers_cmds[] =
 {
     {"Header", header_cmd, NULL, OR_FILEINFO, TAKE23,
      "an action, header and value"},

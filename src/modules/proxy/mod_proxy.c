@@ -735,13 +735,13 @@ static const char *
     return NULL;
 }
 
-static handler_rec proxy_handlers[] =
+static const handler_rec proxy_handlers[] =
 {
     {"proxy-server", proxy_handler},
     {NULL}
 };
 
-static command_rec proxy_cmds[] =
+static const command_rec proxy_cmds[] =
 {
     {"ProxyRequests", set_proxy_req, NULL, RSRC_CONF, FLAG,
      "on if the true proxy requests should be accepted"},

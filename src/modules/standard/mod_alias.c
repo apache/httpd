@@ -221,7 +221,7 @@ static const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf * dirconf,
     return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 1);
 }
 
-static command_rec alias_cmds[] =
+static const command_rec alias_cmds[] =
 {
     {"Alias", add_alias, NULL, RSRC_CONF, TAKE2,
      "a fakename and a realname"},

@@ -187,7 +187,7 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
     return NULL;
 }
 
-static command_rec anon_auth_cmds[] =
+static const command_rec anon_auth_cmds[] =
 {
     {"Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG, ITERATE,
      "a space-separated list of user IDs"},

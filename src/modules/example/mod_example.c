@@ -1055,7 +1055,7 @@ static int example_header_parser(request_rec *r)
 /* 
  * List of directives specific to our module.
  */
-static command_rec example_cmds[] =
+static const command_rec example_cmds[] =
 {
     {
         "Example",              /* directive name */
@@ -1086,7 +1086,7 @@ static command_rec example_cmds[] =
  * if a content-handler returns anything except DECLINED, no other
  * content-handlers will be called.
  */
-static handler_rec example_handlers[] =
+static const handler_rec example_handlers[] =
 {
     {"example-handler", example_handler},
     {NULL}

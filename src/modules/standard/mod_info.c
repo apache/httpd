@@ -201,9 +201,9 @@ static info_cfg_lines *mod_info_load_config(pool *p, const char *filename,
 }
 
 static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
-                                 command_rec *cmds, char *label)
+                                 const command_rec *cmds, char *label)
 {
-    command_rec *cmd = cmds;
+    const command_rec *cmd = cmds;
     info_cfg_lines *li = cfg, *li_st = NULL, *li_se = NULL;
     info_cfg_lines *block_start = NULL;
     int lab = 0, nest = 0;
@@ -355,8 +355,8 @@ static int display_info(request_rec *r)
     module *modp = NULL;
     char buf[MAX_STRING_LEN], *cfname;
     char *more_info;
-    command_rec *cmd = NULL;
-    handler_rec *hand = NULL;
+    const command_rec *cmd = NULL;
+    const handler_rec *hand = NULL;
     server_rec *serv = r->server;
     int comma = 0;
     info_cfg_lines *mod_info_cfg_httpd = NULL;
@@ -653,14 +653,14 @@ static const char *add_module_info(cmd_parms *cmd, void *dummy, char *name,
     return NULL;
 }
 
-static command_rec info_cmds[] =
+static const command_rec info_cmds[] =
 {
     {"AddModuleInfo", add_module_info, NULL, RSRC_CONF, TAKE2,
      "a module name and additional information on that module"},
     {NULL}
 };
 
-static handler_rec info_handlers[] =
+static const handler_rec info_handlers[] =
 {
     {"server-info", display_info},
     {NULL}

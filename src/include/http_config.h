@@ -211,8 +211,8 @@ typedef struct module_struct {
     void *(*merge_server_config) (pool *p, void *base_conf, void *new_conf);
 #endif
 
-    command_rec *cmds;
-    handler_rec *handlers;
+    const command_rec *cmds;
+    const handler_rec *handlers;
 
     /* Hooks for getting into the middle of server ops...
 

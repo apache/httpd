@@ -878,7 +878,7 @@ static const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
     return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t");
 }
 
-static command_rec config_log_cmds[] =
+static const command_rec config_log_cmds[] =
 {
     {"CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE2,
      "a file name and a custom log format string or format name"},

@@ -98,7 +98,7 @@ static const char *set_speling(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
 }
 
-static command_rec speling_cmds[] =
+static const command_rec speling_cmds[] =
 {
     {"CheckSpelling", set_speling, NULL, RSRC_CONF, FLAG,
      "whether or not to fix miscapitalized/misspelled requests"},

@@ -530,7 +530,7 @@ static const char *set_magicfile(cmd_parms *cmd, char *d, char *arg)
  * configuration file commands - exported to Apache API
  */
 
-static command_rec mime_magic_cmds[] =
+static const command_rec mime_magic_cmds[] =
 {
     {"MimeMagicFile", set_magicfile, NULL, RSRC_CONF, TAKE1,
      "Path to MIME Magic file (in file(1) format)"},

@@ -672,7 +672,7 @@ static void status_init(server_rec *s, pool *p)
     status_flags[SERVER_GRACEFUL] = 'G';
 }
 
-static handler_rec status_handlers[] =
+static const handler_rec status_handlers[] =
 {
     {STATUS_MAGIC_TYPE, status_handler},
     {"server-status", status_handler},

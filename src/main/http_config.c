@@ -432,7 +432,7 @@ static void init_handlers(pool *p)
     module *modp;
     int nhandlers = 0;
     int nwildhandlers = 0;
-    handler_rec *handp;
+    const handler_rec *handp;
     fast_handler_rec *ph, *pw;
     char *starp;
 
@@ -1451,7 +1451,7 @@ void child_exit_modules(pool *p, server_rec *s)
  * a particular directive is allowed to be used.  This procedure prints
  * in English where the given (pc) directive can be used.
  */
-void show_overrides(command_rec *pc, module *pm)
+void show_overrides(const command_rec *pc, module *pm)
 {
     int n = 0;
 
@@ -1515,7 +1515,7 @@ void show_overrides(command_rec *pc, module *pm)
  */
 void show_directives()
 {
-    command_rec *pc;
+    const command_rec *pc;
     int n;
 
     for (n = 0; preloaded_modules[n]; ++n)

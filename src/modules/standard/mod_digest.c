@@ -91,7 +91,7 @@ static const char *set_digest_slot(cmd_parms *cmd, void *offset, char *f, char *
     return set_string_slot(cmd, offset, f);
 }
 
-static command_rec digest_cmds[] =
+static const command_rec digest_cmds[] =
 {
     {"AuthDigestFile", set_digest_slot,
   (void *) XtOffsetOf(digest_config_rec, pwfile), OR_AUTHCFG, TAKE12, NULL},

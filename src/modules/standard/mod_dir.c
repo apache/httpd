@@ -83,7 +83,7 @@ static const char *add_index(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static command_rec dir_cmds[] =
+static const command_rec dir_cmds[] =
 {
     {"DirectoryIndex", add_index, NULL,
      DIR_CMD_PERMS, ITERATE,
@@ -212,7 +212,7 @@ static int handle_dir(request_rec *r)
 }
 
 
-static handler_rec dir_handlers[] =
+static const handler_rec dir_handlers[] =
 {
     {DIR_MAGIC_TYPE, handle_dir},
     {NULL}

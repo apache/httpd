@@ -323,7 +323,7 @@ the values we expected for each piece (resp.).
     return OK;
 }
 
-static handler_rec test_util_uri_handlers[] =
+static const handler_rec test_util_uri_handlers[] =
 {
     {"test-util-uri", test_util_uri},
     {NULL}

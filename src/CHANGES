@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Mark module command_rec and handler_rec structures const so that they
+     end up in the read-only data section (and are friendlier to systems
+     that don't do optimistic memory allocation on fork()). [Dean Gaudet]
+
   *) Add check to the "Port" directive to make sure the specified 
      port is in the appropriate range.  [Ben Hyde]
 

@@ -110,7 +110,7 @@ static int asis_handler(request_rec *r)
     return OK;
 }
 
-static handler_rec asis_handlers[] =
+static const handler_rec asis_handlers[] =
 {
     {ASIS_MAGIC_TYPE, asis_handler},
     {"send-as-is", asis_handler},

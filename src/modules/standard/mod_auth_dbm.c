@@ -113,7 +113,7 @@ static const char *set_dbm_slot(cmd_parms *cmd, void *offset, char *f, char *t)
     return set_file_slot(cmd, offset, f);
 }
 
-static command_rec dbm_auth_cmds[] =
+static const command_rec dbm_auth_cmds[] =
 {
     {"AuthDBMUserFile", set_file_slot,
      (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),

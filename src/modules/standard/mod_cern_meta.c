@@ -211,7 +211,7 @@ static const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf,
 }
 
 
-static command_rec cern_meta_cmds[] =
+static const command_rec cern_meta_cmds[] =
 {
     {"MetaFiles", set_metafiles, NULL, DIR_CMD_PERMS, FLAG, NULL},
     {"MetaDir", set_metadir, NULL, DIR_CMD_PERMS, TAKE1,

@@ -316,7 +316,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     return NULL;
 }
 
-static command_rec cookie_log_cmds[] = {
+static const command_rec cookie_log_cmds[] = {
     {"CookieExpires", set_cookie_exp, NULL, RSRC_CONF, TAKE1,
     "an expiry date code"},
     {"CookieTracking", set_cookie_enable, NULL, OR_FILEINFO, FLAG,

@@ -363,7 +363,7 @@ static const char *set_expiresdefault(cmd_parms *cmd, expires_dir_config * dir_c
                    "'ExpiresDefault ", code, "': ", response, NULL);
 }
 
-static command_rec expires_cmds[] =
+static const command_rec expires_cmds[] =
 {
     {"ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS, FLAG,
      "Limited to 'on' or 'off'"},

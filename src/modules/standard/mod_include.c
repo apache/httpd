@@ -2363,13 +2363,13 @@ static int xbithack_handler(request_rec *r)
 #endif
 }
 
-static command_rec includes_cmds[] =
+static const command_rec includes_cmds[] =
 {
     {"XBitHack", set_xbithack, NULL, OR_OPTIONS, TAKE1, "Off, On, or Full"},
     {NULL}
 };
 
-static handler_rec includes_handlers[] =
+static const handler_rec includes_handlers[] =
 {
     {INCLUDES_MAGIC_TYPE, send_shtml_file},
     {INCLUDES_MAGIC_TYPE3, send_shtml_file},

@@ -164,7 +164,7 @@ static const char *set_types_config(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static command_rec mime_cmds[] =
+static const command_rec mime_cmds[] =
 {
     {"AddType", add_type, NULL, OR_FILEINFO, ITERATE2,
      "a mime type followed by one or more file extensions"},
