@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
 
+  *) Fix apxs to insert LoadModule/AddModule directives only outside of
+     sections. PR 8712, 9012.  [André Malo]
+
   *) Fix suexec compile error under SUNOS4, where strerror() doesn't
      exist. PR 5913, 9977.
      [Jonathan W Miner <Jonathan.W.Miner@lmco.com>]

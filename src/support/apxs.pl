@@ -543,9 +543,69 @@ if ($opt_i or $opt_e) {
         foreach $lmd (@lmd) {
             my $what = $opt_A ? "preparing" : "activating";
             if ($content !~ m|\n#?\s*$lmd|) {
-                 $content =~ s|^(.*\n#?\s*LoadModule\s+[^\n]+\n)|$1$c$lmd\n|sg;
+                # check for open <containers>, so that the new LoadModule
+                # directive always appears *outside* of an <container>.
+
+                my $before = ($content =~ m|^(.*\n)#?\s*LoadModule\s+[^\n]+\n|s)[0];
+
+                # the '()=' trick forces list context and the scalar
+                # assignment counts the number of list members (aka number
+                # of matches) then
+                my $cntopen = () = ($before =~ m|^\s*<[^/].*$|mg);
+                my $cntclose = () = ($before =~ m|^\s*</.*$|mg);
+
+                if ($cntopen == $cntclose) {
+                    # fine. Last LoadModule is contextless.
+                    $content =~ s|^(.*\n#?\s*LoadModule\s+[^\n]+\n)|$1$c$lmd\n|s;
+                }
+                elsif ($cntopen < $cntclose) {
+                    print STDERR 'Configuration file is not valid. There are '
+                                 . "sections closed before opened.\n";
+                    exit(1);
+                }
+                else {
+                    # put our cmd after the section containing the last
+                    # LoadModule.
+                    my $found =
+                    $content =~ s!\A (               # string and capture start
+                                  (?:(?:
+                                    ^\s*             # start of conf line with a
+                                    (?:[^<]|<[^/])   # directive which does not
+                                                     # start with '</'
+
+                                    .*(?:$)\n        # rest of the line.
+                                                     # the '$' is in parentheses
+                                                     # to avoid misinterpreting
+                                                     # the string "$\" as
+                                                     # perl variable.
+
+                                    )*               # catch as much as possible
+                                                     # of such lines. (including
+                                                     # zero)
+
+                                    ^\s*</.*(?:$)\n? # after the above, we
+                                                     # expect a config line with
+                                                     # a closing container (</)
+
+                                  ) {$cntopen}       # the whole pattern (bunch
+                                                     # of lines that end up with
+                                                     # a closing directive) must
+                                                     # be repeated $cntopen
+                                                     # times. That's it.
+                                                     # Simple, eh? ;-)
+
+                                  )                  # capture end
+                                 !$1$c$lmd\n!mx;
+
+                    unless ($found) {
+                        print STDERR 'Configuration file is not valid. There '
+                                     . "are sections opened and not closed.\n";
+                        exit(1);
+                    }
+                }
             } else {
-                 $content =~ s|^(.*\n)#?\s*$lmd[^\n]*\n|$1$c$lmd\n|sg;
+                # replace already existing LoadModule line
+                $content =~ s|^(.*\n)#?\s*$lmd[^\n]*\n|$1$c$lmd\n|s;
             }
             $lmd =~ m|LoadModule\s+(.+?)_module.*|;
             print STDERR "[$what module `$1' in $cfgbase.conf]\n";
@@ -553,9 +613,34 @@ if ($opt_i or $opt_e) {
         my $amd;
         foreach $amd (@amd) {
             if ($content !~ m|\n#?\s*$amd|) {
-                 $content =~ s|^(.*\n#?\s*AddModule\s+[^\n]+\n)|$1$c$amd\n|sg;
+                # check for open <containers> etc. see above for explanations.
+
+                my $before = ($content =~ m|^(.*\n)#?\s*AddModule\s+[^\n]+\n|s)[0];
+                my $cntopen = () = ($before =~ m|^\s*<[^/].*$|mg);
+                my $cntclose = () = ($before =~ m|^\s*</.*$|mg);
+
+                if ($cntopen == $cntclose) {
+                    $content =~ s|^(.*\n#?\s*AddModule\s+[^\n]+\n)|$1$c$amd\n|s;
+                }
+                elsif ($cntopen < $cntclose) {
+                    # cannot happen here, but who knows ...
+                    print STDERR 'Configuration file is not valid. There are '
+                                 . "sections closed before opened.\n";
+                    exit(1);
+                }
+                else {
+                    unless ($content =~ s!\A((?:(?:^\s*(?:[^<]|<[^/]).*(?:$)\n)*
+                                          ^\s*</.*(?:$)\n?){$cntopen})
+                                         !$1$c$amd\n!mx) {
+                        # cannot happen here, anyway.
+                        print STDERR 'Configuration file is not valid. There '
+                                     . "are sections opened and not closed.\n";
+                        exit(1);
+                    }
+                }
             } else {
-                 $content =~ s|^(.*\n)#?\s*$amd[^\n]*\n|$1$c$amd\n|sg;
+                # replace already existing AddModule line
+                $content =~ s|^(.*\n)#?\s*$amd[^\n]*\n|$1$c$amd\n|s;
             }
         }
         if (@lmd or @amd) {
