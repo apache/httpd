@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.45 1996/10/22 00:03:06 jim Exp $
+# $Id: Configuration.tmpl,v 1.46 1996/10/22 04:21:43 akosut Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -53,7 +53,7 @@ OPTIM=-O2
 # functions. The format is: Rule RULE=value
 #
 # At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
-# STATUS, BADMMAP and IRIXNIS.
+# STATUS and IRIXNIS.
 #
 # For all Rules, if set to "yes", then Configure knows we want that
 # capability and does what is required to add it in. If set to "default"
@@ -94,14 +94,8 @@ Rule IRIXNIS=no
 #  not use this one by setting WANTHSREGEX to 'no' or commenting
 #  out the Rule. The "default" action is "no" unless overruled
 #  by OS specifics
-#
-# BADMMAP:
-#  If you find that your OS can't cope with mmap (compiles OKAY but refuses
-#  to run and moans "httpd: Could not mmap memory" .. or similar) set
-#  this to 'yes'.
 
 Rule WANTHSREGEX=default
-Rule BADMMAP=default
 
 ################################################################
 # Module configuration

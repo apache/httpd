@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: conf.h,v 1.40 1996/10/09 21:33:12 chuck Exp $ */
+/* $Id: conf.h,v 1.41 1996/10/22 04:21:44 akosut Exp $ */
 
 /*
  * conf.h: system-dependant #defines and includes...
@@ -110,7 +110,7 @@ int gethostname(char *name, int namelen);
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 #endif
 #define JMP_BUF sigjmp_buf
-#define HAVE_MMAP
+#define HAVE_SHMGET
 typedef int rlim_t;
 
 #elif defined(AIX)

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.28 1996/10/22 00:03:06 jim Exp $
+# $Id: Configure,v 1.29 1996/10/22 04:21:44 akosut Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -112,7 +112,6 @@ awk >>Makefile <$tmpfile '\
 RULE_WANTHSREGEX=`./CutRule WANTHSREGEX $file`
 RULE_STATUS=`./CutRule STATUS $file`
 RULE_SOCKS4=`./CutRule SOCKS4 $file`
-RULE_BADMMAP=`./CutRule BADMMAP $file`
 RULE_IRIXNIS=`./CutRule IRIXNIS $file`
 
 #
@@ -123,7 +122,7 @@ RULE_IRIXNIS=`./CutRule IRIXNIS $file`
 # options) as required. Setting CC and OPTIM here has no effect
 # if they were set in Configure.
 #
-# Also, we set DEF_WANTHSREGEX and DEF_BADMMAP to the appropriate
+# Also, we set DEF_WANTHSREGEX and to the appropriate
 # value for each platform.
 #
 # As more PLATFORMs are added to Configuration.tmpl, be sure to
@@ -143,7 +142,6 @@ case "$PLAT" in
 	LIBS="$LIBS -lposix -lbsd"
 	LFLAGS="$LFLAGS -s"
 	DEF_WANTHSREGEX=no
-	DEF_BADMMAP=no
 	;;
     *-ibm-aix*)
 	OS='IBM AIX'
@@ -172,7 +170,6 @@ case "$PLAT" in
 	;;
     *-sgi-irix*)
 	DEF_WANTHSREGEX=yes
-	DEF_BADMMAP=no
         DBM_LIB=""
 	if [ "$RULE_IRIXNIS" = "yes" ]; then
 	    OS='SGI IRIX w/NIS'
@@ -234,7 +231,6 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
 	OSBPRINTF="-K noinline"
 	DEF_WANTHSREGEX=no
-	DEF_BADMMAP=no
 	;;
     *-solaris2*)
 	OS='Solaris 2'
@@ -276,7 +272,7 @@ case "$PLAT" in
 esac
 
 #
-# See if we need to override WANTHSREGEX or BADMMAP
+# See if we need to override WANTHSREGEX
 #
 if [ "$RULE_WANTHSREGEX" = "default" ]; then
 	if [ "x$DEF_WANTHSREGEX" = "x" ]; then
@@ -286,20 +282,11 @@ if [ "$RULE_WANTHSREGEX" = "default" ]; then
 	fi
 fi
 
-if [ "$RULE_BADMMAP" = "default" ]; then
-	if [ "x$DEF_BADMMAP" = "x" ]; then
-		RULE_BADMMAP=no
-	else
-		RULE_BADMMAP=$DEF_BADMMAP
-	fi
-fi
-
 # Show the final values of the rules
 
 echo "# Platform: $OS" >> Makefile
 echo "# Final Rules:" >> Makefile
 echo "#  Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile
-echo "#  Rule BADMMAP=$RULE_BADMMAP" >> Makefile
 echo "###############" >> Makefile
 
 #
@@ -359,13 +346,6 @@ fi
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
     INCLUDES="$INCLUDES -Iregex"
-fi
-
-#
-# Broken mmap?
-#
-if [ "$RULE_BADMMAP" = "yes" ]; then
-    CFLAGS="$CFLAGS -DNO_MMAP"
 fi
 
 #
