@@ -48,6 +48,7 @@ ALL : "$(OUTDIR)\ApacheCore.dll"
 
 CLEAN :
 	-@erase "$(INTDIR)\alloc.obj"
+	-@erase "$(INTDIR)\ap_snprintf.obj"
 	-@erase "$(INTDIR)\buff.obj"
 	-@erase "$(INTDIR)\buildmark.obj"
 	-@erase "$(INTDIR)\explain.obj"
@@ -89,7 +90,6 @@ CLEAN :
 	-@erase "$(INTDIR)\util_date.obj"
 	-@erase "$(INTDIR)\util_md5.obj"
 	-@erase "$(INTDIR)\util_script.obj"
-	-@erase "$(INTDIR)\util_snprintf.obj"
 	-@erase "$(INTDIR)\util_win32.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheCore.dll"
@@ -153,6 +153,7 @@ DEF_FILE= \
 	".\ApacheCore.def"
 LINK32_OBJS= \
 	"$(INTDIR)\alloc.obj" \
+	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\buff.obj" \
 	"$(INTDIR)\buildmark.obj" \
 	"$(INTDIR)\explain.obj" \
@@ -194,7 +195,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\util_date.obj" \
 	"$(INTDIR)\util_md5.obj" \
 	"$(INTDIR)\util_script.obj" \
-	"$(INTDIR)\util_snprintf.obj" \
 	"$(INTDIR)\util_win32.obj"
 
 "$(OUTDIR)\ApacheCore.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -223,6 +223,8 @@ ALL : "$(OUTDIR)\ApacheCore.dll" "$(OUTDIR)\ApacheCore.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\alloc.obj"
 	-@erase "$(INTDIR)\alloc.sbr"
+	-@erase "$(INTDIR)\ap_snprintf.obj"
+	-@erase "$(INTDIR)\ap_snprintf.sbr"
 	-@erase "$(INTDIR)\buff.obj"
 	-@erase "$(INTDIR)\buff.sbr"
 	-@erase "$(INTDIR)\buildmark.obj"
@@ -305,8 +307,6 @@ CLEAN :
 	-@erase "$(INTDIR)\util_md5.sbr"
 	-@erase "$(INTDIR)\util_script.obj"
 	-@erase "$(INTDIR)\util_script.sbr"
-	-@erase "$(INTDIR)\util_snprintf.obj"
-	-@erase "$(INTDIR)\util_snprintf.sbr"
 	-@erase "$(INTDIR)\util_win32.obj"
 	-@erase "$(INTDIR)\util_win32.sbr"
 	-@erase "$(INTDIR)\vc50.idb"
@@ -365,6 +365,7 @@ BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheCore.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\alloc.sbr" \
+	"$(INTDIR)\ap_snprintf.sbr" \
 	"$(INTDIR)\buff.sbr" \
 	"$(INTDIR)\buildmark.sbr" \
 	"$(INTDIR)\explain.sbr" \
@@ -406,7 +407,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\util_date.sbr" \
 	"$(INTDIR)\util_md5.sbr" \
 	"$(INTDIR)\util_script.sbr" \
-	"$(INTDIR)\util_snprintf.sbr" \
 	"$(INTDIR)\util_win32.sbr"
 
 "$(OUTDIR)\ApacheCore.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
@@ -424,6 +424,7 @@ DEF_FILE= \
 	".\ApacheCore.def"
 LINK32_OBJS= \
 	"$(INTDIR)\alloc.obj" \
+	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\buff.obj" \
 	"$(INTDIR)\buildmark.obj" \
 	"$(INTDIR)\explain.obj" \
@@ -465,7 +466,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\util_date.obj" \
 	"$(INTDIR)\util_md5.obj" \
 	"$(INTDIR)\util_script.obj" \
-	"$(INTDIR)\util_snprintf.obj" \
 	"$(INTDIR)\util_win32.obj"
 
 "$(OUTDIR)\ApacheCore.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -514,6 +514,34 @@ DEP_CPP_ALLOC=\
 
 "$(INTDIR)\alloc.obj"	"$(INTDIR)\alloc.sbr" : $(SOURCE) $(DEP_CPP_ALLOC)\
  "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=.\ap\ap_snprintf.c
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+DEP_CPP_AP_SN=\
+	".\main\conf.h"\
+	".\os\win32\os.h"\
+	".\regex\regex.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_AP_SN=\
+	".\main\os.h"\
+	
+
+"$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+
+"$(INTDIR)\ap_snprintf.obj"	"$(INTDIR)\ap_snprintf.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2250,35 +2278,6 @@ DEP_CPP_UTIL_S=\
 
 "$(INTDIR)\util_script.obj"	"$(INTDIR)\util_script.sbr" : $(SOURCE)\
  $(DEP_CPP_UTIL_S) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-SOURCE=.\main\util_snprintf.c
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-DEP_CPP_UTIL_SN=\
-	".\main\conf.h"\
-	".\os\win32\os.h"\
-	".\regex\regex.h"\
-	
-
-"$(INTDIR)\util_snprintf.obj" : $(SOURCE) $(DEP_CPP_UTIL_SN) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
-
-DEP_CPP_UTIL_SN=\
-	".\main\conf.h"\
-	".\os\win32\os.h"\
-	".\regex\regex.h"\
-	
-
-"$(INTDIR)\util_snprintf.obj"	"$(INTDIR)\util_snprintf.sbr" : $(SOURCE)\
- $(DEP_CPP_UTIL_SN) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

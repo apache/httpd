@@ -97,6 +97,10 @@ SOURCE=.\main\alloc.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ap\ap_snprintf.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ApacheCore.def
 # End Source File
 # Begin Source File
@@ -262,10 +266,6 @@ SOURCE=.\main\util_md5.c
 # Begin Source File
 
 SOURCE=.\main\util_script.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\main\util_snprintf.c
 # End Source File
 # Begin Source File
 
