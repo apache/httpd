@@ -458,14 +458,15 @@ char *getword_nulls(pool* atrans, char **line, char stop) {
  * all honored
  */
 
-char *substring_conf (pool *p, char *start, int len)
+char *substring_conf (pool *p, char *start, int len, char quote)
 {
     char *result = palloc (p, len + 2);
     char *resp = result;
     int i;
 
     for (i = 0; i < len; ++i) {
-        if (start[i] == '\\') 
+        if (start[i] == '\\' && (start[i+1] == '/'
+				 || (quote && start[i+1] == quote)))
 	    *resp++ = start[++i];
 	else
 	    *resp++ = start[i];
@@ -490,19 +491,19 @@ char *getword_conf(pool* p, char **line) {
     if ((quote = *str) == '"' || quote == '\'') {
         strend = str + 1;
 	while (*strend && *strend != quote) {
-	    if (*strend == '\\' && strend[1]) strend += 2;
+	    if (*strend == '\\' && strend[1] && strend[1] == quote)
+		strend += 2;
 	    else ++strend;
 	}
-	res = substring_conf (p, str + 1, strend - str - 1);
+	res = substring_conf (p, str + 1, strend - str - 1, quote);
 
 	if (*strend == quote) ++strend;
     } else {
         strend = str;
 	while (*strend && !isspace (*strend))
-	    if (*strend == '\\' && strend[1]) strend += 2;
-	    else ++strend;
+	    ++strend;
 
-	res = substring_conf (p, str, strend - str);
+	res = substring_conf (p, str, strend - str, 0);
     }
 
     while (*strend && isspace(*strend)) ++ strend;
