@@ -1,0 +1,55 @@
+:
+eval 'exec perl -S $0 ${1+"$@"}'
+    if $running_under_some_shell;
+##
+##  rename.cf.update
+##
+
+#   configuration
+$id       = "../src/ID";
+$renamecf = "./rename.cf";
+
+sub is_api_func {
+    my ($func) = @_;
+
+    $rc = join('', `lid -f $id --key=token --result=grep $func`);
+    if (   $rc =~ m|\.c:\d+:\s*API_EXPORT(_NONSTD)?\(|s
+        or $rc =~ m|\.c:\d+:\s*API_VAR_EXPORT\s+|s) {
+        return 1;
+    }
+    return 0;
+}
+
+open(OLD, "<$renamecf") || die;
+open(NEW, ">$renamecf.new") || die;
+while ($l = <OLD>) {
+    $l =~ s|\n$||;
+    if ($l =~ m|^\s*#.*| or $l =~ m|^\s*$|) {
+        print NEW "$l\n";
+        next;
+    }
+    if (($s1, $old, $s2, $new, $s3) = ($l =~ m|^(\s*)(\S+)(\s+)(\S+)(\s*)$|)) {
+        if (&is_api_func($old)) {
+            if ($new !~ m|^API_|) {
+                print "<<$s1$old$s2$new$s3\n";
+                $new =~ s|^[A-Z]+_|API_|;
+                print ">>$s1$old$s2$new$s3\n";
+                print NEW "$s1$old$s2$new$s3\n";
+                next;
+            }
+        }
+        else {
+            if ($new !~ m|^APX_|) {
+                print "<<$s1$old$s2$new$s3\n";
+                $new =~ s|^[A-Z]+_|APX_|;
+                print ">>$s1$old$s2$new$s3\n";
+                print NEW "$s1$old$s2$new$s3\n";
+                next;
+            }
+        }
+    }
+    print NEW "$l\n";
+}
+close(OLD);
+close(NEW);
+
