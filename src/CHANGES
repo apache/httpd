@@ -1,5 +1,7 @@
 Changes with Apache 1.3b7
 
+  *) Improve RFC1413 support. [Bob Beck <beck@bofh.ucs.ualberta.ca>]
+
   *) Fix support script `dbmmanage': It was unable to handle some sort
      of passwords, especially passwords with "0" chars.
      [Ralf S. Engelschall] PR#2242
