@@ -1735,12 +1735,12 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
 
     if ((parent_pid != my_pid) || one_process) {
         /* Running as Child process or in one_process (debug) mode */
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_SUCCESS, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: Child process is running", my_pid);
         AMCSocketInitialize();
         child_main();
         AMCSocketCleanup();
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_SUCCESS, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: Child process is exiting", my_pid);        
 
         return 1;
