@@ -181,12 +181,6 @@ AC_DEFUN(APACHE_ONCE,[
   fi
 ])
 
-sinclude(srclib/apr/build/apr_common.m4)
-sinclude(srclib/apr/build/apr_network.m4)
-sinclude(srclib/apr/build/apr_threads.m4)
-sinclude(srclib/apr/build/apr_hints.m4)
-sinclude(hints.m4)
-
 dnl APACHE_MODPATH_INIT(modpath)
 AC_DEFUN(APACHE_MODPATH_INIT,[
   current_dir=$1

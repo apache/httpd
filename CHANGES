@@ -1,4 +1,9 @@
 Changes with Apache 2.0.15-dev
+
+  *) Untangled the buildconf script and eliminated the need for build's
+     aclocal.m4, generated_lists, build.mk, build2.mk, and a host of other
+     libtool muck that is now under srclib/apr/build.  [Roy Fielding]
+
   *) Win32: Don't accept more connections than we have worker threads
      to handle.
      [Bill Stoddard]

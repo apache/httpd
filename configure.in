@@ -9,7 +9,18 @@ AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
 AC_CONFIG_AUX_DIR(srclib/apr/build)
- 
+
+dnl #
+dnl # Include our own M4 macros along with those for APR and libtool
+dnl #
+sinclude(srclib/apr/build/apr_common.m4)
+sinclude(srclib/apr/build/apr_network.m4)
+sinclude(srclib/apr/build/apr_threads.m4)
+sinclude(srclib/apr/build/apr_hints.m4)
+sinclude(srclib/apr/build/libtool.m4)
+sinclude(hints.m4)
+sinclude(acinclude.m4)
+
 dnl Generate ./config.nice for reproducing runs of configure
 dnl
 APACHE_CONFIG_NICE(config.nice)
@@ -20,9 +31,6 @@ test "$prefix" = "NONE" && prefix='/usr/local'
 dnl Absolute source/build directory
 abs_srcdir=`(cd $srcdir && pwd)`
 abs_builddir=`pwd`
-aprbuild=$abs_srcdir/srclib/apr/build
-
-MKDIR=$abs_srcdir/srclib/apr/build/mkdir.sh
 
 dnl If the source dir is not equal to the build dir, 
 dnl then we are running in VPATH mode.
@@ -154,7 +162,7 @@ AM_PROG_LIBTOOL
 APACHE_LIBTOOL_SILENT
 
 if test "$apache_need_shared" = "yes"; then
-  $SHELL $aprbuild/ltconfig --output=shlibtool --disable-static --srcdir=$aprbuild --cache-file=./config.cache $aprbuild/ltmain.sh
+  $SHELL $ac_aux_dir/ltconfig --output=shlibtool --disable-static --srcdir=$ac_aux_dir --cache-file=./config.cache $ac_aux_dir/ltmain.sh
   case $PLATFORM in
     *os390)
       CFLAGS="$CFLAGS -Wc,DLL,EXPORTALL"
@@ -267,7 +275,7 @@ AC_DEFINE_UNQUOTED(SERVER_CONFIG_FILE, "conf/$progname.conf",
 AC_DEFINE_UNQUOTED(APACHE_MPM_DIR, "$MPM_DIR",
 	[Location of the source for the current MPM])
 
-perlbin=`$srcdir/build/PrintPath perl`
+perlbin=`$ac_aux_dir/PrintPath perl`
 AC_SUBST(perlbin)
 
 dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
