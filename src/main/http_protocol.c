@@ -958,7 +958,7 @@ static void get_mime_headers(request_rec *r)
             r->status = HTTP_BAD_REQUEST;
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Size of a request header field exceeds server limit.<P>\n"
-                "<PRE>\n", field, "</PRE>\n", NULL));
+                "<PRE>\n", ap_escape_html(r->pool, field), "</PRE>\n", NULL));
             return;
         }
         copy = ap_palloc(r->pool, len + 1);
@@ -968,7 +968,7 @@ static void get_mime_headers(request_rec *r)
             r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Request header field is missing colon separator.<P>\n"
-                "<PRE>\n", copy, "</PRE>\n", NULL));
+                "<PRE>\n", ap_escape_html(r->pool, copy), "</PRE>\n", NULL));
             return;
         }
 
