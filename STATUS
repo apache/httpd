@@ -74,11 +74,11 @@ Available Patches:
 
     * Dean's [PATCH] 1.3: security updates for mod_imap and mod_include
 	<Pine.LNX.3.95dg3.980106143648.1054X-100000@twinlark.arctic.org>
-	Status: Dean +1, Jim +1
+	Status: Dean +1, Jim +1, Martin +1
 
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
-	Status: Dean +1, Jim +1
+	Status: Dean +1, Jim +1, Martin +1
 
     * Doug's httpd -MApache::httpd_conf
 	<34AFFF3D.3E932275@telebusiness.co.nz>
@@ -97,7 +97,7 @@ Available Patches:
 
     * Ken's [PATCH] for copyright year update
 	<34AA4B95.36726117@Golux.Com>
-	Status: Ken +1, Jim +1
+	Status: Ken +1, Jim +1, Martin +1
 	Gregory Lundberg says it's legally invalid
 	Alexei disagrees, citing past practice and investigation
 
