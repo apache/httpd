@@ -1,5 +1,10 @@
 Changes with Apache 2.0.51
 
+  *) Small fix to allow reverse proxying to an ftp server. Previously
+     an attempt to do this would try and connect to 0.0.0.0, regardless
+     of the server specified. PR 24922
+     [Pascal Terjan <pterjan@linuxfr.org>]
+
   *) Add the NOTICE file to the rpm spec file in compliance with the
      Apache v2.0 license. [Graham Leggett]
  
