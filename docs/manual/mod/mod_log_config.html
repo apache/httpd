@@ -202,9 +202,9 @@ requests which did <STRONG>not</STRONG> return some sort of normal status.
 <P>
 
 Note that the common log format is defined by the string <CODE>"%h %l
-%u %t \"%r\" %s %b"</CODE>, which can be used as the basis for
+%u %t \"%r\" %>s %b"</CODE>, which can be used as the basis for
 extending for format if desired (<EM>e.g.</EM>, to add extra fields at the end).
-NCSA's extended/combined log format would be <CODE>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\""</CODE>.
+NCSA's extended/combined log format would be <CODE>"%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""</CODE>.
 
 <P>
 
@@ -385,7 +385,7 @@ can use:
  HREF="directive-dict.html#Default"
  REL="Help"
 ><STRONG>Default:</STRONG></A> <CODE>LogFormat &quot;%h %l %u %t \&quot;%r\&quot;
-%s %b&quot;</CODE><BR>
+%>s %b&quot;</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
