@@ -55,19 +55,12 @@ APACHE_CHECK_STANDARD_MODULE(setenvif, basing ENV vars on headers, , yes)
 APACHE_CHECK_STANDARD_MODULE(echo, ECHO server, , yes)
 
 
-ac_cv_enable_dso="no"
+LIBS="$LIBS -ldl"
+LTFLAGS="$LTFLAGS -export-dynamic"
 if test "$sharedobjs" = "yes"; then
-    LIBS="$LIBS -ldl"
-    LTFLAGS="$LTFLAGS -export-dynamic"
-    ac_cv_enable_dso="yes"
     APACHE_CHECK_STANDARD_MODULE(so, DSO capability, , yes)
 else
     APACHE_CHECK_STANDARD_MODULE(so, DSO capability, , no)
-    if test "$sharedobjs" = "yes"; then
-        LIBS="$LIBS -ldl"
-        LTFLAGS="$LTFLAGS -export-dynamic"
-        ac_cv_enable_dso="yes"
-    fi
 fi
 AC_CACHE_SAVE
 
