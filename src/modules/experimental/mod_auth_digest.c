@@ -132,13 +132,8 @@
 #include "ap_sha1.h"
 
 #ifdef WIN32
-/*
- * Crypt APIs are only available in WinNT and Win95 with OSR 2 so 
- * wincrypt.h is protected by this macro definition.
- */
-#define _WIN32_WINNT 0x0400
+/* Crypt APIs are available on Win95 with OSR 2 */
 #include <wincrypt.h>
-#undef _WIN32_WINNT
 #endif
 
 #ifdef HAVE_SHMEM_MM
