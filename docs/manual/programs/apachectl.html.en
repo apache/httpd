@@ -34,7 +34,7 @@
      <p>If your Apache installation uses non-standard paths, you will
      need to edit the <code>apachectl</code> script to set the
      appropriate paths to the <code>httpd</code> binary.  You can also
-     specify any necessary <code>httpd</code> command line arugments.
+     specify any necessary <code>httpd</code> command line arguments.
      See the comments in the script for details.</p>
 
      <p>The <code>apachectl</code> script returns a 0 exit value on
@@ -57,7 +57,7 @@ binary.</p>
 <p>When acting in SysV init mode, <code>apachectl</code> takes simple,
 one-word commands, defined below.</p>
 
-<p><code><strong>apachectl </strong> <var>command</var></code></p>
+<p><code><strong>apachectl</strong> <var>command</var></code></p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -131,7 +131,7 @@ equivalent to <code>apachectl -t</code>.</dd>
 <dt><code>startssl</code></dt>
 
 <dd>This is equivalent to <code>apachectl -k start -DSSL</code>.  We
-recommend that you use that command explictly, or you adjust your
+recommend that you use that command explicitly, or you adjust your
 <code>httpd.conf</code> to remove the <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> section so that SSL will always be
 available.</dd>
 
