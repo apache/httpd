@@ -1372,6 +1372,11 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
 #else
     void *score = NULL;
 #endif
+
+    if (worker->s && worker->s->status & PROXY_WORKER_INITIALIZED) {
+        /* The worker share is already initialized */
+        return;
+    }
 #if PROXY_HAS_SCOREBOARD
         /* Get scoreboard slot */
     if (ap_scoreboard_image) {
@@ -1414,7 +1419,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
 
 #if APR_HAS_THREADS
     int mpm_threads;
+#endif
 
+    if (worker->s->status & PROXY_WORKER_INITIALIZED) {
+        /* The worker is already initialized */
+        return APR_SUCCESS;
+    }
+
+#if APR_HAS_THREADS
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
     if (mpm_threads > 1) {
         /* Set hard max to no more then mpm_threads */
@@ -1442,8 +1454,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                   apr_pool_cleanup_null);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "proxy: initialized worker %d for (%s) min=%d max=%d smax=%d",
-             worker->id, worker->hostname, worker->min, worker->hmax, worker->smax);
+            "proxy: initialized worker %d in child %d for (%s) min=%d max=%d smax=%d",
+             worker->id, getpid(), worker->hostname, worker->min,
+             worker->hmax, worker->smax);
 
 #if (APR_MAJOR_VERSION > 0)
         /* Set the acquire timeout */
@@ -1457,8 +1470,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         
         rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "proxy: initialized single connection worker %d for (%s)",
-             worker->id, worker->hostname);
+             "proxy: initialized single connection worker %d in child %d for (%s)",
+             worker->id, getpid(), worker->hostname);
     }
     if (rv == APR_SUCCESS)
         worker->s->status |= PROXY_WORKER_INITIALIZED;
