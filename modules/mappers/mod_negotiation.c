@@ -133,6 +133,7 @@ static int do_cache_negotiated_docs(server_rec *s)
 
 static const command_rec negotiation_cmds[] =
 {
+    /* TODOC: CacheNegotiatedDocs now takes a FLAG argument */
     {"CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, FLAG,
      "Either 'on' or 'off' (default)"},
     {"LanguagePriority", set_language_priority, NULL, OR_FILEINFO, ITERATE,
