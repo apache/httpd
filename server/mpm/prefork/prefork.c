@@ -89,6 +89,7 @@
 
 #include "ap_config.h"
 #include "apr_portable.h"
+#include "apr_thread_proc.h"
 #include "httpd.h"
 #include "mpm_default.h"
 #include "mpm_status.h"
@@ -1397,13 +1398,6 @@ int ap_graceful_stop_signalled(void)
 
 static void child_main(int child_num_arg)
 {
-/* XXX replace int with NET_SIZE_T, this is defined in ap_config.h which
-   has macros we can't make visible to this file, but it is the original 
-   type for clen.
-*/
-    int clen;
-    struct sockaddr sa_server;
-    struct sockaddr sa_client;
     ap_listen_rec *lr;
     ap_listen_rec *last_lr;
     ap_listen_rec *first_lr;
@@ -1542,7 +1536,6 @@ static void child_main(int child_num_arg)
 		    /* we didn't get a socket, and we were told to die */
 		    clean_child_exit(0);
 		}
-		clen = sizeof(sa_client);
 		stat = ap_accept(&csd, sd, ptrans);
 		if (stat == APR_SUCCESS || stat != APR_EINTR)
 		    break;
@@ -1671,13 +1664,6 @@ static void child_main(int child_num_arg)
 	 */
 
         ap_get_os_sock(&sockdes, csd);
-
-	clen = sizeof(sa_server);
-	if (getsockname(sockdes, &sa_server, &clen) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
-	    ap_close_socket(csd);
-	    continue;
-	}
 
 	sock_disable_nagle(sockdes);
 
@@ -2136,9 +2122,12 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 		    * scoreboard.  Somehow we don't know about this
 		    * child.
 		    */
+                ap_os_proc_t os_pid;
+
+                ap_get_os_proc(&os_pid, pid);
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 
                             0, server_conf,
-			    "long lost child came home! (pid %d)", pid);
+			    "long lost child came home! (pid %d)", os_pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
 		* only do it when there's a timeout.  Remember only a
