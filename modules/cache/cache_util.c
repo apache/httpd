@@ -126,7 +126,6 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
 {
     apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
     apr_int64_t minfresh;
-    int age_in_errhdr = 0;
     const char *cc_cresp, *cc_req;
     const char *agestr = NULL;
     const char *expstr = NULL;
