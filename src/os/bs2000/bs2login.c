@@ -67,9 +67,6 @@ static const char *bs2000_account = NULL;
 /* It stores the account name for later use */
 const char *os_set_account(pool *p, const char *account)
 {
-    if (bs2000_account != NULL && strcasecmp(bs2000_account, account) != 0)
-        return "BS2000Account: can be defined only once.";
-
     bs2000_account = ap_pstrdup(p, account);
     return NULL;
 }
