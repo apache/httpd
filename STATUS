@@ -98,7 +98,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        existing brigade instead of calling brigade_split which creates a 
        new brigade. PR 33382. r154200
        Patch for 2.0: http://www.apache.org/~pquerna/c-i-f-leak.patch
-       +1: pquerna
+       +1: pquerna, trawick
 
     *) dummy_connection tweak: directly use the address of the first
        listener rather than extracting through getnameinfo(), and log
@@ -117,7 +117,7 @@ PATCHES TO BACKPORT FROM TRUNK:
 
     *) Add a build script to create a solaris package.
        svn rev 124104
-       +1: minfrin
+       +1: minfrin, trawick
 
     *) Get some control chars out of ap_log_error() invocations.
        Patch from Eric Covener with tweak by trawick:
@@ -128,7 +128,7 @@ PATCHES TO BACKPORT FROM TRUNK:
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
        svn rev 126565
-       +1: bnicholes
+       +1: bnicholes, trawick (no need for APLOG_NOERRNO in Apache >=2)
 
     *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
        using the proper accessor function; matters only in some
@@ -136,7 +136,7 @@ PATCHES TO BACKPORT FROM TRUNK:
        reset during reloads but is fatal in such cases.
        http://svn.apache.org/viewcvs?view=rev&rev=111241
        PR: 32529
-       +1: jorton
+       +1: jorton, trawick
 
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
@@ -236,7 +236,7 @@ PATCHES TO BACKPORT FROM TRUNK:
     * support/check_forensic: Fix tempfile usage
       svn rev 125495, 126224
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
-      +1: thommay, jerenkrantz
+      +1: thommay, jerenkrantz, trawick
       trawick: "which" isn't portable; I've suggested a work-around on dev@
       jorton said: NetBSD's which isn't sufficient either.
       jerenkrantz: Since it's not in the critical path (and depends on
