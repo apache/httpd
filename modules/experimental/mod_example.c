@@ -23,6 +23,15 @@
  * In the interest of brevity, all functions and structures internal to
  * this module, but which may have counterparts in *real* modules, are
  * prefixed with 'x_' instead of 'example_'.
+ *
+ * IMPORTANT NOTE
+ * ==============
+ *
+ * Some of the code in this module has problems.
+ * Before using it to base your work on, see
+ *
+ * http://issues.apache.org/bugzilla/show_bug.cgi?id=29709
+ * http://issues.apache.org/bugzilla/show_bug.cgi?id=32051
  */
 
 #include "httpd.h"
