@@ -1,4 +1,9 @@
 Changes with Apache 1.3b3
+  *) Make single-exe Windows install. [Ben Laurie and Eric Esselink]
+
+  *) Make CGI work under Win95. [Ben Laurie and Paul Sutton]
+
+  *) Make index.html and friends work under Win95. [Ben Laurie]
 
   *) PORT: Solaris 2.4 needs Spencer regex, the system regex is broken.
 	[John Line <jml4@cam.ac.uk>] PR#1321
