@@ -264,18 +264,15 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 
     replace_stderr = 1;
     if (s_main->error_log) {
+        /* replace stderr with this new log */
 #ifdef WIN32
+        /* ToDo: Create ap_fflush() */
         HANDLE hFile;
         ap_get_os_file(&hFile, s_main->error_log);
         FlushFileBuffers(hFile);
-        if (!SetStdHandle(STD_ERROR_HANDLE, hFile)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), s_main,
-                         "unable to replace stderr with error_log");
-        }
-        replace_stderr = 0;
 #else
-        /* replace stderr with this new log */
-        fflush(stderr); /* ToDo: replace this with an APR call... */
+        fflush(stderr);
+#endif
         ap_open_stderr(&errfile, p);        
         if ((rc = ap_dupfile(&errfile, s_main->error_log)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
@@ -283,7 +280,6 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
         } else {
             replace_stderr = 0;
         }
-#endif
     }
     /* note that stderr may still need to be replaced with something
      * because it points to the old error log, or back to the tty
