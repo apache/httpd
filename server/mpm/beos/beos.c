@@ -838,7 +838,7 @@ static void beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
-static void beos_hooks(void)
+static void beos_hooks(apr_pool_t *p)
 {
     INIT_SIGLIST()
     one_process = 0;

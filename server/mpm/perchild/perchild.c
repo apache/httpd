@@ -1519,7 +1519,7 @@ static int perchild_pre_connection(conn_rec *c)
     return OK;
 }
 
-static void perchild_hooks(void)
+static void perchild_hooks(apr_pool_t *p)
 {
     INIT_SIGLIST()
     one_process = 0;

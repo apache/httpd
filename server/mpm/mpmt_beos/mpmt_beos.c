@@ -848,7 +848,7 @@ static void mpmt_beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
-static void mpmt_beos_hooks(void)
+static void mpmt_beos_hooks(apr_pool_t *p)
 {
     INIT_SIGLIST()
     one_process = 0;

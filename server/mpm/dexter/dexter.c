@@ -1157,7 +1157,7 @@ static void dexter_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
-static void dexter_hooks(void)
+static void dexter_hooks(apr_pool_t *p)
 {
     INIT_SIGLIST()
     one_process = 0;
