@@ -1,57 +1,30 @@
-Apache 1.3.11 Released
+Apache 1.3.12 Released
 ======================
 
 The Apache Software Foundation and The Apache Server Project are
-pleased to announce the release of version 1.3.11 of the Apache HTTP server.
-Apache 1.3.10 was not released due to a last-minute bug found and
-fixed after the source was tagged and tested.
+pleased to announce the release of version 1.3.12 of the Apache HTTP server.
 
-This new Apache version incorporates numerous significant improvements
-to the server.  Apart from portability and security fixes, documentation
-enhancements, performance improvements, and assorted other minor
-features or fixes notable changes are:
+The primary changes in this version of Apache are those related to
+the ``cross site scripting'' security alerts described at
 
-   - Binary and shared builds on several platforms have been
-     improved.
+   http://www.cert.org/advisories/CA-2000-02.html
+      - and -
+   http://www.apache.org/info/css-security/index.html
 
-   - The time that a parent waits for its children to die
-     after SIGKILL has been sent has been reduced.
-
-   - Various suexec improvements.
-
-   - More rigorous checking of Host: headers to fix security problems
-     with mass name-based virtual hosting.
-
-   - Addition of the  %q logging format directive (logs "?" and the query
-     string part of a query, or the empty string if no query).
-
-   - Improvement of the OS390 port.
-
-   - Several EBCDIC fixes.
-
-   - Better error reporting during the "compiler sanity" check.
-
-   - Fixed the `quad integer' (aka `long long') handling in ap_snprintf.c
-
-   - mod_rewrite's general substitution function was overhauled.
-
-   - Several WIN32 bugs have been fixed, including:
-     - CGIs broken if script calls other programs which deliver on stdout
-       (Search this file for "DETACHED")
-     - 16 bit CGIs should work now
-     - Server will not start if passed the -d option with spaces in the
-       argument.
+Specifically, charset handling has been improved and reinforced
+(including 2 new directives: AddDefaultCharset and AddDefaultCharsetName)
+and server generated pages properly escape ``userland'' input.
 
 A complete listing with detailed descriptions is provided in the
 src/CHANGES file.
 
-We consider Apache 1.3.11 to be the best version of Apache available and
+We consider Apache 1.3.12 to be the best version of Apache available and
 we strongly recommend that users of older versions, especially of the
 1.1.x and 1.2.x family, upgrade as soon as possible.  No further releases
 will be made in the 1.2.x family.
 
 
-Apache 1.3.11 is available for download from
+Apache 1.3.12 is available for download from
 
     http://www.apache.org/dist/
 
@@ -62,7 +35,7 @@ Binary distributions are available from
 
    http://www.apache.org/dist/binaries/
 
-As of Apache 1.3.11 binary distributions contain all standard Apache
+As of Apache 1.3.12 binary distributions contain all standard Apache
 modules as shared objects (if supported by the platform) and include
 full source code.  Installation is easily done by executing the
 included install script.  See the README.bindist and INSTALL.bindist
