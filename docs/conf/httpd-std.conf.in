@@ -748,7 +748,7 @@ AddLanguage pt-br .pt-br
 AddLanguage ltz .ltz
 AddLanguage ca .ca
 AddLanguage es .es
-AddLanguage sv .se
+AddLanguage sv .sv
 AddLanguage cz .cz
 AddLanguage ru .ru
 AddLanguage tw .tw

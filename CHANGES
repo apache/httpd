@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Use .sv instead of .se as extension for Swedish documents in the
+     default configuration. PR 12877.  [André Malo]
+
   *) Updated mod_ldap and mod_auth_ldap to support the Novell LDAP SDK SSL
      and standardized the LDAP SSL support across the various LDAP SDKs.  
      Isolated the SSL functionality to mod_ldap rather than speading it 

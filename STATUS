@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 20:23:37 $]
+Last modified at [$Date: 2003/03/07 20:30:38 $]
 
 Release:
 
@@ -173,14 +173,6 @@ PATCHES TO PORT FROM 2.1
       modules/mappers/mod_alias.c: r1.49
       +1: nd, trawick (this is simple...  look how query string is
           appended in the other situation)
-
-    * be consistent with 1.3 and use .sv extension for Swedish documents
-      (PR 12877).
-      docs/conf/httpd-std.conf.in: r1.34
-      docs/conf/httpd-win.conf: r1.80
-      docs/docroot/index.html.se -> index.html.sv
-      docs/docroot/index.html.var: r1.10
-      +1: nd, wrowe, trawick
 
     * Prevent endless loops of internal redirects in mod_rewrite by
       aborting after exceeding a limit of internal redirects. The
