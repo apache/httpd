@@ -2,19 +2,19 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.1 -->
 
-<name>mod_access</name> 
+<name>mod_authz_host</name> 
 
-<description>クライアントのホスト名、IP アドレス、その他のクライアント
-のリクエストの特徴に基づいたアクセス制御機能を提供する</description>
+<description>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</description>
 
 <status>Base</status>
-<sourcefile>mod_access.c</sourcefile>
-<identifier>access_module</identifier>
+<sourcefile>mod_authz_host.c</sourcefile>
+<identifier>authz_host_module</identifier>
+<compatibility>Apache 2.0.44 以降</compatibility>
 
 <summary>
-    <p>mod_access により提供されるディレクティブはサーバの特定の部分への
+    <p>mod_authz_host により提供されるディレクティブはサーバの特定の部分への
     アクセスを制御するために <directive module="core" type="section"
     >Directory</directive>, <directive module="core"
     type="section">Files</directive>, <directive module="core"
@@ -24,14 +24,14 @@
     アドレスや <a href="../env.html">環境変数</a
     >として取得された、その他のリクエストの特徴に基づいて
     アクセス制御を行なうことができます。<directive
-    module="mod_access">Allow</directive> と
-    <directive module="mod_access">Deny</directive> ディレクティブは
+    module="mod_authz_host">Allow</directive> と
+    <directive module="mod_authz_host">Deny</directive> ディレクティブは
     どのようなクライアントにアクセスを
     許可する、しないかを指定するために使用されます。一方、
-    <directive module="mod_access">Order</directive> ディレクティブは
+    <directive module="mod_authz_host">Order</directive> ディレクティブは
     デフォルトのアクセス状態と、
-    <directive module="mod_access">Allow</directive> ディレクティブと
-    <directive module="mod_access">Deny</directive>
+    <directive module="mod_authz_host">Allow</directive> ディレクティブと
+    <directive module="mod_authz_host">Deny</directive>
     ディレクティブとのお互いへの影響の仕方を設定します。
     </p>
 
@@ -73,8 +73,8 @@
     それに続く引数は三つの違った形式があります。<code>Allow from
     all</code> が指定されていれば、すべてのホストにアクセスを許可し、
     アクセス制限は下で説明されているように、
-    <directive module="mod_access">Deny</directive>
-    ディレクティブと <directive module="mod_access">Order</directive>
+    <directive module="mod_authz_host">Deny</directive>
+    ディレクティブと <directive module="mod_authz_host">Order</directive>
     ディレクティブの設定で決まります。
     特定のホストやホスト群にのみサーバへのアクセスを許可するためには、
     以下のどれかの形式で <em>host</em> を指定することができます:</p>
@@ -176,7 +176,7 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
     <p>このディレクティブはホスト名、IP
     アドレス、環境変数に基づいてサーバへのアクセスを制限します。
     <directive>Deny</directive> ディレクティブの引数は <directive
-    module="mod_access">Allow</directive>
+    module="mod_authz_host">Allow</directive>
     ディレクティブとまったく同じです。</p>
 </usage>
 
@@ -198,38 +198,38 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 <usage>
 
     <p><directive>Order</directive> ディレクティブはデフォルトのアクセスの状態と
-    <directive module="mod_access">Allow</directive> ディレクティブと
-    <directive module="mod_access">Deny</directive>
+    <directive module="mod_authz_host">Allow</directive> ディレクティブと
+    <directive module="mod_authz_host">Deny</directive>
     ディレクティブが評価される順番を制御します。
     <em>Ordering</em> は以下のどれかです。</p>
 
     <dl>
       <dt>Deny,Allow</dt>
 
-      <dd><directive module="mod_access">Deny</directive> ディレクティブが
-      <directive module="mod_access">Allow</directive>
+      <dd><directive module="mod_authz_host">Deny</directive> ディレクティブが
+      <directive module="mod_authz_host">Allow</directive>
       ディレクティブの前に評価されます。
       アクセスはデフォルトで許可されます。<directive
-      module="mod_access">Deny</directive>
-      ディレクティブに合わないか、<directive module="mod_access">Allow</directive>
+      module="mod_authz_host">Deny</directive>
+      ディレクティブに合わないか、<directive module="mod_authz_host">Allow</directive>
       ディレクティブに合うクライアントはアクセスを許可されます。</dd>
 
       <dt>Allow,Deny</dt>
 
-      <dd><directive module="mod_access">Allow</directive>
+      <dd><directive module="mod_authz_host">Allow</directive>
       ディレクティブが <directive
-      module="mod_access">Deny</directive>
+      module="mod_authz_host">Deny</directive>
       ディレクティブの前に評価されます。
       アクセスはデフォルトで拒否されます。<directive
-      module="mod_access">Allow</directive>
-      ディレクティブに合わないか、<directive module="mod_access">Deny</directive>
+      module="mod_authz_host">Allow</directive>
+      ディレクティブに合わないか、<directive module="mod_authz_host">Deny</directive>
       ディレクティブに合うクライアントはアクセスを拒否されます。
       </dd>
 
       <dt>Mutual-failure</dt>
 
-      <dd><directive module="mod_access">Allow</directive> のリストに現れて、
-      <directive module="mod_access">Deny</directive>
+      <dd><directive module="mod_authz_host">Allow</directive> のリストに現れて、
+      <directive module="mod_authz_host">Deny</directive>
       のリストに現れないホストのみがアクセスを許可されます。
       この順番付けは <code>Order Allow,Deny</code> と同じ効果を持ち、
       その設定の方が好ましいために非推奨となっています。</dd>
@@ -237,8 +237,8 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 
     <p>キーワードはコンマで分離することだけが可能です。
     間に空白があってはいけません。どの場合でも、<directive
-    module="mod_access">Allow</directive> と
-    <directive module="mod_access">Deny</directive> 文は
+    module="mod_authz_host">Allow</directive> と
+    <directive module="mod_authz_host">Deny</directive> 文は
     全て評価されるということに注意してください。
     </p>
 
@@ -276,8 +276,8 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 
     <p><directive>Order</directive>
     ディレクティブはデフォルトのアクセスの状態に影響を与えるので、
-    <directive module="mod_access">Allow</directive> ディレクティブと
-    <directive module="mod_access">Deny</directive>
+    <directive module="mod_authz_host">Allow</directive> ディレクティブと
+    <directive module="mod_authz_host">Deny</directive>
     ディレクティブが無くても、サーバのアクセスに影響を与えることができます。
     たとえば、</p>
 
@@ -296,12 +296,12 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
     アクセスディレクティブの処理の順番を変更します。これは、たとえば、
     <directive>Order</directive> ディレクティブの設定に関わらず、
     <directive module="core" type="section">Location</directive> セクションの
-    <directive module="mod_access">Allow</directive> ディレクティブや
-    <directive module="mod_access">Deny</directive> ディレクティブは、
+    <directive module="mod_authz_host">Allow</directive> ディレクティブや
+    <directive module="mod_authz_host">Deny</directive> ディレクティブは、
     <directive module="core" type="sectino">Directory</directive> セクションや
     <code>.htaccess</code> ファイルの <directive
-    module="mod_access">Allow</directive>
-    ディレクティブや <directive module="mod_access">Deny</directive>
+    module="mod_authz_host">Allow</directive>
+    ディレクティブや <directive module="mod_authz_host">Deny</directive>
     ディレクティブよりも常に後に評価されるということを意味します。
     設定セクションのマージの詳細については、
     <a href="../sections.html">Directory,Location, Files
