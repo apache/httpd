@@ -149,7 +149,7 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     mime_dir_config *new =
     (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
 
-    new->extension_mappings = NULL;
+    new->extension_mappings = apr_hash_make(p);
 
     new->charsets_remove = NULL;
     new->encodings_remove = NULL;
@@ -827,10 +827,8 @@ static int find_ct(request_rec *r)
         ap_str_tolower(ext);
 #endif
 
-        if (conf->extension_mappings != NULL) {
-            exinfo = (extension_info*)apr_hash_get(conf->extension_mappings,
-                                                   ext, APR_HASH_KEY_STRING);
-        }
+        exinfo = (extension_info*)apr_hash_get(conf->extension_mappings,
+                                               ext, APR_HASH_KEY_STRING);
 
         if (exinfo == NULL) {
             if ((type = apr_hash_get(mime_type_extensions, ext,
