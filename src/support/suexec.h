@@ -72,7 +72,7 @@
  *            for suEXEC.  For most systems, 500 or 100 is common.
  */
 #ifndef UID_MIN
-#define UID_MIN 500
+#define UID_MIN 100
 #endif
 
 /*
