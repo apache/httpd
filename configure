@@ -1057,18 +1057,20 @@ conf_port="80"
 conf_serveradmin="you@your.address"
 conf_servername="new.host.name"
 if [ "x$confadjust" = "x1" ]; then
-    for uid in nobody www daemon demon http httpd; do 
-        if [ "x`egrep \^${uid}: /etc/passwd`" != "x" ]; then
-            conf_user="$uid"
-            break
-        fi
-    done
-    for gid in nobody nogroup www daemon demon http httpd; do 
-        if [ "x`egrep \^${gid}: /etc/group`" != "x" ]; then
-            conf_group="$gid"
-            break
-        fi
-    done
+    if [ -f /etc/passwd ]; then
+        for uid in nobody www daemon demon http httpd; do 
+            if [ "x`egrep \^${uid}: /etc/passwd`" != "x" ]; then
+                conf_user="$uid"
+                break
+            fi
+        done
+        for gid in nobody nogroup www daemon demon http httpd; do 
+            if [ "x`egrep \^${gid}: /etc/group`" != "x" ]; then
+                conf_group="$gid"
+                break
+            fi
+        done
+    fi
     if [ "x`$aux/getuid.sh`" != "x0" ]; then
         conf_port="8080"
     fi
