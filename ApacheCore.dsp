@@ -54,8 +54,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release"
-# ADD LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release"
+# ADD BASE LINK32 aprlib.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release" /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 aprlib.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"lib\pcre\release" /libpath:"ap\Release" /base:@"os\win32\BaseAddr.ref",ApacheCore
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
@@ -81,8 +81,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug"
-# ADD LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug"
+# ADD BASE LINK32 aprlib.lib regex.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 aprlib.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"lib\pcre\debug" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
 
 !ENDIF 
 
@@ -304,10 +304,6 @@ SOURCE=.\include\explain.h
 # Begin Source File
 
 SOURCE=.\include\fnmatch.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\hsregex.h
 # End Source File
 # Begin Source File
 

@@ -68,9 +68,11 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f aprlib.mak CFG="aprlib - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f aprlibdll.mak CFG="aprlibdll - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd regex
-	 $(MAKE) $(MAKEOPT) -f regex.mak CFG="regex - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..
+	cd lib\pcre
+	 $(MAKE) $(MAKEOPT) -f dftables.mak CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f pcre.mak CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f pcreposix.mak CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd ap
 	 $(MAKE) $(MAKEOPT) -f ap.mak CFG="ap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
