@@ -10,13 +10,13 @@ AC_MSG_RESULT($APACHE_MPM)
 
 apache_cv_mpm=$APACHE_MPM
 	
-if test "$apache_cv_mpm" != "prefork"; then
+if test "$apache_cv_mpm" = "mpmt_pthread" -o "$apache_cv_mpm" = "dexter"; then
   PTHREADS_CHECK
   AC_MSG_CHECKING([for which threading library to use])
   AC_MSG_RESULT($threads_result)
 
   if test "$apache_threads_working" = "no"; then
-    AC_MSG_RESULT(The currently selected MPM requires threads which your system seems to lack)
+    AC_MSG_RESULT(The currently selected MPM requires pthreads which your system seems to lack)
     AC_MSG_CHECKING(checking for replacement)
     AC_MSG_RESULT(prefork selected)
     apache_cv_mpm=prefork
