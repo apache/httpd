@@ -13,7 +13,7 @@
 <body id="index-page">
 <div id="page-header">
 <p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
-<p class="apache">HTTP сервер Apache Версия 2.0</p>
+<p class="apache">HTTP сервер Apache версии 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
@@ -27,7 +27,7 @@
 <a href="./ko/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google Search" type="submit" /><input value="10" name="num" type="hidden" /><input value="ru" name="hl" type="hidden" /><input value="KOI8-R" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Apache 2.0" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
+<form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Поиск в Google" type="submit" /><input value="10" name="num" type="hidden" /><input value="ru" name="hl" type="hidden" /><input value="KOI8-R" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Apache 2.0" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Release Notes</a></h2>
 <ul><li><a href="new_features_2_0.html">Обзор новых возможностей в Apache 2.0</a></li>
 <li><a href="upgrading.html">Переход от версии 1.3 к версии 2.0</a></li>
