@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -128,8 +128,8 @@
     Privilegien der Apache-Kindprozesse festzulegen. Die Kindprozesse
     m&uuml;ssen in der Lage sein, alle Inhalte zu lesen, die sie ausliefern
     sollen, sollten dar&uuml;ber hinaus jedoch so wenig wie m&ouml;glich Rechte
-    besitzen. Zus&auml;tzlich, solange nicht <a
-    href="../suexec.html">suexec</a> verwendet wird, legen diese
+    besitzen. Zus&auml;tzlich, solange nicht <program>
+    suexec</program> verwendet wird, legen diese
     Direktiven auch die Privilegien fest, die von CGI-Skripts
     geerbt werden.</p>
 
