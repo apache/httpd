@@ -336,7 +336,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         return ap_pass_brigade(f->next, bb);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
             "cache: running CACHE_OUT filter");
 
     /* TODO: Handle getting errors on either of these calls 
@@ -348,8 +348,8 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     /* This filter is done once it has served up its content */
     ap_remove_output_filter(f);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r->server,
-            "cached version of %s being served", r->uri);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+            "cache: serving cached version of %s", r->uri);
     return ap_pass_brigade(f->next, bb);
 }
 
