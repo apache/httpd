@@ -1547,147 +1547,112 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         return NULL;
     }
 
-            if (s->type == MAPTYPE_TXT) {
-                if ((rv = apr_stat(&st, s->checkfile,
-                                   APR_FINFO_MIN, r->pool)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                                  "mod_rewrite: can't access text RewriteMap "
-                                  "file %s", s->checkfile);
-                    rewritelog(r, 1, "can't open RewriteMap file, "
-                               "see error log");
-                    return NULL;
-                }
-                value = get_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key);
-                if (value == NULL) {
-                    rewritelog(r, 6, "cache lookup FAILED, forcing new "
-                               "map lookup");
-                    if ((value =
-                         lookup_map_txtfile(r, s->datafile, key)) != NULL) {
-                        rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
-                                   "-> val=%s", name, key, value);
-                        set_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key, value);
-                        return value;
-                    }
-                    else {
-                        rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
-                                   "key=%s", name, key);
-                        set_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key, "");
-                        return NULL;
-                    }
-                }
-                else {
-                    rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s "
-                               "-> val=%s", name, key, value);
-                    return value[0] != '\0' ? value : NULL;
-                }
+    switch (s->type) {
+    /*
+     * Text file map (perhaps random)
+     */
+    case MAPTYPE_RND:
+    case MAPTYPE_TXT:
+        rv = apr_stat(&st, s->checkfile, APR_FINFO_MIN, r->pool);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "mod_rewrite: can't access text RewriteMap file %s",
+                          s->checkfile);
+            rewritelog(r, 1, "can't open RewriteMap file, see error log");
+            return NULL;
+        }
+
+        value = get_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key);
+        if (!value) {
+            rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
+
+            value = lookup_map_txtfile(r, s->datafile, key);
+            if (!value) {
+                rewritelog(r, 5, "map lookup FAILED: map=%s[txt] key=%s",
+                           name, key);
+                set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, "");
+                return NULL;
             }
-            else if (s->type == MAPTYPE_DBM) {
-                if ((rv = apr_stat(&st, s->checkfile,
-                                   APR_FINFO_MIN, r->pool)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                                  "mod_rewrite: can't access DBM RewriteMap "
-                                  "file %s", s->checkfile);
-                    rewritelog(r, 1, "can't open DBM RewriteMap file, "
-                               "see error log");
-                    return NULL;
-                }
-                value = get_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key);
-                if (value == NULL) {
-                    rewritelog(r, 6,
-                               "cache lookup FAILED, forcing new map lookup");
-                    if ((value =
-                         lookup_map_dbmfile(r, s->datafile, s->dbmtype, key)) != NULL) {
-                        rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s "
-                                   "-> val=%s", name, key, value);
-                        set_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key, value);
-                        return value;
-                    }
-                    else {
-                        rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] "
-                                   "key=%s", name, key);
-                        set_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key, "");
-                        return NULL;
-                    }
-                }
-                else {
-                    rewritelog(r, 5, "cache lookup OK: map=%s[dbm] key=%s "
-                               "-> val=%s", name, key, value);
-                    return value[0] != '\0' ? value : NULL;
-                }
+
+            rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] -> val=%s",
+                       name, key, value);
+            set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, value);
+        }
+        else {
+            rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s -> val=%s",
+                       name, key, value);
+        }
+
+        if (s->type == MAPTYPE_RND && *value) {
+            value = select_random_value_part(r, value);
+            rewritelog(r, 5, "randomly chosen the subvalue `%s'", value);
+        }
+
+        return *value ? value : NULL;
+
+    /*
+     * DBM file map
+     */
+    case MAPTYPE_DBM:
+        rv = apr_stat(&st, s->checkfile, APR_FINFO_MIN, r->pool);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "mod_rewrite: can't access DBM RewriteMap file %s",
+                          s->checkfile);
+            rewritelog(r, 1, "can't open DBM RewriteMap file, see error log");
+            return NULL;
+        }
+
+        value = get_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key);
+        if (!value) {
+            rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
+
+            value = lookup_map_dbmfile(r, s->datafile, s->dbmtype, key);
+            if (!value) {
+                rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] key=%s",
+                           name, key);
+                set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, "");
+                return NULL;
             }
-            else if (s->type == MAPTYPE_PRG) {
-                if ((value =
-                     lookup_map_program(r, s->fpin, s->fpout, key)) != NULL) {
-                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s",
-                               name, key, value);
-                    return value;
-                }
-                else {
-                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s",
-                               name, key);
-                }
-            }
-            else if (s->type == MAPTYPE_INT) {
-                if ((value = s->func(r, key)) != NULL) {
-                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s",
-                               name, key, value);
-                    return value;
-                }
-                else {
-                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s",
-                               name, key);
-                }
-            }
-            else if (s->type == MAPTYPE_RND) {
-                if ((rv = apr_stat(&st, s->checkfile,
-                                   APR_FINFO_MIN, r->pool)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                                  "mod_rewrite: can't access text RewriteMap "
-                                  "file %s", s->checkfile);
-                    rewritelog(r, 1, "can't open RewriteMap file, "
-                               "see error log");
-                    return NULL;
-                }
-                value = get_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key);
-                if (value == NULL) {
-                    rewritelog(r, 6, "cache lookup FAILED, forcing new "
-                               "map lookup");
-                    if ((value =
-                         lookup_map_txtfile(r, s->datafile, key)) != NULL) {
-                        rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] "
-                                   "-> val=%s", name, key, value);
-                        set_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key, value);
-                    }
-                    else {
-                        rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
-                                   "key=%s", name, key);
-                        set_cache_string(cachep, name, CACHEMODE_TS,
-                                         st.mtime, key, "");
-                        return NULL;
-                    }
-                }
-                else {
-                    rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s "
-                               "-> val=%s", name, key, value);
-                }
-                if (value[0] != '\0') {
-                   value = select_random_value_part(r, value);
-                   rewritelog(r, 5, "randomly choosen the subvalue `%s'",
-                              value);
-                }
-                else {
-                    value = NULL;
-                }
-                return value;
-            }
+
+            rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s -> val=%s",
+                       name, key, value);
+            set_cache_string(cachep, name, CACHEMODE_TS, st.mtime, key, value);
+            return value;
+        }
+
+        rewritelog(r, 5, "cache lookup OK: map=%s[dbm] key=%s -> val=%s",
+                   name, key, value);
+        return *value ? value : NULL;
+
+    /*
+     * Program file map
+     */
+    case MAPTYPE_PRG:
+        value = lookup_map_program(r, s->fpin, s->fpout, key);
+        if (!value) {
+            rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", name, key);
+            return NULL;
+        }
+
+        rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s",
+                   name, key, value);
+        return value;
+
+    /*
+     * Internal Map
+     */
+    case MAPTYPE_INT:
+        value = s->func(r, key);
+        if (!value) {
+            rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", name, key);
+            return NULL;
+        }
+
+        rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s",
+                   name, key, value);
+        return value;
+    }
 
     return NULL;
 }
