@@ -1,7 +1,7 @@
 Changes with Apache 1.3.4
 
   *) Fixed a segmentation violation in mod_proxy when a response is
-     non-cachable.  [Roy Fielding, traced by Doug Bloebaum].
+     non-cachable.  [Roy Fielding, traced by Doug Bloebaum]. PR#2950, 3056
 
 Changes with Apache 1.3.3
 
