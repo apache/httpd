@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/03 17:47:50 $]
+Last modified at [$Date: 2001/10/06 00:48:03 $]
 
 Release:
 
@@ -108,6 +108,13 @@ RELEASE SHOWSTOPPERS:
       f->next (ap_getline will always read "top of input stack"). Also 
       fix the bug where request body content will end up closing the
       connection (buggering up persistent conns).
+      Status: Justin is working on this as fast as he can.
+              The core input filters and HTTP-related filters are
+              switched to the new logic.  At this point, proxy and
+              ssl remain broken.  Preliminary patches for ssl have been 
+              posted to dev@httpd.  There are lots of places that made 
+              implementation assumptions about the fact that the core 
+              filter would return the socket.  That code is now broken.
 
       - socket bucket and core input filter changes. see end of
         message ID (Feb 27): <20010227075326.S2297@lyra.org>
@@ -121,6 +128,8 @@ RELEASE SHOWSTOPPERS:
       - further work with combining/tweaking the builtin filters:
           Message-ID: <20010509115445.D1374@lyra.org>
 
+      - thoughts on filter modes:
+          Message-ID: <021b01c14dee$09782af0$93c0b0d0@roweclan.net>
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
