@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/11 20:18:00 $]
+Last modified at [$Date: 2002/11/20 00:15:31 $]
 
 Release:
 
@@ -298,6 +298,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       the child_init hook (i.e. the fcntl lock needs to be resynced).
       More examination and analysis is required.
         Status: This has also been reported on Cygwin.  
+                FreeBSD 4.7 was reputed to have 'fixed' threads.  Not.
         Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
 
       Aaron says: I spent some time disecting this and have come to
