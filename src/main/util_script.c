@@ -93,10 +93,10 @@ static char **create_argv(pool *p, char *path, char *user, char *group,
     for (x = 0, numwords = 1; args[x]; x++)
         if (args[x] == '+') ++numwords;
 
-    if (numwords > APACHE_ARG_MAX - 4) {
-        numwords = APACHE_ARG_MAX - 4; /* Truncate args to prevent overrun */
+    if (numwords > APACHE_ARG_MAX - 5) {
+        numwords = APACHE_ARG_MAX - 5; /* Truncate args to prevent overrun */
     }
-    av = (char **)palloc(p, (numwords + 4) * sizeof(char *));
+    av = (char **)palloc(p, (numwords + 5) * sizeof(char *));
 
     if (path)
         av[idx++] = path;
