@@ -23,7 +23,7 @@ modules.
 
 <H2>Summary of Changes</H2>
 
-The source directory changes are:
+The source changes are:
 <UL>
  <LI>The non-module source files have moved from <CODE>src</CODE> into
      <CODE>src/main</CODE>
@@ -32,6 +32,13 @@ The source directory changes are:
      to <CODE>src/modules/standard</CODE>
  </LI>
  <LI>The <CODE>support</CODE> directory is now in <CODE>src/support</CODE>
+ </LI>
+ <LI>The existing symbol names used for global Apache function and variable
+     identifiers have been renamed in the source. This way namespace conflicts
+     are avoided when linking Apache with third-party libraries.  See the file
+     <CODE>src/include/compat.h</CODE> both for the list of renamed symbol
+     names and for a way to get source backward compatibility in existing
+     third-party module sources.
  </LI>
 </UL>
 
