@@ -250,7 +250,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-    apr_sleep(apr_time_from_sec(1));
+    apr_sleep(apr_time_from_sec(1) - apr_time_now());
     return OK;
 }
 
