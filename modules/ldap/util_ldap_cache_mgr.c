@@ -116,12 +116,15 @@ void util_ald_free(const void *ptr)
 {
 #if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
-        apr_shm_free(util_ldap_shm, (void *)ptr);
+        if (ptr)
+            apr_shm_free(util_ldap_shm, (void *)ptr);
     } else {
-        free((void *)ptr);
+        if (ptr)
+            free((void *)ptr);
     }
 #else
-    free((void *)ptr);
+    if (ptr)
+        free((void *)ptr);
 #endif
 }
 
@@ -129,12 +132,12 @@ void *util_ald_alloc(int size)
 {
 #if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
-        return (void *)apr_shm_malloc(util_ldap_shm, size);
+        return (void *)apr_shm_calloc(util_ldap_shm, size);
     } else {
-        return (void *)malloc(size);
+        return (void *)calloc(sizeof(char), size);
     }
 #else
-    return (void *)malloc(size);
+    return (void *)calloc(size);
 #endif
 }
 

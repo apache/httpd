@@ -232,19 +232,21 @@ int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
  * @param url The URL of the LDAP connection - used for deciding which cache to use.
  * @param basedn The Base DN to search for the user in.
  * @param scope LDAP scope of the search.
+ * @param attrs LDAP attributes to return in search.
  * @param filter The user to search for in the form of an LDAP filter. This filter must return
  *               exactly one user for the check to be successful.
  * @param bindpw The user password to bind as.
  * @param binddn The DN of the user will be returned in this variable.
+ * @param retvals The values corresponding to the attributes requested in the attrs array.
  * @tip The filter supplied will be searched for. If a single entry is returned, an attempt
  *      is made to bind as that user. If this bind succeeds, the user is not validated.
  * @deffunc int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
- *                                          char *url, const char *basedn, int scope,
- *                                          char *filter, char *bindpw, char **binddn)
+ *                                          char *url, const char *basedn, int scope, char **attrs,
+ *                                          char *filter, char *bindpw, char **binddn, char ***retvals)
  */
 int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
-                                const char *url, const char *basedn, int scope, 
-                                const char *filter, const char *bindpw, const char **binddn);
+                              const char *url, const char *basedn, int scope, char **attrs,
+                              const char *filter, const char *bindpw, const char **binddn, const char ***retvals);
 
 /* from apr_ldap_cache.c */
 

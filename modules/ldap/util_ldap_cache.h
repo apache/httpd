@@ -139,9 +139,10 @@ typedef struct util_url_node_t {
 typedef struct util_search_node_t {
     const char *username;		/* Cache key */
     const char *dn;			/* DN returned from search */
-    const char *bindpw;		/* The most recently used bind password; 
-				   NULL if the bind failed */
-    apr_time_t lastbind;	/* Time of last successful bind */
+    const char *bindpw;			/* The most recently used bind password; 
+					   NULL if the bind failed */
+    apr_time_t lastbind;		/* Time of last successful bind */
+    const char **vals;			/* Values of queried attributes */
 } util_search_node_t;
 
 /*

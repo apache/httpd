@@ -68,6 +68,8 @@
 /* for getpid() */
 #include <unistd.h>
 #endif
+#include <ctype.h>
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -90,6 +92,7 @@ typedef struct {
     int port;				/* Port of the LDAP server */
     char *basedn;			/* Base DN to do all searches from */
     char *attribute;			/* Attribute to search for */
+    char **attributes;			/* Array of all the attributes to return */
     int scope;				/* Scope of the search */
     char *filter;			/* Filter to further limit the search  */
     deref_options deref;		/* how to handle alias dereferening */
@@ -202,6 +205,7 @@ void mod_auth_ldap_build_filter(char *filtbuf,
  */
 int mod_auth_ldap_check_user_id(request_rec *r)
 {
+    const char **vals = NULL;
     char filtbuf[FILTER_LENGTH];
     mod_auth_ldap_config_t *sec =
         (mod_auth_ldap_config_t *)ap_get_module_config(r->per_dir_config, &auth_ldap_module);
@@ -254,7 +258,8 @@ int mod_auth_ldap_check_user_id(request_rec *r)
     mod_auth_ldap_build_filter(filtbuf, r, sec);
 
     /* do the user search */
-    result = util_ldap_cache_checkuserid(r, ldc, sec->url, sec->basedn, sec->scope, filtbuf, sent_pw, &dn);
+    result = util_ldap_cache_checkuserid(r, ldc, sec->url, sec->basedn, sec->scope,
+                                         sec->attributes, filtbuf, sent_pw, &dn, &vals);
     util_ldap_connection_close(ldc);
 
     if (result != LDAP_SUCCESS) {
@@ -276,6 +281,24 @@ int mod_auth_ldap_check_user_id(request_rec *r)
     req->user = r->user;
     if (sec->user_is_dn) {
         r->user = req->dn;
+    }
+
+    /* add environment variables */
+    if (sec->attributes && vals) {
+        apr_table_t *e = r->subprocess_env;
+        int i = 0;
+        while (sec->attributes[i]) {
+            char *str = apr_pstrcat(r->pool, "AUTHENTICATE_", sec->attributes[i], NULL);
+            int j = 13;
+            while (str[j]) {
+                if (str[j] >= 'a' && str[j] <= 'z') {
+                    str[j] = str[j] - ('a' - 'A');
+                }
+                j++;
+            }
+            apr_table_setn(e, str, vals[i]);
+            i++;
+        }
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, 
@@ -639,7 +662,17 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
     }
     sec->basedn = urld->lud_dn? apr_pstrdup(cmd->pool, urld->lud_dn) : "";
     if (urld->lud_attrs && urld->lud_attrs[0]) {
-        sec->attribute = apr_pstrdup(cmd->pool, urld->lud_attrs[0]);
+        int i = 1;
+        while (urld->lud_attrs[i]) {
+            i++;
+        }
+        sec->attributes = apr_pcalloc(cmd->pool, sizeof(char *) * (i+1));
+        i = 0;
+        while (urld->lud_attrs[i]) {
+            sec->attributes[i] = apr_pstrdup(cmd->pool, urld->lud_attrs[i]);
+            i++;
+        }
+        sec->attribute = sec->attributes[0];
     }
     else {
         sec->attribute = "uid";
