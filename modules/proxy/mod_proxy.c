@@ -695,6 +695,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
     ps->workers = apr_array_make(p, 10, sizeof(proxy_worker));
     ps->balancers = apr_array_make(p, 10, sizeof(proxy_balancer));
+    ps->forward = NULL;
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -739,6 +740,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
     ps->workers = apr_array_append(p, base->workers, overrides->workers);
     ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
+    ps->forward = overrides->forward ? overrides->forward : base->forward;
 
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
@@ -1112,13 +1114,22 @@ static const char *
 static const char *
     set_proxy_req(cmd_parms *parms, void *dummy, int flag)
 {
+    const char *err;
     proxy_server_conf *psf =
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->req = flag;
     psf->req_set = 1;
+    /* Add default forward proxy worker */
+    if ((err = ap_proxy_add_worker(&(psf->forward), parms->pool,
+                                   psf, "*://*:0"))) {
+        return apr_pstrcat(parms->temp_pool, "ProxyRequests ", err, NULL); 
+    }
+        
+
     return NULL;
 }
+
 static const char *
     set_proxy_error_override(cmd_parms *parms, void *dummy, int flag)
 {
