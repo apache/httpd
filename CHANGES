@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fix infinite loop in mod_cgid.c.  
+     [Dale Ghent <daleg@elemental.org>, Brian Pane <bpane@pacbell.net>]
+
   *) Add Debian layout.  [Daniel Stone <daniel@sfarc.net>]
 
   *) If shared modules are requested and mod_so is not available,
