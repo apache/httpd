@@ -1436,6 +1436,10 @@ rvputs(request_rec *r, ...)
     return k;
 }
 
+int rflush (request_rec *r) {
+    return bflush(r->connection->client);
+}
+
 void send_error_response (request_rec *r, int recursive_error)
 {
     conn_rec *c = r->connection;

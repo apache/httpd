@@ -115,6 +115,7 @@ int rputs(const char *str, request_rec *r);
 int rwrite(const void *buf, int nbyte, request_rec *r);
 int rvputs(request_rec *r, ...);
 int rprintf(request_rec *r,const char *fmt,...);
+int rflush(request_rec *r);
      
 /*
  * Index used in custom_responses array for a specific error code
