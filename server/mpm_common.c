@@ -119,7 +119,7 @@ void ap_reclaim_child_processes(int terminate)
             ap_proc_t proc;
 
 #ifdef CHILD_TABLE
-            if (ap_child_table[i].status == SERVER_DEAD)
+            if (pid == 0)
 #elif defined(SCOREBOARD)
             if (pid == ap_my_pid || pid == 0)
 #endif
@@ -128,11 +128,7 @@ void ap_reclaim_child_processes(int terminate)
             proc.pid = pid;
             waitret = ap_wait_proc(&proc, APR_NOWAIT);
             if (waitret != APR_CHILD_NOTDONE) {
-#ifdef CHILD_TABLE
-                ap_child_table[i].status = SERVER_DEAD;
-#elif defined(SCOREBOARD)
-                ap_scoreboard_image->parent[i].pid = 0;
-#endif
+                CHILD_INFO_TABLE[i].pid = 0;
                 continue;
             }
             ++not_dead_yet;

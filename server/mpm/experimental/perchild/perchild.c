@@ -985,7 +985,7 @@ static int startup_children(int number_to_start)
     int i;
 
     for (i = 0; number_to_start && i < num_daemons; ++i) {
-	if (ap_child_table[i].status != SERVER_DEAD) {
+	if (ap_child_table[i].pid) {
 	    continue;
 	}
 	if (make_child(ap_server_conf, i, 0) < 0) {
@@ -1021,7 +1021,7 @@ static void perform_child_maintenance(void)
     free_length = 0;
     
     for (i = 0; i < num_daemons; ++i) {
-        if (ap_child_table[i].status == SERVER_DEAD) {
+        if (ap_child_table[i].pid == 0) {
             if (free_length < spawn_rate) {
                 free_slots[free_length] = i;
                 ++free_length;
@@ -1083,7 +1083,7 @@ static void server_main_loop(int remaining_children_to_start)
                 }
             }
             if (child_slot >= 0) {
-                ap_child_table[child_slot].status = SERVER_DEAD;
+                ap_child_table[child_slot].pid = 0;
                 
 		if (remaining_children_to_start
 		    && child_slot < num_daemons) {
@@ -1183,7 +1183,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     /* Initialize the child table */
     if (!is_graceful) {
         for (i = 0; i < HARD_SERVER_LIMIT; i++) {
-            ap_child_table[i].status = SERVER_DEAD;
+            ap_child_table[i].pid = 0;
         }
     }
 
@@ -1263,7 +1263,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
          */
 	
 	for (i = 0; i < num_daemons; ++i) {
-	    if (ap_child_table[i].status != SERVER_DEAD) {
+	    if (ap_child_table[i].pid) {
 	        ap_child_table[i].status = SERVER_DYING;
 	    } 
 	}

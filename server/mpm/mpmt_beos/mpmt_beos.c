@@ -553,7 +553,7 @@ static void startup_children(int number_to_start)
     int i;
 
     for (i = 0; number_to_start && i < ap_daemons_limit; ++i) {
-	if (ap_child_table[i].status  != SERVER_DEAD) {
+	if (ap_child_table[i].pid) {
 	    continue;
 	}
 	if (make_child(ap_server_conf, i, 0) < 0) {
@@ -588,7 +588,7 @@ static void perform_idle_server_maintenance(void)
     free_length = 0;
 
     for (i = 0; i < ap_daemons_limit; ++i) {
-        if (ap_child_table[i].status == SERVER_DEAD) {
+        if (ap_child_table[i].pid == 0) {
             if (free_length < spawn_rate) {
                 free_slots[free_length] = i;
                 ++free_length;
@@ -647,7 +647,7 @@ static void server_main_loop(int remaining_children_to_start)
                 }
             }
             if (child_slot >= 0) {
-                ap_child_table[child_slot].status = SERVER_DEAD;
+                ap_child_table[child_slot].pid = 0;
                 
 		if (remaining_children_to_start
 		    && child_slot < ap_daemons_limit) {
@@ -807,7 +807,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 
 	/* give the children the signal to die */
         for (i = 0; i < ap_daemons_limit;) {
-            if(ap_child_table[i].status != SERVER_DEAD) {
+            if(ap_child_table[i].pid) {
                 if (write_port(port_of_death, 99, &char_of_death, 1) != B_OK) {
                     if (errno == EINTR) continue;
                     ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
