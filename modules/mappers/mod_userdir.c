@@ -326,7 +326,7 @@ static int translate_userdir(request_rec *r)
 #else                           /* WIN32 */
             struct passwd *pw;
 
-#if APR_HAS_THREADS && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+#if APR_HAS_THREADS && defined(HAVE_GETPWNAM_R)
             struct passwd pwd;
             size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
             char *buf = apr_pcalloc(r->pool, buflen);

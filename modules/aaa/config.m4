@@ -25,7 +25,9 @@ APACHE_CHECK_STANDARD_MODULE(asis, as-is filetypes, , yes)
 APACHE_CHECK_STANDARD_MODULE(imap, internal imagemaps, , yes)
 APACHE_CHECK_STANDARD_MODULE(actions, Action triggering on requests, action, yes)
 APACHE_CHECK_STANDARD_MODULE(speling, correct common URL misspellings, , no)
-APACHE_CHECK_STANDARD_MODULE(userdir, mapping of user requests, , yes)
+APACHE_CHECK_STANDARD_MODULE(userdir, mapping of user requests, , yes, [
+  AC_CHECK_FUNCS(getpwnam_r)
+])
 APACHE_CHECK_STANDARD_MODULE(suexec, set uid and gid for spawned processes, , no)
 APACHE_CHECK_STANDARD_MODULE(alias, translation of requests, , yes)
 
