@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Available MPM's for Apache 2.0</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<h1 align="center">Apache 2.0 - Available MPM's</h1>
+<p align="center"><em>Dated 15<sup>th</sup> January 2000</em></p>
+<p>Apache 2.0 has a new architecture that moves the processing of requests from the code server into a MultiProcessing Module (MPM).  By selecting the MPM to use you can alter the way the server behaves.  Additionally the introduction of the MPM's has led to platforms developing their own optimised modules.  On some platforms there is no choice, whilst on others there are different options, each with differing processing models.  This list aims to help you select a suitable MPM for your system.</p>
+<hr>
+<h3>Platforms</h3>
+<ul>
+<li><A href="#unix">Unix</a></li>
+<li><a href="#windows">Windows</a></li>
+<li><a href="#os2">OS/2</a></li>
+<li><a href="#beos">BeOS</a></li>
+</ul>
+<a name="unix"><h3>Unix</h3>
+<table width="100%" border="1">
+<tr>
+<th width="20%">MPM</th>
+<th width="60%">Description</th>
+<th width="20%">Maintainer</th>
+</tr>
+<tr>
+<td>prefork</td>
+<td>The prefork MPM reproduces the behaviour of Apache 1.3.</td>
+<td>??</td>
+</tr>
+<tr>
+<td>mpmt_pthread</td>
+<td>This MPM uses a multi-process, multi-threaded model to provide good scability and stability.</td>
+<td>Manoj?</td>
+</tr>
+<tr>
+<td>dexter</td>
+<td>This is Manoj's plaything.  It has a number of hybrid features that Manoj has been looking at to improve performance.</td>
+<td><a href="mailto:manojk@io.com">Manoj</a></td>
+</tr>
+</table>
+
+<a name="windows"><h3>Windows</h3>
+<table width="100%" border="1">
+<tr>
+<th width="20%">MPM</th>
+<th width="60%">Description</th>
+<th width="20%">Maintainer</th>
+</tr>
+<tr>
+<td>winnt</td>
+<td>The Windows MPM.  This is mainly aimed at Windows NT.</td>
+<td><a href="mailto:stoddard@raleigh.ibm.com">Bill Stoddard</a></td>
+</tr>
+</table>
+
+<a name="os2"><h3>OS/2</h3>
+<table width="100%" border="1">
+<tr>
+<th width="20%">MPM</th>
+<th width="60%">Description</th>
+<th width="20%">Maintainer</th>
+</tr>
+<tr>
+<td>spmt_os2</td>
+<td>Single process, multiple thread MPM for OS2.</td>
+<td><a href="mailto:brianh@kheldar.apana.org.au">Brian Havard</a></td>
+</tr>
+</table>
+
+<a name="beos"><h3>BeOS</h3>
+<table width="100%" border="1">
+<tr>
+<th width="20%">MPM</th>
+<th width="60%">Description</th>
+<th width="20%">Maintainer</th>
+</tr>
+<tr>
+<td>mpmt_beos</td>
+<td>Multi-threaded MPM for BeOS.  This follows the mpmt_pthread model.</td>
+<td><a href="mailto:dreid@jetnet.co.uk">David Reid</a></td>
+</tr>
+</table>
+
+<hr>
+<I>David Reid, 15<sup>th</sup> January 2000</I>
+</body>
+</html>
+

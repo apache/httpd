@@ -1,0 +1,36 @@
+
+DEPTH     = ..
+top_srcdir = @top_srcdir@
+srcdir    = @srcdir@
+VPATH     = @srcdir@
+
+PROGRAMS = htpasswd htdigest rotatelogs logresolve ab
+targets  = $(PROGRAMS)
+
+PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
+PROGRAM_DEPENDENCIES = ../lib/apr/$(LIBPRE)apr.a \
+	../ap/libap.la
+
+include $(top_srcdir)/build/rules.mk
+include $(top_srcdir)/build/program.mk
+
+htpasswd_OBJECTS = htpasswd.lo
+htpasswd: $(htpasswd_OBJECTS)
+	$(LINK) $(htpasswd_OBJECTS) $(PROGRAM_LDADD)
+
+htdigest_OBJECTS = htdigest.lo
+htdigest: $(htdigest_OBJECTS)
+	$(LINK) $(htdigest_OBJECTS) $(PROGRAM_LDADD)
+
+rotatelogs_OBJECTS = rotatelogs.lo
+rotatelogs: $(rotatelogs_OBJECTS)
+	$(LINK) $(rotatelogs_OBJECTS) $(PROGRAM_LDADD)
+
+logresolve_OBJECTS = logresolve.lo
+logresolve: $(logresolve_OBJECTS)
+	$(LINK) $(logresolve_OBJECTS) $(PROGRAM_LDADD)
+
+ab_OBJECTS = ab.lo
+ab: $(ab_OBJECTS)
+	$(LINK) $(ab_OBJECTS) $(PROGRAM_LDADD)
+

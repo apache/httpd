@@ -1,0 +1,8 @@
+#!/bin/sh
+
+dir=$1
+for stubdir in `find $dir -type d`; do
+    if [ -r $stubdir/config.m4 ]; then
+        echo "sinclude($stubdir/config.m4)"
+    fi
+done

@@ -1,0 +1,107 @@
+#!/bin/sh
+
+# TODO - Steal the new PHP buildconf and build.mk.
+# This will do for now, though
+
+supplied_flag=$1
+
+# do some version checking for the tools we use
+if test "$1" = "--force"; then
+    shift
+# this is a posix correct "test -nt"
+elif test "`ls -t buildconf buildconf.stamp 2>/dev/null |head -1`" != "buildconf"; then
+    :
+else
+    echo "buildconf: checking installation..."
+
+    # autoconf will check for the version itself
+    # automake 1.4 or newer
+    am_version=`automake --version 2>/dev/null|head -1|sed -e 's/^[^0-9]*//' -e 's/[a-z]* *$//'`
+    if test "$am_version" = ""; then
+	echo "buildconf: automake not found."
+	echo "           You need automake version 1.4 or newer installed"
+	echo "           to build APACHE from CVS."
+	exit 1
+    fi
+    IFS=.; set $am_version; IFS=' '
+    if test "$1" = "1" -a "$2" -lt "4" || test "$1" -lt "1"; then
+	echo "buildconf: automake version $am_version found."
+	echo "           You need automake version 1.4 or newer installed"
+	echo "           to build APACHE from CVS."
+	exit 1
+    else
+	echo "buildconf: automake version $am_version (ok)"
+    fi
+
+    # libtool 1.3.3 or newer
+    lt_pversion=`libtool --version 2>/dev/null|sed -e 's/^[^0-9]*//' -e 's/[- ].*//'`
+    if test "$lt_pversion" = ""; then
+	echo "buildconf: libtool not found."
+	echo "           You need libtool version 1.3 or newer installed"
+	echo "           to build APACHE from CVS."
+	exit 1
+    fi
+    lt_version=`echo $lt_pversion|sed -e 's/\([a-z]*\)$/.\1/'`
+    IFS=.; set $lt_version; IFS=' '
+    if test "$1" -gt "1" || test "$2" -gt "3" || test "$2" = "3" -a "$3" -ge "3"
+    then
+	echo "buildconf: libtool version $lt_pversion (ok)"
+    else
+	echo "buildconf: libtool version $lt_pversion found."
+	echo "           You need libtool version 1.3.3 or newer installed"
+	echo "           to build APACHE from CVS."
+	exit 1
+    fi
+    touch buildconf.stamp
+fi
+
+am_prefix=`which automake | sed -e 's#/[^/]*/[^/]*$##'`
+lt_prefix=`which libtool | sed -e 's#/[^/]*/[^/]*$##'`
+if test "$am_prefix" != "$lt_prefix"; then
+    echo "buildconf: WARNING: automake and libtool are installed in different"
+    echo "           directories.  This may cause aclocal to fail."
+    echo "buildconf: continuing anyway"
+fi
+
+if test "$supplied_flag" = "--copy"; then
+    automake_flags=--copy
+fi
+
+./helpers/build-acconfig-header
+
+mv aclocal.m4 aclocal.m4.old 2>/dev/null
+aclocal
+if test "$?" != "0" -a "$am_prefix" != "$lt_prefix"; then
+    echo "buildconf: ERROR: aclocal failed, probably because automake and"
+    echo "           libtool are installed with different prefixes;"
+    echo "           automake is installed in $am_prefix, but libtool in $lt_prefix."
+    echo "           Please re-install automake and/or libtool with a common prefix"
+    echo "           and try again."
+    exit 1
+fi
+
+if cmp aclocal.m4.old aclocal.m4 > /dev/null 2>&1; then
+    echo "buildconf: keeping aclocal.m4"
+    mv aclocal.m4.old aclocal.m4
+else
+    echo "buildconf: created or modified aclocal.m4"
+fi
+
+autoheader
+
+# find all Makefile.ams
+files="Makefile `find ap lib main modules regex os -name Makefile.am | sed 's#\.am##' | tr '\n' ' '`"
+
+# suppress stupid automake warning
+automake --add-missing --include-deps $automake_flags $files 2>&1 | grep -v \$APACHE_OUTPUT_FILES >&2
+
+
+mv configure configure.old 2>/dev/null
+autoconf
+if cmp configure.old configure > /dev/null 2>&1; then
+    echo "buildconf: keeping configure"
+    mv configure.old configure
+else
+    echo "buildconf: created or modified configure"
+fi
+
