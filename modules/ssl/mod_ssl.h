@@ -95,6 +95,8 @@
 #include "mpm.h"
 #include "apr.h"
 #include "apr_strings.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 #include "apr_tables.h"
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
