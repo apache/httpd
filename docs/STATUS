@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/04/23 15:26:33 $
+Last modified: $Date: 2003/04/23 17:17:49 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -12,7 +12,7 @@ Decisions pending
   - Backport removal of SSI from docs directory in default config
     docs/conf/httpd-std.conf.in rev 1.36
     docs/conf/httpd-win.conf rev 1.82
-    +1: slive
+    +1: slive, nd
 
   -Comment out .gz etc. AddEncoding lines in our default configuration.
     docs/conf/httpd-std.conf.in rev 1.32
@@ -183,12 +183,6 @@ XML Conversions
 The following files need to be converted to XML as described at
 http://httpd.apache.org/docs-project/docsformat.html
 
-expand.pl                          # delete after finishing everything
-
-# These will require manual.xsl changes
-faq/footer.html                    
-faq/header.html
-
 # Perhaps these should be left in html to allow the developers to
 # play with them
 # nope. in order to create other formats, we need 'em as xml. --nd
@@ -198,8 +192,6 @@ developer/API.html
 programs/ab.html
 programs/apxs.html
 programs/dbmmanage.html
-programs/footer.html
-programs/header.html
 programs/htdigest.html
 programs/htpasswd.html
 programs/other.html
