@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/07/21 12:05:09 $
+Last modified: $Date: 2003/07/23 23:54:23 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -14,7 +14,7 @@ Decisions pending
   repository but don't belong in distributions unless we introduce the
   tools to generate the index database or keep a current database checked
   into cvs.
-  +1: wrowe, nd, slive
+  +1: wrowe, nd, slive, erikabele
 
 - Remove several out-of-place files into somewhere in the tree outside
   of the actual web site content?  Erik suggests we merge the two icons
@@ -23,7 +23,7 @@ Decisions pending
     icons/readme
     icons/small/readme.txt
   Votes for a single top-level README reference?
-  +1: wrowe, slive, nd
+  +1: wrowe, slive, nd, erikabele
 
 
 Things That Need Fixing
