@@ -766,9 +766,9 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
     struct hostent *hp;
-    static __declspec( thread ) struct hostent hpbuf;
-    static __declspec( thread ) u_long ipaddr;
-    static __declspec( thread ) char* charpbuf[2];
+    static APACHE_TLS struct hostent hpbuf;
+    static APACHE_TLS u_long ipaddr;
+    static APACHE_TLS char* charpbuf[2];
 
     for (i=0; host[i] != '\0'; i++)
 	if (!isdigit(host[i]) && host[i] != '.')
