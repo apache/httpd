@@ -1758,7 +1758,7 @@ static int dav_method_options(request_rec *r)
             return dav_handle_err(r, err, NULL);
 
         /* if unrecognized option, pass to versioning provider */
-        if (!core_option) {
+        if (!core_option && vsn_hooks != NULL) {
             if ((err = (*vsn_hooks->get_option)(resource, elem, &body))
                 != NULL) {
                 return dav_handle_err(r, err, NULL);
