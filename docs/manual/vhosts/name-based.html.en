@@ -64,18 +64,20 @@
 	<code>&lt;VirtualHost&gt;</code> directive should be the same as the
 	argument to the <code>NameVirtualHost</code> directive (ie, an IP
 	address, or <code>*</code> for all addresses).  Inside each
-	<code>&lt;VirtualHost&gt;</code> block, you will need at minimum a /
+	<code>&lt;VirtualHost&gt;</code> block, you will need at minimum a
 	<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive to
 	designate which host is served and a <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> directive to
 	show where in the filesystem the content for that host lives.</p>
 
-	<p>If you are adding virtual hosts to an existing web server, you
+    <div class="note"><h3>Main host goes away</h3>
+	If you are adding virtual hosts to an existing web server, you
 	must also create a &lt;VirtualHost&gt; block for the existing host.
 	The <code>ServerName</code> and <code>DocumentRoot</code> included in
 	this virtual host should be the same as the global
 	<code>ServerName</code> and <code>DocumentRoot</code>.  List this
 	virtual host first in the configuration file so that it will act as
-	the default host.</p>
+	the default host.
+    </div>
 
 	<p>For example, suppose that you are serving the domain
 	<code>www.domain.tld</code> and you wish to add the virtual host
@@ -86,28 +88,36 @@
     NameVirtualHost *<br />
     <br />
     &lt;VirtualHost *&gt;<br />
+    <span class="indent">
     ServerName www.domain.tld<br />
+    ServerAlias domain.tld *.domain.tld<br />
     DocumentRoot /www/domain<br />
+    </span>
     &lt;/VirtualHost&gt;<br />
     <br />
     &lt;VirtualHost *&gt;<br />
-    ServerName www.otherdomain.tld<br />
+    <span class="indent">ServerName www.otherdomain.tld<br />
     DocumentRoot /www/otherdomain<br />
+    </span>
     &lt;/VirtualHost&gt;<br />
 	</code></p></div>
 
 	<p>You can alternatively specify an explicit IP address in place of
 	the * in both the <code>NameVirtualHost</code> and
-	<code>&lt;VirtualHost&gt;</code> directives.</p>
+	<code>&lt;VirtualHost&gt;</code> directives. For example, you might
+    want to do this in order to run some name-based virtual hosts on one
+    IP address, and either IP-based, or another set of name-based
+    virtual hosts on another address.</p>
 
 	<p>Many servers want to be accessible by more than one name.  This is
 	possible with the <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>
 	directive, placed inside the &lt;VirtualHost&gt; section. For
-	example if you add this to the first &lt;VirtualHost&gt; block
-	above</p>
+	example in the first &lt;VirtualHost&gt; block above, the <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> directive indicates that the
+    listed names are other names which people can use to see that same
+    web site:</p>
 
 	<div class="example"><p><code>
-	ServerAlias domain.tld *.domain.tld
+    ServerAlias domain.tld *.domain.tld
 	</code></p></div>
 
 	<p>then requests for all hosts in the <code>domain.tld</code> domain
@@ -156,6 +166,13 @@
     pages from the first virtual host listed for that IP address
     (the <cite>primary</cite> name-based virtual host).</p>
 
+    <div class="note"><h3>How much older?</h3>
+    Please note that when we say older, we really do mean older. You are
+    very unlikely to encounter one of these browsers in use today. All
+    current versions of any browser send the <code>Host</code> header as
+    required for name-based virtual hosts.
+    </div>
+
     <p>There is a possible workaround with the <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>
     directive, albeit a slightly cumbersome one:</p>
 
@@ -165,9 +182,11 @@
     NameVirtualHost 111.22.33.44<br />
     <br />
     &lt;VirtualHost 111.22.33.44&gt;<br />
+    <span class="indent">
     ServerName www.domain.tld<br />
     ServerPath /domain<br />
     DocumentRoot /web/domain<br />
+    </span>
     &lt;/VirtualHost&gt;<br />
  	  </code></p></div>
 
