@@ -84,7 +84,8 @@ extern int fclose(FILE *);
 
 static unsigned char test_char_table[256];
 
-#define TEST_CHAR(c, f)	(test_char_table[((unsigned char)(c)) & 0xff] & (f))
+/* we assume the folks using this ensure the char < 256 */
+#define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
 /* XXX: this should be compile-time initialized so that test_char_table can
  * live in read-only memory and not require backing store across fork(). 
@@ -691,32 +692,6 @@ API_EXPORT(char *) getword_conf(pool *p, const char **line)
     return res;
 }
 
-#ifdef UNDEF
-/* this function is dangerous, and superceded by getword_white, so don't use it
- */
-void cfg_getword(char *word, char *line)
-{
-    int x = 0, y;
-
-    for (x = 0; line[x] && isspace(line[x]); x++);
-    y = 0;
-    while (1) {
-	if (!(word[y] = line[x]))
-	    break;
-	if (isspace(line[x]))
-	    if ((!x) || (line[x - 1] != '\\'))
-		break;
-	if (line[x] != '\\')
-	    ++y;
-	++x;
-    }
-    word[y] = '\0';
-    while (line[x] && isspace(line[x]))
-	++x;
-    for (y = 0; (line[y] = line[x]); ++x, ++y);
-}
-#endif
-
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
 API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
@@ -980,8 +955,7 @@ API_EXPORT(char *) get_token(pool *p, char **accept_line, int accept_white)
     }
 
     tok_len = ptr - tok_start;
-    token = palloc(p, tok_len + 1);
-    ap_cpystrn(token, tok_start, tok_len + 1);
+    token = pstrndup(p, tok_start, tok_len);
 
     /* Advance accept_line pointer to the next non-white byte */
 
@@ -1048,31 +1022,28 @@ API_EXPORT(int) find_last_token(pool *p, const char *line, const char *tok)
 
 API_EXPORT(char *) escape_shell_cmd(pool *p, const char *s)
 {
-    register int x, y, l;
     char *cmd;
+    char *d;
 
-    l = strlen(s);
-    cmd = palloc(p, 2 * l + 1);	/* Be safe */
-    strcpy(cmd, s);
-
-    for (x = 0; cmd[x]; x++) {
+    cmd = palloc(p, 2 * strlen(s) + 1);	/* Be safe */
+    d = cmd;
+    for (; *s; ++s) {
 
 #if defined(__EMX__) || defined(WIN32)
 	/* Don't allow '&' in parameters under OS/2. */
 	/* This can be used to send commands to the shell. */
-	if (cmd[x] == '&') {
-	    cmd[x] = ' ';
+	if (*s == '&') {
+	    *d++ = ' ';
+	    continue;
 	}
 #endif
 
-	if (TEST_CHAR(cmd[x], T_ESCAPE_SHELL_CMD)) {
-	    for (y = l + 1; y > x; y--)
-		cmd[y] = cmd[y - 1];
-	    l++;		/* length has been increased */
-	    cmd[x] = '\\';
-	    x++;		/* skip the character */
+	if (TEST_CHAR(*s, T_ESCAPE_SHELL_CMD)) {
+	    *d++ = '\\';
 	}
+	*d++ = *s;
     }
+    *d = '\0';
 
     return cmd;
 }
@@ -1170,7 +1141,15 @@ API_EXPORT(char *) construct_server(pool *p, const char *hostname,
     }
 }
 
-#define c2x(what,where) sprintf(where,"%%%02x",(unsigned char)what)
+static const char c2x_table[] = "0123456789abcdef";
+
+static ap_inline char *c2x(unsigned char what, char *where)
+{
+    *where++ = '%';
+    *where++ = c2x_table[what >> 4];
+    *where++ = c2x_table[what & 0xf];
+    return where;
+}
 
 /*
  * escape_path_segment() escapes a path segment, as defined in RFC 1808. This
@@ -1189,46 +1168,50 @@ API_EXPORT(char *) construct_server(pool *p, const char *hostname,
 
 API_EXPORT(char *) escape_path_segment(pool *p, const char *segment)
 {
-    register int x, y;
     char *copy = palloc(p, 3 * strlen(segment) + 1);
+    const unsigned char *s = (const unsigned char *)segment;
+    unsigned char *d = (unsigned char *)copy;
+    unsigned c;
 
-    for (x = 0, y = 0; segment[x]; x++, y++) {
-	char c = segment[x];
+    while ((c = *s)) {
 	if (TEST_CHAR(c, T_ESCAPE_PATH_SEGMENT)) {
-	    c2x(c, &copy[y]);
-	    y += 2;
+	    d = c2x(c, d);
 	}
-	else
-	    copy[y] = c;
+	else {
+	    *d++ = c;
+	}
+	++s;
     }
-    copy[y] = '\0';
+    *d = '\0';
     return copy;
 }
 
 API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
 {
     char *copy = palloc(p, 3 * strlen(path) + 3);
-    char *s = copy;
+    const unsigned char *s = (const unsigned char *)path;
+    unsigned char *d = (unsigned char *)copy;
+    unsigned c;
 
     if (!partial) {
 	char *colon = strchr(path, ':');
 	char *slash = strchr(path, '/');
 
 	if (colon && (!slash || colon < slash)) {
-	    *s++ = '.';
-	    *s++ = '/';
+	    *d++ = '.';
+	    *d++ = '/';
 	}
     }
-    for (; *path; ++path) {
-	char c = *path;
+    while ((c = *s)) {
 	if (TEST_CHAR(c, T_OS_ESCAPE_PATH)) {
-	    c2x(c, s);
-	    s += 3;
+	    d = c2x(c, d);
 	}
-	else
-	    *s++ = c;
+	else {
+	    *d++ = c;
+	}
+	++s;
     }
-    *s = '\0';
+    *d = '\0';
     return copy;
 }
 
@@ -1507,34 +1490,6 @@ API_EXPORT(gid_t) gname2id(const char *name)
 #endif
 }
 
-#if 0
-int get_portnum(int sd)
-{
-    struct sockaddr addr;
-    int len;
-
-    len = sizeof(struct sockaddr);
-    if (getsockname(sd, &addr, &len) < 0)
-	return -1;
-    return ntohs(((struct sockaddr_in *) &addr)->sin_port);
-}
-
-struct in_addr get_local_addr(int sd)
-{
-    struct sockaddr addr;
-    int len;
-
-    len = sizeof(struct sockaddr);
-    if (getsockname(sd, &addr, &len) < 0) {
-	perror("getsockname");
-	fprintf(stderr, "Can't get local host address!\n");
-	exit(1);
-    }
-
-    return ((struct sockaddr_in *) &addr)->sin_addr;
-}
-
-#endif
 
 /*
  * Parses a host of the form <address>[:port]
