@@ -9,9 +9,6 @@ Changes with Apache 2.1.0-dev
   *) logresolve: Allow size of log line buffer to be overridden at
      build time (MAXLINE).  PR 27793.  [Jeff Trawick]
 
-  *) Fix crash when Apache was started with no Listen directives.
-     [Michael Corcoran <mcorcoran warpsolutions.com>]
-
   *) mod_dav: Fix a problem that could cause crashes when manipulating 
      locks on some platforms.  [Jeff Trawick]
 
@@ -287,6 +284,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) Fix crash when Apache was started with no Listen directives.
+     [Michael Corcoran <mcorcoran warpsolutions.com>]
+
   *) core_output_filter: Fix bug that could result in sending
      garbage over the network when module handlers construct
      bucket brigades containing multiple file buckets all referencing
