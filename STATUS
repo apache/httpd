@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/31 19:21:50 $]
+Last modified at [$Date: 2001/08/06 22:59:22 $]
 
 Release:
 
@@ -143,6 +143,20 @@ RELEASE SHOWSTOPPERS:
         Status: Greg volunteers
         MsgId: <20010227104646.E2297@lyra.org>
         MsgId: <3A9C0097.9C83F07C@Golux.Com>
+
+    * mod_negotiation will not serve a request when an early extention
+      is understood, but a later extention is not.  e.g. if the request
+      index.html.bak is recieved, and negotition could find the file
+      index.html.bak.en, it still won't be served because the 
+      ap-mime-exception-list will contain "index" and "bak", and the
+      string "index.bak" doesn't match "index.html.bak".  Need to
+      review the ap-mime-exception-list component by component to be
+      allow these cases.  [This could be part of a patch to allow the
+      name index.bak in the case above to match index.html.bak.en]
+
+    * mod_negotiation needs a new option or directive, something like
+      ForceLanguagePriority, to fall back to the LanguagePriority
+      directive instead of returning a "no acceptable variant" error.
 
     * Usability: Sanitize the MPM config directives.  MaxClients in 
       the threaded MPM is totally misleading now as it has little to
