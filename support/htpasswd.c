@@ -407,6 +407,18 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     }
 }
 
+static const char *get_tempname(apr_pool_t *p)
+{
+    char tn[] = "htpasswd.tmp.XXXXXX";
+    char *dirname;
+
+    if (!(dirname = getenv("TEMP")) && !(dirname = getenv("TMPDIR"))) {
+            dirname = P_tmpdir;
+    }
+    dirname = apr_psprintf(p, "%s/%s", dirname, tn);
+    return dirname;
+}
+
 /*
  * Let's do it.  We end up doing a lot of file opening and closing,
  * but what do we care?  This application isn't run constantly.
@@ -419,7 +431,7 @@ int main(int argc, const char * const argv[])
     char *password = NULL;
     char *pwfilename = NULL;
     char *user = NULL;
-    char tn[] = "htpasswd.tmp.XXXXXX";
+    const char *tn;
     char scratch[MAX_STRING_LEN];
     int found = 0;
     int i;
@@ -533,6 +545,7 @@ int main(int argc, const char * const argv[])
      * We can access the files the right way, and we have a record
      * to add or update.  Let's do it..
      */
+    tn = get_tempname(pool);
     if (apr_file_mktemp(&ftemp, tn, 0, pool) != APR_SUCCESS) {
         apr_file_printf(errfile, "%s: unable to create temporary file %s\n", 
                         argv[0], tn);
