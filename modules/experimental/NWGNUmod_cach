@@ -179,6 +179,7 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/cache_util.o \
+	$(OBJDIR)/cache_hash.o \
 	$(OBJDIR)/cache_storage.o \
 	$(OBJDIR)/mod_cache.o \
 	$(EOLIST)
@@ -230,12 +231,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	generate_name \
-	ap_cache_hex2usec \
-	ap_cache_usec2hex \
-	cache_hook_create_entity \
-	cache_hook_open_entity \
-	cache_hook_remove_url \
+	@mod_cache.imp \
 	cache_module \
 	$(EOLIST)
 	

@@ -179,7 +179,6 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_mem_cache.o \
-	$(OBJDIR)/cache_hash.o \
 	$(EOLIST)
 
 #
@@ -221,9 +220,7 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	@$(APR)/aprlib.imp \
 	@httpd.imp \
-	cache_hook_create_entity \
-	cache_hook_open_entity \
-	cache_hook_remove_url \
+	@mod_cache.imp \
 	$(EOLIST)
  
 #   
