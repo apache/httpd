@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
+<!-- English revision: 1.12.2.14 -->
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.12.2.12 -->
 
 <sitemap metafile="sitemap.xml.meta">
 
@@ -61,8 +61,8 @@
 <category id="faq">
 <title>Apache サーバのよくある質問</title>
 <page href="faq/">概略</page>
-<page separate="yes" href="faq/all_in_one.html">1 ページ版</page>
 <page href="faq/support.html">サポート</page>
+<page href="faq/error.html">エラーメッセージ</page>
 </category>
 
 <category id="ssl">
@@ -82,7 +82,7 @@
 <page href="howto/ssi.html">Server Side Includes 入門</page>
 <page href="howto/htaccess.html">.htaccess ファイル</page>
 <page href="howto/public_html.html">ユーザ毎のウェブディレクトリ</page>
-<page href="misc/tutorials.html">いろいろな Apache のチュートリアル</page>
+<page href="misc/tutorials.html">Apache チュートリアル</page>
 </category>
 
 <category id="platform">
@@ -121,13 +121,13 @@
 <page href="misc/known_client_problems.html">クライアントの既知の問題</page>
 <page href="misc/descriptors.html">記述子と Apache</page>
 <page href="cgi_path.html">CGI 環境の PATH_INFO の変更</page>
+<page href="misc/relevant_standards.html">関連する標準規格</page>
 </category>
 
 <category id="modules">
 <title>Apache モジュール</title>
-<page href="mod/">モジュール索引</page>
-<page href="mod/directives.html">ディレクティブ索引</page>
-<page href="mod/quickreference.html">ディレクティブクイックリファレンス</page>
+<page href="mod/module-dict.html">Apache ディレクティブの説明に使われる用語</page>
+<page href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</page>
 &allmodules;
 </category>
 
@@ -145,12 +145,12 @@
 <page href="developer/filters.html">Apache 2.0 のフィルタの動作の仕方</page>
 </category>
 
-<category id="descriptive">
-<title>説明用の情報</title>
-<page href="mod/module-dict.html">Apache モジュールを説明するために使われている用語</page>
-<page href="mod/directive-dict.html">Apache ディレクティブを説明するために使われている用語</page>
+<category id="index">
+<title>用語集と索引</title>
 <page href="glossary.html">用語集</page>
-<page>サイトマップ (この文書)</page>
+<page href="mod/">モジュール索引</page>
+<page href="mod/directives.html">ディレクティブ索引</page>
+<page href="mod/quickreference.html">ディレクティブ クイックリファレンス</page>
 </category>
 
 </sitemap>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.1.2.3 -->
+<!-- English revision: 1.1.2.4 -->
 
 <manualpage metafile="custom-error.xml.meta">
-  
+
   <title>カスタムエラーレスポンス</title>
-  
+
   <summary>
     <p>ウェブマスターが何らかのエラーや問題に対する
     Apache の反応を設定できるようにする追加機能を提供します。</p>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.2.2.4 -->
+<!-- English revision: 1.2.2.5 -->
 
 <manualpage metafile="bind.xml.meta">
 
@@ -10,13 +10,13 @@
   <summary>
     <p>Apache が使用するアドレスとポートの設定をします。</p>
   </summary>
-  
+
   <seealso><a href="vhosts/">バーチャルホスト</a></seealso>
   <seealso><a href="dns-caveats.html">DNS の問題</a></seealso>
 
   <section id="overview">
     <title>概要</title>
-    
+
     <related>
       <modulelist>
         <module>core</module>
@@ -27,8 +27,8 @@
         <directive module="mpm_common">Listen</directive>
       </directivelist>
     </related>
-    
-    
+
+
     <p>Apache は起動時に、ローカルマシンのあるポートあよびアドレス
     に対して接続し、リクエストが来るのを待ちます。
     デフォルトではマシンのすべてのアドレスに対して listen します。

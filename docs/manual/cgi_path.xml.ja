@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.1.2.2 -->
+<!-- English revision: 1.1.2.3 -->
 
 <manualpage metafile="cgi_path.xml.meta">
 
@@ -29,7 +29,7 @@
 
     <example>
       Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
-    </example>    
+    </example>
 
     <p>この場合、<code>user.cgi</code> は CGI スクリプトであり、
     &quot;/ralph&quot; は、CGI に渡される情報です。もし上の設定がなされていて、

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.4.2.2 -->
+<!-- English revision: 1.4.2.3 -->
 
 <manualpage metafile="filter.xml.meta">
 
@@ -30,7 +30,7 @@
         <directive module="core">SetOutputFilter</directive>
       </directivelist>
     </related>
-    
+
     <p><em>フィルタ</em> とは、サーバが送受信したデータに
     適用される処理プロセスのことをいいます。クライアントからサーバに
     送られたデータは <em>入力フィルタ</em> によって、サーバから
