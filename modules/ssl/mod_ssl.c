@@ -274,7 +274,6 @@ static int ssl_hook_pre_connection(conn_rec *c)
     SSL_set_app_data(ssl, c);
     apctx = apr_table_make(c->pool, AP_CTX_MAX_ENTRIES);
     apr_table_setn(apctx, "ssl::request_rec", NULL);
-    apr_table_setn(apctx, "ssl::verify::depth", AP_CTX_NUM2PTR(0));
     SSL_set_app_data2(ssl, apctx);
 
     sslconn->ssl = ssl;
