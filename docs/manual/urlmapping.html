@@ -3,8 +3,6 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
     <title>Mapping URLs to Filesystem Locations - Apache HTTP
     Server</title>
   </head>
@@ -30,6 +28,8 @@
 
       <li><a href="#redirect">URL Redirection</a></li>
 
+      <li><a href="#proxy">Reverse Proxy</a></li>
+
       <li><a href="#rewrite">Rewrite Engine</a></li>
 
       <li><a href="#notfound">File Not Found</a></li>
@@ -41,6 +41,7 @@
         <td valign="top"><strong>Related Modules</strong><br />
          <br />
          <a href="mod/mod_alias.html">mod_alias</a><br />
+         <a href="mod/mod_proxy.html">mod_proxy</a><br />
          <a href="mod/mod_rewrite.html">mod_rewrite</a><br />
          <a href="mod/mod_userdir.html">mod_userdir</a><br />
          <a href="mod/mod_speling.html">mod_speling</a><br />
@@ -60,6 +61,8 @@
          <a
         href="mod/core.html#errordocument">ErrorDocument</a><br />
          <a href="mod/core.html#options">Options</a><br />
+         <a href="mod/mod_proxy.html#proxypass">ProxyPass</a><br />
+         <a href="mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a><br />
          <a href="mod/mod_alias.html#redirect">Redirect</a><br />
          <a
         href="mod/mod_alias.html#redirectmatch">RedirectMatch</a><br />
@@ -137,7 +140,7 @@
     substitution. For example,</p>
 
     <blockquote>
-      <code>ScriptAliasMatch ^/~([^/]*)/cgi-bin/(.*)
+      <code>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
       /home/$1/cgi-bin/$2</code>
     </blockquote>
 
@@ -188,7 +191,7 @@
     following <code>AliasMatch</code> directive:</p>
 
     <blockquote>
-      <code>AliasMatch ^/upages/([^/]*)/?(.*)
+      <code>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
       /home/$1/public_html/$2</code>
     </blockquote>
 
@@ -238,18 +241,52 @@
       http://www.example.com/startpage.html</code>
     </blockquote>
 
+
+<h2><a id="proxy" name="proxy">Reverse Proxy</a></h2>
+
+<p>Apache also allows you to bring remote documents into the URL space
+of the local server.  This technique is called <em>reverse
+proxying</em> because the web server acts like a proxy server by
+fetching the documents from a remote server and returning them to the
+client.  It is different from normal proxying because, to the client,
+it appears the documents originate at the reverse proxy server.</p>
+
+<p>In the following example, when clients request documents under the
+<code>/foo/</code> directory, the server fetches those documents from
+the <code>/bar/</code> directory on <code>internal.example.com</code>
+and returns them to the client as if they were from the local
+server.</p>
+
+<blockquote>
+ProxyPass /foo/ http://internal.example.com/bar/<br />
+ProxyPassReverse /foo/ http://internal.example.com/bar/
+</blockquote>
+
+<p>The <a href="mod/mod_proxy.html#proxypass">ProxyPass</a> configures
+the server to fetch the appropriate documents, while the <a
+href="mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a>
+directive rewrites redirects originating at
+<code>internal.examle.com</code> so that they target the appropriate
+directory on the local server.  It is important to note, however, that
+links inside the documents will not be rewritten.  So any absolute
+links on <code>internal.example.com</code> will result in the client
+breaking out of the proxy server and requesting directly from
+<code>internal.example.com</code>.</p>
+
+
     <h2><a id="rewrite" name="rewrite">Rewriting Engine</a></h2>
 
-    <p>When even more powerful substitution is required, the
-    rewriting engine provided by <a
-    href="mod/mod_rewrite.html">mod_rewrite</a> can be useful. The
-    directives provided by this module use characteristics of the
-    request such as browser type or source IP address in deciding
-    from where to serve content. In addition, mod_rewrite can use
-    external database files or programs to determine how to handle
-    a request. Many practical examples employing mod_rewrite are
-    discussed in the <a href="misc/rewriteguide.html">URL Rewriting
-    Guide</a>.</p>
+    <p>When even more powerful substitution is required, the rewriting
+    engine provided by <a href="mod/mod_rewrite.html">mod_rewrite</a>
+    can be useful. The directives provided by this module use
+    characteristics of the request such as browser type or source IP
+    address in deciding from where to serve content. In addition,
+    mod_rewrite can use external database files or programs to
+    determine how to handle a request. The rewriting engine is capable
+    of performing all three types of mappings discussed above:
+    internal redirects (aliases), external redirects, and proxying.
+    Many practical examples employing mod_rewrite are discussed in the
+    <a href="misc/rewriteguide.html">URL Rewriting Guide</a>.</p>
 
     <h2><a id="notfound" name="notfound">File Not Found</a></h2>
 
