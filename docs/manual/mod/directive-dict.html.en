@@ -55,6 +55,11 @@
         HREF="#Compatibility"
         REL="Help"
        ><STRONG>Compatibility:</STRONG></A> <EM>compatibility notes</EM>
+       <BR>
+       <A
+        HREF="#Depricated"
+        REL="Help"
+       ><STRONG>Depricated:</STRONG></A> <EM>see other</EM>
    </DD>
   </DL>
   <P>
@@ -77,6 +82,8 @@
    <LI><A HREF="#Module">Module</A>
    </LI>
    <LI><A HREF="#Compatibility">Compatibility</A>
+   </LI>
+   <LI><A HREF="#Depricated">Depricated</A>
    </LI>
   </UL>
 
@@ -356,6 +363,17 @@ more details.</dd>
   be mentioned.  Otherwise, this attribute should say &quot;<EM>No
   compatibility issues.</EM>&quot;
   </P>
+
+  <HR>
+  <H2><A NAME="Depricated">Depricated</A></H2>
+  <P>
+  If this directive is eliminated since the Apache version 1 distribution,
+  the directive or option that replaces the behavior should be cited here.
+  In general, directives, features, and options are only depreciated to
+  minimize debugging of conflicting features, or features that can only
+  be supported in an alternate manner.
+  </P>
+
 <!--#include virtual="footer.html" -->
  </BODY>
 </HTML>

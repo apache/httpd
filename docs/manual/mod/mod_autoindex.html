@@ -55,19 +55,14 @@ are controlled by <CODE>mod_autoindex</CODE>.
 The two functions are separated so that you can completely remove
 (or replace) automatic index generation should you want to.
 <P>
-If
-<A
- HREF="#fancyindexing"
-><SAMP>FancyIndexing</SAMP></A>
-is enabled, or the <SAMP>FancyIndexing</SAMP> keyword is present on the
-<A
- HREF="#indexoptions"
-><SAMP>IndexOptions</SAMP></A>
+If the <SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP> 
+option is given  with the <A HREF="#indexoptions"><SAMP>IndexOptions</SAMP></A>
 directive, the column headers are links that control the
 order of the display.  If you select a header link, the
 listing will be regenerated, sorted by the values in that
 column.  Selecting the same header repeatedly toggles
-between ascending and descending order.
+between ascending and descending order.  This can be suppressed with
+<A HREF="#indexoptions">IndexOptions</A> <SAMP>SuppressColumnSorting</SAMP>.
 </P>
 <P>
 Note that when the display is sorted by &quot;Size&quot;,
@@ -89,7 +84,6 @@ order) even though they both are shown as &quot;1K&quot;.
 <LI><A HREF="#addiconbyencoding">AddIconByEncoding</A>
 <LI><A HREF="#addiconbytype">AddIconByType</A>
 <LI><A HREF="#defaulticon">DefaultIcon</A>
-<LI><A HREF="#fancyindexing">FancyIndexing</A>
 <LI><A HREF="#headername">HeaderName</A>
 <LI><A HREF="#indexignore">IndexIgnore</A>
 <LI><A HREF="#indexoptions">IndexOptions</A>
@@ -127,12 +121,12 @@ HREF="mod_dir.html#directoryindex">DirectoryIndex</A>.</p>
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
-This sets the alternate text to display for a file, instead of an icon, for
-<A HREF="#fancyindexing">FancyIndexing</A>. <EM>File</EM> is a file
-extension, partial filename, wild-card expression or full filename for files
-to describe. <EM>String</EM> is enclosed in double quotes
-(<CODE>&quot;</CODE>).  This alternate text is displayed if the client is
-image-incapable or has image loading disabled.
+This provides the alternate text to display for a file, instead of an icon, for
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>. <EM>File</EM> 
+is a file extension, partial filename, wild-card expression or full filename for 
+files to describe. <EM>String</EM> is enclosed in double quotes (<CODE>&quot;</CODE>).
+This alternate text is displayed if the client is image-incapable, has image loading 
+disabled, or fails to retrieve the icon.
 
 <HR>
 <H2><A NAME="addaltbyencoding">AddAltByEncoding</A> directive</H2>
@@ -160,12 +154,12 @@ image-incapable or has image loading disabled.
  REL="Help"
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
-This sets the alternate text to display for a file, instead of an icon, for
-<A HREF="#fancyindexing">FancyIndexing</A>. <EM>MIME-encoding</EM> is a
-valid content-encoding, such as <SAMP>x-compress</SAMP>.
-<EM>String</EM> is enclosed in double quotes
-(<CODE>&quot;</CODE>).  This alternate text is displayed if the client is
-image-incapable or has image loading disabled.
+This provides the alternate text to display for a file, instead of an icon, 
+for <SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>. 
+<EM>MIME-encoding</EM> is a valid content-encoding, such as <SAMP>x-compress</SAMP>.
+<EM>String</EM> is enclosed in double quotes (<CODE>&quot;</CODE>).  This alternate 
+text is displayed if the client is image-incapable, has image loading disabled, or 
+fails to retrieve the icon.
 
 <HR>
 <H2><A NAME="addaltbytype">AddAltByType</A> directive</H2>
@@ -194,11 +188,11 @@ image-incapable or has image loading disabled.
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
 This sets the alternate text to display for a file, instead of an icon, for
-<A HREF="#fancyindexing">FancyIndexing</A>. <EM>MIME-type</EM> is a
-valid content-type, such as <SAMP>text/html</SAMP>.
-<EM>String</EM> is enclosed in double quotes
-(<CODE>&quot;</CODE>).  This alternate text is displayed if the client is
-image-incapable or has image loading disabled.
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>.  
+<EM>MIME-type</EM> is a valid content-type, such as <SAMP>text/html</SAMP>. 
+<EM>String</EM> is enclosed in double quotes (<CODE>&quot;</CODE>).  This 
+alternate text is displayed if the client is image-incapable, has image loading 
+disabled, or fails to retrieve the icon.
 
 <HR>
 
@@ -228,10 +222,10 @@ image-incapable or has image loading disabled.
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
 This sets the description to display for a file, for
-<A HREF="#fancyindexing">FancyIndexing</A>. <EM>File</EM> is a file
-extension, partial filename, wild-card expression or full filename for files
-to describe. <EM>String</EM> is enclosed in double quotes
-(<CODE>&quot;</CODE>). Example:
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>. 
+<EM>File</EM> is a file extension, partial filename, wild-card expression 
+or full filename for files to describe. <EM>String</EM> is enclosed in double 
+quotes (<CODE>&quot;</CODE>). Example:
 <BLOCKQUOTE><CODE>AddDescription "The planet Mars" /web/pics/mars.gif
 </CODE></BLOCKQUOTE>
 <P>
@@ -280,8 +274,8 @@ may affect the rest of the directory listing.
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
 This sets the icon to display next to a file ending in <EM>name</EM> for
-<A HREF="#fancyindexing">FancyIndexing</A>. <EM>Icon</EM> is either a
-(%-escaped) relative URL to the icon, or of the format
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>. <EM>Icon</EM> 
+is either a (%-escaped) relative URL to the icon, or of the format
 (<EM>alttext</EM>,<EM>url</EM>) where <EM>alttext</EM> is the text tag given
 for an icon for non-graphical browsers.<P>
 
@@ -322,7 +316,7 @@ AddIcon, when possible.<P><HR>
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
 This sets the icon to display next to files with
-<EM>MIME-encoding</EM> for <A HREF="#fancyindexing">FancyIndexing</A>.
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>.
 <EM>Icon</EM> is either a (%-escaped) relative URL to the icon, or of the
 format (<EM>alttext</EM>,<EM>url</EM>) where <EM>alttext</EM> is the text tag
 given for an icon for non-graphical browsers.<P>
@@ -359,8 +353,8 @@ AddIconByEncoding /icons/compress.xbm x-compress
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
 This sets the icon to display next to files of type <EM>MIME-type</EM> for
-<A HREF="#fancyindexing">FancyIndexing</A>. <EM>Icon</EM> is either a
-(%-escaped) relative URL to the icon, or of the format
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>. <EM>Icon</EM> 
+is either a (%-escaped) relative URL to the icon, or of the format
 (<EM>alttext</EM>,<EM>url</EM>) where <EM>alttext</EM> is the text tag given
 for an icon for non-graphical browsers.<P>
 <EM>Mime-type</EM> is a wildcard expression matching required the mime types.
@@ -394,7 +388,8 @@ AddIconByType (IMG,/icons/image.xbm) image/*
 ><STRONG>Module:</STRONG></A> mod_autoindex<P>
 
 The DefaultIcon directive sets the icon to display for files when no
-specific icon is known, for <A HREF="#fancyindexing">FancyIndexing</A>.
+specific icon is known, for 
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP>.
 <EM>Url</EM> is a (%-escaped) relative URL to the icon. Examples:
 <BLOCKQUOTE><CODE>
 DefaultIcon /icon/unknown.xbm
@@ -403,41 +398,16 @@ DefaultIcon /icon/unknown.xbm
 <H2><A NAME="fancyindexing">FancyIndexing</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt FancyIndexing} directive&gt; -->
 <A
- HREF="directive-dict.html#Syntax"
+ HREF="directive-dict.html#Depricated"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> FancyIndexing on|off<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory,
-    .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> Indexes<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_autoindex
+><STRONG>Depricated:</STRONG></A> See <A HREF="#indexoptions">IndexOptions</A> 
+ <SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP><BR>
 <P>
-The FancyIndexing directive sets the FancyIndexing option for a directory.
-The <A HREF="#indexoptions">IndexOptions</A> directive should be used in
-preference.
+The FancyIndexing directive was replaced by the 
+<SAMP><A HREF="#indexoptions:fancyindexing">FancyIndexing</A></SAMP> option to the
+<A HREF="#indexoptions">IndexOptions</A> directive, and is no longer supported
+in Apache 2.0.
 </P>
-<BLOCKQUOTE>
- <STRONG>Note that in versions of Apache prior to 1.3.2, the
- <SAMP>FancyIndexing</SAMP> and
- <SAMP>IndexOptions</SAMP> directives will override each other. You
- should use <SAMP>IndexOptions&nbsp;FancyIndexing</SAMP> in preference
- to the standalone <SAMP>FancyIndexing</SAMP> directive.
- As of Apache 1.3.2, a standalone <SAMP>FancyIndexing</SAMP> directive
- is combined with any <SAMP>IndexOptions</SAMP> directive already
- specified for the current scope.</STRONG>
-</BLOCKQUOTE>
 <HR>
 
 <H2><A NAME="headername">HeaderName</A> directive</H2>
@@ -600,20 +570,10 @@ for dangers inherent in truncating descriptions.</b></dd>
 <DT><A NAME="indexoptions:fancyindexing">FancyIndexing</A>
 <DD><!--%plaintext &lt;?INDEX {\tt FancyIndexing} index option&gt; -->
 This turns on fancy indexing of directories.
-<BLOCKQUOTE>
- <STRONG>Note that in versions of Apache prior to 1.3.2, the
- <SAMP>FancyIndexing</SAMP> and
- <SAMP>IndexOptions</SAMP> directives will override each other. You
- should use <SAMP>IndexOptions&nbsp;FancyIndexing</SAMP> in preference
- to the standalone <SAMP>FancyIndexing</SAMP> directive.
- As of Apache 1.3.2, a standalone <SAMP>FancyIndexing</SAMP> directive
- is combined with any <SAMP>IndexOptions</SAMP> directive already
- specified for the current scope.</STRONG>
-</BLOCKQUOTE>
 <dt><a name="indexoptions:foldersfirst">FoldersFirst
  (<i>Apache 1.3.10 and later</i>)</a></dt>
 <dd>
-If this option is enabled, subdirectories in a FancyIndexed listing
+If this option is enabled, subdirectory listings
 will <i>always</i> appear first, followed by normal files in the
 directory.  The listing is basically broken into two components,
 the files and the subdirectories, and each is sorted separately and
@@ -829,7 +789,8 @@ Apache 1.3.4 and later.
 <P>
 The <SAMP>IndexOrderDefault</SAMP> directive is used in combination with
 the <A HREF="#indexoptions:fancyindexing"><SAMP>FancyIndexing</SAMP></A>
-index option.  By default, fancyindexed directory listings are displayed in ascending order by filename; the <SAMP>IndexOrderDefault</SAMP> allows
+index option.  By default, fancyindexed directory listings are displayed 
+in ascending order by filename; the <SAMP>IndexOrderDefault</SAMP> allows
 you to change this initial display order.
 </P>
 <P>
