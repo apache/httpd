@@ -108,7 +108,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r);
  * @param new_file The URI to lookup
  * @param r The current request
  * @param next_filter The first filter the sub_request should use.  If this is
- *                    NULL, it defaults to the first filter for the main request
+ *                    NULL this subrequest cannot be served [lookup only]
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_lookup_uri(const char *new_file, const request_rec *r)
  */
@@ -122,7 +122,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
  * @param new_file The URI to lookup
  * @param r The current request
  * @param next_filter The first filter the sub_request should use.  If this is
- *                    NULL, it defaults to the first filter for the main request
+ *                    NULL this subrequest cannot be served [lookup only]
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_lookup_file(const char *new_file, const request_rec *r)
  */
@@ -140,7 +140,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
  *      AP_SUBREQ_MERGE_ARGS  merge r->args and r->path_info
  * </PRE>
  * @param next_filter The first filter the sub_request should use.  If this is
- *                    NULL, it defaults to the first filter for the main request
+ *                    NULL this subrequest cannot be served [lookup only]
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_lookup_dirent(apr_finfo_t *finfo, int subtype, const request_rec *r)
  * @tip The apr_dir_read flags value APR_FINFO_MIN|APR_FINFO_NAME flag is the 
