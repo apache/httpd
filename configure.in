@@ -329,7 +329,7 @@ AC_ARG_WITH(port,APACHE_HELP_STRING(--with-port=PORT,Port on which to listen (de
 
 dnl ## See if APR has IPv6 support
 ap_old_cppflags=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include -I$abs_builddir/srclib/apr/include"
+CPPFLAGS="$CPPFLAGS $INCLUDES"
 AC_TRY_COMPILE([#include <apr.h>], [
 #if !APR_HAVE_IPV6
 #error APR does not have IPv6 support
