@@ -511,7 +511,7 @@ typedef struct {
  * configuration functions - called by Apache API routines
  */
 
-module mime_magic_module;
+module AP_MODULE_DECLARE_DATA mime_magic_module;
 
 static void *create_magic_server_config(apr_pool_t *p, server_rec *d)
 {
@@ -2493,7 +2493,7 @@ static void register_hooks(apr_pool_t *p)
  * Apache API module interface
  */
 
-module mime_magic_module =
+module AP_MODULE_DECLARE_DATA mime_magic_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                      /* dir config creator */
