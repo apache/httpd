@@ -474,7 +474,7 @@ if test "x$ap_ssltk_base" = "x"; then
   AC_MSG_CHECKING(for SSL/TLS toolkit libraries)
   ap_ssltk_libdir=""
   for p in $ap_ssltk_base/lib /usr/local/openssl/lib \
-           /usr/local/ssl/lib /usr/local/lib /usr/lib /lib; do
+           /usr/local/ssl/lib /usr/local/lib /usr/lib /lib /usr/lib64; do
     if test -f "$p/libssl.a" -o -f "$p/libssl.so"; then
       ap_ssltk_libdir="$p"
       break
