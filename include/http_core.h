@@ -184,10 +184,12 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r);
  *                   setting.  The result is the (double reverse checked) 
  *                   hostname, or NULL if any of the lookups fail.
  * </PRE>
+ * @param str_is_ip unless NULL is passed, this will be set to non-zero on output when an IP address 
+ *        string is returned
  * @return The remote hostname
- * @deffunc const char *ap_get_remote_host(conn_rec *conn, void *dir_config, int type)
+ * @deffunc const char *ap_get_remote_host(conn_rec *conn, void *dir_config, int type, int *str_is_ip)
  */
-AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type);
+AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type, int *str_is_ip);
 
 /**
  * Retrieve the login name of the remote user.  Undef if it could not be

@@ -402,7 +402,7 @@ static int match_headers(request_rec *r)
 		break;
 	    case SPECIAL_REMOTE_HOST:
 		val =  ap_get_remote_host(r->connection, r->per_dir_config,
-					  REMOTE_NAME);
+					  REMOTE_NAME, NULL);
 		break;
 	    case SPECIAL_REMOTE_USER:
 		val = r->user;
