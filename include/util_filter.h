@@ -452,14 +452,14 @@ AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
 
 /**
  * Flush the current brigade down the filter stack.
- * @param f The current filter
+ * @param f The filter we are passing to
  * @param bb The brigade to flush
  */
 AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
 
 /**
  * Write a buffer for the current filter, buffering if possible.
- * @param f the filter doing the writing
+ * @param f the filter we are writing to
  * @param bb The brigade to buffer into
  * @param data The data to write
  * @param nbyte The number of bytes in the data
@@ -469,7 +469,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
 
 /**
  * Write a buffer for the current filter, buffering if possible.
- * @param f the filter doing the writing
+ * @param f the filter we are writing to
  * @param bb The brigade to buffer into
  * @param str The string to write
  */
@@ -478,7 +478,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
 
 /**
  * Write a character for the current filter, buffering if possible.
- * @param f the filter doing the writing
+ * @param f the filter we are writing to
  * @param bb The brigade to buffer into
  * @param c The character to write
  */
@@ -487,7 +487,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
 
 /**
  * Write an unspecified number of strings to the current filter
- * @param f the filter doing the writing
+ * @param f the filter we are writing to
  * @param bb The brigade to buffer into
  * @param ... The strings to write
  */
@@ -497,7 +497,7 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fputstrs(ap_filter_t *f,
 
 /**
  * Output data to the filter in printf format
- * @param f the filter doing the writing
+ * @param f the filter we are writing to
  * @param bb The brigade to buffer into
  * @param fmt The format string
  * @param ... The argumets to use to fill out the format string
