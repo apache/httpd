@@ -3,7 +3,7 @@
 
                         http://httpd.apache.org/
 
-                               July 2000
+                             February 2002
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -146,10 +146,10 @@ How to become involved in the Apache project
 There are several levels of contributing.  If you just want to send
 in an occasional suggestion/fix, then you can just use the bug reporting
 form at <http://httpd.apache.org/bug_report.html>.  You can also subscribe
-to the announcements mailing list (apache-announce@apache.org) which we
-use to broadcast information about new releases, bugfixes, and upcoming
-events.  There's a lot of information about the development process (much
-of it in serious need of updating) to be found at <http://dev.apache.org/>.
+to the announcements mailing list (announce-subscribe@httpd.apache.org) which
+we use to broadcast information about new releases, bugfixes, and upcoming
+events.  There's a lot of information about the development process (much of
+it in serious need of updating) to be found at <http://httpd.apache.org/dev/>.
 
 If you'd like to become an active contributor to the Apache project (the
 group of volunteers who vote on changes to the distributed server), then
@@ -163,8 +163,9 @@ development.
    a user support forum; it is for people actively working on development
    of the server code and documentation, and for planning future
    directions.  If you have user/configuration questions, send them
-   to the USENET newsgroup "comp.infosystems.www.servers.unix".or for
-   windows users, the newsgroup "comp.infosystems.www.servers.ms-windows".
+   to users list <http://httpd.apache.org/userslist> or to the USENET
+   newsgroup "comp.infosystems.www.servers.unix".or for windows users,
+   the newsgroup "comp.infosystems.www.servers.ms-windows".
 
 There is a core group of contributors (informally called the "core")
 which was formed from the project founders and is augmented from time
