@@ -589,7 +589,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	 * pass it on blindly because of restrictions on future values.
 	 */
 	else if (!strcasecmp(w, "Last-Modified")) {
-	    time_t mtime = ap_parseHTTPdate(l);
+	    ap_time_t *mtime = ap_parseHTTPdate(l, r->pool);
 
 	    ap_update_mtime(r, mtime);
 	    ap_set_last_modified(r);

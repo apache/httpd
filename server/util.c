@@ -92,15 +92,6 @@ extern int fclose(FILE *);
  */
 #define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
-API_VAR_EXPORT const char ap_month_snames[12][4] =
-{
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-};
-API_VAR_EXPORT const char ap_day_snames[7][4] =
-{
-    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-};
-
 API_EXPORT(char *) ap_get_time()
 {
     time_t t;
@@ -132,13 +123,17 @@ API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype)
     }
 }
 
-API_EXPORT(char *) ap_ht_time(ap_context_t *p, time_t t, const char *fmt, int gmt)
+API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t *t, const char *fmt, int gmt)
 {
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
-    struct tm *tms;
 
-    tms = (gmt ? gmtime(&t) : localtime(&t));
+    if (gmt) {
+        ap_explode_time(t, APR_UTCTIME);
+    }
+    else {
+        ap_explode_time(t, APR_LOCALTIME);
+    }
     if(gmt) {
 	/* Convert %Z to "GMT" and %z to "+0000";
 	 * on hosts that do not have a time zone string in struct tm,
@@ -174,64 +169,9 @@ API_EXPORT(char *) ap_ht_time(ap_context_t *p, time_t t, const char *fmt, int gm
     }
 
     /* check return code? */
-    strftime(ts, MAX_STRING_LEN, fmt, tms);
+    ap_strftime(ts, MAX_STRING_LEN, fmt, t);
     ts[MAX_STRING_LEN - 1] = '\0';
     return ap_pstrdup(p, ts);
-}
-
-API_EXPORT(char *) ap_gm_timestr_822(ap_context_t *p, time_t sec)
-{
-    struct tm *tms;
-    char *date_str = ap_palloc(p, 48 * sizeof(char));
-    char *date_str_ptr = date_str;
-    int real_year;
-
-    tms = gmtime(&sec);    
-
-    /* Assumption: this is always 3 */
-    /* i = strlen(ap_day_snames[tms->tm_wday]); */
-    memcpy(date_str_ptr, ap_day_snames[tms->tm_wday], 3);
-    date_str_ptr += 3;
-    *date_str_ptr++ = ',';
-    *date_str_ptr++ = ' ';
-    *date_str_ptr++ = tms->tm_mday / 10 + '0';
-    *date_str_ptr++ = tms->tm_mday % 10 + '0';
-    *date_str_ptr++ = ' ';
-    /* Assumption: this is also always 3 */
-    /* i = strlen(ap_month_snames[tms->tm_mon]); */
-    memcpy(date_str_ptr, ap_month_snames[tms->tm_mon], 3);
-    date_str_ptr += 3;
-    *date_str_ptr++ = ' ';
-    real_year = 1900 + tms->tm_year;
-    /* This routine isn't y10k ready. */
-    *date_str_ptr++ = real_year / 1000 + '0';
-    *date_str_ptr++ = real_year % 1000 / 100 + '0';
-    *date_str_ptr++ = real_year % 100 / 10 + '0';
-    *date_str_ptr++ = real_year % 10 + '0';
-    *date_str_ptr++ = ' ';
-    *date_str_ptr++ = tms->tm_hour / 10 + '0';
-    *date_str_ptr++ = tms->tm_hour % 10 + '0';
-    *date_str_ptr++ = ':';
-    *date_str_ptr++ = tms->tm_min / 10 + '0';
-    *date_str_ptr++ = tms->tm_min % 10 + '0';
-    *date_str_ptr++ = ':';
-    *date_str_ptr++ = tms->tm_sec / 10 + '0';
-    *date_str_ptr++ = tms->tm_sec % 10 + '0';
-    *date_str_ptr++ = ' ';
-    *date_str_ptr++ = 'G';
-    *date_str_ptr++ = 'M';
-    *date_str_ptr++ = 'T';
-    *date_str_ptr = '\0';
-
-    return date_str;
-    /* RFC date format; as strftime '%a, %d %b %Y %T GMT' */
-
-    /* The equivalent using sprintf. Use this for more legible but slower code
-    return ap_psprintf(p,
-		"%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[tms->tm_wday],
-		tms->tm_mday, ap_month_snames[tms->tm_mon], tms->tm_year + 1900,
-		tms->tm_hour, tms->tm_min, tms->tm_sec);
-    */
 }
 
 /* What a pain in the ass. */

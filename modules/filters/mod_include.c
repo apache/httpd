@@ -124,12 +124,16 @@ static void add_include_vars(request_rec *r, char *timefmt)
 #endif /* ndef WIN32 */
     ap_table_t *e = r->subprocess_env;
     char *t;
-    time_t date = r->request_time;
+    ap_time_t *date = r->request_time;
+    ap_time_t *mtime = NULL;
+
+    ap_make_time(&mtime, r->pool);
+    ap_set_curtime(mtime, r->finfo.st_mtime); 
 
     ap_table_setn(e, "DATE_LOCAL", ap_ht_time(r->pool, date, timefmt, 0));
     ap_table_setn(e, "DATE_GMT", ap_ht_time(r->pool, date, timefmt, 1));
     ap_table_setn(e, "LAST_MODIFIED",
-              ap_ht_time(r->pool, r->finfo.st_mtime, timefmt, 0));
+              ap_ht_time(r->pool, mtime, timefmt, 0));
     ap_table_setn(e, "DOCUMENT_URI", r->uri);
     ap_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
 #ifndef WIN32
@@ -1021,13 +1025,17 @@ static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
             parse_string(r, tag_val, error, MAX_STRING_LEN, 0);
         }
         else if (!strcmp(tag, "timefmt")) {
-            time_t date = r->request_time;
+            ap_time_t *date = r->request_time;
+            ap_time_t *mtime = NULL;
+
+            ap_make_time(&mtime, r->pool);
+            ap_set_curtime(mtime, r->finfo.st_mtime);
 
             parse_string(r, tag_val, tf, MAX_STRING_LEN, 0);
             ap_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, tf, 0));
             ap_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, tf, 1));
             ap_table_setn(env, "LAST_MODIFIED",
-                      ap_ht_time(r->pool, r->finfo.st_mtime, tf, 0));
+                      ap_ht_time(r->pool, mtime, tf, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
@@ -1168,6 +1176,7 @@ static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, con
     char *tag_val;
     struct stat finfo;
     char parsed_string[MAX_STRING_LEN];
+    ap_time_t *mtime = NULL;
 
     while (1) {
         if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
@@ -1179,7 +1188,9 @@ static int handle_flastmod(ap_file_t *in, request_rec *r, const char *error, con
         else {
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error)) {
-                ap_rputs(ap_ht_time(r->pool, finfo.st_mtime, tf, 0), r);
+                ap_make_time(&mtime, r->pool);
+                ap_set_curtime(mtime, finfo.st_mtime);
+                ap_rputs(ap_ht_time(r->pool, mtime, tf, 0), r);
             }
         }
     }
@@ -2341,6 +2352,7 @@ static int send_parsed_file(request_rec *r)
     (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
     request_rec *parent;
+    ap_time_t *mtime = NULL;
 
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         return DECLINED;
@@ -2372,7 +2384,9 @@ static int send_parsed_file(request_rec *r)
         && (r->finfo.st_mode & S_IXGRP)
 #endif
         ) {
-        ap_update_mtime(r, r->finfo.st_mtime);
+        ap_make_time(&mtime, r->pool);
+        ap_set_curtime(mtime, r->finfo.st_mtime);
+        ap_update_mtime(r, mtime);
         ap_set_last_modified(r);
     }
     if ((errstatus = ap_meets_conditions(r)) != OK) {

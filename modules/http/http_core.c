@@ -2453,6 +2453,7 @@ static int default_handler(request_rec *r)
 {
     core_dir_config *d =
 	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+    ap_time_t *temp;
     int rangestatus, errstatus;
     ap_file_t *fd = NULL;
     ap_status_t status;
@@ -2506,8 +2507,9 @@ static int default_handler(request_rec *r)
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
-	
-    ap_update_mtime(r, r->finfo.st_mtime);
+    ap_make_time(&temp, r->pool);	
+    ap_set_curtime(temp, r->finfo.st_mtime);
+    ap_update_mtime(r, temp);
     ap_set_last_modified(r);
     ap_set_etag(r);
     ap_table_setn(r->headers_out, "Accept-Ranges", "bytes");

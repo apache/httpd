@@ -214,11 +214,16 @@ API_EXPORT(time_t) ap_tm2sec(const struct tm * t)
  * but many changes since then.
  *
  */
-API_EXPORT(time_t) ap_parseHTTPdate(const char *date)
+API_EXPORT(ap_time_t *) ap_parseHTTPdate(const char *date, ap_context_t *cont)
 {
-    struct tm ds;
+    ap_int32_t year;
+    ap_int32_t mday;
+    ap_int32_t hour;
+    ap_int32_t min;
+    ap_int32_t sec;
     int mint, mon;
     const char *monstr, *timstr;
+    ap_time_t *temp;
     static const int months[12] =
     {
 	('J' << 16) | ('a' << 8) | 'n', ('F' << 16) | ('e' << 8) | 'b',
@@ -229,93 +234,99 @@ API_EXPORT(time_t) ap_parseHTTPdate(const char *date)
 	('N' << 16) | ('o' << 8) | 'v', ('D' << 16) | ('e' << 8) | 'c'};
 
     if (!date)
-	return BAD_DATE;
+	return NULL;
 
     while (*date && ap_isspace(*date))	/* Find first non-whitespace char */
 	++date;
 
     if (*date == '\0')
-	return BAD_DATE;
+	return NULL;
 
     if ((date = strchr(date, ' ')) == NULL)	/* Find space after weekday */
-	return BAD_DATE;
+	return NULL;
 
     ++date;			/* Now pointing to first char after space, which should be */
     /* start of the actual date information for all 3 formats. */
 
     if (ap_checkmask(date, "## @$$ #### ##:##:## *")) {	/* RFC 1123 format */
-	ds.tm_year = ((date[7] - '0') * 10 + (date[8] - '0') - 19) * 100;
-	if (ds.tm_year < 0)
-	    return BAD_DATE;
+	year = ((date[7] - '0') * 10 + (date[8] - '0') - 19) * 100;
+	if (year < 0)
+	    return NULL;
 
-	ds.tm_year += ((date[9] - '0') * 10) + (date[10] - '0');
+	year += ((date[9] - '0') * 10) + (date[10] - '0');
 
-	ds.tm_mday = ((date[0] - '0') * 10) + (date[1] - '0');
+	mday = ((date[0] - '0') * 10) + (date[1] - '0');
 
 	monstr = date + 3;
 	timstr = date + 12;
     }
     else if (ap_checkmask(date, "##-@$$-## ##:##:## *")) {		/* RFC 850 format  */
-	ds.tm_year = ((date[7] - '0') * 10) + (date[8] - '0');
-	if (ds.tm_year < 70)
-	    ds.tm_year += 100;
+	year = ((date[7] - '0') * 10) + (date[8] - '0');
+	if (year < 70)
+	    year += 100;
 
-	ds.tm_mday = ((date[0] - '0') * 10) + (date[1] - '0');
+	mday = ((date[0] - '0') * 10) + (date[1] - '0');
 
 	monstr = date + 3;
 	timstr = date + 10;
     }
     else if (ap_checkmask(date, "@$$ ~# ##:##:## ####*")) {	/* asctime format  */
-	ds.tm_year = ((date[16] - '0') * 10 + (date[17] - '0') - 19) * 100;
-	if (ds.tm_year < 0)
-	    return BAD_DATE;
+	year = ((date[16] - '0') * 10 + (date[17] - '0') - 19) * 100;
+	if (year < 0)
+	    return NULL;
 
-	ds.tm_year += ((date[18] - '0') * 10) + (date[19] - '0');
+	year += ((date[18] - '0') * 10) + (date[19] - '0');
 
 	if (date[4] == ' ')
-	    ds.tm_mday = 0;
+	    mday = 0;
 	else
-	    ds.tm_mday = (date[4] - '0') * 10;
+	    mday = (date[4] - '0') * 10;
 
-	ds.tm_mday += (date[5] - '0');
+	mday += (date[5] - '0');
 
 	monstr = date;
 	timstr = date + 7;
     }
     else
-	return BAD_DATE;
+	return NULL;
 
-    if (ds.tm_mday <= 0 || ds.tm_mday > 31)
-	return BAD_DATE;
+    if (mday <= 0 || mday > 31)
+	return NULL;
 
-    ds.tm_hour = ((timstr[0] - '0') * 10) + (timstr[1] - '0');
-    ds.tm_min = ((timstr[3] - '0') * 10) + (timstr[4] - '0');
-    ds.tm_sec = ((timstr[6] - '0') * 10) + (timstr[7] - '0');
+    hour = ((timstr[0] - '0') * 10) + (timstr[1] - '0');
+    min  = ((timstr[3] - '0') * 10) + (timstr[4] - '0');
+    sec  = ((timstr[6] - '0') * 10) + (timstr[7] - '0');
 
-    if ((ds.tm_hour > 23) || (ds.tm_min > 59) || (ds.tm_sec > 61))
-	return BAD_DATE;
+    if ((hour > 23) || (min > 59) || (sec > 61))
+	return NULL;
 
     mint = (monstr[0] << 16) | (monstr[1] << 8) | monstr[2];
     for (mon = 0; mon < 12; mon++)
 	if (mint == months[mon])
 	    break;
     if (mon == 12)
-	return BAD_DATE;
+	return NULL;
 
-    if ((ds.tm_mday == 31) && (mon == 3 || mon == 5 || mon == 8 || mon == 10))
-	return BAD_DATE;
+    if ((mday == 31) && (mon == 3 || mon == 5 || mon == 8 || mon == 10))
+	return NULL;
 
     /* February gets special check for leapyear */
 
     if ((mon == 1) &&
-	((ds.tm_mday > 29)
-	 || ((ds.tm_mday == 29)
-	     && ((ds.tm_year & 3)
-		 || (((ds.tm_year % 100) == 0)
-		     && (((ds.tm_year % 400) != 100)))))))
-	return BAD_DATE;
+	((mday > 29)
+	 || ((mday == 29)
+	     && ((year & 3)
+		 || (((year % 100) == 0)
+		     && (((year % 400) != 100)))))))
+	return NULL;
 
-    ds.tm_mon = mon;
+    ap_make_time(&temp, cont);
+    ap_set_year(temp, year);
+    ap_set_mday(temp, mday);
+    ap_set_hour(temp, hour);
+    ap_set_min(temp, min);
+    ap_set_sec(temp, sec);
+    ap_set_mon(temp, mon);
 
-    return ap_tm2sec(&ds);
+    return temp;
 }

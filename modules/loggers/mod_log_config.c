@@ -406,7 +406,13 @@ static const char *log_request_time(request_rec *r, char *a)
 
 static const char *log_request_duration(request_rec *r, char *a)
 {
-    return ap_psprintf(r->pool, "%ld", time(NULL) - r->request_time);
+    ap_time_t *currtime = NULL;
+    ap_int32_t diff;
+    ap_make_time(&currtime, r->pool);
+    ap_current_time(currtime);
+
+    ap_timediff(currtime, r->request_time, &diff); 
+    return ap_psprintf(r->pool, "%ld", diff);
 }
 
 /* These next two routines use the canonical name:port so that log
