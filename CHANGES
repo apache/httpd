@@ -1,5 +1,8 @@
-
 Changes with Apache 2.0.38
+
+  *) Allow CGI scripts to return their Content-Length.  This also fixes a
+     hang on HEAD requests seen on certain platforms (such as FreeBSD).
+     [Justin Erenkrantz]
 
   *) Added log rotation based on file size to the RotateLog support
      utility. [Brad Nicholes]
