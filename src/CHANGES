@@ -1,3 +1,41 @@
+Changes with Apache 1.2b2:
+
+  *) Added PORTING information file.  [Jim Jagielski]
+
+  *) Added definitions for S_IWGRP and S_IWOTH to conf.h
+
+  *) Changed default group to "nogroup" instead of "nobody"
+
+  *) Fixed define typo of FCNTL_SERIALIZED_ACCEPT where
+     USE_FCNTL_SERIALIZED_ACCEPT was intended.
+
+  *) Fixed additional uses of 0xffffffff where INADDR_NONE was intended,
+     which caused problems of systems where socket s_addr is >32bits.
+
+  *) Added comment to explain (r->chunked = 1) side-effect in
+     http_protocol.c [Roy Fielding]
+
+  *) Replaced use of index() in mod_expires.c with more appropriate
+     and portable isdigit() test.  [Ben Laurie]
+  
+  *) Updated Configure for ... 
+        *-dg-dgux*    (bad pattern match)
+        QNX           (DEF_WANTHSREGEX=yes)
+        *-sunos4*     (DEF_WANTHSREGEX=yes, -DUSEBCOPY)
+        *-ultrix      (new)
+     and added some user diagnostic info.  [Ben Laurie]
+
+  *) In helpers/CutRule, replaced "cut" invocation with "awk" invocation
+     for better portability.
+
+  *) Updated helpers/GuessOS for ... 
+        SCO      (braindamaged uname, whatever-whatever-unixware2)
+        IRIX64   (-sgi-irix64)
+        ULTRIX   (-unknown-ultrix)
+        SINIX    (-whatever-sysv4)
+     and fixed something in helpers/PrintPath  [Ben Laurie]
+
+
 Changes with Apache 1.2b1:
 
   *) Not listed. See <http://www.apache.org/docs/new_features_1_2.html>
