@@ -85,7 +85,8 @@
  *        #define ap_isascii(c) ((OS_ASC(c) & 0x80) == 0)
  */
 
-/* XXXXX - fix me - See note with NOT_PROXY */
+/* XXXXX - fix me - See note with NOT_PROXY 
+ */
 
 typedef struct handlers_info {
     char *name;
