@@ -692,9 +692,6 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
 	    if (rr) 
 		ap_set_module_config(rr->request_config, &includes_module, r);
 
-#ifdef CHARSET_EBCDIC
-            ap_bsetflag(rr->connection->client, B_EBCDIC2ASCII, 0);
-#endif
             if (!error_fmt && ap_run_sub_req(rr)) {
                 error_fmt = "unable to include \"%s\" in parsed file %s";
             }
