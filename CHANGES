@@ -1,4 +1,10 @@
 Changes with Apache 2.0.18-dev
+
+  *) Patch prefork to put enough of the signal processing back in so that
+     signals are all handled properly now. The previous patch fixed the
+     deadlock race condition, but broke the user directed signal handling.
+     This fixes it to work the way it did before my previous prefork patch
+     (primarily, SIGTERM is now working).
  
   *) Change how input filters decide how much data is returned to the
      higher filter.  We used to use a field in the conn_rec, with this
