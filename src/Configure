@@ -305,16 +305,16 @@ case "$PLAT" in
 	;;
     i386-ibm-aix*)
     	OS='IBM AIX PS/2'
-	CFLAGS="$CFLAGS -DAIX -U__STR__ -DUSEBCOPY"
+	CFLAGS="$CFLAGS -DAIX=1 -U__STR__ -DUSEBCOPY"
 	DEF_WANTHSREGEX=no
 	;;
     *-ibm-aix[1-3].*|*-ibm-aix4.[0-1])
         OS='IBM AIX < v4.2'
-        CFLAGS="$CFLAGS -DAIX -DNEED_RLIM_T -U__STR__"
+        CFLAGS="$CFLAGS -DAIX=1 -DNEED_RLIM_T -U__STR__"
         ;;
     *-ibm-aix*)
         OS='IBM AIX >= 4.2'
-        CFLAGS="$CFLAGS -DAIX -U__STR__"
+        CFLAGS="$CFLAGS -DAIX=42 -U__STR__"
 	LDFLAGS="$LDFLAGS -lm"
         ;;
     *-apollo-*)

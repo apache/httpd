@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
   
+  *) PORT: Fix compiler warnings under AIX >= 4.2 where the manual pages imply
+     that we should use NET_SIZE_T == int but the include files force size_t.
+     [Ralf S. Engelschall]
+
   *) Fix two bugs in select() handling in http_main.c.
      [Roy Fielding]
 

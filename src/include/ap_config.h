@@ -250,6 +250,9 @@ typedef int rlim_t;
 #ifdef USEBCOPY
 #define memmove(a,b,c) bcopy(b,a,c)
 #endif
+#if AIX >= 42
+#define NET_SIZE_T size_t
+#endif
 
 #elif defined(ULTRIX)
 #define HAVE_GMTOFF 1
