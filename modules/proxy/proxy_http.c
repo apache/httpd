@@ -246,7 +246,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 				 "Connect to remote machine blocked");
     }
 
-    if ((apr_create_tcp_socket(&sock, r->pool)) != APR_SUCCESS) {
+    if ((apr_create_socket(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
