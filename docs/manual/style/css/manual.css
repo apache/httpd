@@ -57,6 +57,8 @@ a:active {
 }
 
 /* hover on non-white backgrounds */
+tr.odd a:hover,
+tr.odd a:active,
 div.note a:hover,
 div.note a:active,
 div.example a:hover,
@@ -89,6 +91,8 @@ code.module a:active {
 }
 
 /* hover on non-white backgrounds */
+tr.odd code.module a:hover,
+tr.odd code.module a:active,
 div.note code.module a:hover,
 div.note code.module a:active,
 div.example code.module a:hover,
@@ -121,6 +125,8 @@ code.directive a:active {
 }
 
 /* hover on non-white backgrounds */
+tr.odd code.directive a:hover,
+tr.odd code.directive a:active,
 div.note code.directive a:hover,
 div.note code.directive a:active,
 div.example code.directive a:hover,
@@ -301,11 +307,6 @@ tr.odd { /* for large tables alternating colors */
     background-color: #f2f2f2;
 }
 
-tr.odd a:hover,
-tr.odd a:active {
-      background-color: #fff;
-}
-
 /* bordered table cells   */
 /* ====================== */
 
@@ -331,13 +332,54 @@ table.directive th {
     white-space: nowrap;
 }
 
-.qref {
-     border-collapse: collapse;
-     width: 100%;
+table.qref {
+    border-collapse: collapse;
+    width: 100%;
 }
 
-.qref th {
-      background-color: #eee;
+table.qref td {
+    border-style: none solid;
+    border-color: #aaa;
+    border-width: 1px;
+}
+
+table.qref td.descr {
+    padding-left: 1em;
+    font-size: 13px;
+}
+
+table#legend {
+    width: 100%;
+    border-style: none;
+    border-width: 0;
+    vertical-align: bottom;
+    padding: 0;
+    margin: 0;
+}
+
+table#legend td {
+    vertical-align: bottom;
+    margin: 0;
+    padding: 0;
+}
+
+table#legend td.letters {
+    width: 100%;
+    padding-bottom: 0.5em;
+}
+
+table#legend table {
+    vertical-align: bottom;
+    margin: 0 0 0 0.4em;
+    padding: 0;
+    height: 7.5em;
+}
+
+table#legend table td,
+table#legend table th {
+    vertical-align: middle;
+    padding: 0.1ex 0.2em;
+    line-height: 1em;
 }
 
 /* related modules & dir. */
@@ -555,11 +597,21 @@ div.directive-section {
 }
 
 /* look for this on directive
- * list page...
+ * list pages
  */
 div#directive-list {
     margin-left: 30px;
     padding: 0 0 1em 1em;
+}
+
+div#directive-ref {
+    margin: -1em 0 0 0;
+    padding: 0 0 1em 30px;
+    width: 100%; /* IE is BAD (broken as designed) */
+}
+
+div[id]#directive-ref { /* a big sorry to ICab, Amaya (and old Konquerors?) */
+    width: auto; /* other browsers are fine ;-) */
 }
 
 /* sidebar position: right */
@@ -691,19 +743,23 @@ table div.warning {
  * quotations, indented paragraphs and figures
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 p.letters {
+    margin: 1em 0 0 0;
+}
+
+.letters {
     text-align: center;
     background-color: inherit;
     color: #ccc;
 }
 
-p.letters a:link,
-p.letters a:visited {
+.letters a:link,
+.letters a:visited {
     text-decoration: none;
     font-weight: bold;
 }
 
-p.letters a:hover,
-p.letters a:active {
+.letters a:hover,
+.letters a:active {
     font-weight: bold;
 }
 
