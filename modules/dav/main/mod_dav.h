@@ -65,6 +65,7 @@
 #include "apr_tables.h"
 
 #include "httpd.h"
+#include "util_filter.h"
 #include "util_xml.h"
 
 #include <limits.h>     /* for INT_MAX */
@@ -2112,6 +2113,19 @@ struct dav_hooks_vsn
     ** it should be set to NULL.
     */
     dav_error * (*make_activity)(dav_resource *resource);
+
+    /*
+    ** Merge a resource (tree) into target resource (tree).
+    **
+    ** ### more doc...
+    **
+    ** This hook is optional; if the provider does not support merging,
+    ** then this should be set to NULL.
+    */
+    dav_error * (*merge)(dav_resource *target, dav_resource *source,
+			 int no_auto_merge, int no_checkout,
+			 ap_xml_elem *prop_elem,
+			 ap_filter_t *output);
 };
 
 
