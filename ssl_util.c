@@ -108,8 +108,9 @@ void ssl_util_uuencode(char *szTo, const char *szFrom, BOOL bPad)
                              strlen(szFrom), bPad);
 }
 
-void ssl_util_uuencode_binary(
-    unsigned char *szTo, const unsigned char *szFrom, int nLength, BOOL bPad)
+void ssl_util_uuencode_binary(unsigned char *szTo,
+                              const unsigned char *szFrom,
+                              int nLength, BOOL bPad)
 {
     const unsigned char *s;
     int nPad = 0;
@@ -129,8 +130,9 @@ void ssl_util_uuencode_binary(
         *szTo++ = ssl_util_uuencode_six2pr[s[2] & 0x3f];
         --nLength;
     }
-    while(bPad && nPad--)
+    while(bPad && nPad--) {
         *szTo++ = NUL;
+    }
     *szTo = NUL;
     return;
 }
@@ -246,8 +248,8 @@ char *ssl_util_algotypestr(ssl_algo_t t)
     return cp;
 }
 
-char *ssl_util_ptxtsub(
-    apr_pool_t *p, const char *cpLine, const char *cpMatch, char *cpSubst)
+char *ssl_util_ptxtsub(apr_pool_t *p, const char *cpLine,
+                       const char *cpMatch, char *cpSubst)
 {
 #define MAX_PTXTSUB 100
     char *cppMatch[MAX_PTXTSUB];
@@ -287,7 +289,9 @@ char *ssl_util_ptxtsub(
      * Pass 2: allocate memory and assemble result
      */
     cpResult = apr_pcalloc(p, nResult+1);
-    for (cpI = (char *)cpLine, cpO = cpResult, i = 0; cppMatch[i] != NULL; i++) {
+    for (cpI = (char *)cpLine, cpO = cpResult, i = 0;
+         cppMatch[i] != NULL;
+         i++) {
         apr_cpystrn(cpO, cpI, cppMatch[i]-cpI+1);
         cpO += (cppMatch[i]-cpI);
         apr_cpystrn(cpO, cpSubst, nSubst+1);
@@ -299,27 +303,26 @@ char *ssl_util_ptxtsub(
     return cpResult;
 }
 
-apr_status_t
-ssl_util_setmodconfig(
-    server_rec *s, const char *key, SSLModConfigRec *mc)
+apr_status_t ssl_util_setmodconfig(server_rec *s, const char *key,
+                                   SSLModConfigRec *mc)
 {
-    return apr_pool_userdata_set((void *)mc, key, apr_pool_cleanup_null, s->process->pool);
+    return apr_pool_userdata_set((void *)mc, key, apr_pool_cleanup_null,
+                                 s->process->pool);
 }
 
-SSLModConfigRec *
-ssl_util_getmodconfig(
-    server_rec *s, const char *key)
+SSLModConfigRec *ssl_util_getmodconfig(server_rec *s, const char *key)
 {
     SSLModConfigRec *mc = NULL;
 
-    if (apr_pool_userdata_get((void **)&mc, key, s->process->pool) != APR_SUCCESS)
-        ssl_log(s, SSL_LOG_TRACE, "Unable to retrieve SSLModConfig from global pool");
+    if (apr_pool_userdata_get((void **)&mc, key, s->process->pool)
+        != APR_SUCCESS) {
+        ssl_log(s, SSL_LOG_TRACE,
+                "Unable to retrieve SSLModConfig from global pool");
+    }
     return mc;
 }
 
-SSLModConfigRec *
-ssl_util_getmodconfig_ssl(
-    SSL *ssl, const char *key)
+SSLModConfigRec *ssl_util_getmodconfig_ssl(SSL *ssl, const char *key)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     SSLModConfigRec *mc = NULL;
