@@ -617,7 +617,7 @@ void output_directories(struct ent **ar, int n,
 		t2 = pstrcat(scratch, t2, "</A>", NULL);
             } else 
 	    {
-		char *buff="                       ";
+		char buff[24]="                       ";
 		t2 = escape_html(scratch, t);
 		buff[23-len] = '\0';
 		t2 = pstrcat(scratch, t2, "</A>", buff, NULL);
