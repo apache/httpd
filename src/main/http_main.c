@@ -2211,7 +2211,11 @@ static void sig_coredump(int sig)
 {
     chdir(ap_coredump_dir);
     signal(sig, SIG_DFL);
+#ifndef WIN32
     kill(getpid(), sig);
+#else
+    raise(sig);
+#endif
     /* At this point we've got sig blocked, because we're still inside
      * the signal handler.  When we leave the signal handler it will
      * be unblocked, and we'll take the signal... and coredump or whatever
