@@ -1341,7 +1341,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     if (max_body && (r->remaining > max_body)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Request content-length of %s is larger than "
-		      "the configured limit of %lu", lenp, max_body);
+		      "the configured limit of %" APR_OFF_T_FMT, lenp, max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
