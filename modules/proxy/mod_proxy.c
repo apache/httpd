@@ -217,7 +217,7 @@ static int proxy_fixup(request_rec *r)
 {
     char *url, *p;
 
-    if (r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     url = &r->filename[6];
@@ -247,7 +247,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     const char *ref;
 
     /* We only want to worry about GETs */
-    if (r->proxyreq || r->method_number != M_GET || !r->parsed_uri.hostname)
+    if (!r->proxyreq || r->method_number != M_GET || !r->parsed_uri.hostname)
 	return DECLINED;
 
     /* If host does contain a dot already, or it is "localhost", decline */
