@@ -97,7 +97,7 @@ struct ap_listen_rec {
 /**
  * The global list of ap_listen_rec structures
  */
-extern ap_listen_rec *ap_listeners;
+AP_DECLARE_DATA extern ap_listen_rec *ap_listeners;
 
 /**
  * Setup all of the defaults for the listener list
