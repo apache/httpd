@@ -59,10 +59,11 @@
 #include "mod_proxy.h"
 #include "http_main.h"
 #include "ap_md5.h"
-#include "multithread.h"
 #include "http_log.h"
 #include "util_uri.h"
 #include "util_date.h"	/* get ap_checkmask() decl. */
+
+#include <pthread.h>
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -515,23 +516,17 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
      * has its own timeout handler which can set both buffers to EOUT.
      */
 
-    ap_kill_timeout(r);
-
 #ifdef WIN32
     /* works fine under win32, so leave it */
-    ap_hard_timeout("proxy send body", r);
-    alternate_timeouts = 0;
 #else
     /* CHECKME! Since hard_timeout won't work in unix on sends with partial
      * cache completion, we have to alternate between hard_timeout
      * for reads, and soft_timeout for send.  This is because we need
      * to get a return from ap_bwrite to be able to continue caching.
      * BUT, if we *can't* continue anyway, just use hard_timeout.
-     * (Also, if no cache file is written, use hard timeouts)
      */
 
     if (c == NULL || c->len <= 0 || c->cache_completion == 1.0) {
-        ap_hard_timeout("proxy send body", r);
         alternate_timeouts = 0;
     }
 #endif
@@ -540,17 +535,9 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
      * or (after the client aborted) while we can successfully
      * read and finish the configured cache_completion.
      */
-    for (ok = 1; ok; ) {
-        if (alternate_timeouts)
-            ap_hard_timeout("proxy recv body from upstream server", r);
-
+     for (ok = 1; ok; ) {
 	/* Read block from server */
 	n = ap_bread(f, buf, IOBUFSIZE);
-
-        if (alternate_timeouts)
-            ap_kill_timeout(r);
-        else
-            ap_reset_timeout(r);
 
 	if (n == -1) {		/* input error */
 	    if (c != NULL) {
@@ -579,15 +566,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
 
 	/* Write the block to the client, detect aborted transfers */
         while (!con->aborted && n > 0) {
-            if (alternate_timeouts)
-                ap_soft_timeout("proxy send body", r);
-
             w = ap_bwrite(con->client, &buf[o], n);
-
-            if (alternate_timeouts)
-                ap_kill_timeout(r);
-            else
-                ap_reset_timeout(r);
 
             if (w <= 0) {
                 if (c != NULL && c->fp != NULL) {
@@ -617,7 +596,6 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
     if (!con->aborted)
 	ap_bflush(con->client);
 
-    ap_kill_timeout(r);
     return total_bytes_rcvd;
 }
 
@@ -863,6 +841,8 @@ const char *
 {
     int i;
     struct hostent *hp;
+/* XXX - Either get rid of TLS, or use pthread/APR functions */
+#define APACHE_TLS
     static APACHE_TLS struct hostent hpbuf;
     static APACHE_TLS u_long ipaddr;
     static APACHE_TLS char *charpbuf[2];
@@ -1239,7 +1219,6 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 {
     int i;
 
-    ap_hard_timeout("proxy connect", r);
     do {
 	i = connect(sock, (struct sockaddr *) addr, sizeof(struct sockaddr_in));
 #ifdef WIN32
@@ -1252,7 +1231,6 @@ int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 		     "proxy connect to %s port %d failed",
 		     inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
     }
-    ap_kill_timeout(r);
 
     return i;
 }
