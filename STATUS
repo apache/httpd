@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/29 01:25:33 $]
+Last modified at [$Date: 2003/07/29 13:43:22 $]
 
 Release:
 
@@ -287,8 +287,8 @@ PATCHES TO PORT FROM 2.1
       +1: nd, trawick
 
     * Install config.nice to make minor version upgrades easier.
-        Makefile.in: r1.135
-      +1: slive, erikabele, nd
+        Makefile.in: r1.136
+      +1: slive
 
     * mod_rewrite: cause a lookup failure in external rewrite maps if
       the key contains a newline. PR 14453. (2.0 + 1.3)
