@@ -119,6 +119,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "ap_config.h"
 
 enum special {
     SPECIAL_NOT,
