@@ -644,6 +644,7 @@ BEGIN {
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
+!IF EXIST("srclib\openssl")
 	copy docs\conf\ssl-std.conf.in "$(INSTDIR)\conf\ssl.default.conf" <.y
 	-awk -f <<script.awk "docs/conf/ssl-std.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\ssl.default.conf"
     BEGIN { 
@@ -658,9 +659,9 @@ BEGIN {
 	print $$0;
     }
 <<
-!IF EXIST("srclib\openssl")
 	if not exist "$(INSTDIR)\conf\ssl.conf" \
 	    copy "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)\conf\ssl.conf"
+!ENDIF
 	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
 	  sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
@@ -669,6 +670,5 @@ BEGIN {
 	  print $$0;
     }
 <<
-!ENDIF
 	del .y
 	del .a
