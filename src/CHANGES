@@ -5,7 +5,7 @@ Changes with Apache 1.3a2
      the compiler and flags selected); the version of Solaris is now
      available via the #define value of SOLARIS2; IRIX n32bit libs
      now supported and selectable by new Configuration Rule: IRIXN32;
-     We no longer default to -O2 optimization.
+     We no longer default to -O2 optimization.  [Jim Jagielski]
 
   *) mod_browser has been removed, since it's replaced by mod_setenvif.
      [Ken Coar]
@@ -207,7 +207,7 @@ Changes with Apache 1.3a2
 Changes with Apache 1.3a1
 
   *) Added another Configure helper script: TestLib. It determines
-     if a specified library exists.
+     if a specified library exists.  [Jim Jagielski]
 
   *) PORT: Allow for use of n32bit libraries under IRIX 6.x
      [derived from patch from Jeff Hayes <jhayes@aw.sgi.com>]
@@ -329,10 +329,10 @@ Changes with Apache 1.3a1
      command.  [Ian Kluft <ikluft@cisco.com>]
 
   *) We now determine and display the time spent processing a
-     request if desired.
+     request if desired.  [Jim Jagielski]
 
   *) mod_status: PID field of "dead" child slots no longer displays
-     main httpd process's PID.
+     main httpd process's PID.  [Jim Jagielski]
 
   *) Makefile.nt added - to build all the bits from the command line:
         nmake -f Makefile.nt
@@ -412,7 +412,7 @@ Changes with Apache 1.3a1
      When used together, these cause mod_dir to emit HEIGHT and WIDTH
      attributes in the FancyIndexing IMG tags.  [Ken Coar]
 
-  *) PORT: Sequent and SONY NEWS-OS support added.
+  *) PORT: Sequent and SONY NEWS-OS support added.  [Jim Jagielski]
 
   *) PORT: Added Windows NT support
      [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
