@@ -182,6 +182,11 @@ struct dav_stream {
     const char *pathname;       /* we may need to remove it at close time */
 };
 
+/* returns an appropriate HTTP status code given an APR status code for a 
+ * failed I/O operation.  ### use something besides 500? */
+#define MAP_IO2HTTP(e) (APR_STATUS_IS_ENOSPC(e) ? HTTP_INSUFFICIENT_STORAGE : \
+                        HTTP_INTERNAL_SERVER_ERROR)
+
 /* forward declaration for internal treewalkers */
 static dav_error * dav_fs_walk(const dav_walk_params *params, int depth,
                                dav_response **response);
@@ -301,6 +306,7 @@ static dav_error * dav_fs_copymove_file(
     dav_buffer work_buf = { 0 };
     apr_file_t *inf = NULL;
     apr_file_t *outf = NULL;
+    apr_status_t status;
 
     if (pbuf == NULL)
         pbuf = &work_buf;
@@ -315,18 +321,17 @@ static dav_error * dav_fs_copymove_file(
     }
 
     /* ### do we need to deal with the umask? */
-    if ((apr_file_open(&outf, dst, APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BINARY,
-                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
+    status = apr_file_open(&outf, dst, APR_WRITE | APR_CREATE | APR_TRUNCATE 
+                           | APR_BINARY, APR_OS_DEFAULT, p);
+    if (status != APR_SUCCESS) {
         apr_file_close(inf);
 
-        /* ### use something besides 500? */
-        return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+        return dav_new_error(p, MAP_IO2HTTP(status), 0,
                              "Could not open file for writing");
     }
 
     while (1) {
         apr_size_t len = DAV_FS_COPY_BLOCKSIZE;
-        apr_status_t status;
 
         status = apr_file_read(inf, pbuf->buf, &len);
         if (status != APR_SUCCESS && status != APR_EOF) {
@@ -352,9 +357,8 @@ static dav_error * dav_fs_copymove_file(
             break;
 
         /* write any bytes that were read */
-        if (apr_file_write_full(outf, pbuf->buf, len, NULL) != APR_SUCCESS) {
-            int save_errno = errno;
-
+        status = apr_file_write_full(outf, pbuf->buf, len, NULL);
+        if (status != APR_SUCCESS) {
             apr_file_close(inf);
             apr_file_close(outf);
 
@@ -368,14 +372,7 @@ static dav_error * dav_fs_copymove_file(
                                      "inconsistent state.");
             }
 
-            if (save_errno == ENOSPC) {
-                return dav_new_error(p, HTTP_INSUFFICIENT_STORAGE, 0,
-                                     "There is not enough storage to write to "
-                                     "this resource.");
-            }
-
-            /* ### use something besides 500? */
-            return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+            return dav_new_error(p, MAP_IO2HTTP(status), 0,
                                  "Could not write output file");
         }
     }
@@ -817,6 +814,7 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
     apr_pool_t *p = resource->info->pool;
     dav_stream *ds = apr_pcalloc(p, sizeof(*ds));
     apr_int32_t flags;
+    apr_status_t rv;
 
     switch (mode) {
     default:
@@ -833,10 +831,9 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 
     ds->p = p;
     ds->pathname = resource->info->pathname;
-    if (apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, 
-                ds->p) != APR_SUCCESS) {
-        /* ### use something besides 500? */
-        return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+    rv = apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, ds->p);
+    if (rv != APR_SUCCESS) {
+        return dav_new_error(p, MAP_IO2HTTP(rv), 0,
                              "An error occurred while opening a resource.");
     }
 
@@ -985,7 +982,7 @@ static dav_error * dav_fs_create_collection(dav_resource *resource)
     apr_status_t status;
 
     status = apr_dir_make(ctx->pathname, APR_OS_DEFAULT, ctx->pool);
-    if (status == ENOSPC) {
+    if (APR_STATUS_IS_ENOSPC(status)) {
         return dav_new_error(ctx->pool, HTTP_INSUFFICIENT_STORAGE, 0,
                              "There is not enough storage to create "
                              "this collection.");
