@@ -1658,9 +1658,17 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
     }
-    /* TODO: add address cache for forward proxies */
+    /* TODO: add address cache for generic forward proxies.
+     * At least level 0 -> compare with previous hostname:port
+     */
     if (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE ||
         !worker->is_address_reusable) {
+        /* TODO: Check if the connection can be reused
+         */
+        if (conn->connection) {
+            conn->close = 1;
+            ap_proxy_release_connection("*", conn, r->server);
+        }
         err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
