@@ -2548,7 +2548,8 @@
     <em>self-referential</em> URL. That is, a URL which refers back
     to the same server. With <code>UseCanonicalName on</code> (and
     in all versions prior to 1.3) Apache will use the <a
-    href="#servername">ServerName</a> and <a href="#port">Port</a>
+    href="#servername">ServerName</a> and <a 
+    href="mpm_common.html#listen">Listen</a>
     directives to construct a canonical name for the server. This
     name is used in all self-referential URLs, and for the values
     of <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in
@@ -2592,7 +2593,8 @@
     then it should be just fine.</p>
 
     <p><strong>See also:</strong> <a
-    href="#servername">ServerName</a>, <a href="#port">Port</a></p>
+    href="#servername">ServerName</a>, <a 
+    href="mpm_common.html#listen">Listen</a></p>
     <hr />
 
     <h2><a id="virtualhost" name="virtualhost">&lt;VirtualHost&gt;
@@ -2657,7 +2659,8 @@
 
     <p>You can specify a <code>:port</code> to change the port that
     is matched. If unspecified then it defaults to the same port as
-    the most recent <code><a href="#port">Port</a></code> statement
+    the most recent <code><a 
+    href="mpm_common.html#listen">Listen</a></code> statement
     of the main server. You may also specify <code>:*</code> to
     match all ports on that address. (This is recommended when used
     with <code>_default_</code>.)</p>
