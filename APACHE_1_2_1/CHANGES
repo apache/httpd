@@ -1,0 +1,129 @@
+                   OVERVIEW OF NEW FEATURES IN APACHE 1.2
+
+New features with this release, as extensions of the Apache functionality
+For more information, see the documentation included with this release
+(htdocs/manual/) or http://www.apache.org/docs/
+
+In addition to a number of bug fixes and internal performance
+enhancements, Apache 1.2 has the following specific new user
+features:
+
+
+  *) HTTP/1.1 Compliance
+       Aside from the optional proxy module (which operates as HTTP/1.0),
+       Apache is conditionally compliant with the HTTP/1.1 proposed standard,
+       as approved by the IESG and the IETF HTTP working group.
+       HTTP/1.1 provides a much-improved protocol, and should allow for
+       greater performance and efficiency when transferring files. Apache
+       does, however, still work great with HTTP/1.0 browsers.  We are very
+       close to being unconditionally compliant; if you note any deviance
+       from the proposed standard, please report it as a bug.
+
+  *) eXtended Server Side Includes (XSSI)
+       A new set of server-side include directives allows the user to
+       better create WWW pages. This includes number of powerful new
+       features, such as the ability to set variables and use conditional
+       HTML.
+
+  *) File-based and Regex-enabled Directive Sections
+       The new <Files> section allows directives to be enabled based on
+       full filename, not just directory and URL. In addition, <Files>
+       sections can appear in .htaccess files. <Files>, along with
+       <Directory> and <Location>, can also now be based on regular
+       expressions, not just simple prefix matching.
+
+  *) Browser-based Environment Variables
+       Environment variables can now be set based on the User-Agent
+       string of the browser. Combined with XSSI, this allows you to
+       write browser-based conditional HTML documents.
+
+  *) SetUID CGI Execution 
+       Apache now supports the execution of CGI scripts as users other
+       than the server user. A number of security checks are built in to
+       try and make this as safe as possible.
+
+  *) URL Rewriting Module
+       The optional mod_rewrite module is now included. This module can
+       provide powerful URL mapping, using regular expressions. There's
+       nothing this module can't do!
+
+  *) Enhanced, Configurable Logging
+       The optional mod_log_config included with earlier versions of
+       Apache is now standard, and has been enhanced to allow logging of
+       much more detail about the transaction, and can be used to open
+       more than one log at once (each of which can have a different log
+       format).
+
+  *) User Tracking (Cookies) Revisions
+       The mod_cookies included with previous versions of Apache has been
+       renamed mod_usertrack, to more accurately reflect its function
+       (some people inadvertently thought it enabled cookie support in
+       Apache, which is not true - Apache supports the use of cookies
+       directly). It is also now possible to disable the generation of
+       cookies, even when the cookie module is compiled in. Also, an
+       expiry time can be set on the cookies.
+
+  *) Multiple IPs in <VirtualHost>
+       The <VirtualHost> directive can now take more than one IP address
+       or hostname. This lets a single vhost handles requests for
+       multiple IPs or hostnames.
+
+  *) CGI Debugging Environment
+       ScriptLog allows you to now set up a log that records all input
+       and output to failed CGI scripts. This includes environment
+       variables, input headers, POST data, output, and more. This makes
+       CGI scripts much easier to debug.
+
+  *) Resource Limits for CGI Scripts
+       New directives allow the limiting of resources used by CGI scripts
+       (e.g. max CPU time). This is helpful in preventing 'runaway' CGI
+       processes.
+
+  *) Redirect Directive Can Return Alternate Status
+       The Redirect directive can return permanent or temporary redirects,
+       "Gone" or "See Other" HTTP status. For NCSA-compatibility,
+       RedirectTemp and RedirectPermanent are also implemented.
+
+  *) Graceful Restarts
+       Apache can re-read the config files and re-open log files without
+       terminating transactions in progress.
+
+  *) Simplified Compilation
+       The process of configuring Apache for compilation has been
+       simplified.
+
+  *) Add or Remove Options
+       The Options directive can now add or remove options from those
+       currently in force, rather than always replacing them.
+
+  *) Command-line Help
+       The -h command-line option now lists all the available directives.
+
+  *) Optional Headers Module to Set or Remove HTTP Headers
+       The optional mod_headers module can be used to set custom headers
+       in the HTTP response. It can append to existing headers, replace
+       them, or remove headers from the response.
+
+  *) Conditional Config Directives
+       A new <IfModule> section allows directives to be enabled only if a
+       given module is loaded into the server.
+
+  *) Authorization Directives Now Use NCSA-style Syntax
+       The AuthUserFile, AuthGroupFile and AuthDigestFile commands now
+       have a syntax compatible with the NCSA server.
+
+  *) Optional Proxy Module
+       An improved FTP, HTTP, and CONNECT mode SSL proxy is included with
+       Apache 1.2. Some of the changes visible to users:
+       
+              - Improved FTP proxy supporting PASV mode
+              - NoProxy directive for excluding sites to proxy
+              - CONNECT mode ports are configurable from a list
+              - NoCache * directive for disabling proxy caching
+              - Numerous bug fixes
+
+  *) Optional Example Module
+       An example module that demonstrates many of the aspects of the
+       API is now included with Apache as of version 1.2.  It can be
+       used as a base for those who wish to write their own Apache
+       modules.
