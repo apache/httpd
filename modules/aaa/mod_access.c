@@ -93,7 +93,7 @@ enum allowdeny_type {
 typedef struct {
     apr_int64_t limited;
     union {
-	char *from;
+        char *from;
         apr_ipsubnet_t *ip;
     } x;
     enum allowdeny_type type;
@@ -114,16 +114,17 @@ module AP_MODULE_DECLARE_DATA access_module;
 
 static void *create_access_dir_config(apr_pool_t *p, char *dummy)
 {
-    access_dir_conf *conf =
-    (access_dir_conf *) apr_pcalloc(p, sizeof(access_dir_conf));
     int i;
+    access_dir_conf *conf =
+        (access_dir_conf *)apr_pcalloc(p, sizeof(access_dir_conf));
 
-    for (i = 0; i < METHODS; ++i)
-	conf->order[i] = DENY_THEN_ALLOW;
+    for (i = 0; i < METHODS; ++i) {
+        conf->order[i] = DENY_THEN_ALLOW;
+    }
     conf->allows = apr_array_make(p, 1, sizeof(allowdeny));
     conf->denys = apr_array_make(p, 1, sizeof(allowdeny));
 
-    return (void *) conf;
+    return (void *)conf;
 }
 
 static const char *order(cmd_parms *cmd, void *dv, const char *arg)
