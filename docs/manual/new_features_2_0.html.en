@@ -45,6 +45,19 @@
     allow more flexibility. Also, new calls have been added that provide
     additional module capabilities without patching the core Apache server.
 
+<DT><STRONG>IPv6 Support</STRONG></DT>
+<DD>On systems where IPv6 is supported by the underlying Apache
+    Portable Runtime library, Apache gets IPv6 listening sockets by
+    default.  Additionally, the Listen, NameVirtualHost, and
+    &lt;VirtualHost&gt; directives support IPv6 numeric address
+    strings (e.g., "Listen [fe80::1]:8080").</DD>
+
+<DT><STRONG>Filtering</STRONG></DT>
+<DD>Apache modules may now be written as filters which act on the
+    stream of content as it is delivered to or from the server.  This
+    allows, for example, the output of CGI scripts to be parsed for
+    Server Side Include directive by mod_include.</DD>
+
 </DL>
 
 <P><HR>
