@@ -419,6 +419,80 @@ Changes with Apache 1.3a1
 
 Changes with Apache 1.2.2
 
+  *) Fixed another long-standing bug in sub_req_lookup_file where it would
+     happily skip past access checks on subdirectories looked up with relative
+     paths.  (It's used by mod_dir, mod_negotiation, and mod_include.)
+     [Dean Gaudet]
+
+  *) Add lockfile name to error message printed out when
+     USE_FLOCK_SERIALIZED_ACCEPT is defined.
+     [Marc Slemko]
+
+  *) Enhanced the chunking and error handling inside the buffer functions.
+     [Dean Gaudet, Roy Fielding]
+
+  *) When merging the main server's <Directory> and <Location> sections into
+     a vhost, put the main server's first and the vhost's second.  Otherwise
+     the vhost can't override the main server.  [Dean Gaudet] PR#717
+
+  *) The <Directory> code would merge and re-merge the same section after
+     a match was found, possibly causing problems with some modules.
+     [Dean Gaudet]
+
+  *) Fixed an infinite loop in mod_imap for references above the server root.
+     [Dean Gaudet] PR#748
+
+  *) mod_include cleanup showed that handle_else was being used to handle
+     endif.  It didn't cause problems, but it was cleaned up too.
+     [Howard Fear]
+
+  *) Last official synchonisation of mod_rewrite with author version (because
+     mod_rewrite is now directly developed by the author at the Apache Group):
+     o added diff between mod_rewrite 3.0.6+ and 3.0.9
+       minus WIN32/NT stuff, but plus copyright removement.
+       In detail:
+       - workaround for detecting infinite rewriting loops
+       - fixed setting of env vars when "-" is used as subst string
+       - fixed forced response code on redirects (PR#777)
+       - fixed cases where r->args is ""
+       - kludge to disable locking on pipes under braindead SunOS
+       - fix for rewritelog in cases where remote hostname is unknown
+       - fixed totally damaged request_rec walk-back loop
+     o remove static from local data and add static to global ones.
+     o replaced ugly proxy finding stuff by simple
+       find_linked_module("mod_proxy") call.
+     o added missing negation char on rewritelog()
+     o fixed a few comment typos
+     [Ralf S. Engelschall]
+
+  *) Anonymous_LogEmail was logging on each subrequest.
+     [Dean Gaudet] PR#421, PR#868
+
+  *) "force-response-1.0" now only applies to requests which are HTTP/1.0 to
+     begin with.  "nokeepalive" now works for HTTP/1.1 clients.  Added
+     "downgrade-1.0" which causes Apache to pretend it received a 1.0.
+     Additionally mod_browser now triggers during translate_name to workaround
+     a deficiency in the header_parse phase.
+     [Dean Gaudet] PR#875
+
+  *) get_client_block() returns wrong length if policy is 
+     REQUEST_CHUNKED_DECHUNK.
+     [Kenichi Hori <ken@d2.bs1.fc.nec.co.jp>] PR#815
+
+  *) Properly treat <files> container like other containers in mod_info.
+     [Marc Slemko] PR#848
+
+  *) The proxy didn't treat the "Host:" keyword of the host header as case-
+     insensitive.  The proxy would corrupt the first line of a response from
+     an HTTP/0.9 server.  [Kenichi Hori <ken@d2.bs1.fc.nec.co.jp>] PR#813,814
+
+  *) mod_include would log some bogus values occasionally.
+     [Skip Montanaro <skip@calendar.com>, Marc Slemko] PR#797
+
+  *) PORT: The slack fd changes in 1.2.1 introduced a problem with SIGHUP
+     under Solaris 2.x (up through 2.5.1).  It has been fixed.
+     [Dean Gaudet] PR#832
+
   *) API: In HTTP/1.1, whether or not a request message contains a body
      is independent of the request method and based solely on the presence
      of a Content-Length or Transfer-Encoding.  Therefore, our default
