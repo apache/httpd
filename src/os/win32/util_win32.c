@@ -34,7 +34,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool,
 {
     char buf[HUGE_STRING_LEN];
     char *pInputName;
-    char *p, *q;
+    char *p, *q, *t;
     BOOL bDone = FALSE;
     BOOL bFileExists = TRUE;
     HANDLE hFind;
@@ -43,7 +43,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool,
     if (!szFile || strlen(szFile) == 0 || strlen(szFile) >= sizeof(buf))
         return ap_pstrdup(pPool, "");
 
-    buf[0] = '\0';
+    t = buf;
     pInputName = ap_pstrdup(pPool, szFile);
 
     /* First convert all slashes to \ so Win32 calls work OK */
@@ -52,27 +52,30 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool,
             *p = '\\';
     }
     
-    p = pInputName;
+    q = p = pInputName;
     /* If there is drive information, copy it over. */ 
     if (pInputName[1] == ':') {
-        buf[0] = tolower(*p++);
-        buf[1] = *p++;
-        buf[2] = '\0';
+        /* This is correct - if systemcase is used for
+         * comparison, d: designations will match
+         */                    
+        *(t++) = tolower(*p++);
+        *(t++) = *p++;
+        q = p;
 
         /* If all we have is a drive letter, then we are done */
-        if (strlen(pInputName) == 2)
+        if (!*p)
             bDone = TRUE;
-    }
-    
-    q = p;
+    }    
+
     if (*p == '\\') {
-        p++;
-        if (*p == '\\')  /* Possible UNC name */
+        ++p;
+        if (*p == '\\')  /* UNC name */
         {
-            p++;
             /* Get past the machine name.  FindFirstFile */
             /* will not find a machine name only */
-            p = strchr(p, '\\'); 
+            *(t++) = '\\';
+            ++q;
+            p = strchr(p + 1, '\\'); 
             if (p)
             {
                 p++;
@@ -80,14 +83,21 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool,
                 /* will not find a \\machine\share name only */
                 p = strchr(p, '\\'); 
                 if (p) {
-                    strncat(buf,q,p-q);
+                    /* This was faulty - as of 1.3.13 \\machine\share 
+                     * name is now always lowercased
+                     */
+                    strncpy(t,q,p-q);
+                    strlwr(t);
+                    t += p - q;
                     q = p;
                     p++;
                 }
             }
 
-            if (!p)
+            if (!p) {
+                bFileExists = FALSE;
                 p = q;
+            }
         }
     }
 
@@ -117,13 +127,18 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool,
                 FindClose(hFind);
 
                 if (*q == '\\')
-                    strcat(buf,"\\");
-                strcat(buf, wfd.cFileName);
+                    *(t++) = '\\';
+                t = strchr(strcpy(t, wfd.cFileName), '\0');
             }
         }
         
         if (!bFileExists || OnlyDots((*q == '.' ? q : q+1))) {
-            strcat(buf, q);
+            /* WARNING: Comparison is faulty ...\unknown
+             * names may not match!
+             */
+            strcpy(t, q);
+            strlwr(t);
+            t = strchr(t, '\0');
         }
         
         if (p) {
@@ -135,8 +150,9 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool,
             bDone = TRUE;
         }
     }
+    *t = '\0';
     
-    /* First convert all slashes to / so server code handles it ok */
+    /* Finally, convert all slashes to / so server code handles it ok */
     for (p = buf; *p; p++) {
         if (*p == '\\')
             *p = '/';
@@ -214,9 +230,17 @@ API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool,
      *   (where n is a number) and the first three characters 
      *   after the last period."
      *  Here, we attempt to detect and decode these names.
-     */
-    p = strchr(pNewStr, '~');
-    if (p != NULL) {
+     *
+     *  XXX: Netware network clients may have alternate short names,
+     *  simply truncated, with no embedded '~'.  Further, this behavior
+     *  can be modified on WinNT volumes.  This was not a safe test,
+     *  therefore exclude the '~' pretest.
+     */     
+#ifdef WIN32_SHORT_FILENAME_INSECURE_BEHAVIOR
+     p = strchr(pNewStr, '~');
+     if (p != NULL)
+#endif
+     {
         char *pConvertedName, *pQstr, *pPstr;
         char buf[HUGE_STRING_LEN];
         /* We potentially have a short name.  Call 
@@ -261,7 +285,6 @@ API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool,
             pNewStr = ap_pstrdup(pPool, buf);
         }
     }
-
 
     return pNewStr;
 }
