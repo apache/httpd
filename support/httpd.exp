@@ -560,8 +560,10 @@ apr_pool_clear
 apr_pool_create
 apr_pool_destroy
 apr_pool_free_blocks_num_bytes
+apr_pool_get_abort
 apr_pool_note_subprocess
 apr_pool_num_bytes
+apr_pool_set_abort
 apr_pool_sub_make
 apr_pool_userdata_get
 apr_pool_userdata_set
@@ -599,7 +601,6 @@ apr_send
 apr_sendfile
 apr_sendto
 apr_sendv
-apr_set_abort
 apr_setsocketopt
 apr_setup_signal_thread
 apr_sha1_base64
