@@ -3259,6 +3259,14 @@ static int default_handler(request_rec *r)
             return HTTP_NOT_FOUND;
         }
 
+        /* we understood the POST method, but it isn't legal for this
+           particular resource. */
+        if (r->method_number == M_POST) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "This resource does not accept the POST method.");
+            return HTTP_METHOD_NOT_ALLOWED;
+        }
+
         if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0,
                                     r->pool)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
