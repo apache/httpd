@@ -160,7 +160,7 @@ static int bio_filter_out_read(BIO *bio, char *out, int outl)
 
 static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 {
-    bio_filter_out_ctx_t *b = (bio_filter_out_ctx_t *)(bio->ptr);
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
 
     /* when handshaking we'll have a small number of bytes.
      * max size SSL will pass us here is about 16k.
@@ -168,7 +168,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
      */
     BIO_clear_retry_flags(bio);
 
-    if (!b->length && (inl + b->blen < sizeof(b->buffer))) {
+    if (!outctx->length && (inl + outctx->blen < sizeof(outctx->buffer))) {
         /* the first two SSL_writes (of 1024 and 261 bytes)
          * need to be in the same packet (vec[0].iov_base)
          */
@@ -176,8 +176,8 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
          * but this way we avoid the malloc(APR_BUCKET_BUFF_SIZE)
          * and free() of it later
          */
-        memcpy(&b->buffer[b->blen], in, inl);
-        b->blen += inl;
+        memcpy(&outctx->buffer[outctx->blen], in, inl);
+        outctx->blen += inl;
     }
     else {
         /* pass along the encrypted data
@@ -185,10 +185,10 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
          * which will be overwritten once we leave here
          */
         apr_bucket *bucket = apr_bucket_transient_create(in, inl,
-                                                         b->bb->bucket_alloc);
+                                             outctx->bb->bucket_alloc);
 
-        b->length += inl;
-        APR_BRIGADE_INSERT_TAIL(b->bb, bucket);
+        outctx->length += inl;
+        APR_BRIGADE_INSERT_TAIL(outctx->bb, bucket);
 
         bio_filter_out_flush(bio);
     }
@@ -201,23 +201,23 @@ static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
     long ret = 1;
     char **pptr;
 
-    bio_filter_out_ctx_t *b = (bio_filter_out_ctx_t *)(bio->ptr);
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
 
     switch (cmd) {
       case BIO_CTRL_RESET:
-        b->blen = b->length = 0;
+        outctx->blen = outctx->length = 0;
         break;
       case BIO_CTRL_EOF:
-        ret = (long)((b->blen + b->length) == 0);
+        ret = (long)((outctx->blen + outctx->length) == 0);
         break;
       case BIO_C_SET_BUF_MEM_EOF_RETURN:
-        b->blen = b->length = (apr_size_t)num;
+        outctx->blen = outctx->length = (apr_size_t)num;
         break;
       case BIO_CTRL_INFO:
-        ret = (long)(b->blen + b->length);
+        ret = (long)(outctx->blen + outctx->length);
         if (ptr) {
             pptr = (char **)ptr;
-            *pptr = (char *)&(b->buffer[0]);
+            *pptr = (char *)&(outctx->buffer[0]);
         }
         break;
       case BIO_CTRL_GET_CLOSE:
@@ -230,7 +230,7 @@ static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
         ret = 0L;
         break;
       case BIO_CTRL_PENDING:
-        ret = (long)(b->blen + b->length);
+        ret = (long)(outctx->blen + outctx->length);
         break;
       case BIO_CTRL_FLUSH:
         ret = (bio_filter_out_flush(bio) == APR_SUCCESS);
@@ -416,11 +416,11 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
  */
 static int bio_filter_in_read(BIO *bio, char *in, int inl)
 {
-    bio_filter_in_ctx_t *ctx = (bio_filter_in_ctx_t *)(bio->ptr);
-    apr_read_type_e block = ctx->block;
-    SSLConnRec *sslconn = myConnConfig(ctx->f->c);
+    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
+    apr_read_type_e block = inctx->block;
+    SSLConnRec *sslconn = myConnConfig(inctx->f->c);
 
-    ctx->rc = APR_SUCCESS;
+    inctx->rc = APR_SUCCESS;
 
     /* OpenSSL catches this case, so should we. */
     if (!in)
@@ -430,47 +430,47 @@ static int bio_filter_in_read(BIO *bio, char *in, int inl)
      * OpenSSL calls BIO_flush() at the appropriate times for
      * the other protocols.
      */
-    if ((SSL_version(ctx->ssl) == SSL2_VERSION) || sslconn->is_proxy) {
-        bio_filter_out_flush(ctx->wbio);
+    if ((SSL_version(inctx->ssl) == SSL2_VERSION) || sslconn->is_proxy) {
+        bio_filter_out_flush(inctx->wbio);
     }
 
     BIO_clear_retry_flags(bio);
 
-    if (!ctx->bb) {
-        ctx->rc = APR_EOF;
+    if (!inctx->bb) {
+        inctx->rc = APR_EOF;
         return -1;
     }
 
-    if (APR_BRIGADE_EMPTY(ctx->bb)) {
+    if (APR_BRIGADE_EMPTY(inctx->bb)) {
 
-        ctx->rc = ap_get_brigade(ctx->f->next, ctx->bb,
+        inctx->rc = ap_get_brigade(inctx->f->next, inctx->bb,
                                    AP_MODE_READBYTES, block, 
                                    inl);
 
         /* Not a problem, there was simply no data ready yet.
          */
-        if (APR_STATUS_IS_EAGAIN(ctx->rc) || APR_STATUS_IS_EINTR(ctx->rc)
-               || (ctx->rc == APR_SUCCESS && APR_BRIGADE_EMPTY(ctx->bb))) {
+        if (APR_STATUS_IS_EAGAIN(inctx->rc) || APR_STATUS_IS_EINTR(inctx->rc)
+               || (inctx->rc == APR_SUCCESS && APR_BRIGADE_EMPTY(inctx->bb))) {
             BIO_set_retry_read(bio);
             return 0;
         }
 
-        if (ctx->rc != APR_SUCCESS) {
+        if (inctx->rc != APR_SUCCESS) {
             /* Unexpected errors discard the brigade */
-            apr_brigade_cleanup(ctx->bb);
-            ctx->bb = NULL;
+            apr_brigade_cleanup(inctx->bb);
+            inctx->bb = NULL;
             return -1;
         }
     }
 
-    ctx->rc = brigade_consume(ctx->bb, block, in, &inl);
+    inctx->rc = brigade_consume(inctx->bb, block, in, &inl);
 
-    if (ctx->rc == APR_SUCCESS) {
+    if (inctx->rc == APR_SUCCESS) {
         return inl;
     }
 
-    if (APR_STATUS_IS_EAGAIN(ctx->rc) 
-            || APR_STATUS_IS_EINTR(ctx->rc)) {
+    if (APR_STATUS_IS_EAGAIN(inctx->rc) 
+            || APR_STATUS_IS_EINTR(inctx->rc)) {
         BIO_set_retry_read(bio);
         return inl;
     }
@@ -478,10 +478,10 @@ static int bio_filter_in_read(BIO *bio, char *in, int inl)
     /* Unexpected errors and APR_EOF clean out the brigade.
      * Subsequent calls will return APR_EOF.
      */
-    apr_brigade_cleanup(ctx->bb);
-    ctx->bb = NULL;
+    apr_brigade_cleanup(inctx->bb);
+    inctx->bb = NULL;
 
-    if (APR_STATUS_IS_EOF(ctx->rc) && inl) {
+    if (APR_STATUS_IS_EOF(inctx->rc) && inl) {
         /* Provide the results of this read pass,
          * without resetting the BIO retry_read flag
          */
@@ -550,18 +550,18 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                      const char *data,
                                      apr_size_t len)
 {
-    SSLFilterRec *ctx = f->ctx;
+    SSLFilterRec *frec = f->ctx;
     apr_size_t n;
 
     /* write SSL */
-    n = ssl_io_hook_write(ctx->pssl, (unsigned char *)data, len);
+    n = ssl_io_hook_write(frec->pssl, (unsigned char *)data, len);
 
     if (n != len) {
         conn_rec *c = f->c;
         char *reason = "reason unknown";
 
         /* XXX: probably a better way to determine this */
-        if (SSL_total_renegotiations(ctx->pssl)) {
+        if (SSL_total_renegotiations(frec->pssl)) {
             reason = "likely due to failed renegotiation";
         }
 
@@ -579,14 +579,14 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
                                          apr_bucket_brigade *bb)
 {
     apr_status_t status = APR_SUCCESS;
-    SSLFilterRec *ctx = f->ctx;
+    SSLFilterRec *frec = f->ctx;
 
-    if (!ctx->pssl) {
+    if (!frec->pssl) {
         /* ssl_abort() has been called */
         return ap_pass_brigade(f->next, bb);
     }
 
-    if ((status = ssl_hook_process_connection(ctx)) != APR_SUCCESS) {
+    if ((status = ssl_hook_process_connection(frec)) != APR_SUCCESS) {
         return status;
     }
 
@@ -597,7 +597,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
          * These types do not require translation by OpenSSL.  
          */
         if (APR_BUCKET_IS_EOS(bucket) || APR_BUCKET_IS_FLUSH(bucket)) {
-            if ((status = bio_filter_out_flush(ctx->pbioWrite)) != APR_SUCCESS) {
+            if ((status = bio_filter_out_flush(frec->pbioWrite)) != APR_SUCCESS) {
                 return status;
             }
 
@@ -638,7 +638,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     return status;
 }
 
-static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *ctx,
+static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                                       char *buf,
                                       apr_size_t *len)
 {
@@ -648,15 +648,15 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *ctx,
 
     *len = 0;
 
-    if ((bytes = char_buffer_read(&ctx->cbuf, buf, wanted))) {
+    if ((bytes = char_buffer_read(&inctx->cbuf, buf, wanted))) {
         *len = bytes;
-        if (ctx->mode == AP_MODE_SPECULATIVE) {
+        if (inctx->mode == AP_MODE_SPECULATIVE) {
             /* We want to rollback this read. */
-            ctx->cbuf.value -= bytes;
-            ctx->cbuf.length += bytes;
+            inctx->cbuf.value -= bytes;
+            inctx->cbuf.length += bytes;
             return APR_SUCCESS;
         } 
-        if ((*len >= wanted) || ctx->mode == AP_MODE_GETLINE) {
+        if ((*len >= wanted) || inctx->mode == AP_MODE_GETLINE) {
             return APR_SUCCESS;
         }
     }
@@ -667,32 +667,32 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *ctx,
          * from the stack.  This is where we want to consider all of
          * the blocking and SPECULATIVE semantics
          */
-        rc = SSL_read(ctx->frec->pssl, buf + bytes, wanted - bytes);
+        rc = SSL_read(inctx->frec->pssl, buf + bytes, wanted - bytes);
 
         if (rc > 0) {
             *len += rc;
-            if (ctx->mode == AP_MODE_SPECULATIVE) {
-                char_buffer_write(&ctx->cbuf, buf, rc);
+            if (inctx->mode == AP_MODE_SPECULATIVE) {
+                char_buffer_write(&inctx->cbuf, buf, rc);
             }
-            return ctx->rc;
+            return inctx->rc;
         }
         else if (rc == 0) {
             /* If EAGAIN, we will loop given a blocking read,
              * otherwise consider ourselves at EOF.
              */
-            if (APR_STATUS_IS_EAGAIN(ctx->rc)
-                    || APR_STATUS_IS_EINTR(ctx->rc)) {
-                if (ctx->block == APR_NONBLOCK_READ) {
+            if (APR_STATUS_IS_EAGAIN(inctx->rc)
+                    || APR_STATUS_IS_EINTR(inctx->rc)) {
+                if (inctx->block == APR_NONBLOCK_READ) {
                     break;
                 }
             }
             else {
-                ctx->rc = APR_EOF;
+                inctx->rc = APR_EOF;
                 break;
             }
         }
         else /* (rc < 0) */ {
-            int ssl_err = SSL_get_error(ctx->frec->pssl, rc);
+            int ssl_err = SSL_get_error(inctx->frec->pssl, rc);
 
             if (ssl_err == SSL_ERROR_WANT_READ) {
                 /*
@@ -703,14 +703,14 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *ctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotation which is handled implicitly by OpenSSL.)
                  */
-                if (ctx->block == APR_NONBLOCK_READ) {
-                    ctx->rc = APR_EAGAIN;
+                if (inctx->block == APR_NONBLOCK_READ) {
+                    inctx->rc = APR_EAGAIN;
                     break; /* non fatal error */
                 }
             }
             else if (ssl_err == SSL_ERROR_SYSCALL) {
-                conn_rec *c = (conn_rec *)SSL_get_app_data(ctx->frec->pssl);
-                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->rc, c->base_server,
+                conn_rec *c = (conn_rec *)SSL_get_app_data(inctx->frec->pssl);
+                ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
                             "SSL filter error reading data");
                 break;
             }
@@ -718,22 +718,22 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *ctx,
                 /*
                  * Log SSL errors and any unexpected conditions.
                  */
-                conn_rec *c = (conn_rec *)SSL_get_app_data(ctx->frec->pssl);
-                ap_log_error(APLOG_MARK, APLOG_ERR, ctx->rc, c->base_server,
+                conn_rec *c = (conn_rec *)SSL_get_app_data(inctx->frec->pssl);
+                ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
                             "SSL library error reading data");
                 ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
-                if (ctx->rc == APR_SUCCESS) {
-                    ctx->rc = APR_EGENERAL;
+                if (inctx->rc == APR_SUCCESS) {
+                    inctx->rc = APR_EGENERAL;
                 }
                 break;
             }
         }
     }
-    return ctx->rc;
+    return inctx->rc;
 }
 
-static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *ctx,
+static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
                                          char *buf,
                                          apr_size_t *len)
 {
@@ -750,7 +750,7 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *ctx,
      */
 
     while (tmplen > 0) {
-        status = ssl_io_input_read(ctx, buf + offset, &tmplen);
+        status = ssl_io_input_read(inctx, buf + offset, &tmplen);
         
         if (status != APR_SUCCESS) {
             return status;
@@ -775,7 +775,7 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *ctx,
         value = buf + bytes;
         length = *len - bytes;
 
-        char_buffer_write(&ctx->cbuf, value, length);
+        char_buffer_write(&inctx->cbuf, value, length);
 
         *len = bytes;
     }
@@ -800,9 +800,9 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *ctx,
 
 static void ssl_io_filter_disable(ap_filter_t *f)
 {
-    bio_filter_in_ctx_t *ctx = f->ctx;
-    ctx->ssl = NULL;
-    ctx->frec->pssl = NULL;
+    bio_filter_in_ctx_t *inctx = f->ctx;
+    inctx->ssl = NULL;
+    inctx->frec->pssl = NULL;
 }
 
 static apr_status_t ssl_io_filter_error(ap_filter_t *f,
@@ -846,12 +846,12 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
                                         apr_off_t readbytes)
 {
     apr_status_t status;
-    bio_filter_in_ctx_t *ctx = f->ctx;
+    bio_filter_in_ctx_t *inctx = f->ctx;
 
-    apr_size_t len = sizeof(ctx->buffer);
+    apr_size_t len = sizeof(inctx->buffer);
     int is_init = (mode == AP_MODE_INIT);
 
-    if (!ctx->ssl) {
+    if (!inctx->ssl) {
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
@@ -861,15 +861,15 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return APR_ENOTIMPL;
     }
 
-    ctx->mode = mode;
-    ctx->block = block;
+    inctx->mode = mode;
+    inctx->block = block;
 
     /* XXX: we could actually move ssl_hook_process_connection to an
      * ap_hook_process_connection but would still need to call it for
      * AP_MODE_INIT for protocols that may upgrade the connection
      * rather than have SSLEngine On configured.
      */
-    status = ssl_hook_process_connection(ctx->frec);
+    status = ssl_hook_process_connection(inctx->frec);
 
     if (status != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
@@ -882,17 +882,17 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    if (ctx->mode == AP_MODE_READBYTES || 
-        ctx->mode == AP_MODE_SPECULATIVE) {
+    if (inctx->mode == AP_MODE_READBYTES || 
+        inctx->mode == AP_MODE_SPECULATIVE) {
         /* Protected from truncation, readbytes < MAX_SIZE_T 
          * FIXME: No, it's *not* protected.  -- jre */
         if (readbytes < len) {
             len = (apr_size_t)readbytes;
         }
-        status = ssl_io_input_read(ctx, ctx->buffer, &len);
+        status = ssl_io_input_read(inctx, inctx->buffer, &len);
     }
-    else if (ctx->mode == AP_MODE_GETLINE) {
-        status = ssl_io_input_getline(ctx, ctx->buffer, &len);
+    else if (inctx->mode == AP_MODE_GETLINE) {
+        status = ssl_io_input_getline(inctx, inctx->buffer, &len);
     }
     else {
         /* We have no idea what you are talking about, so return an error. */
@@ -905,7 +905,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 
     if (len > 0) {
         apr_bucket *bucket =
-            apr_bucket_transient_create(ctx->buffer, len, f->c->bucket_alloc);
+            apr_bucket_transient_create(inctx->buffer, len, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
 
@@ -915,24 +915,24 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 static void ssl_io_input_add_filter(SSLFilterRec *frec, conn_rec *c,
                                     SSL *ssl)
 {
-    bio_filter_in_ctx_t *ctx;
+    bio_filter_in_ctx_t *inctx;
 
-    ctx = apr_palloc(c->pool, sizeof(*ctx));
+    inctx = apr_palloc(c->pool, sizeof(*inctx));
 
-    frec->pInputFilter = ap_add_input_filter(ssl_io_filter, ctx, NULL, c);
+    frec->pInputFilter = ap_add_input_filter(ssl_io_filter, inctx, NULL, c);
 
     frec->pbioRead = BIO_new(&bio_filter_in_method);
-    frec->pbioRead->ptr = (void *)ctx;
+    frec->pbioRead->ptr = (void *)inctx;
 
-    ctx->frec = frec;
-    ctx->ssl = ssl;
-    ctx->wbio = frec->pbioWrite;
-    ctx->f = frec->pInputFilter;
-    ctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    inctx->frec = frec;
+    inctx->ssl = ssl;
+    inctx->wbio = frec->pbioWrite;
+    inctx->f = frec->pInputFilter;
+    inctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
 
-    ctx->cbuf.length = 0;
+    inctx->cbuf.length = 0;
 
-    ctx->pool = c->pool;
+    inctx->pool = c->pool;
 }
 
 static apr_status_t ssl_io_filter_cleanup (void *data)
