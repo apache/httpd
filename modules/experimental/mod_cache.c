@@ -540,7 +540,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         } 
         else if (exps != NULL && exp == APR_DATE_BAD) {
             /* if a broken Expires header is present, don't cache it */
-            reason = apr_psprintf(p, "Broken expires header %s", exp);
+            reason = apr_psprintf(p, "Broken expires header %s", exps);
         }
         else if (r->args && exps == NULL) {
             /* if query string present but no expiration time, don't cache it
