@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
+     from escaping filters twice when the backslash character is used.
+     PR 24437 [Jess Holle <jessh@ptc.com>]
+
   *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
      functions leave the connections in a sane state after errors have
      occurred. PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134,
