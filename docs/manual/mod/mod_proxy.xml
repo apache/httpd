@@ -115,7 +115,7 @@
       Deny from all<br />
       Allow from internal.example.com<br />
     </indent>
-    &lt;/Proxy&gr;
+    &lt;/Proxy&gt;
     </example>
 
     <example><title>Reverse Proxy</title>
@@ -128,8 +128,8 @@
     </indent>
     &lt;/Proxy&gt;<br />
     <br />
-    ProxyPass /foo/ http://foo.example.com/bar/<br />
-    ProxyPassReverse /foo/ http://foo.example.com/bar/
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
     </example>
     </section> <!-- /examples -->
 
