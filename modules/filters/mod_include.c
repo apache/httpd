@@ -3108,7 +3108,6 @@ static apr_size_t find_argument(include_ctx_t *ctx, const char *data,
          * The value is still the raw input string. Finally clean it up.
          */
         --(intern->current_arg->value_len);
-        intern->current_arg->value[intern->current_arg->value_len] = '\0';
 
         /* strip quote escaping \ from the string */
         if (intern->quote) {
