@@ -939,7 +939,7 @@ static void do_emit_plain(request_rec *r, ap_file_t *f)
 static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		      char *title)
 {
-    ap_file_t *f;
+    ap_file_t *f = NULL;
     request_rec *rr = NULL;
     int emit_amble = 1;
     int emit_H1 = 1;
@@ -1022,7 +1022,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
  */
 static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 {
-    ap_file_t *f;
+    ap_file_t *f = NULL;
     request_rec *rr = NULL;
     int suppress_post = 0;
     int suppress_sig = 0;

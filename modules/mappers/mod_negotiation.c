@@ -776,7 +776,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 static int read_type_map(negotiation_state *neg, request_rec *rr)
 {
     request_rec *r = neg->r;
-    ap_file_t *map;
+    ap_file_t *map = NULL;
     ap_status_t status;
     char buffer[MAX_STRING_LEN];
     enum header_state hstate;

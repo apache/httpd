@@ -765,7 +765,7 @@ static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_context_t *p, const char *name)
 {
     configfile_t *new_cfg;
-    ap_file_t *file;
+    ap_file_t *file = NULL;
     ap_status_t stat;
     ap_filetype_e type;
 

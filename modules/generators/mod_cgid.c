@@ -666,7 +666,7 @@ static const command_rec cgid_cmds[] =
 static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret, 
                            int show_errno, char *error) 
 { 
-    ap_file_t *f; 
+    ap_file_t *f = NULL; 
     struct stat finfo; 
 
     ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
@@ -698,7 +698,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     ap_array_header_t *hdrs_arr = ap_table_elts(r->headers_in); 
     ap_table_entry_t *hdrs = (ap_table_entry_t *) hdrs_arr->elts; 
     char argsbuffer[HUGE_STRING_LEN]; 
-    ap_file_t *f; 
+    ap_file_t *f = NULL; 
     int i; 
     struct stat finfo; 
 

@@ -823,7 +823,7 @@ static int include_cmd(char *s, request_rec *r)
     ap_status_t rc;
     ap_table_t *env = r->subprocess_env;
     char **argv;
-    ap_file_t *file;
+    ap_file_t *file = NULL;
     ap_iol *iol;
 
     arg.r = r;
@@ -2347,7 +2347,7 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, char *arg)
 
 static int send_parsed_file(request_rec *r)
 {
-    ap_file_t *f;
+    ap_file_t *f = NULL;
     enum xbithack *state =
     (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
