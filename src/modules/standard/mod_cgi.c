@@ -210,8 +210,19 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 	/* Soak up script output */
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	    continue;
+#ifdef WIN32
+        /* Soak up stderr and redirect it to the error log.
+         * Script output to stderr is already directed to the error log
+         * on Unix, thanks to the magic of fork().
+         */
+        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, r, 
+                          "%s", argsbuffer);            
+        }
+#else
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
 	    continue;
+#endif
 	return ret;
     }
 
