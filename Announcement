@@ -9,9 +9,8 @@
    
    This version of Apache is primarily a security fix release
    addressing a problem which could lead to a directory listing being
-   displayed in place of an error message. Also, it fixes    
-   some broken functionality present in the 1.3.17 release and
-   various Win32 issues.
+   displayed in place of an error message. Also, it fixes some broken
+   functionality present in the 1.3.17 release and various Win32 issues.
    A summary of the new features is given at the end of this document.
    
    We consider Apache 1.3.19 to be the best version of Apache available
@@ -71,6 +70,7 @@
    that the current Win32 code has not yet reached the levels of the Unix
    version, but is of acceptable quality. Any Win32 stability or security
    problems do not impact, in any way, Apache on other platforms.
+
    
                          Apache 1.3.19  Major changes
 
