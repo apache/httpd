@@ -9,6 +9,6 @@
     <variant>de</variant>
     <variant>en</variant>
     <variant>ja</variant>
-    <variant>ru</variant>
+    <variant outdated="yes">ru</variant>
   </variants>
 </metafile>
