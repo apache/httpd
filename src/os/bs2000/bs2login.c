@@ -278,7 +278,7 @@ pid_t os_fork(const char *user)
 	    ap_log_error(APLOG_MARK, APLOG_EMERG,
 			 NULL, "ufork: Possible mis-configuration "
 			 "for user %s - Aborting.", user);
-	    clean_parent_exit(1);
+	    exit(1);
 	}
 	break;
 
