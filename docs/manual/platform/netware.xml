@@ -365,6 +365,14 @@
         <li><directive module="core">CGIMapExtension</directive> -
         This directive maps a CGI file extension to a script interpreter.</li>
       </ul>
+      <ul>
+        <li><directive module="mod_nw_ssl">SecureListen</directive> -
+        Enables SSL encryption for a specified port.</li>
+      </ul>
+      <ul>
+        <li><directive module="mod_nw_ssl">NWSSLTrustedCerts</directive> -
+        Adds trusted certificates that are used to create secure connections to proxied servers.</li>
+      </ul>
 
     </section>
 
