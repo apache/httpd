@@ -101,7 +101,7 @@ extern ap_listen_rec *ap_listeners;
  * Setup all of the defaults for the listener list
  */
 void ap_listen_pre_config(void);
-#if !defined(WIN32) && !defined(PREFORK_MPM) && !defined(SPMT_OS2_MPM)
+#if !defined(WIN32) && !defined(SPMT_OS2_MPM)
 /**
  * Loop through the global ap_listen_rec list and create all of the required
  * sockets.  This executes the listen and bind on the sockets.
