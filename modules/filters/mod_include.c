@@ -96,32 +96,52 @@ module AP_MODULE_DECLARE_DATA include_module;
 static apr_hash_t *include_hash;
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
 
+/*****************************************************************
+ *
+ * XBITHACK.  Sigh...  NB it's configurable per-directory; the compile-time
+ * option only changes the default.
+ */
+
+module include_module;
+enum xbithack {
+    xbithack_off, xbithack_on, xbithack_full
+};
+
+typedef struct {
+    char *default_error_msg;
+    char *default_time_fmt;
+    enum xbithack *xbithack;
+} include_dir_config;
+
+#ifdef XBITHACK
+#define DEFAULT_XBITHACK xbithack_full
+#else
+#define DEFAULT_XBITHACK xbithack_off
+#endif
+
 #define BYTE_COUNT_THRESHOLD AP_MIN_BYTES_TO_WRITE
 
 /* ------------------------ Environment function -------------------------- */
 
+/* Sentinel value to store in subprocess_env for items that
+ * shouldn't be evaluated until/unless they're actually used
+ */
+static char lazy_eval_sentinel;
+
 /* XXX: could use ap_table_overlap here */
 static void add_include_vars(request_rec *r, char *timefmt)
 {
-    char *pwname;
     apr_table_t *e = r->subprocess_env;
     char *t;
-    apr_time_t date = r->request_time;
 
-    apr_table_setn(e, "DATE_LOCAL", ap_ht_time(r->pool, date, timefmt, 0));
-    apr_table_setn(e, "DATE_GMT", ap_ht_time(r->pool, date, timefmt, 1));
-    apr_table_setn(e, "LAST_MODIFIED",
-              ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0));
+    apr_table_setn(e, "DATE_LOCAL", &lazy_eval_sentinel);
+    apr_table_setn(e, "DATE_GMT", &lazy_eval_sentinel);
+    apr_table_setn(e, "LAST_MODIFIED", &lazy_eval_sentinel);
     apr_table_setn(e, "DOCUMENT_URI", r->uri);
     if (r->path_info && *r->path_info) {
         apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
     }
-    if (apr_get_username(&pwname, r->finfo.user, r->pool) == APR_SUCCESS) {
-        apr_table_setn(e, "USER_NAME", pwname);
-    }
-    else {
-        apr_table_setn(e, "USER_NAME", "<unknown>");
-    }
+    apr_table_setn(e, "USER_NAME", &lazy_eval_sentinel);
     if ((t = strrchr(r->filename, '/'))) {
         apr_table_setn(e, "DOCUMENT_NAME", ++t);
     }
@@ -135,6 +155,42 @@ static void add_include_vars(request_rec *r, char *timefmt)
         apr_table_setn(e, "QUERY_STRING_UNESCAPED",
                   ap_escape_shell_cmd(r->pool, arg_copy));
     }
+}
+
+static const char *add_include_vars_lazy(request_rec *r, const char *var)
+{
+    char *val;
+    if (!strcasecmp(var, "DATE_LOCAL")) {
+        include_dir_config *conf =
+            (include_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                       &include_module);
+        val = ap_ht_time(r->pool, r->request_time, conf->default_time_fmt, 0);
+    }
+    else if (!strcasecmp(var, "DATE_GMT")) {
+        include_dir_config *conf =
+            (include_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                       &include_module);
+        val = ap_ht_time(r->pool, r->request_time, conf->default_time_fmt, 1);
+    }
+    else if (!strcasecmp(var, "LAST_MODIFIED")) {
+        include_dir_config *conf =
+            (include_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                       &include_module);
+        val = ap_ht_time(r->pool, r->finfo.mtime, conf->default_time_fmt, 0);
+    }
+    else if (!strcasecmp(var, "USER_NAME")) {
+        if (apr_get_username(&val, r->finfo.user, r->pool) != APR_SUCCESS) {
+            val = "<unknown>";
+        }
+    }
+    else {
+        val = NULL;
+    }
+
+    if (val) {
+        apr_table_setn(r->subprocess_env, var, val);
+    }
+    return val;
 }
 
 /* --------------------------- Parser functions --------------------------- */
@@ -177,7 +233,6 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         if (ctx->output_now) {
             apr_size_t start_index;
             apr_bucket *start_bucket;
-            apr_bucket_brigade *remainder;
             if (ctx->head_start_index > 0) {
                 start_bucket = ctx->head_start_bucket;
                 apr_bucket_split(start_bucket, start_index);
@@ -716,6 +771,9 @@ static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
                     tmp_store        = *end_of_var_name;
                     *end_of_var_name = '\0';
                     val = apr_table_get(r->subprocess_env, start_of_var_name);
+                    if (val == &lazy_eval_sentinel) {
+                        val = add_include_vars_lazy(r, start_of_var_name);
+                    }
                     *end_of_var_name = tmp_store;
 
 		    if (val) {
@@ -962,12 +1020,21 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
             if (!strcmp(tag, "var")) {
                 const char *val = apr_table_get(r->subprocess_env, tag_val);
 
+                if (val == &lazy_eval_sentinel) {
+                    val = add_include_vars_lazy(r, tag_val);
+                }
                 if (val) {
                     switch(encode) {
-                    case E_NONE:   echo_text = val;                          break;
-                    case E_URL:    echo_text = ap_escape_uri(r->pool, val);  break;
-                    case E_ENTITY: echo_text = ap_escape_html(r->pool, val); break;
-            	}
+                    case E_NONE:   
+                        echo_text = val;
+                        break;
+                    case E_URL:
+                        echo_text = ap_escape_uri(r->pool, val);  
+                        break;
+                    case E_ENTITY: 
+                        echo_text = ap_escape_html(r->pool, val); 
+                        break;
+                    }
 
                     e_len = strlen(echo_text);
                     tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1, &e_wrt);
@@ -2337,13 +2404,19 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
             apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
             apr_table_entry_t *elts = (apr_table_entry_t *)arr->elts;
             int i;
-            char *key_text, *val_text;
+            const char *key_text, *val_text;
             apr_size_t   k_len, v_len, t_wrt;
 
             *inserted_head = NULL;
             for (i = 0; i < arr->nelts; ++i) {
                 key_text = ap_escape_html(r->pool, elts[i].key);
-                val_text = ap_escape_html(r->pool, elts[i].val);
+                if (elts[i].val == &lazy_eval_sentinel) {
+                    val_text =
+                        ap_escape_html(r->pool,
+                                       add_include_vars_lazy(r, elts[i].key));
+                } else {
+                    val_text = ap_escape_html(r->pool, elts[i].val);
+                }
                 k_len = strlen(key_text);
                 v_len = strlen(val_text);
 
@@ -2687,29 +2760,6 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
     }
     return APR_SUCCESS;
 }
-
-/*****************************************************************
- *
- * XBITHACK.  Sigh...  NB it's configurable per-directory; the compile-time
- * option only changes the default.
- */
-
-module include_module;
-enum xbithack {
-    xbithack_off, xbithack_on, xbithack_full
-};
-
-typedef struct {
-    char *default_error_msg;
-    char *default_time_fmt;
-    enum xbithack *xbithack;
-} include_dir_config;
-
-#ifdef XBITHACK
-#define DEFAULT_XBITHACK xbithack_full
-#else
-#define DEFAULT_XBITHACK xbithack_off
-#endif
 
 static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
 {

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Make mod_include do lazy evaluation of potentially expensive to
+     compute variables.  [Brian Pane <bpane@pacbell.net>]
+
   *) Fix logging of bytes sent for HEAD requests.  %b and %B should
      log either - or 0, before this patch, they were both logging
      the file size.  [Taketo Kabe <kabe@sra-tohoku.co.jp>]
