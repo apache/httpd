@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Rearrange OpenSSL engine initialization to support RAND 
+     redirection on crypto accelerator. 
+     [Frederic DONNAT <frederic.donnat@zencod.com>]
+
   *) Always emit Vary header if mod_deflate is involved in the
      request.  [Andre Malo <nd@perlig.de>]
 
