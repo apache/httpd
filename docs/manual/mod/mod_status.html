@@ -47,6 +47,44 @@ A compile-time option must be used to display the details marked "(*)" as
 the instrumentation required for obtaining these statistics does not
 exist within standard Apache.
 
+<H2><A NAME="extendedstatus">ExtendedStatus directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt ExtendedStatus} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ExtendedStatus <EM>On|Off</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>ExtendedStatus Off</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config <BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+ <A
+  HREF="directive-dict.html#Module"
+  REL="Help"
+  ><STRONG>Module:</STRONG></A> mod_status<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ExtendedStatus is only available
+ in Apache 1.3 and later
+
+<P>
+This directive controls whether the server keeps track of extended
+status information for each request. This is only useful if the status module
+is enabled on the server.
+</P>
+<P>
+This setting applies to the entire server, and cannot be enabled or
+disabled on a virtualhost-by-virtualhost basis.
+</P>
+
 <H2>Enabling Status Support</H2>
 
 To enable status reports only for browsers from the foo.com
@@ -78,21 +116,6 @@ A machine-readable version of the status file is available by accessing the
 page <CODE>http://your.server.name/server-status?auto</CODE>.  This is useful
 when automatically run, see the Perl program in the <CODE>/support</CODE>
 directory of Apache, <CODE>log_server_status</CODE>.
-
-<H2>Full Instrumentation</H2>
-
-To obtain full statistics you must compile Apache with a special
-directive.  On some machines there may be a small performance loss
-if you do this.  Try full statistics and see if you notice any
-difference.  If you do please contact <A HREF="mailto:jim@apache.org">
-jim@apache.org</A> and tell us your configuration.
-
-<P>
-
-Do this by using the following run-time directive:
-<PRE>
-        ExtendedStatus On
-</PRE>
 
 <BLOCKQUOTE>
  <STRONG>
