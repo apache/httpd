@@ -205,9 +205,6 @@
 
 #define DAV_EMPTY_VALUE		"\0"	/* TWO null terms */
 
-/* the namespace URI was not found; no ID is available */
-#define AP_XML_NS_ERROR_NOT_FOUND	(AP_XML_NS_ERROR_BASE)
-
 struct dav_propdb {
     apr_pool_t *p;		/* the pool we should use */
     request_rec *r;		/* the request record */
@@ -298,19 +295,19 @@ static int dav_find_liveprop_provider(dav_propdb *propdb,
     return DAV_PROPID_CORE_UNKNOWN;
 }
 
-static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
+static void dav_find_liveprop(dav_propdb *propdb, apr_xml_elem *elem)
 {
     const char *ns_uri;
     dav_elem_private *priv = elem->priv;
     const dav_hooks_liveprop *hooks;
 
 
-    if (elem->ns == AP_XML_NS_NONE)
+    if (elem->ns == APR_XML_NS_NONE)
         ns_uri = NULL;
-    else if (elem->ns == AP_XML_NS_DAV_ID)
+    else if (elem->ns == APR_XML_NS_DAV_ID)
         ns_uri = "DAV:";
     else
-        ns_uri = AP_XML_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
+        ns_uri = APR_XML_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
 
     priv->propid = dav_find_liveprop_provider(propdb, ns_uri, elem->name,
                                               &hooks);
@@ -371,7 +368,7 @@ static void dav_do_prop_subreq(dav_propdb *propdb)
 static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 				       int propid, const char *name,
 				       dav_prop_insert what,
-				       ap_text_header *phdr,
+				       apr_text_header *phdr,
 				       dav_prop_insert *inserted)
 {
     const char *value = NULL;
@@ -471,7 +468,7 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 	    /* use D: prefix to refer to the DAV: namespace URI */
 	    s = apr_psprintf(propdb->p, "<D:%s/>" DEBUG_CR, name);
 	}
-	ap_text_append(propdb->p, phdr, s);
+	apr_text_append(propdb->p, phdr, s);
 
 	*inserted = what;
     }
@@ -480,9 +477,9 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 }
 
 static dav_error * dav_insert_liveprop(dav_propdb *propdb,
-				       const ap_xml_elem *elem,
+				       const apr_xml_elem *elem,
 				       dav_prop_insert what,
-				       ap_text_header *phdr,
+				       apr_text_header *phdr,
 				       dav_prop_insert *inserted)
 {
     dav_elem_private *priv = elem->priv;
@@ -521,12 +518,12 @@ static void dav_output_prop_name(apr_pool_t *pool,
 }
 
 static void dav_insert_xmlns(apr_pool_t *p, const char *pre_prefix, int ns,
-			     const char *ns_uri, ap_text_header *phdr)
+			     const char *ns_uri, apr_text_header *phdr)
 {
     const char *s;
 
     s = apr_psprintf(p, " xmlns:%s%d=\"%s\"", pre_prefix, ns, ns_uri);
-    ap_text_append(p, phdr, s);
+    apr_text_append(p, phdr, s);
 }
 
 static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
@@ -604,8 +601,8 @@ void dav_close_propdb(dav_propdb *propdb)
 dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
 {
     const dav_hooks_db *db_hooks = propdb->db_hooks;
-    ap_text_header hdr = { 0 };
-    ap_text_header hdr_ns = { 0 };
+    apr_text_header hdr = { 0 };
+    apr_text_header hdr_ns = { 0 };
     dav_get_props_result result = { 0 };
     int found_contenttype = 0;
     int found_contentlang = 0;
@@ -621,9 +618,9 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
         }
 
         /* initialize the result with some start tags... */
-        ap_text_append(propdb->p, &hdr,
-		       "<D:propstat>" DEBUG_CR
-		       "<D:prop>" DEBUG_CR);
+        apr_text_append(propdb->p, &hdr,
+                        "<D:propstat>" DEBUG_CR
+                        "<D:prop>" DEBUG_CR);
 
         /* if there ARE properties, then scan them */
         if (propdb->db != NULL) {
@@ -717,10 +714,10 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
     /* if not just reporting on supported live props,
      * terminate the result */
     if (what != DAV_PROP_INSERT_SUPPORTED) {
-        ap_text_append(propdb->p, &hdr,
-		       "</D:prop>" DEBUG_CR
-		       "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
-		       "</D:propstat>" DEBUG_CR);
+        apr_text_append(propdb->p, &hdr,
+	                "</D:prop>" DEBUG_CR
+	                "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
+	                "</D:propstat>" DEBUG_CR);
     }
 
     result.propstats = hdr.first;
@@ -728,13 +725,13 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
     return result;
 }
 
-dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
+dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
 {
     const dav_hooks_db *db_hooks = propdb->db_hooks;
-    ap_xml_elem *elem = dav_find_child(doc->root, "prop");
-    ap_text_header hdr_good = { 0 };
-    ap_text_header hdr_bad = { 0 };
-    ap_text_header hdr_ns = { 0 };
+    apr_xml_elem *elem = dav_find_child(doc->root, "prop");
+    apr_text_header hdr_good = { 0 };
+    apr_text_header hdr_bad = { 0 };
+    apr_text_header hdr_ns = { 0 };
     int have_good = 0;
     dav_get_props_result result = { 0 };
     char *marks_liveprop;
@@ -745,7 +742,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
        the marks */
 
     /* we will ALWAYS provide a "good" result, even if it is EMPTY */
-    ap_text_append(propdb->p, &hdr_good,
+    apr_text_append(propdb->p, &hdr_good,
 		   "<D:propstat>" DEBUG_CR
 		   "<D:prop>" DEBUG_CR);
 
@@ -873,16 +870,16 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
 
         /* make sure we've started our "bad" propstat */
         if (hdr_bad.first == NULL) {
-            ap_text_append(propdb->p, &hdr_bad,
-                           "<D:propstat>" DEBUG_CR
-                           "<D:prop>" DEBUG_CR);
+            apr_text_append(propdb->p, &hdr_bad,
+                            "<D:propstat>" DEBUG_CR
+                            "<D:prop>" DEBUG_CR);
         }
 
         /* output this property's name (into the bad propstats) */
         dav_output_prop_name(propdb->p, &name, xi, &hdr_bad);
     }
 
-    ap_text_append(propdb->p, &hdr_good,
+    apr_text_append(propdb->p, &hdr_good,
 		    "</D:prop>" DEBUG_CR
 		    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
 		    "</D:propstat>" DEBUG_CR);
@@ -893,10 +890,10 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
     /* we may not have any "bad" results */
     if (hdr_bad.first != NULL) {
         /* "close" the bad propstat */
-	ap_text_append(propdb->p, &hdr_bad,
-		       "</D:prop>" DEBUG_CR
-		       "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
-		       "</D:propstat>" DEBUG_CR);
+	apr_text_append(propdb->p, &hdr_bad,
+                        "</D:prop>" DEBUG_CR
+                        "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
+                        "</D:propstat>" DEBUG_CR);
 
 	/* if there are no good props, then just return the bad */
 	if (!have_good) {
@@ -918,7 +915,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
 void dav_get_liveprop_supported(dav_propdb *propdb,
                                 const char *ns_uri,
                                 const char *propname,
-                                ap_text_header *body)
+                                apr_text_header *body)
 {
     int propid;
     const dav_hooks_liveprop *hooks;
@@ -942,7 +939,7 @@ void dav_get_liveprop_supported(dav_propdb *propdb,
 void dav_prop_validate(dav_prop_ctx *ctx)
 {
     dav_propdb *propdb = ctx->propdb;
-    ap_xml_elem *prop = ctx->prop;
+    apr_xml_elem *prop = ctx->prop;
     dav_elem_private *priv;
 
     priv = ctx->prop->priv = apr_pcalloc(propdb->p, sizeof(*priv));

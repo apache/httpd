@@ -56,7 +56,7 @@
 #include "apr_hash.h"
 #include "apr_errno.h"
 #include "apr_strings.h"
-#include "util_xml.h"   /* for ap_text_header */
+#include "util_xml.h"   /* for apr_text_header */
 #include "mod_dav.h"
 
 
@@ -101,7 +101,7 @@ int dav_get_liveprop_ns_count(void)
     return dav_liveprop_count;
 }
 
-void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr)
+void dav_add_all_liveprop_xmlns(apr_pool_t *p, apr_text_header *phdr)
 {
     apr_hash_index_t *idx = apr_hash_first(p, dav_liveprop_uris);
 
@@ -113,7 +113,7 @@ void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr)
         apr_hash_this(idx, &key, NULL, &val);
 
         s = apr_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, (const char *)key);
-        ap_text_append(p, phdr, s);
+        apr_text_append(p, phdr, s);
     }
 }
 

@@ -477,8 +477,8 @@ DAV_DECLARE(void) dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf,
 /* contains results from one of the getprop functions */
 typedef struct
 {
-    ap_text * propstats;	/* <propstat> element text */
-    ap_text * xmlns;		/* namespace decls for <response> elem */
+    apr_text * propstats;	/* <propstat> element text */
+    apr_text * xmlns;		/* namespace decls for <response> elem */
 } dav_get_props_result;
 
 /* holds the contents of a <response> element */
@@ -532,11 +532,11 @@ typedef enum {
 
 int dav_get_depth(request_rec *r, int def_depth);
 
-int dav_validate_root(const ap_xml_doc *doc, const char *tagname);
-ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
+int dav_validate_root(const apr_xml_doc *doc, const char *tagname);
+apr_xml_elem *dav_find_child(const apr_xml_elem *elem, const char *tagname);
 
 /* gather up all the CDATA into a single string */
-DAV_DECLARE(const char *) dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
+DAV_DECLARE(const char *) dav_xml_get_cdata(const apr_xml_elem *elem, apr_pool_t *pool,
                               int strip_white);
 
 /*
@@ -661,7 +661,7 @@ APR_DECLARE_EXTERNAL_HOOK(dav, DAV, int, find_liveprop,
 */
 APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, insert_all_liveprops, 
                          (request_rec *r, const dav_resource *resource,
-                          dav_prop_insert what, ap_text_header *phdr))
+                          dav_prop_insert what, apr_text_header *phdr))
 
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
@@ -782,7 +782,7 @@ struct dav_hooks_liveprop
     */
     dav_prop_insert (*insert_prop)(const dav_resource *resource,
 				   int propid, dav_prop_insert what,
-				   ap_text_header *phdr);
+				   apr_text_header *phdr);
 
     /*
     ** Determine whether a given property is writable.
@@ -835,14 +835,14 @@ struct dav_hooks_liveprop
     ** database. Note: it will be set to zero on entry.
     */
     dav_error * (*patch_validate)(const dav_resource *resource,
-				  const ap_xml_elem *elem,
+				  const apr_xml_elem *elem,
 				  int operation,
 				  void **context,
 				  int *defer_to_dead);
 
     /* ### doc... */
     dav_error * (*patch_exec)(const dav_resource *resource,
-			      const ap_xml_elem *elem,
+			      const apr_xml_elem *elem,
 			      int operation,
 			      void *context,
 			      dav_liveprop_rollback **rollback_ctx);
@@ -914,7 +914,7 @@ DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri);
 int dav_get_liveprop_ns_count(void);
 
 /* ### docco */
-void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr);
+void dav_add_all_liveprop_xmlns(apr_pool_t *p, apr_text_header *phdr);
 
 /*
 ** The following three functions are part of mod_dav's internal handling
@@ -925,7 +925,7 @@ int dav_core_find_liveprop(const dav_resource *resource,
                            const dav_hooks_liveprop **hooks);
 void dav_core_insert_all_liveprops(request_rec *r,
                                    const dav_resource *resource,
-                                   dav_prop_insert what, ap_text_header *phdr);
+                                   dav_prop_insert what, apr_text_header *phdr);
 void dav_core_register_uris(apr_pool_t *p);
 
 
@@ -1248,7 +1248,7 @@ const char *dav_lock_get_activelock(request_rec *r, dav_lock *locks,
 dav_error * dav_lock_parse_lockinfo(request_rec *r,
 				    const dav_resource *resrouce,
 				    dav_lockdb *lockdb,
-				    const ap_xml_doc *doc,
+				    const apr_xml_doc *doc,
 				    dav_lock **lock_request);
 int dav_unlock(request_rec *r, const dav_resource *resource,
 	       const dav_locktoken *locktoken);
@@ -1510,7 +1510,7 @@ void dav_close_propdb(dav_propdb *db);
 
 dav_get_props_result dav_get_props(
     dav_propdb *db,
-    ap_xml_doc *doc);
+    apr_xml_doc *doc);
 
 dav_get_props_result dav_get_allprops(
     dav_propdb *db,
@@ -1520,7 +1520,7 @@ void dav_get_liveprop_supported(
     dav_propdb *propdb,
     const char *ns_uri,
     const char *propname,
-    ap_text_header *body);
+    apr_text_header *body);
 
 /*
 ** 3-phase property modification.
@@ -1567,7 +1567,7 @@ typedef struct dav_prop_ctx
 #define DAV_PROP_OP_DELETE	2	/* delete a prop value */
 /* ### add a GET? */
 
-    ap_xml_elem *prop;			/* property to affect */
+    apr_xml_elem *prop;			/* property to affect */
 
     dav_error *err;			/* error (if any) */
 
@@ -1650,13 +1650,13 @@ typedef struct dav_walker_ctx
     request_rec *r;			/* original request */
 
     /* for PROPFIND operations */
-    ap_xml_doc *doc;
+    apr_xml_doc *doc;
     int propfind_type;
 #define DAV_PROPFIND_IS_ALLPROP		1
 #define DAV_PROPFIND_IS_PROPNAME	2
 #define DAV_PROPFIND_IS_PROP		3
 
-    ap_text *propstat_404;	/* (cached) propstat giving a 404 error */
+    apr_text *propstat_404;	/* (cached) propstat giving a 404 error */
 
     const dav_if_header *if_header;	/* for validation */
     const dav_locktoken *locktoken;	/* for UNLOCK */
@@ -2051,7 +2051,7 @@ struct dav_hooks_vsn
      * individual text item to 63 characters, to conform to the limit
      * used by MS Web Folders.
      */
-    void (*get_vsn_options)(apr_pool_t *p, ap_text_header *phdr);
+    void (*get_vsn_options)(apr_pool_t *p, apr_text_header *phdr);
 
     /* Get the value of a specific option for an OPTIONS request.
      * The option being requested is given by the parsed XML
@@ -2059,8 +2059,8 @@ struct dav_hooks_vsn
      * appended to the "option" text object.
      */
     dav_error * (*get_option)(const dav_resource *resource,
-                              const ap_xml_elem *elem,
-                              ap_text_header *option);
+                              const apr_xml_elem *elem,
+                              apr_text_header *option);
 
     /* Determine whether a non-versioned (or non-existent) resource
      * is versionable. Returns != 0 if resource can be versioned.
@@ -2163,7 +2163,7 @@ struct dav_hooks_vsn
     ** contains the parsed report request body.
     ** Returns 0 if the Label header is not allowed.
     */
-    int (*report_label_header_allowed)(const ap_xml_doc *doc);
+    int (*report_label_header_allowed)(const apr_xml_doc *doc);
 
     /*
     ** Generate a report on a resource. Since a provider is free
@@ -2187,7 +2187,7 @@ struct dav_hooks_vsn
     */
     dav_error * (*deliver_report)(request_rec *r,
                                   const dav_resource *resource,
-                                  const ap_xml_doc *doc,
+                                  const apr_xml_doc *doc,
                                   ap_filter_t *output);
 
     /*
@@ -2274,7 +2274,7 @@ struct dav_hooks_vsn
     ** it should be set to NULL.
     */
     dav_error * (*make_workspace)(dav_resource *resource,
-                                  ap_xml_doc *doc);
+                                  apr_xml_doc *doc);
 
     /*
     ** Determine whether a null resource can be created as an activity.
@@ -2308,7 +2308,7 @@ struct dav_hooks_vsn
     */
     dav_error * (*merge)(dav_resource *target, dav_resource *source,
 			 int no_auto_merge, int no_checkout,
-			 ap_xml_elem *prop_elem,
+			 apr_xml_elem *prop_elem,
 			 ap_filter_t *output);
 };
 

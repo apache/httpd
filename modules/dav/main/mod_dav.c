@@ -447,7 +447,7 @@ static const char *dav_xml_escape_uri(apr_pool_t *p, const char *uri)
      * Note: this is a teeny bit of overkill since we know there are no
      * '<' or '>' characters, but who cares.
      */
-    return ap_xml_quote_string(p, e_uri, 0);
+    return apr_xml_quote_string(p, e_uri, 0);
 }
 
 static void dav_send_multistatus(request_rec *r, int status,
@@ -467,7 +467,7 @@ static void dav_send_multistatus(request_rec *r, int status,
 
        for (i = namespaces->nelts; i--; ) {
            ap_rprintf(r, " xmlns:ns%d=\"%s\"", i,
-                      AP_XML_GET_URI_ITEM(namespaces, i));
+                      APR_XML_GET_URI_ITEM(namespaces, i));
        }
     }
 
@@ -475,7 +475,7 @@ static void dav_send_multistatus(request_rec *r, int status,
     ap_rputs(">" DEBUG_CR, r);
 
     for (; first != NULL; first = first->next) {
-        ap_text *t;
+        apr_text *t;
 
         if (first->propresult.xmlns == NULL) {
             ap_rputs("<D:response>", r);
@@ -1178,18 +1178,18 @@ static int dav_method_delete(request_rec *r)
 
 /* generate DAV:supported-method-set OPTIONS response */
 static dav_error *dav_gen_supported_methods(request_rec *r,
-                                            const ap_xml_elem *elem,
+                                            const apr_xml_elem *elem,
                                             const apr_table_t *methods,
-                                            ap_text_header *body)
+                                            apr_text_header *body)
 {
     const apr_array_header_t *arr;
     const apr_table_entry_t *elts;
-    ap_xml_elem *child;
-    ap_xml_attr *attr;
+    apr_xml_elem *child;
+    apr_xml_attr *attr;
     char *s;
     int i;
 
-    ap_text_append(r->pool, body, "<D:supported-method-set>" DEBUG_CR);
+    apr_text_append(r->pool, body, "<D:supported-method-set>" DEBUG_CR);
 
     if (elem->first_child == NULL) {
         /* show all supported methods */
@@ -1204,19 +1204,19 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
                              "<D:supported-method D:name=\"%s\"/>"
                              DEBUG_CR,
                              elts[i].key);
-            ap_text_append(r->pool, body, s);
+            apr_text_append(r->pool, body, s);
         }
     }
     else {
         /* check for support of specific methods */
         for (child = elem->first_child; child != NULL; child = child->next) {
-            if (child->ns == AP_XML_NS_DAV_ID
+            if (child->ns == APR_XML_NS_DAV_ID
                 && strcmp(child->name, "supported-method") == 0) {
                 const char *name = NULL;
 
                 /* go through attributes to find method name */
                 for (attr = child->attr; attr != NULL; attr = attr->next) {
-                    if (attr->ns == AP_XML_NS_DAV_ID
+                    if (attr->ns == APR_XML_NS_DAV_ID
                         && strcmp(attr->name, "name") == 0)
                             name = attr->value;
                 }
@@ -1233,26 +1233,26 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
                                      "<D:supported-method D:name=\"%s\"/>"
                                      DEBUG_CR,
                                      name);
-                    ap_text_append(r->pool, body, s);
+                    apr_text_append(r->pool, body, s);
                 }
             }
         }
     }
 
-    ap_text_append(r->pool, body, "</D:supported-method-set>" DEBUG_CR);
+    apr_text_append(r->pool, body, "</D:supported-method-set>" DEBUG_CR);
     return NULL;
 }
 
 /* generate DAV:supported-live-property-set OPTIONS response */
 static dav_error *dav_gen_supported_live_props(request_rec *r,
                                                const dav_resource *resource,
-                                               const ap_xml_elem *elem,
-                                               ap_text_header *body)
+                                               const apr_xml_elem *elem,
+                                               apr_text_header *body)
 {
     dav_lockdb *lockdb;
     dav_propdb *propdb;
-    ap_xml_elem *child;
-    ap_xml_attr *attr;
+    apr_xml_elem *child;
+    apr_xml_attr *attr;
     dav_error *err;
 
     /* open lock database, to report on supported lock properties */
@@ -1277,7 +1277,7 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
                               err);
     }
 
-    ap_text_append(r->pool, body, "<D:supported-live-property-set>" DEBUG_CR);
+    apr_text_append(r->pool, body, "<D:supported-live-property-set>" DEBUG_CR);
 
     if (elem->first_child == NULL) {
         /* show all supported live properties */
@@ -1289,14 +1289,14 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     else {
         /* check for support of specific live property */
         for (child = elem->first_child; child != NULL; child = child->next) {
-            if (child->ns == AP_XML_NS_DAV_ID
+            if (child->ns == APR_XML_NS_DAV_ID
                 && strcmp(child->name, "supported-live-property") == 0) {
                 const char *name = NULL;
                 const char *nmspace = NULL;
 
                 /* go through attributes to find name and namespace */
                 for (attr = child->attr; attr != NULL; attr = attr->next) {
-                    if (attr->ns == AP_XML_NS_DAV_ID) {
+                    if (attr->ns == APR_XML_NS_DAV_ID) {
                         if (strcmp(attr->name, "name") == 0)
                             name = attr->value;
                         else if (strcmp(attr->name, "namespace") == 0)
@@ -1322,7 +1322,7 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
         }
     }
 
-    ap_text_append(r->pool, body, "</D:supported-live-property-set>" DEBUG_CR);
+    apr_text_append(r->pool, body, "</D:supported-live-property-set>" DEBUG_CR);
 
     dav_close_propdb(propdb);
 
@@ -1335,16 +1335,16 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
 /* generate DAV:supported-report-set OPTIONS response */
 static dav_error *dav_gen_supported_reports(request_rec *r,
                                             const dav_resource *resource,
-                                            const ap_xml_elem *elem,
+                                            const apr_xml_elem *elem,
                                             const dav_hooks_vsn *vsn_hooks,
-                                            ap_text_header *body)
+                                            apr_text_header *body)
 {
-    ap_xml_elem *child;
-    ap_xml_attr *attr;
+    apr_xml_elem *child;
+    apr_xml_attr *attr;
     dav_error *err;
     char *s;
 
-    ap_text_append(r->pool, body, "<D:supported-report-set>" DEBUG_CR);
+    apr_text_append(r->pool, body, "<D:supported-report-set>" DEBUG_CR);
 
     if (vsn_hooks != NULL) {
         const dav_report_elem *reports;
@@ -1368,20 +1368,20 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
                                      "<D:supported-report D:name=\"%s\" "
                                      "D:namespace=\"%s\"/>" DEBUG_CR,
                                      rp->name, rp->nmspace);
-                    ap_text_append(r->pool, body, s);
+                    apr_text_append(r->pool, body, s);
                 }
             }
             else {
                 /* check for support of specific report */
                 for (child = elem->first_child; child != NULL; child = child->next) {
-                    if (child->ns == AP_XML_NS_DAV_ID
+                    if (child->ns == APR_XML_NS_DAV_ID
                         && strcmp(child->name, "supported-report") == 0) {
                         const char *name = NULL;
                         const char *nmspace = NULL;
 
                         /* go through attributes to find name and namespace */
                         for (attr = child->attr; attr != NULL; attr = attr->next) {
-                            if (attr->ns == AP_XML_NS_DAV_ID) {
+                            if (attr->ns == APR_XML_NS_DAV_ID) {
                                 if (strcmp(attr->name, "name") == 0)
                                     name = attr->value;
                                 else if (strcmp(attr->name, "namespace") == 0)
@@ -1411,7 +1411,7 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
                                                  "D:namespace=\"%s\"/>"
                                                  DEBUG_CR,
                                                  rp->name, rp->nmspace);
-                                ap_text_append(r->pool, body, s);
+                                apr_text_append(r->pool, body, s);
                                 break;
                             }
                         }
@@ -1421,7 +1421,7 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
         }
     }
 
-    ap_text_append(r->pool, body, "</D:supported-report-set>" DEBUG_CR);
+    apr_text_append(r->pool, body, "</D:supported-report-set>" DEBUG_CR);
     return NULL;
 }
 
@@ -1495,15 +1495,15 @@ static int dav_method_options(request_rec *r)
     const apr_array_header_t *arr;
     const apr_table_entry_t *elts;
     apr_table_t *methods = apr_table_make(r->pool, 12);
-    ap_text_header vsn_options = { 0 };
-    ap_text_header body = { 0 };
-    ap_text *t;
+    apr_text_header vsn_options = { 0 };
+    apr_text_header body = { 0 };
+    apr_text *t;
     int text_size;
     int result;
     int i;
     apr_array_header_t *uri_ary;
-    ap_xml_doc *doc;
-    const ap_xml_elem *elem;
+    apr_xml_doc *doc;
+    const apr_xml_elem *elem;
     dav_error *err;
 
     /* resolve the resource */
@@ -1737,7 +1737,7 @@ static int dav_method_options(request_rec *r)
         int core_option = 0;
         dav_error *err = NULL;
 
-        if (elem->ns == AP_XML_NS_DAV_ID) {
+        if (elem->ns == APR_XML_NS_DAV_ID) {
             if (strcmp(elem->name, "supported-method-set") == 0) {
                 err = dav_gen_supported_methods(r, elem, methods, &body);
                 core_option = 1;
@@ -1783,28 +1783,28 @@ static int dav_method_options(request_rec *r)
 
 static void dav_cache_badprops(dav_walker_ctx *ctx)
 {
-    const ap_xml_elem *elem;
-    ap_text_header hdr = { 0 };
+    const apr_xml_elem *elem;
+    apr_text_header hdr = { 0 };
 
     /* just return if we built the thing already */
     if (ctx->propstat_404 != NULL) {
         return;
     }
 
-    ap_text_append(ctx->w.pool, &hdr,
-                   "<D:propstat>" DEBUG_CR
-                   "<D:prop>" DEBUG_CR);
+    apr_text_append(ctx->w.pool, &hdr,
+                    "<D:propstat>" DEBUG_CR
+                    "<D:prop>" DEBUG_CR);
 
     elem = dav_find_child(ctx->doc->root, "prop");
     for (elem = elem->first_child; elem; elem = elem->next) {
-        ap_text_append(ctx->w.pool, &hdr,
-                       ap_xml_empty_elem(ctx->w.pool, elem));
+        apr_text_append(ctx->w.pool, &hdr,
+                        apr_xml_empty_elem(ctx->w.pool, elem));
     }
 
-    ap_text_append(ctx->w.pool, &hdr,
-                   "</D:prop>" DEBUG_CR
-                   "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
-                   "</D:propstat>" DEBUG_CR);
+    apr_text_append(ctx->w.pool, &hdr,
+                    "</D:prop>" DEBUG_CR
+                    "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
+                    "</D:propstat>" DEBUG_CR);
 
     ctx->propstat_404 = hdr.first;
 }
@@ -1868,8 +1868,8 @@ static int dav_method_propfind(request_rec *r)
     int depth;
     dav_error *err;
     int result;
-    ap_xml_doc *doc;
-    const ap_xml_elem *child;
+    apr_xml_doc *doc;
+    const apr_xml_elem *child;
     dav_walker_ctx ctx = { { 0 } };
     dav_response *multi_status;
 
@@ -1994,10 +1994,10 @@ static int dav_method_propfind(request_rec *r)
     return DONE;
 }
 
-static ap_text * dav_failed_proppatch(apr_pool_t *p,
+static apr_text * dav_failed_proppatch(apr_pool_t *p,
                                       apr_array_header_t *prop_ctx)
 {
-    ap_text_header hdr = { 0 };
+    apr_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
     dav_prop_ctx *ctx = (dav_prop_ctx *)prop_ctx->elts;
     dav_error *err424_set = NULL;
@@ -2007,11 +2007,11 @@ static ap_text * dav_failed_proppatch(apr_pool_t *p,
     /* ### might be nice to sort by status code and description */
 
     for ( ; i-- > 0; ++ctx ) {
-        ap_text_append(p, &hdr,
-                       "<D:propstat>" DEBUG_CR
-                       "<D:prop>");
-        ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
-        ap_text_append(p, &hdr, "</D:prop>" DEBUG_CR);
+        apr_text_append(p, &hdr,
+                        "<D:propstat>" DEBUG_CR
+                        "<D:prop>");
+        apr_text_append(p, &hdr, apr_xml_empty_elem(p, ctx->prop));
+        apr_text_append(p, &hdr, "</D:prop>" DEBUG_CR);
 
         if (ctx->err == NULL) {
             /* nothing was assigned here yet, so make it a 424 */
@@ -2040,24 +2040,24 @@ static ap_text * dav_failed_proppatch(apr_pool_t *p,
                          "HTTP/1.1 %d (status)"
                          "</D:status>" DEBUG_CR,
                          ctx->err->status);
-        ap_text_append(p, &hdr, s);
+        apr_text_append(p, &hdr, s);
 
         /* ### we should use compute_desc if necessary... */
         if (ctx->err->desc != NULL) {
-            ap_text_append(p, &hdr, "<D:responsedescription>" DEBUG_CR);
-            ap_text_append(p, &hdr, ctx->err->desc);
-            ap_text_append(p, &hdr, "</D:responsedescription>" DEBUG_CR);
+            apr_text_append(p, &hdr, "<D:responsedescription>" DEBUG_CR);
+            apr_text_append(p, &hdr, ctx->err->desc);
+            apr_text_append(p, &hdr, "</D:responsedescription>" DEBUG_CR);
         }
 
-        ap_text_append(p, &hdr, "</D:propstat>" DEBUG_CR);
+        apr_text_append(p, &hdr, "</D:propstat>" DEBUG_CR);
     }
 
     return hdr.first;
 }
 
-static ap_text * dav_success_proppatch(apr_pool_t *p, apr_array_header_t *prop_ctx)
+static apr_text * dav_success_proppatch(apr_pool_t *p, apr_array_header_t *prop_ctx)
 {
-    ap_text_header hdr = { 0 };
+    apr_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
     dav_prop_ctx *ctx = (dav_prop_ctx *)prop_ctx->elts;
 
@@ -2066,15 +2066,15 @@ static ap_text * dav_success_proppatch(apr_pool_t *p, apr_array_header_t *prop_c
      * ### this code assumes everything will return status==200.
      */
 
-    ap_text_append(p, &hdr,
-                   "<D:propstat>" DEBUG_CR
-                   "<D:prop>" DEBUG_CR);
+    apr_text_append(p, &hdr,
+                    "<D:propstat>" DEBUG_CR
+                    "<D:prop>" DEBUG_CR);
 
     for ( ; i-- > 0; ++ctx ) {
-        ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
+        apr_text_append(p, &hdr, apr_xml_empty_elem(p, ctx->prop));
     }
 
-    ap_text_append(p, &hdr,
+    apr_text_append(p, &hdr,
                    "</D:prop>" DEBUG_CR
                    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
                    "</D:propstat>" DEBUG_CR);
@@ -2129,12 +2129,12 @@ static int dav_method_proppatch(request_rec *r)
     dav_error *err;
     dav_resource *resource;
     int result;
-    ap_xml_doc *doc;
-    ap_xml_elem *child;
+    apr_xml_doc *doc;
+    apr_xml_elem *child;
     dav_propdb *propdb;
     int failure = 0;
     dav_response resp = { 0 };
-    ap_text *propstat_text;
+    apr_text *propstat_text;
     apr_array_header_t *ctx_list;
     dav_prop_ctx *ctx;
     dav_auto_version_info av_info;
@@ -2201,11 +2201,11 @@ static int dav_method_proppatch(request_rec *r)
     /* do a first pass to ensure that all "remove" properties exist */
     for (child = doc->root->first_child; child; child = child->next) {
         int is_remove;
-        ap_xml_elem *prop_group;
-        ap_xml_elem *one_prop;
+        apr_xml_elem *prop_group;
+        apr_xml_elem *one_prop;
 
         /* Ignore children that are not set/remove */
-        if (child->ns != AP_XML_NS_DAV_ID
+        if (child->ns != APR_XML_NS_DAV_ID
             || (!(is_remove = strcmp(child->name, "remove") == 0)
                 && strcmp(child->name, "set") != 0)) {
             continue;
@@ -2862,7 +2862,7 @@ static int dav_method_lock(request_rec *r)
     int result;
     int depth;
     int new_lock_request = 0;
-    ap_xml_doc *doc;
+    apr_xml_doc *doc;
     dav_lock *lock;
     dav_response *multi_response = NULL;
     dav_lockdb *lockdb;
@@ -3119,7 +3119,7 @@ static int dav_method_vsn_control(request_rec *r)
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
-    ap_xml_doc *doc;
+    apr_xml_doc *doc;
     const char *target = NULL;
     int result;
 
@@ -3143,7 +3143,7 @@ static int dav_method_vsn_control(request_rec *r)
     /* note: doc == NULL if no request body */
 
     if (doc != NULL) {
-        const ap_xml_elem *child;
+        const apr_xml_elem *child;
         apr_size_t tsize;
 
         if (!dav_validate_root(doc, "version-control")) {
@@ -3169,8 +3169,8 @@ static int dav_method_vsn_control(request_rec *r)
         }
 
         /* get version URI */
-        ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
-                       &target, &tsize);
+        apr_xml_to_text(r->pool, child, APR_XML_X2T_INNER, NULL, NULL,
+                        &target, &tsize);
         if (tsize == 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "An \"href\" element does not contain a URI.");
@@ -3305,7 +3305,7 @@ static int dav_method_checkout(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     int result;
-    ap_xml_doc *doc;
+    apr_xml_doc *doc;
     int apply_to_vsn = 0;
     int is_unreserved = 0;
     int is_fork_ok = 0;
@@ -3320,7 +3320,7 @@ static int dav_method_checkout(request_rec *r)
         return result;
 
     if (doc != NULL) {
-        const ap_xml_elem *aset;
+        const apr_xml_elem *aset;
 
         if (!dav_validate_root(doc, "checkout")) {
             /* This supplies additional information for the default msg. */
@@ -3350,12 +3350,12 @@ static int dav_method_checkout(request_rec *r)
                 create_activity = 1;
             }
             else {
-                const ap_xml_elem *child = aset->first_child;
+                const apr_xml_elem *child = aset->first_child;
 
                 activities = apr_array_make(r->pool, 1, sizeof(const char *));
 
                 for (; child != NULL; child = child->next) {
-                    if (child->ns == AP_XML_NS_DAV_ID
+                    if (child->ns == APR_XML_NS_DAV_ID
                         && strcmp(child->name, "href") == 0) {
                         const char *href;
 
@@ -3511,7 +3511,7 @@ static int dav_method_checkin(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     int result;
-    ap_xml_doc *doc;
+    apr_xml_doc *doc;
     int keep_checked_out = 0;
 
     /* If no versioning provider, decline the request */
@@ -3583,8 +3583,8 @@ static int dav_method_update(request_rec *r)
     dav_resource *resource;
     dav_resource *version = NULL;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
-    ap_xml_doc *doc;
-    ap_xml_elem *child;
+    apr_xml_doc *doc;
+    apr_xml_elem *child;
     int is_label = 0;
     int depth;
     int result;
@@ -3645,8 +3645,8 @@ static int dav_method_update(request_rec *r)
     }
 
     /* get the target value (a label or a version URI) */
-    ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
-                   &target, &tsize);
+    apr_xml_to_text(r->pool, child, APR_XML_X2T_INNER, NULL, NULL,
+                    &target, &tsize);
     if (tsize == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "A \"label-name\" or \"href\" element does not contain "
@@ -3791,8 +3791,8 @@ static int dav_method_label(request_rec *r)
 {
     dav_resource *resource;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
-    ap_xml_doc *doc;
-    ap_xml_elem *child;
+    apr_xml_doc *doc;
+    apr_xml_elem *child;
     int depth;
     int result;
     apr_size_t tsize;
@@ -3859,8 +3859,8 @@ static int dav_method_label(request_rec *r)
         return HTTP_BAD_REQUEST;
     }
 
-    ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
-                   &ctx.label, &tsize);
+    apr_xml_to_text(r->pool, child, APR_XML_X2T_INNER, NULL, NULL,
+                    &ctx.label, &tsize);
     if (tsize == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "A \"label-name\" element does not contain "
@@ -3918,7 +3918,7 @@ static int dav_method_report(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     int result;
     int label_allowed;
-    ap_xml_doc *doc;
+    apr_xml_doc *doc;
     dav_error *err;
 
     /* If no versioning provider, decline the request */
@@ -3969,7 +3969,7 @@ static int dav_method_make_workspace(request_rec *r)
     dav_resource *resource;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
-    ap_xml_doc *doc;
+    apr_xml_doc *doc;
     int result;
 
     /* if no versioning provider, or the provider does not support workspaces,
@@ -4098,10 +4098,10 @@ static int dav_method_merge(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     int result;
-    ap_xml_doc *doc;
-    ap_xml_elem *source_elem;
-    ap_xml_elem *href_elem;
-    ap_xml_elem *prop_elem;
+    apr_xml_doc *doc;
+    apr_xml_elem *source_elem;
+    apr_xml_elem *href_elem;
+    apr_xml_elem *prop_elem;
     const char *source;
     int no_auto_merge;
     int no_checkout;
@@ -4712,5 +4712,5 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, find_liveprop,
 
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, insert_all_liveprops,
                                  (request_rec *r, const dav_resource *resource,
-                                  dav_prop_insert what, ap_text_header *phdr),
+                                  dav_prop_insert what, apr_text_header *phdr),
                                  (r, resource, what, phdr))
