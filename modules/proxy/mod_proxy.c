@@ -269,15 +269,17 @@ static int proxy_handler(request_rec *r)
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
     int i, rc;
     int direct_connect = 0;
-    const char *maxfwd_str;
+    const char *str;
     const char *pragma, *auth, *imstr;
+    long maxfwd;
 
+    /* is this for us? */
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
-    if ((r->method_number == M_TRACE || r->method_number == M_OPTIONS) &&
-	(maxfwd_str = apr_table_get(r->headers_in, "Max-Forwards")) != NULL) {
-	long maxfwd = strtol(maxfwd_str, NULL, 10);
+    /* handle max-forwards / OPTIONS / TRACE */
+    if ((str = apr_table_get(r->headers_in, "Max-Forwards"))) {
+	maxfwd = strtol(str, NULL, 10);
 	if (maxfwd < 1) {
             switch (r->method_number) {
             case M_TRACE: {
@@ -298,11 +300,20 @@ static int proxy_handler(request_rec *r)
 		    ap_finalize_request_protocol(r);
 	        return OK;
             }
+	    default: {
+		return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+		                     "Max-Forwards has reached zero - proxy loop?");
+	    }
             }
 	}
-	apr_table_setn(r->headers_in, "Max-Forwards", 
-		      apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd-1 : 0));
+	maxfwd = (maxfwd > 0) ? maxfwd - 1 : 0;
     }
+    else {
+	/* set configured max-forwards */
+	maxfwd = conf->maxfwd;
+    }
+    apr_table_setn(r->headers_in, "Max-Forwards", 
+		   apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
 
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return rc;
@@ -417,6 +428,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->req_set = 0;
     ps->recv_buffer_size = 0; /* this default was left unset for some reason */
     ps->recv_buffer_size_set = 0;
+    ps->maxfwd = DEFAULT_MAX_FORWARDS;
+    ps->maxfwd_set = 0;
 
     return ps;
 }
@@ -438,6 +451,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
     ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
+    ps->maxfwd = (overrides->maxfwd_set == 0) ? base->maxfwd : overrides->maxfwd;
 
     return ps;
 }
@@ -664,6 +678,21 @@ static const char *
     return NULL;
 }
 
+static const char *
+    set_max_forwards(cmd_parms *parms, void *dummy, const char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+    long s = atol(arg);
+    if (s < 0) {
+	return "ProxyMaxForwards must be greater or equal to zero..";
+    }
+
+    psf->maxfwd = s;
+    psf->maxfwd_set = 1;
+    return NULL;
+}
+
 static const char*
     set_via_opt(cmd_parms *parms, void *dummy, const char *arg)
 {
@@ -701,6 +730,8 @@ static const command_rec proxy_cmds[] =
      "A list of names, hosts or domains to which the proxy will not connect"),
     AP_INIT_TAKE1("ProxyReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF,
      "Receive buffer size for outgoing HTTP and FTP connections in bytes"),
+    AP_INIT_TAKE1("ProxyMaxForwards", set_max_forwards, NULL, RSRC_CONF,
+     "The maximum number of proxies a request may be forwarded through."),
     AP_INIT_ITERATE("NoProxy", set_proxy_dirconn, NULL, RSRC_CONF,
      "A list of domains, hosts, or subnets to which the proxy will connect directly"),
     AP_INIT_TAKE1("ProxyDomain", set_proxy_domain, NULL, RSRC_CONF,

@@ -134,6 +134,8 @@ enum enctype {
 #define CRLF   "\015\012"
 #endif /*APR_CHARSET_EBCDIC*/
 
+/* default Max-Forwards header setting */
+#define DEFAULT_MAX_FORWARDS	10
 
 /* static information about a remote proxy */
 struct proxy_remote {
@@ -179,6 +181,8 @@ typedef struct {
     char viaopt_set;
     size_t recv_buffer_size;
     char recv_buffer_size_set;
+    long maxfwd;
+    char maxfwd_set;
 } proxy_server_conf;
 
 struct per_thread_data {
