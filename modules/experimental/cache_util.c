@@ -71,12 +71,10 @@ CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r)
         apr_table_get(r->headers_in, "If-None-Match") ||
         apr_table_get(r->headers_in, "If-Modified-Since") ||
         apr_table_get(r->headers_in, "If-Unmodified-Since")) {
-
         return 1;
     }
     return 0;
 }
-
 
 /* remove other filters from filter stack */
 CACHE_DECLARE(void) ap_cache_reset_output_filters(request_rec *r)
@@ -123,9 +121,11 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
         }
     }
 
-    /* then loop through all the cachedisable entries */
-    /* Looking for urls that contain the full cachedisable url and possibly more. */
-    /*   This means we are disabling cachedisable url and below... */
+    /* then loop through all the cachedisable entries
+     * Looking for urls that contain the full cachedisable url and possibly
+     * more.
+     * This means we are disabling cachedisable url and below...
+     */
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent = 
                                (struct cache_disable *)conf->cachedisable->elts;
@@ -140,11 +140,12 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
 
 
 /* do a HTTP/1.1 age calculation */
-CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value,
+CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
+                                                const apr_time_t age_value,
                                                 apr_time_t now)
 {
-    apr_time_t apparent_age, corrected_received_age, response_delay, corrected_initial_age,
-           resident_time, current_age;
+    apr_time_t apparent_age, corrected_received_age, response_delay,
+               corrected_initial_age, resident_time, current_age;
 
     /* Perform an HTTP/1.1 age calculation. (RFC2616 13.2.3) */
 
@@ -161,7 +162,8 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache, 
                                             request_rec *r)
 {
-    apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale, minfresh;
+    apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
+    apr_int64_t minfresh;
     const char *cc_cresp, *cc_req, *pragma_cresp;
     const char *agestr = NULL;
     char *val;
@@ -172,7 +174,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
      * We now want to check if our cached data is still fresh. This depends
      * on a few things, in this order:
      *
-     * - RFC2616 14.9.4 End to end reload, Cache-Control: no-cache no-cache in
+     * - RFC2616 14.9.4 End to end reload, Cache-Control: no-cache. no-cache in
      * either the request or the cached response means that we must
      * revalidate the request unconditionally, overriding any expiration
      * mechanism. It's equivalent to max-age=0,must-revalidate.
@@ -212,57 +214,74 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     age = ap_cache_current_age(info, age_c, r->request_time);
 
     /* extract s-maxage */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val))
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val)) {
         smaxage = apr_atoi64(val);
-    else
+    }
+    else {
         smaxage = -1;
+    }
 
     /* extract max-age from request */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val)) {
         maxage_req = apr_atoi64(val);
-    else
+    }
+    else {
         maxage_req = -1;
+    }
 
     /* extract max-age from response */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val))
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val)) {
         maxage_cresp = apr_atoi64(val);
+    }
     else
+    {
         maxage_cresp = -1;
+    }
 
     /*
      * if both maxage request and response, the smaller one takes priority
      */
-    if (-1 == maxage_req)
+    if (-1 == maxage_req) {
         maxage = maxage_cresp;
-    else if (-1 == maxage_cresp)
+    }
+    else if (-1 == maxage_cresp) {
         maxage = maxage_req;
-    else
+    }
+    else {
         maxage = MIN(maxage_req, maxage_cresp);
+    }
 
     /* extract max-stale */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-stale", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-stale", &val)) {
         maxstale = apr_atoi64(val);
-    else
+    }
+    else {
         maxstale = 0;
+    }
 
     /* extract min-fresh */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val))
+    if (cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val)) {
         minfresh = apr_atoi64(val);
-    else
+    }
+    else {
         minfresh = 0;
+    }
 
     /* override maxstale if must-revalidate or proxy-revalidate */
     if (maxstale && ((cc_cresp &&
                       ap_cache_liststr(NULL,
                                        cc_cresp, "must-revalidate", NULL))
-                     || (cc_cresp && ap_cache_liststr(NULL,
-                                                      cc_cresp,
-                                                      "proxy-revalidate", NULL))))
+                     || (cc_cresp &&
+                         ap_cache_liststr(NULL,
+                                          cc_cresp,
+                                          "proxy-revalidate", NULL)))) {
         maxstale = 0;
+    }
     /* handle expiration */
     if ((-1 < smaxage && age < (smaxage - minfresh)) ||
         (-1 < maxage && age < (maxage + maxstale - minfresh)) ||
-        (info->expire != APR_DATE_BAD && age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh))) {
+        (info->expire != APR_DATE_BAD &&
+         age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh))) {
         /* it's fresh darlings... */
         /* set age header on response */
         apr_table_set(r->headers_out, "Age",
@@ -271,7 +290,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
         /* add warning if maxstale overrode freshness calculation */
         if (!((-1 < smaxage && age < smaxage) ||
               (-1 < maxage && age < maxage) ||
-              (info->expire != APR_DATE_BAD && (info->expire - info->date) > age))) {
+              (info->expire != APR_DATE_BAD &&
+               (info->expire - info->date) > age))) {
             /* make sure we don't stomp on a previous warning */
             apr_table_merge(r->headers_out, "Warning", "110 Response is stale");
         }
@@ -279,7 +299,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     }
     return 0;        /* Cache object is stale */
 }
-/* 
+
+/*
  * list is a comma-separated list of case-insensitive tokens, with
  * optional whitespace around the tokens.
  * The return returns 1 if the token val is found in the list, or 0
@@ -356,7 +377,8 @@ CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
 }
 
 /* return each comma separated token, one at a time */
-CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
+CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list,
+                                           const char **str)
 {
     apr_size_t i;
     const char *s;
@@ -463,7 +485,8 @@ static void cache_hash(const char *it, char *val, int ndepth, int nlength)
     val[i + 22 - k] = '\0';
 }
 
-CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels, int dirlength, const char *name)
+CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels,
+                                   int dirlength, const char *name)
 {
     char hashfile[66];
     cache_hash(name, hashfile, dirlevels, dirlength);
