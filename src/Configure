@@ -1857,7 +1857,7 @@ if [ "x$RULE_EXPAT" = "xyes" ]; then
         echo " + using system Expat"
         LIBS="$LIBS -lexpat"
     else
-        if [ "$xRULE_EXPAT" = "xyes" ]; then
+        if [ ! -d ./lib/expat-lite/ ]; then
             echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
 	    exit 1
         fi
