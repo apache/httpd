@@ -172,8 +172,7 @@ struct cache_object {
     void *vobj;         /* Opaque portion (specific to the cache implementation) of the cache object */
     apr_size_t count;   /* Number of body bytes written to the cache so far */
     int complete;
-    apr_uint32_t refcount;
-    apr_size_t cleanup;
+    apr_uint32_t refcount;  /* refcount and bit flag to cleanup object */
 };
 
 typedef struct cache_handle cache_handle_t;
