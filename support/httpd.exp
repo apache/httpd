@@ -453,6 +453,7 @@ apr_kill
 apr_kill_cleanup
 apr_listen
 apr_lock
+apr_lock_file
 apr_lstat
 apr_make_array
 apr_make_dir
@@ -545,6 +546,7 @@ apr_thread_join
 apr_tokenize_to_argv
 apr_ungetc
 apr_unlock
+apr_unlock_file
 apr_unregister_other_child
 apr_validate_password
 apr_vformatter
