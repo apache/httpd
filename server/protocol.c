@@ -254,7 +254,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 if (*s) {
                     /* ensure this string is terminated */
                     if (bytes_handled < n) {
-                        (*s)[bytes_handled] = '\0';
+                        (*s)[bytes_handled-1] = '\0';
                     }
                     else {
                         (*s)[n-1] = '\0';
