@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.7 $ -->
+<!-- $Revision: 1.8 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -24,10 +24,10 @@
   <title>PATH_INFO Changes in the CGI Environment</title>
 
   <summary>
-    <p>As implemented in Apache 1.1.1 and earlier versions, the
-    method Apache used to create PATH_INFO in the CGI environment
-    was counterintuitive, and could result in crashes in certain
-    cases. In Apache 1.2 and beyond, this behavior has changed.
+    <p>As implemented in Apache HTTP Server 1.1.1 and earlier versions, the
+    method <code>httpd</code> used to create PATH_INFO in the CGI
+    environment was counterintuitive, and could result in crashes in certain
+    cases. In Apache HTTP Server 1.2 and beyond, this behavior has changed.
     Although this results in some compatibility problems with
     certain legacy CGI applications, the Apache 1.2 behavior is
     still compatible with the CGI/1.1 specification, and CGI
@@ -36,7 +36,7 @@
   </summary>
 
   <section id="prob"><title>The Problem</title>
-    <p>Apache 1.1.1 and earlier implemented the PATH_INFO and
+    <p>Apache HTTP Server 1.1.1 and earlier implemented the PATH_INFO and
     SCRIPT_NAME environment variables by looking at the filename,
     not the URL. While this resulted in the correct values in many
     cases, when the filesystem path was overloaded to contain path
@@ -48,7 +48,7 @@
     </example>    
 
     <p>In this case, <code>user.cgi</code> is the CGI script, the
-    "/ralph" is information to be passed onto the CGI. If this
+    "<code>/ralph</code>" is information to be passed onto the CGI. If this
     configuration was in place, and a request came for
     "<code>/cgi-ralph/script/</code>", the code would set PATH_INFO
     to "<code>/ralph/script</code>", and SCRIPT_NAME to
@@ -57,9 +57,9 @@
   </section>
 
   <section id="solution"><title>The Solution</title>
-    <p>Apache 1.2 and later now determine SCRIPT_NAME and PATH_INFO
-    by looking directly at the URL, and determining how much of the
-    URL is client-modifiable, and setting PATH_INFO to it. To use
+    <p>Apache HTTP Server 1.2 and later now determine SCRIPT_NAME and
+    PATH_INFO by looking directly at the URL, and determining how much of
+    the URL is client-modifiable, and setting PATH_INFO to it. To use
     the above example, PATH_INFO would be set to
     "<code>/script</code>", and SCRIPT_NAME to
     "<code>/cgi-ralph</code>". This makes sense and results in no
@@ -68,7 +68,7 @@
     "<code>http://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME$PATH_INFO</code>"
     will always be an accessible URL that points to the current
     script, something which was not necessarily true with previous
-    versions of Apache.</p>
+    versions of <code>httpd</code>.</p>
 
     <p>However, the "<code>/ralph</code>" information from the
     <code>Alias</code> directive is lost. This is unfortunate, but
@@ -82,7 +82,7 @@
     <title>Compatibility with Previous Servers</title>
 
     <p>It may be necessary for a script that was designed for
-    earlier versions of Apache or other servers to need the
+    earlier versions of Apache HTTP Server or other servers to need the
     information that the old PATH_INFO variable provided. For this
     purpose, Apache 1.2 (1.2b3 and later) sets an additional
     variable, FILEPATH_INFO. This environment variable contains the
@@ -99,6 +99,6 @@
 
     <p>By doing this, a script can work with all servers supporting
     the CGI/1.1 specification, including all versions of
-    Apache.</p>
+    Apache HTTP Server.</p>
   </section>
 </manualpage>
