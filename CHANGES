@@ -2,8 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) ssl session caching(shmht) : Fix a SEGV problem with SHMHT session
+     caching. PR 17864.
+     [Andreas Leimbacher <andreasl67@yahoo.de>, Madhusudan Mathihalli]
+
   *) change directive name from 'compressionlevel' to 'deflatecompressionlevel'
-     [Ian Holsman, André Malo]]
+     [Ian Holsman, André Malo]
 
   *) mod_negotiation: quality values are now parsed independent from
      the current locale. level values are now really parsed as integers.
