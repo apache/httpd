@@ -78,9 +78,6 @@ static void *ssl_scache_shmht_calloc(void *opt_param,
     SSLModConfigRec *mc = myModConfig((server_rec *)opt_param);
 
     apr_rmm_off_t off = apr_rmm_calloc(mc->pSessionCacheDataRMM, (number*size));
-ssl_log((server_rec *)opt_param, SSL_LOG_ERROR,
-    "rmm calloc returning %ld %ld size %d",
-    off, apr_rmm_addr_get(mc->pSessionCacheDataRMM, off), (number * size));
 
     return apr_rmm_addr_get(mc->pSessionCacheDataRMM, off);
 }
