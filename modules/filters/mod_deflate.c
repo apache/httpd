@@ -129,7 +129,9 @@ typedef struct deflate_filter_config_t
     int windowSize;
     int memlevel;
     apr_size_t bufferSize;
-    char *noteName;
+    char *noteRatioName;
+    char *noteInputName;
+    char *noteOutputName;
 } deflate_filter_config;
 
 /* windowsize is negative to suppress Zlib header */
@@ -202,11 +204,26 @@ static const char *deflate_set_buffer_size(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 static const char *deflate_set_note(cmd_parms *cmd, void *dummy,
-                                    const char *arg)
+                                    const char *arg1, const char *arg2)
 {
     deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
                                                     &deflate_module);
-    c->noteName = apr_pstrdup(cmd->pool, arg);
+    
+    if (arg2 == NULL) {
+        c->noteRatioName = apr_pstrdup(cmd->pool, arg1);
+    }
+    else if (!strcasecmp(arg1, "ratio")) {
+        c->noteRatioName = apr_pstrdup(cmd->pool, arg2);
+    }
+    else if (!strcasecmp(arg1, "input")) {
+        c->noteInputName = apr_pstrdup(cmd->pool, arg2);
+    }
+    else if (!strcasecmp(arg1, "output")) {
+        c->noteOutputName = apr_pstrdup(cmd->pool, arg2);
+    }
+    else {
+        return apr_psprintf(cmd->pool, "Unknown note type %s", arg1);
+    }
 
     return NULL;
 }
@@ -238,6 +255,11 @@ typedef struct deflate_ctx_t
     unsigned long crc;
     apr_bucket_brigade *bb, *proc_bb;
 } deflate_ctx;
+
+#define LeaveNote(type, value) \
+    if (c->note##type##Name) \
+        apr_table_setn(r->notes, c->note##type##Name, \
+                       (ctx->stream.total_in > 0) ? (value) : "-")
 
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
@@ -433,19 +455,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                           "Zlib: Compressed %ld to %ld : URL %s",
                           ctx->stream.total_in, ctx->stream.total_out, r->uri);
 
-            if (c->noteName) {
-                if (ctx->stream.total_in > 0) {
-                    int total;
-
-                    total = ctx->stream.total_out * 100 / ctx->stream.total_in;
-
-                    apr_table_setn(r->notes, c->noteName,
-                                   apr_itoa(r->pool, total));
-                }
-                else {
-                    apr_table_setn(r->notes, c->noteName, "-");
-                }
-            }
+            LeaveNote(Input, apr_off_t_toa(r->pool, ctx->stream.total_in));
+            LeaveNote(Output, apr_off_t_toa(r->pool, ctx->stream.total_out));
+            LeaveNote(Ratio, apr_itoa(r->pool, (int)
+                                      (ctx->stream.total_out * 100 /
+                                       ctx->stream.total_in)));
 
             deflateEnd(&ctx->stream);
 
@@ -775,7 +789,7 @@ static void register_hooks(apr_pool_t *p)
 }
 
 static const command_rec deflate_filter_cmds[] = {
-    AP_INIT_TAKE1("DeflateFilterNote", deflate_set_note, NULL, RSRC_CONF,
+    AP_INIT_TAKE12("DeflateFilterNote", deflate_set_note, NULL, RSRC_CONF,
                   "Set a note to report on compression ratio"),
     AP_INIT_TAKE1("DeflateWindowSize", deflate_set_window_size, NULL,
                   RSRC_CONF, "Set the Deflate window size (1-15)"),
