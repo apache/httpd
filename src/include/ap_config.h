@@ -350,6 +350,7 @@ typedef int rlim_t;
 
 #elif defined(NEXT)
 typedef unsigned short mode_t;
+typedef int rlim_t;
 #define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #define NO_SETSID

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Fixed NEXT/OpenStep building by adding an fallback typedef for 
+     rlim_t to ap_config.h.
+     [Mark Miller <markm@swoon.net>] PR#4906
+
   *) Fix SHARED_CORE feature for HPUX by backing-out a change (comitted
      between 1.3.7 and 1.3.9) which changed the DSO extension from `sl' to
      `so'. This worked only for modules (where we load the DSO manually), but
