@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 16:40:09 $]
+Last modified at [$Date: 2003/05/15 18:08:38 $]
 
 Release:
 
@@ -131,7 +131,7 @@ PATCHES TO PORT FROM 2.1
     * Do not bypass output filters when redirecting subrequests internally.
       PR 17629.
       modules/http/http_request.c: r1.155
-      +1: nd, stoddard
+      +1: nd, stoddard, trawick
 
       jerenkrantz asks: Do we even need subreq_core_filter anymore?  I'm sort
                         of confused on the interaction.  subreq_core_filter
