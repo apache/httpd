@@ -956,7 +956,8 @@ typedef int rlim_t;
 #define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #define USE_MMAP_FILES
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define NEED_UNION_SEMUN
+#define USE_SYSVSEM_SERIALIZED_ACCEPT
 #define _POSIX_SOURCE
 #include <signal.h>
 #ifdef SIGDUMP  /* SIGDUMP is not defined by OS/390 v1r2 */
