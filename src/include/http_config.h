@@ -176,6 +176,8 @@ typedef struct module_struct {
 
     const char *name;
 
+    void *dynamic_load_handle;
+
     struct module_struct *next;
 
     /* init() occurs after config parsing, but before any children are
@@ -254,7 +256,7 @@ typedef struct module_struct {
  */
 
 #define MODULE_MAGIC_NUMBER 19980201
-#define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL
+#define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
  * data
@@ -279,6 +281,7 @@ API_EXPORT(char *) server_root_relative(pool *p, char *fname);
 /* Finally, the hook for dynamically loading modules in... */
 
 API_EXPORT(void) add_module(module *m);
+API_EXPORT(void) remove_module(module *m);
 API_EXPORT(int) add_named_module(const char *name);
 API_EXPORT(void) clear_module_list(void);
 API_EXPORT(const char *) find_module_name(module *m);
