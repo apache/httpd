@@ -5,7 +5,8 @@ Changes with Apache 1.2b3:
 
   *) Remove rlim_t typedef for NetBSD. Do older versions need this?
 
-  *) Defined rlim_t and WANTHSREGEX=yes for NeXT.
+  *) Defined rlim_t and WANTHSREGEX=yes and fixed waitpid() substitute for
+     NeXT.
 
   *) Removed recent modification to promote the status code on internal
      redirects, since the correct fix was to change the default log format
