@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/20 15:14:12 $]
+  Last modified at [$Date: 1999/03/20 15:25:29 $]
 
 Release:
 
@@ -17,6 +17,45 @@ Release:
     1.3.0: Tagged and rolled on June 1.  Announced and released on the 6th.
            
     2.0  : In pre-alpha development, see apache-2.0 and apache-apr repository
+
+Binaries (1.3.5):
+
+ Platform                      Avail.  Volunteer
+ ------------------------------------------------------------------------------
+ alpha-dec-osf3.0              no      Sameer Parekh
+ alpha-dec-osf4.0              no      Lars Eilebrecht
+ arm-linux(Netwinder-ELF)      no      Rasmus Lerdorf
+ hppa1.1-hp-hpux               no      Rob Hartill
+ i386-slackware-linux(a.out)   no      Sameer Parekh
+ i386-sun-solaris2.5           no      Sameer Parekh
+ i386-sun-solaris2.7           no      Cliff Skolnick
+ i386-unixware-svr4            no      Sameer Parekh
+ i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
+ i386-unknown-freebsd2.2.8     no      Jim Jagielski
+ i686-pc-freebsd3.1            no      Ralf S. Engelschall
+ i585-pc-redhat5.2             no      Ralf S. Engelschall
+ i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
+ i386-unknown-netBSD           no      Lars Eilebrecht, Bill <lucid@secret.org>
+ i386-unknown-sco3             no      Ben Laurie
+ i386-unknown-sco5             no      Ben Laurie
+ m68k-apple-aux3.1.1           no      Jim Jagielski
+ m88k-dg-dgux5.4R2.01          no      Sameer parekh
+ m88k-next-next                no      Rob Hartill
+ mips-sgi-irix5.3              no      Mark Imbrianco
+ mips-sgi-irix6.2              no      Ralf S. Engelschall, Lars Eilebrecht
+ mips-sni-svr4                 no      Martin Kraemer
+ rs6000-ibm-aix3.2.5           no      Sameer Parekh
+ rs6000-ibm-aix4.2             no      Ralf S. Engelschall, Bill Stoddard
+ rs6000-ibm-aix4.3.2           no      Bill Stoddard
+ sparc-sun-solaris2.5          no      Lars Eilebrecht
+ sparc-sun-solaris2.6          no      Lars Eilebrecht, Ralf S. Engelschall
+ sparc-sun-solaris2.7          no      Cliff Skolnick
+ sparc-sun-sunos4.1.4          no      Michael Douglass
+ sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
+ sparc-unknown-linux           no      Lars Eilebrecht
+ mips-dec-ultrix4.4            no      Sameer Parekh
+ mips-unknown-linux            no      Lars Eilebrecht
+
 
 RELEASE SHOWSTOPPERS:
 
