@@ -6,7 +6,11 @@ define dump_table
     set $n = ((apr_array_header_t *)$arg0)->nelts
     set $i = 0
     while $i < $n
-	printf "[%u] '%s'='%s'\n", $i, $t[$i].key, $t[$i].val
+	if $t[$i].val == (void *)0L
+	   printf "[%u] '%s'=>NULL\n", $i, $t[$i].key
+	else
+	   printf "[%u] '%s'='%s'\n", $i, $t[$i].key, $t[$i].val
+	end
 	set $i = $i + 1
     end
 end
