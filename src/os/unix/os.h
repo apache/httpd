@@ -16,5 +16,5 @@
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
-extern int os_is_path_absolute(char *f);
+extern int os_is_path_absolute(const char *f);
 #endif

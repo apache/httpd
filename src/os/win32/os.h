@@ -75,7 +75,7 @@ every configuration function as __stdcall.
 #define NO_OTHER_CHILD
 #define NO_RELIABLE_PIPED_LOGS
 
-__inline int os_is_path_absolute(char *file)
+__inline int os_is_path_absolute(const char *file)
 {
   /* For now, just do the same check that http_request.c and mod_alias.c
    * do. 
