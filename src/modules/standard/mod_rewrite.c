@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.4 (15-Apr-1997)
+**  URL Rewriting Module, Version 3.0.5 (16-Apr-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -309,10 +309,19 @@ static void *config_perdir_create(pool *p, char *path)
 
     a->state           = ENGINE_DISABLED;
     a->options         = OPTION_NONE;
-    a->directory       = pstrdup(p, path);
     a->baseurl         = NULL;
     a->rewriteconds    = make_array(p, 2, sizeof(rewritecond_entry));
     a->rewriterules    = make_array(p, 2, sizeof(rewriterule_entry));
+
+    if (path == NULL)
+        a->directory = NULL;
+    else {
+        /* make sure it has a trailing slash */
+        if (path[strlen(path)-1] == '/')
+            a->directory = pstrdup(p, path);
+        else
+            a->directory = pstrcat(p, path, "/", NULL);
+    }
 
     return (void *)a;
 }

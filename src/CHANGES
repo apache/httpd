@@ -7,6 +7,8 @@ Changes with Apache 1.2
 
   *) Updated mod_rewrite to 3.0.4: Fixes HTTP redirects from within
      .htaccess files because the RewriteBase was not replaced correctly.
+     Updated mod_rewrite to 3.0.5: Fixes problem with rewriting inside
+     <Directory> sections missing a trailing /.
      [Ralf S. Engelschall]
 
   *) Back out the HAVE_SHMGET change for Linux because it's too late in
