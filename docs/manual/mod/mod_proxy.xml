@@ -35,6 +35,13 @@ and filter support was enabled.</p>
 <p>Please note that the <strong>caching</strong> function present in
 mod_proxy up to Apache v1.3.x has been <strong>removed</strong> from
 mod_proxy and will be incorporated into a new module, mod_cache.</p>
+
+<note type="warning"><p>Do not enable proxying with <directive
+module="mod_proxy">ProxyRequests</directive> until you have 
+<a href="#access">secured your server</a>.  Open proxy servers are
+dangerous both to your network and to the Internet at large.</p></note>
+
+
 </summary>
 
 <section id="configs"><title>Common configuration topics</title>
@@ -91,6 +98,9 @@ enabled using mod_cache as with the forward proxy.</p>
 </section>
 
 <section id="access"><title>Controlling access to your proxy</title>
+
+<!-- XXX: This is completely wrong... There is a proxy block
+in 2.0 -->
 
 <p>You can control who can access your proxy via the normal <directive module="core" type="section">Directory</directive>
 control block using the following example:</p>
@@ -288,6 +298,12 @@ server. (Setting ProxyRequests to 'off' does not disable use of the
 
 <p>In a typical reverse proxy configuration, this option should be set to
 'off'.</p>
+
+<note type="warning"><p>Do not enable proxying with <directive
+module="mod_proxy">ProxyRequests</directive> until you have 
+<a href="#access">secured your server</a>.  Open proxy servers are
+dangerous both to your network and to the Internet at large.</p></note>
+
 </usage>
 </directivesynopsis>
 
