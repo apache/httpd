@@ -155,6 +155,7 @@
 
                                                       [--with-perl=FILE]   
                                                       [--without-support]  
+                                                      [--without-confadjust]
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
      LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment
@@ -264,6 +265,11 @@
      installation of support tools from the src/support/ area. This can be
      useful when you have compilation problems with one or more of these not
      programs on your platform or if you just don't need them.
+
+     Use the --without-confadjust option to explicitly disable some built
+     user/situation dependent adjustments to the config files (Group, Port,
+     ServerAdmin, ServerName, etc.).  This is usually only interesting for
+     vendor package maintainers who wants to force the keeping of defaults.
  
      Use the --enable-suexec option to enable the suEXEC feature by building
      and installing the "suexec" support program. Use --suexec-caller=UID to

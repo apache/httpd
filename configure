@@ -176,6 +176,9 @@ suexec_safepath="/usr/local/bin:/usr/bin:/bin"
 #   with support tools
 support=1
 
+#   with adjustments
+confadjust=1
+
 #   determine rules
 rules=""
 rulelist=""
@@ -385,6 +388,7 @@ do
             echo " --disable-shared=NAME  disable build of Module named 'NAME' as a shared object"
             echo " --with-perl=FILE       set the path to the optional Perl interpreter to use"
             echo " --without-support      disable the build and installation of support tools"
+            echo " --without-confadjust   disable some build user/situation adjustments to config files"
             echo ""
             echo "suEXEC options:"
             echo " --enable-suexec        enable the suEXEC feature"
@@ -669,6 +673,9 @@ do
         --without-support)
             support=0
             ;;
+        --without-confadjust)
+            confadjust=0
+            ;;
         --suexec-caller=*)
             suexec_caller="$apc_optarg"
             suexec_ok=1
@@ -778,53 +785,57 @@ fi
 ##  determine special configuration parameters
 ##
 conf_group="#-1"
-if [ ".`egrep ^nobody: /etc/group`" != . ]; then
-    conf_group="nobody"
-    if [ ".`egrep ^nogroup: /etc/group`" != . ]; then
-        conf_group="nogroup"
-    fi
-fi
 conf_port="80"
-if [ ".`id | grep root`" = . ]; then
-    conf_port="8080"
-fi
-username="$LOGNAME"
-if [ ".$username" = . ]; then
-    username="$USER"
+conf_serveradmin="you@your.address"
+conf_servername="new.host.name"
+if [ ".$confadjust" = .1 ]; then
+    if [ ".`egrep ^nobody: /etc/group`" != . ]; then
+        conf_group="nobody"
+        if [ ".`egrep ^nogroup: /etc/group`" != . ]; then
+            conf_group="nogroup"
+        fi
+    fi
+    if [ ".`id | grep root`" = . ]; then
+        conf_port="8080"
+    fi
+    username="$LOGNAME"
     if [ ".$username" = . ]; then
-        username="`whoami 2>/dev/null | sed -e 's/\n$//'`"
+        username="$USER"
         if [ ".$username" = . ]; then
-            username="`who am i 2>/dev/null | cut '-d ' -f1`"
+            username="`whoami 2>/dev/null | sed -e 's/\n$//'`"
             if [ ".$username" = . ]; then
-                username="unknown"
+                username="`who am i 2>/dev/null | cut '-d ' -f1`"
+                if [ ".$username" = . ]; then
+                    username="unknown"
+                fi
             fi
         fi
     fi
-fi
-hostname="`uname -n | sed -e 's/\n$//'`"
-if [ ".$hostname" = . ]; then
-    hostname="`hostname | sed -e 's/\n$//'`"
+    hostname="`uname -n | sed -e 's/\n$//'`"
     if [ ".$hostname" = . ]; then
-        hostname="hostname"
+        hostname="`hostname | sed -e 's/\n$//'`"
+        if [ ".$hostname" = . ]; then
+            hostname="hostname"
+        fi
     fi
-fi
-hostname="`echo $hostname | sed -e 's/\..*//'`"
-domainname="";
-if [ -f /etc/resolv.conf ]; then
-    domainname="`egrep '^[ 	]*domain' /etc/resolv.conf |\
-                 sed -e 's/.*domain//' -e 's/^[ 	]*//' \
-                     -e 's/^ *//' -e 's/^	*//' \
-                     -e 's/^\.//' -e 's/^/./'`"
-    if [ ".$domainname" = . ]; then
-        domainname="`egrep '^[ 	]*search' /etc/resolv.conf |\
-                     sed -e 's/.*search//' -e 's/^[ 	]*//' \
+    hostname="`echo $hostname | sed -e 's/\..*//'`"
+    domainname="";
+    if [ -f /etc/resolv.conf ]; then
+        domainname="`egrep '^[ 	]*domain' /etc/resolv.conf |\
+                     sed -e 's/.*domain//' -e 's/^[ 	]*//' \
                          -e 's/^ *//' -e 's/^	*//' \
-                         -e 's/ .*//' -e 's/^\.//' -e 's/^/./'`"
+                         -e 's/^\.//' -e 's/^/./'`"
+        if [ ".$domainname" = . ]; then
+            domainname="`egrep '^[ 	]*search' /etc/resolv.conf |\
+                         sed -e 's/.*search//' -e 's/^[ 	]*//' \
+                             -e 's/^ *//' -e 's/^	*//' \
+                             -e 's/ .*//' -e 's/^\.//' -e 's/^/./'`"
+        fi
     fi
+    conf_serveradmin="$username@$hostname$domainname"
+    conf_servername="$hostname$domainname"
 fi
-conf_serveradmin="$username@$hostname$domainname"
-conf_servername="$hostname$domainname"
-
+ 
 ##
 ##  determine prefix-relative paths for directories
 ##  because Apache supports them for the -d and -f 

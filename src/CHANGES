@@ -6,7 +6,10 @@ Changes with Apache 1.3.1
   *) Let APACI's configure script determine some configuration parameters
      (Group, Port, ServerAdmin, ServerName) via some intelligent tests to
      remove some of the classical hurdles for new users when setting up
-     Apache. [Ralf S. Engelschall]
+     Apache. This is done per default because it is useful for the average
+     user. Package authors can use the --without-confadjust option to disable
+     these configuration adjustments.
+     [Ralf S. Engelschall]
 
   *) Added an EXTRA_DEPS configuration parameter which can be used
      to add an extra Makefile dependency for the httpd target, for instance
