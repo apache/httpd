@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Send the Close Alert message to the peer before closing
+     the SSL session. [Madhusudan Mathihalli, Joe Orton]
+
   *) mod_setenvif: Remove "support" for Remote_User variable which
      never worked at all. PR 25725.  [André Malo]
 
