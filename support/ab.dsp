@@ -86,5 +86,41 @@ LINK32=link.exe
 
 SOURCE=.\ab.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\ab.rc
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "ab - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\build\win32\win32ver.awk
+
+".\ab.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../build/win32/win32ver.awk ab "ApacheBench Utility"\
+ ../include/ap_release.h > .\ab.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ab - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\build\win32\win32ver.awk
+
+".\ab.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../build/win32/win32ver.awk ab "ApacheBench Utility"\
+ ../include/ap_release.h > .\ab.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project

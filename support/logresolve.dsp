@@ -86,5 +86,41 @@ LINK32=link.exe
 
 SOURCE=.\logresolve.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\logresolve.rc
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "logresolve - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\build\win32\win32ver.awk
+
+".\logresolve.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../build/win32/win32ver.awk logresolve "logresolve Utility"\
+ ../include/ap_release.h > .\logresolve.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "logresolve - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\build\win32\win32ver.awk
+
+".\logresolve.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../build/win32/win32ver.awk logresolve "logresolve Utility"\
+ ../include/ap_release.h > .\logresolve.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
