@@ -1,11 +1,11 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mpm_common - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mpm_common</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mpm_common - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mpm_common</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>A collection of directives that are implemented by
 more than one multi-processing module (MPM)</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
-                      </a></td><td>MPM</td></tr></table></td></tr></table><h2>Directives</h2><ul><li><a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="#group">Group</a></li><li><a href="#listen">Listen</a></li><li><a href="#listenbacklog">ListenBackLog</a></li><li><a href="#lockfile">LockFile</a></li><li><a href="#maxclients">MaxClients</a></li><li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxsparethreads">MaxSpareThreads</a></li><li><a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="#minsparethreads">MinSpareThreads</a></li><li><a href="#numservers">NumServers</a></li><li><a href="#pidfile">PidFile</a></li><li><a href="#scoreboardfile">ScoreBoardFile</a></li><li><a href="#sendbuffersize">SendBufferSize</a></li><li><a href="#serverlimit">ServerLimit</a></li><li><a href="#startservers">StartServers</a></li><li><a href="#startthreads">StartThreads</a></li><li><a href="#threadlimit">ThreadLimit</a></li><li><a href="#threadsperchild">ThreadsPerChild</a></li><li><a href="#user">User</a></li></ul><hr/><h2><a name="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                      </a></td><td>MPM</td></tr></table></td></tr></table><h2>Directives</h2><ul><li><a href="#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="#group">Group</a></li><li><a href="#listen">Listen</a></li><li><a href="#listenbacklog">ListenBackLog</a></li><li><a href="#lockfile">LockFile</a></li><li><a href="#maxclients">MaxClients</a></li><li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="#maxsparethreads">MaxSpareThreads</a></li><li><a href="#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="#minsparethreads">MinSpareThreads</a></li><li><a href="#numservers">NumServers</a></li><li><a href="#pidfile">PidFile</a></li><li><a href="#scoreboardfile">ScoreBoardFile</a></li><li><a href="#sendbuffersize">SendBufferSize</a></li><li><a href="#serverlimit">ServerLimit</a></li><li><a href="#startservers">StartServers</a></li><li><a href="#startthreads">StartThreads</a></li><li><a href="#threadlimit">ThreadLimit</a></li><li><a href="#threadsperchild">ThreadsPerChild</a></li><li><a href="#user">User</a></li></ul><hr><h2><a name="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Directory where Apache attempts to
 switch before dumping core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>CoreDumpDirectory <em>directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -21,7 +21,7 @@ switch before dumping core</td></tr><tr><td nowrap="nowrap"><a href="directive-d
     as, core dumps won't normally get written. If you want a core
     dump for debugging, you can use this directive to place it in a
     different location.</p>
-<hr/><h2><a name="Group">Group</a> <a name="group">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Group">Group</a> <a name="group">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Group under which the server will answer
 requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Group <em>unix-group</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -56,7 +56,7 @@ requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" c
     <a href="../mod/mod_suexec.html#suexecusergroup" class="directive"><code class="directive">SuexecUserGroup</code></a>
     directive. SECURITY: See <a href="#user" class="directive"><code class="directive">User</code></a> for a discussion of the
     security considerations.</p>
-<hr/><h2><a name="Listen">Listen</a> <a name="listen">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Listen">Listen</a> <a name="listen">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>IP addresses and ports that the server
 listens to</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Listen [<em>IP-address</em>:]<em>portnumber</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -99,7 +99,7 @@ listens to</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
    Listen [fe80::a00:20ff:fea7:ccea]:80
 </code></td></tr></table></blockquote>
 <p><strong>See also </strong></p><ul><li><a href="../dns-caveats.html">DNS Issues</a></li><li><a href="../bind.html">Setting
-    which addresses and ports Apache uses</a></li></ul><hr/><h2><a name="ListenBackLog">ListenBackLog</a> <a name="listenbacklog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+    which addresses and ports Apache uses</a></li></ul><hr><h2><a name="ListenBackLog">ListenBackLog</a> <a name="listenbacklog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maximum length of the queue of pending connections</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ListenBacklog <em>backlog</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>ListenBacklog 511</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -117,7 +117,7 @@ listens to</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     many OSes do not use exactly what is specified as the backlog,
     but use a number based on (but normally larger than) what is
     set.</p>
-<hr/><h2><a name="LockFile">LockFile</a> <a name="lockfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="LockFile">LockFile</a> <a name="lockfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Location of the accept serialization lock file</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>LockFile <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>LockFile logs/accept.lock</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -139,7 +139,7 @@ listens to</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     service attack and prevent the server from starting by creating
     a lockfile with the same name as the one the server will try to
     create.</p>
-<hr/><h2><a name="MaxClients">MaxClients</a> <a name="maxclients">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="MaxClients">MaxClients</a> <a name="maxclients">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maximum number of child processes that will be created
 to serve requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MaxClients <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -168,7 +168,7 @@ to serve requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#
     number of simultaneous requests that can be served is obtained
     from the value of this directive multiplied by
     <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>.</p>
-<hr/><h2><a name="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Limit on the number of requests that an individual child server
 will handle during its life</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MaxRequestsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -198,7 +198,7 @@ will handle during its life</td></tr><tr><td nowrap="nowrap"><a href="directive-
     the first request is counted towards this limit. In effect, it
     changes the behavior to limit the number of
     <em>connections</em> per child.</p>
-<hr/><h2><a name="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maximum number of idle threads</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MaxSpareThreads <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
@@ -223,7 +223,7 @@ will handle during its life</td></tr><tr><td nowrap="nowrap"><a href="directive-
     <code>MaxSpareThreads 100</code>.  Since this MPM runs a
     single-process, the spare thread count is also server-wide.</p>
 
-<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr><h2><a name="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Maximum number of threads per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MaxThreadsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>MaxThreadsPerChild 64</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -236,7 +236,7 @@ will handle during its life</td></tr><tr><td nowrap="nowrap"><a href="directive-
     process. To increase this value beyond its default, it is
     necessary to change the value of the compile-time define
     <code>HARD_THREAD_LIMIT</code> and recompile the server.</p>
-<hr/><h2><a name="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Minimum number of idle threads available to handle request
 spikes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>MinSpareServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -263,7 +263,7 @@ spikes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     <code>MinSpareThreads 10</code> and, since it is a single-process
     MPM, tracks this on a server-wide bases.</p>
 
-<p><strong>See also </strong></p><ul><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="NumServers">NumServers</a> <a name="numservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li><li><a href="#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr><h2><a name="NumServers">NumServers</a> <a name="numservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Total number of children alive at the same time</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>NumServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>NumServers 2</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -274,7 +274,7 @@ spikes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cla
     this directive do not dynamically create new child processes so
     this number should be large enough to handle the requests for
     the entire site.</p>
-<hr/><h2><a name="PidFile">PidFile</a> <a name="pidfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="PidFile">PidFile</a> <a name="pidfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>File where the server records the process ID
 of the daemon</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>PidFile <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -299,7 +299,7 @@ of the daemon</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synt
 
     <p>The PidFile is subject to the same warnings about log file
     placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
-<hr/><h2><a name="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Location of the file used to store coordination data for
 the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ScoreBoardFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -326,7 +326,7 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     you may see improved speed by placing it on a RAM disk. But be
     careful that you heed the same warnings about log file placement
     and <a href="../misc/security_tips.html">security</a>.</p>
-<p><strong>See also </strong></p><ul><li><a href="../stopping.html">Stopping and Restarting Apache</a></li></ul><hr/><h2><a name="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="../stopping.html">Stopping and Restarting Apache</a></li></ul><hr><h2><a name="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>TCP buffer size</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SendBufferSize <em>bytes</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
@@ -336,7 +336,7 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     specified. Very useful to increase past standard OS defaults on
     high speed high latency (<em>i.e.</em>, 100ms or so, such as
     transcontinental fast pipes).</p>
-<hr/><h2><a name="ServerLimit">ServerLimit</a> <a name="serverlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ServerLimit">ServerLimit</a> <a name="serverlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Upper limit on configurable number of processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ServerLimit <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>ServerLimit 256 (prefork), ServerLimit 16 (worker)</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -370,7 +370,7 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     settings require more than 16 server processes.  Do not set the
     value of this directive any higher than the number of server
     processes required by what you may want for <a href="#maxclients " class="directive"><code class="directive">MaxClients </code></a> and <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>.</p>
-<hr/><h2><a name="StartServers">StartServers</a> <a name="startservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="StartServers">StartServers</a> <a name="startservers">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Number of child server processes created at startup</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>StartServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>StartServers 5</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -381,7 +381,7 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     number of child server processes created on startup. As the number
     of processes is dynamically controlled depending on the load,
     there is usually little reason to adjust this parameter.</p>
-<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li></ul><hr/><h2><a name="StartThreads">StartThreads</a> <a name="startthreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a></li><li><a href="#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a></li></ul><hr><h2><a name="StartThreads">StartThreads</a> <a name="startthreads">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Nubmer of threads created on startup</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>StartThreads <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
@@ -401,7 +401,7 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     process, this is the total number of threads created at startup to
     serve requests.</p>
 
-<hr/><h2><a name="ThreadLimit">ThreadLimit</a> <a name="threadlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ThreadLimit">ThreadLimit</a> <a name="threadlimit">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets the upper limit on the configurable number of threads
 per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ThreadLimit <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -425,7 +425,7 @@ per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#
     <p>Use this directive only if you need to set <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> higher than 64.  Do
     not set the value of this directive any higher than what you might
     want to set <a href="#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> to.</p>
-<hr/><h2><a name="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Number of threads created by each child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ThreadsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>ThreadsPerChild 50</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -440,7 +440,7 @@ per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#
     like worker, where there are multiple child processes, the
     total number of threads should be high enough to handle the
     common load on the server.</p>
-<hr/><h2><a name="User">User</a> <a name="user">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="User">User</a> <a name="user">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>The userid under which the server will answer
 requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>User <em>unix-userid</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -486,4 +486,4 @@ requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" c
 (or <a href="#group" class="directive"><code class="directive">Group</code></a>) to
 <code>root</code> unless you know exactly what you are doing, and what
 the dangers are.</p></td></tr></table></blockquote>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

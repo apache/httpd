@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dav - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_dav</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_dav - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_dav</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -26,7 +26,7 @@
       <em>(Any web-server writable filename, without an
       extension)</em>
 </code></td></tr></table></blockquote>
-<h2>Directives</h2><ul><li><a href="#dav">Dav</a></li><li><a href="#davdepthinfinity">DavDepthInfinity</a></li><li><a href="#davlockdb">DavLockDB</a></li><li><a href="#davmintimeout">DavMinTimeout</a></li></ul><hr/><h2><a name="Dav">Dav</a> <a name="dav">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<h2>Directives</h2><ul><li><a href="#dav">Dav</a></li><li><a href="#davdepthinfinity">DavDepthInfinity</a></li><li><a href="#davlockdb">DavLockDB</a></li><li><a href="#davmintimeout">DavMinTimeout</a></li></ul><hr><h2><a name="Dav">Dav</a> <a name="dav">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Enable WebDAV HTTP methods</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Dav on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>Dav off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -54,7 +54,7 @@
          &nbsp;&nbsp;&lt;/LimitExcept&gt;<br>
          &lt;/Location&gt;<br>
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Allow PROPFIND, Depth: Infinity requests</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>DavDepthInfinity on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>DavDepthInfinity off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -65,7 +65,7 @@
     allow the processing of PROPFIND requests containing the header
     'Depth: Infinity'. Because this type of request could constitute a
     denial-of-service attack, by default it is not allowed.</p>
-<hr/><h2><a name="DavLockDB">DavLockDB</a> <a name="davlockdb">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="DavLockDB">DavLockDB</a> <a name="davlockdb">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Location of the DAV lock database</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>DavLockDB <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
@@ -81,7 +81,7 @@
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 DavLockDB /tmp/DavLock
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Minimum amount of time the server holds a lock on
 a DAV resource</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>DavMinTimeout <em>seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -106,4 +106,4 @@ a DAV resource</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syn
          DavMinTimeout 600<br>
          &lt;/Location&gt;<br>
 </code></td></tr></table></blockquote>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dir - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_dir</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
+      --><title>mod_dir - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_dir</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
@@ -32,7 +32,7 @@
     ディレクトリへのアクセスはスラッシュで終わっている必要があり、
     <code>mod_dir</code> は、<code>http://servername/foo/dirname/</code>
     へのリダイレクトを送出することになります。</p>
-<h2>ディレクティブ</h2><ul><li><a href="#directoryindex">DirectoryIndex</a></li></ul><hr/><h2><a name="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<h2>ディレクティブ</h2><ul><li><a href="#directoryindex">DirectoryIndex</a></li></ul><hr><h2><a name="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>クライアントがディレクトリをリクエストしたときに調べる
 リソースのリスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DirectoryIndex
@@ -70,4 +70,4 @@ DirectoryIndex index.html
     <p>とした場合、<code>index.html</code> と <code>index.txt</code>
     のどちらもディレクトリ内に存在しない場合、CGI スクリプト
     <code>/cgi-bin/index.pl</code> が実行されます。</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"/></a><a href="../"><img src="../images/home.gif" alt="ホーム"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>

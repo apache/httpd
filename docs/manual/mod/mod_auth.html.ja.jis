@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_auth</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
+      --><title>mod_auth - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_auth</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>テキストファイルを用いたユーザ認証</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
                         </a></td><td>auth_module</td></tr></table></td></tr></table><h2>概要</h2>
@@ -14,7 +14,7 @@
     また、HTTP ダイジェスト認証は <code><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>
     で提供されています。</p>
 
-<h2>ディレクティブ</h2><ul><li><a href="#authauthoritative">AuthAuthoritative</a></li><li><a href="#authgroupfile">AuthGroupFile</a></li><li><a href="#authuserfile">AuthUserFile</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#authname" class="directive"><code class="directive">AuthName</code></a></li><li><a href="../mod/core.html#authtype" class="directive"><code class="directive">AuthType</code></a></li></ul><hr/><h2><a name="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<h2>ディレクティブ</h2><ul><li><a href="#authauthoritative">AuthAuthoritative</a></li><li><a href="#authgroupfile">AuthGroupFile</a></li><li><a href="#authuserfile">AuthUserFile</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#authname" class="directive"><code class="directive">AuthName</code></a></li><li><a href="../mod/core.html#authtype" class="directive"><code class="directive">AuthType</code></a></li></ul><hr><h2><a name="AuthAuthoritative">AuthAuthoritative</a> <a name="authauthoritative">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>認証と承認プロセスを、
 より低いレベルのモジュールに移行させるかどうかを設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AuthAuthoritative on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
@@ -69,7 +69,7 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
     <em>置かないで下さい</em>。そうしないと 
     <a href="#authuserfile" class="directive"><code class="directive">AuthUserFile</code></a>
     はダウンロードできてしまいます。</td></tr></table></blockquote>
-<hr/><h2><a name="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>認証に使用するユーザグループの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AuthGroupFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -103,7 +103,7 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
     保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
     そうしないと AuthGroupFile はダウンロードできてしまいます。</p>
 </td></tr></table></blockquote>
-<hr/><h2><a name="AuthUserFile">AuthUserFile</a> <a name="authuserfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AuthUserFile">AuthUserFile</a> <a name="authuserfile">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>認証に使用するユーザとパスワードの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AuthUserFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -150,4 +150,4 @@ Apache 2.0 では、モジュールの順序づけに異なる仕組みを使っています。</td></
 保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
 そうしないと AuthUserFile はダウンロードできてしまいます。</p></td></tr></table></blockquote>
 
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"/></a><a href="../"><img src="../images/home.gif" alt="ホーム"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>

@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_autoindex</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
+      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_autoindex</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>Unix の <em>ls</em> コマンドや
     Win32 の <em>dir</em> シェルコマンドに似た
     ディレクトリインデックスを生成します</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
@@ -155,7 +155,7 @@
 &lt;/FORM&gt;
 </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="AddAlt">AddAlt</a> <a name="addalt">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AddAlt">AddAlt</a> <a name="addalt">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>アイコンの代わりに
 表示される、ファイル名で選択された代替テキスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AddAlt <em>string file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -178,7 +178,7 @@
     AddAlt "PDF" *.pdf<br>
     AddAlt "Compressed" *.gz *.zip *.Z
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>アイコンの代わりに表示される、MIME 符号化方法で選択された
 代替テキスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AddAltByEncoding <em>string MIME-encoding</em>
@@ -202,7 +202,7 @@
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     AddAltByEncoding "gzip" x-gzip
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="AddAltByType">AddAltByType</a> <a name="addaltbytype">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AddAltByType">AddAltByType</a> <a name="addaltbytype">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>アイコンの代わりに
 表示される、MIME タイプで選択された代替テキスト</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AddAltByType <em>string
@@ -226,7 +226,7 @@
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     AddAltByType "TXT" text/plain
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="AddDescription">AddDescription</a> <a name="adddescription">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AddDescription">AddDescription</a> <a name="adddescription">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ファイルに対して表示する説明</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AddDescription
     <em>string file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -273,7 +273,7 @@
        (太字の語句の最後が切れるといった) 場合、
       出力結果は、ディレクトリ一覧の残りの部分に影響を与えるでしょう。</p>
 </td></tr></table></blockquote>
-<hr/><h2><a name="AddIcon">AddIcon</a> <a name="addicon">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AddIcon">AddIcon</a> <a name="addicon">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ファイルに表示するアイコンを名前で選択</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AddIcon <em>icon
     name</em> [<em>name</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -306,7 +306,7 @@
     より
     <a href="#addiconbytype" class="directive"><code class="directive">AddIconByType</code></a>
     を優先的に使うべきでしょう。</p>
-<hr/><h2><a name="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ファイルに表示するアイコンを MIME 
 符号化方法で選択</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AddIconByEncoding
@@ -327,7 +327,7 @@
     ワイルドカード表現です。例:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddIconByEncoding /icons/compress.xbm x-compress</code></td></tr></table></blockquote>
-<hr/><h2><a name="AddIconByType">AddIconByType</a> <a name="addiconbytype">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="AddIconByType">AddIconByType</a> <a name="addiconbytype">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ファイルの隣に表示するアイコンを
 MIME タイプによって選択</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>AddIconByType
@@ -348,7 +348,7 @@ MIME タイプによって選択</td></tr><tr><td nowrap="nowrap"><a href="directiv
     ワイルドカード表現です。例:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddIconByType (IMG,/icons/image.xbm) image/*</code></td></tr></table></blockquote>
-<hr/><h2><a name="DefaultIcon">DefaultIcon</a> <a name="defaulticon">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="DefaultIcon">DefaultIcon</a> <a name="defaulticon">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>特定のアイコンが何も設定されていない時に
 ファイルに表示するアイコン</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DefaultIcon <em>url-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -362,7 +362,7 @@ MIME タイプによって選択</td></tr><tr><td nowrap="nowrap"><a href="directiv
     <em>Url-path</em> は、(% でエスケープされた) アイコンへの相対 URL
     です。例:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DefaultIcon /icon/unknown.xbm</code></td></tr></table></blockquote>
-<hr/><h2><a name="HeaderName">HeaderName</a> <a name="headername">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="HeaderName">HeaderName</a> <a name="headername">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>
 インデックス一覧の先頭に挿入されるファイルの名前</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>HeaderName <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -416,7 +416,7 @@ HeaderName HEADER.html
     <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
     を設定して、これらのタグが繰り返されないようにしたいと思うでしょう。</p>
-<hr/><h2><a name="IndexIgnore">IndexIgnore</a> <a name="indexignore">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="IndexIgnore">IndexIgnore</a> <a name="indexignore">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ディレクトリ一覧を行なう際に無視すべき
 ファイルリストに追加</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>IndexIgnore <em>file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -433,7 +433,7 @@ HeaderName HEADER.html
     が含まれています。例:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>IndexIgnore README .htaccess *~</code></td></tr></table></blockquote>
-<hr/><h2><a name="IndexOptions">IndexOptions</a> <a name="indexoptions">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="IndexOptions">IndexOptions</a> <a name="indexoptions">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>ディレクトリインデックスの様々な設定項目
 </td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -741,7 +741,7 @@ foo-1.04
 	
       </dd>
     </dl>
-<hr/><h2><a name="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>
 ディレクトリインデックスの標準の順番付けを設定</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>IndexOrderDefault
@@ -771,7 +771,7 @@ Ascending|Descending Name|Date|Size|Description</td></tr><tr><td nowrap="nowrap"
     ディレクトリ一覧をある特定の順番でのみ表示するようにできます。
     これは、
     クライアントが別の順番でディレクトリ一覧をリクエストすることを防ぎます。</p>
-<hr/><h2><a name="ReadmeName">ReadmeName</a> <a name="readmename">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="ReadmeName">ReadmeName</a> <a name="readmename">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>インデックス一覧の最後に挿入されるファイルの名前</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>ReadmeName <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
                   </a></td><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">上書き:
@@ -789,4 +789,4 @@ ReadmeName FOOTER.html
 
     <p>より詳細にまでこの挙動について記述している <a href="#headername" class="directive"><code class="directive">HeaderName</code></a>
     もご覧下さい。</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"/></a><a href="../"><img src="../images/home.gif" alt="ホーム"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>

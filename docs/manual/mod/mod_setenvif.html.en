@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_setenvif - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_setenvif</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_setenvif - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_setenvif</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Allows the setting of environment variables based
 on characteristics of the request</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -23,7 +23,7 @@ on characteristics of the request</td></tr><tr><td nowrap="nowrap"><a href="modu
   BrowserMatch ^Mozilla netscape<br>
   BrowserMatch MSIE !netscape<br>
 </code></td></tr></table></blockquote>
-<h2>Directives</h2><ul><li><a href="#browsermatch">BrowserMatch</a></li><li><a href="#browsermatchnocase">BrowserMatchNoCase</a></li><li><a href="#setenvif">SetEnvIf</a></li><li><a href="#setenvifnocase">SetEnvIfNoCase</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../env.html">Environment Variables in Apache</a></li></ul><hr/><h2><a name="BrowserMatch">BrowserMatch</a> <a name="browsermatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<h2>Directives</h2><ul><li><a href="#browsermatch">BrowserMatch</a></li><li><a href="#browsermatchnocase">BrowserMatchNoCase</a></li><li><a href="#setenvif">SetEnvIf</a></li><li><a href="#setenvifnocase">SetEnvIfNoCase</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../env.html">Environment Variables in Apache</a></li></ul><hr><h2><a name="BrowserMatch">BrowserMatch</a> <a name="browsermatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets environment variables conditional on HTTP User-Agent
 </td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
@@ -48,7 +48,7 @@ on characteristics of the request</td></tr><tr><td nowrap="nowrap"><a href="modu
     BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br>
     BrowserMatch MSIE !javascript<br>
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets environment variables conditional on User-Agent without
 respect to case</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
@@ -78,7 +78,7 @@ respect to case</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Sy
    BrowserMatchNoCase Robot is_a_robot<br>
    SetEnvIfNoCase User-Agent Robot is_a_robot<br>
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="SetEnvIf">SetEnvIf</a> <a name="setenvif">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="SetEnvIf">SetEnvIf</a> <a name="setenvif">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets environment variables based on attributes of the request
 </td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SetEnvIf <em>attribute
@@ -184,7 +184,7 @@ of</p>
     set [a-z].</p>
 <p><strong>See also </strong></p><ul><li><a href="../env.html">Environment Variables in Apache</a>,
 for additional examples.
-</li></ul><hr/><h2><a name="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+</li></ul><hr><h2><a name="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets environment variables based on attributes of the request
 without respect to case</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SetEnvIfNoCase <em>attribute regex 
@@ -209,4 +209,4 @@ without respect to case</td></tr><tr><td nowrap="nowrap"><a href="directive-dict
     field <code>Host:</code> was included and contained
     <code>Apache.Org</code>, <code>apache.org</code>, or any other
     combination.</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_access - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_access</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
+      --><title>mod_access - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_access</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>クライアントのホスト名、IP アドレス、その他のクライアント
 のリクエストの特徴に基づいたアクセス制御機能を提供する</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
@@ -33,7 +33,7 @@
     しかし、<a href="../mod/core.html#limit" class="directive"><code class="directive">&lt;Limit&gt;</code></a>
     セクションの中にディレクティブを書くことで、
     一部のメソッドにのみ制限をかけることもできます。</p>
-<h2>ディレクティブ</h2><ul><li><a href="#allow">Allow</a></li><li><a href="#deny">Deny</a></li><li><a href="#order">Order</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li></ul><hr/><h2><a name="Allow">Allow</a> <a name="allow">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<h2>ディレクティブ</h2><ul><li><a href="#allow">Allow</a></li><li><a href="#deny">Deny</a></li><li><a href="#order">Order</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../mod/core.html#satisfy" class="directive"><code class="directive">Satisfy</code></a></li><li><a href="../mod/core.html#require" class="directive"><code class="directive">Require</code></a></li></ul><hr><h2><a name="Allow">Allow</a> <a name="allow">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>サーバのある領域にアクセスできるホストを制御する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
@@ -135,7 +135,7 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br>
     で始まるブラウザのみがアクセスを許可され、
     他のものはアクセスを拒否されます。</p>
 
-<hr/><h2><a name="Deny">Deny</a> <a name="deny">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="Deny">Deny</a> <a name="deny">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>サーバがアクセスを拒否するホストを制御する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
@@ -148,7 +148,7 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br>
     アドレス、環境変数に基づいてサーバへのアクセスを制限します。
     <code class="directive">Deny</code> ディレクティブの引数は <a href="#allow" class="directive"><code class="directive">Allow</code></a>
     ディレクティブとまったく同じです。</p>
-<hr/><h2><a name="Order">Order</a> <a name="order">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="Order">Order</a> <a name="order">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>デフォルトのアクセス可能な状態と、Allow と
 Deny が評価される順番を制御する</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td> Order <em>ordering</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
@@ -262,4 +262,4 @@ Deny が評価される順番を制御する</td></tr><tr><td nowrap="nowrap"><a href="
     設定セクションのマージの詳細については、
     <a href="../sections.html">Directory,Location, Files
     セクションの動作方法</a> を参照してください。</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"/></a><a href="../"><img src="../images/home.gif" alt="ホーム"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>

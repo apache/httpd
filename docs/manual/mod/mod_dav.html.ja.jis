@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dav - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_dav</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
+      --><title>mod_dav - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_dav</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能です</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
@@ -29,7 +29,7 @@
       <em>(ウェブサーバの書き込めるファイル名で、
       拡張子のないもの)</em>
 </code></td></tr></table></blockquote>
-<h2>ディレクティブ</h2><ul><li><a href="#dav">Dav</a></li><li><a href="#davdepthinfinity">DavDepthInfinity</a></li><li><a href="#davlockdb">DavLockDB</a></li><li><a href="#davmintimeout">DavMinTimeout</a></li></ul><hr/><h2><a name="Dav">Dav</a> <a name="dav">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<h2>ディレクティブ</h2><ul><li><a href="#dav">Dav</a></li><li><a href="#davdepthinfinity">DavDepthInfinity</a></li><li><a href="#davlockdb">DavLockDB</a></li><li><a href="#davmintimeout">DavMinTimeout</a></li></ul><hr><h2><a name="Dav">Dav</a> <a name="dav">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>WebDAV HTTP メソッドを有効にします</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>Dav on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
                     </a></td><td><code>Dav off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -59,7 +59,7 @@
          &nbsp;&nbsp;&lt;/LimitExcept&gt;<br>
          &lt;/Location&gt;<br>
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>PROPFIND, Depth: Infinity リクエストを許可します</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DavDepthInfinity on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
                     </a></td><td><code>DavDepthInfinity off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
@@ -72,7 +72,7 @@
     ディレクティブを使います。このタイプのリクエストは
     denial-of-service アタックとなりうるので、
     デフォルトでは許可されていません。</p>
-<hr/><h2><a name="DavLockDB">DavLockDB</a> <a name="davlockdb">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="DavLockDB">DavLockDB</a> <a name="davlockdb">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>DAV ロックデータベースの位置です</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DavLockDB <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
                   </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
@@ -90,7 +90,7 @@
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>例</strong></p><code>
 DavLockDB /tmp/DavLock
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
+<hr><h2><a name="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>サーバが DAV リソースのロックを維持する最小時間です。
 </td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DavMinTimeout <em>seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
@@ -117,4 +117,4 @@ DavLockDB /tmp/DavLock
          DavMinTimeout 600<br>
          &lt;/Location&gt;<br>
 </code></td></tr></table></blockquote>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"/></a><a href="../"><img src="../images/home.gif" alt="ホーム"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="索引"></a><a href="../"><img src="../images/home.gif" alt="ホーム"></a></body></html>

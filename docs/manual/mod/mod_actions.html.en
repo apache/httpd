@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_actions - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_actions</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_actions - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_actions</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>This module provides for executing CGI scripts based on
 media type or request method.</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -13,7 +13,7 @@ media type or request method.</td></tr><tr><td nowrap="nowrap"><a href="module-d
     you run CGI scripts whenever a particular method is used in a
     request. This makes it much easier to execute scripts that process
     files.</p>
-<h2>Directives</h2><ul><li><a href="#action">Action</a></li><li><a href="#script">Script</a></li></ul><hr/><h2><a name="Action">Action</a> <a name="action">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<h2>Directives</h2><ul><li><a href="#action">Action</a></li><li><a href="#script">Script</a></li></ul><hr><h2><a name="Action">Action</a> <a name="action">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Activates a CGI script for a particular handler or
 content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Action <em>action-type cgi-script</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -48,7 +48,7 @@ content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synta
     <p>In the second example, requests for files with a file extension of
     <code>.xyz</code> are handled instead by the specified cgi script 
     <code>/cgi-bin/program.cgi</code>.</p>
-<p><strong>See also </strong></p><ul><li><a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a></li></ul><hr/><h2><a name="Script">Script</a> <a name="script">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a></li></ul><hr><h2><a name="Script">Script</a> <a name="script">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Activates a CGI script for a particular request
 method.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td> Script <em>method cgi-script</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -84,4 +84,4 @@ method.</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cl
     # A CGI PUT handler<br>
     Script PUT /~bob/put.cgi<br>
 </code></td></tr></table></blockquote>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_include - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_include</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_include - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_include</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Server-parsed html documents (Server Side Includes)</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
                         </a></td><td>include_module</td></tr></table></td></tr></table><h2>Summary</h2>
@@ -147,8 +147,8 @@
           <dt><strong>cgi</strong></dt>
 
           <dd>
-            The value specifies a (%-encoded) URL relative path to
-            the CGI script. If the path does not begin with a (/),
+            The value specifies a (%-encoded) URL-path to
+            the CGI script. If the path does not begin with a slash (/),
             then it is taken to be relative to the current
             document. The document referenced by this path is
             invoked as a CGI script, even if the server would not
@@ -197,7 +197,7 @@
         <p>The use of <code><a href="#includevirtual">#include 
         virtual</a></code> is almost always
         prefered to using either <code>#exec cgi</code> or <code>#exec
-        cmd</code>. The former (<code>#include virtual</code>) used the
+        cmd</code>. The former (<code>#include virtual</code>) uses the
         standard Apache sub-request mechanism to include files or
         scripts. It is much better tested and maintained.</p>
 
@@ -231,8 +231,7 @@
 
           <dt><strong>virtual</strong></dt>
 
-          <dd>The value is a (%-encoded) URL-path relative to the
-          current document being parsed. If it does not begin with
+          <dd>The value is a (%-encoded) URL-path. If it does not begin with
           a slash (/) then it is taken to be relative to the
           current document.</dd>
         </dl>
@@ -278,8 +277,7 @@
           <dt><strong><a name="includevirtual">virtual</a></strong></dt>
 
          <dd>
-          <p>The value is a (%-encoded) URL relative to the
-          current document being parsed. The URL cannot contain a
+          <p>The value is a (%-encoded) URL-path. The URL cannot contain a
           scheme or hostname, only a path and an optional query
           string. If it does not begin with a slash (/) then it is
           taken to be relative to the current document.</p>
@@ -526,7 +524,7 @@
     default.  You can use the <a href="../mod/core.html#acceptpathinfo" class="directive"><code class="directive">AcceptPathInfo</code></a> directive to
     configure the server to accept requests with PATH_INFO.</p>
 
-<hr/><h2><a name="SSIEndTag">SSIEndTag</a> <a name="ssiendtag">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="SSIEndTag">SSIEndTag</a> <a name="ssiendtag">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>String that ends an include element</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SSIEndTag <em>tag</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>SSIEndTag "--&gt;"</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -543,7 +541,7 @@
     SSIEndTag "%&gt;"
     </code></td></tr></table></blockquote>
 
-<p><strong>See also </strong></p><ul><li><a href="#ssistarttag" class="directive"><code class="directive">SSIStartTag</code></a></li></ul><hr/><h2><a name="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#ssistarttag" class="directive"><code class="directive">SSIStartTag</code></a></li></ul><hr><h2><a name="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Error message displayed when there is an SSI error</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SSIErrorMsg <em>message</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>SSIErrorMsg 
@@ -567,7 +565,7 @@
     SSIErrorMsg "&lt;!-- Error --&gt;"
     </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="SSIStartTag">SSIStartTag</a> <a name="ssistarttag">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="SSIStartTag">SSIStartTag</a> <a name="ssistarttag">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>String that starts an include element</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Changes the string that mod_include looks for to start an
 include element</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -599,7 +597,7 @@ include element</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#De
     &lt;%#printenv %&gt;
     </code></td></tr></table></blockquote>
 
-<p><strong>See also </strong></p><ul><li><a href="#ssiendtag" class="directive"><code class="directive">SSIEndTag</code></a></li></ul><hr/><h2><a name="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#ssiendtag" class="directive"><code class="directive">SSIEndTag</code></a></li></ul><hr><h2><a name="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Configures the format in which date strings are 
 displayed</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SSITimeFormat <em>formatstring</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -624,7 +622,7 @@ displayed</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" 
     <p>The above directive would cause times to be displayed in the
     format "22:26, June 14, 2002".</p>
 
-<hr/><h2><a name="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>String displayed when
 an unset variable is echoed</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SSIUndefinedEcho <em>tag</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -642,7 +640,7 @@ an unset variable is echoed</td></tr><tr><td nowrap="nowrap"><a href="directive-
     SSIUndefinedEcho "[ No Value ]"
     </code></td></tr></table></blockquote>
 
-<hr/><h2><a name="XBitHack">XBitHack</a> <a name="xbithack">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="XBitHack">XBitHack</a> <a name="xbithack">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Parse SSI directives in files with the execute 
 bit set</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>XBitHack on|off|full</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -684,4 +682,4 @@ bit set</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cl
       </dd>
     </dl>
 
-    <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+    <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

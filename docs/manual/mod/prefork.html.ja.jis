@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>prefork - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache $B%b%8%e!<%k(B prefork</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">$B@bL@(B:
+      --><title>prefork - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache $B%b%8%e!<%k(B prefork</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">$B@bL@(B:
                       </span></td><td>$B%9%l%C%I$r;H$o$:!"@h9T$7$F(B fork $B$r9T$J(B$B$&%&%'%V%5!<%P$r<BAu$7$F$$$^$9(B
 </td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">$B%9%F!<%?%9(B:
                       </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">$B%b%8%e!<(B$B%k<1JL;R(B:
@@ -66,7 +66,7 @@
     <p><a href="../mod/mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
     $B$O!"8E$$%W%m%;%9$rDd;_$7$F?7$7(B$B$$%W%m%;%9$r5/F0$9$k$3$H$K$h$C$F!"(B
     $B$I$NDxEY$NIQEY$G%5!<%P$,%W%m%;%9$r%j%5%$%/%k$9$k$+$r@)8f$7$^$9!#(B</p>
-<hr/><h2><a name="AcceptMutex">AcceptMutex</a> <a name="acceptmutex">$B%G%#%l%/%F%#%V(B</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>$B@bL@(B: 
+<hr><h2><a name="AcceptMutex">AcceptMutex</a> <a name="acceptmutex">$B%G%#%l%/%F%#%V(B</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>$B@bL@(B: 
                   </strong></td><td>$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
 accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$?$a$K(B
 $B;H$&J}K!(B</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">$B9=J8(B:
@@ -114,7 +114,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       <dd>POSIX Threads (PThreads) $B5,3J$G<BAu$5$l$F$$$k(B
       POSIX $BGSB>=hM}$r;H$$$^$9!#(B</dd>
     </dl>
-<hr/><h2><a name="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>$B@bL@(B: 
+<hr><h2><a name="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>$B@bL@(B: 
                   </strong></td><td>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">$B9=J8(B:
                   </a></td><td>MaxSpareServers <em>number</em><br></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">$B%G%U%)%k%H(B: 
                     </a></td><td><code>MaxSpareServers 10</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">$B%3%s%F%-%9%H(B:
@@ -129,7 +129,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
     <p>$BHs>o$K:.$s$G$$$k%5%$%H$G$N$_!"$3$N%Q%i%a!<%?$r%A%e!<%K%s%0$9$k$Y$-$G$9!#(B
     $B$3$N%Q%i%a!<%?$rBg$-$/$9$k$H$$$&$3$H$O!"BgDq$N>l9g$O0-$$H/A[$G$9!#(B</p>
-<p><strong>$B;2>H(B </strong></p><ul><li><a href="#minspareservers" class="directive"><code class="directive">MinSpareServers</code></a></li><li><a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/><h2><a name="MinSpareServers">MinSpareServers</a> <a name="minspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>$B@bL@(B: 
+<p><strong>$B;2>H(B </strong></p><ul><li><a href="#minspareservers" class="directive"><code class="directive">MinSpareServers</code></a></li><li><a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr><h2><a name="MinSpareServers">MinSpareServers</a> <a name="minspareservers">$B%G%#%l%/%F%#%V(B</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>$B@bL@(B: 
                   </strong></td><td>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:G>.8D?t(B</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">$B9=J8(B:
                   </a></td><td>MinSpareServers <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">$B%G%U%)%k%H(B: 
                     </a></td><td><code>MinSpareServers  5</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">$B%3%s%F%-%9%H(B:
@@ -144,4 +144,4 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
     <p>$BHs>o$K:.$s$G$$$k%5%$%H$G$N$_!"$3$N%Q%i%a!<%?$r%A%e!<%K%s%0$9$k$Y$-$G$9!#(B
     $B$3$N%Q%i%a!<%?$rBg$-$/$9$k$H$$$&$3$H$O!"BgDq$N>l9g$O0-$$H/A[$G$9!#(B</p>
-<p><strong>$B;2>H(B </strong></p><ul><li><a href="#maxspareservers" class="directive"><code class="directive">MaxSpareServers</code></a></li><li><a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="$B:w(B$B0z(B"/></a><a href="../"><img src="../images/home.gif" alt="$B%[(B$B!<(B$B%`(B"/></a></body></html>
+<p><strong>$B;2>H(B </strong></p><ul><li><a href="#maxspareservers" class="directive"><code class="directive">MaxSpareServers</code></a></li><li><a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a></li></ul><hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="$B:w(B$B0z(B"></a><a href="../"><img src="../images/home.gif" alt="$B%[(B$B!<(B$B%`(B"></a></body></html>

@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth_anon - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth_anon</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_auth_anon - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_auth_anon</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Allows "anonymous" user access to authenticated
     areas</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -71,7 +71,7 @@
        Require valid-user<br>
        &lt;/Files&gt;<br>
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="Anonymous">Anonymous</a> <a name="anonymous">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Anonymous">Anonymous</a> <a name="anonymous">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Specifies userIDs that areallowed access without
 password verification</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Anonymous <em>user</em> [<em>user</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -96,7 +96,7 @@ password verification</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.h
     <p>This would allow the user to enter without password
     verification by using the userId's 'anonymous',
     'AnonyMous','Not Registered' and 'I Don't Know'.</p>
-<hr/><h2><a name="Anonymous_Authoritative">Anonymous_Authoritative</a> <a name="anonymous_authoritative">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Anonymous_Authoritative">Anonymous_Authoritative</a> <a name="anonymous_authoritative">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Configures if authorization will fall-through
 to other methods</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Anonymous_Authoritative on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -114,7 +114,7 @@ to other methods</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#S
     switch it on. And remember that it is the linking order of the
     modules (in the Configuration / Make file) which details the
     order in which the Authorization modules are queried.</p>
-<hr/><h2><a name="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets whether the password entered will be logged in the
 error log</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Anonymous_LogEmail on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -126,7 +126,7 @@ error log</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" 
     <p>When set <code>on</code>, the default, the 'password' entered
     (which hopefully contains a sensible email address) is logged in
     the error log.</p>
-<hr/><h2><a name="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Specifies whether blank passwords are allowed</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Anonymous_MustGiveEmail on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>Anonymous_MustGiveEmail on</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -136,7 +136,7 @@ error log</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" 
                   </a></td><td>mod_auth_anon</td></tr></table></td></tr></table>
     <p>Specifies whether the user must specify an email address as
     the password. This prohibits blank passwords.</p>
-<hr/><h2><a name="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets whether the userID field may be empty</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Anonymous_NoUserID on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>Anonymous_NoUserID off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -148,7 +148,7 @@ error log</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" 
     perhaps the password field) empty. This can be very convenient for
     MS-Explorer users who can just hit return or click directly on the
     OK button; which seems a natural reaction.</p>
-<hr/><h2><a name="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a> <a name="anonymous_verifyemail">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a> <a name="anonymous_verifyemail">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Sets whether to check the password field for a correctly
 formatted email address</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>Anonymous_VerifyEmail on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -160,4 +160,4 @@ formatted email address</td></tr><tr><td nowrap="nowrap"><a href="directive-dict
     <p>When set <code>on</code> the 'password' entered is checked for
     at least one '@' and a '.' to encourage users to enter valid email
     addresses (see the above <a href="#auth_logemail" class="directive"><code class="directive">Auth_LogEmail</code></a>).</p>
-<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

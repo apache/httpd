@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_vhost_alias - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_vhost_alias</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+      --><title>mod_vhost_alias - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_vhost_alias</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
                       </span></td><td>Provides for dynamically configured mass virtual
 hosting</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
@@ -164,7 +164,7 @@ virtual hosting</a></li></ul><h2>Directory Name Interpolation</h2>
     <p>The <a href="../mod/mod_log_config.html#logformat" class="directive"><code class="directive">LogFormat</code></a>
     directives <code>%V</code> and <code>%A</code> are useful
     in conjunction with this module.</p>
-<hr/><h2><a name="VirtualDocumentRoot">VirtualDocumentRoot</a> <a name="virtualdocumentroot">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="VirtualDocumentRoot">VirtualDocumentRoot</a> <a name="virtualdocumentroot">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Dynamically configure the location of the document root
 for a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>VirtualDocumentRoot <em>interpolated-directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -183,7 +183,7 @@ for a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dic
     cannot be used in the same context as
     <code class="directive">VirtualDocumentRootIP</code>.</p>
 
-<hr/><h2><a name="VirtualDocumentRootIP">VirtualDocumentRootIP</a> <a name="virtualdocumentrootip">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="VirtualDocumentRootIP">VirtualDocumentRootIP</a> <a name="virtualdocumentrootip">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Dynamically configure the location of the document root
 for a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>VirtualDocumentRootIP <em>interpolated-directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -196,7 +196,7 @@ for a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dic
     <code class="directive">VirtualDocumentRoot</code>
     directive, except that it uses the IP address of the server end
     of the connection instead of the server name.</p>
-<hr/><h2><a name="VirtualScriptAlias">VirtualScriptAlias</a> <a name="virtualscriptalias">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="VirtualScriptAlias">VirtualScriptAlias</a> <a name="virtualscriptalias">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Dynamically configure the location of the CGI directory for
 a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>VirtualScriptAlias <em>interpolated-directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -212,7 +212,7 @@ a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.ht
     <code>/cgi-bin/</code>, much like <a href="../mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a>
     <code>/cgi-bin/</code> would.</p>
 
-<hr/><h2><a name="VirtualScriptAliasIP">VirtualScriptAliasIP</a> <a name="virtualscriptaliasip">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<hr><h2><a name="VirtualScriptAliasIP">VirtualScriptAliasIP</a> <a name="virtualscriptaliasip">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Dynamically configure the location of the cgi directory for
 a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>VirtualScriptAliasIP <em>interpolated-directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
@@ -226,4 +226,4 @@ a given virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.ht
     directive, except that it uses the IP address of the server end
     of the connection instead of the server name.</p>
 
-    <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
+    <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
