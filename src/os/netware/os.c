@@ -193,6 +193,49 @@ char *ap_os_canonical_filename(pool *pPool, const char *szFile)
     return pNewName;
 }
 
+
+char *ap_os_case_canonical_filename(pool *pPool, const char *szFile)
+{
+    /* First thing we need to do is get a copy of the 
+        canonicalized path */
+    char *pNewName = ap_os_canonical_filename(pPool, szFile);
+    int	  volnum=0;
+    long  dirnum=0;
+    long  pathcount=0;
+    char *path;
+    char  vol[_MAX_VOLUME+1];
+    int   retval, x, y;
+	    
+    /* See if path exists by trying to get the volume and directory number */
+    retval = FEMapPathVolumeDirToVolumeDir(pNewName, 0, 0, &volnum, &dirnum);
+    if (retval == 0) {
+        /* allocate a buffer and ask the file system for the real name of
+            the directory and file */
+        path = ap_palloc(pPool, strlen(pNewName)+2);
+        FEMapVolumeAndDirectoryToPath (volnum, dirnum, path, &pathcount);
+
+        /* The file system gives it back in a lengh preceded string so we
+            need to convert it to a null terminated string. */
+        x = 0;
+        while (pathcount-- > 0) {
+            y = path[x];
+            path[x] = '/';
+            x += y + 1;
+        }
+        path[x] = '\0';  /* null terminate the full path */
+
+        /* Get the name of the volume so that we can prepend it onto the path */
+        FEMapVolumeNumberToName (volnum, vol);
+        vol[vol[0]+1] = '\0';
+        pNewName = ap_pstrcat (pPool, &(vol[1]), ":", path, NULL);
+    }
+
+    /* At this point we either have a real case accurate path or 
+        our best guess whichis a lower cased path */
+    return pNewName;
+}
+
+
 /*
  * ap_os_is_filename_valid is given a filename, and returns 0 if the filename
  * is not valid for use on this system. On NetWare, this means it fails any
