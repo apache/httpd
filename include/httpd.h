@@ -811,7 +811,7 @@ struct request_rec {
      *  @defvar ap_filter_t *output_filters */
     struct ap_filter_t *output_filters;
     /** A list of input filters to be used for this request 
-     *  @defvar ap_filter_t *filters */
+     *  @defvar ap_filter_t *input_filters */
     struct ap_filter_t *input_filters;
     /** A flag to determine if the eos bucket has been sent yet
      *  @defvar int eos_sent */
@@ -881,8 +881,8 @@ struct conn_rec {
     /** send note from one module to another, must remain valid for all
      *  requests on this conn */
     apr_table_t *notes;
-    /** A list of input filters to be used for this request 
-     *  @defvar ap_filter_t *filters */
+    /** A list of input filters to be used for this connection
+     *  @defvar ap_filter_t *input_filters */
     struct ap_filter_t *input_filters;
     /** A list of output filters to be used for this connection
      *  @defvar ap_filter_t *filters */
