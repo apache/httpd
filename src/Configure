@@ -1206,11 +1206,12 @@ if [ "$RULE_SOCKS5" = "yes" ]; then
     esac
 fi
 
-# AIX 4.x support:
+# AIX 4.x support: Special Case: need to check for sys/processor.h
+# before we usually would.
 # Processor Binding
 case "$PLAT" in
     *-ibm-aix*)
-        if [ ".$HAVE_SYS_PROCESSOR_H" = .1 ]; then
+        if ./helpers/TestCompile header sys/processor.h ; then
             CFLAGS="$CFLAGS -DAIX_BIND_PROCESSOR"
         fi
         ;;
@@ -1646,12 +1647,10 @@ for header in $CHECK_FOR_HEADERS; do
     echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
     name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
     if ./helpers/TestCompile header $header; then
-        eval "HAVE_${name}=1"
         echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
         echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
         echo "#endif" >>$AP_CONFIG_AUTO_H
     else
-        eval "HAVE_${name}=0"
         echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
         echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
         echo "#endif" >>$AP_CONFIG_AUTO_H
