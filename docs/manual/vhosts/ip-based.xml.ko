@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.3.2.2 -->
 
 <manualpage metafile="ip-based.xml.meta">
 <parentdocument href="./">가상호스트</parentdocument>
@@ -41,8 +41,8 @@
       module="core">ServerRoot</directive> 설정으로 실행해야 한다.</li>
 
       <li>충분한 메모리가 있고, 컴퓨터의 모든 IP를 기다리기위한
-      파일기술자(file descriptor) 요구사항도 만족한다. "와일드카드"나
-      특정 주소를 <directive
+      <a href="../misc/descriptors.html">파일기술자(file descriptor)
+      요구사항</a>도 만족한다. "와일드카드"나 특정 주소를 <directive
       module="mpm_common">Listen</directive>할 수만 있다. 그래서
       어떤 이유에서건 특정 주소를 기다릴 필요가 있다면, (한
       웹서버가 한 주소를 제외한 모든 주소를 기다리고 다른 한

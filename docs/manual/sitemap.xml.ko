@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ko"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English revision: 1.29 -->
+<!-- English revision: 1.12.2.12 -->
 
 <sitemap metafile="sitemap.xml.meta">
 
@@ -11,7 +11,7 @@
 
 <summary>
 <p>이 페이지는 현재
-<a href="./">Apache HTTP Server Version 2.1 문서</a> 목록을
+<a href="./">Apache HTTP Server Version 2.0 문서</a> 목록을
 보여준다.</p>
 </summary>
 
@@ -83,6 +83,7 @@
 <page href="howto/ssi.html">Server Side Includes 소개</page>
 <page href="howto/htaccess.html">.htaccess 파일</page>
 <page href="howto/public_html.html">사용자별 웹디렉토리</page>
+<page href="misc/tutorials.html">아파치 투토리얼</page>
 </category>
 
 <category id="platform">
@@ -118,6 +119,11 @@
 <category id="misc">
 <title>기타 아파치 문서</title>
 <page separate="yes" href="misc/">개요</page>
+<page href="misc/custom_errordocs.html">다국어 사용자정의 서버 오류문</page>
+<page href="misc/fin_wait_2.html">FIN_WAIT_2 상태 연결과 아파치</page>
+<page href="misc/known_client_problems.html">클라이언트의 이미
+알려진 문제점</page>
+<page href="misc/descriptors.html">파일기술자와 아파치</page>
 <page href="cgi_path.html">CGI 환경에서 PATH_INFO의 변화</page>
 </category>
 
