@@ -138,6 +138,7 @@ int status_handler (request_rec *r)
     int busy=0;
     long count=0;
     long lres,bytes;
+    long my_lres,my_bytes;
     long bcount=0;
     int short_report=0;
     server_rec *server = r->server;
@@ -223,10 +224,13 @@ int status_handler (request_rec *r)
     for (i = 0; i<HARD_SERVER_MAX; ++i) {
         score_record=get_scoreboard_info(i);
         lres = score_record.access_count;
+        my_lres = score_record.my_access_count;
 	bytes= score_record.bytes_served;
+	my_bytes= score_record.my_bytes_served;
         if (lres!=0 || (score_record.status != SERVER_READY && score_record.status != SERVER_DEAD)) {
 	    if (!short_report) {
-	        sprintf(buffer,"<br>Server %d: %ld [",i,lres);
+	        sprintf(buffer,"<br>Server %d (%d): %ld|%ld [",
+		 i,(int)score_record.pid,my_lres,lres);
 		rputs(buffer,r);
 
 		switch (score_record.status) {
@@ -242,6 +246,9 @@ int status_handler (request_rec *r)
 		case SERVER_BUSY_WRITE:
 		    rputs("Write",r);
 		    break;
+		case SERVER_DEAD:
+		    rputs("Dead",r);
+		    break;
 		}
 		sprintf(buffer,"] u%g s%g cu%g cs%g %s (",
 			score_record.times.tms_utime/tick,
@@ -250,6 +257,8 @@ int status_handler (request_rec *r)
 			score_record.times.tms_cstime/tick,
 			asctime(localtime(&score_record.last_used)));
 		rputs(buffer,r);
+		format_byte_out(r,my_bytes);
+		rputs("|",r);
 		format_byte_out(r,bytes);
 		rputs(")",r);
 	    }
@@ -262,7 +271,7 @@ int status_handler (request_rec *r)
 	}
     }
     if (short_report) {
-        sprintf(buffer,"Accesses: %ld\nBytes: %ld\n",count,bcount);
+        sprintf(buffer,"Total Accesses: %ld\nTotal Bytes: %ld\n",count,bcount);
 	rputs(buffer,r);
     } else {
         sprintf(buffer,"<p>Total accesses: %ld u%g s%g cu%g cs%g (",

@@ -665,6 +665,13 @@ void update_child_status (int child_num, int status)
 
 #if defined(STATUS_INSTRUMENTATION)
     new_score_rec.last_used=time(NULL);
+    if (status == SERVER_DEAD) {
+	/*
+	 * Reset individual counters
+	 */
+	new_score_rec.my_access_count = 0;
+	new_score_rec.my_bytes_served = 0;
+    }
 #endif
 
 #if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
@@ -702,7 +709,9 @@ void increment_counts (int child_num, request_rec *r)
         bgetopt(r->connection->client, BO_BYTECT, &bs);
 
     new_score_rec.access_count ++;
+    new_score_rec.my_access_count ++;
     new_score_rec.bytes_served += (long)bs;
+    new_score_rec.my_bytes_served += (long)bs;
 
     times(&new_score_rec.times);
 

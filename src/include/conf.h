@@ -225,7 +225,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #define NEED_STRDUP
 #define JMP_BUF sigjmp_buf
 /* fcntl() locking is expensive with NFS */
-#define FLOCK_SERIALIZED_ACCEPT
+#undef FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define MOVEBREAK		0x4000000
 

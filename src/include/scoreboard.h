@@ -75,6 +75,8 @@ typedef struct {
 #if defined(STATUS_INSTRUMENTATION)
     long access_count;
     long bytes_served;
+    long my_access_count;
+    long my_bytes_served;
     struct tms times;
     time_t last_used;
 #endif
