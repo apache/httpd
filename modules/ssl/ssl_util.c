@@ -381,7 +381,7 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
      */
     for (i = 0; i < CRYPTO_NUM_LOCKS; i++) {
         lock_count[i]=0;
-        apr_lock_create(&(lock_cs[i]), APR_MUTEX, APR_LOCKALL,
+        apr_lock_create(&(lock_cs[i]), APR_MUTEX, APR_INTRAPROCESS,
                         mc->szMutexFile, p);
     }
 
