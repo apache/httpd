@@ -101,6 +101,7 @@
 #include "util_script.h"
 #include "util_filter.h"
 #include "mpm.h"
+#include "apr.h"
 #include "apr_strings.h"
 #include "apr_tables.h"
 #include "apr_lib.h"
