@@ -330,15 +330,16 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_create_request(http_create_request, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
-                                 AP_FTYPE_PROTOCOL);
+                                 NULL, AP_FTYPE_PROTOCOL);
     ap_http_header_filter_handle =
         ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
-                                  AP_FTYPE_PROTOCOL);
+                                  NULL, AP_FTYPE_PROTOCOL);
     ap_chunk_filter_handle =
-        ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
+        ap_register_output_filter("CHUNK", chunk_filter,
+                                  NULL, AP_FTYPE_TRANSCODE);
     ap_byterange_filter_handle =
         ap_register_output_filter("BYTERANGE", ap_byterange_filter,
-                                  AP_FTYPE_PROTOCOL);
+                                  NULL, AP_FTYPE_PROTOCOL);
     ap_method_registry_init(p);
 }
 

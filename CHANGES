@@ -1,5 +1,10 @@
 Changes with Apache 2.0.40
 
+  *) Add a filter_init parameter to the filter registration functions
+     so that a filter can execute arbitrary code before the handlers
+     are invoked.  This resolves a problem where mod_include requests
+     would incorrectly return a 304.  [Justin Erenkrantz]
+
   *) Fix a long-standing bug in 2.0, CGI scripts were being called
      with relative paths instead of absolute paths.  Apache 1.3 used
      absolute paths for everything except for SuExec, this brings back
