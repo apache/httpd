@@ -527,7 +527,7 @@ static void menu_header(request_rec *r, char *menu)
            "</title>\n</head><body>\n", NULL);
 
     if (!strcasecmp(menu, "formatted")) {
-        ap_rvputs(r, "<h1>Menu for ", r->uri, "</h1>\n<hr>\n\n", NULL);
+        ap_rvputs(r, "<h1>Menu for ", r->uri, "</h1>\n<hr />\n\n", NULL);
     }
 
     return;
@@ -539,7 +539,7 @@ static void menu_blank(request_rec *r, char *menu)
         ap_rputs("\n", r);
     }
     if (!strcasecmp(menu, "semiformatted")) {
-        ap_rputs("<br>\n", r);
+        ap_rputs("<br />\n", r);
     }
     if (!strcasecmp(menu, "unformatted")) {
         ap_rputs("\n", r);
