@@ -47,6 +47,7 @@ to help with development, or to track down bugs), see the section on
   <LI><A HREF="#run">Running Apache for Windows</A>
   <LI><A HREF="#use">Using Apache for Windows</A>
   <LI><A HREF="#cmdline">Running Apache for Windows from the Command Line</A>
+  <LI><A HREF="#signal">Signalling Apache when running</A>
   <LI><A HREF="#comp">Compiling Apache for Windows</A>
 </UL>
 
@@ -152,7 +153,7 @@ subdirectory <SAMP>htdocs</SAMP>. There are lots of other options
 which should be set before you start really using Apache. However to
 get started quickly the files should work as installed.
 
-<H2><A NAME="inst">Running Apache for Windows</A></H2>
+<H2><A NAME="run">Running Apache for Windows</A></H2>
 
 There are two ways you can run Apache:
 
@@ -161,7 +162,7 @@ There are two ways you can run Apache:
     you want Apache to automatically start when you machine boots, and to
     keep Apache running when you log-off.
 
- <LI>From a console window. This is the only option available for
+ <LI>From a <a ref="#cmdline">console window</a>. This is the only option available for
     Windows 95 users.
 </UL>
 
@@ -272,32 +273,57 @@ interafce for administering Apache. But in some cases it is easier to
 work from the command line.
 
 <P>
-
 When working with Apache it is important to know how it will find the
-configuration files. During installation, a registry key will have
-been installed. For the 1.3 beta releases the key is:
+configuration files.  Apache will try one of the following, in this order.
 
-<PRE>
-  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3 beta\ServerRoot
-</PRE>
+<ul>
+<li>A ServerRoot directive via a -C switch.
+<li>The -f switch on the command line.
+<li>The -d switch on the command line.
+<li>A registry entry, created if you did a binary install.
+<li>The server root compiled into the server.
+</ul>
 
-While for the final 1.3.0 release it is called:
+<P>
+The server root compiled into the server is usually "/apache".
+invoking apache with the -v switch will display this value
+labeled as HTTPD_ROOT.
 
+<P>
+Your current working directory when Apache is started up has no
+effect on Apache's behavior.
+
+<P>
+Under windows, when invoked from the start menu or the Service Manager Apache is
+usually passed no arguments.  So using the registry entry is the perfered
+technique.
+
+<P>
+During a binary installation, a registry key will have
+been installed, for example:
 <PRE>
   HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3.0\ServerRoot
 </PRE>
 
-(The use of different keys lets you install later versions without
-affect any previous versions already installed. For example, when
-1.3.1 comes out it will use "1.3.1" instead of "1.3.0" in the registry
-key, so you can install and test 1.3.1 without affecting you existing
-1.3.0 installation. Note however that Windows NT service manager only
-ever allows one service with the same name, so you cannot install the
-newer version as a service whilst the older version is still
-installed).
+For the 1.3 beta releases the key was:
+<PRE>
+  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3 beta\ServerRoot
+</PRE>
 
 <P>
+This key is compiled into the server and can enable you to test 
+new versions without affecting the current version.  Of course
+you must take care not to install the new version on top of the
+old version in the file system.  You can not run two invocations
+of Apache on Windows simultaneously.
 
+<P>
+If you did not do a binary install then Apache will in some
+senarios complain that about the missing registry key.  This
+warning can be ignored if it otherwise was able to find it's
+configuration files.
+
+<P>
 The value of this key is the "ServerRoot" directory, containing the
 <SAMP>conf</SAMP> directory. When Apache starts it will read the
 <SAMP>httpd.conf</SAMP> file from this directory. If this file
@@ -309,7 +335,6 @@ location it is vital that you update the <SAMP>ServerRoot</SAMP>
 directory in the <SAMP>httpd.conf</SAMP> file to the new location.
 
 <P>
-
 To run Apache from the command line as a console application, use the
 following command:
 
@@ -317,14 +342,13 @@ following command:
     apache -s
 </PRE>
 
-(The -s option is not required by Windows 95, but on Windows NT it
-prevents Apache waiting to see if Apache is running as a
-service). Apache will execute, and will remain running until it
-is stopped by pressing control-C.
+Apache will execute, and will remain running until it is stopped by pressing
+control-C.  (The -s option is not required by Windows 95, but on Windows NT it
+prevents Apache waiting to see if Apache is running as a service.)
 
 <P>
 
-To install Apache as a Windows NT service, use the following:
+To install Apache as a Windows NT service as follows:
 
 <PRE>
     apache -i
@@ -336,15 +360,34 @@ and to remove the Apache service, use
     apache -u
 </PRE>
 
-If you want to run an installation of Apache in a directory other than
-the one in the registry key as above, use the <CODE>-f</CODE>
-command-line to specify the path to the <SAMP>httpd.conf</SAMP> file,
-or the <CODE>-d</CODE> option to specify the server root
-directory. These options can be used with any of the other flags as
-listed above. Again note that once Apache has read the
-<SAMP>httpd.conf</SAMP> file it will then start using the directory
-given on the <SAMP>ServerRoot</SAMP> directive line instead of the -f
-or -d command line argument.
+
+<H2><A NAME="signal">Signalling Apache when running</A></H2>
+
+<P>When Apache is running you may request that it reread it's
+configuration files as follows:
+
+<PRE>
+    apache -Z @@whatever?@@>
+</PRE>
+
+and to request that it shutdown gracefully, via:
+
+<PRE>
+    apache -Z @@whatever?@@>
+</PRE>
+
+and you can force it to stop via:
+
+<PRE>
+    apache -Z @@whatever?@@
+</PRE>
+
+
+<P>
+Other techinques of shutting down the server (e.g. using the
+task manager to "End Process", distroying the command 
+window containing the server, or using control-C to interupt
+it) all have the downside of @@whatever@@.
 
 <H2><A NAME="comp">Compiling Apache for Windows</A></H2>
 
@@ -411,6 +454,13 @@ be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.
 
 <P>If you do not have nmake, or wish to install in a different directory,
    be sure to use a similar naming scheme.</P>
+
+<P>
+Before running the server you must fill out the conf directory.
+Copy the *.conf-dist-win from the distribution conf directory
+and rename *.conf.  Edit the @@ServerRoot@@ entries to your
+actual server root (for example "C:\apache").  Copy over
+the conf/magic and conf/mime.types files as well.
 
 <!--#include virtual="footer.html" -->
 </BODY>
