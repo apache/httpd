@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/11 19:20:32 $]
+Last modified at [$Date: 2003/11/13 15:16:26 $]
 
 Release:
 
@@ -261,7 +261,7 @@ PATCHES TO BACKPORT FROM 2.1
       such children stopped inheriting the error log handle.
         modules/generators/mod_cgi.c r1.152
         modules/filters/mod_ext_filter.c r1.5
-      +1: trawick, nd
+      +1: trawick, nd, jorton
 
     * When UseCanonicalName is set to OFF, allow ap_get_server_port to 
       check r->connection->local_addr->port before defaulting to 
