@@ -24,7 +24,7 @@
   The documentation available as of the date of this release is
   included in HTML format in the docs/manual/ directory.  The most
   up-to-date documentation can be found at
-  http://httpd.apache.org/docs-2.0/.
+  http://httpd.apache.org/docs-2.1/.
 
   Installation
   ------------
@@ -86,5 +86,5 @@
   University of Cambridge, England.  The original software is available from
      ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
 
-  Apache 2.0 relies heavily on the use of autoconf and libtool to provide
+  Apache 2 relies heavily on the use of autoconf and libtool to provide
   a build environment.

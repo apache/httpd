@@ -264,7 +264,7 @@ AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp)
 
 /* We actually compare the canonical root to this root, (but we don't
  * waste time checking the case), since every use of this function in 
- * httpd-2.0 tests if the path is 'proper', meaning we've already passed
+ * httpd-2.1 tests if the path is 'proper', meaning we've already passed
  * it through apr_filepath_merge, or we haven't.
  */
 AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir) 

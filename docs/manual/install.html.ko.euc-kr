@@ -69,15 +69,15 @@
         <td><a href="#download">다운로드</a></td>
 
         <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_0_<em>NN</em>.tar.gz</code>
+        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
         </td>
       </tr>
 
       <tr>
         <td><a href="#extract">압축 풀기</a></td>
 
-        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_0_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
       </tr>
 
       <tr>
@@ -220,12 +220,12 @@
     배포본을 확인할 수 있다:</p>
 
     <blockquote>
-      <code>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</code>
+      <code>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</code>
     </blockquote>
     혹은 
 
     <blockquote>
-      <code>$ gpg --verify httpd-2_0_<em>NN</em>.tar.gz.asc</code>
+      <code>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</code>
     </blockquote>
     다음과 같은 메세지가 나와야 한다.<br />
      <br />
@@ -247,8 +247,8 @@
     압축과 tar를 푸는 것이다:</p>
 
     <blockquote>
-      <code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-2_0_<em>NN</em>.tar</code>
+      <code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+       $ tar xvf httpd-2_1_<em>NN</em>.tar</code>
     </blockquote>
 
     <p>그러면 현재 디렉토리 아래에 배포본의 소스코드를 담은

@@ -6,12 +6,12 @@
 
 ================
   Darwin (OS X):
-   Apache 2.0 relies heavily on the use of autoconf and libtool to
+   Apache 2 relies heavily on the use of autoconf and libtool to
    provide a build environment.  Darwin provides these tools as part
    of the Developers Tools package. Under Darwin, however, GNUlibtool
    is installed as 'glibtool' to avoid conflicting with the Darwin
-   'libtool' program.  Apache 2.0 knows about this so that's not
-   a problem.
+   'libtool' program.  Apache 2 knows about this so that's not a
+   problem.
 
    As of OS X 10.2 (Jaguar), the bundled versions work perfectly. Partly
    this is due to the fact that /bin/sh is now 'bash' and not 'zsh' as

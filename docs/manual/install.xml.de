@@ -35,15 +35,15 @@
         <td><a href="#download">Download</a></td>
 
         <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_0_<em>NN</em>.tar.gz</code>
+        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
         </td>
       </tr>
 
       <tr>
         <td><a href="#extract">Auspacken</a></td>
 
-        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_0_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
       </tr>
 
       <tr>
@@ -193,11 +193,11 @@
     k&#246;nnen Sie die Distribution mit einem der folgenden Befehle
     (wiederum abh&#228;ngig von Ihrer PGP Version) pr&#252;fen:</p>
 
-  <example>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</example>
+  <example>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</example>
 
     <p>oder</p>
 
-  <example>$ gpg --verify httpd-2_0_<em>NN</em>.tar.gz.asc</example>
+  <example>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</example>
 
     <p>Sie sollten eine Meldung wie</p>
 
@@ -221,8 +221,8 @@
     aus einem simplen Dekomprimieren und danach "Ent-tarren":</p>
 
   <example>
-      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
-      $ tar xvf httpd-2_0_<em>NN</em>.tar
+      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+      $ tar xvf httpd-2_1_<em>NN</em>.tar
   </example>
 
     <p>Dies erstellt unterhalb des aktuellen Verzeichnisses ein neues
@@ -598,8 +598,8 @@
     href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
     sowie eine komplette Referenz der verf&#252;gbaren <a
     href="mod/directives.html">Konfigurationsanweisungen</a> finden
-    Sie unter <a href="http://httpd.apache.org/docs-2.0/"
-    >http://httpd.apache.org/docs-2.0/</a>.</p>
+    Sie unter <a href="http://httpd.apache.org/docs-2.1/"
+    >http://httpd.apache.org/docs-2.1/</a>.</p>
 </section>
 
 <section id="test"><title>Testen</title>

@@ -16,7 +16,7 @@ browse to that location, you will see a display of some of the tracing
 the example module did as the various callbacks were made.
 
 To include the example module in your server add --enable-example to the
-other ./configure arguments executed from the httpd-2.0 directory. After
+other ./configure arguments executed from the httpd-2.1 directory. After
 that run 'make'.
 
 To add another module of your own:
