@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Cleanup the byterange filter to use the apr_brigade_partition
+     and apr_bucket_copy functions.  This removes a lot of very messy
+     code, and hopefully makes this filter more stable.
+     [Ryan Bloom]
+
   *) Remove AddModule and ClearModuleList directives.  Both of these
      directives were used to ensure that modules could be enabled
      in the correct order.  That requirement is now gone, because
