@@ -403,6 +403,12 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DUW"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
 	;;
+    maxion-*-sysv4*)
+    	OS='SVR4'
+	CFLAGS="$CFLAGS -DSVR4"
+	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lsocket -lnsl -lc -lgen"
+	;;
     *-sni-sysv4*)
 	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"
