@@ -3368,8 +3368,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
 static void core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    apr_bucket_init_types(pconf);
-    apr_bucket_insert_type(&ap_bucket_type_error);
+    /* XXX: can this function go away completely? -jcw */
 }
 
 static void core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
