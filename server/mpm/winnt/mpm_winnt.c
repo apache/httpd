@@ -1014,12 +1014,10 @@ static void child_main()
                      "Child %d: exit_event_name = %s", my_pid, exit_event_name);
         /* Set up the scoreboard. */
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
-        ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, ap_server_conf,
-                     "getting listeners child_main", my_pid);        
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+                     "getting listeners child_main, pid %d", my_pid);
         get_listeners_from_parent(ap_server_conf);
     }
-    ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, ap_server_conf,
-                     "in child_main", my_pid);        
 
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
