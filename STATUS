@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/07/11 14:37:54 $]
+  Last modified at [$Date: 2001/07/12 15:53:18 $]
 
 Release:
 
@@ -326,7 +326,7 @@ Binaries (1.3.20):
  armv4l-whatever-linux2        no      Rasmus Lerdorf
  hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
  i386-be-beos                  no      David Reid
- i386-win32-cygwin             yes     Stipe Tolj
+ i686-whatever-cygwin          yes     Stipe Tolj
  i386-slackware-linux(a.out)   no      Sameer Parekh
  i386-sun-solaris2.5           no      Sameer Parekh
  i386-sun-solaris2.6           no      Randy Terbush
