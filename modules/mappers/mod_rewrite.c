@@ -3088,7 +3088,7 @@ static int rewrite_rand(int l, int h)
      * result. Doing an integer modulus would only use the lower-order bits
      * which may not be as uniformly random.
      */
-    return (int)((double)(rand() % RAND_MAX) / RAND_MAX) * (h - l + 1) + l;
+    return (int)(((double)(rand() % RAND_MAX) / RAND_MAX) * (h - l + 1) + l);
 }
 
 static char *select_random_value_part(request_rec *r, char *value)
