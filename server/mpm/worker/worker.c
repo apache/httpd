@@ -252,6 +252,21 @@ static apr_proc_mutex_t *accept_mutex;
  */
 #define LISTENER_SIGNAL     SIGHUP
 
+/* An array of socket descriptors in use by each thread used to
+ * perform a non-graceful (forced) shutdown of the server. */
+static apr_socket_t **worker_sockets;
+
+static void close_worker_sockets(void)
+{
+    int i;
+    for (i = 0; i < ap_threads_per_child; i++) {
+        if (worker_sockets[i]) {
+            apr_socket_close(worker_sockets[i]);
+            worker_sockets[i] = NULL;
+        }
+    }
+}
+  
 static void wakeup_listener(void)
 {
     listener_may_exit = 1;
@@ -301,6 +316,7 @@ static void signal_threads(int mode)
         workers_may_exit = 1;
         ap_queue_interrupt_all(worker_queue);
         ap_queue_info_term(worker_queue_info);
+        close_worker_sockets(); /* forcefully kill all current connections */
     }
 }
 
@@ -912,7 +928,9 @@ worker_pop:
             }
             continue;
         }
+        worker_sockets[thread_slot] = csd;
         process_socket(ptrans, csd, process_slot, thread_slot, bucket_alloc);
+        worker_sockets[thread_slot] = NULL;
         requests_this_child--; /* FIXME: should be synchronized - aaron */
         apr_pool_clear(ptrans);
         last_ptrans = ptrans;
@@ -1001,6 +1019,9 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                      "ap_queue_info_create() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
+
+    worker_sockets = apr_pcalloc(pchild, ap_threads_per_child
+                                        * sizeof(apr_socket_t *));
 
     loops = prev_threads_created = 0;
     while (1) {

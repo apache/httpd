@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Close sockets on worker MPM when doing a graceless restart.
+     [Aaron Bannert]
+
   *) Reverted a minor optimization in mod_ssl.c that used the vhost ID
      as the session id context rather that a MD5 hash of that vhost ID,
      because it caused very long vhost id's to be unusable with mod_ssl.
