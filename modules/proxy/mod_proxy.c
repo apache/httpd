@@ -168,7 +168,7 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->redirect = apr_pstrdup(p, val);
     }
     else {
-        return "unknown parameter";
+        return "unknown Worker parameter";
     }
     return NULL;
 }
@@ -198,7 +198,7 @@ static const char *set_balancer_param(apr_pool_t *p,
         balancer->timeout = apr_time_from_sec(ival);
     }
     else {
-        return "unknown parameter";
+        return "unknown Balancer parameter";
     }
     return NULL;
 }
@@ -475,7 +475,7 @@ static int proxy_fixup(request_rec *r)
     if (p == NULL || p == url)
         return HTTP_BAD_REQUEST;
 
-    return OK;		/* otherwise; we've done the best we can */
+    return OK;      /* otherwise; we've done the best we can */
 }
 #endif
 /* Send a redirection if the request contains a hostname which is not */
@@ -496,7 +496,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     /* If host does contain a dot already, or it is "localhost", decline */
     if (strchr(r->parsed_uri.hostname, '.') != NULL
      || strcasecmp(r->parsed_uri.hostname, "localhost") == 0)
-        return DECLINED;	/* host name has a dot already */
+        return DECLINED;    /* host name has a dot already */
 
     ref = apr_table_get(r->headers_in, "Referer");
 
@@ -820,8 +820,8 @@ static const char *
     }
     else
         if (strchr(f, ':') == NULL)
-            ap_str_tolower(f);		/* lowercase scheme */
-    ap_str_tolower(p + 3);		/* lowercase hostname */
+            ap_str_tolower(f);      /* lowercase scheme */
+    ap_str_tolower(p + 3);      /* lowercase hostname */
 
     if (port == -1) {
         port = apr_uri_port_of_scheme(scheme);
@@ -1063,15 +1063,15 @@ static const char *
         New->name = apr_pstrdup(parms->pool, arg);
         New->hostaddr = NULL;
 
-	if (ap_proxy_is_ipaddr(New, parms->pool)) {
+    if (ap_proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "Parsed addr %s", inet_ntoa(New->addr));
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "Parsed mask %s", inet_ntoa(New->mask));
 #endif
-	}
-	else if (ap_proxy_is_domainname(New, parms->pool)) {
+    }
+    else if (ap_proxy_is_domainname(New, parms->pool)) {
             ap_str_tolower(New->name);
 #if DEBUGGING
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
@@ -1303,8 +1303,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     if (!name)
         return "BalancerMember must define remote proxy server";
     
-    ap_str_tolower(path);	/* lowercase scheme://hostname */
-    ap_str_tolower(name);	/* lowercase scheme://hostname */
+    ap_str_tolower(path);   /* lowercase scheme://hostname */
+    ap_str_tolower(name);   /* lowercase scheme://hostname */
 
     /* Try to find existing worker */
     worker = ap_proxy_get_worker(cmd->temp_pool, conf, name);
@@ -1338,10 +1338,76 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *
+    set_proxy_param(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    server_rec *s = cmd->server;
+    proxy_server_conf *conf =
+    (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
+    char *name = NULL;
+    char *word, *val;
+    proxy_balancer *balancer = NULL;
+    proxy_worker *worker = NULL;
+    const char *err;
+
+    if (cmd->directive->parent &&
+        strncasecmp(cmd->directive->parent->directive,
+                    "<Proxy", 6) == 0) {
+        const char *pargs = cmd->directive->parent->args;
+        /* Directive inside <Proxy section
+         * Parent directive arg is the worker/balancer name.
+         */
+        name = ap_getword_conf(cmd->temp_pool, &pargs);
+        if ((word = ap_strchr_c(name, '>')))
+            *word = '\0';
+    }
+    else {
+        /* Standard set directive with worker/balancer
+         * name as first param.
+         */
+        name = ap_getword_conf(cmd->temp_pool, &arg);
+    }
+ 
+    if (strncasecmp(name, "balancer:", 9) == 0) {
+        balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
+        if (!balancer) {
+            return apr_pstrcat(cmd->temp_pool, "ProxySet can not find '",
+                               name, "' Balancer.", NULL);
+        }        
+    }
+    else {
+        worker = ap_proxy_get_worker(cmd->temp_pool, conf, name);
+        if (!worker) {
+            return apr_pstrcat(cmd->temp_pool, "ProxySet can not find '",
+                               name, "' Worker.", NULL);
+        }
+    }
+
+    while (*arg) {
+        word = ap_getword_conf(cmd->pool, &arg);
+        val = strchr(word, '=');
+        if (!val) {
+            return "Invalid ProxySet parameter. Parameter must be "
+                   "in the form 'key=value'";
+        }
+        else
+            *val++ = '\0';
+        if (worker)
+            err = set_worker_param(cmd->pool, worker, word, val);
+        else
+            err = set_balancer_param(cmd->pool, balancer, word, val);
+
+        if (err)
+            return apr_pstrcat(cmd->temp_pool, "ProxySet ", err, " ", word, " ", name, NULL);
+    }
+
+    return NULL;
+}
+
 static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
 {
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
-					            &proxy_module);
+                                &proxy_module);
     void **new_space = (void **)apr_array_push(sconf->sec_proxy);
     
     *new_space = dir_config;
@@ -1482,6 +1548,8 @@ static const command_rec proxy_cmds[] =
      "A balancer name and scheme with list of params"), 
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
+    AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
+     "A balancer or worker name with list of params"),
     {NULL}
 };
 
@@ -1653,17 +1721,17 @@ module AP_MODULE_DECLARE_DATA proxy_module =
     STANDARD20_MODULE_STUFF,
     create_proxy_dir_config,    /* create per-directory config structure */
     merge_proxy_dir_config,     /* merge per-directory config structures */
-    create_proxy_config,	/* create per-server config structure */
-    merge_proxy_config,		/* merge per-server config structures */
-    proxy_cmds,			/* command table */
+    create_proxy_config,    /* create per-server config structure */
+    merge_proxy_config,     /* merge per-server config structures */
+    proxy_cmds,         /* command table */
     register_hooks
 };
 
 APR_HOOK_STRUCT(
-	APR_HOOK_LINK(scheme_handler)
-	APR_HOOK_LINK(canon_handler)
-	APR_HOOK_LINK(pre_request)
-	APR_HOOK_LINK(post_request)
+    APR_HOOK_LINK(scheme_handler)
+    APR_HOOK_LINK(canon_handler)
+    APR_HOOK_LINK(pre_request)
+    APR_HOOK_LINK(post_request)
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler, 
@@ -1689,5 +1757,5 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                        proxy_server_conf *conf),(worker,
                                        balancer,r,conf),DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
-				    (request_rec *r), (r),
-				    OK, DECLINED)
+                    (request_rec *r), (r),
+                    OK, DECLINED)
