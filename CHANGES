@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Add a very early prototype of SSL support (in mod_tls.c). It is
+     vital that you read modules/tls/README before attempting to build
+     it. [Ben Laurie]
+
   *) Fix a potential seg fault on all platforms.  David Reid fixed this
      on BEOS, but the problem could happen anywhere, so we don't want
      to #ifdef it. [Cliff Woolley <cliffwoolley@yahoo.com>]

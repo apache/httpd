@@ -1,0 +1,19 @@
+This currently won't work with Apache unaided. The manual things I
+have to do to make it work are:
+
+edit .../httpd-2.0/config_vars.mk:
+
+Add "-L<where OpenSSL is> -lssl -lcrypto" to EXTRA_LIBS.
+
+Change "modules/tls/mod_tls.la" to "modules/tls/libapachemod_tls.la" in
+BUILTIN_LIBS.
+
+edit .../httpd-2.0/modules/tls/Makefile.in:
+
+Diddle with the openssl_state_machine.lo target to match your setup.
+
+Then all you need is "TLSFilter on" and "TLSCertificateFile <file>" in
+your config, and you are away (note that the cert file must also
+contain the private key at present).
+
+Ben Laurie, 11 Feb 2001.

@@ -124,11 +124,11 @@ AP_DECLARE(void) ap_register_output_filter(const char *name,
     register_filter(name, f, ftype, &registered_output_filters);
 }
 
-static void add_any_filter(const char *name, void *ctx, 
-                                      request_rec *r, conn_rec *c, 
-                                      ap_filter_rec_t *frec,
-                                      ap_filter_t **r_filters,
-                                      ap_filter_t **c_filters)
+static ap_filter_t *add_any_filter(const char *name, void *ctx, 
+				   request_rec *r, conn_rec *c, 
+				   ap_filter_rec_t *frec,
+				   ap_filter_t **r_filters,
+				   ap_filter_t **c_filters)
 {
     for (; frec != NULL; frec = frec->next) {
         if (!strcasecmp(name, frec->name)) {
@@ -153,7 +153,7 @@ static void add_any_filter(const char *name, void *ctx,
                 fscan->next = f;
             }
 
-            return;
+            return f;
         }
     }
 
@@ -161,18 +161,18 @@ static void add_any_filter(const char *name, void *ctx,
                  "an unknown filter was not added: %s", name);
 }
 
-AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx,
-                                                request_rec *r, conn_rec *c)
+AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
+					      request_rec *r, conn_rec *c)
 {
-    add_any_filter(name, ctx, r, c, registered_input_filters,
-            r ? &r->input_filters : NULL, &c->input_filters);
+    return add_any_filter(name, ctx, r, c, registered_input_filters,
+			  r ? &r->input_filters : NULL, &c->input_filters);
 }
 
-AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx,
-                                                request_rec *r, conn_rec *c)
+AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
+					       request_rec *r, conn_rec *c)
 {
-    add_any_filter(name, ctx, r, c, registered_output_filters,
-            r ? &r->output_filters : NULL, &c->output_filters);
+    return add_any_filter(name, ctx, r, c, registered_output_filters,
+			  r ? &r->output_filters : NULL, &c->output_filters);
 }
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)

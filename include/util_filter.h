@@ -312,8 +312,8 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade
  * @param ftype The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
  */
 AP_DECLARE(void) ap_register_input_filter(const char *name,
-                                          ap_in_filter_func filter_func,
-                                          ap_filter_type ftype);
+					  ap_in_filter_func filter_func,
+					  ap_filter_type ftype);
 /**
  * This function is used to register an output filter with the system. 
  * After this registration is performed, then a filter may be added 
@@ -326,8 +326,8 @@ AP_DECLARE(void) ap_register_input_filter(const char *name,
  * @see ::ap_add_output_filter
  */
 AP_DECLARE(void) ap_register_output_filter(const char *name,
-                                           ap_out_filter_func filter_func,
-                                           ap_filter_type ftype);
+					    ap_out_filter_func filter_func,
+					    ap_filter_type ftype);
 
 /*
  * ap_add_filter():
@@ -352,7 +352,8 @@ AP_DECLARE(void) ap_register_output_filter(const char *name,
  * @param c The connection to add the fillter for
  * @deffunc void ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
-AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c);
+AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
+					      request_rec *r, conn_rec *c);
 
 /**
  * Add a filter to the current request.  Filters are added in a FIFO manner.
@@ -363,8 +364,8 @@ AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx, request_rec *r
  * @param c The connection to add this filter for
  * @deffunc void ap_add_output_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
-AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx, 
-                                      request_rec *r, conn_rec *c);
+AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx, 
+					       request_rec *r, conn_rec *c);
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
 
