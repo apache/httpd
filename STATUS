@@ -378,11 +378,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_proxy: Fix ProxyRemoteMatch.  PR 33170.
       svn rev 151248
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
     * Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
       svn rev 151255
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
 CURRENT RELEASE NOTES:
 
