@@ -172,6 +172,8 @@ uses</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>User</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>WorkerStackSize</name>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>AssignUserID</name>

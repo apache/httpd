@@ -54,6 +54,8 @@ NT.</description>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>WorkerStackSize</name>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>Win32DisableAcceptEx</name>
