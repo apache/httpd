@@ -1,5 +1,8 @@
 Changes with Apache 1.3.22
 
+  *) mod_proxy - remove Explain*; replace with ap_log_*
+     [Chuck Murcko <chuck@topsail.org>]
+
 Changes with Apache 1.3.21
 
   *) Enable mod_mime_magic (experimental) for Win32.  [William Rowe]
