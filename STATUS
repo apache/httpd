@@ -35,16 +35,6 @@ Available Patches:
 	Message-ID: <5040300017947935000002L052*@MHS> 
 	Status: Ken +1 (on concept)
 
-    * "[PATCH] Link DSO modules against possible libraries from $(LIBS)"
-      In the configuration process we already determine the variable LDFLAGS
-      and LIBS. They hold -L and -l options for linking executables.  We parse
-      these options and separate them into three classes: OBJ, PIC and DSO.
-      And then we re-assemble a LIBS_SHLIB variable from only the options in
-      classes PIC and DSO. This variable is then used on the build command for
-      mod_xxx.so.
-	Message-ID: <19980711133804.A2439@engelschall.com>
-	Status: Ralf +1
-  
     * Filenames containing whitespace characters caused problems for directives
       Bill Stoddard <wgstodda@us.ibm.com>
 	Message-ID: <3591353E.A5D07487@us.ibm.com>
