@@ -1,5 +1,8 @@
 Changes with Apache 2.0.35
 
+  *) AIX: Fix the syntax for setting the LDR_CNTRL and AIXTHREAD_SCOPE
+     environment variables in the envvars file.  [Jeff Trawick]
+
   *) worker MPM: Don't create a listener thread until we have a worker
      thread.  Otherwise, in situations where we'll have to wait a while
      to take over scoreboard slots from a previous generation, we'll be
