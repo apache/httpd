@@ -203,12 +203,12 @@ extern "C" {
 
 /* The timeout for waiting for messages */
 #ifndef DEFAULT_TIMEOUT
-#define DEFAULT_TIMEOUT 120000 
+#define DEFAULT_TIMEOUT 300 
 #endif
 
 /* The timeout for waiting for keepalive timeout until next request */
 #ifndef DEFAULT_KEEPALIVE_TIMEOUT
-#define DEFAULT_KEEPALIVE_TIMEOUT 300
+#define DEFAULT_KEEPALIVE_TIMEOUT 15
 #endif
 
 /* The number of requests to entertain per connection */
