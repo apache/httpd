@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_deflate</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_deflate</h1>
+
+    <p>This module provides the ability to set environment
+    variables based upon attributes of the request.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_deflate.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    deflate_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 2.0 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>The experimental <samp>mod_deflate</samp> module allows 
+    output from your server to be compressed before being sent
+    to the client over the network.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#DeflateFilterNote">DeflateFilterNote</a></li>
+
+      <li><a href="#DeflateWindowSize">DeflateWindowSize</a></li>
+
+      <li><a href="#DeflateMemLevel">DeflateMemLevel</a></li>
+    </ul>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="DeflateFilterNote" name="DeflateFilterNote">DeflateFilterNote
+    directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DeflateFilterNote <em>notename
+    </em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <i>none</i><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> none<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_deflate<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 2.0 and
+    above</p>
+
+    <p>The DeflateFilterNote directive specifies that a note about
+    compression ratios should be attached to the request.  The name
+    of the note is the value specified for the directive.</p>
+
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="DeflateWindowSize"
+    name="DeflateWindowSize">DeflateWindowSize directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DeflateWindowSize
+    <em>value</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> none<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_deflate<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 2.0 and
+    above</p>
+
+    <p>The <samp>DeflateWindowSize</samp> directive specifies the
+    zlib compression window size.</p>
+
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="DeflateMemLevel" name="DeflateMemLevel">DeflateMemLevel
+    directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DeflateMemLevel
+    <em>value</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> none<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_deflate<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 2.0 and
+    above</p>
+
+    <p>The DeflateMemLevel directive specifies the amount of
+    memory available to zlib for compression.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

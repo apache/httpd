@@ -1,0 +1,400 @@
+#
+# Declare the sub-directories to be built here
+#
+
+SUBDIRS = \
+	srclib\apr \
+	build \
+	support \
+	modules \
+	$(EOLIST) 
+
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+
+include $(AP_WORK)\build\NWGNUhead.inc
+
+#
+# build this level's files
+
+#
+# Make sure all needed macro's are defined
+#
+
+#
+# These directories will be at the beginning of the include list, followed by
+# INCDIRS
+#
+XINCDIRS	+= \
+			$(AP_WORK)/srclib/apr/include \
+			$(AP_WORK)/srclib/include/arch/NetWare \
+			$(AP_WORK)/srclib/apr-util/include \
+			$(AP_WORK)/include \
+			$(AP_WORK)/modules/filters/ \
+			$(AP_WORK)/modules/generators/ \
+			$(AP_WORK)/modules/http/ \
+			$(AP_WORK)/modules/loggers/ \
+			$(AP_WORK)/modules/mappers/ \
+			$(AP_WORK)/modules/proxy/ \
+			$(AP_WORK)/os/NetWare \
+			$(AP_WORK)/server/mpm/NetWare \
+			$(AP_WORK)/srclib/pcre \
+			$(NWOS) \
+			$(EOLIST)
+
+#
+# These flags will come after CFLAGS
+#
+XCFLAGS		+= \
+			$(EOLIST)
+
+#
+# These defines will come after DEFINES
+#
+XDEFINES	+= \
+			$(EOLIST)
+
+#
+# These flags will be added to the link.opt file
+#
+XLFLAGS		+= \
+			$(EOLIST)
+
+#
+# These values will be appended to the correct variables based on the value of
+# RELEASE
+#
+ifeq "$(RELEASE)" "debug"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+		   	$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "noopt"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+		   	$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "release"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+#
+# These are used by the link target if an NLM is being generated
+# This is used by the link 'name' directive to name the nlm.  If left blank
+# TARGET_nlm (see below) will be used.
+#
+NLM_NAME		= Apache2
+
+#
+# This is used by the link '-desc ' directive. 
+# If left blank, NLM_NAME will be used.
+#
+NLM_DESCRIPTION	= Apache Web Server 
+
+#
+# This is used by the '-threadname' directive.  If left blank,
+# NLM_NAME Thread will be used.
+#
+NLM_THREAD_NAME	= Apache
+#
+# If this is specified, it will override VERSION value in 
+# $(AP_WORK)\build\NWGNUenvironment.inc
+#
+NLM_VERSION		=
+
+#
+# If this is specified, it will override the default of 64K
+#
+NLM_STACK_SIZE	= 65536
+ 
+
+#
+# If this is specified it will be used by the link '-entry' directive
+#
+NLM_ENTRY_SYM	= _LibCPrelude
+
+#
+# If this is specified it will be used by the link '-exit' directive
+#
+NLM_EXIT_SYM	= _LibCPostlude
+
+#
+# If this is specified it will be used by the link '-check' directive
+#
+NLM_CHECK_SYM	= _LibCCheckUnload
+
+#
+# If these are specified it will be used by the link '-flags' directive
+#
+NLM_FLAGS		=  PSEUDOPREEMPTION
+
+#
+# If this is specified it will be linked in with the XDCData option in the def 
+# file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
+# by setting APACHE_UNIPROC in the environment
+#
+XDCDATA         = 
+
+#
+# If there is an NLM target, put it here
+#
+TARGET_nlm = \
+	$(OBJDIR)/Apache2.nlm \
+	$(EOLIST)
+
+#
+# If there is an LIB target, put it here
+#
+TARGET_lib = \
+	$(EOLIST)
+
+#
+# These are the OBJ files needed to create the NLM target above.
+# Paths must all use the '/' character
+#
+FILES_nlm_objs = \
+	$(OBJDIR)/buildmark.o \
+	$(OBJDIR)/config.o \
+	$(OBJDIR)/connection.o \
+	$(OBJDIR)/core.o \
+	$(OBJDIR)/error_bucket.o \
+	$(OBJDIR)/http_core.o \
+	$(OBJDIR)/http_protocol.o \
+	$(OBJDIR)/http_request.o \
+	$(OBJDIR)/listen.o \
+	$(OBJDIR)/log.o \
+	$(OBJDIR)/main.o \
+	$(OBJDIR)/mod_access.o \
+	$(OBJDIR)/mod_actions.o \
+	$(OBJDIR)/mod_alias.o \
+	$(OBJDIR)/mod_asis.o \
+	$(OBJDIR)/mod_auth.o \
+	$(OBJDIR)/mod_autoindex.o \
+	$(OBJDIR)/mod_dir.o \
+	$(OBJDIR)/mod_env.o \
+	$(OBJDIR)/mod_imap.o \
+	$(OBJDIR)/mod_include.o \
+	$(OBJDIR)/mod_log_config.o \
+	$(OBJDIR)/mod_mime.o \
+	$(OBJDIR)/mod_negotiation.o \
+	$(OBJDIR)/mod_nw_ssl.o \
+	$(OBJDIR)/mod_setenvif.o \
+	$(OBJDIR)/mod_so.o \
+	$(OBJDIR)/mod_userdir.o \
+	$(OBJDIR)/modules.o \
+	$(OBJDIR)/mpm_common.o \
+	$(OBJDIR)/mpm_netware.o \
+	$(OBJDIR)/pcre.o \
+	$(OBJDIR)/pcreposix.o \
+	$(OBJDIR)/protocol.o \
+	$(OBJDIR)/request.o \
+	$(OBJDIR)/rfc1413.o \
+	$(OBJDIR)/scoreboard.o \
+	$(OBJDIR)/util.o \
+	$(OBJDIR)/util_cfgtree.o \
+	$(OBJDIR)/util_charset.o \
+	$(OBJDIR)/util_filter.o \
+	$(OBJDIR)/util_md5.o \
+	$(OBJDIR)/util_nw.o \
+	$(OBJDIR)/util_script.o \
+	$(OBJDIR)/util_time.o \
+	$(OBJDIR)/util_xml.o \
+	$(OBJDIR)/vhost.o \
+	$(EOLIST)
+
+#
+# These are the LIB files needed to create the NLM target above.
+# These will be added as a library command in the link.opt file.
+#
+FILES_nlm_libs = \
+   	libcpre.o \
+	$(EOLIST)
+
+#
+# These are the modules that the above NLM target depends on to load.
+# These will be added as a module command in the link.opt file.
+#
+FILES_nlm_modules = \
+	aprlib \
+	Libc \
+	$(EOLIST)
+
+#
+# If the nlm has a msg file, put it's path here
+#
+FILE_nlm_msg =
+ 
+#
+# If the nlm has a hlp file put it's path here
+#
+FILE_nlm_hlp =
+
+#
+# If this is specified, it will override $(NWOS)\copyright.txt.
+#
+FILE_nlm_copyright =
+
+#
+# Any additional imports go here
+#
+FILES_nlm_Ximports = \
+	@netware.imp \
+	@$(APR)/aprlib.imp \
+	@libc.imp \
+	@ws2nlm.imp \
+	GetCurrentAddressSpace \
+	$(EOLIST)
+ 
+#   
+# Any symbols exported to here
+#
+FILES_nlm_exports = \
+	@$(NWOS)/httpd.imp \
+	$(EOLIST)
+	
+#   
+# These are the OBJ files needed to create the LIB target above.
+# Paths must all use the '/' character
+#
+FILES_lib_objs = \
+		$(EOLIST)
+
+#
+# implement targets and dependancies (leave this section alone)
+#
+
+libs :: $(OBJDIR) $(TARGET_lib)
+
+nlms :: libs $(TARGET_nlm)
+
+#
+# Updated this target to create necessary directories and copy files to the 
+# correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
+#
+install :: nlms FORCE
+	copy $(OBJDIR)\Apache2.nlm $(INSTALL)\Apache2\*.*
+	-copy ABOUT_APACHE              $(INSTALL)\Apache2\*.*
+	-copy README                    $(INSTALL)\Apache2\*.*
+	-copy STATUS                    $(INSTALL)\Apache2\*.*
+	-copy LICENSE                   $(INSTALL)\Apache2\*.*
+	-copy docs\cgi-examples\*.      $(INSTALL)\Apache2\cgi-examples\*.*
+	-copy docs\conf\httpd-std.conf  $(INSTALL)\Apache2\conf\httpd.conf
+	-copy docs\conf\magic           $(INSTALL)\Apache2\conf\magic
+	-copy docs\conf\mime.types      $(INSTALL)\Apache2\conf\mime.types
+	-copy docs\error\*.*            $(INSTALL)\Apache2\error\*.*
+	-copy docs\error\include\*.*    $(INSTALL)\Apache2\error\include\*.*
+	-copy docs\docroot\*.*          $(INSTALL)\Apache2\htdocs\*.*
+	-copy docs\icons\*.*            $(INSTALL)\Apache2\icons\*.*
+	-copy docs\icons\small\*.*      $(INSTALL)\Apache2\icons\small\*.*
+	-copy docs\man\*.*              $(INSTALL)\Apache2\man\*.*
+	-copy docs\manual\*.*           $(INSTALL)\Apache2\manual\*.*
+	-copy docs\manual\developer\*.* $(INSTALL)\Apache2\manual\developer
+	-copy docs\manual\faq\*.*       $(INSTALL)\Apache2\manual\faq
+	-copy docs\manual\howto\*.*     $(INSTALL)\Apache2\manual\howto
+	-copy docs\manual\images\*.*    $(INSTALL)\Apache2\manual\images
+	-copy docs\manual\misc\*.*      $(INSTALL)\Apache2\manual\misc
+	-copy docs\manual\mod\*.*       $(INSTALL)\Apache2\manual\mod
+	-copy docs\manual\platform\*.*  $(INSTALL)\Apache2\manual\platform
+	-copy docs\manual\programs\*.*  $(INSTALL)\Apache2\manual\programs
+	-copy docs\manual\search\*.*    $(INSTALL)\Apache2\manual\search
+	-copy docs\manual\vhosts\*.*    $(INSTALL)\Apache2\manual\vhosts
+    
+installdev :: FORCE
+	-copy $(subst /,\,$(AP_WORK))\include\*.h           $(INSTALL)\Apache2\include\*.*
+	-copy $(subst /,\,$(AP_WORK))\os\netware\*.h        $(INSTALL)\Apache2\include\*.*
+	-copy $(subst /,\,$(NWOS))\include\*.h              $(INSTALL)\Apache2\include\*.*
+	-copy $(subst /,\,$(NWOS))\*.imp                    $(INSTALL)\Apache2\lib\*.*
+	-copy $(subst /,\,$(APR))\include\*.h               $(INSTALL)\Apache2\include\*.*
+	-copy $(subst /,\,$(APR))\arch\netware\include\*.h  $(INSTALL)\Apache2\include\*.*
+	-copy $(subst /,\,$(APRUTIL))\include\*.h           $(INSTALL)\Apache2\include\*.*
+	-copy $(subst /,\,$(APR))\*.imp                     $(INSTALL)\Apache2\lib\*.*
+    
+#
+# Any specialized rules here
+#
+
+$(OBJDIR)/%.o: server/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/arch/netware/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/http/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/aaa/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/mappers/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/generators/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/metadata/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/filters/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: modules/loggers/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: os/netware/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: server/mpm/netware/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+$(OBJDIR)/%.o: srclib/pcre/%.c $(OBJDIR)\cc.opt
+	@echo compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+
+#
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(AP_WORK)\build\NWGNUtail.inc
+

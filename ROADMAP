@@ -1,0 +1,39 @@
+APACHE 2.1+ ROADMAP:
+
+Last modified at [$Date: 2001/11/27 05:19:39 $]
+
+DEFERRRED FOR APACHE 2.1
+
+    * Source code should follow style guidelines.
+      OK, we all agree pretty code is good.  Probably best to clean this
+      up by hand immediately upon branching a 2.1 tree.
+      Justin's voulenteered to hand-edit the entire source tree ;)
+
+    * revamp the input filter syntax to provide for ordering of
+      filters created with the Set{Input|Output}Filter and the
+      Add{Input|Output}Filter directives.  A 'relative to filterx' 
+      syntax is definately preferable, but not realistic for 2.0.
+
+    * Platforms that do not support fork (primarily Win32 and AS/400)
+      Architect start-up code that avoids initializing all the modules 
+      in the parent process on platforms that do not support fork.
+      Better yet - not only inform the startup of which phase it's in,
+      but allow the parent 'process' to initialize shared memory, etc,
+      and create a module-by-module stream to pass to the child, so the
+      parent can actually arbitrate the important stuff.
+
+    * Replace stat [deferred open] with open/fstat in directory_walk.
+      Justin, Ian, OtherBill all interested in this.  Implies setting up
+      the apr_file_t member in request_rec, and having all modules use
+      that file, and allow the cleanup to close it [if it isn't a shared,
+      cached file handle.]
+
+    * Refactor auth into auth protocols and auth database stores.
+      Many interested hackers, too destabilizing for 2.0 inclusion.
+
+DEFERRRED FOR APACHE 3.0
+
+    * The Async Apache Server implemented in terms of APR.
+      [Bill Stoddard's pet project.]
+
+    

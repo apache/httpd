@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!ENTITY nbsp "&#160;">
+
+<!ENTITY % inlinetags "em | strong | code | a | br | directive | module">
+
+<!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
+| blockquote">
+
+<!ENTITY % Block "(%blocktags;)*">
+
+<!ENTITY % Inline "(#PCDATA | %inlinetags;)*">
+
+<!ENTITY % BlockOrInline "(#PCDATA | %inlinetags; | %blocktags;)*">
+
+<!ELEMENT modulesynopsis (name , description, status , sourcefile?,
+identifier? , compatibility? , summary? , seealso* , section*,
+directivesynopsis+)>
+
+<!ELEMENT directivesynopsis (name , description? , syntax? , default?
+, contextlist? , override? , modulelist?, compatibility? , usage?, seealso*)>
+
+<!ELEMENT name (#PCDATA)>
+
+<!ELEMENT status (#PCDATA)>
+
+<!ELEMENT identifier (#PCDATA)>
+
+<!ELEMENT sourcefile (#PCDATA)>
+
+<!ELEMENT compatibility %Inline;>
+
+<!ELEMENT description %Inline;>
+
+<!ELEMENT section (section | title | %blocktags;)*>
+
+<!ELEMENT module (#PCDATA)>
+
+<!ELEMENT example (#PCDATA | title | %inlinetags; | %blocktags;)*>
+
+<!ELEMENT seealso %Inline;>
+
+<!ELEMENT a %Inline;>
+
+<!ATTLIST a  href CDATA  #REQUIRED >
+
+<!ATTLIST directivesynopsis  type CDATA  #IMPLIED
+                             location CDATA  #IMPLIED >
+
+<!ELEMENT syntax %Inline;>
+
+<!ELEMENT default (#PCDATA)>
+
+<!ELEMENT contextlist (context+)+>
+
+<!ELEMENT modulelist (module)+>
+
+<!ELEMENT context (#PCDATA)>
+
+<!ELEMENT override (#PCDATA)>
+
+<!ELEMENT note (#PCDATA | title | %inlinetags; | %blocktags;)*>
+<!ATTLIST note type CDATA #IMPLIED>
+
+<!ELEMENT title %Inline;>
+
+<!ELEMENT p %Inline;>
+
+<!ELEMENT ul (li+)>
+
+<!ELEMENT ol (li+)>
+
+<!ELEMENT li %BlockOrInline;>
+
+<!ELEMENT strong %Inline;>
+
+<!ELEMENT br EMPTY>
+
+<!ELEMENT table (tr)+>
+
+<!ELEMENT tr (td)+>
+
+<!ELEMENT td %BlockOrInline;>
+
+<!ATTLIST td  colspan CDATA  #IMPLIED
+                rowspan CDATA  #IMPLIED
+                class   CDATA  #IMPLIED >
+<!ELEMENT directive (#PCDATA)>
+
+<!ATTLIST directive  module CDATA  #IMPLIED
+                     type   CDATA  #IMPLIED >
+
+<!ELEMENT code %Inline;>
+
+<!ELEMENT dl (dd | dt)+>
+
+<!ELEMENT dt %Inline;>
+
+<!ELEMENT dd %BlockOrInline;>
+
+<!ELEMENT em %Inline;>
+
+<!ELEMENT usage %Block;>
+
+<!ELEMENT summary %Block;>
+
+<!ELEMENT blockquote %BlockOrInline;>
+
+<!ELEMENT pre %Inline;>

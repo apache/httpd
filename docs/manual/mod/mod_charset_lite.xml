@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_charset_lite</name>
+<description>specify character set translation or recoding</description>
+<status>Experimental</status>
+<sourcefile>mod_charset_lite.c</sourcefile>
+<identifier>charset_lite_module</identifier>
+
+<summary>
+    <p>This is an <strong>experimental</strong> module and should
+    be used with care. Experiment with your
+    <code>mod_charset_lite</code> configuration to ensure that it
+    performs the desired function.</p>
+
+    <p><module>mod_charset_lite</module> allows the administrator to
+    specify the source character set of objects as well as the
+    character set they should be translated into before sending to the
+    client. <module>mod_charset_lite</module> does not translate the
+    data itself but instead tells Apache what translation to
+    perform. <module>mod_charset_lite</module> is applicable to EBCDIC
+    and ASCII host environments. In an EBCDIC environment, Apache
+    normally translates text content from the code page of the Apache
+    process locale to ISO-8859-1.  <module>mod_charset_lite</module>
+    can be used to specify that a different translation is to be
+    performed. In an ASCII environment, Apache normally performs no
+    translation, so <module>mod_charset_lite</module> is needed in
+    order for any translation to take place.</p>
+
+    <p>This module provides a small subset of configuration
+    mechanisms implemented by Russian Apache and its associated
+    <code>mod_charset</code>.</p>
+</summary>
+
+<section><title>Common Problems</title>
+
+<section><title>Invalid character set names</title>
+
+    <p>The character set name parameters of <directive
+    module="mod_charset_lite">CharsetSourceEnc</directive> and
+    <directive module="mod_charset_lite">CharsetDefault</directive>
+    must be acceptable to the translation mechanism used by APR on the
+    system where <module>mod_charset_lite</module> is deployed.  These
+    character set names are not standardized and are usually not the
+    same as the corresponding values used in http headers.  Currently,
+    APR can only use iconv(3), so you can easily test your character
+    set names using the iconv(1) program, as follows:</p>
+<example>
+  iconv -f charsetsourceenc-value -t charsetdefault-value
+</example>
+</section>
+
+<section><title>Mismatch between character set of content and translation
+    rules</title>
+
+    <p>If the translation rules don't make sense for the content,
+    translation can fail in various ways, including:</p>
+
+    <ul>
+      <li>The translation mechanism may return a bad return code,
+      and the connection will be aborted.</li>
+
+      <li>The translation mechanism may silently place special
+      characters (e.g., question marks) in the output buffer when
+      it cannot translate the input buffer.</li>
+    </ul>
+</section>
+</section>
+
+<directivesynopsis>
+<name>CharsetSourceEnc</name>
+<syntax>CharsetSourceEnc <em>charset</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>CharsetSourceEnc</directive> directive specifies the
+    source charset of files in the associated container.</p>
+
+    <p>The value of the <em>charset</em> argument must be accepted
+    as a valid character set name by the character set support in
+    APR. Generally, this means that it must be supported by
+    iconv.</p>
+    Example: 
+<example>
+    &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
+    CharsetSourceEnc  UTF-16BE<br />
+    CharsetDefault    ISO8859-1<br />
+    &lt;/Directory&gt;
+</example>
+    <p>The character set names in this example work with the iconv
+    translation support in Solaris 8.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CharsetDefault</name>
+<syntax>CharsetDefault <em>charset</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>CharsetDefault</directive> directive specifies the
+    charset that content in the associated container should be
+    translated to.</p>
+
+    <p>The value of the <em>charset</em> argument must be accepted
+    as a valid character set name by the character set support in
+    APR. Generally, this means that it must be supported by
+    iconv.</p>
+    Example: 
+<example>
+    &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
+    CharsetSourceEnc  UTF-16BE<br />
+    CharsetDefault    ISO8859-1<br />
+    &lt;/Directory&gt;
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CharsetOptions</name>
+<syntax>CharsetOptions <em>option</em> [<em>option</em>] ...</syntax>
+<default>CharsetOptions <em>DebugLevel=0</em> 
+<em>NoImplicitAdd</em></default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>CharsetOptions</directive> directive configures certain
+    behaviors of <module>mod_charset_lite</module>. <em>Option</em> can
+    be one of</p>
+
+    <dl>
+      <dt>DebugLevel=<em>n</em></dt>
+
+      <dd>The <code>DebugLevel</code> keyword allows you to specify
+      the level of debug messages generated by
+      <module>mod_charset_lite</module>. By default, no messages are
+      generated. This is equivalent to <code>DebugLevel=0</code>.
+      With higher numbers, more debug messages are generated, and
+      server performance will be degraded. The actual meanings of
+      the numeric values are described with the definitions of the
+      DBGLVL_ constants near the beginning of
+      <code>mod_charset_lite.c</code>.</dd>
+
+      <dt>ImplicitAdd | NoImplicitAdd</dt>
+
+      <dd>The <code>ImplicitAdd</code> keyword specifies that
+      <module>mod_charset_lite</module> should implicitly insert its
+      filter when the configuration specifies that the character
+      set of content should be translated. If the filter chain is
+      explicitly configured using the AddOutputFilter directive,
+      <code>NoImplicitAdd</code> should be specified so that
+      <module>mod_charset_lite</module> doesn't add its filter.</dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
