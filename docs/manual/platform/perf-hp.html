@@ -44,6 +44,10 @@ default is 256 buckets and must be set to a power of two. This is
 accomplished with adb against the *disc* image of the kernel. The
 variable name is tcp_hash_size.
 
+Notice that it's critically important that you use "W" to write a 32 bit
+quantity, not "w" to write a 16 bit value when patching the disc image because
+the tcp_hash_size variable is a 32 bit quantity.
+
 <P>
 
 How to pick the value? Examine the output of
