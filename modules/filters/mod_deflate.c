@@ -273,7 +273,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         const char *encoding;
 
         /* only work on main request/no subrequests */
-        if (r->main) {
+        if (!ap_is_initial_req(r)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -644,7 +644,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         apr_size_t len;
 
         /* only work on main request/no subrequests */
-        if (r->main) {
+        if (!ap_is_initial_req(r)) {
             ap_remove_input_filter(f);
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
@@ -908,7 +908,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         const char *encoding;
 
         /* only work on main request/no subrequests */
-        if (r->main) {
+        if (!ap_is_initial_req(r)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
