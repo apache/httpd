@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/20 03:49:50 $]
+Last modified at [$Date: 2001/11/21 18:19:06 $]
 
 Release:
 
@@ -68,16 +68,6 @@ RELEASE SHOWSTOPPERS:
       directive instead of returning a "no acceptable variant" error.
         Status: Bill has some code in his tree that accomplishes
                 this, and will commit it Friday after it's tested.
-
-    * Usability: Sanitize the MPM config directives.  MaxClients in 
-      the threaded MPM is totally misleading now as it has little to
-      do with limiting the number of clients (it limits the number
-      of child processes). Bill proposed nomenclature change to
-      something like "StartWorkers, MaxWorkers, etc." that could 
-      apply to most all the MPMs (with some notable exceptions).
-      Bill would be happy with changing MaxClients to MaxServers
-      to make it agree with the operation of the StartServers
-      directive.
 
     * revamp the input filter syntax to provide for ordering of
       filters created with the Set{Input|Output}Filter and the
