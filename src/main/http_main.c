@@ -588,8 +588,9 @@ accept_mutex_methods_s accept_mutex_uslock_s = {
 
 #if defined (HAVE_PTHREAD_SERIALIZED_ACCEPT)
 
-/* This code probably only works on Solaris ... but it works really fast
- * on Solaris.  Note that pthread mutexes are *NOT* released when a task
+/* This code probably doesn't work on many platforms, but it is
+ * known to work really fast (at least on Solaris and AIX).
+ * Note that pthread mutexes are *NOT* released when a task
  * dies ... the task has to free it itself.  So we block signals and
  * try to be nice about releasing the mutex.
  */
