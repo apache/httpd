@@ -209,6 +209,15 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name wintty
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name abs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_deflate
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_ssl
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -747,6 +756,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_bucketeer"=".\modules\test\mod_bucketeer.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_cache"=".\modules\experimental\mod_cache.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -937,6 +967,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_cache
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_echo"=".\modules\echo\mod_echo.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 
