@@ -29,23 +29,23 @@ how, there's a <A HREF="#whatworks">What Works</A> section at the bottom.
 outside of <CODE>VirtualHost</CODE> sections.  There are virtual servers,
 called <EM>vhosts</EM>, which are defined by
 <A
- HREF="mod/core.html#virtualhost"
+ HREF="../mod/core.html#virtualhost"
 ><SAMP>VirtualHost</SAMP></A>
 sections.
 
 <P>The directives
 <A
- HREF="mod/core.html#port"
+ HREF="../mod/core.html#port"
 ><SAMP>Port</SAMP></A>,
 <A
- HREF="mod/core.html#servername"
+ HREF="../mod/core.html#servername"
 ><SAMP>ServerName</SAMP></A>,
 <A
- HREF="mod/core.html#serverpath"
+ HREF="../mod/core.html#serverpath"
 ><SAMP>ServerPath</SAMP></A>,
 and
 <A
- HREF="mod/core.html#serveralias"
+ HREF="../mod/core.html#serveralias"
 ><SAMP>ServerAlias</SAMP></A>
 can appear anywhere within the definition of
 a server.  However, each appearance overrides the previous appearance
@@ -57,7 +57,7 @@ is 80.  The main_server has no default <CODE>ServerName</CODE>,
 
 <P>In the absence of any
 <A
- HREF="mod/core.html#listen"
+ HREF="../mod/core.html#listen"
 ><SAMP>Listen</SAMP></A>
 directives, the (final if there
 are multiple) <CODE>Port</CODE> directive in the main_server indicates
@@ -114,29 +114,29 @@ merges and default values are set.  In particular:
 <OL>
 <LI>If a vhost has no
     <A
-     HREF="mod/core.html#serveradmin"
+     HREF="../mod/core.html#serveradmin"
     ><CODE>ServerAdmin</CODE></A>,
     <A
-     HREF="mod/core.html#resourceconfig"
+     HREF="../mod/core.html#resourceconfig"
     ><CODE>ResourceConfig</CODE></A>,
     <A
-     HREF="mod/core.html#accessconfig"
+     HREF="../mod/core.html#accessconfig"
     ><CODE>AccessConfig</CODE></A>,
     <A
-     HREF="mod/core.html#timeout"
+     HREF="../mod/core.html#timeout"
     ><CODE>Timeout</CODE></A>,
     <A
-     HREF="mod/core.html#keepalivetimeout"
+     HREF="../mod/core.html#keepalivetimeout"
     ><CODE>KeepAliveTimeout</CODE></A>,
     <A
-     HREF="mod/core.html#keepalive"
+     HREF="../mod/core.html#keepalive"
     ><CODE>KeepAlive</CODE></A>,
     <A
-     HREF="mod/core.html#maxkeepaliverequests"
+     HREF="../mod/core.html#maxkeepaliverequests"
     ><CODE>MaxKeepAliveRequests</CODE></A>,
     or
     <A
-     HREF="mod/core.html#sendbuffersize"
+     HREF="../mod/core.html#sendbuffersize"
     ><CODE>SendBufferSize</CODE></A>
     directive then the respective value is
     inherited from the main_server.  (That is, inherited from whatever
