@@ -64,6 +64,11 @@ all: $(STAMP) generated_lists
 	@$(MAKE) AMFLAGS=$(AMFLAGS) -s -f build/build2.mk
 
 generated_lists:
+	@libpath=`helpers/PrintPath libtoolize`; \
+	if [ "x$$libpath" = "x" ]; then \
+		echo "libtoolize not found in path"; \
+		exit 1; \
+	fi; 
 	@echo config_m4_files = `find . -name config.m4` > $@
 	@n=`helpers/PrintPath libtoolize`; echo libtool_prefix = `dirname $$n`/.. >> $@
 
