@@ -625,6 +625,8 @@ Changes with Apache 2.1.1
 
 Changes with Apache 2.0.54
 
+  *) htdigest: Fix permissions of created files.  PR 33765.  [Joe Orton]
+
   *) core_input_filter: Move buckets to a persistent brigade instead of
      creating a new brigade. This stop a memory leak when proxying a 
      Streaming Media Server. PR 33382. [Paul Querna]
@@ -635,8 +637,31 @@ Changes with Apache 2.0.54
 
 Changes with Apache 2.0.53
 
+  *) Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
+     [Max Bowsher <maxb ukf.net>]
+
+  *) mod_proxy: Fix ProxyRemoteMatch directive.  PR 33170.
+     [Rici Lake <rici ricilake.net>]
+
+  *) mod_proxy: Respect errors reported by pre_connection hooks.
+     [Jeff Trawick]
+
+  *) --with-module can now take more than one module to be statically
+     linked: --with-module=<modtype>:<modfile>,<modtype>:<modfile>,...
+     If the <modtype>-subdirectory doesn't exist it will be created and
+     populated with a standard Makefile.in.  [Erik Abele]
+
+  *) Fix the RPM spec file so that an RPM build now works. An RPM
+     build now requires system installations of APR and APR-util.
+     Remove some arbitrary moving around of binaries - the RPM now
+     maps to the ASF build of httpd.
+     [Graham Leggett]
+
+  *) mod_dumpio, an I/O logging/dumping module, added to the
+     modules/expermimental subdirectory.  [Jim Jagielski]
+
   *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
-     library handles special characters. PR 24437 [Jess Holle]
+     library handles special characters. PR 24437.  [Jess Holle]
 
   *) Win32 MPM: Correct typo in debugging output.  [William Rowe]
 
@@ -676,7 +701,7 @@ Changes with Apache 2.0.53
   *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
      ldap authorization only modules have access to the util_ldap 
      user cache without having to require ldap authentication as well.  
-     [PR 31898] [Jari Ahonen jah progress.com, Brad Nicholes]
+     PR 31898.  [Jari Ahonen jah progress.com, Brad Nicholes]
 
   *) mod_auth_ldap: Added the directive "Requires ldap-attribute" that
      allows the module to only authorize a user if the attribute value
@@ -713,10 +738,6 @@ Changes with Apache 2.0.53
      Previously this would segfault or simply not match as expected,
      depending on the platform.  [Jeff Trawick]
 
-  *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
-     [michael teitler <michael.teitler cetelem.fr>,
-      Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
-
   *) mod_rewrite: Fix 0 bytes write into random memory position.
      PR 31036. [Andr� Malo]
 
@@ -727,7 +748,7 @@ Changes with Apache 2.0.53
      [Rüiger Plü <r.pluem t-online.de>]
 
   *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
-     statistics display. PR 29216 [Graham Leggett]
+     statistics display. PR 29216.  [Graham Leggett]
 
   *) mod_ldap: fix a bogus error message to tell the user which file
      is causing a potential problem with the LDAP shared memory cache.
@@ -736,7 +757,7 @@ Changes with Apache 2.0.53
   *) mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
 
   *) Fix the re-linking issue when purging elements from the LDAP cache
-     PR 24801 [Jess Holle <jessh ptc.com>]
+     PR 24801.  [Jess Holle <jessh ptc.com>]
       
   *) mod_disk_cache: Fix races in saving responses.  [Justin Erenkrantz]
 
@@ -2282,7 +2303,8 @@ Changes with Apache 2.0.43
 
 Changes with Apache 2.0.42
 
-  *) mod_dav: Check for versioning hooks before using them.
+  *) SECURITY: CAN-2002-1593 (cve.mitre.org) [CERT VU#406121]
+     mod_dav: Check for versioning hooks before using them.
      [Greg Stein]
 
 Changes with Apache 2.0.41
@@ -3009,7 +3031,8 @@ Changes with Apache 2.0.36
 
   *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
 
-  *) SECURITY: Added the APLOG_TOCLIENT flag to ap_log_rerror() to
+  *) SECURITY:  CAN-2002-1592 (cve.mitre.org) [CERT VU#165803]
+     Added the APLOG_TOCLIENT flag to ap_log_rerror() to
      explicitly tell the server that warning messages should be sent 
      to the client in addition to being recorded in the error log. 
      Prior to this change, ap_log_rerror() always sent warning 
