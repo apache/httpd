@@ -309,7 +309,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
     /* get a socket - either a keepalive one, or a new one */
     new = 1;
     if ((backend->connection) && (backend->connection->id == c->id)) {
-        int buffer_len = 1;
+        apr_size_t buffer_len = 1;
         char test_buffer[1]; 
         apr_status_t socket_status;
         apr_int32_t current_timeout;
