@@ -281,13 +281,13 @@ pedagogical purposes):
 
 	    FD_ZERO (&amp;accept_fds);
 	    for (i = first_socket; i &lt;= last_socket; ++i) {
-		FD_SET (i, &mp;accept_fds);
+		FD_SET (i, &amp;accept_fds);
 	    }
 	    rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
 	    if (rc &lt; 1) continue;
 	    new_connection = -1;
 	    for (i = first_socket; i &lt;= last_socket; ++i) {
-		if (FD_ISSET (i, &accept_fds)) {
+		if (FD_ISSET (i, &amp;accept_fds)) {
 		    new_connection = accept (i, NULL, NULL);
 		    if (new_connection != -1) break;
 		}
