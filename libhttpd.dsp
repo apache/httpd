@@ -88,13 +88,384 @@ LINK32=link.exe
 
 # Name "libhttpd - Win32 Release"
 # Name "libhttpd - Win32 Debug"
+# Begin Group "Configuration"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\os\win32\libhttpd.c
+SOURCE=.\include\ap_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\libhttpd.def
+# PROP Exclude_From_Build 1
 # End Source File
+# Begin Source File
+
+SOURCE=.\server\buildmark.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_conf_globals.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\modules.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\os.h
+# End Source File
+# End Group
+# Begin Group "Generated Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\server\gen_test_char.exe
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# Begin Custom Build - Generating test_char.h
+InputPath=.\server\gen_test_char.exe
+
+".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_test_char.exe >.\server\test_char.h 
+	echo Generated test_char.h from gen_test_char.exe 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# Begin Custom Build - Generating test_char.h
+InputPath=.\server\gen_test_char.exe
+
+".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_test_char.exe >.\server\test_char.h 
+	echo Generated test_char.h from gen_test_char.exe 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\gen_uri_delims.exe
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# Begin Custom Build - Generating uri_delims.h
+InputPath=.\server\gen_uri_delims.exe
+
+".\server\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_uri_delims.exe >.\server\uri_delims.h 
+	echo Generated uri_delims.h from gen_uri_delims.exe 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# Begin Custom Build - Generating uri_delims.h
+InputPath=.\server\gen_uri_delims.exe
+
+".\server\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_uri_delims.exe >.\server\uri_delims.h 
+	echo Generated uri_delims.h from gen_uri_delims.exe 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\test_char.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\uri_delims.h
+# End Source File
+# End Group
+# Begin Group "httpd"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\server\config.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\connection.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_connection.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_log.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_main.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_vhost.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\httpd.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\log.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\vhost.c
+# End Source File
+# End Group
+# Begin Group "modules"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\modules\http\http_core.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_core.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_protocol.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_protocol.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\http_request.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_request.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\aaa\mod_access.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mappers\mod_actions.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mappers\mod_alias.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\generators\mod_asis.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\aaa\mod_auth.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\generators\mod_autoindex.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\generators\mod_cgi.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mappers\mod_dir.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\metadata\mod_env.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mappers\mod_imap.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\filters\mod_include.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\mod_isapi.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\loggers\mod_log_config.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\http\mod_mime.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mappers\mod_negotiation.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\metadata\mod_setenvif.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mappers\mod_so.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\mappers\mod_userdir.c
+# End Source File
+# End Group
+# Begin Group "util"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\server\rfc1413.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\rfc1413.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_cfgtree.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_cfgtree.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_charset.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_date.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_date.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_ebcdic.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_filter.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_filter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_md5.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_md5.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_script.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_script.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_uri.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_uri.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\util_win32.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_xml.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_xml.h
+# End Source File
+# End Group
+# Begin Group "mpm_winnt"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\include\ap_listen.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_mpm.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\listen.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\mpm.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\mpm_common.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\mpm_default.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\mpm_status.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\mpm_winnt.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\mpm_winnt.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\registry.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\service.c
+# End Source File
+# End Group
 # End Target
 # End Project
