@@ -184,16 +184,18 @@ typedef struct
     apr_threadattr_t *threadattr;
 } thread_starter;
 
+typedef enum
+{
+    PT_CSD,
+    PT_ACCEPT
+} poll_type_e;
 
 typedef struct
 {
-    int type;
-    int status;
+    poll_type_e type;
+    int status;        /*XXX what is this for?  0 and 1 don't make it clear */
     void *baton;
 } listener_poll_type;
-
-#define PT_CSD 0
-#define PT_ACCEPT 1
 
 #define ID_FROM_CHILD_THREAD(c, t)    ((c * thread_limit) + t)
 
