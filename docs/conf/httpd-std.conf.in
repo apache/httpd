@@ -52,11 +52,11 @@ ServerRoot "@@ServerRoot@@"
 #
 # The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
 #
-<IfModule !mpm_winnt.c>
-<IfModule !mpm_netware.c>
+#<IfModule !mpm_winnt.c>
+#<IfModule !mpm_netware.c>
 #LockFile @rel_logfiledir@/accept.lock
-</IfModule>
-</IfModule>
+#</IfModule>
+#</IfModule>
 
 #
 # ScoreBoardFile: File used to store internal server process information.
@@ -66,11 +66,11 @@ ServerRoot "@@ServerRoot@@"
 # If specified, ensure that no two invocations of Apache share the same
 # scoreboard file. The scoreboard file MUST BE STORED ON A LOCAL DISK.
 #
-<IfModule !mpm_netware.c>
-<IfModule !perchild.c>
+#<IfModule !mpm_netware.c>
+#<IfModule !perchild.c>
 #ScoreBoardFile @rel_logfiledir@/apache_runtime_status
-</IfModule>
-</IfModule>
+#</IfModule>
+#</IfModule>
 
 
 #
