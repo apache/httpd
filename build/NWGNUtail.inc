@@ -262,6 +262,9 @@ endif
 ifneq "$(NLM_FLAGS)" ""
 	@echo -flags $(NLM_FLAGS) >> $@
 endif
+ifneq "$(strip $(XLFLAGS))" ""
+	@echo $(XLFLAGS) >> $@
+endif
 ifneq "$(strip $(FILES_nlm_objs))" ""
 	@echo $(foreach objfile,$(strip $(FILES_nlm_objs)),$(subst /,\,$(objfile))) >> $@
 endif
@@ -283,9 +286,6 @@ ifneq "$(FILES_nlm_Ximports)" ""
 endif
 ifneq "$(FILES_nlm_exports)" ""
 	@echo Export $(foreach export,$(subst $(SPACE),$(COMMA),$(strip $(FILES_nlm_exports))),$(subst /,\,$(export))) >> $(OBJDIR)\$(NLM_NAME)_link.def
-endif
-ifneq "$(strip $(XLFLAGS))" ""
-	@echo $(XLFLAGS) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif
 
 # if APACHE_UNIPROC is defined, don't include XDCData
