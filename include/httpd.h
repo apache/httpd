@@ -37,6 +37,7 @@
 #include "apr_time.h"
 #include "apr_network_io.h"
 #include "apr_buckets.h"
+#include "apr_poll.h"
 
 #include "os.h"
 
@@ -675,6 +676,8 @@ typedef struct server_rec server_rec;
 typedef struct conn_rec conn_rec;
 /** A structure that represents the current request */
 typedef struct request_rec request_rec;
+/** A structure that represents the status of the current connection */
+typedef struct conn_state_t conn_state_t;
 
 /* ### would be nice to not include this from httpd.h ... */
 /* This comes after we have defined the request_rec type */
@@ -1011,6 +1014,26 @@ struct conn_rec {
     void *sbh;
     /** The bucket allocator to use for all bucket/brigade creations */
     struct apr_bucket_alloc_t *bucket_alloc;
+    /** The current state of this connection */
+    conn_state_t *cs;
+    /** Is there data pending in the input filters? */ 
+    int data_in_input_filters;
+};
+
+typedef enum  {
+    CONN_STATE_CHECK_REQUEST_LINE_READABLE,
+    CONN_STATE_READ_REQUEST_LINE,
+    CONN_STATE_LINGER,
+} conn_state_e;
+
+struct conn_state_t {
+    APR_RING_ENTRY(conn_state_t) timeout_list; 
+    apr_time_t expiration_time; 
+    conn_state_e state;
+    conn_rec *c;
+    apr_pool_t *p;
+    apr_bucket_alloc_t *bucket_alloc;
+    apr_pollfd_t pfd;
 };
 
 /* Per-vhost config... */

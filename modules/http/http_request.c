@@ -205,9 +205,17 @@ static void check_pipeline_flush(request_rec *r)
      */
     /* ### shouldn't this read from the connection input filters? */
     /* ### is zero correct? that means "read one line" */
-    if (r->connection->keepalive == AP_CONN_CLOSE || 
-        ap_get_brigade(r->input_filters, bb, AP_MODE_EATCRLF, 
+    if (r->connection->keepalive != AP_CONN_CLOSE) {
+        if (ap_get_brigade(r->input_filters, bb, AP_MODE_EATCRLF, 
                        APR_NONBLOCK_READ, 0) != APR_SUCCESS) {
+            c->data_in_input_filters = 0;  /* we got APR_EOF or an error */
+        }
+        else {
+            c->data_in_input_filters = 1;
+            return;    /* don't flush */
+        }
+    }
+
         apr_bucket *e = apr_bucket_flush_create(c->bucket_alloc);
 
         /* We just send directly to the connection based filters.  At
@@ -218,7 +226,6 @@ static void check_pipeline_flush(request_rec *r)
          */
         APR_BRIGADE_INSERT_HEAD(bb, e);
         ap_pass_brigade(r->connection->output_filters, bb);
-    }
 }
 
 void ap_process_request(request_rec *r)
