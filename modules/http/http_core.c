@@ -3343,144 +3343,151 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
     }
 
     /* Iterate over the brigade collecting iovecs */
-    while (b) {
-        nbytes = 0; /* in case more points to another brigade */
-        more = NULL;
-        APR_BRIGADE_FOREACH(e, b) {
-            if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
-                break;
-            }
-            /* It doesn't make any sense to use sendfile for a file bucket
-             * that represents 10 bytes.
-             */
-            else if (APR_BUCKET_IS_FILE(e) && (e->length >= AP_MIN_SENDFILE_BYTES)) {
-                apr_bucket_shared *s = e->data;
-                apr_bucket_file *a = s->data;
-
-                /* We can't handle more than one file bucket at a time
-                 * so we split here and send the file we have already found.
-                 */
-                if (fd) {
-                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
-                    ap_save_brigade(f, &ctx->b, &more);
+    do {
+        while (b) {
+            nbytes = 0; /* in case more points to another brigade */
+            APR_BRIGADE_FOREACH(e, b) {
+                if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
                     break;
                 }
-
-                fd = a->fd;
-                flen = e->length;
-                foffset = s->start;
+                /* It doesn't make any sense to use sendfile for a file bucket
+                 * that represents 10 bytes.
+                 */
+                else if (APR_BUCKET_IS_FILE(e) && (e->length >= AP_MIN_SENDFILE_BYTES)) {
+                    apr_bucket_shared *s = e->data;
+                    apr_bucket_file *a = s->data;
+    
+                    /* We can't handle more than one file bucket at a time
+                     * so we split here and send the file we have already found.
+                     */
+                    if (fd) {
+                        more = apr_brigade_split(b, e);
+                        break;
+                    }
+    
+                    fd = a->fd;
+                    flen = e->length;
+                    foffset = s->start;
+                }
+                else {
+                    const char *str;
+                    apr_size_t n;
+                    rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
+                    if (n) {
+                        nbytes += n;
+                        if (!fd) {
+                            vec[nvec].iov_base = (char*) str;
+                            vec[nvec].iov_len = n;
+                            nvec++;
+                        }
+                        else {
+                            /* The bucket is a trailer to a file bucket */
+                            vec_trailers[nvec_trailers].iov_base = (char*) str;
+                            vec_trailers[nvec_trailers].iov_len = n;
+                            nvec_trailers++;
+                        }
+                    }
+                }
+    
+                if ((nvec == MAX_IOVEC_TO_WRITE) || 
+                    (nvec_trailers == MAX_IOVEC_TO_WRITE)) {
+                    /* Split the brigade and break */
+                    if (APR_BUCKET_NEXT(e) != APR_BRIGADE_SENTINEL(b)) {
+                        more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
+                    }
+                    break;
+                }
+            }
+    
+            /* Completed iterating over the brigades, now determine if we want 
+             * to buffer the brigade or send the brigade out on the network
+             */
+            if ((!fd && (!more) && 
+                (nbytes < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(e))
+                || (APR_BUCKET_IS_EOS(e) && c->keepalive)) {
+                
+                /* NEVER save an EOS in here.  If we are saving a brigade with 
+                 * an EOS bucket, then we are doing keepalive connections, and 
+                 * we want to process to second request fully.
+                 */
+                if (APR_BUCKET_IS_EOS(e)) {
+                    APR_BUCKET_REMOVE(e);
+                    apr_bucket_destroy(e);
+                }
+                ap_save_brigade(f, &ctx->b, &b);
+                return APR_SUCCESS;
+            }
+            if (fd) {
+                apr_hdtr_t hdtr;
+#if APR_HAS_SENDFILE
+                apr_int32_t flags = 0;
+#endif
+    
+                memset(&hdtr, '\0', sizeof(hdtr));
+                if (nvec) {
+                    hdtr.numheaders = nvec;
+                    hdtr.headers = vec;
+                }
+                if (nvec_trailers) {
+                    hdtr.numtrailers = nvec_trailers;
+                    hdtr.trailers = vec_trailers;
+                }
+#if APR_HAS_SENDFILE
+                if (!c->keepalive) {
+                    /* Prepare the socket to be reused */
+                    flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+                }
+                rv = sendfile_it_all(c,        /* the connection            */
+                                     fd,       /* the file to send          */
+                                     &hdtr,    /* header and trailer iovecs */
+                                     foffset,  /* offset in the file to begin
+                                                  sending from              */
+                                     flen,     /* length of file            */
+                                     nbytes + flen, /* total length including
+                                                       headers                */
+                                     flags);   /* apr_sendfile flags        */
+    
+                /* If apr_sendfile() returns APR_ENOTIMPL, call send_the_file()
+                 * to loop on apr_read/apr_send to send the file. Our Windows 
+                 * binary distributions (which work on Windows 9x/NT) are 
+                 * compiled on Windows NT. TransmitFile is not available on 
+                 * Windows 95/98 and we discover this at runtime when 
+                 * apr_sendfile() returns APR_ENOTIMPL. Having apr_sendfile() 
+                 * return APR_ENOTIMPL seems the cleanest way to handle this 
+                 * case.
+                 */
+                if (rv == APR_ENOTIMPL) {
+#endif
+    
+                    rv = send_the_file(c, fd, &hdtr, foffset, flen, &bytes_sent);
+    
+#if APR_HAS_SENDFILE
+                }
+#endif
+                fd = NULL;
             }
             else {
-                const char *str;
-                apr_size_t n;
-                rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
-                if (n) {
-                    nbytes += n;
-                    if (!fd) {
-                        vec[nvec].iov_base = (char*) str;
-                        vec[nvec].iov_len = n;
-                        nvec++;
-                    }
-                    else {
-                        /* The bucket is a trailer to a file bucket */
-                        vec_trailers[nvec_trailers].iov_base = (char*) str;
-                        vec_trailers[nvec_trailers].iov_len = n;
-                        nvec_trailers++;
-                    }
-                }
+                rv = writev_it_all(c->client_socket, 
+                                   vec, nvec, 
+                                   nbytes, &bytes_sent);
             }
-
-            if ((nvec == MAX_IOVEC_TO_WRITE) || (nvec_trailers == MAX_IOVEC_TO_WRITE)) {
-                /* Split the brigade and break */
-                if (APR_BUCKET_NEXT(e) != APR_BRIGADE_SENTINEL(b)) {
-                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
-                }
-                break;
+    
+            apr_brigade_destroy(b);
+            if (rv != APR_SUCCESS) {
+                /* XXX: log the error */
+                if (more)
+                    apr_brigade_destroy(more);
+                return rv;
             }
-        }
-
-        /* Completed iterating over the brigades, now determine if we want to
-         * buffer the brigade or send the brigade out on the network
-         */
-        if ((!fd && (!more) && (nbytes < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(e))
-            || (APR_BUCKET_IS_EOS(e) && c->keepalive)) {
-            
-            /* NEVER save an EOS in here.  If we are saving a brigade with an
-             * EOS bucket, then we are doing keepalive connections, and we want
-             * to process to second request fully.
-             */
-            if (APR_BUCKET_IS_EOS(e)) {
-                APR_BUCKET_REMOVE(e);
-                apr_bucket_destroy(e);
-            }
-            ap_save_brigade(f, &ctx->b, &b);
-            return APR_SUCCESS;
-        }
-        if (fd) {
-            apr_hdtr_t hdtr;
-#if APR_HAS_SENDFILE
-            apr_int32_t flags = 0;
-#endif
-
-            memset(&hdtr, '\0', sizeof(hdtr));
-            if (nvec) {
-                hdtr.numheaders = nvec;
-                hdtr.headers = vec;
-            }
-            if (nvec_trailers) {
-                hdtr.numtrailers = nvec_trailers;
-                hdtr.trailers = vec_trailers;
-            }
-#if APR_HAS_SENDFILE
-            if (!c->keepalive) {
-                /* Prepare the socket to be reused */
-                flags |= APR_SENDFILE_DISCONNECT_SOCKET;
-            }
-            rv = sendfile_it_all(c,             /* the connection            */
-                                 fd,            /* the file to send          */
-                                 &hdtr,         /* header and trailer iovecs */
-                                 foffset,       /* offset in the file to begin
-                                                   sending from              */
-                                 flen,          /* length of file            */
-                                 nbytes + flen, /* total length including 
-                                                   headers                   */
-                                 flags);        /* apr_sendfile flags        */
-
-            /* If apr_sendfile() returns APR_ENOTIMPL, call send_the_file() to
-             * loop on apr_read/apr_send to send the file. Our Windows binary 
-             * distributions (which work on Windows 9x/NT) are compiled on 
-             * Windows NT. TransmitFile is not available on Windows 95/98 and
-             * we discover this at runtime when apr_sendfile() returns 
-             * APR_ENOTIMPL. Having apr_sendfile() return APR_ENOTIMPL seems
-             * the cleanest way to handle this case.
-             */
-            if (rv == APR_ENOTIMPL) {
-#endif
-
-                rv = send_the_file(c, fd, &hdtr, foffset, flen, &bytes_sent);
-
-#if APR_HAS_SENDFILE
-            }
-#endif
-        }
-        else {
-            rv = writev_it_all(c->client_socket, 
-                               vec, nvec, 
-                               nbytes, &bytes_sent);
-        }
-
-        apr_brigade_destroy(b);
-        if (rv != APR_SUCCESS) {
-            /* XXX: log the error */
-            if (more)
-                apr_brigade_destroy(more);
-            return rv;
-        }
-        nvec = 0;
-        nvec_trailers = 0;
+            nvec = 0;
+            nvec_trailers = 0;
+    
+            b = more;
+            more = NULL;
+        }  /* end while () */
 
         b = more;
-    }  /* end while () */
+    } while (more);
 
     return APR_SUCCESS;
 }
