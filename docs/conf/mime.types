@@ -16,7 +16,7 @@ application/activemessage
 application/andrew-inset	ez
 application/applefile
 application/atomicmail
-application/batch-smtp
+application/batch-SMTP
 application/cals-1840
 application/commonground
 application/cybercash
@@ -88,6 +88,7 @@ application/vnd.claymore
 application/vnd.commerce-battelle
 application/vnd.commonspace
 application/vnd.comsocaller
+application/vnd.contact.cmsg
 application/vnd.cosmocaller
 application/vnd.cups-postscript
 application/vnd.cups-raster
@@ -105,6 +106,7 @@ application/vnd.ecowin.series
 application/vnd.ecowin.seriesrequest
 application/vnd.ecowin.seriesupdate
 application/vnd.enliven
+application/vnd.epson.esf
 application/vnd.epson.msf
 application/vnd.epson.quickanime
 application/vnd.epson.salt
@@ -129,14 +131,17 @@ application/vnd.groove-identity-message
 application/vnd.groove-injector
 application/vnd.groove-tool-message
 application/vnd.groove-tool-template
+application/vnd.groove-vcard
 application/vnd.hp-HPGL
 application/vnd.hp-PCL
 application/vnd.hp-PCLXL
 application/vnd.hp-hpid
 application/vnd.hp-hps
+application/vnd.httphone
 application/vnd.hzn-3d-crossword
 application/vnd.ibm.MiniPay
 application/vnd.ibm.modcap
+application/vnd.informix-visionary
 application/vnd.intercon.formnet
 application/vnd.intertrust.digibox
 application/vnd.intertrust.nncp
@@ -159,6 +164,7 @@ application/vnd.lotus-notes
 application/vnd.lotus-organizer
 application/vnd.lotus-screencam
 application/vnd.lotus-wordpro
+application/vnd.mcd
 application/vnd.mediastation.cdkey
 application/vnd.meridian-slingshot
 application/vnd.mif		mif
@@ -176,13 +182,16 @@ application/vnd.motorola.flexsuite.gotap
 application/vnd.motorola.flexsuite.kmr
 application/vnd.motorola.flexsuite.ttc
 application/vnd.motorola.flexsuite.wem
+application/vnd.mozilla.xul+xml
 application/vnd.ms-artgalry
 application/vnd.ms-asf
 application/vnd.ms-excel	xls
+application/vnd.ms-lrm
 application/vnd.ms-powerpoint	ppt
 application/vnd.ms-project
 application/vnd.ms-tnef
 application/vnd.ms-works
+application/vnd.msign
 application/vnd.music-niff
 application/vnd.musician
 application/vnd.netfpx
@@ -244,6 +253,8 @@ application/vnd.wt.stf
 application/vnd.xara
 application/vnd.xfdl
 application/vnd.yellowriver-custom-menu
+application/whoispp-query
+application/whoispp-response
 application/wita
 application/wordperfect5.1
 application/x-bcpio		bcpio
@@ -286,12 +297,17 @@ audio/basic			au snd
 audio/l16
 audio/midi			mid midi kar
 audio/mpeg			mpga mp2 mp3
+audio/prs.sid
+audio/telephone-event
+audio/tone
 audio/vnd.cns.anp1
 audio/vnd.cns.inf1
 audio/vnd.digital-winds
 audio/vnd.everad.plj
 audio/vnd.lucent.voice
 audio/vnd.nortel.vbk
+audio/vnd.nuera.ecelp4800
+audio/vnd.nuera.ecelp7470
 audio/vnd.octel.sbc
 audio/vnd.qcelp
 audio/vnd.rhetorex.32kadpcm
@@ -318,6 +334,7 @@ image/vnd.dwg
 image/vnd.dxf
 image/vnd.fastbidsheet
 image/vnd.fpx
+image/vnd.fst
 image/vnd.fujixerox.edmics-mmr
 image/vnd.fujixerox.edmics-rlc
 image/vnd.mix
@@ -379,7 +396,11 @@ text/sgml			sgml sgm
 text/tab-separated-values	tsv
 text/t140
 text/uri-list
+text/vnd.DMClientScript
+text/vnd.IPTC.NITF
+text/vnd.IPTC.NewsML
 text/vnd.abc
+text/vnd.curl
 text/vnd.flatland.3dml
 text/vnd.fly
 text/vnd.fmi.flexstor
@@ -395,7 +416,9 @@ text/vnd.wap.wmlscript		wmls
 text/x-setext			etx
 text/xml			xml
 video/mpeg			mpeg mpg mpe
+video/pointer
 video/quicktime			qt mov
+video/vnd.fvt
 video/vnd.motorola.video
 video/vnd.motorola.videop
 video/vnd.vivo
