@@ -185,7 +185,9 @@ Open issues:
       renaming. The used prefix or prefixes are configureable in the file,
       too. But we have to additionally vote on them in the next point.
       Votes: Ralf +1, Jim +1 (on the source-level renaming for
-      1.3b6 and 1.3.0; how is still up for debate :) )
+      1.3b6 and 1.3.0; how is still up for debate :) ),
+      Marc -0 (this is not the time nor the place, but I don't have
+      time to veto this crap so it will be pushed through)
 
     * Use consistant prefixes for the renaming; suggestions:
 
