@@ -16,7 +16,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Mise &agrave; de la version 1.3 &agrave; la
+    <h1 align="center">Mise &agrave; de la version 1.3 &agrave; la
     version 2.0</h1>
 
     <p>Afin d'aider les personnes souhaitant se mettre &agrave;
