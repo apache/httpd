@@ -73,85 +73,120 @@
  * release to a development or beta version.
  */
 
-/* To allow for multiple services, store the configuration file's full path
- * under each service entry:
- *
- * HKLM\System\CurrentControlSet\Services\[service name]\Parameters\ConfPath
- *
- * The default configuration path (for console apache) is still stored:
- * 
- * HKLM\Software\[Vendor]\[Software]\[Version]\ServerRoot
- */
-
-#include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
-
-/* Define where the Apache values are stored in the registry. 
- *
- * If you are looking here to roll the tarball, you didn't need to visit.
- * registry.c now picks up the version from include/httpd.h
+#include "winnt.h"
+/* bet you are looking to change revisions to roll the tarball...
+ * Guess what, you already did.  Revised May '00 to save you from 
+ * searching all over creation for every revision tag.
  */
 
-#define REGKEY "SOFTWARE\\" AP_SERVER_BASEVENDOR "\\" AP_SERVER_BASEPRODUCT "\\" AP_SERVER_BASEREVISION
+#define VENDOR   AP_SERVER_BASEVENDOR
+#define SOFTWARE AP_SERVER_BASEPRODUCT
+#define VERSION  AP_SERVER_BASEREVISION
 
-#define SERVICEKEYPRE  "System\\CurrentControlSet\\Services\\"
-#define SERVICEKEYPOST "\\Parameters"
+#define REGKEY "SOFTWARE\\" VENDOR "\\" SOFTWARE "\\" VERSION
 
-#define SERVICELAUNCH9X "Software\\Microsoft\\Windows\\CurrentVersion\\RunServices\\"
 /*
  * The Windows API registry key functions don't set the last error
  * value (the windows equivalent of errno). So we need to set it
  * with SetLastError() before calling the aplog_error() function.
  * Because this is common, let's have a macro.
  */
-#define do_error(rv,fmt,arg) do { \
-         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, fmt, arg); \
-    } while (0);
+#define return_error(rv) return (SetLastError(rv), rv);
 
-/*
- * Get the data for registry key value. This is a generic function that
- * can either get a value into a caller-supplied buffer, or it can
- * allocate space for the value from the pass in pool. It will normally
- * be used by other functions within this file to get specific key values
- * (e.g. registry_get_server_root()). This function returns a number of
- * different error statuses, allowing the caller to differentiate
- * between a key or value not existing and other kinds of errors. Depending
- * on the type of data being obtained the caller can then either ignore
- * the key-not-existing error, or treat it as a real error.
+ap_status_t ap_registry_create_key(const char *key)
+{
+    HKEY hKey = HKEY_LOCAL_MACHINE;
+    HKEY hKeyNext;
+    char keystr[MAX_PATH + 1];        
+    char *parsekey = keystr;
+    char *nextkey = keystr;
+    DWORD result;
+    int rv;
+
+    ap_cpystrn(keystr, key, sizeof(keystr) - 1);
+    	
+    /* Walk the tree, creating at each stage if necessary */
+    while (parsekey) {
+        if (nextkey = strchr(parsekey, '\\'))
+            *(nextkey++) = '\0';
+
+        rv = RegCreateKeyEx(hKey,
+			    parsekey,    /* subkey */
+			    0,	         /* reserved */
+			    NULL,        /* class */
+			    REG_OPTION_NON_VOLATILE,
+			    KEY_WRITE,
+			    NULL,
+			    &hKeyNext,
+			    &result);
+
+    	/* Close the old key */
+        if (hKey != HKEY_LOCAL_MACHINE)
+	    RegCloseKey(hKey);
+        hKey = hKeyNext;
+        
+        if (rv != ERROR_SUCCESS)
+	    break;
+
+        parsekey = nextkey;
+    }
+
+    if (hKey != HKEY_LOCAL_MACHINE)
+        RegCloseKey(hKey);
+
+    return_error(rv);
+}
+
+ap_status_t ap_registry_delete_key(const char *key)
+{
+    ap_status_t rv;
+    HKEY hKey;
+    int nSize = 0;
+    char tempkey[MAX_PATH + 1];
+    char *parsekey;
+
+    ap_cpystrn(tempkey, key, sizeof(parsekey) - 1);
+    parsekey = strrchr(tempkey, '\\');
+    
+    if (parsekey) {
+        *(parsekey++) = '\0';
+        rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                          tempkey,
+		          0,
+		          KEY_WRITE,
+		          &hKey);
+
+        if (rv == ERROR_FILE_NOT_FOUND)
+            return APR_ENODIR;
+    
+        if (rv != ERROR_SUCCESS)
+            return_error(rv);
+    }
+    else {
+        parsekey = tempkey;
+        hKey = HKEY_LOCAL_MACHINE;
+    }
+    
+    rv = RegDeleteKey(hKey, key);
+
+    if (hKey != HKEY_LOCAL_MACHINE)
+        RegCloseKey(hKey);
+
+    return_error(rv);
+}
+
+/* Clean up a way over complicated process.
  *
- * If ppValue is NULL, allocate space for the value and return it in
- * *pValue. The return value is the number of bytes in the value.
- * The first argument is the pool to use to allocate space for the value.
- *
- * If pValue is not NULL, assume it is a buffer of nSizeValue bytes,
- * and write the value into the buffer. The return value is the number
- * of bytes in the value (so if the return value is greater than
- * the supplied nSizeValue, the caller knows that *pValue is truncated).
- * The pool argument is ignored.
- *
- * The return value is the number of bytes in the successfully retreived
- * key if everything worked, or:
- *
- *  -1 the key does not exists
- *  -2 if out of memory during the function
- *  -3 if the buffer specified by *pValue/nSizeValue was not large enough 
- *     for the value.
- *  -4 if an error occurred
- *
- * If the return value is negative a message will be logged to the error
- * log (aplog_error) function. If the return value is -2, -3 or -4 the message
- * will be logged at priority "error", while if the return value is -1 the
- * message will be logged at priority "warning".
+ * The return value is APR_SUCCESS, APR_ENOPATH, APR_NOTFOUND, or the OS error
  */
 
-static int ap_registry_get_key_int(ap_pool_t *p, char *key, char *name, char *pBuffer, int nSizeBuffer, char **ppValue)
+ap_status_t ap_registry_get_value(ap_pool_t *p, const char *key, const char *name, char **ppValue)
 {
-    long rv;
+    ap_status_t rv;
     HKEY hKey;
-    char *pValue;
-    int nSize;
-    int retval;
+    int nSize = 0;
 
     rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
                       key,
@@ -159,89 +194,284 @@ static int ap_registry_get_key_int(ap_pool_t *p, char *key, char *name, char *pB
 		      KEY_READ,
 		      &hKey);
 
-    if (rv == ERROR_FILE_NOT_FOUND) {
-        ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
-        "Registry does not contain key %s",key);
-        return -1;
-    }
-    if (rv != ERROR_SUCCESS) {
-        do_error(rv, "RegOpenKeyEx HKLM\\%s",key);
-        return -4;
-    }
+    if (rv == ERROR_FILE_NOT_FOUND)
+        return APR_ENODIR;
+    
+    if (rv != ERROR_SUCCESS)
+        return_error(rv);
 
-    if (pBuffer == NULL) {
-	/* Find the size required for the data by passing NULL as the buffer
-	 * pointer. On return nSize will contain the size required for the
-	 * buffer if the return value is ERROR_SUCCESS.
-	 */
-	rv = RegQueryValueEx(hKey, 
-			     name,		/* key name */
-			     NULL,		/* reserved */
-			     NULL,		/* type */
-			     NULL,		/* for value */
-			     &nSize);		/* for size of "value" */
-
-	if (rv != ERROR_SUCCESS) {
-	    do_error(rv, "RegQueryValueEx(key %s)", key);
-	    return -1;
-	}
-
-	pValue = ap_palloc(p, nSize);
-	*ppValue = pValue;
-	if (!pValue) {
-	    /* Eek, out of memory, probably not worth trying to carry on,
-	     * but let's give it a go
-	     */
-	    ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO,APR_ENOMEM,NULL,
-		"Error getting registry key: out of memory");
-	    return -2;
-	}
-    }
-    else {
-	/* Get the value into the existing buffer of length nSizeBuffer */
-	pValue = pBuffer;
-	nSize = nSizeBuffer;
-    }
-
+    /* Find the size required for the data by passing NULL as the buffer
+     * pointer. On return nSize will contain the size required for the
+     * buffer if the return value is ERROR_SUCCESS.
+     */
     rv = RegQueryValueEx(hKey, 
 			 name,		/* key name */
 			 NULL,		/* reserved */
 			 NULL,		/* type */
-			 pValue,		/* for value */
+			 NULL,		/* for value */
 			 &nSize);		/* for size of "value" */
 
-    retval = 0;	    /* Return value */
+    if (rv != ERROR_SUCCESS)
+	return_error(rv);
+
+    *ppValue = ap_palloc(p, nSize);
+    rv = RegQueryValueEx(hKey, 
+			 name,		/* key name */
+			 NULL,		/* reserved */
+			 NULL,		/* type */
+			 *ppValue,      /* for value */
+			 &nSize);	/* for size of "value" */
+
+    if (rv == ERROR_FILE_NOT_FOUND)
+        rv = APR_NOTFOUND;
+
+    RegCloseKey(hKey);
+
+    return_error(rv);
+}
+
+ap_status_t ap_registry_get_array(ap_pool_t *p, const char *key, const char *name, ap_array_header_t **parray)
+{
+    char *pValue;
+    char *tmp;
+    char **newelem;
+    ap_status_t rv;
+    HKEY hKey;
+    int nSize = 0;
+
+    rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                      key,
+		      0,
+		      KEY_READ,
+		      &hKey);
+
+    if (rv == ERROR_FILE_NOT_FOUND)
+        return APR_ENODIR;
+    
+    if (rv != ERROR_SUCCESS)
+        return_error(rv);
+
+    /* Find the size required for the data by passing NULL as the buffer
+     * pointer. On return nSize will contain the size required for the
+     * buffer if the return value is ERROR_SUCCESS.
+     */
+    rv = RegQueryValueEx(hKey, 
+			 name,		/* key name */
+			 NULL,		/* reserved */
+			 NULL,		/* type */
+			 NULL,		/* for value */
+			 &nSize);		/* for size of "value" */
 
     if (rv == ERROR_FILE_NOT_FOUND) {
-	ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
-        "Registry does not contain value %s\\%s", key, name);
-	retval = -1;
-    }
-    else if (rv == ERROR_MORE_DATA) {
-	/* This should only happen if we got passed a pre-existing buffer
-	 * (pBuffer, nSizeBuffer). But I suppose it could also happen if we
-	 * allocate a buffer if another process changed the length of the
-	 * value since we found out its length above. Umm.
-	 */
-	ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO,rv,NULL,
-	    "Error getting registry value %s: buffer not big enough", key);
-	retval = -3;
+        rv = APR_NOTFOUND;
     }
     else if (rv != ERROR_SUCCESS) {
-	do_error(rv, "RegQueryValueEx(key %s)", key);
-	retval = -4;
+	return_error(rv);
     }
+    else 
+    {
+        pValue = ap_palloc(p, nSize);
+        rv = RegQueryValueEx(hKey, 
+			     name,		/* key name */
+			     NULL,		/* reserved */
+			     NULL,		/* type */
+			     pValue,        /* for value */
+			     &nSize);	/* for size of "value" */
 
-    rv = RegCloseKey(hKey);
-    if (rv != ERROR_SUCCESS) {
-        do_error(rv, "RegCloseKey HKLM\\%s", key);
-        if (retval == 0) {
-            /* Keep error status from RegQueryValueEx, if any */
-            retval = -4;  
+        nSize = 1;    /* Element Count */
+        tmp = pValue;
+        while (tmp[0] || tmp[1])
+        {
+            if (!tmp[0])
+                ++nSize;
+            ++tmp;
         }
+    
+        *parray = ap_make_array(p, nSize, sizeof(char *));
+        tmp = pValue;
+        newelem = (char **) ap_push_array(*parray);
+        *newelem = tmp;
+        while (tmp[0] || tmp[1])
+        {
+            if (!tmp[0]) {
+                newelem = (char **) ap_push_array(*parray);
+                *newelem = tmp + 1;
+            }
+            ++tmp;
+        }
+    }    
+    
+    RegCloseKey(hKey);
+
+    return_error(rv);
+}
+
+/*
+ * ap_registry_store_key_value() stores a value name and value under the
+ * Apache registry key. If the Apache key does not exist it is created
+ * first. This function is intended to be called from a wrapper function
+ * in this file to set particular data values, such as 
+ * ap_registry_set_server_root() below.
+ *
+ * Returns 0 if the value name and data was stored successfully, or
+ * returns -1 if the Apache key does not exist (since we try to create 
+ * this key, this should never happen), or -4 if any other error occurred
+ * (these values are consistent with ap_registry_get_key_value()).
+ * If the return value is negative then the error will already have been
+ * logged via aplog_error().
+ */
+
+ap_status_t ap_registry_store_value(const char *key, const char *name, const char *value)
+{
+    long rv;
+    HKEY hKey;
+
+    rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+		      key,
+		      0,
+	 	      KEY_WRITE,
+		      &hKey);
+
+    if (rv == ERROR_FILE_NOT_FOUND) 
+    {
+	rv = ap_registry_create_key(key);
+
+        if (rv != APR_SUCCESS)
+	    return_error(rv);
+	
+	rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+		          key,
+		          0,
+	 	          KEY_WRITE,
+		          &hKey);
+
+	if (rv == ERROR_FILE_NOT_FOUND)
+            return APR_ENODIR;
     }
 
-    return retval < 0 ? retval : nSize;
+    if (rv != ERROR_SUCCESS)
+        return_error(rv);
+
+    /* Now set the value and data */
+    rv = RegSetValueEx(hKey, 
+                       name,	/* value key name */
+		       0,	/* reserved */
+		       REG_SZ,	/* type */
+		       value,	/* value data */
+		       (DWORD) strlen(value) + 1); /* for size of "value" */
+
+    if (rv == ERROR_SUCCESS) {
+	ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO,rv,NULL,
+	    "Registry stored HKLM\\" REGKEY "\\%s value %s", key, value);
+    }
+
+    /* Make sure we close the key even if there was an error storing
+     * the data
+     */
+    RegCloseKey(hKey);
+    
+    return_error(rv);
+}
+
+ap_status_t ap_registry_store_array(ap_pool_t *p, const char *key, const char *name, int nelts, char const* const* elts)
+{
+    int  bufsize, i;
+    char *buf, *tmp;
+    long rv;
+    HKEY hKey;
+
+    rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+		      key,
+		      0,
+	 	      KEY_WRITE,
+		      &hKey);
+
+    if (rv == ERROR_FILE_NOT_FOUND) 
+    {
+	rv = ap_registry_create_key(key);
+
+        if (rv != APR_SUCCESS)
+	    return_error(rv);
+	
+	rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+		          key,
+		          0,
+	 	          KEY_WRITE,
+		          &hKey);
+
+	if (rv == ERROR_FILE_NOT_FOUND)
+            return APR_ENODIR;
+    }
+
+    if (rv != ERROR_SUCCESS)
+        return_error(rv);
+
+    bufsize = 1; /* For trailing second null */
+    for (i = 0; i < nelts; ++i)
+    {
+        bufsize += strlen(elts[i]) + 1;
+    }
+    if (!nelts) 
+        ++bufsize;
+
+    buf = ap_palloc(p, bufsize);
+    tmp = buf;
+    for (i = 0; i < nelts; ++i)
+    {
+        strcpy(tmp, elts[i]);
+        tmp += strlen(elts[i]) + 1;
+    }
+    if (!nelts) 
+        (*tmp++) = '\0';
+    *tmp = '\0'; /* Trailing second null */
+
+    /* Now set the value and data */
+    rv = RegSetValueEx(hKey, 
+                       name,	     /* value key name */
+		       0,	     /* reserved */
+		       REG_MULTI_SZ, /* type */
+		       buf,	     /* value data */
+		       (DWORD) bufsize); /* for size of "value" */
+
+    if (rv == ERROR_SUCCESS) {
+	ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO,rv,NULL,
+	    "Registry stored HKLM\\" REGKEY "\\%s", key);
+    }
+
+    /* Make sure we close the key even if there was an error storing
+     * the data
+     */
+    RegCloseKey(hKey);
+    
+    return_error(rv);
+}
+
+/* A key or value that does not exist is _not_ an error while deleting. */
+
+ap_status_t ap_registry_delete_value(const char *key, const char *name)
+{
+    ap_status_t rv;
+    HKEY hKey;
+    
+    rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+                      key,
+		      0,
+		      KEY_WRITE,
+		      &hKey);
+
+    if (rv == ERROR_FILE_NOT_FOUND)
+        return APR_SUCCESS;
+    
+    if (rv != ERROR_SUCCESS)
+        return_error(rv);
+
+    rv = RegDeleteValue(hKey, name);
+
+    if (rv == ERROR_FILE_NOT_FOUND)
+        rv = APR_SUCCESS;
+    
+    RegCloseKey(hKey);
+    return_error(rv);
 }
 
 /*
@@ -251,262 +481,17 @@ static int ap_registry_get_key_int(ap_pool_t *p, char *key, char *name, char *pB
  * dir will contain an empty string), or -1 if there was
  * an error getting the key.
  */
-int ap_registry_get_server_root(ap_pool_t *p, char **buf)
+ap_status_t ap_registry_get_server_root(ap_pool_t *p, char **buf)
 {
-    int rv;
+    ap_status_t rv;
 
-    rv = ap_registry_get_key_int(p, REGKEY, "ServerRoot", NULL, 0, buf);
-    if (rv < 0) {
+    rv = ap_registry_get_value(p, REGKEY, "ServerRoot", buf);
+    if (rv) 
         *buf = NULL;
-    }
 
-    return (rv < -1) ? -1 : 0;
+    return rv;
 }
 
-char *ap_get_service_key(char *display_name)
-{
-    size_t keylen = strlen(display_name);
-    char *key2, *key = malloc(sizeof(SERVICEKEYPRE) + keylen
-                            + sizeof(SERVICEKEYPOST) + 1);
-
-    key2 = ap_cpystrn(key, SERVICEKEYPRE, sizeof(SERVICEKEYPRE) + 1);
-    key2 = ap_collapse_spaces(key2, display_name);
-    key2 = ap_cpystrn(key2, SERVICEKEYPOST, sizeof(SERVICEKEYPOST) + 1);
-    
-    return(key);
-}
-
-int ap_registry_get_service_conf(ap_pool_t *p, char **buf, char *service_name)
-{
-    int rv;
-    char *key = ap_get_service_key(service_name);
-
-    rv = ap_registry_get_key_int(p, key, "ConfPath", NULL, 0, buf);
-    if (rv < 0) {
-        *buf = NULL;
-    }
-
-    free(key);
-    return (rv < -1) ? -1 : 0;
-}
-
-/**********************************************************************
- * The rest of this file deals with storing keys or values in the registry
- */
-
-char *ap_registry_parse_key(int index, char *key)
-{
-    char *head = key, *skey;
-    int i;
-    
-    if(!key)
-        return(NULL);
-
-    for(i = 0; i <= index; i++)
-    {
-        if(key && key[0] == '\\')
-            key++;
-        if (!key)
-            return(NULL);
-        head = key;
-        key = strchr(head, '\\');
-    }
-
-    if(!key)
-        return(strdup(head));
-    *key = '\0';
-    skey = strdup(head);
-    *key = '\\';
-    return(skey);
-}
-
-/*
- * ap_registry_create_apache_key() creates the Apache registry key
- * (HLKM\SOFTWARE\Apache Software Foundation\Apache\version, as defined at the start
- * of this file), if it does not already exist. It will be called by
- * ap_registry_store_key_int() if it cannot open this key. This 
- * function is intended to be called by ap_registry_store_key_int() if
- * the Apache key does not exist when it comes to store a data item.
- *
- * Returns 0 on success or -1 on error. If -1 is returned, the error will
- * already have been logged.
- */
-
-static int ap_registry_create_key(char *longkey)
-{
-    int index;
-    HKEY hKey;
-    HKEY hKeyNext;
-    int retval;
-    int rv;
-    char *key;
-
-    hKey = HKEY_LOCAL_MACHINE;
-    index = 0;
-    retval = 0;
-
-    /* Walk the tree, creating at each stage if necessary */
-    while (key=ap_registry_parse_key(index,longkey)) {
-	int result;
-
-	rv = RegCreateKeyEx(hKey,
-			    key,         /* subkey */
-			    0,	         /* reserved */
-			    NULL,        /* class */
-			    REG_OPTION_NON_VOLATILE,
-			    KEY_WRITE,
-			    NULL,
-			    &hKeyNext,
-			    &result);
-	if (rv != ERROR_SUCCESS) {
-	    do_error(rv, "RegCreateKeyEx(%s)", longkey);
-	    retval = -4;
-	}
-
-	/* Close the old key */
-	rv = RegCloseKey(hKey);
-	if (rv != ERROR_SUCCESS) {
-	    do_error(rv, "RegCloseKey", NULL);
-	    if (retval == 0) {
-		/* Keep error status from RegCreateKeyEx, if any */
-		retval = -4;  
-	    }
-	}
-
-	if (retval) {
-	    break;
-	}
-
-    free(key);
-	hKey = hKeyNext;
-	index++;
-    }
-
-    if (!key) {
-	/* Close the final key we opened, if we walked the entire
-	 * tree
-	 */
-	rv = RegCloseKey(hKey);
-	if (rv != ERROR_SUCCESS) {
-	    do_error(rv, "RegCloseKey", NULL);
-	    if (retval == 0) {
-		/* Keep error status from RegCreateKeyEx, if any */
-		retval = -4;  
-	    }
-	}
-    }
-    else
-        free(key);
-
-    return retval;
-}
-
-/*
- * ap_registry_store_key_int() stores a value name and value under the
- * Apache registry key. If the Apache key does not exist it is created
- * first. This function is intended to be called from a wrapper function
- * in this file to set particular data values, such as 
- * ap_registry_set_server_root() below.
- *
- * Returns 0 if the value name and data was stored successfully, or
- * returns -1 if the Apache key does not exist (since we try to create 
- * this key, this should never happen), or -4 if any other error occurred
- * (these values are consistent with ap_registry_get_key_int()).
- * If the return value is negative then the error will already have been
- * logged via aplog_error().
- */
-
-static int ap_registry_store_key_int(char *key, char *name, DWORD type, void *value, int value_size)
-{
-    long rv;
-    HKEY hKey;
-    int retval;
-
-    rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-		      key,
-		      0,
-	 	      KEY_WRITE,
-		      &hKey);
-
-    if (rv == ERROR_FILE_NOT_FOUND) {
-	/* Key could not be opened -- try to create it 
-	 */
-        if (ap_registry_create_key(key) < 0) {
-	    /* Creation failed (error already reported) */
-	    return -4;
-	}
-	
-	/* Now it has been created we should be able to open it
-	 */
-	rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-		  key,
-		  0,
-	 	  KEY_WRITE,
-		  &hKey);
-
-	if (rv == ERROR_FILE_NOT_FOUND) {
-            ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
-                         "Registry does not contain key %s after creation",key);
-	    return -1;
-	}
-    }
-
-    if (rv != ERROR_SUCCESS) {
-        do_error(rv, "RegOpenKeyEx HKLM\\%s", key);
-        return -4;
-    }
-
-    /* Now set the value and data */
-    rv = RegSetValueEx(hKey, 
-                       name,	/* value key name */
-		       0,	/* reserved */
-		       type,	/* type */
-		       value,	/* value data */
-		       (DWORD)value_size); /* for size of "value" */
-
-    retval = 0;	    /* Return value */
-
-    if (rv != ERROR_SUCCESS) {
-	do_error(rv, "RegQueryValueEx(key %s)", key);
-	retval = -4;
-    }
-    else {
-	ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO,rv,NULL,
-	    "Registry stored HKLM\\" REGKEY "\\%s value %s", key, 
-	    type == REG_SZ ? value : "(not displayable)");
-    }
-
-    /* Make sure we close the key even if there was an error storing
-     * the data
-     */
-    rv = RegCloseKey(hKey);
-    if (rv != ERROR_SUCCESS) {
-        do_error(rv, "RegCloseKey HKLM\\%s", key);
-        if (retval == 0) {
-            /* Keep error status from RegQueryValueEx, if any */
-            retval = -4;  
-        }
-    }
-
-    return retval;
-}
-
-/*
- * Sets the service confpath value within the registry. Returns 0 on success
- * or -1 on error. If -1 is return the error will already have been
- * logged via aplog_error().
- */
-
-int ap_registry_set_service_conf(char *conf, char *display_name)
-{
-    int rv;
-    char *key = ap_get_service_key(display_name);
-    
-    rv = ap_registry_store_key_int(key, "ConfPath", REG_SZ, conf, strlen(conf)+1);
-    free(key);
-
-    return rv < 0 ? -1: 0;
-}
 
 /*
  * Sets the serverroot value within the registry. Returns 0 on success
@@ -514,11 +499,7 @@ int ap_registry_set_service_conf(char *conf, char *display_name)
  * logged via aplog_error().
  */
 
-int ap_registry_set_server_root(char *dir)
+ap_status_t ap_registry_set_server_root(char *dir)
 {
-    int rv;
-
-    rv = ap_registry_store_key_int(REGKEY, "ServerRoot", REG_SZ, dir, strlen(dir)+1);
-
-    return rv < 0 ? -1 : 0;
+    return ap_registry_store_value(REGKEY, "ServerRoot", dir);
 }
