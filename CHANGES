@@ -1,17 +1,8 @@
-Changes with Apache 2.0.32-dev
+Changes with Apache 2.0.31
 
   *) Create the scoreboard (in the parent) in a global pool context,
      so it survives graceful restarts. This fixes a SEGV during
      graceful restarts.  [Aaron Bannert]
-
-  *) The Location: response header field, used for external
-     redirect, *must* be an absoluteURI.  The Redirect directive
-     tested for that, but RedirectMatch didn't -- it would allow
-     almost anything through.  Now it will try to turn an abs_path
-     into an absoluteURI, but it will correctly varf like Redirect
-     if the final redirection target isn't an absoluteURI.  [Ken Coar]
-
-Changes with Apache 2.0.31
 
   *) Add a timeout option to the proxy code 'ProxyTimeout' 
      [Ian Holsman]
