@@ -2473,7 +2473,9 @@ static void set_group_privs(void)
 
 	    if ((ent = getpwuid(uid)) == NULL) {
 		aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			 "getpwuid: couldn't determine user name from uid");
+			 "getpwuid: couldn't determine user name from uid %u, "
+			 "you probably need to modify the User directive",
+			 (unsigned)uid);
 		exit(1);
 	    }
 
@@ -2489,7 +2491,8 @@ static void set_group_privs(void)
 
 	if (initgroups(name, group_id) == -1) {
 	    aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			"initgroups: unable to set groups");
+			"initgroups: unable to set groups for User %s "
+			"and Group %u", name, (unsigned)group_id);
 	    exit(1);
 	}
 #ifdef MULTIPLE_GROUPS
@@ -2501,7 +2504,8 @@ static void set_group_privs(void)
 #endif
 	if (setgid(group_id) == -1) {
 	    aplog_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			"setgid: unable to set group id");
+			"setgid: unable to set group id to Group %u",
+			(unsigned)group_id);
 	    exit(1);
 	}
 #endif
