@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/01/20 13:20:06 $
+Last modified: $Date: 2003/01/31 16:45:57 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -48,6 +48,8 @@ Things That Need Fixing
 - Windows platform docs are in desperate need of rewrites/updates for 2.0.
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
     - "using apache" has been done, "compiling apache" is still open
+    - hints on uninstalling apache (exit monitor, close directories,
+      registry entries etc) (PR 10154)
 
 - New Auth system
     - Much clean-up and enhancement of aaa howto
@@ -58,6 +60,8 @@ Things That Need Fixing
     - mod_proxy: updates for 2.0
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
+    - mod_rewrite: explain, when what variables are actually available
+      (PR 16402)
     
 - man pages
     - Convert from nroff to our xml format.  See list at bottom.
