@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.16 $ ($Date: 1997/04/11 03:25:04 $)
+$Revision: 1.17 $ ($Date: 1997/04/11 03:36:58 $)
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -469,7 +469,17 @@ $Revision: 1.16 $ ($Date: 1997/04/11 03:25:04 $)
    HREF="../mod/mod_expires.html"
    REL="Help"
   ><CODE>mod_expires</CODE></A>
-  documentation for more details.)
+  documentation for more details.)  Another possibility is to use the
+  <A
+   HREF="../mod/mod_include.html#xbithack"
+   REL="Help"
+  ><SAMP>XBitHack Full</SAMP></A>
+  mechanism, which tells Apache to send (under certain circumstances
+  detailed in the XBitHack directive description) a
+  <SAMP>Last-Modified</SAMP> header based upon the last modification
+  time of the file being parsed.  Note that this may actually be lying
+  to the client if the parsed file doesn't change but the SSI-inserted
+  content does.
   </P>
   <HR>
  </LI>
