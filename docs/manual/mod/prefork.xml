@@ -100,7 +100,7 @@ uses</a></seealso>
 <directivesynopsis>
 <name>MaxSpareServers</name>
 <description>Maximum number of idle child server processes</description>
-<syntax>MaxSpareServers <var>number</var><br /></syntax>
+<syntax>MaxSpareServers <var>number</var></syntax>
 <default>MaxSpareServers 10</default>
 <contextlist><context>server config</context></contextlist>
 

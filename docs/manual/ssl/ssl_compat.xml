@@ -50,6 +50,8 @@ provide.</p>
 <section id="table1">
 <title>Table 1: Configuration Directive Mapping</title>
 <table style="zebra">
+<columnspec><column width=".32"/><column width=".32"/>
+<column width=".32"/></columnspec>
 <tr><th>Old Directive</th><th>mod_ssl Directive</th><th>Comment</th></tr>
 
 <tr><th colspan="3">Apache-SSL 1.x &amp; mod_ssl 2.0.x compatibility:</th></tr>
@@ -130,6 +132,8 @@ href="#table2">Table 2</a>.</p>
 <section id="table2">
 <title>Table 2: Environment Variable Derivation</title>
 <table style="zebra">
+<columnspec><column width=".38"/><column width=".38"/>
+<column width=".2"/></columnspec>
 <tr><th>Old Variable</th><th>mod_ssl Variable</th><th>Comment</th></tr>
 
 <tr><td><code>SSL_PROTOCOL_VERSION</code></td><td><code>SSL_PROTOCOL</code></td><td>renamed</td></tr>
@@ -229,6 +233,7 @@ are listed in <a href="#table3">Table 3</a>.</p>
 <section id="table3">
 <title>Table 3: Custom Log Cryptography Function</title>
 <table>
+<columnspec><column width=".2"/><column width=".4"/></columnspec>
 <tr><th>Function Call</th><th>Description</th></tr>
 
 <tr><td><code>%...{version}c</code></td>   <td>SSL protocol version</td></tr>

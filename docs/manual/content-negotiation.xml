@@ -242,6 +242,7 @@
 <section id="dimensions"><title>Dimensions of Negotiation</title>
 
     <table>
+      <columnspec><column width=".15"/><column width=".85"/></columnspec>
       <tr valign="top">
         <th>Dimension</th>
 
@@ -524,6 +525,8 @@ decimal places before choosing the best variant.</p>
     invalid hyperlinks:</p>
 
     <table border="1" cellpadding="8" cellspacing="0">
+      <columnspec><column width=".2"/><column width=".2"/>
+        <column width=".2"/></columnspec>
       <tr>
         <th>Filename</th>
 

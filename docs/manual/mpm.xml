@@ -85,6 +85,7 @@ systems.  This will be the MPM selected if you do not make another
 choice at compile-time.</p>
 
 <table>
+<columnspec><column width=".2"/><column width=".2"/></columnspec>
 <tr><td>BeOS</td><td><module>beos</module></td></tr>
 <tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
 <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
