@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/26 20:12:13 $]
+Last modified at [$Date: 2004/02/26 20:21:16 $]
 
 Release:
 
@@ -252,7 +252,13 @@ PATCHES TO BACKPORT FROM 2.1
         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.109&r2=1.110
         [gosh nd, must have lost the commit message for that second one;
         I need to stop using silly gcc 3.2 I think]
-      +1: trawick, stoddard, jerenkrantz
+        oops, 2 additional fixes needed:
+        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.113&r2=1.114
+        [maybe nd didn't do such a big favor after all ;) ]
+        Fix existing bug that leads to segfault with this fix if
+        "BufferedLogs Off" is used:
+        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.114&r2=1.115
+      +1: trawick (, stoddard, jerenkrantz)
 
     * mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
       size.  PR 20617  [Jesse Pelton <jsp pkc.com>]
