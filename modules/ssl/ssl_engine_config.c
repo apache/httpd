@@ -857,18 +857,18 @@ const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd,
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    ssl_verify_t id;
+    ssl_verify_t mode;
     const char *err;
 
-    if ((err = ssl_cmd_verify_parse(cmd, arg, &id))) {
+    if ((err = ssl_cmd_verify_parse(cmd, arg, &mode))) {
         return err;
     }
     
     if (cmd->path) {
-        dc->nVerifyClient = id;
+        dc->nVerifyClient = mode;
     }
     else {
-        sc->server->auth.verify_mode = id;
+        sc->server->auth.verify_mode = mode;
     }
 
     return NULL;
@@ -1279,11 +1279,17 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
 
 const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd,
                                    void *dcfg,
-                                   int flag)
+                                   const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    ssl_verify_t mode;
+    const char *err;
 
-    sc->proxy->auth.verify_mode = flag ? TRUE : FALSE;
+    if ((err = ssl_cmd_verify_parse(cmd, arg, &id))) {
+        return err;
+    }
+
+    sc->proxy->auth.verify_mode = mode;
 
     return NULL;
 }

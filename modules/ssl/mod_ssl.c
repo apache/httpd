@@ -160,7 +160,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(ProxyCipherSuite, TAKE1,
                "SSL Proxy: colon-delimited list of permitted SSL ciphers "
                "(`XXX:...:XXX' - see manual)")
-    SSL_CMD_SRV(ProxyVerify, FLAG,
+    SSL_CMD_SRV(ProxyVerify, TAKE1,
                "SSL Proxy: whether to verify the remote certificate "
                "(`on' or `off')")
     SSL_CMD_SRV(ProxyVerifyDepth, TAKE1,
