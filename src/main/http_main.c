@@ -422,6 +422,44 @@ void reset_timeout (request_rec *r) {
 
 #if defined(HAVE_MMAP)
 static short_score *scoreboard_image=NULL;
+
+static void setup_shared_mem(void)
+{
+    caddr_t m;
+#if defined(MAP_ANON) || defined(MAP_FILE)
+/* BSD style */
+    m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
+	     PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
+    if (m == (caddr_t)-1)
+    {
+	perror("mmap");
+	fprintf(stderr, "httpd: Could not mmap memory\n");
+	exit(1);
+    }
+#else
+/* Sun style */
+    int fd;
+
+    fd = open("/dev/zero", O_RDWR);
+    if (fd == -1)
+    {
+	perror("open");
+	fprintf(stderr, "httpd: Could not open /dev/zero\n");
+	exit(1);
+    }
+    m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
+	     PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (m == (caddr_t)-1)
+    {
+	perror("mmap");
+	fprintf(stderr, "httpd: Could not mmap /dev/zero\n");
+	exit(1);
+    }
+    close(fd);
+#endif
+    scoreboard_image = (short_score *)m;
+}
+
 #elif defined(HAVE_SHMGET)
 static short_score *scoreboard_image=NULL;
 static key_t shmkey = IPC_PRIVATE;
@@ -551,46 +589,8 @@ static int force_read (int fd, char *buffer, int bufsz)
 /* Called by parent process */
 void reinit_scoreboard (pool *p)
 {
-#if defined(HAVE_MMAP)
+#if defined(HAVE_SHMGET) || defined(HAVE_MMAP)
     if (scoreboard_image == NULL)
-    {
-	caddr_t m;
-#if defined(MAP_ANON) || defined(MAP_FILE)
-/* BSD style */
-	m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
-		 PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
-	if (m == (caddr_t)-1)
-	{
-	    perror("mmap");
-	    fprintf(stderr, "httpd: Could not mmap memory\n");
-	    exit(1);
-	}
-#else
-/* Sun style */
-	int fd;
-
-	fd = open("/dev/zero", O_RDWR);
-	if (fd == -1)
-	{
-	    perror("open");
-	    fprintf(stderr, "httpd: Could not open /dev/zero\n");
-	    exit(1);
-	}
-	m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
-		 PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-	if (m == (caddr_t)-1)
-	{
-	    perror("mmap");
-	    fprintf(stderr, "httpd: Could not mmap /dev/zero\n");
-	    exit(1);
-	}
-	close(fd);
-#endif
-	scoreboard_image = (short_score *)m;
-    }
-    memset(scoreboard_image, 0, HARD_SERVER_MAX*sizeof(short_score));
-#elif defined(HAVE_SHMGET)
-    if (scoreboard_image == NULL )
     {
 	setup_shared_mem();
     }
