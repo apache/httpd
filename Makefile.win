@@ -27,6 +27,10 @@
 
 default:        _apacher
 
+!IF ("$(CTARGET)" == "") && EXIST("Apache.sln")
+CTARGET=/build
+!ENDIF
+
 !IF !EXIST("srclib\apr")
 !MESSAGE Please check out or download and unpack the Apache Portability Runtime
 !MESSAGE sources (apr and apr-util) into your $(INSTDIR)\srclib directory.
@@ -61,6 +65,9 @@ _tryssl:
 	cd support
 	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 .\$(LONG)\abs.exe
 	cd ..
+!ELSEIF EXIST("Apache.sln")
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project abs
 !ELSE
 	msdev Apache.dsw /USEENV /MAKE \
 		"mod_ssl - Win32 $(LONG)" \
@@ -85,6 +92,8 @@ _tryzlib:
 	cd modules\filters
 	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 .\$(LONG)\mod_deflate.so
 	cd ..\..
+!ELSEIF EXIST("Apache.sln")
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
 !ELSE
 	msdev Apache.dsw /USEENV /MAKE \
 		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
@@ -275,6 +284,26 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f ApacheMonitor.mak   CFG="ApacheMonitor - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f wintty.mak          CFG="wintty - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+
+!ELSEIF EXIST("Apache.sln")
+
+_cleanr:  
+	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET="/clean" _build
+
+_cleand:  
+	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   CTARGET="/clean" _build
+
+_build:
+	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
+	-del $(LONG)\buildmark.obj
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project BuildBin
+!IF EXIST("srclib\openssl")
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project abs
+!ENDIF
+!IF EXIST("srclib\zlib")
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
+!ENDIF
 
 !ELSE
 
