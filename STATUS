@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/08/16 16:27:02 $]
+  Last modified at [$Date: 1999/08/16 17:59:39 $]
 
 Release:
 
@@ -485,11 +485,14 @@ Binaries (1.3.9):
  m68k-apple-aux3.1.1           no      Jim Jagielski
  m88k-dg-dgux5.4R2.01          no      Sameer parekh
  m88k-next-next                no      Rob Hartill
+ mips-dec-ultrix4.4            no      Sameer Parekh
+ mips-unknown-linux            no      Lars Eilebrecht
  mips-sgi-irix5.3              no      Mark Imbrianco
  mips-sgi-irix6.2              no      Lars Eilebrecht
  mips-sgi-irix6.4              no      Lars Eilebrecht
  mips-sni-svr4                 no      Martin Kraemer
  OS/2                          no      Brian Havard
+ powerpc-apple-rhapsody5.3     no      Wilfredo Sanchez
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.2             no      Bill Stoddard
@@ -500,6 +503,3 @@ Binaries (1.3.9):
  sparc-sun-sunos4.1.4          no      Lars Eilebrecht, Michael Douglass
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht
- mips-dec-ultrix4.4            no      Sameer Parekh
- mips-unknown-linux            no      Lars Eilebrecht
-
