@@ -249,19 +249,21 @@ int cache_select_url(request_rec *r, char *url)
                 const char *etag, *lastmod;
 
                 /* Make response into a conditional */
+
                 /* FIXME: What if the request is already conditional? */
                 etag = apr_table_get(h->resp_hdrs, "ETag");
-                if (!etag) {
-                    lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
-                }
+                lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
+
                 if (etag || lastmod) {
-                    /* if we have a cached etag or Last-Modified */
+                    /* If we have a cached etag and/or Last-Modified */
+
                     cache->stale_headers = apr_table_copy(r->pool,
                                                           r->headers_in);
                     if (etag) {
                         apr_table_set(r->headers_in, "If-None-Match", etag);
                     }
-                    else if (lastmod) {
+                    
+                    if (lastmod) {
                         apr_table_set(r->headers_in, "If-Modified-Since",
                                       lastmod);
                     }
