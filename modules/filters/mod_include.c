@@ -780,7 +780,7 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p
     const char *args = r->args;
 
     if (!args || !args[0] || strchr(args, '=')) {
-       *argv = NULL;
+       numwords = 1;
     }
     else {
         /* count the number of keywords */
@@ -789,18 +789,21 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p
                 ++numwords;
             }
         }
-        if (numwords > APACHE_ARG_MAX) {
-            numwords = APACHE_ARG_MAX;	/* Truncate args to prevent overrun */
-        }
-        *argv = (char **) ap_palloc(p, (numwords + 1) * sizeof(char *));
-
-        for (x = 1, idx = 0; x <= numwords; x++) {
-            w = ap_getword_nulls(p, &args, '+');
-            ap_unescape_url(w);
-            (*argv)[idx++] = ap_escape_shell_cmd(p, w);
-        }
-        (*argv)[idx] = NULL;
     }
+    /* Everything is - 1 to account for the first parameter which is the
+     * program name.  We didn't used to have to do this, but APR wants it.
+     */
+    if (numwords > APACHE_ARG_MAX - 1) {
+        numwords = APACHE_ARG_MAX - 1;	/* Truncate args to prevent overrun */
+    }
+    *argv = (char **) ap_palloc(p, (numwords + 2) * sizeof(char *));
+ 
+    for (x = 1, idx = 1; x < numwords; x++) {
+        w = ap_getword_nulls(p, &args, '+');
+        ap_unescape_url(w);
+        (*argv)[idx++] = ap_escape_shell_cmd(p, w);
+    }
+    (*argv)[idx] = NULL;
 
     return APR_SUCCESS;
 }
@@ -861,6 +864,7 @@ static int include_cmd(char *s, request_rec *r)
     }
     else {
         build_argv_list(&argv, r, r->pool);
+        argv[0] = ap_pstrdup(r->pool, s);
         rc = ap_create_process(&procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
 
         if (rc != APR_SUCCESS) {
