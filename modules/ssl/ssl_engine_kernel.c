@@ -799,6 +799,20 @@ int ssl_hook_Access(request_rec *r)
         }
     }
 
+    /* If we're trying to have the user name set from a client
+     * certificate then we need to set it here. This should be safe as
+     * the user name probably isn't important from an auth checking point
+     * of view as the certificate supplied acts in that capacity.
+     * However, if FakeAuth is being used then this isn't the case so
+     * we need to postpone setting the username until later.
+     */
+    if ((dc->nOptions & SSL_OPT_FAKEBASICAUTH) == 0 && dc->szUserName) {
+        char *val = ssl_var_lookup(r->pool, r->server, r->connection,
+                                   r, (char *)dc->szUserName);
+        if (val && val[0])
+            r->user = val;
+    } 
+
     /*
      * Else access is granted from our point of view (except vendor
      * handlers override). But we have to return DECLINED here instead
@@ -1040,17 +1054,6 @@ int ssl_hook_Fixup(request_rec *r)
      */
     if (!(((sc->enabled == SSL_ENABLED_TRUE) || (sc->enabled == SSL_ENABLED_OPTIONAL)) && sslconn && (ssl = sslconn->ssl))) {
         return DECLINED;
-    }
-
-    /*
-     * Set r->user if requested
-     */
-    if (dc->szUserName) {
-        val = ssl_var_lookup(r->pool, r->server, r->connection, 
-                             r, (char *)dc->szUserName);
-        if (val && val[0]) {
-            r->user = val;
-        }
     }
 
     /*
