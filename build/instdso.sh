@@ -43,7 +43,7 @@ case $SYS in
         echo $CMD
         $CMD || exit $?
         ;;
-    OS/2)
+    OS/2|OS/390)
         CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR/"
         echo $CMD
         $CMD || exit $?
