@@ -350,12 +350,12 @@ static int writable(char *fname)
 /*
  * Return true if the named file exists, regardless of permissions.
  */
-static int exists(char *fname)
+static int exists(char *fname, apr_pool_t *pool)
 {
     apr_finfo_t sbuf;
     apr_status_t check;
 
-    check = apr_stat(&sbuf, fname, APR_FINFO_NORM, NULL);
+    check = apr_stat(&sbuf, fname, APR_FINFO_NORM, pool);
     return (check ? 0 : 1);
 }
 
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
 	 * Verify that the file exists if -c was omitted.  We give a special
 	 * message if it doesn't.
 	 */
-	if ((! newfile) && (! exists(pwfilename))) {
+	if ((! newfile) && (! exists(pwfilename, pool))) {
 	    fprintf(stderr,
 		    "%s: cannot modify file %s; use '-c' to create it\n",
 		    argv[0], pwfilename);
