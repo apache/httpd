@@ -609,7 +609,7 @@ error</td></tr>
 <tr><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--#" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">String that starts an include element</td></tr>
 <tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the format in which date strings are
 displayed</td></tr>
-<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">String displayed when an unset variable is echoed</td></tr>
+<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">String displayed when an unset variable is echoed</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates 
 for Client Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>directory-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for 
