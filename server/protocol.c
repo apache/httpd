@@ -227,6 +227,10 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
             }
         }
         e = APR_BRIGADE_FIRST(b); 
+        if (APR_BUCKET_IS_EOS(e)) {
+            apr_brigade_destroy(b);
+            return -1;
+        }
         if (e->length == 0) {
             apr_bucket_delete(e);
             continue;
