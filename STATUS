@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/05 01:28:11 $]
+Last modified at [$Date: 2003/07/07 19:11:34 $]
 
 Release:
 
@@ -196,21 +196,6 @@ PATCHES TO PORT FROM 2.1
         buildconf 1.36, 1.37
         build/.cvsignore 1.4
         +1: trawick, jerenkrantz
-
-    * Ignore the Server header field as set by modules and CGIs.
-        modules/http/http_protocol.c 1.470
-        jerenkrantz: When it is a proxy response that doesn't have server
-                     string set, we shouldn't place one there.  Correct?
-        trawick:     rfc2616/14.38: "The Server response-header field contains
-                     information about the software used by the origin server 
-                     to handle the request." ... "If the response is being 
-                     forwarded through a proxy, the proxy application MUST NOT
-                     modify the Server response-header."  
-                     I don't see any wiggle room for us to be adding one if
-                     the origin server didn't include it.
-                     BTW, with my patch Apache 2 and Apache 1.3 will behave
-                     identically.  (That's how I read the code, anyway :) )
-        +1: trawick, nd, jerenkrantz
 
     * mod_rewrite: Perform child initialization on the rewrite log
       lock.  This fixes a log corruption issue when flock-based 

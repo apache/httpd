@@ -1279,10 +1279,13 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     h.bb = bb;
     form_header_field(&h, "Date", date);
 
-    /* keep a previously set server header (possibly from proxy), otherwise
+    /* keep the set-by-proxy server header, otherwise
      * generate a new server header */
-    if ((server = apr_table_get(r->headers_out, "Server")) != NULL) {
-        form_header_field(&h, "Server", server);
+    if (r->proxyreq != PROXYREQ_NONE) {
+        server = apr_table_get(r->headers_out, "Server");
+        if (server) {
+            form_header_field(&h, "Server", server);
+        }
     }
     else {
         form_header_field(&h, "Server", ap_get_server_version());
