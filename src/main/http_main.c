@@ -1024,7 +1024,7 @@ static void accept_mutex_off(void)
 #endif
 
 /* On some architectures it's safe to do unserialized accept()s in the single
- * ' case.  But it's never safe to do it in the case where there's
+ * Listen case.  But it's never safe to do it in the case where there's
  * multiple Listen statements.  Define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
  * when it's safe in the single Listen case.
  */
