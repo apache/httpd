@@ -2643,7 +2643,6 @@ static int handle_multi(request_rec *r)
      * some values in this request will be allocated in r->pool, and others in
      * sub_req->pool.
      */
-    ap_pool_join(r->pool, sub_req->pool);
     r->mtime = 0; /* reset etag info for subrequest */
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
