@@ -256,12 +256,30 @@
             <xsl:apply-templates select="section" mode="index"/>
           </ul>
 
-          <hr/>
+          <hr />
+          
+          <xsl:if test="seealso">
+            <p>
+              <strong>
+                <xsl:value-of select="$messages/message[@name='seealso']"/>
+              </strong>
+            </p>
+            
+            <ul>
+              <xsl:for-each select="seealso">
+                <li>
+                  <xsl:apply-templates/>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
           
           <xsl:apply-templates select="section"/>
         </blockquote>
        
         <!-- Page footer -->
+        <hr/>
+        
         <h3 align="center">
           <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
         </h3>
