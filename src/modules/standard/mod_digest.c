@@ -280,7 +280,7 @@ static int check_nonce(pool *p, const char *prefix, const char *nonce) {
     char *timestamp = (char *)nonce + 2 * MD5_DIGESTSIZE;
     char *md5;
 
-    if (strlen(nonce) < MD5_DIGESTSIZE)
+    if (strlen(nonce) < 2 * MD5_DIGESTSIZE)
        return AUTH_REQUIRED;
 
     md5 = ap_md5(p, (unsigned char *)ap_pstrcat(p, prefix, timestamp, NULL));
