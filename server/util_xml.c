@@ -20,6 +20,7 @@
 #include "http_log.h"
 #include "http_core.h"
 
+#include "util_charset.h"
 #include "util_xml.h"
 
 
@@ -110,6 +111,9 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
         return HTTP_BAD_REQUEST;
     }
 
+#if APR_CHARSET_EBCDIC
+    apr_xml_parser_convert_doc(r->pool, *pdoc, ap_hdrs_from_ascii);
+#endif
     return OK;
 
   parser_error:
