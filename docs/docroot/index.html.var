@@ -2,7 +2,7 @@ URI: index.html.ca
 Content-language: ca
 Content-type: text/html
 
-URI: index.html.cz
+URI: index.html.cz.ISO-8859-2
 Content-language: cz
 Content-type: text/html;charset=ISO-8859-2
 
@@ -42,7 +42,7 @@ URI: index.html.he.iso8859-8
 Content-language: he
 Content-type: text/html;charset=ISO-8859-8
 
-URI: index.html.hr
+URI: index.html.hr.ISO-8859-2
 Content-language: hr
 Content-type: text/html;charset=ISO-8859-2
 
