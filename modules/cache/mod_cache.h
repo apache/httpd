@@ -240,6 +240,9 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
  * @return 0 ==> cache object is stale, 1 ==> cache object is fresh
  */
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, request_rec *r);
+
+CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r);
+
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
 CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels, 

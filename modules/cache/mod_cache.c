@@ -532,6 +532,12 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             /* Oh, hey.  It isn't that stale!  Yay! */
             cache->handle = cache->stale_handle;
             info = &cache->handle->cache_obj->info;
+            /* Load in the saved status. */
+            r->status = info->status;
+            /* The cached response will override our err_headers_out. */
+            apr_table_clear(r->err_headers_out);
+            /* Merge in our headers. */
+            ap_cache_accept_headers(cache->handle, r);
             rv = OK;
         }
         else {
@@ -665,7 +671,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             /* FIXME: Should we now go and make sure it's really not
              * modified since what the user thought?
              */
-            bkt = apr_bucket_eos_create(bb->bucket_alloc);
+            bkt = apr_bucket_flush_create(bb->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, bkt);
         }
         else {
