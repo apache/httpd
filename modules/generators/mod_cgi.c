@@ -329,24 +329,24 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     /* Transumute ourselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
      */
-    if ((ap_createprocattr_init(&procattr, p) != APR_SUCCESS) ||
-        (ap_setprocattr_io(procattr, 
-                           APR_FULL_BLOCK, 
-                           APR_FULL_BLOCK,
-                           APR_FULL_BLOCK) != APR_SUCCESS) ||
-        (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename))        != APR_SUCCESS) ||
-        (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
+    if (((rc = ap_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
+        ((rc = ap_setprocattr_io(procattr, 
+                                 APR_FULL_BLOCK, 
+                                 APR_FULL_BLOCK,
+                                 APR_FULL_BLOCK)) != APR_SUCCESS) ||
+        ((rc = ap_setprocattr_dir(procattr, 
+                                  ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
+        ((rc = ap_setprocattr_cmdtype(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
 		      "couldn't create child process: %s", r->filename);
-        rc = !APR_SUCCESS;
     }
     else {
         rc = ap_create_process(&procnew, command, argv, env, procattr, p);
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
