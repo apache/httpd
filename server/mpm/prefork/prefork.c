@@ -558,6 +558,7 @@ static void child_main(int child_num_arg)
      * we can have cleanups occur when the child exits.
      */
     apr_allocator_create(&allocator);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&pchild, pconf, NULL, allocator);
     apr_allocator_owner_set(allocator, pchild);
 

@@ -373,6 +373,7 @@ void worker_main(void *arg)
     tv.tv_usec = 0;
 
     apr_allocator_create(&allocator);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
     apr_allocator_owner_set(allocator, ptrans);
     apr_pool_tag(ptrans, "transaction");
