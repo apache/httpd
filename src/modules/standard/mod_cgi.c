@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_cgi.c,v 1.18 1996/08/23 18:19:13 jim Exp $ */
+/* $Id: mod_cgi.c,v 1.19 1996/10/08 21:47:00 brian Exp $ */
 
 /*
  * http_script: keeps all script-related ramblings together.
@@ -424,7 +424,7 @@ int cgi_handler (request_rec *r)
         hard_timeout ("copy script args", r);
         handler = signal (SIGPIPE, SIG_IGN);
     
-	while ((len_read = read_client_block (r, argsbuffer, HUGE_STRING_LEN)))
+	while ((len_read = get_client_block (r, argsbuffer, HUGE_STRING_LEN)))
 	{
 	    if (fwrite (argsbuffer, 1, len_read, script_out) == 0)
 		break;

@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.52 1996/10/08 20:43:33 brian Exp $ */
+/* $Id: http_protocol.c,v 1.53 1996/10/08 21:46:59 brian Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -1051,6 +1051,35 @@ void finalize_request_protocol (request_rec *r) {
 
 }
 
+/* Here we deal with getting input from the client. This can be in the
+ * form of POST or PUT (other methods can be added later), and may be
+ * transmitted in either a fixed content-length or via chunked
+ * transfer-coding.
+ *
+ * Note that this is more complicated than it was in Apache 1.1 and prior
+ * versions, because chunked support means that the module does less.
+ *
+ * The proper procedure is this:
+ * 1. Call setup_client_block() near the beginning of the request
+ *    handler. This will set up all the neccessary properties, and
+ *    will return either OK, or an error code. If the latter,
+ *    the module should return that error code.
+ *
+ * 2. When you are ready to possibly accept input, call should_client_block().
+ *    This will tell the module whether or not to read input. If it is 0,
+ *    the module should assume that the input is of a non-entity type
+ *    (e.g. a GET request). This step also sends a 100 Continue response
+ *    to HTTP/1.1 clients, so should not be called until the module
+ *    is *defenitely* ready to read content. (otherwise, the point of the
+ *    100 response is defeated). Never call this function more than once.
+ *
+ * 3. Finally, call get_client_block in a loop. Pass it a buffer and its
+ *    size. It will put data into the buffer (not neccessarily the full
+ *    buffer, in the case of chunked inputs), and return the length of
+ *    the input block. When it is done reading, it will return 0.
+ *
+ */
+
 int setup_client_block (request_rec *r)
 {
     char *tenc = table_get (r->headers_in, "Transfer-Encoding");
@@ -1078,7 +1107,16 @@ int setup_client_block (request_rec *r)
 }
 
 int should_client_block (request_rec *r) {
-    return (r->method_number == M_POST || r->method_number == M_PUT);
+   if (r->method_number != M_POST && r->method_number != M_PUT)
+       return 0;
+
+   if (r->proto_num >= 1001) {
+       bvputs(r->connection->client,
+            SERVER_PROTOCOL, " 100 Continue\015\012\015\012", NULL);
+       bflush(r->connection->client);
+   }
+
+   return 1;
 }
 
 static int rd_chunk_size (BUFF *b) {
@@ -1103,7 +1141,7 @@ static int rd_chunk_size (BUFF *b) {
     return (c == EOF) ? -1 : chunksize;
 }
 
-long read_client_block (request_rec *r, char *buffer, int bufsiz)
+long get_client_block (request_rec *r, char *buffer, int bufsiz)
 {
     long c, len_read, len_to_read = r->remaining;
 

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_protocol.h,v 1.8 1996/08/20 11:50:50 paul Exp $ */
+/* $Id: http_protocol.h,v 1.9 1996/10/08 21:46:59 brian Exp $ */
 
 /*
  * Prototypes for routines which either talk directly back to the user,
@@ -133,7 +133,7 @@ int index_of_response (int status);
      
 int setup_client_block (request_rec *r);
 int should_client_block (request_rec *r);
-long read_client_block (request_rec *r, char *buffer, int bufsiz);
+long get_client_block (request_rec *r, char *buffer, int bufsiz);
 
 /* Sending a byterange */
 

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.h,v 1.12 1996/10/06 02:25:02 fielding Exp $ */
+/* $Id: http_config.h,v 1.13 1996/10/08 21:46:57 brian Exp $ */
 
 /*
  * The central data structures around here...
@@ -215,7 +215,7 @@ typedef struct module_struct {
  * handle it back-compatibly, or at least signal an error).
  */
 
-#define MODULE_MAGIC_NUMBER 19960806
+#define MODULE_MAGIC_NUMBER 19961007
 #define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, 0, __FILE__, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
