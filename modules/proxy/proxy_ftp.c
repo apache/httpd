@@ -438,7 +438,7 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
  */
 static int ftp_unauthorized (request_rec *r, int log_it)
 {
-    r->proxyreq = 0;
+    r->proxyreq = PROXYREQ_NONE;
     /* Log failed requests if they supplied a password
      * (log username/password guessing attempts)
      */

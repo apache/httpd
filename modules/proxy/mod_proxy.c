@@ -156,7 +156,7 @@ static int proxy_detect(request_rec *r)
 	    && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))
 	    && ap_matches_request_vhost(r, r->parsed_uri.hostname,
                r->parsed_uri.port_str ? r->parsed_uri.port : ap_default_port(r)))) {
-	    r->proxyreq = 1;
+	    r->proxyreq = PROXYREQ_PROXY;
 	    r->uri = r->unparsed_uri;
 	    r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
 	    r->handler = "proxy-server";
@@ -166,7 +166,7 @@ static int proxy_detect(request_rec *r)
     else if (conf->req && r->method_number == M_CONNECT
 	     && r->parsed_uri.hostname
 	     && r->parsed_uri.port_str) {
-	    r->proxyreq = 1;
+	    r->proxyreq = PROXYREQ_PROXY;
 	    r->uri = r->unparsed_uri;
 	    r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
 	    r->handler = "proxy-server";
@@ -201,7 +201,7 @@ static int proxy_trans(request_rec *r)
            r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
                                  r->uri + len, NULL);
            r->handler = "proxy-server";
-           r->proxyreq = 1;
+           r->proxyreq = PROXYREQ_REVERSE;
            return OK;
 	}
     }
@@ -303,7 +303,7 @@ static int proxy_handler(request_rec *r)
 	long maxfwd = strtol(maxfwd_str, NULL, 10);
 	if (maxfwd < 1) {
 	    int access_status;
-	    r->proxyreq = 0;
+	    r->proxyreq = PROXYREQ_NONE;
 	    if ((access_status = ap_send_http_trace(r)))
 		ap_die(access_status, r);
 	    else
