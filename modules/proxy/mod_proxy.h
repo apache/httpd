@@ -88,6 +88,7 @@
 #include "apr_strings.h"
 #include "apr_buckets.h"
 #include "apr_md5.h"
+#include "apr_network_io.h"
 #include "apr_pools.h"
 #include "apr_strings.h"
 #include "apr_uri.h"
