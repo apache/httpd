@@ -208,34 +208,6 @@ DocumentRoot "@exp_htdocsdir@"
     Deny from all
 </FilesMatch>
 
-<IfModule mime_module>
-    #
-    # TypesConfig describes where the mime.types file (or equivalent) is
-    # to be found.
-    #
-    TypesConfig @rel_sysconfdir@/mime.types
-</IfModule>
-
-#
-# DefaultType is the default MIME type the server will use for a document
-# if it cannot otherwise determine one, such as from filename extensions.
-# If your server contains mostly text or HTML documents, "text/plain" is
-# a good value.  If most of your content is binary, such as applications
-# or images, you may want to use "application/octet-stream" instead to
-# keep browsers from trying to display binary files as though they are
-# text.
-#
-DefaultType text/plain
-
-#
-# The mod_mime_magic module allows the server to use various hints from the
-# contents of the file itself to determine its type.  The MIMEMagicFile
-# directive tells the module where the hint definitions are located.
-#
-<IfModule mime_magic_module>
-    MIMEMagicFile @rel_sysconfdir@/magic
-</IfModule>
-
 #
 # HostnameLookups: Log the names of clients or just their IP addresses
 # e.g., www.apache.org (on) or 204.62.129.132 (off).
@@ -245,16 +217,6 @@ DefaultType text/plain
 # nameserver.
 #
 HostnameLookups Off
-
-# EnableMMAP and EnableSendfile: On systems that support it, 
-# memory-mapping or the sendfile syscall is used to deliver
-# files.  This usually improves server performance, but must
-# be turned off when serving from networked-mounted 
-# filesystems or if support for these functions is otherwise
-# broken on your system.
-#
-#EnableMMAP off
-#EnableSendfile off
 
 #
 # ErrorLog: The location of the error log file.
@@ -349,11 +311,27 @@ LogLevel warn
     Allow from all
 </Directory>
 
+#
+# DefaultType is the default MIME type the server will use for a document
+# if it cannot otherwise determine one, such as from filename extensions.
+# If your server contains mostly text or HTML documents, "text/plain" is
+# a good value.  If most of your content is binary, such as applications
+# or images, you may want to use "application/octet-stream" instead to
+# keep browsers from trying to display binary files as though they are
+# text.
+#
+DefaultType text/plain
+
 <IfModule mime_module>
+    #
+    # TypesConfig points to the file containing the list of mappings from
+    # filename extension to MIME-type.
+    #
+    TypesConfig @rel_sysconfdir@/mime.types
 
     #
     # AddType allows you to add to or override the MIME configuration
-    # file mime.types for specific file types.
+    # file specified in TypesConfig for specific file types.
     #
     #AddType application/x-gzip .tgz
     #
@@ -407,6 +385,15 @@ LogLevel warn
 </IfModule>
 
 #
+# The mod_mime_magic module allows the server to use various hints from the
+# contents of the file itself to determine its type.  The MIMEMagicFile
+# directive tells the module where the hint definitions are located.
+#
+<IfModule mime_magic_module>
+    MIMEMagicFile @rel_sysconfdir@/magic
+</IfModule>
+
+#
 # Action lets you define media types that will execute a script whenever
 # a matching file is called. This eliminates the need for repeated URL
 # pathnames for oft-used CGI file processors.
@@ -450,6 +437,15 @@ LogLevel warn
     BrowserMatch "^XML Spy" redirect-carefully
 </IfModule>
 
+# EnableMMAP and EnableSendfile: On systems that support it, 
+# memory-mapping or the sendfile syscall is used to deliver
+# files.  This usually improves server performance, but must
+# be turned off when serving from networked-mounted 
+# filesystems or if support for these functions is otherwise
+# broken on your system.
+#
+#EnableMMAP off
+#EnableSendfile off
 
 ### Section 3: Supplemental configuration
 #
