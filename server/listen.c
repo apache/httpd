@@ -164,7 +164,20 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #endif
 #endif
 #endif
-    apr_socket_accept_filter(s, ACCEPT_FILTER_NAME, "");
+    stat = apr_socket_accept_filter(s, ACCEPT_FILTER_NAME, "");
+    if (stat != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(stat)) {
+        ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
+                      "Failed to enable the '%s' Accept Filter",
+                      ACCEPT_FILTER_NAME);
+    }
+#else
+#ifdef APR_TCP_DEFER_ACCEPT
+    stat = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 1);   
+    if (stat != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(stat)) {
+        ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
+                              "Failed to enable APR_TCP_DEFER_ACCEPT");
+    }
+#endif
 #endif
 
     server->sd = s;
