@@ -253,6 +253,9 @@ static void set_and_comp_regexp(cookie_dir_rec *dcfg,
                                 pool *p,
                                 const char *cookie_name) 
 {
+    int danger_chars = 0;
+    const char *sp = cookie_name;
+
     /*
      * The goal is to end up with this regexp, 
      * ^cookie_name=([^;]+)|;[\t]+cookie_name=([^;]+) 
@@ -260,6 +263,31 @@ static void set_and_comp_regexp(cookie_dir_rec *dcfg,
      * with the real cookie name set by the user in httpd.conf,
      * or with the default COOKIE_NAME.
      */
+
+    /* Anyway, we need to escape the cookie_name before pasting it
+     * into the regex
+     */
+    while (*sp) {
+        if (!ap_isalnum(*sp)) {
+            ++danger_chars;
+        }
+        ++sp;
+    }
+
+    if (danger_chars) {
+        char *cp;
+        cp = ap_palloc(p, sp - cookie_name + danger_chars + 1); /* 1 == \0 */
+        sp = cookie_name;
+        cookie_name = cp;
+        while (*sp) {
+            if (!ap_isalnum(*sp)) {
+                *cp++ = '\\';
+            }
+            *cp++ = *sp++;
+        }
+        *cp = '\0';
+    }
+
     dcfg->regexp_string = ap_pstrcat(p, "^", cookie_name,
                                      "=([^;]+)|;[ \t]+", cookie_name,
                                      "=([^;]+)", NULL);

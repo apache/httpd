@@ -1,5 +1,8 @@
 Changes with Apache 1.3.32
 
+  *) mod_usertrack: Escape the cookie name before pasting into the
+     regexp.  [André Malo]
+
   *) Win32: Improve error reporting after a failed attempt to spawn a 
      piped log process or rewrite map process.  [Jeff Trawick]
 
