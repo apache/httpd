@@ -237,7 +237,7 @@ void *cache_pq_peek(cache_pqueue_t *q)
     return d;
 }
 
-static void cache_pq_set_null( void*d, int val)
+static void cache_pq_set_null( void*d, apr_ssize_t val)
 {
     /* do nothing */
 }
