@@ -1305,6 +1305,15 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         verify = mctx->auth.verify_mode;
     }
 
+    if (verify == SSL_CVERIFY_NONE) {
+        /* 
+         * SSLProxyVerify is either not configured or set to "none".
+         * (this callback doesn't happen in the server context if SSLVerify
+         *  is not configured or set to "none")
+         */
+        return TRUE;
+    }
+
     if (ssl_verify_error_is_optional(errnum) &&
         (verify == SSL_CVERIFY_OPTIONAL_NO_CA))
     {
