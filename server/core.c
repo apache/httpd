@@ -3861,7 +3861,9 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 break;
             }
             if (APR_BUCKET_IS_FLUSH(e)) {
-                more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
+                if (e != APR_BRIGADE_LAST(b)) {
+                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
+                }
                 break;
             }
 
