@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) New Directive SSIUndefinedEcho. to change the '(none)' echoed
+     for a undefined variable. [Ian Holsman]
+
   *) Proxy HTTP and CONNECT: Keep trying other addresses from the DNS
      when we can't get a socket in the specified address family.  We may
      have gotten back an IPv6 address first and yet our system is not

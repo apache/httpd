@@ -122,6 +122,8 @@ typedef struct {
     char *default_end_tag;
     int  start_tag_len;
     bndm_t start_seq_pat;
+    char *undefinedEcho;
+    int  undefinedEchoLen;
 } include_server_config;
 
 #ifdef XBITHACK
@@ -1350,8 +1352,12 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                                       r->pool);
                 }
                 else {
-                    tmp_buck = apr_bucket_immortal_create("(none)", 
-                                                          sizeof("(none)")-1);
+                    include_server_config *sconf= 
+                        ap_get_module_config(r->server->module_config,
+                                             &include_module);
+                    tmp_buck = apr_bucket_pool_create(sconf->undefinedEcho, 
+                                                      sconf->undefinedEchoLen,
+                                                      r->pool);
                 }
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
@@ -3209,6 +3215,8 @@ static void *create_includes_server_config(apr_pool_t*p, server_rec *server)
     bndm_compile(&result->start_seq_pat, result->default_start_tag, 
                  result->start_tag_len); 
 
+    result->undefinedEcho = apr_pstrdup(p,"(none)");
+    result->undefinedEchoLen = strlen( result->undefinedEcho);
     return result; 
 }
 static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
@@ -3371,6 +3379,16 @@ static const char *set_default_start_tag(cmd_parms *cmd, void *mconfig, const ch
 
     return NULL;
 }
+static const char *set_undefined_echo(cmd_parms *cmd, void *mconfig, const char *msg)
+{
+    include_server_config *conf;
+    conf = ap_get_module_config(cmd->server->module_config, &include_module);
+    conf->undefinedEcho = apr_pstrdup(cmd->pool, msg);
+    conf->undefinedEchoLen = strlen(msg);
+
+    return NULL;
+}
+
 
 static const char *set_default_end_tag(cmd_parms *cmd, void *mconfig, const char *msg)
 {
@@ -3403,6 +3421,8 @@ static const command_rec includes_cmds[] =
                   "SSI Start String Tag"),
     AP_INIT_TAKE1("SSIEndTag", set_default_end_tag, NULL, RSRC_CONF,
                   "SSI End String Tag"),
+    AP_INIT_TAKE1("SSIUndefinedEcho", set_undefined_echo, NULL, RSRC_CONF,
+                  "SSI Start String Tag"),
 
     {NULL}
 };
