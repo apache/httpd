@@ -73,8 +73,6 @@
     beendet und neue startet.</p>
 </section>
 
-<directivesynopsis location="mpm_common"><name>BS2000Account</name>
-</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>

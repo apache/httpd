@@ -66,8 +66,6 @@ uses</a></seealso>
     old ones and launching new ones.</p>
 </section>
 
-<directivesynopsis location="mpm_common"><name>BS2000Account</name>
-</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>

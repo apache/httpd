@@ -30,7 +30,6 @@
 <div id="quickview"><h3 class="directives">Direktiven</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#bs2000account">BS2000Account</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
@@ -106,37 +105,6 @@
     Ihr System herauszufinden, können Sie Ihr <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> auf <code>debug</code> setzen. Dann wird der
     voreingestellte <code class="directive">AcceptMutex</code> ins <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> geschrieben.</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BS2000Account" id="BS2000Account">BS2000Account</a>-<a name="bs2000account" id="bs2000account">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Bestimmt den nicht-privilegierten Account auf
-BS2000-Maschinen</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BS2000Account <var>Account</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td><code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Nur für BS2000-Maschinen verfügbar</td></tr>
-</table>
-    <p>Die Direktive <code class="directive">BS2000Account</code> ist nur
-    für BS2000-Hosts verfügbar. Sie muss dazu verwendet werden,
-    den Account für den nicht-privilegierten Apache-Server-Benutzer
-    (der durch die Direktive <code class="directive"><a href="#user">User</a></code>
-    eingestellt wird) zu bestimmen. Dies wird vom BS2000-POSIX-Subsystem
-    benötigt (um die zugrundeliegende BS2000-Anwendungsumgebung
-    mittels eines Sub-LOGONs zu wechseln), um zu verhindern, dass
-    CGI-Skripte auf Ressourcen des privilegierten Accounts zugreifen, der
-    den Server gestartet hat, üblicherweise <code>SYSROOT</code>.</p>
-
-    <div class="note"><h3>Anmerkung</h3>
-      <p>Es kann nur eine <code>BS2000Account</code>-Direktive verwendet
-      werden.</p>
-    </div>
-
-<h3>Siehe auch</h3>
-<ul>
-<li><a href="../platform/ebcdic.html">Apache-EBCDIC-Portierung</a></li>
-</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a>-<a name="coredumpdirectory" id="coredumpdirectory">Direktive</a></h2>
