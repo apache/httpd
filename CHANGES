@@ -5,7 +5,7 @@ Changes with Apache 2.0.20-dev
 
   *) Fix a bug in the threaded MPM that would cause it to kill off all
      workers immediately after starting if the number of workers started
-     was above a certain threshhold.  [Ryan Bloom, Bill Stoddard]
+     was above a certain threshold.  [Ryan Bloom, Bill Stoddard]
 
 Changes with Apache 2.0.19
 
