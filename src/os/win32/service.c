@@ -57,6 +57,132 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     }
 }
 
+/* This is the WndProc procedure for our invisible window.
+ * When the user shuts down the system, this window is sent
+ * a signal WM_QUERYENDSESSION with lParam == 0 to indicate
+ * a system shutdown. We clean up by shutting down Apache and
+ * indicate to the system that the message was received and
+ * understood (return TRUE).
+ * If a user logs off, the window is sent WM_QUERYENDSESSION 
+ * as well, but with lParam != 0. We ignore this case.
+ */
+
+int send_signal(pool *p, char *signal);
+
+static BOOL die_on_logoff;
+
+LRESULT CALLBACK Service9xWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    if (message == WM_QUERYENDSESSION)
+    {
+        /* Hmmm... not logging out, must be shutting down */
+        if ((lParam == 0) || die_on_logoff)
+        {
+            /* Tell Apache to shut down gracefully */
+            ap_start_shutdown();
+	    if (wParam)
+		Sleep(30000);
+        }
+        return TRUE;
+    }
+    return (DefWindowProc(hWnd, message, wParam, lParam));
+}
+
+DWORD WINAPI WatchWindow(void *kill_on_logoff)
+{
+    /* When running as a service under Windows 9x, there is no console
+     * window present, and no ConsoleCtrlHandler to call when the system 
+     * is shutdown.
+     */
+    WNDCLASS wc;
+    HWND hwndMain;
+    MSG msg;
+    wc.style         = CS_GLOBALCLASS;
+    wc.lpfnWndProc   = (WNDPROC) Service9xWndProc; 
+    wc.cbClsExtra    = 0;
+    wc.cbWndExtra    = 0; 
+    wc.hInstance     = NULL;
+    wc.hIcon         = NULL;
+    wc.hCursor       = NULL;
+    wc.hbrBackground = NULL;
+    wc.lpszMenuName  = NULL;
+    wc.lpszClassName = "ApacheWin95ServiceMonitor";
+
+    die_on_logoff = (BOOL) kill_on_logoff;
+
+    if (!RegisterClass(&wc)) 
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                     "Could not register window class for WatchWindow");
+        return 0;
+    }
+
+    /* Create an invisible window */
+    hwndMain = CreateWindow("ApacheWin95ServiceMonitor", "Apache Service", 
+                            WS_OVERLAPPEDWINDOW & ~WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
+                            CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, NULL, NULL);
+
+    if (!hwndMain)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                     "Could not create WatchWindow");
+        return 0;
+    }
+    
+    while (GetMessage(&msg, NULL, 0, 0)) 
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    return 0;
+}
+
+
+int service95_main(int (*main_fn)(int, char **), int argc, char **argv )
+{
+    /* Windows 95/98 */
+    HANDLE thread;
+    DWORD thread_id;
+    HINSTANCE hkernel;
+    DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
+    
+    /* Obtain a handle to the kernel library */
+    hkernel = LoadLibrary("KERNEL32.DLL");
+    if (!hkernel)
+        return -1;
+    
+    /* Find the RegisterServiceProcess function */
+    RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
+                             GetProcAddress(hkernel, "RegisterServiceProcess");
+    if (RegisterServiceProcess == NULL)
+        return -1;
+	
+    /* Register this process as a service */
+    if (!RegisterServiceProcess((DWORD)NULL, 1))
+        return -1;
+
+    /* Hide the console */
+    FreeConsole();
+
+    thread = CreateThread(NULL, 0, WatchWindow, (LPVOID) FALSE, 0, &thread_id);
+    CloseHandle(thread);
+
+    /* Run the service */
+    globdat.exit_status = main_fn(argc, argv);
+
+    PostThreadMessage(thread_id, WM_QUIT, 0, 0);
+
+    /* When the service quits, remove it from the 
+       system service table */
+    RegisterServiceProcess((DWORD)NULL, 0);
+
+    /* Free the kernel library */
+    FreeLibrary(hkernel);
+
+    /* We have to quit right here to avoid an invalid page fault */
+    exit(globdat.exit_status);
+}
+
 void service_cd()
 {
     /* change to the drive and directory with the executable */
@@ -189,10 +315,7 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
 
 void InstallService(char *display_name, char *conf)
 {
-    SC_HANDLE   schService;
-    SC_HANDLE   schSCManager;
-
-    TCHAR szPath[512];
+    TCHAR szPath[MAX_PATH];
     TCHAR szQuotedPath[512];
     char *service_name;
 
@@ -209,26 +332,32 @@ void InstallService(char *display_name, char *conf)
     service_name = strdup(display_name);
     ap_remove_spaces(service_name, display_name);
 
-    ap_snprintf(szQuotedPath, 512, "\"%s\"", szPath);
+    if (isWindowsNT())
+    {
+        SC_HANDLE schService;
+        SC_HANDLE schSCManager;
 
-    schSCManager = OpenSCManager(
-                        NULL,                   // machine (NULL == local)
-                        NULL,                   // database (NULL == default)
-                        SC_MANAGER_ALL_ACCESS   // access required
-                        );
-   if (!schSCManager) {
-       ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-	   "OpenSCManager failed");
-    }
-    else {
-    /* Added dependencies for the following: TCPIP, AFD
-     * AFD is the winsock handler, TCPIP is self evident
-     *
-     * RPCSS is the Remote Procedure Call (RPC) Locator
-     * required for DCOM communication.  I am far from
-     * convinced we should toggle this, but be warned that
-     * future apache modules or ISAPI dll's may depend on it.
-     */
+        ap_snprintf(szQuotedPath, sizeof(szQuotedPath), "\"%s\"", szPath);
+
+        schSCManager = OpenSCManager(
+                            NULL,                 // machine (local)
+                            NULL,                 // database (default)
+                            SC_MANAGER_ALL_ACCESS // access required
+                            );
+       if (!schSCManager) {
+           ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+	       "OpenSCManager failed");
+           return;
+        }
+        
+        /* Added dependencies for the following: TCPIP, AFD
+         * AFD is the winsock handler, TCPIP is self evident
+         *
+         * RPCSS is the Remote Procedure Call (RPC) Locator
+         * required for DCOM communication.  I am far from
+         * convinced we should toggle this, but be warned that
+         * future apache modules or ISAPI dll's may depend on it.
+         */
         schService = CreateService(
             schSCManager,               // SCManager database
             service_name,               // name of service
@@ -247,9 +376,6 @@ void InstallService(char *display_name, char *conf)
         if (schService) {
             CloseServiceHandle(schService);
 
-            /* Now store the server_root in the registry */
-            if(!ap_registry_set_service_conf(conf, service_name))
-                printf("The %s service has been installed successfully.\n", display_name);
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
@@ -258,37 +384,77 @@ void InstallService(char *display_name, char *conf)
 
         CloseServiceHandle(schSCManager);
     }
-}
+    else /* !isWindowsNT() */
+    {
+        HKEY hkey;
+        DWORD rv;
 
+        ap_snprintf(szQuotedPath, sizeof(szQuotedPath),
+                    "\"%s\" -k start -n %s", 
+                    szPath, service_name);
+        /* Create/Find the RunServices key */
+        rv = RegCreateKey(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows"
+                          "\\CurrentVersion\\RunServices", &hkey);
+        if (rv != ERROR_SUCCESS) {
+            SetLastError(rv);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "Could not create/open the RunServices registry key");
+            return;
+        }
+
+        /* Attempt to add a key for our service */
+        rv = RegSetValueEx(hkey, service_name, 0, REG_SZ, 
+                           (unsigned char *)szQuotedPath, 
+                           strlen(szQuotedPath) + 1);
+        if (rv != ERROR_SUCCESS) {
+            SetLastError(rv);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "Unable to install service: "
+                         "Could not add to RunServices Registry Key");
+            RegCloseKey(hkey);
+            return;
+        }
+        RegCloseKey(hkey);
+    }
+
+    /* Both Platforms: Now store the server_root in the registry */
+    if(!ap_registry_set_service_conf(conf, service_name))
+        printf("The %s service has been installed successfully.\n", display_name);
+}
 
 void RemoveService(char *display_name)
 {
-    SC_HANDLE   schService;
-    SC_HANDLE   schSCManager;
-    char       *service_name;
+    char *service_name;
+    BOOL success = FALSE;
 
     printf("Removing the %s service\n", display_name);
 
     /* Remove spaces from display name to create service name */
     service_name = strdup(display_name);
     ap_remove_spaces(service_name, display_name);
+
+    if (isWindowsNT())
+    {
+        SC_HANDLE   schService;
+        SC_HANDLE   schSCManager;
     
-    schSCManager = OpenSCManager(
-                        NULL,                   // machine (NULL == local)
-                        NULL,                   // database (NULL == default)
-                        SC_MANAGER_ALL_ACCESS   // access required
-                        );
-    if (!schSCManager) {
-       ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-	   "OpenSCManager failed");
-    }
-    else {
+        schSCManager = OpenSCManager(
+                            NULL,                   // machine (NULL == local)
+                            NULL,                   // database (NULL == default)
+                            SC_MANAGER_ALL_ACCESS   // access required
+                            );
+        if (!schSCManager) {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "OpenSCManager failed");
+            return;
+        }
+
         schService = OpenService(schSCManager, service_name, SERVICE_ALL_ACCESS);
 
         if (schService == NULL) {
             /* Could not open the service */
-           ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-			"OpenService failed");
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "OpenService failed");
         }
         else {
             /* try to stop the service */
@@ -296,16 +462,68 @@ void RemoveService(char *display_name)
 
             // now remove the service
             if (DeleteService(schService) == 0)
-		ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-		    "DeleteService failed");
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                             "DeleteService failed");
             else
-                printf("The %s service has been removed successfully.\n", display_name);
+                success = TRUE;
             CloseServiceHandle(schService);
         }
         /* SCM removes registry parameters  */
         CloseServiceHandle(schSCManager);
     }
+    else /* !isWindowsNT() */
+    {
+        HKEY hkey;
+        DWORD rv;
 
+        /* Open the RunServices key */
+        rv = RegOpenKey(HKEY_LOCAL_MACHINE, 
+                "Software\\Microsoft\\Windows\\CurrentVersion\\RunServices",
+                    &hkey);
+        if (rv != ERROR_SUCCESS) {
+            SetLastError(rv);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "Could not open the RunServices registry key.");
+        } 
+        else {
+            /* Delete the registry value for this service */
+            rv = RegDeleteValue(hkey, service_name);
+            if (rv != ERROR_SUCCESS) {
+                SetLastError(rv);
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                             "Unable to remove service: "
+                             "Could not delete the RunServices entry.");
+            }
+            else
+                success = TRUE;
+        }
+        RegCloseKey(hkey);
+
+        /* Open the Services key */
+        rv = RegOpenKey(HKEY_LOCAL_MACHINE, 
+                        "SYSTEM\\CurrentControlSet\\Services", &hkey);
+        if (rv != ERROR_SUCCESS) {
+            rv = RegDeleteValue(hkey, service_name);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "Could not open the Services registry key.");
+            success = FALSE;
+        } 
+        else {
+            /* Delete the registry key for this service */
+            rv = RegDeleteKey(hkey, service_name);
+            if (rv != ERROR_SUCCESS) {
+                SetLastError(rv);
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                             "Unable to remove service: "
+                             "Could not delete the Services registry key.");
+                success = FALSE;
+            }
+        }
+        RegCloseKey(hkey);
+    }
+    if (success)
+        printf("The %s service has been removed successfully.\n", 
+               display_name);
 }
 
 /* A hack to determine if we're running as a service without waiting for
@@ -320,33 +538,35 @@ BOOL isProcessService() {
 }
 
 /* Determine is service_name is a valid service
+ *
+ * TODO: be nice if we tested that it is an 'apache' service, no?
  */
 
 BOOL isValidService(char *display_name) {
-    SC_HANDLE schSCM, schSVC;
+    char service_key[MAX_PATH];
     char *service_name;
-    int Err;
-
+    HKEY hkey;
+    
     /* Remove spaces from display name to create service name */
-    service_name = strdup(display_name);
+    strcpy(service_key, "System\\CurrentControlSet\\Services\\");
+    service_name = strchr(service_key, '\0');
     ap_remove_spaces(service_name, display_name);
 
-    if (!(schSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-        "OpenSCManager failed");
-       return FALSE;
+    if (RegOpenKey(HKEY_LOCAL_MACHINE, service_key, &hkey) != ERROR_SUCCESS) {
+        return FALSE;
     }
+    RegCloseKey(hkey);
+    return TRUE;
+}
 
-    if ((schSVC = OpenService(schSCM, service_name, SERVICE_ALL_ACCESS))) {
-        CloseServiceHandle(schSVC);
-        CloseServiceHandle(schSCM);
-        return TRUE;
-    }
+BOOL isWindowsNT(void)
+{
+    OSVERSIONINFO osver;
+    osver.dwOSVersionInfoSize = sizeof(osver);
 
-    Err = GetLastError();
-    if (Err != ERROR_SERVICE_DOES_NOT_EXIST && Err != ERROR_INVALID_NAME)
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-        "OpenService failed");
+    if (GetVersionEx(&osver))
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+            return TRUE;
 
     return FALSE;
 }
@@ -478,7 +698,7 @@ BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
              * Tell the system we have dealt with the signal
              * without waiting for Apache to terminate.
              */
-            ap_start_shutdown();            
+            ap_start_shutdown();
             return TRUE;
 
         case CTRL_CLOSE_EVENT:

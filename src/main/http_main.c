@@ -6149,7 +6149,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
 
-    /* Give the read in of teh pipe (hPipeRead) to the child as stdin. The 
+    /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
      * parent will write the socket data to the child on this pipe.
      */
     memset(&si, 0, sizeof(si));
@@ -6674,11 +6674,6 @@ int REALMAIN(int argc, char *argv[])
 	    break;
         case 'n':
             service_name = ap_pstrdup(pcommands, optarg);
-            if (isValidService(optarg)) {
-                ap_registry_get_service_conf(pconf, ap_server_confname, sizeof(ap_server_confname),
-                                             optarg);
-                conf_specified = 1;
-            }
             break;
 	case 'i':
 	    install = 1;
@@ -6697,9 +6692,9 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 #endif /* WIN32 */
 #ifdef NETWARE
-    case 's':
-        DestroyScreen(GetCurrentScreen());
-        break;
+        case 's':
+            DestroyScreen(GetCurrentScreen());
+            break;
 #endif
 	case 'd':
             optarg = ap_os_canonical_filename(pcommands, optarg);
@@ -6759,6 +6754,29 @@ int REALMAIN(int argc, char *argv[])
 #endif
     }       /* while  */
 
+    if (!service_name && install) {
+        service_name = DEFAULTSERVICENAME;
+    }
+
+    if (service_name && isValidService(service_name)) 
+    {
+        ap_registry_get_service_conf(pconf, ap_server_confname, 
+                                     sizeof(ap_server_confname),
+                                     service_name);
+        conf_specified = 1;
+        if (install > 0) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+                         "Service \"%s\" is already installed!", service_name);
+            clean_parent_exit(0);
+        }
+    }
+    else if (service_name && (install <= 0))
+    {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
+                     "Service \"%s\" is not installed!", service_name);
+        clean_parent_exit(0);
+    }
+
     /* ServerConfFile is found in this order:
      * (1) -f or -n
      * (2) [-d]/SERVER_CONFIG_FILE
@@ -6792,19 +6810,11 @@ int REALMAIN(int argc, char *argv[])
     ap_no2slash(ap_server_confname);
 
 #ifdef WIN32
-    if (!child) {
-        /* Let's go fishing for some signals including ctrl+c/ctrl+break,
-         * and logoff, close and shutdown under WinNT/2000
-         */
-        SetConsoleCtrlHandler(ap_control_handler, TRUE);
-        atexit(ap_control_handler_terminate);
-    }
-    
     /* Read the conf now unless we are uninstalling the service,
      * or shutting down a running service 
      * (but do read the conf for the pidfile if we shutdown the console)
      */
-    if ((install >= 0) && (!service_name || !signal_to_send 
+    if ((install >= 0) && (!service_name || !signal_to_send || !isWindowsNT()
                            || strcasecmp(signal_to_send,"shutdown"))) {
         server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
     }
@@ -6820,7 +6830,7 @@ int REALMAIN(int argc, char *argv[])
         clean_parent_exit(0);
     }
     
-    if (service_name && signal_to_send) {
+    if (service_name && signal_to_send && isWindowsNT()) {
         send_signal_to_service(service_name, signal_to_send);
         clean_parent_exit(0);
     }
@@ -6842,7 +6852,7 @@ int REALMAIN(int argc, char *argv[])
         clean_parent_exit(0);
     }
 
-    /* Treat -k start confpath as just -f confpath */
+    /* Handle -k start [with or without -n arg] later */
     if (signal_to_send && strcasecmp(signal_to_send, "start")) {
         send_signal(pconf, signal_to_send);
         clean_parent_exit(0);
@@ -6860,7 +6870,7 @@ int REALMAIN(int argc, char *argv[])
     printf("%s running...\n", ap_get_server_version());
 #elif defined(WIN32)
     if (!child) {
-	printf("%s running...\n", ap_get_server_version());
+        printf("%s running...\n", ap_get_server_version());
     }
 #elif defined(NETWARE)
     clrscr();
@@ -6889,12 +6899,45 @@ int REALMAIN(int argc, char *argv[])
     if (child || one_process) {
 	if (!exit_event || !start_mutex)
 	    exit(-1);
+#ifdef WIN32
+	if (child)
+	    FreeConsole();
+#endif
 	worker_main();
 	ap_destroy_mutex(start_mutex);
 	destroy_event(exit_event);
+    } 
+    else if (service_name && signal_to_send && !isWindowsNT()
+             && !strcasecmp(signal_to_send, "start")) {
+        /* service95_main will call master_main() */
+        service95_main(master_main, argc, argv);
     }
     else 
+    {
+#ifdef WIN32
+	/* Let's go fishing for some signals including ctrl+c/ctrl+break,
+         * and logoff, close and shutdown under WinNT/2000
+	 *
+	 * Under 95/98 create a monitor window to watch for session end
+         */
+        DWORD thread_id;
+        SetConsoleCtrlHandler(ap_control_handler, TRUE);
+        atexit(ap_control_handler_terminate);
+	if (!isWindowsNT()) {
+	    HANDLE thread;
+	    thread = CreateThread(NULL, 0, WatchWindow, 
+		                  (LPVOID) TRUE, 0, &thread_id);
+	    CloseHandle(thread);
+	}
+#endif
+
         master_main(argc, argv);
+
+#ifdef WIN32
+	if (!isWindowsNT())
+	    PostThreadMessage(thread_id, WM_QUIT, 0, 0);
+#endif
+    }
 #endif
 
     clean_parent_exit(0);
