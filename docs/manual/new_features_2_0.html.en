@@ -86,6 +86,11 @@ posting and maintaining web content.
 <dd>New module in Apache 2.0.  This module includes the functionality
 of mod_mmap_static in Apache 1.3, plus adds further caching abilities.
 
+<dt><strong>mod_headers</strong> 
+<dd>This module is much more flexible in Apache 2.0.  It can now
+modify request headers used by mod_proxy, and it can conditionally set
+response headers.
+
 </dl>
 
 <!--#include virtual="footer.html" -->
