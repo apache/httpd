@@ -122,6 +122,10 @@ FINAL RELEASE SHOWSTOPPERS:
       A device checker patch had been sent to the list a while ago.
       Msg-Id: ?
 
+    * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
+      See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
+
+
 Documentation that needs writing:
 
     * Documentation for:
