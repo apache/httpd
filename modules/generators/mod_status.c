@@ -230,7 +230,7 @@ static char status_flags[SERVER_NUM_STATUS];
 static int status_handler(request_rec *r)
 {
     const char *loc;
-    apr_time_t nowtime = apr_time_now();
+    apr_time_t nowtime;
     apr_interval_time_t up_time;
     int j, i, res;
     int ready = 0;
@@ -262,6 +262,7 @@ static int status_handler(request_rec *r)
         return DECLINED;
     }
 
+    nowtime = apr_time_now();
     tu = ts = tcu = tcs = 0;
 
     if (!ap_exists_scoreboard_image()) {
