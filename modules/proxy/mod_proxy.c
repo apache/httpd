@@ -1671,25 +1671,6 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
-
-#define KBYTE 1024
-#define MBYTE 1048576L
-#define GBYTE 1073741824L
-
-/* Format the number of bytes nicely */
-static void format_byte_out(request_rec *r, apr_off_t bytes)
-{
-
-    if (bytes < (5 * KBYTE))
-        ap_rprintf(r, "%d B", (int) bytes);
-    else if (bytes < (MBYTE / 2))
-        ap_rprintf(r, "%.1f kB", (float) bytes / KBYTE);
-    else if (bytes < (GBYTE / 2))
-        ap_rprintf(r, "%.1f MB", (float) bytes / MBYTE);
-    else
-        ap_rprintf(r, "%.1f GB", (float) bytes / GBYTE);
-}
-
 /*
  *  proxy Extension to mod_status
  */
@@ -1725,7 +1706,7 @@ static int proxy_status_hook(request_rec *r, int flags)
 
         worker = (proxy_worker *)balancer->workers->elts;
         for (n = 0; n < balancer->workers->nelts; n++) {
-
+            char fbuf[50];
             ap_rvputs(r, "<tr>\n<td>", worker->scheme, "</td>", NULL);
             ap_rvputs(r, "<td>", worker->hostname, "</td><td>", NULL);
             if (worker->s->status & PROXY_WORKER_DISABLED)
@@ -1740,9 +1721,9 @@ static int proxy_status_hook(request_rec *r, int flags)
             ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
             ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
             ap_rprintf(r, "<td>%d</td><td>", (int)(worker->s->elected));
-            format_byte_out(r, worker->s->transfered);
+            ap_rputs(apr_strfsize(worker->s->transfered, fbuf), r);
             ap_rputs("</td><td>", r);
-            format_byte_out(r, worker->s->readed);
+            ap_rputs(apr_strfsize(worker->s->readed, fbuf), r);
             ap_rputs("</td>\n", r);
 
             /* TODO: Add the rest of dynamic worker data */
@@ -1783,13 +1764,13 @@ static void child_init(apr_pool_t *p, server_rec *s)
         /* Initialize worker's shared scoreboard data */ 
         worker = (proxy_worker *)conf->workers->elts;
         for (i = 0; i < conf->workers->nelts; i++) {
-            ap_proxy_initialize_worker_share(conf, worker);
+            ap_proxy_initialize_worker_share(conf, worker, s);
             ap_proxy_initialize_worker(worker, s);
             worker++;
         }
         /* Initialize forward worker if defined */
         if (conf->forward) {
-            ap_proxy_initialize_worker_share(conf, conf->forward);
+            ap_proxy_initialize_worker_share(conf, conf->forward, s);
             ap_proxy_initialize_worker(conf->forward, s);
             /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
