@@ -162,6 +162,11 @@ pid_t pgrp;
 
 int one_process = 0;
 
+/* The address 255.255.255.255, when used as a virtualhost address,
+ * will become the "default" server when the ip doesn't match other vhosts.
+ */
+#define DEFAULT_VHOST_ADDR 0xfffffffful
+
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it = { F_WRLCK, 0, 0, 0 };
 static struct flock unlock_it = { F_UNLCK, 0, 0, 0 };
@@ -1245,7 +1250,7 @@ server_rec *find_virtual_server (struct in_addr server_ip, int port,
 		sar->host_addr.s_addr == server_ip.s_addr) &&
 		(sar->host_port == 0 || sar->host_port == port)) {
 		return virt;
-	    } else if ( sar->host_addr.s_addr == INADDR_NONE ) {
+	    } else if ( sar->host_addr.s_addr == DEFAULT_VHOST_ADDR ) {
 		/* this is so that you can build a server that is the
 		    "default" for any interface which isn't explicitly
 		    specified.  So that you can implement "deny anything
