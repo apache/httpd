@@ -44,22 +44,6 @@ you should select the <a href="mod/prefork.html">prefork</a>
 MPM.  Other MPMs will have different directives to control process
 creation and request processing.</li>
 
-<li>Server-Side Includes provided by <a
-href="mod/mod_include.html">mod_include</a> are now implemented using
-the new
-<a href="filter.html">filter system</a> rather than as a handler.
-This provides much more power and flexibility, but requires 
-the use of the <a href="mod/core.html#setoutputfilter">SetOutputFilter</a>
-to activate server-parsed content.  If you were using
-<code>AddHandler server-parsed .shtml</code>, you can get
-similar functionality using
-<blockquote><code>
-&lt;FilesMatch "\.shtml(\..+)?$"&gt;<br>
-&nbsp;&nbsp;SetOutputFilter INCLUDES<br>
-&lt;/FilesMatch&gt;
-</code></blockquote></li>
-
-
 <li>The <code>CacheNegotiatedDocs</code> directive now takes
 the argument <code>on</code> or <code>off</code>.  Existing
 instances of <code>CacheNegotiatedDocs</code> should be replaced
