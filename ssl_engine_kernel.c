@@ -1581,7 +1581,7 @@ static void modssl_proxy_info_log(server_rec *s,
     SSLSrvConfigRec *sc = mySrvConfig(s);
     char name_buf[256];
     X509_NAME *name;
-    const char *dn;
+    char *dn;
 
     if (s->loglevel < APLOG_DEBUG) {
         return;
