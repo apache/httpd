@@ -1375,6 +1375,7 @@ static void usage(char *bin)
     fprintf(stderr, "  -L               : list available configuration directives\n");
     fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
 #ifdef NETWARE
+    fprintf(stderr, "  -e               : force the display of configuration file errors to the logger screen\n");
     fprintf(stderr, "  -s               : load Apache without a screen\n");
 #endif
     fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
@@ -7136,6 +7137,7 @@ int REALMAIN(int argc, char *argv[])
 #endif
 
 #ifdef NETWARE
+    int currentScreen = GetCurrentScreen();
     /* If top_module is not NULL then APACHEC was not exited cleanly
      * and is in a bad state.  Simply clean up and exit.
      */
@@ -7211,7 +7213,7 @@ int REALMAIN(int argc, char *argv[])
 
     while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:wiuStThk:n:W:")) != -1) {
 #else /* !WIN32 */
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLsStTh")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLesStTh")) != -1) {
 #endif
         char **new;
 	switch (c) {
@@ -7290,16 +7292,29 @@ int REALMAIN(int argc, char *argv[])
             break;
 #endif /* WIN32 */
 #ifdef NETWARE
+        case 'e':
+            {
+                int screenHandle;  
+
+                /* Get a screen handle for the console screen. */
+                if ((screenHandle = CreateScreen("System Console", 0)) != NULL)
+                {
+                    SetAutoScreenDestructionMode(1); 
+                    SetCurrentScreen(screenHandle);  /* switch to console screen I/O */
+                }
+            }
+            break;
         case 's':
             if (DestroyScreen(GetCurrentScreen()) == 0)
             {
                 int screenHandle;  
-   
+
                 /* Create a screen handle for the console screen, 
                 even though the console screen exists. */
                 if ((screenHandle = CreateScreen("System Console", 0)) != NULL)
                 {
                     SetCurrentScreen(screenHandle);  /* switch to console screen I/O */
+                    currentScreen = GetCurrentScreen();
                 }
             }
             break;
@@ -7544,6 +7559,11 @@ int REALMAIN(int argc, char *argv[])
         printf("%s running...\n", ap_get_server_version());
     }
 #elif defined(NETWARE)
+    if (currentScreen != GetCurrentScreen()) {
+        SetCurrentScreen(currentScreen);  /* switch to console screen I/O */
+        SetAutoScreenDestructionMode(0); 
+    }
+
     printf("%s running...\n", ap_get_server_version());
 #endif
 
