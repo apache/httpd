@@ -59,9 +59,10 @@
 
 #include "httpd.h"
 #include "http_config.h"
-#include "apr_general.h"
-#include "util_filter.h"
 #include "apr_buckets.h"
+#include "apr_general.h"
+#include "apr_lib.h"
+#include "util_filter.h"
 #include "http_request.h"
 
 #include <ctype.h>
