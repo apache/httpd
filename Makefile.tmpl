@@ -181,7 +181,7 @@ build-std:
 #   build the additional support stuff
 build-support:
 	@echo "===> $(SRC)/support"; \
-	cd $(TOP)/$(SRC)/support; $(MAKE) $(MFLAGS) all; \
+	cd $(TOP)/$(SRC)/support; $(MAKE) $(MFLAGS) all || exit 1; \
 	if [ ".$(suexec)" = .1 ]; then \
 	    $(MAKE) $(MFLAGS) \
 		EXTRA_CFLAGS='\
