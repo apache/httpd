@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/02/16 16:48:32 $]
+Last modified at [$Date: 2000/02/16 18:29:20 $]
 
 Release:
 
@@ -8,6 +8,10 @@ Release:
     2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
+    * Reliable piped logs look broken everywhere. Each MPM includes essentially
+	identical code to ap_register_other_child(), etc. Most of this code can
+	be moved out of the MPMs and into some common file (http_core.c?).
+
     * DSO hooks registered during the preflight call to ap_read_config
 	are not 'unregistered' during the preflight clean-up. Thus, when 
 	Apache comes up, the hook tables contain two entries for each DSO hook,
@@ -55,6 +59,8 @@ RELEASE SHOWSTOPPERS:
         resolver calls,
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Win32: Enable the winnt MPM to use the new scoreboard API
 
     * Win32: Non-blocking CGI pipes
 
