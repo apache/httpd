@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.8 $ ($Date: 2001/02/10 23:33:36 $)
+  $Revision: 1.9 $ ($Date: 2001/02/28 03:36:00 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -216,8 +216,8 @@
   runs fine from the command line, remember that the environment and
   permissions may be different when running under the web server.  The
   CGI can only access resources allowed for the <A 
-  HREF="../mod/core.html#user"><CODE>User</CODE></A> and 
-  <A HREF="../mod/core.html#group"><CODE>Group</CODE></A> specified in 
+  HREF="../mod/mpm_common.html#user"><CODE>User</CODE></A> and 
+  <A HREF="../mod/mpm_common.html#group"><CODE>Group</CODE></A> specified in 
   your Apache configuration.  In addition, the environment will not be 
   the same as the one provided on the command line, but it can be 
   adjusted using the directives provided by <A 
@@ -533,15 +533,14 @@
   Two alternatives are:
   <OL>
    <LI>Place the cgi-bin directory next to the public_html directory:
-    <P>
+
     <DL>
      <DD><CODE>ScriptAliasMatch ^/~([^/]*)/cgi-bin/(.*) /home/$1/cgi-bin/$2</CODE>
      </DD>
     </DL>
-    </P>
+
     </LI>
     <LI>Place the cgi-bin directory underneath the public_html directory:
-     <P></p>
      <DL>
       <DD><CODE>&lt;Directory /home/*/public_html/cgi-bin&gt;<BR>
        &nbsp;&nbsp;&nbsp;&nbsp;Options ExecCGI<BR>
@@ -549,7 +548,6 @@
        &lt;/Directory&gt;</CODE>
       </DD>
      </DL>
-     <p></P>
     </LI>
    </OL>
   <HR> 

@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.6 $ ($Date: 2000/08/04 11:44:17 $)
+  $Revision: 1.7 $ ($Date: 2001/02/28 03:35:59 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -147,7 +147,7 @@
   Each log file requires a file descriptor, which means that if you are
   using separate access and error logs for each virtual host, each
   virtual host needs two file descriptors.  Each
-  <A HREF="../mod/core.html#listen"><SAMP>Listen</SAMP></A>
+  <A HREF="../mod/mpm_common.html#listen"><SAMP>Listen</SAMP></A>
   directive also needs a file descriptor.
   </P>
   <P>
@@ -164,7 +164,7 @@
   </P>
   <OL>
    <LI>Reduce the number of
-    <A HREF="../mod/core.html#listen"><SAMP>Listen</SAMP></A>
+    <A HREF="../mod/mpm_common.html#listen"><SAMP>Listen</SAMP></A>
     directives.  If there are no other servers running on the machine
     on the same port then you normally don't
     need any Listen directives at all.  By default Apache listens to
@@ -182,7 +182,7 @@
     (see your system's documentation on the <CODE>limit</CODE> or
     <CODE>ulimit</CODE> commands).  For some systems, information on
     how to do this is available in the
-    <A HREF="perf.html">performance hints</A> page.  There is a specific
+    <A HREF="perf-tuning.html">performance hints</A> page.  There is a specific
     note for <A HREF="#freebsd-setsize">FreeBSD</A> below.
     <P>
     For Windows 95, try modifying your <SAMP>C:\CONFIG.SYS</SAMP> file to
@@ -200,7 +200,7 @@
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
    <LI>Spread your operation across multiple server processes (using
-    <A HREF="../mod/core.html#listen"><SAMP>Listen</SAMP></A>
+    <A HREF="../mod/mpm_common.html#listen"><SAMP>Listen</SAMP></A>
     for example, but see the first point) and/or ports.
    </LI>
   </OL>
@@ -472,10 +472,10 @@
   the directives are not necessarily those of the running server; they
   are extracted from the configuration files themselves at the time of
   the request.  If the files have been changed since the server was last
-  reloaded, the display will will not match the values actively in use.
+  reloaded, the display will not match the values actively in use.
   If the files and the path to the files are not readable by the user as
   which the server is running (see the
-  <A HREF="../mod/core.html#user"><SAMP>User</SAMP></A>
+  <A HREF="../mod/mpm_common.html#user"><SAMP>User</SAMP></A>
   directive), then <SAMP>mod_info</SAMP> cannot read them in order to
   list their values.  An entry <EM>will</EM> be made in the error log in
   this event, however.
