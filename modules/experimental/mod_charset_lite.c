@@ -78,6 +78,8 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "util_charset.h"
+#include "ap_buckets.h"
+#include "util_filter.h"
 
 #ifndef APACHE_XLATE
 #error mod_charset_lite cannot work without APACHE_XLATE enabled
@@ -89,6 +91,12 @@ typedef struct charset_dir_t {
     const char *charset_source; /* source encoding */
     const char *charset_default; /* how to ship on wire */
 } charset_dir_t;
+
+typedef struct charset_req_t {
+    charset_dir_t *dc;
+    apr_xlate_t *xlate_output;
+/*  not yet...  apr_xlate_t *xlate_input; */
+} charset_req_t;
 
 module charset_lite_module;
 
@@ -154,6 +162,7 @@ static const char *add_charset_debug(cmd_parms *cmd, charset_dir_t *dc, int arg)
 static int find_code_page(request_rec *r)
 {
     charset_dir_t *dc = ap_get_module_config(r->per_dir_config, &charset_lite_module);
+    charset_req_t *reqinfo;
     apr_status_t rv;
     apr_xlate_t *input_xlate, *output_xlate;
     const char *mime_type;
@@ -233,12 +242,11 @@ static int find_code_page(request_rec *r)
                      dc->charset_source, dc->charset_default);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    rv = ap_set_content_xlate(r, 1, output_xlate);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "can't set content output translation");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
+
+    reqinfo = (charset_req_t *)apr_palloc(r->pool, sizeof(charset_req_t));
+    ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
+    reqinfo->dc = dc;
+    reqinfo->xlate_output = output_xlate;
 
     switch (r->method_number) {
     case M_PUT:
@@ -255,15 +263,284 @@ static int find_code_page(request_rec *r)
                          dc->charset_default, dc->charset_source);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
+
+/* Can't delete this yet :( #ifdef OLD */
         rv = ap_set_content_xlate(r, 0, input_xlate);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "can't set content input translation");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
+/* #endif */
+
+        /* not yet... reqinfo->xlate_input = input_xlate; */
     }
 
     return DECLINED;
+}
+
+/* xlate_register_filter() is a filter hook which decides whether or not
+ * to insert a translation filter for the current request.
+ */
+static void xlate_register_filter(request_rec *r)
+{
+    /* Hey... don't be so quick to use reqinfo->dc here; it may not exist */
+    charset_req_t *reqinfo = ap_get_module_config(r->request_config, 
+                                                  &charset_lite_module);
+    charset_dir_t *dc = ap_get_module_config(r->per_dir_config, &charset_lite_module);
+    int debug = dc->debug == DEBUG;
+
+    if (debug) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                     "xlate_register_filter() - "
+                     "dc: %X charset_source: %s charset_default: %s",
+                     (unsigned)dc,
+                     dc && dc->charset_source ? dc->charset_source : "(none)",
+                     dc && dc->charset_default ? dc->charset_default : "(none)");
+    }
+
+    if (reqinfo && reqinfo->xlate_output) {
+        ap_add_filter("XLATEOUT", NULL, r);
+    }
+    
+#ifdef NOT_YET
+    if (reqinfo && reqinfo->xlate_input) {
+        /* ap_add_filter(xxx, yyy, r); */
+    }
+#endif
+}
+
+/* stuff that sucks that I know of:
+ *
+ * bucket handling:
+ *  why create an eos bucket when we see it come down the stream?  just send the one
+ *  passed as input
+ *
+ * translation mechanics:
+ *   we don't handle characters that straddle more than two buckets; an error
+ *   will be generated
+ */
+
+#define XLATE_BUF_SIZE (16*1024) /* we try to send down brigades of this len, but... */
+#define XLATE_MIN_BUFF_LEFT 128  /* flush once there is no more than this much
+                                  * space is left in the translation buffer 
+                                  */
+
+#define FATTEST_CHAR  8          /* we don't handle chars wider than this that straddle 
+                                  * two buckets
+                                  */
+
+typedef struct xlate_output_ctx xlate_output_ctx;
+
+struct xlate_output_ctx {
+    apr_ssize_t saved;
+    char buf[FATTEST_CHAR]; /* we want to be able to build a complete char here */
+};
+
+/* send_downstream() is passed the translated data; it puts it in a single-
+ * bucket brigade and passes the brigade to the next filter
+ */
+static int send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t len)
+{
+    ap_bucket_brigade *bb;
+    apr_ssize_t written;
+
+    bb = ap_brigade_create(f->r->pool);
+    ap_brigade_append_buckets(bb, ap_bucket_transient_create(tmp, len, &written));
+    ap_assert(written == len); /* You BETTER accept all my data! */
+    return ap_pass_brigade(f->next, bb);
+}
+
+static void send_eos(ap_filter_t *f)
+{
+    ap_bucket_brigade *bb;
+
+    bb = ap_brigade_create(f->r->pool);
+    ap_brigade_append_buckets(bb, ap_bucket_eos_create());
+    ap_pass_brigade(f->next, bb);
+}
+
+static void remove_and_destroy(ap_bucket_brigade *bb, ap_bucket *b)
+{
+    if (bb->head == b) {
+        bb->head = b->next;
+    }
+    if (bb->tail == b) {
+        bb->tail = b->prev;
+    }
+    ap_bucket_destroy(b);
+}
+
+static void set_aside_partial_char(ap_filter_t *f, const char *partial,
+                                   apr_ssize_t partial_len)
+{
+    xlate_output_ctx *ctx;
+
+    if (!f->ctx) { /* if no context yet, create it */
+        f->ctx = ctx = (xlate_output_ctx *)
+            apr_palloc(f->r->pool, sizeof(xlate_output_ctx));
+    }
+    ap_assert(sizeof(ctx->buf) > partial_len);
+    ctx->saved = partial_len;
+    memcpy(ctx->buf, partial, partial_len);
+}
+
+static apr_status_t finish_partial_char(ap_filter_t *f,
+                                        charset_req_t *reqinfo,
+                                        /* input buffer: */
+                                        const char **cur_str, 
+                                        apr_ssize_t *cur_len,
+                                        /* output buffer: */
+                                        char **out_str,
+                                        apr_ssize_t *out_len)
+{
+    apr_status_t rv;
+    xlate_output_ctx *ctx = f->ctx;
+    apr_size_t tmp_input_len;
+
+    /* Keep adding bytes from the input string to the saved string until we
+     *    1) finish the input char
+     *    2) get an error
+     * or 3) run out of bytes to add
+     */
+
+    do {
+        ctx->buf[ctx->saved] = **cur_str;
+        ++ctx->saved;
+        ++*cur_str;
+        --*cur_len;
+        tmp_input_len = ctx->saved;
+        rv = apr_xlate_conv_buffer(reqinfo->xlate_output,
+                                   ctx->buf,
+                                   &tmp_input_len,
+                                   *out_str,
+                                   out_len);
+    } while (rv == APR_INCOMPLETE && *cur_len);
+
+    if (rv == APR_SUCCESS) {
+        ctx->saved = 0;
+    }
+
+    /* huh?  we can catch errors here... */
+    return APR_SUCCESS;
+}
+
+static int xlate_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
+{
+    charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
+                                                  &charset_lite_module);
+    charset_dir_t *dc = reqinfo->dc;
+    int debug = dc->debug == DEBUG;
+    ap_bucket *dptr, *consumed_bucket;
+    const char *cur_str;
+    apr_ssize_t cur_len, cur_avail;
+    char tmp[XLATE_BUF_SIZE];
+    apr_ssize_t space_avail;
+    int done;
+    int bytes_sent_downstream = 0;
+    int written;
+    apr_status_t rv = APR_SUCCESS;
+
+    if (debug) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, f->r->server,
+                     "xlate_output_filter() - "
+                     "dc: %X charset_source: %s charset_default: %s",
+                     (unsigned)dc,
+                     dc && dc->charset_source ? dc->charset_source : "(none)",
+                     dc && dc->charset_default ? dc->charset_default : "(none)");
+    }
+
+    dptr = bb->head;
+    done = 0;
+    cur_len = 0;
+    space_avail = sizeof(tmp);
+    consumed_bucket = NULL;
+    while (!done) {
+        if (!cur_len) { /* no bytes left to process in the current bucket... */
+            if (consumed_bucket) {
+                remove_and_destroy(bb, consumed_bucket);
+                consumed_bucket = NULL;
+            }
+            if (!dptr ||
+                dptr->read(dptr, &cur_str, &cur_len, 0) == AP_END_OF_BRIGADE) {
+                done = 1;
+                break;
+            }
+            consumed_bucket = dptr; /* for axing when we're done reading it */
+            dptr = dptr->next; /* get ready for when we access the next bucket */
+        }
+        /* Try to fill up our tmp buffer with translated data. */
+        cur_avail = cur_len;
+
+        if (f->ctx && ((xlate_output_ctx *)f->ctx)->saved) {
+            /* Rats... we need to finish a partial character from the previous
+             * bucket.
+             */
+            char *tmp_tmp;
+
+            tmp_tmp = tmp + sizeof(tmp) - space_avail;
+            rv = finish_partial_char(f, reqinfo, 
+                                     &cur_str, &cur_len,
+                                     &tmp_tmp, &space_avail);
+        }
+        else {
+            rv = apr_xlate_conv_buffer(reqinfo->xlate_output,
+                                       cur_str, &cur_avail,
+                                       tmp + sizeof(tmp) - space_avail, &space_avail);
+
+            /* Update input ptr and len after consuming some bytes */
+            cur_str += cur_len - cur_avail;
+            cur_len = cur_avail;
+            
+            if (rv == APR_INCOMPLETE) { /* partial character at end of input */
+                /* We need to safe the final byte(s) for next time; we can't
+                 * convert it until we look at the next bucket.
+                 */
+                set_aside_partial_char(f, cur_str, cur_len);
+                rv = 0;
+                cur_len = 0;
+            }
+        }
+
+        if (rv != APR_SUCCESS) {
+            /* bad input byte; we can't continue */
+            done = 1;
+        }
+
+        if (space_avail < XLATE_MIN_BUFF_LEFT) {
+            /* It is time to flush, as there is not enough space left in the
+             * current output buffer to bother with converting more data.
+             */
+            /* TODO: handle errors from this operation */
+            written = send_downstream(f, tmp, sizeof(tmp) - space_avail);
+            
+            /* The filters (or ap_r* routines) upstream apparently want 
+             * to know how many bytes were written, not how many of their 
+             * bytes were accepted.
+             */
+            bytes_sent_downstream += written;
+
+            /* tmp is now empty */
+            space_avail = sizeof(tmp);
+        }
+    }
+
+    if (rv == APR_SUCCESS) {
+        if (space_avail < sizeof(tmp)) { /* gotta write out what we converted */
+            written = send_downstream(f, tmp, sizeof(tmp) - space_avail);
+            bytes_sent_downstream += written;
+        }
+        
+        if (cur_len == AP_END_OF_BRIGADE) {
+            send_eos(f);
+        }
+    }
+    else {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, rv, f->r,
+                      "xlate_output_filter() - returning error");
+    }
+
+    return bytes_sent_downstream;
 }
 
 static const command_rec cmds[] =
@@ -295,9 +572,15 @@ static const command_rec cmds[] =
     {NULL}
 };
 
-static void register_hooks(void)
+static void charset_register_hooks(void)
 {
     ap_hook_fixups(find_code_page, NULL, NULL, AP_HOOK_MIDDLE);
+    /* The first function just registers this module's register_filter 
+     * hook.  The other associates a global name with the filter defined
+     * by this module.
+     */
+    ap_hook_insert_filter(xlate_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_register_filter("XLATEOUT", xlate_output_filter, AP_FTYPE_CONTENT);
 }
 
 module charset_lite_module =
@@ -309,6 +592,6 @@ module charset_lite_module =
     NULL,
     cmds,
     NULL,
-    register_hooks,
+   charset_register_hooks,
 };
 
