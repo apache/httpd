@@ -2227,7 +2227,7 @@ AP_DECLARE(void) ap_send_http_header(request_rec *r)
         apr_table_unset(r->headers_out, "Content-Length");
         /* Disable the buffer filter because it may be masking bugs in the 
          * bucket brigade code 
-         * ap_add_output_filter("BUFFER", NULL, r, r->connection); */
+         * ap_add_output_filter("COALESCE", NULL, r, r->connection); */
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
 
