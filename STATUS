@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 17:51:17 $]
+Last modified at [$Date: 2002/02/02 09:09:45 $]
 
 Release:
 
@@ -153,6 +153,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Yes: Ken
          No: Aaron, Justin, trawick, stoddard, Jim
 
+    * Recent changes to ap_rgetline may have broken EBCDIC boxes.
+        Message-ID: <20020122072605.GF28051@ebuilt.com>
+        Justin says: "I don't have an EBCDIC box to test on.  A potential
+                      solution is to split out ap_rgetline into two
+                      functions as described in this message."
+
     * Modify the worker MPM so that it doesn't need to create and
       destroy a pool for each request--possibly by adopting a
       leader/follower model in which each worker owns a persistent
@@ -256,24 +262,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       fix the bug where request body content will end up closing the
       connection (buggering up persistent conns).
       Status: Justin is working on this as fast as he can.
-              The core input filters, HTTP-related filters, mod_ssl, and
-              mod_proxy are switched to the new logic.  
-              However, ap_getline() still needs to be refactored out.  But, 
-              there's a problem there: ap_getline() peeks ahead for MIME
-              continuation (first character on line is space or \t) and 
-              stores unused data in core_request_config which violates the
-              abstraction.  That's cheating.  So, we may not be able to 
-              implement this without setting some data aside (yuck!).
-              I believe this is OtherBill's main complaint with the current
-              filtering.
-              AIUI (correct me if I'm wrong!), OtherBill believes we 
-              should have a pushback option so that we can return unread 
-              data - this would solve this case.  However, my question to 
-              him is how do we handle stuff like mod_ssl - we can't "unread"
-              data.  So, do we have two brigades for each filter?  An in
-              brigade and a returned brigade?  That seems messy.  To
-              everyone else, can we refactor ap_getline() without pushback 
-              and how?
+              The core input filters, HTTP-related filters, mod_ssl,
+              mod_proxy, and ap_[r]getline are switched to the new logic.  
 
       - socket bucket and core input filter changes. see end of
         message ID (Feb 27): <20010227075326.S2297@lyra.org>
