@@ -236,9 +236,11 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             /* stop gap to make sure everything else works.  In the end,
              * we'll just restart the cgid server. */
             apr_pool_destroy(pcgi);
-            kill(getppid(), SIGWINCH);
+            kill(getpid(), SIGWINCH); /* yes, to ourself */
             break;
         case APR_OC_REASON_RESTART:
+            apr_proc_other_child_unregister(data);
+            break;
         case APR_OC_REASON_UNREGISTER:
             apr_pool_destroy(pcgi);
             kill(*sd, SIGHUP);
