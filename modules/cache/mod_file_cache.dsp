@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_file_cache" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_file_cache" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -106,8 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_file_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_file_cache\
- "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
+	awk -f ../../build/win32/win32ver.awk mod_file_cache  "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
 
 # End Custom Build
 
@@ -118,8 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_file_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_file_cache\
- "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
+	awk -f ../../build/win32/win32ver.awk mod_file_cache  "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
 
 # End Custom Build
 

@@ -49,8 +49,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Release\gen_test_char.pdb" /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Release\gen_test_char.pdb" /machine:I386
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\gen_test_char.pdb" /machine:I386
+# SUBTRACT BASE LINK32 /pdb:none
+# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\gen_test_char.pdb" /machine:I386
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
@@ -66,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\include" /I "..\srclib\apr\include" /I "..\srclib\apr-util\include" /I "..\os\win32" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\gen_test_char" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\srclib\apr\include" /I "..\srclib\apr-util\include" /I "..\os\win32" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\gen_test_char" /FD /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,7 +76,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_test_char.pdb" /debug /machine:I386 /pdbtype:sept
+# SUBTRACT BASE LINK32 /pdb:none
 # ADD LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_test_char.pdb" /debug /machine:I386
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 

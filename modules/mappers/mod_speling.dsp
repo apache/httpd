@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_speling.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_speling
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_speling.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_speling
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_speling.so" /base:@..\..\os\win32\BaseAddr.ref,mod_speling
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_speling.so" /base:@..\..\os\win32\BaseAddr.ref,mod_speling
 
 !ELSEIF  "$(CFG)" == "mod_speling - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_speling" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_speling" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_speling.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_speling
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_speling.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_speling
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_speling.so" /base:@..\..\os\win32\BaseAddr.ref,mod_speling
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_speling.so" /base:@..\..\os\win32\BaseAddr.ref,mod_speling
 
 !ENDIF 
 
@@ -106,8 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_speling.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_speling\
- "speling_module for Apache" ../../include/ap_release.h > .\mod_speling.rc
+	awk -f ../../build/win32/win32ver.awk mod_speling  "speling_module for Apache" ../../include/ap_release.h > .\mod_speling.rc
 
 # End Custom Build
 
@@ -118,8 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_speling.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_speling\
- "speling_module for Apache" ../../include/ap_release.h > .\mod_speling.rc
+	awk -f ../../build/win32/win32ver.awk mod_speling  "speling_module for Apache" ../../include/ap_release.h > .\mod_speling.rc
 
 # End Custom Build
 

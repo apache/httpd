@@ -49,8 +49,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib /nologo /subsystem:console /incremental:no /map /machine:I386
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib /nologo /subsystem:console /incremental:no /map /machine:I386
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib /nologo /subsystem:console /map /machine:I386
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib /nologo /subsystem:console /map /machine:I386
 
 !ELSEIF  "$(CFG)" == "wintty - Win32 Debug"
 
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fd"Debug/wintty" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fd"Debug/wintty" /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -84,14 +84,6 @@ LINK32=link.exe
 # Name "wintty - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\wintty.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\wintty.rc
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\build\win32\win32ver.awk
 
 !IF  "$(CFG)" == "wintty - Win32 Release"
@@ -101,8 +93,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\wintty.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk wintty\
- "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
+	awk -f ../../build/win32/win32ver.awk wintty  "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
 
 # End Custom Build
 
@@ -113,13 +104,20 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\wintty.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk wintty\
- "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
+	awk -f ../../build/win32/win32ver.awk wintty  "wintty Console Utility" ../../include/ap_release.h > .\wintty.rc
 
 # End Custom Build
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\wintty.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\wintty.rc
 # End Source File
 # End Target
 # End Project

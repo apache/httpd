@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fd"Debug/rotatelogs" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fd"Debug/rotatelogs" /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -89,7 +89,6 @@ SOURCE=.\rotatelogs.c
 # Begin Source File
 
 SOURCE=.\rotatelogs.rc
-
 # End Source File
 # Begin Source File
 
@@ -102,8 +101,7 @@ SOURCE=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\rotatelogs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"\
- ../include/ap_release.h > .\rotatelogs.rc
+	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"  ../include/ap_release.h > .\rotatelogs.rc
 
 # End Custom Build
 
@@ -114,8 +112,7 @@ InputPath=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\rotatelogs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"\
- ../include/ap_release.h > .\rotatelogs.rc
+	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"  ../include/ap_release.h > .\rotatelogs.rc
 
 # End Custom Build
 

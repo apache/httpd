@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_tls.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_tls
-# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll" /subsystem:windows /dll /incremental:no /map /out:"Release/mod_tls.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_tls
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_tls.so" /base:@..\..\os\win32\BaseAddr.ref,mod_tls
+# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_tls.so" /libpath:"../../srclib/openssl/out32dll" /base:@..\..\os\win32\BaseAddr.ref,mod_tls
 
 !ELSEIF  "$(CFG)" == "mod_tls - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../../include" /I "../../os/win32" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_tls" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../os/win32" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_tls" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_tls.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_tls
-# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll.dbg" /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_tls.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_tls
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_tls.so" /base:@..\..\os\win32\BaseAddr.ref,mod_tls
+# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_tls.so" /libpath:"../../srclib/openssl/out32dll.dbg" /base:@..\..\os\win32\BaseAddr.ref,mod_tls
 
 !ENDIF 
 
@@ -93,15 +93,15 @@ SOURCE=.\mod_tls.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\mod_tls.rc
+# End Source File
+# Begin Source File
+
 SOURCE=.\openssl_state_machine.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\openssl_state_machine.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\mod_tls.rc
 # End Source File
 # Begin Source File
 
@@ -114,8 +114,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_tls.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_tls\
- "tls_module for Apache" ../../include/ap_release.h > .\mod_tls.rc
+	awk -f ../../build/win32/win32ver.awk mod_tls  "tls_module for Apache" ../../include/ap_release.h > .\mod_tls.rc
 
 # End Custom Build
 
@@ -126,8 +125,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_tls.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_tls\
- "tls_module for Apache" ../../include/ap_release.h > .\mod_tls.rc
+	awk -f ../../build/win32/win32ver.awk mod_tls  "tls_module for Apache" ../../include/ap_release.h > .\mod_tls.rc
 
 # End Custom Build
 
