@@ -574,8 +574,7 @@ ServerSignature On
     Alias /manual "@exp_manualdir@"
 
     <Directory "@exp_manualdir@">
-        Options Indexes FollowSymLinks MultiViews IncludesNoExec
-        AddOutputFilter Includes html
+        Options Indexes FollowSymLinks MultiViews
         AllowOverride None
         Order allow,deny
         Allow from all
