@@ -577,11 +577,22 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
          * if there are empty lines
          */
         r->the_request = NULL;
-        rv = ap_rgetline(&(r->the_request), DEFAULT_LIMIT_REQUEST_LINE + 2,
+        rv = ap_rgetline(&(r->the_request), (apr_size_t)(r->server->limit_req_line + 2),
                          &len, r, 0, bb);
 
         if (rv != APR_SUCCESS) {
             r->request_time = apr_time_now();
+
+            /* ap_rgetline returns APR_ENOSPC if it fills up the
+             * buffer before finding the end-of-line.  This is only going to
+             * happen if it exceeds the configured limit for a request-line.
+             */
+            if (rv == APR_ENOSPC) {
+                r->status    = HTTP_REQUEST_URI_TOO_LARGE;
+                r->proto_num = HTTP_VERSION(1,0);
+                r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+            }
+
             return 0;
         }
     } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
@@ -610,18 +621,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
 
     ap_parse_uri(r, uri);
-
-    /* ap_getline returns (size of max buffer - 1) if it fills up the
-     * buffer before finding the end-of-line.  This is only going to
-     * happen if it exceeds the configured limit for a request-line.
-     * The cast is safe, limit_req_line cannot be negative
-     */
-    if (len > (apr_size_t)r->server->limit_req_line) {
-        r->status    = HTTP_REQUEST_URI_TOO_LARGE;
-        r->proto_num = HTTP_VERSION(1,0);
-        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
-        return 0;
-    }
 
     if (ll[0]) {
         r->assbackwards = 0;
@@ -856,7 +855,7 @@ request_rec *ap_read_request(conn_rec *conn)
     if (!read_request_line(r, tmp_bb)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request failed: URI too long");
+                          "request failed: URI too long (longer than %d)", r->server->limit_req_line);
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
