@@ -880,6 +880,8 @@ int ssl_hook_UserCheck(request_rec *r)
             password = auth_line;
 
             if ((username[0] == '/') && strEQ(password, "password")) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                 "Encountered FakeBasicAuth spoof: %s", username);
                 return HTTP_FORBIDDEN;
             }
         }
