@@ -2928,9 +2928,11 @@ static int default_handler(request_rec *r)
  */
 static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
+#if 0
     request_rec *r = f->r;
+#endif
+    apr_ssize_t bytes_sent = 0;
     ap_bucket *dptr = b->head;
-    apr_ssize_t bytes_sent;
     int len = 0, written;
     const char *str;
 
