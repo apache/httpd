@@ -444,7 +444,6 @@ Open issues:
 
   * vformatter TODO:
     - double check logic in apapi_vformatter(), and especially psprintf()
-    - fix ALLOC_USE_MALLOC, make sure ALLOC_DEBUG and POOL_DEBUG still work
     - add in and use the inaddr formatting codes that started the whole
       debate last october
     - ... so that we can finally start fixing all the log messages that

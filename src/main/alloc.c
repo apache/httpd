@@ -219,7 +219,7 @@ static union block_hdr *malloc_block(int size)
 
 
 
-#ifdef ALLOC_DEBUG
+#if defined(ALLOC_DEBUG) && !defined(ALLOC_USE_MALLOC)
 static void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
 {
     while (free_blk) {
@@ -535,7 +535,7 @@ extern char _end;
 /* Find the pool that ts belongs to, return NULL if it doesn't
  * belong to any pool.
  */
-pool *find_pool(const void *ts)
+API_EXPORT(pool *) find_pool(const void *ts)
 {
     const char *s = ts;
     union block_hdr **pb;
@@ -582,7 +582,7 @@ pool *find_pool(const void *ts)
 /* return TRUE iff a is an ancestor of b
  * NULL is considered an ancestor of all pools
  */
-int pool_is_ancestor(pool *a, pool *b)
+API_EXPORT(int) pool_is_ancestor(pool *a, pool *b)
 {
     if (a == NULL) {
 	return 1;
@@ -771,11 +771,6 @@ char *pstrcat(pool *a,...)
     return res;
 }
 
-/* XXX */
-#ifdef ALLOC_USE_MALLOC
-#error "psprintf does not support ALLOC_USE_MALLOC yet..."
-#endif
-
 /* psprintf is implemented by writing directly into the current
  * block of the pool, starting right at first_avail.  If there's
  * insufficient room, then a new block is allocated and the earlier
@@ -785,13 +780,36 @@ char *pstrcat(pool *a,...)
 
 struct psprintf_data {
     pool *p;
+#ifdef ALLOC_USE_MALLOC
+    char *base;
+    size_t len;
+#else
     union block_hdr *blok;
     char *strp;
     int got_a_new_block;
+#endif
 };
 
 static int psprintf_write(void *vdata, const char *inp, size_t len)
 {
+#ifdef ALLOC_USE_MALLOC
+    struct psprintf_data *ps;
+    int size;
+    char *ptr;
+
+    ps = vdata;
+
+    size = ps->len + len + 1;
+    ptr = realloc(ps->base, size);
+    if (ptr == NULL) {
+	fputs("Ouch!  Out of memory!\n", stderr);
+	exit(1);
+    }
+    ps->base = ptr;
+    memcpy(ptr + ps->len, inp, len);
+    ps->len += len;
+    return 0;
+#else
     struct psprintf_data *ps;
     union block_hdr *blok;
     union block_hdr *nblok;
@@ -837,10 +855,31 @@ static int psprintf_write(void *vdata, const char *inp, size_t len)
     ps->blok = nblok;
     ps->got_a_new_block = 1;
     return 0;
+#endif
 }
 
 API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
 {
+#ifdef ALLOC_USE_MALLOC
+    struct psprintf_data ps;
+    void *ptr;
+
+    block_alarms();
+    ps.p = p;
+    ps.base = NULL;
+    ps.len = CLICK_SZ;	/* need room at beginning for allocation_list */
+    apapi_vformatter(psprintf_write, &ps, fmt, ap);
+    ptr = ps.base;
+    if (ptr == NULL) {
+	unblock_alarms();
+	return pstrdup(p, "");
+    }
+    *((char *)ptr + ps.len) = '\0';	/* room was saved for this */
+    *(void **)ptr = p->allocation_list;
+    p->allocation_list = ptr;
+    unblock_alarms();
+    return (char *)ptr + CLICK_SZ;
+#else
     struct psprintf_data ps;
     char *strp;
     int size;
@@ -870,6 +909,7 @@ API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
     }
 
     return strp;
+#endif
 }
 
 API_EXPORT_NONSTD(char *) psprintf(pool *p, const char *fmt, ...)

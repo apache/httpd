@@ -97,6 +97,8 @@ API_EXPORT(void) destroy_pool(pool *);
 #define pool_join(a,b)
 #else
 API_EXPORT(void) pool_join(pool *p, pool *sub);
+API_EXPORT(pool *) find_pool(const void *ts);
+API_EXPORT(int) pool_is_ancestor(pool *a, pool *b);
 #endif
 
 /* Clearing out EVERYTHING in an pool... destroys any sub-pools */
