@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_info: HTML escape configuration information so it displays 
+     correctly. PR 24232. [Thom May]
+     
   *) Restore the ability to add a description for directories that
      don't contain an index file.  (Broken in 2.0.48) [André Malo]
 
