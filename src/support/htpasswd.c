@@ -431,8 +431,8 @@ int main(int argc, char *argv[])
 
     /*
      * Make sure we still have exactly the right number of arguments left
-     # (the filename, the username, and possibly the password if -b was
-     # specified).
+     * (the filename, the username, and possibly the password if -b was
+     * specified).
      */
     if ((argc - i) != args_left) {
 	return usage();
