@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) Be more careful about recursively removing CVS directories. Make
+     sure that we aren't cd'ing to their home directory first.
+     [Aaron Bannert]
+
   *) Add a missing errordir entry in the Debian config.layout. PR: 10067
      [Dirk-Jan Faber <dirk-jan@selwerd.nl>, Aaron Bannert,
       Thom May <thom@planetarytramp.net>]
