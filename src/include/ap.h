@@ -180,7 +180,7 @@ API_EXPORT(int) ap_base64decode(char * plain_dst, const char *coded_src);
 API_EXPORT(int) ap_base64decode_binary(unsigned char * plain_dst, const char *coded_src);
 
 /* Password validation, as used in AuthType Basic which is able to cope
- * (based on the prexix) with the SHA1, Apache's internal MD5 and (depending
+ * (based on the prefix) with the SHA1, Apache's internal MD5 and (depending
  * on your platform either plain or crypt(3) passwords.
  */
 API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
