@@ -8,7 +8,8 @@ APACHE_MODULE(status, process/thread monitoring, , , no)
 APACHE_MODULE(autoindex, directory listing, , , yes)
 APACHE_MODULE(asis, as-is filetypes, , , yes)
 APACHE_MODULE(info, server information, , , no)
-APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no)
+APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
+              other_targets=suexec ] )
 
 LTFLAGS="$LTFLAGS -export-dynamic"
 
