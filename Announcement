@@ -1,20 +1,21 @@
-Apache 1.3beta2 Released
+ROUGH DRAFT COPY
+Apache 1.3beta3 Released
 ------------------------
 
-The Apache Group is pleased to announce the release of the first public
-beta release of Apache 1.3.  Apache 1.3b1 was never formally released,
-thus making 1.3b2 the first beta.
+The Apache Group is pleased to announce the release of the second public
+beta release of Apache 1.3. 
 
 Apache 1.3 offers numerous enhancements, improvements and performance
 boosts over the 1.2 codebase. The most visible and noteworthy addition
-is the ability to run Apache under Windows 95 and NT.
+is the ability to run Apache under Windows 95 and NT (known as the
+``Win32'' port). 
 
-Apache 1.3b2 under UNIX has undergone extensive testing, but there are
-known issues in the current release. The Windows port has not undergone
-as strenuous a workout. At present, the Windows port should be considered
-a ``developers version'' including only the source and no pre-compiled
-binaries at present. It is anticipated that a binary-release will be
-available ``shortly''.
+Apache 1.3b3 under both Win32 and UNIX has undergone extensive testing,
+and is much improved over the previous 1.3b2 release. In particular,
+the 1.3b2 release for Win32 was considered a ``developers version.''
+We feel pretty confident that the Win32 port is ready for a much wider
+audience, and with that in mind, we are providing pre-compiled
+executables for the Win32 platform.
 
 Apache has been the most popular web server on the Internet since April
 of 1996. The September 1997 WWW server site survey by Netcraft (see:
