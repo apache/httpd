@@ -344,6 +344,7 @@ ap_start_restart
 ap_start_shutdown
 ap_str_tolower
 ap_strcasecmp_match
+ap_strcasestr
 ap_strcmp_match
 ap_stripprefix
 ap_sub_req_lookup_file
@@ -382,8 +383,10 @@ ap_uudecode
 ap_validate_password
 ap_vbprintf
 ap_vformatter
+ap_vrprintf
 ap_vsnprintf
 core_module
+regerror
 top_module
 XML_DefaultCurrent
 XML_ErrorString
