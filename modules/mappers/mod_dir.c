@@ -118,14 +118,10 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
 
 static int fixup_dir(request_rec *r)
 {
-    dir_config_rec *d;
-
-    if (r->finfo.filetype != APR_DIR) {
+    /* only (potentially) redirect for GET requests against directories */
+    if (r->method_number != M_GET || r->finfo.filetype != APR_DIR) {
 	return DECLINED;
     }
-
-    d = (dir_config_rec *) ap_get_module_config(r->per_dir_config,
-						&dir_module);
 
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {
         char *ifile;
@@ -140,6 +136,7 @@ static int fixup_dir(request_rec *r)
                   ap_construct_url(r->pool, ifile, r));
         return HTTP_MOVED_PERMANENTLY;
     }
+
     return OK;
 }
 
