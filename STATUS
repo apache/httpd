@@ -25,14 +25,15 @@ Documentation that needs writing:
 
 Available Patches:
 
-    * Ken's fix for error pages and error-notes
-      Take references to error-notes out of ap_send_error_response();
+    * Ken's fix for error pages and error-notes (#2)
+      Take references to error-notes out of ap_send_error_response()
+      except for internal HTTP_BAD_REQUEST uses.  Otherwise,
       leave its use for page customisation to ErrorDocuments.
       Only copy ap_log_rerror() text into error-notes if the
       level is 'warning' or more severe AND there's not already
       something stored there.
-	Message-ID: <360AAF24.50411D15@Golux.Com>
-	Status: Ken +1, Roy -1
+	Message-ID: <360AC071.C1554255@Golux.Com>
+	Status: Ken +1
 
     * Earle Ake: Apache 1.3.1 port to Pyramid DC/OSx
       <199809221847.OAA11700@wpdiss1.wpafb.af.mil>
