@@ -1199,12 +1199,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         split = NULL;
         flush = 0;
 
-        APR_BRIGADE_FOREACH(e, b) {
+        e = APR_BRIGADE_FIRST(b);
+        while (e != APR_BRIGADE_SENTINEL(b)) {
             const char *ignored;
             apr_size_t len;
             len = 0;
             if (APR_BUCKET_IS_EOS(e)) {
                 eos = 1;
+                break;
             }
             else if (APR_BUCKET_IS_FLUSH(e)) {
                 if (partial_send_okay) {
@@ -1241,6 +1243,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                         flush = 1;
                         break;
                     }
+                    continue;
                 }
                 else if (rv != APR_EOF) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -1255,6 +1258,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
 
             ctx->curr_len += len;
             r->bytes_sent += len;
+            e = APR_BUCKET_NEXT(e);
         }
 
         if (split) {
