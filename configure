@@ -236,12 +236,6 @@ iflags_core="-m 755"
 iflags_dso="-m 755"
 iflags_script="-m 755"
 iflags_data="-m 644"
-case $PLATFORM in
-    *OS/2* ) 
-        iflags_program="$iflags_program -e .exe" 
-        iflags_core="$iflags_core -e .exe" 
-        ;;
-esac
 
 #   various other flags
 support=1
@@ -327,6 +321,10 @@ case $PLATFORM in
 	iflags_core="${iflags_core} -S \"-S\"" 
 	iflags_dso="${iflags_dso} -S \"-S\""
 	;;
+    *OS/2* ) 
+        iflags_program="${iflags_program} -e .exe" 
+        iflags_core="${iflags_core} -e .exe" 
+        ;;
    *)
 	default_layout="Apache"
 	;;
