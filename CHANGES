@@ -43,7 +43,7 @@ Changes with Apache 2.1.0-dev
   *) Fix mod_proxy handling of filtered input bodies.  [Justin Erenkrantz]
 
   *) Don't remove the Content-Length from responses in mod_proxy
-     [Brian Pane]
+     PR: 8677 [Brian Pane]
 
   *) Move the check of the Expect request header field after the hook
      for ap_post_read_request, since that is the only opportunity for
