@@ -16,18 +16,6 @@ SUBDIRS = \
 	proxy \
 	$(EOLIST) 
 
-# If the ldap-aaa directory exists then build the auth_ldap module
-ifeq "$(wildcard $(AP_WORK)\modules\ldap-aaa)" "$(AP_WORK)\modules\ldap-aaa"
-SUBDIRS += ldap-aaa \
-		   $(EOLIST)
-endif
-
-#If the ldap-cache directory exists then build the ldaputil module
-ifeq "$(wildcard $(AP_WORK)\modules\ldap-cache)" "$(AP_WORK)\modules\ldap-cache"
-SUBDIRS += ldap-cache \
-	       $(EOLIST)
-endif
-
 #If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
 SUBDIRS += mod_edir \
