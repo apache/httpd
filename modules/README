@@ -17,10 +17,6 @@ experimental/
   evolve radically in the future.  This code isn't supported
   officially.
 
-extra/
-
-  This is the directory for third-party modules, such as mod_jserv.
-
 test/
 
   This directory houses modules which test various components 
