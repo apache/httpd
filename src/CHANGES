@@ -1,5 +1,8 @@
 Changes with Apache 1.2b7
 
+  *) Reduced the default timeout from 1200 seconds to 300, and the
+     one in the sample configfile from 400 to 300.  [Marc Slemko]
+
   *) Stop vbprintf from crashing if given a NULL string pointer; 
      print (null) instead.  [Ken Coar]
 

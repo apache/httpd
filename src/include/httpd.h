@@ -181,7 +181,7 @@
 #define HUGE_STRING_LEN 8192
 
 /* The timeout for waiting for messages */
-#define DEFAULT_TIMEOUT 1200
+#define DEFAULT_TIMEOUT 300
 
 /* The timeout for waiting for keepalive timeout until next request */
 #define DEFAULT_KEEPALIVE_TIMEOUT 15

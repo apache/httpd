@@ -1146,7 +1146,7 @@ See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A name="timeout"><h2>TimeOut directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
 <strong>Syntax:</strong> TimeOut <em>number</em><br>
-<strong>Default:</strong> <code>TimeOut 1200</code><br>
+<strong>Default:</strong> <code>TimeOut 300</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> core<p>
 
@@ -1162,9 +1162,11 @@ wait for three things:
 </OL>
 
 We plan on making these separately configurable at some point down the
-road.  1200 is very generous - you may consider turning it down to
-something smaller if you find the server getting swamped by
-half-completed connections from buggy browsers.
+road.  The timer used to default to 1200 before 1.2, but has been
+lowered to 300 which is still far more than necessary in most
+situations.  It is not set any lower by default because there may
+still be odd places in the code where the timer is not reset when
+a packet is sent.
 
 <p><hr>
 

@@ -87,9 +87,8 @@ ScoreBoardFile logs/apache_status
 #CacheNegotiatedDocs
 
 # Timeout: The number of seconds before receives and sends time out
-#  n.b. the compiled default is 1200 (20 minutes !)
 
-Timeout 400
+Timeout 300
 
 # KeepAlive: Whether or not to allow persistent connections (more than
 # one request per connection). Set to "Off" to deactivate.
