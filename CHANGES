@@ -1,5 +1,9 @@
 Changes with Apache 2.0.41
 
+  *) New option to ServerTokens 'maj[or]'. Only show the major version
+     Also Surfaced this directive in the standard config (default FULL)
+     [Ian Holsman]
+
   *) Change mod_rewrite to use apr-util's dbm support for dbm rewrite
      maps.  The dbm type (e.g., ndbm, gdbm) can be specified on the
      RewriteMap directive.  PR 10644  [Jeff Trawick]
