@@ -79,7 +79,6 @@
  * Anonymous_LogEmail           [ on | off ] default = on
  * Anonymous_VerifyEmail        [ on | off ] default = off
  * Anonymous_NoUserId           [ on | off ] default = off
- * Anonymous_Authoritative      [ on | off ] default = off
  *
  * The magic user id is something like 'anonymous', it is NOT case sensitive. 
  * 
@@ -99,12 +98,15 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
+#include "ap_provider.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_request.h"
 #include "http_protocol.h"
+
+#include "mod_auth.h"
 
 typedef struct anon_auth_pw {
     char *password;
@@ -117,7 +119,6 @@ typedef struct {
     int logemail;
     int verifyemail;
     int mustemail;
-    int authoritative;
 } authn_anon_config_rec;
 
 static void *create_authn_anon_dir_config(apr_pool_t *p, char *d)
@@ -131,7 +132,6 @@ static void *create_authn_anon_dir_config(apr_pool_t *p, char *d)
     conf->logemail = 1;
     conf->verifyemail = 0;
     conf->mustemail = 1;
-    conf->authoritative = 0;
     return conf;
 }
 
@@ -175,48 +175,42 @@ static const command_rec authn_anon_cmds[] =
     AP_INIT_FLAG("Anonymous_LogEmail", ap_set_flag_slot,
      (void *)APR_OFFSETOF(authn_anon_config_rec, logemail),
      OR_AUTHCFG, "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_Authoritative", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(authn_anon_config_rec, authoritative),
-     OR_AUTHCFG, "Limited to 'on' or 'off'"),
     {NULL}
 };
 
 module AP_MODULE_DECLARE_DATA authn_anon_module;
 
-static int anon_authenticate_basic_user(request_rec *r)
+static authn_status check_anonymous(request_rec *r, const char *user,
+                                    const char *sent_pw)
 {
     authn_anon_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authn_anon_module);
-    const char *sent_pw;
-    int res = DECLINED;
-
-    if ((res = ap_get_basic_auth_pw(r, &sent_pw))) {
-        return res;
-    }
+    authn_status res = AUTH_USER_NOT_FOUND;
 
     /* Ignore if we are not configured */
     if (!conf->passwords) {
-        return DECLINED;
+        return AUTH_USER_NOT_FOUND;
     }
 
     /* Do we allow an empty userID and/or is it the magic one
      */
 
-    if ((!(r->user[0])) && (conf->nouserid)) {
-        res = OK;
+    if ((!user[0]) && (conf->nouserid)) {
+        res = AUTH_USER_FOUND;
     }
     else {
         anon_auth_pw *p = conf->passwords;
-        res = DECLINED;
-        while ((res == DECLINED) && (p != NULL)) {
-            if (!(strcasecmp(r->user, p->password))) {
-                res = OK;
+        res = AUTH_USER_NOT_FOUND;
+        while ((res == AUTH_USER_NOT_FOUND) && (p != NULL)) {
+            if (!strcasecmp(user, p->password)) {
+                res = AUTH_USER_FOUND;
             }
             p = p->next;
         }
     }
+
     /* Is username is OK and password been filled out (if required) */
-    if ((res == OK) && ((!conf->mustemail) || strlen(sent_pw)) &&
+    if ((res == AUTH_USER_FOUND) && ((!conf->mustemail) || strlen(sent_pw)) &&
         /* does the password look like an email address ? */
         ((!conf->verifyemail) ||
           ((strpbrk("@", sent_pw) != NULL) && 
@@ -226,24 +220,22 @@ static int anon_authenticate_basic_user(request_rec *r)
                         "Anonymous: Passwd <%s> Accepted",
                         sent_pw ? sent_pw : "\'none\'");
         }
-        return OK;
-    }
-    else {
-        if (conf->authoritative) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
-                        "Anonymous: Authoritative, Passwd <%s> not accepted",
-                        sent_pw ? sent_pw : "\'none\'");
-            return HTTP_UNAUTHORIZED;
-        }
-        /* Drop out the bottom to return DECLINED */
+        return AUTH_GRANTED;
     }
 
-    return DECLINED;
+    return (res == AUTH_USER_NOT_FOUND ? res : AUTH_DENIED);
 }
+
+static const authn_provider authn_anon_provider =
+{
+    &check_anonymous,
+    NULL
+};
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(anon_authenticate_basic_user,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "anon", "0",
+                         &authn_anon_provider);
 }
 
 module AP_MODULE_DECLARE_DATA authn_anon_module =
