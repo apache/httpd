@@ -346,7 +346,7 @@ host</context></contextlist>
     nickname, it doesn't actually apply the format and make it the
     default. Therefore, it will not affect subsequent
     <directive>TransferLog</directive> directives.  In addition,
-    <directive>TransferLog</directive> cannot use one nickname
+    <directive>LogFormat</directive> cannot use one nickname
     to define another nickname.</p>
 
     <p>For example:</p>
