@@ -22,6 +22,8 @@
 <a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
     <p>이 문서는 아파치 <a href="directives.html">설정
     지시어</a>를 설명하는데 사용한 용어들을 설명한다.</p>
