@@ -87,8 +87,8 @@
 extern int ap_os_is_path_absolute(const char *file);
 #endif
 
-char *ap_os_canonical_filename(apr_pool_t *p, const char *file);
-char *ap_os_case_canonical_filename(apr_pool_t *p, const char *szFile);
+AP_DECLARE(char *)ap_os_canonical_filename(apr_pool_t *p, const char *file);
+AP_DECLARE(char *)ap_os_case_canonical_filename(apr_pool_t *p, const char *szFile);
 
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0

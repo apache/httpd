@@ -32,6 +32,7 @@ test_char.h: gen_test_char
 util.lo: test_char.h
 
 EXPORT_FILES = $(top_srcdir)/include/*.h \
+       $(top_srcdir)/os/$(OS_DIR)/*.h \
        $(top_srcdir)/srclib/apr/include/*.h \
        $(top_srcdir)/srclib/apr-util/include/*.h
 
