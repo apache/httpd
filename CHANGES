@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Fixed file extensions for real media files and removed rpm extension
+     from mime.types. PR 26079.  [Allan Sandfeld <kde carewolf.com>]
+
   *) Remove compile-time length limit on request strings. Length is
      now enforced solely with the LimitRequestLine config directive.
      [Paul J. Reder]
