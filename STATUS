@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/15 14:01:56 $]
+  Last modified at [$Date: 2002/05/15 14:10:47 $]
 
 Release:
 
@@ -247,21 +247,12 @@ Win32 specific issues:
       re-implemented now that CreateProcess is being used.
         Status: already resolved in Apache 2.0 using APR.
 
-    * process/thread model
-	- need dynamic thread creation/destruction, similar to 
-	  Unix process model
-        Status: already reimplemented in Apache 2.0 using APR.
-
     * handle bugs that make it pop up errors on console, ie. segv 
       equiv?  Can we do this?  Need to make it robust.
       This is done for mod_isapi by the ap_load_dso code on win32,
       look there for an example ... probably not appropriate everywhere,
       but only where the client is affecting the state of the machine.
       What the operator does is a different matter.
-
-    * the mutex should be critical-regions, since the current design
-      is creating a mess of SO calls that are unnecessary
-        Status: Apache 2.0's apr/mpm locking model is already overhauled.
 
     * rfc1413.c has static storage which won't work multithreaded
         Status: this is a pretty significant rewrite.  Apache 2.0 is
