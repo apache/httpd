@@ -3,3 +3,4 @@ config_vars.mk
 apr_common.m4
 find_apr.m4
 find_apu.m4
+ltmain.sh
