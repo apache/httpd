@@ -36,6 +36,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
     char errbuf[200];
     apr_size_t total_read = 0;
     apr_size_t limit_xml_body = ap_get_limit_xml_body(r);
+    int result = HTTP_BAD_REQUEST;
 
     parser = apr_xml_parser_create(r->pool);
     brigade = apr_brigade_create(r->pool, r->connection->bucket_alloc);
@@ -78,6 +79,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "XML request body is larger than the configured "
                               "limit of %lu", (unsigned long)limit_xml_body);
+                result = HTTP_REQUEST_ENTITY_TOO_LARGE;
                 goto read_error;
             }
 
@@ -121,5 +123,5 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
     apr_brigade_destroy(brigade);
 
     /* Apache will supply a default error, plus the error log above. */
-    return HTTP_BAD_REQUEST;
+    return result;
 }
