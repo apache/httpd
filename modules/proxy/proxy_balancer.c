@@ -370,9 +370,9 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 
         PROXY_BALANCER_UNLOCK(balancer);        
         access_status = OK;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy_balancer_post_request for (%s)", balancer->name);
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-             "proxy_balancer_post_request for (%s)", balancer->name);
 
     return access_status;
 } 
