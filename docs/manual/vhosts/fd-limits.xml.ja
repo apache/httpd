@@ -42,7 +42,7 @@
 
     <ul>
       <li>ログファイルの数を減らす。<directive type="section"
-      modoule="core">VirtualHost</directive>
+      module="core">VirtualHost</directive>
       セクションでログファイルを指定せず、メインのログファイルにのみ記録する。
       (これに関する詳しい情報は以下の<a
       href="#splitlogs">ログファイルの分割</a>を読んでください。)</li>
