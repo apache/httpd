@@ -1,5 +1,7 @@
 Changes with Apache 1.1b4:
 
+  *) r->bytes_sent variable restored
+
   *) More possibly unsecure programs removed from the support directory.
 
   *) More mod_auth_msql authentication improvements.

@@ -71,6 +71,11 @@
 
 #include <stdarg.h>
 
+#define SET_BYTES_SENT(r) \
+  do { if (r->sent_bodyct) \
+	  bgetopt (r->connection->client, BO_BYTECT, &r->bytes_sent); \
+  } while (0)
+
 /* Handling of conditional gets (if-modified-since); Roy owes Rob beer. 
  * This would be considerably easier if strptime or timegm were portable...
  */
@@ -502,6 +507,7 @@ void set_sub_req_protocol (request_rec *rnew, request_rec *r)
 
 void finalize_sub_req_protocol (request_rec *sub)
 {
+    SET_BYTES_SENT (sub->main);
 } 
 
 /* Support for the Basic authentication protocol, and a bit for Digest.
@@ -754,6 +760,7 @@ long send_fd(FILE *f, request_rec *r)
     }
     bflush(c->client);
     
+    SET_BYTES_SENT(r);
     return total_bytes_sent;
 }
 
@@ -761,6 +768,7 @@ int rputc (int c, request_rec *r)
 {
     if (r->connection->aborted) return EOF;
     bputc(c, r->connection->client);
+    SET_BYTES_SENT(r);
     return c;
 }
 
@@ -768,6 +776,7 @@ int
 rputs(const char *str, request_rec *r)
 {
     if (r->connection->aborted) return EOF;
+    SET_BYTES_SENT(r);
     return bputs(str, r->connection->client);
 }
 
@@ -780,6 +789,7 @@ int rprintf(request_rec *r,const char *fmt,...)
     va_start(vlist,fmt);
     n=vbprintf(r->connection->client,fmt,vlist);
     va_end(vlist);
+    SET_BYTES_SENT(r);
     return n;
     }
 
@@ -809,6 +819,7 @@ rvputs(request_rec *r, ...)
     }
     va_end(args);
 
+    SET_BYTES_SENT(r);
     return k;
 }
 

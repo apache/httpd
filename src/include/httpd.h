@@ -353,6 +353,7 @@ struct request_rec {
   int method_number;		/* M_GET, M_POST, etc. */
 
   int sent_bodyct;		/* byte count in stream is for body */
+  long bytes_sent;		/* body byte count, for easy access */
   
   /* MIME header environments, in and out.  Also, an array containing
    * environment variables to be passed to subprocesses, so people can
