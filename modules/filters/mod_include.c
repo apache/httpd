@@ -190,7 +190,12 @@ static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
     int state = 0;
 
     do {
-        if (dptr->read(dptr, &buf, &len, 0) == AP_END_OF_BRIGADE) {
+        if (dptr->type == AP_BUCKET_EOS) {
+            break;
+        }
+        dptr->read(dptr, &buf, &len, 0);
+        /* XXX handle retcodes */
+        if (len == 0) { /* end of pipe? */
             break;
         }
         c = buf;
@@ -337,7 +342,6 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     const char *str;
     int length; 
     char *t = tag, *tag_val, term;
-    int len;
 
     /* makes code below a little less cluttered */
     --tagbuf_len;
@@ -409,7 +413,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
         }
     }
     if (*c != '=') {
-        *c--;
+        /* XXX may need to ungetc() here (see pre-bucketized code) */
         return NULL;
     }
 
@@ -928,14 +932,17 @@ static int include_cmd(char *s, request_rec *r, ap_filter_t *next)
                         "couldn't create child process: %d: %s", rc, s);
         }
         else {
-            ap_bucket_brigade *bcgi = NULL;
+            ap_bucket_brigade *bcgi;
+            ap_bucket *b;
+
             apr_note_subprocess(r->pool, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
             file = procnew->out;
             if (!file)
                 return APR_EBADF;
             bcgi = ap_brigade_create(r->pool);
-            AP_BRIGADE_INSERT_TAIL(bcgi, ap_bucket_create_pipe(file));
+            b = ap_bucket_create_pipe(file);
+            AP_BRIGADE_INSERT_TAIL(bcgi, b);
             ap_pass_brigade(next, bcgi);
         
             /* We can't close the pipe here, because we may return before the
@@ -2315,7 +2322,6 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
                 hackbucket = foo;
             }
             ap_pass_brigade(f->next, before_tag);
-            ap_brigade_destroy(before_tag);
             if (!strcmp(directive, "if")) {
                 if (!printing) {
                     if_nesting++;
@@ -2460,7 +2466,6 @@ static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
     request_rec *r = f->r;
     enum xbithack *state =
     (enum xbithack *) ap_get_module_config(r->per_dir_config, &includes_module);
-    int errstatus;
     request_rec *parent;
 
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
