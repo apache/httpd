@@ -206,6 +206,7 @@ FILES_nlm_Ximports = \
 	util_ldap_connection_find \
 	util_ldap_connection_close \
 	util_ldap_cache_checkuserid \
+	util_ldap_cache_getuserdn \
 	util_ldap_cache_compare \
 	util_ldap_cache_comparedn \
 	@$(APR)/aprlib.imp \
