@@ -109,7 +109,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-
+#ifdef HAVE_NETINET_TCP_H
+#include <netinet/tcp.h>	/* for TCP_NODELAY */
+#endif
 
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
