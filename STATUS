@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 22:17:44 $]
+Last modified at [$Date: 2003/05/13 22:49:38 $]
 
 Release:
 
@@ -195,11 +195,6 @@ PATCHES TO PORT FROM 2.1
       comfortable with doing)
       (the docs should explain the thing better. Currently it's not
        really understandable for users. If nobody else does, nd tries to.)
-
-    * Hook mod_rewrite's type checker before mod_mime's one. That way the
-      RewriteRule [T=...] Flag should work as expected now. PR 19626.
-      modules/mappers/mod_rewrite.c r1.150
-      +1: nd, trawick, stoddard
 
     * mod_auth_ldap: Use generic whitespace character class when parsing
       "require" directives, instead of literal spaces only. PR 17135.

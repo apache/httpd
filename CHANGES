@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) Hook mod_rewrite's type checker before mod_mime's one. That way the
+     RewriteRule [T=...] Flag should work as expected now. PR 19626.
+     [André Malo]
+
   *) htpasswd: Check the processed file on validity. If a line is not empty
      and not a comment, it must contain at least one colon. Otherwise exit
      with error code 7. [Kris Verbeeck <Kris.Verbeeck@ubizen.com>, Thom May]
