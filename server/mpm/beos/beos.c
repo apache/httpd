@@ -337,7 +337,7 @@ static int32 worker_thread(void * dummy)
     /* each worker thread is in control of it's own destiny...*/
     int this_worker_should_exit = 0; 
     free(ti);
-
+      
     /* block the signals for this thread */
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
@@ -814,7 +814,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * a seperate pool of it's own to use.
      */
     apr_pool_create(&pchild, pconf);
-    ap_run_child_init(pchild, ap_server_conf);
 
     /* Now that we have the child pool (pchild) we can allocate
      * the listenfds and creat the pollset...
@@ -827,7 +826,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    listening_sockets[i]=lr->sd;
 
     /* we assume all goes OK...hmm might want to check that! */
-    if (!is_graceful) {
+    /* if we're in one_process mode we don't want to start threads
+     * do we??
+     */
+    if (!is_graceful && !one_process) {
 	    startup_threads(remaining_threads_to_start);
 	    remaining_threads_to_start = 0;
     }
@@ -852,13 +854,33 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /*
      * main_loop until it's all over
      */
-    server_main_loop(remaining_threads_to_start);
+    if (!one_process) {
+        server_main_loop(remaining_threads_to_start);
     
-    tell_workers_to_exit(); /* if we get here we're exiting... */
-    sleep(1); /* give them a brief chance to exit */
-
+        tell_workers_to_exit(); /* if we get here we're exiting... */
+        sleep(1); /* give them a brief chance to exit */
+    } else {
+        proc_info *my_info = (proc_info *)malloc(sizeof(proc_info));
+        my_info->slot = 0;
+        apr_pool_create(&my_info->tpool, pchild);
+        worker_thread(my_info);
+    }
+        
     /* close the UDP socket we've been using... */
     apr_socket_close(listening_sockets[0]);
+
+    if (one_process || shutdown_pending) {
+        const char *pidfile = NULL;
+        pidfile = ap_server_root_relative (pconf, ap_pid_fname);
+        if ( pidfile != NULL && unlink(pidfile) == 0)
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+                         "removed PID file %s (pid=%ld)", pidfile, 
+                         (long)getpid());
+    }
+
+    if (one_process) {
+        return 1;
+    }
         
     /*
      * If we get here we're shutting down...
@@ -870,18 +892,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         if (beosd_killpg(getpgrp(), SIGTERM) < 0)
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
              "killpg SIGTERM");
-
-        /* cleanup pid file on normal shutdown */
-        {
-            const char *pidfile = NULL;
-            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
-            if ( pidfile != NULL && unlink(pidfile) == 0)
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
-            		 0, ap_server_conf,
-            		 "removed PID file %s (pid=%ld)",
-            		 pidfile, (long)getpid());
-        }
-        
+      
         /* use ap_reclaim_child_processes starting with SIGTERM */
         ap_reclaim_child_processes(1);
 
@@ -894,10 +905,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     /* we've been told to restart */
     signal(SIGHUP, SIG_IGN);
-
-    if (one_process) {
-        return 1;
-    }
 
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
@@ -949,7 +956,8 @@ static void beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
-    ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
+    if (!one_process) 
+        ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
