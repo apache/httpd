@@ -1164,6 +1164,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     memset(*balancer, 0, sizeof(proxy_balancer));
 
     (*balancer)->name = uri;
+    (*balancer)->lbmethod = lbmethod_requests;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS

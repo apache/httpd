@@ -161,7 +161,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
 }
 
 /*
- * The idea behind this scheduler is the following:
+ * The idea behind the find_best_byrequests scheduler is the following:
  *
  * lbfactor is "how much we expect this worker to work", or "the worker's
  * normalized work quota".
@@ -205,7 +205,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
  *   b a d c d a c d b d ...
  *
  */
-static proxy_worker *find_best_worker(proxy_balancer *balancer,
+static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
                                       request_rec *r)
 {
     int i;
@@ -213,9 +213,6 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
     proxy_worker *candidate = NULL;
     
-    if (PROXY_THREAD_LOCK(balancer) != APR_SUCCESS)
-        return NULL;
-
     /* First try to see if we have available candidate */
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* If the worker is in error state run
@@ -241,11 +238,88 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     if (candidate) {
         candidate->s->lbstatus -= total_factor;
         candidate->s->elected++;
-        PROXY_THREAD_UNLOCK(balancer);
-        return candidate;
     }
-    else {
+
+    return candidate;
+}
+
+/*
+ * The idea behind the find_best_bytraffic scheduler is the following:
+ *
+ * We know the amount of traffic (bytes in and out) handled by each
+ * worker. We normalize that traffic by each workers' weight. So assuming
+ * a setup as below:
+ *
+ * worker     a    b    c
+ * lbfactor   1    1    3
+ *
+ * the scheduler will allow worker c to handle 3 times the
+ * traffic of a and b. If each request/response results in the
+ * same amount of traffic, then c would be accessed 3 times as
+ * often as a or b. If, for example, a handled a request that
+ * resulted in a large i/o bytecount, then b and c would be
+ * chosen more often, to even things out.
+ */
+static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
+                                          request_rec *r)
+{
+    int i;
+    apr_off_t mytraffic = 0;
+    apr_off_t curmin = 0;
+    proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
+    proxy_worker *candidate = NULL;
+    
+    /* First try to see if we have available candidate */
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        /* If the worker is in error state run
+         * retry on that worker. It will be marked as
+         * operational if the retry timeout is elapsed.
+         * The worker might still be unusable, but we try
+         * anyway.
+         */
+        if (!PROXY_WORKER_IS_USABLE(worker))
+            ap_proxy_retry_worker("BALANCER", worker, r->server);
+        /* Take into calculation only the workers that are
+         * not in error state or not disabled.
+         */
+        if (PROXY_WORKER_IS_USABLE(worker)) {
+            mytraffic = (worker->s->transferred/worker->s->lbfactor) +
+                        (worker->s->read/worker->s->lbfactor);
+            if (!candidate || mytraffic < curmin) {
+                candidate = worker;
+                curmin = mytraffic;
+            }
+        }
+        worker++;
+    }
+    
+    if (candidate) {
+        candidate->s->elected++;
+    }
+
+    return candidate;
+}
+
+static proxy_worker *find_best_worker(proxy_balancer *balancer,
+                                      request_rec *r)
+{
+    proxy_worker *candidate = NULL;
+    
+    if (PROXY_THREAD_LOCK(balancer) != APR_SUCCESS)
+        return NULL;    
+
+    if (balancer->lbmethod == lbmethod_requests) {
+        candidate = find_best_byrequests(balancer, r);
+    } else if (balancer->lbmethod == lbmethod_traffic) {
+        candidate = find_best_bytraffic(balancer, r);
+    } else {
         PROXY_THREAD_UNLOCK(balancer);
+        return NULL;
+    }
+
+    PROXY_THREAD_UNLOCK(balancer);
+
+    if (candidate == NULL) {
         /* All the workers are in error state or disabled.
          * If the balancer has a timeout sleep for a while
          * and try again to find the worker. The chances are
@@ -522,6 +596,21 @@ static int balancer_handler(request_rec *r)
                 bsel->max_attempts = ival;
             bsel->max_attempts_set = 1;
         }
+        if ((val = apr_table_get(params, "lm"))) {
+            int ival = atoi(val);
+            switch(ival) {
+                case 0:
+                    break;
+                case lbmethod_traffic:
+                    bsel->lbmethod = lbmethod_traffic;
+                    break;
+                case lbmethod_requests:
+                    bsel->lbmethod = lbmethod_requests;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
     if (wsel) {
         const char *val;
@@ -599,12 +688,15 @@ static int balancer_handler(request_rec *r)
                       "\">", NULL); 
             ap_rvputs(r, balancer->name, "</a></h3>\n\n", NULL);
             ap_rputs("\n\n<table border=\"0\"><tr>"
-                "<th>StickySesion</th><th>Timeout</th><th>FailoverAttempts</th>"
+                "<th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);                
             ap_rvputs(r, "<td>", balancer->sticky, NULL);
             ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
                 apr_time_sec(balancer->timeout));
             ap_rprintf(r, "<td>%d</td>\n", balancer->max_attempts);
+            ap_rprintf(r, "<td>%s</td>\n",
+                       balancer->lbmethod == lbmethod_requests ? "Requests" :
+                       balancer->lbmethod == lbmethod_traffic  ? "Traffic" : "Unknown");
             ap_rputs("</table>\n", r);
             ap_rputs("\n\n<table border=\"0\"><tr>"
                 "<th>Scheme</th><th>Host</th>"
@@ -681,6 +773,12 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<tr><td>Failover Attempts:</td><td><input name=\"fa\" type=text ", r);
             ap_rprintf(r, "value=\"%d\"></td></tr>\n",
                        bsel->max_attempts);
+            ap_rputs("<tr><td>LB Method:</td><td><select name=\"lm\">", r);
+            ap_rprintf(r, "<option value=\"%d\" %s>Requests</option>", lbmethod_requests,
+                       bsel->lbmethod == lbmethod_requests ? "selected" : "");
+            ap_rprintf(r, "<option value=\"%d\" %s>Traffic</option>", lbmethod_traffic,
+                       bsel->lbmethod == lbmethod_traffic ? "selected" : "");
+            ap_rputs("</select></td></tr>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
