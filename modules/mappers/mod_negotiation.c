@@ -1108,7 +1108,7 @@ static int read_types_multi(negotiation_state *neg)
          */
         {
             int nexcept = exception_list->nelts;
-            char **except = (char**)exception_list->elts;
+            char **cur_except = (char**)exception_list->elts;
             char *segstart = filp, *segend, saveend;
 
             while (*segstart && nexcept) {
@@ -1118,12 +1118,12 @@ static int read_types_multi(negotiation_state *neg)
                 *segend = '\0';
                     
 #ifdef CASE_BLIND_FILESYSTEM
-                if (strcasecmp(segstart, *except) == 0) {
+                if (strcasecmp(segstart, *cur_except) == 0) {
 #else
-                if (strcmp(segstart, *except) == 0) {
+                if (strcmp(segstart, *cur_except) == 0) {
 #endif
                     --nexcept;
-                    ++except;                    
+                    ++cur_except;                    
                 }         
                 
                 if (!saveend)
