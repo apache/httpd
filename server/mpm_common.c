@@ -70,6 +70,8 @@
 #include "apr.h"
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
+#include "apr_strings.h"
+#include "apr_lock.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -79,6 +81,10 @@
 #include "mpm_common.h"
 #include "ap_mpm.h"
 #include "ap_listen.h"
+
+#ifdef AP_MPM_WANT_SET_SCOREBOARD
+#include "scoreboard.h"
+#endif
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>
@@ -455,7 +461,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num)
+void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
 {
     int i;
     apr_status_t rv = APR_SUCCESS;
@@ -463,5 +469,148 @@ AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num)
     for (i = 0; i < num && rv == APR_SUCCESS; i++) {
         rv = ap_mpm_pod_signal(pod);
     }
+}
+#endif /* #ifdef AP_MPM_USES_POD */
+
+/* standard mpm configuration handling */
+#ifdef AP_MPM_WANT_SET_PIDFILE
+const char *ap_pid_fname = NULL;
+
+AP_DECLARE(const char *)ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
+					    const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (cmd->server->is_virtual) {
+	return "PidFile directive not allowed in <VirtualHost>";
+    }
+    ap_pid_fname = arg;
+    return NULL;
+}
+#endif
+
+#ifdef AP_MPM_WANT_SET_SCOREBOARD
+AP_DECLARE(const char *) ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
+					       const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_scoreboard_fname = arg;
+    return NULL;
+}
+#endif
+
+#ifdef AP_MPM_WANT_SET_LOCKFILE
+const char *ap_lock_fname = NULL;
+AP_DECLARE(const char *) ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
+					     const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_lock_fname = arg;
+    return NULL;
+}
+#endif
+
+#ifdef AP_MPM_WANT_SET_MAX_REQUESTS
+int ap_max_requests_per_child = 0;
+AP_DECLARE(const char *) ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
+						 const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_max_requests_per_child = atoi(arg);
+
+    return NULL;
+}
+#endif
+
+#ifdef AP_MPM_WANT_SET_COREDUMPDIR
+char ap_coredump_dir[MAX_STRING_LEN];
+AP_DECLARE(const char *) ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
+						const char *arg)
+{
+    apr_finfo_t finfo;
+    const char *fname;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    fname = ap_server_root_relative(cmd->pool, arg);
+    if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS)
+        || (finfo.filetype != APR_DIR)) {
+	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname,
+			   " does not exist or is not a directory", NULL);
+    }
+    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
+    return NULL;
+}
+#endif
+
+#ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+apr_lockmech_e_np accept_lock_mech = APR_LOCK_DEFAULT;
+AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
+						     void *dummy,
+						     const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (!strcasecmp(arg, "default")) {
+        accept_lock_mech = APR_LOCK_DEFAULT;
+    }
+#if APR_HAS_FLOCK_SERIALIZE
+    else if (!strcasecmp(arg, "flock")) {
+        accept_lock_mech = APR_LOCK_FLOCK;
+    }
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+    else if (!strcasecmp(arg, "fcntl")) {
+        accept_lock_mech = APR_LOCK_FCNTL;
+    }
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+    else if (!strcasecmp(arg, "sysvsem")) {
+        accept_lock_mech = APR_LOCK_SYSVSEM;
+    }
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+    else if (!strcasecmp(arg, "proc_pthread")) {
+        accept_lock_mech = APR_LOCK_PROC_PTHREAD;
+    }
+#endif
+    else {
+        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
+                           "ones for this platform are: default"
+#if APR_HAS_FLOCK_SERIALIZE
+                           ", flock"
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+                           ", fcntl"
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+                           ", sysvsem"
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+                           ", proc_pthread"
+#endif
+                           , NULL);
+    }
+    return NULL;
 }
 #endif

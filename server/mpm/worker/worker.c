@@ -1425,44 +1425,6 @@ static void worker_hooks(apr_pool_t *p)
     ap_hook_pre_config(worker_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (cmd->server->is_virtual) {
-	return "PidFile directive not allowed in <VirtualHost>";
-    }
-    ap_pid_fname = arg;
-    return NULL;
-}
-
-static const char *set_scoreboard(cmd_parms *cmd, void *dummy,
-				  const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_scoreboard_fname = arg;
-    return NULL;
-}
-
-static const char *set_lockfile(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    lock_fname = arg;
-    return NULL;
-}
-
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,
 					const char *arg) 
 {
@@ -1567,98 +1529,9 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_max_requests(cmd_parms *cmd, void *dummy,
-				    const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_max_requests_per_child = atoi(arg);
-
-    return NULL;
-}
-
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy,
-				    const char *arg) 
-{
-    apr_finfo_t finfo;
-    const char *fname;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    fname = ap_server_root_relative(cmd->pool, arg);
-    if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS) 
-        || (finfo.filetype != APR_DIR)) {
-	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
-			  " does not exist or is not a directory", NULL);
-    }
-    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
-    return NULL;
-}
-
-static const char *set_accept_lock_mech(cmd_parms *cmd, void *dummy, const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (!strcasecmp(arg, "default")) {
-        accept_lock_mech = APR_LOCK_DEFAULT;
-    }
-#if APR_HAS_FLOCK_SERIALIZE
-    else if (!strcasecmp(arg, "flock")) {
-        accept_lock_mech = APR_LOCK_FLOCK;
-    }
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-    else if (!strcasecmp(arg, "fcntl")) {
-        accept_lock_mech = APR_LOCK_FCNTL;
-    }
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE
-    else if (!strcasecmp(arg, "sysvsem")) {
-        accept_lock_mech = APR_LOCK_SYSVSEM;
-    }
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-    else if (!strcasecmp(arg, "proc_pthread")) {
-        accept_lock_mech = APR_LOCK_PROC_PTHREAD;
-    }
-#endif
-    else {
-        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
-                           "ones for this platform are: default"
-#if APR_HAS_FLOCK_SERIALIZE
-                           ", flock"
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-                           ", fcntl"
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE
-                           ", sysvsem"
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-                           ", proc_pthread"
-#endif
-                           , NULL);
-    }
-    return NULL;
-}
-
 static const command_rec worker_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
-AP_INIT_TAKE1("PidFile", set_pidfile, NULL, RSRC_CONF,
-    "A file for logging the server process ID"),
-AP_INIT_TAKE1("ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF,
-    "A file for Apache to maintain runtime process management information"),
-AP_INIT_TAKE1("LockFile", set_lockfile, NULL, RSRC_CONF,
-    "The lockfile used when Apache needs to lock the accept() call"),
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
   "Number of child processes launched at server startup"),
 AP_INIT_TAKE1("MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
@@ -1669,12 +1542,6 @@ AP_INIT_TAKE1("MaxClients", set_server_limit, NULL, RSRC_CONF,
   "Maximum number of children alive at the same time"),
 AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
   "Number of threads each child creates"),
-AP_INIT_TAKE1("MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
-  "Maximum number of requests a particular child serves before dying."),
-AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
-  "The location of the directory Apache changes to before dumping core"),
-AP_INIT_TAKE1("AcceptMutex", set_accept_lock_mech, NULL, RSRC_CONF,
-              "The system mutex implementation to use for the accept mutex"),
 { NULL }
 };
 

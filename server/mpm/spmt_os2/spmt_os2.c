@@ -84,8 +84,6 @@
 
 /* config globals */
 
-static int ap_max_requests_per_child=0;
-static const char *ap_pid_fname=NULL;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -148,8 +146,6 @@ static void clean_child_exit(int code)
     thread_control[THREAD_GLOBAL(thread_num)].thread_retval = code;
     _endthread();
 }
-
-
 
 static apr_lock_t *accept_mutex = NULL;
 
@@ -1177,20 +1173,6 @@ static void spmt_os2_hooks(apr_pool_t *p)
     ap_hook_pre_config(spmt_os2_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (cmd->server->is_virtual) {
-	return "PidFile directive not allowed in <VirtualHost>";
-    }
-    ap_pid_fname = arg;
-    return NULL;
-}
-
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1262,37 +1244,6 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_max_requests_per_child = atoi(arg);
-
-    return NULL;
-}
-
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    apr_finfo_t finfo;
-    const char *fname;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    fname = ap_server_root_relative(cmd->pool, arg);
-    if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS) 
-        || (finfo.filetype != APR_DIR)) {
-	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
-			  " does not exist or is not a directory", NULL);
-    }
-    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
-    return NULL;
-}
-
 /* Stub functions until this MPM supports the connection status API */
 
 AP_DECLARE(void) ap_update_connection_status(long conn_id, const char *key, \
@@ -1308,8 +1259,6 @@ AP_DECLARE(void) ap_reset_connection_status(long conn_id)
 
 static const command_rec spmt_os2_cmds[] = {
 LISTEN_COMMANDS
-AP_INIT_TAKE1("PidFile", set_pidfile, NULL, RSRC_CONF,
-    "A file for logging the server process ID"),
 AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF, 
   "Number of child processes launched at server startup" ),
 AP_INIT_TAKE1( "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF,
@@ -1318,10 +1267,6 @@ AP_INIT_TAKE1( "MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF,
   "Maximum number of idle children" ),
 AP_INIT_TAKE1( "MaxClients", set_server_limit, NULL, RSRC_CONF,
   "Maximum number of children alive at the same time" ),
-AP_INIT_TAKE1( "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
-  "Maximum number of requests a particular child serves before dying." ),
-AP_INIT_TAKE1( "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
-  "The location of the directory Apache changes to before dumping core" ),
 { NULL }
 };
 
