@@ -1,3 +1,4 @@
+ 
 /* ====================================================================
  * Copyright (c) 1996 The Apache Group.  All rights reserved.
  *
@@ -50,7 +51,6 @@
  *
  */
 
-/* $Id: mod_rewrite.c,v 1.4 1996/08/23 16:16:52 akosut Exp $ */
 
 /*
 **  mod_rewrite.c -- The Main Module Code
@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 2.2 (22-08-1996)
+**  URL Rewriting Module, Version 2.3.5 (09-10-1996)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -99,6 +99,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <netinet/in.h>
 
     /* from the Apache server ... */
 #include "httpd.h"
@@ -192,7 +193,9 @@ module rewrite_module = {
 static command_rec command_table[] = {
     { "RewriteEngine",   cmd_rewriteengine,   NULL, OR_FILEINFO, FLAG, 
       "On or Off to enable or disable (default) the whole rewriting engine" },
-    { "RewriteBase",     cmd_rewritebase,     NULL, OR_OPTIONS,  TAKE1, 
+    { "RewriteOptions",  cmd_rewriteoptions,  NULL, OR_FILEINFO, ITERATE, 
+      "List of option strings to set" },
+    { "RewriteBase",     cmd_rewritebase,     NULL, OR_FILEINFO, TAKE1, 
       "the base URL of the per-directory context" },
     { "RewriteCond",     cmd_rewritecond,     NULL, OR_FILEINFO, RAW_ARGS, 
       "a input string and a to be applied regexp-pattern" },
@@ -215,6 +218,17 @@ static handler_rec handler_table[] = {
 
     /* the common cache */
 cache *cachep;
+
+    /* the txt mapfile parsing stuff */
+#define MAPFILE_PATTERN "^([^ ]+) +([^ ]+).*$"
+#ifdef HAS_APACHE_REGEX_LIB
+#define MAPFILE_OUTPUT "$1,$2"
+static regex_t   *lookup_map_txtfile_regexp = NULL;
+static regmatch_t lookup_map_txtfile_regmatch[10];
+#else
+#define MAPFILE_OUTPUT "\\1,\\2"
+static regexp *lookup_map_txtfile_regexp = NULL;
+#endif
 
 
 
@@ -241,6 +255,7 @@ static void *config_server_create(pool *p, server_rec *s)
     a = (rewrite_server_conf *)pcalloc(p, sizeof(rewrite_server_conf));
 
     a->state           = ENGINE_DISABLED;
+    a->options         = OPTION_NONE;
     a->rewritelogfile  = NULL;
     a->rewritelogfp    = -1;
     a->rewriteloglevel = 1;
@@ -260,12 +275,21 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
     overrides = (rewrite_server_conf *)overridesv;
 
     a->state           = overrides->state;
-    a->rewritelogfile  = overrides->rewritelogfile;
-    a->rewritelogfp    = overrides->rewritelogfp;
+    a->options         = overrides->options;
+    a->rewritelogfile  = base->rewritelogfile  != NULL ? base->rewritelogfile  : overrides->rewritelogfile;
+    a->rewritelogfp    = base->rewritelogfp    != -1   ? base->rewritelogfp    : overrides->rewritelogfp;
     a->rewriteloglevel = overrides->rewriteloglevel;
-    a->rewritemaps     = append_arrays(p, overrides->rewritemaps,  base->rewritemaps);
-    a->rewriteconds    = append_arrays(p, overrides->rewriteconds, base->rewriteconds);
-    a->rewriterules    = append_arrays(p, overrides->rewriterules, base->rewriterules);
+
+    if (a->options & OPTION_INHERIT) {
+        a->rewritemaps  = append_arrays(p, overrides->rewritemaps,  base->rewritemaps);
+        a->rewriteconds = append_arrays(p, overrides->rewriteconds, base->rewriteconds);
+        a->rewriterules = append_arrays(p, overrides->rewriterules, base->rewriterules);
+    }
+    else {
+        a->rewritemaps  = overrides->rewritemaps;
+        a->rewriteconds = overrides->rewriteconds;
+        a->rewriterules = overrides->rewriterules;
+    }
 
     return (void *)a;
 }
@@ -284,10 +308,11 @@ static void *config_perdir_create(pool *p, char *path)
     a = (rewrite_perdir_conf *)pcalloc(p, sizeof(rewrite_perdir_conf));
 
     a->state           = ENGINE_DISABLED;
-    a->rewriteconds    = make_array(p, 2, sizeof(rewritecond_entry));
-    a->rewriterules    = make_array(p, 2, sizeof(rewriterule_entry));
+    a->options         = OPTION_NONE;
     a->directory       = pstrdup(p, path);
     a->baseurl         = NULL;
+    a->rewriteconds    = make_array(p, 2, sizeof(rewritecond_entry));
+    a->rewriterules    = make_array(p, 2, sizeof(rewriterule_entry));
 
     return (void *)a;
 }
@@ -301,10 +326,18 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
     overrides = (rewrite_perdir_conf *)overridesv;
 
     a->state           = overrides->state;
-    a->rewriteconds    = append_arrays(p, overrides->rewriteconds, base->rewriteconds);
-    a->rewriterules    = append_arrays(p, overrides->rewriterules, base->rewriterules);
+    a->options         = overrides->options;
     a->directory       = overrides->directory;
     a->baseurl         = overrides->baseurl;
+
+    if (a->options & OPTION_INHERIT) {
+        a->rewriteconds = append_arrays(p, overrides->rewriteconds, base->rewriteconds);
+        a->rewriterules = append_arrays(p, overrides->rewriterules, base->rewriterules);
+    }
+    else {
+        a->rewriteconds = overrides->rewriteconds;
+        a->rewriterules = overrides->rewriterules;
+    }
 
     return (void *)a;
 }
@@ -326,6 +359,29 @@ static char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf, int f
     else                   /* is per-directory command */
         dconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
 
+    return NULL;
+}
+
+static char *cmd_rewriteoptions(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option)
+{
+    rewrite_server_conf *sconf;
+    char *err;
+
+    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    if (cmd->path == NULL) /* is server command */
+        err = cmd_rewriteoptions_setoption(cmd->pool, &(sconf->options), option);
+    else                   /* is per-directory command */
+        err = cmd_rewriteoptions_setoption(cmd->pool, &(dconf->options), option);
+
+    return err;
+}
+
+static char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name)
+{
+    if (strcasecmp(name, "inherit") == 0)
+        *options |= OPTION_INHERIT;
+    else
+        return pstrcat(p, "RewriteOptions: unknown option '", name, "'\n", NULL);
     return NULL;
 }
 
@@ -360,26 +416,35 @@ static char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
 
     new->name = a1;
     if (strncmp(a2, "txt:", 4) == 0) {
-        new->file = a2+4;
-        new->type = MAPTYPE_TXT;
+        new->type      = MAPTYPE_TXT;
+        new->datafile  = a2+4;
+        new->checkfile = a2+4;
     }
     else if (strncmp(a2, "dbm:", 4) == 0) {
-        new->file = a2+4;
-        new->type = MAPTYPE_DBM;
+#ifdef HAS_NDBM_LIB
+        new->type      = MAPTYPE_DBM;
+        new->datafile  = a2+4;
+        new->checkfile = pstrcat(cmd->pool, a2+4, NDBM_FILE_SUFFIX, NULL);
+#else
+        return pstrdup(cmd->pool, "RewriteMap: cannot use NDBM mapfile, because no NDBM support compiled in");
+#endif
     }
     else if (strncmp(a2, "prg:", 4) == 0) {
-        new->file = a2+4;
         new->type = MAPTYPE_PRG;
+        new->datafile = a2+4;
+        new->checkfile = a2+4;
     }
     else {
-        new->file = a2;
-        new->type = MAPTYPE_TXT;
+        new->type      = MAPTYPE_TXT;
+        new->datafile  = a2;
+        new->checkfile = a2;
     }
     new->fpin  = 0;
     new->fpout = 0;
 
-    if (stat(new->file, &st) == -1)
-        return pstrcat(cmd->pool, "RewriteMap: map file or program not found:", new->file, NULL);
+    if (new->checkfile)
+        if (stat(new->checkfile, &st) == -1)
+            return pstrcat(cmd->pool, "RewriteMap: map file or program not found:", new->checkfile, NULL);
 
     return NULL;
 }
@@ -519,8 +584,12 @@ static char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *cfg, cha
 static char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char *key, char *val)
 {
     if (   strcasecmp(key, "nocase") == 0
-        || strcasecmp(key, "NC") == 0       ) {
+        || strcasecmp(key, "NC") == 0    ) {
         cfg->flags |= CONDFLAG_NOCASE;
+    }
+    else if (   strcasecmp(key, "ornext") == 0
+             || strcasecmp(key, "OR") == 0    ) {
+        cfg->flags |= CONDFLAG_ORNEXT;
     }
     else {
         return pstrcat(p, "RewriteCond: unknown flag '", key, "'\n", NULL);
@@ -722,6 +791,15 @@ static void init_module(server_rec *s, pool *p)
 
     /* create the lookup cache */
     cachep = init_cache(p);
+
+
+    /* precompile a static pattern 
+       for the txt mapfile parsing */
+#ifdef HAS_APACHE_REGEX_LIB
+    lookup_map_txtfile_regexp = pregcomp(p, MAPFILE_PATTERN, REG_EXTENDED);
+#else
+    lookup_map_txtfile_regexp = regcomp(MAPFILE_PATTERN);
+#endif
 }
 
 
@@ -1021,7 +1099,9 @@ static int hook_fixup(request_rec *r)
             /* make sure the QUERY_STRING and
                PATH_INFO parts get incorporated */
             r->filename = pstrcat(r->pool, r->filename, 
-                                           r->path_info ? r->path_info : "", 
+                                           /* r->path_info was already
+                                              appended by the rewriting engine
+                                              because of the per-dir context! */
                                            r->args ? "?" : NULL, r->args, 
                                            NULL);
 
@@ -1254,6 +1334,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     int rc;
     int prefixstrip;
     int i;
+    int failed;
     array_header *rewriteconds;
     rewritecond_entry *conds;
     rewritecond_entry *c;
@@ -1296,11 +1377,37 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
            slow down the rewriting engine!! */
         rewriteconds = p->rewriteconds;
         conds = (rewritecond_entry *)rewriteconds->elts;
+        failed = 0;
         for (i = 0; i < rewriteconds->nelts; i++) {
             c = &conds[i];
-            if (!apply_rewrite_cond(r, c, perdir))
-                return 0; /* if any condition fails this complete rule fails */
+            rc = apply_rewrite_cond(r, c, perdir);
+            if (c->flags & CONDFLAG_ORNEXT) {
+                /* there is a "or" flag */
+                if (rc == 0) {
+                    /* one cond is false, but another can be true... */
+                    continue;
+                }
+                else {
+                    /* one true cond is enough, so skip the other conds
+                       of the "ornext" chained conds */
+                    while (   i < rewriteconds->nelts
+                           && c->flags & CONDFLAG_ORNEXT) {
+                        i++;
+                        c = &conds[i];
+                    }
+                    continue;
+                }
+            }
+            else {
+                /* no "or" flag, so a single fail means total fail */
+                if (rc == 0) { /* failed */
+                    failed = 1;
+                    break;
+                }
+            }
         }
+        if (failed) 
+            return 0; /* if any condition fails this complete rule fails */
 
         /* if this is a pure matching rule we return immediately */
         if (strcmp(output, "-") == 0) 
@@ -1763,43 +1870,43 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         s = &entries[i];
         if (strcmp(s->name, name) == 0) {
             if (s->type == MAPTYPE_TXT) {
-                stat(s->file, &st); /* existence was checked at startup! */
-                value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
+                stat(s->checkfile, &st); /* existence was checked at startup! */
+                value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
-                    if ((value = lookup_map_txtfile(r, s->file, key)) != NULL) {
-                        rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file, key, value);
-                        set_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key, value);
+                    if ((value = lookup_map_txtfile(r, s->datafile, key)) != NULL) {
+                        rewritelog(r, 5, "map lookup OK: map=%s key=%s[txt] -> val=%s", s->name, key, value);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key, value);
                         return value;
                     }
                     else {
-                        rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
+                        rewritelog(r, 5, "map lookup FAILED: map=%s[txt] key=%s", s->name, key);
                         return NULL;
                     }
                 }
                 else {
-                    rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
+                    rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s -> val=%s", s->name, key, value);
                     return value;
                 }
             }
             else if (s->type == MAPTYPE_DBM) {
 #if HAS_NDBM_LIB
-                stat(s->file, &st); /* existence was checked at startup! */
-                value = get_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key);
+                stat(s->checkfile, &st); /* existence was checked at startup! */
+                value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
-                    if ((value = lookup_map_dbmfile(r, s->file, key)) != NULL) {
-                        rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file, key, value);
-                        set_cache_string(cachep, s->file, CACHEMODE_TS, st.st_mtime, key, value);
+                    if ((value = lookup_map_dbmfile(r, s->datafile, key)) != NULL) {
+                        rewritelog(r, 5, "map lookup OK: map=%s[dbm] key=%s -> val=%s", s->name, key, value);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key, value);
                         return value;
                     }
                     else {
-                        rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
+                        rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] key=%s", s->name, key);
                         return NULL;
                     }
                 }
                 else {
-                    rewritelog(r, 5, "cache lookup OK: res=%s key=%s -> val=%s", s->file, key, value);
+                    rewritelog(r, 5, "cache lookup OK: map=%s[dbm] key=%s -> val=%s", s->name, key, value);
                     return value;
                 }
 #else
@@ -1808,11 +1915,11 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             }
             else if (s->type == MAPTYPE_PRG) {
                 if ((value = lookup_map_program(r, s->fpin, s->fpout, key)) != NULL) {
-                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->file, key, value);
+                    rewritelog(r, 5, "map lookup OK: map=%s key=%s -> val=%s", s->name, key, value);
                     return value;
                 }
                 else {
-                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->file, key);
+                    rewritelog(r, 5, "map lookup FAILED: map=%s key=%s", s->name, key);
                 }
             }
         }
@@ -1820,20 +1927,6 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     return NULL;
 }
 
-#define PATTERN "^([^ ]+) +([^ ]+).*$"
-
-#ifdef HAS_APACHE_REGEX_LIB
-
-#define OUTPUT "$1,$2"
-static regex_t   *lookup_map_txtfile_regexp = NULL;
-static regmatch_t lookup_map_txtfile_regmatch[10];
-
-#else
-
-#define OUTPUT "\\1,\\2"
-static regexp *lookup_map_txtfile_regexp = NULL;
-
-#endif
 
 static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
 {
@@ -1849,14 +1942,7 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     if ((fp = pfopen(r->pool, file, "r")) == NULL)
         return NULL;
 
-    if (lookup_map_txtfile_regexp == NULL)
-#ifdef HAS_APACHE_REGEX_LIB
-        lookup_map_txtfile_regexp = pregcomp(r->pool, PATTERN, REG_EXTENDED);
-#else
-        lookup_map_txtfile_regexp = regcomp(PATTERN);
-#endif
-
-    strcpy(output,  OUTPUT);
+    strcpy(output,  MAPFILE_OUTPUT);
     while (fgets(line, sizeof(line), fp) != NULL) {
         if (line[strlen(line)-1] == '\n')
             line[strlen(line)-1] = '\0';
@@ -1895,7 +1981,7 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
     static char buf[MAX_STRING_LEN];
 
     dbmkey.dptr  = key;
-    dbmkey.dsize = strlen(key)+1;
+    dbmkey.dsize = strlen(key);
     if ((dbmfp = dbm_open(file, O_RDONLY, 0666)) != NULL) {
         dbmval = dbm_fetch(dbmfp, dbmkey);
         if (dbmval.dptr != NULL) {
@@ -2038,7 +2124,7 @@ static void rewritelog(request_rec *r, int level, char *text, ...)
     else
         sprintf(redir, "/redir#%d", i);
 
-    sprintf(str3, "%s %s [sid#%x][rid#%x/%s%s] (%d) %s\n", str1, current_logtime(r), (unsigned int)(r->server), (unsigned int)r, type, redir, level, str2);
+    sprintf(str3, "%s %s [%s/sid#%x][rid#%x/%s%s] (%d) %s\n", str1, current_logtime(r), r->server->server_hostname, (unsigned int)(r->server), (unsigned int)r, type, redir, level, str2);
 
     write(conf->rewritelogfp, str3, strlen(str3));
 
@@ -2096,15 +2182,15 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         map = &entries[i];
         if (map->type != MAPTYPE_PRG)
             continue;
-        if (map->file == NULL    ||
-            *(map->file) == '\0' ||
+        if (map->datafile == NULL    ||
+            *(map->datafile) == '\0' ||
             map->fpin > 0        ||
             map->fpout > 0         )
             continue;
-        fname = server_root_relative(p, map->file);
+        fname = server_root_relative(p, map->datafile);
         fpin = NULL;
         fpout = NULL;
-        rc = spawn_child(p, rewritemap_program_child, (void *)map->file, kill_after_timeout, &fpin, &fpout);
+        rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile, kill_after_timeout, &fpin, &fpout);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
             fprintf (stderr, "mod_rewrite: could not fork child for RewriteMap process\n");
             exit (1);
@@ -2355,8 +2441,8 @@ static cache *init_cache(pool *p)
     cache *c;
 
     c = (cache *)palloc(p, sizeof(cache));
-    c->pool = p;
-    c->lists = make_array(p, 2, sizeof(cachelist));
+    c->pool = make_sub_pool(NULL);
+    c->lists = make_array(c->pool, 2, sizeof(cachelist));
     return c;
 }
 
@@ -2396,21 +2482,19 @@ static void store_cache_string(cache *c, char *res, cacheentry *ce)
     cachelist *l;
     cacheentry *e;
     int found_list;
-    int found_entry;
 
     found_list = 0;
-    found_entry = 0;
     /* first try to edit an existing entry */
     for (i = 0; i < c->lists->nelts; i++) {
-        l = (cachelist *)&(c->lists->elts[i]);
+        l = &(((cachelist *)c->lists->elts)[i]);
         if (strcmp(l->resource, res) == 0) {
             found_list = 1;
-            for (j = 0; j < l->entries->nelts; i++) {
-                e = (cacheentry *)&(l->entries->elts)[j];
+            for (j = 0; j < l->entries->nelts; j++) {
+                e = &(((cacheentry *)l->entries->elts)[j]);
                 if (strcmp(e->key, ce->key) == 0) {
                     e->time  = ce->time;
                     e->value = pstrdup(c->pool, ce->value);
-                    found_entry = 1;
+                    return;
                 }
             }
         }
@@ -2425,15 +2509,17 @@ static void store_cache_string(cache *c, char *res, cacheentry *ce)
 
     /* create the new entry */
     for (i = 0; i < c->lists->nelts; i++) {
-        l = (cachelist *)&(c->lists->elts)[i];
+        l = &(((cachelist *)c->lists->elts)[i]);
         if (strcmp(l->resource, res) == 0) {
             e = push_array(l->entries);
             e->time  = ce->time;
             e->key   = pstrdup(c->pool, ce->key);
             e->value = pstrdup(c->pool, ce->value);
+            return;
         }
     }
 
+    /* not reached, but when it is no problem... */
     return;
 }
 
@@ -2445,10 +2531,10 @@ static cacheentry *retrieve_cache_string(cache *c, char *res, char *key)
     cacheentry *e;
 
     for (i = 0; i < c->lists->nelts; i++) {
-        l = (cachelist *)&(c->lists->elts)[i];
+        l = &(((cachelist *)c->lists->elts)[i]);
         if (strcmp(l->resource, res) == 0) {
-            for (j = 0; j < l->entries->nelts; i++) {
-                e = (cacheentry *)&(l->entries->elts)[j];
+            for (j = 0; j < l->entries->nelts; j++) {
+                e = &(((cacheentry *)l->entries->elts)[j]);
                 if (strcmp(e->key, key) == 0) {
                     return e;
                 }
@@ -2623,38 +2709,120 @@ static int is_this_our_host(request_rec *r, char *testhost)
 {
     char **cppHNLour;
     char **cppHNLtest;
+    char *ourhostname;
+    char *ourhostip;
+    char *names;
+    char *name;
     int i, j;
 
-    if ((cppHNLour = make_hostname_list(r, r->server->server_hostname)) == NULL)
-        return 0;
-    if ((cppHNLtest = make_hostname_list(r, testhost)) == NULL)
-        return 0;
+    /* we can check:
+       r->
+            char *hostname            Host, as set by full URI or Host: 
+            int hostlen               Length of http://host:port in full URI 
+       r->server->
+            int is_virtual            0=main, 1=ip-virtual, 2=non-ip-virtual
+            char *server_hostname     used on compare to r->hostname
+            inet_ntoa(r->connection->local_addr.sin_addr)
+                                      used on compare to r->hostname
+            short port                for redirects
+            char *path                name of ServerPath
+            int pathlen               len of ServerPath
+            char *names               Wildcarded names for ServerAlias servers 
+       under 1.1:
+       r->server->
+            struct in_addr host_addr  The bound address, for this server 
+            short host_port           The bound port, for this server 
+            char *virthost            The name given in <VirtualHost> 
+       under 1.2:
+       r->server->addrs->next...
+            struct in_addr host_addr  The bound address, for this server
+            short host_port           The bound port, for this server 
+            char *virthost            The name given in <VirtualHost> 
+    */
 
-    for (i = 0; cppHNLtest[i] != NULL; i++) {
-        for (j = 0; cppHNLour[j] != NULL; j++) {
-            if (strcmp(cppHNLtest[i], cppHNLour[j]) == 0) {
-                return 1;
+    ourhostname = r->server->server_hostname;
+    ourhostip   = inet_ntoa(r->connection->local_addr.sin_addr);
+
+    /* just a simple common case */
+    if (strcmp(testhost, ourhostname) == 0 ||
+        strcmp(testhost, ourhostip)   == 0   )
+       return YES;
+
+    /* now the complicated cases */
+    if (!r->server->is_virtual) {
+        /* main servers */
+
+        /* check for the alternative IP addresses */
+        if ((cppHNLour = resolv_ipaddr_list(r, ourhostname)) == NULL)
+            return NO;
+        if ((cppHNLtest = resolv_ipaddr_list(r, testhost)) == NULL)
+            return NO;
+        for (i = 0; cppHNLtest[i] != NULL; i++) {
+            for (j = 0; cppHNLour[j] != NULL; j++) {
+                if (strcmp(cppHNLtest[i], cppHNLour[j]) == 0) {
+                    return YES;
+                }
             }
         }
     }
-    return 0;
+    else if (r->server->is_virtual) {
+        /* virtual servers */
+
+        /* check for the virtual-server aliases */
+        if (r->server->names != NULL && r->server->names[0] != '\0') {
+            names = r->server->names;
+            while (*names != '\0') {
+                name = getword_conf(r->pool, &names);
+                if ((is_matchexp(name) && !strcasecmp_match(testhost, name)) ||
+                    (strcasecmp(testhost, name) == 0)                          ) {
+                    return YES;
+                }
+            }
+        }
+    }
+    return NO;
 }
 
-static char **make_hostname_list(request_rec *r, char *hostname)
+static int isaddr(char *host)
+{
+    char *cp;
+
+    /* Null pointers and empty strings 
+       are not addresses. */
+    if (host == NULL)
+        return NO;
+    if (*host == '\0')
+        return NO;
+    /* Make sure it has only digits and dots. */
+    for (cp = host; *cp; cp++) {
+        if (!isdigit(*cp) && *cp != '.')
+            return NO;
+    }
+    /* If it has a trailing dot, 
+       don't treat it as an address. */
+    if (*(cp-1) == '.')
+       return NO;
+    return YES;
+}
+
+static char **resolv_ipaddr_list(request_rec *r, char *name)
 {
     char **cppHNL;
     struct hostent *hep;
     int i;
 
-    if ((hep = gethostbyname(hostname)) == NULL)
+    if (isaddr(name)) 
+        hep = gethostbyaddr(name, sizeof(struct in_addr), AF_INET);
+    else
+        hep = gethostbyname(name);
+    if (hep == NULL)
         return NULL;
-    for (i = 0; hep->h_aliases[i]; i++)
+    for (i = 0; hep->h_addr_list[i]; i++)
         ;
-    cppHNL = (char **)palloc(r->pool, sizeof(char *)*(i+2));
-    cppHNL[0] = pstrdup(r->pool, hep->h_name);
-    for (i = 0; hep->h_aliases[i]; i++)
-        cppHNL[1+i] = pstrdup(r->pool, hep->h_aliases[i]);
-    cppHNL[1+i] = NULL;
+    cppHNL = (char **)palloc(r->pool, sizeof(char *)*(i+1));
+    for (i = 0; hep->h_addr_list[i]; i++)
+        cppHNL[i] = pstrdup(r->pool, inet_ntoa(*((struct in_addr *)(hep->h_addr_list[i]))) );
+    cppHNL[i] = NULL;
     return cppHNL;
 }
 

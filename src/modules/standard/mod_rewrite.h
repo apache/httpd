@@ -1,3 +1,4 @@
+
 /* ====================================================================
  * Copyright (c) 1996 The Apache Group.  All rights reserved.
  *
@@ -50,7 +51,6 @@
  *
  */
 
-/* $Id: mod_rewrite.h,v 1.5 1996/08/23 16:16:53 akosut Exp $ */
 
 #ifndef _MOD_REWRITE_H
 #define _MOD_REWRITE_H 1
@@ -64,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 2.2 (22-08-1996)
+**  URL Rewriting Module, Version 2.3.5 (09-10-1996)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -96,17 +96,33 @@
 
 
 
-   /* try to see under which version we are running */
+    /* Check Apache Release */
 #if (MODULE_MAGIC_NUMBER >= 19960725)
+#define IS_APACHE_12         1
 #define HAS_APACHE_REGEX_LIB 1
 #endif
 
-    /* now we go on and include more of our own stuff ... */
+
+    /* The RegExp support:
+       For Apache 1.1.1 we provide our own Spencer V8 library,
+       for Apache 1.2 and higher there is a Spencer POSIX library
+       in the distribution */
 #ifndef HAS_APACHE_REGEX_LIB
 #include "regexp/regexp.h"
 #endif
+
+
+    /* The NDBM support:
+       We support only NDBM files. 
+       But we have to stat the file for the mtime,
+       so we also need to know the file extension */
 #if HAS_NDBM_LIB
-#include <ndbm>
+#include <ndbm.h>
+#if (__FreeBSD__)
+#define NDBM_FILE_SUFFIX ".db"
+#else 
+#define NDBM_FILE_SUFFIX ".pag"
+#endif
 #endif
 
 
@@ -128,6 +144,7 @@
 #define CONDFLAG_NONE               1<<0
 #define CONDFLAG_NOCASE             1<<1
 #define CONDFLAG_NOTMATCH           1<<2
+#define CONDFLAG_ORNEXT             1<<3
 
 #define RULEFLAG_NONE               1<<0
 #define RULEFLAG_FORCEREDIRECT      1<<1
@@ -147,8 +164,21 @@
 #define ENGINE_DISABLED             1<<0
 #define ENGINE_ENABLED              1<<1
 
-#define CACHEMODE_TS  1<<0
-#define CACHEMODE_TTL 1<<1
+#define OPTION_NONE                 1<<0
+#define OPTION_INHERIT              1<<1
+
+#define CACHEMODE_TS                1<<0
+#define CACHEMODE_TTL               1<<1
+
+#ifndef FALSE
+#define FALSE 0
+#define TRUE  !FALSE
+#endif
+
+#ifndef NO
+#define NO    FALSE
+#define YES   TRUE
+#endif
 
 
 /*
@@ -162,21 +192,22 @@
 
 typedef struct {
     char *name;                    /* the name of the map */
-    char *file;                    /* the file of the map */
+    char *datafile;                /* the file which contains the data of the map */
+    char *checkfile;               /* the file which stays for existence of the map */
     int   type;                    /* the type of the map */
     int   fpin;                    /* in  filepointer for program maps */
     int   fpout;                   /* out filepointer for program maps */
 } rewritemap_entry;
 
 typedef struct {
-    char   *input;                 /* Input string of RewriteCond */
-    char   *pattern;               /* the RegExp pattern string */
+    char    *input;                /* Input string of RewriteCond */
+    char    *pattern;              /* the RegExp pattern string */
 #ifdef HAS_APACHE_REGEX_LIB
     regex_t *regexp;
 #else
-    regexp *regexp;                /* the RegExp pattern compilation */
+    regexp  *regexp;               /* the RegExp pattern compilation */
 #endif
-    int     flags;                 /* Flags which control the match */
+    int      flags;                /* Flags which control the match */
 } rewritecond_entry;
 
 typedef struct {
@@ -199,6 +230,7 @@ typedef struct {
 
 typedef struct {
     int           state;           /* the RewriteEngine state */
+    int           options;         /* the RewriteOption state */
     char         *rewritelogfile;  /* the RewriteLog filename */
     int           rewritelogfp;    /* the RewriteLog open filepointer */
     int           rewriteloglevel; /* the RewriteLog level of verbosity */
@@ -213,10 +245,11 @@ typedef struct {
 
 typedef struct {
     int           state;           /* the RewriteEngine state */
+    int           options;         /* the RewriteOption state */
     array_header *rewriteconds;    /* the RewriteCond entries (temporary) */
     array_header *rewriterules;    /* the RewriteRule entries */
-    char *directory;               /* the directory where it applies */
-    char *baseurl;                 /* the base-URL  where it applies */
+    char         *directory;       /* the directory where it applies */
+    char         *baseurl;         /* the base-URL  where it applies */
 } rewrite_perdir_conf;
 
 
@@ -229,7 +262,7 @@ typedef struct cacheentry {
 } cacheentry;
 
 typedef struct cachelist {
-    char  *resource;
+    char         *resource;
     array_header *entries;
 } cachelist;
 
@@ -259,6 +292,8 @@ static void *config_perdir_merge (pool *p, void *basev, void *overridesv);
 
     /* config directive handling */
 static char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
+static char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
+static char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name);
 static char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
 static char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
 static char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
@@ -296,7 +331,7 @@ static void  expand_map_lookups(request_rec *r, char *uri);
     /* DBM hashfile support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
 static char *lookup_map_txtfile(request_rec *r, char *file, char *key);
-#if SUPPORT_DBM_REWRITEMAP
+#if HAS_NDBM_LIB
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key);
 #endif
 static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
@@ -328,8 +363,11 @@ static void        store_cache_string(cache *c, char *res, cacheentry *ce);
 static char  *subst_prefix_path(request_rec *r, char *input, char *match, char *subst);
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
+
+    /* DNS functions */
 static int    is_this_our_host(request_rec *r, char *testhost);
-static char **make_hostname_list(request_rec *r, char *hostname);
+static int    isaddr(char *host);
+static char **resolv_ipaddr_list(request_rec *r, char *name);
 
 #endif /* _MOD_REWRITE_H */
 
