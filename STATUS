@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/17 00:11:41 $]
+Last modified at [$Date: 2004/03/17 01:15:54 $]
 
 Release:
 
@@ -73,7 +73,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Add a check on apr_pollset_create() to return value to exit ab in case it fails.
         support/ab.c: r1.139
-      +1: jjclar, bnicholes
+      +1: jjclar, bnicholes, trawick
 
     *) Use apr_temp_dir_get for htpasswd
        support/htpasswd.c: 1.75
