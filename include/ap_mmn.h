@@ -117,6 +117,7 @@
  *                        handler
  * 20030821 (2.1.0-dev) bumped mod_include's entire API
  * 20030821.1 (2.1.0-dev) added XHTML doctypes
+ * 20030821.2 (2.1.0-dev) added ap_escape_errorlog_item
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
@@ -124,7 +125,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20030821
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

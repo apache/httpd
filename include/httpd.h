@@ -1381,10 +1381,20 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s);
 /**
  * Escape a string for logging
  * @param p The pool to allocate from
- * @param s The string to escape
+ * @param str The string to escape
  * @return The escaped string
  */
 AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str);
+
+/**
+ * Escape a string for logging into the error log (without a pool)
+ * @param dest The buffer to write to
+ * @param source The string to escape
+ * @param maxlen The buffer size for the escaped string (including \0)
+ * @return The len of the escaped string (always < maxlen)
+ */
+AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
+                                               apr_size_t buflen);
 
 /**
  * Construct a full hostname
