@@ -1,5 +1,10 @@
 Changes with Apache 2.0.24-dev
 
+  *) Fix a problem with the new method code.  We need to cast
+     the 1 to an apr_int64_t or it will be treated as a 32-bit
+     integer, and it will wrap after being shifted 32 times.
+     [Cody Sherr <csherr@covalent.net> and Ryan Morgan <rmorgan@covalent.net>]
+
   *) Fix a bug in mod_expires.  Previous to this patch, if you
      told mod_expires to add 604800 seconds to the last-modified
      time, it actually added 604800 usec's to the last-modified time,
