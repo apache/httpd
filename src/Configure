@@ -1484,6 +1484,12 @@ case "$PLAT" in
 	fi
 	;;
     BS2000*-siemens-sysv4*)
+	# Activate RISC compilation if this is a SR2000 machine
+	# (test written by Thomas Dorner <Thomas.Dorner@start.de>
+	# for perl5 port):
+	if [ -n "`bs2cmd SHOW-SYSTEM-INFO | grep 'HSI-ATT.*TYPE.*SR'`" ]; then
+	    CFLAGS="$CFLAGS -Krisc_4000"
+	fi
 	# Depending on the BS2000 OS and compiler/crte release,
 	# -lnsl may be available (or may be not).
 	# In standard SVR4 systems, -lsocket relies on some symbols
