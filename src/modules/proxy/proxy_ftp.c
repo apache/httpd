@@ -561,7 +561,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-#ifndef TPF
+#if !defined(TPF) && !defined(BEOS)
     if (conf->recv_buffer_size > 0
 	&& setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))
@@ -815,7 +815,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-#ifndef TPF
+#if !defined (TPF) && !defined(BEOS)
     if (conf->recv_buffer_size) {
 	if (setsockopt(dsock, SOL_SOCKET, SO_RCVBUF,
 	       (const char *) &conf->recv_buffer_size, sizeof(int)) == -1) {

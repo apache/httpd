@@ -1,5 +1,8 @@
 Changes with Apache 1.3.13
 
+  *) Fixes to mod_proxy for BeOS support.
+     [David Reid <dreid@jetnet.co.uk>]
+
   *) Fix return value calculation in APXS' error messages.
      This should avoid the confusion on APXS errors.
      [Ralf S. Engelschall]

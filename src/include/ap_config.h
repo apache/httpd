@@ -891,6 +891,8 @@ typedef int rlim_t;
 #define NO_WRITEV
 #define NO_KILLPG
 #define NEED_INITGROUPS
+#define PF_INET AF_INET
+#define S_IEXEC S_IXUSR
 
 #elif defined(_CX_SX)
 #define JMP_BUF sigjmp_buf

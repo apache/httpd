@@ -258,7 +258,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-#ifndef TPF
+#if !defined(TPF) && !defined(BEOS)
     if (conf->recv_buffer_size) {
 	if (setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
 		       (const char *) &conf->recv_buffer_size, sizeof(int))

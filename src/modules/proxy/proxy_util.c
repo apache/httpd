@@ -280,7 +280,7 @@ char *
 	if (!ap_isdigit(host[i]) && host[i] != '.')
 	    break;
     /* must be an IP address */
-#if defined(WIN32) || defined(NETWARE) || defined(TPF)
+#if defined(WIN32) || defined(NETWARE) || defined(TPF) || defined(BEOS)
     if (host[i] == '\0' && (inet_addr(host) == -1))
 #else
     if (host[i] == '\0' && (ap_inet_addr(host) == -1 || inet_network(host) == -1))
