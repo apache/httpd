@@ -75,7 +75,7 @@
 #include "apr_atomic.h"
 #include <unistd.h>
 #include "http_protocol.h"
-#include "../../server/test_char.h"
+#include "test_char.h"
 
 module AP_MODULE_DECLARE_DATA log_forensic_module;
 
@@ -84,7 +84,7 @@ typedef struct fcfg {
     apr_file_t *fd;
 } fcfg;
 
-static int next_id;
+static apr_uint32_t next_id;
 
 static void *make_forensic_log_scfg(apr_pool_t *p, server_rec *s)
 {
