@@ -291,7 +291,24 @@ static void cleanup_tables(void *not_used)
 }
 #endif	/* HAVE_SHMEM_MM */
 
-#ifdef WIN32
+#ifdef __OpenBSD__
+static void initialize_secret(server_rec *s)
+{
+    u_int32_t rnd = 0, i;
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s,
+		 "Digest: generating secret for digest authentication ...");
+
+    for (i = 0; i < sizeof(secret); i++) {
+	if (i % 4 == 0)
+	    rnd = arc4random();
+	secret[i] = rnd;
+	rnd >>= 8;
+    }
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s,
+		 "Digest: done");
+}
+#elif defined(WIN32)
 /* TODO: abstract out the random number generation. APR? */
 static void initialize_secret(server_rec *s)
 {
@@ -357,6 +374,7 @@ static void initialize_secret(server_rec *s)
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s, "Digest: done");
 }
+#endif
 #endif
 
 #ifdef HAVE_SHMEM_MM

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
 
+  *) PORT: Take advantage of OpenBSD's arc4random() function for the
+     initial secret [Henning Brauer <hb-apache-dev at bsws.de>]
+
   *) If Listen directive is not a port, but just an IP, emit an
      error condition as this case is ambiguous.
      [Rich Bowen, Justin Erenkrantz, Cliff Woolley]
