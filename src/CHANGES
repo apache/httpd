@@ -1,4 +1,8 @@
 Changes with Apache 1.3.1
+  
+  *) The "handler not found" error was issued in cases where the handler
+     really did exist, but was just declining to serve the request.
+     [John Van Essen <jve@gamers.org>] PR#2529
 
   *) Add Dynamic Shared Object (DSO) support for SCO5 (OpenServer 5.0.x).
      [Ronald Record <rr@sco.com>] PR#2533
