@@ -465,6 +465,19 @@
     This is necessary to maintain compliance with the HTTP/1.1
     specification and to work effectively with properly configured
     clients.</p>
+
+    <p>In order to support advanced techniques (such as Cookies or
+    special URL-paths) to determine the user's preferred language,
+    since Apache 2.1 <module>mod_negotiation</module> recognizes
+    the <a href="env.html">environment variable</a>
+    <code>prefer-language</code>. If it exists and contains an
+    appropriate language tag, <module>mod_negotiation</module> will
+    try to select a matching variant. If there's no such variant,
+    the normal negotiation process applies.</p>
+
+    <example><title>Example</title>
+      SetEnvIf Cookie "language=(.+)" prefer-language=$1
+    </example>
 </section>
 </section>
 
