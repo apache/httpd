@@ -58,21 +58,18 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
             /* XXX: why can't I reuse pbktIn??? */
 	    apr_bucket *pbktEOS=apr_bucket_eos_create();
 	    APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
-	    break;
+	    continue;
 	    }
 
 	/* read */
 	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
 
 	/* write */
-	buf=apr_palloc(f->r->pool,len);
+	buf=malloc(len);
 	for(n=0 ; n < len ; ++n)
 	    buf[n]=toupper(data[n]);
 
-	/* XXX: should we use a heap bucket instead? Or a transient (in
-	 * which case we need a separate brigade for each bucket)?
-         */
-	pbktOut=apr_bucket_pool_create(buf,len,f->r->pool);
+	pbktOut=apr_bucket_heap_create(buf,len,0);
 	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
 	}
 
