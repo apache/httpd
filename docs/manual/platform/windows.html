@@ -17,7 +17,7 @@
 <H1 ALIGN="CENTER">Using Apache With Microsoft Windows</H1>
 
 <P>This document explains how to install, configure and run
-   Apache 1.3 under Microsoft Windows. Please note that at
+   Apache 1.3b6 and later under Microsoft Windows. Please note that at
    this time, Windows support is entirely experimental, and is
    recommended only for experienced users. The Apache Group does not
    guarantee that this software will work as documented, or even at
@@ -47,6 +47,7 @@ to help with development, or to track down bugs), see the section on
   <LI><A HREF="#run">Running Apache for Windows</A>
   <LI><A HREF="#use">Using Apache for Windows</A>
   <LI><A HREF="#cmdline">Running Apache for Windows from the Command Line</A>
+  <LI><A HREF="#signal">Signalling Apache when running</A>
   <LI><A HREF="#comp">Compiling Apache for Windows</A>
 </UL>
 
@@ -183,8 +184,8 @@ with
 To run Apache from a console window, select the "Apache Server" option
 from the Start menu. This will open a console window and start Apache
 running inside it. The window will remain active until you stop
-Apache. To stop Apache running, press Control-C within the console
-window.
+Apache. To stop Apache running, see <A HREF="#signal>Signalling Apache
+when Running</SAMP>.
 
 <P>
 
@@ -355,6 +356,35 @@ and to remove the Apache service, use
     apache -u
 </PRE>
 
+
+<H2><A NAME="signal">Signalling Apache when running</A></H2>
+
+On Windows 95 Apache runs as a console application. You can tell a
+running Apache to stop by opening another console window and running
+
+<PRE>
+    apache -k shutdown
+</PRE>
+
+This should be used instead of pressing Control-C in the running
+Apache console window, because it lets Apache end any current
+transactions and cleanup gracefully.
+
+<P>
+
+You can also tell Apache to restart. This makes it re-read the
+configuration files. Any transactions in progress are allowed to
+complete without interruption. To restart Apache, run
+
+<PRE>
+    apache -k restart
+</PRE>
+
+Note for people familiar with the Unix version of Apache: these
+commands provide a Windows equivalent to <CODE>kill -TERM
+<i>pid</i></CODE> and <CODE>kill -USR1 <i>pid</i></CODE>. The command
+line option used, <CODE>-k</CODE>, was chosen as a reminder of the
+"kill" command used on Unix.
 
 <H2><A NAME="comp">Compiling Apache for Windows</A></H2>
 
