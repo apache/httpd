@@ -115,8 +115,7 @@
 
 static FILE *log;
 
-static void
-err_output (const char *fmt, va_list ap)
+static void err_output (const char *fmt, va_list ap)
 {
     time_t timevar;
     struct tm *lt;
@@ -140,8 +139,7 @@ err_output (const char *fmt, va_list ap)
     return;
 }
 
-void
-log_err (const char *fmt, ...)
+void log_err (const char *fmt, ...)
 {
 #ifdef LOG_EXEC
     va_list     ap;
@@ -153,10 +151,10 @@ log_err (const char *fmt, ...)
     return;
 }
 
-int
-main(int argc, char *argv[], char **env)
+int main(int argc, char *argv[], char **env)
 {
-    int doclen;             /* length of the docroot     */
+    int homelen;	    /* length of homedir path */
+    int cgilen;		    /* length of cgidir path */
     int userdir = 0;        /* ~userdir flag             */
     uid_t uid;              /* user information          */
     char *target_uname;     /* target user name          */
@@ -164,7 +162,6 @@ main(int argc, char *argv[], char **env)
     char *prog;             /* name of this program      */
     char *cmd;              /* command to be executed    */
     char *cwd;              /* current working directory */
-    char *buf = NULL;       /* temporary buffer          */
     struct passwd *pw;      /* password entry holder     */
     struct group *gr;       /* group entry holder        */
     struct stat dir_info;   /* directory info holder     */
@@ -213,7 +210,7 @@ main(int argc, char *argv[], char **env)
      * to protect against attacks.  If a '/' is
      * found, error out.  Naughty naughty crackers.
      */
-    if (strchr (cmd, '/') != (char) NULL )
+    if ((strchr (cmd, '/')) != NULL )
     {
 	log_err ("invalid command (%s)\n", cmd);
 	exit (104);
@@ -231,32 +228,45 @@ main(int argc, char *argv[], char **env)
     }
 
     /*
+     * Error out if the target username is invalid.
+     */
+    if ((pw = getpwnam (target_uname)) == NULL )
+    {
+	log_err ("invalid target user name: (%s)\n", target_uname);
+	exit (105);
+    }
+
+    /*
+     * Error out if the target group name is invalid.
+     */
+    if ((gr = getgrnam (target_gname)) == NULL )
+    {
+	log_err ("invalid target group name: (%s)\n", target_gname);
+	exit (106);
+    }
+
+    /*
      * Get the current working directory, as well as
      * the proper document root (dependant upon whether
      * or not it is a ~userdir request.  Error out if
      * we cannot get either one, or if the command is
      * not in the docroot.
      */
-    if ((cwd = getcwd (buf, MAXPATHLEN)) == NULL)
-    {
-        log_err ("cannot get current working directory\n");
-        exit (105);
-    }
     if (userdir)
     {
-	doclen = strlen (pw->pw_dir);
-	if (strncmp (cwd, pw->pw_dir, doclen))
-        {   
-	    log_err ("command not in docroot (%s/%s)\n", cwd, cmd);
-	    exit (106);
-	}
-    } else {
-	doclen = strlen (DOC_ROOT);
-	if (strncmp (cwd, DOC_ROOT, doclen))
-        {
-	    log_err ("command not in docroot (%s/%s)\n", cwd, cmd);
-	    exit (106);
-	}
+	homelen = strlen(pw->pw_dir) + 1;
+	cgilen = strlen(USER_CGI_BIN) + 1;
+	strncpy(cwd, pw->pw_dir, (homelen < MAXPATHLEN ? homelen : MAXPATHLEN));
+	homelen = MAXPATHLEN - homelen - 1;	/* get space left */
+	strncat(cwd, USER_CGI_BIN, (cgilen < homelen ? cgilen : homelen));
+    }
+    else
+	strncpy(cwd, DOC_ROOT, MAXPATHLEN);
+
+
+    if (!(chdir(cwd))) {
+	log_err("cannot chdir directory: (%s)\n", cwd);
+	exit(107);
     }
 
     /*
@@ -266,7 +276,7 @@ main(int argc, char *argv[], char **env)
          !(S_ISDIR(dir_info.st_mode)) )
     {
 	log_err ("cannot stat directory: (%s)\n", cwd);
-	exit (107);
+	exit (108);
     }
 
     /*
@@ -275,7 +285,7 @@ main(int argc, char *argv[], char **env)
     if ((dir_info.st_mode & S_IWOTH) || (dir_info.st_mode & S_IWGRP))
     {
 	log_err ("directory is writable by others: (%s)\n", cwd);
-	exit (108);
+	exit (109);
     }
 
     /*
@@ -284,7 +294,7 @@ main(int argc, char *argv[], char **env)
     if ((lstat (cmd, &prg_info)) || (S_ISLNK(prg_info.st_mode)))
     {
 	log_err ("cannot stat program: (%s)\n", cmd);
-	exit (109);
+	exit (110);
     }
 
     /*
@@ -293,7 +303,7 @@ main(int argc, char *argv[], char **env)
     if ((prg_info.st_mode & S_IWOTH) || (prg_info.st_mode & S_IWGRP))
     {
 	log_err ("file is writable by others: (%s/%s)\n", cwd, cmd);
-	exit (110);
+	exit (111);
     }
 
     /*
@@ -302,41 +312,23 @@ main(int argc, char *argv[], char **env)
     if ((prg_info.st_mode & S_ISUID) || (prg_info.st_mode & S_ISGID))
     {
 	log_err ("file is either setuid or setgid: (%s/%s)\n",cwd,cmd);
-	exit (111);
-    }
-
-    /*
-     * Error out if the target username is invalid.
-     */
-    if ( (pw = getpwnam (target_uname)) == NULL )
-    {
-	log_err ("invalid target user name: (%s)\n", target_uname);
 	exit (112);
-    }
-
-    /*
-     * Error out if the target group name is invalid.
-     */
-    if ( (gr = getgrnam (target_gname)) == NULL )
-    {
-	log_err ("invalid target group name: (%s)\n", target_gname);
-	exit (113);
     }
 
     /*
      * Error out if the target name/group is different from
      * the name/group of the cwd or the program.
      */
-    if ( (pw->pw_uid != dir_info.st_uid) ||
-	 (gr->gr_gid != dir_info.st_gid) ||
-	 (pw->pw_uid != prg_info.st_uid) ||
-	 (gr->gr_gid != prg_info.st_gid) )
+    if ((pw->pw_uid != dir_info.st_uid) ||
+	(gr->gr_gid != dir_info.st_gid) ||
+	(pw->pw_uid != prg_info.st_uid) ||
+	(gr->gr_gid != prg_info.st_gid))
     {
 	log_err ("target uid/gid (%ld/%ld) mismatch with directory (%ld/%ld) or program (%ld/%ld)\n",
 		 pw->pw_uid, gr->gr_gid,
 		 dir_info.st_uid, dir_info.st_gid,
 		 prg_info.st_uid, prg_info.st_gid);
-	exit (114);
+	exit (113);
     }
 
     /*
@@ -345,7 +337,7 @@ main(int argc, char *argv[], char **env)
     if (pw->pw_uid == 0)
     {
 	log_err ("cannot run as uid 0 (%s)\n", cmd);
-	exit (115);
+	exit (114);
     }
 
     /*
@@ -354,7 +346,7 @@ main(int argc, char *argv[], char **env)
     if (gr->gr_gid == 0)
     {
 	log_err ("cannot run as gid 0 (%s)\n", cmd);
-	exit (116);
+	exit (115);
     }
 
     /*
@@ -367,11 +359,10 @@ main(int argc, char *argv[], char **env)
      * Initialize the group access list for the target user,
      * and setgid() to the target group. If unsuccessful, error out.
      */
-    if ( (initgroups (NNAME,NGID) != 0) ||
-         (setgid (gr->gr_gid)      != 0) )
+    if ((setgid (gr->gr_gid)) != 0)
     {
-        log_err ("failed to initialize groups or setgid (%ld: %s/%s)\n", gr->gr_gid, cwd, cmd);
-        exit (117);
+        log_err ("failed to setgid (%ld: %s/%s)\n", gr->gr_gid, cwd, cmd);
+        exit (116);
     }
 
     /*
@@ -380,7 +371,7 @@ main(int argc, char *argv[], char **env)
     if ((setuid (pw->pw_uid)) != 0)
     {
 	log_err ("failed to setuid (%ld: %s/%s)\n", pw->pw_uid, cwd, cmd);
-	exit (118);
+	exit (117);
     }
 
     /*
