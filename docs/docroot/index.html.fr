@@ -27,7 +27,7 @@ vers l'endroit o&ugrave; se trouve le contenu r&eacute;el du site.</p>
 
 <p>Vous voyez cette page parce que l'administrateur du site a modifi&eacute;
 la configuration de ce serveur Web. Veuillez contacter
-<STRONG>l'administrateur du site concern&eacute;</STRONG>. La fondation
+<STRONG>l'administrateur du site concern&eacute;</STRONG>. La Fondation
 Apache (Apache Software Foundation), qui produit le logiciel Apache
 utilis&eacute; par ce site, n'a rien &agrave; voir avec la maintenance de ce
 site et ne peut intervenir sur sa configuration.</p>
