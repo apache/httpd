@@ -182,13 +182,10 @@ static void format_kbyte_out(request_rec *r, unsigned long kbytes)
 	ap_rprintf(r, "%.1f GB", (float) kbytes / MBYTE);
 }
 
-static void show_time(request_rec *r, apr_time_t tsecs) 
+static void show_time(request_rec *r, apr_uint32_t tsecs) 
 {
-    long days, hrs, mins, secs;
+    apr_uint32_t days, hrs, mins, secs;
     
-    /* convert apr_time_t (in micro seconds) to seconds */
-    tsecs = tsecs/1000000;
-
     secs = tsecs % 60;
     tsecs /= 60;
     mins = tsecs % 60;
@@ -234,7 +231,7 @@ static int status_handler(request_rec *r)
 {
     const char *loc;
     apr_time_t nowtime = apr_time_now();
-    time_t up_time;
+    apr_uint32_t up_time;
     int j, i, res;
     int ready = 0;
     int busy = 0;
@@ -351,7 +348,8 @@ static int status_handler(request_rec *r)
         }
     }
 
-    up_time = nowtime - ap_restart_time;
+    /* up_time in seconds */
+    up_time = (apr_uint32_t) ((nowtime - ap_restart_time)/1000000);
 
     if (!short_report) {
 	ap_rputs(DOCTYPE_HTML_3_2
