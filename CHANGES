@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) htpasswd: use apr_temp_dir_get() and general cleanup
+     [Guenter Knauf <eflash gmx.net>, Thom May]
+
   *) mod_ssl: Fix memory leak in session cache handling.  PR 26562
      [Madhusudan Mathihalli]
 
