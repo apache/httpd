@@ -546,10 +546,10 @@ Package=<4>
     Project_Dep_Name libaprutil
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name pcreposix
+    Project_Dep_Name gen_test_char
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name gen_test_char
+    Project_Dep_Name pcre
     End Project Dependency
 }}}
 
@@ -1939,21 +1939,6 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name dftables
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "pcreposix"=.\srclib\pcre\pcreposix.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name pcre
     End Project Dependency
 }}}
 
