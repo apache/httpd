@@ -1,5 +1,11 @@
 Changes with Apache 1.3.13
 
+  *) Win32 NT and 2000 services now capture stderr messages that occur
+     before Apache's logs are opened to the Application Event Log.
+     Console and Win9x services now hold the console open for 30 seconds
+     (and may be dismissed with the <ESC> key) if they exit with an error.
+     [William Rowe]
+
   *) Expand Win32 protection for pathname length, to provide protection
      from future potential bugs such as that which caused directory index 
      to be displayed rather than returning an error.
