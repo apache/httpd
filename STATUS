@@ -361,3 +361,11 @@ Delayed until after 1.3.0, unless someone happens to get to it:
     * In ap_bclose() there's no test that (fb->fd != -1) -- so it's
       possible that it'll do something completely bogus when it's 
       used for read-only things. - Dean Gaudet
+
+    * Okay, so our negotiation strategy needs a bit of refinement.  See
+      <Pine.LNX.3.96dg4.980429182338.15569d-100000@twinlark.arctic.org>.
+      In general, we need to go through and clean up the negotiation
+      module to make it compliant with the final HTTP/1.1 draft, and at the
+      very least we should make it more copacetic to the idea of transferring
+      gzipped variants of files when both variants exist on the server.
+
