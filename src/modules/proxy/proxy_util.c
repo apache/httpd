@@ -581,7 +581,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
                 ap_reset_timeout(r);
 
             if (w <= 0) {
-                if (c != NULL) {
+                if (c != NULL && c->fp != NULL) {
                     /* when a send failure occurs, we need to decide
                      * whether to continue loading and caching the
                      * document, or to abort the whole thing
