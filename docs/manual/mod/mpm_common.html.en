@@ -141,13 +141,13 @@ switch before dumping core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>This controls the directory to which Apache attempts to
-    switch before dumping core. The default is in the 
+    switch before dumping core. The default is in the
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> directory, however
     since this should not be writable by the user the server runs
     as, core dumps won't normally get written. If you want a core
     dump for debugging, you can use this directive to place it in a
     different location.</p>
-    <p>Linux 2.4 and beyond: If you start Apache as root and you
+    <p>Linux 2.4 and beyond: If you start Apache as <code>root</code> and you
     explicitly configure <code class="directive">CoreDumpDirectory</code>, Apache
     enables core dumps.</p>
 
@@ -226,7 +226,7 @@ listens to</td></tr>
     <p>The <code class="directive">Listen</code> directive tells the server to
     accept incoming requests on the specified port or address-and-port
     combination. If only a port number is specified, the server listens to
-    the given port on all interfaces. If an IP address is given as well 
+    the given port on all interfaces. If an IP address is given as well
     as a port, the server will listen on the given port and
     interface.</p>
 
@@ -364,7 +364,7 @@ to hold without calling free()</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>The <code class="directive">MaxMemFree</code> directive sets the 
+    <p>The <code class="directive">MaxMemFree</code> directive sets the
     maximum number of free Kbytes that the main allocator is allowed
     to hold without calling <code>free()</code>. When not set, or when set
     to zero, the threshold will be set to unlimited.</p>
