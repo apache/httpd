@@ -2,9 +2,9 @@ Apache 1.3 STATUS:
 
 Release:
 
-    1.3b6: freeze; release proposed for Friday, April 17. 
-           Jim is the RM and rolls the release in the next 24h 
-    1.3b5: Tagged APACHE_1_3b5 and released
+    1.3b7: freeze; Hopefully to simply be renamed 1.3.0
+
+    1.3b6: Tagged APACHE_1_3b6. Possible release 4/17
 
     2.0  : In pre-alpha development, see apache-2.0 repository
 
@@ -56,126 +56,6 @@ Plan:
 Showstoppers:
 
 Committed Code Changes:
-    * Dean's `const'-change to os_is_path_absolute().
-    * Security patch for "UserDir /abspath" without a * in the path. PR#1701
-    * Dean's cleanup of race conditions in Unix child_main
-    * Dean's fixes for better handling of various errors from select() and
-      accept() in child_main(). PR#1747, 1107, 588, 1787, 987, 588
-    * Dean's add of -lm to LIBS for HPUX. PR#1639
-    * Ralf's remove of obsolete "dist.tar" target from Makefile.tmpl
-    * Dean's fixes for some inconsistencies in <Files> semantics. PR#1817
-    * Dean's <Files> is not permitted within <Location>. PR#379
-    * Dean's and Martin's fix of </Files> 
-    * Fix for mod_mime_magic error messages. PR#1827
-    * Workaround for using RLIMIT_AS for the RLimitMEM directive. PR#1816
-    * Doug's patch to bind a process to a single processor under AIX
-    * Martin's patch for mod_info to fix HTML markup
-    * Martin's changes to the check_cmd_context() function 
-    * Patch for the ap_cpystrn() off-by-1 error
-    * Dean's fix for multiple UserDir problem introduced during 1.3b4-dev.
-    * Dean's fix to problems with absoluteURIs.
-    * Dean's patch to use SA_RESETHAND or SA_ONESHOT for coredump handlers.
-    * Patch to recognize FreeBSD versions. PR#1450
-    * Workaround in mod_status for NeXT's running not m68k chips
-    * Fix for -X situation to honor the SIGINT or SIGQUIT signals
-    * Patch to hide Proxy-Authorization from CGI/SSI/etc
-    * Ralf's new ProxyPassReverse directive for mod_proxy
-    * Ralf's add of new RewriteMap types: rnd and int. PR#1631
-    * Fix regex handling for mod_setenvif BrowserMatch command. PR#1825
-    * Ralf's fix for assumptions on the username characters in mod_rewrite
-    * Paul's merge of os/win32/mod_dll.c into modules/standard/mod_so.c
-    * Paul's patch for reading the server-root from the NT registry
-    * Ralf's fix for locking of `RewriteMap' programs. PR#1029
-    * Dean's fix for the `config with no Port setting' situation
-    * Ralf's fix for `RewriteMap' program handling. PR#1431
-    * Ralf's fix for the initialization of RewriteLogLevel. PR#1325
-    * Ralf's mod_rewrite meta-construct expansion inconsistency fix
-    * Martin's new URI parsing stuff (the source module main/util_uri.c)
-    * New `%a' construct for LogFormat and CustomLog. PR#1885
-    * Make \\ behave as expected.
-    * Fix for "poly" directive in image maps. PR#1771
-    * Reduce memory usage, and speed up ServerAlias support. PR#1531
-    * Dean's cleanup of code in http_vhost.c and vhost-stuff in mod_rewrite.c
-    * Dean's rewrite of absoluteURI handling vhost matching
-    * Dean's new mod_test_util_uri.c 
-    * back out USE_PTHREAD_SERIALIZED_ACCEPT for solaris
-    * Ken's abstraction of SERVER_{BUILT,VERSION}
-    * Ralf's Config File Line Continuation
-    * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite PR#1696
-    * Ralf's fix for the `<VirtualHost> w/o mod_rewrite' situation. PR#1790
-    * Mark's fix for ProxyPass/ProxyRequests interaction broken by uri stuff
-    * Rasmus' generation of the new src/include/ap_config.h header file
-    * Dean's fix for mod_mime_magic and files with length 0
-    * Dean's change to Location and LocationMatch semantics. PR#1440
-    * Ralf's fix for the flock()<->fork() problematic for RewriteLock's
-    * Dean's Minor cleanup in http_main
-    * Ralf's Various improvements to the configuration and build support
-    * Corrections to the setup of the REMOTE_HOST variable. PR#1925 
-    * Fix for rputs() which did not calculate r->sent_bodyct properly. PR#1900
-    * Don't tweak TZ envvar if the user has specified an explicit one. PR#1888
-    * API clarification for command_rec handlers
-    * API clarification for content_type et al
-    * Ralf's mod_so changes to keep track of loaded modules ourself.
-    * Ralf's support for building shared objects even for library-style modules
-    * Performance improvements to invoke_handler().
-    * Ben Hyde's check to make sure the "Port" range is valid
-    * Ralf's Unbundling mod_proxy and mod_mime (making mime_find_ct obsolete)
-    * Jim's change of -DAUX to -DAUX3 for A/UX
-    * Jim's src/include/ap_config.h wraps it's #define's with #ifndef/#endif's
-    * Dean's Clean up of some undocumented behavior of mod_setenvif
-    * Performance tweak to mod_log_config
-    * Marc's cfg_getline() fix for lines without the termination char
-    * Ralf's Various cleanups to the command line interface and manual pages
-    * Marc's mod_proxy was not clearing the Proxy-Connection header
-    * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
-    * Ralf's new ApacheBench support program (src/support/ab.c)
-    * Ralf's major Configure cleanup
-    * Ralf's additional manual pages for the support programs
-    * Ben Hyde's Configure check for unknown command switch
-    * Martin's fix for src/helpers/fp2rp
-    * Ralf's reanim. of undocum. directive: ProxyReceiveBufferSize, PR#1348
-    * Ralf's mod_proxy fix to use FTP SIZE response for Content-Length, PR#1183
-    * Ralf's change to make the shared object compilation command more portable
-    * Dean's protect against FD_SETSIZE mismatches
-    * Martin's fix to allow %2F chars in proxy requests and in the uri query
-      part
-    * fix to mark listening sockets for closure in the parent after a SIGHUP 
-    * Dean's clean up undefined signals on some platforms (SCO, BeOS).
-    * Dean's fix for making work the `HostnameLookups Off'
-    * Dean's mark of a few bitfields as signed to ensure correct code. 
-    * Dean's changes to scoreboard defs which helps gcc generate better code.
-    * Ralf's fix for QUERY_STRING and the proxy pass-through of mod_rewrite
-    * Fix for symlink check in mod_rewrite's ``RewriteCond ... -l'', PR#2010
-    * Fix: SIGXCPU and SIGXFSZ are now reset to SIG_DFL at boot-time
-    * Dean's remove of HAVE_SNPRINTF
-    * Dean's mutation of ap_snprintf() code into ap_vformatter()
-    * Lars' fix for "Options +Includes" and "+IncludesNoExec" merging
-    * Jim's fix for inconsistent usage of TCC and CC in Configure
-    * Jim's fix for IRIX which needs the -n32 flag iff using 'cc', PR#1901
-    * Jim's add of the SCO_SV port. PR#1962
-    * Dean's floating point ap_snprintf code wasn't threadsafe.
-    * Ralf's add of the new Apache Autoconf-style Interface (APACI)
-    * Rainer Scherg's fix for CONNECT proxy support: #1326, #1573, #1942
-    * Ken's reworking of the Apache LICENSE
-    * Ralf's APache eXtenSion for easy "off-source" extending Apache via DSO
-    * Ralf's APACI --without-support option
-    * Martin's fix accept (and pass) http://user:pass@host proxy requests
-    * Martin's fix CONNECT proxy handling again
-    * Ralf's fallback strategy for DSO by trying to guess flags from Perl
-    * Ralf's add of the query (-q) option to apxs
-    * Ralf's initial doc and Configuration.tmpl entry for mod_mmap_static
-    * OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
-    * Roy's reduce of logging level of "normal" warning messages
-    * Alexei's change Win32 IS_MODULE to SHARED_MODULE to match Unix way
-    * Fixed ordering of argument checks for RewriteBase directive, PR#2045
-    * Ralf's cleanup of subdir movement to again allow correct breaks on error
-    * Ralf's consistent add of "distclean" targets for the src/-Makefiles
-    * Build the libraries before building the rest of the tools
-    * Ralf's and Martin's DSO support for all SVR4-derivate Unix platforms
-    * THE BIG SYMBOL RENAMING
-    * Ralf's DSO configuration updates for the UnixWare platform
-    * Ralf's DSO support for the HP/UX platform by emulating dlopen
-    * Clean up warnings on Ultrix and HPUX.
 
 Available Patches:
 
