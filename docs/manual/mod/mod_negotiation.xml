@@ -28,7 +28,7 @@
     </ul>
 </summary>
 
-<seealso><directive module="mod_mime">DefaultLangauge</directive></seealso>
+<seealso><directive module="mod_mime">DefaultLanguage</directive></seealso>
 <seealso><directive module="mod_mime">AddEncoding</directive></seealso>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 <seealso><directive module="mod_mime">AddType</directive></seealso>
@@ -152,11 +152,11 @@ cached by proxy servers</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>ForceLangaugePriority</name>
+<name>ForceLanguagePriority</name>
 <description>Action to take if a single acceptable document is not 
 found</description>
 <syntax>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</syntax>
-<default>ForceLangaugePriority None</default>
+<default>ForceLanguagePriority None</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
@@ -189,7 +189,7 @@ found</description>
     <code>LanguagePriority</code> to serve a valid result, rather than
     returning an HTTP result 406 (NOT ACCEPTABLE).  If the directives
     below were given, and the user's Accept-Language only permitted an
-    es langauge response, but such a variant isn't found, then the
+    es language response, but such a variant isn't found, then the
     first variant from the LanguagePriority list below will be
     served.</p>
 
