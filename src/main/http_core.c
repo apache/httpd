@@ -1084,6 +1084,7 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 	return "Port must be numeric";
     new->local_addr.sin_port = htons(port);
     new->fd = -1;
+    new->used = 0;
     new->next = listeners;
     listeners = new;
     return NULL;

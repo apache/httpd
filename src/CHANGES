@@ -1,5 +1,11 @@
 Changes with Apache 1.2b3:
 
+  *) Add the ability to pass different Makefile.tmpl files to Configure
+     using the -make flag.
+
+  *) Fix coredump triggered when sending a SIGHUP to the server caused
+     by a dereference of an unitialized pointer in the listen_rec.
+
   *) Add FILEPATH_INFO variable to CGI environment, which is equal to
      PATH_INFO from previous versions of Apache (in certain situations,
      Apache 1.2's PATH_INFO will be different than 1.1's). [Alexei Kosut]
