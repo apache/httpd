@@ -333,9 +333,6 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
             break;
     }
 
-    ldc->bound = 1;
-    ldc->reason = "LDAP: connection open successful";
-
     /* free the handle if there was an error
     */
     if (LDAP_SUCCESS != result)
@@ -345,6 +342,10 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         ldc->bound = 0;
         ldc->reason = "LDAP: ldap_simple_bind_s() failed";
     }
+	else {
+		ldc->bound = 1;
+		ldc->reason = "LDAP: connection open successful";
+	}
 
     return(result);
 }
@@ -875,6 +876,9 @@ start_over:
     if (result != LDAP_SUCCESS) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed";
         ldap_msgfree(res);
+        ldap_unbind_s(ldc->ldap);
+        ldc->ldap = NULL;
+        ldc->bound = 0;
         return result;
     }
     else {
