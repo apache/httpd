@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/17 10:38:00 $]
+Last modified at [$Date: 2003/04/17 13:35:31 $]
 
 Release:
 
@@ -217,11 +217,6 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/ssl_engine_kernel.c r1.88
       tried with 0.9.7a on AIX and 0.9.5a on Linux.)
       +1: trawick, wrowe (including the other patches above)
-
-    * Fix warnings on AIX for missing str[n]casecmp prototypes
-      modules/ssl/mod_ssl.h r1.130
-      modules/experimenal/mod_auth_ldap.c r1.15
-      +1: trawick, wrowe, jerenkrantz
 
     * Enable coredumps on Linux 2.4+ if CoreDumpDirectory is coded
       os/unix/unixd.c                 r1.57

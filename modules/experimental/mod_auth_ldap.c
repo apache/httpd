@@ -63,6 +63,8 @@
 #include <apr_ldap.h>
 #include <apr_strings.h>
 #include <apr_xlate.h>
+#define APR_WANT_STRFUNC
+#include <apr_want.h>
 
 #include "ap_config.h"
 #if APR_HAVE_UNISTD_H
