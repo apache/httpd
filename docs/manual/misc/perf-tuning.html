@@ -690,16 +690,23 @@ munmap(0x400ee000, 6144)                = 0
 
 On some architectures it's slower to <code>mmap</code> small
 files than it is to simply <code>read</code> them.  The define
-<code>MMAP_THRESHOLD</code> can be set to the minimum size required before
-using <code>mmap</code>.  By default it's set to 0 (except on SunOS4
-where experimentation has shown 8192 to be a better value).  Using a
-tool such as
-<a href="http://reality.sgi.com/lm_engr/lmbench/lmbench.html">lmbench</a>
-you can determine the optimal setting for your
-environment.  It may even be the case that <code>mmap</code> isn't used
-on your architecture, if so then defining <code>USE_MMAP_FILES</code>
-might work (if it works then report back to us).
+<code>MMAP_THRESHOLD</code> can be set to the minimum
+size required before using <code>mmap</code>.  By default
+it's set to 0 (except on SunOS4 where experimentation has
+shown 8192 to be a better value).  Using a tool such as <a
+href="http://reality.sgi.com/lm_engr/lmbench/lmbench.html">lmbench</a> you
+can determine the optimal setting for your environment.
 
+<p>You may also wish to experiment with <code>MMAP_SEGMENT_SIZE</code>
+(default 32768) which determines the maximum number of bytes that
+will be written at a time from mmap()d files.  Apache only resets the
+client's <code>Timeout</code> in between write()s.  So setting this
+large may lock out low bandwidth clients unless you also increase the
+<code>Timeout</code>.
+
+<p>It may even be the case that <code>mmap</code> isn't
+used on your architecture, if so then defining <code>USE_MMAP_FILES</code>
+might work (if it works then report back to us).
 
 <p>Apache does its best to avoid copying bytes around in memory.  The
 first write of any request typically is turned into a <code>writev</code>
