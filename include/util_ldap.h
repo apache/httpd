@@ -155,14 +155,25 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
 LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc);
 
 /**
- * Destroy a connection to an LDAP server
+ * Unbind a connection to an LDAP server
+ * @param ldc A structure containing the expanded details of the server
+ *            that was connected.
+ * @tip This function unbinds the LDAP connection, and disconnects from
+ *      the server. It is used during error conditions, to bring the LDAP
+ *      connection back to a known state.
+ * @deffunc apr_status_t util_ldap_connection_unbind(util_ldap_connection_t *ldc)
+ */
+LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_unbind(void *param);
+
+/**
+ * Cleanup a connection to an LDAP server
  * @param ldc A structure containing the expanded details of the server
  *            that was connected.
  * @tip This function is registered with the pool cleanup to close down the
  *      LDAP connections when the server is finished with them.
- * @deffunc apr_status_t util_ldap_connection_destroy(util_ldap_connection_t *ldc)
+ * @deffunc apr_status_t util_ldap_connection_cleanup(util_ldap_connection_t *ldc)
  */
-LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param);
+LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param);
 
 /**
  * Find a connection in a list of connections

@@ -185,44 +185,53 @@ LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc)
 
 
 /*
- * Destroys an LDAP connection by unbinding. This function is registered
- * with the pool cleanup function - causing the LDAP connections to be
- * shut down cleanly on graceful restart.
+ * Destroys an LDAP connection by unbinding and closing the connection to
+ * the LDAP server. It is used to bring the connection back to a known
+ * state after an error, and during pool cleanup.
  */
-LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param)
+LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_unbind(void *param)
+{
+    util_ldap_connection_t *ldc = param;
+
+    if (ldc) {
+        if (ldc->ldap) {
+            ldap_unbind_s(ldc->ldap);
+            ldc->ldap = NULL;
+        }
+        ldc->bound = 0;
+    }
+
+    return APR_SUCCESS;
+}
+
+
+/*
+ * Clean up an LDAP connection by unbinding and unlocking the connection.
+ * This function is registered with the pool cleanup function - causing
+ * the LDAP connections to be shut down cleanly on graceful restart.
+ */
+LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
     if (ldc) {
 
-        /* unbinding from the LDAP server */
-        if (ldc->ldap) {
-            ldap_unbind_s(ldc->ldap);
-            ldc->bound = 0;
-            ldc->ldap = NULL;
-        }
+        /* unbind and disconnect from the LDAP server */
+        util_ldap_connection_unbind(ldc);
 
+        /* free the username and password */
         if (ldc->bindpw) {
             free((void*)ldc->bindpw);
         }
-    
         if (ldc->binddn) {
             free((void*)ldc->binddn);
         }
 
-        /* release the lock we were using.  The lock should have
-           already been released in the close connection call.  
-           But just in case it wasn't, we first try to get the lock
-           before unlocking it to avoid unlocking an unheld lock. 
-           Unlocking an unheld lock causes problems on NetWare.  The
-           other option would be to assume that close connection did
-           its job. */
-#if APR_HAS_THREADS
-        apr_thread_mutex_trylock(ldc->lock);
-        apr_thread_mutex_unlock(ldc->lock);
-#endif
-
+        /* unlock this entry */
+        util_ldap_connection_close(ldc);
+    
     }
+
     return APR_SUCCESS;
 }
 
@@ -342,10 +351,10 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         ldc->bound = 0;
         ldc->reason = "LDAP: ldap_simple_bind_s() failed";
     }
-	else {
-		ldc->bound = 1;
-		ldc->reason = "LDAP: connection open successful";
-	}
+    else {
+        ldc->bound = 1;
+        ldc->reason = "LDAP: connection open successful";
+    }
 
     return(result);
 }
@@ -461,7 +470,7 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
 
         /* add the cleanup to the pool */
         apr_pool_cleanup_register(l->pool, l,
-                                  util_ldap_connection_destroy,
+                                  util_ldap_connection_cleanup,
                                   apr_pool_cleanup_null);
 
         if (p) {
@@ -565,8 +574,8 @@ start_over:
     if ((result = ldap_search_ext_s(ldc->ldap, const_cast(reqdn), LDAP_SCOPE_BASE, 
 				    "(objectclass=*)", NULL, 1, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
-        util_ldap_connection_close(ldc);
         ldc->reason = "DN Comparison ldap_search_ext_s() failed with server down";
+        util_ldap_connection_unbind(ldc);
         goto start_over;
     }
     if (result != LDAP_SUCCESS) {
@@ -694,8 +703,8 @@ start_over:
     if ((result = ldap_compare_s(ldc->ldap, const_cast(dn), const_cast(attrib), const_cast(value)))
         == LDAP_SERVER_DOWN) { 
         /* connection failed - try again */
-        util_ldap_connection_close(ldc);
         ldc->reason = "ldap_compare_s() failed with server down";
+        util_ldap_connection_unbind(ldc);
         goto start_over;
     }
 
@@ -815,6 +824,7 @@ start_over:
 				    const_cast(filter), attrs, 0, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
+        util_ldap_connection_unbind(ldc);
         goto start_over;
     }
 
@@ -869,6 +879,7 @@ start_over:
          LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed with server down";
         ldap_msgfree(res);
+        util_ldap_connection_unbind(ldc);
         goto start_over;
     }
 
@@ -876,22 +887,17 @@ start_over:
     if (result != LDAP_SUCCESS) {
         ldc->reason = "ldap_simple_bind_s() to check user credentials failed";
         ldap_msgfree(res);
-        ldap_unbind_s(ldc->ldap);
-        ldc->ldap = NULL;
-        ldc->bound = 0;
+        util_ldap_connection_unbind(ldc);
         return result;
     }
     else {
         /*
-         * Since we just bound the connection to the authenticating user id, update the
-         * ldc->binddn and ldc->bindpw to reflect the change and also to allow the next 
-         * call to util_ldap_connection_open() to handle the connection reuse appropriately.
-         * Otherwise the next time that this connection is reused, it will indicate that
-         * it is bound to the original user id specified ldc->binddn when in fact it is 
-         * bound to a completely different user id.
+         * We have just bound the connection to a different user and password
+         * combination, which might be reused unintentionally next time this
+         * connection is used from the connection pool. To ensure no confusion,
+         * we mark the connection as unbound.
          */
-        util_ldap_strdup((char**)&(ldc->binddn), *binddn);
-        util_ldap_strdup((char**)&(ldc->bindpw), bindpw);
+        ldc->bound = 0;
     }
 
     /*
@@ -937,6 +943,7 @@ start_over:
     ldc->reason = "Authentication successful";
     return LDAP_SUCCESS;
 }
+
 
 /*
  * Reports if ssl support is enabled 
