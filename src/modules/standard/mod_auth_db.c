@@ -252,7 +252,7 @@ int db_check_auth(request_rec *r) {
 
            if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
 	       if (!(sec->auth_dbauthoritative))
-		 return DECLINED:
+		 return DECLINED;
                sprintf(errstr,"user %s not in DB group file %s",
 		       user, sec->auth_dbgrpfile);
 	       log_reason (errstr, r->filename, r);
