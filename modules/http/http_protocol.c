@@ -1912,9 +1912,11 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
              * Otherwise, we should assume we have a bad request.
              */
             if (rv == AP_FILTER_ERROR) {
+                apr_brigade_destroy(bb);
                 return rv;
             }
             else {
+                apr_brigade_destroy(bb);
                 return HTTP_BAD_REQUEST;
             }
         }
@@ -1938,6 +1940,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
              */
             rv = apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
+                apr_brigade_destroy(bb);
                 return HTTP_BAD_REQUEST;
             }
         }
