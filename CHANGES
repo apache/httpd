@@ -40,8 +40,9 @@ Changes with Apache 2.1.0-dev
   *) Fix bug in mod_deflate that unconditionally sent deflate'd output
      even when Accept-Encoding is not present.  [Justin Erenkrantz]
 
-  *) Pass environment variables through to piped loggers, resolving
-     a regression since 1.3.  [Ken Coar, Jeff Trawick]
+  *) Pass environment variables through to piped loggers and start
+     them via the shell, resolving regressions since 1.3.  PR 28815
+     [Ken Coar, Jeff Trawick]
 
   *) Enable the option to support anonymous shared memory in mod_ldap.
      This makes the cache work on Linux again. [Graham Leggett]
