@@ -1,3 +1,7 @@
+  *) Allow ErrorDocument directive to also be used from .htaccess files.
+     This is enabled/disabled by using the FileInfo flag with 
+     AllowOverrides [Mark Cox]
+     
   *) Add AddHandler command, which allows content-type-independent 
      "handlers" to be defined for file extensions. These can be either
      built into Apache (such as CGI scripts or server-side includes, or
@@ -19,7 +23,7 @@
      "ScriptAlias foo.bar.net *.foo.com foo.com" [Alexei Kosut]
 
   *) Added Status module with preliminary documentation available
-     http://www.apache.org/docs/1.1/mod_status.html
+     http://www.apache.org/docs/1.1/mod_status.html [Mark Cox]
 
   *) Added simple and complex instrumentation to Apache to allow a
      instantaneous status screen to be displayed.  Since the complex

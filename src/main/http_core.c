@@ -697,9 +697,8 @@ char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     return NULL;
 }
 
-/* Note --- change the mask below, and ErrorDocument will work from
- * .htaccess files.  The question is, what AllowOverride should webmasters
- * have to turn it off?
+/* Note --- ErrorDocument will now work from .htaccess files.  
+ * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
 
 command_rec core_cmds[] = {
@@ -720,7 +719,7 @@ command_rec core_cmds[] = {
   
 { "AccessFileName", set_access_name, NULL, RSRC_CONF, TAKE1, NULL },
 { "DocumentRoot", set_document_root, NULL, RSRC_CONF, TAKE1, NULL },
-{ "ErrorDocument", set_error_document, NULL, RSRC_CONF, RAW_ARGS, NULL },
+{ "ErrorDocument", set_error_document, NULL, OR_FILEINFO, RAW_ARGS, NULL },
 { "AllowOverride", set_override, NULL, ACCESS_CONF, RAW_ARGS, NULL },
 { "Options", set_options, NULL, OR_OPTIONS, RAW_ARGS, NULL },
 { "DefaultType", set_string_slot,
