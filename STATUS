@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/27 14:28:40 $]
+Last modified at [$Date: 2000/07/27 14:39:13 $]
 
 Release:
 
@@ -231,6 +231,10 @@ Available Patches:
  
    * Jim Winstead's <jimw@trainedmonkey.com> patch to add CookieDomain and 
      other small mod_usertrack features
+
+   * Dan Rench's <drench@xnet.com> patch to add allow the errmsg and timefmt 
+     of SSI's to be modified in the config file.  Patch is available in 
+     PR6193
 
 Open issues:
 
