@@ -390,13 +390,10 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
 	    char *pt = apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
 				  NULL);
 #ifdef WIN32
-	    char buffer[HUGE_STRING_LEN];
 	    /* We need to make this a real Windows path name */
-	    GetFullPathName(pt, HUGE_STRING_LEN, buffer, NULL);
-	    apr_table_setn(e, "PATH_TRANSLATED", apr_pstrdup(r->pool, buffer));
-#else
-	    apr_table_setn(e, "PATH_TRANSLATED", pt);
+	    apr_filepath_merge(&pt, "", pt, APR_FILEPATH_NATIVE, r->pool);
 #endif
+	    apr_table_setn(e, "PATH_TRANSLATED", pt);
 	}
 	ap_destroy_sub_req(pa_req);
     }
