@@ -1201,6 +1201,7 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 
     if (debug) {
         foreground = one_process = 1;
+        no_detach = 0;
     }
     else
     {

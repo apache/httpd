@@ -1007,6 +1007,7 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 
     if (debug) {
         foreground = one_process = 1;
+        no_detach = 0;
     }
     else
     {
