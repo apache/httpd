@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/08 06:21:40 $]
+Last modified at [$Date: 2002/04/08 06:30:34 $]
 
 Release:
 
@@ -780,15 +780,17 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-Binaries needed:
+Binaries (2.0.35):
 
-    Mandrake 8.1:           rbb volunteers
-    FreeBSD 4.1:            rbb volunteers
-    OS X 10.1.3/Darwin 5.3: Jim volunteers
-    Solaris 8.x/sparc:      Jim volunteers
-    Solaris 8.x/i386:       Aaron volunteers
-    RedHat 7.2:             Jim volunteers
-    Linux 2.2.19/i386:      Aaron volunteers
+ Platform                      Avail.  Volunteer
+ ------------------------------------------------------------------
+ Mandrake 8.1                  no      Ryan Bloom
+ FreeBSD 4.1                   no      Ryan Bloom
+ OS X 10.1.3/Darwin 5.3        no      Jim Jagielski
+ Solaris 8.x/sparc             no      Jim Jagielski
+ RedHat 7.2                    no      Jim Jagielski
+ i686-pc-linux-gnu             no      Aaron Bannert
+ Solaris 8.x/i386              no      Aaron Bannert
 
 Other features that need writing:
 
