@@ -244,7 +244,8 @@ case "$PLAT" in
 	;;
     *-sunos4*)
 	OS='SunOS 4'
-	CFLAGS="$CFLAGS -DSUNOS4"
+	CFLAGS="$CFLAGS -DSUNOS4 -DUSEBCOPY"
+	DEF_WANTHSREGEX=yes
 	;;
     *-unixware*)
 	DEF_WANTHSREGEX=yes
