@@ -3,13 +3,13 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <modulesynopsis>
 
-<name>mod_authn_anon</name>
+<name>mod_auth_anon</name>
 <description>Allows "anonymous" user access to authenticated
-    areas</description>
+areas</description>
 <status>Extension</status>
-<sourcefile>mod_authn_anon.c</sourcefile>
-<identifier>authn_anon_module</identifier>
-<compatibility>Available in Apache 2.0.44 and later</compatibility>
+<sourcefile>mod_auth_anon.c</sourcefile>
+<identifier>auth_anon_module</identifier>
+<compatibility>Available only in versions prior to 2.1</compatibility>
 
 <summary>
     <p>This module does access control in a manner similar to
@@ -26,10 +26,10 @@
     allows users to share URLs.</p>
 </summary>
 
-<section><title>Example</title>
+<section id="example"><title>Example</title>
 
     <p>The example below (when combined with the Auth directives of a
-    htpasswd-file based (or GDM, mSQL <em>etc.</em>) base access
+    htpasswd-file based (or GDM, mSQL etc.) base access
     control system allows users in as 'guests' with the following
     properties:</p>
 
@@ -55,36 +55,37 @@
 
     <p>Excerpt of httpd.conf:</p>
 
-<example>
-       Anonymous_NoUserId off<br />
-       Anonymous_MustGiveEmail on<br />
-       Anonymous_VerifyEmail on<br />
-       Anonymous_LogEmail on<br />
-       Anonymous anonymous guest www test welcome<br />
-<br />
-      AuthName "Use 'anonymous' &amp; Email address for
-      guest entry"<br />
+    <example>
+      Anonymous_NoUserId off<br />
+      Anonymous_MustGiveEmail on<br />
+      Anonymous_VerifyEmail on<br />
+      Anonymous_LogEmail on<br />
+      Anonymous anonymous guest www test welcome<br />
+      <br />
+      AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
       AuthType basic<br />
-<br />
-       # An
-      AuthUserFile/AuthDBMUserFile<br />
-       # directive must be specified, or use<br />
-       # Anonymous_Authoritative for public access.<br />
-       # In the .htaccess for the public directory, add:<br />
-       &lt;Files *&gt;<br />
-       Order Deny,Allow<br />
-       Allow from all<br />
-<br />
-       Require valid-user<br />
-       &lt;/Files&gt;<br />
-</example>
+      <br />
+      # An
+      AuthUserFile/AuthDBUserFile/AuthDBMUserFile<br />
+      # directive must be specified, or use<br />
+      # Anonymous_Authoritative for public access.<br />
+      # In the .htaccess for the public directory, add:<br />
+      &lt;Files *&gt;<br />
+      <indent>
+        Order Deny,Allow<br />
+        Allow from all<br />
+        <br />
+        Require valid-user<br />
+      </indent>
+      &lt;/Files&gt;
+    </example>
 </section>
 
 <directivesynopsis>
 <name>Anonymous</name>
 <description>Specifies userIDs that areallowed access without
 password verification</description>
-<syntax>Anonymous <em>user</em> [<em>user</em>] ...</syntax>
+<syntax>Anonymous <var>user</var> [<var>user</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -101,8 +102,9 @@ password verification</description>
     '<code>anonymous</code>' is always one of the allowed
     userIDs.</p>
 
-    <p>Example:</p>
-<example>Anonymous anonymous "Not Registered" 'I don\'t know'</example>
+    <example><title>Example:</title>
+      Anonymous anonymous "Not Registered" 'I don\'t know'
+    </example>
 
     <p>This would allow the user to enter without password
     verification by using the userId's 'anonymous',
@@ -123,7 +125,7 @@ to other methods</description>
 <usage>
     <p>When set 'on', there is no fall-through to other authorization
     methods. So if a userID does not match the values specified in the
-    <directive module="mod_authn_anon">Anonymous</directive> directive,
+    <directive module="mod_auth_anon">Anonymous</directive> directive,
     access is denied.</p>
 
     <p>Be sure you know what you are doing when you decide to
@@ -196,7 +198,7 @@ formatted email address</description>
     <p>When set <code>on</code> the 'password' entered is checked for
     at least one '@' and a '.' to encourage users to enter valid email
     addresses (see the above <directive
-    module="mod_authn_anon">Auth_LogEmail</directive>).</p>
+    module="mod_auth_anon">Auth_LogEmail</directive>).</p>
 </usage>
 </directivesynopsis>
 

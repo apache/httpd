@@ -16,8 +16,8 @@ changes on a per-directory basis.</p>
     <related>
         <modulelist>
             <module>core</module>
-            <module>mod_authn_file</module>
-            <module>mod_authz_groupfile</module>
+            <module>mod_auth</module>
+            <module>mod_auth</module>
             <module>mod_cgi</module>
             <module>mod_include</module>
             <module>mod_mime</module>
@@ -31,8 +31,8 @@ changes on a per-directory basis.</p>
             <directive module="core">SetHandler</directive>
             <directive module="core">AuthType</directive>
             <directive module="core">AuthName</directive>
-            <directive module="mod_authn_file">AuthUserFile</directive>
-            <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+            <directive module="mod_auth">AuthUserFile</directive>
+            <directive module="mod_auth">AuthGroupFile</directive>
             <directive module="core">Require</directive>
         </directivelist>
 

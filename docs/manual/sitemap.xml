@@ -130,14 +130,11 @@ Server on HPUX</page>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
   <modulefile>mod_asis.xml</modulefile>
-  <modulefile>mod_auth_basic.xml</modulefile>
+  <modulefile>mod_access.xml</modulefile>
+  <modulefile>mod_auth.xml</modulefile>
+  <modulefile>mod_auth_anon.xml</modulefile>
+  <modulefile>mod_auth_dbm.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
-  <modulefile>mod_authn_anon.xml</modulefile>
-  <modulefile>mod_authn_dbm.xml</modulefile>
-  <modulefile>mod_authn_file.xml</modulefile>
-  <modulefile>mod_authz_dbm.xml</modulefile>
-  <modulefile>mod_authz_groupfile.xml</modulefile>
-  <modulefile>mod_authz_host.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml</modulefile>
   <modulefile>mod_cache.xml</modulefile>
@@ -186,12 +183,6 @@ Server on HPUX</page>
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
   <modulefile>worker.xml</modulefile>
-
-  <modulefile>obs_mod_access.xml</modulefile>
-  <modulefile>obs_mod_auth.xml</modulefile>
-  <modulefile>obs_mod_auth_anon.xml</modulefile>
-  <modulefile>obs_mod_auth_dbm.xml</modulefile>
-  <modulefile>obs_mod_auth_digest.xml</modulefile>
 </modulefilelist>
 </category>
 

@@ -244,12 +244,12 @@ response without an explicit character set</description>
       <dd>
 
       Allow use of the authorization directives (<directive
-      module="mod_authn_dbm">AuthDBMGroupFile</directive>,
-      <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
-      <directive module="mod_authz_groupfile">AuthGroupFile</directive>,
+      module="mod_auth_dbm">AuthDBMGroupFile</directive>,
+      <directive module="mod_auth_dbm">AuthDBMUserFile</directive>,
+      <directive module="mod_auth">AuthGroupFile</directive>,
       <directive module="core">AuthName</directive>, 
       <directive module="core">AuthType</directive>, <directive
-      module="mod_authn_file">AuthUserFile</directive>, <directive
+      module="mod_auth">AuthUserFile</directive>, <directive
       module="core">Require</directive>, <em>etc.</em>).</dd>
 
       <dt>FileInfo</dt>
@@ -288,9 +288,9 @@ response without an explicit character set</description>
 
       <dd>
       Allow use of the directives controlling host access (<directive
-      module="mod_authz_host">Allow</directive>, <directive
-      module="mod_authz_host">Deny</directive> and <directive
-      module="mod_authz_host">Order</directive>).</dd>
+      module="mod_access">Allow</directive>, <directive
+      module="mod_access">Deny</directive> and <directive
+      module="mod_access">Order</directive>).</dd>
 
       <dt>Options</dt>
 
@@ -330,8 +330,8 @@ authentication</description>
     marks.  It must be accompanied by <directive
     module="core">AuthType</directive> and <directive
     module="core">Require</directive> directives, and directives such
-    as <directive module="mod_authn_file">AuthUserFile</directive> and
-    <directive module="mod_authz_groupfile">AuthGroupFile</directive> to
+    as <directive module="mod_auth">AuthUserFile</directive> and
+    <directive module="mod_auth">AuthGroupFile</directive> to
     work.</p>
 
    <p>For example:</p>
@@ -364,8 +364,8 @@ authentication</description>
      It must be accompanied by <directive
      module="core">AuthName</directive> and <directive
      module="core">Require</directive> directives, and directives such
-     as <directive module="mod_authn_file">AuthUserFile</directive> and
-     <directive module="mod_authz_groupfile">AuthGroupFile</directive> to
+     as <directive module="mod_auth">AuthUserFile</directive> and
+     <directive module="mod_auth">AuthGroupFile</directive> to
      work.</p>
 </usage>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
@@ -1105,7 +1105,7 @@ MIME content-type</description>
     address. (In "tcpwrappers" terminology this is called
     <code>PARANOID</code>.)</p>
 
-    <p>Regardless of the setting, when <module>mod_authz_host</module> is
+    <p>Regardless of the setting, when <module>mod_access</module> is
     used for controlling access by hostname, a double reverse lookup
     will be performed.  This is necessary for security. Note that the
     result of this double-reverse isn't generally available unless you
@@ -2158,8 +2158,8 @@ a resource</description>
     <p><directive>Require</directive> must be accompanied by
     <directive module="core">AuthName</directive> and <directive
     module="core">AuthType</directive> directives, and directives such
-    as <directive module="mod_authn_file">AuthUserFile</directive>
-    and <directive module="mod_authz_groupfile">AuthGroupFile</directive> (to
+    as <directive module="mod_auth">AuthUserFile</directive>
+    and <directive module="mod_auth">AuthGroupFile</directive> (to
     define users and groups) in order to work correctly. Example:</p>
 
     <example>
@@ -2179,7 +2179,7 @@ a resource</description>
     section.</p>
 </usage>
 <seealso><directive module="core">Satisfy</directive></seealso>
-<seealso><module>mod_authz_host</module></seealso>
+<seealso><module>mod_access</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2299,7 +2299,7 @@ user authentication</description>
 
 <usage>
     <p>Access policy if both <directive
-    module="mod_authz_host">Allow</directive> and <directive
+    module="mod_access">Allow</directive> and <directive
     module="core">Require</directive> used. The parameter can be
     either <var>all</var> or <var>any</var>. This directive is only
     useful if access to a particular area is being restricted by both
@@ -2324,7 +2324,7 @@ user authentication</description>
     </example>
    
 </usage>
-   <seealso><directive module="mod_authz_host">Allow</directive></seealso>
+   <seealso><directive module="mod_access">Allow</directive></seealso>
    <seealso><directive module="core">Require</directive></seealso>
 </directivesynopsis>
 
