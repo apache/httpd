@@ -11,49 +11,68 @@
 
 <summary>
     <p>This Multi-Processing Module (MPM) implements a hybrid
-    multi-process multi-threaded server. Each process has a fixed
+    multi-process multi-threaded server.  By using threads to serve
+    requests, it is able to serve a large number of requests with
+    less system resources than a process-based server.  Yet it
+    retains much of the stability of a process-based server by 
+    keeping multiple processes available, each with many threads.</p>
+
+    <p>The most important directives used to control this MPM are
+    <directive module="mpm_common">ThreadsPerChild</directive> and
+    <directive module="mpm_common">MaxClients</directive>.  By multiplying
+    together the value of these directives you define the total number
+    of simultaneous connections that the server can handle.</p>
+
+</summary>
+<seealso><a href="../bind.html">Setting which addresses and
+    ports Apache uses</a></seealso>
+
+<section><title>How it Works</title>
+    <p>Each process has a fixed
     number of threads. The server adjusts to handle load by
     increasing or decreasing the number of processes.</p>
 
     <p>A single control process is responsible for launching child
-    processes. Each child process creates a fixed number of threads
-    as specified in the <code>ThreadsPerChild</code> directive. The
-    individual threads then listen for connections and serve them
-    when they arrive.</p>
+    processes. Each child process creates a fixed number of threads as
+    specified in the <directive
+    module="mpm_common">ThreadsPerChild</directive> directive. The
+    individual threads then listen for connections and serve them when
+    they arrive.</p>
 
     <p>Apache always tries to maintain a pool of <em>spare</em> or
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
     served. Apache assesses the total number of idle threads in all
-    processes, and forks or kills processes to keep this number
-    within the boundaries specified by <code>MinSpareThreads</code>
-    and <code>MaxSpareThreads</code>. Since this process is very
-    self-regulating, it is rarely necessary to modify these
-    directives from their default values. The maximum number of
+    processes, and forks or kills processes to keep this number within
+    the boundaries specified by <directive
+    module="mpm_common">MinSpareThreads</directive> and <directive
+    module="mpm_common">MaxSpareThreads</directive>. Since this
+    process is very self-regulating, it is rarely necessary to modify
+    these directives from their default values. The maximum number of
     clients that may be served simultaneously is determined by
     multiplying the maximum number of server processes that will be
-    created (<code>MaxClients</code>) by the number of threads
-    created in each process (<code>ThreadsPerChild</code>).</p>
+    created (<directive module="mpm_common">MaxClients</directive>) by
+    the number of threads created in each process (<directive
+    module="mpm_common">ThreadsPerChild</directive>).</p>
 
-    <p>While the parent process is usually started as root under
-    Unix in order to bind to port 80, the child processes and
-    threads are launched by Apache as a less-privileged user. The
-    <code>User</code> and <code>Group</code> directives are used to
-    set the privileges of the Apache child processes. The child
-    processes must be able to read all the content that will be
-    served, but should have as few privileges beyond that as
-    possible. In addition, unless <a
-    href="../suexec.html">suexec</a> is used, these directives also
-    set the privileges which will be inherited by CGI scripts.</p>
+    <p>While the parent process is usually started as root under Unix
+    in order to bind to port 80, the child processes and threads are
+    launched by Apache as a less-privileged user. The <directive
+    module="mpm_common">User</directive> and <directive
+    module="mpm_common">Group</directive> directives are used to set
+    the privileges of the Apache child processes. The child processes
+    must be able to read all the content that will be served, but
+    should have as few privileges beyond that as possible. In
+    addition, unless <a href="../suexec.html">suexec</a> is used,
+    these directives also set the privileges which will be inherited
+    by CGI scripts.</p>
 
-    <p><code>MaxRequestsPerChild</code> controls how frequently the
-    server recycles processes by killing old ones and launching new
-    ones.</p>
-
-    <p>See also: <a href="../bind.html">Setting which addresses and
-    ports Apache uses</a>.</p>
-</summary>
+    <p><directive module="mpm_common">MaxRequestsPerChild</directive>
+    controls how frequently the server recycles processes by killing
+    old ones and launching new ones.</p>
+</section>
+ 
 
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
