@@ -2719,15 +2719,15 @@ static int parse_byterange(char *range, apr_off_t clength,
 
     if ((dash == range)) {
         /* In the form "-5" */
-        *start = clength - apr_atoll(dash + 1);
+        *start = clength - apr_atoi64(dash + 1);
         *end = clength - 1;
     }
     else {
         *dash = '\0';
         dash++;
-        *start = apr_atoll(range);
+        *start = apr_atoi64(range);
         if (*dash) {
-            *end = apr_atoll(dash);
+            *end = apr_atoi64(dash);
         }
         else {                  /* "5-" */
             *end = clength - 1;
