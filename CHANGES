@@ -1,4 +1,8 @@
 Changes with Apache 2.0.25-dev
+  *)  Implement CRYPTO_set_locking_callback() in terms of apr_lock
+      for mod_ssl
+     [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
+
   *) Fix for mod_include. Ryan's patch to check error
      codes put a return in the wrong place. Also, the
      include handler return code wasn't being checked.

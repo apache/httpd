@@ -185,6 +185,7 @@ void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         ssl_init_SSLLibrary();
     }
 #endif
+    ssl_util_thread_setup(s, p);
     if (mc->nInitCount == 1) {
         ssl_pphrase_Handle(s, p);
         ssl_init_TmpKeysHandle(SSL_TKP_GEN, s, p);
