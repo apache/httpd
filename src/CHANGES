@@ -5,17 +5,17 @@ Changes with Apache 1.3.9
      (which was touched by the adjustments for mod_alias).
      [Ralf S. Engelschall]
 
- *) For binary builds, add -R flag to apachectl to work around the
-    lack of an absolute path to the ./libexec directory where
-    libhttp.ep file is needed for SHARED_CORE architectures.
-    [Randy Terbush randy@covalent.net]
+  *) For binary builds, add -R flag to apachectl to work around the
+     lack of an absolute path to the ./libexec directory where
+     libhttp.ep file is needed for SHARED_CORE architectures.
+     [Randy Terbush randy@covalent.net]
 
- *) Roll back (re)naming in the uuencode/decode section. The ap/ap_
-    routines are now called ap_base64* and are 'plain'. I.e. no 
-    pool access or anything clever. Inside apache the routines 
-    acting like pstrdup are called ap_puuencode() and ap_uudecode().
-    The odly named ap_uuencode(), ap_uudecode() is kept around for
-    now but depricated.  [dirkx]
+  *) Roll back (re)naming in the uuencode/decode section. The ap/ap_
+     routines are now called ap_base64* and are 'plain'. I.e. no 
+     pool access or anything clever. Inside apache the routines 
+     acting like pstrdup are called ap_puuencode() and ap_uudecode().
+     The odly named ap_uuencode(), ap_uudecode() is kept around for
+     now but depricated.  [dirkx]
 
 Changes with Apache 1.3.8
 
