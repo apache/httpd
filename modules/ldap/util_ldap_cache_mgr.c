@@ -645,10 +645,12 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Last Bind</b></font></td>"
                              "</tr>\n", r
                             );
-                    for (i=0; i < n->search_cache->size; ++i) {
-                        for (p = n->search_cache->nodes[i]; p != NULL; p = p->next) {
-
-                            (*n->search_cache->display)(r, n->search_cache, p->payload);
+                    if (n) {
+                        for (i=0; i < n->search_cache->size; ++i) {
+                            for (p = n->search_cache->nodes[i]; p != NULL; p = p->next) {
+    
+                                (*n->search_cache->display)(r, n->search_cache, p->payload);
+                            }
                         }
                     }
                     ap_rputs("</table>\n</p>\n", r);
@@ -664,10 +666,12 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Result</b></font></td>"
                              "</tr>\n", r
                             );
-                    for (i=0; i < n->compare_cache->size; ++i) {
-                        for (p = n->compare_cache->nodes[i]; p != NULL; p = p->next) {
-
-                            (*n->compare_cache->display)(r, n->compare_cache, p->payload);
+                    if (n) {
+                        for (i=0; i < n->compare_cache->size; ++i) {
+                            for (p = n->compare_cache->nodes[i]; p != NULL; p = p->next) {
+    
+                                (*n->compare_cache->display)(r, n->compare_cache, p->payload);
+                            }
                         }
                     }
                     ap_rputs("</table>\n</p>\n", r);
@@ -680,10 +684,12 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Actual DN</b></font></td>"
                              "</tr>\n", r
                             );
-                    for (i=0; i < n->dn_compare_cache->size; ++i) {
-                        for (p = n->dn_compare_cache->nodes[i]; p != NULL; p = p->next) {
-
-                            (*n->dn_compare_cache->display)(r, n->dn_compare_cache, p->payload);
+                    if (n) {
+                        for (i=0; i < n->dn_compare_cache->size; ++i) {
+                            for (p = n->dn_compare_cache->nodes[i]; p != NULL; p = p->next) {
+    
+                                (*n->dn_compare_cache->display)(r, n->dn_compare_cache, p->payload);
+                            }
                         }
                     }
                     ap_rputs("</table>\n</p>\n", r);
