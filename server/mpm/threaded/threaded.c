@@ -473,8 +473,6 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
         return;
     }
 
-    ap_sock_disable_nagle(sock);
-
     current_conn = ap_run_create_connection(p, sock, conn_id);
     if (current_conn) {
         ap_process_connection(current_conn);

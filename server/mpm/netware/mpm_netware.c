@@ -504,8 +504,6 @@ got_listener:
         * We now have a connection, so set it up with the appropriate
         * socket options, file descriptors, and read/write buffers.
         */
-        ap_sock_disable_nagle(csd);
-
         current_conn = ap_run_create_connection(ptrans, csd, my_worker_num);
         if (current_conn) {
             ap_process_connection(current_conn);

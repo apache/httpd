@@ -787,8 +787,6 @@ static void child_main(int child_num_arg)
         }
 #endif
 
-	ap_sock_disable_nagle(csd);
-
 	current_conn = ap_run_create_connection(ptrans, csd, my_child_num);
         if (current_conn) {
             ap_process_connection(current_conn);

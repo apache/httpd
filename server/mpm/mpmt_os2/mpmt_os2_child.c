@@ -406,7 +406,6 @@ static void worker_main(void *vpArg)
     while (rc = DosReadQueue(workq, &rd, &len, (PPVOID)&worker_args, 0, DCWW_WAIT, &priority, NULLHANDLE),
            rc == 0 && rd.ulData != WORKTYPE_EXIT) {
         pconn = worker_args->pconn;
-        ap_sock_disable_nagle(worker_args->conn_sd);
         current_conn = ap_run_create_connection(pconn, worker_args->conn_sd, conn_id);
 
         if (current_conn) {
