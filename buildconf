@@ -61,7 +61,7 @@ if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo "--with-apr=[path to apr] :"
     echo ""
     echo "   cd srclib"
-    echo "   svn co https://svn.apache.org/repos/asf/apr/apr/branches/APR_0_9_BRANCH apr"
+    echo "   svn co https://svn.apache.org/repos/asf/apr/apr/branches/0.9.x apr"
     echo "" 
     should_exit=1
 fi
@@ -74,7 +74,7 @@ if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
     echo "--with-apr-util=[path to apr-util]:"
     echo ""
     echo "   cd srclib"
-    echo "   svn co https://svn.apache.org/repos/asf/apr/apr-util/branches/APU_0_9_BRANCH apr-util"
+    echo "   svn co https://svn.apache.org/repos/asf/apr/apr-util/branches/0.9.x apr-util"
     echo ""
     should_exit=1
 fi
