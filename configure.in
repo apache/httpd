@@ -52,6 +52,7 @@ sys/time.h \
 sys/types.h \
 sys/socket.h \
 netinet/in.h \
+netinet/tcp.h \
 arpa/inet.h \
 netdb.h \
 pwd.h \
