@@ -1152,7 +1152,7 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
     }
 
     /* Heuristic to determine second argument. */
-    if (strchr(msg,' ')) 
+    if (ap_strchr_c(msg,' ')) 
 	what = MSG;
     else if (msg[0] == '/')
 	what = LOCAL_PATH;

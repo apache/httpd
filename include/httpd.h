@@ -931,7 +931,7 @@ API_EXPORT(char *) ap_getword_nulls(ap_pool_t *p, const char **line, char stop);
 API_EXPORT(char *) ap_getword_nulls_nc(ap_pool_t *p, char **line, char stop);
 API_EXPORT(char *) ap_getword_conf(ap_pool_t *p, const char **line);
 API_EXPORT(char *) ap_getword_conf_nc(ap_pool_t *p, char **line);
-API_EXPORT(char *) ap_resolve_env(ap_pool_t *p, const char * word); 
+API_EXPORT(const char *) ap_resolve_env(ap_pool_t *p, const char * word); 
 
 API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
 API_EXPORT(char *) ap_get_list_item(ap_pool_t *p, const char **field);
@@ -1050,13 +1050,18 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
   */
 #ifdef AP_DEBUG
 
+# define strchr(s, c)	ap_strchr(s,c)
 # define strrchr(s, c)  ap_strrchr(s,c)
 
+char *ap_strchr(char *s, int c);
+const char *ap_strchr_c(const char *s, int c);
 char *ap_strrchr(char *s, int c);
 const char *ap_strrchr_c(const char *s, int c);
 
 #else
 
+# define ap_strchr(s, c)	strchr(s, c)
+# define ap_strchr_c(s, c)	strchr(s, c)
 # define ap_strrchr(s, c)	strrchr(s, c)
 # define ap_strrchr_c(s, c)	strrchr(s, c)
 

@@ -484,7 +484,7 @@ deal_with_path:
 	}
 	if (*s == '?') {
 	    ++s;
-	    s1 = strchr(s, '#');
+	    s1 = ap_strchr_c(s, '#');
 	    if (s1) {
 		uptr->fragment = ap_pstrdup(p, s1 + 1);
 		uptr->query = ap_pstrndup(p, s, s1 - s);
@@ -588,7 +588,7 @@ API_EXPORT(int) ap_parse_hostinfo_components(ap_pool_t *p, const char *hostinfo,
     /* We expect hostinfo to point to the first character of
      * the hostname.  There must be a port, separated by a colon
      */
-    s = strchr(hostinfo, ':');
+    s = ap_strchr_c(hostinfo, ':');
     if (s == NULL) {
 	return HTTP_BAD_REQUEST;
     }

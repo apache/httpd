@@ -50,40 +50,29 @@
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
+ *
+ * Portions of this software are based upon public domain software
+ * originally written at the National Center for Supercomputing Applications,
+ * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef AP_LISTEN_H
-#define AP_LISTEN_H
+#include "httpd.h"
 
-#include "apr_network_io.h"
-#include "http_config.h"
+#ifdef AP_DEBUG
+# undef strchr
 
-typedef struct ap_listen_rec ap_listen_rec;
-struct ap_listen_rec {
-    ap_listen_rec *next;
-    ap_socket_t *sd;
-    int active;
-#ifdef WIN32
-    int count;
-#endif
-/* more stuff here, like which protocol is bound to the port */
-};
+char *ap_strchr(char *s, int c)
+{ return strchr(s,c); }
 
-extern ap_listen_rec *ap_listeners;
+const char *ap_strchr_c(const char *s, int c)
+{ return strchr(s,c); }
 
-void ap_listen_pre_config(void);
-int ap_listen_open(process_rec *process, unsigned port);
-const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
-const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
-const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
-				    const char *arg);
+# undef strrchr
 
-#define LISTEN_COMMANDS	\
-AP_INIT_TAKE1("ListenBacklog", ap_set_listenbacklog, NULL, RSRC_CONF, \
-  "Maximum length of the queue of pending connections, as used by listen(2)"), \
-AP_INIT_TAKE1("Listen", ap_set_listener, NULL, RSRC_CONF, \
-  "A port number or a numeric IP address and a port number"), \
-AP_INIT_TAKE1("SendBufferSize", ap_set_send_buffer_size, NULL, RSRC_CONF, \
-  "Send buffer size in bytes"),
+char *ap_strrchr(char *s, int c)
+{ return strrchr(s,c); }
+
+const char *ap_strrchr_c(const char *s, int c)
+{ return strrchr(s,c); }
 
 #endif

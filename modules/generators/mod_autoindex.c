@@ -787,7 +787,7 @@ static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
      * If the filename includes a path, extract just the name itself
      * for the simple matches.
      */
-    if ((filename_only = strrchr(filename_full, '/')) == NULL) {
+    if ((filename_only = ap_strrchr_c(filename_full, '/')) == NULL) {
 	filename_only = filename_full;
     }
     else {

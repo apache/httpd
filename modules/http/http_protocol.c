@@ -210,7 +210,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
             return 0;
     }
 
-    if (!strchr(range, ',')) {
+    if (!ap_strchr_c(range, ',')) {
         /* A single range */
         if (!parse_byterange(ap_pstrdup(r->pool, range + 6), r->clength,
                              &range_start, &range_end))

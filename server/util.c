@@ -128,7 +128,7 @@ API_EXPORT(char *) ap_field_noparam(ap_pool_t *p, const char *intype)
 
     if (intype == NULL) return NULL;
 
-    semi = strchr(intype, ';');
+    semi = ap_strchr_c(intype, ';');
     if (semi == NULL) {
 	return ap_pstrdup(p, intype);
     } 
@@ -628,7 +628,7 @@ API_EXPORT(char *) ap_getword_nc(ap_pool_t *atrans, char **line, char stop)
 
 API_EXPORT(char *) ap_getword(ap_pool_t *atrans, const char **line, char stop)
 {
-    char *pos = strchr(*line, stop);
+    const char *pos = ap_strchr_c(*line, stop);
     char *res;
 
     if (!pos) {
@@ -689,7 +689,7 @@ API_EXPORT(char *) ap_getword_nulls_nc(ap_pool_t *atrans, char **line, char stop
 
 API_EXPORT(char *) ap_getword_nulls(ap_pool_t *atrans, const char **line, char stop)
 {
-    char *pos = strchr(*line, stop);
+    const char *pos = ap_strchr_c(*line, stop);
     char *res;
 
     if (!pos) {
@@ -785,27 +785,27 @@ API_EXPORT(char *) ap_getword_conf(ap_pool_t *p, const char **line)
  * environment value does not exist, leave the ${ENV}
  * construct alone; it means something else.
  */
-API_EXPORT(char *) ap_resolve_env(ap_pool_t *p, const char * word)
+API_EXPORT(const char *) ap_resolve_env(ap_pool_t *p, const char * word)
 {
        char tmp[ MAX_STRING_LEN ];
-       char * s, * e;
+       const char *s, *e;
        tmp[0] = '\0';
 
-       if (!(s=strchr(word,'$')))
-               return (char *)word;
+       if (!(s=ap_strchr_c(word,'$')))
+               return word;
 
        do {
                /* XXX - relies on strncat() to add '\0'
                 */
 	       strncat(tmp,word,s - word);
-               if ((s[1] == '{') && (e=strchr(s,'}'))) {
-                       *e = '\0';
+               if ((s[1] == '{') && (e=ap_strchr_c(s,'}'))) {
+                       const char *e2 = e;
                        word = e + 1;
                        e = getenv(s+2);
                        if (e) {
                            strcat(tmp,e);
                        } else {
-                           strcat(tmp,s);
+                           strncat(tmp, s, e2-s);
                            strcat(tmp,"}");
                        }
                } else {
@@ -813,7 +813,7 @@ API_EXPORT(char *) ap_resolve_env(ap_pool_t *p, const char * word)
                        word = s+1;
                        strcat(tmp,"$");
                };
-       } while ((s=strchr(word,'$')));
+       } while ((s=ap_strchr_c(word,'$')));
        strcat(tmp,word);
 
        return ap_pstrdup(p,tmp);
@@ -1605,8 +1605,8 @@ API_EXPORT(char *) ap_os_escape_path(ap_pool_t *p, const char *path, int partial
     unsigned c;
 
     if (!partial) {
-	char *colon = strchr(path, ':');
-	char *slash = strchr(path, '/');
+	const char *colon = ap_strchr_c(path, ':');
+	const char *slash = ap_strchr_c(path, '/');
 
 	if (colon && (!slash || colon < slash)) {
 	    *d++ = '.';
@@ -2016,14 +2016,3 @@ API_EXPORT(char *) ap_escape_quotes (ap_pool_t *p, const char *instring)
     *outchr = '\0';
     return outstring;
 }
-
-#ifdef AP_DEBUG
-# undef strrchr
-
-char *ap_strrchr(char *s, int c)
-{ return strrchr(s,c); }
-
-const char *ap_strrchr_c(const char *s, int c)
-{ return strrchr(s,c); }
-
-#endif
