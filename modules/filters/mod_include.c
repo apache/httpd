@@ -418,10 +418,15 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         }
         
         /* Consider the case where we have <!-- at the end of the bucket. */
-        ctx->bytes_parsed += len - slen;
+        if (len > slen) {
+            ctx->bytes_parsed += (len - slen);
+            c = buf + len - slen;
+        }
+        else {
+            c = buf;
+        }
         ctx->parse_pos = 0;
 
-        c = buf + len - slen + 1;
         while (c < buf + len)
         {
             if (*c == str[ctx->parse_pos]) {
