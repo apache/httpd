@@ -1,3 +1,5 @@
+Changes with Apache 2.0.45
+
 Changes with Apache 2.0.44
 
   *) mod_autoindex: Bring forward the IndexOptions IgnoreCase option
