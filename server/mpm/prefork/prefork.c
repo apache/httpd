@@ -123,7 +123,7 @@
  * some sort of compile-time limit to help catch typos.
  */
 #ifndef MAX_SERVER_LIMIT
-#define MAX_SERVER_LIMIT 20000
+#define MAX_SERVER_LIMIT 200000
 #endif
 
 #ifndef HARD_THREAD_LIMIT
