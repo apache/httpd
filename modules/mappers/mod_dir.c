@@ -246,8 +246,6 @@ static int fixup_dir(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    static const char * const aszSucc[]={"mod_autoindex.c", NULL};
-
     ap_hook_fixups(fixup_dir,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
