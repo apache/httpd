@@ -2599,11 +2599,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     }
 
     if (r->chunked) {
-        /* The coalesce filter is useful to coalesce content from the ap_r*
-         * routines. Removing this filter should not break the server.
-         */
-        ap_add_output_filter("COALESCE", NULL, r, r->connection);
-
         /* We can't add this filter until we have already sent the headers.
          * If we add it before this point, then the headers will be chunked
          * as well, and that is just wrong.
