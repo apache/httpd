@@ -37,7 +37,7 @@
     following properties:</p>
 
     <ul>
-      <li>It insists that the user enters a userId.
+      <li>It insists that the user enters a userID.
       (<directive module="mod_authn_anon"
       >Anonymous_NoUserId</directive>)</li>
 
@@ -52,10 +52,11 @@
 
       <li>The userID must be one of <code>anonymous guest www test
       welcome</code> and comparison is <strong>not</strong> case
-      sensitive.</li>
+      sensitive. (<directive module="mod_authn_anon"
+      >Anonymous</directive></li>
 
       <li>And the Email addresses entered in the passwd field are
-      logged to the error log file
+      logged to the error log file.
       (<directive module="mod_authn_anon"
       >Anonymous_LogEmail</directive>)</li>
     </ul>
@@ -85,7 +86,7 @@
 
 <directivesynopsis>
 <name>Anonymous</name>
-<description>Specifies userIDs that areallowed access without
+<description>Specifies userIDs that are allowed access without
 password verification</description>
 <syntax>Anonymous <var>user</var> [<var>user</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
