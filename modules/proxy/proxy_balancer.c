@@ -134,7 +134,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
                                               request_rec *r)
 {
     int i;
-    double total_status = 0.0;
+    double total_factor = 0.0;
     proxy_runtime_worker *worker = (proxy_runtime_worker *)balancer->workers->elts;
     proxy_runtime_worker *candidate = NULL;
 
@@ -153,7 +153,11 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
                 if (worker->w->cp->nfree > candidate->w->cp->nfree)
                     candidate = worker;
             }
-            total_status += worker->lbstatus;
+            /* Total factor should allways be 100.
+             * This is for cases when worker is in error state.
+             * It will force the even request distribution
+             */
+            total_factor += worker->lbfactor;
         }
         worker++;
     }
@@ -204,12 +208,20 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
             }
             worker++;
         }
-        /* XXX: The lbfactor can be update using bytes transfered
-         * Right now, use the round-robin scheme
-         */
-        candidate->lbstatus += candidate->lbfactor;
-        if (candidate->lbstatus >= total_status)
-            candidate->lbstatus = candidate->lbfactor;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            /* If the worker is not error state
+             * or not in disabled mode
+             */
+            if (worker->w->status > 2) {
+                /* XXX: The lbfactor can be update using bytes transfered
+                 * Right now, use the round-robin scheme
+                 */
+                worker->lbstatus += worker->lbfactor;
+                if (worker->lbstatus >= total_factor)
+                    worker->lbstatus = worker->lbfactor;
+            }
+            worker++;
+        }
     }
     return candidate;
 }
