@@ -412,10 +412,10 @@ install-config:
 			-e 's;logs/accept.lock;$(runtimedir)/$(TARGET).lock;' \
 			-e 's;logs/apache_runtime_status;$(runtimedir)/$(TARGET).scoreboard;' \
 			-e 's;logs/httpd.pid;$(runtimedir)/$(TARGET).pid;' \
-			-e 's;logs/access_log;$(logfiledir)/$${target_prefix}access_log;' \
-			-e 's;logs/error_log;$(logfiledir)/$${target_prefix}error_log;' \
-			-e 's;logs/referer_log;$(logfiledir)/$${target_prefix}referer_log;' \
-			-e 's;logs/agent_log;$(logfiledir)/$${target_prefix}agent_log;' \
+			-e "s;logs/access_log;$(logfiledir)/$${target_prefix}access_log;" \
+			-e "s;logs/error_log;$(logfiledir)/$${target_prefix}error_log;" \
+			-e "s;logs/referer_log;$(logfiledir)/$${target_prefix}referer_log;" \
+			-e "s;logs/agent_log;$(logfiledir)/$${target_prefix}agent_log;" \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
 			-e 's;conf/mime.types;$(sysconfdir)/mime.types;' \
 			-e 's;Group #-1;Group $(conf_group);' \
