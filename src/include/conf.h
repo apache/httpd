@@ -92,6 +92,9 @@ int gethostname (char *name, int namelen);
 #define NO_SETSID
 #define NO_KILLPG
 #define NO_WRITEV
+#define HAVE_SHMGET
+#define SHM_R 0400  /* Read permission */
+#define SHM_W 0200  /* Write permission */
 #define NEED_INITGROUPS
 #define NEED_STRCASECMP
 #define NEED_STRDUP
@@ -101,6 +104,10 @@ extern void GETUSERMODE();
 extern char *inet_ntoa();
 #define NO_SLACK
 #define NO_GETTIMEOFDAY
+#define S_IEXEC  S_IXUSR
+#define S_IREAD  S_IRUSR
+#define S_IWRITE S_IWUSR
+#define PF_INET  AF_INET
 
 #elif defined(SUNOS4)
 #define HAVE_GMTOFF

@@ -44,6 +44,7 @@ Committed:
     * Brian Havard's [PATCH] mod_mime_magic and OS/2
     * Igor Tatarinov's [PATCH] usage patch (-V)
     * Dean's [PATCH] child_timeout not correctly defined
+    * Mark Bixby's [PORT] MPE porting patch
 
 Available:
 
@@ -66,10 +67,6 @@ Available:
     * Dean's [PATCH] fix Rasmus' chunking error
 	<Pine.LNX.3.95dg3.971220143033.544I-100000@twinlark.arctic.org>
 	Status: Dean +1
-
-    * Mark Bixby's [PORT] MPE porting patch
-	<199712201539.KAA04649@devsys.jaguNET.com>
-	Status: Jim +1, Dean +1
 
     * Dean's [PATCH] mod_status cleanups
 	<Pine.LNX.3.95dg3.971220023128.4924E-100000@twinlark.arctic.org>

@@ -98,7 +98,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
-#ifndef WIN32
+#if !defined(WIN32) && !defined(MPE)
 #include <sys/time.h>
 #endif
 

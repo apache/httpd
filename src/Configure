@@ -165,6 +165,7 @@ DB_LIB="-ldb"
 SHELL="/bin/sh"
 TARGET="httpd"
 PRINTPATH=PrintPath
+CAT="cat"
 
 if ./helpers/$PRINTPATH -s ranlib; then
     RANLIB="ranlib"
@@ -202,8 +203,9 @@ case "$PLAT" in
     *MPE/iX*)
         OS='MPE/iX'
 	CFLAGS="$CFLAGS -DMPE -D_POSIX_SOURCE -D_SOCKET_SOURCE"
-	LIBS="$LIBS -lsocket"
+	LIBS="$LIBS -lsocket -lsvipc"
 	LDFLAGS="$LDFLAGS -Xlinker \"-WL,cap=ia,ba,ph,pm;nmstack=1024000\""
+	CAT="/bin/cat" # built-in cat is badly broken for stdin redirection
 	;;
     *-apple-aux3*)
 	OS='A/UX 3.1.x'
@@ -814,7 +816,7 @@ for modfile in $MODFILES ; do
 #	echo bas=$modbase ext=$ext
 
 	if [ -r $modbase.module ] ; then
-		cat $modbase.module > $tmpfile2
+		$CAT $modbase.module > $tmpfile2
 	else
 	    if [ -f $modbase.c ] ; then
 		# Guess module structure name in case there is not
@@ -824,7 +826,7 @@ for modfile in $MODFILES ; do
 			sed 's/[ 	]*;[ 	]*$//'`
 		# Get any module definition part
 		if grep "MODULE-DEFINITION-" $modbase.c > /dev/null; then
-		cat $modbase.c | \
+		$CAT $modbase.c | \
 		sed '1,/MODULE-DEFINITION-START/d;/MODULE-DEFINITION-END/,$d' \
 			> $tmpfile2
 		fi
@@ -922,11 +924,11 @@ done
 # Add the module targets to the Makefile. Do not add individual object
 # targets for auto-generated directories.
 
-cat > $awkfile <<EOF1
+$CAT > $awkfile <<EOF1
     BEGIN {
 	split ("$AUTODIRS", tmp, " ")
 EOF1
-cat >> $awkfile <<'EOF2'
+$CAT >> $awkfile <<'EOF2'
 	for ( key in tmp ) {
 	    autodirs[tmp[key]] = 1
 	}
@@ -955,11 +957,11 @@ awk -f $awkfile >>Makefile <$tmpfile
 # Now add the auto-generated library targets.  Need to use awk so we
 # don't hang a continuation on the last line.
 
-cat > $awkfile <<EOF3
+$CAT > $awkfile <<EOF3
     BEGIN {
 	split ("$AUTOLIBS", libs)
 EOF3
-cat >> $awkfile <<'EOF4'
+$CAT >> $awkfile <<'EOF4'
 	z = 0
 	for ( lib in libs ) {
 	    if (z != 0)
@@ -1027,7 +1029,7 @@ fi
 #
 # ./Makefile
 #
-cat Makefile.config >> Makefile
+$CAT Makefile.config >> Makefile
 sed -e "s#@@Configuration@@#$file#" "Makefile.tmpl" >>Makefile
 
 #
@@ -1036,12 +1038,12 @@ sed -e "s#@@Configuration@@#$file#" "Makefile.tmpl" >>Makefile
 MAKEDIRS="support main ap regex $OSDIR"
 for dir in $MAKEDIRS ; do
 	echo Creating Makefile in $dir
-	cat Makefile.config $dir/Makefile.tmpl > $dir/Makefile
+	$CAT Makefile.config $dir/Makefile.tmpl > $dir/Makefile
 done
 
-cat Makefile.config >modules/Makefile
+$CAT Makefile.config >modules/Makefile
 
-cat << EOF >> modules/Makefile
+$CAT << EOF >> modules/Makefile
 MODULES=$MODDIRS
 CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
 
@@ -1055,8 +1057,8 @@ EOF
 for moddir in $AUTODIRS ; do
 	echo "Creating Makefile in $moddir"
 
-	cat Makefile.config > $moddir/Makefile
-	cat << 'EOF' >> $moddir/Makefile
+	$CAT Makefile.config > $moddir/Makefile
+	$CAT << 'EOF' >> $moddir/Makefile
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH2) $(EXTRA_INCLUDES)
@@ -1081,7 +1083,7 @@ EOF
 		}'
 
 	    echo "LIB=lib$basedir.a" >> $moddir/Makefile
-	    cat << 'EOF' >> $moddir/Makefile
+	    $CAT << 'EOF' >> $moddir/Makefile
 
 all:	$(LIB)
 
@@ -1100,6 +1102,6 @@ $(OBJS): Makefile
 EOF
 	fi
 
-    cat >> $moddir/Makefile < $moddir/Makefile.tmpl
+    $CAT >> $moddir/Makefile < $moddir/Makefile.tmpl
 
 done
