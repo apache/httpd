@@ -77,7 +77,7 @@
     time using the <code>-f</code> command-line option as in</p>
 
 <div class="example"><p><code>/usr/local/apache2/bin/apachectl -f
-      /usr/local/apache/conf/httpd.conf</code></p></div>
+      /usr/local/apache2/conf/httpd.conf</code></p></div>
 
     <p>If all goes well during startup, the server will detach from
     the terminal and the command prompt will return almost
