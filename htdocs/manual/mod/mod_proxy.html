@@ -583,8 +583,11 @@ Example:
 Apache 1.1 and later.<P>
 
 Sets the name of the directory to contain cache files; this must be
-writable
-by the httpd server.
+writable by the httpd server.<BR>
+Setting <CODE>CacheRoot</CODE> enables proxy cacheing; without defining
+a <CODE>CacheRoot</CODE>, proxy functionality will be available
+if <CODE>ProxyRequests</CODE> are set to <CODE>On</CODE>, but no
+cacheing will be available.
 
 <HR>
 
@@ -621,7 +624,9 @@ Apache 1.1 and later.<P>
 
 Sets the desired space usage of the cache, in KB (1024-byte units). Although
 usage may grow above this setting, the garbage collection will delete files
-until the usage is at or below this setting.
+until the usage is at or below this setting.<BR>
+Depending on the expected proxy traffic volume and <CODE>CacheGcInterval</CODE>,
+use a value which is at least 20 to 40 % lower than the available space.
 
 <HR>
 
@@ -657,7 +662,16 @@ until the usage is at or below this setting.
 Apache 1.1 and later.<P>
 
 Check the cache every &lt;time&gt; hours, and delete files if the space
-usage is greater than that set by CacheSize.
+usage is greater than that set by CacheSize. Note that &lt;time&gt; accepts a
+float value, you could for example use <CODE>CacheGcInterval 1.5</CODE> to
+check the cache every 90 minutes. (If unset, no garbage collection will
+be performed, and the cache will grow indefinitely.)
+Note also that the larger the <CODE>CacheGcInterval</CODE>, the more
+extra space beyond the configured <CODE>CacheSize</CODE> will be
+needed for the cache between garbage collections.<BR> <!--
+Note that due to a design flaw, Apache does not automatically force a
+garbage collection when the available space on the file system where
+the cache resides is exhausted. -->
 
 <HR>
 
