@@ -113,10 +113,6 @@ Changes with Apache 2.1.0-dev
      the ENGINE functions but the engine header files are missing.
      [Cliff Woolley]
 
-  *) mod_dav: Use bucket brigades when reading PUT data. This avoids
-     problems if the data stream is modified by an input filter. PR 22104.
-     [Tim Robbins <tim robbins.dropbear.id.au>, André Malo]
-
   *) mod_rewrite: RewriteRules in server context using the force
      type feature [T=...] no longer disable MultiViews.  [André Malo]
 
@@ -153,11 +149,6 @@ Changes with Apache 2.1.0-dev
 
   *) Add support for IMT minor-type wildcards (e.g., text/*) to
      ExpiresByType.  PR#7991  [Ken Coar]
-
-  *) Fix a problem with namespace mappings being dropped in mod_dav_fs; 
-     if any property values were set which defined namespaces these 
-     came out mangled in the PROPFIND response.  PR 11637.
-     [Amit Athavale <amit_athavale persistent.co.in>]
 
   *) prefork MPM: Use the right permissions for the directory created 
      for gprof support.  [Jim Carlson <jcarlson jnous.com>]
@@ -263,6 +254,30 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) Fix htdbm to generate comment fields in DBM files correctly.
+     [Justin Erenkrantz]
+
+  *) mod_dav: Use bucket brigades when reading PUT data. This avoids
+     problems if the data stream is modified by an input filter. PR 22104.
+     [Tim Robbins <tim robbins.dropbear.id.au>, André Malo]
+
+  *) Fix RewriteBase directive to not add double slashes.  [André Malo]
+
+  *) Improve 'configure --help' output for some modules.  [Astrid Keßler]
+
+  *) Correct UseCanonicalName Off to properly check incoming port number.
+     [Jim Jagielski]
+
+  *) Fix slow graceful restarts with prefork MPM.  [Joe Orton]
+
+  *) Fix a problem with namespace mappings being dropped in mod_dav_fs; 
+     if any property values were set which defined namespaces these 
+     came out mangled in the PROPFIND response.  PR 11637.
+     [Amit Athavale <amit_athavale persistent.co.in>]
+
+  *) mod_dav: Return a WWW-auth header for MOVE/COPY requests where
+     the destination resource gives a 401.  PR 15571.  [Joe Orton]
 
   *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
      into the errorlog.  [André Malo]
