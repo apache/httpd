@@ -95,8 +95,42 @@ pool * ap_init_alloc(void);		/* Set up everything */
 API_EXPORT(pool *) ap_make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
 API_EXPORT(void) ap_destroy_pool(pool *);
 
-/* used to guarantee to the pool debugging code that the sub pool will not be
- * destroyed before the parent pool
+/* pools have nested lifetimes -- sub_pools are destroyed when the
+ * parent pool is cleared.  We allow certain liberties with operations
+ * on things such as tables (and on other structures in a more general
+ * sense) where we allow the caller to insert values into a table which
+ * were not allocated from the table's pool.  The table's data will
+ * remain valid as long as all the pools from which its values are
+ * allocated remain valid.
+ *
+ * For example, if B is a sub pool of A, and you build a table T in
+ * pool B, then it's safe to insert data allocated in A or B into T
+ * (because B lives at most as long as A does, and T is destroyed when
+ * B is cleared/destroyed).  On the other hand, if S is a table in
+ * pool A, it is safe to insert data allocated in A into S, but it
+ * is *not safe* to insert data allocated from B into S... because
+ * B can be cleared/destroyed before A is (which would leave dangling
+ * pointers in T's data structures).
+ *
+ * In general we say that it is safe to insert data into a table T
+ * if the data is allocated in any ancestor of T's pool.  This is the
+ * basis on which the POOL_DEBUG code works -- it tests these ancestor
+ * relationships for all data inserted into tables.  POOL_DEBUG also
+ * provides tools (ap_find_pool, and ap_pool_is_ancestor) for other
+ * folks to implement similar restrictions for their own data
+ * structures.
+ *
+ * However, sometimes this ancestor requirement is inconvenient --
+ * sometimes we're forced to create a sub pool (such as through
+ * ap_sub_req_lookup_uri), and the sub pool is guaranteed to have
+ * the same lifetime as the parent pool.  This is a guarantee implemented
+ * by the *caller*, not by the pool code.  That is, the caller guarantees
+ * they won't destroy the sub pool individually prior to destroying the
+ * parent pool.
+ *
+ * In this case the caller must call ap_pool_join() to indicate this
+ * guarantee to the POOL_DEBUG code.  There are a few examples spread
+ * through the standard modules.
  */
 #ifndef POOL_DEBUG
 #ifdef ap_pool_join
