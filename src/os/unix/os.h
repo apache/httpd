@@ -88,7 +88,7 @@ extern int os_is_path_absolute(const char *f);
  */
 
 #if defined(LINUX) || defined(__FreeBSD__) || defined(SOLARIS2) || \
-    defined(__bsdi__) || defined(IRIX) || defined(SVR4)
+    defined(__bsdi__) || defined(IRIX) || defined(SVR4) || defined(OSF1)
 # define HAVE_DLFCN_H 1
 #endif
 
@@ -97,7 +97,7 @@ extern int os_is_path_absolute(const char *f);
 #endif
 
      /* OSes that don't support dlopen */
-#if defined(UW) || defined(ULTRIX)
+#if defined(UW) || defined(ULTRIX) || defined(HPUX) || defined(HPUX10)
 # define NO_DL
 #endif
 

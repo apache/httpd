@@ -733,6 +733,14 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-shared"
             LDFLAGS_SHLIB_EXPORT=""
             ;;
+        *-dec-osf*)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="" ;;
+            esac
+            LDFLAGS_SHLIB="-shared -expect_unresolved '*' -msym -s"
+            LDFLAGS_SHLIB_EXPORT=""
+            ;;
     esac
 fi
 
