@@ -114,11 +114,11 @@ int proxy_ftp_canon(request_rec *r, char *url)
     port = DEFAULT_FTP_PORT;
     err = proxy_canon_netloc(p, &url, &user, &password, &host, &port);
     if (err)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
     if (user != NULL && !ftp_check_string(user))
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
     if (password != NULL && !ftp_check_string(password))
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
 
 /* now parse path/parameters args, according to rfc1738 */
 /* N.B. if this isn't a true proxy request, then the URL path
@@ -131,28 +131,28 @@ int proxy_ftp_canon(request_rec *r, char *url)
 	*(strp++) = '\0';
 	parms = proxy_canonenc(p, strp, strlen(strp), enc_parm, r->proxyreq);
 	if (parms == NULL)
-	    return BAD_REQUEST;
+	    return HTTP_BAD_REQUEST;
     }
     else
 	parms = "";
 
     path = proxy_canonenc(p, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
     if (!ftp_check_string(path))
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
 
     if (!r->proxyreq && r->args != NULL) {
 	if (strp != NULL) {
 	    strp = proxy_canonenc(p, r->args, strlen(r->args), enc_parm, 1);
 	    if (strp == NULL)
-		return BAD_REQUEST;
+		return HTTP_BAD_REQUEST;
 	    parms = pstrcat(p, parms, "?", strp, NULL);
 	}
 	else {
 	    strp = proxy_canonenc(p, r->args, strlen(r->args), enc_fpath, 1);
 	    if (strp == NULL)
-		return BAD_REQUEST;
+		return HTTP_BAD_REQUEST;
 	    path = pstrcat(p, path, "?", strp, NULL);
 	}
 	r->args = NULL;
@@ -180,7 +180,7 @@ int proxy_ftp_canon(request_rec *r, char *url)
  */
 static int ftp_getrc(BUFF *f)
 {
-    int i, len, status;
+    int len, status;
     char linebuff[100], buff[5];
 
     len = bgets(linebuff, 100, f);
@@ -194,7 +194,7 @@ static int ftp_getrc(BUFF *f)
 	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
 
     if (linebuff[len - 1] != '\n') {
-	i = bskiplf(f);
+	(void)bskiplf(f);
     }
 
 /* skip continuation lines */
@@ -206,7 +206,7 @@ static int ftp_getrc(BUFF *f)
 	    if (len == -1)
 		return -1;
 	    if (linebuff[len - 1] != '\n') {
-		i = bskiplf(f);
+		(void)bskiplf(f);
 	    }
 	} while (memcmp(linebuff, buff, 4) != 0);
     }
@@ -240,27 +240,91 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
     char buf2[IOBUFSIZE];
     char *filename;
     char *tempurl;
-    char *newurlptr;
     int searchidx = 0;
     char *searchptr = NULL;
     int firstfile = 1;
     char urlptr[HUGE_STRING_LEN];
-    long total_bytes_sent;
+    unsigned long total_bytes_sent = 0;
     register int n, o, w;
+    int hostlen;
     conn_rec *con = r->connection;
+    char *dir, *path, *reldir, *site, *psite;
 
     tempurl = pstrdup(r->pool, url);
-    if ((n = strcspn(tempurl, "@")) != strlen(tempurl)) {	/* hide user/passwd */
-	memmove(tempurl + (n - 5), tempurl, 6);
-	tempurl += n - 5;	/* leave room for ftp:// */
+
+    (void)decodeenc(tempurl);
+
+    /* Determine length of "scheme://site" prefix */
+    for (hostlen=0; tempurl[hostlen]!='/'; ++hostlen)
+	continue;
+    if (tempurl[hostlen] == '/' && tempurl[hostlen+1] == '/') {
+	for (hostlen+=2; tempurl[hostlen]!='/' && tempurl[hostlen]!='?'; ++hostlen)
+	    continue;
+    } else {
+	hostlen = 0;
     }
 
-    n = decodeenc(tempurl);
-    ap_snprintf(buf, sizeof(buf), "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>Directory %s</H1><HR><PRE>", tempurl, tempurl);
-    bwrite(con->client, buf, strlen(buf));
+    /* Save "scheme://site" prefix */
+    site = psite = pstrndup(r->pool, tempurl, hostlen);
+
+    if ((n = strcspn(tempurl, "@")) != strlen(tempurl) && n < hostlen) {    /* hide user/passwd */
+	memmove(tempurl + (n - 5), tempurl, 6);
+	tempurl += n - 5;	/* leave room for ftp:// */
+	hostlen -= (n-5);
+
+	/* Save "scheme://site" prefix without user/password */
+	site = pstrndup(r->pool, tempurl, hostlen);
+    }
+
+    /* Save "scheme://site" prefix */
+    site = pstrndup(r->pool, tempurl, hostlen);
+
+    /* Copy path, strip (all except the last) trailing slashes */
+    path = dir = pstrcat(r->pool, tempurl+hostlen, "/", NULL);
+    while ((n = strlen(path)) > 1 && path[n-1] == '/' && path[n-2] == '/')
+	path[n-1] = '\0';
+
+    /* print "ftp://host/" */
+    ap_snprintf(buf, sizeof(buf), "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
+		"<HTML><HEAD><TITLE>%s</TITLE>\n"
+		"<BASE HREF=\"%s%s\"></HEAD>\n"
+		"<BODY><H2>Directory of "
+		"<A HREF=\"/\">%s</A>/",
+		tempurl, psite, path, site, site);
+    bputs(buf, con->client);
     if (f2 != NULL)
-	bwrite(f2, buf, strlen(buf));
-    total_bytes_sent = strlen(buf);
+	bputs(buf, f2);
+    total_bytes_sent += strlen(buf);
+
+    while ((dir = strchr(dir+1, '/')) != NULL)
+    {
+	*dir = '\0';
+	if ((reldir = strrchr(path+1, '/'))==NULL)
+	    reldir = path+1;
+	else
+	    ++reldir;
+	/* print "path/" component */
+	ap_snprintf(buf, sizeof(buf), "<A HREF=\"/%s/\">%s</A>/", path+1, reldir);
+	bputs(buf, con->client);
+    if (f2 != NULL)
+	    bputs(buf, f2);
+	total_bytes_sent += strlen(buf);
+	*dir = '/';
+    }
+    ap_snprintf(buf, sizeof(buf), "</H2>\n<HR><PRE>");
+    bputs(buf, con->client);
+    if (f2 != NULL)
+	    bputs(buf, f2);
+    total_bytes_sent += strlen(buf);
+
+    for (hostlen=0; url[hostlen]!='/'; ++hostlen)
+	continue;
+    if (url[hostlen] == '/' && url[hostlen+1] == '/') {
+	for (hostlen+=2; url[hostlen]!='/' && url[hostlen]!='?'; ++hostlen)
+	    continue;
+    } else
+	hostlen = 0;
+
     while (!con->aborted) {
 	n = bgets(buf, IOBUFSIZE, f);
 	if (n == -1) {		/* input error */
@@ -270,18 +334,18 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	}
 	if (n == 0)
 	    break;		/* EOF */
-	if (buf[0] == 'l') {
-	    char *link_ptr;
+	if (buf[0] == 'l' && (filename=strstr(buf, " -> ")) != NULL) {
+	    char *link_ptr = filename;
 
-	    link_ptr = strstr(buf, " -> ");
-	    filename = link_ptr;
 	    do
 		filename--;
 	    while (filename[0] != ' ');
 	    *(filename++) = 0;
 	    *(link_ptr++) = 0;
-	    ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s", url, (url[strlen(url) - 1] == '/' ? "" : "/"), filename);
-	    ap_snprintf(buf2, sizeof(urlptr), "%s <A HREF=\"%s\">%s %s</A>\015\012", buf, urlptr, filename, link_ptr);
+	    if ((n = strlen(link_ptr)) > 1 && link_ptr[n - 1] == '\n')
+	      link_ptr[n - 1] = '\0';
+	    ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s", url+hostlen, (url[strlen(url) - 1] == '/' ? "" : "/"), filename);
+	    ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s %s</A>\n", buf, filename, filename, link_ptr);
 	    strncpy(buf, buf2, sizeof(buf) - 1);
 	    buf[sizeof(buf) - 1] = '\0';
 	    n = strlen(buf);
@@ -312,48 +376,12 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	    }
 
 	    /* Special handling for '.' and '..' */
-	    if (!strcmp(filename, ".")) {
-		ap_snprintf(urlptr, sizeof(urlptr), "%s", url);
-		ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
-	    }
-	    else if (!strcmp(filename, "..")) {
-		char temp[200];
-		char newpath[200];
-		char *method, *host, *path, *newfile;
-
-		strncpy(temp, url, sizeof(temp) - 1);
-		temp[sizeof(temp) - 1] = '\0';
-		method = temp;
-
-		host = strchr(method, ':');
-		if (host == NULL)
-		    host = "";
-		else
-		    *(host++) = 0;
-		host++;
-		host++;
-
-		path = strchr(host, '/');
-		if (path == NULL)
-		    path = "";
-		else
-		    *(path++) = 0;
-
-		strncpy(newpath, path, sizeof(newpath) - 1);
-		newpath[sizeof(newpath) - 1] = '\0';
-		newfile = strrchr(newpath, '/');
-		if (newfile)
-		    *(newfile) = 0;
-		else
-		    newpath[0] = 0;
-
-		ap_snprintf(urlptr, sizeof(urlptr), "%s://%s/%s", method, host, newpath);
-		ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
+	    if (!strcmp(filename, ".") || !strcmp(filename, "..") || buf[0] == 'd') {
+		ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s/\">%s</A>\n",
+		    buf, filename, filename);
 	    }
 	    else {
-		ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s", url, (url[strlen(url) - 1] == '/' ? "" : "/"), filename);
-		newurlptr = encode_space(r, urlptr);
-		ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, newurlptr, filename);
+		ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\n", buf, filename, filename);
 	    }
 	    strncpy(buf, buf2, sizeof(buf));
 	    buf[sizeof(buf) - 1] = '\0';
@@ -376,9 +404,10 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	    o += w;
 	}
     }
-    bputs("</PRE><HR></BODY></HTML>\015\012", con->client);
+    strcpy (buf, "</PRE><HR></BODY></HTML>\n");
+    bputs(buf, con->client);
     if (f2 != NULL)
-	bputs("</PRE><HR></BODY></HTML>\015\012", f2);
+	bputs(buf, f2);
     total_bytes_sent += strlen(buf);
     bflush(con->client);
 
