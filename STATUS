@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/16 05:01:43 $]
+Last modified at [$Date: 2001/08/16 05:04:38 $]
 
 Release:
 
@@ -57,9 +57,6 @@ RELEASE SHOWSTOPPERS:
 	    disable-shared was because the shared lib wasn't getting
 	    installed and a "make clean" in aprutil would make Apache
 	    fail to load.
-
-    * ap_vrprintf() needs to handle more than 4K
-        Status: Greg volunteers
 
     * mod_dir should normally redirect ALL directory requests which do
       not include a trailing slash on the URI. However, if a "notes"
