@@ -3,6 +3,11 @@
 #include <os2.h>
 #include "httpd.h"
 #include "http_log.h"
+#include "os.h"
+#include <sys/time.h>
+#include <sys/signal.h>
+#include <ctype.h>
+#include <string.h>
 
 
 API_EXPORT(char *)ap_os_canonical_filename(ap_context_t *pPool, const char *szFile)
