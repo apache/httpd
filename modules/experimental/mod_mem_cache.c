@@ -298,7 +298,7 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     sconf->max_cache_size = DEFAULT_MAX_CACHE_SIZE;
     sconf->cache_size = 0;
 
-    apr_pool_cleanup_register(p, NULL, cleanup_cache_mem, apr_pool_cleanup_null);
+    apr_pool_cleanup_register(p, sconf, cleanup_cache_mem, apr_pool_cleanup_null);
 
     return sconf;
 }
