@@ -50,9 +50,23 @@
  *
  */
 
-/* $Id: mod_proxy.c,v 1.3 1996/10/01 07:11:42 chuck Exp $ */
+/* $Id: mod_proxy.c,v 1.4 1996/10/09 14:52:55 chuck Exp $ */
 
 #include "mod_proxy.h"
+
+/* Some WWW schemes and their default ports; this is basically /etc/services */
+/* This will become global when the protocol abstraction comes */
+static struct proxy_services defports[]={
+    { "ftp",      DEFAULT_FTP_PORT},
+    { "gopher",   DEFAULT_GOPHER_PORT},
+    { "http",     DEFAULT_PORT},
+    { "nntp",     DEFAULT_NNTP_PORT},
+    { "wais",     DEFAULT_WAIS_PORT}, 
+    { "https",    DEFAULT_HTTPS_PORT},
+    { "snews",    DEFAULT_SNEWS_PORT},
+    { "prospero", DEFAULT_PROSPERO_PORT},
+    { NULL, -1}  /* unknown port */
+};
 
 /*
  * A Web proxy module. Stages:

@@ -50,11 +50,13 @@
  *
  */
 
-/* $Id: proxy_connect.c,v 1.1 1996/10/01 07:11:44 chuck Exp $ */
+/* $Id: proxy_connect.c,v 1.2 1996/10/09 14:52:57 chuck Exp $ */
 
 /* CONNECT method SSL handling for Apache proxy */
 
 #include "mod_proxy.h"
+#include "http_log.h"
+#include "http_main.h"
 
 /*  
  * This handles Netscape CONNECT method secure proxy requests.

@@ -50,13 +50,15 @@
  *
  */
 
-/* $Id: proxy_cache.c,v 1.1 1996/10/01 07:11:44 chuck Exp $ */
+/* $Id: proxy_cache.c,v 1.2 1996/10/09 14:52:56 chuck Exp $ */
 
 /* Cache and garbage collection  routines for Apache proxy */
 
 #include "md5.h"
 
 #include "mod_proxy.h"
+#include "http_log.h"
+#include "http_main.h"
 #include <utime.h>
 
 struct gc_ent

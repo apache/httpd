@@ -50,11 +50,14 @@
  *
  */
 
-/* $Id: proxy_ftp.c,v 1.1 1996/10/01 07:11:45 chuck Exp $ */
+/* $Id: proxy_ftp.c,v 1.2 1996/10/09 14:52:58 chuck Exp $ */
 
 /* FTP routines for Apache proxy */
 
 #include "mod_proxy.h"
+#include "http_main.h"
+
+extern int find_ct(request_rec *r);
 
 /*
  * Decodes a '%' escaped string, and returns the number of characters
@@ -266,7 +269,7 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             {
                 char temp[200];
                 char newpath[200];
-                char *method, *host, *path, *file, *newfile;
+                char *method, *host, *path, *newfile;
    
                 strcpy(temp,url);
                 method=temp;

@@ -50,7 +50,7 @@
 # 
 # Makefile for the Apache proxy library
 # 
-# $Id: Makefile,v 1.4 1996/10/01 21:54:57 chuck Exp $
+# $Id: Makefile,v 1.5 1996/10/09 14:52:54 chuck Exp $
 #
 
 SHELL = /bin/sh
@@ -78,13 +78,11 @@ $(LIB):	$(OBJS)
 	ar crv $@ $(OBJS)
 	$(RANLIB) $@
 
-# dependencies
-$(OBJS): mod_proxy.h $(INCDIR)/httpd.h $(INCDIR)/http_config.h
-proxy_cache.o proxy_util.o: $(INCDIR)/md5.h
-
-# various forms of cleanup
-tidy:
-	rm -f *.out
-
-clean:	tidy
+clean:
 	rm -f *.o libproxy.a
+
+# dependencies
+$(OBJS): mod_proxy.h $(INCDIR)/httpd.h $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h
+proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o proxy_util.o: $(INCDIR)/http_main.h
+proxy_cache.o proxy_connect.o proxy_http.o: $(INCDIR)/http_log.h
+proxy_cache.o proxy_util.o: $(INCDIR)/md5.h

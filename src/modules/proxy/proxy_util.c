@@ -50,12 +50,12 @@
  *
  */
 
-/* $Id: proxy_util.c,v 1.1 1996/10/01 07:11:46 chuck Exp $ */
+/* $Id: proxy_util.c,v 1.2 1996/10/09 14:52:59 chuck Exp $ */
 
 /* Utility routines for Apache proxy */
 
 #include "mod_proxy.h"
-
+#include "http_main.h"
 #include "md5.h"
 
 /* already called in the knowledge that the characters are hex digits */

@@ -50,11 +50,13 @@
  *
  */
 
-/* $Id: proxy_http.c,v 1.2 1996/10/08 22:49:29 chuck Exp $ */
+/* $Id: proxy_http.c,v 1.3 1996/10/09 14:52:58 chuck Exp $ */
 
 /* HTTP routines for Apache proxy */
 
 #include "mod_proxy.h"
+#include "http_log.h"
+#include "http_main.h"
 
 /*
  * Canonicalise http-like URLs.

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_proxy.h,v 1.1 1996/10/01 07:11:43 chuck Exp $ */
+/* $Id: mod_proxy.h,v 1.2 1996/10/09 14:52:56 chuck Exp $ */
 
 /*
  * Main include file for the Apache proxy
@@ -112,6 +112,7 @@ Chuck Murcko <chuck@telebase.com> 1 Oct 96
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_protocol.h"
   
 #include "explain.h"
 
@@ -143,20 +144,10 @@ enum enctype { enc_path, enc_search, enc_user, enc_fpath, enc_parm };
 #define	DEFAULT_PROSPERO_PORT	1525	/* WARNING: conflict w/Oracle */
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
-static struct
+struct proxy_services
 {
     const char *scheme;
     int port;
-} defports[]={
-    { "ftp",      DEFAULT_FTP_PORT},
-    { "gopher",   DEFAULT_GOPHER_PORT},
-    { "http",     DEFAULT_PORT},
-    { "nntp",     DEFAULT_NNTP_PORT},
-    { "wais",     DEFAULT_WAIS_PORT},
-    { "https",    DEFAULT_HTTPS_PORT},
-    { "snews",    DEFAULT_SNEWS_PORT},
-    { "prospero", DEFAULT_PROSPERO_PORT},
-    { NULL, -1}  /* unknown port */
 };
 
 /* static information about a remote proxy */
