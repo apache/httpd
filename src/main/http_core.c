@@ -1665,6 +1665,11 @@ static const char *set_send_buffer_size(cmd_parms *cmd, void *dummy, char *arg)
 
 static const char *set_user(cmd_parms *cmd, void *dummy, char *arg)
 {
+#ifdef WIN32
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, cmd->server,
+		 "User directive has no affect on Win32");
+    cmd->server->server_uid = ap_user_id = 1;
+#else
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -1700,6 +1705,7 @@ static const char *set_user(cmd_parms *cmd, void *dummy, char *arg)
 	exit (1);
     }
 #endif
+#endif /* WIN32 */
 
     return NULL;
 }

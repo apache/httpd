@@ -760,7 +760,9 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
     if (fstat(fileno(file), &stbuf) == 0 &&
         !S_ISREG(stbuf.st_mode) &&
 #ifdef WIN32
-        strcasecmp(name, "nul") != 0) {
+        !(strcasecmp(name, "nul") == 0 ||
+          (strlen(name) >= 4 &&
+           strcasecmp(name + strlen(name) - 4, "/nul") == 0))) {
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif

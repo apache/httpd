@@ -1,5 +1,11 @@
 Changes with Apache 1.3.4
 
+  *) Properly handle & allow "nul" and ".*/null" in AccessConfig and
+     ResourceConfig directives on Win32.  Also add a note to the effect
+     of 'useless User directive ignored on Win32' to the errorlog if
+     a User directive is encountered on Win32.
+     [Ken Parzygnat <kparz@raleigh.ibm.com>] PR#2078, 2303.
+
   *) Fix multiple whitespace handling in imagemaps for mod_imap which was
      broken since Apache 1.3.1 where we took out compressing of multiple
      spaces in ap_cfg_getline().
