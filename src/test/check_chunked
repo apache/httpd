@@ -4,6 +4,8 @@
 # to check that the chunks are all correctly laid out.  It's easiest
 # to use a tool like netcat to generate the output.  This script
 # *insists* that \r exist in the output.
+#
+# You can find netcat at avian.org:/src/hacks/nc110.tgz.
 
 use strict;
 
