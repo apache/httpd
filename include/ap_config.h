@@ -60,6 +60,10 @@
 #include "apr_hooks.h"
 
 /**
+ * @package Symbol Export Macros
+ */
+
+/**
  * AP_DECLARE_EXPORT is defined when building the Apache Core dynamic
  * library, so that all public symbols are exported.
  *
@@ -70,6 +74,8 @@
  * including Apache's Core headers, to import and link the symbols from the 
  * dynamic Apache Core library and assure appropriate indirection and calling 
  * conventions at compile time.
+ *
+ * @deffunc AP_DECLARE_EXPORT/AP_DECLARE_STATIC
  */
 
 #if !defined(WIN32)
@@ -78,25 +84,28 @@
  * use the most appropriate calling convention.  Hook functions and other
  * Core functions with variable arguments must use AP_DECLARE_NONSTD().
  *
- * @deffunc AP_DECLARE(rettype) ap_func(args);
+ * @deffunc AP_DECLARE(rettype) ap_func(args)
  */
 #define AP_DECLARE(type)            type
+
 /**
  * Apache Core dso variable argument and hook functions are declared with 
- * AP_DECLARE(), as they must use the C language calling convention.
+ * AP_DECLARE_NONSTD(), as they must use the C language calling convention.
  *
- * @deffunc AP_DECLARE_NONSTD(rettype) ap_func(args [...]);
+ * @deffunc AP_DECLARE_NONSTD(rettype) ap_func(args [...])
  */
 #define AP_DECLARE_NONSTD(type)     type
+
 /**
  * Apache Core dso variables are declared with AP_MODULE_DECLARE_DATA.
  * This assures the appropriate indirection is invoked at compile time.
  *
- * @deffunc AP_DECLARE_DATA type apr_variable;
  * @tip extern AP_DECLARE_DATA type apr_variable; syntax is required for
  * declarations within headers to properly import the variable.
+ * @deffunc AP_DECLARE_DATA type apr_variable
  */
 #define AP_DECLARE_DATA
+
 #elif defined(AP_DECLARE_STATIC)
 #define AP_DECLARE(type)            type __stdcall
 #define AP_DECLARE_NONSTD(type)     type
@@ -128,10 +137,16 @@
  *
  * The old SHARED_MODULE compile-time symbol is now the default behavior, 
  * so it is no longer referenced anywhere with Apache 2.0.
+ *
+ * @deffunc AP_MODULE_DECLARE_EXPORT
  */
 #define AP_MODULE_DECLARE_EXPORT
 #define AP_MODULE_DECLARE_DATA __declspec(dllexport)
 #endif
+
+/**
+ * @package Hook Functions
+ */
 
 #define AP_DECLARE_HOOK(ret,name,args) \
 APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
@@ -141,39 +156,51 @@ APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
 
 /**
  * Implement an Apache core hook that has no return code, and therefore 
- * runs all of the registered functions
+ * runs all of the registered functions.
  * @param name The name of the hook
- * @param args_decl The declaration of the arguments for the hook
- * @param args_used The names for the arguments for the hook
- * @deffunc void AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
+ * @param args_decl The declaration of the arguments for the hook, for example
+ * "(int x,void *y)"
+ * @param args_use The arguments for the hook as used in a call, for example
+ * "(x,y)"
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
- * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_HOOK_VOID.
+ * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_VOID.
+ * @deffunc void AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
  */
 #define AP_IMPLEMENT_HOOK_VOID(name,args_decl,args_use) \
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
 
 /**
- * Implement an Apache core hook that runs until one of the functions 
- * returns something other than OK or DECLINE
+ * Implement an Apache core hook that runs until one of the functions
+ * returns something other than ok or decline. That return value is
+ * then returned from the hook runner. If the hooks run to completion,
+ * then ok is returned. Note that if no hook runs it would probably be
+ * more correct to return decline, but this currently does not do so.
+ *
+ * @param ret The return type of the hook (and the hook runner)
  * @param name The name of the hook
  * @param args_decl The declaration of the arguments for the hook
  * @param args_used The names for the arguments for the hook
- * @deffunc int AP_IMPLEMENT_HOOK_RUN_ALL(name, args_decl, args_use)
+ * @param ok The "ok" return value
+ * @param decline The "decline" return value.
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
- */
+ * @deffunc ret AP_IMPLEMENT_HOOK_RUN_ALL(ret, name, args_decl, args_use, ok, decline) */
 #define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl,args_use,ok,decline)
 
 /**
- * Implement a hook that runs until the first function returns something
- * other than DECLINE
+ * Implement a hook that runs until the first function that returns
+ * something other than decline. If all functions return decline, the
+ * hook runner returns decline.
+ *
+ * @param ret The return type of the hook (and the hook runner)
  * @param name The name of the hook
  * @param args_decl The declaration of the arguments for the hook
  * @param args_used The names for the arguments for the hook
- * @deffunc int AP_IMPLEMENT_HOOK_RUN_FIRST(name, args_decl, args_use)
+ * @param decline The "decline" return value.
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
+ * @deffunc ret AP_IMPLEMENT_HOOK_RUN_FIRST(ret, name, args_decl, args_use, decline)
  */
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl,args_use,decline)
