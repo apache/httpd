@@ -2,6 +2,9 @@ Changes with Apache 2.1.4
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Correctly export all mod_dav public functions.
+     [Branko Èibej <brane xbc.nu>]
+
 Changes with Apache 2.1.3
 
   *) core_input_filter: Move buckets to a persistent brigade instead of

@@ -58,12 +58,13 @@ DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri)
     return (int)apr_hash_get(dav_liveprop_uris, uri, APR_HASH_KEY_STRING);
 }
 
-int dav_get_liveprop_ns_count(void)
+DAV_DECLARE(int) dav_get_liveprop_ns_count(void)
 {
     return dav_liveprop_count;
 }
 
-void dav_add_all_liveprop_xmlns(apr_pool_t *p, apr_text_header *phdr)
+DAV_DECLARE(void) dav_add_all_liveprop_xmlns(apr_pool_t *p,
+                                             apr_text_header *phdr)
 {
     apr_hash_index_t *idx = apr_hash_first(p, dav_liveprop_uris);
 
