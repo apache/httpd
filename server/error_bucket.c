@@ -90,7 +90,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
 AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, 
 		const char *buf, apr_pool_t *p)
 {
-    apr_bucket *b = (apr_bucket *)calloc(1, sizeof(*b));
+    apr_bucket *b = (apr_bucket *)malloc(sizeof(*b));
 
     APR_BUCKET_INIT(b);
     return ap_bucket_error_make(b, error, buf, p);
