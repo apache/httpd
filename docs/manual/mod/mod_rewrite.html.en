@@ -485,6 +485,7 @@ Result:
               <td>
                  REMOTE_ADDR<br />
                  REMOTE_HOST<br />
+                 REMOTE_PORT<br />
                  REMOTE_USER<br />
                  REMOTE_IDENT<br />
                  REQUEST_METHOD<br />
