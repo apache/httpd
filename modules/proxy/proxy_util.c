@@ -981,17 +981,19 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_context_t *p)
 	bits = 8 * quads;
 
 	if (bits != 32)		/* no warning for fully qualified IP address */
-	    fprintf(stderr, "Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld\n",
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld",
 		    inet_ntoa(This->addr), bits);
     }
 
     This->mask.s_addr = htonl(INADDR_NONE << (32 - bits));
 
     if (*addr == '\0' && (This->addr.s_addr & ~This->mask.s_addr) != 0) {
-	fprintf(stderr, "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
 		inet_ntoa(This->addr), bits);
 	This->addr.s_addr &= This->mask.s_addr;
-	fprintf(stderr, "         Set to %s/%ld\n",
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "         Set to %s/%ld",
 		inet_ntoa(This->addr), bits);
     }
 
@@ -1026,17 +1028,23 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 
 	if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-	    fprintf(stderr, "1)IP-Match: %s[%s] <-> ", host, inet_ntoa(addr));
-	    fprintf(stderr, "%s/", inet_ntoa(This->addr));
-	    fprintf(stderr, "%s\n", inet_ntoa(This->mask));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "1)IP-Match: %s[%s] <-> ", host, inet_ntoa(addr));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s/", inet_ntoa(This->addr));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s", inet_ntoa(This->mask));
 #endif
 	    return 1;
 	}
 #if DEBUGGING
 	else {
-	    fprintf(stderr, "1)IP-NoMatch: %s[%s] <-> ", host, inet_ntoa(addr));
-	    fprintf(stderr, "%s/", inet_ntoa(This->addr));
-	    fprintf(stderr, "%s\n", inet_ntoa(This->mask));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "1)IP-NoMatch: %s[%s] <-> ", host, inet_ntoa(addr));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s/", inet_ntoa(This->addr));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s", inet_ntoa(This->mask));
 	}
 #endif
     }
@@ -1048,7 +1056,8 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 
 	if (found != NULL) {
 #if DEBUGGING
-	    fprintf(stderr, "2)IP-NoMatch: hostname=%s msg=%s\n", host, found);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "2)IP-NoMatch: hostname=%s msg=%s", host, found);
 #endif
 	    return 0;
 	}
@@ -1063,17 +1072,23 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 	    ip_list = (struct in_addr *) *ip_listptr;
 	    if (This->addr.s_addr == (ip_list->s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-		fprintf(stderr, "3)IP-Match: %s[%s] <-> ", found, inet_ntoa(*ip_list));
-		fprintf(stderr, "%s/", inet_ntoa(This->addr));
-		fprintf(stderr, "%s\n", inet_ntoa(This->mask));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                       "3)IP-Match: %s[%s] <-> ", found, inet_ntoa(*ip_list));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                       "%s/", inet_ntoa(This->addr));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                       "%s", inet_ntoa(This->mask));
 #endif
 		return 1;
 	    }
 #if DEBUGGING
 	    else {
-		fprintf(stderr, "3)IP-NoMatch: %s[%s] <-> ", found, inet_ntoa(*ip_list));
-		fprintf(stderr, "%s/", inet_ntoa(This->addr));
-		fprintf(stderr, "%s\n", inet_ntoa(This->mask));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                       "3)IP-NoMatch: %s[%s] <-> ", found, inet_ntoa(*ip_list));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                       "%s/", inet_ntoa(This->addr));
+		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                       "%s", inet_ntoa(This->mask));
 	    }
 #endif
 	}
@@ -1098,7 +1113,8 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, ap_context_t *p)
 
 #if 0
     if (addr[i] == ':') {
-	fprintf(stderr, "@@@@ handle optional port in proxy_is_domainname()\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "@@@@ handle optional port in proxy_is_domainname()");
 	/* @@@@ handle optional port */
     }
 #endif
@@ -1151,7 +1167,8 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, ap_context_t *p)
 
 #if 0
     if (addr[i] == ':') {
-	fprintf(stderr, "@@@@ handle optional port in proxy_is_hostname()\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "@@@@ handle optional port in proxy_is_hostname()");
 	/* @@@@ handle optional port */
     }
 #endif

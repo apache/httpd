@@ -257,7 +257,8 @@ module MODULE_VAR_EXPORT digest_auth_module;
 #ifdef HAVE_SHMEM_MM
 static ap_status_t cleanup_tables(void *not_used)
 {
-    fprintf(stderr, "Digest: cleaning up shared memory\n");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                 "Digest: cleaning up shared memory");
     fflush(stderr);
 
     if (client_mm) {

@@ -630,7 +630,8 @@ static void add_job(int sock)
 
     new_job = (joblist *) malloc(sizeof(joblist));
     if (new_job == NULL) {
-	fprintf(stderr, "Ouch!  Out of memory in add_job()!\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Ouch!  Out of memory in add_job()!");
         return;
     }
     new_job->next = NULL;
@@ -1755,15 +1756,18 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
 
     ap_threads_per_child = atoi(arg);
     if (ap_threads_per_child > HARD_THREAD_LIMIT) {
-        fprintf(stderr, "WARNING: ThreadsPerChild of %d exceeds compile time"
-                " limit of %d threads,\n", ap_threads_per_child,
-                HARD_THREAD_LIMIT);
-        fprintf(stderr, " lowering ThreadsPerChild to %d. To increase, please"
-                " see the\n", HARD_THREAD_LIMIT);
-        fprintf(stderr, " HARD_THREAD_LIMIT define in src/include/httpd.h.\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: ThreadsPerChild of %d exceeds compile time"
+                     " limit of %d threads,", ap_threads_per_child,
+                     HARD_THREAD_LIMIT);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,                             " lowering ThreadsPerChild to %d. To increase, please"
+                     " see the", HARD_THREAD_LIMIT);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     " HARD_THREAD_LIMIT define in src/include/httpd.h.");
     }
     else if (ap_threads_per_child < 1) {
-	fprintf(stderr, "WARNING: Require ThreadsPerChild > 0, setting to 1\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require ThreadsPerChild > 0, setting to 1");
 	ap_threads_per_child = 1;
     }
     return NULL;

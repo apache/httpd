@@ -318,14 +318,16 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 
 static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
-    fprintf(stderr, "WARNING: LoadFile not supported on this platform\n");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                 "WARNING: LoadFile not supported on this platform");
     return NULL;
 }
 
 static const char *load_module(cmd_parms *cmd, void *dummy, 
 	                       char *modname, char *filename)
 {
-    fprintf(stderr, "WARNING: LoadModule not supported on this platform\n");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                 "WARNING: LoadModule not supported on this platform");
     return NULL;
 }
 
