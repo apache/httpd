@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
 
 <manualpage>
   <relativepath href="."/>
@@ -288,7 +288,7 @@
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
         \"%{User-agent}i\"" combined<br />
-         CustomLog log/acces_log combined
+         CustomLog log/access_log combined
       </example>
 
       <p>この書式の最初の方は Common Log Format とまったく同じで、最後に
