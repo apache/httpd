@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/03/02 08:19:35 $]
+Last modified at [$Date: 2000/03/02 09:57:28 $]
 
 Release:
 
@@ -8,6 +8,8 @@ Release:
     2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
+    * Fix SAFEREAD
+
     * Fix lingering close
         Status:
 
@@ -20,6 +22,7 @@ RELEASE SHOWSTOPPERS:
     * Reliable piped logs look broken everywhere. Each MPM includes essentially
 	identical code to ap_register_other_child(), etc. Most of this code can
 	be moved out of the MPMs and into some common file (http_core.c?).
+	Dean says presumably you mean an os-specific file?
 
     * DSO hooks registered during the preflight call to ap_read_config
 	are not 'unregistered' during the preflight clean-up. Thus, when 
@@ -31,9 +34,6 @@ RELEASE SHOWSTOPPERS:
                 This needs to be used in Apache now.
 
     * Put back resource limit code
-
-    * Port mod_rewrite
-        Status: Paul Reder <rederpj@raleigh.ibm.com> is working on this.
 
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
@@ -85,7 +85,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	modules/.deps
 	modules/mpm/.deps
 	os/.deps
-    
+
     * apaci permissions problem:
 	cvs checkout apache-2.0
 	cd apache-2.0/src
@@ -107,6 +107,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Dynamically loadable MPMs
       Enable users of the binary distributions of Apache to be able to 
       dynamically load the MPM.
+
+      Dean says this probably isn't a good idea.  For example consider
+      -lpthread, you couldn't have the same core run with pthreads,
+      prefork, and gnu pth without a lot of headaches is my guess.
 
     * Platforms that do not support fork (primarily Win32 and AS/400)
       Consider introducing HAVE_FORK feature macro. Architect start-up code
@@ -171,19 +175,9 @@ Other bugs that need fixing:
 Other features that need writing:
 
     * Finish infrastructure in core for async MPMs
-        Status: ?
+        Status: post 2.0
 
     * TODO in source -- just do an egrep on "TODO" and see what's there
-
-    * Work on other MPMs. Possible MPMs discussed or in progress include:
-
-      - Dean Gaudet's async MPM
-          Status: dean is unlikely to begin work on this any time soon...
-	    has lots of ideas he'll share with folks willing to begin
-	    tackling the issues.  this is apache 2.1 material.
-
-      - Zach Brown's <zab@zabbo.net> Linux siginfo MPM
-          Status: ?
 
 Documentation that needs writing:
 
