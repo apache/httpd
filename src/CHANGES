@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) Make sure RewriteLock can be used only in the global context, (i.e.
+     outside of any <VirtualHost> sections) because it's a global facility of
+     the rewrite engine. [Ralf S. Engelschall]
+
   *) Fix the ownership delegation for proxy directory under `make install'.
      [Ralf S. Engelschall]
 
