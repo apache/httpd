@@ -6,7 +6,7 @@ dav_objects="mod_dav.lo props.lo util.lo util_lock.lo liveprop.lo providers.lo s
 
 APACHE_MODULE(dav, WebDAV protocol handling, $dav_objects, , no)
 
-if test "$enable_dav" = "yes"; then
+if test "$enable_dav" != "no"; then
   apache_need_expat=yes
 
   INCLUDES="$INCLUDES -I\$(top_srcdir)/$modpath_current"
