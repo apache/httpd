@@ -1,10 +1,9 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/10/27 14:23:03 $]
+  Last modified at [$Date: 2004/10/27 16:34:59 $]
 
 Release:
 
-   1.3.33-dev: Jim proposes a tag-n-roll around Oct 24
-               with a release on the 27th.
+   1.3.33: Tagged October 27, 2004
    1.3.32: Tagged October 18, 2004. Not formally released.
    1.3.31: Tagged May 7, 2004. Announced May 11, 2004.
    1.3.30: Tagged April 9, 2004. Not released.
