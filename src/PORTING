@@ -4,12 +4,12 @@ The Semi-Official Guide to Porting Apache
 Introduction:
 -------------
 Apache has been ported to a wide variety of platforms, from multiple
-UNIX varients to OS/2. Starting with v1.3, it will even run under
-Windows95 and NT. Nonetheless, there are most likely a few platforms
-out there that currently are not "officially" supported under
+UNIX variants to OS/2. Starting with v1.3, it will even run under
+Windows95 and Windows NT. Nonetheless, there are most likely a few
+platforms out there that currently are not "officially" supported under
 Apache. Porting Apache to these platforms can be quite simple
-depending on the "genericness" of the OS. This doc will provide some
-basic guidelines to help the potential porter.
+depending on the "genericness" of the OS. This document will provide
+some basic guidelines to help the potential porter.
 
 -------------
 Requirements:
@@ -25,8 +25,9 @@ is required. However, Apache does not use or require ANSI-only
 functions or options (eg: the "%n" parameter in the scanf()
 family); the source basically uses ANSI function prototyping but
 no other specific ANSIisms. Thus, an ANSI-to-K&R filter _may_
-work, although as far as I know it has not yet been tried. If you
-attempt this, let the Apache team know (mailto: new-httpd@hyperreal.com).
+work, although as far as we know it has not yet been tried. If you
+attempt this, let the Apache team know (send mail to Apache@Apache.Org
+or make a suggestion report at <http://www.apache.org/bugdb.cgi>).
 
 -------------------
 The Starting Point:
@@ -52,7 +53,7 @@ Configure cannot Grok:
 If this happens to you, then it means that Configure doesn't
 know how to configure and compile Apache for your OS. The first
 course of action is the easiest: Look in Configure and see if
-there are any OSs which is similar to yours.
+there are any OSs which are similar to yours.
 
 For example, let's say that your OS is similar to HP-UX, but that
 GuessOS returns "foobar-intel-hubble". You would then edit
@@ -97,7 +98,7 @@ Configure:
  ==========
 Configure concerns itself with determining the OS-type for the
 build and setting up a few Makefile variables for the build. The
-most important is 'OS' and 'CFLAGS'. For example, when Configure
+most important are 'OS' and 'CFLAGS'. For example, when Configure
 determines a build for A/UX, it runs the following lines:
 
   case "$PLAT" in
@@ -140,7 +141,7 @@ are required for Apache to build and run under IBM AIX (the #undefs
 are not strictly required, but are a Good Idea anyway).
 
 The following several lines provide a list and short description
-of these #defines. By correcting #defining the ones you need in conf.h
+of these #defines. By correctly #defining the ones you need in conf.h
 (wrapped by the above mentioned "system cookie"), you can fine tune the
 build for your OS.
 
@@ -195,7 +196,7 @@ build for your OS.
       platforms do not provide this function. If your platform
       does provide it _and_ it's reliable (most are not) then
       define this to use the OS version. Otherwise, Apache will
-      use it's own.
+      use its own.
 --
 
  USE_*:
@@ -212,8 +213,8 @@ build for your OS.
       when using NFS).
 
      USE_LONGJMP:
-      use the longjmp() call instead of siglongjmp()
-      (as well as setjmp() instead of sigsetjmp())
+      Define to use the longjmp() call instead of siglongjmp()
+      (as well as setjmp() instead of sigsetjmp()).
      
      USE_MMAP_FILES:
       Enable the use of mmap() for sending static files.
@@ -260,7 +261,8 @@ Conclusion:
 -----------
 The above hints, and a good understanding of your OS and Apache, will
 go a LONG way in helping you get Apache built and running on your
-OS. If you have a port, PLEASE send Email to 'new-httpd@hyperreal.com'
+OS. If you have a port, PLEASE send Email to 'Apache@Apache.Org',
+or log a suggestion report at <http://www.apache.org/bugdb.cgi>,
 with the patches so that we may add them to the official version.
 If you hit a rough spot in the porting process, you can also try
 sending Email to that address as well and, if you are lucky, someone
