@@ -234,8 +234,7 @@ SOURCE=.\modules\http\mod_core.h
 InputPath=.\modules\http\mod_core.h
 
 ".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mod_core.h
-	copy .\modules\http\mod_core.h .\include\mod_core.h
+	xcopy /y .\modules\http\mod_core.h .\include
 	echo Created mod_core.h
 	
 # End Custom Build
@@ -247,8 +246,7 @@ InputPath=.\modules\http\mod_core.h
 InputPath=.\modules\http\mod_core.h
 
 ".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mod_core.h
-	copy .\modules\http\mod_core.h .\include\mod_core.h
+	xcopy /y .\modules\http\mod_core.h .\include
 	echo Created mod_core.h
 	
 # End Custom Build
@@ -267,8 +265,7 @@ SOURCE=.\modules\dav\main\mod_dav.h
 InputPath=.\modules\dav\main\mod_dav.h
 
 ".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mod_dav.h
-	copy .\modules\dav\main\mod_dav.h .\include\mod_dav.h
+	xcopy /y .\modules\dav\main\mod_dav.h .\include
 	echo Created mod_dav.h
 	
 # End Custom Build
@@ -280,8 +277,7 @@ InputPath=.\modules\dav\main\mod_dav.h
 InputPath=.\modules\dav\main\mod_dav.h
 
 ".\include\mod_dav.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mod_dav.h
-	copy .\modules\dav\main\mod_dav.h .\include\mod_dav.h
+	xcopy /y .\modules\dav\main\mod_dav.h .\include
 	echo Created mod_dav.h
 	
 # End Custom Build
@@ -300,8 +296,7 @@ SOURCE=.\modules\proxy\mod_proxy.h
 InputPath=.\modules\proxy\mod_proxy.h
 
 ".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mod_proxy.h
-	copy .\modules\proxy\mod_proxy.h .\include\mod_proxy.h
+	xcopy /y .\modules\proxy\mod_proxy.h .\include
 	echo Created mod_proxy.h
 	
 # End Custom Build
@@ -313,8 +308,7 @@ InputPath=.\modules\proxy\mod_proxy.h
 InputPath=.\modules\proxy\mod_proxy.h
 
 ".\include\mod_proxy.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mod_proxy.h
-	copy .\modules\proxy\mod_proxy.h .\include\mod_proxy.h
+	xcopy /y .\modules\proxy\mod_proxy.h .\include
 	echo Created mod_proxy.h
 	
 # End Custom Build
@@ -333,8 +327,7 @@ SOURCE=.\server\mpm\winnt\mpm.h
 InputPath=.\server\mpm\winnt\mpm.h
 
 ".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mpm.h
-	copy .\server\mpm\winnt\mpm.h .\include\mpm.h
+	xcopy /y .\server\mpm\winnt\mpm.h .\include
 	echo Created mpm.h
 	
 # End Custom Build
@@ -346,8 +339,7 @@ InputPath=.\server\mpm\winnt\mpm.h
 InputPath=.\server\mpm\winnt\mpm.h
 
 ".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mpm.h
-	copy .\server\mpm\winnt\mpm.h .\include\mpm.h
+	xcopy /y .\server\mpm\winnt\mpm.h .\include
 	echo Created mpm.h
 	
 # End Custom Build
@@ -366,8 +358,7 @@ SOURCE=.\server\mpm\winnt\mpm_default.h
 InputPath=.\server\mpm\winnt\mpm_default.h
 
 ".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mpm_default.h
-	copy .\server\mpm\winnt\mpm_default.h .\include\mpm_default.h
+	xcopy /y .\server\mpm\winnt\mpm_default.h .\include
 	echo Created mpm_default.h
 	
 # End Custom Build
@@ -379,8 +370,7 @@ InputPath=.\server\mpm\winnt\mpm_default.h
 InputPath=.\server\mpm\winnt\mpm_default.h
 
 ".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\mpm_default.h
-	copy .\server\mpm\winnt\mpm_default.h .\include\mpm_default.h
+	xcopy /y .\server\mpm\winnt\mpm_default.h .\include
 	echo Created mpm_default.h
 	
 # End Custom Build
@@ -399,8 +389,7 @@ SOURCE=.\os\win32\os.h
 InputPath=.\os\win32\os.h
 
 ".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\os.h
-	copy .\os\win32\os.h .\include\os.h
+	xcopy /y .\os\win32\os.h .\include
 	echo Created os.h
 	
 # End Custom Build
@@ -412,8 +401,7 @@ InputPath=.\os\win32\os.h
 InputPath=.\os\win32\os.h
 
 ".\include\os.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	del .\include\os.h
-	copy .\os\win32\os.h .\include\os.h
+	xcopy /y .\os\win32\os.h .\include
 	echo Created os.h
 	
 # End Custom Build
