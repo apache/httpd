@@ -252,6 +252,7 @@ typedef int pid_t;
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1 /* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
+#include <sys/time.h>     
 
 #elif defined(SCO5)
 
@@ -282,6 +283,10 @@ extern int listen(), bind(), socket(), getsockname();
 extern int accept(), gethostname(), connect(), lstat();
 extern int select(), killpg(), shutdown();
 extern int initgroups(), setsockopt();
+extern char *shmat(int, char *, int);
+extern int  shmctl(int, int, struct shmid_ds *);
+extern int  shmget(key_t, int, int);
+extern char *sbrk(int);
 extern char *crypt();
 extern char *getwd();
 #include <sys/time.h>
