@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/20 00:11:41 $]
+Last modified at [$Date: 2003/06/20 23:04:06 $]
 
 Release:
 
@@ -241,6 +241,13 @@ PATCHES TO PORT FROM 2.1
         modules/ssl/ssl_engine_mutex.c 1.126
         os/unix/unixd.c 1.158
         os/unix/unixd.h 1.138
+        +1: trawick
+
+    * mod_cgid: Eliminate a double-close of a socket.  This resolves
+      various operational problems in a threaded MPM, since on the
+      second attempt to close the socket, the same descriptor was
+      often already in use by another thread for another purpose.
+        modules/generators/mod_cgid.c 1.151
         +1: trawick
 
 CURRENT RELEASE NOTES:
