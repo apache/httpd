@@ -86,10 +86,11 @@
 #ifdef CHILD_INFO_TABLE
 void ap_reclaim_child_processes(int terminate)
 {
-    int i, status;
+    int i;
     long int waittime = 1024 * 16;      /* in usecs */
     struct timeval tv;
-    int waitret, tries;
+    ap_status_t waitret;
+    int tries;
     int not_dead_yet;
 
 #ifdef SCOREBOARD
@@ -110,6 +111,7 @@ void ap_reclaim_child_processes(int terminate)
         not_dead_yet = 0;
         for (i = 0; i < ap_max_daemons_limit; ++i) {
             pid_t pid = CHILD_INFO_TABLE[i].pid;
+            ap_proc_t proc;
 
 #ifdef CHILD_TABLE
             if (ap_child_table[i].status == SERVER_DEAD)
@@ -118,8 +120,9 @@ void ap_reclaim_child_processes(int terminate)
 #endif
                 continue;
 
-            waitret = waitpid(pid, &status, WNOHANG);
-            if (waitret == pid || waitret == -1) {
+            proc.pid = pid;
+            waitret = ap_wait_proc(&proc, APR_NOWAIT);
+            if (waitret != APR_CHILD_NOTDONE) {
 #ifdef CHILD_TABLE
                 ap_child_table[i].status = SERVER_DEAD;
 #elif defined(SCOREBOARD)
