@@ -470,6 +470,15 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
  */
 API_EXPORT(int) ap_method_number_of(const char *method);
 
+/**
+ * Get the method name associated with the given internal method
+ * number.  Returns NULL if not recognized.
+ * @param methnum An integer value corresponding to an internal method number
+ * @return The name corresponding to the method number
+ * @deffunc const char *ap_method_name_of(int methnum)
+ */
+API_EXPORT(const char *) ap_method_name_of(int methnum);
+
   /* Hooks */
   /*
    * post_read_request --- run right after read_request or internal_redirect,
