@@ -653,7 +653,12 @@ static int imap_handler(request_rec *r)
     char *imap_base = icr->imap_base ?
     icr->imap_base : IMAP_BASE_DEFAULT;
 
-    FILE *imap = pfopen(r->pool, r->filename, "r");
+    FILE *imap; 
+
+    if (r->method_number != M_GET)
+	return DECLINED;
+
+    imap = pfopen(r->pool, r->filename, "r"); 
 
     if (!imap)
         return NOT_FOUND;

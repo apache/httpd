@@ -1,5 +1,7 @@
 Changes with Apache 1.3b1
 
+  *) mod_imap should only handle GET methods.  [Jay Bloodworth]
+
   *) suexec.c wouldn't build without -DLOG_EXEC. [Jason A. Dour]
 
   *) mod_autoindex improperly counted &escapes; as more than one
