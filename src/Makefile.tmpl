@@ -1,4 +1,4 @@
-# $Id: Makefile.tmpl,v 1.24 1996/09/08 12:19:09 ben Exp $
+# $Id: Makefile.tmpl,v 1.25 1996/09/08 16:14:55 jim Exp $
 # Apache makefile template (well, suffix).
 
 # This is combined with the information in the "Configuration" file
@@ -14,7 +14,7 @@ OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   md5c.o util_md5.o explain.o http_bprintf.o $(MODULES)
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 all: Configuration httpd
 

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.14 1996/09/08 13:52:39 ben Exp $
+# $Id: Configure,v 1.15 1996/09/08 16:14:55 jim Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -114,7 +114,7 @@ awk >>Makefile <$tmpfile '\
 
 PLAT=`grep "PLATFORM=" Makefile | awk '{ print $1 }' | awk -F= '{ print $2 }'`
 
-if [ "$PLAT" = "" ]; then
+if [ "x$PLAT" = "x" ]; then
 	echo "PLATFORM has not been set!"
 	exit 1
 fi
@@ -206,7 +206,7 @@ case "$PLAT" in
 	OS='SCO 5'
 	CFLAGS="$CFLAGS -DSCO5"
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
-	OSBPRINTF=" -K noinline"
+	OSBPRINTF="-K noinline"
 	DEF_HSREGEX=no
 	DEF_BADMMAP=no
 	;;
@@ -245,13 +245,13 @@ esac
 
 # Extract the rules
 
-RULE_HSREGEX=`CutRule HSREGEX`
-RULE_STATUS=`CutRule STATUS`
-RULE_SOCKS=`CutRule SOCKS`
-RULE_BADMMAP=`CutRule BADMMAP`
+RULE_HSREGEX=`./CutRule HSREGEX`
+RULE_STATUS=`./CutRule STATUS`
+RULE_SOCKS=`./CutRule SOCKS`
+RULE_BADMMAP=`./CutRule BADMMAP`
 
 if [ "$RULE_HSREGEX" = "default" ]; then
-	if [ "$DEF_HSREGEX" = "" ]; then
+	if [ "x$DEF_HSREGEX" = "x" ]; then
 		RULE_HSREGEX=no
 	else
 		RULE_HSREGEX=$DEF_HSREGEX
@@ -259,7 +259,7 @@ if [ "$RULE_HSREGEX" = "default" ]; then
 fi
 
 if [ "$RULE_BADMMAP" = "default" ]; then
-	if [ "$DEF_BADMMAP" = "" ]; then
+	if [ "x$DEF_BADMMAP" = "x" ]; then
 		RULE_BADMMAP=no
 	else
 		RULE_BADMMAP=$DEF_BADMMAP
