@@ -122,7 +122,7 @@ API_EXPORT(void *) pcalloc(struct pool *, int nbytes);
 API_EXPORT(char *) pstrdup(struct pool *, const char *s);
 /* make a nul terminated copy of the n characters starting with s */
 API_EXPORT(char *) pstrndup(struct pool *, const char *s, int n);
-API_EXPORT(char *) pstrcat(struct pool *,...);	/* all '...' must be char* */
+API_EXPORT_NONSTD(char *) pstrcat(struct pool *,...);	/* all '...' must be char* */
 API_EXPORT_NONSTD(char *) psprintf(struct pool *, const char *fmt, ...)
     __attribute__((format(printf,2,3)));
 API_EXPORT(char *) pvsprintf(struct pool *, const char *fmt, va_list);

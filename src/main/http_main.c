@@ -976,7 +976,7 @@ unsigned int set_callback_and_alarm(void (*fn) (int), int x)
 
 
 #ifdef WIN32
-int check_alarm(void)
+API_EXPORT(int) check_alarm(void)
 {
     if (alarm_expiry_time) {
 	unsigned int t;

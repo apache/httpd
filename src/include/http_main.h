@@ -121,7 +121,7 @@ API_EXPORT(void) sync_scoreboard_image(void);
 int update_child_status(int child_num, int status, request_rec *r);
 void time_process_request(int child_num, int status);
 unsigned int set_callback_and_alarm(void (*fn) (int), int x);
-int check_alarm(void);
+API_EXPORT(int) check_alarm(void);
 
 #ifndef NO_OTHER_CHILD
 /*

@@ -737,7 +737,7 @@ API_EXPORT(char *) pstrndup(struct pool *a, const char *s, int n)
     return res;
 }
 
-char *pstrcat(pool *a,...)
+API_EXPORT_NONSTD(char *) pstrcat(pool *a,...)
 {
     char *cp, *argp, *res;
 
