@@ -330,7 +330,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     apr_file_t *tmpfile;
 
     if (strcasecmp(type, "disk")) {
-	return DECLINED;
+        return DECLINED;
+    }
+
+    if (conf->cache_root == NULL) {
+        return DECLINED;
     }
 
     if (len < conf->minfs || len > conf->maxfs) {
@@ -382,12 +386,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 static int open_entity(cache_handle_t *h, request_rec *r, const char *type, const char *key)
 {
     apr_status_t rc;
+    static int error_logged = 0;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
                                                  &disk_cache_module);
-    char *data = data_file(r->pool, conf->dirlevels, conf->dirlength, 
-                           conf->cache_root, key);
-    char *headers = header_file(r->pool, conf->dirlevels, conf->dirlength, 
-                                conf->cache_root, key);
+    char *data;
+    char *headers;
     apr_file_t *fd;
     apr_file_t *hfd;
     apr_finfo_t finfo;
@@ -399,8 +402,22 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
 
     /* Look up entity keyed to 'url' */
     if (strcasecmp(type, "disk")) {
-	return DECLINED;
+        return DECLINED;
     }
+
+    if (conf->cache_root == NULL) {
+        if (!error_logged) {
+            error_logged = 1;
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                         "disk_cache: Cannot cache files to disk without a CacheRoot specified.");
+        }
+        return DECLINED;
+    }
+
+    data = data_file(r->pool, conf->dirlevels, conf->dirlength, 
+                     conf->cache_root, key);
+    headers = header_file(r->pool, conf->dirlevels, conf->dirlength, 
+                          conf->cache_root, key);
 
     /* Open the data file */
     rc = apr_file_open(&fd, data, APR_READ|APR_BINARY, 0, r->pool);
@@ -830,21 +847,6 @@ static const char
     return NULL;
 }
 
-static int disk_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
-                                  apr_pool_t *ptemp, server_rec *s)
-{
-    disk_cache_conf *conf = ap_get_module_config(s->module_config,
-                                                   &disk_cache_module);
-    if (conf->cache_root == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "CacheRoot must be initialized for mod_disk_cache to function.");
-
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
-    return OK;
-}
-
 static const command_rec disk_cache_cmds[] =
 {
     AP_INIT_TAKE1("CacheRoot", set_cache_root, NULL, RSRC_CONF,
@@ -882,7 +884,6 @@ static void disk_cache_register_hook(apr_pool_t *p)
     cache_hook_create_entity(create_entity, NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_open_entity(open_entity,  NULL, NULL, APR_HOOK_MIDDLE);
 /*    cache_hook_remove_entity(remove_entity, NULL, NULL, APR_HOOK_MIDDLE); */
-    ap_hook_post_config(disk_cache_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA disk_cache_module = {
