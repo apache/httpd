@@ -918,6 +918,7 @@ static void *worker_thread(void *arg)
                     /* XXX: Should we check for POLLERR? */
                     if (listenfds[curr_pollfd].revents & POLLIN) {
                         last_pollfd = curr_pollfd;
+                        sd = NULL;
                         ap_put_os_sock(&sd, &listenfds[curr_pollfd].fd, ptrans);
                         goto got_fd;
                     }
