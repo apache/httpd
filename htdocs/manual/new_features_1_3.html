@@ -346,7 +346,7 @@ documentation</A> for more information.
 <P><HR>
 
 <A NAME="api">
-<H3>API Additions</H3>
+<H3>API Additions and Changes</H3>
 </A>
 
 <P>For all those module writers and code hackers:
@@ -455,6 +455,12 @@ documentation</A> for more information.
 <DD>These are wrappers which deal with the
     <A HREF="mod/core.html#usecanonicalname">UseCanonicalName</A> directive
     when retrieving the server name and port for a request.
+
+<DT><B>Change to prototype for <CODE>ap_spawn_child_err_buff</CODE> and
+    <CODE>ap_call_exec</CODE></B>
+<DD>Added a <CODE>child_info *</CODE> to <CODE>spawn</CODE> function 
+    (as passed to <CODE>ap_spawn_child_err_buff</CODE>) and to 
+    <CODE>ap_call_exec</CODE> to make children work correctly on Win32.
 </DL>
 
 <P><HR>
