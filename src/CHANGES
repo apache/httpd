@@ -10,6 +10,9 @@ Changes with Apache 1.3.25
 
   *) Fix a problem in mod_rewrite which would lead to 400 Bad Request
      responses for rewriting rules which resulted in a local path.
+     Note: This will also reject invalid requests like
+     "HEAD /roaming/martin/IMAP localhost HTTP/1.0" as issued by
+     Netscape-4.x Roaming Profiles (on a DAV-enabled server)
      [Martin Kraemer]
 
   *) Disallow anything but whitespace on the request line after the
