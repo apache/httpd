@@ -81,6 +81,10 @@ Changes with Apache 1.2b5
   *) Fix bug with ServerPath that could cause certain files to be not
      found by the server. [Alexei Kosut] 
 
+  *) Fix handling of ErrorDocument so that it doesn't remove a trailing
+     double-quote from text and so that it properly checks for unsupported
+     status codes using the new index_of_response interface. [Roy Fielding] 
+
 Changes with Apache 1.2b4:
 
   *) Fix possible race condition in accept_mutex_init() that
