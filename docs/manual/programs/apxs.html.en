@@ -250,7 +250,7 @@
     <div class="example"><p><code>
       $ apxs -c mod_foo.c<br />
       /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /path/to/libtool --mode=link -o mod_foo.la mod_foo.slo<br />
+      /path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
       $ _
     </code></p></div>
 
