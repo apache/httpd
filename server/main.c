@@ -296,6 +296,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_context_t *plog; /* Pool of log streams, reset _after_ each read of conf */
     ap_context_t *ptemp; /* Pool for temporary config stuff, reset often */
     ap_context_t *pcommands; /* Pool for -C and -c switches */
+    module **mod;
 
     ap_initialize();
     process = create_process(argc, (const char **)argv);
@@ -305,7 +306,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     
     ap_util_uri_init();
 
-    g_pHookPool=pglobal;
+    g_pHookPool=pconf;
 
     ap_setup_prelinked_modules(process);
 
@@ -375,7 +376,11 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_destroy_pool(ptemp);
 
     for (;;) {
+	ap_hook_deregister_all();
 	ap_clear_pool(pconf);
+	for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
+		ap_register_hooks(*mod);
+	}
 	ap_create_context(&ptemp, pconf);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
