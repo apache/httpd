@@ -1515,6 +1515,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	    send_header(r, "Cache-Control");
 	    send_header(r, "Vary");
 	    send_header(r, "Warning");
+	    send_header(r, "WWW-Authenticate");
 	    set_keepalive(r);
 	    bputs("\015\012", c->client);
 	    return;
