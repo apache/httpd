@@ -1072,22 +1072,6 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
                                          config_log_state *cls,
                                          apr_array_header_t *default_format)
 {
-    void *data;
-    const char *userdata_key = "open_config_log";
-
-    /* Skip opening the log the first time through. It's really
-     * good to avoid starting the piped log process during preflight.
-     */
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (!data) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                              NULL, s->process->pool);
-        /* If logging for the first time after a restart, keep going. */
-        if (!ap_my_generation) {
-            return cls;
-        }
-    }
-
     if (cls->log_writer != NULL) {
         return cls;             /* virtual config shared w/main server */
     }
@@ -1098,12 +1082,12 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     
     cls->log_writer = log_writer_init(p, s, cls->fname);
     if (cls->log_writer == NULL)
-        exit(1); 
+        return NULL; 
 
     return cls;
 }
 
-static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
+int open_multi_logs(server_rec *s, apr_pool_t *p)
 {
     int i;
     multi_log_state *mls = ap_get_module_config(s->module_config,
@@ -1135,7 +1119,10 @@ static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
 		}
 	    }
 
-            cls = open_config_log(s, p, cls, mls->default_format);
+            if (!open_config_log(s, p, cls, mls->default_format)) {
+                /* Failure already logged by open_config_log */
+                return DONE;
+            }
         }
     }
     else if (mls->server_config_logs) {
@@ -1150,11 +1137,14 @@ static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
 		}
 	    }
 
-            cls = open_config_log(s, p, cls, mls->default_format);
+            if (!open_config_log(s, p, cls, mls->default_format)) {
+                /* Failure already logged by open_config_log */
+                return DONE;
+            }
         }
     }
 
-    return NULL;
+    return OK;
 }
 
 
@@ -1196,15 +1186,15 @@ static int init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server
     /* First, do "physical" server, which gets default log fd and format
      * for the virtual servers, if they don't override...
      */
-
-    open_multi_logs(s, p);
+    int res = open_multi_logs(s, p);
 
     /* Then, virtual servers */
 
-    for (s = s->next; s; s = s->next) {
-        open_multi_logs(s, p);
+    for (s = s->next; (res == OK) && s; s = s->next) {
+        res = open_multi_logs(s, p);
     }
-    return OK;
+
+    return res;
 }
 
 static void init_child(apr_pool_t *p, server_rec *s)
