@@ -1,9 +1,10 @@
 
-CLEANFILES = gen_test_char gen_uri_delims test_char.h uri_delims.h apache.exports
+TARGET_EXPORTS    = apache.exports
+CLEANFILES = gen_test_char gen_uri_delims test_char.h uri_delims.h \
+	$(TARGET_EXPORTS)
 
 SUBDIRS = mpm
 
-TARGET_EXPORTS    = apache.exports
 LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
     uri_delims.h test_char.h \
@@ -13,7 +14,10 @@ LTLIBRARY_SOURCES = \
         mpm_common.c util_charset.c util_debug.c util_xml.c \
 	util_filter.c exports.c buildmark.c
 
-include $(top_srcdir)/build/ltlib.mk
+targets = delete-exports $(LTLIBRARY_NAME)
+
+include $(top_srcdir)/build/rules.mk
+include $(top_srcdir)/build/library.mk
 
 gen_uri_delims_OBJECTS = gen_uri_delims.lo
 gen_uri_delims: $(gen_uri_delims_OBJECTS)
@@ -32,7 +36,8 @@ test_char.h: gen_test_char
 util_uri.lo: uri_delims.h
 util.lo: test_char.h
 
-EXPORT_FILES = ../srclib/apr/apr.exports ../srclib/apr-util/aprutil.exports apache.exports
+EXPORT_FILES = ../srclib/apr/apr.exports ../srclib/apr-util/aprutil.exports \
+	$(TARGET_EXPORTS)
 
 delete-exports:
 	@if test -f $(TARGET_EXPORTS); then \
@@ -46,7 +51,7 @@ delete-exports:
 
 
 $(TARGET_EXPORTS):
-	$(AWK) -f $(top_srcdir)/srclib/apr/helpers/make_export.awk $(top_srcdir)/include/*.h > $@ ; \
+	$(AWK) -f $(top_srcdir)/srclib/apr/helpers/make_export.awk $(top_srcdir)/include/*.h > $@
 
-exports.c: delete-exports $(EXPORT_FILES)
+exports.c: $(EXPORT_FILES)
 	(cat $(EXPORT_FILES) | ../build/buildexports.sh ..) > $@
