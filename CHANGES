@@ -1,5 +1,10 @@
 Changes with Apache 2.0.26-dev
 
+  *) Back out the 1.45 change to util_script.c.  This change made
+     us set the environment variable REQUEST_URI to the redirected
+     URI, instead of the originally requested URI.
+     [Taketo Kabe <kabe@sra-tohoku.co.jp>]
+
   *) Make mod_include do lazy evaluation of potentially expensive to
      compute variables.  [Brian Pane <bpane@pacbell.net>]
 
