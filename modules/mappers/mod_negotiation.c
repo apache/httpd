@@ -1076,7 +1076,7 @@ static int read_types_multi(negotiation_state *neg)
 		      "Negotiation: discovered file(s) matching request: %s"
                       " (None could be negotiated).", 
                       r->filename);
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return HTTP_NOT_FOUND;
     }
 
     set_vlist_validator(r, r);
