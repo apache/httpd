@@ -642,8 +642,8 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
         {
             CloseHandle(hPipeWrite);
             hPipeWrite = hDup;
-            thread = CreateThread(NULL, 0, service_stderr_thread, 
-                                  (LPVOID) hPipeRead, 0, &threadid);
+            thread = (HANDLE) _beginthreadex(NULL, 0, service_stderr_thread, 
+                                             (LPVOID) hPipeRead, 0, &threadid);
             if (thread)
             {
                 FILE *fl, flip;
@@ -875,7 +875,7 @@ apr_status_t mpm_service_to_start(const char **display_name)
         globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
         globdat.service_term = CreateEvent(NULL, FALSE, FALSE, NULL);
         if (globdat.service_init)
-            globdat.service_thread = CreateThread(NULL, 0, 
+            globdat.service_thread = (HANDLE) _beginthreadex(NULL, 0, 
                                                   service_nt_dispatch_thread, 
                                                   NULL, 0, 
                                                   &globdat.service_thread_id);
@@ -887,9 +887,9 @@ apr_status_t mpm_service_to_start(const char **display_name)
 
         globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
         if (globdat.service_init)
-            globdat.service_thread = CreateThread(NULL, 0,
+            globdat.service_thread = (HANDLE) _beginthreadex(NULL, 0,
                                                   monitor_service_9x_thread, 
-                                                  (LPVOID) mpm_service_name, 0, 
+                                                  (LPVOID) mpm_service_name, 0,
                                                   &globdat.service_thread_id);
     }
 
