@@ -692,8 +692,6 @@ void         ssl_var_unregister(void);
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 
 /*  I/O  */
-void         ssl_io_register(void);
-void         ssl_io_unregister(void);
 void         ssl_io_filter_init(conn_rec *, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
 long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
