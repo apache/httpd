@@ -3329,7 +3329,7 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
         return rc;
     }
 
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)  && !defined(NETWARE)
+#if APR_USE_SYSVSEM_SERIALIZE
     rc = unixd_set_global_mutex_perms(rewrite_mapr_lock_acquire);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
