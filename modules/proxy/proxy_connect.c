@@ -331,9 +331,9 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                     int o = 0;
                     while(nbytes)
                     {
-                        i = nbytes;
 			if (apr_send(r->connection->client_socket, buffer + o, &nbytes) != APR_SUCCESS)
 			    break;
+                        i = nbytes;
                         o += i;
                         nbytes -= i;
                     }
@@ -354,9 +354,9 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                     int o = 0;
                     while(nbytes)
                     {
-                        i = nbytes;
 			if (apr_send(sock, buffer + o, &nbytes) != APR_SUCCESS)
 			    break;
+                        i = nbytes;
                         o += i;
                         nbytes -= i;
                     }
