@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/29 21:41:13 $]
+Last modified at [$Date: 2004/03/29 23:07:46 $]
 
 Release:
 
@@ -109,12 +109,6 @@ PATCHES TO BACKPORT FROM 2.1
        locks on some platforms. (especially Sparc!!!)
            modules/dav/fs/lock.c: r1.31
        +1: trawick
-
-    *) Fix the comment delimiter so that it correctly parses the username
-        comment.  Also add a terminate function to allow NetWare to pause
-	the output before the screen is destroyed.
-       support/htdbm.c: r1.15
-       +1: bnicholes, trawick, jjclar
 
     *) Use apr_temp_dir_get for htdigest and remove the dependancy on
         the external cp/copy command. Remove the OMIT_DELONCLOSE #ifdef

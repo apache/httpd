@@ -105,9 +105,16 @@ struct htdbm_t {
 #define HTDBM_NOFILE 4
 #define HTDBM_STDIN  5
 
+static void terminate(void)
+{
+    apr_terminate();
+#ifdef NETWARE
+    pressanykey();
+#endif
+}
+
 static void htdbm_terminate(htdbm_t *htdbm) 
 {
-    
     if (htdbm->dbm)
         apr_dbm_close(htdbm->dbm);
     htdbm->dbm = NULL;
@@ -254,7 +261,7 @@ static apr_status_t htdbm_list(htdbm_t *htdbm)
         fprintf(stderr, "    %-32s", kb);
         strncpy(rec, val.dptr, val.dsize);
         rec[val.dsize] = '\0';
-        cmnt = strchr(rec, ';');
+        cmnt = strchr(rec, ':');
         if (cmnt)
             fprintf(stderr, cmnt + 1);
         fprintf(stderr, "\n");
@@ -387,7 +394,7 @@ int main(int argc, const char * const argv[])
     int args_left = 2;
 
     apr_app_initialize(&argc, &argv, NULL);
-    atexit(apr_terminate);
+    atexit(terminate);
 
     if ((rv = htdbm_init(&pool, &h)) != APR_SUCCESS) {
         fprintf(stderr, "Unable to initialize htdbm terminating!\n");
@@ -569,7 +576,6 @@ int main(int argc, const char * const argv[])
         }
     }
     htdbm_terminate(h);
-    apr_terminate();
     
     return 0; /* Suppress compiler warning. */
 }
