@@ -6847,35 +6847,35 @@ int REALMAIN(int argc, char *argv[])
 	    ap_set_version();
 	    printf("Server version: %s\n", ap_get_server_version());
 	    printf("Server built:   %s\n", ap_get_server_built());
-#ifdef NETWARE
-            clean_parent_exit(0);
-#else
+#ifdef WIN32
             clean_parent_exit(1);
+#else
+            clean_parent_exit(0);
 #endif
 
         case 'V':
 	    ap_set_version();
 	    show_compile_settings();
-#ifdef NETWARE
-            clean_parent_exit(0);
-#else
+#ifdef WIN32
             clean_parent_exit(1);
+#else
+            clean_parent_exit(0);
 #endif
 
 	case 'l':
 	    ap_show_modules();
-#ifdef NETWARE
-            clean_parent_exit(0);
-#else
+#ifdef WIN32
             clean_parent_exit(1);
+#else
+            clean_parent_exit(0);
 #endif
 
 	case 'L':
 	    ap_show_directives();
-#ifdef NETWARE
-            clean_parent_exit(0);
-#else
+#ifdef WIN32
             clean_parent_exit(1);
+#else
+            clean_parent_exit(0);
 #endif
 
 	case 'X':
@@ -7021,11 +7021,19 @@ int REALMAIN(int argc, char *argv[])
 
     if (ap_configtestonly) {
         fprintf(stderr, "%s: Syntax OK\n", ap_server_root_relative(pcommands, ap_server_confname));
+#ifdef WIN32
+        clean_parent_exit(1);
+#else
         clean_parent_exit(0);
+#endif
     }
 
     if (ap_dump_settings) {
+#ifdef WIN32
+        clean_parent_exit(1);
+#else
         clean_parent_exit(0);
+#endif
     }
 
 #ifdef WIN32
