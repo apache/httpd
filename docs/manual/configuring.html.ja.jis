@@ -71,7 +71,7 @@
     わかりやすくするためにディレクティブをインデントしても構いません。
     </p>
 
-    <p>設定ファイルの構文エラーは、
+    <p>設定ファイルの構文エラーは、
     <code>apachectl configtest</code>
     かコマンドラインオプション
     <code>-t</code> を使って調べられます。</p>
@@ -151,7 +151,7 @@
     を調べてください。サーバ管理者はさらにメイン設定ファイルの
     <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>
     を設定することでどのディレクティブを <code>.htaccess</code>
-    ファイルに書けるようにするかを制御することができます。</p>
+    ファイルに書けるようにするかを制御することができます。</p>
 
     <p><code>.htaccess</code> ファイルに関する詳しい情報は
     <a href="howto/htaccess.html">.htaccess チュートリアル</a>

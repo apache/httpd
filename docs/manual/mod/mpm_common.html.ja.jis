@@ -134,7 +134,7 @@
     デフォルトでは全ての IP インターフェースのリクエストに応答します。
     Listen ディレクティブは現在では必須のディレクティブとなりました。
     もし設定ファイルになければ、サーバは起動に失敗します。
-    これは以前のバージョンの Apache から変更のあった部分です。</p>
+    これは以前のバージョンの Apache から変更のあった部分です。</p>
 
     <p>Listen ディレクティブでは、特定のポートあるいは
     アドレスとポートの組み合わせから入ってくるリクエストに対して
@@ -368,7 +368,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr>
 </table>
-    <p>子プロセス毎に含まれるスレッド数の最大値です。
+    <p>子プロセス毎に含まれるスレッド数の最大値です。
     子プロセス毎にスレッド数変化する MPM では、
     このディレクティブは、子プロセス内に生成されるスレッド数の
     最大値を設定します。デフォルト値よりも大きい値にするのであれば、
@@ -525,7 +525,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 </table>
-    <p><code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM の場合は、このディレクティブは
+    <p><code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM の場合は、このディレクティブは
     Apache プロセス稼働中における
     <code class="directive"><a href="#maxclients">MaxClients</a></code>
     に設定可能な上限値を設定することになります
@@ -577,7 +577,7 @@
 </table>
     <p><code class="directive">StartServers</code> ディレクティブは、
     起動時に生成される子サーバプロセスの数を設定します。
-    プロセス数は負荷に応じて動的に制御されますので、
+    プロセス数は負荷に応じて動的に制御されますので、
     通常はこの値を調整する理由はあまりないでしょう。</p>
 
 <h3>参照</h3>
