@@ -405,6 +405,8 @@ API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 #define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
 static int scoreboard_fd = -1;
+static ap_file_t *scoreboard_file = NULL;
+static ap_file_t *scoreboard_file = NULL;
 
 /* XXX: things are seriously screwed if we ever have to do a partial
  * read or write ... we could get a corrupted scoreboard
@@ -447,9 +449,12 @@ static void cleanup_scoreboard_file(void *foo)
 API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 {
     if (scoreboard_fd != -1)
-	ap_pclosef(p, scoreboard_fd);
+	ap_close(scoreboard_fd);
 
-    scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0666);
+    ap_open(p, ap_scoreboard_fname, APR_CREATE | APR_BINARY | APR_READ | APR_WRITE,
+            APR_UREAD | APR_UWRITE | APR_GREAD | APR_GWRITE | APR_WREAD | APR_WWRITE,
+            &scoreboard_file);
+    ap_get_os_file(scoreboard_file, &scoreboard_fd);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");
@@ -475,7 +480,9 @@ void reinit_scoreboard(ap_context_t *p)
     ap_scoreboard_image = &_scoreboard_image;
     ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
 
-    scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644);
+    ap_open(p, ap_scoreboard_fname, APR_CREATE | APR_BINARY | APR_READ | APR_WRITE,
+            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, &scoreboard_file);
+    ap_get_os_file(scoreboard_file, &scoreboard_fd);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");
