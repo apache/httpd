@@ -1,0 +1,76 @@
+                                 Apache
+                             Version 1.1 (and up)
+
+What is it?
+-----------
+
+Apache is an HTTP server designed as a plug-in replacement for the NCSA
+server version 1.3 (or 1.4). It fixes numerous bugs in the NCSA server and
+includes many frequently requested new features, and has an API which
+allows it to be extended to meet users' needs more easily.
+
+Documentation
+-------------
+
+All the documentation is on-line on the WWW, via <URL:http://www.apache.org/>.
+
+Installation
+------------
+
+Unless you grabbed a binary distribution of Apache, you must compile
+it for your specific platform.  In order to compile it, you must set
+compile-time options (in particular, system type) for your system by
+editing a Configuration file, run a script which generates a Makefile
+and a small piece of C code, and then compile it.
+
+For instructions on compilation, see the file 'INSTALL' in the src/ directory.
+
+After compilation, you will have a binary called "httpd" in the src/
+directory.  If you received a binary distribution of apache, you
+should have this file already.
+
+The next step is to edit the configuration files for the server.  In
+the subdirectory called "conf" you should find distribution versions
+of the three configuration files: srm.conf-dist, access.conf-dist, and
+httpd.conf-dist.  Copy them to srm.conf, access.conf, httpd.conf
+respectively.
+
+First edit httpd.conf.  This sets up general attributes about the
+server - the port number, the user it runs as, etc.  Next edit the
+srm.conf file - this sets up the root of the document tree, special
+functions like server-parsed HTML or internal imagemap parsing, etc.
+Finally, edit the access.conf file to at least set the base cases of
+access. Documentation for all of these is located at
+<URL:http://www.apache.org/docs/>.
+
+Finally, make a call to httpd, with a -f to the full path to the
+httpd.conf file.  I.e., the common case:
+
+  /usr/local/etc/apache/src/httpd -f /usr/local/etc/apache/conf/httpd.conf
+
+And voila!  The server should be running.
+
+By default the srm.conf and access.conf files are located by name - to
+specifically call them by other names, use the AccessConfig and
+ResourceConfig directives in httpd.conf.
+
+The Latest Version
+------------------
+
+Details of the latest version are in the apache project page (above).
+
+NOTE: At the time of release of Apache 1.1, two modules had updated
+versions which were not sufficiently tested for inclusion into the 1.1
+distribution: mod_auth_msql and mod_cern_meta.  The newer versions are
+available from http://www.apache.org/dist/contrib/modules/ - if you
+plan on using this functionality we encourage you to give the newer
+modules a test drive, and let us know of any problems.  In particular,
+mod_cern_meta is now configurable per-directory, and the configuration
+directives have changed.  We can not promise that the existing
+configuration directives provided by the mod_cern_meta included in the
+distribution will be supported in the future.
+
+Licencing
+---------
+
+Please see the file called LICENSE.
