@@ -1212,8 +1212,9 @@ struct content_length_ctx {
  * of bytes sent to the client.  This means that this filter will always run
  * through all of the buckets in all brigades
  */
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
-                                         apr_bucket_brigade *b)
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
+    ap_filter_t *f,
+    apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
     struct content_length_ctx *ctx;
@@ -1221,20 +1222,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     int eos = 0;
     apr_read_type_e eblock = APR_NONBLOCK_READ;
 
-    int can_send_content_length;
-
-    /* We can only set a C-L in the response header if we
-     * haven't already sent any buckets on to the next
-     * output filter for this request.
-     */
     ctx = f->ctx;
     if (!ctx) {
-        f->ctx = ctx = apr_palloc(r->pool, sizeof(struct content_length_ctx));
+        f->ctx = ctx = apr_palloc(r->pool, sizeof(*ctx));
         ctx->data_sent = 0;
-        can_send_content_length = 1;
-    }
-    else {
-        can_send_content_length = (ctx->data_sent == 0);
     }
 
     /* Loop through this set of buckets to compute their length
@@ -1260,8 +1251,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                 r->bytes_sent += len;
             }
             else if (APR_STATUS_IS_EAGAIN(rv)) {
-                /* Output everything prior to this bucket, and
-                 * do a blocking read
+                /* Output everything prior to this bucket, and then
+                 * do a blocking read on the next batch.
                  */
                 if (e != APR_BRIGADE_FIRST(b)) {
                     apr_bucket_brigade *split = apr_brigade_split(b, e);
@@ -1272,7 +1263,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                     }
                     b = split;
                     e = APR_BRIGADE_FIRST(b);
-                    can_send_content_length = 0;
+
                     ctx->data_sent = 1;
                 }
                 eblock = APR_BLOCK_READ;
@@ -1292,9 +1283,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     }
 
     /* If we've now seen the entire response and it's otherwise
-     * okay to set the C-L in the response header, do so now:
-         */
-    if (can_send_content_length && eos) {
+     * okay to set the C-L in the response header, then do so now.
+     *
+     * We can only set a C-L in the response header if we haven't already
+     * sent any buckets on to the next output filter for this request.
+     */
+    if (ctx->data_sent == 0 && eos) {
         ap_set_content_length(r, r->bytes_sent);
     }
 
