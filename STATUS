@@ -61,7 +61,7 @@ Committed Code Changes:
     * Martin's new URI parsing stuff (the source module main/util_uri.c)
     * New `%a' construct for LogFormat and CustomLog. PR#1885
     * Ralf's `Rule HIDE' feature for hiding the symbol namespace
-      -- vetoed by Roy, will be removed Saturday (if not sooner)
+      -- vetoed by Roy, currently going with Ralf's replacement plan
     * Make \\ behave as expected.
     * Fix for "poly" directive in image maps. PR#1771
     * Reduce memory usage, and speed up ServerAlias support. PR#1531
@@ -101,7 +101,7 @@ Committed Code Changes:
     * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
     * Ralf's new ApacheBench support program (src/support/ab.c)
     * Ken's change HIDE default to "yes", always include hide.h
-      -- vetoed by Roy, will be removed Saturday (if not sooner)
+      -- vetoed by Roy, currently going with Ralf's replacement plan
     * Ralf's major Configure cleanup
     * Ralf's additional manual pages for the support programs
     * Ben Hyde's Configure check for unknown command switch
@@ -141,6 +141,12 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
+      <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
+      The patch provides per-domain cookies (which I use to share user-ids
+      among the *.troll.no web servers) and configurable cookie names.  It
+      also marginally increases the efficiency of Apache when the server
+      runs with DNS lookups turned off.
 
 In progress:
 
