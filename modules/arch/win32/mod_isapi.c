@@ -236,41 +236,44 @@ int isapi_handler (request_rec *r)
          * sucker in. I suppose this could be bad for memory if someone
          * uploaded the complete works of Shakespeare. Well, WebSite
          * does the same thing.
+         *
+         * But we can be smarter and read up to our 48k and then allow
+         * the ISAPI app to read further blocks as desired.
          */
-            long to_read = atol(ap_table_get(e, "CONTENT_LENGTH"));
-            long read;
+        long to_read = atol(ap_table_get(e, "CONTENT_LENGTH"));
+        long read;
 
-            /* Actually, let's cap it at 48k, until we figure out what
-             * to do with this... we don't want a Content-Length: 1000000000
-             * taking out the machine.
-             */
+        /* Actually, let's cap it at 48k, until we figure out what
+         * to do with this... we don't want a Content-Length: 1000000000
+         * taking out the machine.
+         */
 
-            if (to_read > 49152) {
-                if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-                FreeLibrary(isapi_handle);
-                return HTTP_REQUEST_ENTITY_TOO_LARGE;
-            }
-
-            ecb->lpbData = ap_pcalloc(r->pool, 1 + to_read);
-
-            if ((read = ap_get_client_block(r, ecb->lpbData, to_read)) < 0) {
-                if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
-                FreeLibrary(isapi_handle);
-                return HTTP_INTERNAL_SERVER_ERROR;
-            }
-
-            /* Although its not to spec, IIS seems to null-terminate
-             * its lpdData string. So we will too. To make sure
-             * cbAvailable matches cbTotalBytes, we'll up the latter
-             * and equalize them.
-             */
-            ecb->cbAvailable = ecb->cbTotalBytes = read + 1;
-            ecb->lpbData[read] = '\0';
+        if (to_read > 49152) {
+            if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
+            FreeLibrary(isapi_handle);
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
+
+        ecb->lpbData = ap_pcalloc(r->pool, 1 + to_read);
+
+        if ((read = ap_get_client_block(r, ecb->lpbData, to_read)) < 0) {
+            if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
+            FreeLibrary(isapi_handle);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        /* Although its not to spec, IIS seems to null-terminate
+         * its lpdData string. So we will too. To make sure
+         * cbAvailable matches cbTotalBytes, we'll up the latter
+         * and equalize them.
+         */
+        ecb->cbAvailable = ecb->cbTotalBytes = read + 1;
+        ecb->lpbData[read] = '\0';
+    }
     else {
-            ecb->cbTotalBytes = 0;
-            ecb->cbAvailable = 0;
-            ecb->lpbData = NULL;
+        ecb->cbTotalBytes = 0;
+        ecb->cbAvailable = 0;
+        ecb->lpbData = NULL;
     }
 
     /* Set up the callbacks */
@@ -409,7 +412,7 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
 
 BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
 {
-    /* If the request was a huge transmit or chunked, continue piping the
+    /* TODO: If the request was a huge transmit or chunked, continue piping the
      * request here, but if it's of a sane size, continue to ...
      */
     return TRUE;
@@ -454,6 +457,10 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             return TRUE;
 
         case HSE_REQ_SEND_RESPONSE_HEADER_EX:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+
+            /* Not yet - but here's the idea...
             if (((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszStatus
                 && ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchStatus)
                 r->status_line = ap_pstrndup(r->pool, 
@@ -464,10 +471,11 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             sscanf(r->status_line, "%d", &r->status);
             cid->ecb->dwHttpStatusCode = r->status;
 
-          ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszHeader; // HTTP header
-          ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchHeader; // HTTP header len
-          
-          ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->fKeepConn; // Keep alive? (bool)
+             * plus we need to handle...
+             * ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->pszHeader; // HTTP header
+             * ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->cchHeader; // HTTP header len          
+             * ((LPHSE_SEND_HEADER_EX_INFO)lpvBuffer)->fKeepConn; // Keep alive? (bool)
+             */
 
         case HSE_REQ_SEND_RESPONSE_HEADER:
             r->status_line = lpvBuffer ? lpvBuffer : ap_pstrdup(r->pool, "200 OK");
@@ -606,6 +614,8 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 
         /* We don't support all this async I/O, Microsoft-specific stuff */
         case HSE_REQ_IO_COMPLETION:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
             /* TODO: Emulate a completion port, if we can...
              * Record the callback address and user defined argument...
              * we will call this after any async request (including transmitfile)
@@ -621,11 +631,14 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                           HTTP_INTERNAL_SERVER_ERROR, r,
                           "ISAPI asynchronous I/O not supported: %s",
                           r->filename);
-
+            return FALSE;
+            
         case HSE_APPEND_LOG_PARAMETER:
             /* Log lpvBuffer, of lpdwSize bytes */
             return TRUE;
 
+        
+        /* Need to implement all applicable for ISAPI 5.0 support */
         case HSE_REQ_ABORTIVE_CLOSE:
         case HSE_REQ_ASYNC_READ_CLIENT:
         case HSE_REQ_CLOSE_CONNECTION:

@@ -583,6 +583,10 @@ static char *parse_log_misc_string(ap_pool_t *p, log_format_item *it,
 		*d++ = '\\';
 		s++;
 		break;
+	    case 'r':
+		*d++ = '\r';
+		s++;
+		break;
 	    case 'n':
 		*d++ = '\n';
 		s++;
@@ -706,7 +710,7 @@ static ap_array_header_t *parse_log_string(ap_pool_t *p, const char *s, const ch
         }
     }
 
-    s = "\n";
+    s = APR_EOL_STR;
     parse_log_item(p, (log_format_item *) ap_push_array(a), &s);
     return a;
 }
