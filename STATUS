@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/03 22:23:55 $]
+Last modified at [$Date: 2003/04/03 23:01:54 $]
 
 Release:
 
@@ -161,7 +161,7 @@ PATCHES TO PORT FROM 2.1
     * mod_deflate: Check also err_headers_out for an already set
       Content-Encoding: gzip header. This prevents gzip compressed content
       from a CGI script from being compressed once more. PR 17797.
-      modules/filters/mod_deflate.c: r1.33
+      modules/filters/mod_deflate.c: r1.32
       +1: nd, ianh
 
     * mod_negotiation: parse quality values independent from
