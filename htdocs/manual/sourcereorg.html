@@ -59,6 +59,11 @@ In addition, the following enhancements have been made:
  </LI>
  <LI>All the sub-directories (main, modules/* and os/*) are built as 
      libraries.
+ </LI>
+ <LI>The new Apache Autoconf-style Interface (APACI) script named
+     <CODE>configure</CODE> replaced the old top-level <CODE>Makefile</CODE>
+     and <CODE>src/helpers/InstallApache</CODE> stuff.
+ </LI>
 </UL>
 
 <H2>Adding Modules</H2>
@@ -132,6 +137,14 @@ From Apache 1.3 onwards, module authors can make use of these new features:
  <LI>If the module is in its own directory, Apache can automatically
      create a Makefile to build the module given a file containing
      the module's dependencies.
+ </LI>
+ <LI>For building a third-party module <STRONG>outside</STRONG>
+     the Apache source tree the new <CODE>apxs</CODE> support tool can be used
+     to compile the module into a dynamic shared object (DSO), install it into
+     the existing Apache installation and optionally activating it in the
+     Apache <CODE>httpd.conf</CODE> file.  The only requirement is that Apache
+     has DSO-support for the used platform and the module <CODE>mod_so</CODE>
+     was built into the server binary <CODE>httpd</CODE>.
  </LI>
 </UL>
 
