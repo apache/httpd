@@ -1202,7 +1202,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
     marks_input = ap_pcalloc(propdb->p, propdb->ns_xlate->nelts);
 
     /* same for the liveprops */
-    marks_liveprop = ap_pcalloc(propdb->p, dav_get_liveprop_ns_count());
+    marks_liveprop = ap_pcalloc(propdb->p, dav_get_liveprop_ns_count() + 1);
 
     for (elem = elem->first_child; elem; elem = elem->next) {
 	dav_datum key;
