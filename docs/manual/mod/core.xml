@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.46.2.37 $ -->
+<!-- $Revision: 1.46.2.38 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -2472,6 +2472,10 @@ user authentication</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
+<compatibility>Influenced by <directive module="core" type="section"
+>Limit</directive> and <directive module="core"
+type="section">LimitExcept</directive> in version 2.0.51 and
+later</compatibility>
 
 <usage>
     <p>Access policy if both <directive
@@ -2499,6 +2503,10 @@ user authentication</description>
       Satisfy Any
     </example>
 
+    <p>Since version 2.0.51 <directive>Satisfy</directive> directives can
+    be restricted to particular methods by <directive module="core"
+    type="section">Limit</directive> and <directive module="core" type="section"
+    >LimitExcept</directive> sections.</p>
 </usage>
    <seealso><directive module="mod_access">Allow</directive></seealso>
    <seealso><directive module="core">Require</directive></seealso>
