@@ -453,18 +453,21 @@ static int check_speling(request_rec *r)
             t = "";
 
             for (i = 0; i < candidates->nelts; ++i) {
+		char *vuri;
+		const char *reason;
 
+		reason = sp_reason_str[(int) (variant[i].quality)];
                 /* The format isn't very neat... */
-                t = ap_pstrcat(p, t, "<li><a href=\"", url,
-			       variant[i].name, r->path_info,
-			       r->parsed_uri.query ? "?" : "",
-			       r->parsed_uri.query ? r->parsed_uri.query : "",
-			       "\">", variant[i].name, r->path_info,
-			       r->parsed_uri.query ? "?" : "",
-			       r->parsed_uri.query ? r->parsed_uri.query : "",
-			       "</a> (",
-			       sp_reason_str[(int) (variant[i].quality)],
-			       ")\n", NULL);
+		vuri = ap_pstrcat(p, url, variant[i].name, r->path_info,
+				  (r->parsed_uri.query != NULL) ? "?" : "",
+				  (r->parsed_uri.query != NULL)
+				      ? r->parsed_uri.query : "",
+				  NULL);
+		ap_table_mergen(r->subprocess_env, "VARIANTS",
+				ap_pstrcat(p, "\"", vuri, "\";\"",
+					   reason, "\"", NULL));
+                t = ap_pstrcat(p, t, "<li><a href=\"", vuri,
+			       "\">", vuri, "</a> (", reason, ")\n", NULL);
 
                 /*
                  * when we have printed the "close matches" and there are
