@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) Performance improvements for the code that generates HTTP
+     response headers  [Brian Pane]
+
   *) Add -S as a synonym for -t -DDUMP_VHOSTS.
      [Thom May <thom@planetarytramp.net>]
 

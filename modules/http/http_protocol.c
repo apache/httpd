@@ -1151,6 +1151,48 @@ static int form_header_field(header_struct *h,
     return 1;
 }
 
+/* Send a request's HTTP response headers to the client.
+ */
+static apr_status_t send_all_header_fields(header_struct *h,
+                                           const request_rec *r)
+{
+    const apr_array_header_t *elts;
+    const apr_table_entry_t *t_elt;
+    const apr_table_entry_t *t_end;
+    struct iovec *vec;
+    struct iovec *vec_next;
+
+    elts = apr_table_elts(r->headers_out);
+    if (elts->nelts == 0) {
+        return APR_SUCCESS;
+    }
+    t_elt = (const apr_table_entry_t *)(elts->elts);
+    t_end = t_elt + elts->nelts;
+    vec = (struct iovec *)apr_palloc(h->pool, 4 * elts->nelts);
+    vec_next = vec;
+
+    /* For each field, generate
+     *    name ": " value CRLF
+     */
+    do {
+        vec_next->iov_base = (void*)(t_elt->key);
+        vec_next->iov_len = strlen(t_elt->key);
+        vec_next++;
+        vec_next->iov_base = ": ";
+        vec_next->iov_len = sizeof(": ") - 1;
+        vec_next++;
+        vec_next->iov_base = (void*)(t_elt->val);
+        vec_next->iov_len = strlen(t_elt->val);
+        vec_next++;
+        vec_next->iov_base = CRLF;
+        vec_next->iov_len = sizeof(CRLF) - 1;
+        vec_next++;
+        t_elt++;
+    } while (t_elt < t_end);
+
+    return apr_brigade_writev(h->bb, NULL, NULL, vec, vec_next - vec);
+}
+
 /*
  * Determine the protocol to use for the response. Potentially downgrade
  * to HTTP/1.0 in some situations and/or turn off keepalives.
@@ -1637,8 +1679,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                      NULL);
     }
     else {
-        apr_table_do((int (*) (void *, const char *, const char *)) form_header_field,
-                     (void *) &h, r->headers_out, NULL);
+        send_all_header_fields(&h, r);
     }
 
     terminate_header(b2);
