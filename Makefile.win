@@ -65,12 +65,13 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f apr.mak CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapr.mak CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd srclib\expat-lite
+	 $(MAKE) $(MAKEOPT) -f expat.mak CFG="expat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f libexpat.mak CFG="libexpat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd srclib\apr-util
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libaprutil.mak CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-	cd srclib\expat-lite
-	 $(MAKE) $(MAKEOPT) -f libexpat.mak CFG="libexpat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -99,7 +100,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 	cd modules\generators
-#        $(MAKE) $(MAKEOPT) -f mod_info.mak CFG"=mod_info - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+         $(MAKE) $(MAKEOPT) -f mod_info.mak CFG"=mod_info - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f mod_status.mak CFG="mod_status - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\mappers
@@ -112,9 +113,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd modules\proxy
+#	cd modules\proxy
 #        $(MAKE) $(MAKEOPT) -f mod_proxy.mak CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-        cd ..\..
+#       cd ..\..
 	cd support
          $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
          $(MAKE) $(MAKEOPT) -f htpasswd.mak CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -150,7 +151,7 @@ _install:
 	copy modules\cache\$(LONG)\mod_file_cache.so "$(INSTDIR)\modules"
         copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules"
         copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules"
-#       copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules"
+        copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules"
         copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules"
         copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules"
 	copy modules\mappers\$(LONG)\mod_speling.so "$(INSTDIR)\modules"
