@@ -1865,6 +1865,7 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
     tmp = apr_pstrcat(r->pool, protocol, " ", r->status_line, CRLF, NULL);
+    ap_xlate_proto_to_ascii(tmp, strlen(tmp));
     apr_cpystrn(buf, tmp, strlen(tmp) + 1);
     buf += strlen(tmp);
 
