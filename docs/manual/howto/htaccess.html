@@ -18,15 +18,15 @@
     <ul>
       <li><a href="#what">What they are/How to use them</a></li>
 
-      <li><a href="#when">When (not) to use them</a></li>
+      <li><a href="#when">When (not) to use .htaccess files</a></li>
 
       <li><a href="#how">How directives are applied</a></li>
 
       <li><a href="#auth">Authentication example</a></li>
 
-      <li><a href="#ssi">Server side includes</a></li>
+      <li><a href="#ssi">Server side includes example</a></li>
 
-      <li><a href="#cgi">CGI</a></li>
+      <li><a href="#cgi">CGI example</a></li>
 
       <li><a href="#troubleshoot">Troubleshooting</a></li>
     </ul>
@@ -105,9 +105,9 @@
 <td>FileInfo</td></tr>
 </table></blockquote>
 
-    <p>If you are unsure whether a particular diretive is permitted in a
+    <p>If you are unsure whether a particular directive is permitted in a
     .htaccess file, look at the documentation for that directive, and check
-    the Context line for ".htaccess"</p>
+    the Context line for ".htaccess."</p>
 
     <h2><a id="when" name="when">When (not) to use .htaccess files</a></h2>
 
@@ -141,9 +141,10 @@
 
     <p>Further note that Apache must look for .htaccess files in all
     higher-level directories, in order to have a full complement of
-    directives that it must apply. (See section on how directives are
-    applied, below.) Thus, if a file is requested out of a directory
-    /www/htdocs/example, Apache must look for the following files:</p>
+    directives that it must apply. (See section on <a href="#how">how
+    directives are applied</a>.) Thus, if a file is requested out of
+    a directory /www/htdocs/example, Apache must look for the following 
+    files:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 /.htaccess<br>
@@ -192,7 +193,7 @@ AddType text/example .exm
     AllowOverride None
 </code></td></tr></table></blockquote>
 
-    <h2><a id="how" name="how">How directives are applied:</a></h2>
+    <h2><a id="how" name="how">How directives are applied</a></h2>
 
     <p>The configuration directives found in a .htaccess file are applied to
     the directory in which the .htaccess file is found, and to all
@@ -201,7 +202,7 @@ AddType text/example .exm
     are applied in the order that they are found. Therefore, a .htaccess file
     in a particular directory may override directives found in .htaccess
     files found higher up in the directory tree. And those, in turn, may have
-    overriden directives found yet higher up, or in the main server
+    overridden directives found yet higher up, or in the main server
     configuration file itself.</p>
 
     <p>Example:</p>
@@ -224,7 +225,7 @@ Options Includes
 </code></td></tr></table></blockquote>
 
     <p>Because of this second .htaccess file, in the directory
-    /www/htdocs/example1/example2, cgi execution is not permitted, as only
+    /www/htdocs/example1/example2, CGI execution is not permitted, as only
     Options Includes is in effect, which completely overrides any earlier
     setting that may have been in place.</p>
 
@@ -263,7 +264,7 @@ Options Includes
     <p>Please see the <a href="auth.html">authentication tutorial</a>
     for a more complete discussion of authentication and authorization.</p>
 
-    <h2><a id="ssi" name="ssi">SSI example</a></h2>
+    <h2><a id="ssi" name="ssi">Server side includes example</a></h2>
 
     <p>Another common use of .htaccess files is to enable Server Side
     Includes for a particular directory. This may be done with the following
