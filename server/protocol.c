@@ -104,7 +104,7 @@ APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(default_port)
 )
 
-AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func;
+AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
 
 /*
  * Builds the content-type that should be sent to the client from the

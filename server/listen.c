@@ -72,7 +72,7 @@
 #include "mpm.h"
 #include "mpm_common.h"
 
-ap_listen_rec *ap_listeners;
+ap_listen_rec *ap_listeners = NULL;
 #if APR_HAVE_IPV6
 static int default_family = APR_UNSPEC;
 #else
