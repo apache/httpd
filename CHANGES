@@ -1,5 +1,8 @@
 Changes with Apache 2.0.32-dev
 
+  *) Fix resolve_symlink to save the original symlink name if known.
+     [Justin Erenkrantz]
+
   *) Be a bit more sane with regard to CanonicalNames.  If the user has
      specified they want to use the CanonicalName, but they have not
      configured a port with the ServerName, then use the same port that 
