@@ -482,7 +482,6 @@ module AP_MODULE_DECLARE_DATA vhost_alias_module =
     mva_create_server_config,	/* server config */
     mva_merge_server_config,	/* merge server configs */
     mva_commands,		/* command apr_table_t */
-    NULL,			/* handlers */
     register_hooks              /* register hooks */
 };
 
