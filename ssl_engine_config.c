@@ -90,7 +90,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
         /*
          * initialize per-module configuration
          */
-        mc->nInitCount             = 0;
         mc->nSessionCacheMode      = SSL_SCMODE_UNSET;
         mc->szSessionCacheDataFile = NULL;
         mc->nSessionCacheDataSize  = 0;

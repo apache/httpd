@@ -463,6 +463,7 @@ typedef struct {
 typedef struct {
     long int       nData;
     unsigned char *cpData;
+    apr_time_t     source_mtime;
 } ssl_asn1_t;
 
 /*
@@ -502,7 +503,6 @@ typedef struct {
     pid_t           pid;
     apr_pool_t     *pPool;
     BOOL            bFixed;
-    int             nInitCount;
     int             nSessionCacheMode;
     char           *szSessionCacheDataFile;
     int             nSessionCacheDataSize;
