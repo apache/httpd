@@ -1,0 +1,51 @@
+This release of Apache supports the notion of "optional modules".
+However, the server has to know which modules are compiled into it, in
+order for those modules to be effective; this requires generation of a
+short bit of code ("modules.c") which simply has a list of them.
+
+It is also necessary to choose the correct options for your platform.
+
+To do this:
+
+1) Copy the file "Configuration.tmpl" to "Configuration" and then edit
+   "Configuration".  This contains the per-machine config settings of
+   the Makefile, and also an additional section at the bottom which
+   lists the modules which have been compiled in, and also names the
+   files containing them.  You will need to:
+
+   a) Select a compiler, and compilation options as appropriate to
+      your machine.
+
+   b) Uncomment lines corresponding to those optional modules you wish
+      to include (among the Module lines at the bottom of the file),
+      or add new lines corresponding to custom modules you have written.
+      (See API.html for preliminary docs on how to do that).	
+
+      Note that DBM auth has to be explicitly configured in, if you want
+      it --- just uncomment the corresponding line.
+
+2) Run the "Configure" script:
+
+      % Configure
+      Using 'Configuration' as config file
+      %
+
+   This generates new versions of the Makefile and of modules.c.  (If
+   you want to maintain multiple configurations, you can say, e.g.,
+
+      % Configure -file Configuration.ai
+      Using alternate config file Configuration.ai
+      % 
+
+3) Type "make".
+
+The modules we place in the Apache distribution are the ones we have
+tested and are used regularly by various members of the Apache
+development group.  Additional modules contributed by members or third
+parties with specific needs or functions are available at
+<URL:http://www.apache.org/dist/contrib/modules/>.  There are
+instructions on that page for linking these modules into the
+core Apache code.
+
+
+ 

@@ -1,0 +1,272 @@
+# Config file for the Apache httpd.
+
+# Configuration.tmpl is the template for Configuration. Configuration should
+# be edited to select system type. Configuration.tmpl should only be changed
+# when a new system or module is added, or an existing one modified.
+
+# There are three types of lines here:
+
+# '#' comments, distinguished by having a '#' as the first non-blank character
+#
+# Lines which set a Make option --- these are simply copied into the Makefile
+#
+# Module selection lines, distinguished by having 'Module' at the front.
+# These list the configured modules, in priority order (highest priority
+# first).  They're down at the bottom.
+
+# First, ordinary compile-time configuration.
+
+# What to call the compiler:  For normal machines with ANSI compilers
+# CC= cc
+# For Suns or other non-ANSI platforms. Please make sure your gcc is
+# 2.0 or later, as 1.40 seems to create bad code for the Sun 4.
+CC= gcc
+
+# CFLAGS, compile flags.
+
+# -DMINIMAL_DNS is now obsolete. Use httpd.conf settings of
+# HostnameLookups on
+# or
+# HostnameLookups off
+#
+# If you want to have more secure hostname resolution at the cost of some 
+# performance, use -DMAXIMUM_DNS.
+# If you want setting the xbit of a file to cause it to be treated as
+# server-included HTML (unless it is a CGI script), say -DXBITHACK.  Note
+# that this is a run-time option, per-directory, either way (via the XBITHACK
+# command); this option only sets the default.
+
+# If you find that your OS can't cope with mmap (compiles OKAY but refuses
+# to run and moans "httpd: Could not mmap memory" .. or similar) try
+# disabling use of shared memory for process management (scoreboard with
+# -DNO_MMAP
+
+# Status Instrumentation
+# In order for the status module to obtain full statistics Apache must
+# be modified to keep track of various information.  This is not
+# turned on by default. In order to enable full status details add -DSTATUS 
+# to the end of the CFLAGS line below.
+
+# Using SOCKS
+# Apache can be compiled to work over a SOCKS firewall by 
+# adding the following string to your CFLAGS define:
+#
+#  -Dconnect=Rconnect -Dselect=Rselect -Dgethostbyname=Rgethostbyname
+#
+# and by adding the following to the EXTRA_LIBS define:
+#
+#  -L/usr/local/lib -lsocks
+#
+# making sure that -L points to wherever you've put libsocks.a.
+
+# [Some other former Apache compile-time options are now treated differently;
+#  the virtual host code is always present; DBM auth is an optional module, and
+#  may be configured out by changing the module config below, though it still
+#  defaults in.  Note that this config file does not include DBM auth by
+#  default --- configure it in below if you need it].
+
+CFLAGS= -O2
+
+# Place here any flags you may need upon linking, such as a flag to
+# prevent dynamic linking (if desired)
+LFLAGS= 
+
+# Place here any extra libraries you may need to link to. 
+# -lndbm is commonly required for DBM auth, if that is configured in.
+EXTRA_LIBS=
+
+# AUX_CFLAGS are system-specific control flags.
+# NOTE: IF YOU DO NOT CHOOSE ONE OF THESE, EDIT httpd.h AND CHOOSE
+# SETTINGS FOR THE SYSTEM FLAGS. IF YOU DON'T, BAD THINGS WILL HAPPEN.
+
+# For SunOS 4
+#AUX_CFLAGS= -DSUNOS4
+# For Solaris 2.
+#AUX_CFLAGS= -DSOLARIS2
+#AUX_LIBS= -lsocket -lnsl
+# For SGI IRIX. Use the AUX_LIBS line if you're using NIS and want
+# user-supported directories
+#AUX_CFLAGS= -DIRIX
+#AUX_LIBS= -lsun
+# For HP-UX       n.b. if you use the paid-for HP CC compiler, use flag -Ae
+#AUX_CFLAGS= -DHPUX
+# For AIX
+#AUX_CFLAGS= -DAIX -U__STR__
+# For Ultrix
+#AUX_CFLAGS= -DULTRIX
+# For DEC OSF/1
+#AUX_CFLAGS= -DOSF1
+# For NeXT
+#AUX_CFLAGS= -DNEXT
+# For Sequent
+#AUX_CFLAGS= -DSEQUENT
+# For Linux -m486 ONLY IF YOU HAVE 486 BINARY SUPPORT IN KERNEL
+#AUX_CFLAGS= -DLINUX
+# For A/UX
+#AUX_CFLAGS= -DAUX -D_POSIX_SOURCE
+#AUX_LIBS= -lposix -lbsd -s
+# For SCO ODT 3
+# libcrypt_i available from sosco.sco.com, files /SLS/lng225b.Z and
+# /SLS/lng225b.ltr.Z
+# the -Oe option causes cc to die compiling mod_imap (using 3.0.0a of the dev sys)
+#CFLAGS= -Oacgiltz
+#AUX_CFLAGS= -DSCO
+#AUX_LIBS= -lPW -lsocket -lmalloc -lcrypt_i
+# For SCO OpenServer Release 5
+# -K noinline is needed to work around an optimiser bug which appears in
+# http_bprintf.c
+#AUX_CFLAGS= -DSCO5
+#AUX_LIBS=-lsocket -lmalloc -lprot
+#BROKEN_BPRINTF_FLAGS=-K noinline
+# For SVR4
+# Some SVR4 implementations will require SO_LINGER option to be set in order
+# to guarantee buffer flushes. Dell, Esix, and UnixWare are a few of these.
+# Use -DNEED_LINGER in addition to other AUX_CFLAGS for these.
+#AUX_CFLAGS= -DSVR4
+#AUX_LIBS= -lsocket -lnsl -lc
+# For UnixWare 2.x, no longer just SVR4 (sigh) - use cc, not gcc
+# AUX_LIBS= -lsocket -lnsl -lcrypt
+# For Amdahl UTS 2.1
+# -Xa enables ANSI mode, -eft is expanded types
+#AUX_CFLAGS= -Xa -eft -DUTS21
+#AUX_LIBS= -lsocket -lbsd -la
+# For HP/Apollo Domain/OS
+#AUX_CFLAGS= -DAPOLLO
+# For NetBSD/FreeBSD/BSDI 2.x
+# -m486 only if you are running on Intel 486/586
+#AUX_CFLAGS= -m486
+# BSDI doesn't need -lcrypt
+#AUX_LIBS= -lcrypt
+# For QNX
+#AUX_CFLAGS= -DQNX
+#AUX_LFLAGS= -N 0x20000
+# For LynxOS
+#AUX_CFLAGS= -DLYNXOS
+#EXTRA_LIBS=-lbsd -ldes -lc_p
+# For DG/UX 5.4
+#AUX_CFLAGS= -DDGUX
+#AUX_LIBS=
+
+# For EMX OS/2 port
+#AUX_CFLAGS= -Zbsd-signals -Zbin-files
+#-DNO_KILLPG -DNEED_STRCASECMP -DNO_SETSID
+#-g
+#AUX_LIBS= -lsocket -llibufc -lgdbm -lbsd
+
+################################################################
+# Module configuration
+#
+# Modules are listed in reverse priority order --- the ones that come
+# later can override the behavior of those that come earlier.  This
+# can have visible effects; for instance, if UserDir followed Alias,
+# you couldn't alias out a particular user's home directory.
+
+# The configuration below is what we consider a decent default 
+# configuration.  If you want the functionality provided by a particular
+# module, remove the "#" sign at the beginning of the line. But remember, 
+# the more modules you compile into the server, the larger the executable
+# is and the more memory it will take, so if you are unlikely to use the
+# functionality of a particular module you might wish to leave it out.
+
+## Basic modules (i.e., generally useful stuff that works everyplace):
+## You should probably not comment out any of these unless you know what it
+## does and you know you won't need it.
+
+Module mime_module         mod_mime.o
+Module access_module       mod_access.o
+Module auth_module         mod_auth.o
+Module negotiation_module  mod_negotiation.o
+Module includes_module     mod_include.o
+Module dir_module          mod_dir.o
+Module cgi_module          mod_cgi.o
+Module userdir_module      mod_userdir.o
+Module alias_module        mod_alias.o
+Module env_module          mod_env.o
+Module common_log_module   mod_log_common.o
+
+## The asis module implemented ".asis" file types, which allow the embedding
+## of HTTP headers at the beginning of the document.  mod_imap handles internal 
+## imagemaps (no more cgi-bin/imagemap/!).  mod_actions is used to specify 
+## CGI scripts which act as "handlers" for particular files, for example to
+## automatically convert every GIF to another file type.
+
+Module asis_module         mod_asis.o
+Module imap_module         mod_imap.o
+Module action_module       mod_actions.o
+
+## Optional modules for NCSA user-agent/referer logging compatibility
+## We recommend, however, that you migrate to the configurable logging
+## module, below.
+
+# Module agent_log_module    mod_log_agent.o
+# Module referer_log_module  mod_log_referer.o
+
+## This is a *replacement* for mod_log_common which supports a
+## LogFormat directive which allows you to specify what goes into 
+## the TransferLog (if you want Referer, etc.)  source code for docs.
+##
+## If you play with this, remember to drop the standard
+## mod_log_common --- a server with both will work, but you'll get
+## very confused trying to figure out what's going on...
+
+# Module config_log_module   mod_log_config.o
+
+## cern_meta mimicks the behavior of the CERN web server with regards to 
+## metainformation files.  
+
+# Module cern_meta_module    mod_cern_meta.o
+
+## The status module allows the server to display current details about 
+## how well it is performing and what it is doing.  Consider also enabling 
+## -DSTATUS (see the CFLAGS section near the start of the file) to allow
+## full status information.  Check conf/access.conf on how to enable this.
+
+# Module status_module	     mod_status.o
+
+## The Info module displays configuration information for the server and 
+## all included modules. It's very useful for debugging.
+
+# Module info_module         mod_info.o
+
+## Optional authentication modules. 
+##
+## The anon_auth module allows for anonymous-FTP-style username/ 
+## password authentication.
+
+# Module anon_auth_module    mod_auth_anon.o
+
+## db_auth and dbm_auth work with Berkeley DB files - make sure there
+## is support for DBM files on your system.  You may need to grab the GNU
+## "gdbm" package if not.
+
+# Module db_auth_module      mod_auth_db.o
+# Module dbm_auth_module     mod_auth_dbm.o
+
+## msql_auth checks against an MSQL database.  You must have MSQL installed
+## and an "msql.h" available for this to even compile.  Additionally,
+## you may need to add a couple entries to the CFLAGS line, like
+##
+##  -lmsql -L/usr/local/lib -L/usr/local/Minerva/lib
+##
+## This depends on your installation of MSQL.
+
+# Module msql_auth_module    mod_auth_msql.o
+
+## "digest" implements HTTP Digest Authentication rather than the less 
+## secure Basic Auth used by the other modules.
+
+# Module digest_module       mod_digest.o
+
+## Outright experiments --- mod_dld defines commands which
+## allows other modules to be loaded in at runtime, and mod_cookies
+## uses Netscape cookies to automatically construct and log accurate
+## click-trails from Netscape cookies, for Netscape-using clients who
+## aren't coming in via proxy.   
+
+# Module dld_module	     mod_dld.o
+# Module cookies_module      mod_cookies.o
+
+## Finally, the proxy module.  It's not as complete as it could
+## be yet, so use at your own risk.
+
+# Module proxy_module        mod_proxy.o
