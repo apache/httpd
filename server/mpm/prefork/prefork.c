@@ -1694,6 +1694,7 @@ static void child_main(int child_num_arg)
 					 my_child_num);
 
 	ap_process_connection(current_conn);
+        ap_lingering_close(current_conn);
     }
 }
 
