@@ -177,7 +177,7 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
         free(dbmval.dptr);
         return FALSE;
     }
-    if (apr_dbm_store(dbm, dbmkey, dbmval) < 0) {
+    if (apr_dbm_store(dbm, dbmkey, dbmval) != APR_SUCCESS) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                 "Cannot store SSL session to DBM file `%s'",
                 mc->szSessionCacheDataFile);
