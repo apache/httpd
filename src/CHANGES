@@ -1,5 +1,8 @@
 Changes with Apache 1.2b8
 
+  *) Fixed problem with ErrorDocument not working for virtual hosts
+     due to one of the performance changes in 1.2b7. [Dean Gaudet]
+
   *) Log an error message if we get a request header that is too long,
      since it may indicate a buffer overflow attack. [Marc Slemko]
 

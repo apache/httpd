@@ -120,6 +120,12 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     int i;
   
     memcpy ((char *)conf, (const char *)base, sizeof(core_dir_config));
+    if( base->response_code_strings ) {
+	conf->response_code_strings = palloc(a,
+	    sizeof(*conf->response_code_strings) * RESPONSE_CODES );
+	memcpy( conf->response_code_strings, base->response_code_strings,
+	    sizeof(*conf->response_code_strings) * RESPONSE_CODES );
+    }
     
     conf->d = new->d;
     conf->d_is_matchexp = new->d_is_matchexp;
