@@ -3359,7 +3359,7 @@ static void register_hooks(apr_pool_t *p)
     ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
                               AP_FTYPE_CONTENT);
     ap_old_write_func = ap_register_output_filter("OLD_WRITE", 
-                                   ap_old_write_filter, AP_FTYPE_CONTENT - 1);
+                                   ap_old_write_filter, AP_FTYPE_CONTENT - 10);
 }
 
 AP_DECLARE_DATA module core_module = {
