@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/11 20:15:56 $]
+Last modified at [$Date: 2001/11/12 08:40:33 $]
 
 Release:
 
@@ -312,6 +312,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         randomization in APR itself.
         - Bring the Win9xConHook.dll from 1.3 into 2.0 (no sense till it
         actually works) and add in a splash of Win9x service code.
+
+    * In order to use a DSO version of mod_ssl we have to link with
+      -lssl and -lcrypto. A workaround is in place right now where the
+      entire EXTRA_LIBS macro is being appended to the objects list, but
+      this is a hack. We should either revamp the APACHE_CHECK_SSL_TOOLKIT
+      autoconf function or come up with some other autoconf checks to
+      search for libssl and libcrypto and properly add them to mod_ssl's
+      link flags.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
