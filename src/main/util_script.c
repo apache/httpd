@@ -302,6 +302,15 @@ int scan_script_header(request_rec *r, FILE *f)
         else if(!strcasecmp(w,"Location")) {
 	    table_set (r->headers_out, w, l);
         }   
+
+/* The HTTP specification says that it is legal to merge duplicate
+ * headers into one.  Some browsers that support Cookies don't like
+ * merged headers and prefer that each Set-Cookie header is sent
+ * separately.  Lets humour those browsers.
+ */
+	else if(!strcasecmp(w, "Set-Cookie")) {
+	    table_add(r->err_headers_out, w, l);
+	}
         else {
 	    table_merge (r->err_headers_out, w, l);
         }

@@ -624,6 +624,15 @@ void table_merge (table *t, char *key, char *val)
     elts->val = pstrdup (t->pool, val);
 }
 
+void table_add (table *t, char *key, char *val)
+{
+    table_entry *elts = (table_entry *)t->elts;
+
+    elts = (table_entry *)push_array(t);
+    elts->key = pstrdup (t->pool, key);
+    elts->val = pstrdup (t->pool, val);
+}
+
 table* overlay_tables (pool *p, table *overlay, table *base)
 {
     return append_arrays (p, overlay, base);
