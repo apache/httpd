@@ -179,9 +179,9 @@ typedef struct include_filter_ctx {
 
 #define CREATE_ERROR_BUCKET(cntx, t_buck, h_ptr, ins_head)        \
 {                                                                 \
-    apr_size_t e_wrt;                                             \
+    /* XXX: it'd probably be nice to use a pool bucket here */    \
     t_buck = apr_bucket_heap_create(cntx->error_str,              \
-                             strlen(cntx->error_str), 1, &e_wrt); \
+                             strlen(cntx->error_str), 1);         \
     APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                      \
                                                                   \
     if (ins_head == NULL) {                                       \
