@@ -901,11 +901,23 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB_EXPORT="-rdynamic"
             SHLIB_SUFFIX_DEPTH=0
             ;;
-        *-freebsd*)
+        *-freebsd2*)
             CFLAGS_SHLIB="-fpic"
             LDFLAGS_SHLIB="-Bshareable"
             LDFLAGS_SHLIB_EXPORT=""
             SHLIB_SUFFIX_DEPTH=2
+            ;;
+        *-freebsd3*)
+            CFLAGS_SHLIB="-fpic"
+            LDFLAGS_SHLIB="-Bshareable"
+            OBJFORMAT=`test -x /usr/bin/objformat && /usr/bin/objformat || echo aout` 
+            if [ ".$OBJFORMAT" = .elf ]; then
+                LDFLAGS_SHLIB_EXPORT="-Wl,-E"
+                SHLIB_SUFFIX_DEPTH=0
+            else
+                LDFLAGS_SHLIB_EXPORT=""
+                SHLIB_SUFFIX_DEPTH=2
+            fi  
             ;;
         *-openbsd*)
             CFLAGS_SHLIB="-fPIC"

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) PORT: DSO/ELF support for FreeBSD 3.0.
+     [Ralf S. Engelschall, Dirk Froemberg <ibex@physik.TU-Berlin.DE>]
+  
   *) Add a "default-handler" handler that calls the default_hander()
      function which is normally called for static content.  This allows
      you to override a specific handler.  [Marc Slemko]
