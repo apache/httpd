@@ -1,5 +1,8 @@
 Changes with Apache 1.2b2:
 
+  *) Fixed problem in set_[user|group] that prevented CGI execution
+     for non-virtualhosts when suEXEC was enabled.
+
   *) Added PORTING information file.  [Jim Jagielski]
 
   *) Added definitions for S_IWGRP and S_IWOTH to conf.h [Ben Laurie]

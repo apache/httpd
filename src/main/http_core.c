@@ -841,7 +841,7 @@ const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 {
     if (!cmd->server->is_virtual) {
 	user_name = pstrdup (cmd->pool, arg);
-	user_id = uname2id(arg);
+	cmd->server->server_uid = user_id = uname2id(arg);
     }
     else {
 	if (suexec_enabled)
@@ -859,7 +859,7 @@ const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 {
     if (!cmd->server->is_virtual)
-	group_id = gname2id(arg);
+	cmd->server->server_gid = group_id = gname2id(arg);
     else {
 	if (suexec_enabled)
 	    cmd->server->server_gid = gname2id(arg);
