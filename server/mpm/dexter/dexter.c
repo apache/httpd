@@ -67,8 +67,8 @@
 #include "unixd.h"
 #include "iol_socket.h"
 #include "ap_listen.h"
-#include "scoreboard.h" 
 #include "acceptlock.h"
+#include "mpm_default.h"
 
 #include <poll.h>
 #include <netinet/tcp.h> 
@@ -90,6 +90,16 @@ static int requests_this_child;
 static int num_listenfds = 0;
 static struct pollfd *listenfds;
 
+/* Table of child status */
+#define SERVER_DEAD 0
+#define SERVER_DYING 1
+#define SERVER_ALIVE 2
+
+static struct {
+    pid_t pid;
+    unsigned char status;
+} child_table[HARD_SERVER_LIMIT];
+
 #if 0
 #define SAFE_ACCEPT(stmt) do {if (ap_listeners->next != NULL) {stmt;}} while (0)
 #else
@@ -99,7 +109,7 @@ static struct pollfd *listenfds;
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with NumServers changes across SIGWINCH restarts.  We use this
- * value to optimize routines that have to scan the entire scoreboard.
+ * value to optimize routines that have to scan the entire child table.
  *
  * XXX - It might not be worth keeping this code in. There aren't very
  * many child processes in this MPM.
@@ -134,7 +144,7 @@ int raise_sigstop_flags;
 #endif
 
 #ifdef HAS_OTHER_CHILD
-/* used to maintain list of children which aren't part of the scoreboard */
+/* used to maintain list of children which aren't part of the child table */
 typedef struct other_child_rec other_child_rec;
 struct other_child_rec {
     other_child_rec *next;
@@ -317,14 +327,16 @@ static void reclaim_child_processes(int terminate)
 	/* now see who is done */
 	not_dead_yet = 0;
 	for (i = 0; i < max_daemons_limit; ++i) {
-	    int pid = ap_scoreboard_image[i].pid;
+	    int pid;
 
-	    if (ap_scoreboard_image[i].status == SERVER_DEAD)
+	    if (child_table[i].status == SERVER_DEAD)
 		continue;
+
+            pid = child_table[i].pid;
 
 	    waitret = waitpid(pid, &status, WNOHANG);
 	    if (waitret == pid || waitret == -1) {
-		ap_scoreboard_image[i].status = SERVER_DEAD;
+		child_table[i].status = SERVER_DEAD;
 		continue;
 	    }
 	    ++not_dead_yet;
@@ -1048,15 +1060,14 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 {
     int pid;
 
-    (void) ap_update_child_status(slot, SERVER_ALIVE);
-
     if (slot + 1 > max_daemons_limit) {
         max_daemons_limit = slot + 1;
     }
 
     if (one_process) {
 	set_signals();
-        ap_scoreboard_image[slot].pid = getpid();
+        child_table[slot].pid = getpid();
+        child_table[slot].status = SERVER_ALIVE;
 	child_main(slot);
     }
 
@@ -1093,7 +1104,9 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 	return 0;
     }
     /* else */
-    ap_scoreboard_image[slot].pid = pid;
+    child_table[slot].pid = pid;
+    child_table[slot].status = SERVER_ALIVE;
+
     return 0;
 }
 
@@ -1103,7 +1116,7 @@ static int startup_children(int number_to_start)
     int i;
 
     for (i = 0; number_to_start && i < num_daemons; ++i) {
-	if (ap_scoreboard_image[i].status != SERVER_DEAD) {
+	if (child_table[i].status != SERVER_DEAD) {
 	    continue;
 	}
 	if (make_child(server_conf, i, 0) < 0) {
@@ -1141,14 +1154,13 @@ static void perform_child_maintenance(void)
     ap_check_signals();
     
     for (i = 0; i < num_daemons; ++i) {
-        unsigned char status = ap_scoreboard_image[i].status;
-
-        if (status == SERVER_DEAD) {
+        if (child_table[i].status == SERVER_DEAD) {
             if (free_length < spawn_rate) {
                 free_slots[free_length] = i;
                 ++free_length;
             }
-        } else {
+        }
+        else {
             last_non_dead = i;
         }
 
@@ -1182,16 +1194,23 @@ static void server_main_loop(int remaining_children_to_start)
     int child_slot;
     ap_wait_t status;
     int pid;
+    int i;
 
     while (!restart_pending && !shutdown_pending) {
         pid = wait_or_timeout(&status);
         
         if (pid >= 0) {
             process_child_status(pid, status);
-            /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = find_child_by_pid(pid);
+            /* non-fatal death... note that it's gone in the child table. */
+            child_slot = -1;
+            for (i = 0; i < max_daemons_limit; ++i) {
+        	if (child_table[i].pid == pid) {
+                    child_slot = i;
+                    break;
+                }
+            }
             if (child_slot >= 0) {
-                ap_update_child_status(child_slot, SERVER_DEAD);
+                child_table[child_slot].status = SERVER_DEAD;
                 
 		if (remaining_children_to_start
 		    && child_slot < num_daemons) {
@@ -1210,9 +1229,9 @@ static void server_main_loop(int remaining_children_to_start)
 	    }
 	    else if (is_graceful) {
 		/* Great, we've probably just lost a slot in the
-		    * scoreboard.  Somehow we don't know about this
-		    * child.
-		    */
+		 * child table.  Somehow we don't know about this
+		 * child.
+		 */
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
 			    "long lost child came home! (pid %d)", pid);
 	    }
@@ -1244,6 +1263,7 @@ static void server_main_loop(int remaining_children_to_start)
 int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 {
     int remaining_children_to_start;
+    int i;
 
     pconf = _pconf;
     server_conf = s;
@@ -1270,8 +1290,11 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     }
     ap_log_pid(pconf, ap_pid_fname);
     SAFE_ACCEPT(accept_mutex_init(pconf, 1));
+    /* Initialize the child table */
     if (!is_graceful) {
-        reinit_scoreboard(pconf);
+        for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+            child_table[i].status = SERVER_DEAD;
+        }
     }
 
     set_signals();
@@ -1350,8 +1373,8 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
          */
 	
 	for (i = 0; i < num_daemons; ++i) {
-	    if (ap_scoreboard_image[i].status != SERVER_DEAD) {
-	        ap_scoreboard_image[i].status = SERVER_DYING;
+	    if (child_table[i].status != SERVER_DEAD) {
+	        child_table[i].status = SERVER_DYING;
 	    } 
 	}
 	/* give the children the signal to die */
