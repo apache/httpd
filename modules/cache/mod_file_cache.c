@@ -158,6 +158,7 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
+#if APR_HAS_SENDFILE
 static apr_status_t open_file(apr_file_t **file, const char *filename, int flg1, int flg2, 
                              apr_pool_t *p)
 {
@@ -187,6 +188,7 @@ static apr_status_t open_file(apr_file_t **file, const char *filename, int flg1,
 
     return rv;
 }
+#endif /* APR_HAS_SENDFILE */
 
 static apr_status_t cleanup_file_cache(void *sconfv)
 {
