@@ -1621,7 +1621,7 @@ char *ap_get_local_host(pool *a)
     str[MAXHOSTNAMELEN] = '\0';
     if ((!(p = gethostbyname(str))) || (!(server_hostname = find_fqdn(a, p)))) {
 	fprintf(stderr, "httpd: cannot determine local host name.\n");
-	fprintf(stderr, "Use ServerName to set it manually.\n");
+	fprintf(stderr, "Use the ServerName directive to set it manually.\n");
 	exit(1);
     }
 
