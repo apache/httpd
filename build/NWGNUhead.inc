@@ -56,6 +56,8 @@ help :
 	@echo nlms. . . . . . . builds all nlms
 	@echo install . . . . . builds libs and nlms and copies install files to
 	@echo                   "$(INSTALL)"
+	@echo installdev. . . . copies headers and files needed for development to
+	@echo                   "$(INSTALL)"
 	@echo clean . . . . . . deletes $(OBJDIR) dirs, *.err, and *.map
 	@echo clobber_all . . . deletes all possible output from the make
 	@echo clobber_install . deletes all files in $(INSTALL)
