@@ -963,9 +963,9 @@ request_rec *ap_read_request(conn_rec *conn)
 #endif
 
     ap_bsetopt(conn->client, BO_TIMEOUT,
-        conn->keptalive
-            ? &r->server->keep_alive_timeout
-            : &r->server->timeout);
+               conn->keptalive
+               ? &r->server->keep_alive_timeout
+               : &r->server->timeout);
 
     /* Get the request... */
     if (!read_request_line(r)) {
@@ -2015,18 +2015,28 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
  */
 API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
+    ap_status_t rv;
     long len = r->finfo.size;
 #ifdef HAVE_SENDFILE
     if (!r->chunked) {
+        ap_bsetopt(r->connection->client, BO_TIMEOUT,
+                   r->connection->keptalive
+                   ? &r->server->keep_alive_timeout
+                   : &r->server->timeout);
         ap_bflush(r->connection->client);
-        if (iol_sendfile(r->connection->client->iol, 
-                         fd,  /* The file to send */
-                         NULL, /* header and trailer iovecs */
-                         0,   /* Offset in file to begin sending from */
-                         &len,
-                         0) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        rv = iol_sendfile(r->connection->client->iol, 
+                          fd,     /* The file to send */
+                          NULL,   /* header and trailer iovecs */
+                          0,      /* Offset in file to begin sending from */
+                          &len,
+                          0);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "ap_send_fd: iol_sendfile failed.");
+        }
+        if (r->connection->keptalive) {
+            ap_bsetopt(r->connection->client, BO_TIMEOUT, 
+                       &r->server->timeout);
         }
     }
     else {
