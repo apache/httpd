@@ -2,16 +2,64 @@ Apache 1.3 STATUS:
 
 Release:
 
-    1.3.3-dev: current
-	   Martin has volunteered to be RM.
-	   Plan is to build the 1.3.3 tarball on Oct 7, 1998, testing
-	   it for two days, and announcing and releasing on Oct 9, 1998
+    1.3.4-dev: current
+
+    1.3.3: Tagged and rolled on Oct. 7.
+	   Martin is RM. Plan is to announce and release on Oct 9, 1998
 
     1.3.2: Tagged and rolled on Sep. 21. Announced and released on 23rd.
     1.3.1: Tagged and rolled on July 19. Announced and released.
     1.3.0: Tagged and rolled on June 1.  Announced and released on the 6th.
            
     2.0  : In pre-alpha development, see apache-2.0 repository
+
+Current "Go" chart by platform:
+
+    A/UX 3.1.1             Jim Jagielski <jim@jaguNET.com>
+    AIX 3.2                Jens-Uwe Mager <jum@helios.de>
+    		       compile & go
+    AIX 4.1.5              Jens-Uwe Mager <jum@helios.de>
+    		       compile & go, simple production
+    AIX 4.1.5  gcc         Shane Owenby <shaneo@us.ibm.com>
+    		       --enable-shared=remain --disable-module=auth_db
+    AIX 4.2.1  xlC 3.1.4   Shane Owenby <shaneo@us.ibm.com>
+    		       --enable-shared=remain --disable-module=auth_db
+    AIX 4.3                Jens-Uwe Mager <jum@helios.de>
+    		       compile & go
+    AIX 4.3.1  xlC 3.1.4   Shane Owenby <shaneo@us.ibm.com>
+    		       --enable-shared=remain --disable-module=auth_db
+    BS2000/OSD             Martin Kraemer <martin.kraemer@mch.sni.de>
+    		       mod_php3.0.5 w/ freetype & gd (minor include adjustment)
+    FreeBSD 2.2.6          "Ralf S. Engelschall" <rse@engelschall.com>
+    FreeBSD 2.2.6          Dirk-Willem van Gulik <dirk.vangulik@jrc.it> Production (simple)
+    FreeBSD 2.2.7          Dirk-Willem van Gulik <dirk.vangulik@jrc.it> Production (simple)
+    FreeBSD 2.2.7-release  Jim Jagielski <jim@jaguNET.com>
+    FreeBSD 2.2.7-stable   Jim Jagielski <jim@jaguNET.com>
+    FreeBSD 3 Snap         Dirk-Willem van Gulik <dirk.vangulik@jrc.it>
+    HP-UX 11.00.           "Voglmaier, Reinhard Erich" <rv33100@GlaxoWellcome.co.uk>
+    		       mod_auth_dbm and mod_cntr.
+    		       Problem: Configure tries to open ./helpers/helpers.
+    Irix 5.3               Dirk-Willem van Gulik <dirk.vangulik@jrc.it>
+    Irix 5.4               Dirk-Willem van Gulik <dirk.vangulik@jrc.it>
+    Irix 5.6  (gcc)        Dirk-Willem van Gulik <dirk.vangulik@jrc.it> 
+    Linux Debian GNU/1.3   "Ralf S. Engelschall" <rse@engelschall.com>
+    Linux i386 RedHat 4.x  Christof Damian <damian@mediaconsult.com>
+    		       mod_php, mod_php3, mod_perl & mod_auth_mysql
+    Linux 2.0.35 (RH5.1, glibc2) Manoj Kasichainula <manojk@io.com>
+    		       basic stuff tested okay.
+    OS/2                   "Brian Havard" <brianh@kheldar.apana.org.au>
+    		       Builds and runs on OS/2.
+    OSF1 / 4.0             Dirk-Willem van Gulik <dirk.vangulik@jrc.it> (warning version stamp)
+    ReliantUNIX 5.43       Martin Kraemer <martin.kraemer@mch.sni.de>
+    		       Intranet Origin&Proxy server
+    SINIX 5.41             Martin Kraemer <martin.kraemer@mch.sni.de>
+    		       Origin server w/ mod_php3.0.4
+    Solaris 2.4 (gcc)      Dirk-Willem van Gulik <dirk.vangulik@jrc.it>
+    Solaris 2.5 (gcc)      Dirk-Willem van Gulik <dirk.vangulik@jrc.it> Production
+    Solaris 2.6 (gcc)      Martin Kraemer <martin.kraemer@mch.sni.de>
+    		       Compile & Go/NoGo test only
+    SunOs 4.1.3 (gcc)      Dirk-Willem van Gulik <dirk.vangulik@jrc.it>
+
 
 RELEASE SHOWSTOPPERS:
 
@@ -447,15 +495,15 @@ Binaries
    freebsd_2.1            N       N     1.2.4
    freebsd_2.2            N       N     1.2.5
    hpux_10.20             N       N     1.2.5
-   hpux_11                N       Y     
+   hpux_11                N       N     1.3.2
    irix_6.2               N       N     1.2.5
    linux_2.x              N       N     1.2.4, 1.3.0
    netbsd_1.2             N       N     1.2.4
-   os2                    N       Y     1.3.1
+   os2                    N       N     1.3.2
    reliantunix_5.4        Y       N     1.3.1
    solaris                N       N     1.2.5, 1.3.0, 1.3.1
    sparclinux             N       N     1.3.0, 1.3.1
    sunos_4.1.x            N       N     1.2.5
    ultrix_4.4             N       N     1.2.4
-   win32                  -       Y     1.3.1  (is symlink okay?)
+   win32                  -       N     1.3.2  (is symlink okay?)
 
