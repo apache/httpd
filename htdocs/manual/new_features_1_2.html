@@ -33,12 +33,15 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
 
 <li><b><xa href="http11.html">HTTP/1.1 Compliance</a></b>
 [Documentation to be written]<br>
-Apache (except for the optional proxy) is fully compliant with
-the new HTTP/1.1 standard, as ratified
-by the <a href="http://www.ics.uci.edu/pub/ietf/http/">IETF HTTP
-working group</a>. HTTP/1.1 provides a much-improved protocol, and
+Aside from the optional proxy module (which operates as HTTP/1.0),
+Apache is conditionally compliant with the HTTP/1.1 proposed standard,
+as approved by the IESG and the
+<a href="http://www.ics.uci.edu/pub/ietf/http/">IETF HTTP working group</a>.
+HTTP/1.1 provides a much-improved protocol, and
 should allow for greater performance and efficiency when transferring
 files. Apache does, however, still work great with HTTP/1.0 browsers.
+We are very close to being unconditionally compliant; if you note any
+deviance from the proposed standard, please report it as a bug.
 
 <li><b><a href="mod/mod_include.html">eXtended Server Side Includes
 (XSSI)</a></b><br>
@@ -95,7 +98,7 @@ open <a href="multilogs.html">more than one log file</a> at once
 Revisions</a></b><br>
 The <code>mod_cookies</code> included with previous versions of Apache
 has been renamed <code>mod_usertrack</code>, to more accurately
-reflect its function (some people inadvertantely thought it enabled
+reflect its function (some people inadvertently thought it enabled
 cookie support in Apache, which is not true - Apache supports the use
 of cookies directly). It is also now possible to disable the
 generation of cookies, even when
@@ -120,9 +123,9 @@ New directives allow the limiting of resources used by CGI scripts
 (e.g. max CPU time). This is helpful in preventing 'runaway' CGI
 processes.
 
-<li><b><a href="mod/mod_alias.html">Redirect Directive Can Returns Additional Statuses</a></b><br>
+<li><b><a href="mod/mod_alias.html">Redirect Directive Can Return Alternate Status</a></b><br>
     The Redirect directive can return permanent or temporary redirects,
-    "Gone" or "See Other" HTTP statuses. For NCSA-compatability, 
+    "Gone" or "See Other" HTTP status. For NCSA-compatibility, 
     RedirectTemp and RedirectPermanent are also implemented.
 
 <li><b><xa href="graceful.html">Graceful Restarts</a></b>
@@ -135,7 +138,7 @@ processes.
     simplified.
 
 <li><b><a href="mod/core.html#options">Add or Remove Options</a></b><br>
-    The <code>Options</code>directive can now add or remove options from
+    The <code>Options</code> directive can now add or remove options from
     those currently in force, rather than always replacing them.
 
 <li><b><a href="invoking.html#help">Command-line Help</a></b><br>
