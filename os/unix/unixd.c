@@ -449,6 +449,7 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
     apr_status_t status;
     int sockdes;
 
+    *accepted = NULL;
     status = apr_accept(&csd, lr->sd, ptrans);
     if (status == APR_SUCCESS) { 
         *accepted = csd;
