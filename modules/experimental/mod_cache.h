@@ -219,7 +219,7 @@ struct cache_object {
     apr_size_t count;   /* Number of body bytes written to the cache so far */
     int complete;
 #ifdef USE_ATOMICS
-    apr_atomic_t refcount;
+    apr_uint32_t refcount;
 #else
     apr_size_t refcount;
 #endif

@@ -103,7 +103,7 @@ typedef struct mem_cache_object {
     long total_refs;          /**< total number of references this entry has had */
 
 #ifdef USE_ATOMICS
-    apr_atomic_t pos;   /**< the position of this entry in the cache */
+    apr_uint32_t pos;   /**< the position of this entry in the cache */
 #else
     apr_ssize_t pos;
 #endif
