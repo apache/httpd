@@ -59,7 +59,7 @@
     <p>The default value of the <code>Listen</code> field for
     main_server is 80. The main_server has no default
     <code>ServerPath</code>, or <code>ServerAlias</code>. The
-    default <code>ServerName</code> is deduced from the servers IP
+    default <code>ServerName</code> is deduced from the server's IP
     address.</p>
 
     <p>The main_server Listen directive has two functions.  One
