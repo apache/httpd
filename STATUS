@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/26 23:30:38 $]
+Last modified at [$Date: 2004/05/31 09:47:50 $]
 
 Release:
 
@@ -81,7 +81,8 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Allow LimitRequestBody to be reset to unlimited. PR 29106
          server/core.c: r1.279
-       +1: nd, kess (on concept)
+       +1: nd
+       +1: kess (on concept)
 
     *) Small fix to allow reverse proxying to an ftp server. Previously
        an attempt to do this would try and connect to 0.0.0.0, regardless
@@ -106,7 +107,7 @@ PATCHES TO BACKPORT FROM 2.1
        with conditional use of APR_LARGEFILE
 
        PR: 13511
-       +1: jorton, trawick
+       +1: jorton, trawick, nd
 
     *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
        modules/ssl/ssl_scache_shmcb.c: r1.26
@@ -116,6 +117,7 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.160&r2=1.163
        PR: 22030, 18348
        +1: jorton, trawick
+       +1: nd (concept)
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
