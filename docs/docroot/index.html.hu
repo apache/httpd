@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Ezen a web oldalon az Apache-webszerver van telepítve!</title>
+  <!-- Translated Wed Jan  7 09:22:01 2004 - Lacza Vilmos at siemens dot com -->
+ </head>
+ <!-- Background white, links blue (unvisited), navy (visited), red
+ (active) -->
+ <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+ vlink="#000080" alink="#FF0000">
+  <h1 align="center">
+   Talált! Ezen a web oldalon az Apache-webszerver van telepítve!
+  </h1>
+  <p>
+    Ha Ön ezt az oldalt látja, az azt jelenti, hogy ennek a domain-nek 
+    a tulajdonosa éppen egy új Apache webszervert telepített sikeresen.
+    Most még ezt a lapot a valós web tartalommal ki kell egészíteni és 
+    a lapot átalakítani (vagy a webszervert a valós tartalmak 
+    eléréséhez át kell konfigurálni).
+  </p>
+  <hr />
+  <blockquote>
+   <p>
+    Ha Ön ezt a lapot egy másik várt weblap helyett látná,
+    <strong>vegye fel a kapcsolatot ennek a lapnak a tulajdonosával!</strong>
+    (Kísérelje meg e-mail üzenet küldését a <samp>&lt;webmaster@<em>domain-név</em>&gt;</samp> címre).<br />
+   </p>
+   <p>
+     Annak ellenére, hogy ennek a domain-nek a tulajdonosa az Apache 
+     webszerver szoftvert használja, ennek az oldalnak semminemü kapcsolata
+     nincs az <em>Apache Software Foundation</em> szervezettel (amely ezt a szoftvert 
+     ingyenesen terjeszti). <strong>Ebbõl kifolyólag nem áll fenn semmilyen indok
+     e-mail üzenet küldésére a szoftver fejlesztõinek címezve.</strong>
+     Ha Ön mégis ezt tenné, az Ön e-mail <strong><big>üzenete törölve lesz</big></strong>.
+   </p>
+  </blockquote>
+  <hr />
+  <p>
+   Az Apache-webszerver szoftver angol nyelvû <a
+   href="manual/">online dokumentációja</a> része 
+   ennek a szoftvercsomagnak.
+  </p>
+  <p>
+   Ezen weblap webmesterének joga van az alul elhelyezkedõ
+   "Powered by Apache"-logót Apache szoftveren alapuló webszerveren használni.
+   <br />
+   Köszönet, hogy Ön az Apache szoftvert választotta! 
+  </p>
+  <div align="center">
+   <img src="apache_pb.gif" alt="Powered by the Apache HTTP Server!">
+  </div>
+ </body>
+</html>
