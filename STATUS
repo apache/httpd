@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 16:35:33 $]
+Last modified at [$Date: 2003/05/13 16:53:05 $]
 
 Release:
 
@@ -202,15 +202,6 @@ PATCHES TO PORT FROM 2.1
       comfortable with doing)
       (the docs should explain the thing better. Currently it's not
        really understandable for users. If nobody else does, nd tries to.)
-
-    * Fix a problem that caused httpd to be linked with incorrect flags
-      on some platforms when mod_so was enabled by default, breaking 
-      DSOs on AIX.  PR 19012
-      This was new breakage with 2.0.45 that has bit at least a 
-      handful of vocal people, but there is an easy work-around 
-      (explicitly add --enable-so).
-      modules/mappers/config9.m4 r1.16
-      +1: trawick, nd, stoddard
 
     * Hook mod_rewrite's type checker before mod_mime's one. That way the
       RewriteRule [T=...] Flag should work as expected now. PR 19626.
