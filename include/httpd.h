@@ -427,7 +427,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * all of the potential response status-lines (a sparse table).
  * A future version should dynamically generate the apr_table_t at startup.
  */
-#define RESPONSE_CODES 76
+#define RESPONSE_CODES 57
 
 #define HTTP_CONTINUE                      100
 #define HTTP_SWITCHING_PROTOCOLS           101
@@ -440,7 +440,6 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_RESET_CONTENT                 205
 #define HTTP_PARTIAL_CONTENT               206
 #define HTTP_MULTI_STATUS                  207
-#define HTTP_IM_USED                       226
 #define HTTP_MULTIPLE_CHOICES              300
 #define HTTP_MOVED_PERMANENTLY             301
 #define HTTP_MOVED_TEMPORARILY             302
