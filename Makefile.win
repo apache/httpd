@@ -658,5 +658,5 @@ BEGIN {
 	  print $$0;
     }
 <<
-	del .a .y
-
+	del .y
+	del .a
