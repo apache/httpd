@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) Fix the building of cgi command lines when the query string
+     contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
+     Jeff Trawick]
+
   *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
      as set by apr-util in util_ldap.c. This should allow mod_ldap
      to work with the Netscape/Mozilla LDAP library. [Øyvin Sømme
