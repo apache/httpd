@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "DBMMANAGE" 1 "2003-05-10" "Apache HTTP Server" "dbmmanage"
+.TH "DBMMANAGE" 1 "2003-11-25" "Apache HTTP Server" "dbmmanage"
 
 .SH NAME
 dbmmanage \- Manage user authentication files in DBM format
@@ -47,7 +47,6 @@ This manual page only lists the command line arguments\&. For details of the dir
 
 .SH "OPTIONS"
  
-.RS
  
 .TP
 \fIfilename\fR
@@ -64,11 +63,9 @@ A group, which the user is member of\&. A groupname may not contain a colon (:)\
 .TP
 \fIcomment\fR
 This is the place for your opaque comments about the user, like realname, mailaddress or such things\&. The server will ignore this field\&.  
-.RE
  
-.Sh "ENCODINGS"
+.SS "Encodings"
  
-.RS
  
 .TP
 -d
@@ -82,11 +79,9 @@ SHA1 encryption
 .TP
 -p
 plaintext (\fInot recommended\fR)  
-.RE
   
-.Sh "COMMANDS"
+.SS "Commands"
  
-.RS
  
 .TP
 add
@@ -109,7 +104,6 @@ Same as the adduser command, except that it makes sure \fIusername\fR already ex
 .TP
 view
 Just displays the contents of the DBM file\&. If you specify a \fIusername\fR, it displays the particular record only\&.  
-.RE
   
 .SH "BUGS"
  
