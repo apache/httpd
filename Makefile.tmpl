@@ -139,7 +139,7 @@ all: build
 build: 
 	@echo "===> $(SRC)"
 	@$(MAKE) -f $(MKF) $(MFLAGS) build-std $(build-support)
-	@touch $(SRC)/.build.ok
+	@touch $(SRC)/.apaci.build.ok
 	@echo "<=== $(SRC)"
 
 #   build the standard stuff
@@ -165,7 +165,7 @@ build-support:
 #   package. This is implemented by running subtargets for the
 #   separate parts of the installation process.
 install:
-	@if [ ! -f $(SRC)/.build.ok ]; then \
+	@if [ ! -f $(SRC)/.apaci.build.ok ]; then \
 	    $(MAKE) -f $(MKF) $(MFLAGS) build; \
 	fi
 	@$(MAKE) -f $(MKF) $(MFLAGS) \
@@ -341,7 +341,7 @@ install-docroot:
 clean:
 	@echo "===> $(SRC)"
 	@$(MAKE) -f $(MKF) $(MFLAGS) clean-std $(clean-support)
-	@rm -f $(SRC)/.build.ok
+	@rm -f $(SRC)/.apaci.build.ok
 	@echo "<=== $(SRC)"
 
 #   clean the standard stuff
