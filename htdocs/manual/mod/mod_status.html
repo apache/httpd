@@ -80,7 +80,15 @@ Do this by adding the following to the AUX_CFLAGS line in the
 	AUX_CFLAGS= (something) -DSTATUS
 </pre>
 
+<BLOCKQUOTE>
+ <STRONG>
+  It should be noted that if <SAMP>mod_status</SAMP> is compiled into
+  the server, its handler capability is available in <EM>all</EM>
+  configuration files, including <EM>per</EM>-directory files
+  (<EM>e.g.</EM>, <SAMP>.htaccess</SAMP>).  This may have
+  security-related ramifications for your site.
+ </STRONG>
+</BLOCKQUOTE>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-
