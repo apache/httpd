@@ -2768,7 +2768,7 @@ static int handle_map_file(request_rec *r)
         apr_bucket_brigade *bb;
         apr_bucket *e;
 
-        ap_allow_methods(r, REPLACE_ALLOW, "GET", "OPTIONS", "POST", NULL);
+        ap_allow_standard_methods(r, REPLACE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
         if ((res = ap_discard_request_body(r)) != OK) {
             return res;
         }

@@ -2676,7 +2676,7 @@ static int default_handler(request_rec *r)
     bld_content_md5 = (d->content_md5 & 1)
       && r->output_filters->frec->ftype != AP_FTYPE_CONTENT;
 
-    ap_allow_methods(r, MERGE_ALLOW, "GET", "OPTIONS", "POST", NULL);
+    ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
 
     if ((errstatus = ap_discard_request_body(r)) != OK) {
         return errstatus;
