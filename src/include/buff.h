@@ -167,3 +167,6 @@ API_EXPORT(int) spawn_child_err_buff (pool *, int (*)(void *), void *,
 API_EXPORT(int) bnonblock(BUFF *fb, int direction);
 /* and get an fd to select() on */
 API_EXPORT(int) bfileno(BUFF *fb, int direction);
+
+/* bflush() if a read now would block, but don't actually read anything */
+API_EXPORT(void) bhalfduplex (BUFF *fb);

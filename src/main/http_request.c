@@ -411,7 +411,7 @@ int directory_walk (request_rec *r)
 	    void *htaccess_conf = NULL;
 
   	    res = parse_htaccess (&htaccess_conf, r, overrides_here,
- 				  test_dirname, sconf->access_name);
+ 				  pstrdup (r->pool, test_dirname), sconf->access_name);
 	    if (res) return res;
 
 	    if (htaccess_conf)
@@ -1076,6 +1076,14 @@ void process_request (request_rec *r)
     old_stat = update_child_status (r->connection->child_num, SERVER_BUSY_LOG,
      r);
 #endif /* STATUS */
+
+    /* We want to flush the last packet if this isn't a pipelining
+     * connection *before* we start into logging.  Suppose that the logging
+     * causes a DNS lookup to occur, which may have a high latency.  If
+     * we hold off on this packet, then it'll appear like the link is
+     * stalled when really it's the application that's stalled.
+     */
+    bhalfduplex (r->connection->client);
     log_transaction (r);
 #ifdef STATUS
     (void)update_child_status (r->connection->child_num, old_stat, r);

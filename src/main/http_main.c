@@ -2398,7 +2398,7 @@ void child_main(int child_num_arg)
 		if (lr == NULL) continue;
 		sd = lr->fd;
 	    } else {
-		/* there's only one socket, just pretend we the other stuff */
+		/* only one socket, just pretend we did the other stuff */
 		sd = listeners->fd;
 	    }
 

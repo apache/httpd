@@ -128,8 +128,10 @@ Changes with Apache 1.3a2
      [Dean Gaudet]
 
   *) In obscure cases where a partial socket write occured while chunking,
-     Apache would omit the chunk header/footer on the next block.
-     [Dean Gaudet]
+     Apache would omit the chunk header/footer on the next block.  Cleaned
+     up other bugs/inconsistencies in error conditions in buff.c.  Fixed
+     a bug where a long pause in DNS lookups could cause the last packet
+     of a response to be unduly delayed.  [Roy Fielding, Dean Gaudet]
 
   *) API: Added child_exit function to module structure.  This is called
      once per "heavy-weight process" just before a server child exit()'s 
