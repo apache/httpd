@@ -1,8 +1,10 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>suEXEC Support - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">suEXEC Support</h1>
+      --><title>suEXEC Support - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>suEXEC Support</h1>
     <p>The <strong>suEXEC</strong> feature provides
     Apache users the ability
     to run <strong>CGI</strong> and <strong>SSI</strong> programs
@@ -18,10 +20,10 @@
     you aren't familiar with managing setuid root programs and the
     security issues they present, we highly recommend that you not
     consider using suEXEC.</p>
-  <ul><li><a href="#before">Before we begin</a></li><li><a href="#model">suEXEC Security Model</a></li><li><a href="#install">Configuring &amp; Installing
-    suEXEC</a></li><li><a href="#enable">Enabling &amp; Disabling
-    suEXEC</a></li><li><a href="#usage">Using suEXEC</a></li><li><a href="#debug">Debugging suEXEC</a></li><li><a href="#jabberwock">Beware the Jabberwock:
-    Warnings &amp; Examples</a></li></ul><hr><h2><a name="before">Before we begin</a></h2>
+  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">Before we begin</a></li><li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC Security Model</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">Configuring &amp; Installing
+    suEXEC</a></li><li><img alt="" src="./images/down.gif" /> <a href="#enable">Enabling &amp; Disabling
+    suEXEC</a></li><li><img alt="" src="./images/down.gif" /> <a href="#usage">Using suEXEC</a></li><li><img alt="" src="./images/down.gif" /> <a href="#debug">Debugging suEXEC</a></li><li><img alt="" src="./images/down.gif" /> <a href="#jabberwock">Beware the Jabberwock:
+    Warnings &amp; Examples</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="before" id="before">Before we begin</a></h2>
 
     <p>Before jumping head-first into this document,
     you should be aware of the assumptions made on the part of the
@@ -67,7 +69,7 @@
     enough to use it.</p>
 
     <p>Still with us? Yes? Good. Let's move on!</p>
-<h2><a name="model">suEXEC Security Model</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="model" id="model">suEXEC Security Model</a></h2>
 
     <p>Before we begin configuring and installing
     suEXEC, we will first discuss the security model you are about
@@ -94,209 +96,209 @@
         <strong>Was the wrapper called with the proper number of
         arguments?</strong> 
 
-        <blockquote>
+        <p class="indent">
           The wrapper will only execute if it is given the proper
           number of arguments. The proper argument format is known
           to the Apache web server. If the wrapper is not receiving
           the proper number of arguments, it is either being
           hacked, or there is something wrong with the suEXEC
           portion of your Apache binary.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the user executing this wrapper a valid user of
         this system?</strong> 
 
-        <blockquote>
+        <p class="indent">
           This is to ensure that the user executing the wrapper is
           truly a user of the system.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is this valid user allowed to run the
         wrapper?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Is this user the user allowed to run this wrapper? Only
           one user (the Apache user) is allowed to execute this
           program.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Does the target program have an unsafe hierarchical
         reference?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Does the target program contain a leading '/' or have a
           '..' backreference? These are not allowed; the target
           program must reside within the Apache webspace.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target user name valid?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Does the target user exist?
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target group name valid?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Does the target group exist?
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target user <em>NOT</em> superuser?</strong>
         
 
-        <blockquote>
+        <p class="indent">
           Presently, suEXEC does not allow 'root' to execute
           CGI/SSI programs.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target userid <em>ABOVE</em> the minimum ID
         number?</strong> 
 
-        <blockquote>
+        <p class="indent">
           The minimum user ID number is specified during
           configuration. This allows you to set the lowest possible
           userid that will be allowed to execute CGI/SSI programs.
           This is useful to block out "system" accounts.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target group <em>NOT</em> the superuser
         group?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Presently, suEXEC does not allow the 'root' group to
           execute CGI/SSI programs.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target groupid <em>ABOVE</em> the minimum ID
         number?</strong> 
 
-        <blockquote>
+        <p class="indent">
           The minimum group ID number is specified during
           configuration. This allows you to set the lowest possible
           groupid that will be allowed to execute CGI/SSI programs.
           This is useful to block out "system" groups.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Can the wrapper successfully become the target user
         and group?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Here is where the program becomes the target user and
           group via setuid and setgid calls. The group access list
           is also initialized with all of the groups of which the
           user is a member.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Does the directory in which the program resides
         exist?</strong> 
 
-        <blockquote>
+        <p class="indent">
           If it doesn't exist, it can't very well contain files.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the directory within the Apache
         webspace?</strong> 
 
-        <blockquote>
+        <p class="indent">
           If the request is for a regular portion of the server, is
           the requested directory within the server's document
           root? If the request is for a UserDir, is the requested
           directory within the user's document root?
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the directory <em>NOT</em> writable by anyone
         else?</strong> 
 
-        <blockquote>
+        <p class="indent">
           We don't want to open up the directory to others; only
           the owner user may be able to alter this directories
           contents.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Does the target program exist?</strong> 
 
-        <blockquote>
+        <p class="indent">
           If it doesn't exists, it can't very well be executed.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target program <em>NOT</em> writable by
         anyone else?</strong> 
 
-        <blockquote>
+        <p class="indent">
           We don't want to give anyone other than the owner the
           ability to change the program.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target program <em>NOT</em> setuid or
         setgid?</strong> 
 
-        <blockquote>
+        <p class="indent">
           We do not want to execute programs that will then change
           our UID/GID again.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Is the target user/group the same as the program's
         user/group?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Is the user the owner of the file?
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Can we successfully clean the process environment
         to ensure safe operations?</strong> 
 
-        <blockquote>
+        <p class="indent">
           suEXEC cleans the process' environment by establishing a
           safe execution PATH (defined during configuration), as
           well as only passing through those variables whose names
           are listed in the safe environment list (also created
           during configuration).
-        </blockquote>
+        </p>
       </li>
 
       <li>
         <strong>Can we successfully become the target program and
         execute?</strong> 
 
-        <blockquote>
+        <p class="indent">
           Here is where suEXEC ends and the target program begins.
-        </blockquote>
+        </p>
       </li>
     </ol>
 
@@ -311,13 +313,13 @@
     configuration, as well as what security risks can be avoided
     with a proper suEXEC setup, see the <a href="#jabberwock">"Beware the Jabberwock"</a> section of this
     document.</p>
-<h2><a name="install">Configuring &amp; Installing
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="install" id="install">Configuring &amp; Installing
     suEXEC</a></h2>
 
     <p>Here's where we begin the fun.</p>
 
     <p><strong>suEXEC configuration
-    options</strong><br>
+    options</strong><br />
     </p>
 
     <dl>
@@ -353,7 +355,7 @@
       work properly in cases where the UserDir directive points to
       a location that is not the same as the user's home directory
       as referenced in the passwd file. Default value is
-      "public_html".<br>
+      "public_html".<br />
        If you have virtual hosts with a different UserDir for each,
       you will need to define them to all reside in one parent
       directory; then name that parent directory here. <strong>If
@@ -398,41 +400,41 @@
     </dl>
 
     <p><strong>Checking your suEXEC
-    setup</strong><br>
+    setup</strong><br />
      Before you compile and install the suEXEC wrapper you can
-    check the configuration with the --layout option.<br>
+    check the configuration with the --layout option.<br />
      Example output:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-    suEXEC setup:<br>
-            suexec binary: /usr/local/apache/sbin/suexec<br>
-            document root: /usr/local/apache/share/htdocs<br>
-           userdir suffix: public_html<br>
-                  logfile: /usr/local/apache/var/log/suexec_log<br>
-                safe path: /usr/local/bin:/usr/bin:/bin<br>
-                caller ID: www<br>
-          minimum user ID: 100<br>
-         minimum group ID: 100<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+    suEXEC setup:<br />
+            suexec binary: /usr/local/apache/sbin/suexec<br />
+            document root: /usr/local/apache/share/htdocs<br />
+           userdir suffix: public_html<br />
+                  logfile: /usr/local/apache/var/log/suexec_log<br />
+                safe path: /usr/local/bin:/usr/bin:/bin<br />
+                caller ID: www<br />
+          minimum user ID: 100<br />
+         minimum group ID: 100<br />
+</code></p></div>
 
     <p><strong>Compiling and installing the suEXEC
-    wrapper</strong><br>
+    wrapper</strong><br />
      If you have enabled the suEXEC feature with the
     --enable-suexec option the suexec binary (together with Apache
     itself) is automatically built if you execute the command
-    "make".<br>
+    "make".<br />
      After all components have been built you can execute the
     command "make install" to install them. The binary image
     "suexec" is installed in the directory defined by the --sbindir
     option. Default location is
-    "/usr/local/apache/sbin/suexec".<br>
+    "/usr/local/apache/sbin/suexec".<br />
      Please note that you need <strong><em>root
     privileges</em></strong> for the installation step. In order
     for the wrapper to set the user ID, it must be installed as
     owner <code><em>root</em></code> and must have the setuserid
     execution bit set for file modes.</p>
 
-<h2><a name="enable">Enabling &amp; Disabling
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="enable" id="enable">Enabling &amp; Disabling
     suEXEC</a></h2>
 
     <p>Upon startup of Apache, it looks for the file
@@ -440,9 +442,9 @@
     "/usr/local/apache/sbin/suexec"). If Apache finds a properly
     configured suEXEC wrapper, it will print the following message
     to the error log:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
     [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
-</code></td></tr></table></blockquote>
+</code></p></div>
     <p>If you don't see this message at server startup, the server is
     most likely not finding the wrapper program where it expects
     it, or the executable is not installed <em>setuid root</em>.</p>
@@ -453,18 +455,18 @@
     will not be enough. </p>
      <p>If you want to disable suEXEC you should kill and restart
     Apache after you have removed the "suexec" file. </p>
-<h2><a name="usage">Using suEXEC</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="usage" id="usage">Using suEXEC</a></h2>
 
-    <p><strong>Virtual Hosts:</strong><br> One way to use the suEXEC
-    wrapper is through the <a href="./mod/mod_suexec.html#suexecusergroup" class="directive"><code class="directive">SuexecUserGroup</code></a> directive in
-    <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">VirtualHost</code></a> definitions.  By
+    <p><strong>Virtual Hosts:</strong><br /> One way to use the suEXEC
+    wrapper is through the <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> directive in
+    <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> definitions.  By
     setting this directive to values different from the main server
     user ID, all requests for CGI resources will be executed as the
-    <em>User</em> and <em>Group</em> defined for that <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>. If this
-    directive is not specified for a <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> then the main server userid
+    <em>User</em> and <em>Group</em> defined for that <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. If this
+    directive is not specified for a <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> then the main server userid
     is assumed.</p>
 
-    <p><strong>User directories:</strong><br>
+    <p><strong>User directories:</strong><br />
      The suEXEC wrapper can also be used to execute CGI programs as
     the user to which the request is being directed. This is
     accomplished by using the "<strong><code>~</code></strong>"
@@ -473,7 +475,7 @@
     execution to be enabled for the user and that the script must
     meet the scrutiny of the <a href="#model">security checks</a>
     above.</p>
-<h2><a name="debug">Debugging suEXEC</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="debug" id="debug">Debugging suEXEC</a></h2>
 
     <p>The suEXEC wrapper will write log information
     to the file defined with the --with-suexec-logfile option as
@@ -481,7 +483,7 @@
     the wrapper properly, have a look at this log and the error_log
     for the server to see where you may have gone astray.</p>
 
-<h2><a name="jabberwock">Beware the Jabberwock:
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="jabberwock" id="jabberwock">Beware the Jabberwock:
     Warnings &amp; Examples</a></h2>
 
     <p><strong>NOTE!</strong> This section may not be
@@ -499,7 +501,7 @@
       <li>
         Hierarchy limitations 
 
-        <blockquote>
+        <p class="indent">
           For security and efficiency reasons, all suexec requests
           must remain within either a top-level document root for
           virtual host requests, or one top-level personal document
@@ -508,30 +510,30 @@
           of your VHosts' document roots off of one main Apache
           document hierarchy to take advantage of suEXEC for
           VirtualHosts. (Example forthcoming.)
-        </blockquote>
+        </p>
       </li>
 
       <li>
         suEXEC's PATH environment variable 
 
-        <blockquote>
+        <p class="indent">
           This can be a dangerous thing to change. Make certain
           every path you include in this define is a
           <strong>trusted</strong> directory. You don't want to
           open people up to having someone from across the world
           running a trojan horse on them.
-        </blockquote>
+        </p>
       </li>
 
       <li>
         Altering the suEXEC code 
 
-        <blockquote>
+        <p class="indent">
           Again, this can cause <strong>Big Trouble</strong> if you
           try this without knowing what you are doing. Stay away
           from it if at all possible.
-        </blockquote>
+        </p>
       </li>
     </ul>
 
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>

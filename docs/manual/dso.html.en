@@ -1,8 +1,10 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Dynamic Shared Object (DSO) Support - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Dynamic Shared Object (DSO) Support</h1>
+      --><title>Dynamic Shared Object (DSO) Support - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Dynamic Shared Object (DSO) Support</h1>
     <p>The Apache HTTP Server is a modular program where the
     administrator can choose the functionality to include in the
     server by selecting a set of modules. The modules can be
@@ -16,21 +18,21 @@
 
     <p>This document describes how to use DSO modules as well as
     the theory behind their use.</p>
-  <ul><li><a href="#implementation">Implementation</a></li><li><a href="#usage">Usage Summary</a></li><li><a href="#background">Background</a></li><li><a href="#advantages">Advantages and Disadvantages</a></li></ul><hr><h2><a name="implementation">Implementation</a></h2>
+  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">Implementation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#usage">Usage Summary</a></li><li><img alt="" src="./images/down.gif" /> <a href="#background">Background</a></li><li><img alt="" src="./images/down.gif" /> <a href="#advantages">Advantages and Disadvantages</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="implementation" id="implementation">Implementation</a></h2>
 
-<table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="./mod/mod_so.html">mod_so</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a><br></td></tr></table>
+<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>The DSO support for loading individual Apache modules is based
-    on a module named <code><a href="./mod/mod_so.html">mod_so</a></code> which must be statically
+    on a module named <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> which must be statically
     compiled into the Apache core. It is the only module besides
-    <code><a href="./mod/core.html">core</a></code> which cannot be put into a DSO
+    <code class="module"><a href="./mod/core.html">core</a></code> which cannot be put into a DSO
     itself. Practically all other distributed Apache modules can then
     be placed into a DSO by individually enabling the DSO build for
     them via <code>configure</code>'s
     <code>--enable-<em>module</em>=shared</code> option as disucussed
     in the <a href="install.html">install documentation</a>. After a
     module is compiled into a DSO named <code>mod_foo.so</code> you
-    can use <code><a href="./mod/mod_so.html">mod_so</a></code>'s <a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a> command in your
+    can use <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>'s <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> command in your
     <code>httpd.conf</code> file to load this module at server startup
     or restart.</p>
 
@@ -48,7 +50,7 @@
     source tree and without having to fiddle with the
     platform-dependent compiler and linker flags for DSO
     support.</p>
-<h2><a name="usage">Usage Summary</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="usage" id="usage">Usage Summary</a></h2>
 
     <p>To give you an overview of the DSO features of Apache 2.0,
     here is a short and concise summary:</p>
@@ -59,10 +61,10 @@
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code>: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ ./configure --prefix=/path/to/install --enable-foo=shared<br>
+<div class="example"><p><code>
+$ ./configure --prefix=/path/to/install --enable-foo=shared<br />
 $ make install
-</code></td></tr></table></blockquote>
+</code></p></div>
       </li>
 
       <li>
@@ -70,20 +72,20 @@ $ make install
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code>: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br>
+<div class="example"><p><code>
+$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br />
 $ make install
-</code></td></tr></table></blockquote>
+</code></p></div>
       </li>
 
       <li>
         Configure Apache for <em>later installation</em> of shared
         modules: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ ./configure --enable-so<br>
+<div class="example"><p><code>
+$ ./configure --enable-so<br />
 $ make install
-</code></td></tr></table></blockquote>
+</code></p></div>
       </li>
 
       <li>
@@ -92,19 +94,19 @@ $ make install
         <code>mod_foo.so</code> <em>outside of</em> the Apache
         source tree using <a href="programs/apxs.html">apxs</a>: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ cd /path/to/3rdparty<br>
-$ apxs -c mod_foo.c<br>
+<div class="example"><p><code>
+$ cd /path/to/3rdparty<br />
+$ apxs -c mod_foo.c<br />
 $ apxs -i -a -n foo mod_foo.la
-</code></td></tr></table></blockquote>
+</code></p></div>
       </li>
     </ol>
 
     <p>In all cases, once the shared module is compiled, you must
-    use a <a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a>
+    use a <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
     directive in <code>httpd.conf</code> to tell Apache to activate
     the module.</p>
-<h2><a name="background">Background</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="background" id="background">Background</a></h2>
 
     <p>On modern Unix derivatives there exists a nifty mechanism
     usually called dynamic linking/loading of <em>Dynamic Shared
@@ -204,7 +206,7 @@ $ apxs -i -a -n foo mod_foo.la
     modules into the Apache core functionality. So, Apache is
     really predestined for using DSO to load its modules at
     run-time.</p>
-<h2><a name="advantages">Advantages and Disadvantages</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="advantages" id="advantages">Advantages and Disadvantages</a></h2>
 
     <p>The above DSO based features have the following
     advantages:</p>
@@ -212,7 +214,7 @@ $ apxs -i -a -n foo mod_foo.la
     <ul>
       <li>The server package is more flexible at run-time because
       the actual server process can be assembled at run-time via
-      <a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a>
+      <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
       <code>httpd.conf</code> configuration commands instead of
       <code>configure</code> options at build-time. For instance
       this way one is able to run different server instances
@@ -267,4 +269,4 @@ $ apxs -i -a -n foo mod_foo.la
       loading the code yourself via <code>dlopen()</code>.</li>
     </ul>
 
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>

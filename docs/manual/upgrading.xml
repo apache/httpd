@@ -76,14 +76,15 @@
         enclose the message in double quotes. For example, existing
         instances of
 
-        <blockquote>
-          <code>ErrorDocument 403 "Some Message</code>
-        </blockquote>
+        <example>
+          ErrorDocument 403 "Some Message
+        </example>
         should be replaced with
 
-        <blockquote>
-          <code>ErrorDocument 403 "Some Message"</code>
-        </blockquote>
+        <example>
+          ErrorDocument 403 "Some Message"
+        </example>
+
         As long as the second argument is not a valid URL or
         pathname, it will be treated as a text message.
       </li>

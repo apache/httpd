@@ -1,8 +1,10 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Starting Apache - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Starting Apache</h1>
+      --><title>Starting Apache - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Starting Apache</h1>
     <p>On Windows, Apache is normally run as a service on Windows
     NT, or as a console application on Windows 95. For details, see
     <a href="platform/windows.html#run">running Apache for
@@ -12,9 +14,9 @@
     is run as a daemon that executes continuously in the
     background to handle requests.  This document describes how
     to invoke <code>httpd</code>.</p>
-<ul><li><a href="#startup">How Apache Starts</a></li><li><a href="#errors">Errors During Start-up</a></li><li><a href="#boot">Starting at Boot-Time</a></li><li><a href="#info">Additional Information</a></li></ul><hr><h2><a name="startup">How Apache Starts</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">How Apache Starts</a></li><li><img alt="" src="./images/down.gif" /> <a href="#errors">Errors During Start-up</a></li><li><img alt="" src="./images/down.gif" /> <a href="#boot">Starting at Boot-Time</a></li><li><img alt="" src="./images/down.gif" /> <a href="#info">Additional Information</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="startup" id="startup">How Apache Starts</a></h2>
 
-    <p>If the <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
+    <p>If the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     specified in the configuration file is default of 80 (or any other
     port below 1024), then it is necessary to have root privileges in
     order to start apache, so that it can bind to this privileged
@@ -32,8 +34,8 @@
     compile-time, but it is possible to specify its location at run
     time using the <code>-f</code> command-line option as in</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>/usr/local/apache/bin/httpd -f
-      /usr/local/apache/conf/httpd.conf</code></td></tr></table></blockquote>
+<div class="example"><p><code>/usr/local/apache/bin/httpd -f
+      /usr/local/apache/conf/httpd.conf</code></p></div>
 
     <p>As an alternative to invoking the <code>httpd</code> binary
     directly, a shell script called <a href="programs/apachectl.html">apachectl</a> is provided which
@@ -45,14 +47,14 @@
     the terminal and the command prompt will return almost
     immediately. This indicates that the server is up and running.
     You can then use your browser to connect to the server and view
-    the test page in the <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> directory
+    the test page in the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> directory
     and the local copy of the documentation linked from that
     page.</p>
-<h2><a name="errors">Errors During Start-up</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="errors" id="errors">Errors During Start-up</a></h2>
 
     <p>If Apache suffers a fatal problem during startup, it will
     write a message describing the problem either to the console or
-    to the <a href="./mod/core.html#errorlog" class="directive"><code class="directive">ErrorLog</code></a> before
+    to the <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> before
     exiting. One of the most common error messages is "<code>Unable
     to bind to Port ...</code>". This message is usually caused by
     either:</p>
@@ -68,7 +70,7 @@
 
     <p>For further trouble-shooting instructions, consult the
     Apache <a href="faq/">FAQ</a>.</p>
-<h2><a name="boot">Starting at Boot-Time</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="boot" id="boot">Starting at Boot-Time</a></h2>
 
     <p>If you want your server to continue running after a system
     reboot, you should add a call to <code>httpd</code> or
@@ -80,7 +82,7 @@
     designed so that it can often be linked directly as an init
     script, but be sure to check the exact requirements of your
     system.</p>
-<h2><a name="info">Additional Information</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="info" id="info">Additional Information</a></h2>
 
     <p>Additional information about the command-line options of <a href="programs/httpd.html">httpd</a> and <a href="programs/apachectl.html">apachectl</a> as well as other
     support programs included with the server is available on the
@@ -88,4 +90,4 @@
     There is also documentation on all the <a href="mod/">modules</a> included with the Apache distribution
     and the <a href="mod/directives.html">directives</a> that they
     provide.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>

@@ -1,30 +1,32 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=iso-2022-jp"><!--
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>コンテントネゴシエーション - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">コンテントネゴシエーション</h1>
+      --><title>コンテントネゴシエーション - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
 
-    <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
+    <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
     サポートしています。
-    ブラウザにより提供されたメディアタイプ、
-    言語、文字セット、エンコーディングの優先傾向に基づいて、
+    ブラウザにより提供されたメディアタイプ、
+    言語、文字セット、エンコーディングの優先傾向に基づいて、
     最適なリソースの表現を選択できます。
     また、不完全なネゴシエーション情報を送ってくるブラウザからのリクエストを
     もっと賢く取り扱えるよう、いくつか機能も実装してあります。</p>
 
-    <p>コンテントネゴシエーションは
-    <code><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
+    <p>コンテントネゴシエーションは
+    <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
     モジュールによって
     提供されていて、デフォルトで組み込まれています。</p>
-<ul><li><a href="#about">コンテントネゴシエーションについて</a></li><li><a href="#negotiation">Apache におけるネゴシエーション</a><ul><li><a href="#type-map">type-map ファイルを使う</a></li><li><a href="#multiviews">Multiviews</a></li></ul></li><li><a href="#methods">ネゴシエーション方法</a><ul><li><a href="#dimensions">ネゴシエーションの次元</a></li><li><a href="#algorithm">Apache ネゴシエーションアルゴリズム</a></li></ul></li><li><a href="#better">品質の値を変える</a><ul><li><a href="#wildcards">メディアタイプとワイルドカード</a></li><li><a href="#exceptions">言語ネゴシエーションの例外処理</a></li></ul></li><li><a href="#extensions">Transparent Content Negotiation
-の拡張</a></li><li><a href="#naming">リンクと名前の変換に関する注意点</a></li><li><a href="#caching">キャッシュに関する注意事項</a></li><li><a href="#more">追加情報</a></li></ul><hr><h2><a name="about">コンテントネゴシエーションについて</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">コンテントネゴシエーションについて</a></li><li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Apache におけるネゴシエーション</a></li><li><img alt="" src="./images/down.gif" /> <a href="#methods">ネゴシエーション方法</a></li><li><img alt="" src="./images/down.gif" /> <a href="#better">品質の値を変える</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extensions">Transparent Content Negotiation
+の拡張</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming">リンクと名前の変換に関する注意点</a></li><li><img alt="" src="./images/down.gif" /> <a href="#caching">キャッシュに関する注意事項</a></li><li><img alt="" src="./images/down.gif" /> <a href="#more">追加情報</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="about" id="about">コンテントネゴシエーションについて</a></h2>
 
     <p>リソースは、幾つか異なった表現で利用できる場合があります。
-    例えば、異なる言語や異なるメディアタイプ、
+    例えば、異なる言語や異なるメディアタイプ、
     またはそれらの組み合わせで利用できるかも知れません。
     もっとも適した選択をする方法の一つには、インデックスページを
     ユーザに見せて、ユーザに選んでもらう方法があります。
-    しかし、サーバが自動的に選ぶことができる場合が多くあります。
+    しかし、サーバが自動的に選ぶことができる場合が多くあります。
     これは、ブラウザがリクエスト情報毎の情報の一部に、
     どの表現を嗜好するかを送ることで動作しています。
     例えばブラウザは、可能ならフランス語で情報を見たい、
@@ -33,7 +35,7 @@
     ブラウザはリクエストのヘッダで自分の優先傾向を知らせます。
     フランス語のみの表現を要求する場合は、ブラウザは次を送ります。</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Accept-Language: fr</code></td></tr></table></blockquote>
+<div class="example"><p><code>Accept-Language: fr</code></p></div>
 
     <p>この優先傾向は、選択可能な表現が存在して、
     言語によって様々な表現がある場合にのみ適用される
@@ -44,12 +46,12 @@
     そして様々なメディアタイプを受け付けるが、
     プレインテキストや他のタイプよりは HTML を好む、
     他のメディアタイプよりは GIF や JPEG を好む、しかし最終手段として
-    他のメディアタイプも受け付ける、と設定されています。</p>
+    他のメディアタイプも受け付ける、と設定されています。</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  Accept-Language: fr; q=1.0, en; q=0.5<br>
+<div class="example"><p><code>
+  Accept-Language: fr; q=1.0, en; q=0.5<br />
   Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>Apache は HTTP/1.1 規格で定義されている 'server
     driven' コンテントネゴシエーションをサポートしています。
@@ -61,7 +63,7 @@
     これらの RFCで定義されている 'feature negotiation'
     はサポートしていません。</p>
 
-    <p><strong>リソース</strong>とは URI
+    <p><strong>リソース</strong>とは URI
     で特定される概念上のもののことです (RFC 2396)。 Apache
     のような HTTP サーバは、その名前空間の中での
     リソースの<strong>表現</strong>へのアクセスを提供します。
@@ -75,7 +77,7 @@
     ネゴシエーション可能なリソースの variant が異なる、
     その状態を指して、
     ネゴシエーションの<strong>次元</strong>と呼びます。</p>
-<h2><a name="negotiation">Apache におけるネゴシエーション</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="negotiation" id="negotiation">Apache におけるネゴシエーション</a></h2>
 
     <p>リソースをネゴシエーションするためには、
     サーバは variant それぞれについての情報を知っておく必要があります。
@@ -92,7 +94,7 @@
       行なってその結果から選択する方法。</li>
     </ul>
 
-   <h3><a name="type-map">type-map ファイルを使う</a></h3>
+   <h3><a name="type-map" id="type-map">type-map ファイルを使う</a></h3>
 
     <p>タイプマップは <code>type-map</code> ハンドラ
     (もしくは、古い Apache
@@ -104,7 +106,7 @@
     として定義するようなハンドラを、
     設定ファイル中に置く必要があることに注意してください。
     これは</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddHandler type-map .var</code></td></tr></table></blockquote>
+<div class="example"><p><code>AddHandler type-map .var</code></p></div>
     <p>をサーバ設定ファイル中に書くことが一番良い方法です。</p>
 
     <p>タイプマップファイルは記述するリソースと同じ名前を持っていて、
@@ -117,17 +119,17 @@
     次に例を示します。このファイルはリソース <code>foo</code> 
     を記述しているので、<code>foo.var</code> という名前になります。</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  URI: foo<br>
-<br>
-  URI: foo.en.html<br>
-  Content-type: text/html<br>
-  Content-language: en<br>
-<br>
-  URI: foo.fr.de.html<br>
-  Content-type: text/html;charset=iso-8859-2<br>
-  Content-language: fr, de<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+  URI: foo<br />
+<br />
+  URI: foo.en.html<br />
+  Content-type: text/html<br />
+  Content-language: en<br />
+<br />
+  URI: foo.fr.de.html<br />
+  Content-type: text/html;charset=iso-8859-2<br />
+  Content-language: fr, de<br />
+</code></p></div>
     <p>たとえ MultiViews を使用するようになっていたとしても、
     ファイル名の拡張子よりタイプマップの方が優先権を持つということにも
     注意してください。
@@ -135,18 +137,18 @@
     アートがあります) メディアタイプの "qs"
     パラメータで指定されます。</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  URI: foo<br>
-<br>
-  URI: foo.jpeg<br>
-  Content-type: image/jpeg; qs=0.8<br>
-<br>
-  URI: foo.gif<br>
-  Content-type: image/gif; qs=0.5<br>
-<br>
-  URI: foo.txt<br>
-  Content-type: text/plain; qs=0.01<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+  URI: foo<br />
+<br />
+  URI: foo.jpeg<br />
+  Content-type: image/jpeg; qs=0.8<br />
+<br />
+  URI: foo.gif<br />
+  Content-type: image/gif; qs=0.5<br />
+<br />
+  URI: foo.txt<br />
+  Content-type: text/plain; qs=0.01<br />
+</code></p></div>
 
     <p>qs 値の範囲は 0.000 から 1.000 です。qs 値が
     0.000 の variant は決して
@@ -168,15 +170,15 @@
     ドキュメントにあります。</p>
 
 
-<h3><a name="multiviews">Multiviews</a></h3>
+<h3><a name="multiviews" id="multiviews">Multiviews</a></h3>
 
     <p><code>MultiViews</code> はディレクトリ毎のオプションで、
-    <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>, 
-    <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>, 
-    <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>
-    や、(<a href="./mod/core.html#allowoverride" class="directive"><code class="directive">AllowOverride</code></a>
+    <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, 
+    <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, 
+    <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
+    や、(<code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>
     が適切な値に 設定されていると) <code>.htaccess</code>
-    ファイルで <a href="./mod/core.html#options" class="directive"><code class="directive">Options</code></a>
+    ファイルで <code class="directive"><a href="./mod/core.html#options">Options</a></code>
     ディレクティブによって設定することができます。
     <code>Options All</code> は
     <code>MultiViews</code>
@@ -197,10 +199,10 @@
 
     <p>サーバがディレクトリの索引を作ろうとしている場合、
     <code>MultiViews</code>
-    は <a href="./mod/mod_dir.html#directoryindex" class="directive"><code class="directive">DirectoryIndex</code></a>
+    は <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
     ディレクティブで指定されたファイルを探す過程にも
     適用されます。設定ファイルに</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DirectoryIndex index</code></td></tr></table></blockquote>
+<div class="example"><p><code>DirectoryIndex index</code></p></div>
     <p>が書かれていて、<code>index.html</code> と
     <code>index.html3</code> が
     両方存在していると、サーバはその中からどちらかを適当に選びます。
@@ -211,12 +213,12 @@
     文字セット、コンテントタイプ、言語、エンコーディングを
     指定するための <code>mod_mime</code> 
     で認識できる拡張子を持たないファイルが見つかると、結果は
-    <a href="./mod/mod_mime.html#multiviewsmatch" class="directive"><code class="directive">MultiViewsMatch</code></a>
+    <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>
     ディレクティブの設定に依存します。このディレクティブは
     ハンドラ、フィルタ、他のファイル拡張子タイプのどれが
     MultiViews ネゴシエーションで使用できるかを決定します。</p>
 
-<h2><a name="methods">ネゴシエーション方法</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="methods" id="methods">ネゴシエーション方法</a></h2>
 
     <p>Apache はリソースの variant の一覧を、タイプマップファイルか
     ディレクトリ内のファイル名からかで取得した後、
@@ -249,7 +251,7 @@
       を実行するように頼むことができます。</li>
     </ol>
 
-<h3><a name="dimensions">ネゴシエーションの次元</a></h3>
+<h3><a name="dimensions" id="dimensions">ネゴシエーションの次元</a></h3>
 
     <table>
       <tr valign="top">
@@ -298,7 +300,7 @@
     </table>
 
 
-<h3><a name="algorithm">Apache ネゴシエーションアルゴリズム</a></h3>
+<h3><a name="algorithm" id="algorithm">Apache ネゴシエーションアルゴリズム</a></h3>
 
     <p>ブラウザに返す「最適な」variant を (もしあれば) 選択するように
     Apache は次のアルゴリズムを使うことができます。
@@ -330,7 +332,7 @@
 
 	  <li>(もしあれば) Accept-Language ヘッダの言語順か、
 	  (もしあれば)
-	  <a href="./mod/mod_negotiation.html#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a> 
+	  <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code> 
 	  ディレクティブの言語順で最適な言語の variant を選びます。</li>
 
 	  <li>最高「レベル」のメディアパラメータ
@@ -384,7 +386,7 @@
       相違の次元を示す HTTP Vary ヘッダも設定されます。</li>
     </ol>
 
-<h2><a name="better">品質の値を変える</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="better" id="better">品質の値を変える</a></h2>
 
     <p>上記の Apaceh ネゴシエーションアルゴリズムの厳格な解釈で
     得られるであろう値から、Apache は品質数値を時々変えます。
@@ -396,7 +398,7 @@
     ブラウザが完全で正しい情報を送っていれば、
     この数値変化は適用されません。</p>
 
-<h3><a name="wildcards">メディアタイプとワイルドカード</a></h3>
+<h3><a name="wildcards" id="wildcards">メディアタイプとワイルドカード</a></h3>
 
     <p>Accept: リクエストヘッダはメディアタイプの優先傾向を指定します。
     これはまた、"image/*" や "*/*"
@@ -404,7 +406,7 @@
     ここで * は任意の文字列にマッチします。
     ですから、次の:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Accept: image/*, */*</code></td></tr></table></blockquote>
+<div class="example"><p><code>Accept: image/*, */*</code></p></div>
 
     <p>を含むリクエストは、"image/" ではじまるタイプ全てが許容できる、
     そして他のどんなタイプも許容できる
@@ -413,18 +415,18 @@
     扱うことのできる明示的なタイプに加えて、機械的に
     ワイルドカードを送るブラウザもあります。例えば:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*
-</code></td></tr></table></blockquote>
+</code></p></div>
     <p>こうすることの狙いは、明示的にリストしているタイプが優先されるけれども、
     異なる表現が利用可能であればそれでも良い、ということです。
     しかしながら、上の基本的なアルゴリズムでは、
     */* ワイルドカードは他の全てのタイプと全く同等なので優先されません。
     ブラウザは */* にもっと低い品質 (優先) 
     値を付けてリクエストを送るべきなのです。例えば:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*; q=0.01
-</code></td></tr></table></blockquote>
+</code></p></div>
     <p>明示的なタイプには品質数値が付けられていませんので、
     デフォルトの 1.0 (最高値) の優先になります。
     ワイルドカード */* は低い優先度 0.01 を与えられているので、
@@ -442,7 +444,7 @@
     動作するようになります。</p>
 
 
-<h3><a name="exceptions">言語ネゴシエーションの例外処理</a></h3>
+<h3><a name="exceptions" id="exceptions">言語ネゴシエーションの例外処理</a></h3>
 
     <p>Apache 2.0 では新たに、言語ネゴシエーションが適合するものを
     見つけるのに失敗した時に、優雅にフォールバックできるような
@@ -456,10 +458,10 @@
     このような場合には Apache が Accept-Language を無視して、
     クライアントのリクエストに明示的には合致しないドキュメントを
     提供するように設定できます。
-    <a href="./mod/mod_negotiation.html#forcelanguagepriority" class="directive"><code class="directive">ForceLanguagePriority</code></a>
+    <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     ディレクティブは、これらのエラーの一つか両方をオーバーライドするために
     使用できて、
-    <a href="./mod/mod_negotiation.html#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a>
+    <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     ディレクティブの内容を使ってサーバの判断を代行するようにできます。</p>
 
     <p>サーバは他に適合するものが見つからなければ、
@@ -476,7 +478,7 @@
     このような設定になっています。)
     しかしながら、他の言語にはマッチせず、"No Acceptable Variants"
     エラーを返したり、
-    <a href="./mod/mod_negotiation.html#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a>
+    <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     にフォールバックしようとしているときは、
     サブセット指定を無視して、<code>en-GB</code> を <code>en</code>
     にマッチします。
@@ -489,7 +491,7 @@
     適切に設定されたクライアントともきちんと動作するために
     必要です。</p>
 
-<h2><a name="extensions">Transparent Content Negotiation
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="extensions" id="extensions">Transparent Content Negotiation
 の拡張</a></h2> 
 
 <p>Apache は transparent content negotiation プロトコル
@@ -504,7 +506,7 @@ Accept-Encoding リクエストヘッダに従って許容される
 RVSA/1.0 アルゴリズム (RFC 2296) の実装が拡張されました。
 RVSA/1.0 の実装では、最適な variant が見つかるまで、
 計算した品質数値は小数点以下 5 桁まで丸めません。</p>
-<h2><a name="naming">リンクと名前の変換に関する注意点</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="naming" id="naming">リンクと名前の変換に関する注意点</a></h2>
 
     <p>言語ネゴシエーションを使っている場合は、
     ファイルが一つ以上の拡張子を持てて、
@@ -532,7 +534,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 
     <p>ファイル名と、それに対して使えるリンクと使えないリンクの例です:</p>
 
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table class="bordered">
       <tr>
         <th>ファイル名</th>
 
@@ -544,7 +546,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
       <tr>
         <td><em>foo.html.en</em></td>
 
-        <td>foo<br>
+        <td>foo<br />
          foo.html</td>
 
         <td>-</td>
@@ -561,10 +563,10 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
       <tr>
         <td><em>foo.html.en.gz</em></td>
 
-        <td>foo<br>
+        <td>foo<br />
          foo.html</td>
 
-        <td>foo.gz<br>
+        <td>foo.gz<br />
          foo.html.gz</td>
       </tr>
 
@@ -573,16 +575,16 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 
         <td>foo</td>
 
-        <td>foo.html<br>
-         foo.html.gz<br>
+        <td>foo.html<br />
+         foo.html.gz<br />
          foo.gz</td>
       </tr>
 
       <tr>
         <td><em>foo.gz.html.en</em></td>
 
-        <td>foo<br>
-         foo.gz<br>
+        <td>foo<br />
+         foo.gz<br />
          foo.gz.html</td>
 
         <td>foo.html</td>
@@ -591,8 +593,8 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
       <tr>
         <td><em>foo.html.gz.en</em></td>
 
-        <td>foo<br>
-         foo.html<br>
+        <td>foo<br />
+         foo.html<br />
          foo.html.gz</td>
 
         <td>foo.gz</td>
@@ -612,7 +614,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     (エンコーディング拡張子もあればそれも含めて)
     MIME タイプ拡張子の右側になければなりません
     (<em>例えば</em> <code>foo.html.en</code>)。</p>
-<h2><a name="caching">キャッシュに関する注意事項</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="caching" id="caching">キャッシュに関する注意事項</a></h2>
 
     <p>キャッシュが一つの表現を保存しているときは、
     リクエスト URL と関連づけられています。
@@ -630,16 +632,16 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     <p>HTTP/1.0 準拠のクライアントからのリクエストに対しては、
     (ブラウザであろうとキャッシュであろうと)
     ネゴシエーションを受けた応答のキャッシュを許すために、
-    <a href="./mod/mod_negotiation.html#cachenegotiateddocs" class="directive"><code class="directive">CacheNegotiatedDocs</code></a>
+    <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
     ディレクティブを使用できます。
     このディレクティブは、サーバ設定ファイルやバーチャルホストに書くことができ、
     引数をとりません。
     HTTP/1.1 クライアントからのリクエストには効力を持ちません。</p>
-<h2><a name="more">追加情報</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="more" id="more">追加情報</a></h2>
 
     <p>コンテントネゴシエーションに関する追加情報は、
     Alan J. Flavell さんの<a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
     Negotiation Notes</a> をご覧下さい。ですが、
     Apache 2.0 での変更点を含むためには更新されていないかもしれない
     ということに注意してください。</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="索引"></a><a href="./"><img src="./images/home.gif" alt="ホーム"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>

@@ -1,82 +1,84 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Mapping URLs to Filesystem Locations - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Mapping URLs to Filesystem Locations</h1>
+      --><title>Mapping URLs to Filesystem Locations - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Mapping URLs to Filesystem Locations</h1>
     <p>This document explains how Apache uses the URL of a request
     to determine the filesystem location from which to serve a
     file.</p>
-  <ul><li><a href="#related">Related Modules and Directives</a></li><li><a href="#documentroot">DocumentRoot</a></li><li><a href="#outside">Files Outside the DocumentRoot</a></li><li><a href="#user">User Directories</a></li><li><a href="#redirect">URL Redirection</a></li><li><a href="#proxy">Reverse Proxy</a></li><li><a href="#rewrite">Rewriting Engine</a></li><li><a href="#notfound">File Not Found</a></li></ul><hr><h2><a name="related">Related Modules and Directives</a></h2>
+  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">Related Modules and Directives</a></li><li><img alt="" src="./images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li><li><img alt="" src="./images/down.gif" /> <a href="#outside">Files Outside the DocumentRoot</a></li><li><img alt="" src="./images/down.gif" /> <a href="#user">User Directories</a></li><li><img alt="" src="./images/down.gif" /> <a href="#redirect">URL Redirection</a></li><li><img alt="" src="./images/down.gif" /> <a href="#proxy">Reverse Proxy</a></li><li><img alt="" src="./images/down.gif" /> <a href="#rewrite">Rewriting Engine</a></li><li><img alt="" src="./images/down.gif" /> <a href="#notfound">File Not Found</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="related" id="related">Related Modules and Directives</a></h2>
 
-<table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="./mod/mod_alias.html">mod_alias</a></code><br><code><a href="./mod/mod_proxy.html">mod_proxy</a></code><br><code><a href="./mod/mod_rewrite.html">mod_rewrite</a></code><br><code><a href="./mod/mod_userdir.html">mod_userdir</a></code><br><code><a href="./mod/mod_speling.html">mod_speling</a></code><br><code><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/mod_alias.html#alias" class="directive"><code class="directive">Alias</code></a><br><a href="./mod/mod_alias.html#aliasmatch" class="directive"><code class="directive">AliasMatch</code></a><br><a href="./mod/mod_speling.html#checkspelling" class="directive"><code class="directive">CheckSpelling</code></a><br><a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a><br><a href="./mod/core.html#errordocument" class="directive"><code class="directive">ErrorDocument</code></a><br><a href="./mod/core.html#options" class="directive"><code class="directive">Options</code></a><br><a href="./mod/mod_proxy.html#proxypass" class="directive"><code class="directive">ProxyPass</code></a><br><a href="./mod/mod_proxy.html#proxypassreverse" class="directive"><code class="directive">ProxyPassReverse</code></a><br><a href="./mod/mod_alias.html#redirect" class="directive"><code class="directive">Redirect</code></a><br><a href="./mod/mod_alias.html#redirectmatch" class="directive"><code class="directive">RedirectMatch</code></a><br><a href="./mod/mod_rewrite.html#rewritecond" class="directive"><code class="directive">RewriteCond</code></a><br><a href="./mod/mod_rewrite.html#rewritematch" class="directive"><code class="directive">RewriteMatch</code></a><br><a href="./mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a><br><a href="./mod/mod_alias.html#scriptaliasmatch" class="directive"><code class="directive">ScriptAliasMatch</code></a><br><a href="./mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a><br></td></tr></table>
-<h2><a name="documentroot">DocumentRoot</a></h2>
+<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritematch">RewriteMatch</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="documentroot" id="documentroot">DocumentRoot</a></h2>
 
     <p>In deciding what file to serve for a given request, Apache's
     default behavior is to take the URL-Path for the request (the part
     of the URL following the hostname and port) and add it to the end
-    of the <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> specified
+    of the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> specified
     in your configuration files. Therefore, the files and directories
-    underneath the <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a>
+    underneath the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
     make up the basic document tree which will be visible from the
     web.</p>
 
     <p>Apache is also capable of <a href="vhosts/">Virtual
     Hosting</a>, where the server receives requests for more than one
-    host. In this case, a different <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> can be specified for each
+    host. In this case, a different <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> can be specified for each
     virtual host, or alternatively, the directives provided by the
-    module <code><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code> can
+    module <code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code> can
     be used to dynamically determine the appropriate place from which
     to serve content based on the requested IP address or
     hostname.</p>
-<h2><a name="outside">Files Outside the DocumentRoot</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="outside" id="outside">Files Outside the DocumentRoot</a></h2>
 
     <p>There are frequently circumstances where it is necessary to
     allow web access to parts of the filesystem that are not strictly
-    underneath the <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a>. Apache offers several
+    underneath the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>. Apache offers several
     different ways to accomplish this. On Unix systems, symbolic links
-    can bring other parts of the filesystem under the <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a>. For security reasons,
-    Apache will follow symbolic links only if the <a href="./mod/core.html#options" class="directive"><code class="directive">Options</code></a> setting for the relevant
+    can bring other parts of the filesystem under the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>. For security reasons,
+    Apache will follow symbolic links only if the <code class="directive"><a href="./mod/core.html#options">Options</a></code> setting for the relevant
     directory includes <code>FollowSymLinks</code> or
     <code>SymLinksIfOwnerMatch</code>.</p>
 
-    <p>Alternatively, the <a href="./mod/mod_alias.html#alias" class="directive"><code class="directive">Alias</code></a> directive will map any part
+    <p>Alternatively, the <code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code> directive will map any part
     of the filesystem into the web space. For example, with</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Alias /docs /var/web</code></td></tr></table></blockquote>
+<div class="example"><p><code>Alias /docs /var/web</code></p></div>
 
     <p>the URL <code>http://www.example.com/docs/dir/file.html</code>
     will be served from <code>/var/web/dir/file.html</code>. The
-    <a href="./mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a> directive
+    <code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive
     works the same way, with the additional effect that all content
     located at the target path is treated as CGI scripts.</p>
 
     <p>For situations where you require additional flexibility, you
-    can use the <a href="./mod/mod_alias.html#aliasmatch" class="directive"><code class="directive">AliasMatch</code></a> and 
-    <a href="./mod/mod_alias.html#scriptaliasmatch" class="directive"><code class="directive">ScriptAliasMatch</code></a>
+    can use the <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> and 
+    <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code>
     directives to do powerful regular-expression based matching and
     substitution. For example,</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
-      /home/$1/cgi-bin/$2</code></td></tr></table></blockquote>
+<div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
+      /home/$1/cgi-bin/$2</code></p></div>
 
     <p>will map a request to
     <code>http://example.com/~user/cgi-bin/script.cgi</code> to the
     path <code>/home/user/cgi-bin/script.cgi</code> and will treat
     the resulting file as a CGI script.</p>
-<h2><a name="user">User Directories</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="user" id="user">User Directories</a></h2>
 
     <p>Traditionally on Unix systems, the home directory of a
     particular <em>user</em> can be referred to as
-    <code>~user/</code>. The module <code><a href="./mod/mod_userdir.html">mod_userdir</a></code>
+    <code>~user/</code>. The module <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code>
     extends this idea to the web by allowing files under each user's
     home directory to be accessed using URLs such as the
     following.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>http://www.example.com/~user/file.html</code></td></tr></table></blockquote>
+<div class="example"><p><code>http://www.example.com/~user/file.html</code></p></div>
 
     <p>For security reasons, it is inappropriate to give direct
     access to a user's home directory from the web. Therefore, the
-    <a href="./mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a> directive
+    <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> directive
     specifies a directory underneath the user's home directory
     where web files are located. Using the default setting of
     <code>Userdir public_html</code>, the above URL maps to a file
@@ -95,15 +97,15 @@
     alternate string to represent user directories. This functionality
     is not supported by mod_userdir. However, if users' home
     directories are structured in a regular way, then it is possible
-    to use the <a href="./mod/mod_alias.html#aliasmatch" class="directive"><code class="directive">AliasMatch</code></a>
+    to use the <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code>
     directive to achieve the desired effect. For example, to make
     <code>http://www.example.com/upages/user/file.html</code> map to
     <code>/home/user/public_html/file.html</code>, use the following
     <code>AliasMatch</code> directive:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
-      /home/$1/public_html/$2</code></td></tr></table></blockquote>
-<h2><a name="redirect">URL Redirection</a></h2>
+<div class="example"><p><code>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
+      /home/$1/public_html/$2</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="redirect" id="redirect">URL Redirection</a></h2>
 
     <p>The configuration directives discussed in the above sections
     tell Apache to get content from a specific place in the filesystem
@@ -111,14 +113,14 @@
     inform the client that the requested content is located at a
     different URL, and instruct the client to make a new request with
     the new URL. This is called <em>redirection</em> and is
-    implemented by the <a href="./mod/mod_alias.html#redirect" class="directive"><code class="directive">Redirect</code></a> directive. For example, if
+    implemented by the <code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code> directive. For example, if
     the contents of the directory <code>/foo/</code> under the
-    <a href="./mod/mod_alias.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> are moved
+    <code class="directive"><a href="./mod/mod_alias.html#documentroot">DocumentRoot</a></code> are moved
     to the new directory <code>/bar/</code>, you can instruct clients
     to request the content at the new location as follows:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Redirect permanent /foo/
-      http://www.example.com/bar/</code></td></tr></table></blockquote>
+<div class="example"><p><code>Redirect permanent /foo/
+      http://www.example.com/bar/</code></p></div>
 
     <p>This will redirect any URL-Path starting in
     <code>/foo/</code> to the same URL path on the
@@ -126,20 +128,20 @@
     substituted for <code>/foo/</code>. You can redirect clients to
     any server, not only the origin server.</p>
 
-    <p>Apache also provides a <a href="./mod/mod_alias.html#redirectmatch" class="directive"><code class="directive">RedirectMatch</code></a> directive for more
+    <p>Apache also provides a <code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive for more
     complicated rewriting problems. For example, to redirect requests
     for the site home page to a different site, but leave all other
     requests alone, use the following configuration:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>RedirectMatch permanent ^/$
-      http://www.example.com/startpage.html</code></td></tr></table></blockquote>
+<div class="example"><p><code>RedirectMatch permanent ^/$
+      http://www.example.com/startpage.html</code></p></div>
 
     <p>Alternatively, to temporarily redirect all pages on a site
     to one particular page, use the following:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>RedirectMatch temp .*
-      http://www.example.com/startpage.html</code></td></tr></table></blockquote>
-<h2><a name="proxy">Reverse Proxy</a></h2>
+<div class="example"><p><code>RedirectMatch temp .*
+      http://www.example.com/startpage.html</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="proxy" id="proxy">Reverse Proxy</a></h2>
 
 <p>Apache also allows you to bring remote documents into the URL space
 of the local server.  This technique is called <em>reverse
@@ -154,14 +156,14 @@ the <code>/bar/</code> directory on <code>internal.example.com</code>
 and returns them to the client as if they were from the local
 server.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-ProxyPass /foo/ http://internal.example.com/bar/<br>
+<div class="example"><p><code>
+ProxyPass /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverse /foo/ http://internal.example.com/bar/
-</code></td></tr></table></blockquote>
+</code></p></div>
 
-<p>The <a href="./mod/mod_proxy.html#proxypass" class="directive"><code class="directive">ProxyPass</code></a> configures
+<p>The <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> configures
 the server to fetch the appropriate documents, while the
-<a href="./mod/mod_proxy.html#proxypassreverse" class="directive"><code class="directive">ProxyPassReverse</code></a>
+<code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
 directive rewrites redirects originating at
 <code>internal.examle.com</code> so that they target the appropriate
 directory on the local server.  It is important to note, however, that
@@ -169,10 +171,10 @@ links inside the documents will not be rewritten.  So any absolute
 links on <code>internal.example.com</code> will result in the client
 breaking out of the proxy server and requesting directly from
 <code>internal.example.com</code>.</p>
-<h2><a name="rewrite">Rewriting Engine</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="rewrite" id="rewrite">Rewriting Engine</a></h2>
 
     <p>When even more powerful substitution is required, the rewriting
-    engine provided by <code><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
+    engine provided by <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     can be useful. The directives provided by this module use
     characteristics of the request such as browser type or source IP
     address in deciding from where to serve content. In addition,
@@ -182,7 +184,7 @@ breaking out of the proxy server and requesting directly from
     internal redirects (aliases), external redirects, and proxying.
     Many practical examples employing mod_rewrite are discussed in the
     <a href="misc/rewriteguide.html">URL Rewriting Guide</a>.</p>
-<h2><a name="notfound">File Not Found</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="notfound" id="notfound">File Not Found</a></h2>
 
     <p>Inevitably, URLs will be requested for which no matching
     file can be found in the filesystem. This can happen for
@@ -196,7 +198,7 @@ breaking out of the proxy server and requesting directly from
     <p>Another common cause of "File Not Found" errors is
     accidental mistyping of URLs, either directly in the browser,
     or in HTML links. Apache provides the module
-    <code><a href="./mod/mod_speling.html">mod_speling</a></code> (sic) to help with
+    <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> (sic) to help with
     this problem. When this module is activated, it will intercept
     "File Not Found" errors and look for a resource with a similar
     filename. If one such file is found, mod_speling will send an
@@ -216,8 +218,8 @@ breaking out of the proxy server and requesting directly from
     <p>If all attempts to locate the content fail, Apache returns
     an error page with HTTP status code 404 (file not found). The
     appearance of this page is controlled with the
-    <a href="./mod/core.html#errordocument" class="directive"><code class="directive">ErrorDocument</code></a> directive
+    <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> directive
     and can be customized in a flexible manner as discussed in the
     <a href="custom-error.html">Custom error responses</a> and <a href="misc/custom_errordocs.html">International Server Error
     Responses</a> documents.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>

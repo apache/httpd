@@ -1,8 +1,10 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Content Negotiation - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Content Negotiation</h1>
+      --><title>Content Negotiation - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Content Negotiation</h1>
 
     <p>Apache's supports content negotiation as described in
     the HTTP/1.1 specification. It can choose the best
@@ -13,11 +15,11 @@
     incomplete negotiation information.</p>
 
     <p>Content negotiation is provided by the
-    <code><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> module.
+    <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> module.
     which is compiled in by default.</p>
-<ul><li><a href="#about">About Content Negotiation</a></li><li><a href="#negotiation">Negotiation in Apache</a><ul><li><a href="#type-map">Using a type-map file</a></li><li><a href="#multiviews">Multiviews</a></li></ul></li><li><a href="#methods">The Negotiation Methods</a><ul><li><a href="#dimensions">Dimensions of Negotiation</a></li><li><a href="#algorithm">Apache Negotiation Algorithm</a></li></ul></li><li><a href="#better">Fiddling with Quality
-    Values</a><ul><li><a href="#wildcards">Media Types and Wildcards</a></li><li><a href="#exceptions">Language Negotiation Exceptions</a></li></ul></li><li><a href="#extensions">Extensions to Transparent Content
-Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventions</a></li><li><a href="#caching">Note on Caching</a></li><li><a href="#more">More Information</a></li></ul><hr><h2><a name="about">About Content Negotiation</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">About Content Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Negotiation in Apache</a></li><li><img alt="" src="./images/down.gif" /> <a href="#methods">The Negotiation Methods</a></li><li><img alt="" src="./images/down.gif" /> <a href="#better">Fiddling with Quality
+    Values</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extensions">Extensions to Transparent Content
+Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming">Note on hyperlinks and naming conventions</a></li><li><img alt="" src="./images/down.gif" /> <a href="#caching">Note on Caching</a></li><li><img alt="" src="./images/down.gif" /> <a href="#more">More Information</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="about" id="about">About Content Negotiation</a></h2>
 
     <p>A resource may be available in several different
     representations. For example, it might be available in
@@ -32,7 +34,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     preferences by headers in the request. To request only French
     representations, the browser would send</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Accept-Language: fr</code></td></tr></table></blockquote>
+<div class="example"><p><code>Accept-Language: fr</code></p></div>
 
     <p>Note that this preference will only be applied when there is
     a choice of representations and they vary by language.</p>
@@ -44,10 +46,10 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     other media types, but also allowing any other media type as a
     last resort:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  Accept-Language: fr; q=1.0, en; q=0.5<br>
+<div class="example"><p><code>
+  Accept-Language: fr; q=1.0, en; q=0.5<br />
   Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
-</code></td></tr></table></blockquote>
+</code></p></div>
 
     <p>Apache supports 'server driven' content negotiation, as
     defined in the HTTP/1.1 specification. It fully supports the
@@ -69,7 +71,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     representations is termed a <strong>variant</strong>. The ways
     in which the variants for a negotiable resource vary are called
     the <strong>dimensions</strong> of negotiation.</p>
-<h2><a name="negotiation">Negotiation in Apache</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="negotiation" id="negotiation">Negotiation in Apache</a></h2>
 
     <p>In order to negotiate a resource, the server needs to be
     given information about each of the variants. This is done in
@@ -85,7 +87,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
       results.</li>
     </ul>
 
-   <h3><a name="type-map">Using a type-map file</a></h3>
+   <h3><a name="type-map" id="type-map">Using a type-map file</a></h3>
 
     <p>A type map is a document which is associated with the
     handler named <code>type-map</code> (or, for
@@ -94,7 +96,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     use this feature, you must have a handler set in the
     configuration that defines a file suffix as
     <code>type-map</code>; this is best done with a</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>AddHandler type-map .var</code></td></tr></table></blockquote>
+<div class="example"><p><code>AddHandler type-map .var</code></p></div>
     <p>in the server configuration file.</p>
 
     <p>Type map files should have the same name as the resource
@@ -108,35 +110,35 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     This file would be named <code>foo.var</code>, as it describes
     a resource named <code>foo</code>.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  URI: foo<br>
-<br>
-  URI: foo.en.html<br>
-  Content-type: text/html<br>
-  Content-language: en<br>
-<br>
-  URI: foo.fr.de.html<br>
-  Content-type: text/html;charset=iso-8859-2<br>
-  Content-language: fr, de<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+  URI: foo<br />
+<br />
+  URI: foo.en.html<br />
+  Content-type: text/html<br />
+  Content-language: en<br />
+<br />
+  URI: foo.fr.de.html<br />
+  Content-type: text/html;charset=iso-8859-2<br />
+  Content-language: fr, de<br />
+</code></p></div>
     <p>Note also that a typemap file will take precedence over the
     filename's extension, even when Multiviews is on. If the
     variants have different source qualities, that may be indicated
     by the "qs" parameter to the media type, as in this picture
     (available as jpeg, gif, or ASCII-art): </p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  URI: foo<br>
-<br>
-  URI: foo.jpeg<br>
-  Content-type: image/jpeg; qs=0.8<br>
-<br>
-  URI: foo.gif<br>
-  Content-type: image/gif; qs=0.5<br>
-<br>
-  URI: foo.txt<br>
-  Content-type: text/plain; qs=0.01<br>
-</code></td></tr></table></blockquote>
+<div class="example"><p><code>
+  URI: foo<br />
+<br />
+  URI: foo.jpeg<br />
+  Content-type: image/jpeg; qs=0.8<br />
+<br />
+  URI: foo.gif<br />
+  Content-type: image/gif; qs=0.5<br />
+<br />
+  URI: foo.txt<br />
+  Content-type: text/plain; qs=0.01<br />
+</code></p></div>
 
     <p>qs values can vary in the range 0.000 to 1.000. Note that
     any variant with a qs value of 0.000 will never be chosen.
@@ -156,12 +158,12 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     typemap</a> documentation.</p>
 
 
-<h3><a name="multiviews">Multiviews</a></h3>
+<h3><a name="multiviews" id="multiviews">Multiviews</a></h3>
 
     <p><code>MultiViews</code> is a per-directory option, meaning it
-    can be set with an <a href="./mod/core.html#options" class="directive"><code class="directive">Options</code></a>
-    directive within a <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>, <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> or <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a> section in
-    <code>access.conf</code>, or (if <a href="./mod/core.html#allowoverride" class="directive"><code class="directive">AllowOverride</code></a> is properly set) in
+    can be set with an <code class="directive"><a href="./mod/core.html#options">Options</a></code>
+    directive within a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> section in
+    <code>access.conf</code>, or (if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is properly set) in
     <code>.htaccess</code> files. Note that <code>Options All</code>
     does not set <code>MultiViews</code>; you have to ask for it by
     name.</p>
@@ -177,10 +179,10 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     then chooses the best match to the client's requirements.</p>
 
     <p><code>MultiViews</code> may also apply to searches for the file
-    named by the <a href="./mod/mod_dir.html#directoryindex" class="directive"><code class="directive">DirectoryIndex</code></a> directive, if the
+    named by the <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> directive, if the
     server is trying to index a directory. If the configuration files
     specify</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DirectoryIndex index</code></td></tr></table></blockquote>
+<div class="example"><p><code>DirectoryIndex index</code></p></div>
     <p>then the server will arbitrate between <code>index.html</code>
     and <code>index.html3</code> if both are present. If neither
     are present, and <code>index.cgi</code> is there, the server
@@ -189,11 +191,11 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     <p>If one of the files found when reading the directory does not
     have an extension recognized by <code>mod_mime</code> to designate
     its Charset, Content-Type, Language, or Encoding, then the result
-    depends on the setting of the <a href="./mod/mod_mime.html#multiviewsmatch" class="directive"><code class="directive">MultiViewsMatch</code></a> directive.  This
+    depends on the setting of the <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code> directive.  This
     directive determines whether handlers, filters, and other
     extension types can participate in MultiViews negotiation.</p>
 
-<h2><a name="methods">The Negotiation Methods</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="methods" id="methods">The Negotiation Methods</a></h2>
 
     <p>After Apache has obtained a list of the variants for a given
     resource, either from a type-map file or from the filenames in
@@ -225,7 +227,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
       variant selection algorithm' defined in RFC 2296.</li>
     </ol>
 
-<h3><a name="dimensions">Dimensions of Negotiation</a></h3>
+<h3><a name="dimensions" id="dimensions">Dimensions of Negotiation</a></h3>
 
     <table>
       <tr valign="top">
@@ -270,7 +272,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     </table>
 
 
-<h3><a name="algorithm">Apache Negotiation Algorithm</a></h3>
+<h3><a name="algorithm" id="algorithm">Apache Negotiation Algorithm</a></h3>
 
     <p>Apache can use the following algorithm to select the 'best'
     variant (if any) to return to the browser. This algorithm is
@@ -355,7 +357,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
       dimensions of variance.</li>
     </ol>
 
-<h2><a name="better">Fiddling with Quality
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="better" id="better">Fiddling with Quality
     Values</a></h2>
 
     <p>Apache sometimes changes the quality values from what would
@@ -368,23 +370,23 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     sends full and correct information these fiddles will not be
     applied.</p>
 
-<h3><a name="wildcards">Media Types and Wildcards</a></h3>
+<h3><a name="wildcards" id="wildcards">Media Types and Wildcards</a></h3>
 
     <p>The Accept: request header indicates preferences for media
     types. It can also include 'wildcard' media types, such as
     "image/*" or "*/*" where the * matches any string. So a request
     including:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Accept: image/*, */*</code></td></tr></table></blockquote>
+<div class="example"><p><code>Accept: image/*, */*</code></p></div>
 
     <p>would indicate that any type starting "image/" is acceptable,
     as is any other type (so the first "image/*" is redundant).
     Some browsers routinely send wildcards in addition to explicit
     types they can handle. For example:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*
-</code></td></tr></table></blockquote>
+</code></p></div>
     <p>The intention of this is to indicate that the explicitly listed
     types are preferred, but if a different representation is
     available, that is ok too. However under the basic algorithm,
@@ -392,9 +394,9 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     to all the other types, so they are not being preferred. The
     browser should really have sent a request with a lower quality
     (preference) value for *.*, such as:</p>
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<div class="example"><p><code>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*; q=0.01
-</code></td></tr></table></blockquote>
+</code></p></div>
     <p>The explicit types have no quality factor, so they default to a
     preference of 1.0 (the highest). The wildcard */* is given a
     low preference of 0.01, so other types will only be returned if
@@ -410,7 +412,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     correct information to start with work as expected.</p>
 
 
-<h3><a name="exceptions">Language Negotiation Exceptions</a></h3>
+<h3><a name="exceptions" id="exceptions">Language Negotiation Exceptions</a></h3>
 
     <p>New in Apache 2.0, some exceptions have been added to the
     negotiation algorithm to allow graceful fallback when language
@@ -422,10 +424,10 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     Variant" or "Multiple Choices" response to the client.  To avoid
     these error messages, it is possible to configure Apache to ignore
     the Accept-language in these cases and provide a document that
-    does not explictly match the client's request.  The <a href="./mod/mod_negotiation.html#forcelanguagepriority" class="directive"><code class="directive">ForceLanguagePriority</code></a>
+    does not explictly match the client's request.  The <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     directive can be used to override one or both of these error
     messages and subsitute the servers judgement in the form of the 
-    <a href="./mod/mod_negotiation.html#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a>
+    <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     directive.</p>
 
     <p>The server will also attempt to match language-subsets when no
@@ -440,7 +442,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     general.  Unfortunately, many current clients have default
     configurations that resemble this.)  However, if no other language
     match is possible and the server is about to return a "No
-    Acceptable Variants" error or fallback to the <a href="./mod/mod_negotiation.html#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a>, the server
+    Acceptable Variants" error or fallback to the <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, the server
     will ignore the subset specification and match <code>en-GB</code>
     against <code>en</code> documents.  Implicitly, Apache will add
     the parent language to the client's acceptable language list with
@@ -451,7 +453,7 @@ Negotiation</a></li><li><a href="#naming">Note on hyperlinks and naming conventi
     specification and to work effectively with properly configured
     clients.</p>
 
-<h2><a name="extensions">Extensions to Transparent Content
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="extensions" id="extensions">Extensions to Transparent Content
 Negotiation</a></h2> 
 
 <p>Apache extends the transparent content negotiation protocol (RFC
@@ -463,7 +465,7 @@ to use them as candidate variants whenever their encodings are
 acceptable according to the Accept-Encoding request header. The
 RVSA/1.0 implementation does not round computed quality factors to 5
 decimal places before choosing the best variant.</p>
-<h2><a name="naming">Note on hyperlinks and naming conventions</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="naming" id="naming">Note on hyperlinks and naming conventions</a></h2>
 
     <p>If you are using language negotiation you can choose between
     different naming conventions, because files can have more than
@@ -490,7 +492,7 @@ decimal places before choosing the best variant.</p>
     <p>Here some more examples of filenames together with valid and
     invalid hyperlinks:</p>
 
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table class="bordered">
       <tr>
         <th>Filename</th>
 
@@ -502,7 +504,7 @@ decimal places before choosing the best variant.</p>
       <tr>
         <td><em>foo.html.en</em></td>
 
-        <td>foo<br>
+        <td>foo<br />
          foo.html</td>
 
         <td>-</td>
@@ -519,10 +521,10 @@ decimal places before choosing the best variant.</p>
       <tr>
         <td><em>foo.html.en.gz</em></td>
 
-        <td>foo<br>
+        <td>foo<br />
          foo.html</td>
 
-        <td>foo.gz<br>
+        <td>foo.gz<br />
          foo.html.gz</td>
       </tr>
 
@@ -531,16 +533,16 @@ decimal places before choosing the best variant.</p>
 
         <td>foo</td>
 
-        <td>foo.html<br>
-         foo.html.gz<br>
+        <td>foo.html<br />
+         foo.html.gz<br />
          foo.gz</td>
       </tr>
 
       <tr>
         <td><em>foo.gz.html.en</em></td>
 
-        <td>foo<br>
-         foo.gz<br>
+        <td>foo<br />
+         foo.gz<br />
          foo.gz.html</td>
 
         <td>foo.html</td>
@@ -549,8 +551,8 @@ decimal places before choosing the best variant.</p>
       <tr>
         <td><em>foo.html.gz.en</em></td>
 
-        <td>foo<br>
-         foo.html<br>
+        <td>foo<br />
+         foo.html<br />
          foo.html.gz</td>
 
         <td>foo.gz</td>
@@ -570,7 +572,7 @@ decimal places before choosing the best variant.</p>
     extension (including an encoding extension if there is one)
     must be on the right hand side of the MIME-type extension
     (<em>e.g.</em>, <code>foo.html.en</code>).</p>
-<h2><a name="caching">Note on Caching</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="caching" id="caching">Note on Caching</a></h2>
 
     <p>When a cache stores a representation, it associates it with
     the request URL. The next time that URL is requested, the cache
@@ -584,15 +586,15 @@ decimal places before choosing the best variant.</p>
     responses.</p>
 
     <p>For requests which come from a HTTP/1.0 compliant client
-    (either a browser or a cache), the directive <a href="./mod/mod_negotiation.html#cachenegotiateddocs" class="directive"><code class="directive">CacheNegotiatedDocs</code></a> can be
+    (either a browser or a cache), the directive <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code> can be
     used to allow caching of responses which were subject to
     negotiation. This directive can be given in the server config or
     virtual host, and takes no arguments. It has no effect on requests
     from HTTP/1.1 clients.</p>
-<h2><a name="more">More Information</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="more" id="more">More Information</a></h2>
 
     <p>For more information about content negotiation, see Alan
     J. Flavell's <a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
     Negotiation Notes</a>.  But note that this document may not be
     updated to include changes in Apache 2.0.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>

@@ -250,7 +250,7 @@
           The time that the server finished processing the request.
           The format is: 
 
-          <blockquote>
+          <p class="indent">
             <code>[day/month/year:hour:minute:second zone]<br />
              day = 2*digit<br />
              month = 3*letter<br />
@@ -259,7 +259,7 @@
              minute = 2*digit<br />
              second = 2*digit<br />
              zone = (`+' | `-') 4*digit</code>
-          </blockquote>
+          </p>
           It is possible to have the time displayed in another format
           by specifying <code>%{format}t</code> in the log format
           string, where <code>format</code> is as in
