@@ -31,7 +31,7 @@ Windows</compatibility>
     </note>
 </summary>
 
-<section><title>Creating Loadable Modules for Windows</title>
+<section id="windows"><title>Creating Loadable Modules for Windows</title>
 
     <note><title>Note</title>
     <p>The module name format changed for Windows

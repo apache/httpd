@@ -52,11 +52,11 @@ Windows</td></tr></table>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> Creating Loadable Modules for Windows</li>
+<li><img alt="" src="../images/down.gif" /> <a href="#windows">Creating Loadable Modules for Windows</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>Creating Loadable Modules for Windows</h2>
+<h2><a name="windows" id="windows">Creating Loadable Modules for Windows</a></h2>
 
     <div class="note"><h3>Note</h3>
     <p>The module name format changed for Windows

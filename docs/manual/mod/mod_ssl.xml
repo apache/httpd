@@ -22,7 +22,7 @@ to provide the cryptography engine.</p>
 <a href="../ssl/">SSL documentation</a>.</p>
 </summary>
 
-<section><title>Environment Variables</title>
+<section id="envvars"><title>Environment Variables</title>
 
 <p>This module provides a lot of SSL information as additional environment
 variables to the SSI and CGI namespace. The generated variables are listed in
@@ -75,7 +75,7 @@ compatibility variables.</p>
 </table>
 </section>
 
-<section><title>Custom Log Formats</title>
+<section id="logformats"><title>Custom Log Formats</title>
 
 <p>When <module>mod_ssl</module> is built into Apache or at least
 loaded (under DSO situation) additional functions exist for the <a

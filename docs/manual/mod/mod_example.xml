@@ -34,7 +34,7 @@
     various callbacks were made.</p>
 </summary>
 
-<section><title>Compiling the example module</title>
+<section id="compiling"><title>Compiling the example module</title>
 
     <p>To include the example module in your server, follow the
     steps below:</p>
@@ -74,7 +74,7 @@
     </ol>
 </section>
 
-<section><title>Using the <code>mod_example</code> Module</title>
+<section id="using"><title>Using the <code>mod_example</code> Module</title>
 
     <p>To activate the example module, include a block similar to
     the following in your <code>srm.conf</code> file:</p>
