@@ -1,4 +1,8 @@
 Changes with Apache 1.3
+
+  *) CONFIG: "HostnameLookups" now defaults to off because it is far better
+     for the net if we require people that actually need this data to
+     enable it.  [Linus Torvalds]
   
   *) directory_walk() is an expensive function, keep a little more state to
      avoid needless string counting.  Add two new functions make_dirstr_parent
@@ -78,10 +82,6 @@ Changes with Apache 1.2.1
 
   *) SECURITY: Apache will refuse to run as "User root" unless
      BIG_SECURITY_HOLE is defined at compile time.  [Dean Gaudet]
-
-  *) CONFIG: "HostnameLookups" now defaults to off because it is far better
-     for the net if we require people that actually need this data to
-     enable it.  [Linus Torvalds]
 
   *) CONFIG: If a symlink pointed to a directory then it would be disallowed
      if it contained a .htaccess disallowing symlinks.  This is contrary
