@@ -107,7 +107,7 @@
 #define	MBYTE			1048576L
 #define	GBYTE			1073741824L
 
-module status_module;
+module MODULE_VAR_EXPORT status_module;
 
 /* Format the number of bytes nicely */
 
@@ -652,7 +652,7 @@ handler_rec status_handlers[] =
 { NULL }
 };
 
-module status_module =
+module MODULE_VAR_EXPORT status_module =
 {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */

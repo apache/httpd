@@ -102,7 +102,7 @@ typedef struct {
     int vars_present;
 } env_server_config_rec;
 
-module env_module;
+module MODULE_VAR_EXPORT env_module;
 
 void *create_env_server_config (pool *p, server_rec *dummy)
 {
@@ -241,7 +241,7 @@ int fixup_env_module(request_rec *r)
     return OK;  
 }
 
-module env_module = {
+module MODULE_VAR_EXPORT env_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    NULL,			/* dir config creater */

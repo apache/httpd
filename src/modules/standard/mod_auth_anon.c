@@ -194,7 +194,7 @@ command_rec anon_auth_cmds[] = {
 { NULL }
 };
 
-module anon_auth_module;
+module MODULE_VAR_EXPORT anon_auth_module;
 
 int anon_authenticate_basic_user (request_rec *r)
 {
@@ -279,7 +279,7 @@ int check_anon_access (request_rec *r) {
 }
  
 
-module anon_auth_module = {
+module MODULE_VAR_EXPORT anon_auth_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_anon_auth_dir_config,	/* dir config creater */

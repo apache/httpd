@@ -162,7 +162,7 @@
 #include "http_config.h"
 #include "http_core.h" /* For REMOTE_NAME */
 
-module config_log_module;
+module MODULE_VAR_EXPORT config_log_module;
 
 static int xfer_flags = ( O_WRONLY | O_APPEND | O_CREAT );
 #if defined(__EMX__) || defined(WIN32)
@@ -773,7 +773,7 @@ void init_config_log (server_rec *s, pool *p)
     for (s = s->next; s; s = s->next) open_multi_logs (s, p);
 }
 
-module config_log_module = {
+module MODULE_VAR_EXPORT config_log_module = {
    STANDARD_MODULE_STUFF,
    init_config_log,		/* initializer */
    NULL,			/* create per-dir config */

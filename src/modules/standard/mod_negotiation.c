@@ -81,7 +81,7 @@ typedef struct {
     array_header *language_priority;
 } neg_dir_config;
 
-module negotiation_module;
+module MODULE_VAR_EXPORT negotiation_module;
 
 char *merge_string_array (pool *p, array_header *arr, char *sep)
 {
@@ -2025,7 +2025,7 @@ handler_rec negotiation_handlers[] = {
 { NULL }
 };
 
-module negotiation_module = {
+module MODULE_VAR_EXPORT negotiation_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_neg_dir_config,	/* dir config creater */

@@ -70,7 +70,7 @@ typedef struct {
     array_header *browsers;
 } browser_server_config_rec;
 
-module browser_module;
+module MODULE_VAR_EXPORT browser_module;
 
 void *create_browser_config (pool *p, server_rec *dummy)
 {
@@ -169,7 +169,7 @@ int parse_headers_browser_module(request_rec *r)
     return OK;  
 }
 
-module browser_module = {
+module MODULE_VAR_EXPORT browser_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    NULL,			/* dir config creater */

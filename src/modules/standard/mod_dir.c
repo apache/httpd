@@ -63,7 +63,7 @@
 #include "http_main.h"
 #include "util_script.h"
 
-module dir_module;
+module MODULE_VAR_EXPORT dir_module;
 
 typedef struct dir_config_struct {
     char *index_names;
@@ -193,7 +193,7 @@ static handler_rec dir_handlers[] = {
 { NULL }
 };
 
-module dir_module = {
+module MODULE_VAR_EXPORT dir_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_dir_config,		/* dir config creater */

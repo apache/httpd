@@ -110,7 +110,7 @@
 double strtod();   /* SunOS needed this */
 #endif
 
-module imap_module;
+module MODULE_VAR_EXPORT imap_module;
 
 typedef struct { 
   char *imap_menu;
@@ -817,7 +817,7 @@ handler_rec imap_handlers[] = {
 { NULL }
 };
 
-module imap_module = {
+module MODULE_VAR_EXPORT imap_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_imap_dir_config,	/* dir config creater */

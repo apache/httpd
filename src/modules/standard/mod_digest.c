@@ -96,7 +96,7 @@ command_rec digest_cmds[] = {
 { NULL }
 };
 
-module digest_module;
+module MODULE_VAR_EXPORT digest_module;
 
 char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 {
@@ -343,7 +343,7 @@ int digest_check_auth (request_rec *r) {
     return AUTH_REQUIRED;
 }
 
-module digest_module = {
+module MODULE_VAR_EXPORT digest_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_digest_dir_config,	/* dir config creater */

@@ -101,7 +101,7 @@
 #include <sys/time.h>
 #endif
 
-module usertrack_module;
+module MODULE_VAR_EXPORT usertrack_module;
 
 typedef struct {
     int always;
@@ -322,7 +322,7 @@ command_rec cookie_log_cmds[] = {
 { NULL }
 };
 
-module usertrack_module = {
+module MODULE_VAR_EXPORT usertrack_module = {
    STANDARD_MODULE_STUFF,
    NULL,                   /* initializer */
    make_cookie_dir,    	   /* dir config creater */

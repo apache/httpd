@@ -206,7 +206,7 @@ typedef struct {
 #define ACTIVE_OFF 	0
 #define ACTIVE_DONTCARE 2
 
-module expires_module;
+module MODULE_VAR_EXPORT expires_module;
 
 void *create_dir_expires_config (pool *p, char *dummy)
 {     
@@ -465,7 +465,7 @@ int add_expires(request_rec *r)
     return OK;
 }
 
-module expires_module = {
+module MODULE_VAR_EXPORT expires_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_dir_expires_config,	/* dir config creater */

@@ -136,7 +136,7 @@
 #define DEFAULT_METADIR		".web"
 #define DEFAULT_METASUFFIX	".meta"
 
-module cern_meta_module;
+module MODULE_VAR_EXPORT cern_meta_module;
 
 typedef struct {
 	char *metadir;
@@ -305,7 +305,7 @@ int add_cern_meta_data(request_rec *r)
     return rv;
 }
 
-module cern_meta_module = {
+module MODULE_VAR_EXPORT cern_meta_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    NULL,			/* dir config creater */

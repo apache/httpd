@@ -120,7 +120,7 @@ typedef struct {
     array_header *headers;
 } headers_conf;
 
-module headers_module;
+module MODULE_VAR_EXPORT headers_module;
 
 void *create_headers_config (pool *p, server_rec *s)
 {
@@ -233,7 +233,7 @@ int fixup_headers(request_rec *r)
     return DECLINED;
 }
 
-module headers_module = {
+module MODULE_VAR_EXPORT headers_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_headers_dir_config,	/* dir config creater */

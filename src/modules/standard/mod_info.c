@@ -84,7 +84,7 @@ typedef struct mod_info_config_lines {
 	struct mod_info_config_lines *next;
 } mod_info_config_lines;
 
-module info_module;
+module MODULE_VAR_EXPORT info_module;
 extern module *top_module;
 
 char *mod_info_html_cmd_string(char *string) {
@@ -436,7 +436,7 @@ handler_rec info_handlers[] = {
 	{ NULL }
 };
 
-module info_module = {
+module MODULE_VAR_EXPORT info_module = {
 	STANDARD_MODULE_STUFF,
 	NULL,				/* initializer */
 	NULL,				/* dir config creater */
