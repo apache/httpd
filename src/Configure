@@ -767,10 +767,8 @@ for modfile in $MODFILES ; do
 		modname=`grep "Name:" $tmpfile2 | sed 's/^.*Name:[ 	]*//'`
 		if grep "ConfigStart" $tmpfile2 > /dev/null \
 		 && grep "ConfigEnd" $tmpfile2 > /dev/null; then
-		    echo "    o $modname runs:"
 		    sed '1,/ConfigStart/d;/ConfigEnd/,$d' $tmpfile2 > \
 		     $tmpfile3
-		    sed 's/^/>> /' $tmpfile3
 		    . ./$tmpfile3
 		fi
 		rm -f $tmpfile2 $tmpfile3
