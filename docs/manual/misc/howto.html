@@ -24,6 +24,8 @@ How to:
     URL</A>
 <LI><A HREF="#logreset">reset your log files</A>
 <LI><A HREF="#stoprob">stop/restrict robots</A>
+<LI><A HREF="#proxyssl">proxy SSL requests <EM>through</EM> your non-SSL
+    server</A>
 </UL>
 
 <HR>
@@ -161,6 +163,46 @@ in which they can roam, create a <CODE>robots.txt</CODE> file; refer
 to the <A HREF="http://info.webcrawler.com/mak/projects/robots/robots.html"
 >robot information pages</A> provided by Martijn Koster for the syntax.</P>
 
+<HR>
+<H2><A NAME="proxyssl">How to proxy SSL requests <EM>through</EM>
+    your non-SSL Apache server</A>
+    <BR>
+    <SMALL>(<EM>submitted by David Sedlock</EM>)</SMALL>
+</H2>
+<P>
+SSL uses port 443 for requests for secure pages. If your browser just
+sits there for a long time when you attempt to access a secure page
+over your Apache proxy, then the proxy may not be configured to handle
+SSL. You need to instruct Apache to listen on port 443 in addition to
+any of the ports on which it is already listening:
+</P>
+<PRE>
+    Listen 80
+    Listen 443
+</PRE>
+<P>
+Then set the security proxy in your browser to 443. That might be it!
+</P>
+<P>
+If your proxy is sending requests to another proxy, then you may have
+to set the directive ProxyRemote differently. Here are my settings:
+</P>
+<PRE>
+    ProxyRemote http://nicklas:80/ http://proxy.mayn.franken.de:8080
+    ProxyRemote http://nicklas:443/ http://proxy.mayn.franken.de:443
+</PRE>
+<P>
+Requests on port 80 of my proxy <SAMP>nicklas</SAMP> are forwarded to
+proxy<SAMP>.mayn.franken.de:8080</SAMP>, while requests on port 443 are
+forwarded to <SAMP>proxy.mayn.franken.de:443</SAMP>.
+If the remote proxy is not set up to
+handle port 443, then the last directive can be left out. SSL requests
+will only go over the first proxy.
+</P>
+<P>
+Note that your Apache does NOT have to be set up to serve secure pages
+with SSL. Proxying SSL is a different thing from using it.
+</P>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
