@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
-<!DOCTYPE directiveindex [
-    <!ENTITY allmodules SYSTEM "allmodules.xml">
-]>
-
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml"> ]
+>
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+
 <directiveindex>
-<title>Directive Index</title>
-<summary>
-    <p>Each Apache directive available in the standard Apache
-    distribution is listed here. They are described using a
-    consistent format, and there is <a href="directive-dict.html"
-    rel="Glossary">a dictionary</a> of the terms used in their
-    descriptions available.</p>
-</summary>
-&allmodules;
+  <title>Directive Index</title>
+  <summary>
+    <p>
+      Each Apache directive available in the standard Apache
+      distribution is listed here. They are described using a
+      consistent format, and there is <a href="directive-dict.html"
+      rel="Glossary">a dictionary</a> of the terms used in their
+      descriptions available.
+    </p>
+  </summary>
+  &allmodules;
 </directiveindex>
