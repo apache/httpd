@@ -72,10 +72,8 @@ AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(process_connection)
 )
 
-AP_IMPLEMENT_HOOK_RUN_ALL(API_EXPORT,int,pre_connection,
-                          (conn_rec *c),(c),OK,DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(API_EXPORT,int,process_connection,
-                            (conn_rec *c),(c),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 
 /*
  * More machine-dependent networking gooo... on some systems,
