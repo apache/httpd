@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Remove the dexter MPM.  Perchild is the same basic idea, but it has the
+     added feature of allowing a uid/gid per child process.  If no
+     uid/gid is specified, then Perchild behaves exactly like dexter.
+     [Ryan Bloom]
+
   *) Get perchild building again. [Ryan Bloom]
 
   *) Don't disable threads just because we are using the prefork MPM.
