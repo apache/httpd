@@ -203,6 +203,7 @@ int totalbread = 0;        	/* totoal amount of entity body read */
 int totalposted = 0;        	/* total number of bytes posted, inc. headers */
 int done = 0;        		/* number of requests we have done */
 int doneka = 0;        		/* number of keep alive connections done */
+int started = 0;		/* number of requests started, so no excess */
 int good = 0, bad = 0;        	/* number of good and bad requests */
 
 /* store error cases */
@@ -474,6 +475,8 @@ static void start_connect(struct connection *c)
 {
     ap_status_t rv;
 
+    if(!(started < requests)) return;
+
     c->read = 0;
     c->bread = 0;
     c->keepalive = 0;
@@ -501,10 +504,12 @@ static void start_connect(struct connection *c)
                 err("\nTest aborted after 10 failures\n\n");
             }
             start_connect(c);
+            return;
         }
     }
 
     /* connected first time */
+    started++;
     write_request(c);
 }
 
@@ -516,7 +521,7 @@ static void close_connection(struct connection *c)
 {
     if (c->read == 0 && c->keepalive) {
         /* server has legitimately shut down an idle keep alive request */
-        good--;			/* connection never happend */
+        if (good) good--;	/* connection never happened */
     }
     else {
         if (good == 1) {
@@ -848,14 +853,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.18 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.19 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.18 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.19 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
