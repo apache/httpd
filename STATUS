@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/02 19:55:41 $]
+Last modified at [$Date: 2002/06/02 22:44:11 $]
 
 Release:
 
@@ -52,6 +52,9 @@ CURRENT RELEASE NOTES:
       Friday.  Just wanted an intermediate milestone.
 
 RELEASE SHOWSTOPPERS:
+
+    * Reverse proxy broken
+      Message-ID: <3CFA9315.4030003@apache.org>
 
     * HP/UX 10.20: compile breakage in APR.  Looks like it should be easy
       to fix, probably just some extraneous #include's that are fouling
