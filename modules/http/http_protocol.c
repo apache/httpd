@@ -903,6 +903,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     if (!ctx->remaining) {
         switch (ctx->state) {
         case BODY_NONE:
+            if (f->r->proxyreq != PROXYREQ_RESPONSE) {
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+                return APR_SUCCESS;
+            }
             break;
         case BODY_LENGTH:
             e = apr_bucket_eos_create(f->c->bucket_alloc);
