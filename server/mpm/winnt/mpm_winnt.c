@@ -75,7 +75,6 @@
 #include "mpm_common.h"
 #include "scoreboard.h"
 
-
 typedef HANDLE thread;
 #ifdef CONTAINING_RECORD
 #undef CONTAINING_RECORD
@@ -1322,6 +1321,14 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
     /* We never store the thread's handle, so close it now. */
     ResumeThread(pi.hThread);
     CloseHandle(pi.hThread);
+
+    /* Important:
+     * Give the child process a chance to run before dup'ing the sockets.
+     * We have already set the listening sockets noninheritable, but if 
+     * WSADuplicateSocket runs before the child process initializes
+     * the listeners will be inherited anyway.
+     */
+    Sleep(1000);
 
     /* Run the chain of open sockets. For each socket, duplicate it 
      * for the target process then send the WSAPROTOCOL_INFO 

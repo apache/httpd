@@ -1,5 +1,14 @@
 Changes with Apache 2.0.21-dev
- 
+
+  *) Win32: Prevent listening sockets from being inherited by
+     the Apache child process, CGI scripts, rotatelog process
+     etc.  If the Apache child process segfaults, any processes 
+     that the child started are not reaped. Prior to this fix,
+     these processes inherited the listening sockets which sometimes
+     prevented the restarted Apache child process from accepting
+     connections (ie, the server would hang). 
+     [Bill Stoddard]
+
   *) Provide vhost and request strings when ExtendedStatus is on.
      [Greg Ames]
 
