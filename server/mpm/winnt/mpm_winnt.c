@@ -139,7 +139,6 @@ static DWORD my_pid;
 static DWORD parent_pid;
 
 int ap_threads_per_child = 0;
-int ap_daemons_to_start=0;
 
 /* ap_get_max_daemons and ap_my_generation are used by the scoreboard
  * code
@@ -1167,24 +1166,7 @@ static void child_main()
     CloseHandle(exit_event);
 }
 
-static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *processes)
-{
-    int i;
-    int handle = 0;
-
-    CloseHandle(handles[position]);
-    CloseHandle(events[position]);
-
-    handle = (int)handles[position];
-
-    for (i = position; i < (*processes)-1; i++) {
-	handles[i] = handles[i + 1];
-	events[i] = events[i + 1];
-    }
-    (*processes)--;
-}
-
-static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *processes)
+static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_event)
 {
     int rv;
     char buf[1024];
@@ -1202,7 +1184,6 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
     HANDLE hPipeWrite = NULL;
     SECURITY_ATTRIBUTES sa = {0};  
 
-    HANDLE kill_event;
     LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
 
     sa.nLength = sizeof(sa);
@@ -1288,18 +1269,19 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
         CloseHandle(pi.hThread);
         return -1;
     }
-    
+
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                  "Parent: Created child process %d", pi.dwProcessId);
 
     SetEnvironmentVariable("AP_PARENT_PID",NULL);
+    *child_proc = pi.hProcess;
 
-    /* Create the exit_event, apCchild_pid */
+    /* Create the child_exit_event, apCchild_pid. */
     sa.nLength = sizeof(sa);
     sa.bInheritHandle = TRUE;
     sa.lpSecurityDescriptor = NULL;        
-    kill_event = CreateEvent(&sa, TRUE, FALSE, apr_psprintf(pconf,"apC%d", pi.dwProcessId));
-    if (!kill_event) {
+    *child_exit_event = CreateEvent(&sa, TRUE, FALSE, apr_psprintf(pconf,"apC%d", pi.dwProcessId));
+    if (!(*child_exit_event)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                      "Parent: Could not create exit event for child process");
         CloseHandle(pi.hProcess);
@@ -1307,12 +1289,6 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
         return -1;
     }
     
-    /* Assume the child process lives. Update the process and event tables */
-    handles[*processes] = pi.hProcess;
-    events[*processes] = kill_event;
-    (*processes)++;
-
-    /* We never store the thread's handle, so close it now. */
     ResumeThread(pi.hThread);
     CloseHandle(pi.hThread);
 
@@ -1333,7 +1309,8 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
         lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
         apr_os_sock_get(&nsd,lr->sd);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                     "Parent: Duplicating socket %d and sending it to child process %d", nsd, pi.dwProcessId);
+                     "Parent: Duplicating socket %d and sending it to child process %d", 
+                     nsd, pi.dwProcessId);
         if (WSADuplicateSocket(nsd, pi.dwProcessId,
                                lpWSAProtocolInfo) == SOCKET_ERROR) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), server_conf,
@@ -1358,60 +1335,81 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
     return 0;
 }
 
-/**********************************************************************
+/***********************************************************************
  * master_main()
- * This is the parent process. master_main() creates a multithreaded
- * child process to handle connections, then blocks waiting to receive
- * a shutdown, restart event or child exit event. 
- * 
- * restart_event 
- * - Child is signaled to die gracefully
+ * master_main() runs in the parent process.  It creates the child 
+ * process which handles HTTP requests then waits on one of three 
+ * events:
+ *
+ * restart_event
+ * -------------
+ * The restart event causes master_main to start a new child process and
+ * tells the old child process to exit (by setting the child_exit_event).
+ * The restart event is set as a result of one of the following:
+ * 1. An apache -k restart command on the command line
+ * 2. A command received from Windows service manager which gets 
+ *    translated into an ap_signal_parent(SIGNAL_PARENT_RESTART)
+ *    call by code in service.c.
+ * 3. The child process calling ap_signal_parent(SIGNAL_PARENT_RESTART)
+ *    as a result of hitting MaxRequestsPerChild.
+ *
  * shutdown_event 
- * - Child is signaled to die gracefully
- * child_exit_event 
- * - Child has died, either normally (max_request_per_child)
- * or abnormally (seg fault, irrecoverable error condition detected by the 
- * child)
+ * --------------
+ * The shutdown event causes master_main to tell the child process to 
+ * exit and that the server is shutting down. The shutdown event is
+ * set as a result of one of the following:
+ * 1. An apache -k shutdown command on the command line
+ * 2. A command received from Windows service manager which gets
+ *    translated into an ap_signal_parent(SIGNAL_PARENT_SHUTDOWN)
+ *    call by code in service.c.
+ *
+ * child process handle
+ * --------------------
+ * The child process handle will be signaled if the child process 
+ * exits for any reason. In a normal running server, the signaling
+ * of this event means that the child process has exited prematurely
+ * due to a seg fault or other irrecoverable error. For server
+ * robustness, master_main will restart the child process under this 
+ * condtion.
+ *
+ * master_main uses the child_exit_event to signal the child process
+ * to exit.
  **********************************************************************/
-#define MAX_PROCESSES 50 /* must be < MAX_WAIT_OBJECTS-1 */
+#define NUM_WAIT_HANDLES 3
+#define CHILD_HANDLE     0
+#define SHUTDOWN_HANDLE  1
+#define RESTART_HANDLE   2
 static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_event)
 {
-    int remaining_children_to_start = ap_daemons_to_start;
-    int i;
     int rv, cld;
-    int child_num = 0;
     int restart_pending = 0;
     int shutdown_pending = 0;
-    int current_live_processes = 0; /* number of child process we know about */
 
-    HANDLE process_handles[MAX_PROCESSES];
-    HANDLE process_kill_events[MAX_PROCESSES];
+    HANDLE child_handle;
+    HANDLE child_exit_event;
+    HANDLE event_handles[NUM_WAIT_HANDLES];
 
-
-    /* Create child process 
-     * Should only be one in this version of Apache for WIN32 
-     */
-    while (remaining_children_to_start--) {
-        if (create_process(pconf, process_handles, process_kill_events, 
-                           &current_live_processes) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
-                         "master_main: create child process failed. Exiting.");
-            shutdown_pending = 1;
-            goto die_now;
-        }
+    /* Create a single child process */
+    rv = create_process(pconf, &child_handle, &child_exit_event);
+    if (rv < 0) 
+    {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
+                     "master_main: create child process failed. Exiting.");
+        shutdown_pending = 1;
+        goto die_now;
     }
     
     restart_pending = shutdown_pending = 0;
 
-    if (!strcasecmp(signal_arg, "runservice"))
+    if (!strcasecmp(signal_arg, "runservice")) {
         mpm_service_started();
+    }
 
     /* Wait for shutdown or restart events or for child death */
-    process_handles[current_live_processes] = shutdown_event;
-    process_handles[current_live_processes+1] = restart_event;
-
-    rv = WaitForMultipleObjects(current_live_processes+2, (HANDLE *)process_handles, 
-                                FALSE, INFINITE);
+    event_handles[CHILD_HANDLE] = child_handle;
+    event_handles[SHUTDOWN_HANDLE] = shutdown_event;
+    event_handles[RESTART_HANDLE] = restart_event;
+    rv = WaitForMultipleObjects(NUM_WAIT_HANDLES, (HANDLE *) event_handles, FALSE, INFINITE);
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
         /* Something serious is wrong */
@@ -1425,10 +1423,9 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
                      "master_main: WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
         shutdown_pending = 1;
     }
-    else if (cld == current_live_processes) {
+    else if (cld == SHUTDOWN_HANDLE) {
         /* shutdown_event signalled */
         shutdown_pending = 1;
-        printf("shutdown event signaled\n");
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
                      "Parent: SHUTDOWN EVENT SIGNALED -- Shutting down the server.");
         if (ResetEvent(shutdown_event) == 0) {
@@ -1437,78 +1434,64 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         }
 
     }
-    else if (cld == current_live_processes+1) {
-        /* restart_event signalled */
-        int children_to_kill = current_live_processes;
+    else if (cld == RESTART_HANDLE) {
+        /* Received a restart event. Prepare the restart_event to be reused 
+         * then signal the child process to exit. 
+         */
         restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, s, 
                      "Parent: RESTART EVENT SIGNALED -- Restarting the server.");
         if (ResetEvent(restart_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
-                         "master_main: ResetEvent(restart_event) failed.");
+                         "Parent: ResetEvent(restart_event) failed.");
         }
-        /* Signal each child process to die 
-         * We are making a big assumption here that the child process, once signaled,
-         * will REALLY go away. Since this is a restart, we do not want to hold the 
-         * new child process up waiting for the old child to die. Remove the old 
-         * child out of the process_handles apr_table_t and hope for the best...
+        if (SetEvent(child_exit_event) == 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
+                         "Parent: SetEvent for child process %d failed.", 
+                         event_handles[CHILD_HANDLE]);
+        }
+        /* Don't wait to verify that the child process really exits, 
+         * just move on with the restart.
          */
-        for (i = 0; i < children_to_kill; i++) {
-            if (SetEvent(process_kill_events[i]) == 0)
-                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
-                             "master_main: SetEvent for child process in slot #%d failed", i);
-            cleanup_process(process_handles, process_kill_events, i, &current_live_processes);
-        }
+        event_handles[CHILD_HANDLE] = NULL;
     } 
     else {
-        /* A child process must have exited because of a fatal error condition (seg fault, etc.). 
-         * Remove the dead process 
-         * from the process_handles and process_kill_events apr_table_t and create a new
-         * child process.
-         * TODO: Consider restarting the child immediately without looping through http_main
-         * and without rereading the configuration. Will need this if we ever support multiple 
-         * children. One option, create a parent thread which waits on child death and restarts it.
-         * Consider, however, that if the user makes httpd.conf invalid, we want to die before
-         * our child tries it... otherwise we have a nasty loop.
-         */
+        /* The child process exited prematurely due to a fatal error. */
         restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf, 
                      "Parent: CHILD PROCESS FAILED -- Restarting the child process.");
-        ap_assert(cld < current_live_processes);
-        cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
-        /* APD2("main_process: child in slot %d died", rv); */
-        /* restart_child(process_hancles, process_kill_events, cld, &current_live_processes); */
+
+        event_handles[CHILD_HANDLE] = NULL;
     }
 
 die_now:
     if (shutdown_pending) 
     {
-        int tmstart = time(NULL);
-        
+        int timeout = 5000;  /* Timeout is milliseconds */
+
+        /* This shutdown is only marginally graceful. We will give the 
+         * child a bit of time to exit gracefully. If the time expires,
+         * the child will be wacked.
+         */
         if (strcasecmp(signal_arg, "runservice")) {
             mpm_service_stopping();
         }
-        /* Signal each child processes to die */
-        for (i = 0; i < current_live_processes; i++) {
-            printf("SetEvent handle = %d\n", process_kill_events[i]);
-            if (SetEvent(process_kill_events[i]) == 0)
+        /* Signal the child processes to exit */
+        if (SetEvent(child_exit_event) == 0) {
                 ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), server_conf,
-                             "master_main: SetEvent for child process in slot #%d failed", i);
+                             "Parent: SetEvent for child process %d failed", event_handles[CHILD_HANDLE]);
         }
-
-        while (current_live_processes && ((tmstart+60) > time(NULL))) {
-            rv = WaitForMultipleObjects(current_live_processes, (HANDLE *)process_handles, FALSE, 2000);
-            if (rv == WAIT_TIMEOUT)
-                continue;
-            ap_assert(rv != WAIT_FAILED);
-            cld = rv - WAIT_OBJECT_0;
-            ap_assert(rv < current_live_processes);
-            cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
+        rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
+        if (rv == WAIT_OBJECT_0) {
+            ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, server_conf,
+                         "Parent: Child process %d exited successfully.", event_handles[CHILD_HANDLE]);
+            event_handles[CHILD_HANDLE] = NULL;
         }
-        for (i = 0; i < current_live_processes; i++) {
-            ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, APR_SUCCESS, server_conf,
-                         "Parent: Forcing termination of child #%d (handle %d)", i, process_handles[i]);
-            TerminateProcess((HANDLE) process_handles[i], 1);
+        else {
+            ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, server_conf,
+                         "Parent: Forcing termination of child process %d ", event_handles[CHILD_HANDLE]);
+            TerminateProcess(event_handles[CHILD_HANDLE], 1);
+            event_handles[CHILD_HANDLE] = NULL;
         }
         return 0;  /* Tell the caller we do not want to restart */
     }
@@ -1853,7 +1836,6 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     }
 
     ap_listen_pre_config();
-    ap_daemons_to_start = DEFAULT_NUM_DAEMON;
     ap_threads_per_child = DEFAULT_START_THREAD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
