@@ -114,9 +114,18 @@ typedef struct {
     time_t expires;
 } cookie_log_state;
 
+typedef enum {
+    CT_UNSET,
+    CT_NETSCAPE,
+    CT_COOKIE,
+    CT_COOKIE2
+} cookie_type_e;
+
 typedef struct {
     int enabled;
+    cookie_type_e style;
     char *cookie_name;
+    char *cookie_domain;
 } cookie_dir_rec;
 
 /* Define this to allow post-2000 cookies. Cookies use two-digit dates,
@@ -203,15 +212,22 @@ static void make_cookie(request_rec *r)
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
         new_cookie = ap_psprintf(r->pool,
-                "%s=%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-                    dcfg->cookie_name, cookiebuf, ap_day_snames[tms->tm_wday],
-                    tms->tm_mday, ap_month_snames[tms->tm_mon],
-		    tms->tm_year % 100,
-                    tms->tm_hour, tms->tm_min, tms->tm_sec);
+                                 "%s=%s; "
+                                 "path=/; "
+                                 "expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
+                                 dcfg->cookie_name, cookiebuf,
+                                 ap_day_snames[tms->tm_wday],
+                                 tms->tm_mday, ap_month_snames[tms->tm_mon],
+                                 tms->tm_year % 100,
+                                 tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
     else {
 	new_cookie = ap_psprintf(r->pool, "%s=%s; path=/",
 				 dcfg->cookie_name, cookiebuf);
+    }
+    if (dcfg->cookie_domain != NULL) {
+        new_cookie = ap_psprintf(r->pool, "%s; domain=%s",
+                                 new_cookie, dcfg->cookie_domain);
     }
 
     ap_table_setn(r->headers_out, "Set-Cookie", new_cookie);
@@ -265,6 +281,8 @@ static void *make_cookie_dir(pool *p, char *d)
 
     dcfg = (cookie_dir_rec *) ap_pcalloc(p, sizeof(cookie_dir_rec));
     dcfg->cookie_name = COOKIE_NAME;
+    dcfg->cookie_domain = NULL;
+    dcfg->style = CT_UNSET;
     dcfg->enabled = 0;
     return dcfg;
 }
@@ -277,14 +295,16 @@ static const char *set_cookie_enable(cmd_parms *cmd, void *mconfig, int arg)
     return NULL;
 }
 
-static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg)
+static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
+                                  const char *arg)
 {
-    cookie_log_state *cls = ap_get_module_config(parms->server->module_config,
-                                              &usertrack_module);
+    cookie_log_state *cls;
     time_t factor, modifier = 0;
     time_t num = 0;
     char *word;
 
+    cls  = ap_get_module_config(parms->server->module_config,
+                                &usertrack_module);
     /* The simple case first - all numbers (we assume) */
     if (ap_isdigit(arg[0]) && ap_isdigit(arg[strlen(arg) - 1])) {
         cls->expires = atol(arg);
@@ -352,13 +372,69 @@ static const char *set_cookie_name(cmd_parms *cmd, void *mconfig, char *name)
     return NULL;
 }
 
+/*
+ * Set the value for the 'Domain=' attribute.
+ */
+static const char *set_cookie_domain(cmd_parms *cmd, void *mconfig, char *name)
+{
+    cookie_dir_rec *dcfg;
+
+    dcfg = (cookie_dir_rec *) mconfig;
+
+    /*
+     * Apply the restrictions on cookie domain attributes.
+     */
+    if (strlen(name) == 0) {
+        return "CookieDomain values may not be null";
+    }
+    if (name[0] != '.') {
+        return "CookieDomain values must begin with a dot";
+    }
+    if (strchr(&name[1], '.') == NULL) {
+        return "CookieDomain values must contain at least one embedded dot";
+    }
+
+    dcfg->cookie_domain = ap_pstrdup(cmd->pool, name);
+    return NULL;
+}
+
+/*
+ * Make a note of the cookie style we should use.
+ */
+static const char *set_cookie_style(cmd_parms *cmd, void *mconfig, char *name)
+{
+    cookie_dir_rec *dcfg;
+
+    dcfg = (cookie_dir_rec *) mconfig;
+
+    if (strcasecmp(name, "Netscape") == 0) {
+        dcfg->style = CT_NETSCAPE;
+    }
+    else if (strcasecmp(name, "Cookie") == 0) {
+        dcfg->style = CT_COOKIE;
+    }
+    else if (strcasecmp(name, "Cookie2") == 0) {
+        dcfg->style = CT_COOKIE2;
+    }
+    else {
+        return ap_psprintf(cmd->pool, "Invalid %s keyword: '%s'",
+                           cmd->cmd->name, name);
+    }
+
+    return NULL;
+}
+
 static const command_rec cookie_log_cmds[] = {
-    {"CookieExpires", set_cookie_exp, NULL, RSRC_CONF, TAKE1,
+    {"CookieExpires", set_cookie_exp, NULL, OR_FILEINFO, TAKE1,
      "an expiry date code"},
     {"CookieTracking", set_cookie_enable, NULL, OR_FILEINFO, FLAG,
      "whether or not to enable cookies"},
     {"CookieName", set_cookie_name, NULL, OR_FILEINFO, TAKE1,
      "name of the tracking cookie"},
+    {"CookieDomain", set_cookie_domain, NULL, OR_FILEINFO, TAKE1,
+     "domain to which this cookie applies"},
+    {"CookieStyle", set_cookie_style, NULL, OR_FILEINFO, TAKE1,
+     "'Netscape', 'Cookie' (RFC2109), or 'Cookie2' (RFC2965)"},
     {NULL}
 };
 
