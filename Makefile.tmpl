@@ -79,7 +79,6 @@ AUX             = @AUX@
 CP              = cp
 LN              = ln
 RM              = rm -f
-TAR             = tar
 MKDIR           = $(TOP)/$(AUX)/mkdir.sh
 INSTALL         = $(TOP)/$(AUX)/install.sh -c
 INSTALL_PROGRAM = $(INSTALL) -s -m 755
@@ -87,6 +86,8 @@ INSTALL_DSO     = $(INSTALL) -m 755
 INSTALL_SCRIPT  = $(INSTALL) -m 755
 INSTALL_DATA    = $(INSTALL) -m 644
 PERL            = @PERL@
+TAR		= @TAR@
+TAROPT		= @TAROPT@
 
 #   installation name of Apache webserver
 TARGET          = @TARGET@
@@ -367,7 +368,7 @@ install-data:
 		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(datadir)/htdocs/]"; \
 	else \
 		echo "Copying tree $(TOP)/htdocs/ -> $(root)$(datadir)/htdocs/"; \
-		(cd $(TOP)/htdocs/ && $(TAR) -hcf - *) |\
+		(cd $(TOP)/htdocs/ && $(TAR) $(TAROPT) - *) |\
 		(cd $(root)$(datadir)/htdocs/ && $(TAR) -xf -); \
 		find $(root)$(datadir)/htdocs/ -type d -exec chmod a+rx {} \; ; \
 		find $(root)$(datadir)/htdocs/ -type f -exec chmod a+r {} \; ; \
@@ -384,7 +385,7 @@ install-data:
 		done; \
 	fi
 	@echo "Copying tree $(TOP)/icons/ -> $(root)$(datadir)/icons/"; \
-	(cd $(TOP)/icons/ && $(TAR) -hcf - *) |\
+	(cd $(TOP)/icons/ && $(TAR) $(TAROPT) - *) |\
 	(cd $(root)$(datadir)/icons/ && $(TAR) -xf -); \
 	find $(root)$(datadir)/icons/ -type d -exec chmod a+rx {} \; ;\
 	find $(root)$(datadir)/icons/ -type f -exec chmod a+r {} \;
