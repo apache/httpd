@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/12 09:54:56 $]
+Last modified at [$Date: 2004/06/12 17:37:03 $]
 
 Release:
 
@@ -76,8 +76,8 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
        +1: jorton
        trawick: need changes to mod_ssl.h to remove prototypes for those removed functions
-       -1: nd: actually that's a public API change (major bump) then and not
-           applicable for 2.0, just let 'em in
+       0: nd: IMHO that's a public API change then and not applicable for
+              2.0, just let 'em in
 
     *) Enable the option to support anonymous shared memory in mod_ldap.
        This makes the cache work on Linux again.
@@ -124,15 +124,12 @@ PATCHES TO BACKPORT FROM 2.1
          server/core.c: r1.275
        +1: nd
 
-    *) mod_headers: Backport ErrorHeader directive (regression from 1.3)
-         modules/metadata/mod_headers.c: r1.44, 1.45, 1.51
-       +1: nd, trawick
-       0: bnicholes 
-             ErrorHeader seems to be confusing since the defined header
-	     appears for both successful as well as error responses.  Maybe
-	     the directive should be renamed or a "persist" option added
-	     to the Header directive that allows a standard header definition
-	     to appear for all response types.
+    *) mod_headers: Regression from 1.3: There's no ErrorHeader directive.
+       Since this was always a misnomer, it was dropped in 2.1 and
+       Header was extended instead. Backport this from 2.1 and document
+       this in the upgrading docs. A 2.0 patch is here:
+         http://www.apache.org/~nd/header_always_2.0.diff
+       +1: nd
 
     *) Allow URLs for ServerAdmin. PR 28174.
          server/core.c: r1.274
