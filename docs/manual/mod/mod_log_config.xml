@@ -185,11 +185,20 @@
     "%!200,304,302{Referer}i" logs <code>Referer:</code> on all requests
     which did <em>not</em> return some sort of normal status.</p>
 
-    <p>Note that there is no escaping performed on the strings from
-    <code>%...r</code>, <code>%...i</code> and <code>%...o</code>. This
-    is mainly to comply with the requirements of the Common Log Format.
-    This implies that clients can insert control characters into the log,
-    so care should be taken when dealing with raw log files.</p>
+    <p>Note that in versions previous to 2.0.46 no escaping has been performed
+    on the strings from <code>%...r</code>, <code>%...i</code> and
+    <code>%...o</code>. This was mainly to comply with the requirements of
+    the Common Log Format. This implied that clients could insert control
+    characters into the log, so you had to be quite careful when dealing
+    with raw log files.</p>
+
+    <p>For security reasons starting with 2.0.46 non-printable and
+    other special characters are escaped mostly by using
+    <code>\x<var>hh</var></code> sequences, where <var>hh</var> stands for
+    the hexadecimal representation of the raw byte. Exceptions from this
+    rule are <code>"</code> and <code>\</code> which are escaped by prepending
+    a backslash, and all whitespace characters that are written in their
+    C-notation (<code>\n</code>, <code>\t</code> etc).</p>
 
     <p>Some commonly used log format strings are:</p>
 
