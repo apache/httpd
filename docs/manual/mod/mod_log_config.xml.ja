@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.29 -->
+<!-- English Revision: 1.13.2.14 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -72,7 +72,7 @@
         <th>説明</th></tr>
 
     <tr><td><code>%%</code></td>
-        <td>パーセント記号</td></tr>
+        <td>パーセント記号 (<em>Apache 2.0.44 以降</em>)</td></tr>
 
     <tr><td><code>%...a</code></td>
         <td>リモート IP アドレス</td></tr>
@@ -112,8 +112,8 @@
 
     <tr><td><code>%...l</code></td>
         <td>(identd からもし提供されていれば) リモートログ名。
-        これは <module>mod_ident</module> がサーバに存在して、
-        <directive module="mod_ident">IdentityCheck</directive>
+        これは
+        <directive module="core">IdentityCheck</directive>
         ディレクティブが <code>On</code> に設定されていない限り、
         <code>-</code> になります。</td></tr>
 
@@ -135,6 +135,7 @@
     <tr><td><code>%...{<var>format</var>}P</code></td>
         <td>リクエストを扱ったワーカーのプロセス ID かスレッド ID。
         <var>format</var> として有効な値は <code>pid</code> と <code>tid</code>
+	(<em>Apache 2.0.46 以降</em>)
         </td></tr>
 
     <tr><td><code>%...q</code></td>
