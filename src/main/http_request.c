@@ -1020,10 +1020,13 @@ static void process_request_internal(request_rec *r)
         return;
     }
 
-    access_status = unescape_url(r->uri);
-    if (access_status) {
-	die(access_status, r);
-	return;
+    /* Ignore embedded %2F's in path for proxy requests */
+    if (!r->proxyreq && r->parsed_uri.path) {
+	access_status = unescape_url(r->parsed_uri.path);
+	if (access_status) {
+	    die(access_status, r);
+	    return;
+	}
     }
 
     getparents(r->uri);     /* OK --- shrinking transformations... */
