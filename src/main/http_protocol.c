@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.45 1996/09/03 00:31:26 akosut Exp $ */
+/* $Id: http_protocol.c,v 1.46 1996/09/17 14:53:54 chuck Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -981,7 +981,8 @@ void send_http_header(request_rec *r)
     
     basic_http_header (r);
 
-    set_keepalive (r);
+    if (!table_get(r->subprocess_env, "nokeepalive"))
+        set_keepalive (r);
 
     if (r->chunked)
 	bputs("Transfer-Encoding: chunked\015\012", fd);
@@ -1026,9 +1027,6 @@ void send_http_header(request_rec *r)
     }
 
     bputs("\015\012",fd);
-
-    if (c->keepalive)
-	bflush(fd);  /* This is to work around a Netscape bug */
 
     bsetopt(fd, BO_BYTECT, &zero);
     r->sent_bodyct = 1;		/* Whatever follows is real body stuff... */

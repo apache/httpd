@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.67 1996/09/13 00:24:50 jim Exp $ */
+/* $Id: http_main.c,v 1.68 1996/09/17 14:53:52 chuck Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1522,7 +1522,8 @@ void child_main(int child_num_arg)
 #if defined(STATUS)
         if (r) increment_counts(child_num,r,1);
 #endif
-	while (r && current_conn->keepalive) {
+	while (r && current_conn->keepalive &&
+          !table_get(r->subprocess_env, "nokeepalive")) {
 	    bflush(conn_io);
 	    destroy_pool(r->pool);
 	    (void)update_child_status (child_num, SERVER_BUSY_KEEPALIVE,
@@ -1959,11 +1960,12 @@ main(int argc, char *argv[])
 	r = read_request (conn);
 	if (r) process_request (r); /* else premature EOF (ignore) */
 
-        while (r && conn->keepalive) {
-	  bflush(cio);
-	  destroy_pool(r->pool);
-          r = read_request (conn);
-          if (r) process_request (r);
+        while (r && conn->keepalive &&
+          !table_get(r->subprocess_env, "nokeepalive")) {
+	    bflush(cio);
+	    destroy_pool(r->pool);
+            r = read_request (conn);
+            if (r) process_request (r);
         }
 
 	bflush(cio);
