@@ -56,7 +56,7 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
 #include "ap_config.h"
 #include "ebcdic.h"
 /*
@@ -217,5 +217,5 @@ ascii2ebcdic(void *dest, const void *srce, size_t count)
                 *udest++ = os_toebcdic[*usrce++];
     }
 }
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
  

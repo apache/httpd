@@ -1,4 +1,11 @@
 Changes with Apache 2.0b1
+  *) Get the functions in server/linked into the server, regardless of
+     which modules linked into the server.  This uses the same hack 
+     for Apache that we use for APR and apr-util to ensure all of the
+     necessary functions are linked.  As a part of thise, the CHARSET_EBCIDC
+     was renamed to AP_CHARSET_EBCDIC for namespace protection, and to make
+     the scripts a bit easier.
+     [Ryan Bloom]
 
   *) Rework the RFC1413 handling to make it thread-safe, use a timeout
      on the query, and remove IPv4 dependencies.  [Jeff Trawick]

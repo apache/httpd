@@ -104,13 +104,13 @@
 #define unlink _unlink
 #endif
 
-#ifndef CHARSET_EBCDIC
+#ifndef AP_CHARSET_EBCDIC
 #define LF 10
 #define CR 13
-#else /*CHARSET_EBCDIC*/
+#else /*AP_CHARSET_EBCDIC*/
 #define LF '\n'
 #define CR '\r'
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
 
 #define MAX_STRING_LEN 256
 #define ALG_PLAIN 0
@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
     int noninteractive = 0;
     int i;
     int args_left = 2;
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
     apr_pool_t *pool;
     apr_status_t rv;
     apr_xlate_t *to_ascii;
@@ -408,7 +408,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "apr_MD5InitEBCDIC()->%d\n", rv);
         exit(1);
     }
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
 
     tempfilename = NULL;
     signal(SIGINT, (void (*)(int)) interrupted);

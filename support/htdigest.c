@@ -93,22 +93,22 @@
 #endif
 
 #if 'A' == 0xC1
-#define CHARSET_EBCDIC
+#define AP_CHARSET_EBCDIC
 #endif
 
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
 #define LF '\n'
 #define CR '\r'
 #else
 #define LF 10
 #define CR 13
-#endif /* CHARSET_EBCDIC */
+#endif /* AP_CHARSET_EBCDIC */
 
 #define MAX_STRING_LEN 256
 
 char *tn;
 apr_pool_t *cntxt;
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
 apr_xlate_t *to_ascii;
 #endif
 
@@ -192,7 +192,7 @@ static void add_password(char *user, char *realm, apr_file_t *f)
     sprintf(string, "%s:%s:%s", user, realm, pw);
 
     apr_MD5Init(&context);
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
     apr_MD5SetXlate(&context, to_ascii);
 #endif
     apr_MD5Update(&context, (unsigned char *) string, strlen(string));
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
     atexit(apr_terminate); 
     apr_create_pool(&cntxt, NULL);
 
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
     rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
     if (rv) {
         fprintf(stderr, "apr_xlate_open(): %s (%d)\n",

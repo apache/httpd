@@ -243,7 +243,7 @@ AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(AP,ret,name,args_decl,args_use,decline)
 #define AP_HAVE_RELIABLE_PIPED_LOGS TRUE
 #endif
 
-#if defined(CHARSET_EBCDIC) && !defined(APACHE_XLATE)
+#if defined(AP_CHARSET_EBCDIC) && !defined(APACHE_XLATE)
 #define APACHE_XLATE
 #endif
 

@@ -1,9 +1,9 @@
 #! /bin/sh
 
 if test -z "$1"; then
-    echo "USAGE: $0 SRCLIB-DIRECTORY"
+    echo "USAGE: $0 HTTPD-DIRECTORY"
     echo ""
-    echo "for example: $0 ../srclib"
+    echo "for example: $0 .."
     exit 1
 fi
 
@@ -12,9 +12,10 @@ echo " * link all of the APR functions into server regardless of whether"
 echo " * the base server uses them."
 echo " */"
 echo ""
+echo "#define CORE_PRIVATE"
 
 cur_dir="`pwd`"
-for dir in $1/apr/include $1/apr-util/include
+for dir in $1/srclib/apr/include $1/srclib/apr-util/include $1/include
 do
     cd $dir
     for file in *.h; do
