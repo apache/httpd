@@ -321,6 +321,9 @@ static int get_path_info(request_rec *r)
             return HTTP_FORBIDDEN;
         }
 #else
+        /* XXX: WARNING - APR broke this security exception!
+         */
+
 #error APR_ENOENT || APR_ENOTDIR not defined; please see the
 #error comments at this line in the source for a workaround.
         /*
