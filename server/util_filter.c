@@ -66,7 +66,7 @@
  */
 typedef struct ap_filter_rec_t {
     const char *name;
-    apr_filter_func filter_func;
+    ap_filter_func filter_func;
     ap_filter_type ftype;
 
     struct ap_filter_rec_t *next;
@@ -100,7 +100,7 @@ static apr_status_t filter_cleanup(void *ctx)
 }
 
 API_EXPORT(void) ap_register_filter(const char *name,
-                                    apr_filter_func filter_func,
+                                    ap_filter_func filter_func,
                                     ap_filter_type ftype)
 {
     ap_filter_rec_t *frec = apr_palloc(FILTER_POOL, sizeof(*frec));
@@ -121,7 +121,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
 
     for (; frec != NULL; frec = frec->next) {
         if (!strcasecmp(name, frec->name)) {
-            apr_filter_t *f = apr_pcalloc(r->pool, sizeof(*f));
+            ap_filter_t *f = apr_pcalloc(r->pool, sizeof(*f));
 
             f->filter_func = frec->filter_func;
             f->ctx = ctx;
@@ -132,7 +132,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
                 r->filters = f;
             }
             else {
-                apr_filter_t *fscan = r->filters;
+                ap_filter_t *fscan = r->filters;
                 while (!INSERT_BEFORE(f, fscan->next))
                     fscan = fscan->next;
                 f->next = fscan->next;
