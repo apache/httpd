@@ -70,13 +70,6 @@ extern "C" {
  * @package mod_core private header file
  */
 
-typedef struct ap_http_conn_rec ap_http_conn_rec;
-
-struct ap_http_conn_rec {
-    /** How many times have we used it? */
-    int keepalives;
-};
-
 /*
  * These (input) filters are internal to the mod_core operation.
  */
@@ -98,8 +91,6 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
  
 AP_DECLARE(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
-
-AP_DECLARE_DATA extern module http_module;
 
 #ifdef __cplusplus
 }

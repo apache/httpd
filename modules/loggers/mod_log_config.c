@@ -194,7 +194,6 @@
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
 #include "http_protocol.h"
-#include "mod_core.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>

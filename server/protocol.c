@@ -363,6 +363,116 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     }
 }
 
+static int read_request_line(request_rec *r)
+{
+    char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* getline's two extra for \n\0 */
+    const char *ll = l;
+    const char *uri;
+    const char *pro;
+
+#if 0
+    conn_rec *conn = r->connection;
+#endif
+    int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
+    int len;
+
+    /* Read past empty lines until we get a real request line,
+     * a read error, the connection closes (EOF), or we timeout.
+     *
+     * We skip empty lines because browsers have to tack a CRLF on to the end
+     * of POSTs to support old CERN webservers.  But note that we may not
+     * have flushed any previous response completely to the client yet.
+     * We delay the flush as long as possible so that we can improve
+     * performance for clients that are pipelining requests.  If a request
+     * is pipelined then we won't block during the (implicit) read() below.
+     * If the requests aren't pipelined, then the client is still waiting
+     * for the final buffer flush from us, and we will block in the implicit
+     * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
+     * have to block during a read.
+     */
+
+    while ((len = ap_getline(l, sizeof(l), r, 0)) <= 0) {
+        if (len < 0) {             /* includes EOF */
+	    /* this is a hack to make sure that request time is set,
+	     * it's not perfect, but it's better than nothing 
+	     */
+	    r->request_time = apr_time_now();
+            return 0;
+        }
+    }
+    /* we've probably got something to do, ignore graceful restart requests */
+
+    /* XXX - sigwait doesn't work if the signal has been SIG_IGNed (under
+     * linux 2.0 w/ glibc 2.0, anyway), and this step isn't necessary when
+     * we're running a sigwait thread anyway. If/when unthreaded mode is
+     * put back in, we should make sure to ignore this signal iff a sigwait
+     * thread isn't used. - mvsk
+
+#ifdef SIGWINCH
+    apr_signal(SIGWINCH, SIG_IGN);
+#endif
+    */
+
+    r->request_time = apr_time_now();
+    r->the_request = apr_pstrdup(r->pool, l);
+    r->method = ap_getword_white(r->pool, &ll);
+
+#if 0
+/* XXX If we want to keep track of the Method, the protocol module should do
+ * it.  That support isn't in the scoreboard yet.  Hopefully next week 
+ * sometime.   rbb */
+    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method", r->method); 
+#endif
+    uri = ap_getword_white(r->pool, &ll);
+
+    /* Provide quick information about the request method as soon as known */
+
+    r->method_number = ap_method_number_of(r->method);
+    if (r->method_number == M_GET && r->method[0] == 'H') {
+        r->header_only = 1;
+    }
+
+    ap_parse_uri(r, uri);
+
+    /* ap_getline returns (size of max buffer - 1) if it fills up the
+     * buffer before finding the end-of-line.  This is only going to
+     * happen if it exceeds the configured limit for a request-line.
+     */
+    if (len > r->server->limit_req_line) {
+        r->status    = HTTP_REQUEST_URI_TOO_LARGE;
+        r->proto_num = HTTP_VERSION(1,0);
+        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+        return 0;
+    }
+
+    if (ll[0]) {
+        r->assbackwards = 0;
+        pro = ll;
+        len = strlen(ll);
+    } else {
+        r->assbackwards = 1;
+        pro = "HTTP/0.9";
+        len = 8;
+    }
+    r->protocol = apr_pstrndup(r->pool, pro, len);
+
+    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
+
+    /* Avoid sscanf in the common case */
+    if (len == 8 &&
+        pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P' &&
+        pro[4] == '/' && apr_isdigit(pro[5]) && pro[6] == '.' &&
+        apr_isdigit(pro[7])) {
+ 	r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
+    } else if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
+               && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
+	r->proto_num = HTTP_VERSION(major, minor);
+    else
+	r->proto_num = HTTP_VERSION(1,0);
+
+    return 1;
+}
+
 static void get_mime_headers(request_rec *r)
 {
     char field[DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2]; /* getline's two extra */
@@ -446,6 +556,9 @@ request_rec *ap_read_request(conn_rec *conn)
     r->connection      = conn;
     r->server          = conn->base_server;
 
+    conn->keptalive    = conn->keepalive == 1;
+    conn->keepalive    = 0;
+
     r->user            = NULL;
     r->ap_auth_type    = NULL;
 
@@ -458,9 +571,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->notes           = apr_table_make(r->pool, 5);
 
     r->request_config  = ap_create_request_config(r->pool);
-    if (ap_run_create_request(r) != OK) {
-        return NULL;
-    }
+    ap_run_create_request(r);
     r->per_dir_config  = r->server->lookup_defaults;
 
     r->sent_bodyct     = 0;                      /* bytect isn't for body */
@@ -469,13 +580,34 @@ request_rec *ap_read_request(conn_rec *conn)
     r->read_body       = REQUEST_NO_BODY;
 
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
+    r->the_request     = NULL;
     r->output_filters  = conn->output_filters;
     r->input_filters   = conn->input_filters;
 
+    apr_setsocketopt(conn->client_socket, APR_SO_TIMEOUT, 
+                     (int)(conn->keptalive
+                     ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
+                     : r->server->timeout * APR_USEC_PER_SEC));
+                     
     ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
     ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
     ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
 
+    /* Get the request... */
+    if (!read_request_line(r)) {
+        if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+			  "request failed: URI too long");
+            ap_send_error_response(r, 0);
+            ap_run_log_transaction(r);
+            return r;
+        }
+        return NULL;
+    }
+    if (r->connection->keptalive) {
+        apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT,
+                         (int)(r->server->timeout * APR_USEC_PER_SEC));
+    }
     if (!r->assbackwards) {
         get_mime_headers(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
@@ -513,6 +645,8 @@ request_rec *ap_read_request(conn_rec *conn)
 
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
+
+    conn->keptalive = 0;        /* We now have a request to play with */
 
     if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1,1))) ||
         ((r->proto_num == HTTP_VERSION(1,1)) &&
