@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="prefork.xml.meta">
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.12 -->
 
 <name>prefork</name>
 <description>スレッドを使わず、先行して fork を行なうウェブサーバを実装
@@ -111,7 +111,7 @@
 <directivesynopsis>
 <name>MaxSpareServers</name>
 <description>アイドルな子サーバプロセスの最大個数</description>
-<syntax>MaxSpareServers <var>number</var><br /></syntax>
+<syntax>MaxSpareServers <var>number</var></syntax>
 <default>MaxSpareServers 10</default>
 <contextlist><context>server config</context></contextlist>
 
