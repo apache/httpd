@@ -204,10 +204,13 @@ close(SAVE);
       program name, the command line should be surrounded in
       quotation marks (e.g., <em>cmd="/bin/mypgm arg1 arg2"</em>.
       Normal shell quoting is not necessary since the program is
-      run directly, bypassing the shell.  In addition to the 
-      standard CGI environment variables, DOCUMENT_URI,
-      DOCUMENT_PATH_INFO, and QUERY_STRING_UNESCAPED will also be set
-      for the program.</dd>
+      run directly, bypassing the shell.  Program arguments are
+      blank-delimited.  A backslash can be used to escape blanks 
+      which should be part of a program argument.  Any backslashes
+      which are part of the argument must be escaped with backslash
+      themselves.  In addition to the standard CGI environment 
+      variables, DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
+      QUERY_STRING_UNESCAPED will also be set for the program.</dd>
 
       <dt>mode=<em>mode</em></dt>
 
