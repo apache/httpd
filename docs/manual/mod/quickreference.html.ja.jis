@@ -84,155 +84,158 @@ to the specified content language</td></tr>
     [<em>extension</em> ...]</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename
 extensions to the filters that will process
 responses from the server</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addtype">AddType <em>MIME-type
-    extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions
+<tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
+[<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">assigns an output filter to a particular MIME-type</td></tr>
+<tr><td><a href="mod_mime.html#addtype">AddType <em>MIME-type
+    extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions
 onto the specified content type</td></tr>
-<tr><td><a href="mod_alias.html#alias"> Alias <em>URL-path
-    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL をファイルシステムの位置にマップする</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <em>regex
-    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">正規表現を使って URL をファイルシステムの位置にマップする</td></tr>
-<tr><td><a href="mod_authz_host.html#allow"> Allow from
+<tr class="odd"><td><a href="mod_alias.html#alias"> Alias <em>URL-path
+    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL をファイルシステムの位置にマップする</td></tr>
+<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <em>regex
+    file-path</em>|<em>directory-path</em></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">正規表現を使って URL をファイルシステムの位置にマップする</td></tr>
+<tr class="odd"><td><a href="mod_authz_host.html#allow"> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">サーバのある領域にアクセスできるホストを制御する</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <em>port</em> [<em>port</em>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through
+    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">サーバのある領域にアクセスできるホストを制御する</td></tr>
+<tr><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <em>port</em> [<em>port</em>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through
 the proxy</td></tr>
-<tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var> 
-[<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types of directives that are allowed in
+<tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var> 
+[<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Types of directives that are allowed in
 .htaccess files</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous">Anonymous <em>user</em> [<em>user</em>] ...</a></td><td /><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies userIDs that areallowed access without
+<tr><td><a href="mod_authn_anon.html#anonymous">Anonymous <em>user</em> [<em>user</em>] ...</a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies userIDs that areallowed access without
 password verification</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous_authoritative">Anonymous_Authoritative on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures if authorization will fall-through
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_authoritative">Anonymous_Authoritative on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures if authorization will fall-through
 to other methods</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether the password entered will be logged in the
+<tr><td><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the password entered will be logged in the
 error log</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies whether blank passwords are allowed</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether to check the password field for a correctly
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies whether blank passwords are allowed</td></tr>
+<tr><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
-<tr class="odd"><td><a href="perchild.html#assignuserid">AssignUserID <em>user_id</em> <em>group_id</em></a></td><td /><td>v</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
-<tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative on|off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">認証と承認を、より低いレベルのモジュールに移行させるかを
+<tr><td><a href="perchild.html#assignuserid">AssignUserID <em>user_id</em> <em>group_id</em></a></td><td /><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative on|off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">認証と承認を、より低いレベルのモジュールに移行させるかを
 設定します。</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <em>provider-name</em></a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">この位置に対する認証プロバイダを設定します。</td></tr>
-<tr><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <em>file-path</em></a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the database file containing the list
+<tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <em>provider-name</em></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">この位置に対する認証プロバイダを設定します。</td></tr>
+<tr class="odd"><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <em>file-path</em></a></td><td /><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the database file containing the list
 of user groups for authentication</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the type of database file that is used to
+<tr><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
 store passwords</td></tr>
-<tr><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <em>file-path</em></a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of a database file containing the list of users and
+<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <em>file-path</em></a></td><td /><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a database file containing the list of users and
 passwords for authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
+<tr><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
 response hases in digest authentication</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <em>URI</em> [<em>URI</em>] ...</a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">URIs that are in the same protection space for digest
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <em>URI</em> [<em>URI</em>] ...</a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">URIs that are in the same protection space for digest
 authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestfile">AuthDigestFile <em>file-path</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the text file containing the list
+<tr><td><a href="mod_auth_digest.html#authdigestfile">AuthDigestFile <em>file-path</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Location of the text file containing the list
 of users and encoded passwords for digest authentication</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestgroupfile">AuthDigestGroupFile <em>file-path</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Name of the text file containing the list of groups
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestgroupfile">AuthDigestGroupFile <em>file-path</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the text file containing the list of groups
 for digest authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables checking of the nonce-count sent by the
+<tr><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Enables or disables checking of the nonce-count sent by the
 server</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat <em>format</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines how the nonce is generated</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <em>seconds</em></a></td><td> 300 </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">How long the server nonce is valid</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop none|auth|auth-int [auth|auth-int]</a></td><td> auth </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines the quality-of-protection to use in digest
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat <em>format</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how the nonce is generated</td></tr>
+<tr><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <em>seconds</em></a></td><td> 300 </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">How long the server nonce is valid</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop none|auth|auth-int [auth|auth-int]</a></td><td> auth </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the quality-of-protection to use in digest
 authentication</td></tr>
-<tr class="odd"><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <em>file-path</em></a></td><td /><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a text file containing the list
+<tr><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <em>file-path</em></a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of a text file containing the list
 of user groups for authentication</td></tr>
-<tr><td><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Prevent other authentication modules from
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Prevent other authentication modules from
 authenticating the user if this one fails</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
-<tr><td><a href="mod_auth_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
-<tr><td><a href="mod_auth_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapenabled"> AuthLDAPEnabled on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn on or off LDAP authentication</td></tr>
-<tr><td><a href="mod_auth_ldap.html#authldapfrontpagehack">AuthLDAPFrontPageHack on|off</a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Allow LDAP authentication to work with MS FrontPage</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">LDAP attributes used to check for group membership</td></tr>
-<tr><td><a href="mod_auth_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username when checking for
+<tr><td><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
+<tr><td><a href="mod_auth_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
+<tr><td><a href="mod_auth_ldap.html#authldapenabled"> AuthLDAPEnabled on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Turn on or off LDAP authentication</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapfrontpagehack">AuthLDAPFrontPageHack on|off</a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Allow LDAP authentication to work with MS FrontPage</td></tr>
+<tr><td><a href="mod_auth_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">LDAP attributes used to check for group membership</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username when checking for
 group membership</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
+<tr><td><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr>
-<tr><td><a href="mod_auth_ldap.html#authldapstarttls directive">AuthLDAPStartTLS on|off</a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Use a secure TLS connection to the LDAP server</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl <em>url</em></a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
-<tr><td><a href="core.html#authname">AuthName <var>auth-domain</var></a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Authorization realm for use in HTTP
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapstarttls directive">AuthLDAPStartTLS on|off</a></td><td /><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Use a secure TLS connection to the LDAP server</td></tr>
+<tr><td><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl <em>url</em></a></td><td /><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
+<tr class="odd"><td><a href="core.html#authname">AuthName <var>auth-domain</var></a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Authorization realm for use in HTTP
 authentication</td></tr>
-<tr class="odd"><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
-<tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <em>file-path</em></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">認証に使用するユーザとパスワードの一覧が格納されている、
+<tr><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Type of user authentication</td></tr>
+<tr class="odd"><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <em>file-path</em></a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">認証に使用するユーザとパスワードの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr>
-<tr class="odd"><td><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level modules</td></tr>
-<tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
+<tr><td><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level modules</td></tr>
+<tr class="odd"><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the type of database file that is used to
 store passwords</td></tr>
-<tr class="odd"><td><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level modules</td></tr>
-<tr><td><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">HTTP User-Agent に基づいて環境変数を設定する
+<tr><td><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level modules</td></tr>
+<tr class="odd"><td><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP User-Agent に基づいて環境変数を設定する
 </td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP User-Agent に基づいて大文字小文字を区別せずに
+<tr><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">HTTP User-Agent に基づいて大文字小文字を区別せずに
 環境変数を設定する</td></tr>
-<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <em>seconds</em></a></td><td> 3600 (one hour) </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <em>cache_type </em> <em> url-string</em></a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Disable caching of specified URLs by specified storage manager</td></tr>
-<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <em>cache_type </em><em> url-string</em></a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Enable caching specified URLs in a specified storage manager</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile
-    <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
-<tr><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <em>Percentage</em></a></td><td> 60 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Percentage of download to arrive for the cache to force complete transfer</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore requests from the client for uncached content</td></tr>
-<tr><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore responses where there is no Last Modified Header</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <em>float</em></a></td><td> 0.1 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The factor used to estimate the Expires date from the LastModified date</td></tr>
-<tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <em>seconds</em></a></td><td> 86400 (one day) </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachemaxstreamingbuffer">CacheMaxStreamingBuffer <em>size_in_bytes</em></a></td><td> 0 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of a streamed response to buffer in memory before declaring the response uncacheable</td></tr>
-<tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs on|off</a></td><td> off </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">コンテントネゴシエーションされたドキュメントをプロキシサーバが
+<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <em>seconds</em></a></td><td> 3600 (one hour) </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <em>cache_type </em> <em> url-string</em></a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs by specified storage manager</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <em>cache_type </em><em> url-string</em></a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching specified URLs in a specified storage manager</td></tr>
+<tr><td><a href="mod_file_cache.html#cachefile">CacheFile
+    <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <em>Percentage</em></a></td><td> 60 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Percentage of download to arrive for the cache to force complete transfer</td></tr>
+<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore requests from the client for uncached content</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></td><td /><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore responses where there is no Last Modified Header</td></tr>
+<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <em>float</em></a></td><td> 0.1 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The factor used to estimate the Expires date from the LastModified date</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <em>seconds</em></a></td><td> 86400 (one day) </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
+<tr><td><a href="mod_cache.html#cachemaxstreamingbuffer">CacheMaxStreamingBuffer <em>size_in_bytes</em></a></td><td> 0 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Maximum amount of a streamed response to buffer in memory before declaring the response uncacheable</td></tr>
+<tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs on|off</a></td><td> off </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">コンテントネゴシエーションされたドキュメントをプロキシサーバが
 キャッシュできるようにする</td></tr>
-<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension cgi-path .extension</a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI 
+<tr><td><a href="core.html#cgimapextension">CGIMapExtension cgi-path .extension</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI 
 scripts</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <em>charset</em></a></td><td /><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Charset to translate into</td></tr>
-<tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <em>option</em> [<em>option</em>] ...</a></td><td> DebugLevel=0 
-NoImp +</td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Configures charset tranlation behavior</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <em>charset</em></a></td><td /><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Source charset of files</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">spelling モジュールを使用するようにする</td></tr>
-<tr><td><a href="perchild.html#childperuserid">ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>child_id</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest on|off</a></td><td> off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <em>charset</em></a></td><td /><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Charset to translate into</td></tr>
+<tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <em>option</em> [<em>option</em>] ...</a></td><td> DebugLevel=0 
+NoImp +</td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Configures charset tranlation behavior</td></tr>
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <em>charset</em></a></td><td /><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
+<tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">spelling モジュールを使用するようにする</td></tr>
+<tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <em>user_id</em>
+<em>group_id</em> <em>num_children</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="core.html#contentdigest">ContentDigest on|off</a></td><td> off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
 headers</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
-<tr><td><a href="mod_log_config.html#cookielog">CookieLog <em>filename</em></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename for the logging of cookies</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format of the cookie header field</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <em>directory</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Apache がコアダンプする前に移動を試みるディレクトリ
+<tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
+<tr><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
+<tr class="odd"><td><a href="mod_log_config.html#cookielog">CookieLog <em>filename</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename for the logging of cookies</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Format of the cookie header field</td></tr>
+<tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables tracking cookie</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <em>directory</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Apache がコアダンプする前に移動を試みるディレクトリ
 </td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog 
+<tr><td><a href="mod_log_config.html#customlog">CustomLog 
     <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
-    [env=[!]<em>environment-variable</em>]</a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
-<tr><td><a href="mod_dav.html#dav" id="D" name="D">Dav on|off</a></td><td> off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">WebDAV HTTP メソッドを有効にします</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">PROPFIND, Depth: Infinity リクエストを許可します</td></tr>
-<tr><td><a href="mod_dav.html#davlockdb">DavLockDB <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">DAV ロックデータベースの位置です</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <em>seconds</em></a></td><td> 0 </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">サーバが DAV リソースのロックを維持する最小時間です。
+    [env=[!]<em>environment-variable</em>]</a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav on|off</a></td><td> off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">WebDAV HTTP メソッドを有効にします</td></tr>
+<tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">PROPFIND, Depth: Infinity リクエストを許可します</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#davlockdb">DavLockDB <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">DAV ロックデータベースの位置です</td></tr>
+<tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <em>seconds</em></a></td><td> 0 </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">サーバが DAV リソースのロックを維持する最小時間です。
 </td></tr>
-<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <em>url-path</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">特定のアイコンが何も設定されていない時に
+<tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <em>url-path</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">特定のアイコンが何も設定されていない時に
 ファイルに表示するアイコン</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage
-    <em>MIME-lang</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets all files in the given scope to the 
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage
+    <em>MIME-lang</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets all files in the given scope to the 
 specified language</td></tr>
-<tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">MIME content-type that will be sent if the
+<tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>MIME-type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">MIME content-type that will be sent if the
 server cannot determine a type in any other way</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <em>value</em></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib が一度に圧縮する塊の大きさ</td></tr>
-<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote <em>notename</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">ロギング用に圧縮比をメモに追加</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <em>value</em></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib が圧縮に使うメモリのレベルを指定</td></tr>
-<tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <em>value</em></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib の圧縮用ウィンドウの大きさ</td></tr>
-<tr class="odd"><td><a href="mod_authz_host.html#deny"> Deny from
+<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <em>value</em></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">zlib が一度に圧縮する塊の大きさ</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote <em>notename</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">ロギング用に圧縮比をメモに追加</td></tr>
+<tr><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <em>value</em></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">zlib が圧縮に使うメモリのレベルを指定</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <em>value</em></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Zlib の圧縮用ウィンドウの大きさ</td></tr>
+<tr><td><a href="mod_authz_host.html#deny"> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">サーバがアクセスを拒否するホストを制御する</td></tr>
-<tr><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
-... &lt;/Directory&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that apply only to the
+    [<em>host</em>|env=<em>env-variable</em>] ...</a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">サーバがアクセスを拒否するホストを制御する</td></tr>
+<tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
+... &lt;/Directory&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that apply only to the
 named file-system directory and sub-directories</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントがディレクトリをリクエストしたときに調べる
+<tr><td><a href="mod_dir.html#directoryindex">DirectoryIndex
+    <em>local-url</em> [<em>local-url</em>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントがディレクトリをリクエストしたときに調べる
 リソースのリスト</td></tr>
-<tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
-... &lt;/Directory&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose directives that apply to 
+<tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
+... &lt;/Directory&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose directives that apply to 
 file-system directories matching a regular expression and their
 subdirectories</td></tr>
-<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> /usr/local/apache/h +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory that forms the main document tree visible
+<tr><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> /usr/local/apache/h +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Directory that forms the main document tree visible
 from the web</td></tr>
-<tr><td><a href="core.html#enablemmap" id="E" name="E">EnableMMAP on|off</a></td><td> on </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
+<tr class="odd"><td><a href="core.html#enablemmap" id="E" name="E">EnableMMAP on|off</a></td><td> on </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
+<tr><td><a href="core.html#enablesendfile">EnableSendfile on|off</a></td><td> on </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
 <tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">What the server will return to the client
 in case of an error</td></tr>
 <tr><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Location where the server will log errors</td></tr>
@@ -256,7 +259,7 @@ filenames</td></tr>
 filenames</td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">要求に合う単独のドキュメントが見つからなかったときに行なうことを指定
 </td></tr>
-<tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var></a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
+<tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var>|none</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 MIME content-type</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <em>unix-group</em></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストに応答する際に所属するグループ</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header set|append|add|unset|echo  <em>header</em> 
@@ -504,7 +507,7 @@ is accessed by an incompatible browser</td></tr>
 <tr><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</td></tr>
-<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var></a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be processed by a
+<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|none</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be processed by a
 handler</td></tr>
 <tr><td><a href="core.html#setinputfilter">SetInputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Sets the filters that will process client requests and POST
 input</td></tr>
