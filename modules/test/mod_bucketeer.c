@@ -130,7 +130,6 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
         const char *data;
         apr_size_t len;
 
-        int done = 0;
         apr_size_t i;
         apr_size_t lastpos;
 
