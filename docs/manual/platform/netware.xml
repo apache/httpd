@@ -540,7 +540,7 @@
         NetWare server and run them using the following commands:
           <example>
             SYS:\genchars &gt; sys:\test_char.h<br />
-            SYS:\dftables &gt; sys:\chartables.c<br />
+            SYS:\dftables sys:\chartables.c<br />
           </example>
         </li>
 
