@@ -1,5 +1,8 @@
 Changes with Apache 1.3.21
 
+  *) UnsetEnv from main body of httpd.conf file didn't work; backport
+     of bugfix from 2.0 codebase. [Gary Benson <gbenson@redhat.com>] PR#8254
+
   *) Win32 - add mod_unique_id.so and mod_vhost_alias.so to the build.
      [William Rowe]
 
