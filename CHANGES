@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) Convert mod_auth_digest to use the new apr_global_mutex_t
+     type.  [Aaron Bannert]
+
   *) fix bug in mod-include where it wouldn't send a unmatched
      part if it was at the end of a bucket [Ian Holsman]
 
