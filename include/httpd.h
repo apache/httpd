@@ -279,7 +279,7 @@ extern "C" {
 #endif
 #endif /* CORE_PRIVATE */
 
-#define AP_SERVER_BASEVERSION "Apache/2.0-dev"       /* SEE COMMENTS ABOVE */
+#define AP_SERVER_BASEVERSION "Apache/2.0a2-dev"       /* SEE COMMENTS ABOVE */
 #define AP_SERVER_VERSION  AP_SERVER_BASEVERSION
 
 #define AP_SERVER_PROTOCOL "HTTP/1.1"
