@@ -1,9 +1,5 @@
 Changes with Apache 2.0.24-dev
 
-  *) Fix a restart problem when cgid is used.  Code in the parent
-     httpd process was trying to clear a pool which is now only 
-     initialized in the child.  [Greg Ames, Jeff Trawick]
-     
 Changes with Apache 2.0.23
 
   *) Use the prefork MPM by default on Unix.  [various]
