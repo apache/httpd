@@ -629,15 +629,17 @@ static char *lcase_header_name_return_body (char *header, request_rec *r)
         *cp++ = tolower(*cp);
     
     if (!*cp) {
-	log_reason ("Syntax error in type map --- no ':'", r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Syntax error in type map --- no ':': %s", r->filename);
 	return NULL;
     }
 
     do ++cp; while (*cp && isspace (*cp));
 
     if (!*cp) {
-	log_reason ("Syntax error in type map --- no header body",
-		    r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Syntax error in type map --- no header body: %s",
+		    r->filename);
 	return NULL;
     }
 
@@ -660,7 +662,8 @@ static int read_type_map (negotiation_state *neg, request_rec *rr)
     }
     map = pfopen (neg->pool, rr->filename, "r");
     if (map == NULL) {
-        log_reason("cannot access type map file", rr->filename, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "cannot access type map file", rr->filename);
 	return FORBIDDEN;
     }
 
@@ -745,7 +748,8 @@ static int read_types_multi (negotiation_state *neg)
     dirp = popendir (neg->pool, neg->dir_name);
 
     if (dirp == NULL) {
-        log_reason("cannot read directory for multi", neg->dir_name, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "cannot read directory for multi", neg->dir_name);
 	return FORBIDDEN;
     }
 
@@ -1887,7 +1891,8 @@ static int handle_map_file (request_rec *r)
     }
 
     if (!best) {
-      log_reason ("no acceptable variant", r->filename, r);
+      aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		  "no acceptable variant", r->filename);
 
       set_neg_headers(r, neg, na_result);
       store_variant_list (r, neg);
@@ -1966,7 +1971,8 @@ return_from_multi:
     }
 
     if (!best) {
-      log_reason ("no acceptable variant", r->filename, r);
+      aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		  "no acceptable variant", r->filename);
 
       set_neg_headers (r, neg, na_result);
       store_variant_list (r, neg);
