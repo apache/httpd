@@ -1265,9 +1265,15 @@ static void child_main()
     /* Release the start_mutex to let the new process (in the restart
      * scenario) a chance to begin accepting and servicing requests 
      */
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
-                 "Child %d: Releasing the start mutex", my_pid);
-    apr_proc_mutex_unlock(start_mutex);
+    rv = apr_proc_mutex_unlock(start_mutex);
+    if (rv == APR_SUCCESS) {
+        ap_log_error(APLOG_MARK,APLOG_INFO | APLOG_NOERRNO, rv, ap_server_conf, 
+                     "Child %d: Released the start mutex", my_pid);
+    }
+    else {
+        ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf, 
+                     "Child %d: Failure releasing the start mutex", my_pid);
+    }
 
     /* Tell the worker threads they may exit when done handling
      * a connection.
@@ -2274,10 +2280,16 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-            apr_proc_mutex_create(&start_mutex, 
-                                  signal_name_prefix,
-                                  APR_LOCK_DEFAULT,
-                                  ap_server_conf->process->pool);
+            rv =  apr_proc_mutex_create(&start_mutex, 
+                                        signal_name_prefix,
+                                        APR_LOCK_DEFAULT,
+                                        ap_server_conf->process->pool);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
+                             "%s: Unable to create the start_mutex.",
+                             service_name);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }            
         }
     }
     else /* parent_pid != my_pid */
@@ -2311,6 +2323,8 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
 
 static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_conf)
 {
+    apr_status_t rv;
+
     setup_signal_names(apr_psprintf(pchild,"ap%d", parent_pid));
 
     /* This is a child process, not in single process mode */
@@ -2323,15 +2337,21 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_co
 
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
 
-        apr_proc_mutex_child_init(&start_mutex, signal_name_prefix, pconf);
+        rv = apr_proc_mutex_child_init(&start_mutex, signal_name_prefix, pconf);
     }
     else {
         /* Single process mode - this lock doesn't even need to exist */
-        apr_proc_mutex_create(&start_mutex, signal_name_prefix, 
-                             APR_LOCK_DEFAULT, pconf);
+        rv = apr_proc_mutex_create(&start_mutex, signal_name_prefix, 
+                                   APR_LOCK_DEFAULT, pconf);
         
         /* Borrow the shutdown_even as our _child_ loop exit event */
         exit_event = shutdown_event;
+    }
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
+                     "%s child %d: Unable to init the start_mutex.",
+                     service_name, my_pid);
+        exit(APEXIT_CHILDINIT);
     }
 }
 
