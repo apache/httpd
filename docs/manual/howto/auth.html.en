@@ -207,7 +207,7 @@ person in</a></h2>
     type:</p>
 
     <div class="example"><p><code>
-      htpasswd /usr/local/apache/passwd/password dpitts
+      htpasswd /usr/local/apache/passwd/passwords dpitts
     </code></p></div>
 
     <p>You'll get the same response as before, but it will be

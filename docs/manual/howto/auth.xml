@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.1.2.7 $ -->
+<!-- $Revision: 1.1.2.8 $ -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -221,7 +221,7 @@ person in</title>
     type:</p>
 
     <example>
-      htpasswd /usr/local/apache/passwd/password dpitts
+      htpasswd /usr/local/apache/passwd/passwords dpitts
     </example>
 
     <p>You'll get the same response as before, but it will be
