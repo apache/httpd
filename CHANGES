@@ -1,6 +1,11 @@
 Changes with Apache 2.0.25-dev
-  *)  Implement CRYPTO_set_locking_callback() in terms of apr_lock
-      for mod_ssl
+
+  *) Make the worker MPM shutdown and restart cleanly.  This also
+     cleans up some race conditions, and gets the worker using
+     pools more cleanly.  [Aaron Bannert <aaron@clove.org>]
+
+  *) Implement CRYPTO_set_locking_callback() in terms of apr_lock
+     for mod_ssl
      [Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>]
 
   *) Fix for mod_include. Ryan's patch to check error
