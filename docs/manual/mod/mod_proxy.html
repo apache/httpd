@@ -45,6 +45,7 @@ and other protocols.
 <LI><A HREF="#proxypass">ProxyPass</A>
 <LI><A HREF="#proxypassreverse">ProxyPassReverse</A>
 <LI><A HREF="#proxyblock">ProxyBlock</A>
+<LI><A HREF="#proxyreceivebuffersize">ProxyReceiveBufferSize</A>
 <LI><A HREF="#noproxy">NoProxy</A>
 <LI><A HREF="#proxydomain">ProxyDomain</A>
 <LI><A HREF="#cacheroot">CacheRoot</A>
@@ -318,6 +319,51 @@ ProxyBlock *
 </PRE>
 
 blocks connections to all sites.
+
+<HR>
+
+<H2><A NAME="proxyreceivebuffersize">ProxyReceiveBufferSize</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ProxyReceiveBufferSize <EM>&lt;bytes&gt;</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <EM>None</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_proxy<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ProxyReceiveBufferSize is only available in
+Apache 1.3 and later.<P>
+
+The ProxyReceiveBufferSize directive specifies an explicit network buffer size
+for outgoing HTTP and FTP connections, for increased throughput.  It has to be
+greater then 512 or set to 0 to indicate that the systems default buffer size
+should be used. 
+
+<P>
+Example:
+
+<PRE>
+  ProxyReceiveBufferSize 2048
+</PRE>
 
 <HR>
 
