@@ -49,7 +49,7 @@
  * For more information on the Apache Group and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
 
- * $Id: httpd_monitor.c,v 1.2 1996/08/20 13:25:07 paul Exp $
+ * $Id: httpd_monitor.c,v 1.3 1996/10/23 18:53:46 brian Exp $
 
 
  * simple script to monitor the child Apache processes
@@ -80,8 +80,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "scoreboard.h"
-#include "httpd.h"
+#include "../src/httpd.h"
+#include "../src/scoreboard.h"
 
 #define PIDFILE_OPT		"PidFile"
 #define	SCORE_OPT		"ScoreBoardFile"
