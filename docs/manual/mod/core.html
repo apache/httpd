@@ -391,7 +391,14 @@ any errors it encounters. If the filename does not begin with a slash (/)
 then it is assumed to be relative to the <A HREF="#serverroot">ServerRoot</A>.
 Example:
 <blockquote><code>ErrorLog /dev/null</code></blockquote>
-This effectively turns off error logging.<p><hr>
+This effectively turns off error logging.<p>
+
+SECURITY: See the <A HREF="../misc/security_tips.html">security tips</A> 
+document for details on why your security could be compromised if
+the directory where logfiles are stored is writable by anyone other
+than the user that starts the server.
+
+<p><hr>
 
 <A name="files"><h2>&lt;Files&gt;</h2></A>
 <strong>Syntax:</strong> &lt;Files <em>filename</em>&gt;
@@ -1213,6 +1220,11 @@ addresses. (If the machine does not have multiple network interfaces,
 then this can be accomplished with the <code>ifconfig alias</code>
 command (if your OS supports it), or with kernel patches like <A
 HREF="../misc/vif-info.html">VIF</A> (for SunOS(TM) 4.1.x)).<p>
+
+SECURITY: See the <A HREF="../misc/security_tips.html">security tips</A> 
+document for details on why your security could be compromised if
+the directory where logfiles are stored is writable by anyone other
+than the user that starts the server.
 
 <p><strong>See also:</strong>
 <A HREF="../virtual-host.html">Information on Virtual Hosts.

@@ -80,6 +80,13 @@ is set by the <A HREF="mod/mod_mime.html#typesconfig">TypesConfig</A> directive,
 and is <code>conf/mime.types</code> by default.
 
 <h2>Log files</h2>
+<h3>security warning</h3>
+Anyone who can write to the directory where Apache is writing a
+log file can almost certainly gain access to the uid that the server is
+started as, which is normally root.  Do <EM>NOT</EM> give people write
+access to the directory the logs are stored in without being aware of
+the consequences; see the <A HREF="misc/security_tips.html">security tips</A>
+document for details.
 <h3>pid file</h3>
 On daemon startup, it saves the process id of the parent httpd process to
 the file <code>logs/httpd.pid</code>. This filename can be changed with the

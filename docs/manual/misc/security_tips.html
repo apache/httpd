@@ -15,6 +15,18 @@ the suggestions will be general, other, specific to Apache
 
 <HR>
 
+<H2>Permissions on Log File Directories</H2>
+<P>When Apache starts, it opens the log files as the user who started the
+server before switching to the user defined in the 
+<a href="../mod/core.html#user"><b>User</b></a> directive.  Anyone who
+has write permission for the directory where any log files are
+being written to can append pseudo-arbitrary data to any file on the
+system which is writable to the user who starts Apache.  Since the
+server is normally started by root, you should <EM>NOT</EM> give anyone
+write permission to the directory where logs are stored unless you
+want them to have root access. 
+<P>
+<HR>
 <H2>Server Side Includes</H2>
 <P>Server side includes (SSI) can be configured so that users can execute
 arbitrary programs on the server. That thought alone should send a shiver
@@ -54,15 +66,16 @@ or your ability to spot potential security holes in CGI, whether they were
 deliberate or accidental.<p>
 
 All the CGI scripts will run as the same user, so they have potential to
-conflict (accidentally or deliberately) with other scripts e.g. User A hates
-User B, so he writes a script to trash User B's CGI database.<P>
+conflict (accidentally or deliberately) with other scripts e.g.
+User A hates User B, so he writes a script to trash User B's CGI
+database.  One program which can be used to allow scripts to run
+as different users is <A HREF="../suexec.html">suEXEC</A> which is
+included with Apache as of 1.2 and is called from special hooks in
+the Apache server code.  Another popular way of doing this is with
+<A HREF="http://wwwcgi.umr.edu/~cgiwrap/">CGIWrap</A>.  <P>
 
 <HR>
 
-Please send any other useful security tips to
-<A HREF="mailto:apache-bugs@mail.apache.org">apache-bugs@mail.apache.org</A>
-<p>
-<HR>
 
 <H2>Stopping users overriding system wide settings...</H2>
 <P>To run a really tight ship, you'll want to stop users from setting
@@ -84,6 +97,12 @@ Then setup for specific directories<P>
 
 This stops all overrides, Includes and accesses in all directories apart
 from those named.<p>
+
+<HR>
+<P>Please send any other useful security tips to
+<A HREF="mailto:apache-bugs@mail.apache.org">apache-bugs@mail.apache.org</A>
+<p>
+<HR>
 
 <!--#include virtual="footer.html" -->
 </BODY>
