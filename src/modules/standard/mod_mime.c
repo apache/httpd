@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_mime.c,v 1.11 1996/08/20 11:51:16 paul Exp $ */
 
 /*
  * http_mime.c: Sends/gets MIME headers for requests

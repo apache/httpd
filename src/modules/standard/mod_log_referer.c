@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_log_referer.c,v 1.4 1996/08/20 11:51:16 paul Exp $ */
 
 
 #include "httpd.h"

@@ -50,6 +50,7 @@
  *
  */
 
+/* $Id: rfc1413.c,v 1.4 1996/08/20 11:51:21 paul Exp $ */
 
 /*
  * rfc1413() speaks a common subset of the RFC 1413, AUTH, TAP and IDENT

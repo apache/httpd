@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_userdir.c,v 1.8 1996/08/20 11:51:20 paul Exp $ */
 
 /*
  * mod_userdir... implement the UserDir command.  Broken away from the

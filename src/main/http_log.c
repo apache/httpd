@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_log.c,v 1.6 1996/08/20 11:50:45 paul Exp $ */
 
 /*
  * http_log.c: Dealing with the logs and errors

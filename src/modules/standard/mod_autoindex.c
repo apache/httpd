@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_autoindex.c,v 1.11 1996/08/20 11:51:08 paul Exp $ */
 
 /*
  * http_dir.c: Handles the on-the-fly html index generation

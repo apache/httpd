@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_protocol.h,v 1.8 1996/08/20 11:50:50 paul Exp $ */
 
 /*
  * Prototypes for routines which either talk directly back to the user,

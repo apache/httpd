@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: ap_config.h,v 1.34 1996/08/20 11:50:39 paul Exp $ */
 
 /*
  * conf.h: system-dependant #defines and includes...

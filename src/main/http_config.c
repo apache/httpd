@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_config.c,v 1.21 1996/08/20 11:50:42 paul Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config

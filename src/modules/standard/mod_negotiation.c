@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_negotiation.c,v 1.17 1996/08/20 11:51:17 paul Exp $ */
 
 /*
  * mod_negotiation.c: keeps track of MIME types the client is willing to

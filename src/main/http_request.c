@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_request.c,v 1.15 1996/08/20 11:50:51 paul Exp $ */
 
 /*
  * http_request.c: functions to get and process requests

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_request.h,v 1.4 1996/08/20 11:50:52 paul Exp $ */
 
 /* http_request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: util.c,v 1.18 1996/08/20 11:51:23 paul Exp $ */
 
 /*
  * str.c: string utility things

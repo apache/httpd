@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1996 The Apache Group.  All rights reserved.
  *
@@ -50,6 +49,8 @@
  * project, please see <http://www.apache.org/>.
  *
  */
+
+/* $Id: buff.c,v 1.6 1996/08/20 11:50:38 paul Exp $ */
 
 #include <errno.h>
 #include <stdio.h>

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -50,6 +49,8 @@
  * project, please see <http://www.apache.org/>.
  *
  */
+
+/* $Id: mod_actions.c,v 1.6 1996/08/20 11:50:55 paul Exp $ */
 
 /*
  * mod_actions.c: executes scripts based on MIME type

@@ -50,6 +50,8 @@
  *
  */
 
+/* $Id: mod_rewrite.h,v 1.4 1996/08/20 11:51:19 paul Exp $ */
+
 #ifndef _MOD_REWRITE_H
 #define _MOD_REWRITE_H 1
 

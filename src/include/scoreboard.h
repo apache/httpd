@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -50,6 +49,8 @@
  * project, please see <http://www.apache.org/>.
  *
  */
+
+/* $Id: scoreboard.h,v 1.15 1996/08/20 11:51:22 paul Exp $ */
 
 #include <sys/times.h>
 

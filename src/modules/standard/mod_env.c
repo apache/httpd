@@ -50,6 +50,8 @@
  *
  */
 
+/* $Id: mod_env.c,v 1.3 1996/08/20 11:51:10 paul Exp $ */
+
 /*
  * mod_env.c
  * version 0.0.5

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_ai_backcompat.c,v 1.3 1996/08/20 11:50:55 paul Exp $ */
 
 #include "httpd.h"
 #include "http_config.h"

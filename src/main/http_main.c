@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_main.c,v 1.62 1996/08/20 11:50:47 paul Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_log.h,v 1.3 1996/08/20 11:50:46 paul Exp $ */
 
 void open_logs (server_rec *, pool *p);
 void error_log2stderr (server_rec *);     

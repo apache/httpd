@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995, 1996 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_cookies.c,v 1.12 1996/08/20 11:51:04 paul Exp $ */
 
 /* User Tracking Module
  *

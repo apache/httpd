@@ -50,6 +50,7 @@
  *
  */
 
+/* $Id: mod_auth_msql.c,v 1.13 1996/08/20 11:51:01 paul Exp $ */
 
 /*
  * mod_auth_msql: authentication

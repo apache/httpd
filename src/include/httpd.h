@@ -1,4 +1,3 @@
- 
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: httpd.h,v 1.47 1996/08/20 11:50:52 paul Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon

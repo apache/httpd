@@ -1,3 +1,5 @@
+/* $Id: explain.h,v 1.2 1996/08/20 11:50:41 paul Exp $ */
+
 #ifndef EXPLAIN
 #define DEF_Explain
 #define Explain0(f)

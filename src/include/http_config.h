@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_config.h,v 1.11 1996/08/20 11:50:43 paul Exp $ */
 
 /*
  * The central data structures around here...

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_dld.c,v 1.3 1996/08/20 11:51:09 paul Exp $ */
 
 /*
  * A first stab at dynamic loading, using the GNU dld library

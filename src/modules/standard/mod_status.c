@@ -50,6 +50,8 @@
  *
  */
 
+/* $Id: mod_status.c,v 1.29 1996/08/20 11:51:20 paul Exp $ */
+
 /* Status Module.  Provide a way of getting at the internal Apache
  * status information without having to worry where the scoreboard is
  * held.

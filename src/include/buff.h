@@ -50,6 +50,8 @@
  *
  */
 
+/* $Id: buff.h,v 1.6 1996/08/20 11:50:39 paul Exp $ */
+
 #include <stdarg.h>
 
 /* Reading is buffered */

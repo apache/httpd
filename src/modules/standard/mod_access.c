@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_access.c,v 1.4 1996/08/20 11:50:54 paul Exp $  */
 
 /*
  * Security options etc.

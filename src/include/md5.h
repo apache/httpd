@@ -1,3 +1,5 @@
+/* $Id: md5.h,v 1.2 1996/08/20 11:50:53 paul Exp $ */
+
 /*
  * This is work is derived from material Copyright RSA Data Security, Inc.
  *

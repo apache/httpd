@@ -1,4 +1,3 @@
- 
 /* ====================================================================
  * Copyright (c) 1996 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_rewrite.c,v 1.3 1996/08/20 11:51:18 paul Exp $ */
 
 /*
 **  mod_rewrite.c

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_imap.c,v 1.10 1996/08/20 11:51:11 paul Exp $ */
 /*
  * This imagemap module started as a port of the original imagemap.c
  * written by Rob McCool (11/13/93 robm@ncsa.uiuc.edu).

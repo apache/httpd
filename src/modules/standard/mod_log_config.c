@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_log_config.c,v 1.10 1996/08/20 11:51:15 paul Exp $  */
 
 /*
  * This is module implements the TransferLog directive (same as the

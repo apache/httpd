@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_digest.c,v 1.7 1996/08/20 11:51:05 paul Exp $ */
 
 /*
  * mod_digest: MD5 digest authentication

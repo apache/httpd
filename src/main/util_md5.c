@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -50,6 +49,8 @@
  * project, please see <http://www.apache.org/>.
  *
  */
+
+/* $Id: util_md5.c,v 1.4 1996/08/20 11:51:24 paul Exp $ */
 
 /************************************************************************
  * NCSA HTTPd Server

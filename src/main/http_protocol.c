@@ -1,4 +1,3 @@
-    
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,8 @@
  *
  */
   
+/* $Id: http_protocol.c,v 1.42 1996/08/20 11:50:50 paul Exp $ */
+
 /*
  * http_protocol.c --- routines which directly communicate with the
  * client.

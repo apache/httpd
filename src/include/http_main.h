@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: http_main.h,v 1.4 1996/08/20 11:50:48 paul Exp $ */
 
 /*
  * Routines in http_main.c which other code --- in particular modules ---

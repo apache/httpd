@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -50,6 +49,8 @@
  * project, please see <http://www.apache.org/>.
  *
  */
+
+/* $Id: mod_cgi.c,v 1.17 1996/08/20 11:51:03 paul Exp $ */
 
 /*
  * http_script: keeps all script-related ramblings together.

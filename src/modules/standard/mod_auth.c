@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_auth.c,v 1.5 1996/08/20 11:50:57 paul Exp $ */
 
 /*
  * http_auth: authentication

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: util_script.h,v 1.6 1996/08/20 11:51:25 paul Exp $ */
 
 char **create_argv(pool *p, char *av0, char *args);
 #ifdef __EMX__

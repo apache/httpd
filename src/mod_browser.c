@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1996 The Apache Group.  All rights reserved.
  *
@@ -50,6 +49,8 @@
  * project, please see <http://www.apache.org/>.
  *
  */
+
+/* $Id: mod_browser.c,v 1.3 1996/08/20 11:51:01 paul Exp $ */
 
 /*
  * mod_browser.c

@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_alias.c,v 1.7 1996/08/20 11:50:56 paul Exp $ */
 
 /*
  * http_alias.c: Stuff for dealing with directory aliases

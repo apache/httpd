@@ -50,6 +50,8 @@
  *
  */
 
+/* $Id: mod_info.c,v 1.3 1996/08/20 11:51:13 paul Exp $ */
+
 /* 
  * Info Module.  Display configuration information for the server and
  * all included modules.

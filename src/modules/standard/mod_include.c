@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: mod_include.c,v 1.14 1996/08/20 11:51:12 paul Exp $ */
 
 /*
  * http_include.c: Handles the server-parsed HTML documents

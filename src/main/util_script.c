@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -51,6 +50,7 @@
  *
  */
 
+/* $Id: util_script.c,v 1.21 1996/08/20 11:51:25 paul Exp $ */
 
 
 #define CORE_PRIVATE
