@@ -1,0 +1,215 @@
+.TH httpd 8 "February 1997"
+.\" Copyright (c) 1995-1997 David Robinson. All rights reserved.
+.\" ====================================================================
+.\" The Apache Software License, Version 1.1
+.\"
+.\" Copyright (c) 2000-2003 The Apache Software Foundation.  All rights
+.\" reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\"
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in
+.\"    the documentation and/or other materials provided with the
+.\"    distribution.
+.\"
+.\" 3. The end-user documentation included with the redistribution,
+.\"    if any, must include the following acknowledgment:
+.\"       "This product includes software developed by the
+.\"        Apache Software Foundation (http://www.apache.org/)."
+.\"    Alternately, this acknowledgment may appear in the software itself,
+.\"    if and wherever such third-party acknowledgments normally appear.
+.\"
+.\" 4. The names "Apache" and "Apache Software Foundation" must
+.\"    not be used to endorse or promote products derived from this
+.\"    software without prior written permission. For written
+.\"    permission, please contact apache@apache.org.
+.\"
+.\" 5. Products derived from this software may not be called "Apache",
+.\"    nor may "Apache" appear in their name, without prior written
+.\"    permission of the Apache Software Foundation.
+.\"
+.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+.\" WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\" OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+.\" DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+.\" ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+.\" SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+.\" LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+.\" USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+.\" ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+.\" OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+.\" OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\" ====================================================================
+.\"
+.\" This software consists of voluntary contributions made by many
+.\" individuals on behalf of the Apache Software Foundation.  For more
+.\" information on the Apache Software Foundation, please see
+.\" <http://www.apache.org/>.
+.\"
+.\" Portions of this software are based upon public domain software
+.\" originally written at the National Center for Supercomputing Applications,
+.\" University of Illinois, Urbana-Champaign.
+.\"
+.SH NAME
+httpd \- Apache hypertext transfer protocol server
+.SH SYNOPSIS
+.B httpd 
+[
+.B \-X
+] [
+.BI \-R " libexecdir"
+] [
+.BI \-d " serverroot"
+] [
+.BI \-f " config"
+] [
+.BI \-C " directive"
+] [
+.BI \-c " directive"
+] [
+.BI \-D " parameter"
+]
+
+.B httpd 
+[
+.B \-h
+] 
+[
+.B \-l
+] 
+[
+.B \-L
+] 
+[
+.B \-v
+] 
+[
+.B \-V
+] 
+[
+.B \-S
+] 
+[
+.B \-t
+] 
+[
+.B \-T
+]
+
+.SH DESCRIPTION
+.B httpd
+is the Apache HyperText Transfer Protocol (HTTP) server program. It is
+designed to be run as a stand-alone daemon process. When used like this
+it will create a pool of child processes to handle requests. To stop
+it, send a TERM signal to the initial (parent) process. The PID of
+this process is written to a file as given in the configuration file.
+Alternatively 
+.B httpd 
+may be invoked by the Internet daemon inetd(8) each
+time a connection to the HTTP service is made.
+.PP
+This manual page only lists the command line arguments. For details
+of the directives necessary to configure 
+.B httpd
+see the Apache manual,
+which is part of the Apache distribution or can be found at
+http://httpd.apache.org/. Paths in this manual may not reflect those
+compiled into 
+.B httpd.
+.SH OPTIONS
+.TP 12
+.BI \-R " libexecdir"
+This option is only available if Apache was built with
+the 
+.I SHARED_CORE
+rule enabled which forces the Apache core code to be
+placed into a dynamic shared object (DSO) file. This file
+is searched in a hardcoded path under ServerRoot per default. Use this
+option if you want to override it.
+.TP 12
+.BI \-d " serverroot"
+Set the initial value for the ServerRoot directive to \fIserverroot\fP. This
+can be overridden by the ServerRoot command in the configuration file. The
+default is \fB/usr/local/apache\fP.
+.TP
+.BI \-f " config"
+Execute the commands in the file \fIconfig\fP on startup. If \fIconfig\fP
+does not begin with a /, then it is taken to be a path relative to
+the ServerRoot. The default is \fBconf/httpd.conf\fP.
+.TP
+.BI \-C " directive"
+Process the configuration \fIdirective\fP before reading config files.
+.TP
+.BI \-c " directive"
+Process the configuration \fIdirective\fP after reading config files.
+.TP
+.BI \-D " parameter"
+Sets a configuration \fIparameter\fP which can be used with
+<IfDefine>...</IfDefine> sections in the configuration files
+to conditionally skip or process commands.
+.TP
+.B \-h
+Output a short summary of available command line options.
+.TP
+.B \-l
+Output a list of modules compiled into the server.
+.TP
+.B \-L
+Output a list of directives together with expected arguments and
+places where the directive is valid.
+.TP
+.B \-S
+Show the settings as parsed from the config file (currently only shows the
+virtualhost settings).
+.TP
+.B \-t
+Run syntax tests for configuration files only. The program immediately exits
+after these syntax parsing with either a return code of 0 (Syntax OK) or
+return code not equal to 0 (Syntax Error).
+.TP
+.B \-T
+Same as option 
+.B \-t
+but does not check the configured document roots. 
+.TP
+.B \-X
+Run in single-process mode, for internal debugging purposes only; the daemon
+does not detach from the terminal or fork any children. Do NOT use this mode
+to provide ordinary web service.
+.TP
+.B \-v
+Print the version of 
+.B httpd
+, and then exit.
+.TP
+.B \-V
+Print the version and build parameters of 
+.B httpd
+, and then exit.
+.SH FILES
+.PD 0
+.B /usr/local/apache/conf/httpd.conf
+.br
+.B /usr/local/apache/conf/srm.conf
+.br
+.B /usr/local/apache/conf/access.conf
+.br
+.B /usr/local/apache/conf/mime.types
+.br
+.B /usr/local/apache/conf/magic
+.br
+.B /usr/local/apache/logs/error_log
+.br
+.B /usr/local/apache/logs/access_log
+.br
+.B /usr/local/apache/logs/httpd.pid
+.PD
+.SH SEE ALSO
+.BR inetd (8).

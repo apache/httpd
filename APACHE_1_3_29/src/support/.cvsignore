@@ -1,0 +1,15 @@
+Makefile
+checkgid
+rotatelogs
+htpasswd
+htdigest
+unescape
+inc2shtml
+httpd_monitor
+suexec
+logresolve
+ab
+apxs
+Debug
+Release
+*.vcproj

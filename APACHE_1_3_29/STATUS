@@ -1,0 +1,282 @@
+APACHE 1.3 STATUS:						-*-text-*-
+  Last modified at [$Date: 2003/10/24 16:11:40 $]
+
+Release:
+
+   1.3.29: Tagged October 24, 2003.
+   1.3.28: Tagged July 16, 2003.
+   1.3.27: Tagged September 30, 2002. Announced Oct 3, 2002.
+   1.3.26: Tagged June 18, 2002.
+   1.3.25: Tagged June 17, 2002. Not released.
+   1.3.24: Tagged Mar 21, 2002. Announced Mar 22, 2002.
+   1.3.23: Tagged Jan 21, 2002.
+   1.3.22: Tagged Oct 8, 2001.  Announced Oct 12, 2001.
+   1.3.21: Not released.
+             (Pulled for htdocs/manual config mismatch. t/r Oct 5, 2001)
+   1.3.20: Tagged and rolled May 15, 2001. Announced May 21, 2001.
+   1.3.19: Tagged and rolled Feb 26, 2001. Announced Mar 01, 2001.
+   1.3.18: Tagged and rolled Not released.
+             (Pulled because of an incorrect unescaping fix. t/r Feb 19, 2001)
+   1.3.17: Tagged and rolled Jan 26, 2001. Announced Jan 29, 2001.
+   1.3.16: Not released.
+             (Pulled because of vhosting bug. t/r Jan 20, 2001)
+   1.3.15: Not released.
+             (Pulled due to CVS dumping core during the tagging when it
+              reached src/os/win32/)
+   1.3.14: Tagged and Rolled Oct 10, 2000.  Released/announced on the 13th.
+   1.3.13: Not released.
+             (Pulled in the "first minutes" due to a Netware build bug)
+   1.3.12: Tagged and rolled Feb. 23, 2000. Released/announced on the 25th.
+   1.3.11: Tagged and rolled Jan. 19, 2000. Released/announced on the 21st.
+   1.3.10: Not released.
+             (Pulled at "last minute" due to a build bug in the MPE port)
+    1.3.9: Tagged and rolled on Aug. 16, 1999. Released and announced on 19th.
+    1.3.8: Not released.
+    1.3.7: Not released.
+    1.3.6: Tagged and rolled on Mar. 22, 1999. Released and announced on 24th.
+    1.3.5: Not released.
+    1.3.4: Tagged and rolled on Jan. 9, 1999.  Released on 11th, announced on 12th.
+    1.3.3: Tagged and rolled on Oct. 7, 1998.  Released on 9th, announced on 10th.
+    1.3.2: Tagged and rolled on Sep. 21, 1998. Announced and released on 23rd.
+    1.3.1: Tagged and rolled on July 19, 1998. Announced and released.
+    1.3.0: Tagged and rolled on June 1, 1998.  Announced and released on the 6th.
+           
+    2.0  : Available for general use, see httpd-2.0 repository
+
+RELEASE SHOWSTOPPERS:
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+   * isn't ap_die() broken with recognizing recursive errors
+       Message-Id: <3F8C56E3.8050501@attglobal.net>
+        +1: jeff, jim
+
+   * Current vote on 3 PRs for inclusion:
+      Bugz #17877 (passing chunked encoding thru proxy)
+      (still checking if RFC compliant... vote is on the
+       correctness of the patch code only).
+        +1: jim, chuck, minfrin
+      Bugz #9181 (Unable to set headers on non-2XX responses)
+        +1: Martin, Jim
+      Gnats #10246 (Add ProxyConnAllow directive)
+        +0: Martin (or rather -.5, see dev@ Message
+	            <20020529215048.A56015@deejai2.mch.fsc.net>)
+
+    * htpasswd.c and htdigest.c use tmpnam()... consider using
+      mkstemp() when available.
+        Message-ID: <Pine.LNX.4.30.0102191441100.22500-100000@dax.joh.cam.ac.uk>
+	Status:
+        
+    * Dean's "unescaping hell" (unescaping the various URI components
+      at the right time and place, esp. unescaping the host name).
+        Message-ID: <Pine.LNX.4.33.0102231235031.11699-100000@twinlark.arctic.org>
+        Status:
+
+    * Martin observed a core dump because a ipaddr_chain struct contains
+      a NULL-"server" pointer when being dereferenced by invoking "httpd -S".
+        Message-ID: <20010213231854.A20932@deejai2.mch.fsc.net>
+        Status: Workaround enabled. Clean solution can come after 1.3.19
+
+    * long pathnames with many components and no AllowOverride None
+      Workaround is to define <Directory /> with AllowOverride None,
+      which is something all sites should do in any case.
+	Status: Marc was looking at it.  (Will asks 'wasn't this patched?')
+
+    * Ronald Tschalär's patch to mod_proxy to allow other modules to
+      set headers too (needed by mod_auth_digest)
+        Message-ID: <199907080712.JAA28269@chill.innovation.ch>
+        Status:
+
+
+Available Patches (Most likely, will be ported to 2.0 as appropriate):
+
+   *  A rewrite of ap_unparse_uri_components() by Jeffrey W. Baker
+     <jwbaker@acm.org> to more fully close some segfault potential.
+        Message-ID: <Pine.LNX.4.21.0102102350060.6815-200000@desktop>
+        Status:  Jim +1 (for 1.3.19), Martin +0
+
+    * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
+	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
+	Status: Martin +1, Jim +1, Ken +1 (on concept)
+
+    * Raymond S Brand's path to mod_autoindex to fix the header/readme
+      include processing so the envariables are correct for the included
+      documents.  (Actually, there are two variants in the patch message,
+      for two different ways of doing it.)
+	Message-ID: <384AA242.B93F8B5@rsbx.net>
+	Status: Martin +1(concept)
+
+    * Jayaram's patch (10/27/99) for bugfix to mod_autoindex
+      IndexIgnore <file-extension> should hide the files with this file-
+      extension in directory listings. This was NOT happening because the 
+      total filename was being compared with the file-extension.
+      Status: Martin +1(untested), Ken +1(untested)
+       
+    * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
+      to refer to URIs for non-static resources.
+	MID: <Pine.LNX.4.10.9906041415330.15776-100000@xiomara.msg.com.mx>
+	Status: Ken +1 (on concept), Lars +1 (on concept)
+
+    * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
+      (PR#2598)
+	Message-ID: <199905170830.SAA31549@silk.apana.org.au>
+	Status: Lars +1 (on concept), Ken +1 (on concept),
+                Martin +1(untested)
+
+    * Aidan Cully's patch to allow assignment of 'ownership' of resources
+      to either the server UID or the file's owner.
+	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
+	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
+
+In progress:
+
+Needs patch:
+
+    * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
+      See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
+
+    * URI issues
+	- RFC2068 requires a server to recognize its own IP addr(s) in
+	dot notation, we do this fine if the user follows the
+	dns-caveats documentation... we should handle it in the case
+	the user doesn't ever supply a dot-notation address.
+
+    * Problems dealing with .-rooted domain names such as "twinlark."
+        versus "twinlark.arctic.org.".  See the thread containing
+	Message-ID: <19980203211817.06723@deejai.mch.sni.de> for more
+	details.  In particular this affects the correctness of the
+	proxy and the vhost mechanism.
+
+    * proxy_*_canon routines use r->proxyreq incorrectly.  See
+	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
+
+Open issues:
+
+    * Should we provide a way to force CustomError responses past IE's
+      'prettify-if-less-than-N-bytes' bogosity?
+
+    * general/3787: SERVER_PORT is always 80 if client comes to any port
+      => needs review by the protocol guys, I think.
+
+    * All DBMs suffer from confusion in dbmmanage (perl script) since the
+        dbmmanage creates in the first-matched dbm format.  This is not
+        necessarily the library that Apache was built with.  Aught to
+        rewrite dbmmanage with the proper library for clean administration.
+
+    * Marc's socket options like source routing (kill them?)
+	Marc, Martin say Yes
+
+    * In ap_bclose() there's no test that (fb->fd != -1) -- so it's
+      possible that it'll do something completely bogus when it's 
+      used for read-only things. - Dean Gaudet
+
+    * Roy's HTTP/1.1 Wishlist items:
+        1) byte range error handling
+
+    * use of spawnvp in uncompress_child in mod_mime_magic - doesn't
+      use the new child_info structure, is this still safe?  Needs to be 
+      looked at.
+
+    * suexec doesn't understand argv parameters; e.g.
+
+        <!--#exec cmd="./ls -l" -->
+
+      fails even when "ls" is in the same directory because suexec is trying
+      to stat a file called "ls -l".  A patch for this is available at
+
+        http://www.xnet.com/~emarshal/suexec.diff
+
+      and it's not bad except that it doesn't handle programs with spaces in
+      the filename (think win32, or samba-mounted filesystems).  There are
+      several PR's to this and I don't see for security reasons why we can't
+      accomodate it, though it does add complexity to suexec.c.
+      Accepting quoted executable names solves that issue, except that the
+      exec cmd="" parsing needs to accept escaped quotes.
+      PR #1120
+      Brian: +1
+        Status: Already resolved in Apache 2.0 - exec is defined as passing
+                the cmd="" argument as argv[0], which means it is -only- the
+                file name to execute (with spaces allowed in the name.)
+      
+Win32/Netware specific issues:
+
+    * mod_rewrite's cache isn't threadsafe, needs a mutex on Win32/Netware
+      (and OS/2?)
+
+    * apparently either "BrowserMatch" or the "nokeepalive" variable
+      cause instability - see PR#1729.
+
+
+Binaries (1.3.27):
+
+ Platform                      Avail.  Volunteer
+ ------------------------------------------------------------------
+ 000964804C00-ibm-aix4.3       no      Bill Stoddard
+ 9000_715-hp-hpux11.00         no      Jeff Trawick
+ 9000_785-hp-hpux11.00         no      Cliff Woolley
+ alpha-dec-osf3.0              no      Sameer Parekh
+ alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar,
+                                       Randy Terbush
+ alpha-whatever-linux2         no      Randy Terbush
+ armv4l-whatever-linux2        no      Rasmus Lerdorf
+ hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
+ i386-be-beos                  no      David Reid
+ i386-dg-dgux5.4R2.01          no      Randy Terbush
+ i386-siemens-sinix5.4         yes     Martin Kraemer
+ i386-slackware-linux(a.out)   no      Sameer Parekh
+ i386-sun-solaris2.5           no      Sameer Parekh
+ i386-sun-solaris2.6           no      Randy Terbush
+ i386-sun-solaris2.7           no      Cliff Skolnick
+ i386-sun-solaris2.8           no      Aaron Bannert
+ i386-unixware-svr4            no      Sameer Parekh, Randy Terbush
+ i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
+ i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
+ i386-unknown-sco3             no      Ben Laurie
+ i386-unknown-sco5             no      Ben Laurie
+ i386-whatever-bsdi            no      David Reid
+ i386-whatever-freebsd3.0      no      Dirk-Willem van Gulik
+ i386-whatever-freebsd3.3      no      Ask Bjoern Hansen
+ i386-whatever-freebsd4.0      no      Ask Bjoern Hansen
+ i386-whatever-freebsd4.6      no      Aaron Bannert
+ i586-unknown-linux2           no      Ralf S. Engelschall,
+                                       Lars Eilebrecht, Randy Terbush
+ i686-pc-freebsd3.1            no      Ralf S. Engelschall
+ i686-unknown-linux2           no      Lars Eilebrecht
+ i686-whatever-cygwin          no      Stipe Tolj
+ i686-whatever-linux2          no      Ken Coar, Randy Terbush
+ i686-whatever-linux22         no      Aaron Bannert
+ ia64-whatever-linux22         no      Martin Kraemer
+ ia64-hp-hpux11.20             no      Cliff Woolley
+ m68k-apple-aux3.1.1           no      Jim Jagielski
+ m88k-dg-dgux5.4R2.01          no      Sameer parekh
+ m88k-next-next                no      Rob Hartill
+ mips-dec-ultrix4.4            no      Sameer Parekh
+ mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
+ mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
+ mips-sgi-irix6.4              no      Lars Eilebrecht
+ mips-siemens-reliantunix5.4   yes     Martin Kraemer
+ mips-unknown-linux            no      Lars Eilebrecht
+ netware                       yes     Brad Nicholes <bnicholes@novell.com>
+ OS/2                          yes     Brian Havard
+ OS/390-09.00-02               no                     
+ powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
+ powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
+ powerpc-apple-darwin5.5       no      Aaron Bannert
+ ppc-whatever-linux22          yes     Graham Leggett
+ rs6000-ibm-aix3.2.5           no      Sameer Parekh
+ rs6000-ibm-aix4.1             no      Lars Eilebrecht
+ rs6000-ibm-aix4.3.x           no      Bill Stoddard, Randy Terbush
+ sparc-sun-solaris2.5          no      Lars Eilebrecht, Randy Terbush
+ sparc-sun-solaris2.6          no      Lars Eilebrecht
+ sparc-sun-solaris2.7          no      Cliff Skolnick
+ sparc-sun-solaris2.8          no      Jim Jagielski
+ sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
+ sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
+ sun4u-sun-solaris2.280        no      Jeff Trawick
+ TPF                           no      David McCreedy, Carolyn Weiss
+ win32                         yes     William Rowe
+ x86-bsdos-3.x                 no      Randy Terbush
+ x86-bsdos-4.x                 no      Randy Terbush
+ x86-openbsd-2.x               no      Randy Terbush
+ x86-qnx-4.x                   no      Randy Terbush
+ x86_64-whatever-linux22       yes     Aaron Bannert
