@@ -125,14 +125,14 @@ static const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
     if (!t || strcmp(t, "dbm"))
 	return DECLINE_CMD;
 
-    return set_string_slot(cmd, offset, f);
+    return set_file_slot(cmd, offset, f);
 }
 
 static command_rec dbm_auth_cmds[] = {
-{ "AuthDBMUserFile", set_string_slot,
+{ "AuthDBMUserFile", set_file_slot,
     (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
     OR_AUTHCFG, TAKE1, NULL },
-{ "AuthDBMGroupFile", set_string_slot,
+{ "AuthDBMGroupFile", set_file_slot,
     (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
     OR_AUTHCFG, TAKE1, NULL },
 { "AuthUserFile", set_dbm_slot,

@@ -825,6 +825,21 @@ API_EXPORT_NONSTD(const char *) set_flag_slot (cmd_parms *cmd,
     return NULL;
 }
 
+const char *set_file_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
+{
+    /* Prepend server_root to relative arg.
+       This allows .htaccess to be independent of server_root,
+       so the server can be moved or mirrored with less pain.  */
+    char *p;
+    int offset = (int)cmd->info;
+    if (*arg == '/')
+      p = pstrdup (cmd->pool, arg);
+    else
+      p = make_full_path (cmd->pool, server_root, arg);
+    *(char **)(struct_ptr + offset) = p;
+    return NULL;
+}
+
 /*****************************************************************
  *
  * Reading whole config files...

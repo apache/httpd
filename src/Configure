@@ -833,7 +833,7 @@ awk >>Makefile <$tmpfile '\
 #
 echo  >> Makefile
 echo "CFLAGS1=$CFLAGS">> Makefile.config
-echo "INCLUDES1=$INCLUDES -I${SRCDIR}/core">> Makefile.config
+echo "INCLUDES1=$INCLUDES -I${SRCDIR}/main">> Makefile.config
 echo "LIBS1=$LIBS">> Makefile.config
 echo "LDFLAGS1=$LDFLAGS">> Makefile.config
 echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile.config
@@ -845,7 +845,7 @@ echo "OSDIR=${SRCDIR}/$OSDIR">> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 
-cp $OSDIR/os.h core/os.h
+cp $OSDIR/os.h main/os.h
 
 ####################################################################
 # Use TestCompile to see if $(CC) is ANSI and as a "final" sanity
@@ -877,7 +877,7 @@ awk >>Makefile <$tmpfile \
 #
 # directories to create makefiles in
 #
-MAKEDIRS="support core $OSDIR"
+MAKEDIRS="support main $OSDIR"
 for dir in $MAKEDIRS ; do
 	echo Creating Makefile in $dir
 	cat Makefile.config $dir/Makefile.tmpl > $dir/Makefile
@@ -950,7 +950,7 @@ CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
-INCDIR=../../core
+INCDIR=../../main
 
 all:	$(OBJS)
 

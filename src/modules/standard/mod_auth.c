@@ -94,7 +94,7 @@ static const char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t
     if (t && strcmp(t, "standard"))
         return pstrcat(cmd->pool, "Invalid auth file type: ",  t, NULL);
 
-    return set_string_slot(cmd, offset, f);
+    return set_file_slot(cmd, offset, f);
 }
 
 static command_rec auth_cmds[] = {

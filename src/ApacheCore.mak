@@ -101,7 +101,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I ".\regex" /I ".\core" /D "WIN32" /D\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I ".\regex" /I ".\main" /D "WIN32" /D\
  "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheCore.pch" /YX /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\CoreR/
@@ -284,7 +284,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\regex" /I ".\core" /D "WIN32"\
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\regex" /I ".\main" /D "WIN32"\
  /D "_DEBUG" /D "_WINDOWS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\ApacheCore.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\CoreD/
@@ -434,16 +434,16 @@ LINK32_OBJS= \
 
 !IF "$(CFG)" == "ApacheCore - Win32 Release" || "$(CFG)" ==\
  "ApacheCore - Win32 Debug"
-SOURCE=.\core\alloc.c
+SOURCE=.\main\alloc.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_ALLOC=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
-	".\core\multithread.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
+	".\main\multithread.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -455,11 +455,11 @@ DEP_CPP_ALLOC=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_ALLOC=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
-	".\core\multithread.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
+	".\main\multithread.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -471,16 +471,16 @@ DEP_CPP_ALLOC=\
 
 !ENDIF 
 
-SOURCE=.\core\buff.c
+SOURCE=.\main\buff.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_BUFF_=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_main.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_main.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -492,11 +492,11 @@ DEP_CPP_BUFF_=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_BUFF_=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_main.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_main.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -508,9 +508,9 @@ DEP_CPP_BUFF_=\
 
 !ENDIF 
 
-SOURCE=.\core\explain.c
+SOURCE=.\main\explain.c
 DEP_CPP_EXPLA=\
-	".\core\explain.h"\
+	".\main\explain.h"\
 	
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
@@ -530,9 +530,9 @@ DEP_CPP_EXPLA=\
 
 !ENDIF 
 
-SOURCE=.\core\fnmatch.c
+SOURCE=.\main\fnmatch.c
 DEP_CPP_FNMAT=\
-	".\core\fnmatch.h"\
+	".\main\fnmatch.h"\
 	
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
@@ -570,15 +570,15 @@ SOURCE=.\os\win32\getopt.c
 
 !ENDIF 
 
-SOURCE=.\core\http_bprintf.c
+SOURCE=.\main\http_bprintf.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -590,10 +590,10 @@ DEP_CPP_HTTP_=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -605,21 +605,21 @@ DEP_CPP_HTTP_=\
 
 !ENDIF 
 
-SOURCE=.\core\http_config.c
+SOURCE=.\main\http_config.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_C=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\explain.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\explain.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -631,16 +631,16 @@ DEP_CPP_HTTP_C=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_C=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\explain.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\explain.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -652,26 +652,26 @@ DEP_CPP_HTTP_C=\
 
 !ENDIF 
 
-SOURCE=.\core\http_core.c
+SOURCE=.\main\http_core.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_CO=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\fnmatch.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\httpd.h"\
-	".\core\md5.h"\
-	".\core\rfc1413.h"\
-	".\core\scoreboard.h"\
-	".\core\util_md5.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\fnmatch.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\httpd.h"\
+	".\main\md5.h"\
+	".\main\rfc1413.h"\
+	".\main\scoreboard.h"\
+	".\main\util_md5.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -683,21 +683,21 @@ DEP_CPP_HTTP_CO=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_CO=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\fnmatch.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\httpd.h"\
-	".\core\md5.h"\
-	".\core\rfc1413.h"\
-	".\core\scoreboard.h"\
-	".\core\util_md5.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\fnmatch.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\httpd.h"\
+	".\main\md5.h"\
+	".\main\rfc1413.h"\
+	".\main\scoreboard.h"\
+	".\main\util_md5.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -709,18 +709,18 @@ DEP_CPP_HTTP_CO=\
 
 !ENDIF 
 
-SOURCE=.\core\http_log.c
+SOURCE=.\main\http_log.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_L=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -732,13 +732,13 @@ DEP_CPP_HTTP_L=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_L=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -750,25 +750,25 @@ DEP_CPP_HTTP_L=\
 
 !ENDIF 
 
-SOURCE=.\core\http_main.c
+SOURCE=.\main\http_main.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_M=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\explain.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\multithread.h"\
-	".\core\scoreboard.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\explain.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\multithread.h"\
+	".\main\scoreboard.h"\
 	".\os\win32\getopt.h"\
 	".\os\win32\readdir.h"\
 	".\os\win32\service.h"\
@@ -782,20 +782,20 @@ DEP_CPP_HTTP_M=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_M=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\explain.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\multithread.h"\
-	".\core\scoreboard.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\explain.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\multithread.h"\
+	".\main\scoreboard.h"\
 	".\os\win32\getopt.h"\
 	".\os\win32\readdir.h"\
 	".\os\win32\service.h"\
@@ -809,22 +809,22 @@ DEP_CPP_HTTP_M=\
 
 !ENDIF 
 
-SOURCE=.\core\http_protocol.c
+SOURCE=.\main\http_protocol.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_P=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\httpd.h"\
-	".\core\util_date.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\httpd.h"\
+	".\main\util_date.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -836,18 +836,18 @@ DEP_CPP_HTTP_P=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_P=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_date.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_date.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -859,23 +859,23 @@ DEP_CPP_HTTP_P=\
 
 !ENDIF 
 
-SOURCE=.\core\http_request.c
+SOURCE=.\main\http_request.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_HTTP_R=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\fnmatch.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\scoreboard.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\fnmatch.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\scoreboard.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -887,18 +887,18 @@ DEP_CPP_HTTP_R=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_HTTP_R=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\fnmatch.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\scoreboard.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\fnmatch.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\scoreboard.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -910,10 +910,10 @@ DEP_CPP_HTTP_R=\
 
 !ENDIF 
 
-SOURCE=.\core\md5c.c
+SOURCE=.\main\md5c.c
 DEP_CPP_MD5C_=\
-	".\core\conf.h"\
-	".\core\md5.h"\
+	".\main\conf.h"\
+	".\main\md5.h"\
 	".\regex\regex.h"\
 	
 
@@ -939,14 +939,14 @@ SOURCE=.\modules\standard\mod_access.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_A=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -958,14 +958,14 @@ DEP_CPP_MOD_A=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_A=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -982,17 +982,17 @@ SOURCE=.\modules\standard\mod_actions.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AC=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1004,17 +1004,17 @@ DEP_CPP_MOD_AC=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AC=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1031,11 +1031,11 @@ SOURCE=.\modules\standard\mod_alias.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AL=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1047,11 +1047,11 @@ DEP_CPP_MOD_AL=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AL=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1068,16 +1068,16 @@ SOURCE=.\modules\standard\mod_asis.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AS=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1089,16 +1089,16 @@ DEP_CPP_MOD_AS=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AS=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1115,14 +1115,14 @@ SOURCE=.\modules\standard\mod_auth.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AU=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_protocol.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_protocol.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1134,14 +1134,14 @@ DEP_CPP_MOD_AU=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AU=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_protocol.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_protocol.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1158,17 +1158,17 @@ SOURCE=.\modules\standard\mod_autoindex.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_AUT=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1180,17 +1180,17 @@ DEP_CPP_MOD_AUT=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_AUT=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1207,18 +1207,18 @@ SOURCE=.\modules\standard\mod_cgi.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_C=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1230,18 +1230,18 @@ DEP_CPP_MOD_C=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_C=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1258,17 +1258,17 @@ SOURCE=.\modules\standard\mod_dir.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_D=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1280,17 +1280,17 @@ DEP_CPP_MOD_D=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_D=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1307,11 +1307,11 @@ SOURCE=.\os\win32\mod_dll.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_DL=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1323,11 +1323,11 @@ DEP_CPP_MOD_DL=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_DL=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1344,11 +1344,11 @@ SOURCE=.\modules\standard\mod_env.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_E=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1360,11 +1360,11 @@ DEP_CPP_MOD_E=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_E=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1381,17 +1381,17 @@ SOURCE=.\modules\standard\mod_imap.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_I=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1403,17 +1403,17 @@ DEP_CPP_MOD_I=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_I=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1430,17 +1430,17 @@ SOURCE=.\modules\standard\mod_include.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_IN=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1452,17 +1452,17 @@ DEP_CPP_MOD_IN=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_IN=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1479,16 +1479,16 @@ SOURCE=.\os\win32\mod_isapi.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_IS=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1500,16 +1500,16 @@ DEP_CPP_MOD_IS=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_IS=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1526,12 +1526,12 @@ SOURCE=.\modules\standard\mod_log_config.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_L=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1543,12 +1543,12 @@ DEP_CPP_MOD_L=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_L=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1565,11 +1565,11 @@ SOURCE=.\modules\standard\mod_mime.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_M=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\modules\standard\mod_mime.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
@@ -1582,11 +1582,11 @@ DEP_CPP_MOD_M=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_M=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\modules\standard\mod_mime.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
@@ -1604,15 +1604,15 @@ SOURCE=.\modules\standard\mod_negotiation.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_N=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1624,15 +1624,15 @@ DEP_CPP_MOD_N=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_N=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1649,13 +1649,13 @@ SOURCE=.\modules\standard\mod_setenvif.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_S=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1667,13 +1667,13 @@ DEP_CPP_MOD_S=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_S=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1690,11 +1690,11 @@ SOURCE=.\modules\standard\mod_userdir.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MOD_U=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1706,11 +1706,11 @@ DEP_CPP_MOD_U=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MOD_U=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1727,11 +1727,11 @@ SOURCE=.\os\win32\modules.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_MODUL=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1743,11 +1743,11 @@ DEP_CPP_MODUL=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_MODUL=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_config.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_config.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1761,8 +1761,8 @@ DEP_CPP_MODUL=\
 
 SOURCE=.\os\win32\multithread.c
 DEP_CPP_MULTI=\
-	".\core\conf.h"\
-	".\core\multithread.h"\
+	".\main\conf.h"\
+	".\main\multithread.h"\
 	".\regex\regex.h"\
 	
 
@@ -1805,18 +1805,18 @@ DEP_CPP_READD=\
 
 !ENDIF 
 
-SOURCE=.\core\rfc1413.c
+SOURCE=.\main\rfc1413.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_RFC14=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\httpd.h"\
-	".\core\rfc1413.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\httpd.h"\
+	".\main\rfc1413.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1828,13 +1828,13 @@ DEP_CPP_RFC14=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_RFC14=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\httpd.h"\
-	".\core\rfc1413.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\httpd.h"\
+	".\main\rfc1413.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1848,8 +1848,8 @@ DEP_CPP_RFC14=\
 
 SOURCE=.\os\win32\service.c
 DEP_CPP_SERVI=\
-	".\core\conf.h"\
-	".\core\multithread.h"\
+	".\main\conf.h"\
+	".\main\multithread.h"\
 	".\os\win32\service.h"\
 	".\regex\regex.h"\
 	
@@ -1871,16 +1871,16 @@ DEP_CPP_SERVI=\
 
 !ENDIF 
 
-SOURCE=.\core\util.c
+SOURCE=.\main\util.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1892,11 +1892,11 @@ DEP_CPP_UTIL_=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1908,10 +1908,10 @@ DEP_CPP_UTIL_=\
 
 !ENDIF 
 
-SOURCE=.\core\util_date.c
+SOURCE=.\main\util_date.c
 DEP_CPP_UTIL_D=\
-	".\core\conf.h"\
-	".\core\util_date.h"\
+	".\main\conf.h"\
+	".\main\util_date.h"\
 	".\regex\regex.h"\
 	
 
@@ -1932,17 +1932,17 @@ DEP_CPP_UTIL_D=\
 
 !ENDIF 
 
-SOURCE=.\core\util_md5.c
+SOURCE=.\main\util_md5.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_M=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
-	".\core\md5.h"\
-	".\core\util_md5.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
+	".\main\md5.h"\
+	".\main\util_md5.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1954,12 +1954,12 @@ DEP_CPP_UTIL_M=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_M=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
-	".\core\md5.h"\
-	".\core\util_md5.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
+	".\main\md5.h"\
+	".\main\util_md5.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1971,23 +1971,23 @@ DEP_CPP_UTIL_M=\
 
 !ENDIF 
 
-SOURCE=.\core\util_script.c
+SOURCE=.\main\util_script.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_S=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -1999,18 +1999,18 @@ DEP_CPP_UTIL_S=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_S=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\http_conf_globals.h"\
-	".\core\http_config.h"\
-	".\core\http_core.h"\
-	".\core\http_log.h"\
-	".\core\http_main.h"\
-	".\core\http_protocol.h"\
-	".\core\http_request.h"\
-	".\core\httpd.h"\
-	".\core\util_script.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\http_conf_globals.h"\
+	".\main\http_config.h"\
+	".\main\http_core.h"\
+	".\main\http_log.h"\
+	".\main\http_main.h"\
+	".\main\http_protocol.h"\
+	".\main\http_request.h"\
+	".\main\httpd.h"\
+	".\main\util_script.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	
@@ -2022,9 +2022,9 @@ DEP_CPP_UTIL_S=\
 
 !ENDIF 
 
-SOURCE=.\core\util_snprintf.c
+SOURCE=.\main\util_snprintf.c
 DEP_CPP_UTIL_SN=\
-	".\core\conf.h"\
+	".\main\conf.h"\
 	".\regex\regex.h"\
 	
 
@@ -2050,17 +2050,17 @@ SOURCE=.\os\win32\util_win32.c
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 DEP_CPP_UTIL_W=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 NODEP_CPP_UTIL_W=\
-	".\core\sfio.h"\
+	".\main\sfio.h"\
 	
 
 "$(INTDIR)\util_win32.obj" : $(SOURCE) $(DEP_CPP_UTIL_W) "$(INTDIR)"
@@ -2070,10 +2070,10 @@ NODEP_CPP_UTIL_W=\
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 DEP_CPP_UTIL_W=\
-	".\core\alloc.h"\
-	".\core\buff.h"\
-	".\core\conf.h"\
-	".\core\httpd.h"\
+	".\main\alloc.h"\
+	".\main\buff.h"\
+	".\main\conf.h"\
+	".\main\httpd.h"\
 	".\os\win32\readdir.h"\
 	".\regex\regex.h"\
 	

@@ -109,14 +109,14 @@ static const char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
     if (!t || strcmp(t, "db"))
         return DECLINE_CMD;
 
-    return set_string_slot(cmd, offset, f);
+    return set_file_slot(cmd, offset, f);
 }
 
 static command_rec db_auth_cmds[] = {
-{ "AuthDBUserFile", set_string_slot,
+{ "AuthDBUserFile", set_file_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
     OR_AUTHCFG, TAKE1, NULL },
-{ "AuthDBGroupFile", set_string_slot,
+{ "AuthDBGroupFile", set_file_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
     OR_AUTHCFG, TAKE1, NULL },
 { "AuthUserFile", set_db_slot,

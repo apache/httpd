@@ -260,6 +260,7 @@ API_EXPORT(void) set_module_config (void *conf_vector, module *m, void *val);
 
 API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *, char *, char *);
 API_EXPORT_NONSTD(const char *) set_flag_slot (cmd_parms *, char *, int);
+API_EXPORT_NONSTD(const char *) set_file_slot (cmd_parms *, char *, char *);
 
 /* For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise
