@@ -719,18 +719,25 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
 
+#if defined(HSE_REQ_IS_KEEP_CONN) /* this and a lot more aren't in VC++ 5.0 */
         case HSE_REQ_IS_KEEP_CONN:
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
-        
+#endif
+
+#if defined(HSE_REQ_ASYNC_READ_CLIENT)
         case HSE_REQ_ASYNC_READ_CLIENT:
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
-        
+#endif
+
+#if defined(HSE_REQ_GET_IMPERSONATION_TOKEN)
         case HSE_REQ_GET_IMPERSONATION_TOKEN:  /* Added in ISAPI 4.0 */
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
+#endif
 
+#if defined(HSE_REQ_MAP_URL_TO_PATH_EX)
         case HSE_REQ_MAP_URL_TO_PATH_EX:
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
@@ -773,15 +780,21 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
              */
 
             return TRUE;
-        
+#endif
+
+#if defined(HSE_REQ_ABORTIVE_CLOSE)
         case HSE_REQ_ABORTIVE_CLOSE:
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
-                
+#endif
+
+#if defined(HSE_REQ_GET_CERT_INFO_EX)
         case HSE_REQ_GET_CERT_INFO_EX:  /* Added in ISAPI 4.0 */
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
+#endif
 
+#if defined(HSE_REQ_SEND_RESPONSE_HEADER_EX)
         case HSE_REQ_SEND_RESPONSE_HEADER_EX:  /* Added in ISAPI 4.0 */
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
@@ -832,13 +845,15 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                 ap_rputs(data, r);
 
             return TRUE;
-#if 0
-/* HSE_REQ_CLOSE_CONNACTION and HSE_REQ_IS_CONNECTED are not defined on
- * my system. wgs */
+#endif
+
+#if defined(HSE_REQ_CLOSE_CONNECTION) /* not in VC++ 5.0 or 6.0 */
         case HSE_REQ_CLOSE_CONNECTION:  /* Added after ISAPI 4.0 */
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
+#endif
 
+#if defined(HSE_REQ_IS_CONNECTED) /* not in VC++ 5.0 or 6.0 */
         case HSE_REQ_IS_CONNECTED:  /* Added after ISAPI 4.0 */
             /* Returns True if client is connected c.f. Q188346*/
             return TRUE;
