@@ -97,12 +97,13 @@
  * 20020128 (2.0.31-dev) bump for pre_config hook change
  * 20020218 (2.0.33-dev) bump for AddOutputFilterByType directive
  * 20020220 (2.0.33-dev) bump for scoreboard.h structure change
+ * 20020302 (2.0.33-dev) bump for protocol_filter additions.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20020220
+#define MODULE_MAGIC_NUMBER_MAJOR 20020302
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
