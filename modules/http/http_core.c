@@ -186,6 +186,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->add_default_charset = ADD_DEFAULT_CHARSET_UNSET;
     conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
 
+    conf->filters = apr_make_array(a, 40, sizeof(void *));
     return (void *)conf;
 }
 
@@ -325,6 +326,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 	    conf->add_default_charset_name = new->add_default_charset_name;
 	}
     }
+    conf->filters = apr_append_arrays(a, base->filters, new->filters);
 
     return (void*)conf;
 }
@@ -1872,6 +1874,16 @@ static const char *set_server_alias(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *add_filter(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    core_dir_config *conf = dummy;
+    char **newfilter;
+    
+    newfilter = (char **)apr_push_array(conf->filters);
+    *newfilter = apr_pstrdup(cmd->pool, arg);
+    return NULL;
+}
+
 static const char *add_module_command(cmd_parms *cmd, void *dummy,
 				      const char *arg)
 {
@@ -2685,6 +2697,13 @@ AP_INIT_TAKE12("RLimitNPROC", set_limit_nproc,
 AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
    OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
+/* XXX This should be allowable in .htaccess files, but currently it won't
+ * play well with the Options stuff.  Until that is fixed, I would prefer
+ * to leave it just in the conf file.  Other should feel free to disagree
+ * with me.  Rbb.
+ */
+AP_INIT_ITERATE("AddFilter", add_filter, NULL, ACCESS_CONF,
+   "filters to be run"),
 { NULL }
 };
 
@@ -3111,7 +3130,18 @@ static unsigned short core_port(const request_rec *r)
 
 static void core_register_filter(request_rec *r)
 {
-    ap_add_filter("CORE", NULL, r);
+    int i;
+    core_dir_config *conf = (core_dir_config *)
+                            ap_get_module_config(r->per_dir_config,
+						   &core_module); 
+    char **items = (char **)conf->filters->elts;
+
+    for (i = 0; i < conf->filters->nelts; i++) {
+        char *foobar = items[i];
+        ap_add_filter(foobar, r);
+    }
+
+    ap_add_filter("CORE", r);
 }
 
 static void register_hooks(void)

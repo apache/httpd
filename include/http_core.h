@@ -421,7 +421,8 @@ typedef struct {
     /* Where to find interpreter to run scripts */
     interpreter_source_e script_interpreter_source;
 #endif    
-    
+
+    apr_array_header_t *filters;
 } core_dir_config;
 
 /* Per-server core configuration */
