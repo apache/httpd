@@ -420,8 +420,7 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
 		ic->sar->host_port);
     }
     else {
-	len = apr_snprintf(buf, sizeof(buf), "%pA:%u",
-		ic->sar->host_addr, ic->sar->host_port);
+	len = apr_snprintf(buf, sizeof(buf), "%pI", ic->sar->host_addr);
     }
     if (ic->sar->host_port == 0) {
 	buf[len-1] = '*';
