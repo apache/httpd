@@ -198,6 +198,10 @@
 #define YES   TRUE
 #endif
 
+#ifndef RAND_MAX
+#define RAND_MAX 32767
+#endif
+
 #ifndef LONG_STRING_LEN
 #define LONG_STRING_LEN 2048
 #endif
