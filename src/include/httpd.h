@@ -104,6 +104,11 @@
  */
 
 
+/* -- Internal representation for a HTTP protocol number, e.g., HTTP/1.1 -- */
+
+#define HTTP_VERSION(major,minor) (1000*(major)+(minor))
+
+
 /* -------------- Port number for server running standalone --------------- */
 
 #define DEFAULT_PORT 80

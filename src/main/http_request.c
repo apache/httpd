@@ -982,8 +982,8 @@ void process_request_internal(request_rec *r)
         return;
     }
 
-    if ((!r->hostname && (r->proto_num >= 1001)) ||
-        ((r->proto_num == 1001) && !table_get(r->headers_in, "Host"))) {
+    if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1,1))) ||
+        ((r->proto_num == HTTP_VERSION(1,1)) && !table_get(r->headers_in, "Host"))) {
         /*
          * Client sent us a HTTP/1.1 or later request without telling us the
          * hostname, either with a full URL or a Host: header. We therefore
@@ -1027,8 +1027,8 @@ void process_request_internal(request_rec *r)
         return;
     }
 
-    if (r->proto_num > 1000 && table_get(r->subprocess_env, "downgrade-1.0")) {
-        r->proto_num = 1000;
+    if (r->proto_num > HTTP_VERSION(1,0) && table_get(r->subprocess_env, "downgrade-1.0")) {
+        r->proto_num = HTTP_VERSION(1,0);
     }
 
     /*

@@ -300,7 +300,7 @@ int set_keepalive(request_rec *r)
          find_last_token(r->pool,
                          table_get(r->headers_out, "Transfer-Encoding"),
                          "chunked") ||
-         ((r->proto_num >= 1001) && (r->chunked = 1))) &&
+         ((r->proto_num >= HTTP_VERSION(1,1)) && (r->chunked = 1))) &&
         r->server->keep_alive &&
         (r->server->keep_alive_timeout > 0) &&
         ((r->server->keep_alive_max == 0) ||
@@ -311,7 +311,7 @@ int set_keepalive(request_rec *r)
         (!table_get(r->subprocess_env, "nokeepalive") ||
          table_get(r->headers_in, "Via")) &&
         ((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
-         (r->proto_num >= 1001))
+         (r->proto_num >= HTTP_VERSION(1,1)))
        ) {
         char header[256];
         int left = r->server->keep_alive_max - r->connection->keepalives;
@@ -726,8 +726,11 @@ int read_request_line(request_rec *r)
 
     r->assbackwards = (ll[0] == '\0');
     r->protocol = pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
-    sscanf(r->protocol, "HTTP/%d.%d", &major, &minor);
-    r->proto_num = 1000 * major + minor;
+    if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
+      && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
+	r->proto_num = HTTP_VERSION(major, minor);
+    else
+	r->proto_num = HTTP_VERSION(1,0);
 
     return 1;
 }
@@ -1058,7 +1061,7 @@ void basic_http_header(request_rec *r)
      * kluge around broken browsers when indicated by force-response-1.0
      */
     if (r->proxyreq
-        || (r->proto_num == 1000
+        || (r->proto_num == HTTP_VERSION(1,0)
             && table_get(r->subprocess_env, "force-response-1.0"))) {
 
         protocol = "HTTP/1.0";
@@ -1385,7 +1388,7 @@ API_EXPORT(int) should_client_block(request_rec *r)
     if (!r->read_chunked && (r->remaining <= 0))
         return 0;
 
-    if (r->proto_num >= 1001) { /* sending 100 Continue interim response */
+    if (r->proto_num >= HTTP_VERSION(1,1)) { /* sending 100 Continue interim response */
         bvputs(r->connection->client,
                SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
                NULL);
