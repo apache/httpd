@@ -684,8 +684,12 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 {
     int rc;
     DWORD BytesRead;
-    DWORD CompKey;
     LPOVERLAPPED pol;
+#ifdef _WIN64
+    ULONG_PTR CompKey;
+#else
+    DWORD CompKey;
+#endif
 
     mpm_recycle_completion_context(context);
 
@@ -728,10 +732,11 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
  * Main entry point for the worker threads. Worker threads block in 
  * win*_get_connection() awaiting a connection to service.
  */
-static void worker_main(long thread_num)
+static void worker_main(long *thread_num_)
 {
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
+    long thread_num = *thread_num_;
     ap_sb_handle_t *sbh;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
@@ -867,7 +872,7 @@ void child_main(apr_pool_t *pconf)
     HANDLE *child_handles;
     int rv;
     time_t end_time;
-    int i;
+    long i;
     int cld;
 
     apr_pool_create(&pchild, pconf);
@@ -928,7 +933,7 @@ void child_main(apr_pool_t *pconf)
      */
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Starting %d worker threads.", my_pid, ap_threads_per_child);
-    child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child * sizeof(int));
+    child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child * sizeof(HANDLE));
     apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
 
     while (1) {
@@ -941,7 +946,7 @@ void child_main(apr_pool_t *pconf)
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
             child_handles[i] = (HANDLE) _beginthreadex(NULL, (unsigned)ap_thread_stacksize,
                                                        (LPTHREAD_START_ROUTINE) worker_main,
-                                                       (void *) i, 0, &tid);
+                                                       (void *) &i, 0, &tid);
             if (child_handles[i] == 0) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                              "Child %d: _beginthreadex failed. Unable to create all worker threads. "
@@ -1113,7 +1118,7 @@ void child_main(apr_pool_t *pconf)
                  "Child %d: Waiting for %d worker threads to exit.", my_pid, threads_created);
     end_time = time(NULL) + 180;
     while (threads_created) {
-        rv = wait_for_many_objects(threads_created, child_handles, end_time - time(NULL));
+        rv = wait_for_many_objects(threads_created, child_handles, (DWORD)(end_time - time(NULL)));
         if (rv != WAIT_TIMEOUT) {
             rv = rv - WAIT_OBJECT_0;
             ap_assert((rv >= 0) && (rv < threads_created));
