@@ -221,9 +221,8 @@ proxy_needsdomain(request_rec *r, const char *url, const char *domain)
     /* Split request into user, password, host, port */
     err = proxy_canon_netloc(r->pool, &url_copy, &user, &password, &host, &port);
 
-    if (err != NULL)
-    {
-	log_error(err, r->server);
+    if (err != NULL) {
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, err);
 	return DECLINED;
     }
 
@@ -251,8 +250,10 @@ proxy_needsdomain(request_rec *r, const char *url, const char *domain)
 		       NULL);
 
 	table_set(r->headers_out, "Location", nuri);
-	log_error(pstrcat(r->pool, "Domain missing: ", r->uri, " sent to ", nuri,
-		      ref ? " from " : NULL, ref, NULL), r->server);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    pstrcat(r->pool, "Domain missing: ", r->uri, " sent to ", nuri,
+			    ref ? " from " : NULL, ref, NULL));
+
 	return REDIRECT;
     }
 }
@@ -307,15 +308,14 @@ proxy_handler(request_rec *r)
 	for (direct_connect=ii=0; ii < conf->dirconn->nelts && !direct_connect; ii++)
 	{
 	    direct_connect = list[ii].matcher (&list[ii], r);
-	    /*log_error("URI and NoProxy:", r->server);*/
-	    /*log_error(r->uri, r->server);*/
-	    /*log_error(list[ii].name, r->server);*/
+	    aplog_error(APLOG_MARK, APLOG_DEBUG, r->server,
+			"URI and NoProxy: %s: %s", r->uri, list[ii].name);
 	}
 #if DEBUGGING
 	{
 	    char msg[256];
 	    sprintf (msg, (direct_connect)?"NoProxy for %s":"UseProxy for %s", r->uri);
-	    log_error(msg, r->server);
+	    aplog_error(APLOG_MARK, APLOG_DEBUG, r->server, msg);
 	}
 #endif
     }

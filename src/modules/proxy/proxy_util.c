@@ -831,7 +831,7 @@ proxy_get_host_of_request(request_rec *r)
     err = proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	log_error(err, r->server);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, err);
 
     r->hostname = host;
 

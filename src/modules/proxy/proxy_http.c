@@ -223,7 +223,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     sock = psocket(pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1)
     {
-	log_error("proxy: error creating socket", r->server);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "proxy: error creating socket");
 	return SERVER_ERROR;
     }
     
