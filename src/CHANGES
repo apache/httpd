@@ -3,6 +3,10 @@ Changes with Apache 1.2
   *) Added undocumented perl SSI mechanism for -DUSE_PERL_SSI and mod_perl.
      [Rob Hartill]
 
+  *) Proxy needs to use hard_timeout instead of soft_timeout when it is
+     reading from one buffer and writing to another, at least until it has
+     a custom timeout handler.  [Roy Fielding and Petr Lampa]
+
   *) Fixed problem on Irix with servers hanging in IdentityCheck,
      apparently due to a mismatch between sigaction and setjmp.
      [Roy Fielding] PR#502
