@@ -246,7 +246,7 @@ static void clean_var_rec(var_rec *mime_info)
     mime_info->sub_req = NULL;
     mime_info->type_name = "";
     mime_info->file_name = "";
-    mime_info->content_encoding = "";
+    mime_info->content_encoding = NULL;
     mime_info->content_languages = NULL;
     mime_info->content_charset = "";
     mime_info->description = "";
