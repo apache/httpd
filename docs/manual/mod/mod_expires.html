@@ -154,6 +154,13 @@
   >ExpiresDefault</A>
   directive.
   </P>
+  <P>
+  You can also specify the expiration time calculation using an
+  <A
+   HREF="#AltSyn"
+  >alternate syntax</A>,
+  described later in this document.
+  </P>
   <HR>
   <H2><A NAME="expiresdefault">
    ExpiresDefault directive
@@ -178,8 +185,89 @@
    HREF="#expiresbytype"
   >ExpiresByType</A>
   directive.  See the description of that directive for details about
-  the syntax of the argument.
+  the syntax of the argument, and the
+  <A
+   HREF="#AltSyn"
+  >alternate syntax</A>
+  description as well.
   </P>
+  <HR>
+  <H2>
+   <A NAME="AltSyn">Alternate Interval Syntax</A>
+  </H2>
+  <P>
+  The 
+  <A
+   HREF="#expiresdefault"
+  ><SAMP>ExpiresDefault</SAMP></A>
+  and
+  <A
+   HREF="#expiresbytype"
+  ><SAMP>ExpiresByType</SAMP></A>
+  directives can also be defined in a more readable syntax of the form:
+  </P>
+  <DL>
+   <DD><CODE>ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt; &lt;type&gt;}*"
+    <BR>
+    ExpiresByType type/encoding "&lt;base&gt; [plus] {&lt;num&gt; &lt;type&gt;}*"</CODE>
+   </DD>
+  </DL>
+  <P>
+  where &lt;base&gt; is one of:
+  </P>
+  <MENU>
+   <LI><SAMP>access</SAMP>  
+   </LI>
+   <LI><SAMP>now</SAMP> (equivalent to '<SAMP>access</SAMP>')
+   </LI>
+   <LI><SAMP>modification</SAMP>
+   </LI>
+  </MENU>
+  </P>
+  <P>
+  The '<SAMP>plus</SAMP>' keyword is optional.  &lt;num&gt; should be an
+  integer value [acceptable to <SAMP>atoi()</SAMP>], and &lt;type&gt;
+  is one of:
+  </P>
+  <MENU>
+   <LI><SAMP>years</SAMP>
+   </LI>
+   <LI><SAMP>months</SAMP>
+   </LI>
+   <LI><SAMP>weeks</SAMP>
+   </LI>
+   <LI><SAMP>days</SAMP>
+   </LI>
+   <LI><SAMP>hours</SAMP>
+   </LI>
+   <LI><SAMP>minutes</SAMP>
+   </LI>
+   <LI><SAMP>seconds</SAMP>
+   </LI>
+  </MENU>
+  <P>
+  For example, any of the following directives can be used to make
+  documents expire 1 month after being accessed, by default:
+  </P>
+  <DL>
+   <DD><CODE>ExpiresDefault "access plus 1 month"
+    <BR>
+    ExpiresDefault "access plus 4 weeks"
+    <BR>
+    ExpiresDefault "access plus 30 days"
+   </DD>
+  </DL>
+  <P>
+  The expiry time can be fine-tuned by adding several '&lt;num&gt; &lt;type&gt;'
+  clauses:
+  </P>
+  <DL>
+   <DD><CODE>ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+    <BR>
+    ExpiresByType image/gif "modification plus 5 hours 3 minutes"
+   </DD>
+  </DL>
+
   <!--#include virtual="footer.html" -->
  </BODY>
 </HTML>
