@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/09 19:25:13 $]
+Last modified at [$Date: 2004/11/10 12:04:50 $]
 
 Release:
 
@@ -71,18 +71,9 @@ Contributors looking for a mission:
 
 RELEASE SHOWSTOPPERS:
 
-    *) mod_rewrite: Regression since 2.0.52 in QUERY_STRING handling
-       for [P] rules.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c?r1=1.262&r2=1.263
-       +1: jorton, nd, wrowe
-
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    *) SECURITY: CAN-2004-0942 Fix for memory consumption DoS.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.158&r2=1.159
-       +1: stoddard, jorton, nd
 
     *) util_ldap: Add the util_ldap_cache_getuserdn() API to allow 
        non-LDAP authentication modules the ability to use the util_ldap 
@@ -97,20 +88,6 @@ PATCHES TO BACKPORT FROM 2.1
          modules/aaa/mod_authnz_ldap.c: r1.7
 	 docs/manual/mod/mod_authnz_ldap.xml: r1.3
        +1: bnicholes, wrowe
-
-    *) mod_ssl: Fix and prevent an SSLCipherSuite bypass by resuming a
-       session during a renegotiation.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_kernel.c?r1=1.110&r2=1.111
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_init.c?r1=1.128&r2=1.129
-       PR: 31505
-       +1: jorton, pquerna, minfrin, wrowe
-
-    *) mod_ssl: Fail to configure when an SSL proxy is configured with
-       incomplete client cert keypair, rather than segfaulting at
-       runtime.
-       http://cvs.apache.org/viewcvs/httpd-2.0/modules/ssl/ssl_engine_init.c.diff?r1=1.118&r2=1.119
-       PR: 24030
-       +1: jorton, minfrin, jerenkrantz, wrowe
 
     *) mod_ssl: Fix an possible NULL pointer dereference in some configs.
        http://nagoya.apache.org/bugzilla/showattachment.cgi?attach_id=13182

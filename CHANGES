@@ -1,5 +1,18 @@
 Changes with Apache 2.0.53
 
+  *) SECURITY: CAN-2004-0942 (cve.mitre.org):
+     Fix for memory consumption DoS in handling of MIME folded request
+     headers.  [Joe Orton]
+
+  *) SECURITY: CAN-2004-0885 (cve.mitre.org)
+     mod_ssl: Fix a bug which allowed an SSLCipherSuite setting to be
+     bypassed during an SSL renegotiation.  PR 31505.  
+     [Hartmut Keil <Hartmut.Keil adnovum.ch>, Joe Orton]
+
+  *) mod_ssl: Fail at startup rather than segfault at runtime if a
+     client cert is configured with an encrypted private key.
+     PR 24030.  [Joe Orton]
+
   *) apxs: fix handling of -Wc/-Wl and "-o mod_foo.so". PR 31448
      [Joe Orton]
 
