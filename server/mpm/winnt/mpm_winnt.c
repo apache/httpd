@@ -671,6 +671,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 static void winnt_accept(void *listen_socket) 
 {
     static int num_completion_contexts = 0;
+    static int requests_this_child = 0;
     PCOMP_CONTEXT pCompContext;
     DWORD BytesRead;
     SOCKET nlsd;
@@ -679,6 +680,9 @@ static void winnt_accept(void *listen_socket)
     nlsd = (SOCKET) listen_socket;
 
     while (!shutdown_in_progress) {
+        if (ap_max_requests_per_child && (requests_this_child > ap_max_requests_per_child)) {
+            break;
+	}
         pCompContext = NULL;
         /* Grab a context off the queue */
         apr_lock_acquire(qlock);
@@ -778,6 +782,12 @@ static void winnt_accept(void *listen_socket)
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
                                    &pCompContext->Overlapped);
+        requests_this_child++;
+    }
+
+    if (!shutdown_in_progress) {
+        /* Yow, hit an irrecoverable error! Tell the child to die. */
+        SetEvent(exit_event);
     }
 }
 static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
