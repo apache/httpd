@@ -666,7 +666,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec_dir->elts;
     int num_sec = sconf->sec_dir->nelts;
     int sec_idx;
-    unsigned int seg;
+    unsigned int seg, startseg;
     int res;
     ap_conf_vector_t *entry_config;
     core_dir_config *entry_core;
@@ -728,7 +728,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * sec_idx keeps track of which section we're on, since sections are
      *     ordered by number of segments. See core_reorder_directories 
      */
-    seg = ap_count_dirs(r->filename);
+    startseg = seg = ap_count_dirs(r->filename);
     sec_idx = 0;
     do {
         int overrides_here;
@@ -737,7 +737,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         
         /* We have no trailing slash, but we sure would appreciate one...
          */
-        if (!sec_idx && r->filename[strlen(r->filename)-1] != '/')
+        if (sec_idx && r->filename[strlen(r->filename)-1] != '/')
             strcat(r->filename, "/");
 
         /* Begin *this* level by looking for matching <Directory> sections
@@ -796,7 +796,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
         /* That temporary trailing slash was useful, now drop it.
          */
-        if (seg > 1)
+        if (seg > startseg)
             r->filename[strlen(r->filename) - 1] = '\0';
 
         /* Time for all good things to come to an end?
