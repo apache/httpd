@@ -187,53 +187,11 @@ static void restart(int sig)
     ap_start_restart(1);
 }
 
-static ap_listen_rec *old_listeners;
-static ap_listen_rec *head_listener;
-static int setup_listeners(pool *pconf, server_rec *s)
-{
-    ap_listen_rec *lr;
-    int num_listeners = 0;
-
-    if (ap_listen_open(pconf, s->port)) {
-       return 0;
-    }
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        num_listeners++;
-    }
-    return num_listeners;
-}
-
-static int find_listener(ap_listen_rec *lr)
-{
-    ap_listen_rec *or;
-
-    for (or = old_listeners; or; or = or->next) {
-	if (!memcmp(&or->local_addr, &lr->local_addr, sizeof(or->local_addr))) {
-//	    or->used = 1;
-	    return or->fd;
-	}
-    }
-    return -1;
-}
-
-
-static void close_unused_listeners(void)
-{
-    ap_listen_rec *or, *next;
-
-    for (or = old_listeners; or; or = next) {
-	next = or->next;
-//	if (!or->used)
-	    closesocket(or->fd);
-	free(or);
-    }
-    old_listeners = NULL;
-}
-
 /*
  * Find a listener which is ready for accept().  This advances the
  * head_listener global.
  */
+static ap_listen_rec *head_listener;
 static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
 //static ap_listen_rec *find_ready_listener(fd_set * main_fds)
 {
@@ -249,6 +207,90 @@ static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
     } while (lr != head_listener);
     return NULL;
 }
+static int setup_listeners(pool *pconf, server_rec *s)
+{
+    ap_listen_rec *lr;
+    int num_listeners = 0;
+
+    if (ap_listen_open(pconf, s->port)) {
+       return 0;
+    }
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        num_listeners++;
+    }
+
+    /* Should we turn the list into a ring ?*/
+    head_listener = ap_listeners;
+
+    return num_listeners;
+}
+
+static int setup_inherited_listeners(pool *p, server_rec *s)
+{
+    WSAPROTOCOL_INFO WSAProtocolInfo;
+    HANDLE pipe;
+    ap_listen_rec *lr;
+    DWORD BytesRead;
+    int num_listeners = 0;
+    int fd;
+
+    /* Setup the listeners */
+    listenmaxfd = -1;
+    FD_ZERO(&listenfds);
+
+    /* Set up a default listener if necessary */
+    if (ap_listeners == NULL) {
+        struct sockaddr_in local_addr;
+        ap_listen_rec *new;
+        local_addr.sin_family = AF_INET;
+        local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
+        new = malloc(sizeof(ap_listen_rec));
+        new->local_addr = local_addr;
+        new->fd = -1;
+        new->next = ap_listeners;
+        ap_listeners = new;
+    }
+
+    /* Open the pipe to the parent process to receive the inherited socket
+     * data. The sockets have been set to listening in the parent process.
+     */
+    pipe = GetStdHandle(STD_INPUT_HANDLE);
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
+                      &BytesRead, (LPOVERLAPPED) NULL)) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                         "setup_inherited_listeners: Unable to read socket data from parent");
+            exit(1);
+        }
+        fd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
+                       &WSAProtocolInfo, 0, 0);
+        if (fd == INVALID_SOCKET) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                         "setup_inherited_listeners: WSASocket failed to get inherit the socket.");
+            exit(1);
+        }
+        if (fd >= 0) {
+            FD_SET(fd, &listenfds);
+            if (fd > listenmaxfd)
+                listenmaxfd = fd;
+        }
+        ap_note_cleanups_for_socket(p, fd);
+    }
+    CloseHandle(pipe);
+
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        num_listeners++;
+    }
+
+    /* turn the list into a ring ?*/
+//    lr->next = ap_listeners;
+    head_listener = ap_listeners;
+
+    return num_listeners;
+}
+
 
 /*
  * Signalling Apache on NT.
@@ -349,6 +391,12 @@ static void sock_disable_nagle(int s) /* ZZZ abstract */
     }
 }
 
+API_EXPORT(int) ap_graceful_stop_signalled(void)
+{
+    /* XXX - Does this really work? - Manoj */
+    return is_graceful;
+}
+
 
 /**********************************************************************
  * Multithreaded implementation
@@ -421,6 +469,27 @@ static void sock_disable_nagle(int s) /* ZZZ abstract */
  * connection already in progress (in child_sub_main()). We'd have to
  * get that to poll on the exit event. 
  */
+int service_init()
+{
+}
+
+/*
+int service_init()
+{
+    common_init();
+ 
+    ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
+    if (ap_registry_get_service_conf(pconf, ap_server_confname, sizeof(ap_server_confname),
+                                     ap_server_argv0))
+        return FALSE;
+
+    ap_setup_prelinked_modules();
+    server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
+    ap_log_pid(pconf, ap_pid_fname);
+    post_parse_init();
+    return TRUE;
+}
+*/
 
 /*
  * Definition of jobs, shared by main and worker threads.
@@ -584,7 +653,7 @@ static void child_sub_main(int child_num)
 
     while (1) {
 	BUFF *conn_io;
-	request_rec *r;
+//	request_rec *r;
 
 	/*
 	 * (Re)initialize this child to a pre-connection state.
@@ -657,8 +726,8 @@ static void child_sub_main(int child_num)
         
 	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
                                          (struct sockaddr_in *) &sa_client,
-                                         (struct sockaddr_in *) &sa_server,
-                                         child_num, 0); /* Set my_thread_num to 0 for now */
+                                         (struct sockaddr_in *) &sa_server);//,
+            //child_num, 0); /* Set my_thread_num to 0 for now */
         
         ap_process_connection(current_conn);
     }        
@@ -750,70 +819,6 @@ static void setup_signal_names(char *prefix)
 	"%s_restart", signal_name_prefix);    
 }
 
-static void setup_inherited_listeners(pool *p)
-{
-    HANDLE pipe;
-    ap_listen_rec *lr;
-    int fd;
-    WSAPROTOCOL_INFO WSAProtocolInfo;
-    DWORD BytesRead;
-
-    /* Open the pipe to the parent process to receive the inherited socket
-     * data. The sockets have been set to listening in the parent process.
-     */
-    pipe = GetStdHandle(STD_INPUT_HANDLE);
-
-    /* Setup the listeners */
-    listenmaxfd = -1;
-    FD_ZERO(&listenfds);
-    lr = ap_listeners;
-
-    FD_ZERO(&listenfds);
-
-    for (;;) {
-	fd = find_listener(lr);
-	if (fd < 0) {
-            if (!ReadFile(pipe, 
-                          &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO),
-                          &BytesRead,
-                          (LPOVERLAPPED) NULL)){
-                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
-                             "setup_inherited_listeners: Unable to read socket data from parent");
-                exit(1);
-            }
-            fd = WSASocket(FROM_PROTOCOL_INFO,
-                           FROM_PROTOCOL_INFO,
-                           FROM_PROTOCOL_INFO,
-                           &WSAProtocolInfo,
-                           0,
-                           0);
-            if (fd == INVALID_SOCKET) {
-                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
-                             "setup_inherited_listeners: WSASocket failed to get inherit the socket.");
-                exit(1);
-            }
-//            APD2("setup_inherited_listeners: WSASocket() returned socket %d", fd);
-	}
-	else {
-	    ap_note_cleanups_for_socket(p, fd);
-	}
-	if (fd >= 0) {
-	    FD_SET(fd, &listenfds);
-	    if (fd > listenmaxfd)
-		listenmaxfd = fd;
-	}
-	lr->fd = fd;
-	if (lr->next == NULL)
-	    break;
-	lr = lr->next;
-    }
-    /* turn the list into a ring */
-    lr->next = ap_listeners;
-    head_listener = ap_listeners;
-    close_unused_listeners();
-    CloseHandle(pipe);
-    return;
-}
 
 /*
  * worker_main() is main loop for the child process. The loop in
@@ -853,7 +858,7 @@ void worker_main(void)
     my_pid = getpid();
 
 
-    ap_restart_time = time(NULL);
+//    ap_restart_time = time(NULL);
 
 //    reinit_scoreboard(pconf);
 
@@ -886,7 +891,7 @@ void worker_main(void)
         setup_listeners(pconf, server_conf);
     } else {
         /* Get listeners from the parent process */
-        setup_inherited_listeners(pconf);
+        setup_inherited_listeners(pconf, server_conf);
     }
 
     if (listenmaxfd == -1) {
@@ -1095,20 +1100,17 @@ static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *
 //    APD4("cleanup_processes: removed child in slot %d handle %d, max=%d", position, handle, *processes);
 }
 
-static int create_process(pool *p, HANDLE *handles, HANDLE *events, 
-                          int *processes, int *child_num, char *kill_event_name)
+static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *processes)
 {
 
-    int rv, i;
-    HANDLE kill_event;
+    int rv;
     char buf[1024];
-    char exit_event_name[40]; /* apPID_C# */
     char *pCommand;
     char *pEnvBlock;
 
     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
     PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
-    LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
+
     ap_listen_rec *lr;
     DWORD BytesWritten;
     HANDLE hPipeRead = NULL;
@@ -1134,17 +1136,6 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
     
-    /* Create the exit event (apPID_C#). Parent signals this event to tell the
-     * child to exit 
-     */
-    ap_snprintf(exit_event_name, sizeof(exit_event_name), "%s_C%d", kill_event_name, ++(*child_num));
-    kill_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
-    if (!kill_event) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                     "Parent: Could not create exit event for child process");
-        return -1;
-    }
-    
 //    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, ap_server_confname);  
     pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, SERVER_CONFIG_FILE);  
 
@@ -1155,7 +1146,7 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
 
-    pEnvBlock = ap_psprintf(p, "AP_PARENT_PID=%d\0AP_CHILD_NUM=%d\0\0",parent_pid,*child_num);
+    pEnvBlock = ap_psprintf(p, "AP_PARENT_PID=%d\0\0",parent_pid);
 
     /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
      * parent will write the socket data to the child on this pipe.
@@ -1168,9 +1159,9 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     si.hStdInput   = hPipeRead;
 
     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
-                       TRUE,      /* Inherit handles */
-                       0,         /* Creation flags */
-                       pEnvBlock, /* Environment block */
+                       TRUE,               /* Inherit handles */
+                       CREATE_SUSPENDED,   /* Creation flags */
+                       pEnvBlock,          /* Environment block */
                        NULL,
                        &si, &pi)) {
         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
@@ -1185,15 +1176,30 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         return -1;
     }
     else {
+        HANDLE kill_event;
+        LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
+
         ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
                      "Parent: Created child process %d", pi.dwProcessId);
 
+        /* Create the exit_event, apCHILD_PID */
+        kill_event = CreateEvent(NULL, TRUE, FALSE, 
+                                 ap_psprintf(pconf,"ap%d", pi.dwProcessId));
+        if (!kill_event) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                         "Parent: Could not create exit event for child process");
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            return -1;
+        }
+        
         /* Assume the child process lives. Update the process and event tables */
         handles[*processes] = pi.hProcess;
         events[*processes] = kill_event;
         (*processes)++;
 
         /* We never store the thread's handle, so close it now. */
+        ResumeThread(pi.hThread);
         CloseHandle(pi.hThread);
 
         /* Run the chain of open sockets. For each socket, duplicate it 
@@ -1290,7 +1296,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
      */
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
-                           &current_live_processes, &child_num, signal_prefix_string) < 0) {
+                           &current_live_processes) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
                          "master_main: create child process failed. Exiting.");
             shutdown_pending = 1;
@@ -1388,8 +1394,6 @@ die_now:
             ap_assert(rv != WAIT_FAILED);
             cld = rv - WAIT_OBJECT_0;
             ap_assert(rv < current_live_processes);
-//            APD4("main_process: child in #%d handle %d died, left=%d", 
-//                 rv, process_handles[rv], current_live_processes);
             cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
         }
         for (i = 0; i < current_live_processes; i++) {
@@ -1445,11 +1449,9 @@ static void winnt_post_config(pool *pconf, pool *plog, pool *ptemp, server_rec* 
 API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
 {
 
-    int child_num;
     char* exit_event_name;
 
-    int i;
-    time_t tmstart;
+//    time_t tmstart;
     HANDLE shutdown_event;	/* used to signal shutdown to parent */
     HANDLE restart_event;	/* used to signal a restart to parent */
 
@@ -1458,15 +1460,13 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
 
     if ((parent_pid != my_pid) || one_process) {
         /* Child process */
-        child_num = atoi(getenv("AP_CHILD_NUM"));
-        exit_event_name = ap_psprintf(pconf, "ap_%d_C%d", parent_pid, child_num);
+        exit_event_name = ap_psprintf(pconf, "ap%d", my_pid);
         exit_event = open_event(exit_event_name);
-        setup_signal_names(ap_psprintf(pconf,"ap_%d", parent_pid));
+        setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         start_mutex = ap_open_mutex(signal_name_prefix);
         ap_assert(start_mutex);
 
         worker_main();
-
 
         destroy_event(exit_event);
     }
@@ -1480,7 +1480,7 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
         if (!restart) {
             /* service_set_status(SERVICE_START_PENDING);*/
 
-            setup_signal_names(ap_psprintf(pconf,"ap_%d", parent_pid));
+            setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         
             /* Create shutdown event, apPID_shutdown, where PID is the parent 
              * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
@@ -1510,7 +1510,8 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-            start_mutex = ap_create_mutex(signal_prefix_string);        
+            start_mutex = ap_create_mutex(signal_name_prefix);        
+//            start_mutex = ap_create_mutex(ap_psprintf(pconf,"ap%d", parent_pid));
             /* TOTD: Add some code to detect failure */
         }
 
@@ -1632,6 +1633,67 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
     ap_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
     return NULL;
+}
+/*
+static int
+map_rv(int rv)
+{
+    switch(rv)
+    {
+    case WAIT_OBJECT_0:
+    case WAIT_ABANDONED:
+        return(MULTI_OK);
+    case WAIT_TIMEOUT:
+        return(MULTI_TIMEOUT);
+    case WAIT_FAILED:
+        return(MULTI_ERR);
+    default:
+        assert(0);
+    }
+
+    assert(0);
+    return(0);
+}
+*/
+
+/*
+API_EXPORT(mutex *) ap_open_mutex(char *name)
+{
+    return(OpenMutex(MUTEX_ALL_ACCESS, FALSE, name));
+}
+*/
+
+struct ap_thread_mutex {
+    HANDLE _mutex;
+};
+
+
+API_EXPORT(ap_thread_mutex *) ap_thread_mutex_new(void)
+{
+    ap_thread_mutex *mtx;
+
+    mtx = malloc(sizeof(ap_thread_mutex));
+    mtx->_mutex = CreateMutex(NULL, FALSE, NULL);
+    return mtx;
+}
+
+
+API_EXPORT(void) ap_thread_mutex_lock(ap_thread_mutex *mtx)
+{
+    int rv;
+    rv = WaitForSingleObject(mtx->_mutex, INFINITE);
+}
+
+
+API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *mtx)
+{
+    ReleaseMutex(mtx->_mutex);
+}
+
+API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
+{
+    CloseHandle(mtx->_mutex);
+    free(mtx);
 }
 
 static const command_rec winnt_cmds[] = {
