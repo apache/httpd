@@ -112,15 +112,6 @@ PATCHES TO BACKPORT FROM TRUNK:
        svn rev 124104
        +1: minfrin
 
-    *) Win32: Eliminate a very ugly race - the parallel starting 
-       threads were picking up thread identifiers other than their
-       own.  Because the limit of threads is an int, stuffing the 
-       int into the void* value is a safe argument convention.
-
-       http://svn.apache.org/viewcvs.cgi?rev=123899&view=rev
-
-       +1: stoddard
-
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
        svn rev 126565
