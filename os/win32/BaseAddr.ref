@@ -60,3 +60,4 @@ mod_authz_default    0x6FB20000    0x00010000
 mod_authz_groupfile  0x6FB10000    0x00010000
 mod_authz_host       0x6FB00000    0x00010000
 mod_authz_user       0x6FAF0000    0x00010000
+mod_logio            0x6FAE0000    0x00010000

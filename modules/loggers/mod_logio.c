@@ -81,6 +81,7 @@
 #include "httpd.h"
 #include "http_core.h"
 #include "http_config.h"
+#include "http_connection.h"
 #include "http_protocol.h"
 
 module AP_MODULE_DECLARE_DATA logio_module;
@@ -182,7 +183,7 @@ static apr_status_t logio_out_filter(ap_filter_t *f,
  * The hooks...
  */
 
-static int logio_pre_conn(conn_rec *c) {
+static int logio_pre_conn(conn_rec *c, void *csd) {
     logio_config_t *cf = apr_pcalloc(c->pool, sizeof(*cf));
 
     ap_set_module_config(c->conn_config, &logio_module, cf);
