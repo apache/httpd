@@ -848,14 +848,10 @@ static int check_signal(int signum)
     return 0;
 }
 
-/* XXX unfortunate issue:
- *     with apachectl restart (not graceful), previous generation dies
- *     abruptly with no chance to clean up scoreboard entries; when new
- *     generation is started, processes can loop forever in start_threads()
- *     waiting for scoreboard entries for threads of prior generation to
- *     get cleaned up...  but it will never happen and the new generation
- *     child looping here, waiting for scoreboard to get cleaned up, is
- *     wasted
+/* XXX under some circumstances not understood, children can get stuck
+ *     in start_threads forever trying to take over slots which will
+ *     never be cleaned up; for now there is an APLOG_DEBUG message issued
+ *     every so often when this condition occurs
  */
 static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
 {
@@ -868,6 +864,8 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     apr_status_t rv;
     int i = 0;
     int threads_created = 0;
+    int loops;
+    int prev_threads_created;
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
@@ -898,6 +896,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
     apr_os_thread_get(&listener_os_thread, ts->listener);
+    loops = prev_threads_created = 0;
     while (1) {
         /* ap_threads_per_child does not include the listener thread */
         for (i = 0; i < ap_threads_per_child; i++) {
@@ -941,6 +940,16 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         }
         /* wait for previous generation to clean up an entry */
         apr_sleep(1 * APR_USEC_PER_SEC);
+        ++loops;
+        if (loops % 120 == 0) { /* every couple of minutes */
+            if (prev_threads_created == threads_created) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                             "child %" APR_PID_T_FMT " isn't taking over "
+                             "slots very quickly (%d of %d)",
+                             ap_my_pid, threads_created, ap_threads_per_child);
+            }
+            prev_threads_created = threads_created;
+        }
     }
     
     /* What state should this child_main process be listed as in the 
