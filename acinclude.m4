@@ -75,6 +75,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(LIBTOOL)
   APACHE_SUBST(SHELL)
   APACHE_SUBST(MODULE_DIRS)
+  APACHE_SUBST(PORT)
 
   abs_srcdir="`(cd $srcdir && pwd)`"
 
@@ -324,6 +325,11 @@ AC_DEFUN(APACHE_MODULE,[
 dnl
 dnl APACHE_LAYOUT(configlayout, layoutname)
 AC_DEFUN(APACHE_LAYOUT,[
+  if test ! -f $srcdir/../config.layout; then
+    echo "** Error: Layout file $srcdir/../config.layout not found"
+    echo "** Error: Cannot use undefined layout '$LAYOUT'"
+    exit 1
+  fi
   pldconf=config.pld
   changequote({,})
   sed -e "1,/[ 	]*<[lL]ayout[ 	]*$2[ 	]*>[ 	]*/d" \

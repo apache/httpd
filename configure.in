@@ -107,6 +107,10 @@ APACHE_EBCDIC
 AC_ARG_WITH(optim,[  --with-optim="FLAGS"      compiler optimisation flags],
         [OPTIM="$withval"])
 
+AC_ARG_WITH(port,[  --with-port=PORT        Port on which to listen (default is 80)],
+        [PORT="$withval"],
+	[PORT=80])
+
 AC_ARG_WITH(debug,[  --with-debug            Turn on debugging and compile time warnings],
         [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall"; else CFLAGS="$CFLAGS -g"; fi])
 
