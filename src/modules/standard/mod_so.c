@@ -114,7 +114,7 @@ http://developer.netscape.com/library/documentation/enterprise/unix/svrplug.htm#
 */
 
 /*
- * Module definition information
+ * Module definition information used by Configure
  *
  * MODULE-DEFINITION-START
  * Name: so_module
@@ -139,43 +139,6 @@ http://developer.netscape.com/library/documentation/enterprise/unix/svrplug.htm#
 #include "http_config.h"
 #include "http_log.h"
 
-     /* Os-specific stuff that goes in conf.h */
-
-#if defined(LINUX) || defined(__FreeBSD__) || defined(SOLARIS) || \
-    defined(__bsdi__) || defined(IRIX)
-#define HAS_DLFCN
-#endif
-
-#if defined(__FreeBSD__)
-#define NEED_UNDERSCORE_SYM
-#endif
-
-     /* OSes that don't support dlopen */
-#if defined(UW) || defined(ULTRIX)
-#define NO_DL
-#endif
-
-     /* Start of real module */
-#ifdef HAS_DLFCN
-#include <dlfcn.h>
-#else
-void * dlopen (__const char * __filename, int __flag);
-__const char * dlerror (void);
-void * dlsym (void *, __const char *);
-int dlclose (void *);
-#endif
-
-#ifndef RTLD_NOW
-/* 
- * probably on an older system that doesn't support RTLD_NOW or RTLD_LAZY.
- * The below define is a lie since we are really doing RTLD_LAZY since the
- * system doesn't support RTLD_NOW.
- */
-#define RTLD_NOW 1
-#endif
-
-static int have_symbol_table = 0;
-
 #ifndef NO_DLOPEN
 
 /* This is the cleanup for a loaded DLL. It unloads the module.
@@ -195,7 +158,7 @@ void unload_module(module *modp)
 
     /* The Linux manpage doesn't give any way to check the success of
      * dlclose() */
-    dlclose(modp->dynamic_load_handle);
+    os_dl_unload((os_dl_module_handle_type)modp->dynamic_load_handle);
 
     aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"unloaded module %s", mod_name);
@@ -211,8 +174,21 @@ void unload_file(void *handle)
 {
     /* The Linux manpage doesn't give any way to check the success of
      * dlclose() */
-    dlclose(handle);
+    os_dl_unload((os_dl_module_handle_type)handle);
 }
+
+#ifdef WIN32
+/* This is a cleanup which does nothing. On Win32 using the API-provided
+ * null_cleanup() function gives a "pointers to functions 
+ * with different attributes" error during compilation.
+ */
+void mod_so_null_cleanup(module *modp)
+{
+    /* This function left intentionally blank */
+}
+#else
+# define mod_so_null_cleanup null_cleanup
+#endif
 
 /* load_module is called for the directive LoadModule 
  */
@@ -223,11 +199,12 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
     module *modp;
     const char *szModuleFile=server_root_relative(cmd->pool, filename);
 
-    if (!(modhandle = dlopen(szModuleFile, RTLD_NOW)))
+    if (!(modhandle = os_dl_load(szModuleFile)))
       {
-	const char *my_error = dlerror();
+	const char *my_error = os_dl_error();
 	return pstrcat (cmd->pool, "Cannot load ", szModuleFile,
-			" into server: ", my_error,
+			" into server: ", 
+			my_error ? my_error : "(reason unknown)",
 			NULL);
       }
  
@@ -238,9 +215,9 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
     modname = pstrcat(cmd->pool, "_", modname, NULL);
 #endif
 
-    if (!(modp = (module *)(dlsym (modhandle, modname)))) {
+    if (!(modp = (module *)(os_dl_sym (modhandle, modname)))) {
 	return pstrcat (cmd->pool, "Can't find module ", modname,
-			" in file ", filename, ":", dlerror(), NULL);
+			" in file ", filename, ":", os_dl_error(), NULL);
     }
 	
     modp->dynamic_load_handle = modhandle;
@@ -252,7 +229,7 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
      * DLL to be unloaded.
      */
     register_cleanup(cmd->pool, modp, 
-		     (void (*)(void*))unload_module, null_cleanup);
+		     (void (*)(void*))unload_module, mod_so_null_cleanup);
 
     /* Alethea Patch (rws,djw2) - need to run configuration functions
        in new modules */
@@ -278,16 +255,18 @@ static const char *load_file (cmd_parms *cmd, void *dummy, char *filename)
 
     file = server_root_relative(cmd->pool, filename);
     
-    if (!(handle = dlopen(file, 1))) {
-	const char *my_error = dlerror();
+    if (!(handle = os_dl_load(file))) {
+	const char *my_error = os_dl_error();
 	return pstrcat (cmd->pool, "Cannot load ", filename, 
-			" into server:", my_error, NULL);
+			" into server:", 
+			my_error ? my_error : "(reason unknown)",
+			NULL);
     }
     
     aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded file %s", filename);
 
-    register_cleanup(cmd->pool, handle, unload_file, null_cleanup);
+    register_cleanup(cmd->pool, handle, unload_file, mod_so_null_cleanup);
 
     return NULL;
 }

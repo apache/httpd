@@ -73,7 +73,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_autoindex.obj"
 	-@erase "$(INTDIR)\mod_cgi.obj"
 	-@erase "$(INTDIR)\mod_dir.obj"
-	-@erase "$(INTDIR)\mod_dll.obj"
 	-@erase "$(INTDIR)\mod_env.obj"
 	-@erase "$(INTDIR)\mod_imap.obj"
 	-@erase "$(INTDIR)\mod_include.obj"
@@ -82,6 +81,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_mime.obj"
 	-@erase "$(INTDIR)\mod_negotiation.obj"
 	-@erase "$(INTDIR)\mod_setenvif.obj"
+	-@erase "$(INTDIR)\mod_so.obj"
 	-@erase "$(INTDIR)\mod_userdir.obj"
 	-@erase "$(INTDIR)\modules.obj"
 	-@erase "$(INTDIR)\multithread.obj"
@@ -143,7 +143,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_autoindex.obj" \
 	"$(INTDIR)\mod_cgi.obj" \
 	"$(INTDIR)\mod_dir.obj" \
-	"$(INTDIR)\mod_dll.obj" \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
@@ -152,6 +151,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_setenvif.obj" \
+	"$(INTDIR)\mod_so.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
@@ -232,8 +232,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_cgi.sbr"
 	-@erase "$(INTDIR)\mod_dir.obj"
 	-@erase "$(INTDIR)\mod_dir.sbr"
-	-@erase "$(INTDIR)\mod_dll.obj"
-	-@erase "$(INTDIR)\mod_dll.sbr"
 	-@erase "$(INTDIR)\mod_env.obj"
 	-@erase "$(INTDIR)\mod_env.sbr"
 	-@erase "$(INTDIR)\mod_imap.obj"
@@ -250,6 +248,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_negotiation.sbr"
 	-@erase "$(INTDIR)\mod_setenvif.obj"
 	-@erase "$(INTDIR)\mod_setenvif.sbr"
+	-@erase "$(INTDIR)\mod_so.obj"
+	-@erase "$(INTDIR)\mod_so.sbr"
 	-@erase "$(INTDIR)\mod_userdir.obj"
 	-@erase "$(INTDIR)\mod_userdir.sbr"
 	-@erase "$(INTDIR)\modules.obj"
@@ -315,7 +315,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_autoindex.sbr" \
 	"$(INTDIR)\mod_cgi.sbr" \
 	"$(INTDIR)\mod_dir.sbr" \
-	"$(INTDIR)\mod_dll.sbr" \
 	"$(INTDIR)\mod_env.sbr" \
 	"$(INTDIR)\mod_imap.sbr" \
 	"$(INTDIR)\mod_include.sbr" \
@@ -324,6 +323,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_mime.sbr" \
 	"$(INTDIR)\mod_negotiation.sbr" \
 	"$(INTDIR)\mod_setenvif.sbr" \
+	"$(INTDIR)\mod_so.sbr" \
 	"$(INTDIR)\mod_userdir.sbr" \
 	"$(INTDIR)\modules.sbr" \
 	"$(INTDIR)\multithread.sbr" \
@@ -373,7 +373,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_autoindex.obj" \
 	"$(INTDIR)\mod_cgi.obj" \
 	"$(INTDIR)\mod_dir.obj" \
-	"$(INTDIR)\mod_dll.obj" \
 	"$(INTDIR)\mod_env.obj" \
 	"$(INTDIR)\mod_imap.obj" \
 	"$(INTDIR)\mod_include.obj" \
@@ -382,6 +381,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_setenvif.obj" \
+	"$(INTDIR)\mod_so.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
 	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
@@ -1439,47 +1439,6 @@ DEP_CPP_MOD_D=\
 
 !ENDIF 
 
-SOURCE=.\os\win32\mod_dll.c
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-DEP_CPP_MOD_DL=\
-	".\include\alloc.h"\
-	".\include\ap.h"\
-	".\include\buff.h"\
-	".\include\conf.h"\
-	".\include\hsregex.h"\
-	".\include\http_config.h"\
-	".\include\httpd.h"\
-	".\os\win32\os.h"\
-	".\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\mod_dll.obj" : $(SOURCE) $(DEP_CPP_MOD_DL) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
-
-DEP_CPP_MOD_DL=\
-	".\include\alloc.h"\
-	".\include\ap.h"\
-	".\include\buff.h"\
-	".\include\conf.h"\
-	".\include\hsregex.h"\
-	".\include\http_config.h"\
-	".\include\httpd.h"\
-	".\os\win32\os.h"\
-	".\os\win32\readdir.h"\
-	
-
-"$(INTDIR)\mod_dll.obj"	"$(INTDIR)\mod_dll.sbr" : $(SOURCE) $(DEP_CPP_MOD_DL)\
- "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
 SOURCE=.\modules\standard\mod_env.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
@@ -1860,6 +1819,49 @@ DEP_CPP_MOD_S=\
 
 !ENDIF 
 
+SOURCE=.\modules\standard\mod_so.c
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+DEP_CPP_MOD_SO=\
+	".\include\alloc.h"\
+	".\include\ap.h"\
+	".\include\buff.h"\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+"$(INTDIR)\mod_so.obj" : $(SOURCE) $(DEP_CPP_MOD_SO) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+DEP_CPP_MOD_SO=\
+	".\include\alloc.h"\
+	".\include\ap.h"\
+	".\include\buff.h"\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+"$(INTDIR)\mod_so.obj"	"$(INTDIR)\mod_so.sbr" : $(SOURCE) $(DEP_CPP_MOD_SO)\
+ "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
 SOURCE=.\modules\standard\mod_userdir.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
@@ -1943,6 +1945,9 @@ DEP_CPP_MODUL=\
 !ENDIF 
 
 SOURCE=.\os\win32\multithread.c
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
 DEP_CPP_MULTI=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
@@ -1950,15 +1955,18 @@ DEP_CPP_MULTI=\
 	".\os\win32\os.h"\
 	
 
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-
 "$(INTDIR)\multithread.obj" : $(SOURCE) $(DEP_CPP_MULTI) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
+DEP_CPP_MULTI=\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\multithread.h"\
+	".\os\win32\os.h"\
+	
 
 "$(INTDIR)\multithread.obj"	"$(INTDIR)\multithread.sbr" : $(SOURCE)\
  $(DEP_CPP_MULTI) "$(INTDIR)"

@@ -185,10 +185,6 @@ SOURCE=.\modules\standard\mod_dir.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\mod_dll.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\standard\mod_env.c
 # End Source File
 # Begin Source File
@@ -218,6 +214,10 @@ SOURCE=.\modules\standard\mod_negotiation.c
 # Begin Source File
 
 SOURCE=.\modules\standard\mod_setenvif.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\modules\standard\mod_so.c
 # End Source File
 # Begin Source File
 

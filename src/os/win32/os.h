@@ -95,3 +95,12 @@ API_EXPORT(int) os_spawnve(int mode,const char *cmdname,const char *const *argv,
 #define _spawnle			    os_spawnle
 #define spawnle				    os_spawnle
 API_EXPORT(int) os_spawnle(int mode,const char *cmdname,...);
+
+/* Abstractions for dealing with shared object files (DLLs on Win32).
+ * These are used by mod_so.c
+ */
+#define os_dl_module_handle_type HINSTANCE
+#define os_dl_load(l)   LoadLibraryEx(l, NULL, LOAD_WITH_ALTERED_SEARCH_PATH)
+#define os_dl_unload(l) FreeLibrary(l)
+#define os_dl_sym(h,s)  GetProcAddress(h,s)
+#define os_dl_error()   ""	/* for now */

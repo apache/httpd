@@ -6,7 +6,7 @@
 #include "http_config.h"
 
 extern module core_module;
-extern module dll_module;
+extern module so_module;
 extern module mime_module;
 extern module access_module;
 extern module auth_module;
@@ -27,7 +27,7 @@ extern module isapi_module;
 
 module *prelinked_modules[] = {
   &core_module,
-  &dll_module,
+  &so_module,
   &mime_module,
   &access_module,
   &auth_module,
@@ -49,7 +49,7 @@ module *prelinked_modules[] = {
 };
 module *preloaded_modules[] = {
   &core_module,
-  &dll_module,
+  &so_module,
   &mime_module,
   &access_module,
   &auth_module,
