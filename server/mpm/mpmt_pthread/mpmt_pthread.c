@@ -73,7 +73,9 @@
 #include "ap_listen.h"
 #include "scoreboard.h" 
 
-#include <netinet/tcp.h> 
+#ifdef HAVE_NETINET_TCP_H
+#include <netinet/tcp.h>
+#endif
 #include <sys/wait.h> 
 #include <pthread.h>
 #include <signal.h>
