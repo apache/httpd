@@ -302,9 +302,17 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
             continue;
         }
         if (((*ch == '$') || (*ch == '%')) && (*(ch + 1) == '1')) {
+            /* Todo: Make short name!!! */
             prgtaken = 1;
             arg = (const char**)apr_array_push(args);
-            *arg = cgiprg;
+            if (*ch == '%') {
+                char *repl = apr_pstrdup(p, cgiprg);
+                while ((repl = strchr(repl, '/')))
+                    *repl++ = '\\';
+                *arg = repl;
+            }
+            else
+                *arg = cgiprg;
             ch += 2;
             continue;
         }
@@ -313,7 +321,14 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
                                                   && (*(ch + 3) == '\"')) {
             prgtaken = 1;
             arg = (const char**)apr_array_push(args);
-            *arg = cgiprg;
+            if (*(ch + 1) == '%') {
+                char *repl = apr_pstrdup(p, cgiprg);
+                while ((repl = strchr(repl, '/')))
+                    *repl++ = '\\';
+                *arg = repl;
+            }
+            else
+                *arg = cgiprg;
             ch += 4;
             continue;
         }
