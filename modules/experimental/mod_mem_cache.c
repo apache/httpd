@@ -81,10 +81,17 @@ typedef enum {
 } cache_type_e;
 
 typedef struct {
+    char* hdr;
+    char* val;
+} cache_header_tbl_t;
+
+typedef struct {
     cache_type_e type;
     char *key;
-    void *m;
+    apr_ssize_t num_headers;
+    cache_header_tbl_t *tbl;
     apr_size_t m_len;
+    void *m;
     cache_info info;
     int complete;
 } cache_object_t;
@@ -103,9 +110,11 @@ static mem_cache_conf *sconf;
 
 /* Forward declarations */
 static int remove_entity(cache_handle *h);
-static int write_headers(cache_handle *h, request_rec *r, cache_info *i);
+static int write_headers(cache_handle *h, request_rec *r, cache_info *i,
+                         apr_table_t *headers);
 static int write_body(cache_handle *h, apr_bucket_brigade *b);
-static int read_headers(cache_handle *h, request_rec *r, cache_info **info);
+static int read_headers(cache_handle *h, request_rec *r, cache_info **info, 
+                        apr_table_t *headers);
 static int read_body(cache_handle *h, apr_bucket_brigade *bb);
 
 static void cleanup_cache_object(cache_object_t *obj)
@@ -147,6 +156,10 @@ static void cleanup_cache_object(cache_object_t *obj)
     if (obj->m)
         free(obj->m);
 
+    /* XXX Cleanup the headers */
+    if (obj->num_headers) {
+        
+    }
     free(obj);
 }
 
@@ -377,10 +390,15 @@ static int remove_url(const char *type, char *key)
     return OK;
 }
 
-static int read_headers(cache_handle *h, request_rec *r, cache_info **info) 
+static int read_headers(cache_handle *h, request_rec *r, cache_info **info, 
+                        apr_table_t *headers) 
 {
     cache_object_t *obj = (cache_object_t*) h->cache_obj;
+    int i;
 
+    for (i = 0; i < obj->num_headers; ++i) {
+        apr_table_setn(headers, obj->tbl[i].hdr, obj->tbl[i].val);
+    } 
     *info = &(obj->info);
 
     return OK;
@@ -399,9 +417,47 @@ static int read_body(cache_handle *h, apr_bucket_brigade *bb)
     return OK;
 }
 
-static int write_headers(cache_handle *h, request_rec *r, cache_info *info)
+static int write_headers(cache_handle *h, request_rec *r, cache_info *info, apr_table_t *headers)
 {
     cache_object_t *obj = (cache_object_t*) h->cache_obj;
+    apr_table_entry_t *elts = (apr_table_entry_t *) headers->a.elts;
+    apr_ssize_t i;
+    apr_size_t len = 0;
+    apr_size_t idx = 0;
+    char *buf;
+
+    /* Precompute how much storage we need to hold the headers */
+    obj->tbl = malloc(sizeof(cache_header_tbl_t) * headers->a.nelts);
+    if (NULL == obj->tbl) {
+        return DECLINED;
+    }
+    for (i = 0; i < headers->a.nelts; ++i) {
+        len += strlen(elts[i].key);
+        len += strlen(elts[i].val);
+        len += 2;        /* Extra space for NULL string terminator for key and val */
+    }
+
+    /* Transfer the headers into a contiguous memory block */
+    buf = malloc(len);
+    if (!buf) {
+        free(obj->tbl);
+        obj->tbl = NULL;
+        return DECLINED;
+    }
+    obj->num_headers = headers->a.nelts;
+    for (i = 0; i < obj->num_headers; ++i) {
+        obj->tbl[i].hdr = &buf[idx];
+        len = strlen(elts[i].key) + 1;              /* Include NULL terminator */
+        strncpy(&buf[idx], elts[i].key, len);
+        idx+=len;
+
+        obj->tbl[i].val = &buf[idx];
+        len = strlen(elts[i].val) + 1;
+        strncpy(&buf[idx], elts[i].val, len);
+        idx+=len;
+    }
+
+#if 0
     if (info->date) {
         obj->info.date = info->date;
     }
@@ -416,7 +472,7 @@ static int write_headers(cache_handle *h, request_rec *r, cache_info *info)
         if (obj->info.content_type)
             strcpy((char*) obj->info.content_type, info->content_type);
     }
-
+#endif
     return OK;
 }
 

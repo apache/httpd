@@ -175,9 +175,9 @@ struct cache_handle {
 
     /* Cache call back functions */
     int (*remove_entity) (cache_handle *h);
-    int (*write_headers)(cache_handle *h, request_rec *r, cache_info *i);
+    int (*write_headers)(cache_handle *h, request_rec *r, cache_info *i, apr_table_t *headers);
     int (*write_body)(cache_handle *h, apr_bucket_brigade *b);
-    int (*read_headers) (cache_handle *h, request_rec *r, cache_info **i);
+    int (*read_headers) (cache_handle *h, request_rec *r, cache_info **i, apr_table_t *headers);
     int (*read_body) (cache_handle *h, apr_bucket_brigade *bb); 
 
 };
@@ -208,7 +208,7 @@ int cache_remove_entity(request_rec *r, const char *types, cache_handle *h);
 int cache_select_url(request_rec *r, const char *types, char *url);
 
 apr_status_t cache_write_entity_headers(cache_handle *h, request_rec *r, cache_info *info, 
-                                        apr_table_t *headers_in, apr_table_t *headers_out);
+                                        apr_table_t *headers);
 apr_status_t cache_write_entity_body(cache_handle *h, apr_bucket_brigade *bb);
 
 apr_status_t cache_read_entity_headers(cache_handle *h, request_rec *r, apr_table_t **headers);
@@ -252,13 +252,13 @@ APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_entity,
                           (cache_handle *h))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, read_entity_headers, 
                           (cache_handle *h, cache_info **info,
-                           apr_table_t **headers_in, apr_table_t **headers_out))
+                           apr_table_t **headers))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, read_entity_body, 
                           (cache_handle *h,
                            apr_bucket_brigade *out))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, write_entity_headers, 
                           (cache_handle *h, cache_info *info,
-                           apr_table_t *headers_in, apr_table_t *headers_out))
+                           apr_table_t *headers))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, write_entity_body, 
                           (cache_handle *h,
                            apr_bucket_brigade *in))

@@ -631,7 +631,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /*
      * Write away header information to cache.
      */
-    cache_write_entity_headers(cache->handle, r, info, r->headers_in, r->headers_out);
+    cache_write_entity_headers(cache->handle, r, info, r->headers_out);
     cache_write_entity_body(cache->handle, in);    
     return ap_pass_brigade(f->next, in);
 }
