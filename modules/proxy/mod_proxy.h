@@ -259,6 +259,6 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
-int ap_proxy_pre_http_connection(conn_rec *c);
+int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r);
 
 #endif /*MOD_PROXY_H*/
