@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) mod_cgi: Fix some problems where the wrong error value was being
+     traced.  [Jeff Trawick]
+
   *) EBCDIC: Fix some missing ASCII conversion on some protocol data.
      [Jeff Trawick]
 

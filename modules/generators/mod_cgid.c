@@ -609,13 +609,14 @@ static const command_rec cgid_cmds[] =
 }; 
 
 static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret, 
-                           int show_errno, char *error) 
+                           apr_status_t rv, char *error) 
 { 
     apr_file_t *f = NULL; 
     struct stat finfo; 
     char time_str[APR_CTIME_LEN];
+    int log_flags = rv ? APLOG_ERR : APLOG_NOERRNO | APLOG_ERR;
 
-    ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
+    ap_log_rerror(APLOG_MARK, log_flags, rv, r, 
                 "%s: %s", error, r->filename); 
 
     if (!conf->logname || 
@@ -765,39 +766,27 @@ static int cgid_handler(request_rec *r)
         argv0 = r->filename; 
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r)) 
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
                                "Options ExecCGI is off in this directory"); 
     if (nph && is_included) 
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
                                "attempt to include NPH CGI script"); 
 
-#if defined(OS2) || defined(WIN32) 
-    /* Allow for cgid files without the .EXE extension on them under OS/2 */ 
-    if (r->finfo.st_mode == 0) { 
-        struct stat statbuf; 
-        char *newfile; 
-
-        newfile = apr_pstrcat(r->pool, r->filename, ".EXE", NULL); 
-
-        if ((stat(newfile, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) { 
-            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
-                                   "script not found or unable to stat"); 
-        } else { 
-            r->filename = newfile; 
-        } 
-    } 
+#if defined(OS2) || defined(WIN32)
+#error mod_cgid does not work on this platform.  If you teach it to, look 
+#error at mod_cgi.c for required code in this path.
 #else 
     if (r->finfo.protection == 0) 
-        return log_scripterror(r, conf, HTTP_NOT_FOUND, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
                                "script not found or unable to stat"); 
 #endif 
     if (r->finfo.filetype == APR_DIR) 
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
                                "attempt to invoke directory as script"); 
 /*
     if (!ap_suexec_enabled) { 
         if (!ap_can_exec(&r->finfo)) 
-            return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
+            return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
                                    "file permissions deny server execution"); 
     } 
 */
@@ -806,7 +795,7 @@ static int cgid_handler(request_rec *r)
     env = ap_create_environment(r->pool, r->subprocess_env); 
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, 0, 
+            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno, 
                                    "unable to create socket to cgi daemon");
     } 
     memset(&unix_addr, 0, sizeof(unix_addr));
@@ -814,7 +803,7 @@ static int cgid_handler(request_rec *r)
     strcpy(unix_addr.sun_path, conf->sockname);
 
     if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
-            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, 0, 
+            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno, 
                                    "unable to connect to cgi daemon");
     } 
 
