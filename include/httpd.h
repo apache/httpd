@@ -373,7 +373,7 @@ enum server_token_type {
 };
 
 API_EXPORT(const char *) ap_get_server_version(void);
-API_EXPORT(void) ap_add_version_component(ap_pool_t pconf, const char *component);
+API_EXPORT(void) ap_add_version_component(ap_pool_t *pconf, const char *component);
 API_EXPORT(const char *) ap_get_server_built(void);
 
 /* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
