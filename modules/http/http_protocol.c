@@ -862,7 +862,6 @@ typedef struct http_filter_ctx {
 
 apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length)
 {
-#define ASCII_CR '\015'
 #define ASCII_LF '\012'
     ap_bucket *e;
     char *buff;
@@ -917,15 +916,12 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
             return rv;
         }
 
-        pos = buff;
-        while (pos < buff + len) {
-            if (*pos == ASCII_LF) {
-                e->split(e, pos - buff + 1);
-                bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
-                ctx->b = bb;
-                return APR_SUCCESS;
-            }
-            pos++;
+        pos = memchr(buff, ASCII_LF, len);
+        if (pos != NULL) {
+            e->split(e, pos - buff + 1);
+            bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+            ctx->b = bb;
+            return APR_SUCCESS;
         }
     }
     return APR_SUCCESS;
