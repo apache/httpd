@@ -26,7 +26,8 @@
 />
 
 <!-- Read the localized messages from the specified language file -->
-<xsl:variable name="messages" select="document('../lang/en.xml')/messages"/>
+<xsl:variable name="message" select="document('../lang/en.xml')
+                                     /language/messages/message"/>
 
 <!-- Get the guts of the stylesheets -->
 <xsl:include href="manualpage.xsl" />
@@ -73,25 +74,25 @@
 
 \hypersetup{
     pdftitle={</xsl:text>
-<xsl:value-of select="$messages/message[@name='apache']" />
+<xsl:value-of select="$message[@id='apache']" />
 <xsl:text> </xsl:text>
-<xsl:value-of select="$messages/message[@name='http-server']" />
+<xsl:value-of select="$message[@id='http-server']" />
 <xsl:text> </xsl:text>
-<xsl:value-of select="$messages/message[@name='documentation']" />
+<xsl:value-of select="$message[@id='documentation']" />
 <xsl:text> </xsl:text>
-<xsl:value-of select="$messages/message[@name='version']" />
+<xsl:value-of select="$message[@id='version']" />
 <xsl:text>},
     pdfauthor={Apache Software Foundation}
   }
 
 \title{</xsl:text>
-<xsl:value-of select="$messages/message[@name='apache']" />
+<xsl:value-of select="$message[@id='apache']" />
 <xsl:text> </xsl:text>
-<xsl:value-of select="$messages/message[@name='http-server']" />
+<xsl:value-of select="$message[@id='http-server']" />
 <xsl:text> </xsl:text>
-<xsl:value-of select="$messages/message[@name='documentation']" />
+<xsl:value-of select="$message[@id='documentation']" />
 <xsl:text> </xsl:text>
-<xsl:value-of select="$messages/message[@name='version']" />
+<xsl:value-of select="$message[@id='version']" />
 <xsl:text>\\ \bigskip \bigskip
 \includegraphics{images/feather}\\ \bigskip}
 \author{Apache Software Foundation}

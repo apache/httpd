@@ -177,7 +177,7 @@ select="$metafile/basename"/>
 \fbox{\begin{tabular}{rr}
 \begin{minipage}[t]{.49\linewidth}
 \textbf{</xsl:text>
-<xsl:value-of select="$messages/message[@name='relatedmodules']" />
+<xsl:value-of select="$message[@id='relatedmodules']" />
 <xsl:text>} \\
 </xsl:text>
 <xsl:for-each select="modulelist/module">
@@ -189,7 +189,7 @@ select="$metafile/basename"/>
 \end{minipage} &amp; 
 \begin{minipage}[t]{.4\linewidth}
 \textbf{</xsl:text>
-<xsl:value-of select="$messages/message[@name='relateddirectives']" />
+<xsl:value-of select="$message[@id='relateddirectives']" />
 <xsl:text>} \\
 </xsl:text>
 <xsl:for-each select="directivelist/directive">
@@ -211,7 +211,7 @@ select="$metafile/basename"/>
 <xsl:template name="seealso">
      <xsl:if test="seealso">
 	<xsl:text>\textbf{</xsl:text>
-        <xsl:value-of select="$messages/message [@name='seealso']" />
+        <xsl:value-of select="$message[@id='seealso']" />
         <xsl:text>}\begin{itemize}</xsl:text>
         <xsl:for-each select="seealso">
         <xsl:text>\item </xsl:text>

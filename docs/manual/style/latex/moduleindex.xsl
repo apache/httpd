@@ -35,7 +35,7 @@
   <xsl:call-template name="seealso"/>
 
    <xsl:text>\subsection*{</xsl:text>
-   <xsl:value-of select="$messages/message[@name='corefeatures']" />
+   <xsl:value-of select="$message[@id='corefeatures']" />
    <xsl:text>}
 
 \begin{description}
@@ -103,7 +103,7 @@
     <!-- /core section -->
 
     <xsl:text>\section*{</xsl:text>
-    <xsl:value-of select="$messages/message[@name='othermodules']" />
+    <xsl:value-of select="$message[@id='othermodules']" />
     <xsl:text>}
 \begin{description}
 </xsl:text>
