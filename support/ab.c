@@ -163,6 +163,7 @@ struct connection {
     int state;
     int read;			/* amount of bytes read */
     int bread;			/* amount of body read */
+    int rwrite;			/* amount of bytes written in the req */
     int length;			/* Content-Length value used for keep-alive */
     char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
     int cbx;			/* offset in cbuffer */
@@ -204,6 +205,9 @@ char cookie[1024],		/* optional cookie line */
      hdrs[4096];		/* optional arbitrary headers */
 apr_port_t port;		/* port number */
 apr_time_t aprtimeout = 30 * APR_USEC_PER_SEC;	/* timeout value */
+ /*
+  * XXX - this is now a per read/write transact type of value
+  */
 
 int use_html = 0;		/* use html in the report */
 const char *tablestring;
@@ -242,6 +246,8 @@ apr_pollfd_t *readbits;
 apr_xlate_t *from_ascii, *to_ascii;
 #endif
 
+static void close_connection(struct connection * c);
+
 /* --------------------------------------------------------- */
 
 /* simple little function to write an error string and exit */
@@ -266,24 +272,60 @@ static void apr_err(char *s, apr_status_t rv)
 
 /* --------------------------------------------------------- */
 
-/* write out request to a connection - assumes we can write
-   (small) request out in one go into our new socket buffer  */
+/* apr_send() does a single best efford write; which if it
+ * manages to send any bytes out - does return. It will only
+ * retry on EINTR, EAGAIN and EWOULDBLOCK (until Timeout or
+ * until one or more bytes are send). This function turns it
+ * into a send_all_or_timeout().
+ */
+static int _send(struct connection * c, char *r, apr_size_t len, apr_time_t tuntil)
+{
+    apr_time_t to = 0;
+    do {
+	apr_size_t l = len;
+	if (apr_send(c->aprsock, r, &l) != APR_SUCCESS)
+	    return -1;
 
+	/* Bail early on the most common case */
+	if (len == l)
+	    return 0;
+
+	/*
+	 * only do bookeeping when we really cannot avoid it.
+	 */
+	len -= l;
+	r += l;
+	to = tuntil - apr_time_now();
+	apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, to);
+
+    } while (to > 0);
+
+    return -1;			/* timeout */
+}
+
+/* write out request to a connection - assumes we can write
+ * (small) request out in one go into our new socket buffer
+ *
+ * XXX: this needs to be rewritten to be pointer based; we do
+ *      not really want this to block for serious amounths of
+ *      time under normal circumstances.
+ */
 static void write_request(struct connection * c)
 {
-    apr_size_t len = reqlen;
-    c->connect = apr_time_now();
+    apr_time_t tnow = apr_time_now();
+    apr_size_t tuntil = tnow + aprtimeout;
+    c->connect = tnow;
+
     apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
-    if (apr_send(c->aprsock, request, &len) != APR_SUCCESS ||
-	reqlen != len) {
+
+    if (_send(c, request, reqlen, tuntil)) {
 	printf("Send request failed!\n");
 	close_connection(c);
 	return;
     }
+
     if (posting) {
-	len = postlen;
-	if (apr_send(c->aprsock, postdata, &len) != APR_SUCCESS ||
-	    reqlen != len) {
+	if (_send(c, postdata, postlen, tuntil)) {
 	    printf("Send post request failed!\n");
 	    close_connection(c);
 	    return;
@@ -529,6 +571,7 @@ static void start_connect(struct connection * c)
     if ((rv = apr_connect(c->aprsock, destsa)) != APR_SUCCESS) {
 	if (APR_STATUS_IS_EINPROGRESS(rv)) {
 	    c->state = STATE_CONNECTING;
+	    c->rwrite = 0;
 	    apr_poll_socket_add(readbits, c->aprsock, APR_POLLOUT);
 	    return;
 	}
@@ -876,7 +919,7 @@ static void test(void)
 	     * Notes: APR_POLLHUP is set after FIN is received on some
 	     * systems, so treat that like APR_POLLIN so that we try to read
 	     * again.
-	     * 
+	     *
 	     * Some systems return APR_POLLERR with APR_POLLHUP.  We need to
 	     * call read_connection() for APR_POLLHUP, so check for
 	     * APR_POLLHUP first so that a closed connection isn't treated
@@ -919,14 +962,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.58 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.59 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.58 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.59 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
