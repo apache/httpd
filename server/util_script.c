@@ -444,8 +444,6 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     }
     w = buffer ? buffer : x;
 
-    ap_hard_timeout("read script header", r);
-
     /* temporary place to hold headers to merge in later */
     merge = ap_make_table(r->pool, 10);
 
@@ -461,7 +459,6 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     while (1) {
 
 	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
-	    ap_kill_timeout(r);
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			  "Premature end of script headers: %s", r->filename);
 	    return HTTP_INTERNAL_SERVER_ERROR;
@@ -494,7 +491,6 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	if (w[0] == '\0') {
 	    int cond_status = OK;
 
-	    ap_kill_timeout(r);
 	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
 		cond_status = ap_meets_conditions(r);
 	    }
@@ -546,7 +542,6 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 		}
 	    }
 
-	    ap_kill_timeout(r);
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			  "%s: %s", malformed, r->filename);
 	    return HTTP_INTERNAL_SERVER_ERROR;

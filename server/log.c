@@ -65,7 +65,6 @@
 
 #define CORE_PRIVATE
 #include "httpd.h"
-#include "http_conf_globals.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
@@ -578,7 +577,6 @@ static int piped_log_spawn(piped_log *pl)
 {
     int pid;
 
-    ap_block_alarms();
     pid = fork();
     if (pid == 0) {
 	/* XXX: this needs porting to OS2 and WIN32 */
@@ -602,10 +600,8 @@ static int piped_log_spawn(piped_log *pl)
     if (pid == -1) {
 	fprintf(stderr,
 	    "piped_log_spawn: unable to fork(): %s\n", strerror (errno));
-	ap_unblock_alarms();
 	return -1;
     }
-    ap_unblock_alarms();
     pl->pid = pid;
     ap_register_other_child(pid, piped_log_maintenance, pl, pl->fds[1]);
     return 0;
@@ -683,10 +679,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
     pl->p = p;
     pl->program = ap_pstrdup(p, program);
     pl->pid = -1;
-    ap_block_alarms ();
     if (pipe(pl->fds) == -1) {
 	int save_errno = errno;
-	ap_unblock_alarms();
 	errno = save_errno;
 	return NULL;
     }
@@ -696,20 +690,16 @@ API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
 	ap_kill_cleanup(p, pl, piped_log_cleanup);
 	close(pl->fds[0]);
 	close(pl->fds[1]);
-	ap_unblock_alarms();
 	errno = save_errno;
 	return NULL;
     }
-    ap_unblock_alarms();
     return pl;
 }
 
 API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 {
-    ap_block_alarms();
     piped_log_cleanup(pl);
     ap_kill_cleanup(pl->p, pl, piped_log_cleanup);
-    ap_unblock_alarms();
 }
 
 #else

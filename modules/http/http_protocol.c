@@ -1343,15 +1343,15 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
  * It is more expensive to check the User-Agent than it is to just add the
  * bytes, so we haven't used the BrowserMatch feature here.
  */
-static void terminate_header(BUFF *client)
+static void terminate_header(request_rec *r)
 {
     long int bs;
 
-    ap_bgetopt(client, BO_BYTECT, &bs);
+    ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
     if (bs >= 255 && bs <= 257)
-        ap_bputs("X-Pad: avoid browser bug\015\012", client);
+        ap_rputs("X-Pad: avoid browser bug\015\012", r);
 
-    ap_bputs("\015\012", client);  /* Send the terminating empty line */
+    ap_rputs("\015\012", r);  /* Send the terminating empty line */
 }
 
 /* Build the Allow field-value from the request handler method mask.
@@ -1389,8 +1389,6 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
     if ((rv = ap_setup_client_block(r, REQUEST_NO_BODY)))
         return rv;
 
-    ap_hard_timeout("send TRACE", r);
-
     r->content_type = "message/http";
     ap_send_http_header(r);
 
@@ -1402,7 +1400,6 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
                 ap_send_header_field, (void *) r, r->headers_in, NULL);
     ap_rputs("\015\012", r);
 
-    ap_kill_timeout(r);
     return OK;
 }
 
@@ -1413,8 +1410,6 @@ int ap_send_http_options(request_rec *r)
     if (r->assbackwards)
         return DECLINED;
 
-    ap_hard_timeout("send OPTIONS", r);
-
     ap_basic_http_header(r);
 
     ap_table_setn(r->headers_out, "Content-Length", "0");
@@ -1424,9 +1419,8 @@ int ap_send_http_options(request_rec *r)
     ap_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
              (void *) r, r->headers_out, NULL);
 
-    terminate_header(r->connection->client);
+    terminate_header(r);
 
-    ap_kill_timeout(r);
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
 
     return OK;
@@ -1563,8 +1557,6 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 	fixup_vary(r);
     }
 
-    ap_hard_timeout("send headers", r);
-
     ap_basic_http_header(r);
 
 #ifdef CHARSET_EBCDIC
@@ -1612,9 +1604,8 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     ap_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
              (void *) r, r->headers_out, NULL);
 
-    terminate_header(r->connection->client);
+    terminate_header(r);
 
-    ap_kill_timeout(r);
 
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
@@ -1642,11 +1633,9 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
         r->chunked = 0;
         ap_bsetflag(r->connection->client, B_CHUNK, 0);
 
-        ap_soft_timeout("send ending chunk", r);
         ap_rputs("0\015\012", r);
         /* If we had footer "headers", we'd send them now */
         ap_rputs("\015\012", r);
-        ap_kill_timeout(r);
     }
 }
 
@@ -1975,10 +1964,9 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
             r->connection->keepalive = -1;
             return OK;
         }
-        ap_hard_timeout("reading request body", r);
+
         while ((rv = ap_get_client_block(r, dumpbuf, HUGE_STRING_LEN)) > 0)
             continue;
-        ap_kill_timeout(r);
 
         if (rv < 0)
             return HTTP_BAD_REQUEST;
@@ -1989,47 +1977,45 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
 /*
  * Send the body of a response to the client.
  */
-API_EXPORT(long) ap_send_fd(FILE *f, request_rec *r)
+API_EXPORT(long) ap_send_fd(APRFile fd, request_rec *r)
 {
-    return ap_send_fd_length(f, r, -1);
+    return ap_send_fd_length(fd, r, -1);
 }
 
-API_EXPORT(long) ap_send_fd_length(FILE *f, request_rec *r, long length)
+API_EXPORT(long) ap_send_fd_length(APRFile fd, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
-    register int n, w, o, len;
+    register int n, w, o;
 
     if (length == 0)
         return 0;
 
-    ap_soft_timeout("send body", r);
-
-    while (!r->connection->aborted) {
+    while (!ap_is_aborted(r->connection)) {
         if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
-            len = length - total_bytes_sent;
+            o = length - total_bytes_sent;
         else
-            len = IOBUFSIZE;
+            o = IOBUFSIZE;
 
-        while ((n = fread(buf, sizeof(char), len, f)) < 1
-               && ferror(f) && errno == EINTR && !r->connection->aborted)
+        while ((n = read(fd, buf, o)) < 0 && 
+                (errno == EINTR || errno == EAGAIN) && 
+                !ap_is_aborted(r->connection))
             continue;
-
+            
         if (n < 1) {
             break;
         }
         o = 0;
 
-        while (n && !r->connection->aborted) {
+        while (n && !ap_is_aborted(r->connection)) {
             w = ap_bwrite(r->connection->client, &buf[o], n);
             if (w > 0) {
-                ap_reset_timeout(r); /* reset timeout after successful write */
                 total_bytes_sent += w;
                 n -= w;
                 o += w;
             }
             else if (w < 0) {
-                if (!r->connection->aborted) {
+                if (!ap_is_aborted(r->connection)) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
                      "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
@@ -2040,11 +2026,13 @@ API_EXPORT(long) ap_send_fd_length(FILE *f, request_rec *r, long length)
         }
     }
 
-    ap_kill_timeout(r);
     SET_BYTES_SENT(r);
     return total_bytes_sent;
 }
 
+
+/* TODO: re-implement ap_send_fb */
+#if 0
 /*
  * Send the body of a response to the client.
  */
@@ -2058,17 +2046,15 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
     register int n, w, o, len, fd;
-    fd_set fds;
+    struct pollfd fds;
 
     if (length == 0)
         return 0;
 
     /* Make fb unbuffered and non-blocking */
     ap_bsetflag(fb, B_RD, 0);
-#ifndef TPF    
-    ap_bnonblock(fb, B_RD);
-#endif
     fd = ap_bfileno(fb, B_RD);
+    ap_bnonblock(fd);
 #ifdef CHECK_FD_SETSIZE
     if (fd >= FD_SETSIZE) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
@@ -2079,10 +2065,10 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     }
 #endif
 
-    ap_soft_timeout("send body", r);
+    fds.fd = fd;
+    fds.events = POLLIN;
 
-    FD_ZERO(&fds);
-    while (!r->connection->aborted) {
+    while (!ap_is_aborted(r->connection)) {
 #ifdef NDELAY_PIPE_RETURNS_ZERO
 	/* Contributed by dwd@bell-labs.com for UTS 2.1.2, where the fcntl */
 	/*   O_NDELAY flag causes read to return 0 when there's nothing */
@@ -2106,9 +2092,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             if (n >= 0)
                 break;
 #endif
-            if (r->connection->aborted)
+            if (ap_is_aborted(r->connection))
                 break;
-            if (n < 0 && errno != EAGAIN)
+            if (n < 0 && errno != EAGAIN /* ZZZ rethink for threaded impl */)
                 break;
 
             /* we need to block, so flush the output first */
@@ -2119,32 +2105,31 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
                 r->connection->aborted = 1;
                 break;
             }
-            FD_SET(fd, &fds);
             /*
-             * we don't care what select says, we might as well loop back
+             * we don't care what poll says, we might as well loop back
              * around and try another read
              */
-            ap_select(fd + 1, &fds, NULL, NULL, NULL);
+	    /* use AP funcs */
+            poll(&fds, 1, -1);
 #ifdef NDELAY_PIPE_RETURNS_ZERO
 	    afterselect = 1;
 #endif
-        } while (!r->connection->aborted);
+        } while (!ap_is_aborted(r->connection));
 
-        if (n < 1 || r->connection->aborted) {
+        if (n < 1 || ap_is_aborted(r->connection)) {
             break;
         }
         o = 0;
 
-        while (n && !r->connection->aborted) {
+        while (n && !ap_is_aborted(r->connection)) {
             w = ap_bwrite(r->connection->client, &buf[o], n);
             if (w > 0) {
-                ap_reset_timeout(r); /* reset timeout after successful write */
                 total_bytes_sent += w;
                 n -= w;
                 o += w;
             }
             else if (w < 0) {
-                if (!r->connection->aborted) {
+                if (!ap_is_aborted(r->connection)) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
                        "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
@@ -2155,10 +2140,10 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
         }
     }
 
-    ap_kill_timeout(r);
     SET_BYTES_SENT(r);
     return total_bytes_sent;
 }
+#endif
 
 
 
@@ -2185,7 +2170,6 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
     if (length == 0)
         return 0;
 
-    ap_soft_timeout("send mmap", r);
 
     length += offset;
     while (!r->connection->aborted && offset < length) {
@@ -2199,24 +2183,26 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
         while (n && !r->connection->aborted) {
             w = ap_bwrite(r->connection->client, (char *) mm + offset, n);
             if (w > 0) {
-                ap_reset_timeout(r); /* reset timeout after successful write */
                 total_bytes_sent += w;
                 n -= w;
                 offset += w;
             }
             else if (w < 0) {
-                if (!r->connection->aborted) {
+                if (r->connection->aborted)
+                    break;
+                else if (errno == EAGAIN)
+                    continue;
+                else {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
-                       "client stopped connection before send mmap completed");
+                     "client stopped connection before send mmap completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
+                    break;
                 }
-                break;
             }
         }
     }
 
-    ap_kill_timeout(r);
     SET_BYTES_SENT(r);
     return total_bytes_sent;
 }
@@ -2265,7 +2251,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
     int n;
 
     if (r->connection->aborted)
-        return -1;
+        return EOF;
 
     n = ap_bwrite(r->connection->client, buf, nbyte);
     if (n < 0) {
@@ -2275,7 +2261,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
         }
-        return -1;
+        return EOF;
     }
     SET_BYTES_SENT(r);
     return n;
@@ -2406,8 +2392,6 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         if (!ap_is_empty_table(r->err_headers_out))
             r->headers_out = ap_overlay_tables(r->pool, r->err_headers_out,
                                                r->headers_out);
-        ap_hard_timeout("send 304", r);
-
         ap_basic_http_header(r);
         ap_set_keepalive(r);
 
@@ -2425,9 +2409,8 @@ void ap_send_error_response(request_rec *r, int recursive_error)
                     "Proxy-Authenticate",
                     NULL);
 
-        terminate_header(r->connection->client);
+        terminate_header(r);
 
-        ap_kill_timeout(r);
         return;
     }
 
@@ -2476,8 +2459,6 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         }
     }
 
-    ap_hard_timeout("send error body", r);
-
     if ((custom_response = ap_response_code_string(r, idx))) {
         /*
          * We have a custom response output. This should only be
@@ -2493,7 +2474,6 @@ void ap_send_error_response(request_rec *r, int recursive_error)
          */
         if (custom_response[0] == '\"') {
             ap_rputs(custom_response + 1, r);
-            ap_kill_timeout(r);
             ap_finalize_request_protocol(r);
             ap_rflush(r);
             return;
@@ -2757,7 +2737,6 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         ap_rputs(ap_psignature("<HR>\n", r), r);
         ap_rputs("</BODY></HTML>\n", r);
     }
-    ap_kill_timeout(r);
     ap_finalize_request_protocol(r);
     ap_rflush(r);
 }
