@@ -81,7 +81,7 @@
         o Out-of-the-box supported platforms are:
            - Linux     - IRIX
            - FreeBSD   - HPUX
-           - OpenBSD   - OSF1
+           - OpenBSD   - Digital UNIX
            - NetBSD    - UnixWare
            - SunOS     - AIX
            - Solaris   - SCO

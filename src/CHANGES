@@ -3,11 +3,11 @@ Changes with Apache 1.3.2
   *) Fix documentation of ProxyPass/ProxyPassReverse according to the
      trailing slash problem. [Jon Drukman <jsd@gamespot.com>] PR#2933
   
-  *) Remove `-msym' option from LDFLAGS_SHLIB for the OSF1 platform, because
-     it's only supported under OSF1 4.0 and higher. But because our GuessOS is
-     still unaware of OSF1 versions and the -msym is just to optimize the DSO
-     statup time a little bit it's safe and best when we leave it out now.
-     [Ralf S. Engelschall] PR#2969
+  *) Remove `-msym' option from LDFLAGS_SHLIB for the Digital UNIX (OSF/1)
+     platform, because it's only supported under version 4.0 and higher. But
+     because our GuessOS is still unaware of Digital UNIX versions and the
+     -msym is just to optimize the DSO statup time a little bit it's safe and
+     best when we leave it out now.  [Ralf S. Engelschall] PR#2969
 
   *) Fix the ap_log_error_old(), ap_log_unixerr() and ap_log_printf()
      functions: First all three functions no longer fail on strings containing
@@ -357,7 +357,7 @@ Changes with Apache 1.3.1
      [Ralf S. Engelschall]
  
   *) Add conservative ticks around more egrep arguments in top-level configure
-     to avoid problems under brain-dead platforms like Digital Unix (OSF1).
+     to avoid problems under brain-dead platforms like Digital UNIX (OSF1).
      [Ralf S. Engelschall] PR#2596
 
   *) mod_rewrite created RewriteLock files under the UID of the parent
