@@ -367,15 +367,22 @@ extern char *getwd();
 typedef quad_t rlim_t;
 
 #elif defined(QNX)
+#ifndef crypt
+char *crypt(const char *pw, const char *salt);
+#endif
+#ifndef initgroups
+int initgroups (char *, int);     
+#endif
+#ifndef strncasecmp
+#define strncasecmp strnicmp
+#endif
 #undef NO_KILLPG
 #undef NO_SETSID
 #define NEED_INITGROUPS
 #define NEED_SELECT_H
 #define NEED_PROCESS_H
 #define HAVE_SYS_SELECT_H
-
 #include <unix.h>
-
 #define JMP_BUF sigjmp_buf
 
 #elif defined(LYNXOS)
