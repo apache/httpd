@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/11 06:40:41 $]
+Last modified at [$Date: 2003/03/11 07:07:51 $]
 
 Release:
 
@@ -165,15 +165,6 @@ PATCHES TO PORT FROM 2.1
       the pattern will not always match as desired. PR 12596.
       modules/generators/mod_autoindex.c: r1.119
       +1: nd, wrowe, trawick
-
-    * Allow builds to work with out of tree apr and apr-util
-      buildconf: r1.30
-      configure.in: r1.239, r1.240
-      +1: thommay, striker, ianh 
-          wrowe (but we must add server/mpm/config.m4 r1.47 to that list)
-      +1(concept): trawick...  I won't be putting my name next to any
-          specific revisions (no confidence on my part), but I will
-          try to help sort out what may go wrong.
 
     * New Directive for mod_deflate (compressionlevel), and change to default
       compression level
