@@ -143,7 +143,7 @@ static void *create_authz_dbm_dir_config(apr_pool_t *p, char *d)
 
 static const command_rec authz_dbm_cmds[] =
 {
-    AP_INIT_TAKE1("AuthzDBMGroupFile", ap_set_file_slot,
+    AP_INIT_TAKE1("AuthDBMGroupFile", ap_set_file_slot,
      (void *)APR_OFFSETOF(authz_dbm_config_rec, grpfile),
      OR_AUTHCFG, "database file containing group names and member user IDs"),
     AP_INIT_TAKE1("AuthzDBMType", ap_set_string_slot,
