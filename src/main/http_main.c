@@ -350,7 +350,7 @@ int ap_note_platform = 1;  /* Global, alas, so http_core can talk to us */
  * server version string to a known value and [re]enables modifications
  * (which are disabled by configuration completion).
  */
-static void reset_version()
+static void reset_version(void *dummy)
 {
     version_locked = 0;
     ap_note_platform = 1;
