@@ -192,12 +192,37 @@ static const char* memcache_cache_get_key(void*a)
 }
 /** 
  * callback to free an entry 
- * XXX: just call cleanup_cache_object ?
+ * There is way too much magic in this code. Right now, this callback
+ * is only called out of cache_insert() which is called under protection
+ * of the sconf->lock, which means that we do not (and should not)
+ * attempt to obtain the lock recursively. 
  */
 static void memcache_cache_free(void*a)
 {
     cache_object_t *obj = (cache_object_t *)a;
-    cleanup_cache_object(obj);
+
+    /* Cleanup the cache object. Object should be removed from the cache
+     * now. Increment the refcount before setting cleanup to avoid a race 
+     * condition. A similar pattern is used in remove_url()
+     */
+#ifdef USE_ATOMICS
+    apr_atomic_inc(&obj->refcount);
+#else
+    obj->refcount++;
+#endif
+
+    obj->cleanup = 1;
+
+#ifdef USE_ATOMICS
+    if (!apr_atomic_dec(&obj->refcount)) {
+        cleanup_cache_object(obj);
+    }
+#else
+    obj->refcount--;
+    if (!obj->refcount) {
+        cleanup_cache_object(obj);
+    }
+#endif
 }
 /*
  * functions return a 'negative' score as lower is better in a priority Q
