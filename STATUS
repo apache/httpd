@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/29 05:11:24 $]
+Last modified at [$Date: 2003/01/29 08:49:44 $]
 
 Release:
 
@@ -65,11 +65,11 @@ PATCHES TO PORT FROM 2.1
       serving the response. This fixes segfault observed on
       windows serving mmap cached files.
       modules/cache/mod_file_cache.c r1.76
-      +1: stoddard
+      +1: stoddard, jwoolley
  
     * mod_file_cache segfault bugfix. PR 16313.
       modules/cache/mod_file_cache.c r1.75
-     +1: stoddard, orlikowski, striker
+     +1: stoddard, orlikowski, striker, jwoolley
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
