@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/06 18:49:36 $]
+Last modified at [$Date: 2003/03/06 18:57:38 $]
 
 Release:
 
@@ -209,7 +209,12 @@ PATCHES TO PORT FROM 2.1
     * Allow builds to work with out of tree apr and apr-util
       buildconf: r1.30
       configure.in: r1.239, r1.240
-      +1: thommay, striker
+      +1: thommay, striker, ianh
+
+    * New Directive for mod_deflate (compressionlevel), and change to default
+      compression level
+      mod_deflate.c 1.31
+      +1: ianh, wrowe
 
 CURRENT RELEASE NOTES:
 
