@@ -25,6 +25,8 @@
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
 <p>이 페이지는 현재
 <a href="./">Apache HTTP Server Version 2.1 문서</a> 목록을

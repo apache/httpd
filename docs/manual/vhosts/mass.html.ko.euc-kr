@@ -21,6 +21,8 @@
 <p><span>가능한 언어: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/vhosts/mass.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
 
     <p>이 문서는 아파치 1.3에서 대량의 가상호스트를 효율적으로

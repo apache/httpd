@@ -25,6 +25,8 @@
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>자동으로 유닉스의 <code>ls</code> 명령어나 Win32의
     <code>dir</code> 쉘명령어와 유사한 디렉토리 목록을 만든다</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Base</td></tr>

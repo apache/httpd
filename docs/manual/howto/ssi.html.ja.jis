@@ -21,6 +21,8 @@
 <p><span>Available Languages: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/howto/ssi.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
 <p>サーバサイドインクルードによって、既存の HTML
 ドキュメントに動的なコンテンツを追加することができます。</p>

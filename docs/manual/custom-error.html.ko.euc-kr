@@ -22,6 +22,8 @@
 <a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/custom-error.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</div>
 
     <p>웹마스터는 오류나 문제가 발생했을때 아파치의 응답을
     설정할 수 있다.</p>
