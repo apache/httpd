@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.5 -->
+<modulesynopsis metafile="mod_env.xml.meta">
+
+<name>mod_env</name>
+<description>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
+수정한다</description>
+<status>Base</status>
+<sourcefile>mod_env.c</sourcefile>
+<identifier>env_module</identifier>
+<summary>
+    <p>이 모듈은 CGI 스크립트나 SSI 페이지에 전달할 환경변수를
+    조절한다. 웹서버를 시작한 쉘에서 환경변수를 가져올 수 있다.
+    아니면 설정과정중에 환경변수를 설정하고 제거할 수 있다.</p>
+</summary>
+<seealso><a href="../env.html">환경변수</a></seealso>
+
+<directivesynopsis>
+<name>PassEnv</name>
+<description>쉘에서 환경변수를 가져온다</description>
+<syntax>PassEnv <var>env-variable</var> [<var>env-variable</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>웹서버를 실행한 쉘의 특정 환경변수를 CGI 스크립트나
+    SSI 페이지로 전달한다.</p>
+
+    <example><title>예제</title>
+      PassEnv LD_LIBRARY_PATH
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnv</name>
+<description>환경변수를 설정한다</description>
+<syntax>SetEnv <var>env-variable</var> <var>value</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>CGI 스크립트나 SSI 페이지에 전달할 환경변수를 설정한다.</p>
+
+    <example><title>예제</title>
+      SetEnv SPECIAL_PATH /foo/bin
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UnsetEnv</name>
+<description>환경변수를 제거한다</description>
+<syntax>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>CGI 스크립트나 SSI 페이지에 환경변수를 전달하지 않는다.</p>
+
+    <example><title>예제</title>
+      UnsetEnv LD_LIBRARY_PATH
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

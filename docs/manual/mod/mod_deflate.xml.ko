@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.18 -->
+<modulesynopsis metafile="mod_deflate.xml.meta">
+
+<name>mod_deflate</name>
+<description>내용을 클라이언트로 보내기 전에 압축한다</description>
+<status>Extension</status>
+<sourcefile>mod_deflate.c</sourcefile>
+<identifier>deflate_module</identifier>
+
+<summary>
+    <p><module>mod_deflate</module> 모듈은 서버의 출력을 네트웍으로
+    클라이언트에 보내기 전에 압축하는 <code>DEFLATE</code> 출력필터를
+    제공한다.</p>
+</summary>
+<seealso><a href="../filter.html">필터</a></seealso>
+
+<section id="recommended"><title>권장하는 설정</title>
+    <p>급한 사람을 위한 견본 설정이다. 그러나 시간을 가지고
+    아래 자세한 설명을 읽길 바란다!</p>
+
+    <example><title>일부 type만 압축</title>
+      AddOutputFilterByType DEFLATE text/html text/plain text/xml
+    </example>
+
+    <example><title>이미지를 제외한 모든 것을 압축</title>
+      &lt;Location /&gt;<br />
+      <indent>
+        # 필터를 추가한다<br />
+        SetOutputFilter DEFLATE<br />
+        <br />
+        # Netscape 4.x에 문제가 있다...<br />
+        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
+        <br />
+        # Netscape 4.06-4.08에 더 문제가 있다<br />
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
+        <br />
+        # MSIE은 Netscape라고 자신을 알리지만, 문제가 없다<br />
+        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        <br />
+        # 이미지를 압축하지 않는다<br />
+        SetEnvIfNoCase Request_URI \<br />
+        <indent>
+          \.(?:gif|jpe?g|png)$ no-gzip dont-vary<br />
+        </indent>
+        <br />
+        # 프록시가 잘못된 내용을 전달하지않도록 한다<br />
+        Header append Vary User-Agent env=!dont-vary<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+</section>
+
+<section id="enable"><title>압축하기</title>
+
+    <section id="output"><title>출력 압축</title>
+      <p><code>DEFLATE</code> <a href="../filter.html">필터</a>가
+      압축을 한다. 다음 지시어는 지시어가 있는 위치의 문서를
+      압축한다:</p>
+
+      <example>
+        SetOutputFilter DEFLATE
+      </example>
+
+      <p>모든 내용을 압축하면 처리하지 못하는 브라우저가 있기때문에
+      html 파일만을 압축하기위해 (아래 참고)
+      <code>gzip-only-text/html</code>을 <code>1</code>로 설정할지도
+      모른다. 이를 <em><code>1</code>이 아닌 값으로</em> 설정하면
+      무시한다.</p>
+      
+      <p>보통 특별한 MIME type만 압축하려면 <directive module="core"
+      >AddOutputFilterByType</directive> 지시어를 사용한다.
+      다음 설정은 html 파일만을 압축한다:</p>
+
+      <example>
+        &lt;Directory "/your-server-root/manual"&gt;<br />
+        <indent>
+          AddOutputFilterByType DEFLATE text/html<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+
+      <p>압축한 파일을 처리하지 못하는 브라우저에게는 압축하지않고
+      보내길위해 <directive module="mod_setenvif"
+      >BrowserMatch</directive> 지시어에 <code>no-gzip</code>을
+      설정한다. 최적의 결과를 얻기위해 <code>no-gzip</code>과
+      <code>gzip-only-text/html</code>을 같이 사용할 수 있다.
+      이 경우 전자가 후자를 무시한다. 위 절의 <a
+      href="#recommended">설정 예제</a> 일부를 살펴보자:</p>
+
+      <example>
+        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
+        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+      </example>
+
+      <p>먼저 <code>User-Agent</code> 문자열을 보고 Netscape
+      Navigator 버전 4.x인지 검사한다. 이 버전은 <code>text/html</code>이
+      아닌 type의 압축을 처리하지 못한다. 버전 4.06, 4.07, 4.08은
+      html 파일 압축을 처리하는대도 문제가 있다. 그래서 우리는
+      이 경우 deflate 필터를 완전히 사용하지않는다.</p>
+
+      <p>세번째 <directive module="mod_setenvif">BrowserMatch</directive>
+      지시어는 Microsoft Internet Explorer가 자신을 "Mozilla/4"로
+      알리지만 압축된 요청을 처리할 수 있기때문에 user agent
+      추측을 수정한다. <code>User-Agent</code> 헤더에서 "MSIE"
+      (<code>\b</code>는 "단어 경계"를 뜻한다) 문자열을 발견하면
+      앞에서 설정한 제약을 푼다.</p>
+
+      <note><title>주의</title>
+        <code>DEFLATE</code> 필터는 항상 PHP나 SSI와 같은 RESOURCE
+        필터 뒤에 들어간다. 또, 내부 하위요청(subrequest)에 영향을
+        주지 않는다.
+      </note>
+    </section>
+
+    <section id="input"><title>입력 압축풀기</title>
+      <p><module>mod_deflate</module> 모듈은 요청의 gzip 압축된
+      내용을 푸는 필터도 제공한다. 이 기능을 사용하려면 다음과
+      같이 <directive module="core">SetInputFilter</directive>나
+      <directive module="mod_mime">AddInputFilter</directive>를
+      사용하여 입력필터순서에 <code>DEFLATE</code> 필터를
+      추가해야한다:</p>
+
+      <example>
+        &lt;Location /dav-area&gt;<br />
+        <indent>
+          SetInputFilter DEFLATE<br />
+        </indent>
+        &lt;/Location&gt;
+      </example>
+      
+      <p>요청에 <code>Content-Encoding: gzip</code> 헤더가 있다면
+      자동으로 압축된 내용을 푼다. gzip 요청을 할 수 있는
+      브라우저는 드물다. 그러나 어떤 <a
+      href="http://www.webdav.org">WebDAV</a> 클라이언트와 같은
+      특별한 프로그램은 요청 압축을 지원한다.</p>
+
+      <note type="warning"><title>Content-Length에 대한 주의</title>
+        <p>요청 내용을 직접 살펴본다면, <em><code>Content-Length</code>
+        헤더를 믿지마라!</em> Content-Length 헤더는 클라이언트가
+        보낸 내용의 길이이지, 압축을 푼 결과의 바이트수가
+        <em>아니다</em>.</p>
+      </note>
+    </section>
+</section>
+
+<section id="proxies"><title>프록시 서버 다루기</title>
+
+    <p><module>mod_deflate</module> 모듈은 프록시가 자신이 캐쉬한
+    응답을 적절한 <code>Accept-Encoding</code> 요청 헤더를 보낸
+    클라이언트에게만 보내도록 <code>Vary:
+    Accept-Encoding</code> HTTP 응답 헤더를 추가한다. 그래서
+    압축된 내용을 이해할 수 없는 클라이언트에 압축된 내용을
+    보내지않도록 한다.</p>
+
+    <p>예를 들어, <code>User-Agent</code> 헤더 등에 따라 특별히
+    필터 적용을 취소한다면, 프록시에게 이러한 제한을 알려주기위해
+    직접 <code>Vary</code> 헤더에 추가해야 한다. 예를 들어,
+    설정이 <code>User-Agent</code>에 따라 <code>DEFLATE</code>
+    필터를 추가한다면 다음을 사용한다:</p>
+
+    <example>
+      Header append Vary User-Agent
+    </example>
+    
+    <p>요청 헤더외의 다른 정보에 (<em>예를 들어</em>, HTTP 버전)
+    따라 압축 여부가 결정된다면, <code>Vary</code> 헤더값을
+    <code>*</code>로 설정해야 한다. 그러면 표준을 따르는 프록시는
+    캐싱을 하지 않게 된다.</p>
+
+    <example><title>예제</title>
+      Header set Vary *
+    </example>
+</section>
+
+<directivesynopsis>
+<name>DeflateFilterNote</name>
+<description>압축률을 로그에 기록한다</description>
+<syntax>DeflateFilterNote [<var>type</var>] <var>notename</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility><var>type</var> is available since Apache 2.0.45</compatibility>
+
+<usage>
+    <p><directive>DeflateFilterNote</directive> 지시어는 요청의
+    압축률을 로그에 기록하는 기호를 지정한다. 기호 이름은 지시어로
+    지정한 값이다. 통계를 위해 <a href="../logs.html#accesslog">접근
+    로그</a>에서 기호를 사용할 수 있다.</p>
+
+    <example><title>예제</title>
+      DeflateFilterNote ratio<br />
+      <br />
+      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
+      CustomLog logs/deflate_log deflate
+    </example>
+
+    <p>로그에서 더 정확한 값을 추출하려면 <var>type</var> 아규먼트로
+    기록할 자료를 선택한다. <var>type</var>는 다음중 하나이다:</p>
+
+    <dl>
+      <dt><code>Input</code></dt>
+      <dd>필터 입력스트림의 바이트수를 저장한다.</dd>
+
+      <dt><code>Output</code></dt>
+      <dd>필터 출력스트림의 바이트수를 저장한다..</dd>
+
+      <dt><code>Ratio</code></dt>
+      <dd>압축률을 (<code>output/input * 100</code>) 저장한다.
+       <var>type</var> 아규먼트를 생략하면 사용하는 기본값이다.</dd>
+    </dl>
+
+    <p>그래서 이렇게 로그에 기록할 수 있다:</p>
+
+    <example><title>정밀한 로그</title>
+      DeflateFilterNote Input instream<br />
+      DeflateFilterNote Output outstream<br />
+      DeflateFilterNote Ratio ratio<br />
+      <br />
+      LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate<br />
+      CustomLog logs/deflate_log deflate
+    </example>
+</usage>
+<seealso><module>mod_log_config</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateBufferSize</name>
+<description>zlib이 한번에 압축할 크기</description>
+<syntax>DeflateBufferSize <var>value</var></syntax>
+<default>DeflateBufferSize 8096</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>DeflateBufferSize</directive> 지시어는 zlib이
+    한번에 압축할 바이트수를 지정한다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateWindowSize</name>
+<description>Zlib 압축 window size</description>
+<syntax>DeflateWindowSize <var>value</var></syntax>
+<default>DeflateWindowSize 15</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>DeflateWindowSize</directive> 지시어는 zlib
+    압축 window size를 (1과 15 사이의 값) 지정한다. 일반적으로
+    window size가 클수록 압축률이 증가한다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>DeflateMemLevel</name>
+<description>zlib이 압축할때 사용하는 메모리량</description>
+<syntax>DeflateMemLevel <var>value</var></syntax>
+<default>DeflateMemLevel 9</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>DeflateMemLevel</directive> 지시어는 zlib이
+    압축할때 얼마만큼 메모리를 사용할지 결정한다. (1과 9 사이의
+    값)</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateCompressionLevel</name>
+<description>출력을 얼만큼 압축하는가</description>
+<syntax>DeflateCompressionLevel <var>value</var></syntax>
+<default>Zlib's default</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>This directive is available since Apache 2.0.45</compatibility>
+
+<usage>
+    <p><directive>DeflateCompressionLevel</directive> 지시어는
+        사용할 압축수준을 선택한다. 값이 클수록 압축률이 증가하지만,
+        CPU를 더 많이 사용한다.</p>
+    <p>(가장 덜 압축) 1과 (가장 많이 압축) 9 사이의 값을 지정한다.</p>
+</usage>
+</directivesynopsis>
+
+
+</modulesynopsis>
+

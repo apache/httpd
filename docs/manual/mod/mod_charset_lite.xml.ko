@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.7 -->
+<modulesynopsis metafile="mod_charset_lite.xml.meta">
+
+<name>mod_charset_lite</name>
+<description>문자집합 변환을 지정</description>
+<status>Experimental</status>
+<sourcefile>mod_charset_lite.c</sourcefile>
+<identifier>charset_lite_module</identifier>
+
+<summary>
+    <p>이 모듈은 <strong>실험적인</strong> 모듈이고, 주의있게
+    사용해야 한다. 원하는 동작을 하는지
+    <module>mod_charset_lite</module> 설정을 시험해봐라.</p>
+
+    <p><module>mod_charset_lite</module>를 사용하여 문서 원본의
+    문자집합과 문서를 클라이언트로 보내기 전에 변환할 문자집합을
+    지정할 수 있다. <module>mod_charset_lite</module>는 직접
+    자료를 변환하지않고 대신 아파치에게 변환하라고 요청한다.
+    <module>mod_charset_lite</module>는 EBCDIC과 ASCII 환경에서
+    사용할 수 있다. EBCDIC 환경에서 아파치는 보통 아파치 프로세스의
+    코드페이지에서 ISO-8859-1 문자집합으로 문서를 변환한다.
+    <module>mod_charset_lite</module>를 사용하여 다른 변환을
+    지시할 수 있다. ASCII 환경에서 아파치는 기본적으로 변환을
+    하지 않기때문에, 어떤 변환을 위해서는
+    <module>mod_charset_lite</module>가 필요하다.</p>
+
+    <p>이 모듈은 러시아판 아파치의 <code>mod_charset</code>이
+    제공하는 설정의 일부를 제공한다.</p>
+</summary>
+
+<section id="problems"><title>일반적인 문제점</title>
+
+    <section><title>잘못된 문자집합 이름</title>
+
+      <p><module>mod_charset_lite</module>를 사용하는 시스템의
+      ARP 번역기능이 <directive
+      module="mod_charset_lite">CharsetSourceEnc</directive>와
+      <directive module="mod_charset_lite">CharsetDefault</directive>의
+      파라미터인 문자집합 이름을 처리할 수 있어야 한다. 문자집합
+      이름은 표준화되지 않았고, http 헤더에 사용하는 값과 항상
+      같지는 않다. 현재 APR은 iconv(3)만을 사용하기때문에,
+      다음과 같이 iconv(1) 프로그램을 사용하여 특정 문자집합
+      이름을 사용할 수 있는지 쉽게 알 수 있다:</p>
+
+      <example>
+        iconv -f charsetsourceenc-value -t charsetdefault-value
+      </example>
+    </section>
+
+    <section><title>내용과 변환규칙의 문자집합이 서로 다름</title>
+
+      <p>변환규칙이 상황에 맞지않으면 다음과 같은 여러 방식으로
+      변환이 실패할 수 있다:</p>
+
+      <ul>
+      <li>변환기능이 실패 반환코드를 반환하고 연결이 끊어질
+      수 있다.</li>
+
+      <li>입력버퍼를 변환하지 못할때 출력버퍼에 대신 특별한
+      문자를 (예, 물음표) 적을 수 있다.</li>
+      </ul>
+    </section>
+</section>
+
+<directivesynopsis>
+<name>CharsetSourceEnc</name>
+<description>파일 원본의 문자집합</description>
+<syntax>CharsetSourceEnc <var>charset</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p><directive>CharsetSourceEnc</directive> 지시어는 지시어를
+    사용한 위치에 있는 파일들 원본의 문자집합을 지정한다.</p>
+
+    <p><var>charset</var> 아규먼트에는 APR이 지원하는 문자집합
+    이름을 사용해야 한다. 일반적으로 iconv가 지원하는 문자집합을
+    의미한다.</p>
+    
+    <example><title>예제</title>
+      &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
+      <indent>
+        CharsetSourceEnc  UTF-16BE<br />
+        CharsetDefault    ISO-8859-1<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>Solaris 8의 iconv가 이 예제의 문자집합을 지원한다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CharsetDefault</name>
+<description>변환할 문자집합</description>
+<syntax>CharsetDefault <var>charset</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p><directive>CharsetDefault</directive> 지시어는 지시어를
+    사용한 위치에 있는 원본을 변환할 문자집합을 지정한다.</p>
+
+    <p><var>charset</var> 아규먼트에는 APR이 지원하는 문자집합
+    이름을 사용해야 한다. 일반적으로 iconv가 지원하는 문자집합을
+    의미한다.</p>
+
+    <example><title>예제</title>
+      &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
+      <indent>
+        CharsetSourceEnc  UTF-16BE<br />
+        CharsetDefault    ISO-8859-1<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CharsetOptions</name>
+<description>문자집합 변환 기능을 설정</description>
+<syntax>CharsetOptions <var>option</var> [<var>option</var>] ...</syntax>
+<default>CharsetOptions DebugLevel=0 NoImplicitAdd</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p><directive>CharsetOptions</directive> 지시어는
+    <module>mod_charset_lite</module>의 기능을 설정한다.
+    <var>Option</var>에는 아래 항목들을 사용할 수 있다</p>
+
+    <dl>
+      <dt><code>DebugLevel=<var>n</var></code></dt>
+
+      <dd><code>DebugLevel</code> 키워드는
+      <module>mod_charset_lite</module>가 기록하는 디버그문구의
+      수준을 설정한다. 기본적으로 어떤 것도 기록하지 않는다.
+      이는 <code>DebugLevel=0</code>과 같다. 높은 숫자를 사용할수록
+      더 많은 디버그문구를 기록하게되어 서버 성능이 떨어진다.
+      숫자값의 실제 의미는 <code>mod_charset_lite.c</code> 앞부분의
+      DBGLVL_ 상수 정의를 참고하라.</dd>
+
+      <dt><code>ImplicitAdd | NoImplicitAdd</code></dt>
+
+      <dd><code>ImplicitAdd</code> 키워드는 내용을 변환할
+      문자집합을 지정하면 자동으로 <module>mod_charset_lite</module>를
+      필터에 추가한다. <directive module="mod_mime"
+      >AddOutputFilter</directive> 지시어로 필터순서를 직접
+      지정한다면, <code>NoImplicitAdd</code>를 사용하여
+      <module>mod_charset_lite</module>가 자동으로 필터에
+      추가되지않도록 해야 한다.</dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

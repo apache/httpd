@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.9 -->
+<modulesynopsis metafile="mod_cgi.xml.meta">
+
+<name>mod_cgi</name>
+<description>CGI 스크립트 실행</description>
+<status>Base</status>
+<sourcefile>mod_cgi.c</sourcefile>
+<identifier>cgi_module</identifier>
+
+<summary>
+    <!-- XXX: Should mention Options ExecCGI
+          is the link to howto/cgi not sufficient? -nd
+    -->
+
+    <p>서버는 mime type이 <code>application/x-httpd-cgi</code>이거나
+    (아파치 1.1 이후) 핸들러가 <code>cgi-script</code>인 모든
+    파일을 CGI 스크립트로 인식하여, 실행하고, 그 결과를 클라이언트에게
+    보낸다. 파일이 <directive module="mod_mime">AddType</directive>
+    지시어로 지정한 확장자를 가지거나, <directive
+    module="mod_alias">ScriptAlias</directive> 디렉토리 안에
+    있으면 CGI로 처리된다.</p>
+
+    <p>서버는 CGI 스크립트를 부를때 <code>DOCUMENT_ROOT</code>라는
+    환경변수를 추가한다. 이 변수는 <directive
+    module="core">DocumentRoot</directive> 설정값을 가진다.</p>
+
+    <p>아파치에서 CGI 스크립트를 사용하는 방법에 대한 소개는
+    <a href="../howto/cgi.html">CGI로 동적내용</a> 투토리얼을
+    참고하라.</p>
+
+    <p>유닉스에서 다중쓰레드 MPM을 사용한다면 이 모듈대신
+    <module>mod_cgid</module> 모듈을 사용해야 한다. 사용자
+    입장에서 이 두 모듈은 기본적으로 동일하다.</p>
+</summary>
+
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
+<seealso><directive module="core">Options</directive></seealso>
+<seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><a href="../suexec.html">다른 사용자 ID로 CGI 프로그램
+실행하기</a></seealso>
+<seealso><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 표준</a></seealso>
+
+<section id="env"><title>CGI 환경변수</title>
+    <p>서버는 다음과 같은 방법으로 <a
+    href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 표준</a>이 설명하는
+    CGI 환경변수를 설정한다:</p>
+
+    <dl>
+      <dt>PATH_INFO</dt>
+
+      <dd>이 변수는 <directive module="core"
+      >AcceptPathInfo</directive> 지시어를 직접 <code>off</code>로
+      지정한 경우에만 설정한다. <directive
+      >AcceptPathInfo</directive>가 없는 경우 서버는 기본적으로
+      경로 정보가 있는 요청에 대해 404 NOT FOUND 오류를 내지만,
+      <module>mod_cgi</module>는 경로 정보를 (URI에서 스크립트
+      파일명 뒤에 나오는 <code>/more/path/info</code>) 받는다.
+      <directive>AcceptPathInfo</directive> 지시어를 생략하면
+      <module>mod_cgi</module> 요청에 대해서 <directive
+      module="core">AcceptPathInfo</directive>를 <code>On</code>으로
+      설정한 것과 같다.</dd>
+
+      <dt>REMOTE_HOST</dt>
+
+      <dd>이 변수는 <directive module="core"
+      >HostnameLookups</directive>가 <code>on</code>이고 (기본값은
+      off), 접속한 호스트 주소를 역DNS 검색하여 실제 호스트명을
+      찾은 경우에만 설정한다.</dd>
+
+      <dt>REMOTE_IDENT</dt>
+
+      <dd>이 변수는 <directive module="core"
+      >IdentityCheck</directive>가 <code>on</code>이고, 접속한
+      호스트가 ident 프로토콜을 지원하는 경우에만 설정한다.
+      쉽게 이 값을 속일 수 있기때문에 이 변수의 내용을 믿으면
+      안되고, 클라이언트와 서버 사이에 프록시가 있다면 변수
+      내용이 완전히 무의미함을 주의하라.</dd>
+
+      <dt>REMOTE_USER</dt>
+
+      <dd>CGI 스크립트가 인증을 거쳐야하는 경우에만 설정한다.</dd>
+    </dl>
+</section>
+
+<section id="cgi-debug"><title>CGI 디버깅</title>
+    <p>어디에서 잘못 실행되는지 스크립트의 출력을 (표준출력과
+    표준오류) 볼 수 없기때문에 CGI 스크립트는 전통적으로 디버깅하기
+    어려웠다. 아파치 1.2 이후에 추가된 지시어를 사용하면 발생한
+    오류를 자세히 로그에 남길 수 있다.</p>
+
+    <section><title>CGI 로그파일 형식</title>
+      <p>CGI 오류로그는 정상적으로 실행하지 못한 CGI를 기록한다.
+      오류가 발생한 CGI 스크립트는 로그에 여러 줄의 정보를 남긴다.
+      첫번째 두 줄은 항상 아래와 같은 형식이다:</p>
+
+      <example>
+        %% [<var>시간</var>] <var>요청줄</var><br />
+        %% <var>HTTP-상태</var> <var>CGI-스크립트-파일명</var>
+      </example>
+
+      <p>CGI 스크립트를 실행할 수 없는 오류인 경우 로그파일에
+      추가로 두 줄을 더 기록한다:</p>
+
+      <example>
+        %%error<br />
+        <var>오류문</var>
+      </example>
+
+      <p>스크립트가 (보통 스크립트의 버그때문에) 잘못된 헤더
+      정보를 반환하는 경우, 다음 내용을 로그에 기록한다:</p>
+
+      <example>
+        %request<br />
+        <var>받은 모든 HTTP 헤더</var><br />
+        <var>(있다면) POST나 PUT 내용</var><br />
+        %response<br />
+        <var>CGI 스크립트 출력의 모든 헤더</var><br />
+        %stdout<br />
+        <var>CGI 표준출력</var><br />
+        %stderr<br />
+        <var>CGI 표준오류</var><br />
+      </example>
+
+      <p>(스크립트가 표준출력이나 표준오류에 아무 내용도 출력하지
+      않았다면 %stdout과 %stderr 부분은 생략될 수 있다).</p>
+    </section>
+</section>
+
+<directivesynopsis>
+<name>ScriptLog</name>
+<description>CGI 스크립트 오류로그파일의 위치</description>
+<syntax>ScriptLog <var>file-path</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<modulelist><module>mod_cgi</module><module>mod_cgid</module>
+</modulelist>
+
+<usage>
+    <p><directive>ScriptLog</directive> 지시어는 CGI 스크립트
+    오류로그파일을 지정한다. <directive>ScriptLog</directive>를
+    사용하지않으면 오류로그를 만들지 않는다. 사용하면 아규먼트로
+    지정한 파일에 CGI 오류를 기록한다. 상대경로를 지정하면
+    <directive module="core">ServerRoot</directive>에 상대경로로
+    받아들인다.
+    </p>
+
+    <example><title>예제</title>
+      ScriptLog logs/cgi_log
+    </example>
+
+    <p>자식 프로세스를 실행하는 사용자, <em>즉</em> <directive
+    module="mpm_common">User</directive> 지시어로 지정한 사용자
+    권한으로 로그를 연다. 그래서 그 사용자가 스크립트 로그가
+    있는 디렉토리에 쓰기권한이 있던지, 직접 미리 파일을 만들어서
+    그 사용자에게 쓰기권한을 줘야 한다. 스크립트 로그를 주 로그
+    디렉토리에 둔다면 자식 프로세스를 실행하는 사용자에게 쓰기권한을
+    주기위해 디렉토리 권한을 변경하지 <strong>마라</strong>.</p>
+
+    <p>스크립트 로그는 CGI 스크립트를 작성할때 디버깅을 위한
+    용도이지 서버를 실행하는 동안 계속 사용하기위함이 아님을
+    주의하라. 속도와 효율성면에서 최적화가 안되있고, 설계한
+    목적이외의 방법으로 사용하면 보안상 문제가 될 수 있다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptLogLength</name>
+<description>CGI 스크립트 로그파일의 크기 제한</description>
+<syntax>ScriptLogLength <var>bytes</var></syntax>
+<default>ScriptLogLength 10385760</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<modulelist><module>mod_cgi</module><module>mod_cgid</module>
+</modulelist>
+
+<usage>
+    <p><directive>ScriptLogLength</directive>는 CGI 스크립트
+    로그파일의 크기를 제한한다. CGI 오류가 발생할때마다 (모든
+    요청 헤더, 모든 스크립트 출력 등) 많은 정보가 로그에
+    기록되기때문에 파일이 매우 커질 수 있다. 파일이 무한히 커지는
+    문제를 막기위해 이 지시어를 사용하여 CGI 로그파일의 최대
+    파일크기를 설정한다. 파일의 크기가 설정한 값을 넘으면 더
+    이상 정보를 기록하지않는다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptLogBuffer</name>
+<description>스크립트 로그에 기록할 PUT 혹은 POST 요청의 최대량</description>
+<syntax>ScriptLogBuffer <var>bytes</var></syntax>
+<default>ScriptLogBuffer 1024</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<modulelist><module>mod_cgi</module><module>mod_cgid</module>
+</modulelist>
+
+<usage>
+    <p>큰 내용을 받아서 로그파일이 너무 빨리 커지는 현상을 막기위해
+    파일에 기록할 PUT 혹은 POST 내용의 크기를 제한한다. 기본적으로
+    1024 바이트까지 로그에 기록하지만, 이 지시어를 사용하여
+    수정할 수 있다.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
