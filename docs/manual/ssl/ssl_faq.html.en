@@ -127,17 +127,6 @@ author.</p>
     of the Wassenaar Agreement and its <q>List of Dual Use Goods and
     Technologies And Munitions List</q>.</p>
 
-    
-    <p>Additionally the Wassenaar Agreement itself has no direct consequence for
-    exporting cryptography software. What is actually allowed or forbidden to
-    be exported from the countries has still to be defined in the local laws
-    of each country. And at least according to official press releases from
-    the German BMWi (see <a href="http://www.bmwi.de/presse/1998/1208prm2.html">here</a>) and the
-    Switzerland Bawi (see <a href="http://jya.com/wass-ch.htm">here</a>) there
-    will be no forthcoming export restriction for free cryptography software
-    for their countries. Remember that mod_ssl is created in Germany and
-    distributed from Switzerland.</p>
-    
     <p>So, mod_ssl and OpenSSL are not affected by the Wassenaar Agreement.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
