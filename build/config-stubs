@@ -1,8 +1,10 @@
 #!/bin/sh
 
-dir=$1
-for stubdir in `find $dir -type d`; do
-    if [ -r $stubdir/config.m4 ]; then
-        echo "sinclude($stubdir/config.m4)"
+for configfiles in `find . -name "config*.m4" | \
+         sed 's#\(.*\)\/config\(.*\)\.m4#\2config.m4\1#' | \
+         sort -g | \
+         sed 's#\(.*\)config.m4\(.*\)#\2/config\1.m4#g'`; do
+    if [ -r $configfiles ]; then
+        echo "sinclude($configfiles)"
     fi
 done
