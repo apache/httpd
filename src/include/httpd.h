@@ -665,7 +665,7 @@ char *escape_path_segment(pool *p, const char *s);
 char *os_escape_path(pool *p,const char *path,int partial);
 #define escape_uri(ppool,path) os_escape_path(ppool,path,1)
 extern char *escape_html(pool *p, const char *s);
-char *construct_server(pool *p, const char *hostname, int port);
+char *construct_server(pool *p, const char *hostname, unsigned port);
 char *construct_url (pool *p, const char *path, const server_rec *s);     
 char *escape_shell_cmd (pool *p, const char *s);
      
@@ -700,6 +700,6 @@ int can_exec(const struct stat *);
 void chdir_file(const char *file);
      
 char *get_local_host(pool *);
-unsigned long get_virthost_addr (const char *hostname, short int *port);
+unsigned long get_virthost_addr (const char *hostname, unsigned short *port);
 
 extern time_t restart_time;

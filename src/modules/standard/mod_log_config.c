@@ -330,7 +330,7 @@ char *log_virtual_host (request_rec *r, char *a) {
 char *log_server_port (request_rec *r, char *a) {
     char portnum[22];
 
-    ap_snprintf(portnum, sizeof(portnum), "%d", r->server->port);
+    ap_snprintf(portnum, sizeof(portnum), "%u", r->server->port);
     return pstrdup(r->pool, portnum);
 }
 

@@ -547,7 +547,8 @@ void parse_uri (request_rec *r, const char *uri)
 
 const char *check_fulluri (request_rec *r, const char *uri) {
   char *name, *host;
-  int i, port;
+  int i;
+  unsigned port;
 
   /* This routine parses full URLs, if they match the server */
   if (strncmp(uri, "http://", 7)) return uri;
@@ -674,7 +675,7 @@ void get_mime_headers (request_rec *r)
 static void check_hostalias (request_rec *r) {
   const char *hostname=r->hostname;
   char *host = getword(r->pool, &hostname, ':');	/* Get rid of port */
-  int port = (*hostname) ? atoi(hostname) : 80;
+  unsigned port = (*hostname) ? atoi(hostname) : 80;
   server_rec *s;
   int l;
 

@@ -1108,7 +1108,7 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
     char *ports;
-    int port;
+    unsigned port;
 
     if (cmd->server->is_virtual) return "Listen not allowed in <VirtualHost>";
     ports=strchr(ips, ':');

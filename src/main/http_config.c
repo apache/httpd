@@ -849,7 +849,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
  * *paddr is the variable used to keep track of **paddr between calls
  * port is the default port to assume
  */
-static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, int port)
+static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, unsigned port)
 {
     struct hostent *hep;
     unsigned long my_addr;

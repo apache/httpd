@@ -367,7 +367,7 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
   char my_base[SMALLBUF] = {'\0'};
 
   if ( ! strcasecmp(value, "map" ) || ! strcasecmp(value, "menu") ) {
-    if (r->server->port == 80 ) { 
+    if (r->server->port == DEFAULT_PORT ) { 
       ap_snprintf(url, SMALLBUF,
 		"http://%s%s", r->server->server_hostname, r->uri);
     }
@@ -411,10 +411,10 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
       url[SMALLBUF-1] = '\0';
     }         
     else {                  
-      if (r->server->port == 80 ) {  
+      if (r->server->port == DEFAULT_PORT ) {  
 	ap_snprintf(url, SMALLBUF, "http://%s/", r->server->server_hostname);
       }            
-      if (r->server->port != 80 ) {
+      if (r->server->port != DEFAULT_PORT ) {
 	ap_snprintf(url, SMALLBUF, "http://%s:%d/",
 		r->server->server_hostname, r->server->port);
       }                     /* no base, no value: pick a simple default */

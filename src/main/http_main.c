@@ -1476,8 +1476,8 @@ void set_signals()
 pool *pconf;			/* Pool for config stuff */
 pool *ptrans;			/* Pool for per-transaction stuff */
 
-server_rec *find_virtual_server (struct in_addr server_ip, int port,
-				 server_rec *server)
+static server_rec *find_virtual_server (struct in_addr server_ip,
+				unsigned port, server_rec *server)
 {
     server_rec *virt;
     server_addr_rec *sar;
@@ -1513,7 +1513,7 @@ void default_server_hostnames(server_rec *s)
     int n;
     server_addr_rec *sar;
     int has_default_vhost_addr;
-    int mainport = s->port;
+    unsigned mainport = s->port;
     int from_local=0;  
 
     /* Main host first */

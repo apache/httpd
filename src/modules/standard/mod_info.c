@@ -312,7 +312,7 @@ int display_info(request_rec *r) {
 			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>User/Group:</strong> <tt>%s(%d)/%d</tt><br>\n",user_name,(int)user_id,(int)group_id);
 			rputs(buf,r);
-			ap_snprintf(buf, sizeof(buf), "<strong>Hostname/port:</strong> <tt>%s:%d</tt><br>\n",serv->server_hostname,serv->port);
+			ap_snprintf(buf, sizeof(buf), "<strong>Hostname/port:</strong> <tt>%s:%u</tt><br>\n",serv->server_hostname,serv->port);
 			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>Daemons:</strong> <tt>start: %d &nbsp;&nbsp; min idle: %d &nbsp;&nbsp; max idle: %d &nbsp;&nbsp; max: %d</tt><br>\n",daemons_to_start,daemons_min_free,daemons_max_free,daemons_limit);
 			rputs(buf,r);

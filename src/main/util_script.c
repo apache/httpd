@@ -176,7 +176,7 @@ void add_common_vars(request_rec *r)
 	    table_set (e, http2env (r->pool, hdrs[i].key), hdrs[i].val);
     }
     
-    ap_snprintf(port, sizeof(port), "%d", s->port);
+    ap_snprintf(port, sizeof(port), "%u", s->port);
 
     if(!(env_path = getenv("PATH")))
         env_path=DEFAULT_PATH;

@@ -782,14 +782,14 @@ unescape_url(char *url) {
     else return OK;
 }
 
-char *construct_server(pool *p, const char *hostname, int port) {
+char *construct_server(pool *p, const char *hostname, unsigned port) {
     char portnum[22];		
 	/* Long enough, even if port > 16 bits for some reason */
   
-    if (port == 80)
+    if (port == DEFAULT_PORT)
 	return (char *)hostname;
     else {
-        ap_snprintf (portnum, sizeof(portnum), "%d", port);
+        ap_snprintf (portnum, sizeof(portnum), "%u", port);
 	return pstrcat (p, hostname, ":", portnum, NULL);
     }
 }
@@ -1142,7 +1142,7 @@ struct in_addr get_local_addr(int sd) {
  * Parses a host of the form <address>[:port]
  * :port is permitted if 'port' is not NULL
  */
-unsigned long get_virthost_addr (const char *w, short int *ports) {
+unsigned long get_virthost_addr (const char *w, unsigned short *ports) {
     struct hostent *hep;
     unsigned long my_addr;
     char *p;
