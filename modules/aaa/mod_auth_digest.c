@@ -145,8 +145,8 @@ typedef struct digest_config_struct {
 
 #define DFLT_ALGORITHM  "MD5"
 
-#define DFLT_NONCE_LIFE APR_TIME_FROM_SEC(300)
-#define NEXTNONCE_DELTA APR_TIME_FROM_SEC(30)
+#define DFLT_NONCE_LIFE apr_time_from_sec(300)
+#define NEXTNONCE_DELTA apr_time_from_sec(30)
 
 
 #define NONCE_TIME_LEN  (((sizeof(apr_time_t)+2)/3)*4)
@@ -543,7 +543,7 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
                            t, NULL);
     }
 
-    ((digest_config_rec *) config)->nonce_lifetime = APR_TIME_FROM_SEC(lifetime);
+    ((digest_config_rec *) config)->nonce_lifetime = apr_time_from_sec(lifetime);
     return NULL;
 }
 
