@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) It's OK for a semop to return EINTR, just loop around and try
+     again.  [Dean Gaudet]
+
   *) Fix configuration engine re-entrant hangups, which solve a
      handful of problems seen with mod_perl <Perl> configuration sections
      [Salvador Ortiz Garcia <sog@msg.com.mx>]

@@ -741,17 +741,21 @@ static void accept_mutex_init(pool *p)
 
 static void accept_mutex_on(void)
 {
-    if (semop(sem_id, &op_on, 1) < 0) {
-	perror("accept_mutex_on");
-	clean_child_exit(APEXIT_CHILDFATAL);
+    while (semop(sem_id, &op_on, 1) < 0) {
+	if (errno != EINTR) {
+	    perror("accept_mutex_on");
+	    clean_child_exit(APEXIT_CHILDFATAL);
+	}
     }
 }
 
 static void accept_mutex_off(void)
 {
-    if (semop(sem_id, &op_off, 1) < 0) {
-	perror("accept_mutex_off");
-	clean_child_exit(APEXIT_CHILDFATAL);
+    while (semop(sem_id, &op_off, 1) < 0) {
+	if (errno != EINTR) {
+	    perror("accept_mutex_off");
+	    clean_child_exit(APEXIT_CHILDFATAL);
+	}
     }
 }
 
