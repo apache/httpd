@@ -3511,7 +3511,7 @@ static const char *core_method(const request_rec *r)
 static unsigned short core_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 
-static void core_register_filter(request_rec *r)
+static void core_insert_filter(request_rec *r)
 {
     int i;
     core_dir_config *conf = (core_dir_config *)
@@ -3546,10 +3546,10 @@ static void register_hooks(void)
     ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
 
-    /* define the CORE filter, then register a hook to insert it at
-     * request-processing time.
+    /* register the core's insert_filter hook and register core-provided
+     * filters
      */
-    ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_insert_filter(core_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
     ap_register_input_filter("HTTP_IN", http_filter, AP_FTYPE_CONNECTION);
     ap_register_input_filter("CORE_IN", core_input_filter, AP_FTYPE_CONNECTION);
     ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_CONNECTION + 1);
