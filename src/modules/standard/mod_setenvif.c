@@ -154,12 +154,22 @@ module MODULE_VAR_EXPORT setenvif_module;
  * the URI has been mapped to a file and we have anything from the
  * .htaccess file and <Directory> and <Files> containers).
  */
-static void *create_setenvif_config(pool *p, char *dummy)
+static void *create_setenvif_config(pool *p)
 {
     sei_cfg_rec *new = (sei_cfg_rec *) ap_palloc(p, sizeof(sei_cfg_rec));
 
     new->conditionals = ap_make_array(p, 20, sizeof(sei_entry));
     return (void *) new;
+}
+
+static void *create_setenvif_config_svr(pool *p, server_rec *dummy)
+{
+    return create_setenvif_config(p);
+}
+
+static void *create_setenvif_config_dir(pool *p, char *dummy)
+{
+    return create_setenvif_config(p);
 }
 
 static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
@@ -191,13 +201,15 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     int i;
     int beenhere = 0;
     unsigned icase;
+    int perdir;
 
     /*
      * Determine from our context into which record to put the entry.
      * cmd->path == NULL means we're in server-wide context; otherwise,
      * we're dealing with a per-directory setting.
      */
-    sconf = (cmd->path != NULL)
+    perdir = (cmd->path != NULL);
+    sconf = perdir
 	? (sei_cfg_rec *) mconfig
 	: (sei_cfg_rec *) ap_get_module_config(cmd->server->module_config,
 					       &setenvif_module);
@@ -354,9 +366,11 @@ static int match_headers(request_rec *r)
     table_entry *elts;
     const char *val;
     int i, j;
+    int perdir;
     char *last_name;
 
-    if (ap_table_get(r->notes, SEI_MAGIC_HEIRLOOM) == NULL) {
+    perdir = (ap_table_get(r->notes, SEI_MAGIC_HEIRLOOM) != NULL);
+    if (! perdir) {
 	ap_table_set(r->notes, SEI_MAGIC_HEIRLOOM, "post-read done");
 	sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
 						      &setenvif_module);
@@ -439,9 +453,9 @@ module MODULE_VAR_EXPORT setenvif_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */
-    create_setenvif_config,     /* dir config creater */
+    create_setenvif_config_dir, /* dir config creater */
     merge_setenvif_config,      /* dir merger --- default is to override */
-    create_setenvif_config,     /* server config */
+    create_setenvif_config_svr, /* server config */
     merge_setenvif_config,      /* merge server configs */
     setenvif_module_cmds,       /* command table */
     NULL,                       /* handlers */
