@@ -537,7 +537,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     apr_pool_t *p = r->pool;
     conn_rec *c = r->connection;
     proxy_conn_rec *backend;
-    apr_socket_t *sock, *local_sock, *remote_sock;
+    apr_socket_t *sock, *local_sock, *remote_sock=NULL;
     apr_sockaddr_t *connect_addr;
     apr_status_t rv;
     conn_rec *origin, *remote;
