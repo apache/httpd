@@ -23,10 +23,9 @@
     <directive module="mpm_common">MaxClients</directive>, which
     controls the maximum total number of threads that may be
     launched.</p>
-
 </summary>
-<seealso><a href="../bind.html">Setting which addresses and
-    ports Apache uses</a></seealso>
+<seealso><a href="../bind.html">Setting which addresses and ports Apache
+uses</a></seealso>
 
 <section id="how-it-works"><title>How it Works</title>
     <p>Each process has a fixed
@@ -93,7 +92,8 @@
     old ones and launching new ones.</p>
 </section>
  
-
+<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Group</name>
