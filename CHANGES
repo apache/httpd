@@ -91,9 +91,6 @@ Changes with Apache 2.1.0-dev
      them via the shell, resolving regressions since 1.3.  PR 28815
      [Ken Coar, Jeff Trawick]
 
-  *) Enable the option to support anonymous shared memory in mod_ldap.
-     This makes the cache work on Linux again. [Graham Leggett]
-
   *) External rewrite map responses are no longer limited to 2048
      bytes.  [André Malo]
 
@@ -413,6 +410,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Enable the option to support anonymous shared memory in mod_ldap.
+     This makes the cache work on Linux again. [Graham Leggett]
 
   *) Enable special ErrorDocument value 'default' which restores the
      canned server response for the scope of the directive.
