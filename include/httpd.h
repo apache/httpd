@@ -223,7 +223,7 @@ extern "C" {
 #endif /* default limit on number of request header fields */
 
 
-/*
+/**
  * The default default character set name to add if AddDefaultCharset is
  * enabled.  Overridden with AddDefaultCharsetName.
  */
@@ -231,24 +231,28 @@ extern "C" {
 
 #endif /* CORE_PRIVATE */
 
+/** default HTTP Server protocol */
 #define AP_SERVER_PROTOCOL "HTTP/1.1"
 
 
 /* ------------------ stuff that modules are allowed to look at ----------- */
 
-/* Define this to be what your HTML directory content files are called */
+/** Define this to be what your HTML directory content files are called */
 #ifndef AP_DEFAULT_INDEX
 #define AP_DEFAULT_INDEX "index.html"
 #endif
 
 
-/* Define this to be what type you'd like returned for files with unknown */
-/* suffixes.  MUST be all lower case. */
+/** 
+ * Define this to be what type you'd like returned for files with unknown 
+ * suffixes.  
+ * @warning MUST be all lower case. 
+ */
 #ifndef DEFAULT_CONTENT_TYPE
 #define DEFAULT_CONTENT_TYPE "text/plain"
 #endif
 
-/* The name of the MIME types file */
+/** The name of the MIME types file */
 #ifndef AP_TYPES_CONFIG_FILE
 #define AP_TYPES_CONFIG_FILE "conf/mime.types"
 #endif
@@ -256,29 +260,38 @@ extern "C" {
 /*
  * Define the HTML doctype strings centrally.
  */
+/** HTML 2.0 Doctype */
 #define DOCTYPE_HTML_2_0  "<!DOCTYPE HTML PUBLIC \"-//IETF//" \
                           "DTD HTML 2.0//EN\">\n"
+/** HTML 3.2 Doctype */
 #define DOCTYPE_HTML_3_2  "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 3.2 Final//EN\">\n"
+/** HTML 4.0 Strict Doctype */
 #define DOCTYPE_HTML_4_0S "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 4.0//EN\"\n" \
                           "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+/** HTML 4.0 Transitional Doctype */
 #define DOCTYPE_HTML_4_0T "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 4.0 Transitional//EN\"\n" \
                           "\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n"
+/** HTML 4.0 Frameset Doctype */
 #define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 4.0 Frameset//EN\"\n" \
                           "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
 
-/* -- Internal representation for a HTTP protocol number, e.g., HTTP/1.1 -- */
+/** Internal representation for a HTTP protocol number, e.g., HTTP/1.1 */
 
 #define HTTP_VERSION(major,minor) (1000*(major)+(minor))
+/** Major part of HTTP protocol */
 #define HTTP_VERSION_MAJOR(number) ((number)/1000)
+/** Minor part of HTTP protocol */
 #define HTTP_VERSION_MINOR(number) ((number)%1000)
 
 /* -------------- Port number for server running standalone --------------- */
 
+/** default HTTP Port */
 #define DEFAULT_HTTP_PORT	80
+/** default HTTPS Port */
 #define DEFAULT_HTTPS_PORT	443
 /**
  * Check whether @a port is the default port for the request @a r.
@@ -299,14 +312,15 @@ extern "C" {
  */
 #define ap_http_method(r)	ap_run_http_method(r)
 
-/* The default string lengths */
+/** The default string lengths */
 #define MAX_STRING_LEN HUGE_STRING_LEN
 #define HUGE_STRING_LEN 8192
 
-/* The size of the server's internal read-write buffers */
+/** The size of the server's internal read-write buffers */
 #define AP_IOBUFSIZE 8192
 
-/* APR_HAS_LARGE_FILES introduces the problem of spliting sendfile into 
+/**
+ * APR_HAS_LARGE_FILES introduces the problem of spliting sendfile into 
  * mutiple buckets, no greater than MAX(apr_size_t), and more granular 
  * than that in case the brigade code/filters attempt to read it directly.
  * ### 4mb is an invention, no idea if it is reasonable.
@@ -314,27 +328,23 @@ extern "C" {
 #define AP_MAX_SENDFILE 16777216
 
 
-/*
+/**
  * Special Apache error codes. These are basically used
  *  in http_main.c so we can keep track of various errors.
- *
- *   APEXIT_OK:
- *     A normal exit
- *   APEXIT_INIT:
- *     A fatal error arising during the server's init sequence
- *   APEXIT_CHILDINIT:
- *     The child died during its init sequence
- *   APEXIT_CHILDFATAL:
+ *        
+ */
+/** a normal exit */
+#define APEXIT_OK		0x0
+/** A fatal error arising during the server's init sequence */
+#define APEXIT_INIT		0x2
+/**  The child died during its init sequence */
+#define APEXIT_CHILDINIT	0x3
+/** 
  *     A fatal error, resulting in the whole server aborting.
  *     If a child exits with this error, the parent process
  *     considers this a server-wide fatal error and aborts.
- *                 
  */
-#define APEXIT_OK		0x0
-#define APEXIT_INIT		0x2
-#define APEXIT_CHILDINIT	0x3
 #define APEXIT_CHILDFATAL	0xf
-
 
 #ifndef AP_DECLARE
 /**
@@ -369,11 +379,18 @@ extern "C" {
 # define AP_MODULE_DECLARE_DATA
 #endif
 
-/* modules should not used functions marked AP_CORE_DECLARE
- * or AP_CORE_DECLARE_NONSTD */
+/**
+ * @internal
+ * modules should not used functions marked AP_CORE_DECLARE
+ */
 #ifndef AP_CORE_DECLARE
 # define AP_CORE_DECLARE	AP_DECLARE
 #endif
+/**
+ * @internal
+ * modules should not used functions marked AP_CORE_DECLARE_NONSTD
+ */
+
 #ifndef AP_CORE_DECLARE_NONSTD
 # define AP_CORE_DECLARE_NONSTD	AP_DECLARE_NONSTD
 #endif
@@ -397,16 +414,19 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
  */
 AP_DECLARE(const char *) ap_get_server_built(void);
 
-#define DECLINED -1		/* Module declines to handle */
-#define DONE -2			/* Module has served the response completely 
+#define DECLINED -1		/**< Module declines to handle */
+#define DONE -2			/**< Module has served the response completely 
 				 *  - it's safe to die() with no more output
 				 */
-#define OK 0			/* Module has handled this stage. */
+#define OK 0			/**< Module has handled this stage. */
 
 
-/* ----------------------- HTTP Status Codes  ------------------------- */
-
-/* The size of the static array in http_protocol.c for storing
+/**
+ * @defgroup HTTP_Status HTTP Status Codes
+ * @{
+ */
+/**
+ * The size of the static array in http_protocol.c for storing
  * all of the potential response status-lines (a sparse table).
  * A future version should dynamically generate the apr_table_t at startup.
  */
@@ -461,13 +481,20 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_INSUFFICIENT_STORAGE          507
 #define HTTP_NOT_EXTENDED                  510
 
+/** is the status code informational */
 #define ap_is_HTTP_INFO(x)         (((x) >= 100)&&((x) < 200))
+/** is the status code OK ?*/
 #define ap_is_HTTP_SUCCESS(x)      (((x) >= 200)&&((x) < 300))
+/** is the status code a redirect */
 #define ap_is_HTTP_REDIRECT(x)     (((x) >= 300)&&((x) < 400))
+/** is the status code a error (client or server) */
 #define ap_is_HTTP_ERROR(x)        (((x) >= 400)&&((x) < 600))
+/** is the status code a client error  */
 #define ap_is_HTTP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
+/** is the status code a server error  */
 #define ap_is_HTTP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
 
+/** should the status code drop the connection */
 #define ap_status_drops_connection(x) \
                                    (((x) == HTTP_BAD_REQUEST)           || \
                                     ((x) == HTTP_REQUEST_TIME_OUT)      || \
@@ -477,8 +504,13 @@ AP_DECLARE(const char *) ap_get_server_built(void);
                                     ((x) == HTTP_INTERNAL_SERVER_ERROR) || \
                                     ((x) == HTTP_SERVICE_UNAVAILABLE) || \
 				    ((x) == HTTP_NOT_IMPLEMENTED))
-
-/* Methods recognized (but not necessarily handled) by the server.
+/** @} */
+/**
+ * @defgroup Methods List of Methods recognized by the server
+ * @{
+ */
+/**
+ * Methods recognized (but not necessarily handled) by the server.
  * These constants are used in bit shifting masks of size int, so it is
  * unsafe to have more methods than bits in an int.  HEAD == M_GET.
  * This list must be tracked by the list in http_protocol.c in routine
@@ -501,7 +533,8 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define M_UNLOCK    14
 #define M_INVALID   15
 
-/* METHODS needs to be equal to the number of bits
+/**
+ * METHODS needs to be equal to the number of bits
  * we are using for limit masks.
  */
 #define METHODS     64
@@ -510,30 +543,42 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * The method mask bit to shift for anding with a bitmask.
  */
 #define AP_METHOD_BIT (apr_int64_t)1
+/** @} */
 
 
-typedef struct ap_method_list_t ap_method_list_t;
 /**
  * Structure for handling HTTP methods.  Methods known to the server are
  * accessed via a bitmask shortcut; extension methods are handled by
  * an array.
  */
+typedef struct ap_method_list_t ap_method_list_t;
 struct ap_method_list_t {
     /* The bitmask used for known methods */
     apr_int64_t method_mask;
     /* the array used for extension methods */
     apr_array_header_t *method_list;
 };
-
+/**
+ * @defgroup module_magic Module Magic mime types
+ * @{
+ */
+/** Magic for mod_cgi[d] */
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
+/** Magic for mod_include */
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
+/** Magic for mod_include */
 #define INCLUDES_MAGIC_TYPE3 "text/x-server-parsed-html3"
+/** Magic for mod_dir */
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
 
+/** @} */
 /* Just in case your linefeed isn't the one the other end is expecting. */
 #if !APR_CHARSET_EBCDIC
+/** linefeed */
 #define LF 10
+/** carrige return */
 #define CR 13
+/** carrige return /Line Feed Combo */
 #define CRLF "\015\012"
 #else /* APR_CHARSET_EBCDIC */
 /* For platforms using the EBCDIC charset, the transition ASCII->EBCDIC is done
@@ -547,16 +592,22 @@ struct ap_method_list_t {
 #define CRLF "\r\n"
 #endif /* APR_CHARSET_EBCDIC */                                   
 
-/* Possible values for request_rec.read_body (set by handling module):
- *    REQUEST_NO_BODY          Send 413 error if message has any body
- *    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
- *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
+/**
+ * @defgroup values_requet_rec_body Possible values for request_rec.read_body 
+ * @{
+ * Possible values for request_rec.read_body (set by handling module):
  */
-#define REQUEST_NO_BODY          0
-#define REQUEST_CHUNKED_ERROR    1
-#define REQUEST_CHUNKED_DECHUNK  2
 
-/* Things which may vary per file-lookup WITHIN a request ---
+/** Send 413 error if message has any body */
+#define REQUEST_NO_BODY          0
+/** Send 411 error if body without Content-Length */
+#define REQUEST_CHUNKED_ERROR    1
+/** If chunked, remove the chunks for me. */
+#define REQUEST_CHUNKED_DECHUNK  2
+/** @} */
+
+/*
+ * Things which may vary per file-lookup WITHIN a request ---
  * e.g., state of MIME config.  Basically, the name of an object, info
  * about the object, and any other info we may ahve which may need to
  * change as we go poking around looking for it (e.g., overridden by
@@ -591,9 +642,14 @@ struct htaccess_result {
  * threaded versions of the server you must consider multiplexing
  * issues.  */
 
+
+/** A structure that represents one process */
 typedef struct process_rec process_rec;
+/** A structure that represents a virtual server */
 typedef struct server_rec server_rec;
+/** A structure that represents one connection */
 typedef struct conn_rec conn_rec;
+/** A structure that represents the current request */
 typedef struct request_rec request_rec;
 
 /* ### would be nice to not include this from httpd.h ... */
@@ -913,14 +969,15 @@ struct conn_rec {
 
 /* Per-vhost config... */
 
-/* The address 255.255.255.255, when used as a virtualhost address,
+/**
+ * The address 255.255.255.255, when used as a virtualhost address,
  * will become the "default" server when the ip doesn't match other vhosts.
  */
 #define DEFAULT_VHOST_ADDR 0xfffffffful
 
-typedef struct server_addr_rec server_addr_rec;
 
 /** A structure to be used for Per-vhost config */
+typedef struct server_addr_rec server_addr_rec;
 struct server_addr_rec {
     /** The next server in the list */
     server_addr_rec *next;
@@ -1215,6 +1272,7 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
  * @return The converted URL
  */
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial);
+/** @see ap_os_escape_path */
 #define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
 
 /**
@@ -1484,13 +1542,6 @@ extern int os_init_job_environment(server_rec *s, const char *user_name, int one
  */
 char *ap_get_local_host(apr_pool_t *p);
 
-/*
- * Redefine assert() to something more useful for an Apache...
- *
- * Use ap_assert() if the condition should always be checked.
- * Use AP_DEBUG_ASSERT() if the condition should only be checked when AP_DEBUG
- * is defined.
- */
 /**
  * Log an assertion to the error log
  * @param szExp The assertion that failed
@@ -1499,7 +1550,17 @@ char *ap_get_local_host(apr_pool_t *p);
  */
 AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 			    __attribute__((noreturn));
+
+/** @internal */
 #define ap_assert(exp) ((exp) ? (void)0 : ap_log_assert(#exp,__FILE__,__LINE__))
+
+/**
+ * Redefine assert() to something more useful for an Apache...
+ *
+ * Use ap_assert() if the condition should always be checked.
+ * Use AP_DEBUG_ASSERT() if the condition should only be checked when AP_DEBUG
+ * is defined.
+ */
 
 #ifdef AP_DEBUG
 #define AP_DEBUG_ASSERT(exp) ap_assert(exp)
@@ -1507,17 +1568,26 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 #define AP_DEBUG_ASSERT(exp) ((void)0)
 #endif
 
-/* A set of flags which indicate places where the server should raise(SIGSTOP).
+/**
+ * @defgroup stopsignal flags which indicate places where the sever should stop for debugging.
+ * @{
+ * A set of flags which indicate places where the server should raise(SIGSTOP).
  * This is useful for debugging, because you can then attach to that process
  * with gdb and continue.  This is important in cases where one_process
  * debugging isn't possible.
  */
+/** stop on a Detach */
 #define SIGSTOP_DETACH			1
+/** stop making a child process */
 #define SIGSTOP_MAKE_CHILD		2
+/** stop spawning a child process */
 #define SIGSTOP_SPAWN_CHILD		4
+/** stop spawning a child process with a piped log */
 #define SIGSTOP_PIPED_LOG_SPAWN		8
+/** stop spawning a CGI child process */
 #define SIGSTOP_CGI_CHILD		16
 
+/** Macro to get GDB started */
 #ifdef DEBUG_SIGSTOP
 extern int raise_sigstop_flags;
 #define RAISE_SIGSTOP(x)	do { \
@@ -1526,7 +1596,7 @@ extern int raise_sigstop_flags;
 #else
 #define RAISE_SIGSTOP(x)
 #endif
-
+/** @} */
 /**
  * Get HTML describing the address and (optionally) admin of the server.
  * @param prefix Text which is prepended to the return value
@@ -1535,7 +1605,7 @@ extern int raise_sigstop_flags;
  */
 AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r);
 
-/* strtoul does not exist on sunos4. */
+/** strtoul does not exist on sunos4. */
 #ifdef strtoul
 #undef strtoul
 #endif
@@ -1568,11 +1638,17 @@ const char *ap_strstr_c(const char *s, const char *c);
 
 #else
 
+/** use this instead of strchr */
 # define ap_strchr(s, c)	strchr(s, c)
+/** use this instead of strchr */
 # define ap_strchr_c(s, c)	strchr(s, c)
+/** use this instead of strrchr */
 # define ap_strrchr(s, c)	strrchr(s, c)
+/** use this instead of strrchr */
 # define ap_strrchr_c(s, c)	strrchr(s, c)
+/** use this instead of strrstr*/
 # define ap_strstr(s, c)	strstr(s, c)
+/** use this instead of strrstr*/
 # define ap_strstr_c(s, c)	strstr(s, c)
 
 #endif
