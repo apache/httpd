@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/03 06:28:14 $]
+Last modified at [$Date: 2003/12/03 21:38:55 $]
 
 Release:
 
@@ -366,7 +366,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Fix mod_mem_cache removal ordering bug.
         modules/experimental/mod_mem_cache.c r1.97
-      +1: jwoolley
+      +1: jwoolley, bnicholes
 
 CURRENT RELEASE NOTES:
 
