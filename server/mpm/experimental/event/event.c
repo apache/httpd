@@ -839,18 +839,11 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
     unblock_signal(LISTENER_SIGNAL);
     apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
 
-    while (1) {
-        /* TODO: requests_this_child should be synchronized - aaron */
-        if (requests_this_child <= 0) {
-            check_infinite_requests();
-        }
-
-        if (listener_may_exit)
-            break;
-
-        /* We've already decremented the idle worker count inside
-         * ap_queue_info_wait_for_idler. */
         while (!listener_may_exit) {
+
+            if (requests_this_child <= 0) {
+                check_infinite_requests();
+            }
 
             rc = apr_pollset_poll(event_pollset, timeout_interval, &num,
                                   &out_pfd);
@@ -992,8 +985,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
             }
             apr_thread_mutex_unlock(timeout_mutex);
 
-        }                       /* while we are to keep listening */
-    }                           /* while 1 - main loop */
+        }     /* listener main loop */
 
     ap_queue_term(worker_queue);
     dying = 1;
