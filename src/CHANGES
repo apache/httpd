@@ -1,4 +1,20 @@
 Changes with Apache 1.3a2
+
+  *) directory_walk optimization to reduce an O(N*M) loop to O(N+M) where
+     N is the number of <Directory> sections, and M is the number of
+     components in the filename of an object.
+
+     To achieve this optimization the following config changes were made:
+	- Wildcards (* and ?, not the regex forms) in <Directory>s,
+	  <Files>s, and <Location>s now treat a slash as a special
+	  character.  For example "/home/*/public_html" previously would
+	  match "/home/a/andrew/public_html", now it only matches things
+	  like "/home/bob/public_html".  This mimics /bin/sh behaviour.
+	- It's possible now to use [] wildcarding in <Directory>, <Files>
+	  or <Location>.
+	- Regex <Directory>s are applied after all non-regex <Directory>s.
+
+    [Dean Gaudet]
   
   *) Fix a bug introduced in 1.3a1 directory_walk regarding .htaccess files
      and corrupted paths.  [Dean Gaudet]

@@ -1122,7 +1122,12 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 
 	if (virt->send_buffer_size == 0)
 		virt->send_buffer_size = main_server->send_buffer_size;
+
+	/* XXX: this is really something that should be dealt with by a
+	 * post-config api phase */
+	core_reorder_directories (p, virt);
     }
+    core_reorder_directories (p, main_server);
 }
 
 /*****************************************************************

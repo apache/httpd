@@ -62,6 +62,7 @@
 #include "rfc1413.h"
 #include "util_md5.h"
 #include "scoreboard.h"
+#include "fnmatch.h"
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -84,8 +85,8 @@ void *create_core_dir_config (pool *a, char *dir)
     if (!dir || dir[strlen(dir) - 1] == '/') conf->d = dir;
     else if (strncmp(dir,"proxy:",6)==0) conf->d = pstrdup (a, dir);
     else conf->d = pstrcat (a, dir, "/", NULL);
-    conf->d_is_matchexp = conf->d ? (is_matchexp( conf->d ) != 0) : 0;
-
+    conf->d_is_fnmatch = conf->d ? (is_fnmatch (conf->d) != 0) : 0;
+    conf->d_components = conf->d ? count_dirs (conf->d) : 0;
 
     conf->opts = dir ? OPT_UNSET : OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
@@ -129,7 +130,8 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     }
     
     conf->d = new->d;
-    conf->d_is_matchexp = new->d_is_matchexp;
+    conf->d_is_fnmatch = new->d_is_fnmatch;
+    conf->d_components = new->d_components;
     conf->r = new->r;
     
     if (new->opts != OPT_UNSET) conf->opts = new->opts;
@@ -233,6 +235,76 @@ void add_file_conf (core_dir_config *conf, void *url_config)
     void **new_space = (void **) push_array (conf->sec);
     
     *new_space = url_config;
+}
+
+/* This routine reorders the directory sections such that the 1-component
+ * sections come first, then the 2-component, and so on, finally followed by
+ * the "special" sections.  A section is "special" if it's a regex, or if it
+ * doesn't start with / -- consider proxy: matching.  All movements are
+ * in-order to preserve the ordering of the sections from the config files.
+ * See directory_walk().
+ */
+void core_reorder_directories (pool *p, server_rec *s)
+{
+    core_server_config *sconf;
+    array_header *old_sec;
+    array_header *new_sec;
+    int nelts;
+    unsigned n_components;
+    unsigned next_n_components;
+    core_dir_config *entry_core;
+    int still_more_to_go;
+    int i;
+    void **elts;
+
+    sconf = get_module_config (s->module_config, &core_module);
+    old_sec = sconf->sec;
+    nelts = old_sec->nelts;
+    elts = (void **)old_sec->elts;
+    new_sec = make_array (p, nelts, sizeof(void *));
+
+    /* First collect all the 1 component names, then the 2 componennt names,
+     * and so on.  We use next_n_components to know what to look for the
+     * next time around... to deal with weird configs with many many many
+     * in at least one <Directory>.
+     */
+    n_components = 1;
+    do {
+	/* guess there's none left other than ones with exactly n_components */
+	still_more_to_go = 0;
+	/* guess that what's left has infinite components */
+	next_n_components = ~0u;
+	for (i = 0; i < nelts; ++i) {
+	    if (elts[i] == NULL) continue;
+	    entry_core = (core_dir_config *)get_module_config (elts[i],
+							    &core_module);
+	    if (entry_core->r) continue;
+	    if (entry_core->d[0] != '/') continue;
+	    if (entry_core->d_components != n_components) {
+		/* oops, the guess was wrong */
+		still_more_to_go = 1;
+		if (entry_core->d_components < next_n_components) {
+		    next_n_components = entry_core->d_components;
+		}
+		continue;
+	    }
+	    *(void **)push_array (new_sec) = elts[i];
+	    elts[i] = NULL;
+	}
+	n_components = next_n_components;
+    } while (still_more_to_go);
+    
+    /* anything left is a "special" case */
+    for (i = 0; i < nelts; ++i) {
+	if (elts[i] == NULL) continue;
+	*(void **)push_array (new_sec) = elts[i];
+    }
+
+    /* XXX: in theory we could have allocated new_sec from the ptemp
+     * pool, and then memcpy'd it over top of old_sec ... oh well,
+     * we're wasting some ram here.
+     */
+    sconf->sec = new_sec;
 }
 
 /*****************************************************************
@@ -731,7 +803,7 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
-    conf->d_is_matchexp = is_matchexp( conf->d ) != 0;
+    conf->d_is_fnmatch = is_fnmatch( conf->d ) != 0;
     conf->r = r;
 
     add_per_url_conf (cmd->server, new_url_conf);
@@ -787,7 +859,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     conf = (core_dir_config *)get_module_config(new_file_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);
-    conf->d_is_matchexp = is_matchexp( conf->d ) != 0;
+    conf->d_is_fnmatch = is_fnmatch( conf->d ) != 0;
     conf->r = r;
 
     add_file_conf (c, new_file_conf);

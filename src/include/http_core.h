@@ -129,8 +129,10 @@ typedef unsigned char allow_options_t;
 typedef unsigned char overrides_t;
 
 typedef struct {
-    /* path of the directory/regex/etc.  see also d_is_matchexp below */
+    /* path of the directory/regex/etc.  see also d_is_fnmatch below */
     char *d;
+    /* the number of slashes in d */
+    unsigned d_components;
 
     allow_options_t opts;
     allow_options_t opts_add;
@@ -170,11 +172,11 @@ typedef struct {
 
     int content_md5 : 2;  /* calculate Content-MD5? */
 
-    /* since is_matchexp(conf->d) was being called so frequently in
+    /* since is_fnmatch(conf->d) was being called so frequently in
      * directory_walk() and its relatives, this field was created and
      * is set to the result of that call.
      */
-    int d_is_matchexp : 1;
+    int d_is_fnmatch : 1;
 
     /* System Resource Control */
 #ifdef RLIMIT_CPU

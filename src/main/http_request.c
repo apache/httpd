@@ -69,6 +69,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "scoreboard.h"
+#include "fnmatch.h"
 
 /*****************************************************************
  *
@@ -253,7 +254,7 @@ int directory_walk (request_rec *r)
     char *test_filename = pstrdup (r->pool, r->filename);
     char *test_dirname;
     int num_dirs, res;
-    int i, test_filename_len;
+    int i, j, test_filename_len;
 
     /* Are we dealing with a file? If not, we can (hopefuly) safely assume
      * we have a handler that doesn't require one, but for safety's sake,
@@ -284,7 +285,7 @@ int directory_walk (request_rec *r)
     if (test_filename[0] != '/')
 #endif
     {
-/* fake filenames only match Directory sections */
+/* fake filenames (i.e. proxy:) only match Directory sections */
         void *this_conf, *entry_config;
         core_dir_config *entry_core;
 	char *entry_dir;
@@ -304,8 +305,8 @@ int directory_walk (request_rec *r)
 		if (!regexec(entry_core->r, test_filename, 0, NULL, 0))
 		    this_conf = entry_config;
 	    }
-	    else if (entry_core->d_is_matchexp) {
-		if (!strcmp_match(test_filename, entry_dir))
+	    else if (entry_core->d_is_fnmatch) {
+		if (!fnmatch (entry_dir, test_filename, FNM_PATHNAME))
 		    this_conf = entry_config;
 	    }
 	    else if (!strncmp (test_filename, entry_dir, strlen(entry_dir)))
@@ -344,11 +345,12 @@ int directory_walk (request_rec *r)
      * function so we try to avoid allocating lots of extra memory here.
      */
     test_dirname = palloc (r->pool, test_filename_len+1);
+    /* j keeps track of which section we're on, see core_reorder_directories */
+    j = 0;
     for (i = 1; i <= num_dirs; ++i) {
         core_dir_config *core_dir =
 	  (core_dir_config *)get_module_config(per_dir_defaults, &core_module);
 	int overrides_here;
-	int j;
 
 	/* XXX: this could be made faster by only copying the next component
 	 * rather than copying the entire thing all over.
@@ -363,39 +365,31 @@ int directory_walk (request_rec *r)
 	    log_reason("Symbolic link not allowed", test_dirname, r);
 	    return res;
 	}
-	
+
 	/* Begin *this* level by looking for matching <Directory> sections from
 	 * access.conf.
 	 */
-    
-	for (j = 0; j < num_sec; ++j) {
+
+	for (; j < num_sec; ++j) {
 	    void *entry_config = sec[j];
 	    core_dir_config *entry_core;
 	    char *entry_dir;
 	    void *this_conf;
 
-	    if (!entry_config) continue;
-	    
 	    entry_core =
 	      (core_dir_config *)get_module_config(entry_config, &core_module);
 	    entry_dir = entry_core->d;
-	
+
+	    if (entry_core->r
+		|| entry_dir[0] != '/'
+		|| entry_core->d_components > i) break;
+
 	    this_conf = NULL;
-	    if (entry_core->r) {
-		if (!regexec(entry_core->r, test_dirname, 0, NULL,
-			     (j == num_sec) ? 0 : REG_NOTEOL)) {
-		    /* Don't try this wildcard again --- if it ends in '*'
-		     * it'll match again, and subdirectories won't be able to
-		     * override it...
-		     */
-		    sec[j] = NULL;
+	    if (entry_core->d_is_fnmatch) {
+		if (!fnmatch(entry_dir, test_dirname, FNM_PATHNAME)) {
+		    sec[j] = NULL;	
 		    this_conf = entry_config;
 		}
-	    }
-	    else if (entry_core->d_is_matchexp &&
-		     !strcmp_match(test_dirname, entry_dir)) {
-		sec[j] = NULL;	
-	        this_conf = entry_config;
 	    }
 	    else if (!strcmp (test_dirname, entry_dir))
 	        this_conf = entry_config;
@@ -420,10 +414,31 @@ int directory_walk (request_rec *r)
   	    res = parse_htaccess (&htaccess_conf, r, overrides_here,
  				  test_dirname, sconf->access_name);
 	    if (res) return res;
+
 	    if (htaccess_conf)
 		per_dir_defaults =
 		    merge_per_dir_configs (r->pool, per_dir_defaults,
 					htaccess_conf);
+	}
+	
+    }
+
+    /* now match the "special" sections (regex, and "proxy:" stuff).  But
+     * note that proxy: stuff doesn't get down this far, it's been handled
+     * earlier, so we'll just skip it.
+     */
+    for ( ; j < num_sec; ++j) {
+	void *entry_config = sec[j];
+	core_dir_config *entry_core;
+
+	entry_core =
+	    (core_dir_config *)get_module_config(entry_config, &core_module);
+	if (entry_core->r) {
+	    if (!regexec(entry_core->r, test_dirname, 0, NULL, REG_NOTEOL)) {
+		per_dir_defaults =
+		    merge_per_dir_configs (r->pool, per_dir_defaults,
+					    entry_config);
+	    }
 	}
     }
 
@@ -494,9 +509,10 @@ int location_walk (request_rec *r)
 		if (!regexec(entry_core->r, test_location, 0, NULL, 0))
 		    this_conf = entry_config;
 	    }
-	    else if( entry_core->d_is_matchexp ) {
-		if (!strcmp_match(test_location, entry_url))
+	    else if( entry_core->d_is_fnmatch ) {
+		if (!fnmatch (entry_url, test_location, FNM_PATHNAME)) {
 		    this_conf = entry_config;
+		}
 	    }
 	    else if (!strncmp (test_location, entry_url, len) &&
 		     (entry_url[len - 1] == '/' ||
@@ -556,9 +572,10 @@ int file_walk (request_rec *r)
 		if (!regexec(entry_core->r, test_file, 0, NULL, 0))
 		    this_conf = entry_config;
 	    }
-	    else if ( entry_core->d_is_matchexp ) {
-		if (!strcmp_match(test_file, entry_file))
+	    else if ( entry_core->d_is_fnmatch ) {
+		if (!fnmatch(entry_file, test_file, FNM_PATHNAME)) {
 		    this_conf = entry_config;
+		}
 	    }
 	    else if (!strncmp (test_file, entry_file, len) &&
 		     (entry_file[len - 1] == '/' ||

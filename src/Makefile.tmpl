@@ -11,7 +11,7 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
   md5c.o util_md5.o explain.o http_bprintf.o util_date.o util_snprintf.o\
-  $(MODULES)
+  fnmatch.o $(MODULES)
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
@@ -69,13 +69,15 @@ alloc.o: alloc.c httpd.h conf.h alloc.h buff.h multithread.h
 buff.o: buff.c httpd.h conf.h alloc.h buff.h http_main.h
 dummy.o: dummy.c
 explain.o: explain.c explain.h
+fnmatch.o: fnmatch.c
+gnu-fnmatch.o: gnu-fnmatch.c fnmatch.h
 http_bprintf.o: http_bprintf.c httpd.h conf.h alloc.h buff.h
 http_config.o: http_config.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h http_log.h http_request.h \
  http_conf_globals.h explain.h
 http_core.o: http_core.c httpd.h conf.h alloc.h buff.h http_config.h \
  http_core.h http_protocol.h http_conf_globals.h http_main.h \
- http_log.h rfc1413.h util_md5.h md5.h scoreboard.h
+ http_log.h rfc1413.h util_md5.h md5.h scoreboard.h fnmatch.h
 http_log.o: http_log.c httpd.h conf.h alloc.h buff.h http_config.h \
  http_core.h http_log.h
 http_main.o: http_main.c httpd.h conf.h alloc.h buff.h http_main.h \
@@ -86,8 +88,8 @@ http_protocol.o: http_protocol.c httpd.h conf.h alloc.h buff.h \
  util_date.h
 http_request.o: http_request.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_request.h http_core.h http_protocol.h http_log.h \
- http_main.h scoreboard.h
-md5c.o: md5c.c md5.h
+ http_main.h scoreboard.h fnmatch.h
+md5c.o: md5c.c conf.h md5.h
 mod_access.o: mod_access.c httpd.h conf.h alloc.h buff.h http_core.h \
  http_config.h http_log.h http_request.h
 mod_actions.o: mod_actions.c httpd.h conf.h alloc.h buff.h \
@@ -99,7 +101,7 @@ mod_asis.o: mod_asis.c httpd.h conf.h alloc.h buff.h http_config.h \
 mod_auth.o: mod_auth.c httpd.h conf.h alloc.h buff.h http_config.h \
  http_core.h http_log.h http_protocol.h
 mod_auth_anon.o: mod_auth_anon.c httpd.h conf.h alloc.h buff.h \
- http_config.h http_core.h http_log.h http_protocol.h
+ http_config.h http_core.h http_log.h http_protocol.h http_request.h
 mod_auth_db.o: mod_auth_db.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h http_log.h http_protocol.h
 mod_auth_dbm.o: mod_auth_dbm.c httpd.h conf.h alloc.h buff.h \
@@ -109,7 +111,7 @@ mod_auth_msql.o: mod_auth_msql.c httpd.h conf.h alloc.h buff.h \
 mod_autoindex.o: mod_autoindex.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h http_request.h http_protocol.h http_log.h \
  http_main.h util_script.h
-mod_setenvif.o: mod_setenvif.c httpd.h conf.h http_core.h alloc.h buff.h \
+mod_browser.o: mod_browser.c httpd.h conf.h alloc.h buff.h \
  http_config.h
 mod_cern_meta.o: mod_cern_meta.c httpd.h conf.h alloc.h buff.h \
  http_config.h util_script.h http_log.h http_request.h
@@ -143,13 +145,16 @@ mod_log_config.o: mod_log_config.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h
 mod_log_referer.o: mod_log_referer.c httpd.h conf.h alloc.h buff.h \
  http_config.h
-mod_mime.o: mod_mime.c httpd.h conf.h alloc.h buff.h http_config.h
+mod_mime.o: mod_mime.c httpd.h conf.h alloc.h buff.h http_config.h \
+ mod_mime.h
 mod_mime_magic.o: mod_mime_magic.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_request.h http_core.h http_log.h http_protocol.h
 mod_negotiation.o: mod_negotiation.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_request.h http_core.h http_log.h util_script.h
 mod_rewrite.o: mod_rewrite.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_request.h http_core.h http_log.h mod_rewrite.h
+mod_setenvif.o: mod_setenvif.c httpd.h conf.h alloc.h buff.h \
+ http_config.h http_core.h http_log.h
 mod_status.o: mod_status.c httpd.h conf.h alloc.h buff.h http_config.h \
  http_core.h http_protocol.h http_main.h util_script.h scoreboard.h \
  http_log.h
@@ -161,7 +166,7 @@ modules.o: modules.c httpd.h conf.h alloc.h buff.h http_config.h
 rfc1413.o: rfc1413.c httpd.h conf.h alloc.h buff.h http_log.h \
  rfc1413.h http_main.h
 util.o: util.c httpd.h conf.h alloc.h buff.h http_conf_globals.h
-util_date.o: util_date.c util_date.h
+util_date.o: util_date.c conf.h util_date.h
 util_md5.o: util_md5.c httpd.h conf.h alloc.h buff.h util_md5.h md5.h
 util_script.o: util_script.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_conf_globals.h http_main.h http_log.h \

@@ -299,6 +299,8 @@ void *create_request_config (pool *p);
 void *create_per_dir_config (pool *p);
 void *merge_per_dir_configs (pool *p, void *base, void *new);
 
+void core_reorder_directories (pool *, server_rec *);
+
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
 int parse_htaccess(void **result, request_rec *r, int override,
