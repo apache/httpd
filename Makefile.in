@@ -35,6 +35,7 @@ install-conf:
 		$(INSTALL_DATA) $$i $(sysconfdir); \
 	done; \
 	for i in *-std* ldap.conf proxy.conf ssl.conf; do \
+		[ -f $$i ] || continue; \
 		sed -e 's#@@ServerRoot@@#$(prefix)#g' \
 		    -e 's#@@Port@@#$(PORT)#g' \
 			< $$i > $(sysconfdir)/$$i; \
