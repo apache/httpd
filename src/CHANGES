@@ -16,10 +16,11 @@ Changes with Apache 1.3.5
      DSO/DLL section because it's a directive from mod_status and isn't
      available before the DLL of mod_status is loaded.
      [Martin POESCHL <mpoeschl@gmx.net>] PR#3936
- 
-  *) Fix a bug in the calculation of the buffer size for the line continuation
-     facility in Apache's configuration files which could lead to a buffer
-     overflow situation. [Thomas Devanneaux <Thomas.Devanneaux@enst.fr>] PR#3617
+
+  *) SECURITY: Fix a bug in the calculation of the buffer size for the line 
+     continuation facility in Apache's configuration files which could 
+     lead to a buffer overflow situation.
+     [Thomas Devanneaux <Thomas.Devanneaux@enst.fr>] PR#3617
 
   *) Make documentation and error messages of APACI's --activate-module=FILE 
      option more clear. [Jan Wolter <janc@wwnet.net>] PR#3995
