@@ -68,11 +68,6 @@ Changes with Apache 2.1.0-dev
   *) Keep the subrequest filter in place when a subrequest is 
      redirected.  PR 15423.  [Jeff Trawick]
 
-  *) Allow SSLMutex to select/use the full range of APR locking
-     mechanisms available to it. Also, fix the bug that SSLMutex uses
-     APR_LOCK_DEFAULT no matter what.  PR 8122  [Jim Jagielski,
-     martin.t.kutschker@blackbox.net (Martin Kutschker)]
-
   *) Return 413 if chunk-ext-header is too long rather than reading from
      the truncated line.  PR 15857.  [Justin Erenkrantz]
 
@@ -168,6 +163,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Allow SSLMutex to select/use the full range of APR locking
+     mechanisms available to it. Also, fix the bug that SSLMutex uses
+     APR_LOCK_DEFAULT no matter what.  PR 8122  [Jim Jagielski,
+     martin.t.kutschker@blackbox.net (Martin Kutschker)]
 
   *) Restore the ability of htdigest.exe to create files that contain
      more than one user. PR 12910.  [André Malo]
