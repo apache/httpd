@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -16,7 +16,8 @@
     <a href="new_features_2_0.html">Neue Funktionen</a> oder in
     den <code>src/CHANGES</code>-Dateien.</p>
 </summary>
-<seealso><a href="new_features_2_0.html">Neue Funktionen in Version 2.0</a></seealso>
+<seealso><a href="new_features_2_0.html">Neue Funktionen in
+  Version 2.0</a></seealso>
 
   <section id="compile-time">
     <title>&#196;nderungen der Konfiguration bei der Kompilierung</title>
@@ -153,6 +154,14 @@
       Die gleiche Funktionalit&#228;t ist nun mit der Option
       <code>FancyIndexing</code> der Direktive <directive
       module="mod_autoindex">IndexOptions</directive> verf&#252;gbar.</li>
+
+      <li>Die von <module>mod_negotiation</module> bereitgestellte
+      Content-Negotiation-Technik MultiViews f&#252;hrt nun eine strengere
+      Dateierkennung durch. Es wird ausschlie&#223;lich unter den
+      <em>aushandelbaren</em> Dateien gew&#228;hlt. Das bisherige Verhalten
+      kann jedoch mit der Direktive <directive
+      module="mod_mime">MultiviewsMatch</directive> wiederhergestellt
+      werden.</li>
      </ul>
   </section>
 
