@@ -153,24 +153,18 @@
 #define BSD_COMP
 
 #include "apr.h"
+#include "apr_signal.h"
 #include "apr_strings.h"
 #include "apr_network_io.h"
 #include "apr_file_io.h"
 #include "apr_time.h"
 #include "apr_getopt.h"
 #include "apr_general.h"
-#include <signal.h>
 #include "apr_lib.h"
 #include "ap_release.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-#if APR_HAVE_STDIO_H
-#include <stdio.h>		/* for EOF */
-#endif
-#if APR_HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
 
 #include "apr_base64.h"
 #ifdef NOT_ASCII
@@ -1335,14 +1329,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.98 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.99 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.98 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.99 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1716,8 +1710,8 @@ int main(int argc, const char * const argv[])
 	exit(1);
     }
 #endif
-#if SIGPIPE
-    signal(SIGPIPE, SIG_IGN);	        /* Ignore writes to connections that
+#ifdef SIGPIPE
+    apr_signal(SIGPIPE, SIG_IGN);       /* Ignore writes to connections that
 					 * have been closed at the other end. */
 #endif
     copyright();
