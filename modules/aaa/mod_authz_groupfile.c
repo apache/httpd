@@ -58,7 +58,7 @@
 
 /* This module is triggered by an
  *
- *          AuthzGroupFile standard /path/to/file
+ *          AuthGroupFile standard /path/to/file
  *
  * and the presense of a
  *
@@ -66,10 +66,10 @@
  * 
  * In an applicable limit/directory block for that method.
  *
- * If there are no AuthzGroupFile directives valid for 
+ * If there are no AuthGroupFile directives valid for 
  * the request; we DECLINED.
  * 
- * If the AuthzGroupFile is defined; but somehow not
+ * If the AuthGroupFile is defined; but somehow not
  * accessible: we SERVER_ERROR (was DECLINED).
  *
  * If there are no 'require ' directives defined for
