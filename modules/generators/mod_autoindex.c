@@ -1420,7 +1420,7 @@ static void output_directories(struct ent **ar, int n,
     int desc_width;
     char *name_scratch;
     char *pad_scratch;
-    char *breakrow;
+    char *breakrow = "";
 
     apr_pool_create(&scratch, r->pool);
     if (name[0] == '\0') {
@@ -1499,8 +1499,6 @@ static void output_directories(struct ent **ar, int n,
         if (!(autoindex_opts & SUPPRESS_RULES))
             breakrow = apr_psprintf(r->pool, "<tr><th colspan=\"%d\">"
                                              "<hr /></th></tr>\n", cols);
-        else
-            breakrow = "";
 	ap_rvputs(r, "</th></tr>", breakrow, NULL);
     }
     else if (autoindex_opts & FANCY_INDEXING) {
@@ -1907,7 +1905,7 @@ static int index_directory(request_rec *r,
                 qstring += qstring[3] ? 4 : 3;
             }
             else if (qstring[0] == 'P' && qstring[1] == '=') {
-                char *eos = strchr(qstring, '&');
+                const char *eos = ap_strchr_c(qstring, '&');
                 if (eos) {
                     pstring = apr_pstrndup(r->pool, qstring + 2, 
                                            eos - qstring - 2);
