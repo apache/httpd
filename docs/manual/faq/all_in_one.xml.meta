@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile>
+  <basename>all_in_one</basename>
+  <path>/faq/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+  </variants>
+</metafile>

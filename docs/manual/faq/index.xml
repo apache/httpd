@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd" [
+    <!ENTITY categories SYSTEM "categories.xml">
+]>
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<faq metafile="index.xml.meta">
+<parentdocument href="../" />
+
+<title>Frequently Asked Questions</title>
+
+<summary>
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a href="http://httpd.apache.org/docs-2.1/faq/"
+    >http://httpd.apache.org/docs-2.1/faq/</a>&gt;. In addition, you can view
+    this FAQ <a href="all_in_one.html">all in one page</a> for easy searching
+    and printing.</p>
+
+    <p>Since Apache 2.0 is quite new, we don't yet know what the
+    <em>Frequently Asked Questions</em> will be. While this section fills up,
+    you should also consult the <a
+    href="http://httpd.apache.org/docs/misc/FAQ.html">Apache 1.3 FAQ</a> to see
+    if your question is answered there.</p>
+</summary>
+
+&categories;
+
+</faq>
+
