@@ -113,44 +113,97 @@ void add_include_vars(request_rec *r, char *timefmt)
     }
 }
 
-#define GET_CHAR(f,c,r,p) \
+
+
+/* --------------------------- Parser functions --------------------------- */
+
+#define OUTBUFSIZE 4096
+/* PUT_CHAR and FLUSH_BUF currently only work within the scope of 
+ * find_string(); they are hacks to avoid calling rputc for each and
+ * every character output.  A common set of buffering calls for this 
+ * type of output SHOULD be implemented.
+ */
+#define PUT_CHAR(c,r) \
+ { \
+   outbuf[outind++] = c; \
+   if (outind == OUTBUFSIZE) { FLUSH_BUF(r) }; \
+ } 
+
+/* there SHOULD be some error checking on the return value of
+ * rwrite, however it is unclear what the API for rwrite returning
+ * errors is and little can really be done to help the error in 
+ * any case.
+ */
+#define FLUSH_BUF(r) \
+ { \
+   rwrite(outbuf, outind, r); \
+   outind = 0; \
+ }
+
+/*
+ * f: file handle being read from
+ * c: character to read into
+ * ret: return value to use if input fails
+ * r: current request_rec
+ *
+ * This macro is redefined after find_string() for historical reasons
+ * to avoid too many code changes.  This is one of the many things
+ * that should be fixed.
+ */
+#define GET_CHAR(f,c,ret,r) \
  { \
    int i = getc(f); \
-   if(feof(f) || ferror(f) || (i == -1)) { \
-        pfclose(p,f); \
-        return r; \
+   if(i == EOF) { /* either EOF or error -- needs error handling if latter */ \
+       if (ferror(f)) \
+	   fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
+       FLUSH_BUF(r); \
+       pfclose(r->pool,f); \
+       return ret; \
    } \
    c = (char)i; \
  }
 
-/* --------------------------- Parser functions --------------------------- */
-
-/* Grrrr... rputc makes this slow as all-get-out.  Elsewhere, it doesn't
- * matter much, but this is an inner loop...
- */
-
 int find_string(FILE *in,char *str, request_rec *r, int printing) {
     int x,l=strlen(str),p;
+    char outbuf[OUTBUFSIZE];
+    int outind = 0;
     char c;
 
     p=0;
     while(1) {
-        GET_CHAR(in,c,1,r->pool);
+        GET_CHAR(in,c,1,r);
         if(c == str[p]) {
-            if((++p) == l)
+            if((++p) == l) {
+		FLUSH_BUF(r);
                 return 0;
+	    }
         }
         else {
             if (printing) {
                 for(x=0;x<p;x++) {
-                    rputc(str[x],r);
+                    PUT_CHAR(str[x],r);
                 }
-                rputc(c,r);
+                PUT_CHAR(c,r);
             }
             p=0;
         }
     }
 }
+
+#undef FLUSH_BUF
+#undef PUT_CHAR
+#undef GET_CHAR
+#define GET_CHAR(f,c,r,p) \
+ { \
+   int i = getc(f); \
+   if(i == EOF) { /* either EOF or error -- needs error handling if latter */ \
+       if (ferror(f)) \
+	   fprintf(stderr, "encountered error in GET_CHAR macro, mod_include.\n"); \
+       pfclose(p,f); \
+       return r; \
+   } \
+   c = (char)i; \
+ }
 
 /*
  * decodes a string containing html entities or numeric character references.

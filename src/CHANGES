@@ -33,6 +33,9 @@ Changes with Apache 1.2b7
      auto initializers, multiple is_matchexp calls on a static string,
      and excessive merging of response_code_strings. [Dean Gaudet]
 
+  *) Added double-buffering to mod_include to improve performance on
+     server-side includes. [Marc Slemko]
+
   *) Several fixes for suexec wrapper. [Randy Terbush]
      - Make wrapper work for files on NFS filesystem.
      - Fix portability problem of MAXPATHLEN.
