@@ -165,8 +165,9 @@ char *md5contextTo64(pool *a, MD5_CTX *context)
     p = encodedDigest;
     for (i=0; i < sizeof(digest); i+=3) {
         *p++ = basis_64[digest[i]>>2];
-        *p++ = basis_64[((digest[i] & 0x3)<<4) | ((digest[i+1] & 0xF0)>>4)];
-        *p++ = basis_64[((digest[i+1] & 0xF)<<2) | ((digest[i+2] & 0xC0)>>6)];+         *p++ = basis_64[digest[i+2] & 0x3F];
+        *p++ = basis_64[((digest[i] & 0x3)<<4) | ((int)(digest[i+1] & 0xF0)>>4)];
+        *p++ = basis_64[((digest[i+1] & 0xF)<<2) | ((int)(digest[i+2] & 0xC0)>>6)];
+        *p++ = basis_64[digest[i+2] & 0x3F];
     }
     *p-- = '\0';
     *p-- = '=';
@@ -177,7 +178,7 @@ char *md5contextTo64(pool *a, MD5_CTX *context)
 char *md5digest(pool *p, FILE *infile)
 {
     MD5_CTX context;
-    char buf[1000];
+    unsigned char buf[1000];
     long length = 0;
     int nbytes;
 

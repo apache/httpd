@@ -123,7 +123,7 @@ int get_digest_rec(request_rec *r, digest_header_rec *response) {
   char *auth_line = table_get(r->headers_in, "Authorization");
   int l = strlen(auth_line);
   int s = 0, vk = 0, vv = 0;
-  char *t, key[l], value[l];
+  char *t, *key, *value;
 
   if (!(t = auth_type(r)) || strcasecmp(t, "Digest"))
     return DECLINED;
@@ -144,6 +144,9 @@ int get_digest_rec(request_rec *r, digest_header_rec *response) {
     note_digest_auth_failure (r);
     return AUTH_REQUIRED;
   }
+
+  key=palloc(r->pool,l);
+  value=palloc(r->pool,l);
 
   /* There's probably a better way to do this, but for the time being... */
 
@@ -226,11 +229,12 @@ int get_digest_rec(request_rec *r, digest_header_rec *response) {
 /* The actual MD5 code... whee */
 
 char *find_digest(request_rec *r, digest_header_rec *h, char *a1) {
-  return md5(r->pool, pstrcat(r->pool, a1, ":", h->nonce, ":", 
-			      md5(r->pool,
-				  pstrcat(r->pool, r->method, ":",
-					  h->requested_uri,NULL)),
-			      NULL));
+  return md5(r->pool,
+	     (unsigned char *)pstrcat(r->pool, a1, ":", h->nonce, ":", 
+			  md5(r->pool,
+			      (unsigned char *)pstrcat(r->pool,r->method,":",
+						       h->requested_uri,NULL)),
+				      NULL));
 }
 
 /* These functions return 0 if client is OK, and proper error status
