@@ -157,8 +157,14 @@ TARGET_nlm = \
 	$(OBJDIR)/proxyftp.nlm \
 	$(OBJDIR)/proxyhtp.nlm \
 	$(OBJDIR)/proxybalancer.nlm \
-#	$(OBJDIR)/proxyajp.nlm \
 	$(EOLIST)
+
+# If AJPLIB has been defined then build the proxyajp module
+ifneq "$(AJPLIB)" ""
+TARGET_nlm += $(OBJDIR)/proxyajp.nlm \
+	$(EOLIST)
+endif
+
 
 #
 # If there is an LIB target, put it here

@@ -20,6 +20,7 @@ XINCDIRS	+= \
 			$(NWOS) \
 			$(AP_WORK)/modules/http \
 			$(AP_WORK)/modules/arch/netware \
+			$(AJPLIB) \
 			$(AP_WORK)/srclib/apr/include \
 			$(AP_WORK)/srclib/apr-util/include \
 			$(AP_WORK)/srclib/apr \
@@ -168,6 +169,9 @@ TARGET_lib = \
 FILES_nlm_objs = \
 	$(OBJDIR)/proxy_ajp.o \
 	$(OBJDIR)/proxy_util.o \
+	$(OBJDIR)/ajp_header.o \
+	$(OBJDIR)/ajp_msg.o \
+	$(OBJDIR)/ajp_link.o \
 	$(OBJDIR)/libprews.o \
 	$(EOLIST)
 
@@ -252,7 +256,7 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
-vpath %.c ../arch/netware
+vpath %.c ../arch/netware $(AJPLIB)
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
