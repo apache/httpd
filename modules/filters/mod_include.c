@@ -1079,7 +1079,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                      * The filename comparison catches a recursive include
                      * with an ever-changing URL, eg.
                      * <!--#include virtual=
-                     *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x"-->
+                     *      "$REQUEST_URI/$QUERY_STRING?$QUERY_STRING/x" -->
                      * which, although they would eventually be caught because
                      * we have a limit on the length of files, etc., can 
                      * recurse for a while.
@@ -3079,7 +3079,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * environment of the base document (for compatibility); that means
          * torquing our own last_modified date as well so that the
          * LAST_MODIFIED variable gets reset to the proper value if the
-         * nested document resets <!--#config timefmt-->.
+         * nested document resets <!--#config timefmt -->.
          */
         r->subprocess_env = r->main->subprocess_env;
         apr_pool_join(r->main->pool, r->pool);
