@@ -348,6 +348,42 @@ API_EXPORT(int) ap_is_matchexp(const char *str)
     return 0;
 }
 
+/*
+ * Here's a pool-based interface to POSIX regex's regcomp().
+ * Note that we return regex_t instead of being passed one.
+ * The reason is that if you use an already-used regex_t structure,
+ * the memory that you've already allocated gets forgotten, and
+ * regfree() doesn't clear it. So we don't allow it.
+ */
+
+static ap_status_t regex_cleanup(void *preg)
+{
+    regfree((regex_t *) preg);
+    return APR_SUCCESS;
+}
+
+API_EXPORT(regex_t *) ap_pregcomp(ap_context_t *p, const char *pattern,
+				   int cflags)
+{
+    regex_t *preg = ap_palloc(p, sizeof(regex_t));
+
+    if (regcomp(preg, pattern, cflags)) {
+	return NULL;
+    }
+
+    ap_register_cleanup(p, (void *) preg, regex_cleanup, regex_cleanup);
+
+    return preg;
+}
+
+API_EXPORT(void) ap_pregfree(ap_context_t *p, regex_t * reg)
+{
+    ap_block_alarms();
+    regfree(reg);
+    ap_kill_cleanup(p, (void *) reg, regex_cleanup);
+    ap_unblock_alarms();
+}
+
 /* 
  * Apache stub function for the regex libraries regexec() to make sure the
  * whole regex(3) API is available through the Apache (exported) namespace.
