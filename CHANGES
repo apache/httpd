@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) External rewrite map responses are no longer limited to 2048
+     bytes.  [André Malo]
+
   *) Fix a potential SEGV in the 'shmcb' session cache when session data
      size is greater than the size of the cache. PR 27751
      [Geoff Thorpe <geoff geoffthorpe.net>]

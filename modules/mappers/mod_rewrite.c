@@ -182,9 +182,9 @@
 #define REWRITE_MAX_TXT_MAP_LINE 1024
 #endif
 
-/* max response length (incl.\n) in prg rewrite maps */
-#ifndef REWRITE_MAX_PRG_MAP_LINE
-#define REWRITE_MAX_PRG_MAP_LINE 2048
+/* buffer length for prg rewrite maps */
+#ifndef REWRITE_PRG_MAP_BUF
+#define REWRITE_PRG_MAP_BUF 1024
 #endif
 
 /* for better readbility */
@@ -1314,13 +1314,13 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
 static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
                                 apr_file_t *fpout, char *key)
 {
-    char buf[REWRITE_MAX_PRG_MAP_LINE];
+    char *buf;
     char c;
-    apr_size_t i;
-    apr_size_t nbytes;
+    apr_size_t i, nbytes, combined_len = 0;
     apr_status_t rv;
     const char *eol = APR_EOL_STR;
-    int eolc = 0;
+    int eolc = 0, found_nl = 0;
+    result_list *buflist = NULL, *curbuf = NULL;
 
 #ifndef NO_WRITEV
     struct iovec iova[2];
@@ -1368,31 +1368,90 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     apr_file_writev(fpin, iova, niov, &nbytes);
 #endif
 
+    buf = apr_palloc(r->pool, REWRITE_PRG_MAP_BUF + 1);
+
     /* read in the response value */
-    i = 0;
     nbytes = 1;
     apr_file_read(fpout, &c, &nbytes);
-    while (nbytes == 1 && (i < REWRITE_MAX_PRG_MAP_LINE)) {
-        if (c == eol[eolc]) {
-            if (!eol[++eolc]) {
-                /* remove eol from the buffer */
-                i -= --eolc;
+    do {
+        i = 0;
+        while (nbytes == 1 && (i < REWRITE_PRG_MAP_BUF)) {
+            if (c == eol[eolc]) {
+                if (!eol[++eolc]) {
+                    /* remove eol from the buffer */
+                    --eolc;
+                    if (i < eolc) {
+                        curbuf->len -= eolc-i;
+                        i = 0;
+                    }
+                    else {
+                        i -= eolc;
+                    }
+                    ++found_nl;
+                    break;
+                }
+            }
+
+            /* only partial (invalid) eol sequence -> reset the counter */
+            else if (eolc) {
+                eolc = 0;
+            }
+
+            /* catch binary mode, e.g. on Win32 */
+            else if (c == '\n') {
+                ++found_nl;
                 break;
+            }
+
+            buf[i++] = c;
+            apr_file_read(fpout, &c, &nbytes);
+        }
+
+        /* well, if there wasn't a newline yet, we need to read further */
+        if (buflist || (nbytes == 1 && !found_nl)) {
+            if (!buflist) {
+                curbuf = buflist = apr_palloc(r->pool, sizeof(*buflist));
+            }
+            else if (i) {
+                curbuf->next = apr_palloc(r->pool, sizeof(*buflist));
+                curbuf = curbuf->next;
+                
+            }
+            curbuf->next = NULL;
+
+            if (i) {
+                curbuf->string = buf;
+                curbuf->len = i;
+                combined_len += i;
+                buf = apr_palloc(r->pool, REWRITE_PRG_MAP_BUF);
+            }
+
+            if (nbytes == 1 && !found_nl) {
+                i = 0;
+                continue;
             }
         }
 
-        /* only partial (invalid) eol sequence -> reset the counter */
-        else if (eolc) {
-            eolc = 0;
-        }
+        break;
+    } while (1);
 
-        /* catch binary mode, e.g. on Win32 */
-        else if (c == '\n') { 
-            break;
-        }
+    /* concat the stuff */
+    if (buflist) {
+        char *p;
 
-        buf[i++] = c;
-        apr_file_read(fpout, &c, &nbytes);
+        p = buf = apr_palloc(r->pool, combined_len + 1); /* \0 */
+        while (buflist) {
+            if (buflist->len) {
+                memcpy(p, buflist->string, buflist->len);
+                p += buflist->len;
+            }
+            buflist = buflist->next;
+        }
+        *p = '\0';
+        i = combined_len;
+    }
+    else {
+        buf[i] = '\0';
     }
 
     /* give the lock back */
@@ -1406,12 +1465,12 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
         }
     }
 
-    /* buf is not zero terminated, so be careful! */
-    if (i == 4 && strncasecmp(buf, "NULL", 4) == 0) {
+    /* catch the "failed" case */
+    if (i == 4 && !strcasecmp(buf, "NULL")) {
         return NULL;
     }
 
-    return apr_pstrmemdup(r->pool, buf, i);
+    return buf;
 }
 
 /*
