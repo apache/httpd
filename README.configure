@@ -241,7 +241,7 @@
 
   The PHP language (http://www.php.net) is an HTML-embedded scripting language 
   which can be directly integrated into the Apache HTTP server for powerful HTML 
-  scripting.  The package can be found at http://www.php.net/download-php.php3. 
+  scripting.  The package can be found at http://www.php.net/downloads.php 
 
   1. How you can install Apache with a statically linked PHP:
 
