@@ -261,6 +261,7 @@ _build:
 	cd ..\..
 	cd modules\loggers
 	 $(MAKE) $(MAKEOPT) -f mod_log_config.mak  CFG="mod_log_config - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_log_forensic.mak CFG="mod_log_forensic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_logio.mak       CFG="mod_logio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\mappers
@@ -402,6 +403,7 @@ _copybin:
 	copy modules\generators\$(LONG)\mod_status.$(src_so) 	"$(inst_so)" <.y
 	copy modules\http\$(LONG)\mod_mime.$(src_so) 		"$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_log_config.$(src_so) 	"$(inst_so)" <.y
+	copy modules\loggers\$(LONG)\mod_log_forensic.$(src_so) "$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_logio.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_actions.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_alias.$(src_so) 	"$(inst_so)" <.y
