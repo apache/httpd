@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/13 18:01:11 $]
+Last modified at [$Date: 2003/11/13 18:04:16 $]
 
 Release:
 
@@ -70,7 +70,7 @@ PATCHES TO BACKPORT FROM 2.1
       Old code simply checked if it was non-zero, not if it
       was *valid*
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.247&r2=1.248
-      +1:
+      +1: bnicholes
 
     * Better descriptions for the configure --help output for some modules
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/config9.m4.diff?r1=1.17&r2=1.18
