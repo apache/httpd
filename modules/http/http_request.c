@@ -1388,8 +1388,6 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
 	apr_psprintf(r->pool, "%d", r->status));
 
-    ap_add_filter("CORE", NULL, new);
-
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need
      * to do their thing on internal redirects as well.  Perhaps this is a

@@ -3284,6 +3284,11 @@ static const char *core_method(const request_rec *r)
 static unsigned short core_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 
+static int core_post_read_req(request_rec *r)
+{
+    ap_add_filter("CORE", NULL, r);
+}
+
 static void core_register_filter(request_rec *r)
 {
     int i;
@@ -3310,6 +3315,7 @@ static void register_hooks(void)
     /* FIXME: I suspect we can eliminate the need for these - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
+    ap_hook_post_read_request(core_post_read_req, NULL, NULL, AP_HOOK_REALLY_FIRST);
 
     /* define the CORE filter, then register a hook to insert it at
      * request-processing time.
