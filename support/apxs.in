@@ -269,7 +269,7 @@ sub get_vars {
                 ? $config_vars{$arg}
                 : $config_vars{lc $arg};
             $val =~ s/[()]//g;
-            $result .= eval "qq($val)";
+            $result .= eval "qq($val)" if defined $val;
             $result .= ";;";
             $ok = 1;
         }
@@ -277,7 +277,7 @@ sub get_vars {
             if (exists $internal_vars{$arg} or exists $internal_vars{lc $arg}) {
                 my $val = exists $internal_vars{$arg} ? $arg : lc $arg;
                 $val = eval "\$CFG_$val";
-                $result .= eval "qq($val)";
+                $result .= eval "qq($val)" if defined $val;
                 $result .= ";;";
                 $ok = 1;
             }

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Get rid of uninitialized value errors with "apxs -q" on certain
+     variables.  [Stas Bekman <stas@stason.org>]
+
   *) Fix apxs to allow it to work when the build directory is somewhere
      besides server-root/build.  PR 8453  
      [Jeff Trawick and a host of others]
