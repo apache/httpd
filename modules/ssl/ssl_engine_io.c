@@ -222,7 +222,7 @@ static apr_status_t churn_output(SSLFilterRec *pRec)
 }
 
 static apr_status_t churn (SSLFilterRec *pRec,
-        apr_read_type_e eReadType, apr_size_t *readbytes)
+        apr_read_type_e eReadType, apr_off_t *readbytes)
 {
     apr_bucket *pbktIn;
     ap_input_mode_t eMode = (eReadType == APR_BLOCK_READ) 
@@ -362,7 +362,7 @@ apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 }
 
 apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
-                          ap_input_mode_t eMode, apr_size_t *readbytes)
+                          ap_input_mode_t eMode, apr_off_t *readbytes)
 {
     apr_status_t ret;
     SSLFilterRec *pRec        = f->ctx;
