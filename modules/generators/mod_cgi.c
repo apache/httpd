@@ -462,7 +462,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
-            apr_pool_note_subprocess(p, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
 
             *script_in = procnew->out;
             if (!*script_in)
