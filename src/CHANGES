@@ -1,5 +1,13 @@
 Changes with Apache 1.3b4
-  
+
+  *) HTTP/1.1 requires x-gzip and gzip encodings be treated
+     equivalent, similarly for x-compress and compress.  Apache
+     now ignores a leading x- when comparing encodings.  It also
+     preserves the encoding the client requests (for example if
+     it requests x-gzip, then Apache will respond with x-gzip
+     in the Content-Encoding header).
+     [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>] PR#1772
+
   *) Fix a memory leak on keep-alive connections.  [Igor Tatarinov]
 
   *) Added mod_so module to support dynamic loading of modules on Unix

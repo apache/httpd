@@ -127,6 +127,8 @@ static const char *add_encoding(cmd_parms *cmd, mime_dir_config * m, char *enc,
 {
     if (*ext == '.')
         ++ext;
+    if ((enc[0] == 'x' || enc[0] == 'X') && enc[1] == '-')
+        enc += 2;
     table_set(m->encoding_types, ext, enc);
     return NULL;
 }

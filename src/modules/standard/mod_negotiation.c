@@ -1468,7 +1468,6 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
         return;
     }
 
-
     /* if no Accept: header, leave quality alone (will
      * remain at the default value of 1) */
     if (neg->accept_encodings->nelts == 0) {
@@ -1483,9 +1482,14 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
      */
     for (i = 0; i < neg->accept_encodings->nelts; ++i) {
         char *name = accept_recs[i].type_name;
+        int off = 0;
 
-        if (!strcmp(name, enc)) {
+	if (name[0] == 'x' && name[1] == '-')
+            off = 2;
+
+        if (!strcmp(name+off, enc)) {
             variant->encoding_quality = 1;
+            variant->content_encoding = name;
             return;
         }
     }
@@ -2192,7 +2196,9 @@ static int handle_multi(request_rec *r)
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;
-    r->content_encoding = sub_req->content_encoding;
+    /* it may have been modified, so that it would match the exact encoding
+     * requested by the client (i.e. x-gzip vs. gzip) */
+    r->content_encoding = best->content_encoding;
     r->content_languages = sub_req->content_languages;
     r->content_language = sub_req->content_language;
     r->finfo = sub_req->finfo;
