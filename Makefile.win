@@ -177,11 +177,19 @@ _build:
 	cd srclib\apr-iconv
 	 $(MAKE) $(MAKEOPT) -f apriconv.mak  CFG="apriconv - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapriconv.mak  CFG="libapriconv - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 cd ccs
-	  $(MAKE) $(MAKEOPT) -f Makefile.win BUILD_TYPE=$(SHORT)DD
-	 cd ..\ces
-	  $(MAKE) $(MAKEOPT) -f Makefile.win BUILD_TYPE=$(SHORT)DD
-	cd ..\..\..
+!IF "$(CTARGET)" == "CLEAN"
+	$(MAKE) $(MAKEOPT) /f build\modules.mk.win clean \
+		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=.
+!ELSE
+	cd ccs
+	$(MAKE) /nologo /f Makefile.win all \
+		BUILD_MODE=$(LONG) BIND_MODE=shared
+	cd ..\ces
+	$(MAKE) /nologo /f Makefile.win all \
+		BUILD_MODE=$(LONG) BIND_MODE=shared
+	cd ..
+!ENDIF
+	cd ..\..
 	cd srclib\apr-util\uri
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak  CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
@@ -332,6 +340,12 @@ _build:
 	@echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	@msdev Apache.dsw /USEENV /MAKE \
 		"BuildBin - Win32 $(LONG)" $(CTARGET)
+!IF "$(CTARGET)" == "/CLEAN"
+	@cd srclib\apr-iconv
+	@$(MAKE) $(MAKEOPT) /f build\modules.mk.win clean \
+		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=.
+	@cd ..\..
+!ENDIF
 !IF EXIST("srclib\openssl")
 	@msdev Apache.dsw /USEENV /MAKE \
 		"mod_ssl - Win32 $(LONG)" \
@@ -370,8 +384,11 @@ _install:
 	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin" <.y
 	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv.dll "$(INSTDIR)\bin" <.y
-	copy srclib\apr-iconv\ccs\$(LONG)\*.so "$(INSTDIR)\bin\iconv" <.y
-	copy srclib\apr-iconv\ces\$(LONG)\*.so "$(INSTDIR)\bin\iconv" <.y
+	cd srclib\apr-iconv
+	$(MAKE) $(MAKEOPT) /f build\modules.mk.win install \
+		BUILD_MODE=$(LONG) BIND_MODE=shared \
+		API_SOURCE=. INSTALL_DIR="$(INSTDIR)\bin\iconv"
+	cd ..\..
 	copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.so "$(INSTDIR)\modules" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules" <.y
