@@ -432,8 +432,8 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
                 ws->my_access_count = 0L;
                 ws->my_bytes_served = 0L;
             }
-            ws->conn_count = (unsigned short)0;
-            ws->conn_bytes = (unsigned long)0;
+            ws->conn_count = 0;
+            ws->conn_bytes = 0;
         }
         if (r) {
             conn_rec *c = r->connection;
