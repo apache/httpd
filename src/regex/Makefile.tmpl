@@ -66,6 +66,10 @@ regexec.o:	engine.c engine.ih
 regerror.o:	regerror.ih
 debug.o:	debug.ih
 main.o:	main.ih
+ 
+# tester - just compile... do not link
+re-nolink: $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) -c
 
 # tester
 re:	$(OBJS)

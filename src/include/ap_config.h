@@ -929,12 +929,12 @@ typedef int rlim_t;
 #define NO_LINGCLOSE
 #define NO_MMAP
 #define NO_OTHER_CHILD
+#define NO_PIPED_LOGS
 #define NO_RELIABLE_PIPED_LOGS
 #define NO_SETSID
 #define NO_SLACK
 #define NO_TIMES
 #define NO_USE_SIGACTION
-#define NO_WRITEV
 #define USE_LONGJMP
 /*#define USE_SHMGET_SCOREBOARD*/
 #define USE_TPF_ACCEPT
@@ -942,6 +942,7 @@ typedef int rlim_t;
 /*#define USE_TPF_DAEMON*/
 #define USE_TPF_SCOREBOARD
 #define USE_TPF_SELECT
+#define crypt(buf,salt) ((char *)buf)
 #undef  offsetof
 #define offsetof(s_type,field) ((size_t)&(((s_type*)0)->field))
 

@@ -3,8 +3,11 @@
 
 #define PLATFORM "TPF"
 
-#ifdef errno
+/* if the compiler defined errno then undefine it
+   and pick up the correct definition from errno.h */
+#if defined(errno) && !defined(__errnoh)
 #undef errno
+#include <errno.h>
 #endif
 
 /*
@@ -69,6 +72,24 @@ typedef struct fd_set {
 
 /* TPF doesn't have, or need, tzset (it is used in mod_expires.c) */
 #define tzset()
+ 
+/* definitions for the file descriptor inheritance table */
+#define TPF_FD_LIST_SIZE 4000
+
+enum FILE_TYPE { PIPE_OUT = 1, PIPE_IN, PIPE_ERR };
+
+typedef struct tpf_fd_item {
+    int            fd;
+    enum FILE_TYPE file_type;
+    char           *fname;
+}TPF_FD_ITEM;
+
+typedef struct tpf_fd_list {
+    void           *next_avail_byte;
+    void           *last_avail_byte;
+    unsigned int   nbr_of_items;
+    TPF_FD_ITEM    first_item;
+}TPF_FD_LIST;
 
 #include <i$netd.h>
 struct apache_input {
@@ -79,9 +100,16 @@ struct apache_input {
     int                 generation;         /* server generation number */
     int                 listeners[10];
     time_t              restart_time;
+    TPF_FD_LIST         *tpf_fds;           /* fd inheritance table ptr */
+    void                *shm_static_ptr;    /* shm ptr for static pages */
 };
 
 typedef struct apache_input APACHE_TPF_INPUT;
+ 
+extern void *tpf_shm_static_ptr;            /* mod_tpf_shm_static */
+#define TPF_SHM_STATIC_SIZE 200000
+#define MMAP_SEGMENT_SIZE 32767             /* writev can handle 32767 */
+#define _SYS_UIO_H_                         /* writev */
 
 typedef struct tpf_fork_child {
      char  *filename;

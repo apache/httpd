@@ -1,5 +1,15 @@
 Changes with Apache 1.3.10
 
+  *) More TPF changes. Code reorganization for cleanliness, regex
+     changes for testing, as well as doc and build updates.
+     [David McCreedy <McCreedy@us.ibm.com> and others at IBM]
+
+  *) Add TPF processing for the socket read to the rfc1413 code.
+     [David McCreedy <McCreedy@us.ibm.com> and others at IBM]
+
+  *) Require the batch (-b) option and default to MD5 on TPF in htpasswd.
+     [David McCreedy <McCreedy@us.ibm.com> and others at IBM]
+
   *) Move "handler not found" warning message to below the check
      for a wildcard handler.  [Dirk <dirkm@teleport.com>, Roy Fielding]
      PR#2584, PR#2751, PR#3349, PR#3436, PR#3548, PR#4384, PR#4795, PR#4807

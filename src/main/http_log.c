@@ -570,6 +570,7 @@ API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 
 /* piped log support */
 
+#ifndef NO_PIPED_LOGS
 #ifndef NO_RELIABLE_PIPED_LOGS
 /* forward declaration */
 static void piped_log_maintenance(int reason, void *data, ap_wait_t status);
@@ -746,18 +747,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
 {
     piped_log *pl;
     FILE *dummy;
-#ifdef TPF
-    TPF_FORK_CHILD cld;
-    cld.filename = (char *)program;
-    cld.subprocess_env = NULL;
-    cld.prog_type = FORK_NAME;
-
-    if (!ap_spawn_child (p, NULL, &cld,
-      kill_after_timeout, &dummy, NULL, NULL)){
-#else
     if (!ap_spawn_child(p, piped_log_child, (void *)program,
 			kill_after_timeout, &dummy, NULL, NULL)) {
-#endif /* TPF */
 	perror("ap_spawn_child");
 	fprintf(stderr, "Couldn't fork child for piped log process\n");
 	exit (1);
@@ -774,4 +765,5 @@ API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 {
     ap_pfclose(pl->p, pl->write_f);
 }
+#endif
 #endif

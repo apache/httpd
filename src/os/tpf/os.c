@@ -66,6 +66,13 @@
 #include "scoreboard.h"
 #include "http_log.h"
 #include "http_conf_globals.h"
+#ifdef __PIPE_
+#include "ipc.h"
+#include "shm.h"
+static TPF_FD_LIST *tpf_fds = NULL;
+#endif
+
+void *tpf_shm_static_ptr = NULL;
 
 static FILE *sock_fp;
 
@@ -168,14 +175,6 @@ char *getpass(const char* prompt)
     return((char *)NULL);
 }
 
-#ifndef __PIPE_
-int pipe(int fildes[2])
-{
-    errno = ENOSYS;
-    return(-1);
-}
-#endif
-  
 /* fork and exec functions are not defined on
    TPF due to the implementation of tpf_fork() */
  
@@ -225,8 +224,6 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
    array_header             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
    table_entry              *elts = (table_entry *) env_arr->elts;
 
-
-
    if (func) {
       if (result=func(data, NULL)) {
           return 0;                    /* error from child function */
@@ -240,7 +237,6 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
       fcntl(temp_out, F_SETFD, FD_CLOEXEC);
       dup2(out_fds[1], STDOUT_FILENO);
    }
-
 
    if (pipe_in) {
       fd_flags_in = fcntl(in_fds[1], F_GETFD);
@@ -371,6 +367,8 @@ pid_t os_fork(server_rec *s, int slot)
 
     input_parms.slot = slot;
     input_parms.restart_time = ap_restart_time;
+    input_parms.shm_static_ptr = tpf_shm_static_ptr;
+    input_parms.tpf_fds = tpf_fds;
     fork_input.ebw_data = &input_parms;
     fork_input.program = ap_server_argv0;
     fork_input.prog_type = TPF_FORK_NAME;
@@ -397,11 +395,12 @@ int os_check_server(char *server) {
 
 void os_note_additional_cleanups(pool *p, int sd) {
     char sockfilename[50];
-    /* write the socket to file so that TPF socket device driver will close socket in case
-       we happen to abend. */
+    /* write the socket to file so that TPF socket device driver
+       will close socket in case we happen to abend. */
     sprintf(sockfilename, "/dev/tpf.socket.file/%.8X", sd);
     sock_fp = fopen(sockfilename, "r+");
-    ap_note_cleanups_for_file(p, sock_fp);  /* arrange to close on exec or restart */
+    /* arrange to close on exec or restart */
+    ap_note_cleanups_for_file(p, sock_fp);
     fcntl(sd,F_SETFD,FD_CLOEXEC);
 }
 
@@ -409,6 +408,257 @@ void os_tpf_child(APACHE_TPF_INPUT *input_parms) {
     tpf_child = 1;
     ap_my_generation = input_parms->generation;
     ap_restart_time = input_parms->restart_time;
+    tpf_fds = input_parms->tpf_fds;
+    tpf_shm_static_ptr = input_parms->shm_static_ptr;
 }
 
+#ifndef __PIPE_
 
+int pipe(int fildes[2])
+{
+    errno = ENOSYS;
+    return(-1);
+}
+
+API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
+
+{
+    fprintf(stderr, "Pipes not supported on this TPF system\n");
+    exit (1);
+}
+
+#else
+
+void ap_tpf_detach_shared_mem(void *address)
+{
+    if (*((void **)address)) {
+        shmdt(*((void **)address));
+        *((void **)address) = NULL;
+    }
+}
+
+static void *ap_tpf_get_shared_mem(size_t size)
+{
+    key_t shmkey = IPC_PRIVATE;
+    int shmid = -1;
+    void *result;
+
+    if ((shmid = shmget(shmkey, size, IPC_CREAT | SHM_R | SHM_W)) == -1) {
+        perror("shmget failed in ap_tpf_get_shared_mem funciton");
+        exit(1);
+    }
+#define BADSHMAT ((void *)(-1))
+    if ((result = shmat(shmid, 0, 0)) == BADSHMAT) {
+        perror("shmat failed in ap_tpf_get_shared_mem");
+    }
+    if (shmctl(shmid, IPC_RMID, NULL) != 0) {
+        perror("shmctl(IPC_RMID) failed in ap_tpf_get_shared_mem");
+    }
+    if (result == BADSHMAT) {   /* now bailout */
+        exit(1);
+    }
+
+    return result;
+}
+
+int ap_tpf_fd_lookup(enum FILE_TYPE file_type, const char *fname)
+/* lookup a fd in the fd inheritance table */
+{
+    if (tpf_fds) {
+        int i;
+        TPF_FD_ITEM *fd_item = &tpf_fds->first_item;
+
+        for (i = 1; i <= tpf_fds->nbr_of_items; i++, fd_item++) {
+            /* check for an fd with the same type and name */
+            if ((file_type == fd_item->file_type) &&
+                (strcmp(fname, fd_item->fname) == 0) ) {
+                /* we've got a match, check that fd is still open */
+                struct stat stbuf;
+
+                if (fstat(fd_item->fd, &stbuf) == 0) {
+                    return(fd_item->fd);
+                }
+                else {
+                    /* fd is not open - the entire fd table is suspect */
+                    fprintf(stderr, "fstat failed in ap_tpf_fd_lookup "
+                                    "for fd %i (filename/pipe to %s): %s\n",
+                            fd_item->fd, fname, strerror(errno));
+                    ap_tpf_detach_shared_mem(&tpf_fds);
+                    return(-1);
+                }
+            }
+        }
+    }
+    return(-1);
+}
+
+void ap_tpf_add_fd(pool *p, int fd, enum FILE_TYPE file_type, const char *fname)
+/* add a newly opened fd to the fd inheritance table */
+{
+    int fname_size;
+
+    if (tpf_child) {
+        return; /* no kids allowed */
+    }
+    if (tpf_fds == NULL) {
+        /* get shared memory if necssary */
+        tpf_fds = ap_tpf_get_shared_mem((size_t)TPF_FD_LIST_SIZE);
+        if (tpf_fds) {
+            ap_register_cleanup(p, (void *)&tpf_fds,
+                                ap_tpf_detach_shared_mem, ap_null_cleanup);
+            tpf_fds->nbr_of_items = 0;
+            tpf_fds->next_avail_byte = &tpf_fds->first_item;
+            tpf_fds->last_avail_byte = (char *)tpf_fds + TPF_FD_LIST_SIZE;
+        }
+    }
+    /* add fd */
+    if (tpf_fds) {
+        TPF_FD_ITEM *fd_item;
+
+        /* make sure there's room */
+        fname_size = strlen(fname) + 1;
+        if (sizeof(TPF_FD_ITEM) + fname_size >
+            (char *)tpf_fds->last_avail_byte -
+            (char *)tpf_fds->next_avail_byte) {
+            fprintf(stderr, "fd inheritance table out of room, increase "
+                    "TPF_FD_LIST_SIZE in os.h and recompile Apache\n");
+            exit(1);
+        }
+        /* add the new item */
+        fd_item = tpf_fds->next_avail_byte;
+        tpf_fds->next_avail_byte = fd_item + 1;
+        tpf_fds->last_avail_byte
+            = (char *)tpf_fds->last_avail_byte - fname_size;
+        fd_item->fname = tpf_fds->last_avail_byte;
+        strcpy(fd_item->fname, fname);
+        fd_item->fd = fd;
+        fd_item->file_type = file_type;
+        tpf_fds->nbr_of_items++;
+    }
+}
+
+API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
+{
+    int log_fd;
+    piped_log *pl;
+
+    /* check fd inheritance table to see if this log is already open */
+    log_fd = ap_tpf_fd_lookup(PIPE_OUT, program);
+    if (log_fd < 0) {
+        /* this is a new log - open it */
+        FILE *dummy;
+        TPF_FORK_CHILD cld;
+        cld.filename = (char *)program;
+        cld.subprocess_env = NULL;
+        cld.prog_type = FORK_NAME;
+
+        if (ap_spawn_child(p, NULL, &cld, kill_after_timeout,
+            &dummy, NULL, NULL)) {
+            log_fd = fileno(dummy);
+            /* add this log to the fd inheritance table */
+            ap_tpf_add_fd(p, log_fd, PIPE_OUT, program);
+        }
+        else {
+            perror("ap_spawn_child");
+            fprintf(stderr, "Couldn't fork child for piped log process\n");
+            exit (1);
+        }
+    }
+
+    pl = ap_palloc(p, sizeof (*pl));
+    pl->p = p;
+    pl->fds[1] = log_fd;
+
+    return pl;
+}
+
+#endif /* __PIPE_ */
+
+/*   The following functions are used for the tpf specific module called
+     mod_tpf_shm_static.  This module is a clone of Apache's mod_mmap_static.
+     Because TPF doesn't support the system call mmap(), it is replaced by
+     shared memory, but uses the mmap directives, etc.   */
+
+union align{
+
+   /* Types which are likely to have the longest RELEVANT alignment
+    * restrictions...     */
+
+   char *cp;
+   void (*f) (void);
+   long l;
+   FILE *fp;
+   double d;
+};
+
+#define CLICK_SZ (sizeof(union align))
+union block_hdr {
+    union align a;
+
+    /* Actual header... */
+
+    struct {
+        char *endp;
+        union block_hdr *next;
+        char *first_avail;
+ #ifdef POOL_DEBUG
+        union block_hdr *global_next;
+        struct pool *owning_pool;
+ #endif
+     } h;
+};
+
+struct pool {
+    union block_hdr *first;
+    union block_hdr *last;
+    struct cleanup *cleanups;
+    struct process_chain *subprocesses;
+    struct pool *sub_pools;
+    struct pool *sub_next;
+    struct pool *sub_prev;
+    struct pool *parent;
+    char *free_first_avail;
+#ifdef ALLOC_USE_MALLOC
+    void *allocation_list;
+#endif
+#ifdef POOL_DEBUG
+    struct pool *joined;
+#endif
+};
+
+#include "alloc.h"
+#define POOL_HDR_CLICKS (1 + ((sizeof(struct pool) - 1) / CLICK_SZ))
+#define POOL_HDR_BYTES (POOL_HDR_CLICKS * CLICK_SZ)
+
+pool * ap_get_shared_mem_pool(size_t size)
+{
+    pool *new_pool;
+    union block_hdr *blok;
+
+    blok = (union block_hdr *) ap_tpf_get_shared_mem(size);
+    /* if shm fails, it will exit  blok will be valid here */
+    memset((char *) blok, '\0', size);
+    blok->h.next = NULL;
+    blok->h.first_avail = (char *) (blok + 1);
+    blok->h.endp = size + blok->h.first_avail;
+    new_pool = (pool *) blok->h.first_avail;
+    blok->h.first_avail += POOL_HDR_BYTES;
+    new_pool->free_first_avail = blok->h.first_avail;
+    new_pool->first = new_pool->last = blok;
+
+    return new_pool;
+}
+
+int ap_check_shm_space(struct pool *a, int size)
+{
+    union block_hdr *blok = a->last;
+    char *first_avail = blok->h.first_avail;
+    char *new_first_avail;
+
+    new_first_avail = first_avail + size;
+    if (new_first_avail <= blok->h.endp) {
+         return (1);
+    }
+    else
+         return (0);
+}
