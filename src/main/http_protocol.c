@@ -1072,10 +1072,9 @@ static int read_request_line(request_rec *r)
         r->proto_num = HTTP_VERSION(r->protocol[5] - '0', r->protocol[7] - '0');
     }
     else {
-        char *lint;
+        char lint[2];
         char http[5];
-	lint = ap_palloc(r->pool, strlen(r->protocol)+1);
-	if (3 == sscanf(r->protocol, "%4s/%u.%u%s", http, &major, &minor, lint)
+	if (3 == sscanf(r->protocol, "%4s/%u.%u%1s", http, &major, &minor, lint)
             && (strcasecmp("http", http) == 0)
 	    && (minor < HTTP_VERSION(1,0)) ) /* don't allow HTTP/0.1000 */
 	    r->proto_num = HTTP_VERSION(major, minor);
