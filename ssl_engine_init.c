@@ -660,6 +660,42 @@ static void ssl_init_cert_chain(server_rec *s,
             n, n == 1 ? "" : "s");
 }
 
+static int ssl_server_import_cert(server_rec *s,
+                                  SSLSrvConfigRec *sc,
+                                  const char *id,
+                                  int idx)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+    ssl_asn1_t *asn1;
+    unsigned char *ptr;
+    const char *type = ssl_asn1_keystr(idx);
+    X509 *cert;
+
+    if (!(asn1 = ssl_asn1_table_get(mc->tPublicCert, id))) {
+        return FALSE;
+    }
+
+    ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
+            "Configuring %s server certificate", type);
+
+    ptr = asn1->cpData;
+    if (!(cert = d2i_X509(NULL, &ptr, asn1->nData))) {
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                "Unable to import %s server certificate", type);
+        ssl_die();
+    }
+
+    if (SSL_CTX_use_certificate(sc->pSSLCtx, cert) <= 0) {
+        ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
+                "Unable to configure %s server certificate", type);
+        ssl_die();
+    }
+
+    sc->pPublicCert[idx] = cert;
+
+    return TRUE;
+}
+
 static void ssl_check_public_cert(server_rec *s,
                                   apr_pool_t *ptemp,
                                   X509 *cert,
@@ -766,51 +802,9 @@ void ssl_init_ConfigureServer(server_rec *s,
     rsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_RSA);
     dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
 
-    if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, rsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
-                "Configuring RSA server certificate");
-
-        ptr = asn1->cpData;
-        if (!(sc->pPublicCert[SSL_AIDX_RSA] =
-              d2i_X509(NULL, &ptr, asn1->nData)))
-        {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to import RSA server certificate");
-            ssl_die();
-        }
-
-        if (SSL_CTX_use_certificate(ctx, sc->pPublicCert[SSL_AIDX_RSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to configure RSA server certificate");
-            ssl_die();
-        }
-
-        ok = TRUE;
-    }
-
-    if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, dsa_id))) {
-        ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
-                "Configuring DSA server certificate");
-
-        ptr = asn1->cpData;
-        if (!(sc->pPublicCert[SSL_AIDX_DSA] =
-              d2i_X509(NULL, &ptr, asn1->nData)))
-        {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to import DSA server certificate");
-            ssl_die();
-        }
-
-        if (SSL_CTX_use_certificate(ctx, sc->pPublicCert[SSL_AIDX_DSA]) <= 0) {
-            ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
-                    "Unable to configure DSA server certificate");
-            ssl_die();
-        }
-
-        ok = TRUE;
-    }
-
-    if (!ok) {
+    if (!(ssl_server_import_cert(s, sc, rsa_id, SSL_AIDX_RSA) ||
+          ssl_server_import_cert(s, sc, dsa_id, SSL_AIDX_DSA)))
+    {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Oops, no RSA or DSA server certificate found?!");
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
