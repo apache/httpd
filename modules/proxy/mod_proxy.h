@@ -110,9 +110,10 @@
 #include "http_config.h"
 #include "http_protocol.h"
 #include "ap_cache.h"
-/*   XXX There is no explain.h in Apache 2.0
-#include "explain.h"
-*/
+
+#include "apr_compat.h"
+#include "apr_strings.h"
+
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
@@ -202,7 +203,7 @@ typedef struct {
     apr_array_header_t *allowed_connect_ports;
     const char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
-    float cache_completion;	/* Force cache completion after this point */
+    float cache_completion;     /* Force cache completion after this point */
     enum {
       via_off,
       via_on,
@@ -210,13 +211,20 @@ typedef struct {
       via_full
     } viaopt;                   /* how to deal with proxy Via: headers */
     size_t recv_buffer_size;
-	ap_cache_handle_t *cache;
+    ap_cache_handle_t *cache;
 } proxy_server_conf;
 
+struct per_thread_data {
+    struct hostent hpbuf;
+    u_long ipaddr;
+    char *charpbuf[2];
+};
+
 typedef struct {
-	float cache_completion; /* completion percentage */
-	int content_length; /* length of the content */
+        float cache_completion; /* completion percentage */
+        int content_length; /* length of the content */
 } proxy_completion;
+
 
 /* Function prototypes */
 
@@ -234,7 +242,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url);
 
 int ap_proxy_http_canon(request_rec *r, char *url, const char *scheme,
 		     int def_port);
-int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
+int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 		       const char *proxyhost, int proxyport);
 
 /* proxy_util.c */
@@ -242,12 +250,12 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
 int ap_proxy_hex2c(const char *x);
 void ap_proxy_c2hex(int ch, char *x);
 char *ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
-		     int isenc);
+			int isenc);
 char *ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
 const char *ap_proxy_date_canon(apr_pool_t *p, const char *x);
 apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f);
-long int ap_proxy_send_fb(proxy_completion *, BUFF *f, request_rec *r, ap_cache_el  *c);
+long int ap_proxy_send_fb(proxy_completion *, BUFF *f, request_rec *r, ap_cache_el *c);
 void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *hdrs);
 int ap_proxy_liststr(const char *list, const char *val);
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
@@ -258,7 +266,7 @@ int ap_proxy_cache_send(request_rec *r, ap_cache_el *c);
 int ap_proxy_cache_should_cache(request_rec *r, apr_table_t *resp_hdrs,
                                 const int is_HTTP1);
 int ap_proxy_cache_update(ap_cache_el *c);
-void ap_proxy_cache_error(ap_cache_el  **r);
+void ap_proxy_cache_error(ap_cache_el **r);
 int ap_proxyerror(request_rec *r, int statuscode, const char *message);
 int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
@@ -266,8 +274,8 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r);
 int ap_proxy_garbage_init(server_rec *, apr_pool_t *);
-/* This function is called by apr_table_do() for all header lines */
+/* This function is called by ap_table_do() for all header lines */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
-unsigned ap_proxy_bputs2(const char *data, BUFF *client, ap_cache_el  *cache);
+unsigned ap_proxy_bputs2(const char *data, BUFF *client, ap_cache_el *cache);
 
 #endif /*MOD_PROXY_H*/
