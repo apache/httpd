@@ -105,7 +105,7 @@ static server_rec *server_conf;
 static HANDLE AcceptExCompPort = NULL;
 
 static int one_process = 0;
-static char *signal_arg;
+static char const* signal_arg;
 
 OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 
@@ -1822,10 +1822,11 @@ void winnt_rewrite_args(process_rec *process)
     char *def_server_root;
     char fnbuf[MAX_PATH];
     char optbuf[3];
-    char **new_arg;
+    const char *optarg;
+    const char **new_arg;
     int fixed_args;
     char *pid;
-    int opt;
+    apr_getopt_t *opt;
 
     one_process = !!getenv("ONE_PROCESS");
 
@@ -1901,15 +1902,15 @@ void winnt_rewrite_args(process_rec *process)
     fixed_args = mpm_new_argv->nelts;
 
     optbuf[0] = '-'; optbuf[2] = '\0';
-    while (apr_getopt(process->argc, (char**) process->argv, 
-                     "n:k:iu" AP_SERVER_BASEARGS, 
-                     &opt, process->pool) == APR_SUCCESS) {
-        switch (opt) {
+    apr_initopt(&opt, process->pool, process->argc, (char**) process->argv);
+    while (apr_getopt(opt, "n:k:iu" AP_SERVER_BASEARGS, 
+                      optbuf + 1, &optarg) == APR_SUCCESS) {
+        switch (optbuf[1]) {
         case 'n':
-            service_named = mpm_service_set_name(process->pool, apr_optarg);
+            service_named = mpm_service_set_name(process->pool, optarg);
             break;
         case 'k':
-            signal_arg = apr_optarg;
+            signal_arg = optarg;
             break;
         case 'i':
             /* TODO: warn of depreciated syntax, "use -k install instead" */
@@ -1923,18 +1924,13 @@ void winnt_rewrite_args(process_rec *process)
             optbuf[1] = (char) opt;
             new_arg = (char**) apr_push_array(mpm_new_argv);
             *new_arg = apr_pstrdup(process->pool, optbuf);
-            if (apr_optarg) {
+            if (optarg) {
                 new_arg = (char**) apr_push_array(mpm_new_argv);
-                *new_arg = apr_optarg;
+                *new_arg = optarg;
             }
             break;
         }
     }
-    /* Set optreset and optind to allow apr_getopt to work correctly
-     * when called from http_main.c
-     */
-    apr_optreset = 1;
-    apr_optind = 1;
     
     /* Track the number of args actually entered by the user */
     inst_argc = mpm_new_argv->nelts - fixed_args;

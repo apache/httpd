@@ -88,9 +88,9 @@
 #include "mpm_winnt.h"
 #include "apr_strings.h"
 
-char *service_name = NULL;
-char *display_name = NULL;
-char *signal_arg = NULL;
+char const* service_name = NULL;
+char const* display_name = NULL;
+char const* signal_arg = NULL;
     
 static struct
 {
@@ -446,7 +446,7 @@ long __stdcall service_stderr_thread(LPVOID hPipe)
     HANDLE hEventSource;
     char errbuf[256];
     char *errmsg = errbuf;
-    char *errarg[9];
+    const char *errarg[9];
     DWORD errlen = 0;
     DWORD errres;
     HKEY hk;
@@ -645,14 +645,14 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 }
 
 
-apr_status_t mpm_service_set_name(apr_pool_t *p, char *name)
+apr_status_t mpm_service_set_name(apr_pool_t *p, const char *name)
 {
     char *key_name;
     
     service_name = apr_palloc(p, strlen(name) + 1);
-    apr_collapse_spaces(service_name, name);
+    apr_collapse_spaces((char*) service_name, name);
     key_name = apr_psprintf(p, SERVICECONFIG, service_name);
-    if (ap_registry_get_value(p, key_name, "DisplayName", &display_name) == APR_SUCCESS)
+    if (ap_registry_get_value(p, key_name, "DisplayName", (char**)&display_name) == APR_SUCCESS)
         return APR_SUCCESS;
 
     /* Take the given literal name if there is no service entry */
@@ -1053,7 +1053,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         
         argc += 1;
         start_argv = apr_palloc(ptemp, argc * sizeof(char**));
-        start_argv[0] = service_name;
+        start_argv[0] = (char*) service_name;
         if (argc > 1)
             memcpy(start_argv + 1, argv, (argc - 1) * sizeof(char**));
         
