@@ -158,7 +158,7 @@ else
     if [ "x$TAR" != "x" ]
     then
       case "x$OS" in
-        x*390*) $TAR -cfU ../httpd-$VER-$OS.tar -C .. httpd-$VER;;
+        x*os390*) $TAR -cfU ../httpd-$VER-$OS.tar -C .. httpd-$VER;;
 	    *) (cd .. && $TAR -cf httpd-$VER-$OS.tar httpd-$VER);;
       esac
       if [ "x$GZIP" != "x" ]
