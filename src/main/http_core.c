@@ -1861,6 +1861,16 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig, char *word1)
     return NULL;
 }
 
+#ifdef _OSD_POSIX /* BS2000 Logon Passwd file */
+static const char *set_bs2000_authfile (cmd_parms *cmd, void *dummy, char *name)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) return err;
+
+    return os_set_authfile(cmd->pool, name);
+}
+#endif /*_OSD_POSIX*/
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -1992,6 +2002,10 @@ static const command_rec core_cmds[] = {
 { "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1, "set level of verbosity in error logging" },
 { "NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF, TAKE1,
   "a numeric ip address:port, or the name of a host" },
+#ifdef _OSD_POSIX
+{ "BS2000AuthFile", set_bs2000_authfile, NULL, RSRC_CONF, TAKE1,
+  "server User's bs2000 logon password file (read-protected)" },
+#endif
 { NULL },
 };
 

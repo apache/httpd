@@ -3147,7 +3147,11 @@ static void child_main(int child_num_arg)
     }
 #else
     /* Only try to switch if we're running as root */
-    if (!geteuid() && setuid(ap_user_id) == -1) {
+    if (!geteuid() && (
+#ifdef _OSD_POSIX
+	os_init_job_environment(server_conf, ap_user_name) != 0 || 
+#endif
+	setuid(ap_user_id) == -1)) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 		    "setuid: unable to change uid");
 	clean_child_exit(APEXIT_CHILDFATAL);
