@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/04 18:12:05 $]
+Last modified at [$Date: 2002/03/05 21:23:29 $]
 
 Release:
 
@@ -74,17 +74,6 @@ FINAL RELEASE SHOWSTOPPERS:
       GA release:
           * Free lists for bucket allocation
           * Pool allocator change
-
-    * Graceful restart is broken in the worker MPM.
-        Message-ID: <m3g03tnrkv.fsf@rdu163-40-092.nc.rr.com>
-      Justin asks: "Is this fixed?  I can't reproduce now."
-      Jeff: Here is a problem that remains now that the segfault
-      is fixed:
-      * accept mutex gets cleaned up before children are gone; with
-        some types (sysvsem), this causes immediate failure in a
-        thread blocked in the accept mutex; that thread will exit(),
-        presumably taking with it any active connections owned by other
-        threads in the process
 
     * Address popular PRs
         * Win32 doesn't install as service correctly [9863, 9914, 9961]
