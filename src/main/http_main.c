@@ -2994,7 +2994,6 @@ void worker_main()
     int srv;
     int clen;
     int csd;
-    struct sockaddr_in sa_server;
     struct sockaddr_in sa_client;
     int total_jobs = 0;
     thread **child_handles;
