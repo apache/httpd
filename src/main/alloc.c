@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: alloc.c,v 1.11 1996/08/20 10:51:01 paul Exp $ */
+/* $Id: alloc.c,v 1.12 1996/09/13 00:24:51 jim Exp $ */
 
 
 /*
@@ -109,8 +109,10 @@ union block_hdr *malloc_block (int size)
   union block_hdr *blok =
     (union block_hdr *)malloc(size + sizeof(union block_hdr));
 
-  if (blok == NULL) return NULL;
-  
+  if (blok == NULL) {
+      fprintf (stderr, "Ouch!  malloc failed in malloc_block()\n");
+      exit (1);
+  }
   blok->h.next = NULL;
   blok->h.first_avail = (char *)(blok + 1);
   blok->h.endp = size + blok->h.first_avail;

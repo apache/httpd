@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.66 1996/09/08 17:24:55 ben Exp $ */
+/* $Id: http_main.c,v 1.67 1996/09/13 00:24:50 jim Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1655,6 +1655,10 @@ static void copy_listeners(pool *p)
     for(lr=listeners ; lr ; lr=lr->next)
 	{
 	listen_rec *nr=malloc(sizeof *nr);
+	if (nr == NULL) {
+	  fprintf (stderr, "Ouch!  malloc failed in copy_listeners()\n");
+	  exit (1);
+	}
 	*nr=*lr;
 	kill_cleanups_for_fd(p,nr->fd);
 	nr->next=old_listeners;
