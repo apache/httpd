@@ -55,6 +55,10 @@
 #ifndef AP_MMN_H
 #define AP_MMN_H
 
+/**
+ * @package Multi-Processing Module library
+ */
+
 /*
     The MPM, "multi-processing model" provides an abstraction of the
     interface with the OS for distributing incoming connections to
@@ -101,33 +105,40 @@
     TODO: add SIGPIPE debugging check somewhere to make sure its SIG_IGN
 */
 
-/* run until a restart/shutdown is indicated, return 1 for shutdown
-   0 otherwise */
+/**
+ * This is the function that MPMs must create.  This function is responsible
+ * for controlling the parent and child processes.  It will run until a 
+ * restart/shutdown is indicated.
+ * @param pconf the configuration pool, reset before the config file is read
+ * @param plog the log pool, reset after the config file is read
+ * @param server_conf the global server config.
+ * @return 1 for shutdown 0 otherwise.
+ * @deffunc int ap_mpm_run(ap_pool_t *pconf, ap_pool_t *plog, server_rec *server_conf)
+ */
 API_EXPORT(int) ap_mpm_run(ap_pool_t *pconf, ap_pool_t *plog, server_rec *server_conf);
 
-/* predicate indicating if a graceful stop has been requested ...
-   used by the connection loop */
+/**
+ * predicate indicating if a graceful stop has been requested ...
+ * used by the connection loop 
+ * @return 1 if a graceful stop has been requested, 0 otherwise
+ * @deffunc int ap_graceful_stop_signalled*void)
+ */
 API_EXPORT(int) ap_graceful_stop_signalled(void);
 
-/*
- * ap_start_shutdown() and ap_start_restart() are functions to initiate 
- * shutdown or restart without relying on signals. 
+/**
+ * ap_start_shutdown() and ap_start_restart() is a function to initiate 
+ * shutdown without relying on signals. 
  *
- * These should only be called from the parent process itself, since the
+ * This should only be called from the parent process itself, since the
  * parent process will use the shutdown_pending and restart_pending variables
  * to determine whether to shutdown or restart. The child process should
  * call signal_parent() directly to tell the parent to die -- this will
  * cause neither of those variable to be set, which the parent will
  * assume means something serious is wrong (which it will be, for the
  * child to force an exit) and so do an exit anyway.
+ * @deffunc void ap_start_shutdown(void)
  */
 
 API_EXPORT(void) ap_start_shutdown(void);
-API_EXPORT(void) ap_start_restart(int graceful);
-
-/* 
- * ap_signal_parent() - used to send a signal to the parent process.
- */
-void ap_signal_parent(ap_pool_t *p, const char* signal, const char* server_root);
 
 #endif
