@@ -37,6 +37,7 @@ ap_bread
 ap_bsetflag
 ap_bsetopt
 ap_bskiplf
+ap_bspawn_child
 ap_bvputs
 ap_bwrite
 ap_bytes_in_free_blocks
@@ -299,8 +300,7 @@ ap_slack
 ap_snprintf
 ap_soft_timeout
 ap_some_auth_required
-ap_spawn_child_err
-ap_spawn_child_err_buff
+ap_spawn_child
 ap_srm_command_loop
 ap_standalone
 ap_start_restart
