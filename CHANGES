@@ -1,5 +1,17 @@
 Changes with Apache 2.0.46
 
+  *) SECURITY [CAN-2003-0245]: Fixed a bug that could be triggered
+     remotely through mod_dav and possibly other mechanisms, causing
+     an Apache child process to crash.  The crash was first reported
+     by David Endler <DEndler@iDefense.com> and was researched and
+     fixed by Joe Orton <jorton@redhat.com>.  Details will be released
+     on 30 May 2003.
+
+  *) SECURITY [CAN-2003-0189]: Fixed a denial-of-service vulnerability
+     affecting basic authentication on Unix platforms related to
+     thread-safety in apr_password_validate().  The problem was reported
+     by John Hughes <john.hughes@entegrity.com>.
+
   *) Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
      when a MKACTIVITY request comes in.
      [Ben Collins-Sussman <sussman@collab.net>]
