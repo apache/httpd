@@ -46,52 +46,6 @@
 
 #include "zlib.h"
 
-#ifdef HAVE_ZUTIL_H
-#include "zutil.h"
-#else
-/* As part of the encoding process, we must send what our OS_CODE is
- * (or so it seems based on what I can tell of how gzip encoding works).
- *
- * zutil.h is not always included with zlib distributions (it is a private
- * header), so this is straight from zlib 1.1.3's zutil.h.
- */
-#ifdef OS2
-#define OS_CODE  0x06
-#endif
-
-#ifdef WIN32 /* Window 95 & Windows NT */
-#define OS_CODE  0x0b
-#endif
-
-#if defined(VAXC) || defined(VMS)
-#define OS_CODE  0x02
-#endif
-
-#ifdef AMIGA
-#define OS_CODE  0x01
-#endif
-
-#if defined(ATARI) || defined(atarist)
-#define OS_CODE  0x05
-#endif
-
-#if defined(MACOS) || defined(TARGET_OS_MAC)
-#define OS_CODE  0x07
-#endif
-
-#ifdef __50SERIES /* Prime/PRIMOS */
-#define OS_CODE  0x0F
-#endif
-
-#ifdef TOPS20
-#define OS_CODE  0x0a
-#endif
-
-#ifndef OS_CODE
-#define OS_CODE  0x03  /* assume Unix */
-#endif
-#endif
-
 static const char deflateFilterName[] = "DEFLATE";
 module AP_MODULE_DECLARE_DATA deflate_module;
 
@@ -105,6 +59,21 @@ typedef struct deflate_filter_config_t
     char *note_input_name;
     char *note_output_name;
 } deflate_filter_config;
+
+/* RFC 1952 Section 2.3 defines the gzip header:
+ *
+ * +---+---+---+---+---+---+---+---+---+---+
+ * |ID1|ID2|CM |FLG|     MTIME     |XFL|OS |
+ * +---+---+---+---+---+---+---+---+---+---+
+ */
+static const char gzip_header[10] = 
+{ '\037', '\213', Z_DEFLATED, 0,
+  0, 0, 0, 0, /* mtime */
+  0, 0x03 /* Unix OS_CODE */
+};
+
+/* magic header */
+static const char deflate_magic[2] = { '\037', '\213' };
 
 /* windowsize is negative to suppress Zlib header */
 #define DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION
@@ -236,9 +205,6 @@ static const char *deflate_set_compressionlevel(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-/* magic header */
-static char deflate_magic[2] = { '\037', '\213' };
-
 typedef struct deflate_ctx_t
 {
     z_stream stream;
@@ -269,7 +235,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
      * we're in better shape.
      */
     if (!ctx) {
-        char *buf, *token;
+        char *token;
         const char *encoding;
 
         /* only work on main request/no subrequests */
@@ -419,22 +385,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* RFC 1952 Section 2.3 dictates the gzip header:
-         *
-         * +---+---+---+---+---+---+---+---+---+---+
-         * |ID1|ID2|CM |FLG|     MTIME     |XFL|OS |
-         * +---+---+---+---+---+---+---+---+---+---+
-         *
-         * If we wish to populate in MTIME (as hinted in RFC 1952), do:
-         * putLong(date_array, apr_time_now() / APR_USEC_PER_SEC);
-         * where date_array is a char[4] and then print date_array in the
-         * MTIME position.  WARNING: ENDIANNESS ISSUE HERE.
-         */
-        buf = apr_psprintf(r->pool, "%c%c%c%c%c%c%c%c%c%c", deflate_magic[0],
-                           deflate_magic[1], Z_DEFLATED, 0 /* flags */,
-                           0, 0, 0, 0 /* 4 chars for mtime */,
-                           0 /* xflags */, OS_CODE);
-        e = apr_bucket_pool_create(buf, 10, r->pool, f->c->bucket_alloc);
+        /* add immortal gzip header */
+        e = apr_bucket_immortal_create(gzip_header, sizeof gzip_header,
+                                       f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
         /* If the entire Content-Encoding is "identity", we can replace it. */
