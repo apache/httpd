@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/18 20:23:56 $]
+Last modified at [$Date: 2004/02/18 20:33:09 $]
 
 Release:
 
@@ -83,7 +83,7 @@ PATCHES TO BACKPORT FROM 2.1
     * fix "Expected </Foo>> but saw </Foo>" errors in nested,
       argumentless containers.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/config.c?r1=1.172&r2=1.173
-      +1: geoff, stas
+      +1: geoff, stas, trawick
 
     * mod_ssl: Clear OpenSSL error stack during pphrase entry to prevent 
       spurious failures in SSL functions later.
