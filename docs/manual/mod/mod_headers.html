@@ -152,7 +152,7 @@ the browser, or by Apache input filters to be overridden or modified.
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> Header set|append|add
- <EM>header</EM> <EM>value</EM><BR>
+ <EM>header</EM> <EM>value</EM> <EM>[env=[!]environment-variable]</EM><BR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -186,7 +186,8 @@ by the first argument. This can be one of the following values:
 
 <UL>
 <LI><STRONG>set</STRONG><BR>
-  The response header is set, replacing any previous header with this name
+  The response header is set, replacing any previous header with this name.
+  The <EM>value</EM> may be a format string.
 
 <LI><STRONG>append</STRONG><BR>
   The response header is appended to any existing header of the same
@@ -206,20 +207,30 @@ by the first argument. This can be one of the following values:
 
 <LI><STRONG>echo</STRONG><BR>
   Request headers with this name are echoed back in the response headers.
-  <EM>header</EM> may be a regular expression. For example, the directive
-  <P>
-  Header echo ^TS*
-  <P>
-  will cause all request headers that begin with TS to be echoed
-  or copied over to the response headers.
+  <EM>header</EM> may be a regular expression. 
 </UL>
 
-This argument is followed by a header name, which can include the
+This argument is followed by a <EM>header</EM> name, which can include the
 final colon, but it is not required. Case is ignored for set, append, add
-and unset. The header name for echo is case sensitive and may be a
-regular expression. For add, append and set a value is given as the third 
-argument. If this value contains spaces, it should be surrounded by double 
-quotes. For unset and echo, no value should be given.
+and unset. The <EM>header</EM> name for echo is case sensitive and may be a
+regular expression. 
+<P>
+add, append and set take a <EM>value</EM> as the third argument. If 
+<EM>value</EM> contains spaces, it should be surrounded by doublequotes. 
+<EM>value</EM> may be a character string, a string containing format
+specifiers or a combination of both. The following format specifiers
+are supported in <EM>value</EM>:
+<PRE>
+%t:	The time the request was received in Universal Coordinated Time
+	since the epoch (Jan. 1, 1970) measured in microseconds. The
+	value is preceeded by "t=".
+%D:     The time from when the request was received to the time the
+        headers are sent on the wire. This is a measure of the
+	duration of the request. The value is preceeded by "D=".
+</PRE>
+add, append and set may take an optional <EM>conditional clause</EM>
+as the fourth argument. The header action (add, append, set) is 
+done only if the <EM>conditional clause</EM> evaluates as TRUE.
 
 <H3>Order of Processing</H3>
 
@@ -251,7 +262,49 @@ The Header directives are processed just before the response is sent
 to the network. These means that it is possible to set and/or override
 most headers, except for those headers added by the header filter.
 <P>
+<HR>
+<H2>Examples</H2>
+<OL>
+<LI>Copy all request headers that begin with "TS" to the response headers:</LI>
+<PRE>
+   Header echo ^TS*
+</PRE>
 
+<LI>Add a header, MyHeader, to the response including a timestamp for when
+the request was received and how long it took to begin serving the
+request. This header can be used by the client to intuit load on
+the server or in isolating bottlenecks between the client and the
+server.</LI>
+<PRE>
+   Header add MyHeader "%D %t"
+</PRE>
+results in this header being added to the response:
+<PRE>
+   MyHeader: D=3775428 t=991424704447256
+</PRE>
+<LI>Say hello to Joe</LI>
+<PRE>
+   Header add MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
+</PRE>
+results in this header being added to the response:
+<PRE>
+   MyHeader: Hello Joe. It took D=3775428 microseconds for Apache to serve this request.
+</PRE>
+
+<LI>Conditionally send MyHeader on the response if and only if header
+"MyRequestHeader" is present on the request. This is useful for
+constructing headers in response to some client stimulus. Note that
+this example requires the services of the mod_setenvif module.</LI>
+<PRE>
+   SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<BR>
+   Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+</PRE> 
+If the header "MyRequestHeader: value" is present on the HTTP request, the response
+will contain the following header:
+<PRE>
+   MyHeader: D=3775428 t=991424704447256 mytext
+</PRE>
+</OL>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
