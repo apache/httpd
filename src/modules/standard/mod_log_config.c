@@ -384,16 +384,14 @@ static const char *log_request_time(request_rec *r, char *a)
     }
     else {                      /* CLF format */
         char sign = (timz < 0 ? '-' : '+');
-	size_t l;
 
         if (timz < 0) {
             timz = -timz;
         }
-
-        strftime(tstr, MAX_STRING_LEN, "[%d/%b/%Y:%H:%M:%S ", t);
-	l = strlen(tstr);
-        ap_snprintf(tstr + l, sizeof(tstr) - l,
-                    "%c%.2d%.2d]", sign, timz / 60, timz % 60);
+        ap_snprintf(tstr, sizeof(tstr), "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
+                t->tm_mday, ap_month_snames[t->tm_mon], t->tm_year+1900, 
+                t->tm_hour, t->tm_min, t->tm_sec,
+                sign, timz / 60, timz % 60);
     }
 
     return ap_pstrdup(r->pool, tstr);
