@@ -137,7 +137,8 @@ around, but fortunately most architectures do not require a scoreboard file.
 See the ScoreBoardFile documentation for a method to determine if your
 architecture uses it.
 
-<p><code>NEXT</code> and <code>MACHTEN</code> have small race conditions
+<p><code>NEXT</code> and <code>MACHTEN</code> (68k only) have small race
+conditions
 which can cause a restart/die signal to be lost, but should not cause the
 server to do anything otherwise problematic.
 <!-- they don't have sigaction, or we're not using it -djg -->
