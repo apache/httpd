@@ -321,7 +321,7 @@ static int char_buffer_read(char_buffer_t *buffer, char *in, int inl)
         return 0;
     }
 
-    if (buffer->length >= inl) {
+    if (buffer->length > inl) {
         /* we have have enough to fill the caller's buffer */
         memcpy(in, buffer->value, inl);
         buffer->value += inl;
