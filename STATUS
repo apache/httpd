@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/23 21:05:12 $]
+Last modified at [$Date: 2002/11/23 21:40:26 $]
 
 Release:
 
@@ -62,16 +62,9 @@ CURRENT RELEASE NOTES:
     * Backwards compatibility is expected of future Apache 2.0 releases,
       such that no MMN major number changes will occur until 2.1.
 
-    * The current sandbox (cvs HEAD) operating under C-T-R guidelines
-      is version 2.1-dev.
-
     * All commits to APACHE_2_0_BRANCH must be reflected in cvs HEAD
       as well, if they apply.  Logical progression is commit to HEAD,
-      get feedback (3 +1's) and then commit to APACHE_2_0_BRANCH.
-
-    * The 'modules/experimental' tree will evaporate soon.  Anything
-      in the development branch should be located under it's eventual 
-      home (such as modules/cache/.)
+      get feedback and then commit to APACHE_2_0_BRANCH.
 
 RELEASE SHOWSTOPPERS:
 
@@ -478,9 +471,9 @@ TODO ISSUES REMAINING IN MOD_SSL:
 EXPERIMENTAL MODULES:
 
     Experimental modules should eventually be be promoted to fully supported
-    status or removed from the repository entirely (ie, the
-    'experiment' failed). This section tracks what needs to happen to 
-    get the modules promoted to fully supported status.
+    status or removed from the repository entirely (ie, the 'experiment' 
+    failed). This section tracks what needs to happen to get the modules 
+    promoted to fully supported status.
 
     mod_cache/mod_mem_cache/mod_disk_cache:
     * mod_cache: handle cache_control: no_cache "field_name" to enable 
