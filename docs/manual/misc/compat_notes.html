@@ -143,6 +143,11 @@ it added one automatically if the .asis file contained a Location header.
   PR#968</A> for a few brief suggestions on alternative ways to 
   implement the same thing under Apache.
 
+  <LI>Apache does not allow ServerRoot settings inside a VirtualHost
+  container.  There is only one global ServerRoot in Apache; any desired
+  changes in paths for virtual hosts need to be made with the explicit
+  directives, eg. DocumentRoot, TransferLog, etc.
+
 </OL>
 
 More to come when we notice them....
