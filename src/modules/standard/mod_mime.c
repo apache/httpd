@@ -217,15 +217,20 @@ int find_ct(request_rec *r)
 
     /* Parse filename extensions, which can be in any order */
     while ((ext = getword(r->pool, &fn, '.')) && *ext) {
+      int found = 0;
 
       /* Check for Content-Type */
       if ((type = table_get (conf->forced_types, ext))
-	  || (type = table_get (hash_buckets[hash(*ext)], ext)))
-        r->content_type = type;
+	  || (type = table_get (hash_buckets[hash(*ext)], ext))) {
+          r->content_type = type;
+	  found = 1;
+      }
 
       /* Check for Content-Language */
-      if ((type = table_get (conf->language_types, ext)))
+      if ((type = table_get (conf->language_types, ext))) {
 	  r->content_language = type;
+	  found = 1;
+      }
 	
       /* Check for Content-Encoding */
       if ((type = table_get (conf->encoding_types, ext))) {
@@ -234,10 +239,25 @@ int find_ct(request_rec *r)
 	  else
 	      r->content_encoding = pstrcat(r->pool, r->content_encoding,
 					    ", ", type, NULL);
+	  found = 1;
       }
+
       /* Check for a special handler, but not for proxy request */
-      if ((type = table_get (conf->handlers, ext)) && !r->proxyreq)
+      if ((type = table_get (conf->handlers, ext)) && !r->proxyreq) {
 	  r->handler = type;
+	  found = 1;
+      }
+
+      /* This is to deal with cases such as foo.gif.bak, which we want
+       * to not have a type. So if we find an unknown extension, we
+       * zap the type/language/encoding (but not the handler)
+       */
+
+      if (!found) {
+	r->content_type = NULL;
+	r->content_language = NULL;
+	r->content_encoding = NULL;
+      }
 
     }
 
