@@ -542,7 +542,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
     conn_rec *current_conn;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int csd;
-    void *sbh;
+    ap_sb_handle_t *sbh;
 
     ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
     apr_os_sock_get(&csd, sock);
@@ -903,7 +903,7 @@ static void child_main(int child_num_arg)
     apr_pool_create(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
-    reopen_scoreboard(pchild);
+    reopen_scoreboard(pchild, 0);
 
     rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname,
                                                pchild));
@@ -1502,7 +1502,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * use by any of the children.
      */
     ++ap_my_generation;
-    ap_scoreboard_image->global.running_generation = ap_my_generation;
+    ap_scoreboard_image->global->running_generation = ap_my_generation;
     update_scoreboard_global();
     
     /* wake up the children...time to die.  But we'll have more soon */

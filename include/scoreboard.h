@@ -100,23 +100,11 @@ extern "C" {
 /* Type used for generation indicies.  Startup and every restart cause a
  * new generation of children to be spawned.  Children within the same
  * generation share the same configuration information -- pointers to stuff
- * created at config time in the parent are valid across children.  For
- * example, the vhostrec pointer in the scoreboard below is valid in all
- * children of the same generation.
- *
- * The safe way to access the vhost pointer is like this:
- *
- * worker_score *ss = pointer to whichver slot is interesting;
- * process_score *ps = pointer to whichver slot is interesting;
- * server_rec *vh = ss->vhostrec;
- *
- * if (ps->generation != ap_my_generation) {
- *     vh = NULL;
- * }
- *
- * then if vh is not NULL it's valid in this child.
- *
- * This avoids various race conditions around restarts.
+ * created at config time in the parent are valid across children.  However,
+ * this can't work effectively with non-forked architectures.  So while the
+ * arrays in the scoreboard never change between the parent and forked
+ * children, so they do not require shm storage, the contents of the shm
+ * may contain no pointers.
  */
 typedef int ap_generation_t;
 
@@ -124,8 +112,9 @@ typedef int ap_generation_t;
  * Set by the MPM when the scoreboard is created.
  */
 typedef enum {
-    SB_SHARED = 1,
-    SB_NOT_SHARED = 2
+    SB_NOT_SHARED = 1,
+    SB_SHARED = 2,      /* PARENT */
+    SB_SHARED_CHILD = 3
 } ap_scoreboard_e;
 
 #define SB_WORKING  0  /* The server is busy and the child is useful. */
@@ -160,9 +149,7 @@ struct worker_score {
     apr_time_t last_used;
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
-    server_rec *vhostrec;	/* What virtual host is being accessed? */
-                                /* SEE ABOVE FOR SAFE USAGE! */
-    worker_score *next;
+    char vhost[32];	        /* What virtual host is being accessed? */
 };
 
 typedef struct {
@@ -182,43 +169,41 @@ struct process_score{
                              */
 };
 
+/* Scoreboard is now in 'local' memory, since it isn't updated once created,
+ * even in forked architectures.  Child created-processes (non-fork) will
+ * set up these indicies into the (possibly relocated) shmem records.
+ */
 typedef struct {
-    global_score global;
+    global_score *global;
     process_score *parent;
     worker_score **servers;
 } scoreboard;
 
-#define KEY_LENGTH 16
-#define VALUE_LENGTH 64
-typedef struct {
-    char key[KEY_LENGTH];
-    char value[VALUE_LENGTH];
-} status_table_entry;
+typedef struct ap_sb_handle_t ap_sb_handle_t;
 
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
-AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
-AP_DECLARE(void) ap_increment_counts(void *sbh, request_rec *r);
+AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sbh, request_rec *r);
 
+void ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
+apr_status_t reopen_scoreboard(apr_pool_t *p, int detached);
+void ap_init_scoreboard(void *shared_score);
 int ap_calc_scoreboard_size(void);
-void ap_init_scoreboard(void);
 apr_status_t ap_cleanup_scoreboard(void *d);
-
-AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
-
 void ap_sync_scoreboard_image(void);
 
-AP_DECLARE(void) ap_create_sb_handle(void **new_handle, apr_pool_t *p,
+AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
                                      int child_num, int thread_num);
     
 void update_scoreboard_global(void);
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
-AP_DECLARE(int) ap_update_child_status(void *sbh, int status, request_rec *r);
+AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status, request_rec *r);
 AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_num,
                                                     int status, request_rec *r);
 void ap_time_process_request(int child_num, int thread_num, int status);
-AP_DECLARE(worker_score *) ap_get_servers_scoreboard(int x, int y);
-AP_DECLARE(process_score *) ap_get_parent_scoreboard(int x);
-AP_DECLARE(global_score *) ap_get_global_scoreboard(void);
+
+AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y);
+AP_DECLARE(process_score *) ap_get_scoreboard_process(int x);
+AP_DECLARE(global_score *) ap_get_scoreboard_global(void);
 
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;

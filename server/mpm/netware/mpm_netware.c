@@ -333,7 +333,7 @@ static void worker_main(void *arg)
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
     int worker_num_arg = (int)arg;
-    void *sbh;
+    ap_sb_handle_t *sbh;
 
     int my_worker_num = worker_num_arg;
     apr_socket_t *csd = NULL;
@@ -842,7 +842,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * use by any of the children.
          */
         ++ap_my_generation;
-        ap_scoreboard_image->global.running_generation = ap_my_generation;
+        ap_scoreboard_image->global->running_generation = ap_my_generation;
         update_scoreboard_global();
 
     	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,

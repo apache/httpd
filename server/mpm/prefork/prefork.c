@@ -578,7 +578,7 @@ static void child_main(int child_num_arg)
     apr_pollfd_t *pollset;
     int offset;
     void *csd;
-    void *sbh;
+    ap_sb_handle_t *sbh;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
@@ -593,7 +593,7 @@ static void child_main(int child_num_arg)
     apr_pool_create(&ptrans, pchild);
 
     /* needs to be done before we switch UIDs so we have permissions */
-    reopen_scoreboard(pchild);
+    reopen_scoreboard(pchild, 0);
     SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
     if (unixd_setup_child()) {
@@ -1160,7 +1160,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * use by any of the children.
      */
     ++ap_my_generation;
-    ap_scoreboard_image->global.running_generation = ap_my_generation;
+    ap_scoreboard_image->global->running_generation = ap_my_generation;
     update_scoreboard_global();
     
     if (is_graceful) {

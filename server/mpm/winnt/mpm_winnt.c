@@ -887,7 +887,7 @@ static void worker_main(int thread_num)
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
     apr_os_sock_info_t sockinfo;
-    void *sbh;
+    ap_sb_handle_t *sbh;
 
     while (1) {
         conn_rec *c;
@@ -2019,22 +2019,22 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                      "Child %d: Child process is running", my_pid);
 
-        /* Set up the scoreboard. */
-        ap_run_pre_mpm(pconf, SB_NOT_SHARED);
-        /* Humm... Should we put the parent pid here? Does it matter 
-         * since the scoreboard is not shared?
-         */
-        ap_scoreboard_image->parent[0].pid = parent_pid;
-        ap_scoreboard_image->parent[0].quiescing = 0;
         if (one_process) {
+            /* Set up the scoreboard. */
+            ap_run_pre_mpm(pconf, SB_NOT_SHARED);
             if (ap_setup_listeners(ap_server_conf) < 1) {
                 return 1;
             }
         }
         else {
+            /* Set up the scoreboard. */
+            ap_run_pre_mpm(pconf, SB_SHARED_CHILD);
             ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
             get_listeners_from_parent(ap_server_conf);
         }
+        ap_scoreboard_image->parent[0].pid = parent_pid;
+        ap_scoreboard_image->parent[0].quiescing = 0;
+            
         if (!set_listeners_noninheritable(pconf)) {
             return 1;
         }
@@ -2045,6 +2045,9 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         return 1;
     }
     else { 
+        /* Set up the scoreboard. */
+        ap_run_pre_mpm(pconf, SB_SHARED);
+
         /* Parent process */
         if (ap_setup_listeners(ap_server_conf) < 1) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, s,
