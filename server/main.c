@@ -294,7 +294,7 @@ API_EXPORT(int)        main(int argc, char *argv[])
     ap_pool_t *pconf;
     ap_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
     ap_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
-    ap_pool_t *pcommands; /* Pool for -C and -c switches */
+    ap_pool_t *pcommands; /* Pool for -D, -C and -c switches */
     module **mod;
 
 #ifndef WIN32 /* done in main_win32.c */
@@ -322,7 +322,11 @@ API_EXPORT(int)        main(int argc, char *argv[])
 
     ap_run_rewrite_args(process);
 
-    while (ap_getopt(argc, argv, "C:c:D:d:f:vVlLth?", &c, pcommands) == APR_SUCCESS) {
+    /* Maintain AP_SERVER_BASEARGS list in http_main.h to allow the MPM 
+     * to safely pass on our args from its rewrite_args() handler.
+     */
+    while (ap_getopt(argc, argv, AP_SERVER_BASEARGS, &c, pcommands) 
+            == APR_SUCCESS) {
         char **new;
         switch (c) {
  	case 'c':
