@@ -181,7 +181,6 @@ static void make_cookie(request_rec *r)
 #endif
 
     if (cls->expires) {
-        struct tm *tms;
         ap_time_t *when = NULL;
         ap_int64_t req_time;
         char *temp_cookie = NULL;

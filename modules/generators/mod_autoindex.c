@@ -1273,7 +1273,7 @@ static void output_directories(struct ent **ar, int n,
 			       autoindex_config_rec *d, request_rec *r,
 			       int autoindex_opts, char keyid, char direction)
 {
-    int x;
+    int x, rv;
     char *name = r->uri;
     char *tp;
     int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
@@ -1404,8 +1404,11 @@ static void output_directories(struct ent **ar, int n,
 	    if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
 		if (ar[x]->lm != -1) {
 		    char time_str[MAX_STRING_LEN];
-		    struct tm *ts = localtime(&ar[x]->lm);
-		    strftime(time_str, MAX_STRING_LEN, "%d-%b-%Y %H:%M  ", ts);
+		    ap_time_t *ts = NULL;
+                    ap_make_time(&ts, r->pool);
+                    ap_set_ansitime(ts, ar[x]->lm);
+		    ap_strftime(time_str, &rv, MAX_STRING_LEN, 
+                                "%d-%b-%Y %H:%M  ", ts);
 		    ap_rputs(time_str, r);
 		}
 		else {
