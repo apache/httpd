@@ -60,6 +60,7 @@
 #define APACHE_HTTP_CORE_H
 
 #include "apr.h"
+#include "apr_hash.h"
 
 #if APR_HAVE_STRUCT_RLIMIT
 #include <sys/time.h>
@@ -497,6 +498,49 @@ AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy, const char *arg);
 
 #endif
+
+
+/* ----------------------------------------------------------------------
+ *
+ * Runtime status/management
+ */
+
+typedef enum {
+    ap_mgmt_type_string,
+    ap_mgmt_type_long,
+    ap_mgmt_type_hash
+} ap_mgmt_type_e;
+
+typedef union {
+    const char *s_value;
+    long i_value;
+    apr_hash_t *h_value;
+} ap_mgmt_value;
+
+typedef struct {
+    const char *description;
+    const char *name;
+    ap_mgmt_type_e vtype;
+    ap_mgmt_value v;
+} ap_mgmt_item_t;
+
+/**
+ * This hook provdes a way for modules to provide metrics/statistics about
+ * their operational status.
+ *
+ * @param p A pool to use to create entries in the hash table
+ * @param val The name of the parameter(s) that is wanted. This is
+ *            tree-structured would be in the form ('*' is all the tree,
+ *            'module.*' all of the module , 'module.foo.*', or
+ *            'module.foo.bar' )
+ * @param ht The hash table to store the results. Keys are item names, and
+ *           the values point to ap_mgmt_item_t structures.
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int, get_mgmt_items,
+                (apr_pool_t *p, const char * val, apr_hash_t *ht))
+
+/* ---------------------------------------------------------------------- */
 
 #ifdef __cplusplus
 }
