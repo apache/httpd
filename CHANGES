@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Fix segfault which occurred when a section in an included
+     configuration file was not closed. PR 17093.  [André Malo]
+
   *) Enhance the behavior of mod_isapi's WriteClient() callback to
      provide better emulation for isapi modules that presume that the
      first WriteClient() call may send status and headers.  An example

@@ -1170,7 +1170,9 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
                                   curr_parent->filename,
                                   curr_parent->line_num,
                                   curr_parent->directive);
-                                  curr_parent = curr_parent->parent;
+
+            parms->err_directive = curr_parent;
+            curr_parent = curr_parent->parent;
         }
 
         return errmsg;
