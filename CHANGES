@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Throw an error message if an attempt is made to use the LDAPTrustedCA
+     or LDAPTrustedCAType directives in a VirtualHost. PR 26390
+     [Brad Nicholes]
+
   *) Small fix to allow reverse proxying to an ftp server. Previously
      an attempt to do this would try and connect to 0.0.0.0, regardless
      of the server specified. PR 24922
