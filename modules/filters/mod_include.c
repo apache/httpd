@@ -155,7 +155,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
         apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
     }
     apr_table_setn(e, "USER_NAME", LAZY_VALUE);
-    if ((t = strrchr(r->filename, '/'))) {
+    if (r->filename && (t = strrchr(r->filename, '/'))) {
         apr_table_setn(e, "DOCUMENT_NAME", ++t);
     }
     else {

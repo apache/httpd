@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/22 17:40:26 $]
+Last modified at [$Date: 2003/10/23 20:07:45 $]
 
 Release:
 
@@ -259,11 +259,6 @@ PATCHES TO BACKPORT FROM 2.1
       config file name.
         modules/generators/mod_info.c r1.151
       +1: trawick
-
-    * mod_include: fix segfault which occured if the filename was not
-      set, for example, when processing some error conditions. PR 23836.
-        modules/filters/mod_include.c: r1.288
-      +1: nd, trawick, jwoolley
 
     * Set the scoreboard state to indicate logging prior to running
       logging hooks so that server-status will show 'L' for hung
