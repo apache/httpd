@@ -364,9 +364,11 @@ $ apxs -i -a -n foo mod_foo.so
      use symbols from the Apache core, from the C library (<CODE>libc</CODE>)
      and all other dynamic or static libraries used by the Apache core, or
      from static library archives (<CODE>libfoo.a</CODE>) containing position
-     independent code. The only chance to use other code is to either make
-     sure the Apache core itself already contains a reference to it or loading
-     the code yourself via <CODE>dlopen()</CODE>.
+     independent code. The only chances to use other code is to either make
+     sure the Apache core itself already contains a reference to it, loading
+     the code yourself via <CODE>dlopen()</CODE> or enabling the
+     <CODE>SHARED_CHAIN</CODE> rule while building Apache when your platform
+     supports linking DSO files against DSO libraries.
 <P>
 <LI> Under some platforms (many SVR4 systems) there is no way to force the
      linker to export all global symbols for use in DSO's when linking the
