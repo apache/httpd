@@ -105,6 +105,7 @@ bcreate(pool *p, int flags)
     BUFF *fb;
 
     fb = palloc(p, sizeof(BUFF));
+    fb->pool=p;
     fb->bufsiz = DEFAULT_BUFSIZE;
     fb->flags = flags & B_RDWR;
 
@@ -135,6 +136,9 @@ bpushfd(BUFF *fb, int fd_in, int fd_out)
 {
     fb->fd = fd_out;
     fb->fd_in = fd_in;
+    note_cleanups_for_fd(fb->pool,fb->fd);
+    if(fb->fd != fb->fd_in)
+	note_cleanups_for_fd(fb->pool,fb->fd_in);
 }
 
 int

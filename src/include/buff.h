@@ -80,6 +80,9 @@ struct buff_struct
     void (*error)(BUFF *fb, int op, void *data);
     void *error_data;
     long int bytes_sent;   /* number of bytes actually written */
+
+    pool *pool;
+
 /* could also put pointers to the basic I/O routines here */
     int fd;                /* the file descriptor */
     int fd_in;             /* input file descriptor, if different */
