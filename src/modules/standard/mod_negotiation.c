@@ -188,11 +188,12 @@ typedef struct var_rec {
     int is_pseudo_html;         /* text/html, *or* the INCLUDES_MAGIC_TYPEs */
 
     /* Above are all written-once properties of the variant.  The
-     * two fields below are changed during negotiation:
+     * three fields below are changed during negotiation:
      */
     
     float level_matched;
     int mime_stars;
+    int definite;
 } var_rec;
 
 /* Something to carry around the state of negotiation (and to keep
@@ -239,6 +240,7 @@ void clean_var_rec (var_rec *mime_info)
     mime_info->bytes = 0;
     mime_info->lang_index = -1;
     mime_info->mime_stars = 0;
+    mime_info->definite = 1;
 
     mime_info->charset_quality = 1.0;
     mime_info->type_quality = 0.0;
@@ -454,6 +456,7 @@ negotiation_state *parse_accept_headers (request_rec *r)
         for (i = 0; i < new->accepts->nelts; ++i)
             if (elts[i].quality < 1.0) new->accept_q = 1;
     }
+    else new->accept_q = 1;
     
     return new;
 }
@@ -942,6 +945,9 @@ int find_default_index (neg_dir_config *conf, char *lang)
  * acceptable, but only if no variants with an explicit language
  * are acceptable. The default q value set here is assigned to variants
  * with no language type in set_language_quality().
+ *
+ * Note that if using the transparent negotiation network algorythm,
+ * we don't use this fiddle.
  */
 
 void set_default_lang_quality(negotiation_state *neg)
@@ -949,13 +955,14 @@ void set_default_lang_quality(negotiation_state *neg)
     var_rec *avail_recs = (var_rec *)neg->avail_vars->elts;
     int j;
 
-    for (j = 0; j < neg->avail_vars->nelts; ++j) {
-        var_rec *variant = &avail_recs[j];
-	if (variant->content_language && *variant->content_language) {
-	    neg->default_lang_quality = 0.001;
-	    return;
+    if (!neg->use_transparent_neg)
+	for (j = 0; j < neg->avail_vars->nelts; ++j) {
+	    var_rec *variant = &avail_recs[j];
+	    if (variant->content_language && *variant->content_language) {
+		neg->default_lang_quality = 0.001;
+		return;
+	    }
 	}
-    }
 	  
     neg->default_lang_quality = 1.0;
 }
@@ -1066,6 +1073,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
 	
         variant->lang_quality = best ? best->quality : 
 	                     (star ? star->quality : fiddle_q);
+        variant->definite = variant->definite && best;
     }
 
     /* Now set the old lang_index field */
@@ -1114,6 +1122,7 @@ void set_accept_quality(negotiation_state *neg, var_rec *variant)
     int i;
     accept_rec *accept_recs = (accept_rec *)neg->accepts->elts;
     float q = 0.0;
+    int q_definite = 1;
 
     /* if no Accept: header, leave quality alone (will
      * remain at the default value of 1) */
@@ -1162,8 +1171,11 @@ void set_accept_quality(negotiation_state *neg, var_rec *variant)
         if (!neg->accept_q && variant->mime_stars == 1) q = 0.01;
         else if (!neg->accept_q && variant->mime_stars == 2) q = 0.02;
         else q = type->quality;
+
+        q_definite = (variant->mime_stars == 3);
     }
     variant->accept_type_quality = q;
+    variant->definite=variant->definite && q_definite;
 
     /* if the _best_ quality we got for this variant was 0.0,
      * eliminate it now */
@@ -1311,14 +1323,15 @@ int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best
         variant->lang_quality;
     
 #ifdef NEG_DEBUG
-    fprintf(stderr, "Variant: file=%s type=%s lang=%s acceptq=%1.3f langq=%1.3f typeq=%1.3f q=%1.3f\n",
+    fprintf(stderr, "Variant: file=%s type=%s lang=%s acceptq=%1.3f langq=%1.3f typeq=%1.3f q=%1.3f definite=%d\n",
             variant->file_name ? variant->file_name : "",
             variant->type_name ? variant->type_name : "",
             variant->content_language ? variant->content_language : "",
             variant->accept_type_quality,
             variant->lang_quality,
             variant->type_quality,
-            q
+            q,
+            variant->definite
             );
 #endif
     
@@ -1487,17 +1500,21 @@ int best_match(negotiation_state *neg, var_rec **pbest)
              *   If variant & URI are not neigbors, list_ua or list_os
              *   Else
              *     If UA can do trans neg
-             *        IF best q > 0, choice_ua 
-             *        ELSE           list_ua
+             *        IF best is definite && best q > 0, choice_ua 
+             *        ELSE                               list_ua
              *     ELSE
-             *        IF best  > 0, choose_os
-             *        ELSE          list_os (or forward_os on proxy)
+             *        IF best q > 0, choose_os
+             *        ELSE           list_os (or forward_os on proxy)
              */
 
             /* assume variant and URI are neigbors (since URI in
              * var map must be in same directory) */
             
-            algorithm_result = bestq ? na_choice : na_list;
+            if(neg->use_transparent_neg)
+               algorithm_result = (best && best->definite) && (bestq>0)
+                                       ? na_choice : na_list;
+            else
+               algorithm_result = bestq>0 ? na_choice : na_list;
         }
     }   
 
@@ -1534,11 +1551,16 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
     int vary_by_encoding = 0;
     array_header *hdrs;
 
-    /* Question: do we output Alternates and Vary headers in the
-     * error document of 406 messages? I assume not here. But we
-     * definitely need to get these headers output when sending
-     * a 300 'error', so if the result of the network algorithm
-     * was a List response, set them in err_headers_out.
+    /* This is a bit of a hack: the apache status handling code regards
+     * any status other than 200 as an error, and only outputs
+     * headers marked as safe for output with errors. This
+     * are the header stored in err_headers_out. If we know
+     * we are going to generate a 300 status (because we got
+     * a network-algorithm result of na_list), we put these
+     * headers into err_headers_out to get them output with the
+     * list response. The core code which handles error responses
+     * should really be updated, since these headers should probably
+     * be output for other 2xx and 3xx statuses as well.
      */
     hdrs = (na_result == na_list) ? r->err_headers_out : r->headers_out;
 
@@ -1563,7 +1585,6 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
             }
         }
                               
-
         rec = pstrcat(r->pool, "{\"", variant->file_name, "\" ", qstr, NULL);
         if (variant->type_name) {
 	    if (*variant->type_name)
@@ -1740,14 +1761,9 @@ int handle_map_file (request_rec *r)
       return NOT_ACCEPTABLE;
     }
 
-    if (na_result == na_choice) {
+    if (na_result == na_choice)
         if ((res = setup_choice_response(r, neg, best)) != 0)
             return res;
-        
-        /* Run the request. Should we check the output status
-         * for REDIRECT?? */
-        return run_sub_req(best->sub_req);
-    }
 
     /* Make sure caching works - Vary should handle HTTP/1.1, but for
      * HTTP/1.0, we can't allow caching at all. NB that we merge the
