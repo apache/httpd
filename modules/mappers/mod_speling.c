@@ -408,10 +408,11 @@ static int check_speling(request_rec *r)
 	    && (candidates->nelts == 1
 		|| variant[0].quality != variant[1].quality)) {
 
-            nuri = ap_pstrcat(r->pool, url, variant[0].name, r->path_info,
-			      r->parsed_uri.query ? "?" : "",
-			      r->parsed_uri.query ? r->parsed_uri.query : "",
-			      NULL);
+            nuri = ap_escape_uri(r->pool, ap_pstrcat(r->pool, url,
+						     variant[0].name,
+						     r->path_info, NULL));
+	    if (r->parsed_uri.query)
+		nuri = ap_pstrcat(r->pool, nuri, "?", r->parsed_uri.query, NULL);
 
             ap_table_setn(r->headers_out, "Location",
 			  ap_construct_url(r->pool, nuri, r));
