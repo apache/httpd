@@ -90,6 +90,9 @@ Package=<4>
     Project_Dep_Name mod_cgi
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_charset_lite
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_dav_fs
     End Project Dependency
     Begin Project Dependency
@@ -261,6 +264,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "apriconv"=".\srclib\apr-iconv\apriconv.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "aprutil"=".\srclib\apr-util\aprutil.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -269,6 +284,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name apriconv
+    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
     End Project Dependency
@@ -384,6 +402,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "libapriconv"=".\srclib\apr-iconv\libapriconv.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "libaprutil"=".\srclib\apr-util\libaprutil.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -394,6 +427,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
@@ -415,6 +451,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libaprutil
@@ -679,6 +718,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_cgi"=".\modules\generators\mod_cgi.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_charset_lite"=".\modules\experimental\mod_charset_lite.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
