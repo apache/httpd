@@ -19,29 +19,37 @@ SYSTEM=`(uname -s) 2>/dev/null`  || SYSTEM="unknown"
 VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
 
 
-# Now test for SCO, since it is has a braindamaged uname.
+# Now test for ISC and SCO, since it is has a braindamaged uname.
 #
 # We need to work around FreeBSD 1.1.5.1 
-SCO=`uname -X 2>/dev/null | grep "^Release" | awk '{print $3}'`
-if [ "x$SCO" != "x" ]; then
-    case "$SCO" in
-   	3.2v4.2)
-	    echo "whatever-whatever-sco3"; exit 0
-	    ;;
-	3.2v5.0*)
-	    echo "whatever-whatever-sco5"; exit 0
-	    ;;
-	4.2MP)
-            if [ "x$VERSION" = "x2.1.1" ]; then
-                echo "${MACHINE}-whatever-unixware211"; exit 0
-            else
-                echo "${MACHINE}-whatever-unixware2"; exit 0
-            fi
-	    ;;
-	4.2)
-	    echo "whatever-whatever-unixware1"; exit 0
-	    ;;
-    esac
+XREL=`uname -X 2>/dev/null | grep "^Release" | awk '{print $3}'`
+if [ "x$XREL" != "x" ]; then
+    if [ -f /etc/kconfig ]; then
+	case "$XREL" in
+	    4.0|4.1)
+		    echo "${MACHINE}-whatever-isc4"; exit 0
+		;;
+	esac
+    else
+	case "$XREL" in
+	    3.2v4.2)
+		echo "whatever-whatever-sco3"; exit 0
+		;;
+	    3.2v5.0*)
+		echo "whatever-whatever-sco5"; exit 0
+		;;
+	    4.2MP)
+		if [ "x$VERSION" = "x2.1.1" ]; then
+		    echo "${MACHINE}-whatever-unixware211"; exit 0
+		else
+		    echo "${MACHINE}-whatever-unixware2"; exit 0
+		fi
+		;;
+	    4.2)
+		echo "whatever-whatever-unixware1"; exit 0
+		;;
+	esac
+    fi
 else
 # Now we simply scan though... In most cases, the SYSTEM info is enough
 #
@@ -126,6 +134,10 @@ else
 	    exit 0
 	    ;;
 
+	Paragon*:*:*:*)
+	    echo "i860-intel-osf1"; exit 0
+	    ;;
+ 
 	SunOS:5.*)
 	    echo "${MACHINE}-sun-solaris2"; exit 0
 	    ;;

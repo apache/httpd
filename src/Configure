@@ -273,6 +273,14 @@ case "$PLAT" in
 	LIBS="$LIBS -N128k -lsocket"
 	DEF_WANTHSREGEX=yes
 	;;
+    *-isc4*)
+	OS='ISC 4'
+	CC=gcc
+	CFLAGS="$CFLAGS -posix -DISC"
+	LFLAGS="$LFLAGS -posix"
+	LIBS="$LIBS -linet"
+        DEF_WANTHSREGEX=yes
+	;;
     *-sco3*)
 	OS='SCO 3'
 	CFLAGS="$CFLAGS -DSCO -Oacgiltz"
@@ -349,6 +357,11 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DCONVEXOS11"
 	CC='cc'
 	DEF_WANTHSREGEX=yes
+	;;
+    i860-intel-osf1)
+	DEF_WANTHSREGEX=yes
+	OS='Paragon OSF/1'
+	CFLAGS="$CFLAGS -DPARAGON"
 	;;
     *) # default: Catch systems we don't know about
     	echo Sorry, but we cannot grok \"$PLAT\"

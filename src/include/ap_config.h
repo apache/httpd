@@ -144,6 +144,16 @@ typedef int rlim_t;
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 
+#elif defined(PARAGON)
+#define HAVE_GMTOFF
+#undef NO_KILLPG
+#undef NO_SETSID
+#define JMP_BUF sigjmp_buf
+#define HAVE_MMAP
+#define HAVE_CRYPT_H
+#define NO_LONG_DOUBLE
+typedef int rlim_t;
+
 #elif defined(SEQUENT)
 #define HAVE_GMTOFF
 #undef NO_KILLPG
@@ -426,6 +436,16 @@ typedef int rlim_t;
 #include <sys/types.h>
 #define JMB_BUF jmp_buf
 typedef int rlim_t;
+
+#elif defined(ISC)
+#include <net/errno.h>     
+#define NO_KILLPG
+#undef NO_SETSID
+#define HAVE_SHMGET
+#define SIGURG SIGUSR1
+#define JMP_BUF sigjmp_buf
+#define USE_FCNTL_SERIALIZED_ACCEPT
+#define getwd(d) getcwd(d,MAX_STRING_LEN)
 
 /* Unknown system - Edit these to match */
 #else
