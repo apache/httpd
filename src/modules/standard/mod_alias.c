@@ -65,6 +65,7 @@ typedef struct {
     char *real;
     char *fake;
     char *handler;
+    regex_t *regexp;
     int redir_status;		/* 301, 302, 303, 410, etc */
 } alias_entry;
 
@@ -117,7 +118,8 @@ void *merge_alias_dir_config (pool *p, void *basev, void *overridesv)
     return a;
 }
 
-const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
+const char *add_alias_internal(cmd_parms *cmd, void *dummy, char *f, char *r,
+			       int use_regex)
 {
     server_rec *s = cmd->server;
     alias_server_conf *conf =
@@ -126,18 +128,35 @@ const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
 
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
     
+    if (use_regex) {
+	new->regexp = pregcomp(cmd->pool, f, REG_EXTENDED);
+	if (new->regexp == NULL)
+	    return "Regular expression could not be compiled.";
+    }
+
     new->fake = f; new->real = r; new->handler = cmd->info;
+
     return NULL;
 }
 
-const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
-			 char *arg2, char *arg3)
+const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r) {
+    return add_alias_internal(cmd, dummy, f, r, 0);
+}
+
+const char *add_alias_regex(cmd_parms *cmd, void *dummy, char *f, char *r) {
+    return add_alias_internal(cmd, dummy, f, r, 1);
+}
+
+const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf *dirconf, 
+				  char *arg1, char *arg2, char *arg3,
+				  int use_regex)
 {
     alias_entry *new;
     server_rec *s = cmd->server;
     alias_server_conf *serverconf =
         (alias_server_conf *)get_module_config(s->module_config,&alias_module);
     int status = (int)cmd->info;
+    regex_t *r = NULL;
     char *f = arg2;
     char *url = arg3;
 
@@ -156,6 +175,12 @@ const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
 	url = arg2;
     }
 
+    if (use_regex) {
+        r = pregcomp(cmd->pool, f, REG_EXTENDED);
+        if (r == NULL)
+            return "Regular expression could not be compiled.";
+    }
+
     if (is_HTTP_REDIRECT(status)) {
 	if (!url) return "URL to redirect to is missing";
 	if (!is_url (url)) return "Redirect to non-URL";
@@ -169,9 +194,19 @@ const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
     else
         new = push_array (serverconf->redirects);
 
-    new->fake = f; new->real = url;
+    new->fake = f; new->real = url; new->regexp = r;
     new->redir_status = status;
     return NULL;
+}
+
+const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *arg1,
+			 char *arg2, char *arg3) {
+    return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 0);
+}
+
+const char *add_redirect_regex(cmd_parms *cmd, alias_dir_conf *dirconf,
+			       char *arg1, char *arg2, char *arg3) {
+    return add_redirect_internal(cmd, dirconf, arg1, arg2, arg3, 1);
 }
 
 command_rec alias_cmds[] = {
@@ -182,6 +217,13 @@ command_rec alias_cmds[] = {
 { "Redirect", add_redirect, (void*)HTTP_MOVED_TEMPORARILY, 
     OR_FILEINFO, TAKE23, 
     "an optional status, then document to be redirected and destination URL" },
+{ "AliasMatch", add_alias_regex, NULL, RSRC_CONF, TAKE2, 
+    "a regular expression and a filename"},
+{ "ScriptAliasMatch", add_alias_regex, "cgi-script", RSRC_CONF, TAKE2, 
+    "a regular expression and a filename"},
+{ "RedirectMatch", add_redirect_regex, (void*)HTTP_MOVED_TEMPORARILY, 
+    OR_FILEINFO, TAKE23, 
+    "an optional status, then a regular expression and destination URL" },
 { "RedirectTemp", add_redirect, (void*)HTTP_MOVED_TEMPORARILY, 
     OR_FILEINFO, TAKE2, 
     "a document to be redirected, then the destination URL" },
@@ -228,28 +270,44 @@ int alias_matches (char *uri, char *alias_fakename)
 char *try_alias_list (request_rec *r, array_header *aliases, int doesc, int *status)
 {
     alias_entry *entries = (alias_entry *)aliases->elts;
+    regmatch_t regm[10];
+    char *found = NULL;
     int i;
     
     for (i = 0; i < aliases->nelts; ++i) {
         alias_entry *p = &entries[i];
-        int l = alias_matches (r->uri, p->fake);
+	int l;
 
-        if (l > 0) {
+	if (p->regexp) {
+	    if (!regexec(p->regexp, r->uri, p->regexp->re_nsub+1, regm, 0))
+		found = pregsub(r->pool, p->real, r->uri,
+				p->regexp->re_nsub+1, regm);
+	}
+	else {
+	    l = alias_matches (r->uri, p->fake);
+
+	    if (l > 0) {
+		if (doesc) {
+		    char *escurl;
+		    escurl = os_escape_path(r->pool, r->uri + l, 1);
+		    
+		    found = pstrcat(r->pool, p->real, escurl, NULL);
+		} else
+		    found = pstrcat(r->pool, p->real, r->uri + l, NULL);
+	    }
+	}
+
+	if (found) {
 	    if (p->handler) { /* Set handler, and leave a note for mod_cgi */
-	        r->handler = pstrdup(r->pool, p->handler);
+		r->handler = pstrdup(r->pool, p->handler);
 		table_set (r->notes, "alias-forced-type", p->handler);
 	    }
-
+	    
 	    *status = p->redir_status;
 
-	    if (doesc) {
-		char *escurl;
-		escurl = os_escape_path(r->pool, r->uri + l, 1);
-
-		return pstrcat(r->pool, p->real, escurl, NULL);
-	    } else
-		return pstrcat(r->pool, p->real, r->uri + l, NULL);
-        }
+	    return found;
+	}
+	
     }
 
     return NULL;

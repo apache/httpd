@@ -637,7 +637,10 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
 #endif    
     cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (!strcmp(cmd->path, "~")) {
+    if (cmd->info) { /* <DirectoryMatch> */
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+    else if (!strcmp(cmd->path, "~")) {
 	cmd->path = getword_conf (cmd->pool, &arg);
 	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
     }
@@ -681,7 +684,10 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
     cmd->path = getword_conf (cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (!strcmp(cmd->path, "~")) {
+    if (cmd->info) { /* <LocationMatch> */
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+    else if (!strcmp(cmd->path, "~")) {
 	cmd->path = getword_conf (cmd->pool, &arg);
 	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
     }
@@ -728,7 +734,12 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     if (cmd->path)
 	cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (!strcmp(cmd->path, "~")) {
+    if (cmd->info) { /* <FilesMatch> */
+	if (old_path && cmd->path[0] != '/' && cmd->path[0] != '^')
+            cmd->path = pstrcat(cmd->pool, "^", old_path, cmd->path, NULL);
+        r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+    else if (!strcmp(cmd->path, "~")) {
 	cmd->path = getword_conf (cmd->pool, &arg);
 	if (old_path && cmd->path[0] != '/' && cmd->path[0] != '^')
 	    cmd->path = pstrcat(cmd->pool, "^", old_path, cmd->path, NULL);
@@ -1206,6 +1217,12 @@ command_rec core_cmds[] = {
 { "</Limit>", endlimit, NULL, OR_ALL, RAW_ARGS, "Marks end of <Limit>" },
 { "<IfModule", start_ifmod, NULL, OR_ALL, RAW_ARGS, "Container for directives based on existance of specified modules" },
 { "</IfModule>", end_ifmod, NULL, OR_ALL, NO_ARGS, "Marks end of <IfModule>" },
+{ "<DirectoryMatch", dirsection, (void*)1, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources located in the specified directories" },
+{ "</DirectoryMatch>", end_dirsection, NULL, ACCESS_CONF, NO_ARGS, "Marks end of <DirectoryMatch>" },
+{ "<LocationMatch", urlsection, (void*)1, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources accessed through the specified URL paths" },
+{ "</LocationMatch>", end_urlsection, NULL, ACCESS_CONF, NO_ARGS, "Marks end of <LocationMatch>" },
+{ "<FilesMatch", filesection, (void*)1, OR_ALL, RAW_ARGS, "Container for directives affecting files matching specified patterns" },
+{ "</FilesMatch>", end_filesection, NULL, OR_ALL, NO_ARGS, "Marks end of <FilesMatch>" },
 { "AuthType", set_string_slot, (void*)XtOffsetOf(core_dir_config, auth_type),
     OR_AUTHCFG, TAKE1, "An HTTP authorization type (e.g., \"Basic\")" },
 { "AuthName", set_string_slot, (void*)XtOffsetOf(core_dir_config, auth_name),
