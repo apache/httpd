@@ -1241,11 +1241,10 @@ char *ap_init_mutex_method(char *t)
     if (server_conf) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
                     "Requested serialization method '%s' not available",t);
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
-                    "Using compiled-in default of '%s'", ap_default_mutex_method());
+        exit(APEXIT_INIT);
     } else {
         fprintf(stderr, "Requested serialization method '%s' not available;\n", t);
-        fprintf(stderr, "Using compiled-in default of '%s'\n", ap_default_mutex_method());
+        exit(APEXIT_INIT);
     }
     }
     return NULL;
