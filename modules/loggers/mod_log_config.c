@@ -1149,6 +1149,10 @@ static void init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, serve
     for (s = s->next; s; s = s->next) {
         open_multi_logs(s, p);
     }
+}
+
+static void init_child(apr_pool_t *p, server_rec *s)
+{
 #ifdef BUFFERED_LOGS
 	/* Now register the last buffer flush with the cleanup engine */
 	apr_register_cleanup(p, s, flush_all_logs, flush_all_logs);
@@ -1157,6 +1161,7 @@ static void init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, serve
 
 static void register_hooks(void)
 {
+    ap_hook_child_init(init_child,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_open_logs(init_config_log,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_log_transaction(multi_log_transaction,NULL,NULL,AP_HOOK_MIDDLE);
 }
