@@ -170,7 +170,8 @@ AC_DEFUN(APACHE_MODPATH_ADD,[
 
   if test -z "$module_standalone"; then
     if test -z "$2"; then
-      libname="mod_$1.la"
+      # The filename of a convenience library must have a "lib" prefix:
+      libname="lib$1.la"
       BUILTIN_LIBS="$BUILTIN_LIBS $modpath_current/$libname"
       modpath_static="$modpath_static $libname"
       cat >>$modpath_current/modules.mk<<EOF
