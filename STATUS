@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/15 01:04:15 $]
+Last modified at [$Date: 2002/03/15 01:37:47 $]
 
 Release:
 
@@ -118,10 +118,6 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-    * mod_negotiation may be broken on Win32 with large .var
-      files.  Some Win32 savant needs to evaluate the Win32 
-      portion of the patch posted to dev@apr.apache.org in this
-      message: <m3sn761ra6.fsf@rdu88-250-166.nc.rr.com>
 
     * Convert all instances of the old apr_lock_t type to the new
       types.
@@ -332,8 +328,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                   have something to look at/compare with.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
-        Status: Ken asks, didn't Jeff fix this when he fixed the queue
-                overrun?
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
