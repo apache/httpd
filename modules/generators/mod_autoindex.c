@@ -1146,6 +1146,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 					request_rec *r, char keyid,
 					char direction)
 {
+    request_rec *rr;
     struct ent *p;
 
     if ((dirent->name[0] == '.') && (!dirent->name[1])) {
@@ -1153,6 +1154,16 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     }
 
     if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, dirent->name))) {
+        return (NULL);
+    }
+
+    if (!(rr = ap_sub_req_lookup_dirent(dirent, r, NULL))) {
+        return (NULL);
+    }
+
+    if ((rr->finfo.filetype != APR_DIR && rr->finfo.filetype != APR_REG)
+        || rr->status != OK) {
+        ap_destroy_sub_req(rr);
         return (NULL);
     }
 
@@ -1166,27 +1177,24 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     p->key = apr_toupper(keyid);
     p->ascending = (apr_toupper(direction) == D_ASCENDING);
     p->version_sort = autoindex_opts & VERSION_SORT;
-
-    if (autoindex_opts & FANCY_INDEXING) {
-        request_rec *rr = ap_sub_req_lookup_dirent(dirent, r, NULL);
-
-	if (rr->finfo.filetype != 0) {
-	    p->lm = rr->finfo.mtime;
-	    if (rr->finfo.filetype == APR_DIR) {
-	        if (!(p->icon = find_icon(d, rr, 1))) {
-		    p->icon = find_default_icon(d, "^^DIRECTORY^^");
-		}
-		if (!(p->alt = find_alt(d, rr, 1))) {
-		    p->alt = "DIR";
-		}
-		p->size = -1;
-		p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
+ 
+    if (autoindex_opts & FANCY_INDEXING) 
+    {
+	p->lm = rr->finfo.mtime;
+	if (rr->finfo.filetype == APR_DIR) {
+	    if (!(p->icon = find_icon(d, rr, 1))) {
+		p->icon = find_default_icon(d, "^^DIRECTORY^^");
 	    }
-	    else {
-		p->icon = find_icon(d, rr, 0);
-		p->alt = find_alt(d, rr, 0);
-		p->size = rr->finfo.size;
+	    if (!(p->alt = find_alt(d, rr, 1))) {
+		p->alt = "DIR";
 	    }
+	    p->size = -1;
+	    p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
+	}
+	else {
+	    p->icon = find_icon(d, rr, 0);
+	    p->alt = find_alt(d, rr, 0);
+	    p->size = rr->finfo.size;
 	}
 
 	p->desc = find_desc(d, rr);
@@ -1194,12 +1202,11 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 	if ((!p->desc) && (autoindex_opts & SCAN_HTML_TITLES)) {
 	    p->desc = apr_pstrdup(r->pool, find_title(rr));
 	}
-
-	ap_destroy_sub_req(rr);
     }
+    ap_destroy_sub_req(rr);
     /*
-     * We don't need to take any special action for the file size key.  If
-     * we did, it would go here.
+     * We don't need to take any special action for the file size key.
+     * If we did, it would go here.
      */
     if (keyid == K_LAST_MOD) {
         if (p->lm < 0) {
