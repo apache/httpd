@@ -1202,7 +1202,10 @@ static const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 
     s->next = main_server->next;
     main_server->next = s;
-	
+
+    s->defn_name = cmd->config_file->name;
+    s->defn_line_number = cmd->config_file->line_number;
+
     old_end_token = cmd->end_token;
     cmd->end_token = end_virtualhost_section;
     cmd->server = s;

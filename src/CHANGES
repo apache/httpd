@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) If you start apache with the -S command line option it will dump
+     out the parsed vhost settings.  This is useful for folks trying
+     to figure out what is wrong with their vhost configuration.
+     (Other dumps may be added in the future.) [Dean Gaudet]
+
   *) Add %pA, %pI, and %pp codes to ap_vformatter (and hence ap_bprintf,
      ap_snprintf, and ap_psprintf).  See include/ap.h for docs.
      [Dean Gaudet]

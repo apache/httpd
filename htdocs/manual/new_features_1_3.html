@@ -626,6 +626,13 @@ Allows additional information to be listed along with a specified module.
   outside the Apache source tree. To achieve this APACI installs the Apache C
   header files together with the <CODE>apxs</CODE> tool.
  </LI>
+ <li><strong>-S command line option for debugging vhost setup</strong>
+  <br>
+  If Apache is invoked with the <code>-S</code> command line option it will
+  dump out information regarding how it parsed the <code>VirtualHost</code>
+  sections.  This is useful for folks trying to debug their virtual host
+  configuration.
+ </li>
 </UL>
 
 <!--#include virtual="footer.html" -->

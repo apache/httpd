@@ -85,6 +85,9 @@ httpd \- Apache hypertext transfer protocol server
 .B \-V
 ] 
 [
+.B \-S
+] 
+[
 .B \-?
 ] 
 
@@ -141,6 +144,9 @@ places where the directive is valid.
 .TP
 .B \-l
 Output a list of modules compiled into the server.
+.B \-S
+Show the settings as parsed from the config file (currently only shows the
+virtualhost settings).
 .TP
 .B \-X
 Run in single-process mode, for internal debugging purposes only; the daemon

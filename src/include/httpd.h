@@ -753,6 +753,10 @@ struct server_rec {
 
     server_rec *next;
 
+    /* description of where the definition came from */
+    const char *defn_name;
+    unsigned defn_line_number;
+
     /* Full locations of server config info */
 
     char *srm_confname;

@@ -80,6 +80,7 @@ extern int ap_daemons_max_free;
 extern int ap_daemons_limit;
 extern MODULE_VAR_EXPORT int ap_suexec_enabled;
 extern int ap_listenbacklog;
+extern int ap_dump_settings;
 
 extern char *ap_pid_fname;
 extern char *ap_scoreboard_fname;

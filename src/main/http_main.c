@@ -244,6 +244,7 @@ int ap_daemons_limit;
 time_t ap_restart_time;
 int ap_suexec_enabled = 0;
 int ap_listenbacklog;
+int ap_dump_settings;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -803,7 +804,7 @@ static void usage(char *bin)
     fprintf(stderr, "Usage: %s [-d directory] [-f file]\n", bin);
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-S]\n", pad);
     fprintf(stderr, "Options:\n");
 #ifdef SHARED_CORE
     fprintf(stderr, "  -L directory     : specify an alternate location for shared object files\n");
@@ -816,6 +817,7 @@ static void usage(char *bin)
     fprintf(stderr, "  -V               : show compile settings\n");
     fprintf(stderr, "  -h               : list available configuration directives\n");
     fprintf(stderr, "  -l               : list compiled-in modules\n");
+    fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n");
     exit(1);
 }
 
@@ -3968,11 +3970,12 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
+    while ((c = getopt(argc, argv,
+				    "C:c:Xd:f:vVhlL:S"
 #ifdef DEBUG_SIGSTOP
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlL:Z:")) != -1) {
-#else
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlL:")) != -1) {
+				    "Z:"
 #endif
+			)) != -1) {
 	char **new;
 	switch (c) {
 	case 'c':
@@ -4019,6 +4022,9 @@ int REALMAIN(int argc, char *argv[])
 	     */
 	    break;
 #endif
+	case 'S':
+	    ap_dump_settings = 1;
+	    break;
 	case '?':
 	    usage(argv[0]);
 	}
@@ -5065,7 +5071,7 @@ int REALMAIN(int argc, char *argv[])
 
     ap_setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:ius")) != -1) {
+    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlZ:iusS")) != -1) {
         char **new;
 	switch (c) {
 	case 'c':
@@ -5094,6 +5100,9 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 	case 's':
 	    run_as_service = 0;
+	    break;
+	case 'S':
+	    ap_dump_settings = 1;
 	    break;
 #endif /* WIN32 */
 	case 'd':
