@@ -544,12 +544,17 @@ static void ssl_init_ctx_verify(server_rec *s,
             ssl_die();
         }
 
-        ca_list = ssl_init_FindCAList(s, ptemp,
-                                      mctx->auth.ca_cert_file,
-                                      mctx->auth.ca_cert_path);
+        if (mctx->pks && (mctx->pks->ca_name_file || mctx->pks->ca_name_path)) {
+            ca_list = ssl_init_FindCAList(s, ptemp,
+                                          mctx->pks->ca_name_file,
+                                          mctx->pks->ca_name_path);
+        } else
+            ca_list = ssl_init_FindCAList(s, ptemp,
+                                          mctx->auth.ca_cert_file,
+                                          mctx->auth.ca_cert_path);
         if (!ca_list) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                    "Unable to determine list of available "
+                    "Unable to determine list of acceptable "
                     "CA certificates for client authentication");
             ssl_die();
         }
@@ -1151,7 +1156,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
 
         if ((rv = apr_dir_open(&dir, ca_path, ptemp)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                    "Failed to open SSLCACertificatePath `%s'",
+                    "Failed to open Certificate Path `%s'",
                     ca_path);
             ssl_die();
         }

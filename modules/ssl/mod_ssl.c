@@ -116,6 +116,12 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_ALL(CACertificateFile, TAKE1,
                 "SSL CA Certificate file "
                 "(`/path/to/file' - PEM encoded)")
+    SSL_CMD_SRV(CADNRequestPath, TAKE1,
+                "SSL CA Distinguished Name path "
+                "(`/path/to/dir' - symlink hashes to PEM of acceptable CA names to request)")
+    SSL_CMD_SRV(CADNRequestFile, TAKE1,
+                "SSL CA Distinguished Name file "
+                "(`/path/to/file' - PEM encoded to derive acceptable CA names to request)")
     SSL_CMD_SRV(CARevocationPath, TAKE1,
                 "SSL CA Certificate Revocation List (CRL) path "
                 "(`/path/to/dir' - contains PEM encoded files)")
