@@ -35,7 +35,6 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
   if test "$enable_deflate" != "no"; then
     ap_save_includes=$INCLUDES
     ap_save_ldflags=$LDFLAGS
-    ap_save_libs=$LIBS
     ap_save_cppflags=$CPPFLAGS
     if test "$ap_zlib_base" != "/usr"; then
       APR_ADDTO(INCLUDES, [-I${ap_zlib_base}/include])
@@ -50,12 +49,12 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
     AC_MSG_CHECKING([for zlib library])
     AC_TRY_LINK([#include <zlib.h>], [int i = Z_OK;], 
     [AC_MSG_RESULT(found) 
-     AC_CHECK_HEADERS(zutil.h)],
+     APR_SETVAR(MOD_DEFLATE_LDADD, [-lz])],
     [AC_MSG_RESULT(not found)
      enable_deflate=no
      INCLUDES=$ap_save_includes
-     LDFLAGS=$ap_save_ldflags
-     LIBS=$ap_save_libs])
+     LDFLAGS=$ap_save_ldflags])
+    APR_REMOVEFROM(LIBS, [-lz])
     CPPFLAGS=$ap_save_cppflags
   fi
 ])
