@@ -73,7 +73,7 @@
 apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
 {
     SSL *ssl;
-    char *cpType;
+    const char *cpType = "";
     conn_rec *conn;
     SSLConnRec *sslconn;
 
