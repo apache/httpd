@@ -612,6 +612,9 @@ void         ssl_callback_LogTracingState(SSL *, int, int);
 
 /*  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);
+#if 0 /* XXX */
+void         ssl_scache_status_register(apr_pool_t *p);
+#endif
 void         ssl_scache_kill(server_rec *);
 BOOL         ssl_scache_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
 SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int);
@@ -683,10 +686,9 @@ void         ssl_var_register(void);
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 void         ssl_var_log_config_register(apr_pool_t *p);
 
-/*  Extensions  */
+/*  Proxy Extensions  */
 #if 0 /* XXX */
 void         ssl_ext_proxy_register(apr_pool_t *p);
-void         ssl_ext_ms_register(apr_pool_t *p);
 #endif /* -0- */
 
 /*  I/O  */
