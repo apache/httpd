@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.1 $ ($Date: 1999/06/24 15:02:52 $)
+  $Revision: 1.2 $ ($Date: 2000/09/09 18:19:54 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -211,19 +211,21 @@
       </STRONG>
      </A>
   <P>
-  You can't! The reason is: First, case translations for arbitrary
-  length URLs cannot be done <EM>via</EM> regex patterns and
-  corresponding substitutions.  One need a per-character pattern like
-  sed/Perl <SAMP>tr|..|..|</SAMP> feature.  Second, just making URLs
-  always upper or lower case will not resolve the complete problem of
-  case-INSENSITIVE URLs, because actually the URLs had to be rewritten
-  to the correct case-variant residing on the filesystem because in
-  later processing Apache needs to access the file.  And Unix
-  filesystem is always case-SENSITIVE.
+  You can't! The reasons are: first, that, case translations for
+  arbitrary length URLs cannot be done <EM>via</EM> regex patterns and
+  corresponding substitutions.  One needs a per-character pattern like
+  the sed/Perl <SAMP>tr|..|..|</SAMP> feature.  Second, just making
+  URLs always upper or lower case does not solve the whole problem of
+  case-INSENSITIVE URLs, because URLs actually have to be rewritten to
+  the correct case-variant for the file residing on the filesystem
+  in order to allow Apache to access the file.  And
+  the Unix filesystem is always case-SENSITIVE.
   </P>
   <P>
-  But there is a module named <CODE>mod_speling.c</CODE> (yes, it is named
-  this way!) out there on the net. Try this one.
+  But there is a module named <CODE><A
+  HREF="../mod/mod_speling.html">mod_speling.c</A></CODE> in the
+  Apache distribution. Try this module to help correct people who use
+  mis-cased URLs.
   </P>
   <HR>
  </LI>

@@ -359,7 +359,7 @@ mutex.  Unfortunately SysV-style semaphores have some bad side-effects.
 One is that it's possible Apache will die without cleaning up the semaphore
 (see the <CODE>ipcs(8)</CODE> man page).  The other is that the semaphore
 API allows for a denial of service attack by any CGIs running under the
-same uid as the webserver (<EM>i.e.</EM>, all CGIs unless you use something
+same uid as the webserver (<EM>i.e.</EM>, all CGIs, unless you use something
 like suexec or cgiwrapper).  For these reasons this method is not used
 on any architecture except IRIX (where the previous two are prohibitively
 expensive on most IRIX boxes).
@@ -446,7 +446,7 @@ The TCP specification does not state that the FIN_WAIT_2 state has a
 timeout, but it doesn't prohibit it.  On systems without the timeout,
 Apache 1.2 induces many sockets stuck forever in the FIN_WAIT_2 state.
 In many cases this can be avoided by simply upgrading to the latest
-TCP/IP patches supplied by the vendor, in cases where the vendor has
+TCP/IP patches supplied by the vendor.  In cases where the vendor has
 never released patches (<EM>i.e.</EM>,  SunOS4 -- although folks with a source
 license can patch it themselves) we have decided to disable this feature.
 
@@ -799,8 +799,8 @@ but don't seem worth the effort.
 
 There are
 <A HREF="http://www.arctic.org/~dgaudet/apache/1.3/">
-several performance patches available for 1.3.</A>  But they may
-be slightly out of date by the time Apache 1.3.0 has been released,
+several performance patches available for 1.3.</A>  Although they may
+not apply cleanly to the current version,
 it shouldn't be difficult for someone with a little C knowledge to
 update them.  In particular:
 
@@ -856,8 +856,8 @@ depending on the operating system.
 <P>Apache's core code is already multithread aware, and Apache version
 1.3 is multithreaded on NT.  There have been at least two other experimental
 implementations of threaded Apache, one using the 1.3 code base on DCE,
-and one using a custom user-level threads package and the 1.0 code base,
-neither are available publically.  There is also an experimental port of
+and one using a custom user-level threads package and the 1.0 code base;
+neither is available publically.  There is also an experimental port of
 Apache 1.3 to <A HREF="http://www.mozilla.org/docs/refList/refNSPR/">
 Netscape's Portable Run Time</A>, which
 <A HREF="http://www.arctic.org/~dgaudet/apache/2.0/">is available</A>
