@@ -1,5 +1,8 @@
 Changes with Apache 1.2.2
 
+  *) mod_include would log some bogus values occasionally.
+     [Skip Montanaro <skip@calendar.com>, Marc Slemko] PR#797
+
   *) PORT: The slack fd changes in 1.2.1 introduced a problem with SIGHUP
      under Solaris 2.x (up through 2.5.1).  It has been fixed.
      [Dean Gaudet] PR#832

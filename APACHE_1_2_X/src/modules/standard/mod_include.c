@@ -458,7 +458,7 @@ void parse_string(request_rec *r, char *in, char *out, int length,
             var[vlen] = vtext[vtlen] = '\0';
             if (braces == 1) {
                 if (*in != '}') {
-                    log_printf(r->server, "Invalid variable %s%s", vtext,in);
+                    log_printf(r->server, "Invalid variable \"%s%s\"", vtext,in);
                     *next = '\0';
                     return;
                 } else
@@ -545,19 +545,19 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
 		char tmp[MAX_STRING_LEN+2];
 		ap_snprintf(tmp, sizeof(tmp), "/%s/", parsed_string);
 		if (parsed_string[0] == '/' || strstr(tmp, "/../") != NULL)
-		    error_fmt = "unable to include file %s in parsed file %s";
+		    error_fmt = "unable to include file \"%s\" in parsed file %s";
 		else
 		    rr = sub_req_lookup_file (parsed_string, r);
 	    } else
 		rr = sub_req_lookup_uri (parsed_string, r);
 	    
 	    if (!error_fmt && rr->status != 200)
-	        error_fmt = "unable to include %s in parsed file %s";
+	        error_fmt = "unable to include \"%s\" in parsed file %s";
 
 	    if (!error_fmt && noexec && rr->content_type
 		&& (strncmp (rr->content_type, "text/", 5)))
 	        error_fmt =
-		  "unable to include potential exec %s in parsed file %s";
+		  "unable to include potential exec \"%s\" in parsed file %s";
             if (error_fmt == NULL)
             {
                 request_rec *p;
@@ -565,11 +565,11 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
                 for (p=r; p != NULL; p=p->main)
                     if (strcmp(p->filename, rr->filename) == 0) break;
                 if (p != NULL)
-                    error_fmt = "Recursive include of %s in parsed file %s";
+                    error_fmt = "Recursive include of \"%s\" in parsed file %s";
             }
 	    
 	    if (!error_fmt && run_sub_req (rr))
-	        error_fmt = "unable to include %s in parsed file %s";
+	        error_fmt = "unable to include \"%s\" in parsed file %s";
 	    chdir_file(r->filename);
 		    
             if (error_fmt) {
@@ -582,7 +582,7 @@ int handle_include(FILE *in, request_rec *r, char *error, int noexec) {
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            log_printf(r->server, "unknown parameter %s to tag include in %s",
+            log_printf(r->server, "unknown parameter \"%s\" to tag include in %s",
                        tag, r->filename);
             rputs(error, r);
         }
@@ -689,8 +689,8 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         if(!strcmp(tag,"cmd")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 1);
             if(include_cmd(parsed_string, r) == -1) {
-                log_printf(r->server, "unknown parameter %s to tag include in %s",
-                           tag, r->filename);
+                log_printf(r->server, "execution failure for parameter \"%s\" to tag exec in file %s", 
+                tag, r->filename);
                 rputs(error, r);
             }
             /* just in case some stooge changed directories */
@@ -699,7 +699,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         else if(!strcmp(tag,"cgi")) {
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             if(include_cgi(parsed_string, r) == -1) {
-                log_printf(r->server, "invalid CGI ref %s in %s",tag_val,file);
+                log_printf(r->server, "invalid CGI ref \"%s\" in %s",tag_val,file);
                 rputs(error, r);
             }
             /* grumble groan */
@@ -708,7 +708,7 @@ int handle_exec(FILE *in, request_rec *r, char *error)
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            log_printf(r->server, "unknown parameter %s to tag exec in %s",
+            log_printf(r->server, "unknown parameter \"%s\" to tag exec in %s",
                        tag, file);
             rputs(error, r);
         }
@@ -731,7 +731,7 @@ int handle_echo (FILE *in, request_rec *r, char *error) {
         } else if(!strcmp(tag,"done"))
             return 0;
         else {
-            log_printf(r->server, "unknown parameter %s to tag echo in %s",
+            log_printf(r->server, "unknown parameter \"%s\" to tag echo in %s",
                 tag, r->filename);
             rputs(error, r);
         }
@@ -802,7 +802,7 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
         else if(!strcmp(tag,"done"))
             return 0;
         else {
-            log_printf(r->server,"unknown parameter %s to tag config in %s",
+            log_printf(r->server,"unknown parameter \"%s\" to tag config in %s",
                     tag, r->filename);
             rputs(error, r);
         }
@@ -822,7 +822,7 @@ int find_file(request_rec *r, char *directive, char *tag,
         to_send = make_full_path (r->pool, dir, tag_val);
         if(stat(to_send,finfo) == -1) {
             log_printf(r->server,
-                    "unable to get information about %s in parsed file %s",
+                    "unable to get information about \"%s\" in parsed file %s",
                     to_send, r->filename);
             rputs(error, r);
             return -1;
@@ -838,7 +838,7 @@ int find_file(request_rec *r, char *directive, char *tag,
 	    return 0;
         } else {
             log_printf(r->server,
-                    "unable to get information about %s in parsed file %s",
+                    "unable to get information about \"%s\" in parsed file %s",
                     tag_val, r->filename);
             rputs(error, r);
 	    destroy_sub_req (rr);
@@ -846,7 +846,7 @@ int find_file(request_rec *r, char *directive, char *tag,
         }
     }
     else {
-        log_printf(r->server,"unknown parameter %s to tag %s in %s",
+        log_printf(r->server,"unknown parameter \"%s\" to tag %s in %s",
                 tag, directive, r->filename);
         rputs(error, r);
         return -1;
@@ -920,7 +920,7 @@ int re_check(request_rec *r, char *string, char *rexp)
 
     compiled = pregcomp (r->pool, rexp, REG_EXTENDED|REG_NOSUB);
     if (compiled == NULL) {
-        log_printf(r->server, "unable to compile pattern %s", rexp);
+        log_printf(r->server, "unable to compile pattern \"%s\"", rexp);
         return -1;
     }
     regex_error = regexec(compiled, string, 0, (regmatch_t *)NULL, 0);
@@ -1048,7 +1048,7 @@ int parse_expr(request_rec *r, char *expr, char *error)
     if ((parse = expr) == (char *)NULL) return(0);
     root = current = (struct parse_node*)NULL;
     if ((expr_pool = make_sub_pool(r->pool)) == (struct pool *)NULL) {
-        log_printf(r->server, "out of memory", r->filename);
+        log_printf(r->server, "out of memory processing file %s", r->filename);
         rputs(error, r);
         return(0);
     }
@@ -1057,7 +1057,7 @@ int parse_expr(request_rec *r, char *expr, char *error)
     while (1) {
         new = (struct parse_node*)palloc(expr_pool, sizeof (struct parse_node));
         if (new == (struct parse_node*)NULL) {
-            log_printf(r->server,"out of memory", r->filename);
+            log_printf(r->server,"out of memory processing file %s", r->filename);
             rputs(error, r);
             goto RETURN;
         }
@@ -1094,7 +1094,7 @@ int parse_expr(request_rec *r, char *expr, char *error)
                 break;
               default:
                 log_printf(r->server,
-                    "Invalid expression %s", expr, r->filename);
+                    "Invalid expression \"%s\" in file %s", expr, r->filename);
                 rputs(error, r);
                 goto RETURN;
             }
@@ -1107,7 +1107,7 @@ rputs ("     Token: and/or\n", r);
 #endif
             if (current == (struct parse_node*)NULL) {
                 log_printf(r->server,
-                    "Invalid expression %s", expr, r->filename);
+                    "Invalid expression \"%s\" in file %s", expr, r->filename);
                 rputs(error, r);
                 goto RETURN;
             }
@@ -1127,7 +1127,7 @@ rputs ("     Token: and/or\n", r);
                     break;
                   default:
                     log_printf(r->server,
-                        "Invalid expression %s", expr, r->filename);
+                        "Invalid expression \"%s\" in file %s", expr, r->filename);
                     rputs(error, r);
                     goto RETURN;
                 }
@@ -1166,7 +1166,7 @@ rputs("     Token: not\n", r);
                     break;
                   default:
                     log_printf(r->server,
-                        "Invalid expression %s", expr, r->filename);
+                        "Invalid expression \"%s\" in file %s", expr, r->filename);
                     rputs(error, r);
                     goto RETURN;
                 }
@@ -1192,7 +1192,7 @@ rputs("     Token: eq/ne\n", r);
 #endif
             if (current == (struct parse_node*)NULL) {
                 log_printf(r->server,
-                    "Invalid expression %s", expr, r->filename);
+                    "Invalid expression \"%s\" in file %s", expr, r->filename);
                 rputs(error, r);
                 goto RETURN;
             }
@@ -1211,8 +1211,9 @@ rputs("     Token: eq/ne\n", r);
                   case token_eq:
                   case token_ne:
                   default:
-                    log_printf(r->server,
-                        "Invalid expression %s", expr, r->filename);
+                    log_printf(r->server, 
+                        "Invalid expression \"%s\" in file %s", 
+                        expr, r->filename);
                     rputs(error, r);
                     goto RETURN;
                 }
@@ -1243,7 +1244,7 @@ rputs("     Token: rbrace\n", r);
                 current = current->parent;
             }
             if (current == (struct parse_node*)NULL) {
-                log_printf(r->server,"Unmatched ')'in %s\n", expr, r->filename);
+                log_printf(r->server,"Unmatched ')' in %s", expr, r->filename);
                 rputs(error, r);
                 goto RETURN;
             }
@@ -1271,7 +1272,8 @@ rputs("     Token: lbrace\n", r);
                   case token_group:
                   default:
                     log_printf(r->server,
-                        "Invalid expression %s", expr, r->filename);
+                        "Invalid expression \"%s\" in file %s", 
+			expr, r->filename);
                     rputs(error, r);
                     goto RETURN;
                 }
@@ -1318,7 +1320,7 @@ rputs("     Evaluate and/or\n", r);
             if (current->left == (struct parse_node*)NULL ||
                         current->right == (struct parse_node*)NULL) {
                 log_printf(r->server,
-                    "Invalid expression %s", expr, r->filename);
+                    "Invalid expression \"%s\" in file %s", expr, r->filename);
                 rputs(error, r);
                 goto RETURN;
             }
@@ -1379,7 +1381,7 @@ rputs("     Evaluate eq/ne\n", r);
                         (current->left->token.type != token_string) ||
                         (current->right->token.type != token_string)) {
                 log_printf(r->server,
-                    "Invalid expression %s", expr, r->filename);
+                    "Invalid expression \"%s\" in file %s", expr, r->filename);
                 rputs(error, r);
                 goto RETURN;
             }
@@ -1397,7 +1399,7 @@ rputs("     Evaluate eq/ne\n", r);
                 if (current->right->token.value[len-1] == '/') {
                     current->right->token.value[len-1] = '\0';
                 } else {
-                    log_printf(r->server,"Invalid rexp %s",
+                    log_printf(r->server,"Invalid rexp \"%s\" in file %s",
                             current->right->token.value, r->filename);
                     rputs(error, r);
                     goto RETURN;
@@ -1462,12 +1464,14 @@ rvputs(r,"     Evaluate (): ", current->value ? "1" : "0", "\n", NULL);
             break;
 
           case token_lbrace:
-            log_printf(r->server,"Unmatched '(' in %s\n", expr, r->filename);
+            log_printf(r->server,"Unmatched '(' in %s in file %s", 
+		expr, r->filename);
             rputs(error, r);
             goto RETURN;
 
           case token_rbrace:
-            log_printf(r->server,"Unmatched ')' in %s\n", expr, r->filename);
+            log_printf(r->server,"Unmatched ')' in %s in file %s\n", 
+		expr, r->filename);
             rputs(error, r);
             goto RETURN;
 
@@ -1507,7 +1511,7 @@ rvputs(r,"**** if conditional_status=\"", *conditional_status ? "1" : "0", "\"\n
 rvputs(r,"**** if expr=\"", expr, "\"\n", NULL);
 #endif
         } else {
-            log_printf(r->server,"unknown parameter %s to tag if in %s",
+            log_printf(r->server,"unknown parameter \"%s\" to tag if in %s",
                     tag, r->filename);
             rputs(error, r);
         }
@@ -1544,7 +1548,7 @@ rvputs(r,"**** elif conditional_status=\"", *conditional_status ? "1" : "0", "\"
 rvputs(r,"**** if expr=\"", expr, "\"\n", NULL);
 #endif
         } else {
-            log_printf(r->server,"unknown parameter %s to tag if in %s",
+            log_printf(r->server,"unknown parameter \"%s\" to tag if in %s",
                     tag, r->filename);
             rputs(error, r);
         }
@@ -1736,7 +1740,7 @@ void send_parsed_content(FILE *f, request_rec *r)
 #endif
             else {
                 log_printf(r->server,
-                        "httpd: unknown directive %s in parsed doc %s",
+                        "httpd: unknown directive \"%s\" in parsed doc %s",
                         directive,r->filename);
                 if (printing) rputs(error, r);
                 ret=find_string(f,ENDING_SEQUENCE,r,0);
