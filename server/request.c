@@ -1236,7 +1236,6 @@ static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
 static int sub_req_common_validation(request_rec *rnew)
 {
     int res;
-
     if (((   ap_satisfies(rnew) == SATISFY_ALL
              || ap_satisfies(rnew) == SATISFY_NOSPEC)
             ? ((res = ap_run_access_checker(rnew))
@@ -1453,12 +1452,17 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
          * do a file_walk, if it doesn't change the per_dir_config then
          * we know that we don't have to redo all the access checks
          */
-        if ((res = file_walk(rnew) == OK)
-            && (rnew->per_dir_config == r->per_dir_config)
-            && (res = ap_run_type_checker(rnew)) == OK 
-            && (res = ap_run_fixups(rnew)) == OK) {
+        if ((res = file_walk(rnew))) {
+            rnew->status = res;
             return rnew;
         }
+        if (rnew->per_dir_config == r->per_dir_config) {
+            if ((res = ap_run_type_checker(rnew)) 
+                    || (res = ap_run_fixups(rnew))) {
+                rnew->status = res;
+            }
+            return rnew;
+        }  
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
@@ -1555,12 +1559,17 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
              * do a file_walk, if it doesn't change the per_dir_config then
              * we know that we don't have to redo all the access checks
              */
-            if ((res = file_walk(rnew) == OK)
-                && (rnew->per_dir_config == r->per_dir_config)
-                && (res = ap_run_type_checker(rnew)) == OK 
-                && (res = ap_run_fixups(rnew)) == OK) {
-                return rnew;
+        if ((res = file_walk(rnew))) {
+            rnew->status = res;
+            return rnew;
+        }
+        if (rnew->per_dir_config == r->per_dir_config) {
+            if ((res = ap_run_type_checker(rnew)) 
+                    || (res = ap_run_fixups(rnew))) {
+                rnew->status = res;
             }
+            return rnew;
+        }  
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
