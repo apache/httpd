@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/10 07:48:55 $]
+  Last modified at [$Date: 1999/01/10 15:12:04 $]
 
 Release:
 
@@ -163,7 +163,9 @@ Needs patch:
 Open issues:
 
     * Official retirement of 1.2; when?  Ken suggests as of 1.3.4.
-	Status: Ken +1
+      'Retirement' to be interpreted as removing the verbiage from the
+      main Apache page, but leaving the kits in /dist/.
+	Status: Ken +1, Randy +1, Dean +1, Ralf +1
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
