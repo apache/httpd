@@ -51,8 +51,13 @@
  *
  */
 
+#ifndef _APACHE_UTIL_MD5_H
+#define _APACHE_UTIL_MD5_H
+
 #include "md5.h"
 
 API_EXPORT(char *) ap_md5(pool *a, unsigned char *string);
 API_EXPORT(char *) ap_md5contextTo64(pool *p, AP_MD5_CTX * context);
 API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile);
+
+#endif	/* !_APACHE_UTIL_MD5_H */

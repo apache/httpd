@@ -81,6 +81,8 @@
  *
  */
 
+#ifndef _APACHE_MD5_H
+#define _APACHE_MD5_H
 
 /* MD5.H - header file for MD5C.C */
 
@@ -98,3 +100,5 @@ API_EXPORT(void) MD5Init(AP_MD5_CTX * context);
 API_EXPORT(void) MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 			   unsigned int inputLen);
 API_EXPORT(void) MD5Final(unsigned char digest[16], AP_MD5_CTX * context);
+
+#endif	/* !_APACHE_MD5_H */

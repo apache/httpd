@@ -52,6 +52,9 @@
  *
  */
 
+#ifndef _APACHE_ALLOC_H
+#define _APACHE_ALLOC_H
+
 /*
  * Resource allocation routines...
  *
@@ -276,3 +279,5 @@ API_EXPORT(int) spawn_child_err(pool *, int (*)(void *), void *,
 
 API_EXPORT(long) bytes_in_pool(pool *p);
 API_EXPORT(long) bytes_in_free_blocks(void);
+
+#endif	/* !_APACHE_ALLOC_H */

@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_CONF_H
+#define _APACHE_CONF_H
+
 /*
  * conf.h: system-dependant #defines and includes...
  * See README for a listing of what they mean
@@ -1047,3 +1050,5 @@ extern char *strerror (int err);
 #ifdef NEED_DIFFTIME
 extern double difftime(time_t time1, time_t time0);
 #endif
+
+#endif	/* !_APACHE_CONF_H */

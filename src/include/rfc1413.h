@@ -51,4 +51,9 @@
  *
  */
 
+#ifndef _APACHE_RFC1413_H
+#define _APACHE_RFC1413_H
+
 extern char *rfc1413(conn_rec *conn, server_rec *srv);
+
+#endif	/* !_APACHE_RFC1413_H */

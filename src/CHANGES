@@ -1,5 +1,13 @@
 Changes with Apache 1.3b4
 
+  *) The src/main/*.h header files have had #ifndef wrappers added to
+     insulate them against duplicate calls if they get included through
+     multiple paths (e.g., in .c files as well as other .h files).
+     [Ken Coar]
+
+  *) The libap routines now have a header file for their prototypes,
+     src/ap/ap.h, to ease their use in non-httpd applications.  [Ken Coar]
+
   *) mod_autoindex with a plaintext header file would emit the <PRE>
      start-tag before the HTML preamble, rather than after the preamble
      but before the header file contents.  [John Van Essen <jve@gamers.org>]

@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_HTTP_CONFIG_H
+#define _APACHE_HTTP_CONFIG_H
+
 /*
  * The central data structures around here...
  */
@@ -330,3 +333,5 @@ int header_parse(request_rec *);
 int run_post_read_request(request_rec *);
 
 #endif
+
+#endif	/* !_APACHE_HTTP_CONFIG_H */

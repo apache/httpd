@@ -51,8 +51,8 @@
  *
  */
 
-#ifndef HTTP_VHOST_H
-#define HTTP_VHOST_H
+#ifndef _APACHE_HTTP_VHOST_H
+#define _APACHE_HTTP_VHOST_H
 
 /* called before any config is read */
 void init_vhost_config(pool *p);
@@ -74,4 +74,4 @@ void update_vhost_given_ip(conn_rec *conn);
  */
 void update_vhost_from_headers(request_rec *r);
 
-#endif
+#endif	/* !_APACHE_HTTP_VHOST_H */

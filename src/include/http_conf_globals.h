@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_HTTP_CONF_GLOBALS_H
+#define _APACHE_HTTP_CONF_GLOBALS_H
+
 /* 
  * Process config --- what the process ITSELF is doing
  */
@@ -96,3 +99,5 @@ extern array_header *server_post_read_config;
  * is some memory corruption, so we allocate it statically.
  */
 extern char coredump_dir[MAX_STRING_LEN];
+
+#endif	/* !_APACHE_HTTP_CONF_GLOBALS_H */

@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_BUFF_H
+#define _APACHE_BUFF_H
+
 #ifdef B_SFIO
 #include "sfio.h"
 #endif
@@ -189,3 +192,5 @@ API_EXPORT(int) bfileno(BUFF *fb, int direction);
 
 /* bflush() if a read now would block, but don't actually read anything */
 API_EXPORT(void) bhalfduplex(BUFF *fb);
+
+#endif	/* !_APACHE_BUFF_H */

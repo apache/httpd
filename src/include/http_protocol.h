@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_HTTP_PROTOCOL_H
+#define _APACHE_HTTP_PROTOCOL_H
+
 /*
  * Prototypes for routines which either talk directly back to the user,
  * or control the ones that eventually do.
@@ -200,3 +203,5 @@ void finalize_sub_req_protocol(request_rec *sub_r);
 /* This is also useful for putting sub_reqs and internal_redirects together */
 
 void parse_uri(request_rec *r, const char *uri);
+
+#endif	/* !_APACHE_HTTP_PROTOCOL_H */

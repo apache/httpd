@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_UTIL_DATE_H
+#define _APAcHE_UTIL_DATE_H
+
 /*
  * util_date.h: prototypes for date parsing utility routines
  */
@@ -66,3 +69,5 @@
 API_EXPORT(int) checkmask(const char *data, const char *mask);
 time_t tm2sec(const struct tm *t);
 API_EXPORT(time_t) parseHTTPdate(const char *date);
+
+#endif	/* !_APACHE_UTIL_DATE_H */

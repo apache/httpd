@@ -54,8 +54,8 @@
  * <panos@alumni.cs.colorado.edu> for xinetd.
  */
 
-#ifndef _AP_H
-#define _AP_H
+#ifndef _APACHE_AP_H
+#define _APACHE_AP_H
 
 API_EXPORT(char *) ap_cpystrn(char *, const char *, size_t);
 int ap_slack(int, int);
@@ -63,4 +63,4 @@ API_EXPORT(char *) ap_escape_quotes(pool *, const char *);
 API_EXPORT(int) ap_snprintf(char *, size_t, const char *, ...);
 API_EXPORT(int) ap_vsnprintf(char *, size_t, const char *, va_list ap);
 
-#endif
+#endif	/* !_APACHE_AP_H */

@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_HTTPD_H
+#define _APACHE_HTTPD_H
+
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
  */
@@ -60,6 +63,7 @@
 #include "conf.h"
 #include "alloc.h"
 #include "buff.h"
+#include "ap.h"
 
 /* ----------------------------- config dir ------------------------------ */
 
@@ -942,6 +946,4 @@ extern int raise_sigstop_flags;
 #define RAISE_SIGSTOP(x)
 #endif
 
-/* Our own home-brewed strncpy replacement */
-API_EXPORT(char *) ap_cpystrn(char *dst, const char *src, size_t dst_size);
-
+#endif	/* !_APACHE_HTTPD_H */

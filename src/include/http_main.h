@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_HTTP_MAIN_H
+#define _APACHE_HTTP_MAIN_H
+
 /*
  * Routines in http_main.c which other code --- in particular modules ---
  * may want to call.  Right now, that's limited to timeout handling.
@@ -140,3 +143,5 @@ API_EXPORT(void) register_other_child(int pid,
 API_EXPORT(void) unregister_other_child(void *data);
 
 #endif
+
+#endif	/* !_APACHE_HTTP_MAIN_H */

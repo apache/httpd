@@ -1,5 +1,5 @@
-#ifndef MULTITHREAD_H
-#define MULTITHREAD_H
+#ifndef _APACHE_MULTITHREAD_H
+#define _APACHE_MULTITHREAD_H
 
 #define MULTI_OK (0)
 #define MULTI_TIMEOUT (1)
@@ -54,4 +54,4 @@ extern void *dummy_mutex;
 
 #endif /* ndef MULTITHREAD */
 
-#endif /* ndef MULTITHREAD_H */
+#endif /* !_APACHE_MULTITHREAD_H */

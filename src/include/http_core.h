@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_HTTP_CORE_H
+#define _APACHE_HTTP_CORE_H
+
 /*****************************************************************
  *
  * The most basic server code is encapsulated in a single module
@@ -217,3 +220,5 @@ typedef struct {
 } core_server_config;
 
 #endif
+
+#endif	/* !_APACHE_HTTP_CORE_H */

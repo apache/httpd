@@ -51,6 +51,9 @@
  *
  */
 
+#ifndef _APACHE_HTTP_LOG_H
+#define _APACHE_HTTP_LOG_H
+
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 
@@ -128,3 +131,5 @@ API_EXPORT(void) close_piped_log (piped_log *);
 #define piped_log_read_fd(pl)	(-1)
 #define piped_log_write_fd(pl)	(fileno((pl)->write_f))
 #endif
+
+#endif	/* !_APACHE_HTTP_LOG_H */
