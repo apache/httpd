@@ -1388,7 +1388,7 @@ AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
 
 module AP_MODULE_DECLARE_DATA mpm_prefork_module = {
     MPM20_MODULE_STUFF,
-    NULL,                       /* hook to run before apache parses args */
+    ap_mpm_rewrite_args,        /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */

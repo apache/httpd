@@ -76,6 +76,7 @@
 #include "apr_uri.h"
 #include "util_ebcdic.h"
 #include "ap_mpm.h"
+#include "mpm_common.h"
 
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place
  *          extern functions and global data in another appropriate module.
@@ -309,7 +310,11 @@ static void usage(process_rec *process)
                  "       %s [-k install|config|uninstall] [-n service_name]",
                  pad);
 #endif
-
+#ifdef AP_MPM_WANT_SIGNAL_SERVER
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "       %s [-k start|startssl|restart|graceful|stop]",
+                 pad);
+#endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
@@ -404,6 +409,7 @@ int main(int argc, const char * const argv[])
     apr_status_t rv;
     module **mod;
     const char *optarg;
+    APR_OPTIONAL_FN_TYPE(ap_signal_server) *signal_server;
 
     AP_MONCONTROL(0); /* turn off profiling of startup */
 
@@ -563,6 +569,15 @@ int main(int argc, const char * const argv[])
     if (configtestonly) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Syntax OK");
         destroy_and_exit_process(process, 0);
+    }
+
+    signal_server = APR_RETRIEVE_OPTIONAL_FN(ap_signal_server);
+    if (signal_server) {
+        int exit_status;
+
+        if (signal_server(&exit_status, pconf) != 0) {
+            destroy_and_exit_process(process, exit_status);
+        }
     }
 
     apr_pool_clear(plog);

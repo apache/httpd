@@ -280,6 +280,11 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg);
 #endif
 
+#ifdef AP_MPM_WANT_SIGNAL_SERVER
+int ap_signal_server(int *, apr_pool_t *);
+void ap_mpm_rewrite_args(process_rec *);
+#endif
+
 #ifdef __cplusplus
 }
 #endif
