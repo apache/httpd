@@ -353,7 +353,7 @@ extern MODULE_VAR_EXPORT const char SERVER_BUILT[];
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
  */
-#define APACHE_RELEASE 1030000
+#define APACHE_RELEASE 1030001
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT
