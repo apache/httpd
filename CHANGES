@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Move RFC 1413 ident requests from core to new module mod_ident.
+     [André Malo]
+
   *) Fix the ulimit command used by apachectl on Tru64.  PR 13609.
      [Joseph Senulis <Joseph.Senulis@dnr.state.wi.us>, Jeff Trawick]
 
