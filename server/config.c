@@ -864,12 +864,14 @@ static const char * ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
 	    char *bracket = cmd_name + strlen(cmd_name) - 1;
 
 	    if (*bracket != '>') {
+                parms->err_directive = newdir;
 		return apr_pstrcat(p, cmd_name,
 				  "> directive missing closing '>'", NULL);
 	    }
 	    *bracket = '\0';
 	    if (strcasecmp(cmd_name + 2,
 			    (*curr_parent)->directive + 1) != 0) {
+                parms->err_directive = newdir;
 		return apr_pstrcat(p, "Expected </",
 				  (*curr_parent)->directive + 1, "> but saw ",
 				  cmd_name, ">", NULL);

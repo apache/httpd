@@ -1,5 +1,9 @@
 Changes with Apache 2.0.16-dev
 
+  *) Fix segfaults for configuration file syntax errors such as
+     "<Directory>" followed by "</Directory" and
+     "<Directory>" followed by "</Directoryz>".  [Jeff Trawick]
+
   *) Cleanup the --enable-layout option of configure.  This makes
      us use a consistent location for the config.layout file, and it
      makes configure more portable.
