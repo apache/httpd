@@ -81,8 +81,8 @@
 #include "ApacheMonitor.h"
 
 
-#define OS_VERSION_WINNT    1
-#define OS_VERSION_WIN9X    2
+#define OS_VERSION_WIN9X    1
+#define OS_VERSION_WINNT    2
 #define OS_VERSION_WIN2K    3
 /* Should be enough */
 #define MAX_APACHE_SERVICES 128
