@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_cern_meta.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_cern_meta  "cern_meta_module for Apache" ../../include/ap_release.h > .\mod_cern_meta.rc
+	awk -f ../../build/win32/win32ver.awk mod_cern_meta.so "cern_meta_module for Apache" ../../include/ap_release.h > .\mod_cern_meta.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_cern_meta.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_cern_meta  "cern_meta_module for Apache" ../../include/ap_release.h > .\mod_cern_meta.rc
+	awk -f ../../build/win32/win32ver.awk mod_cern_meta.so "cern_meta_module for Apache" ../../include/ap_release.h > .\mod_cern_meta.rc
 
 # End Custom Build
 

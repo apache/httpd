@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_auth_basic.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_basic  "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_auth_basic.rc
+	awk -f ../../build/win32/win32ver.awk mod_auth_basic.so "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_auth_basic.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_auth_basic.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_basic  "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_auth_basic.rc
+	awk -f ../../build/win32/win32ver.awk mod_auth_basic.so "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_auth_basic.rc
 
 # End Custom Build
 

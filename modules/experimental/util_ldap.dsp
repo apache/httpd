@@ -118,7 +118,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\util_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk util_ldap "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
+	awk -f ../../build/win32/win32ver.awk util_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
 
 # End Custom Build
 
@@ -129,7 +129,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\util_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk util_ldap "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
+	awk -f ../../build/win32/win32ver.awk util_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\util_ldap.rc
 
 # End Custom Build
 

@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_userdir.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_userdir  "userdir_module for Apache" ../../include/ap_release.h > .\mod_userdir.rc
+	awk -f ../../build/win32/win32ver.awk mod_userdir.so "userdir_module for Apache" ../../include/ap_release.h > .\mod_userdir.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_userdir.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_userdir  "userdir_module for Apache" ../../include/ap_release.h > .\mod_userdir.rc
+	awk -f ../../build/win32/win32ver.awk mod_userdir.so "userdir_module for Apache" ../../include/ap_release.h > .\mod_userdir.rc
 
 # End Custom Build
 

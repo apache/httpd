@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_auth_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_ldap "auth_ldap_module for Apache" ../../include/ap_release.h > .\mod_auth_ldap.rc
+	awk -f ../../build/win32/win32ver.awk mod_auth_ldap.so "auth_ldap_module for Apache" ../../include/ap_release.h > .\mod_auth_ldap.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_auth_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_ldap "auth_ldap_module for Apache" ../../include/ap_release.h > .\mod_auth_ldap.rc
+	awk -f ../../build/win32/win32ver.awk mod_auth_ldap.so "auth_ldap_module for Apache" ../../include/ap_release.h > .\mod_auth_ldap.rc
 
 # End Custom Build
 

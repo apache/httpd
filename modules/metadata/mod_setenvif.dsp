@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_setenvif.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_setenvif  "setenvif_module for Apache" ../../include/ap_release.h  > .\mod_setenvif.rc
+	awk -f ../../build/win32/win32ver.awk mod_setenvif.so "setenvif_module for Apache" ../../include/ap_release.h  > .\mod_setenvif.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_setenvif.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_setenvif  "setenvif_module for Apache" ../../include/ap_release.h  > .\mod_setenvif.rc
+	awk -f ../../build/win32/win32ver.awk mod_setenvif.so "setenvif_module for Apache" ../../include/ap_release.h  > .\mod_setenvif.rc
 
 # End Custom Build
 

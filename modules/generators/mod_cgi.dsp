@@ -110,7 +110,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_cgi.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_cgi  "cgi_module for Apache" ../../include/ap_release.h > .\mod_cgi.rc
+	awk -f ../../build/win32/win32ver.awk mod_cgi.so "cgi_module for Apache" ../../include/ap_release.h > .\mod_cgi.rc
 
 # End Custom Build
 
@@ -121,7 +121,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_cgi.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_cgi  "cgi_module for Apache" ../../include/ap_release.h > .\mod_cgi.rc
+	awk -f ../../build/win32/win32ver.awk mod_cgi.so "cgi_module for Apache" ../../include/ap_release.h > .\mod_cgi.rc
 
 # End Custom Build
 

@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_imap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_imap  "imap_module for Apache" ../../include/ap_release.h > .\mod_imap.rc
+	awk -f ../../build/win32/win32ver.awk mod_imap.so "imap_module for Apache" ../../include/ap_release.h > .\mod_imap.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_imap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_imap  "imap_module for Apache" ../../include/ap_release.h > .\mod_imap.rc
+	awk -f ../../build/win32/win32ver.awk mod_imap.so "imap_module for Apache" ../../include/ap_release.h > .\mod_imap.rc
 
 # End Custom Build
 

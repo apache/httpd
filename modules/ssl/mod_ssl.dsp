@@ -302,7 +302,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_ssl.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ssl  "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
+	awk -f ../../build/win32/win32ver.awk mod_ssl.so "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
 
 # End Custom Build
 
@@ -313,7 +313,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_ssl.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ssl  "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
+	awk -f ../../build/win32/win32ver.awk mod_ssl.so "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
 
 # End Custom Build
 

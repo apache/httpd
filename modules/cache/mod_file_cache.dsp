@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_file_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_file_cache  "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
+	awk -f ../../build/win32/win32ver.awk mod_file_cache.so "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_file_cache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_file_cache  "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
+	awk -f ../../build/win32/win32ver.awk mod_file_cache.so "file_cache_module for Apache" ../../include/ap_release.h > .\mod_file_cache.rc
 
 # End Custom Build
 

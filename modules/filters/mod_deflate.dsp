@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_deflate.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_deflate  "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
+	awk -f ../../build/win32/win32ver.awk mod_deflate.so "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_deflate.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_deflate  "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
+	awk -f ../../build/win32/win32ver.awk mod_deflate.so "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
 
 # End Custom Build
 
