@@ -100,7 +100,7 @@
 #ifdef WIN32
 
 /*
-  select() sometimes returns 0 even though the timeout has _not_ expired. We must work around this.
+  select() sometimes returns 1 even though the write will block. We must work around this.
 */
 
 int sendwithtimeout(int sock, const char *buf, int len, int flags)
