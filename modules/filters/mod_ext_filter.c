@@ -110,7 +110,7 @@ typedef struct ef_ctx_t {
     ef_filter_t *filter;
     int noop;
 #if APR_FILES_AS_SOCKETS
-    apr_pollfd_t *pollset;
+    apr_pollset_t *pollset;
 #endif
 } ef_ctx_t;
 
@@ -531,17 +531,21 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
 
 #if APR_FILES_AS_SOCKETS
     {
-        apr_socket_t *newsock;
+        apr_pollfd_t pfd = { 0 };
 
-        rc = apr_poll_setup(&ctx->pollset, 2, ctx->p);
+        rc = apr_pollset_create(&ctx->pollset, 2, ctx->p, 0);
         ap_assert(rc == APR_SUCCESS);
-        rc = apr_socket_from_file(&newsock, ctx->proc->in);
+
+        pfd.p         = ctx->p;
+        pfd.desc_type = APR_POLL_FILE;
+        pfd.reqevents = APR_POLLOUT;
+        pfd.desc.f    = ctx->proc->in;
+        rc = apr_pollset_add(ctx->pollset, &pfd);
         ap_assert(rc == APR_SUCCESS);
-        rc = apr_poll_socket_add(ctx->pollset, newsock, APR_POLLOUT);
-        ap_assert(rc == APR_SUCCESS);
-        rc = apr_socket_from_file(&newsock, ctx->proc->out);
-        ap_assert(rc == APR_SUCCESS);
-        rc = apr_poll_socket_add(ctx->pollset, newsock, APR_POLLIN);
+
+        pfd.reqevents = APR_POLLIN;
+        pfd.desc.f    = ctx->proc->out;
+        rc = apr_pollset_add(ctx->pollset, &pfd);
         ap_assert(rc == APR_SUCCESS);
     }
 #endif
@@ -736,12 +740,13 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
             if (APR_STATUS_IS_EAGAIN(rv)) {
 #if APR_FILES_AS_SOCKETS
                 int num_events;
+                const apr_pollfd_t *pdesc;
                 
-                rv = apr_poll(ctx->pollset, 2,
-                              &num_events, f->r->server->timeout);
+                rv = apr_pollset_poll(ctx->pollset, f->r->server->timeout,
+                                      &num_events, &pdesc);
                 if (rv || dc->debug >= DBGLVL_GORY) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
-                                  rv, f->r, "apr_poll()");
+                                  rv, f->r, "apr_pollset_poll()");
                 }
                 if (rv != APR_SUCCESS && !APR_STATUS_IS_EINTR(rv)) { 
                     /* some error such as APR_TIMEUP */
