@@ -16,6 +16,7 @@ available</description>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 <compatibility>Available in Apache 2.0.30 and later</compatibility>
 
 <usage>
@@ -733,6 +734,7 @@ ErrorLog logs/error.log (Windows and OS/2)</default>
 <description>File attributes used to create the ETag
 HTTP response header</description>
 <syntax>FileETag <em>component</em> ...</syntax>
+<default>FileETag INode MTime Size</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1130,7 +1132,8 @@ the server configuration files</description>
 <description>Enables HTTP persistent connections</description>
 <syntax>KeepAlive on|off</syntax>
 <default>KeepAlive On</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The Keep-Alive extension to HTTP/1.0 and the persistent
@@ -1163,7 +1166,8 @@ the server configuration files</description>
 requests on a persistent connection</description>
 <syntax>KeepAliveTimeout <em>seconds</em></syntax>
 <default>KeepAliveTimeout 15</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The number of seconds Apache will wait for a subsequent
@@ -1424,7 +1428,9 @@ from the client</description>
 <description>Limits the size of an XML-based request body</description>
 <syntax>LimitXMLRequestBody <em>number</em></syntax>
 <default>LimitXMLRequestBody 1000000</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 
 <usage>
     <p>Limit (in bytes) on maximum size of an XML-based request
@@ -1672,7 +1678,8 @@ matching URLs</description>
 connection</description>
 <syntax>MaxKeepAliveRequests <em>number</em></syntax>
 <default>MaxKeepAliveRequests 100</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The <directive>MaxKeepAliveRequests</directive> directive
@@ -1949,7 +1956,8 @@ by Apache children</description>
 <syntax>RLimitCPU <em>number</em>|max [<em>number</em>|max]</syntax>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 
 <usage>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -1981,7 +1989,8 @@ by Apache children</description>
 <syntax>RLimitMEM <em>number</em>|max [<em>number</em>|max]</syntax>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 
 <usage>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -2013,7 +2022,8 @@ processes launched by Apache children</description>
 <syntax>RLimitNPROC <em>number</em>|max [<em>number</em>|max]</syntax>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 
 <usage>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
@@ -2091,8 +2101,8 @@ user authentication</description>
 scripts</description>
 <syntax>ScriptInterpreterSource registry|script</syntax>
 <default>ScriptInterpreterSource script</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Win32 only</compatibility>
 
@@ -2207,7 +2217,7 @@ itself</description>
 <name>ServerPath</name>
 <description>Legacy URL pathname for a name-virtual host that
 is accessed by an incompatible browser</description>
-<syntax>ServerPath <em>directory-path</em></syntax>
+<syntax>ServerPath <em>URL-path</em></syntax>
 <contextlist><context>virtual host</context></contextlist>
 
 <usage>
@@ -2386,7 +2396,7 @@ input</description>
 <name>SetOutputFilter</name>
 <description>Sets the filters that will process responses from the
 server</description>
-<syntax>SetOutputFilter <em>filter</em> [<em>filter</em>] ...</syntax>
+<syntax>SetOutputFilter <em>filter</em>[<em>;filter</em>...]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
