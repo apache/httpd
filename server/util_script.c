@@ -519,9 +519,9 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
 	    for (cp = w; *cp != '\0'; ++cp) {
                 native = apr_xlate_conv_byte(ap_hdrs_from_ascii, *cp);
-		if (isprint(*cp) && !isprint(native))
+		if (apr_isprint(*cp) && !apr_isprint(native))
 		    ++maybeEBCDIC;
-		if (!isprint(*cp) && isprint(native))
+		if (!apr_isprint(*cp) && apr_isprint(native))
 		    ++maybeASCII;
             }
 	    if (maybeASCII > maybeEBCDIC) {
