@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/27 11:57:32 $]
+Last modified at [$Date: 2003/02/27 12:09:42 $]
 
 Release:
 
@@ -135,11 +135,6 @@ PATCHES TO PORT FROM 2.1
       modules/experimental/util_ldap.c r1.11
       +1: bnicholes
        0: jerenkrantz (mod_ldap is experimental, no need to update it)
-
-    * Add a hint about handling of IPv4-mapped addresses to the output
-      of httpd -V.
-      server/main.c r1.144
-      +1: trawick, nd, stoddard
 
     * Fix a problem where a redirected subrequest doesn't have the
       subrequest filter in place (PR 15423).
