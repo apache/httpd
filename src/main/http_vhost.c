@@ -494,14 +494,15 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 				"VirtualHost %s:%u -- mixing * "
 				"ports and non-* ports with "
 				"a NameVirtualHost address is not supported,"
-				" you will get undefined behaviour",
+				" proceeding with undefined results",
 				sar->virthost, sar->host_port);
 		    }
 		}
 		else if (ic) {
 		    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, main_s,
 			    "VirtualHost %s:%u overlaps with "
-			    "VirtualHost %s:%u, the first has precedence",
+			    "VirtualHost %s:%u, the first has precedence, "
+			    "perhaps you need a NameVirtualHost directive",
 			    sar->virthost, sar->host_port,
 			    ic->sar->virthost, ic->sar->host_port);
 		    ic->sar = sar;
