@@ -399,10 +399,10 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
  *             new bucket brigade is returned in this location.
  * @param b The bucket brigade to save aside.  This brigade is always empty
  *          on return
- * @deffunc void ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to, ap_bucket_brigade **b)
+ * @deffunc apr_status_t ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to, ap_bucket_brigade **b)
  */
-AP_DECLARE(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to,
-                                        ap_bucket_brigade **b);    
+AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **save_to,
+                                         ap_bucket_brigade **b);    
 
 #ifdef __cplusplus
 }
