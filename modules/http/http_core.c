@@ -1080,9 +1080,10 @@ API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string)
 }
 
 static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
-				      char *line)
+				      char *errno_str, char *msg)
 {
     int error_number, index_number, idx500;
+    enum { MSG, LOCAL_PATH, REMOTE_PATH } what = MSG;
     char *w;
                 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
@@ -1093,10 +1094,7 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
     /* 1st parameter should be a 3 digit number, which we recognize;
      * convert it into an array index
      */
-  
-    w = ap_getword_conf_nc(cmd->pool, &line);
-    error_number = atoi(w);
-
+    error_number = atoi(errno_str);
     idx500 = ap_index_of_response(HTTP_INTERNAL_SERVER_ERROR);
 
     if (error_number == HTTP_INTERNAL_SERVER_ERROR) {
@@ -1104,13 +1102,22 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
     }
     else if ((index_number = ap_index_of_response(error_number)) == idx500) {
         return ap_pstrcat(cmd->pool, "Unsupported HTTP response code ",
-			  w, NULL);
+			  errno_str, NULL);
     }
 
+    /* Heuristic to determine second argument. */
+    if (strchr(msg,' ')) 
+	what = MSG;
+    else if (msg[0] == '/')
+	what = LOCAL_PATH;
+    else if (ap_is_url(msg))
+	what = REMOTE_PATH;
+    else
+        what = MSG;
+   
     /* The entry should be ignored if it is a full URL for a 401 error */
 
-    if (error_number == 401 &&
-	line[0] != '/' && line[0] != '"') { /* Ignore it... */
+    if (error_number == 401 && what == REMOTE_PATH) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, cmd->server,
 		     "cannot use a full URL in a 401 ErrorDocument "
 		     "directive --- ignoring!");
@@ -1121,7 +1128,13 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
 		ap_pcalloc(cmd->pool,
 			   sizeof(*conf->response_code_strings) * RESPONSE_CODES);
         }
-        conf->response_code_strings[index_number] = ap_pstrdup(cmd->pool, line);
+	/* hack. Prefix a " if it is a msg; as that is what
+	 * http_protocol.c relies on to distinguish between
+	 * a msg and a (local) path.
+	 */
+        conf->response_code_strings[index_number] = (what == MSG) ?
+		ap_pstrcat(cmd->pool, "\"",msg,NULL) :
+		ap_pstrdup(cmd->pool, msg);
     }   
 
     return NULL;
@@ -2335,7 +2348,7 @@ static const command_rec core_cmds[] = {
   "Name(s) of per-directory config files (default: .htaccess)" },
 { "DocumentRoot", set_document_root, NULL, RSRC_CONF, TAKE1,
   "Root directory of the document tree"  },
-{ "ErrorDocument", set_error_document, NULL, OR_FILEINFO, RAW_ARGS,
+{ "ErrorDocument", set_error_document, NULL, OR_FILEINFO, TAKE2,
   "Change responses for HTTP errors" },
 { "AllowOverride", set_override, NULL, ACCESS_CONF, RAW_ARGS,
   "Controls what groups of directives can be configured by per-directory "
