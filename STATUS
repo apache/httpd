@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/12/01 14:45:46 $]
+  Last modified at [$Date: 2000/12/01 15:45:17 $]
 
 Release:
 
@@ -56,11 +56,6 @@ Available Patches:
       similar problems?)
         PR: 6475
         Status:
-
-    * Dan Astoorian <djast@cs.toronto.edu>'s patch to fix mod_include RE
-      tokenisation
-	PR: 5898
-	Status: Jim: Still appropriate?
 
     * Gerd Knorr <gknorr@berlinonline.de>'s patch to enable mod_auth_digest
       to handle both Digest *and* Basic authentication modes.
@@ -131,9 +126,6 @@ Available Patches:
 		Randy +1 (please choose name other than "hook")
                 Doug +1 on concept (untested), Lars +1 on concept,
 		Martin +1 (untested), Fred +1,
-		Jim -1 (I really don't think it makes sense to
-		add this right now this late in the release cycle
-		for 1.3.13. I am +1 for 1.3.14)
 		Greg -0 for 1.3 series.
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
