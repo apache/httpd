@@ -1,6 +1,6 @@
 
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995-1997 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -179,7 +179,14 @@ int get_path_info(request_rec *r)
 	    *cp = '\0';
 	    return OK;
 	}
+#if defined(ENOENT)
 	else if (errno == ENOENT) {
+#else
+  #error Your system apparently does not define ENOENT.
+  #error Removal of these lines opens a security hole if protecting
+  #error from directory indexes with DirectoryIndex.
+	else {
+#endif
 	    last_cp = cp;
 	
 	    while (--cp > path && *cp != '/')
@@ -188,10 +195,12 @@ int get_path_info(request_rec *r)
 	    while (cp > path && cp[-1] == '/')
 		--cp;
 	} 
+#if defined(ENOENT)
 	else {
 	    log_reason("unable to determine if index file exists (stat() returned unexpected error)", r->filename, r);
-	    return HTTP_FORBIDDEN;
+	    return FORBIDDEN;
 	}
+#endif
     }
 
     return OK;
