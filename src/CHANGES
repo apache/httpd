@@ -1,5 +1,13 @@
 Changes with Apache 1.3b6
 
+  *) Allow top-level (APACI) Makefile to break on build errors
+     the same way the src/ subtree Makefiles breaks on them by replacing the
+     initial APACI sed-subdir-display-kludge with a more clean
+     variable-passing-solution: variable SDP can optionally hold the subdir
+     prefix which is consistently used for displaying the subdir movement.
+     This way even the top-level Makefile can stop correctly on errors as the
+     user expects. [Ralf S. Engelschall]
+
   *) Fixed ordering of argument checks for RewriteBase directive.
      [Todd Eigenschink <eigenstr@mixi.net>, PR#2045]
 

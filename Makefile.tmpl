@@ -144,7 +144,7 @@ build:
 
 #   build the standard stuff
 build-std:
-	@cd $(SRC); $(MAKE) $(MFLAGS) all 2>&1 | sed -e 's:^\([=<]==[>=]\) :\1 $(SRC)/:'
+	@cd $(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ all
 
 #   build the additional support stuff
 build-support:
@@ -351,7 +351,7 @@ clean:
 
 #   clean the standard stuff
 clean-std:
-	@cd $(SRC); $(MAKE) $(MFLAGS) clean | sed -e 's:^\([=<]==[>=]\) :\1 $(SRC)/:'
+	@cd $(SRC); $(MAKE) $(MFLAGS) SDP=$(SRC)/ clean
 
 #   clean additional support stuff
 clean-support:

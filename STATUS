@@ -158,6 +158,7 @@ Committed Code Changes:
     * Ralf's initial doc and Configuration.tmpl entry for mod_mmap_static
     * OS/2 tweak to deal with multiple .exe targets. [Brian Havard]
     * Fixed ordering of argument checks for RewriteBase directive, PR#2045
+    * Ralf's cleanup of subdir movement to again allow correct breaks on error
 
 Available Patches:
 

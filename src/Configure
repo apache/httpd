@@ -1389,9 +1389,9 @@ default: all
 
 all clean depend :: 
 	@for i in \$(MODULES); do \\
-	    echo "===> modules/\$\$i"; \\
-		(cd \$\$i && \$(MAKE) \$(MFLAGS_STATIC) CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; \\
-		echo "<=== modules/\$\$i"; \\
+	    echo "===> \$(SDP)modules/\$\$i"; \\
+		(cd \$\$i && \$(MAKE) \$(MFLAGS_STATIC) SDP='\$(SDP)' CC='\$(CC)' AUX_CFLAGS='\$(CFLAGS)' RANLIB='\$(RANLIB)' \$@) || exit 1; \\
+		echo "<=== \$(SDP)modules/\$\$i"; \\
 	done
 
 EOF
