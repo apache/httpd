@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 00:03:16 $]
+Last modified at [$Date: 2003/03/07 00:57:06 $]
 
 Release:
 
@@ -66,6 +66,7 @@ PATCHES TO PORT FROM 2.1
       include/httpd.h r1.195
       server/util_debug.c r1.10
       +1: striker
+      -0: nd (util_debug isn't a so cool place for the functions)
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
