@@ -185,9 +185,27 @@
 #endif
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 
-#ifdef	USE_SSL
-#if ((!(RSAREF)) && (!(SYSSSL)))
+#if !defined(WIN32) && !defined(NETWARE)
+#include "ap_config_auto.h"
+#endif
+
+#if defined(HAVE_SSLC)
+
+/* Libraries for RSA SSL-C */
+#include <rsa.h>
+#include <x509.h>
+#include <pem.h>
+#include <err.h>
+#include <ssl.h>
+#include <r_rand.h>
+#include <sslc.h>
+#define USE_SSL
+#define RSAREF
+
+#elif defined(HAVE_OPENSSL)
+
 /* Libraries on most systems.. */
 #include <openssl/rsa.h>
 #include <openssl/crypto.h>
@@ -196,20 +214,11 @@
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 #include <openssl/rand.h>
-#else
-/* Libraries for RSAref and SYSSSL */
-#include <rsa.h>
-#include <crypto.h>
-#include <x509.h>
-#include <pem.h>
-#include <err.h>
-#include <ssl.h>
-#include <rand.h>
-#endif
+#define USE_SSL
+
 #endif
 
 #include <math.h>
-#endif
 #if APR_HAVE_CTYPE_H
 #include <ctype.h>
 #endif
@@ -1771,14 +1780,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.122 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.123 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.122 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.123 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
