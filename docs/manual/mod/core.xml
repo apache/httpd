@@ -2321,7 +2321,11 @@ handler</description>
     SetHandler server-status<br />
     &lt;/Location&gt;
 </example>
+
 </usage>
+
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+
 </directivesynopsis>
 
 <directivesynopsis>
