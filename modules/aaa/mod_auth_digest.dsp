@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\srclib\apr\Release" /base:@BaseAddr.ref,mod_auth_digest
+# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\srclib\apr\Release" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_digest
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "mod_auth_digest - Win32 Debug"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept /libpath:"..\..\CoreD" /libpath:"..\..\srclib\apr\Debug" /base:@BaseAddr.ref,mod_auth_digest
+# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept /libpath:"..\..\CoreD" /libpath:"..\..\srclib\apr\Debug" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_digest
 # SUBTRACT LINK32 /pdb:none /incremental:no /map
 
 !ENDIF 
