@@ -182,9 +182,9 @@ FILES_nlm_libs = \
 FILES_nlm_modules = \
 	aprlib \
 	libc \
-	ldapsdk \
-	ldapssl \
-	ldapx \
+	lldapsdk \
+	lldapssl \
+	lldapx \
 	$(EOLIST)
 
 #
@@ -215,7 +215,7 @@ FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
-	@$(LDAPSDK)/lib/nlm/ldapsdk.imp \
+	@$(LDAPSDK)/imports/lldapsdk.imp \
 	$(EOLIST)
  
 #   
