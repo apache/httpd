@@ -61,24 +61,6 @@
 
 #include "ap_listen.h"
 
-/* From registry.c: */
-
-apr_status_t ap_registry_create_key(const char *key);
-apr_status_t ap_registry_delete_key(const char *key);
-
-apr_status_t ap_registry_store_value(const char *key, const char *name, 
-                                    const char *value);
-apr_status_t ap_registry_get_value(apr_pool_t *p, const char *key, 
-                                  const char *name, char **ppValue);
-apr_status_t ap_registry_store_array(apr_pool_t *p, const char *key, 
-                                    const char *name, int nelts, 
-                                    char const* const* elts);
-apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, 
-                                  const char *name, 
-                                  apr_array_header_t **parray);
-apr_status_t ap_registry_delete_value(const char *key, const char *name);
-
-
 /* From service.c: */
 
 #define SERVICE_APACHE_RESTART 128
