@@ -71,6 +71,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypass">ProxyPass</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypassreverse">ProxyPassReverse</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypreservehost">ProxyPreserveHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyremote">ProxyRemote</a></li>
@@ -780,7 +782,7 @@ proxied server</td></tr>
     This means that if the proxied content contains absolute URL
     references, they will by-pass the proxy.  A third-party module
     that will look inside the HTML and rewrite URL references is Nick
-    Kew's <a href="http://www.webthing.com/software/mod_proxy_html/">mod_proxy_html</a>.</p>
+    Kew's <a href="http://apache.webthing.com/software/mod_proxy_html/">mod_proxy_html</a>.</p>
 
     <p><var>path</var> is the name of a local virtual path. <var>url</var> is a
     partial URL for the remote server - the same way they are used for the
@@ -792,6 +794,8 @@ proxied server</td></tr>
     <div class="example"><p><code>
       ProxyPass         /mirror/foo/ http://backend.example.com/<br />
       ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+      ProxyPassReverseCookieDomain  backend.example.com  public.example.com
+      ProxyPassReverseCookiePath  /  /mirror/foo/
     </code></p></div>
 
     <p>will not only cause a local request for the
@@ -812,6 +816,38 @@ proxied server</td></tr>
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Domain string in Set-Cookie headers from a reverse-
+proxied server</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookieDomain <var>internal-domain</var> <var>public-domain</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+</table>
+<p>Usage is basically similar to
+<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, but instead of
+rewriting headers that are a URL, this rewrites the <code>domain</code>
+string in <code>Set-Cookie</code> headers.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a name="proxypassreversecookiepath" id="proxypassreversecookiepath">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Path string in Set-Cookie headers from a reverse-
+proxied server</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookiePath <var>internal-path</var> <var>public-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+</table>
+<p>Usage is basically similar to
+<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, but instead of
+rewriting headers that are a URL, this rewrites the <code>path</code>
+string in <code>Set-Cookie</code> headers.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
