@@ -362,11 +362,9 @@ static void xlate_register_filter(request_rec *r)
 static int send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t len)
 {
     ap_bucket_brigade *bb;
-    apr_ssize_t written;
 
     bb = ap_brigade_create(f->r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_transient_create(tmp, len, &written));
-    ap_assert(written == len); /* You BETTER accept all my data! */
+    ap_brigade_append_buckets(bb, ap_bucket_create_transient(tmp, len));
     return ap_pass_brigade(f->next, bb);
 }
 
@@ -375,7 +373,7 @@ static void send_eos(ap_filter_t *f)
     ap_bucket_brigade *bb;
 
     bb = ap_brigade_create(f->r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_eos_create());
+    ap_brigade_append_buckets(bb, ap_bucket_create_eos());
     ap_pass_brigade(f->next, bb);
 }
 
