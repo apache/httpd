@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
+<!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 <!-- English -->
 <messages>
  <message name="seealso">See also </message>
  <message name="description">Description</message>
  <message name="apachemodule">Apache Module</message>
  <message name="status">Status</message>
- <message name="moduleidentifier">Module Identifier</message>
+ <message name="moduleidentifier">Module&nbsp;Identifier</message>
  <message name="compatibility">Compatibility</message>
  <message name="syntax">Syntax</message>
  <message name="default">Default</message>
