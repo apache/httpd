@@ -179,8 +179,7 @@ static int die_now = 0;
 static apr_thread_mutex_t *accept_mutex = NULL;
 
 /* Keep track of the number of worker threads currently active */
-static int worker_thread_count;
-static apr_thread_mutex_t *worker_thread_count_mutex;
+static unsigned long worker_thread_count;
 static int request_count;
 
 /*  Structure used to register/deregister a console handler with the OS */
@@ -210,9 +209,7 @@ static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, apr_b
     apr_bucket_alloc_destroy(bucket_alloc);
     apr_pool_destroy(ptrans);
 
-    apr_thread_mutex_lock(worker_thread_count_mutex);
-    worker_thread_count--;
-    apr_thread_mutex_unlock(worker_thread_count_mutex);
+    atomic_dec (&worker_thread_count);
     if (worker_num >=0)
         ap_update_child_status_from_indexes(0, worker_num, WORKER_DEAD, 
                                             (request_rec *) NULL);
@@ -382,9 +379,7 @@ void worker_main(void *arg)
 
     bucket_alloc = apr_bucket_alloc_create(pmain);
 
-    apr_thread_mutex_lock(worker_thread_count_mutex);
-    worker_thread_count++;
-    apr_thread_mutex_unlock(worker_thread_count_mutex);
+    atomic_inc (&worker_thread_count);
 
     ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY, 
                                         (request_rec *) NULL);
@@ -899,7 +894,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     restart_pending = shutdown_pending = 0;
     worker_thread_count = 0;
-    apr_thread_mutex_create(&worker_thread_count_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
     apr_thread_mutex_create(&accept_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
 
     if (!is_graceful) {
