@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Quotes cannot be used around require group and require dn
+     directives, update the documentation to reflect this. Also add
+     quotes around the dn and group within debug messages, to make it
+     more obvious why authentication is failing if quotes are used in
+     error. PR 19304 [Graham Leggett]
+
   *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
      from escaping filters twice when the backslash character is used.
      PR 24437 [Jess Holle <jessh@ptc.com>]

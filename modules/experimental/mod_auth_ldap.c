@@ -573,8 +573,8 @@ int mod_auth_ldap_auth_checker(request_rec *r)
                 default: {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, 
                                   "[%d] auth_ldap authorise: "
-                                  "require dn: LDAP error [%s][%s]",
-                                  getpid(), ldc->reason, ldap_err2string(result));
+                                  "require dn \"%s\": LDAP error [%s][%s]",
+                                  getpid(), t, ldc->reason, ldap_err2string(result));
                 }
             }
         }
@@ -599,7 +599,7 @@ int mod_auth_ldap_auth_checker(request_rec *r)
             }
 
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, 
-                          "[%d] auth_ldap authorise: require group: testing for group membership in `%s'", 
+                          "[%d] auth_ldap authorise: require group: testing for group membership in \"%s\"", 
 		          getpid(), t);
 
             for (i = 0; i < sec->groupattr->nelts; i++) {
@@ -619,9 +619,9 @@ int mod_auth_ldap_auth_checker(request_rec *r)
                     }
                     default: {
                         ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, 
-                                      "[%d] auth_ldap authorise: require group: "
+                                      "[%d] auth_ldap authorise: require group \"%s\": "
                                       "authorisation failed [%s][%s]",
-                                      getpid(), ldc->reason, ldap_err2string(result));
+                                      getpid(), t, ldc->reason, ldap_err2string(result));
                     }
                 }
             }
