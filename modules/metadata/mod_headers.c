@@ -127,7 +127,7 @@ typedef enum {
 
 typedef enum {
     hdr_in = 0,                 /* RequestHeader */
-    hdr_out = 1,                /* Header */
+    hdr_out = 1                 /* Header */
 } hdr_inout;
 
 typedef struct {
