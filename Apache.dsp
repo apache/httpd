@@ -90,10 +90,26 @@ LINK32=link.exe
 
 SOURCE=.\os\win32\main_win32.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\registry.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\service.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
+# Begin Source File
+
+SOURCE=.\os\win32\registry.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\service.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
@@ -105,6 +121,13 @@ SOURCE=.\os\win32\apache.ico
 # Begin Source File
 
 SOURCE=.\os\win32\apache.rc
+
+!IF  "$(CFG)" == "Apache - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # End Target

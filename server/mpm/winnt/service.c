@@ -71,6 +71,9 @@
 #include "registry.h"
 #include "ap_mpm.h"
 
+typedef void (CALLBACK *ap_completion_t)();
+API_VAR_IMPORT ap_completion_t ap_mpm_init_complete;
+
 static struct
 {
     int (*main_fn)(int, char **);
@@ -89,6 +92,53 @@ static void WINAPI service_ctrl(DWORD ctrlCode);
 static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
 static int ap_start_service(SC_HANDLE);
 static int ap_stop_service(SC_HANDLE);
+
+static void CALLBACK report_service95_running()
+{
+    FreeConsole();
+
+    /* We do this only once, ever */
+    ap_mpm_init_complete = NULL;
+}
+
+int service95_main(int (*main_fn)(int, char **), int argc, char **argv )
+{
+    HINSTANCE hkernel;
+    DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
+    
+    /* Obtain a handle to the kernel library */
+    hkernel = LoadLibrary("KERNEL32.DLL");
+    if (!hkernel)
+        return -1;
+    
+    /* Find the RegisterServiceProcess function */
+    RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
+                             GetProcAddress(hkernel, "RegisterServiceProcess");
+    if (RegisterServiceProcess == NULL)
+        return -1;
+	
+    /* Register this process as a service */
+    if (!RegisterServiceProcess((DWORD)NULL, 1))
+        return -1;
+
+    /* Eliminate the console for the remainer of the service session */
+    ap_mpm_init_complete = report_service95_running;
+
+    /* Run the service */
+    globdat.exit_status = main_fn(argc, argv);
+
+    /* When the service quits, remove it from the 
+       system service table */
+    RegisterServiceProcess((DWORD)NULL, 0);
+
+    /* Free the kernel library */
+    // Worthless, methinks, since it won't be reclaimed
+    // FreeLibrary(hkernel);
+
+    /* We have to quit right here to avoid an invalid page fault */
+    // But, this is worth experimenting with!
+    return (globdat.exit_status);
+}
 
 int service_main(int (*main_fn)(int, char **), int argc, char **argv )
 {
@@ -125,6 +175,17 @@ void service_cd()
     chdir(buf);
 }
 
+static void CALLBACK report_service_started()
+{
+    ReportStatusToSCMgr(
+        SERVICE_RUNNING,    // service state
+        NO_ERROR,           // exit code
+        0);                 // wait hint
+    
+    /* This is only reported once, ever! */
+    ap_mpm_init_complete = NULL;
+}
+
 void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 {
     int i, new_argc;
@@ -156,6 +217,8 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
         SERVICE_START_PENDING, // service state
         NO_ERROR,              // exit code
         3000);                 // wait hint
+
+    ap_mpm_init_complete = report_service_started;
 
     service_cd();
 

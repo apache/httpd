@@ -369,18 +369,18 @@ EXPORTS
         regerror @364
         ap_send_error_response @365
 	ap_start_shutdown @366
-        send_signal_to_service  @367
+;       send_signal_to_service  @367
         ap_read_config   @368
 	ap_server_pre_read_config  @369
 	ap_server_post_read_config @370
 	ap_setup_prelinked_modules @371
-	RemoveService @372
-	InstallService @373
-	isValidService @374
-	service_main  @375
-	isProcessService @376
-	ap_registry_get_server_root @377
-	ap_registry_get_service_conf @378
+;	RemoveService @372
+;	InstallService @373
+;	isValidService @374
+;	service_main  @375
+;	isProcessService @376
+;	ap_registry_get_server_root @377
+;	ap_registry_get_service_conf @378
         ap_hook_pre_connection @379
         ap_hook_post_read_request @380
         ap_hook_log_transaction @381
@@ -399,3 +399,4 @@ EXPORTS
         ap_run_http_method @394
         ap_bread_core @395
         ap_bwrite_core @396
+	ap_mpm_init_complete @397
