@@ -43,8 +43,8 @@ process.<P>
 
 <LI><H2>But why does it happen?</H2>
 
-There are several reasons for it happening, and not all of them are
-fully understood by the Apache team yet.  What is known follows.<P>
+There are numerous reasons for it happening, some of them may not
+yet be fully clear.  What is known follows.<P>
 
 <H3>Buggy clients and persistent connections</H3>
 
@@ -111,15 +111,14 @@ As far as we know, the client-caused FIN_WAIT_2 problem is present for
 all servers that support persistent connections, including Apache 1.1.x
 and 1.2.<P>
 
-<H3>Something in Apache may be broken</H3>
+<H3>A necessary bit of code introduced in 1.2</H3>
 
 While the above bug is a problem, it is not the whole problem.
 Some users have observed no FIN_WAIT_2 problems with Apache 1.1.x,
 but with 1.2b enough connections build up in the FIN_WAIT_2 state to
-crash their server.  We have not yet identified why this would occur
-and welcome additional test input.<P>
+crash their server.  
 
-One possible (and most likely) source for additional FIN_WAIT_2 states
+The most likely source for additional FIN_WAIT_2 states
 is a function called <CODE>lingering_close()</CODE> which was added
 between 1.1 and 1.2.  This function is necessary for the proper
 handling of persistent connections and any request which includes
@@ -134,13 +133,13 @@ has a chance to read the server's response, and thus understand why
 the connection has closed.
 See the <A HREF="#appendix">appendix</A> for more details.<P>
 
-We have not yet tracked down the exact reason why
-<CODE>lingering_close()</CODE> causes problems.  Its code has been
-thoroughly reviewed and extensively updated in 1.2b6.  It is possible
-that there is some problem in the BSD TCP stack which is causing the
-observed problems.  It is also possible that we fixed it in 1.2b6.
-Unfortunately, we have not been able to replicate the problem on our
-test servers.<P>
+The code in <CODE>lingering_close()</CODE> appears to cause problems
+for a number of factors, including the change in traffic patterns
+that it causes.  The code has been thoroughly reviewed and we are
+not aware of any bugs in it.  It is possible that there is some
+problem in the BSD TCP stack, aside from the lack of a timeout
+for the FIN_WAIT_2 state, exposed by the <CODE>lingering_close</CODE>
+code that causes the observed problems.<P>
 
 <H2><LI>What can I do about it?</H2>
 
