@@ -1,34 +1,33 @@
-# Microsoft Developer Studio Project File - Name="ApacheCore" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 6.00
+# Microsoft Developer Studio Project File - Name="httpd" - Package Owner=<4>
+# Microsoft Developer Studio Generated Build File, Format Version 5.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=ApacheCore - Win32 Debug
+CFG=httpd - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "ApacheCore.mak".
+!MESSAGE NMAKE /f "httpd.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ApacheCore.mak" CFG="ApacheCore - Win32 Debug"
+!MESSAGE NMAKE /f "httpd.mak" CFG="httpd - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ApacheCore - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "ApacheCore - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "httpd - Win32 Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "httpd - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+!IF  "$(CFG)" == "httpd - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -40,8 +39,8 @@ RSC=rc.exe
 # PROP Output_Dir "LibR"
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"LibR\httpd" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -51,7 +50,7 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
 
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+!ELSEIF  "$(CFG)" == "httpd - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -64,8 +63,8 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "LibD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"LibD\httpd" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -79,8 +78,8 @@ LIB32=link.exe -lib
 
 # Begin Target
 
-# Name "ApacheCore - Win32 Release"
-# Name "ApacheCore - Win32 Debug"
+# Name "httpd - Win32 Release"
+# Name "httpd - Win32 Debug"
 # Begin Group "Configuration"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
@@ -94,7 +93,7 @@ SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ApacheCore.def
+SOURCE=.\httpd.def
 # PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
@@ -121,7 +120,7 @@ SOURCE=.\os\win32\os.h
 
 SOURCE=.\server\gen_test_char.exe
 
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+!IF  "$(CFG)" == "httpd - Win32 Release"
 
 # Begin Custom Build - Generating test_char.h
 InputPath=.\server\gen_test_char.exe
@@ -132,7 +131,7 @@ InputPath=.\server\gen_test_char.exe
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+!ELSEIF  "$(CFG)" == "httpd - Win32 Debug"
 
 # Begin Custom Build - Generating test_char.h
 InputPath=.\server\gen_test_char.exe
@@ -150,7 +149,7 @@ InputPath=.\server\gen_test_char.exe
 
 SOURCE=.\server\gen_uri_delims.exe
 
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+!IF  "$(CFG)" == "httpd - Win32 Release"
 
 # Begin Custom Build - Generating uri_delims.h
 InputPath=.\server\gen_uri_delims.exe
@@ -161,7 +160,7 @@ InputPath=.\server\gen_uri_delims.exe
 	
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+!ELSEIF  "$(CFG)" == "httpd - Win32 Debug"
 
 # Begin Custom Build - Generating uri_delims.h
 InputPath=.\server\gen_uri_delims.exe

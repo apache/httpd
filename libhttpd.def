@@ -1,7 +1,7 @@
-; apachecore.def : 
+; libhttpd.def : 
 
-LIBRARY ApacheCore
-DESCRIPTION ''
+LIBRARY libhttpd
+DESCRIPTION 'Apache httpd Server Dynamic Library'
 
 EXPORTS
 	; Add new API calls to the end of this list.

@@ -1,5 +1,13 @@
 Changes with Apache 2.0b1
 
+  *) The Apache/Win32 Apache.exe and dll's now live in bin.  The 
+     current directory logic now backs up over bin/ to determine the
+     server root from the Apache.exe path.
+
+  *) Apache/Win32 now follows the standard conventions of mod_foo.so
+     loadable modules, dynamic libs are all named libfoo.dll, and the
+     makefile.win populates the include, lib and libexec directories.
+
   *) Apache is now IPv6-capable.  On systems where APR supports IPv6,
      Apache gets IPv6 listening sockets by default.  Additionally, the
      Listen, NameVirtualHost, and <VirtualHost> directives support IPv6
