@@ -595,13 +595,13 @@ int main(int argc, const char * const argv[])
                 found++;
             }
         }
+        apr_file_close(fpw);
     }
     if (!found) {
         apr_file_printf(errfile, "Adding ");
         putline(ftemp, record);
     }
     apr_file_printf(errfile, "password for user %s\n", user);
-    apr_file_close(fpw);
 
     /* The temporary file has all the data, just copy it to the new location.
      */
