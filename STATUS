@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/22 00:59:23 $]
+Last modified at [$Date: 2002/03/22 02:51:27 $]
 
 Release:
 
@@ -69,15 +69,6 @@ FINAL RELEASE SHOWSTOPPERS:
         been done (a footprint left by dir/file_walk doesn't have to
         be in request_rec; a better place is core_request_config)
 
-    * We need to find out the right place to add the AddOutputFilterByType
-      directive.  mod_mime?  No.  core with fixups?  That's what it is now.
-      ap_pass_brigade() hook?  As a filter that runs at HTTP_HEADER stage?
-      This needs to be resolved before the next public release.
-        Message-ID: <018701c1b99c$f0f24310$0a01230a@KOJ>
-      - First cut of this code has been committed. Needs to be
-      reviewed and documented.  Any module that does not use the
-      accessor function will break the server.
-        
     * API changes planned for 2.0 that should happen before the
       GA release:
           * Free lists for bucket allocation
