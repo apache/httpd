@@ -260,6 +260,11 @@ Win32 specific issues:
  Help:
 
     * process/thread model
+	- need dynamic thread creation/destruction, similar to 
+	  Unix process model
+	- can't use WaitForMultipleObjects in the same way we
+	  do now, since that has a limit of 64(!) objects.  Grr.
+	  PR#1665
 
     * some errors printed by CGIs to stderr don't end up making it
       to the server log unless an extra debugging message is added
