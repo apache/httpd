@@ -121,24 +121,27 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
      * exchange close notify messages, but allow the user
      * to force the type of handshake via SetEnvIf directive
      */
-    if (apr_table_get(conn->notes, "ssl::flag::unclean-shutdown") == PTRUE) {
-        /* perform no close notify handshake at all
-           (violates the SSL/TLS standard!) */
-        SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
-        cpType = "unclean";
-    }
-    else if (apr_table_get(conn->notes, "ssl::flag::accurate-shutdown") == PTRUE) {
-        /* send close notify and wait for clients close notify
-           (standard compliant, but usually causes connection hangs) */
-        SSL_set_shutdown(ssl, 0);
-        cpType = "accurate";
-    }
-    else {
+    switch (sslconn->shutdown_type) {
+      case SSL_SHUTDOWN_TYPE_STANDARD:
         /* send close notify, but don't wait for clients close notify
            (standard compliant and safe, so it's the DEFAULT!) */
         SSL_set_shutdown(ssl, SSL_RECEIVED_SHUTDOWN);
         cpType = "standard";
+        break;
+      case SSL_SHUTDOWN_TYPE_UNCLEAN:
+        /* perform no close notify handshake at all
+           (violates the SSL/TLS standard!) */
+        SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
+        cpType = "unclean";
+        break;
+      case SSL_SHUTDOWN_TYPE_ACCURATE:
+        /* send close notify and wait for clients close notify
+           (standard compliant, but usually causes connection hangs) */
+        SSL_set_shutdown(ssl, 0);
+        cpType = "accurate";
+        break;
     }
+
     SSL_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
@@ -218,14 +221,11 @@ int ssl_hook_Translate(request_rec *r)
      * to allow the close connection handler to use them.
      */
     if (apr_table_get(r->subprocess_env, "ssl-unclean-shutdown") != NULL)
-        apr_table_setn(r->connection->notes, "ssl::flag::unclean-shutdown", PTRUE);
+        sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_UNCLEAN;
+    else if (apr_table_get(r->subprocess_env, "ssl-accurate-shutdown") != NULL)
+        sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_ACCURATE;
     else
-        apr_table_setn(r->connection->notes, "ssl::flag::unclean-shutdown", PFALSE);
-    if (apr_table_get(r->subprocess_env, "ssl-accurate-shutdown") != NULL)
-        apr_table_setn(r->connection->notes, "ssl::flag::accurate-shutdown", PTRUE);
-    else
-        apr_table_setn(r->connection->notes, "ssl::flag::accurate-shutdown", PFALSE);
-
+        sslconn->shutdown_type = SSL_SHUTDOWN_TYPE_STANDARD;
     return DECLINED;
 }
 
