@@ -2301,16 +2301,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         const char *title = status_lines[idx];
         const char *h1;
 
-        /* XXX This is a major hack that should be fixed cleanly.  The
-         * problem is that we have the information we need in a previous
-         * request, but the text of the page must be sent down the last
-         * request_rec's filter stack.  rbb
-         */
-        request_rec *rlast = r;
-        while (rlast->next) {
-            rlast = rlast->next;
-        }
-
         /* Accept a status_line set by a module, but only if it begins
          * with the 3 digit status code
          */
@@ -2331,24 +2321,24 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
          * so do ebcdic->ascii translation explicitly (if needed)
          */
 
-        ap_rvputs_proto_in_ascii(rlast,
+        ap_rvputs_proto_in_ascii(r,
                   DOCTYPE_HTML_2_0
                   "<html><head>\n<title>", title,
                   "</title>\n</head><body>\n<h1>", h1, "</h1>\n",
                   NULL);
 
-        ap_rvputs_proto_in_ascii(rlast,
+        ap_rvputs_proto_in_ascii(r,
                                  get_canned_error_string(status, r, location),
                                  NULL);
 
         if (recursive_error) {
-            ap_rvputs_proto_in_ascii(rlast, "<p>Additionally, a ",
+            ap_rvputs_proto_in_ascii(r, "<p>Additionally, a ",
                       status_lines[ap_index_of_response(recursive_error)],
                       "\nerror was encountered while trying to use an "
                       "ErrorDocument to handle the request.</p>\n", NULL);
         }
-        ap_rvputs_proto_in_ascii(rlast, ap_psignature("<hr />\n", r), NULL);
-        ap_rvputs_proto_in_ascii(rlast, "</body></html>\n", NULL);
+        ap_rvputs_proto_in_ascii(r, ap_psignature("<hr />\n", r), NULL);
+        ap_rvputs_proto_in_ascii(r, "</body></html>\n", NULL);
     }
     ap_finalize_request_protocol(r);
 }

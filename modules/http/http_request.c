@@ -96,6 +96,23 @@
  * Mainline request processing...
  */
 
+/* XXX A cleaner and faster way to do this might be to pass the request_rec 
+ * down the filter chain as a parameter.  It would need to change for 
+ * subrequest vs. main request filters; perhaps the subrequest filter could 
+ * make the switch.
+ */
+static void update_r_in_filters(ap_filter_t *f, 
+                                request_rec *from,
+                                request_rec *to)
+{
+    while (f) {
+        if (f->r == from) {
+            f->r = to;
+        }
+        f = f->next;
+    }
+}
+
 AP_DECLARE(void) ap_die(int type, request_rec *r)
 {
     int error_index = ap_index_of_response(type);
@@ -123,6 +140,20 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
 
         while (r_1st_err->prev && (r_1st_err->prev->status != HTTP_OK))
             r_1st_err = r_1st_err->prev;  /* Get back to original error */
+
+        if (r_1st_err != r) {
+            /* The recursive error was caused by an ErrorDocument specifying
+             * an internal redirect to a bad URI.  ap_internal_redirect has
+             * changed the filter chains to point to the ErrorDocument's 
+             * request_rec.  Back out those changes so we can safely use the 
+             * original failing request_rec to send the canned error message.
+             *
+             * ap_send_error_response gets rid of existing resource filters
+             * on the output side, so we can skip those.
+             */
+            update_r_in_filters(r_1st_err->proto_output_filters, r, r_1st_err);
+            update_r_in_filters(r_1st_err->input_filters, r, r_1st_err);
+        }
 
         custom_response = NULL; /* Do NOT retry the custom thing! */
     }
@@ -301,7 +332,6 @@ static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
 static request_rec *internal_internal_redirect(const char *new_uri,
                                                request_rec *r) {
     int access_status;
-    ap_filter_t *f;
     request_rec *new = (request_rec *) apr_pcalloc(r->pool,
                                                    sizeof(request_rec));
 
@@ -367,21 +397,8 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->output_filters  = new->proto_output_filters;
     new->input_filters   = new->proto_input_filters;
 
-    f = new->input_filters;
-    while (f) {
-        if (f->r == r) {
-            f->r = new;
-        }
-        f = f->next;
-    }
-
-    f = new->output_filters;
-    while (f) {
-        if (f->r == r) {
-            f->r = new;
-        }
-        f = f->next;
-    }
+    update_r_in_filters(new->input_filters, r, new);
+    update_r_in_filters(new->output_filters, r, new);
 
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
                    apr_itoa(r->pool, r->status));
@@ -402,8 +419,6 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 /* XXX: Is this function is so bogus and fragile that we deep-6 it? */
 AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
 {
-    ap_filter_t *filters;
-
     /* We need to tell POOL_DEBUG that we're guaranteeing that rr->pool
      * will exist as long as r->pool.  Otherwise we run into troubles because
      * some values in this request will be allocated in r->pool, and others in
@@ -449,20 +464,8 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
      * their f->r structure when it is pointing to rr, the real request_rec
      * will not get updated.  Fix that here.
      */
-    filters = r->input_filters;
-    while (filters) {
-        if (filters->r == rr) {
-            filters->r = r;
-        } 
-        filters = filters->next;
-    }
-    filters = r->output_filters;
-    while (filters) {
-        if (filters->r == rr) {
-            filters->r = r;
-        } 
-        filters = filters->next;
-    }
+    update_r_in_filters(r->input_filters, rr, r);
+    update_r_in_filters(r->output_filters, rr, r);
 }
 
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
