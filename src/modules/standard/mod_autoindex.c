@@ -136,6 +136,7 @@ typedef struct ai_desc_t {
     char *pattern;
     char *description;
     int full_path;
+    int wildcards;
 } ai_desc_t;
 
 typedef struct autoindex_config_struct {
@@ -269,16 +270,27 @@ static const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
 }
 
 /*
- * Add description text for a filename pattern.  Prefix the pattern
- * with a wildcard unless it begins with '/' signifying an absolute
- * path.  If the pattern contains a '/' anywhere, add a slash to the
- * prefix so that "bar/bletch" won't be matched by "foobar/bletch",
- * and make a note that there's a delimiter; the matching routine
- * simplifies to just the actual filename whenever it can.  This allows
- * definitions in parent directories to be made for files in subordinate
- * ones using relative paths.  Always postfix with a wildard so that
- * partial or leading names will match.
+ * Add description text for a filename pattern.  If the pattern has
+ * wildcards already (or we need to add them), add leading and
+ * trailing wildcards to it to ensure substring processing.  If the
+ * pattern contains a '/' anywhere, force wildcard matching mode,
+ * add a slash to the prefix so that "bar/bletch" won't be matched
+ * by "foobar/bletch", and make a note that there's a delimiter;
+ * the matching routine simplifies to just the actual filename
+ * whenever it can.  This allows definitions in parent directories
+ * to be made for files in subordinate ones using relative paths.
  */
+
+/*
+ * Absent a strcasestr() function, we have to force wildcards on
+ * systems for which "AAA" and "aaa" mean the same file.
+ */
+#ifdef CASE_BLIND_FILESYSTEM
+#define WILDCARDS_REQUIRED 1
+#else
+#define WILDCARDS_REQUIRED 0
+#endif
+
 static const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
 {
     autoindex_config_rec *dcfg = (autoindex_config_rec *) d;
@@ -287,11 +299,17 @@ static const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
 
     desc_entry = (ai_desc_t *) ap_push_array(dcfg->desc_list);
     desc_entry->full_path = (strchr(to, '/') == NULL) ? 0 : 1;
-    if (*to != '/') {
+    desc_entry->wildcards = (WILDCARDS_REQUIRED
+			     || desc_entry->full_path
+			     || ap_is_fnmatch(to));
+    if (desc_entry->wildcards) {
 	prefix = desc_entry->full_path ? "*/" : "*";
+	desc_entry->pattern = ap_pstrcat(dcfg->desc_list->pool,
+					 prefix, to, "*", NULL);
     }
-    desc_entry->pattern = ap_pstrcat(dcfg->desc_list->pool,
-				     prefix, to, "*", NULL);
+    else {
+	desc_entry->pattern = ap_pstrdup(dcfg->desc_list->pool, to);
+    }
     desc_entry->description = ap_pstrdup(dcfg->desc_list->pool, desc);
     return NULL;
 }
@@ -745,6 +763,13 @@ static char *find_default_icon(autoindex_config_rec *d, char *bogus_name)
  * same as the order in which directives were processed, earlier matching
  * directives will dominate.
  */
+
+#ifdef CASE_BLIND_FILESYSTEM
+#define MATCH_FLAGS FNM_CASE_BLIND
+#else
+#define MATCH_FLAGS 0
+#endif
+
 static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
 {
     int i;
@@ -765,12 +790,23 @@ static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
     }
     for (i = 0; i < dcfg->desc_list->nelts; ++i) {
 	ai_desc_t *tuple = &list[i];
+	int found;
 
 	/*
 	 * Only use the full-path filename if the pattern contains '/'s.
 	 */
 	filename = (tuple->full_path) ? filename_full : filename_only;
-	if (ap_fnmatch(tuple->pattern, filename, 0) == 0) {
+	/*
+	 * Make the comparison using the cheapest method; only do
+	 * wildcard checking if we must.
+	 */
+	if (tuple->wildcards) {
+	    found = (ap_fnmatch(tuple->pattern, filename, MATCH_FLAGS) == 0);
+	}
+	else {
+	    found = (strstr(filename, tuple->pattern) != NULL);
+	}
+	if (found) {
 	    return tuple->description;
 	}
     }
