@@ -505,7 +505,6 @@ static int cgid_server(void *data)
         apr_proc_t *procnew = NULL;
         apr_file_t *inout;
 
-
         len = sizeof(unix_addr);
         sd2 = accept(sd, (struct sockaddr *)&unix_addr, &len);
         if (sd2 < 0) {
@@ -539,6 +538,10 @@ static int cgid_server(void *data)
                                         in_pipe,
                                         out_pipe,
                                         err_pipe)) != APR_SUCCESS) ||
+              /* XXX apr_procattr_child_*_set() is creating an unnecessary 
+               * pipe between this process and the child being created...
+               * It is cleaned up with the temporary pool for this request.
+               */
               ((rc = apr_procattr_child_err_set(procattr, r->server->error_log, NULL)) != APR_SUCCESS) ||
               ((rc = apr_procattr_child_in_set(procattr, inout, NULL)) != APR_SUCCESS))) ||
             ((rc = apr_procattr_child_out_set(procattr, inout, NULL)) != APR_SUCCESS) ||
@@ -571,6 +574,7 @@ static int cgid_server(void *data)
                         "couldn't create child process: %d: %s", rc, r->filename);
             }
         }
+        apr_pool_clear(p);
     } 
     return -1; 
 } 
