@@ -100,7 +100,6 @@
 #include <poll.h>
 #include <grp.h>
 #include <pwd.h>
-#include <pthread.h>
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <setjmp.h>
@@ -166,7 +165,7 @@ module AP_MODULE_DECLARE_DATA mpm_perchild_module;
 
 static apr_file_t *pipe_of_death_in = NULL;
 static apr_file_t *pipe_of_death_out = NULL;
-static pthread_mutex_t pipe_of_death_mutex;
+static apr_lock_t *pipe_of_death_mutex;
 
 /* *Non*-shared http_main globals... */
 
@@ -192,20 +191,20 @@ int raise_sigstop_flags;
 static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 static apr_pool_t *thread_pool_parent; /* Parent of per-thread pools */
-static pthread_mutex_t thread_pool_parent_mutex;
+static apr_lock_t *thread_pool_parent_mutex;
 
 static int child_num;
 static unsigned int my_pid; /* Linux getpid() doesn't work except in 
                       main thread. Use this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
-static pthread_mutex_t worker_thread_count_mutex;
+static apr_lock_t *worker_thread_count_mutex;
 static int worker_thread_free_ids[HARD_THREAD_LIMIT];
-static pthread_attr_t worker_thread_attr;
+static apr_threadattr_t *worker_thread_attr;
 
 /* Keep track of the number of idle worker threads */
 static int idle_thread_count;
-static pthread_mutex_t idle_thread_count_mutex;
+static apr_lock_t *idle_thread_count_mutex;
 
 /* Locks for accept serialization */
 #ifdef NO_SERIALIZED_ACCEPT
@@ -215,7 +214,7 @@ static pthread_mutex_t idle_thread_count_mutex;
 static apr_lock_t *process_accept_mutex;
 #endif /* NO_SERIALIZED_ACCEPT */
 static const char *lock_fname;
-static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
+static apr_lock_t *thread_accept_mutex;
 
 AP_DECLARE(int) ap_get_max_daemons(void)
 {
@@ -477,24 +476,21 @@ static void *worker_thread(void *);
 /* Starts a thread as long as we're below max_threads */
 static int start_thread(void)
 {
-    pthread_t thread;
+    apr_thread_t *thread;
     int rc;
 
-    pthread_mutex_lock(&worker_thread_count_mutex);
-    if (worker_thread_count < max_threads) {
-        if ((rc = pthread_create(&thread, &worker_thread_attr, worker_thread,
-	  &worker_thread_free_ids[worker_thread_count]))) {
-#ifdef PTHREAD_SETS_ERRNO
-            rc = errno;
-#endif
+    apr_lock_acquire(worker_thread_count_mutex);
+    if (worker_thread_count < max_threads - 1) {
+        if ((rc = apr_thread_create(&thread, worker_thread_attr, worker_thread,
+	               &worker_thread_free_ids[worker_thread_count], pchild))) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, rc, ap_server_conf,
-                         "pthread_create: unable to create worker thread");
+                         "apr_thread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
                Apache running away with the CPU trying to fork over and
                over and over again if we exit. */
             sleep(10);
             workers_may_exit = 1;
-            pthread_mutex_unlock(&worker_thread_count_mutex);
+            apr_lock_release(worker_thread_count_mutex);
             return 0;
         }
 	else {
@@ -510,17 +506,17 @@ static int start_thread(void)
                          " MaxThreadsPerChild or NumServers settings");
             reported = 1;
         }
-        pthread_mutex_unlock(&worker_thread_count_mutex);
+        apr_lock_release(worker_thread_count_mutex);
         return 0;
     }
-    pthread_mutex_unlock(&worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
     return 1;
 
 }
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static void check_pipe_of_death(void)
 {
-    pthread_mutex_lock(&pipe_of_death_mutex);
+    apr_lock_acquire(pipe_of_death_mutex);
     if (!workers_may_exit) {
         int ret;
         char pipe_read_char;
@@ -537,7 +533,7 @@ static void check_pipe_of_death(void)
             workers_may_exit = 1;
         }
     }
-    pthread_mutex_unlock(&pipe_of_death_mutex);
+    apr_lock_release(pipe_of_death_mutex);
 }
 
 /* idle_thread_count should be incremented before starting a worker_thread */
@@ -557,9 +553,9 @@ static void *worker_thread(void *arg)
     int n;
     apr_status_t rv;
 
-    pthread_mutex_lock(&thread_pool_parent_mutex);
+    apr_lock_acquire(thread_pool_parent_mutex);
     apr_pool_create(&tpool, thread_pool_parent);
-    pthread_mutex_unlock(&thread_pool_parent_mutex);
+    apr_lock_release(thread_pool_parent_mutex);
     apr_pool_create(&ptrans, tpool);
 
     (void) ap_update_child_status(child_num, thread_num, SERVER_STARTING,
@@ -574,13 +570,13 @@ static void *worker_thread(void *arg)
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
         if (!thread_just_started) {
-            pthread_mutex_lock(&idle_thread_count_mutex);
+            apr_lock_acquire(idle_thread_count_mutex);
             if (idle_thread_count < max_spare_threads) {
                 idle_thread_count++;
-                pthread_mutex_unlock(&idle_thread_count_mutex);
+                apr_lock_release(idle_thread_count_mutex);
             }
             else {
-                pthread_mutex_unlock(&idle_thread_count_mutex);
+                apr_lock_release(idle_thread_count_mutex);
                 break;
             }
         }
@@ -591,9 +587,9 @@ static void *worker_thread(void *arg)
         (void) ap_update_child_status(child_num, thread_num, SERVER_READY,
                                       (request_rec *) NULL);
 
-        pthread_mutex_lock(&thread_accept_mutex);
+        apr_lock_acquire(thread_accept_mutex);
         if (workers_may_exit) {
-            pthread_mutex_unlock(&thread_accept_mutex);
+            apr_lock_release(thread_accept_mutex);
             break;
         }
         if ((rv = SAFE_ACCEPT(apr_lock_acquire(process_accept_mutex)))
@@ -673,8 +669,8 @@ static void *worker_thread(void *arg)
                              "process gracefully.");
                 workers_may_exit = 1;
             }
-            pthread_mutex_unlock(&thread_accept_mutex);
-	    pthread_mutex_lock(&idle_thread_count_mutex);
+            apr_lock_release(thread_accept_mutex);
+	    apr_lock_acquire(idle_thread_count_mutex);
             if (idle_thread_count > min_spare_threads) {
                 idle_thread_count--;
             }
@@ -683,7 +679,7 @@ static void *worker_thread(void *arg)
                     idle_thread_count--;
                 }
             }
-            pthread_mutex_unlock(&idle_thread_count_mutex);
+            apr_lock_release(idle_thread_count_mutex);
         got_from_other_child:
             if (thread_socket_table[thread_num] == -2) {
                 struct msghdr msg;
@@ -728,21 +724,21 @@ static void *worker_thread(void *arg)
                              "process gracefully.");
                 workers_may_exit = 1;
             }
-            pthread_mutex_unlock(&thread_accept_mutex);
-	    pthread_mutex_lock(&idle_thread_count_mutex);
+            apr_lock_release(thread_accept_mutex);
+	    apr_lock_acquire(idle_thread_count_mutex);
             idle_thread_count--;
-            pthread_mutex_unlock(&idle_thread_count_mutex);
+            apr_lock_release(idle_thread_count_mutex);
 	    break;
 	}
         apr_pool_clear(ptrans);
     }
 
-    pthread_mutex_lock(&thread_pool_parent_mutex);
+    apr_lock_acquire(thread_pool_parent_mutex);
     ap_update_child_status(child_num, thread_num, SERVER_DEAD,
                            (request_rec *) NULL);
     apr_pool_destroy(tpool);
-    pthread_mutex_unlock(&thread_pool_parent_mutex);
-    pthread_mutex_lock(&worker_thread_count_mutex);
+    apr_lock_release(thread_pool_parent_mutex);
+    apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count--;
     worker_thread_free_ids[worker_thread_count] = thread_num;
     if (worker_thread_count == 0) {
@@ -750,7 +746,7 @@ static void *worker_thread(void *arg)
          * by signalling the sigwait thread */
         kill(my_pid, SIGTERM);
     }
-    pthread_mutex_unlock(&worker_thread_count_mutex);
+    apr_lock_release(worker_thread_count_mutex);
 
     return NULL;
 }
@@ -829,13 +825,24 @@ static int perchild_setup_child(int childnum)
     return 0;
 }
 
+static int check_signal(int signum)
+{
+    switch (signum) {
+        case SIGTERM:
+        case SIGINT:
+            just_die(signum);
+            return 1;
+    }
+    return 0;
+}                                                                               
+
 static void child_main(int child_num_arg)
 {
-    sigset_t sig_mask;
-    int signal_received;
     int i;
     ap_listen_rec *lr;
     apr_status_t rv;
+    apr_thread_t *thread;
+    apr_threadattr_t *thread_attr;
 
     my_pid = getpid();
     child_num = child_num_arg;
@@ -859,22 +866,7 @@ static void child_main(int child_num_arg)
 
     /*done with init critical section */
 
-    /* All threads should mask signals out, accoring to sigwait(2) man page */
-    sigfillset(&sig_mask);
-
-#ifdef SIGPROCMASK_SETS_THREAD_MASK
-    if (sigprocmask(SIG_SETMASK, &sig_mask, NULL) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf, "sigprocmask");
-    }
-#else
-    if ((rv = pthread_sigmask(SIG_SETMASK, &sig_mask, NULL)) != 0) {
-#ifdef PTHREAD_SETS_ERRNO
-        rv = errno;
-#endif
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
-                     "pthread_sigmask");
-    }
-#endif
+    apr_setup_signal_thread();
 
     requests_this_child = max_requests_per_child;
     
@@ -904,20 +896,21 @@ static void child_main(int child_num_arg)
         worker_thread_free_ids[i] = i;
     }
     apr_pool_create(&thread_pool_parent, pchild);
-    pthread_mutex_init(&thread_pool_parent_mutex, NULL);
-    pthread_mutex_init(&idle_thread_count_mutex, NULL);
-    pthread_mutex_init(&worker_thread_count_mutex, NULL);
-    pthread_mutex_init(&pipe_of_death_mutex, NULL);
-    pthread_attr_init(&worker_thread_attr);
-#ifdef PTHREAD_ATTR_SETDETACHSTATE_ARG2_ADDR
-    {
-        int on = 1;
+    apr_lock_create(&thread_pool_parent_mutex, APR_MUTEX, APR_INTRAPROCESS, 
+                    NULL, pchild);
+    apr_lock_create(&idle_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS, 
+                    NULL, pchild);
+    apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS,
+                    NULL, pchild);
+    apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS,
+                    NULL, pchild);
+    apr_lock_create(&thread_accept_mutex, APR_MUTEX, APR_INTRAPROCESS,
+                    NULL, pchild);
 
-        pthread_attr_setdetachstate(&worker_thread_attr, &on);
-    }
-#else
-    pthread_attr_setdetachstate(&worker_thread_attr, PTHREAD_CREATE_DETACHED);
-#endif
+    apr_threadattr_create(&worker_thread_attr, pchild);
+    apr_threadattr_detach_set(worker_thread_attr);                                     
+
+    apr_create_signal_thread(&thread, thread_attr, check_signal, pchild);
 
     /* We are creating worker threads right now */
     for (i=0; i < threads_to_start; i++) {
@@ -928,20 +921,8 @@ static void child_main(int child_num_arg)
     }
 
     /* This thread will be the one responsible for handling signals */
-    sigemptyset(&sig_mask);
-    sigaddset(&sig_mask, SIGTERM);
-    sigaddset(&sig_mask, SIGINT);
-    ap_sigwait(&sig_mask, &signal_received);
-    switch (signal_received) {
-        case SIGTERM:
-        case SIGINT:
-            just_die(signal_received);
-            break;
-        default:
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-            "received impossible signal: %d", signal_received);
-            just_die(SIGTERM);
-    }
+    worker_thread(&worker_thread_free_ids[max_threads]);
+
 }
 
 static int make_child(server_rec *s, int slot)
