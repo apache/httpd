@@ -1,5 +1,9 @@
 Changes with Apache 2.0.32-dev
 
+  *) Create the scoreboard (in the parent) in a global pool context,
+     so it survives graceful restarts. This fixes a SEGV during
+     graceful restarts.  [Aaron Bannert]
+
   *) The Location: response header field, used for external
      redirect, *must* be an absoluteURI.  The Redirect directive
      tested for that, but RedirectMatch didn't -- it would allow
