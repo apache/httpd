@@ -163,10 +163,10 @@ typedef struct {
  * the strmatch_patterns are really a const just to have a
  * case-independent strstr.
  */
-    apr_array_header_t* cookie_paths ;
-    apr_array_header_t* cookie_domains ;
-    const apr_strmatch_pattern* cookie_path_str ;
-    const apr_strmatch_pattern* cookie_domain_str ;
+    apr_array_header_t* cookie_paths;
+    apr_array_header_t* cookie_domains;
+    const apr_strmatch_pattern* cookie_path_str;
+    const apr_strmatch_pattern* cookie_domain_str;
 
 } proxy_server_conf;
 
