@@ -38,6 +38,13 @@ Documentation that needs writing:
 	virtualhosting.  (If it exists already I can't find it easily.)
 
 Available Patches:
+   
+    * Ralf's "[PATCH] Fix module init"
+      This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
+      SHOWSTOPPERS" by doing a more correct init of the modules after loading
+      through two new core API functions.
+      <19980611171746.A23845@engelschall.com>
+      Status: Ralf +1
 
     * Wilfredo Sanchez's port to Rhapsody 5.1 for 1.2.6 - forward port to
       1.3?
