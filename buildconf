@@ -162,6 +162,14 @@ cp $apr_src_dir/build/config.guess $apr_src_dir/build/config.sub \
    $apr_src_dir/build/PrintPath $apr_src_dir/build/apr_common.m4 \
    $apr_src_dir/build/find_apr.m4 $apu_src_dir/build/find_apu.m4 build
 
+# Optionally copy libtool-1.3.x files
+if [ -f $apr_src_dir/build/ltconfig ]; then
+    cp $apr_src_dir/build/ltconfig build
+fi
+if [ -f $apr_src_dir/build/ltmain.sh ]; then
+    cp $apr_src_dir/build/ltmain.sh build
+fi
+
 echo rebuilding $pcre_configure
 (cd srclib/pcre && ${AUTOCONF:-autoconf})
 

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/22 22:21:24 $]
+Last modified at [$Date: 2003/03/25 11:51:27 $]
 
 Release:
 
@@ -179,10 +179,6 @@ PATCHES TO PORT FROM 2.1
          qvalues be returned as 1.0 or 0.0 (as atof() did)?
          1.0: nd
          0.0: 
-
-    * get out-of-tree APR builds to work for libtool 1.3.x users
-      buildconf: r1.32
-      +1: trawick
 
     * Fix chinese default page. PR 18025. (2.0 + 1.3)
       docs/conf/httpd-std.conf.in: r1.35
