@@ -118,9 +118,9 @@ APR_HOOK_STRUCT(
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,
                           (request_rec *r),(r),OK,DECLINED)
-AP_IMPLEMENT_HOOK_VOID(pre_config,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_config,
 		       (apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp),
-                       (pconf,plog,ptemp))
+                       (pconf,plog,ptemp),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,post_config,
 		       (apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp,
                         server_rec *s),(pconf,plog,ptemp,s),OK,DECLINED)

@@ -1933,7 +1933,7 @@ void winnt_rewrite_args(process_rec *process)
 }
 
 
-static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp) 
+static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp) 
 {
     /* Handle the following SCM aspects in this phase:
      *
@@ -1955,6 +1955,7 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
         ap_log_error(APLOG_MARK,APLOG_CRIT, service_to_start_success, NULL, 
                      "%s: Unable to start the service manager.",
                      service_name);
+        /* XXX: return HTTP_INTERNAL_SERVER_ERROR? */
         exit(1);
     }
 
@@ -1974,6 +1975,8 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+
+    return OK;
 }
 
 static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* server)

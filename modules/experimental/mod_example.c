@@ -847,13 +847,15 @@ static void *x_merge_server_config(apr_pool_t *p, void *server1_conf,
  * This routine is called before the server processes the configuration
  * files.  There is no return value.
  */
-static void x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
-                         apr_pool_t *ptemp)
+static int x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                        apr_pool_t *ptemp)
 {
     /*
      * Log the call and exit.
      */
     trace_add(NULL, NULL, NULL, "x_pre_config()");
+
+    return OK;
 }
 
 /*

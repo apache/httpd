@@ -1194,7 +1194,7 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
     apr_hash_set(log_hash, tag, 1, (const void *)log_struct);
 }
 
-static void log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
 
@@ -1229,6 +1229,8 @@ static void log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "U", log_request_uri, 1);
         log_pfn_register(p, "s", log_status, 1);
     }
+
+    return OK;
 }
 
 static void register_hooks(apr_pool_t *p)

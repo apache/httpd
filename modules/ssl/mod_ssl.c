@@ -204,7 +204,7 @@ static const command_rec ssl_config_cmds[] = {
  *  the various processing hooks
  */
 
-static void ssl_hook_pre_config(
+static int ssl_hook_pre_config(
     apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     /* Register us to handle mod_log_config %c/%x variables */
@@ -215,6 +215,8 @@ static void ssl_hook_pre_config(
     /* XXX: Register us to handle mod_status extensions that don't exist yet */
     ssl_scache_status_register(pconf);
 #endif /* -0- */
+
+    return OK;
 }
 
 static int ssl_hook_pre_connection(conn_rec *c)

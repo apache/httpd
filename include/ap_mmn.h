@@ -94,6 +94,7 @@
  *                       a GET request
  * 20020118 (2.0.31-dev) Input filtering split of blocking and mode
  * 20020127 (2.0.31-dev) bump for pre_mpm hook change
+ * 20020128 (2.0.31-dev) bump for pre_config hook change
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
