@@ -1,4 +1,9 @@
 Changes with Apache 2.0.15-dev
+
+  *) Enhance rotatelogs so that a UTC offset can be specified, and
+     the logfile name can be formatted using strftime(3).  (Brought
+     forward from 1.3.)  [Ken Coar]
+
   *) Reimplement the Windows MPM (mpm_winnt.c) to eliminate calling 
      DuplicateHandle on an IOCompletionPort (a practice which
      MS "discourages"). The new model does not rely on associating
