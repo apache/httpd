@@ -117,7 +117,7 @@
 #define SIZEFMT_BYTES 0
 #define SIZEFMT_KMG 1
 #ifdef CHARSET_EBCDIC
-#define RAW_ASCII_CHAR(ch)  ap_xlate_conv_byte(ap_hdrs_from_ascii, (unsigned char)ch)
+#define RAW_ASCII_CHAR(ch)  apr_xlate_conv_byte(ap_hdrs_from_ascii, (unsigned char)ch)
 #else /*CHARSET_EBCDIC*/
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*CHARSET_EBCDIC*/

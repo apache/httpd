@@ -1480,7 +1480,7 @@ static char x2c(const char *what)
     xstr[2]=what[0];
     xstr[3]=what[1];
     xstr[4]='\0';
-    digit = ap_xlate_conv_byte(ap_hdrs_from_ascii, 0xFF & strtol(xstr, NULL, 16));
+    digit = apr_xlate_conv_byte(ap_hdrs_from_ascii, 0xFF & strtol(xstr, NULL, 16));
 #endif /*CHARSET_EBCDIC*/
     return (digit);
 }
@@ -1558,7 +1558,7 @@ static const char c2x_table[] = "0123456789abcdef";
 static apr_inline unsigned char *c2x(unsigned what, unsigned char *where)
 {
 #ifdef CHARSET_EBCDIC
-    what = ap_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
+    what = apr_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
 #endif /*CHARSET_EBCDIC*/
     *where++ = '%';
     *where++ = c2x_table[what >> 4];
