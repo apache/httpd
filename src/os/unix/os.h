@@ -41,9 +41,9 @@ extern int os_is_path_absolute(const char *f);
 #ifdef HAS_DLFCN
 # include <dlfcn.h>
 #else
-void * dlopen (__const char * __filename, int __flag);
-__const char * dlerror (void);
-void * dlsym (void *, __const char *);
+void * dlopen (const char * __filename, int __flag);
+const char * dlerror (void);
+void * dlsym (void *, const char *);
 int dlclose (void *);
 #endif
 
