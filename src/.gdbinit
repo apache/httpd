@@ -13,3 +13,16 @@ end
 document dump_table
     Print the key/value pairs in a table.
 end
+
+define dump_string_array
+    set $a = (char **)((array_header *)$arg0)->elts
+    set $n = (int)((array_header *)$arg0)->nelts
+    set $i = 0
+    while $i < $n
+	printf "[%u] '%s'\n", $i, $a[$i]
+	set $i = $i + 1
+    end
+end
+document dump_string_array
+    Print all of the elements in an array of strings.
+end

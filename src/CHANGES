@@ -1,13 +1,14 @@
 Changes with Apache 1.3.7
 
-  *) Portability changes for BeOS. [David Reid abb37@dial.pipex.com]
+  *) The "Vary" response header field is now sanitised right before
+     the header is sent back to the client.  Multiple "Vary" fields
+     are combined, and duplicate tokens (e.g., "Vary: host, host" or
+     "Vary: host, negotiate, host, accept-language") are reduced to
+     single instances.  This is a better solution than the force-no-vary
+     one (which is still valid for clients that can't cope with Vary
+     at all).  PR#3118 [Dean Gaudet, Roy Fielding, Ken Coar]
 
-  *) Sanitise "Vary" values by not adding duplicate keywords.  A
-     separate routine needs to be used to do this, so any module
-     that frobs "Vary" needs to be changed.  The standard modules
-     have all been modified.  This solution is somewhat inelegant,
-     but it does the job for now.  PR#4118 (better fix than before)
-     [Ken Coar, Roy Fielding]
+  *) Portability changes for BeOS. [David Reid abb37@dial.pipex.com]
 
   *) Link DSO's with "gcc -shared" instead of "ld -Bshareable" at 
      least on Linux and FreeBSD for now.  

@@ -1446,6 +1446,113 @@ static int use_range_x(request_rec *r)
              && strstr(ua, "MSIE 3")));
 }
 
+/*
+ * qsort comparison routine for fixup_vary().
+ */
+static int compare_vary(const void *va, const void *vb)
+{
+    return strcasecmp(*(const char **)va, *(const char **)vb);
+}
+
+/*
+ * ap_table_get() only picks up the first occurrence of a key,
+ * which means that if there's a Vary in r->headers_out and another
+ * in r->err_headers_out, one might get ignored.  This routine
+ * is called by ap_table_do and merges all instances of Vary into
+ * a temporary list in r->notes.
+ */
+static int merge_vary_fields(void *d, const char *key, const char *val)
+{
+    request_rec *r;
+
+    r = (request_rec *)d;
+    ap_table_merge(r->notes, "Vary-list", val);
+    return 1;
+}
+
+/*
+ * Since some clients choke violently on multiple Vary fields, or
+ * Vary fields with duplicate tokens, combine any multiples and remove
+ * any duplicates.
+ */
+static void fixup_vary(request_rec *r)
+{
+    const char *vary;
+    array_header *arr;
+    char *start;
+    char *e;
+    char **ecur;
+    char **eend;
+    char **ekeep;
+
+    /* Don't do any unnecessary manipulations..
+     */
+    if (ap_table_get(r->headers_out, "Vary") == NULL) {
+	return;
+    }
+    ap_table_do((int (*)(void *, const char *, const char *))merge_vary_fields,
+		(void *) r, r->headers_out, "Vary");
+    vary = ap_table_get(r->notes, "Vary-list");
+
+    /* XXX: we could make things a lot better, by having r->vary,
+     * which is an array of char * -- which modules append to as they
+     * find things which the request varies on.  This is probably
+     * better than a table, because a table would require O(n^2)
+     * string comparisons... another option would be to use a table
+     * but indicate that folks should use ap_table_add...
+     * at any rate, if we had such an array, we would just set
+     * arr = r->vary here (or arr = ap_table_elts(r->vary)).
+     */
+    arr = ap_make_array(r->pool, 5, sizeof(char *));
+
+    /* XXX: this part could become a new routine which takes a string
+     * and breaks it up, appending to an array, spliting on /[,\s]+/.
+     */
+    e = ap_pstrdup(r->pool, vary);
+    start = e;
+    while (*e) {
+	while (ap_isspace(*e)) {
+	    ++e;
+	}
+	start = e;
+	e = strchr(e, ',');
+	if (!e) {
+	    break;
+	}
+	*e = '\0';
+	*(char **)ap_push_array(arr) = start;
+	++e;
+    }
+    if (*start) {
+	*(char **)ap_push_array(arr) = start;
+    }
+
+    /* XXX: this part could become a new routine which modifies an
+     * array of char * in place, eliminating duplicate entries
+     */
+    if (arr->nelts > 1) {
+	qsort(arr->elts, arr->nelts, sizeof(char *), compare_vary);
+
+	/* now pluck out the non-duplicates */
+	ekeep = (char **)arr->elts;
+	ecur = ekeep + 1;
+	eend = ekeep + arr->nelts - 1;
+	while (ecur <= eend) {
+	    if (strcasecmp(*ecur, *ekeep)) {
+		*++ekeep = *ecur;
+	    }
+	    ++ecur;
+	}
+	arr->nelts = ekeep - (char **)arr->elts + 1;
+    }
+
+    /* and finally we're done, we can just merge the array adding ,
+     * between entries
+     */
+    ap_table_setn(r->headers_out, "Vary",
+		  ap_array_pstrcat(r->pool, arr, ','));
+}
+
 API_EXPORT(void) ap_send_http_header(request_rec *r)
 {
     int i;
@@ -1479,6 +1586,9 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 	ap_table_unset(r->headers_out, "Vary");
 	r->proto_num = HTTP_VERSION(1,0);
 	ap_table_set(r->subprocess_env, "force-response-1.0", "1");
+    }
+    else {
+	fixup_vary(r);
     }
 
     ap_hard_timeout("send headers", r);
