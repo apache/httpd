@@ -646,7 +646,7 @@ AddEncoding x-gzip gz tgz
 # Danish (da) - Dutch (nl) - English (en) - Estonian (ee)
 # French (fr) - German (de) - Greek-Modern (el)
 # Italian (it) -Portugese (pt) - Luxembourgeois* (ltz)
-# Spanish (es) - Swedish (sv) - Catalan (es-ct)
+# Spanish (es) - Swedish (sv) - Catalan (ca)
 #
 AddLanguage da .dk
 AddLanguage nl .nl
@@ -658,7 +658,7 @@ AddLanguage el .el
 AddLanguage it .it
 AddLanguage pt .pt
 AddLanguage ltz .lu
-AddLanguage es-ct .es-ct
+AddLanguage ca .ca
 AddLanguage es .es
 AddLanguage sv .se
 
@@ -668,7 +668,7 @@ AddLanguage sv .se
 # Just list the languages in decreasing order of preference. We have
 # more or less alphabetized them here. You probably want to change this.
 #
-LanguagePriority en da nl et fr de el it pt ltz es-ct es sv
+LanguagePriority en da nl et fr de el it pt ltz ca es sv
 
 #
 # AddType allows you to tweak mime.types without actually editing it, or to
