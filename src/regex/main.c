@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <regex.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "main.ih"
 
@@ -23,7 +24,7 @@ extern void regprint();
 /*
  - main - do the simple case, hand off to regress() for regression
  */
-main(argc, argv)
+int main(argc, argv)
 int argc;
 char *argv[];
 {
@@ -103,7 +104,7 @@ char *argv[];
 		len = (int)(subs[0].rm_eo - subs[0].rm_so);
 		if (subs[0].rm_so != -1) {
 			if (len != 0)
-				printf("match `%.*s'\n", len,
+				printf("match `%.*s'\n", (int)len,
 					argv[optind] + subs[0].rm_so);
 			else
 				printf("match `'@%.1s\n",
@@ -499,7 +500,6 @@ efind(name)
 char *name;
 {
 	static char efbuf[100];
-	size_t n;
 	regex_t re;
 
 	sprintf(efbuf, "REG_%s", name);

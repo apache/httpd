@@ -100,6 +100,8 @@ Changes with Apache 1.2b7
   *) Fixed http_protocol to correctly output all HTTP/1.1 headers, including
      for the special case of a 304 response.  [Paul Sutton]
 
+  *) Fixed compiler warnings in the regex library. [Dean Gaudet]
+
 Changes with Apache 1.2b6
 
   *) Allow whitespace in imagemap mapfile coordinates. [Marc Slemko]

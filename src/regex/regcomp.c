@@ -51,7 +51,7 @@ static char nuls[10];		/* place to point scanner in event of error */
 #define	NEXTn(n)	(p->next += (n))
 #define	GETNEXT()	(*p->next++)
 #define	SETERROR(e)	seterr(p, (e))
-#define	REQUIRE(co, e)	((co) || SETERROR(e))
+#define	REQUIRE(co, e)	((void)((co) || SETERROR(e)))
 #define	MUSTSEE(c, e)	(REQUIRE(MORE() && PEEK() == (c), e))
 #define	MUSTEAT(c, e)	(REQUIRE(MORE() && GETNEXT() == (c), e))
 #define	MUSTNOTSEE(c, e)	(REQUIRE(!MORE() || PEEK() != (c), e))
@@ -192,8 +192,8 @@ register struct parse *p;
 int stop;			/* character this ERE should end at */
 {
 	register char c;
-	register sopno prevback;
-	register sopno prevfwd;
+	register sopno prevback = 0;
+	register sopno prevfwd = 0;
 	register sopno conc;
 	register int first = 1;		/* is this the first alternative? */
 
@@ -580,7 +580,6 @@ static void
 p_bracket(p)
 register struct parse *p;
 {
-	register char c;
 	register cset *cs = allocset(p);
 	register int invert = 0;
 
@@ -796,7 +795,6 @@ int endc;			/* name ended by endc,']' */
 	register char *sp = p->next;
 	register struct cname *cp;
 	register int len;
-	register char c;
 
 	while (MORE() && !SEETWO(endc, ']'))
 		NEXT1();
@@ -1171,63 +1169,6 @@ register char *cp;
 	cs->multis[cs->smultis - 1] = '\0';
 }
 
-/*
- - mcsub - subtract a collating element from a cset
- == static void mcsub(register cset *cs, register char *cp);
- */
-static void
-mcsub(cs, cp)
-register cset *cs;
-register char *cp;
-{
-	register char *fp = mcfind(cs, cp);
-	register size_t len = strlen(fp);
-
-	assert(fp != NULL);
-	(void) memmove(fp, fp + len + 1,
-				cs->smultis - (fp + len + 1 - cs->multis));
-	cs->smultis -= len;
-
-	if (cs->smultis == 0) {
-		free(cs->multis);
-		cs->multis = NULL;
-		return;
-	}
-
-	cs->multis = realloc(cs->multis, cs->smultis);
-	assert(cs->multis != NULL);
-}
-
-/*
- - mcin - is a collating element in a cset?
- == static int mcin(register cset *cs, register char *cp);
- */
-static int
-mcin(cs, cp)
-register cset *cs;
-register char *cp;
-{
-	return(mcfind(cs, cp) != NULL);
-}
-
-/*
- - mcfind - find a collating element in a cset
- == static char *mcfind(register cset *cs, register char *cp);
- */
-static char *
-mcfind(cs, cp)
-register cset *cs;
-register char *cp;
-{
-	register char *p;
-
-	if (cs->multis == NULL)
-		return(NULL);
-	for (p = cs->multis; *p != '\0'; p += strlen(p) + 1)
-		if (strcmp(cp, p) == 0)
-			return(p);
-	return(NULL);
-}
 
 /*
  - mcinvert - invert the list of collating elements in a cset
@@ -1497,8 +1438,8 @@ struct parse *p;
 register struct re_guts *g;
 {
 	register sop *scan;
-	sop *start;
-	register sop *newstart;
+	sop *start = NULL;
+	register sop *newstart = NULL;
 	register sopno newlen;
 	register sop s;
 	register char *cp;

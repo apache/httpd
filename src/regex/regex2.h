@@ -91,8 +91,6 @@ typedef struct {
 #define	CHsub(cs, c)	((cs)->ptr[(uch)(c)] &= ~(cs)->mask, (cs)->hash -= (c))
 #define	CHIN(cs, c)	((cs)->ptr[(uch)(c)] & (cs)->mask)
 #define	MCadd(p, cs, cp)	mcadd(p, cs, cp)	/* regcomp() internal fns */
-#define	MCsub(p, cs, cp)	mcsub(p, cs, cp)
-#define	MCin(p, cs, cp)	mcin(p, cs, cp)
 
 /* stuff for character categories */
 typedef unsigned char cat_t;
