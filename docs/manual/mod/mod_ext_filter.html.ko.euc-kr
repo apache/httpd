@@ -300,7 +300,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">지시어</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>mod_ext_filter 옵션을 설정한다</td></tr>
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 옵션을 설정한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory</td></tr>

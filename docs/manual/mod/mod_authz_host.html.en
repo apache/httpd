@@ -215,7 +215,7 @@ server</td></tr>
 <div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls the default access state and the order in which
-Allow and Deny are
+<code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> Order <var>ordering</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Order Deny,Allow</code></td></tr>

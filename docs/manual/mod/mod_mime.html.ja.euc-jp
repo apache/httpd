@@ -556,8 +556,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>path_info コンポーネントをファイル名の一部として扱うように
-mod_mime に通知する</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>path_info</code> コンポーネントをファイル名の一部として扱うように
+<code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> に通知する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ModMimeUsePathInfo Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
@@ -879,7 +879,7 @@ mod_mime に通知する</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>mime.types ファイルの位置</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>mime.types</code> ファイルの位置</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TypesConfig <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>TypesConfig conf/mime.types</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>

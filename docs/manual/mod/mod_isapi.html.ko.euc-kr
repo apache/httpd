@@ -210,7 +210,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a> <a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">지시어</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>ISAPI exntension의 HSE_APPEND_LOG_PARAMETER
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>ISAPI exntension의 <code>HSE_APPEND_LOG_PARAMETER</code>
 요청을 오류 로그에 기록한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ISAPIAppendLogToErrors on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ISAPIAppendLogToErrors off</code></td></tr>
@@ -226,7 +226,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a> <a name="isapiappendlogtoquery" id="isapiappendlogtoquery">지시어</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>ISAPI exntension의 HSE_APPEND_LOG_PARAMETER
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>ISAPI exntension의 <code>HSE_APPEND_LOG_PARAMETER</code>
 요청을 질의문자열에 기록한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ISAPIAppendLogToQuery on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ISAPIAppendLogToQuery on</code></td></tr>
