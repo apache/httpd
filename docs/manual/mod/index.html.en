@@ -25,7 +25,8 @@ HTTP headers</dd><dt><a href="mod_auth.html">mod_auth</a></dt><dd>User authentic
     external CGI daemon</dd><dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd><dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd><dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before
     it is delivered to the client</dd><dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and
-    serving directory index files</dd><dt><a href="mod_env.html">mod_env</a></dt><dd>Modifies the environment which is
+    serving directory index files</dd><dt><a href="mod_echo.html">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
+modules</dd><dt><a href="mod_env.html">mod_env</a></dt><dd>Modifies the environment which is
     passed to CGI scripts and SSI pages</dd><dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd><dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of
     <code>Expires</code> HTTP headers according to user-specified
     criteria</dd><dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body
