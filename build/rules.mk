@@ -83,7 +83,7 @@ INSTALL = $(abs_srcdir)/build/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755
 
-DEFS = -I. -I$(srcdir) -I$(top_srcdir)/modules/mpm/$(MPM_NAME)
+DEFS = -I. -I$(srcdir) -I$(top_srcdir)/server/mpm/$(MPM_NAME)
 
 # Suffixes
 

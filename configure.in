@@ -209,10 +209,10 @@ else
 		[byte order is unknown due to cross-compilation])
 fi
 
-APACHE_FAST_OUTPUT(Makefile modules/Makefile) 
+APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/beos/Makefile os/os2/Makefile)
 APACHE_FAST_OUTPUT(os/unix/Makefile server/Makefile)
-APACHE_FAST_OUTPUT(support/Makefile test/Makefile)
+APACHE_FAST_OUTPUT(support/Makefile test/Makefile srclib/pcre/Makefile)
 for i in $AP_LIB_DIRS; do
   APACHE_FAST_OUTPUT(srclib/$i/Makefile)
 done
