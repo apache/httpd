@@ -631,7 +631,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	&& conn->remote_host == NULL
 	&& (type == REMOTE_DOUBLE_REV
 	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
-	if (apr_get_remote_hostname(&conn->remote_host, conn->client_socket)
+	if (apr_get_hostname(&conn->remote_host, APR_REMOTE, conn->client_socket)
             == APR_SUCCESS){
 	    ap_str_tolower(conn->remote_host);
 	   
@@ -718,21 +718,11 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     }
     if (d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
         if (conn->local_host == NULL) {
-	    struct in_addr *iaddr;
-	    struct hostent *hptr;
-	    iaddr = &(conn->local_addr.sin_addr);
-	    hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr),
-				 AF_INET);
-	    if (hptr != NULL) {
-	        conn->local_host = apr_pstrdup(conn->pool,
-					      (void *)hptr->h_name);
-		ap_str_tolower(conn->local_host);
-	    }
-	    else {
-	        conn->local_host = apr_pstrdup(conn->pool,
-					      r->server->server_hostname);
-	    }
-	}
+            if (apr_get_hostname(&conn->local_host, APR_LOCAL, conn->client_socket) != APR_SUCCESS)
+                conn->local_host = apr_pstrdup(conn->pool, r->server->server_hostname);
+            else
+                ap_str_tolower(conn->local_host);
+        }
 	return conn->local_host;
     }
     /* default */
