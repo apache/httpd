@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/01 00:13:28 $]
+Last modified at [$Date: 2003/07/01 01:25:04 $]
 
 Release:
 
@@ -69,16 +69,6 @@ PATCHES TO PORT FROM 2.1
       server/protocol.c: r1.132
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.131&r2=1.132&diff_format=h
       +1: brianp, jerenkrantz
-
-    * Backport LimitInteralRecursion to 2.0 and 1.3.
-      (1.3 patch is here: <http://cvs.apache.org/~nd/recursion13.patch>)
-      (2.0 patch is here: <http://cvs.apache.org/~nd/recursion20.patch>)
-      PR 19753.
-      include/http_core.h r1.75, r1.76
-      modules/http/http_request.c r1.156, r1.158
-      server/core.c r1.236, r1.237
-      server/request.c r1.126, r1.127
-      +1: nd, brianp (for 2.0), jerenkrantz (both)
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.

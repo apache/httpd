@@ -332,8 +332,14 @@ static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
 static request_rec *internal_internal_redirect(const char *new_uri,
                                                request_rec *r) {
     int access_status;
-    request_rec *new = (request_rec *) apr_pcalloc(r->pool,
-                                                   sizeof(request_rec));
+    request_rec *new;
+
+    if (ap_is_recursion_limit_exceeded(r)) {
+        ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+        return NULL;
+    }
+
+    new = (request_rec *) apr_pcalloc(r->pool, sizeof(request_rec));
 
     new->connection = r->connection;
     new->server     = r->server;
@@ -480,7 +486,14 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
-    int access_status = ap_process_request_internal(new);
+    int access_status;
+
+    /* ap_die was already called, if an error occured */
+    if (!new) {
+        return;
+    }
+
+    access_status = ap_process_request_internal(new);
     if (access_status == OK) {
         if ((access_status = ap_invoke_handler(new)) != 0) {
             ap_die(access_status, new);
@@ -501,6 +514,12 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
 {
     int access_status;
     request_rec *new = internal_internal_redirect(new_uri, r);
+
+    /* ap_die was already called, if an error occured */
+    if (!new) {
+        return;
+    }
+
     if (r->handler)
         ap_set_content_type(new, r->content_type);
     access_status = ap_process_request_internal(new);

@@ -134,6 +134,12 @@ extern "C" {
  */
 #define AP_MIN_BYTES_TO_WRITE  8000
 
+/* default maximum of internal redirects */
+# define AP_DEFAULT_MAX_INTERNAL_REDIRECTS 10
+
+/* default maximum subrequest nesting level */
+# define AP_DEFAULT_MAX_SUBREQ_DEPTH 10
+
 /**
  * Retrieve the value of Options for this request
  * @param r The current request
@@ -256,6 +262,14 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r);
  *               or a URL
  */
 AP_DECLARE(void) ap_custom_response(request_rec *r, int status, const char *string);
+
+/**
+ * Check if the current request is beyond the configured max. number of redirects or subrequests
+ * @param r The current request
+ * @return true (is exceeded) or false
+ * @deffunc int ap_is_recursion_limit_exceeded(const request_rec *r)
+ */
+AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r);
 
 /**
  * Check for a definition from the server command line
@@ -562,6 +576,10 @@ typedef struct {
     char *access_name;
     apr_array_header_t *sec_dir;
     apr_array_header_t *sec_url;
+
+    /* recursion backstopper */
+    int redirect_limit; /* maximum number of internal redirects */
+    int subreq_limit;   /* maximum nesting level of subrequests */
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
