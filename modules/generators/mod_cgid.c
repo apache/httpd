@@ -515,9 +515,10 @@ static int cgid_server(void *data)
 { 
     struct sockaddr_un unix_addr;
     int pid; 
-    int sd, sd2, len, rc;
+    int sd, sd2, rc;
     int errfile;
     mode_t omask;
+    apr_socklen_t len;
     server_rec *main_server = data;
     cgid_server_conf *sconf = (cgid_server_conf *)ap_get_module_config( 
                        main_server->module_config, &cgid_module); 
