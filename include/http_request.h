@@ -66,6 +66,9 @@
 extern "C" {
 #endif
 
+#define AP_SUBREQ_NO_ARGS 0
+#define AP_SUBREQ_MERGE_ARGS 1
+
 /**
  * @file http_request.h
  * @brief Apache Request library
@@ -131,18 +134,24 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
  * can be inspected to find information about the requested file
  * @param finfo The apr_dir_read result to lookup
  * @param r The current request
+ * @param subtype What type of subrequest to perform, one of;
+ * <PRE>
+ *      AP_SUBREQ_NO_ARGS     ignore r->args and r->path_info
+ *      AP_SUBREQ_MERGE_ARGS  merge r->args and r->path_info
+ * </PRE>
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @deffunc request_rec * ap_sub_req_lookup_dirent(apr_finfo_t *finfo, const request_rec *r)
+ * @deffunc request_rec * ap_sub_req_lookup_dirent(apr_finfo_t *finfo, int subtype, const request_rec *r)
  * @tip The apr_dir_read flags value APR_FINFO_MIN|APR_FINFO_NAME flag is the 
  * minimum recommended query if the results will be passed to apr_dir_read.
  * The file info passed must include the name, and must have the same relative
  * directory as the current request.
  */
 AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *finfo,
-                                              const request_rec *r,
-                                              ap_filter_t *next_filter);
+                                                   const request_rec *r,
+                                                   int subtype,
+                                                   ap_filter_t *next_filter);
 /**
  * Create a sub request for the given URI using a specific method.  This
  * sub request can be inspected to find information about the requested URI

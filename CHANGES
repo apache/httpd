@@ -1,5 +1,9 @@
 Changes with Apache 2.0.31-dev
 
+  *) Fixed PATH_INFO and QUERY_STRING from mod_negotiation results.
+     Resolves the common case of using negotation to resolve the request
+     /script/foo for /script.cgi/foo.  [William Rowe]
+
   *) Added new functions ap_add_(input|output)_filter_handle to
      allow modules to bypass the usual filter name lookup when
      adding hard-coded filters to a request [Brian Pane]

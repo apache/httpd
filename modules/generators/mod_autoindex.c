@@ -1286,7 +1286,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         return (NULL);
     }
 
-    if (!(rr = ap_sub_req_lookup_dirent(dirent, r, NULL))) {
+    if (!(rr = ap_sub_req_lookup_dirent(dirent, r, AP_SUBREQ_NO_ARGS, NULL))) {
         return (NULL);
     }
 
