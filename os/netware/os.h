@@ -73,6 +73,6 @@ extern int hold_screen_on_exit; /* Indicates whether the screen should be held o
 #define APACHE_MPM_DIR  "server/mpm/netware" /* generated on unix */
 
 #define getpid NXThreadGetId
-#define exit(s) if(s||hold_screen_on_exit){pressanykey();apr_terminate();}exit(s);
+#define exit(s) {if(s||hold_screen_on_exit){pressanykey();}apr_terminate();exit(s);}
 
 #endif   /* ! APACHE_OS_H */
