@@ -1,151 +1,399 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>Configuration Sections - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Configuration Sections</h1> <p>Directives in the <a href="configuring.html">configuration files</a> may apply to the
+entire server, or they may be restricted to apply only to particular
+directories, files, hosts, or URLs.  This document describes how to
+use configuration section containers or <code>.htaccess</code> files
+to change the scope of other configuration directives.</p>
+<ul><li><a href="#types">Types of Configuration Section Containers</a></li><li><a href="#file-and-web">Filesystem and Webspace</a><ul><li><a href="#filesystem">Filesystem Containers</a></li><li><a href="#webspace">Webspace Containers</a></li><li><a href="#wildcards">Wildcards and Regular Expressions</a></li><li><a href="#whichwhen">What to use When</a></li></ul></li><li><a href="#virtualhost">Virtual Hosts</a></li><li><a href="#proxy">Proxy</a></li><li><a href="#whatwhere">What Directives are Allowed?</a></li><li><a href="#mergin">How the sections are merged</a><ul><li><a href="#merge-examples">Some Examples</a></li></ul></li></ul><hr><h2><a name="types">Types of Configuration Section Containers</a></h2>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+<table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="./mod/core.html">core</a></code><br><code><a href="./mod/mod_proxy.html">mod_proxy</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a><br><a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a><br><a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a><br><a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a><br><a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a><br><a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a><br><a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a><br><a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a><br><a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a><br><a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a><br></td></tr></table>
 
-    <title>How Directory, Location and Files sections work</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<p>There are two basic types of containers.  Most containers are
+evaluated for each request.  The enclosed directives are applied only
+for those requests that match the containers.  The <a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a> and <a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a> containers, on the
+other hand, are evaluated only at server startup and restart.  If
+their conditions are true at startup, then the enclosed directives
+will apply to all requests.  If the conditions are not true, the
+enclosed directives will be ignored.</p>
 
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+<p>The <a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a> directive
+encloses directives that will only be applied if an appropriate
+parameter is defined on the <code>httpd</code> command line.  For example,
+with the following configuration, all requests will be redirected
+to another site only if the server is started using
+<code>httpd -DClosedForNow</code>:</p>
 
-    <h1 align="center">How Directory, Location and Files sections
-    work</h1>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;IfDefine ClosedForNow&gt;<br>
+Redirect / http://otherserver.example.com/<br>
+&lt;/IfDefine&gt;
+</code></td></tr></table></blockquote>
 
-    <p>The sections <a
-    href="mod/core.html#directory"><code>&lt;Directory&gt;</code></a>,
-    <a
-    href="mod/core.html#location"><code>&lt;Location&gt;</code></a>
-    and <a
-    href="mod/core.html#files"><code>&lt;Files&gt;</code></a> can
-    contain directives which only apply to specified directories,
-    URLs or files respectively. Also htaccess files can be used
-    inside a directory to apply directives to that directory. This
-    document explains how these different sections differ and how
-    they relate to each other when Apache decides which directives
-    apply for a particular directory or request URL.</p>
+<p>The <a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a>
+directive is very similar, except it encloses directives that will
+only be applied if a particular module is available in the server.
+The module must either be statically compiled in the server, or it
+must be dynamically compiled and its <a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a> line must be earlier in the
+configuration file.  This directive should only be used if you need
+your configuration file to work whether or not certain modules are
+installed.  It should not be used to enclose directives that you want
+to work all the time, because it can suppress useful error messages
+about missing modules.</p>
 
-    <h2>Directives allowed in the sections</h2>
+<p>In the following example, the <a href="./mod/mod_mime_magic.html#mimemagicfiles" class="directive"><code class="directive">MimeMagicFiles</code></a> directive will be
+applied only if <code><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> is available.</p>
 
-    <p>Everything that is syntactically allowed in
-    <code>&lt;Directory&gt;</code> is also allowed in
-    <code>&lt;Location&gt;</code> (except a
-    sub-<code>&lt;Files&gt;</code> section). Semantically, however
-    some things, most notably <code>AllowOverride</code> and the
-    two options <code>FollowSymLinks</code> and
-    <code>SymLinksIfOwnerMatch</code>, make no sense in
-    <code>&lt;Location&gt;</code>,
-    <code>&lt;LocationMatch&gt;</code> or
-    <code>&lt;DirectoryMatch&gt;</code>. The same for
-    <code>&lt;Files&gt;</code> -- syntactically everything is fine,
-    but semantically some things are different.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;IfModule mod_mime_magic.c&gt;<br>
+MimeMagicFile conf/magic<br>
+&lt;/IfModule&gt;
+</code></td></tr></table></blockquote>
 
-    <h2>How the sections are merged</h2>
+<p>Both <a href="./mod/core.html#ifdefine" class="directive"><code class="directive">&lt;IfDefine&gt;</code></a>
+and <a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a>
+can apply negative conditions by preceding their test with "!".
+Also, these sections can be nested to achieve more complex
+restrictions.</p>
+<h2><a name="file-and-web">Filesystem and Webspace</a></h2>
+
+<p>The most commonly used configuration section containers are the
+ones that change the configuration of particular places in the
+filesystem or webspace.  First, it is important to understand the
+difference between the two.  The filesystem is the view of your disks
+as seen by your operating system.  For example, in a default install,
+Apache resides at <code>/usr/local/apache2</code> in the Unix
+filesystem or <code>"c:/Program Files/Apache Group/Apache2"</code> in
+the Windows filesystem.  (Note that forward slashes should always be
+used as the path separator in Apache, even for Windows.)  In contrast,
+the webspace is the view of your site as delivered by the web server
+and seen by the client.  So the path <code>/dir/</code> in the
+webspace corresponds to the path
+<code>/usr/local/apache2/htdocs/dir/</code> in the filesystem of a
+default Apache install on Unix.  The webspace need not map directly to
+the filesystem, since webpages may be generated dynamically
+from databases or other locations.</p>
+
+<h3><a name="filesystem">Filesystem Containers</a></h3>
+
+<p>The <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>
+and <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>
+directives, along with their regex counterparts, apply directives to
+parts of the filesystem.  Directives enclosed in a <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> section apply to
+the named filesystem directory and all subdirectories of that
+directory.  The same effect can be obtained using <a href="howto/htaccess.html">.htaccess files</a>.  For example, in the
+following configuration, directory indexes will be enabled for the
+<code>/var/web/dir1</code> directory and all subdirectories.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Directory /var/web/dir1&gt;<br>
+Options +Indexes<br>
+&lt;/Directory&gt;
+</code></td></tr></table></blockquote>
+
+<p>Directives enclosed in a <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a> section apply to any file with
+the specified name, regardless of what directory it lies in.
+So for example, the following configuration directives will,
+when placed in the main section of the configuration file,
+deny access to any file named <code>private.html</code> regardless
+of where it is found.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Files private.html&gt;<br>
+Order allow,deny<br>
+Deny from all<br>
+&lt;/Files&gt;
+</code></td></tr></table></blockquote>
+
+<p>To address files found in a particular part of the filesystem, the
+<a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a> and
+<a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> sections
+can be combined.  For example, the following configuration will deny
+access to <code>/var/web/dir1/private.html</code>,
+<code>/var/web/dir1/subdir2/private.html</code>,
+<code>/var/web/dir1/subdir3/private.html</code>, and any other instance
+of <code>private.html</code> found under the <code>/var/web/dir1/</code>
+directory.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Directory /var/web/dir1&gt;<br>
+&lt;Files private.html&gt;<br>
+Order allow,deny<br>
+Deny from all<br>
+&lt;/Files&gt;<br>
+&lt;/Directory&gt;
+</code></td></tr></table></blockquote>
+
+
+<h3><a name="webspace">Webspace Containers</a></h3>
+
+<p>The <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>
+directive and its regex counterpart, on the other hand, change the
+configuration for content in the webspace.  For example, the following
+configuration prevents access to any URL-path that begins in /private.
+In particular, it will apply to requests for
+<code>http://yoursite.example.com/private</code>,
+<code>http://yoursite.example.com/private123</code>, and
+<code>http://yoursite.example.com/private/dir/file.html</code> as well
+as any other requests starting with the <code>/private</code> string.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Location /private&gt;<br>
+Order Allow,Deny<br>
+Deny from all<br>
+&lt;/Location&gt;
+</code></td></tr></table></blockquote>
+
+<p>The <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>
+directive need not have anything to do with the filesystem.
+For example, the following example shows how to map a particular
+URL to an internal Apache handler provided by <code><a href="./mod/mod_status.html">mod_status</a></code>.
+No file called <code>server-status</code> needs to exist in the
+filesystem.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Location /server-status&gt;<br>
+SetHandler server-status<br>
+&lt;/Location&gt;
+</code></td></tr></table></blockquote>
+
+
+<h3><a name="wildcards">Wildcards and Regular Expressions</a></h3>
+
+<p>The <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>,
+<a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>, and
+<a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>
+directives can each use the shell-style wildcard characters "?" to
+match any single character, "*" to match any set of characters, and
+character classes like [a-zA-Z] to match particular characters.  This
+is useful to apply the same configuration to a group of filesystem or
+webspace locations. If even more flexible matching is required, each
+container has a regular-expression (regex) counterpart <a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a>, <a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a>, and <a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a> that allow
+perl-compatible<a href="glossary.html#regex">regular expressions</a>
+to be used in choosing the matches.  But see the section below on
+configuration merging to find out how using regex sections will change
+how directives are applied.</p>
+
+<p>A non-regex wildcard section that changes the configuration of
+all user directories could look as follows:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Directory /home/*/public_html&gt;<br>
+Options Indexes<br>
+&lt;/Directory&gt;
+</code></td></tr></table></blockquote>
+
+<p>Using regex sections, we can deny access to many types of image files
+at once:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br>
+Order allow,deny<br>
+Deny from all<br>
+&lt;/FilesMatch&gt;
+</code></td></tr></table></blockquote>
+
+
+
+<h3><a name="whichwhen">What to use When</a></h3>
+
+<p>Choosing between filesystem containers and webspace containers is
+actually quite easy.  When applying directives to objects that reside
+in the filesystem always use <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> or <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>.  When applying directives to objects
+that do not reside in the filesystem (such as a webpage generated from
+a database), use <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>.</p>
+
+<p>It is important to never use <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> when trying to restrict
+access to objects in the filesystem.  This is because many
+different webspace locations (URLs) could map to the same filesystem
+location, allowing your restrictions to be circumvented.
+For example, consider the following configuration:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Location /dir/&gt;<br>
+Order allow,deny<br>
+Deny from all<br>
+&lt;/Location&gt;
+</code></td></tr></table></blockquote>
+
+<p>This works fine if the request is for
+<code>http://yoursite.example.com/dir/</code>.  But what if you are on
+a case-insensitive filesystem?  Then your restriction could be easily
+circumvented by requesting
+<code>http://yoursite.example.com/DIR/</code>.  The <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> directive, in
+contrast, will apply to any content served from that location,
+regardless of how it is called.  (An exception is filesystem links.
+The same directory can be placed in more than one part of the
+filesystem using symbolic links.  The <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> directive will follow the symbolic
+link without resetting the pathname.  Therefore, for the highest level
+of security, symbolic links should be disabled with the appropriate
+<a href="./mod/core.html#options" class="directive"><code class="directive">Options</code></a> directive.)</p>
+
+<p>If you are, perhaps, thinking that none of this applies to you
+because you use a case-sensitive filesystem, remember that there are
+many other ways to map multiple webspace locations to the same
+filesystem location.  Therefore you should always use the filesystem
+containers when you can.  There is, however, one exception to this
+rule.  Putting configuration restrictions in a <code>&lt;Location
+/&gt;</code> section is perfectly safe because this section will apply
+to all requests regardless of the specific URL.</p>
+
+
+<h2><a name="virtualhost">Virtual Hosts</a></h2>
+
+<p>The <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a>
+container encloses directives that apply to specific hosts.
+This is useful when serving multiple hosts from the same machine
+with a different configuration for each.  For more information,
+see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
+<h2><a name="proxy">Proxy</a></h2>
+
+<p>The <a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a>
+container applies enclosed configuration directives only
+to sites accessed through <code><a href="./mod/mod_proxy.html">mod_proxy</a></code>'s proxy server
+that match the specified URL.  For example, the following configuration
+will prevent the proxy server from being used to access the
+<code>cnn.com</code> website.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Proxy http://cnn.com/*&gt;<br>
+Order allow,deny<br>
+Deny from all<br>
+&lt;/Proxy&gt;
+</code></td></tr></table></blockquote>
+<h2><a name="whatwhere">What Directives are Allowed?</a></h2>
+
+<p>To find out what directives are allowed in what types of
+configuration sections, check the <a href="mod/directive-dict.html#Context">Context</a> of the directive.
+Everything that is allowed in 
+<a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>
+sections is also syntactically allowed in
+<a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a>,
+<a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>,
+<a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a>,
+<a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>,
+<a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a>,
+and
+<a href="./mod/proxy.html#proxy" class="directive"><code class="directive">&lt;Proxy&gt;</code></a>
+sections.  There are some exceptions, however.</p>
+
+<ul>
+<li>The <a href="./mod/core.html#allowoverride" class="directive"><code class="directive">AllowOverride</code></a> directive
+works only in <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>
+sections.</li>
+
+<li>The <code>FollowSymLinks</code> and
+<code>SymLinksIfOwnerMatch</code> <a href="./mod/core.html#options" class="directive"><code class="directive">Options</code></a> work only in <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> sections or
+<code>.htaccess</code> files.</li>
+
+<li>The <a href="./mod/core.html#options" class="directive"><code class="directive">Options</code></a> directive cannot
+be used in <a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a>
+and <a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a>
+sections.</li>
+</ul>
+<h2><a name="mergin">How the sections are merged</a></h2>
+
+<p>The configuration sections are applied in a very particular order.
+Since this can have important effects on how configuration directives
+are interpreted, it is important to understand how this works.</p>
 
     <p>The order of merging is:</p>
 
     <ol>
-      <li><code>&lt;Directory&gt;</code> (except regular
-      expressions) and .htaccess done simultaneously (with
-      .htaccess, if allowed, overriding
-      <code>&lt;Directory&gt;</code>)</li>
+      <li> <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> (except regular expressions)
+      and .htaccess done simultaneously (with .htaccess, if allowed,
+      overriding <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>)</li>
 
-      <li><code>&lt;DirectoryMatch&gt;</code>, and
-      <code>&lt;Directory&gt;</code> with regular expressions</li>
+      <li><a href="./mod/core.html#directorymatch" class="directive"><code class="directive">&lt;DirectoryMatch&gt;</code></a>
+      (and <code>&lt;Directory ~&gt;</code>)</li>
 
-      <li><code>&lt;Files&gt;</code> and
-      <code>&lt;FilesMatch&gt;</code> done simultaneously</li>
+      <li><a href="./mod/core.html#files" class="directive"><code class="directive">&lt;Files&gt;</code></a> and <a href="./mod/core.html#filesmatch" class="directive"><code class="directive">&lt;FilesMatch&gt;</code></a> done
+      simultaneously</li>
 
-      <li><code>&lt;Location&gt;</code> and
-      <code>&lt;LocationMatch&gt;</code> done simultaneously</li>
+      <li><a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a>
+      and <a href="./mod/core.html#locationmatch" class="directive"><code class="directive">&lt;LocationMatch&gt;</code></a> done simultaneously</li>
     </ol>
 
-    <p>Apart from <code>&lt;Directory&gt;</code>, each group is
-    processed in the order that they appear in the configuration
-    files. <code>&lt;Directory&gt;</code> (group 1 above) is
-    processed in the order shortest directory component to longest.
-    If multiple <code>&lt;Directory&gt;</code> sections apply to
-    the same directory they are processed in the configuration
-    file order. Configurations included
-    via the <code>Include</code> directive will be treated as if
+    <p>Apart from <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a>, each group is processed in
+    the order that they appear in the configuration files.  <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> (group 1 above)
+    is processed in the order shortest directory component to longest.
+    So for example, <code>&lt;Directory /var/web/dir&gt;</code> will
+    be processed before <code>&lt;Directory
+    /var/web/dir/subdir&gt;</code>.  If multiple <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> sections apply
+    to the same directory they are processed in the configuration file
+    order. Configurations included via the <a href="./mod/core.html#include" class="directive"><code class="directive">Include</code></a> directive will be treated as if
     they were inside the including file at the location of the
-    <code>Include</code> directive.</p>
+    <a href="./mod/core.html#include" class="directive"><code class="directive">Include</code></a> directive.</p>
 
-    <p>Sections inside <code>&lt;VirtualHost&gt;</code> sections
+    <p>Sections inside <a href="./mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> sections
     are applied <em>after</em> the corresponding sections outside
     the virtual host definition. This allows virtual hosts to
     override the main server configuration.</p>
 
     <p>Later sections override earlier ones.</p>
 
-    <h2>Notes about using sections</h2>
-
-    <p>The general guidelines are:</p>
-
-    <ul>
-      <li>If you are attempting to match objects at the filesystem
-      level then you must use <code>&lt;Directory&gt;</code> and/or
-      <code>&lt;Files&gt;</code>.</li>
-
-      <li>If you are attempting to match objects at the URL level
-      then you must use <code>&lt;Location&gt;</code></li>
-    </ul>
-
-    <p>But a notable exception is:</p>
-
-    <ul>
-      <li>proxy control is done via <code>&lt;Directory&gt;</code>.
-      This is a legacy mistake because the proxy existed prior to
-      <code>&lt;Location&gt;</code>. A future version of the config
-      language should probably switch this to
-      <code>&lt;Location&gt;</code>.</li>
-    </ul>
-
-    <p>Note about .htaccess parsing:</p>
-
-    <ul>
-      <li>Modifying .htaccess parsing during Location doesn't do
-      anything because .htaccess parsing has already occurred.</li>
-    </ul>
-
-    <p><code>&lt;Location&gt;</code> and symbolic links:</p>
-
-    <ul>
-      <li>It is not possible to use "<code>Options
-      FollowSymLinks</code>" or "<code>Options
-      SymLinksIfOwnerMatch</code>" inside a
-      <code>&lt;Location&gt;</code>,
-      <code>&lt;LocationMatch&gt;</code> or
-      <code>&lt;DirectoryMatch&gt;</code> section (the options are
-      simply ignored). Using the options in question is only
-      possible inside a <code>&lt;Directory&gt;</code> section (or
-      a <code>.htaccess</code> file).</li>
-    </ul>
-
-    <p><code>&lt;Files&gt;</code> and <code>Options</code>:</p>
-
-    <ul>
-      <li>Apache won't check for it, but using an
-      <code>Options</code> directive inside a
-      <code>&lt;Files&gt;</code> section has no effect.</li>
-    </ul>
-
-    <p>Another note:</p>
-
-    <ul>
-      <li>There is actually a
+<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Technical Note</strong></p>
+      There is actually a
       <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
       sequence performed just before the name translation phase
       (where <code>Aliases</code> and <code>DocumentRoots</code>
       are used to map URLs to filenames). The results of this
       sequence are completely thrown away after the translation has
-      completed.</li>
-    </ul>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
+      completed.
+</td></tr></table></blockquote>
 
+<h3><a name="merge-examples">Some Examples</a></h3>
+
+<p>Below is an artificial example to show the order of
+merging. Assuming they all apply to the request, the directives in
+this example will be applied in the order A &gt; B &gt; C &gt; D &gt;
+E.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Location /&gt;<br>
+E<br>
+&lt;/Location&gt;<br>
+<br>
+&lt;Files f.html&gt;<br>
+D<br>
+&lt;/Files&gt;<br>
+<br>
+&lt;VirtualHost *&gt;<br>
+&lt;Directory /a/b&gt;<br>
+B<br>
+&lt;/Directory&gt;<br>
+&lt;/VirtualHost&gt;<br>
+<br>
+&lt;DirectoryMatch "^.*b$"&gt;<br>
+C<br>
+&lt;/DirectoryMatch&gt;<br>
+<br>
+&lt;Directory /a/b&gt;<br>
+A<br>
+&lt;/Directory&gt;<br>
+<br>
+</code></td></tr></table></blockquote>
+
+<p>For a more concrete example, consider the following.  Regardless of
+any access restrictions placed in <a href="./mod/core.html#directory" class="directive"><code class="directive">&lt;Directory&gt;</code></a> sections, the <a href="./mod/core.html#location" class="directive"><code class="directive">&lt;Location&gt;</code></a> section will be
+evaluated last and will allow unrestricted access to the server.  In
+other words, order of merging is important, so be careful!</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+&lt;Location /&gt;<br>
+Order deny,allow<br>
+Allow from all<br>
+&lt;/Location&gt;<br>
+<br>
+# Woops!  This &lt;Directory&gt; section will have no effect<br>
+&lt;Directory /&gt;<br>
+Order allow,deny<br>
+Allow from all<br>
+Deny from badguy.example.com<br>
+&lt;/Directory&gt;
+</code></td></tr></table></blockquote>
+
+
+
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>

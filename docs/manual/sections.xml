@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+
+<manualpage>
+  <relativepath href="."/>
+
+<title>Configuration Sections</title>
+
+<summary> <p>Directives in the <a
+href="configuring.html">configuration files</a> may apply to the
+entire server, or they may be restricted to apply only to particular
+directories, files, hosts, or URLs.  This document describes how to
+use configuration section containers or <code>.htaccess</code> files
+to change the scope of other configuration directives.</p>
+</summary>
+
+<section id="types"><title>Types of Configuration Section Containers</title>
+
+<related>
+<modulelist>
+<module>core</module>
+<module>mod_proxy</module>
+</modulelist>
+<directivelist>
+<directive type="section" module="core">Directory</directive>
+<directive type="section" module="core">DirectoryMatch</directive>
+<directive type="section" module="core">Files</directive>
+<directive type="section" module="core">FilesMatch</directive>
+<directive type="section" module="core">IfDefine</directive>
+<directive type="section" module="core">IfModule</directive>
+<directive type="section" module="core">Location</directive>
+<directive type="section" module="core">LocationMatch</directive>
+<directive type="section" module="proxy">Proxy</directive>
+<directive type="section" module="core">VirtualHost</directive>
+</directivelist>
+</related>
+
+<p>There are two basic types of containers.  Most containers are
+evaluated for each request.  The enclosed directives are applied only
+for those requests that match the containers.  The <directive
+type="section" module="core">IfDefine</directive> and <directive
+type="section" module="core">IfModule</directive> containers, on the
+other hand, are evaluated only at server startup and restart.  If
+their conditions are true at startup, then the enclosed directives
+will apply to all requests.  If the conditions are not true, the
+enclosed directives will be ignored.</p>
+
+<p>The <directive type="section" module="core">IfDefine</directive> directive
+encloses directives that will only be applied if an appropriate
+parameter is defined on the <code>httpd</code> command line.  For example,
+with the following configuration, all requests will be redirected
+to another site only if the server is started using
+<code>httpd -DClosedForNow</code>:</p>
+
+<example>
+&lt;IfDefine ClosedForNow&gt;<br />
+Redirect / http://otherserver.example.com/<br />
+&lt;/IfDefine&gt;
+</example>
+
+<p>The <directive type="section" module="core">IfModule</directive>
+directive is very similar, except it encloses directives that will
+only be applied if a particular module is available in the server.
+The module must either be statically compiled in the server, or it
+must be dynamically compiled and its <directive
+module="mod_so">LoadModule</directive> line must be earlier in the
+configuration file.  This directive should only be used if you need
+your configuration file to work whether or not certain modules are
+installed.  It should not be used to enclose directives that you want
+to work all the time, because it can suppress useful error messages
+about missing modules.</p>
+
+<p>In the following example, the <directive
+module="mod_mime_magic">MimeMagicFiles</directive> directive will be
+applied only if <module>mod_mime_magic</module> is available.</p>
+
+<example>
+&lt;IfModule mod_mime_magic.c&gt;<br />
+MimeMagicFile conf/magic<br />
+&lt;/IfModule&gt;
+</example>
+
+<p>Both <directive type="section" module="core">IfDefine</directive>
+and <directive type="section" module="core">IfModule</directive>
+can apply negative conditions by preceding their test with "!".
+Also, these sections can be nested to achieve more complex
+restrictions.</p>
+</section>
+
+<section id="file-and-web"><title>Filesystem and Webspace</title>
+
+<p>The most commonly used configuration section containers are the
+ones that change the configuration of particular places in the
+filesystem or webspace.  First, it is important to understand the
+difference between the two.  The filesystem is the view of your disks
+as seen by your operating system.  For example, in a default install,
+Apache resides at <code>/usr/local/apache2</code> in the Unix
+filesystem or <code>"c:/Program Files/Apache Group/Apache2"</code> in
+the Windows filesystem.  (Note that forward slashes should always be
+used as the path separator in Apache, even for Windows.)  In contrast,
+the webspace is the view of your site as delivered by the web server
+and seen by the client.  So the path <code>/dir/</code> in the
+webspace corresponds to the path
+<code>/usr/local/apache2/htdocs/dir/</code> in the filesystem of a
+default Apache install on Unix.  The webspace need not map directly to
+the filesystem, since webpages may be generated dynamically
+from databases or other locations.</p>
+
+<section id="filesystem"><title>Filesystem Containers</title>
+
+<p>The <directive type="section" module="core">Directory</directive>
+and <directive type="section" module="core">Files</directive>
+directives, along with their regex counterparts, apply directives to
+parts of the filesystem.  Directives enclosed in a <directive
+type="section" module="core">Directory</directive> section apply to
+the named filesystem directory and all subdirectories of that
+directory.  The same effect can be obtained using <a
+href="howto/htaccess.html">.htaccess files</a>.  For example, in the
+following configuration, directory indexes will be enabled for the
+<code>/var/web/dir1</code> directory and all subdirectories.</p>
+
+<example>
+&lt;Directory /var/web/dir1&gt;<br />
+Options +Indexes<br />
+&lt;/Directory&gt;
+</example>
+
+<p>Directives enclosed in a <directive type="section"
+module="core">Files</directive> section apply to any file with
+the specified name, regardless of what directory it lies in.
+So for example, the following configuration directives will,
+when placed in the main section of the configuration file,
+deny access to any file named <code>private.html</code> regardless
+of where it is found.</p>
+
+<example>
+&lt;Files private.html&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Files&gt;
+</example>
+
+<p>To address files found in a particular part of the filesystem, the
+<directive type="section" module="core">Files</directive> and
+<directive type="section" module="core">Directory</directive> sections
+can be combined.  For example, the following configuration will deny
+access to <code>/var/web/dir1/private.html</code>,
+<code>/var/web/dir1/subdir2/private.html</code>,
+<code>/var/web/dir1/subdir3/private.html</code>, and any other instance
+of <code>private.html</code> found under the <code>/var/web/dir1/</code>
+directory.</p>
+
+<example>
+&lt;Directory /var/web/dir1&gt;<br />
+&lt;Files private.html&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Files&gt;<br />
+&lt;/Directory&gt;
+</example>
+</section>
+
+<section id="webspace"><title>Webspace Containers</title>
+
+<p>The <directive type="section" module="core">Location</directive>
+directive and its regex counterpart, on the other hand, change the
+configuration for content in the webspace.  For example, the following
+configuration prevents access to any URL-path that begins in /private.
+In particular, it will apply to requests for
+<code>http://yoursite.example.com/private</code>,
+<code>http://yoursite.example.com/private123</code>, and
+<code>http://yoursite.example.com/private/dir/file.html</code> as well
+as any other requests starting with the <code>/private</code> string.</p>
+
+<example>
+&lt;Location /private&gt;<br />
+Order Allow,Deny<br />
+Deny from all<br />
+&lt;/Location&gt;
+</example>
+
+<p>The <directive type="section" module="core">Location</directive>
+directive need not have anything to do with the filesystem.
+For example, the following example shows how to map a particular
+URL to an internal Apache handler provided by <module>mod_status</module>.
+No file called <code>server-status</code> needs to exist in the
+filesystem.</p>
+
+<example>
+&lt;Location /server-status&gt;<br />
+SetHandler server-status<br />
+&lt;/Location&gt;
+</example>
+</section>
+
+<section id="wildcards"><title>Wildcards and Regular Expressions</title>
+
+<p>The <directive type="section" module="core">Directory</directive>,
+<directive type="section" module="core">Files</directive>, and
+<directive type="section" module="core">Location</directive>
+directives can each use the shell-style wildcard characters "?" to
+match any single character, "*" to match any set of characters, and
+character classes like [a-zA-Z] to match particular characters.  This
+is useful to apply the same configuration to a group of filesystem or
+webspace locations. If even more flexible matching is required, each
+container has a regular-expression (regex) counterpart <directive
+type="section" module="core">DirectoryMatch</directive>, <directive
+type="section" module="core">FilesMatch</directive>, and <directive
+type="section" module="core">LocationMatch</directive> that allow
+perl-compatible<a href="glossary.html#regex">regular expressions</a>
+to be used in choosing the matches.  But see the section below on
+configuration merging to find out how using regex sections will change
+how directives are applied.</p>
+
+<p>A non-regex wildcard section that changes the configuration of
+all user directories could look as follows:</p>
+
+<example>
+&lt;Directory /home/*/public_html&gt;<br />
+Options Indexes<br />
+&lt;/Directory&gt;
+</example>
+
+<p>Using regex sections, we can deny access to many types of image files
+at once:</p>
+<example>
+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/FilesMatch&gt;
+</example>
+
+</section>
+
+<section id="whichwhen"><title>What to use When</title>
+
+<p>Choosing between filesystem containers and webspace containers is
+actually quite easy.  When applying directives to objects that reside
+in the filesystem always use <directive type="section"
+module="core">Directory</directive> or <directive type="section"
+module="core">Files</directive>.  When applying directives to objects
+that do not reside in the filesystem (such as a webpage generated from
+a database), use <directive type="section"
+module="core">Location</directive>.</p>
+
+<p>It is important to never use <directive type="section"
+module="core">Location</directive> when trying to restrict
+access to objects in the filesystem.  This is because many
+different webspace locations (URLs) could map to the same filesystem
+location, allowing your restrictions to be circumvented.
+For example, consider the following configuration:</p>
+
+<example>
+&lt;Location /dir/&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Location&gt;
+</example>
+
+<p>This works fine if the request is for
+<code>http://yoursite.example.com/dir/</code>.  But what if you are on
+a case-insensitive filesystem?  Then your restriction could be easily
+circumvented by requesting
+<code>http://yoursite.example.com/DIR/</code>.  The <directive
+type="section" module="core">Directory</directive> directive, in
+contrast, will apply to any content served from that location,
+regardless of how it is called.  (An exception is filesystem links.
+The same directory can be placed in more than one part of the
+filesystem using symbolic links.  The <directive type="section"
+module="core">Directory</directive> directive will follow the symbolic
+link without resetting the pathname.  Therefore, for the highest level
+of security, symbolic links should be disabled with the appropriate
+<directive module="core">Options</directive> directive.)</p>
+
+<p>If you are, perhaps, thinking that none of this applies to you
+because you use a case-sensitive filesystem, remember that there are
+many other ways to map multiple webspace locations to the same
+filesystem location.  Therefore you should always use the filesystem
+containers when you can.  There is, however, one exception to this
+rule.  Putting configuration restrictions in a <code>&lt;Location
+/&gt;</code> section is perfectly safe because this section will apply
+to all requests regardless of the specific URL.</p>
+</section>
+
+</section>
+
+<section id="virtualhost"><title>Virtual Hosts</title>
+
+<p>The <directive type="section" module="core">VirtualHost</directive>
+container encloses directives that apply to specific hosts.
+This is useful when serving multiple hosts from the same machine
+with a different configuration for each.  For more information,
+see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
+</section>
+
+<section id="proxy"><title>Proxy</title>
+
+<p>The <directive type="section" module="proxy">Proxy</directive>
+container applies enclosed configuration directives only
+to sites accessed through <module>mod_proxy</module>'s proxy server
+that match the specified URL.  For example, the following configuration
+will prevent the proxy server from being used to access the
+<code>cnn.com</code> website.</p>
+
+<example>
+&lt;Proxy http://cnn.com/*&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Proxy&gt;
+</example>
+</section>
+
+<section id="whatwhere"><title>What Directives are Allowed?</title>
+
+<p>To find out what directives are allowed in what types of
+configuration sections, check the <a
+href="mod/directive-dict.html#Context">Context</a> of the directive.
+Everything that is allowed in 
+<directive type="section" module="core">Directory</directive>
+sections is also syntactically allowed in
+<directive type="section" module="core">DirectoryMatch</directive>,
+<directive type="section" module="core">Files</directive>,
+<directive type="section" module="core">FilesMatch</directive>,
+<directive type="section" module="core">Location</directive>,
+<directive type="section" module="core">LocationMatch</directive>,
+and
+<directive type="section" module="proxy">Proxy</directive>
+sections.  There are some exceptions, however.</p>
+
+<ul>
+<li>The <directive module="core">AllowOverride</directive> directive
+works only in <directive type="section" module="core">Directory</directive>
+sections.</li>
+
+<li>The <code>FollowSymLinks</code> and
+<code>SymLinksIfOwnerMatch</code> <directive
+module="core">Options</directive> work only in <directive
+type="section" module="core">Directory</directive> sections or
+<code>.htaccess</code> files.</li>
+
+<li>The <directive module="core">Options</directive> directive cannot
+be used in <directive type="section" module="core">Files</directive>
+and <directive type="section" module="core">FilesMatch</directive>
+sections.</li>
+</ul>
+</section>
+
+<section id="mergin"><title>How the sections are merged</title>
+
+<p>The configuration sections are applied in a very particular order.
+Since this can have important effects on how configuration directives
+are interpreted, it is important to understand how this works.</p>
+
+    <p>The order of merging is:</p>
+
+    <ol>
+      <li> <directive type="section"
+      module="core">Directory</directive> (except regular expressions)
+      and .htaccess done simultaneously (with .htaccess, if allowed,
+      overriding <directive type="section"
+      module="core">Directory</directive>)</li>
+
+      <li><directive type="section" module="core">DirectoryMatch</directive>
+      (and <code>&lt;Directory ~&gt;</code>)</li>
+
+      <li><directive type="section"
+      module="core">Files</directive> and <directive
+      type="section" module="core">FilesMatch</directive> done
+      simultaneously</li>
+
+      <li><directive type="section" module="core">Location</directive>
+      and <directive type="section"
+      module="core">LocationMatch</directive> done simultaneously</li>
+    </ol>
+
+    <p>Apart from <directive type="section"
+    module="core">Directory</directive>, each group is processed in
+    the order that they appear in the configuration files.  <directive
+    type="section" module="core">Directory</directive> (group 1 above)
+    is processed in the order shortest directory component to longest.
+    So for example, <code>&lt;Directory /var/web/dir&gt;</code> will
+    be processed before <code>&lt;Directory
+    /var/web/dir/subdir&gt;</code>.  If multiple <directive
+    type="section" module="core">Directory</directive> sections apply
+    to the same directory they are processed in the configuration file
+    order. Configurations included via the <directive
+    module="core">Include</directive> directive will be treated as if
+    they were inside the including file at the location of the
+    <directive module="core">Include</directive> directive.</p>
+
+    <p>Sections inside <directive type="section"
+    module="core">VirtualHost</directive> sections
+    are applied <em>after</em> the corresponding sections outside
+    the virtual host definition. This allows virtual hosts to
+    override the main server configuration.</p>
+
+    <p>Later sections override earlier ones.</p>
+
+<note><title>Technical Note</title>
+      There is actually a
+      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+      sequence performed just before the name translation phase
+      (where <code>Aliases</code> and <code>DocumentRoots</code>
+      are used to map URLs to filenames). The results of this
+      sequence are completely thrown away after the translation has
+      completed.
+</note>
+
+<section id="merge-examples"><title>Some Examples</title>
+
+<p>Below is an artificial example to show the order of
+merging. Assuming they all apply to the request, the directives in
+this example will be applied in the order A &gt; B &gt; C &gt; D &gt;
+E.</p>
+
+<example>
+&lt;Location /&gt;<br />
+E<br />
+&lt;/Location&gt;<br />
+<br />
+&lt;Files f.html&gt;<br />
+D<br />
+&lt;/Files&gt;<br />
+<br />
+&lt;VirtualHost *&gt;<br />
+&lt;Directory /a/b&gt;<br />
+B<br />
+&lt;/Directory&gt;<br />
+&lt;/VirtualHost&gt;<br />
+<br />
+&lt;DirectoryMatch "^.*b$"&gt;<br />
+C<br />
+&lt;/DirectoryMatch&gt;<br />
+<br />
+&lt;Directory /a/b&gt;<br />
+A<br />
+&lt;/Directory&gt;<br />
+<br />
+</example>
+
+<p>For a more concrete example, consider the following.  Regardless of
+any access restrictions placed in <directive module="core"
+type="section">Directory</directive> sections, the <directive
+module="core" type="section">Location</directive> section will be
+evaluated last and will allow unrestricted access to the server.  In
+other words, order of merging is important, so be careful!</p>
+
+<example>
+&lt;Location /&gt;<br />
+Order deny,allow<br />
+Allow from all<br />
+&lt;/Location&gt;<br />
+<br />
+# Woops!  This &lt;Directory&gt; section will have no effect<br />
+&lt;Directory /&gt;<br />
+Order allow,deny<br />
+Allow from all<br />
+Deny from badguy.example.com<br />
+&lt;/Directory&gt;
+</example>
+
+</section>
+
+</section>
+</manualpage>
+
