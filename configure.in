@@ -36,6 +36,12 @@ dnl
 dnl ## Preload our OS configuration
 APR_PRELOAD
 
+dnl
+dnl Process command line arguments. This is done early in the process so the
+dnl user can get feedback quickly in case of an error.
+dnl
+APACHE_CHECK_DBM
+
 dnl ## Check for programs
 
 AC_PROG_AWK
@@ -174,9 +180,6 @@ INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/aputil"
 if test "$apache_need_sdbm" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS sdbm"
   AP_LIBS="$AP_LIBS lib/sdbm/libsdbm.la"
-  INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/sdbm"
-else
-  echo "Adding sdbm to the include list anyway until aputil configuration works..."
   INCLUDES="$INCLUDES -I\$(top_srcdir)/lib/sdbm"
 fi
 if test "$apache_need_expat" = "yes"; then
