@@ -383,7 +383,7 @@ static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_t
         if (rc != len) {
             return 1;
         }
-        apr_table_set(r->notes,"mod_userdir_user", data);
+        apr_table_set(r->notes,"mod_userdir_user", (const char *)data);
     }
     return 0;
 } 
