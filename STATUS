@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/01 02:27:39 $]
+Last modified at [$Date: 2004/03/01 18:05:05 $]
 
 Release:
 
@@ -86,6 +86,12 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_ssl: Send the Close Alert message to the peer before closing
       the SSL session.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_connection.h?r1=1.59&r2=1.60
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.118&r2=1.119
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/Makefile.in?r1=1.91&r2=1.92
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/connection.c?r1=1.114&r2=1.116
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.261&r2=1.263
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/eoc_bucket.c (new file)
       +1: madhum
 
     * mod_ssl: Fix nasty memory leak for each plain-HTTP-on-SSL-port request.
