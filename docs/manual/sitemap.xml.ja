@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!-- English revision: 1.31 -->
+<!-- English revision: 1.32 -->
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ja"> ]
 >
@@ -115,6 +115,7 @@
 <title>Apache その他</title>
 <page separate="yes" href="misc/">概略</page>
 <page href="cgi_path.html">CGI 環境の PATH_INFO の変更</page>
+<page href="misc/relevant_standards.html">関連する標準規格</page>
 </category>
 
 <category id="modules">

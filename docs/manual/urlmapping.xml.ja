@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.9 -->
 
 <manualpage metafile="urlmapping.xml.meta">
 
@@ -97,7 +97,7 @@
     を使って強力な正規表現に基づいたマッチと置換を行なうことができます。
     たとえば、</p>
 
-<example>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
+<example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</example>
 
     <p>は <code>http://example.com/~user/cgi-bin/script.cgi</code> への
@@ -140,7 +140,7 @@
     <code>/home/user/public_html/file.html</code> にマップされるようにするには、
     以下のように <code>AliasMatch</code> ディレクティブを使います:</p>
 
-<example>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
+<example>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
       /home/$1/public_html/$2</example>
 </section>
 
