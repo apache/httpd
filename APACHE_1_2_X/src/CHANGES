@@ -1,3 +1,11 @@
+Changes with Apache 1.2.2
+
+  *) API: Symbol APACHE_RELEASE provides a numeric form of the Apache
+     release version number, such that it always increases along the
+     same lines as our source code branching.  [Roy Fielding]
+
+  *) Minor oversight on multiple variants fixed.  [Paul Sutton] PR#94
+
 Changes with Apache 1.2.1
 
   *) SECURITY: Don't serve file system objects unless they are plain files,

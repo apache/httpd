@@ -263,7 +263,10 @@
 #define SERVER_VERSION	SERVER_BASEVERSION
 #endif
 
-#define APACHE_RELEASE_DATE 19970705
+/* Numeric release version identifier: major minor bugfix betaseq
+ * Always increases along the same track as the source branch.
+ */
+#define APACHE_RELEASE 1020201
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #define SERVER_SUPPORT "http://www.apache.org/"
