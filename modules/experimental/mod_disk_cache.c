@@ -625,7 +625,10 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         /* Make call to the same thing cache_select_url calls to crack Vary. */
         /* @@@ Some day, not today. */
         if (r->headers_in) {
-            rv = store_table(dobj->hfd, r->headers_in);
+            apr_table_t *headers_in;
+
+            headers_in = ap_cache_cacheable_hdrs_out(r->pool, r->headers_in);
+            rv = store_table(dobj->hfd, headers_in);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
