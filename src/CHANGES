@@ -1,5 +1,11 @@
 Changes with Apache 1.3b4
 
+  *) More mod_mime_magic cleanup:  fewer syscalls; should handle "files"
+     which don't exist on disk more gracefully; handles vhosts properly.
+     Update documentation to reflect the code -- if there's no
+     MimeMagicFile directive then the module is not enabled.
+     [Dean Gaudet]
+
   *) PORT: Some older *nix dialects cannot automatically start scripts
      which begin with a #! interpreter line (the shell starts the scripts
      appropriately on these platforms). Apache now supports starting of

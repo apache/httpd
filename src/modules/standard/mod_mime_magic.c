@@ -136,9 +136,6 @@
 #define MODNAME        "mod_mime_magic"
 #define MIME_MAGIC_DEBUG        0
 
-#ifndef MAGIC
-#define MAGIC "conf/magic"
-#endif
 #define MIME_BINARY_UNKNOWN    "application/octet-stream"
 #define MIME_TEXT_UNKNOWN    "text/plain"
 
@@ -258,7 +255,7 @@ static void mprint(request_rec *, union VALUETYPE *, struct magic *);
 static int uncompress(request_rec *, int, const unsigned char *,
 		      unsigned char **, int);
 static long from_oct(int, char *);
-static int fsmagic(request_rec *r, const char *fn, struct stat *sb);
+static int fsmagic(request_rec *r, const char *fn);
 
 /*
  * includes for ASCII substring recognition formerly "names.h" in file
@@ -296,7 +293,8 @@ static char *types[] =
     "message/rfc822",		/* "mail text", */
     "message/news",		/* "news text", */
     "application/binary",	/* "can't happen error on names.h/types", */
-    0};
+    0
+};
 
 static struct names {
     char *name;
@@ -495,7 +493,6 @@ typedef struct {
  */
 
 module mime_magic_module;
-extern module mime_module;
 
 static void *create_magic_server_config(pool *p, server_rec *d)
 {
@@ -511,17 +508,8 @@ static void *merge_magic_server_config(pool *p, void *basev, void *addv)
 			    palloc(p, sizeof(magic_server_config_rec));
 
     new->magicfile = add->magicfile ? add->magicfile : base->magicfile;
-    if (add->magic && add->last) {
-	new->magic = add->magic;
-	new->last = add->last;
-    }
-    else if (base->magic && base->last) {
-	new->magic = base->magic;
-	new->last = base->last;
-    }
-    else {
-	new->magic = new->last = NULL;
-    }
+    new->magic = NULL;
+    new->last = NULL;
     return new;
 }
 
@@ -545,7 +533,7 @@ static const char *set_magicfile(cmd_parms *cmd, char *d, char *arg)
 static command_rec mime_magic_cmds[] =
 {
     {"MimeMagicFile", set_magicfile, NULL, RSRC_CONF, TAKE1,
-     "Path to MIME Magic file (in file(1) format, default " MAGIC ")"},
+     "Path to MIME Magic file (in file(1) format)"},
     {NULL}
 };
 
@@ -847,15 +835,13 @@ static int magic_process(request_rec *r)
 {
     int fd = 0;
     unsigned char buf[HOWMANY + 1];	/* one extra for terminating '\0' */
-    struct utimbuf utbuf;
-    struct stat sb;
     int nbytes = 0;		/* number of bytes read from a datafile */
     int result;
 
     /*
      * first try judging the file based on its filesystem status
      */
-    switch ((result = fsmagic(r, r->filename, &sb))) {
+    switch ((result = fsmagic(r, r->filename))) {
     case DONE:
 	magic_rsl_putchar(r, '\n');
 	return result;
@@ -868,10 +854,6 @@ static int magic_process(request_rec *r)
 
     if ((fd = popenf(r->pool, r->filename, O_RDONLY, 0)) < 0) {
 	/* We can't open it, but we were able to stat it. */
-	/*
-	 * if (sb.st_mode & 0002) magic_rsl_puts(r,"writable, ");
-	 * if (sb.st_mode & 0111) magic_rsl_puts(r,"executable, ");
-	 */
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    MODNAME ": can't read `%s'", r->filename);
 	/* let some other handler decide what the problem is */
@@ -894,12 +876,6 @@ static int magic_process(request_rec *r)
 	tryit(r, buf, nbytes);
     }
 
-    /*
-     * Try to restore access, modification times if read it.
-     */
-    utbuf.actime = sb.st_atime;
-    utbuf.modtime = sb.st_mtime;
-    (void) utime(r->filename, &utbuf);	/* don't care if loses */
     (void) pclosef(r->pool, fd);
     (void) magic_rsl_putchar(r, '\n');
 
@@ -955,9 +931,6 @@ static int apprentice(server_rec *s, pool *p)
     magic_server_config_rec *conf = (magic_server_config_rec *)
 		    get_module_config(s->module_config, &mime_magic_module);
 
-    if (!conf->magicfile) {
-	conf->magicfile = pstrdup(p, MAGIC);
-    }
     fname = server_root_relative(p, conf->magicfile);
     f = pfopen(p, fname, "r");
     if (f == NULL) {
@@ -1460,28 +1433,9 @@ static int hextoint(int c)
  * return OK to indicate it's a regular file still needing handling
  * other returns indicate a failure of some sort
  */
-static int fsmagic(request_rec *r, const char *fn, struct stat *sb)
+static int fsmagic(request_rec *r, const char *fn)
 {
-    int ret = 0;
-
-    /* we don't care to identify symlinks, only their contents are
-     * important */
-    ret = stat(fn, sb);		/* don't merge into if; see "ret =" above */
-
-    if (ret) {
-	/* If the file doesn't exist or something let some other module
-	 * further along handle it.
-	 */
-	return DECLINED;
-    }
-
-    /*
-     * if (sb->st_mode & S_ISUID) magic_rsl_puts(r,"setuid "); 
-     * if (sb->st_mode & S_ISGID) magic_rsl_puts(r,"setgid "); 
-     * if (sb->st_mode & S_ISVTX) magic_rsl_puts(r,"sticky ");
-     */
-
-    switch (sb->st_mode & S_IFMT) {
+    switch (r->finfo.st_mode & S_IFMT) {
     case S_IFDIR:
 	magic_rsl_puts(r, DIR_MAGIC_TYPE);
 	return DONE;
@@ -1530,14 +1484,14 @@ static int fsmagic(request_rec *r, const char *fn, struct stat *sb)
 	break;
     default:
 	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
-		    MODNAME ": invalid mode 0%o.", (unsigned int)sb->st_mode);
+		    MODNAME ": invalid mode 0%o.", (unsigned int)r->finfo.st_mode);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /*
      * regular file, check next possibility
      */
-    if (sb->st_size == 0) {
+    if (r->finfo.st_size == 0) {
 	magic_rsl_puts(r, MIME_TEXT_UNKNOWN);
 	return DONE;
     }
@@ -2394,47 +2348,51 @@ static int revision_suffix(request_rec *r)
  * initialize the module
  */
 
-static void magic_init(server_rec *s, pool *p)
+static void magic_init(server_rec *main_server, pool *p)
 {
     int result;
-    magic_server_config_rec *conf = (magic_server_config_rec *)
-			get_module_config(s->module_config, &mime_magic_module);
+    magic_server_config_rec *conf;
+    magic_server_config_rec *main_conf;
+    server_rec *s;
 #if MIME_MAGIC_DEBUG
     struct magic *m, *prevm;
 #endif /* MIME_MAGIC_DEBUG */
 
-    /* on the first time through we read the magic file */
-    if (conf->magicfile && !conf->magic) {
-	result = apprentice(s, p);
-	if (result == -1)
-	    return;
-#if MIME_MAGIC_DEBUG
-	prevm = 0;
-	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
-		    MODNAME ": magic_init 1 test");
-	for (m = conf->magic; m; m = m->next) {
-	    if (isprint((((unsigned long) m) >> 24) & 255) &&
-		isprint((((unsigned long) m) >> 16) & 255) &&
-		isprint((((unsigned long) m) >> 8) & 255) &&
-		isprint(((unsigned long) m) & 255)) {
-		aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
-			    MODNAME ": magic_init 1: POINTER CLOBBERED! "
-			    "m=\"%c%c%c%c\" line=%d",
-			    (((unsigned long) m) >> 24) & 255,
-			    (((unsigned long) m) >> 16) & 255,
-			    (((unsigned long) m) >> 8) & 255,
-			    ((unsigned long) m) & 255,
-			    prevm ? prevm->lineno : -1);
-		break;
-	    }
-	    prevm = m;
+    main_conf = get_module_config(main_server->module_config, &mime_magic_module);
+    for (s = main_server; s; s = s->next) {
+	conf = get_module_config(s->module_config, &mime_magic_module);
+	if (conf->magicfile == NULL && s != main_server) {
+	    /* inherits from the parent */
+	    *conf = *main_conf;
 	}
+	else if (conf->magicfile) {
+	    result = apprentice(s, p);
+	    if (result == -1)
+		return;
+#if MIME_MAGIC_DEBUG
+	    prevm = 0;
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+			MODNAME ": magic_init 1 test");
+	    for (m = conf->magic; m; m = m->next) {
+		if (isprint((((unsigned long) m) >> 24) & 255) &&
+		    isprint((((unsigned long) m) >> 16) & 255) &&
+		    isprint((((unsigned long) m) >> 8) & 255) &&
+		    isprint(((unsigned long) m) & 255)) {
+		    aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+				MODNAME ": magic_init 1: POINTER CLOBBERED! "
+				"m=\"%c%c%c%c\" line=%d",
+				(((unsigned long) m) >> 24) & 255,
+				(((unsigned long) m) >> 16) & 255,
+				(((unsigned long) m) >> 8) & 255,
+				((unsigned long) m) & 255,
+				prevm ? prevm->lineno : -1);
+		    break;
+		}
+		prevm = m;
+	    }
 #endif
+	}
     }
-
-    if (!conf->magic)
-	return;
-    return;
 }
 
 /*
@@ -2444,18 +2402,21 @@ static void magic_init(server_rec *s, pool *p)
 static int magic_find_ct(request_rec *r)
 {
     int result;
+    magic_server_config_rec *conf;
+
+    /* the file has to exist */
+    if (r->finfo.st_mode == 0 || !r->filename) {
+	return DECLINED;
+    }
 
     /* was someone else already here? */
     if (r->content_type) {
 	return DECLINED;
     }
 
-    /* make sure mime_module was called first - it's cheaper! */
-    if (mime_module.type_checker) {
-	result = (mime_module.type_checker) (r);
-	if (result == OK) {
-	    return OK;
-	}
+    conf = get_module_config(r->server->module_config, &mime_magic_module);
+    if (!conf || !conf->magic) {
+	return DECLINED;
     }
 
     /* initialize per-request info */
