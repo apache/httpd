@@ -2806,7 +2806,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
             rv = apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
 
             if (APR_STATUS_IS_EAGAIN(rv)) {
-                continue;
+                return APR_EOF;
             }
             else if (rv != APR_SUCCESS)
                 return rv;
