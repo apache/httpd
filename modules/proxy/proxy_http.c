@@ -334,16 +334,16 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	backend->connection = NULL;
 
 	/* see memory note above */
-	if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, c->pool)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+	if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, c->pool)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
 			 "proxy: error creating socket");
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 #if !defined(TPF) && !defined(BEOS)
-	if (conf->recv_buffer_size > 0 && apr_setsocketopt(sock, APR_SO_RCVBUF,
-	    conf->recv_buffer_size)) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+	if (conf->recv_buffer_size > 0 && (rv = apr_setsocketopt(sock, APR_SO_RCVBUF,
+	    conf->recv_buffer_size))) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			  "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
 	}
 #endif
@@ -368,11 +368,11 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	while (connect_addr) {
 
 	    /* make the connection out of the socket */
-	    err = apr_connect(sock, connect_addr);
+	    rv = apr_connect(sock, connect_addr);
 
 	    /* if an error occurred, loop round and try again */
-            if (err != APR_SUCCESS) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+            if (rv != APR_SUCCESS) {
+		ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
 			     "proxy: attempt to connect to %pI (%s) failed", 
 			     connect_addr, connectname);
 		connect_addr = connect_addr->next;
@@ -590,7 +590,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer), &eos))) {
 	apr_socket_close(sock);
 	backend->connection = NULL;
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 	     "proxy: error reading status line from remote server %s",
 	     connectname);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,

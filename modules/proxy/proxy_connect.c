@@ -104,13 +104,11 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 {
     apr_pool_t *p = r->pool;
     apr_socket_t *sock;
+    apr_status_t err, rv;
     char buffer[HUGE_STRING_LEN];
-    int i, err;
+    int i;
     apr_size_t nbytes;
 
-#if 0
-    apr_socket_t *client_sock = NULL;
-#endif
     apr_pollfd_t *pollfd;
     apr_int32_t pollcnt;
     apr_int16_t pollevent;
@@ -193,8 +191,8 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     }
 
     /* create a new socket */
-    if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -217,11 +215,11 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 	while (connect_addr) {
 
 	    /* make the connection out of the socket */
-	    err = apr_connect(sock, connect_addr);
+	    rv = apr_connect(sock, connect_addr);
 
 	    /* if an error occurred, loop round and try again */
-            if (err != APR_SUCCESS) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+            if (rv != APR_SUCCESS) {
+		ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
 			     "proxy: CONNECT: attempt to connect to %pI (%s) failed", connect_addr, connectname);
 		connect_addr = connect_addr->next;
 		continue;
@@ -296,10 +294,10 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
 /*    r->sent_bodyct = 1;*/
 
-    if(apr_poll_setup(&pollfd, 2, r->pool) != APR_SUCCESS)
+    if((rv = apr_poll_setup(&pollfd, 2, r->pool)) != APR_SUCCESS)
     {
 	apr_socket_close(sock);
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy: CONNECT: error apr_poll_setup()");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -312,10 +310,10 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
 /*	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server, "proxy: CONNECT: going to sleep (poll)");*/
-        if (apr_poll(pollfd, &pollcnt, -1) != APR_SUCCESS)
+        if ((rv = apr_poll(pollfd, &pollcnt, -1)) != APR_SUCCESS)
         {
 	    apr_socket_close(sock);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "proxy: CONNECT: error apr_poll()");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy: CONNECT: error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 /*	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
