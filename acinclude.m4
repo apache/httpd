@@ -255,7 +255,7 @@ AC_DEFUN(APACHE_MODULE,[
   if test "$enable_$1" != "no"; then
     case "$enable_$1" in
     shared*)
-      enable_$1=`echo $ac_n $enable_$1$ac_c|sed 's/shared,*//'`
+      enable_$1=`echo $enable_$1|sed 's/shared,*//'`
       sharedobjs=yes
       shared=yes
       DSO_MODULES="$DSO_MODULES $1"
