@@ -628,6 +628,18 @@ do
             datadir="$apc_optarg"       
             autosuffix_datadir=no
             ;;
+        --iconsdir=*) 
+            iconsdir="$apc_optarg" 
+            autosuffix_iconsdir=no
+            ;;
+        --htdocsdir=*) 
+            htdocsdir="$apc_optarg" 
+            autosuffix_htdocsdir=no
+            ;;
+        --cgidir=*) 
+            cgidir="$apc_optarg" 
+            autosuffix_cgidir=no
+            ;;
         --includedir=*)       
             includedir="$apc_optarg"       
             autosuffix_includedir=no

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
 
+  *) Add --iconsdir, --htdocsdir, and --cgidir option to top-level
+     configure script to allow one to override the corresponding 
+     variables from config.layout.
+     [Ralf S. Engelschall]
+
   *) Fixed `quad integer' (aka `long long') handling in ap_snprintf.c
      [Ralf S. Engelschall]
 
