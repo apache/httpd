@@ -28,22 +28,24 @@ them are more compatible than others.</p>
 </blockquote>
 
 <p>
-Here we talk about backward compatibility to other SSL solutions. As you
-perhaps know, mod_ssl is not the only existing SSL solution for Apache.
-Actually there are four additional major products available on the market: Ben
-Laurie's freely available <a href="http://www.apache-ssl.org/">Apache-SSL</a>
-(from where mod_ssl were originally derived in 1998), Red Hat's commercial <a href="http://www.redhat.com/products/product-details.phtml?id=rhsa">Secure Web
-Server</a> (which is based on mod_ssl), Covalent's commercial <a href="http://raven.covalent.net/">Raven SSL Module</a> (also based on mod_ssl)
-and finally C2Net's commercial product <a href="http://www.c2.net/products/stronghold/">Stronghold</a> (based on a
-different evolution branch named Sioux up to Stronghold 2.x and based on
-mod_ssl since Stronghold 3.x).</p>
+This page covers backwards compatibility between mod_ssl and other
+SSL solutions.  mod_ssl is not the only SSL solution for Apache; four
+additional products are (or were) also available: Ben Laurie's freely
+available <a href="http://www.apache-ssl.org/">Apache-SSL</a> (from
+where mod_ssl were originally derived in 1998), Red Hat's commercial
+<a href="http://www.redhat.com/products/product-details.phtml?id=rhsa">Secure
+Web Server</a> (which was based on mod_ssl), Covalent's commercial <a href="http://www.covalent.net/">Raven SSL Module</a> (also based on
+mod_ssl) and finally C2Net's (now Red Hat's) commercial product <a href="http://www.redhat.com/explore/stronghold/">Stronghold</a> (based
+on a different evolution branch named Sioux up to Stronghold 2.x and
+based on mod_ssl since Stronghold 3.x).</p>
 
 <p>
-The idea in mod_ssl is mainly the following: because mod_ssl provides mostly a
-superset of the functionality of all other solutions we can easily provide
-backward compatibility for most of the cases. Actually there are three
-compatibility areas we currently address: configuration directives,
-environment variables and custom log functions.</p>   
+mod_ssl mostly provides a superset of the functionality of all other
+solutions, so it's simple to migrate from one of the older modules to
+mod_ssl. The configuration directives and environment variable names
+used by the older SSL solutions vary from those used in mod_ssl;
+tables are included here to give the equivalents used by mod_ssl to
+allow easy migration. .</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configuration">Configuration Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#variables">Environment Variables</a></li>
@@ -52,15 +54,11 @@ environment variables and custom log functions.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="configuration" id="configuration">Configuration Directives</a></h2>
-<p>For backward compatibility to the configuration directives of other SSL
-solutions we do an on-the-fly mapping: directives which have a direct
-counterpart in mod_ssl are mapped silently while other directives lead to a
-warning message in the logfiles. The currently implemented directive mapping
-is listed in <a href="#table1">Table 1</a>. Currently full backward
-compatibility is provided only for Apache-SSL 1.x and mod_ssl 2.0.x.
-Compatibility to Sioux 1.x and Stronghold 2.x is only partial because of
-special functionality in these interfaces which mod_ssl (still) doesn't
-provide.</p>
+<p>The mapping between configuration directives used by Apache-SSL
+1.x and mod_ssl 2.0.x is given in <a href="#table1">Table
+1</a>. The mapping from Sioux 1.x and Stronghold 2.x is only partial
+because of special functionality in these interfaces which mod_ssl
+doesn't provide.</p>
 
 
 <h3><a name="table1" id="table1">Table 1: Configuration Directive Mapping</a></h3>
@@ -98,9 +96,9 @@ provide.</p>
 <tr><td><code>SSL_X509VerifyPolicy</code> <em>arg</em></td><td>-</td><td>functionality not supported</td></tr>
 <tr class="odd"><td><code>SSL_LogX509Attributes</code> <em>arg</em></td><td>-</td><td>functionality not supported</td></tr>
 <tr class="header"><th colspan="3">Stronghold 2.x compatibility:</th></tr>
-<tr><td><code>StrongholdAccelerator</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr class="odd"><td><code>StrongholdKey</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr><td><code>StrongholdLicenseFile</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><td><code>StrongholdAccelerator</code> <em>engine</em></td><td><code>SSLCryptoDevice</code> <em>engine</em></td><td>renamed</td></tr>
+<tr class="odd"><td><code>StrongholdKey</code> <em>dir</em></td><td>-</td><td>functionality not needed</td></tr>
+<tr><td><code>StrongholdLicenseFile</code> <em>dir</em></td><td>-</td><td>functionality not needed</td></tr>
 <tr class="odd"><td><code>SSLFlag</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renamed</td></tr>
 <tr><td><code>SSLSessionLockFile</code> <em>file</em></td><td><code>SSLMutex</code> <em>file</em></td><td>renamed</td></tr>
 <tr class="odd"><td><code>SSLCipherList</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renamed</td></tr>
@@ -110,20 +108,17 @@ provide.</p>
 <tr class="odd"><td><code>SSL_CertificateLogDir</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
 <tr><td><code>AuthCertDir</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
 <tr class="odd"><td><code>SSL_Group</code> <em>name</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr><td><code>SSLProxyMachineCertPath</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr class="odd"><td><code>SSLProxyMachineCertFile</code> <em>file</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr><td><code>SSLProxyCACertificatePath</code> <em>dir</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr class="odd"><td><code>SSLProxyCACertificateFile</code> <em>file</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr><td><code>SSLProxyVerifyDepth</code> <em>number</em></td><td>-</td><td>functionality not supported</td></tr>
-<tr class="odd"><td><code>SSLProxyCipherList</code> <em>spec</em></td><td>-</td><td>functionality not supported</td></tr>
+<tr><td><code>SSLProxyMachineCertPath</code> <em>dir</em></td><td><code>SSLProxyMachineCertificatePath</code> <em>dir</em></td><td>renamed</td></tr>
+<tr class="odd"><td><code>SSLProxyMachineCertFile</code> <em>file</em></td><td><code>SSLProxyMachineCertificateFile</code> <em>file</em></td><td>renamed</td></tr>
+<tr><td><code>SSLProxyCipherList</code> <em>spec</em></td><td><code>SSLProxyCipherSpec</code> <em>spec</em></td><td>renamed</td></tr>
 </table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Environment Variables</a></h2>
-<p>When you use ``<code>SSLOptions +CompatEnvVars</code>'' additional environment
-variables are generated. They all correspond to existing official mod_ssl
-variables. The currently implemented variable derivation is listed in <a href="#table2">Table 2</a>.</p>
+<h2><a name="variables" id="variables">Environment Variables</a></h2> 
+
+<p>The mapping between environment variable names used by the older
+SSL solutions and the names used by mod_ssl is given in <a href="#table2">Table 2</a>.</p>
 
 <h3><a name="table2" id="table2">Table 2: Environment Variable Derivation</a></h3>
 
@@ -199,8 +194,7 @@ variables. The currently implemented variable derivation is listed in <a href="#
 <div class="section">
 <h2><a name="customlog" id="customlog">Custom Log Functions</a></h2>
 <p>
-When mod_ssl is built into Apache or at least loaded (under DSO situation)
-additional functions exist for the <a href="../mod/mod_log_config.html#formats">Custom Log Format</a> of
+When mod_ssl is enabled, additional functions exist for the <a href="../mod/mod_log_config.html#formats">Custom Log Format</a> of
 <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> as documented in the Reference
 Chapter. Beside the ``<code>%{</code><em>varname</em><code>}x</code>''
 eXtension format function which can be used to expand any variables provided
