@@ -136,16 +136,16 @@
           <table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
             <table bgcolor="#ffffff">
               <tr>
-                <td valign="top"><span class="help"><xsl:value-of select="$messages/message[@name='description']"/>:</span></td>
+                <td valign="top" nowrap="nowrap"><span class="help"><xsl:value-of select="$messages/message[@name='description']"/>:</span></td>
                 <td><xsl:apply-templates select="description"/></td>
               </tr>
               <tr>
-                <td><a class="help" href="module-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a></td>
+                <td nowrap="nowrap"><a class="help" href="module-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a></td>
                 <td><xsl:value-of select="status"/></td>
               </tr>
               <xsl:if test="identifier">
                 <tr>
-                  <td><a class="help" href="module-dict.html#ModuleIdentifier"><xsl:value-of select="$messages/message[@name='moduleidentifier']"/>:</a> </td>
+                  <td nowrap="nowrap"><a class="help" href="module-dict.html#ModuleIdentifier"><xsl:value-of select="$messages/message[@name='moduleidentifier']"/>:</a> </td>
                   <td><xsl:value-of select="identifier"/></td>
                 </tr>
               </xsl:if>
