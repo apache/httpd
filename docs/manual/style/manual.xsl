@@ -9,6 +9,30 @@
 
 <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
 
+<xsl:template match="directiveindex">
+<html>
+<head><title><xsl:value-of select="title"/> - Apache HTTP Server</title>
+<link rel="stylesheet" type="text/css" href="../style/manual.css" />
+</head>
+<body>
+  <blockquote>
+   <div align="center">
+    <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+    <h3>Apache HTTP Server Version 2.0</h3>
+   </div>
+   <h1 align="center"><xsl:value-of select="title"/></h1>
+<xsl:apply-templates select="summary" />
+<ul>
+<xsl:for-each select="document(modulelist/modulefile)/modulesynopsis/directivesynopsis">
+<xsl:sort select="name"/>
+<li><a href="{/modulesynopsis/name}.html#{name}"><xsl:value-of select="name"/></a></li>
+</xsl:for-each>
+</ul>
+</blockquote>
+</body>
+</html>
+</xsl:template>
+
  <!-- Process an entire document into an HTML page -->
  <xsl:template match="modulesynopsis">
 <html>
