@@ -1636,9 +1636,70 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             backend_addr = backend_addr->next;
             continue;
         }
-        conn->sock   = newsock;
-        conn->worker = worker;
-        connected    = 1;
+        
+        conn->sock     = newsock;
+        conn->worker   = worker;
+        /* XXX: the hostname will go from proxy_conn_rec
+         * keep for now.
+         * We will 'optimize' later, both code and unneeded data
+         */
+        conn->hostname = worker->hostname;
+        connected      = 1;
     }
-    return connected ? 0 : 1;
+    return connected ? OK : DECLINED;
+}
+
+PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
+                                              proxy_conn_rec *conn,
+                                              proxy_server_conf *conf,
+                                              conn_rec *c,
+                                              server_rec *s)
+{
+    proxy_worker *worker = conn->worker;
+    apr_sockaddr_t *backend_addr = worker->cp->addr;
+
+    /* The socket is now open, create a new backend server connection 
+    * 
+    */
+    conn->connection = ap_run_create_connection(c->pool, s, conn->sock,
+                                                c->id, c->sbh,
+                                                c->bucket_alloc);
+
+    if (!conn->connection) {
+        /* the peer reset the connection already; ap_run_create_connection() 
+        * closed the socket
+        */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
+                     s, "proxy: %s: an error occurred creating a "
+                     "new connection to %pI (%s)", proxy_function,
+                     backend_addr, conn->hostname);
+        /* XXX: Will be closed when proxy_conn is closed */
+        apr_socket_close(conn->sock);
+        conn->sock = NULL;
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    /* For ssl connection to backend */
+    if (conn->is_ssl) {
+        if (!ap_proxy_ssl_enable(conn->connection)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                         s, "proxy: %s: failed to enable ssl support "
+                         "for %pI (%s)", proxy_function, 
+                         backend_addr, conn->hostname);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+    }
+    else {
+        /* TODO: See if this will break FTP */
+        ap_proxy_ssl_disable(conn->connection);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "proxy: %s: connection complete to %pI (%s)",
+                 proxy_function, backend_addr, conn->hostname);
+
+    /* set up the connection filters */
+    ap_run_pre_connection(conn->connection, conn->sock);
+
+    return OK;
 }
