@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/04 15:38:19 $]
+  Last modified at [$Date: 1999/12/06 21:48:40 $]
 
 Release:
 
@@ -42,9 +42,20 @@ Documentation that needs writing:
 
 
 Available Patches:
+    * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
+	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
+	Status: 
+
+    * Raymond S Brand's path to mod_autoindex to fix the header/readme
+      include processing so the envariables are correct for the included
+      documents.  (Actually, there are two variants in the patch message,
+      for two different ways of doing it.)
+	Message-ID: <384AA242.B93F8B5@rsbx.net>
+	Status: 
+
     * Jayaram's patch (10/27/99) to fix PR4856
-        PR: 4856 It is found that UnSetEnv directive fails to unset the environment
-        variable in the server config context.
+        PR: 4856 It is found that UnSetEnv directive fails to unset the
+	environment variable in the server config context.
 	Status:
 
     * Jayaram's patch (10/27/99) for changes to mod_autoindex
