@@ -1,5 +1,13 @@
 Changes with Apache 1.3.13
 
+  *) Correct the problem where the only local host name that the IP stack
+     can discover are 'undotted' private names.  If no fully qualified
+     domain name can be identified, the default ServerName will be set to
+     the machine's IP address string. A warning is provided if Apache has
+     to assume the IP dotted address string or the localhost/loopback
+     address as the ServerName.  The default ServerName is removed from
+     the default Win32 httpd.conf file.  [William Rowe]
+
   *) Add new directives RemoveType and  RemoveEncoding to accompany the
      RemoveHandler directive added in 1.3.4.  AddType, AddEncoding, and
      AddHandler now all have corresponding 'undo' directives.  This allows
@@ -30,12 +38,6 @@ Changes with Apache 1.3.13
   *) Export from Win32 the ap_start_shutdown and ap_start_restart symbols 
      for modules and executables dynamically linked to the core.
      [William Rowe; Jim Patterson <jim-patterson@ncf.ca>]
-
-  *) Correct the problem where the only local host name that the IP stack
-     can discover are 'undotted' private names.  If no fully qualified
-     domain name can be identified, the default ServerName will be set to
-     the machine's IP address string. A warning is always provided if the
-     ServerName not specified, but assumed.  [William Rowe]
 
   *) Prevent the source code for CGIs from being revealed when using
      mod_vhost_alias and the CGI directory is under the document root
