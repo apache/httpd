@@ -764,6 +764,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                  * Otherwise, skip over the mismatches.
                  */
                 if (entry_core->d_components
+                    && (entry_core->d_components < seg)
                     && (entry_core->d_is_fnmatch
                         ? (apr_fnmatch(entry_core->d, r->filename,
                                        FNM_PATHNAME) != APR_SUCCESS)
