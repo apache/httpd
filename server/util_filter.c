@@ -239,6 +239,14 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *b
     if (next) {
         ap_bucket *e;
         if ((e = AP_BRIGADE_LAST(bb)) && AP_BUCKET_IS_EOS(e) && next->r) {
+            /* This is only safe because HTTP_HEADER filter is always in
+             * the filter stack.   This ensures that there is ALWAYS a
+             * request-based filter that we can attach this to.  If the
+             * HTTP_FILTER is removed, and another filter is not put in its
+             * place, then handlers like mod_cgi, which attach their own
+             * EOS bucket to the brigade will be broken, because we will
+             * get two EOS buckets on the same request.
+             */
             next->r->eos_sent = 1;
         }
         return next->frec->filter_func.out_func(next, bb);
