@@ -1565,7 +1565,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
      * either, if the base paths match, we can pick up where we leave off.
      */
 
-    if (strncmp(rnew->filename, fdir, fdirlen) != 0
+    if (strncmp(rnew->filename, fdir, fdirlen) == 0
            && rnew->filename[fdirlen] 
            && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL) 
     {
