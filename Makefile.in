@@ -1,5 +1,5 @@
 
-SUBDIRS = modules os server srclib support test
+SUBDIRS = modules os server srclib support
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
