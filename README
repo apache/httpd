@@ -17,8 +17,8 @@ included, in HTML format, in the htdocs/manual/ directory. For the
 most up-to-date documentation, visit us on the WWW, at
 <URL:http://www.apache.org/>.
 
-Installation
-------------
+New Installations
+-----------------
 
 NOTE: Windows users please see http://www.apache.org/docs/windows.html,
       or the htdocs/manual/windows.html file included with Apache. The
@@ -61,6 +61,30 @@ By default the srm.conf and access.conf files are located by name - to
 specifically call them by other names, use the AccessConfig and
 ResourceConfig directives in httpd.conf.
 
+Upgrading an Existing Apache Environment
+----------------------------------------
+
+Between releases of Apache, there are several files that are likely
+to get changed (aside from the source, of course).  These include:
+
+  src/Makefile.tmpl
+  src/Configuration.tmpl
+  src/Configure
+  conf/*.conf-dist
+  conf/mime.types
+
+It's recommended that you unpack a new Apache version distribution
+into a different directory than the existing one, and check these
+files against the ones you already have for new or changed directives.
+It's almost certain that the Configure, Configuration.tmpl, and
+Makefile.tmpl files are going to change, so pay particular attention
+to merging your existing Configuration settings with the ones in
+the Configuration.tmpl file to make a new Configuration file in the
+new Apache src directory.  Then follow the steps for a new
+installation to build and test the new server before replacing
+the existing Apache directory tree with the one from the new
+distribution.
+
 The Latest Version
 ------------------
 
@@ -90,4 +114,4 @@ This package contains software written and copyrighted by Henry Spencer.
 Please see the file called src/regex/COPYRIGHT. 
 
 The NT port was started with code provided to the Apache Group
-by Ambarish Malpani of ValiCert, Inc. (www.valicert.com).
+by Ambarish Malpani of ValiCert, Inc. (<http://www.valicert.com/>).
