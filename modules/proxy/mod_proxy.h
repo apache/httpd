@@ -381,7 +381,7 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r);
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
 PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
-                                       int isenc);
+                                       int forcedec, int proxyreq);
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
                                            char **passwordp, char **hostp, apr_port_t *port);
 PROXY_DECLARE(const char *)ap_proxy_date_canon(apr_pool_t *p, const char *x);

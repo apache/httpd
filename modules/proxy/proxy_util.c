@@ -130,10 +130,10 @@ PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x)
  * Convert a URL-encoded string to canonical form.
  * It decodes characters which need not be encoded,
  * and encodes those which must be encoded, and does not touch
- * those which must not be touched.
+ * those which must not be touched. 
  */
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
-    int isenc)
+    int forcedec, int proxyreq)
 {
     int i, j, ch;
     char *y;
@@ -174,8 +174,11 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
         y[j] = ch;
         continue;
     }
-/* decode it if not already done */
-    if (isenc && ch == '%') {
+/* 
+ * decode it if not already done. do not decode reverse proxied URLs
+ * unless specifically forced
+ */
+    if ((forcedec || (proxyreq && proxyreq != PROXYREQ_REVERSE)) && ch == '%') {
         if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2]))
         return NULL;
         ch = ap_proxy_hex2c(&x[i + 1]);
@@ -238,12 +241,12 @@ PROXY_DECLARE(char *)
     strp = strchr(user, ':');
     if (strp != NULL) {
         *strp = '\0';
-        password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
+        password = ap_proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1, 0);
         if (password == NULL)
         return "Bad %-escape in URL (password)";
     }
 
-    user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1);
+    user = ap_proxy_canonenc(p, user, strlen(user), enc_user, 1, 0);
     if (user == NULL)
         return "Bad %-escape in URL (username)";
     }
