@@ -123,7 +123,6 @@ static int dying = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
-static ap_listen_rec *listensocks;
 static fd_queue_t *worker_queue;
 
 /* The structure used to pass unique initialization info to each thread */
@@ -563,10 +562,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     void *csd = NULL;
     apr_pool_t *ptrans;		/* Pool for per-transaction stuff */
     int n;
-    int curr_pollfd, last_pollfd = 0;
-    int offset = 0;
     apr_pollfd_t *pollset;
     apr_status_t rv;
+    ap_listen_rec *lr, *last_lr = ap_listeners;
 
     free(ti);
 
@@ -575,8 +573,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     apr_thread_mutex_unlock(worker_thread_count_mutex);
 
     apr_poll_setup(&pollset, num_listensocks, tpool);
-    for(n=0 ; n < num_listensocks ; ++n)
-	apr_poll_socket_add(pollset, listensocks[n].sd, APR_POLLIN);
+    for(lr = ap_listeners ; lr != NULL ; lr = lr->next)
+	apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -614,26 +612,26 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
 
             if (workers_may_exit) break;
 
-            if (num_listensocks == 1) {
-                offset = 0;
+            if (ap_listeners->next == NULL) {
+                /* only one listener */
+                lr = ap_listeners;
                 goto got_fd;
             }
             else {
                 /* find a listener */
-                curr_pollfd = last_pollfd;
+                lr = last_lr;
                 do {
-                    curr_pollfd++;
-                    if (curr_pollfd >= num_listensocks) {
-                        curr_pollfd = 0;
+                    lr = lr->next;
+                    if (lr == NULL) {
+                        lr = ap_listeners;
                     }
                     /* XXX: Should we check for POLLERR? */
-		    apr_poll_revents_get(&event, listensocks[curr_pollfd].sd, pollset);
+		    apr_poll_revents_get(&event, lr->sd, pollset);
                     if (event & APR_POLLIN) {
-                        last_pollfd = curr_pollfd;
-			offset = curr_pollfd;
+                        last_lr = lr;
                         goto got_fd;
                     }
-                } while (curr_pollfd != last_pollfd);
+                } while (lr != last_lr);
             }
         }
     got_fd:
@@ -641,7 +639,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             /* create a new transaction pool for each accepted socket */
             apr_pool_create(&ptrans, tpool);
 
-            rv = listensocks[offset].accept_func(&csd, &listensocks[offset], ptrans);
+            rv = lr->accept_func(&csd, lr, ptrans);
 
             if (rv == APR_EGENERAL) {
                 signal_workers();
@@ -817,7 +815,6 @@ static void child_main(int child_num_arg)
 {
     apr_thread_t **threads;
     int i;
-    ap_listen_rec *lr;
     apr_status_t rv;
     thread_starter *ts;
     apr_threadattr_t *thread_attr;
@@ -860,14 +857,6 @@ static void child_main(int child_num_arg)
         requests_this_child = INT_MAX;
     }
     
-    /* Set up the pollfd array */
-    listensocks = apr_pcalloc(pchild,
-			    sizeof(*listensocks) * (num_listensocks));
-    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, ++i) {
-	listensocks[i].sd=lr->sd;
-        listensocks[i].accept_func = lr->accept_func;
-    }
-
     /* Setup worker threads */
 
     /* clear the storage; we may not create all our threads immediately, and we want
