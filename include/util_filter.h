@@ -300,7 +300,7 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade
  *        AP_FTYPE_CONNECTION
  * @see add_input_filter()
  */
-AP_DECLARE(void) ap_register_input_filter(const char *name,
+AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
 					  ap_in_filter_func filter_func,
 					  ap_filter_type ftype);
 /**
@@ -315,7 +315,7 @@ AP_DECLARE(void) ap_register_input_filter(const char *name,
  *              ::AP_FTYPE_CONNECTION
  * @see ap_add_output_filter()
  */
-AP_DECLARE(void) ap_register_output_filter(const char *name,
+AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
 					    ap_out_filter_func filter_func,
 					    ap_filter_type ftype);
 

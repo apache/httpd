@@ -74,6 +74,11 @@ extern "C" {
  * @package HTTP protocol handling
  */
 
+/* This is an optimization.  We keep a record of the filter_rec that
+ * stores the old_write filter, so that we can avoid strcmp's later.
+ */
+AP_DECLARE_DATA extern ap_filter_rec_t *ap_old_write_func;
+
 /*
  * Prototypes for routines which either talk directly back to the user,
  * or control the ones that eventually do.
