@@ -2448,6 +2448,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     char *date = NULL;
     request_rec *r = f->r;
     char *buff, *buff_start;
+    const char *clheader;
     const char *protocol;
     apr_bucket *e;
     apr_bucket_brigade *b2;
@@ -2560,7 +2561,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
      * and we will compute a real C-L for the head request. RBB
      */
     if (r->header_only && 
-        !strcmp(apr_table_get(r->headers_out, "Content-Length"), "0")) {
+        (clheader = apr_table_get(r->headers_out, "Content-Length")) &&
+        !strcmp(clheader, "0")) {
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
