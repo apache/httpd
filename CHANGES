@@ -1,5 +1,8 @@
 Changes with Apache 2.0.43
 
+  *) Allow POST requests and CGI scripts to work when DAV is enabled
+     on the location.  [Ryan Bloom]
+
   *) Allow the UserDir directive to accept a list of directories.
      This matches what Apache 1.3 does.  Also add documentation for
      this feature. [Jay Ball <jay@veggiespam.com>]
