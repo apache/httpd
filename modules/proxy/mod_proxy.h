@@ -106,8 +106,6 @@
 #include "http_log.h"
 #include "http_connection.h"
 #include "util_filter.h"
-#include "mod_core.h"
-
 
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
