@@ -172,15 +172,14 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
 {
     const char *strp;
     char *strp2;
-    const char *err, *desthost;
+    const char *desthost;
     ap_socket_t *sock;
-    int i, j, len, backasswards, content_length=-1;
+    int i, len, backasswards, content_length=-1;
     ap_array_header_t *reqhdrs_arr;
-    ap_table_t *resp_hdrs;
+    ap_table_t *resp_hdrs=NULL;
     ap_table_entry_t *reqhdrs;
     struct sockaddr_in server;
     struct in_addr destaddr;
-    struct hostent server_hp;
     BUFF *f, *cachefp=NULL;
     char buffer[HUGE_STRING_LEN];
     char portstr[32];
@@ -456,7 +455,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
         ap_bwrite(r->connection->client, buffer, len, &cntr);
         if (cachefp && ap_bwrite(cachefp, buffer, len, &cntr) != len) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "proxy: error writing extra data to cache");
+                          "proxy: error writing extra data to cache %ld",
+                          (long)cachefp);
             ap_proxy_cache_error(&c);
         }
     }

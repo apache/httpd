@@ -496,9 +496,8 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
     int  ok;
     char buf[IOBUFSIZE];
     long total_bytes_rcvd, in_buffer;
-    proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config, &proxy_module);
     ap_ssize_t cntr;
-    register int n, o, w;
+    register int n, o;
     conn_rec *con = r->connection;
     int alternate_timeouts = 1;    /* 1 if we alternate between soft & hard timeouts */
     BUFF *cachefp = NULL;
