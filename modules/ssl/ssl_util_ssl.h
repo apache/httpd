@@ -57,8 +57,8 @@
  * ====================================================================
  */
 
-#ifndef SSL_UTIL_SSL_H
-#define SSL_UTIL_SSL_H
+#ifndef __SSL_UTIL_SSL_H__
+#define __SSL_UTIL_SSL_H__
 
 /*
  * Determine SSL library version number
@@ -114,4 +114,4 @@ char       *SSL_SESSION_id2sz(unsigned char *, int);
 
 #endif /* XXX */
 
-#endif /* SSL_UTIL_SSL_H */
+#endif /* __SSL_UTIL_SSL_H__ */
