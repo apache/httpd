@@ -44,11 +44,15 @@ LYNX="lynx -dump"
 # have one, then status and fullstatus will not work.
 STATUSURL="http://localhost:@PORT@/server-status"
 #
-# the command to increase the limit on open file descriptors
+# Set this variable to a command that increases the maximum
+# number of file descriptors allowed per child process. This is
+# critical for configurations that use many file descriptors,
+# such as mass vhosting, or a multithreaded server.
 ULIMIT_MAX_FILES="@APACHECTL_ULIMIT@"
 # --------------------                              --------------------
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
 
+# Set the maximum number of file descriptors allowed per child process.
 if [ "x$ULIMIT_MAX_FILES" != "x" ] ; then
     $ULIMIT_MAX_FILES
 fi
