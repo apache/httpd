@@ -27,18 +27,12 @@ Changes with Apache 2.1.0-dev
      came out mangled in the PROPFIND response.  PR 11637.
      [Amit Athavale <amit_athavale@persistent.co.in>]
 
-  *) forward port of buffer overflow fixes for htdigest. [Thom May]
-
   *) prefork MPM: Use the right permissions for the directory created 
      for gprof support.  [Jim Carlson <jcarlson@jnous.com>]
 
   *) By default, use the same CC and CPP with which APR was built.
      The user can override with CC and CPP environment variables.
      [Jeff Trawick]
-
-  *) Fix ap_construct_url() so that it surrounds IPv6 literal address
-     strings with [].  This fixes certain types of redirection.
-     PR 19207.  [Jeff Trawick]
 
   *) mod_log_config: Add the ability to log the id of the thread 
      processing the request via new %P formats.  [Jeff Trawick]
@@ -181,6 +175,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Fix ap_construct_url() so that it surrounds IPv6 literal address
+     strings with [].  This fixes certain types of redirection.
+     PR 19207.  [Jeff Trawick]
+
+  *) forward port of buffer overflow fixes for htdigest. [Thom May]
 
   *) Added AllowEncodedSlashes directive to permit control of whether
      the server will accept encoded slashes ('%2f') in the URI path.
