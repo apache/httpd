@@ -25,7 +25,9 @@
 <syntax>AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
 <default>AuthBasicProvider On</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>AuthBasicProvider</directive> directive sets 
