@@ -3095,14 +3095,14 @@ static apr_status_t buffer_filter(ap_filter_t *f, ap_bucket_brigade *b)
             ap_bucket_destroy(destroy_me);
             destroy_me = NULL;
         }
-        if ((e->type == AP_BUCKET_EOS)  || (e->type == AP_BUCKET_FILE) ||
-            (e->type == AP_BUCKET_PIPE)) {
+        if ((e->type == ap_eos_type())  || (e->type == ap_file_type()) ||
+            (e->type == ap_pipe_type())) {
             pass_the_brigade = 1;
         }
         else {
             const char *str;
             apr_ssize_t n;
-            rv = e->read(e, &str, &n, 0);
+            rv = ap_bucket_read(e, &str, &n, 0);
             if (rv != APR_SUCCESS) {
                 /* XXX: log error */
                 return rv;
@@ -3204,7 +3204,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
         char chunk_hdr[20]; /* enough space for the snprintf below */
 
 	AP_BRIGADE_FOREACH(e, b) {
-	    if (e->type == AP_BUCKET_EOS) {
+	    if (e->type == ap_eos_type()) {
 		/* there shouldn't be anything after the eos */
 		eos = e;
 		break;
@@ -3214,7 +3214,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		const char *data;
 		apr_ssize_t len;
 
-		rv = e->read(e, &data, &len, 1);
+		rv = ap_bucket_read(e, &data, &len, 1);
 		if (rv != APR_SUCCESS) {
 		    return rv;
 		}
@@ -3378,10 +3378,10 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         nbytes = 0; /* in case more points to another brigade */
         more = NULL;
         AP_BRIGADE_FOREACH(e, b) {
-            if (e->type == AP_BUCKET_EOS) {
+            if (e->type == ap_eos_type()) {
                 break;
             }
-            else if (e->type == AP_BUCKET_FILE) {
+            else if (e->type == ap_file_type()) {
                 ap_bucket_file *a = e->data;
                 /* Assume there is at most one AP_BUCKET_FILE in the brigade */
                 fd = a->fd;
@@ -3391,7 +3391,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
             else {
                 const char *str;
                 apr_ssize_t n;
-                rv = e->read(e, &str, &n, 0);
+                rv = ap_bucket_read(e, &str, &n, 0);
                 if (n) {
                     nbytes += n;
                     if (!fd) {
@@ -3420,7 +3420,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* Completed iterating over the brigades, now determine if we want to
          * buffer the brigade or send the brigade out on the network
          */
-        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && (e->type != AP_BUCKET_EOS)) {
+        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && (e->type != ap_eos_type())) {
             ap_save_brigade(f, &ctx->b, &b);
             return APR_SUCCESS;
         }
@@ -3498,6 +3498,11 @@ static const handler_rec core_handlers[] = {
 { NULL, NULL }
 };
 
+static void core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    ap_init_bucket_types(pconf);
+}
+
 static void core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap_set_version(pconf);
@@ -3536,6 +3541,7 @@ static void core_insert_filter(request_rec *r)
 
 static void register_hooks(void)
 {
+    ap_hook_pre_config(core_pre_config, NULL, NULL, AP_HOOK_REALLY_FIRST);
     ap_hook_post_config(core_post_config,NULL,NULL,AP_HOOK_REALLY_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_pre_connection(ap_pre_http_connection,NULL,NULL,

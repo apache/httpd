@@ -212,7 +212,7 @@ API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next,
 API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {
     if (next) {
-        if (AP_BRIGADE_LAST(bb)->type == AP_BUCKET_EOS && next->r) {
+        if (AP_BRIGADE_LAST(bb)->type == ap_eos_type() && next->r) {
             next->r->eos_sent = 1;
         }
         return next->frec->filter_func.out_func(next, bb);
@@ -234,8 +234,7 @@ API_EXPORT(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
     }
     
     AP_RING_FOREACH(e, &(*b)->list, ap_bucket, link) {
-        if (e->setaside)
-            e->setaside(e);
+        ap_bucket_setaside(e);
     }
     AP_BRIGADE_CONCAT(*saveto, *b);
 }

@@ -688,7 +688,7 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                 }
                 break;
             }
-            rv = dptr->read(dptr, &cur_str, &cur_len, 0);
+            rv = ap_bucket_read(dptr, &cur_str, &cur_len, 0);
             if (rv != APR_SUCCESS) {
                 done = 1;
                 ctx->ees = EES_BUCKET_READ;
