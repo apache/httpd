@@ -167,6 +167,8 @@ static int first_thread_limit;
 static int changed_limit_at_restart;
 static int dying = 0;
 static int workers_may_exit = 0;
+static int start_thread_may_exit = 0;
+static int listener_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
 static int resource_shortage = 0;
@@ -251,6 +253,7 @@ static apr_proc_mutex_t *accept_mutex;
 
 static void wakeup_listener(void)
 {
+    listener_may_exit = 1;
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" and wake
      * up the listener thread since it is the only thread with SIGHUP
@@ -259,10 +262,11 @@ static void wakeup_listener(void)
     pthread_kill(*listener_os_thread, LISTENER_SIGNAL);
 }
 
-static void signal_workers(void)
-{
-    workers_may_exit = 1;
+#define ST_GRACEFUL          1
+#define ST_UNGRACEFUL        2
 
+static void signal_threads(int mode)
+{
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
      */
@@ -271,6 +275,8 @@ static void signal_workers(void)
     /* XXX: This will happen naturally on a graceful, and we don't care 
      * otherwise.
     ap_queue_signal_all_wakeup(worker_queue); */
+
+    workers_may_exit = 1;
     ap_queue_interrupt_all(worker_queue);
 }
 
@@ -548,7 +554,10 @@ int ap_graceful_stop_signalled(void)
      * maybe it should be ap_mpm_process_exiting?
      */
 {
-    return workers_may_exit;
+    /* note: for a graceful termination, listener_may_exit will be set before
+     *       workers_may_exit, so check listener_may_exit
+     */
+    return listener_may_exit;
 }
 
 /*****************************************************************
@@ -589,7 +598,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
 static void check_infinite_requests(void)
 {
     if (ap_max_requests_per_child) {
-        signal_workers();
+        signal_threads(ST_GRACEFUL);
     }
     else {
         /* wow! if you're executing this code, you may have set a record.
@@ -658,13 +667,13 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         if (requests_this_child <= 0) {
             check_infinite_requests();
         }
-        if (workers_may_exit) break;
+        if (listener_may_exit) break;
 
         if ((rv = SAFE_ACCEPT(apr_proc_mutex_lock(accept_mutex)))
             != APR_SUCCESS) {
             int level = APLOG_EMERG;
 
-            if (workers_may_exit) {
+            if (listener_may_exit) {
                 break;
             }
             if (ap_scoreboard_image->parent[process_slot].generation != 
@@ -674,7 +683,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
                          "apr_proc_mutex_lock failed. Attempting to shutdown "
                          "process gracefully.");
-            signal_workers();
+            signal_threads(ST_GRACEFUL);
             break;                    /* skip the lock release */
         }
 
@@ -683,7 +692,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             lr = ap_listeners;
         }
         else {
-            while (!workers_may_exit) {
+            while (!listener_may_exit) {
                 apr_status_t ret;
                 apr_int16_t event;
 
@@ -697,10 +706,10 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                      * circumstances. Let's try exiting gracefully, for now. */
                     ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
                                  ap_server_conf, "apr_poll: (listen)");
-                    signal_workers();
+                    signal_threads(ST_GRACEFUL);
                 }
 
-                if (workers_may_exit) break;
+                if (listener_may_exit) break;
 
                 /* find a listener */
                 lr = last_lr;
@@ -719,7 +728,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             }
         }
     got_fd:
-        if (!workers_may_exit) {
+        if (!listener_may_exit) {
             /* create a new transaction pool for each accepted socket */
             if (recycled_pool == NULL) {
                 apr_allocator_t *allocator;
@@ -743,13 +752,13 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             if (rv == APR_EGENERAL) {
                 /* E[NM]FILE, ENOMEM, etc */
                 resource_shortage = 1;
-                signal_workers();
+                signal_threads(ST_GRACEFUL);
             }
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
                 != APR_SUCCESS) {
                 int level = APLOG_EMERG;
 
-                if (workers_may_exit) {
+                if (listener_may_exit) {
                     break;
                 }
                 if (ap_scoreboard_image->parent[process_slot].generation != 
@@ -759,7 +768,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
                              "apr_proc_mutex_unlock failed. Attempting to "
                              "shutdown process gracefully.");
-                signal_workers();
+                signal_threads(ST_GRACEFUL);
             }
             if (csd != NULL) {
                 rv = ap_queue_push(worker_queue, csd, ptrans,
@@ -780,7 +789,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                              "apr_proc_mutex_unlock failed. Attempting to "
                              "shutdown process gracefully.");
-                signal_workers();
+                signal_threads(ST_GRACEFUL);
             }
             break;
         }
@@ -950,7 +959,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
             }
             threads_created++;
         }
-        if (workers_may_exit || threads_created == ap_threads_per_child) {
+        if (start_thread_may_exit || threads_created == ap_threads_per_child) {
             break;
         }
         /* wait for previous generation to clean up an entry */
@@ -992,7 +1001,7 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
         /* deal with a rare timing window which affects waking up the
          * listener thread...  if the signal sent to the listener thread
          * is delivered between the time it verifies that the
-         * workers_may_exit flag is clear and the time it enters a
+         * listener_may_exit flag is clear and the time it enters a
          * blocking syscall, the signal didn't do any good...  work around
          * that by sleeping briefly and sending it again
          */
@@ -1034,9 +1043,10 @@ static void join_start_thread(apr_thread_t *start_thread_id)
 {
     apr_status_t rv, thread_rv;
 
-    workers_may_exit = 1; /* start thread may not want to exit until this
-                           * is set
-                           */
+    start_thread_may_exit = 1; /* tell it to give up in case it is still 
+                                * trying to take over slots from a 
+                                * previous generation
+                                */
     rv = apr_thread_join(&thread_rv, start_thread_id);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
@@ -1135,7 +1145,7 @@ static void child_main(int child_num_arg)
     if (one_process) {
         /* Block until we get a terminating signal. */
         apr_signal_thread(check_signal);
-        /* make sure the start thread has finished; signal_workers() 
+        /* make sure the start thread has finished; signal_threads() 
          * and join_workers() depend on that
          */
         /* XXX join_start_thread() won't be awakened if one of our
@@ -1143,8 +1153,8 @@ static void child_main(int child_num_arg)
          *     shutdown this child
          */
         join_start_thread(start_thread_id);
-        signal_workers(); /* helps us terminate a little more quickly when
-                           * the dispatch of the signal thread
+        signal_threads(ST_UNGRACEFUL); /* helps us terminate a little more
+                           * quickly than the dispatch of the signal thread
                            * beats the Pipe of Death and the browsers
                            */
         /* A terminating signal was received. Now join each of the
@@ -1166,10 +1176,10 @@ static void child_main(int child_num_arg)
             rv = ap_mpm_pod_check(pod);
             if (rv == AP_GRACEFUL || rv == AP_RESTART) {
                 /* make sure the start thread has finished; 
-                 * signal_workers() and join_workers depend on that
+                 * signal_threads() and join_workers depend on that
                  */
                 join_start_thread(start_thread_id);
-                signal_workers();
+                signal_threads(rv == AP_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
                 break;
             }
         }
