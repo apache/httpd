@@ -509,7 +509,7 @@ int call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
             log_unixerr("fopen", NULL, err_string, r->server);
             return(pid);
         }
-        fgets (interpreter, 2048, program);
+        fgets (interpreter, sizeof(interpreter), program);
         fclose (program);
         if (!strncmp (interpreter, "#!", 2)) {
             is_script = 1;
@@ -604,7 +604,7 @@ int call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
                 log_unixerr("fopen", NULL, err_string, r->server);
                 return(pid);
             }
-            sz = fread (interpreter, 1, 2047, program);
+            sz = fread (interpreter, 1, sizeof(interpreter)-1, program);
             if(sz < 0) {
                 char err_string[HUGE_STRING_LEN];
                 ap_snprintf(err_string, sizeof(err_string), "open of %s failed, errno is %d\n", r->filename, errno);
@@ -616,7 +616,7 @@ int call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
             fclose (program);
             if (!strncmp (interpreter, "#!", 2)) {
                 is_script = 1;
-                for(i=2; i<2048; i++)
+                for(i=2; i<sizeof(interpreter); i++)
                 {
                     if((interpreter[i] == '\r') ||
                             (interpreter[i] == '\n'))
