@@ -44,6 +44,10 @@ SetOutputFilter DEFLATE
       SetOutputFilter DEFLATE<br />
 &lt;/Directory&gt;
 </example>
+
+    <p>For browsers that have problems even with compression of html files,
+    use the <directive>BrowserMatch</directive> directive to set the 'no-gzip' note
+    for that particular browser so that no compression will be performed.</p>
 </section>
 
 <directivesynopsis>
