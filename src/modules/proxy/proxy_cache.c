@@ -111,21 +111,21 @@ void proxy_garbage_coll(request_rec *r)
 {
     static int inside = 0;
 
-    acquire_mutex(garbage_mutex);
+    (void)acquire_mutex(garbage_mutex);
     if(inside == 1)
     {
-        release_mutex(garbage_mutex);
+        (void)release_mutex(garbage_mutex);
         return;
     }
     else
         inside = 1;
-    release_mutex(garbage_mutex);
+    (void)release_mutex(garbage_mutex);
 
     help_proxy_garbage_coll(r);
 
-    acquire_mutex(garbage_mutex);
+    (void)acquire_mutex(garbage_mutex);
     inside = 0;
-    release_mutex(garbage_mutex);
+    (void)release_mutex(garbage_mutex);
 }
 
 
