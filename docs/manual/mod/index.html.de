@@ -54,8 +54,8 @@ requests to be assigned a variety of different userids</dd>
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd> Das Multi-Processing-Modul ist optimiert dür
   Windows NT.</dd>
-<dt><a href="worker.html">worker</a></dt><dd>Multi-Processing Module implementing a hybrid
-    multi-threaded multi-process web server</dd>
+<dt><a href="worker.html">worker</a></dt><dd>Multi-Processing-Modul, das einen Hybrid-Webserver mit
+  Multi-Thread und Multi-Prozess-Unterstützung implementiert</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">Andere Module</a></h2>
