@@ -973,6 +973,7 @@ all:	$(OBJS)
 clean:
 	rm -f $(OBJS)
 
+$(OBJS): Makefile
 EOF
 cat >> modules/$moddir/Makefile < modules/$moddir/Makefile.tmpl
 
