@@ -482,6 +482,12 @@ int cgi_handler (request_rec *r)
 	    r->method = pstrdup(r->pool, "GET");
 	    r->method_number = M_GET;
 
+	    /* We already read the message body (if any), so don't allow
+	     * the redirected request to think it has one.  We can ignore 
+	     * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR.
+	     */
+	    table_unset(r->headers_in, "Content-Length");
+
 	    internal_redirect_handler (location, r);
 	    return OK;
         }

@@ -1,5 +1,8 @@
 Changes with Apache 1.2b7
 
+  *) Fixed problem with mod_cgi-generated internal redirects trying to
+     read the request message-body twice. [Archie Cobbs and Roy Fielding]
+
   *) Reduced timeout on lingering close, removed possibility of a blocked
      read causing the child to hang, and stopped logging of errors if
      the socket is not connected (reset by client).  [Roy Fielding]
