@@ -131,4 +131,44 @@
 
   </section>
 
+  <section id="language_country_codes"><title>Language/Country Codes</title>
+
+    <p>The following links document ISO and other language and country
+    code information:</p>
+
+    <dl>
+      <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
+
+      <dd>ISO 639 provides two sets of language codes, one as a two-letter
+      code set (639-1) and another as a three-letter code set (this part
+      of ISO 639) for the representation of names of languages.</dd>
+
+      <dt><a href="http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
+      ISO 3166-1</a></dt>
+
+      <dd>These pages document the country names (official short names
+      in English) in alphabetical order as given in ISO 3166-1 and the
+      corresponding ISO 3166-1-alpha-2 code elements.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
+      (Best Current Practice),
+      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+
+      <dd>This document describes a language tag for use in cases where
+      it is desired to indicate the language used in an information
+      object, how to register values for use in this language tag,
+      and a construct for matching such language tags.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      (Standards Track)</dt>
+
+      <dd>This document defines a "Content-language:" header, for use in
+      cases where one desires to indicate the language of something that
+      has RFC 822-like headers, like MIME body parts or Web documents,
+      and an "Accept-Language:" header for use in cases where one wishes
+      to indicate one's preferences with regard to language.</dd>
+    </dl>
+
+  </section>
+
 </manualpage>
