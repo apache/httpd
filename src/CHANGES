@@ -1,5 +1,11 @@
 Changes with Apache 1.3.27
 
+  *) Back out an older patch for PR 9932, which had some incorrect
+     behavior. Instead, use a backport of the APR fix. This has
+     the nice effect that ap_snprintf() can now distinguish between
+     an output which was truncated, and an output which exactly
+     filled the buffer. [Jim Jagielski]
+
   *) The cache in mod_proxy was incorrectly updating the Content-Length
      value (to 0) from 304 responses when doing validation. Bugz#10128
      [Paul Terry <paul.terry@gmx.net>, ast@domdv.de, Jim Jagielski]

@@ -157,11 +157,13 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
  * Process the format string until the entire string is exhausted, or
  * the buffer fills.  If the buffer fills then stop processing immediately
  * (so no further %n arguments are processed), and return the buffer
- * length.  In all cases the buffer is NUL terminated.
+ * length.  In all cases the buffer is NUL terminated. The return value
+ * is the number of characters placed in the buffer, excluding the
+ * terminating NUL. All this implies that, at most, (len-1) characters
+ * will be copied over; if the return value is >= len, then truncation
+ * occured.
  *
- * In no event does ap_snprintf return a negative number.  It's not possible
- * to distinguish between an output which was truncated, and an output which
- * exactly filled the buffer.
+ * In no event does ap_snprintf return a negative number.
  */
 API_EXPORT_NONSTD(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 			    __attribute__((format(printf,3,4)));
