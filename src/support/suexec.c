@@ -156,6 +156,7 @@ char *safe_env_lst[] =
 
 static void err_output(const char *fmt, va_list ap)
 {
+#ifdef LOG_EXEC
     time_t timevar;
     struct tm *lt;
 
@@ -175,6 +176,7 @@ static void err_output(const char *fmt, va_list ap)
     vfprintf(log, fmt, ap);
 
     fflush(log);
+#endif /* LOG_EXEC */
     return;
 }
 
