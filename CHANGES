@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Fix some mod_include problems which broke evaluation of some
+     expressions.  PR 10108  [Jeff Trawick]
+
   *) Fix the calculation of request time in mod_status.  [Stas Bekman]
 
   *) Fix the calculation of thread_num in the worker score structure.
