@@ -1,5 +1,14 @@
 Changes with Apache 2.0.27-dev
 
+  *) Introduced thread saftey for mod_rewrite's internal cache.
+     [Brian Pane <bpane@pacbell.net>]
+
+  *) Simplified mod_env's directives to behave as most directives are
+     expected, in that UnsetEnv will not unset a SetEnv and PassEnv 
+     directive following that UnsetEnv within the same container.
+     Also provides a runtime startup warning if a PassEnv configured 
+     environment value is undefined.  [William Rowe]
+
   *) The worker MPM is now completely ported to APR's new lock API. It
      uses native APR types for thread mutexes, cross-process mutexes,
      and condition variables.  [Aaron Bannert]
