@@ -35,7 +35,9 @@
 <xsl:text>
 </xsl:text> <!-- insert line break -->
 
+        <xsl:if test="not($is-chm) or seealso">
         <div id="quickview">
+          <xsl:if test="not($is-chm)">
           <ul id="toc">
 
 <xsl:text>
@@ -57,6 +59,7 @@
               </a>
             </li>
           </ul>
+          </xsl:if> <!-- chm -->
 
           <xsl:if test="seealso">
             <h3>
@@ -83,6 +86,7 @@
             </ul>
           </xsl:if>
         </div> <!-- /quickview -->
+        </xsl:if> <!-- chm foo -->
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
