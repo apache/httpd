@@ -2483,7 +2483,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     }
 
     APR_BRIGADE_FOREACH(e, b) {
-        if (APR_BRIGADE_FIRST(b)->type == &ap_bucket_type_error) {
+        if (e->type == &ap_bucket_type_error) {
             ap_bucket_error *eb = e->data;
 
             ap_die(eb->status, r);
