@@ -1,37 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_vhost_alias</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_vhost_alias</h1>
-
-    <p>This module provides support for <a
-    href="../vhosts/mass.html">dynamically configured mass virtual
-    hosting</a>.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>
-    mod_vhost_alias.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    vhost_alias_module<br />
-     <a href="module-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 1.3.7 and later.</p>
-
-    <h2>Summary</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_vhost_alias - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_vhost_alias</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>This module provides support for <a href="../vhosts/mass.html">dynamically configured mass virtual
+hosting</a>.</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>vhost_alias_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Available in Apache 1.3.7 and later.</compatibility></td></tr></table></td></tr></table><h2>Summary</h2><summary>
 
     <p>This module creates dynamically configured virtual hosts, by
     allowing the IP address and/or the <code>Host:</code> header of
@@ -39,51 +11,31 @@
     determine what files to serve. This allows for easy use of a
     huge number of virtual hosts with similar configurations.</p>
 
-    <h2>Directives</h2>
+    <seealso>See also: <a href="core.html#usecanonicalname" class="directive"><code class="directive">UseCanonicalName</code></a>.</seealso>
 
-    <ul>
-      <li><a
-      href="#virtualdocumentroot">VirtualDocumentRoot</a></li>
-
-      <li><a
-      href="#virtualdocumentrootip">VirtualDocumentRootIP</a></li>
-
-      <li><a href="#virtualscriptalias">VirtualScriptAlias</a></li>
-
-      <li><a
-      href="#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
-    </ul>
-
-    <p>See also: <a
-    href="core.html#usecanonicalname">UseCanonicalName</a>.</p>
-
-    <h2>Directory Name Interpolation</h2>
+</summary><h2>Directives</h2><ul><li><a href="#virtualdocumentroot">VirtualDocumentRoot</a></li><li><a href="#virtualdocumentrootip">VirtualDocumentRootIP</a></li><li><a href="#virtualscriptalias">VirtualScriptAlias</a></li><li><a href="#virtualscriptaliasip">VirtualScriptAliasIP</a></li></ul><h2>Directory Name Interpolation</h2>
+    
 
     <p>All the directives in this module interpolate a string into
     a pathname. The interpolated string (henceforth called the
-    "name") may be either the server name (see the <a
-    href="core.html#usecanonicalname"><code>UseCanonicalName</code></a>
+    "name") may be either the server name (see the <a href="core.html#usecanonicalname"><code>UseCanonicalName</code></a>
     directive for details on how this is determined) or the IP
     address of the virtual host on the server in dotted-quad
     format. The interpolation is controlled by specifiers inspired
     by <code>printf</code> which have a number of formats:</p>
 
-    <dl>
-      <dt><code>%%</code></dt>
+<table>
 
-      <dd>insert a <code>%</code></dd>
+<tr><td><code>%%</code></td>
+<td>insert a <code>%</code></td></tr>
 
-      <dt><code>%p</code></dt>
+<tr><td><code>%p</code></td>
+<td>insert the port number of the virtual host</td></tr>
 
-      <dd>insert the port number of the virtual host</dd>
-
-      <dt><code>%N.M</code></dt>
-
-      <dd>insert (part of) the name</dd>
-    </dl>
-    <br />
-     <br />
+<tr><td><code>%N.M</code></td>
+<td>insert (part of) the name</td></tr>
      
+</table>
 
     <p><code>N</code> and <code>M</code> are used to specify
     substrings of the name. <code>N</code> selects from the
@@ -93,97 +45,96 @@
     present; the dot must be present if and only if <code>M</code>
     is present. The interpretation is as follows:</p>
 
-    <dl>
-      <dt><code>0</code></dt>
+    <table>
+      <tr><td><code>0</code></td>
+      <td>the whole name</td></tr>
 
-      <dd>the whole name</dd>
+      <tr><td><code>1</code></td>
+      <td>the first part</td></tr>
 
-      <dt><code>1</code></dt>
+      <tr><td><code>2</code></td>
+      <td>the second part</td></tr>
 
-      <dd>the first part</dd>
+      <tr><td><code>-1</code></td>
+      <td>the last part</td></tr>
 
-      <dt><code>2</code></dt>
+      <tr><td><code>-2</code></td>
+      <td>the penultimate part</td></tr>
 
-      <dd>the second part</dd>
+      <tr><td><code>2+</code></td>
+      <td>the second and all subsequent parts</td></tr>
 
-      <dt><code>-1</code></dt>
+      <tr><td><code>-2+</code></td>
+      <td>the penultimate and all preceding parts</td></tr>
 
-      <dd>the last part</dd>
+      <tr><td><code>1+</code> and <code>-1+</code></td>
+      <td>the same as <code>0</code></td></tr>
+    </table>
 
-      <dt><code>-2</code></dt>
+    <p>If <code>N</code> or <code>M</code> is greater than the number
+    of parts available a single underscore is interpolated. </p>
 
-      <dd>the penultimate part</dd>
-
-      <dt><code>2+</code></dt>
-
-      <dd>the second and all subsequent parts</dd>
-
-      <dt><code>-2+</code></dt>
-
-      <dd>the penultimate and all preceding parts</dd>
-
-      <dt><code>1+</code> and <code>-1+</code></dt>
-
-      <dd>the same as <code>0</code></dd>
-    </dl>
-    If <code>N</code> or <code>M</code> is greater than the number
-    of parts available a single underscore is interpolated. <br />
-     <br />
-     
-
-    <h3>Examples</h3>
+<h2>Examples</h2>
+    
 
     <p>For simple name-based virtual hosts you might use the
     following directives in your server configuration file:</p>
-<pre>
-    UseCanonicalName    Off
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    UseCanonicalName    Off<br>
     VirtualDocumentRoot /usr/local/apache/vhosts/%0
-</pre>
-    A request for
+</code></td></tr></table></blockquote>
+
+    <p>A request for
     <code>http://www.example.com/directory/file.html</code> will be
     satisfied by the file
     <code>/usr/local/apache/vhosts/www.example.com/directory/file.html</code>.
-    <br />
-     <br />
-     
+    </p> 
 
     <p>For a very large number of virtual hosts it is a good idea
     to arrange the files to reduce the size of the
     <code>vhosts</code> directory. To do this you might use the
     following in your configuration file:</p>
-<pre>
-    UseCanonicalName    Off
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    UseCanonicalName    Off<br>
     VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
-</pre>
-    A request for
+</code></td></tr></table></blockquote>
+
+    <p>A request for
     <code>http://www.example.isp.com/directory/file.html</code>
     will be satisfied by the file
-    <code>/usr/local/apache/vhosts/isp.com/e/x/a/example/directory/file.html</code>.
-    A more even spread of files can be achieved by hashing from the
-    end of the name, for example: 
-<pre>
+    <code>/usr/local/apache/vhosts/isp.com/e/x/a/example/directory/file.html</code>.</p>
+
+    <p>A more even spread of files can be achieved by hashing from the
+    end of the name, for example: </p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2
-</pre>
-    The example request would come from
-    <code>/usr/local/apache/vhosts/isp.com/e/l/p/example/directory/file.html</code>.
-    Alternatively you might use: 
-<pre>
+</code></td></tr></table></blockquote>
+
+    <p>The example request would come from
+    <code>/usr/local/apache/vhosts/isp.com/e/l/p/example/directory/file.html</code>.</p>
+
+    <p>Alternatively you might use: </p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+
-</pre>
-    The example request would come from
-    <code>/usr/local/apache/vhosts/isp.com/e/x/a/mple/directory/file.html</code>.
-    <br />
-     <br />
-     
+</code></td></tr></table></blockquote>
+
+    <p>The example request would come from
+    <code>/usr/local/apache/vhosts/isp.com/e/x/a/mple/directory/file.html</code>.</p>
 
     <p>For IP-based virtual hosting you might use the following in
     your configuration file:</p>
-<pre>
-    UseCanonicalName DNS
-    VirtualDocumentRootIP   /usr/local/apache/vhosts/%1/%2/%3/%4/docs
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    UseCanonicalName DNS<br>
+    VirtualDocumentRootIP   /usr/local/apache/vhosts/%1/%2/%3/%4/docs<br>
     VirtualScriptAliasIP    /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
-</pre>
-    A request for
+</code></td></tr></table></blockquote>
+
+    <p>A request for
     <code>http://www.example.isp.com/directory/file.html</code>
     would be satisfied by the file
     <code>/usr/local/apache/vhosts/10/20/30/40/docs/directory/file.html</code>
@@ -191,147 +142,65 @@
     10.20.30.40. A request for
     <code>http://www.example.isp.com/cgi-bin/script.pl</code> would
     be satisfied by executing the program
-    <code>/usr/local/apache/vhosts/10/20/30/40/cgi-bin/script.pl</code>.
-    <br />
-     <br />
-     
+    <code>/usr/local/apache/vhosts/10/20/30/40/cgi-bin/script.pl</code>.</p>
 
     <p>If you want to include the <code>.</code> character in a
     <code>VirtualDocumentRoot</code> directive, but it clashes with
     a <code>%</code> directive, you can work around the problem in
     the following way:</p>
-<pre>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0
-</pre>
-    A request for
+</code></td></tr></table></blockquote>
+
+    <p>A request for
     <code>http://www.example.isp.com/directory/file.html</code>
     will be satisfied by the file
-    <code>/usr/local/apache/vhosts/example.isp/directory/file.html</code>.
-    <br />
-     <br />
+    <code>/usr/local/apache/vhosts/example.isp/directory/file.html</code>.</p>
      
-
-    <p>The <a href="mod_log_config.html#formats">LogFormat
-    directives</a> <code>%V</code> and <code>%A</code> are useful
+    <p>The <a href="mod_log_config.html#logformat" class="directive"><code class="directive">LogFormat</code></a>
+    directives <code>%V</code> and <code>%A</code> are useful
     in conjunction with this module.</p>
-    <hr />
-
-    <h2><a id="virtualdocumentroot"
-    name="virtualdocumentroot">VirtualDocumentRoot
-    directive</a></h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> VirtualDocumentRoot
-    <em>interpolated-directory</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> None<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_vhost_alias<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a>
-    VirtualDocumentRoot is only available in 1.3.7 and later.</p>
+<hr/><h2><a name="VirtualDocumentRoot">VirtualDocumentRoot</a> <a name="virtualdocumentroot">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Dynamically configure the location of the document root
+for a given virtual host.</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>VirtualDocumentRoot <em>interpolated-directory</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_vhost_alias</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>VirtualDocumentRoot is only available in 1.3.7 and
+later.</td></tr></table></td></tr></table><usage>
 
     <p>The <code>VirtualDocumentRoot</code> directive allows you to
     determine where Apache will find your documents based on the
     value of the server name. The result of expanding
     <em>interpolated-directory</em> is used as the root of the
-    document tree in a similar manner to the <a
-    href="core.html#documentroot"><code>DocumentRoot</code></a>
-    directive's argument. If <em>interpolated-directory</em> is
-    <code>none</code> then <code>VirtaulDocumentRoot</code> is
-    turned off. This directive cannot be used in the same context
-    as <a
-    href="#virtualdocumentrootip"><code>VirtualDocumentRootIP</code></a>.</p>
-    <hr />
+    document tree in a similar manner to the <a href="core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> directive's argument. 
+    If <em>interpolated-directory</em> is <code>none</code> then
+    <code>VirtaulDocumentRoot</code> is turned off. This directive 
+    cannot be used in the same context as
+    <code class="directive">VirtualDocumentRootIP</code>.</p>
 
-    <h2><a id="virtualdocumentrootip"
-    name="virtualdocumentrootip">VirtualDocumentRootIP
-    directive</a></h2>
+</usage><hr/><h2><a name="VirtualDocumentRootIP">VirtualDocumentRootIP</a> <a name="virtualdocumentrootip">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Dynamically configure the location of the document root
+for a given virtual host</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>VirtualDocumentRootIP <em>interpolated-directory</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_vhost_alias</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>VirtualDocumentRootIP is only available in 1.3.7 
+and later.</td></tr></table></td></tr></table><usage>
 
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> VirtualDocumentRootIP
-    <em>interpolated-directory</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> None<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_vhost_alias<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a>
-    VirtualDocumentRootIP is only available in 1.3.7 and later.</p>
-
-    <p>The <code>VirtualDocumentRootIP</code> directive is like the
-    <a
-    href="#virtualdocumentroot"><code>VirtualDocumentRoot</code></a>
+<p>The <code>VirtualDocumentRootIP</code> directive is like the
+    <code class="directive">VirtualDocumentRoot</code>
     directive, except that it uses the IP address of the server end
     of the connection instead of the server name.</p>
-    <hr />
-
-    <h2><a id="virtualscriptalias"
-    name="virtualscriptalias">VirtualScriptAlias directive</a></h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> VirtualScriptAlias
-    <em>interpolated-directory</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> None<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_vhost_alias<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a>
-    VirtualScriptAlias is only available in 1.3.7 and later.</p>
+</usage><hr/><h2><a name="VirtualScriptAlias">VirtualScriptAlias</a> <a name="virtualscriptalias">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Dynamically configure the location of the CGI directory for
+a given virtual host.</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>VirtualScriptAlias <em>interpolated-directory</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_vhost_alias</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>VirtualScriptAlias is only available in 1.3.7
+and later.</td></tr></table></td></tr></table><usage>
 
     <p>The <code>VirtualScriptAlias</code> directive allows you to
     determine where Apache will find CGI scripts in a similar
-    manner to <a
-    href="#virtualdocumentroot"><code>VirtualDocumentRoot</code></a>
+    manner to <code class="directive">VirtualDocumentRoot</code>
     does for other documents. It matches requests for URIs starting
-    <code>/cgi-bin/</code>, much like <code><a
-    href="mod_alias.html#scriptalias">ScriptAlias</a>
-    /cgi-bin/</code> would.</p>
-    <hr />
+    <code>/cgi-bin/</code>, much like <a href="mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a>
+    <code>/cgi-bin/</code> would.</p>
 
-    <h2><a id="virtualscriptaliasip"
-    name="virtualscriptaliasip">VirtualScriptAliasIP
-    directive</a></h2>
-
-    <p><a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> VirtualScriptAliasIP
-    <em>interpolated-directory</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> None<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_vhost_alias<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a>
-    VirtualScriptAliasIP is only available in 1.3.7 and later.</p>
+</usage><hr/><h2><a name="VirtualScriptAliasIP">VirtualScriptAliasIP</a> <a name="virtualscriptaliasip">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Dynamically configure the location of the cgi directory for
+a given virtual host.</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>VirtualScriptAliasIP <em>interpolated-directory</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_vhost_alias</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>VirtualScriptAliasIP is only available in 1.3.7 
+and later.</td></tr></table></td></tr></table><usage>
 
     <p>The <code>VirtualScriptAliasIP</code> directive is like the
-    <a
-    href="#virtualscriptalias"><code>VirtualScriptAlias</code></a>
+    <a href="#virtualscriptalias"><code>VirtualScriptAlias</code></a>
     directive, except that it uses the IP address of the server end
     of the connection instead of the server name.</p>
 
-     <!--#include virtual="footer.html" -->
-  </body>
-</html>
-
+    </usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
