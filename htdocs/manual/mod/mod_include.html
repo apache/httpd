@@ -52,11 +52,14 @@ The document is parsed as an HTML document, with special commands embedded
 as SGML comments. A command has the syntax:
 
 <blockquote><code>
-&lt;!--#</code><em>element attribute=value attribute=value ...</em> <code>--&gt;
+&lt;!--#</code><em>element attribute=value attribute=value ...</em>
+<code> --&gt;
 </code></blockquote>
 
 The value will often be enclosed in double quotes; many commands only allow
-a single attribute-value pair.
+a single attribute-value pair.  Note that the comment terminator
+(<SAMP>--&gt;</SAMP>) should be preceded by whitespace to ensure that it
+isn't considered part of an SSI token.
 <p>
 The allowed elements are:<p>
 
@@ -184,14 +187,16 @@ output. Thus included files can be nested.
 <dd>The value to give a variable.
 </dl>
 For example: 
-  <CODE>&lt;!--#set var="category" value="help"--&gt;</CODE>
+  <CODE>&lt;!--#set var="category" value="help" --&gt;</CODE>
 <dd>Apache 1.2 and above.
 
 </dl>
 
-<h2>Include variables</h2>
+<h2>Include Variables</h2>
 
-In addition to the variables in the standard CGI environment, these are available for the <code>echo</code> command, for <code>if</code> and <code>elif</code>, and to any program invoked by the document.
+In addition to the variables in the standard CGI environment, these are
+available for the <code>echo</code> command, for <code>if</code> and
+<code>elif</code>, and to any program invoked by the document.  
 
 <dl>
 <dt>DATE_GMT
@@ -209,6 +214,51 @@ current document.
 <dd>The last modification date of the document requested by the user.
 </dl>
 <p>
+
+<H2>Variable Substitution</H2>
+<P> Variable substitution is done within quoted strings in most cases
+    where they may reasonably occur as an argument to an SSI directive.
+    This includes the
+    <SAMP>config</SAMP>,
+    <SAMP>exec</SAMP>,
+    <SAMP>flastmod</SAMP>,
+    <SAMP>fsize</SAMP>,
+    <SAMP>include</SAMP>, and
+    <SAMP>set</SAMP>
+    directives, as well as the arguments to conditional operators.
+    You can insert a literal dollar sign into the string using backslash
+    quoting:
+
+<PRE>
+    &lt;!--#if expr="$a = \$test" --&gt;
+</PRE>
+
+<P> If a variable reference needs to be substituted in the middle of a
+    character sequence that might otherwise be considered a valid
+    identifier in its own right, it can be disambiguated by enclosing
+    the reference in braces, <EM>&agrave; la</EM> shell substitution:
+
+<PRE>
+    &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" --&gt;
+</PRE>
+
+<P> This will result in the <SAMP>Zed</SAMP> variable being set to
+    &quot;<SAMP>X_Y</SAMP>&quot; if <SAMP>REMOTE_HOST</SAMP> is
+    &quot;<SAMP>X</SAMP>&quot; and <SAMP>REQUEST_METHOD</SAMP> is
+    &quot;<SAMP>Y</SAMP>&quot;.
+
+<P> EXAMPLE: the below example will print "in foo" if the DOCUMENT_URI is 
+/foo/file.html, "in bar" if it is /bar/file.html and "in neither" 
+otherwise:
+<PRE>
+    &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;
+    in foo
+    &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;
+    in bar
+    &lt;!--#else --&gt;
+    in neither
+    &lt;!--#endif --&gt;
+</PRE>
 
 <H2>Flow Control Elements</H2>
 
@@ -256,12 +306,15 @@ elements are:
 <DT>! <I>test_condition</I>
 	<DD>true if <I>test_condition</I> is false
 <DT><I>test_condition1</I> && <I>test_condition2</I>
-	<DD>true if both <I>test_condition1</I> and <I>test_condition2</I> are true
+	<DD>true if both <I>test_condition1</I> and
+	<I>test_condition2</I> are true 
 <DT><I>test_condition1</I> || <I>test_condition2</I>
-	<DD>true if either <I>test_condition1</I> or <I>test_condition2</I> is true
+	<DD>true if either <I>test_condition1</I> or
+	<I>test_condition2</I> is true 
 </DL>
 
-<P> "<I>=</I>" and "<I>!=</I>" bind more tightly than "<I>&&</I>" and "<I>||</I>".
+<P> "<I>=</I>" and "<I>!=</I>" bind more tightly than "<I>&&</I>" and
+    "<I>||</I>". 
     "<I>!</I>" binds most tightly.  Thus, the following are equivalent:
 
 <PRE>
@@ -280,40 +333,6 @@ elements are:
      <I>string1    string2</I>  results in <I>string1 string2</I>
     <I>'string1    string2'</I> results in <I>string1    string2</I>
 </PRE>
-
-<P> Variable substitution is done within quoted strings.  You can put
-    a dollar sign into the string using backslash quoting:
-
-<PRE>
-    &lt;!--#if expr="$a = \$test" --&gt;
-</PRE>
-
-<P> If a variable reference needs to be substituted in the middle of a
-    string, it can be done by enclosing the reference in braces,
-    <EM>&aacute; la</EM> shell substitution:
-
-<PRE>
-    &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" -->
-</PRE>
-
-<P> will result in the <SAMP>Zed</SAMP> variable being set to
-    &quot;<SAMP>X_Y</SAMP>&quot; if <SAMP>REMOTE_HOST</SAMP> is
-    &quot;<SAMP>X</SAMP>&quot; and <SAMP>REQUEST_METHOD</SAMP> is
-    &quot;<SAMP>Y</SAMP>&quot;.
-
-<P> EXAMPLE: the below example will print "in foo" if the DOCUMENT_URI is 
-/foo/file.html, "in bar" if it is /bar/file.html and "in neither" 
-otherwise:
-<PRE>
-    &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\""--&gt;
-    in foo
-    &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\""--&gt;
-    in bar
-    &lt;!--#else --&gt;
-    in neither
-    &lt;!--#endif --&gt;
-</PRE>
-
 
 <hr>
 <h2>Directives</h2>
@@ -357,4 +376,3 @@ the request.
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-
