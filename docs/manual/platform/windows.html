@@ -17,19 +17,9 @@
 <H1 ALIGN="CENTER">Using Apache With Microsoft Windows</H1>
 
 <P>This document explains how to install, configure and run
-   Apache 1.3 under Microsoft Windows. Please note that at
-   this time, Windows support is entirely experimental, and is
-   recommended only for experienced users. The Apache Group does not
-   guarantee that this software will work as documented, or even at
-   all. If you find any bugs, or wish to contribute in other ways, please
-   use our <A HREF="http://www.apache.org/bug_report.html">bug reporting
-   page.</A></P>
-
-<P><STRONG>Warning: Apache on NT has not yet been optimized for performance.
-Apache still performs best, and is most reliable on Unix platforms.  Over
-time we will improve NT performance. Folks doing comparative reviews
-of webserver performance are asked to compare against Apache
-on a Unix platform such as Solaris, FreeBSD, or Linux.</STRONG></P>
+   Apache 2.0 under Microsoft Windows. If you find any bugs, or wish 
+   to contribute in other ways, please use our 
+   <A HREF="http://www.apache.org/bugs/">bug reporting page.</A></P>
 
 <P>
 
@@ -57,30 +47,23 @@ to help with development, or to track down bugs), see the section on
 
 <H2><A NAME="req">Requirements</A></H2>
 
-Apache 1.3 is designed to run on Windows NT 4.0. The binary installer
-will only work in Intel processors. Apache may also run on Windows 95,
+Apache 2.0 is designed to run on Windows NT 4.0 and Windows 2000. The binary 
+installer will only work in Intel processors. Apache may also run on Windows 95,
 Windows 98 and Windows NT 3.5.1, but these have not been tested. In
 all cases TCP/IP networking must be installed.
 
 <P>
 
-If running on Windows 95, using the "Winsock2" upgrade is recommended
-but may not be necessary.  If running on NT 4.0, installing Service Pack 2
-is recommended.
+If running on Windows 95, using the "Winsock2" upgrade is REQUIRED. "Winsock 2" 
+for Windows 95 is available <A HREF="http://www.microsoft.com/windows95/downloads/">here.</A>
 
+If running on NT 4.0, installing Service Pack 2 is recommended.
 <P>
-
-<STRONG>Note: "Winsock 2" is required for Apache 1.3.7 and later.</STRONG>
-
-<P>
-
-"Winsock 2" for Windows 95 is available <A HREF="http://www.microsoft.com/windows95/downloads/">here.</A>
-
 <H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
 <P>Information on the latest version of Apache can be found on the
 Apache web server at <A
-HREF="http://www.apache.org/">http://www.apache.org/</A>.  This will
+HREF="http://www.apache.org/httpd">http://www.apache.org/httpd</A>.  This will
 list the current release, any more recent alpha or beta-test releases,
 together with details of mirror web and anonymous ftp sites.</P>
 
@@ -251,6 +234,11 @@ The main differences in Apache for Windows are:
            this is set, it is recommended that a very high number is
            used. The recommended default, <CODE>MaxRequestsPerChild
            0</CODE>, does not cause the process to ever exit.
+	   <STRONG>
+           Warning: The server configuration file is reread when the
+           new child process is started. If you have modified httpd.conf,
+           the new child may not start or you may receive unexpected results.
+	   </STRONG>
       <P><A HREF="mod/core.html#threadsperchild">ThreadsPerChild</A> -
          This directive is new, and tells the server how many threads it
          should use. This is the maximum number of connections the server
@@ -474,8 +462,8 @@ line option used, <CODE>-k</CODE>, was chosen as a reminder of the
 
 <H2><A NAME="comp">Compiling Apache for Windows</A></H2>
 
-<P>Compiling Apache requires Microsoft Visual C++ 5.0 to be properly
-   installed. It is easiest to compile with the command-line tools
+<P>Compiling Apache requires Microsoft Visual C++ 5.0 (or later) to be 
+   properly installed. It is easiest to compile with the command-line tools
    (nmake, <EM>etc.</EM>..). Consult the VC++ manual to determine how to install
    them.</P>
 
@@ -484,17 +472,11 @@ line option used, <CODE>-k</CODE>, was chosen as a reminder of the
    <CODE>src</CODE> subdirectory of the Apache distribution.</P>
 
 <P>The master Apache makefile instructions are contained in the
-   <CODE>Makefile.nt</CODE> file. To compile Apache on Windows NT, simply
+   <CODE>Makefile.win</CODE> file. To compile Apache on Windows, simply
    use one of the following commands:
 <UL>
-<LI><CODE>nmake /f Makefile.nt _apacher</CODE> (release build)
-<LI><CODE>nmake /f Makefile.nt _apached</CODE> (debug build)
-</UL>
-
-<P><em>(1.3.4 and later)</em> To compile Apache on Windows 95, use one of
-<UL>
-<LI><CODE>nmake /f Makefile_win32.txt</CODE> (release build)
-<LI><CODE>nmake /f Makefile_win32_debug.txt</CODE> (debug build)
+<LI><CODE>nmake /f Makefile.win _apacher</CODE> (release build)
+<LI><CODE>nmake /f Makefile.win _apached</CODE> (debug build)
 </UL>
 
 <P>These will both compile Apache. The latter will include debugging
@@ -508,7 +490,7 @@ line option used, <CODE>-k</CODE>, was chosen as a reminder of the
    Project files (<CODE>.DSP</CODE>) are included for each of the
    portions of Apache. To build Apache from the these projects files
    you will need to build the following projects <EM>in this order</EM>:
-
+<STRONG> This needs updating for Apache 2.0 </STRONG>
  <OL>
    <LI><CODE>os\win32\ApacheOS.dsp</CODE>
    <LI><CODE>regex\regex.dsp</CODE>
@@ -529,16 +511,9 @@ line option used, <CODE>-k</CODE>, was chosen as a reminder of the
 <P>To install the files into the <CODE>\Apache</CODE> directory
    automatically, use one the following nmake commands (see above):</P>
 <UL>
-<LI><CODE>nmake /f Makefile.nt installr INSTDIR=<EM>dir</EM></CODE>
+<LI><CODE>nmake /f Makefile.win installr INSTDIR=<EM>dir</EM></CODE>
  (for release build)
-<LI><CODE>nmake /f Makefile.nt installd INSTDIR=<EM>dir</EM></CODE>
- (for debug build)
-</UL>
-or, for Windows 95 (1.3.4 and later), use one of:
-<UL>
-<LI><CODE>nmake /f Makefile_win32.txt install INSTDIR=<EM>dir</EM></CODE>
- (for release build)
-<LI><CODE>nmake /f Makefile_win32_debug.txt install INSTDIR=<EM>dir</EM></CODE>
+<LI><CODE>nmake /f Makefile.win installd INSTDIR=<EM>dir</EM></CODE>
  (for debug build)
 </UL>
 
