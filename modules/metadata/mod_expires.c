@@ -290,7 +290,7 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
     while (word[0]) {
         /* <num>
          */
-        if (ap_isdigit(word[0])) {
+        if (apr_isdigit(word[0])) {
             num = atoi(word);
         }
         else {
@@ -487,8 +487,8 @@ static int add_expires(request_rec *r)
     apr_table_mergen(r->headers_out, "Cache-Control",
 		    apr_psprintf(r->pool, "max-age=%qd",
 				(expires - r->request_time)
-				    / AP_USEC_PER_SEC));
-    timestr = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+				    / APR_USEC_PER_SEC));
+    timestr = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(timestr, expires);
     apr_table_setn(r->headers_out, "Expires", timestr);
     return OK;

@@ -267,7 +267,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
 	}
 
 	*l++ = '\0';
-	while (*l && ap_isspace(*l))
+	while (*l && apr_isspace(*l))
 	    ++l;
 
 	if (!strcasecmp(w, "Content-type")) {
@@ -275,7 +275,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
 	    /* Nuke trailing whitespace */
 
 	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && ap_isspace(*endp))
+	    while (endp > l && apr_isspace(*endp))
 		*endp-- = '\0';
 
 	    tmp = apr_pstrdup(r->pool, l);
@@ -290,7 +290,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
 	    apr_table_set(tmp_headers, w, l);
 	}
     }
-    apr_overlap_tables(r->headers_out, tmp_headers, AP_OVERLAP_TABLES_SET);
+    apr_overlap_tables(r->headers_out, tmp_headers, APR_OVERLAP_TABLES_SET);
     return OK;
 }
 

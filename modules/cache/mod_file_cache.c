@@ -360,7 +360,7 @@ static int file_cache_xlat(request_rec *r)
     sconf = ap_get_module_config(r->server->module_config, &file_cache_module);
 
     /* we only operate when at least one cachefile directive was used */
-    if (ap_is_empty_table(sconf->files))
+    if (apr_is_empty_table(sconf->files))
 	return DECLINED;
 
     res = ap_core_translate(r);

@@ -87,7 +87,7 @@ static int decodeenc(char *x)
     for (i = 0, j = 0; x[i] != '\0'; i++, j++) {
 /* decode it if not already done */
     ch = x[i];
-    if (ch == '%' && ap_isxdigit(x[i + 1]) && ap_isxdigit(x[i + 2])) {
+    if (ch == '%' && apr_isxdigit(x[i + 1]) && apr_isxdigit(x[i + 2])) {
         ch = ap_proxy_hex2c(&x[i + 1]);
         i += 2;
     }
@@ -107,7 +107,7 @@ static int ftp_check_string(const char *x)
 
     for (i = 0; x[i] != '\0'; i++) {
     ch = x[i];
-    if (ch == '%' && ap_isxdigit(x[i + 1]) && ap_isxdigit(x[i + 2])) {
+    if (ch == '%' && apr_isxdigit(x[i + 1]) && apr_isxdigit(x[i + 2])) {
         ch = ap_proxy_hex2c(&x[i + 1]);
         i += 2;
     }
@@ -207,8 +207,8 @@ static int ftp_getrc(BUFF *f)
     if (len == -1)
     return -1;
 /* check format */
-    if (len < 5 || !ap_isdigit(linebuff[0]) || !ap_isdigit(linebuff[1]) ||
-    !ap_isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
+    if (len < 5 || !apr_isdigit(linebuff[0]) || !apr_isdigit(linebuff[1]) ||
+    !apr_isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
     status = 0;
     else
     status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
@@ -248,8 +248,8 @@ static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
     len = ap_bgets(linebuff, sizeof linebuff, f);
     if (len == -1)
     return -1;
-    if (len < 5 || !ap_isdigit(linebuff[0]) || !ap_isdigit(linebuff[1]) ||
-    !ap_isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
+    if (len < 5 || !apr_isdigit(linebuff[0]) || !apr_isdigit(linebuff[1]) ||
+    !apr_isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
     status = 0;
     else
     status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
@@ -359,8 +359,8 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
         apr_cpystrn(buf, buf2, sizeof(buf));
         n = strlen(buf);
     }
-    else if (buf[0] == 'd' || buf[0] == '-' || buf[0] == 'l' || ap_isdigit(buf[0])) {
-        if (ap_isdigit(buf[0])) {    /* handle DOS dir */
+    else if (buf[0] == 'd' || buf[0] == '-' || buf[0] == 'l' || apr_isdigit(buf[0])) {
+        if (apr_isdigit(buf[0])) {    /* handle DOS dir */
         searchptr = strchr(buf, '<');
         if (searchptr != NULL)
             *searchptr = '[';
@@ -487,7 +487,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
     unsigned short pport;
     int pasvmode = 0;
     char pasv[64];
-    char *pstr, dates[AP_RFC822_DATE_LEN];
+    char *pstr, dates[APR_RFC822_DATE_LEN];
 
     char *npaddr;
     apr_uint32_t npport;
@@ -546,7 +546,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
     }
 
 /* check if ProxyBlock directive on this host */
-    destaddr.s_addr = ap_inet_addr(host);
+    destaddr.s_addr = apr_inet_addr(host);
     for (i = 0; i < conf->noproxies->nelts; i++) {
     if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
         || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
@@ -936,7 +936,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
                 len = 0;
             }
             else if (i == 213) { /* Size command ok */
-                for (j = 0; j < sizeof resp && ap_isdigit(resp[j]); j++)
+                for (j = 0; j < sizeof resp && apr_isdigit(resp[j]); j++)
                     ;
                 resp[j] = '\0';
                 if (resp[0] != '\0')

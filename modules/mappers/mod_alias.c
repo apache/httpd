@@ -188,7 +188,7 @@ static const char *add_redirect_internal(cmd_parms *cmd,
 	status = HTTP_MOVED_TEMPORARILY;
     else if (!strcasecmp(arg1, "seeother"))
 	status = HTTP_SEE_OTHER;
-    else if (ap_isdigit(*arg1))
+    else if (apr_isdigit(*arg1))
 	status = atoi(arg1);
     else {
 	f = arg1;

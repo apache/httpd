@@ -103,11 +103,11 @@ static char *http2env(apr_pool_t *a, char *w)
     char *cp = res;
 
     while (*++cp) {
-	if (!ap_isalnum(*cp) && *cp != '_') {
+	if (!apr_isalnum(*cp) && *cp != '_') {
 	    *cp = '_';
 	}
 	else {
-	    *cp = ap_toupper(*cp);
+	    *cp = apr_toupper(*cp);
 	}
     }
 
@@ -116,7 +116,7 @@ static char *http2env(apr_pool_t *a, char *w)
 
 API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
 {
-    apr_array_header_t *env_arr = ap_table_elts(t);
+    apr_array_header_t *env_arr = apr_table_elts(t);
     apr_table_entry_t *elts = (apr_table_entry_t *) env_arr->elts;
     char **env = (char **) apr_palloc(p, (env_arr->nelts + 2) * sizeof(char *));
     int i, j;
@@ -136,11 +136,11 @@ API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
 	}
 	env[j] = apr_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
 	whack = env[j];
-	if (ap_isdigit(*whack)) {
+	if (apr_isdigit(*whack)) {
 	    *whack++ = '_';
 	}
 	while (*whack != '=') {
-	    if (!ap_isalnum(*whack) && *whack != '_') {
+	    if (!apr_isalnum(*whack) && *whack != '_') {
 		*whack = '_';
 	    }
 	    ++whack;
@@ -163,7 +163,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     char *env_temp;
 #endif
     const char *host;
-    apr_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
+    apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
     apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
     int i;
 
@@ -281,7 +281,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 	}
     }
 
-    apr_overlap_tables(r->subprocess_env, e, AP_OVERLAP_TABLES_SET);
+    apr_overlap_tables(r->subprocess_env, e, APR_OVERLAP_TABLES_SET);
 }
 
 /* This "cute" little function comes about because the path info on
@@ -319,15 +319,15 @@ static char *original_uri(request_rec *r)
 
     first = r->the_request;	/* use the request-line */
 
-    while (*first && !ap_isspace(*first)) {
+    while (*first && !apr_isspace(*first)) {
 	++first;		/* skip over the method */
     }
-    while (ap_isspace(*first)) {
+    while (apr_isspace(*first)) {
 	++first;		/*   and the space(s)   */
     }
 
     last = first;
-    while (*last && !ap_isspace(*last)) {
+    while (*last && !apr_isspace(*last)) {
 	++last;			/* end at next whitespace */
     }
 
@@ -474,8 +474,8 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 		cond_status = ap_meets_conditions(r);
 	    }
 	    apr_overlap_tables(r->err_headers_out, merge,
-		AP_OVERLAP_TABLES_MERGE);
-	    if (!ap_is_empty_table(cookie_table)) {
+		APR_OVERLAP_TABLES_MERGE);
+	    if (!apr_is_empty_table(cookie_table)) {
 		/* the cookies have already been copied to the cookie_table */
 		apr_table_unset(r->err_headers_out, "Set-Cookie");
 		r->err_headers_out = apr_overlay_tables(r->pool,
@@ -532,7 +532,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	}
 
 	*l++ = '\0';
-	while (*l && ap_isspace(*l)) {
+	while (*l && apr_isspace(*l)) {
 	    ++l;
 	}
 
@@ -542,7 +542,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    /* Nuke trailing whitespace */
 
 	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && ap_isspace(*endp)) {
+	    while (endp > l && apr_isspace(*endp)) {
 		*endp-- = '\0';
 	    }
 

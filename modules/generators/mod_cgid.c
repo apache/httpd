@@ -312,7 +312,7 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
     return (pid);
 }
 
-static void cgid_maint(int reason, void *data, ap_wait_t status)
+static void cgid_maint(int reason, void *data, apr_wait_t status)
 {
 #if APR_HAS_OTHER_CHILD
     int *sd = data;
@@ -739,7 +739,7 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
 static int log_script(request_rec *r, cgid_server_conf * conf, int ret, 
                   char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err) 
 { 
-    apr_array_header_t *hdrs_arr = ap_table_elts(r->headers_in); 
+    apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in); 
     apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
     char argsbuffer[HUGE_STRING_LEN]; 
     apr_file_t *f = NULL; 
@@ -781,7 +781,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     } 
 
     apr_puts("%response\n", f); 
-    hdrs_arr = ap_table_elts(r->err_headers_out); 
+    hdrs_arr = apr_table_elts(r->err_headers_out); 
     hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
 
     for (i = 0; i < hdrs_arr->nelts; ++i) { 

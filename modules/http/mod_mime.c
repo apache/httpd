@@ -78,14 +78,14 @@
 
 /* XXXX - fix me / EBCDIC
  *        there was a cludge here which would use its
- *	  own version ap_isascii(). Indicating that
+ *	  own version apr_isascii(). Indicating that
  *	  on some platforms that might be needed. 
  *
  *	  #define OS_ASC(c) (c)		    -- for mere mortals 
  *     or
  *        #define OS_ASC(c) (ebcdic2ascii[c]) -- for dino's
  *
- *        #define ap_isascii(c) ((OS_ASC(c) & 0x80) == 0)
+ *        #define apr_isascii(c) ((OS_ASC(c) & 0x80) == 0)
  */
 
 /* XXXXX - fix me - See note with NOT_PROXY 
@@ -313,7 +313,7 @@ AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
  */
 
 #define MIME_HASHSIZE (32)
-#define hash(i) (ap_tolower(i) % MIME_HASHSIZE)
+#define hash(i) (apr_tolower(i) % MIME_HASHSIZE)
 
 static apr_table_t *hash_buckets[MIME_HASHSIZE];
 
@@ -381,7 +381,7 @@ static int is_token(char c)
 {
     int res;
 
-    res = (ap_isascii(c) && ap_isgraph(c)
+    res = (apr_isascii(c) && apr_isgraph(c)
 	   && (strchr(tspecial, c) == NULL)) ? 1 : -1;
     return res;
 }
@@ -390,7 +390,7 @@ static int is_qtext(char c)
 {
     int res;
 
-    res = (ap_isascii(c) && (c != '"') && (c != '\\') && (c != '\n'))
+    res = (apr_isascii(c) && (c != '"') && (c != '\\') && (c != '\n'))
 	? 1 : -1;
     return res;
 }
@@ -402,7 +402,7 @@ static int is_quoted_pair(char *s)
 
     if (((s + 1) != NULL) && (*s == '\\')) {
 	c = (int) *(s + 1);
-	if (ap_isascii(c)) {
+	if (apr_isascii(c)) {
 	    res = 1;
 	}
     }

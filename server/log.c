@@ -372,9 +372,9 @@ static void log_error_core(const char *file, int line, int level,
     if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
 	errstr[0] = '[';
 	apr_ctime(errstr + 1, apr_now());
-	errstr[1 + AP_CTIME_LEN - 1] = ']';
-	errstr[1 + AP_CTIME_LEN    ] = ' ';
-	len = 1 + AP_CTIME_LEN + 1;
+	errstr[1 + APR_CTIME_LEN - 1] = ']';
+	errstr[1 + APR_CTIME_LEN    ] = ' ';
+	len = 1 + APR_CTIME_LEN + 1;
     } else {
 	len = 0;
     }
@@ -534,7 +534,7 @@ void ap_log_pid(apr_pool_t *p, const char *fname)
 
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
-    char time_str[AP_CTIME_LEN];
+    char time_str[APR_CTIME_LEN];
 
     apr_ctime(time_str, apr_now());
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
@@ -552,7 +552,7 @@ API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 
 #ifdef HAVE_RELIABLE_PIPED_LOGS
 /* forward declaration */
-static void piped_log_maintenance(int reason, void *data, ap_wait_t status);
+static void piped_log_maintenance(int reason, void *data, apr_wait_t status);
 
 static int piped_log_spawn(piped_log *pl)
 {
@@ -599,7 +599,7 @@ static int piped_log_spawn(piped_log *pl)
 }
 
 
-static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
+static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
 {
     piped_log *pl = data;
     apr_status_t stats;

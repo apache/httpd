@@ -71,7 +71,7 @@
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
  */
-#define INLINE extern ap_inline
+#define INLINE extern apr_inline
 
 INLINE int ap_os_is_path_absolute(const char *file);
 

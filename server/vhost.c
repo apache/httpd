@@ -221,7 +221,7 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
 	my_addr = DEFAULT_VHOST_ADDR;
 	is_an_ip_addr = 1;
     }
-    else if ((my_addr = ap_inet_addr(w)) != INADDR_NONE) {
+    else if ((my_addr = apr_inet_addr(w)) != INADDR_NONE) {
 	is_an_ip_addr = 1;
     }
     if (is_an_ip_addr) {
@@ -354,7 +354,7 @@ static void dump_iphash_statistics(server_rec *main_s)
  *
  * Hash function provided by David Hankins.
  */
-static ap_inline unsigned hash_inaddr(unsigned key)
+static apr_inline unsigned hash_inaddr(unsigned key)
 {
     key ^= (key >> 16);
     return ((key >> 8) ^ key) % IPHASH_TABLE_SIZE;
@@ -388,7 +388,7 @@ static name_chain *new_name_chain(apr_pool_t *p, server_rec *s, server_addr_rec 
 }
 
 
-static ap_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
+static apr_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
     unsigned port)
 {
     unsigned bucket;
@@ -687,7 +687,7 @@ static void fix_hostname(request_rec *r)
     src = r->hostname;
     dst = host;
     while (*src) {
-	if (!ap_isalnum(*src) && *src != '.' && *src != '-') {
+	if (!apr_isalnum(*src) && *src != '.' && *src != '-') {
 	    if (*src == ':')
 		break;
 	    else
@@ -699,7 +699,7 @@ static void fix_hostname(request_rec *r)
     /* check the port part */
     if (*src++ == ':') {
 	while (*src) {
-	    if (!ap_isdigit(*src++)) {
+	    if (!apr_isdigit(*src++)) {
 		goto bad;
 	    }
 	}

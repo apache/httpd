@@ -56,7 +56,7 @@
 #define AP_AC_CONFIG_H
 
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
-#include "apr_lib.h"		/* ap_isfoo() macros */
+#include "apr_lib.h"		/* apr_isfoo() macros */
 
 /* Implemented flags for dynamic library bindings.
  *

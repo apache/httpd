@@ -156,7 +156,7 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
 
 static int is_ip(const char *host)
 {
-    while ((*host == '.') || ap_isdigit(*host))
+    while ((*host == '.') || apr_isdigit(*host))
 	host++;
     return (*host == '\0');
 }
@@ -193,7 +193,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
 	*s++ = '\0';
 
 	if (!is_ip(where)
-	    || (a->x.ip.net = ap_inet_addr(where)) == INADDR_NONE) {
+	    || (a->x.ip.net = apr_inet_addr(where)) == INADDR_NONE) {
 	    a->type = T_FAIL;
 	    return "syntax error in network portion of network/netmask";
 	}
@@ -205,7 +205,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
 	}
 	/* is it in /a.b.c.d form? */
 	if (strchr(s, '.')) {
-	    mask = ap_inet_addr(s);
+	    mask = apr_inet_addr(s);
 	    if (mask == INADDR_NONE) {
 		a->type = T_FAIL;
 		return "syntax error in mask portion of network/netmask";
@@ -224,7 +224,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
 	a->x.ip.mask = mask;
         a->x.ip.net  = (a->x.ip.net & mask);   /* pjr - This fixes PR 4770 */
     }
-    else if (ap_isdigit(*where) && is_ip(where)) {
+    else if (apr_isdigit(*where) && is_ip(where)) {
 	/* legacy syntax for ip addrs: a.b.c. ==> a.b.c.0/24 for example */
 	int shift;
 	char *t;
@@ -238,11 +238,11 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
 	shift = 24;
 	while (*s) {
 	    t = s;
-	    if (!ap_isdigit(*t)) {
+	    if (!apr_isdigit(*t)) {
 		a->type = T_FAIL;
 		return "invalid ip address";
 	    }
-	    while (ap_isdigit(*t)) {
+	    while (apr_isdigit(*t)) {
 		++t;
 	    }
 	    if (*t == '.') {

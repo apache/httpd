@@ -139,9 +139,9 @@ EXPORTS
 ;	ap_kill_cleanups_for_socket   @132
 	;ap_kill_timeout   @133
 	ap_log_assert   @134
-	ap_log_error_old   @135
-	ap_log_reason   @136
-	ap_log_unixerr   @137
+;	ap_log_error_old   @135
+;	ap_log_reason   @136
+;	ap_log_unixerr   @137
 ;	ap_make_array   @138
 	ap_make_dirstr   @139
 	ap_make_dirstr_parent   @140
@@ -279,7 +279,7 @@ EXPORTS
 	ap_limit_section   @272
 	ap_loaded_modules   @273
 	ap_log_error   @274
-	ap_log_printf   @275
+;	ap_log_printf   @275
 	ap_log_rerror   @276
 ;	ap_month_snames  @277
 ;	ap_null_cleanup   @278

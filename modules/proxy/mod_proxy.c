@@ -609,7 +609,7 @@ static const char *
       ap_get_module_config(s->module_config, &proxy_module);
     int *New;
 
-    if (!ap_isdigit(arg[0]))
+    if (!apr_isdigit(arg[0]))
     return "AllowCONNECT: port number must be numeric";
 
     New = apr_push_array(conf->allowed_connect_ports);

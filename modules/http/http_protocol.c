@@ -669,7 +669,7 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
      * would be incorrect.
      */
     
-    weak = ((r->request_time - r->mtime > AP_USEC_PER_SEC) && !force_weak) ? "" : "W/";
+    weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC) && !force_weak) ? "" : "W/";
 
     if (r->finfo.protection != 0) {
         etag = apr_psprintf(r->pool,
@@ -738,7 +738,7 @@ API_EXPORT(void) ap_set_etag(request_rec *r)
 API_EXPORT(void) ap_set_last_modified(request_rec *r)
 {
     apr_time_t mod_time = ap_rationalize_mtime(r, r->mtime);
-    char *datestr = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+    char *datestr = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(datestr, mod_time);
     apr_table_setn(r->headers_out, "Last-Modified", datestr);
 }
@@ -1038,7 +1038,7 @@ static void get_mime_headers(request_rec *r)
     char *value;
     char *copy;
     int len;
-    unsigned int fields_read = 0;
+    int fields_read = 0;
     apr_table_t *tmp_headers;
 
     /* We'll use apr_overlap_tables later to merge these into r->headers_in. */
@@ -1088,7 +1088,7 @@ static void get_mime_headers(request_rec *r)
 	apr_table_addn(tmp_headers, copy, value);
     }
 
-    apr_overlap_tables(r->headers_in, tmp_headers, AP_OVERLAP_TABLES_MERGE);
+    apr_overlap_tables(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);
 }
 
 request_rec *ap_read_request(conn_rec *conn)
@@ -1527,7 +1527,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     (void) checked_bputstrs(r, protocol, " ", r->status_line, CRLF, NULL);
 
-    date = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+    date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(date, r->request_time);
     ap_send_header_field(r, "Date", date);
     ap_send_header_field(r, "Server", ap_get_server_version());
@@ -1675,14 +1675,14 @@ static int uniq_field_values(void *d, const char *key, const char *val)
     do {
         /* Find a non-empty fieldname */
 
-        while (*e == ',' || ap_isspace(*e)) {
+        while (*e == ',' || apr_isspace(*e)) {
             ++e;
         }
         if (*e == '\0') {
             break;
         }
         start = e;
-        while (*e != '\0' && *e != ',' && !ap_isspace(*e)) {
+        while (*e != '\0' && *e != ',' && !apr_isspace(*e)) {
             ++e;
         }
         if (*e != '\0') {
@@ -1764,7 +1764,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
      * header field tables into a single table.  If we don't do this, our
      * later attempts to set or unset a given fieldname might be bypassed.
      */
-    if (!ap_is_empty_table(r->err_headers_out))
+    if (!apr_is_empty_table(r->err_headers_out))
         r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
                                         r->headers_out);
 
@@ -1820,7 +1820,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
      * some other part of the server configuration.
      */
     if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
-	date = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+	date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
         apr_rfc822_date(date, r->request_time);
         apr_table_addn(r->headers_out, "Expires", date);
     }
@@ -1921,7 +1921,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
 {
     const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");
-    unsigned long max_body;
+    long max_body;
 
     r->read_body = read_policy;
     r->read_chunked = 0;
@@ -1944,7 +1944,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     else if (lenp) {
         const char *pos = lenp;
 
-        while (ap_isdigit(*pos) || ap_isspace(*pos))
+        while (apr_isdigit(*pos) || apr_isspace(*pos))
             ++pos;
         if (*pos != '\0') {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -2016,7 +2016,7 @@ static long get_chunk_size(char *b)
 {
     long chunksize = 0;
 
-    while (ap_isxdigit(*b)) {
+    while (apr_isxdigit(*b)) {
         int xvalue = 0;
 
         if (*b >= '0' && *b <= '9')
@@ -2052,7 +2052,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     apr_size_t len_to_read;
     apr_ssize_t len_read;
     long chunk_start = 0;
-    unsigned long max_body;
+    long max_body;
     apr_status_t rv;
 
     if (!r->read_chunked) {     /* Content-length read */
@@ -2098,7 +2098,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
         chunk_start = getline(buffer, bufsiz, r->connection->client, 0);
         if ((chunk_start <= 0) || (chunk_start >= (bufsiz - 1))
-            || !ap_isxdigit(*buffer)) {
+            || !apr_isxdigit(*buffer)) {
             r->connection->keepalive = -1;
             return -1;
         }
@@ -2641,7 +2641,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
      * message body.  Note that being assbackwards here is not an option.
      */
     if (status == HTTP_NOT_MODIFIED) {
-        if (!ap_is_empty_table(r->err_headers_out))
+        if (!apr_is_empty_table(r->err_headers_out))
             r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
                                                r->headers_out);
         ap_basic_http_header(r);
@@ -2757,11 +2757,11 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
          */
         if (r->status_line != NULL
             && strlen(r->status_line) > 4       /* long enough */
-            && ap_isdigit(r->status_line[0])
-            && ap_isdigit(r->status_line[1])
-            && ap_isdigit(r->status_line[2])
-            && ap_isspace(r->status_line[3])
-            && ap_isalnum(r->status_line[4])) {
+            && apr_isdigit(r->status_line[0])
+            && apr_isdigit(r->status_line[1])
+            && apr_isdigit(r->status_line[2])
+            && apr_isspace(r->status_line[3])
+            && apr_isalnum(r->status_line[4])) {
             title = r->status_line;
         }
 

@@ -728,7 +728,7 @@ static int magic_rsl_to_request(request_rec *r)
 	 frag = frag->next, cur_frag++) {
 	/* loop through the characters in the fragment */
 	for (cur_pos = 0; frag->str[cur_pos]; cur_pos++) {
-	    if (ap_isspace(frag->str[cur_pos])) {
+	    if (apr_isspace(frag->str[cur_pos])) {
 		/* process whitespace actions for each state */
 		if (state == rsl_leading_space) {
 		    /* eat whitespace in this state */
@@ -933,7 +933,7 @@ static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
     magic_rsl_puts(r, MIME_BINARY_UNKNOWN);
 }
 
-#define    EATAB {while (ap_isspace((unsigned char) *l))  ++l;}
+#define    EATAB {while (apr_isspace((unsigned char) *l))  ++l;}
 
 /*
  * apprentice - load configuration from the magic file r
@@ -975,7 +975,7 @@ static int apprentice(server_rec *s, apr_pool_t *p)
 
 	/* skip leading whitespace */
 	ws_offset = 0;
-	while (line[ws_offset] && ap_isspace(line[ws_offset])) {
+	while (line[ws_offset] && apr_isspace(line[ws_offset])) {
 	    ws_offset++;
 	}
 
@@ -1018,10 +1018,10 @@ static int apprentice(server_rec *s, apr_pool_t *p)
     ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 		MODNAME ": apprentice test");
     for (m = conf->magic; m; m = m->next) {
-	if (ap_isprint((((unsigned long) m) >> 24) & 255) &&
-	    ap_isprint((((unsigned long) m) >> 16) & 255) &&
-	    ap_isprint((((unsigned long) m) >> 8) & 255) &&
-	    ap_isprint(((unsigned long) m) & 255)) {
+	if (apr_isprint((((unsigned long) m) >> 24) & 255) &&
+	    apr_isprint((((unsigned long) m) >> 16) & 255) &&
+	    apr_isprint((((unsigned long) m) >> 8) & 255) &&
+	    apr_isprint(((unsigned long) m) & 255)) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 			MODNAME ": apprentice: POINTER CLOBBERED! "
 			"m=\"%c%c%c%c\" line=%d",
@@ -1149,7 +1149,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
 	s = l;
 	if (*l == '+' || *l == '-')
 	    l++;
-	if (ap_isdigit((unsigned char) *l)) {
+	if (apr_isdigit((unsigned char) *l)) {
 	    m->in.offset = strtol(l, &t, 0);
 	    if (*s == '-')
 		m->in.offset = -m->in.offset;
@@ -1164,7 +1164,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
     }
 
 
-    while (ap_isdigit((unsigned char) *l))
+    while (apr_isdigit((unsigned char) *l))
 	++l;
     EATAB;
 
@@ -1262,7 +1262,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
 	}
 	/* FALL THROUGH */
     default:
-	if (*l == 'x' && ap_isspace((unsigned char) l[1])) {
+	if (*l == 'x' && apr_isspace((unsigned char) l[1])) {
 	    m->reln = *l;
 	    ++l;
 	    goto GetDesc;	/* Bill The Cat */
@@ -1334,7 +1334,7 @@ static char *getstr(server_rec *serv, register char *s, register char *p,
     register int val;
 
     while ((c = *s++) != '\0') {
-	if (ap_isspace((unsigned char) c))
+	if (apr_isspace((unsigned char) c))
 	    break;
 	if (p >= pmax) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, serv,
@@ -1437,7 +1437,7 @@ static char *getstr(server_rec *serv, register char *s, register char *p,
 /* Single hex char to int; -1 if not a hex char. */
 static int hextoint(int c)
 {
-    if (ap_isdigit((unsigned char) c))
+    if (apr_isdigit((unsigned char) c))
 	return c - '0';
     if ((c >= 'a') && (c <= 'f'))
 	return c + 10 - 'a';
@@ -1570,10 +1570,10 @@ static int match(request_rec *r, unsigned char *s, int nbytes)
 
 #if MIME_MAGIC_DEBUG
     for (m = conf->magic; m; m = m->next) {
-	if (ap_isprint((((unsigned long) m) >> 24) & 255) &&
-	    ap_isprint((((unsigned long) m) >> 16) & 255) &&
-	    ap_isprint((((unsigned long) m) >> 8) & 255) &&
-	    ap_isprint(((unsigned long) m) & 255)) {
+	if (apr_isprint((((unsigned long) m) >> 24) & 255) &&
+	    apr_isprint((((unsigned long) m) >> 16) & 255) &&
+	    apr_isprint((((unsigned long) m) >> 8) & 255) &&
+	    apr_isprint(((unsigned long) m) & 255)) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, r,
 			MODNAME ": match: POINTER CLOBBERED! "
 			"m=\"%c%c%c%c\"",
@@ -2008,15 +2008,15 @@ static int ascmagic(request_rec *r, unsigned char *buf, int nbytes)
     if (*buf == '.') {
 	unsigned char *tp = buf + 1;
 
-	while (ap_isspace(*tp))
+	while (apr_isspace(*tp))
 	    ++tp;		/* skip leading whitespace */
-	if ((ap_isalnum(*tp) || *tp == '\\') &&
-	     (ap_isalnum(*(tp + 1)) || *tp == '"')) {
+	if ((apr_isalnum(*tp) || *tp == '\\') &&
+	     (apr_isalnum(*(tp + 1)) || *tp == '"')) {
 	    magic_rsl_puts(r, "application/x-troff");
 	    return 1;
 	}
     }
-    if ((*buf == 'c' || *buf == 'C') && ap_isspace(*(buf + 1))) {
+    if ((*buf == 'c' || *buf == 'C') && apr_isspace(*(buf + 1))) {
 	/* Fortran */
 	magic_rsl_puts(r, "text/plain");
 	return 1;
@@ -2299,7 +2299,7 @@ static long from_oct(int digs, char *where)
 {
     register long value;
 
-    while (ap_isspace(*where)) {	/* Skip spaces */
+    while (apr_isspace(*where)) {	/* Skip spaces */
 	where++;
 	if (--digs <= 0)
 	    return -1;		/* All blank field */
@@ -2310,7 +2310,7 @@ static long from_oct(int digs, char *where)
 	--digs;
     }
 
-    if (digs > 0 && *where && !ap_isspace(*where))
+    if (digs > 0 && *where && !apr_isspace(*where))
 	return -1;		/* Ended on non-space/nul */
 
     return value;
@@ -2339,10 +2339,10 @@ static int revision_suffix(request_rec *r)
 
     /* check for recognized revision suffix */
     suffix_pos = strlen(r->filename) - 1;
-    if (!ap_isdigit(r->filename[suffix_pos])) {
+    if (!apr_isdigit(r->filename[suffix_pos])) {
 	return 0;
     }
-    while (suffix_pos >= 0 && ap_isdigit(r->filename[suffix_pos]))
+    while (suffix_pos >= 0 && apr_isdigit(r->filename[suffix_pos]))
 	suffix_pos--;
     if (suffix_pos < 0 || r->filename[suffix_pos] != '@') {
 	return 0;
@@ -2409,10 +2409,10 @@ static void magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 			MODNAME ": magic_init 1 test");
 	    for (m = conf->magic; m; m = m->next) {
-		if (ap_isprint((((unsigned long) m) >> 24) & 255) &&
-		    ap_isprint((((unsigned long) m) >> 16) & 255) &&
-		    ap_isprint((((unsigned long) m) >> 8) & 255) &&
-		    ap_isprint(((unsigned long) m) & 255)) {
+		if (apr_isprint((((unsigned long) m) >> 24) & 255) &&
+		    apr_isprint((((unsigned long) m) >> 16) & 255) &&
+		    apr_isprint((((unsigned long) m) >> 8) & 255) &&
+		    apr_isprint(((unsigned long) m) & 255)) {
 		    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 				MODNAME ": magic_init 1: POINTER CLOBBERED! "
 				"m=\"%c%c%c%c\" line=%d",

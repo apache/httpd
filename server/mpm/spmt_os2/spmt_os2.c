@@ -359,7 +359,7 @@ static int find_child_by_tid(int tid)
 #endif
 static int wait_or_timeout_counter;
 
-static int wait_or_timeout(ap_wait_t *status)
+static int wait_or_timeout(apr_wait_t *status)
 {
     int ret;
     ULONG tid;
@@ -1247,7 +1247,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     while (!restart_pending && !shutdown_pending) {
 	int child_slot;
-	ap_wait_t status;
+	apr_wait_t status;
 	int tid = wait_or_timeout(&status);
 
 	/* XXX: if it takes longer than 1 second for all our children

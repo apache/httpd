@@ -1066,7 +1066,7 @@ static void perform_child_maintenance(void)
 static void server_main_loop(int remaining_children_to_start)
 {
     int child_slot;
-    ap_wait_t status;
+    apr_wait_t status;
     apr_proc_t pid;
     int i;
 

@@ -190,7 +190,7 @@ char cookie[1024],        	/* optional cookie line */
         			 * authentification */
      hdrs[4096];        	/* optional arbitrary headers */
 int port = 80;        		/* port number */
-time_t aprtimeout = 30 * AP_USEC_PER_SEC; /* timeout value */
+time_t aprtimeout = 30 * APR_USEC_PER_SEC; /* timeout value */
 
 int use_html = 0;        	/* use html in the report */
 char *tablestring;
@@ -259,7 +259,7 @@ static void write_request(struct connection *c)
 {
     apr_ssize_t len = reqlen;
     c->connect = apr_now();
-    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 30 * AP_USEC_PER_SEC);
+    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 30 * APR_USEC_PER_SEC);
     if (apr_send(c->aprsock, request, &reqlen) != APR_SUCCESS ||
         reqlen != len) {
         printf("Send request failed!\n");
@@ -815,12 +815,12 @@ static void test(void)
 
         /* check for time limit expiry */
         now = apr_now();
-        timed = (now - start) / AP_USEC_PER_SEC;
+        timed = (now - start) / APR_USEC_PER_SEC;
         if (tlimit && timed > (tlimit * 1000)) {
             requests = done;   /* so stats are correct */
         }
         /* Timeout of 30 seconds. */
-        timeout = 30 * AP_USEC_PER_SEC;
+        timeout = 30 * APR_USEC_PER_SEC;
 
         n = concurrency;
         status = apr_poll(readbits, &n, timeout);
@@ -862,14 +862,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.21 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.22 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.21 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.22 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -1006,11 +1006,11 @@ int main(int argc, char **argv)
     }
 #endif
 
-    ap_optind = 1;
+    apr_optind = 1;
     while (apr_getopt(argc, argv, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, cntxt) == APR_SUCCESS) {
         switch (c) {
         case 'n':
-            requests = atoi(ap_optarg);
+            requests = atoi(apr_optarg);
             if (!requests) {
                err("Invalid number of requests\n");
             }
@@ -1019,7 +1019,7 @@ int main(int argc, char **argv)
             keepalive = 1;
             break;
         case 'c':
-            concurrency = atoi(ap_optarg);
+            concurrency = atoi(apr_optarg);
             break;
         case 'i':
             if (posting == 1)
@@ -1030,7 +1030,7 @@ int main(int argc, char **argv)
             if (posting != 0)
                 err("Cannot mix POST and HEAD\n");
 
-            if (0 == (r = open_postfile(ap_optarg))) {
+            if (0 == (r = open_postfile(apr_optarg))) {
                posting = 1;
             }
             else if (postdata) {
@@ -1038,27 +1038,27 @@ int main(int argc, char **argv)
             }
             break;
         case 'v':
-            verbosity = atoi(ap_optarg);
+            verbosity = atoi(apr_optarg);
             break;
         case 't':
-            tlimit = atoi(ap_optarg);
+            tlimit = atoi(apr_optarg);
             requests = MAX_REQUESTS;  /* need to size data array on something */
             break;
         case 'T':
-            strcpy(content_type, ap_optarg);
+            strcpy(content_type, apr_optarg);
             break;
         case 'C':
             strncat(cookie, "Cookie: ", sizeof(cookie));
-            strncat(cookie, ap_optarg, sizeof(cookie));
+            strncat(cookie, apr_optarg, sizeof(cookie));
             strncat(cookie, "\r\n", sizeof(cookie));
             break;
         case 'A':
             /* assume username passwd already to be in colon separated form. 
              * Ready to be uu-encoded.
              */
-            while(isspace(*ap_optarg))
-                ap_optarg++;
-            l=ap_base64encode(tmp, ap_optarg, strlen(ap_optarg));
+            while(isspace(*apr_optarg))
+                apr_optarg++;
+            l=ap_base64encode(tmp, apr_optarg, strlen(apr_optarg));
             tmp[l]='\0';
  
             strncat(auth, "Authorization: basic ", sizeof(auth));
@@ -1069,9 +1069,9 @@ int main(int argc, char **argv)
             /*
              * assume username passwd already to be in colon separated form.
              */
-            while(isspace(*ap_optarg))
-                ap_optarg++;
-            l=ap_base64encode(tmp, ap_optarg, strlen(ap_optarg));
+            while(isspace(*apr_optarg))
+                apr_optarg++;
+            l=ap_base64encode(tmp, apr_optarg, strlen(apr_optarg));
             tmp[l]='\0';
  
             strncat(auth, "Proxy-Authorization: basic ", sizeof(auth));
@@ -1079,7 +1079,7 @@ int main(int argc, char **argv)
             strncat(auth, "\r\n", sizeof(auth));
             break;
         case 'H':
-            strncat(hdrs, ap_optarg, sizeof(hdrs));
+            strncat(hdrs, apr_optarg, sizeof(hdrs));
             strncat(hdrs, "\r\n", sizeof(hdrs));
             break;
 	case 'w':
@@ -1091,15 +1091,15 @@ int main(int argc, char **argv)
 	     */
 	case 'x':
 	    use_html = 1;
-	    tablestring = ap_optarg;
+	    tablestring = apr_optarg;
 	    break;
 	case 'y':
 	    use_html = 1;
-	    trstring = ap_optarg;
+	    trstring = apr_optarg;
 	    break;
 	case 'z':
 	    use_html = 1;
-	    tdstring = ap_optarg;
+	    tdstring = apr_optarg;
 	    break;
 	case 'h':
 	    usage(argv[0]);
@@ -1110,12 +1110,12 @@ int main(int argc, char **argv)
         }
     }
 
-    if (ap_optind != argc - 1) {
+    if (apr_optind != argc - 1) {
         fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
         usage(argv[0]);
     }
 
-    if (parse_url(argv[ap_optind++])) {
+    if (parse_url(argv[apr_optind++])) {
         fprintf(stderr, "%s: invalid URL\n", argv[0]);
         usage(argv[0]);
     }

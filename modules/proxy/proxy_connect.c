@@ -144,7 +144,7 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
     }
 
 /* check if ProxyBlock directive on this host */
-    destaddr.s_addr = ap_inet_addr(host);
+    destaddr.s_addr = apr_inet_addr(host);
     for (i = 0; i < conf->noproxies->nelts; i++) {
     if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
         || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')

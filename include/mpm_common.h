@@ -105,7 +105,7 @@ void ap_reclaim_child_processes(int terminate);
  * @param ret The process id of the process that died
  * @param p The pool to allocate out of
  */
-void ap_wait_or_timeout(ap_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
+void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
 
 /**
  * Log why a child died to the error log, if the child died without the
@@ -113,7 +113,7 @@ void ap_wait_or_timeout(ap_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
  * @param pid The child that has died
  * @param status The status returned from ap_wait_or_timeout
  */
-void ap_process_child_status(apr_proc_t *pid, ap_wait_t status);
+void ap_process_child_status(apr_proc_t *pid, apr_wait_t status);
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 /**

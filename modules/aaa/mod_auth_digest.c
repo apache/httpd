@@ -174,8 +174,8 @@ typedef struct digest_config_struct {
 
 #define	DFLT_ALGORITHM	"MD5"
 
-#define	DFLT_NONCE_LIFE	(300*AP_USEC_PER_SEC)
-#define NEXTNONCE_DELTA	(30*AP_USEC_PER_SEC)
+#define	DFLT_NONCE_LIFE	(300*APR_USEC_PER_SEC)
+#define NEXTNONCE_DELTA	(30*APR_USEC_PER_SEC)
 
 
 #define NONCE_TIME_LEN	(((sizeof(apr_time_t)+2)/3)*4)
@@ -536,10 +536,10 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
     long  lifetime;
 
     lifetime = strtol(t, &endptr, 10); 
-    if (endptr < (t+strlen(t)) && !ap_isspace(*endptr))
+    if (endptr < (t+strlen(t)) && !apr_isspace(*endptr))
 	return apr_pstrcat(cmd->pool, "Invalid time in AuthDigestNonceLifetime: ", t, NULL);
 
-    ((digest_config_rec *) config)->nonce_lifetime = lifetime * AP_USEC_PER_SEC;
+    ((digest_config_rec *) config)->nonce_lifetime = lifetime * APR_USEC_PER_SEC;
     return NULL;
 }
 
@@ -599,7 +599,7 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
     long  size, min;
 
     size = strtol(size_str, &endptr, 10); 
-    while (ap_isspace(*endptr)) endptr++;
+    while (apr_isspace(*endptr)) endptr++;
     if (*endptr == '\0' || *endptr == 'b' || *endptr == 'B')
 	;
     else if (*endptr == 'k' || *endptr == 'K')
@@ -867,19 +867,19 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 
 	/* find key */
 
-	while (ap_isspace(auth_line[0])) auth_line++;
+	while (apr_isspace(auth_line[0])) auth_line++;
 	vk = 0;
 	while (auth_line[0] != '=' && auth_line[0] != ','
-	       && auth_line[0] != '\0' && !ap_isspace(auth_line[0]))
+	       && auth_line[0] != '\0' && !apr_isspace(auth_line[0]))
 	    key[vk++] = *auth_line++;
 	key[vk] = '\0';
-	while (ap_isspace(auth_line[0])) auth_line++;
+	while (apr_isspace(auth_line[0])) auth_line++;
 
 	/* find value */
 
 	if (auth_line[0] == '=') {
 	    auth_line++;
-	    while (ap_isspace(auth_line[0])) auth_line++;
+	    while (apr_isspace(auth_line[0])) auth_line++;
 
 	    vv = 0;
 	    if (auth_line[0] == '\"') {		/* quoted string */
@@ -893,7 +893,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 	    }
 	    else {				 /* token */
 		while (auth_line[0] != ',' && auth_line[0] != '\0'
-		       && !ap_isspace(auth_line[0]))
+		       && !apr_isspace(auth_line[0]))
 		    value[vv++] = *auth_line++;
 	    }
 	    value[vv] = '\0';
@@ -1369,7 +1369,7 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
 	return OK;
 
     nc = strtol(snc, &endptr, 16);
-    if (endptr < (snc+strlen(snc)) && !ap_isspace(*endptr)) {
+    if (endptr < (snc+strlen(snc)) && !apr_isspace(*endptr)) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: invalid nc %s received - not a number", snc);
 	return !OK;
@@ -1433,8 +1433,8 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 	if (dt > conf->nonce_lifetime) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,r,
 			  "Digest: user %s: nonce expired (%.2lf seconds old - max lifetime %.2lf) - sending new nonce", 
-			  r->user, ((double)dt)/AP_USEC_PER_SEC, 
-			  ((double)(conf->nonce_lifetime))/AP_USEC_PER_SEC);
+			  r->user, ((double)dt)/APR_USEC_PER_SEC, 
+			  ((double)(conf->nonce_lifetime))/APR_USEC_PER_SEC);
 	    note_digest_auth_failure(r, conf, resp, 1);
 	    return HTTP_UNAUTHORIZED;
 	}
@@ -1928,7 +1928,7 @@ static int add_auth_info(request_rec *r)
 	 * Content-length is never set yet when we get here, and we can't
 	 * calc the entity hash) it's best to just leave this #def'd out.
 	 */
-	char date[AP_RFC822_DATE_LEN];
+	char date[APR_RFC822_DATE_LEN];
 	apr_rfc822_date(date, r->request_time);
 	char *entity_info =
 	    ap_md5(r->pool,

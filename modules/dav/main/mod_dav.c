@@ -191,7 +191,7 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
 
     newconf->d_params = apr_copy_table(p, parent->d_params);
     apr_overlap_tables(newconf->d_params, child->d_params,
-		      AP_OVERLAP_TABLES_SET);
+		      APR_OVERLAP_TABLES_SET);
 
     return newconf;
 }
@@ -1888,7 +1888,7 @@ static int process_mkcol_body(request_rec *r)
     else if (lenp) {
 	const char *pos = lenp;
 
-	while (ap_isdigit(*pos) || ap_isspace(*pos)) {
+	while (apr_isdigit(*pos) || apr_isspace(*pos)) {
 	    ++pos;
 	}
 	if (*pos != '\0') {

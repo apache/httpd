@@ -248,8 +248,8 @@ static void dav_format_time(int style, apr_time_t sec, char *buf)
     /* 29 chars plus null term */
     sprintf(buf,
 	    "%s, %.2d %s %d %.2d:%.2d:%.2d GMT",
-           ap_day_snames[tms.tm_wday],
-           tms.tm_mday, ap_month_snames[tms.tm_mon],
+           apr_day_snames[tms.tm_wday],
+           tms.tm_mday, apr_month_snames[tms.tm_mon],
            tms.tm_year + 1900,
            tms.tm_hour, tms.tm_min, tms.tm_sec);
 }

@@ -78,18 +78,18 @@ int ap_proxy_hex2c(const char *x)
 
 #ifndef CHARSET_EBCDIC
     ch = x[0];
-    if (ap_isdigit(ch))
+    if (apr_isdigit(ch))
     i = ch - '0';
-    else if (ap_isupper(ch))
+    else if (apr_isupper(ch))
     i = ch - ('A' - 10);
     else
     i = ch - ('a' - 10);
     i <<= 4;
 
     ch = x[1];
-    if (ap_isdigit(ch))
+    if (apr_isdigit(ch))
     i += ch - '0';
-    else if (ap_isupper(ch))
+    else if (apr_isupper(ch))
     i += ch - ('A' - 10);
     else
     i += ch - ('a' - 10);
@@ -180,7 +180,7 @@ char *
     }
 /* decode it if not already done */
     if (isenc && ch == '%') {
-        if (!ap_isxdigit(x[i + 1]) || !ap_isxdigit(x[i + 2]))
+        if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2]))
         return NULL;
         ch = ap_proxy_hex2c(&x[i + 1]);
         i += 2;
@@ -191,7 +191,7 @@ char *
         }
     }
 /* recode it, if necessary */
-    if (!ap_isalnum(ch) && !strchr(allowed, ch)) {
+    if (!apr_isalnum(ch) && !strchr(allowed, ch)) {
         ap_proxy_c2hex(ch, &y[j]);
         j += 2;
     }
@@ -262,7 +262,7 @@ char *
     *(strp++) = '\0';
 
     for (i = 0; strp[i] != '\0'; i++)
-        if (!ap_isdigit(strp[i]))
+        if (!apr_isdigit(strp[i]))
         break;
 
     /* if (i == 0) the no port was given; keep default */
@@ -279,13 +279,13 @@ char *
     return "Missing host in URL";
 /* check hostname syntax */
     for (i = 0; host[i] != '\0'; i++)
-    if (!ap_isdigit(host[i]) && host[i] != '.')
+    if (!apr_isdigit(host[i]) && host[i] != '.')
         break;
     /* must be an IP address */
 #ifdef WIN32
     if (host[i] == '\0' && (inet_addr(host) == -1))
 #else
-    if (host[i] == '\0' && (ap_inet_addr(host) == -1 || inet_network(host) == -1))
+    if (host[i] == '\0' && (apr_inet_addr(host) == -1 || inet_network(host) == -1))
 #endif
     {
     return "Bad IP address in URL";
@@ -346,7 +346,7 @@ const char *
            &min, &sec, &year) != 7)
         return x;
     for (wk = 0; wk < 7; wk++)
-        if (strcmp(week, ap_day_snames[wk]) == 0)
+        if (strcmp(week, apr_day_snames[wk]) == 0)
         break;
     if (wk == 7)
         return x;
@@ -354,14 +354,14 @@ const char *
 
 /* check date */
     for (mon = 0; mon < 12; mon++)
-    if (strcmp(month, ap_month_snames[mon]) == 0)
+    if (strcmp(month, apr_month_snames[mon]) == 0)
         break;
     if (mon == 12)
     return x;
 
     q = apr_palloc(p, 30);
-    apr_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
-        ap_month_snames[mon], year, hour, min, sec);
+    apr_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", apr_day_snames[wk], mday,
+        apr_month_snames[mon], year, hour, min, sec);
     return q;
 }
 
@@ -469,11 +469,11 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF 
     /* XXX: RFC2068 defines only SP and HT as whitespace, this test is
      * wrong... and so are many others probably.
      */
-        while (ap_isspace(*value))
+        while (apr_isspace(*value))
             ++value;            /* Skip to start of value   */
 
     /* should strip trailing whitespace as well */
-    for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
+    for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
         *end = '\0';
 
         apr_table_add(resp_hdrs, buffer, value);
@@ -607,11 +607,11 @@ void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *t)
 {
     int i;
     BUFF *fp = r->connection->client;
-    apr_table_entry_t *elts = (apr_table_entry_t *) ap_table_elts(t)->elts;
+    apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(t)->elts;
 
     ap_bvputs(fp, respline, CRLF, NULL);
 
-    for (i = 0; i < ap_table_elts(t)->nelts; ++i) {
+    for (i = 0; i < apr_table_elts(t)->nelts; ++i) {
         if (elts[i].key != NULL) {
             ap_bvputs(fp, elts[i].key, ": ", elts[i].val, CRLF, NULL);
             apr_table_addn(r->headers_out, elts[i].key, elts[i].val);
@@ -641,12 +641,12 @@ int ap_proxy_liststr(const char *list, const char *val)
         i = p - list;
         do
         p++;
-        while (ap_isspace(*p));
+        while (apr_isspace(*p));
     }
     else
         i = strlen(list);
 
-    while (i > 0 && ap_isspace(list[i - 1]))
+    while (i > 0 && apr_isspace(list[i - 1]))
         i--;
     if (i == len && strncasecmp(list, val, len) == 0)
         return 1;
@@ -667,9 +667,9 @@ int ap_proxy_hex2sec(const char *x)
     for (i = 0, j = 0; i < 8; i++) {
     ch = x[i];
     j <<= 4;
-    if (ap_isdigit(ch))
+    if (apr_isdigit(ch))
         j |= ch - '0';
-    else if (ap_isupper(ch))
+    else if (apr_isupper(ch))
         j |= ch - ('A' - 10);
     else
         j |= ch - ('a' - 10);
@@ -744,7 +744,7 @@ const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp)
     static APACHE_TLS char *charpbuf[2];
 
     for (i = 0; host[i] != '\0'; i++)
-        if (!ap_isdigit(host[i]) && host[i] != '.')
+        if (!apr_isdigit(host[i]) && host[i] != '.')
             break;
 
     if (host[i] != '\0') {
@@ -753,7 +753,7 @@ const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp)
             return "Host not found";
     }
     else {
-        ipaddr = ap_inet_addr(host);
+        ipaddr = apr_inet_addr(host);
         hp = gethostbyaddr((char *) &ipaddr, sizeof(u_long), AF_INET);
         if (hp == NULL) {
             memset(&hpbuf, 0, sizeof(hpbuf));
@@ -806,7 +806,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
     long bits;
 
     /* if the address is given with an explicit netmask, use that */
-    /* Due to a deficiency in ap_inet_addr(), it is impossible to parse */
+    /* Due to a deficiency in apr_inet_addr(), it is impossible to parse */
     /* "partial" addresses (with less than 4 quads) correctly, i.e.  */
     /* 192.168.123 is parsed as 192.168.0.123, which is not what I want. */
     /* I therefore have to parse the IP address manually: */
@@ -824,7 +824,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
     if (*addr == '/' && quads > 0)    /* netmask starts here. */
         break;
 
-    if (!ap_isdigit(*addr))
+    if (!apr_isdigit(*addr))
         return 0;        /* no digit at start of quad */
 
     ip_addr[quads] = strtol(addr, &tmp, 0);
@@ -846,7 +846,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
     for (This->addr.s_addr = 0, i = 0; i < quads; ++i)
     This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
-    if (addr[0] == '/' && ap_isdigit(addr[1])) {    /* net mask follows: */
+    if (addr[0] == '/' && apr_isdigit(addr[1])) {    /* net mask follows: */
     char *tmp;
 
     ++addr;
@@ -1004,7 +1004,7 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p)
     return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
-    for (i = 0; ap_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i)
+    for (i = 0; apr_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i)
     continue;
 
 #if 0
@@ -1059,7 +1059,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
     return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
-    for (i = 0; ap_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
+    for (i = 0; apr_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
 
 #if 0
     if (addr[i] == ':') {
@@ -1132,7 +1132,7 @@ int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, reques
 {
     int i;
     for (i = 0; host[i] != '\0'; i++)
-        if (!ap_isdigit(host[i]) && host[i] != '.')
+        if (!apr_isdigit(host[i]) && host[i] != '.')
             break;
 
     apr_set_remote_port(sock, port);

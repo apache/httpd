@@ -193,7 +193,7 @@ void ap_lingering_close(conn_rec *c)
         if (rc != APR_SUCCESS || nbytes == 0) break;
 
         /* how much time has elapsed? */
-        timeout = (int)((apr_now() - start) / AP_USEC_PER_SEC);
+        timeout = (int)((apr_now() - start) / APR_USEC_PER_SEC);
         if (timeout >= MAX_SECS_TO_LINGER) break;
 
         /* figure out the new timeout */

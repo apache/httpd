@@ -181,7 +181,7 @@ static int handle_dir(request_rec *r)
         if (ap_is_HTTP_REDIRECT(rr->status) ||
             (rr->status == HTTP_NOT_ACCEPTABLE && num_names == 1)) {
 
-            ap_pool_join(r->pool, rr->pool);
+            apr_pool_join(r->pool, rr->pool);
             error_notfound = rr->status;
             r->notes = apr_overlay_tables(r->pool, r->notes, rr->notes);
             r->headers_out = apr_overlay_tables(r->pool, r->headers_out,

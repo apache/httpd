@@ -223,7 +223,7 @@ int ap_tpf_spawn_child(apr_pool_t *p, int (*func) (void *, child_info *),
    int                      fd_flags_out, fd_flags_in, fd_flags_err;
    struct tpf_fork_input    fork_input;
    TPF_FORK_CHILD           *cld = (TPF_FORK_CHILD *) data;
-   apr_array_header_t             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
+   apr_array_header_t       *env_arr = apr_table_elts ((array_header *) cld->subprocess_env);
    table_entry              *elts = (table_entry *) env_arr->elts;
 
 
