@@ -265,7 +265,8 @@ int set_keepalive(request_rec *r)
     else if (r->server->keep_alive && (!r->server->keep_alive_max ||
 	(r->server->keep_alive_max > r->connection->keepalives)) &&
 	(r->server->keep_alive_timeout > 0) &&
-	(r->status == USE_LOCAL_COPY || r->header_only || length || tenc ||
+	(r->status == HTTP_NOT_MODIFIED || r->status == HTTP_NO_CONTENT
+	 || r->header_only || length || tenc ||
 	 ((r->proto_num >= 1001) && (r->chunked = 1))) &&
 	(!find_token(r->pool, conn, "close")) &&
 	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
@@ -1021,7 +1022,7 @@ int send_http_trace (request_rec *r)
     
     /* Now we recreate the request, and echo it back */
 
-    rvputs(r, r->method, " ", r->uri, " ", r->protocol, "\015\012", NULL);
+    rvputs( r, r->the_request, "\015\012", NULL );
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {
       if (!hdrs[i].key) continue;

@@ -84,7 +84,7 @@ Changes with Apache 1.2b7
   *) Fixed bug which caused a segmentation fault if only one argument
      given to RLimit* directives. [Ed Korthof]
 
-  *) Continue persistent connection after 304 response. [Dean Gaudet]
+  *) Continue persistent connection after 204 or 304 response. [Dean Gaudet]
 
   *) Improved buffered output to the client by delaying the flush decision
      until the BUFF code is actually about to read the next request.
