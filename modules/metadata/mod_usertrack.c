@@ -211,10 +211,7 @@ static int spot_cookie(request_rec *r)
         return DECLINED;
     }
 
-    if ((cookie_header = apr_table_get(r->headers_in,
-                                       (dcfg->style == CT_COOKIE2
-                                        ? "Cookie2"
-                                        : "Cookie")))) {
+    if ((cookie_header = apr_table_get(r->headers_in, "Cookie"))) {
         if (!ap_regexec(dcfg->regexp, cookie_header, NUM_SUBS, regm, 0)) {
             char *cookieval = NULL;
             /* Our regexp,
