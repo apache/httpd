@@ -416,7 +416,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param bb The brigade to buffer into
  * @param data The data to write
  * @param nbyte The number of bytes in the data
- * @deffunc int ap_fwrite(ap_filter_t *f, apr_bucket_brigade *bb, const char *data, apr_ssize_t nbyte);
+ * @deffunc int ap_fwrite(ap_filter_t *f, apr_bucket_brigade *bb, const char *data, apr_ssize_t nbyte)
  */
 #define ap_fwrite(f, bb, data, nbyte) \
 	apr_brigade_write(bb, ap_filter_flush, (f)->next, data, nbyte)
@@ -426,7 +426,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param f the filter doing the writing
  * @param bb The brigade to buffer into
  * @param str The string to write
- * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, const char *str);
+ * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, const char *str)
  */
 #define ap_fputs(f, bb, str) \
 	apr_brigade_puts(bb, ap_filter_flush, (f)->next, str)
@@ -436,7 +436,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param f the filter doing the writing
  * @param bb The brigade to buffer into
  * @param c The character to write
- * @deffunc int ap_fputc(ap_filter_t *f, apr_bucket_brigade *bb, char c);
+ * @deffunc int ap_fputc(ap_filter_t *f, apr_bucket_brigade *bb, char c)
  */
 #define ap_fputc(f, bb, c) \
 	apr_brigade_putc(bb, ap_filter_flush, (f)->next, c)
@@ -446,10 +446,9 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param f the filter doing the writing
  * @param bb The brigade to buffer into
  * @param ... The strings to write
- * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
+ * @deffunc int ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
  */
-#define ap_fvputs(f, bb, args...) \
-	apr_brigade_putstrs(bb, ap_filter_flush, (f)->next, ##args)
+AP_DECLARE_NONSTD(int) ap_fvputs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
 
 /**
  * Output data to the filter in printf format
@@ -457,10 +456,9 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param bb The brigade to buffer into
  * @param fmt The format string
  * @param ... The argumets to use to fill out the format string
- * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...);
+ * @deffunc int ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...)
  */
-#define ap_fprintf(f, bb, fmt, args...) \
-	apr_brigade_printf(bb, ap_filter_flush, (f)->next, fmt, ##args)
+AP_DECLARE_NONSTD(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...);
 
 #ifdef __cplusplus
 }
