@@ -113,7 +113,6 @@ static char *to_charset = NULL;           /* UTF-8 identifier derived from the c
 static char* derive_codepage_from_lang (apr_pool_t *p, char *language)
 {
     int lang_len;
-    int check_short = 0;
     char *charset;
     
     if (!language)          /* our default codepage */

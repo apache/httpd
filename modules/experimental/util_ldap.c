@@ -617,7 +617,7 @@ LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t
     util_url_node_t curnode;
     util_compare_node_t *compare_nodep;
     util_compare_node_t the_compare_node;
-    apr_time_t curtime;
+    apr_time_t curtime = 0; /* silence gcc -Wall */
     int failures = 0;
 
     util_ldap_state_t *st = 
@@ -961,8 +961,9 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy, const 
     st->cache_bytes = atol(bytes);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "[%d] ldap cache: Setting shared memory cache size to %d bytes.", 
-                      getpid(), st->cache_bytes);
+                 "[%" APR_PID_T_FMT "] ldap cache: Setting shared memory "
+                 " cache size to %" APR_SIZE_T_FMT " bytes.", 
+                 getpid(), st->cache_bytes);
 
     return NULL;
 }
@@ -1070,7 +1071,7 @@ static const char *util_ldap_set_cert_auth(cmd_parms *cmd, void *dummy, const ch
 }
 
 
-const char *util_ldap_set_cert_type(cmd_parms *cmd, void *dummy, const char *Type)
+static const char *util_ldap_set_cert_type(cmd_parms *cmd, void *dummy, const char *Type)
 {
     util_ldap_state_t *st = 
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
@@ -1118,19 +1119,16 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 
 static apr_status_t util_ldap_cleanup_module(void *data)
 {
+#if APR_HAS_LDAP_SSL && APR_HAS_NOVELL_LDAPSDK
     server_rec *s = data;
-
     util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
-                                          s->module_config, &ldap_module);
+        s->module_config, &ldap_module);
+    
+    if (st->ssl_support)
+        ldapssl_client_deinit();
 
-    #if APR_HAS_LDAP_SSL
-        #if APR_HAS_NOVELL_LDAPSDK
-            if (st->ssl_support)
-                ldapssl_client_deinit();
-        #endif
-    #endif
-   
-    return(APR_SUCCESS);
+#endif
+    return APR_SUCCESS;
 }
 
 static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, 
@@ -1160,7 +1158,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         s_vhost = s->next;
         while (s_vhost) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
-                         "LDAP merging Shared Cache conf: shm=0x%x rmm=0x%x for VHOST: %s",
+                         "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp for VHOST: %s",
                          st->cache_shm, st->cache_rmm, s_vhost->server_hostname);
 
             st_vhost = (util_ldap_state_t *)ap_get_module_config(s_vhost->module_config, &ldap_module);
