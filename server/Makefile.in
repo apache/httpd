@@ -2,7 +2,7 @@
 CLEAN_TARGETS = gen_test_char test_char.h gen_uri_delims uri_delims.h \
 	ApacheCoreOS2.def
 DISTCLEAN_TARGETS = httpd.exp
-EXTRACLEAN_TARGETS = exports.c export_vars.h
+EXTRACLEAN_TARGETS = export_files exports.c export_vars.h
 
 SUBDIRS = mpm
 
