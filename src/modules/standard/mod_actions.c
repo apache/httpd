@@ -181,7 +181,8 @@ static int action_handler (request_rec *r)
 					action ? action : default_type(r)))) {
         script = t;
 	if (r->finfo.st_mode == 0) {
-	    log_reason("File does not exist", r->filename, r);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"File does not exist: %s", r->filename);
 	    return NOT_FOUND;
 	}
     }
