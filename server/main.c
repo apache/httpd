@@ -136,8 +136,8 @@ static void show_compile_settings(void)
 #ifdef HAS_OTHER_CHILD
     printf(" -D HAS_OTHER_CHILD\n");
 #endif
-#ifdef NO_RELIABLE_PIPED_LOGS
-    printf(" -D NO_RELIABLE_PIPED_LOGS\n");
+#ifdef HAVE_RELIABLE_PIPED_LOGS
+    printf(" -D HAVE_RELIABLE_PIPED_LOGS\n");
 #endif
 #ifdef BUFFERED_LOGS
     printf(" -D BUFFERED_LOGS\n");

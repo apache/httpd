@@ -618,7 +618,7 @@ API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 
 /* piped log support */
 
-#ifndef NO_RELIABLE_PIPED_LOGS
+#ifdef HAVE_RELIABLE_PIPED_LOGS
 /* forward declaration */
 static void piped_log_maintenance(int reason, void *data, ap_wait_t status);
 

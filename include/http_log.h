@@ -143,7 +143,7 @@ API_EXPORT(void) ap_log_reason(const char *reason, const char *fname,
 
 typedef struct piped_log {
     ap_context_t *p;
-#ifndef NO_RELIABLE_PIPED_LOGS
+#ifdef HAVE_RELIABLE_PIPED_LOGS
     char *program;
     ap_proc_t *pid;
     ap_file_t *fds[2];
@@ -154,7 +154,7 @@ typedef struct piped_log {
 
 API_EXPORT(piped_log *) ap_open_piped_log (ap_context_t *p, const char *program);
 API_EXPORT(void) ap_close_piped_log (piped_log *);
-#ifndef NO_RELIABLE_PIPED_LOGS
+#ifdef HAVE_RELIABLE_PIPED_LOGS
 #define ap_piped_log_read_fd(pl)	((pl)->fds[0])
 #define ap_piped_log_write_fd(pl)	((pl)->fds[1])
 #else

@@ -44,6 +44,39 @@ AC_DEFUN(AC_ADD_LIBRARY,[
 ])
 
 dnl
+dnl AC_CHECK_DEFINE(macro, headerfile)
+dnl
+dnl checks for the macro in the header file
+dnl
+AC_DEFUN(AC_CHECK_DEFINE,[
+  AC_CACHE_CHECK(for $1 in $2, ac_cv_define_$1,
+  AC_EGREP_CPP([YES_IS_DEFINED], [
+    #include <$2>
+    #ifdef $1
+    YES_IS_DEFINED
+    #endif
+  ], ac_cv_define_$1=yes, ac_cv_define_$1=no))
+  if test "$ac_cv_define_$1" = "yes" ; then
+      AC_DEFINE(HAVE_$1)
+  fi
+])
+
+dnl
+dnl AC_TYPE_RLIM_T
+dnl
+dnl If rlim_t is not defined, define it to int
+dnl
+AC_DEFUN(AC_TYPE_RLIM_T, [
+  AC_CACHE_CHECK([for rlim_t], ac_cv_type_rlim_t, [
+    AC_TRY_COMPILE([#include <sys/resource.h>], [rlim_t spoon;], [
+      ac_cv_type_rlim_t=yes
+    ],[ac_cv_type_rlim_t=no
+      AC_DEFINE(rlim_t, int)
+    ])
+  ])
+])
+
+dnl
 dnl APACHE_ONCE(namespace, variable, code)
 dnl
 dnl execute code, if variable is not set in namespace
