@@ -1731,6 +1731,19 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+/* Stub functions until this MPM supports the connection status API */
+
+API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
+                                             const char *value)
+{
+    /* NOP */
+}
+
+API_EXPORT(void) ap_reset_connection_status(long conn_id)
+{
+    /* NOP */
+}
+
 static const command_rec winnt_cmds[] = {
 LISTEN_COMMANDS
 { "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,

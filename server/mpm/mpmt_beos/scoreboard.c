@@ -180,3 +180,17 @@ void ap_time_process_request(int child_num, int thread_num, int status)
     }
     put_scoreboard_info(child_num, thread_num, ss);
 }
+
+/* Stub functions until this MPM supports the connection status API */
+
+API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
+                                             const char *value)
+{
+    /* NOP */
+}
+
+API_EXPORT(void) ap_reset_connection_status(long conn_id)
+{
+    /* NOP */
+}
+

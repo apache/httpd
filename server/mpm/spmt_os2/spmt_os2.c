@@ -1771,6 +1771,18 @@ API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
     free(mtx);
 }
 
+/* Stub functions until this MPM supports the connection status API */
+
+API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
+                                             const char *value)
+{
+    /* NOP */
+}
+
+API_EXPORT(void) ap_reset_connection_status(long conn_id)
+{
+    /* NOP */
+}
 
 static const command_rec spmt_os2_cmds[] = {
 LISTEN_COMMANDS
