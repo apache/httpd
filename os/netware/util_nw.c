@@ -70,7 +70,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     const char * const *env,
     apr_procattr_t *attr, apr_pool_t *p)
 {
-    return APR_ENOTIMPL;
+    return apr_proc_create(newproc, progname, args, env, attr, p);
 }
 
 int  _NonAppCheckUnload( void )
