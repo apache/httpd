@@ -1037,6 +1037,8 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
 
     ap_str_tolower(uri);
     *balancer = apr_array_push(conf->balancers);
+    memset(*balancer, 0, sizeof(proxy_balancer));
+
     (*balancer)->name = uri;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_runtime_worker));
     /* XXX Is this a right place to create mutex */
@@ -1150,14 +1152,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
 PROXY_DECLARE(void) 
 ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, proxy_worker *worker)
 {
-    int i;
-    double median, ffactor = 0.0;
-    proxy_runtime_worker *runtime, *workers;    
-#if PROXY_HAS_SCOREBOARD
-    lb_score *score;
-#else
-    void *score;
-#endif
+    proxy_runtime_worker *runtime;
 
 #if PROXY_HAS_SCOREBOARD
     int mpm_daemons;
@@ -1173,61 +1168,16 @@ ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, prox
                           worker->name, balancer->name);
             return;
         }
-        score = ap_get_scoreboard_lb(getpid(), lb_workers);
     }
-    else
 #endif
-    {
-        /* Use the plain memory */
-        score = apr_pcalloc(pool, sizeof(proxy_runtime_stat));
-    }
-    if (!score)
-        return;
     runtime = apr_array_push(balancer->workers);
-    runtime->w = worker;
-    runtime->s = (proxy_runtime_stat *)score;
-    runtime->s->id = lb_workers;
-    /* TODO: deal with the dynamic overflow */
+    runtime->w  = worker;
+    runtime->b  = balancer;
+    runtime->id = lb_workers;
+    runtime->s  = NULL;
+    /* Increase the total runtime count */
     ++lb_workers;
 
-    /* Recalculate lbfactors */
-    workers = (proxy_runtime_worker *)balancer->workers->elts;
-
-    for (i = 0; i < balancer->workers->nelts; i++) {
-        /* Set to the original configuration */
-        workers[i].s->lbfactor = workers[i].w->lbfactor;
-        ffactor += workers[i].s->lbfactor;
-    }
-    if (ffactor < 100.0) {
-        int z = 0;
-        for (i = 0; i < balancer->workers->nelts; i++) {
-            if (workers[i].s->lbfactor == 0.0) 
-                ++z;
-        }
-        if (z) {
-            median = (100.0 - ffactor) / z;
-            for (i = 0; i < balancer->workers->nelts; i++) {
-                if (workers[i].s->lbfactor == 0.0) 
-                    workers[i].s->lbfactor = median;
-            }
-        }
-        else {
-            median = (100.0 - ffactor) / balancer->workers->nelts;
-            for (i = 0; i < balancer->workers->nelts; i++)
-                workers[i].s->lbfactor += median;
-        }
-    }
-    else if (ffactor > 100.0) {
-        median = (ffactor - 100.0) / balancer->workers->nelts;
-        for (i = 0; i < balancer->workers->nelts; i++) {
-            if (workers[i].s->lbfactor > median)
-                workers[i].s->lbfactor -= median;
-        }
-    } 
-    for (i = 0; i < balancer->workers->nelts; i++) {
-        /* Update the status entires */
-        workers[i].s->lbstatus = workers[i].s->lbfactor;
-    }
 }
 
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,

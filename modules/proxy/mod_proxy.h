@@ -266,7 +266,6 @@ struct proxy_worker {
 
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
-    int             id;         /* scoreboard id */
     double          lbstatus;   /* Current lbstatus */
     double          lbfactor;   /* dynamic lbfactor */
     apr_size_t      transfered; /* Number of bytes transfered to remote */
@@ -276,12 +275,14 @@ typedef struct {
 
 /* Runtime worker. */
 typedef struct {
-    proxy_balancer     *b;         /* balancer containing this worker */
+    int                id;      /* scoreboard id */
+    proxy_balancer     *b;      /* balancer containing this worker */
     proxy_worker       *w;
     proxy_runtime_stat *s;
 } proxy_runtime_worker;
 
 struct proxy_balancer {
+    int                status;
     apr_array_header_t *workers; /* array of proxy_runtime_workers */
     const char *name;            /* name of the load balancer */
     const char *sticky;          /* sticky session identifier */

@@ -19,6 +19,7 @@
 
 #include "mod_proxy.h"
 #include "ap_mpm.h"
+#include "scoreboard.h"
 #include "apr_version.h"
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
@@ -31,6 +32,75 @@ module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 #define PROXY_BALANCER_UNLOCK(b)    APR_SUCCESS
 #endif
 
+static int init_runtime_score(apr_pool_t *pool, proxy_balancer *balancer)
+{
+    int i;
+    double median, ffactor = 0.0;
+    proxy_runtime_worker *workers;    
+#if PROXY_HAS_SCOREBOARD
+    lb_score *score;
+    int mpm_daemons;
+#else
+    void *score;
+#endif
+
+    workers = (proxy_runtime_worker *)balancer->workers->elts;
+
+    for (i = 0; i < balancer->workers->nelts; i++) {
+#if PROXY_HAS_SCOREBOARD
+        ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &mpm_daemons);
+        /* Check if we are prefork or single child */
+        if (workers[i].w->hmax && mpm_daemons > 1) {
+            score = ap_get_scoreboard_lb(getpid(), workers[i].id);
+        }
+        else
+#endif
+        {
+            /* Use the plain memory */
+            score = apr_pcalloc(pool, sizeof(proxy_runtime_stat));
+        }
+        workers[i].s = (proxy_runtime_stat *)score;
+    }
+
+    /* Recalculate lbfactors */
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        /* Set to the original configuration */
+        workers[i].s->lbfactor = workers[i].w->lbfactor;
+        ffactor += workers[i].s->lbfactor;
+    }
+    if (ffactor < 100.0) {
+        int z = 0;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (workers[i].s->lbfactor == 0.0) 
+                ++z;
+        }
+        if (z) {
+            median = (100.0 - ffactor) / z;
+            for (i = 0; i < balancer->workers->nelts; i++) {
+                if (workers[i].s->lbfactor == 0.0) 
+                    workers[i].s->lbfactor = median;
+            }
+        }
+        else {
+            median = (100.0 - ffactor) / balancer->workers->nelts;
+            for (i = 0; i < balancer->workers->nelts; i++)
+                workers[i].s->lbfactor += median;
+        }
+    }
+    else if (ffactor > 100.0) {
+        median = (ffactor - 100.0) / balancer->workers->nelts;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (workers[i].s->lbfactor > median)
+                workers[i].s->lbfactor -= median;
+        }
+    } 
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        /* Update the status entires */
+        workers[i].s->lbstatus = workers[i].s->lbfactor;
+    }
+    balancer->status = 1;
+    return 0;
+}
 
 /* Retrieve the parameter with the given name                                */
 static char *get_path_param(apr_pool_t *pool, char *url,
@@ -273,6 +343,10 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     if (!(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
         return DECLINED;
     
+    /* Initialize shared scoreboard data */ 
+    if (!((*balancer)->status))
+        init_runtime_score(conf->pool, *balancer);
+
     /* Step 2: find the session route */
     
     runtime = find_session_route(*balancer, r, &route, url);
@@ -325,8 +399,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         *worker = runtime->w;
     }
     /* Decrease the free channels number */
-    if ((*worker)->cp->nfree)
-        --(*worker)->cp->nfree;
+    /* XXX: This should be the function of apr_reslist */
+    --(*worker)->cp->nfree;
 
     PROXY_BALANCER_UNLOCK(*balancer);
     
@@ -359,8 +433,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* increase the free channels number */
-    if (worker->cp->nfree)
-        worker->cp->nfree++;
+    worker->cp->nfree++;
     /* TODO: calculate the bytes transfered */
 
     /* TODO: update the scoreboard status */
@@ -483,6 +556,9 @@ static int balancer_handler(request_rec *r)
     /* First set the params */
     if (bsel) {
         const char *val;
+        if (!bsel->status)
+            init_runtime_score(conf->pool, bsel);
+
         if ((val = apr_table_get(params, "ss"))) {
             if (strlen(val))
                 bsel->sticky = apr_pstrdup(conf->pool, val);
@@ -565,6 +641,9 @@ static int balancer_handler(request_rec *r)
                   ap_get_server_built(), "\n</dt></dl>\n", NULL);
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
+            if (!balancer->status)
+                init_runtime_score(conf->pool, balancer);
+
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
             ap_rvputs(r, "<a href=\"", r->uri, "?b=",
                       balancer->name + sizeof("balancer://") - 1,
