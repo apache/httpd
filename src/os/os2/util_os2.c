@@ -5,7 +5,7 @@
 #include "http_log.h"
 
 
-API_EXPORT(char *)ap_os_canonical_filename(pool *pPool, const char *szFile)
+API_EXPORT(char *)ap_os_case_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     char buf2[HUGE_STRING_LEN];
@@ -30,14 +30,21 @@ API_EXPORT(char *)ap_os_canonical_filename(pool *pPool, const char *szFile)
         }
     }
 
-    strlwr(buf2);
-    
 /* Switch backslashes to forward */
     for (pos=buf2; *pos; pos++)
         if (*pos == '\\')
             *pos = '/';
     
     return ap_pstrdup(pPool, buf2);
+}
+
+
+
+API_EXPORT(char *)ap_os_canonical_filename(pool *pPool, const char *szFile)
+{
+    char *szCanonicalFile = ap_os_case_canonical_filename(pPool, szFile);
+    strlwr(szCanonicalFile);
+    return szCanonicalFile;
 }
 
 

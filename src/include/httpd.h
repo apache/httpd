@@ -1088,6 +1088,9 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
 #ifdef WIN32
 API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
 API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
+#elif defined(OS2)
+API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
+#define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
 #else
 #define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
 #define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)

@@ -366,3 +366,4 @@ EXPORTS
 	ap_sha1_base64	@360
 	ap_add_file_conf  @361
 	ap_set_config_vectors  @362
+	ap_os_case_canonical_filename  @363
