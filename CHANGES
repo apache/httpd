@@ -1,6 +1,12 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+  *) Rename CacheMaxStreamingBuffer to MCacheMaxStreamingBuffer. Move
+     implementation of MCacheMaxStreamingBuffer from mod_cache to
+     mod_mem_cache. MCacheMaxStreamingBuffer now defaults to the
+     lesser of 100,000 bytes or MCacheMaxCacheObjectSize. This should 
+     eliminate the need for explicitly coding MCacheMaxStreamingBuffer
+     in most configurations. [Bill Stoddard]
 
   *) mod_cache: Fix PR 15113, a core dump in cache_in_filter when
      a redirect occurs. The code was passing a format string and
