@@ -22,8 +22,6 @@
 <a href="./ja/server-wide.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/server-wide.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 <p>このドキュメントでは<code class="module"><a href="./mod/core.html">core</a></code>
 サーバのディレクティブの中で、
@@ -76,7 +74,7 @@
 <h2><a name="resource" id="resource">リソースの制限</a></h2>
     
 
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_netware.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
 
     <p><code class="directive">LimitRequest</code>* ディレクティブは Apache
     がクライアントからのリクエスト読み込みで使う
@@ -88,7 +86,7 @@
     特に、これは CGI スクリプトと SSI exec
     コマンドで使われるリソースを制御します。</p>
 
-    <p><code class="directive"><a href="./mod/mpm_netware.html#threadstacksize">ThreadStackSize</a></code> は Netware
+    <p><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code> は Netware
     でのみ、スタックの大きさを制御するために使われます。</p>
   </div></div>
 <div class="bottomlang">
