@@ -378,6 +378,34 @@ int ap_invoke_handler(request_rec *r)
     return HTTP_INTERNAL_SERVER_ERROR;
 }
 
+API_EXPORT(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
+    int methnum;
+    int i;
+    char **xmethod;
+
+    methnum = ap_method_number_of(method);
+    /*
+     * The simple case: a method hard-coded into Apache.
+     */
+    if (methnum != M_INVALID) {
+	return (methnum & cmd->limited);
+    }
+    /*
+     * Some extension method we don't know implicitly.
+     */
+    if ((cmd->limited_xmethods == NULL)
+	|| (cmd->limited_xmethods->nelts == 0)) {
+	return 0;
+    }
+    xmethod = (char **) cmd->limited_xmethods->elts;
+    for (i = 0; i < cmd->limited_xmethods->nelts; ++i) {
+	if (strcmp(method, xmethod[i]) == 0) {
+	    return 1;
+	}
+    }
+    return 0;
+}
+
 API_EXPORT(void) ap_register_hooks(module *m)
     {
     if(m->register_hooks)
@@ -948,11 +976,11 @@ static const char * ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
     return NULL;
 }
 
-const char * ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
-					cmd_parms *parms,
-					ap_directive_t **current,
-					ap_directive_t **curr_parent,
-                                        char *orig_directive)
+const char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
+				 cmd_parms *parms,
+				 ap_directive_t **current,
+				 ap_directive_t **curr_parent,
+				 char *orig_directive)
 {
     char l[MAX_STRING_LEN];
     char *bracket;
@@ -1300,8 +1328,9 @@ void ap_process_resource_config(server_rec *s, const char *fname,
     fname = ap_server_root_relative(p, fname);
 
     /* don't require conf/httpd.conf if we have a -C or -c switch */
-    if((ap_server_pre_read_config->nelts || ap_server_post_read_config->nelts) &&
-       !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
+    if ((ap_server_pre_read_config->nelts
+	 || ap_server_post_read_config->nelts)
+	&& !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
 	if (apr_stat(&finfo, fname, p) != APR_SUCCESS)     
 	    return;
     }
@@ -1349,6 +1378,7 @@ API_EXPORT(void)ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
+    parms.limited = -1;
 
     errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
     if (errmsg) {
@@ -1363,8 +1393,7 @@ API_EXPORT(void)ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
 }
 
 int ap_parse_htaccess(void **result, request_rec *r, int override,
-		   const char *d, const char *access_name)
-{
+		      const char *d, const char *access_name) {
     configfile_t *f = NULL;
     cmd_parms parms;
     char *filename = NULL;

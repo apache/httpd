@@ -279,14 +279,14 @@ struct configfile_t {
  * to carry a large variety of miscellaneous data which is all of
  * use to *somebody*...
  */
-struct cmd_parms_struct
-    {
+struct cmd_parms_struct {
     /** Argument to command from cmd_table */
     void *info;
     /** Which allow-override bits are set */
     int override;
     /** Which methods are <Limit>ed */
     int limited;
+    apr_array_header_t *limited_xmethods;
 
     /** Config file structure. */
     configfile_t *config_file;
@@ -482,6 +482,20 @@ API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val);
  */
 API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, void *,
 						   const char *);
+
+/**
+ * Return true if the specified method is limited by being listed in
+ * a <Limit> container, or by *not* being listed in a <LimiteExcept>
+ * container.
+ *
+ * @param   method  Pointer to a string specifying the method to check.
+ * @param   cmd     Pointer to the cmd_parms structure passed to the
+ *                  directive handler.
+ * @return  0 if the method is not limited in the current scope
+ * @deffunc ap_method_is_limited(cmd_parms *cmd, const char *method)
+ */
+API_EXPORT(int) ap_method_is_limited(cmd_parms *cmd, const char *method);
+
 /**
  * Generic command handling function for strings, always sets the value
  * to a lowercase string
