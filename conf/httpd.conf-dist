@@ -7,11 +7,16 @@
 
 # Originally by Rob McCool
 
-# Shared Object Module Loading:
-# To be able to use the functionality of a module which was built
-# as a shared object you have to place corresponding `LoadModule'
-# lines at this location so the directives contained in it are
-# actually available _before_ they are used. 
+# Dynamic Shared Object (DSO) Support
+#
+# To be able to use the functionality of a module which was built as a DSO you
+# have to place corresponding `LoadModule' lines at this location so the
+# directives contained in it are actually available _before_ they are used.
+# Please read the file README.DSO in the Apache 1.3 distribution for more
+# details about the DSO mechanism and run `httpd -l' for the list of already
+# built-in (statically linked and thus always available) modules in your httpd
+# binary.
+#
 # Example:
 # LoadModule foo_module libexec/mod_foo.so
 
