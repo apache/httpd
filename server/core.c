@@ -2705,10 +2705,14 @@ static int default_handler(request_rec *r)
 
     ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
 
+    /* If filters intend to consume the request body, they must
+     * register an InputFilter to slurp the contents of the POST
+     * data from the POST input stream.  It no longer exists when
+     * the output filters are invoked by the default handler.
+     */
     if ((errstatus = ap_discard_request_body(r)) != OK) {
         return errstatus;
     }
-    
     if (r->method_number == M_INVALID) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "Invalid method in request %s", r->the_request);
@@ -2717,25 +2721,20 @@ static int default_handler(request_rec *r)
     if (r->method_number == M_OPTIONS) {
         return ap_send_http_options(r);
     }
-    if (r->method_number == M_PUT) {
-        return HTTP_METHOD_NOT_ALLOWED;
-    }
-    if (r->finfo.filetype == 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
-		      "File does not exist: %s", r->filename);
-	return HTTP_NOT_FOUND;
-    }
-    if (r->path_info && *r->path_info) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
-		      "File does not exist: %s",
-		      apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
-	return HTTP_NOT_FOUND;
-    }
-    
     if (r->method_number != M_GET && r->method_number != M_POST) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
-
+    if (r->finfo.filetype == 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+                      "File does not exist: %s", r->filename);
+        return HTTP_NOT_FOUND;
+    }
+    if (!r->used_path_info && r->path_info && *r->path_info) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+                      "File does not exist: %s",
+                      apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
+        return HTTP_NOT_FOUND;
+    }
     if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
