@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/26 10:28:03 $]
+Last modified at [$Date: 2004/01/26 16:04:20 $]
 
 Release:
 
@@ -82,21 +82,21 @@ PATCHES TO BACKPORT FROM 2.1
       for common startup failures which otherwise now include escaped newlines.
       (regression since 2.0.48)
       http://cvs.apache.org/viewcvs/httpd-2.0/server/main.c.diff?r1=1.152&r2=1.150
-      +1: jorton
+      +1: jorton, trawick
 
     * Fix for possible memory corruption from ap_make_method_list.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/http/http_protocol.c?r1=1.475&r2=1.476
-      +1: jorton
+      +1: jorton, trawick
 
     * mod_ssl: Fix streaming of nph- CGI scripts over SSL.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.113&r2=1.114
       PR: 21944
-      +1: jorton
+      +1: jorton, trawick
       
     * mod_ssl: Fix for possible segfault on ssl_var_lookup for SSL_SESSION_ID.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.29&r2=1.30
       PR: 15057
-      +1: jorton
+      +1: jorton, trawick
 
     * proxy_http fix: mod_proxy hangs when both KeepAlive and 
       ProxyErrorOverride are enabled, and a non-200 response without a 
