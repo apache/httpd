@@ -1115,13 +1115,13 @@ int parse_expr(request_rec *r, char *expr, char *error)
     } *root, *current, *new;
     char *parse;
     char buffer[MAX_STRING_LEN];
-    struct pool *expr_pool;
+    pool *expr_pool;
     int retval = 0;
 
     if ((parse = expr) == (char *)NULL)
         return(0);
     root = current = (struct parse_node*)NULL;
-    if ((expr_pool = make_sub_pool(r->pool)) == (struct pool *)NULL) {
+    if ((expr_pool = make_sub_pool(r->pool)) == (pool *)NULL) {
         log_printf(r->server, "out of memory processing file %s", r->filename);
         rputs(error, r);
         return(0);
