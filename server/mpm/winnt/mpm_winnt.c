@@ -70,8 +70,9 @@
 #include "../os/win32/getopt.h"
 #include "mpm_default.h"
 #include "../os/win32/iol_socket.h"
+
 /*
- * Actual definitions of WINNT MPM specific config globals
+ * Definitions of WINNT MPM specific config globals
  */
 int ap_max_requests_per_child=0;
 int ap_daemons_to_start=0;
@@ -80,114 +81,23 @@ static int ap_threads_per_child = 0;
 static int workers_may_exit = 0;
 static int max_requests_per_child = 0;
 static int requests_this_child;
-static int num_listenfds = 0;
+
 static struct pollfd *listenfds;
+static int num_listenfds = 0;
+int listenmaxfd = -1;
+
 static pool *pconf;		/* Pool for config stuff */
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
 
 static server_rec *server_conf;
-/*static int sd; ZZZ why is the global...? Only seems to be needed on Win32*/
-
-/* one_process --- debugging mode variable; can be set from the command line
- * with the -X flag.  If set, this gets you the child_main loop running
- * in the process which originally started up (no detach, no make_child),
- * which is a pretty nice debugging environment.  (You'll get a SIGHUP
- * early in standalone_main; just continue through.  This is the server
- * trying to kill off any child processes which it might have lying
- * around --- Apache doesn't keep track of their pids, it just sends
- * SIGHUP to the process group, ignoring it in the root process.
- * Continue through and you'll be fine.).
- */
 
 static int one_process = 0;
-
-#ifdef DEBUG_SIGSTOP
-int raise_sigstop_flags;
-#endif
-
-
-/* *Non*-shared winnt.c globals... */
 event *exit_event;
 mutex *start_mutex;
 int my_pid;
 int parent_pid;
-int listenmaxfd = -1;
-
-/* a clean exit from a child with proper cleanup 
-   static void clean_child_exit(int code) __attribute__ ((noreturn)); 
-void clean_child_exit(int code)
-{
-    if (pchild) {
-	ap_destroy_pool(pchild);
-    }
-    exit(code);
-}
-*/
-/*****************************************************************
- * Connection structures and accounting...
- */
-
-/* volatile just in case */
-static int volatile shutdown_pending;
-static int volatile restart_pending;
-static int volatile is_graceful;
-
-/*
- * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
- * functions to initiate shutdown or restart without relying on signals. 
- * Previously this was initiated in sig_term() and restart() signal handlers, 
- * but we want to be able to start a shutdown/restart from other sources --
- * e.g. on Win32, from the service manager. Now the service manager can
- * call ap_start_shutdown() or ap_start_restart() as appropiate.  Note that
- * these functions can also be called by the child processes, since global
- * variables are no longer used to pass on the required action to the parent.
- *
- * These should only be called from the parent process itself, since the
- * parent process will use the shutdown_pending and restart_pending variables
- * to determine whether to shutdown or restart. The child process should
- * call signal_parent() directly to tell the parent to die -- this will
- * cause neither of those variable to be set, which the parent will
- * assume means something serious is wrong (which it will be, for the
- * child to force an exit) and so do an exit anyway.
- */
-
-void ap_start_shutdown(void)
-{
-    if (shutdown_pending == 1) {
-	/* Um, is this _probably_ not an error, if the user has
-	 * tried to do a shutdown twice quickly, so we won't
-	 * worry about reporting it.
-	 */
-	return;
-    }
-    shutdown_pending = 1;
-}
-
-/* do a graceful restart if graceful == 1 */
-void ap_start_restart(int graceful)
-{
-
-    if (restart_pending == 1) {
-	/* Probably not an error - don't bother reporting it */
-	return;
-    }
-    restart_pending = 1;
-    is_graceful = graceful;
-}
-
-static void sig_term(int sig)
-{
-    ap_start_shutdown();
-}
-
-static void restart(int sig)
-{
-    ap_start_restart(1);
-}
-
-
 
 
 /*
@@ -232,7 +142,6 @@ static void signal_parent(int type)
      * to die, or for a signal on the "spache-signal" event. So set the
      * "apache-signal" event here.
      */
-
     if (one_process) {
 	return;
     }
@@ -242,8 +151,6 @@ static void signal_parent(int type)
     case 1: signal_name = signal_restart_name; break;
     default: return;
     }
-
-//    APD2("signal_parent signalling event \"%s\"", signal_name);
 
     e = OpenEvent(EVENT_ALL_ACCESS, FALSE, signal_name);
     if (!e) {
@@ -263,38 +170,24 @@ static void signal_parent(int type)
     }
     CloseHandle(e);
 }
-
-
-/*****************************************************************
- * Here follows a long bunch of generic server bookkeeping stuff...
- */
-
-static void sock_disable_nagle(int s) /* ZZZ abstract */
+void ap_start_shutdown(void)
 {
-    /* The Nagle algorithm says that we should delay sending partial
-     * packets in hopes of getting more data.  We don't want to do
-     * this; we are not telnet.  There are bad interactions between
-     * persistent connections and Nagle's algorithm that have very severe
-     * performance penalties.  (Failing to disable Nagle is not much of a
-     * problem with simple HTTP.)
-     *
-     * In spite of these problems, failure here is not a shooting offense.
-     */
-    int just_say_no = 1;
-
-    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
-		   sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
-		    "setsockopt: (TCP_NODELAY)");
-    }
+    signal_parent(0);
+}
+void ap_start_restart(int graceful)
+{
+    signal_parent(1);
 }
 
+static int volatile is_graceful = 0;
 API_EXPORT(int) ap_graceful_stop_signalled(void)
 {
-    /* XXX - Does this really work? - Manoj */
     return is_graceful;
 }
 
+/*
+ * Routines that deal with sockets, some are WIN32 specific...
+ */
 static int s_iInitCount = 0;
 static int AMCSocketInitialize(void)
 {
@@ -327,8 +220,6 @@ static int AMCSocketInitialize(void)
     return (s_iInitCount);
 
 }
-
-
 static void AMCSocketCleanup(void)
 {
     if (--s_iInitCount == 0)
@@ -336,10 +227,33 @@ static void AMCSocketCleanup(void)
     return;
 }
 
+static void sock_disable_nagle(int s) /* ZZZ abstract */
+{
+    /* The Nagle algorithm says that we should delay sending partial
+     * packets in hopes of getting more data.  We don't want to do
+     * this; we are not telnet.  There are bad interactions between
+     * persistent connections and Nagle's algorithm that have very severe
+     * performance penalties.  (Failing to disable Nagle is not much of a
+     * problem with simple HTTP.)
+     *
+     * In spite of these problems, failure here is not a shooting offense.
+     */
+    int just_say_no = 1;
+
+    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
+		   sizeof(int)) < 0) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+		    "setsockopt: (TCP_NODELAY)");
+    }
+}
 
 /*
- * Find a listener which is ready for accept().  This advances the
- * head_listener global.
+ * Routines to deal with managing the list of listening sockets...
+ * find_ready_listener()
+ *   Finds a listener which is ready for accept(). This advances 
+ *   the head_listener global.
+ * setup_listeners()
+ * setup_inherited_listeners() 
  */
 static ap_listen_rec *head_listener;
 static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
@@ -525,13 +439,10 @@ static int setup_inherited_listeners(pool *p, server_rec *s)
  * connection already in progress (in child_sub_main()). We'd have to
  * get that to poll on the exit event. 
  */
-int service_init()
-{
-}
 
-/*
 int service_init()
 {
+/*
     common_init();
  
     ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
@@ -543,9 +454,9 @@ int service_init()
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
     ap_log_pid(pconf, ap_pid_fname);
     post_parse_init();
+*/
     return TRUE;
 }
-*/
 
 /*
  * Definition of jobs, shared by main and worker threads.
@@ -621,8 +532,6 @@ int remove_job(void)
     rv = WaitForMultipleObjects(2, hObjects, FALSE, INFINITE);
     ap_assert(rv != WAIT_FAILED);
     if (rv == WAIT_OBJECT_0 + 1) {
-	/* thread_exit_now */
-//	APD1("thread got exit now event");
 	return -1;
     }
     /* must be semaphore */
@@ -652,7 +561,7 @@ int remove_job(void)
 }
 
 /*
- * child_sub_main() - this is the main loop for the worker threads
+ * child_main() - this is the main loop for the worker threads
  *
  * Each thread runs within this function. They wait within remove_job()
  * for a job to become available, then handle all the requests on that
@@ -670,62 +579,29 @@ int remove_job(void)
  *    accepted socket, instead of blocking on a mutex or select().
  */
 
-static void child_sub_main(int child_num)
+static void child_main(int child_num)
 {
-    NET_SIZE_T clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
+    int len;
+    BUFF *conn_io;
+    conn_rec *current_conn;
+    ap_iol *iol;
+
     pool *ptrans;
     int requests_this_child = 0;
     int csd = -1;
-    ap_iol *iol;
-    int srv = 0;
-    int conn_id = 1;
-    /* Note: current_conn used to be a defined at file scope as follows... Since the signal code is
-       not being used in WIN32, make the variable local */
-    //    static APACHE_TLS conn_rec *volatile current_conn;
-    conn_rec *current_conn;
 
     ptrans = ap_make_sub_pool(pconf);
 
 #if 0
-    /* ZZZ scoreboard */
     (void) ap_update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
 #endif
 
-    /*
-     * Setup the jump buffers so that we can return here after a timeout.
-     */
-#if 0 /* ZZZ */
-#if defined(USE_LONGJMP)
-    setjmp(jmpbuffer);
-#else
-    sigsetjmp(jmpbuffer, 1);
-#endif
-#ifdef SIGURG
-    signal(SIGURG, timeout);
-#endif
-#endif
-
     while (1) {
-	BUFF *conn_io;
-//	request_rec *r;
-
-	/*
-	 * (Re)initialize this child to a pre-connection state.
-	 */
-#if 0   /* ZZZ Alarms... */
-	ap_set_callback_and_alarm(NULL, 0); /* Cancel any outstanding alarms */
-#endif
-#if 0   /* ZZZ what is this? It's not thread safe! */
-	timeout_req = NULL;                 /* No request in progress */
-#endif
 	current_conn = NULL;
-
 	ap_clear_pool(ptrans);
-
 #if 0
-        /* ZZZ scoreboard */
 	(void) ap_update_child_status(child_num, SERVER_READY,
 	                              (request_rec *) NULL);
 #endif
@@ -744,69 +620,46 @@ static void child_sub_main(int child_num)
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
 	 */
-
-	clen = sizeof(sa_server);
-	if (getsockname(csd, &sa_server, &clen) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "getsockname");
+        len = sizeof(struct sockaddr);
+	if (getsockname(csd, &sa_server, &len)== SOCKET_ERROR) {
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, 
+                         "getsockname failed with error %d\n", WSAGetLastError());
 	    continue;
 	}
-	clen = sizeof(sa_client);
-	if ((getpeername(csd, &sa_client, &clen)) < 0) {
-	    /* get peername will fail if the input isn't a socket */
-	    perror("getpeername");
+
+	len = sizeof(struct sockaddr);
+	if ((getpeername(csd, &sa_client, &len)) == SOCKET_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, 
+                         "getpeername failed with error %d\n", WSAGetLastError());
 	    memset(&sa_client, '\0', sizeof(sa_client));
 	}
-
-	sock_disable_nagle(csd);
 #if 0
-        /* ZZZ scoreboard */
 	(void) ap_update_child_status(child_num, SERVER_BUSY_READ,
-				   (request_rec *) NULL);
+                                      (request_rec *) NULL);
 #endif
+	sock_disable_nagle(csd);
+
         iol = win32_attach_socket(csd);
         if (iol == NULL) {
-            if (errno == EBADF) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
-                             "filedescriptor (%u) larger than FD_SETSIZE (%u) "
-                             "found, you probably need to rebuild Apache with a "
-                             "larger FD_SETSIZE", csd, FD_SETSIZE);
-            }
-            else {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
-                             "error attaching to socket");
-            }
+            ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+                         "error attaching to socket");
             close(csd);
-            return;
+            continue;
         }
 
 	conn_io = ap_bcreate(ptrans, B_RDWR);
-
         ap_bpush_iol(conn_io, iol);
-        
+
 	current_conn = ap_new_connection(ptrans, server_conf, conn_io,
                                          (struct sockaddr_in *) &sa_client,
                                          (struct sockaddr_in *) &sa_server,
-                                         conn_id);
-        
+                                         child_num);
+
         ap_process_connection(current_conn);
-    }        
+    }
 }
 
-
-void child_main(int child_num_arg)
-{
-    /*
-     * Only reason for this function, is to pass in
-     * arguments to child_sub_main() on its stack so
-     * that longjump doesn't try to corrupt its local
-     * variables and I don't need to make those
-     * damn variables static/global
-     */
-    child_sub_main(child_num_arg);
-}
-
-
-void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
+static void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
 {
     int i;
 
@@ -882,16 +735,18 @@ static void setup_signal_names(char *prefix)
  * worker_main() is main loop for the child process. The loop in
  * this function becomes the controlling thread for the actually working
  * threads (which run in a loop in child_sub_main()).
+ * Globals Used:
+ *  exit_event, start_mutex, ap_threads_per_child, server_conf,
+ *  h_errno defined to WSAGetLastError in winsock2.h,
  */
-
-void worker_main(void)
+static void worker_main(void)
 {
-    int nthreads;
+    int nthreads = ap_threads_per_child;
     fd_set main_fds;
     int srv;
     int clen;
     int csd;
-    int sd = -1; // made this local and not global
+    int sd = -1;
     struct sockaddr_in sa_client;
     int total_jobs = 0;
     thread **child_handles;
@@ -906,11 +761,11 @@ void worker_main(void)
 
     pchild = ap_make_sub_pool(pconf);
 
-    nthreads = ap_threads_per_child;
-
 //    ap_restart_time = time(NULL);
 
-//    reinit_scoreboard(pconf);
+#if 0
+    reinit_scoreboard(pconf);
+#endif
 
     /*
      * Wait until we have permission to start accepting connections.
@@ -927,13 +782,17 @@ void worker_main(void)
                      "Waiting for start_mutex or exit_event -- process will exit");
 
 	ap_destroy_pool(pchild);
-//	cleanup_scoreboard();
+#if 0
+	cleanup_scoreboard();
+#endif
 	exit(0);
     }
     if (rv == WAIT_OBJECT_0 + 1) {
 	/* exit event signalled - exit now */
 	ap_destroy_pool(pchild);
-//	cleanup_scoreboard();
+#if 0
+	cleanup_scoreboard();
+#endif
 	exit(0);
     }
     /* start_mutex obtained, continue into the select() loop */
@@ -952,10 +811,11 @@ void worker_main(void)
 	signal_parent(0);	/* tell parent to die */
 
 	ap_destroy_pool(pchild);
-//	cleanup_scoreboard();
+#if 0
+	cleanup_scoreboard();
+#endif
 	exit(0);
     }
-//    set_signals();
 
     allowed_globals.jobsemaphore = create_semaphore(0);
     allowed_globals.jobmutex = ap_create_mutex(NULL);
@@ -968,8 +828,6 @@ void worker_main(void)
 
     while (1) {
         if (ap_max_requests_per_child && (total_jobs > ap_max_requests_per_child)) {
-            /* MaxRequestsPerChild hit...
-             */
             break;
 	}
         /* Always check for the exit event being signaled.
@@ -977,7 +835,6 @@ void worker_main(void)
         rv = WaitForSingleObject(exit_event, 0);
         ap_assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
         if (rv == WAIT_OBJECT_0) {
-//            APD1("child: exit event signalled, exiting");
             break;
         }
 
@@ -987,19 +844,16 @@ void worker_main(void)
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
 	srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 	if (srv == SOCKET_ERROR) {
-	    /* Map the Win32 error into a standard Unix error condition */
-	    errno = WSAGetLastError();
-
 	    /* Error occurred - if EINTR, loop around with problem */
-	    if (errno != EINTR) {
+	    if (WSAGetLastError() != WSAEINTR) {
 		/* A "real" error occurred, log it and increment the count of
 		 * select errors. This count is used to ensure we don't go into
 		 * a busy loop of continuous errors.
 		 */
-		ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
+		ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_WIN32ERROR, server_conf, "select: (listen)");
 		count_select_errors++;
 		if (count_select_errors > MAX_SELECT_ERRORS) {
-		    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server_conf,
+		    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                                  "Too many errors in select loop. Child process exiting.");
 		    break;
 		}
@@ -1022,20 +876,14 @@ void worker_main(void)
 	    csd = accept(sd, (struct sockaddr *) &sa_client, &clen);
 	    if (csd == INVALID_SOCKET) {
 		csd = -1;
-		errno = WSAGetLastError();
 	    }
-	} while (csd < 0 && errno == EINTR);
+	} while (csd < 0 && h_errno == WSAEINTR);
 
 	if (csd < 0) {
-#if defined(EPROTO) && defined(ECONNABORTED)
-	    if ((errno != EPROTO) && (errno != ECONNABORTED))
-#elif defined(EPROTO)
-	    if (errno != EPROTO)
-#elif defined(ECONNABORTED)
-	    if (errno != ECONNABORTED)
-#endif
-		ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+            if (h_errno != WSAECONNABORTED) {
+		ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
 			    "accept: (client socket)");
+            }
 	}
 	else {
 	    add_job(csd);
@@ -1043,8 +891,6 @@ void worker_main(void)
 	}
     }
       
-//    APD2("process PID %d exiting", my_pid);
-
     /* Get ready to shutdown and exit */
     allowed_globals.exit_now = 1;
     ap_release_mutex(start_mutex);
@@ -1057,7 +903,6 @@ void worker_main(void)
     }
 #endif
 
-//    APD2("process PID %d waiting for worker threads to exit", my_pid);
     /* Wait for all your children */
     end_time = time(NULL) + 180;
     while (nthreads) {
@@ -1072,7 +917,6 @@ void worker_main(void)
 	break;
     }
 
-//    APD2("process PID %d killing remaining worker threads", my_pid);
     for (i = 0; i < nthreads; i++) {
 	kill_thread(child_handles[i]);
 	free_thread(child_handles[i]);
@@ -1085,11 +929,11 @@ void worker_main(void)
 
     ap_destroy_pool(pchild);
 
-//    cleanup_scoreboard();
+#if 0
+    cleanup_scoreboard();
+#endif
 
-//    APD2("process PID %d exited", my_pid);
-//    clean_parent_exit(0);
-}				/* standalone_main */
+}
 
 /*
  * Spawn a child Apache process. The child process has the command line arguments from
@@ -1134,102 +978,98 @@ static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *
 	events[i] = events[i + 1];
     }
     (*processes)--;
-
-//    APD4("cleanup_processes: removed child in slot %d handle %d, max=%d", position, handle, *processes);
 }
 
 static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *processes)
- {
+{
+    int rv;
+    char buf[1024];
+    char *pCommand;
 
-     int rv;
-     char buf[1024];
-     char *pCommand;
+    STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
+    PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
 
-     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
-     PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
+    ap_listen_rec *lr;
+    DWORD BytesWritten;
+    HANDLE hPipeRead = NULL;
+    HANDLE hPipeWrite = NULL;
+    SECURITY_ATTRIBUTES sa = {0};  
 
-     ap_listen_rec *lr;
-     DWORD BytesWritten;
-     HANDLE hPipeRead = NULL;
-     HANDLE hPipeWrite = NULL;
-     SECURITY_ATTRIBUTES sa = {0};  
+    sa.nLength = sizeof(sa);
+    sa.bInheritHandle = TRUE;
+    sa.lpSecurityDescriptor = NULL;
 
-     sa.nLength = sizeof(sa);
-     sa.bInheritHandle = TRUE;
-     sa.lpSecurityDescriptor = NULL;
+    /* Build the command line. Should look something like this:
+     * C:/apache/bin/apache.exe -f ap_server_confname 
+     * First, get the path to the executable...
+     */
+    rv = GetModuleFileName(NULL, buf, sizeof(buf));
+    if (rv == sizeof(buf)) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Path to Apache process too long");
+        return -1;
+    } else if (rv == 0) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: GetModuleFileName() returned NULL for current process.");
+        return -1;
+    }
 
-     /* Build the command line. Should look something like this:
-      * C:/apache/bin/apache.exe -f ap_server_confname 
-      * First, get the path to the executable...
-      */
-     rv = GetModuleFileName(NULL, buf, sizeof(buf));
-     if (rv == sizeof(buf)) {
-         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                      "Parent: Path to Apache process too long");
-         return -1;
-     } else if (rv == 0) {
-         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                      "Parent: GetModuleFileName() returned NULL for current process.");
-         return -1;
-     }
+    //    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, ap_server_confname);  
+    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, SERVER_CONFIG_FILE);  
 
- //    pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, ap_server_confname);  
-     pCommand = ap_psprintf(p, "\"%s\" -f \"%s\"", buf, SERVER_CONFIG_FILE);  
+    /* Create a pipe to send socket info to the child */
+    if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Unable to create pipe to child process.\n");
+        return -1;
+    }
 
-     /* Create a pipe to send socket info to the child */
-     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
-         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                      "Parent: Unable to create pipe to child process.\n");
-         return -1;
-     }
+    SetEnvironmentVariable("AP_PARENT_PID",ap_psprintf(p,"%d",parent_pid));
 
-     SetEnvironmentVariable("AP_PARENT_PID",ap_psprintf(p,"%d",parent_pid));
+    /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
+     * parent will write the socket data to the child on this pipe.
+     */
+    memset(&si, 0, sizeof(si));
+    memset(&pi, 0, sizeof(pi));
+    si.cb = sizeof(si);
+    si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+    si.wShowWindow = SW_HIDE;
+    si.hStdInput   = hPipeRead;
 
-     /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
-      * parent will write the socket data to the child on this pipe.
-      */
-     memset(&si, 0, sizeof(si));
-     memset(&pi, 0, sizeof(pi));
-     si.cb = sizeof(si);
-     si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-     si.wShowWindow = SW_HIDE;
-     si.hStdInput   = hPipeRead;
+    if (!CreateProcess(NULL, pCommand, NULL, NULL, 
+                       TRUE,               /* Inherit handles */
+                       CREATE_SUSPENDED,   /* Creation flags */
+                       NULL,               /* Environment block */
+                       NULL,
+                       &si, &pi)) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Not able to create the child process.");
+        /*
+         * We must close the handles to the new process and its main thread
+         * to prevent handle and memory leaks.
+         */ 
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        return -1;
+    }
+    else {
+        HANDLE kill_event;
+        LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
 
-     if (!CreateProcess(NULL, pCommand, NULL, NULL, 
-                        TRUE,               /* Inherit handles */
-                        CREATE_SUSPENDED,   /* Creation flags */
-                        NULL,               /* Environment block */
-                        NULL,
-                        &si, &pi)) {
-         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                      "Parent: Not able to create the child process.");
-         /*
-          * We must close the handles to the new process and its main thread
-          * to prevent handle and memory leaks.
-          */ 
-         CloseHandle(pi.hProcess);
-         CloseHandle(pi.hThread);
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
+                     "Parent: Created child process %d", pi.dwProcessId);
 
-         return -1;
-     }
-     else {
-         HANDLE kill_event;
-         LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
+        SetEnvironmentVariable("AP_PARENT_PID",NULL);
 
-         ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
-                      "Parent: Created child process %d", pi.dwProcessId);
-
-         SetEnvironmentVariable("AP_PARENT_PID",NULL);
-
-         /* Create the exit_event, apCHILD_PID */
-         kill_event = CreateEvent(NULL, TRUE, FALSE, 
-                                  ap_psprintf(pconf,"apC%d", pi.dwProcessId)); // exit_event_name...
-         if (!kill_event) {
-             ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
-                          "Parent: Could not create exit event for child process");
-             CloseHandle(pi.hProcess);
-             CloseHandle(pi.hThread);
-             return -1;
+        /* Create the exit_event, apCHILD_PID */
+        kill_event = CreateEvent(NULL, TRUE, FALSE, 
+                                 ap_psprintf(pconf,"apC%d", pi.dwProcessId)); // exit_event_name...
+        if (!kill_event) {
+            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                         "Parent: Could not create exit event for child process");
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            return -1;
         }
         
         /* Assume the child process lives. Update the process and event tables */
@@ -1276,7 +1116,6 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *process
 /* To share the semaphores with other processes, we need a NULL ACL
  * Code from MS KB Q106387
  */
-
 static PSECURITY_ATTRIBUTES GetNullACL()
 {
     PSECURITY_DESCRIPTOR pSD;
@@ -1421,7 +1260,6 @@ die_now:
         int tmstart = time(NULL);
         /* Signal each child processes to die */
         for (i = 0; i < current_live_processes; i++) {
-//                APD3("master_main: signalling child %d, handle %d to die", i, process_handles[i]);
             if (SetEvent(process_kill_events[i]) == 0)
                 ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                              "master_main: SetEvent for child process in slot #%d failed", i);
@@ -1444,7 +1282,7 @@ die_now:
         return (0); /* Tell the caller we are shutting down */
     }
 
-    return (1); /* Tell the call we want a restart */
+    return (1); /* Tell the caller we want a restart */
 }
 
 /* 
@@ -1457,7 +1295,6 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
 
     /* Track parent/child pids... */
     pid = getenv("AP_PARENT_PID");
-    printf("pid = %d\n", pid);
     if (pid) {
         /* AP_PARENT_PID is only valid in the child */
         parent_pid = atoi(pid);
@@ -1479,9 +1316,6 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
 
 }
 
-/*
-Need to register this hook if we want it...
-*/
 static void winnt_post_config(pool *pconf, pool *plog, pool *ptemp, server_rec* server_conf)
 {
     server_conf = server_conf;
