@@ -1610,6 +1610,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 {
     int server_port;
     apr_status_t err = APR_SUCCESS;
+    const char   *hostname;
+    apr_port_t   port;
+    
     /*
      * Break up the URL to determine the host to connect to
      */
@@ -1648,12 +1651,25 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
     }
+    if (!worker->is_address_reusable) {
+        if (proxyname) {
+            hostname = proxyname;
+            port = proxyport;
+        } else {
+            hostname = uri->hostname;
+            port = uri->port;
+        }
+    }
+    else {
+        hostname = conn->hostname;
+        port = conn->port;
+    }
     /* TODO: add address cache for forward proxies */
     if (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE ||
         !worker->is_address_reusable) {
         err = apr_sockaddr_info_get(&(conn->addr),
-                                    conn->hostname, APR_UNSPEC,
-                                    conn->port, 0,
+                                    hostname, APR_UNSPEC,
+                                    port, 0,
                                     conn->pool);
     }
     else if (!worker->cp->addr) {
@@ -1669,8 +1685,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         * inside dynamic config to force the lookup.
         */
         err = apr_sockaddr_info_get(&(worker->cp->addr),
-                                    conn->hostname, APR_UNSPEC,
-                                    conn->port, 0,
+                                    hostname, APR_UNSPEC,
+                                    port, 0,
                                     worker->cp->pool);
         conn->addr = worker->cp->addr;
         PROXY_THREAD_UNLOCK(worker);
@@ -1678,7 +1694,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     if (err != APR_SUCCESS) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
-                                         conn->hostname, NULL));
+                                         hostname, NULL));
     }
 
     /* Get the server port for the Via headers */
