@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/07 15:41:00 $]
+Last modified at [$Date: 2001/12/07 18:02:47 $]
 
 Release:
 
@@ -91,6 +91,9 @@ RELEASE SHOWSTOPPERS:
       ap_hook_error_log (or other missing functions -- if there are
       any) to segfault on AIX and can probably cause load or other
       errors on some other platforms.
+
+    * Sending httpd a SIGHUP with worker MPM causes a segfault 
+      when we started as root and switch to a different user.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
