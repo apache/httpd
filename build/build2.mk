@@ -65,10 +65,11 @@ apr_private.h_in = srclib/apr/include/apr_private.h.in
 apr_configure = srclib/apr/configure
 mm_configure = srclib/apr/shmem/unix/mm/configure
 pcre_configure = srclib/pcre/configure
+aprutil_configure = srclib/apr-util/configure
 
 APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
-APR_TARGETS = $(apr_configure) $(apr_private.h_in) $(mm_configure)
+APR_TARGETS = $(apr_configure) $(apr_private.h_in) $(mm_configure) $(aprutil_configure)
 
 PCRE_TARGETS = $(pcre_configure)
 
@@ -116,6 +117,10 @@ $(apr_private.h_in): $(apr_configure) srclib/apr/acconfig.h
 	@echo rebuilding $@
 	@rm -f $@
 	(cd srclib/apr && autoheader)
+
+$(aprutil_configure): srclib/apr-util/configure.in
+	@echo rebuilding $@
+	(cd srclib/apr-util && ./buildconf.sh)
 
 $(apr_configure): srclib/apr/aclocal.m4 srclib/apr/configure.in srclib/apr/apr_common.m4 srclib/apr/hints.m4
 	@echo rebuilding $@
