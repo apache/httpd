@@ -280,7 +280,7 @@ int ap_invoke_handler(request_rec *r)
 {
     const char *handler;
     const char *p;
-    size_t handler_len;
+    char *p2;
     int result;
     char hbuf[MAX_STRING_LEN];
 
@@ -289,14 +289,14 @@ int ap_invoke_handler(request_rec *r)
     }
     else {
         handler = r->content_type ? r->content_type : ap_default_type(r);
-        if (ap_strchr_c(handler, ';') != NULL) {
+        if ((p=ap_strchr_c(handler, ';')) != NULL) {
 	    apr_cpystrn(hbuf, handler, sizeof hbuf);
+	    p2 = hbuf+(handler-p);
 	    handler = hbuf;
-	    p = ap_strchr_c(handler, ';');
 	    /* MIME type arguments */
-            while (p > handler && p[-1] == ' ')
-	        --p;		/* strip trailing spaces */
-	    *p='\0';
+            while (p2 > handler && p2[-1] == ' ')
+	        --p2;		/* strip trailing spaces */
+	    *p2='\0';
 	}
     }
 
