@@ -86,6 +86,12 @@ module dir_module;
 #define SUPPRESS_SIZE 16
 #define SUPPRESS_DESC 32
 
+/*
+ * These are the dimensions of the default icons supplied with Apache.
+ */
+#define DEFAULT_ICON_WIDTH 20
+#define DEFAULT_ICON_HEIGHT 22
+
 struct item {
     char *type;
     char *apply_to;
@@ -97,6 +103,8 @@ typedef struct dir_config_struct {
 
     char *default_icon;
     char *index_names;
+    int icon_width;
+    int icon_height;
   
     array_header *icon_list, *alt_list, *desc_list, *ign_list;
     array_header *hdr_list, *rdme_list, *opts_list;
@@ -192,6 +200,7 @@ const char *fancy_indexing (cmd_parms *cmd, void *d, int arg)
 const char *add_opts(cmd_parms *cmd, void *d, const char *optstr) {
     char *w;
     int opts = 0;
+    dir_config_rec *d_cfg = (dir_config_rec *) d;
 
     while(optstr[0]) {
         w = getword_conf(cmd->pool, &optstr);
@@ -209,6 +218,30 @@ const char *add_opts(cmd_parms *cmd, void *d, const char *optstr) {
             opts |= SUPPRESS_DESC;
         else if(!strcasecmp(w,"None"))
             opts = 0;
+	else if (! strncasecmp (w, "IconWidth", 9)) {
+	    if (strchr (w, '=') != NULL) {
+		const char *x = pstrdup (cmd->pool, w);
+		char *val;
+		val = getword (cmd->pool, &x, '=');
+		val = getword (cmd->pool, &x, '=');
+		d_cfg->icon_width = atoi(val);
+	    }
+	    else {
+		d_cfg->icon_width = DEFAULT_ICON_WIDTH;
+	    }
+	}
+	else if (! strncasecmp (w, "IconHeight", 10)) {
+	    if (strchr (w, '=') != NULL) {
+		const char *x = pstrdup (cmd->pool, w);
+		char *val;
+		val = getword (cmd->pool, &x, '=');
+		val = getword (cmd->pool, &x, '=');
+		d_cfg->icon_height = atoi(val);
+	    }
+	    else {
+		d_cfg->icon_height = DEFAULT_ICON_HEIGHT;
+	    }
+	}
 	else
 	    return "Invalid directory indexing option";
     }
@@ -256,6 +289,8 @@ void *create_dir_config (pool *p, char *dummy)
         (dir_config_rec *) pcalloc (p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
+    new->icon_width = 0;
+    new->icon_height = 0;
     new->icon_list = make_array (p, 4, sizeof (struct item));
     new->alt_list = make_array (p, 4, sizeof (struct item));
     new->desc_list = make_array (p, 4, sizeof (struct item));
@@ -275,6 +310,8 @@ void *merge_dir_configs (pool *p, void *basev, void *addv)
 
     new->default_icon = add->default_icon?add->default_icon:base->default_icon;
     new->index_names = add->index_names? add->index_names: base->index_names;
+    new->icon_height = add->icon_height ? add->icon_height : base->icon_height;
+    new->icon_width = add->icon_width ? add->icon_width : base->icon_width;
 
     new->alt_list = append_arrays (p, add->alt_list, base->alt_list);
     new->ign_list = append_arrays (p, add->ign_list, base->ign_list);
@@ -579,9 +616,20 @@ void output_directories(struct ent **ar, int n,
 
     if(dir_opts & FANCY_INDEXING) {
         rputs("<PRE>", r);
-        if((tp = find_default_icon(d,"^^BLANKICON^^")))
+        if((tp = find_default_icon(d,"^^BLANKICON^^"))) {
             rvputs(r, "<IMG SRC=\"", escape_html(scratch, tp),
-		   "\" ALT=\"     \"> ", NULL);
+		   "\" ALT=\"     \"", NULL);
+	    if (d->icon_width && d->icon_height) {
+		rprintf
+		    (
+			r,
+			" HEIGHT=\"%d\" WIDTH=\"%d\"",
+			d->icon_height,
+			d->icon_width
+		    );
+	    }
+	    rputs ("> ", r);
+	}
         rputs("Name                   ", r);
         if(!(dir_opts & SUPPRESS_LAST_MOD))
             rputs("Last modified     ", r);
@@ -639,8 +687,18 @@ void output_directories(struct ent **ar, int n,
 		       escape_html(scratch, ar[x]->icon ?
 				   ar[x]->icon : d->default_icon),
 		       "\" ALT=\"[", (ar[x]->alt ? ar[x]->alt : "   "),
-		       "]\">", NULL);
-            }
+		       "]\"", NULL);
+		if (d->icon_width && d->icon_height) {
+		    rprintf
+			(
+			    r,
+			    " HEIGHT=\"%d\" WIDTH=\"%d\"",
+			    d->icon_height,
+			    d->icon_width
+			);
+		}
+		rputs (">", r);
+	    }
             if(dir_opts & ICONS_ARE_LINKS) 
                 rputs("</A>", r);
 
