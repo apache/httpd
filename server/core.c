@@ -3079,9 +3079,26 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 if (n) {
                     if (!fd) {
                         if (nvec == MAX_IOVEC_TO_WRITE) {
-                            /* woah! too many. stop now. */
-                            more = apr_brigade_split(b, e);
-                            break;
+                            /* woah! too many. buffer them up, for use later. */
+                            apr_bucket *temp;
+                            apr_bucket_brigade *temp_brig;
+
+                            temp_brig = apr_brigade_create(f->c->pool);
+                            temp = APR_BRIGADE_FIRST(b);
+                            while (temp != e) {
+                                apr_bucket *d;
+                                rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
+                                apr_brigade_write(temp_brig, NULL, NULL, str, n);
+                                d = temp;
+                                temp = APR_BUCKET_NEXT(temp);
+                                apr_bucket_delete(d);
+                            }
+                            temp = APR_BRIGADE_FIRST(temp_brig);
+                            APR_BUCKET_REMOVE(temp);
+                            APR_BRIGADE_INSERT_HEAD(b, temp);
+                            apr_brigade_destroy(temp_brig);
+                            e = temp;
+                            nvec = 0;
                         }
                         vec[nvec].iov_base = (char*) str;
                         vec[nvec].iov_len = n;
