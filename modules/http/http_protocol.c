@@ -2194,7 +2194,8 @@ struct content_length_ctx {
 
 /* This filter computes the content length, but it also computes the number
  * of bytes sent to the client.  This means that this filter will always run
-through all of the buckets in all brigades */
+ * through all of the buckets in all brigades 
+ */
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                                                               ap_bucket_brigade *b)
 {
@@ -2240,7 +2241,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         apr_size_t length;
 
         if (AP_BUCKET_IS_EOS(e) || AP_BUCKET_IS_FLUSH(e)) {
-            ctx->hold_data = 0;
             send_it = 1;
         }
         rv = ap_bucket_read(e, &ignored, &length, AP_BLOCK_READ);
@@ -2250,20 +2250,21 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         r->bytes_sent += length;
     }
 
-    /* save the brigade; we can't pass any data to the next
-     * filter until we have the entire content length
-     */
-    if (ctx->hold_data && !send_it) {
-        ap_save_brigade(f, &ctx->saved, &b);
-        return APR_SUCCESS;
+    if (ctx->hold_data) { /* calculating content length? */
+        /* save the brigade; we can't pass any data to the next
+         * filter until we have the entire content length
+         */
+        if (!send_it) {
+            ap_save_brigade(f, &ctx->saved, &b);
+            return APR_SUCCESS;
+        }
+        if (ctx->saved) {
+            AP_BRIGADE_CONCAT(ctx->saved, b);
+            b = ctx->saved;
+        }
+        ap_set_content_length(r, r->bytes_sent);
     }
 
-    if (ctx->saved) {
-        AP_BRIGADE_CONCAT(ctx->saved, b);
-        b = ctx->saved;
-    }
-
-    ap_set_content_length(r, r->bytes_sent);
     return ap_pass_brigade(f->next, b);
 }
 
