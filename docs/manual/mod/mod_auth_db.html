@@ -39,7 +39,7 @@ comma-separated list of the groups to which the users belongs. There must
 be no whitespace within the value, and it must never contain any colons.<p>
 
 Security: make sure that the AuthDBGroupFile is stored outside the
-document tree of the webserver; do <em>not</em> put it in the directory that
+document tree of the web-server; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the
 AuthDBGroupFile unless otherwise protected.<p>
 
@@ -58,7 +58,7 @@ AuthDBUserFile /www/userbase
 The key for the single DB record is the username. The value consists of <p>
 
 <blockquote><code>
-Unix Crypted Password : List of Groups [ : (ignored) ]
+Unix Crypt-ed Password : List of Groups [ : (ignored) ]
 </code></blockquote>
 
 The password section contains the Unix crypt() password as before. This is
@@ -88,7 +88,7 @@ arbitrary data.  The colon and the data following it will be ignored
 by the server.<p>
 
 Security: make sure that the AuthDBUserFile is stored outside the
-document tree of the webserver; do <em>not</em> put it in the directory that
+document tree of the web-server; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the
 AuthDBUserFile.<p>
 

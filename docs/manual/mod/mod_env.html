@@ -17,8 +17,8 @@ in Apache 1.1 and later.
 
 This module allows Apache's CGI and SSI environment to inherit
 environment variables from the shell which invoked the httpd process.
-CERN webservers are able to do this, so this module is especially
-useful to webadmins who wish to migrate from CERN to Apache without
+CERN web-servers are able to do this, so this module is especially
+useful to web-admins who wish to migrate from CERN to Apache without
 rewriting all their scripts
  
 <h2>Directives</h2>
@@ -37,7 +37,7 @@ rewriting all their scripts
 <strong>Compatibility:</strong> PassEnv is only available in
 Apache 1.1 and later.<p>
 
-Passes an environment variable to CGI scripts from the servers's own
+Passes an environment variable to CGI scripts from the server's own
 environment. Example:
 <pre>
     PassEnv LD_LIBRARY_PATH

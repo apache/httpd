@@ -40,7 +40,7 @@ Note that searching large groups files is <em>very</em> inefficient;
 be used instead.<p>
 
 Security: make sure that the AuthGroupFile is stored outside the
-document tree of the webserver; do <em>not</em> put it in the directory that
+document tree of the web-server; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the AuthGroupFile.<p>
 
 See also <A HREF="core.html#authname">AuthName</A>,
@@ -59,14 +59,14 @@ The AuthUserFile directive sets the name of a textual file containing the list
 of users and passwords for user authentication. <em>Filename</em> is the
 absolute path to the user file.<p>
 Each line of the user file file contains a username followed by a colon,
-followed by the crypt() encrypted password. The behaviour of multiple
+followed by the crypt() encrypted password. The behavior of multiple
 occurrences of the same user is undefined.<p>
 Note that searching user groups files is inefficient;
 <A HREF="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</A> should
 be used instead.<p>
 
 Security: make sure that the AuthUserFile is stored outside the
-document tree of the webserver; do <em>not</em> put it in the directory that
+document tree of the web-server; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the AuthUserFile.<p>
 
 See also <A HREF="core.html#authname">AuthName</A>,

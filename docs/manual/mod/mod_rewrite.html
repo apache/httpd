@@ -35,7 +35,7 @@ substitution.
 <p>
 It operates on the full URLs (including the PATH_INFO part) both in
 per-server context (httpd.conf) and per-dir context (.htaccess) and even
-can generate QUERY_STRING parts on result.   The rewrittten result can lead to internal sub-processing, external request redirection or to internal proxy throughput.
+can generate QUERY_STRING parts on result.   The rewritten result can lead to internal sub-processing, external request redirection or to internal proxy throughput.
 </b>
 
 <p>
@@ -280,13 +280,13 @@ RewriteMap real-to-host txt:/path/to/file/map.real-to-user
 <li><b>Program Format</b>
     <p>
     This is a Unix executable, not a lookup file.  To create it you can use
-    the language of your choice, but the result has to be a runable Unix
+    the language of your choice, but the result has to be a run-able Unix
     binary (i.e. either object-code or a script with the
     magic cookie trick '<tt>#!/path/to/interpreter</tt>' as the first line).
     <p>
     This program gets started once at startup of the Apache servers and then
     communicates with the rewriting engine over its <tt>stdin</tt> and
-    <tt>stdout</tt> filehandles.  For each map-function lookup it will
+    <tt>stdout</tt> file-handles.  For each map-function lookup it will
     receive the key to lookup as a newline-terminated string on
     <tt>stdin</tt>. It then has to give back the looked-up value as a
     newline-terminated string on <tt>stdout</tt> or the four-character string
@@ -359,7 +359,7 @@ it is automatically added.
 When a substitution occurs for a new URL, this module has to
 re-inject the URL into the server processing. To be able to do this it needs
 to know what the corresponding URL-prefix or URL-base is. By default this
-prefix is the corresponding filepath itself. <b>But at most websites URLs are
+prefix is the corresponding filepath itself. <b>But at most web-sites URLs are
 <b>NOT</b> directly related to physical filename paths, so this assumption
 will be usually be wrong!</b> There you have to use the <tt>RewriteBase</tt>
 directive to specify the correct URL-prefix. 
@@ -367,7 +367,7 @@ directive to specify the correct URL-prefix.
 <p>
 <table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
-So, if your webserver's URLs are <b>not</b> directly
+So, if your web-server's URLs are <b>not</b> directly
 related to physical file paths, you have to use <tt>RewriteBase</tt> in every
 <tt>.htaccess</tt> files where you want to use <tt>RewriteRule</tt>
 directives.
@@ -647,7 +647,7 @@ RewriteRule ...some special stuff for any of these hosts...
 <b>Example:</b>
 <blockquote>
 
-To rewrite the Homepage of a site according to the ``<tt>User-Agent:</tt>''
+To rewrite the Home-page of a site according to the ``<tt>User-Agent:</tt>''
 header of the request, you can use the following:
 
 <blockquote><pre>
@@ -818,7 +818,7 @@ comma-separated list of the following flags:
     be handled by the Apache proxy module. If not you get an error from
     the proxy module. Use this flag to achieve a more powerful implementation
     of the <tt>mod_proxy</tt> directive <tt>ProxyPass</tt>, to map
-    some remote stuff into the namespace of the local server.
+    some remote stuff into the name-space of the local server.
 <p>
 <li>'<strong><code>last|L</code></strong>' (<b>l</b>ast rule)<br>
     Stop the rewriting process here and

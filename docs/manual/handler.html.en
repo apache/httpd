@@ -14,7 +14,7 @@
 performed when a file is called. Generally, files have implicit
 handlers, based on the file type. Normally, all files are simply
 served by the server, but certain file typed are "handled"
-seperately. For example, you may use a type of
+separately. For example, you may use a type of
 "application/x-httpd-cgi" to invoke CGI scripts.</p>
 
 <p>Apache 1.1 adds the additional ability to use handlers
@@ -48,7 +48,7 @@ handlers in the standard distribution are as follows:</p>
     Get the server's status report
     (<a href="mod_status.html">mod_status</a>)
 <li><strong>type-map</strong>:
-    Parse as a type map file for content negotation
+    Parse as a type map file for content negotiation
     (<a href="mod_negotiation.html">mod_negotiation</a>)
 </ul>
 
@@ -64,7 +64,7 @@ handlers in the standard distribution are as follows:</p>
 
 <h2><a name="addhandler">AddHandler</a></h2>
 
-<strong>Syntax:</strong> &lt;AddHandler <em>handler-name extention</em>&gt;<br>
+<strong>Syntax:</strong> &lt;AddHandler <em>handler-name extension</em>&gt;<br>
 <strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_mime
@@ -122,11 +122,11 @@ make use of. Specifically, a new record has been added to the
 <p>If you wish to have your module engage a handler, you need only to
 set <code>r-&gt;handler</code> to the name of the handler at any time
 prior to the <code>invoke_handler</code> stage of the
-request. Handlers are implemented as they were before, albiet using
+request. Handlers are implemented as they were before, albeit using
 the handler name instead of a content type. While it is not
-neccessary, the naming convention for handlers is to use a
-dash-seperated word, with no slashes, so as to not invade the media
-type namespace.</p>
+necessary, the naming convention for handlers is to use a
+dash-separated word, with no slashes, so as to not invade the media
+type name-space.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>

@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <h1>Headers Module</h1>
 
-The optional headers module allows for the customisation of HTTP
+The optional headers module allows for the customization of HTTP
 response headers. Headers can be merged, replaced or removed. The
 directives described in this document are only available if Apache is
 compiled with <b>mod_headers.c</b>.
@@ -23,8 +23,8 @@ compiled with <b>mod_headers.c</b>.
 <hr>
 
 <A name="header"><h2>Header</h2></A>
-<strong>Sytnax:</strong> Header [ set | append | add ] <em>header</em> <em>value</em><br>
-<strong>Sytnax:</strong> Header unset <em>header</em><br>
+<strong>Syntax:</strong> Header [ set | append | add ] <em>header</em> <em>value</em><br>
+<strong>Syntax:</strong> Header unset <em>header</em><br>
 <strong>Context:</strong> server config, virtual host, access.conf, .htaccess<br>
 <strong>Status:</strong> optional<br>
 <strong>Module:</strong> mod_header<p>
@@ -46,7 +46,7 @@ of the following values:
 <li><b>add</b><br>
   The response header is added to the existing set of headers, even if
   this header already exists. This can result in two (or more) headers
-  having the same name. This can lead to unforseen consequences, and in
+  having the same name. This can lead to unforeseen consequences, and in
   general "append" should be used instead.
 
 <li><b>unset</b><br>

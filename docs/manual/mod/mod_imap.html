@@ -59,7 +59,7 @@ possible with previously distributed imagemap programs.<P>
 <p>
 
 <A name="imapmenu"><h3>ImapMenu</h3></A>
-<strong>Syntax:</strong> ImapMenu <code>{none, formatted, semiformatted,
+<strong>Syntax:</strong> ImapMenu <code>{none, formatted, semi-formatted,
                                                       unformatted}</code><br>
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
@@ -142,7 +142,7 @@ The directive is one of <code>base</code>, <code>default</code>,
 <code>poly</code>, <code>circle</code>, <code>rect</code>, or
 <code>point</code>.  The value is an absolute or relative URL, or one
 of the special values listed below.  The coordinates are
-<code>x,y</code> pairs seperated by whitespace.  The quoted text is
+<code>x,y</code> pairs separated by whitespace.  The quoted text is
 used as the text of the link if a imagemap menu is generated.  Lines
 beginning with '#' are comments.
 
@@ -153,7 +153,7 @@ in the imagemap file.
 <dl>  
 <dt><code>base</code> Directive
 <dd>Has the effect of <code>&lt;BASE href="value"&gt;</code>.  The
-     non-absolute URLs of the mapfile are taken relative to this value.
+     non-absolute URLs of the map-file are taken relative to this value.
      The <code>base</code> directive overrides ImapBase as set in a
      .htaccess file or in the server configuration files.  In the absence
      of an ImapBase configuration directive, <code>base</code> defaults to
@@ -211,7 +211,7 @@ The values for each of the directives can any of the following:
   <dd>Synonymous with <code>map</code>.
 <p>
   <dt><code>referer</code>
-  <dd>Equivalent to the URL of the refering document.
+  <dd>Equivalent to the URL of the referring document.
        Defaults to <code>http://servername/</code> if no Referer:
        header was present. 
 <p>
@@ -231,7 +231,7 @@ The values for each of the directives can any of the following:
   <dt><code>0,0 200,200</code>
   <dd>A coordinate consists of an <tt>x</tt> and a <tt>y</tt> value
        separated by a comma.  The coordinates are separated from each other
-       by whitespace.  To accomodate the way Lynx handles imagemaps, should a
+       by whitespace.  To accommodate the way Lynx handles imagemaps, should a
        user select the coordinate <code>0,0</code>, it is as if
        no coordinate had been selected.   
 </dl>
