@@ -52,7 +52,7 @@ extern "C" {
  */
 
 /**
- * An internal handler used by the ap_process_request, all sub request mechanisms
+ * An internal handler used by the ap_process_request, all subrequest mechanisms
  * and the redirect mechanism.
  * @param r The request, subrequest or internal redirect to pre-process
  * @return The return code for the request
@@ -60,7 +60,7 @@ extern "C" {
 AP_DECLARE(int) ap_process_request_internal(request_rec *r);
 
 /**
- * Create a sub request from the given URI.  This sub request can be
+ * Create a subrequest from the given URI.  This subrequest can be
  * inspected to find information about the requested URI
  * @param new_uri The URI to lookup
  * @param r The current request
@@ -74,7 +74,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_uri,
                                                 ap_filter_t *next_filter);
 
 /**
- * Create a sub request for the given file.  This sub request can be
+ * Create a subrequest for the given file.  This subrequest can be
  * inspected to find information about the requested file
  * @param new_file The file to lookup
  * @param r The current request
@@ -87,7 +87,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r,
                                               ap_filter_t *next_filter);
 /**
- * Create a sub request for the given apr_dir_read result.  This sub request 
+ * Create a subrequest for the given apr_dir_read result.  This subrequest 
  * can be inspected to find information about the requested file
  * @param finfo The apr_dir_read result to lookup
  * @param r The current request
@@ -110,9 +110,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *finfo,
                                                    int subtype,
                                                    ap_filter_t *next_filter);
 /**
- * Create a sub request for the given URI using a specific method.  This
- * sub request can be inspected to find information about the requested URI
- * @param method The method to use in the new sub request
+ * Create a subrequest for the given URI using a specific method.  This
+ * subrequest can be inspected to find information about the requested URI
+ * @param method The method to use in the new subrequest
  * @param new_uri The URI to lookup
  * @param r The current request
  * @param next_filter The first filter the sub_request should use.  If this is
@@ -135,16 +135,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
                                                         apr_bucket_brigade *bb);
 
 /**
- * Run the handler for the sub request
- * @param r The sub request to run
- * @return The return code for the sub request
+ * Run the handler for the subrequest
+ * @param r The subrequest to run
+ * @return The return code for the subrequest
  * @deffunc int ap_run_sub_req(request_rec *r)
  */
 AP_DECLARE(int) ap_run_sub_req(request_rec *r);
 
 /**
- * Free the memory associated with a sub request
- * @param r The sub request to finish
+ * Free the memory associated with a subrequest
+ * @param r The subrequest to finish
  * @deffunc void ap_destroy_sub_req(request_rec *r)
  */
 AP_DECLARE(void) ap_destroy_sub_req(request_rec *r);
@@ -193,9 +193,9 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *sub_req, request_rec *r)
 AP_DECLARE(int) ap_some_auth_required(request_rec *r);
  
 /**
- * Determine if the current request is the main request or a sub requests
+ * Determine if the current request is the main request or a subrequest
  * @param r The current request
- * @retrn 1 if this is a main request, 0 otherwise
+ * @return 1 if this is the main request, 0 otherwise
  * @deffunc int ap_is_initial_req(request_rec *r)
  */
 AP_DECLARE(int) ap_is_initial_req(request_rec *r);
