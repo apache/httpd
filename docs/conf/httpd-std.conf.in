@@ -571,13 +571,16 @@ ServerSignature On
     # the manual, even if you choose to move your DocumentRoot.  You may
     # comment this out if you do not care for the documentation.
     #
-    Alias /manual "@exp_manualdir@"
+    AliasMatch ^/manual(?:/(?:de|en|fr|ja|ko|ru))?(/.*)?$ "@exp_manualdir@$1"
 
     <Directory "@exp_manualdir@">
         Options Indexes FollowSymLinks MultiViews
         AllowOverride None
         Order allow,deny
         Allow from all
+
+        SetEnvIf Request_URI ^/manual/(de|en|fr|ja|ko|ru)/ prefer-language=$1
+        RedirectMatch 301 ^/manual(?:/(de|en|fr|ja|ko|ru)){2,}(/.*)?$ /manual/$1$2
     </Directory>
 
     #

@@ -94,6 +94,8 @@
                 <xsl:value-of select="title"/>
             </h1>&lf;
 
+            <xsl:call-template name="langavail" />&lf;
+
             <form>
                 <xsl:call-template name="search.spec" />
             </form>&lf;

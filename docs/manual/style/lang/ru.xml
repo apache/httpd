@@ -70,4 +70,5 @@
 
  <!-- footer line -->
  <message name="maintainedby">Поддержка осуществляется</message>
+ <message name="langavail">Available Languages</message>
 </messages>
