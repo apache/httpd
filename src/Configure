@@ -1999,7 +1999,8 @@ if [ "x$using_shlib" = "x1" ] ; then
 	echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
     fi
     if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
-	echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
+	echo "EXTRA_LDFLAGS_SHLIB=$EXTRA_LDFLAGS_SHLIB" >> Makefile.config
+	echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB $EXTRA_LDFLAGS_SHLIB" >> Makefile.config
     fi
     if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
 	echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
