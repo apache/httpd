@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/04 01:24:06 $]
+Last modified at [$Date: 2002/02/04 03:21:25 $]
 
 Release:
 
@@ -43,7 +43,7 @@ on related projects:
 RELEASE SHOWSTOPPERS:
     * 31 BETA STATUS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
-        Compiles on : AIX, Solaris, FreeBSD 3.5, Win32, Linux 2.4
+        Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, Linux 2.4
         for beta
             +1 : Justin, Ian, Jeff Trawick, BillS, BrianP
             +0 : 
@@ -60,10 +60,21 @@ RELEASE SHOWSTOPPERS:
                 +1: Ian, Justin
                 +0:
                 -1:
+                Jeff says: We can't do anything about libtool since AIX
+                           needs a version that won't work on some
+                           platforms.  Handle this in the README.
+                           The binbuild issue isn't AIX.  It is
+			   something that could happen anywhere that
+			   the binbuild-er has their own expat.
+			   Handle this by patching binbuild.sh for a
+			   beta roll or putting a patch in the README for
+                           use by people who want to do binbuild but
+			   have expat installed locally.
+
             * erroneous check in an AP_DEBUG_ASSERT() call.  Only happens
               in maintainer mode.  Fixed in modules/http/http_protocol.c
               revision 1.391.  Add item in release notes:
-                +1: Justin, Cliff, Aaron, BillS, Jim
+                +1: Justin, Cliff, Aaron, BillS, Jim, trawick
                 +0:
                 -1:
             * hasn't run for 3 days on Daedalus 
@@ -108,7 +119,7 @@ RELEASE SHOWSTOPPERS:
         Justin says: "Is this really a showstopper?  This has been here
                       forever.  What's wrong?  Does this have to do with
                       autoconf or m4?"
-        Not a showstopper: Justin, BrianP
+        Not a showstopper: Justin, BrianP, trawick
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -225,6 +236,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Justin says: If we get it working on AIX, we can enable this
                    on all platforms and clean up our build system
                    somewhat.
+      Jeff says:   I thought I tested a patch for you sometime in
+                   January that you were going to commit within a few
+                   days.
 
     * Handling of %2f in URIs.  Currently both 1.3 and 2.0
       completely disallow %2f in the request URI path (see
