@@ -115,6 +115,8 @@ Changes with Apache 2.0.30-dev
   *) On a error in the proxy, make it write a line to the error log
      [Ian Holsman]
 
+  *) Various mod_ssl performance improvements [Doug MacEachern]
+
 Changes with Apache 2.0.29
 
   *) Add buffering in core_output_filter to ensure that long
