@@ -60,6 +60,8 @@
 #include <bstring.h>            /* for IRIX, FD_SET calls bzero() */
 #endif
 
+DEF_Explain
+
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is

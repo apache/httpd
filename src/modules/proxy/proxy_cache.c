@@ -64,6 +64,8 @@
 #include "multithread.h"
 #include "md5.h"
 
+DEF_Explain
+
 #define	abs(c)	((c) >= 0 ? (c) : -(c))
 
 struct gc_ent

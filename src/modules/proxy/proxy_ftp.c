@@ -56,6 +56,8 @@
 #include "http_main.h"
 #include "../standard/mod_mime.h"
 
+DEF_Explain
+
 /*
  * Decodes a '%' escaped string, and returns the number of characters
  */

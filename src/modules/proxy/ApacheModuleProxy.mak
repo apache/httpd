@@ -221,8 +221,21 @@ DEP_CPP_MOD_P=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
+DEP_CPP_MOD_P=\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\explain.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\os\win32\readdir.h"\
+	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	
 
-"$(INTDIR)\mod_proxy.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mod_proxy.obj" : $(SOURCE) $(DEP_CPP_MOD_P) "$(INTDIR)"
 
 
 !ENDIF 
@@ -254,8 +267,25 @@ DEP_CPP_PROXY=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
+DEP_CPP_PROXY=\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\explain.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\http_main.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\core\md5.h"\
+	"..\..\core\multithread.h"\
+	"..\..\core\util_date.h"\
+	"..\..\os\win32\readdir.h"\
+	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	
 
-"$(INTDIR)\proxy_cache.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\proxy_cache.obj" : $(SOURCE) $(DEP_CPP_PROXY) "$(INTDIR)"
 
 
 !ENDIF 
@@ -284,8 +314,22 @@ DEP_CPP_PROXY_=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
+DEP_CPP_PROXY_=\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\explain.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\http_main.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\os\win32\readdir.h"\
+	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	
 
-"$(INTDIR)\proxy_connect.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\proxy_connect.obj" : $(SOURCE) $(DEP_CPP_PROXY_) "$(INTDIR)"
 
 
 !ENDIF 
@@ -314,8 +358,22 @@ DEP_CPP_PROXY_F=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
+DEP_CPP_PROXY_F=\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\explain.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_main.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\os\win32\readdir.h"\
+	"..\..\regex\regex.h"\
+	"..\standard\mod_mime.h"\
+	".\mod_proxy.h"\
+	
 
-"$(INTDIR)\proxy_ftp.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\proxy_ftp.obj" : $(SOURCE) $(DEP_CPP_PROXY_F) "$(INTDIR)"
 
 
 !ENDIF 
@@ -345,8 +403,23 @@ DEP_CPP_PROXY_H=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
+DEP_CPP_PROXY_H=\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\explain.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\http_main.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\core\util_date.h"\
+	"..\..\os\win32\readdir.h"\
+	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	
 
-"$(INTDIR)\proxy_http.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
 
 
 !ENDIF 
@@ -377,8 +450,24 @@ DEP_CPP_PROXY_U=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
+DEP_CPP_PROXY_U=\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\explain.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\http_main.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\core\md5.h"\
+	"..\..\core\multithread.h"\
+	"..\..\os\win32\readdir.h"\
+	"..\..\regex\regex.h"\
+	".\mod_proxy.h"\
+	
 
-"$(INTDIR)\proxy_util.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\proxy_util.obj" : $(SOURCE) $(DEP_CPP_PROXY_U) "$(INTDIR)"
 
 
 !ENDIF 

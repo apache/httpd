@@ -103,9 +103,6 @@ Chuck Murcko <chuck@topsail.org> 15 April 1997
   
 #include "explain.h"
 
-DEF_Explain
-
-
 extern module MODULE_VAR_EXPORT proxy_module;
 
 
