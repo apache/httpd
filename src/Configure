@@ -1827,7 +1827,7 @@ fi
 TEXTRA_CFLAGS=`egrep '^EXTRA_CFLAGS=' Makefile.config | tail -1 |\
 	       sed -e 's;^EXTRA_CFLAGS=;;' -e 's;\`.*\`;;'`
 tmpstr=`echo $CFLAGS $TEXTRA_CFLAGS |\
-	sed -e 's;[ 	]\([+-]\);!\1;g' -e 's/\\\"/\"/g' -e 's/\([^\\]\)"/\1/g'`
+	sed -e 's;[ 	]\([+-]\);!\1;g' -e 's/\([^\\]\)"/\1/g' -e 's/\\\"/\"/g'`
 OIFS="$IFS"
 IFS='!'
 for cflag in $tmpstr; do
