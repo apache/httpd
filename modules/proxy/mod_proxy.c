@@ -20,6 +20,7 @@
 #include "mod_core.h"
 
 #include "apr_optional.h"
+#include "ap_mpm.h"
 
 #if (MODULE_MAGIC_NUMBER_MAJOR > 20020903)
 #include "mod_ssl.h"
@@ -1366,6 +1367,39 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return NULL;
 }
 
+static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
+{
+    apr_pool_t *pool;
+    proxy_conn_pool *cp;
+    
+    /* Create a connection pool's subpool */
+    apr_pool_create(&pool, p);
+    cp = (proxy_conn_pool *)apr_pcalloc(pool, sizeof(proxy_conn_pool));
+    cp->pool = pool;
+#if APR_HAS_THREADS
+    {
+        int mpm_threads;
+        ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
+        if (mpm_threads > 1) {
+            /* Set hard max to no more then mpm_threads */
+            if (worker->hmax == 0 || worker->hmax > mpm_threads)
+                 worker->hmax = mpm_threads;
+            if (worker->smax == 0 || worker->smax > worker->hmax)
+                 worker->smax = worker->hmax;
+            /* Set min to be lower then smax */
+            if (worker->min > worker->smax)
+                 worker->min = worker->smax; 
+        }
+        else {
+            /* This will supress the apr_reslist creation */
+            worker->min = worker->smax = worker->hmax = 0;
+        }
+    }
+#endif
+    
+    worker->cp = cp;
+}
+
 PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
                                                 apr_pool_t *p,
                                                 proxy_server_conf *conf,
@@ -1398,6 +1432,8 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     if (port == -1)
         port = apr_uri_port_of_scheme((*worker)->scheme);
     (*worker)->port = port;
+
+    init_conn_pool(p, *worker);
 
     return NULL;
 }
