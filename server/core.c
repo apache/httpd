@@ -2853,12 +2853,14 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         apr_bucket *e;
         apr_bucket_brigade *newbb;
 
-        if (mode == APR_NONBLOCK_READ) {
-            e = APR_BRIGADE_FIRST(ctx->b);
-            rv = apr_bucket_read(e, &str, &len, mode);
+        e = APR_BRIGADE_FIRST(ctx->b);
+        if ((rv = apr_bucket_read(e, &str, &len, mode) != APR_SUCCESS)) {
+            return rv;
+        }
 
-            if (len < *readbytes)
-                *readbytes = len;
+        /* We can only return at most what the user asked for. */
+        if (len < *readbytes) {
+            *readbytes = len;
         }
 
         apr_brigade_partition(ctx->b, *readbytes, &e);
