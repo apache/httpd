@@ -441,10 +441,8 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     va_start(args, fmt);
     log_error_core(file, line, level, r->server, r, fmt, args);
     if (ap_table_get(r->notes, "error-notes") == NULL) {
-	char errstr[MAX_STRING_LEN];
-
-	ap_vsnprintf(errstr, sizeof(errstr), fmt, args);
-	ap_table_set(r->notes, "error-notes", errstr);
+	ap_table_setn(r->notes, "error-notes",
+	    ap_pvsprintf(r->pool, fmt, args));
     }
     va_end(args);
 }
