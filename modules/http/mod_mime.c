@@ -76,7 +76,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
-
+#include "http_protocol.h"
 
 /* XXXX - fix me / EBCDIC
  *        there was a cludge here which would use its
@@ -744,7 +744,7 @@ static int find_ct(request_rec *r)
     int found_metadata = 0;
 
     if (r->finfo.filetype == APR_DIR) {
-        r->content_type = DIR_MAGIC_TYPE;
+        ap_rset_content_type(DIR_MAGIC_TYPE, r);
         return OK;
     }
 
@@ -793,7 +793,7 @@ static int find_ct(request_rec *r)
         if (exinfo == NULL || !exinfo->forced_type) {
             if ((type = apr_hash_get(mime_type_extensions, ext,
                                      APR_HASH_KEY_STRING)) != NULL) {
-                r->content_type = type;
+                ap_rset_content_type((char*) type, r);
                 found = 1;
             }
         }
@@ -801,7 +801,7 @@ static int find_ct(request_rec *r)
         if (exinfo != NULL) {
 
             if (exinfo->forced_type) {
-                r->content_type = exinfo->forced_type;
+                ap_rset_content_type(exinfo->forced_type, r);
                 found = 1;
             }
 
@@ -885,29 +885,29 @@ static int find_ct(request_rec *r)
 
 	if ((ctp = analyze_ct(r, r->content_type))) {
 	    param *pp = ctp->param;
-	    r->content_type = apr_pstrcat(r->pool, ctp->type, "/",
-					 ctp->subtype, NULL);
+	    ap_rset_content_type(apr_pstrcat(r->pool, ctp->type, "/",
+                                             ctp->subtype, NULL), r);
 	    while (pp != NULL) {
 		if (charset && !strcmp(pp->attr, "charset")) {
 		    if (!override) {
-			r->content_type = apr_pstrcat(r->pool, r->content_type,
-						     "; charset=", charset,
-						     NULL);
+			ap_rset_content_type(apr_pstrcat(r->pool, r->content_type,
+                                                         "; charset=", charset,
+                                                         NULL), r);
 			override = 1;
 		    }
 		}
 		else {
-		    r->content_type = apr_pstrcat(r->pool, r->content_type,
-						 "; ", pp->attr,
-						 "=", pp->val,
-						 NULL);
+		    ap_rset_content_type(apr_pstrcat(r->pool, r->content_type,
+                                                     "; ", pp->attr,
+                                                     "=", pp->val,
+                                                     NULL), r);
 		}
 		pp = pp->next;
 	    }
 	    if (charset && !override) {
-		r->content_type = apr_pstrcat(r->pool, r->content_type,
-					     "; charset=", charset,
-					     NULL);
+		ap_rset_content_type(apr_pstrcat(r->pool, r->content_type,
+                                                 "; charset=", charset,
+                                                 NULL), r);
 	    }
 	}
     }

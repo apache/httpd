@@ -1710,7 +1710,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /* set content-type */
     if (dirlisting) {
-        r->content_type = "text/html";
+        ap_rset_content_type("text/html", r);
     }
     else {
         if (r->content_type) {
@@ -1718,7 +1718,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                      "proxy: FTP: Content-Type set to %s", r->content_type);
         }
         else {
-            r->content_type = ap_default_type(r);
+            ap_rset_content_type(ap_default_type(r), r);
         }
         if (xfer_type != 'A' && size != NULL) {
             /* We "trust" the ftp server to really serve (size) bytes... */

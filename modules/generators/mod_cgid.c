@@ -1216,8 +1216,7 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     /* Force sub_req to be treated as a CGI request, even if ordinary
      * typing rules would have called it something else.
      */
-
-    rr->content_type = CGI_MAGIC_TYPE;
+    ap_rset_content_type(CGI_MAGIC_TYPE, rr);
 
     /* Run it. */
 

@@ -1145,7 +1145,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
         return rv;
     }
 
-    r->content_type = "message/http";
+    ap_rset_content_type("message/http", r);
 
     /* Now we recreate the request, and echo it back */
 
@@ -1252,6 +1252,17 @@ static void fixup_vary(request_rec *r)
         apr_table_setn(r->headers_out, "Vary",
                        apr_array_pstrcat(r->pool, varies, ','));
     }
+}
+AP_DECLARE(void) ap_rset_content_type(char *ct, request_rec *r)
+{
+    r->content_type = ct;
+
+    /* Insert filters requested by the AddOutputFiltersByType 
+     * configuration directive. Content-type filters must be 
+     * inserted after the content handlers have run because 
+     * only then, do we reliably know the content-type.
+     */
+    ap_add_output_filters_by_type(r);
 }
 
 typedef struct header_filter_ctx {
@@ -2039,7 +2050,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->content_languages = NULL;
         r->content_encoding = NULL;
         r->clength = 0;
-        r->content_type = "text/html; charset=iso-8859-1";
+        ap_rset_content_type("text/html; charset=iso-8859-1", r);
 
         if ((status == HTTP_METHOD_NOT_ALLOWED)
             || (status == HTTP_NOT_IMPLEMENTED)) {
@@ -2593,10 +2604,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
         if (num_ranges > 1) {
             ctx->orig_ct = r->content_type;
-            r->content_type = apr_pstrcat(r->pool, "multipart",
-                                          use_range_x(r) ? "/x-" : "/",
-                                          "byteranges; boundary=",
-                                          r->boundary, NULL);
+            ap_rset_content_type(apr_pstrcat(r->pool, "multipart",
+                                             use_range_x(r) ? "/x-" : "/",
+                                             "byteranges; boundary=",
+                                             r->boundary, NULL), r);
         }
 
         /* create a brigade in case we never call ap_save_brigade() */
