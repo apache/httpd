@@ -87,16 +87,13 @@
 #include "httpd.h"
 #include "http_log.h"
 
-/* Define where the Apache values are stored in the registry. In general
- * VERSION will be the same across all beta releases for a particular
- * major release, but will change when the final release is made.
+/* Define where the Apache values are stored in the registry. 
+ *
+ * If you are looking here to roll the tarball, you didn't need to visit.
+ * registry.c now picks up the version from include/httpd.h
  */
 
-#define VENDOR   "Apache Software Foundation"
-#define SOFTWARE "Apache"
-#define VERSION  "2.0a4-dev"
-
-#define REGKEY "SOFTWARE\\" VENDOR "\\" SOFTWARE "\\" VERSION
+#define REGKEY "SOFTWARE\\" AP_SERVER_BASEVENDOR "\\" AP_SERVER_BASEPRODUCT "\\" AP_SERVER_BASEREVISION
 
 #define SERVICEKEYPRE  "System\\CurrentControlSet\\Services\\"
 #define SERVICEKEYPOST "\\Parameters"
