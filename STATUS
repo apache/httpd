@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/23 08:30:21 $]
+Last modified at [$Date: 1999/11/30 00:10:23 $]
 
 Release:
 
@@ -81,6 +81,17 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Should be much cleaner with APR in 2.0.
 
     * Switch to autoconf, et al. for configuration.
+        Status: Manoj has placed an initial version into the 2.0
+        repository. Todos include:
+          
+          - Support selection of modules (including MPMs; only Dexter
+            works right now). Probably involved creating a directory for
+            each module
+          - "make install" and "make depend" should work
+          - a tool to simplfy third-party module building should be
+            written. Something like apxs
+          - Add a lot more checks to satisfy the various platforms, e.g.
+            for threading
 
     * Use APR to get rid of more platform dependancies.
         Status: Ryan Bloom <rbb@raleigh.ibm.com> is working on this.
