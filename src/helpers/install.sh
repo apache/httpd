@@ -7,6 +7,10 @@
 ##  Cleaned up for Apache's Autoconf-style Interface (APACI)
 ##  by Ralf S. Engelschall <rse@apache.org>
 ##
+#
+# This script falls under the Apache License.
+# See http://www.apache.org/docs/LICENSE
+
 
 #
 #   put in absolute paths if you don't have them in your path; 

@@ -3,6 +3,10 @@
 ##  findcpp.sh -- Find out how to _directly_ run the C Pre-Processor (CPP)
 ##  Written by Ralf S. Engelschall for the Apache configuration mechanism
 ##
+#
+# This script falls under the Apache License.
+# See http://www.apache.org/docs/LICENSE
+
 
 #   create a test C source:
 #   - has to use extension ".c" because some CPP only accept this one

@@ -6,6 +6,10 @@
 ##  Ralf S. Engelschall <rse@apache.org> for use with 
 ##  Apache's Autoconf-style Interface (APACI).
 ##
+#
+# This script falls under the Apache License.
+# See http://www.apache.org/docs/LICENSE
+
 
 #   input: the modules source file
 modfile=$1

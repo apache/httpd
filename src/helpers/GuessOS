@@ -3,10 +3,12 @@
 # Simple OS/Platform guesser. Similar to config.guess but
 # much, much smaller. Since it was developed for use with
 # Apache, it follows under Apache's regular licensing
-# with one specific addition: Any changes or additions
-# to this script should be Emailed to the Apache
-# group (apache@apache.org) in general and to
-# Jim Jagielski (jim@jaguNET.com) in specific.
+# (see http://www.apache.org/docs/LICENSE)  with one specific
+# addition: Any changes or additions to this script should be
+# Emailed to the Apache group (apache@apache.org) in general
+# and to Jim Jagielski (jim@apache.org) in specific.
+#
+# Blame Jim; he wrote it (plus a cast of dozens)
 #
 # Be as similar to the output of config.guess/config.sub
 # as possible.

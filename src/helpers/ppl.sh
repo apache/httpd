@@ -8,6 +8,10 @@
 ##  for pretty printing lists in the --help option of
 ##  Apache's Autoconf-style Interface (APACI)
 ##
+#
+# This script falls under the Apache License.
+# See http://www.apache.org/docs/LICENSE
+
 
 list=`
 IFS=:

@@ -3,6 +3,10 @@
 ##  checkheader.sh -- Check whether a C header file exists
 ##  Written by Ralf S. Engelschall for the Apache configuration mechanism
 ##
+#
+# This script falls under the Apache License.
+# See http://www.apache.org/docs/LICENSE
+
 
 header=$1
 rc=1

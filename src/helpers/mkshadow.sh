@@ -6,6 +6,10 @@
 ##  for the shadow tree generation option (--shadow) of 
 ##  Apache's Autoconf-style Interface (APACI) 
 ##
+#
+# This script falls under the Apache License.
+# See http://www.apache.org/docs/LICENSE
+
 
 #   default IFS
 DIFS=' 	
