@@ -5,7 +5,7 @@ Release:
     1.3.0: Shoot for May 16, 1998 Release!
            Brian to be RM, Jim will do announcements
 
-    1.3b7: In development
+    1.3b7: In development... Possible release May 8.
 
     1.3b6: Tagged APACHE_1_3b6. Announced and Released 4/20/98
 
@@ -82,6 +82,10 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Michael Anderson's <mka@redes.int.com.mx> C++ friendly patch
+      <354A4183.3E9AF551@redes.int.com.mx> 
+      Status: Ben, Jim +1
+
     * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
       <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
       The patch provides per-domain cookies (which I use to share user-ids
@@ -109,10 +113,7 @@ In progress:
 FINAL RELEASE SHOWSTOPPERS:
 
     * MIME type case sensitivity disparity between 1.2.6 and 1.3b6 (PR #2112)
-       Jim: Is the suggested change in find_title() not
-            sufficient? Or is the fix to remap all mimes to lowercase?
-       Dean: all mime types are already lowercase everywhere else in the
-            server
+      mod_autoindex should lowercase the mime-type when comparing
 
     * proxy security fixes from 1.2.5 need to be brought forward
        Jim: What are these?
@@ -129,19 +130,7 @@ FINAL RELEASE SHOWSTOPPERS:
       make the child exit with a special code when a fatal error occurs; the
       parent would then abort.  See
       <Pine.LNX.3.96dg4.980413204700.6322R-100000@twinlark.arctic.org>
-        Jim: Is this something to hold 1.3.0 up for? I'm thinking maybe
-	     some sort of error-code be placed in scoreboard that
-	     the parent could act on? Of course, we already use
-	     waitpid() so we have the status already...
-	     Some of these "we should stop errors" are kinda obvious,
-	     like a bad lockfile... some I would have no idea.
-	     I'll generate a list of what I think are these Abort
-	     errors and ask for feedback.
-	Dean: Yep.  It's a serious reliability difference between 1.2 and
-	     1.3 -- for some errors, such as the bogus group id, 1.2 would
-	     have exited immediately.  1.3 will consume all system resources,
-	     it will spawn 32 children per second, and every one of them will
-	     write a log entry.  Besides it's an easy fix.
+        Jim: Possible patch: <199805022019.QAA01941@devsys.jaguNET.com>
 
     * The DoS issue about symlinks to /dev/zero is still present.
       A device checker patch had been sent to the list a while ago.
