@@ -1098,7 +1098,7 @@ static const char *set_maintain_connection_status(cmd_parms *cmd,
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    struct stat finfo;
+    ap_file_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
