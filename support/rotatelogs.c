@@ -23,6 +23,13 @@
  * Ported to APR by Mladen Turk <mturk@mappingsoft.com>
  *
  * 23 Sep 2001
+ *
+ * -l option added 2004-06-11
+ *
+ * -l causes the use of local time rather than GMT as the base for the
+ * interval.  NB: Using -l in an environment which changes the GMT offset
+ * (such as for BST or DST) can lead to unpredictable results!
+ *
  */
 
 
@@ -60,19 +67,31 @@ int main (int argc, const char * const argv[])
     int nMessCount = 0;
     apr_size_t nRead, nWrite;
     int use_strftime = 0;
+    int use_localtime = 0;
     int now = 0;
     const char *szLogRoot;
     apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
     apr_pool_t *pool;
     char *ptr = NULL;
+    int argBase = 0;
+    int argFile = 1;
+    int argIntv = 2;
+    int argOffset = 3;
 
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
 
     apr_pool_create(&pool, NULL);
-    if (argc < 3 || argc > 4) {
+    if ((argc > 2) && (strcmp(argv[1], "-l") == 0)) {
+        argBase++;
+        argFile += argBase;
+        argIntv += argBase;
+        argOffset += argBase;
+        use_localtime = 1;
+    }
+    if (argc < (argBase + 3) || argc > (argBase + 4)) {
         fprintf(stderr,
-                "Usage: %s <logfile> <rotation time in seconds> "
+                "Usage: %s [-l] <logfile> <rotation time in seconds> "
                 "[offset minutes from UTC] or <rotation size in megabytes>\n\n",
                 argv[0]);
 #ifdef OS2
@@ -96,12 +115,12 @@ int main (int argc, const char * const argv[])
         exit(1);
     }
 
-    szLogRoot = argv[1];
+    szLogRoot = argv[argFile];
 
-    ptr = strchr (argv[2], 'M');
+    ptr = strchr(argv[argIntv], 'M');
     if (ptr) {
         if (*(ptr+1) == '\0') {
-            sRotation = atoi(argv[2]) * 1048576;
+            sRotation = atoi(argv[argIntv]) * 1048576;
         }
         if (sRotation == 0) {
             fprintf(stderr, "Invalid rotation size parameter\n");
@@ -109,10 +128,10 @@ int main (int argc, const char * const argv[])
         }
     }
     else {
-        if (argc >= 4) {
-            utc_offset = atoi(argv[3]) * 60;
+        if (argc >= (argBase + 4)) {
+            utc_offset = atoi(argv[argOffset]) * 60;
         }
-        tRotation = atoi(argv[2]);
+        tRotation = atoi(argv[argIntv]);
         if (tRotation <= 0) {
             fprintf(stderr, "Rotation time must be > 0\n");
             exit(6);
@@ -127,9 +146,20 @@ int main (int argc, const char * const argv[])
 
     for (;;) {
         nRead = sizeof(buf);
-        if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS)
+        if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
             exit(3);
+        }
         if (tRotation) {
+            /*
+             * Check for our UTC offset every time through the loop, since
+             * it might change if there's a switch between standard and
+             * daylight savings time.
+             */
+            if (use_localtime) {
+                apr_time_exp_t lt;
+                apr_time_exp_lt(&lt, apr_time_now());
+                utc_offset = lt.tm_gmtoff;
+            }
             now = (int)(apr_time_now() / APR_USEC_PER_SEC) + utc_offset;
             if (nLogFD != NULL && now >= tLogEnd) {
                 nLogFDprev = nLogFD;
@@ -158,10 +188,12 @@ int main (int argc, const char * const argv[])
         if (nLogFD == NULL) {
             int tLogStart;
                 
-            if (tRotation)
+            if (tRotation) {
                 tLogStart = (now / tRotation) * tRotation;
-            else
+            }
+            else {
                 tLogStart = (int)apr_time_sec(apr_time_now());
+            }
 
             if (use_strftime) {
                 apr_time_t tNow = apr_time_from_sec(tLogStart);
