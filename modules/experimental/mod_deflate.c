@@ -198,18 +198,13 @@ static const char *deflate_set_memlevel(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
-static void deflate_insert_filter(request_rec * r)
-{
-    ap_add_output_filter(deflateFilterName, NULL, r, r->connection);
-}
-
 /* magic header */
 static int deflate_magic[2] = { 0x1f, 0x8b };        
 
 typedef struct deflate_ctx_t
 {
     z_stream stream;
-    char buffer[FILTER_BUFSIZE];
+    unsigned char buffer[FILTER_BUFSIZE];
     unsigned long crc;
     apr_bucket_brigade *bb;
 } deflate_ctx;
@@ -321,7 +316,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 deflate_len = FILTER_BUFSIZE - ctx->stream.avail_out;
 
                 if (deflate_len != 0) {
-                    b = apr_bucket_heap_create(ctx->buffer, deflate_len, 1);
+                    b = apr_bucket_heap_create((char *)ctx->buffer, deflate_len, 1);
                     APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                     ctx->stream.next_out = ctx->buffer;
                     ctx->stream.avail_out = FILTER_BUFSIZE;
@@ -399,7 +394,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx->crc = crc32(ctx->crc, (const Bytef *)data, len);
 
         /* write */
-        ctx->stream.next_in = (char *)data;
+        ctx->stream.next_in = (unsigned char *)data; /* we just lost const-ness,
+                                              but we'll just have to trust zlib */
         ctx->stream.avail_in = len;
         ctx->stream.next_out = ctx->buffer;
         ctx->stream.avail_out = FILTER_BUFSIZE;
@@ -410,7 +406,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 ctx->stream.next_out = ctx->buffer;
                 len = FILTER_BUFSIZE - ctx->stream.avail_out;
 
-                b = apr_bucket_heap_create(ctx->buffer, len, 1);
+                b = apr_bucket_heap_create((char *)ctx->buffer, len, 1);
                 APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                 ctx->stream.avail_out = FILTER_BUFSIZE;
             }
