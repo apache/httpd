@@ -10,20 +10,20 @@
                   </a></th><td>file_cache_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
                   </a></th><td>mod_file_cache.c</td></tr></table><h3>Summary</h3>
 
-<div class="warning">
-This module should be used with care. You can easily
-    create a broken site using mod_file_cache, so read this
-    document carefully.
-</div>
+    <div class="warning">
+      This module should be used with care. You can easily create a broken
+      site using <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>, so read this document
+      carefully.
+    </div>
 
     <p><em>Caching</em> frequently requested files that change very
     infrequently is a technique for reducing server load.
-    mod_file_cache provides two techniques for caching frequently
-    requested <em>static</em> files. Through configuration
-    directives, you can direct mod_file_cache to either open then
-    mmap()a file, or to pre-open a file and save the file's open
-    <em>file handle</em>. Both techniques reduce server load when
-    processing requests for these files by doing part of the work
+    <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> provides two techniques for caching
+    frequently requested <em>static</em> files. Through configuration
+    directives, you can direct <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> to either
+    open then <code>mmap()</code> a file, or to pre-open a file and save
+    the file's open <em>file handle</em>. Both techniques reduce server
+    load when processing requests for these files by doing part of the work
     (specifically, the file I/O) for serving the file when the
     server is started rather than during each request.</p>
 
@@ -33,14 +33,13 @@ This module should be used with care. You can easily
     the Apache core content handler.</p>
 
     <p>This module is an extension of and borrows heavily from the
-    mod_mmap_static module in Apache 1.3.</p>
+    <code>mod_mmap_static</code> module in Apache 1.3.</p>
 </div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cachefile">CacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mmapfile">MMapFile</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Using mod_file_cache</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Using mod_file_cache</h2>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#using">Using mod_file_cache</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="using" id="using">Using mod_file_cache</a></h2>
 
     <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> caches a list of statically
-    configured files via <code class="directive"><a href="#mmapfile">MMapFile</a></code> or <code class="directive"><a href="#cachefile">CacheFile</a></code> directives in the
-    main server configuration.</p>
+    configured files via <code class="directive"><a href="#mmapfile">MMapFile</a></code> or <code class="directive"><a href="#cachefile">CacheFile</a></code> directives in the main server configuration.</p>
 
     <p>Not all platforms support both directives. For example, Apache
     on Windows does not currently support the <code class="directive"><a href="#mmapstatic">MMapStatic</a></code> directive, while
@@ -51,70 +50,69 @@ This module should be used with care. You can easily
     that support both directives, you should experiment with both to
     see which works best for you.</p>
 
-<h3>MmapFile Directive</h3>
+    <h3>MMapFile Directive</h3>
 
-    <p>The <code class="directive"><a href="#mmapfile">MmapFile</a></code>
-    directive of <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> maps a list of
-    statically configured files into memory through the system call
-    <code>mmap()</code>. This system call is available on most modern
-    Unix derivates, but not on all. There are sometimes
-    system-specific limits on the size and number of files that can be
-    mmap()d, experimentation is probably the easiest way to find
-    out.</p>
+      <p>The <code class="directive"><a href="#mmapfile">MMapFile</a></code>
+      directive of <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> maps a list of
+      statically configured files into memory through the system call
+      <code>mmap()</code>. This system call is available on most modern
+      Unix derivates, but not on all. There are sometimes system-specific
+      limits on the size and number of files that can be
+      <code>mmap()</code>ed, experimentation is probably the easiest way
+      to find out.</p>
 
-    <p>This mmap()ing is done once at server start or restart,
-    only. So whenever one of the mapped files changes on the
-    filesystem you <em>have</em> to restart the server (see the <a href="../stopping.html">Stopping and Restarting</a>
-    documentation). To reiterate that point: if the files are
-    modified <em>in place</em> without restarting the server you
-    may end up serving requests that are completely bogus. You
-    should update files by unlinking the old copy and putting a new
-    copy in place. Most tools such as <code>rdist</code> and
-    <code>mv</code> do this. The reason why this modules doesn't
-    take care of changes to the files is that this check would need
-    an extra <code>stat()</code> every time which is a waste and
-    against the intent of I/O reduction.</p>
+      <p>This <code>mmap()</code>ing is done once at server start or
+      restart, only. So whenever one of the mapped files changes on the
+      filesystem you <em>have</em> to restart the server (see the <a href="../stopping.html">Stopping and Restarting</a> documentation).
+      To reiterate that point: if the files are modified <em>in place</em>
+      without restarting the server you may end up serving requests that
+      are completely bogus. You should update files by unlinking the old
+      copy and putting a new copy in place. Most tools such as
+      <code>rdist</code> and <code>mv</code> do this. The reason why this
+      modules doesn't take care of changes to the files is that this check
+      would need an extra <code>stat()</code> every time which is a waste
+      and against the intent of I/O reduction.</p>
+    
 
+    <h3>CacheFile Directive</h3>
 
-<h3>CacheFile Directive</h3>
+      <p>The <code class="directive"><a href="#cachefile">CacheFile</a></code>
+      directive of <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> opens an active
+      <em>handle</em> or <em>file descriptor</em> to the file (or files)
+      listed in the configuration directive and places these open file
+      handles in the cache. When the file is requested, the server
+      retrieves the handle from the cache and passes it to the
+      <code>sendfile()</code> (or <code>TransmitFile()</code> on Windows),
+      socket API.</p>
 
-    <p>The <code class="directive"><a href="#cachefile">CacheFile</a></code>
-    directive of <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> opens an active
-    <em>handle</em> or <em>file descriptor</em> to the file (or files)
-    listed in the configuration directive and places these open file
-    handles in the cache. When the file is requested, the server
-    retrieves the handle from the cache and passes it to the
-    sendfile() (or TransmitFile() on Windows), socket API.</p>
+      
 
-    <p>Insert more details about sendfile API...</p>
+      <p>This file handle caching is done once at server start or
+      restart, only. So whenever one of the cached files changes on
+      the filesystem you <em>have</em> to restart the server (see the
+      <a href="../stopping.html">Stopping and Restarting</a>
+      documentation). To reiterate that point: if the files are
+      modified <em>in place</em> without restarting the server you
+      may end up serving requests that are completely bogus. You
+      should update files by unlinking the old copy and putting a new
+      copy in place. Most tools such as <code>rdist</code> and
+      <code>mv</code> do this.</p>
+    
 
-    <p>This file handle caching is done once at server start or
-    restart, only. So whenever one of the cached files changes on
-    the filesystem you <em>have</em> to restart the server (see the
-    <a href="../stopping.html">Stopping and Restarting</a>
-    documentation). To reiterate that point: if the files are
-    modified <em>in place</em> without restarting the server you
-    may end up serving requests that are completely bogus. You
-    should update files by unlinking the old copy and putting a new
-    copy in place. Most tools such as <code>rdist</code> and
-    <code>mv</code> do this.</p>
+    <div class="note"><h3>Note</h3>
+      <p>Don't bother asking for a for a directive which recursively
+      caches all the files in a directory. Try this instead... See the 
+      <code class="directive"><a href="../mod/core.html#include">Include</a></code> directive, and consider
+      this command:</p>
 
-
-<div class="note"><h3>Note</h3> Don't bother asking for a for a
-    directive which recursively caches all the files in a
-    directory. Try this instead... See the 
-    <code class="directive"><a href="../mod/core.html#include">Include</a></code> directive, and consider
-    this command:
-<div class="example"><p><code>
-  find /www/htdocs -type f -print \ <br />
-  | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
-</code></p></div>
-</div>
-
+      <div class="example"><p><code>
+        find /www/htdocs -type f -print \<br />
+        | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
+      </code></p></div>
+    </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheFile
-    <em>file-path</em> [<em>file-path</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>Cache a list of file handles at startup time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_file_cache</td></tr></table>
@@ -125,7 +123,7 @@ This module should be used with care. You can easily
     shutdown.  When the files have changed on the filesystem, the
     server should be restarted to to re-cache them.</p>
 
-    <p>Be careful with the <em>file-path</em> arguments: They have
+    <p>Be careful with the <var>file-path</var> arguments: They have
     to literally match the filesystem path Apache's URL-to-filename
     translation handlers create. We cannot compare inodes or other
     stuff to match paths through symbolic links <em>etc.</em>
@@ -134,12 +132,12 @@ This module should be used with care. You can easily
     with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-<div class="example"><h3>Example</h3><p><code>
-  CacheFile /usr/local/apache/htdocs/index.html
-</code></p></div>
+    <div class="example"><h3>Example</h3><p><code>
+      CacheFile /usr/local/apache/htdocs/index.html
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MMapFile <em>file-path</em> [<em>file-path</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>Map a list of files into memory at startup time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_file_cache</td></tr></table>
@@ -147,10 +145,10 @@ This module should be used with care. You can easily
     (given as whitespace separated arguments) into memory at server
     startup time. They are automatically unmapped on a server
     shutdown. When the files have changed on the filesystem at
-    least a HUP or USR1 signal should be send to the server to
-    re-mmap them.</p>
+    least a <code>HUP</code> or <code>USR1</code> signal should be send to
+    the server to re-<code>mmap()</code> them.</p>
 
-    <p>Be careful with the <em>file-path</em> arguments: They have
+    <p>Be careful with the <var>file-path</var> arguments: They have
     to literally match the filesystem path Apache's URL-to-filename
     translation handlers create. We cannot compare inodes or other
     stuff to match paths through symbolic links <em>etc.</em>
@@ -159,7 +157,7 @@ This module should be used with care. You can easily
     with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-<div class="example"><h3>Example</h3><p><code>
-  MMapFile /usr/local/apache/htdocs/index.html
-</code></p></div>
+    <div class="example"><h3>Example</h3><p><code>
+      MMapFile /usr/local/apache/htdocs/index.html
+    </code></p></div>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
