@@ -251,7 +251,7 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSCO -Oacgiltz"
 	LIBS="$LIBS -lPW -lsocket -lmalloc -lcrypt_i"
 	;;
-    *-sco5*|*-SCO_SV*)
+    *-sco5*)
 	OS='SCO 5'
 	CFLAGS="$CFLAGS -DSCO5"
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
