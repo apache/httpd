@@ -265,9 +265,9 @@ install :: nlms FORCE
 #
 
 ifneq "$(ZLIBSDK)" ""
-$(OBJDIR)/%.o: $(ZLIBSDK)/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: $(ZLIBSDK)/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo Compiling $<
-	$(CC) $(ZLIBSDK)\$(<F) -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $(ZLIBSDK)\$(<F) -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 endif
 
 #
