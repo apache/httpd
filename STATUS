@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/27 13:49:21 $]
+Last modified at [$Date: 2003/02/27 15:28:17 $]
 
 Release:
 
@@ -199,7 +199,7 @@ CURRENT VOTES:
        R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker, nd,
                 gregames(lazy consensus OK for mainline)
        Abstain: 
-       C-T-R:   BrianP, aaron, jim, gstein
+       C-T-R:   BrianP, aaron, jim, gstein, bnicholes
        
        gstein: we have an open branch, so there is an easy release
                valve for feature and API changes. we trust developers
