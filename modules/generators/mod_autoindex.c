@@ -1162,7 +1162,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
         request_rec *rr = ap_sub_req_lookup_file(name, r);
 
 	if (rr->finfo.protection != 0) {
-	    ap_get_curtime(rr->finfo.mtime, (ap_int64_t *)&p->lm);
+	    ap_get_ansitime(rr->finfo.mtime, (ap_int64_t *)&p->lm);
 	    if (S_ISDIR(rr->finfo.protection)) {
 	        if (!(p->icon = find_icon(d, rr, 1))) {
 		    p->icon = find_default_icon(d, "^^DIRECTORY^^");
