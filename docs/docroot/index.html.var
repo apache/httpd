@@ -42,6 +42,10 @@ URI: index.html.he.iso8859-8
 Content-language: he
 Content-type: text/html;charset=ISO-8859-8
 
+URI: index.html.hu
+Content-language: hu
+Content-type: text/html
+
 URI: index.html.hr.iso8859-2
 Content-language: hr
 Content-type: text/html;charset=ISO-8859-2
