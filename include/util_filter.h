@@ -272,6 +272,8 @@ struct ap_filter_t {
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
  * @param mode   ::AP_MODE_BLOCKING, ::AP_MODE_NONBLOCKING, or ::AP_MODE_PEEK
+ * @param readbytes How many bytes to read from the next filter.  0 means that
+ *                  a single line should be read.
  */
 AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket, 
                                         ap_input_mode_t mode, apr_size_t *readbytes);
