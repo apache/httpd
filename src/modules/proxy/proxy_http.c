@@ -276,7 +276,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     }
 
 /* Is it an HTTP/1 response? */
-    if (checkmask(buffer,  "HTTP/#.# ### *"))
+    if (checkmask(buffer,  "HTTP/#.# ###*"))
     {
 /* If not an HTTP/1 messsage or if the status line was > 8192 bytes */
 	if (buffer[5] != '1' || buffer[len-1] != '\n')
