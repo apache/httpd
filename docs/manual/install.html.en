@@ -10,7 +10,10 @@
 <H1>Compiling and Installing Apache 1.2</H1>
 
 If you wish to download and install an earlier version of Apache please
-read <A HREF="install_1_1.html">Compiling and Installing Apache 1.1</A>.
+read <A HREF="install_1_1.html">Compiling and Installing Apache 1.1</A>.</P>
+
+UnixWare users will want to consult <A HREF="unixware.html">build notes</A>
+for various UnixWare versions before compiling.
 
 <H2>Downloading Apache</H2>
 
