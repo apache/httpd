@@ -2185,74 +2185,125 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
     return 1;
 }
 
+/* figure out, whether a variant is in a specific language
+ * it returns also false, if the variant has no language.
+ */
+static int variant_has_language(var_rec *variant, const char *lang)
+{
+    int j, max;
+
+    /* fast exit */
+    if (   !lang
+        || !variant->content_languages
+        || !(max = variant->content_languages->nelts)) {
+        return 0;
+    }
+
+    for (j = 0; j < max; ++j) {
+        if (!strcmp(lang,
+                    ((char **) (variant->content_languages->elts))[j])) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 static int best_match(negotiation_state *neg, var_rec **pbest)
 {
     int j;
-    var_rec *best = NULL;
+    var_rec *best;
     float bestq = 0.0f;
     enum algorithm_results algorithm_result;
 
     var_rec *avail_recs = (var_rec *) neg->avail_vars->elts;
 
+    const char *preferred_language = apr_table_get(neg->r->subprocess_env,
+                                                   "prefer-language");
+
     set_default_lang_quality(neg);
 
     /*
      * Find the 'best' variant 
+     * We run the loop possibly twice: if "prefer-language"
+     * environment variable is set but we did not find an appropriate
+     * best variant. In that case forget the preferred language and
+     * negotiate over all variants.
      */
 
-    for (j = 0; j < neg->avail_vars->nelts; ++j) {
-        var_rec *variant = &avail_recs[j];
+    do {
+        best = NULL;
 
-        /* Find all the relevant 'quality' values from the
-         * Accept... headers, and store in the variant.  This also
-         * prepares for sending an Alternates header etc so we need to
-         * do it even if we do not actually plan to find a best
-         * variant.  
-         */
-        set_accept_quality(neg, variant);
-        set_language_quality(neg, variant);
-        set_encoding_quality(neg, variant);
-        set_charset_quality(neg, variant);
+        for (j = 0; j < neg->avail_vars->nelts; ++j) {
+            var_rec *variant = &avail_recs[j];
 
-        /* Only do variant selection if we may actually choose a
-         * variant for the client 
-         */
-        if (neg->may_choose) {
-
-            /* Now find out if this variant is better than the current
-             * best, either using the RVSA/1.0 algorithm, or Apache's
-             * internal server-driven algorithm. Presumably other
-             * server-driven algorithms are possible, and could be
-             * implemented here.
+            /* if a language is preferred, but the current variant
+             * is not in that language, then drop it for now
              */
-     
-            if (neg->use_rvsa) {
-                if (is_variant_better_rvsa(neg, variant, best, &bestq)) {
-                    best = variant;
-                }
+            if (   preferred_language
+                && !variant_has_language(variant, preferred_language)) {
+                continue;
             }
-            else {
-                if (is_variant_better(neg, variant, best, &bestq)) {
-                    best = variant;
+
+            /* Find all the relevant 'quality' values from the
+             * Accept... headers, and store in the variant.  This also
+             * prepares for sending an Alternates header etc so we need to
+             * do it even if we do not actually plan to find a best
+             * variant.  
+             */
+            set_accept_quality(neg, variant);
+            set_language_quality(neg, variant);
+            set_encoding_quality(neg, variant);
+            set_charset_quality(neg, variant);
+
+            /* Only do variant selection if we may actually choose a
+             * variant for the client 
+             */
+            if (neg->may_choose) {
+
+                /* Now find out if this variant is better than the current
+                 * best, either using the RVSA/1.0 algorithm, or Apache's
+                 * internal server-driven algorithm. Presumably other
+                 * server-driven algorithms are possible, and could be
+                 * implemented here.
+                 */
+     
+                if (neg->use_rvsa) {
+                    if (is_variant_better_rvsa(neg, variant, best, &bestq)) {
+                        best = variant;
+                    }
+                }
+                else {
+                    if (is_variant_better(neg, variant, best, &bestq)) {
+                        best = variant;
+                    }
                 }
             }
         }
-    }
 
-    /* We now either have a best variant, or no best variant */
+        /* We now either have a best variant, or no best variant */
 
-    if (neg->use_rvsa)    {
-        /* calculate result for RVSA/1.0 algorithm:
-         * only a choice response if the best variant has q>0
-         * and is definite
-         */
-        algorithm_result = (best && best->definite) && (bestq > 0) ?
-                           alg_choice : alg_list;
-    }
-    else {
-        /* calculate result for Apache negotiation algorithm */
-        algorithm_result = bestq > 0 ? alg_choice : alg_list;        
-    }
+        if (neg->use_rvsa)    {
+            /* calculate result for RVSA/1.0 algorithm:
+             * only a choice response if the best variant has q>0
+             * and is definite
+             */
+            algorithm_result = (best && best->definite) && (bestq > 0) ?
+                                alg_choice : alg_list;
+        }
+        else {
+            /* calculate result for Apache negotiation algorithm */
+            algorithm_result = bestq > 0 ? alg_choice : alg_list;        
+        }
+
+        /* run the loop again, if the "prefer-language" got no clear result */
+        if (preferred_language && (!best || algorithm_result != alg_choice)) {
+            preferred_language = NULL;
+            continue;
+        }
+
+        break;
+    } while (1);
 
     /* Returning a choice response with a non-neighboring variant is a
      * protocol security error in TCN (see rfc2295).  We do *not*

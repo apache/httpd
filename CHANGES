@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_negotiation: Introduce "prefer-language" environment variable,
+     which allows to influence the negotiation process on request basis
+     to prefer a certain language.  [André Malo]
+
   *) Added AllowEncodedSlashes directive which permits request URIs
      to encode '/' as '%2f' and pass it to scripts in path-info without
      triggering the 'no encoded slashes anywhere' legacy rule.
