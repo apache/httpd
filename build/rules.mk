@@ -71,14 +71,13 @@ LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
 # Link-related commands
 
 LINK     = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
-SH_LINK  = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
+SH_LINK  = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(NOTEST_LDFLAGS) $(CORE_IMPLIB) -o $@
 MOD_LINK = $(LIBTOOL) --mode=link $(COMPILE) -module $(LTFLAGS) $(LDFLAGS) $(NOTEST_LDFLAGS) -o $@
 
 # Cross compile commands
 
 # Helper programs
 
-SH_LIBTOOL = $(SHELL) $(top_builddir)/shlibtool --silent
 MKINSTALLDIRS = $(abs_srcdir)/build/mkdir.sh
 INSTALL = $(abs_srcdir)/build/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
@@ -92,7 +91,7 @@ CXX_SUFFIX = cpp
 SHLIB_SUFFIX = so
 
 .SUFFIXES:
-.SUFFIXES: .S .c .$(CXX_SUFFIX) .lo .o .s .y .l .slo
+.SUFFIXES: .S .c .$(CXX_SUFFIX) .lo .o .s .y .l .slo .def .la
 
 .c.o:
 	$(COMPILE) -c $<
@@ -127,6 +126,12 @@ SHLIB_SUFFIX = so
 
 all: all-recursive
 install: install-recursive
+
+
+# Makes an import library from a def file
+.def.la:
+	$(LIBTOOL) --mode=compile $(MK_IMPLIB) -o $@ $<
+
 
 # if we are doing a distclean, we actually want to hit every 
 # directory that has ever been configured.  To do this, we just do a quick
@@ -184,7 +189,7 @@ depend: depend-recursive
 clean: clean-recursive clean-x
 
 clean-x:
-	rm -f $(targets) *.slo *.lo *.la *.o $(CLEAN_TARGETS)
+	rm -f $(targets) *.slo *.lo *.la *.o *.obj $(CLEAN_TARGETS)
 	rm -rf .libs
 
 distclean: distclean-recursive clean-x

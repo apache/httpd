@@ -1,5 +1,5 @@
 
-SUBDIRS = srclib modules os server support
+SUBDIRS = srclib os server modules support
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
@@ -126,3 +126,5 @@ install-suexec:
 
 suexec:
 	cd support && make suexec
+
+include $(top_srcdir)/os/os2/core.mk

@@ -41,6 +41,23 @@ fi
 
 AC_CANONICAL_SYSTEM
 
+case "$host_alias" in
+  *os2*)
+      # Use a custom made libtool replacement
+      echo "using aplibtool"
+      LIBTOOL="$abs_srcdir/srclib/apr/build/aplibtool"
+      SH_LIBTOOL="$LIBTOOL --shared --export-all"
+      CORE_IMPLIB_FILE="ApacheCoreOS2.la"
+      CORE_IMPLIB="$abs_srcdir/server/$CORE_IMPLIB_FILE"
+      MK_IMPLIB="emximp"
+      SHMOD_EXPORT_EXT="def"
+      other_targets="$other_targets os2core"
+      ;;
+  *)
+      SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool --silent'
+      ;;
+esac
+
 dnl
 dnl ## Preload our OS configuration
 APR_PRELOAD
@@ -158,8 +175,10 @@ APACHE_SUBST(OS_DIR)
 APACHE_SUBST(BUILTIN_LIBS)
 
 AM_DISABLE_SHARED
-AM_PROG_LIBTOOL
-APACHE_LIBTOOL_SILENT
+if test -z "$LIBTOOL"; then
+  AM_PROG_LIBTOOL
+  APACHE_LIBTOOL_SILENT
+fi
 
 if test "$apache_need_shared" = "yes"; then
   $SHELL $ac_aux_dir/ltconfig --output=shlibtool --disable-static --srcdir=$ac_aux_dir --cache-file=./config.cache $ac_aux_dir/ltmain.sh
