@@ -1412,7 +1412,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 	return unclosed_directive(cmd);
     }
 
-    *endp = '\0';
+    arg=ap_pstrndup(cmd->pool, arg, endp-arg);
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
@@ -1474,7 +1474,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 	return unclosed_directive(cmd);
     }
 
-    *endp = '\0';
+    arg=ap_pstrndup(cmd->pool, arg, endp-arg);
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
@@ -1534,7 +1534,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 	return unclosed_directive(cmd);
     }
 
-    *endp = '\0';
+    arg=ap_pstrndup(cmd->pool, arg, endp-arg);
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     /* Only if not an .htaccess file */
@@ -1589,7 +1589,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
 	return unclosed_directive(cmd);
     }
 
-    *endp = '\0';
+    arg=ap_pstrndup(cmd->pool, arg, endp-arg);
 
     if (not) {
         arg++;
@@ -1638,7 +1638,7 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
 	return unclosed_directive(cmd);
     }
 
-    *endp = '\0';
+    arg=ap_pstrndup(cmd->pool, arg, endp-arg);
 
     if (arg[0] == '!') {
         not = 1;
@@ -1681,7 +1681,7 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
 	return unclosed_directive(cmd);
     }
 
-    *endp = '\0';
+    arg=ap_pstrndup(cmd->pool, arg, endp-arg);
     
     /* FIXME: There's another feature waiting to happen here -- since you
 	can now put multiple addresses/names on a single <VirtualHost>
