@@ -317,8 +317,8 @@ static int translate_userdir(request_rec *r)
             else
                 filename = apr_pstrcat(r->pool, userdir, "/", w, NULL);
         }
-        else if (ap_strchr_c(userdir, ':')) {
-            redirect = apr_pstrcat(r->pool, userdir, "/", w, dname, NULL);
+        else if (ap_strchr_c(x, ':')) {
+            redirect = apr_pstrcat(r->pool, x, w, dname, NULL);
             apr_table_setn(r->headers_out, "Location", redirect);
             return HTTP_MOVED_TEMPORARILY;
         }
