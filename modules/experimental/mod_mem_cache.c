@@ -62,6 +62,10 @@
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
 
+#if !APR_HAS_THREADS
+#error This module does not currently compile unless you have a thread-capable APR. Sorry!
+#endif
+
 #define MAX_CACHE 5000
 module AP_MODULE_DECLARE_DATA mem_cache_module;
 
