@@ -1859,9 +1859,10 @@ int default_handler (request_rec *r)
 
 #ifdef USE_MMAP_FILES
     block_alarms();
-    if (r->finfo.st_size >= MMAP_THRESHOLD) {
-	/* we need to protect ourselves in case we die while we've got the
-	 * file mmapped */
+    if ((r->finfo.st_size >= MMAP_THRESHOLD)
+	&& ( !r->header_only || (d->content_md5 & 1))) {
+      /* we need to protect ourselves in case we die while we've got the
+ 	 * file mmapped */
 	mm = mmap (NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
 		    fileno(f), 0);
     } else {

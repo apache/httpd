@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) http_core was mmap()ing even in cases where it wasn't going to
+     read the file.  [Ben Hyde <bhyde@gensym.com>]
+
   *) Complete rewrite ;_) of mod_rewrite's URL rewriting engine:
      Now the rewriting engine (the heart of mod_rewrite) is organized more
      straight-forward, first time well documented and reduced to the really
