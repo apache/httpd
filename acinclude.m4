@@ -134,7 +134,11 @@ dnl If rlim_t is not defined, define it to int
 dnl
 AC_DEFUN(AC_TYPE_RLIM_T, [
   AC_CACHE_CHECK([for rlim_t], ac_cv_type_rlim_t, [
-    AC_TRY_COMPILE([#include <sys/resource.h>], [rlim_t spoon;], [
+    AC_TRY_COMPILE([
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+], [rlim_t spoon;], [
       ac_cv_type_rlim_t=yes
     ],[ac_cv_type_rlim_t=no
     ])
