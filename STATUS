@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/08 22:42:18 $]
+Last modified at [$Date: 2002/11/11 20:11:08 $]
 
 Release:
 
@@ -519,9 +519,6 @@ EXPERIMENTAL MODULES:
 
     * Enable mod_cache/mod_mem_cache/mod_disk_cache to handle
       multiviews
-
-    * mod_mem_cache fd caching is broken on Unix. The cached fd cannot
-      be used across multiple threads except for use on sendfile().
 
     * mod_mem_cache/mod_disk_cache: Complete implementing config
       directives (mod_disk_cache: CacheExpiryCheck and GC directives
