@@ -3290,8 +3290,13 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
 static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
+/* XXX this needs to be moved to a common header file, but this is an ugly
+ * hack just for today.
+ */
+#define ASCII_LF '\012'
     char *buff;
     apr_size_t length = HUGE_STRING_LEN;
+    apr_size_t templen;
     apr_socket_t *csock = NULL;
     apr_status_t rv;
     ap_bucket *e;
@@ -3303,11 +3308,17 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
     rv = apr_recv(csock, buff, &length);
     if (rv == APR_SUCCESS) {
         if (length > 0) {
+            templen = length - 1;
+            while (buff[templen] != ASCII_LF) {
+                rv = apr_recv(csock, buff + templen + 1, &length);
+                templen += length;
+            }
+                 
             /* This should probably be a pool bucket, but using a transient is 
              * actually okay here too.  We know the pool we are using will always 
              * be available as long as the connection is open.
              */
-            e = ap_bucket_create_transient(buff, length);
+            e = ap_bucket_create_transient(buff, templen + 1);
             AP_BRIGADE_INSERT_TAIL(b, e);
         }
         else {
@@ -3321,7 +3332,7 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
         /* leave the brigade empty for now; return error code
          * in the future */
     }
-    return length;
+    return templen;
 }
 /* Default filter.  This filter should almost always be used.  Its only job
  * is to send the headers if they haven't already been sent, and then send
