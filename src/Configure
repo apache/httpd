@@ -920,7 +920,7 @@ echo "#ifndef AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
 echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
 
 echo " + checking for system header files"
-CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h"
+CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h sys/param.h"
 for header in $CHECK_FOR_HEADERS; do
     echo "" >>$AP_CONFIG_AUTO_H
     echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H

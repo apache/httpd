@@ -200,6 +200,12 @@ build for your OS.
       functions are available as well. This is set automatically during the
       Configure process and stored in the src/include/ap_config_auto.h header
       file.
+
+    HAVE_SYS_PARAM_H:
+      Defined if the OS has the <sys/param.h> header file. This is
+      set automatically during the Configure process and stored in the
+      src/include/ap_config_auto.h header file.
+
 --
 
  USE_*:

@@ -116,10 +116,6 @@ stat() properly */
 #include "os.h"
 #endif
 
-#if !defined(QNX) && !defined(MPE) && !defined(WIN32) && !defined(TPF) && !defined(NETWARE)
-#include <sys/param.h>
-#endif
-
 /* Define one of these according to your system. */
 #if defined(MINT)
 typedef int rlim_t;
@@ -964,6 +960,10 @@ typedef int rlim_t;
 /* NEED_STRDUP is set on stupid systems that don't have strdup. */
 #undef NEED_STRDUP
 #endif
+
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif /* HAVE_SYS_PARAM_H */
 
 /* stuff marked API_EXPORT is part of the API, and intended for use
  * by modules
