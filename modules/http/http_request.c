@@ -772,6 +772,10 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew->request_config = ap_create_request_config(rnew->pool);
     rnew->htaccess       = r->htaccess;
     rnew->per_dir_config = r->server->lookup_defaults;
+    rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
+
+    /* make a copy of the allowed-methods list */
+    ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
 
     /* start with the same set of output filters */
     rnew->filters = r->filters;
