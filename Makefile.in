@@ -160,8 +160,6 @@ install-include:
 	@cp -p $(srcdir)/modules/proxy/mod_proxy.h $(includedir)
 	@cp -p $(srcdir)/modules/ssl/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/pcre/pcre*.h $(includedir)
-	@cp -p $(srcdir)/srclib/apr/include/*.h $(includedir)
-	@cp -p $(srcdir)/srclib/apr-util/include/*.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/*.h $(includedir)
 	@chmod 644 $(includedir)/*.h
 
