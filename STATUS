@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/15 17:56:48 $]
+Last modified at [$Date: 2003/07/15 19:09:22 $]
 
 Release:
 
@@ -286,15 +286,15 @@ PATCHES TO PORT FROM 2.1
       +1: trawick, nd
 
     * pass REDIRECT_REMOTE_USER to the script if REMOTE_USER doesn't
-      exists and the original request is protected.
+      exist and the original request is protected.
         server/util_script.c: r1.82
         support/suexec.c: r1.27
-      +1: nd
+      +1: nd, trawick
 
     * use the appropriate folder icon, even if there's a directoryindex
       listed file in the particular folder. PR 9587
         modules/generators/mod_autoindex.c r1.120
-      +1: nd
+      +1: nd, trawick
 
     * Ignore RewriteRules in .htaccess files if the directory
       containing the .htaccess file is requested without a trailing slash.
