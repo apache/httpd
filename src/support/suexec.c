@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995,1996 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -92,7 +92,7 @@
  * Version 0.0.1 - Randy Terbush
  *    First assigned version. Heavily modified to act as generic
  * SUID wrapper for Apache.  Submitted to the Apache development
- * group for conjsideration.
+ * group for consideration.
  *
  * Version Primordial Ooze - Jason A. Dour
  *    First version.   Heavily modified from MDomo source.  Acted
