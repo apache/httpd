@@ -130,6 +130,12 @@
 #include "util_uri.h"
 #include "util_md5.h"
 #include "ap_sha1.h"
+
+#ifdef WIN32
+/* Crypt APIs are available on Win95 with OSR 2 */
+#include <wincrypt.h>
+#endif
+
 #ifdef HAVE_SHMEM_MM
 #include "mm.h"
 #endif	/* HAVE_SHMEM_MM */
@@ -160,7 +166,7 @@ typedef struct digest_config_struct {
 
 
 #define NONCE_TIME_LEN	(((sizeof(time_t)+2)/3)*4)
-#define NONCE_HASH_LEN	40
+#define NONCE_HASH_LEN	(2*SHA_DIGESTSIZE)
 #define NONCE_LEN	(NONCE_TIME_LEN + NONCE_HASH_LEN)
 
 #define	SECRET_LEN	20
@@ -172,12 +178,12 @@ typedef struct hash_entry {
     unsigned long      key;			/* the key for this entry    */
     struct hash_entry *next;			/* next entry in the bucket  */
     unsigned long      nonce_count;		/* for nonce-count checking  */
-    char               ha1[17];			/* for algorithm=MD5-sess    */
+    char               ha1[2*MD5_DIGESTSIZE+1];	/* for algorithm=MD5-sess    */
     char               last_nonce[NONCE_LEN+1];	/* for one-time nonce's      */
 } client_entry;
 
 static struct hash_table {
-    client_entry  **table;
+    client_entry  **ap_table_t;
     unsigned long   tbl_len;
     unsigned long   num_entries;
     unsigned long   num_created;
@@ -249,7 +255,7 @@ module MODULE_VAR_EXPORT digest_auth_module;
  */
 
 #ifdef HAVE_SHMEM_MM
-static void cleanup_tables(void *not_used)
+static ap_status_t cleanup_tables(void *not_used)
 {
     fprintf(stderr, "Digest: cleaning up shared memory\n");
     fflush(stderr);
@@ -268,43 +274,64 @@ static void cleanup_tables(void *not_used)
 	mm_destroy(otn_count_mm);
 	otn_count_mm = NULL;
     }
+
+    return APR_SUCCESS;
 }
 #endif	/* HAVE_SHMEM_MM */
 
+#ifdef WIN32
+/* TODO: abstract out the random number generation. APR? */
+static void initialize_secret(server_rec *s)
+{
+    HCRYPTPROV hProv;
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s,
+		 "Digest: generating secret for digest authentication ...");
+    if (!CryptAcquireContext(&hProv,NULL,NULL,PROV_RSA_FULL,0)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, s, 
+                     "Digest: Error acquiring context. Errno = %d",
+                     GetLastError());
+        exit(EXIT_FAILURE);
+    }
+    if (!CryptGenRandom(hProv,sizeof(secret),secret)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, s, 
+                     "Digest: Error generating secret. Errno = %d",
+                     GetLastError());
+        exit(EXIT_FAILURE);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s, "Digest: done");
+}
+#else
 static void initialize_secret(server_rec *s)
 {
 #ifdef	DEV_RANDOM
-    FILE *rnd;
+    int rnd;
     size_t got, tot;
 #else
     extern int randbyte(void);	/* from the truerand library */
     unsigned int idx;
 #endif
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s,
 		 "Digest: generating secret for digest authentication ...");
 
 #ifdef	DEV_RANDOM
 #define	XSTR(x)	#x
 #define	STR(x)	XSTR(x)
-    if ((rnd = fopen(STR(DEV_RANDOM), "rb")) == NULL) {
+    if ((rnd = open(STR(DEV_RANDOM), O_RDONLY)) == NULL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, s,
 		     "Digest: Couldn't open " STR(DEV_RANDOM));
 	exit(EXIT_FAILURE);
     }
-    if (setvbuf(rnd, NULL, _IONBF, 0) != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
-		     "Digest: Error trying to disable buffering for " STR(DEV_RANDOM));
-	exit(EXIT_FAILURE);
-    }
     for (tot=0; tot<sizeof(secret); tot += got) {
-	if ((got = fread(secret+tot, 1, sizeof(secret)-tot, rnd)) < 1) {
+	if ((got = read(rnd, secret+tot, sizeof(secret)-tot)) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, s,
 			 "Digest: Error reading " STR(DEV_RANDOM));
 	    exit(EXIT_FAILURE);
 	}
     }
-    fclose(rnd);
+    close(rnd);
 #undef	STR
 #undef	XSTR
 #else	/* use truerand */
@@ -315,8 +342,9 @@ static void initialize_secret(server_rec *s)
 	secret[idx] = (unsigned char) randbyte();
 #endif	/* DEV_RANDOM */
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s, "Digest: done");
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Digest: done");
 }
+#endif
 
 #ifdef HAVE_SHMEM_MM
 static void initialize_tables(server_rec *s)
@@ -404,7 +432,8 @@ failed:
 }
 #endif	/* HAVE_SHMEM_MM */
 
-static void initialize_module(server_rec *s, pool *p)
+static void initialize_module(ap_context_t *p, ap_context_t *plog,
+			      ap_context_t *ptemp, server_rec *s)
 {
     /* keep from doing the init more than once at startup, and delay
      * the init until the second round
@@ -428,7 +457,6 @@ static void initialize_module(server_rec *s, pool *p)
      * creating a creeping memory leak.
      */
     initialize_tables(s);
-    /* atexit(cleanup_tables); */
     ap_register_cleanup(p, NULL, cleanup_tables, ap_null_cleanup);
 #endif	/* HAVE_SHMEM_MM */
 }
@@ -438,7 +466,7 @@ static void initialize_module(server_rec *s, pool *p)
  * configuration code
  */
 
-static void *create_digest_dir_config(pool *p, char *dir)
+static void *create_digest_dir_config(ap_context_t *p, char *dir)
 {
     digest_config_rec *conf;
 
@@ -509,7 +537,7 @@ static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
     }
 
     if (!strcasecmp(op, "auth-int"))
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, cmd->server,
 		     "Digest: WARNING: qop `auth-int' currently only works "
 		     "correctly for responses with no entity");
     else if (strcasecmp(op, "auth"))
@@ -559,7 +587,7 @@ static const char *set_algorithm(cmd_parms *cmd, void *config, const char *alg)
 #ifdef HAVE_SHMEM_MM
 	;
 #else	/* HAVE_SHMEM_MM */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, cmd->server,
 		     "Digest: WARNING: algorithm `MD5-sess' is currently not "
 		     "correctly implemented");
 #endif	/* HAVE_SHMEM_MM */
@@ -909,7 +937,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
  * Note that this must be called after mod_proxy had its go so that
  * r->proxyreq is set correctly.
  */
-static int update_nonce_count(request_rec *r)
+static int parse_hdr_and_update_nc(request_rec *r)
 {
     digest_header_rec *resp;
     int res;
@@ -969,7 +997,7 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 
 /* The nonce has the format b64(time)+hash .
  */
-static const char *gen_nonce(pool *p, time_t now, const char *opaque,
+static const char *gen_nonce(ap_context_t *p, time_t now, const char *opaque,
 			     const server_rec *server,
 			     const digest_config_rec *conf)
 {
@@ -1075,12 +1103,12 @@ static const char *get_session(const request_rec *r,
     if (ha1 == NULL || ha1[0] == '\0') {
 	urp = get_userpw_hash(r, resp, conf);
 	ha1 = ap_md5(r->pool,
-		     (unsigned char *) ap_pstrcat(r->pool, ha1, ":", resp->nonce,
+		     (unsigned char *) ap_pstrcat(r->pool, urp, ":", resp->nonce,
 						  ":", resp->cnonce, NULL));
 	if (!resp->client)
 	    resp->client = gen_client(r);
 	if (resp->client)
-	    memcpy(resp->client->ha1, ha1, 17);
+	    memcpy(resp->client->ha1, ha1, sizeof(resp->client->ha1));
     }
 
     return ha1;
@@ -1098,8 +1126,8 @@ static void clear_session(const digest_header_rec *resp)
  * Authorization challenge generation code (for WWW-Authenticate)
  */
 
-static const char *guess_domain(pool *p, const char *uri, const char *filename,
-				const char *dir)
+static const char *guess_domain(ap_context_t *p, const char *uri,
+				const char *filename, const char *dir)
 {
     size_t u_len = strlen(uri), f_len = strlen(filename), d_len = strlen(dir);
     const char *u, *f;
@@ -1163,7 +1191,7 @@ static const char *guess_domain(pool *p, const char *uri, const char *filename,
 }
 
 
-static const char *ltox(pool *p, unsigned long num)
+static const char *ltox(ap_context_t *p, unsigned long num)
 {
     if (num != 0)
 	return ap_psprintf(p, "%lx", num);
@@ -1241,14 +1269,16 @@ static void note_digest_auth_failure(request_rec *r,
      * unneccessarily (it's usually > 200 bytes!).
      */
 
-    if (conf->uri_list)
+    if (r->proxyreq)
+	domain = NULL;	/* don't send domain for proxy requests */
+    else if (conf->uri_list)
 	domain = conf->uri_list;
     else {
 	/* They didn't specify any domain, so let's guess at it */
 	domain = guess_domain(r->pool, resp->request_uri->path, r->filename,
 			      conf->dir_name);
 	if (domain[0] == '/' && domain[1] == '\0')
-	    domain = "";	/* "/" is the default, so no need to send it */
+	    domain = NULL;	/* "/" is the default, so no need to send it */
 	else
 	    domain = ap_pstrcat(r->pool, ", domain=\"", domain, "\"", NULL);
     }
@@ -1275,8 +1305,9 @@ static const char *get_hash(request_rec *r, const char *user,
     char l[MAX_STRING_LEN];
     const char *rpw;
     char *w, *x;
+    ap_status_t sts;
 
-    if (!(f = ap_pcfg_openfile(r->pool, auth_pwfile))) {
+    if ((sts = ap_pcfg_openfile(&f, r->pool, auth_pwfile)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		      "Digest: Could not open password file: %s", auth_pwfile);
 	return NULL;
@@ -1370,7 +1401,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 	if (dt > conf->nonce_lifetime) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,r,
 			  "Digest: user %s: nonce expired - sending new nonce",
-			  r->connection->user);
+			  r->user);
 	    note_digest_auth_failure(r, conf, resp, 1);
 	    return AUTH_REQUIRED;
 	}
@@ -1379,7 +1410,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 	if (memcmp(resp->client->last_nonce, resp->nonce, NONCE_LEN)) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
 			  "Digest: user %s: one-time-nonce mismatch - sending "
-			  "new nonce", r->connection->user);
+			  "new nonce", r->user);
 	    note_digest_auth_failure(r, conf, resp, 1);
 	    return AUTH_REQUIRED;
 	}
@@ -1451,7 +1482,6 @@ static int authenticate_digest_user(request_rec *r)
     digest_config_rec *conf;
     digest_header_rec *resp;
     request_rec       *mainreq;
-    conn_rec          *conn = r->connection;
     const char        *t;
     int                res;
 
@@ -1500,21 +1530,39 @@ static int authenticate_digest_user(request_rec *r)
 	return AUTH_REQUIRED;
     }
 
-    r->connection->user         = (char *) resp->username;
-    r->connection->ap_auth_type = (char *) "Digest";
+    r->user         = (char *) resp->username;
+    r->ap_auth_type = (char *) "Digest";
 
 
     /* check the auth attributes */
 
     if (strcmp(resp->uri, resp->request_uri->path)) {
 	uri_components *r_uri = resp->request_uri, d_uri;
-	ap_parse_uri_components(r->pool, resp->uri, &d_uri);
+	int port;
+
+	if (ap_parse_uri_components(r->pool, resp->uri, &d_uri) != HTTP_OK) {
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+			  "Digest: invalid uri <%s> in Authorization header",
+			  resp->uri);
+	    return BAD_REQUEST;
+	}
+
+	if (d_uri.hostname)
+	    ap_unescape_url(d_uri.hostname);
+	if (d_uri.path)
+	    ap_unescape_url(d_uri.path);
+	if (d_uri.query)
+	    ap_unescape_url(d_uri.query);
+	if (r_uri->query)
+	    ap_unescape_url(r_uri->query);
+	port = ap_get_server_port(r);
 
 	if ((d_uri.hostname && d_uri.hostname[0] != '\0'
-	     && strcasecmp(d_uri.hostname, r->server->server_hostname))
-	    || (d_uri.port_str && d_uri.port != r->server->port)
-	    || (!d_uri.port_str && r->server->port != 80)
-	    || strcmp(d_uri.path, r_uri->path)
+	     && strcasecmp(d_uri.hostname, ap_get_server_name(r)))
+	    || (d_uri.port_str && d_uri.port != port)
+	    || (d_uri.hostname && d_uri.hostname[0] != '\0'
+		&& !d_uri.port_str && port != ap_default_port(r))
+	    || !d_uri.path || strcmp(d_uri.path, r_uri->path)
 	    || (d_uri.query != r_uri->query
 		&& (!d_uri.query || !r_uri->query
 		    || strcmp(d_uri.query, r_uri->query)))
@@ -1556,10 +1604,10 @@ static int authenticate_digest_user(request_rec *r)
     if (!conf->pwfile)
 	return DECLINED;
 
-    if (!(conf->ha1 = get_hash(r, conn->user, conf->realm, conf->pwfile))) {
+    if (!(conf->ha1 = get_hash(r, r->user, conf->realm, conf->pwfile))) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: user `%s' in realm `%s' not found: %s",
-		      conn->user, conf->realm, r->uri);
+		      r->user, conf->realm, r->uri);
 	note_digest_auth_failure(r, conf, resp, 0);
 	return AUTH_REQUIRED;
     }
@@ -1568,7 +1616,7 @@ static int authenticate_digest_user(request_rec *r)
 	/* old (rfc-2069) style digest */
 	if (strcmp(resp->digest, old_digest(r, resp, conf->ha1))) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "Digest: user %s: password mismatch: %s", conn->user,
+			  "Digest: user %s: password mismatch: %s", r->user,
 			  r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
 	    return AUTH_REQUIRED;
@@ -1595,7 +1643,7 @@ static int authenticate_digest_user(request_rec *r)
 
 	if (strcmp(resp->digest, new_digest(r, resp, conf))) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "Digest: user %s: password mismatch: %s", conn->user,
+			  "Digest: user %s: password mismatch: %s", r->user,
 			  r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
 	    return AUTH_REQUIRED;
@@ -1620,16 +1668,17 @@ static int authenticate_digest_user(request_rec *r)
  * Checking ID
  */
 
-static table *groups_for_user(request_rec *r, const char *user,
+static ap_table_t *groups_for_user(request_rec *r, const char *user,
 			      const char *grpfile)
 {
     configfile_t *f;
-    table *grps = ap_make_table(r->pool, 15);
+    ap_table_t *grps = ap_make_table(r->pool, 15);
     ap_context_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
+    ap_status_t sts;
 
-    if (!(f = ap_pcfg_openfile(r->pool, grpfile))) {
+    if ((sts = ap_pcfg_openfile(&f, r->pool, grpfile)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		      "Digest: Could not open group file: %s", grpfile);
 	return NULL;
@@ -1666,13 +1715,13 @@ static int digest_check_auth(request_rec *r)
     const digest_config_rec *conf =
 		(digest_config_rec *) ap_get_module_config(r->per_dir_config,
 							   &digest_auth_module);
-    const char *user = r->connection->user;
+    const char *user = r->user;
     int m = r->method_number;
     int method_restricted = 0;
     register int x;
     const char *t, *w;
-    table *grpstatus;
-    const array_header *reqs_arr;
+    ap_table_t *grpstatus;
+    const ap_array_header_t *reqs_arr;
     require_line *reqs;
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest"))
@@ -1746,7 +1795,7 @@ static int digest_check_auth(request_rec *r)
  */
 
 #ifdef SEND_DIGEST
-static const char *hdr(const table *tbl, const char *name)
+static const char *hdr(const ap_table_t *tbl, const char *name)
 {
     const char *val = ap_table_get(tbl, name);
     if (val)
@@ -1895,26 +1944,27 @@ static int add_auth_info(request_rec *r)
 }
 
 
+static void register_hooks(void)
+{
+    static const char * const cfgPost[]={ "http_core.c", NULL };
+    static const char * const parsePre[]={ "mod_proxy.c", NULL };
+
+    ap_hook_post_config(initialize_module, NULL, cfgPost, NULL);
+    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, NULL);
+    ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_auth_checker(digest_check_auth, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_fixups(add_auth_info, NULL, NULL, HOOK_MIDDLE);
+}
+
 module MODULE_VAR_EXPORT digest_auth_module =
 {
-    STANDARD_MODULE_STUFF,
-    initialize_module,		/* initializer */
+    STANDARD20_MODULE_STUFF,
     create_digest_dir_config,	/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
     digest_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* filename translation */
-    authenticate_digest_user,	/* check_user_id */
-    digest_check_auth,		/* check auth */
-    NULL,			/* check access */
-    NULL,			/* type_checker */
-    add_auth_info,		/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    update_nonce_count		/* post read-request */
+    register_hooks		/* register hooks */
 };
 
