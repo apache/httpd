@@ -158,6 +158,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_expires.mak CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_headers.mak CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_mime_magic.mak CFG="mod_mime_magic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -225,6 +226,7 @@ _build:
 		"mod_cern_meta - Win32 $(LONG)"\
 		"mod_expires - Win32 $(LONG)"\
 		"mod_headers - Win32 $(LONG)"\
+		"mod_mime_magic - Win32 $(LONG)"\
 		"mod_unique_id - Win32 $(LONG)"\
 		"mod_usertrack - Win32 $(LONG)"\
 		"mod_proxy - Win32 $(LONG)"\
@@ -295,6 +297,7 @@ _install:
 	copy modules\metadata\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules"
+	copy modules\metadata\$(LONG)\mod_mime_magic.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules"
 	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules"
 	copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
