@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/07 21:54:48 $]
+Last modified at [$Date: 2002/06/07 22:52:02 $]
 
 Release:
 
@@ -51,22 +51,6 @@ CURRENT RELEASE NOTES:
       end of the week (ie, by Friday 6/7).  Doable?  We'll see.
 
 RELEASE SHOWSTOPPERS:
-
-    * Potentially remove ap_discard_request_body()
-      Message-ID: <20020531142047.W19485@apache.org>
-                  <3CFFFA12.1040007@cnet.com>
-      Status: Can we remove all callers of ap_discard_request_body and
-              only do it in ap_finalize_request_protocol?  If we do it
-              in finalize_request_protocol, we may not catch 413 errors
-              until after the request is served.  Oops.  But, if we
-              didn't NEED the body in the first place, then it isn't
-              really a 413, is it?
-      Patches (may or may not be applicable):
-                For the core and various modules:
-                  <20020602164041.N19485@apache.org>
-                For mod_dav:
-                  <20020602161511.K19485@apache.org>
-                  <20020602162838.L19485@apache.org>
 
     * Returning invalid 304 errors when filters are present.  [PR 9673]
       Message-ID: <Pine.GSO.4.44.0206061713320.3848-100000@lab26.lacfas.hec.ca>
