@@ -1,5 +1,11 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fix a file descriptor leak in mod_include.  When we include a
+     file, we use a sub-request, but we didn't destroy the sub-request
+     immediately, instead we waited until the original request was
+     done.  This patch closes the sub-request as soon as the data is
+     done being generated.  [Brian Pane <bpane@pacbell.net>]
+
   *) Allow modules that add sockets to the ap_listeners list to
      define the function that should be used to accept on that
      socket.  Each MPM can define their own function to use for

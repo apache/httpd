@@ -75,9 +75,6 @@
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*APR_CHARSET_EBCDIC*/
 
-/* just need some arbitrary non-NULL pointer which can't also be a request_rec */
-#define NESTED_INCLUDE_MAGIC	(&include_module)
-
 /****************************************************************************
  * Used to keep context information during parsing of a request for SSI tags.
  * This is especially useful if the tag stretches across multiple buckets or
