@@ -63,7 +63,7 @@ how they are used by the Apache HTTP Server.</p>
       <li>The server can be better customized for the needs of the
       particular site. For example, sites that need a great deal of
       scalability can choose to use a threaded MPM like 
-      <module>worker</module>, while sites requiring
+      <module>worker</module> or <module>event</module>, while sites requiring
       stability or compatibility with older software can use a
       <module>prefork</module>. In addition,
       special features like serving different hosts under different
@@ -83,13 +83,12 @@ how they are used by the Apache HTTP Server.</p>
     <p>MPMs must be chosen during configuration, and compiled into
     the server. Compilers are capable of optimizing a lot of
     functions if threads are used, but only if they know that
-    threads are being used. Because some MPMs use threads on Unix
-    and others don't, Apache will always perform better if the MPM
-    is chosen at configuration time and built into Apache.</p>
+    threads are being used.</p>
 
     <p>To actually choose the desired MPM, use the argument
-    --with-mpm= <em>NAME</em> with the <program>configure</program> script.
-    <em>NAME</em> is the name of the desired MPM.</p>
+      <code>--with-mpm=<em>NAME</em></code> with the
+      <program>configure</program> script. <em>NAME</em> is the name of the
+      desired MPM.</p>
 
     <p>Once the server has been compiled, it is possible to
     determine which MPM was chosen by using <code>./httpd
