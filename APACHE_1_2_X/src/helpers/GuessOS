@@ -41,6 +41,8 @@ if [ "x$XREL" != "x" ]; then
 	    4.2MP)
 		if [ "x$VERSION" = "x2.1.1" ]; then
 		    echo "${MACHINE}-whatever-unixware211"; exit 0
+		elif [ "x$VERSION" = "x2.1.2" ]; then
+		    echo "${MACHINE}-whatever-unixware212"; exit 0
 		else
 		    echo "${MACHINE}-whatever-unixware2"; exit 0
 		fi
