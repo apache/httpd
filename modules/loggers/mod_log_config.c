@@ -249,6 +249,8 @@ typedef struct {
     apr_array_header_t *config_logs;
     apr_array_header_t *server_config_logs;
     apr_table_t *formats;
+    const char *excluded_types_env_var;
+    apr_hash_t *excluded_types;
 } multi_log_state;
 
 /*
@@ -870,6 +872,30 @@ static int multi_log_transaction(request_rec *r)
     config_log_state *clsarray;
     int i;
 
+    /* do we want to exclude this request */
+    if ( mls->excluded_types ) {
+        char *found = apr_hash_get(mls->excluded_types ,r->content_type,APR_HASH_KEY_STRING );
+        if ( found ) {
+            if ( mls->excluded_types_env_var ) {
+                if (mls->excluded_types_env_var[0] == '!' ) {
+                    /* if it is set, then ignore the line */
+                    if ( apr_table_get( r->subprocess_env ,&(mls->excluded_types_env_var[1])) ) {
+                        return OK;
+                    }
+                }
+                else {
+                    /* if it isn't set, then ignore the line */
+                    if ( apr_table_get(r->subprocess_env ,mls->excluded_types_env_var) == NULL ) {
+                        return OK;
+                    }
+                }
+            }
+            else {
+                /* no env var, so just ignore the request */
+                return OK;
+            }
+        }
+    }
     /*
      * Log this transaction..
      */
@@ -908,6 +934,8 @@ static void *make_config_log_state(apr_pool_t *p, server_rec *s)
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
     mls->formats = apr_table_make(p, 4);
+    mls->excluded_types = NULL;
+    mls->excluded_types_env_var = NULL;
     apr_table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
 
     return mls;
@@ -930,6 +958,17 @@ static void *merge_config_log_state(apr_pool_t *p, void *basev, void *addv)
         add->default_format = base->default_format;
     }
     add->formats = apr_table_overlay(p, base->formats, add->formats);
+
+    if ( base->excluded_types && add->excluded_types ) {
+        add->excluded_types = apr_hash_overlay(p,add->excluded_types ,base->excluded_types );
+    } 
+    else {
+        if ( base->excluded_types ) {
+            add->excluded_types = apr_hash_copy(p,base->excluded_types );
+        }
+        /* only add exclusions are possibly present, so nothing to do */
+    }
+    /* don't need to check excluded_types_env_var, we just take the override one if its there */
 
     return add;
 }
@@ -1008,6 +1047,41 @@ static const char *set_cookie_log(cmd_parms *cmd, void *dummy, const char *fn)
     return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t", NULL);
 }
 
+static const char *set_exclude_by_type( cmd_parms *cmd, void *dummy, 
+                                        const char*word1, const char*word2 )
+{
+    multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
+                                                &log_config_module);
+    char *state;
+    char *exclusions;
+    char *excluded_type;
+
+  
+    if (word2 != NULL) {
+        if (strncasecmp(word2, "env=", 4) != 0) {
+            return "error in condition clause, it should read env=XXX";
+        }
+        if ((word2[4] == '\0')
+            || ((word2[4] == '!') && (word2[5] == '\0'))) {
+            return "missing environment variable name";
+        }
+        mls->excluded_types_env_var= apr_pstrdup(cmd->pool, &word2[4]);
+    } 
+    else {
+        mls->excluded_types_env_var=NULL;
+    }
+    /* if the first parameter is a empty string, then we do nothing */
+    mls->excluded_types = apr_hash_make(cmd->pool);
+    exclusions = apr_pstrdup(cmd->pool, word1);
+    excluded_type = apr_strtok(exclusions," ",&state);
+    while ( excluded_type ) {
+        /* it doesn't matter what we set */
+        apr_hash_set(mls->excluded_types, excluded_type,APR_HASH_KEY_STRING,"1"); 
+        excluded_type = apr_strtok(NULL," ",&state);
+    }
+    return NULL;
+}
+
 static const command_rec config_log_cmds[] =
 {
 AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
@@ -1019,6 +1093,8 @@ AP_INIT_TAKE12("LogFormat", log_format, NULL, RSRC_CONF,
      "a log format string (see docs) and an optional format name"),
 AP_INIT_TAKE1("CookieLog", set_cookie_log, NULL, RSRC_CONF,
      "the filename of the cookie log"),
+AP_INIT_TAKE12("LogExcludeByType",set_exclude_by_type, NULL, RSRC_CONF,
+              "a space-separated list of mime types to exclude from logging"),
     {NULL}
 };
 
