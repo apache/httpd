@@ -1082,7 +1082,8 @@ int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r)
 }
 
 /* converts a series of buckets into a string */
-apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen)
+apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
+				  char *buff, size_t bufflen, int *eos)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -1093,6 +1094,7 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buf
 
     /* start with an empty string */
     buff[0] = 0;
+    *eos = 0;
 
     /* get line-at-a-time */
     c->remain = 0;
@@ -1108,6 +1110,9 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buf
 	/* loop through each bucket */
 	while (!found && !APR_BRIGADE_EMPTY(bb)) {
 	    e = APR_BRIGADE_FIRST(bb);
+	    if (APR_BUCKET_IS_EOS(e)) {
+		*eos = 1;
+	    }
 	    if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
 		return rv;
 	    }
