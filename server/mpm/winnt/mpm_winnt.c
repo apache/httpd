@@ -194,34 +194,6 @@ static apr_status_t socket_cleanup(void *sock)
     return APR_SUCCESS;
 }
 
-/* A bunch or routines from os/win32/multithread.c that need to be merged into APR
- * or thrown out entirely...
- */
-
-static HANDLE create_semaphore(int initial)
-{
-    return(CreateSemaphore(NULL, initial, 1000000, NULL));
-}
-
-static void acquire_semaphore(HANDLE semaphore_id)
-{
-    int rv;
-    
-    rv = WaitForSingleObject(semaphore_id, INFINITE);
-    
-    return;
-}
-
-static int release_semaphore(HANDLE semaphore_id)
-{
-    return(ReleaseSemaphore(semaphore_id, 1, NULL));
-}
-
-static void destroy_semaphore(HANDLE semaphore_id)
-{
-    CloseHandle(semaphore_id);
-}
-
 
 /* To share the semaphores with other processes, we need a NULL ACL
  * Code from MS KB Q106387
@@ -546,7 +518,7 @@ static void add_job(int sock)
     if (!allowed_globals.jobhead)
 	allowed_globals.jobhead = new_job;
     allowed_globals.jobcount++;
-    release_semaphore(allowed_globals.jobsemaphore);
+    ReleaseSemaphore(allowed_globals.jobsemaphore, 1, NULL);
 
     apr_lock_release(allowed_globals.jobmutex);
 }
@@ -556,7 +528,7 @@ static int remove_job(void)
     joblist *job;
     int sock;
 
-    acquire_semaphore(allowed_globals.jobsemaphore);
+    WaitForSingleObject(allowed_globals.jobsemaphore, INFINITE);
     apr_lock_acquire(allowed_globals.jobmutex);
 
     if (shutdown_in_progress && !allowed_globals.jobhead) {
@@ -1004,7 +976,7 @@ static void child_main()
     ap_assert(maintenance_event);
 
     apr_pool_create(&pchild, pconf);
-    allowed_globals.jobsemaphore = create_semaphore(0);
+    allowed_globals.jobsemaphore = CreateSemaphore(NULL, 0, 1000000, NULL);
     apr_lock_create(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
 
     /*
@@ -1189,7 +1161,7 @@ static void child_main()
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                  "Child %d: All worker threads have ended.", my_pid);
 
-    destroy_semaphore(allowed_globals.jobsemaphore);
+    CloseHandle(allowed_globals.jobsemaphore);
     apr_lock_destroy(allowed_globals.jobmutex);
     apr_lock_destroy(qlock);
 
