@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Fix problem with 'apache -k shutdown' and startup event
+     synchronisation (Win32).  [Ken Parzygnat <kparz@raleigh.ibm.com>]
+     PR#3255
+
   *) The config parser wasn't correctly noticing a missing '>'
      on container start lines (e.g., it wouldn't spot
      "<Directory /" as a syntax error).  [Ryan Bloom <rbbloom@us.ibm.com>]
