@@ -4,28 +4,59 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_actions - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_actions</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>メディアタイプやリクエストメソッドに応じて
-CGI スクリプトを実行する機能を提供</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>actions_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
-                  </a></th><td>mod_actions.c</td></tr></table><h3>概要</h3>
+      -->
+<title>mod_actions - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_actions</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>メディアタイプやリクエストメソッドに応じて
+CGI スクリプトを実行する機能を提供</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>actions_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_actions.c</td></tr></table>
+<h3>概要</h3>
+
     <p>このモジュールには二つのディレクティブがあります。<code class="directive"><a href="#action">Action</a></code>
     ディレクティブは特定のタイプのファイルをリクエストされた場合に
     CGI スクリプトが実行されるようにします。<code class="directive"><a href="#script">Script</a></code>
     ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
     スクリプトが実行されるようにします。
     これはファイルを処理するスクリプトの実行をずっと簡単にします。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><a href="../howto/cgi.html">CGI による動的コンテンツ</a></li><li><a href="../handler.html">Apache のハンドラの使用</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>特定のハンドラやコンテントタイプに対して CGI を実行するように
-設定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>Action <var>action-type</var> <var>cgi-script</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_actions</td></tr></table>
+</ul>
+<h3>参照</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
+<li><a href="../howto/cgi.html">CGI による動的コンテンツ</a></li>
+<li><a href="../handler.html">Apache のハンドラの使用</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のハンドラやコンテントタイプに対して CGI を実行するように
+設定</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_actions</td></tr>
+</table>
     <p>このディレクティブは <var>action-type</var>
     がリクエストされたときに <var>cgi-script</var>
     が実行されるという動作を追加します。<var>cgi-script</var> は
@@ -54,13 +85,22 @@ CGI スクリプトを実行する機能を提供</td></tr><tr><th><a href="module-dict.h
     <p>2 番目の例では、拡張子が <code>.xyz</code> のファイルへのリクエストは、
     そのファイルの代わりに指定されたスクリプト
     <code>/cgi-bin/program.cgi</code> が呼ばれます。</p>
-<h3>参照</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>特定のリクエストメソッドに対して CGI スクリプトを
-実行するように設定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_actions</td></tr></table>
+
+<h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のリクエストメソッドに対して CGI スクリプトを
+実行するように設定</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_actions</td></tr>
+</table>
     <p>このディレクティブは <var>method</var>
     というメソッドを使ってリクエストが行なわれたときに
     <var>cgi-script</var> を実行するという動作を追加します。
@@ -92,4 +132,10 @@ CGI スクリプトを実行する機能を提供</td></tr><tr><th><a href="module-dict.h
       # A CGI PUT handler<br />
       Script PUT /~bob/put.cgi<br />
     </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

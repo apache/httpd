@@ -4,43 +4,58 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>設定ファイル - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>設定ファイル</h1>
+      -->
+<title>設定ファイル - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>設定ファイル</h1>
 <p>この文書では、Apache HTTP サーバを設定するのに使用するファイルについて
-記述しています。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">メインの設定ファイル</a></li><li><img alt="" src="./images/down.gif" /> <a href="#syntax">設定ファイルの構文</a></li><li><img alt="" src="./images/down.gif" /> <a href="#modules">モジュール</a></li><li><img alt="" src="./images/down.gif" /> <a href="#scope">ディレクティブの適用範囲</a></li><li><img alt="" src="./images/down.gif" /> <a href="#htaccess">.htaccess ファイル</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="main" id="main">メインの設定ファイル</a></h2>
+記述しています。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">メインの設定ファイル</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#syntax">設定ファイルの構文</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#modules">モジュール</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#scope">ディレクティブの適用範囲</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#htaccess">.htaccess ファイル</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="main" id="main">メインの設定ファイル</a></h2>
     
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
     <p>Apache は <a href="mod/directives.html">ディレクティブ</a> を設定ファイルに平文で書くことにより設定します。
-    メインの設定ファイルは普通は <code>httpd.conf</code> という名前です。
+    メインの設定ファイルは普通は <code>httpd.conf</code> という名前です。
     このファイルの位置はコンパイル時に設定されますが、コマンドラインの
     <code>-f</code> フラグにより上書きできます。
-    その上、他の設定ファイルが <code class="directive"><a href="./mod/core.html#include">Include</a></code>
-    ディレクティブによって追加されているかもしれません。
-    どのディレクティブもこれらの設定ファイルのどれにでも入れられます。
+    また、他の設定ファイルを <code class="directive"><a href="./mod/core.html#include">Include</a></code>
+    ディレクティブによって追加でき、ワイルドカードを使用して多数の
+    設定ファイルを追加することができます。
+    どんなディレクティブも、これらの設定ファイルどれにでも入れることができます。
     Apache は起動時か再起動時のみメイン設定ファイルの変更を認識します。</p>
-
-    <p>Apache 1.3.13 の新しい機能として、設定ファイルが実際はディレクトリで
-    あるときにはそのディレクトリで見つかったすべてのファイル
-    (とサブディレクトリ) を解析するというものがあります。利用法としては、
-    バーチャルホストを追加するときに、それぞれのホストに対して小さな設定
-    ファイルを作り、設定ディレクトリに置くというものが挙げられます。
-    こうすると、単にファイルの追加、削除をすることにより全くファイルを
-    編集することなくバーチャルホストの追加、削除ができます。
-    これは自動化をずっと簡単にします。</p>
 
     <p>サーバは MIME
     ドキュメントタイプを含んでいるファイルも読み込みます。ファイル名は
     <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code>
     で設定され、デフォルトでは <code>mime.types</code>
     になっています。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="syntax" id="syntax">設定ファイルの構文</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="syntax" id="syntax">設定ファイルの構文</a></h2>
     
 
     <p>Apache の設定ファイルは 1 行に 1 つのディレクティブからなります。
     バックスラッシュ "\" はディレクティブが次の行に継続していることを
     示すために行の最後の文字として使われているかもしれません。
-    行の最後とバックスラッシュの間に他の文字や空白があってはいけません。
+    行の最後とバックスラッシュの間に他の文字や空白があってはいけません。
     </p>
 
     <p>設定ファイルのディレクティブは大文字小文字を区別しませんが、
@@ -54,14 +69,16 @@
     <code>apachectl configtest</code>
     かコマンドラインオプション
     <code>-t</code> を使って調べられます。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="modules" id="modules">モジュール</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="modules" id="modules">モジュール</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>Apache はモジュール化されたサーバです。
     コアサーバには最も基本的な機能だけが含まれています。拡張機能は
-    Apache にロードされる<a href="mod/">モジュール</a>として利用可能です。デフォルトでは、コンパイル時にモジュールの
+    Apache にロードされる<a href="mod/">モジュール</a>として利用可能です。デフォルトでは、コンパイル時にモジュールの
     <a href="mod/module-dict.html#status">Base</a> セット (基本セット) が
     サーバに含まれます。サーバが<a href="dso.html">動的ロード</a>モジュールを使うようにコンパイルされている場合は、
     モジュールを別にコンパイルして、いつでも
@@ -74,7 +91,9 @@
 
     <p>コマンドラインオプション <code>-l</code> を使って現時点で
     どのモジュールがサーバにコンパイルされているかを知ることができます。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="scope" id="scope">ディレクティブの適用範囲</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="scope" id="scope">ディレクティブの適用範囲</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
@@ -102,7 +121,9 @@
     ディレクティブの <a href="mod/directive-dict.html#context">コンテキスト</a> を調べてください。詳しい情報は、
     <a href="sections.html">Directory, Location, Files
     セクションの動作法</a>にあります。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="htaccess" id="htaccess">.htaccess ファイル</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">.htaccess ファイル</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
@@ -127,7 +148,10 @@
     ファイルに書けるようにするかを制御することができます。</p>
 
     <p><code>.htaccess</code> ファイルに関する詳しい情報は
-    Ken Coar さんのチュートリアル
-    <a href="http://apache-server.com/tutorials/ATusing-htaccess.html">Using .htaccess Files with Apache</a> 
+    <a href="howto/htaccess.html">.htaccess チュートリアル</a>
     を参照してください。</p>
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -4,19 +4,50 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_deflate - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_deflate</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>クライアントへ送られる前にコンテンツを圧縮する</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>deflate_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
-                  </a></th><td>mod_deflate.c</td></tr></table><h3>概要</h3>
+      -->
+<title>mod_deflate - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_deflate</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>クライアントへ送られる前にコンテンツを圧縮する</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>deflate_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_deflate.c</td></tr></table>
+<h3>概要</h3>
+
     <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは <code>DEFLATE</code>
     出力フィルタを提供します。これはサーバからの出力を、ネットワークを
     通してクライアントに送る前に圧縮することを可能にします。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
-</ul><h3>トピック</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> 圧縮を有効にする</li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>圧縮を有効にする</h2>
+</ul>
+<h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> 圧縮を有効にする</li>
+</ul><h3>参照</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2>圧縮を有効にする</h2>
 
     <p>圧縮機能は <code>DEFLATE</code> <a href="../filter.html">フィルタ</a>
     により実装されています。以下のディレクティブはそのディレクティブのある
@@ -47,45 +78,70 @@ SetOutputFilter DEFLATE
     ディレクティブを使って特定のブラウザに対しては圧縮が行なわれないように
     'no-gzip' ノートをセットすると良いでしょう。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>zlib が一度に圧縮する塊の大きさ</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>DeflateBufferSize <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>DeflateBufferSize 8096</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_deflate</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>zlib が一度に圧縮する塊の大きさ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateBufferSize <em>value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DeflateBufferSize 8096</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_deflate</td></tr>
+</table>
     <p><code class="directive">DeflateBufferSize</code> ディレクティブは
     zlib が一度に圧縮する塊の大きさをバイト単位で指定します。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>ロギング用に圧縮比をメモに追加</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>DeflateFilterNote <em>notename</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_deflate</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ロギング用に圧縮比をメモに追加</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateFilterNote <em>notename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_deflate</td></tr>
+</table>
     <p><code class="directive">DeflateFilterNote</code> ディレクティブは
     圧縮比に関するメモがリクエストに付加されることを指定します。
     メモの名前はディレクティブに指定された値です。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>zlib が圧縮に使うメモリのレベルを指定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>DeflateMemLevel <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>DeflateMemLevel 9</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_deflate</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>zlib が圧縮に使うメモリのレベルを指定</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateMemLevel <em>value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DeflateMemLevel 9</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_deflate</td></tr>
+</table>
     <p><code class="directive">DeflateMemLevel</code> ディレクティブは
     zlib が圧縮に使うメモリのレベルを設定します (1 から 9 の間の値)。
     (訳注: 2 を底とする対数の値になります。
     8 程度が良いでしょう。)</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>Zlib の圧縮用ウィンドウの大きさ</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>DeflateWindowSize <em>value</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>DeflateWindowSize 15</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_deflate</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Zlib の圧縮用ウィンドウの大きさ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateWindowSize <em>value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DeflateWindowSize 15</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_deflate</td></tr>
+</table>
     <p><code class="directive">DeflateWindowSize</code> ディレクティブは
     zlib の圧縮用ウィンドウ (訳注: zlib で使用される履歴バッファ) 
     の大きさを指定します (1 から 15 の間の値)。
     (訳注: 2 を底とする対数の値になります。
     8 から 15 にするのが良いでしょう。)</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -4,11 +4,28 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_setenvif - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_setenvif</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>リクエストの特徴に基づいた環境変数の設定を可能にする</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>setenvif_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
-                  </a></th><td>mod_setenvif.c</td></tr></table><h3>概要</h3>
+      -->
+<title>mod_setenvif - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_setenvif</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>リクエストの特徴に基づいた環境変数の設定を可能にする</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>setenvif_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_setenvif.c</td></tr></table>
+<h3>概要</h3>
+
 
     <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
     モジュールは、リクエストのある側面が指定された正規表現
@@ -25,19 +42,31 @@
   BrowserMatch ^Mozilla netscape<br />
   BrowserMatch MSIE !netscape<br />
 </code></p></div>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="../env.html">Apache の環境変数</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>HTTP User-Agent に基づいて環境変数を設定する
-</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_setenvif</td></tr></table>
+</ul>
+<h3>参照</h3>
+<ul class="seealso">
+<li><a href="../env.html">Apache の環境変数</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>HTTP User-Agent に基づいて環境変数を設定する
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_setenvif</td></tr>
+</table>
   <p><code class="directive">BrowserMatch</code> は
   <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ディレクティブの
   特例で、<code>User-Agent</code> HTTP リクエストヘッダに基づいて
@@ -54,18 +83,23 @@
     BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
     BrowserMatch MSIE !javascript<br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>HTTP User-Agent に基づいて大文字小文字を区別せずに
-環境変数を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_setenvif</td></tr><tr><th><a href="directive-dict.html#Compatibility">互換性:
-              </a></th><td>Apache 1.2 以降
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>HTTP User-Agent に基づいて大文字小文字を区別せずに
+環境変数を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 1.2 以降
     (Apache 1.2 ではこのディレクティブはもう用いられていない
-    mod_browser モジュールにありました)</td></tr></table>
+    mod_browser モジュールにありました)</td></tr>
+</table>
 
     <p><code class="directive">BrowserMatchNoCase</code> ディレクティブは
     意味的には <code class="directive"><a href="#browsermatch">BrowserMatch</a></code> ディレクティブと
@@ -87,16 +121,21 @@
    BrowserMatchNoCase Robot is_a_robot<br />
    SetEnvIfNoCase User-Agent Robot is_a_robot<br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>リクエストの属性に基づいて環境変数を設定する
-</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>SetEnvIf <em>attribute
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストの属性に基づいて環境変数を設定する
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_setenvif</td></tr></table>
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_setenvif</td></tr>
+</table>
     <p><code class="directive">SetEnvIf</code>
     ディレクティブは、リクエストの属性に基づいて環境変数を定義します。
     最初の引数で指定できる <em>attribute</em> は以下の三つのどれかです:</p>
@@ -184,17 +223,26 @@
 
     <p>最後の例は、リクエストに "TS" で始まり、値が集合 [a-z] のどれかで
     始まるヘッダがあるときに <code>HAVE_TS</code> を設定します。</p>
-<h3>参照</h3><ul><li>他の例は、<a href="../env.html">Apache の環境変数</a>
-</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>SetEnvIfNoCase <em>attribute regex 
+
+<h3>参照</h3>
+<ul>
+<li>他の例は、<a href="../env.html">Apache の環境変数</a>
+</li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_setenvif</td></tr><tr><th><a href="directive-dict.html#Compatibility">互換性:
-              </a></th><td>Apache 1.3 以降</td></tr></table>
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 1.3 以降</td></tr>
+</table>
 
     <p><code class="directive">SetEnvIfNoCase</code> は意味的には
     <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ディレクティブと
@@ -210,4 +258,10 @@
     その他の大文字小文字の組み合わせであったときに <code>site</code>
     環境変数を "<code>apache</code>" に設定します。</p>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
