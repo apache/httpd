@@ -680,7 +680,7 @@ static dav_error * dav_get_resource(request_rec *r, int label_allowed,
                                                  label, use_checked_in,
                                                  res_p);
     if (err != NULL) {
-        err = dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+        err = dav_push_error(r->pool, err->status, 0,
                              "Could not fetch resource information.", err);
         return err;
     }
