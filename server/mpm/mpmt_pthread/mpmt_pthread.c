@@ -411,7 +411,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
         return;
     }
 
-    ap_sock_disable_nagle(csd);
+    ap_sock_disable_nagle(sock);
 
     iol = ap_iol_attach_socket(p, sock);
 
