@@ -35,5 +35,7 @@ depend:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-os-inline.o: os-inline.c
-os.o: os.c os.h
+os-inline.o: os-inline.c $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h
+os.o: os.c $(INCDIR)/conf.h ../../os/unix/os.h \
+ $(INCDIR)/hsregex.h os.h os-inline.c

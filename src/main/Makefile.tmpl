@@ -57,7 +57,8 @@ buff.o: buff.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
  $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
  $(INCDIR)/ap.h $(INCDIR)/util_uri.h $(INCDIR)/http_main.h \
  $(INCDIR)/http_log.h
-fnmatch.o: fnmatch.c $(INCDIR)/fnmatch.h
+fnmatch.o: fnmatch.c $(INCDIR)/conf.h ../os/unix/os.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/fnmatch.h
 http_bprintf.o: http_bprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
  $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h

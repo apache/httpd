@@ -64,7 +64,7 @@ depend:
 
 # We really don't expect end users to use this rule. It builds a
 # httpd binary with all modules built in and then updates the
-# include/hide.h file according to the exported symbols of this
+# $(INCDIR)/hide.h file according to the exported symbols of this
 # binary. So run this target once after a new function was added
 # to the source.
 updatehide:
@@ -74,7 +74,7 @@ updatehide:
 	$(MAKE) clean 
 	./Configure -file Configuration.for-hide
 	$(MAKE) httpd
-	./helpers/UpdateHide httpd include/hide.h
+	./helpers/UpdateHide httpd $(INCDIR)/hide.h
 	$(MAKE) clean
 	rm -f Configuration.for-hide
 
@@ -83,7 +83,9 @@ updatehide:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-buildmark.o: buildmark.c
+buildmark.o: buildmark.c $(INCDIR)/conf.h os/unix/os.h $(INCDIR)/hsregex.h
 modules.o: modules.c $(INCDIR)/httpd.h $(INCDIR)/conf.h os/unix/os.h \
  $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h $(INCDIR)/http_config.h
+t.o: t.c
+tt.o: tt.c
