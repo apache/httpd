@@ -333,7 +333,7 @@ static int32 worker_thread(void * dummy)
     sigset_t sig_mask;
     int requests_this_child = ap_max_requests_per_child;
     apr_pollfd_t *pollset;
-    /* each worker thread is in control of it's own destiny...*/
+    /* each worker thread is in control of its own destiny...*/
     int this_worker_should_exit = 0; 
     free(ti);
 
@@ -823,7 +823,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     /* setup the child pool to use for the workers.  Each worker creates
-     * a seperate pool of it's own to use.
+     * a seperate pool of its own to use.
      */
     apr_pool_create(&pchild, pconf);
 

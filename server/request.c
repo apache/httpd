@@ -330,7 +330,7 @@ static int get_path_info(request_rec *r)
 
         /* ### We no longer need the test ap_os_is_filename_valid() here 
          * since apr_stat isn't a posix thing - it's apr_stat's responsibility
-         * to handle whatever path string arrives at it's door - by platform
+         * to handle whatever path string arrives at its door - by platform
          * and volume restrictions as applicable... 
          * TODO: This code becomes even simpler if apr_stat grows 
          * an APR_PATHINCOMPLETE result to indicate that we are staring at
@@ -925,9 +925,9 @@ AP_DECLARE(int) directory_walk(request_rec *r)
          */
 
         /* We choose apr_lstat here, rather that apr_stat, so that we
-         * capture this path object rather than it's target.  We will
+         * capture this path object rather than its target.  We will
          * replace the info with our target's info below.  We especially
-         * want the name of this 'link' object, not the name of it's
+         * want the name of this 'link' object, not the name of its
          * target, if we are fixing case.
          */
         rv = apr_lstat(&r->finfo, r->filename, APR_FINFO_MIN | APR_FINFO_NAME, r->pool);

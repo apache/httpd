@@ -2087,7 +2087,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  Finally we had to remember if a MIME-type should be
      *  forced for this URL (`RewriteRule .. .. [T=<type>]')
      *  Later in the API processing phase this is forced by our
-     *  MIME API-hook function. This time its no problem even for
+     *  MIME API-hook function. This time it's no problem even for
      *  the per-directory context (where the MIME-type hook was
      *  already processed) because a sub-request happens ;-)
      */

@@ -156,7 +156,7 @@ static apr_status_t accept_mutex_child_cleanup(void *foo)
 
 /*
  * Initialize mutex lock.
- * Done by each child at it's birth
+ * Done by each child at its birth
  */
 static void accept_mutex_child_init(apr_pool_t *p)
 {

@@ -459,7 +459,7 @@ apr_status_t isapi_handler (request_rec *r)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        /* Although its not to spec, IIS seems to null-terminate
+        /* Although it's not to spec, IIS seems to null-terminate
          * its lpdData string. So we will too.
          */
         if (res == 0)
@@ -520,7 +520,7 @@ apr_status_t isapi_handler (request_rec *r)
                 if (WaitForSingleObject(cid->complete, isa->timeout)
                         == WAIT_TIMEOUT) {
                     /* TODO: Now what... if this hung, then do we kill our own
-                     * thread to force it's death?  For now leave timeout = -1
+                     * thread to force its death?  For now leave timeout = -1
                      */
                 }
             }

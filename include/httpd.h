@@ -320,7 +320,7 @@ extern "C" {
  *   APEXIT_INIT:
  *     A fatal error arising during the server's init sequence
  *   APEXIT_CHILDINIT:
- *     The child died during it's init sequence
+ *     The child died during its init sequence
  *   APEXIT_CHILDFATAL:
  *     A fatal error, resulting in the whole server aborting.
  *     If a child exits with this error, the parent process
