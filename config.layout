@@ -209,3 +209,23 @@
     logfiledir:    $datadir/logs
     proxycachedir: $datadir/proxy
 </Layout>
+
+#   OpenBSD Layout
+<Layout OpenBSD>
+    prefix:        /var/www
+    exec_prefix:   /usr
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/sbin
+    libexecdir:    $exec_prefix/lib/apache/modules
+    mandir:        $exec_prefix/share/man
+    sysconfdir:    $prefix/conf
+    datadir:       $prefix
+    iconsdir:      $prefix/icons
+    htdocsdir:     $prefix/htdocs
+    cgidir:        $prefix/cgi-bin
+    includedir:    $exec_prefix/lib/apache/include
+    localstatedir: $prefix
+    runtimedir:    $prefix/logs
+    logfiledir:    $prefix/logs
+    proxycachedir: $prefix/proxy
+</Layout>
