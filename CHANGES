@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Remind the admin about the User and Group directives when we are
+     unable to set permissions on a semaphore.  PR 7812  [Jeff Trawick]
+
   *) fix possible compilation problem in ssl_engine_kernel.c. PR 7802
      [Doug MacEachern]
 

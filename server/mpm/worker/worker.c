@@ -1613,7 +1613,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         rv = unixd_set_proc_mutex_perms(accept_mutex);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
-                         "Couldn't set permissions on cross-process lock");
+                         "Couldn't set permissions on cross-process lock; "
+                         "check User and Group directives");
             return 1;
         }
     }
