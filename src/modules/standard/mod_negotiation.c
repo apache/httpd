@@ -63,14 +63,14 @@
 #include "http_core.h"
 #include "http_log.h"
 
-/* define HOLTMAN to allow for Holtman I-D transparent negotiation.
+/* define TCN_02 to allow for Holtman I-D transparent negotiation.
  * This file currently implements the draft-02, except for
  * anything to do with features and cache-control (max-age etc)
  *
  * Since the draft is just that, and we don't yet implement
  * everything, regard the transparent negotiation stuff as experimental.
  */
-/*#define HOLTMAN*/
+/*#define TCN_02*/
 
 /* Commands --- configuring document caching on a per (virtual?)
  * server basis...
@@ -455,7 +455,7 @@ negotiation_state *parse_accept_headers (request_rec *r)
       do_header_line (r->pool, table_get (hdrs, "Accept-charset"));
     new->avail_vars = make_array (r->pool, 40, sizeof (var_rec));
 
-#ifdef HOLTMAN
+#ifdef TCN_02
     if (table_get(r->headers_in, "Negotiate")) {
         /* Negotiate: header tells us UA does transparent negotiation
          * We have to decide whether we want to ... for now, yes,
