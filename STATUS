@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/18 19:16:38 $]
+Last modified at [$Date: 2001/01/19 02:58:56 $]
 
 Release:
 
@@ -107,9 +107,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       always make good sense.
           Status:  rbb volunteers.
 
-    * release distros do not include a "test" dir.  It should be
-      cleaned for the dev guys.  (Greg volunteers)
-
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
 
@@ -195,8 +192,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       (APR) library version skew.
       MsgID: <Pine.LNX.4.10.10005231712380.31927-100000@nebula.lyra.org>
         Status: Greg +1 (volunteers), Jeff +1, Ryan +1, Tony -0(?)
-
-    * mod_info to use the configuration tree
 
     * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
 
