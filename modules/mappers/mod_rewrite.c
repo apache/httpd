@@ -1477,8 +1477,16 @@ static int hook_fixup(request_rec *r)
      *  remember the current filename before rewriting for later check
      *  to prevent deadlooping because of internal redirects
      *  on final URL/filename which can be equal to the inital one.
+     *  also, we'll restore original r->filename if we decline this
+     *  request
      */
     ofilename = r->filename;
+
+    if (r->filename == NULL) {
+        r->filename = apr_pstrdup(r->pool, r->uri);
+        rewritelog((r, 2, "init rewrite engine with requested uri %s",
+                    r->filename));
+    }
 
     /*
      *  now apply the rules ...
@@ -1631,7 +1639,7 @@ static int hook_fixup(request_rec *r)
              * use the following internal redirection stuff because
              * this would lead to a deadloop.
              */
-            if (strcmp(r->filename, ofilename) == 0) {
+            if (ofilename != NULL && strcmp(r->filename, ofilename) == 0) {
                 rewritelog(r, 1, "[per-dir %s] initial URL equal rewritten "
                            "URL: %s [IGNORING REWRITE]",
                            dconf->directory, r->filename);
@@ -1688,6 +1696,7 @@ static int hook_fixup(request_rec *r)
     else {
         rewritelog(r, 1, "[per-dir %s] pass through %s",
                    dconf->directory, r->filename);
+        r->filename = ofilename;
         return DECLINED;
     }
 }

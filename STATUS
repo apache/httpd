@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/13 17:12:08 $]
+Last modified at [$Date: 2004/10/13 17:23:10 $]
 
 Release:
 
@@ -137,12 +137,6 @@ PATCHES TO BACKPORT FROM 2.1
          modules/mappers/mod_rewrite.c: r1.259
        +1: nd, jerenkrantz, minfrin
        minfrin: applied to v2.0
-
-    *) mod_rewrite: Handle per-location rules when r->filename is unset.
-       Previously this would segfault or simply not match as expected,
-       depending on the platform.
-         modules/mappers/mod_rewrite.c: r1.260
-       +1: trawick, geoff, jerenkrantz
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff

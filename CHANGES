@@ -1,5 +1,9 @@
 Changes with Apache 2.0.53
 
+  *) mod_rewrite: Handle per-location rules when r->filename is unset.
+     Previously this would segfault or simply not match as expected,
+     depending on the platform.  [Jeff Trawick]
+
   *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
      [michael teitler <michael.teitler cetelem.fr>,
       Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
