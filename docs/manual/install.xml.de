@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
-<!--<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>-->
-<!-- English revision: 1.4 -->
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- English revision: 1.5 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -19,9 +19,10 @@
     <p>Die Konfigurations- und Installationsumgebung des Apache 2.0 hat sich
     seit dem Apache 1.3 komplett ver&#228;ndert. Der Apache 1.3 benutzt einen
     speziellen Satz von Skripten, um eine einfache Installation zu
-    erm&#246;glichen. Der Apache 2.0 dagegen verwendet nun libtool und
-    autoconf, um eine Umgebung zu schaffen, die der vieler anderer Open
-    Source Projekte &#228;hnlich sieht.</p>
+    erm&#246;glichen. Der Apache 2.0 dagegen verwendet nun
+    <code>libtool</code> und <code>autoconf</code>, um eine Umgebung zu
+    schaffen, die der vieler anderer Open Source Projekte &#228;hnlich
+    sieht.</p>
 </summary>
 
 <section id="overview"><title>&#220;berblick f&#252;r die Ungeduldigen</title>
@@ -109,7 +110,7 @@
       Stellen Sie sicher, dass Sie einen ANSI-C Compiler installiert
       haben. Der <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
       Compiler (GCC)</a> der <a href="http://www.gnu.org/">Free Software
-      Foundation (FSF)</a> ist empfèhlenswert (Version 2.7.2 ist gut). Wenn
+      Foundation (FSF)</a> ist empfehlenswert (Version 2.7.2 ist gut). Wenn
       Sie den GCC nicht besitzen, stellen Sie zumindest sicher, dass der
       Compiler Ihres Anbieters ANSI-kompatibel ist. Au&#223;erdem muss Ihr
       <code>PATH</code> wesentliche Generierungswerkzeuge wie
@@ -123,10 +124,10 @@
       ausgedr&#252;ckt. Darum sollten Sie jetzt pr&#252;fen, ob Ihr System
       die F&#228;higkeit zur Zeitsynchronisation besitzt, und diese
       gegebenenfalls installieren. &#220;blicherweise werden hierf&#252;r
-      die Programme ntpdate oder xntpd verwendet, die auf dem Network
-      Time Protocol (NTP) basieren. N&#228;here Informationen &#252;ber NTP
-      Software und &#246;ffentliche Zeitserver finden Sie in der Usenet
-      Newsgroup <a
+      die Programme <code>ntpdate</code> oder <code>xntpd</code> verwendet,
+      die auf dem Network Time Protocol (NTP) basieren. N&#228;here
+      Informationen &#252;ber NTP Software und &#246;ffentliche Zeitserver
+      finden Sie in der Usenet Newsgroup <a
       href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
       und auf der <a href="http://www.eecis.udel.edu/~ntp/">NTP
       Homepage</a>.<br />
@@ -141,14 +142,15 @@
       oder <a href="programs/dbmmanage.html">dbmmanage</a> (die in Perl
       geschrieben sind) wird der Perl 5 Interpreter ben&#246;tigt (die
       Versionen ab 5.003 sind ausreichend). Wenn kein derartiger Interpreter
-      vom 'configure'-Skript gefunden werden kann, macht das jedoch nichts.
-      Selbstverst&#228;ndlich k&#246;nnen Sie den Apache 2.0 auch so
-      generieren und installieren. Lediglich diese Pflegeskripte k&#246;nnen
-      dann nicht verwendet werden. Wenn Sie mehrere Perl Interpreter
-      installiert haben (vielleicht Perl 4 durch Ihren H&#228;ndler und
-      Perl 5 durch Sie selbst), dann ist die Verwendung der --with-perl
-      Option (siehe unten) empfehlenswert, um sicherzustellen, dass
-      der richtige Interpreter von ./configure ausgew&#228;hlt wird.<br />
+      vom '<code>configure</code>'-Skript gefunden werden kann, macht das
+      jedoch nichts. Selbstverst&#228;ndlich k&#246;nnen Sie den Apache 2.0
+      auch so generieren und installieren. Lediglich diese Pflegeskripte
+      k&#246;nnen dann nicht verwendet werden. Wenn Sie mehrere Perl
+      Interpreter installiert haben (vielleicht Perl 4 durch Ihren
+      H&#228;ndler und Perl 5 durch Sie selbst), dann ist die Verwendung der
+      <code>--with-perl</code> Option (siehe unten) empfehlenswert, um
+      sicherzustellen, dass der richtige Interpreter von
+      <code>./configure</code> ausgew&#228;hlt wird.<br />
       <br />
       </li>
     </ul>
@@ -266,9 +268,9 @@
     <p>Um einen kurzen Eindruck zu gewinnen, welche M&#246;glichkeiten Sie
     haben, folgt hier ein typisches Beispiel, das den Apache mit einem
     speziellen Compiler und Compilerflags f&#252;r das
-    Installationsverzeichnis /sk/pkg/apache kompiliert, sowie die beiden
-    zus&#228;tzlichen Module mod_rewrite und mod_speling f&#252;r
-    sp&#228;teres Laden durch den DSO-Mechanismus:</p>
+    Installationsverzeichnis <code>/sk/pkg/apache</code> kompiliert, sowie
+    die beiden zus&#228;tzlichen Module mod_rewrite und mod_speling
+    f&#252;r sp&#228;teres Laden durch den DSO-Mechanismus:</p>
 
   <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
@@ -277,19 +279,19 @@
        --enable-speling=shared
   </example>
 
-    <p>Wenn configure startet, ben&#246;tigt es mehrere Minuten, um
-    die Verf&#252;gbarkeit von Features auf Ihrem System zu pr&#252;fen
+    <p>Wenn <code>configure</code> startet, ben&#246;tigt es mehrere Minuten,
+    um die Verf&#252;gbarkeit von Features auf Ihrem System zu pr&#252;fen
     und ein Makefile zu generieren, das sp&#228;ter zur Kompilierung des
     Servers verwendet wird.</p>
 
     <p>Die einfachste Art und Weise, alle Konfigurationsflags f&#252;r den
-    Apache herauszufinden, ist, ./configure --help aufzurufen.
+    Apache herauszufinden, ist, <code>./configure --help</code> aufzurufen.
     Hier folgt eine kurze Beschreibung der meisten Argumente und
     Umgebungsvariablen.</p>
 
 <section id="environment"><title>Umgebungsvariablen</title>
 
-    <p>Der autoconf-Generierungsvorgang verwendet verschiedene
+    <p>Der <code>autoconf</code>-Generierungsvorgang verwendet verschiedene
     Umgebungsvariablen f&#252;r die Konfiguration der Generierungsumgebung.
     Im allgemeinen ver&#228;ndern diese Variablen die Methode, die benutzt
     wird, um den Apache zu erstellen, nicht aber die letztendlichen
@@ -340,8 +342,8 @@
       <dt><code>NOTEST_LIBS=...</code></dt>
 
       <dd>Diese Variablen haben die gleiche Funktion wie ihre
-      Namensvettern ohne NOTEST. Diese Variablen werden jedoch nur auf
-      den Generierungsprozess angewendet, nachdem autoconf seine
+      Namensvettern ohne <code>NOTEST</code>. Diese Variablen werden jedoch
+      nur auf den Generierungsprozess angewendet, nachdem autoconf seine
       Featuretests durchgef&#252;hrt hat. Dies erlaubt die Einbeziehung
       von Flags, die w&#228;hrend des Featuretests Probleme bereiten
       w&#252;rden, aber f&#252;r die endg&#252;ltige Kompilierung verwendet
@@ -435,20 +437,21 @@
     Dokumentation enthalten. Module mit dem <a
     href="mod/module-dict.html#Status">Status</a> "Base"
     sind standardm&#228;&#223;ig enthalten und m&#252;ssen ausdr&#252;cklich
-    deaktiviert werden, wenn Sie sie nicht verwenden m&#246;chten. Module
-    mit einem anderen Status m&#252;ssen ausdr&#252;cklich aktiviert werden,
-    wenn Sie sie verwenden m&#246;chten.</p>
+    deaktiviert werden (z.B. <module>mod_userdir</module>), wenn Sie sie
+    nicht verwenden m&#246;chten. Module mit einem anderen Status (z.B.
+    <module>mod_expires</module>) m&#252;ssen ausdr&#252;cklich aktiviert
+    werden, wenn Sie sie verwenden m&#246;chten.</p>
 
     <p>Es gibt zwei M&#246;glichkeiten, Module zu kompilieren und mit dem
     Apache zu benutzen. Module k&#246;nnen <em>statisch kompiliert</em>
     werden, was bedeutet, dass sie permanent in dem Apache Binary
     eingebunden sind. Wenn Ihr Betriebssystem Dynamic Shared Objects
     (DSOs; Anm. d. &#220;bersetzers: dynamisch eingebundene Bibliotheken)
-    unterst&#252;tzt und autoconf diese Unterst&#252;tzung erkennen kann,
-    dann k&#246;nnen Module alternativ <em>dynamisch kompiliert</em> werden.
-    DSO-Module werden von der Apache Binary getrennt gespeichert und
-    k&#246;nnen vom Server unter Verwendung der Direktiven zur
-    Laufzeitkonfiguration, die von <a href="mod/mod_so.html">mod_so</a>
+    unterst&#252;tzt und <code>autoconf</code> diese Unterst&#252;tzung
+    erkennen kann, dann k&#246;nnen Module alternativ <em>dynamisch
+    kompiliert</em> werden. DSO-Module werden von der Apache Binary getrennt
+    gespeichert und k&#246;nnen vom Server unter Verwendung der Direktiven
+    zur Laufzeitkonfiguration, die von <module>mod_so</module>
     bereitgestellt werden, ein- oder ausgeschlossen werden. mod_so wird
     automatisch dem Server hinzugef&#252;gt, sobald ein dynamisches Modul
     in die Kompilierung einbezogen wird. Wenn Sie Ihren Server f&#252;r das
@@ -614,10 +617,10 @@
     <p>ausf&#252;hren.</p>
 
     <p>Danach sollten Sie Ihr erstes Dokument unter dem URL
-    http://localhost/ anfordern k&#246;nnen. Die Webseite, die Sie sehen,
-    ist im <a href="mod/core.html#documentroot">DocumentRoot</a> abgelegt,
-    welches &#252;blicherweise <code><em>PREFIX</em>/htdocs/</code> ist.
-    Den Server <a href="stopping.html">stoppen</a> Sie wieder durch
+    <code>http://localhost/</code> anfordern k&#246;nnen. Die Webseite,
+    die Sie sehen, ist im <directive module="core">DocumentRoot</directive>
+    abgelegt, welches &#252;blicherweise <code><em>PREFIX</em>/htdocs/</code>
+    ist. Den Server <a href="stopping.html">stoppen</a> Sie wieder durch
     Ausf&#252;hren von:</p>
 
   <example>$ <em>PREFIX</em>/bin/apachectl stop</example>
