@@ -252,7 +252,7 @@ processes</td></tr>
 [env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ログファイルの名前と書式を設定する</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">WebDAV HTTP メソッドを有効にします</td></tr>
 <tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">PROPFIND, Depth: Infinity リクエストを許可します</td></tr>
-<tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
+<tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">DAV ロックデータベースの場所</td></tr>
 <tr><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">DAV ロックデータベースの位置</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">サーバが DAV リソースのロックを維持する最小時間です。
 </td></tr>
