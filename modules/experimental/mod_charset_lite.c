@@ -266,20 +266,6 @@ static int find_code_page(request_rec *r)
     if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED; 
     if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED; 
     
-    /* If this is a subrequest, bail out.  We don't want to be setting up 
-     * translation just because something like mod_autoindex wants to find the
-     * mime type for directory objects.
-     * (I won't swear that there aren't cases where we need to process 
-     * subrequests :) ).
-     */
-    if (r->main) {
-        if (debug) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                         "skipping subrequest");
-        }
-        return DECLINED;
-    }
-
     mime_type = r->content_type ? r->content_type : ap_default_type(r);
 
     /* If mime type isn't text or message, bail out.
