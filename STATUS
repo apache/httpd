@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/24 20:13:09 $]
+Last modified at [$Date: 2003/06/24 22:15:35 $]
 
 Release:
 
@@ -211,6 +211,7 @@ PATCHES TO PORT FROM 2.1
     * mod_dav: backport the "streamy" PROPFIND response.
         modules/dav/main/mod_dav.c r1.94 r1.95 r1.96
         modules/dav/main/mod_dav.h 1.67
+        NOTE: the change passes the WebDAV tests run by 'litmus'
         +1: striker, gstein
 
     * handle switching between libtools and unwritable ltconfig/ltmain.sh
