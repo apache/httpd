@@ -76,6 +76,7 @@ void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc;
     server_rec *s2;
+    char *cp;
 
     /*
      * Let us cleanup on restarts and exists
@@ -121,12 +122,10 @@ void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * Identification
      */
     if (mc->nInitCount == 1) {
-#if 0 /* XXX */
         ssl_log(s, SSL_LOG_INFO, "Server: %s, Interface: %s, Library: %s",
                 AP_SERVER_BASEVERSION,
-                ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_INTERFACE"),
-                ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_LIBRARY"));
-#endif
+                ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_INTERFACE"),
+                ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY"));
     }
 
     /*
@@ -257,12 +256,10 @@ void ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      *  Announce mod_ssl and SSL library in HTTP Server field
      *  as ``mod_ssl/X.X.X OpenSSL/X.X.X''
      */
-#if 0 /* XXX */
-    if ((cp = ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_PRODUCT")) != NULL && cp[0] != NUL)
+    if ((cp = ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_PRODUCT")) != NULL && cp[0] != NUL)
         ap_add_version_component(p, cp);
-    ap_add_version_component(p, ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_INTERFACE"));
-    ap_add_version_component(p, ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_LIBRARY"));
-#endif
+    ap_add_version_component(p, ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_INTERFACE"));
+    ap_add_version_component(p, ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY"));
 
     return;
 }
