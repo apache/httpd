@@ -111,6 +111,8 @@ fi
 dnl ## Checking command-line options
 test -n "$GCC" && test "$USE_MAINTAINER_MODE" = "yes" && \
     EXTRA_CFLAGS="$EXTRA_CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"
+test -n "$GCC" && test "$USE_MAINTAINER_MODE" = "y2" && \
+    EXTRA_CFLAGS="$EXTRA_CFLAGS -g -Wall -Werror -Wmissing-declarations"
 
 APACHE_ENABLE_LAYOUT
 APACHE_ENABLE_MODULES
