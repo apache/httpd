@@ -429,6 +429,9 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
         goto cleanup;
     /* Step Two: Make the Connection */
     if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+          "proxy: AJP: failed to make connection to backend: %s",
+          backend->hostname);
         status = HTTP_SERVICE_UNAVAILABLE;
         goto cleanup;
     }
