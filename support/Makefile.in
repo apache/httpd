@@ -46,7 +46,9 @@ checkgid_OBJECTS = checkgid.lo
 checkgid: $(checkgid_OBJECTS)
 	$(LINK) $(checkgid_LTFLAGS) $(checkgid_OBJECTS) $(PROGRAM_LDADD)
 
+# suexec must be statically compiled. Otherwise it is not relocatable,
+# since LD_* environment variables are ignored in setuid programs.
 suexec_OBJECTS = suexec.lo
 suexec: $(suexec_OBJECTS)
-	$(LINK) $(suexec_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) -static $(suexec_OBJECTS) $(PROGRAM_LDADD)
 
