@@ -339,6 +339,8 @@ apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 	apr_size_t len, n;
 	apr_status_t ret;
 
+        APR_BUCKET_REMOVE(pbktIn);
+
 	if(APR_BUCKET_IS_EOS(pbktIn)) {
 	    if ((ret = churn_output(pRec)) != APR_SUCCESS)
             {
