@@ -145,10 +145,6 @@
 #define WORKER_READY        SERVER_READY
 #define WORKER_IDLE_KILL    SERVER_IDLE_KILL
 
-
-#define NON_ASYNC
-
-
 /* config globals */
 
 int ap_threads_per_child=0;         /* Worker threads per child */
@@ -176,12 +172,9 @@ static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pmain;		/* Pool for httpd child stuff */
 
 static pid_t ap_my_pid;	/* it seems silly to call getpid all the time */
-//static pid_t parent_pid;
 
 static int die_now = 0;
-#ifdef NON_ASYNC
 static apr_thread_mutex_t *accept_mutex = NULL;
-#endif
 
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
@@ -331,7 +324,6 @@ int ap_graceful_stop_signalled(void)
 }
 
 static int just_go = 0;
-static int skipped_selects = 0;
 static int would_block = 0;
 static void worker_main(void *arg)
 {
@@ -340,7 +332,6 @@ static void worker_main(void *arg)
     apr_pool_t *ptrans;
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
-    int sockdes;
     int worker_num_arg = (int)arg;
     void *sbh;
 
@@ -348,20 +339,8 @@ static void worker_main(void *arg)
     apr_socket_t *csd = NULL;
     apr_socket_t *sd = NULL;
     int requests_this_child = 0;
-#ifdef NON_ASYNC
-    ap_listen_rec *first_lr;
-    int srv;
-    struct timeval tv;
-#else
-    WSAEVENT evt;
-#endif
 
     DWORD ret;
-
-#ifdef NON_ASYNC
-    tv.tv_sec = 1;
-    tv.tv_usec = 0;
-#endif
 
     apr_pool_create(&ptrans, pmain);
 
@@ -391,45 +370,15 @@ static void worker_main(void *arg)
         * Wait for an acceptable connection to arrive.
         */
 
-#ifdef NON_ASYNC
         /* Lock around "accept", if necessary */
         apr_thread_mutex_lock(accept_mutex);
-#endif
 
         for (;;) {
             if (shutdown_pending || restart_pending || (ap_scoreboard_image->servers[0][my_worker_num].status == WORKER_IDLE_KILL)) {
                 DBPRINT1 ("\nThread slot %d is shutting down\n", my_worker_num);
-#ifdef NON_ASYNC
                 apr_thread_mutex_unlock(accept_mutex);
-#endif
                 clean_child_exit(0, my_worker_num);
             }
-
-#ifdef NON_ASYNC
-            if (!just_go) {
-                /* more than one socket */
-                memcpy(&main_fds, &listenfds, sizeof(fd_set));
-                srv = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
-
-                if (srv < 0 && h_errno != EINTR) {
-                    /* Single Unix documents select as returning errnos
-                    * EBADF, EINTR, and EINVAL... and in none of those
-                    * cases does it make sense to continue.  In fact
-                    * on Linux 2.0.x we seem to end up with EFAULT
-                    * occasionally, and we'd loop forever due to it.
-                    */
-                    ap_log_error(APLOG_MARK, APLOG_ERR, h_errno, ap_server_conf, "select: (listen)");
-                    clean_child_exit(1, my_worker_num);
-                }
-
-                if (srv <= 0)
-                    continue;
-
-                just_go = 1;
-            }
-            else
-                skipped_selects++;
-#endif
 
             /* we remember the last_lr we searched last time around so that
             we don't end up starving any particular listening socket */
@@ -441,29 +390,10 @@ static void worker_main(void *arg)
                 if (!lr)
                     lr = ap_listeners;
             }
-#ifdef NON_ASYNC
-            first_lr = lr;
-            do {
-                apr_os_sock_get(&sockdes, lr->sd);
-                if (FD_ISSET(sockdes, &main_fds))
-                    goto got_listener;
-                lr = lr->next;
-                if (!lr)
-                    lr = ap_listeners;
-            } while (lr != first_lr);
-            /* FIXME: if we get here, something bad has happened, and we're
-            probably gonna spin forever.
-            */
-            continue;
-got_listener:
-#endif
             last_lr = lr;
             sd = lr->sd;
 
-#ifdef NON_ASYNC
-            apr_setsocketopt(lr->sd, APR_SO_NONBLOCK, 1);
             stat = apr_accept(&csd, sd, ptrans);
-            apr_setsocketopt(lr->sd, APR_SO_NONBLOCK, 0);
             if (stat == APR_SUCCESS) {
                 apr_setsocketopt(csd, APR_SO_NONBLOCK, 0);
                 break;		/* We have a socket ready for reading */
@@ -472,77 +402,48 @@ got_listener:
                 just_go = 0;
                 ret = APR_TO_NETOS_ERROR(stat);
 
-#else
-            apr_os_sock_get(&sockdes, sd);
-            apr_socket_data_get((void**)&evt, "eventKey", sd);
+                switch (ret) {
 
-            ret = WSAWaitForMultipleEvents (1, (const WSAEVENT*)&evt, 0, 3000, 1);
+                    case WSAEWOULDBLOCK:
+                        would_block++;
+                        apr_thread_yield();
+                        continue;
+                        break;
 
-            if (ret != WSA_WAIT_FAILED) {
-                if (ret == WSA_WAIT_TIMEOUT) {
-                    /*timeout_count++;*/
-                    continue;
+                    case WSAECONNRESET:
+                    case WSAETIMEDOUT:
+                    case WSAEHOSTUNREACH:
+                    case WSAENETUNREACH:
+                        break;
+
+                    case WSAENETDOWN:
+                        /*
+                        * When the network layer has been shut down, there
+                        * is not much use in simply exiting: the parent
+                        * would simply re-create us (and we'd fail again).
+                        * Use the CHILDFATAL code to tear the server down.
+                        * @@@ Martin's idea for possible improvement:
+                        * A different approach would be to define
+                        * a new APEXIT_NETDOWN exit code, the reception
+                        * of which would make the parent shutdown all
+                        * children, then idle-loop until it detected that
+                        * the network is up again, and restart the children.
+                        * Ben Hyde noted that temporary ENETDOWN situations
+                        * occur in mobile IP.
+                        */
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
+                            "apr_accept: giving up.");
+                        clean_child_exit(APEXIT_CHILDFATAL, my_worker_num);
+
+                    default:
+                        ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
+                            "apr_accept: (client socket)");
+                        clean_child_exit(1, my_worker_num);
                 }
-                stat = apr_accept(&csd, sd, ptrans);
-                if (stat == APR_SUCCESS) {
-                    apr_setsocketopt(csd, APR_SO_NONBLOCK, 0);
-                    break;
-                }
-                else {
-                    ret = APR_TO_NETOS_ERROR(stat);
-                }
-            }
-#endif            
-
-            switch (ret) {
-
-                case WSAEWOULDBLOCK:
-                    would_block++;
-                    apr_thread_yield();
-                    continue;
-                    break;
-
-                case WSAECONNRESET:
-                case WSAETIMEDOUT:
-                case WSAEHOSTUNREACH:
-                case WSAENETUNREACH:
-                    break;
-
-                case WSAENETDOWN:
-                    /*
-                    * When the network layer has been shut down, there
-                    * is not much use in simply exiting: the parent
-                    * would simply re-create us (and we'd fail again).
-                    * Use the CHILDFATAL code to tear the server down.
-                    * @@@ Martin's idea for possible improvement:
-                    * A different approach would be to define
-                    * a new APEXIT_NETDOWN exit code, the reception
-                    * of which would make the parent shutdown all
-                    * children, then idle-loop until it detected that
-                    * the network is up again, and restart the children.
-                    * Ben Hyde noted that temporary ENETDOWN situations
-                    * occur in mobile IP.
-                    */
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
-                        "apr_accept: giving up.");
-                    clean_child_exit(APEXIT_CHILDFATAL, my_worker_num);
-
-                default:
-                    ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
-                        "apr_accept: (client socket)");
-                    clean_child_exit(1, my_worker_num);
-            }
-
-#ifdef NON_ASYNC
             }
         }
 
         apr_thread_mutex_unlock(accept_mutex);
-#else
-
-
-        }
-#endif
 
         ap_create_sb_handle(&sbh, ptrans, 0, my_worker_num);
         /*
@@ -755,11 +656,9 @@ static void display_settings ()
     int status_array[SERVER_NUM_STATUS];
     int i, status, total=0;
     int reqs = request_count;
-    int skips = skipped_selects;
     int wblock = would_block;
 
     request_count = 0;
-    skipped_selects = 0;
     would_block = 0;
 
     ClearScreen (getscreenhandle());
@@ -819,26 +718,38 @@ static void display_settings ()
     }
     printf ("Total Running:\t%d\tout of: \t%d\n", total, ap_threads_limit);
     printf ("Requests per interval:\t%d\n", reqs);
-    printf ("Skipped selects:\t%d\n", skips);
     printf ("Would blocks:\t%d\n", wblock);
 }
 
-static apr_status_t cleanup_event_handle (void *data)
+static void show_server_data()
 {
-    WSAEVENT evt = (WSAEVENT) data;
+    ap_listen_rec *lr;
+    module **m;
 
-    WSACloseEvent (evt);
+    printf("%s \n", ap_get_server_version());
 
-    return APR_SUCCESS;
+    /* Display listening ports */
+    printf("   Listening on port(s):");
+    lr = ap_listeners;
+    do {
+       printf(" %d", lr->bind_addr->port);
+       lr = lr->next;
+    } while(lr && lr != ap_listeners);
+    
+    /* Display dynamic modules loaded */
+    printf("\n");    
+    for (m = ap_loaded_modules; *m != NULL; m++) {
+        if (((module*)*m)->dynamic_load_handle) {
+            printf("   Loaded dynamic module %s\n", ((module*)*m)->name);
+        }
+    }
 }
+
 
 static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
     int sockdes;
-#ifndef NON_ASYNC
-    WSAEVENT evt;
-#endif
 
     if (ap_setup_listeners(s) < 1 ) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
@@ -854,12 +765,7 @@ static int setup_listeners(server_rec *s)
         if (sockdes > listenmaxfd) {
             listenmaxfd = sockdes;
         }
-#ifndef NON_ASYNC
         apr_setsocketopt(lr->sd, APR_SO_NONBLOCK, 1);
-        evt = WSACreateEvent();
-        WSAEventSelect (sockdes, evt, FD_ACCEPT);
-        apr_socket_data_set(lr->sd, (void*)evt, "eventKey",  cleanup_event_handle);
-#endif
     }
     return 0;
 }
@@ -884,9 +790,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     restart_pending = shutdown_pending = 0;
     worker_thread_count = 0;
     apr_thread_mutex_create(&worker_thread_count_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
-#ifdef NON_ASYNC
     apr_thread_mutex_create(&accept_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
-#endif
 
     if (!is_graceful) {
         ap_run_pre_mpm(pconf, SB_NOT_SHARED);
@@ -912,7 +816,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
 
-    printf("%s \n", ap_get_server_version());
+    show_server_data();
 
     while (!restart_pending && !shutdown_pending) {
         perform_idle_server_maintenance(pconf);
@@ -1074,7 +978,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
             if (show_settings) {
                 show_settings = 0;
                 ClearScreen (getscreenhandle());
-                printf("%s \n", ap_get_server_version());
+                show_server_data();
             }
             else {
                 show_settings = 1;
