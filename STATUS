@@ -101,11 +101,6 @@ Available Patches:
 	Status: Ralf -1 (because it is too huge, has to be cleaned up and
 		split)
 
-    * Rhapsody port, by Wilfredo Sanchez <wsanchez@apple.com>
-	Message-Id: <199806262218.PAA12490@scv2.apple.com>   
-	Status: Ken +1 (on concept), Lars +1 (on concept),
-	        Martin +1 (on concept, don't have a X machine at hand ;-)
-
     * Ralf's "[PATCH] Fix module init"
       This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
       SHOWSTOPPERS" by doing a more correct init of the modules after loading
