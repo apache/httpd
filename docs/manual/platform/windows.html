@@ -52,7 +52,7 @@ to help with development, or to track down bugs), see the section on
 
 <HR>
 
-<H2><A name="req">Requirements</A></H2>
+<H2><A NAME="req">Requirements</A></H2>
 
 <P>Apache 1.3b6 requires the following:</P>
 
@@ -62,14 +62,14 @@ to help with development, or to track down bugs), see the section on
       requirements unknown) with a connection to a TCP/IP network.
 </UL>
 
-<P><SMALL><A name="351">*</A> Apache may run with Windows NT 3.5.1, but
+<P><SMALL><A NAME="351">*</A> Apache may run with Windows NT 3.5.1, but
    has not been tested.</SMALL></P>
 
 <P>If running on Windows 95, using the "Winsock2" upgrade is recommended
    but may not be necessary.  If running on NT 4.0, installing Service Pack 2
    is recommended.</P>
 
-<H2><A name="down">Downloading Apache for Windows</A></H2>
+<H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
 <P>Information on the latest version of Apache can be found on the
 Apache web server at <A
@@ -84,7 +84,7 @@ You should download the version of Apache for Windows with the
 ready to install and run. There may also be a <CODE>.zip</CODE> file
 containing the source code, to compile Apache yourself. 
 
-<H2><A name="inst">Installing Apache for Windows</A></H2>
+<H2><A NAME="inst">Installing Apache for Windows</A></H2>
 
 Run the Apache <SAMP>.exe</SAMP> file you downloaded above. This will
 ask for:
@@ -124,7 +124,7 @@ subdirectory <SAMP>htdocs</SAMP>. There are lots of other options
 which should be set before you start really using Apache. However to
 get started the files should work as installed.
 
-<H2><A name="inst">Running Apache for Windows</A></H2>
+<H2><A NAME="inst">Running Apache for Windows</A></H2>
 
 There are two ways you can run Apache:
 
@@ -178,7 +178,7 @@ manual. If nothing happens or you get an error, look in the
 Once your basic installation is working, you should configure it
 properly by editing the files in the <SAMP>conf</SAMP> directory.
 
-<H2><A name="use">Configuring Apache for Windows</A></H2>
+<H2><A NAME="use">Configuring Apache for Windows</A></H2>
 
 Apache is configured by files in the <SAMP>conf</SAMP>
 directory. These are the same as files used to configure the Unix
@@ -237,7 +237,7 @@ The main differences in Apache for Windows are:
          is available.</A>
 </UL>
 
-<H2><A name="cmdline">Running Apache for Windows from the Command Line</A></H2>
+<H2><A NAME="cmdline">Running Apache for Windows from the Command Line</A></H2>
 
 The Start menu icons and the NT Service manager can provide an simple
 interafce for administering Apache. But in some cases it is easier to
@@ -301,7 +301,7 @@ listed above. Again note that once Apache has read the
 given on the <SAMP>ServerRoot</SAMP> directive line instead of the -f
 or -d command line argument.
 
-<H2><A name="comp">Compiling Apache for Windows</A></H2>
+<H2><A NAME="comp">Compiling Apache for Windows</A></H2>
 
 <P>Compiling Apache requires Microsoft Visual C++ 5.0 to be properly
    installed. It is easiest to compile with the command-line tools
@@ -344,8 +344,10 @@ or -d command line argument.
 <P>To install the files into the <CODE>\Apache</CODE> directory
    automatically, use one the following nmake commands (see above):</P>
 <UL>
-<LI><CODE>nmake /f Makefile.nt installr INSTDIR=<i>dir</i></CODE> (for release build)
-<LI><CODE>nmake /f Makefile.nt installd INSTDIR=<i>dir</i></CODE> (for debug build)
+<LI><CODE>nmake /f Makefile.nt installr INSTDIR=<EM>dir</EM></CODE>
+ (for release build)
+<LI><CODE>nmake /f Makefile.nt installd INSTDIR=<EM>dir</EM></CODE>
+ (for debug build)
 </UL>
 
 The dir argument to INSTDIR gives the installation directory. The can
@@ -354,12 +356,12 @@ be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.
 <P>This will install the following:</P>
 
 <UL>
-  <LI><CODE><i>dir</i>\Apache.exe</CODE> - Apache executable
-  <LI><CODE><i>dir</i>\ApacheCore.dll</CODE> - Main Apache shared library
-  <LI><CODE><i>dir</i>\modules\ApacheModule*.dll</CODE> - Optional Apache
+  <LI><CODE><EM>dir</EM>\Apache.exe</CODE> - Apache executable
+  <LI><CODE><EM>dir</EM>\ApacheCore.dll</CODE> - Main Apache shared library
+  <LI><CODE><EM>dir</EM>\modules\ApacheModule*.dll</CODE> - Optional Apache
       modules (7 files)
-  <LI><CODE><i>dir</i>\conf</CODE> - Empty configuration directory
-  <LI><CODE><i>dir</i>\logs</CODE> - Empty logging directory
+  <LI><CODE><EM>dir</EM>\conf</CODE> - Empty configuration directory
+  <LI><CODE><EM>dir</EM>\logs</CODE> - Empty logging directory
 </UL>
 
 <P>If you do not have nmake, or wish to install in a different directory,

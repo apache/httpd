@@ -43,9 +43,11 @@ coming up, and in what order:
 <MENU>
  <LI> <A HREF="#req_tour">A brief tour of the <CODE>request_rec</CODE></A>
  <LI> <A HREF="#req_orig">Where request_rec structures come from</A>
- <LI> <A HREF="#req_return">Handling requests, declining, and returning error codes</A>
+ <LI> <A HREF="#req_return">Handling requests, declining, and returning error
+  codes</A>
  <LI> <A HREF="#resp_handlers">Special considerations for response handlers</A>
- <LI> <A HREF="#auth_handlers">Special considerations for authentication handlers</A>
+ <LI> <A HREF="#auth_handlers">Special considerations for authentication
+  handlers</A>
  <LI> <A HREF="#log_handlers">Special considerations for logging handlers</A>
 </MENU>
 <LI> <A HREF="#pools">Resource allocation and resource pools</A>
@@ -53,16 +55,17 @@ coming up, and in what order:
 <MENU>
  <LI> <A HREF="#per-dir">Per-directory configuration structures</A>
  <LI> <A HREF="#commands">Command handling</A>
- <LI> <A HREF="#servconf">Side notes --- per-server configuration, virtual servers, etc.</A>
+ <LI> <A HREF="#servconf">Side notes --- per-server configuration,
+  virtual servers, <EM>etc</EM>.</A>
 </MENU>
 </UL>
 
-<H2><A name="basics">Basic concepts.</A></H2>
+<H2><A NAME="basics">Basic concepts.</A></H2>
 
 We begin with an overview of the basic concepts behind the
 API, and how they are manifested in the code.
 
-<H3><A name="HMR">Handlers, Modules, and Requests</A></H3>
+<H3><A NAME="HMR">Handlers, Modules, and Requests</A></H3>
 
 Apache breaks down request handling into a series of steps, more or
 less the same way the Netscape server API does (although this API has
@@ -116,7 +119,7 @@ The handlers themselves are functions of one argument (a
 <CODE>request_rec</CODE> structure. vide infra), which returns an
 integer, as above.<P>
 
-<H3><A name="moduletour">A brief tour of a module</A></H3>
+<H3><A NAME="moduletour">A brief tour of a module</A></H3>
 
 At this point, we need to explain the structure of a module.  Our
 candidate will be one of the messier ones, the CGI module --- this
@@ -215,14 +218,14 @@ module cgi_module = {
 };
 </PRE>
 
-<H2><A name="handlers">How handlers work</A></H2>
+<H2><A NAME="handlers">How handlers work</A></H2>
 
 The sole argument to handlers is a <CODE>request_rec</CODE> structure.
 This structure describes a particular request which has been made to
 the server, on behalf of a client.  In most cases, each connection to
 the client generates only one <CODE>request_rec</CODE> structure.<P>
 
-<H3><A name="req_tour">A brief tour of the <CODE>request_rec</CODE></A></H3>
+<H3><A NAME="req_tour">A brief tour of the <CODE>request_rec</CODE></A></H3>
 
 The <CODE>request_rec</CODE> contains pointers to a resource pool
 which will be cleared when the server is finished handling the
@@ -329,7 +332,7 @@ struct request_rec {
 
 </PRE>
 
-<H3><A name="req_orig">Where request_rec structures come from</A></H3>
+<H3><A NAME="req_orig">Where request_rec structures come from</A></H3>
 
 Most <CODE>request_rec</CODE> structures are built by reading an HTTP
 request from a client, and filling in the fields.  However, there are
@@ -370,7 +373,8 @@ a few exceptions:
        function <CODE>run_sub_request</CODE>).
 </UL>
 
-<H3><A name="req_return">Handling requests, declining, and returning error codes</A></H3>
+<H3><A NAME="req_return">Handling requests, declining, and returning error
+ codes</A></H3>
 
 As discussed above, each handler, when invoked to handle a particular
 <CODE>request_rec</CODE>, has to return an <CODE>int</CODE> to
@@ -389,7 +393,8 @@ the module should put a <CODE>Location</CODE> in the request's
 <CODE>headers_out</CODE>, to indicate where the client should be
 redirected <EM>to</EM>. <P>
 
-<H3><A name="resp_handlers">Special considerations for response handlers</A></H3>
+<H3><A NAME="resp_handlers">Special considerations for response
+ handlers</A></H3>
 
 Handlers for most phases do their work by simply setting a few fields
 in the <CODE>request_rec</CODE> structure (or, in the case of access
@@ -463,7 +468,8 @@ internally redirected should always return <CODE>OK</CODE>. <P>
 (Invoking <CODE>ap_internal_redirect</CODE> from handlers which are
 <EM>not</EM> response handlers will lead to serious confusion).
 
-<H3><A name="auth_handlers">Special considerations for authentication handlers</A></H3>
+<H3><A NAME="auth_handlers">Special considerations for authentication
+ handlers</A></H3>
 
 Stuff that should be discussed here in detail:
 
@@ -481,7 +487,7 @@ Stuff that should be discussed here in detail:
        to be sent back).
 </UL>
 
-<H3><A name="log_handlers">Special considerations for logging handlers</A></H3>
+<H3><A NAME="log_handlers">Special considerations for logging handlers</A></H3>
 
 When a request has internally redirected, there is the question of
 what to log.  Apache handles this by bundling the entire chain of
@@ -493,7 +499,7 @@ initial request from the client; note that the bytes_sent field will
 only be correct in the last request in the chain (the one for which a
 response was actually sent).
 
-<H2><A name="pools">Resource allocation and resource pools</A></H2>
+<H2><A NAME="pools">Resource allocation and resource pools</A></H2>
 <P>
 One of the problems of writing and designing a server-pool server is
 that of preventing leakage, that is, allocating resources (memory,
@@ -610,7 +616,7 @@ of the strings, as a unit; for instance:
 returns a pointer to 8 bytes worth of memory, initialized to
 <CODE>"foo/bar"</CODE>.
 </P>
-<H3><A name="pools-used">Commonly-used pools in the Apache Web server</A></H3>
+<H3><A NAME="pools-used">Commonly-used pools in the Apache Web server</A></H3>
 <P>
 A pool is really defined by its lifetime more than anything else.  There
 are some static pools in http_main which are passed to various
@@ -633,7 +639,7 @@ non-http_main functions as arguments at opportune times.  Here they are:
    </LI>
    <LI>created at the beginning of a config "cycle"; exists until the
     server is terminated or restarts; passed to all config-time
-    routines, either via cmd->pool, or as the "pool *p" argument on
+    routines, either via cmd-&gt;pool, or as the "pool *p" argument on
     those which don't take pools
    </LI>
    <LI>passed to the module init() functions
@@ -652,8 +658,8 @@ non-http_main functions as arguments at opportune times.  Here they are:
    <LI>subpool of permanent_pool
    </LI>
    <LI>created at the beginning of a config "cycle"; exists until the
-    end of config parsing; passed to config-time routines via
-    cmd->temp_pool.  Somewhat of a "bastard child" because it isn't
+    end of config parsing; passed to config-time routines <EM>via</EM>
+    cmd-&gt;temp_pool.  Somewhat of a "bastard child" because it isn't
     available everywhere.  Used for temporary scratch space which
     may be needed by some config routines but which is deleted at
     the end of config.
@@ -687,52 +693,54 @@ non-http_main functions as arguments at opportune times.  Here they are:
    <LI>cleared by the child before going into the accept() loop to receive
     a connection
    </LI>
-   <LI>used as connection->pool
+   <LI>used as connection-&gt;pool
    </LI>
   </UL>
  </DD>
- <DT>r->pool
+ <DT>r-&gt;pool
  </DT>
  <DD>
   <UL>
-   <LI>for the main request this is a subpool of connection->pool; for
+   <LI>for the main request this is a subpool of connection-&gt;pool; for
     subrequests it is a subpool of the parent request's pool.
    </LI>
    <LI>exists until the end of the request (<EM>i.e.</EM>, destroy_sub_req, or
     in child_main after process_request has finished)
    </LI>
-   <LI>note that r itself is allocated from r->pool; <EM>i.e.</EM>, r->pool is
+   <LI>note that r itself is allocated from r-&gt;pool; <EM>i.e.</EM>,
+    r-&gt;pool is
     first created and then r is the first thing palloc()d from it
    </LI>
   </UL>
  </DD>
 </DL>
 <P>
-For almost everything folks do, r->pool is the pool to use.  But you
+For almost everything folks do, r-&gt;pool is the pool to use.  But you
 can see how other lifetimes, such as pchild, are useful to some
 modules... such as modules that need to open a database connection once
 per child, and wish to clean it up when the child dies.
 </P>
 <P>
 You can also see how some bugs have manifested themself, such as setting
-connection->user to a value from r->pool -- in this case connection exists
-for the lifetime of ptrans, which is longer than r->pool (especially if
-r->pool is a subrequest!).  So the correct thing to do is to allocate
-from connection->pool.
+connection-&gt;user to a value from r-&gt;pool -- in this case
+connection exists
+for the lifetime of ptrans, which is longer than r-&gt;pool (especially if
+r-&gt;pool is a subrequest!).  So the correct thing to do is to allocate
+from connection-&gt;pool.
 </P>
 <P>
 And there was another interesting bug in mod_include/mod_cgi.  You'll see
-in those that they do this test to decide if they should use r->pool
-or r->main->pool.  In this case the resource that they are registering
-for cleanup is a child process.  If it were registered in r->pool,
+in those that they do this test to decide if they should use r-&gt;pool
+or r-&gt;main-&gt;pool.  In this case the resource that they are registering
+for cleanup is a child process.  If it were registered in r-&gt;pool,
 then the code would wait() for the child when the subrequest finishes.
 With mod_include this could be any old #include, and the delay can be up
 to 3 seconds... and happened quite frequently.  Instead the subprocess
-is registered in r->main->pool which causes it to be cleaned up when
+is registered in r-&gt;main-&gt;pool which causes it to be cleaned up when
 the entire request is done -- <EM>i.e.</EM>, after the output has been sent to
 the client and logging has happened.
 </P>
-<H3><A name="pool-files">Tracking open files, etc.</A></H3>
+<H3><A NAME="pool-files">Tracking open files, etc.</A></H3>
 <P>
 As indicated above, resource pools are also used to track other sorts
 of resources besides memory.  The most common are open files.  The
@@ -824,7 +832,7 @@ cleared.  It is only when you are allocating many, many sub-requests
 for a single main request that you should seriously consider the
 <CODE>ap_destroy...</CODE> functions).
 
-<H2><A name="config">Configuration, commands and the like</A></H2>
+<H2><A NAME="config">Configuration, commands and the like</A></H2>
 
 One of the design goals for this server was to maintain external
 compatibility with the NCSA 1.3 server --- that is, to read the same
@@ -873,7 +881,7 @@ for handling them.  That is solved the same way it is solved wherever
 else similar problems come up, by tying those structures to the
 per-transaction resource pool.  <P>
 
-<H3><A name="per-dir">Per-directory configuration structures</A></H3>
+<H3><A NAME="per-dir">Per-directory configuration structures</A></H3>
 
 Let's look out how all of this plays out in <CODE>mod_mime.c</CODE>,
 which defines the file typing handler which emulates the NCSA server's
@@ -966,7 +974,7 @@ consists solely of the state of the <CODE>XBITHACK</CODE>), and for
 those modules, you can just not declare one, and leave the
 corresponding structure slot in the module itself <CODE>NULL</CODE>.<P>
 
-<H3><A name="commands">Command handling</A></H3>
+<H3><A NAME="commands">Command handling</A></H3>
 
 Now that we have these structures, we need to be able to figure out
 how to fill them.  That involves processing the actual
@@ -1105,7 +1113,8 @@ int find_ct(request_rec *r)
 
 </PRE>
 
-<H3><A name="servconf">Side notes --- per-server configuration, virtual servers, etc.</A></H3>
+<H3><A NAME="servconf">Side notes --- per-server configuration, virtual
+ servers, <EM>etc</EM>.</A></H3>
 
 The basic ideas behind per-server module configuration are basically
 the same as those for per-directory configuration; there is a creation

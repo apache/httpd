@@ -45,7 +45,7 @@
   decisions of the port to this machine.
  </P>
 
- <H2 ALIGN=center>Design Goals</H2>
+ <H2 ALIGN=CENTER>Design Goals</H2>
  <P>
   One objective of the EBCDIC port was to maintain enough backwards
   compatibility with the (EBCDIC) CERN server to make the transition to
@@ -61,7 +61,7 @@
   documents which must be converted.
  </P>
 
- <H2 ALIGN=center>Technical Solution</H2>
+ <H2 ALIGN=CENTER>Technical Solution</H2>
  <P>
   Since all Apache input and output is based upon the BUFF data type
   and its methods, the easiest solution was to add the conversion to
@@ -87,7 +87,7 @@
   </UL>
  </P>
 
-<H2 ALIGN=center>Porting Notes</H2>
+<H2 ALIGN=CENTER>Porting Notes</H2>
  <P>
   <OL>
    <LI>
@@ -200,8 +200,8 @@
   </OL>
  </P>
 
- <H2 ALIGN=center>Document Storage Notes</H2>
-  <H3 ALIGN=center>Binary Files</H3>
+ <H2 ALIGN=CENTER>Document Storage Notes</H2>
+  <H3 ALIGN=CENTER>Binary Files</H3>
    <P>
     All files with a <SAMP>Content-Type:</SAMP> which does not
     start with <SAMP>text/</SAMP> are regarded as <EM>binary files</EM>
@@ -217,7 +217,7 @@
     (the -b switch is not supported in unix rcp's).
    </P>
 
-  <H3 ALIGN=center>Text Documents</H3>
+  <H3 ALIGN=CENTER>Text Documents</H3>
    <P>
     The default assumption of the server is that Text Files
     (i.e., all files whose <SAMP>Content-Type:</SAMP> starts with
@@ -225,13 +225,13 @@
     set of the host, EBCDIC.
    </P>
 
-  <H3 ALIGN=center>Server Side Included Documents</H3>
+  <H3 ALIGN=CENTER>Server Side Included Documents</H3>
    <P>
     SSI documents must currently be stored in EBCDIC only. No
     provision is made to convert it from ASCII before processing.
    </P>
 
- <H2 ALIGN=center>Apache Modules' Status</H2>
+ <H2 ALIGN=CENTER>Apache Modules' Status</H2>
  <TABLE BORDER ALIGN=middle>
   <TR>
    <TH>Module
@@ -240,223 +240,223 @@
   </TR>
 
   <TR>
-   <TD ALIGN=left>http_core
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>http_core
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_access
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_access
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_actions
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT>mod_actions
+   <TD ALIGN=CENTER>?
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_alias
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_alias
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_asis
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT>mod_asis
+   <TD ALIGN=CENTER>?
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_auth
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_auth
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_auth_anon
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_auth_anon
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_auth_db
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT>mod_auth_db
+   <TD ALIGN=CENTER>?
    <TD>with own libdb.a
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_auth_dbm
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT>mod_auth_dbm
+   <TD ALIGN=CENTER>?
    <TD>with own libdb.a
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_autoindex
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_autoindex
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_cern_meta
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT>mod_cern_meta
+   <TD ALIGN=CENTER>?
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_cgi
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_cgi
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_digest
-   <TD ALIGN=center>-
+   <TD ALIGN=LEFT>mod_digest
+   <TD ALIGN=CENTER>-
    <TD>MD5 not ported yet
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_dir
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_dir
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_dld
-   <TD ALIGN=center>-
+   <TD ALIGN=LEFT>mod_dld
+   <TD ALIGN=CENTER>-
    <TD>no shared libs
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_env
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_env
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_example
-   <TD ALIGN=center>-
+   <TD ALIGN=LEFT>mod_example
+   <TD ALIGN=CENTER>-
    <TD>not tried yet
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_expires
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_expires
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_headers
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_headers
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_imap
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_imap
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_include
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_include
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_info
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_info
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_log_agent
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_log_agent
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_log_config
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_log_config
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_log_referer
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_log_referer
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_mime
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_mime
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_mime_magic
-   <TD ALIGN=center>-
+   <TD ALIGN=LEFT>mod_mime_magic
+   <TD ALIGN=CENTER>-
    <TD>not tried yet
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_negotiation
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_negotiation
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_proxy
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_proxy
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_rewrite
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT>mod_rewrite
+   <TD ALIGN=CENTER>?
    <TD>untested
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_setenvif
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_setenvif
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_speling
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_speling
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_status
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_status
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_unique_id
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_unique_id
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_userdir
-   <TD ALIGN=center>+
+   <TD ALIGN=LEFT>mod_userdir
+   <TD ALIGN=CENTER>+
    <TD>
   </TR>
 
   <TR>
-   <TD ALIGN=left>mod_usertrack
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT>mod_usertrack
+   <TD ALIGN=CENTER>?
    <TD>untested
   </TR>
  </TABLE>
 
- <H2 ALIGN=center>Third Party Modules' Status</H2>
+ <H2 ALIGN=CENTER>Third Party Modules' Status</H2>
  <TABLE BORDER ALIGN=middle>
   <TR>
    <TH>Module
@@ -465,26 +465,28 @@
   </TR>
 
   <TR>
-   <TD ALIGN=left><A HREF="http://java.apache.org/">mod_jserv</A>
-   <TD ALIGN=center>-
+   <TD ALIGN=LEFT><A HREF="http://java.apache.org/">mod_jserv</A>
+   <TD ALIGN=CENTER>-
    <TD>JAVA still being ported.
   </TR>
 
   <TR>
-   <TD ALIGN=left><A HREF="http://www.php.net/">mod_php</A>
-   <TD ALIGN=center>-
+   <TD ALIGN=LEFT><A HREF="http://www.php.net/">mod_php</A>
+   <TD ALIGN=CENTER>-
    <TD>not ported yet
   </TR>
 
   <TR>
-   <TD ALIGN=left><A HREF="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">mod_put</A>
-   <TD ALIGN=center>?
+   <TD ALIGN=LEFT
+   ><A HREF="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">mod_put</A>
+   <TD ALIGN=CENTER>?
    <TD>untested
   </TR>
 
   <TR>
-   <TD ALIGN=left><A HREF="ftp://hachiman.vidya.com/pub/apache/">mod_session</A>
-   <TD ALIGN=center>-
+   <TD ALIGN=LEFT
+   ><A HREF="ftp://hachiman.vidya.com/pub/apache/">mod_session</A>
+   <TD ALIGN=CENTER>-
    <TD>untested
   </TR>
 

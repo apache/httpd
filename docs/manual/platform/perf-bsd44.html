@@ -17,7 +17,8 @@
 </A>
 <H1 ALIGN="CENTER">Running a High-Performance Web Server for BSD</H1>
 
-Like other OS's, the listen queue is often the <STRONG>first limit hit</STRONG>.  The
+Like other OS's, the listen queue is often the <STRONG>first limit
+hit</STRONG>.  The
 following are comments from "Aaron Gifford &lt;agifford@InfoWest.COM&gt;"
 on how to fix this on BSDI 1.x, 2.x,  and FreeBSD 2.0 (and earlier):
 
@@ -167,7 +168,8 @@ value derived from maxusers proved sufficient for our load.
 <P>
 
 Be aware that your system may not boot with a kernel that is configured
-to use more resources than you have available system RAM. <STRONG>ALWAYS</STRONG>
+to use more resources than you have available system RAM.
+<STRONG>ALWAYS</STRONG>
 have a known bootable kernel available when tuning your system this way,
 and use the system tools beforehand to learn if you need to buy more
 memory before tuning.
@@ -187,8 +189,8 @@ Finally, there's the hard limit of child processes configured in Apache.
 <P>
 
 For versions of Apache later than 1.0.5 you'll need to change the
-definition for <STRONG>HARD_SERVER_LIMIT</STRONG> in <EM>httpd.h</EM> and recompile
-if you need to run more than the default 150 instances of httpd.
+definition for <STRONG>HARD_SERVER_LIMIT</STRONG> in <EM>httpd.h</EM> and
+recompile if you need to run more than the default 150 instances of httpd.
 
 <P>
 
@@ -228,8 +230,8 @@ often maxed out.</BLOCKQUOTE>
 
 <H3>More welcome!</H3>
 
-If you have tips to contribute, send mail to <A
-HREF="mailto:brian@organic.com">brian@organic.com</A>
+If you have tips to contribute, send mail to
+<A HREF="mailto:brian@organic.com">brian@organic.com</A>
 
 <!--#include virtual="footer.html" -->
 </BODY></HTML>
