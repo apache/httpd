@@ -66,7 +66,6 @@
 #include "os.h"
 #include "scoreboard.h"
 #include "http_log.h"
-#include "http_conf_globals.h"
 
 static FILE *sock_fp;
 

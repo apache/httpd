@@ -87,7 +87,6 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "ap_mpm.h"
-#include "http_conf_globals.h"
 #include "apr_optional.h"
 #include "../filters/mod_include.h"
 #ifdef HAVE_STRING_H

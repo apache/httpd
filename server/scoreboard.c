@@ -64,12 +64,7 @@
 #include "http_main.h"
 #include "http_core.h"
 #include "http_config.h"
-/* ToDo: Fix this right */
-#if !defined(WIN32) && !defined(OS2) && !defined(BEOS)
-#include "unixd.h"
-#endif
 
-#include "http_conf_globals.h"
 #include "mpm.h"
 #include "scoreboard.h"
 #ifdef HAVE_SYS_TYPES_H

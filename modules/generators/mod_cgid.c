@@ -88,7 +88,6 @@
 #include "http_main.h" 
 #include "http_log.h" 
 #include "util_script.h" 
-#include "http_conf_globals.h" 
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "mod_suexec.h"
