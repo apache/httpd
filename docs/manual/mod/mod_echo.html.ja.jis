@@ -14,10 +14,11 @@
     <p>本モジュールはコンセプトを伝えるためのプロトコルモジュールの
     実装例となっています。単純なエコーサーバを提供します。
     Telnet で接続し、文字列を送信すると、エコーを返します。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocolecho">ProtocolEcho</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocolecho">ProtocolEcho</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>エコーサーバの有効無効を設定します。</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>ProtocolEcho <em>On|Off</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>server config, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td><code>ProtocolEcho <em>On|Off</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_echo</td></tr><tr><th><a href="directive-dict.html#Compatibility">互換性:
               </a></th><td>Apache 2.0 以降</td></tr></table>

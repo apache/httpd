@@ -224,7 +224,8 @@
     <p>ちょっとどんなことができるかを見せましょう。
     ここで典型的な例として、<code>/sw/pkg/apache</code> 
     というインストールツリーでコンパイラとフラグを指定して、
-    さらに二つの追加モジュール mod_rewrite と mod_speling を後で DSO 
+    さらに二つの追加モジュール <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> と
+    <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> を後で DSO 
     メカニズムでロードするようにコンパイルしてみます:</p>
 
 <div class="example"><p><code>
@@ -408,7 +409,7 @@
       <dd><em>MODULE</em> モジュールをコンパイルして
       インクルードします。識別子 <em>MODULE</em> は
       モジュール文書に記載されている<a href="mod/module-dict.html#ModuleIdentifier">モジュール
-      識別子</a>から "_module" を取り除いた文字列です。
+      識別子</a>から "_module" を取り除いた文字列です。
       DSO としてモジュールをコンパイルする場合は、
       <code>=shared</code> オプションを付加してください。</dd>
 
@@ -474,7 +475,7 @@
 
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
-    <p><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code> と <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
+    <p><code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code> と <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     の DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 
     等、 Apache 機能の幾つかでは情報の検索に単純な key/value
     データベースを使用します。Apache には SDBM がソースコードごと

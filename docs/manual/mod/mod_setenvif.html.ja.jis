@@ -25,12 +25,16 @@
   BrowserMatch ^Mozilla netscape<br />
   BrowserMatch MSIE !netscape<br />
 </code></p></div>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="../env.html">Apache の環境変数</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../env.html">Apache の環境変数</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>HTTP User-Agent に基づいて環境変数を設定する
 </td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td><code>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_setenvif</td></tr></table>
@@ -53,9 +57,9 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>HTTP User-Agent に基づいて大文字小文字を区別せずに
 環境変数を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td><code>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_setenvif</td></tr><tr><th><a href="directive-dict.html#Compatibility">互換性:
@@ -74,7 +78,7 @@
 </code></p></div>
 
     <p><code class="directive">BrowserMatch</code> ディレクティブと
-    <code class="directive">BrowserMatchNoCase</code> ディレクティブは
+    <code class="directive">BrowserMatchNoCase</code> ディレクティブは
     <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ディレクティブと
     <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code> ディレクティブの
     特例です。以下の 2 行の効果は同じです:</p>
@@ -86,10 +90,10 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>リクエストの属性に基づいて環境変数を設定する
 </td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>SetEnvIf <em>attribute
+              </a></th><td><code>SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_setenvif</td></tr></table>
@@ -99,7 +103,7 @@
 
 <ol>
 <li>HTTP リクエストヘッダフィールド (詳しい情報は <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a> を
-    参照してください)。例えば、<code>Host</code>,
+    参照してください)。例えば、<code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, 
     <code>Accept-Language</code> です。リクエストヘッダの集合を現すために
     正規表現を使うこともできます。</li>
@@ -183,10 +187,10 @@
 <h3>参照</h3><ul><li>他の例は、<a href="../env.html">Apache の環境変数</a>
 </li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>SetEnvIfNoCase <em>attribute regex 
+              </a></th><td><code>SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_setenvif</td></tr><tr><th><a href="directive-dict.html#Compatibility">互換性:

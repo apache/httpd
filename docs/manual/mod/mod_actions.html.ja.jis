@@ -16,17 +16,19 @@ CGI スクリプトを実行する機能を提供</td></tr><tr><th><a href="module-dict.h
     ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
     スクリプトが実行されるようにします。
     これはファイルを処理するスクリプトの実行をずっと簡単にします。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li><li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>特定のハンドラやコンテントタイプに対して CGI を実行するように
 設定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>Action <em>action-type cgi-script</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">上書き:
+              </a></th><td><code>Action <em>action-type cgi-script</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , , </td></tr><tr><th><a href="directive-dict.html#Override">上書き:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_actions</td></tr></table>
     <p>このディレクティブは <em>action-type</em>
     がリクエストされたときに <em>cgi-script</em>
-    が実行されるという動作を追加します。<em>cgi-script</em> は
+    が実行されるという動作を追加します。<em>cgi-script</em> は
     <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> や
     <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> によって
     CGI スクリプトに設定されたリソースへの URL-path です。
@@ -48,7 +50,7 @@ CGI スクリプトを実行する機能を提供</td></tr><tr><th><a href="module-dict.h
 </code></p></div>
 
     <p>最初の例では、MIME コンテントタイプが <code>image/gif</code>
-    のファイルへのリクエストは、そのファイルの代わりに指定されたスクリプト
+    のファイルへのリクエストは、そのファイルの代わりに指定されたスクリプト
     <code>/cgi-bin/images.cgi</code> が呼ばれます。</p>
 
     <p>2 番目の例では、拡張子が <code>.xyz</code> のファイルへのリクエストは、
@@ -57,8 +59,8 @@ CGI スクリプトを実行する機能を提供</td></tr><tr><th><a href="module-dict.h
 <h3>参照</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>特定のリクエストメソッドに対して CGI スクリプトを
 実行するように設定</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td> Script <em>method cgi-script</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td><code> Script <em>method cgi-script</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td>, , </td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_actions</td></tr></table>
     <p>このディレクティブは <em>method</em>

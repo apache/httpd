@@ -13,13 +13,14 @@
 <p>このモジュールは、
 <code>http://example.com/~user/</code>
 構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL から
+</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL から
 ファイルシステムへのマッピング</a></li><li><a href="../howto/public_html.html">public_html
 チュートリアル</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>ユーザ専用ディレクトリの位置</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td>UserDir <em>directory-filename</em></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
+              </a></th><td><code>UserDir <em>directory-filename</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>UserDir public_html</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
+              </a></th><td>, </td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_userdir</td></tr></table>
 
@@ -34,7 +35,7 @@
 
       <li><code>disabled</code> キーワード。
       <code>enabled</code> キーワード (下記参照) で明示的に
-      指定されたユーザ以外の
+      指定されたユーザ以外の
       <em>全ての</em>ユーザ名-ディレクトリ変換を
       しないようにします。</li>
 
@@ -81,7 +82,7 @@ http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
 <div class="note">
       <strong>このディレクティブを使うときは注意してください;
       "<code>UserDir ./</code>" は
-      "<code>/~root</code>" から "<code>/</code>" へマップしますが、
+      "<code>/~root</code>" から "<code>/</code>" へマップしますが、
       これは望ましい動作ではないでしょう。
       "<code>UserDir disabled root</code>" 宣言を
       設定の中に含めておくことを強くお薦めします。
@@ -109,6 +110,23 @@ UserDir enabled user1 user2 user3
 UserDir enabled<br />
 UserDir disabled user4 user5 user6
 </code></p></div>
+
+<p>他のユーザディレクトリを指定することもできます。
+次のようなコマンドを使うと:</p>
+
+<div class="example"><p><code>
+Userdir public_html /usr/web http://www.foo.com/
+</code></p></div>
+
+<p>http://www.foo.com/~bob/one/two.html へのリクエストはまず
+~bob/public_html/one/two.html のページを調べ、その次に
+/usr/web/bob/one/two.html を調べ、最後に http://www.foo.com/bob/one/two.html
+へのリダイレクトを送ります。</p>
+
+<p>リダイレクトを加える場合は、リストの最後の選択肢でなければなりません。
+Apache はリダイレクトが成功するかどうかを決めることはできませんので、
+リストの前の方にリダイレクトを書くと、それが必ず使用される選択肢に
+なってしまいます。</p>
 
 <h3>参照</h3><ul><li><a href="../howto/public_html.html">public_html
 チュートリアル</a></li></ul></div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
