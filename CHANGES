@@ -29,9 +29,6 @@ Changes with Apache 2.1.0-dev
   *) Add test_config hook, run only if httpd is invoked using -t.
      [Joe Orton]
 
-  *) WinNT MPM: Fix a broken log message at termination.  PR 28063.
-     [Eider Oliveira <eider bol.com.br>]
-
   *) Improve error handling for corrupted pid files.  [Jeff Trawick]
 
   *) mod_proxy.c and proxy_util.c: Enable compiling on 2.0-HEAD 
@@ -419,6 +416,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) WinNT MPM: Fix a broken log message at termination.  PR 28063.
+     [Eider Oliveira <eider bol.com.br>]
 
   *) Prevent Win32 pool corruption at startup [Allan Edwards]
 
