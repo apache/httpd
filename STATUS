@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/28 21:00:40 $]
+Last modified at [$Date: 2001/08/28 23:34:30 $]
 
 Release:
 
@@ -77,18 +77,12 @@ RELEASE SHOWSTOPPERS:
       to make it agree with the operation of the StartServers
       directive.
 
-    * configure --enable-mods-shared=most and --enable-mods=most
-      options have issues.  Examples: 
+    * configure --enable-mods-shared=most option has issues.  Example: 
 
       ./configure --enable-mods-shared=most
 
         This builds mod_headers as a DSO (good) but builds mod_mime
-        as a compiled-in module (bad, I think).
-
-      ./configure --enable-mods=most
-
-        This builds mod_mime(good) but doesn't build mod_headers at 
-        all (bad).
+        as a compiled-in module (bad).
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
