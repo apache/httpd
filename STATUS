@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/01 04:30:52 $]
+Last modified at [$Date: 1999/11/02 23:18:28 $]
 
 Release:
 
@@ -12,7 +12,14 @@ Plan:
 
 RELEASE SHOWSTOPPERS:
 
+    * CGI programs will stop working after a little while
+        Status: Manoj is working on this
+
     * suEXEC doesn't work
+        Status: Manoj has finished an implementation, but it needs
+        polishing. Specifically, it puts a bunch of Unix stuff into
+        portable code.  Current patch will be sent to new-httpd upon
+        request.
 
     * Windows NT port isn't done
         Status: Bill is working on this through his MPM work, and Ryan
@@ -41,6 +48,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 Other bugs that need fixing:
 
     * MaxRequestsPerChild measures connections, not requests.
+        Until someone has a better way, we'll probably just rename it
+        "MaxConnectionsPerChild".
     
     * Regex containers don't work in an intutive way
         Status: No one has come up with an efficient way to fix this
@@ -49,7 +58,7 @@ Other bugs that need fixing:
 
     * Areas where APRFile is being used need to be cleaned-up
 
-    * SIGSEGV on Linux seems to only kill a thread not a whole process;
+    * SIGSEGV on Linux seems to only kill a thread, not a whole process;
       we need to work around this, probably by bouncing the signal to
       the sigwait thread. But this will hurt debugability.
 
