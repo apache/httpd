@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Add SSL_CLIENT_V_REMAIN variable, representing the
+     number of days until the client cert expires.  [Joe Orton]
+
   *) mod_userdir: Ensure that the userdir identity is used for
      suexec userdir access in a virtual host which has suexec configured.  
      PR 18156.  [Joshua Slive]
