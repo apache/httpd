@@ -338,6 +338,8 @@ Win32 specific issues:
     * modules that need to be made to work on win32
     	- mod_info
         - mod_example isn't multithreadreded
+	- mod_speling
+	- mod_unique_id (needs mt changes)
 
     * do something to disable bogus warnings
 
