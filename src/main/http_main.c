@@ -1153,10 +1153,10 @@ static void linger_timeout(void)
  */
 static void lingering_close(request_rec *r)
 {
-    char dummybuf[2048];
+    char dummybuf[512];
     struct timeval tv;
-    fd_set lfds, fds_read, fds_err;
-    int select_rv = 0;
+    fd_set lfds;
+    int select_rv;
     int lsd;
 
     /* Prevent a slow-drip client from holding us here indefinitely */
@@ -1185,13 +1185,11 @@ static void lingering_close(request_rec *r)
     /* Set up to wait for readable data on socket... */
 
     FD_ZERO(&lfds);
-    FD_SET(lsd, &lfds);
 
     /* Wait for readable data or error condition on socket;
-     * slurp up any data that arrives...  We exit when we go for 
-     * an interval of tv length without getting any more data, get an
-     * error from select(), get an exception on lsd, get an error or EOF
-     * on a read, or the timer expires.
+     * slurp up any data that arrives...  We exit when we go for an
+     * interval of tv length without getting any more data, get an error
+     * from select(), get an error or EOF on a read, or the timer expires.
      */
 
     do {
@@ -1204,16 +1202,14 @@ static void lingering_close(request_rec *r)
 	 * These parameters are reset on each pass, since they might be
 	 * changed by select.
 	 */
+	FD_SET(lsd, &lfds);
 	tv.tv_sec = 2;
 	tv.tv_usec = 0;
-	fds_read = lfds;
-	fds_err = lfds;
 
-	select_rv = ap_select(lsd + 1, &fds_read, NULL, &fds_err, &tv);
-    } while ((select_rv > 0) &&	/* Something to see on socket    */
-	     !FD_ISSET(lsd, &fds_err) &&	/* that isn't an error condition */
-	     FD_ISSET(lsd, &fds_read) &&	/* and is worth trying to read   */
-	     (read(lsd, dummybuf, sizeof dummybuf) > 0));
+	select_rv = ap_select(lsd + 1, &lfds, NULL, NULL, &tv);
+
+    } while ((select_rv > 0) &&
+             (read(lsd, dummybuf, sizeof dummybuf) > 0));
 
     /* Should now have seen final ack.  Safe to finally kill socket */
 
@@ -1277,18 +1273,18 @@ static void probe_writable_fds(void)
 
     fd_max = 0;
     FD_ZERO(&writable_fds);
-    for (ocr = other_children; ocr; ocr = ocr->next) {
-	if (ocr->write_fd == -1)
-	    continue;
-	FD_SET(ocr->write_fd, &writable_fds);
-	if (ocr->write_fd > fd_max) {
-	    fd_max = ocr->write_fd;
-	}
-    }
-    if (fd_max == 0)
-	return;
-
     do {
+	for (ocr = other_children; ocr; ocr = ocr->next) {
+	    if (ocr->write_fd == -1)
+		continue;
+	    FD_SET(ocr->write_fd, &writable_fds);
+	    if (ocr->write_fd > fd_max) {
+		fd_max = ocr->write_fd;
+	    }
+	}
+	if (fd_max == 0)
+	    return;
+
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
 	rc = ap_select(fd_max + 1, NULL, &writable_fds, NULL, &tv);

@@ -1,4 +1,7 @@
 Changes with Apache 1.3b7
+  
+  *) Fix two bugs in select() handling in http_main.c.
+     [Roy Fielding]
 
   *) Suppress "error(0)" messages for ap_log_error() when the APLOG_NOERRNO
      is unset (as it is in situations like timeouts) where it is unclear
