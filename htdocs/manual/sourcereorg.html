@@ -105,7 +105,7 @@ Apache is as follows:
 
 In previous releases of Apache, new modules were added to the
 <CODE>src</CODE> directory, and if the module required any additional
-compilation options (such as libaries) they would have to be added
+compilation options (such as libraries) they would have to be added
 to <CODE>Configuration</CODE>. Also the user would have to be
 told the module's structure name to add on the Module line
 of <CODE>Configuration</CODE>.
@@ -138,7 +138,7 @@ From Apache 1.3 onwards, module authors can make use of these new features:
 The rest of this document shows how to package modules for Apache 1.3
 and later and what to tell end-users of the module.
 
-<h3>Building a simple source distibution</h3>
+<h3>Building a simple source distribution</h3>
 
 Consider a simple add-on module, distributed as a single file. For
 example, say it is called mod_demo.c. The archive for this module
@@ -175,7 +175,7 @@ some standard Apache module API functions might look this this:
 
 When the user runs <CODE>Configure</CODE> Apache will create a full
 makefile to build this module. If this module also requires
-some additional built-time options to be given, such as libaries,
+some additional built-time options to be given, such as libraries,
 see the next section.
 <P>
 
@@ -250,10 +250,10 @@ an embedded module definition.
 
 <h3>Module Definition Information for Binary Distribitions</h3>
 
-If the module is to be distributed as binary (object or libary) rather
+If the module is to be distributed as binary (object or library) rather
 than source, it is not possible to add the module definition
 information to the source file. In this case it can be placed in a
-separate file which has the same base name as the object or libary
+separate file which has the same base name as the object or library
 file, but with a <CODE>.module</CODE> extension. So, for example, if
 the distributed module object file is mod_demo.o, the module
 definition file should be called mod_demo.module. It contains the same
