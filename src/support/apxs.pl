@@ -568,7 +568,8 @@ stop:
 
 #include "httpd.h"
 #include "http_config.h"
-#include "conf.h"
+#include "http_protocol.h"
+#include "ap_config.h"
 
 /* The sample content handler */
 static int %NAME%_handler(request_rec *r)
