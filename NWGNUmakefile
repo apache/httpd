@@ -131,7 +131,7 @@ NLM_THREAD_NAME	= Apache
 # This is used by the '-screenname' directive.  If left blank,
 # 'Apache for NetWare' Thread will be used.
 #
-NLM_SCREEN_NAME = Apache for NetWare
+NLM_SCREEN_NAME = Apache $(VERSION_STR) for NetWare
 
 
 #
