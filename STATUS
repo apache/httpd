@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/05 18:56:43 $]
+Last modified at [$Date: 2004/11/09 19:25:13 $]
 
 Release:
 
@@ -74,7 +74,7 @@ RELEASE SHOWSTOPPERS:
     *) mod_rewrite: Regression since 2.0.52 in QUERY_STRING handling
        for [P] rules.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c?r1=1.262&r2=1.263
-       +1: jorton, nd
+       +1: jorton, nd, wrowe
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -89,33 +89,33 @@ PATCHES TO BACKPORT FROM 2.1
        cache for authorization purposes only rather than authentication.  
        PR #31898
         http://www.apache.org/~bnicholes/apache_2.0_getuserdn.patch
-       +1:bnicholes
+       +1:bnicholes, wrowe
        
     *) mod_authnz_ldap: Added the directive "Requires ldap-attribute" that
        allows the module to only authorize a user if the attribute value
        specified matches the value of the user object. PR 31913
          modules/aaa/mod_authnz_ldap.c: r1.7
 	 docs/manual/mod/mod_authnz_ldap.xml: r1.3
-       +1: bnicholes
+       +1: bnicholes, wrowe
 
     *) mod_ssl: Fix and prevent an SSLCipherSuite bypass by resuming a
        session during a renegotiation.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_kernel.c?r1=1.110&r2=1.111
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_init.c?r1=1.128&r2=1.129
        PR: 31505
-       +1: jorton, pquerna, minfrin
+       +1: jorton, pquerna, minfrin, wrowe
 
     *) mod_ssl: Fail to configure when an SSL proxy is configured with
        incomplete client cert keypair, rather than segfaulting at
        runtime.
        http://cvs.apache.org/viewcvs/httpd-2.0/modules/ssl/ssl_engine_init.c.diff?r1=1.118&r2=1.119
        PR: 24030
-       +1: jorton, minfrin, jerenkrantz
+       +1: jorton, minfrin, jerenkrantz, wrowe
 
     *) mod_ssl: Fix an possible NULL pointer dereference in some configs.
        http://nagoya.apache.org/bugzilla/showattachment.cgi?attach_id=13182
        PR: 31848
-       +1: jorton
+       +1: jorton, wrowe
 
     *) Allow for the use of --with-module=foo:bar where the ./modules/foo
        directory is a local addition to the ./modules directory.
@@ -124,6 +124,10 @@ PATCHES TO BACKPORT FROM 2.1
        simply adding them to ./modules.
          modules/config5.m4: 1.4
        +1: jim, jerenkrantz
+       +0: wrowe
+           (would rather see --with-module-lib=foo --enable-bar=shared syntax to
+            support multiple libs, module modules.  Might need to pass the
+            --with-module-lib=foo to ./buildconf instead.)
 
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
@@ -136,7 +140,7 @@ PATCHES TO BACKPORT FROM 2.1
        library handles special characters.
          http://issues.apache.org/bugzilla/showattachment.cgi?attach_id=12919
        PR 24437
-       +1: minfrin
+       +1: minfrin, wrowe
 
     *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.102
@@ -167,6 +171,12 @@ PATCHES TO BACKPORT FROM 2.1
        -0: jerenkrantz
            jerenkrantz: I don't think we can change the APR 0.9 interfaces.
                         They are supposed to be set in stone.
+       -1:  wrowe: agrees with jerenkrantz, further realized that this major
+                   change in APR 1.0 caused -every- apr-util linked app to have
+                   the ldap sdk (openldap etc) linked in, and our --static-support
+                   stuff is horribly broken by this change.  Not that it's wrong,
+                   we need to look at making it slightly more dynamic for those
+                   apps that don't touch ldap.
 
     *) Add load balancer support to the scoreboard in preparation for
        load balancing support in mod_proxy.
@@ -177,6 +187,8 @@ PATCHES TO BACKPORT FROM 2.1
            nd: -0 as in "it should be considered as a 2.1 feature".
               If the modified structures are public (are they?), I'm just -1.
            jerenkrantz: Sounds like a good 2.1 feature...
+       -1: wrowe (make this a private score to the module and you would be fine;
+                  we don't need to keep overloading a single scoreboard.)
 
     *) mod_cgi: Added API call and overload of detached field in cgi_exec_info_t 
        structure to support loading in current or new address space for CGIs.
@@ -196,13 +208,14 @@ PATCHES TO BACKPORT FROM 2.1
        trawick: need changes to mod_ssl.h to remove prototypes for those removed functions
        0: nd: IMHO that's a public API change then and not applicable for
               2.0, just let 'em in
+       -1: wrowe (as nd suggests, leave the dead horse in peace.)
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
        directive. PR 28553.
          modules/mappers/mod_actions.c: r1.32, r1.34
        jerenkrantz: Icky side-effect of the *t == '0' check.
-       +1: nd, jerenkrantz
+       +1: nd, jerenkrantz, wrowe
 
     *) mod_log_config: Cleanup log_header_out function to allow multiple headers
        like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
@@ -236,7 +249,7 @@ PATCHES TO BACKPORT FROM 2.1
           modules/ssl/ssl_engine_kernel.c: r1.83, r1.105, r1.108
           modules/ssl/ssl_util.c: r1.36
           modules/ssl/ssl_private.h: r1.2
-       +1: bnicholes
+       +1: bnicholes, wrowe                             
        -0: jerenkrantz (should wait for 2.2)
        -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
 
@@ -325,7 +338,7 @@ PATCHES TO BACKPORT FROM 2.1
       check r->connection->local_addr->port before defaulting to 
       server->port or ap_default_port()
         server/core.c r1.247
-      +1: bnicholes, jim
+      +1: bnicholes, jim, wrowe
        0: nd, jerenkrantz
          nd: can the local_addr->port ever be 0?
 	 bnicholes response: I couldn't tell you for sure if local_addr->port
@@ -341,7 +354,7 @@ PATCHES TO BACKPORT FROM 2.1
       (if there is sufficient interest I'll pursue getting APR 0.9
       fixed up as well as putting together a patch for httpd 2.0.next
       which integrates the two rounds of changes)
-      +1 concept: trawick, nd, stoddard
+      +1 concept: trawick, nd, stoddard, wrowe
 
     * mod_cache: Add CacheIgnoreHeaders directive.
       PR: 30399
@@ -352,6 +365,7 @@ PATCHES TO BACKPORT FROM 2.1
         modules/experimental/mod_disk_cache.c: 1.67
         modules/experimental/mod_mem_cache.c: 1.119
       +1: jerenkrantz
+      +0: sounds like a nice 'feature' v.s. rfc-required behavior, great for 2.2
 
 CURRENT RELEASE NOTES:
 
@@ -366,13 +380,13 @@ CURRENT VOTES:
 
     * Promote mod_ldap and mod_auth_ldap from experimental to
       non experimental status.
-      +1: bnicholes
+      +1: bnicholes, wrowe
       +0: minfrin (wait till the last cache bugs are ironed out)
 
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
       items to be addressed as a supported module).
-      +1: jim, stoddard, bnicholes, fielding
+      +1: jim, stoddard, bnicholes, fielding, wrowe
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
