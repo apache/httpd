@@ -96,7 +96,7 @@ static int cache_url_handler(request_rec *r, int lookup)
     /* find certain cache controlling headers */
     auth = apr_table_get(r->headers_in, "Authorization");
 
-    /* first things first - does the request allow us to return
+    /* First things first - does the request allow us to return
      * cached information at all? If not, just decline the request.
      *
      * Note that there is a big difference between not being allowed
@@ -114,7 +114,7 @@ static int cache_url_handler(request_rec *r, int lookup)
      */
     if (conf->ignorecachecontrol == 1 && auth == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "incoming request is asking for a uncached version of "
+                     "incoming request may be asking for a uncached version of "
                      "%s, but we know better and are ignoring it", url);
     }
     else {
@@ -270,6 +270,10 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* If the request has Cache-Control: no-store from RFC 2616, don't store
      * unless CacheStoreNoStore is active.
+     */
+    /* FIXME: The Cache-Control: no-store could have come in on a 304,
+     * FIXME: while the original request wasn't conditional.  IOW, we made the
+     * FIXME: the request conditional earlier to revalidate our cached response.
      */
     cc_in = apr_table_get(r->headers_in, "Cache-Control");
     if (r->no_cache ||
