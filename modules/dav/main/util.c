@@ -305,6 +305,61 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname)
     return NULL;
 }
 
+/* gather up all the CDATA into a single string */
+const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
+                              int strip_white)
+{
+    apr_size_t len = 0;
+    ap_text *scan;
+    const ap_xml_elem *child;
+    char *cdata;
+    char *s;
+    apr_size_t tlen;
+
+    for (scan = elem->first_cdata.first; scan != NULL; scan = scan->next)
+        len += strlen(scan->text);
+
+    for (child = elem->first_child; child != NULL; child = child->next) {
+        for (scan = child->following_cdata.first;
+             scan != NULL;
+             scan = scan->next)
+            len += strlen(scan->text);
+    }
+
+    cdata = s = apr_palloc(pool, len + 1);
+
+    for (scan = elem->first_cdata.first; scan != NULL; scan = scan->next) {
+        tlen = strlen(scan->text);
+        memcpy(s, scan->text, tlen);
+        s += tlen;
+    }
+
+    for (child = elem->first_child; child != NULL; child = child->next) {
+        for (scan = child->following_cdata.first;
+             scan != NULL;
+             scan = scan->next) {
+            tlen = strlen(scan->text);
+            memcpy(s, scan->text, tlen);
+            s += tlen;
+        }
+    }
+
+    *s = '\0';
+
+    if (strip_white && len > 0) {
+        /* trim leading whitespace */
+        while (apr_isspace(*cdata))     /* assume: return false for '\0' */
+            ++cdata;
+
+        /* trim trailing whitespace */
+        while (len-- > 0 && apr_isspace(cdata[len]))
+            continue;
+        cdata[len + 1] = '\0';
+    }
+
+    return cdata;
+}
+
 /* ---------------------------------------------------------------
 **
 ** Timeout header processing
@@ -1492,6 +1547,8 @@ dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl)
     return NULL;
 }
 
+#if 0 /* not needed right now... */
+
 static const char *strip_white(const char *s, apr_pool_t *pool)
 {
     apr_size_t idx;
@@ -1513,53 +1570,9 @@ static const char *strip_white(const char *s, apr_pool_t *pool)
 
     return s;
 }
+#endif
 
-#define DAV_TARGET_SELECTOR_HDR "Target-Selector"
-
-/* see mod_dav.h for docco */
-int dav_get_target_selector(request_rec *r,
-                            const ap_xml_elem *version,
-                            const char **target,
-                            int *is_label)
-{
-    /* Initialize results */
-    *target = NULL;
-    *is_label = 0;
-
-    if (version != NULL) {
-        /* Expect either <DAV:version><DAV:href>URI</DAV:href></DAV:version>
-         * or <DAV:label-name>LABEL</DAV:label-name> */
-        if (strcmp(version->name, "version") == 0) {
-            if ((version = dav_find_child(version, "href")) == NULL) {
-	        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			      "Missing DAV:href in DAV:version element");
-                return HTTP_BAD_REQUEST;
-            }
-
-            /* return the contents of the DAV:href element */
-            /* ### this presumes no child elements */
-            *target = strip_white(version->first_cdata.first->text, r->pool);
-        }
-        else if (strcmp(version->name, "label-name") == 0) {
-            /* return contents of the DAV:label-name element */
-            *target = strip_white(version->first_cdata.first->text, r->pool);
-            *is_label = 1;
-        }
-        else {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
-			  "Unknown version specifier (not DAV:version or DAV:label-name)");
-            return HTTP_BAD_REQUEST;
-        }
-    }
-    else {
-        /* no element. see if a Target-Selector header was provided
-         * (which is always interpreted as a label) */
-        *target = apr_table_get(r->headers_in, DAV_TARGET_SELECTOR_HDR);
-        *is_label = 1;
-    }
-
-    return OK;
-}
+#define DAV_LABEL_HDR "Label"
 
 /* dav_add_vary_header
  *
@@ -1572,18 +1585,22 @@ void dav_add_vary_header(request_rec *in_req,
 {
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(in_req);
 
+    /* ### this is probably all wrong... I think there is a function in
+       ### the Apache API to add things to the Vary header. need to check */
+
     /* Only versioning headers require a Vary response header,
      * so only do this check if there is a versioning provider */
     if (vsn_hooks != NULL) {
-	const char *target = apr_table_get(in_req->headers_in, DAV_TARGET_SELECTOR_HDR);
+	const char *target = apr_table_get(in_req->headers_in, DAV_LABEL_HDR);
 	const char *vary = apr_table_get(out_req->headers_out, "Vary");
 
         /* If Target-Selector specified, add it to the Vary header */
 	if (target != NULL) {
 	    if (vary == NULL)
-		vary = DAV_TARGET_SELECTOR_HDR;
+		vary = DAV_LABEL_HDR;
 	    else
-		vary = apr_pstrcat(out_req->pool, vary, "," DAV_TARGET_SELECTOR_HDR, NULL);
+		vary = apr_pstrcat(out_req->pool, vary, "," DAV_LABEL_HDR,
+                                   NULL);
 
 	    apr_table_setn(out_req->headers_out, "Vary", vary);
 	}
@@ -1649,7 +1666,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
              * Note that auto-versioning can only be applied to a version selector,
              * so no separate working resource will be created.
              */
-	    if ((err = (*vsn_hooks->checkout)(parent, NULL))
+	    if ((err = (*vsn_hooks->checkout)(parent, 0, 0, 0, NULL, NULL))
                 != NULL)
             {
 		body = apr_psprintf(r->pool,
@@ -1685,7 +1702,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
     if (!parent_only && !resource->working) {
         /* Auto-versioning can only be applied to version selectors, so
          * no separate working resource will be created. */
-	if ((err = (*vsn_hooks->checkout)(resource, NULL))
+	if ((err = (*vsn_hooks->checkout)(resource, 0, 0, 0, NULL, NULL))
             != NULL)
         {
 	    body = apr_psprintf(r->pool,

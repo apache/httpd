@@ -59,11 +59,13 @@
 #ifndef _MOD_DAV_H_
 #define _MOD_DAV_H_
 
-#include "httpd.h"
-#include "util_xml.h"
 #include "apr_hooks.h"
 #include "apr_hash.h"
 #include "apr_dbm.h"
+#include "apr_tables.h"
+
+#include "httpd.h"
+#include "util_xml.h"
 
 #include <limits.h>     /* for INT_MAX */
 
@@ -519,6 +521,10 @@ int dav_get_depth(request_rec *r, int def_depth);
 int dav_validate_root(const ap_xml_doc *doc, const char *tagname);
 ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
+/* gather up all the CDATA into a single string */
+const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
+                              int strip_white);
+
 
 /* --------------------------------------------------------------------
 **
@@ -598,9 +604,6 @@ APR_DECLARE_EXTERNAL_HOOK(dav, DAV, int, find_liveprop,
 APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, insert_all_liveprops, 
                          (request_rec *r, const dav_resource *resource,
                           dav_prop_insert what, ap_text_header *phdr))
-
-/* ### make this internal to mod_dav.c ? */
-#define DAV_KEY_RESOURCE        "dav-resource"
 
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
@@ -1573,11 +1576,17 @@ struct dav_hooks_repository
      * URI or accessing the resource or whatever, then an error should be
      * returned.
      *
-     * root_dir: the root of the directory for which this repository is
-     *           configured.
-     * target: is either a label, or a version URI, or NULL. If there is
-     *         a target, then is_label specifies whether the target is a
-     *         label or a URI.
+     * root_dir:
+     *   the root of the directory for which this repository is configured.
+     *
+     * label:
+     *   if a Label: header is present (and allowed), this is the label
+     *   to use to identify a version resource from the resource's
+     *   corresponding version history. Otherwise, it will be NULL.
+     *
+     * use_checked_in:
+     *   use the DAV:checked-in property of the resource identified by the
+     *   Request-URI to identify and return a version resource
      *
      * The provider may associate the request storage pool with the resource
      * (in the resource->pool field), to use in other operations on that
@@ -1586,8 +1595,8 @@ struct dav_hooks_repository
     dav_error * (*get_resource)(
         request_rec *r,
         const char *root_dir,
-	const char *target,
-        int is_label,
+	const char *label,
+        int use_checked_in,
         dav_resource **resource
     );
 
@@ -1786,25 +1795,6 @@ struct dav_hooks_repository
 */
 
 
-/*
- * dav_get_target_selector
- *
- * If a DAV:version or DAV:label-name element is provided,
- * then it is assumed to provide the target version.
- * If no element is provided (version==NULL), then the
- * request headers are examined for a Target-Selector header.
- *
- * The target version, if any, is then returned. If the version
- * was specified by a label, then *is_label is set to 1.
- * Otherwise, the target is a version URI.
- *
- * (used by versioning clients)
- */
-int dav_get_target_selector(request_rec *r,
-                            const ap_xml_elem *version,
-                            const char **target,
-                            int *is_label);
-
 /* dav_add_vary_header
  *
  * If there were any headers in the request which require a Vary header
@@ -1925,8 +1915,19 @@ struct dav_hooks_vsn
      * resource descriptor will refer to the working resource.
      * The working_resource argument can be NULL if the caller
      * is not interested in the working resource.
+     *
+     * If the client has specified DAV:unreserved or DAV:fork-ok in the
+     * checkout request, then the corresponding flags are set. If
+     * DAV:activity-set has been specified, then create_activity is set
+     * if DAV:new was specified; otherwise, the DAV:href elements' CDATA
+     * (the actual href text) is passed in the "activities" array (each
+     * element of the array is a const char *). activities will be NULL
+     * no DAV:activity-set was provided or when create_activity is set.
      */
     dav_error * (*checkout)(dav_resource *resource,
+                            int is_unreserved, int is_fork_ok,
+                            int create_activity,
+                            apr_array_header_t *activities,
                             dav_resource **working_resource);
 
     /* Uncheckout a resource. If successful, the resource

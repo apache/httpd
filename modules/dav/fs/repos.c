@@ -594,8 +594,8 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
 static dav_error * dav_fs_get_resource(
     request_rec *r,
     const char *root_dir,
-    const char *target,
-    int is_label,
+    const char *label,
+    int use_checked_in,
     dav_resource **result_resource)
 {
     dav_resource_private *ctx;
