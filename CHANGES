@@ -1,5 +1,9 @@
 Changes with Apache 2.0.31-dev
 
+  *) Added new functions ap_add_(input|output)_filter_handle to
+     allow modules to bypass the usual filter name lookup when
+     adding hard-coded filters to a request [Brian Pane]
+
   *) caching should now work on subrequests (still very experimental)
      [Ian Holsman]
   
