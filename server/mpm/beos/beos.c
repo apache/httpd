@@ -117,6 +117,8 @@ typedef struct {
     apr_pool_t *tpool;
 } proc_info;
 
+static void check_restart(void *data);
+
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with MaxClients changes across SIGWINCH restarts.  We use this
@@ -337,7 +339,9 @@ static int32 worker_thread(void * dummy)
     /* each worker thread is in control of it's own destiny...*/
     int this_worker_should_exit = 0; 
     free(ti);
-      
+
+    on_exit_thread(check_restart, (void*)child_slot);
+          
     /* block the signals for this thread */
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
@@ -462,7 +466,7 @@ static int32 worker_thread(void * dummy)
     return (0);
 }
 
-static int make_worker(server_rec *s, int slot)
+static int make_worker(int slot)
 {
     thread_id tid;
     proc_info *my_info = (proc_info *)malloc(sizeof(proc_info)); /* freed by thread... */
@@ -489,7 +493,7 @@ static int make_worker(server_rec *s, int slot)
     tid = spawn_thread(worker_thread, "apache_worker", B_NORMAL_PRIORITY,
         my_info);
     if (tid < B_NO_ERROR) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, 
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL, 
             "spawn_thread: Unable to start a new thread");
         /* In case system resources are maxxed out, we don't want
          * Apache running away with the CPU trying to fork over and
@@ -509,6 +513,16 @@ static int make_worker(server_rec *s, int slot)
     return 0;
 }
 
+static void check_restart(void *data)
+{
+    if (!restart_pending && !shutdown_pending) {
+        int slot = (int)data;
+        make_worker(slot);
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, NULL, 
+            "spawning a new worker thread in slot %d", slot);
+    }
+}
+
 /* start up a bunch of children */
 static void startup_threads(int number_to_start)
 {
@@ -518,7 +532,7 @@ static void startup_threads(int number_to_start)
 	if (ap_scoreboard_image->servers[0][i].tid) {
 	    continue;
 	}
-	if (make_worker(ap_server_conf, i) < 0) {
+	if (make_worker(i) < 0) {
 	    break;
 	}
 	--number_to_start;
@@ -567,7 +581,7 @@ static void perform_idle_server_maintenance(void)
 
     if (free_length > 0) {
     	for (i = 0; i < free_length; ++i) {
-	        make_worker(ap_server_conf, free_slots[i]);
+	        make_worker(free_slots[i]);
 	    }
 	    /* the next time around we want to spawn twice as many if this
 	     * wasn't good enough, but not if we've just done a graceful
@@ -590,6 +604,7 @@ static void server_main_loop(int remaining_threads_to_start)
     int i;
 
     while (!restart_pending && !shutdown_pending) {
+
         ap_wait_or_timeout(&status, &pid, pconf);
          
         if (pid.pid >= 0) {
@@ -611,7 +626,7 @@ static void server_main_loop(int remaining_threads_to_start)
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    make_worker(ap_server_conf, child_slot);
+                    make_worker(child_slot);
                     --remaining_threads_to_start;
 		        }
 #if APR_HAS_OTHER_CHILD
