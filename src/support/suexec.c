@@ -68,19 +68,21 @@
  */
 
 
-#include "suexec.h"
-
 #include <sys/param.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <pwd.h>
-#include <grp.h>
-#include <time.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+
+#include <errno.h>
+#include <grp.h>
+#include <pwd.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+
+#include "suexec.h"
 
 /*
  ***********************************************************************
@@ -499,6 +501,6 @@ int main(int argc, char *argv[])
      *
      * Oh well, log the failure and error out.
      */
-    log_err("exec failed (%s)\n", cmd);
+    log_err("(%d)%s: exec failed (%s)\n", errno, strerror(errno), cmd);
     exit(255);
 }

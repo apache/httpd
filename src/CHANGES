@@ -1,5 +1,7 @@
 Changes with Apache 1.3b4
 
+  *) suexec errors now include the errno/description.  [Marc Slemko] PR#1543
+
   *) PORT: OSF/1 now uses USE_FLOCK_SERIALIZED_ACCEPT to solve PR#467.
      The choice of flock vs. fcntl was made based on timings which showed that
      even on non-NFS, non-exported filesystems fcntl() was an order of
