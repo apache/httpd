@@ -1113,12 +1113,8 @@ static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf
 	    p = p->next;
 	}
 
-#ifdef ULTRIX_BRAIN_DEATH
-	qsort((void *) ar, num_ent, sizeof(struct ent *), (int (*)) dsortf);
-#else
 	qsort((void *) ar, num_ent, sizeof(struct ent *),
 	          (int (*)(const void *, const void *)) dsortf);
-#endif
     }
     output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, keyid,
 		       direction);

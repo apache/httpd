@@ -1557,7 +1557,7 @@ API_EXPORT(FILE *) ap_pfopen(pool *a, const char *name, const char *mode)
 		    modeFlags);
 	if (desc >= 0) {
 	    desc = ap_slack(desc, AP_SLACK_LOW);
-	    fd = fdopen(desc, mode);
+	    fd = ap_fdopen(desc, mode);
 	}
     }
     else {
@@ -1575,7 +1575,7 @@ API_EXPORT(FILE *) ap_pfdopen(pool *a, int fd, const char *mode)
     FILE *f;
 
     ap_block_alarms();
-    f = fdopen(fd, mode);
+    f = ap_fdopen(fd, mode);
     if (f != NULL)
 	ap_note_cleanups_for_file(a, f);
     ap_unblock_alarms();
@@ -1753,7 +1753,7 @@ API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how)
 #define os_pipe(fds) pipe(fds)
 #endif /* WIN32 */
 
-/* for fdopen, to get binary mode */
+/* for ap_fdopen, to get binary mode */
 #if defined (__EMX__) || defined (WIN32)
 #define BINMODE	"b"
 #else
@@ -1969,7 +1969,7 @@ API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *), void *data,
     }
 
     if (pipe_out) {
-	*pipe_out = fdopen(fd_out, "r" BINMODE);
+	*pipe_out = ap_fdopen(fd_out, "r" BINMODE);
 	if (*pipe_out)
 	    ap_note_cleanups_for_file(p, *pipe_out);
 	else
@@ -1977,7 +1977,7 @@ API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *), void *data,
     }
 
     if (pipe_in) {
-	*pipe_in = fdopen(fd_in, "w" BINMODE);
+	*pipe_in = ap_fdopen(fd_in, "w" BINMODE);
 	if (*pipe_in)
 	    ap_note_cleanups_for_file(p, *pipe_in);
 	else
@@ -1985,7 +1985,7 @@ API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *), void *data,
     }
 
     if (pipe_err) {
-	*pipe_err = fdopen(fd_err, "r" BINMODE);
+	*pipe_err = ap_fdopen(fd_err, "r" BINMODE);
 	if (*pipe_err)
 	    ap_note_cleanups_for_file(p, *pipe_err);
 	else

@@ -1,4 +1,6 @@
 Changes with Apache 1.3b6
+
+  *) PORT: Clean up warnings on Ultrix.  [Ben Hyde]
  
   *) Adding DSO support for the HP/UX platform by emulating the dlopen-style
      interface via the similar but proprietary HP/UX shl_xxx-style system
