@@ -161,8 +161,10 @@ API_EXPORT(void) add_common_vars(request_rec *r)
     server_rec *s = r->server;
     conn_rec *c = r->connection;
     const char *rem_logname;
-
     char port[40], *env_path;
+#ifdef WIN32
+    char *env_temp;
+#endif
 
     array_header *hdrs_arr = table_elts(r->headers_in);
     table_entry *hdrs = (table_entry *) hdrs_arr->elts;
@@ -196,6 +198,15 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 
     if (!(env_path = getenv("PATH")))
 	env_path = DEFAULT_PATH;
+
+#ifdef WIN32
+    if (env_temp = getenv("SystemRoot"))
+        table_set(e, "SystemRoot", env_temp);         
+    if (env_temp = getenv("COMSPEC"))
+        table_set(e, "COMSPEC", env_temp);            
+    if (env_temp = getenv("WINDIR"))
+        table_set(e, "WINDIR", env_temp);             
+#endif
 
     table_set(e, "PATH", env_path);
     table_set(e, "SERVER_SOFTWARE", SERVER_VERSION);
