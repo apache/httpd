@@ -39,7 +39,7 @@ ab: ab.o
 checkgid: checkgid.o
 	$(CC) $(CFLAGS) -o checkgid $(LDFLAGS) checkgid.o $(LIBS)
 
-apxs: apxs.pl
+apxs: apxs.pl Makefile
 	sed <apxs.pl >apxs \
 	    -e 's%@TARGET@%$(TARGET)%g' \
 	    -e 's%@CC@%$(CC)%g' \
