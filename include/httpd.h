@@ -964,7 +964,7 @@ int strcasecmp(const char *a, const char *b);
 #endif
 
 #ifndef HAVE_STRNCASECMP
-int strncasecmp(const char *a, const char *b, int n);
+int strncasecmp(const char *a, const char *b, size_t n);
 #endif
 
 /* Regexes */
