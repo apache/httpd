@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: */
+/* $Id: http_core.c,v 1.34 1996/08/25 17:46:08 ben Exp $ */
 
 #define CORE_PRIVATE
 #include "httpd.h"
