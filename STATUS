@@ -33,7 +33,7 @@ Available Patches:
       lines of code to detect and handle shellcmd.  COMMAND.COM is used
       to exec the script on Win95, CMD.EXE on NT.
 	Message-ID: <5040300017947935000002L052*@MHS> 
-	Status: Ken +1 (on concept)
+	Status: Ken +1 (on concept), Lars +1 (on concept)
 
     * Filenames containing whitespace characters caused problems for directives
       Bill Stoddard <wgstodda@us.ibm.com>
@@ -45,7 +45,7 @@ Available Patches:
       and a fix for mod_include exec=cmd processing). This patch does not
       change the function of ap_call_exec.
 	Message-ID: <5040300017289790000002L002*@MHS>
-	Status: Ken +1 (on concept)
+	Status: Ken +1 (on concept), Lars +1 (on concept)
 
     * Configure tweaks to support building outside the source tree, and 
       add more customizeability for installation layout, by 
@@ -56,14 +56,14 @@ Available Patches:
 
     * Rhapsody port, by Wilfredo Sanchez <wsanchez@apple.com>
 	Message-Id: <199806262218.PAA12490@scv2.apple.com>   
-	Status: Ken +1 (on concept)
+	Status: Ken +1 (on concept), Lars +1 (on concept)
 
     * Ralf's "[PATCH] Fix module init"
       This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
       SHOWSTOPPERS" by doing a more correct init of the modules after loading
       through two new core API functions.
 	Message-ID: <19980611171746.A23845@engelschall.com>
-	Status: Ralf +1
+	Status: Ralf +1, Lars +1
 
     * Paul's patch to add integrated restart/shutdown signalling (Win32)
       This patch make Apache listen on predictable event names to allow
@@ -71,12 +71,19 @@ Available Patches:
       option to send the shutdown or restart signal to the running parent 
       process.
 	Message-ID: <Pine.LNX.3.96.980510152254.21880O-100000@ecstasy.localnet>
-	Statue: Ken +1 (on concept)
+	Status: Ken +1 (on concept), Lars +1 (on concept)
 
     * Martin's patch to use the Basic Authentication scheme for (proxy-)
       ftp logins as well. When no password is given, but the ftp server
       requires one, a [401 Auth Required] response is generated on-the-fly.
-      See: <19980716012456.04088@deejai.mch.sni.de>
+	Message-ID: <19980716012456.04088@deejai.mch.sni.de>
+	Status: Lars +1 (on concept)
+
+    * Lars' patch to work around a Navigator/Mozilla bug when mod_proxy
+      is used (broken images).
+      (Marc doesn't like it and I don't like it either, but people will
+       blame Apache for it, so...)
+	Message-ID: <XFMail.980802025055.sfx@unix-ag.org>
 
 In progress:
  
