@@ -104,6 +104,15 @@ typedef struct example_config {
 static char *trace = NULL;
 
 /*
+ * To avoid leaking memory from pools other than the per-request one, we
+ * allocate a module-private pool, and then use a sub-pool of that which gets
+ * freed each time we modify the trace.  That way previous layers of trace
+ * data don't get lost.
+ */
+static pool *example_pool = NULL;
+static pool *example_subpool = NULL;
+
+/*
  * Declare ourselves so the configuration routines can find and know us.
  * We'll fill it in at the end of the module.
  */
@@ -260,12 +269,28 @@ static example_config *our_sconfig
  * be displayed by the example_handler() routine.
  */
 static void trace_add
-	(server_rec *s, pool *p, example_config *mconfig, const char *note) {
+	(server_rec *s, example_config *mconfig, const char *note) {
 
     char    *sofar;
     char    *addon;
     char    *where;
+    pool    *subpool;
 
+    /*
+     * Make a new sub-pool and copy any existing trace to it.
+     */
+    subpool = make_sub_pool (example_pool);
+    if (trace != NULL) {
+	addon = pstrcat (subpool, trace, NULL);
+    }
+    /*
+     * Now, if we have a sub-pool from before, nuke it and replace with the
+     * one we just allocated.
+     */
+    if (example_subpool != NULL) {
+	destroy_pool (example_subpool);
+    }
+    example_subpool = subpool;
     /*
      * If we weren't passed a configuration record, we can't figure out to
      * what location this call applies.  This only happens for co-routines
@@ -277,7 +302,7 @@ static void trace_add
     where = (where != NULL) ? where : "";
     addon = pstrcat 
 		(
-		    p,
+		    subpool,
 		    "   <DT><SAMP>",
 		    note,
 		    "</SAMP>\n   </DT>\n",
@@ -287,14 +312,14 @@ static void trace_add
 		    NULL
 		);
     sofar = (trace == NULL) ? "" : trace;
-    trace = pstrcat (p, sofar, addon, NULL);
+    trace = pstrcat (subpool, sofar, addon, NULL);
     /*
      * Store a copy of the same information in the configuration record, if
      * there is one.
      */
     if (mconfig != NULL) {
 	sofar = (mconfig->trace == NULL) ? "" : mconfig->trace;
-	mconfig->trace = pstrcat (p, sofar, addon, NULL);
+	mconfig->trace = pstrcat (subpool, sofar, addon, NULL);
     }
     /*
      * You *could* uncomment the following if you wanted to see the calling
@@ -304,7 +329,7 @@ static void trace_add
      */
 /*
     if (s != NULL) {
-        log_printf(s, "mod_example: %s", note);
+        log_printf (s, "mod_example: %s", note);
     }
  */
 }
@@ -336,7 +361,7 @@ static const char *cmd_example
      * "Example Wuz Here"
      */
     cfg->local = 1;
-    trace_add (cmd->server, cmd->pool, cfg, "cmd_example()");
+    trace_add (cmd->server, cfg, "cmd_example()");
     return NULL;
 }
 
@@ -371,7 +396,7 @@ static int example_handler
 	    *cfg;
 
     cfg = our_dconfig (r);
-    trace_add (r->server, r->pool, cfg, "example_handler()");
+    trace_add (r->server, cfg, "example_handler()");
     /*
      * We're about to start sending content, so we need to force the HTTP
      * headers to be sent at this point.  Otherwise, no headers will be sent
@@ -510,12 +535,18 @@ static void example_init
     char    *sname = s->server_hostname;
 
     /*
+     * If we haven't already allocated our module-private pool, do so now.
+     */
+    if (example_pool == NULL) {
+	example_pool = make_sub_pool (NULL);
+    };
+    /*
      * The arbitrary text we add to our trace entry indicates for which server
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
     note = pstrcat (p, "example_init(", sname, ")", NULL);
-    trace_add (s, p, NULL, note);
+    trace_add (s, NULL, note);
 }
 
 /*
@@ -553,7 +584,7 @@ static void *example_dir_create
      */
     dname = (dname != NULL) ? dname : "";
     cfg->loc = pstrcat (p, "DIR(", dname, ")", NULL);
-    trace_add (NULL, p, cfg, "example_dir_create()");
+    trace_add (NULL, cfg, "example_dir_create()");
     return (void *) cfg;
 }
 
@@ -617,7 +648,7 @@ static void *example_dir_merge
 		"\")",
 		NULL
 	    );
-    trace_add (NULL, p, merged_config, note);
+    trace_add (NULL, merged_config, note);
     return (void *) merged_config;
 }
 
@@ -648,7 +679,7 @@ static void *example_server_create
      */
     sname = (sname != NULL) ? sname : "";
     cfg->loc = pstrcat (p, "SVR(", sname, ")", NULL);
-    trace_add (s, p, cfg, "example_server_create()");
+    trace_add (s, cfg, "example_server_create()");
     return (void *) cfg;
 }
 
@@ -699,7 +730,7 @@ static void *example_server_merge
 		"\")",
 		NULL
 	    );
-    trace_add (NULL, p, merged_config, note);
+    trace_add (NULL, merged_config, note);
     return (void *) merged_config;
 }
 
@@ -722,7 +753,7 @@ static int example_xlate
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add (r->server, r->pool, cfg, "example_xlate()");
+    trace_add (r->server, cfg, "example_xlate()");
     return DECLINED;
 }
 
@@ -745,7 +776,7 @@ static int example_ckuser
     /*
      * Don't do anything except log the call.
      */
-    trace_add (r->server, r->pool, cfg, "example_ckuser()");
+    trace_add (r->server, cfg, "example_ckuser()");
     return DECLINED;
 }
 
@@ -770,7 +801,7 @@ static int example_ckauth
      * Log the call and return OK, or access will be denied (even though we
      * didn't actually do anything).
      */
-    trace_add (r->server, r->pool, cfg, "example_ckauth()");
+    trace_add (r->server, cfg, "example_ckauth()");
     return OK;
 }
 
@@ -790,7 +821,7 @@ static int example_ckaccess
 	    *cfg;
 
     cfg = our_dconfig (r);
-    trace_add (r->server, r->pool, cfg, "example_ckaccess()");
+    trace_add (r->server, cfg, "example_ckaccess()");
     return OK;
 }
 
@@ -813,7 +844,7 @@ static int example_typer
      * Log the call, but don't do anything else - and report truthfully that
      * we didn't do anything.
      */
-    trace_add (r->server, r->pool, cfg, "example_typer()");
+    trace_add (r->server, cfg, "example_typer()");
     return DECLINED;
 }
 
@@ -835,7 +866,7 @@ static int example_fixer
     /*
      * Log the call and exit.
      */
-    trace_add (r->server, r->pool, cfg, "example_fixer()");
+    trace_add (r->server, cfg, "example_fixer()");
     return OK;
 }
 
@@ -853,7 +884,7 @@ static int example_logger
 	    *cfg;
 
     cfg = our_dconfig (r);
-    trace_add (r->server, r->pool, cfg, "example_logger()");
+    trace_add (r->server, cfg, "example_logger()");
     return DECLINED;
 }
 
@@ -872,7 +903,7 @@ static int example_hparser
 	    *cfg;
 
     cfg = our_dconfig (r);
-    trace_add (r->server, r->pool, cfg, "example_hparser()");
+    trace_add (r->server, cfg, "example_hparser()");
     return DECLINED;
 }
 
