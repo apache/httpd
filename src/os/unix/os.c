@@ -4,3 +4,9 @@
  */
 
 #include "os.h"
+
+
+/* some linkers complain unless there's at least one function in each
+ * .o file
+ */
+void os_is_not_here(void) {}

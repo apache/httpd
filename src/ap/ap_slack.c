@@ -106,4 +106,7 @@ int ap_slack(int fd, int line)
     return new_fd;
 #endif
 }
+#else
+/* need at least one function in the file for some linkers */
+void ap_slack_is_not_here(void) {}
 #endif /* NO_SLACK */

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Some linkers complain when .o files contain no functions.
+     [Dean Gaudet] PR#1614
+
   *) Some const declarations in mod_imap.c that were added for debugging
      purposes caused some compilers heartburn without adding any
      significant value, so they've been removed.  [Ken Coar]
