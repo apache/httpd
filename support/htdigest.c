@@ -213,7 +213,9 @@ int main(int argc, char *argv[])
     char x[MAX_STRING_LEN];
     char command[MAX_STRING_LEN];
     int found;
-    
+   
+    ap_initialize();
+    atexit(ap_terminate); 
     ap_create_pool(&cntxt, NULL);
 
     tn = NULL;
