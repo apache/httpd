@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis metafile="mod_authn_default.xml.meta">
+<!-- English revision: 1.2 -->
+
+<name>mod_authn_default</name>
+<description>認証フォールバックモジュール</description>
+<status>Base</status>
+<sourcefile>mod_authn_default.c</sourcefile>
+<identifier>authn_default_module</identifier>
+<compatibility>Apache 2.1 以降</compatibility>
+
+<summary>
+    <p><module>mod_auth_basic</module> のような認証モジュールを
+    設定しなかった場合は、本モジュールがフォールバックとなります。
+    ユーザから提示されたどんな証書も単に拒否します。</p>
+</summary>
+
+<directivesynopsis>
+<name>AuthDefaultAuthoritative</name>
+<description>次の低次レベルの認証モジュールに制御を渡すかどうかを
+設定します</description>
+<syntax>AuthDefaultAuthoritative On|Off</syntax>
+<default>AuthDefaultAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive>AuthDefaultAuthoritative</directive> ディレクティブを
+    明示的に <code>Off</code> に設定すると、
+    認証を次の (<code>modules.c</code> ファイルで定義されている)
+    低次レベルのモジュールに渡します。
+    </p>
+
+    <note><title>注意</title>
+      <p><module>mod_authn_default</module> 自体が<em>とても低い</em>
+      レベルとして定義されていますので、通常はこれよりも低次の
+      モジュールは存在しません。ですから
+      <directive>AuthDefaultAuthoritative</directive> はデフォルト
+      (<code>On</code>) のままにしたほうが良いでしょう。</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
