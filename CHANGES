@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) If shared modules are requested and mod_so is not available,
+     produce a fatal config-time error.  [Justin Erenkrantz]
+
   *) Improve http2env's performance by cutting the work it has to
      do.  [Brian Pane <bpane@pacbell.net>]
 

@@ -33,8 +33,11 @@ AC_TRY_COMPILE([#include <apr.h>], [
 ], ap_enable_so="static", [
 if test "$enable_so" = "static"; then
     AC_MSG_ERROR([mod_so has been requested but cannot be built on your system])
+else if test "$sharedobjs" = "yes"; then
+    AC_MSG_ERROR([shared objects have been requested but cannot be built since mod_so cannot be built])
 else
     ap_enable_so="no"
+fi
 fi
 ])
 CPPFLAGS=$ap_old_cppflags

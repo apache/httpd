@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/11 01:26:27 $]
+Last modified at [$Date: 2001/11/11 01:58:12 $]
 
 Release:
 
@@ -304,12 +304,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         randomization in APR itself.
         - Bring the Win9xConHook.dll from 1.3 into 2.0 (no sense till it
         actually works) and add in a splash of Win9x service code.
-
-    * When --enable-modules=most or --enable-mods-shared=most is passed
-      to the configure script it is still possible to enable many of the
-      modules while mod_so itself is not buildable (for whatever reason,
-      like not having APR_HAS_DSO). We need to emit an error message
-      and fail the configure script at this point.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
