@@ -142,7 +142,12 @@ Needs patch:
 	    apdefines.h    :
 
 Open issues:
-    
+
+    * What do to about SERVER_SUBVERSION now?
+      STATUS:
+       o Scrap it now that modules can use ap_add_version_component
+         Jim +1 (make sure this is clear :) ), Brian +1
+
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
 
@@ -189,25 +194,6 @@ Open issues:
     * Should we re-enable nagle now that we're non-buffering CGIs?  See
       various messages from Marc in March 98.
   
-    * Listing the operating system's generic name (e.g. Irix, Win32) in
-      SERVER_VERSION:
-	 o Looks like we want to do this...
-	   Implementation: New API function, ap_add_version_component()
-	   that takes a 'const char *' and tacks it onto the end
-	   of the string returned by ap_get_server_version().  Would allow
-	   modules to add their info at run-time, more closely tracking
-	   reality for dynamically-loaded modules.
-
-	 o Do we want to scrap -DSERVER_SUBVERSION if modules can add
-	   their contribution strings at run-time?
-	     +1: Brian
-	     -1: Ken
-
-	 o Debate:
-	    Unix:Win32:OS/2 in '()' comment
-	     +1: Jim, Martin, Alexei, Ken, Brian
-	    Irix:AIX:FreeBSD in '()' comment
-
 Win32 specific issues:
 
  In progress:
