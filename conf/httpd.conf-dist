@@ -710,7 +710,7 @@ ServerSignature On
     # French (fr) - German (de) - Greek-Modern (el)
     # Italian (it) - Korean (kr) - Norwegian (no) - Norwegian Nynorsk (nn)
     # Portugese (pt) - Luxembourgeois* (ltz)
-    # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
+    # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cs)
     # Polish (pl) - Brazilian Portuguese (pt-br) - Japanese (ja)
     # Russian (ru)
     #
@@ -738,7 +738,7 @@ ServerSignature On
     AddLanguage ca .ca
     AddLanguage es .es
     AddLanguage sv .sv
-    AddLanguage cz .cz
+    AddLanguage cs .cz .cs
     AddLanguage ru .ru
     AddLanguage zh-TW .zh-tw
     AddCharset Big5         .Big5    .big5

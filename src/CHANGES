@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
 
+  *) Use appropriate language code for Czech (cs) and Traditional Chinese
+     (zh-tw) in default config files. PR 9427.  [André Malo]
+
   *) Don't block synchronous signals (e.g., SIGSEGV) while waiting for
      and holding a pthread accept mutex.  [Jeff Trawick]
 
