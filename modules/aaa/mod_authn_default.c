@@ -119,7 +119,7 @@ static int authenticate_no_user(request_rec *r)
 
     /* fill in the r->user field */
     if (!strcasecmp(type, "Basic")) {
-        char *sent_pw;
+        const char *sent_pw;
         int res;
 
         if ((res = ap_get_basic_auth_pw(r, &sent_pw)) != OK) {
