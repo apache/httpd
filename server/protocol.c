@@ -603,7 +603,10 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                 r->proto_num = HTTP_VERSION(1,0);
                 r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
             }
-
+            else if (r->connection->keepalive != AP_CONN_KEEPALIVE) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOTICE, rv, r,
+                              "request line read error.");
+            }
             return 0;
         }
     } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
