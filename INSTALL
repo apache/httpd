@@ -234,21 +234,23 @@
      Use the --add-module=FILE option to copy a module source file to the
      Apache src/modules/extra/ directory and on-the-fly add an entry for it in
      the configuration file. FILE has to be a valid path to a C source file
-     outside the Apache source tree, for instance /path/to/mod_foo.c. The added
-     module this is way is automatically activated and enabled. Use this option
-     to automatically include a simple third-party module to the Apache build
-     process.
- 
+     outside the Apache source tree, for instance /path/to/mod_foo.c, or a
+     path to an already existing C source code file in src/modules/extra/, such
+     as src/modules/extra/mod_foo.c, in which case no copying will be done.
+     The added module this is way is automatically activated and enabled. Use
+     this option to automatically include a simple third-party module to the
+     Apache build process.
+
      Use the --activate-module=FILE option to add an entry for an existing
-     module source file into the configuration file on-the-fly. FILE has to be
-     a valid path beginning with "src/modules/", and the file has to have been
-     copied to this location in the Apache source tree before running
-     configure.  The module is automatically enabled. Use this option to
-     automatically include a complex third-party module to the Apache build
-     process where, for instance a module like mod_perl or mod_php3 consisting
-     of more than one file which are created by a third-party configuration
-     scheme.
- 
+     module object or library file into the configuration file on-the-fly.
+     FILE has to be a valid path beginning with "src/modules/", and the
+     corresponding file has to have been copied to this location in the Apache
+     source tree before running configure.  The module is automatically
+     enabled. Use this option to automatically include a complex third-party
+     module to the Apache build process where, for instance a module like
+     mod_perl or mod_php3 consisting of more than one file which are created
+     by a third-party configuration scheme.
+
      Use the --enable-module=NAME and --disable-module=NAME options to enable
      or disable a particular already distributed module from the Apache
      src/Configuration.tmpl file. The correct module names (no `mod_' prefix!)
