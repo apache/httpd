@@ -182,6 +182,9 @@
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 module MODULE_VAR_EXPORT config_log_module;
 

@@ -121,6 +121,9 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 enum special {
     SPECIAL_NOT,

@@ -68,6 +68,9 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 typedef struct {
     const char *real;

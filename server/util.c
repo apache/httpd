@@ -104,6 +104,9 @@
 #ifdef HAVE_GRP_H
 #include <grp.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 /* A bunch of functions in util.c scan strings looking for certain characters.
  * To make that more efficient we encode a lookup table.  The test_char_table

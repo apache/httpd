@@ -85,6 +85,7 @@
 #include "apr_md5.h"
 #include "ap_sha1.h"
 #include <signal.h>
+#include <time.h>
 
 #ifdef HAVE_CRYPT_H
 #include <crypt.h>

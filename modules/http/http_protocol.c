@@ -83,6 +83,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(post_read_request)
