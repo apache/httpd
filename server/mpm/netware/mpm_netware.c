@@ -172,6 +172,7 @@ static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pmain;		/* Pool for httpd child stuff */
 
 static pid_t ap_my_pid;	/* it seems silly to call getpid all the time */
+static char *ap_my_addrspace = NULL;
 
 static int die_now = 0;
 
@@ -806,7 +807,10 @@ static void show_server_data()
     ap_listen_rec *lr;
     module **m;
 
-    printf("%s ID: %d\n", ap_get_server_version(), getpid());
+    printf("%s\n", ap_get_server_version());
+    if (ap_my_addrspace && (ap_my_addrspace[0] != 'O') && (ap_my_addrspace[1] != 'S'))
+        printf("   Running in address space %s\n", ap_my_addrspace);
+
 
     /* Display listening ports */
     printf("   Listening on port(s):");
@@ -957,14 +961,24 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
+/* GetCurrentAddressSpace - this should be replaced with the correct header file when available! */
+struct _BogusAddressSpace { int a; int b; int c; char name[]; };
+typedef struct _BogusAddressSpace BogusAddressSpace;
+extern BogusAddressSpace* GetCurrentAddressSpace(void);
+/* GetCurrentAddressSpace */
+
 static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     int debug;
+    BogusAddressSpace *addrspace = NULL;
 
     debug = ap_exists_config_define("DEBUG");
 
     is_graceful = 0;
     ap_my_pid = getpid();
+    addrspace = GetCurrentAddressSpace();
+    if (addrspace)
+        ap_my_addrspace = apr_pstrdup (p, addrspace->name);
 
     ap_listen_pre_config();
     ap_threads_to_start = DEFAULT_START_THREADS;
@@ -1046,7 +1060,6 @@ void netware_rewrite_args(process_rec *process)
     }
 }
 
-
 static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
 {
     char *szCommand = "APACHE2 ";
@@ -1077,7 +1090,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
 
         /* If we got an instance id but it doesn't match this 
             instance of the nlm, pass it on. */
-        if (pID && (atoi(&pID[2]) != getpid()))
+        if (pID && ap_my_addrspace && strnicmp(&pID[2], ap_my_addrspace, strlen(ap_my_addrspace)))
             return NOTMYCOMMAND;
 
         /* If we have determined that this command belongs to this
