@@ -222,6 +222,7 @@ case "$PLAT" in
     *-ibm-aix*)
         OS='IBM AIX >= 4.2'
         CFLAGS="$CFLAGS -DAIX -U__STR__"
+	LDFLAGS="$LDFLAGS -lm"
         ;;
     *-apollo-*)
 	OS='Apollo Domain'

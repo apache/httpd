@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) PORT: AIX >= 4.2 requires -lm due to libc changes.
+     [Jason Venner <jason@idiom.com>] PR#667
+
   *) Enable ``=""'' for RewriteCond directives to match against
      the empty string. This is the preferred way instead of ``^$''.
      [Ralf S. Engelschall]
