@@ -74,22 +74,17 @@
     <xsl:for-each select="$directives[$letter=translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)]">
     <xsl:sort select="name"/>
 
-      <li><xsl:choose>
-        <xsl:when test="position()=1">
-          <a name="{$letter}" id="{$letter}" href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
-            <xsl:if test="@type = 'section'">&lt;</xsl:if>
-            <xsl:value-of select="name"/>
-            <xsl:if test="@type = 'section'">&gt;</xsl:if>
-          </a>
-        </xsl:when>
+      <li>
+        <a href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
+          <xsl:if test="position()=1">
+            <xsl:attribute name="id"><xsl:value-of select="$letter"/></xsl:attribute>
+            <xsl:attribute name="name"><xsl:value-of select="$letter"/></xsl:attribute>
+          </xsl:if>
 
-        <xsl:otherwise>
-          <a href="{../name}.html#{translate(name,$uppercase,$lowercase)}">
-            <xsl:if test="@type = 'section'">&lt;</xsl:if>
-            <xsl:value-of select="name"/>
-            <xsl:if test="@type = 'section'">&gt;</xsl:if>
-          </a>
-        </xsl:otherwise></xsl:choose>
+          <xsl:if test="@type = 'section'">&lt;</xsl:if>
+          <xsl:value-of select="name"/>
+          <xsl:if test="@type = 'section'">&gt;</xsl:if>
+        </a>
       </li>
 
 <xsl:text>

@@ -85,7 +85,11 @@
   <!-- category/page                                      -->
   <!--                                                    -->
   <xsl:template match="category/page">
-    <xsl:variable name="link">
+    <li>
+      <xsl:if test="@separate='yes'">
+        <xsl:attribute name="class">separate</xsl:attribute>
+      </xsl:if>
+
       <xsl:if test="@href">
         <a href="{@href}">
           <xsl:value-of select="."/>
@@ -94,19 +98,7 @@
       <xsl:if test="not(@href)">
         <xsl:value-of select="."/>
       </xsl:if>
-    </xsl:variable>
-
-    <xsl:if test="@separate='yes'">
-      <li class="separate">
-        <xsl:copy-of select="$link"/>
-      </li>
-    </xsl:if>
-
-    <xsl:if test="not(@separate='yes')">
-      <li>
-        <xsl:copy-of select="$link"/>
-      </li>
-    </xsl:if>
+    </li>
 
 <xsl:text>
 </xsl:text> <!-- insert line break -->
