@@ -1722,8 +1722,9 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
 
 static void mprint(request_rec *r, union VALUETYPE *p, struct magic *m)
 {
-    char *pp, *rt;
+    char *pp;
     unsigned long v;
+    char time_str[APR_CTIME_LEN];
 
     switch (m->type) {
     case BYTE:
@@ -1754,10 +1755,8 @@ static void mprint(request_rec *r, union VALUETYPE *p, struct magic *m)
     case DATE:
     case BEDATE:
     case LEDATE:
-	/* XXX: not multithread safe */
-	pp = ctime((time_t *) & p->l);
-	if ((rt = strchr(pp, '\n')) != NULL)
-	    *rt = '\0';
+        apr_ctime(time_str, APR_USEC_PER_SEC * (apr_time_t)*(time_t *)&p->l);
+        pp = time_str;
 	(void) magic_rsl_printf(r, m->desc, pp);
 	return;
     default:
