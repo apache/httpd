@@ -33,9 +33,10 @@ Everything that is syntactically allowed in
 section).  Semantically however some things, and the most
 notable are <CODE>AllowOverride</CODE> and the two options
 <CODE>FollowSymLinks</CODE> and <CODE>SymLinksIfOwnerMatch</CODE>,
-make no sense in <CODE>&lt;Location&gt;</CODE>.  The same for
-<CODE>&lt;Files&gt;</CODE> -- syntactically everything is fine, but
-semantically some things are different.
+make no sense in <CODE>&lt;Location&gt;</CODE>,
+<CODE>&lt;LocationMatch&gt;</CODE> or <CODE>&lt;DirectoryMatch&gt;</CODE>.
+The same for <CODE>&lt;Files&gt;</CODE> -- syntactically everything
+is fine, but semantically some things are different.
 
 <H2>How the sections are merged</H2>
 
@@ -134,7 +135,8 @@ Note about .htaccess parsing:
 <LI>
     It is not possible to use "<CODE>Options FollowSymLinks</CODE>"
     or "<CODE>Options SymLinksIfOwnerMatch</CODE>" inside a
-    <CODE>&lt;Location&gt;</CODE>/<CODE>&lt;LocationMatch&gt;</CODE> section
+    <CODE>&lt;Location&gt;</CODE>, <CODE>&lt;LocationMatch&gt;</CODE>
+    or <CODE>&lt;DirectoryMatch&gt;</CODE> section
     (the options are simply ignored).
     Using the options in question is only possible inside a
     <CODE>&lt;Directory&gt;</CODE> section (or a <CODE>.htaccess</CODE> file).
