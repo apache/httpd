@@ -3,7 +3,9 @@
  =====================
 
  The Apache Group is pleased to announce the release of the long
- awaited 1.3.0 version of the Apache HTTP server.
+ awaited 1.3.0 version of the Apache HTTP server.  18 months, 1500
+ bug reports, 500 patches, and 150 total code contributors helped
+ make the release of 1.3.0 a reality.
 
  To grab the latest Apache distribution, check out
      http://www.apache.org/dist/
