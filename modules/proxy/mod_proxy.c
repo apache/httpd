@@ -151,6 +151,15 @@ static const char *set_worker_param(proxy_worker *worker,
         worker->recv_buffer_size = ival;
         worker->recv_buffer_size_set = 1;
     }
+    else if (!strcasecmp(key, "keepalive")) {
+        if (!strcasecmp(val, "on"))
+            worker->keepalive = 1;
+        else if (!strcasecmp(val, "off"))
+            worker->keepalive = 0;
+        else
+            return "KeepAlive must be On|Off";
+        worker->keepalive_set = 1;
+    }    
     else {
         return "unknown parameter";
     }

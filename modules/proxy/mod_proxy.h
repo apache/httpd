@@ -236,6 +236,7 @@ struct proxy_worker {
     apr_size_t          io_buffer_size;
     char                io_buffer_size_set;
     char                keepalive;
+    char                keepalive_set;
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
 };
