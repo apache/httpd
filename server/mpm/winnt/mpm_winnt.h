@@ -73,9 +73,9 @@ typedef struct CompContext {
     char *recv_buf;
     int  recv_buf_size;
     ap_context_t *ptrans;
-    struct sockaddr sa_server;
+    struct sockaddr *sa_server;
     int sa_server_len;
-    struct sockaddr sa_client;
+    struct sockaddr *sa_client;
     int sa_client_len;
 } COMP_CONTEXT, *PCOMP_CONTEXT;
 #if 0
