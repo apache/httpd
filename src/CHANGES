@@ -1,5 +1,9 @@
 Changes with Apache 1.2
 
+  *) Allow suexec to access files relative to current directory but not
+     above.  (Excluding leading / or any .. directory.)  [Ken Coar]
+     PR#269, 319, 395
+
   *) Fix suexec segfault when group doesn't exist. [Gregory Neil Shapiro]
      PR#367, 368, 354, 453
 

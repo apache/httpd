@@ -264,11 +264,16 @@ int main(int argc, char *argv[])
     }
     
     /*
-     * Check for a '/' in the command to be executed,
-     * to protect against attacks.  If a '/' is
+     * Check for a leading '/' (absolute path) in the command to be executed,
+     * or attempts to back up out of the current directory,
+     * to protect against attacks.  If any are
      * found, error out.  Naughty naughty crackers.
      */
-    if ((strchr(cmd, '/')) != NULL ) {
+    if (
+	    (cmd[0] == '/') ||
+	    (! strncmp (cmd, "../", 3)) ||
+	    (strstr (cmd, "/../") != NULL)
+       ) {
 	log_err("invalid command (%s)\n", cmd);
 	exit(104);
     }
