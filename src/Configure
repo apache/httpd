@@ -611,14 +611,18 @@ case "$PLAT" in
 	CFLAGS_SHLIB='-Zpic'
 	;;
     TPF)
-       OS='TPF'
-       OSDIR='os/tpf'
-       CC='c89'
-       CFLAGS="$CFLAGS -DTPF -DCHARSET_EBCDIC -D_POSIX_SOURCE"
-       DEF_WANTHSREGEX=yes
-       LIBS="$LIBS"
-       SUBTARGET="target_compile_only"
-       ;;
+	OS='TPF'
+	OSDIR='os/tpf'
+	CC='c89'
+	CFLAGS="$CFLAGS -DTPF -DCHARSET_EBCDIC -D_POSIX_SOURCE"
+	if [ "x$TPF64BIT" = "xYES" ] ; then
+		DEF_WANTHSREGEX=no
+	else
+		DEF_WANTHSREGEX=yes
+	fi
+	LIBS="$LIBS"
+	SUBTARGET="target_compile_only"
+	;;
     BS2000*-siemens-sysv4*)
 	OS='BS2000'
 	OSDIR='os/bs2000'
@@ -1778,6 +1782,10 @@ MODDIRS_NO_SO=`awk < $tmpfile '
 # Use tmpfile2 for the module definition file, and tmpfile3 for the
 # shell commands to be executed for this module.
 
+if [ "x$OS" = "xTPF" -a "x$TPF64BIT" = "xYES" ]; then
+   rm -f apache.modules
+fi
+
 for modfile in $MODFILES ; do
 	rm -f $tmpfile2 $tmpfile3
 	modname=''
@@ -1840,6 +1848,10 @@ for modfile in $MODFILES ; do
 	#   optionally generate export file for some linkers 
 	if [ "x$ext" = "x$SHMOD_SUFFIX_NAME" -a "x$SHLIB_EXPORT_FILES" = "xyes" ]; then
 		echo "$modname" >$modbase.exp
+	fi
+	if [ "x$OS" = "xTPF" -a "x$TPF64BIT" = "xYES" ] ; then
+                # output a list of modules for TPF's 64BIT build process
+		`echo $modfile | sed 's/.*\/\([_a-zA-Z]*\.\)o$/\1c/' >> apache.modules`
 	fi
 done
 # $tmpfile now contains Module lines for all the modules we want

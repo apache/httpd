@@ -2412,7 +2412,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     long total_bytes_sent = 0;
     register int n, w, o, len, fd;
     fd_set fds;
-#ifdef TPF
+#ifdef TPF_HAVE_NONSOCKET_SELECT
     struct timeval tv;
 #endif 
 

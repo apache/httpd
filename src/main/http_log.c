@@ -318,7 +318,7 @@ static void log_error_core(const char *file, int line, int level,
     len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 	    "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
 
-#ifndef TPF
+#ifndef TPF41
     if (file && (level & APLOG_LEVELMASK) == APLOG_DEBUG) {
 #ifdef _OSD_POSIX
 	char tmp[256];
@@ -341,7 +341,7 @@ static void log_error_core(const char *file, int line, int level,
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 		"%s(%d): ", file, line);
     }
-#endif /* TPF */
+#endif /* TPF41 */
     if (r) {
 	/* XXX: TODO: add a method of selecting whether logged client
 	 * addresses are in dotted quad or resolved form... dotted

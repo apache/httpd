@@ -5167,6 +5167,16 @@ static void process_child_status(int pid, ap_wait_t status)
 	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
         /* cleanup pid file -- it is useless after our exiting */
         const char *pidfile = NULL;
+#ifdef TPF
+        /* safer on TPF to go through normal shutdown process */
+	if (!shutdown_pending) {
+		ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server_conf,
+			"Child %d returned a Fatal error... \n"
+			"Apache is shutting down!", pid);
+		shutdown_pending = 1;
+	}
+        return;
+#endif
         pidfile = ap_server_root_relative (pconf, ap_pid_fname);
         if ( pidfile != NULL && unlink(pidfile) == 0)
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
@@ -5651,7 +5661,7 @@ int REALMAIN(int argc, char *argv[])
         memcpy(tpf_server_name, input_parms.parent.servname,
                INETD_SERVNAME_LENGTH);
         tpf_server_name[INETD_SERVNAME_LENGTH + 1] = '\0';
-        sprintf(tpf_mutex_key, "%.*x", TPF_MUTEX_KEY_SIZE - 1, getpid());
+        sprintf(tpf_mutex_key, "%.*x", (int) TPF_MUTEX_KEY_SIZE - 1, getpid());
         tpf_parent_pid = getppid();
         ap_open_logs(server_conf, plog);
         ap_tpf_zinet_checks(ap_standalone, tpf_server_name, server_conf);

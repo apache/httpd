@@ -36,6 +36,8 @@
 /*                                                                    */
 /**********************************************************************/
 
+/* used only on TPF41 systems */
+
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)getopt.c  8.2 (Berkeley) 4/2/94";
 #endif /* LIBC_SCCS and not lint */

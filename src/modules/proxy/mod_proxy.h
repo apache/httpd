@@ -213,7 +213,11 @@ typedef struct {
 
 struct per_thread_data {
     struct hostent hpbuf;
+#ifdef TPF
+    u_int  ipaddr;
+#else
     u_long ipaddr;
+#endif
     char *charpbuf[2];
 };
 /* Function prototypes */

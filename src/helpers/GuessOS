@@ -27,15 +27,10 @@
 # Be as similar to the output of config.guess/config.sub
 # as possible.
 
-# Handle TPF before handling other OSes.  This
-# is being done because TPF is sometimes compiled
-# on OS/390.  When that is the case, if we don't
-# handle TPF ahead of the other OSes, TPF will
-# fall into the OS/390 case and this script would
-# return an incorrect value for the platform.
-#
-# Apache is not compiled on the TPF platform
-# therefore an environment variable is used
+# Handle TPF before the other operating systems
+# since it's compiled on non-TPF platforms.
+# This keeps GuessOS from returning incorrect
+# uname values for TPF:
 if [ "x$TPF" = "xYES" ]; then
     echo "TPF"
     exit 0	

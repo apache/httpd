@@ -21,11 +21,11 @@ extern "C" {
 #endif
 
 #ifndef WIN32
-#if defined(TPF) || defined(NETWARE)
+#if defined(TPF41) || defined(NETWARE)
 #include <time.h>
 #else
 #include <sys/times.h>
-#endif /* TPF */
+#endif /* TPF41 || NETWARE */
 #endif
 
 

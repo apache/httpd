@@ -53,7 +53,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
-#if !defined(WIN32) && !defined(MPE) && !defined(TPF)
+#if !defined(WIN32) && !defined(MPE) && !defined(TPF41)
 #include <sys/time.h>
 #endif
 

@@ -24,11 +24,17 @@
 #include "scoreboard.h"
 #include "http_log.h"
 #include "http_conf_globals.h"
+#ifdef TPF41
 #ifdef __PIPE_
 #include <ipc.h>
 #include <shm.h>
 static TPF_FD_LIST *tpf_fds = NULL;
-#endif
+#endif /* __PIPE_ */
+#else
+#include <sys/ipc.h>  
+#include <sys/shm.h>
+static TPF_FD_LIST *tpf_fds = NULL;
+#endif /* TPF41 */
 
 void *tpf_shm_static_ptr = NULL;
 unsigned short zinet_model;
@@ -162,13 +168,10 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
                        int out_fds[], int in_fds[], int err_fds[])
 
 {
-
-   int                      i, temp_out, temp_in, temp_err, save_errno, pid, result=0;
-   int                      fd_flags_out, fd_flags_in, fd_flags_err;
+   int                      i, temp_out=0, temp_in=0, temp_err=0, save_errno, pid, result=0;
+   int                      fd_flags_out=0, fd_flags_in=0, fd_flags_err=0;
    struct tpf_fork_input    fork_input;
    TPF_FORK_CHILD           *cld = (TPF_FORK_CHILD *) data;
-   array_header             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
-   table_entry              *elts = (table_entry *) env_arr->elts;
 #ifdef TPF_FORK_EXTENDED
 #define WHITE " \t\n"
 #define MAXARGC 49
@@ -178,11 +181,13 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
    pool                     *subpool = NULL;
 
 #include "util_script.h"
-
+#else
+   array_header             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
+   table_entry              *elts = (table_entry *) env_arr->elts;
 #endif /* TPF_FORK_EXTENDED */ 
 
    if (func) {
-      if (result=func(data, NULL)) {
+      if ((result=func(data, NULL))) {
           return 0;                    /* error from child function */
       }
    }
@@ -473,10 +478,10 @@ void os_tpf_child(APACHE_TPF_INPUT *input_parms) {
     tpf_fds = input_parms->tpf_fds;
     tpf_shm_static_ptr = input_parms->shm_static_ptr;
     tpf_parent_pid = getppid();
-    sprintf(tpf_mutex_key, "%.*x", TPF_MUTEX_KEY_SIZE - 1, tpf_parent_pid);
+    sprintf(tpf_mutex_key, "%.*x", (int) TPF_MUTEX_KEY_SIZE - 1, tpf_parent_pid);
 }
 
-#ifndef __PIPE_
+#if defined(TPF41) && !defined(__PIPE_)
 
 int pipe(int fildes[2])
 {
@@ -505,7 +510,7 @@ static void *ap_tpf_get_shared_mem(size_t size)
 {
     key_t shmkey = IPC_PRIVATE;
     int shmid = -1;
-    void *result;
+    static void *result;
 
     if ((shmid = shmget(shmkey, size, IPC_CREAT | SHM_R | SHM_W)) == -1) {
         perror("shmget failed in ap_tpf_get_shared_mem function");
@@ -565,7 +570,7 @@ void ap_tpf_add_fd(pool *p, int fd, enum FILE_TYPE file_type, const char *fname)
         return; /* no kids allowed */
     }
     if (tpf_fds == NULL) {
-        /* get shared memory if necssary */
+        /* get shared memory if necessary */
         tpf_fds = ap_tpf_get_shared_mem((size_t)TPF_FD_LIST_SIZE);
         if (tpf_fds) {
             ap_register_cleanup(p, (void *)&tpf_fds,
@@ -636,7 +641,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
     return pl;
 }
 
-#endif /* __PIPE_ */
+#endif /* TPF41 && ndef __PIPE_ */
 
 /*   The following functions are used for the tpf specific module called
      mod_tpf_shm_static.  This module is a clone of Apache's mod_mmap_static.
@@ -768,7 +773,7 @@ int i;
    #error "is no longer supported."
    #error "Replace with USE_SHMGET_SCOREBOARD to use"
    #error "shared memory or remove entirely to use"
-   #error "scoreboard on file for pre-PUT10 systems"
+   #error "scoreboard on file for pre-TPF41 PUT10 systems"
 #endif
 
 #ifdef TPF_FORK_EXTENDED
