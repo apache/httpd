@@ -420,6 +420,7 @@ extern char *crypt();
 #define NEED_STRDUP
 /* fcntl() locking is expensive with NFS */
 #define USE_FLOCK_SERIALIZED_ACCEPT
+#define SAFE_UNSERIALIZED_ACCEPT
 #define HAVE_SHMGET
 /*
  * NOTE: If when you run Apache under A/UX and you get a warning
