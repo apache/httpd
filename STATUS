@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/20 16:13:31 $]
+Last modified at [$Date: 2003/11/20 17:34:02 $]
 
 Release:
 
@@ -64,7 +64,7 @@ RELEASE SHOWSTOPPERS:
 
     * EBCDIC: Translate the protocol data...
         modules/http/http_protocol.c: r1.469, r1.472
-      +1: trawick, nd
+      +1: trawick, nd, gregames
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
