@@ -137,12 +137,8 @@ static void make_cookie(request_rec *r)
     /* 1024 == hardcoded constant */
     char cookiebuf[1024];
     char *new_cookie;
-    char *dot;
     const char *rname = ap_get_remote_host(r->connection, r->per_dir_config,
 					REMOTE_NAME);
-
-    if ((dot = strchr(rname, '.')))
-        *dot = '\0';            /* First bit of hostname */
 
 #if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
 /* We lack gettimeofday(), so we must use time() to obtain the epoch
@@ -151,7 +147,7 @@ static void make_cookie(request_rec *r)
 
     mpe_times = times(&mpe_tms);
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s%d%ld%ld", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname, (int) getpid(),
                 (long) r->request_time, (long) mpe_tms.tms_utime);
 #elif defined(WIN32)
     /*
@@ -160,13 +156,13 @@ static void make_cookie(request_rec *r)
      * was started. It should be relatively unique.
      */
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s%d%ld%ld", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%ld", rname, (int) getpid(),
                 (long) r->request_time, (long) GetTickCount());
 
 #else
     gettimeofday(&tv, &tz);
 
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s%d%ld%d", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%d%ld%d", rname, (int) getpid(),
                 (long) tv.tv_sec, (int) tv.tv_usec / 1000);
 #endif
 
