@@ -165,7 +165,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             break;
         }
         c = buf;
-        while (c - buf != len) {
+        while (c < buf + len) {
             if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
                 apr_bucket *start_bucket;
 
@@ -268,7 +268,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
         else {
             c = buf;
         }
-        while (c - buf != len) {
+        while (c < buf + len) {
             if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
                 return dptr;
             }
@@ -366,10 +366,11 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
 static apr_status_t get_combined_directive (include_ctx_t *ctx,
                                             request_rec *r,
                                             apr_bucket_brigade *bb,
-                                            char *tmp_buf, int tmp_buf_size)
+                                            char *tmp_buf, 
+                                            apr_size_t tmp_buf_size)
 {
-    int         done = 0;
-    apr_bucket  *dptr;
+    int        done = 0;
+    apr_bucket *dptr;
     const char *tmp_from;
     apr_size_t tmp_from_len;
 
@@ -414,7 +415,7 @@ static apr_status_t get_combined_directive (include_ctx_t *ctx,
             }
         }
     } while ((!done) &&
-             ((ctx->curr_tag_pos - ctx->combined_tag) < ctx->tag_length));
+             (ctx->curr_tag_pos < ctx->combined_tag + ctx->tag_length));
 
     ctx->combined_tag[ctx->tag_length] = '\0';
     ctx->curr_tag_pos = ctx->combined_tag;
