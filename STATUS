@@ -1,9 +1,10 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/08 04:15:47 $]
+Last modified at [$Date: 2000/06/09 15:22:12 $]
 
 Release:
 
-    2.0a4   : vague plans to release mid-May
+    2.0a5   : ???
+    2.0a4   : released June 7, 2000
     2.0a3   : released April 28, 2000
     2.0a2   : released March 31, 2000
     2.0a1   : released March 10, 2000
@@ -163,6 +164,11 @@ Other bugs that need fixing:
     * SIGSEGV on Linux (glibc 2.1.2) isn't caught properly by a
       sigwaiting thread. We need to work around this, perhaps unless
       there is hope soon for a fixed glibc.
+
+    * The mod_cgid daemon process isn't always cleaned up when httpd
+      gets SIGTERM.  Jeff thinks it may be as simple as registering
+      the daemon process for cleanup with the proper pool, but he hasn't
+      looked at it in enough detail.
 
 Other features that need writing:
 
