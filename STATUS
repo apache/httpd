@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/29 23:07:46 $]
+Last modified at [$Date: 2004/03/29 23:43:29 $]
 
 Release:
 
@@ -109,14 +109,6 @@ PATCHES TO BACKPORT FROM 2.1
        locks on some platforms. (especially Sparc!!!)
            modules/dav/fs/lock.c: r1.31
        +1: trawick
-
-    *) Use apr_temp_dir_get for htdigest and remove the dependancy on
-        the external cp/copy command. Remove the OMIT_DELONCLOSE #ifdef
-	because removing the temp file happens automatically through
-	the apr_temp_dir_get() call.  Also some other misc cleanup of
-	the code
-       support/htdigest.c: r1.41, r1.42, r1.43, r1.44, r1.45
-       +1: bnicholes, jjclar, nd
 
     *) Use apr_temp_dir_get for htpasswd
        support/htpasswd.c: 1.75

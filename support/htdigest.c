@@ -59,17 +59,8 @@
 
 #define MAX_STRING_LEN 256
 
-/* DELONCLOSE is quite cool, but:
- * we need to close the file before we can copy it.
- * otherwise it's locked by the system ;-(
- *
- * XXX: Other systems affected? (Netware?, OS2?)
- */
-#if (defined(WIN32))
-#define OMIT_DELONCLOSE 1
-#endif
-
 apr_file_t *tfp = NULL;
+apr_file_t *errfile;
 apr_pool_t *cntxt;
 #if APR_CHARSET_EBCDIC
 apr_xlate_t *to_ascii;
@@ -78,23 +69,8 @@ apr_xlate_t *to_ascii;
 static void cleanup_tempfile_and_exit(int rc)
 {
     if (tfp) {
-#ifdef OMIT_DELONCLOSE
-        const char *cfilename;
-        char *filename = NULL;
-
-        if (apr_file_name_get(&cfilename, tfp) == APR_SUCCESS) {
-            filename = apr_pstrdup(cntxt, cfilename);
-        }
-#endif
-	apr_file_close(tfp);
-
-#ifdef OMIT_DELONCLOSE
-        if (filename) {
-            apr_file_remove(filename, cntxt);
-        }
-#endif
+        apr_file_close(tfp);
     }
-
     exit(rc);
 }
 
@@ -103,11 +79,11 @@ static void getword(char *word, char *line, char stop)
     int x = 0, y;
 
     for (x = 0; ((line[x]) && (line[x] != stop)); x++)
-	word[x] = line[x];
+        word[x] = line[x];
 
     word[x] = '\0';
     if (line[x])
-	++x;
+        ++x;
     y = 0;
 
     while ((line[y++] = line[x++]));
@@ -138,7 +114,7 @@ static void putline(apr_file_t *f, char *l)
     int x;
 
     for (x = 0; l[x]; x++)
-	apr_file_putc(l[x], f);
+        apr_file_putc(l[x], f);
 }
 
 
@@ -154,13 +130,13 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     apr_size_t len = sizeof(pwin);
 
     if (apr_password_get("New password: ", pwin, &len) != APR_SUCCESS) {
-	fprintf(stderr, "password too long");
-	cleanup_tempfile_and_exit(5);
+        apr_file_printf(errfile, "password too long");
+        cleanup_tempfile_and_exit(5);
     }
     len = sizeof(pwin);
     apr_password_get("Re-type new password: ", pwv, &len);
     if (strcmp(pwin, pwv) != 0) {
-	fprintf(stderr, "They don't match, sorry.\n");
+        apr_file_printf(errfile, "They don't match, sorry.\n");
         cleanup_tempfile_and_exit(1);
     }
     pw = pwin;
@@ -177,30 +153,30 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     apr_md5_final(digest, &context);
 
     for (i = 0; i < 16; i++)
-	apr_file_printf(f, "%02x", digest[i]);
+        apr_file_printf(f, "%02x", digest[i]);
 
     apr_file_printf(f, "\n");
 }
 
 static void usage(void)
 {
-    fprintf(stderr, "Usage: htdigest [-c] passwordfile realm username\n");
-    fprintf(stderr, "The -c flag creates a new file.\n");
+    apr_file_printf(errfile, "Usage: htdigest [-c] passwordfile realm username\n");
+    apr_file_printf(errfile, "The -c flag creates a new file.\n");
     exit(1);
 }
 
 static void interrupted(void)
 {
-    fprintf(stderr, "Interrupted.\n");
+    apr_file_printf(errfile, "Interrupted.\n");
     cleanup_tempfile_and_exit(1);
 }
 
 static void terminate(void)
 {
+    apr_terminate();
 #ifdef NETWARE
     pressanykey();
 #endif
-    apr_terminate();
 }
 
 int main(int argc, const char * const argv[])
@@ -208,23 +184,24 @@ int main(int argc, const char * const argv[])
     apr_file_t *f;
     apr_status_t rv;
     char tn[] = "htdigest.tmp.XXXXXX";
+    char *dirname;
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
     char l[MAX_STRING_LEN];
     char w[MAX_STRING_LEN];
     char x[MAX_STRING_LEN];
-    char command[MAX_STRING_LEN];
     int found;
    
     apr_app_initialize(&argc, &argv, NULL);
     atexit(terminate); 
     apr_pool_create(&cntxt, NULL);
+    apr_file_open_stderr(&errfile, cntxt);
 
 #if APR_CHARSET_EBCDIC
     rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
     if (rv) {
-        fprintf(stderr, "apr_xlate_open(): %s (%d)\n",
+        apr_file_printf(errfile, "apr_xlate_open(): %s (%d)\n",
                 apr_strerror(rv, line, sizeof(line)), rv);
         exit(1);
     }
@@ -232,83 +209,81 @@ int main(int argc, const char * const argv[])
     
     apr_signal(SIGINT, (void (*)(int)) interrupted);
     if (argc == 5) {
-	if (strcmp(argv[1], "-c"))
-	    usage();
-	rv = apr_file_open(&f, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
+        if (strcmp(argv[1], "-c"))
+            usage();
+        rv = apr_file_open(&f, argv[2], APR_WRITE | APR_CREATE, -1, cntxt);
         if (rv != APR_SUCCESS) {
             char errmsg[120];
 
-	    fprintf(stderr, "Could not open passwd file %s for writing: %s\n",
-		    argv[2],
+            apr_file_printf(errfile, "Could not open passwd file %s for writing: %s\n",
+                    argv[2],
                     apr_strerror(rv, errmsg, sizeof errmsg));
-	    exit(1);
-	}
-	printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
-	add_password(argv[4], argv[3], f);
-	apr_file_close(f);
-	exit(0);
+            exit(1);
+        }
+        apr_file_printf(errfile, "Adding password for %s in realm %s.\n", 
+                    argv[4], argv[3]);
+        add_password(argv[4], argv[3], f);
+        apr_file_close(f);
+        exit(0);
     }
     else if (argc != 4)
-	usage();
+        usage();
 
-    if (apr_file_mktemp(&tfp, tn,
-#ifdef OMIT_DELONCLOSE
-    APR_CREATE | APR_READ | APR_WRITE | APR_EXCL
-#else
-    0
-#endif
-    , cntxt) != APR_SUCCESS) {
-	fprintf(stderr, "Could not open temp file.\n");
-	exit(1);
+    if (apr_temp_dir_get((const char**)&dirname, cntxt) != APR_SUCCESS) {
+        apr_file_printf(errfile, "%s: could not determine temp dir\n",
+                        argv[0]);
+        exit(1);
+    }
+    dirname = apr_psprintf(cntxt, "%s/%s", dirname, tn);
+
+    if (apr_file_mktemp(&tfp, dirname, 0, cntxt) != APR_SUCCESS) {
+        apr_file_printf(errfile, "Could not open temp file %s.\n", dirname);
+        exit(1);
     }
 
     if (apr_file_open(&f, argv[1], APR_READ, -1, cntxt) != APR_SUCCESS) {
-	fprintf(stderr,
-		"Could not open passwd file %s for reading.\n", argv[1]);
-	fprintf(stderr, "Use -c option to create new one.\n");
-	cleanup_tempfile_and_exit(1);
+        apr_file_printf(errfile,
+                "Could not open passwd file %s for reading.\n", argv[1]);
+        apr_file_printf(errfile, "Use -c option to create new one.\n");
+        cleanup_tempfile_and_exit(1);
     }
     apr_cpystrn(user, argv[3], sizeof(user));
     apr_cpystrn(realm, argv[2], sizeof(realm));
 
     found = 0;
     while (!(get_line(line, MAX_STRING_LEN, f))) {
-	if (found || (line[0] == '#') || (!line[0])) {
-	    putline(tfp, line);
-	    continue;
-	}
-	strcpy(l, line);
-	getword(w, l, ':');
-	getword(x, l, ':');
-	if (strcmp(user, w) || strcmp(realm, x)) {
-	    putline(tfp, line);
-	    continue;
-	}
-	else {
-	    printf("Changing password for user %s in realm %s\n", user, realm);
-	    add_password(user, realm, tfp);
-	    found = 1;
-	}
+        if (found || (line[0] == '#') || (!line[0])) {
+            putline(tfp, line);
+            continue;
+        }
+        strcpy(l, line);
+        getword(w, l, ':');
+        getword(x, l, ':');
+        if (strcmp(user, w) || strcmp(realm, x)) {
+            putline(tfp, line);
+            continue;
+        }
+        else {
+            apr_file_printf(errfile, "Changing password for user %s in realm %s\n", 
+                    user, realm);
+            add_password(user, realm, tfp);
+            found = 1;
+        }
     }
     if (!found) {
-	printf("Adding user %s in realm %s\n", user, realm);
-	add_password(user, realm, tfp);
+        apr_file_printf(errfile, "Adding user %s in realm %s\n", user, realm);
+        add_password(user, realm, tfp);
     }
     apr_file_close(f);
-#if defined(OS2) || defined(WIN32)
-    sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
-#else
-    sprintf(command, "cp %s %s", tn, argv[1]);
-#endif
 
-#ifdef OMIT_DELONCLOSE
+    /* The temporary file has all the data, just copy it to the new location.
+     */
+    if (apr_file_copy(dirname, argv[1], APR_FILE_SOURCE_PERMS, cntxt) !=
+                APR_SUCCESS) {
+        apr_file_printf(errfile, "%s: unable to update file %s\n", 
+                        argv[0], argv[1]);
+    }
     apr_file_close(tfp);
-    system(command);
-    apr_file_remove(tn, cntxt);
-#else
-    system(command);
-    apr_file_close(tfp);
-#endif
 
     return 0;
 }
