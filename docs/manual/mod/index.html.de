@@ -36,8 +36,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="core" name="core">Kernfunktionen und Multi-Processing-Module</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
-available</dd>
+<dt><a href="core.html">core</a></dt><dd>Ständig verfügbare Kernfunktionen des Apache HTTP
+Servers</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
 more than one multi-processing module (MPM)</dd>
 <dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
