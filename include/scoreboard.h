@@ -197,7 +197,6 @@ typedef struct {
 } status_table_entry;
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
-#define NEW_SCOREBOARD_SIZE	sizeof(new_scoreboard)
 #ifdef TPF
 #define SCOREBOARD_NAME		"SCOREBRD"
 #define SCOREBOARD_FRAMES		SCOREBOARD_SIZE/4095 + 1
