@@ -393,6 +393,7 @@ AP_DECLARE_HOOK(const dav_hooks_locks *, get_lock_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_propdb *, get_propdb_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_vsn *, get_vsn_hooks, (request_rec *r))
 
+AP_DECLARE_HOOK(void, gather_propsets, (ap_array_header_t *uris))
 AP_DECLARE_HOOK(int, find_liveprop, (request_rec *r,
                                      const char *ns_uri, const char *name,
                                      const dav_hooks_liveprop **hooks))
@@ -416,120 +417,10 @@ int dav_get_liveprop_ns_count(void);
 void dav_add_all_liveprop_xmlns(ap_pool_t *p, ap_text_header *phdr);
 
 
-/* --------------------------------------------------------------------
-**
-** ====> DEPRECATED <====
-**
-** DYNAMIC EXTENSIONS
-*/
-
-/* ### docco goes here... */
-
-
-/*
-** This structure is used to specify a set of hooks and its associated
-** context, on a per-directory/location basis.
-**
-** Note: the context is assembled from various sources. dav_dyn_hooks
-** structures will typically have the same pointer values within the
-** context (e.g. ctx.m_context is shared across all providers in a module).
-*/
-typedef struct dav_dyn_hooks
-{
-    const void *hooks;		/* the type-specific hooks */
-
-    struct dav_dyn_hooks *next;	/* next set of hooks, if applicable */
-
-} dav_dyn_hooks;
-
-/*
-** These enumerated values define the different types of functionality that
-** a provider can implement.
-*/
-enum
-{
-    DAV_DYN_TYPE_SENTINEL,
-
-    DAV_DYN_TYPE_PROPDB,	/* property database (1 per dir) */
-    DAV_DYN_TYPE_LOCKS,		/* lock handling (1 per dir) */
-    DAV_DYN_TYPE_QUERY_GRAMMAR,	/* DASL search grammar (N per dir) */
-    DAV_DYN_TYPE_ACL,		/* ACL handling (1 per dir) */
-    DAV_DYN_TYPE_VSN,		/* versioning (1 per dir) */
-    DAV_DYN_TYPE_LIVEPROP,	/* live property handler (N per dir) */
-
-    DAV_DYN_TYPE_MAX
-};
-
-/*
-** This structure defines a provider for a particular type of functionality.
-**
-** The ID is private to a provider and can be used to differentiate between
-** different subclasses of functionality which are implemented using the
-** same set of hooks. For example, a hook function could perform two entirely
-** different operations based on the ID which is passed.
-**
-** is_active() is used by the system to determine whether a particular
-** provider is "active" for the given context. It is possible that a provider
-** is configured for a directory, but has not been enabled -- the is_active()
-** function is used to determine that information.
-**
-** ### is_active is not used right now
-**
-** Note: dav_dyn_provider structures are always treated as "const" by mod_dav.
-*/
-typedef struct dav_dyn_provider
-{
-    int id;			/* provider ID */
-
-    int type;			/* provider's functionality type */
-    const void *hooks;		/* pointer to type-specific hooks */
-
-} dav_dyn_provider;
-
-#define DAV_DYN_END_MARKER	{ 0, DAV_DYN_TYPE_SENTINEL, NULL }
-
-/*
-** This structure defines a module (a set of providers).
-**
-** The friendly name should be a single word. It is used with the "DAV"
-** directive to specify the module to use for a particular directory/location.
-**
-** The module_open/close functions are used to initialize per-module "global"
-** data. The functions are expected to update ctx->m_context.
-**
-** ### module_open/close are not used at the moment
-** ### dir_* are not well-defined, nor are they used
-**
-** Note: The DAV_DYN_VERSION specifies the version of the dav_dyn_module
-**       structure itself. It will be updated if changes in the structure
-**       are made. There are no provisions for forward or backward
-**       compatible changes.
-**
-** Note: dav_dyn_module structures are always treated as "const" by mod_dav.
-*/
-typedef struct
-{
-    int magic;
-#define DAV_DYN_MAGIC		0x44415621	/* "DAV!" */
-
-    int version;
-#define DAV_DYN_VERSION		1		/* must match exactly */
-
-    const char *name;				/* friendly name */
-
-    const dav_dyn_provider *providers;		/* providers in this module */
-
-} dav_dyn_module;
-
 /* ### deprecated */
 #define DAV_GET_HOOKS_PROPDB(r)         dav_get_propdb_hooks(r)
 #define DAV_GET_HOOKS_LOCKS(r)          dav_get_lock_hooks(r)
 #define DAV_GET_HOOKS_VSN(r)            dav_get_vsn_hooks(r)
-
-/* ### temporary; this semantic won't apply in the new scheme */
-const dav_dyn_hooks *dav_get_liveprop_hooks(request_rec *r);
-#define DAV_AS_HOOKS_LIVEPROP(ph)	((const dav_hooks_liveprop *)((ph)->hooks))
-#define DAV_GET_HOOKS_LIVEPROP(r)       DAV_AS_HOOKS_LIVEPROP(dav_get_liveprop_hooks(r))
 
 
 /* --------------------------------------------------------------------

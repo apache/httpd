@@ -2012,32 +2012,6 @@ static const dav_hooks_liveprop dav_hooks_liveprop_fs =
     dav_fs_patch_rollback,
 };
 
-/*
-** Note: we do not provide an is_active function at this point. In the
-** future, mod_dav may use that to determine if a particular provider is
-** active/enabled, but it doesn't now.
-*/
-static const dav_dyn_provider dav_dyn_providers_fs[] =
-{
-    /* liveprop provider */
-    {
-	DAV_FS_PROVIDER_ID,
-        DAV_DYN_TYPE_LIVEPROP,
-        &dav_hooks_liveprop_fs
-    },
-
-    /* must always be last */
-    DAV_DYN_END_MARKER
-};
-
-const dav_dyn_module dav_dyn_module_default =
-{
-    DAV_DYN_MAGIC,
-    DAV_DYN_VERSION,
-    "filesystem",
-
-    dav_dyn_providers_fs
-};
 
 int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
                              const char *workspace)
@@ -2060,6 +2034,32 @@ const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r)
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r)
 {
     return &dav_hooks_db_dbm;
+}
+
+void dav_fs_gather_propsets(ap_array_header_t *uris)
+{
+#ifndef WIN32
+    *(const char **)ap_push_array(uris) =
+        "<http://apache.org/dav/propset/fs/1>";
+#endif
+}
+
+int dav_fs_find_liveprop(request_rec *r, const char *ns_uri, const char *name,
+                         const dav_hooks_liveprop **hooks)
+{
+    int propid = dav_fs_find_prop(ns_uri, name);
+
+    if (propid == 0)
+        return 0;
+
+    *hooks = &dav_hooks_liveprop_fs;
+    return propid;
+}
+
+void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
+                                 int insvalue, ap_text_header *phdr)
+{
+    dav_fs_insert_all(resource, insvalue, phdr);
 }
 
 void dav_fs_register_uris(ap_pool_t *p)

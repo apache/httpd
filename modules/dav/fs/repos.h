@@ -100,6 +100,12 @@ int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
 const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);
 
+void dav_fs_gather_propsets(ap_array_header_t *uris);
+int dav_fs_find_liveprop(request_rec *r, const char *ns_uri, const char *name,
+                         const dav_hooks_liveprop **hooks);
+void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
+                                 int insvalue, ap_text_header *phdr);
+
 void dav_fs_register_uris(ap_pool_t *p);
 
 #endif /* _DAV_FS_REPOS_H_ */

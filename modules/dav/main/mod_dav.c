@@ -110,9 +110,7 @@ typedef struct {
     long limit_xml_body;
 
     ap_table_t *d_params;	/* per-directory DAV config parameters */
-    struct dav_dyn_mod_ctx *dmc;
 
-    dav_dyn_hooks *liveprop;
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -131,27 +129,6 @@ typedef struct {
 
 /* forward-declare for use in configuration lookup */
 extern module MODULE_VAR_EXPORT dav_module;
-
-/* copy a module's providers into our per-directory configuration state */
-static void dav_copy_providers(ap_pool_t *p, const char *name, dav_dir_conf *conf)
-{
-    extern const dav_dyn_module dav_dyn_module_default;
-
-    const dav_dyn_module *mod;
-    const dav_dyn_provider *provider;
-    dav_dyn_hooks *ddh;
-
-    /* ### just hard-code this stuff for now */
-
-    /* mod = dav_find_module(name); */
-    mod = &dav_dyn_module_default;
-
-    provider = mod->providers;
-
-    ddh = ap_pcalloc(p, sizeof(*ddh));
-    ddh->hooks = provider->hooks;
-    conf->liveprop = ddh;
-}
 
 static void dav_init_handler(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp,
                              server_rec *s)
@@ -200,14 +177,6 @@ static void *dav_create_dir_config(ap_pool_t *p, char *dir)
     conf->d_params = ap_make_table(p, 1);
     conf->limit_xml_body = DAV_LIMIT_UNSET;
 
-    /* DBG1("dav_create_dir_config: %08lx", (long)conf); */
-
-    /*
-    ** Locate the appropriate module (NULL == default) and copy the module's
-    ** providers' hooks into our configuration state.
-    */
-    dav_copy_providers(p, NULL, conf);
-
     return conf;
 }
 
@@ -234,11 +203,6 @@ static void *dav_merge_dir_config(ap_pool_t *p, void *base, void *overrides)
     newconf->d_params = ap_copy_table(p, parent->d_params);
     ap_overlap_tables(newconf->d_params, child->d_params,
 		      AP_OVERLAP_TABLES_SET);
-
-    if (child->liveprop != NULL)
-        newconf->liveprop = child->liveprop;
-    else
-        newconf->liveprop = parent->liveprop;
 
     return newconf;
 }
@@ -316,14 +280,6 @@ const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r)
     else
         hooks = data;
     return hooks;
-}
-
-const dav_dyn_hooks *dav_get_liveprop_hooks(request_rec *r)
-{
-    dav_dir_conf *conf;
-
-    conf = ap_get_module_config(r->per_dir_config, &dav_module);
-    return conf->liveprop;
 }
 
 /*
@@ -1335,8 +1291,8 @@ static int dav_method_options(request_rec *r)
     const char *dav_level;
     const char *vsn_level;
     int result;
-    const dav_dir_conf *conf;
-    const dav_dyn_hooks *lp;
+    ap_array_header_t *uri_ary;
+    const char *uris;
 
     /* per HTTP/1.1 S9.2, we can discard this body */
     if ((result = ap_discard_request_body(r)) != OK) {
@@ -1362,17 +1318,12 @@ static int dav_method_options(request_rec *r)
         vsn_level = (*vsn_hooks->get_vsn_header)();
     }
 
-    /*
-    ** Iterate through the live property providers; add their URIs to
-    ** the dav_level string.
-    */
-    conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
-						 &dav_module);
-    for (lp = conf->liveprop; lp != NULL; lp = lp->next) {
-        const char *uri = DAV_AS_HOOKS_LIVEPROP(lp)->propset_uri;
-
-        if (uri != NULL)
-            dav_level = ap_pstrcat(r->pool, dav_level, ",<", uri, ">", NULL);
+    /* gather property set URIs from all the liveprop providers */
+    uri_ary = ap_make_array(r->pool, 5, sizeof(const char *));
+    ap_run_gather_propsets(uri_ary);
+    uris = ap_array_pstrcat(r->pool, uri_ary, ',');
+    if (*uris) {
+        dav_level = ap_pstrcat(r->pool, dav_level, ",", uris, NULL);
     }
 
     /* this tells MSFT products to skip looking for FrontPage extensions */
@@ -3220,6 +3171,7 @@ AP_HOOK_STRUCT(
     AP_HOOK_LINK(get_lock_hooks)
     AP_HOOK_LINK(get_propdb_hooks)
     AP_HOOK_LINK(get_vsn_hooks)
+    AP_HOOK_LINK(gather_propsets)
     AP_HOOK_LINK(find_liveprop)
     AP_HOOK_LINK(insert_all_liveprops)
     )
@@ -3233,3 +3185,13 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_db *, get_propdb_hooks,
                             (request_rec *r), (r), NULL);
 AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_vsn *, get_vsn_hooks,
                             (request_rec *r), (r), NULL);
+AP_IMPLEMENT_HOOK_VOID(gather_propsets, (ap_array_header_t *uris), (uris))
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, find_liveprop,
+                            (request_rec *r,
+                             const char *ns_uri, const char *name,
+                             const dav_hooks_liveprop **hooks),
+                            (r, ns_uri, name, hooks), 0);
+AP_IMPLEMENT_HOOK_VOID(insert_all_liveprops,
+                       (request_rec *r, const dav_resource *resource,
+                        int insvalue, ap_text_header *phdr),
+                       (r, resource, insvalue, phdr));
