@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/04/15 14:59:44 $]
+  Last modified at [$Date: 2000/04/17 16:50:00 $]
 
 Release:
 
@@ -43,6 +43,11 @@ Documentation that needs writing:
 
 
 Available Patches:
+
+    * Eric Wedel <wedel@wenet.net>'s patch for CONNECT method and proxy
+      on Win32.  Addresses PR 5107 and maybe 2014.
+	PR: 5899
+	Status: 
 
     * Dan Astoorian <djast@cs.toronto.edu>'s patch to fix mod_include RE
       tokenisation
