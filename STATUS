@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/13 15:25:05 $]
+Last modified at [$Date: 2004/10/13 15:29:44 $]
 
 Release:
 
@@ -242,7 +242,7 @@ PATCHES TO BACKPORT FROM 2.1
        client.  The full patch file is available at http://www.apache.org/~bnicholes/
        as well as a test client tlsupgrade.c. This functionality is mainly used by
        IPP clients today.
-          modules/ssl/mod_ssl.c: r1.75, r1.97
+          modules/ssl/mod_ssl.c: r1.75, r1.97, r1.100
           modules/ssl/mod_ssl.h: r1.123
           modules/ssl/ssl_engine_config.c: r1.71, r1.90
           modules/ssl/ssl_engine_init.c: r1.107, r1.126
