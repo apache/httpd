@@ -1684,20 +1684,27 @@ port</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class
     <p>In many situations Apache has to construct a
     <em>self-referential</em> URL. That is, a URL which refers back to
     the same server. With <code>UseCanonicalName on</code> Apache will
-    use the hostname and port specified in the <a href="#servername" class="directive"><code class="directive">ServerName</code></a> directive to construct a canonical
+    use the hostname and port specified in the <a href="#servername" class="directive"><code class="directive">ServerName</code></a> directive to construct the canonical
     name for the server. This name is used in all self-referential
     URLs, and for the values of <code>SERVER_NAME</code> and
     <code>SERVER_PORT</code> in CGIs.</p>
 
+    <p>For example, if <code class="directive">ServerName</code> is set to
+    <code>www.example.com</code> and <code class="directive">Port</code> is set
+    to <code>9090</code>, then the <em>canonical name</em> of the server
+    is <code>www.example.com:9090</code>. In the event that
+    <code class="directive">Port</code> has its default value of
+    <code>80</code>, the <code>:80</code> is ommitted from the
+    <em>canonical name</em>.</p>
+
     <p>With <code>UseCanonicalName off</code> Apache will form
     self-referential URLs using the hostname and port supplied by
     the client if any are supplied (otherwise it will use the
-    canonical name). These values are the same that are used to
-    implement <a href="../vhosts/name-based.html">name based
-    virtual hosts</a>, and are available with the same clients. The
-    CGI variables <code>SERVER_NAME</code> and
-    <code>SERVER_PORT</code> will be constructed from the client
-    supplied values as well.</p>
+    canonical name, as defined above). These values are the same
+    that are used to implement <a href="../vhosts/name-based.html">name based virtual hosts</a>,
+    and are available with the same clients. The CGI variables 
+    <code>SERVER_NAME</code> and <code>SERVER_PORT</code> will be
+    constructed from the client supplied values as well.</p>
 
     <p>An example where this may be useful is on an intranet server
     where you have users connecting to the machine using short
@@ -1707,8 +1714,9 @@ port</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class
     slash</em> then Apache will redirect them to
     <code>http://www.domain.com/splat/</code>. If you have
     authentication enabled, this will cause the user to have to
-    reauthenticate twice (once for <code>www</code> and once again
-    for <code>www.domain.com</code>). But if
+    authenticate twice (once for <code>www</code> and once again
+    for <code>www.domain.com</code> -- see <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">the
+    FAQ on this subject for more information</a>). But if
     <code class="directive">UseCanonicalName</code> is set off, then Apache will
     redirect to <code>http://www/splat/</code>.</p>
 
