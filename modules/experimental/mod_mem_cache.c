@@ -62,7 +62,7 @@
 #include "mod_cache.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
-#ifdef APR_HAVE_UNISTD_H
+#if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
