@@ -450,8 +450,12 @@ int status_handler (request_rec *r)
 	    {
 		if (no_table_report)
 		{
-	            rprintf(r,"<b>Server %d</b> (%d): %d|%lu|%lu [",
-		     i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
+		    if (score_record.status == SERVER_DEAD)
+			rprintf(r,"<b>Server %d</b> (-): %d|%lu|%lu [",
+			 i,(int)conn_lres,my_lres,lres);
+		    else
+			rprintf(r,"<b>Server %d</b> (%d): %d|%lu|%lu [",
+			 i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
 
 		    switch (score_record.status)
 		    {
@@ -510,8 +514,12 @@ int status_handler (request_rec *r)
 		}
 		else /* !no_table_report */
 		{
-	            rprintf(r,"<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
-		     i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
+		    if (score_record.status == SERVER_DEAD)
+			rprintf(r,"<tr><td><b>%d</b><td>-<td>%d/%lu/%lu",
+			 i,(int)conn_lres,my_lres,lres);
+		    else
+			rprintf(r,"<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
+			 i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
 
 		    switch (score_record.status)
 		    {
