@@ -1015,6 +1015,9 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_threads_limit = HARD_THREAD_LIMIT;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+#endif
 
     return OK;
 }

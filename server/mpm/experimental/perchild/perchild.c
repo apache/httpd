@@ -1544,6 +1544,9 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     curr_child_num = 0;
+#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+#endif
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
