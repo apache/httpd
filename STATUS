@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/22 20:46:24 $]
+Last modified at [$Date: 2004/04/23 07:21:50 $]
 
 Release:
 
@@ -76,7 +76,7 @@ PATCHES TO BACKPORT FROM 2.1
        (should be a minor MMN bump). PR 28523.
          server/protocol.c: r1.147
          include/http_protocol.h: r1.91
-       +1: nd
+       +1: nd, trawick
 
     *) allow symlinks on directories to be processed by Include directives
        and stop possible recursion by a counter. PR 28492
@@ -90,11 +90,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_headers: don't segfault, when supplying an empty header value
          modules/metadata/mod_headers.c: r1.56
-       +1: nd, bnicholes
+       +1: nd, bnicholes, trawick
 
     *) mod_headers: Backport ErrorHeader directive (regression from 1.3)
          modules/metadata/mod_headers.c: r1.44, 1.45, 1.51
-       +1: nd
+       +1: nd, trawick
 
     *) mod_headers: Allow conditional RequestHeader directives. PR 27951
          modules/metadata/mod_headers.c: r1.52
