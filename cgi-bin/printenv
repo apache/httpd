@@ -8,7 +8,6 @@ foreach $var (sort(keys(%ENV))) {
     $val = $ENV{$var};
     $val =~ s|\n|\\n|g;
     $val =~ s|"|\\"|g;
-    $val = substr($val, 0, 100).'[...]' if (length($val) > 100);
     print "${var}=\"${val}\"\n";
 }
 
