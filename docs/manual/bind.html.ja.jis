@@ -17,6 +17,10 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>バインド</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/bind.html">&nbsp;en&nbsp;</a> | <a href="./ja/bind.html">&nbsp;ja&nbsp;</a></p>
+</div>
+
     <p>Apache が使用するアドレスとポートの設定をします。</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要</a></li>
@@ -169,7 +173,9 @@
     設定されてしまうと、
     それにはアクセスできないということに注意してください。</p>
   </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/bind.html">&nbsp;en&nbsp;</a> | <a href="./ja/bind.html">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
 </body></html>

@@ -17,6 +17,10 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>フィルタ</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/filter.html">&nbsp;en&nbsp;</a> | <a href="./ja/filter.html">&nbsp;ja&nbsp;</a></p>
+</div>
+
     <p>Apache でのフィルタの使い方について記述しています。</p>
   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -60,7 +64,9 @@
     <p>また、<code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> モジュールで
     外部プログラムをフィルタとして指定することができます。</p>
   </div></div>
-<div id="footer">
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/filter.html">&nbsp;en&nbsp;</a> | <a href="./ja/filter.html">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
 </body></html>
