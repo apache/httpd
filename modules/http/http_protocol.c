@@ -1027,7 +1027,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
  *        If no LF is detected on the last line due to a dropped connection 
  *        or a full buffer, that's considered an error.
  */
-int ap_getline(char *s, int n, request_rec *r, int fold)
+AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 {
     char *pos = s;
     char *last_char;
