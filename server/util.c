@@ -675,29 +675,24 @@ AP_DECLARE(char *) ap_getword_white_nc(apr_pool_t *atrans, char **line)
 
 AP_DECLARE(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
 {
-    int pos = -1, x;
+    const char *pos = *line;
+    int len;
     char *res;
 
-    for (x = 0; (*line)[x]; x++) {
-	if (apr_isspace((*line)[x])) {
-	    pos = x;
-	    break;
-	}
+    while (!apr_isspace(*pos) && *pos) {
+        ++pos;
     }
 
-    if (pos == -1) {
-	res = apr_pstrdup(atrans, *line);
-	*line += strlen(*line);
-	return res;
+    len = pos - *line;
+    res = (char *)apr_palloc(atrans, len + 1);
+    memcpy(res, *line, len);
+    res[len] = 0;
+
+    while (apr_isspace(*pos)) {
+        ++pos;
     }
 
-    res = apr_palloc(atrans, pos + 1);
-    apr_cpystrn(res, *line, pos + 1);
-
-    while (apr_isspace((*line)[pos]))
-	++pos;
-
-    *line += pos;
+    *line = pos;
 
     return res;
 }
