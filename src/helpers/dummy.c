@@ -1,4 +1,6 @@
 /* this file is used by TestLib */
+/* the extra decl is to shutup gcc -Wmissing-prototypes */
+extern int foo (const char *c);
 int foo ( const char *c )
 {
 return *c;
