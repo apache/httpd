@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Fix mod_autoindex's handling of ScanHTMLTitles when file
+     content-types are "text/html;parameters".  PR#4524  [Ken Coar]
+
   *) Remove "mxb" support from mod_negotiation -- it was a draft feature
      never accepted into any standard, and it opens up certain DoS
      attacks.  [Koen Holtman <Koen.Holtman@cern.ch>]

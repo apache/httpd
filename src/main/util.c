@@ -119,6 +119,23 @@ API_EXPORT(char *) ap_get_time()
     return (time_string);
 }
 
+/*
+ * Examine a field value (such as a media-/content-type) string and return
+ * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
+ */
+API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype)
+{
+    const char *semi;
+
+    semi = strchr(intype, ';');
+    if (semi != NULL) {
+	while ((semi > intype) && ap_isspace(semi[-1])) {
+	    semi--;
+	}
+    }
+    return ap_pstrndup(p, intype, semi - intype);
+}
+
 API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt)
 {
     char ts[MAX_STRING_LEN];

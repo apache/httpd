@@ -920,6 +920,7 @@ extern API_VAR_EXPORT const char ap_day_snames[7][4];
 
 API_EXPORT(struct tm *) ap_get_gmtoff(int *tz);
 API_EXPORT(char *) ap_get_time(void);
+API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype);
 API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt);
 API_EXPORT(char *) ap_gm_timestr_822(pool *p, time_t t);
 

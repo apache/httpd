@@ -957,7 +957,8 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 	 * SSIs.
 	 */
 	if (rr->content_type != NULL) {
-	    if (!strcasecmp("text/html", rr->content_type)) {
+	    if (!strcasecmp(ap_field_noparam(r->pool, rr->content_type),
+			    "text/html")) {
 		/* Hope everything will work... */
 		emit_amble = 0;
 		emit_H1 = 0;
@@ -1038,7 +1039,8 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 	 * SSIs.
 	 */
 	if (rr->content_type != NULL) {
-	    if (!strcasecmp("text/html", rr->content_type)) {
+	    if (!strcasecmp(ap_field_noparam(r->pool, rr->content_type),
+			    "text/html")) {
 		if (ap_run_sub_req(rr) == OK) {
 		    /* worked... */
 		    suppress_sig = 1;
@@ -1079,8 +1081,9 @@ static char *find_title(request_rec *r)
     if (r->status != HTTP_OK) {
 	return NULL;
     }
-    if (r->content_type
-	&& (!strcmp(r->content_type, "text/html")
+    if ((r->content_type != NULL)
+	&& (!strcasecmp(ap_field_noparam(r->pool, r->content_type),
+			"text/html")
 	    || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
 	&& !r->content_encoding) {
         if (!(thefile = ap_pfopen(r->pool, r->filename, "r"))) {
