@@ -62,12 +62,12 @@ The Latest Version
 
 Details of the latest version are in the apache project page (above).
 
-Licencing
+Licensing
 ---------
 
 Please see the file called LICENSE.
 
-Acknowledgements
+Acknowledgments
 ----------------
 
 We wish to acknowledge the following copyrighted works that make up
@@ -78,8 +78,8 @@ Supercomputing Applications at the University of Illinois at
 Urbana-Champaign.
 
 This software contains code derived from the RSA Data Security Inc. MD5
-Message-Diest Algorithm, including various modifications by Spyglass Inc.,
-Caregie Mellon University, and Bell Communications Research, Inc. 
+Message-Digest Algorithm, including various modifications by Spyglass Inc.,
+Carnegie Mellon University, and Bell Communications Research, Inc. 
 (Bellcore).
 
 This package contains software written and copyrighted by Henry Spencer. 
