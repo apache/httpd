@@ -106,6 +106,9 @@
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -322,7 +325,16 @@ static int translate_userdir(request_rec *r)
             return DECLINED;
 #else                           /* WIN32 */
             struct passwd *pw;
+
+/*#if APR_HAS_THREADS && defined(_POSIX_THREAD_SAFE_FUNCTIONS)*/
+            struct passwd pwd;
+            size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
+            char *buf = apr_pcalloc(r->pool, buflen);
+
+            if (!getpwnam_r(w, &pwd, buf, buflen, &pw)) {
+/*#else
             if ((pw = getpwnam(w))) {
+#endif*/
 #ifdef OS2
                 /* Need to manually add user name for OS/2 */
                 filename = apr_pstrcat(r->pool, pw->pw_dir, w, "/", userdir, NULL);
