@@ -34,7 +34,7 @@
 <h2><a name="definition" id="definition">What is a Handler</a></h2>
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imap.html">mod_imap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
-    
+
 
     <p>A "handler" is an internal Apache representation of the
     action to be performed when a file is called. Generally, files
@@ -89,7 +89,7 @@
       <p>The following directives will cause requests for files with
       the <code>html</code> extension to trigger the launch of the
       <code>footer.pl</code> CGI script.</p>
-      
+
       <div class="example"><p><code>
         Action add-footer /cgi-bin/footer.pl<br />
         AddHandler add-footer .html
@@ -99,7 +99,7 @@
       originally requested document (pointed to by the
       <code>PATH_TRANSLATED</code> environment variable) and making
       whatever modifications or additions are desired.</p>
- 
+
     
     <h3><a name="example2" id="example2">Files with HTTP headers</a></h3>
       
@@ -116,7 +116,7 @@
         SetHandler send-as-is<br />
         &lt;/Directory&gt;
       </code></p></div>
-      
+
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

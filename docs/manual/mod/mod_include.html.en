@@ -636,7 +636,7 @@ directive]"</code></td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String that starts an include element</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIStartTag "&lt;!--"</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIStartTag "&lt;!--#"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
@@ -659,7 +659,7 @@ directive]"</code></td></tr>
     below:</p>
 
     <div class="example"><h3>SSI directives with alternate start and end tags</h3><p><code>
-      &lt;%#printenv %&gt;
+      &lt;%printenv %&gt;
     </code></p></div>
 
 <h3>See also</h3>
