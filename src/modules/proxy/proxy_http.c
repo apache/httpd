@@ -134,13 +134,10 @@ static const char *proxy_location_reverse_map(request_rec *r, const char *url)
 }
 
 /* Clear all connection-based headers from the incoming headers table */
-static void clear_connection(table *headers)
+static void clear_connection(pool *p, table *headers)
 {
     const char *name;
-    /* Although we shouldn't alter the return from ap_table_get, in this case
-       its OK, coz we're going to delete the entry anyway
-    */
-    char *next = (char *)ap_table_get(headers, "Connection");
+    char *next = ap_pstrdup(p, ap_table_get(headers, "Connection"));
 
     ap_table_unset(headers, "Proxy-Connection");
     if (!next)
@@ -296,7 +293,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 				strerror(errno), NULL));
     }
 
-    clear_connection(r->headers_in);	/* Strip connection-based headers */
+    clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */
 
     f = ap_bcreate(p, B_RDWR | B_SOCKET);
     ap_bpushfd(f, sock, sock);
@@ -362,7 +359,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
 	resp_hdrs = ap_proxy_read_headers(p, buffer, HUGE_STRING_LEN, f);
 
-	clear_connection((table *) resp_hdrs);	/* Strip Connection hdrs */
+	clear_connection(p, (table *) resp_hdrs);	/* Strip Connection hdrs */
     }
     else {
 /* an http/0.9 response */
