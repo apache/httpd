@@ -955,6 +955,7 @@ proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
     int ip_addr[4];
     struct in_addr addr;
     struct in_addr *ip_list;
+    char **ip_listptr;
     const char *found;
     const char *host = proxy_get_host_of_request(r);
 
@@ -1005,7 +1006,9 @@ proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 	    found = host;
 
 	/* Try to deal with multiple IP addr's for a host */
-	for (ip_list = (struct in_addr *) *the_host.h_addr_list; ip_list->s_addr != 0UL; ++ip_list)
+	for (ip_listptr=the_host.h_addr_list; *ip_listptr; ++ip_listptr)
+	{
+	    ip_list = (struct in_addr *) *ip_listptr;
 	    if (This->addr.s_addr == (ip_list->s_addr & This->mask.s_addr))
 	    {
 #if DEBUGGING
@@ -1023,6 +1026,7 @@ proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 		fprintf(stderr,"%s\n", inet_ntoa(This->mask));
 	    }
 #endif
+	}
     }
 
     /* Use net math to determine if a host lies in a subnet */

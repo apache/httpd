@@ -1,5 +1,8 @@
 Changes with Apache 1.3b1
   
+  *) Fixed error in proxy_util.c when looping through multiple host IP
+     addresses. [Lars Eilebrecht] PR#974
+
   *) If BUFFERED_LOGS is defined then mod_log_config will do atomic
      buffered writes -- that is, it will buffer up to PIPE_BUF (i.e. 4k)
      bytes before writing, but it will never split a log entry across a
@@ -177,11 +180,6 @@ Changes with Apache 1.3b1
 
   *) Fixed proxy-pass-through feature of mod_rewrite; Added error logging
      information for case where proxy module is not available. [Marc Slemko]
-
-  *) The request to a remote proxy was mangled if it was generated as the
-     result of a ProxyPass directive. URL schemes other than http:// were not
-     supported when ProxyRemote was used. PR#260, PR#656, PR#699, PR#713,
-     PR#812 [Lars Eilebrecht]
 
   *) PORT: Apache has need for mutexes to serialize its children around
      accept.  In prior versions either fcntl file locking or flock file
