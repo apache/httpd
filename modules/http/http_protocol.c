@@ -193,6 +193,7 @@ static int ap_set_byterange(request_rec *r);
 typedef struct byterange_ctx {
     apr_bucket_brigade *bb;
     int num_ranges;
+    const char *orig_ct;
 } byterange_ctx;
 
 /*
@@ -245,6 +246,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         ctx->num_ranges = num_ranges;
 
         if (num_ranges > 1) {
+            ctx->orig_ct = r->content_type;
             r->content_type = 
                  apr_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
                           "byteranges; boundary=", r->boundary, NULL);
@@ -267,7 +269,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     bound_head = apr_pstrcat(r->pool,
                              CRLF "--", r->boundary,
                              CRLF "Content-type: ",
-                             make_content_type(r, r->content_type),
+                             make_content_type(r, ctx->orig_ct),
                              CRLF "Content-range: bytes ", 
                              NULL);
     ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
