@@ -338,7 +338,8 @@ build for your OS.
       NET_SIZE_T:
        Some functions such as accept(), getsockname(), getpeername() take
        an int *len on some architectures and a size_t *len on others.
-       If left undefined apache will default it to int.
+       If left undefined apache will default it to int.  See include/conf.h
+       for a description of NET_SIZE_T.
 
       NEED_HASHBANG_EMUL:
        The execve()/etc. functions on this platform do not deal with #!,

@@ -1066,8 +1066,25 @@ extern int ap_execve(const char *filename, const char *argv[],
 #define XtOffsetOf(s_type,field) XtOffset(s_type*,field)
 #endif
 
-/* some architectures require size_t * pointers where others require int *
- * pointers in functions such as accept(), getsockname(), getpeername()
+/*
+ * NET_SIZE_T exists because of shortsightedness on the POSIX committee.  BSD
+ * systems used "int *" as the parameter to accept(), getsockname(),
+ * getpeername() et al.  Consequently many unixes took an int * for that
+ * parameter.  The POSIX committee decided that "int" was just too generic and
+ * had to be replaced with size_t almost everywhere.  There's no problem with
+ * that when you're passing by value.  But when you're passing by reference
+ * this creates a gross source incompatibility with existing programs.  On
+ * 32-bit architectures it creates only a warning.  On 64-bit architectures it
+ * creates broken code -- because "int *" is a pointer to a 64-bit quantity and
+ * "size_t *" is frequently a pointer to a 32-bit quantity.
+ *
+ * Some Unixes adopted "size_t *" for the sake of POSIX compliance.  Others
+ * ignored it because it was such a broken interface.  Chaos ensued.  POSIX
+ * finally woke up and decided that it was wrong and created a new type
+ * socklen_t.  The only useful value for socklen_t is int, and that's how
+ * everyone who has a clue implements it.  It is almost always the case that
+ * NET_SIZE_T should be defined to be an int, unless the system being compiled
+ * for was created in the window of POSIX madness.
  */
 #ifndef NET_SIZE_T
 #define NET_SIZE_T int
