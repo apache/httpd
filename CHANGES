@@ -163,6 +163,12 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.47
 
+  *) core_output_filter: don't split the brigade after a FLUSH bucket if
+     it's the last bucket.  This prevents creating unneccessary empty
+     brigades which may not be destroyed until the end of a keepalive
+     connection.
+     [Juan Rivera <Juan.Rivera@citrix.com>]
+
   *) Add support for "streamy" PROPFIND responses.
      [Ben Collins-Sussman <sussman@collab.net>]
 
