@@ -905,10 +905,7 @@ static int cgi_handler(request_rec *r)
     apr_file_pipe_timeout_set(script_in, 0);
     apr_file_pipe_timeout_set(script_err, 0);
     
-    /* if r is a subrequest, ensure that the bucket only references
-     * r->main, since it may last longer than the subreq. */
-    b = cgi_bucket_create(r->main ? r->main : r, script_in, script_err,
-                          c->bucket_alloc);
+    b = cgi_bucket_create(r, script_in, script_err, c->bucket_alloc);
 #else
     b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
 #endif

@@ -546,10 +546,21 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
          e = APR_BUCKET_NEXT(e))
     {
         rv = apr_bucket_setaside(e, p);
-        if (rv != APR_SUCCESS
-            /* ### this ENOTIMPL will go away once we implement setaside
-               ### for all bucket types. */
-            && rv != APR_ENOTIMPL) {
+
+        /* If the bucket type does not implement setaside, then
+         * (hopefully) morph it into a bucket type which does, and set
+         * *that* aside... */
+        if (rv == APR_ENOTIMPL) {
+            const char *s;
+            apr_size_t n;
+
+            rv = apr_bucket_read(e, &s, &n, APR_BLOCK_READ);
+            if (rv == APR_SUCCESS) {
+                rv = apr_bucket_setaside(e, p);
+            }
+        }
+
+        if (rv != APR_SUCCESS) {
             return rv;
         }
     }
