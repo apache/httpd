@@ -1,5 +1,10 @@
 Changes with Apache 2.0.37
 
+  *) Modify the worker MPM to not accept() new connections until
+     there is an available worker thread. This prevents queued
+     connections from starving for processing time while long-running
+     connections were hogging all the available threads.  [Aaron Bannert]
+
   *) Convert the worker MPM's fdqueue from a LIFO back into a FIFO.
      [Aaron Bannert]
 
