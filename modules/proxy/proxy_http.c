@@ -298,8 +298,8 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         /* put back old timeout */
         apr_socket_timeout_set(p_conn->sock, current_timeout);
         if ( APR_STATUS_IS_EOF(socket_status) ) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                         "proxy: HTTP: previous connection is closed");
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
+                         "proxy: previous connection is closed, creating a new connection.");
             new = 1;
         }
     }
