@@ -206,7 +206,7 @@ static apr_status_t rfc1413_query(apr_socket_t *sock, conn_rec *conn,
 
     /* send query to server. Handle short write. */
     i = 0;
-    while (i < strlen(buffer)) {
+    while (i < buflen) {
         apr_size_t j = strlen(buffer + i);
         apr_status_t status;
 	status  = apr_send(sock, buffer+i, &j);
