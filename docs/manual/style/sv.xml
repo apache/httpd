@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- Swedish -->
+<messages>
+ <message name="seealso">Se även</message>
+ <message name="description">Beskrivning</message>
+ <message name="apachemodule">Apache Modul</message>
+ <message name="status">Status</message>
+ <message name="moduleidentifier">Modul ID</message>
+ <message name="compatibility">Kompatibilitet</message>
+ <message name="syntax">Syntax</message>
+ <message name="default">Standardvärde</message>
+ <message name="context">Kontext</message>
+ <message name="override">Override</message>
+ <message name="module">Modul</message>
+</messages>

@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  version="1.0">
+<xsl:stylesheet version="1.0"
+              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                  xmlns="http://www.w3.org/TR/xhtml1/strict">
 
-  <!-- Output method -->
-  <xsl:output method="html"
-            encoding="iso-8859-1"
-              indent="yes"/>
+<!-- Include constants, variables, and macros -->
+<xsl:import href="settings.xsl" />
 
+<xsl:output method="html" encoding="iso-8859-1" indent="yes"/>
 
-  <!-- Defined parameters (overrideable) -->
-  <xsl:param    name="relative-path" select="'.'"/>
-
-  <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
-  <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-
-  <!-- Process an entire document into an HTML page -->
-  <xsl:template match="modulesynopsis">
-
-    <html>
-
-<head>
+ <!-- Process an entire document into an HTML page -->
+ <xsl:template match="modulesynopsis">
+<html>
+ <head>
 <xsl:comment>
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
@@ -29,38 +21,33 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   <xsl:apply-templates select="meta"/>
   <title><xsl:value-of select="name"/> - Apache HTTP Server</title>
   <link rel="stylesheet" type="text/css" href="../style/manual.css" />
-</head>
-<body>
-<blockquote>
-
-    <div align="center">
-      <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
-      <h3>Apache HTTP Server Version 2.0</h3>
-    </div>
-    <h1 align="center">Apache Module <xsl:value-of select="name"/></h1>
-
-<!-- Description and module-headers -->
-
-<table bgcolor="#cccccc" cellpadding="0" cellspacing="1">
-<tr><td>
-<table bgcolor="#ffffff">
-  <tr><td><span class="help">Description:</span> </td>
-    <td><xsl:apply-templates select="description"/></td></tr>
-  <tr><td><a class="help" href="module-dict.html#Status">Status:</a> </td>
-    <td><xsl:value-of select="status"/></td></tr>
+ </head>
+ <body>
+  <blockquote>
+   <div align="center">
+    <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+    <h3>Apache HTTP Server Version 2.0</h3>
+   </div>
+   <h1 align="center"><xsl:value-of select="$messages/message[@name='apachemodule']"/> <xsl:value-of select="name"/></h1>
+   <!-- Description and module-headers -->
+   <table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td>
+    <table bgcolor="#ffffff">
+     <tr><td valign="top"><span class="help"><xsl:value-of select="$messages/message[@name='description']"/>:</span> </td>
+         <td><xsl:apply-templates select="description"/></td></tr>
+     <tr><td><a class="help" href="module-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
+         <td><xsl:value-of select="status"/></td></tr>
   <xsl:if test="identifier">
-     <tr><td><a class="help" href="module-dict.html#ModuleIdentifier"
-       >Module&nbsp;Identifier:</a> </td>
-       <td><xsl:value-of select="identifier"/></td></tr>
+     <tr><td><a class="help" href="module-dict.html#ModuleIdentifier"><xsl:value-of select="$messages/message[@name='moduleidentifier']"/>:</a> </td>
+         <td><xsl:value-of select="identifier"/></td></tr>
   </xsl:if>
   <xsl:if test="compatibility">
      <tr><td><a class="help" href="module-dict.html#Compatibility"
-       >Compatibility:</a> </td>
-       <td><xsl:apply-templates select="compatibility"/></td></tr>
-  </xsl:if>
-</table>
-</td></tr>
-</table>
+       ><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
+         <td><xsl:apply-templates select="compatibility"/></td>
+     </tr>
+    </xsl:if>
+   </table>
+ </td></tr></table>
 
 <!-- Summary of module features/usage (1 to 3 paragraphs, optional) -->
 
@@ -70,12 +57,12 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 </xsl:if>
 
 <xsl:if test="seealso">
-  <p><strong>See also:</strong></p>
-  <ul>
-    <xsl:for-each select="seealso">
-      <li><xsl:apply-templates/></li>
-    </xsl:for-each>
-  </ul>
+ <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
+ <ul>
+  <xsl:for-each select="seealso">
+   <li><xsl:apply-templates/></li>
+  </xsl:for-each>
+ </ul>
 </xsl:if>
 
 <!-- Index of directives, automatically generated from
@@ -192,25 +179,25 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 <table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
 <tr><td>
 <table bgcolor="#ffffff" width="100%">
-  <tr><td><strong>Description: </strong></td>
+  <tr><td><strong><xsl:value-of select="$messages/message[@name='description']"/>: </strong></td>
     <td><xsl:value-of select="description"/></td></tr>
-  <tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a> </td>
+  <tr><td><a class="help" href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='description']"/>:</a> </td>
     <td><xsl:apply-templates select="syntax"/></td></tr>
   <xsl:if test="default">
     <tr><td><a class="help" href="directive-dict.html#Default"
-      >Default:</a> </td>
+      ><xsl:value-of select="$messages/message[@name='default']"/>:</a> </td>
       <td><code><xsl:value-of select="default"/></code></td></tr>
   </xsl:if>
-  <tr><td><a class="help" href="directive-dict.html#Context">Context:</a> </td>
+  <tr><td><a class="help" href="directive-dict.html#Context"><xsl:value-of select="$messages/message[@name='context']"/>:</a> </td>
     <td><xsl:apply-templates select="contextlist"/></td></tr>
   <xsl:if test="override">
     <tr><td><a class="help" href="directive-dict.html#Override"
-    >Override:</a> </td>
+    ><xsl:value-of select="$messages/message[@name='override']"/>:</a> </td>
     <td><xsl:value-of select="override"/></td></tr>
   </xsl:if>
-  <tr><td><a class="help" href="directive-dict.html#Status">Status:</a> </td>
+  <tr><td><a class="help" href="directive-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
     <td><xsl:value-of select="/modulesynopsis/status"/></td></tr>
-  <tr><td><a class="help" href="directive-dict.html#Module">Module:</a> </td>
+  <tr><td><a class="help" href="directive-dict.html#Module"><xsl:value-of select="$messages/message[@name='module']"/>:</a> </td>
     <td>
     <xsl:if test="modulelist"><xsl:apply-templates select="modulelist"/>
       </xsl:if>
@@ -220,16 +207,15 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     </td></tr>
   <xsl:if test="compatibility">
     <tr><td><a class="help" href="directive-dict.html#Compatibility"
-      >Compatibility:</a> </td>
+      ><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
       <td><xsl:value-of select="compatibility"/></td></tr>
   </xsl:if>
 </table>
 </td></tr></table>
 
 <xsl:apply-templates select="usage"/>
-
 <xsl:if test="seealso">
-  <p><strong>See also:</strong></p>
+  <p><strong><xsl:value-of select="$messages/message[@name='seealso']"/></strong></p>
   <ul>
     <xsl:for-each select="seealso">
       <li><xsl:apply-templates/></li>
@@ -270,7 +256,15 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   <xsl:template match="note">
   <blockquote>
-  <table><tr><td bgcolor="#e0e5f5">
+  <table><tr><td>
+   <xsl:choose>
+    <xsl:when test="@type='warning'">
+     <xsl:attribute name="bgcolor">#ffe5f5</xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise>
+     <xsl:attribute name="bgcolor">#e0e5f5</xsl:attribute>
+    </xsl:otherwise>
+   </xsl:choose>
      <xsl:apply-templates/>
   </td></tr></table>
   </blockquote>
@@ -304,10 +298,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
   <xsl:template match="module">
     <code>
-    <xsl:variable name="href">
-      <xsl:value-of select="."/>
-    </xsl:variable>
-    <a href="{$href}.html"><xsl:value-of select="."/></a>
+     <a href="{.}.html"><xsl:value-of select="."/></a>
     </code>
     <xsl:if test="parent::modulelist">
       <xsl:if test="not(position()=last())">, </xsl:if>
