@@ -138,7 +138,7 @@
     then NDBM, then GDBM and then SDBM. The first library found will be the
     library <code>dbmmanage</code> will attempt to use for all DBM file
     transactions. This ordering is slightly  different than the standard
-    <code>@AnyDBM::ISA</code> ordering in perl, as well as the ordering used by
+    <code>@AnyDBM::ISA</code> ordering in Perl, as well as the ordering used by
     the simple <code>dbmopen()</code> call in Perl, so if you use any other
     utilities to manage your DBM files, they must also follow this preference
     ordering. Similar care must be taken if using programs in other languages,

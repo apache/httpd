@@ -31,7 +31,7 @@
 
 <dd>If you are <code>root</code>, this option displays the compile options of
 <code>suexec</code>. For security reasons all configuration options are
-changable only at compile time.</dd>
+changeable only at compile time.</dd>
 
 </dl>
 </section>
