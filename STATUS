@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/05 16:29:58 $]
+Last modified at [$Date: 2004/05/07 21:49:34 $]
 
 Release:
 
@@ -361,6 +361,9 @@ PATCHES TO BACKPORT FROM 2.1
 	  wouldn't be listening on any port so it wouldn't matter anyway.
          nd replies: But if it can't be 0 the alternatives thereafter make no
            sense anymore, right?
+	 jim proposes: UseCanonicalName Client directive
+	   which implements this, keeping UseCanonicalName Off
+	   "as is". 
 
     * mod_isapi: send_response_header() failed to copy status string's 
       last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
