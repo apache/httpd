@@ -28,13 +28,13 @@ comparison to other modules.</P>
 
 <H3>Declare the hook function</H3>
 
-<P>Use the DECLARE_HOOK macro, which needs to be given the name of the
-hook, the return type of the hook function and the arguments. For
+<P>Use the AP_DECLARE_HOOK macro, which needs to be given the return
+type of the hook function, the name of the hook, and the arguments. For
 example, if the hook returns an <TT>int</TT> and takes a
 <TT>request_rec *</TT> and an <TT>int</TT> and is called
 "do_something", then declare it like this:</P>
 
-<TT>DECLARE_HOOK(int,do_something,(request_rec *r,int n))</TT>
+<TT>AP_DECLARE_HOOK(int,do_something,(request_rec *r,int n))</TT>
 
 <P>This should go in a header which modules will include if they want
 to use the hook.</P>
@@ -46,8 +46,8 @@ is used to record the module functions that use the hook. This is
 declared as follows:</P>
 
 <PRE>
-HOOK_STRUCT(
-            HOOK_LINK(do_something)
+APR_HOOK_STRUCT(
+            APR_HOOK_LINK(do_something)
             ...
            )
 </PRE>
@@ -64,7 +64,7 @@ this. In all cases, the calling function is called
 <P>If the return value of a hook is <TT>void</TT>, then all the hooks are
 called, and the caller is implemented like this:</P>
 
-<TT>IMPLEMENT_HOOK_VOID(do_something,(request_rec *r,int
+<TT>AP_IMPLEMENT_HOOK_VOID(do_something,(request_rec *r,int
 n),(r,n))</TT>
 
 <P>The second and third arguments are the dummy argument declaration and
@@ -84,7 +84,7 @@ void ap_run_do_something(request_rec *r,int n)
 <P>If the hook returns a value, then it can either be run until the first
 hook that does something interesting, like so:</P>
 
-<TT>IMPLEMENT_HOOK_RUN_FIRST(int,do_something,(request_rec *r,int n),(r,n),DECLINED)</TT>
+<TT>AP_IMPLEMENT_HOOK_RUN_FIRST(int,do_something,(request_rec *r,int n),(r,n),DECLINED)</TT>
 
 <P>The first hook that <I>doesn't</I> return <TT>DECLINED</TT> stops
 the loop and its return value is returned from the hook caller. Note
@@ -98,7 +98,7 @@ nothing". The first function that returns a value other than one of
 those two stops the loop, and its return is the return value. Declare
 these like so:</P>
 
-<TT>IMPLEMENT_HOOK_RUN_ALL(int,do_something,(request_rec *r,int
+<TT>AP_IMPLEMENT_HOOK_RUN_ALL(int,do_something,(request_rec *r,int
 n),(r,n),OK,DECLINED)</TT>
 
 <P>Again, <TT>OK</TT> and <TT>DECLINED</TT> are the traditional
