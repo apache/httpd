@@ -672,6 +672,12 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DBEOS"
 	DEF_WANTHSREGEX=yes
 	;;
+    4850-*.*)
+        OS='NCR MP/RAS'
+        CFLAGS="$CFLAGS -DSVR4 -DMPRAS"
+        DEF_WANTHSREGEX=yes
+        LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
+        ;;
     *) # default: Catch systems we don't know about
         OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"

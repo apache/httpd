@@ -485,10 +485,12 @@ extern char *crypt();
 #define NO_KILLPG
 #undef  NO_SETSID
 #undef NEED_STRDUP
+#ifndef MPRAS
 #define NEED_STRCASECMP
 #ifndef ENCORE
 #define NEED_STRNCASECMP
-#endif
+#endif /* ENCORE */
+#endif /* MPRAS */
 #define bzero(a,b) memset(a,0,b)
 /* A lot of SVR4 systems need this */
 #ifndef USE_SYSVSEM_SERIALIZED_ACCEPT

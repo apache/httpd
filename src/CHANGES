@@ -1,5 +1,7 @@
 Changes with Apache 1.3b7
 
+  *) Support for the NCR MP/RAS 3.0 [John Withers <withers@semi.kcsc.mwr.irs.gov>]
+
   *) The LDFLAGS_SHLIB_EXPORT variable of src/Configuration[.tmpl] was
      not retrieved in src/Configure and thus was not useable.
      [Ralf S. Engelschall]
