@@ -144,6 +144,7 @@
     <ul>
     <li><a href="#error.sendfile">Invalid argument:
     core_output_filter: writing data to the network</a></li>
+    <li><a href="#error.acceptex">AcceptEx failed</a></li>
     </ul>
 
     <h3><a name="error.sendfile" id="error.sendfile">Invalid argument:
@@ -167,6 +168,14 @@
     help with similar problems.</p>
 
     
+
+    <h3><a name="error.acceptex" id="error.acceptex">AcceptEx Failed</a></h3>
+
+    <p>If you get error messages related to the <code>AcceptEx</code> syscall
+    on win32, see the <code class="directive"><a href="../mod/mpm_winnt.html#win32disableacceptex">Win32DisableAcceptEx</a></code>
+    directive.</p>
+    
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/faq/all_in_one.html" title="English">&nbsp;en&nbsp;</a></p>
