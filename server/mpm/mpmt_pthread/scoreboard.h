@@ -234,7 +234,7 @@ API_EXPORT(void) reopen_scoreboard(ap_pool_t *p);
 ap_inline void ap_sync_scoreboard_image(void);
 void increment_counts(int child_num, int thread_num, request_rec *r);
 void update_scoreboard_global(void);
-API_EXPORT(int) find_child_by_pid(int pid);
+API_EXPORT(int) find_child_by_pid(ap_proc_t *pid);
 int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);
 void ap_time_process_request(int child_num, int thread_num, int status);
 

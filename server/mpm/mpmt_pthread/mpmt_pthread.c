@@ -271,29 +271,35 @@ static void reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-static int wait_or_timeout(ap_wait_t *status)
+static ap_proc_t *wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
 {
     struct timeval tv;
-    int ret;
+    ap_status_t rv;
+    ap_proc_t *ret = NULL;
 
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
-	wait_or_timeout_counter = 0;
+        wait_or_timeout_counter = 0;
 #ifdef APR_HAS_OTHER_CHILD
-	probe_writable_fds();
+        ap_probe_writable_fds();
 #endif
     }
-    ret = waitpid(-1, status, WNOHANG);
-    if (ret == -1 && errno == EINTR) {
-	return -1;
+    rv = ap_wait_all_procs(&ret, APR_NOWAIT, p);
+    if (ap_canonical_error(rv) == APR_EINTR) {
+        return NULL;
     }
-    if (ret > 0) {
-	return ret;
+    if (rv == APR_CHILD_DONE) {
+        return ret;
     }
+#ifdef NEED_WAITPID
+    if ((ret = reap_children(status)) > 0) {
+        return ret;
+    }
+#endif
     tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
     tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
     ap_select(0, NULL, NULL, NULL, &tv);
-    return -1;
+    return NULL;
 }
 
 /* handle all varieties of core dumping signals */
@@ -486,8 +492,10 @@ static void set_signals(void)
 #endif
 }
 
-static void process_child_status(int pid, ap_wait_t status)
+static void process_child_status(ap_proc_t *abs_pid, ap_wait_t status)
 {
+    int pid;
+    ap_get_os_proc(&pid, abs_pid);
     /* Child died... if it died due to a fatal error,
 	* we should simply bail out.
 	*/
@@ -1110,13 +1118,14 @@ static void server_main_loop(int remaining_children_to_start)
 {
     int child_slot;
     ap_wait_t status;
-    int pid;
+    ap_proc_t *pid;
     int i;
 
     while (!restart_pending && !shutdown_pending) {
-        pid = wait_or_timeout(&status);
+        /* this is a memory leak, but I'll fix it later. */
+        pid = wait_or_timeout(&status, pconf);
         
-        if (pid >= 0) {
+        if (pid != NULL) {
             process_child_status(pid, status);
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = find_child_by_pid(pid);
@@ -1135,7 +1144,7 @@ static void server_main_loop(int remaining_children_to_start)
 		}
 #ifdef APR_HAS_OTHER_CHILD
 	    }
-	    else if (reap_other_child(pid, status) == 0) {
+	    else if (ap_reap_other_child(pid, status) == 0) {
 		/* handled */
 #endif
 	    }
