@@ -911,9 +911,10 @@ static void x_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
 /*
  * All our process-death routine does is add its trace to the log.
  */
-static void x_child_exit(apr_pool_t *pchild, server_rec *s)
+static apr_status_t x_child_exit(void *data)
 {
     char *note;
+    server_rec *s = data;
     char *sname = s->server_hostname;
 
     /*
