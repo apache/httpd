@@ -11,16 +11,18 @@ APACHE_MODULE(auth_dbm, DBM-based access databases, , , most)
 
 APACHE_MODULE(auth_db, DB-based access databases, , , , [
   AC_CHECK_HEADERS(db.h,,enable_auth_db=no)
-  AC_CHECK_LIB(c,dbopen,,enable_auth_db=yes)
-  if test x"$enable_auth_db" = x"no"; then
-    AC_CHECK_LIB(db,dbopen,,enable_auth_db=no)
-  fi
+  AC_SEARCH_LIBS(dbopen,[c db],,enable_auth_db=no)
 ]) 
 
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
+  _old_cppflags=$CPPFLAGS
+  CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include"
   AC_TRY_COMPILE([#include <apr.h>], 
-                 [#if !APR_HAS_RANDOM #error You need APR random support to use auth_digest. #endif],,
+                 [#if !APR_HAS_RANDOM 
+                  #error You need APR random support to use auth_digest. 
+                  #endif],,
                  enable_auth_digest=no)
+  CPPFLAGS=$_old_cppflags
 ])
 
 APACHE_MODULE(auth_ldap, LDAP based authentication, , , no)
