@@ -364,14 +364,19 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     ap_hard_timeout("proxy receive", r);
 
     len = ap_bgets(buffer, sizeof buffer - 1, f);
-    if (len == -1 || len == 0) {
+    if (len == -1) {
 	ap_bclose(f);
 	ap_kill_timeout(r);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-		     "ap_bgets() - proxy receive - Error reading from remote server %s",
-		     proxyhost ? proxyhost : desthost);
+		     "ap_bgets() - proxy receive - Error reading from remote server %s (length %d)",
+		     proxyhost ? proxyhost : desthost, len);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Error reading from remote server");
+    } else if (len == 0) {
+	ap_bclose(f);
+	ap_kill_timeout(r);
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+			     "Document contains no data");
     }
 
 /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
@@ -480,8 +485,11 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     if (!r->assbackwards)
 	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
     if (c != NULL && c->fp != NULL &&
-	ap_bvputs(c->fp, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1)
-	c = ap_proxy_cache_error(c);
+	ap_bvputs(c->fp, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+		"proxy: error writing status line to %s", c->tempfile);
+	    c = ap_proxy_cache_error(c);
+    }
 
 /* send headers */
     tdo.req = r;
@@ -490,16 +498,22 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
-    if (c != NULL && c->fp != NULL && ap_bputs(CRLF, c->fp) == -1)
+    if (c != NULL && c->fp != NULL && ap_bputs(CRLF, c->fp) == -1) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+	    "proxy: error writing CRLF to %s", c->tempfile);
 	c = ap_proxy_cache_error(c);
+    }
 
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;
 /* Is it an HTTP/0.9 respose? If so, send the extra data */
     if (backasswards) {
 	ap_bwrite(r->connection->client, buffer, len);
-	if (c != NULL && c->fp != NULL && ap_bwrite(c->fp, buffer, len) != len)
+	if (c != NULL && c->fp != NULL && ap_bwrite(c->fp, buffer, len) != len) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+		"proxy: error writing extra data to %s", c->tempfile);
 	    c = ap_proxy_cache_error(c);
+	}
     }
     ap_kill_timeout(r);
 

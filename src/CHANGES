@@ -1,5 +1,13 @@
 Changes with Apache 1.3.7
 
+  *) Fix intermittent SEGV in ap_proxy_cache_error() in
+     src/modules/proxy_util.c where a NULL filepointer and
+     temporary filename were closed and unlinked.
+     [Graham Leggett <minfrin@sharp.fm>] PR#3178
+
+  *) Fix inconsistant error messages reported by mod_proxy.
+     [Graham Leggett <minfrin@sharp.fm>]
+
   *) OS/2: Fix terminating CGIs that aren't compiled by EMX GCC when a 
      connection is aborted.  [Brian Havard]
 

@@ -323,8 +323,11 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *cwd)
     while (!con->aborted) {
 	n = ap_bgets(buf, sizeof buf, f);
 	if (n == -1) {		/* input error */
-	    if (c != NULL)
+	    if (c != NULL) {
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+		    "proxy: error reading from %s", c->url);
 		c = ap_proxy_cache_error(c);
+	    }
 	    break;
 	}
 	if (n == 0)
@@ -383,8 +386,11 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *cwd)
 	o = 0;
 	total_bytes_sent += n;
 
-	if (c != NULL && c->fp && ap_bwrite(c->fp, buf, n) != n)
+	if (c != NULL && c->fp && ap_bwrite(c->fp, buf, n) != n) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+		"proxy: error writing to %s", c->tempfile);
 	    c = ap_proxy_cache_error(c);
+	}
 
 	while (n && !r->connection->aborted) {
 	    w = ap_bwrite(con->client, &buf[o], n);
@@ -1196,8 +1202,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     if (!r->assbackwards)
 	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
     if (c != NULL && c->fp != NULL
-	&& ap_bvputs(c->fp, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1)
-	c = ap_proxy_cache_error(c);
+	&& ap_bvputs(c->fp, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+		"proxy: error writing CRLF to %s", c->tempfile);
+	    c = ap_proxy_cache_error(c);
+    }
 
 /* send headers */
     tdo.req = r;
@@ -1206,8 +1215,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
-    if (c != NULL && c->fp != NULL && ap_bputs(CRLF, c->fp) == -1)
+    if (c != NULL && c->fp != NULL && ap_bputs(CRLF, c->fp) == -1) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+	    "proxy: error writing CRLF to %s", c->tempfile);
 	c = ap_proxy_cache_error(c);
+    }
 
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;
@@ -1226,6 +1238,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
 	/* XXX: we checked for 125||150||226||250 above. This is redundant. */
 	if (rc != 226 && rc != 250)
+            /* XXX: we no longer log an "error writing to c->tempfile" - should we? */
 	    c = ap_proxy_cache_error(c);
     }
     else {

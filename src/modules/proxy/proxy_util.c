@@ -553,8 +553,11 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
             ap_reset_timeout(r);
 
 	if (n == -1) {		/* input error */
-	    if (c != NULL)
+	    if (c != NULL) {
+		ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+		    "proxy: error reading from %s", c->url);
 		c = ap_proxy_cache_error(c);
+	    }
 	    break;
 	}
 	if (n == 0)
@@ -566,7 +569,9 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
 	/*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
         if (c != NULL && c->fp != NULL) {
             if (ap_bwrite(c->fp, &buf[0], n) != n) {
-                c = ap_proxy_cache_error(c);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
+		    "proxy: error writing to %s", c->tempfile);
+		c = ap_proxy_cache_error(c);
             } else {
                 c->written += n;
             }
@@ -824,11 +829,13 @@ void ap_proxy_sec2hex(int t, char *y)
 
 cache_req *ap_proxy_cache_error(cache_req *c)
 {
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
-		 "proxy: error writing to cache file %s", c->tempfile);
-    ap_pclosef(c->req->pool, c->fp->fd);
-    c->fp = NULL;
-    unlink(c->tempfile);
+    if (c != NULL) {
+	if (c->fp != NULL) {
+	    ap_pclosef(c->req->pool, c->fp->fd);
+	    c->fp = NULL;
+	}
+	if (c->tempfile) unlink(c->tempfile);
+    }
     return NULL;
 }
 
@@ -1262,8 +1269,11 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
     if (!parm->req->assbackwards)
 	ap_rvputs(parm->req, key, ": ", value, CRLF, NULL);
     if (parm->cache != NULL && parm->cache->fp != NULL &&
-	ap_bvputs(parm->cache->fp, key, ": ", value, CRLF, NULL) == -1)
+	ap_bvputs(parm->cache->fp, key, ": ", value, CRLF, NULL) == -1) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->cache->req,
+		    "proxy: error writing header to %s", parm->cache->tempfile);
 	    parm->cache = ap_proxy_cache_error(parm->cache);
+    }
     return 1; /* tell ap_table_do() to continue calling us for more headers */
 }
 
