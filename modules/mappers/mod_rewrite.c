@@ -3221,7 +3221,6 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 'T':
         if (!*key || !strcasecmp(key, "ype")) {            /* type */
             cfg->forced_mimetype = val;
-            ap_str_tolower(cfg->forced_mimetype);
         }
         break;
 
@@ -3585,11 +3584,16 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     /* non-substitution rules ('RewriteRule <pat> -') end here. */
     if (p->flags & RULEFLAG_NOSUB) {
         if (p->forced_mimetype) {
-            rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type '%s'",
-                        r->filename, p->forced_mimetype));
+            char *type = do_expand(p->forced_mimetype, ctx);
 
-            apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
-                           p->forced_mimetype);
+            if (*type) {
+                ap_str_tolower(type);
+
+                rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type "
+                            "'%s'", r->filename, type));
+
+                apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR, type);
+            }
         }
 
         return 2;
@@ -3666,11 +3670,16 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 
     /* Finally remember the forced mime-type */
     if (p->forced_mimetype) {
-        rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type '%s'",
-                    r->filename, p->forced_mimetype));
+        char *type = do_expand(p->forced_mimetype, ctx);
 
-        apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
-                       p->forced_mimetype);
+        if (*type) {
+            ap_str_tolower(type);
+
+            rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type '%s'",
+                        r->filename, type));
+
+            apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR, type);
+        }
     }
 
     /* Puuhhhhhhhh... WHAT COMPLICATED STUFF ;_)
