@@ -25,9 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -371,9 +368,12 @@ erlaubt sind.</td></tr>
     frühere Konfigurationsanweisungen überschreiben
     dürfen.</p>
 
-    <div class="note"><h3>Nun in &lt;Directory&gt;-Abschnitten verfügbar</h3>
+    <div class="note"><h3>Nur in &lt;Directory&gt;-Abschnitten verfügbar</h3>
     <code class="directive">AllowOverride</code> ist nur in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>-Abschnitten
-    gültig, nicht in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>- oder <code class="directive"><a href="#files">&lt;Files&gt;</a></code>-Abschnitten.
+    gültig, die ohne reguläre Ausdrüke definiert wurden, nicht
+    in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>-, 
+    <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code>- oder
+    <code class="directive"><a href="#files">&lt;Files&gt;</a></code>-Abschnitten.
     </div>
 
     <p>Wenn diese Anweisung auf <code>None</code> gesetzt wird, dann
@@ -437,6 +437,11 @@ erlaubt sind.</td></tr>
     <div class="example"><p><code>
       AllowOverride AuthConfig Indexes
     </code></p></div>
+
+    <p>Im obigen Beispiel erzeugen alle Direktiven einen internal server
+      error <span class="transnote">(<em>Anm.d.Ü.:</em> Server-interner Fehler)</span>, die weder der
+      Gruppe <code>AuthConfig</code> noch der Gruppe <code>Indexes</code>
+      angehören.</p>
 
 <h3>Siehe auch</h3>
 <ul>
@@ -993,6 +998,23 @@ sich im Apache 2.0 geändert</td></tr>
       ErrorDocument 403 "Der Zugriff ist nicht erlaubt."
     </code></p></div>
 
+    <p>Außerdem kann der spezielle Wert <code>default</code> angegeben
+      werden, um die schlichte, hartkodierte Nachricht des Apache zu verwenden.
+      Es wird normalerweise nicht benötigt, doch <code>default</code>
+      stellt die einfach, im Apache hartkodierte Meldung in Konfigurationen
+      wieder her, die ansonsten von einem existierenden <span class="transnote">(<em>Anm.d.Ü.:</em> zuvor
+        konfigurierten)</span> <code class="directive">ErrorDocument</code> erben
+      würden.</p>
+
+    <div class="example"><p><code>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
+      &lt;Directory /web/docs&gt;<br />
+      <span class="indent">
+        ErrorDocument 404 default<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+
     <p>Wenn Sie eine <code class="directive">ErrorDocument</code>-Anweisung
     angeben, die auf eine entfernte URL weist (d.h. irgendetwas mit der
     Methode <code>http</code> davor), beachten Sie bitte, dass der Apache
@@ -1388,12 +1410,14 @@ wenn eine Testbedingung beim Start wahr ist</td></tr>
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Schließt Direktiven ein, die abhängig vom
 Vorhandensein oder Fehlen eines speziellen Moduls ausgeführt
 werden</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;IfModule [!]<var>Modulname</var>&gt; ...
-    &lt;/IfModule&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;IfModule [!]<var>Modulname</var>|<var>Modulbezeichner</var>&gt;
+  ... &lt;/IfModule&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Modulbezeichner sind ab Version 2.1
+  verfügbar.</td></tr>
 </table>
     <p>Der Container <code>&lt;IfModule
     <var>Test</var>&gt;...&lt;/IfModule&gt;</code> wird dazu verwendet,
@@ -1406,24 +1430,25 @@ werden</td></tr>
     kann <var>Test</var> eine von zwei Formen annehmen:</p>
 
     <ul>
-      <li><var>Modulname</var></li>
+      <li><var>Modul</var></li>
 
-      <li><code>!</code><var>Modulname</var></li>
+      <li><code>!</code><var>Modul</var></li>
     </ul>
 
     <p>Im ersten Fall werden die Direktiven zwischen der Start- und
     Endemarkierung nur ausgeführt, das Modul namens
-    <var>Modulname</var> im Apache enthalten ist -- entweder einkompiliert
+    <var>Modul</var> im Apache enthalten ist -- entweder einkompiliert
     oder mittels <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
     dynamisch geladen. Die zweite Form dreht den Test um und führt die
-    Direktiven nur aus, wenn <var>Modulname</var> <strong>nicht</strong>
+    Direktiven nur aus, wenn <var>Modul</var> <strong>nicht</strong>
     enthalten ist.</p>
 
-    <p>Das Argument <var>Modulname</var> ist der Dateiname des Moduls zum
-    Zeitpunkt seiner Kompilierung, z.B. <code>mod_rewrite.c</code>.
-    Wenn ein Modul aus mehreren Quelltext-Dateien besteht, verwenden Sie den
-    Namen der Datei, welche die Zeichenfolge
-    <code>STANDARD20_MODULE_STUFF</code> enthält.</p>
+    <p>Das Argument <var>Modul</var> kann entweder der Modulbezeichner oder
+      der Dateiname des Moduls zum Zeitpunkt seiner Kompilierung sein. 
+      <code>rewrite_module</code> beispielsweise ist der Bezeichner und
+      <code>mod_rewrite.c</code> ist der Dateiname. Wenn ein Modul aus mehreren
+      Quelltext-Dateien besteht, verwenden Sie den Namen der Datei, welche die
+      Zeichenfolge <code>STANDARD20_MODULE_STUFF</code> enthält.</p>
 
     <p><code class="directive">&lt;IfModule&gt;</code>-Container können
     inneinander verschachtelt werden, um einfache Multi-Modul-Tests
@@ -2693,14 +2718,21 @@ Die Option <code>Registry-Strict</code> ist verfügbar seit Apache
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>E-Mail-Adresse, die der Server in Fehlermeldungen einfügt,
 welche an den Client gesendet werden</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerAdmin <var>E-Mail-Adresse</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerAdmin <var>E-Mail-Adresse</var>|<var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
-    <p><code class="directive">ServerAdmin</code> legt die E-Mail-Adresse fest,
+    <p><code class="directive">ServerAdmin</code> legt die Kontaktadresse fest,
     die der Server in jede Fehlermeldung einfügt, die er an den
-    Client zurückschickt.</p>
+    Client zurückschickt. Wenn <code>httpd</code> das übergebene
+    Argument nicht als URL erkennt, nimmt er an, dess es sich um eine
+    <var>E-Mail-Adresse</var> handelt und stellt in Hyperlinks
+    <code>mailto:</code> voran. Es ist jedoch sogar sinnvoll, eine
+    E-Mail-Adresse zu verwenden, da viele CGI-Skripte davon ausgehen. Wenn Sie
+    eine URL verwenden möchten, sollten Sie auf einem anderen unter Ihrer
+    Kontrolle stehenden Server verweisen. Andernfalls können Besucher Sie
+    im Fehlerfall möglicherweise nicht kontaktieren.</p>
 
     <p>Es kann sich lohnen, hierfür eine reservierte Adresse
     anzugeben, z.B.</p>
@@ -2769,7 +2801,8 @@ selbst zu identifizieren</td></tr>
 
     <p>Wenn kein <code class="directive">ServerName</code> angegeben wurde,
     dann versucht der Server den Rechnernamen mittels eines Reverse-Lookup
-    herzuleiten. Wenn kein Post im Servernamen angegeben wurde, dann
+    herzuleiten. Wenn kein Port in der
+    <code class="directive">ServerName</code>-Anweisung angegeben wurde, dann
     verwendet der Server den Port der eingegangenen Anfrage. Für eine
     optimale Zuverlässigkeit und Berechenbarkeit sollten Sie einen
     eindeutigen Rechnernamen und Port angeben, in dem Sie die Direktive
