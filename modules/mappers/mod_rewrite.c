@@ -113,12 +113,6 @@
 #include <sys/uio.h>
 #endif
 #endif
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
-#ifdef HAVE_GRP_H
-#include <grp.h>
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -3395,11 +3389,6 @@ static char *lookup_variable(request_rec *r, char *var)
     char resultbuf[LONG_STRING_LEN];
     apr_exploded_time_t tm;
     request_rec *rsub;
-#ifndef WIN32
-    struct passwd *pw;
-    struct group *gr;
-    apr_finfo_t finfo;
-#endif
 
     result = NULL;
 
@@ -3588,44 +3577,19 @@ static char *lookup_variable(request_rec *r, char *var)
         LOOKAHEAD(ap_sub_req_lookup_file)
     }
 
-#if !defined(WIN32) && !defined(NETWARE)
-    /* Win32 has a rather different view of file ownerships.
-       For now, just forget it */
-
     /* file stuff */
     else if (strcasecmp(var, "SCRIPT_USER") == 0) {
         result = "<unknown>";
-        if (r->finfo.protection != 0) {
-            if ((pw = getpwuid(r->finfo.user)) != NULL) {
-                result = pw->pw_name;
-            }
-        }
-        else {
-            if (apr_stat(&finfo, r->filename,
-                         APR_FINFO_NORM, r->pool) == APR_SUCCESS) {
-                if ((pw = getpwuid(finfo.user)) != NULL) {
-                    result = pw->pw_name;
-                }
-            }
+        if (r->finfo.valid & APR_FINFO_USER) {
+            apr_get_username(&(char*)result, r->finfo.user, r->pool);
         }
     }
     else if (strcasecmp(var, "SCRIPT_GROUP") == 0) {
         result = "<unknown>";
-        if (r->finfo.protection != 0) {
-            if ((gr = getgrgid(r->finfo.group)) != NULL) {
-                result = gr->gr_name;
-            }
-        }
-        else {
-            if (apr_stat(&finfo, r->filename,
-                         APR_FINFO_NORM, r->pool) == 0) {
-                if ((gr = getgrgid(finfo.group)) != NULL) {
-                    result = gr->gr_name;
-                }
-            }
+        if (r->finfo.valid & APR_FINFO_GROUP) {
+            apr_get_groupname(&(char*)result, r->finfo.group, r->pool);
         }
     }
-#endif /* ndef WIN32 && NETWARE*/
 
     if (result == NULL) {
         return apr_pstrdup(r->pool, "");

@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Adopt apr user/group name features for mod_rewrite.  Eliminates some
+     'extra' stat's for user/group since they should never occur, and now
+     resolves the SCRIPT_USER and SCRIPT_GROUP, including on WinNT NTFS
+     volumes.  [William Rowe]
+
   *) Adopt apr features to simplify mod_includes.  This changes the
      behavior of the USER_NAME variable, unknown uid's are now reported
      as USER_NAME="<unknown>" rather than the old user#000 result.
