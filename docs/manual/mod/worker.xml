@@ -106,6 +106,8 @@ ServerLimit         16</pre></example>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxClients</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
