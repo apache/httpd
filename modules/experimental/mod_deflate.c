@@ -237,26 +237,19 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* Some browsers might have problems with content types
-         * other than text/html, so set gzip-only-text/html
-         * (with browsermatch) for them
-         */
-        if (strncmp(r->content_type, "text/html", 9)
-            && apr_table_get(r->subprocess_env, "gzip-only-text/html")) {
-            return ap_pass_brigade(f->next, bb);
-        }
-
         /* some browsers might have problems, so set no-gzip
          * (with browsermatch) for them
          */
         if (apr_table_get(r->subprocess_env, "no-gzip")) {
             return ap_pass_brigade(f->next, bb);
         }
+
         /* Some browsers might have problems with content types
          * other than text/html, so set gzip-only-text/html
          * (with browsermatch) for them
          */
-        if (strncmp(r->content_type, "text/html", 9)
+        if (r->content_type != NULL
+            && strncmp(r->content_type, "text/html", 9)
             && apr_table_get(r->subprocess_env, "gzip-only-text/html")) {
             return ap_pass_brigade(f->next, bb);
         }
