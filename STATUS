@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/22 15:22:24 $]
+Last modified at [$Date: 2002/03/22 16:15:43 $]
 
 Release:
 
@@ -68,11 +68,18 @@ FINAL RELEASE SHOWSTOPPERS:
         simple check in default_handler to see if dir/file_walk has
         been done (a footprint left by dir/file_walk doesn't have to
         be in request_rec; a better place is core_request_config)
-        
+
+	BillS: I think the common case will be caught in
+	default_handler already (with the r->finfo.filetype == 0
+	check). A module would have to explicitly init r->finfo.filetype
+        then its handler would have to decline the request.  Seems
+	to be an unlikely combination as most (all?) modules bypassing
+	directory_walk are not serving content out of the file system.
+
         gregames says: can this happen somehow without a broken module
             being involved?  If not, why waste cycles trying to defend against
             potential broken modules?  It seems futile.  Please vote.
-          not a showstopper: gregames
+          not a showstopper: gregames, BillS
           showstopper:
 
     * API changes planned for 2.0 that should happen before the
