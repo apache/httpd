@@ -962,6 +962,9 @@ void os2pathname(char *path);
 char *ap_double_quotes(ap_context_t *p, char *str);
 #endif
 
+API_EXPORT(regex_t *) ap_pregcomp(ap_context_t *p, const char *pattern,
+				   int cflags);
+API_EXPORT(void) ap_pregfree(ap_context_t *p, regex_t *reg);
 API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
 API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, 
