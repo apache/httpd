@@ -73,11 +73,8 @@ So here are all the details on how to get Apache and how to get it where it need
        <ul>
            <li><tt><b>pax -rvkf <i>open_edition_filename.tar</i> -o from=ISO8859-1,to=IBM-1047 "*/src"</b></tt>
            <li>switch to the source code subdirectory of the newly extracted apache directory: <tt><b>cd <i>apache-1.3</i>/src</b></tt>
-           <li>remove various subdirectories: <tt><b>rm -r lib/expat-lite os/bs2000 os/os2 os/win32</b></tt>
-               <br><BR><font color=red size=4>TIP: </font>
-               The &quot;<tt>make</tt>&quot; step (shown below) will fail if the
-               <tt>lib/expat-lite</tt> directory is not removed.
-              <br>	
+           <li>remove unnecessary subdirectories:
+               <tt><b>rm -r os/bs2000 os/mpeix os/netware os/os2 os/os390 os/win32</b></tt>
        </ul>
 </ol>
 <br>
@@ -283,7 +280,7 @@ HREF="http://www.apache.org/dist/contrib/modules/">http://www.apache.org/dist/co
     <PRE>
     ZINET ADD S-TFTP PGM-CTFT PORT-69 PROTOCOL-UDP MODEL-NOWAIT
 
-    ZINET ADD S-APACHE PGM-<EM>pppp</EM> MODEL-NOLISTEN PROTOCOL-TCP
+    ZINET ADD S-APACHE PGM-<EM>pppp</EM> MODEL-NOLISTEN
     or ZINET ADD S-APACHE PGM-<EM>pppp</EM> MODEL-DAEMON USER-root <A HREF="#daemon">(see notes above regarding the DAEMON model)</A></PRE>
   Please refer to <EM>IBM Transaction Processing Facility Transmission Control
   Protocol/Internet Protocol Version 4 Release 1</EM> for more information
