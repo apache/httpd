@@ -2683,7 +2683,7 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
     return NULL;
 }
 
-static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
+static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     request_rec *r = f->r;
     include_ctx_t *ctx = f->ctx;
@@ -2775,7 +2775,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 	    NESTED_INCLUDE_MAGIC);
     }
 
-    return OK;
+    return APR_SUCCESS;
 }
 
 static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
