@@ -8,14 +8,17 @@
 
 
 #define BUFSIZE		65536
+#ifdef MAX_PATH
+#undef MAX_PATH
 #define MAX_PATH	1024
+#endif
 
 #include "ap_config.h"
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
 
-int main (int argc, char **argv)
+void main (int argc, char **argv)
 {
     char buf[BUFSIZE], buf2[MAX_PATH];
     time_t tLogEnd = 0;
