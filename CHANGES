@@ -2,12 +2,17 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Prevent endless loops of internal redirects in mod_rewrite by
+     aborting after exceeding a limit of internal redirects. The
+     limit defaults to 10 and can be changed using the RewriteOptions
+     directive. PR 17462.  [André Malo]
+
   *) mod_rewrite: Fix some problems reporting errors with mapping
      programs (RewriteMap prg:/something).  [Jeff Trawick]
 
   *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
      all worker threads are busy. 
-    [Igor Nazarenko <igor_nazarenko@hotmail.com>]
+     [Igor Nazarenko <igor_nazarenko@hotmail.com>]
 
   *) When using Redirect in directory context, append requested query
      string if there's no one supplied by configuration. PR 10961.
