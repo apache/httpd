@@ -1366,6 +1366,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     request_rec *rnew;
     int res;
     char *fdir;
+    char *udir;
 
     rnew = make_sub_request(r);
     fill_in_sub_req_vars(rnew, r, next_filter);
@@ -1383,12 +1384,15 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
      * not even have to redo access checks.
      */
 
+    udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+
     /* This is 100% safe, since dirent->name just came from the filesystem */
+    rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
     if (r->canonical_filename == r->filename)
         rnew->canonical_filename = rnew->filename;
     
-    rnew->uri = apr_pstrdup(rnew->pool, "");
+    ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
     /* Preserve the apr_stat results, and perhaps we also tag that
      * symlinks were tested and/or found for r->filename.  
