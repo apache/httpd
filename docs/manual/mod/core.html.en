@@ -147,11 +147,11 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
 
       <dd>
 
-      Allow use of the authorization directives (<code class="directive"><a href="../mod/mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
-      <code class="directive"><a href="../mod/mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
-      <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code>,
+      Allow use of the authorization directives (<code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
+      <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
+      <code class="directive"><a href="../mod/mod_authn_file.html#authgroupfile">AuthGroupFile</a></code>,
       <code class="directive"><a href="#authname">AuthName</a></code>, 
-      <code class="directive"><a href="#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="#require">Require</a></code>, <em>etc.</em>).</dd>
+      <code class="directive"><a href="#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="#require">Require</a></code>, <em>etc.</em>).</dd>
 
       <dt>FileInfo</dt>
 

@@ -8,7 +8,7 @@
 <status>Extension</status>
 <sourcefile>mod_authz_groupfile.c</sourcefile>
 <identifier>authz_groupfile_module</identifier>
-<compatibility>Available in Apache 2.0.42 and later</compatibility>
+<compatibility>Available in Apache 2.0.44 and later</compatibility>
 
 <summary>
     <p>This module provides authorization capabilities so that

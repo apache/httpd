@@ -177,12 +177,12 @@ response without an explicit character set</description>
       <dd>
 
       Allow use of the authorization directives (<directive
-      module="mod_auth_dbm">AuthDBMGroupFile</directive>,
-      <directive module="mod_auth_dbm">AuthDBMUserFile</directive>,
-      <directive module="mod_auth">AuthGroupFile</directive>,
+      module="mod_authn_dbm">AuthDBMGroupFile</directive>,
+      <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
+      <directive module="mod_authn_file">AuthGroupFile</directive>,
       <directive module="core">AuthName</directive>, 
       <directive module="core">AuthType</directive>, <directive
-      module="mod_auth">AuthUserFile</directive>, <directive
+      module="mod_authn_file">AuthUserFile</directive>, <directive
       module="core">Require</directive>, <em>etc.</em>).</dd>
 
       <dt>FileInfo</dt>
