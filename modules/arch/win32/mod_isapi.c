@@ -653,6 +653,13 @@ int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
 
 /* Common code invoked for both HSE_REQ_SEND_RESPONSE_HEADER and 
  * the newer HSE_REQ_SEND_RESPONSE_HEADER_EX ServerSupportFunction(s)
+ * as well as other functions that write responses and presume that
+ * the support functions above are optional.
+ *
+ * Other callers trying to split headers and body bytes should pass
+ * head/headlen alone (leaving stat/statlen NULL/0), so that they
+ * get a proper count of bytes consumed.  The argument passed to stat
+ * isn't counted as the head bytes are.
  */
 static apr_ssize_t send_response_header(isapi_cid *cid, 
                                         const char *stat,
@@ -698,18 +705,29 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     }
 
     if (stat && (statlen > 0) && *stat) {
-        char *newstat = apr_palloc(cid->r->pool, statlen + 9);
-        char *stattok = (char*)memchr(stat, ' ', statlen - 1) + 1;
-        strcpy(newstat, "Status: ");
-        /* Now decide if we follow the xxx message 
-         * or the http/x.x xxx message format 
-         */
-        if (!apr_isdigit(*stat) && stattok && apr_isdigit(*stattok)) {
-            statlen -= stattok - (char*)stat;
-            stat = stattok;
+        char *newstat;
+        if (!apr_isdigit(*stat)) {
+            const char *stattok = stat;
+            int toklen = statlen;
+            while (toklen && *stattok && !apr_isspace(*stattok)) {
+                ++stattok; --toklen;
+            }
+            while (toklen && apr_isspace(*stattok)) {
+                ++stattok; --toklen;
+            }
+            /* Now decide if we follow the xxx message 
+             * or the http/x.x xxx message format 
+             */
+            if (toklen && apr_isdigit(*stattok)) {
+                statlen -= toklen;
+                stat = stattok;
+            }
         }
-        apr_cpystrn(newstat + 8, stat, statlen + 1);
+        newstat = apr_palloc(cid->r->pool, statlen + 9);
+        strcpy(newstat, "Status: ");
+        apr_cpystrn(newstat + 8, stat, statlen);
         stat = newstat;
+        statlen += 8;
     }
 
     if (!head || headlen == 0 || !*head) {
@@ -799,8 +817,8 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
          * Parse them out, or die trying.
          */
         apr_ssize_t ate;
-        ate = send_response_header(cid, (char*)buf_data,
-                                   NULL, buf_size, 0);
+        ate = send_response_header(cid, NULL, (char*)buf_data,
+                                   0, buf_size);
         if (ate < 0) {
             SetLastError(ERROR_INVALID_PARAMETER);
             return 0;
