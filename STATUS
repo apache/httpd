@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/23 13:47:05 $]
+Last modified at [$Date: 2004/10/23 14:11:48 $]
 
 Release:
 
@@ -80,14 +80,14 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_kernel.c?r1=1.110&r2=1.111
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_init.c?r1=1.128&r2=1.129
        PR: 31505
-       +1: jorton, pquerna
+       +1: jorton, pquerna, minfrin
 
     *) mod_ssl: Fail to configure when an SSL proxy is configured with
        incomplete client cert keypair, rather than segfaulting at
        runtime.
        http://cvs.apache.org/viewcvs/httpd-2.0/modules/ssl/ssl_engine_init.c.diff?r1=1.118&r2=1.119
        PR: 24030
-       +1: jorton
+       +1: jorton, minfrin
 
     *) Allow for the use of --with-module=foo:bar where the ./modules/foo
        directory is a local addition to the ./modules directory.
