@@ -394,7 +394,7 @@ static void fd_lock(int fd);
 static void fd_unlock(int fd);
 
     /* Lexicographic Comparison */
-int compare_lexicography(char *cpNum1, char *cpNum2);
+static int compare_lexicography(char *cpNum1, char *cpNum2);
 
 #endif /* _MOD_REWRITE_H */
 

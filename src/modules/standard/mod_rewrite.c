@@ -3322,7 +3322,7 @@ static void fd_unlock(int fd)
 **
 */
 
-int compare_lexicography(char *cpNum1, char *cpNum2)
+static int compare_lexicography(char *cpNum1, char *cpNum2)
 {
     int i;
     int n1, n2;
