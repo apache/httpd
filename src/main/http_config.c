@@ -1247,7 +1247,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 	*result = dc;
     }
     else {
-	if (errno == ENOENT || errno == ENOTDIR || (!access_name[0]))
+	if (errno == ENOENT || errno == ENOTDIR)
 	    dc = NULL;
 	else {
 	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
