@@ -419,7 +419,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     int rv;
     request_rec *r = f->r;
     char *url = r->unparsed_uri;
-    const char *cc_out = apr_table_get(r->headers_out, "Cache-Control");
+    const char *cc_out;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
@@ -516,8 +516,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
             lastmod = APR_DATE_BAD;
         }
 
-        /* read the etag from the entity */
+        /* read the etag and cache-control from the entity */
         etag = apr_table_get(r->headers_out, "Etag");
+        cc_out = apr_table_get(r->headers_out, "Cache-Control");
 
         /*
          * what responses should we not cache?
