@@ -351,26 +351,9 @@ DIR *os_readdir (DIR *dirP)
 char *ap_os_http_method(void *r)
 {
     int s = ((request_rec*)r)->connection->client->fd;
-    long e;
-	struct sslserveropts *getOpts;
-	size_t getOptLen = sizeof(getOpts);
-    char *http_method = "http";
+    unsigned int optParam;
 
-    getOpts = ap_pcalloc(((request_rec*)r)->pool, getOptLen);
-    if (WSAIoctl(s, SO_SSL_GET_SERVER, 0, 0, (char *)getOpts, getOptLen, &getOptLen, NULL, NULL)) {
-		e = WSAGetLastError();
-		if(e == WSAEFAULT)
-		{
-            getOpts = ap_pcalloc(((request_rec*)r)->pool, getOptLen);
-            if (WSAIoctl(s, SO_SSL_GET_SERVER, 0, 0, (char *)getOpts, getOptLen, &getOptLen, NULL, NULL)) {
-				errno = WSAGetLastError();
-            }
-            else
-                http_method = "https";
-		}
-        else
-		    errno = e;
-	}
-
-   return http_method;
+    if (!WSAIoctl(s, SO_SSL_GET_FLAGS, NULL, 0, &optParam, sizeof(optParam), NULL, NULL, NULL))
+        if (optParam & (SO_SSL_ENABLE | SO_SSL_SERVER)) return "https";
+    return "http";
 }
