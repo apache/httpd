@@ -2921,49 +2921,84 @@ static int default_handler(request_rec *r)
  */
 static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
-    ap_bucket *dptr = b->head;
-    int len = 0;
-    char lenstr[6];
+    ap_bucket *dptr = b->head, *lb, *next, *tail;
+    int len = 0, cur_len;
+    char lenstr[strlen("ffffffff\r\n") + 1];
+    const char *cur_str;
     int hit_eos = 0;
+    apr_status_t rv = 0; /* currently bytes written, will be APR_* */
 
     while (dptr) {
         if (dptr->type == AP_BUCKET_EOS) {
             hit_eos = 1;
+            break;
         } 
+        else if (dptr->length == -1) { /* indeterminate (e.g., a pipe) */
+            dptr->read(dptr, &cur_str, &cur_len, 0);
+            if (cur_len) {
+                len += cur_len;
+                /* write out what we have so far */
+                apr_snprintf(lenstr, sizeof(lenstr), "%x\r\n", len);
+                lb = ap_bucket_create_transient(lenstr, strlen(lenstr));
+                lb->next = b->head;
+                lb->next->prev = lb;
+                b->head = lb;
+                next = dptr->next;
+                tail = b->tail;
+                b->tail = ap_bucket_create_transient("\r\n", 2);
+                dptr->next = b->tail;
+                b->tail->prev = dptr;
+                rv += ap_pass_brigade(f->next, b);
+                /* start a new brigade */
+                len = 0;
+                b = ap_brigade_create(f->r->pool);
+                dptr = next;
+                b->head = dptr;
+                b->tail = tail;
+            }
+            else {
+                dptr = dptr->next;
+            }
+        }
         else {
             len += dptr->length;
+            dptr = dptr->next;
         }
-        dptr = dptr->next;
     }
-
-    apr_snprintf(lenstr, 6, "%x\r\n", len);
-    dptr = ap_bucket_create_transient(lenstr, strlen(lenstr));
-    b->head->prev = dptr;
-    dptr->next = b->head;
-    b->head = dptr;
-    dptr = ap_bucket_create_transient("\r\n", 2);
+    if (len) {
+        apr_snprintf(lenstr, sizeof(lenstr), "%x\r\n", len);
+        lb = ap_bucket_create_transient(lenstr, strlen(lenstr));
+        lb->next = b->head;
+        lb->next->prev = lb;
+        b->head = lb;
+        lb = ap_bucket_create_transient("\r\n", 2);
+        if (hit_eos) {
+            b->tail->prev->next = lb;
+            lb->prev = b->tail->prev;
+            b->tail->prev = lb;
+            lb->next = b->tail;
+        }
+        else {
+            ap_brigade_append_buckets(b, lb);
+        }
+    }
     if (hit_eos) {
-        b->tail->prev->next = dptr;
-        dptr->prev = b->tail->prev;
-        b->tail->prev = dptr;
-        dptr->next = b->tail;
+        lb = ap_bucket_create_transient("0\r\n\r\n", 5);
+        if (b->tail->prev) {
+            b->tail->prev->next = lb;
+        }
+        lb->prev = b->tail->prev;
+        b->tail->prev = lb;
+        lb->next = b->tail;
+        if (b->head == b->tail) {
+            b->head = lb;
+        }
     }
-    else {
-        ap_brigade_append_buckets(b, dptr);
-    }
-
-    if (hit_eos && len != 0) {
-        dptr = ap_bucket_create_transient("0\r\n\r\n", 5);
-        b->tail->prev->next = dptr;
-        dptr->prev = b->tail->prev;
-        b->tail->prev = dptr;
-        dptr->next = b->tail;
-    }
-
-    return ap_pass_brigade(f->next, b);
+    rv += ap_pass_brigade(f->next, b);
+    return rv;
 }
 
-/* Default filter.  This filter should almost always be used.  It's only job
+/* Default filter.  This filter should almost always be used.  Its only job
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.  To send the data, we create an iovec out of the bucket
  * brigade and then call the sendv function.  On platforms that don't
