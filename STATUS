@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/13 12:47:45 $]
+  Last modified at [$Date: 2000/01/13 12:59:37 $]
 
 Release:
 
@@ -52,7 +52,7 @@ RELEASE SHOWSTOPPERS:
       a patch which fixes the problems and addresses some concerns.
         Message-ID: <20000112165918.A6580@schumann.cx>
 	Message-ID: <20000112185823.A8543@schumann.cx>
-	Status: Sascha +1, Jim +1 (untested)
+	Status: Sascha +1, Jim +1 (untested), Ryan +1 (untested)
 
     * Namespace collision is possible with the Expat library. J.
       Clark is aware of this, but we should not wait for an official
