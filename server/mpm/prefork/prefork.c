@@ -1547,7 +1547,8 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     static int restart_num = 0;
     int no_detach = 0;
 
-    no_detach = !!getenv("NO_DETACH");
+    no_detach = !!ap_exists_config_define("NO_DETACH");
+    one_process = !!ap_exists_config_define("ONE_PROCESS");
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
@@ -1581,7 +1582,6 @@ static void prefork_hooks(void)
 #ifdef AUX3
     (void) set42sig();
 #endif
-    one_process = !!getenv("ONE_PROCESS");
 
     ap_hook_pre_config(prefork_pre_config, NULL, NULL, AP_HOOK_MIDDLE);
 }

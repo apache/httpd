@@ -1835,7 +1835,7 @@ void winnt_rewrite_args(process_rec *process)
     GetVersionEx(&osver);
 
     /* AP_PARENT_PID is only valid in the child */
-    pid = getenv("AP_PARENT_PID");
+    pid = ap_exists_config_define("AP_PARENT_PID");
     if (pid) 
     {
         /* This is the child */
@@ -2028,7 +2028,7 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
      */
     apr_status_t rv;
 
-    if (getenv("ONE_PROCESS"))
+    if (ap_exists_config_define("ONE_PROCESS"))
         one_process = -1;
 
     if (ap_exists_config_define("ONE_PROCESS"))
