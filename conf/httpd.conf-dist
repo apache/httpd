@@ -86,7 +86,7 @@ PidFile logs/httpd.pid
 ScoreBoardFile logs/apache_runtime_status
 
 #
-# In the standard configuration, the server will process httpd.conf,
+# In the standard configuration, the server will process this file,
 # srm.conf, and access.conf in that order.  The latter two files are
 # now distributed empty, as it is recommended that all directives
 # be kept in a single file for simplicity.  The commented-out values
@@ -132,8 +132,7 @@ KeepAliveTimeout 15
 # It does this by periodically checking how many servers are waiting
 # for a request.  If there are fewer than MinSpareServers, it creates
 # a new spare.  If there are more than MaxSpareServers, some of the
-# spares die off.  The default values in httpd.conf-dist are probably OK
-# for most sites.
+# spares die off.  The default values are probably OK for most sites.
 #
 MinSpareServers 5
 MaxSpareServers 10
