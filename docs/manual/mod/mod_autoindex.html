@@ -35,6 +35,24 @@ are controlled by <code>mod_autoindex</code>.
 </ul>
 The two functions are separated so that you can completely remove
 (or replace) automatic index generation should you want to.
+<P>
+If
+<A
+ HREF="#fancyindexing"
+>FancyIndexing</A>
+is enabled, the column headers are links that control the
+order of the display.  If you select a header link, the
+listing will be regenerated, sorted by the values in that
+column.  Selecting the same header repeatedly toggles
+between ascending and descending order.
+</P>
+<P>
+Note that when the display is sorted by &quot;Size&quot;,
+it's the <EM>actual</EM> size of the files that's used,
+not the displayed value - so a 1010-byte file will
+always be displayed before a 1011-byte file (if in ascending
+order) even though they both are shown as &quot;1K&quot;.
+</P>
 
 
 <h2>Directives</h2>
