@@ -279,9 +279,8 @@ static const char *add_extension_info(cmd_parms *cmd, void *m_,
     char *key = apr_pstrdup(cmd->temp_pool, ext);
     char *value = apr_pstrdup(cmd->pool, value_);
     ap_str_tolower(value);
-#ifdef CASE_BLIND_FILESYSTEM
     ap_str_tolower(key);
-#endif
+
     if (*key == '.')
 	++key;
     if (!m->extension_mappings) {
@@ -318,9 +317,7 @@ static const char *remove_extension_info(cmd_parms *cmd, void *m_,
     }
     suffix = (attrib_info *) apr_array_push(m->remove_mappings);
     suffix->name = apr_pstrdup(cmd->pool, ext);
-#ifdef CASE_BLIND_FILESYSTEM
     ap_str_tolower(suffix->name);
-#endif
     suffix->offset = (int) (long) cmd->info;
     return NULL;
 }
@@ -464,7 +461,7 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 
         while (ll[0]) {
             char *ext = ap_getword_conf(p, &ll);
-            ap_str_tolower(ext);   /* ??? */
+            ap_str_tolower(ext);
             apr_hash_set(mime_type_extensions, ext, APR_HASH_KEY_STRING, ct);
         }
     }
@@ -778,12 +775,7 @@ static int find_ct(request_rec *r)
 
         found = 0;
 
-#ifdef CASE_BLIND_FILESYSTEM
-        /* We have a basic problem that folks on case-crippled systems
-         * expect anything and everything to succeed
-         */
         ap_str_tolower(ext);
-#endif
 
         if (conf->extension_mappings != NULL) {
             exinfo = (extension_info*)apr_hash_get(conf->extension_mappings,
