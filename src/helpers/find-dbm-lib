@@ -1,4 +1,4 @@
-
+# Our config tool sucks... if this script decides to modify the
 # LIBS variable it won't be used by any of the other TestCompiles.
 # So unless we protect ourselves with the found_dbm variable
 # we'd end up having to do the work twice... and we'd end up putting
