@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/09/27 11:20:29 $
+Last modified: $Date: 2001/10/19 06:00:52 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -14,7 +14,7 @@ tutorial on how to get started with making your contribution.
               ------------------------------
 
 - modules docs
-    - mod_ssl/mod_tls: no docs
+    - mod_ssl: no docs (copyright issues?)
     - mod_suexec: very little documentation
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
