@@ -125,6 +125,7 @@
  */
 
 
+#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
@@ -266,15 +267,11 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 		     (void (*)(void*))unload_module, ap_null_cleanup);
 
     /* 
-     * Finally we need to run the configuration functions 
-     * in new modules now.
+     * Finally we need to create the configuration for the
+     * module and initialize it
      */
-    if (modp->create_server_config)
-      ((void**)cmd->server->module_config)[modp->module_index] =
-	(*modp->create_server_config)(cmd->pool, cmd->server);
-    if (modp->create_dir_config)
-      ((void**)cmd->server->lookup_defaults)[modp->module_index] =
-	(*modp->create_dir_config)(cmd->pool, NULL);
+    ap_single_module_configure(cmd->pool, cmd->server, modp);
+    ap_single_module_init(cmd->pool, cmd->server, modp);
 
     return NULL;
 }

@@ -188,12 +188,14 @@
  *                        exit_generation to running_generation.  Somewhere
  *                        earlier vhostrec was added, but it's only safe to use
  *                        as of this rev.  See scoreboard.h for documentation.
+ * 19981211             - DSO changes -- added ap_single_module_configure()
+ *                                    -- added ap_single_module_init()
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19981204
+#define MODULE_MAGIC_NUMBER_MAJOR 19981211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

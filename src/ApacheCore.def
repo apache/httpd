@@ -317,5 +317,8 @@ EXPORTS
 	so_module   @310
 	top_module   @311
 	ap_fnmatch   @312
-	
+	ap_method_number_of   @313
+	ap_exists_config_define   @314
+	ap_single_module_configure   @315
+	ap_single_module_init   @316
 

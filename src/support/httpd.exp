@@ -95,6 +95,7 @@ ap_escape_path_segment
 ap_escape_quotes
 ap_escape_shell_cmd
 ap_excess_requests_per_child
+ap_exists_config_define
 ap_exists_scoreboard_image
 ap_extended_status
 ap_finalize_request_protocol
@@ -185,6 +186,7 @@ ap_md5contextTo64
 ap_md5digest
 ap_meets_conditions
 ap_merge_per_dir_configs
+ap_method_number_of
 ap_month_snames
 ap_no2slash
 ap_note_auth_failure
@@ -300,6 +302,8 @@ ap_should_client_block
 ap_show_directives
 ap_show_modules
 ap_signal
+ap_single_module_configure
+ap_single_module_init
 ap_slack
 ap_snprintf
 ap_soft_timeout

@@ -1476,6 +1476,23 @@ server_rec *ap_read_config(pool *p, pool *ptemp, char *confname)
     return s;
 }
 
+void ap_single_module_configure(pool *p, server_rec *s, module *m)
+{
+    if (m->create_server_config)
+        ap_set_module_config(s->module_config, m,
+                             (*m->create_server_config)(p, s));
+    if (m->create_dir_config)
+        ap_set_module_config(s->lookup_defaults, m,
+                             (*m->create_dir_config)(p, NULL));
+}
+
+void ap_single_module_init(pool *p, server_rec *s, module *m)
+{
+    if (m->init)
+        (*m->init)(s, p);
+    build_method_shortcuts();
+    init_handlers(p);
+}
 
 void ap_init_modules(pool *p, server_rec *s)
 {
