@@ -792,13 +792,18 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             (r->status != HTTP_RESET_CONTENT) &&	/* not 205 */
             (r->status != HTTP_NOT_MODIFIED)) {	/* not 304 */
 
-            const char *buf;
-            if (ap_proxy_liststr((buf = apr_table_get(r->headers_out,
-                                  "Transfer-Encoding")), "chunked")) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                         "proxy: Transfer-Encoding Chunked!");
-                apr_table_unset(r->headers_out,"Content-Length");
-            }
+            /* We need to copy the output headers and treat them as input
+             * headers as well.  BUT, we need to do this before we remove
+             * TE and C-L, so that they are preserved accordingly for
+             * ap_http_filter to know where to end.
+             */
+            rp->headers_in = apr_table_copy(r->pool, r->headers_out);
+
+            /* In order for ap_set_keepalive to work properly, we can NOT
+             * have any length information stored in the output headers.
+             */
+            apr_table_unset(r->headers_out,"Transfer-Encoding");
+            apr_table_unset(r->headers_out,"Content-Length");
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                          "proxy: start body send");
@@ -811,7 +816,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* read the body, pass it to the output filters */
                 apr_off_t readbytes;
                 apr_bucket *e;
-                rp->headers_in = r->headers_out;
                 readbytes = AP_IOBUFSIZE;
                 while (ap_get_brigade(rp->input_filters, 
                                        bb, 
