@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/29 00:10:04 $]
+Last modified at [$Date: 2004/06/29 10:35:07 $]
 
 Release:
 
@@ -104,7 +104,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.
        build/rpm/httpd.spec.in: r1.5
-       +1: minfrin, nd
+       +1: minfrin, nd, iholsman
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
