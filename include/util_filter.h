@@ -72,6 +72,7 @@ extern "C" {
  */
 
 #define AP_NOBODY_WROTE         -1;
+#define AP_NOBODY_READ          -2;
 
 /*
  * FILTER CHAIN
@@ -215,9 +216,14 @@ struct ap_filter_t {
 
     /** The request_rec associated with the current filter.  If a sub-request
      *  adds filters, then the sub-request is the request associated with the
-     * filter.
+     *  filter.
      */
     request_rec *r;
+
+    /** The conn_rec associated with the current filter.  This is analogous
+     *  to the request_rec, except that it is used for input filtering.
+     */
+    conn_rec *c;
 };
 
 /* This function just passes the current bucket brigade down to the next
@@ -230,6 +236,17 @@ struct ap_filter_t {
  * current request.  I would just rather it didn't take out the whole child
  * process.  
  */
+/**
+ * Get the current bucket brigade from the next filter on the filter
+ * stack.  The filter should return an apr_status_t value.  If the bottom-most 
+ * filter doesn't write to the network, then AP_NOBODY_WROTE is returned.
+ * @param filter The next filter in the chain
+ * @param bucket The current bucket brigade
+ * @return apr_status_t value
+ * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket)
+ */
+API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
+
 /**
  * Pass the current bucket brigade down to the next filter on the filter
  * stack.  The filter should return an apr_status_t value.  If the bottom-most 
@@ -299,6 +316,15 @@ API_EXPORT(void) ap_register_output_filter(const char *name,
  * To re-iterate that last comment.  This function is building a FIFO
  * list of filters.  Take note of that when adding your filter to the chain.
  */
+/**
+ * Add a filter to the current connection.  Filters are added in a FIFO manner.
+ * The first filter added will be the first filter called.
+ * @param name The name of the filter to add
+ * @param c The connection to add the fillter for
+ * @deffunc void ap_add_input_filter(const char *name, void *ctx, conn_rec *r)
+ */
+API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *r);
+
 /**
  * Add a filter to the current request.  Filters are added in a FIFO manner.
  * The first filter added will be the first filter called.

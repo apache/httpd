@@ -118,6 +118,36 @@ API_EXPORT(void) ap_register_output_filter(const char *name,
                     &registered_output_filters);
 }
 
+API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, conn_rec *c)
+{
+    ap_filter_rec_t *frec = registered_input_filters;
+
+    for (; frec != NULL; frec = frec->next) {
+        if (!strcasecmp(name, frec->name)) {
+            ap_filter_t *f = apr_pcalloc(c->pool, sizeof(*f));
+
+            f->frec = frec;
+            f->ctx = ctx;
+            f->r = NULL;
+            f->c = c;
+
+            if (INSERT_BEFORE(f, c->input_filters)) {
+                f->next = c->input_filters;
+                c->input_filters = f;
+            }
+            else {
+                ap_filter_t *fscan = c->input_filters;
+                while (!INSERT_BEFORE(f, fscan->next))
+                    fscan = fscan->next;
+                f->next = fscan->next;
+                fscan->next = f;
+            }
+
+            break;
+        }
+    }
+}
+
 API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
 {
     ap_filter_rec_t *frec = registered_output_filters;
@@ -129,6 +159,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
             f->frec = frec;
             f->ctx = ctx;
             f->r = r;
+            f->c = NULL;
 
             if (INSERT_BEFORE(f, r->output_filters)) {
                 f->next = r->output_filters;
@@ -145,6 +176,21 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
             break;
         }
     }
+}
+
+/* 
+ * Read data from the next filter in the filter stack.  Data should be 
+ * modified in the bucket brigade that is passed in.  The core allocates the
+ * bucket brigade, modules that wish to replace large chunks of data or to
+ * save data off to the side should probably create their own temporary
+ * brigade especially for that use.
+ */
+API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
+{
+    if (next) {
+        return next->frec->filter_func(next, bb);
+    }
+    return AP_NOBODY_READ;
 }
 
 /* Pass the buckets to the next filter in the filter stack.  If the

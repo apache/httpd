@@ -3246,11 +3246,33 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     return APR_SUCCESS;
 }
 
+static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
+{
+    char *buff;
+    apr_size_t length = HUGE_STRING_LEN;
+    apr_socket_t *csock = NULL;
+    ap_bucket *e;
+
+    /* As soon as we have pool buckets, this should become a palloc. */
+    buff = apr_palloc(f->c->pool, HUGE_STRING_LEN);
+    ap_bpop_socket(&csock, f->c->client);
+
+    if (apr_recv(csock, buff, &length) == APR_SUCCESS) {
+        /* This should probably be a pool bucket, but using a transient is 
+         * actually okay here too.  We know the pool we are using will always 
+         * be available as long as the connection is open.
+         */
+        e = ap_bucket_create_transient(buff, length);
+        AP_BRIGADE_INSERT_TAIL(b, e); 
+    }
+    return length;
+} 
+
 /* Default filter.  This filter should almost always be used.  Its only job
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.
  */
-static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     request_rec *r = f->r;
     apr_pool_t *p = r->pool;
@@ -3262,7 +3284,7 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
 #if 0 /* XXX: bit rot! */
     /* This will all be needed once BUFF is removed from the code */
     /* At this point we need to discover if there was any data saved from
-     * the last call to core_filter.
+     * the last call to core_output_filter.
      */
     b = ap_get_saved_data(f, &b);
 
@@ -3459,7 +3481,8 @@ static void register_hooks(void)
      * request-processing time.
      */
     ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_register_output_filter("CORE", core_filter, AP_FTYPE_CONNECTION + 1);
+    ap_register_input_filter("CORE_IN", core_input_filter, AP_FTYPE_CONNECTION);
+    ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_CONNECTION + 1);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
     ap_register_output_filter("BUFFER", buffer_filter, AP_FTYPE_CONNECTION);
 }
