@@ -1529,7 +1529,6 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if (use_port) {
         for(;;)
         {
-/* FIXME: this does not return, despite the incoming connection being accepted */
             rv = apr_accept(&remote_sock, local_sock, r->pool);
             if (rv == APR_EINTR) {
                 continue;
