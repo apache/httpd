@@ -389,7 +389,6 @@ case "$PLAT" in
 	OS='LynxOS 2.x'
 	CFLAGS="$CFLAGS -D__NO_INCLUDE_WARN__ -DLYNXOS"
 	LIBS="$LIBS -lbsd -lcrypt"
-	LFLAGS="$LFLAGS"
 	DEF_WANTHSREGEX=yes
 	;;
     *486-*-bsdi*)
