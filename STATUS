@@ -69,6 +69,10 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Harrie Hazewinkle's PATCH scoreboard to include server_rec *
+	Message-ID: <3635C79B.B5E649F8@jrc.it>
+	Status: Ralf +1
+
     * Ron Record's patch to port Apache to UnixWare 7 (forwarded by
       Randy).
 	Message-ID: <x767dg3476.fsf@montana.covalent.net>
