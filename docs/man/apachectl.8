@@ -1,0 +1,93 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "APACHECTL" 8 "2003-04-23" "Apache HTTP Server" "apachectl"
+
+.SH "SYNOPSIS"
+
+.PP
+When acting in pass-through mode, apachectl can take all the arguments available for the httpd binary\&.
+
+.PP
+\fBapachectl\fR [ \fIhttpd-argument\fR ]
+
+.PP
+When acting in SysV init mode, apachectl takes simple, one-word commands, defined below\&.
+
+.PP
+\fBapachectl\fR\fIcommand\fR
+
+
+.SH "SUMMARY"
+
+.PP
+apachectl is a front end to the Apache HyperText Transfer Protocol (HTTP) server\&. It is designed to help the administrator control the functioning of the Apache httpd daemon\&.
+
+.PP
+The apachectl script can operate in two modes\&. First, it can act as a simple front-end to the httpd command that simply sets any necessary environment variables and then invokes httpd, passing through any command line arguments\&. Second, apachectl can act as a SysV init script, taking simple one-word arguments like start, restart, and stop, and translating them into appropriate signals to httpd\&.
+
+.PP
+If your Apache installation uses non-standard paths, you will need to edit the apachectl script to set the appropriate paths to the httpd binary\&. You can also specify any necessary httpd command line arguments\&. See the comments in the script for details\&.
+
+.PP
+The apachectl script returns a 0 exit value on success, and >0 if an error occurs\&. For more details, view the comments in the script\&.
+
+
+.SH "OPTIONS"
+
+.PP
+Only the SysV init-style options are defined here\&. Other arguments are defined on the httpd manual page\&.
+
+.RS
+
+.TP
+start
+Start the Apache httpd daemon\&. Gives an error if it is already running\&. This is equivalent to apachectl -k start\&.
+.TP
+stop
+Stops the Apache httpd daemon\&. This is equivalent to apachectl -k stop\&.
+.TP
+restart
+Restarts the Apache httpd daemon\&. If the daemon is not running, it is started\&. This command automatically checks the configuration files as in configtest before initiating the restart to make sure the daemon doesn't die\&. This is equivalent to apachectl -k restart\&.
+.TP
+fullstatus
+Displays a full status report from mod_status\&. For this to work, you need to have mod_status enabled on your server and a text-based browser such as lynx available on your system\&. The URL used to access the status report can be set by editing the STATUSURL variable in the script\&.
+.TP
+status
+Displays a brief status report\&. Similar to the fullstatus option, except that the list of requests currently being served is omitted\&.
+.TP
+graceful
+Gracefully restarts the Apache httpd daemon\&. If the daemon is not running, it is started\&. This differs from a normal restart in that currently open connections are not aborted\&. A side effect is that old log files will not be closed immediately\&. This means that if used in a log rotation script, a substantial delay may be necessary to ensure that the old log files are closed before processing them\&. This command automatically checks the configuration files as in configtest before initiating the restart to make sure Apache doesn't die\&. This is equivalent to apachectl -k graceful\&.
+.TP
+configtest
+Run a configuration file syntax test\&. It parses the configuration files and either reports Syntax Ok or detailed information about the particular syntax error\&. This is equivalent to apachectl -t\&.
+.RE
+
+.PP
+The following additional option is available, but deprecated\&.
+
+.RS
+
+.TP
+startssl
+This is equivalent to apachectl -k start -DSSL\&. We recommend that you use that command explicitly, or you adjust your httpd\&.conf to remove the <IfDefine> section so that SSL will always be available\&.
+.RE
+
