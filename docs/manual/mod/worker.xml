@@ -10,8 +10,7 @@
 <identifier>mpm_worker_module</identifier>
 
 <summary>
-    <p>This Multi-Processing Module (MPM) is the default for most
-    unix-like operating systems. It implements a hybrid
+    <p>This Multi-Processing Module (MPM) implements a hybrid
     multi-process multi-threaded server. Each process has a fixed
     number of threads. The server adjusts to handle load by
     increasing or decreasing the number of processes.</p>
