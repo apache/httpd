@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/20 15:45:18 $]
+  Last modified at [$Date: 1999/03/20 18:55:45 $]
 
 Release:
 
@@ -32,8 +32,9 @@ Binaries (1.3.5):
  i386-unixware-svr4            no      Sameer Parekh
  i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
  i386-unknown-freebsd2.2.8     no      Jim Jagielski
+ i386-whatever-freebsd3.0      no      Ken Coar
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
- i585-pc-redhat5.2             no      Ralf S. Engelschall
+ i586-pc-redhat5.2             no      Ralf S. Engelschall
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
  i386-unknown-netBSD           no      Lars Eilebrecht, Bill <lucid@secret.org>
  i386-unknown-sco3             no      Ben Laurie
@@ -178,6 +179,9 @@ Needs patch:
       MaxConnectionsPerChild or really fix it to actually count
       the number of requests.
       Lars: I think we should really fix.
+      Ken: Definitely fix this, otherwise an massive series of
+           requests on the same connection is possible, which
+           defeats the purpose.
       Jim: The main idea behind this is to avoid problems with
            memory leaks. So it really doesn't matter which we
 	   do, as long as there's a match between the directive
@@ -344,7 +348,7 @@ Win32 specific issues:
 	<01BCDB29.2C04DEB0@caravan.individual.com>
 	<01BCDB2A.F8C09010@caravan.individual.com>
 	Status: Ken +1, Sameer +1, Martin +1, Ben +1 (as long as
-	we get a single executable)
+		we get a single executable)
 	Paul: No like Win95 specific stuff
 	Ken: What's W95-specific about it?
 
@@ -388,7 +392,6 @@ Win32 specific issues:
 
     * CGIs
 	- docs on how they work w/scripts
-	- use registry to find interpreter?
 	- WTF is the buffering coming from?
 	    - we don't have a way to make non-blocking files on NT!
 
