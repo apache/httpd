@@ -12,6 +12,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#if defined(WIN32) || defined(OS2)
+#include <io.h>
+#endif
+
 #define BUFSIZE        65536
 #define ERRMSGSZ       82
 #ifndef MAX_PATH
@@ -66,6 +70,10 @@ int main (int argc, char **argv)
         fprintf(stderr, "Rotation time must be > 0\n");
         exit(6);
     }
+
+#if defined(WIN32) || defined(OS2)
+    setmode(0, O_BINARY);
+#endif
 
     use_strftime = (strstr(szLogRoot, "%") != NULL);
     for (;;) {
