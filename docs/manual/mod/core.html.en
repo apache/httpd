@@ -1113,7 +1113,7 @@ filenames</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Forces all matching files to be served with the specified
 MIME content-type</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ForceType <var>MIME-type</var>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ForceType <var>MIME-type</var>|None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1139,7 +1139,7 @@ MIME content-type</td></tr>
     filename extensions, that might identify the media type.</p>
 
     <p>You can override any <code class="directive">ForceType</code> setting
-    by using the value of <code>none</code>:</p>
+    by using the value of <code>None</code>:</p>
 
     <div class="example"><p><code>
       # force all files to be image/gif:<br />
@@ -1152,7 +1152,7 @@ MIME content-type</td></tr>
       # but normal mime-type associations here:<br />
       &lt;Location /images/mixed&gt;<br />
       <span class="indent">
-        ForceType none<br />
+        ForceType None<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -2688,6 +2688,9 @@ handler</td></tr>
       </span>
       &lt;/Location&gt;
     </code></p></div>
+
+    <p>You can override an earlier defined <code class="directive">SetHandler</code>
+    directive by using the value <code>None</code>.</p>
 
 <h3>See also</h3>
 <ul>

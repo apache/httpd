@@ -1064,7 +1064,7 @@ filenames</description>
 <name>ForceType</name>
 <description>Forces all matching files to be served with the specified
 MIME content-type</description>
-<syntax>ForceType <var>MIME-type</var>|none</syntax>
+<syntax>ForceType <var>MIME-type</var>|None</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -1090,7 +1090,7 @@ MIME content-type</description>
     filename extensions, that might identify the media type.</p>
 
     <p>You can override any <directive>ForceType</directive> setting
-    by using the value of <code>none</code>:</p>
+    by using the value of <code>None</code>:</p>
 
     <example>
       # force all files to be image/gif:<br />
@@ -1103,7 +1103,7 @@ MIME content-type</description>
       # but normal mime-type associations here:<br />
       &lt;Location /images/mixed&gt;<br />
       <indent>
-        ForceType none<br />
+        ForceType None<br />
       </indent>
       &lt;/Location&gt;
     </example>
@@ -2632,6 +2632,9 @@ handler</description>
       </indent>
       &lt;/Location&gt;
     </example>
+
+    <p>You can override an earlier defined <directive>SetHandler</directive>
+    directive by using the value <code>None</code>.</p>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
