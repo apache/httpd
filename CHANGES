@@ -2,6 +2,11 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) core_input_filter: Move buckets to a persistent brigade instead of
+     creating a new brigade when apr_brigade_split is called. This stops
+     a memory leak when proxying a Streaming Media Server. PR 33382.
+     [Paul Querna]
+
   *) mod_ssl: Add ssl_ext_lookup optional function for accessing
      certificate extensions.   [David Reid, Joe Orton]
 

@@ -109,6 +109,27 @@ do { \
     } while (!APR_BRIGADE_EMPTY(b) && (e != APR_BRIGADE_SENTINEL(b))); \
 } while (0)
 
+
+/**
+ * Split the contents of a brigade after bucket 'e' to an existing brigade
+ *
+ * XXXX: Should this function be added to APR-Util?
+ */
+static void brigade_move(apr_bucket_brigade *b, apr_bucket_brigade *a,
+                         apr_bucket *e)
+{
+    apr_bucket *f;     
+
+    if (e != APR_BRIGADE_SENTINEL(b)) {
+        f = APR_RING_LAST(&b->list);
+        APR_RING_UNSPLICE(e, f, link);
+        APR_RING_SPLICE_HEAD(&a->list, e, f, apr_bucket, link);
+    }
+
+    APR_BRIGADE_CHECK_CONSISTENCY(a);
+    APR_BRIGADE_CHECK_CONSISTENCY(b);
+}
+
 int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                          ap_input_mode_t mode, apr_read_type_e block,
                          apr_off_t readbytes)
@@ -138,7 +159,7 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     {
         ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
         ctx->b = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
-
+        ctx->tmpbb = apr_brigade_create(ctx->b->p, ctx->b->bucket_alloc);
         /* seed the brigade with the client socket. */
         e = apr_bucket_socket_create(net->client_socket, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
@@ -290,8 +311,8 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             return rv;
         }
 
-        /* Must do split before CONCAT */
-        newbb = apr_brigade_split(ctx->b, e);
+        /* Must do move before CONCAT */
+        brigade_move(ctx->b, ctx->tmpbb, e);
 
         if (mode == AP_MODE_READBYTES) {
             APR_BRIGADE_CONCAT(b, ctx->b);
@@ -312,7 +333,7 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
 
         /* Take what was originally there and place it back on ctx->b */
-        APR_BRIGADE_CONCAT(ctx->b, newbb);
+        APR_BRIGADE_CONCAT(ctx->b, ctx->tmpbb);
     }
     return APR_SUCCESS;
 }
