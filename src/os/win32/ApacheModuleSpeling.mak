@@ -183,6 +183,7 @@ SOURCE=..\..\modules\standard\mod_speling.c
 DEP_CPP_MOD_S=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
@@ -211,6 +212,7 @@ NODEP_CPP_MOD_S=\
 DEP_CPP_MOD_S=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

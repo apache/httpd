@@ -184,6 +184,7 @@ SOURCE=..\..\modules\standard\mod_auth_anon.c
 DEP_CPP_MOD_A=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
@@ -214,6 +215,7 @@ NODEP_CPP_MOD_A=\
 DEP_CPP_MOD_A=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

@@ -3585,7 +3585,8 @@ static char *lookup_variable(request_rec *r, char *var)
         result = ap_get_server_version();
     }
     else if (strcasecmp(var, "API_VERSION") == 0) { /* non-standard */
-        ap_snprintf(resultbuf, sizeof(resultbuf), "%d", MODULE_MAGIC_NUMBER);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%d:%d",
+		    MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
         result = resultbuf;
     }
 

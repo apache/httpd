@@ -183,6 +183,7 @@ SOURCE=..\..\modules\standard\mod_headers.c
 DEP_CPP_MOD_H=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
@@ -209,6 +210,7 @@ NODEP_CPP_MOD_H=\
 DEP_CPP_MOD_H=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

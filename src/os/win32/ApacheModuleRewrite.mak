@@ -191,6 +191,7 @@ SOURCE=..\..\modules\standard\mod_rewrite.c
 DEP_CPP_MOD_R=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
@@ -214,6 +215,7 @@ DEP_CPP_MOD_R=\
 DEP_CPP_MOD_R=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

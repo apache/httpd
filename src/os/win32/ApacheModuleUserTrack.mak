@@ -184,6 +184,7 @@ SOURCE=..\..\modules\standard\mod_usertrack.c
 DEP_CPP_MOD_U=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
@@ -211,6 +212,7 @@ NODEP_CPP_MOD_U=\
 DEP_CPP_MOD_U=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

@@ -184,6 +184,7 @@ SOURCE=..\..\modules\standard\mod_cern_meta.c
 DEP_CPP_MOD_C=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
@@ -213,6 +214,7 @@ NODEP_CPP_MOD_C=\
 DEP_CPP_MOD_C=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

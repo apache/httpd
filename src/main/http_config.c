@@ -538,15 +538,10 @@ API_EXPORT(void) ap_add_module(module *m)
      * teased out...
      */
 
-    /* At some point, we may want to offer back-compatibility for
-     * loading modules that are for older versions of Apache. For now,
-     * though, we don't.
-     */
-
-    if (m->version != MODULE_MAGIC_NUMBER) {
+    if (m->version != MODULE_MAGIC_NUMBER_MAJOR) {
 	fprintf(stderr, "httpd: module \"%s\" is not compatible with this "
 		"version of Apache.\n", m->name);
-	fprintf(stderr, "Please contact the author for the correct version.\n");
+	fprintf(stderr, "Please contact the vendor for the correct version.\n");
 	exit(1);
     }
 

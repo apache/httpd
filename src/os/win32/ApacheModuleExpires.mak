@@ -183,6 +183,7 @@ SOURCE=..\..\modules\standard\mod_expires.c
 DEP_CPP_MOD_E=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
@@ -210,6 +211,7 @@ NODEP_CPP_MOD_E=\
 DEP_CPP_MOD_E=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

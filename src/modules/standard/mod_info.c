@@ -406,8 +406,8 @@ static int display_info(request_rec *r)
                         "<font size=+1><tt>%s</tt></a></font><br>\n",
                         ap_get_server_built());
             ap_rprintf(r, "<strong>API Version:</strong> "
-                        "<tt>%d</tt><br>\n",
-                        MODULE_MAGIC_NUMBER);
+                        "<tt>%d:%d</tt><br>\n",
+                        MODULE_MAGIC_NUMBER_MAJOR:MODULE_MAGIC_NUMBER_MINOR);
             ap_rprintf(r, "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",
                         (ap_standalone ? "standalone" : "inetd"));
             ap_rprintf(r, "<strong>User/Group:</strong> "

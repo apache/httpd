@@ -3224,7 +3224,8 @@ static void show_compile_settings(void)
 {
     printf("Server version: %s\n", ap_get_server_version());
     printf("Server built:   %s\n", ap_get_server_built());
-    printf("Server's Module Magic Number: %u\n", MODULE_MAGIC_NUMBER);
+    printf("Server's Module Magic Number: %u:%u\n",
+	   MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
     printf(" -D BIG_SECURITY_HOLE\n");

@@ -178,6 +178,7 @@ SOURCE=..\..\modules\standard\mod_info.c
 DEP_CPP_MOD_I=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\

@@ -217,6 +217,7 @@ SOURCE=..\..\modules\standard\mod_status.c
 DEP_CPP_MOD_S=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
 	"..\..\include\buff.h"\
@@ -244,6 +245,7 @@ DEP_CPP_MOD_S=\
 DEP_CPP_MOD_S=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
 	"..\..\include\buff.h"\
