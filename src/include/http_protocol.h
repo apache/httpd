@@ -98,6 +98,7 @@ int set_keepalive (request_rec *r);
 API_EXPORT(time_t) rationalize_mtime(request_rec *r, time_t mtime);
 API_EXPORT(void) set_etag(request_rec *r);
 API_EXPORT(void) set_last_modified(request_rec *r);
+API_EXPORT(int) meets_conditions(request_rec *r);
 
 /* Other ways to send stuff at the client.  All of these keep track
  * of bytes_sent automatically.  This indirection is intended to make

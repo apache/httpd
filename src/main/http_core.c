@@ -55,6 +55,7 @@
 #include "http_config.h"
 #include "http_core.h"
 #include "http_protocol.h"	/* For index_of_response().  Grump. */
+#include "http_request.h"
 #include "http_conf_globals.h"
 
 #include "http_main.h"		/* For the default_handler below... */
