@@ -92,7 +92,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\proxy_ftp.c
+SOURCE=.\mod_proxy_ftp.c
 # End Source File
 # End Group
 # Begin Group "Header Files"

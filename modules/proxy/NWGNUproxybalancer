@@ -166,7 +166,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/proxy_balancer.o \
+	$(OBJDIR)/mod_proxy_balancer.o \
 	$(OBJDIR)/proxy_util.o \
 	$(OBJDIR)/libprews.o \
 	$(EOLIST)
