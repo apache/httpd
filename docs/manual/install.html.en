@@ -124,7 +124,7 @@
       <br />
        For some of the support scripts like <a href="programs/apxs.html">apxs</a> or <a href="programs/dbmmanage.html">dbmmanage</a> (which are
       written in Perl) the Perl 5 interpreter is required (versions
-      5.003 and 5.004 are fine). If no such interpreter is found by
+      5.003 or newer are sufficient). If no such interpreter is found by
       the `configure' script there is no harm. Of course, you still
       can build and install Apache 2.0. Only those support scripts
       cannot be used. If you have multiple Perl interpreters
@@ -177,11 +177,11 @@
     (again, depending on your pgp version):</p>
 
 <div class="example"><p><code>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</code></p></div>
-    
+
     <p>or</p>
 
 <div class="example"><p><code>$ gpg --verify httpd-2_0_<em>NN</em>.tar.gz.asc</code></p></div>
-    
+
     <p>You should receive a message like</p>
 
 <div class="example"><p><code>Good signature from user "Martin Kraemer
@@ -497,7 +497,7 @@
 <dl>
 <dt><code>--with-gdbm[=<em>path</em>]</code></dt>
 <dt><code>--with-ndbm[=<em>path</em>]</code></dt>
-<dt><code>--with-berkeley-db[=<em>path</em>]</code></dt> 
+<dt><code>--with-berkeley-db[=<em>path</em>]</code></dt>
 
 <dd>If no <em>path</em> is specified, Apache will search for the
 include files and libraries in the usual search paths.  An explict
