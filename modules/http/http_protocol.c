@@ -661,7 +661,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     /* If this happens, we have a bucket of unknown length.  Die because
      * it means our assumptions have changed. */
-    AP_DEBUG_ASSERT(totalread > 0);
+    AP_DEBUG_ASSERT(totalread >= 0);
 
     if (ctx->state != BODY_NONE) {
         ctx->remaining -= totalread;
