@@ -253,7 +253,7 @@ API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *u
 	 * returning a directory for the root drive.
 	 */
 	for (s = uptr->path; (s = strchr(s, '\\')) != NULL; )
-		*s = '/';
+	    *(char *)s = '/';
 #ifndef WIN32   /* for OS/2 only: */
 	/* Fix OS/2 HPFS filename case problem. */
 	uptr->path = strlwr(uptr->path);

@@ -265,6 +265,10 @@ SOURCE=.\main\util_script.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\main\util_uri.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\os\win32\util_win32.c
 # End Source File
 # End Group
