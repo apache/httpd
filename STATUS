@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/08 08:48:43 $]
+  Last modified at [$Date: 1999/01/08 22:20:36 $]
 
 Release:
 
@@ -162,6 +162,9 @@ Needs patch:
       or via a LimitExcept directive.
 
 Open issues:
+
+    * Official retirement of 1.2; when?  Ken suggests as of 1.3.4.
+	Status: Ken +1
 
     * Redefine APACHE_RELEASE. Add another 'bit' to signify whether
       it's a beta or final release. Maybe 'MMNNFFRBB' which means:
