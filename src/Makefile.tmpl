@@ -113,9 +113,9 @@ $(OBJS): Makefile subdirs
 # DO NOT REMOVE
 buildmark.o: buildmark.c include/ap_config.h include/ap_mmn.h \
  include/ap_config_auto.h os/unix/os.h include/ap_ctype.h \
- include/httpd.h include/alloc.h include/buff.h include/ap.h \
- include/util_uri.h
+ include/hsregex.h include/httpd.h include/alloc.h include/buff.h \
+ include/ap.h include/util_uri.h
 modules.o: modules.c include/httpd.h include/ap_config.h \
  include/ap_mmn.h include/ap_config_auto.h os/unix/os.h \
- include/ap_ctype.h include/alloc.h include/buff.h include/ap.h \
- include/util_uri.h include/http_config.h
+ include/ap_ctype.h include/hsregex.h include/alloc.h include/buff.h \
+ include/ap.h include/util_uri.h include/http_config.h
