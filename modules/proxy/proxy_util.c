@@ -26,6 +26,7 @@
 
 /* Global balancer counter */
 static int lb_workers = 0;
+static int lb_workers_limit = 0;
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -1157,8 +1158,17 @@ ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer, prox
 
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &mpm_daemons);
     /* Check if we are prefork or single child */
-    if (worker->hmax && mpm_daemons > 1)
+    if (worker->hmax && mpm_daemons > 1) {
+        /* Check only if workers_limit is set */
+        if (lb_workers_limit && (lb_workers + 1) > lb_workers_limit) {
+            ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool,
+                          "proxy: Can not add worker (%s) to balancer (%s)."
+                          " Dynamic limit reached.",
+                          worker->name, balancer->name);
+            return;
+        }
         score = ap_get_scoreboard_lb(getpid(), lb_workers);
+    }
     else
 #endif
     {
@@ -1859,5 +1869,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 
 PROXY_DECLARE(int) ap_proxy_lb_workers(void)
 {
-    return (lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT);
+    /* Set the dynamic #workers limit */
+    lb_workers_limit = lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
+    return lb_workers_limit;
 }
