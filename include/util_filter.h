@@ -197,6 +197,7 @@ typedef enum {
  */
 
 typedef struct ap_filter_rec_t ap_filter_rec_t;
+typedef struct ap_filter_provider_t ap_filter_provider_t;
 
 /**
  * This structure is used for recording information about the
@@ -205,6 +206,11 @@ typedef struct ap_filter_rec_t ap_filter_rec_t;
  *
  * At the moment, these are simply linked in a chain, so a ->next pointer
  * is available.
+ *
+ * It is used for any filter that can be inserted in the filter chain.
+ * This may be either a httpd-2.0 filter or a mod_filter harness.
+ * In the latter case it contains dispatch, provider and protocol information.
+ * In the former case, the new fields (from dispatch) are ignored.
  */
 struct ap_filter_rec_t {
     /** The registered name for this filter */
@@ -225,6 +231,56 @@ struct ap_filter_rec_t {
 
     /** The next filter_rec in the list */
     struct ap_filter_rec_t *next;
+
+    /** Dispatch criteria for filter providers */
+    enum {
+        HANDLER,
+        REQUEST_HEADERS,
+        RESPONSE_HEADERS,
+        SUBPROCESS_ENV,
+        CONTENT_TYPE
+    } dispatch ;
+    /** Match value for filter providers */
+    const char* value ;
+    /** Providers for this filter */
+    ap_filter_provider_t* providers ;
+    /** Trace level for this filter */
+    int debug ;
+    /** Protocol flags for this filter */
+    unsigned int proto_flags ;
+    /** Save Ranges header if this filter unsets it */
+    const char* range ;
+};
+
+/**
+ * ap_filter_provider_t is a filter provider, as defined and implemented
+ * by mod_filter.  The struct is a linked list, with dispatch criteria
+ * defined for each filter.  The provider implementation itself is a
+ * (2.0-compatible) ap_filter_rec_t* frec.
+ */
+struct ap_filter_provider_t {
+    /** How to match this provider to filter dispatch criterion */
+    enum {
+        STRING_MATCH,
+        STRING_CONTAINS,
+        REGEX_MATCH,
+        INT_EQ,
+        INT_LT,
+        INT_GT,
+        DEFINED
+    } match_type ;
+    /** negation on match_type */
+    int not ;
+    /** The dispatch match itself - union member depends on match_type */
+    union {
+        const char* c ;
+        regex_t* r ;
+        int i ;
+    } match ;
+    /** The filter that implements this provider */
+    ap_filter_rec_t* frec ;
+    /** The next provider in the list */
+    ap_filter_provider_t* next ;
 };
 
 /**
@@ -308,7 +364,9 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
  * This function is used to register an output filter with the system. 
  * After this registration is performed, then a filter may be added 
  * into the filter chain by using ap_add_output_filter() and simply 
- * specifying the name.
+ * specifying the name.  It may also be used as a provider under mod_filter.
+ * This is (equivalent to) ap_register_output_filter_protocol with
+ * proto_flags=0, and is retained for back-compatibility with 2.0 modules.
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
@@ -322,6 +380,33 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
                                             ap_out_filter_func filter_func,
                                             ap_init_filter_func filter_init,
                                             ap_filter_type ftype);
+
+/* For httpd-2.2 I suggest replacing the above with
+#define ap_register_output_filter(name,ffunc,init,ftype) \
+             ap_register_output_filter_protocol(name,ffunc,init,ftype,0)
+*/
+
+/**
+ * This function is used to register an output filter with the system. 
+ * After this registration is performed, then a filter may be added 
+ * into the filter chain by using ap_add_output_filter() and simply 
+ * specifying the name.  It may also be used as a provider under mod_filter.
+ *
+ * @param name The name to attach to the filter function
+ * @param filter_func The filter function to name
+ * @param filter_init The function to call before the filter handlers 
+ *                    are invoked
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
+ *              ::AP_FTYPE_CONNECTION
+ * @param proto_flags Protocol flags: logical OR of AP_FILTER_PROTO_* bits
+ * @see ap_add_output_filter()
+ */
+AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter_protocol(
+                                            const char *name,
+                                            ap_out_filter_func filter_func,
+                                            ap_init_filter_func filter_init,
+                                            ap_filter_type ftype,
+                                            unsigned int proto_flags);
 
 /**
  * Adds a named filter into the filter chain on the specified request record.
@@ -507,6 +592,27 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
                                            const char *fmt,
                                            ...)
         __attribute__((format(printf,3,4)));                                    
+
+/**
+ * set protocol requirements for an output content filter
+ * (only works with AP_FTYPE_RESOURCE and AP_FTYPE_CONTENT_SET)
+ * @param f the filter in question
+ * @param proto_flags Logical OR of AP_FILTER_PROTO_* bits
+ */
+AP_DECLARE(void) ap_filter_protocol(ap_filter_t* f, unsigned int proto_flags);
+
+/** Filter changes contents (so invalidating checksums/etc) */
+#define AP_FILTER_PROTO_CHANGE 0x1
+/** Filter changes length of contents (so invalidating content-length/etc) */
+#define AP_FILTER_PROTO_CHANGE_LENGTH 0x2
+/** Filter requires complete input and can't work on byteranges */
+#define AP_FILTER_PROTO_NO_BYTERANGE 0x4
+/** Filter should not run in a proxy */
+#define AP_FILTER_PROTO_NO_PROXY 0x8
+/** Filter makes output non-cacheable */
+#define AP_FILTER_PROTO_NO_CACHE 0x10
+/** Filter is incompatible with "Cache-Control: no-transform" */
+#define AP_FILTER_PROTO_TRANSFORM 0x20
 
 #ifdef __cplusplus
 }

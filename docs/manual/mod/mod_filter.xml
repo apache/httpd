@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.2 $ -->
+<!-- $Revision: 1.3 $ -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -331,9 +331,9 @@ content changes)</dd>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>FilterDebug</name>
+<name>FilterTrace</name>
 <description>Get debug/diagnostic information from mod_filter</description>
-<syntax>FilterDebug filter-name level</syntax>
+<syntax>FilterTrace filter-name level</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <usage>
