@@ -53,6 +53,15 @@ RELEASE SHOWSTOPPERS:
 
 PROPOSED PATCHES FOR THIS RELEASE:
 
+   *) mod_rewrite on Win32: change the mutex mechanism for RewriteLog
+      to something more reliable; Apache on Win32 will often exit(1)
+      currently if RewriteLog is enabled
+      Patch is here:
+        Message-ID: <1404e5910504010716389dd7da@mail.gmail.com>
+        From: Eric Covener <covener@gmail.com>
+        Subject: [1.3 PATCH] Win32 RewriteLog deadlock
+      +1: trawick
+
    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
       like Set-Cookie to be logged properly. PR 27787 
         modules/loggers/mod_log_config.c: r1.116 (2.x patch - need 1.3 version)
