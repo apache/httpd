@@ -526,7 +526,33 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
  */
 AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
+/**
+ * Get the next line of input for the request
+ * @param s The buffer into which to read the line
+ * @param n The size of the buffer
+ * @param r The request
+ * @param fold Whether to merge continuation lines
+ * @return The length of the line, if successful
+ *         n, if the line is too big to fit in the buffer
+ *         -1 for miscellaneous errors
+ * @deffunc int ap_method_number_of(const char *method)
+ */
 AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold);
+
+/**
+ * Get the next line of input for the request
+ * @param s Pointer to the pointer to the buffer into which the line
+ *          should be read; if *s==NULL, a buffer of the necessary size
+ *          to hold the data will be allocated from the request pool
+ * @param n The size of the buffer
+ * @param r The request
+ * @param fold Whether to merge continuation lines
+ * @return The length of the line, if successful
+ *         n, if the line is too big to fit in the buffer
+ *         -1 for miscellaneous errors
+ * @deffunc int ap_method_number_of(const char *method)
+ */
+AP_DECLARE(int) ap_rgetline(char **s, int n, request_rec *r, int fold);
 
 /**
  * Get the method number associated with the given string, assumed to
