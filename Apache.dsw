@@ -57,6 +57,12 @@ Package=<4>
     Project_Dep_Name ApacheMonitor
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name libapriconv_ccs_modules
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libapriconv_ces_modules
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_actions
     End Project Dependency
     Begin Project Dependency
@@ -70,6 +76,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_auth_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_ldap
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authn_anon
@@ -133,6 +142,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_headers
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_ident
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_imap
@@ -217,15 +229,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name wintty
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libapriconv_ccs_modules
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libapriconv_ces_modules
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_ldap
     End Project Dependency
 }}}
 
