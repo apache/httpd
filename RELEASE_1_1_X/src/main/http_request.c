@@ -139,7 +139,7 @@ int check_symlinks (char *d, int opts)
 /* Dealing with the file system to get PATH_INFO
  */
 
-void get_path_info(request_rec *r)
+int get_path_info(request_rec *r)
 {
     char *cp;
     char *path = r->filename;
@@ -157,7 +157,10 @@ void get_path_info(request_rec *r)
 	/* See if the pathname ending here exists... */
       
 	*cp = '\0';
+
+	errno = 0;
 	rv = stat(path, &r->finfo);
+
 	if (cp != end) *cp = '/';
       
 	if (!rv) {
@@ -174,9 +177,9 @@ void get_path_info(request_rec *r)
 	
 	    r->path_info = pstrdup (r->pool, cp);
 	    *cp = '\0';
-	    return;
+	    return OK;
 	}
-	else {
+	else if (errno == ENOENT) {
 	    last_cp = cp;
 	
 	    while (--cp > path && *cp != '/')
@@ -184,8 +187,14 @@ void get_path_info(request_rec *r)
 
 	    while (cp > path && cp[-1] == '/')
 		--cp;
+	} 
+	else {
+	    log_reason("unable to determine if index file exists (stat() returned unexpected error)", r->filename, r);
+	    return HTTP_FORBIDDEN;
 	}
     }
+
+    return OK;
 }
 
 int directory_walk (request_rec *r)
@@ -261,7 +270,10 @@ int directory_walk (request_rec *r)
 
     no2slash (test_filename);
     num_dirs = count_dirs(test_filename);
-    get_path_info (r);
+    res = get_path_info (r);
+    if (res != OK) {
+	return res;
+    }
     
     if (S_ISDIR (r->finfo.st_mode)) ++num_dirs;
 
