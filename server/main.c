@@ -66,7 +66,6 @@
 
 const char *ap_server_argv0;
 
-//API_VAR_IMPORT const char *ap_server_root;
 const char *ap_server_root;
 
 ap_array_header_t *ap_server_pre_read_config;
