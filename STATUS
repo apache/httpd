@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/16 00:37:55 $]
+Last modified at [$Date: 2003/10/22 16:48:15 $]
 
 Release:
 
@@ -264,6 +264,13 @@ PATCHES TO BACKPORT FROM 2.1
       set, for example, when processing some error conditions. PR 23836.
         modules/filters/mod_include.c: r1.288
       +1: nd, trawick, jwoolley
+
+    * Set the scoreboard state to indicate logging prior to running
+      logging hooks so that server-status will show 'L' for hung
+      loggers instead of 'W'.
+        modules/http/http_request.c r1.159
+        server/protocol.c r1.138
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
