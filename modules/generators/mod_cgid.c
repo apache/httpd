@@ -398,7 +398,7 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env)
 #endif 
 } 
 
-static int cgid_server_child(int sd) 
+static void cgid_server_child(int sd) 
 { 
     char *argv0; 
     char *filename; 

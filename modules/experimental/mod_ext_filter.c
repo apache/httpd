@@ -530,7 +530,7 @@ static apr_status_t drain_available_output(ap_filter_t *f)
 {
     ef_ctx_t *ctx = f->ctx;
     ef_dir_t *dc = ctx->dc;
-    apr_ssize_t len;
+    apr_size_t len;
     char buf[4096];
     apr_status_t rv;
     ap_bucket_brigade *bb;
@@ -571,8 +571,8 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     ef_ctx_t *ctx = f->ctx;
     ef_dir_t *dc = ctx->dc;
     apr_status_t rv;
-    apr_ssize_t bytes_written = 0;
-    apr_ssize_t tmplen;
+    apr_size_t bytes_written = 0;
+    apr_size_t tmplen;
     
     do {
         tmplen = len - bytes_written;
@@ -631,7 +631,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     ef_ctx_t *ctx = f->ctx;
     ap_bucket *b;
     ef_dir_t *dc;
-    apr_ssize_t len;
+    apr_size_t len;
     const char *data;
     apr_status_t rv;
     char buf[4096];

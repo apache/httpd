@@ -134,7 +134,7 @@ typedef struct charset_filter_ctx_t {
     apr_xlate_t *xlate;
     charset_dir_t *dc;
     ees_t ees;              /* extended error status */
-    apr_ssize_t saved;
+    apr_size_t saved;
     char buf[FATTEST_CHAR]; /* we want to be able to build a complete char here */
     int ran;                /* has filter instance run before? */
     int noop;               /* should we pass brigades through unchanged? */
@@ -452,7 +452,7 @@ static void xlate_insert_filter(request_rec *r)
 /* send_downstream() is passed the translated data; it puts it in a single-
  * bucket brigade and passes the brigade to the next filter
  */
-static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t len)
+static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t len)
 {
     ap_bucket_brigade *bb;
     ap_bucket *b;
@@ -476,7 +476,7 @@ static apr_status_t send_eos(ap_filter_t *f)
 
 static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx, 
                                            const char *partial,
-                                           apr_ssize_t partial_len)
+                                           apr_size_t partial_len)
 {
     apr_status_t rv;
 
@@ -497,10 +497,10 @@ static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx,
 static apr_status_t finish_partial_char(charset_filter_ctx_t *ctx,
                                         /* input buffer: */
                                         const char **cur_str, 
-                                        apr_ssize_t *cur_len,
+                                        apr_size_t *cur_len,
                                         /* output buffer: */
                                         char **out_str,
-                                        apr_ssize_t *out_len)
+                                        apr_size_t *out_len)
 {
     apr_status_t rv;
     apr_size_t tmp_input_len;
@@ -710,8 +710,8 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
 {
     ap_bucket *b, *consumed_bucket;
     const char *bucket;
-    apr_ssize_t bytes_in_bucket; /* total bytes read from current bucket */
-    apr_ssize_t bucket_avail;    /* bytes left in current bucket */
+    apr_size_t bytes_in_bucket; /* total bytes read from current bucket */
+    apr_size_t bucket_avail;    /* bytes left in current bucket */
     apr_status_t rv = APR_SUCCESS;
 
     *hit_eos = 0;
@@ -746,15 +746,15 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
                  * Strangely, finish_partial_char() increments the input buffer
                  * pointer but does not increment the output buffer pointer.
                  */
-                apr_ssize_t old_buffer_avail = *buffer_avail;
+                apr_size_t old_buffer_avail = *buffer_avail;
                 rv = finish_partial_char(ctx,
                                          &bucket, &bucket_avail,
                                          &buffer, buffer_avail);
                 buffer += old_buffer_avail - *buffer_avail;
             }
             else {
-                apr_ssize_t old_buffer_avail = *buffer_avail;
-                apr_ssize_t old_bucket_avail = bucket_avail;
+                apr_size_t old_buffer_avail = *buffer_avail;
+                apr_size_t old_bucket_avail = bucket_avail;
                 rv = apr_xlate_conv_buffer(ctx->xlate,
                                            bucket, &bucket_avail,
                                            buffer,
@@ -821,9 +821,9 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     charset_filter_ctx_t *ctx = f->ctx;
     ap_bucket *dptr, *consumed_bucket;
     const char *cur_str;
-    apr_ssize_t cur_len, cur_avail;
+    apr_size_t cur_len, cur_avail;
     char tmp[OUTPUT_XLATE_BUF_SIZE];
-    apr_ssize_t space_avail;
+    apr_size_t space_avail;
     int done;
     apr_status_t rv = APR_SUCCESS;
 
