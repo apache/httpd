@@ -180,13 +180,11 @@
 #define RULEFLAG_NOTMATCH           1<<6
 #define RULEFLAG_PROXY              1<<7
 #define RULEFLAG_PASSTHROUGH        1<<8
-#define RULEFLAG_FORBIDDEN          1<<9
-#define RULEFLAG_GONE               1<<10
-#define RULEFLAG_QSAPPEND           1<<11
-#define RULEFLAG_NOCASE             1<<12
-#define RULEFLAG_NOESCAPE           1<<13
-#define RULEFLAG_NOSUB              1<<14
-#define RULEFLAG_STATUS             1<<15
+#define RULEFLAG_QSAPPEND           1<<9
+#define RULEFLAG_NOCASE             1<<10
+#define RULEFLAG_NOESCAPE           1<<11
+#define RULEFLAG_NOSUB              1<<12
+#define RULEFLAG_STATUS             1<<13
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -3141,14 +3139,16 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 'f':
     case 'F':
         if (!*key || !strcasecmp(key, "orbidden")) {       /* forbidden */
-            cfg->flags |= RULEFLAG_FORBIDDEN;
+            cfg->flags |= (RULEFLAG_STATUS | RULEFLAG_NOSUB);
+            cfg->forced_responsecode = HTTP_FORBIDDEN;
         }
         break;
 
     case 'g':
     case 'G':
         if (!*key || !strcasecmp(key, "one")) {            /* gone */
-            cfg->flags |= RULEFLAG_GONE;
+            cfg->flags |= (RULEFLAG_STATUS | RULEFLAG_NOSUB);
+            cfg->forced_responsecode = HTTP_GONE;
         }
         break;
 
@@ -3805,40 +3805,10 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
             }
 
             /*
-             *  Rule has the "forbidden" flag set which means that
-             *  we stop processing and indicate this to the caller.
-             */
-            if (p->flags & RULEFLAG_FORBIDDEN) {
-                rewritelog((r, 2, perdir, "forcing '%s' to be forbidden",
-                            r->filename));
-
-                r->filename = apr_pstrcat(r->pool, "forbidden:",
-                                         r->filename, NULL);
-                changed = ACTION_NORMAL;
-                break;
-            }
-
-            /*
-             *  Rule has the "gone" flag set which means that
-             *  we stop processing and indicate this to the caller.
-             */
-            if (p->flags & RULEFLAG_GONE) {
-                rewritelog((r, 2, perdir, "forcing '%s' to be gone",
-                            r->filename));
-
-                r->filename = apr_pstrcat(r->pool, "gone:", r->filename, NULL);
-                changed = ACTION_NORMAL;
-                break;
-            }
-
-            /*
              *  Stop processing also on proxy pass-through and
              *  last-rule and new-round flags.
              */
-            if (p->flags & RULEFLAG_PROXY) {
-                break;
-            }
-            if (p->flags & RULEFLAG_LASTRULE) {
+            if (p->flags & (RULEFLAG_PROXY | RULEFLAG_LASTRULE)) {
                 break;
             }
 
@@ -4202,14 +4172,6 @@ static int hook_uri2file(request_rec *r)
 
             return n;
         }
-        else if (flen > 10 && strncmp(r->filename, "forbidden:", 10) == 0) {
-            /* This URLs is forced to be forbidden for the requester */
-            return HTTP_FORBIDDEN;
-        }
-        else if (flen > 5 && strncmp(r->filename, "gone:", 5) == 0) {
-            /* This URLs is forced to be gone */
-            return HTTP_GONE;
-        }
         else if (flen > 12 && strncmp(r->filename, "passthrough:", 12) == 0) {
             /*
              * Hack because of underpowered API: passing the current
@@ -4478,14 +4440,6 @@ static int hook_fixup(request_rec *r)
             rewritelog((r, 1, dconf->directory, "redirect to %s [REDIRECT/%d]",
                         r->filename, n));
             return n;
-        }
-        else if (l > 10 && strncmp(r->filename, "forbidden:", 10) == 0) {
-            /* This URL is forced to be forbidden for the requester */
-            return HTTP_FORBIDDEN;
-        }
-        else if (l > 5 && strncmp(r->filename, "gone:", 5) == 0) {
-            /* This URL is forced to be gone */
-            return HTTP_GONE;
         }
         else {
             /* it was finally rewritten to a local path */
