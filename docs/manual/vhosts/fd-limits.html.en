@@ -91,7 +91,7 @@ of your log format string:</p>
 
 <p>This will create a log file in the common log format, but with the
 canonical virtual host (whatever appears in the
-../mod/core.html#servername">ServerName</a> directive) prepended to
+<a href="../mod/core.html#servername">ServerName</a> directive) prepended to
 each line. (See <a 
 href="../mod/mod_log_config.html#formats">Custom Log Formats</a> for
 more about customizing your log files.)</p>
