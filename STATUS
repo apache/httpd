@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/03 05:03:24 $]
+Last modified at [$Date: 2004/03/03 10:51:49 $]
 
 Release:
 
@@ -84,11 +84,11 @@ PATCHES TO BACKPORT FROM 2.1
        now enforced solely with the LimitRequestLine config directive.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.263&r2=1.264
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.145&r2=1.146
-      +1:  rederpj, jerenkrantz
+      +1:  rederpj, jerenkrantz, trawick
 
     * Win32 mpm: Fix broken find_ready_listener in Win32DisableAcceptEx path
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/child.c?r1=1.29&r2=1.30
-      +1: stoddard
+      +1: stoddard, trawick
 
     * mod_ssl: Send the Close Alert message to the peer before closing
       the SSL session.
@@ -201,11 +201,13 @@ PATCHES TO BACKPORT FROM 2.1
       restart. PR 21648.  Two people have tested a similar log.c patch
       and the worker.c patch and given feedback in PR 24805.
         server/log.c r1.137
-        PREREQ: ap_mpm_query(mpm-state) support in MPMs
+        Possible PREREQ: ap_mpm_query(mpm-state) support in BeOS and OS/2 MPMs
         (If an MPM is used that doesn't support the query, a complaint
         will be written to the error log when a piped log program
         terminates, and it won't get restarted.)
         +1: trawick, jerenkrantz, nd
+      Backport even with missing OS/2 and BeOS support:
+        +1: trawick
 
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
