@@ -735,10 +735,18 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
     dav_resource *parent_resource;
     apr_status_t rv;
     char *dirpath;
+    char *testroot;
+    char *testpath;
 
-    /* If given resource is root, then there is no parent */
-    if (strcmp(resource->uri, "/") == 0 ||
-        ap_os_is_path_absolute(ctx->pool, ctx->pathname)) {
+    /* If given resource is root, then there is no parent.
+     * Unless we can retrieve the filepath root, this is
+     * intendend to fail.  If we split the root and
+     * no path info remains, then we also fail.
+     */
+    testpath = ctx->pathname;
+    rv = apr_filepath_root(&testroot, &testpath, ctx->pool);
+    if ((rv != APR_SUCCESS && rv != APR_ERELATIVE) 
+        || !testpath || !*testpath) {
         *result_parent = NULL;
         return NULL;
     }
