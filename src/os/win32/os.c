@@ -81,7 +81,12 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
     int n;
     int len = strlen(szPath);
     
-    if ((len == 0) || (len >= MAX_PATH)) {
+    if (len == 0) {
+        errno = ENOENT;
+        return -1;
+    }
+
+    if (len >= MAX_PATH) {
         errno = ENAMETOOLONG;
         return -1;
     }
