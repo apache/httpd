@@ -61,6 +61,7 @@
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
 <li><a href="mod_authz_host.html#allow">Allow</a></li>
 <li><a href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
+<li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><a href="core.html#allowoverride">AllowOverride</a></li>
 <li><a href="mod_authn_anon.html#anonymous">Anonymous</a></li>
 <li><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail</a></li>
