@@ -40,7 +40,7 @@ allows users to share URLs.
 <A HREF="#Sourcecode">Sourcecode</A>
 <P>
 
-<H2><A name="Directives">Directives</A></H2>
+<H2><A NAME="Directives">Directives</A></H2>
 <UL>
 <LI><A HREF="#anonymous">Anonymous</A>
 <LI><A HREF="#Authoritative">Anonymous_Authoritative</A>
@@ -52,7 +52,7 @@ allows users to share URLs.
 
 <HR>
 
-<H2><A name="anonymous">Anonymous directive</A></H2>
+<H2><A NAME="anonymous">Anonymous directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt Anonymous} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -98,7 +98,7 @@ allows users to share URLs.
         'I Don't Know'.
 <HR>
 
-<H2><A name="Authoritative">Anonymous_Authoritative directive</A></H2>
+<H2><A NAME="Authoritative">Anonymous_Authoritative directive</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -135,7 +135,7 @@ allows users to share URLs.
         in which the Authorization modules are queried.
 <HR>
 
-<H2><A name="LogEmail">Anonymous_LogEmail directive</A></H2>
+<H2><A NAME="LogEmail">Anonymous_LogEmail directive</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -165,12 +165,13 @@ allows users to share URLs.
         contains a sensible email address) is logged in the httpd-log file.
 <HR>
 
-<H2><A name="MustGiveEmail">Anonymous_MustGiveEmail directive</A></H2>
+<H2><A NAME="MustGiveEmail">Anonymous_MustGiveEmail directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt Anonymous_MustGiveEmail} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> Anonymous_MustGiveEmail <EM>on</EM> | <EM>off</EM><BR>
+><STRONG>Syntax:</STRONG></A> Anonymous_MustGiveEmail <EM>on</EM>
+ | <EM>off</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -196,7 +197,7 @@ allows users to share URLs.
         address as the password.  This prohibits blank passwords.
 <HR>
 
-<H2><A name="NoUserID">Anonymous_NoUserID directive</A></H2>
+<H2><A NAME="NoUserID">Anonymous_NoUserID directive</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -230,7 +231,7 @@ allows users to share URLs.
 
 <HR>
 
-<H2><A name="VerifyEmail">Anonymous_VerifyEmail directive</A></H2>
+<H2><A NAME="VerifyEmail">Anonymous_VerifyEmail directive</A></H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -261,7 +262,7 @@ allows users to share URLs.
         valid email addresses (see the above <CODE>Auth_LogEmail</CODE>).
 
 <HR>
-<H2><A name="Example">Example</A></H2>
+<H2><A NAME="Example">Example</A></H2>
 
 The example below (when combined with the Auth directives
 of a htpasswd-file based (or GDM, mSQL <EM>etc.</EM>) base access
@@ -271,10 +272,11 @@ following properties:
 <LI>
 It insists that the user enters a userId. (<CODE>Anonymous_NoUserId</CODE>)
 <LI>
-It insists that the user enters a password. (<CODE>Anonymous_MustGiveEmail</CODE>)
+It insists that the user enters a password.
+(<CODE>Anonymous_MustGiveEmail</CODE>)
 <LI>
-The password entered must be a valid email address, ie. contain at least one '@' and a '.'.
-(<CODE>Anonymous_VerifyEmail</CODE>)
+The password entered must be a valid email address, ie. contain at least one
+'@' and a '.'. (<CODE>Anonymous_VerifyEmail</CODE>)
 <LI>
 The userID must be one of <CODE>anonymous guest www test welcome</CODE>
 and comparison is <STRONG>not</STRONG> case sensitive.
@@ -309,12 +311,12 @@ require valid-user        <BR>
 
 
 <HR>
-<H2><A name="CompileTimeOptions">Compile Time Options</A></H2>
+<H2><A NAME="CompileTimeOptions">Compile Time Options</A></H2>
 
 Currently there are no Compile options.
 
 <HR>
-<H2><A name="RevisionHistory">Revision History</A></H2>
+<H2><A NAME="RevisionHistory">Revision History</A></H2>
 
 This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
 
@@ -332,11 +334,13 @@ This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
 
 
 <HR>
-<H2><A name="Person">Contact/person to blame</A></H2>
+<H2><A NAME="Person">Contact/person to blame</A></H2>
 
 This module was written for the
 <A HREF="http://ewse.ceo.org">European Wide Service Exchange</A> by
-&lt<A HREF="mailto:Dirk.vanGulik@jrc.it"><CODE>Dirk.vanGulik@jrc.it</CODE></A>&gt.
+&lt;<A
+     HREF="mailto:Dirk.vanGulik@jrc.it"
+     ><CODE>Dirk.vanGulik@jrc.it</CODE></A>&gt;.
 Feel free to contact me if you have any problems, ice-creams or bugs. This
 documentation, courtesy of Nick Himba, <A HREF="mailto:himba@cs.utwente.nl">
 <CODE>&lt;himba@cs.utwente.nl&gt;</CODE></A>.

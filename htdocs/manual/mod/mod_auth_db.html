@@ -26,8 +26,8 @@ On some BSD systems (e.g. FreeBSD and NetBSD) dbm is automatically mapped to
 Berkeley DB. You can use either <A HREF="mod_auth_dbm.html">mod_auth_dbm</A>
 or mod_auth_db. The latter makes it more obvious that it's Berkeley DB.  On
 other platforms where you want to use the DB library you usually have to
-install it first. See <A
-HREF="http://www.sleepycat.com/">http://www.sleepycat.com/</A> for the
+install it first. See 
+<A HREF="http://www.sleepycat.com/">http://www.sleepycat.com/</A> for the
 distribution. The interface this module uses is the one from DB version 1.85
 and 1.86, but DB version 2.x can also be used when compatibility mode is
 enabled.
@@ -157,7 +157,8 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBAuthoritative &lt; <STRONG> on</STRONG>(default) | off &gt; <BR>
+><STRONG>Syntax:</STRONG></A> AuthDBAuthoritative &lt;
+ <STRONG> on</STRONG>(default) | off &gt; <BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -197,7 +198,8 @@ a lower level with a well protected .htpasswd file.  <P>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> By default; control is not passed on; and an unknown
+><STRONG>Default:</STRONG></A> By default; control is not passed on; and an
+unknown
 userID or rule will result in an Authorization Required reply. Not
 setting it thus keeps the system secure; and forces an NSCA compliant
 behaviour.  <P>

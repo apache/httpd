@@ -30,7 +30,7 @@
   This is an <STRONG>experimental</STRONG> module and should be used with
   care.  You can easily create a broken site using this module, read this
   document carefully.
-  <code>mod_mmap_static</code> maps a list of statically configured files (via
+  <CODE>mod_mmap_static</CODE> maps a list of statically configured files (via
   <CODE>MMapFile</CODE> directives in the main server configuration) into
   memory through the system call <CODE>mmap()</CODE>.  This system
   call is available on most modern Unix derivates, but not on all.  There
@@ -41,7 +41,7 @@
   This mmap()ing is done once at server start or restart, only. So whenever
   one of the mapped files changes on the filesystem you <EM>have</EM> to
   restart the server by at least sending it a HUP or USR1 signal (see the
-  <a href="../stopping.html">Stopping and Restarting</a> documentation).  To
+  <A HREF="../stopping.html">Stopping and Restarting</A> documentation).  To
   reiterate that point:  if the files are modified <EM>in place</EM> without
   restarting the server you may end up serving requests that are completely
   bogus.  You should update files by unlinking the old copy and putting a new
@@ -110,8 +110,8 @@
   create. We cannot compare inodes or other stuff to match paths through
   symbolic links etc. because that again would cost extra <CODE>stat()</CODE>
   system calls which is not acceptable.  This module may or may not work
-  with filenames rewritten by <code>mod_alias</code> or
-  <code>mod_rewrite</code>... it is an experiment after all.
+  with filenames rewritten by <CODE>mod_alias</CODE> or
+  <CODE>mod_rewrite</CODE>... it is an experiment after all.
   </P>
 
   <P>
@@ -127,13 +127,15 @@
   </PRE>
 
   <P>
-  <b>Note</b>: don't bother asking for a for a <code>MMapDir</code> directive which
+  <STRONG>Note</STRONG>: don't bother asking for a for a <CODE>MMapDir</CODE>
+  directive which
   recursively maps all the files in a directory.  Use Unix the way it was
   meant to be used.  For example, see the
-  <a href="core.html#include">Include</a> directive, and consider this command:
-  <blockquote><pre>
-  find /www/htdocs -type f -print | sed -e 's/.*/mmapfile &/' > /www/conf/mmap.conf
-  </pre></blockquote>
+  <A HREF="core.html#include">Include</A> directive, and consider this command:
+  <PRE>
+  find /www/htdocs -type f -print \
+  | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
+  </PRE>
 
 <!--#include virtual="footer.html" -->
  </BODY>
