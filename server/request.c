@@ -545,6 +545,11 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         char *buf;
         unsigned int seg, startseg;
 
+        /* Invariant: from the first time filename_len is set until
+         * it goes out of scope, filename_len==strlen(r->filename)
+         */
+        size_t filename_len;
+
         /*
          * We must play our own mimi-merge game here, for the few 
          * running dir_config values we care about within dir_walk.
@@ -569,10 +574,11 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
                                APR_FILEPATH_TRUENAME, r->pool);
+        filename_len = strlen(r->filename);
         /* Space for terminating null and an extra / is required. */
-        buflen = strlen(r->filename) + strlen(r->path_info) + 2;
+        buflen = filename_len + strlen(r->path_info) + 2;
         buf = apr_palloc(r->pool, buflen);
-        strcpy (buf, r->filename);
+        memcpy(buf, r->filename, filename_len + 1);
         r->filename = buf;
         r->finfo.valid = APR_FINFO_TYPE;
         r->finfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
@@ -591,8 +597,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         
             /* We have no trailing slash, but we sure would appreciate one...
              */
-            if (sec_idx && r->filename[strlen(r->filename)-1] != '/') {
-                strcat(r->filename, "/");
+            if (sec_idx && r->filename[filename_len-1] != '/') {
+                r->filename[filename_len++] = '/';
+                r->filename[filename_len] = 0;
             }
 
             /* Begin *this* level by looking for matching <Directory> sections
@@ -761,7 +768,7 @@ minimerge2:
             /* That temporary trailing slash was useful, now drop it.
              */
             if (seg > startseg) {
-                r->filename[strlen(r->filename) - 1] = '\0';
+                r->filename[--filename_len] = '\0';
             }
 
             /* Time for all good things to come to an end?
@@ -775,17 +782,21 @@ minimerge2:
              * below as necessary...
              */
         
-            seg_name = strchr(r->filename, '\0');
+            seg_name = r->filename + filename_len;
             delim = strchr(r->path_info + (*r->path_info == '/' ? 1 : 0), '/');
             if (delim) {
+                size_t path_info_len = delim - r->path_info;
                 *delim = '\0';
-                strcpy(seg_name, r->path_info);
+                memcpy(seg_name, r->path_info, path_info_len + 1);
+                filename_len += path_info_len;
                 r->path_info = delim;
                 *delim = '/';
             }
             else {
-                strcpy(seg_name, r->path_info);
-                r->path_info = strchr(r->path_info, '\0');
+                size_t path_info_len = strlen(r->path_info);
+                memcpy(seg_name, r->path_info, path_info_len + 1);
+                filename_len += path_info_len;
+                r->path_info += path_info_len;
             }
             if (*seg_name == '/') 
                 ++seg_name;
@@ -850,6 +861,7 @@ minimerge2:
                  * filename in tandem to properly correlate these.
                  */
                 strcpy(seg_name, r->finfo.name);
+                filename_len = strlen(r->filename);
             }
 
             if (r->finfo.filetype == APR_LNK) {
