@@ -504,8 +504,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * types of failure, such as APR_ENOTDIR.  We can do something
      * with APR_ENOENT, knowing that the path is good.
      */
-    if (!r->finfo.filetype) {
-        apr_lstat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
+    if (!r->finfo.filetype || r->finfo.filetype == APR_LNK) {
+        apr_stat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
     }
 
     if (r->finfo.filetype == APR_REG) {
@@ -844,21 +844,13 @@ minimerge2:
                     && (strncmp(r->filename, 
                                 r->canonical_filename, filename_len) == 0))
 #endif
-                && ((opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS)) {
+                && ((opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS)) 
+            {
+
                 thisinfo.filetype = APR_DIR;
                 ++seg;
                 continue;
             }
-                
-            /* XXX: Optimization required:
-             * If...we have allowed symlinks, and
-             * if...we find the segment exists in the directory list
-             * skip the lstat and dummy up an APR_DIR value for thisinfo
-             * this means case sensitive platforms go quite quickly.
-             * Case insensitive platforms might be given the wrong path,
-             * but if it's not found in the cache, then we know we have
-             * something to test (the misspelling is never cached.)
-             */
 
             /* We choose apr_lstat here, rather that apr_stat, so that we
              * capture this path object rather than its target.  We will
@@ -890,7 +882,8 @@ minimerge2:
                               "access to %s failed", r->uri);
                 return r->status = HTTP_FORBIDDEN;
             }
-            else if ((res = check_safe_file(r))) {
+
+            if ((res = check_safe_file(r))) {
                 r->status = res;
                 return res;
             }
@@ -939,7 +932,7 @@ minimerge2:
         /* If we have _not_ optimized, this is the time to recover
          * the final stat result.
          */
-        if (!r->finfo.filetype) {
+        if (!r->finfo.filetype || r->finfo.filetype == APR_LNK) {
             r->finfo = thisinfo;
         }
 
