@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_env</name>
+  <description>Modifies the environment which is
+    passed to CGI scripts and SSI pages</description>
+  <status>Base</status>
+  <sourcefile>mod_env.c</sourcefile>
+  <identifier>env_module</identifier>
+  <summary>
+    <p>This module allows for control of the environment that will
+    be provided to CGI scripts and SSI pages. Environment variables
+    may be passed from the shell which invoked the httpd process.
+    Alternatively, environment variables may be set or unset within
+    the configuration process.</p>
+  </summary>
+  <seealso><a href="../env.html">Environment Variables</a></seealso>
+
+  <directivesynopsis>
+    <name>PassEnv</name>
+    <description>Passes environment variables from the shell</description>
+    <syntax>PassEnv
+    <em>env-variable</em> [<em>env-variable</em>] ...</syntax>
+    <contextlist>
+      <context>server config</context><context>virtual host</context>
+      <context>directory</context><context>.htaccess</context>
+    </contextlist>
+    <override>FileInfo</override>
+
+<usage>
+    <p>Specifies one or more environment variables to pass to CGI
+    scripts and SSI pages from the environment of the shell which
+    invoked the httpd process. Example:</p>
+<example>
+    PassEnv LD_LIBRARY_PATH
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnv</name>
+<description>Sets environment variables</description>
+<syntax>SetEnv <em>env-variable value</em></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Sets an environment variable, which is then passed on to CGI
+    scripts and SSI pages. Example:</p>
+<example>
+    SetEnv SPECIAL_PATH /foo/bin
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UnsetEnv</name>
+<description>Removes variables from the environment</description>
+<syntax>UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Removes one or more environment variables from those passed
+    on to CGI scripts and SSI pages. Example:</p>
+<example>
+    UnsetEnv LD_LIBRARY_PATH
+</example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
