@@ -1,5 +1,19 @@
 Changes with Apache 1.3.2
 
+  *) Changes in ftp proxy: make URL parsing simpler by using the
+     parsed_uri stuff.
+     + Add display of the "current directory" in cases where it's
+     different from the supplied path (e.g., ftp://user@host/ lives
+     in /home/user, not in /, therefore clicking on "../" in the
+     starting directory might send us to /home/).
+     + When ftp login fails, (esp. when a user name was part of the
+     URL already), we now return [401 Unauthorized ] to allow the
+     browser to pop up an authorization dialog. This makes passwords
+     slightly less visible (they don't appear in the regular log files)
+     and implements a functionality that other www proxy servers
+     already offered.
+     [Martin Kraemer]
+
   *) Triggered by the recent "Via:" header changes, the proxy module would
      dump core for replies with invalid headers (e.g., duplicate
      "HTTP/1.0 200 OK" lines). These errors are now logged and the
