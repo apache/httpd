@@ -1,5 +1,36 @@
 Changes with Apache 1.3.24
 
+
+  *) Introduce proper escaping of command.com and cmd.exe for Win32.
+     These patches close vulnerability CAN-2002-0061, identified and
+     reported by Ory Segal <ory.segal@sanctuminc>, by which any CGI
+     invocation of .bat or .cmd files could comprimize the system 
+     when the .bat or .cmd was parsed the query args as an argument 
+     to either cmd.exe /c or command.com /c.  [William Rowe]
+
+  *) Add % and \r [C/R] to the dangerous Win32 shell character list.
+     Retain the Unix sh escapes list for compatibility.
+     [William Rowe]
+
+  *) Pass the command line to the cmd.exe /c interpreter double quoted.
+     This fixes a bug that CGI args ending in a double-quote would 
+     cause invocation to fail.  Also, treat command.com as a 16-bit 
+     executable.  [William Rowe]
+
+  *) Win32; Never invoke cmd or bat scripts based on the registry, even 
+     for 'ScriptInterpreterSource Registry' enabled.  [William Rowe]
+
+ *) Provide Win32 users a log of the cgi command invoked, to assist
+     in debugging scripts at LogLevel info.  Also provide env vars
+     at LogLevel debug for additional help to admins troubleshooting
+     the ever mysterious "Premature end of script headers" error.
+     [Aaron Bannert]
+
+  *) Added the 'CgiCommandArgs off' directive, to allow admins
+     to disable the query argument passing mechanism in Apache,
+     if future cgi arguments vulnerabilities should be discovered.
+     [Aaron Bannert]
+
   *) When a proxied site was being served, Apache was replacing
      the original site Server header with it's own, which is not
      allowed by RFC2616. Fixed. [Graham Leggett]

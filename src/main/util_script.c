@@ -1016,10 +1016,33 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
        
                 /*
                  * We need to unescape any characters that are 
-                 * in the arguments list.
+                 * in the arguments list.  Truncate to 4000
+                 * characters for safety, being careful of the
+                 * now-escaped characters.
                  */
                 ap_unescape_url(arguments);
                 arguments = ap_escape_shell_cmd(r->pool, arguments);
+                if (strlen(arguments) > 4000)
+                {
+                    int len = 4000;
+                    while (len && arguments[len - 1] == '\\') {
+                        --len;
+                    }
+                    arguments[len] = '\0';
+                }
+
+                /*
+                 * Now that the arguments list is 'shell' escaped with
+                 * backslashes, we need to make cmd.exe/command.com 
+                 * safe from this same set of characters.
+                 */
+                if (fileType == eCommandShell32) {
+                    arguments = ap_caret_escape_args(r->pool, arguments);
+                }
+                else if (fileType == eCommandShell16) {
+                    arguments = ap_pstrcat(r->pool, "\"", 
+                            ap_double_quotes(r->pool, arguments), "\"", NULL);
+                }
             }
 
             /*
