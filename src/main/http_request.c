@@ -912,7 +912,14 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
 API_EXPORT(int) ap_run_sub_req(request_rec *r)
 {
+#ifndef CHARSET_EBCDIC
     int retval = ap_invoke_handler(r);
+#else /*CHARSET_EBCDIC*/
+    /* Save the EBCDIC conversion setting of the caller across subrequests */
+    int convert = ap_bgetflag(r->connection->client, B_EBCDIC2ASCII);
+    int retval  = ap_invoke_handler(r);
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert);
+#endif /*CHARSET_EBCDIC*/
     ap_finalize_sub_req_protocol(r);
     return retval;
 }
