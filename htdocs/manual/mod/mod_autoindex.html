@@ -482,10 +482,14 @@ The IndexOptions directive specifies the behavior of the directory indexing.
 <DD><!--%plaintext &lt;?INDEX {\tt FancyIndexing} index option&gt; -->
 This turns on fancy indexing of directories.
 <BLOCKQUOTE>
- <STRONG>Note that the <SAMP>FancyIndexing</SAMP> and
+ <STRONG>Note that in versions of Apache prior to 1.3.2, the
+ <SAMP>FancyIndexing</SAMP> and
  <SAMP>IndexOptions</SAMP> directives will override each other. You
  should use <SAMP>IndexOptions&nbsp;FancyIndexing</SAMP> in preference
- to the standalone <SAMP>FancyIndexing</SAMP> directive.</STRONG>
+ to the standalone <SAMP>FancyIndexing</SAMP> directive.
+ As of Apache 1.3.2, a standalone <SAMP>FancyIndexing</SAMP> directive
+ is combined with any <SAMP>IndexOptions</SAMP> directive already
+ specified for the current scope.</STRONG>
 </BLOCKQUOTE>
 <DT>IconHeight[=pixels] (<EM>Apache 1.3 and later</EM>)
 <DD>
@@ -512,6 +516,12 @@ precalculate the page layout without having to wait until all the
 images have been loaded.  If no value is given for the option, it
 defaults to the standard width of the icons supplied with the Apache
 software.
+<DT>NameLength=[<EM>n</EM> | *] (<EM>Apache 1.3.2 and later</EM>)
+<DD>
+The NameLength keyword allows you to specify the width of the
+filename column in bytes.  If the keyword value is '<SAMP>*</SAMP>',
+then the column is automatically sized to the length of the longest
+filename in the display.
 <DT>ScanHTMLTitles
 <DD><!--%plaintext &lt;?INDEX {\tt ScanHTMLTitles} index option&gt; -->
 This enables the extraction of the title from HTML documents for fancy

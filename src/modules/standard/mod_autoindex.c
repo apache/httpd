@@ -94,6 +94,9 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define SUPPRESS_PREAMBLE 64
 #define SUPPRESS_COLSORT 128
 
+#define K_PAD 1
+#define K_NOPAD 0
+
 /*
  * Define keys for sorting.
  */
@@ -111,6 +114,11 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define DEFAULT_ICON_WIDTH 20
 #define DEFAULT_ICON_HEIGHT 22
 
+/*
+ * Other default dimensions.
+ */
+#define DEFAULT_NAME_WIDTH 23
+
 struct item {
     char *type;
     char *apply_to;
@@ -122,6 +130,8 @@ typedef struct autoindex_config_struct {
 
     char *default_icon;
     int opts;
+    int name_width;
+    int name_adjust;
     int icon_width;
     int icon_height;
 
@@ -335,6 +345,19 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	else if (!strncasecmp(w, "IconHeight=", 11)) {
 	    d_cfg->icon_height = atoi(&w[11]);
 	}
+	else if (!strncasecmp(w, "NameWidth=", 10)) {
+	    if (w[10] == '*') {
+		d_cfg->name_adjust = 1;
+	    }
+	    else {
+		int width = atoi(&w[10]);
+
+		if (width < 1) {
+		    return "NameWidth value must be greater than 1";
+		}
+		d_cfg->name_width = width;
+	    }
+	}
 	else {
 	    return "Invalid directory indexing option";
 	}
@@ -382,6 +405,8 @@ static void *create_autoindex_config(pool *p, char *dummy)
 
     new->icon_width = 0;
     new->icon_height = 0;
+    new->name_width = DEFAULT_NAME_WIDTH;
+    new->name_adjust = 0;
     new->icon_list = ap_make_array(p, 4, sizeof(struct item));
     new->alt_list = ap_make_array(p, 4, sizeof(struct item));
     new->desc_list = ap_make_array(p, 4, sizeof(struct item));
@@ -412,6 +437,8 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
     new->icon_list = ap_append_arrays(p, add->icon_list, base->icon_list);
     new->rdme_list = ap_append_arrays(p, add->rdme_list, base->rdme_list);
     new->opts = add->opts;
+    new->name_width = add->name_width;
+    new->name_adjust = add->name_adjust;
 
     return new;
 }
@@ -837,6 +864,41 @@ static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
     }
 }
 
+/*
+ * Fit a string into a specified buffer width, marking any
+ * truncation.  The size argument is the actual buffer size, including
+ * the \0 termination byte.  The buffer will be prefilled with blanks.
+ * If the pad argument is false, any extra spaces at the end of the
+ * buffer are omitted.  (Used when constructing anchors.)
+ */
+static ap_inline char *widthify(const char *s, char *buff, int size, int pad)
+{
+    int s_len;
+
+    memset(buff, ' ', size);
+    buff[size - 1] = '\0';
+    s_len = strlen(s);
+    if (s_len > (size - 1)) {
+	ap_cpystrn(buff, s, size);
+	if (size > 1) {
+	    buff[size - 2] = '>';
+	}
+	if (size > 2) {
+	    buff[size - 3] = '.';
+	}
+	if (size > 3) {
+	    buff[size - 4] = '.';
+	}
+    }
+    else {
+	ap_cpystrn(buff, s, s_len + 1);
+	if (pad) {
+	    buff[s_len] = ' ';
+	}
+    }
+    return buff;
+}
+
 static void output_directories(struct ent **ar, int n,
 			       autoindex_config_rec *d, request_rec *r,
 			       int autoindex_opts, char keyid, char direction)
@@ -849,20 +911,23 @@ static void output_directories(struct ent **ar, int n,
     int name_width;
     char *name_scratch;
 
-    if (name[0] == '\0')
+    if (name[0] == '\0') {
 	name = "/";
+    }
 
-    name_width = 23;
-    for (x = 0; x < n; x++) {
-	int t = strlen(ar[x]->name);
-	if (t > name_width) {
-	    name_width = t;
+    name_width = d->name_width;
+    if (d->name_adjust) {
+	for (x = 0; x < n; x++) {
+	    int t = strlen(ar[x]->name);
+	    if (t > name_width) {
+		name_width = t;
+	    }
 	}
     }
     ++name_width;
     name_scratch = ap_palloc(r->pool, name_width + 1);
     memset(name_scratch, ' ', name_width);
-    name_scratch[name_width] = 0;
+    name_scratch[name_width] = '\0';
 
     if (autoindex_opts & FANCY_INDEXING) {
 	ap_rputs("<PRE>", r);
@@ -880,8 +945,18 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	    ap_rputs("> ", r);
 	}
-        emit_link(r, "Name", K_NAME, keyid, direction, static_columns);
-	ap_rputs(name_scratch + 4, r);
+        emit_link(r, widthify("Name", name_scratch,
+			      (name_width > 5) ? 5 : name_width, K_NOPAD),
+		  K_NAME, keyid, direction, static_columns);
+	if (name_width > 5) {
+	    memset(name_scratch, ' ', name_width);
+	    name_scratch[name_width] = '\0';
+	    ap_rputs(&name_scratch[5], r);
+	}
+	/*
+	 * Emit the guaranteed-at-least-one-space-between-columns byte.
+	 */
+	ap_rputs(" ", r);
 	if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
             emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
                       static_columns);
@@ -904,6 +979,7 @@ static void output_directories(struct ent **ar, int n,
     for (x = 0; x < n; x++) {
 	char *anchor, *t, *t2;
 	char *pad;
+	int nwidth;
 
 	ap_clear_pool(scratch);
 
@@ -946,7 +1022,22 @@ static void output_directories(struct ent **ar, int n,
 		ap_rputs("</A>", r);
 	    }
 
-	    ap_rvputs(r, " <A HREF=\"", anchor, "\">", t2, "</A>", pad, NULL);
+	    ap_rvputs(r, " <A HREF=\"", anchor, "\">",
+		      widthify(t2, name_scratch, name_width, K_NOPAD),
+		      "</A>", NULL);
+	    /*
+	     * We know that widthify() prefilled the buffer with spaces
+	     * before doing its thing, so use them.
+	     */
+	    nwidth = strlen(t2);
+	    if (nwidth < (name_width - 1)) {
+		name_scratch[nwidth] = ' ';
+		ap_rputs(&name_scratch[nwidth], r);
+	    }
+	    /*
+	     * The blank before the storm.. er, before the next field.
+	     */
+	    ap_rputs(" ", r);
 	    if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
 		if (ar[x]->lm != -1) {
 		    char time_str[MAX_STRING_LEN];
@@ -970,7 +1061,8 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	}
 	else {
-	    ap_rvputs(r, "<LI> <A HREF=\"", anchor, "\"> ", t2, "</A>", pad, NULL);
+	    ap_rvputs(r, "<LI><A HREF=\"", anchor, "\"> ", t2,
+		      "</A>", pad, NULL);
 	}
 	ap_rputc('\n', r);
     }
