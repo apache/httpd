@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_ext_filter</name>
+<description>Pass the response body
+    through an external program before delivery to the
+    client</description>
+<status>Experimental</status>
+<sourcefile>mod_ext_filter.c</sourcefile>
+<identifier>ext_filter_module</identifier>
+
+<summary>
+    <p>This is an <strong>experimental</strong> module and should
+    be used with care. Test your <module>mod_ext_filter</module>
+    configuration carefully to ensure that it performs the desired
+    function. You may wish to review <a href="../filter.html">
+    this information</a> for background on the Apache filtering 
+    model.</p>
+
+    <p><module>mod_ext_filter</module> presents a simple and familiar
+    programming model for filters. With this module, a program
+    which reads from stdin and writes to stdout (i.e., a Unix-style
+    filter command) can be a filter for Apache. This filtering
+    mechanism is much slower than using a filter which is specially
+    written for the Apache API and runs inside of the Apache server
+    process, but it does have the following benefits:</p>
+
+    <ul>
+      <li>the programming model is much simpler</li>
+
+      <li>any programming/scripting language can be used, provided
+      that it allows the program to read from standard input and
+      write to standard output</li>
+
+      <li>existing programs can be used unmodified as Apache
+      filters</li>
+    </ul>
+
+    <p>Even when the performance characteristics are not suitable
+    for production use, <code>mod_ext_filter</code> can be used as
+    a prototype environment for filters.</p>
+</summary>
+
+<section><title>Examples</title>
+
+<section><title>Generating HTML from some other type of response</title>
+<example>
+<pre>
+    # mod_ext_filter directive to define a filter to HTML-ize text/c files 
+    # using the external program /usr/bin/enscript, with the type of the 
+    # result set to text/html
+    ExtFilterDefine c-to-html mode=output intype=text/c outtype=text/html \
+                    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
+
+    &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
+
+    # core directive to cause the new filter to be run on output
+    SetOutputFilter c-to-html
+
+    # mod_mime directive to set the type of .c files to text/c
+    AddType text/c .c
+
+    # mod_ext_filter directive to set the debug level just high 
+    # enough to see a log message per request showing the configuration
+    # in force
+    ExtFilterOptions DebugLevel=1
+
+    &lt;/Directory&gt;
+</pre>
+</example>
+</section>
+
+<section><title>Implementing a content encoding filter</title>
+<example>
+<pre>
+  # mod_ext_filter directive to define the external filter
+  ExtFilterDefine gzip mode=output cmd=/bin/gzip
+
+  &lt;Location /gzipped&gt;
+
+  # core directive to cause the gzip filter to be run on output
+  SetOutputFilter gzip
+
+  # mod_header directive to add "Content-Encoding: gzip" header field
+  Header set Content-Encoding gzip
+
+  &lt;/Location&gt;
+</pre>
+</example>
+
+  <p>Note: this gzip example is just for the purposes of illustration.
+  Please refer to <module>mod_deflate</module> for a practical
+  implementation.</p>
+</section>
+
+<section><title>Slowing down the server</title>
+<example>
+<pre>
+  # mod_ext_filter directive to define a filter which runs everything 
+  # through cat; cat doesn't modify anything; it just introduces extra
+  # pathlength and consumes more resources
+  ExtFilterDefine slowdown mode=output cmd=/bin/cat preservescontentlength
+
+  &lt;Location /&gt;
+
+  # core directive to cause the slowdown filter to be run several times on 
+  # output
+  SetOutputFilter slowdown slowdown slowdown
+
+  &lt;/Location&gt;
+</pre>
+</example>
+</section>
+
+</section> <!-- Examples -->
+
+<directivesynopsis>
+<name>ExtFilterDefine</name>
+<syntax>ExtFilterDefine <em>filtername</em> <em>parameters</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>ExtFilterDefine</directive> directive defines the
+    characteristics of an external filter, including the program to
+    run and its arguments.</p>
+
+    <p><em>filtername</em> specifies the name of the filter being
+    defined. This name can then be used in SetOutputFilter
+    directives. It must be unique among all registered filters.
+    <em>At the present time, no error is reported by the
+    register-filter API, so a problem with duplicate names isn't
+    reported to the user.</em></p>
+
+    <p>Subsequent parameters can appear in any order and define the
+    external command to run and certain other characteristics. The
+    only required parameter is <em>cmd=</em>. These parameters
+    are:</p>
+
+    <dl>
+      <dt>cmd=<em>cmdline</em></dt>
+
+      <dd>The <code>cmd=</code> keyword allows you to specify the
+      external command to run. If there are arguments after the
+      program name, the command line should be surrounded in
+      quotation marks.</dd>
+
+      <dt>mode=<em>mode</em></dt>
+
+      <dd><em>mode</em> should be <em>output</em> for now (the
+      default). In the future, <em>mode=input</em> will be used to
+      specify a filter for request bodies.</dd>
+
+      <dt>intype=<em>imt</em></dt>
+
+      <dd>This parameter specifies the internet media type (i.e.,
+      MIME type) of documents which should be filtered. By default,
+      all documents are filtered. If <code>intype=</code> is
+      specified, the filter will be disabled for documents of other
+      types.</dd>
+
+      <dt>outtype=<em>imt</em></dt>
+
+      <dd>This parameter specifies the internet media type (i.e.,
+      MIME type) of filtered documents. It is useful when the
+      filter changes the internet media type as part of the
+      filtering operation. By default, the internet media type is
+      unchanged.</dd>
+
+      <dt>PreservesContentLength</dt>
+
+      <dd>The <code>PreservesContentLength</code> keyword specifies
+      that the filter preserves the content length. This is not the
+      default, as most filters change the content length. In the
+      event that the filter doesn't modify the length, this keyword
+      should be specified.</dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ExtFilterOptions</name>
+<syntax>ExtFilterOptions
+    <em>option</em> [<em>option</em>] ...</syntax>
+<default>ExtFilterOptions DebugLevel=0 NoLogStderr</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>The <directive>ExtFilterOptions</directive> directive specifies
+    special processing options for <code>mod_ext_filter</code>.
+    <em>Option</em> can be one of</p>
+
+    <dl>
+      <dt>DebugLevel=<em>n</em></dt>
+
+      <dd>
+        The <code>DebugLevel</code> keyword allows you to specify
+        the level of debug messages generated by
+        <code>mod_ext_filter</code>. By default, no debug messages
+        are generated. This is equivalent to
+        <code>DebugLevel=0</code>. With higher numbers, more debug
+        messages are generated, and server performance will be
+        degraded. The actual meanings of the numeric values are
+        described with the definitions of the DBGLVL_ constants
+        near the beginning of <code>mod_ext_filter.c</code>. 
+
+        <p>Note: The core directive LogLevel should be used to
+        cause debug messages to be stored in the Apache error
+        log.</p>
+      </dd>
+
+      <dt>LogStderr | NoLogStderr</dt>
+
+      <dd>The <code>LogStderr</code> keyword specifies that
+      messages written to standard error by the external filter
+      program will be saved in the Apache error log.
+      <code>NoLogStderr</code> disables this feature.</dd>
+    </dl>
+
+     <p>Example:</p>
+<example>
+    ExtFilterOptions  LogStderr DebugLevel=0
+</example>
+
+    <p>Messages written to the filter's standard error will be stored
+    in the Apache error log. No debug messages will be generated by
+    <module>mod_ext_filter</module>. </p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
