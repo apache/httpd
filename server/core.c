@@ -2250,7 +2250,7 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
                                    const char *name)
 {
     ap_directive_t *conftree = NULL;
-    const char* conffile;
+    const char* conffile, *error;
     unsigned *recursion;
     void *data;
 
@@ -2278,8 +2278,13 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
                            name, NULL);
     }
 
-    ap_process_resource_config(cmd->server, conffile,
-                               &conftree, cmd->pool, cmd->temp_pool);
+    error = ap_process_resource_config(cmd->server, conffile,
+                                       &conftree, cmd->pool, cmd->temp_pool);
+    if (error) {
+        *recursion = 0;
+        return error;
+    }
+
     *(ap_directive_t **)dummy = conftree;
 
     /* recursion level done */

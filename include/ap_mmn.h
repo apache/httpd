@@ -81,6 +81,8 @@
  * 20030821.2 (2.1.0-dev) added ap_escape_errorlog_item
  * 20030821.3 (2.1.0-dev) added ap_get_server_revision / ap_version_t
  * 20040425 (2.1.0-dev) removed ap_add_named_module API
+ *                      changed ap_add_module, ap_add_loaded_module,
+ *                      ap_setup_prelinked_modules, ap_process_resource_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */

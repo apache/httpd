@@ -399,6 +399,7 @@ int main(int argc, const char * const argv[])
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
     const char *temp_error_log = NULL;
+    const char *error;
     process_rec *process;
     server_rec *server_conf;
     apr_pool_t *pglobal;
@@ -427,7 +428,12 @@ int main(int argc, const char * const argv[])
     }
 #endif
 
-    ap_setup_prelinked_modules(process);
+    error = ap_setup_prelinked_modules(process);
+    if (error) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_EMERG, 0, NULL, "%s: %s",
+                     ap_server_argv0, error);
+        destroy_and_exit_process(process, 1);
+    }
 
     apr_pool_create(&pcommands, pglobal);
     apr_pool_tag(pcommands, "pcommands");
@@ -566,6 +572,10 @@ int main(int argc, const char * const argv[])
         ap_replace_stderr_log(process->pool, temp_error_log);
     }
     server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
+    if (!server_conf) {
+        destroy_and_exit_process(process, 1);
+    }
+
     if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
                      NULL, "Pre-configuration failed");
@@ -631,6 +641,10 @@ int main(int argc, const char * const argv[])
         apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;
         server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
+        if (!server_conf) {
+            destroy_and_exit_process(process, 1);
+        }
+
         if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
                          0, NULL, "Pre-configuration failed");

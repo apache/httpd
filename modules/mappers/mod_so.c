@@ -162,6 +162,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     moduleinfo *modi;
     moduleinfo *modie;
     int i;
+    const char *error;
 
     /* we need to setup this value for dummy to make sure that we don't try
      * to add a non-existant tree into the build when we return to
@@ -277,7 +278,10 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /* 
      * Add this module to the Apache core structures
      */
-    ap_add_loaded_module(modp, cmd->pool);
+    error = ap_add_loaded_module(modp, cmd->pool);
+    if (error) {
+        return error;
+    }
 
     /* 
      * Register a cleanup in the config apr_pool_t (normally pconf). When
