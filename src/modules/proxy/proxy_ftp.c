@@ -190,7 +190,7 @@ static int ftp_getrc(BUFF *f)
     int len, status;
     char linebuff[100], buff[5];
 
-    len = ap_bgets(linebuff, 100, f);
+    len = ap_bgets(linebuff, sizeof linebuff, f);
     if (len == -1)
 	return -1;
 /* check format */
@@ -209,7 +209,7 @@ static int ftp_getrc(BUFF *f)
 	memcpy(buff, linebuff, 3);
 	buff[3] = ' ';
 	do {
-	    len = ap_bgets(linebuff, 100, f);
+	    len = ap_bgets(linebuff, sizeof linebuff, f);
 	    if (len == -1)
 		return -1;
 	    if (linebuff[len - 1] != '\n') {
@@ -229,10 +229,10 @@ static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
 {
     int len, status;
     char linebuff[100], buff[5];
-    char *mb = msgbuf;
-    int ml = msglen;
+    char *mb = msgbuf,
+	 *me = &msgbuf[msglen];
 
-    len = ap_bgets(linebuff, 100, f);
+    len = ap_bgets(linebuff, sizeof linebuff, f);
     if (len == -1)
 	return -1;
     if (len < 5 || !isdigit(linebuff[0]) || !isdigit(linebuff[1]) ||
@@ -241,7 +241,7 @@ static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
     else
 	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
 
-    mb = ap_cpystrn(mb, linebuff+4, len-4 < ml ? len-4 : ml);
+    mb = ap_cpystrn(mb, linebuff+4, me - mb);
 
     if (linebuff[len - 1] != '\n')
 	(void)ap_bskiplf(f);
@@ -250,13 +250,13 @@ static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
 	memcpy(buff, linebuff, 3);
 	buff[3] = ' ';
 	do {
-	    len = ap_bgets(linebuff, 100, f);
+	    len = ap_bgets(linebuff, sizeof linebuff, f);
 	    if (len == -1)
 		return -1;
 	    if (linebuff[len - 1] != '\n') {
 		(void)ap_bskiplf(f);
 	    }
-            mb = ap_cpystrn(mb, linebuff+4, len-4 < ml ? len-4 : ml);
+	    mb = ap_cpystrn(mb, linebuff+4, me - mb);
 	} while (memcmp(linebuff, buff, 4) != 0);
     }
     return status;
@@ -352,7 +352,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	hostlen = 0;
 
     while (!con->aborted) {
-	n = ap_bgets(buf, IOBUFSIZE, f);
+	n = ap_bgets(buf, sizeof buf, f);
 	if (n == -1) {		/* input error */
 	    if (f2 != NULL)
 		f2 = ap_proxy_cache_error(c);
