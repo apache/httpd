@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_autoindex.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</td></tr>
@@ -547,14 +545,14 @@ MIME タイプによって選択</td></tr>
 </table>
     <p><code class="directive">IndexIgnore</code> ディレクティブは、
     ディレクトリの一覧を行う際に無視すべきファイルリストに追加します。
-    <var>file</var> は、無視するファイル名のファイル拡張子か、ファイル名の一部か、
-    ワイルドカード表現か完全なファイル名です。
+    <var>file</var> は、
+    シェル形式のワイルドカード表現か完全なファイル名です。
     IndexIgnore が複数ある場合は、無視するリストに追加が行われ、
     置換は行われません。デフォルトではリストには <code>.</code>
     (カレントディレクトリ) が含まれています。</p>
 
     <div class="example"><p><code>
-      IndexIgnore README .htaccess *~
+      IndexIgnore README .htaccess *.bak *~
     </code></p></div>
 
 </div>
@@ -604,7 +602,7 @@ MIME タイプによって選択</td></tr>
       <em>必ず</em>最初に現われて、そのディレクトリの通常のファイルは
       その後に続きます。
       一覧は基本的には、ファイルとディレクトリの二つの部分に分けられて、
-      それぞれは別々にソートされ、その後サブディレクトリを先にして
+      それぞれは別々にソートされ、その後サブディレクトリを先にして
       表示が行なわれます。例えばソート順が名前の降順になっていて、
       <code>FoldersFirst</code> が有効になっている場合は、
       サブディレクトリ <code>Zed</code> はサブディレクトリ
@@ -646,7 +644,7 @@ MIME タイプによって選択</td></tr>
       <dd>このオプションが、<code>IconHeight</code> とともに使われている場合は、
       サーバはファイルアイコンのための <code>img</code>
       タグに <code>height</code> と <code>width</code>
-      属性を取り込むようになります。
+      属性を取り込むようになります。
       これによって、イメージ全てをロードし終わるまで待たなくても、
       ブラウザはページレイアウトをあらかじめ計算することができます。
       このオプションに何も値が与えられなければ、Apache
@@ -693,9 +691,15 @@ MIME タイプによって選択</td></tr>
       httpd は <code>title</code> タグの値を読むためにドキュメントを読み始めます。
       これは CPU や disk に負荷をかけます。</dd>
 
+      <dt><a name="indexoptions.showforbidden" id="indexoptions.showforbidden">ShowForbidden</a></dt>
+
+      <dd>指定した場合であっても、サブリクエストの結果が HTTP_UNAUTHORIZED や
+      HTTP_FORBIDDEN のファイルは通常通り隠された状態のまま、
+      ファイル一覧が生成されます。</dd>
+
       <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
-      <dd>もし指定されていれば、Apache は
+      <dd>もし指定されていれば、Apache は
       FancyIndexing で表示されているディレクトリ一覧での
       コラムの先頭を、ソートのためのリンクにしなくなります。
       デフォルトの挙動は、リンクとします。
@@ -731,7 +735,7 @@ MIME タイプによって選択</td></tr>
       この挙動を無効にできて、
       モジュールがヘッダーファイルの中身から表示を始めます。
       この場合、ヘッダーファイルは正しい HTML
-      命令を含んでいなければなりません。
+      命令を含んでいなければなりません。
       ヘッダーファイルが存在しない場合は、プリアンブルは通常通り
       生成されます。</dd>
 
@@ -773,11 +777,11 @@ MIME タイプによって選択</td></tr>
       適切な stat() の返り値を返す場合にのみ有効です。
       いくつかの UNIX システム、OS2 の JFS や Win32 の NTFS
       ボリュームはそうなっています。
-      例えば、OS2 と Win32 FAT ボリュームはそうではありません。
+      例えば、OS2 と Win32 FAT ボリュームはそうではありません。
       この機能が有効になると、クライアントやプロキシは
       <code>HEAD</code> リクエストを行うことによって、
       ファイル一覧の変化を追跡することができるようになります。
-      いくつかのオペレーティングシステムは、新規ファイルや
+      いくつかのオペレーティングシステムは、新規ファイルや
       移動ファイルは正しく追跡するけれども、
       ディレクトリ中のファイルのサイズや日付は追跡ないということに
       注意してください。
@@ -816,10 +820,10 @@ MIME タイプによって選択</td></tr>
       </dd>
 
       <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache 2.1.0 以降</em>)</dt>
+      (<em>Apache 2.0.49 以降</em>)</dt>
 
       <dd><code>XHTML</code> キーワードを指定すると、<code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
-      はHTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
+      は HTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
     </dl>
 
    
@@ -827,7 +831,7 @@ MIME タイプによって選択</td></tr>
    <dd>
      <p>Apache 1.3.3 では、
      <code class="directive">IndexOptions</code> 
-     ディレクティブの扱いで幾つかの大きな変化が導入されました。
+     ディレクティブの扱いで幾つかの大きな変化が導入されました。
      特に、</p>
 
      <ul>
@@ -889,7 +893,7 @@ MIME タイプによって選択</td></tr>
 <div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>
-ディレクトリインデックスの標準の順番付けを設定</td></tr>
+ディレクトリインデックスの標準の順番付けを設定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>IndexOrderDefault Ascending|Descending
 Name|Date|Size|Description</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr>
