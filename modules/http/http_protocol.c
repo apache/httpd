@@ -2616,6 +2616,15 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
         }
     }
 
+#ifdef APACHE_XLATE
+    /* Ensure that the proper translation handle (if any) is used when
+     * sending the response document to the client.  Note that on an 
+     * ASCII machine, ap_hdrs_to_ascii is NULL, so this will turn off 
+     * any translation selected by a module for content.
+     */
+    ap_set_content_xlate(r, 1, ap_hdrs_to_ascii);
+#endif
+
     if ((custom_response = ap_response_code_string(r, idx))) {
         /*
          * We have a custom response output. This should only be
@@ -2641,14 +2650,6 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
         while (r->prev && (r->prev->status != HTTP_OK))
             r = r->prev;
     }
-#ifdef APACHE_XLATE
-    /* Ensure that the proper translation handle (if any) is used when
-     * sending the canned response document to the client.  Note that
-     * on an ASCII machine, ap_hdrs_to_ascii is NULL, so this will
-     * turn off any translation selected by a module for content.
-     */
-    ap_set_content_xlate(r, 1, ap_hdrs_to_ascii);
-#endif
     {
         const char *title = status_lines[idx];
         const char *h1;
