@@ -67,7 +67,7 @@ EXPORTS
 	ap_content_type_tolower   @60
 ;	ap_copy_array   @61
 ;	ap_copy_array_hdr   @62
-;	ap_copy_table   @63
+	ap_core_translate   @63
 	ap_count_dirs   @64
 ;	ap_cpystrn   @65
 	ap_create_environment   @66
