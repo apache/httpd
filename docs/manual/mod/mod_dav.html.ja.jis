@@ -4,12 +4,12 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>mod_dav - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール mod_dav</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
                       </span></td><td>分散オーサリングとバージョン管理
-(<a href="http://www.webdav.org/">WebDAV</a>) 機能です</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
+(<a href="http://www.webdav.org/">WebDAV</a>) 機能</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
                         </a></td><td>dav_module</td></tr></table></td></tr></table><h2>概要</h2>
-    <p>このモジュールはクラス 1 とクラス 2 の
+    <p>このモジュールはクラス 1 とクラス 2 の
     <a href="http://www.webdav.org">WebDAV</a>
-    ('ウェブベースの分散オーサリングとバージョン管理')
+    ('ウェブベースの分散オーサリングとバージョン管理')
     機能を Apache に提供します。
     この HTTP プロトコルの拡張により、リモートのウェブサーバ上にある
     リソースやコレクションを
@@ -22,7 +22,7 @@
 
     <p>同時に <code>httpd.conf</code> ファイルの
     グローバルセクションに次を加えることによって、
-    DAV ロックデータベースのために使う
+    DAV ロックデータベースのために使う
     正当なファイル名を指定します:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DavLockDB /tmp/DavLock&nbsp;&nbsp;&nbsp;&nbsp;
@@ -30,7 +30,7 @@
       拡張子のないもの)</em>
 </code></td></tr></table></blockquote>
 <h2>ディレクティブ</h2><ul><li><a href="#dav">Dav</a></li><li><a href="#davdepthinfinity">DavDepthInfinity</a></li><li><a href="#davlockdb">DavLockDB</a></li><li><a href="#davmintimeout">DavMinTimeout</a></li></ul><hr><h2><a name="Dav">Dav</a> <a name="dav">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>WebDAV HTTP メソッドを有効にします</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </strong></td><td>WebDAV HTTP メソッドを有効にします</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>Dav on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">デフォルト: 
                     </a></td><td><code>Dav off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
                   </a></td><td>directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
@@ -67,13 +67,13 @@
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:
                   </a></td><td>mod_dav</td></tr></table></td></tr></table>
     <p>'Depth: Infinity' を含んでいる
-    PROPFIND リクエストを処理できるようにするには、
+    PROPFIND リクエストを処理できるようにするには、
     <code class="directive">DavDepthInfinity</code>
     ディレクティブを使います。このタイプのリクエストは
     denial-of-service アタックとなりうるので、
     デフォルトでは許可されていません。</p>
 <hr><h2><a name="DavLockDB">DavLockDB</a> <a name="davlockdb">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
-                  </strong></td><td>DAV ロックデータベースの位置です</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
+                  </strong></td><td>DAV ロックデータベースの位置です</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">構文:
                   </a></td><td>DavLockDB <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">コンテキスト:
                   </a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">ステータス:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">モジュール:

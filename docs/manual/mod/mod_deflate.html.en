@@ -36,7 +36,8 @@ SetOutputFilter DEFLATE
 </code></td></tr></table></blockquote>
 <hr><h2><a name="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Fragment size to be compressed at one time by zlib</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>DeflateBufferSize <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>DeflateBufferSize <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>DeflateBufferSize 8096</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_deflate</td></tr></table></td></tr></table>
@@ -55,7 +56,8 @@ SetOutputFilter DEFLATE
     the directive.</p>
 <hr><h2><a name="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>How much memory should be used by zlib for compression</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>DeflateMemLevel <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>DeflateMemLevel <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>DeflateMemLevel 9</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_deflate</td></tr></table></td></tr></table>
@@ -64,7 +66,8 @@ SetOutputFilter DEFLATE
     (a value between 1 and 9).</p>
 <hr><h2><a name="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Zlib compression window size</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
-                  </a></td><td>DeflateWindowSize <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>DeflateWindowSize <em>value</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>DeflateWindowSize 15</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
                   </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_deflate</td></tr></table></td></tr></table>

@@ -3,24 +3,24 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>prefork - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache モジュール prefork</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">説明:
-                      </span></td><td>スレッドを使わず、先行して fork を行なうウェブサーバを実装しています
+                      </span></td><td>スレッドを使わず、先行して fork を行なうウェブサーバを実装
 </td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">ステータス:
                       </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">モジュール識別子:
                         </a></td><td>mpm_prefork_module</td></tr></table></td></tr></table><h2>概要</h2>
-    <p>このマルチプロセッシングモジュール (MPM) は、
+    <p>このマルチプロセッシングモジュール (MPM) は、
     Unix 上での Apache 1.3 のデフォルトの挙動と非常によく似た方法で
     リクエストを処理する、スレッドを使わず、先行して fork を行なう
     ウェブサーバを実装しています。
     スレッドセーフでないライブラリとの互換性をとるために、
-    スレッドを避ける必要のあるサイトでは、このモジュールの使用が適切でしょう。
+    スレッドを避ける必要のあるサイトでは、このモジュールの使用が適切でしょう。
     あるリクエストで発生した問題が他のリクエストに影響しないように、
     個々のリクエストを単離するのにも、最適な MPM です。</p>
 
-    <p>この MPM は非常に自律的なので、この MPM の設定ディレクティブを
+    <p>この MPM は非常に自律的なので、この MPM の設定ディレクティブを
     調整する必要はほとんどないでしょう。もっとも重要なことは、
     <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>
     が、予想される同時リクエスト数を十分扱えるぐらいは大きいけれども、
-    全プロセスに十分な物理メモリが確実に行き渡る程度には小さい値にする、
+    全プロセスに十分な物理メモリが確実に行き渡る程度には小さい値にする、
     ということです。</p>
 
 <h2>ディレクティブ</h2><ul><li><a href="#acceptmutex">AcceptMutex</a></li><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxclients">MaxClients</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxspareservers">MaxSpareServers</a></li><li><a href="#maxspareservers">MaxSpareServers</a></li><li><a href="mpm_common.html#minspareservers">MinSpareServers</a></li><li><a href="#minspareservers">MinSpareServers</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#serverlimit">ServerLimit</a></li><li><a href="mpm_common.html#startservers">StartServers</a></li><li><a href="mpm_common.html#user">User</a></li></ul><p><strong>参照 </strong></p><ul><li><a href="../bind.html">Apache
@@ -43,7 +43,7 @@
     で調整します。一般的に、Apache は非常に自律的なので、
     大抵のサイトではこれらのディレクティブをデフォルト値から調整する
     必要はないでしょう。
-    同時に 256 を超えるリクエストに応答しないといけないサイトでは、
+    同時に 256 を超えるリクエストに応答しないといけないサイトでは、
     <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>
     を増やす必要があるでしょう。
     一方、メモリの限られているサイトでは、スラッシング
@@ -64,7 +64,7 @@
     可能な限り必要最小限の権限のみを持っているようにするべきです。</p>
 
     <p><a href="../mod/mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
-    は、古いプロセスを停止して新しいプロセスを起動することによって、
+    は、古いプロセスを停止して新しいプロセスを起動することによって、
     どの程度の頻度でサーバがプロセスをリサイクルするかを制御します。</p>
 <hr><h2><a name="AcceptMutex">AcceptMutex</a> <a name="acceptmutex">ディレクティブ</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>説明: 
                   </strong></td><td>複数の子プロセスがネットワークソケットでリクエストを
