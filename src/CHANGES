@@ -1,5 +1,7 @@
 Changes with Apache 1.3.21
 
+  *) PORT: Some Cygwin changes. [Stipe Tolj <tolj@wapme-systems.de>]
+
   *) ErrorDocument 404 pointing to a parsed html file with a
      <!--#include virtual="file" --> with a request URI containing
      %2f would result in a segfault (NULL pointer deref, not a

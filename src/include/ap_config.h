@@ -976,6 +976,8 @@ typedef int rlim_t;
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_SYSLOG 1
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 
 #else
