@@ -360,6 +360,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
                 return APR_EBADF;
             *script_in = ap_bcreate(p, B_RD);
             ap_bpush_iol(*script_in, iol);
+            ap_bsetopt(*script_in, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdin */
             ap_get_childin(&file, procnew);
@@ -368,6 +369,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
                 return APR_EBADF;
             *script_out = ap_bcreate(p, B_WR);
             ap_bpush_iol(*script_out, iol);
+            ap_bsetopt(*script_out, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stderr */
             ap_get_childerr(&file, procnew);
@@ -376,6 +378,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
                 return APR_EBADF;
             *script_err = ap_bcreate(p, B_RD);
             ap_bpush_iol(*script_err, iol);
+            ap_bsetopt(*script_err, BO_TIMEOUT, &r->server->timeout);
         }
     }
     ap_unblock_alarms();
