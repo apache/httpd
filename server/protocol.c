@@ -1157,10 +1157,6 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
     }
 
     t = ap_pbase64decode(r->pool, auth_line);
-    /* Note that this allocation has to be made from r->connection->pool
-     * because it has the lifetime of the connection.  The other allocations
-     * are temporary and can be tossed away any time.
-     */
     r->user = ap_getword_nulls (r->pool, &t, ':');
     r->ap_auth_type = "Basic";
 
