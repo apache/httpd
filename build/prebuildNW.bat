@@ -13,7 +13,7 @@
 copy ..\srclib\apr\include\apr.hnw ..\srclib\apr\include\apr.h
 
 @echo Fixing up the APR-Util headers
-copy ..\srclib\apr-util\include\apu.h.in ..\srclib\apr-util\include\apu.h
+copy ..\srclib\apr-util\include\apu.hnw ..\srclib\apr-util\include\apu.h
 
 @echo Fixing up the pcre headers
 copy ..\srclib\pcre\config.hw ..\srclib\pcre\config.h
