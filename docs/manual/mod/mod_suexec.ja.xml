@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_suexec</name>
+<description>指定されたユーザとグループで CGI スクリプトを実行する</description>
+<status>拡張</status>
+<sourcefile>mod_suexec.c</sourcefile>
+<identifier>suexec_module</identifier>
+<compatibility>Apache 2.0 以降で使用可能</compatibility>
+
+
+<summary>
+    <p>このモジュールは CGI スクリプトが指定されたユーザとグループで
+    実行されるようにできます。</p>
+</summary>
+
+
+<directivesynopsis>
+
+<name>SuexecUserGroup</name>
+<syntax>SuexecUserGroup <em>User Group</em></syntax>
+<default>None</default>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context></contextlist>
+<compatibility>SuexecUserGroup は 2.0 以降でのみ使用可能。</compatibility>
+
+<usage>
+    <p><directive>SuexecUserGroup</directive> ディレクティブは CGI プログラム
+    が実行されるユーザとグループを指定できるようにします。CGI 以外の
+    リクエストは User ディレクティブで指定されたユーザのままで処理されます。
+    このディレクティブは VirtualHosts の中で User ディレクティブと
+    Group ディレクティブを使う用法の代わりになります。</p>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

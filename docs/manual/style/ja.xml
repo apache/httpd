@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+
+<!-- Japanese -->
+<messages>
+ <message name="seealso">参照 </message>
+ <message name="description">説明</message>
+ <message name="apachemodule">Apache モジュール</message>
+ <message name="status">ステータス</message>
+ <message name="moduleidentifier">モジュール識別子</message>
+ <message name="compatibility">互換性</message>
+ <message name="syntax">構文</message>
+ <message name="default">デフォルト</message>
+ <message name="context">コンテキスト</message>
+ <message name="override">上書き</message>
+ <message name="status">ステータス</message>
+ <message name="module">モジュール</message>
+ <message name="nodirective">このモジュールにディレクティブはありません。</message>
+ <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
+ <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
+ <message name="index">索引</message>
+ <message name="home">ホーム</message>
+ <message name="directives">ディレクティブ</message>
+ <message name="directive">ディレクティブ</message>
+</messages>
