@@ -69,6 +69,7 @@ Committed Code Changes:
     * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite
     * Ralf's fix for the `<VirtualHost> w/o mod_rewrite' situation. PR#1790
     * Mark's fix for ProxyPass/ProxyRequests interaction broken by uri stuff
+    * Ralf's fix for the flock()<->fork() problematic for RewriteLock's
 
 Available Patches:
 
