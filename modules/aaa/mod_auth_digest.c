@@ -64,9 +64,9 @@
  * based on mod_auth, by Rob McCool and Robert S. Thau
  *
  * This module an updated version of modules/standard/mod_digest.c
- * However, it has not been extensively tested yet, and is therefore
- * currently marked experimental. Send problem reports to me
- * (ronald@innovation.ch)
+ * It is still fairly new and problems may turn up - submit problem
+ * reports to the Apache bug-database, or send them directly to me
+ * at ronald@innovation.ch.
  *
  * Requires either /dev/random (or equivalent) or the truerand library,
  * available for instance from
@@ -79,8 +79,20 @@
  *     currently ignored by mod_proxy (needs patch to mod_proxy)
  *   - generating the secret takes a while (~ 8 seconds) if using the
  *     truerand library
+ *   - The source of the secret should be run-time directive (with server
+ *     scope: RSRC_CONF). However, that could be tricky when trying to
+ *     choose truerand vs. file...
  *   - shared-mem not completely tested yet. Seems to work ok for me,
  *     but... (definitely won't work on Windoze)
+ *   - Sharing a realm among multiple servers has following problems:
+ *     o Server name and port can't be included in nonce-hash
+ *       (we need two nonce formats, which must be configured explicitly)
+ *     o Nonce-count check can't be for equal, or then nonce-count checking
+ *       must be disabled. What we could do is the following:
+ *       (expected < received) ? set expected = received : issue error
+ *       The only problem is that it allows replay attacks when somebody
+ *       captures a packet sent to one server and sends it to another
+ *       one. Should we add "AuthDigestNcCheck Strict"?
  *   - expired nonces give amaya fits.  
  */
 
@@ -94,17 +106,15 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "ap_base64.h"
 #include "ap_ctype.h"
 #include "util_uri.h"
 #include "util_md5.h"
 #include "ap_sha1.h"
+#include "ap_base64.h"
 #include "apr_time.h"
 #include "apr_errno.h"
-
-#ifdef HAVE_SHMEM_MM
-#include "mm.h"
-#endif	/* HAVE_SHMEM_MM */
+#include "apr_shmem.h"
+#include "apr_lock.h"
 
 
 /* struct to hold the configuration info */
@@ -116,7 +126,7 @@ typedef struct digest_config_struct {
     const char  *realm;
     const char **qop_list;
     AP_SHA1_CTX  nonce_ctx;
-    long         nonce_lifetime;
+    ap_time_t    nonce_lifetime;
     const char  *nonce_format;
     int          check_nc;
     const char  *algorithm;
@@ -127,8 +137,8 @@ typedef struct digest_config_struct {
 
 #define	DFLT_ALGORITHM	"MD5"
 
-#define	DFLT_NONCE_LIFE	300000L	/* millis */
-#define NEXTNONCE_DELTA	30000	/* millis */
+#define	DFLT_NONCE_LIFE	(300*AP_USEC_PER_SEC)
+#define NEXTNONCE_DELTA	(30*AP_USEC_PER_SEC)
 
 
 #define NONCE_TIME_LEN	(((sizeof(ap_time_t)+2)/3)*4)
@@ -149,7 +159,7 @@ typedef struct hash_entry {
 } client_entry;
 
 static struct hash_table {
-    client_entry  **ap_table_t;
+    client_entry  **table;
     unsigned long   tbl_len;
     unsigned long   num_entries;
     unsigned long   num_created;
@@ -178,7 +188,8 @@ typedef struct digest_header_struct {
     /* the following fields are not (directly) from the header */
     ap_time_t             nonce_time;
     enum hdr_sts          auth_hdr_sts;
-    uri_components       *request_uri;
+    const char           *raw_request_uri;
+    uri_components       *psd_request_uri;
     int                   needed_auth;
     client_entry         *client;
 } digest_header_rec;
@@ -196,23 +207,23 @@ static unsigned char secret[SECRET_LEN];
 static int call_cnt = 0;
 
 
-#ifdef HAVE_SHMEM_MM
-/* opaque stuff */
+/* client-list, opaque, and one-time-nonce stuff */
 
-static MM            *opaque_mm;
+static ap_shmem_t    *client_shm = NULL;
 static unsigned long *opaque_cntr;
-
-static MM            *client_mm;
-
-static MM            *otn_count_mm;
 static ap_time_t     *otn_counter;	/* one-time-nonce counter */
+static ap_lock_t     *client_lock = NULL;
+static ap_lock_t     *opaque_lock = NULL;
+static char           client_lock_name[L_tmpnam];
+static char           opaque_lock_name[L_tmpnam];
 
-#define	SHMEM_SIZE 	1000		/* ~ 12 entries */
-#define	NUM_BUCKETS	15UL
+#define	DEF_SHMEM_SIZE 	1000L		/* ~ 12 entries */
+#define	DEF_NUM_BUCKETS	15L
+#define	HASH_DEPTH     	5
 
-#else	/* HAVE_SHMEM_MM */
-static void          *client_mm = NULL;
-#endif	/* HAVE_SHMEM_MM */
+static long shmem_size  = DEF_SHMEM_SIZE;
+static long num_buckets = DEF_NUM_BUCKETS;
+
 
 module MODULE_VAR_EXPORT auth_digest_module;
 
@@ -220,31 +231,29 @@ module MODULE_VAR_EXPORT auth_digest_module;
  * initialization code
  */
 
-#ifdef HAVE_SHMEM_MM
 static ap_status_t cleanup_tables(void *not_used)
 {
     ap_log_rerror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                  "Digest: cleaning up shared memory");
     fflush(stderr);
 
-    if (client_mm) {
-	mm_destroy(client_mm);
-	client_mm = NULL;
+    if (client_shm) {
+	ap_shm_destroy(client_shm);
+	client_shm = NULL;
     }
 
-    if (opaque_mm) {
-	mm_destroy(opaque_mm);
-	opaque_mm = NULL;
+    if (client_lock) {
+	ap_destroy_lock(client_lock);
+	client_lock = NULL;
     }
 
-    if (otn_count_mm) {
-	mm_destroy(otn_count_mm);
-	otn_count_mm = NULL;
+    if (opaque_lock) {
+	ap_destroy_lock(opaque_lock);
+	opaque_lock = NULL;
     }
 
     return APR_SUCCESS;
 }
-#endif	/* HAVE_SHMEM_MM */
 
 static void initialize_secret(server_rec *s)
 {
@@ -266,91 +275,81 @@ static void initialize_secret(server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Digest: done");
 }
 
-#ifdef HAVE_SHMEM_MM
-static void initialize_tables(server_rec *s)
+static void log_error_and_cleanup(char *msg, ap_status_t sts, server_rec *s)
+{
+    ap_log_error(APLOG_MARK, APLOG_ERR, sts, s,
+		 "Digest: %s - all nonce-count checking, one-time nonces, and "
+		 "MD5-sess algorithm disabled", msg);
+
+    cleanup_tables(NULL);
+}
+
+static void initialize_tables(server_rec *s, ap_pool_t *ctx)
 {
     unsigned long idx;
+    ap_status_t   sts;
 
     /* set up client list */
 
-    client_mm = mm_create(SHMEM_SIZE, tmpnam(NULL));
-    if (client_mm == NULL)
-	goto failed;
-#ifdef MPE
-    if (geteuid() == 1) {
-#else
-    if (geteuid() == 0) {
-#endif
-	if (mm_permission(client_mm, 0600, ap_user_id, ap_group_id))
-	    goto failed;
+    sts = ap_shm_init(&client_shm, shmem_size, tmpnam(NULL), ctx);
+    if (sts != APR_SUCCESS) {
+	log_error_and_cleanup("failed to create shared memory segments", sts, s);
+	return;
     }
-    client_list = mm_malloc(client_mm, sizeof(*client_list) +
-				       sizeof(client_entry*)*NUM_BUCKETS);
-    if (!client_list)  goto failed;
+
+    client_list = ap_shm_malloc(client_shm, sizeof(*client_list) +
+					    sizeof(client_entry*)*num_buckets);
+    if (!client_list) {
+	log_error_and_cleanup("failed to allocate shared memory", -1, s);
+	return;
+    }
     client_list->table = (client_entry**) (client_list + 1);
-    for (idx=0; idx<NUM_BUCKETS; idx++)
+    for (idx=0; idx<num_buckets; idx++)
 	client_list->table[idx] = NULL;
-    client_list->tbl_len     = NUM_BUCKETS;
+    client_list->tbl_len     = num_buckets;
     client_list->num_entries = 0;
+
+    tmpnam(client_lock_name);
+    sts = ap_create_lock(&client_lock, APR_READWRITE, APR_LOCKALL,
+			 client_lock_name, ctx);
+    if (sts != APR_SUCCESS) {
+	log_error_and_cleanup("failed to create lock", sts, s);
+	return;
+    }
 
 
     /* setup opaque */
 
-    opaque_mm = mm_create(sizeof(*opaque_cntr), tmpnam(NULL));
-    if (opaque_mm == NULL)
-	goto failed;
-#ifdef MPE
-    if (geteuid() == 1) {
-#else
-    if (geteuid() == 0) {
-#endif
-	if (mm_permission(opaque_mm, 0600, ap_user_id, ap_group_id))
-	    goto failed;
+    opaque_cntr = ap_shm_malloc(client_shm, sizeof(*opaque_cntr));
+    if (opaque_cntr == NULL) {
+	log_error_and_cleanup("failed to allocate shared memory", -1, s);
+	return;
     }
-    opaque_cntr = mm_malloc(opaque_mm, sizeof(*opaque_cntr));
-    if (opaque_cntr == NULL)
-	goto failed;
     *opaque_cntr = 1UL;
+
+    tmpnam(opaque_lock_name);
+    sts = ap_create_lock(&opaque_lock, APR_MUTEX, APR_LOCKALL,
+			 opaque_lock_name, ctx);
+    if (sts != APR_SUCCESS) {
+	log_error_and_cleanup("failed to create lock", sts, s);
+	return;
+    }
 
 
     /* setup one-time-nonce counter */
 
-    otn_count_mm = mm_create(sizeof(*otn_counter), tmpnam(NULL));
-    if (otn_count_mm == NULL)
-	goto failed;
-#ifdef MPE
-    if (geteuid() == 1) {
-#else
-    if (geteuid() == 0) {
-#endif
-	if (mm_permission(otn_count_mm, 0600, ap_user_id, ap_group_id))
-	    goto failed;
+    otn_counter = ap_shm_malloc(client_shm, sizeof(*otn_counter));
+    if (otn_counter == NULL) {
+	log_error_and_cleanup("failed to allocate shared memory", -1, s);
+	return;
     }
-    otn_counter = mm_malloc(otn_count_mm, sizeof(*otn_counter));
-    if (otn_counter == NULL)
-	goto failed;
     *otn_counter = 0;
+	/* no lock here */
 
 
     /* success */
     return;
-
-failed:
-    if (!client_mm || (client_list && client_list->table && !opaque_mm)
-	|| (opaque_cntr && !otn_count_mm))
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, s,
-		     "Digest: failed to create shared memory segments; reason "
-		     "was `%s' - all nonce-count checking, one-time nonces, "
-		     "and MD5-sess algorithm disabled", mm_error());
-    else
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, s,
-		     "Digest: failed to allocate shared mem; reason was `%s' "
-		     "- all nonce-count checking, one-time nonces, and "
-		     "MD5-sess algorithm disabled", mm_error());
-
-    cleanup_tables(NULL);
 }
-#endif	/* HAVE_SHMEM_MM */
 
 static void initialize_module(ap_pool_t *p, ap_pool_t *plog,
 			      ap_pool_t *ptemp, server_rec *s)
@@ -365,22 +364,40 @@ static void initialize_module(ap_pool_t *p, ap_pool_t *plog,
     if (call_cnt == 2)
 	initialize_secret(s);
 
-#ifdef HAVE_SHMEM_MM
+/* Disable shmem until pools/init gets sorted out - remove next line when fixed */
+#define APR_HAS_SHARED_MEMORY 0
+
+#if APR_HAS_SHARED_MEMORY
     /* Note: this stuff is currently fixed for the lifetime of the server,
      * i.e. even across restarts. This means that A) any shmem-size
      * configuration changes are ignored, and B) certain optimizations,
      * such as only allocating the smallest necessary entry for each
      * client, can't be done. However, the alternative is a nightmare:
-     * we can't call mm_destroy on a graceful restart because there will
-     * be children using the tables, and we also don't know when the
+     * we can't call ap_shm_destroy on a graceful restart because there
+     * will be children using the tables, and we also don't know when the
      * last child dies. Therefore we can never clean up the old stuff,
      * creating a creeping memory leak.
      */
-    initialize_tables(s);
+    initialize_tables(s, p);
     ap_register_cleanup(p, NULL, cleanup_tables, ap_null_cleanup);
-#endif	/* HAVE_SHMEM_MM */
+#endif	/* APR_HAS_SHARED_MEMORY */
 }
 
+static void initialize_child(ap_pool_t *p, server_rec *s)
+{
+    ap_status_t sts;
+
+    if (!client_shm)
+	return;
+
+    if ((sts = ap_child_init_lock(&client_lock, client_lock_name, p))
+	    != APR_SUCCESS
+	||  (sts = ap_child_init_lock(&opaque_lock, opaque_lock_name, p))
+	    != APR_SUCCESS) {
+	log_error_and_cleanup("failed to create lock", sts, s);
+	return;
+    }
+}
 
 /*
  * configuration code
@@ -420,9 +437,9 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
      * and directives outside a virtual host section)
      */
     ap_SHA1Init(&conf->nonce_ctx);
+    ap_SHA1Update_binary(&conf->nonce_ctx, secret, sizeof(secret));
     ap_SHA1Update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
 			 strlen(realm));
-    ap_SHA1Update_binary(&conf->nonce_ctx, secret, sizeof(secret));
 
     return DECLINE_CMD;
 }
@@ -479,12 +496,12 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
 {
     char *endptr;
     long  lifetime;
-				/* convert from seconds to millis */
-    lifetime = 1000*strtol(t, &endptr, 10); 
+
+    lifetime = strtol(t, &endptr, 10); 
     if (endptr < (t+strlen(t)) && !ap_isspace(*endptr))
 	return ap_pstrcat(cmd->pool, "Invalid time in AuthDigestNonceLifetime: ", t, NULL);
 
-    ((digest_config_rec *) config)->nonce_lifetime = lifetime;
+    ((digest_config_rec *) config)->nonce_lifetime = lifetime * AP_USEC_PER_SEC;
     return NULL;
 }
 
@@ -497,20 +514,27 @@ static const char *set_nonce_format(cmd_parms *cmd, void *config,
 
 static const char *set_nc_check(cmd_parms *cmd, void *config, int flag)
 {
+    if (flag && !client_shm)
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0,
+		     cmd->server, "Digest: WARNING: nonce-count checking "
+		     "is not supported on platforms without shared-memory "
+		     "support - disabling check");
+
     ((digest_config_rec *) config)->check_nc = flag;
     return NULL;
 }
 
 static const char *set_algorithm(cmd_parms *cmd, void *config, const char *alg)
 {
-    if (!strcasecmp(alg, "MD5-sess"))
-#ifdef HAVE_SHMEM_MM
-	;
-#else	/* HAVE_SHMEM_MM */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, cmd->server,
-		     "Digest: WARNING: algorithm `MD5-sess' is currently not "
-		     "correctly implemented");
-#endif	/* HAVE_SHMEM_MM */
+    if (!strcasecmp(alg, "MD5-sess")) {
+	if (!client_shm) {
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0,
+			 cmd->server, "Digest: WARNING: algorithm `MD5-sess' "
+			 "is not supported on platforms without shared-memory "
+			 "support - reverting to MD5");
+	    alg = "MD5";
+	}
+    }
     else if (strcasecmp(alg, "MD5"))
 	return ap_pstrcat(cmd->pool, "Invalid algorithm in AuthDigestAlgorithm: ", alg, NULL);
 
@@ -527,6 +551,41 @@ static const char *set_uri_list(cmd_parms *cmd, void *config, const char *uri)
     }
     else
 	c->uri_list = ap_pstrcat(cmd->pool, ", domain=\"", uri, "\"", NULL);
+    return NULL;
+}
+
+static const char *set_shmem_size(cmd_parms *cmd, void *config,
+				  const char *size_str)
+{
+    char *endptr;
+    long  size, min;
+
+    size = strtol(size_str, &endptr, 10); 
+    while (ap_isspace(*endptr)) endptr++;
+    if (*endptr == '\0' || *endptr == 'b' || *endptr == 'B')
+	;
+    else if (*endptr == 'k' || *endptr == 'K')
+	size *= 1024;
+    else if (*endptr == 'm' || *endptr == 'M')
+	size *= 1048576;
+    else
+	return ap_pstrcat(cmd->pool, "Invalid size in AuthDigestShmemSize: ",
+			  size_str, NULL);
+
+    min = sizeof(*client_list) + sizeof(client_entry*) + sizeof(client_entry);
+    if (size < min)
+	return ap_psprintf(cmd->pool, "size in AuthDigestShmemSize too small: "
+			   "%ld < %ld", size, min, NULL);
+
+    shmem_size  = size;
+    num_buckets = (size - sizeof(*client_list)) /
+		  (sizeof(client_entry*) + HASH_DEPTH * sizeof(client_entry));
+    if (num_buckets == 0)
+	num_buckets = 1;
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, cmd->server,
+		 "Digest: Set shmem-size: %ld, num-buckets: %ld", shmem_size,
+		 num_buckets);
+
     return NULL;
 }
 
@@ -550,11 +609,12 @@ static const command_rec digest_cmds[] =
      "The algorithm used for the hash calculation"},
     {"AuthDigestDomain", set_uri_list, NULL, OR_AUTHCFG, ITERATE,
      "A list of URI's which belong to the same protection space as the current URI"},
+    {"AuthDigestShmemSize", set_shmem_size, NULL, RSRC_CONF, TAKE1,
+     "The amount of shared memory to allocate for keeping track of clients"},
     {NULL}
 };
 
 
-#ifdef HAVE_SHMEM_MM
 /*
  * client list code
  *
@@ -617,12 +677,12 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     client_entry *entry, *prev = NULL;
 
 
-    if (!key || !client_mm)  return NULL;
+    if (!key || !client_shm)  return NULL;
 
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    mm_lock(client_mm, MM_LOCK_RD);
+    ap_lock(client_lock /*, MM_LOCK_RD */);
 
     while(entry && key != entry->key) {
 	prev  = entry;
@@ -635,7 +695,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
 	client_list->table[bucket] = entry;
     }
 
-    mm_unlock(client_mm);
+    ap_unlock(client_lock);
 
     if (entry)
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, r,
@@ -669,7 +729,7 @@ static long gc(void)
 	if (prev)  prev->next = NULL;	/* cut list */
 	else       client_list->table[idx] = NULL;
 	if (entry) {			/* remove entry */
-	    mm_free(client_mm, entry);
+	    ap_shm_free(client_shm, entry);
 	    num_removed++;
 	}
     }
@@ -685,25 +745,25 @@ static long gc(void)
 
 /*
  * Add a new client to the list. Returns the entry if successful, NULL
- * otherwise. This triggers the garbage collection is memory is low.
+ * otherwise. This triggers the garbage collection if memory is low.
  */
-static client_entry *add_client(unsigned long key, client_entry *new,
+static client_entry *add_client(unsigned long key, client_entry *info,
 				server_rec *s)
 {
     int bucket;
     client_entry *entry;
 
 
-    if (!key || !client_mm)  return NULL;
+    if (!key || !client_shm)  return NULL;
 
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    mm_lock(client_mm, MM_LOCK_RW);
+    ap_lock(client_lock /*, MM_LOCK_RW */);
 
     /* try to allocate a new entry */
 
-    entry = mm_malloc(client_mm, sizeof(client_entry));
+    entry = ap_shm_malloc(client_shm, sizeof(client_entry));
     if (!entry) {
 	long num_removed = gc();
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, s,
@@ -712,32 +772,26 @@ static client_entry *add_client(unsigned long key, client_entry *new,
 		     "%ld", num_removed,
 		     client_list->num_created - client_list->num_renewed,
 		     client_list->num_removed, client_list->num_renewed);
-	entry = mm_malloc(client_mm, sizeof(client_entry));
+	entry = ap_shm_malloc(client_shm, sizeof(client_entry));
 	if (!entry)  return NULL;	/* give up */
     }
 
     /* now add the entry */
 
-    memcpy(entry, new, sizeof(client_entry));
+    memcpy(entry, info, sizeof(client_entry));
     entry->key  = key;
     entry->next = client_list->table[bucket];
     client_list->table[bucket] = entry;
     client_list->num_created++;
     client_list->num_entries++;
 
-    mm_unlock(client_mm);
+    ap_unlock(client_lock);
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, s,
 		 "allocated new client %lu", key);
 
     return entry;
 }
-#else	/* HAVE_SHMEM_MM */
-static client_entry *get_client(unsigned long key, const request_rec *r)
-{
-    return NULL;
-}
-#endif	/* HAVE_SHMEM_MM */
 
 
 /*
@@ -747,14 +801,14 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
 /* Parse the Authorization header, if it exists */
 static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 {
-    const char *auth_line = ap_table_get(r->headers_in,
-					 r->proxyreq ? "Proxy-Authorization"
-						     : "Authorization");
+    const char *auth_line;
     size_t l;
     int vk = 0, vv = 0;
     char *key, *value;
 
-
+    auth_line = ap_table_get(r->headers_in,
+			     r->proxyreq ? "Proxy-Authorization"
+					 : "Authorization");
     if (!auth_line) {
 	resp->auth_hdr_sts = NO_HEADER;
 	return !OK;
@@ -833,7 +887,8 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
     }
 
     if (!resp->username || !resp->realm || !resp->nonce || !resp->uri
-	|| !resp->digest) {
+	|| !resp->digest
+	|| (resp->message_qop && (!resp->cnonce || !resp->nonce_count))) {
 	resp->auth_hdr_sts = INVALID;
 	return !OK;
     }
@@ -866,7 +921,8 @@ static int parse_hdr_and_update_nc(request_rec *r)
 	return DECLINED;
 
     resp = ap_pcalloc(r->pool, sizeof(digest_header_rec));
-    resp->request_uri = &r->parsed_uri;
+    resp->raw_request_uri = r->unparsed_uri;
+    resp->psd_request_uri = &r->parsed_uri;
     resp->needed_auth = 0;
     ap_set_module_config(r->request_config, &auth_digest_module, resp);
 
@@ -883,8 +939,8 @@ static int parse_hdr_and_update_nc(request_rec *r)
  * Nonce generation code
  */
 
-/* The hash part of the nonce is a SHA-1 hash of the time, realm, opaque,
- * and our secret.
+/* The hash part of the nonce is a SHA-1 hash of the time, realm, server host
+ * and port, opaque, and our secret.
  */
 static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 			   const server_rec *server,
@@ -896,10 +952,12 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
     int idx;
 
     memcpy(&ctx, &conf->nonce_ctx, sizeof(ctx));
+    /*
     ap_SHA1Update_binary(&ctx, (const unsigned char *) server->server_hostname,
 			 strlen(server->server_hostname));
     ap_SHA1Update_binary(&ctx, (const unsigned char *) &server->port,
 			 sizeof(server->port));
+     */
     ap_SHA1Update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
     if (opaque)
 	ap_SHA1Update_binary(&ctx, (const unsigned char *) opaque,
@@ -922,20 +980,19 @@ static const char *gen_nonce(ap_pool_t *p, ap_time_t now, const char *opaque,
 			     const digest_config_rec *conf)
 {
     char *nonce = ap_palloc(p, NONCE_LEN+1);
+    int len;
     time_rec t;
 
     if (conf->nonce_lifetime != 0)
 	t.time = now;
-    else
-#ifdef HAVE_SHMEM_MM
+    else if (otn_counter)
 	/* this counter is not synch'd, because it doesn't really matter
 	 * if it counts exactly.
 	 */
 	t.time = (*otn_counter)++;
-#else	/* HAVE_SHMEM_MM */
+    else
 	t.time = 42;
-#endif	/* HAVE_SHMEM_MM */
-    ap_base64encode_binary(nonce, t.arr, sizeof(t.arr));
+    len = ap_base64encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf);
 
     return nonce;
@@ -946,7 +1003,6 @@ static const char *gen_nonce(ap_pool_t *p, ap_time_t now, const char *opaque,
  * Opaque and hash-table management
  */
 
-#ifdef HAVE_SHMEM_MM
 /*
  * Generate a new client entry, add it to the list, and return the
  * entry. Returns NULL if failed.
@@ -954,15 +1010,15 @@ static const char *gen_nonce(ap_pool_t *p, ap_time_t now, const char *opaque,
 static client_entry *gen_client(const request_rec *r)
 {
     unsigned long op;
-    client_entry new = { 0, NULL, 0, "", "" }, *entry;
+    client_entry new_entry = { 0, NULL, 0, "", "" }, *entry;
 
-    if (!opaque_mm)  return 0;
+    if (!opaque_cntr)  return NULL;
 
-    mm_lock(opaque_mm, MM_LOCK_RW);
+    ap_lock(opaque_lock /*, MM_LOCK_RW */);
     op = (*opaque_cntr)++;
-    mm_unlock(opaque_mm);
+    ap_unlock(opaque_lock);
 
-    if (!(entry = add_client(op, &new, r->server))) {
+    if (!(entry = add_client(op, &new_entry, r->server))) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		      "Digest: failed to allocate client entry - ignoring "
 		      "client");
@@ -971,63 +1027,76 @@ static client_entry *gen_client(const request_rec *r)
 
     return entry;
 }
-#else	/* HAVE_SHMEM_MM */
-static client_entry *gen_client(const request_rec *r) { return NULL; }
-#endif	/* HAVE_SHMEM_MM */
-
 
 
 /*
  * MD5-sess code.
  *
  * If you want to use algorithm=MD5-sess you must write get_userpw_hash()
- * yourself (see below). The dummy provided here just returns the hash
- * from the auth-file, i.e. it is only useful for testing client
- * implementations of MD5-sess .
+ * yourself (see below). The dummy provided here just uses the hash from
+ * the auth-file, i.e. it is only useful for testing client implementations
+ * of MD5-sess .
  */
 
 /*
  * get_userpw_hash() will be called each time a new session needs to be
  * generated and is expected to return the equivalent of
  *
+ * h_urp = ap_md5(r->pool,
+ *         ap_pstrcat(r->pool, username, ":", ap_auth_name(r), ":", passwd))
  * ap_md5(r->pool,
- *        ap_pstrcat(r->pool, username, ":", ap_auth_name(r), ":", passwd))
+ *         (unsigned char *) ap_pstrcat(r->pool, h_urp, ":", resp->nonce, ":",
+ *                                      resp->cnonce, NULL));
  *
- * You must implement this yourself, and will probably consist of code
- * contacting the password server and retrieving the hash from it.
+ * or put differently, it must return
+ *
+ *   MD5(MD5(username ":" realm ":" password) ":" nonce ":" cnonce)
+ *
+ * If something goes wrong, the failure must be logged and NULL returned.
+ *
+ * You must implement this yourself, which will probably consist of code
+ * contacting the password server with the necessary information (typically
+ * the username, realm, nonce, and cnonce) and receiving the hash from it.
  *
  * TBD: This function should probably be in a seperate source file so that
- * people need not modify mod_auth_digest.c each time they install a new version
- * of apache.
+ * people need not modify mod_auth_digest.c each time they install a new
+ * version of apache.
  */
 static const char *get_userpw_hash(const request_rec *r,
 				   const digest_header_rec *resp,
 				   const digest_config_rec *conf)
 {
-    /* for now, just get it from pwfile */
-    return conf->ha1;
+    return ap_md5(r->pool,
+	     (unsigned char *) ap_pstrcat(r->pool, conf->ha1, ":", resp->nonce,
+					  ":", resp->cnonce, NULL));
 }
 
 
-static const char *get_session(const request_rec *r,
-			       digest_header_rec *resp,
-			       const digest_config_rec *conf)
+/* Retrieve current session H(A1). If there is none and "generate" is
+ * true then a new session for MD5-sess is generated and stored in the
+ * client struct; if generate is false, or a new session could not be
+ * generated then NULL is returned (in case of failure to generate the
+ * failure reason will have been logged already).
+ */
+static const char *get_session_HA1(const request_rec *r,
+				   digest_header_rec *resp,
+				   const digest_config_rec *conf,
+				   int generate)
 {
-    const char *ha1 = NULL, *urp;
+    const char *ha1 = NULL;
 
-    /* get ha1 from client list */
-    if (resp->opaque && resp->client)
-	ha1 = resp->client->ha1;
+    /* return the current sessions if there is one */
+    if (resp->opaque && resp->client && resp->client->ha1[0])
+	return resp->client->ha1;
+    else if (!generate)
+	return NULL;
 
-    /* generate new session if necessary */
-    if (ha1 == NULL || ha1[0] == '\0') {
-	urp = get_userpw_hash(r, resp, conf);
-	ha1 = ap_md5(r->pool,
-		     (unsigned char *) ap_pstrcat(r->pool, urp, ":", resp->nonce,
-						  ":", resp->cnonce, NULL));
-	if (!resp->client)
-	    resp->client = gen_client(r);
-	if (resp->client)
+    /* generate a new session */
+    if (!resp->client)
+	resp->client = gen_client(r);
+    if (resp->client) {
+	ha1 = get_userpw_hash(r, resp, conf);
+	if (ha1)
 	    memcpy(resp->client->ha1, ha1, sizeof(resp->client->ha1));
     }
 
@@ -1139,11 +1208,6 @@ static void note_digest_auth_failure(request_rec *r,
 	qop = ap_pstrcat(r->pool, qop, "\"", NULL);
     }
 
-    /* MD5-sess stuff */
-
-    if (!stale && !strcasecmp(conf->algorithm, "MD5-sess"))
-	clear_session(resp);
-
     /* Setup opaque */
 
     if (resp->opaque == NULL) {
@@ -1183,6 +1247,14 @@ static void note_digest_auth_failure(request_rec *r,
     if (resp->client && conf->nonce_lifetime == 0)
 	memcpy(resp->client->last_nonce, nonce, NONCE_LEN+1);
 
+    /* Setup MD5-sess stuff. Note that we just clear out the session
+     * info here, since we can't generate a new session until the request
+     * from the client comes in with the cnonce.
+     */
+
+    if (!strcasecmp(conf->algorithm, "MD5-sess"))
+	clear_session(resp);
+
     /* setup domain attribute. We want to send this attribute wherever
      * possible so that the client won't send the Authorization header
      * unneccessarily (it's usually > 200 bytes!).
@@ -1194,7 +1266,7 @@ static void note_digest_auth_failure(request_rec *r,
 	domain = conf->uri_list;
     else {
 	/* They didn't specify any domain, so let's guess at it */
-	domain = guess_domain(r->pool, resp->request_uri->path, r->filename,
+	domain = guess_domain(r->pool, resp->psd_request_uri->path, r->filename,
 			      conf->dir_name);
 	if (domain[0] == '/' && domain[1] == '\0')
 	    domain = NULL;	/* "/" is the default, so no need to send it */
@@ -1251,28 +1323,29 @@ static const char *get_hash(request_rec *r, const char *user,
 static int check_nc(const request_rec *r, const digest_header_rec *resp,
 		    const digest_config_rec *conf)
 {
-    if (conf->check_nc && client_mm) {
-	unsigned long nc;
+    unsigned long nc;
+    const char *snc = resp->nonce_count;
+    char *endptr;
 
-	const char *snc = resp->nonce_count;
-	char *endptr;
+    if (!conf->check_nc || !client_shm)
+	return OK;
 
-	nc = strtol(snc, &endptr, 16);
-	if (endptr < (snc+strlen(snc)) && !ap_isspace(*endptr)) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "Digest: invalid nc %s received - not a number", snc);
-	    return !OK;
-	}
+    nc = strtol(snc, &endptr, 16);
+    if (endptr < (snc+strlen(snc)) && !ap_isspace(*endptr)) {
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+		      "Digest: invalid nc %s received - not a number", snc);
+	return !OK;
+    }
 
-	if (!resp->client)
-	    return !OK;
+    if (!resp->client)
+	return !OK;
 
-	if (nc != resp->client->nonce_count) {
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, r,
-			  "nonce-count check failed: %lu != %lu", nc,
-			  resp->client->nonce_count);
-	    return !OK;
-	}
+    if (nc != resp->client->nonce_count) {
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+		      "Digest: Warning, possible replay attack: nonce-count "
+		      "check failed: %lu != %lu", nc,
+		      resp->client->nonce_count);
+	return !OK;
     }
 
     return OK;
@@ -1282,6 +1355,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 		       const digest_config_rec *conf)
 {
     double dt;
+    int len;
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
 
@@ -1295,7 +1369,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
-    ap_base64decode_binary(nonce_time.arr, resp->nonce);
+    len = ap_base64decode_binary(nonce_time.arr, resp->nonce);
     gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf);
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
@@ -1309,7 +1383,6 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     }
 
     dt = r->request_time - nonce_time.time;
-    /* dt = difftime(r->request_time, nonce_time.time); */
     if (conf->nonce_lifetime > 0 && dt < 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: invalid nonce %s received - user attempted "
@@ -1322,8 +1395,8 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 	if (dt > conf->nonce_lifetime) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,r,
 			  "Digest: user %s: nonce expired (%.2lf seconds old - max lifetime %.2lf) - sending new nonce", 
-			  r->user, ((double)dt)/1000, 
-			  ((double)(conf->nonce_lifetime))/1000);
+			  r->user, ((double)dt)/AP_USEC_PER_SEC, 
+			  ((double)(conf->nonce_lifetime))/AP_USEC_PER_SEC);
 	    note_digest_auth_failure(r, conf, resp, 1);
 	    return AUTH_REQUIRED;
 	}
@@ -1344,12 +1417,12 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
 /* The actual MD5 code... whee */
 
+/* RFC-2069 */
 static const char *old_digest(const request_rec *r,
 			      const digest_header_rec *resp, const char *ha1)
 {
     const char *ha2;
 
-    /* rfc-2069 */
     ha2 = ap_md5(r->pool, (unsigned char *)ap_pstrcat(r->pool, r->method, ":",
 						      resp->uri, NULL));
     return ap_md5(r->pool,
@@ -1357,15 +1430,18 @@ static const char *old_digest(const request_rec *r,
 					      ":", ha2, NULL));
 }
 
+/* RFC-2617 */
 static const char *new_digest(const request_rec *r,
 			      digest_header_rec *resp,
 			      const digest_config_rec *conf)
 {
     const char *ha1, *ha2, *a2;
 
-    /* draft-ietf-http-authentication-03 */
-    if (resp->algorithm && !strcasecmp(resp->algorithm, "MD5-sess"))
-	ha1 = get_session(r, resp, conf);
+    if (resp->algorithm && !strcasecmp(resp->algorithm, "MD5-sess")) {
+	ha1 = get_session_HA1(r, resp, conf, 1);
+	if (!ha1)
+	    return NULL;
+    }
     else
 	ha1 = conf->ha1;
 
@@ -1384,6 +1460,40 @@ static const char *new_digest(const request_rec *r,
 					      NULL));
 }
 
+
+static void copy_uri_components(uri_components *dst, uri_components *src,
+				request_rec *r) {
+    if (src->scheme && src->scheme[0] != '\0')
+	dst->scheme = src->scheme;
+    else
+	dst->scheme = (char *) "http";
+
+    if (src->hostname && src->hostname[0] != '\0') {
+	dst->hostname = ap_pstrdup(r->pool, src->hostname);
+	ap_unescape_url(dst->hostname);
+    }
+    else
+	dst->hostname = (char *) ap_get_server_name(r);
+
+    if (src->port_str && src->port_str[0] != '\0')
+	dst->port = src->port;
+    else
+	dst->port = ap_get_server_port(r);
+
+    if (src->path && src->path[0] != '\0') {
+	dst->path = ap_pstrdup(r->pool, src->path);
+	ap_unescape_url(dst->path);
+    }
+    else
+	dst->path = src->path;
+
+    if (src->query && src->query[0] != '\0') {
+	dst->query = ap_pstrdup(r->pool, src->query);
+	ap_unescape_url(dst->query);
+    }
+    else
+	dst->query = src->query;
+}
 
 /* These functions return 0 if client is OK, and proper error status
  * if not... either AUTH_REQUIRED, if we made a check, and it failed, or
@@ -1434,6 +1544,7 @@ static int authenticate_digest_user(request_rec *r)
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
 						      &auth_digest_module);
 
+
     /* check for existence and syntax of Auth header */
 
     if (resp->auth_hdr_sts != VALID) {
@@ -1443,8 +1554,9 @@ static int authenticate_digest_user(request_rec *r)
 			  "`%s': %s", resp->scheme, r->uri);
 	else if (resp->auth_hdr_sts == INVALID)
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "Digest: missing user, realm, nonce, uri, or digest "
-			  "in authorization header: %s", r->uri);
+			  "Digest: missing user, realm, nonce, uri, digest, "
+			  "cnonce, or nonce_count in authorization header: %s",
+			  r->uri);
 	/* else (resp->auth_hdr_sts == NO_HEADER) */
 	note_digest_auth_failure(r, conf, resp, 0);
 	return AUTH_REQUIRED;
@@ -1455,10 +1567,13 @@ static int authenticate_digest_user(request_rec *r)
 
     /* check the auth attributes */
 
-    if (strcmp(resp->uri, resp->request_uri->path)) {
-	uri_components *r_uri = resp->request_uri, d_uri;
-	int port;
+    if (strcmp(resp->uri, resp->raw_request_uri)) {
+	/* Hmm, the simple match didn't work (probably a proxy modified the
+	 * request-uri), so lets do a more sophisticated match
+	 */
+	uri_components r_uri, d_uri;
 
+	copy_uri_components(&r_uri, resp->psd_request_uri, r);
 	if (ap_parse_uri_components(r->pool, resp->uri, &d_uri) != HTTP_OK) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: invalid uri <%s> in Authorization header",
@@ -1472,24 +1587,40 @@ static int authenticate_digest_user(request_rec *r)
 	    ap_unescape_url(d_uri.path);
 	if (d_uri.query)
 	    ap_unescape_url(d_uri.query);
-	if (r_uri->query)
-	    ap_unescape_url(r_uri->query);
-	port = ap_get_server_port(r);
 
-	if ((d_uri.hostname && d_uri.hostname[0] != '\0'
-	     && strcasecmp(d_uri.hostname, ap_get_server_name(r)))
-	    || (d_uri.port_str && d_uri.port != port)
+	if (r->method_number == M_CONNECT) {
+	    if (strcmp(resp->uri, r_uri.hostinfo)) {
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+			      "Digest: uri mismatch - <%s> does not match "
+			      "request-uri <%s>", resp->uri, r_uri.hostinfo);
+		return BAD_REQUEST;
+	    }
+	}
+	else if (
+	    /* check hostname matches, if present */
+	    (d_uri.hostname && d_uri.hostname[0] != '\0'
+	      && strcasecmp(d_uri.hostname, r_uri.hostname))
+	    /* check port matches, if present */
+	    || (d_uri.port_str && d_uri.port != r_uri.port)
+	    /* check that server-port is default port if no port present */
 	    || (d_uri.hostname && d_uri.hostname[0] != '\0'
-		&& !d_uri.port_str && port != ap_default_port(r))
-	    || !d_uri.path || strcmp(d_uri.path, r_uri->path)
-	    || (d_uri.query != r_uri->query
-		&& (!d_uri.query || !r_uri->query
-		    || strcmp(d_uri.query, r_uri->query)))
+		&& !d_uri.port_str && r_uri.port != ap_default_port(r))
+	    /* check that path matches */
+	    || (d_uri.path != r_uri.path
+		/* either exact match */
+	        && (!d_uri.path || !r_uri.path
+		    || strcmp(d_uri.path, r_uri.path))
+		/* or '*' matches empty path in scheme://host */
+	        && !(d_uri.path && !r_uri.path && resp->psd_request_uri->hostname
+		    && d_uri.path[0] == '*' && d_uri.path[1] == '\0'))
+	    /* check that query matches */
+	    || (d_uri.query != r_uri.query
+		&& (!d_uri.query || !r_uri.query
+		    || strcmp(d_uri.query, r_uri.query)))
 	    ) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: uri mismatch - <%s> does not match "
-			  "request-uri <%s>", resp->uri,
-			  ap_unparse_uri_components(r->pool, r_uri, 0));
+			  "request-uri <%s>", resp->uri, resp->raw_request_uri);
 	    return BAD_REQUEST;
 	}
     }
@@ -1543,6 +1674,7 @@ static int authenticate_digest_user(request_rec *r)
 	}
     }
     else {
+	const char *exp_digest;
 	int match = 0, idx;
 	for (idx=0; conf->qop_list[idx] != NULL; idx++) {
 	    if (!strcasecmp(conf->qop_list[idx], resp->message_qop)) {
@@ -1561,7 +1693,12 @@ static int authenticate_digest_user(request_rec *r)
 	    return AUTH_REQUIRED;
 	}
 
-	if (strcmp(resp->digest, new_digest(r, resp, conf))) {
+	exp_digest = new_digest(r, resp, conf);
+	if (!exp_digest) {
+	    /* we failed to allocate a client struct */
+	    return SERVER_ERROR;
+	}
+	if (strcmp(resp->digest, exp_digest)) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: user %s: password mismatch: %s", r->user,
 			  r->uri);
@@ -1753,17 +1890,18 @@ static int add_auth_info(request_rec *r)
 	 * Content-length is never set yet when we get here, and we can't
 	 * calc the entity hash) it's best to just leave this #def'd out.
 	 */
+	char date[AP_RFC822_DATE_LEN];
+	ap_rfc822_date(date, r->request_time);
 	char *entity_info =
 	    ap_md5(r->pool,
-		   (unsigned char *) ap_pstrcat(r->pool,
-		       ap_unparse_uri_components(r->pool,
-						 resp->request_uri, 0), ":",
+		   (unsigned char *) ap_pstrcat(r->pool, resp->raw_request_uri,
+		       ":",
 		       r->content_type ? r->content_type : ap_default_type(r), ":",
 		       hdr(r->headers_out, "Content-Length"), ":",
 		       r->content_encoding ? r->content_encoding : "", ":",
 		       hdr(r->headers_out, "Last-Modified"), ":",
 		       r->no_cache && !ap_table_get(r->headers_out, "Expires") ?
-			    ap_gm_timestr_822(r->pool, r->request_time) :
+			    date :
 			    hdr(r->headers_out, "Expires"),
 		       NULL));
 	digest =
@@ -1771,7 +1909,7 @@ static int add_auth_info(request_rec *r)
 		   (unsigned char *)ap_pstrcat(r->pool, conf->ha1, ":",
 					       resp->nonce, ":",
 					       r->method, ":",
-					       ap_gm_timestr_822(r->pool, r->request_time), ":",
+					       date, ":",
 					       entity_info, ":",
 					       ap_md5(r->pool, (unsigned char *) ""), /* H(entity) - TBD */
 					       NULL));
@@ -1783,12 +1921,13 @@ static int add_auth_info(request_rec *r)
      */
     if (conf->nonce_lifetime > 0) {
 	/* send nextnonce if current nonce will expire in less than 30 secs */
-	if (difftime(r->request_time, resp->nonce_time) > (conf->nonce_lifetime-NEXTNONCE_DELTA)) {
+	if ((r->request_time - resp->nonce_time) > (conf->nonce_lifetime-NEXTNONCE_DELTA)) {
 	    nextnonce = ap_pstrcat(r->pool, ", nextnonce=\"",
 				   gen_nonce(r->pool, r->request_time,
 					     resp->opaque, r->server, conf),
 				   "\"", NULL);
-	    resp->client->nonce_count = 0;
+	    if (resp->client)
+		resp->client->nonce_count = 0;
 	}
     }
     else if (conf->nonce_lifetime == 0 && resp->client) {
@@ -1815,8 +1954,15 @@ static int add_auth_info(request_rec *r)
 
 	/* calculate rspauth attribute
 	 */
-	if (resp->algorithm && !strcasecmp(resp->algorithm, "MD5-sess"))
-	    ha1 = get_session(r, resp, conf);
+	if (resp->algorithm && !strcasecmp(resp->algorithm, "MD5-sess")) {
+	    ha1 = get_session_HA1(r, resp, conf, 0);
+	    if (!ha1) {
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+			      "Digest: internal error: couldn't find session "
+			      "info for user %s", resp->username);
+		return !OK;
+	    }
+	}
 	else
 	    ha1 = conf->ha1;
 
@@ -1857,8 +2003,8 @@ static int add_auth_info(request_rec *r)
 
     if (ai && ai[0])
 	ap_table_mergen(r->headers_out,
-			r->proxyreq ? "Proxy-Authentication-Info" :
-				      "Authentication-Info",
+			r->proxyreq ? "Proxy-Authentication-Info"
+				    : "Authentication-Info",
 			ai);
     return OK;
 }
@@ -1869,8 +2015,9 @@ static void register_hooks(void)
     static const char * const cfgPost[]={ "http_core.c", NULL };
     static const char * const parsePre[]={ "mod_proxy.c", NULL };
 
-    ap_hook_post_config(initialize_module, NULL, cfgPost, 0);
-    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, 0);
+    ap_hook_post_config(initialize_module, NULL, cfgPost, AP_HOOK_MIDDLE);
+    ap_hook_child_init(initialize_child, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, AP_HOOK_MIDDLE);
     ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_auth_checker(digest_check_auth, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_fixups(add_auth_info, NULL, NULL, AP_HOOK_MIDDLE);
