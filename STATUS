@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 14:44:18 $]
+Last modified at [$Date: 2003/05/15 15:15:23 $]
 
 Release:
 
@@ -62,6 +62,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * make ExpiresByType work for dynamic documents.
+      modules/metadata/mod_expires.c 1.41
+      +1: ken
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
