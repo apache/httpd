@@ -346,7 +346,7 @@ static void log_error_core(const char *file, int line, int level,
 	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
 	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
 	    return;
-	apr_open_stderr(&logf, NULL);
+	apr_open_stderr(&logf, pool);
     }
     else if (s->error_log) {
 	/*
@@ -526,7 +526,7 @@ void ap_log_pid(apr_pool_t *p, const char *fname)
        *      that may screw up scripts written to do something
        *      based on the last modification time of the pid file.
        */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
+        ap_log_perror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, p,
 		     apr_psprintf(p,
                                  "pid file %s overwritten -- Unclean shutdown of previous Apache run?",
                      fname)
