@@ -257,7 +257,7 @@ AP_DECLARE(int) ap_rgetline(char **s, int n, request_rec *r, int fold)
             AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(req_cfg->bb));
             break;
         }
-        if (total + length - 1 < n) {
+        if (total + (int)length - 1 < n) {
             if (!*s) {
                 *s = apr_palloc(r->pool, length + 2); /* +2 for LF, null */
             }
