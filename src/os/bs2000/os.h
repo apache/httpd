@@ -6,7 +6,7 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
-#include "httpd.h"
+#include "conf.h"
 
 #if !defined(INLINE) && defined(USE_GNU_INLINE)
 /* Compiler supports inline, so include the inlineable functions as
