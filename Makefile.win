@@ -62,12 +62,10 @@ clean:
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	cd srclib\apr
-#	 aprlibdll creates the dynamic libapr.dll from the static library project apr.dsp
 	 $(MAKE) $(MAKEOPT) -f apr.mak CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapr.mak CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd srclib\apr-util
-#	 libaprutil creates the dynamic libaprutil.dll from the static library project aprutil.dsp
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libaprutil.mak CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -83,8 +81,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
-	 -del Core$(SHORT)\buildmark.obj
-#	 libhttpd creates the dynamic libhttpd.dll from the static library project httpd
+	 -del $(LONG)\buildmark.obj
 	 $(MAKE) $(MAKEOPT) -f libhttpd.mak CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd modules\aaa
