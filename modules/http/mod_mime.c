@@ -101,10 +101,10 @@ typedef struct {
     apr_table_t *language_types;      /* Added with AddLanguage... */
     apr_table_t *handlers;            /* Added with AddHandler...  */
     apr_table_t *charset_types;       /* Added with AddCharset... */       
-    apr_array_header_t *handlers_remove;     /* List of handlers to remove */
-    apr_array_header_t *types_remove;       /* List of MIME types to remove */
+    apr_table_t *filter_names;        /* Added with SetFilterStack... */       
+    apr_array_header_t *handlers_remove;  /* List of handlers to remove */
+    apr_array_header_t *types_remove;     /* List of MIME types to remove */
     apr_array_header_t *encodings_remove; /* List of encodings to remove */
-
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
@@ -142,6 +142,7 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     new->encoding_types = apr_make_table(p, 4);
     new->charset_types = apr_make_table(p, 4);
     new->language_types = apr_make_table(p, 4);
+    new->filter_names = apr_make_table(p, 4);
     new->handlers = apr_make_table(p, 4);
     new->handlers_remove = apr_make_array(p, 4, sizeof(attrib_info));
     new->types_remove = apr_make_array(p, 4, sizeof(attrib_info));
@@ -171,6 +172,8 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
 					   base->charset_types);
     new->language_types = apr_overlay_tables(p, add->language_types,
                                          base->language_types);
+    new->filter_names = apr_overlay_tables(p, add->filter_names,
+                                   base->filter_names);
     new->handlers = apr_overlay_tables(p, add->handlers,
                                    base->handlers);
 
@@ -266,6 +269,17 @@ static const char *add_handler(cmd_parms *cmd, void *m_, const char *hdlr_,
     return NULL;
 }
 
+static const char *set_filter(cmd_parms *cmd, void *m_, const char *ct_,
+                            const char *filt)
+{
+    mime_dir_config *m=m_;
+    char *ct=apr_pstrdup(cmd->pool,ct_);
+
+    ap_str_tolower(ct);
+    apr_table_addn(m->filter_names, ct, filt);
+    return NULL;
+}
+
 /*
  * Note handler names that should be un-added for this location.  This
  * will keep the association from being inherited, as well, but not
@@ -342,6 +356,8 @@ AP_INIT_ITERATE2("AddLanguage", add_language, NULL, OR_FILEINFO,
      "a language (e.g., fr), followed by one or more file extensions"),
 AP_INIT_ITERATE2("AddHandler", add_handler, NULL, OR_FILEINFO,
      "a handler name followed by one or more file extensions"),
+AP_INIT_ITERATE2("SetFilter", set_filter, NULL, OR_FILEINFO, 
+     "a mime type followed by one or more filters"),
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower, 
      (void *)XtOffsetOf(mime_dir_config, type), OR_FILEINFO,
      "a media type"),
@@ -808,10 +824,27 @@ static int find_ct(request_rec *r)
     return OK;
 }
 
+static int filter_chain(void *input, const char *key, const char *val)
+{
+    request_rec *r = input;
+
+    ap_add_output_filter(val, NULL, r, r->connection);
+    return 1;
+}
+
+static void mime_insert_filter(request_rec *r)
+{
+    mime_dir_config *conf =
+    (mime_dir_config *) ap_get_module_config(r->per_dir_config, &mime_module);
+
+    apr_table_do(filter_chain, r, conf->filter_names, r->content_type, NULL);
+}
+
 static void register_hooks(void)
 {
     ap_hook_type_checker(find_ct,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_post_config(mime_post_config,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_insert_filter(mime_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA mime_module = {
