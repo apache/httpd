@@ -534,14 +534,14 @@ include command.</td></tr><tr><td><a class="help" href="directive-dict.html#Synt
     <p>The SSIErrorMsg directive changes the error message displayed
     when mod_include encounters an error. For production servers you
     may consider changing the default error message to
-    <code>"&lt;-- Error --&gt;"</code> so that the message
+    <code>"&lt;!-- Error --&gt;"</code> so that the message
     is not presented to the user.
     </p>
-    <p>This directive has the same effect as the <code>&lt;--#config
+    <p>This directive has the same effect as the <code>&lt;!--#config
     errmsg=<em>message</em> --&gt;</code> element.</p>
 
 <hr/><h2><a name="SSIStartTag">SSIStartTag</a> <a name="ssistarttag">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>Changes the string that mod_include looks for to start an
-include element</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSIStartTag "&lt;--!"</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_include</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Available in version 2.0.30 and later.</td></tr></table></td></tr></table>
+include element</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSIStartTag "&lt;!--"</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_include</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Available in version 2.0.30 and later.</td></tr></table></td></tr></table>
 
     <p>This directive changes the string that mod_include looks for 
     to mark an include element to process.</p>
@@ -556,10 +556,10 @@ displayed</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syn
     when echoing DATE environment variables.  The <em>formatstring</em>
     is as in strftime(3) from the C standard library.</p>
 
-    <p>This directive has the same effect as the <code>&lt;--#config
+    <p>This directive has the same effect as the <code>&lt;!--#config
     timefmt=<em>formatstring</em> --&gt;</code> element.</p>
 <hr/><h2><a name="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Changes the string that mod_include displays when
-a variable isn't set.</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSIUndefinedEcho <em>tag</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSIUndefinedEcho "&lt;-- undef --&gt;"</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_include</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Available in version 2.0.34 and later.
+a variable isn't set.</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>SSIUndefinedEcho <em>tag</em></td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>SSIUndefinedEcho "&lt;!-- undef --&gt;"</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_include</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Available in version 2.0.34 and later.
 </td></tr></table></td></tr></table>
     <p>This directive changes the string that mod_include displays
     when a variable is not set and "echoed".</p>
