@@ -4,6 +4,9 @@ Changes with Apache 2.1.5
 
 Changes with Apache 2.1.4
 
+  *) Don't let a subrequest inherit headers describing the original request's
+     body.  [Greg Ames]
+
   *) Fix Windows CompContext buff size miscalculation
      [Allan Edwards]
 

@@ -987,6 +987,21 @@ request_rec *ap_read_request(conn_rec *conn)
     return r;
 }
 
+/* if a request with a body creates a subrequest, clone the original request's
+ * input headers minus any headers pertaining to the body which has already
+ * been read.  out-of-line helper function for ap_set_sub_req_protocol.
+ */
+
+static void clone_headers_no_body(request_rec *rnew,
+                                  const request_rec *r)
+{
+    rnew->headers_in = apr_table_copy(rnew->pool, r->headers_in);
+    apr_table_unset(rnew->headers_in, "Content-Length");
+    apr_table_unset(rnew->headers_in, "Transfer-Encoding");
+    apr_table_unset(rnew->headers_in, "Content-Type");
+    apr_table_unset(rnew->headers_in, "Content-Encoding");
+}        
+
 /*
  * A couple of other functions which initialize some of the fields of
  * a request structure, as appropriate for adjuncts of one kind or another
@@ -1008,7 +1023,15 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
 
     rnew->status          = HTTP_OK;
 
-    rnew->headers_in      = r->headers_in;
+    /* did the original request have a body?  (e.g. POST w/SSI tags)
+     * if so, make sure the subrequest doesn't inherit body headers
+     */
+    if (r->read_length) {
+        clone_headers_no_body(rnew, r);
+    } else {
+        /* no body (common case).  clone headers the cheap way */
+        rnew->headers_in      = r->headers_in;
+    }
     rnew->subprocess_env  = apr_table_copy(rnew->pool, r->subprocess_env);
     rnew->headers_out     = apr_table_make(rnew->pool, 5);
     rnew->err_headers_out = apr_table_make(rnew->pool, 5);
