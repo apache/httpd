@@ -218,7 +218,6 @@
 のメモリアロケーションのデバッグ</a></li>
 <li><a href="developer/documenting.html">Apache 2.0 の説明を書く</a></li>
 <li><a href="developer/hooks.html">Apache 2.0 フック関数</a></li>
-<li><a href="developer/layeredio.html">Apache 2.0 の階層化された I/O</a></li>
 <li><a href="developer/modules.html">Apache 1.3 から Apache 2.0 にモジュールを
 移植する</a></li>
 <li><a href="developer/request.html">Apache 2.0 のリクエスト処理</a></li>
