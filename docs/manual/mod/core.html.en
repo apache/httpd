@@ -20,6 +20,7 @@ available</td></tr><tr><th><a href="module-dict.html#Status">Status:
 <li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
@@ -581,6 +582,59 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
 
     <div class="example"><p><code>
       EnableMMAP off
+    </code></p></div>
+
+    <p>For NFS mounted files, this feature may be disabled explicitly for
+    the offending files by specifying:</p>
+
+    <div class="example"><p><code>
+      &lt;Directory "/path-to-nfs-files"&gt;
+            EnableMMAP off
+      &lt;/Directory&gt;
+    </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Use the kernel sendfile support to deliver files to the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td><code>EnableSendfile on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>EnableSendfile on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
+              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
+              </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
+              </a></th><td>core</td></tr></table>
+    <p>This directive controls whether the httpd may use the sendfile
+    support from the kernel to transmit file contents to the client.
+    By default, when the handling of a request requires no access
+    to the data within a file -- for example, when delivering a
+    static file -- Apache uses sendfile to deliver the file contents
+    without ever reading the file if the OS supports it.</p>
+
+    <p>This sendfile mechanism avoids seperate read and send operations,
+    and buffer allocations.  But on some platforms or within some
+    filesystems, it is better to disable this feature to avoid 
+    operational problems:</p>
+
+    <ul>
+    <li>Some platforms may have broken sendfile support that the build
+    system did not detect, especially if the binaries were built on
+    another box and moved to such a machine with broken sendfile support.</li>
+    <li>With an NFS-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code>,
+    the kernel may be unable to serve the network file through 
+    it's own cache.</li>
+    </ul>
+
+    <p>For server configurations that are vulnerable to these problems,
+    you should disable memory-mapping of delivered files by specifying:</p>
+
+    <div class="example"><p><code>
+      EnableSendfile off
+    </code></p></div>
+
+    <p>For NFS mounted files, this feature may be disabled explicitly for
+    the offending files by specifying:</p>
+
+    <div class="example"><p><code>
+      &lt;Directory "/path-to-nfs-files"&gt;
+            EnableSendfile off
+      &lt;/Directory&gt;
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>What the server will return to the client
