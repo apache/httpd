@@ -1,5 +1,13 @@
 Changes with Apache 2.0.50
 
+  *) SECURITY: CAN-2004-0488 (cve.mitre.org)
+     mod_ssl: Fix a buffer overflow in the FakeBasicAuth code for a
+     (trusted) client certificate subject DN which exceeds 6K in length.
+     [Joe Orton]
+
+  *) mod_ssl: Log the errors returned on failure to load or initialize
+     a crypto accelerator engine.  [Joe Orton]
+
   *) Allow RequestHeader directives to be conditional. PR 27951.
      [Vincent Deffontaines <vincent gryzor.com>, André Malo]
 
