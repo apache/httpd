@@ -1149,6 +1149,47 @@ short_score get_scoreboard_info(int i)
 }
 
 #if defined(STATUS)
+void time_process_request (int child_num, int status)
+{
+    short_score new_score_rec;
+#if defined(NO_GETTIMEOFDAY)
+    struct tms tms_blk;
+#endif
+
+    if (child_num < 0)
+	return ;
+    
+    sync_scoreboard_image();
+    new_score_rec = scoreboard_image->servers[child_num];
+
+    if (status == START_PREQUEST) {
+#if defined(NO_GETTIMEOFDAY)
+	if ((new_score_rec.start_time = times(&tms_blk)) == -1)
+	    new_score_rec.start_time = (clock_t)0;
+#else
+	if (gettimeofday(&new_score_rec.start_time, (struct timezone *)0) < 0)
+	    new_score_rec.start_time.tv_sec =
+	    new_score_rec.start_time.tv_usec = 0L;
+#endif
+    }
+    else if (status == STOP_PREQUEST) {
+#if defined(NO_GETTIMEOFDAY)
+	if ((new_score_rec.stop_time = times(&tms_blk)) == -1)
+	    new_score_rec.stop_time = new_score_rec.start_time = (clock_t)0;
+#else
+	if (gettimeofday(&new_score_rec.stop_time, (struct timezone *)0) < 0)
+	    new_score_rec.stop_time.tv_sec =
+	    new_score_rec.stop_time.tv_usec =
+	    new_score_rec.start_time.tv_sec =
+	    new_score_rec.start_time.tv_usec = 0L;
+#endif
+
+    }
+
+    put_scoreboard_info(child_num, &new_score_rec);
+
+}
+
 static void increment_counts (int child_num, request_rec *r)
 {
     long int bs=0;
@@ -1156,17 +1197,17 @@ static void increment_counts (int child_num, request_rec *r)
 
     sync_scoreboard_image();
     new_score_rec = scoreboard_image->servers[child_num];
+
     if (r->sent_bodyct)
         bgetopt(r->connection->client, BO_BYTECT, &bs);
 
+    times(&new_score_rec.times);
     new_score_rec.access_count ++;
     new_score_rec.my_access_count ++;
     new_score_rec.conn_count ++;
     new_score_rec.bytes_served += (unsigned long)bs;
     new_score_rec.my_bytes_served += (unsigned long)bs;
     new_score_rec.conn_bytes += (unsigned long)bs;
-
-    times(&new_score_rec.times);
 
     put_scoreboard_info(child_num, &new_score_rec); 
 }
@@ -2238,10 +2279,12 @@ void child_main(int child_num_arg)
             (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
 
             process_request(r);
+
 #if defined(STATUS)
             increment_counts(child_num, r);
 #endif
-            if (!current_conn->keepalive || current_conn->aborted)
+
+            if (!current_conn->keepalive || current_conn->aborted) 
                 break;
 
             destroy_pool(r->pool);
@@ -2981,9 +3024,11 @@ void child_sub_main(int child_num, int srv,
             (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
 
             process_request(r);
+
 #if defined(STATUS)
             increment_counts(child_num, r);
 #endif
+
             if (!current_conn->keepalive || current_conn->aborted)
                 break;
 

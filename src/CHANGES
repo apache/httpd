@@ -1,4 +1,8 @@
 Changes with Apache 1.3
+
+  *) We now determine and display the time spent processing a
+     request if desired.
+
   *) CGI: Add a select() loop so that CGI scripts don't have to be
      nph in order to be "unbuffered". [Sameer Parekh]
 

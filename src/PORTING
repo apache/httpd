@@ -230,6 +230,9 @@ build for your OS.
       NO_SLACK:
        Do not use the "slack" fd feature which requires a working fcntl
        F_DUPFD.
+      NO_GETTIMEOFDAY:
+       OS does not have the gettimeofday() function (which is
+       BSDish). This assumes it has times() instead.
 --
 
   MISC #DEFINES:

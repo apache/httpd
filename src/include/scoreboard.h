@@ -85,6 +85,13 @@ typedef struct {
     unsigned long my_bytes_served;
     unsigned long conn_bytes;
     unsigned short conn_count;
+#if defined(NO_GETTIMEOFDAY)
+    clock_t start_time;
+    clock_t stop_time;
+#else
+    struct timeval start_time;
+    struct timeval stop_time;
+#endif
     struct tms times;
     time_t last_used;
     char client[32];	/* Keep 'em small... */
@@ -110,3 +117,7 @@ typedef struct
 extern void sync_scoreboard_image(void);
 short_score get_scoreboard_info(int x);
 int exists_scoreboard_image ();
+
+/* for time_process_request() in http_main.c */
+#define START_PREQUEST 1
+#define STOP_PREQUEST  2

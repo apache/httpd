@@ -74,6 +74,7 @@ extern void GETPRIVMODE();
 extern void GETUSERMODE();
 extern char *inet_ntoa();
 #define NO_SLACK
+#define NO_GETTIMEOFDAY
 
 #elif defined(SUNOS4)
 #define HAVE_GMTOFF

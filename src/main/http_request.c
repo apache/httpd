@@ -1033,6 +1033,8 @@ void process_request (request_rec *r)
 {
 #ifdef STATUS
     int old_stat;
+
+    time_process_request(r->connection->child_num, START_PREQUEST);
 #endif /* STATUS */
     process_request_internal (r);
 #ifdef STATUS
@@ -1042,6 +1044,7 @@ void process_request (request_rec *r)
     log_transaction (r);
 #ifdef STATUS
     (void)update_child_status (r->connection->child_num, old_stat, r);
+    time_process_request(r->connection->child_num, STOP_PREQUEST);
 #endif /* STATUS */
 }
 

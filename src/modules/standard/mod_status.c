@@ -204,6 +204,7 @@ int status_handler (request_rec *r)
     unsigned short conn_lres;
     unsigned long bcount=0;
     unsigned long kbcount=0;
+    long req_time;
 #ifdef NEXT
     float tick=HZ;
 #else
@@ -285,10 +286,7 @@ int status_handler (request_rec *r)
 	stat_buffer[i] = status[res];
         if (res == SERVER_READY)
 	    ready++;
-        else if (res == SERVER_BUSY_READ || res==SERVER_BUSY_WRITE || 
-		 res == SERVER_STARTING || res==SERVER_BUSY_KEEPALIVE ||
-		 res == SERVER_BUSY_LOG || res==SERVER_BUSY_DNS ||
-		 res == SERVER_GRACEFUL)
+        else if (res != SERVER_DEAD && res != SERVER_UNKNOWN)
 	    busy++;
 #if defined(STATUS)
         lres = score_record.access_count;
@@ -427,15 +425,35 @@ int status_handler (request_rec *r)
 	else
 #ifdef __EMX__
             /* Allow for OS/2 not having CPU stats */
-            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
+            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
 #else
-            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
+            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
 #endif
 
 
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
     {
         score_record=get_scoreboard_info(i);
+
+#if defined(NO_GETTIMEOFDAY)
+	if (score_record.start_time == (clock_t)0)
+	    req_time = 0L;
+	else {
+	    req_time = score_record.stop_time - score_record.start_time;
+	    req_time = (req_time*1000)/(int)tick;
+	}
+#else
+	if (score_record.start_time.tv_sec == 0L &&
+	 score_record.start_time.tv_usec == 0L)
+	    req_time = 0L;
+	else
+	    req_time =
+	((score_record.stop_time.tv_sec-score_record.start_time.tv_sec)*1000)+
+	((score_record.stop_time.tv_usec-score_record.start_time.tv_usec)/1000);
+#endif
+	if (req_time < 0L)
+	    req_time = 0L;
+
         lres = score_record.access_count;
         my_lres = score_record.my_access_count;
 	conn_lres = score_record.conn_count;
@@ -491,16 +509,17 @@ int status_handler (request_rec *r)
 		    }
 #ifdef __EMX__
                     /* Allow for OS/2 not having CPU stats */
-                    rprintf(r,"]\n %s (",
+                    rprintf(r,"]\n %.0f %ld (",
 #else
 
-		    rprintf(r,"] u%g s%g cu%g cs%g\n %s (",
+		    rprintf(r,"] u%g s%g cu%g cs%g\n %.0f %ld (",
 			    score_record.times.tms_utime/tick,
 			    score_record.times.tms_stime/tick,
 			    score_record.times.tms_cutime/tick,
 			    score_record.times.tms_cstime/tick,
 #endif
-			    asctime(localtime(&score_record.last_used)));
+			    difftime(nowtime, score_record.last_used),
+			    (long)req_time);
 		    format_byte_out(r,conn_bytes);
 		    rputs("|",r);
 		    format_byte_out(r,my_bytes);
@@ -555,15 +574,16 @@ int status_handler (request_rec *r)
 		    }
 #ifdef __EMX__
 	            /* Allow for OS/2 not having CPU stats */
-        	    rprintf(r,"\n<td>%.0f",
+        	    rprintf(r,"\n<td>%.0f<td>%ld",
 #else
-		    rprintf(r,"\n<td>%.2f<td>%.0f",
+		    rprintf(r,"\n<td>%.2f<td>%.0f<td>%ld",
 			    (score_record.times.tms_utime +
 			    score_record.times.tms_stime +
 			    score_record.times.tms_cutime +
 			    score_record.times.tms_cstime)/tick,
 #endif
-			    difftime(nowtime, score_record.last_used));
+			    difftime(nowtime, score_record.last_used),
+			    (long)req_time);
 		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,
 			(float)bytes/MBYTE);
@@ -586,6 +606,7 @@ int status_handler (request_rec *r)
 <tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
 <tr><th>M<td>Mode of operation\n \
 <tr><th>SS<td>Seconds since beginning of most recent request\n \
+<tr><th>Req<td>Milliseconds required to process most recent request\n \
 <tr><th>Conn<td>Kilobytes transferred this connection\n \
 <tr><th>Child<td>Megabytes transferred this child\n \
 <tr><th>Slot<td>Total megabytes transferred this slot\n \
@@ -600,6 +621,7 @@ int status_handler (request_rec *r)
 <tr><th>M<td>Mode of operation\n \
 <tr><th>CPU<td>CPU usage, number of seconds\n \
 <tr><th>SS<td>Seconds since beginning of most recent request\n \
+<tr><th>Req<td>Milliseconds required to process most recent request\n \
 <tr><th>Conn<td>Kilobytes transferred this connection\n \
 <tr><th>Child<td>Megabytes transferred this child\n \
 <tr><th>Slot<td>Total megabytes transferred this slot\n \

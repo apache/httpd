@@ -120,7 +120,7 @@ void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = get_module_config (r->server->module_config,
 					       &usertrack_module);
-#ifdef MPE
+#if defined(NO_GETTIMEOFDAY)
     clock_t mpe_times;
     struct tms mpe_tms;
 #else
@@ -137,8 +137,8 @@ void make_cookie(request_rec *r)
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
 
-#ifdef MPE
-/* MPE lacks gettimeofday(), so we must use time() to obtain the epoch
+#if defined(NO_GETTIMEOFDAY)
+/* We lack gettimeofday(), so we must use time() to obtain the epoch
    seconds, and then times() to obtain CPU clock ticks (milliseconds).
    Combine this together to obtain a hopefully unique cookie ID. */
 
