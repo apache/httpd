@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/04 22:31:56 $]
+Last modified at [$Date: 2004/02/04 23:26:54 $]
 
 Release:
 
@@ -82,7 +82,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Fix include guard of ap_mpm.h
         include/ap_mpm.h: r1.38
-      +1: nd, rederpj
+      +1: nd, rederpj, bnicholes
 
     * Fix file extensions for real media files and removed rpm extension
       from mime.types. PR 26079. (2.0 + 1.3)
