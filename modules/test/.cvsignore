@@ -1,8 +1,12 @@
 .deps
+.libs
+*.la
+modules.mk
 Makefile
 *.lo
+*.slo
 *.so
-modules.mk
+*.x
 Debug
 Release
 *.plg
