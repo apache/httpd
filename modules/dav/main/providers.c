@@ -52,95 +52,39 @@
  * <http://www.apache.org/>.
  */
 
-#include "httpd.h"
-#include "http_config.h"
+#include "apr_pools.h"
+#include "apr_hash.h"
+
+#include "ap_hooks.h"   /* ### for ap_global_hook_pool */
 
 #include "mod_dav.h"
-#include "repos.h"
 
-/* per-server configuration */
-typedef struct {
-    const char *lockdb_path;
 
-} dav_fs_server_conf;
+static apr_hash_t *dav_repos_providers = NULL;
 
-extern module MODULE_VAR_EXPORT dav_fs_module;
 
-const char *dav_get_lockdb_path(const request_rec *r)
+static apr_status_t dav_cleanup_providers(void *ctx)
 {
-    dav_fs_server_conf *conf;
-
-    conf = ap_get_module_config(r->server->module_config, &dav_fs_module);
-    return conf->lockdb_path;
+    dav_repos_providers = NULL;
+    return APR_SUCCESS;
 }
 
-static void *dav_fs_create_server_config(apr_pool_t *p, server_rec *s)
+void dav_register_repository(apr_pool_t *p, const char *name,
+                             const dav_hooks_repository *hooks)
 {
-    return apr_pcalloc(p, sizeof(dav_fs_server_conf));
+    /* ### ignore the pool; it is NULL right now */
+    p = ap_global_hook_pool;
+
+    if (dav_repos_providers == NULL) {
+        dav_repos_providers = apr_make_hash(p);
+        apr_register_cleanup(p, NULL, dav_cleanup_providers, apr_null_cleanup);
+    }
+
+    /* just set it. no biggy if it was there before. */
+    apr_hash_set(dav_repos_providers, name, 0, hooks);
 }
 
-static void *dav_fs_merge_server_config(apr_pool_t *p,
-                                        void *base, void *overrides)
+const dav_hooks_repository * dav_lookup_repository(const char *name)
 {
-    dav_fs_server_conf *parent = base;
-    dav_fs_server_conf *child = overrides;
-    dav_fs_server_conf *newconf;
-
-    newconf = apr_pcalloc(p, sizeof(*newconf));
-
-    newconf->lockdb_path =
-        child->lockdb_path ? child->lockdb_path : parent->lockdb_path;
-
-    return newconf;
+    return apr_hash_get(dav_repos_providers, name, 0);
 }
-
-/*
- * Command handler for the DAVLockDB directive, which is TAKE1
- */
-static const char *dav_fs_cmd_davlockdb(cmd_parms *cmd, void *config,
-                                        const char *arg1)
-{
-    dav_fs_server_conf *conf;
-
-    conf = ap_get_module_config(cmd->server->module_config,
-                                &dav_fs_module);
-    arg1 = ap_os_canonical_filename(cmd->pool, arg1);
-    conf->lockdb_path = ap_server_root_relative(cmd->pool, arg1);
-
-    return NULL;
-}
-
-static const command_rec dav_fs_cmds[] =
-{
-    /* per server */
-    AP_INIT_TAKE1("DAVLockDB", dav_fs_cmd_davlockdb, NULL, RSRC_CONF,
-                  "specify a lock database"),
-
-    { NULL }
-};
-
-static void register_hooks(void)
-{
-    ap_hook_get_lock_hooks(dav_fs_get_lock_hooks, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_get_propdb_hooks(dav_fs_get_propdb_hooks, NULL, NULL,
-                             AP_HOOK_MIDDLE);
-    ap_hook_gather_propsets(dav_fs_gather_propsets, NULL, NULL,
-                            AP_HOOK_MIDDLE);
-    ap_hook_find_liveprop(dav_fs_find_liveprop, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_hook_insert_all_liveprops(dav_fs_insert_all_liveprops, NULL, NULL,
-                                 AP_HOOK_MIDDLE);
-
-    dav_fs_register(NULL /* ### pconf */);
-}
-
-module MODULE_VAR_EXPORT dav_fs_module =
-{
-    STANDARD20_MODULE_STUFF,
-    NULL,			/* dir config creater */
-    NULL,			/* dir merger --- default is to override */
-    dav_fs_create_server_config,	/* server config */
-    dav_fs_merge_server_config,	/* merge server config */
-    dav_fs_cmds,		/* command table */
-    NULL,                       /* handlers */
-    register_hooks,             /* register hooks */
-};
