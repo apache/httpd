@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/21 23:38:22 $]
+Last modified at [$Date: 2003/11/21 23:42:47 $]
 
 Release:
 
@@ -65,6 +65,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * mod_expires: Don't report an Internal Server error if ExpiresDefault
+      is used and has not been set in the httpd.conf file. PR: 23748, 24459
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c.diff?r1=1.46&r2=1.47
+      +1: rederpj
 
     * Make Win32 MPM honor MaxMemFree for transaction pools
       server/mpm/winnt/child.c: r1.17
