@@ -105,17 +105,6 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-
-/* some systems do not define SHM_[RW]; values are from Unix98 */
-
-#ifndef SHM_R
-#define SHM_R 0x400
-#endif
-
-#ifndef SHM_W
-#define SHM_W 0x200
-#endif 
-
 #endif
 
 

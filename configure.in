@@ -1,19 +1,24 @@
 dnl ## Process this file with autoconf to produce a configure script
 
 AC_PREREQ(2.13)
-AC_INIT(main/http_main.c)
+AC_INIT(acinclude.m4)
 
 dnl ## This is the central place where Apache's version should be kept.
-AM_INIT_AUTOMAKE(apache, 2.0-dev)
+dnl AM_INIT_AUTOMAKE(apache, 2.0-dev)
 
-AM_CONFIG_HEADER(include/ap_config_auto.h)
+VERSION="apache-2.0-dev"
+	
+AC_CONFIG_HEADER(include/ap_config_auto.h)
 
 APACHE_VERSION=$VERSION
-AC_SUBST(APACHE_VERSION)
+APACHE_SUBST(APACHE_VERSION)
+
+test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
+test "$prefix" = "NONE" && prefix='/usr/local'
 
 dnl XXX - make will sometimes die as annoyingly as automake with this option.
 dnl just remake and continue
-AM_MAINTAINER_MODE
+dnl AM_MAINTAINER_MODE
 
 dnl We want this one before the checks, so the checks can modify CFLAGS
 test -z "$CFLAGS" && auto_cflags=1
@@ -99,8 +104,10 @@ APACHE_INADDR_NONE
 
 case "`uname -sr`" in
 "SunOS 5"*)
-	CFLAGS="$CFLAGS -D_POSIX_PTHREAD_SEMANTICS";;
+	REENTRANCY_FLAGS="$REENTRANCY_FLAGS -D_POSIX_PTHREAD_SEMANTICS";;
 esac
+
+REENTRANCY_FLAGS="$REENTRANCY_FLAGS -D_REENTRANT"
 
 AC_FUNC_SELECT_ARGTYPES
 
@@ -113,29 +120,51 @@ if test "$ac_cv_func_select_arg1" != "int" \
         [Define if arguments to select() aren't what we expect])
 fi
 
-AM_DISABLE_SHARED
-AM_PROG_LIBTOOL
-
 dnl ## Checking command-line options
 test -n "$GCC" && test "$USE_MAINTAINER_MODE" = "yes" && \
     CFLAGS="$CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"
 
+APACHE_ENABLE_LAYOUT
+APACHE_ENABLE_MODULES
+APACHE_ENABLE_SHARED
+
 INCLUDES="-I\$(top_srcdir)/include -I\$(top_srcdir)/lib/apr/include"
-AC_SUBST(INCLUDES)
+APACHE_SUBST(INCLUDES)
 
 dnl reading config stubs
 esyscmd(./helpers/config-stubs .)
 
 INCLUDES="$INCLUDES -I\$(top_srcdir)/\$(OS_DIR)"
-AC_SUBST(EXTRA_LIBS)
-AC_SUBST(REGEX_DIR)
-AC_SUBST(REGEX_LIB)
-AC_SUBST(MPM_LIB)
-AC_SUBST(OS)
-AC_SUBST(OS_DIR)
+EXTRA_LIBS="$EXTRA_LIBS $LIBS"
+EXTRA_LDFLAGS="$LDFLAGS"
+LIBS=""
+LDFLAGS=""
+APACHE_SUBST(EXTRA_LDFLAGS)
+APACHE_SUBST(EXTRA_LIBS)
+APACHE_SUBST(REGEX_DIR)
+APACHE_SUBST(REGEX_LIB)
+APACHE_SUBST(MPM_LIB)
+APACHE_SUBST(OS)
+APACHE_SUBST(OS_DIR)
+APACHE_SUBST(BUILTIN_LIBS)
 
+AM_DISABLE_SHARED
+AM_PROG_LIBTOOL
+APACHE_LIBTOOL_SILENT
+
+if test "$apache_need_shared" = "yes"; then
+  $SHELL $srcdir/ltconfig --output=shlibtool --disable-static --srcdir=$srcdir --cache-file=./config.cache $srcdir/ltmain.sh
+fi
+
+CPPFLAGS="$CPPFLAGS $REENTRANCY_FLAGS"
+APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile
+           modules/Makefile os/Makefile)
+APACHE_FAST_GENERATE
+	
 dnl ## Build modules.c
 rm -f $srcdir/modules.c
 echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
-AC_OUTPUT([Makefile ap/Makefile lib/Makefile main/Makefile modules/Makefile
-           modules/standard/Makefile os/Makefile $APACHE_OUTPUT_FILES])
+
+APACHE_PASSTHRU(REENTRANCY_FLAGS)
+
+AC_OUTPUT($APACHE_OUTPUT_FILES)

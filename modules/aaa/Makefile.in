@@ -1,0 +1,8 @@
+
+DEPTH     = ../..
+topsrcdir = @topsrcdir@
+srcdir    = @srcdir@
+VPATH     = @srcdir@
+
+include $(topsrcdir)/build/special.mk
+

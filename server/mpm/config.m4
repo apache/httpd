@@ -1,37 +1,36 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
-[  --with-mpm=MPM          Choose the process model, etc. for Apache to use.],
-[
-  if test "$withval" != "no" ; then
-    apache_cv_mpm=$withval
-    AC_MSG_RESULT($apache_cv_mpm)
-  else
-    apache_cv_mpm="mpmt_pthread"
-    AC_MSG_RESULT(No MPM specified.  Using pthread)
-  fi
+[  --with-mpm=MPM          Choose the process model for Apache to use.
+                          MPM={dexter,mpmt_beos,mpmt_pthread,prefork}],[
+  APACHE_MPM=$withval
 ],[
-  apache_cv_mpm="mpmt_pthread"
-  AC_MSG_RESULT(No MPM specified.  Using pthread)
+  APACHE_MPM=mpmt_pthread
 ])
+AC_MSG_RESULT($APACHE_MPM)
 
-AC_MSG_CHECKING([for which threading library to use])
-APACHE_CHECK_THREADS('' -pthread -D_REENTRANT, '' -lpthread -lc_r)
-AC_MSG_RESULT("$threads_result")
+apache_cv_mpm=$APACHE_MPM
+	
+if test "$apache_cv_mpm" != "prefork"; then
+  APACHE_CHECK_THREADS
+  AC_MSG_CHECKING([for which threading library to use])
+  AC_MSG_RESULT($threads_result)
 
-AC_MSG_CHECKING([to ensure I can compile the selected MPM]) 
-if test "$apache_threads_working" = "no" && test "$apache_cv_mpm" != "prefork"; then
-AC_MSG_RESULT([can't compile selected MPM because there are no threads, defaulting to prefork])
-    apache_cv_mpm="prefork"
-else
-AC_MSG_RESULT([OK])
+  if test "$apache_threads_working" = "no"; then
+    AC_MSG_RESULT(The currently selected MPM requires threads which your system seems to lack)
+    AC_MSG_CHECKING(checking for replacement)
+    AC_MSG_RESULT(prefork selected)
+    apache_cv_mpm=prefork
+  fi
 fi
 
-APACHE_OUTPUT(modules/mpm/Makefile)
+APACHE_CHECK_SHM_RW
+
+APACHE_FAST_OUTPUT(modules/mpm/Makefile)
 MPM_NAME=$apache_cv_mpm
 MPM_DIR=modules/mpm/$MPM_NAME
 MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 
-AC_SUBST(MPM_NAME)
+APACHE_SUBST(MPM_NAME)
 MODLIST="$MODLIST mpm_${MPM_NAME}"
 
 dnl All the unix MPMs use shared memory; save a little duplication

@@ -1,0 +1,73 @@
+
+DEPTH     = .
+topsrcdir = @topsrcdir@
+srcdir    = @srcdir@
+VPATH     = @srcdir@
+
+SUBDIRS = ap lib main modules os $(REGEX_DIR)
+
+PROGRAM_NAME         = apache
+PROGRAM_SOURCES      = modules.c buildmark.c
+PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
+PROGRAM_DEPENDENCIES = \
+  $(BUILTIN_LIBS) \
+  $(MPM_LIB) \
+  main/libmain.la \
+  $(OS_DIR)/libos.la \
+  ap/libap.la \
+  lib/apr/libapr.a \
+  $(REGEX_LIB)
+
+PROGRAMS        = $(PROGRAM_NAME)
+targets         = $(PROGRAMS)
+phony_targets   = buildmark.c
+install_targets = install-conf install-htdocs install-icons install-other \
+	install-cgi install-include
+
+include $(topsrcdir)/build/rules.mk
+include $(topsrcdir)/build/program.mk
+
+install-conf:
+	@echo Installing configuration files
+	@test -d $(sysconfdir) || $(mkinstalldirs) $(sysconfdir)
+	@cd $(srcdir)/../conf; \
+	for i in mime.types magic; do \
+		$(INSTALL_DATA) $$i $(sysconfdir); \
+	done; \
+	for i in *-dist; do \
+		sed -e 's#@@ServerRoot@@#$(prefix)#g' \
+			< $$i > $(sysconfdir)/$$i; \
+		chmod 0644 $(sysconfdir)/$$i; \
+		file=`echo $$i|sed s/-dist//`; \
+		if test "$$file" != "$$i" && test ! -f $(sysconfdir)/$$file; then \
+			$(INSTALL_DATA) $(sysconfdir)/$$i $(sysconfdir)/$$file; \
+		fi; \
+	done
+
+install-htdocs:
+	@echo Installing HTML documents
+	@test -d $(htdocsdir) || $(mkinstalldirs) $(htdocsdir)
+	@cp -rp $(srcdir)/../htdocs/* $(htdocsdir)
+
+install-icons:
+	@echo Installing icons
+	@test -d $(iconsdir) || $(mkinstalldirs) $(iconsdir)
+	@cp -rp $(srcdir)/../icons/* $(iconsdir)
+
+install-cgi:
+	@echo Installing CGIs
+	@test -d $(cgidir) || $(mkinstalldirs) $(cgidir)
+	@cp -rp $(srcdir)/../cgi-bin/* $(cgidir)
+	
+install-other:
+	@test -d $(logdir) || $(mkinstalldirs) $(logdir)
+
+install-include:
+	@echo Installing header files
+	@test -d $(includedir)     || $(mkinstalldirs) $(includedir)
+	@test -d $(includedir)/xml || $(mkinstalldirs) $(includedir)/xml
+	@test -d $(includedir)/apr || $(mkinstalldirs) $(includedir)/apr
+	@cp include/*.h $(srcdir)/include/*.h $(includedir)
+	@cp $(srcdir)/lib/expat-lite/*.h $(includedir)/xml
+	@cp lib/apr/include/*.h $(srcdir)/lib/apr/include/*.h $(includedir)/apr
+	@chmod 644 $(includedir)/*.h $(includedir)/xml/*.h $(includedir)/apr/*.h
