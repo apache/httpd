@@ -30,7 +30,6 @@
  # mod_ssl.h ............... common header file of mod_ssl
  # ssl_engine_config.c ..... module configuration handling
  # ssl_engine_dh.c ......... DSA/DH support
- - ssl_engine_ext.c ........ Extensions to other Apache parts
  # ssl_engine_init.c ....... module initialization
  # ssl_engine_io.c ......... I/O support
  # ssl_engine_kernel.c ..... SSL engine kernel
@@ -124,11 +123,6 @@
  SSL_EXPERIMENTAL_xxxx variables, except if SSL_EXPERIMENTAL_xxxx_IGNORE
  is already defined. Currently the following features are experimental:
 
-   o SSL_EXPERIMENTAL_PROXY
-     The ability to use various additional SSLProxyXXX directives in
-     oder to control extended client functionality in the HTTPS proxy
-     code.
-
    o SSL_EXPERIMENTAL_ENGINE
      The ability to support the new forthcoming OpenSSL ENGINE stuff.
      Until this development branch of OpenSSL is merged into the main
@@ -144,9 +138,6 @@
  o The complete EAPI-based SSL_VENDOR stuff was removed.
  o The complete EAPI-based SSL_COMPAT stuff was removed.
  o The <IfDefine> variable MOD_SSL is no longer provided automatically 
- o The complete SSL_CONSERVATIVE stuff was removed, i.e.,
-   SSL renegotiations in combination with POST request are not supported
-   unless the problem is solved again, but this time through layered I/O.
 
  MAJOR CHANGES 
 
@@ -154,7 +145,8 @@
  from Apache 1.3 and this mod_ssl version for Apache 2.0:
 
  o The DBM based session cache is now based on APR's DBM API only.
- o Introduced Filter logic (similar to mod_tls)
+ o The shared memory based session cache is now based on APR's APIs.
+ o SSL I/O is now implemented in terms of filters rather than BUFF
  o Eliminated ap_global_ctx. Storing Persistant information in 
    process_rec->pool->user_data. The ssl_pphrase_Handle_CB() and 
    ssl_config_global_* () functions have an extra parameter now - 
@@ -162,14 +154,25 @@
  o Properly support restarts, allowing mod_ssl to be added to a server
    that is already running and to change server certs/keys on restart
  o Various performance enhancements
+ o proxy support is no longer an "extension", much of the mod_ssl core
+   was re-written (ssl_engine_{init,kernel,config}.c) to be generic so
+   it could be re-used in proxy mode.
+   - the optional function ssl_proxy_enable is provide for mod_proxy
+     to enable proxy support
+   - proxy support now requires 'SSLProxyEngine on' to be configured
+   - proxy now supports SSLProxyCARevocation{Path,File} in addition to
+     the original SSLProxy* directives
+ o per-directory SSLCACertificate{File,Path} is now thread-safe but
+   requires SSL_set_cert_store patch to OpenSSL
+ o RSA sslc is supported via ssl_toolkit_compat.h
+ o the ssl_engine_{ds,ext}.c source files are obsolete and no longer
+   exist
 
  TODO
 
+ o SSL renegotiations in combination with POST request
  o Port all remaining code (code inside #if 0...#endif blocks)
  o Do we need SSL_set_read_ahead()?
- o Enable SSL extensions (ssl_engine_ext.c)
- o add configure check for SSL_set_cert_store to support per-dir
-   SSLCACertificate{File,Path}
  o the ssl_expr api is NOT THREAD SAFE.  race conditions exist:
    -in ssl_expr_comp() if SSLRequire is used in .htaccess
     (ssl_expr_info is global)
@@ -180,3 +183,6 @@
    ssl_engine_dh.c, while the comment in ssl_engine_kernel.c says:
    "it is suggested that keys be changed daily or every 500
     transactions, and more often if possible."
+ o ssl_var_lookup could be rewritten to be MUCH faster
+ o CRL callback should be pluggable
+ o init functions should return status code rather than ssl_die()
