@@ -41,8 +41,10 @@
         Microsoft Visual C++ 5.0 or higher.<br />
         <br />
          Apache can be built using the command line tools, or from
-        within the Visual Studio IDE Workbench. the command line
-        tools are configured with the vcvars32 batch file: 
+        within the Visual Studio IDE Workbench.  The command line
+        build requires the environment to reflect the PATH, INCLUDE,
+        LIB and other variables that can be configured with the 
+        vcvars32 batch file: 
 <pre>
   "c:\Program Files\DevStudio\VC\Bin\vcvars32.bat"
 </pre>
@@ -51,16 +53,16 @@
       <li>
         The Windows Platform SDK.<br />
         <br />
-         Visual C++ 5.0 need the updated Microsoft Windows Platform
-        SDK to enable some Apache features. For command line
+         Visual C++ 5.0 builds require an updated Microsoft Windows 
+        Platform SDK to enable some Apache features. For command line
         builds, the Platform SDK environment is prepared by the
         setenv batch file: 
 <pre>
   "c:\Program Files\Platform SDK\setenv.bat"
 </pre>
         The Platform SDK files distributed with Visual C++ 6.0 and
-        later are sufficient, so those users may skip this
-        requirement.<br />
+        later are sufficient, so users of later version may skip 
+        this requirement.<br />
         <br />
          <strong>Note</strong> that the Windows Platform SDK update
         is required to enable all supported mod_isapi features.
@@ -73,21 +75,68 @@
       </li>
 
       <li>The awk utility (awk, gawk or similar.)<br />
-      <br />
-       To install Apache within the build system, several files are
-      modified using the awk utility. awk was chosen since it is a
-      very small download (compared with Perl or WSH/VB) and
-      accomplishes the task. Brian Kernighan's <a
-      href="http://cm.bell-labs.com/cm/cs/who/bwk/">http://cm.bell-labs.com/cm/cs/who/bwk/</a>
-      site has a compiled native Win32 binary, <a
-      href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe">http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a>
-      which you should name awk.exe rather than awk95.exe.<br />
-       Note that Developer Studio IDE will only find awk.exe from
-      the <u>T</u>ools menu <u>O</u>ptions... Directories settings
-      for the Executable files. Add the path for awk.exe to this
-      list, as needed.<br />
-      <br />
+        <br />
+         To install Apache within the build system, several files are
+        modified using the awk.exe utility.  awk was chosen since it 
+        is a very small download (compared with Perl or WSH/VB) and
+        accomplishes the task of generating files. Brian Kernighan's 
+        <a href="http://cm.bell-labs.com/cm/cs/who/bwk/"
+         >http://cm.bell-labs.com/cm/cs/who/bwk/</a>
+        site has a compiled native Win32 binary, 
+        <a href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe"
+         >http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a> which 
+        you must save with the name awk.exe rather than awk95.exe.<br />
+        <br />
+         Note that Developer Studio IDE will only find awk.exe from
+        the <u>T</u>ools menu <u>O</u>ptions... Directories tab list of
+        Executable file paths.  Add the path for awk.exe to this list,
+        and your system PATH environment variable, as needed.<br />
+        <br />
       </li>
+
+      <li>[Optional] OpenSSL libraries (for mod_ssl and ab.exe with ssl support)<br />
+        <br />
+         <strong>Caution:  there are significant restrictions and 
+        prohibitions on the use and distribution of strong cryptography 
+        and patented intellectual property throughout the world.</strong>
+        OpenSSL includes strong cryptography controlled by both export 
+        regulations and domestic law, as well as intellectual property 
+        protected by patent, in the United States and elsewhere.  Neither 
+        the Apache Software Foundation nor the OpenSSL project can provide 
+        legal advise regarding possession, use, or distribution of the code 
+        provided by the OpenSSL project.  <strong>Consult your own legal 
+        counsel, you are responsible for your own actions.</strong><br />
+        <br />
+         OpenSSL must be installed into a srclib subdirectory named openssl, 
+        obtained from <a href="http://www.openssl.org/source/"
+         >http://www.openssl.org/source/</a>, in order to compile mod_ssl
+        or the abs project (ab.exe with SSL support.)  To prepare OpenSSL 
+        for both release and debug builds of Apache, and disable the patent 
+        protected features in 0.9.6c (as built by the ASF for binary
+        distribution from the United States),  you might use the following 
+        build commands;
+<pre>
+  perl util\mkfiles.pl >MINFO
+  perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 >makefile
+  perl util\mk1mf.pl dll debug no-asm no-mdc2 no-rc5 no-idea VC-WIN32 >makefile.dbg
+  perl util\mkdef.pl 32 libeay no-asm no-mdc2 no-rc5 no-idea >ms\libeay32.def
+  perl util\mkdef.pl 32 ssleay no-asm no-mdc2 no-rc5 no-idea >ms\ssleay32.def
+  nmake
+  nmake -f makefile.dbg      
+</pre>
+      </li>
+
+      <li>[Optional] zlib sources (for mod_deflate)<br />
+        <br />
+         Zlib must be installed into a srclib subdirectory named zlib, 
+        however those sources need not be compiled.  The build system will
+        compile the compression sources directly into the mod_deflate 
+        module.  Zlib can be obtained from <a href="http://www.gzip.org/zlib/"
+         >http://www.gzip.org/zlib/</a> -- mod_deflate is confirmed to
+        build correctly with version 1.1.4.<br />
+        <br />
+      </li>
+
     </ul>
 
     <h3><a id="commandbuild" name="commandbuild">Command-Line
@@ -122,33 +171,41 @@
     dependencies between the projects to assure that they are built
     in the appropriate order.</p>
 
-    <p>Open the Apache.dsw workspace, and choose InstallBin
+    <p>Open the Apache.dsw workspace, and select InstallBin
     (Release or Debug build, as desired) as the Active Project.
-    InstallBin causes all related project to be build, and then
+    InstallBin causes all related project to be built, and then
     invokes Makefile.win to move the compiled executables and dlls.
     You may personalize the INSTDIR= choice by changing
     InstallBin's Settings, General tab, Build command line entry.
-    INSTDIR defaults to the /Apache2 directory.</p>
+    INSTDIR defaults to the /Apache2 directory.  If you only want
+    a test compile (without installing) you may build the BuildBin
+    project instead.</p>
 
     <p>The .dsp project files are distributed in Visual C++ 6.0
-    format. Visual C++ 5.0 (97) will recognize them with the single
-    exception of the /ZI flag (which corresponds to the VC 5.0 /Zi
-    flag for debugging symbols.) To quickly prepare the .dsp files
-    for the Visual Studio 5.0 (97), you can run this command from
-    the top-level httpd-2.0 directory:</p>
+    format. Visual C++ 5.0 (97) will recognize them.  Visual C++
+    7.0 (.net) must convert Apache.dsw plus the .dsp files into an 
+    .msproj format, be sure you reconvert the .msproj file if any 
+    of the source .dsp files change!</p>
+
+    <p>Exported .mak files pose a greater hassle, but they are
+    required for Visual C++ 5.0 and 7.0 users to build mod_ssl, ab
+    with SSL support or mod_deflate, since only VC 6.0 knows how
+    to invoke .dsp files directly.  Build the entire project from
+    within the IDE, then export all makefiles.  You must build the
+    projects in order to create all dynamic auto-generated targets,
+    so that dependencies can be parsed correctly.  Run the following
+    command to fix the paths so they will build anywhere;
 <pre>
-     perl srclib\apr\build\cvtdsp.pl -5
+     perl srclib\apr\build\fixwin32mak.pl
 </pre>
     You must type this command from the <em>top level</em>
-    directory of the httpd source tree. Every VC6 .dsp project file
-    within the current directory and below will be listed as it is
-    converted. If you contribute back a patch that revises project
-    files, please convert them back with the the -6 option instead
-    of -5, which returns the project files to Visual Studio 6.0
-    format.<br />
+    directory of the httpd source tree. Every .mak and .dep project 
+    file within the current directory and below will be converted,
+    and the timestamps adjusted to reflect the .dsp. If you contribute 
+    back a patch that revises project files, you must submit project 
+    files in Visual Studio 6.0 format.<br />
      <br />
      
-
     <h3><a id="projectcomponents" name="projectcomponents">Project
     Components</a></h3>
 
@@ -163,6 +220,8 @@
 
       <li><code>srclib\apr-util\uri\gen_uri_delims.dsp</code></li>
 
+      <li><code>srclib\apr-util\xml\expat\lib\xml.dsp</code></li>
+
       <li><code>srclib\apr-util\aprutil.dsp</code></li>
 
       <li><code>srclib\apr-util\libaprutil.dsp</code></li>
@@ -173,8 +232,6 @@
 
       <li><code>srclib\pcre\pcreposix.dsp</code></li>
 
-      <li><code>srclib\expat-lite\libexpat.dsp</code></li>
-
       <li><code>server\gen_test_char.dsp</code></li>
 
       <li><code>libhttpd.dsp</code></li>
@@ -182,47 +239,14 @@
       <li><code>Apache.dsp</code></li>
     </ol>
 
-    <p>In addition, the <code>os\win32</code> subdirectory contains
-    project files for the optional modules.</p>
+    <p>In addition, the <code>modules\</code> subdirectory tree contains
+    project files for the majority of the modules.</p>
 
-    <ol>
-      <li><code>modules\aaa\mod_auth_dbm.dsp</code></li>
-
-      <li><code>modules\aaa\mod_auth_anon.dsp</code></li>
-
-      <li><code>modules\aaa\mod_auth_digest.dsp</code></li>
-
-      <li><code>modules\cache\mod_file_cache.dsp</code></li>
-
-      <li><code>modules\dav\fs\mod_dav_fs.dsp</code></li>
-
-      <li><code>modules\dav\main\mod_dav.dsp</code></li>
-
-      <li><code>modules\generators\mod_info.dsp</code></li>
-
-      <li><code>modules\generators\mod_status.dsp</code></li>
-
-      <li><code>modules\mappers\mod_rewrite.dsp</code></li>
-
-      <li><code>modules\mappers\mod_speling.dsp</code></li>
-
-      <li><code>modules\metadata\mod_usertrack.dsp</code></li>
-
-      <li><code>modules\metadata\mod_cern_meta.dsp</code></li>
-
-      <li><code>modules\metadata\mod_headers.dsp</code></li>
-
-      <li><code>modules\metadata\mod_expires.dsp</code></li>
-
-      <li><code>modules\ssl\mod_ssl.dsp</code></li>
-
-      <li><code>modules\tls\mod_tls.dsp</code></li>
-    </ol>
-
-    <p>The <code>support\</code> folder contains project files for
+    <p>The <code>support\</code> directory contains project files for
     additional programs that are not part of the Apache runtime,
     but are used by the administrator to test Apache and maintain
-    password and log files.</p>
+    password and log files.  Windows-specific support projects are
+    broken out in the <code>support\win32\</code> directory.</p>
 
     <ol>
       <li><code>support\ab.dsp</code></li>
@@ -234,6 +258,8 @@
       <li><code>support\logresolve.dsp</code></li>
 
       <li><code>support\rotatelogs.dsp</code></li>
+
+      <li><code>support\win32\ApacheMonitor.dsp</code></li>
 
       <li><code>support\win32\wintty.dsp</code></li>
     </ol>
@@ -262,8 +288,14 @@
       <li><code><em>dir</em>\bin\Apache.exe</code> - Apache
       executable</li>
 
+      <li><code><em>dir</em>\bin\ApacheMonitor.exe</code> - Service
+      monitor taskbar icon utility</li>
+
       <li><code><em>dir</em>\bin\htdigest.exe</code> - Digest auth
       password file utility</li>
+
+      <li><code><em>dir</em>\bin\htdbm.exe</code> - SDBM auth
+      database password file utility</li>
 
       <li><code><em>dir</em>\bin\htpasswd.exe</code> - Basic auth
       password file utility</li>
@@ -298,24 +330,38 @@
       <li><code><em>dir</em>\include</code> - C language header
       files</li>
 
-      <li><code><em>dir</em>\lib</code> - Static Link library
-      files</li>
-
-      <li><code><em>dir</em>\libexec</code> - DLL link library
-      files</li>
+      <li><code><em>dir</em>\lib</code> - Link library files</li>
     </ul>
 
     <p><strong>Warning about building Apache from the development
     tree</strong></p>
 
-    <p>Only the .dsp files are maintained between release builds.
+    <p>Note; only the .dsp files are maintained between release builds.
     The .mak files are NOT regenerated, due to the tremendous waste
     of reviewer's time. Therefore, you cannot rely on the NMAKE
     commands above to build revised .dsp project files unless you
-    then export all .mak files yourself from the project. This is
+    then export all .mak files yourself from the project.  This is
     unnecessary if you build from within the Microsoft
-    DeveloperStudio environment.</p>
-    <!--#include virtual="footer.html" -->
-  </body>
-</html>
+    Developer Studio environment.</p>
 
+    <p><strong>Note:</strong> it is very worthwhile to build the 
+    BuildBin target project (or the command line _apacher or _apached 
+    target) prior to exporting the make files.  Many files are 
+    autogenerated in the build process.  Only a full build provides 
+    all of the dependent files required to build proper dependency 
+    trees for correct build behavior.</p>
+
+    <p>In order to create distribution .mak files, always review
+    the generated .mak (or .dep) dependencies for Platform SDK or
+    other garbage includes.  The DevStudio\SharedIDE\bin\ (VC5) or
+    DevStudio\Common\MSDev98\bin\ (VC6) directory contains the
+    sysincl.dat file, which must list all exceptions.  Update this
+    file (including both forward and backslashed paths, such as
+    both sys/time.h and sys\time.h) to include such dependencies.
+    Including local-install paths in a distributed .mak file will
+    cause the build to fail completely.  And don't forget to run
+    srclib/apr/build/fixwin32mak.pl in order to fix absolute
+    paths within the .mak files.</p>
+
+    <!--#include virtual="footer.html" -->  </body>
+</html>
