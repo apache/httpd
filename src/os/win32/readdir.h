@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-#define API_EXPORT(type)    __declspec(dllexport) type __stdcall
+#ifndef API_EXPORT
+# define API_EXPORT(type)    __declspec(dllexport) type __stdcall
+#endif
 
 /* struct dirent - same as Unix */
 struct dirent {

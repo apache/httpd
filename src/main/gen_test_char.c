@@ -57,5 +57,6 @@ int main(int argc, char *argv[])
 
     }
     printf("\n};\n");
-    exit(0);
+
+    return 0;
 }
