@@ -713,6 +713,9 @@ ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
 void ssl_asn1_table_unset(apr_hash_t *table,
                           const char *key);
 
+const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
+                                  const char *id,
+                                  int keytype);
 /*  Mutex Support  */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
