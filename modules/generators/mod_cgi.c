@@ -510,13 +510,13 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 
 static apr_status_t default_build_command(const char **cmd, const char ***argv,
                                           request_rec *r, apr_pool_t *p,
-                                          int replace_cmd, apr_cmdtype_e * type)
+                                          int process_cgi, apr_cmdtype_e * type)
 {
     int numwords, x, idx;
     char *w;
-    const char *args = r->args;
+    const char *args = NULL;
 
-    if (replace_cmd) {
+    if (process_cgi) {
         /* Allow suexec's "/" check to succeed */
         const char *argv0 = strrchr(r->filename, '/');
         if (argv0 != NULL)
@@ -524,9 +524,15 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
         else
             argv0 = r->filename;
         *cmd = argv0;
+        args = r->args;
+        /* Do not process r->args if they contain an '=' assignment 
+         */
+        if (r->args && r->args[0] && !ap_strchr_c(r->args, '=')) {
+            args = r->args;
+        }
     }
 
-    if (!args || !args[0] || ap_strchr_c(args, '=')) {
+    if (!args) {
         numwords = 1;
     }
     else {
