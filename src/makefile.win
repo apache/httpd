@@ -104,6 +104,8 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_dbm.mak CFG="mod_auth_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_proxy.mak CFG="mod_proxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_vhost_alias.mak CFG="mod_vhost_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 
 _install:
@@ -140,6 +142,8 @@ _install:
 	copy os\win32\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules"
 	copy os\win32\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules"
 	copy os\win32\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules"
+	copy os\win32\$(LONG)\mod_vhost_alias.so "$(INSTDIR)\modules"
 	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
