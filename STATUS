@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/05 17:06:52 $]
+Last modified at [$Date: 2003/06/06 02:56:56 $]
 
 Release:
 
@@ -206,6 +206,14 @@ PATCHES TO PORT FROM 2.1
 
     * winnt MPM: fix some invalid ap_log_error() invocations
         server/mpm/winnt/child.c 1.15
+        +1: trawick, wrowe
+
+    * handle switching between libtools and unwritable ltconfig/ltmain.sh
+        buildconf 1.36, 1.37
+        +1: trawick
+
+    * Ignore the Server header field as set by modules and CGIs.
+        modules/http/http_protocol.c 1.470
         +1: trawick
 
 CURRENT RELEASE NOTES:
