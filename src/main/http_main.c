@@ -85,6 +85,7 @@
 #include "http_conf_globals.h"
 #include "http_core.h"		/* for get_remote_host */
 #include "http_vhost.h"
+#include "util_script.h"	/* to force util_script.c linking */
 #include "scoreboard.h"
 #include "multithread.h"
 #include <sys/stat.h>
@@ -146,8 +147,8 @@
  * includes the full Apache API. Without this function the objects in
  * main/util_script.c would not be linked into a minimal httpd.
  */
-static void force_library_loading(void) {
-    add_cgi_vars(NULL,NULL);
+void force_library_loading(void) {
+    add_cgi_vars(NULL);
 }
 
 #include "explain.h"
