@@ -107,6 +107,9 @@
 #ifdef CHARSET_EBCDIC
 #include "ebcdic.h"
 #endif /*CHARSET_EBCDIC*/
+#if HAVE_CRYPT_H
+#include <crypt.h>
+#endif
 
 /* Constants for MD5Transform routine.
  */
