@@ -52,11 +52,10 @@
  * <http://www.apache.org/>.
  */
 
-#ifndef AP_AC_CONFIG_H
-#define AP_AC_CONFIG_H
+#ifndef AP_CONFIG_H
+#define AP_CONFIG_H
 
-#include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
-#include "apr_lib.h"		/* apr_isfoo() macros */
+#include "apr.h"
 #include "apr_hooks.h"
 
 /**
@@ -149,10 +148,10 @@
  */
 
 #define AP_DECLARE_HOOK(ret,name,args) \
-APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
+	APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
 
 #define AP_IMPLEMENT_HOOK_BASE(name) \
-APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
+	APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
 
 /**
  * Implement an Apache core hook that has no return code, and
@@ -169,7 +168,7 @@ APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
  * @deffunc AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
  */
 #define AP_IMPLEMENT_HOOK_VOID(name,args_decl,args_use) \
-APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
+	APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
 
 /**
  * Implement an Apache core hook that runs until one of the functions
@@ -193,7 +192,8 @@ APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
  * @deffunc AP_IMPLEMENT_HOOK_RUN_ALL(ret, name, args_decl, args_use, ok, decline)
  */
 #define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl,args_use,ok,decline)
+	APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
+                                            args_use,ok,decline)
 
 /**
  * Implement a hook that runs until the first function that returns
@@ -214,20 +214,14 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl,args_use,ok,decline
  * @deffunc AP_IMPLEMENT_HOOK_RUN_FIRST(ret, name, args_decl, args_use, decline)
  */
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl,args_use,decline)
+	APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl, \
+                                              args_use,decline)
 
-#ifdef WIN32
 #include "os.h"
-#else
+#ifndef WIN32
 #include "ap_config_auto.h"
-#include "ap_config_path.h"
-#include "os.h"
-#endif /* !WIN32 */
-#include "apr.h"
-#ifdef STDC_HEADERS
-#include <stdlib.h>
-#include <string.h>
 #endif
+
 
 #ifdef SIGWAIT_TAKES_ONE_ARG
 #define ap_sigwait(a,b) ((*(b)=sigwait((a)))<0?-1:0)
@@ -242,13 +236,6 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl,args_use,decline)
 /* These systems don't do well with any lingering close code; I don't know
  * why -- manoj */
 #define NO_LINGCLOSE
-#endif
-
-#ifdef SCO5
-/* This allows Apache to run from a startup script on a SCO box in high
- * security (C2) mode.  
- */
-#define SecureWare
 #endif
 
 /* XXX - The PHP4 comments say -D_HPUX_SOURCE is obsolete. */
@@ -267,7 +254,7 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl,args_use,decline)
 
 /* If APR has OTHER_CHILD logic, use reliable piped logs.
  */
-#if (APR_HAS_OTHER_CHILD)
+#if APR_HAS_OTHER_CHILD
 #define AP_HAVE_RELIABLE_PIPED_LOGS TRUE
 #endif
 
@@ -275,4 +262,4 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl,args_use,decline)
 #define APACHE_XLATE
 #endif
 
-#endif /* AP_AC_CONFIG_H */
+#endif /* AP_CONFIG_H */
