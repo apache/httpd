@@ -194,7 +194,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
 static void register_hooks(apr_pool_t * p)
 {
     ap_register_output_filter(bucketeerFilterName, bucketeer_out_filter,
-                              AP_FTYPE_CONTENT-1);
+                              AP_FTYPE_RESOURCE-1);
 }
 
 static const command_rec bucketeer_filter_cmds[] = {

@@ -3141,7 +3141,7 @@ static int default_handler(request_rec *r)
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
     bld_content_md5 = (d->content_md5 & 1)
-                      && r->output_filters->frec->ftype != AP_FTYPE_CONTENT;
+                      && r->output_filters->frec->ftype != AP_FTYPE_RESOURCE;
 
     ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
 
@@ -4031,18 +4031,18 @@ static void register_hooks(apr_pool_t *p)
                                  AP_FTYPE_NETWORK);
     ap_net_time_filter_handle =
         ap_register_input_filter("NET_TIME", net_time_filter,
-                                 AP_FTYPE_HTTP_HEADER);
+                                 AP_FTYPE_PROTOCOL);
     ap_content_length_filter_handle =
         ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter,
-                                  AP_FTYPE_HTTP_HEADER);
+                                  AP_FTYPE_PROTOCOL);
     ap_core_output_filter_handle =
         ap_register_output_filter("CORE", core_output_filter,
                                   AP_FTYPE_NETWORK);
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,
-                                  AP_FTYPE_CONTENT + 5);
+                                  AP_FTYPE_CONTENT_SET);
     ap_old_write_func = ap_register_output_filter("OLD_WRITE",
-                                   ap_old_write_filter, AP_FTYPE_CONTENT - 10);
+                                   ap_old_write_filter, AP_FTYPE_RESOURCE - 10);
 }
 
 AP_DECLARE_DATA module core_module = {

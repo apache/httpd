@@ -181,7 +181,7 @@ static void CaseFilterInRegisterHooks(apr_pool_t *p)
     ap_hook_insert_filter(CaseFilterInInsertFilter, NULL, NULL, 
                           APR_HOOK_MIDDLE);
     ap_register_input_filter(s_szCaseFilterName, CaseFilterInFilter,
-                             AP_FTYPE_CONTENT);
+                             AP_FTYPE_RESOURCE);
 }
 
 module AP_MODULE_DECLARE_DATA case_filter_in_module =

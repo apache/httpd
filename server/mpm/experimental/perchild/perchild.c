@@ -1754,7 +1754,7 @@ static void perchild_hooks(apr_pool_t *p)
     ap_hook_post_read_request(perchild_post_read, NULL, NULL,
                               APR_HOOK_REALLY_FIRST);
     ap_register_input_filter("PERCHILD_BUFFER", perchild_buffer,
-                             AP_FTYPE_CONTENT);
+                             AP_FTYPE_RESOURCE);
 }
 
 static const char *set_num_daemons(cmd_parms *cmd, void *dummy,

@@ -998,13 +998,13 @@ register_hooks(apr_pool_t *p)
      */
     ap_register_output_filter("CACHE_IN", 
                               cache_in_filter, 
-                              AP_FTYPE_CONTENT+1);
+                              AP_FTYPE_CONTENT_SET);
     ap_register_output_filter("CACHE_OUT", 
                               cache_out_filter, 
-                              AP_FTYPE_CONTENT+1);
+                              AP_FTYPE_CONTENT_SET);
     ap_register_output_filter("CACHE_CONDITIONAL", 
                               cache_conditional_filter, 
-                              AP_FTYPE_CONTENT+1);
+                              AP_FTYPE_CONTENT_SET);
     ap_hook_post_config(cache_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 

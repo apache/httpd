@@ -185,26 +185,29 @@ typedef union ap_filter_func {
 typedef enum {
     /** These filters are used to alter the content that is passed through
      *  them. Examples are SSI or PHP. */
-    AP_FTYPE_CONTENT     = 10,
-    /** (XXX somebody rename me or get rid of me please)
-     *  This special type ensures that the HTTP header filter ends up in
-     *  the proper location in the filter chain. */
-    AP_FTYPE_HTTP_HEADER = 20,
+    AP_FTYPE_RESOURCE     = 10,
+    /** These filters are used to alter the content as a whole, but after all
+     *  AP_FTYPE_RESOURCE filters are executed.  These filters should not
+     *  change the content-type.  An example is deflate.  */
+    AP_FTYPE_CONTENT_SET  = 20,
+    /** These filters are used to handle the protocol between server and
+     *  client.  Examples are HTTP and POP. */
+    AP_FTYPE_PROTOCOL     = 30,
     /** These filters implement transport encodings (e.g., chunking). */
-    AP_FTYPE_TRANSCODE   = 30,
+    AP_FTYPE_TRANSCODE    = 40,
     /** These filters will alter the content, but in ways that are
      *  more strongly associated with the connection.  Examples are
-     *  splitting * an HTTP connection into multiple requests and
-     *  buffering HTTP * responses across multiple requests.
+     *  splitting an HTTP connection into multiple requests and
+     *  buffering HTTP responses across multiple requests.
      *
      *  It is important to note that these types of filters are not
      *  allowed in a sub-request. A sub-request's output can certainly
-     *  be filtered by ::AP_FTYPE_CONTENT filters, but all of the "final
+     *  be filtered by ::AP_FTYPE_RESOURCE filters, but all of the "final
      *  processing" is determined by the main request. */
-    AP_FTYPE_CONNECTION  = 40,
+    AP_FTYPE_CONNECTION  = 50,
     /** These filters don't alter the content.  They are responsible for
      *  sending/receiving data to/from the client. */
-    AP_FTYPE_NETWORK     = 50
+    AP_FTYPE_NETWORK     = 60
 } ap_filter_type;
 
 /**
