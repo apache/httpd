@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/10 21:00:02 $]
+Last modified at [$Date: 2004/04/10 21:06:45 $]
 
 Release:
 
@@ -93,7 +93,7 @@ PATCHES TO BACKPORT FROM 2.1
          modules/proxy/mod_proxy.c: r1.99
          modules/proxy/proxy_ftp.c: r1.140
          server/core.c: r1.272
-       +1: nd
+       +1: nd, trawick
 
     *) mod_usertrack: Escape the cookie_name before pasting into the regexp.
        (2.0 + 1.3)
@@ -112,11 +112,11 @@ PATCHES TO BACKPORT FROM 2.1
        string buffer from the temp_pool rather than the stack to 
        avoid over-running a fixed length stack.
          server/config.c: r1.174
-       +1: bnicholes, nd
+       +1: bnicholes, nd, trawick
 
     *) Fix segfault in mod_expires. PR 28047
          modules/metadata/mod_expires.c: r1.54
-       +1: nd, bnicholes
+       +1: nd, bnicholes, trawick
 
     *) Fix memory leak in mod_rewrite. PR 27862. (2.0 + 1.3)
          http://www.apache.org/~nd/mod_rewrite_fixleak.diff
@@ -134,7 +134,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Check to make sure that if auth_ldap is loaded, mod_ldap is 
        also loaded. 
          modules/experimental/mod_auth_ldap.c: r1.22
-       +1: bnicholes, minfrin
+       +1: bnicholes, minfrin, trawick
        
     *) util_ldap_connection_find() locks each cached connection while 
        testing to see if it matches the specified criteria.  But then 
@@ -144,7 +144,7 @@ PATCHES TO BACKPORT FROM 2.1
        requests. This patch unlocks the connection if it doesn't meet
        the connection criteria.
          modules/experimental/util_ldap.c: r1.23
-       +1: bnicholes, minfrin
+       +1: bnicholes, minfrin, trawick
        
     *) Update the ldc->binddn and ldc->bindpw associated with the LDAP 
        connection to match the authenticating user DN and password after
