@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/07 14:17:28 $]
+Last modified at [$Date: 2003/08/07 16:41:10 $]
 
 Release:
 
@@ -301,6 +301,12 @@ PATCHES TO PORT FROM 2.1
 
     * fix extern "C" declaration of util_ebcdic.h. PR: 22203
         include/util_ebcdic.h: r1.15
+      +1: nd
+
+    * Avoid an infinite recursion, which occured if the name of an included
+      config file or directory contained a wildcard character. PR 22194.
+      (2.0 + 1.3)
+        server/config.c: r1.165
       +1: nd
 
 CURRENT RELEASE NOTES:
