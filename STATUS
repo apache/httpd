@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/19 21:39:22 $]
+Last modified at [$Date: 2003/02/20 12:13:06 $]
 
 Release:
 
@@ -123,7 +123,7 @@ PATCHES TO PORT FROM 2.1
     * suexec: Be more pedantic when cleaning environment. Clean it
       immediately after startup. PR 2790, 10449.
       support/suexec.c: r1.25
-      +1: nd
+      +1: nd, trawick
 
     * fill out parms->err_directive while looking for open parents.
       Otherwise when trying to log the error
