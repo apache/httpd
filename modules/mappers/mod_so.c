@@ -220,6 +220,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /* 
      * check for already existing module
      * If it already exists, we have nothing to do 
+     * Check both dynamically-loaded modules and statically-linked modules.
      */
     sconf = (so_server_conf *)ap_get_module_config(cmd->server->module_config, 
 	                                        &so_module);
@@ -233,6 +234,45 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
             return NULL;
         }
     }
+
+    for (i = 0; ap_preloaded_modules[i]; i++) {
+        const char *preload_name;
+        apr_size_t preload_len;
+        apr_size_t thismod_len;
+
+        modp = ap_preloaded_modules[i];
+
+        /* make sure we're comparing apples with apples
+         * make sure name of preloaded module is mod_FOO.c
+         * make sure name of structure being loaded is FOO_module
+         */
+
+        if (memcmp(modp->name, "mod_", 4)) {
+            continue;
+        }
+
+        preload_name = modp->name + strlen("mod_");
+        preload_len = strlen(preload_name) - 2;
+
+        if (strlen(modname) <= strlen("_module")) {
+            continue;
+        }
+        thismod_len = strlen(modname) - strlen("_module");
+        if (strcmp(modname + thismod_len, "_module")) {
+            continue;
+        }
+
+        if (thismod_len != preload_len) {
+            continue;
+        }
+
+        if (!memcmp(modname, preload_name, preload_len)) {
+            return apr_pstrcat(cmd->pool, "module ", modname,
+                               " is built-in and can't be loaded",
+                               NULL);
+        }
+    }
+
     modi = apr_array_push(sconf->loaded_modules);
     modi->name = modname;
 
