@@ -3083,9 +3083,10 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     apr_table_unset(f->r->headers_out, "Content-Length");
 
     /* Always unset the ETag/Last-Modified fields - see RFC2616 - 13.3.4.
-     * We don't know if we are going to be include a virtual file (think
-     * exec) which may make the content completely dynamic or change the
-     * Last-Modified header.  Therefore, we can't support these headers.
+     * We don't know if we are going to be including a file or executing
+     * a program which may change the Last-Modified header or make the 
+     * content completely dynamic.  Therefore, we can't support these
+     * headers.
      */
     apr_table_unset(f->r->headers_out, "ETag");
     apr_table_unset(f->r->headers_out, "Last-Modified");
