@@ -180,6 +180,21 @@ extern API_VAR_EXPORT module core_module;
 
 typedef unsigned char allow_options_t;
 typedef unsigned char overrides_t;
+/*
+ * Bits of info that go into making an ETag for a file
+ * document.  Why a long?  Because char historically
+ * proved too short for Options, and int can be different
+ * sizes on different platforms.
+ */
+typedef unsigned long etag_components_t;
+
+#define ETAG_UNSET 0
+#define ETAG_NONE  (1 << 0)
+#define ETAG_MTIME (1 << 1)
+#define ETAG_INODE (1 << 2)
+#define ETAG_SIZE  (1 << 3)
+#define ETAG_BACKWARD (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
+#define ETAG_ALL   (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
 
 typedef struct {
     /* path of the directory/regex/etc.  see also d_is_fnmatch below */
@@ -308,6 +323,13 @@ typedef struct {
     int ebcdicconversion_debug_header; /* whether to add an X-EBCDIC-Debug-{In,Out} header to the response */
 #endif
 #endif /* CHARSET_EBCDIC */
+
+    /*
+     * What attributes/data should be included in ETag generation?
+     */
+    etag_components_t etag_bits;
+    etag_components_t etag_add;
+    etag_components_t etag_remove;
 
 } core_dir_config;
 

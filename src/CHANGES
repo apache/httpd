@@ -1,5 +1,13 @@
 Changes with Apache 1.3.23
 
+  *) Add FileETag directive to control fields used when constructing
+     an ETag for a file-based resource.  Historically the inode,
+     size, and mtimehave been used, but the inode factor broke
+     caching for systems with content fan-out across multiple
+     back-end servers.  Now the fields used in the construction
+     can be controlled by configuration directives.
+     [Ken Coar, from a patch by Phil Dietz]
+
   *) NetWare: Fixed the access forbidden problem when requesting an
      empty directory rather than showing the empty listing.  
      [Charles Goldman, Guenter Knauf <gk@gknw.de>]

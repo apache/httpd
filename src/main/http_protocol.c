@@ -649,7 +649,15 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
 {
     char *etag;
     char *weak;
+    core_dir_config *cfg;
+    etag_components_t etag_bits;
 
+    cfg = (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                  &core_module);
+    etag_bits = (cfg->etag_bits & (~ cfg->etag_remove)) | cfg->etag_add;
+    if (etag_bits == ETAG_UNSET) {
+        etag_bits = ETAG_BACKWARD;
+    }
     /*
      * Make an ETag header out of various pieces of information. We use
      * the last-modified date and, if we have a real file, the
@@ -666,11 +674,43 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
     weak = ((r->request_time - r->mtime > 1) && !force_weak) ? "" : "W/";
 
     if (r->finfo.st_mode != 0) {
-        etag = ap_psprintf(r->pool,
-                    "%s\"%lx-%lx-%lx\"", weak,
-                    (unsigned long) r->finfo.st_ino,
-                    (unsigned long) r->finfo.st_size,
-                    (unsigned long) r->mtime);
+        char **ent;
+        array_header *components;
+        int i;
+
+        /*
+         * If it's a file (or we wouldn't be here) and no ETags
+         * should be set for files, return an empty string and
+         * note it for ap_send_header_field() to ignore.
+         */
+        if (etag_bits & ETAG_NONE) {
+            ap_table_setn(r->notes, "no-etag", "omit");
+            return "";
+        }
+
+        components = ap_make_array(r->pool, 4, sizeof(char *));
+        if (etag_bits & ETAG_INODE) {
+            ent = (char **) ap_push_array(components);
+            *ent = ap_psprintf(r->pool, "%lx",
+                               (unsigned long) r->finfo.st_ino);
+        }
+        if (etag_bits & ETAG_SIZE) {
+            ent = (char **) ap_push_array(components);
+            *ent = ap_psprintf(r->pool, "%lx",
+                               (unsigned long) r->finfo.st_size);
+        }
+        if (etag_bits & ETAG_MTIME) {
+            ent = (char **) ap_push_array(components);
+            *ent = ap_psprintf(r->pool, "%lx", (unsigned long) r->mtime);
+        }
+        ent = (char **) components->elts;
+        etag = ap_pstrcat(r->pool, weak, "\"", NULL);
+        for (i = 0; i < components->nelts; ++i) {
+            etag = ap_psprintf(r->pool, "%s%s%s", etag,
+                               (i == 0 ? "" : "-"),
+                               ent[i]);
+        }
+        etag = ap_pstrcat(r->pool, etag, "\"", NULL);
     }
     else {
         etag = ap_psprintf(r->pool, "%s\"%lx\"", weak,
@@ -1458,8 +1498,14 @@ API_EXPORT(int) ap_index_of_response(int status)
  * It returns true unless there was a write error of some kind.
  */
 API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r,
-    const char *fieldname, const char *fieldval)
+                                            const char *fieldname,
+                                            const char *fieldval)
 {
+    if (strcasecmp(fieldname, "ETag") == 0) {
+        if (ap_table_get(r->notes, "no-etag") != NULL) {
+            return 1;
+        }
+    }
     return (0 < ap_rvputs(r, fieldname, ": ", fieldval, CRLF, NULL));
 }
 

@@ -170,6 +170,13 @@ static void *create_core_dir_config(pool *a, char *dir)
 #endif
 #endif /* CHARSET_EBCDIC */
 
+    /*
+     * Flag for use of inodes in ETags.
+     */
+    conf->etag_bits = ETAG_UNSET;
+    conf->etag_add = ETAG_UNSET;
+    conf->etag_remove = ETAG_UNSET;
+
     return (void *)conf;
 }
 
@@ -194,7 +201,7 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
     conf->d_is_fnmatch = new->d_is_fnmatch;
     conf->d_components = new->d_components;
     conf->r = new->r;
-    
+
     if (new->opts & OPT_UNSET) {
 	/* there was no explicit setting of new->opts, so we merge
 	 * preserve the invariant (opts_add & opts_remove) == 0
@@ -318,6 +325,26 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
     conf->ebcdicconversion_debug_header = new->ebcdicconversion_debug_header ? new->ebcdicconversion_debug_header : base->ebcdicconversion_debug_header;
 #endif
 #endif /* CHARSET_EBCDIC */
+
+    /*
+     * Now merge the setting of the FileETag directive.
+     */
+    if (new->etag_bits == ETAG_UNSET) {
+        conf->etag_add =
+            (conf->etag_add & (~ new->etag_remove)) | new->etag_add;
+        conf->etag_remove =
+            (conf->opts_remove & (~ new->etag_add)) | new->etag_remove;
+        conf->etag_bits =
+            (conf->etag_bits & (~ conf->etag_remove)) | conf->etag_add;
+    }
+    else {
+        conf->etag_bits = new->etag_bits;
+        conf->etag_add = new->etag_add;
+        conf->etag_remove = new->etag_remove;
+    }
+    if (conf->etag_bits != ETAG_NONE) {
+        conf->etag_bits &= (~ ETAG_NONE);
+    }
 
     return (void*)conf;
 }
@@ -2985,6 +3012,135 @@ set_debug_header(cmd_parms *cmd, core_dir_config *m, int arg)
 #endif
 #endif /* CHARSET_EBCDIC */
 
+/*
+ * Note whether file inodes may be used when forming ETag values.
+ * It would be nicer to do this as an ITERATE, but then we couldn't
+ * remember the +/- state properly.
+ */
+static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
+                                 const char *args_p)
+{
+    core_dir_config *cfg;
+    etag_components_t bit;
+    char action;
+    char *token;
+    const char *args;
+    int valid;
+    int first;
+    int explicit;
+
+    cfg = (core_dir_config *) mconfig;
+
+    args = args_p;
+    first = 1;
+    explicit = 0;
+    while (args[0] != '\0') {
+        action = '*';
+        bit = ETAG_UNSET;
+        valid = 1;
+        token = ap_getword_conf(cmd->pool, &args);
+        if ((*token == '+') || (*token == '-')) {
+            action = *token;
+            token++;
+        }
+        else {
+            /*
+             * The occurrence of an absolute setting wipes
+             * out any previous relative ones.  The first such
+             * occurrence forgets any inherited ones, too.
+             */
+            if (first) {
+                cfg->etag_bits = ETAG_UNSET;
+                cfg->etag_add = ETAG_UNSET;
+                cfg->etag_remove = ETAG_UNSET;
+                first = 0;
+            }
+        }
+
+        if (strcasecmp(token, "None") == 0) {
+            if (action != '*') {
+                valid = 0;
+            }
+            else {
+                cfg->etag_bits = bit = ETAG_NONE;
+                explicit = 1;
+            }
+        }
+        else if (strcasecmp(token, "All") == 0) {
+            if (action != '*') {
+                valid = 0;
+            }
+            else {
+                explicit = 1;
+                cfg->etag_bits = bit = ETAG_ALL;
+            }
+        }
+        else if (strcasecmp(token, "Size") == 0) {
+            bit = ETAG_SIZE;
+        }
+        else if ((strcasecmp(token, "LMTime") == 0)
+                 || (strcasecmp(token, "MTime") == 0)
+                 || (strcasecmp(token, "LastModified") == 0)) {
+            bit = ETAG_MTIME;
+        }
+        else if (strcasecmp(token, "INode") == 0) {
+            bit = ETAG_INODE;
+        }
+        else {
+            return ap_pstrcat(cmd->pool, "Unknown keyword '",
+                              token, "' for ", cmd->cmd->name,
+                              " directive", NULL);
+        }
+
+        if (! valid) {
+            return ap_pstrcat(cmd->pool, cmd->cmd->name, " keyword '",
+                              token, "' cannot be used with '+' or '-'",
+                              NULL);
+        }
+
+        if (action == '+') {
+            /*
+             * Make sure it's in the 'add' list and absent from the
+             * 'subtract' list.
+             */
+            cfg->etag_add |= bit;
+            cfg->etag_remove &= (~ bit);
+        }
+        else if (action == '-') {
+            cfg->etag_remove |= bit;
+            cfg->etag_add &= (~ bit);
+        }
+        else {
+            /*
+             * Non-relative values wipe out any + or - values
+             * accumulated so far.
+             */
+            cfg->etag_bits |= bit;
+            cfg->etag_add = ETAG_UNSET;
+            cfg->etag_remove = ETAG_UNSET;
+            explicit = 1;
+        }
+    }
+
+    /*
+     * Any setting at all will clear the 'None' and 'Unset' bits.
+     */
+
+    if (cfg->etag_add != ETAG_UNSET) {
+        cfg->etag_add &= (~ ETAG_UNSET);
+    }
+    if (cfg->etag_remove != ETAG_UNSET) {
+        cfg->etag_remove &= (~ ETAG_UNSET);
+    }
+    if (explicit) {
+        cfg->etag_bits &= (~ ETAG_UNSET);
+        if ((cfg->etag_bits & ETAG_NONE) != ETAG_NONE) {
+            cfg->etag_bits &= (~ ETAG_NONE);
+        }
+    }
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -3276,6 +3432,8 @@ static const command_rec core_cmds[] = {
 #endif
 #endif /* CHARSET_EBCDIC */
 
+{ "FileETag", set_etag_bits, NULL, OR_FILEINFO, RAW_ARGS,
+  "Specify components used to construct a file's ETag"},
 { NULL }
 };
 
