@@ -1,5 +1,8 @@
 Changes with Apache 2.0.18-dev
 
+  *) Fix command-line processing so that if a bad argument is specified
+     Apache will exit.  [Jeff Trawick]
+
   *) Change the make targets and rules to be consistent in all of the
      Apache-owned source trees.  [Roy Fielding]
      

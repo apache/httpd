@@ -294,6 +294,7 @@ int main(int argc, const char * const argv[])
     apr_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
     apr_pool_t *pcommands; /* Pool for -D, -C and -c switches */
     apr_getopt_t *opt;
+    apr_status_t rv;
     module **mod;
     const char *optarg;
 
@@ -324,7 +325,7 @@ int main(int argc, const char * const argv[])
      */
     apr_getopt_init(&opt, pcommands, process->argc, process->argv);
 
-    while (apr_getopt(opt, AP_SERVER_BASEARGS, &c, &optarg) 
+    while ((rv = apr_getopt(opt, AP_SERVER_BASEARGS, &c, &optarg))
             == APR_SUCCESS) {
         char **new;
         switch (c) {
@@ -362,10 +363,13 @@ int main(int argc, const char * const argv[])
 	case 't':
 	    configtestonly = 1;
 	    break;
-	case '?':
 	case 'h':
 	    usage(process);
 	}
+    }
+
+    if (rv != APR_EOF) { /* bad cmdline option */
+        usage(process);
     }
 
     apr_pool_create(&plog, pglobal);
