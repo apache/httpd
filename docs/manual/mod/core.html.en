@@ -844,7 +844,7 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Forces all matching files to be served with the specified
 MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ForceType <var>MIME-type</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ForceType <var>MIME-type</var>|none</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -867,6 +867,25 @@ MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>Note that unlike <code class="directive"><a href="#defaulttype">DefaultType</a></code>,
     this directive overrides all mime-type associations, including
     filename extensions, that might identify the media type.</p>
+
+    <p>You can override any <code class="directive">ForceType</code> setting
+    by using the value of <code>none</code>:</p>
+
+    <div class="example"><p><code>
+      # force all files to be image/gif:<br />
+      &lt;Location /images&gt;<br />
+        <span class="indent">
+          ForceType image/gif<br />
+        </span>
+      &lt;/Location&gt;<br />
+      <br />
+      # but normal mime-type associations here:<br />
+      &lt;Location /images/mixed&gt;<br />
+      <span class="indent">
+        ForceType none<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables DNS lookups on client IP addresses</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>HostnameLookups on|off|double</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -2136,7 +2155,7 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
 <h3>See also</h3><ul><li><code class="directive"><a href="#serversignature">ServerSignature</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Forces all matching files to be processed by a
 handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>SetHandler <var>handler-name</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>SetHandler <var>handler-name</var>|none</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
