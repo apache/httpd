@@ -113,8 +113,44 @@
 #include "ap_base64.h"
 #include "apr_time.h"
 #include "apr_errno.h"
-#include "apr_shmem.h"
 #include "apr_lock.h"
+
+
+#if APR_HAS_SHARED_MEMORY
+#include "apr_shmem.h"
+#else
+/* just provide dummies - the code does run-time checks anyway */
+typedef   void ap_shmem_t;
+typedef   void ap_shm_name_t;
+
+ap_status_t ap_shm_init(ap_shmem_t **m, ap_size_t reqsize, const char *file, ap_pool_t *cont) {
+    return APR_ENOTIMPL;
+}
+ap_status_t ap_shm_destroy(ap_shmem_t *m) {
+    return APR_ENOTIMPL;
+}
+void *ap_shm_malloc(ap_shmem_t *c, ap_size_t reqsize) {
+    return NULL;
+}
+void *ap_shm_calloc(ap_shmem_t *shared, ap_size_t size) {
+    return NULL;
+}
+ap_status_t ap_shm_free(ap_shmem_t *shared, void *free) {
+    return APR_ENOTIMPL;
+}
+ap_status_t ap_get_shm_name(ap_shmem_t *c, ap_shm_name_t **name) {
+    return APR_ENOTIMPL;
+}
+ap_status_t ap_set_shm_name(ap_shmem_t *c, ap_shm_name_t *name) {
+    return APR_ENOTIMPL;
+}
+ap_status_t ap_open_shmem(ap_shmem_t *c) {
+    return APR_ENOTIMPL;
+}
+ap_status_t ap_shm_avail(ap_shmem_t *c, ap_size_t *avail) {
+    return APR_ENOTIMPL;
+}
+#endif
 
 
 /* struct to hold the configuration info */
