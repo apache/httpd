@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/25 20:59:15 $]
+Last modified at [$Date: 2003/06/26 11:07:09 $]
 
 Release:
 
@@ -253,6 +253,16 @@ PATCHES TO PORT FROM 2.1
     * mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
         modules/generators/mod_cgid.c 1.152
         +1: trawick, gregames, stoddard
+        FYI...  Merge of this is on hold for the time being.  After 
+        testing it previously on multiple platforms, where it performed
+        perfectly time after time, I made the "mistake" of giving it a 
+        quick smoke test on Linux right before committing.  On the 
+        second crash of the cgid daemon the parent got knocked out.
+        More research is needed to see what the issue is, and I am out 
+        of time right now :(  If anybody else has time to play on
+        Linux, I'd love to hear your experiences.  Just keep sending
+        SIGSEGV to the current cgid daemon process and see what
+        happens.
 
 CURRENT RELEASE NOTES:
 
