@@ -1,4 +1,10 @@
 Changes with Apache 2.0.23-dev
+
+  *) More stall fixes for the threaded & worker mpm's.
+     Make mod_status output more accurate.  Don't
+     count workers in processes which aren't actively
+     serving requests. [Greg Ames]
+     
   *) Win32: Get SSI exec cgi tag working. [Bill Stoddard]
 
   *) Add a single listener/multiple worker MPM.  This MPM is

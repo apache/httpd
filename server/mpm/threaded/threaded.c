@@ -1010,6 +1010,7 @@ static void perform_idle_server_maintenance(void)
 	     */
 	    if (status <= SERVER_READY && status != SERVER_DEAD &&
                     !ps->quiescing &&
+                    ps->generation == ap_my_generation &&
                  /* XXX the following shouldn't be necessary if we clean up 
                   *     properly after seg faults, but we're not yet    GLA 
                   */     
