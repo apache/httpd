@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/13 15:56:29 $]
+Last modified at [$Date: 2002/01/13 20:01:00 $]
 
 Release:
 
@@ -100,7 +100,7 @@ RELEASE SHOWSTOPPERS:
       Status: Ian says.. auth_dbm can now handle multiple DBM types,
               is this still an issue?
       Vote: Remove mod_auth_db
-            +1: Justin
+            +1: Justin, Ian
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -116,26 +116,6 @@ RELEASE SHOWSTOPPERS:
       to be able to return an error code.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-    * Add a Logging Directive to exclude logging based on mime type.
-        
-        Message-ID: <ELEDJONBOPPAEGANDEEIEENCCAAA.joshua@slive.ca>
-
-        -1: Joshua Silve, WRowe, Lars 
-        +1: Ian (surprise)
-       
-        Lars Says:
-            But is matching on mime-types really a required feature?
-            IMHO most people are happy with the current conditional logging
-            feature, e.g., matching on REQUEST_URI.
-
-            I tend to be -1 on your patch Ian, because the directive is too
-            specific. We either need a more generic one or just stick with
-            the current (or an enhanced) conditional logging functionality. 
-
-        Ian Says:
-            Large Sites/Sites with other heavy CPU loads need a 'cheap'
-            way to exclude 90% of all log lines (eg images)
-            Regex Matching takes ~5-10 times longer than a simple hash get.
 
     * Try to get libtool inter-library dependency code working on AIX.
 
