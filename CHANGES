@@ -1,5 +1,9 @@
 Changes with Apache 2.0.30-dev
 
+  *) Allow apxs to be used to build DSOs on AIX without requiring the
+     user to hard-code the list of import files.  (This should help
+     on OS/390 and BeOS as well.)  [Jeff Trawick]
+     
   *) Resolved segfault in mod_isapi when configuring with ISAPICacheFile.
      PR 8563, 8919  [William Rowe]
   
