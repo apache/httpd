@@ -1,4 +1,8 @@
 Changes with Apache 2.0.37
+
+  *) Fix generated httpd.conf to respect layout for LoadModule lines.
+     PR 8170.  [Thom May <thom@planetarytramp.net>]
+
   *) Win32: During a graceful restart, threads in the new process
      were accessing scoreboard slots still in use by active threads in 
      the the old process. [Bill Stoddard]
