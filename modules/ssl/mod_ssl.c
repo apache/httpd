@@ -471,7 +471,6 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_auth_checker  (ssl_hook_Auth,          NULL,NULL, APR_HOOK_MIDDLE);
 
     ssl_var_register();
-    ssl_io_register();
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {
