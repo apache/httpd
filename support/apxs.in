@@ -61,13 +61,15 @@ package apxs;
 ##  Configuration
 ##
 
-my $prefix         = "@prefix@";
-my $CFG_PREFIX     = $prefix;
+my %config_vars = ();
+
+my $installbuilddir = "@exp_installbuilddir@";
+get_config_vars("$installbuilddir/config_vars.mk",\%config_vars);
 
 # read the configuration variables once
-my %config_vars = ();
-get_config_vars("$prefix/build/config_vars.mk",\%config_vars);
 
+my $prefix         = get_vars("prefix");
+my $CFG_PREFIX     = $prefix;
 my $exec_prefix    = get_vars("exec_prefix");
 my $CFG_TARGET     = get_vars("progname");
 my $CFG_SYSCONFDIR = get_vars("sysconfdir");
@@ -324,6 +326,7 @@ if ($opt_g) {
     $data =~ s|%NAME%|$name|sg;
     $data =~ s|%TARGET%|$CFG_TARGET|sg;
     $data =~ s|%PREFIX%|$prefix|sg;
+    $data =~ s|%INSTALLBUILDDIR%|$installbuilddir|sg;
 
     my ($mkf, $mods, $src) = ($data =~ m|^(.+)-=#=-\n(.+)-=#=-\n(.+)|s);
 
@@ -418,7 +421,7 @@ if ($opt_c) {
         $la =~ s|\.c$|.la|;
         my $o = $s;
         $o =~ s|\.c$|.o|;
-        push(@cmds, "$prefix/build/libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
+        push(@cmds, "$installbuilddir/libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
         unshift(@objs, $lo);
     }
 
@@ -443,7 +446,7 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
 
-    push(@cmds, "$prefix/build/libtool $ltflags --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
+    push(@cmds, "$installbuilddir/libtool $ltflags --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);
@@ -474,8 +477,8 @@ if ($opt_i or $opt_e) {
         $t =~ s|^.+/([^/]+)$|$1|;
         $t =~ s|\.la$|\.so|;
         if ($opt_i) {
-	    push(@cmds, "$prefix/build/instdso.sh SH_LIBTOOL='" .
-                 "$prefix/build/libtool' $f $CFG_LIBEXECDIR");
+	    push(@cmds, "$installbuilddir/instdso.sh SH_LIBTOOL='" .
+                 "$installbuilddir/libtool' $f $CFG_LIBEXECDIR");
 	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
         }
 
@@ -592,7 +595,7 @@ __DATA__
 builddir=$(shell pwd)
 top_srcdir=%PREFIX%
 top_builddir=%PREFIX%
-include %PREFIX%/build/special.mk
+include %INSTALLBUILDDIR%/special.mk
 
 #   the used tools
 APXS=apxs
