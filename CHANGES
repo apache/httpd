@@ -13,28 +13,6 @@ Changes with Apache 2.1.0-dev
   *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
      library handles special characters. PR 24437 [Jess Holle]
 
-  *) mod_ldap: fix a bogus error message to tell the user which file
-     is causing a potential problem with the LDAP shared memory cache.
-     PR 31431 [Graham Leggett]
-
-  *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
-     statistics display. PR 29216 [Graham Leggett]
-
-  *) mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
-
-  *) mod_cache: Try to correctly follow RFC 2616 13.3 on validating stale
-     cache responses.  [Justin Erenkrantz]
-
-  *) mod_disk_cache: Do not store aborted content.  PR 21492.
-     [Rüdiger Plüm <r.pluem t-online.de>]
-
-  *) mod_disk_cache: Correctly store cached content type.  PR 30278.
-     [Rüdiger Plüm <r.pluem t-online.de>]
-
-  *) mod_rewrite: Handle per-location rules when r->filename is unset.
-     Previously this would segfault or simply not match as expected,
-     depending on the platform.  [Jeff Trawick]
-
   *) Unix MPMs: Shut down the server more quickly when child processes are
      slow to exit.  [Joe Orton, Jeff Trawick]
 
@@ -54,10 +32,6 @@ Changes with Apache 2.1.0-dev
 
   *) mod_proxy: If a request has a blank body and has a 0 Content-Length
      headers, pass that to the proxy.  [Justin Erenkrantz]
-
-  *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
-     [michael teitler <michael.teitler cetelem.fr>,
-      Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
 
   *) Recognize QSA flag in mod_rewrite again.
      [Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
@@ -437,6 +411,35 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.53
+
+  *) mod_cache: Try to correctly follow RFC 2616 13.3 on validating stale
+     cache responses.  [Justin Erenkrantz]
+
+  *) mod_rewrite: Handle per-location rules when r->filename is unset.
+     Previously this would segfault or simply not match as expected,
+     depending on the platform.  [Jeff Trawick]
+
+  *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
+     [michael teitler <michael.teitler cetelem.fr>,
+      Jan Kratochvil <rcpt-dev.AT.httpd.apache.org jankratochvil.net>]
+
+  *) mod_rewrite: Fix 0 bytes write into random memory position.
+     PR 31036. [André Malo]
+
+  *) mod_disk_cache: Do not store aborted content.  PR 21492.
+     [RÃ¼iger PlÃ¼ <r.pluem t-online.de>]
+
+  *) mod_disk_cache: Correctly store cached content type.  PR 30278.
+     [RÃ¼iger PlÃ¼ <r.pluem t-online.de>]
+
+  *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
+     statistics display. PR 29216 [Graham Leggett]
+
+  *) mod_ldap: fix a bogus error message to tell the user which file
+     is causing a potential problem with the LDAP shared memory cache.
+     PR 31431 [Graham Leggett]
+
+  *) mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
 
   *) Fix the re-linking issue when purging elements from the LDAP cache
      PR 24801 [Jess Holle <jessh ptc.com>]
