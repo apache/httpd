@@ -6,3 +6,4 @@ ApacheModuleProxy.ncb
 ApacheModuleProxy.opt
 ApacheModuleProxy.plg
 Makefile
+*.so-o
