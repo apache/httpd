@@ -645,13 +645,13 @@ int main(int argc, const char * const argv[])
 
     if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
-                     0, NULL, "Unable to open logs\n");
+                     0, NULL, "Unable to open logs");
         destroy_and_exit_process(process, 1);
     }
 
     if ( ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
-                     NULL, "Configuration Failed\n");
+                     NULL, "Configuration Failed");
         destroy_and_exit_process(process, 1);
     }
 
@@ -690,13 +690,13 @@ int main(int argc, const char * const argv[])
         apr_pool_clear(plog);
         if (ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
-                         0, NULL, "Unable to open logs\n");
+                         0, NULL, "Unable to open logs");
             destroy_and_exit_process(process, 1);
         }
 
         if (ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
-                         0, NULL, "Configuration Failed\n");
+                         0, NULL, "Configuration Failed");
             destroy_and_exit_process(process, 1);
         }
 
