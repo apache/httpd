@@ -117,6 +117,12 @@ static const char *tls_cert_file(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static apr_status_t tls_filter_cleanup(void *data)
+{
+    SSLStateMachine_destroy((SSLStateMachine *)data);
+    return APR_SUCCESS;
+}
+
 static int tls_filter_inserter(conn_rec *c)
 {
     TLSServerConfig *pConfig =
@@ -135,6 +141,9 @@ static int tls_filter_inserter(conn_rec *c)
     pCtx->pOutputFilter=ap_add_output_filter(s_szTLSFilterName,pCtx,NULL,c);
     pCtx->pbbInput=apr_brigade_create(c->pool);
     pCtx->pbbPendingInput=apr_brigade_create(c->pool);
+
+    apr_pool_cleanup_register(c->pool, (void*)pCtx->pStateMachine,
+                              tls_filter_cleanup, apr_pool_cleanup_null);
 
     return OK;
 }
