@@ -270,7 +270,6 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     /* read up to the amount they specified. */
     if (mode == AP_MODE_READBYTES || mode == AP_MODE_SPECULATIVE) {
         apr_bucket *e;
-        apr_bucket_brigade *newbb;
 
         AP_DEBUG_ASSERT(readbytes > 0);
 
