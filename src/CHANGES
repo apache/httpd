@@ -1,5 +1,8 @@
 Changes with Apache 1.2b3:
 
+  *) Add rwrite() function to API to allow for sending strings of
+     arbitrary length. [Doug MacEachern]
+
   *) Remove rlim_t typedef for NetBSD. Do older versions need this?
 
   *) Defined rlim_t and WANTHSREGEX=yes for NeXT.
