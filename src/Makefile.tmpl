@@ -31,7 +31,7 @@ all: @@Configuration@@ os-dir core-dir modules/last-built httpd
 	@echo "If not, you will at least have to touch @@Configuration@@."
 	@false
 
-httpd: $(REGLIB) modules.o
+httpd: $(REGLIB) $(OBJS)
 	$(CC) $(LDFLAGS)  -o httpd $(OBJS) $(REGLIB) $(LIBS)
 
 regex/libregex.a:
