@@ -253,7 +253,7 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
 
 typedef struct joblist_s {
     struct joblist_s *next;
-    int sock;
+    SOCKET sock;
 } joblist;
 
 typedef struct globals_s {
@@ -269,7 +269,7 @@ globals allowed_globals = {NULL, NULL, NULL, NULL, 0};
 #define MAX_SELECT_ERRORS 100
 
 
-static void add_job(int sock)
+static void add_job(SOCKET sock)
 {
     joblist *new_job;
 
@@ -296,10 +296,10 @@ static void add_job(int sock)
 }
 
 
-static int remove_job(void)
+static SOCKET remove_job(void)
 {
     joblist *job;
-    int sock;
+    SOCKET sock;
 
     WaitForSingleObject(allowed_globals.jobsemaphore, INFINITE);
     apr_thread_mutex_lock(allowed_globals.jobmutex);
@@ -326,7 +326,7 @@ static void win9x_accept(void * dummy)
     struct timeval tv;
     fd_set main_fds;
     int wait_time = 1;
-    int csd;
+    SOCKET csd;
     SOCKET nsd = INVALID_SOCKET;
     int count_select_errors = 0;
     int rc;
@@ -363,7 +363,7 @@ static void win9x_accept(void * dummy)
 	tv.tv_usec = 0;
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
 
-	rc = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
+	rc = select((int)(listenmaxfd + 1), &main_fds, NULL, NULL, &tv);
 
         if (rc == 0 || (rc == SOCKET_ERROR && APR_STATUS_IS_EINTR(apr_get_netos_error()))) {
             count_select_errors = 0;    /* reset count of errors */            
