@@ -73,16 +73,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f pcre.mak CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcreposix.mak CFG="pcreposix - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd ap
-	 $(MAKE) $(MAKEOPT) -f ap.mak CFG="ap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..
-	cd support
-         $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f htpasswd.mak CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-         $(MAKE) $(MAKEOPT) -f htdigest.mak CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f logresolve.mak CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..
 	cd main
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -106,6 +96,13 @@ _build:
 #       cd modules\proxy
 #        $(MAKE) $(MAKEOPT) -f ApacheModuleProxy.mak CFG="ApacheModuleProxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 #       cd ..\..
+	cd support
+         $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+         $(MAKE) $(MAKEOPT) -f htpasswd.mak CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+         $(MAKE) $(MAKEOPT) -f htdigest.mak CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f logresolve.mak CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..
 
 _install:
 	-mkdir $(INSTDIR)
