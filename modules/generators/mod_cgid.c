@@ -247,7 +247,7 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
 #endif
 }
 
-static void get_req(int fd, request_rec *r, char **filename, char **argv0, char ***env, int *req_type) 
+static void get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_type) 
 { 
     int i, len, j; 
     unsigned char *data; 
@@ -493,7 +493,6 @@ static int cgid_server(void *data)
     while (1) {
         int errfileno = STDERR_FILENO;
         char *argv0; 
-        char *filename; 
         char **env; 
         const char * const *argv; 
         apr_int32_t   in_pipe  = APR_CHILD_BLOCK;
@@ -523,7 +522,7 @@ static int cgid_server(void *data)
         r = apr_pcalloc(p, sizeof(request_rec)); 
         procnew = apr_pcalloc(p, sizeof(*procnew));
         r->pool = p; 
-        get_req(sd2, r, &filename, &argv0, &env, &req_type); 
+        get_req(sd2, r, &argv0, &env, &req_type); 
         apr_os_file_put(&r->server->error_log, &errfileno, r->pool);
         apr_os_file_put(&inout, &sd2, r->pool);
 
