@@ -241,7 +241,7 @@ void clean_var_rec (var_rec *mime_info)
     mime_info->mime_stars = 0;
 
     mime_info->charset_quality = 1.0;
-    mime_info->type_quality = 1.0;
+    mime_info->type_quality = 0.0;
     mime_info->encoding_quality = 1;
     mime_info->lang_quality = 1.0;
     mime_info->accept_type_quality = 1.0;
@@ -656,10 +656,7 @@ int read_type_map (negotiation_state *neg, char *map_name)
 		mime_info.description = get_token (neg->pool, &body, 0);
 	    }
 	} else {
-#ifdef NOTDEF
-	    if (mime_info.quality > 0)
-#endif
-	    if (*mime_info.file_name)
+	    if (mime_info.type_quality > 0 && *mime_info.file_name)
 		{
 		    void *new_var = push_array (neg->avail_vars);
 		    memcpy (new_var, (void *)&mime_info, sizeof (var_rec));
