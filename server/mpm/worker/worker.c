@@ -797,6 +797,13 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     return NULL;
 }
 
+/* XXX For ungraceful termination/restart, we definitely don't want to
+ *     wait for active connections to finish but we may want to wait
+ *     for idle workers to get out of the queue code and release mutexes,
+ *     since those mutexes are cleaned up pretty soon and some systems
+ *     may not react favorably (i.e., segfault) if operations are attempted
+ *     on cleaned-up mutexes.
+ */
 static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
@@ -820,8 +827,14 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
              * from an explicit call to ap_queue_interrupt_all(). This allows
              * us to unblock threads stuck in ap_queue_pop() when a shutdown
              * is pending.
+             *
+             * If workers_may_exit is set and this is ungraceful termination/
+             * restart, we are bound to get an error on some systems (e.g.,
+             * AIX, which sanity-checks mutex operations) since the queue
+             * may have already been cleaned up.  Don't log the "error" if
+             * workers_may_exit is set.
              */
-            if (rv != APR_EINTR) {
+            if (rv != APR_EINTR && !workers_may_exit) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                              "ap_queue_pop failed");
             }
