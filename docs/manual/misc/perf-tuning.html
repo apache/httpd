@@ -42,8 +42,6 @@
           <li><a href="#trace">Detailed Analysis of a
           Trace</a></li>
 
-          <li><a href="#patches">Patches Available</a></li>
-
           <li><a href="#preforking">The Pre-Forking Model</a></li>
         </ul>
       </li>
@@ -1017,33 +1015,6 @@ munmap(0x400e3000, 6144)                = 0
     </blockquote>
     That's 19 system calls, of which 4 remain relatively easy to
     remove, but don't seem worth the effort. 
-
-    <h3><a id="patches" name="patches">Appendix: Patches
-    Available</a></h3>
-    There are <a
-    href="http://www.arctic.org/~dgaudet/apache/1.3/">several
-    performance patches available for 1.3.</a> Although they may
-    not apply cleanly to the current version, it shouldn't be
-    difficult for someone with a little C knowledge to update them.
-    In particular: 
-
-    <ul>
-      <li>A <a
-      href="http://www.arctic.org/~dgaudet/apache/1.3/shared_time.patch">
-      patch</a> to remove all <code>time(2)</code> system
-      calls.</li>
-
-      <li>A <a
-      href="http://www.arctic.org/~dgaudet/apache/1.3/mod_include_speedups.patch">
-      patch</a> to remove various system calls from
-      <code>mod_include</code>, these calls are used by few sites
-      but required for backwards compatibility.</li>
-
-      <li>A <a
-      href="http://www.arctic.org/~dgaudet/apache/1.3/top_fuel.patch">
-      patch</a> which integrates the above two plus a few other
-      speedups at the cost of removing some functionality.</li>
-    </ul>
 
     <h3><a id="preforking" name="preforking">Appendix: The
     Pre-Forking Model</a></h3>
