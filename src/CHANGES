@@ -1,5 +1,12 @@
 Changes with Apache 1.3b7
 
+  *) Makes mod_rewrite, mod_log_config, mod_status and the ServerSignature 
+     feature compatible with 'UseCanonicalName off' by changing  
+     r->server->server_hostname to ap_get_server_name().  And I changed some 
+     functions which use r->server->port to use ap_get_server_port() instead, 
+     because if there's no Port directive in the config r->server->port is 0.
+     [Lars Eilebrecht]
+
   *) get/set_module_config are trivial enough to be better off inline.  Worth
      1.5% performance boost. [Dean Gaudet]
 
