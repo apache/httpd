@@ -127,37 +127,37 @@ API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt)
 
     tms = (gmt ? gmtime(&t) : localtime(&t));
     if(gmt) {
-      /* Convert %Z to "GMT" and %z to "+0000";
-       * on hosts that do not have a time zone string in struct tm,
-       * strftime must assume its argument is local time.
-       */
-      const char *f;
-      char *p;
-      for(p = tf, f = fmt; p < tf + sizeof tf - 5 && (*p = *f); f++, p++) {
-	if(*f == '%')
-	  switch(f[1])
-	    {
+	/* Convert %Z to "GMT" and %z to "+0000";
+	 * on hosts that do not have a time zone string in struct tm,
+	 * strftime must assume its argument is local time.
+	 */
+	const char *f;
+	char *strp;
+	for(strp = tf, f = fmt; strp < tf + sizeof(tf) - 6 && (*strp = *f)
+	    ; f++, strp++) {
+	    if (*f != '%') continue;
+	    switch (f[1]) {
 	    case '%':
-	      *++p = *++f;
-	      break;
+		*++strp = *++f;
+		break;
 	    case 'Z':
-	      *p++ = 'G';
-	      *p++ = 'M';
-	      *p = 'T';
-	      f++;
-	      break;
+		*strp++ = 'G';
+		*strp++ = 'M';
+		*strp = 'T';
+		f++;
+		break;
 	    case 'z': /* common extension */
-	      *p++ = '+';
-	      *p++ = '0';
-	      *p++ = '0';
-	      *p++ = '0';
-	      *p = '0';
-	      f++;
-	      break;
+		*strp++ = '+';
+		*strp++ = '0';
+		*strp++ = '0';
+		*strp++ = '0';
+		*strp = '0';
+		f++;
+		break;
 	    }
-      }
-      *p = '\0';
-      fmt = tf;
+	}
+	*strp = '\0';
+	fmt = tf;
     }
 
     /* check return code? */
