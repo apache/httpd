@@ -1085,6 +1085,10 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     char *custom_response = ap_response_code_string(r, error_index);
     int recursive_error = 0;
 
+    if (type == AP_FILTER_ERROR) {
+        return;
+    }
+
     if (type == DONE) {
         ap_finalize_request_protocol(r);
         return;
@@ -1351,7 +1355,7 @@ static void process_request_internal(request_rec *r)
      */
     ap_run_insert_filter(r);
 
-    if ((access_status = ap_invoke_handler(r)) != 0 && access_status != -3) {
+    if ((access_status = ap_invoke_handler(r)) != 0) {
         ap_die(access_status, r);
         return;
     }
