@@ -68,6 +68,8 @@
 #include "http_log.h"
 #include "http_protocol.h"  /* for ap_hook_post_read_request */
 
+#include "apr_general.h"    /* for XtOffsetOf                */
+
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
