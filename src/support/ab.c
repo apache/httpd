@@ -80,6 +80,7 @@
 **    - Enhanced by Dean Gaudet <dgaudet@apache.org>, November 1997
 **    - Cleaned up by Ralf S. Engelschall <rse@apache.org>, March 1998 
 **    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998 
+**    - HTML table output added by David N. Welton <davidw@prosa.it>, January 1999
 **
 */
 
@@ -95,7 +96,7 @@
  *   only an issue for loopback usage
  */
 
-#define VERSION "1.2"
+#define VERSION "1.3"
 
 /*  -------------------------------------------------------------------- */
 
@@ -174,7 +175,8 @@ char* postdata;                 /* *buffer containing data from postfile */
 int postlen = 0;                /* length of data to be POSTed */
 char content_type[1024];        /* content type to put in POST header */
 int port = 80;                  /* port number */
-
+int use_html = 0;		/* use html in the report */
+ 
 int doclen = 0;                 /* the length the document should be */
 int totalread = 0;              /* total number of bytes read */
 int totalbread = 0;             /* totoal amount of entity body read */
@@ -339,7 +341,86 @@ static void output_results(void)
 
 /* --------------------------------------------------------- */
 
-/* start asynchronous non-blocking connection */
+/* calculate and output results in HTML  */ 
+
+static void output_html_results(void)
+{
+    int timetaken;
+
+    gettimeofday(&endtime, 0);
+    timetaken = timedif(endtime, start);
+
+    printf("\n\n<table>\n");
+    printf("<tr><th>Server Software:</th>	<td>%s</td></tr>\n", servername);
+    printf("<tr><th>Server Hostname:</th>	<td>%s</td></tr>\n", hostname);
+    printf("<tr><th>Server Port:</th>		<td>%d</td></tr>\n", port);
+    printf("<tr><th></th><td></td></tr>\n");
+    printf("<tr><th>Document Path:</th>		<td>%s</td></tr>\n", path);
+    printf("<tr><th>Document Length:</th>	<td>%d bytes</td></tr>\n", doclen);
+    printf("<tr><th></th><td></td></tr>\n");
+    printf("<tr><th>Concurrency Level:</th>	<td>%d</td></tr>\n", concurrency);
+    printf("<tr><th>Time taken for tests:</th>	<td>%d.%03d seconds</td></tr>\n",
+           timetaken / 1000, timetaken % 1000);
+    printf("<tr><th>Complete requests:</th>	<td>%d</td></tr>\n", done);
+    printf("<tr><th>Failed requests:</th>	<td>%d</td></tr>\n", bad);
+    if (bad)
+        printf("<tr><td colspan=3>   (Connect: %d, Length: %d, Exceptions: %d)</td></tr>\n",
+               err_conn, err_length, err_except);
+    if (err_response)
+        printf("<tr><th>Non-2xx responses:</th>	<td>%d</td></tr>\n", err_response);
+    if (keepalive)
+        printf("<tr><th>Keep-Alive requests:</th>	<td>%d</td></tr>\n", doneka);
+    printf("<tr><th>Total transferred:</th>	<td>%d bytes</td></tr>\n", totalread);
+    if (posting)
+        printf("<tr><th>Total POSTed:</th>	<td>%d</td></tr>\n", totalposted);
+    printf("<tr><th>HTML transferred:</th>	<td>%d bytes</td></tr>\n", totalbread);
+
+    /* avoid divide by zero */
+    if (timetaken) {
+        printf("<tr><th>Requests per second:</th>	<td>%.2f</td></tr>\n", 1000 * (float) (done) / timetaken);
+        printf("<tr><th>Transfer rate:</th>	<td>%.2f kb/s received</td></tr>\n", (float) (totalread) / timetaken);
+        if (posting) {
+            printf("<tr><td></td>	<td>%.2f kb/s sent</td></tr>\n", 
+       		    (float)(totalposted)/timetaken);
+            printf("<tr><td></td>	<td>%.2f kb/s total</td></tr>\n", 
+           	    (float)(totalread + totalposted)/timetaken);
+        }
+    }
+    printf("</table>\n");
+
+    {
+        /* work out connection times */
+        int i;
+        int totalcon = 0, total = 0;
+        int mincon = 9999999, mintot = 999999;
+        int maxcon = 0, maxtot = 0;
+
+        for (i = 0; i < requests; i++) {
+            struct data s = stats[i];
+	    mincon = ap_min(mincon, s.ctime);
+	    mintot = ap_min(mintot, s.time);
+	    maxcon = ap_max(maxcon, s.ctime);
+	    maxtot = ap_max(maxtot, s.time);
+            totalcon += s.ctime;
+            total += s.time;
+        }
+	printf("<table>\n");
+        printf("<tr><th colspan=4>Connnection Times (ms)</th></tr>\n");
+        printf("<tr><th></th> <th>min</th>   <th>avg</th>   <th>max</th></tr>\n");
+        printf("<tr><th>Connect:</th>    <td>%5d</td> <td>%5d</td> <td>%5d</td></tr>\n", 
+	       mincon, totalcon / requests, maxcon);
+        printf("<tr><th>Processing:</th> <td>%5d</td> <td>%5d</td> <td>%5d</td></tr>\n", 
+            mintot - mincon, (total/requests) - (totalcon/requests),
+            maxtot - maxcon);
+        printf("<tr><th>Total:</th> <td>%5d</td> <td>%5d</td> <td>%5d</td></tr>\n", 
+	       mintot, total / requests, maxtot);
+	printf("</table>\n");
+    }
+}
+
+/* --------------------------------------------------------- */
+
+/* start asnchronous non-blocking connection */
 
 static void start_connect(struct connection *c)
 {
@@ -575,8 +656,11 @@ static void test(void)
     fd_set sel_read, sel_except, sel_write;
     int i;
 
-    printf("Benchmarking %s (be patient)...", hostname);
-    fflush(stdout);
+    if (!use_html)
+    {
+	printf("Benchmarking %s (be patient)...", hostname);
+	fflush(stdout);
+    }
 
     {
         /* get server information */
@@ -678,7 +762,10 @@ static void test(void)
                 write_request(&con[i]);
         }
     }
-    output_results();
+    if (use_html)
+	output_html_results();
+    else
+	output_results();
 }
 
 /* ------------------------------------------------------- */
@@ -686,10 +773,19 @@ static void test(void)
 /* display copyright information */
 static void copyright(void) 
 {
-    printf("This is ApacheBench, Version %s\n", VERSION);
-    printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
-    printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
-    printf("\n");
+    if (!use_html)
+    {
+	printf("This is ApacheBench, Version %s\n", VERSION);
+	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
+	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
+	printf("\n");
+    } else {
+	printf("<p>\n");
+	printf(" This is ApacheBench, Version %s<br>\n", VERSION);
+	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
+	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
+	printf("</p>\n<p>\n");
+    }
 }
 
 /* display usage information */
@@ -777,7 +873,7 @@ int main(int argc, char **argv)
 {
     int c, r;
     optind = 1;
-    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVh")) > 0) {
+    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhw")) > 0) {
         switch (c) {
         case 'n':
             requests = atoi(optarg);
@@ -813,6 +909,9 @@ int main(int argc, char **argv)
             copyright();
             exit(0);
             break;
+	case 'w':
+	    use_html = 1;
+	    break;
         case 'h':
             usage(argv[0]);
             break;
