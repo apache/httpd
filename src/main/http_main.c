@@ -5363,6 +5363,71 @@ void setup_signal_names(char *prefix)
     APD2("signal prefix %s", signal_name_prefix);
 }
 
+static void setup_inherited_listeners(pool *p)
+{
+    HANDLE pipe;
+    listen_rec *lr;
+    int fd;
+    WSAPROTOCOL_INFO WSAProtocolInfo;
+    DWORD BytesRead;
+
+    /* Open the pipe to the parent process to receive the inherited socket
+     * data. The sockets have been set to listening in the parent process.
+     */
+    pipe = GetStdHandle(STD_INPUT_HANDLE);
+
+    /* Setup the listeners */
+    listenmaxfd = -1;
+    FD_ZERO(&listenfds);
+    lr = ap_listeners;
+
+    FD_ZERO(&listenfds);
+
+    for (;;) {
+	fd = find_listener(lr);
+	if (fd < 0) {
+            if (!ReadFile(pipe, 
+                          &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO),
+                          &BytesRead,
+                          (LPOVERLAPPED) NULL)){
+                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                             "setup_inherited_listeners: Unable to read socket data from parent");
+                exit(1);
+            }
+            fd = WSASocket(FROM_PROTOCOL_INFO,
+                           FROM_PROTOCOL_INFO,
+                           FROM_PROTOCOL_INFO,
+                           &WSAProtocolInfo,
+                           0,
+                           0);
+            if (fd == INVALID_SOCKET) {
+                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+                             "setup_inherited_listeners: WSASocket failed to get inherit the socket.");
+                exit(1);
+            }
+            APD2("setup_inherited_listeners: WSASocket() returned socket %d", fd);
+	}
+	else {
+	    ap_note_cleanups_for_socket(p, fd);
+	}
+	if (fd >= 0) {
+	    FD_SET(fd, &listenfds);
+	    if (fd > listenmaxfd)
+		listenmaxfd = fd;
+	}
+	lr->fd = fd;
+	if (lr->next == NULL)
+	    break;
+	lr = lr->next;
+    }
+    /* turn the list into a ring */
+    lr->next = ap_listeners;
+    head_listener = ap_listeners;
+    close_unused_listeners();
+    CloseHandle(pipe);
+    return;
+}
+
 /*
  * worker_main() is main loop for the child process. The loop in
  * this function becomes the controlling thread for the actually working
@@ -5443,8 +5508,13 @@ void worker_main(void)
 	exit(0);
     }
     /* start_mutex obtained, continue into the select() loop */
+    if (one_process) {
+        setup_listeners(pconf);
+    } else {
+        /* Get listeners from the parent process */
+        setup_inherited_listeners(pconf);
+    }
 
-    setup_listeners(pconf);
     if (listenmaxfd == -1) {
 	/* Help, no sockets were made, better log something and exit */
 	ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_NOERRNO, NULL,
@@ -5531,7 +5601,7 @@ void worker_main(void)
 	    if (errno != EINTR) {
 		/* A "real" error occurred, log it and increment the count of
 		 * select errors. This count is used to ensure we don't go into
-		 * a busy loop of continuour errors.
+		 * a busy loop of continuous errors.
 		 */
 		ap_log_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
 		count_select_errors++;
@@ -5655,69 +5725,6 @@ void worker_main(void)
  * returned the error will already have been logged by ap_log_error().
  */
 
-int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, char *prefix)
-{
-    char buf[40], mod[200];
-    int i, rv;
-
-#ifdef WIN32
-#define NUMCHILDARGS  4
-#else
-#define NUMCHILDARGS  2
-#endif
-    char **pass_argv = (char **) alloca(sizeof(char *) * (argc + NUMCHILDARGS + 1));
-    
-    /* We need an event to tell the child process to kill itself when
-     * the parent is doing a shutdown/restart. This will be named
-     * apPID_CN where PID is the parent Apache process PID and 
-     * N is a unique child serial number. prefix contains
-     * the "apPID" part. The child will get the name of this
-     * event as its -Z command line argument.
-     */
-    ap_snprintf(buf, sizeof(buf), "%s_C%d", prefix, ++(*child_num));
-    _flushall();
-    *ev = CreateEvent(NULL, TRUE, FALSE, buf);
-    if (!*ev) {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-	    "could not create event for child process");
-	return -1;
-    }
-    APD2("create_event_and_spawn(): created process kill event %s", buf);
-
-    pass_argv[0] = argv[0];
-    pass_argv[1] = "-Z";
-    pass_argv[2] = buf;
-#ifdef WIN32
-    pass_argv[3] = "-f";
-    pass_argv[4] = ap_server_confname;
-#endif
-    for (i = 1; i < argc; i++) {
-        pass_argv[i + NUMCHILDARGS] = argv[i];
-    }
-    pass_argv[argc + NUMCHILDARGS] = NULL;
-
-    rv = GetModuleFileName(NULL, mod, sizeof(mod));
-    if (rv == sizeof(mod)) {
-	/* mod[] was not big enough for our pathname */
-	ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
-	    "Internal error: path to Apache process too long");
-	return -1;
-    }
-    if (rv == 0) {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-	    "GetModuleFileName() for current process");
-	return -1;
-    }
-    rv = spawnv(_P_NOWAIT, mod, pass_argv);
-    if (rv == -1) {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-	    "spawn of child process %s failed", mod);
-	return -1;
-    }
-
-    return rv;
-}
-
 /**********************************************************************
  * master_main - this is the parent (main) process. We create a
  * child process to do the work, then sit around waiting for either
@@ -5748,23 +5755,133 @@ static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *
     APD4("cleanup_processes: removed child in slot %d handle %d, max=%d", position, handle, *processes);
 }
 
-static int create_process(HANDLE *handles, HANDLE *events, 
+static int create_process(pool *p, HANDLE *handles, HANDLE *events, 
                           int *processes, int *child_num, char *kill_event_name, int argc, char **argv)
 {
-    int i = *processes;
+
+    int rv, i;
     HANDLE kill_event;
-    int child_handle;
+    char buf[1024];
+    char exit_event_name[40]; /* apPID_C# */
+    char *pCommand;
 
-    child_handle = create_event_and_spawn(argc, argv, &kill_event, child_num, kill_event_name);
-    if (child_handle <= 0) {
-	return -1;
+    STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
+    PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
+    LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
+    listen_rec *lr;
+    DWORD BytesWritten;
+    HANDLE hPipeRead = NULL;
+    HANDLE hPipeWrite = NULL;
+    SECURITY_ATTRIBUTES sa = {0};  
+
+    sa.nLength = sizeof(sa);
+    sa.bInheritHandle = TRUE;
+    sa.lpSecurityDescriptor = NULL;
+
+    /* Build the command line. Should look something like this:
+     * C:/apache/bin/apache.exe -Z exit_event -f ap_server_confname 
+     * First, get the path to the executable...
+     */
+    rv = GetModuleFileName(NULL, buf, sizeof(buf));
+    if (rv == sizeof(buf)) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Path to Apache process too long");
+        return -1;
+    } else if (rv == 0) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: GetModuleFileName() returned NULL for current process.");
+        return -1;
     }
-    handles[i] = (HANDLE)child_handle;
-    events[i] = kill_event;
-    (*processes)++;
+    
+    /* Create the exit event (apPID_C#). Parent signals this event to tell the
+     * child to exit 
+     */
+    ap_snprintf(exit_event_name, sizeof(exit_event_name), "%s_C%d", kill_event_name, ++(*child_num));
+    kill_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
+    if (!kill_event) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Could not create exit event for child process");
+        return -1;
+    }
+    
+    pCommand = ap_psprintf(p, "%s -Z %s -f %s", buf, exit_event_name, ap_server_confname);  
 
-    APD4("create_process: created child in slot %d handle %d, max=%d", 
-	(*processes)-1, handles[(*processes)-1], *processes);
+    for (i = 1; i < argc; i++) {
+        pCommand = ap_pstrcat(p, pCommand, " ", argv[i], NULL);
+    }
+
+    /* Create a pipe to send socket info to the child */
+    if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Unable to create pipe to child process.\n");
+        return -1;
+    }
+
+    /* Give the read in of teh pipe (hPipeRead) to the child as stdin. The 
+     * parent will write the socket data to the child on this pipe.
+     */
+    memset(&si, 0, sizeof(si));
+    memset(&pi, 0, sizeof(pi));
+    si.cb = sizeof(si);
+    si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+    si.wShowWindow = SW_HIDE;
+    si.hStdInput   = hPipeRead;
+    /*
+    si.hStdOutput  = NULL;
+    si.hStdError   = NULL;
+    */
+
+    if (!CreateProcess(NULL, pCommand, NULL, NULL, 
+                       TRUE,      /* Inherit handles */
+                       0,         /* Creation flags */
+                       NULL, NULL,
+                       &si, &pi)) {
+        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                     "Parent: Not able to create the child process.");
+        /*
+         * We must close the handles to the new process and its main thread
+         * to prevent handle and memory leaks.
+         */ 
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+
+        return -1;
+    }
+    else {
+        /* Assume the child process lives. Update the process and event tables */
+        handles[*processes] = pi.hProcess;
+        events[*processes] = kill_event;
+        (*processes)++;
+
+        /* Run the chain of open sockets. For each socket, duplicate it 
+         * for the target process then send the WSAPROTOCOL_INFO 
+         * (returned by dup socket) to the child */
+        lr = ap_listeners;
+        while (lr != NULL) {
+            lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
+            APD2("Parent: Duplicating socket %d and sending it to the child process.", lr->fd);
+            if (WSADuplicateSocket(lr->fd, 
+                                   pi.dwProcessId,
+                                   lpWSAProtocolInfo) == SOCKET_ERROR) {
+                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                             "Parent: WSADuplicateSocket failed for socket %d.", lr->fd );
+                return -1;
+            }
+
+            if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
+                           &BytesWritten,
+                           (LPOVERLAPPED) NULL)) {
+                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                             "Parent: Unable to write duplicated socket %d to the child.", lr->fd );
+                return -1;
+            }
+
+            lr = lr->next;
+            if (lr == ap_listeners)
+                break;
+        }
+    }
+    CloseHandle(hPipeWrite);        
 
     return 0;
 }
@@ -5872,10 +5989,12 @@ int master_main(int argc, char **argv)
 	if (!is_graceful) {
 	    ap_restart_time = time(NULL);
 	}
+        copy_listeners(pconf);
 	ap_clear_pool(pconf);
 	pparent = ap_make_sub_pool(pconf);
 
 	server_conf = ap_read_config(pconf, pparent, ap_server_confname);
+        setup_listeners(pconf);
 	ap_clear_pool(plog);
 	ap_open_logs(server_conf, plog);
 	ap_set_version();
@@ -5884,7 +6003,7 @@ int master_main(int argc, char **argv)
         service_set_status(SERVICE_START_PENDING);
         /* Create child processes */
         while (processes_to_create--) {
-            if (create_process(process_handles, process_kill_events, 
+            if (create_process(pconf, process_handles, process_kill_events, 
                                &current_live_processes, &child_num, signal_prefix_string, argc, argv) < 0) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
                              "master_main: create child process failed. Exiting.");
@@ -5902,14 +6021,14 @@ int master_main(int argc, char **argv)
         if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
             ap_log_error(APLOG_MARK,APLOG_CRIT|APLOG_WIN32ERROR, server_conf,
-                         "WaitForMultipeObjects on process handles and apache-signal -- doing shutdown");
+                         "master_main: : WaitForMultipeObjects on process handles and apache-signal -- doing shutdown");
             shutdown_pending = 1;
             break;
         }
         if (rv == WAIT_TIMEOUT) {
             /* Hey, this cannot happen */
             ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
-                         "WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
+                         "master_main: WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
             shutdown_pending = 1;
         }
 
@@ -5940,7 +6059,7 @@ int master_main(int argc, char **argv)
                          "master_main: Restart event signaled. Doing a graceful restart.");
             if (ResetEvent(signal_restart_event) == 0) {
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
-                             "ResetEvent(signal_restart_event) failed.");
+                             "master_main: ResetEvent(signal_restart_event) failed.");
             }
             /* Signal each child process to die */
 	    for (i = 0; i < children_to_kill; i++) {

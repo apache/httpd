@@ -1,5 +1,14 @@
 Changes with Apache 1.3.7
 
+  *) Win32: More apache -k restart work. Restarts are now honored
+     immediately and connections in the listen queue are -not- lost.
+     This is made possible by the use of the WSADuplicateSocket()
+     call.  The listeners are opened in the parent, duplicated, then
+     the duplicates are passed to the child. The original listen sockets 
+     are not closed by the parent across a restart, thus the listen queue 
+     is preserved.
+     [Bill Stoddard <stoddard@raleigh.ibm.com>]
+
   *) Fix handling of case when a client has sent "Expect: 100-continue"
      and we are going to respond with an error, but get stuck waiting to
      discard the body in the pointless hope of preserving the connection.
@@ -70,7 +79,7 @@ Changes with Apache 1.3.7
      could take hours.  Now, a restart is honored almost immediately. 
      All connections in Apache's queues are handled but connections in 
      the stack's listen queue are discarded. Restart triggered by 
-     MaxRequestPerChild is unchanged. 
+     MaxRequestPerChild is unchanged.
      [Bill Stoddard <stoddard@raleigh.ibm.com>]
 
   *) Win32: Eliminated unnecessary call to wait_for_multiple_objects in
