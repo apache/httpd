@@ -28,7 +28,7 @@
         <directive module="mod_actions">Action</directive>
         <directive module="mod_mime">AddHandler</directive>
         <directive module="mod_mime">RemoveHandler</directive>
-        <directive module="mod_mime">SetHandler</directive>
+        <directive module="core">SetHandler</directive>
       </directivelist>
     </related>
     
