@@ -16,10 +16,46 @@
 
 <H1 ALIGN="CENTER">Module mod_alias</H1>
 <P>
-This module is contained in the <CODE>mod_alias.c</CODE> file, and
-is compiled in by default. It provides for mapping different parts of the
-host filesystem in the the document tree, and for URL redirection.
+This module provides for mapping different parts of the
+host filesystem in the document tree, and for URL redirection.
 </P>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_alias.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> alias_module
+</P>
+
+<H2>Summary</H2>
+
+<P>The directives contained in this module allow for manipulation and
+control of URLs as requests arrive at the server.  The
+<CODE>Alias</CODE> and <CODE>ScriptAlias</CODE> directives are used to
+map between URLs and filesystem paths.  This allows for content which
+is not directly under the <A
+HREF="core.html#documentroot"><CODE>DocumentRoot</CODE></A> to be
+served as part of the web document tree.  The <CODE>ScriptAlias</CODE>
+directive has the additional effect of marking the target directory as
+containing only CGI scripts.
+
+<P>The <CODE>Redirect</CODE> directives are used to instruct clients
+to make a new request with a different URL.  They are often used
+when a resource has moved to a new location.
+
+<P>A more powerful and flexible set of directives for manipulating
+URLs is contained in the <A
+HREF="mod_rewrite.html"><CODE>mod_rewrite</CODE></A> module.
+
 
 <H2>Directives</H2>
 <UL>
@@ -105,11 +141,7 @@ See also <A HREF="#scriptalias">ScriptAlias</A>.
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_alias<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3 and later
+><STRONG>Module:</STRONG></A> mod_alias
 </P>
 
 <P>This directive is equivalent to <A HREF="#alias">Alias</A>, but
@@ -149,13 +181,7 @@ to activate the <CODE>/icons</CODE> directory, one might use:
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_alias<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> The directory and .htaccess context's
-are only available in versions 1.1 and later. The <EM>status</EM>
-argument is only available in Apache 1.2 or later.
+><STRONG>Module:</STRONG></A> mod_alias
 </P>
 <P>
 The Redirect directive maps an old URL into a new one. The new URL is returned
@@ -234,11 +260,7 @@ the function <CODE>send_error_response</CODE> in http_protocol.c).
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_alias<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3 and later
+><STRONG>Module:</STRONG></A> mod_alias
 </P>
 
 <P>This directive is equivalent to <A HREF="#alias">Redirect</A>, but
@@ -278,11 +300,7 @@ one might use:
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_alias<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> This directive is only available in Apache 1.2 and later
+><STRONG>Module:</STRONG></A> mod_alias
 </P>
 <P>
 This directive makes the client know that the Redirect is only
@@ -314,11 +332,7 @@ temp</CODE>.
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_alias<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> This directive is only available in Apache 1.2 and later
+><STRONG>Module:</STRONG></A> mod_alias
 </P>
 <P>
 This directive makes the client know that the Redirect is permanent
@@ -382,11 +396,7 @@ run the script /web/cgi-bin/foo.
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_alias<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3 and later
+><STRONG>Module:</STRONG></A> mod_alias
 </P>
 
 <P>This directive is equivalent to <A HREF="#scriptalias">ScriptAlias</A>, but

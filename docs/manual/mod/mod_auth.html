@@ -16,20 +16,49 @@
 
 <H1 ALIGN="CENTER">Module mod_auth</H1>
 
-This module is contained in the <CODE>mod_auth.c</CODE> file, and
-is compiled in by default. It provides for user authentication using
-textual files.
+<P>This module provides for user authentication using text files.
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_auth.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> auth_module
+</P>
+
+<H2>Summary</H2>
+
+<P>This module allows the use of HTTP Basic Authentication to restrict
+access by looking up users in plain text password and group files.
+Similar functionality and greater scalability is provided by <A
+HREF="mod_auth_dbm.html">mod_auth_dbm</A> and <A
+HREF="mod_auth_db.html">mod_auth_db</A>.  HTTP Digest Authentication
+is provided by <A HREF="mod_auth_digest.html">mod_auth_digest</A>.
 
 
-<MENU>
+<H2>Directives</H2>
+
+<UL>
 <LI><A HREF="#authgroupfile">AuthGroupFile</A>
 <LI><A HREF="#authuserfile">AuthUserFile</A>
 <LI><A HREF="#authauthoritative">AuthAuthoritative</A>
-</MENU>
+</UL>
+
+<P>See also: <A HREF="core.html#require">require</A>
+and <A HREF="core.html#satisfy">satisfy</A>.</P>
+
 <HR>
 
 
-<H2><A NAME="authgroupfile">AuthGroupFile</A></H2>
+<H2><A NAME="authgroupfile">AuthGroupFile</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt AuthGroupFile} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -72,7 +101,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
 <A HREF="#authuserfile">AuthUserFile</A>.<P><HR>
 
-<H2><A NAME="authuserfile">AuthUserFile</A></H2>
+<H2><A NAME="authuserfile">AuthUserFile</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt AuthUserFile} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -130,7 +159,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
 <A HREF="#authgroupfile">AuthGroupFile</A>.<P>
 <HR>
-<H2><A NAME="authauthoritative">AuthAuthoritative</A></H2>
+<H2><A NAME="authauthoritative">AuthAuthoritative</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt AuthAuthoritative} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
