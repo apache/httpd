@@ -1,4 +1,13 @@
 Changes with Apache 2.0.21-dev
+
+  *) Fix some issues with the pod and prefork: check the pod *after*
+     processing a connection so that a server processing a time-
+     consuming request bails out as soon as practical; when the
+     parent process wakes up a server process via connect(), use an
+     APR timeout on the connect() so that we don't hang for a long
+     time if there aren't server processes around to do accept().
+     [Jeff Trawick, Greg Ames]
+
   *) Performance improvement to mod_mime.c. find_ct() in mod_mime, 
      spends a lot of time in apr_table_get calls.  Using the default 
      httpd.conf, the tables for languages and charsets are somewhat

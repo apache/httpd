@@ -409,9 +409,31 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
                      "get socket to connect to listener");
         return rv;
     }
-    rv = apr_connect(sock, sa);    
+    /* on some platforms (e.g., FreeBSD), the kernel won't accept many
+     * queued connections before it starts blocking local connects...
+     * we need to keep from blocking too long and instead return an error,
+     * because the MPM won't want to hold up a graceful restart for a
+     * long time
+     */
+    rv = apr_setsocketopt(sock, APR_SO_TIMEOUT, 3 * APR_USEC_PER_SEC);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+                     "set timeout on socket to connect to listener");
+        return rv;
+    }
+    rv = apr_connect(sock, sa);    
+    if (rv != APR_SUCCESS) {
+        int log_level = APLOG_WARNING;
+
+        if (APR_STATUS_IS_TIMEUP(rv)) {
+            /* probably some server processes bailed out already and there 
+             * is nobody around to call accept and clear out the kernel 
+             * connection queue; usually this is not worth logging
+             */
+            log_level = APLOG_DEBUG;
+        }
+	
+        ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf,
                      "connect to listener");
         return rv;
     }
@@ -423,8 +445,10 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
 AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num)
 {
     int i;
-    for (i = 0; i < num; i++) {
-        ap_mpm_pod_signal(pod);
+    apr_status_t rv = APR_SUCCESS;
+
+    for (i = 0; i < num && rv == APR_SUCCESS; i++) {
+        rv = ap_mpm_pod_signal(pod);
     }
 }
 #endif
