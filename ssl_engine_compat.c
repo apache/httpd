@@ -481,22 +481,6 @@ void ssl_compat_variables(request_rec *r)
                 ap_table_set(r->subprocess_env, cpOld, cpVal);
         }
         else if (cpMsg != NULL) {
-#ifdef SSL_VENDOR
-           /*
-            * something that isn't provided by mod_ssl, so at least
-            * let vendor extensions provide a reasonable value first.
-            */
-            cpVal = NULL;
-            ap_hook_use("ap::mod_ssl::vendor::compat_variables_lookup",
-                        AP_HOOK_SIG3(ptr,ptr,ptr),
-                        AP_HOOK_DECLINE(NULL),
-                        &cpVal, r, cpOld);
-            if (cpVal != NULL) {
-                ap_table_set(r->subprocess_env, cpOld, cpVal);
-                continue;
-            }
-#endif
-
             /*
              * we cannot print a message, so we set at least
              * the variables content to the compat message

@@ -563,9 +563,6 @@ typedef struct {
     struct {
         void *pV1, *pV2, *pV3, *pV4, *pV5, *pV6, *pV7, *pV8, *pV9, *pV10;
     } rCtx;
-#ifdef SSL_VENDOR
-    ap_ctx         *ctx;
-#endif
 } SSLModConfigRec;
 
 /*
@@ -609,9 +606,6 @@ typedef struct {
     SSL_CTX     *pSSLProxyCtx;
     STACK_OF(X509_INFO) *skProxyClientCerts;
 #endif
-#ifdef SSL_VENDOR
-    ap_ctx      *ctx;
-#endif
 } SSLSrvConfigRec;
 
 /*
@@ -633,9 +627,6 @@ typedef struct {
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
     char         *szCACertificatePath;
     char         *szCACertificateFile;
-#endif
-#ifdef SSL_VENDOR
-    ap_ctx       *ctx;
 #endif
 #endif /* XXX */
 } SSLDirConfigRec;
@@ -833,7 +824,6 @@ void         ssl_compat_variables(request_rec *);
 #endif
 
 /*  Utility Functions  */
-char        *ssl_util_server_root_relative(pool *, char *, char *);
 char        *ssl_util_vhostid(pool *, server_rec *);
 void         ssl_util_strupper(char *);
 void         ssl_util_uuencode(char *, const char *, BOOL);
@@ -847,12 +837,6 @@ ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *);
 char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(pool *, const char *, const char *, char *);
 void         ssl_util_thread_setup(void);
-
-/*  Vendor extension support  */
-#if defined(SSL_VENDOR) && defined(SSL_VENDOR_OBJS)
-void         ssl_vendor_register(void);
-void         ssl_vendor_unregister(void);
-#endif
 
 #endif /* XXX */
 

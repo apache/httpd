@@ -97,7 +97,7 @@ void ssl_log_open(server_rec *s_main, server_rec *s, pool *p)
         if (strEQ(sc->szLogFile, "/dev/null"))
             return;
         else if (sc->szLogFile[0] == '|') {
-            szLogFile = ssl_util_server_root_relative(p, "log", sc->szLogFile+1);
+            szLogFile = ap_server_root_relative(p, "log", sc->szLogFile+1);
             if ((pl = ap_open_piped_log(p, szLogFile)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Cannot open reliable pipe to SSL logfile filter %s", szLogFile);
@@ -107,7 +107,7 @@ void ssl_log_open(server_rec *s_main, server_rec *s, pool *p)
             setbuf(sc->fileLogFile, NULL);
         }
         else {
-            szLogFile = ssl_util_server_root_relative(p, "log", sc->szLogFile);
+            szLogFile = ap_server_root_relative(p, "log", sc->szLogFile);
             if ((sc->fileLogFile = ap_pfopen(p, szLogFile, "a")) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Cannot open SSL logfile %s", szLogFile);
