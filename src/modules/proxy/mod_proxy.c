@@ -253,10 +253,10 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
 
 	table_setn(r->headers_out, "Location", nuri);
 	aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
-	    "Domain missing: %s sent to %s from %s", r->uri, nuri,
-	    ref ? ref : "-");
+		    "Domain missing: %s sent to %s%s%s", r->uri, nuri,
+		    ref ? " from " : "", ref ? ref : "");
 
-	return REDIRECT;
+	return HTTP_MOVED_PERMANENTLY;
     }
 }
 
