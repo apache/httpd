@@ -1149,12 +1149,8 @@ static int hook_uri2file(request_rec *r)
     char *thisport;
     const char *thisurl;
     char buf[512];
-    char docroot[512];
-    const char *ccp;
     unsigned int port;
     int rulestatus;
-    int n;
-    int l;
 
     /*
      *  retrieve the config structures
@@ -1289,6 +1285,8 @@ static int hook_uri2file(request_rec *r)
             return OK;
         }
         else if ((skip = is_absolute_uri(r->filename)) > 0) {
+            int n;
+
             /* it was finally rewritten to a remote URL */
 
             if (rulestatus != ACTION_NOESCAPE) {
@@ -1359,8 +1357,8 @@ static int hook_uri2file(request_rec *r)
                 return HTTP_BAD_REQUEST;
             }
 
-            /* if there is no valid prefix, we have
-             * to emulate the translator from the core and
+            /* if there is no valid prefix, we call
+             * the translator from the core and
              * prefix the filename with document_root
              *
              * NOTICE:
@@ -1379,29 +1377,23 @@ static int hook_uri2file(request_rec *r)
              * because we only do stat() on the first directory
              * and this gets cached by the kernel for along time!
              */
-            n = prefix_stat(r->filename, r->pool);
-            if (n == 0) {
-                if ((ccp = ap_document_root(r)) != NULL) {
-                    l = apr_cpystrn(docroot, ccp, sizeof(docroot)) - docroot;
+            if (!prefix_stat(r->filename, r->pool)) {
+                int res;
+                char *tmp = r->uri;
 
-                    /* always NOT have a trailing slash */
-                    if (docroot[l-1] == '/') {
-                        docroot[l-1] = '\0';
-                    }
-                    if (r->server->path
-                        && !strncmp(r->filename, r->server->path,
-                                    r->server->pathlen)) {
-                        r->filename = apr_pstrcat(r->pool, docroot,
-                                                  (r->filename +
-                                                   r->server->pathlen), NULL);
-                    }
-                    else {
-                        r->filename = apr_pstrcat(r->pool, docroot,
-                                                  r->filename, NULL);
-                    }
-                    rewritelog(r, 2, "prefixed with document_root to %s",
-                               r->filename);
+                r->uri = r->filename;
+                res = ap_core_translate(r);
+                r->uri = tmp;
+
+                if (res != OK) {
+                    rewritelog(r, 1, "prefixing with document_root of %s "
+                                     "FAILED", r->filename);
+
+                    return res;
                 }
+
+                rewritelog(r, 2, "prefixed with document_root to %s",
+                           r->filename);
             }
 
             rewritelog(r, 1, "go-ahead with %s [OK]", r->filename);
