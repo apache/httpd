@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/12 22:04:42 $]
+Last modified at [$Date: 2000/07/20 21:31:19 $]
 
 Release:
 
@@ -176,10 +176,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Ryan's patch:
         MsgID: <Pine.LNX.4.21.0007072059120.18877-100000@koj.rkbloom.net>
 	Status: Dirk +1, Ryan +1, Greg -1
-
-      Ryan's alternate patch:
-	MsgID: <Pine.LNX.4.21.0007091940440.16496-100000@koj.rkbloom.net>
-	Status: Ryan -0, Greg -1
 
 Other bugs that need fixing:
 
