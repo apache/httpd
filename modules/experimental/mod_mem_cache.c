@@ -1148,7 +1148,7 @@ static void register_hooks(apr_pool_t *p)
     */
     ap_register_provider(p, CACHE_PROVIDER_GROUP, "mem", "0",
                          &cache_mem_provider);
-    ap_register_provider(p, CACHE_PROVIDER_GROUP, "fs", "0",
+    ap_register_provider(p, CACHE_PROVIDER_GROUP, "fd", "0",
                          &cache_fd_provider);
 }
 
