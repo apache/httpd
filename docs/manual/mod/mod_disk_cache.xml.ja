@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 106740 (outdated: 106861) -->
+<!-- English Revision: 106861 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -34,6 +34,9 @@
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+
+    <p>キャッシュの大きさを最大レベルで維持するために
+    <program>htcacheclean</program> を使うことができます。</p>
 
     <note><title>注:</title>
       <p><module>mod_disk_cache</module> は
