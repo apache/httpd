@@ -79,42 +79,48 @@ if test "$bsd_makefile" = "yes"; then
   for makefile in $@; do
     echo "creating $makefile"
     dir=`echo $makefile|sed 's%/*[^/][^/]*$%%'`
-    $mkdir_p "$dir/"
 
+    if test -z "$dir"; then
+        real_srcdir=$top_srcdir
+        real_builddir=$top_builddir
+        dir="."
+    else
+        $mkdir_p "$dir/"
+        real_srcdir=$top_srcdir/$dir
+        real_builddir=$top_builddir/$dir
+    fi
     cat - $top_srcdir/$makefile.in <<EOF |sed 's/^include \(.*\)/.include "\1"/' >$makefile 
 top_srcdir   = $top_srcdir
 top_builddir = $top_builddir
-srcdir       = $top_srcdir/$dir
-builddir     = $top_builddir/$dir
-VPATH        = $top_srcdir/$dir
+srcdir       = $real_srcdir
+builddir     = $real_builddir
+VPATH        = $real_srcdir
 EOF
     
-    test -z "$dir" && dir="."
     touch $dir/.deps
   done
 else  
   for makefile in $@; do
     echo "creating $makefile"
     dir=`echo $makefile|sed 's%/*[^/][^/]*$%%'`
-    $mkdir_p "$dir/"
+
     if test -z "$dir"; then
-        cat - $top_srcdir/$makefile.in <<EOF >$makefile
-top_srcdir   = $top_srcdir
-top_builddir = $top_builddir
-srcdir       = $top_srcdir
-builddir     = $top_builddir
-VPATH        = $top_srcdir
-EOF
+        real_srcdir=$top_srcdir
+        real_builddir=$top_builddir
         dir="."
     else
-        cat - $top_srcdir/$makefile.in <<EOF >$makefile
+        $mkdir_p "$dir/"
+        real_srcdir=$top_srcdir/$dir
+        real_builddir=$top_builddir/$dir
+    fi
+    cat - $top_srcdir/$makefile.in <<EOF >$makefile
 top_srcdir   = $top_srcdir
 top_builddir = $top_builddir
-srcdir       = $top_srcdir/$dir
-builddir     = $top_builddir/$dir
-VPATH        = $top_srcdir/$dir
+srcdir       = $real_srcdir
+builddir     = $real_builddir
+VPATH        = $real_srcdir
 EOF
-    fi 
+
     touch $dir/.deps
   done
 fi
