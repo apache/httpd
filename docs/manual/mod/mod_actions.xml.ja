@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_actions.xml.meta">
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.9 -->
 
 <name>mod_actions</name> 
 

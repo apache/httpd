@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_echo.xml.meta">
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <name>mod_echo</name>
 <description>プロトコルモジュールの概要を示すための単純なエコーサーバ

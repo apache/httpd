@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.10 -->
+<!-- English revision: 1.11 -->
 <modulesynopsis metafile="mod_userdir.xml.meta">
 
 <name>mod_userdir</name>
