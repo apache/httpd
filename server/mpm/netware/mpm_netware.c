@@ -945,7 +945,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         while (worker_thread_count > 0)
             apr_thread_yield();
 
-        apr_pool_destroy (pmain);
         return 1;
     }
     else {  /* the only other way out is a restart */
@@ -965,7 +964,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             apr_thread_yield();
         }
         DBPRINT0 ("restarting...\n");
-        apr_pool_destroy (pmain);
     }
 
     return 0;
