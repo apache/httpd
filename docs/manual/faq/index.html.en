@@ -31,6 +31,7 @@
 <div class="section">
 <h2><a id="topics" name="topics">Topics</a></h2>
 <dl><dt><a href="support.html">Support</a></dt><dd>What do I do when I have problems?</dd>
+<dt><a href="error.html">Error Messages</a></dt><dd>What does this error message mean?</dd>
 </dl></div></div>
 <div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>

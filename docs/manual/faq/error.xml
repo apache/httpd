@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<faq metafile="error.xml.meta">
+<parentdocument href="./">FAQ</parentdocument>
+
+<title>Error Messages - Frequently Asked Questions</title>
+<description>What does this error message mean?</description>
+
+
+
+<section id="error"><title>Error Messages</title>
+    <ul>
+    <li><a href="#error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></li>
+    </ul>
+
+    <section id="error.sendfile"><title>Invalid argument:
+    core_output_filter: writing data to the network</title>
+
+    <p>Apache uses the <code>sendfile</code> syscall on platforms
+    where it is available in order to speed sending of responses.
+    Unfortunately, on some systems, Apache will detect the presence of
+    <code>sendfile</code> at compile-time, even when it does not work
+    properly.  This happens most frequently when using network or
+    other non-standard file-system.</p>
+
+    <p>Symptoms of this problem include the above message in the error
+    log and zero-length responses to non-zero-sized files.  The
+    problem generally occurs only for static files, since dynamic
+    content usually does not make use of <code>sendfile</code>.</p>
+
+    <p>To fix this problem, simply use the <directive
+    module="core">EnableSendfile</directive> directive to disable
+    <code>sendfile</code> for all or part of your server.  Also see
+    the <directive module="core">EnableMMAP</directive>, which can
+    help with similar problems.</p>
+
+    </section>
+</section>
+
+</faq>
+

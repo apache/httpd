@@ -27,11 +27,13 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#topics">Topics</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#support">Support</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#error">Error Messages</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a id="topics" name="topics">Topics</a></h2>
 <dl><dt><a href="#support">Support</a></dt><dd>What do I do when I have problems?</dd>
+<dt><a href="#error">Error Messages</a></dt><dd>What does this error message mean?</dd>
 </dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="support" id="support">Support</a></h2>
@@ -131,6 +133,35 @@
       <p>Professional, commercial support for Apache is available from
       <a href="http://www.apache.org/info/support.cgi">a number of
       companies</a>.</p>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="error" id="error">Error Messages</a></h2>
+    <ul>
+    <li><a href="#error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></li>
+    </ul>
+
+    <h3><a name="error.sendfile" id="error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></h3>
+
+    <p>Apache uses the <code>sendfile</code> syscall on platforms
+    where it is available in order to speed sending of responses.
+    Unfortunately, on some systems, Apache will detect the presence of
+    <code>sendfile</code> at compile-time, even when it does not work
+    properly.  This happens most frequently when using network or
+    other non-standard file-system.</p>
+
+    <p>Symptoms of this problem include the above message in the error
+    log and zero-length responses to non-zero-sized files.  The
+    problem generally occurs only for static files, since dynamic
+    content usually does not make use of <code>sendfile</code>.</p>
+
+    <p>To fix this problem, simply use the <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> directive to disable
+    <code>sendfile</code> for all or part of your server.  Also see
+    the <code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code>, which can
+    help with similar problems.</p>
+
     
 </div></div>
 <div id="footer">
