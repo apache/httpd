@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>perchild</name>
+<description>Multi-Processing Module allowing for daemon processes
+    serving requests to be assigned a variety of different
+    userids</description>
+<status>MPM</status>
+<sourcefile>perchild.c</sourcefile>
+<identifier>mpm_perchild_module</identifier>
+
+<summary>
+<note type="warning">
+This MPM does not currently work on most platforms.  Work is ongoing to
+make it functional.
+</note>
+
+    <p>This Multi-Processing Module (MPM) implements a hybrid
+    multi-process, multi-threaded web server. A fixed number of
+    processes create threads to handle requests. Fluctuations in
+    load are handled by increasing or decreasing the number of
+    threads in each process.</p>
+
+    <p>A single control process launches the number of child processes
+    indicated by the <directive
+    module="mpm_common">NumServers</directive> directive at server
+    startup. Each child process creates threads as specified in the
+    <code>StartThreads</code> directive. The individual threads then
+    listen for connections and serve them when they arrive.</p>
+
+    <p>Apache always tries to maintain a pool of <em>spare</em> or
+    idle server threads, which stand ready to serve incoming
+    requests. In this way, clients do not need to wait for new
+    threads to be created. For each child process, Apache assesses
+    the number of idle threads and creates or destroys threads to
+    keep this number within the boundaries specified by
+    <code>MinSpareThreads</code> and <code>MaxSpareThreads</code>.
+    Since this process is very self-regulating, it is rarely
+    necessary to modify these directives from their default values.
+    The maximum number of clients that may be served simultaneously
+    is determined by multiplying the number of server processes
+    that will be created (<code>NumServers</code>) by the maximum
+    number of threads created in each process
+    (<code>MaxThreadsPerChild</code>).</p>
+
+    <p>While the parent process is usually started as root under
+    Unix in order to bind to port 80, the child processes and
+    threads are launched by Apache as a less-privileged user. The
+    <code>User</code> and <code>Group</code> directives are used to
+    set the privileges of the Apache child processes. The child
+    processes must be able to read all the content that will be
+    served, but should have as few privileges beyond that as
+    possible. In addition, unless <a
+    href="../suexec.html">suexec</a> is used, these directives also
+    set the privileges which will be inherited by CGI scripts.</p>
+
+    <p><code>MaxRequestsPerChild</code> controls how frequently the
+    server recycles processes by killing old ones and launching new
+    ones.</p>
+
+    <p>See also: <a href="../bind.html">Setting which addresses and
+    ports Apache uses</a>.</p>
+
+    <p>In addition it adds the extra ability to specify that
+    specific processes should serve requests under different
+    userids. These processes can then be associated with specific
+    virtual hosts.</p>
+    <!-- XXX: This desperately needs more explanation. -->
+</summary>
+
+<directivesynopsis location="mpm_common">
+<name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>LockFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>MaxThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>NumServers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>StartThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common">
+<name>User</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AssignUserId</name>
+<syntax>AssignUserID <em>user_id</em> <em>group_id</em></syntax>
+<contextlist><context>virtual host</context></contextlist>
+
+<usage>
+    <p>Tie a virtual host to a specific child process. Requests addressed to
+the virtual host where this directive appears will be served by the process
+running with the specified user and group id.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ChildPerUserId</name>
+<syntax>ChildPerUserID <em>user_id</em>
+<em>group_id</em> <em>child_id</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Specify a user id and group id for a specific child process. The number of
+children if set by the <a href="mpm_common.html#numservers">NumServers</a>
+directive. For example, the default value for <a
+href="mpm_common.html#numservers">NumServers</a> is 5 and that means
+children ids 1,2,3,4 and 5 are available for assigment. If a child does not
+have an associated ChildPerUserID, it inherits the <a
+href="mpm_common.html#user">User</a> and <a
+href="mpm_common.html#group">Group</a> settings from the main server </p> 
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
