@@ -76,6 +76,28 @@
 #include "http_request.h"
 
 
+/* Create a set of LDAP_DECLARE(type), LDLDAP_DECLARE(type) and 
+ * LDAP_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define LDAP_DECLARE(type)            type
+#define LDAP_DECLARE_NONSTD(type)     type
+#define LDAP_DECLARE_DATA
+#elif defined(LDAP_DECLARE_STATIC)
+#define LDAP_DECLARE(type)            type __stdcall
+#define LDAP_DECLARE_NONSTD(type)     type
+#define LDAP_DECLARE_DATA
+#elif defined(LDAP_DECLARE_EXPORT)
+#define LDAP_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define LDAP_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define LDAP_DECLARE_DATA             __declspec(dllexport)
+#else
+#define LDAP_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define LDAP_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define LDAP_DECLARE_DATA             __declspec(dllimport)
+#endif
+
+
 /*
  * LDAP Connections
  */
@@ -146,7 +168,7 @@ typedef struct util_ldap_state_t {
  * @return If successful LDAP_SUCCESS is returned.
  * @deffunc int util_ldap_connection_open(util_ldap_connection_t *ldc)
  */
-int util_ldap_connection_open(util_ldap_connection_t *ldc);
+LDAP_DECLARE(int) util_ldap_connection_open(util_ldap_connection_t *ldc);
 
 /**
  * Close a connection to an LDAP server
@@ -157,7 +179,7 @@ int util_ldap_connection_open(util_ldap_connection_t *ldc);
  *      structure, using apr_ldap_open_connection().
  * @deffunc util_ldap_close_connection(util_ldap_connection_t *ldc)
  */
-void util_ldap_connection_close(util_ldap_connection_t *ldc);
+LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc);
 
 /**
  * Destroy a connection to an LDAP server
@@ -167,7 +189,7 @@ void util_ldap_connection_close(util_ldap_connection_t *ldc);
  *      LDAP connections when the server is finished with them.
  * @deffunc apr_status_t util_ldap_connection_destroy(util_ldap_connection_t *ldc)
  */
-apr_status_t util_ldap_connection_destroy(void *param);
+LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param);
 
 /**
  * Find a connection in a list of connections
@@ -187,7 +209,7 @@ apr_status_t util_ldap_connection_destroy(void *param);
  *                                                           const char *binddn, const char *bindpw, deref_options deref,
  *                                                           int netscapessl, int starttls)
  */
-util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *host, int port,
+LDAP_DECLARE(util_ldap_connection_t *) util_ldap_connection_find(request_rec *r, const char *host, int port,
                                                   const char *binddn, const char *bindpw, deref_options deref,
                                                   int netscapessl, int starttls);
 
@@ -210,7 +232,7 @@ util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *ho
  *                                        const char *url, const char *dn, const char *reqdn,
  *                                        int compare_dn_on_server)
  */
-int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
+LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
                               const char *url, const char *dn, const char *reqdn, 
                               int compare_dn_on_server);
 
@@ -227,7 +249,7 @@ int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
  * @deffunc int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
  *                                      const char *url, const char *dn, const char *attrib, const char *value)
  */
-int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
+LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                             const char *url, const char *dn, const char *attrib, const char *value);
 
 /**
@@ -249,7 +271,7 @@ int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
  *                                          char *url, const char *basedn, int scope, char **attrs,
  *                                          char *filter, char *bindpw, char **binddn, char ***retvals)
  */
-int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
+LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                               const char *url, const char *basedn, int scope, char **attrs,
                               const char *filter, const char *bindpw, const char **binddn, const char ***retvals);
 

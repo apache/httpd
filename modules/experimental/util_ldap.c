@@ -178,7 +178,7 @@ int util_ldap_handler(request_rec *r)
  * util_ldap_connection_find() is called this connection will be
  * available for reuse.
  */
-void util_ldap_connection_close(util_ldap_connection_t *ldc)
+LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc)
 {
 
     /*
@@ -238,7 +238,7 @@ apr_status_t util_ldap_connection_destroy(void *param)
  *
  * Returns LDAP_SUCCESS on success; and an error code on failure
  */
-int util_ldap_connection_open(util_ldap_connection_t *ldc)
+LDAP_DECLARE(int) util_ldap_connection_open(util_ldap_connection_t *ldc)
 {
     int result = 0;
     int failures = 0;
@@ -376,7 +376,7 @@ start_over:
  * and returned to the caller. If found in the cache, a pointer to the existing
  * ldc structure will be returned.
  */
-util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *host, int port,
+LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, const char *host, int port,
                                               const char *binddn, const char *bindpw, deref_options deref,
                                               int netscapessl, int starttls)
 {
@@ -505,7 +505,7 @@ util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *ho
  *
  * The lock for the ldap cache should already be acquired.
  */
-int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
+LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc, 
                             const char *url, const char *dn, const char *reqdn, 
                             int compare_dn_on_server)
 {
@@ -623,7 +623,7 @@ start_over:
  * require user cache is owned by the 
  *
  */
-int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
+LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                           const char *url, const char *dn,
                           const char *attrib, const char *value)
 {
@@ -738,7 +738,7 @@ start_over:
     return result;
 }
 
-int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
+LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                               const char *url, const char *basedn, int scope, char **attrs,
                               const char *filter, const char *bindpw, const char **binddn,
                               const char ***retvals)
