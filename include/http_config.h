@@ -96,9 +96,55 @@ enum cmd_how {
     TAKE13			/* one or three arguments */
 };
 
+typedef struct cmd_parms_struct cmd_parms;
+
+#ifdef AP_DEBUG
+
+typedef union {
+    const char *(*no_args) (cmd_parms *parms, void *mconfig);
+    const char *(*raw_args) (cmd_parms *parms, void *mconfig,
+			     const char *args);
+    const char *(*take1) (cmd_parms *parms, void *mconfig, const char *w);
+    const char *(*take2) (cmd_parms *parms, void *mconfig, const char *w,
+			  const char *w2);
+    const char *(*take3) (cmd_parms *parms, void *mconfig, const char *w,
+			  const char *w2, const char *w3);
+    const char *(*flag) (cmd_parms *parms, void *mconfig, int on);
+} cmd_func;
+
+# define AP_NO_ARGS	func.no_args
+# define AP_RAW_ARGS	func.raw_args
+# define AP_TAKE1	func.take1
+# define AP_TAKE2	func.take2
+# define AP_TAKE3	func.take3
+# define AP_FLAG	func.flag
+
+# define AP_INIT_NO_ARGS(directive, func, mconfig, where, help) \
+    { directive, { .no_args=func }, mconfig, where, RAW_ARGS, help }
+# define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
+    { directive, { .raw_args=func }, mconfig, where, RAW_ARGS, help }
+# define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
+    { directive, { .take1=func }, mconfig, where, TAKE1, help }
+# define AP_INIT_ITERATE(directive, func, mconfig, where, help) \
+    { directive, { .take1=func }, mconfig, where, ITERATE, help }
+# define AP_INIT_TAKE2(directive, func, mconfig, where, help) \
+    { directive, { .take2=func }, mconfig, where, TAKE2, help }
+# define AP_INIT_TAKE12(directive, func, mconfig, where, help) \
+    { directive, { .take2=func }, mconfig, where, TAKE12, help }
+# define AP_INIT_FLAG(directive, func, mconfig, where, help) \
+    { directive, { .flag=func }, mconfig, where, FLAG, help }
+
+#else
+
+typedef const char *(*cmd_func) ();
+
+# define AP_RAW_ARGS func
+
+#endif
+
 typedef struct command_struct {
     const char *name;		/* Name of this command */
-    const char *(*func) ();	/* Function invoked */
+    cmd_func func;
     void *cmd_data;		/* Extra data, for functions which
 				 * implement multiple commands...
 				 */
@@ -161,7 +207,8 @@ typedef struct {
  * use to *somebody*...
  */
 
-typedef struct {
+struct cmd_parms_struct
+    {
     void *info;			/* Argument to command from cmd_table */
     int override;		/* Which allow-override bits are set */
     int limited;		/* Which methods are <Limit>ed */
@@ -189,7 +236,8 @@ typedef struct {
     void *context;		/* per_dir_config vector passed 
 				 * to handle_command */
     const ap_directive_t *err_directive; /* directive with syntax error */
-} cmd_parms;
+
+};
 
 /* This structure records the existence of handlers in a module... */
 
@@ -294,7 +342,8 @@ API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val);
 
 /* Generic command handling function... */
 
-API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, void *,
+						   const char *);
 API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *, char *, char *);
 API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, char *, int);
 API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, char *);

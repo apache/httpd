@@ -1021,7 +1021,8 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd,
     return NULL;
 }
 
-static const char *set_access_name(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_access_name(cmd_parms *cmd, void *dummy,
+				   const char *arg)
 {
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
@@ -1054,8 +1055,10 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, char *arg)
 #endif /*GPROF*/
 
 static const char *set_add_default_charset(cmd_parms *cmd, 
-	core_dir_config *d, char *arg)
+					   void *d_, const char *arg)
 {
+    core_dir_config *d=d_;
+
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -1074,7 +1077,8 @@ static const char *set_add_default_charset(cmd_parms *cmd,
     return NULL;
 }
 
-static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_document_root(cmd_parms *cmd, void *dummy,
+				     const char *arg)
 {
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
@@ -1121,9 +1125,10 @@ API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string)
        ap_pstrdup(r->pool, string) : ap_pstrcat(r->pool, "\"", string, NULL);
 }
 
-static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
-				      char *errno_str, char *msg)
+static const char *set_error_document(cmd_parms *cmd, void *conf_,
+				      const char *errno_str, const char *msg)
 {
+    core_dir_config *conf=conf_;
     int error_number, index_number, idx500;
     enum { MSG, LOCAL_PATH, REMOTE_PATH } what = MSG;
                 
@@ -1181,9 +1186,9 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
     return NULL;
 }
 
-static const char *set_override(cmd_parms *cmd, core_dir_config *d,
-				const char *l)
+static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
 {
+    core_dir_config *d=d_;
     char *w;
   
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
@@ -1224,9 +1229,9 @@ static const char *set_override(cmd_parms *cmd, core_dir_config *d,
     return NULL;
 }
 
-static const char *set_options(cmd_parms *cmd, core_dir_config *d,
-			       const char *l)
+static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
 {
+    core_dir_config *d=d_;
     allow_options_t opt;
     int first = 1;
     char action;
@@ -1296,8 +1301,10 @@ static const char *set_options(cmd_parms *cmd, core_dir_config *d,
     return NULL;
 }
 
-static const char *satisfy(cmd_parms *cmd, core_dir_config *c, char *arg)
+static const char *satisfy(cmd_parms *cmd, void *c_, const char *arg)
 {
+    core_dir_config *c=c_;
+
     if (!strcasecmp(arg, "all")) {
         c->satisfy = SATISFY_ALL;
     }
@@ -1310,10 +1317,11 @@ static const char *satisfy(cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-static const char *require(cmd_parms *cmd, core_dir_config *c, char *arg)
+static const char *require(cmd_parms *cmd, void *c_, const char *arg)
 {
     require_line *r;
-  
+    core_dir_config *c=c_;
+
     if (!c->ap_requires) {
         c->ap_requires = ap_make_array(cmd->pool, 2, sizeof(require_line));
     }
@@ -1383,10 +1391,10 @@ static char *unclosed_directive(cmd_parms *cmd)
 		      "> directive missing closing '>'", NULL);
 }
 
-static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
+static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     const char *errmsg;
-    char *endp = strrchr(arg, '>');
+    const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
@@ -1444,10 +1452,10 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
+static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     const char *errmsg;
-    char *endp = strrchr(arg, '>');
+    const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
@@ -1504,16 +1512,16 @@ static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static const char *filesection(cmd_parms *cmd, core_dir_config *c,
-			       const char *arg)
+static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     const char *errmsg;
-    char *endp = strrchr(arg, '>');
+    const char *endp = ap_strrchr_c(arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
     regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
+    core_dir_config *c=mconfig;
 
     void *new_file_conf = ap_create_per_dir_config(cmd->pool);
 
@@ -1571,9 +1579,9 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
     return NULL;
 }
 
-static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
+static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
 {
-    char *endp = strrchr(arg, '>');
+    const char *endp = ap_strrchr_c(arg, '>');
     int not = (arg[0] == '!');
     module *found;
 
@@ -1596,16 +1604,16 @@ static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
 
         retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd, 
                                       &current, &parent, "<IfModule");
-        *(ap_directive_t **)dummy = current;
+        *(ap_directive_t **)mconfig = current;
         return retval;
     }
     else { 
-        *(ap_directive_t **)dummy = NULL;
+        *(ap_directive_t **)mconfig = NULL;
         return ap_soak_end_container(cmd, "<IfModule");
     }
 }
 
-API_EXPORT(int) ap_exists_config_define(char *name)
+API_EXPORT(int) ap_exists_config_define(const char *name)
 {
     char **defines;
     int i;
@@ -1619,13 +1627,13 @@ API_EXPORT(int) ap_exists_config_define(char *name)
     return 0;
 }
 
-static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
+static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    char *endp;
+    const char *endp;
     int defined;
     int not = 0;
 
-    endp = strrchr(arg, '>');
+    endp = ap_strrchr_c(arg, '>');
     if (endp == NULL) {
 	return unclosed_directive(cmd);
     }
@@ -1656,11 +1664,12 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
 
-static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
+static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
+				       const char *arg)
 {
     server_rec *main_server = cmd->server, *s;
     const char *errmsg;
-    char *endp = strrchr(arg, '>');
+    const char *endp = ap_strrchr_c(arg, '>');
     ap_pool_t *p = cmd->pool;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1723,7 +1732,8 @@ static const char *set_server_alias(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *add_module_command(cmd_parms *cmd, void *dummy, char *arg)
+static const char *add_module_command(cmd_parms *cmd, void *dummy,
+				      const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1751,7 +1761,7 @@ static const char *clear_module_list_command(cmd_parms *cmd, void *dummy)
 }
 
 static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
-					  char *arg)
+					  const char *arg)
 {
     /* This one's pretty generic... */
   
@@ -1764,11 +1774,11 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    *(char **)(struct_ptr + offset) = arg;
+    *(const char **)(struct_ptr + offset) = arg;
     return NULL;
 }
 
-static const char *server_port(cmd_parms *cmd, void *dummy, char *arg)
+static const char *server_port(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     int port;
@@ -1786,9 +1796,11 @@ static const char *server_port(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_signature_flag(cmd_parms *cmd, core_dir_config *d, 
-				      char *arg)
+static const char *set_signature_flag(cmd_parms *cmd, void *d_,
+				      const char *arg)
 {
+    core_dir_config *d=d_;
+
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -1809,7 +1821,8 @@ static const char *set_signature_flag(cmd_parms *cmd, core_dir_config *d,
     return NULL;
 }
 
-static const char *set_server_root(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_server_root(cmd_parms *cmd, void *dummy,
+				   const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
@@ -1826,7 +1839,7 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_timeout(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -1838,7 +1851,7 @@ static const char *set_timeout(cmd_parms *cmd, void *dummy, char *arg)
 }
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
-					  char *arg)
+					  const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -1849,7 +1862,8 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_keep_alive(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_keep_alive(cmd_parms *cmd, void *dummy,
+				  const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -1868,7 +1882,8 @@ static const char *set_keep_alive(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_keep_alive_max(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_keep_alive_max(cmd_parms *cmd, void *dummy,
+				      const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -1879,8 +1894,9 @@ static const char *set_keep_alive_max(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_idcheck(cmd_parms *cmd, core_dir_config *d, int arg) 
+static const char *set_idcheck(cmd_parms *cmd, void *d_, int arg) 
 {
+    core_dir_config *d=d_;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -1890,9 +1906,11 @@ static const char *set_idcheck(cmd_parms *cmd, core_dir_config *d, int arg)
     return NULL;
 }
 
-static const char *set_hostname_lookups(cmd_parms *cmd, core_dir_config *d,
-					char *arg)
+static const char *set_hostname_lookups(cmd_parms *cmd, void *d_,
+					const char *arg)
 {
+    core_dir_config *d=d_;
+
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -1913,7 +1931,8 @@ static const char *set_hostname_lookups(cmd_parms *cmd, core_dir_config *d,
     return NULL;
 }
 
-static const char *set_serverpath(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_serverpath(cmd_parms *cmd, void *dummy,
+				  const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -1925,8 +1944,9 @@ static const char *set_serverpath(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_content_md5(cmd_parms *cmd, core_dir_config *d, int arg)
+static const char *set_content_md5(cmd_parms *cmd, void *d_, int arg)
 {
+    core_dir_config *d=d_;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -1936,9 +1956,10 @@ static const char *set_content_md5(cmd_parms *cmd, core_dir_config *d, int arg)
     return NULL;
 }
 
-static const char *set_use_canonical_name(cmd_parms *cmd, core_dir_config *d, 
-					  char *arg)
+static const char *set_use_canonical_name(cmd_parms *cmd, void *d_,
+					  const char *arg)
 {
+    core_dir_config *d=d_;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
 	return err;
@@ -1960,7 +1981,8 @@ static const char *set_use_canonical_name(cmd_parms *cmd, core_dir_config *d,
 }
 
 
-static const char *include_config (cmd_parms *cmd, void **dummy, char *name)
+static const char *include_config (cmd_parms *cmd, void *dummy,
+				   const char *name)
 {
     ap_directive_t *conftree = NULL;
 
@@ -2048,7 +2070,8 @@ API_EXPORT(const char *) ap_psignature(const char *prefix, request_rec *r)
  * Load an authorisation realm into our location configuration, applying the
  * usual rules that apply to realms.
  */
-static const char *set_authname(cmd_parms *cmd, void *mconfig, char *word1)
+static const char *set_authname(cmd_parms *cmd, void *mconfig,
+				const char *word1)
 {
     core_dir_config *aconfig = (core_dir_config *)mconfig;
 
@@ -2141,7 +2164,8 @@ static void ap_set_version(ap_pool_t *pconf)
     }
 }
 
-static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
+				   const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -2163,7 +2187,8 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_limit_req_line(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
+				      const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd,
                                            NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
@@ -2187,7 +2212,7 @@ static const char *set_limit_req_line(cmd_parms *cmd, void *dummy, char *arg)
 }
 
 static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
-                                           char *arg)
+                                           const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd,
                                            NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
@@ -2211,7 +2236,8 @@ static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_limit_req_fields(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_limit_req_fields(cmd_parms *cmd, void *dummy,
+					const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd,
                                            NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
@@ -2230,9 +2256,10 @@ static const char *set_limit_req_fields(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_limit_req_body(cmd_parms *cmd, core_dir_config *conf,
-                                      char *arg) 
+static const char *set_limit_req_body(cmd_parms *cmd, void *conf_,
+                                      const char *arg) 
 {
+    core_dir_config *conf=conf_;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -2272,18 +2299,22 @@ static const char *no_set_limit(cmd_parms *cmd, core_dir_config *conf,
 #endif
 
 #ifdef RLIMIT_CPU
-static const char *set_limit_cpu(cmd_parms *cmd, core_dir_config *conf,
-                                 char *arg, char *arg2)
+static const char *set_limit_cpu(cmd_parms *cmd, void *conf_,
+                                 const char *arg, const char *arg2)
 {
+    core_dir_config *conf=conf_;
+
     unixd_set_rlimit(cmd, &conf->limit_cpu, arg, arg2, RLIMIT_CPU);
     return NULL;
 }
 #endif
 
 #if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)
-static const char *set_limit_mem(cmd_parms *cmd, core_dir_config *conf,
-                                 char *arg, char * arg2)
+static const char *set_limit_mem(cmd_parms *cmd, void *conf_,
+                                 const char *arg, const char * arg2)
 {
+    core_dir_config *conf=conf_;
+
 #if defined(RLIMIT_AS)
     unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2 ,RLIMIT_AS);
 #elif defined(RLIMIT_DATA)
@@ -2296,9 +2327,11 @@ static const char *set_limit_mem(cmd_parms *cmd, core_dir_config *conf,
 #endif
 
 #ifdef RLIMIT_NPROC
-static const char *set_limit_nproc(cmd_parms *cmd, core_dir_config *conf,
-                                   char *arg, char * arg2)
+static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
+                                   const char *arg, const char * arg2)
 {
+    core_dir_config *conf=conf_;
+
     unixd_set_rlimit(cmd, &conf->limit_nproc, arg, arg2, RLIMIT_NPROC);
     return NULL;
 }
@@ -2312,158 +2345,166 @@ static const command_rec core_cmds[] = {
 
 /* Old access config file commands */
 
-{ "<Directory", dirsection, NULL, RSRC_CONF, RAW_ARGS,
+AP_INIT_RAW_ARGS("<Directory", dirsection, NULL, RSRC_CONF, 
   "Container for directives affecting resources located in the specified "
-  "directories" },
-{ "<Location", urlsection, NULL, RSRC_CONF, RAW_ARGS,
+  "directories"),
+AP_INIT_RAW_ARGS("<Location", urlsection, NULL, RSRC_CONF,
   "Container for directives affecting resources accessed through the "
-  "specified URL paths" },
-{ "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS,
+  "specified URL paths"),
+AP_INIT_RAW_ARGS("<VirtualHost", virtualhost_section, NULL, RSRC_CONF,
   "Container to map directives to a particular virtual host, takes one or "
-  "more host addresses" },
-{ "<Files", filesection, NULL, OR_ALL, RAW_ARGS, "Container for directives "
-  "affecting files matching specified patterns" },
-{ "<Limit", ap_limit_section, NULL, OR_ALL, RAW_ARGS, "Container for "
-  "authentication directives when accessed using specified HTTP methods" },
-{ "<LimitExcept", ap_limit_section, (void*)1, OR_ALL, RAW_ARGS,
+  "more host addresses"),
+AP_INIT_RAW_ARGS("<Files", filesection, NULL, OR_ALL,
+  "Container for directives affecting files matching specified patterns"),
+AP_INIT_RAW_ARGS("<Limit", ap_limit_section, NULL, OR_ALL,
+  "Container for authentication directives when accessed using specified HTTP "
+  "methods"),
+AP_INIT_RAW_ARGS("<LimitExcept", ap_limit_section, (void*)1, OR_ALL,
   "Container for authentication directives to be applied when any HTTP "
-  "method other than those specified is used to access the resource" },
-{ "<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL, TAKE1,
-  "Container for directives based on existance of specified modules" },
-{ "<IfDefine", start_ifdefine, NULL, EXEC_ON_READ | OR_ALL, TAKE1,
-  "Container for directives based on existance of command line defines" },
-{ "<DirectoryMatch", dirsection, (void*)1, RSRC_CONF, RAW_ARGS,
+  "method other than those specified is used to access the resource"),
+AP_INIT_TAKE1("<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL,
+  "Container for directives based on existance of specified modules"),
+AP_INIT_TAKE1("<IfDefine", start_ifdefine, NULL, EXEC_ON_READ | OR_ALL,
+  "Container for directives based on existance of command line defines"),
+AP_INIT_RAW_ARGS("<DirectoryMatch", dirsection, (void*)1, RSRC_CONF,
   "Container for directives affecting resources located in the "
-  "specified directories" },
-{ "<LocationMatch", urlsection, (void*)1, RSRC_CONF, RAW_ARGS,
+  "specified directories"),
+AP_INIT_RAW_ARGS("<LocationMatch", urlsection, (void*)1, RSRC_CONF,
   "Container for directives affecting resources accessed through the "
-  "specified URL paths" },
-{ "<FilesMatch", filesection, (void*)1, OR_ALL, RAW_ARGS,
-  "Container for directives affecting files matching specified patterns" },
-{ "AuthType", ap_set_string_slot,
-  (void*)XtOffsetOf(core_dir_config, ap_auth_type), OR_AUTHCFG, TAKE1,
-  "An HTTP authorization type (e.g., \"Basic\")" },
-{ "AuthName", set_authname, NULL, OR_AUTHCFG, TAKE1,
-  "The authentication realm (e.g. \"Members Only\")" },
-{ "Require", require, NULL, OR_AUTHCFG, RAW_ARGS,
-  "Selects which authenticated users or groups may access a protected space" },
-{ "Satisfy", satisfy, NULL, OR_AUTHCFG, TAKE1,
-  "access policy if both allow and require used ('all' or 'any')" },    
+  "specified URL paths"),
+AP_INIT_RAW_ARGS("<FilesMatch", filesection, (void*)1, OR_ALL,
+  "Container for directives affecting files matching specified patterns"),
+AP_INIT_TAKE1("AuthType", ap_set_string_slot,
+  (void*)XtOffsetOf(core_dir_config, ap_auth_type), OR_AUTHCFG, 
+  "An HTTP authorization type (e.g., \"Basic\")"),
+AP_INIT_TAKE1("AuthName", set_authname, NULL, OR_AUTHCFG,
+  "The authentication realm (e.g. \"Members Only\")"),
+AP_INIT_RAW_ARGS("Require", require, NULL, OR_AUTHCFG,
+  "Selects which authenticated users or groups may access a protected space"),
+AP_INIT_TAKE1("Satisfy", satisfy, NULL, OR_AUTHCFG,
+  "access policy if both allow and require used ('all' or 'any')"),
 #ifdef GPROF
-{ "GprofDir", set_gprof_dir, NULL, RSRC_CONF, TAKE1,
-  "Directory to plop gmon.out files" },
+AP_INIT_TAKE1("GprofDir", set_gprof_dir, NULL, RSRC_CONF,
+  "Directory to plop gmon.out files"),
 #endif
-{ "AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, 
-  TAKE1, "The name of the default charset to add to any Content-Type without one or 'Off' to disable" },
+AP_INIT_TAKE1("AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, 
+  "The name of the default charset to add to any Content-Type without one or 'Off' to disable"),
 
 /* Old resource config file commands */
   
-{ "AccessFileName", set_access_name, NULL, RSRC_CONF, RAW_ARGS,
-  "Name(s) of per-directory config files (default: .htaccess)" },
-{ "DocumentRoot", set_document_root, NULL, RSRC_CONF, TAKE1,
-  "Root directory of the document tree"  },
-{ "ErrorDocument", set_error_document, NULL, OR_FILEINFO, TAKE2,
-  "Change responses for HTTP errors" },
-{ "AllowOverride", set_override, NULL, ACCESS_CONF, RAW_ARGS,
+AP_INIT_RAW_ARGS("AccessFileName", set_access_name, NULL, RSRC_CONF,
+  "Name(s) of per-directory config files (default: .htaccess)"),
+AP_INIT_TAKE1("DocumentRoot", set_document_root, NULL, RSRC_CONF,
+  "Root directory of the document tree"),
+AP_INIT_TAKE2("ErrorDocument", set_error_document, NULL, OR_FILEINFO,
+  "Change responses for HTTP errors"),
+AP_INIT_RAW_ARGS("AllowOverride", set_override, NULL, ACCESS_CONF,
   "Controls what groups of directives can be configured by per-directory "
-  "config files" },
-{ "Options", set_options, NULL, OR_OPTIONS, RAW_ARGS,
-  "Set a number of attributes for a given directory" },
-{ "DefaultType", ap_set_string_slot,
+  "config files"),
+AP_INIT_RAW_ARGS("Options", set_options, NULL, OR_OPTIONS,
+  "Set a number of attributes for a given directory"),
+AP_INIT_TAKE1("DefaultType", ap_set_string_slot,
   (void*)XtOffsetOf (core_dir_config, ap_default_type),
-  OR_FILEINFO, TAKE1, "the default MIME type for untypable files" },
+  OR_FILEINFO, "the default MIME type for untypable files"),
 
 /* Old server config file commands */
 
-{ "Port", server_port, NULL, RSRC_CONF, TAKE1, "A TCP port number"},
-{ "HostnameLookups", set_hostname_lookups, NULL, ACCESS_CONF|RSRC_CONF, TAKE1,
+AP_INIT_TAKE1("Port", server_port, NULL, RSRC_CONF, "A TCP port number"),
+AP_INIT_TAKE1("HostnameLookups", set_hostname_lookups, NULL,
+  ACCESS_CONF|RSRC_CONF,
   "\"on\" to enable, \"off\" to disable reverse DNS lookups, or \"double\" to "
-  "enable double-reverse DNS lookups" },
-{ "ServerAdmin", set_server_string_slot,
-  (void *)XtOffsetOf (server_rec, server_admin), RSRC_CONF, TAKE1,
-  "The email address of the server administrator" },
-{ "ServerName", set_server_string_slot,
-  (void *)XtOffsetOf (server_rec, server_hostname), RSRC_CONF, TAKE1,
-  "The hostname of the server" },
-{ "ServerSignature", set_signature_flag, NULL, OR_ALL, TAKE1,
-  "En-/disable server signature (on|off|email)" },
-{ "ServerRoot", set_server_root, NULL, RSRC_CONF, TAKE1,
-  "Common directory of server-related files (logs, confs, etc.)" },
-{ "ErrorLog", set_server_string_slot,
-  (void *)XtOffsetOf (server_rec, error_fname), RSRC_CONF, TAKE1,
-  "The filename of the error log" },
-{ "ServerAlias", set_server_alias, NULL, RSRC_CONF, RAW_ARGS,
-  "A name or names alternately used to access the server" },
-{ "ServerPath", set_serverpath, NULL, RSRC_CONF, TAKE1,
-  "The pathname the server can be reached at" },
-{ "Timeout", set_timeout, NULL, RSRC_CONF, TAKE1, "Timeout duration (sec)" },
-{ "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1,
-  "Keep-Alive timeout duration (sec)"},
-{ "MaxKeepAliveRequests", set_keep_alive_max, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of Keep-Alive requests per connection, or 0 for infinite" },
-{ "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1,
-  "Whether persistent connections should be On or Off" },
-{ "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG,
-  "Enable identd (RFC 1413) user lookups - SLOW" },
-{ "ContentDigest", set_content_md5, NULL, OR_OPTIONS,
-  FLAG, "whether or not to send a Content-MD5 header with each request" },
-{ "UseCanonicalName", set_use_canonical_name, NULL,
-  RSRC_CONF|ACCESS_CONF, TAKE1,
-  "How to work out the ServerName : Port when constructing URLs" },
+  "enable double-reverse DNS lookups"),
+AP_INIT_TAKE1("ServerAdmin", set_server_string_slot,
+  (void *)XtOffsetOf (server_rec, server_admin), RSRC_CONF,
+  "The email address of the server administrator"),
+AP_INIT_TAKE1("ServerName", set_server_string_slot,
+  (void *)XtOffsetOf (server_rec, server_hostname), RSRC_CONF,
+  "The hostname of the server"),
+AP_INIT_TAKE1("ServerSignature", set_signature_flag, NULL, OR_ALL,
+  "En-/disable server signature (on|off|email)"),
+AP_INIT_TAKE1("ServerRoot", set_server_root, NULL, RSRC_CONF,
+  "Common directory of server-related files (logs, confs, etc.)"),
+AP_INIT_TAKE1("ErrorLog", set_server_string_slot,
+  (void *)XtOffsetOf (server_rec, error_fname), RSRC_CONF,
+  "The filename of the error log"),
+AP_INIT_RAW_ARGS("ServerAlias", set_server_alias, NULL, RSRC_CONF,
+  "A name or names alternately used to access the server"),
+AP_INIT_TAKE1("ServerPath", set_serverpath, NULL, RSRC_CONF,
+  "The pathname the server can be reached at"),
+AP_INIT_TAKE1("Timeout", set_timeout, NULL, RSRC_CONF,
+  "Timeout duration (sec)"),
+AP_INIT_TAKE1("KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF,
+  "Keep-Alive timeout duration (sec)"),
+AP_INIT_TAKE1("MaxKeepAliveRequests", set_keep_alive_max, NULL, RSRC_CONF,
+  "Maximum number of Keep-Alive requests per connection, or 0 for infinite"),
+AP_INIT_TAKE1("KeepAlive", set_keep_alive, NULL, RSRC_CONF,
+  "Whether persistent connections should be On or Off"),
+AP_INIT_FLAG("IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF,
+  "Enable identd (RFC 1413) user lookups - SLOW"),
+AP_INIT_FLAG("ContentDigest", set_content_md5, NULL, OR_OPTIONS,
+  "whether or not to send a Content-MD5 header with each request"),
+AP_INIT_TAKE1("UseCanonicalName", set_use_canonical_name, NULL,
+  RSRC_CONF|ACCESS_CONF,
+  "How to work out the ServerName : Port when constructing URLs"),
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
-{ "AddModule", add_module_command, NULL, RSRC_CONF | EXEC_ON_READ, ITERATE,
-  "The name of a module" },
-{ "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF | EXEC_ON_READ,
-  NO_ARGS, NULL },
+AP_INIT_ITERATE("AddModule", add_module_command, NULL,
+  RSRC_CONF | EXEC_ON_READ, "The name of a module"),
+AP_INIT_NO_ARGS("ClearModuleList", clear_module_list_command, NULL,
+  RSRC_CONF | EXEC_ON_READ, NULL),
 /* TODO: ListenBacklog in MPM */
-{ "Include", include_config, NULL, (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ), TAKE1,
-  "Name of the config file to be included" },
-{ "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1,
-  "Level of verbosity in error logging" },
-{ "NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF, TAKE1,
-  "A numeric IP address:port, or the name of a host" },
+AP_INIT_TAKE1("Include", include_config, NULL,
+  (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
+  "Name of the config file to be included"),
+AP_INIT_TAKE1("LogLevel", set_loglevel, NULL, RSRC_CONF,
+  "Level of verbosity in error logging"),
+AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
+  "A numeric IP address:port, or the name of a host"),
 #ifdef _OSD_POSIX
-{ "BS2000Account", set_bs2000_account, NULL, RSRC_CONF, TAKE1,
-  "Name of server User's bs2000 logon account name" },
+AP_INIT_TAKE1("BS2000Account", set_bs2000_account, NULL, RSRC_CONF,
+  "Name of server User's bs2000 logon account name"),
 #endif
 #ifdef WIN32
-{ "ScriptInterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
-  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)" },
+AP_INIT_TAKE1("ScriptInterpreterSource", set_interpreter_source, NULL,
+  OR_FILEINFO,
+  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)"),
 #endif
-{ "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
-  "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
-{ "LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF, TAKE1,
-  "Limit on maximum size of an HTTP request line"},
-{ "LimitRequestFieldsize", set_limit_req_fieldsize, NULL, RSRC_CONF, TAKE1,
-  "Limit on maximum size of an HTTP request header field"},
-{ "LimitRequestFields", set_limit_req_fields, NULL, RSRC_CONF, TAKE1,
-  "Limit (0 = unlimited) on max number of header fields in a request message"},
-{ "LimitRequestBody", set_limit_req_body,
-  (void*)XtOffsetOf(core_dir_config, limit_req_body),
-  OR_ALL, TAKE1,
-  "Limit (in bytes) on maximum size of request message body" },
+AP_INIT_TAKE1("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
+  "Determine tokens displayed in the Server: header - Min(imal), OS or Full"),
+AP_INIT_TAKE1("LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF,
+  "Limit on maximum size of an HTTP request line"),
+AP_INIT_TAKE1("LimitRequestFieldsize", set_limit_req_fieldsize, NULL,
+  RSRC_CONF,
+  "Limit on maximum size of an HTTP request header field"),
+AP_INIT_TAKE1("LimitRequestFields", set_limit_req_fields, NULL, RSRC_CONF,
+  "Limit (0 = unlimited) on max number of header fields in a request message"),
+AP_INIT_TAKE1("LimitRequestBody", set_limit_req_body,
+  (void*)XtOffsetOf(core_dir_config, limit_req_body), OR_ALL,
+  "Limit (in bytes) on maximum size of request message body"),
 /* System Resource Controls */
-{ "RLimitCPU",
 #ifdef RLIMIT_CPU
-  set_limit_cpu, (void*)XtOffsetOf(core_dir_config, limit_cpu),
+AP_INIT_TAKE12("RLimitCPU", set_limit_cpu,
+  (void*)XtOffsetOf(core_dir_config, limit_cpu),
+  OR_ALL, "Soft/hard limits for max CPU usage in seconds"),
 #else
-  no_set_limit, NULL,
+AP_INIT_TAKE12("RLimitCPU", no_set_limit, NULL,
+  OR_ALL, "Soft/hard limits for max CPU usage in seconds"),
 #endif
-  OR_ALL, TAKE12, "Soft/hard limits for max CPU usage in seconds" },
-{ "RLimitMEM",
 #if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined (RLIMIT_AS)
-  set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
+AP_INIT_TAKE12("RLimitMEM", set_limit_mem,
+  (void*)XtOffsetOf(core_dir_config, limit_mem),
+  OR_ALL, "Soft/hard limits for max memory usage per process"),
 #else
-  no_set_limit, NULL,
+AP_INIT_TAKE12("RLimitMEM", no_set_limit, NULL,
+  OR_ALL, "Soft/hard limits for max memory usage per process"),
 #endif
-  OR_ALL, TAKE12, "Soft/hard limits for max memory usage per process" },
-{ "RLimitNPROC",
 #ifdef RLIMIT_NPROC
-  set_limit_nproc, (void*)XtOffsetOf(core_dir_config, limit_nproc),
+AP_INIT_TAKE12("RLimitNPROC", set_limit_nproc,
+  (void*)XtOffsetOf(core_dir_config, limit_nproc),
+  OR_ALL, "soft/hard limits for max number of processes per uid"),
 #else
-  no_set_limit, NULL,
+AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
+   OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
-   OR_ALL, TAKE12, "soft/hard limits for max number of processes per uid" },
 { NULL }
 };
 

@@ -558,7 +558,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * each request.
  */
 struct htaccess_result {
-    char *dir;			/* the directory to which this applies */
+    const char *dir;		/* the directory to which this applies */
     int override;		/* the overrides allowed for the .htaccess file */
     void *htaccess;		/* the configuration directives */
 /* the next one, or NULL if no more; N.B. never change this */
@@ -854,7 +854,7 @@ struct server_rec {
     int keep_alive_max;		/* Maximum requests per connection */
     int keep_alive;		/* Use persistent connections? */
 
-    char *path;			/* Pathname for ServerPath */
+    const char *path;		/* Pathname for ServerPath */
     int pathlen;		/* Length of path */
 
     ap_array_header_t *names;	/* Normal names for ServerAlias servers */
@@ -1042,7 +1042,25 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
 #endif
 #define strtoul strtoul_is_not_a_portable_function_use_strtol_instead
 
-#define ap_is_aborted(abort) (abort->aborted ==1)
+#define ap_is_aborted(abort) (abort->aborted == 1)
+
+  /* The C library has functions that allow const to be silently dropped ...
+     these macros detect the drop in maintainer mode, but use the native
+     methods far narmal builds
+  */
+#ifdef AP_DEBUG
+
+# define strrchr(s, c)  ap_strrchr(s,c)
+
+char *ap_strrchr(char *s, int c);
+const char *ap_strrchr_c(const char *s, int c);
+
+#else
+
+# define ap_strrchr(s, c)	strrchr(s, c)
+# define ap_strrchr_c(s, c)	strrchr(s, c)
+
+#endif
 
 #ifdef __cplusplus
 }

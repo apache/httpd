@@ -136,7 +136,7 @@ API_EXPORT(const char *) ap_get_server_name(request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
-API_EXPORT(int) ap_exists_config_define(char *name);
+API_EXPORT(int) ap_exists_config_define(const char *name);
 API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r);
 
 /* Authentication stuff.  This is one of the places where compatibility
@@ -254,7 +254,7 @@ typedef struct {
 #define ADD_DEFAULT_CHARSET_ON    (1)
 #define ADD_DEFAULT_CHARSET_UNSET (2)
     unsigned add_default_charset : 2;
-    char *add_default_charset_name;
+    const char *add_default_charset_name;
 
     /* System Resource Control */
 #ifdef RLIMIT_CPU
@@ -296,7 +296,7 @@ typedef struct {
      * so it's at least a minimally functional web server on its own (and
      * can be tested that way).  But let's keep it to the bare minimum:
      */
-    char *ap_document_root;
+    const char *ap_document_root;
   
     /* Access control */
 

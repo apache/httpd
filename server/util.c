@@ -2016,3 +2016,14 @@ API_EXPORT(char *) ap_escape_quotes (ap_pool_t *p, const char *instring)
     *outchr = '\0';
     return outstring;
 }
+
+#ifdef AP_DEBUG
+# undef strrchr
+
+char *ap_strrchr(char *s, int c)
+{ return strrchr(s,c); }
+
+const char *ap_strrchr_c(const char *s, int c)
+{ return strrchr(s,c); }
+
+#endif
