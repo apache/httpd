@@ -63,25 +63,13 @@
  * UUencoding modified by: Alvaro Martinez Echevarria <alvaro@lander.es>
  */
 
+#include "apr_general.h"    /* for XtOffsetOf                */
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_protocol.h"  /* for ap_hook_post_read_request */
 
-#include "apr_general.h"    /* for XtOffsetOf                */
-
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
 
 typedef struct {
     unsigned int stamp;

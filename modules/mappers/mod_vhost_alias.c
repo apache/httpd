@@ -75,16 +75,18 @@
  * both written by James Grinter <jrg@blodwen.demon.co.uk>.
  */
 
+#include "apr.h"
 #include "apr_strings.h"
 #include "apr_hooks.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_request.h"  /* for ap_hook_translate_name */
 
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 module AP_MODULE_DECLARE_DATA vhost_alias_module;
 

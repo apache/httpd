@@ -56,9 +56,11 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+
 #define CORE_PRIVATE
 #include "ap_config.h"
-#include "apr_strings.h"
 #include "httpd.h"
 #include "http_connection.h"
 #include "http_request.h"
@@ -70,13 +72,6 @@
 #include "scoreboard.h"
 #include "http_log.h"
 #include "util_filter.h"
-
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
 
 APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(pre_connection)

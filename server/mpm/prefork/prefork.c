@@ -89,14 +89,15 @@
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for perror() */
+#define APR_WANT_STDIO
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
 #endif
-#if APR_HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
-#if APR_HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
 
 #define CORE_PRIVATE
@@ -115,21 +116,9 @@
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "ap_mmn.h"
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_NETINET_TCP_H
-#include <netinet/tcp.h>	/* for TCP_NODELAY */
-#endif
 
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h> 
 #endif
 #ifdef HAVE_TIME_H
 #include <time.h>

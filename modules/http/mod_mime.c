@@ -63,18 +63,19 @@
  * 
  */
 
-#define MIME_PRIVATE
-
+#include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
+
 
 /* XXXX - fix me / EBCDIC
  *        there was a cludge here which would use its

@@ -100,15 +100,17 @@
  * This file replaces mod_cookies.c
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_request.h"
-#include "apr_strings.h"
 
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 module AP_MODULE_DECLARE_DATA usertrack_module;
 

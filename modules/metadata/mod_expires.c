@@ -193,18 +193,18 @@
  * Hi, welcome to the internet.
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "ap_config.h"
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
-#include "apr_strings.h"
 
 typedef struct {
     int active;

@@ -61,20 +61,16 @@
  * 
  */
 
-#include "ap_config.h"
+#include "apr.h"
 #include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
 #include "util_uri.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */

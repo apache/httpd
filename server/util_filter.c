@@ -52,13 +52,12 @@
  * <http://www.apache.org/>.
  */
 
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 #include "http_log.h"
 #include "util_filter.h"
-
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 /* ### make this visible for direct manipulation?
  * ### use a hash table

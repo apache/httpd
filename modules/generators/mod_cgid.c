@@ -69,16 +69,29 @@
  * they fail. 
  */ 
 
-
-
-#define CORE_PRIVATE 
-
 #include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_general.h"
 #include "apr_file_io.h"
 #include "apr_portable.h"
 #include "apr_buckets.h"
+#include "apr_optional.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+#define CORE_PRIVATE 
+
 #include "util_filter.h"
 #include "httpd.h" 
 #include "http_config.h" 
@@ -91,20 +104,12 @@
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "mod_suexec.h"
-#include "apr_optional.h"
 #include "../filters/mod_include.h"
+
+/* ### should be tossed in favor of APR */
 #include <sys/stat.h>
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 #include <sys/un.h> /* for sockaddr_un */
-#include <sys/types.h>
+
 
 module AP_MODULE_DECLARE_DATA cgid_module; 
 

@@ -72,10 +72,14 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
+#include "apr_optional.h"
+#include "apr_buckets.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #define CORE_PRIVATE
 
-#include "apr_buckets.h"
 #include "util_filter.h"
 #include "ap_config.h"
 #include "httpd.h"
@@ -87,14 +91,8 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "ap_mpm.h"
-#include "apr_optional.h"
 #include "../filters/mod_include.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 module AP_MODULE_DECLARE_DATA cgi_module;
 

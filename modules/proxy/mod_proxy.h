@@ -88,29 +88,27 @@
 #define TESTING	0
 #undef EXPLAIN
 
+#include "apr_compat.h"
+#include "apr_strings.h"
+
+#if APR_HAVE_NETDB_H
+#include <netdb.h>
+#endif
+#if APR_HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+#if APR_HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+#if APR_HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_protocol.h"
 #include "proxy_cache.h"
 
-#include "apr_compat.h"
-#include "apr_strings.h"
-
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
-
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
 
 extern module AP_MODULE_DECLARE_DATA proxy_module;
 

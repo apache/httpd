@@ -91,25 +91,29 @@
  * disabled, except those explicitly turned on with the "enabled" keyword.
  */
 
-#if !defined(WIN32) && !defined(OS2) && !defined(BEOS)
-#define HAVE_UNIX_SUEXEC
-#endif
-
 #include "apr_strings.h"
 #include "apr_user.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
+
+#if !defined(WIN32) && !defined(OS2) && !defined(BEOS)
+#define HAVE_UNIX_SUEXEC
+#endif
+
 #ifdef HAVE_UNIX_SUEXEC
 #include "unixd.h"        /* Contains the suexec_identity hook used on Unix */
 #endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 /* The default directory in user's home dir */
 #ifndef DEFAULT_USER_DIR

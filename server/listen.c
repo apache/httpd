@@ -57,19 +57,20 @@
  */
 
 #include "apr_network_io.h"
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "ap_listen.h"
-#include "apr_strings.h"
 #include "http_log.h"
 #include "mpm.h"
 #include "mpm_common.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
+
 
 ap_listen_rec *ap_listeners;
 #if APR_HAVE_IPV6
