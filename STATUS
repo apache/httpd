@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 14:39:22 $]
+Last modified at [$Date: 2003/03/07 14:59:25 $]
 
 Release:
 
@@ -69,7 +69,7 @@ PATCHES TO PORT FROM 2.1
       include/http_config.h r1.101
       include/httpd.h r1.195
       server/util_debug.c r1.10
-      +1: striker, wrowe 
+      +1: striker, wrowe, thommay
       -0: nd (util_debug isn't a so cool place for the functions)
          wrowe: yes - it would be cool to have debug flavors in the same
            files as their non-debug versions - but for macros, then what?
