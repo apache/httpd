@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/27 07:41:28 $]
+Last modified at [$Date: 2003/12/27 12:00:42 $]
 
 Release:
 
@@ -335,13 +335,6 @@ PATCHES TO BACKPORT FROM 2.1
         modules/generators/mod_cgid.c r1.159
       jerenkrantz: Could we do this on other platforms, too?
       +1: trawick, stoddard, jerenkrantz
-
-    * mod_status hook
-        configure.in r1.254
-        Makefile.in r1.134
-        modules/generators/mod_status.c r1.73
-        modules/generators/mod_status.h r1.1,r1.2
-      +1: trawick, ianh, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
