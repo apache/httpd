@@ -4659,6 +4659,16 @@ static int handler_redirect(request_rec *r)
  * +-------------------------------------------------------+
  */
 
+#ifdef REWRITELOG_DISABLED
+static const char *fake_rewritelog(cmd_parms *cmd, void *dummy, const char *a1)
+{
+    return "RewriteLog and RewriteLogLevel are not support by this incarnation "
+           "of mod_rewrite, because it was compiled using the "
+           "-DREWRITELOG_DISABLED compiler option. You have to recompile "
+           "mod_rewrite WITHOUT this option in order to use the rewrite log.";
+}
+#endif
+
 static const command_rec command_table[] = {
     AP_INIT_FLAG(    "RewriteEngine",   cmd_rewriteengine,  NULL, OR_FILEINFO,
                      "On or Off to enable or disable (default) the whole "
@@ -4682,6 +4692,11 @@ static const command_rec command_table[] = {
     AP_INIT_TAKE1(   "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,
                      "the level of the rewriting logfile verbosity "
                      "(0=none, 1=std, .., 9=max)"),
+#else
+    AP_INIT_TAKE1(   "RewriteLog", fake_rewritelog, NULL, RSRC_CONF,
+                     "[DISABLED] the filename of the rewriting logfile"),
+    AP_INIT_TAKE1(   "RewriteLogLevel", fake_rewritelog, NULL, RSRC_CONF,
+                     "[DISABLED] the level of the rewriting logfile verbosity"),
 #endif
     { NULL }
 };
