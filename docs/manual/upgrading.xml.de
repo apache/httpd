@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<manualpage>
+<relativepath href="."/>
+
+<title>Upgrade von 1.3 auf 2.0</title>
+
+<summary>
+    <p>Dieses Dokument dient der Unterst&#252;tzung beim Upgrade. Es
+    enth&#228;lt die entscheidenden Informationen f&#252;r bisherige
+    Apache-Nutzer. Diese sind als kurze Anmerkungen
+    gedacht. Weitere Informationen finden Sie entweder unter
+    <a href="new_features_2_0.html">Neue Funktionen</a> oder in
+    den <code>src/CHANGES</code>-Dateien.</p>
+</summary>
+
+  <section id="compile-time">
+    <title>&#196;nderungen der Konfiguration bei der Kompilierung</title>
+
+    <ul>
+      <li>Der Apache benutzt jetzt ein <code>autoconf</code>- und
+      <code>libtool</code>-System zur <a
+      href="install.html">Konfiguration des
+      Erstellungsverfahrens</a>. Die Verwendung dieses Systems ist
+      &#228;hnlich, aber nicht identisch dem APACI-System des Apache 1.3.
+      </li>
+
+      <li>Zus&#228;tzlich zu der &#252;blichen Auswahl von Modulen, die
+      kompiliert werden sollen, wurde der Hauptteil der
+      Request-Verarbeitung im Apache 2.0 in die <a href="mpm.html">
+      Multi-Processing-Module</a> (MPMs) verschoben.</li>
+    </ul>
+  </section>
+
+  <section id="run-time">
+    <title>&#196;nderungen der Laufzeit-Konfiguration</title>
+
+    <ul>
+      <li>Viele Anweisungen aus dem Serverkern des Apache 1.3 sind
+      jetzt in den MPMs enthalten. Wenn Sie ein Serververhalten
+      w&#252;nschen, das demjenigen des Apache 1.3 m&#246;glichst
+      &#228;hnlich ist, sollten Sie das <a
+      href="mod/prefork.html">prefork</a>-MPM
+      ausw&#228;hlen. Andere MPMs verwenden abweichende Anweisungen
+      f&#252;r die Prozess-Erstellung und Request-Verarbeitung.</li>
+
+      <li>Das <a href="mod/mod_proxy.html">Proxy-Modul</a> wurde
+      umgearbeitet, um es auf den Stand von HTTP/1.1 zu bringen. Eine
+      der bedeutendsten &#196;nderungen ist die Platzierung der
+      Proxy-Zugriffskontrolle innerhalb eines &lt;Proxy&gt;-Blocks,
+      statt innherhalb eines &lt;Directory proxy:&gt;-Blocks.</li>
+
+      <li>Die Behandlung von PATH_INFO (hinter dem tats&#228;chlichen
+      Dateinamen angef&#252;gte Pfadangaben) wurde f&#252;r einige Module
+      ge&#228;ndert. Module, die bisher als Handler implementiert
+      waren, jetzt aber als Filter implementiert sind, akzeptieren
+      m&#246;glicherweise keine Requests mit PATH_INFO mehr.
+      Filter wie <a href="mod/mod_include.html">INCLUDES</a> sind
+      gleich oben im Core-Handler implementiert und weisen deshalb
+      Requests mit PATH_INFO ab. Sie k&#246;nnen die <directive
+      module="core">AcceptPathInfo</directive>-Direktive
+      verwenden, um den Core-Handler zu zwingen, Requests mit
+      PATH_INFO zu akzeptieren, und dadurch die F&#228;higkeit
+      wiederherstellen, PATH_INFO in Server Side Includes zu benutzen.
+      </li>
+
+      <li>Die <directive
+      module="mod_negotiation">CacheNegotiatedDocs</directive>-Direktive
+      hat jetzt das Argument an (<code>on</code>) oder aus
+      (<code>off</code>). Die vorhandenen Anweisungen
+      <code>CacheNegotiatedDocs</code> sollten durch
+      <code>CacheNegotiatedDocs on</code> ersetzt werden.</li>
+
+      <li>
+        Die <directive module="core">ErrorDocument</directive>-Direktive
+        verwendet kein Anf&#252;hrungszeichen mehr am Anfang des
+        Arguments, um eine
+        Textnachricht anzuzeigen. Statt dessen sollten Sie die
+        Nachricht in doppelte Anf&#252;hrungszeichen einschlie&#223;en.
+        Zum Beispiel sollten existierende Angaben wie
+
+        <blockquote>
+          <code>ErrorDocument 403 "Eine Nachricht</code>
+        </blockquote>
+        durch
+
+        <blockquote>
+          <code>ErrorDocument 403 "Eine Nachricht"</code>
+        </blockquote>
+        ersetzt werden.
+        Solange das zweite Argument kein g&#252;ltiger URL oder
+        Pfadname ist, wird es als Textnachricht behandelt.
+      </li>
+
+      <li>Die Direktiven <code>AccessConfig</code> und
+      <code>ResourceConfig</code> sind entfallen.
+      Diese Direktiven k&#246;nnen durch die <directive
+      module="core">Include</directive>-Direktive
+      ersetzt werden, die eine &#228;quivalente Funktionalit&#228;t besitzt.
+      Wenn Sie die Defaultwerte dieser Direktiven verwendet haben,
+      ohne sie in die Konfigurationsdateien einzuf&#252;gen, m&#252;ssen Sie
+      m&#246;glicherweise <code>Include conf/access.conf</code> und
+      <code>Include conf/srm.conf</code> zu Ihrer httpd.conf hinzuf&#252;gen.
+      Um sicherzustellen, da&#223; der Apache die Konfigurationsdateien in
+      der gleichen Reihenfolge liest, wie sie von den &#228;lteren Direktiven
+      impliziert wurde, sollten die <code>Include</code>-Direktiven ans
+      Ende der httpd.conf gestellt werden, wobei die Direktive f&#252;r
+      <code>srm.conf</code> derjenigen f&#252;r <code>access.conf</code>
+      vorangeht.</li>
+
+      <li>Die Direktiven <code>BindAddress</code> und <code>Port</code>
+      sind entfallen. Eine &#228;quivalente Funktionalit&#228;t wird von der
+      flexibleren Direktive  <directive
+      module="mpm_common">Listen</directive> bereitgestellt.</li>
+
+      <li>Im Apache 1.3 wurde die <code>Port</code>-Direktive au&#223;erdem
+      dazu verwendet, die Portnummer f&#252;r
+      selbstreferenzierende URLs festzulegen.
+      Die neue <directive module="core">ServerName</directive>-Syntax
+      stellt das Apache-2.0-&#196;quivalent dar:
+      sie wurde dahingehend ver&#228;ndert, sowohl den Hostnamen
+      <em>als auch</em> die Portnummer f&#252;r selbstreferenzierende URLs
+      in einer Direktive angeben zu k&#246;nnen.</li>
+
+      <li>Die <code>ServerType</code>-Direktive entf&#228;llt.
+      Die Methode zum Bedienen der Requests wird nun durch die Auswahl
+      des MPM ermittelt. Derzeit ist kein MPM daf&#252;r bestimmt, von inetd
+      gestartet zu werden.</li>
+
+      <li>Die Module mod_log_agent und mod_log_referer, welche die
+      Direktiven <code>AgentLog</code>, <code>RefererLog</code> und
+      <code>RefererIgnore</code> bereitgestellt hatten, wurden entfernt.
+      Durch Verwendung der Direktive <directive
+      module="mod_log_config">CustomLog</directive> aus mod_log_config
+      sind die Agent- und Refererlogs auch weiterhin verf&#252;gbar .</li>
+
+      <li>Die Direktiven <code>AddModule</code> und
+      <code>ClearModuleList</code> sind entfallen.
+      Diese Direktiven wurden benutzt, um sicherzustellen, da&#223; die
+      Module in der richtigen Reihenfolge aktiviert werden k&#246;nnen.
+      Die neue Apache 2.0 API erlaubt es Modulen, ihre Reihenfolge
+      explizit anzugeben, und macht diese Direktiven damit
+      &#252;berfl&#252;ssig.</li>
+
+      <li>Die Direktive <code>FancyIndexing</code> wurde entfernt.
+      Die gleiche Funktionalit&#228;t ist nun mit der Option
+      <code>FancyIndexing</code> der Direktive <directive
+      module="mod_autoindex">IndexOptions</directive> verf&#252;gbar.</li>
+     </ul>
+  </section>
+
+  <section id="misc">
+    <title>Sonstige &#196;nderungen</title>
+
+    <ul>
+      <li>Die <code>httpd</code>-Kommandozeilenoption
+      <code>-S</code>, die dazu verwendet wurde, die
+      Virtual-Host-Konfiguration auszugeben, wurde durch
+      <code>-t -D DUMP_VHOSTS</code> ersetzt.</li>
+
+      <li>Das Modul mod_auth_digest, das im Apache 1.3 experimentellen
+      Status hatte, ist nun ein Standardmodul.</li>
+
+      <li>Das Modul mod_mmap_static, das im Apache 1.3 experimentellen
+      Status hatte, wurde durch das Modul mod_file_cache ersetzt.</li>
+
+      <li>Die Distribution wurde komplett reorganisiert und enth&#228;lt kein
+      unabh&#228;ngiges <code>src</code>-Verzeichnis mehr. Statt dessen wurden
+      die Quellcodes logisch unterhalb des Hauptverzeichnisses der
+      Distribution angeordnet. Installationen des kompilierten Servers
+      sollten in ein separates Verzeichnis erfolgen.</li>
+    </ul>
+  </section>
+
+  <section id="third-party">
+    <title>Module von Drittanbietern</title>
+
+    <p>An der API des Apache 2.0 wurden umfassende &#196;nderungen
+    vorgenommen. Bestehende Module, die f&#252;r die Apache 1.3 API
+    entwickelt wurden, werden <strong>nicht</strong> ohne Modifikationen mit
+    der Version 2.0 des Apache zusammenarbeiten. Details sind in der <a
+    href="developer/">Dokumentation f&#252;r Entwickler</a> beschrieben.</p>
+  </section>
+</manualpage>
