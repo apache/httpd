@@ -813,10 +813,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
                 bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
                 e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->connection->pool,
-                                           f->r->connection->bucket_alloc);
+                                           f->r->pool, f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->r->connection->bucket_alloc);
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
                 return ap_pass_brigade(f->r->output_filters, bb);
             }
@@ -834,7 +833,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * proxied *response*, proxy responses MUST be exempt.
          */
         if (ctx->state == BODY_NONE && f->r->proxyreq != PROXYREQ_RESPONSE) {
-            e = apr_bucket_eos_create(f->r->connection->bucket_alloc);
+            e = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
         }
@@ -878,25 +877,33 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             ctx->remaining = get_chunk_size(line);
             /* Detect chunksize error (such as overflow) */
             if (ctx->remaining < 0) {
-                apr_brigade_cleanup(bb);
+                bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
                 e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->connection->pool,
-                                           f->r->connection->bucket_alloc);
+                                           f->r->pool,
+                                           f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->r->connection->bucket_alloc);
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
                 return ap_pass_brigade(f->r->output_filters, bb);
+            }
+
+            if (!ctx->remaining) {
+                /* Handle trailers by calling ap_get_mime_headers again! */
+                ctx->state = BODY_NONE;
+                ap_get_mime_headers(f->r);
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+                return APR_SUCCESS;
             }
         } 
     }
 
     if (!ctx->remaining) {
-        conn_rec *c = f->r->connection;
         switch (ctx->state) {
         case BODY_NONE:
             break;
         case BODY_LENGTH:
-            e = apr_bucket_eos_create(c->bucket_alloc);
+            e = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
         case BODY_CHUNK:
@@ -929,9 +936,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 if (ctx->remaining < 0) {
                     apr_brigade_cleanup(bb);
                     e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE,
-                                               NULL, c->pool, c->bucket_alloc);
+                                               NULL, f->r->pool,
+                                               f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(bb, e);
-                    e = apr_bucket_eos_create(c->bucket_alloc);
+                    e = apr_bucket_eos_create(f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(bb, e);
                     return ap_pass_brigade(f->r->output_filters, bb);
                 }
@@ -940,7 +948,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     /* Handle trailers by calling ap_get_mime_headers again! */
                     ctx->state = BODY_NONE;
                     ap_get_mime_headers(f->r);
-                    e = apr_bucket_eos_create(c->bucket_alloc);
+                    e = apr_bucket_eos_create(f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(b, e);
                     return APR_SUCCESS;
                 }
@@ -988,10 +996,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
             bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
             e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                       f->r->connection->pool,
-                                       f->r->connection->bucket_alloc);
+                                       f->r->pool,
+                                       f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
-            e = apr_bucket_eos_create(f->r->connection->bucket_alloc);
+            e = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
             return ap_pass_brigade(f->r->output_filters, bb);
         }
