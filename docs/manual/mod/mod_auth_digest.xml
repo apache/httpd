@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.19 $ -->
+<!-- $Revision: 1.20 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -68,27 +68,31 @@
     </example>
 
     <note><title>Note</title> 
-    <p>Digest authentication provides a more secure password system
-    than Basic authentication, but only works with supporting
-    browsers. As of November 2002, the major browsers that support digest
-    authentication are <a href="http://www.opera.com/">Opera</a>, <a
-    href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer</a> (fails when used with a query string - see "<a href="#msie"
-    >Working with MS Internet Explorer</a>" below for a workaround), <a
+    <p>Digest authentication is more secure than Basic authentication,
+    but only works with supporting browsers. As of September 2004, major
+    browsers that support digest authentication include <a
     href="http://www.w3.org/Amaya/">Amaya</a>, <a
-    href="http://www.mozilla.org">Mozilla</a> and <a
-    href="http://channels.netscape.com/ns/browsers/download.jsp"
-    >Netscape</a> since version 7. Since digest
-    authentication is not as widely implemented as basic
-    authentication, you should use it only in controlled environments.</p>
+    href="http://konqueror.kde.org/">Konqueror</a>, <a
+    href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
+    for Mac OS X and Windows (although the Windows version fails when
+    used with a query string -- see "<a href="#msie" >Working with MS
+    Internet Explorer</a>" below for a workaround), <a
+    href="http://www.mozilla.org">Mozilla</a>, <a
+    href="http://channels.netscape.com/ns/browsers/download.jsp">
+    Netscape</a> 7, <a href="http://www.opera.com/">Opera</a>, and <a
+    href="http://www.apple.com/safari/">Safari</a>. <a
+    href="http://lynx.isc.org/">lynx</a> does <strong>not</strong>
+    support digest authentication. Since digest authentication is not as
+    widely implemented as basic authentication, you should use it only
+    in environments where all users will have supporting browsers.</p>
     </note>
 </section>
 
 <section id="msie"><title>Working with MS Internet Explorer</title>
     <p>The Digest authentication implementation in current Internet
-    Explorer implementations has known issues, namely that <code>GET</code>
-    requests with a query string are not RFC compliant.  There are a
-    few ways to work around this issue.</p>
+    Explorer for Windows implementations has known issues, namely that
+    <code>GET</code> requests with a query string are not RFC compliant.
+    There are a few ways to work around this issue.</p>
 
     <p>
     The first way is to use <code>POST</code> requests instead of
