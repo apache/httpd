@@ -1,6 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<TITLE>Apache HTTP Server: Compatibility Notes with NCSA's Server</TITLE>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+ "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+<TITLE>Apache HTTP Server: Notes about Compatibility with NCSA's Server</TITLE>
 </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 <BODY
@@ -27,6 +29,14 @@ HREF="http://www.apache.org/bug_report.html">let us know.</A>
 client problems</A> page.
 
 <OL>
+<LI>As of Apache 1.3.1, methods named in a
+    <A HREF="../mod/core.html#limit"><SAMP>&lt;Limit&gt;</SAMP></A>
+    section <EM>must</EM> be listed in upper-case.  Lower- or mixed-case
+    method names will result in a configuration error.
+    <P>
+    </P>
+</LI>
+
 <LI>The basic mod_auth <CODE>AuthGroupFile</CODE>-specified group file
     format allows commas between user names - Apache does not.
 
