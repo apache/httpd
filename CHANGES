@@ -1,5 +1,9 @@
 Changes with Apache 2.0.31-dev
 
+  *) mod_dav now asks its provider to place content directly into the
+     filter stack when handling a GET request. The mod_dav/provider
+     API has changed, so providers need to be updated. [Greg Stein]
+
   *) Clear the output socket descriptor in unixd_accept() to make sure
      we don't supply a bogus socket to the caller if the accept fails.
      This caused problems with the worker MPM, which tried to process
