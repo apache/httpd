@@ -242,7 +242,7 @@ void core_reorder_directories(pool *, server_rec *);
 /* for mod_perl */
 CORE_EXPORT(void) add_per_dir_conf (server_rec *s, void *dir_config);
 CORE_EXPORT(void) add_per_url_conf (server_rec *s, void *url_config);
-CORE_EXPORT(const char *) limit_section (cmd_parms *cmd, void *dummy, const char *arg);
+CORE_EXPORT_NONSTD(const char *) limit_section (cmd_parms *cmd, void *dummy, const char *arg);
 
 #endif
 

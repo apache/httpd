@@ -759,9 +759,13 @@ typedef int rlim_t;
 #define API_VAR_EXPORT
 #endif
 
-/* modules should not used functions marked CORE_EXPORT */
+/* modules should not used functions marked CORE_EXPORT
+ * or CORE_EXPORT_NONSTD */
 #ifndef CORE_EXPORT
 #define CORE_EXPORT	API_EXPORT
+#endif
+#ifndef CORE_EXPORT_NONSTD
+#define CORE_EXPORT_NONSTD	API_EXPORT_NONSTD
 #endif
 
 /* So that we can use inline on some critical functions, and use
