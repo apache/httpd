@@ -373,7 +373,7 @@ extern "C" {
  * @return The server version string
  * @deffunc const char *ap_get_server_version(void)
  */
-API_EXPORT(const char *) ap_get_server_version(void);
+AP_DECLARE(const char *) ap_get_server_version(void);
 
 /**
  * Add a component to the version string
@@ -381,13 +381,13 @@ API_EXPORT(const char *) ap_get_server_version(void);
  * @param component The string to add
  * @deffunc void ap_add_version_component(apr_pool_t *pconf, const char *component)
  */
-API_EXPORT(void) ap_add_version_component(apr_pool_t *pconf, const char *component);
+AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *component);
 
 /**
  * Get the date a time that the server was built
  * @return The server build time string
  */
-API_EXPORT(const char *) ap_get_server_built(void);
+AP_DECLARE(const char *) ap_get_server_built(void);
 
 /* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
  * Always increases along the same track as the source branch.
@@ -1008,37 +1008,37 @@ struct server_rec {
     int limit_req_fields; 
 };
 
-/* stuff marked API_EXPORT is part of the API, and intended for use
+/* stuff marked AP_DECLARE is part of the API, and intended for use
  * by modules
  */
-#ifndef API_EXPORT
-#define API_EXPORT(type)    type
+#ifndef AP_DECLARE
+#define AP_DECLARE(type)    type
 #endif
 
-/* Stuff marked API_EXPORT_NONSTD is part of the API, and intended for
- * use by modules.  The difference between API_EXPORT and
- * API_EXPORT_NONSTD is that the latter is required for any functions
+/* Stuff marked AP_DECLARE_NONSTD is part of the API, and intended for
+ * use by modules.  The difference between AP_DECLARE and
+ * AP_DECLARE_NONSTD is that the latter is required for any functions
  * which use varargs or are used via indirect function call.  This
  * is to accomodate the two calling conventions in windows dlls.
  */
-#ifndef API_EXPORT_NONSTD
-#define API_EXPORT_NONSTD(type)    type
+#ifndef AP_DECLARE_NONSTD
+#define AP_DECLARE_NONSTD(type)    type
 #endif
 
-#ifndef MODULE_VAR_EXPORT
-#define MODULE_VAR_EXPORT
+#ifndef AP_MODULE_DECLARE_DATA
+#define AP_MODULE_DECLARE_DATA
 #endif
-#ifndef API_VAR_EXPORT
-#define API_VAR_EXPORT
+#ifndef AP_DECLARE_DATA
+#define AP_DECLARE_DATA
 #endif
 
-/* modules should not used functions marked CORE_EXPORT
- * or CORE_EXPORT_NONSTD */
-#ifndef CORE_EXPORT
-#define CORE_EXPORT	API_EXPORT
+/* modules should not used functions marked AP_CORE_DECLARE
+ * or AP_CORE_DECLARE_NONSTD */
+#ifndef AP_CORE_DECLARE
+#define AP_CORE_DECLARE	AP_DECLARE
 #endif
-#ifndef CORE_EXPORT_NONSTD
-#define CORE_EXPORT_NONSTD	API_EXPORT_NONSTD
+#ifndef AP_CORE_DECLARE_NONSTD
+#define AP_CORE_DECLARE_NONSTD	AP_DECLARE_NONSTD
 #endif
 
 /* On Mac OS X Server, symbols that conflict with loaded dylibs
@@ -1062,7 +1062,7 @@ struct server_rec {
  * @return the field minus any parameters
  * @deffunc char *ap_field_noparam(apr_pool_t *p, const char *intype);
  */
-API_EXPORT(char *) ap_field_noparam(apr_pool_t *p, const char *intype);
+AP_DECLARE(char *) ap_field_noparam(apr_pool_t *p, const char *intype);
 
 /**
  * Convert a time from an integer into a string in a specified format
@@ -1073,7 +1073,7 @@ API_EXPORT(char *) ap_field_noparam(apr_pool_t *p, const char *intype);
  * @return The string that represents the specified time
  * @deffunc char *ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt)
  */
-API_EXPORT(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt);
+AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt);
 
 /* String handling. The *_nc variants allow you to use non-const char **s as
    arguments (unfortunately C won't automatically convert a char ** to a const
@@ -1087,7 +1087,7 @@ API_EXPORT(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
  * @return A copy of the characters up to the first stop character
  * @deffunc char *ap_getword(apr_pool_t *p, const char **line, char stop);
  */
-API_EXPORT(char *) ap_getword(apr_pool_t *p, const char **line, char stop);
+AP_DECLARE(char *) ap_getword(apr_pool_t *p, const char **line, char stop);
 /**
  * Get the characters until the first occurance of a specified character
  * @param p The pool to allocate memory out of
@@ -1097,7 +1097,7 @@ API_EXPORT(char *) ap_getword(apr_pool_t *p, const char **line, char stop);
  * @tip This is the same as ap_getword, except it doesn't use const char **.
  * @deffunc char *ap_getword_nc(apr_pool_t *p, char **line, char stop);
  */
-API_EXPORT(char *) ap_getword_nc(apr_pool_t *p, char **line, char stop);
+AP_DECLARE(char *) ap_getword_nc(apr_pool_t *p, char **line, char stop);
 
 /**
  * Get the first word from a given string.  A word is defined as all characters
@@ -1107,7 +1107,7 @@ API_EXPORT(char *) ap_getword_nc(apr_pool_t *p, char **line, char stop);
  * @retrn The first word in the line
  * @deffunc char *ap_getword_white(apr_pool_t *p, const char **line)
  */
-API_EXPORT(char *) ap_getword_white(apr_pool_t *p, const char **line);
+AP_DECLARE(char *) ap_getword_white(apr_pool_t *p, const char **line);
 /**
  * Get the first word from a given string.  A word is defined as all characters
  * up to the first whitespace.
@@ -1117,7 +1117,7 @@ API_EXPORT(char *) ap_getword_white(apr_pool_t *p, const char **line);
  * @tip The same as ap_getword_white, except it doesn't use const char **.
  * @deffunc char *ap_getword_white_nc(apr_pool_t *p, const char **line)
  */
-API_EXPORT(char *) ap_getword_white_nc(apr_pool_t *p, char **line);
+AP_DECLARE(char *) ap_getword_white_nc(apr_pool_t *p, char **line);
 
 /**
  * Get all characters from the first occurance of stop to the first '\0'
@@ -1128,7 +1128,7 @@ API_EXPORT(char *) ap_getword_white_nc(apr_pool_t *p, char **line);
  *         character
  * @deffunc char *ap_getword_nulls(apr_pool_t *p, const char **line, char stop)
  */
-API_EXPORT(char *) ap_getword_nulls(apr_pool_t *p, const char **line, char stop);
+AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *p, const char **line, char stop);
 /**
  * Get all characters from the first occurance of stop to the first '\0'
  * @param p The pool to allocate memory out of
@@ -1139,7 +1139,7 @@ API_EXPORT(char *) ap_getword_nulls(apr_pool_t *p, const char **line, char stop)
  * @tip The same as ap_getword_nulls, except it doesn't use const char **.
  * @deffunc char *ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop)
  */
-API_EXPORT(char *) ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop);
+AP_DECLARE(char *) ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop);
 
 /**
  * Get the second word in the string paying attention to quoting
@@ -1148,7 +1148,7 @@ API_EXPORT(char *) ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop);
  * @return A copy of the string
  * @deffunc char *ap_getword_conf(apr_pool_t *p, const char **line)
  */
-API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line);
+AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line);
 /**
  * Get the second word in the string paying attention to quoting
  * @param p The pool to allocate out of
@@ -1157,7 +1157,7 @@ API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line);
  * @tip The same as ap_getword_conf, except it doesn't use const char **.
  * @deffunc char *ap_getword_conf_nc(apr_pool_t *p, char **line)
  */
-API_EXPORT(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
+AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
 
 /**
  * Check a string for any ${ENV} environment variable construct and replace 
@@ -1169,7 +1169,7 @@ API_EXPORT(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
  * @return The string with the replaced environment variables
  * @deffunc const char *ap_resolve_env(apr_pool_t *p, const char *word)
  */
-API_EXPORT(const char *) ap_resolve_env(apr_pool_t *p, const char * word); 
+AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word); 
 
 /**
  * Size an HTTP header field list item, as separated by a comma.
@@ -1181,7 +1181,7 @@ API_EXPORT(const char *) ap_resolve_env(apr_pool_t *p, const char * word);
  * character.  len is the length of the item excluding any beginning whitespace.
  * @deffunc const char *ap_size_list_item(const char **field, int *len)
  */
-API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
+AP_DECLARE(const char *) ap_size_list_item(const char **field, int *len);
 
 /**
  * Retrieve an HTTP header field list item, as separated by a comma,
@@ -1194,7 +1194,7 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
  *         shifted to the next non-comma, non-whitespace.
  * @deffunc char *ap_get_list_item(apr_pool_t *p, const char **field)
  */
-API_EXPORT(char *) ap_get_list_item(apr_pool_t *p, const char **field);
+AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field);
 
 /**
  * Find an item in canonical form (lowercase, no extra spaces) within
@@ -1205,7 +1205,7 @@ API_EXPORT(char *) ap_get_list_item(apr_pool_t *p, const char **field);
  * @return 1 if found, 0 if not found.
  * @deffunc int ap_find_list_item(apr_pool_t *p, const char *line, const char *tok)
  */
-API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok);
+AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok);
 
 /**
  * Retrieve a token, spacing over it and returning a pointer to
@@ -1218,7 +1218,7 @@ API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *t
  * @return the first non-white byte after the token
  * @deffunc char *ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white)
  */
-API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white);
+AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white);
 
 /**
  * find http tokens, see the definition of token from RFC2068 
@@ -1228,7 +1228,7 @@ API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
  * @return 1 if the token is found, 0 otherwise
  * @deffunc int ap_find_token(apr_pool_t *p, const char *line, const char *tok)
  */
-API_EXPORT(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok);
+AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok);
 
 /**
  * find http tokens from the end of the line
@@ -1238,7 +1238,7 @@ API_EXPORT(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok);
  * @return 1 if the token is found, 0 otherwise
  * @deffunc int ap_find_last_token(apr_pool_t *p, const char *line, const char *tok)
  */
-API_EXPORT(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok);
+AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok);
 
 /**
  * Check for an Absolute URI syntax
@@ -1246,7 +1246,7 @@ API_EXPORT(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *
  * @return 1 if URI, 0 otherwise
  * @deffunc int ap_is_url(const char *u)
  */
-API_EXPORT(int) ap_is_url(const char *u);
+AP_DECLARE(int) ap_is_url(const char *u);
 
 /**
  * Unescape a URL
@@ -1254,20 +1254,20 @@ API_EXPORT(int) ap_is_url(const char *u);
  * @return 0 on success, non-zero otherwise
  * @deffunc int ap_unescape_url(char *url)
  */
-API_EXPORT(int) ap_unescape_url(char *url);
+AP_DECLARE(int) ap_unescape_url(char *url);
 /**
  * Remove all double slashes from a string
  * @param name The string to parse
  * @deffunc void ap_no2slash(char *name)
  */
-API_EXPORT(void) ap_no2slash(char *name);
+AP_DECLARE(void) ap_no2slash(char *name);
 
 /**
  * Remove all ./ and ../ substrings from a file name
  * @param name the file name to parse
  * @deffunc void ap_getparents(char *name)
  */
-API_EXPORT(void) ap_getparents(char *name);
+AP_DECLARE(void) ap_getparents(char *name);
 
 /**
  * Escape a path segment, as defined in RFC 1808
@@ -1276,7 +1276,7 @@ API_EXPORT(void) ap_getparents(char *name);
  * @return The converted URL
  * @deffunc char *ap_escape_path_segment(apr_pool_t *p, const char *s)
  */
-API_EXPORT(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
 /**
  * convert an OS path to a URL in an OS dependant way.
  * @param p The pool to allocate out of
@@ -1286,7 +1286,7 @@ API_EXPORT(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
  * @return The converted URL
  * @deffunc char *ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
  */
-API_EXPORT(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial);
+AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial);
 #define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
 
 /**
@@ -1296,7 +1296,7 @@ API_EXPORT(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
  * @return The escaped string
  * @deffunc char *ap_escape_html(apr_pool_t *p, const char *s)
  */
-API_EXPORT(char *) ap_escape_html(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s);
 
 /**
  * Construct a full hostname
@@ -1307,7 +1307,7 @@ API_EXPORT(char *) ap_escape_html(apr_pool_t *p, const char *s);
  * @return The server's hostname
  * @deffunc char *ap_construct_server(apr_pool_t *p, const char *hostname, unsiged port, const request_rec *r)
  */
-API_EXPORT(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
+AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
 				    unsigned port, const request_rec *r);
 /**
  * Escape a shell command
@@ -1316,7 +1316,7 @@ API_EXPORT(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
  * @return The escaped hostname
  * @deffunc char *ap_escape_shell_cmd(apr_pool_t *p, const char *s)
  */
-API_EXPORT(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
 
 /**
  * Count the number of directories in a path
@@ -1324,7 +1324,7 @@ API_EXPORT(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
  * @return The number of directories
  * @deffunc int ap_count_dirs(const char *path)
  */
-API_EXPORT(int) ap_count_dirs(const char *path);
+AP_DECLARE(int) ap_count_dirs(const char *path);
 /**
  * Copy at most n leading directories of s into d d should be at least as 
  * large as s plus 1 extra byte
@@ -1337,7 +1337,7 @@ API_EXPORT(int) ap_count_dirs(const char *path);
  * whereas n = 1 returns the "d:/" root.  On all other platforms, n = 0
  * returns the empty string.
  */
-API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
+AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
 /**
  * return the parent directory name including trailing / of the file s
  * @param p The pool to allocate out of
@@ -1345,7 +1345,7 @@ API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
  * @return A copy of the file's parent directory
  * @deffunc char *ap_make_dirstr_parent(apr_pool_t *p, const char *s)
  */
-API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
+AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
 
 /**
  * Given a directory and filename, create a single path out of them.  This
@@ -1357,7 +1357,7 @@ API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
  * @return A copy of the full path
  * @deffunc char *ap_make_full_path(apr_pool_t *a, const char *dir, const char *f)
  */
-API_EXPORT(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char *f);
+AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char *f);
 
 /**
  * Does the provided string contain wildcard characters?  This is useful
@@ -1367,7 +1367,7 @@ API_EXPORT(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char 
  * @return 1 if the string has wildcards, 0 otherwise
  * @deffunc int ap_is_matchexp(const char *str)
  */
-API_EXPORT(int) ap_is_matchexp(const char *str);
+AP_DECLARE(int) ap_is_matchexp(const char *str);
 
 /**
  * Determine if a string matches a patterm containing the wildcards '?' or '*'
@@ -1376,7 +1376,7 @@ API_EXPORT(int) ap_is_matchexp(const char *str);
  * @return 1 if the two strings match, 0 otherwise
  * @deffunc int ap_strcmp_match(const char *str, const char *exp)
  */
-API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
+AP_DECLARE(int) ap_strcmp_match(const char *str, const char *exp);
 /**
  * Determine if a string matches a patterm containing the wildcards '?' or '*',
  * ignoring case
@@ -1385,7 +1385,7 @@ API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
  * @return 1 if the two strings match, 0 otherwise
  * @deffunc int ap_strcasecmp_match(const char *str, const char *exp)
  */
-API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
+AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp);
 
 /**
  * Find the first occurrence of the substring s2 in s1, regardless of case
@@ -1394,7 +1394,7 @@ API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
  * @return A pointer to the beginning of the substring
  * @deffunc char *ap_strcasestr(const char *s1, const char *s2)
  */
-API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2);
+AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2);
 
 /**
  * Return a pointer to the location inside of bigstring immediately after prefix
@@ -1403,7 +1403,7 @@ API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2);
  * @return A pointer relative to bigstring after prefix
  * deffunc char *ap_stripprefix(const char *bigstring, const char *prefix);
  */
-API_EXPORT(char *) ap_stripprefix(const char *bigstring, const char *prefix);
+AP_DECLARE(char *) ap_stripprefix(const char *bigstring, const char *prefix);
 
 /**
  * Decode a base64 encoded string into memory allocated out of a pool
@@ -1412,7 +1412,7 @@ API_EXPORT(char *) ap_stripprefix(const char *bigstring, const char *prefix);
  * @return The decoded string
  * @deffunc char *ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
  */
-API_EXPORT(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
+AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
 
 /**
  * Encode a string into memory allocated out of a pool in base 64 format
@@ -1421,7 +1421,7 @@ API_EXPORT(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
  * @return The encoded string
  * @deffunc char *ap_pbase64encode(apr_pool_t *p, char *string)
  */
-API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string); 
+AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string); 
 
 #include "pcreposix.h"
 
@@ -1439,7 +1439,7 @@ API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string);
  * @return The compiled regular expression
  * @deffunc regex_t *ap_pregcomp(apr_pool_t *p, const char *pattern, int cflags)
  */
-API_EXPORT(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
+AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 				   int cflags);
 /**
  * Free the memory associated with a compiled regular expression
@@ -1447,7 +1447,7 @@ API_EXPORT(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
  * @param reg The regular expression to free
  * @deffunc void ap_pregfree(apr_pool_t *p, regex_t *reg)
  */
-API_EXPORT(void) ap_pregfree(apr_pool_t *p, regex_t *reg);
+AP_DECLARE(void) ap_pregfree(apr_pool_t *p, regex_t *reg);
 
 /**
  * Match a null-terminated string against a pre-compiled regex.
@@ -1463,7 +1463,7 @@ API_EXPORT(void) ap_pregfree(apr_pool_t *p, regex_t *reg);
  * @return 0 for successful match, REG_NOMATCH otherwise
  * @deffunc int ap_regexec(regex_t *preg, const char *string, size_t nmatch, regmatch_t pmatch[], int eflags)
  */ 
-API_EXPORT(int)    ap_regexec(regex_t *preg, const char *string,
+AP_DECLARE(int)    ap_regexec(regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
 
 /**
@@ -1474,7 +1474,7 @@ API_EXPORT(int)    ap_regexec(regex_t *preg, const char *string,
  * @param errbuf_size The size of the buffer
  * @deffunc size_t ap_regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
  */
-API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, 
+AP_DECLARE(size_t) ap_regerror(int errcode, const regex_t *preg, 
                                char *errbuf, size_t errbuf_size);
 
 /**
@@ -1489,7 +1489,7 @@ API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg,
  * @param pmatch the pmatch array returned from ap_pregex
  * @deffunc char *ap_pregsub(apr_pool_t *p, const char *input, const char *source, size_t nmatch, regmatch_t pmatch[])
  */
-API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
+AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
                               size_t nmatch, regmatch_t pmatch[]);
 
 /**
@@ -1498,13 +1498,13 @@ API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
  * @param s The content-type to convert to lowercase
  * @deffunc void ap_content_type_tolower(char *s)
  */
-API_EXPORT(void) ap_content_type_tolower(char *s);
+AP_DECLARE(void) ap_content_type_tolower(char *s);
 /**
  * convert a string to all lowercase
  * @param s The string to convert to lowercase 
  * @deffunc void ap_str_tolower(char *s) 
  */
-API_EXPORT(void) ap_str_tolower(char *s);
+AP_DECLARE(void) ap_str_tolower(char *s);
 
 /**
  * Search a string from left to right for the first occurrence of a 
@@ -1514,7 +1514,7 @@ API_EXPORT(void) ap_str_tolower(char *s);
  * @return The index of the first occurrence of c in str
  * @deffunc int ap_ind(const char *str, char c)
  */
-API_EXPORT(int) ap_ind(const char *str, char c);	/* Sigh... */
+AP_DECLARE(int) ap_ind(const char *str, char c);	/* Sigh... */
 
 /**
  * Search a string from right to left for the first occurrence of a 
@@ -1524,7 +1524,7 @@ API_EXPORT(int) ap_ind(const char *str, char c);	/* Sigh... */
  * @return The index of the first occurrence of c in str
  * @deffunc int ap_rind(const char *str, char c)
  */
-API_EXPORT(int) ap_rind(const char *str, char c);
+AP_DECLARE(int) ap_rind(const char *str, char c);
 
 /**
  * Given a string, replace any bare " with \" .
@@ -1533,7 +1533,7 @@ API_EXPORT(int) ap_rind(const char *str, char c);
  * @return A copy of the string with escaped quotes 
  * @deffunc char * ap_escape_quotes(apr_pool_t *p, const char *instring) 
  */
-API_EXPORT(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
+AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
 
 /* Misc system hackery */
 /**
@@ -1542,40 +1542,40 @@ API_EXPORT(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
  * @return The user id corresponding to a name
  * @deffunc uid_t ap_uname2id(const char *name) 
  */
-API_EXPORT(uid_t) ap_uname2id(const char *name);
+AP_DECLARE(uid_t) ap_uname2id(const char *name);
 /**
  * Convert a group name to a numeric ID
  * @param name The name to convert
  * @return The group id corresponding to a name
  * @deffunc gid_t ap_gname2id(const char *name) 
  */
-API_EXPORT(gid_t) ap_gname2id(const char *name);
+AP_DECLARE(gid_t) ap_gname2id(const char *name);
 /**
  * Given the name of an object in the file system determine if it is a directory
  * @param name The name of the object to check
  * @return 1 if it is a directory, 0 otherwise
  * @deffunc int ap_is_rdirectory(const char *name)
  */
-API_EXPORT(int) ap_is_rdirectory(const char *name);
+AP_DECLARE(int) ap_is_rdirectory(const char *name);
 /**
  * Given the name of an object in the file system determine if it is a directory - this version is symlink aware
  * @param name The name of the object to check
  * @return 1 if it is a directory, 0 otherwise
  * @deffunc int ap_is_directory(const char *name)
  */
-API_EXPORT(int) ap_is_directory(const char *name);
+AP_DECLARE(int) ap_is_directory(const char *name);
 /**
  * Given a pathname in file, extract the directory and chdir to that directory
  * @param file The file who's directory we wish to switch to
  * @deffunc void ap_chdir_file(const char *file)
  */
-API_EXPORT(void) ap_chdir_file(const char *file);
+AP_DECLARE(void) ap_chdir_file(const char *file);
 /**
  * Get the maximum number of daemons processes for this version of Apache
  * @return The maximum number of daemon processes
  * @deffunc int ap_get_max_daemons(void)
  */
-API_EXPORT(int) ap_get_max_daemons(void);
+AP_DECLARE(int) ap_get_max_daemons(void);
 
 #ifdef _OSD_POSIX
 extern const char *os_set_account(apr_pool_t *p, const char *account);
@@ -1614,7 +1614,7 @@ unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
  * @param nLine The line the assertion is defined on
  * @deffunc void ap_log_assert(const char *szExp, const char *szFile, int nLine)
  */
-API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
+AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 			    __attribute__((noreturn));
 #define ap_assert(exp) ((exp) ? (void)0 : ap_log_assert(#exp,__FILE__,__LINE__))
 
@@ -1644,7 +1644,7 @@ extern int raise_sigstop_flags;
 #define RAISE_SIGSTOP(x)
 #endif
 
-API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r);
+AP_DECLARE(extern const char *) ap_psignature(const char *prefix, request_rec *r);
 
 /* strtoul does not exist on sunos4. */
 #ifdef strtoul

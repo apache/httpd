@@ -69,7 +69,7 @@
 #include <string.h>
 
 
-API_EXPORT(char *)ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile)
+AP_DECLARE(char *)ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     char buf2[HUGE_STRING_LEN];

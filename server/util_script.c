@@ -114,7 +114,7 @@ static char *http2env(apr_pool_t *a, char *w)
     return res;
 }
 
-API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
+AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
 {
     apr_array_header_t *env_arr = apr_table_elts(t);
     apr_table_entry_t *elts = (apr_table_entry_t *) env_arr->elts;
@@ -152,7 +152,7 @@ API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
     return env;
 }
 
-API_EXPORT(void) ap_add_common_vars(request_rec *r)
+AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 {
     apr_table_t *e;
     server_rec *s = r->server;
@@ -289,7 +289,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
  * and find as much of the two that match as possible.
  */
 
-API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info)
+AP_DECLARE(int) ap_find_path_info(const char *uri, const char *path_info)
 {
     int lu = strlen(uri);
     int lp = strlen(path_info);
@@ -334,7 +334,7 @@ static char *original_uri(request_rec *r)
     return apr_pstrndup(r->pool, first, last - first);
 }
 
-API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
+AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
 {
     apr_table_t *e = r->subprocess_env;
 
@@ -403,7 +403,7 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
     return 1;
 }
 
-API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
+AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data)
 {
@@ -589,7 +589,7 @@ static int getsfunc_FILE(char *buf, int len, void *f)
     return apr_fgets(buf, len, (apr_file_t *) f) == APR_SUCCESS;
 }
 
-API_EXPORT(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,
+AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,
 					  char *buffer)
 {
     return ap_scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
@@ -633,7 +633,7 @@ static int getsfunc_STRING(char *w, int len, void *pvastrs)
  * character is returned to **arg, **data.  (The first optional arg is
  * counted as 0.)
  */
-API_EXPORT_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
+AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
                                                       char *buffer, 
                                                       const char **termch,
                                                       int *termarg, ...)
@@ -653,7 +653,7 @@ API_EXPORT_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
     return res;
 }
 
-API_EXPORT(void) ap_send_size(apr_ssize_t size, request_rec *r)
+AP_DECLARE(void) ap_send_size(apr_ssize_t size, request_rec *r)
 {
     /* XXX: this -1 thing is a gross hack */
     if (size == (apr_ssize_t)-1) {

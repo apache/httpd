@@ -83,7 +83,7 @@ extern "C" {
  *         use with an exec call.
  * @deffunc char **ap_create_environment(apr_pool_t *p, apr_table_t *t)
  */
-API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t);
+AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t);
 
 /**
  * This "cute" little function comes about because the path info on
@@ -94,7 +94,7 @@ API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t);
  * @return The length of the path info
  * @deffunc int ap_fine_path_info(const char *uri, const char *path_info)
  */
-API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info);
+AP_DECLARE(int) ap_find_path_info(const char *uri, const char *path_info);
 
 /**
  * Add CGI environment variables required by HTTP/1.1 to the request's 
@@ -102,14 +102,14 @@ API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info);
  * @param r the current request
  * @deffunc void ap_add_cgi_vars(request_rec *r)
  */
-API_EXPORT(void) ap_add_cgi_vars(request_rec *r);
+AP_DECLARE(void) ap_add_cgi_vars(request_rec *r);
 
 /**
  * Add common CGI environment variables to the requests environment table
  * @param r The current request
  * @deffunc void ap_add_common_vars(request_rec *r)
  */
-API_EXPORT(void) ap_add_common_vars(request_rec *r);
+AP_DECLARE(void) ap_add_common_vars(request_rec *r);
 
 /**
  * Read headers output from a script, ensuring that the output is valid.  If
@@ -122,7 +122,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r);
  * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
  * @deffunc int ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer)
  */ 
-API_EXPORT(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer);
+AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer);
 
 /**
  * Read headers strings from a script, ensuring that the output is valid.  If
@@ -138,7 +138,7 @@ API_EXPORT(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *b
  * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
  * @deffunc int ap_scan_script_header_err_core(request_rec *r, char *buffer, int (*getsfunc)(char *, int, void *), void *getsfunc_data)
  */ 
-API_EXPORT_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
+AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
                                                       char *buffer, 
                                                       const char **termch,
                                                       int *termarg, ...);
@@ -156,7 +156,7 @@ API_EXPORT_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
  * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
  * @deffunc int ap_scan_script_header_err_core(request_rec *r, char *buffer, int (*getsfunc)(char *, int, void *), void *getsfunc_data)
  */ 
-API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
+AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
 
@@ -169,7 +169,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
  * @param r The currnt request
  * @deffunc void ap_send_size(apr_ssize_t size, request_rec *r)
  */
-API_EXPORT(void) ap_send_size(apr_ssize_t size, request_rec *r);
+AP_DECLARE(void) ap_send_size(apr_ssize_t size, request_rec *r);
 
 #ifdef __cplusplus
 }

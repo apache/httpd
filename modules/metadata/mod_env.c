@@ -114,7 +114,7 @@ typedef struct {
     int vars_present;
 } env_dir_config_rec;
 
-module MODULE_VAR_EXPORT env_module;
+module AP_MODULE_DECLARE_DATA env_module;
 
 static void *create_env_dir_config(apr_pool_t *p, char *dummy)
 {
@@ -260,7 +260,7 @@ static void register_hooks(void)
 }
 
 
-module MODULE_VAR_EXPORT env_module =
+module AP_MODULE_DECLARE_DATA env_module =
 {
     STANDARD20_MODULE_STUFF,
     create_env_dir_config,      /* dir config creater */

@@ -115,7 +115,7 @@
  * @return 1 for shutdown 0 otherwise.
  * @deffunc int ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf)
  */
-API_EXPORT(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf);
+AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf);
 
 /**
  * predicate indicating if a graceful stop has been requested ...
@@ -123,7 +123,7 @@ API_EXPORT(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
  * @return 1 if a graceful stop has been requested, 0 otherwise
  * @deffunc int ap_graceful_stop_signalled*void)
  */
-API_EXPORT(int) ap_graceful_stop_signalled(void);
+AP_DECLARE(int) ap_graceful_stop_signalled(void);
 
 /**
  * ap_start_shutdown() and ap_start_restart() is a function to initiate 
@@ -139,6 +139,6 @@ API_EXPORT(int) ap_graceful_stop_signalled(void);
  * @deffunc void ap_start_shutdown(void)
  */
 
-API_EXPORT(void) ap_start_shutdown(void);
+AP_DECLARE(void) ap_start_shutdown(void);
 
 #endif

@@ -130,7 +130,7 @@
 #include "apr_mmap.h"
 #include "apr_strings.h"
 
-module MODULE_VAR_EXPORT file_cache_module;
+module AP_MODULE_DECLARE_DATA file_cache_module;
 static int once_through = 0;
 
 typedef struct {
@@ -501,7 +501,7 @@ static const handler_rec file_cache_handlers[] =
     { NULL }
 };
 
-module MODULE_VAR_EXPORT file_cache_module =
+module AP_MODULE_DECLARE_DATA file_cache_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                     /* create per-directory config structure */

@@ -124,7 +124,7 @@
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*CHARSET_EBCDIC*/
 
-module MODULE_VAR_EXPORT includes_module;
+module AP_MODULE_DECLARE_DATA includes_module;
 
 /* just need some arbitrary non-NULL pointer which can't also be a request_rec */
 #define NESTED_INCLUDE_MAGIC	(&includes_module)
@@ -2551,7 +2551,7 @@ static void register_hooks(void)
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 
-module MODULE_VAR_EXPORT includes_module =
+module AP_MODULE_DECLARE_DATA includes_module =
 {
     STANDARD20_MODULE_STUFF,
     create_includes_dir_config, /* dir config creater */

@@ -102,7 +102,7 @@ static void register_filter(const char *name,
     apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, apr_null_cleanup);
 }
 
-API_EXPORT(void) ap_register_input_filter(const char *name,
+AP_DECLARE(void) ap_register_input_filter(const char *name,
                                           ap_in_filter_func filter_func,
                                           ap_filter_type ftype)
 {
@@ -112,7 +112,7 @@ API_EXPORT(void) ap_register_input_filter(const char *name,
                     &registered_input_filters);
 }                                                                    
 
-API_EXPORT(void) ap_register_output_filter(const char *name,
+AP_DECLARE(void) ap_register_output_filter(const char *name,
                                            ap_out_filter_func filter_func,
                                            ap_filter_type ftype)
 {
@@ -122,7 +122,7 @@ API_EXPORT(void) ap_register_output_filter(const char *name,
                     &registered_output_filters);
 }
 
-API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx, 
+AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx, 
                                      request_rec *r, conn_rec *c)
 {
     ap_filter_rec_t *frec = registered_input_filters;
@@ -155,7 +155,7 @@ API_EXPORT(void) ap_add_input_filter(const char *name, void *ctx,
     }
 }
 
-API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx, 
+AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx, 
                                       request_rec *r, conn_rec *c)
 {
     ap_filter_rec_t *frec = registered_output_filters;
@@ -195,7 +195,7 @@ API_EXPORT(void) ap_add_output_filter(const char *name, void *ctx,
  * save data off to the side should probably create their own temporary
  * brigade especially for that use.
  */
-API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next, 
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next, 
                                       ap_bucket_brigade *bb, apr_ssize_t length)
 {
     if (next) {
@@ -209,7 +209,7 @@ API_EXPORT(apr_status_t) ap_get_brigade(ap_filter_t *next,
  * the current filter.  At that point, we can just call the first filter in
  * the stack, or r->output_filters.
  */
-API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
+AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {
     if (next) {
         ap_bucket *e;
@@ -221,7 +221,7 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *b
     return AP_NOBODY_WROTE;
 }
 
-API_EXPORT(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
+AP_DECLARE(void) ap_save_brigade(ap_filter_t *f, ap_bucket_brigade **saveto,
                                         ap_bucket_brigade **b)
 {
     ap_bucket *e;

@@ -96,7 +96,7 @@ apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
 
 apr_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
-API_EXPORT(apr_status_t) ap_set_content_xlate(request_rec *r, int output, 
+AP_DECLARE(apr_status_t) ap_set_content_xlate(request_rec *r, int output, 
                                              apr_xlate_t *xlate)
 {
     apr_status_t rv;

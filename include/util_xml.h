@@ -99,7 +99,7 @@ struct ap_text_header {
  * @param text The new text to append
  * @deffunc void ap_text_append(apr_pool_t *p, ap_text_header *hdr, const char *text)
  */
-API_EXPORT(void) ap_text_append(apr_pool_t *p, ap_text_header *hdr,
+AP_DECLARE(void) ap_text_append(apr_pool_t *p, ap_text_header *hdr,
                                 const char *text);
 
 
@@ -239,7 +239,7 @@ struct ap_xml_doc {
  * @return HTTP status code
  * @deffunc int ap_xml_parse_input(request_rec *r, ap_xml_doc **pdoc)
  */
-API_EXPORT(int) ap_xml_parse_input(request_rec *r, ap_xml_doc **pdoc);
+AP_DECLARE(int) ap_xml_parse_input(request_rec *r, ap_xml_doc **pdoc);
 
 
 /**
@@ -259,7 +259,7 @@ API_EXPORT(int) ap_xml_parse_input(request_rec *r, ap_xml_doc **pdoc);
  * @param psize Size of the converted text
  * @deffunc void ap_xml_to_text(apr_pool_t *p, const ap_xml_elem *elem, int style, apr_array_header_t *namespaces, int *ns_map, const char **pbuf, size_t *psize);
  */
-API_EXPORT(void) ap_xml_to_text(apr_pool_t *p, const ap_xml_elem *elem,
+AP_DECLARE(void) ap_xml_to_text(apr_pool_t *p, const ap_xml_elem *elem,
 				int style, apr_array_header_t *namespaces,
 				int *ns_map, const char **pbuf, size_t *psize);
 
@@ -276,7 +276,7 @@ API_EXPORT(void) ap_xml_to_text(apr_pool_t *p, const ap_xml_elem *elem,
  * @return the string that was stored in the XML element
  * @deffunc const char *ap_xml_empty_elem(apr_pool_t *p, const ap_xml_elem *elem)
  */
-API_EXPORT(const char *) ap_xml_empty_elem(apr_pool_t *p,
+AP_DECLARE(const char *) ap_xml_empty_elem(apr_pool_t *p,
                                            const ap_xml_elem *elem);
 
 /**
@@ -288,7 +288,7 @@ API_EXPORT(const char *) ap_xml_empty_elem(apr_pool_t *p,
  * @return The quoted string
  * @deffunc const char *ap_xml_quote_string(apr_pool_t *p, const char *s, int quotes)
  */
-API_EXPORT(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
+AP_DECLARE(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
                                              int quotes);
 
 /**
@@ -297,7 +297,7 @@ API_EXPORT(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
  * @param elem The element to quote
  * @deffunc void ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem)
  */
-API_EXPORT(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem);
+AP_DECLARE(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem);
 
 /* manage an array of unique URIs: ap_xml_insert_uri() and AP_XML_URI_ITEM() */
 
@@ -308,7 +308,7 @@ API_EXPORT(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem);
  * @return int The uri's index
  * @deffunc int ap_xml_insert_uri(apr_array_header_t *uri_array, const char *uri)
  */
-API_EXPORT(int) ap_xml_insert_uri(apr_array_header_t *uri_array,
+AP_DECLARE(int) ap_xml_insert_uri(apr_array_header_t *uri_array,
                                   const char *uri);
 #define AP_XML_GET_URI_ITEM(ary, i)    (((const char * const *)(ary)->elts)[i])
 

@@ -93,13 +93,13 @@
 #include <strings.h>
 #endif
 
-API_VAR_EXPORT const char *ap_server_argv0;
+AP_DECLARE_DATA const char *ap_server_argv0;
 
-API_VAR_EXPORT const char *ap_server_root;
+AP_DECLARE_DATA const char *ap_server_root;
 
-API_VAR_EXPORT apr_array_header_t *ap_server_pre_read_config;
-API_VAR_EXPORT apr_array_header_t *ap_server_post_read_config;
-API_VAR_EXPORT apr_array_header_t *ap_server_config_defines;
+AP_DECLARE_DATA apr_array_header_t *ap_server_pre_read_config;
+AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config;
+AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines;
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(header_parser)
@@ -138,8 +138,8 @@ static int total_modules = 0;
  * than DYNAMIC_MODULE_LIMIT.
  */
 static int dynamic_modules = 0;
-API_VAR_EXPORT module *top_module = NULL;
-API_VAR_EXPORT module **ap_loaded_modules=NULL;
+AP_DECLARE_DATA module *top_module = NULL;
+AP_DECLARE_DATA module **ap_loaded_modules=NULL;
 
 typedef int (*handler_func) (request_rec *);
 typedef void *(*dir_maker_func) (apr_pool_t *, char *);
@@ -157,7 +157,7 @@ typedef void *(*merger_func) (apr_pool_t *, void *, void *);
  */
 
 #ifndef ap_get_module_config
-API_EXPORT(void *) ap_get_module_config(void *conf_vector, module *m)
+AP_DECLARE(void *) ap_get_module_config(void *conf_vector, module *m)
 {
     void **confv = (void **) conf_vector;
     return confv[m->module_index];
@@ -165,7 +165,7 @@ API_EXPORT(void *) ap_get_module_config(void *conf_vector, module *m)
 #endif
 
 #ifndef ap_set_module_config
-API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val)
+AP_DECLARE(void) ap_set_module_config(void *conf_vector, module *m, void *val)
 {
     void **confv = (void **) conf_vector;
     confv[m->module_index] = val;
@@ -259,7 +259,7 @@ void *ap_create_conn_config(apr_pool_t *p)
     return create_empty_config(p);
 }
 
-CORE_EXPORT(void *) ap_create_per_dir_config(apr_pool_t *p)
+AP_CORE_DECLARE(void *) ap_create_per_dir_config(apr_pool_t *p)
 {
     return create_empty_config(p);
 }
@@ -379,7 +379,7 @@ int ap_invoke_handler(request_rec *r)
     return HTTP_INTERNAL_SERVER_ERROR;
 }
 
-API_EXPORT(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
+AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
     int methnum;
     int i;
     char **xmethod;
@@ -407,7 +407,7 @@ API_EXPORT(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
     return 0;
 }
 
-API_EXPORT(void) ap_register_hooks(module *m)
+AP_DECLARE(void) ap_register_hooks(module *m)
     {
     if(m->register_hooks)
 	{
@@ -423,7 +423,7 @@ API_EXPORT(void) ap_register_hooks(module *m)
 
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
-API_EXPORT(void) ap_add_module(module *m)
+AP_DECLARE(void) ap_add_module(module *m)
 {
     /* This could be called from an AddModule httpd.conf command,
      * after the file has been linked and the module structure within it
@@ -488,7 +488,7 @@ API_EXPORT(void) ap_add_module(module *m)
  * all our current data. I.e. when doing a restart.
  */
 
-API_EXPORT(void) ap_remove_module(module *m)
+AP_DECLARE(void) ap_remove_module(module *m)
 {
     module *modp;
 
@@ -523,7 +523,7 @@ API_EXPORT(void) ap_remove_module(module *m)
     total_modules--;
 }
 
-API_EXPORT(void) ap_add_loaded_module(module *mod)
+AP_DECLARE(void) ap_add_loaded_module(module *mod)
 {
     module **m;
 
@@ -546,7 +546,7 @@ API_EXPORT(void) ap_add_loaded_module(module *mod)
     *m = NULL;
 }
 
-API_EXPORT(void) ap_remove_loaded_module(module *mod)
+AP_DECLARE(void) ap_remove_loaded_module(module *mod)
 {
     module **m;
     module **m2;
@@ -575,7 +575,7 @@ API_EXPORT(void) ap_remove_loaded_module(module *mod)
     *m = NULL;
 }
 
-API_EXPORT(void) ap_setup_prelinked_modules(process_rec *process)
+AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
 {
     module **m;
     module **m2;
@@ -611,12 +611,12 @@ API_EXPORT(void) ap_setup_prelinked_modules(process_rec *process)
     ap_sort_hooks();
 }
 
-API_EXPORT(const char *) ap_find_module_name(module *m)
+AP_DECLARE(const char *) ap_find_module_name(module *m)
 {
     return m->name;
 }
 
-API_EXPORT(module *) ap_find_linked_module(const char *name)
+AP_DECLARE(module *) ap_find_linked_module(const char *name)
 {
     module *modp;
 
@@ -628,7 +628,7 @@ API_EXPORT(module *) ap_find_linked_module(const char *name)
 }
 
 /* Add a named module.  Returns 1 if module found, 0 otherwise.  */
-API_EXPORT(int) ap_add_named_module(const char *name)
+AP_DECLARE(int) ap_add_named_module(const char *name)
 {
     module *modp;
     int i = 0;
@@ -647,7 +647,7 @@ API_EXPORT(int) ap_add_named_module(const char *name)
 }
 
 /* Clear the internal list of modules, in preparation for starting over. */
-API_EXPORT(void) ap_clear_module_list()
+AP_DECLARE(void) ap_clear_module_list()
 {
     module **m = &top_module;
     module **next_m;
@@ -823,7 +823,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
     }
 }
 
-CORE_EXPORT(const command_rec *) ap_find_command(const char *name, const command_rec *cmds)
+AP_CORE_DECLARE(const command_rec *) ap_find_command(const char *name, const command_rec *cmds)
 {
     while (cmds->name)
 	if (!strcasecmp(name, cmds->name))
@@ -834,7 +834,7 @@ CORE_EXPORT(const command_rec *) ap_find_command(const char *name, const command
     return NULL;
 }
 
-CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod)
+AP_CORE_DECLARE(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod)
 {
     const command_rec *cmdp;
     module *modp;
@@ -848,7 +848,7 @@ CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name
     return NULL;
 }
 
-CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod)
+AP_CORE_DECLARE(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod)
 {
     void *mconfig = ap_get_module_config(config, mod);
     void *sconfig = ap_get_module_config(parms->server->module_config, mod);
@@ -1052,7 +1052,7 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
     /* NOTREACHED */
 }
 
-API_EXPORT(const char *) ap_walk_config(ap_directive_t *current,
+AP_DECLARE(const char *) ap_walk_config(ap_directive_t *current,
 					cmd_parms *parms, void *config)
 {
     void *oldconfig = parms->context;
@@ -1079,7 +1079,7 @@ API_EXPORT(const char *) ap_walk_config(ap_directive_t *current,
 }
 
 
-API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
+AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
 					 apr_pool_t *p, apr_pool_t *temp_pool,
 					 ap_directive_t **conftree)
 {
@@ -1130,7 +1130,7 @@ API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
  * Generic command functions...
  */
 
-API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
+AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
 						   void *struct_ptr,
 						   const char *arg)
 {
@@ -1141,7 +1141,7 @@ API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
     return NULL;
 }
 
-API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
+AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
 							 void *struct_ptr,
 							 const char *arg_)
 {
@@ -1154,7 +1154,7 @@ API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
     return NULL;
 }
 
-API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
+AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
                                                  void *struct_ptr_v, int arg)
 {
     /* This one's pretty generic too... */
@@ -1165,7 +1165,7 @@ API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
     return NULL;
 }
 
-API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, 
+AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, 
                                                  const char *arg)
 {
     /* Prepend server_root to relative arg.
@@ -1189,14 +1189,14 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_pt
 static cmd_parms default_parms =
 {NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
-API_EXPORT(const char *) ap_server_root_relative(apr_pool_t *p, const char *file)
+AP_DECLARE(const char *) ap_server_root_relative(apr_pool_t *p, const char *file)
 {
     if(ap_os_is_path_absolute(file))
 	return file;
     return ap_make_full_path(p, ap_server_root, file);
 }
 
-API_EXPORT(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
+AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
 {
     char l[MAX_STRING_LEN];
     const char *args;
@@ -1433,7 +1433,7 @@ void ap_process_resource_config(server_rec *s, const char *fname,
     ap_cfg_closefile(cfp);
 }
 
-API_EXPORT(void)ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
+AP_DECLARE(void)ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
                                        apr_pool_t *p, apr_pool_t *ptemp)
 {
     const char *errmsg;
@@ -1536,7 +1536,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
     return OK;
 }
 
-CORE_EXPORT(const char *) ap_init_virtual_host(apr_pool_t *p, const char *hostname,
+AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, const char *hostname,
 			      server_rec *main_server, server_rec **ps)
 {
     server_rec *s = (server_rec *) apr_pcalloc(p, sizeof(server_rec));
@@ -1578,7 +1578,7 @@ CORE_EXPORT(const char *) ap_init_virtual_host(apr_pool_t *p, const char *hostna
 }
 
 
-API_EXPORT(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
+AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
 {
     server_rec *virt;
 
@@ -1656,7 +1656,7 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
 }
 
 
-API_EXPORT(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
+AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
                                        const char *confname, 
                                        ap_directive_t **conftree)
 {
@@ -1688,7 +1688,7 @@ void ap_single_module_configure(apr_pool_t *p, server_rec *s, module *m)
                              (*m->create_dir_config)(p, NULL));
 }
 
-API_EXPORT(void) ap_run_rewrite_args(process_rec *process)
+AP_DECLARE(void) ap_run_rewrite_args(process_rec *process)
 {
     module *m;
 
@@ -1697,7 +1697,7 @@ API_EXPORT(void) ap_run_rewrite_args(process_rec *process)
             (*m->rewrite_args) (process);
 }
 
-API_EXPORT(void) ap_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+AP_DECLARE(void) ap_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap_run_post_config(pconf,plog,ptemp,s); 
     init_handlers(pconf);
@@ -1789,7 +1789,7 @@ static void show_overrides(const command_rec *pc, module *pm)
  * the directive arguments, in what module they are handled, and in
  * what parts of the configuration they are allowed.  Used for httpd -h.
  */
-API_EXPORT(void) ap_show_directives()
+AP_DECLARE(void) ap_show_directives()
 {
     const command_rec *pc;
     int n;
@@ -1804,7 +1804,7 @@ API_EXPORT(void) ap_show_directives()
 }
 
 /* Show the preloaded module names.  Used for httpd -l. */
-API_EXPORT(void) ap_show_modules()
+AP_DECLARE(void) ap_show_modules()
 {
     int n;
 

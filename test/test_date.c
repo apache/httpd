@@ -10,7 +10,7 @@
  * 
  * Roy Fielding, 1996
  */
-#define API_EXPORT(x) x
+#define AP_DECLARE(x) x
 
 #include <stdio.h>
 #include <stdlib.h>

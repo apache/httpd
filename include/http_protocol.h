@@ -92,7 +92,7 @@ request_rec *ap_read_request(conn_rec *c);
  * @param fieldval The value of the header
  * @deffunc int ap_send_header_field(request_rec *r, const char *fieldname, const char *fieldval)
  */
-API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldname,
+AP_DECLARE_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldname,
                       const char *fieldval);
 
 /**
@@ -103,18 +103,18 @@ API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldnam
  *          correctness depends on code in ap_send_http_header().
  * @deffunc void ap_basic_http_header(request_rec *r)
  */
-API_EXPORT(void) ap_basic_http_header(request_rec *r);
+AP_DECLARE(void) ap_basic_http_header(request_rec *r);
 
 /**
  * Send the Status-Line and header fields for HTTP response
  * @param l The current request
  * @deffunc void ap_send_http_header(request_rec *l)
  */
-API_EXPORT(void) ap_send_http_header(request_rec *l);
+AP_DECLARE(void) ap_send_http_header(request_rec *l);
 
 /* Send the response to special method requests */
 
-API_EXPORT(int) ap_send_http_trace(request_rec *r);
+AP_DECLARE(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
 
 /* Finish up stuff after a request */
@@ -125,7 +125,7 @@ int ap_send_http_options(request_rec *r);
  * @param r The current request
  * @deffunc void ap_finalize_request_protocol(request_rec *r)
  */
-API_EXPORT(void) ap_finalize_request_protocol(request_rec *r);
+AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r);
 
 /**
  * Send error back to client.
@@ -137,7 +137,7 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r);
  *      on the problem with the ErrorDocument.
  * @deffunc void ap_send_error_response(request_rec *r, int recursive_error)
  */
-API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error);
+AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error);
 
 /* Set last modified header line from the lastmod date of the associated file.
  * Also, set content length.
@@ -153,14 +153,14 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error);
  * @return Always 0, can be safely ignored
  * @deffunc int ap_set_content_length(request_rec *r, long length)
  */
-API_EXPORT(int) ap_set_content_length(request_rec *r, long length);
+AP_DECLARE(int) ap_set_content_length(request_rec *r, long length);
 /**
  * Set the keepalive status for this request
  * @param r The current request
  * @return 1 if keepalive can be set, 0 otherwise
  * @deffunc int ap_set_keepalive(request_rec *r)
  */
-API_EXPORT(int) ap_set_keepalive(request_rec *r);
+AP_DECLARE(int) ap_set_keepalive(request_rec *r);
 /**
  * Return the latest rational time from a request/mtime pair.  Mtime is 
  * returned unless it's in the future, in which case we return the current time.
@@ -169,7 +169,7 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r);
  * @return the latest rational time.
  * @deffunc apr_time_t ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  */
-API_EXPORT(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
+AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
 /**
  * Construct an entity tag from the resource information.  If it's a real
  * file, build in some of the file characteristics.
@@ -179,19 +179,19 @@ API_EXPORT(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
  * @return The entity tag
  * @deffunc char *ap_make_etag(request_rec *r, int force_weak)
  */ 
-API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak);
+AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak);
 /**
  * Set the E-tag outgoing header
  * @param The current request
  * @deffunc void ap_set_etag(request_rec *r)
  */
-API_EXPORT(void) ap_set_etag(request_rec *r);
+AP_DECLARE(void) ap_set_etag(request_rec *r);
 /**
  * Set the last modified time for the file being sent
  * @param r The current request
  * @deffunc void ap_set_last_modified(request_rec *r)
  */
-API_EXPORT(void) ap_set_last_modified(request_rec *r);
+AP_DECLARE(void) ap_set_last_modified(request_rec *r);
 /**
  * Implements condition GET rules for HTTP/1.1 specification.  This function
  * inspects the client headers and determines if the response fulfills 
@@ -200,7 +200,7 @@ API_EXPORT(void) ap_set_last_modified(request_rec *r);
  * @return 1 if the response fulfills the condition GET rules, 0 otherwise
  * @deffunc int ap_meets_conditions(request_rec *r)
  */
-API_EXPORT(int) ap_meets_conditions(request_rec *r);
+AP_DECLARE(int) ap_meets_conditions(request_rec *r);
 
 /* Other ways to send stuff at the client.  All of these keep track
  * of bytes_sent automatically.  This indirection is intended to make
@@ -223,7 +223,7 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r);
  * @param nbytes Amount of data actually sent
  * @deffunc apr_status_t ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, apr_size_t length, apr_size_t *nbytes);
  */
-API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
+AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                    apr_size_t length, apr_size_t *nbytes);
 /**
  * Send an MMAP'ed file to the client
@@ -234,7 +234,7 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
  * @return The number of bytes sent
  * @deffunc size_t ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset, size_t length)
  */
-API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
+AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length);
 
 /**
@@ -247,14 +247,14 @@ API_EXPORT(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
  * @return  Pointer to the newly created structure.
  * @deffunc ap_method_list_t ap_make_method_list(apr_pool_t *p, int nelts)
  */
-API_EXPORT(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts);
-API_EXPORT(void) ap_copy_method_list(ap_method_list_t *dest,
+AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts);
+AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
 				     ap_method_list_t *src);
-API_EXPORT_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
 						       int mnum),
 				          void *rec,
 				          const ap_method_list_t *ml, ...);
-API_EXPORT(void) ap_method_list_vdo(int (*comp) (void *urec, const char *mname,
+AP_DECLARE(void) ap_method_list_vdo(int (*comp) (void *urec, const char *mname,
 						 int mnum),
 				    void *rec, const ap_method_list_t *ml,
 				    va_list vp);
@@ -267,7 +267,7 @@ API_EXPORT(void) ap_method_list_vdo(int (*comp) (void *urec, const char *mname,
  * @return  1 if method is in the list, otherwise 0
  * @deffunc int ap_method_in_list(const char *method, ap_method_list_t *l)
  */
-API_EXPORT(int) ap_method_in_list(ap_method_list_t *l, const char *method);
+AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method);
 
 /**
  * Add an HTTP method name to an ap_method_list_t structure if it isn't
@@ -278,7 +278,7 @@ API_EXPORT(int) ap_method_in_list(ap_method_list_t *l, const char *method);
  * @return  None.
  * @deffunc void ap_method_in_list(ap_method_list_t *l, const char *method)
  */
-API_EXPORT(void) ap_method_list_add(ap_method_list_t *l, const char *method);
+AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method);
     
 /**
  * Remove an HTTP method name from an ap_method_list_t structure.
@@ -288,7 +288,7 @@ API_EXPORT(void) ap_method_list_add(ap_method_list_t *l, const char *method);
  * @return  None.
  * @deffunc void ap_method_list_remove(ap_method_list_t *l, const char *method)
  */
-API_EXPORT(void) ap_method_list_remove(ap_method_list_t *l,
+AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
 				       const char *method);
 
 /**
@@ -298,7 +298,7 @@ API_EXPORT(void) ap_method_list_remove(ap_method_list_t *l,
  * @return  None.
  * @deffunc void ap_clear_method_list(ap_method_list_t *l)
  */
-API_EXPORT(void) ap_clear_method_list(ap_method_list_t *l);
+AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
     
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
@@ -311,7 +311,7 @@ API_EXPORT(void) ap_clear_method_list(ap_method_list_t *l);
  * @return The number of bytes sent
  * @deffunc int ap_rputc(int c, request_rec *r)
  */
-API_EXPORT(int) ap_rputc(int c, request_rec *r);
+AP_DECLARE(int) ap_rputc(int c, request_rec *r);
 /**
  * Output a string for the current request
  * @param str The string to output
@@ -319,7 +319,7 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r);
  * @return The number of bytes sent
  * @deffunc int ap_rputs(const char *str, request_rec *r)
  */
-API_EXPORT(int) ap_rputs(const char *str, request_rec *r);
+AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
 /**
  * Write a buffer for the current request
  * @param buf The buffer to write
@@ -328,7 +328,7 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r);
  * @return The number of bytes sent
  * @deffunc int ap_rwrite(const void *buf, int nbyte, request_rec *r)
  */
-API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
+AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
 /**
  * Write an unspecified number of strings to the request
  * @param r The current request
@@ -336,7 +336,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
  * @return The number of bytes sent
  * @deffunc int ap_rvputs(request_rec *r, ...)
  */
-API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...);
+AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...);
 /**
  * Output data to the client in a printf format
  * @param r The current request
@@ -345,7 +345,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...);
  * @return The number of bytes sent
  * @deffunc int ap_vrprintf(request_rec *r, const char *fmt, va_list vlist)
  */
-API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
+AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
 /**
  * Output data to the client in a printf format
  * @param r The current request
@@ -354,7 +354,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
  * @return The number of bytes sent
  * @deffunc int ap_rprintf(request_rec *r, const char *fmt, ...)
  */
-API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
+AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
 				__attribute__((format(printf,2,3)));
 /**
  * Flush all of the data for the current request to the client
@@ -362,7 +362,7 @@ API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
  * @return The number of bytes sent
  * @deffunc int ap_rflush(request_rec *r)
  */
-API_EXPORT(int) ap_rflush(request_rec *r);
+AP_DECLARE(int) ap_rflush(request_rec *r);
 
 /**
  * Index used in custom_responses array for a specific error code
@@ -371,7 +371,7 @@ API_EXPORT(int) ap_rflush(request_rec *r);
  * @return The index of the response
  * @deffunc int ap_index_of_response(int status)
  */
-API_EXPORT(int) ap_index_of_response(int status);
+AP_DECLARE(int) ap_index_of_response(int status);
 
 /** 
  * Return the Status-Line for a given status code (excluding the
@@ -381,7 +381,7 @@ API_EXPORT(int) ap_index_of_response(int status);
  * @return The Status-Line
  * @deffunc const char *ap_get_status_line(int status)
  */
-API_EXPORT(const char *) ap_get_status_line(int status);
+AP_DECLARE(const char *) ap_get_status_line(int status);
 
 /* Reading a block of data from the client connection (e.g., POST arg) */
 
@@ -398,7 +398,7 @@ API_EXPORT(const char *) ap_get_status_line(int status);
  * @return either OK or an error code
  * @deffunc int ap_setup_cleint_block(request_rec *r, int read_policy)
  */
-API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy);
+AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy);
 /**
  * Determine if the client has sent any data.  This also sends a 
  * 100 Continue resposne to HTTP/1.1 clients, so modules should not be called
@@ -408,7 +408,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy);
  * @return 0 if there is no message to read, 1 otherwise
  * @deffunc int ap_should_client_block(request_rec *r)
  */
-API_EXPORT(int) ap_should_client_block(request_rec *r);
+AP_DECLARE(int) ap_should_client_block(request_rec *r);
 /**
  * Call this in a loop.  It will put data into a buffer and return the length
  * of the input block
@@ -419,7 +419,7 @@ API_EXPORT(int) ap_should_client_block(request_rec *r);
  *         if EOF, or -1 if there was an error
  * @deffunc long ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
  */
-API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
+AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
 /**
  * In HTTP/1.1, any method can have a body.  However, most GET handlers
  * wouldn't know what to do with a request body if they received one.
@@ -431,7 +431,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz);
  * @return error status if request is malformed, OK otherwise 
  * @deffunc int ap_discard_request_body(request_rec *r)
  */
-API_EXPORT(int) ap_discard_request_body(request_rec *r);
+AP_DECLARE(int) ap_discard_request_body(request_rec *r);
 
 /* Sending a byterange */
 
@@ -441,7 +441,7 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r);
  * @return 1 if request was setup for byte range requests, 0 otherwise
  * @deffunc int ap_set_byterange(request_rec *r)
  */
-API_EXPORT(int) ap_set_byterange(request_rec *r);
+AP_DECLARE(int) ap_set_byterange(request_rec *r);
 /**
  * Send one byte range chunk for a byte range request
  * @param r The current request
@@ -449,7 +449,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r);
  * @param length Set to the length in should be after the chunk is sent
  * @deffunc int ap_each_byterange(request_rec *r, apr_off_t *offset, apr_size_t *length)
  */
-API_EXPORT(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
+AP_DECLARE(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
 				  apr_size_t *length);
 /**
  * Setup the output headers so that the client knows how to authenticate
@@ -458,7 +458,7 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
  * @param r The current request
  * @deffunc void ap_note_auth_failure(request_rec *r)
  */ 
-API_EXPORT(void) ap_note_auth_failure(request_rec *r);
+AP_DECLARE(void) ap_note_auth_failure(request_rec *r);
 /**
  * Setup the output headers so that the client knows how to authenticate
  * itself the next time, if an authentication request failed.  This function
@@ -466,7 +466,7 @@ API_EXPORT(void) ap_note_auth_failure(request_rec *r);
  * @param r The current request
  * @deffunc void ap_note_basic_auth_failure(request_rec *r)
  */ 
-API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r);
+AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r);
 /**
  * Setup the output headers so that the client knows how to authenticate
  * itself the next time, if an authentication request failed.  This function
@@ -474,7 +474,7 @@ API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r);
  * @param r The current request
  * @deffunc void ap_note_digest_auth_failure(request_rec *r)
  */ 
-API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r);
+AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
 /**
  * Get the password from the request headers
  * @param r The current request
@@ -488,7 +488,7 @@ API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r);
  *         decline as well).
  * @deffunc int ap_get_basic_auth_pw(request_rec *r, const char **pw)
  */
-API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
+AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
 
 /*
  * Setting up the protocol fields for subsidiary requests...
@@ -509,7 +509,7 @@ void ap_finalize_sub_req_protocol(request_rec *sub_r);
  * @param uri The uri to break apart
  * @deffunc void ap_parse_uri(request_rec *r, const char *uri)
  */
-CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
+AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri);
 
 /**
  * Get the method number associated with the given string, assumed to
@@ -518,7 +518,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
  * @return The method number
  * @deffunc int ap_method_number_of(const char *method)
  */
-API_EXPORT(int) ap_method_number_of(const char *method);
+AP_DECLARE(int) ap_method_number_of(const char *method);
 
 /**
  * Get the method name associated with the given internal method
@@ -527,7 +527,7 @@ API_EXPORT(int) ap_method_number_of(const char *method);
  * @return The name corresponding to the method number
  * @deffunc const char *ap_method_name_of(int methnum)
  */
-API_EXPORT(const char *) ap_method_name_of(int methnum);
+AP_DECLARE(const char *) ap_method_name_of(int methnum);
 
 int http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t length);
 

@@ -108,12 +108,6 @@
 #define AP_DECLARE_DATA             __declspec(dllimport)
 #endif
 
-/* XXX: move to compatibility aliases once the symbol rename is complete
- */
-#define API_EXPORT(t)        AP_DECLARE(t)
-#define API_EXPORT_NONSTD(t) AP_DECLARE_NONSTD(t)
-#define API_VAR_EXPORT       AP_DECLARE_DATA
-
 #if !defined(WIN32) || defined(AP_MODULE_DECLARE_STATIC)
 /**
  * Declare a dso module's exported module structure as AP_MODULE_DECLARE_DATA.

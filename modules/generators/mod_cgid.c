@@ -104,7 +104,7 @@
 #include <sys/un.h> /* for sockaddr_un */
 #include <sys/types.h>
 
-module MODULE_VAR_EXPORT cgid_module; 
+module AP_MODULE_DECLARE_DATA cgid_module; 
 
 static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
 static int once_through = 0; 
@@ -1040,7 +1040,7 @@ static void register_hook(void)
     ap_hook_post_config(cgid_init, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT cgid_module = { 
+module AP_MODULE_DECLARE_DATA cgid_module = { 
     STANDARD20_MODULE_STUFF, 
     NULL, /* dir config creater */ 
     NULL, /* dir merger --- default is to override */ 

@@ -126,7 +126,7 @@
  * Examine a field value (such as a media-/content-type) string and return
  * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
  */
-API_EXPORT(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
+AP_DECLARE(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
 {
     const char *semi;
 
@@ -144,7 +144,7 @@ API_EXPORT(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
     }
 }
 
-API_EXPORT(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt)
+AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt)
 {
     apr_size_t retcode;
     char ts[MAX_STRING_LEN];
@@ -209,7 +209,7 @@ API_EXPORT(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
  * Based loosely on sections of wildmat.c by Rich Salz
  * Hmmm... shouldn't this really go component by component?
  */
-API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp)
+AP_DECLARE(int) ap_strcmp_match(const char *str, const char *exp)
 {
     int x, y;
 
@@ -233,7 +233,7 @@ API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp)
     return (str[x] != '\0');
 }
 
-API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp)
+AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp)
 {
     int x, y;
 
@@ -257,7 +257,7 @@ API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp)
     return (str[x] != '\0');
 }
 
-API_EXPORT(int) ap_is_matchexp(const char *str)
+AP_DECLARE(int) ap_is_matchexp(const char *str)
 {
     register int x;
 
@@ -281,7 +281,7 @@ static apr_status_t regex_cleanup(void *preg)
     return APR_SUCCESS;
 }
 
-API_EXPORT(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
+AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 				   int cflags)
 {
     regex_t *preg = apr_palloc(p, sizeof(regex_t));
@@ -295,7 +295,7 @@ API_EXPORT(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
     return preg;
 }
 
-API_EXPORT(void) ap_pregfree(apr_pool_t *p, regex_t * reg)
+AP_DECLARE(void) ap_pregfree(apr_pool_t *p, regex_t * reg)
 {
     regfree(reg);
     apr_kill_cleanup(p, (void *) reg, regex_cleanup);
@@ -305,7 +305,7 @@ API_EXPORT(void) ap_pregfree(apr_pool_t *p, regex_t * reg)
  * Similar to standard strstr() but we ignore case in this version.
  * Based on the strstr() implementation further below.
  */
-API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2)
+AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2)
 {
     char *p1, *p2;
     if (*s2 == '\0') {
@@ -342,7 +342,7 @@ API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2)
  * can use standard pointer comparisons in the calling function
  * (eg: test if ap_stripprefix(a,b) == a)
  */
-API_EXPORT(char *) ap_stripprefix(const char *bigstring, const char *prefix)
+AP_DECLARE(char *) ap_stripprefix(const char *bigstring, const char *prefix)
 {
     char *p1;
     if (*prefix == '\0') {
@@ -365,13 +365,13 @@ API_EXPORT(char *) ap_stripprefix(const char *bigstring, const char *prefix)
  * This is especially important for the DSO situations of modules.
  * DO NOT MAKE A MACRO OUT OF THIS FUNCTION!
  */
-API_EXPORT(int) ap_regexec(regex_t *preg, const char *string,
+AP_DECLARE(int) ap_regexec(regex_t *preg, const char *string,
                            size_t nmatch, regmatch_t pmatch[], int eflags)
 {
     return regexec(preg, string, nmatch, pmatch, eflags);
 }
 
-API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
+AP_DECLARE(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
 {
     return regerror(errcode, preg, errbuf, errbuf_size);
 }
@@ -391,7 +391,7 @@ API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf, s
  * AT&T V8 regexp package.
  */
 
-API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
+AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
 			   size_t nmatch, regmatch_t pmatch[])
 {
     const char *src = input;
@@ -462,7 +462,7 @@ API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
 /*
  * Parse .. so we don't compromise security
  */
-API_EXPORT(void) ap_getparents(char *name)
+AP_DECLARE(void) ap_getparents(char *name)
 {
     int l, w;
 
@@ -523,7 +523,7 @@ API_EXPORT(void) ap_getparents(char *name)
     }
 }
 
-API_EXPORT(void) ap_no2slash(char *name)
+AP_DECLARE(void) ap_no2slash(char *name)
 {
     char *d, *s;
 
@@ -566,7 +566,7 @@ API_EXPORT(void) ap_no2slash(char *name)
  *    /a/b, 3  ==> /a/b/
  *    /a/b, 4  ==> /a/b/
  */
-API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
+AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 {
 #if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
     if (!n) {
@@ -591,7 +591,7 @@ API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 /*
  * return the parent directory name including trailing / of the file s
  */
-API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
+AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
 {
     const char *last_slash = ap_strrchr_c(s, '/');
     char *d;
@@ -609,7 +609,7 @@ API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
 }
 
 
-API_EXPORT(int) ap_count_dirs(const char *path)
+AP_DECLARE(int) ap_count_dirs(const char *path)
 {
     register int x, n;
 
@@ -620,7 +620,7 @@ API_EXPORT(int) ap_count_dirs(const char *path)
 }
 
 
-API_EXPORT(void) ap_chdir_file(const char *file)
+AP_DECLARE(void) ap_chdir_file(const char *file)
 {
     const char *x;
     char buf[HUGE_STRING_LEN];
@@ -638,12 +638,12 @@ API_EXPORT(void) ap_chdir_file(const char *file)
      * error... ah well. */
 }
 
-API_EXPORT(char *) ap_getword_nc(apr_pool_t *atrans, char **line, char stop)
+AP_DECLARE(char *) ap_getword_nc(apr_pool_t *atrans, char **line, char stop)
 {
     return ap_getword(atrans, (const char **) line, stop);
 }
 
-API_EXPORT(char *) ap_getword(apr_pool_t *atrans, const char **line, char stop)
+AP_DECLARE(char *) ap_getword(apr_pool_t *atrans, const char **line, char stop)
 {
     const char *pos = ap_strchr_c(*line, stop);
     char *res;
@@ -665,12 +665,12 @@ API_EXPORT(char *) ap_getword(apr_pool_t *atrans, const char **line, char stop)
     return res;
 }
 
-API_EXPORT(char *) ap_getword_white_nc(apr_pool_t *atrans, char **line)
+AP_DECLARE(char *) ap_getword_white_nc(apr_pool_t *atrans, char **line)
 {
     return ap_getword_white(atrans, (const char **) line);
 }
 
-API_EXPORT(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
+AP_DECLARE(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
 {
     int pos = -1, x;
     char *res;
@@ -699,12 +699,12 @@ API_EXPORT(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
     return res;
 }
 
-API_EXPORT(char *) ap_getword_nulls_nc(apr_pool_t *atrans, char **line, char stop)
+AP_DECLARE(char *) ap_getword_nulls_nc(apr_pool_t *atrans, char **line, char stop)
 {
     return ap_getword_nulls(atrans, (const char **) line, stop);
 }
 
-API_EXPORT(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line, char stop)
+AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line, char stop)
 {
     const char *pos = ap_strchr_c(*line, stop);
     char *res;
@@ -750,12 +750,12 @@ static char *substring_conf(apr_pool_t *p, const char *start, int len, char quot
 #endif
 }
 
-API_EXPORT(char *) ap_getword_conf_nc(apr_pool_t *p, char **line)
+AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line)
 {
     return ap_getword_conf(p, (const char **) line);
 }
 
-API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line)
+AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
 {
     const char *str = *line, *strend;
     char *res;
@@ -802,7 +802,7 @@ API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line)
  * environment value does not exist, leave the ${ENV}
  * construct alone; it means something else.
  */
-API_EXPORT(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
+AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 {
        char tmp[ MAX_STRING_LEN ];
        const char *s, *e;
@@ -835,7 +835,7 @@ API_EXPORT(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 
        return apr_pstrdup(p,tmp);
 }
-API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
+AP_DECLARE(int) ap_cfg_closefile(configfile_t *cfp)
 {
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, 
@@ -868,7 +868,7 @@ static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 }
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
-API_EXPORT(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name)
+AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name)
 {
     configfile_t *new_cfg;
     apr_file_t *file = NULL;
@@ -933,7 +933,7 @@ API_EXPORT(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p,
 
 
 /* Allocate a configfile_t handle with user defined functions and params */
-API_EXPORT(configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
+AP_DECLARE(configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
     void *param,
     int(*getch)(void *param),
     void *(*getstr) (void *buf, size_t bufsiz, void *param),
@@ -954,7 +954,7 @@ API_EXPORT(configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
 
 
 /* Read one character from a configfile_t */
-API_EXPORT(int) ap_cfg_getc(configfile_t *cfp)
+AP_DECLARE(int) ap_cfg_getc(configfile_t *cfp)
 {
     register int ch = cfp->getch(cfp->param);
     if (ch == LF) 
@@ -965,7 +965,7 @@ API_EXPORT(int) ap_cfg_getc(configfile_t *cfp)
 
 /* Read one line from open configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
-API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
+AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 {
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {
@@ -1104,7 +1104,7 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
  * of field is shifted to the next non-comma, non-whitespace character.
  * len is the length of the item excluding any beginning whitespace.
  */
-API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
+AP_DECLARE(const char *) ap_size_list_item(const char **field, int *len)
 {
     const unsigned char *ptr = (const unsigned char *)*field;
     const unsigned char *token;
@@ -1164,7 +1164,7 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
  * the converted list item (or NULL if none) and the address pointed to by
  * field is shifted to the next non-comma, non-whitespace.
  */
-API_EXPORT(char *) ap_get_list_item(apr_pool_t *p, const char **field)
+AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field)
 {
     const char *tok_start;
     const unsigned char *ptr;
@@ -1253,7 +1253,7 @@ API_EXPORT(char *) ap_get_list_item(apr_pool_t *p, const char **field)
  * This would be much more efficient if we stored header fields as
  * an array of list items as they are received instead of a plain string.
  */
-API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok)
+AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok)
 {
     const unsigned char *pos;
     const unsigned char *ptr = (const unsigned char *)line;
@@ -1356,7 +1356,7 @@ API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *t
  * by whitespace at the caller's option.
  */
 
-API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white)
+AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white)
 {
     const char *ptr = *accept_line;
     const char *tok_start;
@@ -1396,7 +1396,7 @@ API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
 
 
 /* find http tokens, see the definition of token from RFC2068 */
-API_EXPORT(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
+AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
 {
     const unsigned char *start_token;
     const unsigned char *s;
@@ -1430,7 +1430,7 @@ API_EXPORT(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
 }
 
 
-API_EXPORT(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok)
+AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok)
 {
     int llen, tlen, lidx;
 
@@ -1448,7 +1448,7 @@ API_EXPORT(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
 }
 
-API_EXPORT(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
+AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
 {
     char *cmd;
     unsigned char *d;
@@ -1508,7 +1508,7 @@ static char x2c(const char *what)
  *   decoding %2f -> /   (a special character)
  *                      returns HTTP_NOT_FOUND
  */
-API_EXPORT(int) ap_unescape_url(char *url)
+AP_DECLARE(int) ap_unescape_url(char *url)
 {
     register int badesc, badpath;
     char *x, *y;
@@ -1546,7 +1546,7 @@ API_EXPORT(int) ap_unescape_url(char *url)
 	return OK;
 }
 
-API_EXPORT(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
+AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
 				    unsigned port, const request_rec *r)
 {
     if (ap_is_default_port(port, r))
@@ -1594,7 +1594,7 @@ static apr_inline unsigned char *c2x(unsigned what, unsigned char *where)
  * something with a '/' in it (and thus does not prefix "./").
  */
 
-API_EXPORT(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
+AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
 {
     char *copy = apr_palloc(p, 3 * strlen(segment) + 1);
     const unsigned char *s = (const unsigned char *)segment;
@@ -1614,7 +1614,7 @@ API_EXPORT(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
     return copy;
 }
 
-API_EXPORT(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
+AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
 {
     char *copy = apr_palloc(p, 3 * strlen(path) + 3);
     const unsigned char *s = (const unsigned char *)path;
@@ -1645,7 +1645,7 @@ API_EXPORT(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
 
 /* ap_escape_uri is now a macro for os_escape_path */
 
-API_EXPORT(char *) ap_escape_html(apr_pool_t *p, const char *s)
+AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
 {
     int i, j;
     char *x;
@@ -1681,7 +1681,7 @@ API_EXPORT(char *) ap_escape_html(apr_pool_t *p, const char *s)
     return x;
 }
 
-API_EXPORT(int) ap_is_directory(const char *path)
+AP_DECLARE(int) ap_is_directory(const char *path)
 {
     apr_finfo_t finfo;
 
@@ -1691,7 +1691,7 @@ API_EXPORT(int) ap_is_directory(const char *path)
     return (finfo.filetype == APR_DIR);
 }
 
-API_EXPORT(int) ap_is_rdirectory(const char *path)
+AP_DECLARE(int) ap_is_rdirectory(const char *path)
 {
     apr_finfo_t finfo;
 
@@ -1701,7 +1701,7 @@ API_EXPORT(int) ap_is_rdirectory(const char *path)
     return (finfo.filetype == APR_DIR);
 }
 
-API_EXPORT(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
+AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
 				  const char *src2)
 {
     register int x;
@@ -1719,7 +1719,7 @@ API_EXPORT(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
 /*
  * Check for an absoluteURI syntax (see section 3.2 in RFC2068).
  */
-API_EXPORT(int) ap_is_url(const char *u)
+AP_DECLARE(int) ap_is_url(const char *u)
 {
     register int x;
 
@@ -1765,7 +1765,7 @@ int initgroups(const char *name, gid_t basegid)
 }
 #endif /* def NEED_INITGROUPS */
 
-API_EXPORT(int) ap_ind(const char *s, char c)
+AP_DECLARE(int) ap_ind(const char *s, char c)
 {
     register int x;
 
@@ -1776,7 +1776,7 @@ API_EXPORT(int) ap_ind(const char *s, char c)
     return -1;
 }
 
-API_EXPORT(int) ap_rind(const char *s, char c)
+AP_DECLARE(int) ap_rind(const char *s, char c)
 {
     register int x;
 
@@ -1787,7 +1787,7 @@ API_EXPORT(int) ap_rind(const char *s, char c)
     return -1;
 }
 
-API_EXPORT(void) ap_str_tolower(char *str)
+AP_DECLARE(void) ap_str_tolower(char *str)
 {
     while (*str) {
 	*str = apr_tolower(*str);
@@ -1795,7 +1795,7 @@ API_EXPORT(void) ap_str_tolower(char *str)
     }
 }
 
-API_EXPORT(uid_t) ap_uname2id(const char *name)
+AP_DECLARE(uid_t) ap_uname2id(const char *name)
 {
 #ifdef WIN32
     return (1);
@@ -1813,7 +1813,7 @@ API_EXPORT(uid_t) ap_uname2id(const char *name)
 #endif
 }
 
-API_EXPORT(gid_t) ap_gname2id(const char *name)
+AP_DECLARE(gid_t) ap_gname2id(const char *name)
 {
 #ifdef WIN32
     return (1);
@@ -1950,7 +1950,7 @@ char *ap_get_local_host(apr_pool_t *a)
 
 /* simple 'pool' alloc()ing glue to ap_base64.c
  */
-API_EXPORT(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
+AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
 {
     char *decoded;
     int l;
@@ -1962,7 +1962,7 @@ API_EXPORT(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
     return decoded;
 }
 
-API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string) 
+AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string) 
 { 
     char *encoded;
     int l = strlen(string);
@@ -1981,7 +1981,7 @@ API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string)
  * also need to compress spaces and such to be able to compare
  * properly. -djg
  */
-API_EXPORT(void) ap_content_type_tolower(char *str)
+AP_DECLARE(void) ap_content_type_tolower(char *str)
 {
     char *semi;
 
@@ -2001,7 +2001,7 @@ API_EXPORT(void) ap_content_type_tolower(char *str)
 /*
  * Given a string, replace any bare " with \" .
  */
-API_EXPORT(char *) ap_escape_quotes (apr_pool_t *p, const char *instring)
+AP_DECLARE(char *) ap_escape_quotes (apr_pool_t *p, const char *instring)
 {
     int newlen = 0;
     const char *inchr = instring;

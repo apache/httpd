@@ -86,7 +86,7 @@ static BOOL OnlyDots(char *pString)
  * is present on the existing path.  This routine also
  * converts alias names to long names.
  */
-API_EXPORT(char *) ap_os_systemcase_filename(apr_pool_t *pPool, 
+AP_DECLARE(char *) ap_os_systemcase_filename(apr_pool_t *pPool, 
                                              const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
@@ -227,7 +227,7 @@ API_EXPORT(char *) ap_os_systemcase_filename(apr_pool_t *pPool,
 /*  Perform canonicalization with the exception that the
  *  input case is preserved.
  */
-API_EXPORT(char *) ap_os_case_canonical_filename(apr_pool_t *pPool, 
+AP_DECLARE(char *) ap_os_case_canonical_filename(apr_pool_t *pPool, 
                                                  const char *szFile)
 {
     char *pNewStr;
@@ -353,7 +353,7 @@ API_EXPORT(char *) ap_os_case_canonical_filename(apr_pool_t *pPool,
 
 /*  Perform complete canonicalization.
  */
-API_EXPORT(char *) ap_os_canonical_filename(apr_pool_t *pPool, const char *szFile)
+AP_DECLARE(char *) ap_os_canonical_filename(apr_pool_t *pPool, const char *szFile)
 {
     char *pNewName;
     pNewName = ap_os_case_canonical_filename(pPool, szFile);
@@ -394,7 +394,7 @@ API_EXPORT(char *) ap_os_canonical_filename(apr_pool_t *pPool, const char *szFil
  * If the path fails ANY of these tests, the result must be to deny access.
  */
 
-API_EXPORT(int) ap_os_is_filename_valid(const char *file)
+AP_DECLARE(int) ap_os_is_filename_valid(const char *file)
 {
     const char *segstart;
     unsigned int seglength;

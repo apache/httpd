@@ -119,8 +119,8 @@ extern int ap_max_requests_per_child;
 extern int ap_extended_status;
 extern void clean_child_exit(int);
 
-API_EXPORT(void) ap_start_shutdown(void);
-API_EXPORT(void) ap_start_restart(int gracefully);
+AP_DECLARE(void) ap_start_shutdown(void);
+AP_DECLARE(void) ap_start_restart(int gracefully);
 
 void setup_signal_names(char *prefix);
 void signal_parent(int type);

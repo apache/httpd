@@ -89,7 +89,7 @@
  *   * - swallow remaining characters 
  *  <x> - exact match for any other character
  */
-API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
+AP_DECLARE(int) ap_checkmask(const char *data, const char *mask)
 {
     int i;
     char d;
@@ -180,7 +180,7 @@ API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
  * but many changes since then.
  *
  */
-API_EXPORT(apr_time_t) ap_parseHTTPdate(const char *date)
+AP_DECLARE(apr_time_t) ap_parseHTTPdate(const char *date)
 {
     apr_exploded_time_t ds;
     apr_time_t result;

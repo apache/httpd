@@ -121,7 +121,7 @@ static const command_rec auth_cmds[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT auth_module;
+module AP_MODULE_DECLARE_DATA auth_module;
 
 static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 {
@@ -324,7 +324,7 @@ static void register_hooks(void)
     ap_hook_auth_checker(check_user_access,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT auth_module =
+module AP_MODULE_DECLARE_DATA auth_module =
 {
     STANDARD20_MODULE_STUFF,
     create_auth_dir_config,	/* dir config creater */

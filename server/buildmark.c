@@ -61,7 +61,7 @@ static const char server_built[] = __DATE__ " " __TIME__;
 static const char server_built[] = "unknown";
 #endif
 
-API_EXPORT(const char *) ap_get_server_built()
+AP_DECLARE(const char *) ap_get_server_built()
 {
     return server_built;
 }

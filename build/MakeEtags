@@ -27,7 +27,7 @@ etags=~/local/bin/etags
 # Exuberant etags is necessary since it can ignore some defined symbols
 # that obscure the function signatures.
 
-ignore=API_EXPORT,API_EXPORT_NONSTD,__declspec
+ignore=AP_DECLARE,AP_DECLARE_NONSTD,__declspec
 
 # Create an etags file at the root of the source
 # tree, then create symbol links to it from each

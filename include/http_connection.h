@@ -98,7 +98,7 @@ conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
  * @param c The connection on which the request is read
  * @deffunc void ap_process_connection(conn_rec *)
  */
-CORE_EXPORT(void) ap_process_connection(conn_rec *);
+AP_CORE_DECLARE(void) ap_process_connection(conn_rec *);
 
 /**
  * The http pre-protocol handler.  This makes sets up Apache to serve http

@@ -206,12 +206,12 @@ typedef struct {
 #define SCOREBOARD_FRAMES		SCOREBOARD_SIZE/4095 + 1
 #endif
 
-API_EXPORT(void) ap_sync_scoreboard_image(void);
-API_EXPORT(int) ap_exists_scoreboard_image(void);
+AP_DECLARE(void) ap_sync_scoreboard_image(void);
+AP_DECLARE(int) ap_exists_scoreboard_image(void);
 
-API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
+AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 
-API_VAR_EXPORT extern ap_generation_t volatile ap_my_generation;
+AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

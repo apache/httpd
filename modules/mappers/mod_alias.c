@@ -90,7 +90,7 @@ typedef struct {
     apr_array_header_t *redirects;
 } alias_dir_conf;
 
-module MODULE_VAR_EXPORT alias_module;
+module AP_MODULE_DECLARE_DATA alias_module;
 
 static void *create_alias_config(apr_pool_t *p, server_rec *s)
 {
@@ -423,7 +423,7 @@ static void register_hooks(void)
     ap_hook_fixups(fixup_redir,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT alias_module =
+module AP_MODULE_DECLARE_DATA alias_module =
 {
     STANDARD20_MODULE_STUFF,
     create_alias_dir_config,	/* dir config creater */

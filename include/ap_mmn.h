@@ -123,13 +123,13 @@
  *			  content_languages MUST all be lowercase strings,
  *			  and MAY NOT be modified in place -- modifications
  *			  require pstrdup().
- * 19980317 (1.3b6-dev)	- CORE_EXPORTs for win32 and <Perl>
+ * 19980317 (1.3b6-dev)	- AP_CORE_DECLAREs for win32 and <Perl>
  *			  API export basic_http_header, send_header_field,
  *			  set_keepalive, srm_command_loop, check_cmd_context,
  *			  tm2sec
  *			  spacetoplus(), plustospace(), client_to_stdout()
  *			  removed
- * 19980324 (1.3b6-dev)	- API_EXPORT(index_of_response)
+ * 19980324 (1.3b6-dev)	- AP_DECLARE(index_of_response)
  * 19980413 (1.3b6-dev)	- The BIG SYMBOL RENAMING: general ap_ prefix
  *			  (see src/include/compat.h for more details)
  *			  apr_vformatter() API, see src/include/ap.h

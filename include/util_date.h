@@ -91,7 +91,7 @@ extern "C" {
  * @return 1 if the string matches, 0 otherwise
  * @deffunc int ap_checkmask(const char *data, const char *mask)
  */
-API_EXPORT(int) ap_checkmask(const char *data, const char *mask);
+AP_DECLARE(int) ap_checkmask(const char *data, const char *mask);
 
 /**
  * Parses an HTTP date in one of three standard forms:
@@ -105,7 +105,7 @@ API_EXPORT(int) ap_checkmask(const char *data, const char *mask);
  *         0 if this would be out of range or if the date is invalid.
  * @deffunc apr_time_t ap_parseHTTPdate(const char *date)
  */
-API_EXPORT(apr_time_t) ap_parseHTTPdate(const char *date);
+AP_DECLARE(apr_time_t) ap_parseHTTPdate(const char *date);
 
 #ifdef __cplusplus
 }

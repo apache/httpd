@@ -107,7 +107,7 @@ static int max_spare_threads = 0;
 static int max_threads = 0;
 static int max_requests_per_child = 0;
 static const char *ap_pid_fname=NULL;
-API_VAR_EXPORT const char *ap_scoreboard_fname=NULL;
+AP_DECLARE_DATA const char *ap_scoreboard_fname=NULL;
 static int num_daemons=0;
 static int curr_child_num=0;
 static int workers_may_exit = 0;
@@ -153,7 +153,7 @@ int ap_max_daemons_limit = -1;
 
 char ap_coredump_dir[MAX_STRING_LEN];
 
-module MODULE_VAR_EXPORT mpm_perchild_module;
+module AP_MODULE_DECLARE_DATA mpm_perchild_module;
 
 static apr_file_t *pipe_of_death_in = NULL;
 static apr_file_t *pipe_of_death_out = NULL;
@@ -208,7 +208,7 @@ static apr_lock_t *process_accept_mutex;
 static const char *lock_fname;
 static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-API_EXPORT(int) ap_get_max_daemons(void)
+AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return ap_max_daemons_limit;
 }
@@ -1754,7 +1754,7 @@ static void *perchild_create_config(apr_pool_t *p, server_rec *s)
     return c;
 }
 
-module MODULE_VAR_EXPORT mpm_perchild_module = {
+module AP_MODULE_DECLARE_DATA mpm_perchild_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

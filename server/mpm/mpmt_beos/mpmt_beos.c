@@ -92,7 +92,7 @@ static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_daemons_limit=0;
 static time_t ap_restart_time=0;
-API_VAR_EXPORT int ap_extended_status = 0;
+AP_DECLARE_DATA int ap_extended_status = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
@@ -140,7 +140,7 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
-API_EXPORT(int) ap_get_max_daemons(void)
+AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return ap_max_daemons_limit;
 }
@@ -1055,7 +1055,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_mpmt_beos_module = {
+module AP_MODULE_DECLARE_DATA mpm_mpmt_beos_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */

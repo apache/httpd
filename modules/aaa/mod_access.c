@@ -117,7 +117,7 @@ typedef struct {
     apr_array_header_t *denys;
 } access_dir_conf;
 
-module MODULE_VAR_EXPORT access_module;
+module AP_MODULE_DECLARE_DATA access_module;
 
 static void *create_access_dir_config(apr_pool_t *p, char *dummy)
 {
@@ -409,7 +409,7 @@ static void register_hooks(void)
     ap_hook_access_checker(check_dir_access,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT access_module =
+module AP_MODULE_DECLARE_DATA access_module =
 {
     STANDARD20_MODULE_STUFF,
     create_access_dir_config,	/* dir config creater */

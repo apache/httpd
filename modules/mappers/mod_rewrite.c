@@ -223,7 +223,7 @@ static void register_hooks(void)
 }
 
     /* the main config structure */
-module MODULE_VAR_EXPORT rewrite_module = {
+module AP_MODULE_DECLARE_DATA rewrite_module = {
    STANDARD20_MODULE_STUFF,
    config_perdir_create,        /* create per-dir    config structures */
    config_perdir_merge,         /* merge  per-dir    config structures */

@@ -311,7 +311,7 @@ void ap_open_logs(server_rec *s_main, apr_pool_t *p)
     }
 }
 
-API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
+AP_DECLARE(void) ap_error_log2stderr(server_rec *s) {
     apr_file_t *errfile = NULL;
 
     apr_open_stderr(&errfile, s->process->pool);        
@@ -444,7 +444,7 @@ static void log_error_core(const char *file, int line, int level,
 #endif
 }
     
-API_EXPORT(void) ap_log_error(const char *file, int line, int level,
+AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
 			      apr_status_t status, const server_rec *s, 
                               const char *fmt, ...)
 {
@@ -455,7 +455,7 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
     va_end(args);
 }
 
-API_EXPORT(void) ap_log_perror(const char *file, int line, int level,
+AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
 			      apr_status_t status, apr_pool_t *p, 
                               const char *fmt, ...)
 {
@@ -466,7 +466,7 @@ API_EXPORT(void) ap_log_perror(const char *file, int line, int level,
     va_end(args);
 }
 
-API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
+AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
 			       apr_status_t status, const request_rec *r, 
                                const char *fmt, ...)
 {
@@ -535,7 +535,7 @@ void ap_log_pid(apr_pool_t *p, const char *fname)
     saved_pid = mypid;
 }
 
-API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
+AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
     char time_str[APR_CTIME_LEN];
 
@@ -675,7 +675,7 @@ static apr_status_t piped_log_cleanup_for_exec(void *data)
     return APR_SUCCESS;
 }
 
-API_EXPORT(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
+AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 {
     piped_log *pl;
 
@@ -708,7 +708,7 @@ static apr_status_t piped_log_cleanup(void *data)
     return APR_SUCCESS;
 }
 
-API_EXPORT(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
+AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 {
     piped_log *pl;
     apr_file_t *dummy = NULL;
@@ -733,7 +733,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 
 #endif
 
-API_EXPORT(void) ap_close_piped_log(piped_log *pl)
+AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 {
     apr_run_cleanup(pl->p, pl, piped_log_cleanup);
 }

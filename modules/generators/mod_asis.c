@@ -128,7 +128,7 @@ static const handler_rec asis_handlers[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT asis_module =
+module AP_MODULE_DECLARE_DATA asis_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
