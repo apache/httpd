@@ -1504,7 +1504,8 @@ static const char *new_digest(const request_rec *r,
 
 
 static void copy_uri_components(uri_components *dst, uri_components *src,
-				request_rec *r) {
+				request_rec *r)
+{
     if (src->scheme && src->scheme[0] != '\0')
 	dst->scheme = src->scheme;
     else
@@ -1535,6 +1536,31 @@ static void copy_uri_components(uri_components *dst, uri_components *src,
     }
     else
 	dst->query = src->query;
+}
+
+/* This handles non-FQDN's. If h1 is empty, the comparison succeeds. Else
+ * if h1 is a FQDN (i.e. contains a '.') then normal strcasecmp() is done.
+ * Else only the first part of h2 (up to the first '.') is compared.
+ */
+static int compare_hostnames(const char *h1, const char *h2)
+{
+    const char *dot;
+
+    /* if no hostname given, then ok */
+    if (!h1 || h1[0] == '\0')
+	return 1;
+
+    /* handle FQDN's in h1 */
+    dot = strchr(h1, '.');
+    if (dot != NULL)
+	return !strcasecmp(h1, h2);
+
+    /* handle non-FQDN's in h1 */
+    dot = strchr(h2, '.');
+    if (dot == NULL)
+	return !strcasecmp(h1, h2);
+    else
+	return (strlen(h1) == (size_t) (dot - h2)) && !strncasecmp(h1, h2, dot-h2);
 }
 
 /* These functions return 0 if client is OK, and proper error status
@@ -1643,8 +1669,7 @@ static int authenticate_digest_user(request_rec *r)
 	}
 	else if (
 	    /* check hostname matches, if present */
-	    (d_uri.hostname && d_uri.hostname[0] != '\0'
-	      && strcasecmp(d_uri.hostname, r_uri.hostname))
+	    !compare_hostnames(d_uri.hostname, r_uri.hostname)
 	    /* check port matches, if present */
 	    || (d_uri.port_str && d_uri.port != r_uri.port)
 	    /* check that server-port is default port if no port present */
@@ -1737,6 +1762,11 @@ static int authenticate_digest_user(request_rec *r)
 	    return AUTH_REQUIRED;
 	}
 
+	if (check_nc(r, resp, conf) != OK) {
+	    note_digest_auth_failure(r, conf, resp, 0);
+	    return AUTH_REQUIRED;
+	}
+
 	exp_digest = new_digest(r, resp, conf);
 	if (!exp_digest) {
 	    /* we failed to allocate a client struct */
@@ -1749,11 +1779,6 @@ static int authenticate_digest_user(request_rec *r)
 	    note_digest_auth_failure(r, conf, resp, 0);
 	    return AUTH_REQUIRED;
 	}
-    }
-
-    if (check_nc(r, resp, conf) != OK) {
-	note_digest_auth_failure(r, conf, resp, 0);
-	return AUTH_REQUIRED;
     }
 
     /* Note: this check is done last so that a "stale=true" can be
