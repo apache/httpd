@@ -350,7 +350,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 /* This is the special environment used for running the "exec cmd="
  *   variety of SSI directives.
  */
-static void add_ssi_vars(request_rec *r, ap_filter_t *next)
+static void add_ssi_vars(request_rec *r)
 {
     apr_table_t *e = r->subprocess_env;
 
@@ -401,7 +401,6 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                                                  &core_module);
 #endif
 
-
 #ifdef DEBUG_CGI
 #ifdef OS2
     /* Under OS/2 need to use device con. */
@@ -418,13 +417,6 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
             r->filename, argv[0]);
 #endif
 
-    if (e_info->prog_type == RUN_AS_CGI) {
-        ap_add_cgi_vars(r);
-    }
-    else /* SSIs want a controlled environment and a special path. */
-    {
-        add_ssi_vars(r, e_info->next);
-    }
     env = (const char * const *)ap_create_environment(p, r->subprocess_env);
 
 #ifdef DEBUG_CGI
@@ -648,6 +640,7 @@ static int cgi_handler(request_rec *r)
 
 */
     ap_add_common_vars(r);
+    ap_add_cgi_vars(r);
 
     e_info.process_cgi = 1;
     e_info.cmd_type    = APR_PROGRAM;
@@ -922,6 +915,8 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_bucket_brigade *bcgi;
     apr_bucket *b;
     apr_status_t rv;
+
+    add_ssi_vars(r);
 
     e_info.process_cgi = 0;
     e_info.cmd_type    = APR_SHELLCMD;
