@@ -867,9 +867,9 @@ static char *
 int proxy_is_ipaddr(struct dirconn_entry *This)
 {
     const char *addr = This->name;
-    unsigned long ip_addr[4];
+    long ip_addr[4];
     int i, quads;
-    unsigned long bits;
+    long bits;
 
     /* if the address is given with an explicit netmask, use that */
     /* Due to a deficiency in ap_inet_addr(), it is impossible to parse */
@@ -900,10 +900,15 @@ int proxy_is_ipaddr(struct dirconn_entry *This)
 	if (!isdigit(*addr))
 	    return 0;		/* no digit at start of quad */
 
-	ip_addr[quads] = strtoul(addr, &tmp, 0);
+	ip_addr[quads] = strtol(addr, &tmp, 0);
 
 	if (tmp == addr)	/* expected a digit, found something else */
 	    return 0;
+
+	if (ip_addr[quads] < 0 || ip_addr[quads] > 255) {
+	    /* invalid octet */
+	    return 0;
+	}
 
 	addr = tmp;
 
@@ -919,14 +924,14 @@ int proxy_is_ipaddr(struct dirconn_entry *This)
 
 	++addr;
 
-	bits = strtoul(addr, &tmp, 0);
+	bits = strtol(addr, &tmp, 0);
 
 	if (tmp == addr)	/* expected a digit, found something else */
 	    return 0;
 
 	addr = tmp;
 
-	if (bits > 32)		/* netmask must be between 0 and 32 */
+	if (bits < 0 || bits > 32)	/* netmask must be between 0 and 32 */
 	    return 0;
 
     }
