@@ -414,6 +414,7 @@ static void *
     ps->noproxies = ap_make_array(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
     ps->nocaches = ap_make_array(p, 10, sizeof(struct nocache_entry));
+    ps->allowed_connect_ports = ap_make_array(p, 10, sizeof(int));
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->req = 0;
@@ -531,6 +532,25 @@ static const char *
 	else
 	    new->addr.s_addr = 0;
     }
+    return NULL;
+}
+
+/*
+ * Set the ports CONNECT can use
+ */
+static const char *
+    set_allowed_ports(cmd_parms *parms, void *dummy, char *arg)
+{
+    server_rec *s = parms->server;
+    proxy_server_conf *conf =
+      ap_get_module_config(s->module_config, &proxy_module);
+    int *New;
+
+    if (!isdigit(arg[0]))
+	return "AllowCONNECT: port number must be numeric";
+
+    New = ap_push_array(conf->allowed_connect_ports);
+    *New = atoi(arg);
     return NULL;
 }
 
@@ -827,6 +847,8 @@ static const command_rec proxy_cmds[] =
      "A list of domains, hosts, or subnets to which the proxy will connect directly"},
     {"ProxyDomain", set_proxy_domain, NULL, RSRC_CONF, TAKE1,
      "The default intranet domain name (in absence of a domain in the URL)"},
+    {"AllowCONNECT", set_allowed_ports, NULL, RSRC_CONF, ITERATE,
+     "A list of ports which CONNECT may connect to"},
     {"CacheRoot", set_cache_root, NULL, RSRC_CONF, TAKE1,
      "The directory to store cache files"},
     {"CacheSize", set_cache_size, NULL, RSRC_CONF, TAKE1,

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) The proxy was refusing to serve CONNECT requests except to
+     port 443 (https://) and 563 (snews://). The new AllowCONNECT
+     directive allows the configuration of the ports to which a
+     CONNECT is allowed.  [Sameer Parekh, Martin Kraemer]
+
   *) mod_expires will now act on content that is not sent from a file
      on disk.  Previously it would never add an Expires: header to
      any response that did not come from a file on disk; the only

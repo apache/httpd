@@ -97,6 +97,20 @@ DEF_Explain
  * FIXME: no check for r->assbackwards, whatever that is.
  */
 
+static int
+allowed_port(proxy_server_conf *conf, int port)
+{
+    int i;
+    int *list = (int *) conf->allowed_connect_ports->elts;
+
+    for(i = 0; i < conf->allowed_connect_ports->nelts; i++) {
+	if(port == list[i])
+	    return 1;
+    }
+    return 0;
+}
+
+
 int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 			  const char *proxyhost, int proxyport)
 {
@@ -137,13 +151,18 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	    return ap_proxyerror(r, "Connect to remote machine blocked");
     }
 
-    switch (port) {
-	case DEFAULT_HTTPS_PORT:
+    /* Check if it is an allowed port */
+    if (conf->allowed_connect_ports->nelts == 0) {
+	/* Default setting if not overridden by AllowCONNECT */
+	switch (port) {
+	    case DEFAULT_HTTPS_PORT:
 	    case DEFAULT_SNEWS_PORT:
-	    break;
-	default:
-	    return HTTP_SERVICE_UNAVAILABLE;
-    }
+		break;
+	    default:
+		return HTTP_SERVICE_UNAVAILABLE;
+	}
+    } else if(!allowed_port(conf, port))
+	return HTTP_SERVICE_UNAVAILABLE;
 
     if (proxyhost) {
 	Explain2("CONNECT to remote proxy %s on port %d", proxyhost, proxyport);

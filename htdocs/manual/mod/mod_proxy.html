@@ -45,6 +45,7 @@ and other protocols.
 <LI><A HREF="#proxypass">ProxyPass</A>
 <LI><A HREF="#proxypassreverse">ProxyPassReverse</A>
 <LI><A HREF="#proxyblock">ProxyBlock</A>
+<LI><A HREF="#allowconnect">AllowCONNECT</A>
 <LI><A HREF="#proxyreceivebuffersize">ProxyReceiveBufferSize</A>
 <LI><A HREF="#noproxy">NoProxy</A>
 <LI><A HREF="#proxydomain">ProxyDomain</A>
@@ -266,6 +267,48 @@ conjunction with the proxy pass-through feature ("<SAMP>RewriteRule ...
  HREF="mod_rewrite.html#RewriteRule"
 ><TT>mod_rewrite</TT></A> because its doesn't depend on a corresponding
 <SAMP>ProxyPass</SAMP> directive.
+
+<HR>
+
+<H2><A NAME="allowconnect">AllowCONNECT</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AllowCONNECT <EM>&lt;port list&gt;</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <EM><SAMP>AllowCONNECT</SAMP> 443 563</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_proxy<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> <SAMP>AllowCONNECT</SAMP> is only
+available in Apache 1.3.2 and later.<P>
+
+The <SAMP>AllowCONNECT</SAMP> directive specifies a list of port numbers
+to which the proxy <SAMP>CONNECT</SAMP> method may connect.
+Today's browsers use this method when a <EM>https</EM> connection
+is requested and proxy tunneling over <EM>http</EM> is in effect.<BR>
+By default, only the default https port (443) and the default
+snews port (563) are enabled. Use the <SAMP>AllowCONNECT</SAMP>
+directive to overrride this default and allow connections to the
+listed ports only.
 
 <HR>
 

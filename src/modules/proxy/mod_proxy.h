@@ -210,6 +210,7 @@ typedef struct {
     array_header *noproxies;
     array_header *dirconn;
     array_header *nocaches;
+    array_header *allowed_connect_ports;
     char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
     enum {
