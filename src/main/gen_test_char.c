@@ -9,7 +9,7 @@
 #define T_OS_ESCAPE_PATH	(0x04)
 #define T_HTTP_TOKEN_STOP	(0x08)
 
-void main(void)
+int main(int argc, char *argv[])
 {
     unsigned c;
     unsigned char flags;
@@ -22,7 +22,7 @@ void main(void)
 "#define T_HTTP_TOKEN_STOP	(%u)\n"
 "\n"
 "static const unsigned char test_char_table[256] = {\n"
-"0,\n",
+"    0,",
 	T_ESCAPE_SHELL_CMD,
 	T_ESCAPE_PATH_SEGMENT,
 	T_OS_ESCAPE_PATH,
@@ -33,6 +33,8 @@ void main(void)
 
     for (c = 1; c < 256; ++c) {
 	flags = 0;
+	if (c % 20 == 0)
+	    printf("\n    ");
 
 	/* escape_shell_cmd */
 	if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
@@ -51,8 +53,9 @@ void main(void)
 	if (iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
 	    flags |= T_HTTP_TOKEN_STOP;
 	}
-	printf("%u%c\n", flags, (c < 255) ? ',' : ' ');
+	printf("%u%c", flags, (c < 255) ? ',' : ' ');
+
     }
-    printf("};\n");
+    printf("\n};\n");
     exit(0);
 }

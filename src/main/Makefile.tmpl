@@ -36,15 +36,11 @@ http_bprintf.o: http_bprintf.c
 uri_delims.h: gen_uri_delims
 	./gen_uri_delims >uri_delims.h
 
-util_uri.o: uri_delims.h
-
 gen_uri_delims: gen_uri_delims.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o gen_uri_delims gen_uri_delims.o $(LIBS)
 
 test_char.h: gen_test_char
 	./gen_test_char >test_char.h
-
-util.o: test_char.h
 
 gen_test_char: gen_test_char.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o gen_test_char gen_test_char.o $(LIBS)
