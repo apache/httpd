@@ -644,10 +644,11 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * On win32 in particular, but perhaps on other kernels,
                  * a blocking call isn't 'always' blocking.
                  */
+                if (*len > 0) {
+                    inctx->rc = APR_SUCCESS;
+                    break;
+                }
                 if (inctx->block == APR_NONBLOCK_READ) {
-                    if (*len > 0) {
-                        inctx->rc = APR_SUCCESS;
-                    }
                     break;
                 }
             }
@@ -676,26 +677,27 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  */
                 inctx->rc = APR_EAGAIN;
 
-                if (inctx->block == APR_NONBLOCK_READ) {
-                    /* Already read something, return APR_SUCCESS instead. */
-                    if (*len > 0) {
-                        inctx->rc = APR_SUCCESS;
-                    }
-                    break; /* non fatal error */
+                if (*len > 0) {
+                    inctx->rc = APR_SUCCESS;
+                    break;
                 }
-                continue; /* try again */
+                if (inctx->block == APR_NONBLOCK_READ) {
+                    break;
+                }
+                continue;  /* Blocking and nothing yet?  Try again. */
             }
             else if (ssl_err == SSL_ERROR_SYSCALL) {
                 if (APR_STATUS_IS_EAGAIN(inctx->rc)
                         || APR_STATUS_IS_EINTR(inctx->rc)) {
                     /* Already read something, return APR_SUCCESS instead. */
-                    if (inctx->block == APR_NONBLOCK_READ) {
-                        if (*len > 0) {
-                            inctx->rc = APR_SUCCESS;
-                        }
+                    if (*len > 0) {
+                        inctx->rc = APR_SUCCESS;
                         break;
                     }
-                    continue;
+                    if (inctx->block == APR_NONBLOCK_READ) {
+                        break;
+                    }
+                    continue;  /* Blocking and nothing yet?  Try again. */
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_ERR, inctx->rc, c->base_server,
