@@ -1,5 +1,10 @@
 Changes with Apache 2.0.32-dev
 
+  *) Allow statically linked support binaries with the new
+     --enable-static-support flag, and enable this behavior in
+     the binbuild script. Also add a new --enable-static-htdbm
+     flag.  [Aaron Bannert]
+
   *) Allow mod_autoindex to serve symlinks if permitted and attempt to
      do only one stat() call when generating the directory listings.
      [Justin Erenkrantz]

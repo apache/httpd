@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:52:15 $]
+Last modified at [$Date: 2002/02/07 23:01:47 $]
 
 Release:
 
@@ -175,20 +175,14 @@ FINAL RELEASE SHOWSTOPPERS:
       variable, but ab, htpasswd, etc. don't know how to pick up apr,
       apr-util, etc.
         Message-ID: <20020116000226.GA15991@ebuilt.com>
-        Justin says: "You could always build all of the binaries
-                      statically if you don't want to let libtool
-                      handle it.  At most, I don't consider this a
-                      a release showstopper as it is a packaging issue."
-        Ken sez: "Showstopper because, until it's the default, it
-                 violates the P of LA.  Binaries will give strange
-                 errors and not run if moved."
-        Status: Aaron volunteers: I'll commit a patch to allow all
-                the support binaries to be built statically against
-                libapr/libaprutil/etc and then enable it in binbuild.
         gregames says: what about httpd?  yeah, it works at the moment
                        if you use apachectl.  But I've already heard
                        complaints about not being able to execute 
                        httpd directly.
+        Status: Aaron has committed this for all the support binaries,
+                but is hesitant to do the same for the httpd binary.
+        Message-ID: <20020207142751.T31582@clove.org>
+
 
 CURRENT VOTES:
 
