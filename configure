@@ -742,6 +742,7 @@ do
                                eval "module_${module}=yes" 
                            done
                            IFS="$OOIFS"
+                           module_auth_digest=no # conflict with mod_digest
                            ;;
                        most ) 
                            OOIFS="$IFS"
@@ -754,7 +755,7 @@ do
                            module_mmap_static=no # not all platforms have mmap()
                            module_so=no          # not all platforms have dlopen()
                            module_example=no     # only for developers
-			   module_auth_digest=no # experimental
+                           module_auth_digest=no # conflict with mod_digest
                            module_log_agent=no   # deprecated
                            module_log_referer=no # deprecated
                            ;;
