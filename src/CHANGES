@@ -1,5 +1,8 @@
 Changes with Apache 1.3.13
 
+  *) Brought httpd.conf-dist-win into sync with httpd.conf-dist, and added
+     explicit documentation of many Win32 specific features. [William Rowe]
+
   *) Convert Win32 build files (.dsp) to MSVC 6.0 format, and add perl
      scripts cvstodsp5.pl and dsp5tocvs.pl for portability to version 5.0.
      [William Rowe]

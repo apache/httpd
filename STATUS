@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/06/08 04:32:59 $]
+  Last modified at [$Date: 2000/06/08 14:30:09 $]
 
 Release:
 
@@ -29,10 +29,6 @@ RELEASE SHOWSTOPPERS:
         the ESC key, with a nice message) if the server died a 
         bad death (non-zero exit code) in console mode.  
         OtherBill is working on this, simple patch on Fri a.m.
-
-    * Assure we haven't drifted too far between httpd.conf-dist
-        and httpd.conf-dist-win.
-        Patch posted... OtherBill will commit Fri a.m.
 
     * Assure the windows.html reflects reality, today.
         - running the service as a user other than SYSTEM (NT/2000).
