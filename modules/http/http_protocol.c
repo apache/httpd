@@ -773,7 +773,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
              * string (excluding leading space) (the endstr checks)
              * and a negative number. */
             if (apr_strtoff(&ctx->remaining, lenp, &endstr, 10)
-                || *endstr || ctx->remaining < 0) {
+                || endstr == lenp || *endstr || ctx->remaining < 0) {
                 apr_bucket_brigade *bb;
 
                 ctx->remaining = 0;
