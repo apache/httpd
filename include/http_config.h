@@ -188,6 +188,7 @@ typedef struct {
 
     void *context;		/* per_dir_config vector passed 
 				 * to handle_command */
+    const ap_directive_t *err_directive; /* directive with syntax error */
 } cmd_parms;
 
 /* This structure records the existence of handlers in a module... */
