@@ -44,6 +44,7 @@ extern "C" {
 #define bflsbuf                        ap_bflsbuf
 #define bflush                         ap_bflush
 #define bgetc                          ap_bgetc
+#define bgetflag                       ap_bgetflag
 #define bgetopt                        ap_bgetopt
 #define bgets                          ap_bgets
 #define bhalfduplex                    ap_bhalfduplex

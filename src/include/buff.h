@@ -153,7 +153,7 @@ API_EXPORT(int) ap_bgetopt(BUFF *fb, int optname, void *optval);
 API_EXPORT(int) ap_bsetflag(BUFF *fb, int flag, int value);
 API_EXPORT(int) ap_bclose(BUFF *fb);
 
-#define bgetflag(fb, flag)	((fb)->flags & (flag))
+#define ap_bgetflag(fb, flag)	((fb)->flags & (flag))
 
 /* Error handling */
 API_EXPORT(void) ap_bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),

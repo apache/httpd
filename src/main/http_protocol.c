@@ -647,7 +647,7 @@ static int read_request_line(request_rec *r)
      */
     ap_bsetflag(conn->client, B_SAFEREAD, 1);
     while ((len = getline(l, HUGE_STRING_LEN, conn->client, 0)) <= 0) {
-        if ((len < 0) || bgetflag(conn->client, B_EOF)) {
+        if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
             ap_bsetflag(conn->client, B_SAFEREAD, 0);
             return 0;
         }
@@ -1050,7 +1050,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 {
     char *protocol;
 #ifdef CHARSET_EBCDIC
-    int convert = bgetflag(r->connection->client, B_EBCDIC2ASCII);
+    int convert = ap_bgetflag(r->connection->client, B_EBCDIC2ASCII);
 #endif /*CHARSET_EBCDIC*/
 
     if (r->assbackwards)
@@ -1209,7 +1209,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     int i;
     const long int zero = 0L;
 #ifdef CHARSET_EBCDIC
-    int convert = bgetflag(r->connection->client, B_EBCDIC2ASCII);
+    int convert = ap_bgetflag(r->connection->client, B_EBCDIC2ASCII);
 #endif /*CHARSET_EBCDIC*/
 
     if (r->assbackwards) {

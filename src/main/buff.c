@@ -689,7 +689,7 @@ API_EXPORT(int) ap_bread(BUFF *fb, void *buf, int nbyte)
 	}
 	i = read_with_errors(fb, buf, nbyte);
 #ifdef CHARSET_EBCDIC
-	if (i > 0 && bgetflag(fb, B_ASCII2EBCDIC))
+	if (i > 0 && ap_bgetflag(fb, B_ASCII2EBCDIC))
 	    ascii2ebcdic(buf, buf, i);
 #endif /*CHARSET_EBCDIC*/
 	return i;
@@ -728,7 +728,7 @@ API_EXPORT(int) ap_bread(BUFF *fb, void *buf, int nbyte)
 /* read directly into caller's buffer */
 	i = read_with_errors(fb, buf, nbyte);
 #ifdef CHARSET_EBCDIC
-	if (i > 0 && bgetflag(fb, B_ASCII2EBCDIC))
+	if (i > 0 && ap_bgetflag(fb, B_ASCII2EBCDIC))
 	    ascii2ebcdic(buf, buf, i);
 #endif /*CHARSET_EBCDIC*/
 	if (i == -1) {
@@ -1194,7 +1194,7 @@ API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte)
     static int csize = 0;
 
     /* XXX: martin don't you want to do this after the error tests below? */
-    if (bgetflag(fb, B_EBCDIC2ASCII)) {
+    if (ap_bgetflag(fb, B_EBCDIC2ASCII)) {
         if (nbyte > csize) {
             if (cbuf != NULL)
                 free(cbuf);
