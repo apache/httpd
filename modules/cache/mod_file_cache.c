@@ -224,14 +224,14 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 
     /* canonicalize the file name? */
     /* os_canonical... */
-    if (apr_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
-	    "file_cache: unable to stat(%s), skipping", filename);
+    if ((rc = apr_stat(&tmp.finfo, filename, cmd->temp_pool)) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
+	    "mod_file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
     }
     if (tmp.finfo.filetype != APR_REG) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
-	    "file_cache: %s isn't a regular file, skipping", filename);
+	ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
+	    "mod_file_cache: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
 
@@ -242,7 +242,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
     rc = open_file(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
-                     "file_cache: unable to open(%s, O_RDONLY), skipping", filename);
+                     "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
 	return NULL;
     }
     tmp.file = fd;
@@ -260,7 +260,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
     return NULL;
 #else
     /* Sendfile not supported on this platform */
-    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
                  "mod_file_cache: unable to cache file: %s. Sendfile is not supported on this OS", filename);
     return NULL;
 #endif
@@ -273,30 +273,30 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     a_file *new_file;
     a_file tmp;
     apr_file_t *fd = NULL;
+    apr_status_t rc;
     const char *fspec;
 
     fspec = ap_os_case_canonical_filename(cmd->pool, filename);
-    if (apr_stat(&tmp.finfo, fspec, cmd->temp_pool) != APR_SUCCESS) { 
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+    if ((rc = apr_stat(&tmp.finfo, fspec, cmd->temp_pool)) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
     }
     if ((tmp.finfo.filetype) != APR_REG) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
 	    "mod_file_cache: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
-    if (apr_open(&fd, fspec, APR_READ, APR_OS_DEFAULT, cmd->temp_pool) 
-                != APR_SUCCESS) { 
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
-	    "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
+    if ((rc = apr_open(&fd, fspec, APR_READ, APR_OS_DEFAULT, 
+                       cmd->temp_pool)) != APR_SUCCESS) { 
+	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
+                     "mod_file_cache: unable to open %s, skipping", 
+                     filename);
 	return NULL;
     }
-    if (apr_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, cmd->pool) != APR_SUCCESS) { 
-	int save_errno = errno;
+    if ((rc = apr_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, cmd->pool)) != APR_SUCCESS) { 
 	apr_close(fd);
-	errno = save_errno;
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to mmap %s, skipping", filename);
 	return NULL;
     }
@@ -477,9 +477,9 @@ static int file_cache_handler(request_rec *r)
 static command_rec file_cache_cmds[] =
 {
 AP_INIT_ITERATE("cachefile", cachefile, NULL, RSRC_CONF,
-     "A space seperated list of files to add to the file handle cache at config time"),
+     "A space separated list of files to add to the file handle cache at config time"),
 AP_INIT_ITERATE("mmapfile", mmapfile, NULL, RSRC_CONF,
-     "A space seperated list of files to mmap at config time"),
+     "A space separated list of files to mmap at config time"),
     {NULL}
 };
 
