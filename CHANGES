@@ -1,3 +1,8 @@
+Changes with Apache 2.0.35
+
+  *) Don't allow initialization to succeed if we can't get a socket
+     corresponding to one of the Listen statements.  [Jeff Trawick]
+
 Changes with Apache 2.0.34
 
   *) Allow all Perchild directives to accept either numerical UID/GID
