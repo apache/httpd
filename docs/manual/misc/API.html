@@ -360,8 +360,9 @@ a few exceptions:
        order to figure out what icon to use.<P>
 
        Such handlers can construct a <EM>sub-request</EM>, using the
-       functions <CODE>ap_sub_req_lookup_file</CODE> and
-       <CODE>ap_sub_req_lookup_uri</CODE>; this constructs a new
+       functions <CODE>ap_sub_req_lookup_file</CODE>,
+       <CODE>ap_sub_req_lookup_uri</CODE>, and
+       <CODE>ap_sub_req_method_uri</CODE>; these construct a new
        <CODE>request_rec</CODE> structure and processes it as you
        would expect, up to but not including the point of actually
        sending a response.  (These functions skip over the access
@@ -370,7 +371,7 @@ a few exceptions:
 
        (Server-side includes work by building sub-requests and then
        actually invoking the response handler for them, via the
-       function <CODE>run_sub_request</CODE>).
+       function <CODE>ap_run_sub_req</CODE>).
 </UL>
 
 <H3><A NAME="req_return">Handling requests, declining, and returning error
@@ -704,7 +705,8 @@ non-http_main functions as arguments at opportune times.  Here they are:
    <LI>for the main request this is a subpool of connection-&gt;pool; for
     subrequests it is a subpool of the parent request's pool.
    </LI>
-   <LI>exists until the end of the request (<EM>i.e.</EM>, destroy_sub_req, or
+   <LI>exists until the end of the request (<EM>i.e.</EM>,
+    ap_destroy_sub_req, or
     in child_main after process_request has finished)
    </LI>
    <LI>note that r itself is allocated from r-&gt;pool; <EM>i.e.</EM>,
@@ -818,7 +820,7 @@ latter case, it is simply gone). <P>
 One final note --- sub-requests have their own resource pools, which
 are sub-pools of the resource pool for the main request.  The polite
 way to reclaim the resources associated with a sub request which you
-have allocated (using the <CODE>ap_sub_req_lookup_...</CODE> functions)
+have allocated (using the <CODE>ap_sub_req_...</CODE> functions)
 is <CODE>ap_destroy_sub_req</CODE>, which frees the resource pool.
 Before calling this function, be sure to copy anything that you care
 about which might be allocated in the sub-request's resource pool into
@@ -830,7 +832,7 @@ this function; only 2K of memory or so are allocated for a typical sub
 request, and it will be freed anyway when the main request pool is
 cleared.  It is only when you are allocating many, many sub-requests
 for a single main request that you should seriously consider the
-<CODE>ap_destroy...</CODE> functions).
+<CODE>ap_destroy_...</CODE> functions).
 
 <H2><A NAME="config">Configuration, commands and the like</A></H2>
 
