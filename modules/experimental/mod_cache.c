@@ -153,7 +153,7 @@ static int cache_url_handler(request_rec *r, int lookup)
      * - Pragma: no-cache
      * - Any requests requiring authorization.
      */
-    if (conf->ignorecachecontrol_set == 1 && conf->ignorecachecontrol == 1 && auth == NULL) {
+    if (conf->ignorecachecontrol == 1 && auth == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
             "incoming request is asking for a uncached version of %s, but we know better and are ignoring it", url);
     }
@@ -799,11 +799,11 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->complete_set == 0) ? base->complete : overrides->complete;
 
     ps->no_last_mod_ignore =
-        (overrides->no_last_mod_ignore_set) ? 
+        (overrides->no_last_mod_ignore_set == 0) ? 
                     base->no_last_mod_ignore : 
                     overrides->no_last_mod_ignore;
     ps->ignorecachecontrol  =
-        (overrides->ignorecachecontrol_set) ? 
+        (overrides->ignorecachecontrol_set == 0) ? 
                     base->ignorecachecontrol : 
                     overrides->ignorecachecontrol;
 
