@@ -49,7 +49,8 @@
       <li><a href="details.html">In-Depth Discussion of Virtual
       Host Matching</a></li>
 
-      <li><a href="fd-limits.html">File Descriptor Limits</a></li>
+      <li><a href="fd-limits.html">File Descriptor Limits</a> (or,
+      <em>Too many log files</em>)</li>
 
       <li><a href="mass.html">Dynamically Configured Mass Virtual
       Hosting</a></li>
@@ -72,11 +73,20 @@
       <li><a href="../mod/core.html#serverpath">ServerPath</a></li>
     </ul>
 
-    <p>Folks trying to debug their virtual host configuration may
-    find the Apache <code>-t -D DUMP_VHOSTS</code> command line switch 
-    useful. It will dump out a description of how Apache parsed the
-    configuration file. Careful examination of the IP addresses and
-    server names may help uncover configuration mistakes. 
+    <p>If you are trying to debug your virtual host configuration, you
+    may find the Apache <code>-t -D DUMP_VHOSTS</code> command line switch 
+    useful. That is, type the following command:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+    /usr/local/apache/bin/httpd -t -D DUMP_VHOSTS
+    </code></td></tr></table></blockquote>
+    
+    <p>This command will dump out a description of how Apache parsed
+    the configuration file. Careful examination of the IP addresses and
+    server names may help uncover configuration mistakes. (See <a
+    href="../programs/httpd.html">the docs for the httpd program</a> for
+    other command line options)</p>
+
     <!--#include virtual="footer.html" -->
     </p>
   </body>
