@@ -36,7 +36,7 @@ AllowOverride None
 # "Includes", "FollowSymLinks", "ExecCGI", or "MultiViews".
 
 # Note that "MultiViews" must be named *explicitly* --- "Options All"
-# doesn't give it to you (or at least, not yet).
+# doesn't give it to you.
 
 Options Indexes FollowSymLinks
 
