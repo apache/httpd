@@ -715,6 +715,12 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     if (info->expire) {
         obj->info.expire = info->expire;
     }
+    if (info->response_time) {
+        obj->info.response_time = info->response_time;
+    }
+    if (info->request_time) {
+        obj->info.request_time = info->request_time;
+    }
     if (info->content_type) {
         obj->info.content_type = (char*) calloc(1, strlen(info->content_type) + 1);
         if (!obj->info.content_type) {
