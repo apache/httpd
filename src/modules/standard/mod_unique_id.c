@@ -144,7 +144,10 @@ static void unique_id_global_init (server_rec *s, pool *p)
      */
     if (XtOffsetOf (unique_id_rec, counter) + sizeof (cur_unique_id.counter)
 	!= 14) {
-	log_error ("mod_unique_id: sorry the size assumptions are wrong in mod_unique_id.c, please remove it from your server or fix the code!", s);
+	aplog_error(APLOG_MARK, APLOG_ALERT, s,
+		    "mod_unique_id: sorry the size assumptions are wrong "
+		    "in mod_unique_id.c, please remove it from your server "
+		    "or fix the code!");
 	exit (1);
     }
 
@@ -153,20 +156,22 @@ static void unique_id_global_init (server_rec *s, pool *p)
      * to be unique as the physical address of the machine
      */
     if (gethostname (str, sizeof (str) - 1) != 0) {
-	log_unixerr ("gethostname", "mod_unique_id",
-	    "mod_unique_id requires the hostname of the server", s);
+	aplog_error(APLOG_MARK, APLOG_ALERT, s,
+		    "gethostname: mod_unique_id requires the hostname of the server");
 	exit (1);
     }
 
     if ((hent = gethostbyname (str)) == NULL) {
-	log_printf (s, "mod_unique_id: unable to gethostbyname(\"%s\")", str);
+	aplog_error(APLOG_MARK, APLOG_ALERT, s,
+		    "mod_unique_id: unable to gethostbyname(\"%s\")", str);
 	exit (1);
     }
 
     global_in_addr = ((struct in_addr *)hent->h_addr_list[0])->s_addr;
 
-    log_printf (s, "mod_unique_id: using ip addr %s",
-	inet_ntoa (*(struct in_addr *)hent->h_addr_list[0]));
+    aplog_error(APLOG_MARK, APLOG_INFO, s,
+		"mod_unique_id: using ip addr %s",
+		inet_ntoa (*(struct in_addr *)hent->h_addr_list[0]));
 
     /* If the server is pummelled with restart requests we could possibly
      * end up in a situation where we're starting again during the same
@@ -219,7 +224,8 @@ static void unique_id_child_init (server_rec *s, pool *p)
      * test this during global_init ... but oh well.
      */
     if (cur_unique_id.pid != pid) {
-	log_error ("mod_unique_id: oh no! pids are greater than 16-bits!  I'm broken!", s);
+	aplog_error(APLOG_MARK, APLOG_DEBUG, s,
+		    "oh no! pids are greater than 16-bits!  I'm broken!");
     }
 
     cur_unique_id.in_addr = global_in_addr;
