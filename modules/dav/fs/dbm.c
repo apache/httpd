@@ -81,7 +81,7 @@ struct dav_db {
 };
 
 /* ### temp */
-#include "sdbm.h"
+#include "apr_sdbm.h"
 
 
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
