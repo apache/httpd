@@ -1523,7 +1523,12 @@ AP_DECLARE(extern const char *) ap_psignature(const char *prefix, request_rec *r
   /* The C library has functions that allow const to be silently dropped ...
      these macros detect the drop in maintainer mode, but use the native
      methods for normal builds
+
+     Note that on some platforms (e.g., AIX with gcc, Solaris with gcc), string.h needs 
+     to be included before the macros are defined or compilation will fail.
   */
+#include <string.h>
+
 #ifdef AP_DEBUG
 
 #undef strchr
