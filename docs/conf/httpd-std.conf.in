@@ -290,7 +290,7 @@ UseCanonicalName Off
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 #
-DocumentRoot "@@ServerRoot@@/@rel_htdocsdir@"
+DocumentRoot "@exp_htdocsdir@"
 
 #
 # Each directory to which Apache has access can be configured with respect
@@ -315,7 +315,7 @@ DocumentRoot "@@ServerRoot@@/@rel_htdocsdir@"
 #
 # This should be changed to whatever you set DocumentRoot to.
 #
-<Directory "@@ServerRoot@@/@rel_htdocsdir@">
+<Directory "@exp_htdocsdir@">
 
 #
 # Possible values for the Options directive are "None", "All",
@@ -499,9 +499,9 @@ ServerSignature On
 # We include the /icons/ alias for FancyIndexed directory listings.  If you
 # do not use FancyIndexing, you may comment this out.
 #
-Alias /icons/ "@@ServerRoot@@/@rel_iconsdir@/"
+Alias /icons/ "@exp_iconsdir@/"
 
-<Directory "@@ServerRoot@@/@rel_iconsdir@">
+<Directory "@exp_iconsdir@">
     Options Indexes MultiViews
     AllowOverride None
     Order allow,deny
@@ -513,9 +513,9 @@ Alias /icons/ "@@ServerRoot@@/@rel_iconsdir@/"
 # the manual, even if you choose to move your DocumentRoot.  You may comment
 # this out if you do not care for the documentation.
 #
-Alias /manual "@@ServerRoot@@/@rel_manualdir@"
+Alias /manual "@exp_manualdir@"
 
-<Directory "@@ServerRoot@@/@rel_manualdir@">
+<Directory "@exp_manualdir@">
     Options Indexes FollowSymLinks MultiViews
     AllowOverride None
     Order allow,deny
@@ -530,7 +530,7 @@ Alias /manual "@@ServerRoot@@/@rel_manualdir@"
 # The same rules about trailing "/" apply to ScriptAlias directives as to
 # Alias.
 #
-ScriptAlias /cgi-bin/ "@@ServerRoot@@/@rel_cgidir@/"
+ScriptAlias /cgi-bin/ "@exp_cgidir@/"
 
 <IfModule mod_cgid.c>
 #
@@ -541,10 +541,10 @@ ScriptAlias /cgi-bin/ "@@ServerRoot@@/@rel_cgidir@/"
 </IfModule>
 
 #
-# "@@ServerRoot@@/@rel_cgidir@" should be changed to whatever your ScriptAliased
+# "@exp_cgidir@" should be changed to whatever your ScriptAliased
 # CGI directory exists, if you have that configured.
 #
-<Directory "@@ServerRoot@@/@rel_cgidir@">
+<Directory "@exp_cgidir@">
     AllowOverride None
     Options None
     Order allow,deny
@@ -854,15 +854,15 @@ AddHandler type-map var
 #   Alias /error/include/ "/your/include/path/"
 #
 # which allows you to create your own set of files by starting with the
-# @@ServerRoot@@/@rel_errordir@/include/ files and
+# @exp_errordir@/include/ files and
 # copying them to /your/include/path/, even on a per-VirtualHost basis.
 #
 
 <IfModule mod_negotiation.c>
 <IfModule mod_include.c>
-    Alias /error/ "@@ServerRoot@@/@rel_errordir@/"
+    Alias /error/ "@exp_errordir@/"
 
-    <Directory "@@ServerRoot@@/@rel_errordir@">
+    <Directory "@exp_errordir@">
         AllowOverride None
         Options IncludesNoExec
         AddOutputFilter Includes html
@@ -960,7 +960,7 @@ BrowserMatch "^WebDrive" redirect-carefully
 # To enable the cache as well, edit and uncomment the following lines:
 # (no cacheing without CacheRoot)
 #
-#CacheRoot "@@ServerRoot@@/@rel_proxycachedir@"
+#CacheRoot "@exp_proxycachedir@"
 #CacheSize 5
 #CacheGcInterval 4
 #CacheMaxExpire 24
