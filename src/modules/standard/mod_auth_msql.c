@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * Copyright (c) 1995 The Apache Group.  All rights reserved.
  *
@@ -7,7 +6,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -53,27 +52,135 @@
 
 
 /*
- * http_auth: authentication
- * 
+ * mod_auth_msql: authentication
+ *
  * Rob McCool & Brian Behlendorf.
- * 
+ *
  * Adapted to Shambhala by rst.
- * 
- * Addapted for use with the mSQL database 
+ *
+ * Addapted for use with the mSQL database
  * (see ftp:/ftp.bond.edu.au/pub/Minerva/mSQL)
  *
- * Version 0.5 Feb 1996
+ * Version 0.9 May 1996 - Blame: Dirk.vanGulik@jrc.it.
  *
+ * A (sometimes more up to date) version of the documentation
+ * can be found at the http://www.apache.org site or at 
+ * http://me-www.jrc.it/~dirkx/mod_auth_msql.html.
+ * 
  * Outline:
  *
- * One mSQL database, and one (or two) tables.
- * one table holds the username (preferably as
- * a primary key) and the encryped password. 
- * the other table holds the username and the
- * names of the group to which the user belongs.
- * It is possible to have username, groupname and
- * password in the same table.
- * 
+ * This module allows access control using the public domain
+ * mSQL database; a fast but limted SQL engine which can be
+ * contacted over an internal unix domain protocol as well as
+ * over normal inter-machine tcp/ip socket communication.
+ *
+ * An example table could be:
+ *
+ * create table user_records (
+ * 	  User_id  char(32) primary key,
+ *	  Cpasswd  char(32),
+ *	[ Xgroup   char(32) ]
+ *	  ) \g
+ *
+ * The user_id can be as long as desired; however some of the
+ * popular web browsers truncate, or stop the user from entering
+ * names longer than 32 characters. Furthermore the 'crypt' function
+ * on your platform might impose further limits. Also use of
+ * the 'require users uid [uid..]' directive in the access.conf file,
+ * where the user ids are separated by spaces can possibly prohibit the
+ * use of spaces in your user-names. Also, not the MAX_FIELD_LEN define
+ * somewhere below.
+ *
+ * To use the above, the following example could be in your access.conf
+ * file. Also there is a more elaborate description afther this example.
+ *
+ * <directory /web/docs/private>
+ *
+ *  Auth_MSQLhost localhost
+ * or
+ *  Auth_MSQLhost datab.machine.your.org
+ *
+ *  		        If this directive is ommited, or set to
+ *			localhost, the machine on which apache
+ *			runs is assumed, and the faster /dev/msql
+ *			communication channel will be used. Otherwise
+ *			it is the machine to contact by tcp/ip.
+ *
+ * Auth_MSQLdatabase    www
+ *
+ *                      The name of the database on the above machine,
+ *			which contains *both* the tables for group and
+ *			for user/passwords. Currently it is not possible
+ *			to have these split over two databases. Make
+ *			sure that the msql.acl (access control file) of
+ *			mSQL does indeed allow the effective uid of the
+ *			web server read access to this database. Check the
+ *			httpd.conf file for this uid.
+ *
+ * Auth_MSQLpwd_table   user_records
+ *
+ *                      Here the table which contain the uid/password combination
+ *			is specified.
+ *
+ * Auth_MSQLuid_field	User_id
+ * Auth_MSQLpwd_field   Cpasswd
+ *
+ *			These two directive specify the field names in the 'user_record'
+ *			table. If this module is compiled with the BACKWARD_VITEK
+ *			compatibility switch, the defaults 'user' and 'password' are
+ *			assumed if you do not specify them. Currently the user_id field
+ *			*MUST* be a primary key or one must ensure that each user only
+ *			occurs *once* in the table. If a UID occurs twice access is
+ *			denied by default.
+ *
+ * Auth_MSQLgrp_table   user_records
+ * Auth_MSQLgrp_field	Xgroup
+ *
+ *                      Optionaly one can also specify a table which contains the
+ *			user/group combinations. This can be the same table which
+ *			also contains the username/password combinations. However
+ *			if a user belongs to two or more groups, one will have to
+ *  		        use a differt table with multiple entries.
+ *
+ * Auth_MSQL_nopasswd	        off
+ * Auth_MSQL_Authorative        on
+ * Auth_MSQL_EncryptedPasswords on
+ *
+ *                      These three optional fields (all set to the sensible defaults,
+ *			so you really do not have to enter them) are described in more
+ *			detail below. If you choose to set these to any other values than
+ *			the above be very sure you understand the security implications and
+ *			do verify that apache does what you exect it to do.
+ *
+ * AuthName 		example mSQL realm
+ * AuthType		basic
+ *
+ *                      Normal apache/ncsa tokens for access control
+ *
+ * <limit get post head>
+ *   order deny,allow
+ *   allow from all
+ *
+ *   require valid-user
+ *    	     	       'valid-user'; allow in any user which has a valid uid/passwd
+ *    	     	       pair in the above pwd_table.
+ * or
+ *   require user smith jones
+ *   	     	      Limit access to users who have a valid uid/passwd pair in the
+ *		      above pwd_table AND whose uid is 'smith' or 'jones'. Do note that
+ *		      the uid's are separated by 'spaces' for historic (ncsa) reasons.
+ *		      So allowing uids with spaces might cause problems.
+ *
+ *   require group has_paid
+ *   	     	      Optionally also ensure that the uid has the value 'has_paid' in the group
+ *		      field in the group table.
+ *   </limit>
+ * </directory>
+ *
+ * End of the example
+ *
+ * - full description of all tokens: -
+ *
  * Directives:
  *
  * Auth_MSQLhost   	Hostname of the machine running
@@ -87,26 +194,72 @@
  *		   	(slower) socket communication.
  *
  * Auth_MSQLdatabase	Name of the database in which the following
- *			table(s) are
- *			
+ *			table(s) are contained.
+ *
  * Auth_MSQLpwd_table	Contains at least the fields with the
- *			username and the (encrypted) password
+ *			username and the (encrypted) password. Each
+ *			uid should only occur once in this table and
+ *			for performance reasons should be a primary key.
+ *			Normally this table is compulsory, but it is
+ *			possible to use a fall-through to other methods
+ *			and use the mSQL module for group control only;
+ *			see the Authorative directive below.
  *
  * Auth_MSQLgrp_table	Contains at least the fields with the
  *			username and the groupname. A user which
  *			is in multiple groups has therefore
- *			multiple entries
+ *			multiple entries; this might be some per-
+ *			formance problems associated with this; and one
+ *			might consider to have separate tables for each
+ *			group (rather than all groups in one table) if
+ *			your directory structure allows for it.
+ *			One only needs to specify this table when doing
+ *			group control.
  *
  * Auth_MSQLuid_field	Name of the field containing the username
  * Auth_MSQLpwd_field   Fieldname for the passwords
  * Auth_MSQLgrp_field	Fieldname for the groupname
  *
+ *                      Only the fields used need to be specified. When this
+ *			module is compiled with the BACKWARD_VITEK option the
+ *			uid and pwd field names default to 'user' and 'password'.
+ *
+ *
  * Auth_MSQL_nopasswd	<on|off>
  *			skip password comparison if passwd field is
- *			empty.
+ *			empty; i.e. allow 'any' password. This is off
+ *			by default; thus to ensure that an empty field
+ *			in the mSQL table does not allow people in by
+ *			default with a random password.
+ *
+ * Auth_MSQL_Authorative <on|off>
+ *			default is 'on'. When set on, there is no
+ *		     	fall through to other authorization methods. So if a
+ *			user is not in the mSQL dbase table (and perhaps
+ *		        not in the right group) or has the password wrong, then
+ *                      he or she is denied access. When this directive is set to
+ *			'off' control is passed on to any other authorization
+ *			modules, such as the basic auth module wih the htpasswd
+ *			file and or the unix-(g)dbm modules.
+ *			The default is 'ON' to avoid nasty 'fall-through' sur-
+ *			prizes. Do be sure you know what you decide to switch
+ *			it off.
+ *
+ * Auth_MSQL_EncryptedPasswords <on|off>
+ * 			default is on. When set on, the values in the
+ *			pwd_field are assumed to be crypted using *your*
+ *		        machines 'crypt' function; and the incoming password
+ *		        is 'crypt'ed before comparison. When this function is
+ *			off, the comparison is done directly with the plaintext
+ *			entered password. (Yes; http-basic-auth does send the
+ *			password as plaintext over the wire :-( ). The default
+ *			is a sensible 'on', and I personally thing that it is
+ *			a *very-bad-idea* to change this. However a multi
+ *			vendor or international environment (which sometimes
+ *			leads to different crypts functions) might force you to.
  *
  * Dirk.vanGulik@jrc.it; http://ewse.ceo.org; http://me-www.jrc.it/~dirkx
- * 23 Nov 1995
+ * 23 Nov 1995, 24 Feb 1996, 16 May 1996.
  *
  * Version 0.0  First release
  *         0.1  Update to apache 1.00
@@ -118,7 +271,118 @@
  *	   0.6  Inconsistency with gid/grp in comment/token/source
  *  	 	Make sure you really use 'Auth_MSQLgrp_field' as
  *		indicated above.
+ *	   0.7  *host to host fixed. Credits go to Rob Stout,
+ * 	 	<stout@lava.et.tudelft.nl> for spotting this one.
+ *	   0.8  Authorative directive added. See above.
+ *	   0.9  palloc return code check(s), should be backward compatible with
+ *	   	1.11 version of Vivek Khera <khera@kciLink.com> msql module,
+ *		fixed broken err msg in group control, changed command table
+ *		messages to make more sense when displayed in that new module
+ *		management tool. Added EncryptedPassword on/off functionality.
+ *		msqlClose() statements added upon error. Support for persistent
+ *		connections with the mSQL database (riscy). Escaping of ' and \.
+ *		Replaced some MAX_STRING_LENGTH claims. 
  */
+
+
+#define ONLY_ONCE 1
+/*
+ * If the mSQL table containing the uid/passwd combination does
+ * not have the uid field as a primary key, it is possible for the
+ * uid to occur more than once in the table with possibly different
+ * passwords. When this module is compiled with the ONLY_ONCE directive
+ * set, access is denied if the uid occures more than once in the
+ * uid/passwd table. If you choose not to set it, the software takes
+ * the first pair returned and ignores any further pairs. The SQL
+ * statement used for this is
+ *
+ *       "select password form pwd_table where user='uid'"
+ *
+ * this might lead to unpredictable results. For this reason as well
+ * as for performance reasons you are strongly adviced to make the
+ * uid field a primary key. Use at your own peril :-)
+ */
+
+#undef KEEP_MSQL_CONNECTION_OPEN
+/*
+ * Normally the (tcp/ip) connection with the database is opened and
+ * closed for each SQL query. When the httpd-server and the database
+ * are on the same machine, and /dev/msql is used this does not
+ * cause a serious overhead. However when your platform does not
+ * support this (see the mSQL documentation) or when the web server
+ * and the database are on different machines the overhead can be
+ * considerable. When the above is set defined the server leaves the
+ * connection open; i.e. no call to msqlClose(). If an error occures
+ * an attempt is made to re-open the connection for the next http-rq.
+ *
+ * This has a number of very serious drawbacks
+ *  - It costs 2 already rare filedescriptors for each child.
+ *  - It costs msql-connections, typically one per child. The (compiled in)
+ *    number of connections mSQL can handle is low, typically 6 or 12.
+ *    which might prohibit access to the mSQL database for later
+ *    processes.
+ *  - when a child dies, it might not free that connection properly
+ *    or quick enough.
+ *  - When errors start to occur, connection/file-descr resources might
+ *    become exausted very quickly.
+ *
+ * In short; use this at your own peril and only in a highly controled and
+ * monitored environment
+ */
+
+#define BACKWARD_VITEK
+#define VITEX_uid_name "user"
+#define VITEX_gid_name "passwd"
+/* A second mSQL auth module for apache has also been developed by
+ * Vivek Khera <khera@kciLink.com> and was subsequently distributed
+ * with some early versions of Apache. It can be optained from
+ * ftp://ftp.kcilink.com/pub/mod_auth_msql.c*. Older 'vitek' versions had
+ * the field/table names compiled in; newer versions, v.1.11 have
+ * more access.conf configuration options; however these where
+ * choosen not to be in line the 'ewse' version of this module. Also,
+ * the 'vitek' module does not give group control or 'empty' password
+ * control.
+ *
+ * To get things slightly more in line this version (0.9) should
+ * be backward compatible with the vitek module by:
+ *
+ *   - adding support for the EncryptedPassword on/off functionality
+ *
+ *   - adding support for the different spelling fo the 4 configuration
+ *     tokens for user-table-name, user/password-field-name and dbase-name.
+ *
+ *   - setting some field names to a default which used to be hard
+ *     coded in in older vitek modules.
+ *
+ * If this troubles you; remove the 'BACKWARD_VITEX' define.
+ */
+
+/* get some sensible values; rather than that big MAX_STRING_LEN,
+ */
+
+/* Max field value length limit; well above the limit of some browsers :-)
+ */
+#define MAX_FIELD_LEN (64)
+/* the next two values can be pulled from msql_priv.c, which is *NOT* copied to your
+ * /usr/local/include as part of the normal install procedure which comes with
+ * mSQL.
+ */
+#define MSQL_FIELD_NAME_LEN (19)
+#define MSQL_TABLE_NAME_LEN (19)
+/* We only do the following two queries:
+ *
+ * - for the user/passwd combination
+ *      select PWDFIELD from PWDTABEL where USERFIELD='UID'
+ *
+ * - optionally for the user/group combination:
+ *   	select GROUPFIELD from GROUPTABLE where USERFIELD='UID' and GROUPFIELD='GID'
+ *
+ * This leads to the following limits: (we are ignoring escaping a wee bit bit here
+ * assuming not more than 24 escapes.)
+ */
+
+#define MAX_QUERY_LEN (32+24+MAX_FIELD_LEN*2+3*MSQL_FIELD_NAME_LEN+1*MSQL_TABLE_NAME_LEN)
+
 
 #include "httpd.h"
 #include "http_config.h"
@@ -140,12 +404,40 @@ typedef struct  {
     char *auth_msql_grp_field;
 
     int auth_msql_nopasswd;
+    int auth_msql_authorative;
+    int auth_msql_encrypted;
 
 } msql_auth_config_rec;
 
 void *create_msql_auth_dir_config (pool *p, char *d)
 {
-    return pcalloc (p, sizeof(msql_auth_config_rec));
+    msql_auth_config_rec * sec= (msql_auth_config_rec *) pcalloc (p, sizeof(msql_auth_config_rec));
+    if (!sec) return NULL; /* no memory... */
+
+    sec->auth_msql_host        = NULL; /* just to enforce the default 'localhost' behaviour */
+
+    /* just in case, to be nice... */
+    sec->auth_msql_database    = NULL;
+    sec->auth_msql_pwd_table   = NULL;
+    sec->auth_msql_grp_table   = NULL;
+    sec->auth_msql_pwd_field   = NULL;
+    sec->auth_msql_uname_field = NULL;
+    sec->auth_msql_grp_field   = NULL;
+
+
+    sec->auth_msql_authorative = 1; /* set some defaults, just in case... */
+    sec->auth_msql_encrypted   = 1;
+    sec->auth_msql_nopasswd    = 0;
+
+#ifdef BACKWARD_VITEK
+    /* these are for backward compatibility with the Vivek
+     * msql module, as it used to have compile-time defaults.
+     */
+    sec->auth_msql_uname_field = VITEX_uid_name;
+    sec->auth_msql_pwd_field   = VITEX_gid_name;
+#endif
+
+    return sec;
 }
 
 char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
@@ -153,47 +445,92 @@ char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
     return NULL;
 }
 
-char *msql_set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
-{
- 
-    int offset = (int)cmd->info; 
-    *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);
-    /* do we want to check anything ? */
+char *set_authorative_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
+    sec->auth_msql_authorative=arg;
     return NULL;
 }
+
+char *set_crypted_password_flag (cmd_parms *cmd, msql_auth_config_rec *sec , int arg) {
+    sec->auth_msql_encrypted = arg;
+    return NULL;
+}
+
+char *msql_set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg) {
+    int offset = (int)cmd->info;
+    *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);
+    return NULL;
+}
+
 
 command_rec msql_auth_cmds[] = {
 { "Auth_MSQLhost", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_host),
-    OR_AUTHCFG, TAKE1, "The Host must be set to something (or localhost)" },
+    OR_AUTHCFG, TAKE1, "Host on which the mSQL database engine resides (defaults to localhost)" },
 
 { "Auth_MSQLdatabase", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_database),
-    OR_AUTHCFG, TAKE1, "The Database field must be set to something. " },
+    OR_AUTHCFG, TAKE1, "Name of the mSQL database which contains the password (and possibly the group) tables. " },
 
 { "Auth_MSQLpwd_table", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_pwd_table),
-    OR_AUTHCFG, TAKE1, "You must give a password table name" },
+    OR_AUTHCFG, TAKE1, "Name of the mSQL table containing the password/user-name combination" },
 
 { "Auth_MSQLgrp_table", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_grp_table),
-    OR_AUTHCFG, TAKE1, "If you want to use groups, you must give a group table name" },
+    OR_AUTHCFG, TAKE1, "Name of the mSQL table containing the group-name/user-name combination; can be the same as the password-table." },
 
 { "Auth_MSQLpwd_field", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_pwd_field),
-    OR_AUTHCFG, TAKE1, "The Password-field name must be set to something" },
+    OR_AUTHCFG, TAKE1, "The name of the field in the mSQL password table" },
 
 { "Auth_MSQLuid_field", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_uname_field),
-    OR_AUTHCFG, TAKE1, "The UserID field name must be set to something" },
+    OR_AUTHCFG, TAKE1, "The name of the user-name field in the mSQL password (and possibly group) table(s)." },
 
 { "Auth_MSQLgrp_field", msql_set_string_slot,
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_grp_field),
-    OR_AUTHCFG, TAKE1, 
-	"GID field name must be set to something if you want to use groups" },
+    OR_AUTHCFG, TAKE1,
+	"The name of the group field in the mSQL group table; must be set if you want to use groups." },
 
-{ "Auth_MSQL_nopasswd", set_passwd_flag, NULL, OR_AUTHCFG, FLAG, 
-	"Limited to 'on' or 'off'" },
+{ "Auth_MSQL_nopasswd", set_passwd_flag, NULL, OR_AUTHCFG, FLAG,
+	"Enable (on) or disable (off) empty password strings; in which case any user password is accepted." },
+
+{ "Auth_MSQL_Authorative", set_authorative_flag, NULL, OR_AUTHCFG, FLAG,
+	"When 'on' the mSQL database is taken to be authorative and access control is not passed along to other db or access modules." },
+
+{ "Auth_MSQL_EncryptedPasswords", set_crypted_password_flag, NULL, OR_AUTHCFG, FLAG,
+	"When 'on' the password in the password table are taken to be crypt()ed using your machines crypt() function." },
+
+#ifdef BACKWARD_VITEK
+/* These 'altenative' tokens should ensure backward compatibility
+ * with viteks mSQL module. The only difference is the spelling.
+ * Note that these tokens do not allow group configuration.
+ */
+{ "AuthMSQLHost", set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_host),
+    OR_AUTHCFG, TAKE1, "mSQL server hostname" },
+{ "AuthMSQLDB", set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_database),
+    OR_AUTHCFG, TAKE1, "mSQL database name" },
+{ "AuthMSQLUserTable", set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_pwd_table),
+    OR_AUTHCFG, TAKE1, "mSQL user table name" },
+{ "AuthMSQLGroupTable", set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_grp_table),
+    OR_AUTHCFG, TAKE1, "mSQL group table name" },
+{ "AuthMSQLNameField", set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_uname_field),
+    OR_AUTHCFG, TAKE1, "mSQL User ID field name within table" },
+{ "AuthMSQLGroupField", set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_grp_field),
+    OR_AUTHCFG, TAKE1, "mSQL Group field name within table" },
+{ "AuthMSQLPasswordField", set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_pwd_field),
+    OR_AUTHCFG, TAKE1, "mSQL Password field name within table" },
+{ "AuthMSQLCryptedPasswords", set_crypted_password_flag, NULL,
+    OR_AUTHCFG, FLAG, "mSQL passwords are stored encrypted if On" },
+
+#endif
 
 { NULL }
 };
@@ -201,17 +538,45 @@ command_rec msql_auth_cmds[] = {
 module msql_auth_module;
 
 char msql_errstr[MAX_STRING_LEN];
-		 /* global errno to be able to handle config/sql 
+		 /* global errno to be able to handle config/sql
 		 * failures separately
 		 */
+
+
+/* boring little routine which escapes the ' and \ in the
+ * SQL query. See the mSQL FAQ for more information :-) on
+ * this very popular subject in the msql-mailing list.
+ */
+char *msql_escape(char *out, char *in) {
+
+  register int i=0,j=0;
+
+  do {
+    /* do we need to escape */
+    if ( (in[i] == '\'') || (in[i] == '\\')) {
+
+      /* does this fit ? */
+      if (j >= (MAX_FIELD_LEN-1)) return NULL;
+
+      out[j++] = '\\'; /* insert that escaping slash for good measure */
+    };
+
+    /* Do things still fit ? */
+    if (j >= MAX_FIELD_LEN) return NULL;
+
+  } while ( ( out[j++] = in[i++]) != '\0' );
+
+  return out;
+}
 
 /* get the password for uname=user, and copy it
  * into r. Assume that user is a string and stored
  * as such in the mSQL database
  */
-char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec) {
+char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int once ) {
 
-    	int 		sock;
+    	static int 	sock=-1;
+    	int		hit;
     	m_result 	*results;
     	m_row 		currow;
 
@@ -220,42 +585,72 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec) {
 
 	msql_errstr[0]='\0';
 
-	/* force fast access over /dev/msql */
-	if ((host) && (!(strcasecmp(host,"localhost"))))
-		*host=NULL;
+#ifndef KEEP_MSQL_CONNECTION_OPEN
+        sock=-1;
+#endif
 
-    	if ((sock=msqlConnect(host)) == -1) {
+	/* force fast access over /dev/msql */
+
+	if ((host) && (!(strcasecmp(host,"localhost"))))
+		host=NULL;
+
+	/* (re) open if nessecary
+	 */
+    	if (sock==-1) if ((sock=msqlConnect(host)) == -1) {
 		sprintf (msql_errstr,
 			"mSQL: Could not connect to Msql DB %s (%s)",
-			(sec->auth_msql_host ? sec->auth_msql_host : "\'unset!\'"),
+			(sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
 			msqlErrMsg);
 		return NULL;
     		}
 
+	/* we always do this, as it avoids book-keeping
+	 * and is quite cheap anyway
+	 */
     	if (msqlSelectDB(sock,sec->auth_msql_database) == -1 ) {
-		sprintf (msql_errstr,"mSQL: Could not switch to Msql Table %s (%s)",
+		sprintf (msql_errstr,"mSQL: Could not select Msql Table \'%s\' on host \'%s\'(%s)",
 			(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
+		        (sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
 			msqlErrMsg);
+		msqlClose(sock);
+		sock=-1;
 		return NULL;
 		}
 
     	if (msqlQuery(sock,query) == -1 ) {
-		sprintf (msql_errstr,"mSQL: Could not Query %s (%s) with [%s]",
+		sprintf (msql_errstr,"mSQL: Could not Query database '%s' on host '%s' (%s) with query [%s]",
 			(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
-			msqlErrMsg,
+		        (sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
+		        msqlErrMsg,
 			( query ? query : "\'unset!\'") );
+		msqlClose(sock);
+		sock=-1;
 		return NULL;
 		}
 
 	if (!(results=msqlStoreResult())) {
-		sprintf (msql_errstr,"mSQL: Could not get the results from mSQL %s (%s) with [%s]",
+		sprintf (msql_errstr,"mSQL: Could not get the results from mSQL database \'%s\' on \'%s\' (%s) with query [%s]",
 			(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
+		        (sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
 			msqlErrMsg,
 			( query ? query : "\'unset!\'") );
+		msqlClose(sock);
+		sock=-1;
 		return NULL;
 		};
 
-	if (msqlNumFields(results) == 1) 
+	hit=msqlNumFields(results);
+
+	if (( once ) && ( hit >1 )) {
+          /* complain if there are to many
+           * matches.
+           */
+          sprintf (msql_errstr,"mSQL: More than %d matches (%d) whith query [%s]",
+          	   once,hit,( query ? query : "\'unset!\'") );
+	} else
+	/* if we have a it, try to get it
+	*/
+        if ( hit )  {
 		if (currow=msqlFetchRow(results)) {
 			/* copy the first matching field value */
 			if (!(result=palloc(r->pool,strlen(currow[0])+1))) {
@@ -263,20 +658,34 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec) {
 					(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
 					msqlErrMsg,
 					( query ? query : "\'unset!\'") );
-				return NULL;
-				};
-			strcpy(result,currow[0]); 
-			}
+				/* do not return right away, to ensure Free/Close.
+				 */
+				} else {
+			        strcpy(result,currow[0]);
+			        };
+		}
+	};
 
-	/* ignore errors here ! */
-	msqlFreeResult(results); 
+	/* ignore errors, functions are voids anyway. */
+	msqlFreeResult(results);
+
+#ifndef KEEP_MSQL_CONNECTION_OPEN
+	/* close the connection, unless explicitly told not to. Do note that
+	 * we do not have a decent closing option of child termination due
+	 * the lack of hooks in the API (or my understanding thereof)
+	 */
 	msqlClose(sock);
+	sock=-1;
+#endif
+
 	return result;
 }
-	
-char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec) {
-  	char 		query[MAX_STRING_LEN];
 
+char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec) {
+  	char 		query[MAX_QUERY_LEN];
+	char 		esc_user[MAX_FIELD_LEN];
+
+	/* do we have enough information to build a query */
 	if (
 	    (!sec->auth_msql_pwd_table) ||
 	    (!sec->auth_msql_pwd_field) ||
@@ -291,25 +700,35 @@ char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec) {
 		return NULL;
 		};
 
+    	if (!(msql_escape(esc_user, user))) {
+		sprintf(msql_errstr,
+			"mSQL: Could not cope/escape the '%s' user_id value",user);
+		return NULL;
+    	};
     	sprintf(query,"select %s from %s where %s='%s'",
 		sec->auth_msql_pwd_field,
 		sec->auth_msql_pwd_table,
 		sec->auth_msql_uname_field,
-		user);
+		esc_user
+		);
 
-	return do_msql_query(r,query,sec);
-}	   
+	return do_msql_query(r,query,sec,ONLY_ONCE);
+}
 
 char *get_msql_grp(request_rec *r, char *group,char *user, msql_auth_config_rec *sec) {
-  	char 		query[MAX_STRING_LEN];
+  	char 		query[MAX_QUERY_LEN];
 
+	char 		esc_user[MAX_FIELD_LEN];
+	char 		esc_group[MAX_FIELD_LEN];
+
+	/* do we have enough information to build a query */
 	if (
 	    (!sec->auth_msql_grp_table) ||
 	    (!sec->auth_msql_grp_field) ||
 	    (!sec->auth_msql_uname_field)
 	   ) {
 		sprintf(msql_errstr,
-			"mSQL: Missing parameters for password lookup: %s%s%s",
+			"mSQL: Missing parameters for group lookup: %s%s%s",
 			(sec->auth_msql_grp_table ? "" : "Group table "),
 			(sec->auth_msql_grp_field ? "" : "GroupID field name "),
 			(sec->auth_msql_uname_field ? "" : "UserID field name ")
@@ -317,15 +736,28 @@ char *get_msql_grp(request_rec *r, char *group,char *user, msql_auth_config_rec 
 		return NULL;
 		};
 
+    	if (!(msql_escape(esc_user, user))) {
+		sprintf(msql_errstr,
+			"mSQL: Could not cope/escape the '%s' user_id value",user);
+
+		return NULL;
+    	};
+    	if (!(msql_escape(esc_group, group))) {
+		sprintf(msql_errstr,
+			"mSQL: Could not cope/escape the '%s' group_id value",group);
+
+		return NULL;
+    	};
+
     	sprintf(query,"select %s from %s where %s='%s' and %s='%s'",
 		sec->auth_msql_grp_field,
 		sec->auth_msql_grp_table,
-		sec->auth_msql_uname_field,user,
-		sec->auth_msql_grp_field,group
+		sec->auth_msql_uname_field,esc_user,
+		sec->auth_msql_grp_field,  esc_group
 		);
 
-	return do_msql_query(r,query,sec);
-}	   
+	return do_msql_query(r,query,sec,0);
+}
 
 
 int msql_authenticate_basic_user (request_rec *r)
@@ -336,41 +768,49 @@ int msql_authenticate_basic_user (request_rec *r)
     conn_rec *c = r->connection;
     char *sent_pw, *real_pw, *colon_pw;
     int res;
-    
-    msql_errstr[0]='\0';
+
 
     if ((res = get_basic_auth_pw (r, &sent_pw)))
         return res;
 
     /* if mSQL *password* checking is configured in any way, i.e. then
-     * handle it, if not decline and leave it to the next in line..  
+     * handle it, if not decline and leave it to the next in line..
      * We do not check on dbase, group, userid or host name, as it is
      * perfectly possible to only do group control with mSQL and leave
      * user control to the next (dbm) guy in line.
      */
     if (
-    	(!sec->auth_msql_pwd_table) && 
-    	(!sec->auth_msql_pwd_field) 
+    	(!sec->auth_msql_pwd_table) &&
+    	(!sec->auth_msql_pwd_field)
 	 ) return DECLINED;
 
+    msql_errstr[0]='\0';
     if(!(real_pw = get_msql_pw(r, c->user, sec ))) {
 	if ( msql_errstr[0] ) {
 		res = SERVER_ERROR;
 		} else {
-        	sprintf(msql_errstr,"mSQL: Password for user %s not found", c->user);
-		note_basic_auth_failure (r);
-		res = AUTH_REQUIRED;
-		};
+		if (sec->auth_msql_authorative) {
+          	   /* insist that the user is in the database
+          	    */
+          	   sprintf(msql_errstr,"mSQL: Password for user %s not found", c->user);
+		   note_basic_auth_failure (r);
+		   res = AUTH_REQUIRED;
+		   } else {
+		   /* pass control on to the next authorization module.
+		    */
+		   return DECLINED;
+		   }; /* if authorative */
+               }; /* if no error */
 	log_reason (msql_errstr, r->filename, r);
 	return res;
-    }    
+    }
 
     /* allow no password, if the flag is set and the password
      * is empty. But be sure to log this.
      */
 
     if ((sec->auth_msql_nopasswd) && (!strlen(real_pw))) {
-        sprintf(msql_errstr,"mSQL: user %s: Empty password accepted",c->user);
+        sprintf(msql_errstr,"mSQL: user %s: Empty/'any' password accepted",c->user);
 	log_reason (msql_errstr, r->uri, r);
 	return OK;
 	};
@@ -385,8 +825,18 @@ int msql_authenticate_basic_user (request_rec *r)
 	return AUTH_REQUIRED;
 	};
 
-    /* anyone know where the prototype for crypt is? */
-    if(strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
+    if(sec->auth_msql_encrypted) {
+        /* anyone know where the prototype for crypt is?
+         *
+         * PLEASE NOTE:
+         *    The crypt function (at least under FreeBSD 2.0.5) returns
+         *    a ptr to a *static* array (max 120 chars) and does *not*
+         *    modify the string pointed at by sent_pw !
+         */
+        sent_pw=(char *)crypt(sent_pw,real_pw);
+        };
+
+    if (strcmp(real_pw,sent_pw)) {
         sprintf(msql_errstr,"mSQL user %s: password mismatch",c->user);
 	log_reason (msql_errstr, r->uri, r);
 	note_basic_auth_failure (r);
@@ -394,10 +844,12 @@ int msql_authenticate_basic_user (request_rec *r)
     }
     return OK;
 }
-    
+
 /* Checking ID */
-    
-int msql_check_auth(request_rec *r) {
+
+int msql_check_auth (request_rec *r) {
+    int user_result=DECLINED,group_result=DECLINED;
+
     msql_auth_config_rec *sec =
       (msql_auth_config_rec *)get_module_config (r->per_dir_config,
 						&msql_auth_module);
@@ -411,53 +863,79 @@ int msql_check_auth(request_rec *r) {
     register int x,res;
     char *t, *w;
 
-    msql_errstr[0]='\0';
 
-    /* if we cannot do it; leave it to some other guy 
+    /* if we cannot do it; leave it to some other guy,
      */
-    if ((!sec->auth_msql_grp_table)&&(!sec->auth_msql_grp_field)) 
+
+    if ((!sec->auth_msql_grp_table)&&(!sec->auth_msql_grp_field))
 	return DECLINED;
 
-    if (!reqs_arr) return DECLINED;
-    
-    for(x=0; x < reqs_arr->nelts; x++) {
-      
+    if (!reqs_arr) {
+	if (sec->auth_msql_authorative) {
+	        sprintf(msql_errstr,"user %s denied, no access rules specified (MSQL-Authorative) ",user);
+	        note_basic_auth_failure(r);
+		return AUTH_REQUIRED;
+		};
+	return DECLINED;
+ 	};
+
+    for(x=0; (x < reqs_arr->nelts) ; x++) {
+
 	if (! (reqs[x].method_mask & (1 << m))) continue;
-	
+
         t = reqs[x].requirement;
         w = getword(r->pool, &t, ' ');
-	
-        if(!strcmp(w,"valid-user"))
-            return OK;
 
         if(!strcmp(w,"user")) {
             while(t[0]) {
                 w = getword_conf (r->pool, &t);
-                if(!strcmp(user,w))
-                    return OK;
+                if (!strcmp(user,w))
+                    user_result= OK;
             }
+	    if ((sec->auth_msql_authorative) && ( user_result != OK)) {
+           	sprintf(msql_errstr,"User %s not found (MSQL-Auhtorative)",user);
+           	note_basic_auth_failure(r);
+		return AUTH_REQUIRED;
+		};
         }
 
         if (!strcmp(w,"group")) {
-	   /* look up the membership for each of the groups in the table */
-           while(t[0]) {
+	   /* look up the membership for each of the groups in the table
+            */
+           msql_errstr[0]='\0';
+
+           while ( (t[0]) && (group_result != OK) && (!msql_errstr[0]) ) {
                 if (get_msql_grp(r,getword(r->pool, &t, ' '),user,sec)) {
-			return OK;
+			group_result= OK;
 			};
        		};
+
 	   if (msql_errstr[0]) {
-		res = SERVER_ERROR;
-		} else {
-           	sprintf(msql_errstr,"user %s not in right groups (%s) ",user,w);
-           	note_basic_auth_failure(r);
-		res = AUTH_REQUIRED;
+	   	log_reason (msql_errstr, r->filename, r);
+		return SERVER_ERROR;
 		};
-	   log_reason (msql_errstr, r->filename, r);
-	   return res;
-           }
+
+	   if ( (sec->auth_msql_authorative) && (group_result != OK) ) {
+           	sprintf(msql_errstr,"user %s not in right groups (MSQL-Authorative) ",user);
+           	note_basic_auth_failure(r);
+		return AUTH_REQUIRED;
+		};
+           };
+
+        if(!strcmp(w,"valid-user"))
+            user_result= OK;
         }
-    
-    return DECLINED;
+
+    /* we do not have to check the valid-ness of the group result as
+     * have not (yet) a 'valid-group' token
+     */
+    if ( (user_result != OK) && (sec->auth_msql_authorative) ) {
+        sprintf(msql_errstr,"User %s denied, no access rules applied (MSQL-Authorative) ",user);
+        note_basic_auth_failure(r);
+	return AUTH_REQUIRED;
+	};
+
+    return user_result;
 }
 
 
@@ -471,10 +949,11 @@ module msql_auth_module = {
    msql_auth_cmds,		/* command table */
    NULL,			/* handlers */
    NULL,			/* filename translation */
-   msql_authenticate_basic_user,	/* check_user_id */
+   msql_authenticate_basic_user,/* check_user_id */
    msql_check_auth,		/* check auth */
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* pre-run fixups */
    NULL				/* logger */
 };
+
