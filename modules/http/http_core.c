@@ -2564,7 +2564,7 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 #endif
 
 static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec, 
-                                  apr_size_t len, apr_size_t *nbytes)
+                                  apr_ssize_t len, apr_ssize_t *nbytes)
 {
     apr_size_t bytes_written = 0;
     apr_status_t rv;
@@ -2610,12 +2610,12 @@ static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec,
  */
 static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd, 
                                   apr_hdtr_t *hdtr, apr_off_t offset, 
-                                  apr_size_t length, apr_size_t *nbytes) 
+                                  apr_ssize_t length, apr_ssize_t *nbytes) 
 {
     apr_status_t rv = APR_SUCCESS;
     apr_int32_t togo;         /* Remaining number of bytes in the file to send */
-    apr_size_t sendlen = 0;
-    apr_size_t bytes_sent;
+    apr_ssize_t sendlen = 0;
+    apr_ssize_t bytes_sent;
     apr_int32_t i;
     apr_off_t o;              /* Track the file offset for partial writes */
     char buffer[8192];
