@@ -111,6 +111,8 @@ API_VAR_EXPORT const char ap_day_snames[7][4] =
 
 API_EXPORT(char *) ap_get_time()
 {
+  /* ZZZ When we abstract out time, this whole function should change to use
+     AP funcs. */
     time_t t;
     char *time_string;
 
@@ -142,6 +144,8 @@ API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype)
 
 API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt)
 {
+  /* ZZZ this function can be replaced by calls to time formatting routines
+     in APR.  */
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
     struct tm *tms;
@@ -849,7 +853,8 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
 	errno = EACCES;
         return NULL;
     }
-
+ 
+    /* ZZZ bopenf and use AP defines for flags. */
     file = ap_pfopen(p, name, "r");
 #ifdef DEBUG
     saved_errno = errno;
@@ -1643,6 +1648,7 @@ API_EXPORT(int) ap_is_directory(const char *path)
 {
     struct stat finfo;
 
+    /* ZZZ replace with AP File Info func. */
     if (stat(path, &finfo) == -1)
 	return 0;		/* in error condition, just return no */
 
@@ -1917,6 +1923,7 @@ API_EXPORT(gid_t) ap_gname2id(const char *name)
  */
 unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
 {
+  /* ZZZ Redesign for AP func changes */
     struct hostent *hep;
     unsigned long my_addr;
     char *p;
@@ -1988,11 +1995,13 @@ char *ap_get_local_host(pool *a)
     char *server_hostname;
     struct hostent *p;
 
-#ifdef BEOS /* BeOS returns zero as an error for gethostname */
-    if (gethostname(str, sizeof(str) - 1) == 0) {
-#else    
-    if (gethostname(str, sizeof(str) - 1) != 0) {
-#endif /* BeOS */
+    /* ZZZ change to use AP funcs. */
+#ifdef BEOS
+    if (gethostname(str, sizeof(str) - 1) == 0)
+#else
+    if (gethostname(str, sizeof(str) - 1) != 0)
+#endif
+    {
 	perror("Unable to gethostname");
 	exit(1);
     }

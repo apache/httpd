@@ -122,7 +122,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
 			    __attribute__((format(printf,5,6)));
 API_EXPORT(void) ap_error_log2stderr (server_rec *);     
 
-void ap_log_pid (pool *p, char *fname);
+void ap_log_pid (pool *p, const char *fname);
 /* These are for legacy code, new code should use ap_log_error,
  * or ap_log_rerror.
  */

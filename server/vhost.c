@@ -167,6 +167,9 @@ void ap_init_vhost_config(pool *p)
 static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
 			    unsigned port)
 {
+  /* ZZZ redesign to use AP funcs and types.  Will see what I can do to make it
+     similar using posix std's. */
+
     struct hostent *hep;
     unsigned long my_addr;
     server_addr_rec *sar;
@@ -470,6 +473,8 @@ static void dump_vhost_config(FILE *f)
 /* compile the tables and such we need to do the run-time vhost lookups */
 void ap_fini_vhost_config(pool *p, server_rec *main_s)
 {
+  /* ZZZ need to redesign for use with AP funcs. will look into this later.
+   */
     server_addr_rec *sar;
     int has_default_vhost_addr;
     server_rec *s;
@@ -774,6 +779,7 @@ static void check_hostalias(request_rec *r)
      *   names we'll match have ports associated with them
      */
     const char *host = r->hostname;
+    /* ZZZ use AP func here. */
     unsigned port = ntohs(r->connection->local_addr.sin_port);
     server_rec *s;
     server_rec *last_s;
@@ -833,6 +839,7 @@ static void check_serverpath(request_rec *r)
     server_rec *s;
     server_rec *last_s;
     name_chain *src;
+    /* use AP func here. */
     unsigned port = ntohs(r->connection->local_addr.sin_port);
 
     /*
