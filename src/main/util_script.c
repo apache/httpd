@@ -1126,7 +1126,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
                           pEnvBlock,
                           ap_make_dirstr_parent(r->pool, r->filename),
                           &si, &pi)) {
-            if (fileType == eFileTypeEXE16) {
+            if (fileType == eFileTypeEXE16 || fileType == eCommandShell16) {
                 /* Hack to get 16-bit CGI's working. It works for all the 
                  * standard modules shipped with Apache. pi.dwProcessId is 0 
                  * for 16-bit CGIs and all the Unix specific code that calls 

@@ -983,7 +983,7 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     {
         char *p, *shellcmd = getenv("COMSPEC");
         if (!shellcmd)
-            shellcmd = SHELL_PATH;
+            return eFileTypeUNKNOWN;
         p = strchr(shellcmd, '\0');
         if ((p - shellcmd >= 11) && !strcasecmp(p - 11, "command.com")) 
         {
@@ -992,14 +992,16 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
             if (!strcasecmp(ext,".cmd"))
                 return eFileTypeUNKNOWN;
             *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C %1", NULL);
+            return eCommandShell16;
         }
-        else
+        else {
             /* Assume any other likes long paths, and knows .cmd,
              * but the entire /c arg should be double quoted, e.g.
              * "c:\path\cmd.exe" /c ""prog" "arg" "arg""
              */
             *interpreter = ap_pstrcat(r->pool, "\"", shellcmd, "\" /C \"\"%1\" %*\"", NULL);
-        return eFileTypeSCRIPT;
+            return eCommandShell32;
+        }
     }
 
     /* If the file has an extension and it is not .com and not .exe and
