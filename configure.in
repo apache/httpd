@@ -581,3 +581,22 @@ AC_OUTPUT($APACHE_OUTPUT_FILES docs/conf/httpd-std.conf docs/conf/ssl-std.conf i
   APACHE_GEN_MAKEFILES
 ])
 
+case $MPM_SUBDIR_NAME in
+*experimental*)
+    echo ""
+    echo ""
+    echo "============================================================"
+    echo "    WARNING: THE '${APACHE_MPM}' MPM IS EXPERIMENTAL"
+    echo "============================================================"
+    echo " The selected MPM might not be fully functional!"
+    echo ""
+    echo " Development of this MPM is not complete. Do not use this"
+    echo " MPM unless you are a programmer willing to help fix it."
+    echo ""
+    echo " If you are looking for a stable server, you should not use"
+    echo " the '${APACHE_MPM}' MPM until it is moved out of experimental."
+    echo "============================================================"
+    echo ""
+    echo ""
+    ;;
+esac
