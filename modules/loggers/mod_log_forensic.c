@@ -177,7 +177,7 @@ typedef struct hlog {
     char *pos;
     char *end;
     apr_pool_t *p;
-    int count;
+    size_t count;
 } hlog;
 
 static int count_string(const char *p)
@@ -219,7 +219,7 @@ static int log_before(request_rec *r)
                                      &log_forensic_module);
     const char *id;
     hlog h;
-    int n;
+    apr_size_t n;
     apr_status_t rv;
 
     if (!cfg->fd) {
@@ -271,7 +271,7 @@ static int log_after(request_rec *r)
     const char *id = ap_get_module_config(r->request_config,
                                           &log_forensic_module);
     char *s;
-    int l,n;
+    apr_size_t l, n;
     apr_status_t rv;
 
     if (!cfg->fd) {
