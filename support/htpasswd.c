@@ -85,6 +85,7 @@
 #include "apr_errno.h"
 #include "apr_file_io.h"
 #include "apr_general.h"
+#include "apr_signal.h"
 
 #if APR_HAVE_STDIO_H
 #include <stdio.h>
@@ -92,9 +93,6 @@
 
 #include "apr_md5.h"
 #include "apr_sha1.h"
-#if APR_HAVE_SIGNAL_H
-#include <signal.h>
-#endif
 #include <time.h>
 
 #if APR_HAVE_CRYPT_H
@@ -422,7 +420,7 @@ int main(int argc, char *argv[])
 #endif /*APR_CHARSET_EBCDIC*/
 
     tempfilename = NULL;
-    signal(SIGINT, (void (*)(int)) interrupted);
+    apr_signal(SIGINT, (void (*)(int)) interrupted);
 
     /*
      * Preliminary check to make sure they provided at least
