@@ -1,4 +1,5 @@
 Changes with Apache 2.0.31-dev
+  *) allow quick_handler to be run on subrequests. [Ian Holsman]
 
   *) mod_dav now asks its provider to place content directly into the
      filter stack when handling a GET request. The mod_dav/provider
