@@ -406,6 +406,7 @@ typedef struct {
     ssl_mutexmode_t nMutexMode;
     apr_lockmech_e  nMutexMech;
     const char     *szMutexFile;
+    BOOL           ChownMutexFile;
     apr_global_mutex_t   *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
