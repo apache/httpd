@@ -23,10 +23,9 @@
     handle as many simultaneous requests as you expect to receive, but
     small enough to assure that there is enough physical RAM for all
     processes.</p>
-
 </summary>
-<seealso><a href="../bind.html">Setting which addresses and
-    ports Apache uses</a></seealso>
+<seealso><a href="../bind.html">Setting which addresses and ports Apache
+uses</a></seealso>
 
 <section id="how-it-works"><title>How it Works</title>
     <p>A single control process is responsible for launching child
@@ -53,9 +52,9 @@
     href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
-    <p>While the parent process is usually started as root under Unix
-    in order to bind to port 80, the child processes are launched by
-    Apache as a less-privileged user. The <directive
+    <p>While the parent process is usually started as <code>root</code>
+    under Unix in order to bind to port 80, the child processes are
+    launched by Apache as a less-privileged user. The <directive
     module="mpm_common">User</directive> and <directive
     module="mpm_common">Group</directive> directives are used to set
     the privileges of the Apache child processes. The child processes
@@ -67,109 +66,37 @@
     old ones and launching new ones.</p>
 </section>
 
-<directivesynopsis location="mpm_common">
-<name>CoreDumpDirectory</name>
+<directivesynopsis location="mpm_common"><name>BS2000Account</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>PidFile</name>
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>Listen</name>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>ListenBacklog</name>
+<directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>LockFile</name>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MaxClients</name>
+<directivesynopsis location="mpm_common"><name>LockFile</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MaxMemFree</name>
+<directivesynopsis location="mpm_common"><name>MaxClients</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MaxRequestsPerChild</name>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>ScoreBoardFile</name>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>SendBufferSize</name>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>ServerLimit</name>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>StartServers</name>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>User</name>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
 </directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>Group</name>
+<directivesynopsis location="mpm_common"><name>User</name>
 </directivesynopsis>
-
-<directivesynopsis>
-<name>AcceptMutex</name>
-<description>Method that Apache uses to serialize multiple children
-accepting requests on network sockets</description>
-<syntax>AcceptMutex default|<var>method</var></syntax>
-<default>AcceptMutex default</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>The <directive>AcceptMutex</directive> directives sets the
-    method that Apache uses to serialize multiple children accepting
-    requests on network sockets. Prior to Apache 2.0, the method was
-    selectable only at compile time. The optimal method to use is
-    highly architecture and platform dependent. For further details,
-    see the <a href="../misc/perf-tuning.html">performance tuning</a>
-    documentation.</p>
-
-    <p>If this directive is set to <code>default</code>, then the
-    compile-time selected default will be used. Other possible
-    methods are listed below. Note that not all methods are
-    available on all platforms. If a method is specified which is
-    not available, a message will be written to the error log
-    listing the available methods.</p>
-
-    <dl>
-      <dt><code>flock</code></dt>
-
-      <dd>uses the <code>flock(2)</code> system call to lock the
-      file defined by the <directive module="mpm_common"
-      >LockFile</directive> directive.</dd>
-
-      <dt><code>fcntl</code></dt>
-
-      <dd>uses the <code>fnctl(2)</code> system call to lock the
-      file defined by the <directive module="mpm_common"
-      >LockFile</directive> directive.</dd>
-
-      <dt><code>sysvsem</code></dt>
-
-      <dd>uses SySV-style semaphores to implement the mutex.</dd>
-
-      <dt><code>pthread</code></dt>
-
-      <dd>uses POSIX mutexes as implemented by the POSIX Threads
-      (PThreads) specification.</dd>
-    </dl>
-</usage>
+<directivesynopsis location="mpm_common"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -183,12 +110,15 @@ accepting requests on network sockets</description>
     <p>The <directive>MaxSpareServers</directive> directive sets the
     desired maximum number of <em>idle</em> child server processes. An
     idle process is one which is not handling a request. If there are
-    more than MaxSpareServers idle, then the parent process will kill
-    off the excess processes.</p>
+    more than <directive>MaxSpareServers</directive> idle, then the
+    parent process will kill off the excess processes.</p>
 
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
-    always a bad idea.</p>
+    always a bad idea. If you are trying to set the value lower than
+    <directive module="prefork">MinSpareServers</directive>, Apache
+    will automatically adjust it to <directive
+    >MinSpareServers</directive><code> + 1</code>.</p>
 </usage>
 <seealso><directive module="prefork">MinSpareServers</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -198,15 +128,15 @@ accepting requests on network sockets</description>
 <name>MinSpareServers</name>
 <description>Minimum number of idle child server processes</description>
 <syntax>MinSpareServers <var>number</var></syntax>
-<default>MinSpareServers  5</default>
+<default>MinSpareServers 5</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>The <directive>MinSpareServers</directive> directive sets the
     desired minimum number of <em>idle</em> child server processes. An
     idle process is one which is not handling a request. If there are
-    fewer than MinSpareServers idle, then the parent process creates
-    new children at a maximum rate of 1 per second.</p>
+    fewer than <directive>MinSpareServers</directive> idle, then the parent
+    process creates new children at a maximum rate of 1 per second.</p>
 
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost

@@ -5,7 +5,7 @@
 
 <name>mpm_winnt</name>
 <description>This Multi-Processing Module is optimized for Windows
-    NT.</description>
+NT.</description>
 <status>MPM</status>
 <sourcefile>mpm_winnt.c</sourcefile>
 <identifier>mpm_winnt_module</identifier>
@@ -26,6 +26,8 @@
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
