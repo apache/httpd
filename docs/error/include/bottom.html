@@ -1,12 +1,30 @@
-<!--#include virtual="spacer.html" -->
+</DL><DL><DD>
 <!--#include virtual="../contact" -->
 </DL>
 <!--#if expr="$INCLUDE_LOGO=yes" -->
  <BR CLEAR=<!--#if expr="$ALIGN_LOGO=left" -->right<!--#else -->left<!--#endif -->>
 <!--#endif -->
 
-<TABLE BORDER=0 CELLPADDING=6 WIDTH="100%">
-<TR><TD ALIGN=CENTER BGCOLOR="#000000">
-<FONT SIZE="+2" COLOR="#FFFFFF"><strong>Error <!--#echo encoding="none" var="REDIRECT_STATUS" --></strong></FONT>
-</TD></TR></TABLE>
-<!--#include virtual="footer.html" -->
+<H2>Error <!--#echo encoding="none" var="REDIRECT_STATUS" --></H2>
+<DL>
+<DD>
+<IMG SRC="/apache_pb.gif" ALT="[Powered by Apache]" ALIGN="RIGHT" WIDTH="259" HEIGHT="32">
+<ADDRESS>
+<!--#if expr="$INCLUDE_SERVER_NAME=yes" -->
+  <A HREF="/"><!--#echo encoding="none" var="SERVER_NAME" --></A>
+  <BR>
+<!--#endif -->
+<!--#if expr="$INCLUDE_DATE=yes" -->
+  <!--#config timefmt="%c" -->
+  <small><!--#echo encoding="none" var="DATE_LOCAL" --></small>
+  <BR>
+<!--#endif -->
+<!--#if expr="$INCLUDE_SOFTWARE=yes" -->
+  <small><!--#echo encoding="none" var="SERVER_SOFTWARE" --></small>
+<!--#endif -->
+</ADDRESS>
+</DL>
+<!-- Multi Language Error Documents, Copyright (c) 2001 The Apache Software Foundation. All rights reserved. -->
+</BODY>
+</HTML>
+
