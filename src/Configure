@@ -326,6 +326,13 @@ case "$PLAT" in
 	RULE_SHARED_CORE=no
 	DEF_SHARED_CORE=no
 	;;
+    *-ibm-aix5.1)
+	OS='IBM AIX 5.1'
+	CFLAGS="$CFLAGS -DAIX=51 -DUSE_PTHREAD_SERIALIZED_ACCEPT -U__STR__"
+	LDFLAGS="$LDFLAGS -lm -lpthread"
+	RULE_SHARED_CORE=no
+	DEF_SHARED_CORE=no
+	;;
     ia64-ibm-aix*)
        OS='IBM AIX IA64'
        CFLAGS="$CFLAGS -DAIXIA64 -U__STR__"
