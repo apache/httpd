@@ -497,25 +497,16 @@ int main(int argc, const char * const argv[])
                         "might just not work on this platform.\n");
     }
 #endif
+
+    /*
+     * Only do the file checks if we're supposed to frob it.
+     */
     if (!(mask & APHTP_NOFILE)) {
         existing_file = exists(pwfilename, pool);
-        /*
-         * Only do the file checks if we're supposed to frob it.
-         *
-         * Verify that the file exists if -c was omitted.  We give a special
-         * message if it doesn't.
-         */
-        if (!(mask & APHTP_NEWFILE) && !existing_file) {
-            apr_file_printf(errfile,
-                    "%s: cannot modify file %s; use '-c' to create it\n",
-                    argv[0], pwfilename);
-            exit(ERR_FILEPERM);
-        }
-        /*
-         * If the file exists, check that it's readable and writable.
-         * If it doesn't exist, verify that we can create it.
-         */
         if (existing_file) {
+            /*
+             * Check that this existing file is readable and writable.
+             */
             if (!accessible(pool, pwfilename, APR_READ | APR_APPEND)) {
                 apr_file_printf(errfile, "%s: cannot open file %s for "
                                 "read/write access\n", argv[0], pwfilename);
@@ -523,6 +514,18 @@ int main(int argc, const char * const argv[])
             }
         }
         else {
+            /*
+             * Error out if -c was omitted for this non-existant file.
+             */
+            if (!(mask & APHTP_NEWFILE)) {
+                apr_file_printf(errfile,
+                        "%s: cannot modify file %s; use '-c' to create it\n",
+                        argv[0], pwfilename);
+                exit(ERR_FILEPERM);
+            }
+            /*
+             * As it doesn't exist yet, verify that we can create it.
+             */
             if (!accessible(pool, pwfilename, APR_CREATE | APR_WRITE)) {
                 apr_file_printf(errfile, "%s: cannot create file %s\n",
                                 argv[0], pwfilename);
