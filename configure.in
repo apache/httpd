@@ -276,6 +276,9 @@ AC_DEFINE_UNQUOTED(APACHE_MPM_DIR, "$MPM_DIR",
 	[Location of the source for the current MPM])
 
 perlbin=`$ac_aux_dir/PrintPath perl`
+if test "x$perlbin" = "x"; then
+    perlbin="/replace/with/path/to/perl/interpreter"
+fi
 AC_SUBST(perlbin)
 
 dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
