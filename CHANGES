@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) Added FreeBSD directory layout. PR 21100.
+     [Sander Holthaus <info@orangexl.com>, André Malo]
+
   *) Fix NULL-pointer issue in ab when parsing an incomplete or non-HTTP
      response. PR 21085. [Glenn Nielsen <glenn@apache.org>, André Malo]
 
