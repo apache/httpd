@@ -78,6 +78,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_config.h"
+#include "util_ebcdic.h"
 
 #if defined(SUNOS4)
 /* stdio.h has been read in ap_config.h already. Add missing prototypes here: */
@@ -1451,7 +1452,7 @@ static char x2c(const char *what)
     xstr[2]=what[0];
     xstr[3]=what[1];
     xstr[4]='\0';
-    digit = os_toebcdic[0xFF & strtol(xstr, NULL, 16)];
+    digit = ap_xlate_conv_byte(ap_hdrs_from_ascii, 0xFF & strtol(xstr, NULL, 16));
 #endif /*CHARSET_EBCDIC*/
     return (digit);
 }
@@ -1529,7 +1530,7 @@ static const char c2x_table[] = "0123456789abcdef";
 static ap_inline unsigned char *c2x(unsigned what, unsigned char *where)
 {
 #ifdef CHARSET_EBCDIC
-    what = os_toascii[what];
+    what = ap_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
 #endif /*CHARSET_EBCDIC*/
     *where++ = '%';
     *where++ = c2x_table[what >> 4];
