@@ -1312,6 +1312,8 @@ char *ap_init_mutex_method(char *t)
     } else
 #endif
     {
+/* Ignore this directive on Windows */
+#ifndef WIN32
     if (server_conf) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
                     "Requested serialization method '%s' not available",t);
@@ -1320,6 +1322,7 @@ char *ap_init_mutex_method(char *t)
         fprintf(stderr, "Requested serialization method '%s' not available\n", t);
         exit(APEXIT_INIT);
     }
+#endif
     }
     return NULL;
 }
