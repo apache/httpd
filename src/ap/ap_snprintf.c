@@ -401,12 +401,12 @@ static char *conv_10(register wide_int num, register bool_int is_unsigned,
     return (p);
 }
 
-static char *conv_10_quad(register widest_int num, register bool_int is_unsigned,
+static char *conv_10_quad(widest_int num, register bool_int is_unsigned,
 		     register bool_int *is_negative, char *buf_end,
 		     register int *len)
 {
     register char *p = buf_end;
-    register u_widest_int magnitude;
+    u_widest_int magnitude;
 
     /*
      * If the value is less than the maximum unsigned long value,
@@ -445,7 +445,7 @@ static char *conv_10_quad(register widest_int num, register bool_int is_unsigned
      * We use a do-while loop so that we write at least 1 digit 
      */
     do {
-	register u_widest_int new_magnitude = magnitude / 10;
+	u_widest_int new_magnitude = magnitude / 10;
 
 	*--p = (char) (magnitude - new_magnitude * 10 + '0');
 	magnitude = new_magnitude;
@@ -618,7 +618,7 @@ static char *conv_p2(register u_wide_int num, register int nbits,
     return (p);
 }
 
-static char *conv_p2_quad(register u_widest_int num, register int nbits,
+static char *conv_p2_quad(u_widest_int num, register int nbits,
 		     char format, char *buf_end, register int *len)
 {
     register int mask = (1 << nbits) - 1;
