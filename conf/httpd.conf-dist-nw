@@ -786,7 +786,7 @@ ServerSignature On
 #  N.B.: You can redirect to a script or a document using server-side-includes.
 #
 #    3) external redirects
-#ErrorDocument 402 http://some.other_server.com/subscription_info.html
+#ErrorDocument 402 http://some.other-server.com/subscription_info.html
 #  N.B.: Many of the environment variables associated with the original
 #  request will *not* be available to such a script.
 
@@ -819,28 +819,28 @@ ServerSignature On
 
 #
 # Allow server status reports, with the URL of http://servername/server-status
-# Change the ".your_domain.com" to match your domain to enable.
+# Change the ".your-domain.com" to match your domain to enable.
 #
 <IfModule mod_status.c>
     <Location /server-status>
         SetHandler server-status
         Order deny,allow
         Deny from all
-        Allow from .your_domain.com
+        Allow from .your-domain.com
     </Location>
 </IfModule>
 
 #
 # Allow remote server configuration reports, with the URL of
 #  http://servername/server-info (requires that mod_info.c be loaded).
-# Change the ".your_domain.com" to match your domain to enable.
+# Change the ".your-domain.com" to match your domain to enable.
 #
 <IfModule mod_info.c>
     <Location /server-info>
         SetHandler server-info
         Order deny,allow
         Deny from all
-        Allow from .your_domain.com
+        Allow from .your-domain.com
     </Location>
 </IfModule>
 
@@ -866,7 +866,7 @@ ServerSignature On
 #<Directory proxy:*>
 #    Order deny,allow
 #    Deny from all
-#    Allow from .your_domain.com
+#    Allow from .your-domain.com
 #</Directory>
 
 #
@@ -886,7 +886,7 @@ ServerSignature On
 #CacheMaxExpire 24
 #CacheLastModifiedFactor 0.1
 #CacheDefaultExpire 1
-#NoCache a_domain.com another_domain.edu joes.garage_sale.com
+#NoCache a-domain.com another-domain.edu joes.garage-sale.com
 
 #</IfModule>
 # End of proxy directives.
@@ -911,12 +911,12 @@ ServerSignature On
 # VirtualHost example:
 # Almost any Apache directive may go into a VirtualHost container.
 #
-#<VirtualHost ip.address.of.host.some_domain.com>
-#    ServerAdmin webmaster@host.some_domain.com
-#    DocumentRoot /www/docs/host.some_domain.com
-#    ServerName host.some_domain.com
-#    ErrorLog logs/host.some_domain.com-error_log
-#    CustomLog logs/host.some_domain.com-access_log common
+#<VirtualHost ip.address.of.host.some-domain.com>
+#    ServerAdmin webmaster@host.some-domain.com
+#    DocumentRoot /www/docs/host.some-domain.com
+#    ServerName host.some-domain.com
+#    ErrorLog logs/host.some-domain.com-error_log
+#    CustomLog logs/host.some-domain.com-access_log common
 #</VirtualHost>
 
 #<VirtualHost _default_:*>

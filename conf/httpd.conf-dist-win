@@ -896,7 +896,7 @@ ServerSignature On
 #  N.B.: You can redirect to a script or a document using server-side-includes.
 #
 #    3) external redirects
-#ErrorDocument 402 http://some.other_server.com/subscription_info.html
+#ErrorDocument 402 http://some.other-server.com/subscription_info.html
 #  N.B.: Many of the environment variables associated with the original
 #  request will *not* be available to such a script.
 
@@ -993,7 +993,7 @@ ServerSignature On
 #    CacheMaxExpire 24
 #    CacheLastModifiedFactor 0.1
 #    CacheDefaultExpire 1
-#    NoCache a_domain.com another_domain.edu joes.garage_sale.com
+#    NoCache a-domain.com another-domain.edu joes.garage-sale.com
 
 #</IfModule>
 # End of proxy directives.
