@@ -13,7 +13,13 @@
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
   vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+        <div align="center">
+      <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+
+      <h3>Apache HTTP Server Version 2.1</h3>
+    </div>
+
+
 
     <h1 align="center">認証</h1>
     <a id="__index__" name="__index__"></a> <!-- INDEX BEGIN -->

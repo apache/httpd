@@ -254,7 +254,13 @@
         </tr>
       </table>
     </div>
-    <!--#include virtual="footer.html" -->
+        <hr />
+
+    <h3 align="center">Apache HTTP Server Version 2.1</h3>
+    <a href="./"><img src="images/index.gif" alt="Index" /></a>
+
+
+
   </body>
 </html>
 

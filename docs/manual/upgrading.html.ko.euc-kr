@@ -12,7 +12,14 @@
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
   vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+        <div align="center">
+      <img src="images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+
+      <h3>Apache HTTP Server Version 2.1</h3>
+    </div>
+
+
+
 
     <h1 align="center">1.3에서 2.0으로 업그레이드</h1>
 
@@ -150,7 +157,13 @@
     맞춰진 기존 모듈은 수정없이 Apache 2.0에서 사용할 수
     <strong>없다</strong>. 자세한 정보는 <a href="developer/">개발자
     문서</a>를 참고하라.</p>
-    <!--#include virtual="footer.html" -->
+        <hr />
+
+    <h3 align="center">Apache HTTP Server Version 2.1</h3>
+    <a href="./"><img src="images/index.gif" alt="Index" /></a>
+
+
+
   </body>
 </html>
 
