@@ -258,6 +258,7 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     if (!(env_path = getenv("PATH"))) {
 	env_path = DEFAULT_PATH;
     }
+    ap_table_addn(e, "PATH", ap_pstrdup(r->pool, env_path));
 
 #ifdef WIN32
     if (env_temp = getenv("SystemRoot")) {
@@ -286,7 +287,6 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     }
 #endif
 
-    ap_table_addn(e, "PATH", env_path);
     ap_table_addn(e, "SERVER_SIGNATURE", ap_psignature("", r));
     ap_table_addn(e, "SERVER_SOFTWARE", ap_get_server_version());
     ap_table_addn(e, "SERVER_NAME", ap_get_server_name(r));
