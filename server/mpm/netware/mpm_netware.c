@@ -318,12 +318,14 @@ static void set_signals(void)
     apr_signal(SIGABRT, sig_term);
 }
 
-int nlmUnloadSignaled()
+int nlmUnloadSignaled(int wait)
 {
     shutdown_pending = 1;
 
-    while (wait_to_finish) {
-        NXThreadYield();
+    if (wait) {
+        while (wait_to_finish) {
+            NXThreadYield();
+        }
     }
 
     return 0;
