@@ -576,9 +576,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     char *a1;
     char *a2;
     char *a3;
-    char *cp;
     const char *err;
-    int rc;
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
@@ -612,26 +610,21 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
 
     /*  arg2: the pattern
         try to compile the regexp to test if is ok */
-    cp = a2;
-    if (cp[0] == '!') {
+    if (*a2 == '!') {
         newcond->flags |= CONDFLAG_NOTMATCH;
-        cp++;
+        ++a2;
     }
 
-    if (newcond->flags & CONDFLAG_NOCASE) {
-        rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE))
-              == NULL);
-    }
-    else {
-        rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL);
-    }
-    if (rc) {
+    regexp = ap_pregcomp(cmd->pool, a2, REG_EXTENDED |
+                                        ((newcond->flags & CONDFLAG_NOCASE)
+                                         ? REG_ICASE : 0));
+    if (!regexp) {
         return apr_pstrcat(cmd->pool,
                            "RewriteCond: cannot compile regular expression '",
                            a2, "'", NULL);
     }
 
-    newcond->pattern = apr_pstrdup(cmd->pool, cp);
+    newcond->pattern = apr_pstrdup(cmd->pool, a2);
     newcond->regexp  = regexp;
 
     return NULL;
@@ -667,9 +660,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     char *a1;
     char *a2;
     char *a3;
-    char *cp;
     const char *err;
-    int mode;
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
@@ -704,21 +695,21 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     /*  arg1: the pattern
      *  try to compile the regexp to test if is ok
      */
-    cp = a1;
-    if (cp[0] == '!') {
+    if (*a1 == '!') {
         newrule->flags |= RULEFLAG_NOTMATCH;
-        cp++;
+        ++a1;
     }
-    mode = REG_EXTENDED;
-    if (newrule->flags & RULEFLAG_NOCASE) {
-        mode |= REG_ICASE;
-    }
-    if ((regexp = ap_pregcomp(cmd->pool, cp, mode)) == NULL) {
+
+    regexp = ap_pregcomp(cmd->pool, a1, REG_EXTENDED |
+                                        ((newrule->flags & RULEFLAG_NOCASE)
+                                         ? REG_ICASE : 0));
+    if (!regexp) {
         return apr_pstrcat(cmd->pool,
                            "RewriteRule: cannot compile regular expression '",
                            a1, "'", NULL);
     }
-    newrule->pattern = apr_pstrdup(cmd->pool, cp);
+
+    newrule->pattern = apr_pstrdup(cmd->pool, a1);
     newrule->regexp  = regexp;
 
     /*  arg2: the output string */
