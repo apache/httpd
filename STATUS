@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/04 16:15:54 $]
+Last modified at [$Date: 2004/10/05 00:29:48 $]
 
 Release:
 
@@ -74,6 +74,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
+       library handles special characters.
+         http://issues.apache.org/bugzilla/showattachment.cgi?attach_id=12919
+       PR 24437
+       +1: minfrin
 
     *) mod_ldap: fix a bogus error message to tell the user which file
        is causing a potential problem with the LDAP shared memory cache.
