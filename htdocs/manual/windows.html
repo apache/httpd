@@ -59,22 +59,20 @@ to help with development, or to track down bugs), see the section on
 
 Apache 1.3 is designed to run on Windows NT 4.0. The binary installer
 will only work with the x86 family of processors, such as Intel's. Apache 
-may also run on Windows 95, Windows 98 and Windows NT 3.5.1, but these 
-have not been tested. In all cases TCP/IP networking must be installed.
+may also run on Windows 95 and 98, but these have not been tested. In all 
+cases TCP/IP networking must be installed.
 
-<P>
+<P>If running on NT 4.0, installing Service Pack 3 is recommended, and
+   Service Pack 4 created known issues with Tcpip/winsock integrety that
+   were resolved in Service Pack 5.</P>
 
-If running on Windows 95, using the "Winsock2" upgrade is recommended
-but may not be necessary.  If running on NT 4.0, installing Service Pack 2
-is recommended.
+<P>If running on Windows 95, the "Winsock2" upgrade MUST BE INSTALLED. 
+   "Winsock2" for Windows 95 is available 
+   <A HREF="http://www.microsoft.com/windows95/downloads/">here</A>.</P>
 
 <P>
 
 <STRONG>Note: "Winsock 2" is required for Apache 1.3.7 and later.</STRONG>
-
-<P>
-
-"Winsock 2" for Windows 95 is available <A HREF="http://www.microsoft.com/windows95/downloads/">here.</A>
 
 <H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
@@ -164,6 +162,37 @@ There are two ways you can run Apache:
     Windows 95 users.
 </UL>
 
+To run Apache from a console window, select the "Start Apache as
+console app" option from the Start menu (in Apache 1.3.4 and earlier,
+this option was called "Apache Server"). This will open a console
+window and start Apache running inside it. The window will remain
+active until you stop Apache. To stop Apache running, either select
+the "Shutdown Apache console app" icon option from the Start menu
+(this is not available in Apache 1.3.4 or earlier), or see <A
+HREF="#signal">Signalling Console Apache when Running</A> for how
+to control Apache from the command line.
+
+<P>If the Apache console window closes immediately (or unexpectedly),
+   run the "Command Prompt" from the Start Menu - Programs list.  Change
+   to the folder to which you installed Apache, type the command apache,
+   and read the error message.  Then change to the logs folder, and review
+   the error.log file for configuration mistakes.  If you accepted the
+   defaults when you installed Apache, the commands would be:</P>
+
+<PRE>
+  c:
+  cd "\program files\apache group\apache"
+  apache
+  <SAMP>Wait for Apache to exit, or press Ctrl+C</SAMP>
+  cd logs
+  more &lt;error.log
+</PRE>
+
+<P><STRONG>Complete the steps above before you proceed to attempt to 
+   start Apache as a Window NT/2000 service!</STRONG></P>
+
+<P>
+
 To start Apache as a service, you first need to install it as a
 service. Multiple Apache services can be installed, each with a
 different name and configuration.  To install the default Apache
@@ -183,17 +212,10 @@ line with
 See <A HREF="#signalsrv">Signalling Service Apache when Running</A>
 for more information on installing and controlling Apache services.
 
-<P>
-
-To run Apache from a console window, select the "Start Apache as
-console app" option from the Start menu (in Apache 1.3.4 and earlier,
-this option was called "Apache Server"). This will open a console
-window and start Apache running inside it. The window will remain
-active until you stop Apache. To stop Apache running, either select
-the "Shutdown Apache console app" icon option from the Start menu
-(this is not available in Apache 1.3.4 or earlier), or see <A
-HREF="#signal">Signalling Console Apache when Running</A> for how
-to control Apache from the command line.
+<P><STRONG>Apache, unlike many other Windows NT/2000 services, logs any
+   errors to it's own error.log file in the logs folder within the
+   Apache server root folder.  You will <EM>not</EM> find Apache error 
+   details in the Windows NT Event Log.</STRONG></P>
 
 <P>
 
@@ -323,6 +345,43 @@ To start a console Apache using a service's configuration file:
 <PRE>
     apache -n "service name"
 </PRE>
+
+<P><STRONG>Important Note on service dependencies:</STRONG></P>
+
+<P>Prior to Apache release 1.3.13, the dependencies required to
+   successfully start an installed service were not configured.
+   After installing a service using earlier versions of Apache, 
+   you must follow these steps:
+
+<PRE>
+    Run regedt32
+    Select <U>W</U>indow - "HKEY_LOCAL_MACHINE on Local Machine" from the menu
+    Double-click to open the SYSTEM, then the CurrentControlSet keys
+    Scroll down and click on the Apache servicename
+    Select <U>E</U>dit - Add <U>V</U>alue... from the menu
+    Fill in the Add Value dialog with 
+        <U>V</U>alue Name: DependOnGroup 
+        <U>D</U>ata Type: REG_MULTI_SZ
+        and click OK
+    Leave the Multi-String Editor dialog empty and click OK
+    Select <U>E</U>dit - Add <U>V</U>alue... from the menu
+    Fill in the Add Value dialog with 
+        <U>V</U>alue Name: DependOnService
+        <U>D</U>ata Type: REG_MULTI_SZ
+        and click OK
+    Type the following list (one per line) in the Multi-String Editor dialog
+        Tcpip
+        Afd
+        and click OK
+</PRE>
+
+<P>If you are using COM or DCOM components from a third party module, ISAPI,
+   or other add-in scripting technologies such as ActiveState Perl, you may
+   also need to add the entry Rpcss to the DependOnService list.  To avoid
+   exposing the TCP port 135 when it is unnecessary, Apache does not create
+   that entry upon installation.  Follow the directions above to find or 
+   create the DependOnService value, double click that value if it already 
+   exists, and add the Rpcss entry to the list.</P>
 
 <H2><A NAME="cmdline">Running Apache for Windows from the Command Line</A></H2>
 
