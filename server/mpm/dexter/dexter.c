@@ -92,6 +92,7 @@ static int max_spare_threads = 0;
 static int max_threads = 0;
 static int max_requests_per_child = 0;
 static char *ap_pid_fname=NULL;
+API_VAR_EXPORT char *ap_scoreboard_fname=NULL;
 static int num_daemons=0;
 static int workers_may_exit = 0;
 static int requests_this_child;
@@ -1237,6 +1238,7 @@ static void dexter_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
     max_threads = HARD_THREAD_LIMIT;
     ap_pid_fname = DEFAULT_PIDLOG;
+    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_dexter_set_maintain_connection_status(1);
@@ -1263,6 +1265,17 @@ static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg)
 	return "PidFile directive not allowed in <VirtualHost>";
     }
     ap_pid_fname = arg;
+    return NULL;
+}
+
+static const char *set_scoreboard(cmd_parms *cmd, void *dummy, char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_scoreboard_fname = arg;
     return NULL;
 }
 
@@ -1434,6 +1447,8 @@ UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
 { "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
     "A file for logging the server process ID"},
+{ "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
+    "A file for Apache to maintain runtime process management information"},
 { "LockFile", set_lockfile, NULL, RSRC_CONF, TAKE1,
     "The lockfile used when Apache needs to lock the accept() call"},
 { "NumServers", set_num_daemons, NULL, RSRC_CONF, TAKE1,
