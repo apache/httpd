@@ -20,7 +20,7 @@
 -->
 
 <modulesynopsis metafile="mod_authn_anon.xml.meta">
-<!-- English Revision: 105989 -->
+<!-- English Revision: 125277 -->
 
 <name>mod_authn_anon</name>
 <description>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
