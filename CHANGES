@@ -1,11 +1,12 @@
 Changes with Apache 2.0.29-dev
 
   *) Remove commas from the end of the macros that define
-     directives that are used by MPMs.  Previous to this patch,
-     you would use these macros without commans, which was unlike
-     any other directives. Now, after the macro, you must have
-     a comma.  This makes the macros look more like the rest of the
-     directives.  [Ryan Bloom and Cliff Woolley]
+     directives that are used by MPMs.  Prior to this patch,
+     you would use these macros without commas, which was unlike
+     the macros for any other directives.  Now, the caller provides
+     the comma rather than the macro providing it.  This makes
+     the macros look more like the rest of the directives.
+     [Ryan Bloom and Cliff Woolley]
 
   *) Add 'redirect-carefully' environment option to disable sending
      redirects under special circumstances.  This is helpful for 
