@@ -847,15 +847,38 @@ static int ssl_init_FindCAList_X509NameCmp(X509_NAME **a, X509_NAME **b)
     return(X509_NAME_cmp(*a, *b));
 }
 
+static void ssl_init_PushCAList(STACK_OF(X509_NAME) *skCAList,
+                                server_rec *s, const char *file)
+{
+    int n;
+    STACK_OF(X509_NAME) *sk;
+
+    sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(file);
+
+    for (n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
+        X509_NAME *name = sk_X509_NAME_value(sk, n);
+
+        ssl_log(s, SSL_LOG_TRACE,
+                "CA certificate: %s",
+                X509_NAME_oneline(name, NULL, 0));
+
+        if (sk_X509_NAME_find(skCAList, name) < 0) {
+            /* this will be freed when skCAList is */
+            sk_X509_NAME_push(skCAList, name);
+        }
+        else {
+            /* need to free this ourselves, else it will leak */
+            X509_NAME_free(name);
+        }
+    }
+
+    sk_X509_NAME_free(sk);
+}
+
 STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const char *cpCAfile, const char *cpCApath)
 {
     STACK_OF(X509_NAME) *skCAList;
-    STACK_OF(X509_NAME) *sk;
-    apr_dir_t *dir;
-    apr_finfo_t direntry;
-    char *cp;
     apr_pool_t *p;
-    int n;
 
     /*
      * Use a subpool so we don't bloat up the server pool which
@@ -880,39 +903,20 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
      * Process CA certificate bundle file
      */
     if (cpCAfile != NULL) {
-        sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(cpCAfile);
-        for(n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
-            X509_NAME *name = sk_X509_NAME_value(sk, n);
-            ssl_log(s, SSL_LOG_TRACE,
-                    "CA certificate: %s",
-                    X509_NAME_oneline(name, NULL, 0));
-            if (sk_X509_NAME_find(skCAList, name) < 0)
-                sk_X509_NAME_push(skCAList, name); /* this will be freed when skCAList is */
-            else
-                X509_NAME_free(name);
-        }
-        sk_X509_NAME_free(sk);
+        ssl_init_PushCAList(skCAList, s, cpCAfile);
     }
 
     /*
      * Process CA certificate path files
      */
     if (cpCApath != NULL) {
+        apr_dir_t *dir;
+        apr_finfo_t direntry;
+
         apr_dir_open(&dir, cpCApath, p);
         while ((apr_dir_read(&direntry, APR_FINFO_DIRENT, dir)) != APR_SUCCESS) {
-            cp = apr_pstrcat(p, cpCApath, "/", direntry.name, NULL);
-            sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(cp);
-            for(n = 0; sk != NULL && n < sk_X509_NAME_num(sk); n++) {
-                X509_NAME *name = sk_X509_NAME_value(sk, n);
-                ssl_log(s, SSL_LOG_TRACE,
-                        "CA certificate: %s",
-                        X509_NAME_oneline(name, NULL, 0));
-                if (sk_X509_NAME_find(skCAList, name) < 0)
-                    sk_X509_NAME_push(skCAList, name); /* this will be freed when skCAList is */
-                else
-                    X509_NAME_free(name);
-            }
-            sk_X509_NAME_free(sk);
+            const char *cp = apr_pstrcat(p, cpCApath, "/", direntry.name, NULL);
+            ssl_init_PushCAList(skCAList, s, cp);
         }
         apr_dir_close(dir);
     }
