@@ -375,6 +375,23 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     </xsl:if>
   </xsl:template>
 
+  <!-- These templates just pass through their content -->
+  <xsl:template match="summary">
+    <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="description">
+    <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="usage">
+    <xsl:apply-templates/>
+  </xsl:template>
+
+  <xsl:template match="syntax">
+    <xsl:apply-templates/>
+  </xsl:template>
+
   <!-- Process everything else by just passing it through -->
   <xsl:template match="*|@*">
     <xsl:copy>
