@@ -72,7 +72,14 @@
 #include "http_config.h"
 #include "http_log.h"
 #include <assert.h>
+
+#ifdef NETWARE
+#include "test_char.h"
+#else
+/* XXX This should be fixed in the INCLUDE path of the makefile
+   so that a specific location is not hard coded here. */
 #include "../../main/test_char.h"
+#endif
 
 module MODULE_VAR_EXPORT log_forensic_module;
 
