@@ -59,8 +59,8 @@
 #include <strings.h>
 #endif
 
-static apr_status_t error_read(apr_bucket *b, const char **str,
-                               apr_size_t *len, apr_read_type_e block)
+static apr_status_t error_bucket_read(apr_bucket *b, const char **str,
+                                      apr_size_t *len, apr_read_type_e block)
 {
     *str = NULL;
     *len = 0;
@@ -98,7 +98,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
     "ERROR", 5,
     apr_bucket_free,
-    error_read,
+    error_bucket_read,
     apr_bucket_setaside_notimpl,
     apr_bucket_split_notimpl,
     apr_bucket_copy_notimpl
