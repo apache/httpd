@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) Fix memory leak in the cache handling of mod_rewrite. PR 27862.
+     [chunyan sheng <shengperson yahoo.com>, André Malo]
+
   *) Include directives no longer refuse to process symlinks on
      directories. Instead there's now a maximum nesting level
      of included directories (128 as distributed). This is configurable

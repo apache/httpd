@@ -4061,7 +4061,7 @@ static char *get_cache_string(cache *c, const char *res, int mode,
             return NULL;
         }
     }
-    return apr_pstrdup(c->pool, ce->value);
+    return ce->value;
 }
 
 static int cache_tlb_hash(char *key)
