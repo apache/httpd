@@ -13,10 +13,6 @@ AC_CONFIG_HEADER(include/ap_config_auto.h)
 APACHE_VERSION=$VERSION
 APACHE_SUBST(APACHE_VERSION)
 
-dnl
-dnl ## Preload our OS configuration
-APR_PRELOAD
-
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 test "$prefix" = "NONE" && prefix='/usr/local'
 
@@ -33,6 +29,10 @@ fi
 
 dnl ## Run configure for packages Apache uses
 AC_CONFIG_SUBDIRS(lib/apr)
+
+dnl
+dnl ## Preload our OS configuration
+APR_PRELOAD
 
 dnl ## Check for programs
 
