@@ -3144,7 +3144,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     char *str1;
     char str2[512];
     char str3[1024];
-    char *type;
+    const char *type;
     char redir[20]; /* enough for "/redir#%d" if int is 32 bit */
     va_list ap;
     int i;
