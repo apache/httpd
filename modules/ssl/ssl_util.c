@@ -336,8 +336,7 @@ ssl_util_getmodconfig_ssl(
 static apr_lock_t *lock_cs[CRYPTO_NUM_LOCKS];
 static long        lock_count[CRYPTO_NUM_LOCKS];
 
-static void ssl_util_thread_locking_callback(int mode, int type,
-                                             const char *file, int line)
+static void ssl_util_thr_lock(int mode, int type, const char *file, int line)
 {
     if (mode & CRYPTO_LOCK) {
         apr_lock_acquire(lock_cs[type]);
@@ -346,6 +345,11 @@ static void ssl_util_thread_locking_callback(int mode, int type,
     else {
         apr_lock_release(lock_cs[type]);
     }
+}
+
+static unsigned long ssl_util_thr_id()
+{
+    return (unsigned long) apr_os_thread_current();
 }
 
 static apr_status_t ssl_util_thread_cleanup(void *data)
@@ -385,7 +389,8 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
                         mc->szMutexFile, p);
     }
 
-    CRYPTO_set_locking_callback(ssl_util_thread_locking_callback);
+    CRYPTO_set_id_callback(ssl_util_thr_id);
+    CRYPTO_set_locking_callback(ssl_util_thr_lock);
 
     apr_pool_cleanup_register(p, NULL,
                               ssl_util_thread_cleanup,
