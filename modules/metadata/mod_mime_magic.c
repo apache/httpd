@@ -2482,7 +2482,11 @@ static int magic_find_ct(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_type_checker(magic_find_ct, NULL, NULL, HOOK_MIDDLE);
+    static const char * const aszPre[]={ "mod_mime.c", NULL };
+
+    /* mod_mime_magic should be run after mod_mime, if at all. */
+
+    ap_hook_type_checker(magic_find_ct, aszPre, NULL, HOOK_MIDDLE);
     ap_hook_post_config(magic_init, NULL, NULL, HOOK_FIRST);
 }
 
