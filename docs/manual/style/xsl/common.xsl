@@ -71,6 +71,9 @@
       <link title="No Sidebar - Default font size" type="text/css" media="all"
              rel="alternate stylesheet" 
              href="{$path}/style/css/manual-loose-100pc.css"/>
+      <link type="text/css" media="print"
+             rel="stylesheet"
+             href="{$path}/style/css/manual-print.css"/>
       
       <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
     </head>
