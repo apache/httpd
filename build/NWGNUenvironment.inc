@@ -189,7 +189,7 @@ INSTDEVDIRS := \
 
 INSTDIRS += \
 	$(INSTALL)\Apache2 \
-	$(INSTALL)\Apache2\cgi-examples \
+	$(INSTALL)\Apache2\cgi-bin \
 	$(INSTALL)\Apache2\conf \
 	$(INSTALL)\Apache2\error \
 	$(INSTALL)\Apache2\error\include \
