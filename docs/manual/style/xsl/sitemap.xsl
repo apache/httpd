@@ -23,11 +23,6 @@
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                   xmlns="http://www.w3.org/1999/xhtml">
 
-<!-- If we use document() in the context of this xsl file, the contextual -->
-<!-- CWD is the xsl file containing directory. $basedir reflects the      -->
-<!-- manual root for that case.                                           -->
-<xsl:variable name="basedir" select="'../../'" />
-
 <!-- ==================================================================== -->
 <!-- <sitemap>                                                            -->
 <!-- Process an entire document into an HTML page                         -->
@@ -177,8 +172,7 @@
 <xsl:variable name="translist">
     <xsl:text>-</xsl:text>
     <xsl:for-each select="modulefile">
-        <xsl:variable name="current"
-            select="document(concat($basedir,'mod/',.))/modulesynopsis" />
+        <xsl:variable name="current" select="document(.)/modulesynopsis" />
    
         <xsl:text> </xsl:text>
         <xsl:value-of select="$current/name" />
@@ -204,10 +198,9 @@
 
 <xsl:for-each select="modulefile">
 <xsl:sort select="substring-before(substring-after($translist, concat('- ',
-    document(concat($basedir,'mod/',.))/modulesynopsis/name, ' ')), ' -')" />
+                  document(.)/modulesynopsis/name, ' ')), ' -')" />
 
-    <xsl:variable name="current" select="document(concat($basedir, 'mod/', .))
-                                         /modulesynopsis" />
+    <xsl:variable name="current" select="document(.)/modulesynopsis" />
 
     <xsl:if test="$current/status='MPM' and $current/name!='mpm_common'">
         <xsl:variable name="name" select="substring-before(substring-after(
@@ -227,10 +220,9 @@
 <ul>
 <xsl:for-each select="modulefile">
 <xsl:sort select="substring-before(substring-after($translist, concat('- ',
-    document(concat($basedir,'mod/',.))/modulesynopsis/name, ' ')), ' -')"/>
+                  document(.)/modulesynopsis/name, ' ')), ' -')"/>
 
-    <xsl:variable name="current" select="document(concat($basedir,'mod/',.))
-                                         /modulesynopsis" />
+    <xsl:variable name="current" select="document(.)/modulesynopsis" />
 
     <xsl:if test="$current/status!='MPM' and $current/status!='Core'">
         <li>
