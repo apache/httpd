@@ -138,7 +138,8 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
 
 
 /* do a HTTP/1.1 age calculation */
-CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value)
+CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value,
+                                                apr_time_t now)
 {
     apr_time_t apparent_age, corrected_received_age, response_delay, corrected_initial_age,
            resident_time, current_age;
@@ -149,7 +150,7 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info, const apr_time
     corrected_received_age = MAX(apparent_age, age_value);
     response_delay = info->response_time - info->request_time;
     corrected_initial_age = corrected_received_age + response_delay;
-    resident_time = apr_time_now() - info->response_time;
+    resident_time = now - info->response_time;
     current_age = corrected_initial_age + resident_time;
 
     return apr_time_sec(current_age);
@@ -206,7 +207,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     }
 
     /* calculate age of object */
-    age = ap_cache_current_age(info, age_c);
+    age = ap_cache_current_age(info, age_c, r->request_time);
 
     /* extract s-maxage */
     if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val))
