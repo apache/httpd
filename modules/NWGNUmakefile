@@ -1,6 +1,8 @@
 #
 # Declare the sub-directories to be built here
 #
+# To build the experimental modules, add "experimental \" 
+# to the list below.
 
 SUBDIRS = \
 	aaa \
