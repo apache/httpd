@@ -169,11 +169,6 @@
     <title>Sonstige &#196;nderungen</title>
 
     <ul>
-      <li>Die <code>httpd</code>-Kommandozeilenoption
-      <code>-S</code>, die dazu verwendet wurde, die
-      Virtual-Host-Konfiguration auszugeben, wurde durch
-      <code>-t -D DUMP_VHOSTS</code> ersetzt.</li>
-
       <li>Das Modul <module>mod_auth_digest</module>, das im Apache 1.3
       experimentellen Status hatte, ist nun ein Standardmodul.</li>
 
