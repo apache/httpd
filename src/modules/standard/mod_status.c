@@ -71,6 +71,7 @@
  * 25.3.96  Make short report have full precision [Ben Laurie suggested]
  * 25.3.96  Show uptime better [Mark/Ben Laurie]
  * 29.3.96  Better HTML and explanation [Mark/Rob Hartill suggested]
+ * 09.4.96  Added message for non-STATUS compiled version
  */
 
 #include "httpd.h"
@@ -327,6 +328,11 @@ int status_handler (request_rec *r)
 	    rputs(buffer,r);
 	    }
     }
+#else
+    rputs("<hr>To obtain a full report with current status information ",r);
+    rputs("you need to recompile Apache adding the <code>-DSTATUS</code> ",r);
+    rputs("directive on the <code>CFLAGS</code> line in the ",r);
+    rputs("<code>Configuration</code> file.",r);
 #endif
     if (!short_report)
         rputs("</body></html>",r);
