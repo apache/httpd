@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.19 $ -->
+<!-- $Revision: 1.20 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -91,6 +91,8 @@ configuration</description>
             <dd>Only information relevant to the named module</dd>
         <dt><code>?config</code></dt>
             <dd>Just the configuration directives, not sorted by module</dd>
+        <dt><code>?hooks</code></dt>
+            <dd>Only the list of Hooks each module is attached to</dd>
         <dt><code>?list</code></dt>
             <dd>Only a simple list of enabled modules</dd>
         <dt><code>?server</code></dt>
