@@ -274,10 +274,12 @@ static void file_cache_post_config(ap_pool_t *p, ap_pool_t *plog,
                                    ap_pool_t *ptemp, server_rec *s)
 {
     a_server_config *sconf;
-    ap_array_header_t *inodes;
     a_file *elts;
     int nelts;
+#ifndef WIN32
+    ap_array_header_t *inodes;
     int i;
+#endif
     
     context = p;    
     /* sort the elements of the main_server, by filename */
@@ -391,9 +393,11 @@ static int file_cache_handler(request_rec *r)
     a_server_config *sconf;
     a_file tmp;
     a_file *ptmp;
-    a_file **pmatch;
     a_file *match;
     int rangestatus, errstatus;
+#ifndef WIN32
+    a_file **pmatch;
+#endif
 
     /* we don't handle anything but GET */
     if (r->method_number != M_GET) return DECLINED;
