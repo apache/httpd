@@ -379,6 +379,7 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
         return NULL;
     }
 
+    ugid->userdir = 1;
 #endif 
     return ugid;
 }

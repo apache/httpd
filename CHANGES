@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Fix suexec behavior with user directories.  PR 7810.
+     [Colm <colmmacc@redbrick.dcu.ie>]
+
   *) Reject a blank UserDir directive since it is ambiguous.  PR 8472.
      [Justin Erenkrantz]
 
