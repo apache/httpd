@@ -281,6 +281,7 @@ static int translate_userdir(request_rec *r)
     while (*userdirs) {
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
+        apr_status_t rv;
 
         if (ap_strchr_c(userdir, '*'))
             x = ap_getword(r->pool, &userdir, '*');
@@ -322,15 +323,10 @@ static int translate_userdir(request_rec *r)
             char *homedir;
 
             if (apr_get_home_directory(&homedir, w, r->pool) == APR_SUCCESS) {
-#ifdef OS2      /* XXX should this OS/2 logic move to APR? */
-                /* Need to manually add user name for OS/2 */
-                filename = apr_pstrcat(r->pool, homedir, w, "/", userdir, NULL);
-#else
                 filename = apr_pstrcat(r->pool, homedir, "/", userdir, NULL);
-#endif
             }
             else {
-                /* XXX old code ignored this error... */
+                return DECLINED;
             }
 #else
             return DECLINED;
@@ -343,11 +339,13 @@ static int translate_userdir(request_rec *r)
          * anyway, in the hope that some handler might handle it. This can be
          * used, for example, to run a CGI script for the user.
          */
-        if (filename && (!*userdirs || 
-            apr_stat(&statbuf, filename, 
-                     APR_FINFO_NORM, r->pool) == APR_SUCCESS)) {
+        if (filename && (!*userdirs 
+                      || ((rv = apr_stat(&statbuf, filename, APR_FINFO_NORM,
+                                         r->pool)) == APR_SUCCESS
+                                             || rv == APR_INCOMPLETE))) {
             r->filename = apr_pstrcat(r->pool, filename, dname, NULL);
-	    /* when statbuf contains info on r->filename we can save a syscall
+	    /* XXX: Does this walk us around FollowSymLink rules?
+             * When statbuf contains info on r->filename we can save a syscall
 	     * by copying it to r->finfo
 	     */
 	    if (*userdirs && dname[0] == 0)
