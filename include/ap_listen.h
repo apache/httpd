@@ -64,7 +64,6 @@ struct ap_listen_rec {
     struct sockaddr_in local_addr;	/* local IP address and port */
 /* TODO: replace the fd with APR stuff */
     int fd;
-    int index; /* index into pollfd array */
 /* more stuff here, like which protocol is bound to the port */
 };
 
