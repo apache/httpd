@@ -150,13 +150,14 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 	    return "Regular expression could not be compiled.";
         new->real = r;
     }
-#ifndef OS2
-    else
-        new->real = ap_os_canonical_filename(cmd->pool, r);
-#else
-    new->real = r;
-#endif
-
+    else {
+        /* XXX This may be optimized, but we must know that new->real
+         * exists.  If so, we can dir merge later, trusing new->real
+         * and just canonicalizing the remainder.  Not till I finish
+         * cleaning out the old ap_canonical stuff first.
+         */
+        new->real = r;
+    }
     new->fake = f;
     new->handler = cmd->info;
 
@@ -373,7 +374,12 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
 		r->handler = p->handler;
 		apr_table_setn(r->notes, "alias-forced-type", r->handler);
 	    }
-
+            /* XXX This is as SLOW as can be, next step, we optimize
+             * and merge to whatever part of the found path was already
+             * canonicalized.  After I finish eliminating os canonical.
+             */
+            if (!doesc)
+                found = ap_server_root_relative(r->pool, found);
 	    *status = p->redir_status;
 
 	    return found;
