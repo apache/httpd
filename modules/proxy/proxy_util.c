@@ -1145,14 +1145,13 @@ int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, reques
     }
     for(;;)
     {
-        switch(apr_connect(sock, host))
-        {
-        case APR_EINTR:
+        apr_status_t rv = apr_connect(sock, host);
+        if (APR_STATUS_IS_EINTR(rv))
             continue;
-        case APR_SUCCESS:
+        else if (rv == APR_SUCCESS)
             return 0;
-        default:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "proxy connect to %s port %d failed", host, port);
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy connect to %s port %d failed", host, port);
             return -1;
         }
     }
