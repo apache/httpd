@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/30 12:27:03 $]
+Last modified at [$Date: 2000/07/31 01:41:02 $]
 
 Release:
 
@@ -58,6 +58,8 @@ RELEASE SHOWSTOPPERS:
 
     * Graceful restart doesn't work for dexter, mpmt_pthread, and
       probably the other Unix MPMs as well
+      status:  A patch has been applied to the tree, but it needs to be
+               tested.   Rbb
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
