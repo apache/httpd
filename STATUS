@@ -110,6 +110,11 @@ Committed Code Changes:
     * Dean's protect against FD_SETSIZE mismatches
     * Ralf's fallback stategy because of HIDE for loading shared object modules
     * Martin's fix to allow %2F chars in proxy requests and in the uri query part
+    * fix to mark listening sockets for closure in the parent after a SIGHUP 
+    * Dean's clean up undefined signals on some platforms (SCO, BeOS).
+    * Dean's fix for making work the `HostnameLookups Off'
+    * Dean's mark of a few bitfields as signed to ensure correct code. 
+    * Dean's changes to scoreboard defs which helps gcc generate better code.
 
 Available Patches:
 
