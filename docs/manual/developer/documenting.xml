@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage>
+<relativepath href=".."/>
+
+<title>Documenting Apache 2.0</title>
+
+<summary>
+    <p>Apache 2.0 uses <a href="http://www.doxygen.org/">Doxygen</a> to
+    document the APIs and global variables in the the code. This will explain
+    the basics of how to document using Doxygen.</p>
+</summary>
+
+<section id="brief"><title>Brief Description</title>
+    <p>To start a documentation block, use <code>/**</code><br />
+    To end a documentation block, use <code>*/</code></p>
+
+    <p>In the middle of the block, there are multiple tags we can
+    use:</p>
+
+    <example>
+      Description of this functions purpose<br />
+      @param parameter_name description<br />
+      @return description<br />
+      @deffunc signature of the function<br />
+    </example>
+      
+    <p>The <code>deffunc</code> is not always necessary. DoxyGen does not
+    have a full parser  in it, so any prototype that use a macro in the
+    return type declaration is too complex for scandoc. Those functions
+    require a <code>deffunc</code>. An example (using &amp;gt; rather
+    than &gt;):</p>
+
+    <example>
+      /**<br />
+ &nbsp;* return the final element of the pathname<br />
+ &nbsp;* @param pathname The path to get the final element of<br />
+ &nbsp;* @return the final element of the path<br />
+ &nbsp;* @tip Examples:<br />
+ &nbsp;* &lt;pre&gt;<br />
+ &nbsp;*                 "/foo/bar/gum"   -&amp;gt; "gum"<br />
+ &nbsp;*                 "/foo/bar/gum/"  -&amp;gt; ""<br />
+ &nbsp;*                 "gum"            -&amp;gt; "gum"<br />
+ &nbsp;*                 "wi\\n32\\stuff" -&amp;gt; "stuff"<br />
+ &nbsp;* &lt;/pre&gt;<br />
+ &nbsp;* @deffunc const char * ap_filename_of_pathname(const char *pathname)<br />
+ &nbsp;*/
+    </example>
+
+    <p>At the top of the header file, always include:</p>
+    <example>
+      /**<br />
+ &nbsp;* @package Name of library header<br />
+ &nbsp;*/
+    </example>
+
+    <p>Doxygen uses a new HTML file for each package. The HTML files are named
+    {Name_of_library_header}.html, so try to be concise with your names.</p>
+
+    <p>For a further discussion of the possibilities please refer to
+    <a href="http://www.doxygen.org/">the Doxygen site</a>.</p>
+</section>
+</manualpage>
+
