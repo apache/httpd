@@ -429,7 +429,8 @@ int cgi_handler (request_rec *r)
 		if ((dbpos + len_read) > conf->bufbytes)
 		    dbsize = conf->bufbytes - dbpos;
 		else dbsize = len_read;
-		strncpy(dbuf + dbpos, argsbuffer, dbsize);
+                reset_timeout(r);
+                memcpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
 	    }
 	    if (fwrite(argsbuffer, 1, len_read, script_out) < (size_t)len_read) {
