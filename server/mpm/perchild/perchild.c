@@ -1356,10 +1356,13 @@ static int pass_request(request_rec *r)
     apr_get_userdata((void **)&foo, "PERCHILD_BUFFER", r->connection->pool);
     len = strlen(foo);
 
+    apr_set_userdata(NULL, "PERCHILD_BUFFER", apr_null_cleanup, 
+                     r->connection->pool);
+
     apr_get_os_sock(&sfd, thesock);
 
-    iov.iov_base = (char *)sconf->fullsockname;
-    iov.iov_len = strlen(sconf->fullsockname) + 1;
+    iov.iov_base = NULL;
+    iov.iov_len = 0;
 
     msg.msg_name = NULL;
     msg.msg_namelen = 0;
@@ -1384,7 +1387,7 @@ static int pass_request(request_rec *r)
 
     write(sconf->sd2, foo, len);
    
-    while (ap_get_brigade(r->input_filters, bb, AP_MODE_NONBLOCKING) != APR_SUCCESS) {
+    while (ap_get_brigade(r->input_filters, bb, AP_MODE_NONBLOCKING) == APR_SUCCESS) {
         ap_bucket *e;
         AP_BRIGADE_FOREACH(e, bb) {
             const char *str;
@@ -1497,10 +1500,11 @@ static apr_status_t perchild_buffer(ap_filter_t *f, ap_bucket_brigade *b, ap_inp
             ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
        
             if (buffer == NULL) {
-                buffer = apr_pstrdup(f->c->pool, str);
+                buffer = apr_pstrndup(f->c->pool, str, len);
             }
             else {
-               buffer = apr_pstrcat(f->c->pool, buffer, str, NULL);
+               buffer = apr_pstrcat(f->c->pool, buffer, 
+                                    apr_pstrndup(f->c->pool, str, len), NULL);
             } 
         }
     }
