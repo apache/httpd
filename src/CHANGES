@@ -1,5 +1,8 @@
 Changes with Apache 1.3.27
 
+  *) Use SysV semaphores by default on OpenBSD. [Henning Brauer 
+     <hb-apache-dev@bsws.de>]
+
   *) httpd -V will now also print out the compile time defined
      HARD_SERVER_LIMIT value. [Dirk-Willem van Gulik].
 

@@ -688,6 +688,10 @@ extern char *crypt();
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #define HAVE_FLOCK_SERIALIZED_ACCEPT
+#if defined(__OpenBSD__)
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
+#define USE_SYSVSEM_SERIALIZED_ACCEPT
+#endif
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #elif defined(UTS21)
