@@ -25,8 +25,6 @@
 <a href="../en/mod/mpm_common.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mpm_common.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr></table>
@@ -223,7 +221,7 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
     <p>特記事項: このディレクティブを
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     で使用することはサポートされなくなりました。Apache 2.0 で
-    <a href="../suexec.html">suexec</a> を設定したい場合は、
+    <code class="program"><a href="../programs/suexec.html">suexec</a></code> を設定したい場合は、
     <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
     を使用してください。</p>
 
@@ -288,6 +286,13 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
     <div class="example"><p><code>
        Listen [fe80::a00:20ff:fea7:ccea]:80
     </code></p></div>
+
+    <div class="note"><h3>エラー条件</h3>
+      同一 IP アドレスとポートの組に、複数の <code>Listen</code> 
+      ディレクティブを指定してしまうと、'Address already in use' 
+      というエラーメッセージを受けることになります。
+    </div>
+
 
 <h3>参照</h3>
 <ul>
@@ -601,7 +606,7 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 
     <div class="note"><h3>注意</h3>
       <p>Apache 2 では、
-      <a href="../programs/apachectl.html">apachectl</a>
+      <code class="program"><a href="../programs/apachectl.html">apachectl</a></code>
       スクリプトのみを使用してサーバの (再) 起動や停止を
       行なうことを推奨しています。</p>
     </div>
@@ -953,7 +958,7 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
     <p>特記事項: このディレクティブを
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     で使用することはサポートされなくなりました。
-    <a href="../suexec.html">suexec</a> 向けにサーバを設定するのであれば、
+    <code class="program"><a href="../programs/suexec.html">suexec</a></code> 向けにサーバを設定するのであれば、
     <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
     を使用してください。</p>
 

@@ -25,21 +25,15 @@
 <a href="../ja/mod/mod_disk_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツキャッシュストレージ管理</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>disk_cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_disk_cache.c</td></tr></table>
 <h3>概要</h3>
 
-    <div class="warning">
-      これは実験的なモジュールです。ドキュメンテーションもまだ開発中です...
-    </div>
-
     <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> はディスクを使用したストレージ
     管理機構を実装しています。主に
-    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> と組み合わせて使われます。</p>
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> と組み合わせて使われます。</p>
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
@@ -66,7 +60,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDirLength <var>length</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLength 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p><code class="directive">CacheDirLength</code> ディレクティブはキャッシュ
@@ -90,7 +84,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDirLevels <var>levels</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLevels 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p><code class="directive">CacheDirLevels</code> ディレクティブはキャッシュの
@@ -115,7 +109,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMaxFileSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p><code class="directive">CacheMaxFileSize</code> ディレクティブは、ドキュメントを
@@ -133,7 +127,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMinFileSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p><code class="directive">CacheMinFileSize</code> ディレクティブは、ドキュメントを
@@ -150,7 +144,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュファイルが保管されるルートディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p><code class="directive">CacheRoot</code> ディレクティブはキャッシュファイルを
