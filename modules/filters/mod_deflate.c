@@ -529,6 +529,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         if (APR_BUCKET_IS_FLUSH(e)) {
             apr_bucket *bkt;
+            apr_status_t rv;
+
             zRC = deflate(&(ctx->stream), Z_SYNC_FLUSH);
             if (zRC != Z_OK) {
                 return APR_EGENERAL;
@@ -544,7 +546,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             bkt = apr_bucket_flush_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, bkt);
-            ap_pass_brigade(f->next, ctx->bb);
+            rv = ap_pass_brigade(f->next, ctx->bb);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
             continue;
         }
 
@@ -562,6 +567,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
+                apr_status_t rv;
+
                 ctx->stream.next_out = ctx->buffer;
                 len = c->bufferSize - ctx->stream.avail_out;
 
@@ -569,6 +576,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                                            NULL, f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                 ctx->stream.avail_out = c->bufferSize;
+                /* Send what we have right now to the next filter. */
+                rv = ap_pass_brigade(f->next, ctx->bb);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
             }
 
             zRC = deflate(&(ctx->stream), Z_NO_FLUSH);
