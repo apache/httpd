@@ -16,7 +16,6 @@ body {
 
 pre, code {
     font-family: "Courier New", Courier, monospace;
-    font-weight: normal;
 }
 
 strong {
@@ -60,18 +59,18 @@ a:active {
 /* ====================== */
 code.module,
 code.module a:link {
-    color: #0073c7; /* #bc0f00; */
+    color: #8B4513; /* #bc0f00; */
     background-color: inherit;
 }
 
 code.module a:visited {
-    color: #54acc4; /* #a06b66; */
+    color: #BC8F8F; /* #a06b66; */
     background-color: inherit;
 }
 
 code.module a:hover,
 code.module a:active {
-    color: #0073c7; /* #bc0f00; */
+    color: #8B4513; /* #bc0f00; */
     background-color: #f0f0f0;
 }
 
@@ -748,7 +747,7 @@ div#page-content {
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 html {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 h1 {
@@ -773,7 +772,7 @@ div.example pre,
 div.example code,
 div.note pre,
 div.warning pre {
-    font-size: 15px;
+    font-size: 13px;
 }
 
 div#page-header p.apache {
