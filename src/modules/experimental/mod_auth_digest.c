@@ -212,7 +212,8 @@ typedef struct digest_header_struct {
     /* the following fields are not (directly) from the header */
     time_t                nonce_time;
     enum hdr_sts          auth_hdr_sts;
-    uri_components       *request_uri;
+    const char           *raw_request_uri;
+    uri_components       *psd_request_uri;
     int                   needed_auth;
     client_entry         *client;
 } digest_header_rec;
@@ -498,9 +499,9 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
      * and directives outside a virtual host section)
      */
     ap_SHA1Init(&conf->nonce_ctx);
+    ap_SHA1Update_binary(&conf->nonce_ctx, secret, sizeof(secret));
     ap_SHA1Update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
 			 strlen(realm));
-    ap_SHA1Update_binary(&conf->nonce_ctx, secret, sizeof(secret));
 
     return DECLINE_CMD;
 }
@@ -911,7 +912,8 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
     }
 
     if (!resp->username || !resp->realm || !resp->nonce || !resp->uri
-	|| !resp->digest) {
+	|| !resp->digest
+	|| (resp->message_qop && (!resp->cnonce || !resp->nonce_count))) {
 	resp->auth_hdr_sts = INVALID;
 	return !OK;
     }
@@ -944,7 +946,8 @@ static int update_nonce_count(request_rec *r)
 	return DECLINED;
 
     resp = ap_pcalloc(r->pool, sizeof(digest_header_rec));
-    resp->request_uri = &r->parsed_uri;
+    resp->raw_request_uri = r->unparsed_uri;
+    resp->psd_request_uri = &r->parsed_uri;
     resp->needed_auth = 0;
     ap_set_module_config(r->request_config, &digest_auth_module, resp);
 
@@ -1273,7 +1276,7 @@ static void note_digest_auth_failure(request_rec *r,
 	domain = conf->uri_list;
     else {
 	/* They didn't specify any domain, so let's guess at it */
-	domain = guess_domain(r->pool, resp->request_uri->path, r->filename,
+	domain = guess_domain(r->pool, resp->psd_request_uri->path, r->filename,
 			      conf->dir_name);
 	if (domain[0] == '/' && domain[1] == '\0')
 	    domain = NULL;	/* "/" is the default, so no need to send it */
@@ -1460,6 +1463,36 @@ static const char *new_digest(const request_rec *r,
 }
 
 
+static void copy_uri_components(uri_components *dst, uri_components *src,
+				request_rec *r) {
+    if (src->scheme && src->scheme[0] != '\0')
+	dst->scheme = src->scheme;
+    else
+	dst->scheme = (char *) "http";
+
+    if (src->hostname && src->hostname[0] != '\0') {
+	dst->hostname = ap_pstrdup(r->pool, src->hostname);
+	ap_unescape_url(dst->hostname);
+    }
+    else
+	dst->hostname = (char *) ap_get_server_name(r);
+
+    if (src->port_str && src->port_str[0] != '\0')
+	dst->port = src->port;
+    else
+	dst->port = ap_get_server_port(r);
+
+    if (src->path && src->path[0] != '\0') {
+	dst->path = ap_pstrdup(r->pool, src->path);
+	ap_unescape_url(dst->path);
+    }
+
+    if (src->query && src->query[0] != '\0') {
+	dst->query = ap_pstrdup(r->pool, src->query);
+	ap_unescape_url(dst->query);
+    }
+}
+
 /* These functions return 0 if client is OK, and proper error status
  * if not... either AUTH_REQUIRED, if we made a check, and it failed, or
  * SERVER_ERROR, if things are so totally confused that we couldn't
@@ -1521,8 +1554,9 @@ static int authenticate_digest_user(request_rec *r)
 			  "`%s': %s", resp->scheme, r->uri);
 	else if (resp->auth_hdr_sts == INVALID)
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-			  "Digest: missing user, realm, nonce, uri, or digest "
-			  "in authorization header: %s", r->uri);
+			  "Digest: missing user, realm, nonce, uri, digest, "
+			  "cnonce, or nonce_count in authorization header: %s",
+			  r->uri);
 	/* else (resp->auth_hdr_sts == NO_HEADER) */
 	note_digest_auth_failure(r, conf, resp, 0);
 	return AUTH_REQUIRED;
@@ -1534,10 +1568,13 @@ static int authenticate_digest_user(request_rec *r)
 
     /* check the auth attributes */
 
-    if (strcmp(resp->uri, resp->request_uri->path)) {
-	uri_components *r_uri = resp->request_uri, d_uri;
-	int port;
+    if (strcmp(resp->uri, resp->raw_request_uri)) {
+	/* Hmm, the simple match didn't work (probably a proxy modified the
+	 * request-uri), so lets do a more sophisticated match
+	 */
+	uri_components r_uri, d_uri;
 
+	copy_uri_components(&r_uri, resp->psd_request_uri, r);
 	if (ap_parse_uri_components(r->pool, resp->uri, &d_uri) != HTTP_OK) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			  "Digest: invalid uri <%s> in Authorization header",
@@ -1551,24 +1588,40 @@ static int authenticate_digest_user(request_rec *r)
 	    ap_unescape_url(d_uri.path);
 	if (d_uri.query)
 	    ap_unescape_url(d_uri.query);
-	if (r_uri->query)
-	    ap_unescape_url(r_uri->query);
-	port = ap_get_server_port(r);
 
-	if ((d_uri.hostname && d_uri.hostname[0] != '\0'
-	     && strcasecmp(d_uri.hostname, ap_get_server_name(r)))
-	    || (d_uri.port_str && d_uri.port != port)
+	if (r->method_number == M_CONNECT) {
+	    if (strcmp(resp->uri, r_uri.hostinfo)) {
+		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+			      "Digest: uri mismatch - <%s> does not match "
+			      "request-uri <%s>", resp->uri, r_uri.hostinfo);
+		return BAD_REQUEST;
+	    }
+	}
+	else if (
+	    /* check hostname matches, if present */
+	    (d_uri.hostname && d_uri.hostname[0] != '\0'
+	      && strcasecmp(d_uri.hostname, r_uri.hostname))
+	    /* check port matches, if present */
+	    || (d_uri.port_str && d_uri.port != r_uri.port)
+	    /* check that server-port is default port if no port present */
 	    || (d_uri.hostname && d_uri.hostname[0] != '\0'
-		&& !d_uri.port_str && port != ap_default_port(r))
-	    || !d_uri.path || strcmp(d_uri.path, r_uri->path)
-	    || (d_uri.query != r_uri->query
-		&& (!d_uri.query || !r_uri->query
-		    || strcmp(d_uri.query, r_uri->query)))
+		&& !d_uri.port_str && r_uri.port != ap_default_port(r))
+	    /* check that path matches */
+	    || (d_uri.path != r_uri.path
+		/* either exact match */
+	        && (!d_uri.path || !r_uri.path
+		    || strcmp(d_uri.path, r_uri.path))
+		/* or '*' matches empty path in scheme://host */
+	        && !(d_uri.path && !r_uri.path && resp->psd_request_uri->hostname
+		    && d_uri.path[0] == '*' && d_uri.path[1] == '\0'))
+	    /* check that query matches */
+	    || (d_uri.query != r_uri.query
+		&& (!d_uri.query || !r_uri.query
+		    || strcmp(d_uri.query, r_uri.query)))
 	    ) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
 			  "Digest: uri mismatch - <%s> does not match "
-			  "request-uri <%s>", resp->uri,
-			  ap_unparse_uri_components(r->pool, r_uri, 0));
+			  "request-uri <%s>", resp->uri, resp->raw_request_uri);
 	    return BAD_REQUEST;
 	}
     }
@@ -1831,9 +1884,8 @@ static int add_auth_info(request_rec *r)
 	 */
 	char *entity_info =
 	    ap_md5(r->pool,
-		   (unsigned char *) ap_pstrcat(r->pool,
-		       ap_unparse_uri_components(r->pool,
-						 resp->request_uri, 0), ":",
+		   (unsigned char *) ap_pstrcat(r->pool, resp->raw_request_uri,
+		       ":",
 		       r->content_type ? r->content_type : ap_default_type(r), ":",
 		       hdr(r->headers_out, "Content-Length"), ":",
 		       r->content_encoding ? r->content_encoding : "", ":",
@@ -1864,7 +1916,8 @@ static int add_auth_info(request_rec *r)
 				   gen_nonce(r->pool, r->request_time,
 					     resp->opaque, r->server, conf),
 				   "\"", NULL);
-	    resp->client->nonce_count = 0;
+	    if (resp->client)
+		resp->client->nonce_count = 0;
 	}
     }
     else if (conf->nonce_lifetime == 0 && resp->client) {

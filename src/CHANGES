@@ -1,5 +1,12 @@
 Changes with Apache 1.3.10
 
+  *) more fixes to mod_auth_digest:
+     - better comparing of request-uri with uri parameter in Authorization
+       header
+     - added a check for a MUST condition in the spec
+     - fixed SEGV
+     [Ronald Tschalär]
+
   *) mod_proxy now works on TPF.
      [Joe Moenich <moenich@us.ibm.com>]
 
