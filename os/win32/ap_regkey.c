@@ -443,7 +443,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
 
 AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key, 
                                                  const char *valuename, 
-                                                 void *value, 
+                                                 const void *value, 
                                                  apr_size_t valuesize,
                                                  apr_int32_t valuetype,
                                                  apr_pool_t *pool)
