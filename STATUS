@@ -204,15 +204,15 @@ Available Patches:
 
       CV1: The recommended-way commit:
 
-         README                apache-1.3/apaci/README          
-         INSTALL               apache-1.3/apaci/INSTALL         
-         configure             apache-1.3/apaci/configure       
-         Makefile.tmpl         apache-1.3/apaci/Makefile.tmpl   
-         aux/fmn.sh       ==>  apache-1.3/apaci/src/helpers/fmn.sh      
-         aux/install.sh        apache-1.3/apaci/src/helpers/install.sh  
-         aux/mkdir.sh          apache-1.3/apaci/src/helpers/mkdir.sh    
-         aux/mkshadow.sh       apache-1.3/apaci/src/helpers/mkshadow.sh 
-         aux/ppl.sh            apache-1.3/apaci/src/helpers/ppl.sh      
+         README                apache-1.3/README.configure
+         INSTALL               apache-1.3/INSTALL         
+         configure             apache-1.3/configure       
+         Makefile.tmpl         apache-1.3/Makefile.tmpl   
+         aux/fmn.sh       ==>  apache-1.3/src/helpers/fmn.sh      
+         aux/install.sh        apache-1.3/src/helpers/install.sh  
+         aux/mkdir.sh          apache-1.3/src/helpers/mkdir.sh    
+         aux/mkshadow.sh       apache-1.3/src/helpers/mkshadow.sh 
+         aux/ppl.sh            apache-1.3/src/helpers/ppl.sh      
 
         Advantages:    - the user finds APACI easily because it stays
                          where it is expected to stay: in the top-level
