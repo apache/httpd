@@ -186,6 +186,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_charset_lite.html">Módulo Apache mod_charset_lite</a></li>
 <li><a href="mod/mod_dav.html">Módulo Apache mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Módulo Apache mod_dav_fs</a></li>
+<li><a href="mod/mod_dav_lock.html">Módulo Apache mod_dav_lock</a></li>
 <li><a href="mod/mod_deflate.html">Módulo Apache mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">Módulo Apache mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Módulo Apache mod_disk_cache</a></li>

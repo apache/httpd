@@ -180,6 +180,7 @@
 <li><a href="mod/mod_charset_lite.html">Apache モジュール mod_charset_lite</a></li>
 <li><a href="mod/mod_dav.html">Apache モジュール mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache モジュール mod_dav_fs</a></li>
+<li><a href="mod/mod_dav_lock.html">Apache モジュール mod_dav_lock</a></li>
 <li><a href="mod/mod_deflate.html">Apache モジュール mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">Apache モジュール mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Apache モジュール mod_disk_cache</a></li>

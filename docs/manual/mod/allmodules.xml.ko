@@ -26,6 +26,7 @@
   <modulefile>mod_charset_lite.xml.ko</modulefile>
   <modulefile>mod_dav.xml.ko</modulefile>
   <modulefile>mod_dav_fs.xml.ko</modulefile>
+  <modulefile>mod_dav_lock.xml</modulefile>
   <modulefile>mod_deflate.xml.ko</modulefile>
   <modulefile>mod_dir.xml.ko</modulefile>
   <modulefile>mod_disk_cache.xml.ko</modulefile>
