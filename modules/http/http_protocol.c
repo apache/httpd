@@ -2267,7 +2267,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
         apr_table_unset(r->headers_out, "Content-Length");
         /* Disable the buffer filter because it may be masking bugs in the 
          * bucket brigade code  */
-        ap_add_output_filter("COALESCE", NULL, r, r->connection);
+//        ap_add_output_filter("COALESCE", NULL, r, r->connection);
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
 
@@ -3157,7 +3157,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                     NULL);
 
         terminate_header(r);
-
+        ap_finalize_request_protocol(r);
         return;
     }
 
