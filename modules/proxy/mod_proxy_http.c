@@ -873,7 +873,17 @@ static void process_proxy_header(request_rec* r, proxy_server_conf* c,
     return ;
 }
 
-static void ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer, int size, conn_rec *c)
+/*
+ * Note: pread_len is the length of the response that we've  mistakenly
+ * read (assuming that we don't consider that an  error via
+ * ProxyBadHeader StartBody). This depends on buffer actually being
+ * local storage to the calling code in order for pread_len to make
+ * any sense at all, since we depend on buffer still containing
+ * what was read by ap_getline() upon return.
+ */
+static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
+                                  char *buffer, int size,
+                                  conn_rec *c, int *pread_len)
 {
     int len;
     char *value, *end;
@@ -885,6 +895,7 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer,
     psc = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     r->headers_out = apr_table_make(r->pool, 20);
+    *pread_len = 0;
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -913,16 +924,14 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer,
                 else if (psc->badopt == bad_body) {
                     /* if we've already started loading headers_out, then
                      * return what we've accumulated so far, in the hopes
-                     * that they are useful. Otherwise, we completely bail.
-                     */
-                    /* FIXME: We've already scarfed the supposed 1st line of
-                     * the body, so the actual content may end up being bogus
-                     * as well. If the content is HTML, we may be lucky.
+                     * that they are useful; also note that we likely pre-read
+                     * the first line of the response.
                      */
                     if (saw_headers) {
                         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
                          "proxy: Starting body due to bogus non-header in headers "
                          "returned by %s (%s)", r->uri, r->method);
+                        *pread_len = len;
                         return ;
                     } else {
                          ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
@@ -994,6 +1003,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     int len, backasswards;
     int interim_response; /* non-zero whilst interim 1xx responses
                            * are being read. */
+    int pread_len = 0;
     apr_table_t *save_table;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
@@ -1073,7 +1083,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          "Set-Cookie", NULL);
 
         /* shove the headers direct into r->headers_out */
-            ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin);
+            ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin,
+                                  &pread_len);
 
             if (r->headers_out == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
@@ -1179,19 +1190,27 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
 
         r->sent_bodyct = 1;
-        /* Is it an HTTP/0.9 response? If so, send the extra data */
-        if (backasswards) {
-            apr_ssize_t cntr = len;
-            /*@@@FIXME:
-             * At this point in response processing of a 0.9 response,
-             * we don't know yet whether data is binary or not.
-             * mod_charset_lite will get control later on, so it cannot
-             * decide on the conversion of this buffer full of data.
-             * However, chances are that we are not really talking to an
-             * HTTP/0.9 server, but to some different protocol, therefore
-             * the best guess IMHO is to always treat the buffer as "text/x":
-             */
-            ap_xlate_proto_to_ascii(buffer, len);
+        /*
+         * Is it an HTTP/0.9 response or did we maybe preread the 1st line of
+         * the response? If so, load the extra data. These are 2 mutually
+         * exclusive possibilities, that just happen to require very
+         * similar behavior.
+         */
+        if (backasswards || pread_len) {
+            apr_ssize_t cntr = (apr_ssize_t)pread_len;
+            if (backasswards) {
+                /*@@@FIXME:
+                 * At this point in response processing of a 0.9 response,
+                 * we don't know yet whether data is binary or not.
+                 * mod_charset_lite will get control later on, so it cannot
+                 * decide on the conversion of this buffer full of data.
+                 * However, chances are that we are not really talking to an
+                 * HTTP/0.9 server, but to some different protocol, therefore
+                 * the best guess IMHO is to always treat the buffer as "text/x":
+                 */
+                ap_xlate_proto_to_ascii(buffer, len);
+                cntr = (apr_ssize_t)len;
+            }
             e = apr_bucket_heap_create(buffer, cntr, NULL, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
