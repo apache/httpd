@@ -3,8 +3,8 @@ PROGRAMS = htpasswd htdigest rotatelogs logresolve ab
 targets  = $(PROGRAMS)
 
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
-PROGRAM_DEPENDENCIES = ../lib/apr/$(LIBPRE)apr.a \
-	../ap/libap.la
+PROGRAM_DEPENDENCIES = ../ap/libap.la \
+	../lib/apr/$(LIBPRE)apr.a
 
 include $(top_srcdir)/build/rules.mk
 
