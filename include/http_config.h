@@ -305,8 +305,9 @@ API_EXPORT(const char *) ap_find_module_name(module *m);
 API_EXPORT(module *) ap_find_linked_module(const char *name);
 
 /* for implementing subconfigs and customized config files */
-API_EXPORT(ap_directive_t *) ap_build_config(cmd_parms *parms, ap_directive_t *current);
-API_EXPORT(const char *)ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, void *config, int container);
+API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
+					 ap_directive_t **conftree);
+API_EXPORT(const char *) ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, void *config, int container);
 
 /* ap_check_cmd_context() definitions: */
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
