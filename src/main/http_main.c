@@ -87,6 +87,11 @@
 #include "http_conf_globals.h"
 #include "scoreboard.h"
 #include <setjmp.h>
+#ifdef HAVE_SHMGET
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#endif
 
 /*
  * Actual definitions of config globals... here because this is
@@ -353,8 +358,98 @@ void reset_timeout (request_rec *r) {
  * We begin with routines which deal with the file itself... 
  */
 
-#ifdef HAVE_MMAP
+#if defined(HAVE_MMAP)
 static short_score *scoreboard_image=NULL;
+#elif defined(HAVE_SHMGET)
+static short_score *scoreboard_image=NULL;
+static key_t shmkey = IPC_PRIVATE;
+static int shmid = -1;
+
+static void setup_shared_mem(void)
+{
+    int score_size = HARD_SERVER_MAX*sizeof(short_score);
+    char errstr[MAX_STRING_LEN];
+    struct shmid_ds shmbuf;
+#ifdef MOVEBREAK
+    int obrk;
+#endif
+
+    if ((shmid = shmget(shmkey, score_size, IPC_CREAT|SHM_R|SHM_W)) == -1)
+    {
+	perror("shmget");
+	fprintf(stderr, "httpd: Could not call shmget\n");
+	exit(1);
+    }
+
+    sprintf(errstr, "created shared memory segment #%d", shmid);
+    log_error(errstr, server_conf);
+
+#ifdef MOVEBREAK
+    /*
+     * Some SysV systems place the shared segment WAY too close
+     * to the dynamic memory break point (sbrk(0)). This severely
+     * limits the use of malloc/sbrk in the program since sbrk will
+     * refuse to move past that point.
+     *
+     * To get around this, we move the break point "way up there",
+     * attach the segment and then move break back down. Ugly
+     */
+    if ((obrk=sbrk(MOVEBREAK)) == -1)
+    {
+	perror("sbrk");
+	fprintf(stderr, "httpd: Could not move break\n");
+    }
+#endif
+
+#define BADSHMAT	((short_score*)(-1))
+    if ((scoreboard_image = (short_score*)shmat(shmid, 0, 0)) == BADSHMAT)
+    {
+	perror("shmat");
+	fprintf(stderr, "httpd: Could not call shmat\n");
+	/*
+	 * We exit below, after we try to remove the segment
+	 */
+    }
+    else	/* only worry about permissions if we attached the segment */
+    {
+	if (shmctl(shmid, IPC_STAT, &shmbuf) != 0) {
+	    perror("shmctl");
+	    fprintf(stderr, "httpd: Could not stat segment #%d\n", shmid);
+	}
+	else
+	{
+	    shmbuf.shm_perm.uid = user_id;
+	    shmbuf.shm_perm.gid = group_id;
+	    if (shmctl(shmid, IPC_SET, &shmbuf) != 0) {
+		perror("shmctl");
+		fprintf(stderr, "httpd: Could not set segment #%d\n", shmid);
+	    }
+	}
+    }
+    /*
+     * We must avoid leaving segments in the kernel's
+     * (small) tables.
+     */
+    if (shmctl(shmid, IPC_RMID, NULL) != 0) {
+	perror("shmctl");
+	fprintf(stderr, "httpd: Could not delete segment #%d\n", shmid);
+	sprintf(errstr, "could not remove shared memory segment #%d", shmid);
+	log_error(errstr, server_conf);
+    }
+    if (scoreboard_image == BADSHMAT)	/* now bailout */
+	exit(1);
+
+#ifdef MOVEBREAK
+    if (obrk == -1)
+	return;		/* nothing else to do */
+    if (sbrk(-(MOVEBREAK)) == -1)
+    {
+	perror("sbrk");
+	fprintf(stderr, "httpd: Could not move break back\n");
+    }
+#endif
+}
+
 #else
 static short_score scoreboard_image[HARD_SERVER_MAX];
 static int have_scoreboard_fname = 0;
@@ -394,7 +489,7 @@ static int force_read (int fd, char *buffer, int bufsz)
 /* Called by parent process */
 void reinit_scoreboard (pool *p)
 {
-#ifdef HAVE_MMAP
+#if defined(HAVE_MMAP)
     if (scoreboard_image == NULL)
     {
 	caddr_t m;
@@ -432,6 +527,12 @@ void reinit_scoreboard (pool *p)
 	scoreboard_image = (short_score *)m;
     }
     memset(scoreboard_image, 0, HARD_SERVER_MAX*sizeof(short_score));
+#elif defined(HAVE_SHMGET)
+    if (scoreboard_image == NULL )
+    {
+	setup_shared_mem();
+    }
+    memset(scoreboard_image, 0, HARD_SERVER_MAX*sizeof(short_score));
 #else
     scoreboard_fname = server_root_relative (p, scoreboard_fname);
 
@@ -454,7 +555,7 @@ void reinit_scoreboard (pool *p)
 /* called by child */
 void reopen_scoreboard (pool *p)
 {
-#ifndef HAVE_MMAP
+#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
     if (scoreboard_fd != -1) pclosef (p, scoreboard_fd);
     
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_RDWR, 0666);
@@ -469,7 +570,7 @@ void reopen_scoreboard (pool *p)
 
 void cleanup_scoreboard ()
 {
-#ifndef HAVE_MMAP
+#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
     unlink (scoreboard_fname);
 #endif
 }
@@ -487,7 +588,7 @@ void cleanup_scoreboard ()
 
 void sync_scoreboard_image ()
 {
-#ifndef HAVE_MMAP
+#if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
     lseek (scoreboard_fd, 0L, 0);
     force_read (scoreboard_fd, (char*)scoreboard_image,
 		sizeof(scoreboard_image));
@@ -500,7 +601,7 @@ void update_child_status (int child_num, int status)
     new_score_rec.pid = getpid();
     new_score_rec.status = status;
 
-#ifdef HAVE_MMAP
+#if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
     memcpy(&scoreboard_image[child_num], &new_score_rec, sizeof(short_score));
 #else
     lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);

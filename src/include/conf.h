@@ -89,6 +89,7 @@ char *crypt(char *pw, char *salt);
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define FCNTL_SERIALIZED_ACCEPT
+#define HAVE_SHMGET
  
 #elif defined(HPUX)
 #define HAVE_RESOURCE 1
@@ -214,6 +215,8 @@ typedef int pid_t;
 #undef NO_SETSID
 #define NEED_STRDUP
 #define JMP_BUF sigjmp_buf
+#define HAVE_SHMGET
+#define MOVEBREAK		0x4000000
 
 #elif defined(SVR4)
 #define NO_KILLPG
