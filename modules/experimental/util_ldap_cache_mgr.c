@@ -284,6 +284,10 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
     if (!cache)
         return NULL;
 
+#if APR_HAS_SHARED_MEMORY
+    cache->rmm_addr = st->cache_rmm;
+    cache->shm_addr = st->cache_shm;
+#endif
     cache->maxentries = st->search_cache_size;
     cache->numentries = 0;
     cache->size = st->search_cache_size / 3;
@@ -542,7 +546,6 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
     if (r->args && strlen(r->args)) {
         char cachetype[5], lint[2];
         unsigned int id, off;
-        int ret;
         char date_str[APR_CTIME_LEN+1];
 
         if ((3 == sscanf(r->args, scanfmt, cachetype, &id, &off, lint)) &&
