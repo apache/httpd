@@ -67,7 +67,7 @@
 #
 require 'sys/socket.ph';
 
-$wherelog = "/var/log/graph/";  # Logs will be like "/var/log/graph/960312"
+$wherelog = "/var/log/graph/";  # Logs will be like "/var/log/graph/19960312"
 $server = "localhost";          # Name of server, could be "www.foo.com"
 $port = "80";                   # Port on server
 $request = "/status/?auto";     # Request to send
@@ -93,7 +93,7 @@ sub tcp_connect
 ### Main
 
 {
-	$date=`date +%y%m%d:%H%M%S`;
+	$date=`date +%Y%m%d:%H%M%S`;
 	chop($date);
 	($day,$time)=split(/:/,$date);
 	$res=&tcp_connect($server,$port);
