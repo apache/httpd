@@ -40,6 +40,7 @@ default:	r
 lib:	purge $(OBJPRODN)
 	rm -f libregex.a
 	ar crv libregex.a $(OBJPRODN)
+	ranlib libregex.a
 
 purge:
 	rm -f *.o
