@@ -59,8 +59,10 @@ a:visited {
     background-color: inherit;
 }
 
-a:hover,
-a:active {
+a:link:hover,
+a:link:active,
+a:visited:hover,
+a:visited:active {
     color: #0073c7;
     background-color: #f0f0f0;
 }
