@@ -307,27 +307,19 @@ install :: nlms FORCE
 	-copy README                    $(INSTALL)\Apache2\*.*
 	-copy STATUS                    $(INSTALL)\Apache2\*.*
 	-copy LICENSE                   $(INSTALL)\Apache2\*.*
-	-copy docs\cgi-examples\*.      $(INSTALL)\Apache2\cgi-examples\*.*
 	-awk  -f build\mkconfnw.awk docs\conf\httpd-std.conf >$(INSTALL)\Apache2\conf\httpd.conf
 	-copy docs\conf\magic           $(INSTALL)\Apache2\conf\magic
 	-copy docs\conf\mime.types      $(INSTALL)\Apache2\conf\mime.types
-	-copy docs\error\*.*            $(INSTALL)\Apache2\error\*.*
-	-copy docs\error\include\*.*    $(INSTALL)\Apache2\error\include\*.*
-	-copy docs\docroot\*.*          $(INSTALL)\Apache2\htdocs\*.*
-	-copy docs\icons\*.*            $(INSTALL)\Apache2\icons\*.*
-	-copy docs\icons\small\*.*      $(INSTALL)\Apache2\icons\small\*.*
-	-copy docs\man\*.*              $(INSTALL)\Apache2\man\*.*
-	-copy docs\manual\*.*           $(INSTALL)\Apache2\manual\*.*
-	-copy docs\manual\developer\*.* $(INSTALL)\Apache2\manual\developer
-	-copy docs\manual\faq\*.*       $(INSTALL)\Apache2\manual\faq
-	-copy docs\manual\howto\*.*     $(INSTALL)\Apache2\manual\howto
-	-copy docs\manual\images\*.*    $(INSTALL)\Apache2\manual\images
-	-copy docs\manual\misc\*.*      $(INSTALL)\Apache2\manual\misc
-	-copy docs\manual\mod\*.*       $(INSTALL)\Apache2\manual\mod
-	-copy docs\manual\platform\*.*  $(INSTALL)\Apache2\manual\platform
-	-copy docs\manual\programs\*.*  $(INSTALL)\Apache2\manual\programs
-	-copy docs\manual\search\*.*    $(INSTALL)\Apache2\manual\search
-	-copy docs\manual\vhosts\*.*    $(INSTALL)\Apache2\manual\vhosts
+	@echo rem copying the docs directories > xc.bat
+	@echo xcopy docs\cgi-examples $(INSTALL)\Apache2\cgi-examples /E >> xc.bat
+	@echo xcopy docs\error $(INSTALL)\Apache2\error /E >> xc.bat
+	@echo xcopy docs\docroot $(INSTALL)\Apache2\htdocs /E >> xc.bat
+	@echo xcopy docs\icons $(INSTALL)\Apache2\icons /E >> xc.bat
+	@echo xcopy docs\man $(INSTALL)\Apache2\man /E >> xc.bat
+	@echo xcopy docs\manual $(INSTALL)\Apache2\manual /E >> xc.bat
+	$(CMD) xc.bat
+
+
     
 installdev :: FORCE
 	-copy $(subst /,\,$(AP_WORK))\include\*.h           $(INSTALL)\Apache2\include\*.*
