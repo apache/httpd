@@ -1,0 +1,45 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Anfrage nicht ausführbar!" -->
+<!--#include virtual="include/top.html" -->
+
+    Die vom Browser angeforderte Aktion wird vom Server
+    nicht unterstützt.
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Cannot proceed request!" -->
+<!--#include virtual="include/top.html" -->
+
+   The server does not support the action requested by the browser.
+   
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Cannot proceed request!" -->
+<!--#include virtual="include/top.html" -->
+
+	El buscador esta solicitando una acci&oacute;n 
+	que no puede ser procesada.
+    
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="La requ&ecirc;te ne peut &ecirc;tre effectu&eacute;e!" -->
+<!--#include virtual="include/top.html" -->
+
+Le serveur n'est pas en mesure d'effectuer l'action requise par le navigateur. 
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

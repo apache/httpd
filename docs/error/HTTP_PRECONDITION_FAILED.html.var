@@ -1,0 +1,44 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Vorbedingung negativ!" -->
+<!--#include virtual="include/top.html" -->
+
+    Die Vorbedingung unter dem angeforderten URL wurde
+    negativ ausgewertet.
+    
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Precondition failed!" -->
+<!--#include virtual="include/top.html" -->
+
+  The precondition on the request for the URL failed positive evaluation.
+  
+<!--#include virtual="include/bottom.html" --> 
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Precondition failed!" -->
+<!--#include virtual="include/top.html" -->
+
+	La precondicion para que exista una 
+	conecci&oacute;n al URL solicitado es falsa.
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Pr&eacute;condition n&eacute;gative!" -->
+<!--#include virtual="include/top.html" -->
+
+La pr&eacute;condition pour l'URL requise a &eacute;t&eacute; &eacute;valu&eacute;e n&eacute;gativement.
+
+<!--#include virtual="include/bottom.html" -->----------fr--

@@ -1,0 +1,46 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Fehlerhafte Anfrage!" -->
+<!--#include virtual="include/top.html" -->
+
+    Ihr Browser (oder Proxy) hat eine ungültige Anfrage gesendet,
+    die vom Server nicht beantwortet werden kann.
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Bad request!" -->
+<!--#include virtual="include/top.html" -->
+
+    Your browser (or proxy) sent a request that
+    this server could not understand.
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Bad request!" -->
+<!--#include virtual="include/top.html" -->
+
+	El buscador ha solicitado una operaci&oacute;n
+	que no puede ser procesada por el servidor.
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="demande incorrecte!" -->
+<!--#include virtual="include/top.html" -->
+
+    Votre navigateur (ou votre proxy) a envoy&eacute; une demande que ce serveur n'a pas comprise.
+
+<!--#include virtual="include/bottom.html" -->  
+----------fr--
