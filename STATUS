@@ -67,6 +67,7 @@ Committed Code Changes:
     * Ken's fix for os/unix/os.h and the new -DHIDE functionality
     * Ralf's Config File Line Continuation
     * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite
+    * Ralf's fix for the `<VirtualHost> w/o mod_rewrite' situation. PR#1790
 
 Available Patches:
 
