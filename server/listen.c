@@ -81,31 +81,13 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 {
     apr_socket_t *s = server->sd;
     int one = 1;
-    char addr[512];
     apr_status_t stat;
-    apr_port_t port;
-    char *ipaddr;
-    apr_sockaddr_t *localsa;
-
-    apr_get_sockaddr(&localsa, APR_LOCAL, s);
-    apr_get_port(&port, localsa);
-    apr_get_ipaddr(&ipaddr, localsa);
-    apr_snprintf(addr, sizeof(addr), "address %s port %u", ipaddr,
-		(unsigned) port);
-
-    stat = apr_getaddrinfo(&localsa, ipaddr, APR_INET, port, 0, p);
-    if (stat != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
-                     "make_sock: for %s/%hu, apr_getaddrinfo() failed", 
-                     ipaddr, port);
-        apr_close_socket(s);
-        return stat;
-    }
 
     stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
-		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
+		    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
+                     server->bind_addr);
 	apr_close_socket(s);
 	return stat;
     }
@@ -113,7 +95,8 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
-		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
+		    "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)", 
+                     server->bind_addr);
 	apr_close_socket(s);
 	return stat;
     }
@@ -141,8 +124,9 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	stat = apr_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, stat, NULL,
-			"make_sock: failed to set SendBufferSize for %s, "
-			"using default", addr);
+			"make_sock: failed to set SendBufferSize for "
+                         "address %pI, using default", 
+                         server->bind_addr);
 	    /* not a fatal error */
 	}
     }
@@ -151,16 +135,18 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     ap_sock_disable_nagle(s);
 #endif
 
-    if ((stat = apr_bind(s, localsa)) != APR_SUCCESS) {
+    if ((stat = apr_bind(s, server->bind_addr)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
-	    "make_sock: could not bind to %s", addr);
+                     "make_sock: could not bind to address %pI", 
+                     server->bind_addr);
 	apr_close_socket(s);
 	return stat;
     }
 
     if ((stat = apr_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, stat, NULL,
-	    "make_sock: unable to listen for connections on %s", addr);
+	    "make_sock: unable to listen for connections on address %pI", 
+                     server->bind_addr);
 	apr_close_socket(s);
 	return stat;
     }
@@ -195,6 +181,21 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     if (!addr) {
         /* XXX not valid for IPv6 if we can get an IPv6 socket when the
          *     config doesn't specify an interface address
+         *
+         *     We need to look at the configuration to see which mode we're
+         *     in: 
+         *     a) get IPv6 if we can but fall back to IPv4
+         *        => leave addr NULL so the logic below calls apr_create_socket()
+         *           first
+         *     b) get IPv4
+         *        => set addr to 0.0.0.0
+         *     c) get IPv6
+         *        => set addr to ::
+         *
+         *     Alternative: earlier in initialization, if we start up in fall-
+         *     back-to-IPv4 mode, go ahead and see if we can get an IPv6 socket;
+         *     if not, set mode to get-IPv4; then, we have fewer cases to handle
+         *     here (and probably elsewhere)
          */
         addr = APR_ANYADDR;
     }
@@ -217,15 +218,33 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     /* this has to survive restarts */
     new = apr_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if ((status = apr_create_socket(&new->sd, APR_INET, SOCK_STREAM, 
-                                    process->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
-                 "make_sock: failed to get a socket for %s", addr);
-        return;
+    if (addr) {
+        /* binding to specific interface; let apr_getaddrinfo() figure out
+         * what address family is appropriate;
+         */
+        if ((status = apr_getaddrinfo(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
+                                      process->pool)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, NULL,
+                          "alloc_listener: failed to set up sockaddr for %s", addr);
+            return;
+        }
+        if ((status = apr_create_socket(&new->sd, new->bind_addr->sa.sin.sin_family, 
+                                        SOCK_STREAM, process->pool)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+                         "alloc_listener: failed to get a socket for %s", addr);
+            return;
+        }
     }
-    apr_get_sockaddr(&sa, APR_LOCAL, new->sd);
-    apr_set_port(sa, port);
-    apr_set_ipaddr(sa, addr);
+    else { /* XXX See big XXX above in this function. */
+        if ((status = apr_create_socket(&new->sd, APR_INET,
+                                        SOCK_STREAM, process->pool)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+                         "alloc_listener: failed to get a socket for INADDR_ANY");
+            return;
+        }
+        apr_get_sockaddr(&new->bind_addr, APR_LOCAL, new->sd);
+        apr_set_port(new->bind_addr, port);
+    }
     new->next = ap_listeners;
     ap_listeners = new;
 }

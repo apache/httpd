@@ -78,6 +78,10 @@ struct ap_listen_rec {
      */
     apr_socket_t *sd;
     /**
+     * The sockaddr the socket should bind to
+     */
+    apr_sockaddr_t *bind_addr;
+    /**
      * Is this socket currently active 
      */
     int active;
