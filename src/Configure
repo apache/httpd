@@ -154,7 +154,7 @@ case "$PLAT" in
 	OS='Apollo Domain'
 	CFLAGS="$CFLAGS -DAPOLLO"
 	;;
-    *-dg-dgux-*)
+    *-dg-dgux*)
 	OS='DG/UX 5.4'
 	CFLAGS="$CFLAGS -DDGUX"
 	;;
