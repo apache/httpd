@@ -244,20 +244,20 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
                                   (apr_size_t)new_file->finfo.size,
                                   APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
             apr_file_close(fd);
-            /* We want to cache an apr_mmap_t that's marked as "non-owner"
-             * to pass to each request so that mmap_setaside()'s call to
-             * apr_mmap_dup() will never try to move the apr_mmap_t to a
-             * different pool.  This apr_mmap_t is already going to live
-             * longer than any request, but mmap_setaside() has no way to
-             * know that because it's allocated out of cmd->pool,
-             * which is disjoint from r->pool.
-             */
-            apr_mmap_dup(&new_file->mm, mm, cmd->pool, 0);
             ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                          "mod_file_cache: unable to mmap %s, skipping", filename);
             return;
         }
         apr_file_close(fd);
+        /* We want to cache an apr_mmap_t that's marked as "non-owner"
+         * to pass to each request so that mmap_setaside()'s call to
+         * apr_mmap_dup() will never try to move the apr_mmap_t to a
+         * different pool.  This apr_mmap_t is already going to live
+         * longer than any request, but mmap_setaside() has no way to
+         * know that because it's allocated out of cmd->pool,
+         * which is disjoint from r->pool.
+         */
+        apr_mmap_dup(&new_file->mm, mm, cmd->pool, 0);
         new_file->is_mmapped = TRUE;
     }
 #endif
