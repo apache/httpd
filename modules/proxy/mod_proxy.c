@@ -946,6 +946,9 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
      */
     if (thiscmd->cmd_data) { /* <ProxyMatch> */
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
@@ -954,6 +957,9 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
         if (strncasecmp(cmd->path, "proxy:", 6))
             cmd->path += 6;
         r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        if (!r) {
+            return "Regex could not be compiled";
+        }
     }
 
     /* initialize our config and fetch it */

@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a bunch of cases where the return code of the regex compiler
+     was not checked properly. This affects: mod_setenvif, mod_usertrack,
+     mod_proxy, mod_proxy_ftp and core. PR 28218.  [André Malo]
+
   *) mod_usertrack: Escape the cookie name before pasting into the
      regexp.  [André Malo]
 
