@@ -88,6 +88,7 @@ static pid_t daemon_pid;
 static int daemon_should_exit = 0;
 static server_rec *root_server = NULL;
 static apr_pool_t *root_pool = NULL;
+static const char *sockname;
 
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
@@ -141,7 +142,6 @@ static int is_scriptaliased(request_rec *r)
 #endif
 
 typedef struct { 
-    const char *sockname;
     const char *logname; 
     long logbytes; 
     int bufbytes; 
@@ -578,10 +578,10 @@ static int cgid_server(void *data)
     apr_signal(SIGCHLD, SIG_IGN); 
     apr_signal(SIGHUP, daemon_signal_handler);
 
-    if (unlink(sconf->sockname) < 0 && errno != ENOENT) {
+    if (unlink(sockname) < 0 && errno != ENOENT) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                      "Couldn't unlink unix domain socket %s",
-                     sconf->sockname);
+                     sockname);
         /* just a warning; don't bail out */
     }
 
@@ -593,7 +593,7 @@ static int cgid_server(void *data)
 
     memset(&unix_addr, 0, sizeof(unix_addr));
     unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, sconf->sockname);
+    strcpy(unix_addr.sun_path, sockname);
 
     omask = umask(0077); /* so that only Apache can use socket */
     rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
@@ -601,7 +601,7 @@ static int cgid_server(void *data)
     if (rc < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                      "Couldn't bind unix domain socket %s",
-                     sconf->sockname); 
+                     sockname); 
         return errno;
     } 
 
@@ -612,10 +612,10 @@ static int cgid_server(void *data)
     } 
 
     if (!geteuid()) {
-        if (chown(sconf->sockname, unixd_config.user_id, -1) < 0) {
+        if (chown(sockname, unixd_config.user_id, -1) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
                          "Couldn't change owner of unix domain socket %s",
-                         sconf->sockname); 
+                         sockname); 
             return errno;
         }
     }
@@ -797,6 +797,13 @@ static int cgid_start(apr_pool_t *p, server_rec *main_server,
     return OK;
 }
 
+static int cgid_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                           apr_pool_t *ptemp)
+{
+    sockname = DEFAULT_SOCKET;
+    return OK;
+}
+
 static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
                      server_rec *main_server) 
 { 
@@ -824,6 +831,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         for (m = ap_preloaded_modules; *m != NULL; m++)
             total_modules++;
 
+        sockname = ap_server_root_relative(p, sockname);
         ret = cgid_start(p, main_server, procnew);
         if (ret != OK ) {
             return ret;
@@ -850,7 +858,6 @@ static void *create_cgid_config(apr_pool_t *p, server_rec *s)
     c->logname = NULL; 
     c->logbytes = DEFAULT_LOGBYTES; 
     c->bufbytes = DEFAULT_BUFBYTES; 
-    c->sockname = ap_server_root_relative(p, DEFAULT_SOCKET); 
     return c; 
 } 
 
@@ -901,11 +908,15 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
     server_rec *s = cmd->server; 
     cgid_server_conf *conf = ap_get_module_config(s->module_config,
                                                   &cgid_module); 
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
 
-    conf->sockname = ap_server_root_relative(cmd->pool, arg); 
+    sockname = ap_server_root_relative(cmd->pool, arg); 
 
-    if (!conf->sockname) {
-        return apr_pstrcat(cmd->pool, "Invalid Scriptsock path ",
+    if (!sockname) {
+        return apr_pstrcat(cmd->pool, "Invalid Scriptsock path",
                            arg, NULL);
     }
 
@@ -1081,7 +1092,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
 
     memset(&unix_addr, 0, sizeof(unix_addr));
     unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, conf->sockname);
+    strcpy(unix_addr.sun_path, sockname);
 
     connect_tries = 0;
     sliding_timer = 100000; /* 100 milliseconds */
@@ -1738,6 +1749,7 @@ static void register_hook(apr_pool_t *p)
 {
     static const char * const aszPre[] = { "mod_include.c", NULL };
 
+    ap_hook_pre_config(cgid_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(cgid_init, aszPre, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(cgid_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
