@@ -42,12 +42,8 @@ ServerRoot "@@ServerRoot@@"
 # to coordinate the httpd children.  THEY MUST BE STORED ON
 # A LOCAL DISK!
 #
-#<IfModule !mpm_winnt_module>
-#<IfModule !mpm_netware_module>
 #LockFile @rel_logfiledir@/accept.lock
 #ScoreBoardFile @rel_logfiledir@/apache_runtime_status
-#</IfModule>
-#</IfModule>
 
 #
 # PidFile: The file in which the server should record its process
