@@ -59,7 +59,7 @@ is available only in Apache 2.0</compatibility>
         response headers:
 
         <example>
-          Header echo ^TS*
+          Header echo ^TS
         </example>
       </li>
 
