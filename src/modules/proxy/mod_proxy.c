@@ -856,7 +856,7 @@ static const char*
     if (s > 0)
       psf->cache.cache_completion = ((float)s / 100);
 
-    psf->cache.cache_completion = 1;
+    psf->cache.cache_completion_set = 1;
     return NULL;    
 }
 
