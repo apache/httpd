@@ -87,36 +87,6 @@ extern apr_xlate_t *ap_locale_to_ascii;
  *  On an ASCII machine this is NULL */
 extern apr_xlate_t *ap_locale_from_ascii;
 
-/* Save & Restore the current conversion settings
- *
- * On an EBCDIC machine:
- *
- * "input"  means: ASCII -> EBCDIC (when reading MIME Headers and
- *                                  PUT/POST data)
- * "output" means: EBCDIC -> ASCII (when sending MIME Headers and Chunks)
- *
- * On an ASCII machine:
- *
- *   no conversion of headers, so we need to set the translation handle
- *   to NULL
- */
-
-#define AP_PUSH_INPUTCONVERSION_STATE(_buff, _newx) \
-        apr_xlate_t *saved_input_xlate; \
-        ap_bgetopt(_buff, BO_RXLATE, &saved_input_xlate); \
-        ap_bsetopt(_buff, BO_RXLATE, &(_newx))
-
-#define AP_POP_INPUTCONVERSION_STATE(_buff) \
-        ap_bsetopt(_buff, BO_RXLATE, &saved_input_xlate)
-
-#define AP_PUSH_OUTPUTCONVERSION_STATE(_buff, _newx) \
-        apr_xlate_t *saved_output_xlate; \
-        ap_bgetopt(_buff, BO_WXLATE, &saved_output_xlate); \
-        ap_bsetopt(_buff, BO_WXLATE, &(_newx))
-
-#define AP_POP_OUTPUTCONVERSION_STATE(_buff) \
-        ap_bsetopt(_buff, BO_WXLATE, &saved_output_xlate)
-
 #ifdef __cplusplus
 }
 #endif
