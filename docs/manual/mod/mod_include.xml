@@ -405,7 +405,8 @@
     cases where they may reasonably occur as an argument to an SSI
     directive. This includes the <code>config</code>,
     <code>exec</code>, <code>flastmod</code>, <code>fsize</code>,
-    <code>include</code>, and <code>set</code> directives, as well
+    <code>include</code>, <code>echo</code>, and <code>set</code>
+    directives, as well
     as the arguments to conditional operators. You can insert a
     literal dollar sign into the string using backslash
     quoting:</p>
