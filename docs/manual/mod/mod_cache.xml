@@ -291,39 +291,6 @@ LastModified date.</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CacheForceCompletion</name>
-<description>Percentage of document served, after which the server
-will complete caching the file even if the request is cancelled.</description>
-<syntax>CacheForceCompletion <var>Percentage</var></syntax>
-<default>CacheForceCompletion 60</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>Ordinarily, if a request is cancelled while the response is being
-    cached and delivered to the client the processing of the response will
-    stop and the cache entry will be removed. The
-    <directive>CacheForceCompletion</directive> directive specifies a
-    threshold beyond which the document will continue to be cached to
-    completion, even if the request is cancelled.</p>
-
-    <p>The threshold is a percentage specified as a value between
-    <code>1</code> and <code>100</code>. A value of <code>0</code>
-    specifies that the default be used. A value of <code>100</code>
-    will only cache documents that are served in their entirety. A value
-    between 60 and 90 is recommended.</p>
-
-    <example>
-      CacheForceCompletion 80
-    </example>
-
-    <note type="warning"><title>Note:</title>
-      This feature is currently <em>not</em> implemented.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CacheIgnoreHeaders</name>
 <description>Do not store the given HTTP header(s) in the cache.
 </description>

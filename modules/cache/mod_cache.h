@@ -73,8 +73,6 @@
 #define MIN(a,b)                ((a) < (b) ? (a) : (b))
 #endif
 
-/* default completion is 60% */
-#define DEFAULT_CACHE_COMPLETION (60)
 #define MSEC_ONE_DAY    ((apr_time_t)(86400*APR_USEC_PER_SEC)) /* one day, in microseconds */
 #define MSEC_ONE_HR     ((apr_time_t)(3600*APR_USEC_PER_SEC))  /* one hour, in microseconds */
 #define MSEC_ONE_MIN    ((apr_time_t)(60*APR_USEC_PER_SEC))    /* one minute, in microseconds */
@@ -125,8 +123,6 @@ typedef struct {
     int defex_set;
     double factor;              /* factor for estimating expires date */
     int factor_set;
-    int complete;               /* Force cache completion after this point */
-    int complete_set;
     /** ignore the last-modified header when deciding to cache this request */
     int no_last_mod_ignore_set;
     int no_last_mod_ignore; 

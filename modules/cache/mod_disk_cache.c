@@ -264,9 +264,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     /* If the Content-Length is still unknown, cache anyway */
     if (len != -1 && (len < conf->minfs || len > conf->maxfs)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache_disk: URL %s failed the size check, "
-                     "or is incomplete",
-                     key);
+                     "cache_disk: URL %s failed the size check", key);
         return DECLINED;
     }
 
@@ -277,7 +275,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     obj->key = apr_pstrdup(r->pool, key);
     /* XXX Bad Temporary Cast - see cache_object_t notes */
     obj->info.len = (apr_size_t) len;
-    obj->complete = 0;   /* Cache object is not complete */
 
     dobj->name = obj->key;
     dobj->datafile = data_file(r->pool, conf, dobj, key);

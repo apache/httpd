@@ -292,36 +292,6 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CacheForceCompletion</name>
-<description>요청이 취소되더라도 서버가 파일을 계속 캐쉬하기위해
-필요한 문서의 서비스률.</description>
-<syntax>CacheForceCompletion <var>Percentage</var></syntax>
-<default>CacheForceCompletion 60</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>보통 응답을 캐쉬하고 클라이언트로 보내는 도중에 요청이
-    취소되면 응답 처리를 중단되고 캐쉬 항목을 지운다.
-    <directive>CacheForceCompletion</directive> 지시어는 요청이
-    취소되더라도 문서를 계속 캐쉬할 정도를 지정한다.</p>
-
-    <p>정도는 백분율로 나타내며 <code>1</code>과 <code>100</code>
-    사이의 값이다. <code>0</code> 값을 지정하면 기본값을 사용한다.
-    <code>100</code>은 내용을 모두 서비스한 문서만을 캐쉬한다.
-    60과 90 사이의 값을 추천한다.</p>
-
-    <example>
-      CacheForceCompletion 80
-    </example>
-
-    <note type="warning"><title>주의:</title>
-      이 기능은 현재 구현되지 <em>않았다</em>.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CacheIgnoreHeaders</name>
 <description>캐쉬에 지정한 HTTP 헤더(들)를 저장하지 않는다
 </description>

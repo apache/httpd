@@ -297,37 +297,6 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CacheForceCompletion</name>
-<description>リクエストがキャンセルされてもキャッシュを完了するかどうかを
-決める送られたドキュメントの割合を指定する。</description>
-<syntax>CacheForceCompletion <var>Percentage</var></syntax>
-<default>CacheForceCompletion 60</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>通常、応答がキャッシュされてクライアントに送られている最中に
-    リクエストがキャンセルされると、応答の処理は中止されて、キャッシュの
-    エントリも削除されます。<directive>CacheForceCompletion</directive>
-    ディレクティブは、リクエストがキャンセルされても、キャッシュ処理を
-    完了まで続けるかどうかのしきい値を指定します。</p>
-
-    <p>しきい値は <code>1</code> と <code>100</code> の間で指定する
-    割合です。<code>0</code> ではデフォルトが使われます。
-    <code>100</code> では、完全に送信が完了したドキュメントのみを
-    キャッシュします。60 から 90 の間の値が推奨値です。</p>
-
-    <example>
-      CacheForceCompletion 80
-    </example>
-
-    <note type="warning"><title>注:</title>
-      この機能は現時点では実装されて<em>いません</em>。
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CacheIgnoreHeaders</name>
 <description>指定された HTTP ヘッダをキャッシュに保存しない。
 </description>
