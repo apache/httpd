@@ -70,9 +70,6 @@
  * CFLAGS="-DSSL_EXPERIMENTAL_xxxx_IGNORE".
  */
 #ifdef SSL_EXPERIMENTAL
-#ifndef SSL_EXPERIMENTAL_PERDIRCA_IGNORE
-#define SSL_EXPERIMENTAL_PERDIRCA
-#endif
 #ifndef SSL_EXPERIMENTAL_PROXY_IGNORE
 #define SSL_EXPERIMENTAL_PROXY
 #endif
@@ -82,6 +79,11 @@
 #endif
 #endif
 #endif /* SSL_EXPERIMENTAL */
+
+/* XXX: add configure check */
+#ifndef MODSSL_HAVE_SSL_SET_CERT_STORE
+#define MODSSL_HAVE_SSL_SET_CERT_STORE 0
+#endif 
 
 /*
  * Power up our brain...
@@ -567,10 +569,8 @@ typedef struct {
     const char   *szCipherSuite;
     ssl_verify_t  nVerifyClient;
     int           nVerifyDepth;
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
     const char   *szCACertificatePath;
     const char   *szCACertificateFile;
-#endif
 } SSLDirConfigRec;
 
 /*
