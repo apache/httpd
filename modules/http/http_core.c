@@ -2912,13 +2912,24 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 
 static int do_nothing(request_rec *r) { return OK; }
 
-/*
- * Default handler for MIME types without other handlers.  Only GET
- * and OPTIONS at this point... anyone who wants to write a generic
- * handler for PUT or POST is free to do so, but it seems unwise to provide
- * any defaults yet... So, for now, we assume that this will always be
- * the last handler called and return 405 or 501.
- */
+#define POST_CHUNK_SIZE 4096
+
+static int handle_request_body(request_rec *r)
+{
+    int rv;
+    char buf[POST_CHUNK_SIZE];
+    long n;
+
+    if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)))
+        return rv;
+
+    if ((rv = ap_should_client_block(r)) == 0)
+        return APR_SUCCESS;
+
+    while ((n = ap_get_client_block(r, buf, POST_CHUNK_SIZE)) > 0);
+
+    return APR_SUCCESS;
+}
 
 static int default_handler(request_rec *r)
 {
@@ -2940,13 +2951,6 @@ static int default_handler(request_rec *r)
     int bld_content_md5 = 
         (d->content_md5 & 1) && r->output_filters->frec->ftype != AP_FTYPE_CONTENT;
 
-    /* This handler has no use for a request body (yet), but we still
-     * need to read and discard it if the client sent one.
-     */
-    if ((errstatus = ap_discard_request_body(r)) != OK) {
-        return errstatus;
-    }
-
     ap_allow_methods(r, MERGE_ALLOW, "GET", "OPTIONS", NULL);
 
     if (r->method_number == M_INVALID) {
@@ -2967,7 +2971,13 @@ static int default_handler(request_rec *r)
 		      : r->filename);
 	return HTTP_NOT_FOUND;
     }
-    if (r->method_number != M_GET) {
+    if (r->method_number == M_POST) {
+        if ((errstatus = handle_request_body(r)) != APR_SUCCESS) {
+            return errstatus;
+        }
+    } else if ((errstatus = ap_discard_request_body(r)) != OK) {
+        return errstatus;
+    } else if (r->method_number != M_GET) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
 	
