@@ -1756,8 +1756,10 @@ int default_handler (request_rec *r)
     if (mm == (caddr_t)-1) {
 	unblock_alarms();
 
-	aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
-		    "mmap_handler: mmap failed: %s", r->filename);
+	if (r->finfo.st_size >= MMAP_THRESHOLD) {
+	    aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
+			"mmap_handler: mmap failed: %s", r->filename);
+	}
 #endif
 
 	if (d->content_md5 & 1) {

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) Fix logic error when issuing a mmap() failed message
+     with a non-zero MMAP_THRESHOLD.
+     [David Chambers <davidc@flosun.salk.edu>] PR#1294
+
   *) Preserve handler value on ProxyPass'ed requests by not
      calling find_types on a proxy'd request; fixes problems
      where some ProxyPass'ed URLs weren't actually passed
