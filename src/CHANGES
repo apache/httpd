@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) Fix the path to the MimeMagicFile in the install-config target, too.
+     [Ralf S. Engelschall, PR#2089]
+
   *) PORT: Added HP-UX 11 patches [Jeff Earickson <jaearick@colby.edu>]
 
   *) If you start apache with the -S command line option it will dump

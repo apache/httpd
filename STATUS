@@ -45,7 +45,6 @@ Showstoppers:
 
 Committed Code Changes:
 
-    * HP-UX 11 port by Jeff Earickson
     * Lars' Configure fix to avoid confusing message under APACI control
     * Ralf's Configure fix for AWK's failing with "string to long" error
     * Ralf's fix for stderr logging to make sure default loglevel is honored
@@ -54,6 +53,8 @@ Committed Code Changes:
     * Lars' fix for the prefix setup on configure --compat
     * Dean's add %pA, %pI, and %pp codes to ap_vformatter
     * Dean's httpd -S command line option to dump parsed vhost setup
+    * HP-UX 11 port by Jeff Earickson
+    * Ralf's fix for the install-config target to get correct MimeMagicFile
 
 Available Patches:
 

@@ -346,6 +346,7 @@ install-config:
 			-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
 			-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
 			-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
+			-e 's;conf/magic;$(sysconfdir)/magic;' \
         	>.install.tmp && \
 		echo "$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf.default"; \
 		$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf.default; \
