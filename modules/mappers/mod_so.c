@@ -144,7 +144,7 @@ module MODULE_VAR_EXPORT so_module;
  */
 
 typedef struct moduleinfo {
-    char *name;
+    const char *name;
     module *modp;
 } moduleinfo;
 
@@ -217,7 +217,7 @@ static ap_status_t unload_file(void *handle)
  */
 
 static const char *load_module(cmd_parms *cmd, void *dummy, 
-                               char *modname, char *filename)
+                               const char *modname, const char *filename)
 {
     ap_status_t status;
     ap_dso_handle_t *modhandle;
@@ -316,7 +316,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
  * shared object file into the adress space of the server process.
  */
 
-static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
+static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
     ap_status_t status;
     ap_dso_handle_t *handle;
@@ -343,7 +343,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 
 #else /* not NO_DLOPEN */
 
-static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
+static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                  "WARNING: LoadFile not supported on this platform");
@@ -351,7 +351,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 }
 
 static const char *load_module(cmd_parms *cmd, void *dummy, 
-	                       char *modname, char *filename)
+	                       const char *modname, const char *filename)
 {
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                  "WARNING: LoadModule not supported on this platform");
@@ -361,10 +361,10 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 #endif /* NO_DLOPEN */
 
 static const command_rec so_cmds[] = {
-    { "LoadModule", load_module, NULL, RSRC_CONF | EXEC_ON_READ, TAKE2,
-      "a module name and the name of a shared object file to load it from"},
-    { "LoadFile", load_file, NULL, RSRC_CONF, ITERATE,
-      "shared object file or library to load into the server at runtime"},
+    AP_INIT_TAKE2("LoadModule", load_module, NULL, RSRC_CONF | EXEC_ON_READ,
+      "a module name and the name of a shared object file to load it from"),
+    AP_INIT_ITERATE("LoadFile", load_file, NULL, RSRC_CONF,
+      "shared object file or library to load into the server at runtime"),
     { NULL }
 };
 
