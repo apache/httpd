@@ -1,3 +1,5 @@
+Changes with Apache 1.3b5
+
 Changes with Apache 1.3b4
 
   *) The module structure was modified to include a *dynamic_load_handle
