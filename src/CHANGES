@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) One more portability fix for APACI shadow tree support: Swap order of awk
+     and sed in top-level configure script to avoid sed fails on some
+     platforms (for instance SunOS 4.1.3 and NCR SysV) because of the
+     non-newline-termined output of Awk. [Ralf S. Engelschall] PR#2729
+
   *) PORT: NEC EWS4800 support.
      [MATSUURA Takanori <t-matsuu@protein.osaka-u.ac.jp>]
 

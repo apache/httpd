@@ -332,7 +332,7 @@ do
             ;;
         --shadow)
             #   determine GNU platform triple
-            gnutriple=`$aux/GuessOS | $AWK '{ printf("%s",$1); }' | sed -e 's:/:-:g'`
+            gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf("%s",$1); }'`
             #   create Makefile wrapper (the first time only)
             if [ ".`ls $top/src.* 2>/dev/null`" = . ]; then
                 if [ .$quiet = .no ]; then
