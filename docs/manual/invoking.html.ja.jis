@@ -18,10 +18,11 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>Apache の起動</h1>
     <p>Windows 上では、Apache は通常は
-    Windows NT ではサービスとして、Windows 95 
+    Windows NT, 2000, XP ではサービスとして、Windows 95, ME 
     ではコンソールアプリケーションとして実行されます。
-    詳細に関しては、「<a href="platform/windows.html#run">
-    Windows で Apache を実行する</a>」をご覧下さい。</p>
+    詳細に関しては、「<a href="platform/windows.html#winsvc">
+    サービスとして実行する</a>」と「<a href="platform/windows.html#wincons">
+    コンソールアプリケーションとして実行する</a>」をご覧下さい。</p>
 
     <p>Unixでは、<a href="programs/httpd.html">httpd</a> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う
