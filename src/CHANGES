@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Fixed mod_auth_digest.c: result of an open() call was being 
+     checked against the wrong failure value.
+     [Rick Ohnemus <rjohnemus@systemware-inc.com>] PR#5292
+
   *) Removed the variable name "template" from a prototype for SunOS4 
      in ap_config.h to make C++ compiler happy, too.
      [SAKAI Kiyotaka <ksakai@netwk.ntt-at.co.jp>] PR#5363

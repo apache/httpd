@@ -317,7 +317,7 @@ static void initialize_secret(server_rec *s)
 #ifdef	DEV_RANDOM
 #define	XSTR(x)	#x
 #define	STR(x)	XSTR(x)
-    if ((rnd = open(STR(DEV_RANDOM), O_RDONLY)) == NULL) {
+    if ((rnd = open(STR(DEV_RANDOM), O_RDONLY)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, s,
 		     "Digest: Couldn't open " STR(DEV_RANDOM));
 	exit(EXIT_FAILURE);
