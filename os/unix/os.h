@@ -132,13 +132,4 @@ extern int ap_os_is_path_absolute(const char *file);
  */
 #define ap_os_systemcase_filename(p,f)  (f)
 
-/**
- * Tests for validity of a filename on the current platform.  The tests for
- * validity are operating system specific
- * @param f The file to test
- * @return 1 If the filename is valid, 0 otherwise
- * @deffunc int ap_os_is_filename_valid(const char *file)
- */
-#define ap_os_is_filename_valid(f)          (1)
-
 #endif	/* !APACHE_OS_H */

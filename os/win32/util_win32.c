@@ -361,7 +361,12 @@ AP_DECLARE(char *) ap_os_canonical_filename(apr_pool_t *pPool, const char *szFil
     return pNewName;
 }
 
-/*
+#ifdef NEVER_SINCE_THESE_TESTS_ARE_MOVING
+/* 
+ * XXX we will no longer use this redunant parsing function, it's
+ * logic moves off into the canonical filename processing and the
+ * apr file handling functions.  Left for today till it's finished.
+ *
  * ap_os_is_filename_valid is given a filename, and returns 0 if the filename
  * is not valid for use on this system. On Windows, this means it fails any
  * of the tests below. Otherwise returns 1.
@@ -387,9 +392,8 @@ AP_DECLARE(char *) ap_os_canonical_filename(apr_pool_t *pPool, const char *szFil
  *
  * 4) any segment in which the basename (before first period) matches
  *    one of the DOS device names
- *    (the list comes from KB article Q100108 although some people
- *     reports that additional names such as "COM5" are also special
- *     devices).
+ *    (the list comes from KB article Q100108 although  additional 
+ *     names such as "COM5" are also special devices).
  *
  * If the path fails ANY of these tests, the result must be to deny access.
  */
@@ -501,6 +505,7 @@ AP_DECLARE(int) ap_os_is_filename_valid(const char *file)
 
     return 1;
 }
+#endif
 
 AP_DECLARE(apr_status_t) ap_os_create_privileged_process(const request_rec *r,
                               apr_proc_t *newproc, const char *progname,
