@@ -117,11 +117,12 @@ static const char *set_language_priority(cmd_parms *cmd, void *n, char *lang)
 }
 
 static const char *cache_negotiated_docs(cmd_parms *cmd, void *dummy,
-                                         char *dummy2)
+                                         int arg)
 {
     void *server_conf = cmd->server->module_config;
 
-    ap_set_module_config(server_conf, &negotiation_module, "Cache");
+    ap_set_module_config(server_conf, &negotiation_module, 
+	(arg ? "Cache" : NULL));
     return NULL;
 }
 
@@ -132,8 +133,8 @@ static int do_cache_negotiated_docs(server_rec *s)
 
 static const command_rec negotiation_cmds[] =
 {
-    {"CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, NO_ARGS,
-     "no arguments (either present or absent)"},
+    {"CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, FLAG,
+     "Either 'on' or 'off' (default)"},
     {"LanguagePriority", set_language_priority, NULL, OR_FILEINFO, ITERATE,
      "space-delimited list of MIME language abbreviations"},
     {NULL}
