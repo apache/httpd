@@ -161,7 +161,7 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_total_size,
                       unique_id_rec_size_uu;
 
-static void unique_id_global_init(server_rec *s, ap_context_t *p)
+static void unique_id_global_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *main_server)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
@@ -200,21 +200,21 @@ static void unique_id_global_init(server_rec *s, ap_context_t *p)
      * be unique as the physical address of the machine
      */
     if (gethostname(str, sizeof(str) - 1) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, errno, main_server,
           "gethostname: mod_unique_id requires the hostname of the server");
         exit(1);
     }
     str[sizeof(str) - 1] = '\0';
 
     if ((hent = gethostbyname(str)) == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, h_errno, main_server,
                     "mod_unique_id: unable to gethostbyname(\"%s\")", str);
         exit(1);
     }
 
     global_in_addr = ((struct in_addr *) hent->h_addr_list[0])->s_addr;
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, main_server,
                 "mod_unique_id: using ip addr %s",
                 inet_ntoa(*(struct in_addr *) hent->h_addr_list[0]));
 
@@ -245,7 +245,7 @@ static void unique_id_global_init(server_rec *s, ap_context_t *p)
 #endif
 }
 
-static void unique_id_child_init(server_rec *s, ap_context_t *p)
+static void unique_id_child_init(ap_context_t *p, server_rec *s)
 {
     pid_t pid;
 #ifdef HAVE_GETTIMEOFDAY
@@ -271,7 +271,7 @@ static void unique_id_child_init(server_rec *s, ap_context_t *p)
      * global_init ... but oh well.
      */
     if (cur_unique_id.pid != pid) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
                     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 
@@ -348,7 +348,7 @@ static int gen_unique_id(request_rec *r)
     new_unique_id.counter = cur_unique_id.counter;
 
     new_unique_id.stamp = htonl((unsigned int)r->request_time);
-    new_unique_id.thread_index = htonl((unsigned int)r->connection->thread_num);
+    new_unique_id.thread_index = htonl((unsigned int)r->connection->id);
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
      * paddings of the original structure */
@@ -392,25 +392,20 @@ static int gen_unique_id(request_rec *r)
     return DECLINED;
 }
 
+static void register_hooks(void)
+{
+    ap_hook_post_config(unique_id_global_init, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_child_init(unique_id_child_init, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_post_read_request(gen_unique_id, NULL, NULL, HOOK_MIDDLE); 
+}
 
 module MODULE_VAR_EXPORT unique_id_module = {
-    STANDARD_MODULE_STUFF,
-    unique_id_global_init,      /* initializer */
+    STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
     NULL,                       /* command ap_table_t */
     NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    NULL,                       /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    unique_id_child_init,       /* child_init */
-    NULL,                       /* child_exit */
-    gen_unique_id               /* post_read_request */
+    register_hooks              /* register hooks */
 };
