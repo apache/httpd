@@ -154,6 +154,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mpm_common.html">Directivas Comunes de los MPM de
             Apache</a></li>
 <li><a href="mod/beos.html">MPM de Apache beos</a></li>
+<li><a href="mod/event.html">MPM de Apache event</a></li>
 <li><a href="mod/leader.html">MPM de Apache leader</a></li>
 <li><a href="mod/mpm_netware.html">MPM de Apache netware</a></li>
 <li><a href="mod/mpmt_os2.html">MPM de Apache os2</a></li>

@@ -151,6 +151,7 @@ HPUX betreiben</a></li>
 </ul><ul><li><a href="mod/core.html">Apache-Kernfunktionen</a></li>
 <li><a href="mod/mpm_common.html">Allgemeine Direktiven der Apache-MPMs</a></li>
 <li><a href="mod/beos.html">Apache-MPM beos</a></li>
+<li><a href="mod/event.html">Apache-MPM event</a></li>
 <li><a href="mod/leader.html">Apache-MPM leader</a></li>
 <li><a href="mod/mpm_netware.html">Apache-MPM netware</a></li>
 <li><a href="mod/mpmt_os2.html">Apache-MPM os2</a></li>

@@ -390,7 +390,7 @@ erlaubt sind.</td></tr>
 
     <div class="note"><h3>Nur in &lt;Directory&gt;-Abschnitten verfügbar</h3>
     <code class="directive">AllowOverride</code> ist nur in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>-Abschnitten
-    gültig, die ohne reguläre Ausdrüke definiert wurden, nicht
+    gültig, die ohne reguläre Ausdrücke definiert wurden, nicht
     in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>-, 
     <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code>- oder
     <code class="directive"><a href="#files">&lt;Files&gt;</a></code>-Abschnitten.

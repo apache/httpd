@@ -53,6 +53,8 @@ available</dd>
 more than one multi-processing module (MPM)</dd>
 <dt><a href="beos.html">beos</a></dt><dd>Este módulo de muiltiprocesamiento está
 optimizado para BeOS.</dd>
+<dt><a href="event.html">event</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
+MPM</dd>
 <dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
 MPM</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
