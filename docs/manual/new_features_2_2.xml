@@ -73,6 +73,13 @@
           modern 32-bit Unix systems.  Support for handling &gt;2Gb request
           bodies has also been added.</dd>
 
+      <dt>Event MPM</dt>
+      <dd>The <module>event</module> MPM uses a seperate thread to handle
+          Keep Alive requests and accepting connections.  Keep Alive requests
+          have traditionally required httpd to dedicate a worker to handle it.
+          This dedicated worker could not be used again until the Keep Alive 
+          timeout was reached.</dd>
+
     </dl>
   </section>
 
