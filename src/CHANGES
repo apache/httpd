@@ -1,4 +1,8 @@
 Changes with Apache 1.3.10
+
+  *) Improve OS390 port to work on older system releases
+     [Paul Gilmartin <pg@sweng.stortek.com>]
+
   *) Enhance mod_mime with an AddCharset directive to properly handle
      that negotiation dimension.
      [Youichirou Koga <y-koga@isoternet.org>]

@@ -957,7 +957,11 @@ typedef int rlim_t;
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define _POSIX_SOURCE
 #include <signal.h>
+#ifdef SIGDUMP  /* SIGDUMP is not defined by OS/390 v1r2 */
 #define NSIG SIGDUMP+1
+#else
+#define NSIG 40
+#endif
 #define JMP_BUF sigjmp_buf
 #define _XOPEN_SOURCE_EXTENDED 1
 #define _OPEN_MSGQ_EXT
@@ -1075,6 +1079,9 @@ typedef int rlim_t;
 #ifndef TPF
 #include <netinet/in.h>
 #endif /* TPF */
+#if defined(OS390) && !defined(NO_ADDRESS)
+#define NO_ADDRESS NO_DATA  /* Not defined properly by OS/390 v1r2 */
+#endif
 #include <netdb.h>
 #include <sys/ioctl.h>
 #if !defined(MPE) && !defined(BEOS) && !defined(TPF)
