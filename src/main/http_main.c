@@ -1190,12 +1190,12 @@ void child_main(int child_num_arg)
 	  if (r) increment_counts(child_num,r);
 #endif
 	}
-	
+#if 0	
 	if (bytes_in_pool (ptrans) > 80000)
 	    log_printf(r->server,
 		       "Memory hog alert: allocated %ld bytes for %s",
 		       bytes_in_pool (ptrans), r->the_request);
-		
+#endif		
 	bflush(conn_io);
 	bclose(conn_io);
     }    
