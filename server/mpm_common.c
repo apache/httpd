@@ -74,6 +74,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_main.h"
 #include "mpm.h"
 #include "mpm_common.h"
 
@@ -276,3 +277,62 @@ void ap_sock_disable_nagle(apr_socket_t *s)
     }
 }
 #endif
+
+AP_DECLARE(uid_t) ap_uname2id(const char *name)
+{
+    struct passwd *ent;
+
+    if (name[0] == '#')
+        return (atoi(&name[1]));
+
+    if (!(ent = getpwnam(name))) {                                                      ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad user name %s", ap_server_argv0, name);
+        exit(1);
+    }
+    return (ent->pw_uid);
+}
+
+AP_DECLARE(gid_t) ap_gname2id(const char *name)
+{
+    struct group *ent;
+
+    if (name[0] == '#')
+        return (atoi(&name[1]));
+
+    if (!(ent = getgrnam(name))) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad group name %s", ap_server_argv0, name);                                               exit(1);
+    }
+    return (ent->gr_gid);
+}
+
+#ifndef HAVE_INITGROUPS
+int initgroups(const char *name, gid_t basegid)
+{
+#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM) || defined(OS2) || defined(WIN32)
+/* QNX, MPE and BeOS do not appear to support supplementary groups. */
+    return 0;
+#else /* ndef QNX */
+    gid_t groups[NGROUPS_MAX];
+    struct group *g;
+    int index = 0;
+
+    setgrent();
+
+    groups[index++] = basegid;
+
+    while (index < NGROUPS_MAX && ((g = getgrent()) != NULL))
+        if (g->gr_gid != basegid) {
+            char **names;
+
+            for (names = g->gr_mem; *names != NULL; ++names)
+                if (!strcmp(*names, name))
+                    groups[index++] = g->gr_gid;
+        }
+
+    endgrent();
+
+    return setgroups(index, groups);
+#endif /* def QNX */
+}
+#endif /* def NEED_INITGROUPS */
+
+

@@ -128,6 +128,20 @@ void ap_sock_disable_nagle(apr_socket_t *s);
 #define ap_sock_disable_nagle(s)        /* NOOP */
 #endif
 
+/**
+ * Convert a username to a numeric ID
+ * @param name The name to convert
+ * @return The user id corresponding to a name
+ * @deffunc uid_t ap_uname2id(const char *name)
+ */
+AP_DECLARE(uid_t) ap_uname2id(const char *name);
+/**
+ * Convert a group name to a numeric ID
+ * @param name The name to convert
+ * @return The group id corresponding to a name
+ * @deffunc gid_t ap_gname2id(const char *name)
+ */
+AP_DECLARE(gid_t) ap_gname2id(const char *name);
 
 #define AP_MPM_HARD_LIMITS_FILE "src/" APACHE_MPM_DIR "/mpm_default.h"
 

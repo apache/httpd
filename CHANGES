@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Move initgroupgs, ap_uname2id and ap_gname2id from util.c to
+     mpm_common.c.  These functions are only valid on some platforms,
+     so they should not be in the main-line code. [Ryan Bloom]
+
   *) Remove ap_chdir_file().  This function is not thread-safe,
      and nobody is currently using it.  [Ryan Bloom]
 

@@ -1728,37 +1728,6 @@ AP_DECLARE(int) ap_is_url(const char *u)
     return (x ? 1 : 0);		/* If the first character is ':', it's broken, too */
 }
 
-#ifndef HAVE_INITGROUPS
-int initgroups(const char *name, gid_t basegid)
-{
-#if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM) || defined(OS2) || defined(WIN32)
-/* QNX, MPE and BeOS do not appear to support supplementary groups. */
-    return 0;
-#else /* ndef QNX */
-    gid_t groups[NGROUPS_MAX];
-    struct group *g;
-    int index = 0;
-
-    setgrent();
-
-    groups[index++] = basegid;
-
-    while (index < NGROUPS_MAX && ((g = getgrent()) != NULL))
-	if (g->gr_gid != basegid) {
-	    char **names;
-
-	    for (names = g->gr_mem; *names != NULL; ++names)
-		if (!strcmp(*names, name))
-		    groups[index++] = g->gr_gid;
-	}
-
-    endgrent();
-
-    return setgroups(index, groups);
-#endif /* def QNX */
-}
-#endif /* def NEED_INITGROUPS */
-
 AP_DECLARE(int) ap_ind(const char *s, char c)
 {
     register int x;
@@ -1788,43 +1757,6 @@ AP_DECLARE(void) ap_str_tolower(char *str)
 	++str;
     }
 }
-
-AP_DECLARE(uid_t) ap_uname2id(const char *name)
-{
-#ifdef WIN32
-    return (1);
-#else
-    struct passwd *ent;
-
-    if (name[0] == '#')
-	return (atoi(&name[1]));
-
-    if (!(ent = getpwnam(name))) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad user name %s", ap_server_argv0, name);
-	exit(1);
-    }
-    return (ent->pw_uid);
-#endif
-}
-
-AP_DECLARE(gid_t) ap_gname2id(const char *name)
-{
-#ifdef WIN32
-    return (1);
-#else
-    struct group *ent;
-
-    if (name[0] == '#')
-	return (atoi(&name[1]));
-
-    if (!(ent = getgrnam(name))) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "%s: bad group name %s", ap_server_argv0, name);
-	exit(1);
-    }
-    return (ent->gr_gid);
-#endif
-}
-
 
 static char *find_fqdn(apr_pool_t *a, struct hostent *p)
 {
