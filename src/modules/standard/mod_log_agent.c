@@ -117,6 +117,8 @@ static void open_agent_log(server_rec *s, pool *p)
 
         pl = ap_open_piped_log(p, cls->fname + 1);
         if (pl == NULL) {
+	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			 "couldn't spawn agent log pipe");
             exit(1);
         }
         cls->agent_fd = ap_piped_log_write_fd(pl);

@@ -132,6 +132,8 @@ static void open_referer_log(server_rec *s, pool *p)
 
 	pl = ap_open_piped_log(p, cls->fname + 1);
 	if (pl == NULL) {
+	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
+			 "couldn't spawn referer log pipe");
             exit(1);
         }
 
