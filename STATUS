@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/01 21:19:41 $]
+Last modified at [$Date: 2002/04/02 04:15:55 $]
 
 Release:
 
@@ -85,6 +85,8 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * ap_cache_hex2msec() and ap_cache_msec2hex() are completely
+      hosed. They do not handle apr_time_t (64 bit ints) properly.
 
     * If any request gets through ap_process_request_internal() and is
       scheduled to be served by the core handler, without a flag that this 
