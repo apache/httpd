@@ -515,6 +515,15 @@ typedef struct {
     etag_components_t etag_bits;
     etag_components_t etag_add;
     etag_components_t etag_remove;
+
+    /*
+     * Run-time performance tuning
+     */
+#define ENABLE_MMAP_OFF    (0)
+#define ENABLE_MMAP_ON     (1)
+#define ENABLE_MMAP_UNSET  (2)
+    int enable_mmap;  /* whether files in this dir can be mmap'ed */
+
 } core_dir_config;
 
 /* Per-server core configuration */

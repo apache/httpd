@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Added EnableMMAP config directive to enable the server
+     administrator to disable memory-mapping of delivered files
+     on a per-directory basis.  [Brian Pane]
+
   *) Performance enhancements for mod_setenvif  [Brian Pane]
 
   *) Fix a mod_ssl build problem on OS/390.  [Jeff Trawick]
