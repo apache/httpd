@@ -40,18 +40,10 @@ apache-docs-subscribe@apache.org
      because they are redundant or irrelevant.
         Status: Rich <rbowen@rcbowen.com> is going to look at this.
 	Some suggestions on files to axe.  Feel free to comment.
-          manual/upgrading_to_1_3.html
-          manual/man-template.html
-          manual/sourcereorg.html
           manual/bind.html (mostly now documented in server-wide.html)
           manual/cgi-path.html (should be documented in mod_cgi.html instead)
           manual/multi-logs.html (documented in mod_log_config.html)
           manual/process-model.html (documented in MPMs, eventually)
-          manual/suexec_1_2.html
-          manual/misc/vif-info.html
-          manual/misc/windoz_keepalive.html
-          manual/misc/nopgp.html
-          manual/misc/HTTP_Features.tsv
           manual/mod/index-bytype.html
 
    - Individual docs will need some cleanup.  For example,
