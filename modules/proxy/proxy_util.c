@@ -990,7 +990,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
 {
     apr_bucket *e;
     apr_status_t rv;
-    apr_size_t readbytes = 0;	/* line-at-a-time */
+    apr_off_t readbytes = 0;	/* line-at-a-time */
     char *pos = buff;
     char *response;
     int found = 0;
