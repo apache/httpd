@@ -737,6 +737,16 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                              "returned by %s (%s)", major, minor, r->uri,
                              r->method);
                 p_conn->close += 1;
+                /*
+                 * ap_send_error relies on a headers_out to be present. we
+                 * are in a bad position here.. so force everything we send out
+                 * to have nothing to do with the incoming packet
+                 */
+                r->headers_out = apr_table_make(r->pool,1);
+                r->status = HTTP_BAD_GATEWAY;
+                r->status_line = "bad gateway";
+                return r->status;
+
             } else {
                 /* strip connection listed hop-by-hop headers from response */
                 const char *buf;
