@@ -58,7 +58,8 @@
 
 #define CORE_PRIVATE
 #include "mod_cache.h"
-#include "cache_hash.h"
+#include "cache_pqueue.h"
+#include "cache_cache.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
 #if APR_HAVE_UNISTD_H
@@ -95,11 +96,14 @@ typedef struct mem_cache_object {
     apr_size_t m_len;
     void *m;
     apr_os_file_t fd;
+    long priority;      /**< the priority of this entry */
+    long total_refs;          /**< total number of references this entry has had */
+    apr_ssize_t pos;    /**< the position of this entry in the cache */
 } mem_cache_object_t;
 
 typedef struct {
     apr_thread_mutex_t *lock;
-    cache_hash_t *cacheht;
+    cache_cache_t *cache_cache;
     apr_size_t cache_size;
     apr_size_t object_cnt;
 
@@ -108,6 +112,7 @@ typedef struct {
     apr_size_t max_cache_object_size;   /* in bytes */
     apr_size_t max_cache_size;          /* in bytes */
     apr_size_t max_object_cnt;
+    cache_pqueue_set_priority *cache_remove_algorithm;
 
 } mem_cache_conf;
 static mem_cache_conf *sconf;
@@ -124,6 +129,102 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
 static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
 static apr_status_t read_headers(cache_handle_t *h, request_rec *r);
 static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
+
+static void cleanup_cache_object(cache_object_t *obj);
+
+static long memcache_get_priority(void*a)
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    mem_cache_object_t *mobj = obj->vobj;
+
+#ifdef USE_ATOMICS
+    return  (long)apr_atomic_read(&mobj->priority);
+#else
+    return  mobj->priority;
+#endif
+    
+}
+
+static void memcache_inc_frequency(void*a)
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    mem_cache_object_t *mobj = obj->vobj;
+
+    mobj->total_refs++;
+    mobj->priority = 0;
+}
+
+static void memcache_set_pos(void *a, apr_ssize_t pos)
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    mem_cache_object_t *mobj = obj->vobj;
+
+#ifdef USE_ATOMICS
+    apr_atomic_set(&mobj->pos, pos);
+#else
+    mobj->pos = pos;
+#endif    
+}
+static apr_ssize_t memcache_get_pos(void *a)
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    mem_cache_object_t *mobj = obj->vobj;
+
+#ifdef USE_ATOMICS
+    return apr_atomic_read(&mobj->pos);
+#else
+    return mobj->pos;
+#endif    
+}
+
+static apr_size_t memcache_cache_get_size(void*a)
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    mem_cache_object_t *mobj = obj->vobj;
+    return mobj->m_len;
+}
+/** callback to get the key of a item */
+static const char* memcache_cache_get_key(void*a)
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    return obj->key;
+}
+/** 
+ * callback to free an entry 
+ * XXX: just call cleanup_cache_object ?
+ */
+static void memcache_cache_free(void*a)
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    cleanup_cache_object(obj);
+}
+/*
+ * functions return a 'negative' score as lower is better in a priority Q
+ */
+static long memcache_lru_algorithm(long queue_clock, void *a) 
+{
+	cache_object_t *obj = (cache_object_t *)a;
+    mem_cache_object_t *mobj = obj->vobj;
+	if (mobj->priority == 0)
+        mobj->priority = ((long)(queue_clock + mobj->total_refs));
+
+    /*	
+     * a 'proper' LRU function would just be
+     *  mobj->priority = mobj->total_refs; 
+     */
+	return -1*mobj->priority;
+}
+
+static long memcache_gdsf_algorithm(long queue_clock, void *a) 
+{
+    cache_object_t *obj = (cache_object_t *)a;
+    mem_cache_object_t *mobj = obj->vobj;
+
+	if (mobj->priority == 0)
+        mobj->priority = queue_clock + (long)(mobj->total_refs*1000 / mobj->m_len);
+
+	return -1*mobj->priority;
+}
 
 static void cleanup_cache_object(cache_object_t *obj)
 {
@@ -188,7 +289,6 @@ static void cleanup_cache_object(cache_object_t *obj)
         }
         free(mobj);
     }
-    return;
 }
 static apr_status_t decrement_refcount(void *arg) 
 {
@@ -207,7 +307,7 @@ static apr_status_t decrement_refcount(void *arg)
          * removed the object from the cache (and set obj->cleanup)
          */
         if (!obj->cleanup) {
-            cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+            cache_remove(sconf->cache_cache, obj);
             sconf->object_cnt--;
             sconf->cache_size -= mobj->m_len;
             obj->cleanup = 1;
@@ -244,39 +344,37 @@ static apr_status_t decrement_refcount(void *arg)
 static apr_status_t cleanup_cache_mem(void *sconfv)
 {
     cache_object_t *obj;
-    cache_hash_index_t *hi;
     mem_cache_conf *co = (mem_cache_conf*) sconfv;
 
     if (!co) {
+        return APR_SUCCESS;
+    }
+    if (!co->cache_cache) {
         return APR_SUCCESS;
     }
 
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    /* Iterate over the cache and clean up each entry */
-    while ((hi = cache_hash_first(co->cacheht)) != NULL) {
-        /* Fetch the object from the cache */
-        cache_hash_this(hi, NULL, NULL, (void **)&obj);
-        if (obj) {
-            /* Remove the object from the cache */
-            cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
-            /* Free the object if the recount == 0 */
+    obj = cache_pop(co->cache_cache);
+    while (obj) {         
+    /* Iterate over the cache and clean up each entry */  
+    /* Free the object if the recount == 0 */
 #ifdef USE_ATOMICS
-            apr_atomic_inc(&obj->refcount);
-            obj->cleanup = 1;
-            if (!apr_atomic_dec(&obj->refcount)) {
+        apr_atomic_inc(&obj->refcount);
+        obj->cleanup = 1;
+        if (!apr_atomic_dec(&obj->refcount)) {
 #else
-            obj->cleanup = 1;
-            if (!obj->refcount) {
+        obj->cleanup = 1;
+        if (!obj->refcount) {
 #endif
-                cleanup_cache_object(obj);
-            }
+            cleanup_cache_object(obj);
         }
+        obj = cache_pop(co->cache_cache);
     }
 
     /* Cache is empty, free the cache table */        
-    cache_hash_free(co->cacheht);
+    cache_free(co->cache_cache);
 
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -298,6 +396,8 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     /* Size of the cache in bytes */
     sconf->max_cache_size = DEFAULT_MAX_CACHE_SIZE;
     sconf->cache_size = 0;
+    sconf->cache_cache = NULL;
+    sconf->cache_remove_algorithm = memcache_gdsf_algorithm;
 
     return sconf;
 }
@@ -325,19 +425,27 @@ static int create_entity(cache_handle_t *h, request_rec *r,
      * TODO: Get smarter about managing the cache size. If the cache is 
      * full, we need to garbage collect stale/infrequently referenced
      * objects.
-     */
+     * we have a self-sizing cache now
     if (sconf->object_cnt >= sconf->max_object_cnt) {
         return DECLINED;
     }
+     */
     if (type_e == CACHE_TYPE_HEAP) {
         /* We can safely ignore these measures when caching open fds */
         if (len < sconf->min_cache_object_size || 
             len > sconf->max_cache_object_size) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "cache_mem: URL %s failed the size check, "
+                         "or is incomplete", 
+                         key);
             return DECLINED;
         }
+        /*
+         * not needed now we have a self-sizing cache.
         if ((sconf->cache_size + len) > sconf->max_cache_size) {
             return DECLINED;
         }
+        */
     } else {
         /* CACHE_TYPE_FILE is only valid for local content 
          * handled by the default handler? 
@@ -361,6 +469,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     strncpy(obj->key, key, strlen(key) + 1);
     obj->info.len = len;
 
+
     /* Allocate and init mem_cache_object_t */
     mobj = calloc(1, sizeof(*mobj));
     if (!mobj) {
@@ -374,6 +483,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 #else 
     obj->refcount = 1;
 #endif
+    mobj->total_refs = 1;
     obj->complete = 0;
     obj->cleanup = 0;
     obj->vobj = mobj;
@@ -395,11 +505,10 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    tmp_obj = (cache_object_t *) cache_hash_get(sconf->cacheht, 
-                                              key, 
-                                              CACHE_HASH_KEY_STRING);
+    tmp_obj = (cache_object_t *) cache_find(sconf->cache_cache, key);
+
     if (!tmp_obj) {
-        cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
+        cache_insert(sconf->cache_cache, obj);     
         sconf->object_cnt++;
         sconf->cache_size += len;
     }
@@ -441,17 +550,18 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    obj = (cache_object_t *) cache_hash_get(sconf->cacheht, key, 
-                                          CACHE_HASH_KEY_STRING);
+    obj = (cache_object_t *) cache_find(sconf->cache_cache, key);
     if (obj) {
         if (obj->complete) {
             request_rec *rmain=r, *rtmp;
-
 #ifdef USE_ATOMICS
             apr_atomic_inc(&obj->refcount);
 #else
             obj->refcount++;
 #endif
+            /* cache is worried about overall counts, not 'open' ones */
+            cache_update(sconf->cache_cache, obj);
+
             /* If this is a subrequest, register the cleanup against
              * the main request. This will prevent the cache object 
              * from being cleaned up from under the request after the
@@ -504,7 +614,7 @@ static int remove_entity(cache_handle_t *h)
      */
     if (!obj->cleanup) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
-        cache_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+        cache_remove(sconf->cache_cache, obj);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
         obj->cleanup = 1;
@@ -594,11 +704,12 @@ static int remove_url(const char *type, const char *key)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    /* This call will return a pointer to the cache_object just removed */
-    obj = cache_hash_set(sconf->cacheht, key, CACHE_HASH_KEY_STRING, NULL);
+  
+    obj = cache_find(sconf->cache_cache, key);       
     if (obj) {
-        /* obj has been removed from the cache */
-        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
+        mem_cache_object_t *mobj;
+        cache_remove(sconf->cache_cache, obj);
+        mobj = (mem_cache_object_t *) obj->vobj;
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
 
@@ -635,11 +746,13 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     int rc;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
     cache_info *info = &(h->cache_obj->info);
-
+ 
     info->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
-    r->headers_out = apr_table_make(r->pool,mobj->num_header_out);
+
+    r->headers_out = apr_table_make(r->pool, mobj->num_header_out);
     r->subprocess_env = apr_table_make(r->pool, mobj->num_subprocess_env);
     r->notes = apr_table_make(r->pool, mobj->num_notes);
+
     rc = unserialize_table(mobj->req_hdrs,
                            mobj->num_req_hdrs,
                            info->req_hdrs);
@@ -689,7 +802,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
     int rc;
-
+ 
     /*
      * The cache needs to keep track of the following information: 
      * - Date, LastMod, Version, ReqTime, RespTime, ContentLength 
@@ -703,6 +816,8 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     if (rc != APR_SUCCESS) {
         return rc;
     }
+
+    /* Precompute how much storage we need to hold the headers */
     rc = serialize_table(&mobj->header_out, 
                          &mobj->num_header_out, 
                          r->headers_out);   
@@ -861,7 +976,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         /* This should not happen, but if it does, we are in BIG trouble
          * cause we just stomped all over the heap.
          */
-        AP_DEBUG_ASSERT(obj->count > mobj->m_len);
+        AP_DEBUG_ASSERT(obj->count >= mobj->m_len);
     }
     return APR_SUCCESS;
 }
@@ -876,12 +991,26 @@ static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (threaded_mpm) {
         apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
     }
-    sconf->cacheht = cache_hash_make(sconf->max_object_cnt);
+
+    sconf->cache_cache = cache_init(sconf->max_object_cnt,
+                                    sconf->max_cache_size,                                   
+                                    memcache_get_priority,
+                                    sconf->cache_remove_algorithm,
+                                    memcache_get_pos,
+                                    memcache_set_pos,
+                                    memcache_inc_frequency,
+                                    memcache_cache_get_size,
+                                    memcache_cache_get_key,
+                                    memcache_cache_free);
     apr_pool_cleanup_register(p, sconf, cleanup_cache_mem, apr_pool_cleanup_null);
 
-    return OK;
-}
+    if (sconf->cache_cache)
+        return OK;
 
+    return -1;
+
+}
+ 
 static const char 
 *set_max_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
@@ -927,6 +1056,23 @@ static const char
     return NULL;
 }
 
+static const char 
+*set_cache_removal_algorithm(cmd_parms *parms, void *name, const char *arg)
+{
+    if (strcasecmp("LRU", arg)) {
+        sconf->cache_remove_algorithm = memcache_lru_algorithm;
+    }
+    else {
+        if (strcasecmp("GDSF", arg)) {
+            sconf->cache_remove_algorithm = memcache_gdsf_algorithm;
+        }
+        else {
+            return "currently implemented algorithms are LRU and GDSF";
+        }
+    }
+    return NULL;
+}
+
 static const command_rec cache_cmds[] =
 {
     AP_INIT_TAKE1("MCacheSize", set_max_cache_size, NULL, RSRC_CONF,
@@ -937,6 +1083,8 @@ static const command_rec cache_cmds[] =
      "The minimum size (in bytes) of an object to be placed in the cache"),
     AP_INIT_TAKE1("MCacheMaxObjectSize", set_max_cache_object_size, NULL, RSRC_CONF,
      "The maximum size (in bytes) of an object to be placed in the cache"),
+    AP_INIT_TAKE1("MCacheRemovalAlgorithm", set_cache_removal_algorithm, NULL, RSRC_CONF,
+     "The algorithm used to remove entries from the cache (default: GDSF)"),
     {NULL}
 };
 
@@ -944,7 +1092,7 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(mem_cache_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     /* cache initializer */
-    /* cache_hook_cache_init(cache_init, NULL, NULL, AP_HOOK_FIRST); */
+    /* cache_hook_init(cache_mem_init, NULL, NULL, APR_HOOK_MIDDLE);  */
     cache_hook_create_entity(create_entity, NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_open_entity(open_entity,  NULL, NULL, APR_HOOK_MIDDLE);
     cache_hook_remove_url(remove_url, NULL, NULL, APR_HOOK_MIDDLE);

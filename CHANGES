@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Implement a fixed size memory cache using a priority queue
+     [Ian Holsman]
+
   *) Fix apxs to allow "apxs -q installbuilddir" and to allow
      querying certain other variables from config_vars.mk.  PR 9316  
      [Jeff Trawick]
