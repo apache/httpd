@@ -68,6 +68,14 @@ If running on Windows 95, using the "Winsock2" upgrade is recommended
 but may not be necessary.  If running on NT 4.0, installing Service Pack 2
 is recommended.
 
+<P>
+
+<STRONG>Note: "Winsock 2" is required for Apache 1.3.7 and later.</STRONG>
+
+<P>
+
+"Winsock 2" for Windows 95 is available <A HREF="http://www.microsoft.com/windows95/downloads/">here.</A>
+
 <H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
 <P>Information on the latest version of Apache can be found on the
@@ -274,6 +282,11 @@ The main differences in Apache for Windows are:
 </UL>
 
 <H2><A NAME="service">Running Apache for Windows as a Service</A></H2>
+ <STRONG>Note: The -n option to specify a service name is only available
+ with Apache 1.3.7 and later.  Earlier versions of Apache only support
+ the default service name 'Apache'.</STRONG>
+
+<P>
 
 You can install Apache as a Windows NT service as follows:
 
@@ -328,7 +341,7 @@ in two ways:
 <PRE>    apache -f "c:\my server\conf\my.conf"</PRE>
 <PRE>    apache -f test\test.conf</PRE>
 <UL>
-<LI>-n specifies the configuration file of an installed Apache service
+<LI>-n specifies the configuration file of an installed Apache service (Apache 1.3.7 and later)
 </UL>
 <PRE>    apache -n "service name"</PRE>
 
