@@ -52,39 +52,52 @@
  */
 
 
-/* Client-Side State (Cookies) Fixup Module
+/* User Tracking Module
  *
- * This is a module for Apache for tracking users paths through a site 
- * using the Client-Side State (Cookie) protocol developed by Netscape.  
+ * This Apache module is designed to track users paths through a site.
+ * It uses the client-side state ("Cookie") protocol developed by Netscape.
  * It is known to work on Netscape browsers, Microsoft Internet 
  * Explorer and others currently being developed.
  *
- * Function:
+ * Each time a page is requested we look to see if the browser is sending
+ * us a Cookie: header that we previously generated.
  *
- *   On each Web request we look for a Cookie: header
- *   If we don't find one then the user hasn't been to this site this session
- *       so send a Set-Cookie: header out with the request
- *   Future requests from the same client should keep the same Cookie line.
+ * If we don't find one then the user hasn't been to this site since
+ * starting their browser or their browser doesn't support cookies.  So
+ * we generate a unique Cookie for the transaction and send it back to
+ * the browser (via a "Set-Cookie" header)
+ * Future requests from the same browser should keep the same Cookie line.
  *
  * The cookie and request are logged to a file.  Use the directive
  * "CookieLog somefilename" in one of the config files to enable the Cookie
- * module.
+ * module.  By matching up all the requests with the same cookie you can
+ * work out exactly what path a user took through your site.
  *
- * Note:
- *   This code doesn't log the initial transaction (the one that created
- *   the cookie to start with).
+ * Notes:
+ * 1.  This code doesn't log the initial transaction (the one that created
+ *     the cookie to start with).  If it did then the cookie log file would
+ *     be bigger than a normal access log.
+ * 2.  This module has been designed to not interfere with other Cookies
+ *     your site may be using; just avoid sending out cookies with
+ *     the name "Apache=" or things will get confused.
+ * 3.  If you want you can modify the Set-Cookie line so that the Cookie
+ *     never expires.  You would then get the same Cookie each time the
+ *     user revisits your site.
  *
- * Mark Cox, mark@ukweb.com, 6 July 95
+ * Mark Cox, mark@ukweb.com, http://www.ukweb.com/~mark/, 6 July 95
  *
  * 6.12.95 MJC Now be more friendly.  Allow our cookies to overlap with
- * others the site may be using.  Use a more descriptive cookie name.
+ *             others the site may be using.  Use a more descriptive 
+ *             cookie name.
  *
  * 18.3.96 MJC Generate cookies for EVERY request no matter what the 
- * browser.
+ *             browser.  We never know when a new browser writer will
+ *             add cookie support.
  *
  * 96/03/31 -JimC Allow the log to be sent to a pipe.  Copies the relevant
- * code from mod_log_agent.c.
+ *                code from mod_log_agent.c.
  *
+ * 24.5.96 MJC Improved documentation after receiving comments from users
  */
 
 #include "httpd.h"
