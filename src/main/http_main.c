@@ -325,8 +325,29 @@ static char *timeout_name = NULL;
 static int alarms_blocked = 0;
 static int alarm_pending = 0;
 
-void timeout(sig)			/* Also called on SIGPIPE */
-int sig;
+#ifndef NO_USE_SIGACTION
+/*
+ * Replace standard signal() with the more reliable sigaction equivalent
+ * from W. Richard Stevens' "Advanced Programming in the UNIX Environment"
+ * (the version that does not automatically restart system calls).
+ */
+Sigfunc *signal(int signo, Sigfunc *func)
+{
+    struct sigaction act, oact;
+
+    act.sa_handler = func;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+#ifdef  SA_INTERRUPT    /* SunOS */
+    act.sa_flags |= SA_INTERRUPT;
+#endif
+    if (sigaction(signo, &act, &oact) < 0)
+       return SIG_ERR;
+    return oact.sa_handler;
+}
+#endif
+
+void timeout(int sig)			/* Also called on SIGPIPE */
 {
     char errstr[MAX_STRING_LEN];
     void *dirconf;
@@ -376,8 +397,7 @@ int sig;
 	if (!current_conn->keptalive) 
             log_transaction(log_req);
 
-        if (sig == SIGPIPE)
-            bsetflag(timeout_req->connection->client, B_EOUT, 1);
+	bsetflag(timeout_req->connection->client, B_EOUT, 1);
 	bclose(timeout_req->connection->client);
     
 	if (!standalone) exit(0);
@@ -388,10 +408,7 @@ int sig;
 #endif
     }
     else {   /* abort the connection */
-        if (sig == SIGPIPE)
-            bsetflag(current_conn->client, B_EOUT, 1);
-        else
-            bflush(current_conn->client);
+        bsetflag(current_conn->client, B_EOUT, 1);
         current_conn->aborted = 1;
     }
 }
@@ -419,7 +436,7 @@ void keepalive_timeout (char *name, request_rec *r)
     timeout_req = r;
     timeout_name = name;
     
-    signal(SIGALRM,(void (*)())timeout);
+    signal(SIGALRM, timeout);
     if (r->connection->keptalive) 
        alarm (r->server->keep_alive_timeout);
     else
@@ -431,7 +448,7 @@ void hard_timeout (char *name, request_rec *r)
     timeout_req = r;
     timeout_name = name;
     
-    signal(SIGALRM,(void (*)())timeout);
+    signal(SIGALRM, timeout);
     alarm (r->server->timeout);
 }
 
@@ -439,7 +456,7 @@ void soft_timeout (char *name, request_rec *r)
 {
     timeout_name = name;
     
-    signal(SIGALRM,(void (*)())timeout);
+    signal(SIGALRM, timeout);
     alarm (r->server->timeout);
 }
 
@@ -483,6 +500,10 @@ void reset_timeout (request_rec *r) {
  * calls to shutdown only half of the connection.  You should define
  * NO_LINGCLOSE in conf.h if such is the case for your system.
  */
+#ifndef MAX_SECS_TO_LINGER
+#define MAX_SECS_TO_LINGER 30
+#endif
+
 #ifdef USE_SO_LINGER
 #define NO_LINGCLOSE    /* The two lingering options are exclusive */
 
@@ -491,7 +512,7 @@ static void sock_enable_linger (int s)
     struct linger li;
 
     li.l_onoff = 1;
-    li.l_linger = 30;
+    li.l_linger = MAX_SECS_TO_LINGER;
 
     if (setsockopt(s, SOL_SOCKET, SO_LINGER,
                    (char *)&li, sizeof(struct linger)) < 0) {
@@ -523,17 +544,16 @@ int sig;
 	siglongjmp(jmpbuffer,1);
 #endif
     }
+    bsetflag(current_conn->client, B_EOUT, 1);
     current_conn->aborted = 1;
 }
     
 static void linger_timeout ()
 {
-    const int max_secs_to_linger = 30;
-
     timeout_name = "lingering close";
     
-    signal(SIGALRM,(void (*)())lingerout);
-    alarm(max_secs_to_linger);
+    signal(SIGALRM, lingerout);
+    alarm(MAX_SECS_TO_LINGER);
 }
 
 /* Since many clients will abort a connection instead of closing it,
@@ -556,7 +576,11 @@ static void lingering_close (request_rec *r)
 
     /* Send any leftover data to the client, but never try to again */
 
-    bflush(r->connection->client);
+    if (bflush(r->connection->client) == -1) {
+        kill_timeout(r);
+        bclose(r->connection->client);
+        return;
+    }
     bsetflag(r->connection->client, B_EOUT, 1);
 
     /* Close our half of the connection --- send the client a FIN */
@@ -1435,7 +1459,9 @@ void set_signals()
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
-    memset(&sa,0,sizeof sa);
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
 
     if (!one_process) {
 	sa.sa_handler = (void (*)())seg_fault;

@@ -459,8 +459,9 @@ int cgi_handler (request_rec *r)
 		dbpos += dbsize;
 	    }
 	    reset_timeout(r);
-	    if (fwrite(argsbuffer, 1, len_read, script_out) < (size_t)len_read) {
-		/* silly script stopped reading, soak up remaining message */
+	    if (fwrite(argsbuffer, sizeof(char), len_read, script_out)
+	            < (size_t)len_read) {
+	        /* silly script stopped reading, soak up remaining message */
 	        while (get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0)
 	            ; /* dump it */
 	        break;
@@ -489,10 +490,12 @@ int cgi_handler (request_rec *r)
 	  
 	    /* Soak up all the script output */
 	    hard_timeout ("read from script", r);
-	    while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL)
+	    while (fread(argsbuffer, sizeof(char), HUGE_STRING_LEN, script_in)
+	           > 0)
 	        continue;
-	    while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL)
-	      continue;
+	    while (fread(argsbuffer, sizeof(char), HUGE_STRING_LEN, script_err)
+	           > 0)
+	        continue;
 	    kill_timeout (r);
 
 
@@ -525,8 +528,8 @@ int cgi_handler (request_rec *r)
 
 	/* Soak up stderr */
 	soft_timeout("soaking script stderr", r);
-	while ((fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL) &&
-	       !r->connection->aborted)
+	while (!r->connection->aborted &&
+	  (fread(argsbuffer, sizeof(char), HUGE_STRING_LEN, script_err) > 0))
 	    continue;
 	kill_timeout(r);
 	pfclose (r->main ? r->main->pool : r->pool, script_err);

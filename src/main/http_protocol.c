@@ -1252,8 +1252,8 @@ void finalize_request_protocol (request_rec *r)
 {
     /* Turn off chunked encoding */
 
-    if (r->chunked) {
-        hard_timeout("send ending chunk", r);
+    if (r->chunked && !r->connection->aborted) {
+        soft_timeout("send ending chunk", r);
         bsetflag(r->connection->client, B_CHUNK, 0);
 	bputs("0\015\012", r->connection->client);
 	/* If we had footer "headers", we'd send them now */
@@ -1519,7 +1519,6 @@ long send_fd_length(FILE *f, request_rec *r, long length)
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
     register int n, w, o, len;
-    conn_rec *c = r->connection;
     
     if (length == 0) return 0;
 
@@ -1531,7 +1530,7 @@ long send_fd_length(FILE *f, request_rec *r, long length)
 	else len = IOBUFSIZE;
 
         while ((n= fread(buf, sizeof(char), len, f)) < 1
-	       && ferror(f) && errno == EINTR)
+	       && ferror(f) && errno == EINTR && !r->connection->aborted)
 	    continue;
 	
 	if (n < 1) {
@@ -1541,7 +1540,7 @@ long send_fd_length(FILE *f, request_rec *r, long length)
 	total_bytes_sent += n;
 	
         while(n && !r->connection->aborted) {
-            w=bwrite(c->client, &buf[o], n);
+            w=bwrite(r->connection->client, &buf[o], n);
 	    if(w <= 0)
 		break;
 	    reset_timeout(r); /* reset timeout after successful write */

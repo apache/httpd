@@ -1,5 +1,9 @@
 Changes with Apache 1.2
 
+  *) If a soft timeout (or lingerout) occurs while trying to flush a
+     buffer or write inside buff.c or fread'ing from a CGI's output,
+     then the timeout would be ignored. [Roy Fielding] PR#373
+
   *) Work around a bug in Netscape Navigator versions 2.x, 3.x and 4.0b2's
      parsing of headers.  If the terminating empty-line CRLF occurs starting
      at the 256th or 257th byte of output, then Navigator will think a normal
