@@ -399,6 +399,27 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, ap
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c);
 
+/* Header mapping functions, and a typedef of their signature */
+PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r, proxy_server_conf *conf, const char *url);
+PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r, proxy_server_conf *conf, const char *str);
+
+#if !defined(WIN32)
+typedef const char *(*ap_proxy_header_reverse_map_fn)(request_rec *,
+                       proxy_server_conf *, const char *);
+#elif defined(PROXY_DECLARE_STATIC)
+typedef const char *(__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
+                                 proxy_server_conf *, const char *);
+#elif defined(PROXY_DECLARE_EXPORT)
+typedef __declspec(dllexport) const char *
+  (__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
+               proxy_server_conf *, const char *);
+#else
+typedef __declspec(dllimport) const char *
+  (__stdcall *ap_proxy_header_reverse_map_fn)(request_rec *,
+               proxy_server_conf *, const char *);
+#endif
+
+
 /* Connection pool API */
 /**
  * Get the worker from proxy configuration
