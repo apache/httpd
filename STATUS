@@ -173,11 +173,15 @@ Closed issues:
       changes to be committed without prior review.  Specific guidelines
       and implementation date to be worked out.
 
+    * Guidelines for commit-then-review are documented at
+      <http://dev.apache.org/guidelines.html#ctr>
+
 Open issues:
 
-    * Guidelines for when prior review is required if commit-then-review
-      is the normal mode of operation.  Roy has started covering the
-      whole process in <http://dev.apache.org/guidelines.html>.
+    * Renaming the "apache" CVS module to "apache-1.2" and the
+      "apachen" module to "apache-1.3" - and, at some point,
+      copying (*not* branching) the apache-1.3 module to a new
+      apache-2.x tree and opening up 2.0 development.
 
     * Ken's [POLL] apachen/patches directory
       Shall we experiment with allowing patches to be distributed for
