@@ -216,6 +216,7 @@ char *
 {
     int i;
     char *strp, *host, *url = *urlp;
+    char *user = NULL, *password = NULL;
 
     if (url[0] != '/' || url[1] != '/')
 	return "Malformed URL";
@@ -226,33 +227,35 @@ char *
     else
 	*(url++) = '\0';	/* skip seperating '/' */
 
-    if (userp != NULL) {
-	char *user = NULL, *password = NULL;
-	strp = strchr(host, '@');
+    /* find _last_ '@' since it might occur in user/password part */
+    strp = strrchr(host, '@');
 
-	if (strp != NULL) {
-	    *strp = '\0';
-	    user = host;
-	    host = strp + 1;
+    if (strp != NULL) {
+	*strp = '\0';
+	user = host;
+	host = strp + 1;
 
 /* find password */
-	    strp = strchr(user, ':');
-	    if (strp != NULL) {
-		*strp = '\0';
-		password = proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
-		if (password == NULL)
-		    return "Bad %-escape in URL (password)";
-	    }
-
-	    user = proxy_canonenc(p, user, strlen(user), enc_user, 1);
-	    if (user == NULL)
-		return "Bad %-escape in URL (username)";
+	strp = strchr(user, ':');
+	if (strp != NULL) {
+	    *strp = '\0';
+	    password = proxy_canonenc(p, strp + 1, strlen(strp + 1), enc_user, 1);
+	    if (password == NULL)
+		return "Bad %-escape in URL (password)";
 	}
+
+	user = proxy_canonenc(p, user, strlen(user), enc_user, 1);
+	if (user == NULL)
+	    return "Bad %-escape in URL (username)";
+    }
+    if (userp != NULL) {
 	*userp = user;
+    }
+    if (passwordp != NULL) {
 	*passwordp = password;
     }
 
-    strp = strchr(host, ':');
+    strp = strrchr(host, ':');
     if (strp != NULL) {
 	*(strp++) = '\0';
 
