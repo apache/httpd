@@ -778,7 +778,10 @@ if you serve numerous virtual hosts), this can <em>greatly</em> increase
 the startup time. If you are sure that all the DocumentRoot
 entries exist, you can tell Apache to bypass this check using:
 <BLOCKQUOTE><CODE>DocumentRootCheck Off</CODE></BLOCKQUOTE>
-
+<P>
+This directive is ignored when Apache is called with the
+<CODE>-t</CODE> command line option to perform a configuration
+test.
 
 <P><HR>
 
