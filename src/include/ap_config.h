@@ -94,6 +94,7 @@ char *crypt(char *pw, char *salt);
 #define HAVE_SHMGET
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
+#define BROKEN_WAIT
 
 #elif defined(HPUX) || defined(HPUX10)
 #define HAVE_RESOURCE

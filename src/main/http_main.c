@@ -937,9 +937,30 @@ static void longjmp_out_of_alarm (int sig) {
 #endif
 }
 
+#ifdef BROKEN_WAIT
+/*
+Some systems appear to fail to deliver dead children to wait() at times.
+This sorts them out.
+*/
+void reap_children()
+    {
+    int status,n;
+
+    for(n=0 ; n < HARD_SERVER_LIMIT ; ++n)
+	if(scoreboard_image->servers[n].status != SERVER_DEAD
+	   && waitpid(scoreboard_image->servers[n].pid,&status,WNOHANG) == -1
+	   && errno == ECHILD)
+	    {
+	    sync_scoreboard_image();
+	    update_child_status(n,SERVER_DEAD,NULL);
+	    }
+    }
+#endif
+
 int wait_or_timeout (int *status)
 {
-    wait_or_timeout_retval = -1;
+    int wait_or_timeout_retval = -1;
+    static int ntimes;
     
 #if defined(NEXT)
     if (setjmp(wait_timeout_buf) != 0) {
@@ -949,7 +970,13 @@ int wait_or_timeout (int *status)
 	errno = ETIMEDOUT;
 	return wait_or_timeout_retval;
     }
-    
+#ifdef BROKEN_WAIT
+    if(++ntimes == 60)
+	{
+	reap_children();
+	ntimes=0;
+	}
+#endif
     signal (SIGALRM, longjmp_out_of_alarm);
     alarm(1);
 #if defined(NEXT)
