@@ -60,12 +60,13 @@
  * mod_headers.c: Add/append/remove HTTP response headers
  *     Written by Paul Sutton, paul@ukweb.com, 1 Oct 1996
  *
- * New directive, Header, can be used to add/replace/remove HTTP headers.
+ * HeaderIn and HeaderOut can be used to add/replace/remove HTTP headers.
  * Valid in both per-server and per-dir configurations.
  *
  * Syntax is:
  *
- *   Header action header value
+ *   HeaderIn action header value
+ *   HeaderOut action header value
  *
  * Where action is one of:
  *     set    - set this header, replacing any old value
@@ -77,8 +78,8 @@
  * Where action is unset, the third argument (value) should not be given.
  * The header name can include the colon, or not.
  *
- * The Header directive can only be used where allowed by the FileInfo 
- * override.
+ * The Header(In|Out) directive can only be used where allowed by the
+ * FileInfo override.
  *
  * When the request is processed, the header directives are processed in
  * this order: firstly, the main server, then the virtual server handling
@@ -89,21 +90,22 @@
  * the following two directives have different effect if applied in
  * the reverse order:
  *
- *   Header append Author "John P. Doe"
- *   Header unset Author
+ *   HeaderOut append Author "John P. Doe"
+ *   HeaderOut unset Author
  *
  * Examples:
  *
  *  To set the "Author" header, use
- *     Header add Author "John P. Doe"
+ *     HeaderOut add Author "John P. Doe"
  *
  *  To remove a header:
- *     Header unset Author
+ *     HeaderOut unset Author
  *
  */
 
 #include "apr.h"
 #include "apr_strings.h"
+#include "apr_buckets.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -111,7 +113,8 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
-
+#include "http_log.h"
+#include "util_filter.h"
 
 typedef enum {
     hdr_add = 'a',              /* add header (could mean multiple hdrs) */
@@ -119,6 +122,11 @@ typedef enum {
     hdr_append = 'm',           /* append (merge into any old value) */
     hdr_unset = 'u'             /* unset header */
 } hdr_actions;
+
+typedef enum {
+    hdr_in = 0,                 /* HeaderIn */
+    hdr_out = 1,                /* HeaderOut */
+} hdr_inout;
 
 typedef struct {
     hdr_actions action;
@@ -131,7 +139,8 @@ typedef struct {
  * a per-dir and per-server config
  */
 typedef struct {
-    apr_array_header_t *headers;
+    apr_array_header_t *fixup_in;
+    apr_array_header_t *fixup_out;
 } headers_conf;
 
 module AP_MODULE_DECLARE_DATA headers_module;
@@ -140,7 +149,8 @@ static void *create_headers_config(apr_pool_t *p, server_rec *s)
 {
     headers_conf *conf = apr_pcalloc(p, sizeof(*conf));
 
-    conf->headers = apr_array_make(p, 2, sizeof(header_entry));
+    conf->fixup_in = apr_array_make(p, 2, sizeof(header_entry));
+    conf->fixup_out = apr_array_make(p, 2, sizeof(header_entry));
 
     return conf;
 }
@@ -156,13 +166,15 @@ static void *merge_headers_config(apr_pool_t *p, void *basev, void *overridesv)
     headers_conf *base = basev;
     headers_conf *overrides = overridesv;
 
-    newconf->headers = apr_array_append(p, base->headers, overrides->headers);
+    newconf->fixup_in = apr_array_append(p, base->fixup_in, overrides->fixup_in);
+    newconf->fixup_out = apr_array_append(p, base->fixup_out, overrides->fixup_out);
 
     return newconf;
 }
 
 
-static const char *header_cmd(cmd_parms *cmd, void *indirconf,
+/* handle HeaderIn and HeaderOut directive */
+static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value)
 {
@@ -175,10 +187,10 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     char *colon;
 
     if (cmd->path) {
-        new = (header_entry *) apr_array_push(dirconf->headers);
+        new = (header_entry *) apr_array_push((hdr_in == inout) ? dirconf->fixup_in : dirconf->fixup_out);
     }
     else {
-        new = (header_entry *) apr_array_push(serverconf->headers);
+        new = (header_entry *) apr_array_push((hdr_in == inout) ? serverconf->fixup_in : serverconf->fixup_out);
     }
 
     if (!strcasecmp(action, "set"))
@@ -194,10 +206,10 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
 
     if (new->action == hdr_unset) {
         if (value)
-            return "Header unset takes two arguments";
+            return "Header(In|Out) unset takes two arguments";
     }
     else if (!value)
-        return "Header requires three arguments";
+        return "Header(In|Out) requires three arguments";
 
     if ((colon = strchr(hdr, ':')))
         *colon = '\0';
@@ -208,54 +220,122 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     return NULL;
 }
 
-static const command_rec headers_cmds[] =
+/* handle deprecated Header directive */
+static const char *header_cmd(cmd_parms *cmd, void *indirconf,
+                              const char *action, const char *inhdr,
+                              const char *value)
 {
-    AP_INIT_TAKE23("Header", header_cmd, NULL, OR_FILEINFO,
-                   "an action, header and value"),
-    {NULL}
-};
+    return "The Header directive has been deprecated. Use HeaderOut instead.";
+}
 
-static void do_headers_fixup(request_rec *r, apr_array_header_t *headers)
+/* handle HeaderOut directive */
+static const char *header_out_cmd(cmd_parms *cmd, void *indirconf,
+                              const char *action, const char *inhdr,
+                              const char *value)
+{
+    return header_inout_cmd(hdr_out, cmd, indirconf, action, inhdr, value);
+}
+
+/* handle HeaderIn directive */
+static const char *header_in_cmd(cmd_parms *cmd, void *indirconf,
+                              const char *action, const char *inhdr,
+                              const char *value)
+{
+    return header_inout_cmd(hdr_in, cmd, indirconf, action, inhdr, value);
+}
+
+
+static void do_headers_fixup(apr_table_t *headers,
+                             apr_array_header_t *fixup)
 {
     int i;
 
-    for (i = 0; i < headers->nelts; ++i) {
-        header_entry *hdr = &((header_entry *) (headers->elts))[i];
+    for (i = 0; i < fixup->nelts; ++i) {
+        header_entry *hdr = &((header_entry *) (fixup->elts))[i];
         switch (hdr->action) {
         case hdr_add:
-            apr_table_addn(r->headers_out, hdr->header, hdr->value);
+            apr_table_addn(headers, hdr->header, hdr->value);
             break;
         case hdr_append:
-            apr_table_mergen(r->headers_out, hdr->header, hdr->value);
+            apr_table_mergen(headers, hdr->header, hdr->value);
             break;
         case hdr_set:
-            apr_table_setn(r->headers_out, hdr->header, hdr->value);
+            apr_table_setn(headers, hdr->header, hdr->value);
             break;
         case hdr_unset:
-            apr_table_unset(r->headers_out, hdr->header);
+            apr_table_unset(headers, hdr->header);
             break;
         }
     }
-
 }
 
-static int fixup_headers(request_rec *r)
+static void ap_headers_insert_output_filter(request_rec *r)
 {
     headers_conf *serverconf = ap_get_module_config(r->server->module_config,
                                                     &headers_module);
     headers_conf *dirconf = ap_get_module_config(r->per_dir_config,
                                                  &headers_module);
 
-    do_headers_fixup(r, serverconf->headers);
-    do_headers_fixup(r, dirconf->headers);
+    if (serverconf->fixup_out->nelts || dirconf->fixup_out->nelts) {
+	ap_add_output_filter("FIXUP_HEADERS_OUT", NULL, r, r->connection);
+    }
+}
+
+static apr_status_t ap_headers_output_filter(ap_filter_t *f,
+                                             apr_bucket_brigade *in)
+{
+    headers_conf *serverconf = ap_get_module_config(f->r->server->module_config,
+                                                    &headers_module);
+    headers_conf *dirconf = ap_get_module_config(f->r->per_dir_config,
+                                                 &headers_module);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, f->r->server,
+		 "headers: ap_headers_output_filter()");
+
+    /* do the fixup */
+    do_headers_fixup(f->r->headers_out, serverconf->fixup_out);
+    do_headers_fixup(f->r->headers_out, dirconf->fixup_out);
+
+    /* remove ourselves from the filter chain */
+    ap_remove_output_filter(f);
+
+    /* send the data up the stack */
+    return ap_pass_brigade(f->next,in);
+}
+
+static apr_status_t ap_headers_fixup(request_rec *r)
+{
+    headers_conf *serverconf = ap_get_module_config(r->server->module_config,
+                                                    &headers_module);
+    headers_conf *dirconf = ap_get_module_config(r->per_dir_config,
+                                                 &headers_module);
+
+    /* do the fixup */
+    if (serverconf->fixup_in->nelts || dirconf->fixup_in->nelts) {
+        do_headers_fixup(r->headers_in, serverconf->fixup_in);
+        do_headers_fixup(r->headers_in, dirconf->fixup_in);
+    }
 
     return DECLINED;
 }
+                                        
+static const command_rec headers_cmds[] =
+{
+    AP_INIT_TAKE23("Header", header_cmd, NULL, OR_FILEINFO,
+                   "deprecated, use HeaderOut instead"),
+    AP_INIT_TAKE23("HeaderIn", header_in_cmd, NULL, OR_FILEINFO,
+                   "an action, header and value"),
+    AP_INIT_TAKE23("HeaderOut", header_out_cmd, NULL, OR_FILEINFO,
+                   "an action, header and value"),
+    {NULL}
+};
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(fixup_headers, NULL, NULL, APR_HOOK_MIDDLE);
-} 
+    ap_hook_insert_filter(ap_headers_insert_output_filter, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_fixups(ap_headers_fixup, NULL, NULL, APR_HOOK_LAST);
+    ap_register_output_filter("FIXUP_HEADERS_OUT", ap_headers_output_filter, AP_FTYPE_CONTENT);
+}
 
 module AP_MODULE_DECLARE_DATA headers_module =
 {
