@@ -152,7 +152,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     const char *strp;
     char *strp2;
     const char *err, *desthost;
-    int i, j, sock, len, backasswards;
+    int i, j, sock,/* len,*/ backasswards;
     table *req_hdrs, *resp_hdrs;
     array_header *reqhdrs_arr;
     table_entry *reqhdrs_elts;
@@ -579,6 +579,11 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
      * Is it an HTTP/0.9 respose? If so, send the extra data we read from
      * upstream as the start of the reponse to client
      */
+/* FIXME: This code is broken: we try and write a buffer and length that
+ * were never intelligently initialised. Rather have a bit of broken protocol
+ * handling for now than broken code.
+ */
+/*
     if (backasswards) {
         ap_hard_timeout("proxy send assbackward", r);
 
@@ -590,7 +595,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
         }
         ap_kill_timeout(r);
     }
-
+*/
 
 #ifdef CHARSET_EBCDIC
     /*
