@@ -3,6 +3,9 @@
  * on Windows 95/NT.
  */
 
+#ifndef APACHE_READDIR_H
+#define APACHE_READDIR_H
+
 #include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,3 +37,5 @@ typedef struct {
 API_EXPORT(DIR *) opendir(const char *);
 API_EXPORT(struct dirent *) readdir(DIR *);
 API_EXPORT(int) closedir(DIR *);
+
+#endif /* ndef APACHE_READDIR_H */
