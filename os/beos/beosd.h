@@ -58,25 +58,37 @@
 #ifndef UNIXD_H
 #define UNIXD_H
 
-/* common stuff that unix MPMs will want */
+/* common stuff that beos MPMs will want */
 
 typedef struct {
     char *user_name;
     uid_t user_id;
     gid_t group_id;
-} unixd_config_rec;
-extern unixd_config_rec unixd_config;
+} beosd_config_rec;
+extern beosd_config_rec beosd_config;
 
-void unixd_detach(void);
-int unixd_setup_child(void);
-void unixd_pre_config(void);
-const char *unixd_set_user(cmd_parms *cmd, void *dummy, char *arg);
-const char *unixd_set_group(cmd_parms *cmd, void *dummy, char *arg);
+void beosd_detach(void);
+int beosd_setup_child(void);
+void beosd_pre_config(void);
+const char *beosd_set_user(cmd_parms *cmd, void *dummy, char *arg);
+const char *beosd_set_group(cmd_parms *cmd, void *dummy, char *arg);
+
+#if defined(NSIG)
+#define NumSIG NSIG
+#elif defined(_NSIG)
+#define NumSIG _NSIG
+#elif defined(__NSIG)
+#define NumSIG __NSIG
+#else
+#define NumSIG 32   /* for 1998's unixes, this is still a good assumption */
+#endif
+
+#define INIT_SIGLIST()  /* nothing */
 
 #define UNIX_DAEMON_COMMANDS	\
-{ "User", unixd_set_user, NULL, RSRC_CONF, TAKE1, \
+{ "User", beosd_set_user, NULL, RSRC_CONF, TAKE1, \
   "Effective user id for this server"}, \
-{ "Group", unixd_set_group, NULL, RSRC_CONF, TAKE1, \
+{ "Group", beosd_set_group, NULL, RSRC_CONF, TAKE1, \
   "Effective group id for this server"}, \
 
 #endif
