@@ -248,6 +248,8 @@ void ap_process_request(request_rec *r)
      * Use this hook with extreme care and only if you know what you are 
      * doing.
      */
+    if (ap_extended_status)
+        ap_time_process_request(r->connection->sbh, START_PREQUEST);
     access_status = ap_run_quick_handler(r, 0);  /* Not a look-up request */
     if (access_status == DECLINED) {
         access_status = ap_process_request_internal(r);
@@ -278,6 +280,8 @@ void ap_process_request(request_rec *r)
     check_pipeline_flush(r);
     ap_update_child_status(r->connection->sbh, SERVER_BUSY_LOG, r);
     ap_run_log_transaction(r);
+    if (ap_extended_status)
+        ap_time_process_request(r->connection->sbh, STOP_PREQUEST);
 }
 
 static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
