@@ -2577,7 +2577,7 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
                                          const char *arg, const char *arg2)
 {
     core_dir_config *conf = conf_;
-    ap_filter_rec_t *old, *new;
+    ap_filter_rec_t *old, *new = NULL;
     const char *filter_name;
 
     if (!conf->ct_output_filters) {
@@ -2590,7 +2590,8 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
     }
 
     while (*arg &&
-           (filter_name = ap_getword(cmd->pool, &arg, ';'))) {
+           (filter_name = ap_getword(cmd->pool, &arg, ';')) &&
+           strcmp(filter_name, "")) {
         new = apr_pcalloc(cmd->pool, sizeof(ap_filter_rec_t));
         new->name = filter_name;
 
@@ -2601,12 +2602,16 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
         old = new;
     }
 
+    if (!new) {
+        return "invalid filter name";
+    }
+    
     apr_hash_set(conf->ct_output_filters, arg2, APR_HASH_KEY_STRING, new);
 
     return NULL;
 }
 /* 
- * Insert filters requested by the AddOutputFiltersByType 
+ * Insert filters requested by the AddOutputFilterByType 
  * configuration directive. We cannot add filters based 
  * on content-type until after the handler has started 
  * to run. Only then do we reliably know the content-type.
