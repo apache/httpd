@@ -171,7 +171,7 @@ MaxRequestsPerChild 30
 # alias flag, or through kernel patches like VIF.
 
 # Any httpd.conf or srm.conf directive may go into a VirtualHost command.
-# See alto the BindAddress entry.
+# See also the BindAddress entry.
  
 #<VirtualHost host.some_domain.com>
 #ServerAdmin webmaster@host.some_domain.com
