@@ -95,6 +95,13 @@ not re-exported and thus not available for use in a DSO.  Finding a way to
 force the linker to export all global symbols is the main problem one has to
 solve when using DSO for extending a program at run-time.
 
+<P>Windows and NetWare provide similar facilities, although they are
+implemented somewhat differently than the description of Unix DSO throughout
+this document.  In particular, DSO modules (DLL's and NLM's, respectively) 
+are built quite differently than their Unix cousins.  This document does not
+attempt to explore the topic of building DSO modules on these platforms.
+The description of mod_so and it's configuration, however, are similar.
+
 <H3>Practical Usage</H3>
 
 <P>The shared library approach is the typical one, because it is what the DSO
@@ -194,6 +201,7 @@ o  Mac OS             (10.0 preview 1)
 o  OpenStep/Mach      (4.2)
 o  DGUX               (??)
 o  NetWare            (5.1)
+o  Windows            (95, 98, NT 4.0, 2000)
 </PRE>
 
 <P>
