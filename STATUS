@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/11 16:11:37 $]
+Last modified at [$Date: 2004/10/11 18:06:49 $]
 
 Release:
 
@@ -80,7 +80,7 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_kernel.c?r1=1.110&r2=1.111
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_init.c?r1=1.128&r2=1.129
        PR: 31505
-       +1: jorton
+       +1: jorton, pquerna
 
     *) mod_ssl: Fail to configure when an SSL proxy is configured with
        incomplete client cert keypair, rather than segfaulting at
@@ -118,7 +118,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) apxs: fix handling of -Wc/-Wl and "-o mod_foo.so".
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apxs.in?r1=1.62&r2=1.64
        PR: 31448
-       +1: jorton, jerenkrantz
+       +1: jorton, jerenkrantz, pquerna
 
     *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.101
@@ -268,6 +268,9 @@ PATCHES TO BACKPORT FROM 2.1
                when the right atomic operations are available/
                implemented?  (Due to under-the-covers mutex
                operations when the dummy atomics are used?)
+      pquerna: Has anyone tested the performance differences 
+               for different platforms? At this point I would 
+               favour waiting for 2.2.
       -0: stoddard (at least until the performance implications are clarified)
 
     * Rewrite how proxy sends its request to allow input bodies to 
