@@ -54,6 +54,7 @@ ALL : "$(OUTDIR)\ApacheModuleRewrite.dll"
 
 CLEAN :
 	-@erase "$(INTDIR)\mod_rewrite.obj"
+	-@erase "$(INTDIR)\passwd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheModuleRewrite.dll"
 	-@erase "$(OUTDIR)\ApacheModuleRewrite.exp"
@@ -75,12 +76,13 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
- uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
+ uuid.lib odbc32.lib odbccp32.lib wsock32.lib /nologo /subsystem:windows /dll\
  /incremental:no /pdb:"$(OUTDIR)\ApacheModuleRewrite.pdb" /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleRewrite.dll"\
  /implib:"$(OUTDIR)\ApacheModuleRewrite.lib" 
 LINK32_OBJS= \
-	"$(INTDIR)\mod_rewrite.obj"
+	"$(INTDIR)\mod_rewrite.obj" \
+	"$(INTDIR)\passwd.obj"
 
 "$(OUTDIR)\ApacheModuleRewrite.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -107,6 +109,7 @@ ALL : "$(OUTDIR)\ApacheModuleRewrite.dll"
 
 CLEAN :
 	-@erase "$(INTDIR)\mod_rewrite.obj"
+	-@erase "$(INTDIR)\passwd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
 	-@erase "$(OUTDIR)\ApacheModuleRewrite.dll"
@@ -136,7 +139,8 @@ LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  /out:"$(OUTDIR)\ApacheModuleRewrite.dll"\
  /implib:"$(OUTDIR)\ApacheModuleRewrite.lib" 
 LINK32_OBJS= \
-	"$(INTDIR)\mod_rewrite.obj"
+	"$(INTDIR)\mod_rewrite.obj" \
+	"$(INTDIR)\passwd.obj"
 
 "$(OUTDIR)\ApacheModuleRewrite.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -179,6 +183,16 @@ LINK32_OBJS= \
 !IF "$(CFG)" == "ApacheModuleRewrite - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleRewrite - Win32 Debug"
 SOURCE=..\..\modules\standard\mod_rewrite.c
+
+!IF  "$(CFG)" == "ApacheModuleRewrite - Win32 Release"
+
+
+"$(INTDIR)\mod_rewrite.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheModuleRewrite - Win32 Debug"
+
 DEP_CPP_MOD_R=\
 	"..\..\main\alloc.h"\
 	"..\..\main\buff.h"\
@@ -190,7 +204,9 @@ DEP_CPP_MOD_R=\
 	"..\..\main\httpd.h"\
 	"..\..\modules\standard\mod_rewrite.h"\
 	"..\..\regex\regex.h"\
+	".\passwd.h"\
 	".\readdir.h"\
+	{$(INCLUDE)}"sys\locking.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
@@ -201,6 +217,27 @@ NODEP_CPP_MOD_R=\
 "$(INTDIR)\mod_rewrite.obj" : $(SOURCE) $(DEP_CPP_MOD_R) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ENDIF 
+
+SOURCE=.\passwd.c
+
+!IF  "$(CFG)" == "ApacheModuleRewrite - Win32 Release"
+
+
+"$(INTDIR)\passwd.obj" : $(SOURCE) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "ApacheModuleRewrite - Win32 Debug"
+
+DEP_CPP_PASSW=\
+	".\passwd.h"\
+	
+
+"$(INTDIR)\passwd.obj" : $(SOURCE) $(DEP_CPP_PASSW) "$(INTDIR)"
+
+
+!ENDIF 
 
 
 !ENDIF 

@@ -132,6 +132,11 @@
 #define USE_FCNTL 1
 #include <fcntl.h>
 #endif
+#ifdef WIN32
+#undef USE_FCNTL
+#define USE_LOCKING
+#endif
+
 
     /* The locking support for the RewriteMap programs:
        Locking a pipe to the child works fine under most

@@ -95,7 +95,9 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef WIN32
+#ifdef WIN32
+#include "../../os/win32/passwd.h"
+#else
 #include <netinet/in.h>
 #endif
 
@@ -109,7 +111,9 @@
     /* now our own stuff ... */
 #include "mod_rewrite.h"
 
- 
+#ifdef USE_LOCKING
+#include <sys/locking.h>
+#endif 
 
 
 /*
@@ -2353,7 +2357,11 @@ static void open_rewritelog(server_rec *s, pool *p)
     char *fname;
     FILE *fp;
     int    rewritelog_flags = ( O_WRONLY|O_APPEND|O_CREAT );
+#ifdef WIN32
+    mode_t rewritelog_mode=_S_IREAD|_S_IWRITE;
+#else
     mode_t rewritelog_mode  = ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
+#endif
   
     conf = get_module_config(s->module_config, &rewrite_module);
     
@@ -2391,9 +2399,11 @@ static int rewritelog_child(void *cmd)
     int child_pid = 1;
 
     cleanup_for_exec();
+#ifdef SIGHUP
     signal(SIGHUP, SIG_IGN);
+#endif
 #if defined(WIN32)
-    child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
@@ -2551,9 +2561,11 @@ static int rewritemap_program_child(void *cmd)
     int child_pid = 1;
     
     cleanup_for_exec();
+#ifdef SIGHUP
     signal(SIGHUP, SIG_IGN);
+#endif
 #if defined(WIN32)
-    child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #elif defined(__EMX__)
     /* OS/2 needs a '/' */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
@@ -2628,9 +2640,11 @@ static char *lookup_variable(request_rec *r, char *var)
     time_t tc;
     struct tm *tm;
     request_rec *rsub;
+#ifndef WIN32
     struct passwd *pw;
     struct group *gr;
     struct stat finfo;
+#endif
 
     result = NULL;
 
@@ -2812,6 +2826,9 @@ static char *lookup_variable(request_rec *r, char *var)
         LOOKAHEAD(sub_req_lookup_file)
     }
 
+#ifndef WIN32
+    /* Win32 has a rather different view of file ownerships. For now, just forget it */
+
     /* file stuff */
     else if (strcasecmp(var, "SCRIPT_USER") == 0) {
         result = pstrdup(r->pool, "<unknown>");
@@ -2843,6 +2860,8 @@ static char *lookup_variable(request_rec *r, char *var)
             }
         }
     }
+
+#endif /* ndef WIN32 */
 
     if (result == NULL)
         return pstrdup(r->pool, "");
@@ -3337,6 +3356,13 @@ static void fd_lock(int fd)
            && (errno == EINTR)               )
         continue;
 #endif
+#ifdef USE_LOCKING
+    /* Lock the first byte, always, assume we want to append and seek to
+    the end afterwards */
+    lseek(fd,0,SEEK_SET);
+    rc=_locking(fd, _LK_LOCK, 1);
+    lseek(fd,0,SEEK_END);
+#endif
 
     if (rc < 0) {
 #ifdef USE_FLOCK
@@ -3366,6 +3392,11 @@ static void fd_unlock(int fd)
 #ifdef USE_FLOCK 
     rc = flock(fd, LOCK_UN);
 #endif 
+#ifdef USE_LOCKING
+    lseek(fd,0,SEEK_SET);
+    rc=_locking(fd,_LK_UNLCK,1);
+    lseek(fd,0,SEEK_END);
+#endif
 
     if (rc < 0) {
 #ifdef USE_FLOCK

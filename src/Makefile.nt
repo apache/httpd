@@ -20,6 +20,7 @@ _apacher:
 	cd os\win32 & set CFG=ApacheModuleExpires - Win32 Release& nmake /nologo -f ApacheModuleExpires.mak
 	cd os\win32 & set CFG=ApacheModuleHeaders - Win32 Release& nmake /nologo -f ApacheModuleHeaders.mak
 	cd os\win32 & set CFG=ApacheModuleUserTrack - Win32 Release& nmake /nologo -f ApacheModuleUserTrack.mak
+	cd os\win32 & set CFG=ApacheModuleRewrite - Win32 Release& nmake /nologo -f ApacheModuleRewrite.mak
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Release& nmake /nologo -f ApacheModuleProxy.mak
 
 _apached:
@@ -34,6 +35,7 @@ _apached:
 	cd os\win32 & set CFG=ApacheModuleExpires - Win32 Debug& nmake /nologo -f ApacheModuleExpires.mak
 	cd os\win32 & set CFG=ApacheModuleHeaders - Win32 Debug& nmake /nologo -f ApacheModuleHeaders.mak
 	cd os\win32 & set CFG=ApacheModuleUserTrack - Win32 Debug& nmake /nologo -f ApacheModuleUserTrack.mak
+	cd os\win32 & set CFG=ApacheModuleRewrite - Win32 Debug& nmake /nologo -f ApacheModuleRewrite.mak
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Debug& nmake /nologo -f ApacheModuleProxy.mak
 
 installr: _apacher
