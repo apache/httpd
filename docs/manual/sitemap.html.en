@@ -87,8 +87,6 @@
 Windows</a></li>
 <li><a href="platform/win_compiling.html">Compiling Apache for
 Microsoft Windows</a></li>
-<li><a href="platform/win_service.html">Running Apache for Windows as
-a Service</a></li>
 <li><a href="platform/netware.html">Using Apache with Novell NetWare</a></li>
 <li><a href="platform/perf-hp.html">Running a High-Performance Web
 Server on HPUX</a></li>
