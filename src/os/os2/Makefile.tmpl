@@ -22,7 +22,7 @@ $(LIB): $(OBJS)
 	$(RANLIB) $@
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 clean:
 	for i in $(COPY); do  rm -f $(INCDIR)/$$i ; done

@@ -1698,11 +1698,11 @@ EOF
 		so=pp[3]
 		split(pp[3], parts, ".")
 		base=parts[1]
-		shlibsobj=shlibsobj " " base "-so.o"
+		objspic=objspic " " base ".lo"
 	    }
 	    END { 
 		printf "SHLIBS=%s\n", shlibs;
-		printf "SHLIBS_OBJ=%s\n", shlibsobj;
+		printf "OBJS_PIC=%s\n", objspic;
             }'
 
 	    $CAT << 'EOF' >> $moddir/Makefile
@@ -1721,19 +1721,27 @@ $(LIB): $(OBJS)
 .SUFFIXES: .o .so
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 .c.so:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) $< && mv $*.o $*-so.o
-	$(LD) $(LDFLAGS_SHLIB) -o $@ $*-so.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $< && mv $*.o $*.lo
+	$(LD) $(LDFLAGS_SHLIB) -o $@ $*.lo
 
 clean:
-	rm -f $(OBJS) $(SHLIBS) $(SHLIBS_OBJ) $(LIB) $(SHLIB)
+	rm -f $(LIB) $(OBJS) $(SHLIBS) $(OBJS_PIC)
 
 distclean: clean
 	rm -f Makefile
 
-$(OBJS) $(SHLIBS) $(SHLIBS_OBJ): Makefile
+#   NOT FOR END USERS!
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
 
 EOF
 	fi

@@ -9,6 +9,23 @@ Changes with Apache 1.3b7
        CFLAGS for SCO 5.
      - update the "depend" targets in Makefile.tmpl files to use $(OSDIR), too.
      - updated the dependencies theirself
+     - removed not existing SHLIB variable from "clean" targets
+     - replaced SHLIB_OBJS/SHLIBS_OBJ consistently with OBJS_PIC because OBJS
+       already exists and OBJS_PIC are also just plain objects and have not
+       directly to do with "shared" things. The only difference is that they
+       contain PIC. So OBJS_PIC is the more canonical name.
+     - Updated the Makefile-dependency lines for OBJS_PIC
+     - Removed the Makefile-dependency line in Configure to avoid double
+       definitions
+     - replaced ugly xx-so.o/xx.so-o hack with a clean and consistent usage
+       of xxx.lo as GNU libtool does with its PIC objects
+     - reduce local complexity in modules Makefile.tmpl by moving the last
+       existing target "depend" to the generation section in Configure, too.
+     - removed the historical $(SPACER) which was used in the past together
+       with BROKEN_BPRINTF_FLAGS to avoid zig-zags in the build process. This
+       is no longer needed.
+     - force the build and run of the gen_xxx programs under main/ as the
+       first step before building the objects because it looks cleaner
      [Ralf S. Engelschall]
 
   *) WIN32: Make Win32 work again after the /dev/null DoS fix.

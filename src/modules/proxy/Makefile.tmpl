@@ -4,9 +4,9 @@ LIB=libproxy.$(LIBEXT)
 OBJS=\
      mod_proxy.o \
      proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o proxy_util.o
-SHLIB_OBJS=\
-     mod_proxy.so-o \
-     proxy_cache.so-o proxy_connect.so-o proxy_ftp.so-o proxy_http.so-o proxy_util.so-o
+OBJS_PIC=\
+     mod_proxy.lo \
+     proxy_cache.lo proxy_connect.lo proxy_ftp.lo proxy_http.lo proxy_util.lo
 
 all: lib
 
@@ -17,28 +17,20 @@ libproxy.a: $(OBJS)
 	ar cr $@ $(OBJS)
 	$(RANLIB) $@
 
-libproxy.so: $(SHLIB_OBJS)
+libproxy.so: $(OBJS_PIC)
 	rm -f $@
-	$(LD) $(LDFLAGS_SHLIB) -o $@ $(SHLIB_OBJS)
+	$(LD) $(LDFLAGS_SHLIB) -o $@ $(OBJS_PIC)
 
-# 1. extension .o for shared objects cannot be used here because
-#    first these files aren't still shared objects and second we
-#    have to use a different name to trigger the different
-#    implicit Make rule
-# 2. extension -so.o (as used elsewhere) cannot be used because
-#    the suffix feature of Make really wants just .x, so we use
-#    extension .so-o
-
-.SUFFIXES: .o .so-o
+.SUFFIXES: .o .lo
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
-.c.so-o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) $< && mv $*.o $*.so-o
+.c.lo:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $< && mv $*.o $*.lo
 
 clean:
-	rm -f $(OBJS) $(SHLIB_OBJS) $(LIB)
+	rm -f $(OBJS) $(OBJS_PIC) $(LIB)
 
 distclean: clean
 	-rm -f Makefile
@@ -57,7 +49,7 @@ depend:
 
 #Dependencies
 
-$(OBJS) $(SHLIB_OBJS): Makefile
+$(OBJS) $(OBJS_PIC): Makefile
 
 # DO NOT REMOVE
 mod_proxy.o: mod_proxy.c mod_proxy.h $(INCDIR)/httpd.h \

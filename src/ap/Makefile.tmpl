@@ -9,7 +9,7 @@ OBJS=ap_execve.o ap_cpystrn.o ap_signal.o \
      ap_slack.o ap_snprintf.o ap_strings.o
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 all: $(LIB)
 

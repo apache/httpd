@@ -1,7 +1,3 @@
-# Apache makefile suffix for core files
-
-# This is combined with the information in the "Configuration" file
-# by the configure script to make the actual Makefile.
 
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
@@ -9,6 +5,7 @@ INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 LIB=  libmain.a
+HEADERS= test_char.h uri_delims.h 
 
 OBJS= alloc.o buff.o \
       http_config.o http_core.o http_log.o \
@@ -17,9 +14,9 @@ OBJS= alloc.o buff.o \
       md5c.o rfc1413.o fnmatch.o
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
-all: $(LIB)
+all: $(HEADERS) $(LIB)
 
 $(LIB): $(OBJS)
 	rm -f $@

@@ -12,7 +12,7 @@ OBJS= \
   ap/libap.a
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 all: @@Configuration@@ $(TARGET)
 
@@ -26,7 +26,7 @@ all: @@Configuration@@ $(TARGET)
 $(TARGET): $(SUBTARGET)
 
 target_static: subdirs modules.o
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) buildmark.c
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
 	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
@@ -40,7 +40,7 @@ libhttpd.ep: libhttpd.so
 		  -L. -lhttpd $(LIBS)
 
 libhttpd.so: subdirs modules.o
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) buildmark.c
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
 	$(LD) $(LDFLAGS_SHLIB) -o libhttpd.so buildmark.o $(OBJS) $(REGLIB)
 	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
 		rm -f libhttpd.so.*; \

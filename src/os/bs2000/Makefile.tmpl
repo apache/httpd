@@ -15,7 +15,7 @@ $(LIB): $(OBJS)
 	$(RANLIB) $@
 
 .c.o:
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 clean:
 	rm -f $(OBJS) $(LIB)
