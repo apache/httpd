@@ -47,10 +47,15 @@
 # these for compiling Apache is risky. If you don't want to see Apache dumping
 # core regularly then at most use -O or -O2.
 #
+# The EXTRA_DEPS can be used to add extra Makefile dependencies to external
+# files (for instance third-party libraries) for the httpd target. The effect
+# is that httpd is relinked when those files are changed.
+#
 EXTRA_CFLAGS=
 EXTRA_LDFLAGS=
 EXTRA_LIBS=
 EXTRA_INCLUDES=
+EXTRA_DEPS=
 
 #CC=
 #OPTIM=

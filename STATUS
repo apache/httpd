@@ -59,13 +59,6 @@ Available Patches:
       See: http://www.engelschall.com/sw/apache/ [libshlib]
       Status (for 1.3.1-dev): Ralf +1
 
-    * Ralf's "EXTRA_DEPS to add extra dependecies to httpd target"
-      This patch adds an EXTRA_DEPS configuration parameter which can be used
-      to add an extra Makefile dependency for the httpd target, for instance
-      to external third-party libraries, etc.
-      See: http://www.engelschall.com/sw/apache/ [extradeps]
-      Status (for 1.3.1-dev): Ralf +1, Marc +1, Jim +1
-
     * Paul's patch to add integrated restart/shutdown signalling (Win32)
       This patch make Apache listen on predictable event names to allow
       restarts and shutdowns to be initiated. Also adds a new command line

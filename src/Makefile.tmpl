@@ -23,7 +23,7 @@ all: @@Configuration@@ $(TARGET)
 	@echo "++ If not, you will at least have to touch '@@Configuration@@'."
 	@false
 
-$(TARGET): $(SUBTARGET)
+$(TARGET): $(EXTRA_DEPS) $(SUBTARGET)
 
 target_static: subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c

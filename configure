@@ -229,7 +229,7 @@ modules=`echo $modules | sed -e 's/^://'`
 #   parameter names to the canonical Autoconf-style shell
 #   variable names.
 OIFS="$IFS" IFS="$DIFS"
-for var in CFLAGS LDFLAGS LIBS INCLUDES; do
+for var in CFLAGS LDFLAGS LIBS INCLUDES DEPS; do
     eval "val=\$EXTRA_$var"
     if [ ".$val" != . ]; then
         eval "$var=\$val"
@@ -897,11 +897,11 @@ touch $sedsubst
 #   generate settings from imported environment variables
 OIFS="$IFS" IFS="$DIFS"
 for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
-           LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB; do
+           LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS; do
     eval "val=\"\$$var\"";
     if [ ".$val" != . ]; then
         case $var in 
-            CFLAGS|LDFLAGS|LIBS|INCLUDES) 
+            CFLAGS|LDFLAGS|LIBS|INCLUDES|DEPS) 
                 echo "s%^#*\\(EXTRA_$var=\\).*%\\1$val%g" >>$sedsubst
                 ;;
             *)
