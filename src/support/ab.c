@@ -536,7 +536,8 @@ static void start_connect(struct connection * c)
     }
 
     /* connected first time */
-    write_request(c);
+    c->state = STATE_CONNECTING;
+    FD_SET(c->fd, &writebits);
 }
 
 /* --------------------------------------------------------- */
