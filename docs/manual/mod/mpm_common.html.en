@@ -82,7 +82,7 @@ accepting requests on network sockets</td></tr>
       file defined by the <code class="directive"><a href="#lockfile">LockFile</a></code> directive.</dd>
 
       <dt><code>fcntl</code></dt>
-      <dd>uses the <code>fnctl(2)</code> system call to lock the
+      <dd>uses the <code>fcntl(2)</code> system call to lock the
       file defined by the <code class="directive"><a href="#lockfile">LockFile</a></code> directive.</dd>
 
       <dt><code>posixsem</code></dt>
@@ -141,7 +141,7 @@ switch before dumping core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>This controls the directory to which Apache attempts to
-    switch before dumping core. The default is in the 
+    switch before dumping core. The default is in the
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> directory, however
     since this should not be writable by the user the server runs
     as, core dumps won't normally get written. If you want a core
@@ -164,10 +164,10 @@ requests</td></tr>
 </table>
     <p>The <code class="directive">Group</code> directive sets the group under
     which the server will answer requests. In order to use this
-    directive, the server must be run initially as root. If you start the
-    server as a non-root user, it will fail to change to the specified
-    group, and will instead continue to run as the group of the original
-    user. <var>Unix-group</var> is one of:</p>
+    directive, the server must be run initially as <code>root</code>. If
+    you start the server as a non-root user, it will fail to change to the
+    specified group, and will instead continue to run as the group of the
+    original user. <var>Unix-group</var> is one of:</p>
 
     <dl>
       <dt>A group name</dt>
@@ -223,7 +223,7 @@ listens to</td></tr>
     <p>The <code class="directive">Listen</code> directive tells the server to
     accept incoming requests on the specified port or address-and-port
     combination. If only a port number is specified, the server listens to
-    the given port on all interfaces. If an IP address is given as well 
+    the given port on all interfaces. If an IP address is given as well
     as a port, the server will listen on the given port and
     interface.</p>
 
@@ -303,7 +303,7 @@ uses</a></li>
     of the main server process is automatically appended to the
     filename.</p>
 
-    <div class="warning"><h3>Security:</h3>
+    <div class="warning"><h3>Security</h3>
       <p>It is best to <em>avoid</em> putting this file in a world writable
       directory such as <code>/var/tmp</code> because someone could create
       a denial of service attack and prevent the server from starting by
@@ -338,7 +338,7 @@ to serve requests</td></tr>
     <p>For non-threaded servers (<em>i.e.</em>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>),
     <code class="directive">MaxClients</code> translates into the maximum
     number of child processes that will be launched to serve requests.
-    The default value is 256; to increase it, you must also raise
+    The default value is <code>256</code>; to increase it, you must also raise
     <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
     <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/beos.html">beos</a></code>
@@ -361,7 +361,7 @@ to hold without calling free()</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>The <code class="directive">MaxMemFree</code> directive sets the 
+    <p>The <code class="directive">MaxMemFree</code> directive sets the
     maximum number of free Kbytes that the main allocator is allowed
     to hold without calling <code>free()</code>. When not set, or when set
     to zero, the threshold will be set to unlimited.</p>
@@ -385,7 +385,7 @@ will handle during its life</td></tr>
     process will die. If <code class="directive">MaxRequestsPerChild</code> is
     <code>0</code>, then the process will never expire.</p>
 
-    <div class="note"><h3>Different default values:</h3>
+    <div class="note"><h3>Different default values</h3>
       <p>The default value for <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> and
       <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> is <code>0</code>.</p>
     </div>
@@ -401,7 +401,7 @@ will handle during its life</td></tr>
       the number of processes when the server load reduces.</li>
     </ul>
 
-    <div class="note"><h3>Note:</h3>
+    <div class="note"><h3>Note</h3>
       <p>For <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> requests, only
       the first request is counted towards this limit. In effect, it
       changes the behavior to limit the number of <em>connections</em> per
@@ -535,12 +535,12 @@ of the daemon</td></tr>
     SIGHUP (kill -1) signal to the process id listed in the
     <code class="directive">PidFile</code>.</p>
 
-    <p>The PidFile is subject to the same warnings about log file
-    placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
+    <p>The <code class="directive">PidFile</code> is subject to the same
+    warnings about log file placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <div class="note"><h3>Note</h3>
-      As of Apache 2 it is recommended to use only the <a href="../programs/apachectl.html">apachectl</a> script for
-      (re-)starting or stopping the server.
+      <p>As of Apache 2 it is recommended to use only the <a href="../programs/apachectl.html">apachectl</a> script for
+      (re-)starting or stopping the server.</p>
     </div>
 
 </div>
@@ -612,8 +612,8 @@ Apache</a></li>
 </table>
     <p>For the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, this directive sets the
     maximum configured value for <code class="directive"><a href="#maxclients">MaxClients</a></code> for the lifetime of the
-    Apache process.  For the worker MPM, this directive in combination
-    with <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> sets
+    Apache process.  For the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM, this directive
+    in combination with <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> sets
     the maximum configured value for <code class="directive"><a href="#maxclients">MaxClients</a></code> for the lifetime of the
     Apache process.  Any attempts to change this directive during a
     restart will be ignored, but <code class="directive"><a href="#maxclients">MaxClients</a></code> can be modified during

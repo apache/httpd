@@ -127,10 +127,11 @@
         <code>openssl</code>, obtained from <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
         or the abs project (<code>ab.exe</code> with SSL support.) To prepare OpenSSL
         for both <code>release</code> and <code>debug</code> builds of Apache, and
-        disable the patent protected features in 0.9.6,  you might use the following
+        disable the patent protected features in 0.9.7,  you might use the following
         build commands:</p>
 
         <div class="example"><p><code>
+          perl Configure VC-WIN32<br />
           perl util\mkfiles.pl &gt;MINFO<br />
           perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile<br />
           perl util\mk1mf.pl dll debug no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile.dbg<br />
