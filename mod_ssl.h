@@ -468,39 +468,76 @@ typedef struct {
     } rCtx;
 } SSLModConfigRec;
 
-/*
- * Define the mod_ssl per-server configuration structure
- * (i.e. the configuration for the main server
- *  and all <VirtualHost> contexts)
- */
+/* public cert/private key */
 typedef struct {
-    SSLModConfigRec *mc;
-    BOOL         enabled;
-    const char  *vhost_id;
-    int          vhost_id_len;
-    const char  *log_file_name;
-    apr_file_t  *log_file;
-    int          log_level;
-    int          session_cache_timeout;
+    /* 
+     * server only has 1-2 certs/keys
+     * 1 RSA and/or 1 DSA
+     */
+    const char  *cert_files[SSL_AIDX_MAX];
+    const char  *key_files[SSL_AIDX_MAX];
+    X509        *certs[SSL_AIDX_MAX];
+    EVP_PKEY    *keys[SSL_AIDX_MAX];
+} modssl_pk_server_t;
 
-    const char  *szPublicCertFiles[SSL_AIDX_MAX];
-    const char  *szPrivateKeyFiles[SSL_AIDX_MAX];
-    const char  *szCertificateChain;
-    const char  *szCACertificatePath;
-    const char  *szCACertificateFile;
-    const char  *szCipherSuite;
-    int          nVerifyDepth;
-    ssl_verify_t nVerifyClient;
-    X509        *pPublicCert[SSL_AIDX_MAX];
-    EVP_PKEY    *pPrivateKey[SSL_AIDX_MAX];
-    SSL_CTX     *pSSLCtx;
-    int          nPassPhraseDialogType;
-    const char  *szPassPhraseDialogPath;
-    ssl_proto_t  nProtocol;
-    const char  *szCARevocationPath;
-    const char  *szCARevocationFile;
-    X509_STORE  *pRevocationStore;
-} SSLSrvConfigRec;
+typedef struct {
+    /* proxy can have any number of cert/key pairs */
+    const char  *cert_file;
+    const char  *cert_path;
+    STACK_OF(X509_INFO) *certs;
+} modssl_pk_proxy_t;
+
+/* stuff related to authentication that can also be per-dir */
+typedef struct {
+    /* known/trusted CAs */
+    const char  *ca_cert_path;
+    const char  *ca_cert_file;
+
+    const char  *cipher_suite;
+
+    /* for client or downstream server authentication */
+    int          verify_depth;
+    ssl_verify_t verify_mode;
+} modssl_auth_ctx_t;
+
+typedef struct SSLSrvConfigRec SSLSrvConfigRec;
+
+typedef struct {
+    SSLSrvConfigRec *sc; /* pointer back to server config */
+    SSL_CTX *ssl_ctx;
+
+    /* we are one or the other */
+    modssl_pk_server_t *pks;
+    modssl_pk_proxy_t  *pkp;
+
+    /* config for handling encrypted keys */
+    ssl_pphrase_t pphrase_dialog_type;
+    const char   *pphrase_dialog_path;
+
+    const char  *cert_chain;
+
+    /* certificate revocation list */
+    const char  *crl_path;
+    const char  *crl_file;
+    X509_STORE  *crl;
+
+    ssl_proto_t  protocol;
+
+    modssl_auth_ctx_t auth;
+} modssl_ctx_t;
+
+struct SSLSrvConfigRec {
+    SSLModConfigRec *mc;
+    BOOL             enabled;
+    const char      *vhost_id;
+    int              vhost_id_len;
+    const char      *log_file_name;
+    apr_file_t      *log_file;
+    int              log_level;
+    int              session_cache_timeout;
+    modssl_ctx_t    *server;
+    modssl_ctx_t    *proxy;
+};
 
 /*
  * Define the mod_ssl per-directory configuration structure
