@@ -1069,7 +1069,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_int_slot(cmd_parms *cmd,
     char *error_str = NULL;
     int offset = (int) (long) cmd->info;
 
-    *(int *) (struct_ptr + offset) = strtol(arg, &endptr, 10);
+    *(int *) ((char*)struct_ptr + offset) = strtol(arg, &endptr, 10);
 
     if ((*arg == '\0') || (*endptr != '\0')) {
         error_str = apr_psprintf(cmd->pool, 
