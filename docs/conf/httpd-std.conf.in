@@ -729,15 +729,6 @@ ServerSignature On
     AddType application/x-gzip .gz .tgz
 
     #
-    # AddEncoding allows you to have certain browsers (Mosaic/X 2.1+)
-    # uncompress information on the fly. Note: Not all browsers support
-    # this.  Despite the name similarity, the following Add* directives have
-    # nothing to do with the FancyIndexing customization directives above.
-    #
-    #AddEncoding x-compress Z
-    #AddEncoding x-gzip gz tgz
-
-    #
     # DefaultLanguage and AddLanguage allows you to specify the language of 
     # a document. You can then use content negotiation to give a browser a 
     # file in a language the user can understand.
