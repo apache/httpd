@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Add Polish translation of error messages.  PR 25101.
+     [Tomasz Kepczynski <tomek jot23.org>]
+
   *) Add AP_MPMQ_MPM_STATE function code for ap_mpm_query. (Not yet
      supported for BeOS, OS/2, or Win32 MPMs.)  [Jeff Trawick,
      Brad Nicholes]
