@@ -313,7 +313,8 @@ directives.  (The initial state is FORBIDDEN.)
 <DT>Mutual-failure
 <DD>Only those hosts which appear on the <CODE>Allow</CODE> list and do not
 appear on the <CODE>Deny</CODE> list are granted access.  (The initial state is
-irrelevant.)
+irrelevant.)  This ordering has the same effect as <code>Order Allow,Deny</code>
+and is deprecated in favor of that configuration.
 </DL>
 <P>
 Keywords may only be separated by a comma; no whitespace is allowed between
