@@ -677,9 +677,21 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
            ### READBYTES bytes, and we wouldn't have to do any work.
         */
 
+        APR_BRIGADE_NORMALIZE(ctx->b);
+        if (APR_BRIGADE_EMPTY(ctx->b)) {
+            if ((rv = ap_get_brigade(f->next, ctx->b, mode, readbytes)) != APR_SUCCESS) {
+                return rv;
+            }
+        }
+            
         apr_brigade_partition(ctx->b, *readbytes, &e);
         APR_BRIGADE_CONCAT(b, ctx->b);
-        ctx->b = apr_brigade_split(b, e);
+        if (e != APR_BRIGADE_SENTINEL(ctx->b)) {
+            ctx->b = apr_brigade_split(b, e);
+        }
+        else {
+            ctx->b = NULL;
+        }
         apr_brigade_length(b, 1, &total);
         *readbytes -= total;
 
