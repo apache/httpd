@@ -353,6 +353,10 @@ void check_hostalias (request_rec *r) {
   if (*r->hostname && (atoi(r->hostname) != r->server->port))
     return;
 
+  if ((host[strlen(host)-1]) == '.') {
+    host[strlen(host)-1] = '\0';
+  }
+
   r->hostname = host;
 
   for (s = r->server->next; s; s = s->next) {
