@@ -202,6 +202,13 @@ AC_DEFUN(APACHE_MODULE,[
   AC_ARG_ENABLE(translit($1,_,-),optname() substr([                         ],len(optname()))$2,,enable_$1=ifelse($5,,maybe-all,$5))
   undefine([optname])dnl
   _apmod_extra_msg=""
+  dnl When --enable-modules=most is set and the module was not explicitly
+  dnl requested, allow a module to disable itself if its pre-reqs fail.
+  if test "$module_selection" = "most" -a "$enable_$1" = "most"; then
+    _apmod_error_fatal="no"
+  else
+    _apmod_error_fatal="yes"
+  fi
   if test "$enable_$1" = "most"; then
     if test "$module_selection" = "most" -o "$module_selection" = "all"; then
       enable_$1=$module_default
@@ -224,7 +231,11 @@ AC_DEFUN(APACHE_MODULE,[
                     $6
                     AC_MSG_CHECKING(whether to enable mod_$1)
                     if test "$enable_$1" = "no"; then
-                      _apmod_extra_msg=" (disabled)"
+                      if test "$_apmod_error_fatal" = "no"; then
+                        _apmod_extra_msg=" (disabled)"
+                      else
+                        AC_MSG_ERROR([mod_$1 has been requested but can not be built due to prerequisite failures])
+                      fi
                     fi])
   fi
   AC_MSG_RESULT($enable_$1$_apmod_extra_msg)
