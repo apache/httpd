@@ -949,7 +949,6 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: URI too long");
             ap_send_error_response(r, 0);
-            ap_rflush(r);
             ap_log_transaction(r);
             return r;
         }
@@ -963,7 +962,6 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: error reading the headers");
             ap_send_error_response(r, 0);
-            ap_rflush(r);
             ap_log_transaction(r);
             return r;
         }
@@ -983,7 +981,6 @@ request_rec *ap_read_request(conn_rec *conn)
             r->header_only = 0;
             r->status = HTTP_BAD_REQUEST;
             ap_send_error_response(r, 0);
-            ap_rflush(r);
             ap_log_transaction(r);
             return r;
         }
@@ -1016,7 +1013,6 @@ request_rec *ap_read_request(conn_rec *conn)
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2068 section 9, and 14.23): %s", r->uri);
         ap_send_error_response(r, 0);
-        ap_rflush(r);
         ap_log_transaction(r);
         return r;
     }
@@ -1037,7 +1033,6 @@ request_rec *ap_read_request(conn_rec *conn)
                           "client sent an unrecognized expectation value of "
                           "Expect: %s", expect);
             ap_send_error_response(r, 0);
-            ap_rflush(r);
             (void) ap_discard_request_body(r);
             ap_log_transaction(r);
             return r;
@@ -2487,6 +2482,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 
         if (r->header_only) {
             ap_finalize_request_protocol(r);
+            ap_rflush(r);
             return;
         }
     }
@@ -2510,6 +2506,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
             ap_rputs(custom_response + 1, r);
             ap_kill_timeout(r);
             ap_finalize_request_protocol(r);
+            ap_rflush(r);
             return;
         }
         /*
@@ -2773,4 +2770,5 @@ void ap_send_error_response(request_rec *r, int recursive_error)
     }
     ap_kill_timeout(r);
     ap_finalize_request_protocol(r);
+    ap_rflush(r);
 }

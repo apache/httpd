@@ -1,5 +1,10 @@
 Changes with Apache 1.3.8
 
+  *) Flush the output buffer immediately after sending an error or redirect
+     response, since the result may be needed by the client to abort a
+     long data transfer or restart a series of pipelined requests.
+     [Tom Vaughan <tvaughan@aventail.com>, Roy Fielding]
+
   *) PORT: Improved compilation and DSO support on Sequent DYNIX/ptx.
      [Ian Turner <iant@sequent.com>] PR#4735
 
