@@ -15,6 +15,7 @@
 <!--#include virtual="header.html" -->
 <h1 ALIGN="CENTER">Content Negotiation</h1>
 
+<p>
 Apache's support for content negotiation has been updated to meet the
 HTTP/1.1 specification. It can choose the best representation of a
 resource based on the browser-supplied preferences for media type,
@@ -30,6 +31,7 @@ which is compiled in by default.
 
 <h2>About Content Negotiation</h2>
 
+<p>
 A resource may be available in several different representations. For
 example, it might be available in different languages or different
 media types, or a combination.  One way of selecting the most
@@ -46,6 +48,7 @@ French representations, the browser would send
   Accept-Language: fr
 </pre>
 
+<p>
 Note that this preference will only be applied when there is a choice
 of representations and they vary by language.
 <p>
@@ -76,6 +79,7 @@ resource vary are called the <b>dimensions</b> of negotiation.
 
 <h2>Negotiation in Apache</h2>
 
+<p>
 In order to negotiate a resource, the server needs to be given
 information about each of the variants. This is done in one of two
 ways:
@@ -89,6 +93,7 @@ ways:
 
 <h3>Using a type-map file</h3>
 
+<p>
 A type map is a document which is associated with the handler
 named <code>type-map</code> (or, for backwards-compatibility with
 older Apache configurations, the mime type
@@ -179,6 +184,7 @@ The full list of headers recognized is:
 
 <h3>Multiviews</h3>
 
+<p>
 This is a per-directory option, meaning it can be set with an
 <code>Options</code> directive within a <code>&lt;Directory&gt;</code>,
 <code>&lt;Location&gt;</code> or <code>&lt;Files&gt;</code>
@@ -261,10 +267,10 @@ can indicate a charset as a parameter of the media type.
 
 <h3>Apache Negotiation Algorithm</h3>
 
+<p>
 Apache uses an algorithm to select the 'best' variant (if any) to
 return to the browser. This algorithm is not configurable. It operates
 like this:
-<p>
 
 <ol>
 <li>
@@ -323,8 +329,10 @@ and go to stage 3.
   dimensions of variance.
 
 </ol>
+
 <h2><a name="better">Fiddling with Quality Values</a></h2>
 
+<p>
 Apache sometimes changes the quality values from what would be
 expected by a strict interpretation of the algorithm above. This is to
 get a better result from the algorithm for browsers which do not send
@@ -337,6 +345,7 @@ be applied.
 
 <h3>Media Types and Wildcards</h3>
 
+<p>
 The Accept: request header indicates preferences for media types. It
 can also include 'wildcard' media types, such as "image/*" or "*/*"
 where the * matches any string. So a request including:
@@ -379,6 +388,7 @@ which send the correct information to start with work as expected.
 
 <h3>Variants with no Language</h3>
 
+<p>
 If some of the variants for a particular resource have a language
 attribute, and some do not, those variants with no language
 are given a very low language quality factor of 0.001.<p>
@@ -396,14 +406,103 @@ For example, consider the situation with three variants:
 <li>foo.html, no language
 </ul>
 
+<p>
 The meaning of a variant with no language is that it is
 always acceptable to the browser. If the request Accept-Language
 header includes either en or fr (or both) one of foo.en.html
 or foo.fr.html will be returned. If the browser does not list
 either en or fr as acceptable, foo.html will be returned instead.
 
+<h2>Note on hyperlinks and naming conventions</h2>
+
+<p>
+If you are using language negotiation you can choose between
+different naming conventions, because files can have more than one
+extension, and the order of the extensions is normally irrelevant
+(see <a href="mod/mod_mime.html">mod_mime</a> documentation for details).
+<p>
+A typical file has a mime-type extension (e.g. <samp>html</samp>),
+maybe an encoding extension (e.g. <samp>gz</samp> and of course a
+language extension (e.g. <samp>en</samp>) when we have different
+language variants of this file.
+
+<p>
+Examples:
+<ul>
+<li>foo.en.html
+<li>foo.html.en
+<li>foo.en.html.gz
+</ul>
+
+<p>
+Here some more examples of filenames together with valid and invalid hyperlinks:
+</p>
+
+<table border=1 cellpadding=8 cellspacing=0>
+<tr>
+ <th>Filename</th>
+ <th>Valid hyperlink</th>
+ <th>Invalid hyperlink</th>
+</tr>
+<tr>
+ <td><em>foo.html.en</em></td>
+ <td>foo<br>
+     foo.html</td>
+ <td>-</td>
+</tr>
+<tr>
+ <td><em>foo.en.html</em></td>
+ <td>foo</td>
+ <td>foo.html</td>
+</tr>
+<tr>
+ <td><em>foo.html.en.gz</em></td>
+ <td>foo<br>
+     foo.html</td>
+ <td>foo.gz<br>
+     foo.html.gz</td>
+</tr>
+<tr>
+ <td><em>foo.en.html.gz</em></td>
+ <td>foo</td>
+ <td>foo.html<br>
+     foo.html.gz<br>
+     foo.gz</td>
+</tr>
+<tr>
+ <td><em>foo.gz.html.en</em></td>
+ <td>foo<br>
+     foo.gz<br>
+     foo.gz.html</td>
+ <td>foo.html</td>
+</tr>
+<tr>
+ <td><em>foo.html.gz.en</em></td>
+ <td>foo<br>
+     foo.html<br>
+     foo.html.gz</td>
+ <td>foo.gz</td>
+</tr>
+</table>
+
+<p>
+Looking at the table above you will notice that it is always possible to
+use the name without any extensions  in an hyperlink (e.g. <samp>foo</samp>).
+The advantage is that you can hide the actual type of a
+document rsp. file and can change it later, e.g. from <samp>html</samp>
+to <samp>shtml</samp> or <samp>cgi</samp> without changing any
+hyperlink references.
+
+<p>
+If you want to continue to use a mime-type in your hyperlinks (e.g.
+<samp>foo.html</samp>) the language extension (including an encoding extension
+if there is one) must be on the right hand side of the mime-type extension
+(e.g. <samp>foo.html.en</samp>).
+
+
 <h2>Note on Caching</h2>
 
+<p>
 When a cache stores a document, it associates it with the request URL.
 The next time that URL is requested, the cache can use the stored
 document, provided it is still within date. But if the resource is
