@@ -418,12 +418,9 @@ if ($opt_c) {
         $lo .= " $o";
     }
     my ($opt_Wl, $opt_L, $opt_l);
+    $opt = '';
     foreach $opt_Wl (@opt_W) {
-        if ($CFG_CC !~ m/gcc$/) {
-            $opt .= " $1" if ($opt_Wl =~ m|^\s*l,(.*)$|);
-        } else {
-            $opt .= " -W$opt_Wl";
-        }
+        $opt .= "$1 " if ($opt_Wl =~ m|^\s*l,(.*)$|);
     }
     foreach $opt_L (@opt_L) {
         $opt .= " -L$opt_L";
