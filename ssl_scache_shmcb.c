@@ -1331,6 +1331,9 @@ static BOOL shmcb_remove_session_id(
                         "internal error");
                 goto end;
             }
+            session_id_length = SSL_SESSION_get_session_id_length(pSession);
+            session_id = SSL_SESSION_get_session_id(pSession);
+
             if ((session_id_length == idlen) 
                  && (memcmp(id, session_id, idlen) == 0)) {
                 ssl_log(s, SSL_LOG_TRACE, "a match!");
