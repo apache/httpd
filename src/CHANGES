@@ -1,8 +1,8 @@
 Changes with Apache 1.3.10
 
   *) Fix various compile time warnings in hashbang_emul code which
-     prevent successful compilation on OS/390
-     [Ovies Brabson <oviesb@us.ibm.com>]
+     prevent successful compilation on OS/390  [Ovies Brabson
+     <oviesb@us.ibm.com>, Paul Gilmartin <pg@sweng.stortek.com>]
 
   *) EBCDIC: Fixed binary upload capability (plain and chunked) for
      all methods using the ap_*_client_block() functions, most notably
