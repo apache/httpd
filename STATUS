@@ -83,6 +83,7 @@ Committed Code Changes:
     * Ralf's mod_so changes to keep track of loaded modules ourself.
     * Ralf's support for building shared objects even for library-style modules
     * Performance improvements to invoke_handler().
+    * Ben Hyde's check to make sure the "Port" range is valid
 
 Available Patches:
 

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Add check to the "Port" directive to make sure the specified 
+     port is in the appropriate range.  [Ben Hyde]
+
   *) Performance improvements to invoke_handler().
      [Dmitry Khrustalev <dima@bog.msu.su>]
 
