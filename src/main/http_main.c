@@ -4517,7 +4517,7 @@ static void child_main(int child_num_arg)
 	 */
 	signal(SIGUSR1, SIG_IGN);
 
-	ap_note_cleanups_for_fd(ptrans, csd);
+	ap_note_cleanups_for_socket(ptrans, csd);
 
 	/* protect various fd_sets */
 #ifdef CHECK_FD_SETSIZE
@@ -4565,7 +4565,7 @@ static void child_main(int child_num_arg)
 			"dup: couldn't duplicate csd");
 	    dupped_csd = csd;	/* Oh well... */
 	}
-	ap_note_cleanups_for_fd(ptrans, dupped_csd);
+	ap_note_cleanups_for_socket(ptrans, dupped_csd);
 
 	/* protect various fd_sets */
 #ifdef CHECK_FD_SETSIZE
