@@ -210,7 +210,7 @@ typedef struct module_struct {
                                  * It's mainly important for the DSO facility
                                  * (see also mod_so).
                                  */
-    void *(*pre_config) (ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *s);
+    void (*pre_config) (ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp);
     void *(*create_dir_config) (ap_context_t *p, char *dir);
     void *(*merge_dir_config) (ap_context_t *p, void *base_conf, void *new_conf);
     void *(*create_server_config) (ap_context_t *p, server_rec *s);
