@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Unix MPMs: Shut down the server more quickly when child processes are
+     slow to exit.  [Joe Orton, Jeff Trawick]
+
   *) mod_info: Added listing of the Request Hooks and added more build 
      information like 'httpd -V' contains. Changed output to XHTML. 
      [Paul Querna]
