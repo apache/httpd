@@ -3047,31 +3047,31 @@ AP_INIT_ITERATE2("AddOutputFilterByType", add_ct_output_filters,
  * #defined them in mpm.h.
  */
 #ifdef AP_MPM_WANT_SET_PIDFILE
-AP_INIT_TAKE1("PidFile",  ap_mpm_set_pidfile, NULL, RSRC_CONF, \
+AP_INIT_TAKE1("PidFile",  ap_mpm_set_pidfile, NULL, RSRC_CONF,
               "A file for logging the server process ID"),
 #endif
 #ifdef AP_MPM_WANT_SET_SCOREBOARD
-AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF, \
+AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF,
               "A file for Apache to maintain runtime process management information"),
 #endif
 #ifdef AP_MPM_WANT_SET_LOCKFILE
-AP_INIT_TAKE1("LockFile",  ap_mpm_set_lockfile, NULL, RSRC_CONF, \
+AP_INIT_TAKE1("LockFile",  ap_mpm_set_lockfile, NULL, RSRC_CONF,
               "The lockfile used when Apache needs to lock the accept() call"),
 #endif
 #ifdef AP_MPM_WANT_SET_MAX_REQUESTS
-AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,\
+AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,
               "Maximum number of requests a particular child serves before dying."),
 #endif
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
-AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF, \
+AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
 #endif
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF, \
+AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF,
               ap_valid_accept_mutex_string),
 #endif
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,\
+AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,
               "Maximum number of 1k blocks a particular childs allocator may hold."),
 #endif
 { NULL }
