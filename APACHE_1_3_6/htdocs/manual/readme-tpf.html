@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>The Apache TPF Port</TITLE>
+</HEAD>
+<BODY>
+<A NAME="top"></A>
+<H1 align="center">Overview of the Apache TPF Port</H1>
+<HR>
+<CENTER>[&nbsp;<A HREF="#configuration_files">Configuration Files</A>
+   &nbsp;|&nbsp;<A HREF="#auto_generated_files">Auto Generated Files</A>
+   &nbsp;|&nbsp;<A HREF="#whats_available">What's Available</A>
+   &nbsp;|&nbsp;<A HREF="#porting_notes">Porting Notes</A>&nbsp;]
+</CENTER>
+<HR>
+<BR>
+
+<P>
+   This version of Apache includes changes allowing it to run on
+   IBM's EBCDIC-based
+   <A HREF="http://www.s390.ibm.com/products/tpf/tpfhp.html">TPF</A>
+   (Transaction Processing Facility) operating system.
+   Unless otherwise noted TPF version 4.1 PUT08 and APAR PJ25589 are required.
+   <BR><BR>
+   Refer to htdocs/manual/<A HREF="install-tpf.html">install-tpf.html</A>
+   for step-by-step installation instructions.
+   <BR><BR>
+   As this is the first cut at making Apache run on TPF,
+   performance tuning has not been done.
+   <BR><BR>
+   This port builds upon the <A HREF="ebcdic.html">EBCDIC changes</A>
+   previously made to Apache.
+   <BR>
+</P>
+
+<A NAME="configuration_files">&nbsp;</A>
+<H2 align=center>Apache Configuration Files</H2>
+<P>
+   The distributed configuration files (httpd.conf-dist and
+   mime.types, both located in the conf subdirectory)
+   work on TPF with only a couple of operating system specific changes
+   to httpd.conf:<BR>
+   <UL>
+   <LI>ServerType needs to be "inetd" since TPF does not yet support
+       "standalone" mode.
+   <LI>Performance considerations may dictate setting KeepAlive to "Off"
+       (the default is "On") or lowering the Timeout value from the default
+       300 seconds (5 minutes) in order to reduce the number of active ECBs on your system.
+   </UL>
+</P>
+
+<A NAME="whats_available">&nbsp;</A>
+<H2 align=center>What's Available in this Version</H2>
+
+   (The Apache organization provides
+   <A HREF="http://www.apache.org/docs/">online documentation</A>
+   describing the various modules and components of the server.)
+
+<H3>Components/modules tested on TPF:</H3>
+
+   <multicol COLS=3><UL>
+   <LI>alloc.c
+   <LI>ap_cpystrn.c
+   <LI>ap_fnmatch.c
+   <LI>ap_signal.c
+   <LI>ap_slack.c
+   <LI>ap_snprintf.c
+   <LI>buff.c
+   <LI>buildmark.c
+   <LI>ebcdic.c
+   <LI>http_config.c
+   <LI>http_core.c
+   <LI>http_log.c
+   <LI>http_main.c
+   <LI>http_protocol.c
+   <LI>http_request.c
+   <LI>http_vhost.c <A HREF="#note_2">*</A>
+   <LI>mod_access.c
+   <LI>mod_alias.c
+   <LI>mod_asis.c
+   <LI>mod_autoindex.c
+   <LI>mod_cern_meta.c
+   <LI>mod_dir.c
+   <LI>mod_example.c
+   <LI>mod_expires.c
+   <LI>mod_headers.c
+   <LI>mod_imap.c
+   <LI>mod_info.c
+   <LI>mod_log_agent.c
+   <LI>mod_log_config.c
+   <LI>mod_log_referer.c
+   <LI>mod_mime.c
+   <LI>mod_negotiation.c
+   <LI>mod_setenvif.c
+   <LI>mod_speling.c
+   <LI>mod_userdir.c
+   <LI>mod_usertrack.c
+   <LI>os.c
+   <LI>os-inline.c
+   <LI>regular expression parser
+   <LI>util.c
+   <LI>util_date.c
+   <LI>util_uri.c
+   </UL></MULTICOL>
+   Please keep in mind that some major pieces are not yet in place including
+   standalone mode, pipes, password/group files, CGI scripts, and MD5 support.
+   <BR>
+   <A NAME="note_2">&nbsp;</A>
+   <BR>
+   * virtual hosting requires TPF version 4.1 PUT09
+
+<H3>Components/modules not (yet?) supported on TPF:</H3>
+
+   <multicol COLS=3><UL>
+   <LI>htpasswd.c
+   <LI>md5c.c
+   <LI>mod_actions.c
+   <LI>mod_auth.c
+   <LI>mod_auth_anon.c
+   <LI>mod_cgi.c
+   <LI>mod_digest.c
+   <LI>mod_env.c
+   <LI>mod_include.c
+   <LI>mod_mime_magic.c
+   <LI>mod_proxy.c
+   <LI>mod_rewrite.c
+   <LI>mod_status.c
+   <LI>mod_unique_id.c
+   <LI>proxy_cache.c
+   <LI>proxy_connect.c
+   <LI>proxy_ftp.c
+   <LI>proxy_http.c
+   <LI>proxy_util.c
+   <LI>rfc1413.c
+   <LI>util_md5.c
+   <LI>util_script.c
+   </UL></MULTICOL>
+
+<H3>Components/modules that don't apply or that probably won't ever be available on TPF:</H3>
+
+   <multicol COLS=3><UL>
+   <LI>gen_test.char.c
+   <LI>gen_uri_delims.c
+   <LI>mod_auth_db.c
+   <LI>mod_auth_dbm.c
+   <LI>mod_auth_db.module
+   <LI>mod_mmap_static.c
+   <LI>mod_so.c
+   </UL></MULTICOL>
+
+<A NAME="porting_notes">&nbsp;</A>
+<H2 align=center>Porting Notes</H2>
+<P>
+   <H3>Changes made due to differences between UNIX and
+   TPF's process models:</H3>
+   <UL>
+   <LI><STRONG>Signals</STRONG>: On TPF a signal that is sent to a process
+      remains unhandled until the process explicitly requests that signals
+      be handled using the <CODE>tpf_process_signals()</CODE> function.
+      Additionally, the default action for an alarm on TPF is to take
+      an OPR-7777 dump and exit.  (On UNIX the default is the equivalent
+      of <CODE>exit()</CODE> with no dump taken.)
+      These differences necessitated a few modifications:
+      <BR><BR>
+      <UL>
+      <LI>bypass the use of <CODE>ap_block_alarms()</CODE> &amp;
+         <CODE>ap_unblock_alarms()</CODE>
+      <LI>add <CODE>tpf_process_signals()</CODE> calls
+      <LI>add <CODE>select()</CODE> calls in buff.c to prevent blocking.
+      </UL>
+   <BR>
+   </UL>
+
+   <H3>Find that function...</H3>
+   <P>Some simple functions &amp; definitions needed to be added
+      on TPF, such as <CODE>FD_SET()</CODE>.
+      We've put these in src/os/tpf/os.h for now.
+   </P>
+
+   <H3>EBCDIC changes:</H3>
+   <P>TPF-specific conversion tables between US-ASCII and
+      EBCDIC (character set IBM-1047 to be exact) were created
+      and put into ebcdic.c in the src/os/tpf directory.
+   </P>
+
+   <H3>Miscellaneous, minor changes:</H3>
+   <P>Various minor changes (such as casting) were made due to
+      differences in how some functions are implemented on TPF.
+   </P>
+
+   <H3>Temporary changes:</H3>
+   <P>Lastly, we needed to bypass sections of Apache processing
+      since this first cut for TPF doesn't include
+      Standalone mode, pipes, forking, et cetera.
+   </P>
+
+<HR>
+<CENTER>[&nbsp;<A HREF="#top">top</A>
+   &nbsp;|&nbsp;<A HREF="#configuration_files">Configuration Files</A>
+   &nbsp;|&nbsp;<A HREF="#auto_generated_files">Auto Generated Files</A>
+   &nbsp;|&nbsp;<A HREF="#whats_available">What's Available</A>
+   &nbsp;|&nbsp;<A HREF="#porting_notes">Porting Notes</A>&nbsp;]
+</CENTER>
+
+</BODY>
+</HTML>

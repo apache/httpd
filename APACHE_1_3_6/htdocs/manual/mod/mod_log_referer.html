@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_log_referer</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_log_referer</H1>
+
+This module is contained in the <CODE>mod_log_referer.c</CODE> file, and is not
+compiled in by default. It provides for logging of the documents which
+reference documents on the server. As of Apache 1.3.5 it is deprecated.
+Use <A HREF="mod_log_config.html#customlog-conditional">CustomLog
+(conditional)</A> instead.
+
+<H2>Log file format</H2>
+The log file contains a separate line for each refer. Each line has the
+format
+<BLOCKQUOTE><EM>uri</EM> <CODE>-&gt;</CODE> <EM>document</EM></BLOCKQUOTE>
+where <EM>uri</EM> is the (%-escaped) URI for the document that references
+the one requested by the client, and <EM>document</EM> is the (%-decoded)
+local URL to the document being referred to.
+
+
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#refererignore">RefererIgnore</A>
+<LI><A HREF="#refererlog">RefererLog</A>
+</UL>
+<HR>
+
+
+<H2><A NAME="refererignore">RefererIgnore</A></H2>
+<!--%plaintext &lt;?INDEX {\tt RefererIgnore} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RefererIgnore <EM>string string ...</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_referer<P>
+
+The RefererIgnore directive adds to the list of strings to ignore in
+Referer headers. If any of the strings in the list is contained in
+the Referer header, then no referrer information will be logged for the
+request. Example:
+<BLOCKQUOTE><CODE>RefererIgnore www.ncsa.uiuc.edu</CODE></BLOCKQUOTE>
+This avoids logging references from www.ncsa.uiuc.edu.
+<P><HR>
+
+
+<H2><A NAME="refererlog">RefererLog</A></H2>
+<!--%plaintext &lt;?INDEX {\tt RefererLog} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RefererLog <EM>file-pipe</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>RefererLog logs/referer_log</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_referer<P>
+
+The RefererLog directive sets the name of the file to which the server will
+log the Referer header of incoming requests. <EM>File-pipe</EM> is one
+of
+<DL><DT>A filename
+<DD>A filename relative to the <A HREF="core.html#serverroot">ServerRoot</A>.
+<DT> `|' followed by a command
+<DD>A program to receive the referrer log information on its standard input.
+Note the a new program will not be started for a VirtualHost if it inherits
+the RefererLog from the main server.
+</DL>
+<STRONG>Security:</STRONG> if a program is used, then it will be
+run under the user who started httpd. This will be root if the server
+was started by root; be sure that the program is secure.<P>
+
+<STRONG>Security:</STRONG> See the <A
+HREF="../misc/security_tips.html">security tips</A> document for
+details on why your security could be compromised if the directory
+where logfiles are stored is writable by anyone other than the user
+that starts the server.<P>
+
+This directive is provided for compatibility with NCSA 1.4.<P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
