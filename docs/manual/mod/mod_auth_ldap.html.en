@@ -60,7 +60,7 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authldapstarttls directive">AuthLDAPStartTLS directive</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapstarttls">AuthLDAPStartTLS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
 </ul>
 <h3>Topics</h3>
@@ -734,7 +734,7 @@ environment variable</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPStartTLS directive" id="AuthLDAPStartTLS directive">AuthLDAPStartTLS directive</a> <a name="authldapstarttls directive" id="authldapstarttls directive">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthLDAPStartTLS" id="AuthLDAPStartTLS">AuthLDAPStartTLS</a> <a name="authldapstarttls" id="authldapstarttls">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use a secure TLS connection to the LDAP server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPStartTLS on|off</code></td></tr>
