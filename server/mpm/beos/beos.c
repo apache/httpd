@@ -135,11 +135,17 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
-/* a clean exit from a child with proper cleanup */
-static void clean_child_exit(int code)
+/* When a worker thread gets to the end of it's life it dies with an
+ * exit value of the code supplied to this function. The thread has
+ * already had check_restart() registered to be called when dying, so
+ * we don't concern ourselves with restarting at all here. We do however
+ * mark the scoreboard slot as belonging to a dead server.
+ */
+static void clean_child_exit(int code, int slot)
 {
-	mpm_state = AP_MPMQ_STOPPING;
-    exit(code);
+    (void) ap_update_child_status_from_indexes(0, slot, SERVER_DEAD, 
+                                               (request_rec*)NULL);
+    exit_thread(code);
 }
 
 
@@ -405,7 +411,7 @@ int ap_graceful_stop_signalled(void)
 /* This is the thread that actually does all the work. */
 static int32 worker_thread(void *dummy)
 {
-    int worker_slot = *(int *)dummy;
+    int worker_slot = (int)dummy;
     apr_allocator_t *allocator;
     apr_bucket_alloc_t *bucket_alloc;
     apr_status_t rv = APR_EINIT;
@@ -433,9 +439,13 @@ static int32 worker_thread(void *dummy)
 
     on_exit_thread(check_restart, (void*)worker_slot);
           
-    /* block the signals for this thread */
-    sigfillset(&sig_mask);
-    sigprocmask(SIG_BLOCK, &sig_mask, NULL);
+    /* block the signals for this thread only if we're not running as a
+     * single process.
+     */
+    if (!one_process) {
+        sigfillset(&sig_mask);
+        sigprocmask(SIG_BLOCK, &sig_mask, NULL);
+    }
 
     /* Each worker thread is fully in control of it's destinay and so
      * to allow each thread to handle the lifetime of it's own resources
@@ -496,7 +506,7 @@ static int32 worker_thread(void *dummy)
 
         if ((ap_max_requests_per_child > 0 
              && requests_this_child++ >= ap_max_requests_per_child))
-            clean_child_exit(0);
+            clean_child_exit(0, worker_slot);
 
         (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
         
@@ -519,7 +529,7 @@ static int32 worker_thread(void *dummy)
                 }
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                              ap_server_conf, "apr_pollset_poll: (listen)");
-    	        clean_child_exit(1);
+    	        clean_child_exit(1, worker_slot);
             }
             /* We can always use pdesc[0], but sockets at position N
              * could end up completely starved of attention in a very
@@ -570,7 +580,7 @@ got_fd:
 
         if (rv == APR_EGENERAL) {
             /* resource shortage or should-not-occur occured */
-            clean_child_exit(1);
+            clean_child_exit(1, worker_slot);
         } else if (rv != APR_SUCCESS)
             continue;
 
@@ -598,7 +608,7 @@ got_a_black_spot:
    	apr_pool_destroy(ptrans);
     apr_pool_destroy(pworker);
     	
-    clean_child_exit(0);
+    clean_child_exit(0, worker_slot);
 }
 
 static int make_worker(int slot)
@@ -618,7 +628,7 @@ static int make_worker(int slot)
     }
 
     tid = spawn_thread(worker_thread, "apache_worker", B_NORMAL_PRIORITY,
-                       (void *)&slot);
+                       (void *)slot);
     if (tid < B_NO_ERROR) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL, 
             "spawn_thread: Unable to start a new thread");
@@ -961,7 +971,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         tell_workers_to_exit();
         snooze(1000000);
     } else {
-        worker_thread((void*)NULL);
+        worker_thread((void*)0);
     }
         
     /* close the UDP socket we've been using... */
