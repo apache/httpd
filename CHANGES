@@ -1,4 +1,7 @@
 Changes with Apache 2.0.36
+
+  *) Update the instructions for how to get started with mod_example.
+     [Stas Bekman]
   
   *) Fix PidFile to default to rel_runtimedir instead of
      rel_logfiledir.  PR 7841.  [Andreas Hasenack <andreas@netbank.com.br>]
