@@ -55,10 +55,9 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
 # ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "$(INTDIR)\buildmark.obj" /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
 # Begin Special Build Tool
-IntDir=.\Release
 SOURCE="$(InputPath)"
-PreLink_Desc=Compiling buildmark.c
-PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"$(INTDIR)\buildmark.obj"
+PreLink_Desc=Compiling buildmark
+PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"Release\buildmark.obj"
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -87,10 +86,9 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
 # ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "$(INTDIR)\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
 # Begin Special Build Tool
-IntDir=.\Debug
 SOURCE="$(InputPath)"
-PreLink_Desc=Compiling buildmark.c
-PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"$(INTDIR)\buildmark.obj"
+PreLink_Desc=Compiling buildmark
+PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"Debug\buildmark.obj"
 # End Special Build Tool
 
 !ENDIF 
