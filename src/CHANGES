@@ -1,5 +1,13 @@
 Changes with Apache 1.3.2
 
+  *) The <IfModule and <IfDefine block starting directives now only
+     allow exactly one argument. Previously, the optional negation
+     character '!' could be separated by whitespace without a syntax
+     error being reported, albeit defeating the IfModule functionality
+     (enclosed directives would ALWAYS be executed). By using the
+     stricter syntax, these hard-to-track errors can be avoided.
+     [Martin Kraemer]
+
   *) Simplify handling of IndexOptions in mod_autoindex -- and BTW
      cause the standalone FancyIndexing directive to logically OR
      into any existing IndexOptions settings rather than wiping
