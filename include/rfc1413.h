@@ -68,8 +68,8 @@ extern "C" {
  */
 
 /**
- * Retrieve the remote user name, given socket structures.  This implements the
- * rfc1413, identd.
+ * Retrieve the remote user name, given socket structures.  This implements
+ * RFC1413, which involves querying the client's identd or auth daemon.
  * @param conn The current connection
  * @param srv The current server
  * @return The remote user name
