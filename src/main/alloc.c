@@ -599,8 +599,9 @@ API_EXPORT(void) pool_join(pool *p, pool *sub)
 {
     union block_hdr *b;
 
-    if (!pool_is_ancestor(p, sub)) {
-	fprintf(stderr, "pool_join: p is not an ancestor of sub\n");
+    /* We could handle more general cases... but this is it for now. */
+    if (sub->parent != p) {
+	fprintf(stderr, "pool_join: p is not parent of sub\n");
 	abort();
     }
     block_alarms();
