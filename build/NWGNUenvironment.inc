@@ -275,7 +275,7 @@ SUPMOD		= $(AP_WORK)/support
 PCRE		= $(AP_WORK)/srclib/pcre
 APRTEST		= $(APR_WORK)/test
 HTTPD		= $(AP_WORK)/modules/http
-XML			= $(AP_WORK)/srclib/apr-util/xml
+XML		= $(APU_WORK)/xml
 
 #
 # Internal Libraries
@@ -284,7 +284,7 @@ XML			= $(AP_WORK)/srclib/apr-util/xml
 APRLIB		= $(APR)/$(OBJDIR)/aprlib.lib
 APRUTLIB	= $(APRUTIL)/$(OBJDIR)/aprutil.lib
 STMODLIB	= $(STDMOD)/$(OBJDIR)/stdmod.lib
-PCRELIB		= $(PCRE/$(OBJDIR)/pcre.lib
+PCRELIB		= $(PCRE)/$(OBJDIR)/pcre.lib
 NWOSLIB		= $(NWOS)/$(OBJDIR)/netware.lib
 SERVLIB		= $(SERVER)/$(OBJDIR)/server.lib
 HTTPDLIB	= $(HTTPD)/$(OBJDIR)/httpd.lib
