@@ -29,6 +29,8 @@
 #include "ssl_private.h"
 #include "mod_ssl.h"
 
+#include "apr_time.h"
+
 /*  _________________________________________________________________
 **
 **  Variable Lookup
@@ -39,6 +41,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var);
 static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
 static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_UTCTIME *tm);
+static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm);
 static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var);
 static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
@@ -318,6 +321,10 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
     else if (strcEQ(var, "V_END")) {
         result = ssl_var_lookup_ssl_cert_valid(p, X509_get_notAfter(xs));
     }
+    else if (strcEQ(var, "V_REMAIN")) {
+        result = ssl_var_lookup_ssl_cert_remain(p, X509_get_notAfter(xs));
+        resdup = FALSE;
+    }
     else if (strcEQ(var, "S_DN")) {
         xsname = X509_get_subject_name(xs);
         cp = X509_NAME_oneline(xsname, NULL, 0);
@@ -447,6 +454,41 @@ static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_UTCTIME *tm)
     result[n] = NUL;
     BIO_free(bio);
     return result;
+}
+
+#define DIGIT2NUM(x) (((x)[0] - '0') * 10 + (x)[1] - '0')
+
+/* Return a string giving the number of days remaining until 'tm', or
+ * "0" if this can't be determined. */
+static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm)
+{
+    apr_time_t then, now = apr_time_now();
+    apr_time_exp_t exp = {0};
+    long diff;
+
+    /* Fail if the time isn't a valid ASN.1 UTCTIME; RFC3280 mandates
+     * that the seconds digits are present even though ASN.1
+     * doesn't. */    
+    if (tm->length < 11 || !ASN1_UTCTIME_check(tm)) {
+        return apr_pstrdup(p, "0");
+    }
+
+    exp.tm_year = DIGIT2NUM(tm->data);
+    exp.tm_mon = DIGIT2NUM(tm->data + 2) - 1;
+    exp.tm_mday = DIGIT2NUM(tm->data + 4) + 1;
+    exp.tm_hour = DIGIT2NUM(tm->data + 6);
+    exp.tm_min = DIGIT2NUM(tm->data + 8);
+    exp.tm_sec = DIGIT2NUM(tm->data + 10);
+
+    if (exp.tm_year <= 50) exp.tm_year += 100;
+
+    if (apr_time_exp_gmt_get(&then, &exp) != APR_SUCCESS) {
+        return apr_pstrdup(p, "0");
+    }
+    
+    diff = (apr_time_sec(then) - apr_time_sec(now)) / (60*60*24);
+
+    return diff > 0 ? apr_ltoa(p, diff) : apr_pstrdup(p, "0");
 }
 
 static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)

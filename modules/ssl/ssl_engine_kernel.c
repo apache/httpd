@@ -934,6 +934,7 @@ static const char *ssl_hook_Fixup_vars[] = {
     "SSL_CLIENT_M_SERIAL",
     "SSL_CLIENT_V_START",
     "SSL_CLIENT_V_END",
+    "SSL_CLIENT_V_REMAIN",
     "SSL_CLIENT_S_DN",
     "SSL_CLIENT_S_DN_C",
     "SSL_CLIENT_S_DN_ST",
