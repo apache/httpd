@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/13 14:38:55 $]
+Last modified at [$Date: 2000/04/13 20:44:09 $]
 
 Release:
 
@@ -12,6 +12,9 @@ RELEASE SHOWSTOPPERS:
       trying to clean the autoconf stuff.  If and only if this proves
       impossible to do (very unlikely), autoconf should be removed and we
       will roll our own config implementation.
+      NOTE: When this is implemented, it would be really nice if the
+            default cgi module on Unix with a threaded MPM is the cgid
+            module.  This should be override-able of course.
           Status: Jim Jagielski is looking into this.
 
     * Put buffered file I/O back into APR.  This should be done using the
