@@ -84,7 +84,7 @@
 
 /* The section for the Configure script:
  * MODULE-DEFINITION-START
- * Name: digest_module
+ * Name: digest_auth_module
  * ConfigStart
 
     RULE_DEV_RANDOM=`./helpers/CutRule DEV_RANDOM $file`
@@ -98,10 +98,10 @@
 	fi
     fi
     if [ "$RULE_DEV_RANDOM" = "truerand" ]; then
-	echo "      (mod_digest) using truerand library for the random seed"
+	echo "      (mod_auth_digest) using truerand library for the random seed"
 	LIBS="$LIBS -L/usr/local/lib -lrand"
     else
-	echo "      (mod_digest) using $RULE_DEV_RANDOM for the random seed"
+	echo "      (mod_auth_digest) using $RULE_DEV_RANDOM for the random seed"
 	CFLAGS="$CFLAGS -DDEV_RANDOM=$RULE_DEV_RANDOM"
     fi
 
@@ -233,7 +233,7 @@ static time_t        *otn_counter;	/* one-time-nonce counter */
 static void          *client_mm = NULL;
 #endif	/* HAVE_SHMEM_MM */
 
-module MODULE_VAR_EXPORT digest_module;
+module MODULE_VAR_EXPORT digest_auth_module;
 
 /*
  * initialization code
@@ -1074,7 +1074,7 @@ static int update_nonce_count(request_rec *r)
     resp = ap_pcalloc(r->pool, sizeof(digest_header_rec));
     resp->request_uri = &r->parsed_uri;
     resp->needed_auth = 0;
-    ap_set_module_config(r->request_config, &digest_module, resp);
+    ap_set_module_config(r->request_config, &digest_auth_module, resp);
 
     res = get_digest_rec(r, resp);
     resp->client = get_client(resp->opaque_num, r);
@@ -1626,14 +1626,14 @@ static int authenticate_digest_user(request_rec *r)
     while (mainreq->main != NULL)  mainreq = mainreq->main;
     while (mainreq->prev != NULL)  mainreq = mainreq->prev;
     resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
-						      &digest_module);
+						      &digest_auth_module);
     resp->needed_auth = 1;
 
 
     /* get our conf */
 
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
-						      &digest_module);
+						      &digest_auth_module);
 
 
     /* check for existence and syntax of Auth header */
@@ -1816,7 +1816,7 @@ static int digest_check_auth(request_rec *r)
 {
     const digest_config_rec *conf =
 		(digest_config_rec *) ap_get_module_config(r->per_dir_config,
-							   &digest_module);
+							   &digest_auth_module);
     const char *user = r->connection->user;
     int m = r->method_number;
     int method_restricted = 0;
@@ -1886,7 +1886,7 @@ static int digest_check_auth(request_rec *r)
 
     note_digest_auth_failure(r, conf,
 	(digest_header_rec *) ap_get_module_config(r->request_config,
-						   &digest_module),
+						   &digest_auth_module),
 	0);
     return AUTH_REQUIRED;
 }
@@ -1911,10 +1911,10 @@ static int add_auth_info(request_rec *r)
 {
     const digest_config_rec *conf =
 		(digest_config_rec *) ap_get_module_config(r->per_dir_config,
-							   &digest_module);
+							   &digest_auth_module);
     digest_header_rec *resp =
 		(digest_header_rec *) ap_get_module_config(r->request_config,
-							   &digest_module);
+							   &digest_auth_module);
     const char *ai = NULL, *digest = NULL, *nextnonce = "";
 
     if (resp == NULL || !resp->needed_auth || conf == NULL)
@@ -2046,7 +2046,7 @@ static int add_auth_info(request_rec *r)
 }
 
 
-module MODULE_VAR_EXPORT digest_module =
+module MODULE_VAR_EXPORT digest_auth_module =
 {
     STANDARD_MODULE_STUFF,
     initialize_module,		/* initializer */
