@@ -1,4 +1,8 @@
 Changes with Apache 1.2b8
+ 
+  *) Fix bug in suexec reintroduced by changes in 1.2b7 which allows
+     initgroups() to hose the group information needed for later
+     comparisons. [Randy Terbush]
 
   *) Remove unnecessary call to va_end() in create_argv() which
      caused a SEGV on some systems.
