@@ -299,17 +299,26 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 }
 
                 /*
-                 * if the private key is encrypted and SSLPassPhraseDialog is configured to "builtin"
-                 * it isn't possible to prompt for a password.  in this case if we already have a
-                 * private key and the file name/mtime hasn't changed, then reuse the existing key.
-                 * of course this will not work if the server was started without LoadModule ssl_module
-                 * configured, then restarted with it configured.  but we fall through with a chance of
-                 * success if the key is not encrypted.  and in the case of fallthrough, pkey_mtime and
-                 * isatty() are used to give a better idea as to what failed.
-                 * even if we could prompt for password again, users won't like getting prompted twice
-                 * at startup.
+                 * if the private key is encrypted and SSLPassPhraseDialog
+                 * is configured to "builtin" it isn't possible to prompt for
+                 * a password after httpd has detached from the tty.
+                 * in this case if we already have a private key and the
+                 * file name/mtime hasn't changed, then reuse the existing key.
+                 * we also reuse existing private keys that were encrypted for
+                 * exec: and pipe: dialogs to minimize chances to snoop the
+                 * password.  that and pipe: dialogs might prompt the user
+                 * for password, which on win32 for example could happen 4
+                 * times at startup.  twice for each child and twice within
+                 * each since apache "restarts itself" on startup.
+                 * of course this will not work for the builtin dialog if
+                 * the server was started without LoadModule ssl_module
+                 * configured, then restarted with it configured.
+                 * but we fall through with a chance of success if the key
+                 * is not encrypted or can be handled via exec or pipe dialog.
+                 * and in the case of fallthrough, pkey_mtime and isatty()
+                 * are used to give a better idea as to what failed.
                  */
-                if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) {
+                if (pkey_mtime) {
                     char *key_id = apr_psprintf(p, "%s:%s", cpVHostID, "RSA"); /* XXX: check for DSA key too? */
                     ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
                     
