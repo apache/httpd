@@ -113,7 +113,7 @@
  * char in here and get it to work, because if char is signed then it
  * will first be sign extended.
  */
-#define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
+#define TEST_CHAR(c, f)        (test_char_table[(unsigned)(c)] & (f))
 
 /* Win32/NetWare/OS2 need to check for both forward and back slashes
  * in ap_getparents() and ap_escape_url.
@@ -137,17 +137,18 @@ AP_DECLARE(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
 
     semi = ap_strchr_c(intype, ';');
     if (semi == NULL) {
-	return apr_pstrdup(p, intype);
+        return apr_pstrdup(p, intype);
     } 
     else {
-	while ((semi > intype) && apr_isspace(semi[-1])) {
-	    semi--;
-	}
-	return apr_pstrndup(p, intype, semi - intype);
+        while ((semi > intype) && apr_isspace(semi[-1])) {
+            semi--;
+        }
+        return apr_pstrndup(p, intype, semi - intype);
     }
 }
 
-AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt)
+AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt,
+                              int gmt)
 {
     apr_size_t retcode;
     char ts[MAX_STRING_LEN];
@@ -155,39 +156,39 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
     apr_time_exp_t xt;
 
     if (gmt) {
-	const char *f;
-	char *strp;
+        const char *f;
+        char *strp;
 
         apr_time_exp_gmt(&xt, t);
-	/* Convert %Z to "GMT" and %z to "+0000";
-	 * on hosts that do not have a time zone string in struct tm,
-	 * strftime must assume its argument is local time.
-	 */
-	for(strp = tf, f = fmt; strp < tf + sizeof(tf) - 6 && (*strp = *f)
-	    ; f++, strp++) {
-	    if (*f != '%') continue;
-	    switch (f[1]) {
-	    case '%':
-		*++strp = *++f;
-		break;
-	    case 'Z':
-		*strp++ = 'G';
-		*strp++ = 'M';
-		*strp = 'T';
-		f++;
-		break;
-	    case 'z': /* common extension */
-		*strp++ = '+';
-		*strp++ = '0';
-		*strp++ = '0';
-		*strp++ = '0';
-		*strp = '0';
-		f++;
-		break;
-	    }
-	}
-	*strp = '\0';
-	fmt = tf;
+        /* Convert %Z to "GMT" and %z to "+0000";
+         * on hosts that do not have a time zone string in struct tm,
+         * strftime must assume its argument is local time.
+         */
+        for(strp = tf, f = fmt; strp < tf + sizeof(tf) - 6 && (*strp = *f)
+            ; f++, strp++) {
+            if (*f != '%') continue;
+            switch (f[1]) {
+            case '%':
+                *++strp = *++f;
+                break;
+            case 'Z':
+                *strp++ = 'G';
+                *strp++ = 'M';
+                *strp = 'T';
+                f++;
+                break;
+            case 'z': /* common extension */
+                *strp++ = '+';
+                *strp++ = '0';
+                *strp++ = '0';
+                *strp++ = '0';
+                *strp = '0';
+                f++;
+                break;
+            }
+        }
+        *strp = '\0';
+        fmt = tf;
     }
     else {
         apr_time_exp_lt(&xt, t);
@@ -217,21 +218,21 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *exp)
     int x, y;
 
     for (x = 0, y = 0; exp[y]; ++y, ++x) {
-	if ((!str[x]) && (exp[y] != '*'))
-	    return -1;
-	if (exp[y] == '*') {
-	    while (exp[++y] == '*');
-	    if (!exp[y])
-		return 0;
-	    while (str[x]) {
-		int ret;
-		if ((ret = ap_strcmp_match(&str[x++], &exp[y])) != 1)
-		    return ret;
-	    }
-	    return -1;
-	}
-	else if ((exp[y] != '?') && (str[x] != exp[y]))
-	    return 1;
+        if ((!str[x]) && (exp[y] != '*'))
+            return -1;
+        if (exp[y] == '*') {
+            while (exp[++y] == '*');
+            if (!exp[y])
+                return 0;
+            while (str[x]) {
+                int ret;
+                if ((ret = ap_strcmp_match(&str[x++], &exp[y])) != 1)
+                    return ret;
+            }
+            return -1;
+        }
+        else if ((exp[y] != '?') && (str[x] != exp[y]))
+            return 1;
     }
     return (str[x] != '\0');
 }
@@ -241,21 +242,22 @@ AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp)
     int x, y;
 
     for (x = 0, y = 0; exp[y]; ++y, ++x) {
-	if ((!str[x]) && (exp[y] != '*'))
-	    return -1;
-	if (exp[y] == '*') {
-	    while (exp[++y] == '*');
-	    if (!exp[y])
-		return 0;
-	    while (str[x]) {
-		int ret;
-		if ((ret = ap_strcasecmp_match(&str[x++], &exp[y])) != 1)
-		    return ret;
-	    }
-	    return -1;
-	}
-	else if ((exp[y] != '?') && (apr_tolower(str[x]) != apr_tolower(exp[y])))
-	    return 1;
+        if (!str[x] && exp[y] != '*')
+            return -1;
+        if (exp[y] == '*') {
+            while (exp[++y] == '*');
+            if (!exp[y])
+                return 0;
+            while (str[x]) {
+                int ret;
+                if ((ret = ap_strcasecmp_match(&str[x++], &exp[y])) != 1)
+                    return ret;
+            }
+            return -1;
+        }
+        else if (exp[y] != '?'
+                 && apr_tolower(str[x]) != apr_tolower(exp[y]))
+            return 1;
     }
     return (str[x] != '\0');
 }
@@ -281,8 +283,8 @@ AP_DECLARE(int) ap_is_matchexp(const char *str)
     register int x;
 
     for (x = 0; str[x]; x++)
-	if ((str[x] == '*') || (str[x] == '?'))
-	    return 1;
+        if ((str[x] == '*') || (str[x] == '?'))
+            return 1;
     return 0;
 }
 
@@ -301,12 +303,12 @@ static apr_status_t regex_cleanup(void *preg)
 }
 
 AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
-				   int cflags)
+                                   int cflags)
 {
     regex_t *preg = apr_palloc(p, sizeof(regex_t));
 
     if (regcomp(preg, pattern, cflags)) {
-	return NULL;
+        return NULL;
     }
 
     apr_pool_cleanup_register(p, (void *) preg, regex_cleanup, regex_cleanup);
@@ -328,13 +330,15 @@ AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2)
 {
     char *p1, *p2;
     if (*s2 == '\0') {
-	/* an empty s2 */
+        /* an empty s2 */
         return((char *)s1);
     }
     while(1) {
-	for ( ; (*s1 != '\0') && (apr_tolower(*s1) != apr_tolower(*s2)); s1++);
-	if (*s1 == '\0') return(NULL);
-	/* found first character of s2, see if the rest matches */
+        for ( ; (*s1 != '\0') && (apr_tolower(*s1) != apr_tolower(*s2)); s1++);
+        if (*s1 == '\0') {
+            return(NULL);
+        }
+        /* found first character of s2, see if the rest matches */
         p1 = (char *)s1;
         p2 = (char *)s2;
         for (++p1, ++p2; apr_tolower(*p1) == apr_tolower(*p2); ++p1, ++p2) {
@@ -347,7 +351,7 @@ AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2)
             /* second string ended, a match */
             break;
         }
-	/* didn't find a match here, try starting at next character in s1 */
+        /* didn't find a match here, try starting at next character in s1 */
         s1++;
     }
     return((char *)s1);
@@ -393,7 +397,8 @@ AP_DECLARE(int) ap_regexec(regex_t *preg, const char *string,
     return regexec(preg, string, nmatch, pmatch, eflags);
 }
 
-AP_DECLARE(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
+AP_DECLARE(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf,
+                               size_t errbuf_size)
 {
     return regerror(errcode, preg, errbuf, errbuf_size);
 }
@@ -413,8 +418,9 @@ AP_DECLARE(size_t) ap_regerror(int errcode, const regex_t *preg, char *errbuf, s
  * AT&T V8 regexp package.
  */
 
-AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
-			   size_t nmatch, regmatch_t pmatch[])
+AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
+                              const char *source, size_t nmatch,
+                              regmatch_t pmatch[])
 {
     const char *src = input;
     char *dest, *dst;
@@ -423,30 +429,30 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
     int len;
 
     if (!source)
-	return NULL;
+        return NULL;
     if (!nmatch)
-	return apr_pstrdup(p, src);
+        return apr_pstrdup(p, src);
 
     /* First pass, find the size */
 
     len = 0;
 
     while ((c = *src++) != '\0') {
-	if (c == '&')
-	    no = 0;
-	else if (c == '$' && apr_isdigit(*src))
-	    no = *src++ - '0';
-	else
-	    no = 10;
+        if (c == '&')
+            no = 0;
+        else if (c == '$' && apr_isdigit(*src))
+            no = *src++ - '0';
+        else
+            no = 10;
 
-	if (no > 9) {		/* Ordinary character. */
-	    if (c == '\\' && (*src == '$' || *src == '&'))
-		c = *src++;
-	    len++;
-	}
-	else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
-	    len += pmatch[no].rm_eo - pmatch[no].rm_so;
-	}
+        if (no > 9) {                /* Ordinary character. */
+            if (c == '\\' && (*src == '$' || *src == '&'))
+                c = *src++;
+            len++;
+        }
+        else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+            len += pmatch[no].rm_eo - pmatch[no].rm_so;
+        }
 
     }
 
@@ -457,23 +463,23 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
     src = input;
 
     while ((c = *src++) != '\0') {
-	if (c == '&')
-	    no = 0;
-	else if (c == '$' && apr_isdigit(*src))
-	    no = *src++ - '0';
-	else
-	    no = 10;
+        if (c == '&')
+            no = 0;
+        else if (c == '$' && apr_isdigit(*src))
+            no = *src++ - '0';
+        else
+            no = 10;
 
-	if (no > 9) {		/* Ordinary character. */
-	    if (c == '\\' && (*src == '$' || *src == '&'))
-		c = *src++;
-	    *dst++ = c;
-	}
-	else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
-	    len = pmatch[no].rm_eo - pmatch[no].rm_so;
-	    memcpy(dst, source + pmatch[no].rm_so, len);
-	    dst += len;
-	}
+        if (no > 9) {                /* Ordinary character. */
+            if (c == '\\' && (*src == '$' || *src == '&'))
+                c = *src++;
+            *dst++ = c;
+        }
+        else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+            len = pmatch[no].rm_eo - pmatch[no].rm_so;
+            memcpy(dst, source + pmatch[no].rm_so, len);
+            dst += len;
+        }
 
     }
     *dst = '\0';
@@ -493,58 +499,61 @@ AP_DECLARE(void) ap_getparents(char *name)
     /* a) remove ./ path segments */
     for (next = name; *next && (*next != '.'); next++) {
     }
+    
     l = w = first_dot = next - name;
     while (name[l] != '\0') {
-	if (name[l] == '.' && IS_SLASH(name[l + 1]) && (l == 0 || IS_SLASH(name[l - 1])))
-	    l += 2;
-	else
-	    name[w++] = name[l++];
+        if (name[l] == '.' && IS_SLASH(name[l + 1])
+            && (l == 0 || IS_SLASH(name[l - 1])))
+            l += 2;
+        else
+            name[w++] = name[l++];
     }
 
     /* b) remove trailing . path, segment */
     if (w == 1 && name[0] == '.')
-	w--;
+        w--;
     else if (w > 1 && name[w - 1] == '.' && IS_SLASH(name[w - 2]))
-	w--;
+        w--;
     name[w] = '\0';
 
     /* c) remove all xx/../ segments. (including leading ../ and /../) */
     l = first_dot;
 
     while (name[l] != '\0') {
-	if (name[l] == '.' && name[l + 1] == '.' && IS_SLASH(name[l + 2]) &&
-	    (l == 0 || IS_SLASH(name[l - 1]))) {
-	    register int m = l + 3, n;
+        if (name[l] == '.' && name[l + 1] == '.' && IS_SLASH(name[l + 2])
+            && (l == 0 || IS_SLASH(name[l - 1]))) {
+            register int m = l + 3, n;
 
-	    l = l - 2;
-	    if (l >= 0) {
-		while (l >= 0 && !IS_SLASH(name[l]))
-		    l--;
-		l++;
-	    }
-	    else
-		l = 0;
-	    n = l;
-	    while ((name[n] = name[m]))
-		(++n, ++m);
-	}
-	else
-	    ++l;
+            l = l - 2;
+            if (l >= 0) {
+                while (l >= 0 && !IS_SLASH(name[l]))
+                    l--;
+                l++;
+            }
+            else
+                l = 0;
+            n = l;
+            while ((name[n] = name[m]))
+                (++n, ++m);
+        }
+        else
+            ++l;
     }
 
     /* d) remove trailing xx/.. segment. */
     if (l == 2 && name[0] == '.' && name[1] == '.')
-	name[0] = '\0';
-    else if (l > 2 && name[l - 1] == '.' && name[l - 2] == '.' && IS_SLASH(name[l - 3])) {
-	l = l - 4;
-	if (l >= 0) {
-	    while (l >= 0 && !IS_SLASH(name[l]))
-		l--;
-	    l++;
-	}
-	else
-	    l = 0;
-	name[l] = '\0';
+        name[0] = '\0';
+    else if (l > 2 && name[l - 1] == '.' && name[l - 2] == '.'
+             && IS_SLASH(name[l - 3])) {
+        l = l - 4;
+        if (l >= 0) {
+            while (l >= 0 && !IS_SLASH(name[l]))
+                l--;
+            l++;
+        }
+        else
+            l = 0;
+        name[l] = '\0';
     }
 }
 
@@ -561,14 +570,14 @@ AP_DECLARE(void) ap_no2slash(char *name)
 #endif
 
     while (*s) {
-	if ((*d++ = *s) == '/') {
-	    do {
-		++s;
-	    } while (*s == '/');
-	}
-	else {
-	    ++s;
-	}
+        if ((*d++ = *s) == '/') {
+            do {
+                ++s;
+            } while (*s == '/');
+        }
+        else {
+            ++s;
+        }
     }
     *d = '\0';
 }
@@ -607,11 +616,11 @@ AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
     }
 
     for (;;) {
-	if (*s == '\0' || (*s == '/' && (--n) == 0)) {
-	    *d = '/';
-	    break;
-	}
-	*d++ = *s++;
+        if (*s == '\0' || (*s == '/' && (--n) == 0)) {
+            *d = '/';
+            break;
+        }
+        *d++ = *s++;
     }
     *++d = 0;
     return (d);
@@ -628,7 +637,7 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
     int l;
 
     if (last_slash == NULL) {
-	return apr_pstrdup(p, "");
+        return apr_pstrdup(p, "");
     }
     l = (last_slash - s) + 1;
     d = apr_palloc(p, l + 1);
@@ -643,8 +652,8 @@ AP_DECLARE(int) ap_count_dirs(const char *path)
     register int x, n;
 
     for (x = 0, n = 0; path[x]; x++)
-	if (path[x] == '/')
-	    n++;
+        if (path[x] == '/')
+            n++;
     return n;
 }
 
@@ -707,20 +716,22 @@ AP_DECLARE(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
     return res;
 }
 
-AP_DECLARE(char *) ap_getword_nulls_nc(apr_pool_t *atrans, char **line, char stop)
+AP_DECLARE(char *) ap_getword_nulls_nc(apr_pool_t *atrans, char **line,
+                                       char stop)
 {
     return ap_getword_nulls(atrans, (const char **) line, stop);
 }
 
-AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line, char stop)
+AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line,
+                                    char stop)
 {
     const char *pos = ap_strchr_c(*line, stop);
     char *res;
 
     if (!pos) {
-	res = apr_pstrdup(atrans, *line);
-	*line += strlen(*line);
-	return res;
+        res = apr_pstrdup(atrans, *line);
+        *line += strlen(*line);
+        return res;
     }
 
     res = apr_pstrndup(atrans, *line, pos - *line);
@@ -736,18 +747,19 @@ AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line, char 
  * all honored
  */
 
-static char *substring_conf(apr_pool_t *p, const char *start, int len, char quote)
+static char *substring_conf(apr_pool_t *p, const char *start, int len,
+                            char quote)
 {
     char *result = apr_palloc(p, len + 2);
     char *resp = result;
     int i;
 
     for (i = 0; i < len; ++i) {
-	if (start[i] == '\\' && (start[i + 1] == '\\'
-				 || (quote && start[i + 1] == quote)))
-	    *resp++ = start[++i];
-	else
-	    *resp++ = start[i];
+        if (start[i] == '\\' && (start[i + 1] == '\\'
+                                 || (quote && start[i + 1] == quote)))
+            *resp++ = start[++i];
+        else
+            *resp++ = start[i];
     }
 
     *resp++ = '\0';
@@ -770,36 +782,36 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
     char quote;
 
     while (*str && apr_isspace(*str))
-	++str;
+        ++str;
 
     if (!*str) {
-	*line = str;
-	return "";
+        *line = str;
+        return "";
     }
 
     if ((quote = *str) == '"' || quote == '\'') {
-	strend = str + 1;
-	while (*strend && *strend != quote) {
-	    if (*strend == '\\' && strend[1] && strend[1] == quote)
-		strend += 2;
-	    else
-		++strend;
-	}
-	res = substring_conf(p, str + 1, strend - str - 1, quote);
+        strend = str + 1;
+        while (*strend && *strend != quote) {
+            if (*strend == '\\' && strend[1] && strend[1] == quote)
+                strend += 2;
+            else
+                ++strend;
+        }
+        res = substring_conf(p, str + 1, strend - str - 1, quote);
 
-	if (*strend == quote)
-	    ++strend;
+        if (*strend == quote)
+            ++strend;
     }
     else {
-	strend = str;
-	while (*strend && !apr_isspace(*strend))
-	    ++strend;
+        strend = str;
+        while (*strend && !apr_isspace(*strend))
+            ++strend;
 
-	res = substring_conf(p, str, strend - str, 0);
+        res = substring_conf(p, str, strend - str, 0);
     }
 
     while (*strend && apr_isspace(*strend))
-	++strend;
+        ++strend;
     *line = strend;
     return res;
 }
@@ -822,7 +834,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
        do {
                /* XXX - relies on strncat() to add '\0'
                 */
-	       strncat(tmp,word,s - word);
+               strncat(tmp,word,s - word);
                if ((s[1] == '{') && (e=ap_strchr_c(s,'}'))) {
                        const char *e2 = e;
                        word = e + 1;
@@ -878,7 +890,8 @@ static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 }
 
 /* Open a ap_configfile_t as FILE, return open ap_configfile_t struct pointer */
-AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t *p, const char *name)
+AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
+                                          apr_pool_t *p, const char *name)
 {
     ap_configfile_t *new_cfg;
     apr_file_t *file = NULL;
@@ -894,7 +907,8 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
         return APR_EBADF;
     }
 
-    status = apr_file_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
+    status = apr_file_open(&file, name, APR_READ | APR_BUFFERED,
+                           APR_OS_DEFAULT, p);
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                 "Opening config file %s (%s)",
@@ -915,8 +929,8 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                    "Access to file %s denied by server: not a regular file",
-                    name);
+                     "Access to file %s denied by server: not a regular file",
+                     name);
         apr_file_close(file);
         return APR_EBADF;
     }
@@ -957,15 +971,17 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
 
 
 /* Allocate a ap_configfile_t handle with user defined functions and params */
-AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
-    void *param,
-    int(*getch)(void *param),
-    void *(*getstr) (void *buf, size_t bufsiz, void *param),
-    int(*close_func)(void *param))
+AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p,
+                       const char *descr,
+                       void *param,
+                       int(*getch)(void *param),
+                       void *(*getstr) (void *buf, size_t bufsiz, void *param),
+                       int(*close_func)(void *param))
 {
     ap_configfile_t *new_cfg = apr_palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Opening config handler %s", descr);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                 "Opening config handler %s", descr);
 #endif
     new_cfg->param = param;
     new_cfg->name = descr;
@@ -991,132 +1007,133 @@ AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
 {
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {
-	char *src, *dst;
-	char *cp;
-	char *cbuf = buf;
-	size_t cbufsize = bufsize;
+        char *src, *dst;
+        char *cp;
+        char *cbuf = buf;
+        size_t cbufsize = bufsize;
 
-	while (1) {
-	    ++cfp->line_number;
-	    if (cfp->getstr(cbuf, cbufsize, cfp->param) == NULL)
-		return 1;
+        while (1) {
+            ++cfp->line_number;
+            if (cfp->getstr(cbuf, cbufsize, cfp->param) == NULL)
+                return 1;
 
-	    /*
-	     *  check for line continuation,
-	     *  i.e. match [^\\]\\[\r]\n only
-	     */
-	    cp = cbuf;
-	    while (cp < cbuf+cbufsize && *cp != '\0')
-		cp++;
-	    if (cp > cbuf && cp[-1] == LF) {
-		cp--;
-		if (cp > cbuf && cp[-1] == CR)
-		    cp--;
-		if (cp > cbuf && cp[-1] == '\\') {
-		    cp--;
-		    if (!(cp > cbuf && cp[-1] == '\\')) {
-			/*
-			 * line continuation requested -
-			 * then remove backslash and continue
-			 */
-			cbufsize -= (cp-cbuf);
-			cbuf = cp;
-			continue;
-		    }
-		    else {
-			/* 
-			 * no real continuation because escaped -
-			 * then just remove escape character
-			 */
-			for ( ; cp < cbuf+cbufsize && *cp != '\0'; cp++)
-			    cp[0] = cp[1];
-		    }   
-		}
-	    }
-	    break;
-	}
+            /*
+             *  check for line continuation,
+             *  i.e. match [^\\]\\[\r]\n only
+             */
+            cp = cbuf;
+            while (cp < cbuf+cbufsize && *cp != '\0')
+                cp++;
+            if (cp > cbuf && cp[-1] == LF) {
+                cp--;
+                if (cp > cbuf && cp[-1] == CR)
+                    cp--;
+                if (cp > cbuf && cp[-1] == '\\') {
+                    cp--;
+                    if (!(cp > cbuf && cp[-1] == '\\')) {
+                        /*
+                         * line continuation requested -
+                         * then remove backslash and continue
+                         */
+                        cbufsize -= (cp-cbuf);
+                        cbuf = cp;
+                        continue;
+                    }
+                    else {
+                        /* 
+                         * no real continuation because escaped -
+                         * then just remove escape character
+                         */
+                        for ( ; cp < cbuf+cbufsize && *cp != '\0'; cp++)
+                            cp[0] = cp[1];
+                    }   
+                }
+            }
+            break;
+        }
 
-	/*
-	 * Leading and trailing white space is eliminated completely
-	 */
-	src = buf;
-	while (apr_isspace(*src))
-	    ++src;
-	/* blast trailing whitespace */
-	dst = &src[strlen(src)];
-	while (--dst >= src && apr_isspace(*dst))
-	    *dst = '\0';
+        /*
+         * Leading and trailing white space is eliminated completely
+         */
+        src = buf;
+        while (apr_isspace(*src))
+            ++src;
+        /* blast trailing whitespace */
+        dst = &src[strlen(src)];
+        while (--dst >= src && apr_isspace(*dst))
+            *dst = '\0';
         /* Zap leading whitespace by shifting */
         if (src != buf)
-	    for (dst = buf; (*dst++ = *src++) != '\0'; )
-	        ;
+            for (dst = buf; (*dst++ = *src++) != '\0'; )
+                ;
 
 #ifdef DEBUG_CFG_LINES
-	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Read config: %s", buf);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Read config: %s", buf);
 #endif
-	return 0;
+        return 0;
     } else {
-	/* No "get string" function defined; read character by character */
-	register int c;
-	register size_t i = 0;
+        /* No "get string" function defined; read character by character */
+        register int c;
+        register size_t i = 0;
 
-	buf[0] = '\0';
-	/* skip leading whitespace */
-	do {
-	    c = cfp->getch(cfp->param);
-	} while (c == '\t' || c == ' ');
+        buf[0] = '\0';
+        /* skip leading whitespace */
+        do {
+            c = cfp->getch(cfp->param);
+        } while (c == '\t' || c == ' ');
 
-	if (c == EOF)
-	    return 1;
-	
-	if(bufsize < 2) {
-	    /* too small, assume caller is crazy */
-	    return 1;
-	}
+        if (c == EOF)
+            return 1;
+        
+        if(bufsize < 2) {
+            /* too small, assume caller is crazy */
+            return 1;
+        }
 
-	while (1) {
-	    if ((c == '\t') || (c == ' ')) {
-		buf[i++] = ' ';
-		while ((c == '\t') || (c == ' '))
-		    c = cfp->getch(cfp->param);
-	    }
-	    if (c == CR) {
-		/* silently ignore CR (_assume_ that a LF follows) */
-		c = cfp->getch(cfp->param);
-	    }
-	    if (c == LF) {
-		/* increase line number and return on LF */
-		++cfp->line_number;
-	    }
-	    if (c == EOF || c == 0x4 || c == LF || i >= (bufsize - 2)) {
-		/* 
-		 *  check for line continuation
-		 */
-		if (i > 0 && buf[i-1] == '\\') {
-		    i--;
-		    if (!(i > 0 && buf[i-1] == '\\')) {
-			/* line is continued */
-			c = cfp->getch(cfp->param);
-			continue;
-		    }
-		    /* else nothing needs be done because
-		     * then the backslash is escaped and
-		     * we just strip to a single one
-		     */
-		}
-		/* blast trailing whitespace */
-		while (i > 0 && apr_isspace(buf[i - 1]))
-		    --i;
-		buf[i] = '\0';
+        while (1) {
+            if ((c == '\t') || (c == ' ')) {
+                buf[i++] = ' ';
+                while ((c == '\t') || (c == ' '))
+                    c = cfp->getch(cfp->param);
+            }
+            if (c == CR) {
+                /* silently ignore CR (_assume_ that a LF follows) */
+                c = cfp->getch(cfp->param);
+            }
+            if (c == LF) {
+                /* increase line number and return on LF */
+                ++cfp->line_number;
+            }
+            if (c == EOF || c == 0x4 || c == LF || i >= (bufsize - 2)) {
+                /* 
+                 *  check for line continuation
+                 */
+                if (i > 0 && buf[i-1] == '\\') {
+                    i--;
+                    if (!(i > 0 && buf[i-1] == '\\')) {
+                        /* line is continued */
+                        c = cfp->getch(cfp->param);
+                        continue;
+                    }
+                    /* else nothing needs be done because
+                     * then the backslash is escaped and
+                     * we just strip to a single one
+                     */
+                }
+                /* blast trailing whitespace */
+                while (i > 0 && apr_isspace(buf[i - 1]))
+                    --i;
+                buf[i] = '\0';
 #ifdef DEBUG_CFG_LINES
-		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Read config: %s", buf);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                             "Read config: %s", buf);
 #endif
-		return 0;
-	    }
-	    buf[i] = c;
-	    ++i;
-	    c = cfp->getch(cfp->param);
-	}
+                return 0;
+            }
+            buf[i] = c;
+            ++i;
+            c = cfp->getch(cfp->param);
+        }
     }
 }
 
@@ -1174,7 +1191,7 @@ AP_DECLARE(const char *) ap_size_list_item(const char **field, int *len)
     /* Advance field pointer to the next non-comma, non-white byte */
 
     while (*ptr == ',' || apr_isspace(*ptr))
-	++ptr;
+        ++ptr;
 
     *field = (const char *)ptr;
     return (const char *)token;
@@ -1275,7 +1292,8 @@ AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field)
  * This would be much more efficient if we stored header fields as
  * an array of list items as they are received instead of a plain string.
  */
-AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok)
+AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line,
+                                  const char *tok)
 {
     const unsigned char *pos;
     const unsigned char *ptr = (const unsigned char *)line;
@@ -1378,7 +1396,8 @@ AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *t
  * by whitespace at the caller's option.
  */
 
-AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white)
+AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
+                                int accept_white)
 {
     const char *ptr = *accept_line;
     const char *tok_start;
@@ -1388,7 +1407,7 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
     /* Find first non-white byte */
 
     while (*ptr && apr_isspace(*ptr))
-	++ptr;
+        ++ptr;
 
     tok_start = ptr;
 
@@ -1397,11 +1416,11 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
      */
 
     while (*ptr && (accept_white || !apr_isspace(*ptr))
-	   && *ptr != ';' && *ptr != ',') {
-	if (*ptr++ == '"')
-	    while (*ptr)
-		if (*ptr++ == '"')
-		    break;
+           && *ptr != ';' && *ptr != ',') {
+        if (*ptr++ == '"')
+            while (*ptr)
+                if (*ptr++ == '"')
+                    break;
     }
 
     tok_len = ptr - tok_start;
@@ -1410,7 +1429,7 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int acc
     /* Advance accept_line pointer to the next non-white byte */
 
     while (*ptr && apr_isspace(*ptr))
-	++ptr;
+        ++ptr;
 
     *accept_line = ptr;
     return token;
@@ -1424,48 +1443,50 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
     const unsigned char *s;
 
     if (!line)
-	return 0;
+        return 0;
 
     s = (const unsigned char *)line;
     for (;;) {
-	/* find start of token, skip all stop characters, note NUL
-	 * isn't a token stop, so we don't need to test for it
-	 */
-	while (TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
-	    ++s;
-	}
-	if (!*s) {
-	    return 0;
-	}
-	start_token = s;
-	/* find end of the token */
-	while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
-	    ++s;
-	}
-	if (!strncasecmp((const char *)start_token, (const char *)tok, s - start_token)) {
-	    return 1;
-	}
-	if (!*s) {
-	    return 0;
-	}
+        /* find start of token, skip all stop characters, note NUL
+         * isn't a token stop, so we don't need to test for it
+         */
+        while (TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
+            ++s;
+        }
+        if (!*s) {
+            return 0;
+        }
+        start_token = s;
+        /* find end of the token */
+        while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
+            ++s;
+        }
+        if (!strncasecmp((const char *)start_token, (const char *)tok,
+                         s - start_token)) {
+            return 1;
+        }
+        if (!*s) {
+            return 0;
+        }
     }
 }
 
 
-AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok)
+AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
+                                   const char *tok)
 {
     int llen, tlen, lidx;
 
     if (!line)
-	return 0;
+        return 0;
 
     llen = strlen(line);
     tlen = strlen(tok);
     lidx = llen - tlen;
 
-    if ((lidx < 0) ||
-	((lidx > 0) && !(apr_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
-	return 0;
+    if (lidx < 0 ||
+        (lidx > 0 && !(apr_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
+        return 0;
 
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
 }
@@ -1476,7 +1497,7 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
     unsigned char *d;
     const unsigned char *s;
 
-    cmd = apr_palloc(p, 2 * strlen(str) + 1);	/* Be safe */
+    cmd = apr_palloc(p, 2 * strlen(str) + 1);        /* Be safe */
     d = (unsigned char *)cmd;
     s = (const unsigned char *)str;
     for (; *s; ++s) {
@@ -1488,15 +1509,15 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
          * space to most applications
          */
         if (*s == '\r' || *s == '\n') {
- 	    *d++ = ' ';
- 	    continue;
- 	}
+             *d++ = ' ';
+             continue;
+         }
 #endif
 
-	if (TEST_CHAR(*s, T_ESCAPE_SHELL_CMD)) {
-	    *d++ = '\\';
-	}
-	*d++ = *s;
+        if (TEST_CHAR(*s, T_ESCAPE_SHELL_CMD)) {
+            *d++ = '\\';
+        }
+        *d++ = *s;
     }
     *d = '\0';
 
@@ -1508,9 +1529,11 @@ static char x2c(const char *what)
     register char digit;
 
 #if !APR_CHARSET_EBCDIC
-    digit = ((what[0] >= 'A') ? ((what[0] & 0xdf) - 'A') + 10 : (what[0] - '0'));
+    digit = ((what[0] >= 'A') ? ((what[0] & 0xdf) - 'A') + 10
+             : (what[0] - '0'));
     digit *= 16;
-    digit += (what[1] >= 'A' ? ((what[1] & 0xdf) - 'A') + 10 : (what[1] - '0'));
+    digit += (what[1] >= 'A' ? ((what[1] & 0xdf) - 'A') + 10
+              : (what[1] - '0'));
 #else /*APR_CHARSET_EBCDIC*/
     char xstr[5];
     xstr[0]='0';
@@ -1518,7 +1541,8 @@ static char x2c(const char *what)
     xstr[2]=what[0];
     xstr[3]=what[1];
     xstr[4]='\0';
-    digit = apr_xlate_conv_byte(ap_hdrs_from_ascii, 0xFF & strtol(xstr, NULL, 16));
+    digit = apr_xlate_conv_byte(ap_hdrs_from_ascii,
+                                0xFF & strtol(xstr, NULL, 16));
 #endif /*APR_CHARSET_EBCDIC*/
     return (digit);
 }
@@ -1547,37 +1571,38 @@ AP_DECLARE(int) ap_unescape_url(char *url)
         return OK;
     }
     for (x = y; *y; ++x, ++y) {
-	if (*y != '%')
-	    *x = *y;
-	else {
-	    if (!apr_isxdigit(*(y + 1)) || !apr_isxdigit(*(y + 2))) {
-		badesc = 1;
-		*x = '%';
-	    }
-	    else {
-		*x = x2c(y + 1);
-		y += 2;
-		if (IS_SLASH(*x) || *x == '\0')
-		    badpath = 1;
-	    }
-	}
+        if (*y != '%')
+            *x = *y;
+        else {
+            if (!apr_isxdigit(*(y + 1)) || !apr_isxdigit(*(y + 2))) {
+                badesc = 1;
+                *x = '%';
+            }
+            else {
+                *x = x2c(y + 1);
+                y += 2;
+                if (IS_SLASH(*x) || *x == '\0')
+                    badpath = 1;
+            }
+        }
     }
     *x = '\0';
     if (badesc)
-	return HTTP_BAD_REQUEST;
+        return HTTP_BAD_REQUEST;
     else if (badpath)
-	return HTTP_NOT_FOUND;
+        return HTTP_NOT_FOUND;
     else
-	return OK;
+        return OK;
 }
 
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
-				    apr_port_t port, const request_rec *r)
+                                       apr_port_t port, const request_rec *r)
 {
-    if (ap_is_default_port(port, r))
-	return apr_pstrdup(p, hostname);
+    if (ap_is_default_port(port, r)) {
+        return apr_pstrdup(p, hostname);
+    }
     else {
-	return apr_psprintf(p, "%s:%u", hostname, port);
+        return apr_psprintf(p, "%s:%u", hostname, port);
     }
 }
 
@@ -1627,13 +1652,13 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
     unsigned c;
 
     while ((c = *s)) {
-	if (TEST_CHAR(c, T_ESCAPE_PATH_SEGMENT)) {
-	    d = c2x(c, d);
-	}
-	else {
-	    *d++ = c;
-	}
-	++s;
+        if (TEST_CHAR(c, T_ESCAPE_PATH_SEGMENT)) {
+            d = c2x(c, d);
+        }
+        else {
+            *d++ = c;
+        }
+        ++s;
     }
     *d = '\0';
     return copy;
@@ -1647,22 +1672,22 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
     unsigned c;
 
     if (!partial) {
-	const char *colon = ap_strchr_c(path, ':');
-	const char *slash = ap_strchr_c(path, '/');
+        const char *colon = ap_strchr_c(path, ':');
+        const char *slash = ap_strchr_c(path, '/');
 
-	if (colon && (!slash || colon < slash)) {
-	    *d++ = '.';
-	    *d++ = '/';
-	}
+        if (colon && (!slash || colon < slash)) {
+            *d++ = '.';
+            *d++ = '/';
+        }
     }
     while ((c = *s)) {
-	if (TEST_CHAR(c, T_OS_ESCAPE_PATH)) {
-	    d = c2x(c, d);
-	}
-	else {
-	    *d++ = c;
-	}
-	++s;
+        if (TEST_CHAR(c, T_OS_ESCAPE_PATH)) {
+            d = c2x(c, d);
+        }
+        else {
+            *d++ = c;
+        }
+        ++s;
     }
     *d = '\0';
     return copy;
@@ -1677,30 +1702,30 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
 
     /* first, count the number of extra characters */
     for (i = 0, j = 0; s[i] != '\0'; i++)
-	if (s[i] == '<' || s[i] == '>')
-	    j += 3;
-	else if (s[i] == '&')
-	    j += 4;
+        if (s[i] == '<' || s[i] == '>')
+            j += 3;
+        else if (s[i] == '&')
+            j += 4;
 
     if (j == 0)
-	return apr_pstrmemdup(p, s, i);
+        return apr_pstrmemdup(p, s, i);
 
     x = apr_palloc(p, i + j + 1);
     for (i = 0, j = 0; s[i] != '\0'; i++, j++)
-	if (s[i] == '<') {
-	    memcpy(&x[j], "&lt;", 4);
-	    j += 3;
-	}
-	else if (s[i] == '>') {
-	    memcpy(&x[j], "&gt;", 4);
-	    j += 3;
-	}
-	else if (s[i] == '&') {
-	    memcpy(&x[j], "&amp;", 5);
-	    j += 4;
-	}
-	else
-	    x[j] = s[i];
+        if (s[i] == '<') {
+            memcpy(&x[j], "&lt;", 4);
+            j += 3;
+        }
+        else if (s[i] == '>') {
+            memcpy(&x[j], "&gt;", 4);
+            j += 3;
+        }
+        else if (s[i] == '&') {
+            memcpy(&x[j], "&amp;", 5);
+            j += 4;
+        }
+        else
+            x[j] = s[i];
 
     x[j] = '\0';
     return x;
@@ -1711,7 +1736,7 @@ AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *path)
     apr_finfo_t finfo;
 
     if (apr_stat(&finfo, path, APR_FINFO_TYPE, p) != APR_SUCCESS)
-	return 0;		/* in error condition, just return no */
+        return 0;                /* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);
 }
@@ -1721,13 +1746,13 @@ AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *path)
     apr_finfo_t finfo;
 
     if (apr_lstat(&finfo, path, APR_FINFO_TYPE, p) != APR_SUCCESS)
-	return 0;		/* in error condition, just return no */
+        return 0;                /* in error condition, just return no */
 
     return (finfo.filetype == APR_DIR);
 }
 
 AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
-				  const char *src2)
+                                  const char *src2)
 {
     apr_size_t len1, len2;
     char *path;
@@ -1762,14 +1787,14 @@ AP_DECLARE(int) ap_is_url(const char *u)
     register int x;
 
     for (x = 0; u[x] != ':'; x++) {
-	if ((!u[x]) ||
-	    ((!apr_isalpha(u[x])) && (!apr_isdigit(u[x])) &&
-	     (u[x] != '+') && (u[x] != '-') && (u[x] != '.'))) {
-	    return 0;
-	}
+        if ((!u[x]) ||
+            ((!apr_isalpha(u[x])) && (!apr_isdigit(u[x])) &&
+             (u[x] != '+') && (u[x] != '-') && (u[x] != '.'))) {
+            return 0;
+        }
     }
 
-    return (x ? 1 : 0);		/* If the first character is ':', it's broken, too */
+    return (x ? 1 : 0);                /* If the first character is ':', it's broken, too */
 }
 
 AP_DECLARE(int) ap_ind(const char *s, char c)
@@ -1793,8 +1818,8 @@ AP_DECLARE(int) ap_rind(const char *s, char c)
 AP_DECLARE(void) ap_str_tolower(char *str)
 {
     while (*str) {
-	*str = apr_tolower(*str);
-	++str;
+        *str = apr_tolower(*str);
+        ++str;
     }
 }
 
@@ -1806,7 +1831,8 @@ static char *find_fqdn(apr_pool_t *a, struct hostent *p)
         if (p->h_aliases) {
             for (x = 0; p->h_aliases[x]; ++x) {
                 if (strchr(p->h_aliases[x], '.') &&
-                    (!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
+                    (!strncasecmp(p->h_aliases[x], p->h_name,
+                                  strlen(p->h_name))))
                     return apr_pstrdup(a, p->h_aliases[x]);
             }
         }
@@ -1843,7 +1869,7 @@ char *ap_get_local_host(apr_pool_t *a)
             /* Recovery - return the default servername by IP: */
             if (p && p->h_addr_list[0]) {
                 apr_snprintf(str, sizeof(str), "%pA", p->h_addr_list[0]);
-	        server_hostname = apr_pstrdup(a, str);
+                server_hostname = apr_pstrdup(a, str);
                 /* We will drop through to report the IP-named server */
             }
         }
@@ -1903,21 +1929,21 @@ AP_DECLARE(void) ap_content_type_tolower(char *str)
 
     semi = strchr(str, ';');
     if (semi) {
-	*semi = '\0';
+        *semi = '\0';
     }
     while (*str) {
-	*str = apr_tolower(*str);
-	++str;
+        *str = apr_tolower(*str);
+        ++str;
     }
     if (semi) {
-	*semi = ';';
+        *semi = ';';
     }
 }
 
 /*
  * Given a string, replace any bare " with \" .
  */
-AP_DECLARE(char *) ap_escape_quotes (apr_pool_t *p, const char *instring)
+AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
 {
     int newlen = 0;
     const char *inchr = instring;
@@ -1928,19 +1954,19 @@ AP_DECLARE(char *) ap_escape_quotes (apr_pool_t *p, const char *instring)
      * string up by an extra byte each time we find an unescaped ".
      */
     while (*inchr != '\0') {
-	newlen++;
+        newlen++;
         if (*inchr == '"') {
-	    newlen++;
-	}
-	/*
-	 * If we find a slosh, and it's not the last byte in the string,
-	 * it's escaping something - advance past both bytes.
-	 */
-	if ((*inchr == '\\') && (inchr[1] != '\0')) {
-	    inchr++;
-	    newlen++;
-	}
-	inchr++;
+            newlen++;
+        }
+        /*
+         * If we find a slosh, and it's not the last byte in the string,
+         * it's escaping something - advance past both bytes.
+         */
+        if ((*inchr == '\\') && (inchr[1] != '\0')) {
+            inchr++;
+            newlen++;
+        }
+        inchr++;
     }
     outstring = apr_palloc(p, newlen + 1);
     inchr = instring;
@@ -1950,16 +1976,16 @@ AP_DECLARE(char *) ap_escape_quotes (apr_pool_t *p, const char *instring)
      * in front of every " that doesn't already have one.
      */
     while (*inchr != '\0') {
-	if ((*inchr == '\\') && (inchr[1] != '\0')) {
-	    *outchr++ = *inchr++;
-	    *outchr++ = *inchr++;
-	}
-	if (*inchr == '"') {
-	    *outchr++ = '\\';
-	}
-	if (*inchr != '\0') {
-	    *outchr++ = *inchr++;
-	}
+        if ((*inchr == '\\') && (inchr[1] != '\0')) {
+            *outchr++ = *inchr++;
+            *outchr++ = *inchr++;
+        }
+        if (*inchr == '"') {
+            *outchr++ = '\\';
+        }
+        if (*inchr != '\0') {
+            *outchr++ = *inchr++;
+        }
     }
     *outchr = '\0';
     return outstring;
