@@ -1135,7 +1135,7 @@ only processed if the parameter named <EM>parameter-name</EM> is defined.
 The second format reverses the test, and only processes the directives if
 <EM>parameter-name</EM> is <STRONG>not</STRONG> defined.
 
-<P>The <EM>paramater-name</EM> argument is a define as given on the
+<P>The <EM>parameter-name</EM> argument is a define as given on the
 <CODE>httpd</CODE> command line via <CODE>-D</CODE><EM>parameter-</EM>, at the
 time the server was started.
 
@@ -1613,12 +1613,18 @@ interfaces and port numbers, use
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> ListenBacklog is only available in Apache
-versions after 1.2.0.<P>
+versions after 1.2.0.
 
-The maximum length of the queue of pending connections.  Generally no
+<P>The maximum length of the queue of pending connections.  Generally no
 tuning is needed or desired, however on some systems it is desirable
 to increase this when under a TCP SYN flood attack.  See
-the backlog parameter to the <CODE>listen(2)</CODE> system call.</P><HR>
+the backlog parameter to the <CODE>listen(2)</CODE> system call.
+
+<P>This will often be limited to a smaller number by the operating
+system.  This varies from OS to OS.  Also note that many OSes do not
+use exactly what is specified as the backlog, but use a number based on
+(but normally larger than) what is set.
+<HR>
 
 <H2><A NAME="location">&lt;Location&gt; directive</A></H2>
 
@@ -1878,10 +1884,17 @@ Using a level of at least <CODE>crit</CODE> is recommended.
  REL="Help"
 ><STRONG>Status:</STRONG></A> core<P>
 
-The MaxClients directive sets the limit on the number of simultaneous
+<P>The MaxClients directive sets the limit on the number of simultaneous
 requests that can be supported; not more than this number of child server
 processes will be created.  To configure more than 256 clients, you must
-edit the HARD_SERVER_LIMIT entry in httpd.h and recompile.<P><HR>
+edit the HARD_SERVER_LIMIT entry in httpd.h and recompile.
+
+<P>Any connection attempts over the MaxClients limit will normally
+be queued, up to a number based on the <A HREF="#listenbacklog">
+ListenBacklog</A> directive.  Once a child process is freed at the
+end of a different request, the connection will then be serviced.
+
+<HR>
 
 <H2><A NAME="maxkeepaliverequests">MaxKeepAliveRequests directive</A></H2>
 <A
@@ -2928,7 +2941,7 @@ See also <A HREF="#minspareservers">MinSpareServers</A> and
  HREF="directive-dict.html#Status"
  REL="Help"
 ><STRONG>Status:</STRONG></A> core (Windows)<BR>
-<STRONG>Compatbility:</STRONG> Available only with Apache 1.3 and later
+<STRONG>Compatibility:</STRONG> Available only with Apache 1.3 and later
 with Windows
 
 <P>This directive tells the server how many threads it should use. This
@@ -3072,8 +3085,8 @@ meant for httpd requests. It is recommended that you set up a new user and
 group specifically for running the server. Some admins use user
 <CODE>nobody</CODE>, but this is not always possible or desirable.
 For example mod_proxy's cache, when enabled, must be accessible to this user
-(see the <A href="mod_proxy.html#cacheroot"><CODE>CacheRoot</CODE></a> 
-directive</a>).<P>
+(see the <A href="mod_proxy.html#cacheroot"><CODE>CacheRoot</CODE>
+directive</A>).<P>
 
 Notes: If you start the server as a non-root user, it will fail to change
 to the lesser privileged user, and will instead continue to run as
