@@ -1,5 +1,7 @@
 Changes with Apache 2.0.54
 
+  *) htdigest: Fix permissions of created files.  PR 33765.  [Joe Orton]
+
   *) core_input_filter: Move buckets to a persistent brigade instead of
      creating a new brigade. This stop a memory leak when proxying a 
      Streaming Media Server. PR 33382. [Paul Querna]
