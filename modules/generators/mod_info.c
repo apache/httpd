@@ -275,6 +275,9 @@ static int display_info(request_rec *r)
     server_rec *serv = r->server;
     int comma = 0;
 
+    if (strcmp(r->handler, "server-info"))
+        return DECLINED;
+
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
 	return DECLINED;
