@@ -112,7 +112,7 @@ $(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/threads.m4
 	@echo rebuilding $@
 	(cd lib/apr && autoconf)
 
-$(mm_configure): lib/apr/shmem/unix/mm/configure.in
+$(mm_configure): lib/apr/shmem/unix/mm/configure.in lib/apr/shmem/unix/mm/aclocal.m4
 	@echo rebuilding $@
 	(cd lib/apr/shmem/unix/mm && autoconf)
 
