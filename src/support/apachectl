@@ -50,13 +50,12 @@ do
     # check for pidfile
     if [ -f $PIDFILE ] ; then
 	PID=`cat $PIDFILE`
-	PS=`ps -p $PID 2>/dev/null | tail -1 | grep $PID`
-	if [ "x$PS" = "x" ]; then
-	    STATUS="httpd (pid $PID?) not running"
-	    RUNNING=0
-	else
+	if kill -0 $PID; then
 	    STATUS="httpd (pid $PID) running"
 	    RUNNING=1
+	else
+	    STATUS="httpd (pid $PID?) not running"
+	    RUNNING=0
 	fi
     else
 	STATUS="httpd (no pid file) not running"
