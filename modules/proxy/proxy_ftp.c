@@ -590,11 +590,11 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 #endif /*_OSD_POSIX*/
     }
 
-    if (ap_proxy_doconnect(sock, host, port, r) == -1) {
+    if (ap_proxy_doconnect(sock, host, port, r) != APR_SUCCESS) {
 	apr_close_socket(sock);
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(r->pool,
 				"Could not connect to remote machine: ",
-				strerror(errno), NULL));
+				host, NULL));
     }
 
     f = ap_bcreate(p, B_RDWR);
@@ -849,11 +849,12 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                          "FTP: contacting host %d.%d.%d.%d:%d",
                          h3, h2, h1, h0, pport);
-            if (ap_proxy_doconnect(dsock, inet_ntoa(destaddr), pport, r) == -1) {
+/* scary */
+            if (ap_proxy_doconnect(dsock, inet_ntoa(destaddr), pport, r) == APR_SUCCESS) {
 		return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 		    apr_pstrcat(r->pool,
 		    "Could not connect to remote machine: ",
-		    strerror(errno), NULL));
+		    inet_ntoa(destaddr), NULL));
 	    }
 	    else {
 		pasvmode = 1;
