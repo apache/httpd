@@ -756,6 +756,13 @@ indexing</description>
         foo-1.04
       </example>
       </dd>
+
+      <dt><a name="indexoptions.xhtml"
+               id="indexoptions.xhtml">XHTML</a>
+      (<em>Apache 2.0.49 and later</em>)</dt>
+
+      <dd>The <code>XHTML</code> keyword forces <module>mod_autoindex</module>
+      to emit XHTML 1.0 code instead of HTML 3.2.</dd>
     </dl>
 
    <!--
