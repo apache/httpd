@@ -193,6 +193,10 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     ConvexOS:*:11.0:*)
 	echo "${MACHINE}-v11-${SYSTEM}"; exit 0;
 	;;
+    
+    UNIX_SV:*:*:maxion)
+	echo "${MACHINE}-ccur-sysv4"; exit 0;
+	;;
 
 esac
 
