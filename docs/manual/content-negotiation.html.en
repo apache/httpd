@@ -24,7 +24,7 @@
 </div>
 
 
-    <p>Apache's supports content negotiation as described in
+    <p>Apache supports content negotiation as described in
     the HTTP/1.1 specification. It can choose the best
     representation of a resource based on the browser-supplied
     preferences for media type, languages, character set and
@@ -33,8 +33,8 @@
     incomplete negotiation information.</p>
 
     <p>Content negotiation is provided by the
-    <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> module.
-    which is compiled in by default.</p>
+    <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> module, which is compiled in
+    by default.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">About Content Negotiation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Negotiation in Apache</a></li>
@@ -57,7 +57,7 @@ Negotiation</a></li>
     One way of selecting the most appropriate choice is to give the
     user an index page, and let them select. However it is often
     possible for the server to choose automatically. This works
-    because browsers can send as part of each request information
+    because browsers can send, as part of each request, information
     about what representations they prefer. For example, a browser
     could indicate that it would like to see information in French,
     if possible, else English will do. Browsers indicate their
@@ -83,11 +83,12 @@ Negotiation</a></li>
 
     <p>Apache supports 'server driven' content negotiation, as
     defined in the HTTP/1.1 specification. It fully supports the
-    Accept, Accept-Language, Accept-Charset and Accept-Encoding
+    <code>Accept</code>, <code>Accept-Language</code>,
+    <code>Accept-Charset</code> and<code>Accept-Encoding</code> 
     request headers. Apache also supports 'transparent'
     content negotiation, which is an experimental negotiation
     protocol defined in RFC 2295 and RFC 2296. It does not offer
-    support for 'feature negotiation' as defined in these RFCs. </p>
+    support for 'feature negotiation' as defined in these RFCs.</p>
 
     <p>A <strong>resource</strong> is a conceptual entity
     identified by a URI (RFC 2396). An HTTP server like Apache
@@ -124,11 +125,13 @@ Negotiation</a></li>
     <p>A type map is a document which is associated with the
     handler named <code>type-map</code> (or, for
     backwards-compatibility with older Apache configurations, the
-    mime type <code>application/x-type-map</code>). Note that to
+    MIME type <code>application/x-type-map</code>). Note that to
     use this feature, you must have a handler set in the
     configuration that defines a file suffix as
-    <code>type-map</code>; this is best done with a</p>
+    <code>type-map</code>; this is best done with</p>
+
 <div class="example"><p><code>AddHandler type-map .var</code></p></div>
+
     <p>in the server configuration file.</p>
 
     <p>Type map files should have the same name as the resource
@@ -157,7 +160,7 @@ Negotiation</a></li>
     filename's extension, even when Multiviews is on. If the
     variants have different source qualities, that may be indicated
     by the "qs" parameter to the media type, as in this picture
-    (available as jpeg, gif, or ASCII-art): </p>
+    (available as JPEG, GIF, or ASCII-art): </p>
 
 <div class="example"><p><code>
   URI: foo<br />
@@ -177,11 +180,11 @@ Negotiation</a></li>
     Variants with no 'qs' parameter value are given a qs factor of
     1.0. The qs parameter indicates the relative 'quality' of this
     variant compared to the other available variants, independent
-    of the client's capabilities. For example, a jpeg file is
-    usually of higher source quality than an ascii file if it is
+    of the client's capabilities. For example, a JPEG file is
+    usually of higher source quality than an ASCII file if it is
     attempting to represent a photograph. However, if the resource
-    being represented is an original ascii art, then an ascii
-    representation would have a higher source quality than a jpeg
+    being represented is an original ASCII art, then an ASCII
+    representation would have a higher source quality than a JPEG
     representation. A qs value is therefore specific to a given
     variant depending on the nature of the resource it
     represents.</p>
