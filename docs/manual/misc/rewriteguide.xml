@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.4.2.11 $ -->
+<!-- $Revision: 1.4.2.12 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -130,16 +130,24 @@ RewriteRule   ^/([uge])/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<
       <dl>
         <dt>Description:</dt>
 
-        <dd>...</dd>
+        <dd>The goal of this rule is to force the use of a particular
+        hostname, in preference to other hostnames which may be used to
+        reach the same site. For example, if you wish to force the use
+        of <strong>www.example.com</strong> instead of
+        <strong>example.com</strong>, you might use a variant of the
+        following recipe.</dd>
 
         <dt>Solution:</dt>
 
         <dd>
 <example><pre>
+# For sites running on a port other than 80
 RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteCond %{SERVER_PORT} !^80$
 RewriteRule ^/(.*)         http://fully.qualified.domain.name:%{SERVER_PORT}/$1 [L,R]
+
+# And for a site running on port 80
 RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]
