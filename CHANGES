@@ -52,14 +52,8 @@ Changes with Apache 2.0.43
      properly for virtual hosts that override server-wide mod_cache
      setttings.  [Matthieu Estrade <estrade-m@ifrance.com>]
 
-  *) Add ap_register_provider/ap_lookup_provider API.
-     [John K. Sterling <john@sterls.com>, Justin Erenkrantz]
-
   *) Add -p option to apxs to allow programs to be compiled with apxs.
      [Justin Erenkrantz]
-
-  *) Rewrite of aaa modules to an authn/authz model.
-     [Dirk-Willem van Gulik, Justin Erenkrantz]
 
 Changes with Apache 2.0.42
 
