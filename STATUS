@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/24 19:16:45 $]
+Last modified at [$Date: 2003/08/25 00:12:37 $]
 
 Release:
 
@@ -286,10 +286,6 @@ PATCHES TO PORT FROM 2.1
       function rewrite at all (it's even much better code :-). (2.0 + 1.3)
         modules/mappers/mod_rewrite.c: r1.162
       +1: nd, trawick
-
-    * Install config.nice to make minor version upgrades easier.
-        Makefile.in: r1.136
-      +1: slive, trawick, erikabele
 
     * mod_rewrite: cause a lookup failure in external rewrite maps if
       the key contains a newline. PR 14453. (2.0 + 1.3)
