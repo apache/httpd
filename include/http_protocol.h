@@ -86,24 +86,15 @@ extern "C" {
 request_rec *ap_read_request(conn_rec *c);
 
 /**
- * Send a single HTTP header field
- * @param r The current request
- * @param fieldname The Header field to send
- * @param fieldval The value of the header
- * @deffunc int ap_send_header_field(request_rec *r, const char *fieldname, const char *fieldval)
- */
-AP_DECLARE_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldname,
-                      const char *fieldval);
-
-/**
  * Send the minimal part of an HTTP response header.
  * @param r The current request
+ * @param buf The buffer to add the header to.
  * @warning Modules should be very careful about using this, and should 
  *          prefer ap_send_http_header().  Much of the HTTP/1.1 implementation 
  *          correctness depends on code in ap_send_http_header().
- * @deffunc void ap_basic_http_header(request_rec *r)
+ * @deffunc void ap_basic_http_header(request_rec *r, char *buf)
  */
-AP_DECLARE(void) ap_basic_http_header(request_rec *r);
+AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf);
 
 /**
  * Send the Status-Line and header fields for HTTP response
