@@ -919,7 +919,6 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-bundle -undefined suppress"
             LDFLAGS_SHLIB_EXPORT=""
             SHLIB_SUFFIX_DEPTH=0
-            DEF_SHARED_CORE=yes
             ;;
         *-solaris2*)
             case $CC in
