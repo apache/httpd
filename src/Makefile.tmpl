@@ -42,17 +42,10 @@ support-dir:
 	cd support; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
 
 clean:
-	rm -f $(TARGET) *.o
+	rm -f $(TARGET) *.o *.bak
 	for i in $(SUBDIRS); do \
 		( cd $$i && $(MAKE) $@ ) || exit 1; \
 	done
-
-dist.tar: 
-	# Assure a semi-sensible configuration going out...
-	cp Makefile.orig Makefile
-	cp modules.c.orig modules.c
-	tar cvf dist.tar README INSTALL CHANGES TODO API.html \
-		Configuration Configure Makefile.tmpl Makefile *.h *.c
 
 # We really don't expect end users to use this rule.  It works only with
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
