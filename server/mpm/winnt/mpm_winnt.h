@@ -123,19 +123,6 @@ AP_DECLARE(void) ap_start_restart(int gracefully);
 void setup_signal_names(char *prefix);
 void signal_parent(int type);
 
-typedef struct CompContext {
-    OVERLAPPED Overlapped;
-    SOCKET accept_socket;
-    apr_socket_t *sock;
-    ap_listen_rec *lr;
-    char *recv_buf;
-    int  recv_buf_size;
-    apr_pool_t *ptrans;
-    struct sockaddr *sa_server;
-    int sa_server_len;
-    struct sockaddr *sa_client;
-    int sa_client_len;
-} COMP_CONTEXT, *PCOMP_CONTEXT;
 
 /* This code is stolen from the apr_private.h and misc/win32/misc.c
  * Please see those sources for detailed documentation.
