@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/23 05:28:54 $]
+Last modified at [$Date: 2003/07/23 05:43:57 $]
 
 Release:
 
@@ -260,19 +260,21 @@ PATCHES TO PORT FROM 2.1
       adds extensions for commonly used *+xml and calendar types, and
       lists image/x-icon ico.
         docs/conf/mime.types: r1.20
-      +1: fielding, nd
+      +1: fielding, nd, jerenkrantz
 
     * httpd-std.conf: Try to be clearer in describing the connection
       between AddType and AddEncoding for defining the meaning of
       compressed file extensions.  Follows mime.types change above.
         docs/conf/httpd-std.conf.in: r1.47
         docs/conf/httpd-win.conf:    r1.93
+      jerenkrantz asks: Why does httpd-std.conf.in have two copies of the
+                        AddEncoding directives?  This is a typo, right?
       +1: fielding, nd
 
     * mod_ext_filter: Set additional environment variables for use by
       the external filter.  PR 20944.
         modules/filters/mod_ext_filter.c:  r1.7
-      +1: trawick, nd
+      +1: trawick, nd, jerenkrantz
 
     * mod_ssl: Fix a problem setting variables that represent the
       client certificate chain.  PR 21397
@@ -283,7 +285,7 @@ PATCHES TO PORT FROM 2.1
       exist and the original request is protected.
         server/util_script.c: r1.82
         support/suexec.c: r1.27
-      +1: nd, trawick
+      +1: nd, trawick, jerenkrantz
 
     * use the appropriate folder icon, even if there's a directoryindex
       listed file in the particular folder. PR 9587
@@ -294,11 +296,13 @@ PATCHES TO PORT FROM 2.1
       containing the .htaccess file is requested without a trailing slash.
       PR 20195.
         modules/mappers/mod_rewrite.c: r1.156
+      jerenkrantz says: We're doing 3 strlen's on the same value, can we please
+                        clean that up?
       +1: nd
 
     * ab: reject overlong credentials from command line (2.0 + 1.3)
         support/ab.c: r1.127
-      +1: nd
+      +1: nd, jerenkrantz
 
     * mod_deflate: Don't attempt to hold all of the response until we're done. 
         modules/filters/mod_deflate.c: r1.35
