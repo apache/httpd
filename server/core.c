@@ -2314,18 +2314,6 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig,
     return NULL;
 }
 
-#ifdef _OSD_POSIX /* BS2000 Logon Passwd file */
-static const char *set_bs2000_account(cmd_parms *cmd, void *dummy, char *name)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    return os_set_account(cmd->pool, name);
-}
-#endif /*_OSD_POSIX*/
-
 /*
  * Handle a request to include the server's OS platform in the Server
  * response header field (the ServerTokens directive).  Unfortunately
@@ -3033,10 +3021,6 @@ AP_INIT_TAKE1("LogLevel", set_loglevel, NULL, RSRC_CONF,
   "Level of verbosity in error logging"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
-#ifdef _OSD_POSIX
-AP_INIT_TAKE1("BS2000Account", set_bs2000_account, NULL, RSRC_CONF,
-  "Name of server User's bs2000 logon account name"),
-#endif
 AP_INIT_TAKE1("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full"),
 AP_INIT_TAKE1("LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF,

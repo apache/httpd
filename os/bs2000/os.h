@@ -56,12 +56,12 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef APACHE_OS_H
-#define APACHE_OS_H
+#ifndef APACHE_OS_BS2000_H
+#define APACHE_OS_BS2000_H
 
 #define PLATFORM "BS2000"
 
-#include "apr.h"
+#include "../unix/os.h"
 
 /*
  * This file in included in all Apache source code. It contains definitions
@@ -73,4 +73,4 @@
 
 extern pid_t os_fork(const char *user);
 
-#endif /*! APACHE_OS_H*/
+#endif /* APACHE_OS_BS2000_H */
