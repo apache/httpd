@@ -30,5 +30,16 @@
       <mapper type="glob" from="*.xml.ja" to="*.html.ja.jis"/>
       <param name="relative-path" expression="."/>
     </style>
+
+   <!-- Transform the root directory of the manual -->
+    <style   basedir="../"
+             destdir="../"
+           extension=".html"
+               style="./manual.en.xsl"
+            includes="*.xml">
+      <mapper type="glob" from="*.xml" to="*.html.en"/>
+      <param name="relative-path" expression="."/>
+    </style>
+
   </target>
 </project>

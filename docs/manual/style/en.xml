@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE translations [ <!ENTITY nbsp "&#160;"> ]>
 
 <!--                   -->
 <!-- Language: English -->
@@ -21,6 +21,10 @@
  <message name="status">Status</message>
  <message name="moduleidentifier">Module&nbsp;Identifier</message>
  <message name="compatibility">Compatibility</message>
+
+ <!-- Used in manualpage -->
+ <message name="relatedmodules">Related Modules</message>
+ <message name="relateddirectives">Related Directives</message>
 
  <!-- Used in description box for directives -->
  <message name="syntax">Syntax</message>
