@@ -370,8 +370,11 @@ struct request_rec {
   int sent_bodyct;		/* byte count in stream is for body */
   long bytes_sent;		/* body byte count, for easy access */
 
+  /* HTTP/1.1 connection-level features */
+
   int chunked;			/* sending chunked transfer-coding */
   int byterange;		/* number of byte ranges */
+  char *boundary;		/* multipart/byteranges boundary */
   char *range;			/* The Range: header */
   long clength;			/* The "real" content length */
 

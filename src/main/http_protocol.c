@@ -181,8 +181,6 @@ static int parse_byterange (char *range, long clength, long *start, long *end)
  * beforehand (which we can't).
  */
 
-#define BYTERANGE_BOUNDARY "13962mx38v144c9999AQdk39d2Klmx79"
-
 int set_byterange (request_rec *r)
 {
     char *range = table_get (r->headers_in, "Range");
@@ -226,8 +224,12 @@ int set_byterange (request_rec *r)
     }
     else {
 	/* a multiple range */
+	char boundary[33];	/* Long enough */
+	
 	r->byterange = 2;
 	table_unset(r->headers_out, "Content-Length");
+	sprintf(boundary, "%lx%lx", r->request_time, getpid());
+	r->boundary = pstrdup(r->pool, boundary);
     }
     
     r->status = PARTIAL_CONTENT;
@@ -242,7 +244,7 @@ int each_byterange (request_rec *r, long *offset, long *length) {
 
     if (!*r->range) {
 	if (r->byterange > 1)
-	    rvputs(r, "\015\012--", BYTERANGE_BOUNDARY, "--\015\012", NULL);
+	    rvputs(r, "\015\012--", r->boundary, "--\015\012", NULL);
 	return 0;
     }
 
@@ -255,7 +257,7 @@ int each_byterange (request_rec *r, long *offset, long *length) {
 	char ts[MAX_STRING_LEN];
 
 	sprintf(ts, "%ld-%ld/%ld", range_start, range_end, r->clength);
-	rvputs(r, "\015\012--", BYTERANGE_BOUNDARY, "\015\012Content-type: ",
+	rvputs(r, "\015\012--", r->boundary, "\015\012Content-type: ",
 	       ct, "\015\012Content-range: bytes ", ts, "\015\012\015\012",
 	       NULL);
     }
@@ -950,8 +952,8 @@ void send_http_header(request_rec *r)
 	bputs("Transfer-Encoding: chunked\015\012", fd);
 
     if (r->byterange > 1)
-        bvputs(fd, "Content-Type: multipart/byteranges; boundary=",
-	       BYTERANGE_BOUNDARY, "\015\012", NULL);
+        bvputs(fd, "Content-Type: multipart/byteranges; boundary=\"",
+	       r->boundary, "\"\015\012", NULL);
     else if (r->content_type)
         bvputs(fd, "Content-Type: ", 
 		 nuke_mime_parms (r->pool, r->content_type), "\015\012", NULL);
