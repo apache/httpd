@@ -77,7 +77,7 @@
  * 1. Add the following to the module source file's module record
  *    definition: MODULE_VAR_EXPORT. i.e. if you have
  *    "module foo_module;", replace it with
- *    "module MODULE+VAR_EXPORT foo_module;". If your module is to be
+ *    "module MODULE_VAR_EXPORT foo_module;". If your module is to be
  *    compiled with both Windows and Unix, you may wish to use an #ifdef
  *    WIN32
  *
