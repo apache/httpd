@@ -1,5 +1,9 @@
 Changes with Apache 1.3
 
+  *) API: Added is_initial_request() which tests if the request being
+     processed is the initial request, or a subrequest.
+     [Doug MacEachern]
+
   *) Extended SSI (mod_include) now handles additional relops for
      string comparisons (<, >, <=, and >=).  [Bruno Wolff III] PR#41
 
