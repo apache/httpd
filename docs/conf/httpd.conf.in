@@ -21,7 +21,7 @@
 # ServerRoot: The top of the directory tree under which the server's
 # configuration, error, and log files are kept.
 #
-# Do NOT add a slash at the end of the directory path.  If you point
+# Do not add a slash at the end of the directory path.  If you point
 # ServerRoot at a non-local disk, be sure to point the LockFile directive
 # at a local disk.  If you wish to share the same ServerRoot for multiple
 # httpd daemons, you will need to change at least LockFile and PidFile.
@@ -53,18 +53,6 @@ Listen @@Port@@
 #
 @@LoadModule@@
 
-# 'Main' server configuration
-#
-# The directives in this section set up the values used by the 'main'
-# server, which responds to any requests that aren't handled by a
-# <VirtualHost> definition.  These values also provide defaults for
-# any <VirtualHost> containers you may define later in the file.
-#
-# All of these directives may appear inside <VirtualHost> containers,
-# in which case these default settings will be overridden for the
-# virtual host being defined.
-#
-
 <IfModule !mpm_winnt_module>
 <IfModule !mpm_netware_module>
 #
@@ -83,6 +71,18 @@ User nobody
 Group #-1
 </IfModule>
 </IfModule>
+
+# 'Main' server configuration
+#
+# The directives in this section set up the values used by the 'main'
+# server, which responds to any requests that aren't handled by a
+# <VirtualHost> definition.  These values also provide defaults for
+# any <VirtualHost> containers you may define later in the file.
+#
+# All of these directives may appear inside <VirtualHost> containers,
+# in which case these default settings will be overridden for the
+# virtual host being defined.
+#
 
 #
 # ServerAdmin: Your address, where problems with the server should be
@@ -144,7 +144,6 @@ DocumentRoot "@exp_htdocsdir@"
 # This should be changed to whatever you set DocumentRoot to.
 #
 <Directory "@exp_htdocsdir@">
-
     #
     # Possible values for the Options directive are "None", "All",
     # or any combination of:
@@ -247,13 +246,15 @@ LogLevel warn
 </IfModule>
 
 <IfModule alias_module>
-    # Redirect allows you to tell clients about documents that used to 
+    #
+    # Redirect: Allows you to tell clients about documents that used to 
     # exist in your server's namespace, but do not anymore. The client 
     # will make a new request for the document at its new location.
     # Example:
     # Redirect permanent /foo http://www.example.com/bar
 
-    # Aliases map web paths into filesystem paths and are used to
+    #
+    # Alias: Maps web paths into filesystem paths and is used to
     # access content that does not live under the DocumentRoot.
     # Example:
     # Alias /webpath /full/filesystem/path
@@ -266,7 +267,7 @@ LogLevel warn
     #
     # ScriptAlias: This controls which directories contain server scripts. 
     # ScriptAliases are essentially the same as Aliases, except that
-    # documents in the realname directory are treated as applications and
+    # documents in the target directory are treated as applications and
     # run by the server when requested rather than as documents sent to the
     # client.  The same rules about trailing "/" apply to ScriptAlias
     # directives as to Alias.
@@ -277,8 +278,8 @@ LogLevel warn
 
 <IfModule cgid_module>
     #
-    # Additional to mod_cgid.c settings, mod_cgid has Scriptsock <path>
-    # for setting UNIX socket for communicating with cgid.
+    # ScriptSock: On threaded servers, designate the path to the UNIX
+    # socket used to communicate with the CGI daemon of mod_cgid.
     #
     #Scriptsock @rel_runtimedir@/cgisock
 </IfModule>
@@ -295,7 +296,7 @@ LogLevel warn
 </Directory>
 
 #
-# DefaultType is the default MIME type the server will use for a document
+# DefaultType: the default MIME type the server will use for a document
 # if it cannot otherwise determine one, such as from filename extensions.
 # If your server contains mostly text or HTML documents, "text/plain" is
 # a good value.  If most of your content is binary, such as applications
@@ -320,8 +321,6 @@ DefaultType text/plain
     #
     # AddEncoding allows you to have certain browsers uncompress
     # information on the fly. Note: Not all browsers support this.
-    # Despite the name similarity, the following Add* directives have
-    # nothing to do with the FancyIndexing customization directives above.
     #
     #AddEncoding x-compress .Z
     #AddEncoding x-gzip .gz .tgz
@@ -342,19 +341,13 @@ DefaultType text/plain
     #
     #AddHandler cgi-script .cgi
 
-    #
     # For files that include their own HTTP headers:
-    #
     #AddHandler send-as-is asis
 
-    #
     # For server-parsed imagemap files:
-    #
     #AddHandler imap-file map
 
-    #
     # For type maps (negotiated resources):
-    #
     #AddHandler type-map var
 
     #
@@ -375,14 +368,6 @@ DefaultType text/plain
 <IfModule mime_magic_module>
     MIMEMagicFile @rel_sysconfdir@/magic
 </IfModule>
-
-#
-# Action lets you define media types that will execute a script whenever
-# a matching file is called. This eliminates the need for repeated URL
-# pathnames for oft-used CGI file processors.
-# Format: Action media/type /cgi-script/location
-# Format: Action handler-name /cgi-script/location
-#
 
 #
 # Customizable error responses come in three flavors:
@@ -407,6 +392,7 @@ DefaultType text/plain
     BrowserMatch "JDK/1\.0" force-response-1.0
 </IfModule>
 
+#
 # EnableMMAP and EnableSendfile: On systems that support it, 
 # memory-mapping or the sendfile syscall is used to deliver
 # files.  This usually improves server performance, but must
@@ -419,11 +405,12 @@ DefaultType text/plain
 
 # Supplemental configuration
 #
-# The configuration files in the @rel_sysconfdir@/extra/ directory can be included
-# to add extra features or modify the default configuration of the server, 
-# or you may simply copy their contents here and change as necessary.
+# The configuration files in the @rel_sysconfdir@/extra/ directory can be 
+# included to add extra features or to modify the default configuration of 
+# the server, or you may simply copy their contents here and change as 
+# necessary.
 
-# Server-Pool Size Regulation (MPM specific)
+# Server-pool management (MPM specific)
 #Include @rel_sysconfdir@/extra/httpd-mpm.conf
 
 # Multi-language error messages
