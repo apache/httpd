@@ -1450,15 +1450,14 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 {
     apr_status_t rv;
 
-    if (!worker->status) {
+    if (!(worker->status & PROXY_WORKER_INITIALIZED)) {
         if ((rv = init_conn_worker(worker, s)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "proxy: %s: failed to initialize worker for (%s)",
                          proxy_function, worker->hostname);
             return DECLINED;
         }
-        /* TODO: make worker status codes */
-        worker->status = 1;
+        worker->status = PROXY_WORKER_INITIALIZED;
     }
 #if APR_HAS_THREADS
     if (worker->hmax) {
