@@ -21,15 +21,15 @@ INSTDIR=\Apache
 !MESSAGE Using default install directory \Apache
 !ENDIF 
 
-!IFNDEF MAKEOPT
-# Only default the behavior if MAKEOPT= is omitted
 !IF "$(MAKE)" == "NMAKE"
 # Microsoft NMake options
 MAKEOPT=-nologo
-!ELSEIF "($MAKE)" == "make"
-# Borland make options?  Not really supported (yet)
+!ELSEIF "$(MAKE)" == "make"
+# Borland make options 
+# Borland build of Apache is highly experimental and unsupported.
 MAKEOPT=-s -N
-!ENDIF
+!ELSE
+!MESSAGE Warning: unrecognized build command "$(MAKE)"
 !ENDIF
 
 default:        _apacher
