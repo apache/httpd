@@ -37,6 +37,14 @@ CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR/"
 echo $CMD
 $CMD || exit $?
 
+if test "$SYS" = "OS/2"
+then
+    # on OS/2, aplibtool --install doesn't copy the .la files & we can't
+    # rename DLLs to have a .so extension or they won't load so none of the 
+    # steps below make sense.
+    exit 0
+fi
+
 DLNAME=`grep "^dlname" $TARGETDIR/$DSOARCHIVE_BASENAME | sed -e "s/dlname='\([^']*\)'/\1/"`
 LIBRARY_NAMES=`grep "library_names" $TARGETDIR/$DSOARCHIVE_BASENAME | sed -e "s/dlname='\([^']*\)'/\1/"`
 LIBRARY_NAMES=`echo $LIBRARY_NAMES | sed -e "s/ *$DLNAME//g"`
