@@ -108,28 +108,6 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),O
 #define MAX_SECS_TO_LINGER 30
 #endif
 
-#ifdef USE_SO_LINGER
-#define NO_LINGCLOSE /* The two lingering options are exclusive */
-
-static void sock_enable_linger(int s)
-{
-    struct linger li;
-
-    li.l_onoff = 1;
-    li.l_linger = MAX_SECS_TO_LINGER;
-
-    if (setsockopt(s, SOL_SOCKET, SO_LINGER,
-                   (char *)&li, sizeof(struct linger)) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
-                     "setsockopt: (SO_LINGER)");
-        /* not a fatal error */
-    }
-}
-
-#else
-#define sock_enable_linger(s) /* NOOP */
-#endif /* USE_SO_LINGER */
-
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
 {
     apr_bucket_brigade *bb;
