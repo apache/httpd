@@ -29,7 +29,7 @@ all: @@Configuration@@ $(TARGET)
 
 $(TARGET):  subdirs modules.o
 	$(CC) -c $(CFLAGS) buildmark.c
-	$(CC) $(CFLAGS) $(LDFLAGS)  -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
 subdirs:
 	for i in $(SUBDIRS); do \
