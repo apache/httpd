@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/23 17:24:35 $]
+Last modified at [$Date: 2002/07/23 17:44:55 $]
 
 Release:
 
@@ -75,6 +75,10 @@ CURRENT VOTES:
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
          +1:   slive
+
+      d) Installing a set of default config files when upgrading a server
+         doesn't make ANY sense at all.
+	 +1:   rbb
 
     * apachectl should revert to just being an init script and
       httpd.sh should be the wrapper for httpd which sources envvars
