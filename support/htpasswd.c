@@ -85,7 +85,7 @@
 #include <signal.h>
 #include <errno.h>
 #include "ap.h"
-#include "ap_md5.h"
+#include "apr_md5.h"
 #include "ap_sha1.h"
 
 #ifdef WIN32
