@@ -99,13 +99,14 @@ static int process_echo_connection(conn_rec *c)
     for( ; ; )
 	{
 	apr_ssize_t r, w;
-        (void) ap_bread(c->client,buf,sizeof buf,&r);
+        r = sizeof(buf);
+        apr_recv(c->client_socket, buf, &r);
 	if(r <= 0)
 	    break;
-	(void) ap_bwrite(c->client,buf,r, &w);
+        w = r;
+	apr_send(c->client_socket, buf, &w);
 	if(w != r)
 	    break;
-	ap_bflush(c->client);
 	}
     return OK;
     }
