@@ -1464,6 +1464,8 @@ const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg)
 	   cmd->server->loglevel = APLOG_INFO;
        else if (!strcasecmp(str, "debug"))
 	   cmd->server->loglevel = APLOG_DEBUG;
+       else
+           return "LogLevel requires level keyword: one of emerg/alert/crit/error/warn/notice/info/debug";
    }
    else
        return "LogLevel requires level keyword";
