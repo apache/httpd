@@ -806,8 +806,8 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
 }
 
 struct dechunk_ctx {
-    apr_ssize_t chunk_size;
-    apr_ssize_t bytes_delivered;
+    apr_size_t chunk_size;
+    apr_size_t bytes_delivered;
     enum {WANT_HDR /* must have value zero */, WANT_BODY, WANT_TRL} state;
 };
 
@@ -821,7 +821,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
     struct dechunk_ctx *ctx = f->ctx;
     ap_bucket *b;
     const char *buf;
-    apr_ssize_t len;
+    apr_size_t len;
 
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(struct dechunk_ctx));
@@ -907,7 +907,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
 #define ASCII_TAB    '\011' 
     ap_bucket *e;
     char *buff;
-    apr_ssize_t len;
+    apr_size_t len;
     char *pos;
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
@@ -1031,7 +1031,7 @@ static int getline(char *s, int n, request_rec *r, int fold)
     int retval;
     int total = 0;
     int looking_ahead = 0;
-    apr_ssize_t length;
+    apr_size_t length;
     conn_rec *c = r->connection;
     core_request_config *req_cfg;
     ap_bucket_brigade *b;
@@ -2278,7 +2278,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
 
     AP_BRIGADE_FOREACH(e, b) {
         const char *ignored;
-        apr_ssize_t length;
+        apr_size_t length;
 
         if (AP_BUCKET_IS_EOS(e) || AP_BUCKET_IS_FLUSH(e)) {
             ctx->hold_data = 0;
@@ -2629,7 +2629,7 @@ static long get_chunk_size(char *b)
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 {
-    apr_ssize_t len_read, total;
+    apr_size_t len_read, total;
     apr_status_t rv;
     ap_bucket *b, *old;
     const char *tempbuf;
@@ -2841,7 +2841,7 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
     ap_bucket_brigade *bb = NULL;
-    apr_ssize_t written;
+    apr_size_t written;
 
     if (r->connection->aborted)
         return EOF;
@@ -2874,7 +2874,7 @@ AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt, ...)
 AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 {
     ap_bucket_brigade *bb = NULL;
-    apr_ssize_t written;
+    apr_size_t written;
     va_list va;
 
     if (r->connection->aborted)
