@@ -1,6 +1,7 @@
 #define INCL_DOS
 #define INCL_DOSERRORS
 #include <os2.h>
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
 #include "os.h"
