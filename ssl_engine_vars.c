@@ -601,7 +601,7 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
 #endif
     }
     else if (strEQ(var, "INTERFACE")) {
-        result = apr_psprintf(p, "mod_ssl/%s", MOD_SSL_VERSION);
+        result = apr_psprintf(p, "mod_ssl/%s", AP_SERVER_BASEREVISION);
     }
     else if (strEQ(var, "LIBRARY")) {
         result = apr_pstrdup(p, SSL_LIBRARY_TEXT);

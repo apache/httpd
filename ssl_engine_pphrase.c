@@ -703,7 +703,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
          */
         if (*pnPassPhraseDialog == 1) {
             apr_file_printf(writetty, "%s mod_ssl/%s (Pass Phrase Dialog)\n",
-                            AP_SERVER_BASEVERSION, MOD_SSL_VERSION);
+                            AP_SERVER_BASEVERSION, AP_SERVER_BASEREVISION);
             apr_file_printf(writetty, "Some of your private key files are encrypted for security reasons.\n");
             apr_file_printf(writetty, "In order to read them you have to provide us with the pass phrases.\n");
         }
