@@ -67,8 +67,6 @@
 
 %{
 #include "mod_ssl.h"
-
-#if 0 /* XXX */
 %}
 
 %union {
@@ -182,8 +180,4 @@ int yyerror(char *s)
     ssl_expr_error = s;
     return 2;
 }
-
-%{
-#endif /* XXX */
-%}
 

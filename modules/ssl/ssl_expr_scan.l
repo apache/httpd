@@ -68,7 +68,6 @@
 
 %{
 #include "mod_ssl.h"
-#if 0 /* XXX */
 
 #include "ssl_expr_parse.h"
 
@@ -114,7 +113,7 @@ int yyinput(char *buf, int max_size);
 <str>\" {
     BEGIN(INITIAL);
     *cpStr = NUL;
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caStr);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caStr);
     return T_STRING;
 }
 <str>\n {
@@ -167,18 +166,18 @@ int yyinput(char *buf, int max_size);
     }
 }
 <regex_flags>i {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
     BEGIN(INITIAL);
     return T_REGEX_I;
 }
 <regex_flags>.|\n {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
     yyless(0);
     BEGIN(INITIAL);
     return T_REGEX;
 }
 <regex_flags><<EOF>> {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
     BEGIN(INITIAL);
     return T_REGEX;
 }
@@ -223,7 +222,7 @@ int yyinput(char *buf, int max_size);
   * Digits
   */
 [0-9]+ {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, yytext);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, yytext);
     return T_DIGIT;
 }
 
@@ -231,7 +230,7 @@ int yyinput(char *buf, int max_size);
   * Identifiers
   */
 [a-zA-Z][a-zA-Z0-9_:-]* {
-    yylval.cpVal = ap_pstrdup(ssl_expr_info.pool, yytext);
+    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, yytext);
     return T_ID;
 }
 
@@ -256,8 +255,4 @@ int yyinput(char *buf, int max_size)
     ssl_expr_info.inputptr += n;
     return n;
 }
-
-%{
-#endif /* XXX */
-%}
 

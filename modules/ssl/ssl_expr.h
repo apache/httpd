@@ -61,8 +61,6 @@
 #ifndef SSL_EXPR_H
 #define SSL_EXPR_H
 
-#if 0 /* XXX */
-
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -111,7 +109,7 @@ typedef struct {
 typedef ssl_expr_node ssl_expr;
 
 typedef struct {
-	pool     *pool;
+	apr_pool_t *pool;
     char     *inputbuf;
     int       inputlen;
     char     *inputptr;
@@ -129,12 +127,10 @@ extern int ssl_expr_yyparse(void);
 extern int ssl_expr_yyerror(char *);
 extern int ssl_expr_yylex(void);
 
-extern ssl_expr *ssl_expr_comp(pool *, char *);
+extern ssl_expr *ssl_expr_comp(apr_pool_t *, char *);
 extern int       ssl_expr_exec(request_rec *, ssl_expr *);
 extern char     *ssl_expr_get_error(void);
 extern ssl_expr *ssl_expr_make(ssl_expr_node_op, void *, void *);
 extern BOOL      ssl_expr_eval(request_rec *, ssl_expr *);
-
-#endif /* XXX */
 
 #endif /* SSL_EXPR_H */
