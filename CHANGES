@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Ensure that the build/ directory is created when using VPATH.
+     [Justin Erenkrantz]
+
   *) Add some popular types to the mime magic file.  PR 7730.
      [Linus Walleij <triad@df.lth.se>, Justin Erenkrantz]
 
