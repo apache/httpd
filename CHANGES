@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) Fix incorrect check for script_in in mod_cgi.  PR 9669.
+     [David MacKenzie <djm@pix.net>]
+
   *) Fix segfault and display error when SSLMutex file can not be
      created.  [Adam Sussman <myddryn@vishnu.vidya.com>]
 
