@@ -186,12 +186,12 @@ static void show_time(request_rec *r, apr_interval_time_t tsecs)
 {
     int days, hrs, mins, secs;
     
-    secs = tsecs % 60;
+    secs = (int)(tsecs % 60);
     tsecs /= 60;
-    mins = tsecs % 60;
+    mins = (int)(tsecs % 60);
     tsecs /= 60;
-    hrs = tsecs % 24;
-    days = tsecs / 24;
+    hrs = (int)(tsecs % 24);
+    days = (int)(tsecs / 24);
     if (days)
 	ap_rprintf(r, " %d day%s", days, days == 1 ? "" : "s");
     if (hrs)
@@ -418,12 +418,14 @@ static int status_handler(request_rec *r)
 			(float) count / (float) up_time);
 
 	    if (up_time > 0) {
-		format_byte_out(r, KBYTE * (float) kbcount / (float) up_time);
+		format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount 
+                                                         / (float) up_time));
 		ap_rputs("/second - ", r);
 	    }
 
 	    if (count > 0) {
-		format_byte_out(r, KBYTE * (float) kbcount / (float) count);
+		format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount 
+                                                         / (float) count));
 		ap_rputs("/request", r);
 	    }
 
@@ -534,9 +536,9 @@ static int status_handler(request_rec *r)
 		ws_record.start_time == 0L)
 		req_time = 0L;
 	    else
-		req_time =
-		    ((ws_record.stop_time - ws_record.start_time) * 1000) +
-		    ((ws_record.stop_time - ws_record.start_time) / 1000);
+		req_time = (long)
+		     (((ws_record.stop_time - ws_record.start_time) * 1000)
+		    + ((ws_record.stop_time - ws_record.start_time) / 1000));
 #endif
 	    if (req_time < 0L)
 		req_time = 0L;
