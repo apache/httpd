@@ -857,8 +857,15 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         /* the code above this checks for 'OK' which is what the hook expects */
         if ( r->status == HTTP_OK )
             return OK;
-        else 
-            return r->status;
+        else  {
+            /* clear r->status for override error, otherwise ErrorDocument
+             * thinks that this is a recursive error, and doesn't find the
+             * custom error page
+             */
+            int status = r->status;
+            r->status = HTTP_OK;
+            return status;
+        }
     } else 
         return OK;
 }
