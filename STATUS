@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/04 16:06:55 $]
+Last modified at [$Date: 2003/12/05 21:22:30 $]
 
 Release:
 
@@ -357,6 +357,13 @@ PATCHES TO BACKPORT FROM 2.1
     * Fix a long delay with CGI requests and keepalive connections on
       AIX.
         modules/generators/mod_cgid.c r1.159
+      +1: trawick
+
+    * mod_status hook
+        configure.in r1.254
+        Makefile.in r1.134
+        modules/generators/mod_status.c r1.173
+        modules/generators/mod_status.h r1.2
       +1: trawick
 
 CURRENT RELEASE NOTES:
