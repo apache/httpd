@@ -57,15 +57,11 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
 API_EXPORT(char *) os_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
-    int add_trailing_slash = 0;
 
-    if (*szFile && szFile[strlen(szFile)-1] == '/')
-        add_trailing_slash = 1;
-        
     sub_canonical_filename(buf, szFile);
     buf[0]=tolower(buf[0]);
 
-    if (add_trailing_slash)
+    if (*szFile && szFile[strlen(szFile)-1] == '/')
         strcat(buf, "/");
 
     return pstrdup(pPool, buf);
