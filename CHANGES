@@ -1,5 +1,7 @@
 Changes with Apache 2.0.49
 
+  *) Fix RewriteBase directive to not add double slashes.  [André Malo]
+
   *) Improve 'configure --help' output for some modules.  [Astrid Keßler]
 
   *) Correct UseCanonicalName Off to properly check incoming port number.
