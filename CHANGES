@@ -1,4 +1,9 @@
 Changes with Apache 2.0.16-dev
+
+  *) Clean up mod_cgid's temporary request pool.  Besides fixing a
+     storage leak this ensures that some unnecessary pipes are closed.
+     [Jeff Trawick]
+
   *) Performance: Add quick_handler hook. This hook is called at the
      very beginning of the request processing before location_walk,
      translate_name, etc.  This hook is useful for URI keyed content
