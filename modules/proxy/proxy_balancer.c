@@ -288,6 +288,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         int i;
         proxy_runtime_worker *workers;
         /* We have a sticky load balancer */
+        runtime->s->elected++;
         *worker = runtime->w;
         /* Update the workers status 
          * so that even session routes get
@@ -320,6 +321,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
             PROXY_BALANCER_UNLOCK(*balancer);
             return HTTP_SERVICE_UNAVAILABLE;
         }
+        runtime->s->elected++;
         *worker = runtime->w;
     }
     /* Decrease the free channels number */
