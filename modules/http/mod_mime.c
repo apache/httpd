@@ -80,10 +80,10 @@
 
 /* XXXX - fix me / EBCDIC
  *        there was a cludge here which would use its
- *	  own version apr_isascii(). Indicating that
- *	  on some platforms that might be needed. 
+ *        own version apr_isascii(). Indicating that
+ *        on some platforms that might be needed. 
  *
- *	  #define OS_ASC(c) (c)		    -- for mere mortals 
+ *        #define OS_ASC(c) (c)             -- for mere mortals 
  *     or
  *        #define OS_ASC(c) (ebcdic2ascii[c]) -- for dino's
  *
@@ -117,8 +117,8 @@ typedef struct extension_info {
 #define MULTIMATCH_FILTERS    8
 
 typedef struct {
-    apr_hash_t  *extension_mappings;  /* Map from extension name to
-                                       * extension_info structure */
+    apr_hash_t *extension_mappings;  /* Map from extension name to
+                                      * extension_info structure */
 
     apr_array_header_t *remove_mappings; /* A simple list, walked once */
 
@@ -153,8 +153,7 @@ module AP_MODULE_DECLARE_DATA mime_module;
 
 static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
 {
-    mime_dir_config *new =
-    (mime_dir_config *) apr_palloc(p, sizeof(mime_dir_config));
+    mime_dir_config *new = apr_palloc(p, sizeof(mime_dir_config));
 
     new->extension_mappings = NULL;
     new->remove_mappings = NULL;
@@ -213,10 +212,9 @@ static void remove_items(apr_pool_t *p, apr_array_header_t *remove,
     attrib_info *suffix = (attrib_info *) remove->elts;
     int i;
     for (i = 0; i < remove->nelts; i++) {
-        extension_info *exinfo =
-            (extension_info*)apr_hash_get(mappings,
-                                          suffix[i].name,
-                                          APR_HASH_KEY_STRING);
+        extension_info *exinfo = apr_hash_get(mappings,
+                                              suffix[i].name,
+                                              APR_HASH_KEY_STRING);
         if (exinfo && *(const char**)((char *)exinfo + suffix[i].offset)) {
             extension_info *copyinfo = exinfo;
             exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
@@ -230,8 +228,8 @@ static void remove_items(apr_pool_t *p, apr_array_header_t *remove,
 
 static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    mime_dir_config *base = (mime_dir_config *) basev;
-    mime_dir_config *add = (mime_dir_config *) addv;
+    mime_dir_config *base = (mime_dir_config *)basev;
+    mime_dir_config *add = (mime_dir_config *)addv;
     mime_dir_config *new = apr_palloc(p, sizeof(mime_dir_config));
 
     if (base->extension_mappings && add->extension_mappings) {
@@ -283,20 +281,21 @@ static const char *add_extension_info(cmd_parms *cmd, void *m_,
     ap_str_tolower(value);
     ap_str_tolower(key);
 
-    if (*key == '.')
-	++key;
+    if (*key == '.') {
+        ++key;
+    }
     if (!m->extension_mappings) {
         m->extension_mappings = apr_hash_make(cmd->pool);
         exinfo = NULL;
     }
-    else
+    else {
         exinfo = (extension_info*)apr_hash_get(m->extension_mappings, key,
                                                APR_HASH_KEY_STRING);
+    }
     if (!exinfo) {
         exinfo = apr_pcalloc(cmd->pool, sizeof(extension_info));
         key = apr_pstrdup(cmd->pool, key);
-        apr_hash_set(m->extension_mappings, key,
-                     APR_HASH_KEY_STRING, exinfo);
+        apr_hash_set(m->extension_mappings, key, APR_HASH_KEY_STRING, exinfo);
     }
     *(const char**)((char *)exinfo + offset) = value;
     return NULL;
@@ -312,12 +311,13 @@ static const char *remove_extension_info(cmd_parms *cmd, void *m_,
 {
     mime_dir_config *m = (mime_dir_config *) m_;
     attrib_info *suffix;
-    if (*ext == '.')
+    if (*ext == '.') {
         ++ext;
+    }
     if (!m->remove_mappings) {
         m->remove_mappings = apr_array_make(cmd->pool, 4, sizeof(*suffix));
     }
-    suffix = (attrib_info *) apr_array_push(m->remove_mappings);
+    suffix = (attrib_info *)apr_array_push(m->remove_mappings);
     suffix->name = apr_pstrdup(cmd->pool, ext);
     ap_str_tolower(suffix->name);
     suffix->offset = (int) (long) cmd->info;
@@ -329,10 +329,10 @@ static const char *remove_extension_info(cmd_parms *cmd, void *m_,
  */
 
 static const char *set_types_config(cmd_parms *cmd, void *dummy,
-				    const char *arg)
+                                    const char *arg)
 {
     ap_set_module_config(cmd->server->module_config, &mime_module,
-			 (void *)arg);
+                         (void *)arg);
     return NULL;
 }
 
@@ -342,86 +342,94 @@ static const char *multiviews_match(cmd_parms *cmd, void *m_,
     mime_dir_config *m = (mime_dir_config *) m_;
 
     if (strcasecmp(include, "Any") == 0) {
-        if (m->multimatch && (m->multimatch & ~MULTIMATCH_ANY))
+        if (m->multimatch && (m->multimatch & ~MULTIMATCH_ANY)) {
             return "Any is incompatible with NegotiatedOnly, "
                    "Filters and Handlers";
+        }
         m->multimatch |= MULTIMATCH_ANY;
     }
     else if (strcasecmp(include, "NegotiatedOnly") == 0) {
-        if (m->multimatch && (m->multimatch & ~MULTIMATCH_NEGOTIATED))
+        if (m->multimatch && (m->multimatch & ~MULTIMATCH_NEGOTIATED)) {
             return "Any is incompatible with NegotiatedOnly, "
                    "Filters and Handlers";
+        }
         m->multimatch |= MULTIMATCH_NEGOTIATED;
     }
     else if (strcasecmp(include, "Filters") == 0) {
         if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED 
-                                             | MULTIMATCH_ANY)))
+                                             | MULTIMATCH_ANY))) {
             return "Filters is incompatible with Any and NegotiatedOnly";
+        }
         m->multimatch |= MULTIMATCH_FILTERS;
     }
     else if (strcasecmp(include, "Handlers") == 0) {
         if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED 
-                                             | MULTIMATCH_ANY)))
+                                             | MULTIMATCH_ANY))) {
             return "Handlers is incompatible with Any and NegotiatedOnly";
+        }
         m->multimatch |= MULTIMATCH_HANDLERS;
     }
-    else 
+    else {
         return "Unrecognized option";
+    }
 
     return NULL;
 }
 
 static const command_rec mime_cmds[] =
 {
-AP_INIT_ITERATE2("AddCharset", add_extension_info, 
-         (void *)APR_XtOffsetOf(extension_info, charset_type), OR_FILEINFO,
-     "a charset (e.g., iso-2022-jp), followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddEncoding", add_extension_info, 
-         (void *)APR_XtOffsetOf(extension_info, encoding_type), OR_FILEINFO,
-     "an encoding (e.g., gzip), followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddHandler", add_extension_info, 
-         (void *)APR_XtOffsetOf(extension_info, handler), OR_FILEINFO,
-     "a handler name followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddInputFilter", add_extension_info, 
-         (void *)APR_XtOffsetOf(extension_info, input_filters), OR_FILEINFO,
-     "input filter name (or ; delimited names) followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddLanguage", add_extension_info, 
-         (void *)APR_XtOffsetOf(extension_info, language_type), OR_FILEINFO,
-     "a language (e.g., fr), followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddOutputFilter", add_extension_info, 
-         (void *)APR_XtOffsetOf(extension_info, output_filters), OR_FILEINFO, 
-     "output filter name (or ; delimited names) followed by one or more file extensions"),
-AP_INIT_ITERATE2("AddType", add_extension_info, 
-         (void *)APR_XtOffsetOf(extension_info, forced_type), OR_FILEINFO, 
-     "a mime type followed by one or more file extensions"),
-AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
-       (void*)APR_XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO,
-     "language to use for documents with no other language file extension"),
-AP_INIT_ITERATE("MultiviewsMatch", multiviews_match, NULL, OR_FILEINFO,
-     "NegotiatedOnly (default), Handlers and/or Filters, or Any"),
-AP_INIT_ITERATE("RemoveCharset", remove_extension_info, 
+    AP_INIT_ITERATE2("AddCharset", add_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, charset_type), OR_FILEINFO,
-     "one or more file extensions"),
-AP_INIT_ITERATE("RemoveEncoding", remove_extension_info, 
+        "a charset (e.g., iso-2022-jp), followed by one or more "
+        "file extensions"),
+    AP_INIT_ITERATE2("AddEncoding", add_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, encoding_type), OR_FILEINFO,
-     "one or more file extensions"),
-AP_INIT_ITERATE("RemoveHandler", remove_extension_info, 
+        "an encoding (e.g., gzip), followed by one or more file extensions"),
+    AP_INIT_ITERATE2("AddHandler", add_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, handler), OR_FILEINFO,
-     "one or more file extensions"),
-AP_INIT_ITERATE("RemoveInputFilter", remove_extension_info, 
+        "a handler name followed by one or more file extensions"),
+    AP_INIT_ITERATE2("AddInputFilter", add_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, input_filters), OR_FILEINFO,
-     "one or more file extensions"),
-AP_INIT_ITERATE("RemoveLanguage", remove_extension_info, 
+        "input filter name (or ; delimited names) followed by one or "
+        "more file extensions"),
+    AP_INIT_ITERATE2("AddLanguage", add_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, language_type), OR_FILEINFO,
-     "one or more file extensions"),
-AP_INIT_ITERATE("RemoveOutputFilter", remove_extension_info, 
+        "a language (e.g., fr), followed by one or more file extensions"),
+    AP_INIT_ITERATE2("AddOutputFilter", add_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, output_filters), OR_FILEINFO, 
+        "output filter name (or ; delimited names) followed by one or "
+        "more file extensions"),
+    AP_INIT_ITERATE2("AddType", add_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, forced_type), OR_FILEINFO, 
+        "a mime type followed by one or more file extensions"),
+    AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
+        (void*)APR_XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO,
+        "language to use for documents with no other language file extension"),
+    AP_INIT_ITERATE("MultiviewsMatch", multiviews_match, NULL, OR_FILEINFO,
+        "NegotiatedOnly (default), Handlers and/or Filters, or Any"),
+    AP_INIT_ITERATE("RemoveCharset", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, charset_type), OR_FILEINFO,
+        "one or more file extensions"),
+    AP_INIT_ITERATE("RemoveEncoding", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, encoding_type), OR_FILEINFO,
+        "one or more file extensions"),
+    AP_INIT_ITERATE("RemoveHandler", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, handler), OR_FILEINFO,
+        "one or more file extensions"),
+    AP_INIT_ITERATE("RemoveInputFilter", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, input_filters), OR_FILEINFO,
+        "one or more file extensions"),
+    AP_INIT_ITERATE("RemoveLanguage", remove_extension_info, 
+        (void *)APR_XtOffsetOf(extension_info, language_type), OR_FILEINFO,
+        "one or more file extensions"),
+    AP_INIT_ITERATE("RemoveOutputFilter", remove_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, output_filters), OR_FILEINFO,
-     "one or more file extensions"),
-AP_INIT_ITERATE("RemoveType", remove_extension_info, 
+        "one or more file extensions"),
+    AP_INIT_ITERATE("RemoveType", remove_extension_info, 
         (void *)APR_XtOffsetOf(extension_info, forced_type), OR_FILEINFO,
-     "one or more file extensions"),
-AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
-     "the MIME types config file"),
+        "one or more file extensions"),
+    AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
+        "the MIME types config file"),
     {NULL}
 };
 
@@ -431,23 +439,26 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 {
     ap_configfile_t *f;
     char l[MAX_STRING_LEN];
-    const char *types_confname = ap_get_module_config(s->module_config, &mime_module);
+    const char *types_confname = ap_get_module_config(s->module_config,
+                                                      &mime_module);
     apr_status_t status;
 
-    if (!types_confname)
+    if (!types_confname) {
         types_confname = AP_TYPES_CONFIG_FILE;
+    }
 
     types_confname = ap_server_root_relative(p, types_confname);
     if (!types_confname) {
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
-		     "Invalid mime types config path %s", 
-                     (const char *)ap_get_module_config(s->module_config, &mime_module));
+                     "Invalid mime types config path %s", 
+                     (const char *)ap_get_module_config(s->module_config,
+                                                        &mime_module));
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     if ((status = ap_pcfg_openfile(&f, ptemp, types_confname)) 
                 != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
-		     "could not open mime types config file %s.", 
+                     "could not open mime types config file %s.", 
                      types_confname);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -457,8 +468,9 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
         const char *ll = l, *ct;
 
-        if (l[0] == '#')
+        if (l[0] == '#') {
             continue;
+        }
         ct = ap_getword_conf(p, &ll);
 
         while (ll[0]) {
@@ -474,14 +486,15 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 static const char *zap_sp(const char *s)
 {
     if (s == NULL) {
-	return (NULL);
+        return (NULL);
     }
     if (*s == '\0') {
-	return (s);
+        return (s);
     }
 
     /* skip prefixed white space */
-    for (; *s == ' ' || *s == '\t' || *s == '\n'; s++);
+    for (; *s == ' ' || *s == '\t' || *s == '\n'; s++)
+        ;
 
     return (s);
 }
@@ -506,7 +519,7 @@ static int is_token(char c)
     int res;
 
     res = (apr_isascii(c) && apr_isgraph(c)
-	   && (strchr(tspecial, c) == NULL)) ? 1 : -1;
+           && (strchr(tspecial, c) == NULL)) ? 1 : -1;
     return res;
 }
 
@@ -515,7 +528,7 @@ static int is_qtext(char c)
     int res;
 
     res = (apr_isascii(c) && (c != '"') && (c != '\\') && (c != '\n'))
-	? 1 : -1;
+        ? 1 : -1;
     return res;
 }
 
@@ -525,10 +538,10 @@ static int is_quoted_pair(const char *s)
     int c;
 
     if (((s + 1) != NULL) && (*s == '\\')) {
-	c = (int) *(s + 1);
-	if (apr_isascii(c)) {
-	    res = 1;
-	}
+        c = (int) *(s + 1);
+        if (apr_isascii(c)) {
+            res = 1;
+        }
     }
     return (res);
 }
@@ -539,13 +552,13 @@ static content_type *analyze_ct(request_rec *r, const char *s)
     char *attribute, *value;
     int quoted = 0;
     server_rec * ss = r->server;
-    apr_pool_t  * p = r->pool;
+    apr_pool_t * p = r->pool;
 
     content_type *ctp;
     param *pp, *npp;
 
     /* initialize ctp */
-    ctp = (content_type *) apr_palloc(p, sizeof(content_type));
+    ctp = (content_type *)apr_palloc(p, sizeof(content_type));
     ctp->type = NULL;
     ctp->subtype = NULL;
     ctp->param = NULL;
@@ -558,10 +571,10 @@ static content_type *analyze_ct(request_rec *r, const char *s)
         cp++;
     }
     if (!*cp) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-		     "mod_mime: analyze_ct: cannot get media type from '%s'",
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                     "mod_mime: analyze_ct: cannot get media type from '%s'",
                      (const char *) mp);
-	return (NULL);
+        return (NULL);
     }
     ctp->type = cp;
     do {
@@ -577,10 +590,10 @@ static content_type *analyze_ct(request_rec *r, const char *s)
         cp++;
     }
     if (*cp != '/') {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-		     "mod_mime: analyze_ct: cannot get media type from '%s'",
-		     (const char *) mp);
-	return (NULL);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                     "mod_mime: analyze_ct: cannot get media type from '%s'",
+                     (const char *) mp);
+        return (NULL);
     }
     ctp->type_len = cp - ctp->type;
 
@@ -591,9 +604,9 @@ static content_type *analyze_ct(request_rec *r, const char *s)
         cp++;
     }
     if (!*cp) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-		     "Cannot get media subtype.");
-	return (NULL);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                     "Cannot get media subtype.");
+        return (NULL);
     }
     ctp->subtype = cp;
     do {
@@ -612,130 +625,130 @@ static content_type *analyze_ct(request_rec *r, const char *s)
     cp++; /* skip the ';' */
     cp = zap_sp(cp);
     if (cp == NULL || *cp == '\0') {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-		     "Cannot get media parameter.");
-	return (NULL);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                     "Cannot get media parameter.");
+        return (NULL);
     }
     mp = cp;
     attribute = NULL;
     value = NULL;
 
     while (cp != NULL && *cp != '\0') {
-	if (attribute == NULL) {
-	    if (is_token(*cp) > 0) {
-		cp++;
-		continue;
-	    }
-	    else if (*cp == ' ' || *cp == '\t' || *cp == '\n') {
-		cp++;
-		continue;
-	    }
-	    else if (*cp == '=') {
-		attribute = zap_sp_and_dup(p, mp, cp, NULL);
-		if (attribute == NULL || *attribute == '\0') {
-		    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-				 "Cannot get media parameter.");
-		    return (NULL);
-		}
-		cp++;
-		cp = zap_sp(cp);
-		if (cp == NULL || *cp == '\0') {
-		    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-				 "Cannot get media parameter.");
-		    return (NULL);
-		}
-		mp = cp;
-		continue;
-	    }
-	    else {
-		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-			     "Cannot get media parameter.");
-		return (NULL);
-	    }
-	}
-	else {
-	    if (mp == cp) {
-		if (*cp == '"') {
-		    quoted = 1;
-		    cp++;
-		}
-		else {
-		    quoted = 0;
-		}
-	    }
-	    if (quoted > 0) {
-		while (quoted && *cp != '\0') {
-		    if (is_qtext(*cp) > 0) {
-			cp++;
-		    }
-		    else if (is_quoted_pair(cp) > 0) {
-			cp += 2;
-		    }
-		    else if (*cp == '"') {
-			cp++;
-			while (*cp == ' ' || *cp == '\t' || *cp == '\n') {
-			    cp++;
-			}
-			if (*cp != ';' && *cp != '\0') {
-			    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-					 "Cannot get media parameter.");
-			    return(NULL);
-			}
-			quoted = 0;
-		    }
-		    else {
-			ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-				     "Cannot get media parameter.");
-			return (NULL);
-		    }
-		}
-	    }
-	    else {
-		while (1) {
-		    if (is_token(*cp) > 0) {
-			cp++;
-		    }
-		    else if (*cp == '\0' || *cp == ';') {
-			break;
-		    }
-		    else {
-			ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-				     "Cannot get media parameter.");
-			return (NULL);
-		    }
-		}
-	    }
-	    value = zap_sp_and_dup(p, mp, cp, NULL);
-	    if (value == NULL || *value == '\0') {
-		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
-			     "Cannot get media parameter.");
-		return (NULL);
-	    }
+        if (attribute == NULL) {
+            if (is_token(*cp) > 0) {
+                cp++;
+                continue;
+            }
+            else if (*cp == ' ' || *cp == '\t' || *cp == '\n') {
+                cp++;
+                continue;
+            }
+            else if (*cp == '=') {
+                attribute = zap_sp_and_dup(p, mp, cp, NULL);
+                if (attribute == NULL || *attribute == '\0') {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                                 "Cannot get media parameter.");
+                    return (NULL);
+                }
+                cp++;
+                cp = zap_sp(cp);
+                if (cp == NULL || *cp == '\0') {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                                 "Cannot get media parameter.");
+                    return (NULL);
+                }
+                mp = cp;
+                continue;
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                             "Cannot get media parameter.");
+                return (NULL);
+            }
+        }
+        else {
+            if (mp == cp) {
+                if (*cp == '"') {
+                    quoted = 1;
+                    cp++;
+                }
+                else {
+                    quoted = 0;
+                }
+            }
+            if (quoted > 0) {
+                while (quoted && *cp != '\0') {
+                    if (is_qtext(*cp) > 0) {
+                        cp++;
+                    }
+                    else if (is_quoted_pair(cp) > 0) {
+                        cp += 2;
+                    }
+                    else if (*cp == '"') {
+                        cp++;
+                        while (*cp == ' ' || *cp == '\t' || *cp == '\n') {
+                            cp++;
+                        }
+                        if (*cp != ';' && *cp != '\0') {
+                            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                                         "Cannot get media parameter.");
+                            return(NULL);
+                        }
+                        quoted = 0;
+                    }
+                    else {
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                                     "Cannot get media parameter.");
+                        return (NULL);
+                    }
+                }
+            }
+            else {
+                while (1) {
+                    if (is_token(*cp) > 0) {
+                        cp++;
+                    }
+                    else if (*cp == '\0' || *cp == ';') {
+                        break;
+                    }
+                    else {
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                                     "Cannot get media parameter.");
+                        return (NULL);
+                    }
+                }
+            }
+            value = zap_sp_and_dup(p, mp, cp, NULL);
+            if (value == NULL || *value == '\0') {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ss,
+                             "Cannot get media parameter.");
+                return (NULL);
+            }
 
-	    pp = apr_palloc(p, sizeof(param));
-	    pp->attr = attribute;
-	    pp->val = value;
-	    pp->next = NULL;
+            pp = apr_palloc(p, sizeof(param));
+            pp->attr = attribute;
+            pp->val = value;
+            pp->next = NULL;
 
-	    if (ctp->param == NULL) {
-		ctp->param = pp;
-	    }
-	    else {
-		npp = ctp->param;
-		while (npp->next) {
-		    npp = npp->next;
-		}
-		npp->next = pp;
-	    }
-	    quoted = 0;
-	    attribute = NULL;
-	    value = NULL;
-	    if (*cp == '\0') {
-		break;
-	    }
-	    cp++;
-	    mp = cp;
-	}
+            if (ctp->param == NULL) {
+                ctp->param = pp;
+            }
+            else {
+                npp = ctp->param;
+                while (npp->next) {
+                    npp = npp->next;
+                }
+                npp->next = pp;
+            }
+            quoted = 0;
+            attribute = NULL;
+            value = NULL;
+            if (*cp == '\0') {
+                break;
+            }
+            cp++;
+            mp = cp;
+        }
     }
     return (ctp);
 }
@@ -759,16 +772,18 @@ static int find_ct(request_rec *r)
         return OK;
     }
 
-    conf = (mime_dir_config *) ap_get_module_config(r->per_dir_config,
-                                                    &mime_module);
+    conf = (mime_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                   &mime_module);
     exception_list = apr_array_make(r->pool, 2, sizeof(char *));
 
     /* Always drop the path leading up to the file name.
      */
-    if ((fn = strrchr(r->filename, '/')) == NULL)
+    if ((fn = strrchr(r->filename, '/')) == NULL) {
         fn = r->filename;
-    else
+    }
+    else {
         ++fn;
+    }
 
     /* The exception list keeps track of those filename components that
      * are not associated with extensions indicating metadata.
@@ -776,7 +791,7 @@ static int find_ct(request_rec *r)
      * a basename of "txt" even though it might look like an extension).
      */
     ext = ap_getword(r->pool, &fn, '.');
-    *((const char **) apr_array_push(exception_list)) = ext;
+    *((const char **)apr_array_push(exception_list)) = ext;
 
     /* Parse filename extensions which can be in any order 
      */
@@ -784,8 +799,9 @@ static int find_ct(request_rec *r)
         const extension_info *exinfo = NULL;
         int found;
 
-        if (*ext == '\0')  /* ignore empty extensions "bad..html" */
+        if (*ext == '\0') {  /* ignore empty extensions "bad..html" */
             continue;
+        }
 
         found = 0;
 
@@ -816,16 +832,18 @@ static int find_ct(request_rec *r)
                 found = 1;
             }
             if (exinfo->language_type) {
-                if (!r->content_languages)
+                if (!r->content_languages) {
                     r->content_languages = apr_array_make(r->pool, 2,
                                                           sizeof(char *));
-                    *((const char **) apr_array_push(r->content_languages))
-                                          = exinfo->language_type;
+                }
+                *((const char **)apr_array_push(r->content_languages))
+                    = exinfo->language_type;
                 found = 1;
             }
             if (exinfo->encoding_type) {
-                if (!r->content_encoding)
+                if (!r->content_encoding) {
                     r->content_encoding = exinfo->encoding_type;
+                }
                 else {
                     /* XXX should eliminate duplicate entities */
                     r->content_encoding = apr_pstrcat(r->pool,
@@ -842,8 +860,9 @@ static int find_ct(request_rec *r)
              */
             if (exinfo->handler && r->proxyreq == PROXYREQ_NONE) {
                 r->handler = exinfo->handler;
-                if (conf->multimatch & MULTIMATCH_HANDLERS)
+                if (conf->multimatch & MULTIMATCH_HANDLERS) {
                     found = 1;
+                }
             }
             /* XXX Two significant problems; 1, we don't check to see if we are
              * setting redundant filters.    2, we insert these in the types config
@@ -855,8 +874,9 @@ static int find_ct(request_rec *r)
                     && (filter = ap_getword(r->pool, &filters, ';'))) {
                     ap_add_input_filter(filter, NULL, r, r->connection);
                 }
-                if (conf->multimatch & MULTIMATCH_FILTERS)
+                if (conf->multimatch & MULTIMATCH_FILTERS) {
                     found = 1;
+                }
             }
             if (exinfo->output_filters && r->proxyreq == PROXYREQ_NONE) {
                 const char *filter, *filters = exinfo->output_filters;
@@ -864,15 +884,18 @@ static int find_ct(request_rec *r)
                     && (filter = ap_getword(r->pool, &filters, ';'))) {
                     ap_add_output_filter(filter, NULL, r, r->connection);
                 }
-                if (conf->multimatch & MULTIMATCH_FILTERS)
+                if (conf->multimatch & MULTIMATCH_FILTERS) {
                     found = 1;
+                }
             }
         }
 
-        if (found || (conf->multimatch & MULTIMATCH_ANY))
+        if (found || (conf->multimatch & MULTIMATCH_ANY)) {
             found_metadata = 1;
-        else
+        }
+        else {
             *((const char **) apr_array_push(exception_list)) = ext;
+        }
     }
 
     /*
@@ -886,11 +909,11 @@ static int find_ct(request_rec *r)
     }
 
     if (r->content_type) {
-	content_type *ctp;
-	int override = 0;
+        content_type *ctp;
+        int override = 0;
 
-	if ((ctp = analyze_ct(r, r->content_type))) {
-	    param *pp = ctp->param;
+        if ((ctp = analyze_ct(r, r->content_type))) {
+            param *pp = ctp->param;
             char *base_content_type = apr_palloc(r->pool, ctp->type_len +
                                                  ctp->subtype_len +
                                                  sizeof("/"));
@@ -901,30 +924,35 @@ static int find_ct(request_rec *r)
             memcpy(tmp, ctp->subtype, ctp->subtype_len);
             tmp += ctp->subtype_len;
             *tmp = 0;
-	    ap_set_content_type(r, base_content_type);
-	    while (pp != NULL) {
-		if (charset && !strcmp(pp->attr, "charset")) {
-		    if (!override) {
-			ap_set_content_type(r, apr_pstrcat(r->pool, r->content_type,
-                                                           "; charset=", charset,
-                                                           NULL));
-			override = 1;
-		    }
-		}
-		else {
-		    ap_set_content_type(r, apr_pstrcat(r->pool, r->content_type,
-                                                       "; ", pp->attr,
-                                                       "=", pp->val,
-                                                       NULL));
-		}
-		pp = pp->next;
-	    }
-	    if (charset && !override) {
-		ap_set_content_type(r, apr_pstrcat(r->pool, r->content_type,
+            ap_set_content_type(r, base_content_type);
+            while (pp != NULL) {
+                if (charset && !strcmp(pp->attr, "charset")) {
+                    if (!override) {
+                        ap_set_content_type(r,
+                                            apr_pstrcat(r->pool,
+                                                        r->content_type,
+                                                        "; charset=",
+                                                        charset,
+                                                        NULL));
+                        override = 1;
+                    }
+                }
+                else {
+                    ap_set_content_type(r,
+                                        apr_pstrcat(r->pool,
+                                                    r->content_type,
+                                                    "; ", pp->attr,
+                                                    "=", pp->val,
+                                                    NULL));
+                }
+                pp = pp->next;
+            }
+            if (charset && !override) {
+                ap_set_content_type(r, apr_pstrcat(r->pool, r->content_type,
                                                    "; charset=", charset,
                                                    NULL));
-	    }
-	}
+            }
+        }
     }
 
     /* Set default language, if none was specified by the extensions
@@ -934,14 +962,16 @@ static int find_ct(request_rec *r)
     if (!r->content_languages && conf->default_language) {
         const char **new;
 
-        if (!r->content_languages)
+        if (!r->content_languages) {
             r->content_languages = apr_array_make(r->pool, 2, sizeof(char *));
-        new = (const char **) apr_array_push(r->content_languages);
+        }
+        new = (const char **)apr_array_push(r->content_languages);
         *new = conf->default_language;
     }
 
-    if (!r->content_type)
+    if (!r->content_type) {
         return DECLINED;
+    }
 
     return OK;
 }
@@ -950,20 +980,20 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(mime_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_type_checker(find_ct,NULL,NULL,APR_HOOK_MIDDLE);
- /* 
-  * this hook seems redundant ... is there any reason a type checker isn't
-  * allowed to do this already?  I'd think that fixups in general would be
-  * the last opportunity to get the filters right.
-  * ap_hook_insert_filter(mime_insert_filters,NULL,NULL,APR_HOOK_MIDDLE);
-  */
+    /* 
+     * this hook seems redundant ... is there any reason a type checker isn't
+     * allowed to do this already?  I'd think that fixups in general would be
+     * the last opportunity to get the filters right.
+     * ap_hook_insert_filter(mime_insert_filters,NULL,NULL,APR_HOOK_MIDDLE);
+     */
 }
 
 module AP_MODULE_DECLARE_DATA mime_module = {
     STANDARD20_MODULE_STUFF,
-    create_mime_dir_config,	/* create per-directory config structure */
-    merge_mime_dir_configs,	/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    mime_cmds,			/* command apr_table_t */
-    register_hooks		/* register hooks */
+    create_mime_dir_config,     /* create per-directory config structure */
+    merge_mime_dir_configs,     /* merge per-directory config structures */
+    NULL,                       /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    mime_cmds,                  /* command apr_table_t */
+    register_hooks              /* register hooks */
 };
