@@ -1,6 +1,10 @@
 # Based on apr's make_export.awk, which is
 # based on Ryan Bloom's make_export.pl
 
+BEGIN {
+    printf(" (APACHE2)\n")
+}
+
 # List of functions that we don't support, yet??
 #/ap_some_name/{next}
 
