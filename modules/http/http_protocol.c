@@ -2161,7 +2161,7 @@ int ap_send_http_options(request_rec *r)
     char *buff;
     ap_bucket *b;
     ap_bucket_brigade *bb;
-    apr_size_t len;
+    apr_size_t len = 0;
     header_struct h;
 
     if (r->assbackwards)
