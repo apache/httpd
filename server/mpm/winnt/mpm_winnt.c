@@ -1971,6 +1971,11 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
         /* Set up the scoreboard. */
         ap_run_pre_mpm(pconf, SB_NOT_SHARED);
+        /* Humm... Should we put the parent pid here? Does it matter 
+         * since the scoreboard is not shared?
+         */
+        ap_scoreboard_image->parent[0].pid = parent_pid;
+        ap_scoreboard_image->parent[0].quiescing = 0;
         if (one_process) {
             if (ap_setup_listeners(ap_server_conf) < 1) {
                 return 1;
